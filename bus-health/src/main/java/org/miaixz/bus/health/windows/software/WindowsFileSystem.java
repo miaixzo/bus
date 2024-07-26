@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.software;
 
 import com.sun.jna.Native;
@@ -49,9 +49,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * The Windows File System contains {@link OSFileStore}s which are a storage pool, device, partition,
- * volume, concrete file system or other implementation specific means of file storage. In Windows, these are
- * represented by a drive letter, e.g., "A:\" and "C:\"
+ * The Windows File System contains {@link OSFileStore}s which are a storage pool, device, partition, volume, concrete
+ * file system or other implementation specific means of file storage. In Windows, these are represented by a drive
+ * letter, e.g., "A:\" and "C:\"
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -180,8 +180,9 @@ public class WindowsFileSystem extends AbstractFileSystem {
                     String uuid = Parsing.parseUuidOrDefault(volume, Normal.EMPTY);
 
                     fs.add(new WindowsOSFileStore(String.format(Locale.ROOT, "%s (%s)", strName, strMount), volume,
-                            strName, strMount, options.toString(), uuid, Normal.EMPTY, getDriveType(strMount), strFsType,
-                            systemFreeBytes.getValue(), userFreeBytes.getValue(), totalBytes.getValue(), 0, 0));
+                            strName, strMount, options.toString(), uuid, Normal.EMPTY, getDriveType(strMount),
+                            strFsType, systemFreeBytes.getValue(), userFreeBytes.getValue(), totalBytes.getValue(), 0,
+                            0));
                 }
             } while (Kernel32.INSTANCE.FindNextVolume(hVol, aVolume, BUFSIZE));
             return fs;
@@ -237,18 +238,18 @@ public class WindowsFileSystem extends AbstractFileSystem {
      */
     private static String getDriveType(String drive) {
         switch (Kernel32.INSTANCE.GetDriveType(drive)) {
-            case 2:
-                return "Removable drive";
-            case 3:
-                return "Fixed drive";
-            case 4:
-                return "Network drive";
-            case 5:
-                return "CD-ROM";
-            case 6:
-                return "RAM drive";
-            default:
-                return "Unknown drive type";
+        case 2:
+            return "Removable drive";
+        case 3:
+            return "Fixed drive";
+        case 4:
+            return "Network drive";
+        case 5:
+            return "CD-ROM";
+        case 6:
+            return "RAM drive";
+        default:
+            return "Unknown drive type";
         }
     }
 

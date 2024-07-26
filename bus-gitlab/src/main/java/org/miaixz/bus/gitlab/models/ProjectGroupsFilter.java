@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import org.miaixz.bus.gitlab.GitLabApiForm;
@@ -33,7 +33,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- *  This class is used to filter Groups when getting lists of groups for a specified project.
+ * This class is used to filter Groups when getting lists of groups for a specified project.
  */
 public class ProjectGroupsFilter implements Serializable {
     private static final long serialVersionUID = -1L;
@@ -105,12 +105,9 @@ public class ProjectGroupsFilter implements Serializable {
      * @return a GitLabApiForm instance holding the query parameters for this ProjectGroupsFilter instance
      */
     public GitLabApiForm getQueryParams() {
-        return (new GitLabApiForm()
-                .withParam("search", search)
+        return (new GitLabApiForm().withParam("search", search)
                 .withParam("shared_min_access_level", sharedMinAccessLevel)
-                .withParam("shared_visible_only", sharedVisibleOnly)
-                .withParam("skip_groups", skipGroups)
-                .withParam("with_shared", withShared)
-        );
+                .withParam("shared_visible_only", sharedVisibleOnly).withParam("skip_groups", skipGroups)
+                .withParam("with_shared", withShared));
     }
 }

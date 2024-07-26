@@ -1,38 +1,38 @@
 <p align="center">
-	<a href="https://www.miaixz.org"><img src="LOGO.svg" width="45%"></a>
+  <a href="https://www.miaixz.org"><img src="LOGO.svg" width="45%"></a>
 </p>
 <p align="center">
-	<a href="http://www.miaixz.org">http://www.miaixz.org</a>
+  <a href="http://www.miaixz.org">http://www.miaixz.org</a>
 </p>
 <p align="center">
-    <a target="_blank" href="https://search.maven.org/search?q=org.miaixz">
-		<img src="https://img.shields.io/badge/maven--central-v8.0.6-blue.svg?label=Maven%20Central" />
-	</a>
-	<a target="_blank" href="https://travis-ci.org/839128/bus">
-		<img src="https://app.travis-ci.com/839128/bus.svg?token=TZPNK5FQiKMp9cao3SnY&branch=main">
-	</a>
-	<a target="_blank" href="https://jdk.java.net/">
-		<img src="https://img.shields.io/badge/Java-17+-green.svg">
-	</a>
-	<a target="_blank" href="https://spring.io/projects/spring-boot">
-		<img src="https://img.shields.io/badge/Spring Boot-3.0.5-brightgreen.svg">
-	</a>
-	<a target="_blank" href="https://www.mysql.com">
-		<img src="https://img.shields.io/badge/Mysql-8.x-blue.svg">
-	</a>
-	<a target="_blank" href="http://dubbo.apache.org">
-		<img src="https://img.shields.io/badge/dubbo-3.2.11-yellow.svg">
-	</a>
-	<a target="_blank" href="http://poi.apache.org">
-		<img src="https://img.shields.io/badge/poi-5.2.5-blue.svg">
-	</a>
-	<a target="_blank" href="https://opensource.org/licenses/MIT">
-		<img src="https://img.shields.io/badge/license-MIT-green.svg">
-	</a>
-</p> 
+  <a target="_blank" href="https://search.maven.org/search?q=org.miaixz">
+    <img src="https://img.shields.io/badge/maven--central-v8.0.6-blue.svg?label=Maven%20Central" />
+  </a>
+  <a target="_blank" href="https://travis-ci.org/839128/bus">
+    <img src="https://app.travis-ci.com/839128/bus.svg?token=TZPNK5FQiKMp9cao3SnY&branch=main">
+  </a>
+  <a target="_blank" href="https://jdk.java.net/">
+    <img src="https://img.shields.io/badge/Java-17+-green.svg">
+  </a>
+  <a target="_blank" href="https://spring.io/projects/spring-boot">
+    <img src="https://img.shields.io/badge/Spring Boot-3.0.5-brightgreen.svg">
+  </a>
+  <a target="_blank" href="https://www.mysql.com">
+    <img src="https://img.shields.io/badge/Mysql-8.x-blue.svg">
+  </a>
+  <a target="_blank" href="http://dubbo.apache.org">
+    <img src="https://img.shields.io/badge/dubbo-3.2.11-yellow.svg">
+  </a>
+  <a target="_blank" href="http://poi.apache.org">
+    <img src="https://img.shields.io/badge/poi-5.2.5-blue.svg">
+  </a>
+  <a target="_blank" href="https://opensource.org/licenses/MIT">
+    <img src="https://img.shields.io/badge/license-MIT-green.svg">
+  </a>
+</p>
 
 <p align="center">
-	-- QQ群①：839128 --
+  -- QQ群①：839128 --
 </p>
 
 ---
@@ -54,7 +54,7 @@ Bus (应用/服务总线) 是一个基础框架、服务套件，它基于Java17
 
 | 完成  | 模块            | 描述信息                                              |
 |-----|---------------|---------------------------------------------------|
-| [√] | bus-all       | 包含微服务所需的完整模块以及通用组件                                | 
+| [√] | bus-all       | 包含微服务所需的完整模块以及通用组件                                |
 | [√] | bus-base      | 基础功能及base相关,实体(Entity),服务(Service),接口(Controller) |
 | [√] | bus-bom       | 包含所有组建信息,当然可以通过配置按需加载等                            |
 | [√] | bus-cache     | 缓存服务及工具,支持redis,memcached,,hessian等               |
@@ -182,4 +182,4 @@ Thanks JetBrains for the OpenSource license.
 
 源码永远是最好的教程，善于读源码和DEBUG朋友掌握完全是轻而易举的事。源码是作者设计理念最直观的展现，这也是开源的魅力所在。"
 Talk is cheap, Show me the code."
-，开源让技术难题的探讨变得更加务实，在您看完源码后心中对它都会有一个定论。在作者看来，Bus切切实实降低了开发学习门槛，也保障了服务的高性能、高可用。如果读者朋友对源码中某些部分的设计存在疑虑，也欢迎与作者保持沟通。 
+，开源让技术难题的探讨变得更加务实，在您看完源码后心中对它都会有一个定论。在作者看来，Bus切切实实降低了开发学习门槛，也保障了服务的高性能、高可用。如果读者朋友对源码中某些部分的设计存在疑虑，也欢迎与作者保持沟通。

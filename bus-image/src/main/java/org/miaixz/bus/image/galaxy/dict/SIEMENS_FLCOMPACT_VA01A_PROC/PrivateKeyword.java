@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_FLCOMPACT_VA01A_PROC;
 
 /**
@@ -36,9 +36,9 @@ public class PrivateKeyword {
     public static final String PrivateCreator = "";
 
     public static String valueOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-                case PrivateTag._0017_xx0A_:
+        case PrivateTag._0017_xx0A_:
             return "_0017_xx0A_";
         case PrivateTag._0017_xx0B_:
             return "_0017_xx0B_";

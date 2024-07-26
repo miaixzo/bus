@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.alipay;
 
 import com.alibaba.fastjson.JSONObject;
@@ -62,8 +62,7 @@ public class AlipayProvider extends AbstractProvider {
 
     private static final String GATEWAY = "https://openapi.alipay.com/gateway.do";
     /**
-     * 支付宝公钥：当选择支付宝登录时，该值可用
-     * 对应“RSA2(SHA256)密钥”中的“支付宝公钥”
+     * 支付宝公钥：当选择支付宝登录时，该值可用 对应“RSA2(SHA256)密钥”中的“支付宝公钥”
      */
     private final AlipayClient alipayClient;
 
@@ -76,7 +75,8 @@ public class AlipayProvider extends AbstractProvider {
     public AlipayProvider(Context context) {
         super(context, Registry.ALIPAY);
         check(context);
-        this.alipayClient = new DefaultAlipayClient(GATEWAY, context.getAppKey(), context.getAppSecret(), "json", Charset.DEFAULT_UTF_8, context.getUnionId(), "RSA2");
+        this.alipayClient = new DefaultAlipayClient(GATEWAY, context.getAppKey(), context.getAppSecret(), "json",
+                Charset.DEFAULT_UTF_8, context.getUnionId(), "RSA2");
     }
 
     /**
@@ -88,8 +88,8 @@ public class AlipayProvider extends AbstractProvider {
     public AlipayProvider(Context context, ExtendCache cache) {
         super(context, Registry.ALIPAY, cache);
         check(context);
-        this.alipayClient = new DefaultAlipayClient(GATEWAY, context.getAppKey(), context.getAppSecret(),
-                "json", Charset.DEFAULT_UTF_8, context.getUnionId(), "RSA2");
+        this.alipayClient = new DefaultAlipayClient(GATEWAY, context.getAppKey(), context.getAppSecret(), "json",
+                Charset.DEFAULT_UTF_8, context.getUnionId(), "RSA2");
     }
 
     /**
@@ -101,8 +101,8 @@ public class AlipayProvider extends AbstractProvider {
     public AlipayProvider(Context context, ExtendCache cache, String proxyHost, Integer proxyPort) {
         super(context, Registry.ALIPAY, cache);
         check(context);
-        this.alipayClient = new DefaultAlipayClient(GATEWAY, context.getAppKey(), context.getAppSecret(),
-                "json", Charset.DEFAULT_UTF_8, context.getUnionId(), "RSA2", proxyHost, proxyPort);
+        this.alipayClient = new DefaultAlipayClient(GATEWAY, context.getAppKey(), context.getAppSecret(), "json",
+                Charset.DEFAULT_UTF_8, context.getUnionId(), "RSA2", proxyHost, proxyPort);
     }
 
     protected void check(Context context) {
@@ -140,12 +140,8 @@ public class AlipayProvider extends AbstractProvider {
         if (!response.isSuccess()) {
             throw new AuthorizedException(response.getSubMsg());
         }
-        return AccToken.builder()
-                .accessToken(response.getAccessToken())
-                .uid(response.getUserId())
-                .expireIn(Integer.parseInt(response.getExpiresIn()))
-                .refreshToken(response.getRefreshToken())
-                .build();
+        return AccToken.builder().accessToken(response.getAccessToken()).uid(response.getUserId())
+                .expireIn(Integer.parseInt(response.getExpiresIn())).refreshToken(response.getRefreshToken()).build();
     }
 
     /**
@@ -168,13 +164,9 @@ public class AlipayProvider extends AbstractProvider {
         if (!response.isSuccess()) {
             throw new AuthorizedException(response.getSubMsg());
         }
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .data(AccToken.builder()
-                        .accessToken(response.getAccessToken())
-                        .uid(response.getUserId())
-                        .expireIn(Integer.parseInt(response.getExpiresIn()))
-                        .refreshToken(response.getRefreshToken())
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode())
+                .data(AccToken.builder().accessToken(response.getAccessToken()).uid(response.getUserId())
+                        .expireIn(Integer.parseInt(response.getExpiresIn())).refreshToken(response.getRefreshToken())
                         .build())
                 .build();
     }
@@ -194,19 +186,14 @@ public class AlipayProvider extends AbstractProvider {
         }
 
         String province = response.getProvince(), city = response.getCity();
-        String location = String.format("%s %s", StringKit.isEmpty(province) ? "" : province, StringKit.isEmpty(city) ? "" : city);
+        String location = String.format("%s %s", StringKit.isEmpty(province) ? "" : province,
+                StringKit.isEmpty(city) ? "" : city);
 
-        return Material.builder()
-                .rawJson(JSONObject.parseObject(JSONObject.toJSONString(response)))
+        return Material.builder().rawJson(JSONObject.parseObject(JSONObject.toJSONString(response)))
                 .uuid(response.getUserId())
                 .username(StringKit.isEmpty(response.getUserName()) ? response.getNickName() : response.getUserName())
-                .nickname(response.getNickName())
-                .avatar(response.getAvatar())
-                .location(location)
-                .gender(Gender.of(response.getGender()))
-                .token(accToken)
-                .source(complex.toString())
-                .build();
+                .nickname(response.getNickName()).avatar(response.getAvatar()).location(location)
+                .gender(Gender.of(response.getGender())).token(accToken).source(complex.toString()).build();
     }
 
     /**
@@ -217,12 +204,9 @@ public class AlipayProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.authorize())
-                .queryParam("app_id", context.getAppKey())
-                .queryParam("scope", "auth_user")
-                .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("state", getRealState(state))
-                .build();
+        return Builder.fromUrl(complex.authorize()).queryParam("app_id", context.getAppKey())
+                .queryParam("scope", "auth_user").queryParam("redirect_uri", context.getRedirectUri())
+                .queryParam("state", getRealState(state)).build();
     }
 
 }

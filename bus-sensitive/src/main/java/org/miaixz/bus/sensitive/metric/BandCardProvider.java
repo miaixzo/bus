@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.sensitive.metric;
 
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -33,9 +33,7 @@ import org.miaixz.bus.sensitive.Context;
 import org.miaixz.bus.sensitive.magic.annotation.Shield;
 
 /**
- * 银行卡号脱敏
- * 只留前四位和后四位
- * 6227 0383 3938 3938 393 脱敏结果: 6227 **** **** ***8 393
+ * 银行卡号脱敏 只留前四位和后四位 6227 0383 3938 3938 393 脱敏结果: 6227 **** **** ***8 393
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,14 +47,10 @@ public class BandCardProvider extends AbstractProvider {
         }
         final Shield shield = context.getShield();
         String bankCard = object.toString();
-        return StringKit.left(bankCard, 4).concat(
-                StringKit.removePrefix(
-                        StringKit.padPre(
-                                StringKit.right(bankCard, 4),
-                                StringKit.length(bankCard), shield.shadow()
-                        ),
-                        StringKit.fill(3, shield.shadow())
-                ));
+        return StringKit.left(bankCard, 4)
+                .concat(StringKit.removePrefix(
+                        StringKit.padPre(StringKit.right(bankCard, 4), StringKit.length(bankCard), shield.shadow()),
+                        StringKit.fill(3, shield.shadow())));
     }
 
 }

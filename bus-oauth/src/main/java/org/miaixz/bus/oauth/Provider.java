@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth;
 
 import org.miaixz.bus.core.basic.entity.Message;
@@ -35,11 +35,8 @@ import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.ErrorCode;
 
 /**
- * {@code Provider}公共接口，所有平台的{@code Provider}都需要实现该接口
- * {@link Provider#authorize(String)}
- * {@link Provider#login(Callback)}
- * {@link Provider#revoke(AccToken)}
- * {@link Provider#refresh(AccToken)}
+ * {@code Provider}公共接口，所有平台的{@code Provider}都需要实现该接口 {@link Provider#authorize(String)}
+ * {@link Provider#login(Callback)} {@link Provider#revoke(AccToken)} {@link Provider#refresh(AccToken)}
  *
  * @author Kimi Liu
  * @since Java 17+

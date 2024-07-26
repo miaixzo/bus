@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org 6tail and other contributors.              ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -40,15 +40,12 @@ import java.util.List;
  */
 public class SolarMonth extends Loops {
 
-    public static final String[] NAMES = {
-            "1月", "2月", "3月", "4月", "5月", "6月",
-            "7月", "8月", "9月", "10月", "11月", "12月"
-    };
+    public static final String[] NAMES = { "1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月" };
 
     /**
      * 每月天数
      */
-    public static final int[] DAYS = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+    public static final int[] DAYS = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
     /**
      * 年
@@ -115,7 +112,7 @@ public class SolarMonth extends Loops {
             return 21;
         }
         int d = DAYS[getIndexInYear()];
-        //公历闰年2月多一天
+        // 公历闰年2月多一天
         if (2 == month && year.isLeap()) {
             d++;
         }
@@ -147,7 +144,8 @@ public class SolarMonth extends Loops {
      * @return 周数
      */
     public int getWeekCount(int start) {
-        return (int) Math.ceil((indexOf(SolarDay.fromYmd(getYear(), month, 1).getWeek().getIndex() - start, 7) + getDayCount()) / 7D);
+        return (int) Math.ceil(
+                (indexOf(SolarDay.fromYmd(getYear(), month, 1).getWeek().getIndex() - start, 7) + getDayCount()) / 7D);
     }
 
     public String getName() {

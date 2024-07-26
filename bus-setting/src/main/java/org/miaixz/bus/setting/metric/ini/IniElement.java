@@ -24,15 +24,14 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.setting.metric.ini;
 
 import java.util.Optional;
 import java.util.function.Function;
 
 /**
- * IniElement, like {@code sections, properties, comments}.
- * they all can be like {@link String} .
+ * IniElement, like {@code sections, properties, comments}. they all can be like {@link String} .
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -40,9 +39,8 @@ import java.util.function.Function;
 public interface IniElement extends CharSequence, java.io.Serializable {
 
     /**
-     * this element's value.
-     * maybe a {@code toString} value like {@code comment},
-     * a property's value like {@code property} or a title value like {@code section} .
+     * this element's value. maybe a {@code toString} value like {@code comment}, a property's value like
+     * {@code property} or a title value like {@code section} .
      *
      * @return some value
      */
@@ -58,9 +56,8 @@ public interface IniElement extends CharSequence, java.io.Serializable {
     String setValue(String newValue);
 
     /**
-     * there may be comments at the end of each element. or null.
-     * if this element is comment, return null.
-     * so, nullable, or see {@link #getCommentOptional}.
+     * there may be comments at the end of each element. or null. if this element is comment, return null. so, nullable,
+     * or see {@link #getCommentOptional}.
      *
      * @return comment end of the element or null. if element, return null.
      * @see #getCommentOptional()
@@ -80,9 +77,9 @@ public interface IniElement extends CharSequence, java.io.Serializable {
     String toNoCommentString();
 
     /**
-     * Get complete information.
-     * Take sec as an example：{@code section.toString() + all properties.toString() + comment.toString()}
-     * In general, it is about the same as {@link #toString()}.
+     * Get complete information. Take sec as an
+     * example：{@code section.toString() + all properties.toString() + comment.toString()} In general, it is about the
+     * same as {@link #toString()}.
      *
      * @return the string
      */
@@ -111,8 +108,7 @@ public interface IniElement extends CharSequence, java.io.Serializable {
     int line();
 
     /**
-     * there may be comments at the end of each element.
-     * if this element is comment, return itself.
+     * there may be comments at the end of each element. if this element is comment, return itself.
      *
      * @return comment end of the element. if element, return itself.
      * @see #getComment()
@@ -124,10 +120,7 @@ public interface IniElement extends CharSequence, java.io.Serializable {
     /**
      * Edit the value of this element on the basis of original value .
      *
-     * @param valueEditor function to edit old value, {@code oldValue -> {
-     *                    // edit ...
-     *                    return newValue;
-     *                    }}
+     * @param valueEditor function to edit old value, {@code oldValue -> { // edit ... return newValue; }}
      * @return old value
      */
     default String setValue(Function<String, String> valueEditor) {

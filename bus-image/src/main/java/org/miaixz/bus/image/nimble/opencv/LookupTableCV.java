@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv;
 
 import org.opencv.core.CvType;
@@ -106,8 +106,7 @@ public class LookupTableCV {
         return val;
     }
 
-    private static void lookupByte(
-            short[] srcData, byte[] dstData, int[] tblOffsets, byte[][] tblData, int mask) {
+    private static void lookupByte(short[] srcData, byte[] dstData, int[] tblOffsets, byte[][] tblData, int mask) {
         int bOffset = tblData.length;
         if (srcData.length < dstData.length) {
             for (int i = 0; i < srcData.length; i++) {
@@ -129,8 +128,7 @@ public class LookupTableCV {
         }
     }
 
-    private static void lookupShort(
-            short[] srcData, short[] dstData, int[] tblOffsets, short[][] tblData, int mask) {
+    private static void lookupShort(short[] srcData, short[] dstData, int[] tblOffsets, short[][] tblData, int mask) {
         int bOffset = tblData.length;
         if (srcData.length < dstData.length) {
             for (int i = 0; i < srcData.length; i++) {
@@ -265,8 +263,7 @@ public class LookupTableCV {
 
         if (lkpDataType == DataBuffer.TYPE_BYTE) {
             boolean scrByte = srcDataType == DataBuffer.TYPE_BYTE;
-            byte[] bDstData =
-                    scrByte && channels >= lkbBands ? bSrcData : new byte[width * height * lkbBands];
+            byte[] bDstData = scrByte && channels >= lkbBands ? bSrcData : new byte[width * height * lkbBands];
             if (scrByte && bSrcData != null) {
                 lookup(bSrcData, bDstData, tblOffsets, bTblData);
             } else if (srcDataType == DataBuffer.TYPE_USHORT && sSrcData != null && bDstData != null) {
@@ -274,8 +271,7 @@ public class LookupTableCV {
             } else if (srcDataType == DataBuffer.TYPE_SHORT && sSrcData != null && bDstData != null) {
                 lookup(sSrcData, bDstData, tblOffsets, bTblData);
             } else {
-                throw new IllegalArgumentException(
-                        "Not supported LUT conversion from source dataType " + srcDataType);
+                throw new IllegalArgumentException("Not supported LUT conversion from source dataType " + srcDataType);
             }
 
             ImageCV dst = new ImageCV(height, width, CvType.CV_8UC(lkbBands));
@@ -284,8 +280,7 @@ public class LookupTableCV {
 
         } else if (lkpDataType == DataBuffer.TYPE_USHORT || lkpDataType == DataBuffer.TYPE_SHORT) {
             boolean scrByte = srcDataType == DataBuffer.TYPE_BYTE;
-            short[] sDstData =
-                    !scrByte && channels >= lkbBands ? sSrcData : new short[width * height * lkbBands];
+            short[] sDstData = !scrByte && channels >= lkbBands ? sSrcData : new short[width * height * lkbBands];
             if (scrByte && bSrcData != null && sTblData != null) {
                 lookup(bSrcData, sDstData, tblOffsets, sTblData);
             } else if (srcDataType == DataBuffer.TYPE_USHORT && sSrcData != null && sTblData != null) {
@@ -293,17 +288,11 @@ public class LookupTableCV {
             } else if (srcDataType == DataBuffer.TYPE_SHORT && sSrcData != null && sTblData != null) {
                 lookup(sSrcData, sDstData, tblOffsets, sTblData);
             } else {
-                throw new IllegalArgumentException(
-                        "Not supported LUT conversion from source dataType " + srcDataType);
+                throw new IllegalArgumentException("Not supported LUT conversion from source dataType " + srcDataType);
             }
 
-            ImageCV dst =
-                    new ImageCV(
-                            height,
-                            width,
-                            lkpDataType == DataBuffer.TYPE_USHORT
-                                    ? CvType.CV_16UC(channels)
-                                    : CvType.CV_16SC(channels));
+            ImageCV dst = new ImageCV(height, width,
+                    lkpDataType == DataBuffer.TYPE_USHORT ? CvType.CV_16UC(channels) : CvType.CV_16SC(channels));
             dst.put(0, 0, sDstData);
             return dst;
         }

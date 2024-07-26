@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.watch;
 
 import java.nio.file.WatchEvent;
@@ -47,8 +47,7 @@ public interface Watcher {
     void onCreate(WatchEvent<?> event, WatchKey key);
 
     /**
-     * 文件修改时执行的方法
-     * 文件修改可能触发多次
+     * 文件修改时执行的方法 文件修改可能触发多次
      *
      * @param event 事件，可通过{@link WatchEvent#context()}获取创建的文件或目录名称
      * @param key   事件发生的{@link WatchKey}，可以通过{@link WatchKey#watchable()}获取监听的Path路径

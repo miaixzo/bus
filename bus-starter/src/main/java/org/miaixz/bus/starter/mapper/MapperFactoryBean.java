@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.mapper;
 
 import org.apache.ibatis.executor.ErrorContext;
@@ -74,11 +74,11 @@ public class MapperFactoryBean<T> extends SqlSessionDaoSupport implements Factor
             }
         }
         // 直接针对接口处理通用接口方法对应的 MappedStatement 是安全的，通用方法不会出现 IncompleteElementException 的情况
-        if (configuration.hasMapper(this.mapperInterface) && mapperBuilder != null && mapperBuilder.isExtendCommonMapper(this.mapperInterface)) {
+        if (configuration.hasMapper(this.mapperInterface) && mapperBuilder != null
+                && mapperBuilder.isExtendCommonMapper(this.mapperInterface)) {
             mapperBuilder.processConfiguration(getSqlSession().getConfiguration(), this.mapperInterface);
         }
     }
-
 
     @Override
     public T getObject() {
@@ -96,9 +96,7 @@ public class MapperFactoryBean<T> extends SqlSessionDaoSupport implements Factor
     }
 
     /**
-     * 将添加的标志返回到MyBatis配置中
-     * 如果映射器将被添加到MyBatis,则返回true,
-     * 如果它还没有被添加到MyBatis中注册
+     * 将添加的标志返回到MyBatis配置中 如果映射器将被添加到MyBatis,则返回true, 如果它还没有被添加到MyBatis中注册
      *
      * @return the boolean
      */
@@ -107,10 +105,8 @@ public class MapperFactoryBean<T> extends SqlSessionDaoSupport implements Factor
     }
 
     /**
-     * 如果addToConfig为false,映射器将不会添加到MyBatis 这意味着
-     * 它必须包含在mybatisconfig .xml中
-     * 如果是真的,映射器将被添加到MyBatis中,如果还没有
-     * 注册 默认情况下addToCofig为真
+     * 如果addToConfig为false,映射器将不会添加到MyBatis 这意味着 它必须包含在mybatisconfig .xml中 如果是真的,映射器将被添加到MyBatis中,如果还没有 注册
+     * 默认情况下addToCofig为真
      *
      * @param addToConfig 是否添加
      */

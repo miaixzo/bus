@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.loader.classloader;
 
 import org.miaixz.bus.core.io.file.FileName;
@@ -54,7 +54,7 @@ public class JarClassLoader extends URLClassLoader {
      * 构造
      */
     public JarClassLoader() {
-        this(new URL[]{});
+        this(new URL[] {});
     }
 
     /**
@@ -84,8 +84,8 @@ public class JarClassLoader extends URLClassLoader {
      */
     public static JarClassLoader load(final File dir) {
         final JarClassLoader loader = new JarClassLoader();
-        loader.addJar(dir);//查找加载所有jar
-        loader.addURL(dir);//查找加载所有class
+        loader.addJar(dir);// 查找加载所有jar
+        loader.addURL(dir);// 查找加载所有class
         return loader;
     }
 
@@ -151,8 +151,7 @@ public class JarClassLoader extends URLClassLoader {
      * @return 是否为jar文件
      */
     private static boolean isJarFile(final File file) {
-        return FileKit.isFile(file) &&
-                FileName.isType(file.getName(), Normal.URL_PROTOCOL_JAR);
+        return FileKit.isFile(file) && FileName.isType(file.getName(), Normal.URL_PROTOCOL_JAR);
     }
 
     /**
@@ -176,8 +175,7 @@ public class JarClassLoader extends URLClassLoader {
     }
 
     /**
-     * 增加class所在目录或文件
-     * 如果为目录，此目录用于搜索class文件，如果为文件，需为jar文件
+     * 增加class所在目录或文件 如果为目录，此目录用于搜索class文件，如果为文件，需为jar文件
      *
      * @param dir 目录
      * @return this

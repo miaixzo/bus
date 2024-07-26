@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xml;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -42,8 +42,7 @@ import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
 
 /**
- * XXE漏洞修复相关工具类
- * 参考：https://blog.spoock.com/2018/10/23/java-xxe/
+ * XXE漏洞修复相关工具类 参考：https://blog.spoock.com/2018/10/23/java-xxe/
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,15 +50,16 @@ import javax.xml.validation.Validator;
 public class XXE {
 
     /**
-     * 关闭XXE，避免漏洞攻击
-     * see: <a href="https://www.owasp.org/index.php/XML_External_Entity_">https://www.owasp.org/index.php/XML_External_Entity_</a>(XXE)_Prevention_Cheat_Sheet#JAXP_DocumentBuilderFactory.2C_SAXParserFactory_and_DOM4J
+     * 关闭XXE，避免漏洞攻击 see: <a href=
+     * "https://www.owasp.org/index.php/XML_External_Entity_">https://www.owasp.org/index.php/XML_External_Entity_</a>(XXE)_Prevention_Cheat_Sheet#JAXP_DocumentBuilderFactory.2C_SAXParserFactory_and_DOM4J
      *
      * @param factory DocumentBuilderFactory
      * @return DocumentBuilderFactory
      */
     public static DocumentBuilderFactory disableXXE(final DocumentBuilderFactory factory) {
         try {
-            // This is the PRIMARY defense. If DTDs (doctypes) are disallowed, almost all XML entity attacks are prevented
+            // This is the PRIMARY defense. If DTDs (doctypes) are disallowed, almost all XML entity attacks are
+            // prevented
             // Xerces 2 only - http://xerces.apache.org/xerces2-j/features.html#disallow-doctype-decl
             factory.setFeature(XmlFeatures.DISALLOW_DOCTYPE_DECL, true);
             // If you can't completely disable DTDs, then at least do the following:

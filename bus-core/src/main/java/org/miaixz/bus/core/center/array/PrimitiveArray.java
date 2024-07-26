@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.array;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -46,8 +46,7 @@ import java.util.Random;
 public class PrimitiveArray extends ArrayValidator {
 
     /**
-     * 生成一个新的重新设置大小的数组
-     * 调整大小后拷贝原数组到新数组下。扩大则占位前N个位置，其它位置补充0，缩小则截断
+     * 生成一个新的重新设置大小的数组 调整大小后拷贝原数组到新数组下。扩大则占位前N个位置，其它位置补充0，缩小则截断
      *
      * @param bytes   原数组
      * @param newSize 新的数组大小
@@ -65,8 +64,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 将多个数组合并在一起
-     * 忽略null的数组
+     * 将多个数组合并在一起 忽略null的数组
      *
      * @param arrays 数组集合
      * @return 合并后的数组
@@ -96,8 +94,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 将多个数组合并在一起
-     * 忽略null的数组
+     * 将多个数组合并在一起 忽略null的数组
      *
      * @param arrays 数组集合
      * @return 合并后的数组
@@ -127,8 +124,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 将多个数组合并在一起
-     * 忽略null的数组
+     * 将多个数组合并在一起 忽略null的数组
      *
      * @param arrays 数组集合
      * @return 合并后的数组
@@ -158,8 +154,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 将多个数组合并在一起
-     * 忽略null的数组
+     * 将多个数组合并在一起 忽略null的数组
      *
      * @param arrays 数组集合
      * @return 合并后的数组
@@ -189,8 +184,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 将多个数组合并在一起
-     * 忽略null的数组
+     * 将多个数组合并在一起 忽略null的数组
      *
      * @param arrays 数组集合
      * @return 合并后的数组
@@ -220,8 +214,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 将多个数组合并在一起
-     * 忽略null的数组
+     * 将多个数组合并在一起 忽略null的数组
      *
      * @param arrays 数组集合
      * @return 合并后的数组
@@ -251,8 +244,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 将多个数组合并在一起
-     * 忽略null的数组
+     * 将多个数组合并在一起 忽略null的数组
      *
      * @param arrays 数组集合
      * @return 合并后的数组
@@ -282,8 +274,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 将多个数组合并在一起
-     * 忽略null的数组
+     * 将多个数组合并在一起 忽略null的数组
      *
      * @param arrays 数组集合
      * @return 合并后的数组
@@ -1049,8 +1040,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 包装类数组转为原始类型数组
-     * {@code null} 按照 {@code false} 对待
+     * 包装类数组转为原始类型数组 {@code null} 按照 {@code false} 对待
      *
      * @param values 包装类型数组
      * @return 原始类型数组
@@ -1074,9 +1064,9 @@ public class PrimitiveArray extends ArrayValidator {
     /**
      * 获取子数组
      * <ul>
-     *     <li>位置可以为负数，例如 -1 代表 数组最后一个元素的位置</li>
-     *     <li>如果 开始位置 大于 结束位置，会自动交换</li>
-     *     <li>如果 结束位置 大于 数组长度，会变为数组长度</li>
+     * <li>位置可以为负数，例如 -1 代表 数组最后一个元素的位置</li>
+     * <li>如果 开始位置 大于 结束位置，会自动交换</li>
+     * <li>如果 结束位置 大于 数组长度，会变为数组长度</li>
      * </ul>
      *
      * @param array 数组
@@ -1111,9 +1101,9 @@ public class PrimitiveArray extends ArrayValidator {
     /**
      * 获取子数组
      * <ul>
-     *     <li>位置可以为负数，例如 -1 代表 数组最后一个元素的位置</li>
-     *     <li>如果 开始位置 大于 结束位置，会自动交换</li>
-     *     <li>如果 结束位置 大于 数组长度，会变为数组长度</li>
+     * <li>位置可以为负数，例如 -1 代表 数组最后一个元素的位置</li>
+     * <li>如果 开始位置 大于 结束位置，会自动交换</li>
+     * <li>如果 结束位置 大于 数组长度，会变为数组长度</li>
      * </ul>
      *
      * @param array 数组
@@ -1148,9 +1138,9 @@ public class PrimitiveArray extends ArrayValidator {
     /**
      * 获取子数组
      * <ul>
-     *     <li>位置可以为负数，例如 -1 代表 数组最后一个元素的位置</li>
-     *     <li>如果 开始位置 大于 结束位置，会自动交换</li>
-     *     <li>如果 结束位置 大于 数组长度，会变为数组长度</li>
+     * <li>位置可以为负数，例如 -1 代表 数组最后一个元素的位置</li>
+     * <li>如果 开始位置 大于 结束位置，会自动交换</li>
+     * <li>如果 结束位置 大于 数组长度，会变为数组长度</li>
      * </ul>
      *
      * @param array 数组
@@ -1185,9 +1175,9 @@ public class PrimitiveArray extends ArrayValidator {
     /**
      * 获取子数组
      * <ul>
-     *     <li>位置可以为负数，例如 -1 代表 数组最后一个元素的位置</li>
-     *     <li>如果 开始位置 大于 结束位置，会自动交换</li>
-     *     <li>如果 结束位置 大于 数组长度，会变为数组长度</li>
+     * <li>位置可以为负数，例如 -1 代表 数组最后一个元素的位置</li>
+     * <li>如果 开始位置 大于 结束位置，会自动交换</li>
+     * <li>如果 结束位置 大于 数组长度，会变为数组长度</li>
      * </ul>
      *
      * @param array 数组
@@ -1222,9 +1212,9 @@ public class PrimitiveArray extends ArrayValidator {
     /**
      * 获取子数组
      * <ul>
-     *     <li>位置可以为负数，例如 -1 代表 数组最后一个元素的位置</li>
-     *     <li>如果 开始位置 大于 结束位置，会自动交换</li>
-     *     <li>如果 结束位置 大于 数组长度，会变为数组长度</li>
+     * <li>位置可以为负数，例如 -1 代表 数组最后一个元素的位置</li>
+     * <li>如果 开始位置 大于 结束位置，会自动交换</li>
+     * <li>如果 结束位置 大于 数组长度，会变为数组长度</li>
      * </ul>
      *
      * @param array 数组
@@ -1259,9 +1249,9 @@ public class PrimitiveArray extends ArrayValidator {
     /**
      * 获取子数组
      * <ul>
-     *     <li>位置可以为负数，例如 -1 代表 数组最后一个元素的位置</li>
-     *     <li>如果 开始位置 大于 结束位置，会自动交换</li>
-     *     <li>如果 结束位置 大于 数组长度，会变为数组长度</li>
+     * <li>位置可以为负数，例如 -1 代表 数组最后一个元素的位置</li>
+     * <li>如果 开始位置 大于 结束位置，会自动交换</li>
+     * <li>如果 结束位置 大于 数组长度，会变为数组长度</li>
      * </ul>
      *
      * @param array 数组
@@ -1296,9 +1286,9 @@ public class PrimitiveArray extends ArrayValidator {
     /**
      * 获取子数组
      * <ul>
-     *     <li>位置可以为负数，例如 -1 代表 数组最后一个元素的位置</li>
-     *     <li>如果 开始位置 大于 结束位置，会自动交换</li>
-     *     <li>如果 结束位置 大于 数组长度，会变为数组长度</li>
+     * <li>位置可以为负数，例如 -1 代表 数组最后一个元素的位置</li>
+     * <li>如果 开始位置 大于 结束位置，会自动交换</li>
+     * <li>如果 结束位置 大于 数组长度，会变为数组长度</li>
      * </ul>
      *
      * @param array 数组
@@ -1333,9 +1323,9 @@ public class PrimitiveArray extends ArrayValidator {
     /**
      * 获取子数组
      * <ul>
-     *     <li>位置可以为负数，例如 -1 代表 数组最后一个元素的位置</li>
-     *     <li>如果 开始位置 大于 结束位置，会自动交换</li>
-     *     <li>如果 结束位置 大于 数组长度，会变为数组长度</li>
+     * <li>位置可以为负数，例如 -1 代表 数组最后一个元素的位置</li>
+     * <li>如果 开始位置 大于 结束位置，会自动交换</li>
+     * <li>如果 结束位置 大于 数组长度，会变为数组长度</li>
      * </ul>
      *
      * @param array 数组
@@ -1368,8 +1358,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 移除数组中对应位置的元素
-     * copier from commons-lang
+     * 移除数组中对应位置的元素 copier from commons-lang
      *
      * @param array 数组对象
      * @param index 位置，如果位置小于0或者大于长度，返回原数组
@@ -1381,8 +1370,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 移除数组中对应位置的元素
-     * copier from commons-lang
+     * 移除数组中对应位置的元素 copier from commons-lang
      *
      * @param array 数组对象
      * @param index 位置，如果位置小于0或者大于长度，返回原数组
@@ -1394,8 +1382,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 移除数组中对应位置的元素
-     * copier from commons-lang
+     * 移除数组中对应位置的元素 copier from commons-lang
      *
      * @param array 数组对象
      * @param index 位置，如果位置小于0或者大于长度，返回原数组
@@ -1407,8 +1394,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 移除数组中对应位置的元素
-     * copier from commons-lang
+     * 移除数组中对应位置的元素 copier from commons-lang
      *
      * @param array 数组对象
      * @param index 位置，如果位置小于0或者大于长度，返回原数组
@@ -1420,8 +1406,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 移除数组中对应位置的元素
-     * copier from commons-lang
+     * 移除数组中对应位置的元素 copier from commons-lang
      *
      * @param array 数组对象
      * @param index 位置，如果位置小于0或者大于长度，返回原数组
@@ -1433,8 +1418,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 移除数组中对应位置的元素
-     * copier from commons-lang
+     * 移除数组中对应位置的元素 copier from commons-lang
      *
      * @param array 数组对象
      * @param index 位置，如果位置小于0或者大于长度，返回原数组
@@ -1446,8 +1430,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 移除数组中对应位置的元素
-     * copier from commons-lang
+     * 移除数组中对应位置的元素 copier from commons-lang
      *
      * @param array 数组对象
      * @param index 位置，如果位置小于0或者大于长度，返回原数组
@@ -1459,8 +1442,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 移除数组中对应位置的元素
-     * copier from commons-lang
+     * 移除数组中对应位置的元素 copier from commons-lang
      *
      * @param array 数组对象
      * @param index 位置，如果位置小于0或者大于长度，返回原数组
@@ -1472,8 +1454,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 移除数组中对应位置的元素
-     * copier from commons-lang
+     * 移除数组中对应位置的元素 copier from commons-lang
      *
      * @param array 数组对象，可以是对象数组，也可以原始类型数组
      * @param index 位置，如果位置小于0或者大于长度，返回原数组
@@ -1500,9 +1481,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 移除数组中指定的元素
-     * 只会移除匹配到的第一个元素
-     * copier from commons-lang
+     * 移除数组中指定的元素 只会移除匹配到的第一个元素 copier from commons-lang
      *
      * @param array   数组对象
      * @param element 要移除的元素
@@ -1514,9 +1493,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 移除数组中指定的元素
-     * 只会移除匹配到的第一个元素
-     * copier from commons-lang
+     * 移除数组中指定的元素 只会移除匹配到的第一个元素 copier from commons-lang
      *
      * @param array   数组对象
      * @param element 要移除的元素
@@ -1528,9 +1505,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 移除数组中指定的元素
-     * 只会移除匹配到的第一个元素
-     * copier from commons-lang
+     * 移除数组中指定的元素 只会移除匹配到的第一个元素 copier from commons-lang
      *
      * @param array   数组对象
      * @param element 要移除的元素
@@ -1542,9 +1517,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 移除数组中指定的元素
-     * 只会移除匹配到的第一个元素
-     * copier from commons-lang
+     * 移除数组中指定的元素 只会移除匹配到的第一个元素 copier from commons-lang
      *
      * @param array   数组对象
      * @param element 要移除的元素
@@ -1556,9 +1529,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 移除数组中指定的元素
-     * 只会移除匹配到的第一个元素
-     * copier from commons-lang
+     * 移除数组中指定的元素 只会移除匹配到的第一个元素 copier from commons-lang
      *
      * @param array   数组对象
      * @param element 要移除的元素
@@ -1570,9 +1541,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 移除数组中指定的元素
-     * 只会移除匹配到的第一个元素
-     * copier from commons-lang
+     * 移除数组中指定的元素 只会移除匹配到的第一个元素 copier from commons-lang
      *
      * @param array   数组对象
      * @param element 要移除的元素
@@ -1584,9 +1553,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 移除数组中指定的元素
-     * 只会移除匹配到的第一个元素
-     * copier from commons-lang
+     * 移除数组中指定的元素 只会移除匹配到的第一个元素 copier from commons-lang
      *
      * @param array   数组对象
      * @param element 要移除的元素
@@ -1598,9 +1565,7 @@ public class PrimitiveArray extends ArrayValidator {
     }
 
     /**
-     * 移除数组中指定的元素
-     * 只会移除匹配到的第一个元素
-     * copier from commons-lang
+     * 移除数组中指定的元素 只会移除匹配到的第一个元素 copier from commons-lang
      *
      * @param array   数组对象
      * @param element 要移除的元素
@@ -2512,9 +2477,9 @@ public class PrimitiveArray extends ArrayValidator {
     /**
      * array数组是否以prefix开头
      * <ul>
-     *     <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
-     *     <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
-     *     <li>prefix长度大于array，返回{@code false}</li>
+     * <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
+     * <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
+     * <li>prefix长度大于array，返回{@code false}</li>
      * </ul>
      *
      * @param array  数组
@@ -2543,9 +2508,9 @@ public class PrimitiveArray extends ArrayValidator {
     /**
      * array数组是否以prefix开头
      * <ul>
-     *     <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
-     *     <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
-     *     <li>prefix长度大于array，返回{@code false}</li>
+     * <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
+     * <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
+     * <li>prefix长度大于array，返回{@code false}</li>
      * </ul>
      *
      * @param array  数组
@@ -2569,9 +2534,9 @@ public class PrimitiveArray extends ArrayValidator {
     /**
      * array数组是否以prefix开头
      * <ul>
-     *     <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
-     *     <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
-     *     <li>prefix长度大于array，返回{@code false}</li>
+     * <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
+     * <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
+     * <li>prefix长度大于array，返回{@code false}</li>
      * </ul>
      *
      * @param array  数组
@@ -2600,9 +2565,9 @@ public class PrimitiveArray extends ArrayValidator {
     /**
      * array数组是否以prefix开头
      * <ul>
-     *     <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
-     *     <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
-     *     <li>prefix长度大于array，返回{@code false}</li>
+     * <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
+     * <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
+     * <li>prefix长度大于array，返回{@code false}</li>
      * </ul>
      *
      * @param array  数组
@@ -2631,9 +2596,9 @@ public class PrimitiveArray extends ArrayValidator {
     /**
      * array数组是否以prefix开头
      * <ul>
-     *     <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
-     *     <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
-     *     <li>prefix长度大于array，返回{@code false}</li>
+     * <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
+     * <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
+     * <li>prefix长度大于array，返回{@code false}</li>
      * </ul>
      *
      * @param array  数组
@@ -2662,9 +2627,9 @@ public class PrimitiveArray extends ArrayValidator {
     /**
      * array数组是否以prefix开头
      * <ul>
-     *     <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
-     *     <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
-     *     <li>prefix长度大于array，返回{@code false}</li>
+     * <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
+     * <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
+     * <li>prefix长度大于array，返回{@code false}</li>
      * </ul>
      *
      * @param array  数组
@@ -2693,9 +2658,9 @@ public class PrimitiveArray extends ArrayValidator {
     /**
      * array数组是否以prefix开头
      * <ul>
-     *     <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
-     *     <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
-     *     <li>prefix长度大于array，返回{@code false}</li>
+     * <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
+     * <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
+     * <li>prefix长度大于array，返回{@code false}</li>
      * </ul>
      *
      * @param array  数组
@@ -2724,9 +2689,9 @@ public class PrimitiveArray extends ArrayValidator {
     /**
      * array数组是否以prefix开头
      * <ul>
-     *     <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
-     *     <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
-     *     <li>prefix长度大于array，返回{@code false}</li>
+     * <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
+     * <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
+     * <li>prefix长度大于array，返回{@code false}</li>
      * </ul>
      *
      * @param array  数组

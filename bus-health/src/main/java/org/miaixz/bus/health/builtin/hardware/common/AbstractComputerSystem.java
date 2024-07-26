@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.hardware.common;
 
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -74,10 +74,8 @@ public abstract class AbstractComputerSystem implements ComputerSystem {
 
     @Override
     public String toString() {
-        String sb = "manufacturer=" + getManufacturer() + ", " +
-                "model=" + getModel() + ", " +
-                "serial number=" + getSerialNumber() + ", " +
-                "uuid=" + getHardwareUUID();
+        String sb = "manufacturer=" + getManufacturer() + ", " + "model=" + getModel() + ", " + "serial number="
+                + getSerialNumber() + ", " + "uuid=" + getHardwareUUID();
         return sb;
     }
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.Philips_MR_Imaging_DD_005;
 
 /**
@@ -140,7 +140,7 @@ public class PrivateTag {
     /** (2005,xx26) VR=CS VM=1 Viewing Hardcopy Only */
     public static final int ViewingHardcopyOnly = 0x20050026;
 
-    /** (2005,xx27) VR=CS VM=1  */
+    /** (2005,xx27) VR=CS VM=1 */
     public static final int _2005_xx27_ = 0x20050027;
 
     /** (2005,xx28) VR=SL VM=1 Number of Label Types */

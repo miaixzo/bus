@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.douyin;
 
 import com.alibaba.fastjson.JSONObject;
@@ -70,26 +70,18 @@ public class DouyinProvider extends AbstractProvider {
         JSONObject userInfoObject = JSONObject.parseObject(response);
         this.checkResponse(userInfoObject);
         JSONObject object = userInfoObject.getJSONObject("data");
-        return Material.builder()
-                .rawJson(object)
-                .uuid(object.getString("union_id"))
-                .username(object.getString("nickname"))
-                .nickname(object.getString("nickname"))
-                .avatar(object.getString("avatar"))
-                .remark(object.getString("description"))
-                .gender(Gender.of(object.getString("gender")))
-                .location(String.format("%s %s %s", object.getString("country"), object.getString("province"), object.getString("city")))
-                .token(accToken)
-                .source(complex.toString())
-                .build();
+        return Material.builder().rawJson(object).uuid(object.getString("union_id"))
+                .username(object.getString("nickname")).nickname(object.getString("nickname"))
+                .avatar(object.getString("avatar")).remark(object.getString("description"))
+                .gender(Gender.of(object.getString("gender"))).location(String.format("%s %s %s",
+                        object.getString("country"), object.getString("province"), object.getString("city")))
+                .token(accToken).source(complex.toString()).build();
     }
 
     @Override
     public Message refresh(AccToken oldToken) {
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .data(getToken(refreshTokenUrl(oldToken.getRefreshToken())))
-                .build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode())
+                .data(getToken(refreshTokenUrl(oldToken.getRefreshToken()))).build();
     }
 
     /**
@@ -117,13 +109,9 @@ public class DouyinProvider extends AbstractProvider {
         JSONObject object = JSONObject.parseObject(response);
         this.checkResponse(object);
         JSONObject dataObj = object.getJSONObject("data");
-        return AccToken.builder()
-                .accessToken(dataObj.getString("access_token"))
-                .openId(dataObj.getString("open_id"))
-                .expireIn(dataObj.getIntValue("expires_in"))
-                .refreshToken(dataObj.getString("refresh_token"))
-                .scope(dataObj.getString("scope"))
-                .build();
+        return AccToken.builder().accessToken(dataObj.getString("access_token")).openId(dataObj.getString("open_id"))
+                .expireIn(dataObj.getIntValue("expires_in")).refreshToken(dataObj.getString("refresh_token"))
+                .scope(dataObj.getString("scope")).build();
     }
 
     /**
@@ -134,13 +122,10 @@ public class DouyinProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.authorize())
-                .queryParam("response_type", "code")
-                .queryParam("client_key", context.getAppKey())
-                .queryParam("redirect_uri", context.getRedirectUri())
+        return Builder.fromUrl(complex.authorize()).queryParam("response_type", "code")
+                .queryParam("client_key", context.getAppKey()).queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("scope", this.getScopes(Symbol.COMMA, true, this.getDefaultScopes(DouyinScope.values())))
-                .queryParam("state", getRealState(state))
-                .build();
+                .queryParam("state", getRealState(state)).build();
     }
 
     /**
@@ -151,12 +136,9 @@ public class DouyinProvider extends AbstractProvider {
      */
     @Override
     protected String accessTokenUrl(String code) {
-        return Builder.fromUrl(complex.accessToken())
-                .queryParam("code", code)
-                .queryParam("client_key", context.getAppKey())
-                .queryParam("client_secret", context.getAppSecret())
-                .queryParam("grant_type", "authorization_code")
-                .build();
+        return Builder.fromUrl(complex.accessToken()).queryParam("code", code)
+                .queryParam("client_key", context.getAppKey()).queryParam("client_secret", context.getAppSecret())
+                .queryParam("grant_type", "authorization_code").build();
     }
 
     /**
@@ -167,10 +149,8 @@ public class DouyinProvider extends AbstractProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(complex.userInfo())
-                .queryParam("access_token", accToken.getAccessToken())
-                .queryParam("open_id", accToken.getOpenId())
-                .build();
+        return Builder.fromUrl(complex.userInfo()).queryParam("access_token", accToken.getAccessToken())
+                .queryParam("open_id", accToken.getOpenId()).build();
     }
 
     /**
@@ -181,11 +161,8 @@ public class DouyinProvider extends AbstractProvider {
      */
     @Override
     protected String refreshTokenUrl(String refreshToken) {
-        return Builder.fromUrl(complex.refresh())
-                .queryParam("client_key", context.getAppKey())
-                .queryParam("refresh_token", refreshToken)
-                .queryParam("grant_type", "refresh_token")
-                .build();
+        return Builder.fromUrl(complex.refresh()).queryParam("client_key", context.getAppKey())
+                .queryParam("refresh_token", refreshToken).queryParam("grant_type", "refresh_token").build();
     }
 
 }

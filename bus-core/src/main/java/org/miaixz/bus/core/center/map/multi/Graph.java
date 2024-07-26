@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map.multi;
 
 import org.miaixz.bus.core.xyz.CollKit;
@@ -63,8 +63,7 @@ public class Graph<T> extends SetValueMap<T, T> {
      * @return 是否
      */
     public boolean containsEdge(final T target1, final T target2) {
-        return this.getValues(target1).contains(target2)
-                && this.getValues(target2).contains(target1);
+        return this.getValues(target1).contains(target2) && this.getValues(target2).contains(target1);
     }
 
     /**

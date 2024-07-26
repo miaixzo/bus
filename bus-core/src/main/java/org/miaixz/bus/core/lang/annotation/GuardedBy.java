@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.annotation;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -32,15 +32,14 @@ import org.miaixz.bus.core.lang.Normal;
 import java.lang.annotation.*;
 
 /**
- * 用来标识每个需要加锁的状态变量以及保护该变量的锁
- * 有助于代码的维护与审查,以及一些自动化的分析工具找到潜在的安全性错误
+ * 用来标识每个需要加锁的状态变量以及保护该变量的锁 有助于代码的维护与审查,以及一些自动化的分析工具找到潜在的安全性错误
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD, ElementType.FIELD})
+@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.FIELD })
 @Inherited
 public @interface GuardedBy {
 

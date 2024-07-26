@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.convert.Convert;
@@ -54,29 +54,15 @@ public class ColorKit {
     private static final int RGB_COLOR_BOUND = 256;
 
     static {
-        final Map<String, Color> colorMap = MapKit
-                .builder("BLACK", Color.BLACK)
-                .put("WHITE", Color.WHITE)
-                .put("LIGHTGRAY", Color.LIGHT_GRAY)
-                .put("LIGHT_GRAY", Color.LIGHT_GRAY)
-                .put("GRAY", Color.GRAY)
-                .put("DARKGRAY", Color.DARK_GRAY)
-                .put("DARK_GRAY", Color.DARK_GRAY)
-                .put("RED", Color.RED)
-                .put("PINK", Color.PINK)
-                .put("ORANGE", Color.ORANGE)
-                .put("YELLOW", Color.YELLOW)
-                .put("GREEN", Color.GREEN)
-                .put("MAGENTA", Color.MAGENTA)
-                .put("CYAN", Color.CYAN)
-                .put("BLUE", Color.BLUE)
+        final Map<String, Color> colorMap = MapKit.builder("BLACK", Color.BLACK).put("WHITE", Color.WHITE)
+                .put("LIGHTGRAY", Color.LIGHT_GRAY).put("LIGHT_GRAY", Color.LIGHT_GRAY).put("GRAY", Color.GRAY)
+                .put("DARKGRAY", Color.DARK_GRAY).put("DARK_GRAY", Color.DARK_GRAY).put("RED", Color.RED)
+                .put("PINK", Color.PINK).put("ORANGE", Color.ORANGE).put("YELLOW", Color.YELLOW)
+                .put("GREEN", Color.GREEN).put("MAGENTA", Color.MAGENTA).put("CYAN", Color.CYAN).put("BLUE", Color.BLUE)
                 // 暗金色
-                .put("DARKGOLD", hexToColor("#9e7e67"))
-                .put("DARK_GOLD", hexToColor("#9e7e67"))
+                .put("DARKGOLD", hexToColor("#9e7e67")).put("DARK_GOLD", hexToColor("#9e7e67"))
                 // 亮金色
-                .put("LIGHTGOLD", hexToColor("#ac9c85"))
-                .put("LIGHT_GOLD", hexToColor("#ac9c85"))
-                .build();
+                .put("LIGHTGOLD", hexToColor("#ac9c85")).put("LIGHT_GOLD", hexToColor("#ac9c85")).build();
         COLOR_MAPPING = MapKit.view(colorMap);
     }
 
@@ -87,12 +73,8 @@ public class ColorKit {
      * @return rgb(red, green, blue)
      */
     public static String toCssRgb(final Color color) {
-        return StringKit.builder()
-                .append("rgb(")
-                .append(color.getRed()).append(Symbol.COMMA)
-                .append(color.getGreen()).append(Symbol.COMMA)
-                .append(color.getBlue()).append(Symbol.PARENTHESE_RIGHT)
-                .toString();
+        return StringKit.builder().append("rgb(").append(color.getRed()).append(Symbol.COMMA).append(color.getGreen())
+                .append(Symbol.COMMA).append(color.getBlue()).append(Symbol.PARENTHESE_RIGHT).toString();
     }
 
     /**
@@ -102,13 +84,9 @@ public class ColorKit {
      * @return rgba(red, green, blue, alpha)
      */
     public static String toCssRgba(final Color color) {
-        return StringKit.builder()
-                .append("rgba(")
-                .append(color.getRed()).append(Symbol.COMMA)
-                .append(color.getGreen()).append(Symbol.COMMA)
-                .append(color.getBlue()).append(Symbol.COMMA)
-                .append(color.getAlpha() / 255D).append(Symbol.PARENTHESE_RIGHT)
-                .toString();
+        return StringKit.builder().append("rgba(").append(color.getRed()).append(Symbol.COMMA).append(color.getGreen())
+                .append(Symbol.COMMA).append(color.getBlue()).append(Symbol.COMMA).append(color.getAlpha() / 255D)
+                .append(Symbol.PARENTHESE_RIGHT).toString();
     }
 
     /**
@@ -206,8 +184,7 @@ public class ColorKit {
     /**
      * 从rgba数组或gray值中获取RGB颜色
      *
-     * @param gray 在单色显示器上呈现时的单个灰色无符号值。单位在p值中指定，
-     *             从最小的0x0000(黑色)到最大的0xFFFF(白色)。
+     * @param gray 在单色显示器上呈现时的单个灰色无符号值。单位在p值中指定， 从最小的0x0000(黑色)到最大的0xFFFF(白色)。
      * @param rgba 指定RGB[A]颜色的无符号值数组(可选的)
      * @return {@link Color}
      */
@@ -279,7 +256,8 @@ public class ColorKit {
         if (null == random) {
             random = RandomKit.getRandom();
         }
-        return new Color(random.nextInt(RGB_COLOR_BOUND), random.nextInt(RGB_COLOR_BOUND), random.nextInt(RGB_COLOR_BOUND));
+        return new Color(random.nextInt(RGB_COLOR_BOUND), random.nextInt(RGB_COLOR_BOUND),
+                random.nextInt(RGB_COLOR_BOUND));
     }
 
     /**

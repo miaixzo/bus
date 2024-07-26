@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -42,10 +42,10 @@ import java.util.Map;
 /**
  * {@link Pair} 转换器，支持以下类型转为Pair
  * <ul>
- *     <li>{@link Map}</li>
- *     <li>{@link Map.Entry}</li>
- *     <li>带分隔符的字符串，支持分隔符{@code :}、{@code =}、{@code ,}</li>
- *     <li>Bean，包含{@code getLeft}和{@code getRight}方法</li>
+ * <li>{@link Map}</li>
+ * <li>{@link Map.Entry}</li>
+ * <li>带分隔符的字符串，支持分隔符{@code :}、{@code =}、{@code ,}</li>
+ * <li>Bean，包含{@code getLeft}和{@code getRight}方法</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -65,10 +65,9 @@ public class PairConverter implements Converter {
      * @return map or null
      */
     private static Map<CharSequence, CharSequence> strToMap(final CharSequence text) {
-        // data:value  data=value  data,value
+        // data:value data=value data,value
         final int index = StringKit.indexOf(text,
-                c -> c == Symbol.C_COLON || c == Symbol.C_EQUAL || c == Symbol.C_COMMA,
-                0, text.length());
+                c -> c == Symbol.C_COLON || c == Symbol.C_EQUAL || c == Symbol.C_COMMA, 0, text.length());
 
         if (index > -1) {
             return MapKit.of(text.subSequence(0, index), text.subSequence(index + 1, text.length()));
@@ -98,10 +97,8 @@ public class PairConverter implements Converter {
         }
 
         final CompositeConverter convert = CompositeConverter.getInstance();
-        return Pair.of(
-                TypeKit.isUnknown(keyType) ? left : convert.convert(keyType, left),
-                TypeKit.isUnknown(valueType) ? right : convert.convert(valueType, right)
-        );
+        return Pair.of(TypeKit.isUnknown(keyType) ? left : convert.convert(keyType, left),
+                TypeKit.isUnknown(valueType) ? right : convert.convert(valueType, right));
     }
 
     @Override
@@ -124,8 +121,7 @@ public class PairConverter implements Converter {
      * @return 转换后的Map
      * @throws ConvertException 转换异常或不支持的类型
      */
-    public Pair<?, ?> convert(final Type leftType, final Type rightType, final Object value)
-            throws ConvertException {
+    public Pair<?, ?> convert(final Type leftType, final Type rightType, final Object value) throws ConvertException {
         Map map = null;
         if (value instanceof Map.Entry) {
             final Map.Entry entry = (Map.Entry) value;

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -40,8 +40,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * {@link CompletableFuture}异步工具类
- * {@link CompletableFuture} 是 Future 的改进，可以通过传入回调对象，在任务完成后调用之
+ * {@link CompletableFuture}异步工具类 {@link CompletableFuture} 是 Future 的改进，可以通过传入回调对象，在任务完成后调用之
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -121,7 +120,6 @@ public class AsyncKit {
         return allOfGet(Arrays.asList(tasks), null);
     }
 
-
     /**
      * 获取所有任务的返回值，可以为异常任务添加异常处理方法
      *
@@ -177,7 +175,6 @@ public class AsyncKit {
         return parallelAllOfGet(tasks, null);
     }
 
-
     /**
      * 获取所有任务的返回值，并行执行，可以为异常任务添加异常处理方法
      *
@@ -186,7 +183,8 @@ public class AsyncKit {
      * @param eHandler 异常处理方法
      * @return 任务结果集合
      */
-    public static <T> List<T> parallelAllOfGet(final CompletableFuture<T>[] tasks, final Function<Exception, T> eHandler) {
+    public static <T> List<T> parallelAllOfGet(final CompletableFuture<T>[] tasks,
+            final Function<Exception, T> eHandler) {
         Assert.notEmpty(tasks);
 
         return parallelAllOfGet(Arrays.asList(tasks), eHandler);
@@ -200,7 +198,8 @@ public class AsyncKit {
      * @param eHandler 异常处理方法
      * @return 任务结果集合
      */
-    public static <T> List<T> parallelAllOfGet(final List<CompletableFuture<T>> tasks, final Function<Exception, T> eHandler) {
+    public static <T> List<T> parallelAllOfGet(final List<CompletableFuture<T>> tasks,
+            final Function<Exception, T> eHandler) {
         Assert.notEmpty(tasks);
 
         return execute(tasks, eHandler, true);
@@ -215,20 +214,19 @@ public class AsyncKit {
      * @param isParallel 是否是并行 {@link Stream}
      * @return 任务结果集合
      */
-    private static <T> List<T> execute(final List<CompletableFuture<T>> tasks, final Function<Exception, T> eHandler, final boolean isParallel) {
-        return StreamKit.of(tasks, isParallel)
-                .map(e -> {
-                    try {
-                        return e.get();
-                    } catch (final InterruptedException | ExecutionException ex) {
-                        if (eHandler != null) {
-                            return eHandler.apply(ex);
-                        } else {
-                            throw ExceptionKit.wrapRuntime(ex);
-                        }
-                    }
-                })
-                .collect(Collectors.toList());
+    private static <T> List<T> execute(final List<CompletableFuture<T>> tasks, final Function<Exception, T> eHandler,
+            final boolean isParallel) {
+        return StreamKit.of(tasks, isParallel).map(e -> {
+            try {
+                return e.get();
+            } catch (final InterruptedException | ExecutionException ex) {
+                if (eHandler != null) {
+                    return eHandler.apply(ex);
+                } else {
+                    throw ExceptionKit.wrapRuntime(ex);
+                }
+            }
+        }).collect(Collectors.toList());
     }
 
 }

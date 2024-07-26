@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.reader;
 
 import org.miaixz.bus.image.galaxy.data.Implementation;
@@ -44,24 +44,22 @@ public class ImageioReaderSpi extends ImageReaderSpi {
 
     private static final String vendorName = "org.miaixz.bus.image";
     private static final String version = Implementation.getVersionName();
-    private static final String[] formatNames = {"dicom", "DICOM"};
-    private static final String[] suffixes = {"dcm", "dic", "dicm", "dicom"};
-    private static final String[] MIMETypes = {"application/dicom"};
-    private static final Class<?>[] inputTypes = {ImageInputStream.class, InputStream.class, ImageioMetaData.class};
+    private static final String[] formatNames = { "dicom", "DICOM" };
+    private static final String[] suffixes = { "dcm", "dic", "dicm", "dicom" };
+    private static final String[] MIMETypes = { "application/dicom" };
+    private static final Class<?>[] inputTypes = { ImageInputStream.class, InputStream.class, ImageioMetaData.class };
 
     public ImageioReaderSpi() {
-        super(vendorName, version, formatNames, suffixes, MIMETypes,
-                ImageioReader.class.getName(), inputTypes,
-                null,  // writerSpiNames
+        super(vendorName, version, formatNames, suffixes, MIMETypes, ImageioReader.class.getName(), inputTypes, null, // writerSpiNames
                 false, // supportsStandardStreamMetadataFormat
-                null,  // nativeStreamMetadataFormatName
-                null,  // nativeStreamMetadataFormatClassName
-                null,  // extraStreamMetadataFormatNames
-                null,  // extraStreamMetadataFormatClassNames
+                null, // nativeStreamMetadataFormatName
+                null, // nativeStreamMetadataFormatClassName
+                null, // extraStreamMetadataFormatNames
+                null, // extraStreamMetadataFormatClassNames
                 false, // supportsStandardImageMetadataFormat
-                null,  // nativeImageMetadataFormatName
-                null,  // nativeImageMetadataFormatClassName
-                null,  // extraImageMetadataFormatNames
+                null, // nativeImageMetadataFormatName
+                null, // nativeImageMetadataFormatClassName
+                null, // extraImageMetadataFormatNames
                 null); // extraImageMetadataFormatClassNames
     }
 
@@ -75,24 +73,16 @@ public class ImageioReaderSpi extends ImageReaderSpi {
         ImageInputStream iis = (ImageInputStream) source;
         iis.mark();
         try {
-            int tag = iis.read()
-                    | (iis.read() << 8)
-                    | (iis.read() << 16)
-                    | (iis.read() << 24);
-            return ((tag >= 0x00080000 && tag <= 0x00080016)
-                    || (iis.skipBytes(124) == 124
-                    && iis.read() == 'D'
-                    && iis.read() == 'I'
-                    && iis.read() == 'C'
-                    && iis.read() == 'M'));
+            int tag = iis.read() | (iis.read() << 8) | (iis.read() << 16) | (iis.read() << 24);
+            return ((tag >= 0x00080000 && tag <= 0x00080016) || (iis.skipBytes(124) == 124 && iis.read() == 'D'
+                    && iis.read() == 'I' && iis.read() == 'C' && iis.read() == 'M'));
         } finally {
             iis.reset();
         }
     }
 
     @Override
-    public ImageReader createReaderInstance(Object extension)
-            throws IOException {
+    public ImageReader createReaderInstance(Object extension) throws IOException {
         return new ImageioReader(this);
     }
 

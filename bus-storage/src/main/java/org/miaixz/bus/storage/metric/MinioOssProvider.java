@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.storage.metric;
 
 import io.minio.*;
@@ -72,16 +72,15 @@ public class MinioOssProvider extends AbstractProvider {
         Assert.notBlank(StringKit.toString(this.context.getConnectTimeout()), "[connectTimeout] not defined");
         Assert.notBlank(StringKit.toString(this.context.getWriteTimeout()), "[writeTimeout] not defined");
 
-        this.client = MinioClient.builder()
-                .endpoint(this.context.getEndpoint())
-                .credentials(this.context.getAccessKey(), this.context.getSecretKey())
-                .build();
+        this.client = MinioClient.builder().endpoint(this.context.getEndpoint())
+                .credentials(this.context.getAccessKey(), this.context.getSecretKey()).build();
 
         this.client.setTimeout(
-                Duration.ofSeconds(this.context.getConnectTimeout() != 0 ? this.context.getConnectTimeout() : 10).toMillis(),
-                Duration.ofSeconds(this.context.getWriteTimeout() != 60 ? this.context.getWriteTimeout() : 60).toMillis(),
-                Duration.ofSeconds(this.context.getReadTimeout() != 0 ? this.context.getReadTimeout() : 10).toMillis()
-        );
+                Duration.ofSeconds(this.context.getConnectTimeout() != 0 ? this.context.getConnectTimeout() : 10)
+                        .toMillis(),
+                Duration.ofSeconds(this.context.getWriteTimeout() != 60 ? this.context.getWriteTimeout() : 60)
+                        .toMillis(),
+                Duration.ofSeconds(this.context.getReadTimeout() != 0 ? this.context.getReadTimeout() : 10).toMillis());
     }
 
     @Override
@@ -92,39 +91,29 @@ public class MinioOssProvider extends AbstractProvider {
     @Override
     public Message download(String bucket, String fileName) {
         try {
-            InputStream inputStream = this.client.getObject(GetObjectArgs.builder().bucket(bucket).object(fileName).build());
+            InputStream inputStream = this.client
+                    .getObject(GetObjectArgs.builder().bucket(bucket).object(fileName).build());
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-            return Message.builder()
-                    .errcode(ErrorCode.SUCCESS.getCode())
-                    .errmsg(ErrorCode.SUCCESS.getDesc())
-                    .data(bufferedReader)
-                    .build();
+            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
+                    .data(bufferedReader).build();
         } catch (Exception e) {
             Logger.error("file download failed", e.getMessage());
         }
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
     public Message download(String bucket, String fileName, File file) {
         try {
-            InputStream inputStream = this.client.getObject(GetObjectArgs.builder().bucket(bucket).object(fileName).build());
+            InputStream inputStream = this.client
+                    .getObject(GetObjectArgs.builder().bucket(bucket).object(fileName).build());
             OutputStream outputStream = new FileOutputStream(file);
             IoKit.copy(inputStream, outputStream);
-            return Message.builder()
-                    .errcode(ErrorCode.SUCCESS.getCode())
-                    .errmsg(ErrorCode.SUCCESS.getDesc())
-                    .build();
+            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
         } catch (Exception e) {
             Logger.error("file download failed", e.getMessage());
         }
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
@@ -134,59 +123,40 @@ public class MinioOssProvider extends AbstractProvider {
 
     @Override
     public Message list() {
-        Iterable<Result<Item>> iterable = this.client.listObjects(ListObjectsArgs.builder().bucket(this.context.getBucket()).build());
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .errmsg(ErrorCode.SUCCESS.getDesc())
-                .data(StreamSupport
-                        .stream(iterable.spliterator(), true)
-                        .map(itemResult -> {
-                            try {
-                                Item item = itemResult.get();
-                                Map<String, Object> extend = new HashMap<>();
-                                extend.put("tag", item.etag());
-                                extend.put("storageClass", item.storageClass());
-                                extend.put("lastModified", item.lastModified());
-                                return Material.builder()
-                                        .name(item.objectName())
-                                        .size(StringKit.toString(item.size()))
-                                        .extend(extend).build();
-                            } catch (NoSuchAlgorithmException |
-                                     InsufficientDataException |
-                                     IOException |
-                                     InvalidKeyException |
-                                     ErrorResponseException |
-                                     InternalException e) {
-                                return Message.builder()
-                                        .errcode(ErrorCode.FAILURE.getCode())
-                                        .errmsg(ErrorCode.FAILURE.getDesc())
-                                        .build();
-                            } catch (ServerException e) {
-                                throw new RuntimeException(e);
-                            } catch (InvalidResponseException e) {
-                                throw new RuntimeException(e);
-                            } catch (XmlParserException e) {
-                                throw new RuntimeException(e);
-                            }
-                        })
-                        .collect(Collectors.toList()))
-                .build();
+        Iterable<Result<Item>> iterable = this.client
+                .listObjects(ListObjectsArgs.builder().bucket(this.context.getBucket()).build());
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
+                .data(StreamSupport.stream(iterable.spliterator(), true).map(itemResult -> {
+                    try {
+                        Item item = itemResult.get();
+                        Map<String, Object> extend = new HashMap<>();
+                        extend.put("tag", item.etag());
+                        extend.put("storageClass", item.storageClass());
+                        extend.put("lastModified", item.lastModified());
+                        return Material.builder().name(item.objectName()).size(StringKit.toString(item.size()))
+                                .extend(extend).build();
+                    } catch (NoSuchAlgorithmException | InsufficientDataException | IOException | InvalidKeyException
+                            | ErrorResponseException | InternalException e) {
+                        return Message.builder().errcode(ErrorCode.FAILURE.getCode())
+                                .errmsg(ErrorCode.FAILURE.getDesc()).build();
+                    } catch (ServerException e) {
+                        throw new RuntimeException(e);
+                    } catch (InvalidResponseException e) {
+                        throw new RuntimeException(e);
+                    } catch (XmlParserException e) {
+                        throw new RuntimeException(e);
+                    }
+                }).collect(Collectors.toList())).build();
     }
 
     @Override
     public Message rename(String oldName, String newName) {
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
     public Message rename(String bucket, String oldName, String newName) {
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
@@ -198,26 +168,14 @@ public class MinioOssProvider extends AbstractProvider {
     @Override
     public Message upload(String bucket, String fileName, InputStream content) {
         try {
-            this.client.putObject(PutObjectArgs.builder()
-                    .bucket(bucket)
-                    .object(fileName)
-                    .stream(content, content.available(), -1)
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                    .build());
-            return Message.builder()
-                    .errcode(ErrorCode.SUCCESS.getCode())
-                    .errmsg(ErrorCode.SUCCESS.getDesc())
-                    .data(Material.builder()
-                            .name(fileName)
-                            .path(this.context.getPrefix() + fileName))
-                    .build();
+            this.client.putObject(PutObjectArgs.builder().bucket(bucket).object(fileName)
+                    .stream(content, content.available(), -1).contentType(MediaType.APPLICATION_OCTET_STREAM).build());
+            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
+                    .data(Material.builder().name(fileName).path(this.context.getPrefix() + fileName)).build();
         } catch (Exception e) {
             Logger.error("file upload failed", e.getMessage());
         }
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
@@ -233,21 +191,12 @@ public class MinioOssProvider extends AbstractProvider {
     @Override
     public Message remove(String bucket, String fileName) {
         try {
-            this.client.removeObject(RemoveObjectArgs.builder()
-                    .bucket(bucket)
-                    .object(fileName)
-                    .build());
-            return Message.builder()
-                    .errcode(ErrorCode.SUCCESS.getCode())
-                    .errmsg(ErrorCode.SUCCESS.getDesc())
-                    .build();
+            this.client.removeObject(RemoveObjectArgs.builder().bucket(bucket).object(fileName).build());
+            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
         } catch (Exception e) {
             Logger.error("file remove failed ", e.getMessage());
         }
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override

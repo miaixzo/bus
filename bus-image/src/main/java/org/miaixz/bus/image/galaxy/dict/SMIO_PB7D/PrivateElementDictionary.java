@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SMIO_PB7D;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,16 +46,17 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.Spacing:
-            case PrivateTag.Origin:
-                return VR.FL;
-            case PrivateTag.Geometry:
-                return VR.UL;
+
+        case PrivateTag.Spacing:
+        case PrivateTag.Origin:
+            return VR.FL;
+        case PrivateTag.Geometry:
+            return VR.UL;
         }
         return VR.UN;
     }

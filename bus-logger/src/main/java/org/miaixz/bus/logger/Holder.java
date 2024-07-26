@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.logger;
 
 import org.miaixz.bus.core.instance.Instances;
@@ -55,8 +55,7 @@ public class Holder {
     }
 
     /**
-     * 根据用户引入的模板引擎jar，自动创建对应的模板引擎对象
-     * 获得的是单例的 {@link Factory}
+     * 根据用户引入的模板引擎jar，自动创建对应的模板引擎对象 获得的是单例的 {@link Factory}
      *
      * @return {@link Factory}
      */
@@ -108,9 +107,7 @@ public class Holder {
     }
 
     /**
-     * 决定日志实现
-     * 依次按照顺序检查日志库的jar是否被引入，如果未引入任何日志库，则检查ClassPath下的logging.properties，
-     * 存在则使用JdkLogFactory，否则使用ConsoleLogFactory
+     * 决定日志实现 依次按照顺序检查日志库的jar是否被引入，如果未引入任何日志库，则检查ClassPath下的logging.properties， 存在则使用JdkLogFactory，否则使用ConsoleLogFactory
      *
      * @return 日志实现类
      */
@@ -121,8 +118,7 @@ public class Holder {
     }
 
     /**
-     * 决定日志实现
-     * 依次按照顺序检查日志库的jar是否被引入，如果未引入任何日志库，则检查ClassPath下的logging.properties，存在则使用JdkLogFactory，否则使用ConsoleLogFactory
+     * 决定日志实现 依次按照顺序检查日志库的jar是否被引入，如果未引入任何日志库，则检查ClassPath下的logging.properties，存在则使用JdkLogFactory，否则使用ConsoleLogFactory
      *
      * @return 日志实现类
      */

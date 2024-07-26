@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_WORKFLOW;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,56 +46,57 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.PatientsDeathDate:
-                return VR.DA;
-            case PrivateTag.ScheduledTime:
-                return VR.DT;
-            case PrivateTag.WorkflowID:
-            case PrivateTag.WorkflowDescription:
-            case PrivateTag.WorkflowControlState:
-            case PrivateTag.WorkitemID:
-            case PrivateTag.WorkitemName:
-            case PrivateTag.WorkitemType:
-            case PrivateTag.WorkitemRoles:
-            case PrivateTag.WorkitemDescription:
-            case PrivateTag.WorkitemControlState:
-            case PrivateTag.ClaimingUser:
-            case PrivateTag.ClaimingHost:
-            case PrivateTag.TaskflowID:
-            case PrivateTag.TaskflowName:
-            case PrivateTag.ClientID:
-            case PrivateTag.TemplateID:
-            case PrivateTag.InstitutionName:
-                return VR.LO;
-            case PrivateTag.PatientsDeathIndicator:
-            case PrivateTag.VIPIndicator:
-            case PrivateTag.InternalVisitUID:
-            case PrivateTag.InternalISRUID:
-            case PrivateTag.ControlState:
-                return VR.SH;
-            case PrivateTag.InstitutionCodeSequence:
-                return VR.SQ;
-            case PrivateTag.InstitutionAddress:
-                return VR.ST;
-            case PrivateTag.PatientsDeathTime:
-                return VR.TM;
-            case PrivateTag.InternalPatientUID:
-            case PrivateTag.ReferencedStudies:
-                return VR.UI;
-            case PrivateTag.EmergencyFlag:
-            case PrivateTag.LocalFlag:
-            case PrivateTag.WorkflowAdHocFlag:
-            case PrivateTag.HybridFlag:
-            case PrivateTag.FailedFlag:
-            case PrivateTag.WorkitemAdHocFlag:
-            case PrivateTag.PatientUpdatePendingFlag:
-            case PrivateTag.PatientMixupFlag:
-                return VR.US;
+
+        case PrivateTag.PatientsDeathDate:
+            return VR.DA;
+        case PrivateTag.ScheduledTime:
+            return VR.DT;
+        case PrivateTag.WorkflowID:
+        case PrivateTag.WorkflowDescription:
+        case PrivateTag.WorkflowControlState:
+        case PrivateTag.WorkitemID:
+        case PrivateTag.WorkitemName:
+        case PrivateTag.WorkitemType:
+        case PrivateTag.WorkitemRoles:
+        case PrivateTag.WorkitemDescription:
+        case PrivateTag.WorkitemControlState:
+        case PrivateTag.ClaimingUser:
+        case PrivateTag.ClaimingHost:
+        case PrivateTag.TaskflowID:
+        case PrivateTag.TaskflowName:
+        case PrivateTag.ClientID:
+        case PrivateTag.TemplateID:
+        case PrivateTag.InstitutionName:
+            return VR.LO;
+        case PrivateTag.PatientsDeathIndicator:
+        case PrivateTag.VIPIndicator:
+        case PrivateTag.InternalVisitUID:
+        case PrivateTag.InternalISRUID:
+        case PrivateTag.ControlState:
+            return VR.SH;
+        case PrivateTag.InstitutionCodeSequence:
+            return VR.SQ;
+        case PrivateTag.InstitutionAddress:
+            return VR.ST;
+        case PrivateTag.PatientsDeathTime:
+            return VR.TM;
+        case PrivateTag.InternalPatientUID:
+        case PrivateTag.ReferencedStudies:
+            return VR.UI;
+        case PrivateTag.EmergencyFlag:
+        case PrivateTag.LocalFlag:
+        case PrivateTag.WorkflowAdHocFlag:
+        case PrivateTag.HybridFlag:
+        case PrivateTag.FailedFlag:
+        case PrivateTag.WorkitemAdHocFlag:
+        case PrivateTag.PatientUpdatePendingFlag:
+        case PrivateTag.PatientMixupFlag:
+            return VR.US;
         }
         return VR.UN;
     }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric;
 
 import org.miaixz.bus.core.center.map.IntHashMap;
@@ -83,15 +83,13 @@ public class Association {
     private int performing;
     private Timeout timeout;
 
-    public Association(ApplicationEntity ae, Connection local, Socket sock)
-            throws IOException {
+    public Association(ApplicationEntity ae, Connection local, Socket sock) throws IOException {
         this.connectTime = System.currentTimeMillis();
         this.serialNo = prevSerialNo.incrementAndGet();
         this.ae = ae;
         this.requestor = ae != null;
-        this.name = sock.getLocalSocketAddress()
-                + delim() + sock.getRemoteSocketAddress()
-                + Symbol.C_PARENTHESE_LEFT + serialNo + Symbol.C_PARENTHESE_RIGHT;
+        this.name = sock.getLocalSocketAddress() + delim() + sock.getRemoteSocketAddress() + Symbol.C_PARENTHESE_LEFT
+                + serialNo + Symbol.C_PARENTHESE_RIGHT;
         this.conn = local;
         this.device = local.getDevice();
         this.monitor = device.getAssociationMonitor();
@@ -192,7 +190,6 @@ public class Association {
     public Object getProperty(String key) {
         return properties != null ? properties.get(key) : null;
     }
-
 
     public <T> T getProperty(Class<T> clazz) {
         return (T) getProperty(clazz.getName());
@@ -372,30 +369,22 @@ public class Association {
     }
 
     private void startRequestTimeout() {
-        startTimeout("{}: start A-ASSOCIATE-RQ timeout of {}ms",
-                "{}: A-ASSOCIATE-RQ timeout expired",
-                "{}: stop A-ASSOCIATE-RQ timeout",
-                conn.getRequestTimeout(), State.Sta2);
+        startTimeout("{}: start A-ASSOCIATE-RQ timeout of {}ms", "{}: A-ASSOCIATE-RQ timeout expired",
+                "{}: stop A-ASSOCIATE-RQ timeout", conn.getRequestTimeout(), State.Sta2);
     }
 
     private void startAcceptTimeout() {
-        startTimeout("{}: start A-ASSOCIATE-AC timeout of {}ms",
-                "{}: A-ASSOCIATE-AC timeout expired",
-                "{}: stop A-ASSOCIATE-AC timeout",
-                conn.getAcceptTimeout(), State.Sta5);
+        startTimeout("{}: start A-ASSOCIATE-AC timeout of {}ms", "{}: A-ASSOCIATE-AC timeout expired",
+                "{}: stop A-ASSOCIATE-AC timeout", conn.getAcceptTimeout(), State.Sta5);
     }
 
     private void startReleaseTimeout() {
-        startTimeout("{}: start A-RELEASE-RP timeout of {}ms",
-                "{}: A-RELEASE-RP timeout expired",
-                "{}: stop A-RELEASE-RP timeout",
-                conn.getReleaseTimeout(), State.Sta7);
+        startTimeout("{}: start A-RELEASE-RP timeout of {}ms", "{}: A-RELEASE-RP timeout expired",
+                "{}: stop A-RELEASE-RP timeout", conn.getReleaseTimeout(), State.Sta7);
     }
 
     private void startIdleTimeout() {
-        startTimeout("{}: start idle timeout of {}ms",
-                "{}: idle timeout expired",
-                "{}: stop idle timeout",
+        startTimeout("{}: start idle timeout of {}ms", "{}: idle timeout expired", "{}: stop idle timeout",
                 conn.getIdleTimeout(), State.Sta6);
     }
 
@@ -403,23 +392,18 @@ public class Association {
         if (timeout > 0) {
             synchronized (this) {
                 stopTimeout();
-                this.timeout = Timeout.start(this,
-                        "{}: start send timeout of {}ms",
-                        "{}: send timeout expired",
-                        "{}: stop send timeout",
-                        timeout);
+                this.timeout = Timeout.start(this, "{}: start send timeout of {}ms", "{}: send timeout expired",
+                        "{}: stop send timeout", timeout);
             }
         }
     }
 
-    private void startTimeout(String startMsg, String expiredMsg,
-                              String cancelMsg, int timeout, State state) {
+    private void startTimeout(String startMsg, String expiredMsg, String cancelMsg, int timeout, State state) {
         if (timeout > 0 && performing == 0 && rspHandlerForMsgId.isEmpty()) {
             synchronized (this) {
                 if (this.state == state) {
                     stopTimeout();
-                    this.timeout = Timeout.start(this, startMsg, expiredMsg,
-                            cancelMsg, timeout);
+                    this.timeout = Timeout.start(this, startMsg, expiredMsg, cancelMsg, timeout);
                 }
             }
         }
@@ -430,10 +414,8 @@ public class Association {
             synchronized (rspHandlerForMsgId) {
                 DimseRSPHandler rspHandler = rspHandlerForMsgId.get(msgID);
                 if (rspHandler != null) {
-                    rspHandler.setTimeout(Timeout.start(this,
-                            "{}: start " + msgID + ":DIMSE-RSP timeout of {}ms",
-                            "{}: " + msgID + ":DIMSE-RSP timeout expired",
-                            "{}: stop " + msgID + ":DIMSE-RSP timeout",
+                    rspHandler.setTimeout(Timeout.start(this, "{}: start " + msgID + ":DIMSE-RSP timeout of {}ms",
+                            "{}: " + msgID + ":DIMSE-RSP timeout expired", "{}: stop " + msgID + ":DIMSE-RSP timeout",
                             timeout), stopOnPending);
                 }
             }
@@ -455,11 +437,11 @@ public class Association {
     }
 
     /**
-     * Block if the number of outstanding DIMSE responses has reached the negotiated value
-     * for the maximum number of outstanding operations it may invoke asynchronously.
+     * Block if the number of outstanding DIMSE responses has reached the negotiated value for the maximum number of
+     * outstanding operations it may invoke asynchronously.
      *
-     * @throws InterruptedException if any thread interrupted the current thread before or
-     *                              while the current thread was waiting
+     * @throws InterruptedException if any thread interrupted the current thread before or while the current thread was
+     *                              waiting
      */
     public void waitForNonBlockingInvoke() throws InterruptedException {
         if (maxOpsInvoked > 0)
@@ -508,22 +490,19 @@ public class Association {
         return state;
     }
 
-    public synchronized void waitForLeaving(State state)
-            throws InterruptedException, IOException {
+    public synchronized void waitForLeaving(State state) throws InterruptedException, IOException {
         while (this.state == state)
             wait();
         checkException();
     }
 
-    synchronized void waitForEntering(State state)
-            throws InterruptedException, IOException {
+    synchronized void waitForEntering(State state) throws InterruptedException, IOException {
         while (this.state != state)
             wait();
         checkException();
     }
 
-    public void waitForSocketClose()
-            throws InterruptedException, IOException {
+    public void waitForSocketClose() throws InterruptedException, IOException {
         waitForEntering(State.Sta1);
     }
 
@@ -550,11 +529,10 @@ public class Association {
     private void onClose() {
         stopTimeout();
         synchronized (rspHandlerForMsgId) {
-            IntHashMap.Visitor<DimseRSPHandler> visitor =
-                    (key, value) -> {
-                        value.onClose(Association.this);
-                        return true;
-                    };
+            IntHashMap.Visitor<DimseRSPHandler> visitor = (key, value) -> {
+                value.onClose(Association.this);
+                return true;
+            };
             rspHandlerForMsgId.accept(visitor);
             rspHandlerForMsgId.clear();
             rspHandlerForMsgId.notifyAll();
@@ -581,8 +559,7 @@ public class Association {
             ac = device.getAssociationHandler().negotiate(this, rq);
             initPCMap();
             maxOpsInvoked = ac.getMaxOpsPerformed();
-            maxPDULength = Association.minZeroAsMax(
-                    rq.getMaxPDULength(), conn.getSendPDULength());
+            maxPDULength = Association.minZeroAsMax(rq.getMaxPDULength(), conn.getSendPDULength());
             write(ac);
             if (monitor != null)
                 monitor.onAssociationAccepted(this);
@@ -604,8 +581,7 @@ public class Association {
         this.ac = ac;
         initPCMap();
         maxOpsInvoked = ac.getMaxOpsInvoked();
-        maxPDULength = Association.minZeroAsMax(
-                ac.getMaxPDULength(), conn.getSendPDULength());
+        maxPDULength = Association.minZeroAsMax(ac.getMaxPDULength(), conn.getSendPDULength());
         enterState(State.Sta6);
         startIdleTimeout();
     }
@@ -685,8 +661,7 @@ public class Association {
     }
 
     public void unexpectedPDU(String pdu) throws AAbort {
-        Logger.warn("{} >> unexpected {} in state: {}",
-                name, pdu, state);
+        Logger.warn("{} >> unexpected {} in state: {}", name, pdu, state);
         throw new AAbort(AAbort.UL_SERIVE_PROVIDER, AAbort.UNEXPECTED_PDU);
     }
 
@@ -707,8 +682,7 @@ public class Association {
         encoder.writePDataTF();
     }
 
-    public void onDimseRQ(PresentationContext pc, Dimse dimse, Attributes cmd,
-                          PDVInputStream data) throws IOException {
+    public void onDimseRQ(PresentationContext pc, Dimse dimse, Attributes cmd, PDVInputStream data) throws IOException {
         stopTimeout();
         incPerforming();
         incReceivedCount(dimse);
@@ -753,11 +727,9 @@ public class Association {
             startReleaseTimeout();
     }
 
-    private void addDimseRSPHandler(DimseRSPHandler rspHandler)
-            throws InterruptedException {
+    private void addDimseRSPHandler(DimseRSPHandler rspHandler) throws InterruptedException {
         synchronized (rspHandlerForMsgId) {
-            while (maxOpsInvoked > 0
-                    && rspHandlerForMsgId.size() >= maxOpsInvoked)
+            while (maxOpsInvoked > 0 && rspHandlerForMsgId.size() >= maxOpsInvoked)
                 rspHandlerForMsgId.wait();
             rspHandlerForMsgId.put(rspHandler.getMessageID(), rspHandler);
         }
@@ -789,26 +761,21 @@ public class Association {
         return tryWriteDimseRSP(pc, cmd, null);
     }
 
-    public boolean tryWriteDimseRSP(PresentationContext pc, Attributes cmd,
-                                    Attributes data) {
+    public boolean tryWriteDimseRSP(PresentationContext pc, Attributes cmd, Attributes data) {
         try {
             writeDimseRSP(pc, cmd, data);
             return true;
         } catch (IOException e) {
-            Logger.warn("{} << {} failed: {}", this,
-                    Dimse.valueOf(cmd.getInt(Tag.CommandField, 0)),
-                    e.getMessage());
+            Logger.warn("{} << {} failed: {}", this, Dimse.valueOf(cmd.getInt(Tag.CommandField, 0)), e.getMessage());
             return false;
         }
     }
 
-    public void writeDimseRSP(PresentationContext pc, Attributes cmd)
-            throws IOException {
+    public void writeDimseRSP(PresentationContext pc, Attributes cmd) throws IOException {
         writeDimseRSP(pc, cmd, null);
     }
 
-    public void writeDimseRSP(PresentationContext pc, Attributes cmd,
-                              Attributes data) throws IOException {
+    public void writeDimseRSP(PresentationContext pc, Attributes cmd, Attributes data) throws IOException {
         DataWriter writer = null;
         int datasetType = Commands.NO_DATASET;
         if (data != null) {
@@ -864,8 +831,7 @@ public class Association {
         return tsMap;
     }
 
-    public PresentationContext pcFor(String cuid, String tsuid)
-            throws NoPresentationException {
+    public PresentationContext pcFor(String cuid, String tsuid) throws NoPresentationException {
         HashMap<String, PresentationContext> tsMap = pcMap.get(cuid);
         if (tsMap == null)
             throw new NoPresentationException(cuid);
@@ -888,63 +854,50 @@ public class Association {
         return ac.getPresentationContext(pcid);
     }
 
-    public CommonExtended getCommonExtendedNegotiationFor(
-            String cuid) {
+    public CommonExtended getCommonExtendedNegotiationFor(String cuid) {
         return ac.getCommonExtendedNegotiationFor(cuid);
     }
 
-    public void cstore(String cuid, String iuid, int priority, DataWriter data,
-                       String tsuid, DimseRSPHandler rspHandler) throws IOException,
-            InterruptedException {
+    public void cstore(String cuid, String iuid, int priority, DataWriter data, String tsuid,
+            DimseRSPHandler rspHandler) throws IOException, InterruptedException {
         PresentationContext pc = pcFor(cuid, tsuid);
         checkIsSCU(cuid);
-        Attributes cstorerq = Commands.mkCStoreRQ(rspHandler.getMessageID(),
-                cuid, iuid, priority);
+        Attributes cstorerq = Commands.mkCStoreRQ(rspHandler.getMessageID(), cuid, iuid, priority);
         invoke(pc, cstorerq, data, rspHandler, conn.getStoreTimeout(), conn.getResponseTimeout());
     }
 
-    public DimseRSP cstore(String cuid, String iuid, int priority,
-                           DataWriter data, String tsuid)
+    public DimseRSP cstore(String cuid, String iuid, int priority, DataWriter data, String tsuid)
             throws IOException, InterruptedException {
         FutureDimseRSP rsp = new FutureDimseRSP(nextMessageID());
         cstore(cuid, iuid, priority, data, tsuid, rsp);
         return rsp;
     }
 
-    public void cstore(String cuid, String iuid, int priority,
-                       String moveOriginatorAET, int moveOriginatorMsgId,
-                       DataWriter data, String tsuid, DimseRSPHandler rspHandler)
-            throws IOException, InterruptedException {
+    public void cstore(String cuid, String iuid, int priority, String moveOriginatorAET, int moveOriginatorMsgId,
+            DataWriter data, String tsuid, DimseRSPHandler rspHandler) throws IOException, InterruptedException {
         PresentationContext pc = pcFor(cuid, tsuid);
-        Attributes cstorerq = Commands.mkCStoreRQ(rspHandler.getMessageID(),
-                cuid, iuid, priority, moveOriginatorAET, moveOriginatorMsgId);
+        Attributes cstorerq = Commands.mkCStoreRQ(rspHandler.getMessageID(), cuid, iuid, priority, moveOriginatorAET,
+                moveOriginatorMsgId);
         invoke(pc, cstorerq, data, rspHandler, conn.getStoreTimeout(), conn.getResponseTimeout());
     }
 
-    public DimseRSP cstore(String cuid, String iuid, int priority,
-                           String moveOriginatorAET, int moveOriginatorMsgId,
-                           DataWriter data, String tsuid) throws IOException,
-            InterruptedException {
+    public DimseRSP cstore(String cuid, String iuid, int priority, String moveOriginatorAET, int moveOriginatorMsgId,
+            DataWriter data, String tsuid) throws IOException, InterruptedException {
         FutureDimseRSP rsp = new FutureDimseRSP(nextMessageID());
-        cstore(cuid, iuid, priority, moveOriginatorAET,
-                moveOriginatorMsgId, data, tsuid, rsp);
+        cstore(cuid, iuid, priority, moveOriginatorAET, moveOriginatorMsgId, data, tsuid, rsp);
         return rsp;
     }
 
-    public void cfind(String cuid, int priority, Attributes data,
-                      String tsuid, DimseRSPHandler rspHandler) throws IOException,
-            InterruptedException {
+    public void cfind(String cuid, int priority, Attributes data, String tsuid, DimseRSPHandler rspHandler)
+            throws IOException, InterruptedException {
         PresentationContext pc = pcFor(cuid, tsuid);
         checkIsSCU(cuid);
-        Attributes cfindrq =
-                Commands.mkCFindRQ(rspHandler.getMessageID(), cuid, priority);
-        invoke(pc, cfindrq, new DataWriterAdapter(data), rspHandler,
-                conn.getSendTimeout(), conn.getResponseTimeout());
+        Attributes cfindrq = Commands.mkCFindRQ(rspHandler.getMessageID(), cuid, priority);
+        invoke(pc, cfindrq, new DataWriterAdapter(data), rspHandler, conn.getSendTimeout(), conn.getResponseTimeout());
     }
 
-    public DimseRSP cfind(String cuid, int priority, Attributes data,
-                          String tsuid, int autoCancel) throws IOException,
-            InterruptedException {
+    public DimseRSP cfind(String cuid, int priority, Attributes data, String tsuid, int autoCancel)
+            throws IOException, InterruptedException {
         return cfind(cuid, priority, data, tsuid, autoCancel, Integer.MAX_VALUE);
     }
 
@@ -954,7 +907,7 @@ public class Association {
      * 则从关联块中读取C-FIND-RSP，直到缓存的C-FIND-RSP为通过调用{@link DimseRSP#next()}删除
      *
      * @param cuid       与操作关联的SOP类UID
-     * @param priority   C-FIND操作的优先级  0 = MEDIUM, 1 = HIGH, 2 = LOW
+     * @param priority   C-FIND操作的优先级 0 = MEDIUM, 1 = HIGH, 2 = LOW
      * @param data       编码要匹配的标识符的数据集
      * @param tsuid      用于编码标识符的传输语法
      * @param autoCancel 待发送的C-CINDL-RQ的挂起C-FIND RSP的数量
@@ -963,9 +916,8 @@ public class Association {
      * @throws IOException          如果发送C-FIND-RQ时出错
      * @throws InterruptedException 如果任何线程在当前*线程正在等待其他调用的操作完成之前或之时中断了当前线程
      */
-    public DimseRSP cfind(String cuid, int priority, Attributes data,
-                          String tsuid, int autoCancel, int capacity) throws IOException,
-            InterruptedException {
+    public DimseRSP cfind(String cuid, int priority, Attributes data, String tsuid, int autoCancel, int capacity)
+            throws IOException, InterruptedException {
         FutureDimseRSP rsp = new FutureDimseRSP(nextMessageID());
         rsp.setAutoCancel(autoCancel);
         rsp.setCapacity(capacity);
@@ -973,39 +925,33 @@ public class Association {
         return rsp;
     }
 
-    public void cget(String cuid, int priority, Attributes data,
-                     String tsuid, DimseRSPHandler rspHandler)
+    public void cget(String cuid, int priority, Attributes data, String tsuid, DimseRSPHandler rspHandler)
             throws IOException, InterruptedException {
         PresentationContext pc = pcFor(cuid, tsuid);
         checkIsSCU(cuid);
-        Attributes cgetrq = Commands.mkCGetRQ(rspHandler.getMessageID(),
-                cuid, priority);
-        invoke(pc, cgetrq, new DataWriterAdapter(data), rspHandler,
-                conn.getSendTimeout(), conn.getRetrieveTimeout(), !conn.isRetrieveTimeoutTotal());
+        Attributes cgetrq = Commands.mkCGetRQ(rspHandler.getMessageID(), cuid, priority);
+        invoke(pc, cgetrq, new DataWriterAdapter(data), rspHandler, conn.getSendTimeout(), conn.getRetrieveTimeout(),
+                !conn.isRetrieveTimeoutTotal());
     }
 
-    public DimseRSP cget(String cuid, int priority, Attributes data,
-                         String tsuid) throws IOException,
-            InterruptedException {
+    public DimseRSP cget(String cuid, int priority, Attributes data, String tsuid)
+            throws IOException, InterruptedException {
         FutureDimseRSP rsp = new FutureDimseRSP(nextMessageID());
         cget(cuid, priority, data, tsuid, rsp);
         return rsp;
     }
 
-    public void cmove(String cuid, int priority, Attributes data,
-                      String tsuid, String destination, DimseRSPHandler rspHandler)
-            throws IOException, InterruptedException {
+    public void cmove(String cuid, int priority, Attributes data, String tsuid, String destination,
+            DimseRSPHandler rspHandler) throws IOException, InterruptedException {
         PresentationContext pc = pcFor(cuid, tsuid);
         checkIsSCU(cuid);
-        Attributes cmoverq = Commands.mkCMoveRQ(rspHandler.getMessageID(),
-                cuid, priority, destination);
-        invoke(pc, cmoverq, new DataWriterAdapter(data), rspHandler,
-                conn.getSendTimeout(), conn.getRetrieveTimeout(), !conn.isRetrieveTimeoutTotal());
+        Attributes cmoverq = Commands.mkCMoveRQ(rspHandler.getMessageID(), cuid, priority, destination);
+        invoke(pc, cmoverq, new DataWriterAdapter(data), rspHandler, conn.getSendTimeout(), conn.getRetrieveTimeout(),
+                !conn.isRetrieveTimeoutTotal());
     }
 
-    public DimseRSP cmove(String cuid, int priority, Attributes data,
-                          String tsuid, String destination) throws IOException,
-            InterruptedException {
+    public DimseRSP cmove(String cuid, int priority, Attributes data, String tsuid, String destination)
+            throws IOException, InterruptedException {
         FutureDimseRSP rsp = new FutureDimseRSP(nextMessageID());
         cmove(cuid, priority, data, tsuid, destination, rsp);
         return rsp;
@@ -1024,219 +970,181 @@ public class Association {
         return rsp;
     }
 
-    public void neventReport(String cuid, String iuid, int eventTypeId,
-                             Attributes data, String tsuid, DimseRSPHandler rspHandler)
-            throws IOException, InterruptedException {
+    public void neventReport(String cuid, String iuid, int eventTypeId, Attributes data, String tsuid,
+            DimseRSPHandler rspHandler) throws IOException, InterruptedException {
         neventReport(cuid, cuid, iuid, eventTypeId, data, tsuid, rspHandler);
     }
 
-    public void neventReport(String asuid, String cuid, String iuid, int eventTypeId,
-                             Attributes data, String tsuid, DimseRSPHandler rspHandler)
-            throws IOException, InterruptedException {
+    public void neventReport(String asuid, String cuid, String iuid, int eventTypeId, Attributes data, String tsuid,
+            DimseRSPHandler rspHandler) throws IOException, InterruptedException {
         PresentationContext pc = pcFor(asuid, tsuid);
         checkIsSCP(asuid);
-        Attributes neventrq =
-                Commands.mkNEventReportRQ(rspHandler.getMessageID(), cuid, iuid,
-                        eventTypeId, data);
-        invoke(pc, neventrq, DataWriterAdapter.forAttributes(data), rspHandler,
-                conn.getSendTimeout(), conn.getResponseTimeout());
+        Attributes neventrq = Commands.mkNEventReportRQ(rspHandler.getMessageID(), cuid, iuid, eventTypeId, data);
+        invoke(pc, neventrq, DataWriterAdapter.forAttributes(data), rspHandler, conn.getSendTimeout(),
+                conn.getResponseTimeout());
     }
 
-    public DimseRSP neventReport(String cuid, String iuid, int eventTypeId,
-                                 Attributes data, String tsuid) throws IOException,
-            InterruptedException {
+    public DimseRSP neventReport(String cuid, String iuid, int eventTypeId, Attributes data, String tsuid)
+            throws IOException, InterruptedException {
         return neventReport(cuid, cuid, iuid, eventTypeId, data, tsuid);
     }
 
-    public DimseRSP neventReport(String asuid, String cuid, String iuid,
-                                 int eventTypeId, Attributes data, String tsuid)
+    public DimseRSP neventReport(String asuid, String cuid, String iuid, int eventTypeId, Attributes data, String tsuid)
             throws IOException, InterruptedException {
         FutureDimseRSP rsp = new FutureDimseRSP(nextMessageID());
         neventReport(asuid, cuid, iuid, eventTypeId, data, tsuid, rsp);
         return rsp;
     }
 
-    public void nget(String cuid, String iuid, int[] tags,
-                     DimseRSPHandler rspHandler)
+    public void nget(String cuid, String iuid, int[] tags, DimseRSPHandler rspHandler)
             throws IOException, InterruptedException {
         nget(cuid, cuid, iuid, tags, rspHandler);
     }
 
-    public void nget(String asuid, String cuid, String iuid, int[] tags,
-                     DimseRSPHandler rspHandler)
+    public void nget(String asuid, String cuid, String iuid, int[] tags, DimseRSPHandler rspHandler)
             throws IOException, InterruptedException {
         PresentationContext pc = pcFor(asuid, null);
         checkIsSCU(asuid);
-        Attributes ngetrq =
-                Commands.mkNGetRQ(rspHandler.getMessageID(), cuid, iuid, tags);
+        Attributes ngetrq = Commands.mkNGetRQ(rspHandler.getMessageID(), cuid, iuid, tags);
         invoke(pc, ngetrq, null, rspHandler, conn.getSendTimeout(), conn.getResponseTimeout());
     }
 
-    public DimseRSP nget(String cuid, String iuid, int[] tags)
-            throws IOException, InterruptedException {
+    public DimseRSP nget(String cuid, String iuid, int[] tags) throws IOException, InterruptedException {
         return nget(cuid, cuid, iuid, tags);
     }
 
-    public DimseRSP nget(String asuid, String cuid, String iuid, int[] tags)
-            throws IOException, InterruptedException {
+    public DimseRSP nget(String asuid, String cuid, String iuid, int[] tags) throws IOException, InterruptedException {
         FutureDimseRSP rsp = new FutureDimseRSP(nextMessageID());
         nget(asuid, cuid, iuid, tags, rsp);
         return rsp;
     }
 
-    public void nset(String cuid, String iuid, Attributes data,
-                     String tsuid, DimseRSPHandler rspHandler)
+    public void nset(String cuid, String iuid, Attributes data, String tsuid, DimseRSPHandler rspHandler)
             throws IOException, InterruptedException {
         nset(cuid, cuid, iuid, new DataWriterAdapter(data), tsuid, rspHandler);
     }
 
-    public void nset(String asuid, String cuid, String iuid,
-                     Attributes data, String tsuid, DimseRSPHandler rspHandler)
+    public void nset(String asuid, String cuid, String iuid, Attributes data, String tsuid, DimseRSPHandler rspHandler)
             throws IOException, InterruptedException {
         nset(asuid, cuid, iuid, new DataWriterAdapter(data), tsuid, rspHandler);
     }
 
-    public DimseRSP nset(String cuid, String iuid, Attributes data,
-                         String tsuid) throws IOException,
-            InterruptedException {
+    public DimseRSP nset(String cuid, String iuid, Attributes data, String tsuid)
+            throws IOException, InterruptedException {
         return nset(cuid, cuid, iuid, new DataWriterAdapter(data), tsuid);
     }
 
-    public DimseRSP nset(String asuid, String cuid, String iuid,
-                         Attributes data, String tsuid)
+    public DimseRSP nset(String asuid, String cuid, String iuid, Attributes data, String tsuid)
             throws IOException, InterruptedException {
         return nset(asuid, cuid, iuid, new DataWriterAdapter(data), tsuid);
     }
 
-    public void nset(String cuid, String iuid, DataWriter data,
-                     String tsuid, DimseRSPHandler rspHandler)
+    public void nset(String cuid, String iuid, DataWriter data, String tsuid, DimseRSPHandler rspHandler)
             throws IOException, InterruptedException {
         nset(cuid, cuid, iuid, data, tsuid, rspHandler);
     }
 
-    public void nset(String asuid, String cuid, String iuid,
-                     DataWriter data, String tsuid, DimseRSPHandler rspHandler)
+    public void nset(String asuid, String cuid, String iuid, DataWriter data, String tsuid, DimseRSPHandler rspHandler)
             throws IOException, InterruptedException {
         PresentationContext pc = pcFor(asuid, tsuid);
         checkIsSCU(asuid);
-        Attributes nsetrq =
-                Commands.mkNSetRQ(rspHandler.getMessageID(), cuid, iuid);
+        Attributes nsetrq = Commands.mkNSetRQ(rspHandler.getMessageID(), cuid, iuid);
         invoke(pc, nsetrq, data, rspHandler, conn.getSendTimeout(), conn.getResponseTimeout());
     }
 
-    public DimseRSP nset(String cuid, String iuid, DataWriter data,
-                         String tsuid) throws IOException,
-            InterruptedException {
+    public DimseRSP nset(String cuid, String iuid, DataWriter data, String tsuid)
+            throws IOException, InterruptedException {
         return nset(cuid, cuid, iuid, data, tsuid);
     }
 
-    public DimseRSP nset(String asuid, String cuid, String iuid,
-                         DataWriter data, String tsuid)
+    public DimseRSP nset(String asuid, String cuid, String iuid, DataWriter data, String tsuid)
             throws IOException, InterruptedException {
         FutureDimseRSP rsp = new FutureDimseRSP(nextMessageID());
         nset(asuid, cuid, iuid, data, tsuid, rsp);
         return rsp;
     }
 
-    public void naction(String cuid, String iuid, int actionTypeId,
-                        Attributes data, String tsuid, DimseRSPHandler rspHandler)
-            throws IOException, InterruptedException {
+    public void naction(String cuid, String iuid, int actionTypeId, Attributes data, String tsuid,
+            DimseRSPHandler rspHandler) throws IOException, InterruptedException {
         naction(cuid, cuid, iuid, actionTypeId, data, tsuid, rspHandler);
     }
 
-    public void naction(String asuid, String cuid, String iuid, int actionTypeId,
-                        Attributes data, String tsuid, DimseRSPHandler rspHandler)
-            throws IOException, InterruptedException {
+    public void naction(String asuid, String cuid, String iuid, int actionTypeId, Attributes data, String tsuid,
+            DimseRSPHandler rspHandler) throws IOException, InterruptedException {
         PresentationContext pc = pcFor(asuid, tsuid);
         checkIsSCU(asuid);
-        Attributes nactionrq =
-                Commands.mkNActionRQ(rspHandler.getMessageID(), cuid, iuid,
-                        actionTypeId, data);
-        invoke(pc, nactionrq, DataWriterAdapter.forAttributes(data), rspHandler,
-                conn.getSendTimeout(), conn.getResponseTimeout());
+        Attributes nactionrq = Commands.mkNActionRQ(rspHandler.getMessageID(), cuid, iuid, actionTypeId, data);
+        invoke(pc, nactionrq, DataWriterAdapter.forAttributes(data), rspHandler, conn.getSendTimeout(),
+                conn.getResponseTimeout());
     }
 
-    public DimseRSP naction(String cuid, String iuid, int actionTypeId,
-                            Attributes data, String tsuid) throws IOException,
-            InterruptedException {
+    public DimseRSP naction(String cuid, String iuid, int actionTypeId, Attributes data, String tsuid)
+            throws IOException, InterruptedException {
         return naction(cuid, cuid, iuid, actionTypeId, data, tsuid);
     }
 
-    public DimseRSP naction(String asuid, String cuid, String iuid,
-                            int actionTypeId, Attributes data, String tsuid)
+    public DimseRSP naction(String asuid, String cuid, String iuid, int actionTypeId, Attributes data, String tsuid)
             throws IOException, InterruptedException {
         FutureDimseRSP rsp = new FutureDimseRSP(nextMessageID());
         naction(asuid, cuid, iuid, actionTypeId, data, tsuid, rsp);
         return rsp;
     }
 
-    public void ncreate(String cuid, String iuid, Attributes data,
-                        String tsuid, DimseRSPHandler rspHandler)
+    public void ncreate(String cuid, String iuid, Attributes data, String tsuid, DimseRSPHandler rspHandler)
             throws IOException, InterruptedException {
         ncreate(cuid, cuid, iuid, data, tsuid, rspHandler);
     }
 
-    public void ncreate(String asuid, String cuid, String iuid,
-                        Attributes data, String tsuid, DimseRSPHandler rspHandler)
-            throws IOException, InterruptedException {
+    public void ncreate(String asuid, String cuid, String iuid, Attributes data, String tsuid,
+            DimseRSPHandler rspHandler) throws IOException, InterruptedException {
         PresentationContext pc = pcFor(asuid, tsuid);
         checkIsSCU(asuid);
-        Attributes ncreaterq =
-                Commands.mkNCreateRQ(rspHandler.getMessageID(), cuid, iuid);
-        invoke(pc, ncreaterq, DataWriterAdapter.forAttributes(data), rspHandler,
-                conn.getSendTimeout(), conn.getResponseTimeout());
+        Attributes ncreaterq = Commands.mkNCreateRQ(rspHandler.getMessageID(), cuid, iuid);
+        invoke(pc, ncreaterq, DataWriterAdapter.forAttributes(data), rspHandler, conn.getSendTimeout(),
+                conn.getResponseTimeout());
     }
 
-    public DimseRSP ncreate(String cuid, String iuid, Attributes data,
-                            String tsuid) throws IOException,
-            InterruptedException {
+    public DimseRSP ncreate(String cuid, String iuid, Attributes data, String tsuid)
+            throws IOException, InterruptedException {
         return ncreate(cuid, cuid, iuid, data, tsuid);
     }
 
-    public DimseRSP ncreate(String asuid, String cuid, String iuid,
-                            Attributes data, String tsuid)
+    public DimseRSP ncreate(String asuid, String cuid, String iuid, Attributes data, String tsuid)
             throws IOException, InterruptedException {
         FutureDimseRSP rsp = new FutureDimseRSP(nextMessageID());
         ncreate(asuid, cuid, iuid, data, tsuid, rsp);
         return rsp;
     }
 
-    public void ndelete(String cuid, String iuid, DimseRSPHandler rspHandler)
-            throws IOException, InterruptedException {
+    public void ndelete(String cuid, String iuid, DimseRSPHandler rspHandler) throws IOException, InterruptedException {
         ndelete(cuid, cuid, iuid, rspHandler);
     }
 
-    public void ndelete(String asuid, String cuid, String iuid,
-                        DimseRSPHandler rspHandler)
+    public void ndelete(String asuid, String cuid, String iuid, DimseRSPHandler rspHandler)
             throws IOException, InterruptedException {
         PresentationContext pc = pcFor(asuid, null);
         checkIsSCU(asuid);
-        Attributes ndeleterq =
-                Commands.mkNDeleteRQ(rspHandler.getMessageID(), cuid, iuid);
+        Attributes ndeleterq = Commands.mkNDeleteRQ(rspHandler.getMessageID(), cuid, iuid);
         invoke(pc, ndeleterq, null, rspHandler, conn.getSendTimeout(), conn.getResponseTimeout());
     }
 
-    public DimseRSP ndelete(String cuid, String iuid)
-            throws IOException, InterruptedException {
+    public DimseRSP ndelete(String cuid, String iuid) throws IOException, InterruptedException {
         return ndelete(cuid, cuid, iuid);
     }
 
-    public DimseRSP ndelete(String asuid, String cuid, String iuid)
-            throws IOException, InterruptedException {
+    public DimseRSP ndelete(String asuid, String cuid, String iuid) throws IOException, InterruptedException {
         FutureDimseRSP rsp = new FutureDimseRSP(nextMessageID());
         ndelete(asuid, cuid, iuid, rsp);
         return rsp;
     }
 
-    public void invoke(PresentationContext pc, Attributes cmd,
-                       DataWriter data, DimseRSPHandler rspHandler, int sendTimeout, int rspTimeout)
-            throws IOException, InterruptedException {
+    public void invoke(PresentationContext pc, Attributes cmd, DataWriter data, DimseRSPHandler rspHandler,
+            int sendTimeout, int rspTimeout) throws IOException, InterruptedException {
         invoke(pc, cmd, data, rspHandler, sendTimeout, rspTimeout, true);
     }
 
-    public void invoke(PresentationContext pc, Attributes cmd,
-                       DataWriter data, DimseRSPHandler rspHandler, int sendTimeout, int rspTimeout, boolean stopOnPending)
-            throws IOException, InterruptedException {
+    public void invoke(PresentationContext pc, Attributes cmd, DataWriter data, DimseRSPHandler rspHandler,
+            int sendTimeout, int rspTimeout, boolean stopOnPending) throws IOException, InterruptedException {
         stopTimeout();
         checkException();
         rspHandler.setPC(pc);
@@ -1255,20 +1163,17 @@ public class Association {
         }
     }
 
-    public Attributes createFileMetaInformation(String iuid, String cuid,
-                                                String tsuid) {
+    public Attributes createFileMetaInformation(String iuid, String cuid, String tsuid) {
         Attributes fmi = new Attributes(7);
-        fmi.setBytes(Tag.FileMetaInformationVersion, VR.OB, new byte[]{0, 1});
+        fmi.setBytes(Tag.FileMetaInformationVersion, VR.OB, new byte[] { 0, 1 });
         fmi.setString(Tag.MediaStorageSOPClassUID, VR.UI, cuid);
         fmi.setString(Tag.MediaStorageSOPInstanceUID, VR.UI, iuid);
         fmi.setString(Tag.TransferSyntaxUID, VR.UI, tsuid);
-        fmi.setString(Tag.ImplementationClassUID, VR.UI,
-                getRemoteImplClassUID());
+        fmi.setString(Tag.ImplementationClassUID, VR.UI, getRemoteImplClassUID());
         String versionName = getRemoteImplVersionName();
         if (versionName != null)
             fmi.setString(Tag.ImplementationVersionName, VR.SH, versionName);
-        fmi.setString(Tag.SourceApplicationEntityTitle, VR.AE,
-                getRemoteAET());
+        fmi.setString(Tag.SourceApplicationEntityTitle, VR.AE, getRemoteAET());
         return fmi;
     }
 
@@ -1285,4 +1190,3 @@ public class Association {
     }
 
 }
-

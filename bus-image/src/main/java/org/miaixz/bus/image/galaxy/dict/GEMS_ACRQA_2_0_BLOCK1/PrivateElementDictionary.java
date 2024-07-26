@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.GEMS_ACRQA_2_0_BLOCK1;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,23 +46,24 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.CRExposureMenuCode:
-            case PrivateTag.CRExposureMenuString:
-            case PrivateTag.CREDRMode:
-            case PrivateTag.CRLatitude:
-            case PrivateTag.CRGroupNumber:
-            case PrivateTag.CRBarCodeNumber:
-            case PrivateTag.CRFilmOutputExposure:
-            case PrivateTag.CRFilmFormat:
-            case PrivateTag.CRSShiftString:
-                return VR.LO;
-            case PrivateTag.CRImageSerialNumber:
-                return VR.US;
+
+        case PrivateTag.CRExposureMenuCode:
+        case PrivateTag.CRExposureMenuString:
+        case PrivateTag.CREDRMode:
+        case PrivateTag.CRLatitude:
+        case PrivateTag.CRGroupNumber:
+        case PrivateTag.CRBarCodeNumber:
+        case PrivateTag.CRFilmOutputExposure:
+        case PrivateTag.CRFilmFormat:
+        case PrivateTag.CRSShiftString:
+            return VR.LO;
+        case PrivateTag.CRImageSerialNumber:
+            return VR.US;
         }
         return VR.UN;
     }

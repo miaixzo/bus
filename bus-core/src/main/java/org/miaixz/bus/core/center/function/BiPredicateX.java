@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.function;
 
 import org.miaixz.bus.core.xyz.ExceptionKit;
@@ -49,8 +49,7 @@ public interface BiPredicateX<T, U> extends BiPredicate<T, U>, Serializable {
      *
      * @param t the first input argument
      * @param u the second input argument
-     * @return {@code true} if the input arguments match the predicate,
-     * otherwise {@code false}
+     * @return {@code true} if the input arguments match the predicate, otherwise {@code false}
      * @throws Exception wrapped checked exception
      */
     boolean testing(T t, U u) throws Throwable;
@@ -60,8 +59,7 @@ public interface BiPredicateX<T, U> extends BiPredicate<T, U>, Serializable {
      *
      * @param t the first input argument
      * @param u the second input argument
-     * @return {@code true} if the input arguments match the predicate,
-     * otherwise {@code false}
+     * @return {@code true} if the input arguments match the predicate, otherwise {@code false}
      */
     @Override
     default boolean test(final T t, final U u) {
@@ -72,21 +70,18 @@ public interface BiPredicateX<T, U> extends BiPredicate<T, U>, Serializable {
         }
     }
 
-
     /**
-     * Returns a composed predicate that represents a short-circuiting logical
-     * AND of this predicate and another.  When evaluating the composed
-     * predicate, if this predicate is {@code false}, then the {@code other}
-     * predicate is not evaluated.
+     * Returns a composed predicate that represents a short-circuiting logical AND of this predicate and another. When
+     * evaluating the composed predicate, if this predicate is {@code false}, then the {@code other} predicate is not
+     * evaluated.
      *
-     * <p>Any exception thrown during evaluation of either predicate are relayed
-     * to the caller; if evaluation of this predicate throws an exception, the
-     * {@code other} predicate will not be evaluated.
+     * <p>
+     * Any exception thrown during evaluation of either predicate are relayed to the caller; if evaluation of this
+     * predicate throws an exception, the {@code other} predicate will not be evaluated.
      *
-     * @param other a predicate that will be logically-ANDed with this
-     *              predicate
-     * @return a composed predicate that represents the short-circuiting logical
-     * AND of this predicate and the {@code other} predicate
+     * @param other a predicate that will be logically-ANDed with this predicate
+     * @return a composed predicate that represents the short-circuiting logical AND of this predicate and the
+     *         {@code other} predicate
      * @throws NullPointerException if other is null
      */
     default BiPredicateX<T, U> and(final BiPredicateX<? super T, ? super U> other) {
@@ -95,11 +90,9 @@ public interface BiPredicateX<T, U> extends BiPredicate<T, U>, Serializable {
     }
 
     /**
-     * Returns a predicate that represents the logical negation of this
-     * predicate.
+     * Returns a predicate that represents the logical negation of this predicate.
      *
-     * @return a predicate that represents the logical negation of this
-     * predicate
+     * @return a predicate that represents the logical negation of this predicate
      */
     @Override
     default BiPredicateX<T, U> negate() {
@@ -107,19 +100,17 @@ public interface BiPredicateX<T, U> extends BiPredicate<T, U>, Serializable {
     }
 
     /**
-     * Returns a composed predicate that represents a short-circuiting logical
-     * OR of this predicate and another.  When evaluating the composed
-     * predicate, if this predicate is {@code true}, then the {@code other}
-     * predicate is not evaluated.
+     * Returns a composed predicate that represents a short-circuiting logical OR of this predicate and another. When
+     * evaluating the composed predicate, if this predicate is {@code true}, then the {@code other} predicate is not
+     * evaluated.
      *
-     * <p>Any exception thrown during evaluation of either predicate are relayed
-     * to the caller; if evaluation of this predicate throws an exception, the
-     * {@code other} predicate will not be evaluated.
+     * <p>
+     * Any exception thrown during evaluation of either predicate are relayed to the caller; if evaluation of this
+     * predicate throws an exception, the {@code other} predicate will not be evaluated.
      *
-     * @param other a predicate that will be logically-ORed with this
-     *              predicate
-     * @return a composed predicate that represents the short-circuiting logical
-     * OR of this predicate and the {@code other} predicate
+     * @param other a predicate that will be logically-ORed with this predicate
+     * @return a composed predicate that represents the short-circuiting logical OR of this predicate and the
+     *         {@code other} predicate
      * @throws NullPointerException if other is null
      */
     default BiPredicateX<T, U> or(final BiPredicateX<? super T, ? super U> other) {
@@ -128,4 +119,3 @@ public interface BiPredicateX<T, U> extends BiPredicate<T, U>, Serializable {
     }
 
 }
-

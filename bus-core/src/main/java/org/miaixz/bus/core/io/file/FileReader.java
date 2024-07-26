@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.file;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
@@ -85,8 +85,7 @@ public class FileReader extends FileWrapper {
     }
 
     /**
-     * 读取文件所有数据
-     * 文件的长度不能超过 {@link Integer#MAX_VALUE}
+     * 读取文件所有数据 文件的长度不能超过 {@link Integer#MAX_VALUE}
      *
      * @return 字节码
      * @throws InternalException IO异常
@@ -131,7 +130,8 @@ public class FileReader extends FileWrapper {
      * @return 文件中的每行内容的集合
      * @throws InternalException IO异常
      */
-    public <T extends Collection<String>> T readLines(final T collection, final Predicate<String> predicate) throws InternalException {
+    public <T extends Collection<String>> T readLines(final T collection, final Predicate<String> predicate)
+            throws InternalException {
         readLines((ConsumerX<String>) s -> {
             if (null == predicate || predicate.test(s)) {
                 collection.add(s);

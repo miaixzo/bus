@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_INSTANCE_MANIFEST;
 
 /**
@@ -36,9 +36,9 @@ public class PrivateKeyword {
     public static final String PrivateCreator = "";
 
     public static String valueOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-                case PrivateTag.TemporaryOriginalHeaderSequence:
+        case PrivateTag.TemporaryOriginalHeaderSequence:
             return "TemporaryOriginalHeaderSequence";
         case PrivateTag.syngoIndexSourceAETitle:
             return "syngoIndexSourceAETitle";

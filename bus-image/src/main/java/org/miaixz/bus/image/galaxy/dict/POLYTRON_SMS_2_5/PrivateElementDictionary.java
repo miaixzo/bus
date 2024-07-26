@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.POLYTRON_SMS_2_5;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,16 +46,17 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag._0009_xx02_:
-            case PrivateTag._0009_xx04_:
-            case PrivateTag._0009_xx06_:
-            case PrivateTag._0089_xx10_:
-                return VR.OB;
+
+        case PrivateTag._0009_xx02_:
+        case PrivateTag._0009_xx04_:
+        case PrivateTag._0009_xx06_:
+        case PrivateTag._0089_xx10_:
+            return VR.OB;
         }
         return VR.UN;
     }

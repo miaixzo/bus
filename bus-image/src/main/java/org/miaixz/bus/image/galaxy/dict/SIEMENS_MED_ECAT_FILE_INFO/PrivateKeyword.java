@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_ECAT_FILE_INFO;
 
 /**
@@ -36,9 +36,9 @@ public class PrivateKeyword {
     public static final String PrivateCreator = "";
 
     public static String valueOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-                case PrivateTag.ECATMainHeader:
+        case PrivateTag.ECATMainHeader:
             return "ECATMainHeader";
         case PrivateTag.ECATImageSubheader:
             return "ECATImageSubheader";

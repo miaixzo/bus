@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.agfa_adc_nx;
 
 /**
@@ -36,9 +36,9 @@ public class PrivateKeyword {
     public static final String PrivateCreator = "";
 
     public static String valueOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-                case PrivateTag._0019_xx07_:
+        case PrivateTag._0019_xx07_:
             return "_0019_xx07_";
         case PrivateTag._0019_xx09_:
             return "_0019_xx09_";

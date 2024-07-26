@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cache.magic;
 
 import org.miaixz.bus.cache.Context;
@@ -55,7 +55,8 @@ public class SingleCacheReader extends AbstractReader {
     private Hitting baseHitting;
 
     @Override
-    public Object read(AnnoHolder annoHolder, MethodHolder methodHolder, ProxyChain baseInvoker, boolean needWrite) throws Throwable {
+    public Object read(AnnoHolder annoHolder, MethodHolder methodHolder, ProxyChain baseInvoker, boolean needWrite)
+            throws Throwable {
         String key = KeyGenerator.generateSingleKey(annoHolder, baseInvoker.getArguments());
         Object readResult = cacheManager.readSingle(annoHolder.getCache(), key);
 
@@ -85,7 +86,8 @@ public class SingleCacheReader extends AbstractReader {
         }
 
         if (config.isPreventOn()) {
-            cacheManager.writeSingle(annoHolder.getCache(), key, PreventObjects.getPreventObject(), annoHolder.getExpire());
+            cacheManager.writeSingle(annoHolder.getCache(), key, PreventObjects.getPreventObject(),
+                    annoHolder.getExpire());
         }
 
         return null;

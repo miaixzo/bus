@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_SIENET;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,13 +46,14 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag._0019_xx01_:
-                return VR.DS;
+
+        case PrivateTag._0019_xx01_:
+            return VR.DS;
         }
         return VR.UN;
     }

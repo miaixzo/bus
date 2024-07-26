@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.watch;
 
 import org.miaixz.bus.core.io.file.PathResolve;
@@ -43,8 +43,8 @@ import java.util.function.Predicate;
 /**
  * {@link WatchEvent} 包装类，提供可选的监听事件和监听选项，实现方法包括：
  * <ul>
- *     <li>注册：{@link #registerPath(Path, int)}注册需要监听的路径。</li>
- *     <li>监听：{@link #watch(Watcher, Predicate)} 启动监听并指定事件触发后的行为。</li>
+ * <li>注册：{@link #registerPath(Path, int)}注册需要监听的路径。</li>
+ * <li>监听：{@link #watch(Watcher, Predicate)} 启动监听并指定事件触发后的行为。</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -201,8 +201,7 @@ public class WatchServiceWrapper implements WatchService, Wrapper<WatchService>,
     }
 
     /**
-     * 递归将指定路径加入到监听中
-     * 如果提供的是目录，则监听目录本身和目录下的目录和文件，深度取决于maxDepth
+     * 递归将指定路径加入到监听中 如果提供的是目录，则监听目录本身和目录下的目录和文件，深度取决于maxDepth
      *
      * @param path     路径
      * @param maxDepth 递归下层目录的最大深度
@@ -219,7 +218,7 @@ public class WatchServiceWrapper implements WatchService, Wrapper<WatchService>,
         PathResolve.walkFiles(path, maxDepth, new SimpleFileVisitor<>() {
             @Override
             public FileVisitResult postVisitDirectory(final Path dir, final IOException exc) throws IOException {
-                //继续添加目录
+                // 继续添加目录
                 registerPath(dir, 0);
                 return super.postVisitDirectory(dir, exc);
             }
@@ -228,9 +227,7 @@ public class WatchServiceWrapper implements WatchService, Wrapper<WatchService>,
     }
 
     /**
-     * 执行事件获取并处理
-     * {@link WatchEvent#context()}是实际操作的文件或目录的相对监听路径的Path，非绝对路径
-     * {@link WatchKey#watchable()}是监听的Path
+     * 执行事件获取并处理 {@link WatchEvent#context()}是实际操作的文件或目录的相对监听路径的Path，非绝对路径 {@link WatchKey#watchable()}是监听的Path
      * 此方法调用后阻塞线程，直到触发监听事件，执行后退出，无循环执行操作
      *
      * @param watcher     {@link Watcher}
@@ -253,9 +250,7 @@ public class WatchServiceWrapper implements WatchService, Wrapper<WatchService>,
     }
 
     /**
-     * 执行事件获取并处理
-     * {@link WatchEvent#context()}是实际操作的文件或目录的相对监听路径的Path，非绝对路径
-     * {@link WatchKey#watchable()}是监听的Path
+     * 执行事件获取并处理 {@link WatchEvent#context()}是实际操作的文件或目录的相对监听路径的Path，非绝对路径 {@link WatchKey#watchable()}是监听的Path
      * 此方法调用后阻塞线程，直到触发监听事件，执行后退出，无循环执行操作
      *
      * @param action 监听回调函数，实现此函数接口用于处理WatchEvent事件
@@ -265,9 +260,7 @@ public class WatchServiceWrapper implements WatchService, Wrapper<WatchService>,
     }
 
     /**
-     * 执行事件获取并处理
-     * {@link WatchEvent#context()}是实际操作的文件或目录的相对监听路径的Path，非绝对路径
-     * {@link WatchKey#watchable()}是监听的Path
+     * 执行事件获取并处理 {@link WatchEvent#context()}是实际操作的文件或目录的相对监听路径的Path，非绝对路径 {@link WatchKey#watchable()}是监听的Path
      * 此方法调用后阻塞线程，直到触发监听事件，执行后退出，无循环执行操作
      *
      * @param action      监听回调函数，实现此函数接口用于处理WatchEvent事件

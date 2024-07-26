@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map;
 
 import java.util.LinkedHashMap;
@@ -32,8 +32,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 /**
- * 固定大小的{@link LinkedHashMap} 实现
- * 注意此类非线程安全，由于{@link #get(Object)}操作会修改链表的顺序结构，因此也不可以使用读写锁。
+ * 固定大小的{@link LinkedHashMap} 实现 注意此类非线程安全，由于{@link #get(Object)}操作会修改链表的顺序结构，因此也不可以使用读写锁。
  *
  * @param <K> 键类型
  * @param <V> 值类型

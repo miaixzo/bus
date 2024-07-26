@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.setting.metric.ini;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -84,15 +84,16 @@ public abstract class AbstractElement implements IniElement {
     /**
      * If the {@code value} changed, change the originalValue
      *
-     * @param newValue when {@code value} changes, like {@link #setValue(String)} or {@link #setValue(java.util.function.Function)}
+     * @param newValue when {@code value} changes, like {@link #setValue(String)} or
+     *                 {@link #setValue(java.util.function.Function)}
      * @return new originalValue
      */
     protected abstract String valueChanged(String newValue);
 
     /**
-     * <p>this element's value.
-     * maybe a {@code toString} value like {@code comment},
-     * a property's value like {@code property} or a title value like {@code section} .
+     * <p>
+     * this element's value. maybe a {@code toString} value like {@code comment}, a property's value like
+     * {@code property} or a title value like {@code section} .
      *
      * @return some value
      */
@@ -111,8 +112,8 @@ public abstract class AbstractElement implements IniElement {
     }
 
     /**
-     * change this element's value.
-     * if you want to DIY how to set value, Recommended to cover {@link #changeValue(String)} instead of {@link #setValue(String)}
+     * change this element's value. if you want to DIY how to set value, Recommended to cover
+     * {@link #changeValue(String)} instead of {@link #setValue(String)}
      *
      * @param newValue a new value
      * @return old value
@@ -125,7 +126,6 @@ public abstract class AbstractElement implements IniElement {
         setOriginalValue(valueChanged(newValue));
         return old;
     }
-
 
     /**
      * Default is {@code originalValue.toString()}
@@ -146,7 +146,6 @@ public abstract class AbstractElement implements IniElement {
     public String getOriginalValue() {
         return originalValue;
     }
-
 
     protected void setOriginalValue(String newOriginalValue) {
         this.originalValue = newOriginalValue;
@@ -176,9 +175,9 @@ public abstract class AbstractElement implements IniElement {
     }
 
     /**
-     * Get complete information.
-     * Take sec as an example：{@code section.toString() + all properties.toString() + comment.toString()}
-     * In general, it is about the same as {@link #toString()}.
+     * Get complete information. Take sec as an
+     * example：{@code section.toString() + all properties.toString() + comment.toString()} In general, it is about the
+     * same as {@link #toString()}.
      *
      * @return the string
      */
@@ -198,8 +197,8 @@ public abstract class AbstractElement implements IniElement {
     }
 
     /**
-     * Returns the length of this character sequence.  The length is the number
-     * of 16-bit <code>char</code>s in the sequence.
+     * Returns the length of this character sequence. The length is the number of 16-bit <code>char</code>s in the
+     * sequence.
      *
      * @return the number of <code>char</code>s in this sequence
      */
@@ -209,19 +208,17 @@ public abstract class AbstractElement implements IniElement {
     }
 
     /**
-     * Returns the <code>char</code> value at the specified index.  An index ranges from zero
-     * to length() - 1.  The first <code>char</code> value of the sequence is at
-     * index zero, the next at index one, and so on, as for array
+     * Returns the <code>char</code> value at the specified index. An index ranges from zero to length() - 1. The first
+     * <code>char</code> value of the sequence is at index zero, the next at index one, and so on, as for array
      * indexing.
      *
-     * <p>If the <code>char</code> value specified by the index is a
-     * <a href="{@docRoot}/java/lang/Character.html#unicode">surrogate</a>, the surrogate
-     * value is returned.
+     * <p>
+     * If the <code>char</code> value specified by the index is a
+     * <a href="{@docRoot}/java/lang/Character.html#unicode">surrogate</a>, the surrogate value is returned.
      *
      * @param index the index of the <code>char</code> value to be returned
      * @return the specified <code>char</code> value
-     * @throws IndexOutOfBoundsException if the index argument is negative or not less than
-     *                                   length()
+     * @throws IndexOutOfBoundsException if the index argument is negative or not less than length()
      */
     @Override
     public char charAt(int index) {
@@ -229,19 +226,16 @@ public abstract class AbstractElement implements IniElement {
     }
 
     /**
-     * Returns a <code>CharSequence</code> that is a subsequence of this sequence.
-     * The subsequence starts with the <code>char</code> value at the specified index and
-     * ends with the <code>char</code> value at index end - 1.  The length
-     * (in <code>char</code>s) of the
-     * returned sequence is end - start, so if start == end
-     * then an empty sequence is returned.
+     * Returns a <code>CharSequence</code> that is a subsequence of this sequence. The subsequence starts with the
+     * <code>char</code> value at the specified index and ends with the <code>char</code> value at index end - 1. The
+     * length (in <code>char</code>s) of the returned sequence is end - start, so if start == end then an empty sequence
+     * is returned.
      *
      * @param start the start index, inclusive
      * @param end   the end index, exclusive
      * @return the specified subsequence
-     * @throws IndexOutOfBoundsException if start or end are negative,
-     *                                   if end is greater than length(),
-     *                                   or if start is greater than end
+     * @throws IndexOutOfBoundsException if start or end are negative, if end is greater than length(), or if start is
+     *                                   greater than end
      */
     @Override
     public CharSequence subSequence(int start, int end) {

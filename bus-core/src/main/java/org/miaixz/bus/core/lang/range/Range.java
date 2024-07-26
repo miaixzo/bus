@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.range;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -38,8 +38,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * 范围生成器。根据给定的初始值、结束值和步进生成一个步进列表生成器
- * 由于用户自行实现{@link Stepper}来定义步进，因此Range本身无法判定边界（是否达到end），需在step实现边界判定逻辑。
+ * 范围生成器。根据给定的初始值、结束值和步进生成一个步进列表生成器 由于用户自行实现{@link Stepper}来定义步进，因此Range本身无法判定边界（是否达到end），需在step实现边界判定逻辑。
  *
  * <p>
  * 此类使用{@link ReentrantReadWriteLock}保证线程安全
@@ -115,7 +114,8 @@ public class Range<T> implements Iterable<T>, Iterator<T>, Serializable {
      * @param isIncludeStart 是否包含第一个元素
      * @param isIncludeEnd   是否包含最后一个元素
      */
-    public Range(final T start, final T end, final Stepper<T> stepper, final boolean isIncludeStart, final boolean isIncludeEnd) {
+    public Range(final T start, final T end, final Stepper<T> stepper, final boolean isIncludeStart,
+            final boolean isIncludeEnd) {
         Assert.notNull(start, "First element must be not null!");
         this.start = start;
         this.end = end;

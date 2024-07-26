@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.qrcode;
 
 import com.google.zxing.common.BitMatrix;
@@ -60,9 +60,10 @@ public class QrAsciiArt {
         final int width = matrix.getWidth();
         final int height = matrix.getHeight();
 
-
-        final AnsiElement foreground = qrConfig.foreColor == null ? null : ColorKit.toAnsiColor(qrConfig.foreColor, true, false);
-        final AnsiElement background = qrConfig.backColor == null ? null : ColorKit.toAnsiColor(qrConfig.backColor, true, true);
+        final AnsiElement foreground = qrConfig.foreColor == null ? null
+                : ColorKit.toAnsiColor(qrConfig.foreColor, true, false);
+        final AnsiElement background = qrConfig.backColor == null ? null
+                : ColorKit.toAnsiColor(qrConfig.backColor, true, true);
 
         final StringBuilder builder = new StringBuilder();
         for (int i = 0; i <= height; i += 2) {
@@ -71,13 +72,13 @@ public class QrAsciiArt {
                 final boolean tp = matrix.get(i, j);
                 final boolean bt = i + 1 >= height || matrix.get(i + 1, j);
                 if (tp && bt) {
-                    rowBuilder.append(Symbol.C_SPACE);//'\u0020'
+                    rowBuilder.append(Symbol.C_SPACE);// '\u0020'
                 } else if (tp) {
-                    rowBuilder.append('▄');//'\u2584'
+                    rowBuilder.append('▄');// '\u2584'
                 } else if (bt) {
-                    rowBuilder.append('▀');//'\u2580'
+                    rowBuilder.append('▀');// '\u2580'
                 } else {
-                    rowBuilder.append('█');//'\u2588'
+                    rowBuilder.append('█');// '\u2588'
                 }
             }
             builder.append(AnsiEncoder.encode(foreground, background, rowBuilder)).append('\n');

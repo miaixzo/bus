@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.ssh.provider.mina;
 
 import org.apache.sshd.client.SshClient;
@@ -86,9 +86,11 @@ public class MinaSession implements Session {
     }
 
     @Override
-    public void bindLocalPort(final InetSocketAddress localAddress, final InetSocketAddress remoteAddress) throws InternalException {
+    public void bindLocalPort(final InetSocketAddress localAddress, final InetSocketAddress remoteAddress)
+            throws InternalException {
         try {
-            this.raw.startLocalPortForwarding(new SshdSocketAddress(localAddress), new SshdSocketAddress(remoteAddress));
+            this.raw.startLocalPortForwarding(new SshdSocketAddress(localAddress),
+                    new SshdSocketAddress(remoteAddress));
         } catch (final IOException e) {
             throw new InternalException(e);
         }
@@ -104,9 +106,11 @@ public class MinaSession implements Session {
     }
 
     @Override
-    public void bindRemotePort(final InetSocketAddress remoteAddress, final InetSocketAddress localAddress) throws InternalException {
+    public void bindRemotePort(final InetSocketAddress remoteAddress, final InetSocketAddress localAddress)
+            throws InternalException {
         try {
-            this.raw.startRemotePortForwarding(new SshdSocketAddress(remoteAddress), new SshdSocketAddress(localAddress));
+            this.raw.startRemotePortForwarding(new SshdSocketAddress(remoteAddress),
+                    new SshdSocketAddress(localAddress));
         } catch (final IOException e) {
             throw new InternalException(e);
         }

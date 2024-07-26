@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.socket;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -37,8 +37,7 @@ import java.net.ProtocolException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 兼容的WebSocket框架阅读器.
- * 这个类不是线程安全的
+ * 兼容的WebSocket框架阅读器. 这个类不是线程安全的
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -59,8 +58,10 @@ public class WebSocketReader {
     boolean isControlFrame;
 
     WebSocketReader(boolean isClient, BufferSource source, FrameCallback frameCallback) {
-        if (source == null) throw new NullPointerException("source == null");
-        if (frameCallback == null) throw new NullPointerException("frameCallback == null");
+        if (source == null)
+            throw new NullPointerException("source == null");
+        if (frameCallback == null)
+            throw new NullPointerException("frameCallback == null");
         this.isClient = isClient;
         this.source = source;
         this.frameCallback = frameCallback;
@@ -74,10 +75,10 @@ public class WebSocketReader {
      * Process the next protocol frame.
      *
      * <ul>
-     *     <li>If it is a control frame this will result in a single call to {@link FrameCallback}.
-     *     <li>If it is a message frame this will result in a single call to {@link
-     *         FrameCallback#onReadMessage}. If the message spans multiple frames, each interleaved
-     *         control frame will result in a corresponding call to {@link FrameCallback}.
+     * <li>If it is a control frame this will result in a single call to {@link FrameCallback}.
+     * <li>If it is a message frame this will result in a single call to {@link FrameCallback#onReadMessage}. If the
+     * message spans multiple frames, each interleaved control frame will result in a corresponding call to
+     * {@link FrameCallback}.
      * </ul>
      */
     void processNextFrame() throws IOException {
@@ -90,7 +91,8 @@ public class WebSocketReader {
     }
 
     private void readHeader() throws IOException {
-        if (closed) throw new IOException("closed");
+        if (closed)
+            throw new IOException("closed");
 
         // Disable the timeout to read the first byte of a new frame.
         int b0;
@@ -124,9 +126,8 @@ public class WebSocketReader {
         boolean isMasked = (b1 & WebSocketProtocol.B1_FLAG_MASK) != 0;
         if (isMasked == isClient) {
             // Masked payloads must be read on the server. Unmasked payloads must be read on the client.
-            throw new ProtocolException(isClient
-                    ? "Server-sent frames must not be masked."
-                    : "Client-sent frames must be masked.");
+            throw new ProtocolException(
+                    isClient ? "Server-sent frames must not be masked." : "Client-sent frames must be masked.");
         }
 
         // Get frame length, optionally reading from follow-up bytes if indicated by special values.
@@ -164,31 +165,31 @@ public class WebSocketReader {
         }
 
         switch (opcode) {
-            case WebSocketProtocol.OPCODE_CONTROL_PING:
-                frameCallback.onReadPing(controlFrameBuffer.readByteString());
-                break;
-            case WebSocketProtocol.OPCODE_CONTROL_PONG:
-                frameCallback.onReadPong(controlFrameBuffer.readByteString());
-                break;
-            case WebSocketProtocol.OPCODE_CONTROL_CLOSE:
-                int code = WebSocketProtocol.CLOSE_NO_STATUS_CODE;
-                String reason = Normal.EMPTY;
-                long bufferSize = controlFrameBuffer.size();
-                if (bufferSize == 1) {
-                    throw new ProtocolException("Malformed close payload length of 1.");
-                } else if (bufferSize != 0) {
-                    code = controlFrameBuffer.readShort();
-                    reason = controlFrameBuffer.readUtf8();
-                    String codeExceptionMessage = WebSocketProtocol.closeCodeExceptionMessage(code);
-                    if (null != codeExceptionMessage) {
-                        throw new ProtocolException(codeExceptionMessage);
-                    }
+        case WebSocketProtocol.OPCODE_CONTROL_PING:
+            frameCallback.onReadPing(controlFrameBuffer.readByteString());
+            break;
+        case WebSocketProtocol.OPCODE_CONTROL_PONG:
+            frameCallback.onReadPong(controlFrameBuffer.readByteString());
+            break;
+        case WebSocketProtocol.OPCODE_CONTROL_CLOSE:
+            int code = WebSocketProtocol.CLOSE_NO_STATUS_CODE;
+            String reason = Normal.EMPTY;
+            long bufferSize = controlFrameBuffer.size();
+            if (bufferSize == 1) {
+                throw new ProtocolException("Malformed close payload length of 1.");
+            } else if (bufferSize != 0) {
+                code = controlFrameBuffer.readShort();
+                reason = controlFrameBuffer.readUtf8();
+                String codeExceptionMessage = WebSocketProtocol.closeCodeExceptionMessage(code);
+                if (null != codeExceptionMessage) {
+                    throw new ProtocolException(codeExceptionMessage);
                 }
-                frameCallback.onReadClose(code, reason);
-                closed = true;
-                break;
-            default:
-                throw new ProtocolException("Unknown control opcode: " + Integer.toHexString(opcode));
+            }
+            frameCallback.onReadClose(code, reason);
+            closed = true;
+            break;
+        default:
+            throw new ProtocolException("Unknown control opcode: " + Integer.toHexString(opcode));
         }
     }
 
@@ -221,13 +222,13 @@ public class WebSocketReader {
     }
 
     /**
-     * Reads a message body into across one or more frames. Control frames that occur between
-     * fragments will be processed. If the message payload is masked this will unmask as it's being
-     * processed.
+     * Reads a message body into across one or more frames. Control frames that occur between fragments will be
+     * processed. If the message payload is masked this will unmask as it's being processed.
      */
     private void readMessage() throws IOException {
         while (true) {
-            if (closed) throw new IOException("closed");
+            if (closed)
+                throw new IOException("closed");
 
             if (frameLength > 0) {
                 source.readFully(messageFrameBuffer, frameLength);
@@ -240,7 +241,8 @@ public class WebSocketReader {
                 }
             }
 
-            if (isFinalFrame) break; // We are exhausted and have no continuations.
+            if (isFinalFrame)
+                break; // We are exhausted and have no continuations.
 
             readUntilNonControlFrame();
             if (opcode != WebSocketProtocol.OPCODE_CONTINUATION) {

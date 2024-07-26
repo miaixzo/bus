@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.hardware.common;
 
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -89,19 +89,9 @@ public abstract class AbstractGraphicsCard implements GraphicsCard {
 
     @Override
     public String toString() {
-        String builder = "GraphicsCard@" +
-                Integer.toHexString(hashCode()) +
-                " [name=" +
-                this.name +
-                ", deviceId=" +
-                this.deviceId +
-                ", vendor=" +
-                this.vendor +
-                ", vRam=" +
-                this.vram +
-                ", versionInfo=[" +
-                this.versionInfo +
-                "]]";
+        String builder = "GraphicsCard@" + Integer.toHexString(hashCode()) + " [name=" + this.name + ", deviceId="
+                + this.deviceId + ", vendor=" + this.vendor + ", vRam=" + this.vram + ", versionInfo=["
+                + this.versionInfo + "]]";
         return builder;
     }
 

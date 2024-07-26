@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_CT_VA0__RAW;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,23 +46,24 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag._0021_xx50_:
-                return VR.CS;
-            case PrivateTag.CreationMask:
-            case PrivateTag.EvaluationMask:
-            case PrivateTag._0021_xx40_:
-            case PrivateTag._0021_xx41_:
-            case PrivateTag._0021_xx42_:
-            case PrivateTag._0021_xx43_:
-            case PrivateTag._0021_xx44_:
-                return VR.UL;
-            case PrivateTag.ExtendedProcessingMask:
-                return VR.US;
+
+        case PrivateTag._0021_xx50_:
+            return VR.CS;
+        case PrivateTag.CreationMask:
+        case PrivateTag.EvaluationMask:
+        case PrivateTag._0021_xx40_:
+        case PrivateTag._0021_xx41_:
+        case PrivateTag._0021_xx42_:
+        case PrivateTag._0021_xx43_:
+        case PrivateTag._0021_xx44_:
+            return VR.UL;
+        case PrivateTag.ExtendedProcessingMask:
+            return VR.US;
         }
         return VR.UN;
     }

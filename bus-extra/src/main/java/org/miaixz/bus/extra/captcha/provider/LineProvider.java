@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.captcha.provider;
 
 import org.miaixz.bus.core.xyz.ColorKit;
@@ -91,14 +91,16 @@ public class LineProvider extends AbstractProvider {
      * @param interfereCount 验证码干扰元素个数
      * @param sizeBaseHeight 字体的大小 高度的倍数
      */
-    public LineProvider(final int width, final int height, final int codeCount, final int interfereCount, final float sizeBaseHeight) {
+    public LineProvider(final int width, final int height, final int codeCount, final int interfereCount,
+            final float sizeBaseHeight) {
         super(width, height, new RandomStrategy(codeCount), interfereCount, sizeBaseHeight);
     }
 
     @Override
     public Image createImage(final String code) {
         // 图像buffer
-        final BufferedImage image = new BufferedImage(width, height, (null == this.background) ? BufferedImage.TYPE_4BYTE_ABGR : BufferedImage.TYPE_INT_RGB);
+        final BufferedImage image = new BufferedImage(width, height,
+                (null == this.background) ? BufferedImage.TYPE_4BYTE_ABGR : BufferedImage.TYPE_INT_RGB);
         final Graphics2D g = ImageKit.createGraphics(image, this.background);
 
         try {

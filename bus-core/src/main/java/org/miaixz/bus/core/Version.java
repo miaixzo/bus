@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -38,8 +38,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 字符串版本表示，用于解析版本号的不同部分并比较大小。
- * 来自：java.lang.module.ModuleDescriptor.Version
+ * 字符串版本表示，用于解析版本号的不同部分并比较大小。 来自：java.lang.module.ModuleDescriptor.Version
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -58,13 +57,12 @@ public class Version implements Comparable<Version>, Serializable {
     private final List<Object> build;
 
     /**
-     * 版本对象，格式：tok+ ( '-' tok+)? ( '+' tok+)?，版本之间使用'.'或'-'分隔，版本号可能包含'+'
-     * 数字部分按照大小比较，字符串按照字典顺序比较。
+     * 版本对象，格式：tok+ ( '-' tok+)? ( '+' tok+)?，版本之间使用'.'或'-'分隔，版本号可能包含'+' 数字部分按照大小比较，字符串按照字典顺序比较。
      *
      * <ol>
-     *     <li>sequence: 主版本号</li>
-     *     <li>pre: 次版本号</li>
-     *     <li>build: 构建版本</li>
+     * <li>sequence: 主版本号</li>
+     * <li>pre: 次版本号</li>
+     * <li>build: 构建版本</li>
      * </ol>
      *
      * @param v 版本字符串
@@ -176,6 +174,7 @@ public class Version implements Comparable<Version>, Serializable {
      * <pre>
      * [大版本].[小版本].[发布流水号]
      * </pre>
+     * 
      * 这里有点说明
      * <ul>
      * <li>大版本 - 表示API的版本,如果没有重大变化,基本上同样的大版本号,使用方式是一致的
@@ -195,8 +194,7 @@ public class Version implements Comparable<Version>, Serializable {
     }
 
     /**
-     * 获取字符串中从位置i开始的数字，并加入到acc中
-     * 如 a123b，则从1开始，解析到acc中为[1, 2, 3]
+     * 获取字符串中从位置i开始的数字，并加入到acc中 如 a123b，则从1开始，解析到acc中为[1, 2, 3]
      *
      * @param s   字符串
      * @param i   位置
@@ -220,8 +218,7 @@ public class Version implements Comparable<Version>, Serializable {
     }
 
     /**
-     * 获取字符串中从位置i开始的字符串，并加入到acc中
-     * 字符串结束的位置为'.'、'-'、'+'和数字
+     * 获取字符串中从位置i开始的字符串，并加入到acc中 字符串结束的位置为'.'、'-'、'+'和数字
      *
      * @param s   版本字符串
      * @param i   开始位置
@@ -300,8 +297,7 @@ public class Version implements Comparable<Version>, Serializable {
         for (int i = 0; i < n; i++) {
             final Object o1 = ts1.get(i);
             final Object o2 = ts2.get(i);
-            if ((o1 instanceof Integer && o2 instanceof Integer)
-                    || (o1 instanceof String && o2 instanceof String)) {
+            if ((o1 instanceof Integer && o2 instanceof Integer) || (o1 instanceof String && o2 instanceof String)) {
                 final int c = CompareKit.compare(o1, o2, null);
                 if (c == 0) {
                     continue;

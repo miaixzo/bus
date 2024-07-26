@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.template.provider.freemarker;
 
 import freemarker.cache.ClassTemplateLoader;
@@ -41,8 +41,7 @@ import org.miaixz.bus.extra.template.TemplateProvider;
 import java.io.IOException;
 
 /**
- * FreeMarker模板引擎封装
- * 见：<a href="https://freemarker.apache.org/">https://freemarker.apache.org/</a>
+ * FreeMarker模板引擎封装 见：<a href="https://freemarker.apache.org/">https://freemarker.apache.org/</a>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -93,28 +92,28 @@ public class FreemarkerProvider implements TemplateProvider {
         cfg.setDefaultEncoding(config.getCharset().toString());
 
         switch (config.getResourceMode()) {
-            case CLASSPATH:
-                cfg.setTemplateLoader(new ClassTemplateLoader(ClassKit.getClassLoader(), config.getPath()));
-                break;
-            case FILE:
-                try {
-                    cfg.setTemplateLoader(new FileTemplateLoader(FileKit.file(config.getPath())));
-                } catch (final IOException e) {
-                    throw new InternalException(e);
-                }
-                break;
-            case WEB_ROOT:
-                try {
-                    cfg.setTemplateLoader(new FileTemplateLoader(FileKit.file(FileKit.getWebRoot(), config.getPath())));
-                } catch (final IOException e) {
-                    throw new InternalException(e);
-                }
-                break;
-            case STRING:
-                cfg.setTemplateLoader(new SimpleStringTemplateLoader());
-                break;
-            default:
-                break;
+        case CLASSPATH:
+            cfg.setTemplateLoader(new ClassTemplateLoader(ClassKit.getClassLoader(), config.getPath()));
+            break;
+        case FILE:
+            try {
+                cfg.setTemplateLoader(new FileTemplateLoader(FileKit.file(config.getPath())));
+            } catch (final IOException e) {
+                throw new InternalException(e);
+            }
+            break;
+        case WEB_ROOT:
+            try {
+                cfg.setTemplateLoader(new FileTemplateLoader(FileKit.file(FileKit.getWebRoot(), config.getPath())));
+            } catch (final IOException e) {
+                throw new InternalException(e);
+            }
+            break;
+        case STRING:
+            cfg.setTemplateLoader(new SimpleStringTemplateLoader());
+            break;
+        default:
+            break;
         }
 
         return cfg;

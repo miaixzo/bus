@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.codec.jpeg;
 
 /**
@@ -49,8 +49,7 @@ public class JPEGLSCodingParam {
         this.reset = reset;
     }
 
-    private static JPEGLSCodingParam getDefaultJPEGLSEncodingParam(
-            int maxVal, int clampedMaxVal, int near) {
+    private static JPEGLSCodingParam getDefaultJPEGLSEncodingParam(int maxVal, int clampedMaxVal, int near) {
         int factor = (clampedMaxVal + 128) >> 8;
         int t1 = factor + 2 + 3 * near;
         if (t1 > maxVal || t1 < near + 1)
@@ -103,22 +102,14 @@ public class JPEGLSCodingParam {
     }
 
     public byte[] getBytes() {
-        return new byte[]{
-                -1, (byte) JPEG.LSE, 0, 13, 1,
-                (byte) (maxVal >> 8), (byte) (maxVal),
-                (byte) (t1 >> 8), (byte) (t1),
-                (byte) (t2 >> 8), (byte) (t2),
-                (byte) (t3 >> 8), (byte) (t3),
-                (byte) (reset >> 8), (byte) (reset)};
+        return new byte[] { -1, (byte) JPEG.LSE, 0, 13, 1, (byte) (maxVal >> 8), (byte) (maxVal), (byte) (t1 >> 8),
+                (byte) (t1), (byte) (t2 >> 8), (byte) (t2), (byte) (t3 >> 8), (byte) (t3), (byte) (reset >> 8),
+                (byte) (reset) };
     }
 
     @Override
     public String toString() {
-        return "JPEGLSCodingParam[MAXVAL=" + maxVal
-                + ", T1=" + t1
-                + ", T2=" + t2
-                + ", T3=" + t3
-                + ", RESET=" + reset
+        return "JPEGLSCodingParam[MAXVAL=" + maxVal + ", T1=" + t1 + ", T2=" + t2 + ", T3=" + t3 + ", RESET=" + reset
                 + "]";
     }
 

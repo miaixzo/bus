@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -73,18 +73,8 @@ public class Http2 {
     /**
      * 查找有效框架类型的表
      */
-    private static final String[] FRAME_NAMES = new String[]{
-            "DATA",
-            "HEADERS",
-            "PRIORITY",
-            "RST_STREAM",
-            "SETTINGS",
-            "PUSH_PROMISE",
-            "PING",
-            "GOAWAY",
-            "WINDOW_UPDATE",
-            "CONTINUATION"
-    };
+    private static final String[] FRAME_NAMES = new String[] { "DATA", "HEADERS", "PRIORITY", "RST_STREAM", "SETTINGS",
+            "PUSH_PROMISE", "PING", "GOAWAY", "WINDOW_UPDATE", "CONTINUATION" };
 
     static {
         for (int i = 0; i < BINARY.length; i++) {
@@ -94,7 +84,7 @@ public class Http2 {
         FLAGS[FLAG_NONE] = Normal.EMPTY;
         FLAGS[FLAG_END_STREAM] = "END_STREAM";
 
-        int[] prefixFlags = new int[]{FLAG_END_STREAM};
+        int[] prefixFlags = new int[] { FLAG_END_STREAM };
 
         FLAGS[FLAG_PADDED] = "PADDED";
         for (int prefixFlag : prefixFlags) {
@@ -104,20 +94,19 @@ public class Http2 {
         FLAGS[FLAG_END_HEADERS] = "END_HEADERS"; // Same as END_PUSH_PROMISE.
         FLAGS[FLAG_PRIORITY] = "PRIORITY"; // Same as FLAG_COMPRESSED.
         FLAGS[FLAG_END_HEADERS | FLAG_PRIORITY] = "END_HEADERS|PRIORITY"; // Only valid on HEADERS.
-        int[] frameFlags = new int[]{
-                FLAG_END_HEADERS, FLAG_PRIORITY, FLAG_END_HEADERS | FLAG_PRIORITY
-        };
+        int[] frameFlags = new int[] { FLAG_END_HEADERS, FLAG_PRIORITY, FLAG_END_HEADERS | FLAG_PRIORITY };
 
         for (int frameFlag : frameFlags) {
             for (int prefixFlag : prefixFlags) {
                 FLAGS[prefixFlag | frameFlag] = FLAGS[prefixFlag] + Symbol.C_OR + FLAGS[frameFlag];
-                FLAGS[prefixFlag | frameFlag | FLAG_PADDED]
-                        = FLAGS[prefixFlag] + Symbol.C_OR + FLAGS[frameFlag] + "|PADDED";
+                FLAGS[prefixFlag | frameFlag | FLAG_PADDED] = FLAGS[prefixFlag] + Symbol.C_OR + FLAGS[frameFlag]
+                        + "|PADDED";
             }
         }
 
         for (int i = 0; i < FLAGS.length; i++) {
-            if (null == FLAGS[i]) FLAGS[i] = BINARY[i];
+            if (null == FLAGS[i])
+                FLAGS[i] = BINARY[i];
         }
     }
 
@@ -133,13 +122,15 @@ public class Http2 {
     }
 
     /**
-     * Returns human-readable representation of HTTP/2 frame headers.
-     * The format is:
+     * Returns human-readable representation of HTTP/2 frame headers. The format is:
+     * 
      * <pre>
      *   direction streamID length type flags
      * </pre>
-     * Where direction is {@code <<} for inbound and {@code >>} for outbound.
-     * For example, the following would indicate a HEAD request sent from the client.
+     * 
+     * Where direction is {@code <<} for inbound and {@code >>} for outbound. For example, the following would indicate
+     * a HEAD request sent from the client.
+     * 
      * <pre>
      * {@code
      *   << 0x0000000f    12 HEADERS       END_HEADERS|END_STREAM
@@ -149,13 +140,12 @@ public class Http2 {
     static String frameLog(boolean inbound, int streamId, int length, byte type, byte flags) {
         String formattedType = type < FRAME_NAMES.length ? FRAME_NAMES[type] : String.format("0x%02x", type);
         String formattedFlags = formatFlags(type, flags);
-        return String.format("%s 0x%08x %5d %-13s %s", inbound ? "<<" : ">>", streamId, length,
-                formattedType, formattedFlags);
+        return String.format("%s 0x%08x %5d %-13s %s", inbound ? "<<" : ">>", streamId, length, formattedType,
+                formattedFlags);
     }
 
     /**
-     * Looks up valid string representing flags from the table. Invalid combinations are represented
-     * in binary.
+     * Looks up valid string representing flags from the table. Invalid combinations are represented in binary.
      */
     // Visible for testing.
     static String formatFlags(byte type, byte flags) {
@@ -163,14 +153,14 @@ public class Http2 {
             return Normal.EMPTY;
         }
         switch (type) { // Special case types that have 0 or 1 flag.
-            case TYPE_SETTINGS:
-            case TYPE_PING:
-                return flags == FLAG_ACK ? "ACK" : BINARY[flags];
-            case TYPE_PRIORITY:
-            case TYPE_RST_STREAM:
-            case TYPE_GOAWAY:
-            case TYPE_WINDOW_UPDATE:
-                return BINARY[flags];
+        case TYPE_SETTINGS:
+        case TYPE_PING:
+            return flags == FLAG_ACK ? "ACK" : BINARY[flags];
+        case TYPE_PRIORITY:
+        case TYPE_RST_STREAM:
+        case TYPE_GOAWAY:
+        case TYPE_WINDOW_UPDATE:
+            return BINARY[flags];
         }
         String result = flags < FLAGS.length ? FLAGS[flags] : BINARY[flags];
         // Special case types that have overlap flag values.

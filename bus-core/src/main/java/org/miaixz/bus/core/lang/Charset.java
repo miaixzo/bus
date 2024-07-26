@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang;
 
 import org.miaixz.bus.core.io.CharsetDetector;
@@ -115,7 +115,8 @@ public class Charset {
      * @throws UnsupportedCharsetException 编码不支持
      */
     public static java.nio.charset.Charset charset(final String charsetName) throws UnsupportedCharsetException {
-        return StringKit.isBlank(charsetName) ? java.nio.charset.Charset.defaultCharset() : java.nio.charset.Charset.forName(charsetName);
+        return StringKit.isBlank(charsetName) ? java.nio.charset.Charset.defaultCharset()
+                : java.nio.charset.Charset.forName(charsetName);
     }
 
     /**
@@ -135,7 +136,8 @@ public class Charset {
      * @param defaultCharset 解析失败使用的默认编码
      * @return Charset
      */
-    public static java.nio.charset.Charset parse(final String charsetName, final java.nio.charset.Charset defaultCharset) {
+    public static java.nio.charset.Charset parse(final String charsetName,
+            final java.nio.charset.Charset defaultCharset) {
         if (StringKit.isBlank(charsetName)) {
             return defaultCharset;
         }
@@ -159,14 +161,14 @@ public class Charset {
      * @return 转换后的字符集
      */
     public static String convert(final String source, final String srcCharset, final String destCharset) {
-        return convert(source, java.nio.charset.Charset.forName(srcCharset), java.nio.charset.Charset.forName(destCharset));
+        return convert(source, java.nio.charset.Charset.forName(srcCharset),
+                java.nio.charset.Charset.forName(destCharset));
     }
 
     /**
-     * 转换字符串的字符集编码
-     * 当以错误的编码读取为字符串时，打印字符串将出现乱码。
-     * 此方法用于纠正因读取使用编码错误导致的乱码问题。
+     * 转换字符串的字符集编码 当以错误的编码读取为字符串时，打印字符串将出现乱码。 此方法用于纠正因读取使用编码错误导致的乱码问题。
      * 例如，在Servlet请求中客户端用GBK编码了请求参数，我们使用UTF-8读取到的是乱码，此时，使用此方法即可还原原编码的内容
+     * 
      * <pre>
      * 客户端 - GBK编码 - Servlet容器 - UTF-8解码 - 乱码
      * 乱码 - UTF-8编码 - GBK解码 - 正确内容
@@ -177,7 +179,8 @@ public class Charset {
      * @param destCharset 目标字符集，默认UTF-8
      * @return 转换后的字符集
      */
-    public static String convert(final String source, java.nio.charset.Charset srcCharset, java.nio.charset.Charset destCharset) {
+    public static String convert(final String source, java.nio.charset.Charset srcCharset,
+            java.nio.charset.Charset destCharset) {
         if (null == srcCharset) {
             srcCharset = ISO_8859_1;
         }
@@ -193,15 +196,15 @@ public class Charset {
     }
 
     /**
-     * 转换文件编码
-     * 此方法用于转换文件编码，读取的文件实际编码必须与指定的srcCharset编码一致，否则导致乱码
+     * 转换文件编码 此方法用于转换文件编码，读取的文件实际编码必须与指定的srcCharset编码一致，否则导致乱码
      *
      * @param file        文件
      * @param srcCharset  原文件的编码，必须与文件内容的编码保持一致
      * @param destCharset 转码后的编码
      * @return 被转换编码的文件
      */
-    public static File convert(final File file, final java.nio.charset.Charset srcCharset, final java.nio.charset.Charset destCharset) {
+    public static File convert(final File file, final java.nio.charset.Charset srcCharset,
+            final java.nio.charset.Charset destCharset) {
         ;
         return FileKit.writeString(FileKit.readString(file, srcCharset), file, destCharset);
     }
@@ -245,8 +248,7 @@ public class Charset {
     }
 
     /**
-     * 探测编码
-     * 注意：此方法会读取流的一部分，然后关闭流，如重复使用流，请使用使用支持reset方法的流
+     * 探测编码 注意：此方法会读取流的一部分，然后关闭流，如重复使用流，请使用使用支持reset方法的流
      *
      * @param in       流，使用后关闭此流
      * @param charsets 需要测试用的编码，null或空使用默认的编码数组
@@ -258,8 +260,7 @@ public class Charset {
     }
 
     /**
-     * 探测编码
-     * 注意：此方法会读取流的一部分，然后关闭流，如重复使用流，请使用使用支持reset方法的流
+     * 探测编码 注意：此方法会读取流的一部分，然后关闭流，如重复使用流，请使用使用支持reset方法的流
      *
      * @param bufferSize 自定义缓存大小，即每次检查的长度
      * @param in         流，使用后关闭此流
@@ -267,7 +268,8 @@ public class Charset {
      * @return 编码
      * @see CharsetDetector#detect(int, InputStream, java.nio.charset.Charset...)
      */
-    public static java.nio.charset.Charset detect(final int bufferSize, final InputStream in, final java.nio.charset.Charset... charsets) {
+    public static java.nio.charset.Charset detect(final int bufferSize, final InputStream in,
+            final java.nio.charset.Charset... charsets) {
         return CharsetDetector.detect(bufferSize, in, charsets);
     }
 
@@ -279,10 +281,7 @@ public class Charset {
      * @return 配置好的CharsetEncoder实例
      */
     public static CharsetEncoder newEncoder(final java.nio.charset.Charset charset, final CodingErrorAction action) {
-        return Assert.notNull(charset)
-                .newEncoder()
-                .onMalformedInput(action)
-                .onUnmappableCharacter(action);
+        return Assert.notNull(charset).newEncoder().onMalformedInput(action).onUnmappableCharacter(action);
     }
 
     /**
@@ -293,10 +292,7 @@ public class Charset {
      * @return 配置好的CharsetDecoder实例，用于解码字符。
      */
     public static CharsetDecoder newDecoder(final java.nio.charset.Charset charset, final CodingErrorAction action) {
-        return Assert.notNull(charset)
-                .newDecoder()
-                .onMalformedInput(action)
-                .onUnmappableCharacter(action)
+        return Assert.notNull(charset).newDecoder().onMalformedInput(action).onUnmappableCharacter(action)
                 // 设置遇到无法解码的字符时的替换字符串
                 .replaceWith("?");
     }

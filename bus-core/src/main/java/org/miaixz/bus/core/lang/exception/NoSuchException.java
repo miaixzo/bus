@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.exception;
 
 /**
@@ -120,7 +120,8 @@ public class NoSuchException extends UncheckedException {
      * @param enableSuppression  是否启用抑制
      * @param writableStackTrace 堆栈跟踪是否应该是可写的
      */
-    public NoSuchException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
+    public NoSuchException(final String message, final Throwable cause, final boolean enableSuppression,
+            final boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 

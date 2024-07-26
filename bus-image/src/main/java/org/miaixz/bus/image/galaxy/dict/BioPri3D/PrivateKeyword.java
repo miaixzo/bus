@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.BioPri3D;
 
 /**
@@ -36,9 +36,9 @@ public class PrivateKeyword {
     public static final String PrivateCreator = "";
 
     public static String valueOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-                case PrivateTag._0011_xx20_:
+        case PrivateTag._0011_xx20_:
             return "_0011_xx20_";
         case PrivateTag._0011_xx24_:
             return "_0011_xx24_";

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.excel.sax.handler;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -33,8 +33,7 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * 抽象行数据处理器，通过实现{@link #handle(int, long, List)} 处理原始数据
- * 并调用{@link #handleData(int, long, Object)}处理经过转换后的数据。
+ * 抽象行数据处理器，通过实现{@link #handle(int, long, List)} 处理原始数据 并调用{@link #handleData(int, long, Object)}处理经过转换后的数据。
  *
  * @param <T> 转换后的数据类型
  * @author Kimi Liu

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -42,16 +42,16 @@ public class DeploymentFilter implements Serializable {
     private static final long serialVersionUID = -1L;
 
     /**
-	 * Return deployments ordered by either one of id, iid, created_at, updated_at or ref fields. Default is id.
-	 */
-	private DeploymentOrderBy orderBy;
+     * Return deployments ordered by either one of id, iid, created_at, updated_at or ref fields. Default is id.
+     */
+    private DeploymentOrderBy orderBy;
 
-	/**
-	 * Return deployments sorted in asc or desc order. Default is asc.
-	 */
-	private SortOrder sortOrder;
+    /**
+     * Return deployments sorted in asc or desc order. Default is asc.
+     */
+    private SortOrder sortOrder;
 
-	/**
+    /**
      * Return deployments updated after the specified date. Expected in ISO 8601 format (2019-03-15T08:00:00Z).
      */
     private Date updatedAfter;
@@ -71,53 +71,53 @@ public class DeploymentFilter implements Serializable {
      */
     private DeploymentStatus status;
 
-	public DeploymentOrderBy getOrderBy() {
-		return orderBy;
-	}
+    public DeploymentOrderBy getOrderBy() {
+        return orderBy;
+    }
 
-	public void setOrderBy(DeploymentOrderBy orderBy) {
-		this.orderBy = orderBy;
-	}
+    public void setOrderBy(DeploymentOrderBy orderBy) {
+        this.orderBy = orderBy;
+    }
 
-	public SortOrder getSortOrder() {
-		return sortOrder;
-	}
+    public SortOrder getSortOrder() {
+        return sortOrder;
+    }
 
-	public void setSortOrder(SortOrder sortOrder) {
-		this.sortOrder = sortOrder;
-	}
+    public void setSortOrder(SortOrder sortOrder) {
+        this.sortOrder = sortOrder;
+    }
 
-	public Date getUpdatedAfter() {
-		return updatedAfter;
-	}
+    public Date getUpdatedAfter() {
+        return updatedAfter;
+    }
 
-	public void setUpdatedAfter(Date updatedAfter) {
-		this.updatedAfter = updatedAfter;
-	}
+    public void setUpdatedAfter(Date updatedAfter) {
+        this.updatedAfter = updatedAfter;
+    }
 
-	public Date getUpdatedBefore() {
-		return updatedBefore;
-	}
+    public Date getUpdatedBefore() {
+        return updatedBefore;
+    }
 
-	public void setUpdatedBefore(Date updatedBefore) {
-		this.updatedBefore = updatedBefore;
-	}
+    public void setUpdatedBefore(Date updatedBefore) {
+        this.updatedBefore = updatedBefore;
+    }
 
-	public String getEnvironment() {
-		return environment;
-	}
+    public String getEnvironment() {
+        return environment;
+    }
 
-	public void setEnvironment(String environment) {
-		this.environment = environment;
-	}
+    public void setEnvironment(String environment) {
+        this.environment = environment;
+    }
 
-	public DeploymentStatus getStatus() {
-		return status;
-	}
+    public DeploymentStatus getStatus() {
+        return status;
+    }
 
-	public void setStatus(DeploymentStatus status) {
-		this.status = status;
-	}
+    public void setStatus(DeploymentStatus status) {
+        this.status = status;
+    }
 
     public DeploymentFilter withOrderBy(DeploymentOrderBy orderBy) {
         this.orderBy = orderBy;
@@ -151,20 +151,15 @@ public class DeploymentFilter implements Serializable {
 
     @JsonIgnore
     public GitLabApiForm getQueryParams(int page, int perPage) {
-        return (getQueryParams()
-                .withParam(Constants.PAGE_PARAM, page)
-                .withParam(Constants.PER_PAGE_PARAM, perPage));
+        return (getQueryParams().withParam(Constants.PAGE_PARAM, page).withParam(Constants.PER_PAGE_PARAM, perPage));
     }
 
     @JsonIgnore
     public GitLabApiForm getQueryParams() {
-        return (new GitLabApiForm()
-                .withParam("order_by", orderBy)
-                .withParam("sort", sortOrder)
+        return (new GitLabApiForm().withParam("order_by", orderBy).withParam("sort", sortOrder)
                 .withParam("updated_after", ISO8601.toString(updatedAfter, false))
                 .withParam("updated_before", ISO8601.toString(updatedBefore, false))
-                .withParam("environment", environment)
-                .withParam("status", status));
+                .withParam("environment", environment).withParam("status", status));
     }
 
 }

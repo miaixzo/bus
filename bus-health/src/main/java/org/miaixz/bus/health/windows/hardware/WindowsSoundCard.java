@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.hardware;
 
 import com.sun.jna.platform.win32.Advapi32Util;
@@ -62,8 +62,8 @@ final class WindowsSoundCard extends AbstractSoundCard {
     }
 
     /**
-     * Returns Windows audio device driver information, which represents the closest proxy we have to sound cards.
-     * NOTE : The reason why the codec name is same as the card name is because windows does not provide the name of the
+     * Returns Windows audio device driver information, which represents the closest proxy we have to sound cards. NOTE
+     * : The reason why the codec name is same as the card name is because windows does not provide the name of the
      * codec chip but sometimes the name of the card returned is infact the name of the codec chip also. Example :
      * Realtek ALC887 HD Audio Device
      *
@@ -77,13 +77,14 @@ final class WindowsSoundCard extends AbstractSoundCard {
             try {
                 if (Advapi32Util.registryValueExists(WinReg.HKEY_LOCAL_MACHINE, fullKey, "Driver")) {
                     soundCards.add(new WindowsSoundCard(
-                            Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, "Driver") + Symbol.SPACE
+                            Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, "Driver")
+                                    + Symbol.SPACE
                                     + Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey,
-                                    "DriverVersion"),
+                                            "DriverVersion"),
                             Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, "ProviderName")
                                     + Symbol.SPACE
                                     + Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey,
-                                    "DriverDesc"),
+                                            "DriverDesc"),
                             Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, "DriverDesc")));
                 }
             } catch (Win32Exception e) {

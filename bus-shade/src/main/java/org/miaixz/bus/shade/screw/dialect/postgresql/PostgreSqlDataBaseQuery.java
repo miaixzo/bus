@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.screw.dialect.postgresql;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -69,7 +69,7 @@ public class PostgreSqlDataBaseQuery extends AbstractDatabaseQuery {
     @Override
     public Database getDataBase() throws InternalException {
         PostgreSqlDatabase model = new PostgreSqlDatabase();
-        //当前数据库名称
+        // 当前数据库名称
         model.setDatabase(getCatalog());
         return model;
     }
@@ -83,10 +83,10 @@ public class PostgreSqlDataBaseQuery extends AbstractDatabaseQuery {
     public List<PostgreSqlTable> getTables() throws InternalException {
         ResultSet resultSet = null;
         try {
-            //查询
+            // 查询
             resultSet = getMetaData().getTables(getCatalog(), getSchema(), Builder.PERCENT_SIGN,
-                    new String[]{"TABLE"});
-            //映射
+                    new String[] { "TABLE" });
+            // 映射
             return Mapping.convertList(resultSet, PostgreSqlTable.class);
         } catch (SQLException e) {
             throw new InternalException(e);
@@ -107,18 +107,17 @@ public class PostgreSqlDataBaseQuery extends AbstractDatabaseQuery {
         Assert.notEmpty(table, "Table name can not be empty!");
         ResultSet resultSet = null;
         try {
-            //查询
+            // 查询
             resultSet = getMetaData().getColumns(getCatalog(), getSchema(), table, Builder.PERCENT_SIGN);
-            //映射
-            List<PostgreSqlColumn> list = Mapping.convertList(resultSet,
-                    PostgreSqlColumn.class);
-            //这里处理是为了如果是查询全部列呢？所以处理并获取唯一表名
-            List<String> tableNames = list.stream().map(PostgreSqlColumn::getTableName)
-                    .collect(Collectors.toList()).stream().distinct().collect(Collectors.toList());
+            // 映射
+            List<PostgreSqlColumn> list = Mapping.convertList(resultSet, PostgreSqlColumn.class);
+            // 这里处理是为了如果是查询全部列呢？所以处理并获取唯一表名
+            List<String> tableNames = list.stream().map(PostgreSqlColumn::getTableName).collect(Collectors.toList())
+                    .stream().distinct().collect(Collectors.toList());
             if (CollKit.isEmpty(columnsCaching)) {
-                //查询全部
+                // 查询全部
                 if (table.equals(Builder.PERCENT_SIGN)) {
-                    //获取全部表列信息SQL
+                    // 获取全部表列信息SQL
                     String sql = "SELECT \"TABLE_NAME\", \"TABLE_SCHEMA\", \"COLUMN_NAME\", \"LENGTH\", concat(\"UDT_NAME\", case when \"LENGTH\" isnull then '' else concat('(', concat(\"LENGTH\", ')')) end) \"COLUMN_TYPE\" FROM(select table_schema as \"TABLE_SCHEMA\", column_name as \"COLUMN_NAME\", table_name as \"TABLE_NAME\", udt_name as \"UDT_NAME\", case when coalesce(character_maximum_length, numeric_precision, -1) = -1 then null else coalesce(character_maximum_length, numeric_precision, -1) end as \"LENGTH\" from information_schema.columns a where  table_schema = '%s' and table_catalog = '%s') t";
                     PreparedStatement statement = prepareStatement(
                             String.format(sql, getSchema(), getDataBase().getDatabase()));
@@ -128,29 +127,26 @@ public class PostgreSqlDataBaseQuery extends AbstractDatabaseQuery {
                         resultSet.setFetchSize(fetchSize);
                     }
                 }
-                //单表查询
+                // 单表查询
                 else {
-                    //获取表列信息SQL 查询表名、列名、说明、数据类型
+                    // 获取表列信息SQL 查询表名、列名、说明、数据类型
                     String sql = "SELECT \"TABLE_NAME\", \"TABLE_SCHEMA\", \"COLUMN_NAME\", \"LENGTH\", concat(\"UDT_NAME\", case when \"LENGTH\" isnull then '' else concat('(', concat(\"LENGTH\", ')')) end) \"COLUMN_TYPE\" FROM(select table_schema as \"TABLE_SCHEMA\", column_name as \"COLUMN_NAME\", table_name as \"TABLE_NAME\", udt_name as \"UDT_NAME\", case when coalesce(character_maximum_length, numeric_precision, -1) = -1 then null else coalesce(character_maximum_length, numeric_precision, -1) end as \"LENGTH\" from information_schema.columns a where table_name = '%s' and table_schema = '%s' and table_catalog = '%s') t";
-                    resultSet = prepareStatement(
-                            String.format(sql, table, getSchema(), getDataBase().getDatabase()))
+                    resultSet = prepareStatement(String.format(sql, table, getSchema(), getDataBase().getDatabase()))
                             .executeQuery();
                 }
-                List<PostgreSqlColumn> inquires = Mapping.convertList(resultSet,
-                        PostgreSqlColumn.class);
-                //处理列，表名为key，列名为值
-                tableNames.forEach(name -> columnsCaching.put(name, inquires.stream()
-                        .filter(i -> i.getTableName().equals(name)).collect(Collectors.toList())));
+                List<PostgreSqlColumn> inquires = Mapping.convertList(resultSet, PostgreSqlColumn.class);
+                // 处理列，表名为key，列名为值
+                tableNames.forEach(name -> columnsCaching.put(name,
+                        inquires.stream().filter(i -> i.getTableName().equals(name)).collect(Collectors.toList())));
             }
-            //处理备注信息
+            // 处理备注信息
             list.forEach(i -> {
-                //从缓存中根据表名获取列信息
+                // 从缓存中根据表名获取列信息
                 List<Column> columns = columnsCaching.get(i.getTableName());
                 columns.forEach(j -> {
-                    //列名表名一致
-                    if (i.getColumnName().equals(j.getColumnName())
-                            && i.getTableName().equals(j.getTableName())) {
-                        //放入备注
+                    // 列名表名一致
+                    if (i.getColumnName().equals(j.getColumnName()) && i.getTableName().equals(j.getTableName())) {
+                        // 放入备注
                         i.setColumnLength(j.getColumnLength());
                         i.setColumnType(j.getColumnType());
                     }
@@ -186,9 +182,9 @@ public class PostgreSqlDataBaseQuery extends AbstractDatabaseQuery {
     public List<? extends PrimaryKey> getPrimaryKeys(String table) throws InternalException {
         ResultSet resultSet = null;
         try {
-            //查询
+            // 查询
             resultSet = getMetaData().getPrimaryKeys(getCatalog(), getSchema(), table);
-            //映射
+            // 映射
             return Mapping.convertList(resultSet, PostgreSqlPrimaryKey.class);
         } catch (SQLException e) {
             throw new InternalException(e);

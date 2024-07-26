@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.notify;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -36,7 +36,7 @@ import org.springframework.context.annotation.Bean;
  * @author Kimi Liu
  * @since Java 17+
  */
-@EnableConfigurationProperties(value = {NotifyProperties.class})
+@EnableConfigurationProperties(value = { NotifyProperties.class })
 public class NotifyConfiguration {
 
     @Bean

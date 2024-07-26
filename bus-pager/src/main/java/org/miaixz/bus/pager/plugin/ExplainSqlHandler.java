@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2024 miaixz.org mybatis.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager.plugin;
 
 import net.sf.jsqlparser.JSQLParserException;
@@ -50,23 +50,24 @@ import org.miaixz.bus.core.lang.exception.InternalException;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Intercepts({@Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class})})
+@Intercepts({ @Signature(type = Executor.class, method = "update", args = { MappedStatement.class, Object.class }) })
 public class ExplainSqlHandler extends SqlParserHandler implements Interceptor {
 
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
         Object[] args = invocation.getArgs();
         MappedStatement ms = (MappedStatement) args[0];
-        if (ms.getSqlCommandType() == SqlCommandType.DELETE
-                || ms.getSqlCommandType() == SqlCommandType.UPDATE) {
+        if (ms.getSqlCommandType() == SqlCommandType.DELETE || ms.getSqlCommandType() == SqlCommandType.UPDATE) {
             Object parameter = args[1];
             Configuration configuration = ms.getConfiguration();
             Object target = invocation.getTarget();
-            StatementHandler handler = configuration.newStatementHandler((Executor) target, ms, parameter, RowBounds.DEFAULT, null, null);
+            StatementHandler handler = configuration.newStatementHandler((Executor) target, ms, parameter,
+                    RowBounds.DEFAULT, null, null);
             if (!(handler instanceof CallableStatementHandler)) {
                 // 标记是否修改过 SQL
                 boolean sqlChangedFlag = false;
-                MetaObject metaObject = SystemMetaObject.forObject(realTarget(SystemMetaObject.forObject(handler).getOriginalObject()));
+                MetaObject metaObject = SystemMetaObject
+                        .forObject(realTarget(SystemMetaObject.forObject(handler).getOriginalObject()));
 
                 String sql = ((String) metaObject.getValue(DELEGATE_BOUNDSQL_SQL)).replaceAll("[\\s]+", Symbol.SPACE);
                 if (this.allowProcess(metaObject)) {
@@ -87,7 +88,9 @@ public class ExplainSqlHandler extends SqlParserHandler implements Interceptor {
                             sqlChangedFlag = true;
                         }
                     } catch (JSQLParserException e) {
-                        throw new InternalException("Failed to process, please exclude the tableName or statementId.\n Error SQL: %s", e, sql);
+                        throw new InternalException(
+                                "Failed to process, please exclude the tableName or statementId.\n Error SQL: %s", e,
+                                sql);
                     }
                 }
                 if (sqlChangedFlag) {

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cache.serialize;
 
 import java.io.ByteArrayInputStream;
@@ -43,8 +43,8 @@ public class JdkGzipSerializer extends AbstractSerializer {
     @Override
     protected byte[] doSerialize(Object object) throws Throwable {
         try (ByteArrayOutputStream bos = new ByteArrayOutputStream();
-             GZIPOutputStream gzout = new GZIPOutputStream(bos);
-             ObjectOutputStream out = new ObjectOutputStream(gzout)) {
+                GZIPOutputStream gzout = new GZIPOutputStream(bos);
+                ObjectOutputStream out = new ObjectOutputStream(gzout)) {
             out.writeObject(object);
             return bos.toByteArray();
         }
@@ -53,8 +53,8 @@ public class JdkGzipSerializer extends AbstractSerializer {
     @Override
     protected Object doDeserialize(byte[] bytes) throws Throwable {
         try (ByteArrayInputStream bis = new ByteArrayInputStream(bytes);
-             GZIPInputStream gzin = new GZIPInputStream(bis);
-             ObjectInputStream ois = new ObjectInputStream(gzin)) {
+                GZIPInputStream gzin = new GZIPInputStream(bis);
+                ObjectInputStream ois = new ObjectInputStream(gzin)) {
 
             return ois.readObject();
         }

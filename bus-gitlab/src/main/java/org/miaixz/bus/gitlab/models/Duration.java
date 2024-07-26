@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -41,18 +41,14 @@ public class Duration implements Serializable {
 
     private static final long serialVersionUID = -1L;
 
-    private static final String[] TIME_UNITS = {
-            "mo", "w", "d", "h", "m", "s"
-    };
+    private static final String[] TIME_UNITS = { "mo", "w", "d", "h", "m", "s" };
 
-    private static final int[] TIME_UNIT_MULTIPLIERS = {
-            60 * 60 * 8 * 5 * 4, // 4 weeks = 1 month
-            60 * 60 * 8 * 5,     // 5 days = 1 week
-            60 * 60 * 8,         // 8 hours = 1 day
-            60 * 60,             // 60 minutes = 1 hours
-            60,                  // 60 seconds = 1 minute
-            1
-    };
+    private static final int[] TIME_UNIT_MULTIPLIERS = { 60 * 60 * 8 * 5 * 4, // 4 weeks = 1 month
+            60 * 60 * 8 * 5, // 5 days = 1 week
+            60 * 60 * 8, // 8 hours = 1 day
+            60 * 60, // 60 minutes = 1 hours
+            60, // 60 seconds = 1 minute
+            1 };
     private static Pattern durationPattern = Pattern.compile("(\\s*(\\d+)(mo|[wdhms]))");
 
     private int seconds;
@@ -92,8 +88,7 @@ public class Duration implements Serializable {
      * Create a human readable duration string from seconds.
      *
      * @param durationSeconds the total number of seconds in the duration
-     * @param includeMonths when true will include months "mo", in the string otherwise
-     *        uses "4w" for each month
+     * @param includeMonths   when true will include months "mo", in the string otherwise uses "4w" for each month
      * @return a human readable string representing the duration
      */
     public static final String toString(int durationSeconds, boolean includeMonths) {
@@ -119,7 +114,8 @@ public class Duration implements Serializable {
             }
 
             if (seconds > 0) {
-                buf.append(days).append('d').append(hours).append('h').append(minutes).append('m').append(seconds).append('s');
+                buf.append(days).append('d').append(hours).append('h').append(minutes).append('m').append(seconds)
+                        .append('s');
             } else if (minutes > 0) {
                 buf.append(days).append('d').append(hours).append('h').append(minutes).append('m');
             } else if (hours > 0) {
@@ -132,7 +128,8 @@ public class Duration implements Serializable {
 
             buf.append(weeks).append('w');
             if (seconds > 0) {
-                buf.append(days).append('d').append(hours).append('h').append(minutes).append('m').append(seconds).append('s');
+                buf.append(days).append('d').append(hours).append('h').append(minutes).append('m').append(seconds)
+                        .append('s');
             } else if (minutes > 0) {
                 buf.append(days).append('d').append(hours).append('h').append(minutes).append('m');
             } else if (hours > 0) {

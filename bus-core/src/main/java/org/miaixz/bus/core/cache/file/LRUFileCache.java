@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.cache.file;
 
 import org.miaixz.bus.core.cache.Cache;
@@ -43,9 +43,7 @@ public class LRUFileCache extends AbstractFileCache {
     private static final long serialVersionUID = -1L;
 
     /**
-     * 构造
-     * 最大文件大小为缓存容量的一半
-     * 默认无超时
+     * 构造 最大文件大小为缓存容量的一半 默认无超时
      *
      * @param capacity 缓存容量
      */
@@ -54,8 +52,7 @@ public class LRUFileCache extends AbstractFileCache {
     }
 
     /**
-     * 构造
-     * 默认无超时
+     * 构造 默认无超时
      *
      * @param capacity    缓存容量
      * @param maxFileSize 最大文件大小

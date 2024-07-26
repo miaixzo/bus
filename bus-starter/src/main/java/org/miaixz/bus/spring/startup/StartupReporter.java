@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.spring.startup;
 
 import org.miaixz.bus.spring.GeniusBuilder;
@@ -55,16 +55,14 @@ import java.util.*;
 public class StartupReporter {
 
     public static final Collection<String> SPRING_BEAN_INSTANTIATE_TYPES = Set
-            .of(GeniusBuilder.SPRING_BEANS_INSTANTIATE,
-                    GeniusBuilder.SPRING_BEANS_SMART_INSTANTIATE);
+            .of(GeniusBuilder.SPRING_BEANS_INSTANTIATE, GeniusBuilder.SPRING_BEANS_SMART_INSTANTIATE);
 
-    public static final Collection<String> SPRING_CONTEXT_POST_PROCESSOR_TYPES = Set
-            .of(GeniusBuilder.SPRING_CONTEXT_BEANDEF_REGISTRY_POST_PROCESSOR,
-                    GeniusBuilder.SPRING_CONTEXT_BEAN_FACTORY_POST_PROCESSOR);
+    public static final Collection<String> SPRING_CONTEXT_POST_PROCESSOR_TYPES = Set.of(
+            GeniusBuilder.SPRING_CONTEXT_BEANDEF_REGISTRY_POST_PROCESSOR,
+            GeniusBuilder.SPRING_CONTEXT_BEAN_FACTORY_POST_PROCESSOR);
 
     public static final Collection<String> SPRING_CONFIG_CLASSES_ENHANCE_TYPES = Set
-            .of(GeniusBuilder.SPRING_CONFIG_CLASSES_ENHANCE,
-                    GeniusBuilder.SPRING_BEAN_POST_PROCESSOR);
+            .of(GeniusBuilder.SPRING_CONFIG_CLASSES_ENHANCE, GeniusBuilder.SPRING_BEAN_POST_PROCESSOR);
 
     public final StartupStatics statics;
 
@@ -76,9 +74,9 @@ public class StartupReporter {
 
     public StartupReporter() {
         this.statics = new StartupStatics();
-        this.statics.setApplicationBootTime(ManagementFactory.getRuntimeMXBean()
-                .getStartTime());
-        this.beanStaticsCustomizers = SpringFactoriesLoader.loadFactories(BeanStaticsCustomizer.class, StartupReporter.class.getClassLoader());
+        this.statics.setApplicationBootTime(ManagementFactory.getRuntimeMXBean().getStartTime());
+        this.beanStaticsCustomizers = SpringFactoriesLoader.loadFactories(BeanStaticsCustomizer.class,
+                StartupReporter.class.getClassLoader());
     }
 
     /**
@@ -102,8 +100,7 @@ public class StartupReporter {
      * 结束应用程序启动
      */
     public void applicationBootFinish() {
-        statics.setApplicationBootElapsedTime(ManagementFactory.getRuntimeMXBean()
-                .getUptime());
+        statics.setApplicationBootElapsedTime(ManagementFactory.getRuntimeMXBean().getUptime());
         statics.getStageStats().sort((o1, o2) -> {
             if (o1.getStartTime() == o2.getStartTime()) {
                 return 0;
@@ -128,8 +125,8 @@ public class StartupReporter {
      * @return 报告的对象，当找不到对象时返回null
      */
     public BaseStatics getStageNyName(String stageName) {
-        return statics.getStageStats().stream().filter(commonStartupStat -> commonStartupStat.getName().equals(stageName))
-                .findFirst().orElse(null);
+        return statics.getStageStats().stream()
+                .filter(commonStartupStat -> commonStartupStat.getName().equals(stageName)).findFirst().orElse(null);
     }
 
     /**
@@ -140,10 +137,8 @@ public class StartupReporter {
     public StartupStatics drainStartupStatics() {
         StartupStatics startupReporterStatics = new StartupStatics();
         startupReporterStatics.setAppName(this.statics.getAppName());
-        startupReporterStatics.setApplicationBootElapsedTime(this.statics
-                .getApplicationBootElapsedTime());
-        startupReporterStatics.setApplicationBootTime(this.statics
-                .getApplicationBootTime());
+        startupReporterStatics.setApplicationBootElapsedTime(this.statics.getApplicationBootElapsedTime());
+        startupReporterStatics.setApplicationBootTime(this.statics.getApplicationBootTime());
         List<BaseStatics> stats = new ArrayList<>();
         Iterator<BaseStatics> iterator = this.statics.getStageStats().iterator();
         while (iterator.hasNext()) {
@@ -186,8 +181,7 @@ public class StartupReporter {
 
                 if (parentBean != null) {
                     // 父节点实际成本减去子节点
-                    parentBean.setRealRefreshElapsedTime(parentBean.getRealRefreshElapsedTime()
-                            - bean.getCost());
+                    parentBean.setRealRefreshElapsedTime(parentBean.getRealRefreshElapsedTime() - bean.getCost());
                     // 删除根列表中的子节点
                     rootBeanList.remove(bean);
                     // 如果子列表开销大于阈值，则将其放到父子列表中。
@@ -210,8 +204,7 @@ public class StartupReporter {
 
     private boolean filterBeanInitializeByCost(BeanStatics bean) {
         String name = bean.getType();
-        if (SPRING_BEAN_INSTANTIATE_TYPES.contains(name)
-                || SPRING_CONTEXT_POST_PROCESSOR_TYPES.contains(name)
+        if (SPRING_BEAN_INSTANTIATE_TYPES.contains(name) || SPRING_CONTEXT_POST_PROCESSOR_TYPES.contains(name)
                 || SPRING_CONFIG_CLASSES_ENHANCE_TYPES.contains(name)) {
             return bean.getCost() >= costThreshold;
         } else {

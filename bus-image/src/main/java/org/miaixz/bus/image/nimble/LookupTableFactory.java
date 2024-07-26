@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 import org.miaixz.bus.core.xyz.ByteKit;
@@ -42,12 +42,9 @@ import java.awt.image.*;
  */
 public class LookupTableFactory {
 
-    private static final String[] XA_XRF_CUIDS = {
-            UID.XRayAngiographicImageStorage.uid,
-            UID.XRayRadiofluoroscopicImageStorage.uid,
-            UID.XRayAngiographicBiPlaneImageStorage.uid
-    };
-    private static final String[] LOG_DISP = {"LOG", "DISP"};
+    private static final String[] XA_XRF_CUIDS = { UID.XRayAngiographicImageStorage.uid,
+            UID.XRayRadiofluoroscopicImageStorage.uid, UID.XRayAngiographicBiPlaneImageStorage.uid };
+    private static final String[] LOG_DISP = { "LOG", "DISP" };
 
     private final StoredValue storedValue;
     private float rescaleSlope = 1;
@@ -87,8 +84,7 @@ public class LookupTableFactory {
     public void setModalityLUT(Attributes attrs) {
         rescaleIntercept = attrs.getFloat(Tag.RescaleIntercept, 0);
         rescaleSlope = attrs.getFloat(Tag.RescaleSlope, 1);
-        modalityLUT = createLUT(storedValue,
-                attrs.getNestedDataset(Tag.ModalityLUTSequence));
+        modalityLUT = createLUT(storedValue, attrs.getNestedDataset(Tag.ModalityLUTSequence));
     }
 
     public void setPresentationLUT(Attributes attrs) {
@@ -101,8 +97,7 @@ public class LookupTableFactory {
             int[] desc = pLUT.getInts(Tag.LUTDescriptor);
             if (desc != null && desc.length == 3) {
                 int len = desc[0] == 0 ? 0x10000 : desc[0];
-                presentationLUT = createLUT(new StoredValue.Unsigned(log2(len)),
-                        resetOffset(desc),
+                presentationLUT = createLUT(new StoredValue.Unsigned(log2(len)), resetOffset(desc),
                         pLUT.getSafeBytes(Tag.LUTData), pLUT.bigEndian());
             }
         } else {
@@ -130,8 +125,7 @@ public class LookupTableFactory {
         this.windowWidth = windowWidth;
     }
 
-    public void setVOI(Attributes img, int windowIndex, int voiLUTIndex,
-                       boolean preferWindow) {
+    public void setVOI(Attributes img, int windowIndex, int voiLUTIndex, boolean preferWindow) {
         if (img == null)
             return;
 
@@ -139,11 +133,8 @@ public class LookupTableFactory {
         if (preferWindow || vLUT == null) {
             float[] wcs = img.getFloats(Tag.WindowCenter);
             float[] wws = img.getFloats(Tag.WindowWidth);
-            if (wcs != null && wcs.length != 0
-                    && wws != null && wws.length != 0) {
-                int index = windowIndex < Math.min(wcs.length, wws.length)
-                        ? windowIndex
-                        : 0;
+            if (wcs != null && wcs.length != 0 && wws != null && wws.length != 0) {
+                int index = windowIndex < Math.min(wcs.length, wws.length) ? windowIndex : 0;
                 windowCenter = wcs[index];
                 windowWidth = wws[index];
                 return;
@@ -151,18 +142,14 @@ public class LookupTableFactory {
         }
         if (vLUT != null) {
             adjustVOILUTDescriptor(vLUT);
-            voiLUT = createLUT(modalityLUT != null
-                            ? new StoredValue.Unsigned(modalityLUT.outBits)
-                            : storedValue,
-                    vLUT);
+            voiLUT = createLUT(modalityLUT != null ? new StoredValue.Unsigned(modalityLUT.outBits) : storedValue, vLUT);
         }
     }
 
     private void adjustVOILUTDescriptor(Attributes vLUT) {
         int[] desc = vLUT.getInts(Tag.LUTDescriptor);
         byte[] data;
-        if (desc != null && desc.length == 3 && desc[2] == 16
-                && (data = vLUT.getSafeBytes(Tag.LUTData)) != null) {
+        if (desc != null && desc.length == 3 && desc[2] == 16 && (data = vLUT.getSafeBytes(Tag.LUTData)) != null) {
             int hiByte = 0;
             for (int i = vLUT.bigEndian() ? 0 : 1; i < data.length; i++, i++)
                 hiByte |= data[i];
@@ -177,12 +164,10 @@ public class LookupTableFactory {
         if (attrs == null)
             return null;
 
-        return createLUT(inBits, attrs.getInts(Tag.LUTDescriptor),
-                attrs.getSafeBytes(Tag.LUTData), attrs.bigEndian());
+        return createLUT(inBits, attrs.getInts(Tag.LUTDescriptor), attrs.getSafeBytes(Tag.LUTData), attrs.bigEndian());
     }
 
-    private LookupTable createLUT(StoredValue inBits, int[] desc, byte[] data,
-                                                              boolean bigEndian) {
+    private LookupTable createLUT(StoredValue inBits, int[] desc, byte[] data, boolean bigEndian) {
 
         if (desc == null)
             return null;
@@ -224,9 +209,7 @@ public class LookupTableFactory {
     }
 
     public LookupTable createLUT(int outBits) {
-        LookupTable lut = combineModalityVOILUT(presentationLUT != null
-                ? log2(presentationLUT.length())
-                : outBits);
+        LookupTable lut = combineModalityVOILUT(presentationLUT != null ? log2(presentationLUT.length()) : outBits);
         if (presentationLUT != null) {
             lut = lut.combine(presentationLUT.adjustOutBits(outBits));
         } else if (inverse)
@@ -247,9 +230,7 @@ public class LookupTableFactory {
                 return modalityLUT.adjustOutBits(outBits);
 
             int size, offset;
-            StoredValue inBits = modalityLUT != null
-                    ? new StoredValue.Unsigned(modalityLUT.outBits)
-                    : storedValue;
+            StoredValue inBits = modalityLUT != null ? new StoredValue.Unsigned(modalityLUT.outBits) : storedValue;
             if (w != 0) {
                 size = Math.max(2, Math.abs(Math.round(w / m)));
                 offset = Math.round((c - b) / m) - size / 2;
@@ -257,8 +238,7 @@ public class LookupTableFactory {
                 offset = inBits.minValue();
                 size = inBits.maxValue() - inBits.minValue() + 1;
             }
-            lut = outBits > 8
-                    ? new ShortLookupTable(inBits, outBits, offset, size, m < 0)
+            lut = outBits > 8 ? new ShortLookupTable(inBits, outBits, offset, size, m < 0)
                     : new ByteLookupTable(inBits, outBits, offset, size, m < 0);
         } else {
             lut = lut.adjustOutBits(outBits);
@@ -290,51 +270,49 @@ public class LookupTableFactory {
         ComponentSampleModel sm = (ComponentSampleModel) raster.getSampleModel();
         DataBuffer dataBuffer = raster.getDataBuffer();
         switch (dataBuffer.getDataType()) {
-            case DataBuffer.TYPE_BYTE:
-                return calcMinMax(storedValue, sm,
-                        ((DataBufferByte) dataBuffer).getData());
-            case DataBuffer.TYPE_USHORT:
-                return calcMinMax(storedValue, sm,
-                        ((DataBufferUShort) dataBuffer).getData());
-            case DataBuffer.TYPE_SHORT:
-                return calcMinMax(storedValue, sm,
-                        ((DataBufferShort) dataBuffer).getData());
-            default:
-                throw new UnsupportedOperationException(
-                        "DataBuffer: " + dataBuffer.getClass() + " not supported");
+        case DataBuffer.TYPE_BYTE:
+            return calcMinMax(storedValue, sm, ((DataBufferByte) dataBuffer).getData());
+        case DataBuffer.TYPE_USHORT:
+            return calcMinMax(storedValue, sm, ((DataBufferUShort) dataBuffer).getData());
+        case DataBuffer.TYPE_SHORT:
+            return calcMinMax(storedValue, sm, ((DataBufferShort) dataBuffer).getData());
+        default:
+            throw new UnsupportedOperationException("DataBuffer: " + dataBuffer.getClass() + " not supported");
         }
     }
 
-    private int[] calcMinMax(StoredValue storedValue, ComponentSampleModel sm,
-                             byte[] data) {
+    private int[] calcMinMax(StoredValue storedValue, ComponentSampleModel sm, byte[] data) {
         int min = Integer.MAX_VALUE;
         int max = Integer.MIN_VALUE;
         int w = sm.getWidth();
         int h = sm.getHeight();
         int stride = sm.getScanlineStride();
         for (int y = 0; y < h; y++)
-            for (int i = y * stride, end = i + w; i < end; ) {
+            for (int i = y * stride, end = i + w; i < end;) {
                 int val = storedValue.valueOf(data[i++]);
-                if (val < min) min = val;
-                if (val > max) max = val;
+                if (val < min)
+                    min = val;
+                if (val > max)
+                    max = val;
             }
-        return new int[]{min, max};
+        return new int[] { min, max };
     }
 
-    private int[] calcMinMax(StoredValue storedValue, ComponentSampleModel sm,
-                             short[] data) {
+    private int[] calcMinMax(StoredValue storedValue, ComponentSampleModel sm, short[] data) {
         int min = Integer.MAX_VALUE;
         int max = Integer.MIN_VALUE;
         int w = sm.getWidth();
         int h = sm.getHeight();
         int stride = sm.getScanlineStride();
         for (int y = 0; y < h; y++)
-            for (int i = y * stride, end = i + w; i < end; ) {
+            for (int i = y * stride, end = i + w; i < end;) {
                 int val = storedValue.valueOf(data[i++]);
-                if (val < min) min = val;
-                if (val > max) max = val;
+                if (val < min)
+                    min = val;
+                if (val > max)
+                    max = val;
             }
-        return new int[]{min, max};
+        return new int[] { min, max };
     }
 
 }

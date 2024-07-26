@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.accord;
 
 import org.miaixz.bus.core.Version;
@@ -85,8 +85,8 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
      */
     boolean noNewExchanges;
     /**
-     * The number of times there was a problem establishing a stream that could be due to route
-     * chosen. Guarded by {@link #connectionPool}.
+     * The number of times there was a problem establishing a stream that could be due to route chosen. Guarded by
+     * {@link #connectionPool}.
      */
     int routeFailureCount;
     int successCount;
@@ -99,8 +99,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
      */
     private Socket rawSocket;
     /**
-     * 应用层套接字，如果该连接不使用SSL，则可以使用位于
-     * {@link #rawSocket}之上的{@link SSLSocket}或{@link #rawSocket}本身
+     * 应用层套接字，如果该连接不使用SSL，则可以使用位于 {@link #rawSocket}之上的{@link SSLSocket}或{@link #rawSocket}本身
      */
     private Socket socket;
     /**
@@ -113,9 +112,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
     private BufferSink sink;
     private int refusedStreamCount;
     /**
-     * 此连接可承载的并发流的最大数目如果
-     * {@code allocations.size() < allocationLimit}
-     * 则可以在此连接上创建新的流
+     * 此连接可承载的并发流的最大数目如果 {@code allocations.size() < allocationLimit} 则可以在此连接上创建新的流
      */
     private int allocationLimit = 1;
 
@@ -124,8 +121,8 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         this.route = route;
     }
 
-    static RealConnection testConnection(
-            RealConnectionPool connectionPool, Route route, Socket socket, long idleAtNanos) {
+    static RealConnection testConnection(RealConnectionPool connectionPool, Route route, Socket socket,
+            long idleAtNanos) {
         RealConnection result = new RealConnection(connectionPool, route);
         result.socket = socket;
         result.idleAtNanos = idleAtNanos;
@@ -142,10 +139,10 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         }
     }
 
-    public void connect(int connectTimeout, int readTimeout, int writeTimeout,
-                        int pingIntervalMillis, boolean connectionRetryEnabled, NewCall call,
-                        EventListener eventListener) {
-        if (protocol != null) throw new IllegalStateException("already connected");
+    public void connect(int connectTimeout, int readTimeout, int writeTimeout, int pingIntervalMillis,
+            boolean connectionRetryEnabled, NewCall call, EventListener eventListener) {
+        if (protocol != null)
+            throw new IllegalStateException("already connected");
 
         RouteException routeException = null;
         List<ConnectionSuite> connectionSuites = route.address().connectionSpecs();
@@ -153,8 +150,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
 
         if (route.address().sslSocketFactory() == null) {
             if (!connectionSuites.contains(ConnectionSuite.CLEARTEXT)) {
-                throw new RouteException(new UnknownServiceException(
-                        "CLEARTEXT communication not enabled for client"));
+                throw new RouteException(new UnknownServiceException("CLEARTEXT communication not enabled for client"));
             }
             String host = route.address().url().host();
             if (!Platform.get().isCleartextTrafficPermitted(host)) {
@@ -163,8 +159,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
             }
         } else {
             if (route.address().protocols().contains(Protocol.H2_PRIOR_KNOWLEDGE)) {
-                throw new RouteException(new UnknownServiceException(
-                        "H2_PRIOR_KNOWLEDGE cannot be used with HTTPS"));
+                throw new RouteException(new UnknownServiceException("H2_PRIOR_KNOWLEDGE cannot be used with HTTPS"));
             }
         }
 
@@ -208,8 +203,8 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         }
 
         if (route.requiresTunnel() && null == rawSocket) {
-            ProtocolException exception = new ProtocolException("Too many tunnel connections attempted: "
-                    + MAX_TUNNEL_ATTEMPTS);
+            ProtocolException exception = new ProtocolException(
+                    "Too many tunnel connections attempted: " + MAX_TUNNEL_ATTEMPTS);
             throw new RouteException(exception);
         }
 
@@ -221,8 +216,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
     }
 
     /**
-     * 完成在代理通道上构建HTTPS连接的所有工作。
-     * 这里的问题是，代理服务器可以发出验证请求，然后关闭连接
+     * 完成在代理通道上构建HTTPS连接的所有工作。 这里的问题是，代理服务器可以发出验证请求，然后关闭连接
      *
      * @param connectTimeout 连接超时时间
      * @param readTimeout    读取超时时间
@@ -232,7 +226,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
      * @throws IOException 异常
      */
     private void connectTunnel(int connectTimeout, int readTimeout, int writeTimeout, NewCall call,
-                               EventListener eventListener) throws IOException {
+            EventListener eventListener) throws IOException {
         Request tunnelRequest = createTunnelRequest();
         UnoUrl url = tunnelRequest.url();
         for (int i = 0; i < MAX_TUNNEL_ATTEMPTS; i++) {
@@ -262,8 +256,8 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
      * @param eventListener  监听器
      * @throws IOException 异常
      */
-    private void connectSocket(int connectTimeout, int readTimeout, NewCall call,
-                               EventListener eventListener) throws IOException {
+    private void connectSocket(int connectTimeout, int readTimeout, NewCall call, EventListener eventListener)
+            throws IOException {
         Proxy proxy = route.proxy();
         Address address = route.address();
 
@@ -292,8 +286,8 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         }
     }
 
-    private void establishProtocol(ConnectionSelector connectionSelector,
-                                   int pingIntervalMillis, NewCall call, EventListener eventListener) throws IOException {
+    private void establishProtocol(ConnectionSelector connectionSelector, int pingIntervalMillis, NewCall call,
+            EventListener eventListener) throws IOException {
         if (null == route.address().sslSocketFactory()) {
             if (route.address().protocols().contains(Protocol.H2_PRIOR_KNOWLEDGE)) {
                 socket = rawSocket;
@@ -319,11 +313,8 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
     private void startHttp2(int pingIntervalMillis) throws IOException {
         // HTTP/2连接超时是按流设置的
         socket.setSoTimeout(0);
-        http2Connection = new Http2Connection.Builder(true)
-                .socket(socket, route.address().url().host(), source, sink)
-                .listener(this)
-                .pingIntervalMillis(pingIntervalMillis)
-                .build();
+        http2Connection = new Http2Connection.Builder(true).socket(socket, route.address().url().host(), source, sink)
+                .listener(this).pingIntervalMillis(pingIntervalMillis).build();
         http2Connection.start();
     }
 
@@ -334,14 +325,13 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         SSLSocket sslSocket = null;
         try {
             // 在连接的套接字上创建包装器
-            sslSocket = (SSLSocket) sslSocketFactory.createSocket(
-                    rawSocket, address.url().host(), address.url().port(), true /* autoClose */);
+            sslSocket = (SSLSocket) sslSocketFactory.createSocket(rawSocket, address.url().host(), address.url().port(),
+                    true /* autoClose */);
 
             // 配置套接字的密码、TLS版本和扩展
             ConnectionSuite connectionSuite = connectionSelector.configureSecureSocket(sslSocket);
             if (connectionSuite.supportsTlsExtensions()) {
-                Platform.get().configureTlsExtensions(
-                        sslSocket, address.url().host(), address.protocols());
+                Platform.get().configureTlsExtensions(sslSocket, address.url().host(), address.protocols());
             }
 
             // 强制握手，否则抛出异常
@@ -355,11 +345,10 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
                 List<Certificate> peerCertificates = unverifiedHandshake.peerCertificates();
                 if (!peerCertificates.isEmpty()) {
                     X509Certificate cert = (X509Certificate) peerCertificates.get(0);
-                    throw new SSLPeerUnverifiedException(
-                            "Hostname " + address.url().host() + " not verified:"
-                                    + "\n    certificate: " + CertificatePinner.pin(cert)
-                                    + "\n    DN: " + cert.getSubjectX500Principal().getName()
-                                    + "\n    subjectAltNames: " + TrustAnyHostnameVerifier.allSubjectAltNames(cert));
+                    throw new SSLPeerUnverifiedException("Hostname " + address.url().host() + " not verified:"
+                            + "\n    certificate: " + CertificatePinner.pin(cert) + "\n    DN: "
+                            + cert.getSubjectX500Principal().getName() + "\n    subjectAltNames: "
+                            + TrustAnyHostnameVerifier.allSubjectAltNames(cert));
                 } else {
                     throw new SSLPeerUnverifiedException(
                             "Hostname " + address.url().host() + " not verified (no certificates)");
@@ -367,8 +356,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
             }
 
             // 检查所提供的证书是否满足
-            address.certificatePinner().check(address.url().host(),
-                    unverifiedHandshake.peerCertificates());
+            address.certificatePinner().check(address.url().host(), unverifiedHandshake.peerCertificates());
 
             // 成功!保存握手和ALPN协议
             String maybeProtocol = connectionSuite.supportsTlsExtensions()
@@ -378,12 +366,11 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
             source = IoKit.buffer(IoKit.source(socket));
             sink = IoKit.buffer(IoKit.sink(socket));
             handshake = unverifiedHandshake;
-            protocol = null != maybeProtocol
-                    ? Protocol.get(maybeProtocol)
-                    : Protocol.HTTP_1_1;
+            protocol = null != maybeProtocol ? Protocol.get(maybeProtocol) : Protocol.HTTP_1_1;
             success = true;
         } catch (AssertionError e) {
-            if (IoKit.isAndroidGetsocknameError(e)) throw new IOException(e);
+            if (IoKit.isAndroidGetsocknameError(e))
+                throw new IOException(e);
             throw e;
         } finally {
             if (null != sslSocket) {
@@ -396,8 +383,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
     }
 
     /**
-     * 要通过HTTP代理建立HTTPS连接，请发送未加密的连接
-     * 请求以创建代理连接。如果代理需要授权，则可能需要重试
+     * 要通过HTTP代理建立HTTPS连接，请发送未加密的连接 请求以创建代理连接。如果代理需要授权，则可能需要重试
      *
      * @param readTimeout   读取超时时间
      * @param writeTimeout  写入超时时间
@@ -405,8 +391,8 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
      * @param url           请求url
      * @throws IOException 异常
      */
-    private Request createTunnel(int readTimeout, int writeTimeout, Request tunnelRequest,
-                                 UnoUrl url) throws IOException {
+    private Request createTunnel(int readTimeout, int writeTimeout, Request tunnelRequest, UnoUrl url)
+            throws IOException {
         // 在每个SSL +代理连接的第一个消息对上创建SSL隧道
         String requestLine = "CONNECT " + Builder.hostHeader(url, true) + " HTTP/1.1";
         while (true) {
@@ -415,69 +401,54 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
             sink.timeout().timeout(writeTimeout, TimeUnit.MILLISECONDS);
             tunnelCodec.writeRequest(tunnelRequest.headers(), requestLine);
             tunnelCodec.finishRequest();
-            Response response = tunnelCodec.readResponseHeaders(false)
-                    .request(tunnelRequest)
-                    .build();
+            Response response = tunnelCodec.readResponseHeaders(false).request(tunnelRequest).build();
             tunnelCodec.skipConnectBody(response);
 
             switch (response.code()) {
-                case HTTP.HTTP_OK:
-                    if (!source.getBuffer().exhausted() || !sink.buffer().exhausted()) {
-                        throw new IOException("TLS tunnel buffered too many bytes!");
-                    }
-                    return null;
+            case HTTP.HTTP_OK:
+                if (!source.getBuffer().exhausted() || !sink.buffer().exhausted()) {
+                    throw new IOException("TLS tunnel buffered too many bytes!");
+                }
+                return null;
 
-                case HTTP.HTTP_PROXY_AUTH:
-                    tunnelRequest = route.address().proxyAuthenticator().authenticate(route, response);
-                    if (null == tunnelRequest) {
-                        throw new IOException("Failed to authenticate with proxy");
-                    }
+            case HTTP.HTTP_PROXY_AUTH:
+                tunnelRequest = route.address().proxyAuthenticator().authenticate(route, response);
+                if (null == tunnelRequest) {
+                    throw new IOException("Failed to authenticate with proxy");
+                }
 
-                    if ("close".equalsIgnoreCase(response.header(HTTP.CONNECTION))) {
-                        return tunnelRequest;
-                    }
-                    break;
+                if ("close".equalsIgnoreCase(response.header(HTTP.CONNECTION))) {
+                    return tunnelRequest;
+                }
+                break;
 
-                default:
-                    throw new IOException("Unexpected response code for CONNECT: " + response.code());
+            default:
+                throw new IOException("Unexpected response code for CONNECT: " + response.code());
             }
         }
     }
 
     /**
-     * 返回通过HTTP代理创建TLS隧道的请求。隧道请求中的所有内容
-     * 都以未加密的方式发送到代理服务器，因此隧道只包含最小的报头集。
-     * 这避免了向代理发送潜在的敏感数据(如HTTP cookie)
+     * 返回通过HTTP代理创建TLS隧道的请求。隧道请求中的所有内容 都以未加密的方式发送到代理服务器，因此隧道只包含最小的报头集。 这避免了向代理发送潜在的敏感数据(如HTTP cookie)
      *
      * @return the request
      * @throws IOException 异常
      */
     private Request createTunnelRequest() throws IOException {
-        Request proxyConnectRequest = new Request.Builder()
-                .url(route.address().url())
-                .method(HTTP.CONNECT, null)
+        Request proxyConnectRequest = new Request.Builder().url(route.address().url()).method(HTTP.CONNECT, null)
                 .header(HTTP.HOST, Builder.hostHeader(route.address().url(), true))
-                .header(HTTP.PROXY_CONNECTION, HTTP.KEEP_ALIVE)
-                .header(HTTP.USER_AGENT, "Httpd/" + Version.all())
+                .header(HTTP.PROXY_CONNECTION, HTTP.KEEP_ALIVE).header(HTTP.USER_AGENT, "Httpd/" + Version.all())
                 .build();
 
-        Response fakeAuthChallengeResponse = new Response.Builder()
-                .request(proxyConnectRequest)
-                .protocol(Protocol.HTTP_1_1)
-                .code(HTTP.HTTP_PROXY_AUTH)
-                .message("Preemptive Authenticate")
-                .body(Builder.EMPTY_RESPONSE)
-                .sentRequestAtMillis(-1L)
-                .receivedResponseAtMillis(-1L)
-                .header(HTTP.PROXY_AUTHENTICATE, HTTP.HTTPD_PREEMPTIVE)
-                .build();
+        Response fakeAuthChallengeResponse = new Response.Builder().request(proxyConnectRequest)
+                .protocol(Protocol.HTTP_1_1).code(HTTP.HTTP_PROXY_AUTH).message("Preemptive Authenticate")
+                .body(Builder.EMPTY_RESPONSE).sentRequestAtMillis(-1L).receivedResponseAtMillis(-1L)
+                .header(HTTP.PROXY_AUTHENTICATE, HTTP.HTTPD_PREEMPTIVE).build();
 
-        Request authenticatedRequest = route.address().proxyAuthenticator()
-                .authenticate(route, fakeAuthChallengeResponse);
+        Request authenticatedRequest = route.address().proxyAuthenticator().authenticate(route,
+                fakeAuthChallengeResponse);
 
-        return null != authenticatedRequest
-                ? authenticatedRequest
-                : proxyConnectRequest;
+        return null != authenticatedRequest ? authenticatedRequest : proxyConnectRequest;
     }
 
     /**
@@ -489,10 +460,12 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
      */
     boolean isEligible(Address address, List<Route> routes) {
         // 如果这个连接不接受新的流，我们就完成了
-        if (transmitters.size() >= allocationLimit || noNewExchanges) return false;
+        if (transmitters.size() >= allocationLimit || noNewExchanges)
+            return false;
 
         // 如果地址的非主机字段没有重叠，我们就完成了
-        if (!Internal.instance.equalsNonHost(this.route.address(), address)) return false;
+        if (!Internal.instance.equalsNonHost(this.route.address(), address))
+            return false;
 
         // 如果主机完全匹配，就完成了:这个连接可以携带地址
         if (address.url().host().equals(this.route().address().url().host())) {
@@ -505,11 +478,14 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         }
 
         // 2. 这些路由必须共享一个IP地址
-        if (routes == null || !routeMatchesAny(routes)) return false;
+        if (routes == null || !routeMatchesAny(routes))
+            return false;
 
         // 3. 此连接的服务器证书必须覆盖新主机
-        if (address.hostnameVerifier() != TrustAnyHostnameVerifier.INSTANCE) return false;
-        if (!supportsUrl(address.url())) return false;
+        if (address.hostnameVerifier() != TrustAnyHostnameVerifier.INSTANCE)
+            return false;
+        if (!supportsUrl(address.url()))
+            return false;
 
         // 4. 证书固定必须与主机匹配
         try {
@@ -522,16 +498,14 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
     }
 
     /**
-     * Returns true if this connection's route has the same address as any of {@code routes}. This
-     * requires us to have a DNS address for both hosts, which only happens after route planning. We
-     * can't coalesce connections that use a proxy, since proxies don't tell us the origin server's IP
-     * address.
+     * Returns true if this connection's route has the same address as any of {@code routes}. This requires us to have a
+     * DNS address for both hosts, which only happens after route planning. We can't coalesce connections that use a
+     * proxy, since proxies don't tell us the origin server's IP address.
      */
     private boolean routeMatchesAny(List<Route> candidates) {
         for (int i = 0, size = candidates.size(); i < size; i++) {
             Route candidate = candidates.get(i);
-            if (candidate.proxy().type() == Proxy.Type.DIRECT
-                    && route.proxy().type() == Proxy.Type.DIRECT
+            if (candidate.proxy().type() == Proxy.Type.DIRECT && route.proxy().type() == Proxy.Type.DIRECT
                     && route.socketAddress().equals(candidate.socketAddress())) {
                 return true;
             }
@@ -548,8 +522,8 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         // 主机不匹配,但是如果证书匹配，仍然是好的。
         if (!url.host().equals(route.address().url().host())) {
             // We have a host mismatch. But if the certificate matches, we're still good.
-            return null != handshake && TrustAnyHostnameVerifier.INSTANCE.verify(
-                    url.host(), (X509Certificate) handshake.peerCertificates().get(0));
+            return null != handshake && TrustAnyHostnameVerifier.INSTANCE.verify(url.host(),
+                    (X509Certificate) handshake.peerCertificates().get(0));
         }
 
         return true;
@@ -653,16 +627,16 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
     }
 
     /**
-     * Returns true if this is an HTTP/2 connection. Such connections can be used in multiple HTTP
-     * requests simultaneously.
+     * Returns true if this is an HTTP/2 connection. Such connections can be used in multiple HTTP requests
+     * simultaneously.
      */
     public boolean isMultiplexed() {
         return http2Connection != null;
     }
 
     /**
-     * Track a failure using this connection. This may prevent both the connection and its route from
-     * being used for future exchanges.
+     * Track a failure using this connection. This may prevent both the connection and its route from being used for
+     * future exchanges.
      */
     void trackFailure(IOException e) {
         assert (!Thread.holdsLock(connectionPool));
@@ -702,16 +676,9 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
 
     @Override
     public String toString() {
-        return "RealConnection{"
-                + route.address().url().host() + Symbol.COLON + route.address().url().port()
-                + ", proxy="
-                + route.proxy()
-                + " hostAddress="
-                + route.socketAddress()
-                + " cipherSuite="
-                + (null != handshake ? handshake.cipherSuite() : "none")
-                + " protocol="
-                + protocol
+        return "RealConnection{" + route.address().url().host() + Symbol.COLON + route.address().url().port()
+                + ", proxy=" + route.proxy() + " hostAddress=" + route.socketAddress() + " cipherSuite="
+                + (null != handshake ? handshake.cipherSuite() : "none") + " protocol=" + protocol
                 + Symbol.C_BRACE_RIGHT;
     }
 

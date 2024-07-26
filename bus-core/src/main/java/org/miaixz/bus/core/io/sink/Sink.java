@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.sink;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
@@ -35,9 +35,7 @@ import java.io.Flushable;
 import java.io.IOException;
 
 /**
- * 接收一个字节流 使用这个接口可以在任何地方编写数据
- * 需要:到网络、存储器或内存中的缓冲区 水槽可以分层
- * 转换接收到的数据,如压缩、加密、节流或添加协议框架
+ * 接收一个字节流 使用这个接口可以在任何地方编写数据 需要:到网络、存储器或内存中的缓冲区 水槽可以分层 转换接收到的数据,如压缩、加密、节流或添加协议框架
  * {@link BufferSink#outputStream}使一个接收器适应{@code outputStream}
  *
  * @author Kimi Liu
@@ -59,14 +57,13 @@ public interface Sink extends Closeable, Flushable {
     /**
      * Returns the timeout for this sink.
      *
-     * @return the {@link  Timeout}
+     * @return the {@link Timeout}
      */
     Timeout timeout();
 
     /**
-     * Pushes all buffered bytes to their final destination and releases the
-     * resources held by this sink. It is an error to write a closed sink. It is
-     * safe to close a sink more than once.
+     * Pushes all buffered bytes to their final destination and releases the resources held by this sink. It is an error
+     * to write a closed sink. It is safe to close a sink more than once.
      */
     @Override
     void close() throws IOException;

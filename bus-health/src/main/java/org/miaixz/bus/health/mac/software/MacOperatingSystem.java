@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.mac.software;
 
 import com.sun.jna.platform.mac.SystemB;
@@ -67,9 +67,9 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
             if (!SysctlKit.sysctl("kern.boottime", tv) || tv.tv_sec.longValue() == 0L) {
                 // Usually this works. If it doesn't, fall back to text parsing.
                 // Boot time will be the first consecutive string of digits.
-                BOOTTIME = Parsing.parseLongOrDefault(
-                        Executor.getFirstAnswer("sysctl -n kern.boottime").split(Symbol.COMMA)[0].replaceAll("\\D", Normal.EMPTY),
-                        System.currentTimeMillis() / 1000);
+                BOOTTIME = Parsing
+                        .parseLongOrDefault(Executor.getFirstAnswer("sysctl -n kern.boottime").split(Symbol.COMMA)[0]
+                                .replaceAll("\\D", Normal.EMPTY), System.currentTimeMillis() / 1000);
             } else {
                 // tv now points to a 64-bit timeval structure for boot time.
                 // First 4 bytes are seconds, second 4 bytes are microseconds
@@ -259,7 +259,8 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
         // Get running services
         List<OSService> services = new ArrayList<>();
         Set<String> running = new HashSet<>();
-        for (OSProcess p : getChildProcesses(1, OperatingSystem.ProcessFiltering.ALL_PROCESSES, OperatingSystem.ProcessSorting.PID_ASC, 0)) {
+        for (OSProcess p : getChildProcesses(1, OperatingSystem.ProcessFiltering.ALL_PROCESSES,
+                OperatingSystem.ProcessSorting.PID_ASC, 0)) {
             OSService s = new OSService(p.getName(), p.getProcessID(), OSService.State.RUNNING);
             services.add(s);
             running.add(p.getName());

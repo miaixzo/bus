@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.gitee;
 
 import com.alibaba.fastjson.JSONObject;
@@ -61,13 +61,10 @@ public class GiteeProvider extends AbstractProvider {
         String response = doPostAuthorizationCode(callback.getCode());
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         this.checkResponse(accessTokenObject);
-        return AccToken.builder()
-                .accessToken(accessTokenObject.getString("access_token"))
-                .refreshToken(accessTokenObject.getString("refresh_token"))
-                .scope(accessTokenObject.getString("scope"))
+        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
+                .refreshToken(accessTokenObject.getString("refresh_token")).scope(accessTokenObject.getString("scope"))
                 .tokenType(accessTokenObject.getString("token_type"))
-                .expireIn(accessTokenObject.getIntValue("expires_in"))
-                .build();
+                .expireIn(accessTokenObject.getIntValue("expires_in")).build();
     }
 
     @Override
@@ -75,21 +72,11 @@ public class GiteeProvider extends AbstractProvider {
         String userInfo = doGetUserInfo(accToken);
         JSONObject object = JSONObject.parseObject(userInfo);
         this.checkResponse(object);
-        return Material.builder()
-                .rawJson(object)
-                .uuid(object.getString("id"))
-                .username(object.getString("login"))
-                .avatar(object.getString("avatar_url"))
-                .blog(object.getString("blog"))
-                .nickname(object.getString("name"))
-                .company(object.getString("company"))
-                .location(object.getString("address"))
-                .email(object.getString("email"))
-                .remark(object.getString("bio"))
-                .gender(Gender.UNKNOWN)
-                .token(accToken)
-                .source(complex.toString())
-                .build();
+        return Material.builder().rawJson(object).uuid(object.getString("id")).username(object.getString("login"))
+                .avatar(object.getString("avatar_url")).blog(object.getString("blog"))
+                .nickname(object.getString("name")).company(object.getString("company"))
+                .location(object.getString("address")).email(object.getString("email")).remark(object.getString("bio"))
+                .gender(Gender.UNKNOWN).token(accToken).source(complex.toString()).build();
     }
 
     /**

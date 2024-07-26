@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.storage;
 
 import org.miaixz.bus.core.basic.entity.Message;
@@ -85,10 +85,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * @return 处理结果 {@link Message}
      */
     default Message list() {
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     /**

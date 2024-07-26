@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.GEMS_IMPS_01;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,22 +46,23 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.LowerRangeOfPixels:
-            case PrivateTag.LowerRangeOfPixels1:
-            case PrivateTag.UpperRangeOfPixels1:
-            case PrivateTag.LowerRangeOfPixels2:
-            case PrivateTag.UpperRangeOfPixels2:
-            case PrivateTag.LengthOfTotalHeaderInBytes:
-            case PrivateTag.AdvantageCompOverflow:
-            case PrivateTag.AdvantageCompUnderflow:
-                return VR.SL;
-            case PrivateTag.VersionOfHeaderStructure:
-                return VR.SS;
+
+        case PrivateTag.LowerRangeOfPixels:
+        case PrivateTag.LowerRangeOfPixels1:
+        case PrivateTag.UpperRangeOfPixels1:
+        case PrivateTag.LowerRangeOfPixels2:
+        case PrivateTag.UpperRangeOfPixels2:
+        case PrivateTag.LengthOfTotalHeaderInBytes:
+        case PrivateTag.AdvantageCompOverflow:
+        case PrivateTag.AdvantageCompUnderflow:
+            return VR.SL;
+        case PrivateTag.VersionOfHeaderStructure:
+            return VR.SS;
         }
         return VR.UN;
     }

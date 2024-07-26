@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_ECAT_FILE_INFO;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,14 +46,15 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.ECATMainHeader:
-            case PrivateTag.ECATImageSubheader:
-                return VR.OB;
+
+        case PrivateTag.ECATMainHeader:
+        case PrivateTag.ECATImageSubheader:
+            return VR.OB;
         }
         return VR.UN;
     }

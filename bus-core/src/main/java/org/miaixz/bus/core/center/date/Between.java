@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date;
 
 import org.miaixz.bus.core.center.date.culture.en.Units;
@@ -60,8 +60,7 @@ public class Between implements Serializable {
     private final Date end;
 
     /**
-     * 构造
-     * 在前的日期做为起始时间，在后的做为结束时间，间隔只保留绝对值正数
+     * 构造 在前的日期做为起始时间，在后的做为结束时间，间隔只保留绝对值正数
      *
      * @param begin 起始时间
      * @param end   结束时间
@@ -71,8 +70,7 @@ public class Between implements Serializable {
     }
 
     /**
-     * 构造
-     * 在前的日期做为起始时间，在后的做为结束时间
+     * 构造 在前的日期做为起始时间，在后的做为结束时间
      *
      * @param begin 起始时间
      * @param end   结束时间
@@ -93,8 +91,7 @@ public class Between implements Serializable {
     }
 
     /**
-     * 创建
-     * 在前的日期做为起始时间，在后的做为结束时间，间隔只保留绝对值正数
+     * 创建 在前的日期做为起始时间，在后的做为结束时间，间隔只保留绝对值正数
      *
      * @param begin 起始时间
      * @param end   结束时间
@@ -105,8 +102,7 @@ public class Between implements Serializable {
     }
 
     /**
-     * 创建
-     * 在前的日期做为起始时间，在后的做为结束时间，间隔只保留绝对值正数
+     * 创建 在前的日期做为起始时间，在后的做为结束时间，间隔只保留绝对值正数
      *
      * @param begin 起始时间
      * @param end   结束时间
@@ -118,8 +114,7 @@ public class Between implements Serializable {
     }
 
     /**
-     * 获取两个日期的差，如果结束时间早于开始时间，获取结果为负。
-     * 返回结果为{@link Duration}对象，通过调用toXXX方法返回相差单位
+     * 获取两个日期的差，如果结束时间早于开始时间，获取结果为负。 返回结果为{@link Duration}对象，通过调用toXXX方法返回相差单位
      *
      * @param startTimeInclude 开始时间（包含）
      * @param endTimeExclude   结束时间（不包含）
@@ -130,8 +125,7 @@ public class Between implements Serializable {
     }
 
     /**
-     * 获取两个日期的差，如果结束时间早于开始时间，获取结果为负
-     * 返回结果为{@link Duration}对象，通过调用toXXX方法返回相差单位
+     * 获取两个日期的差，如果结束时间早于开始时间，获取结果为负 返回结果为{@link Duration}对象，通过调用toXXX方法返回相差单位
      *
      * @param startTimeInclude 开始时间（包含）
      * @param endTimeExclude   结束时间（不包含）
@@ -143,8 +137,7 @@ public class Between implements Serializable {
     }
 
     /**
-     * 获取两个日期的差，如果结束时间早于开始时间，获取结果为负。
-     * 返回结果为时间差的long值
+     * 获取两个日期的差，如果结束时间早于开始时间，获取结果为负。 返回结果为时间差的long值
      *
      * @param startTimeInclude 开始时间（包括）
      * @param endTimeExclude   结束时间（不包括）
@@ -156,21 +149,20 @@ public class Between implements Serializable {
     }
 
     /**
-     * 获取两个日期的差，如果结束时间早于开始时间，获取结果为负
-     * 返回结果为时间差的long值
+     * 获取两个日期的差，如果结束时间早于开始时间，获取结果为负 返回结果为时间差的long值
      *
      * @param startTimeInclude 开始时间（包括）
      * @param endTimeExclude   结束时间（不包括）
      * @param unit             时间差单位
      * @return 时间差
      */
-    public static long between(final LocalDateTime startTimeInclude, final LocalDateTime endTimeExclude, final ChronoUnit unit) {
+    public static long between(final LocalDateTime startTimeInclude, final LocalDateTime endTimeExclude,
+            final ChronoUnit unit) {
         return between(startTimeInclude, endTimeExclude, unit);
     }
 
     /**
-     * 获取两个日期的表象时间差，如果结束时间早于开始时间，获取结果为负。
-     * 比如2011年2月1日，和2021年8月11日，日相差了10天，月相差6月
+     * 获取两个日期的表象时间差，如果结束时间早于开始时间，获取结果为负。 比如2011年2月1日，和2021年8月11日，日相差了10天，月相差6月
      *
      * @param startTimeInclude 开始时间（包括）
      * @param endTimeExclude   结束时间（不包括）
@@ -181,8 +173,7 @@ public class Between implements Serializable {
     }
 
     /**
-     * 判断两个日期相差的时长
-     * 返回 给定单位的时长差
+     * 判断两个日期相差的时长 返回 给定单位的时长差
      *
      * @param unit 相差的单位：相差 天{@link Units#DAY}、小时{@link Units#HOUR} 等
      * @return 时长差
@@ -193,8 +184,7 @@ public class Between implements Serializable {
     }
 
     /**
-     * 计算两个日期相差月数
-     * 在非重置情况下，如果起始日期的天大于结束日期的天，月数要少算1（不足1个月）
+     * 计算两个日期相差月数 在非重置情况下，如果起始日期的天大于结束日期的天，月数要少算1（不足1个月）
      *
      * @param isReset 是否重置时间为起始时间（重置天时分秒）
      * @return 相差月数
@@ -219,8 +209,7 @@ public class Between implements Serializable {
     }
 
     /**
-     * 计算两个日期相差年数
-     * 在非重置情况下，如果起始日期的月大于结束日期的月，年数要少算1（不足1年）
+     * 计算两个日期相差年数 在非重置情况下，如果起始日期的月大于结束日期的月，年数要少算1（不足1年）
      *
      * @param isReset 是否重置时间为起始时间（重置月天时分秒）
      * @return 相差年数
@@ -237,8 +226,7 @@ public class Between implements Serializable {
                 return result;
             } else if (beginMonthBase0 > endMonthBase0) {
                 return result - 1;
-            } else if (java.util.Calendar.FEBRUARY == beginMonthBase0
-                    && Calendar.isLastDayOfMonth(beginCal)
+            } else if (java.util.Calendar.FEBRUARY == beginMonthBase0 && Calendar.isLastDayOfMonth(beginCal)
                     && Calendar.isLastDayOfMonth(endCal)) {
                 // 考虑闰年的2月情况
                 // 两个日期都位于2月的最后一天，此时月数按照相等对待，此时都设置为1号

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.iterator.ArrayIterator;
@@ -192,8 +192,7 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 创建Map
-     * 传入抽象Map{@link AbstractMap}和{@link Map}类将默认创建{@link HashMap}
+     * 创建Map 传入抽象Map{@link AbstractMap}和{@link Map}类将默认创建{@link HashMap}
      *
      * @param <K>     map键类型
      * @param <V>     map值类型
@@ -205,8 +204,7 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 创建Map
-     * 传入抽象Map{@link AbstractMap}和{@link Map}类将默认创建{@link HashMap}
+     * 创建Map 传入抽象Map{@link AbstractMap}和{@link Map}类将默认创建{@link HashMap}
      *
      * @param <K>        map键类型
      * @param <V>        map值类型
@@ -269,15 +267,15 @@ public class MapKit extends MapGets {
     /**
      * 根据给定的键值对数组创建HashMap对象，传入参数必须为key,value,data,value...
      *
-     * <p>奇数参数必须为key，key最后会转换为String类型。</p>
-     * <p>偶数参数必须为value，可以为任意类型。</p>
+     * <p>
+     * 奇数参数必须为key，key最后会转换为String类型。
+     * </p>
+     * <p>
+     * 偶数参数必须为value，可以为任意类型。
+     * </p>
      *
      * <pre>
-     * LinkedHashMap map = MapKit.ofKvs(false,
-     * 	"RED", "#FF0000",
-     * 	"GREEN", "#00FF00",
-     * 	"BLUE", "#0000FF"
-     * );
+     * LinkedHashMap map = MapKit.ofKvs(false, "RED", "#FF0000", "GREEN", "#00FF00", "BLUE", "#0000FF");
      * </pre>
      *
      * @param isLinked      是否使用{@link LinkedHashMap}
@@ -359,11 +357,8 @@ public class MapKit extends MapGets {
      * </pre>
      *
      * <pre>
-     * Map&lt;Object, Object&gt; colorMap = MapKit.of(new String[][] {
-     *    { "RED", "#FF0000" },
-     *    { "GREEN", "#00FF00" },
-     *    { "BLUE", "#0000FF" }
-     * });
+     * Map&lt;Object, Object&gt; colorMap = MapKit
+     *         .of(new String[][] { { "RED", "#FF0000" }, { "GREEN", "#00FF00" }, { "BLUE", "#0000FF" } });
      * </pre>
      * <p>
      * 参考：commons-lang
@@ -405,17 +400,16 @@ public class MapKit extends MapGets {
                     }
                 }
             } else {
-                throw new IllegalArgumentException(StringKit.format("Array element {}, '{}', is not type of Map.Entry or Array or Iterable or Iterator", i, object));
+                throw new IllegalArgumentException(StringKit.format(
+                        "Array element {}, '{}', is not type of Map.Entry or Array or Iterable or Iterator", i,
+                        object));
             }
         }
         return map;
     }
 
     /**
-     * 行转列，合并相同的键，值合并为列表
-     * 将Map列表中相同key的值组成列表做为Map的value
-     * 是{@link #toMapList(Map)}的逆方法
-     * 比如传入数据：
+     * 行转列，合并相同的键，值合并为列表 将Map列表中相同key的值组成列表做为Map的value 是{@link #toMapList(Map)}的逆方法 比如传入数据：
      *
      * <pre>
      * [
@@ -449,8 +443,7 @@ public class MapKit extends MapGets {
 
         for (final Map<K, V> map : mapList) {
             for (final Entry<K, V> entry : map.entrySet()) {
-                resultMap.computeIfAbsent(entry.getKey(), k -> new ArrayList<>())
-                        .add(entry.getValue());
+                resultMap.computeIfAbsent(entry.getKey(), k -> new ArrayList<>()).add(entry.getValue());
             }
         }
 
@@ -458,9 +451,7 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 列转行。将Map中值列表分别按照其位置与key组成新的map。
-     * 是{@link #toListMap(Iterable)}的逆方法
-     * 比如传入数据：
+     * 列转行。将Map中值列表分别按照其位置与key组成新的map。 是{@link #toListMap(Iterable)}的逆方法 比如传入数据：
      *
      * <pre>
      * {
@@ -517,8 +508,7 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 将已知Map转换为key为驼峰风格的Map
-     * 如果KEY为非String类型，保留原值
+     * 将已知Map转换为key为驼峰风格的Map 如果KEY为非String类型，保留原值
      *
      * @param <K> key的类型
      * @param <V> value的类型
@@ -563,7 +553,8 @@ public class MapKit extends MapGets {
      * @param otherParams       其它附加参数字符串（例如密钥）
      * @return 连接字符串
      */
-    public static <K, V> String join(final Map<K, V> map, final String separator, final String keyValueSeparator, final String... otherParams) {
+    public static <K, V> String join(final Map<K, V> map, final String separator, final String keyValueSeparator,
+            final String... otherParams) {
         return join(map, separator, keyValueSeparator, false, otherParams);
     }
 
@@ -577,8 +568,8 @@ public class MapKit extends MapGets {
      * @param otherParams       其它附加参数字符串（例如密钥）
      * @return 签名字符串
      */
-    public static String sortJoin(final Map<?, ?> params, final String separator, final String keyValueSeparator, final boolean isIgnoreNull,
-                                  final String... otherParams) {
+    public static String sortJoin(final Map<?, ?> params, final String separator, final String keyValueSeparator,
+            final boolean isIgnoreNull, final String... otherParams) {
         return join(sort(params), separator, keyValueSeparator, isIgnoreNull, otherParams);
     }
 
@@ -593,7 +584,8 @@ public class MapKit extends MapGets {
      * @param otherParams       其它附加参数字符串（例如密钥）
      * @return 连接后的字符串
      */
-    public static <K, V> String joinIgnoreNull(final Map<K, V> map, final String separator, final String keyValueSeparator, final String... otherParams) {
+    public static <K, V> String joinIgnoreNull(final Map<K, V> map, final String separator,
+            final String keyValueSeparator, final String... otherParams) {
         return join(map, separator, keyValueSeparator, true, otherParams);
     }
 
@@ -610,8 +602,9 @@ public class MapKit extends MapGets {
      * @return 连接后的字符串，map和otherParams为空返回""
      */
     public static <K, V> String join(final Map<K, V> map, final String separator, final String keyValueSeparator,
-                                     final boolean isIgnoreNull, final String... otherParams) {
-        return join(map, separator, keyValueSeparator, (entry) -> !isIgnoreNull || entry.getKey() != null && entry.getValue() != null, otherParams);
+            final boolean isIgnoreNull, final String... otherParams) {
+        return join(map, separator, keyValueSeparator,
+                (entry) -> !isIgnoreNull || entry.getKey() != null && entry.getValue() != null, otherParams);
     }
 
     /**
@@ -627,19 +620,17 @@ public class MapKit extends MapGets {
      * @return 连接后的字符串，map和otherParams为空返回""
      */
     public static <K, V> String join(final Map<K, V> map, final String separator, final String keyValueSeparator,
-                                     final Predicate<Entry<K, V>> predicate, final String... otherParams) {
-        return MapJoiner.of(separator, keyValueSeparator)
-                .append(map, predicate)
-                .append(otherParams)
-                .toString();
+            final Predicate<Entry<K, V>> predicate, final String... otherParams) {
+        return MapJoiner.of(separator, keyValueSeparator).append(map, predicate).append(otherParams).toString();
     }
 
     /**
-     * 编辑Map
-     * 编辑过程通过传入的Editor实现来返回需要的元素内容，这个Editor实现可以实现以下功能：
+     * 编辑Map 编辑过程通过传入的Editor实现来返回需要的元素内容，这个Editor实现可以实现以下功能：
      *
      * <pre>
-     * 1、过滤出需要的对象，如果返回{@code null}表示这个元素对象抛弃
+     * 1、过滤出需要的对象，如果返回{@code
+     * null
+     * }表示这个元素对象抛弃
      * 2、修改元素对象，返回集合中为修改后的对象
      * </pre>
      *
@@ -669,10 +660,8 @@ public class MapKit extends MapGets {
         return map2;
     }
 
-
     /**
-     * 过滤
-     * 过滤过程通过传入的Editor实现来返回需要的元素内容，这个Filter实现可以实现以下功能：
+     * 过滤 过滤过程通过传入的Editor实现来返回需要的元素内容，这个Filter实现可以实现以下功能：
      *
      * <pre>
      * 1、过滤出需要的对象，如果返回null表示这个元素对象抛弃
@@ -691,10 +680,8 @@ public class MapKit extends MapGets {
         return edit(map, t -> predicate.test(t) ? t : null);
     }
 
-
     /**
-     * 通过biFunction自定义一个规则，此规则将原Map中的元素转换成新的元素，生成新的Map返回
-     * 变更过程通过传入的 {@link BiFunction} 实现来返回一个值可以为不同类型的 {@link Map}
+     * 通过biFunction自定义一个规则，此规则将原Map中的元素转换成新的元素，生成新的Map返回 变更过程通过传入的 {@link BiFunction} 实现来返回一个值可以为不同类型的 {@link Map}
      *
      * @param map        原有的map
      * @param biFunction {@code lambda}，参数包含{@code data},{@code value}，返回值会作为新的{@code value}
@@ -707,7 +694,8 @@ public class MapKit extends MapGets {
         if (null == map || null == biFunction) {
             return MapKit.newHashMap();
         }
-        return map.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, m -> biFunction.apply(m.getKey(), m.getValue())));
+        return map.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, m -> biFunction.apply(m.getKey(), m.getValue())));
     }
 
     /**
@@ -738,9 +726,7 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * Map的键和值互换
-     * 互换键值对不检查值是否有重复，如果有则后加入的元素替换先加入的元素
-     * 值的顺序在HashMap中不确定，所以谁覆盖谁也不确定，在有序的Map中按照先后顺序覆盖，保留最后的值
+     * Map的键和值互换 互换键值对不检查值是否有重复，如果有则后加入的元素替换先加入的元素 值的顺序在HashMap中不确定，所以谁覆盖谁也不确定，在有序的Map中按照先后顺序覆盖，保留最后的值
      *
      * @param <T> 键和值类型
      * @param map Map对象，键值类型必须一致
@@ -768,9 +754,7 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * Map的键和值互换
-     * 互换键值对不检查值是否有重复，如果有则后加入的元素替换先加入的元素
-     * 值的顺序在HashMap中不确定，所以谁覆盖谁也不确定，在有序的Map中按照先后顺序覆盖，保留最后的值
+     * Map的键和值互换 互换键值对不检查值是否有重复，如果有则后加入的元素替换先加入的元素 值的顺序在HashMap中不确定，所以谁覆盖谁也不确定，在有序的Map中按照先后顺序覆盖，保留最后的值
      *
      * @param <K> 键和值类型
      * @param <V> 键和值类型
@@ -831,7 +815,8 @@ public class MapKit extends MapGets {
      * @param isDesc 是否倒序
      * @return 排序后新的Map
      */
-    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(final Map<K, V> map, final boolean isDesc) {
+    public static <K, V extends Comparable<? super V>> Map<K, V> sortByValue(final Map<K, V> map,
+            final boolean isDesc) {
         final Map<K, V> result = new LinkedHashMap<>();
         Comparator<Entry<K, V>> entryComparator = Entry.comparingByValue();
         if (isDesc) {
@@ -842,8 +827,7 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 创建代理Map
-     * {@link MapProxy}对Map做一次包装，提供各种getXXX方法
+     * 创建代理Map {@link MapProxy}对Map做一次包装，提供各种getXXX方法
      *
      * @param map 被代理的Map
      * @return {@link MapProxy}
@@ -853,8 +837,7 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 创建Map包装类MapWrapper
-     * {@link MapWrapper}对Map做一次包装
+     * 创建Map包装类MapWrapper {@link MapWrapper}对Map做一次包装
      *
      * @param <K> key的类型
      * @param <V> value的类型
@@ -944,9 +927,7 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 重命名键
-     * 实现方式为移除然后重新put，当旧的key不存在直接返回
-     * 当新的key存在，抛出{@link IllegalArgumentException} 异常
+     * 重命名键 实现方式为移除然后重新put，当旧的key不存在直接返回 当新的key存在，抛出{@link IllegalArgumentException} 异常
      *
      * @param <K>    key的类型
      * @param <V>    value的类型
@@ -967,8 +948,7 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 去除Map中值为{@code null}的键值对
-     * 注意：此方法在传入的Map上直接修改。
+     * 去除Map中值为{@code null}的键值对 注意：此方法在传入的Map上直接修改。
      *
      * @param <K> key的类型
      * @param <V> value的类型
@@ -980,8 +960,7 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 去除Map中值为指定值的键值对
-     * 注意：此方法在传入的Map上直接修改。
+     * 去除Map中值为指定值的键值对 注意：此方法在传入的Map上直接修改。
      *
      * @param <K>   key的类型
      * @param <V>   value的类型
@@ -994,8 +973,7 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 去除Map中值为{@code null}的键值对
-     * 注意：此方法在传入的Map上直接修改。
+     * 去除Map中值为{@code null}的键值对 注意：此方法在传入的Map上直接修改。
      *
      * @param <K>       key的类型
      * @param <V>       value的类型
@@ -1079,8 +1057,7 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 从Map中获取指定键列表对应的值列表
-     * 如果key在map中不存在或key对应值为null，则返回值列表对应位置的值也为null
+     * 从Map中获取指定键列表对应的值列表 如果key在map中不存在或key对应值为null，则返回值列表对应位置的值也为null
      *
      * @param <K>  键类型
      * @param <V>  值类型
@@ -1093,8 +1070,7 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 从Map中获取指定键列表对应的值列表
-     * 如果key在map中不存在或key对应值为null，则返回值列表对应位置的值也为null
+     * 从Map中获取指定键列表对应的值列表 如果key在map中不存在或key对应值为null，则返回值列表对应位置的值也为null
      *
      * @param <K>  键类型
      * @param <V>  值类型
@@ -1107,8 +1083,7 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 从Map中获取指定键列表对应的值列表
-     * 如果key在map中不存在或key对应值为null，则返回值列表对应位置的值也为null
+     * 从Map中获取指定键列表对应的值列表 如果key在map中不存在或key对应值为null，则返回值列表对应位置的值也为null
      *
      * @param <K>  键类型
      * @param <V>  值类型
@@ -1125,8 +1100,7 @@ public class MapKit extends MapGets {
     }
 
     /**
-     * 将键和值转换为{@link AbstractMap.SimpleImmutableEntry}
-     * 返回的Entry不可变
+     * 将键和值转换为{@link AbstractMap.SimpleImmutableEntry} 返回的Entry不可变
      *
      * @param key   键
      * @param value 值
@@ -1149,9 +1123,8 @@ public class MapKit extends MapGets {
      * @return {@link AbstractMap.SimpleEntry} 或者 {@link AbstractMap.SimpleImmutableEntry}
      */
     public static <K, V> Map.Entry<K, V> entry(final K key, final V value, final boolean isImmutable) {
-        return isImmutable ?
-                new AbstractMap.SimpleImmutableEntry<>(key, value) :
-                new AbstractMap.SimpleEntry<>(key, value);
+        return isImmutable ? new AbstractMap.SimpleImmutableEntry<>(key, value)
+                : new AbstractMap.SimpleEntry<>(key, value);
     }
 
     /**
@@ -1164,7 +1137,8 @@ public class MapKit extends MapGets {
      * @param <V>       值类型
      * @return HashMap
      */
-    public static <K, V> Map<K, V> putAll(final Map<K, V> resultMap, final Iterable<V> iterable, final Function<V, K> keyMapper) {
+    public static <K, V> Map<K, V> putAll(final Map<K, V> resultMap, final Iterable<V> iterable,
+            final Function<V, K> keyMapper) {
         return putAll(resultMap, iterable, keyMapper, Function.identity());
     }
 
@@ -1180,7 +1154,8 @@ public class MapKit extends MapGets {
      * @param <V>         值类型
      * @return HashMap
      */
-    public static <T, K, V> Map<K, V> putAll(final Map<K, V> resultMap, final Iterable<T> iterable, final Function<T, K> keyMapper, final Function<T, V> valueMapper) {
+    public static <T, K, V> Map<K, V> putAll(final Map<K, V> resultMap, final Iterable<T> iterable,
+            final Function<T, K> keyMapper, final Function<T, V> valueMapper) {
         return putAll(resultMap, IteratorKit.getIter(iterable), keyMapper, valueMapper);
     }
 
@@ -1194,7 +1169,8 @@ public class MapKit extends MapGets {
      * @param <V>       值类型
      * @return HashMap
      */
-    public static <K, V> Map<K, V> putAll(final Map<K, V> resultMap, final Iterator<V> iterator, final Function<V, K> keyMapper) {
+    public static <K, V> Map<K, V> putAll(final Map<K, V> resultMap, final Iterator<V> iterator,
+            final Function<V, K> keyMapper) {
         return putAll(resultMap, iterator, keyMapper, Function.identity());
     }
 
@@ -1210,7 +1186,8 @@ public class MapKit extends MapGets {
      * @param <V>         值类型
      * @return HashMap
      */
-    public static <T, K, V> Map<K, V> putAll(Map<K, V> resultMap, final Iterator<T> iterator, final Function<T, K> keyMapper, final Function<T, V> valueMapper) {
+    public static <T, K, V> Map<K, V> putAll(Map<K, V> resultMap, final Iterator<T> iterator,
+            final Function<T, K> keyMapper, final Function<T, V> valueMapper) {
         if (null == resultMap) {
             resultMap = MapKit.newHashMap();
         }
@@ -1249,9 +1226,8 @@ public class MapKit extends MapGets {
 
     /**
      * 如果 data 对应的 value 不存在，则使用获取 mappingFunction 重新计算后的值，并保存为该 data 的 value，否则返回 value。
-     * 解决使用ConcurrentHashMap.computeIfAbsent导致的死循环问题
-     * A temporary workaround for Java 8 specific performance issue JDK-8161372 .
-     * This class should be removed once we drop Java 8 support.
+     * 解决使用ConcurrentHashMap.computeIfAbsent导致的死循环问题 A temporary workaround for Java 8 specific performance issue
+     * JDK-8161372 . This class should be removed once we drop Java 8 support.
      *
      * <p>
      * 注意此方法只能用于JDK8
@@ -1263,9 +1239,11 @@ public class MapKit extends MapGets {
      * @param key             键
      * @param mappingFunction 值计算函数
      * @return 值
-     * @see <a href="https://bugs.openjdk.java.net/browse/JDK-8161372">https://bugs.openjdk.java.net/browse/JDK-8161372</a>
+     * @see <a href=
+     *      "https://bugs.openjdk.java.net/browse/JDK-8161372">https://bugs.openjdk.java.net/browse/JDK-8161372</a>
      */
-    public static <K, V> V computeIfAbsentForJdk8(final Map<K, V> map, final K key, final Function<? super K, ? extends V> mappingFunction) {
+    public static <K, V> V computeIfAbsentForJdk8(final Map<K, V> map, final K key,
+            final Function<? super K, ? extends V> mappingFunction) {
         V value = map.get(key);
         if (null == value) {
             value = mappingFunction.apply(key);
@@ -1277,7 +1255,7 @@ public class MapKit extends MapGets {
             // 如果旧值不存在，说明赋值成功，返回当前值
 
             // Dubbo的解决方式，判空后调用依旧无法解决死循环问题
-            //value = map.computeIfAbsent(data, mappingFunction);
+            // value = map.computeIfAbsent(data, mappingFunction);
         }
         return value;
     }

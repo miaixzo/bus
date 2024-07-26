@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.tree;
 
 import org.miaixz.bus.core.Builder;
@@ -195,7 +195,6 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
         return append(map);
     }
 
-
     /**
      * 重置Builder，实现复用
      *
@@ -225,12 +224,7 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
      * 构建树列表，没有顶层节点，例如：
      *
      * <pre>
-     * -用户管理
-     *  -用户管理
-     *    +用户添加
-     * - 部门管理
-     *  -部门管理
-     *    +部门添加
+     * -用户管理 - 用户管理 + 用户添加 - 部门管理 - 部门管理 + 部门添加
      * </pre>
      *
      * @return 树列表

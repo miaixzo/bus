@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.logger.magic;
 
 import org.miaixz.bus.core.xyz.ExceptionKit;
@@ -35,8 +35,7 @@ import org.miaixz.bus.logger.Provider;
 import java.io.Serializable;
 
 /**
- * 抽象日志类
- * 实现了一些通用的接口
+ * 抽象日志类 实现了一些通用的接口
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,22 +48,21 @@ public abstract class AbstractProvider implements Provider, Serializable {
 
     protected String name;
 
-
     @Override
     public boolean isEnabled(final Level level) {
         switch (level) {
-            case TRACE:
-                return isTraceEnabled();
-            case DEBUG:
-                return isDebugEnabled();
-            case INFO:
-                return isInfoEnabled();
-            case WARN:
-                return isWarnEnabled();
-            case ERROR:
-                return isErrorEnabled();
-            default:
-                throw new Error(StringKit.format("Can not identify level: {}", level));
+        case TRACE:
+            return isTraceEnabled();
+        case DEBUG:
+            return isDebugEnabled();
+        case INFO:
+            return isInfoEnabled();
+        case WARN:
+            return isWarnEnabled();
+        case ERROR:
+            return isErrorEnabled();
+        default:
+            throw new Error(StringKit.format("Can not identify level: {}", level));
         }
     }
 

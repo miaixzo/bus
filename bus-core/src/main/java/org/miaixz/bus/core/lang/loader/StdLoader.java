@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.loader;
 
 import org.miaixz.bus.core.io.resource.Resource;
@@ -55,7 +55,8 @@ public class StdLoader extends ResourceLoader implements Loader {
     private final ClassLoader classLoader;
 
     public StdLoader() {
-        this(null != Thread.currentThread().getContextClassLoader() ? Thread.currentThread().getContextClassLoader() : ClassLoader.getSystemClassLoader());
+        this(null != Thread.currentThread().getContextClassLoader() ? Thread.currentThread().getContextClassLoader()
+                : ClassLoader.getSystemClassLoader());
     }
 
     public StdLoader(ClassLoader classLoader) {
@@ -66,8 +67,10 @@ public class StdLoader extends ResourceLoader implements Loader {
     }
 
     public Enumeration<Resource> load(String path, boolean recursively, Filter filter) throws IOException {
-        while (path.startsWith(Symbol.SLASH)) path = path.substring(1);
-        while (path.endsWith(Symbol.SLASH)) path = path.substring(0, path.length() - 1);
+        while (path.startsWith(Symbol.SLASH))
+            path = path.substring(1);
+        while (path.endsWith(Symbol.SLASH))
+            path = path.substring(0, path.length() - 1);
         return new Enumerator(classLoader, path, recursively, null != filter ? filter : Filters.ALWAYS);
     }
 
@@ -99,7 +102,8 @@ public class StdLoader extends ResourceLoader implements Loader {
                     if (url.getProtocol().equalsIgnoreCase(Normal.URL_PROTOCOL_JAR)) {
                         String spec = url.toString();
                         int index = spec.lastIndexOf(Normal.JAR_URL_SEPARATOR);
-                        if (index < 0) continue;
+                        if (index < 0)
+                            continue;
                         set.add(new URL(url, spec.substring(0, index + Normal.JAR_URL_SEPARATOR.length())));
                     }
                 }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http;
 
 import org.miaixz.bus.core.center.regex.Pattern;
@@ -79,25 +79,13 @@ public class Builder {
     /**
      * 如果我们未能以非标准格式解析日期，请依次尝试这些格式.
      */
-    public static final String[] BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS = new String[]{
-            "EEE, dd MMM yyyy HH:mm:ss zzz",
-            "EEEE, dd-MMM-yy HH:mm:ss zzz",
-            "EEE MMM d HH:mm:ss yyyy",
-            "EEE, dd-MMM-yyyy HH:mm:ss z",
-            "EEE, dd-MMM-yyyy HH-mm-ss z",
-            "EEE, dd MMM yy HH:mm:ss z",
-            "EEE dd-MMM-yyyy HH:mm:ss z",
-            "EEE dd MMM yyyy HH:mm:ss z",
-            "EEE dd-MMM-yyyy HH-mm-ss z",
-            "EEE dd-MMM-yy HH:mm:ss z",
-            "EEE dd MMM yy HH:mm:ss z",
-            "EEE,dd-MMM-yy HH:mm:ss z",
-            "EEE,dd-MMM-yyyy HH:mm:ss z",
-            "EEE, dd-MM-yyyy HH:mm:ss z",
-            "EEE MMM d yyyy HH:mm:ss z",
-    };
-    public static final DateFormat[] BROWSER_COMPATIBLE_DATE_FORMATS =
-            new DateFormat[BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS.length];
+    public static final String[] BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS = new String[] {
+            "EEE, dd MMM yyyy HH:mm:ss zzz", "EEEE, dd-MMM-yy HH:mm:ss zzz", "EEE MMM d HH:mm:ss yyyy",
+            "EEE, dd-MMM-yyyy HH:mm:ss z", "EEE, dd-MMM-yyyy HH-mm-ss z", "EEE, dd MMM yy HH:mm:ss z",
+            "EEE dd-MMM-yyyy HH:mm:ss z", "EEE dd MMM yyyy HH:mm:ss z", "EEE dd-MMM-yyyy HH-mm-ss z",
+            "EEE dd-MMM-yy HH:mm:ss z", "EEE dd MMM yy HH:mm:ss z", "EEE,dd-MMM-yy HH:mm:ss z",
+            "EEE,dd-MMM-yyyy HH:mm:ss z", "EEE, dd-MM-yyyy HH:mm:ss z", "EEE MMM d yyyy HH:mm:ss z", };
+    public static final DateFormat[] BROWSER_COMPATIBLE_DATE_FORMATS = new DateFormat[BROWSER_COMPATIBLE_DATE_FORMAT_STRINGS.length];
     public static final String CONNECT = "CONNECT";
     public static final String CONNECTED = "CONNECTED";
     public static final String SEND = "SEND";
@@ -110,26 +98,24 @@ public class Builder {
     /**
      * Byte order marks.
      */
-    private static final SegmentBuffer UNICODE_BOMS = SegmentBuffer.of(
-            ByteString.decodeHex("efbbbf"),   // UTF-8
-            ByteString.decodeHex("feff"),     // UTF-16BE
-            ByteString.decodeHex("fffe"),     // UTF-16LE
+    private static final SegmentBuffer UNICODE_BOMS = SegmentBuffer.of(ByteString.decodeHex("efbbbf"), // UTF-8
+            ByteString.decodeHex("feff"), // UTF-16BE
+            ByteString.decodeHex("fffe"), // UTF-16LE
             ByteString.decodeHex("0000ffff"), // UTF-32BE
-            ByteString.decodeHex("ffff0000")  // UTF-32LE
+            ByteString.decodeHex("ffff0000") // UTF-32LE
     );
     private static final Method addSuppressedExceptionMethod;
     /**
-     * Most websites serve cookies in the blessed format. Eagerly create the parser to ensure such
-     * cookies are on the fast path.
+     * Most websites serve cookies in the blessed format. Eagerly create the parser to ensure such cookies are on the
+     * fast path.
      */
-    private static final ThreadLocal<DateFormat> STANDARD_DATE_FORMAT =
-            ThreadLocal.withInitial(() -> {
-                // Date format specified by RFC 7231 section 7.1.1.1.
-                DateFormat rfc1123 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
-                rfc1123.setLenient(false);
-                rfc1123.setTimeZone(UTC);
-                return rfc1123;
-            });
+    private static final ThreadLocal<DateFormat> STANDARD_DATE_FORMAT = ThreadLocal.withInitial(() -> {
+        // Date format specified by RFC 7231 section 7.1.1.1.
+        DateFormat rfc1123 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss 'GMT'", Locale.US);
+        rfc1123.setLenient(false);
+        rfc1123.setTimeZone(UTC);
+        return rfc1123;
+    });
 
     static {
         Method m;
@@ -161,9 +147,8 @@ public class Builder {
     }
 
     /**
-     * Attempts to exhaust {@code source}, returning true if successful. This is useful when reading a
-     * complete source is helpful, such as when doing so completes a cache body or frees a socket
-     * connection for reuse.
+     * Attempts to exhaust {@code source}, returning true if successful. This is useful when reading a complete source
+     * is helpful, such as when doing so completes a cache body or frees a socket connection for reuse.
      */
     public static boolean discard(Source source, int timeout, TimeUnit timeUnit) {
         try {
@@ -174,13 +159,12 @@ public class Builder {
     }
 
     /**
-     * Reads until {@code in} is exhausted or the deadline has been reached. This is careful to not
-     * extend the deadline if one exists already.
+     * Reads until {@code in} is exhausted or the deadline has been reached. This is careful to not extend the deadline
+     * if one exists already.
      */
     public static boolean skipAll(Source source, int duration, TimeUnit timeUnit) throws IOException {
         long now = System.nanoTime();
-        long originalDuration = source.timeout().hasDeadline()
-                ? source.timeout().deadlineNanoTime() - now
+        long originalDuration = source.timeout().hasDeadline() ? source.timeout().deadlineNanoTime() - now
                 : Long.MAX_VALUE;
         source.timeout().deadlineNanoTime(now + Math.min(originalDuration, timeUnit.toNanos(duration)));
         try {
@@ -211,9 +195,7 @@ public class Builder {
      * Returns an immutable copy of {@code map}.
      */
     public static <K, V> Map<K, V> immutableMap(Map<K, V> map) {
-        return map.isEmpty()
-                ? Collections.emptyMap()
-                : Collections.unmodifiableMap(new LinkedHashMap<>(map));
+        return map.isEmpty() ? Collections.emptyMap() : Collections.unmodifiableMap(new LinkedHashMap<>(map));
     }
 
     /**
@@ -235,8 +217,7 @@ public class Builder {
      * Returns an array containing only elements found in {@code first} and also in {@code
      * second}. The returned elements are in the same order as in {@code first}.
      */
-    public static String[] intersect(
-            Comparator<? super String> comparator, String[] first, String[] second) {
+    public static String[] intersect(Comparator<? super String> comparator, String[] first, String[] second) {
         List<String> result = new ArrayList<>();
         for (String a : first) {
             for (String b : second) {
@@ -250,13 +231,11 @@ public class Builder {
     }
 
     /**
-     * Returns true if there is an element in {@code first} that is also in {@code second}. This
-     * method terminates if any intersection is found. The sizes of both arguments are assumed to be
-     * so small, and the likelihood of an intersection so great, that it is not worth the CPU cost of
-     * sorting or the memory cost of hashing.
+     * Returns true if there is an element in {@code first} that is also in {@code second}. This method terminates if
+     * any intersection is found. The sizes of both arguments are assumed to be so small, and the likelihood of an
+     * intersection so great, that it is not worth the CPU cost of sorting or the memory cost of hashing.
      */
-    public static boolean nonEmptyIntersection(
-            Comparator<String> comparator, String[] first, String[] second) {
+    public static boolean nonEmptyIntersection(Comparator<String> comparator, String[] first, String[] second) {
         if (first == null || second == null || first.length == 0 || second.length == 0) {
             return false;
         }
@@ -271,17 +250,15 @@ public class Builder {
     }
 
     public static String hostHeader(UnoUrl url, boolean includeDefaultPort) {
-        String host = url.host().contains(Symbol.COLON)
-                ? "[" + url.host() + "]"
-                : url.host();
-        return includeDefaultPort || url.port() != UnoUrl.defaultPort(url.scheme())
-                ? host + Symbol.COLON + url.port()
+        String host = url.host().contains(Symbol.COLON) ? "[" + url.host() + "]" : url.host();
+        return includeDefaultPort || url.port() != UnoUrl.defaultPort(url.scheme()) ? host + Symbol.COLON + url.port()
                 : host;
     }
 
     public static int indexOf(Comparator<String> comparator, String[] array, String value) {
         for (int i = 0, size = array.length; i < size; i++) {
-            if (comparator.compare(array[i], value) == 0) return i;
+            if (comparator.compare(array[i], value) == 0)
+                return i;
         }
         return -1;
     }
@@ -300,34 +277,33 @@ public class Builder {
     public static int skipLeadingAsciiWhitespace(String input, int pos, int limit) {
         for (int i = pos; i < limit; i++) {
             switch (input.charAt(i)) {
-                case Symbol.C_HT:
-                case Symbol.C_LF:
-                case '\f':
-                case Symbol.C_CR:
-                case Symbol.C_SPACE:
-                    continue;
-                default:
-                    return i;
+            case Symbol.C_HT:
+            case Symbol.C_LF:
+            case '\f':
+            case Symbol.C_CR:
+            case Symbol.C_SPACE:
+                continue;
+            default:
+                return i;
             }
         }
         return limit;
     }
 
     /**
-     * Decrements {@code limit} until {@code input[limit - 1]} is not ASCII whitespace. Stops at
-     * {@code pos}.
+     * Decrements {@code limit} until {@code input[limit - 1]} is not ASCII whitespace. Stops at {@code pos}.
      */
     public static int skipTrailingAsciiWhitespace(String input, int pos, int limit) {
         for (int i = limit - 1; i >= pos; i--) {
             switch (input.charAt(i)) {
-                case Symbol.C_HT:
-                case Symbol.C_LF:
-                case '\f':
-                case Symbol.C_CR:
-                case Symbol.C_SPACE:
-                    continue;
-                default:
-                    return i + 1;
+            case Symbol.C_HT:
+            case Symbol.C_LF:
+            case '\f':
+            case Symbol.C_CR:
+            case Symbol.C_SPACE:
+                continue;
+            default:
+                return i + 1;
             }
         }
         return pos;
@@ -348,18 +324,20 @@ public class Builder {
      */
     public static int delimiterOffset(String input, int pos, int limit, String delimiters) {
         for (int i = pos; i < limit; i++) {
-            if (delimiters.indexOf(input.charAt(i)) != -1) return i;
+            if (delimiters.indexOf(input.charAt(i)) != -1)
+                return i;
         }
         return limit;
     }
 
     /**
-     * Returns the index of the first character in {@code input} that is {@code delimiter}. Returns
-     * limit if there is no such character.
+     * Returns the index of the first character in {@code input} that is {@code delimiter}. Returns limit if there is no
+     * such character.
      */
     public static int delimiterOffset(String input, int pos, int limit, char delimiter) {
         for (int i = pos; i < limit; i++) {
-            if (input.charAt(i) == delimiter) return i;
+            if (input.charAt(i) == delimiter)
+                return i;
         }
         return limit;
     }
@@ -367,10 +345,9 @@ public class Builder {
     /**
      * If {@code host} is an IP address, this returns the IP address in canonical form.
      * <p>
-     * Otherwise this performs IDN ToASCII encoding and canonicalize the result to lowercase. For
-     * example this converts {@code ☃.net} to {@code xn--n3h.net}, and {@code WwW.GoOgLe.cOm} to
-     * {@code www.google.com}. {@code null} will be returned if the host cannot be ToASCII encoded or
-     * if the result contains unsupported ASCII characters.
+     * Otherwise this performs IDN ToASCII encoding and canonicalize the result to lowercase. For example this converts
+     * {@code ☃.net} to {@code xn--n3h.net}, and {@code WwW.GoOgLe.cOm} to {@code www.google.com}. {@code null} will be
+     * returned if the host cannot be ToASCII encoded or if the result contains unsupported ASCII characters.
      */
     public static String canonicalizeHost(String host) {
         // If the input contains a :, it’s an IPv6 address.
@@ -378,16 +355,20 @@ public class Builder {
             InetAddress inetAddress = host.startsWith("[") && host.endsWith("]")
                     ? decodeIpv6(host, 1, host.length() - 1)
                     : decodeIpv6(host, 0, host.length());
-            if (inetAddress == null) return null;
+            if (inetAddress == null)
+                return null;
             byte[] address = inetAddress.getAddress();
-            if (address.length == 16) return inet6AddressToAscii(address);
-            if (address.length == 4) return inetAddress.getHostAddress(); // An IPv4-mapped IPv6 address.
+            if (address.length == 16)
+                return inet6AddressToAscii(address);
+            if (address.length == 4)
+                return inetAddress.getHostAddress(); // An IPv4-mapped IPv6 address.
             throw new AssertionError("Invalid IPv6 address: '" + host + "'");
         }
 
         try {
             String result = IDN.toASCII(host).toLowerCase(Locale.US);
-            if (result.isEmpty()) return null;
+            if (result.isEmpty())
+                return null;
 
             if (containsInvalidHostnameAsciiCodes(result)) {
                 return null;
@@ -413,9 +394,8 @@ public class Builder {
     }
 
     /**
-     * Returns the index of the first character in {@code input} that is either a control character
-     * (like {@code \u0000 or \n}) or a non-ASCII character. Returns -1 if {@code input} has no such
-     * characters.
+     * Returns the index of the first character in {@code input} that is either a control character (like
+     * {@code \u0000 or \n}) or a non-ASCII character. Returns -1 if {@code input} has no such characters.
      */
     public static int indexOfControlOrNonAscii(String input) {
         for (int i = 0, length = input.length(); i < length; i++) {
@@ -436,36 +416,43 @@ public class Builder {
 
     public static Charset bomAwareCharset(BufferSource source, Charset charset) throws IOException {
         switch (source.select(UNICODE_BOMS)) {
-            case 0:
-                return org.miaixz.bus.core.lang.Charset.UTF_8;
-            case 1:
-                return org.miaixz.bus.core.lang.Charset.UTF_16_BE;
-            case 2:
-                return org.miaixz.bus.core.lang.Charset.UTF_16_LE;
-            case 3:
-                return org.miaixz.bus.core.lang.Charset.UTF_32_BE;
-            case 4:
-                return org.miaixz.bus.core.lang.Charset.UTF_32_LE;
-            case -1:
-                return charset;
-            default:
-                throw new AssertionError();
+        case 0:
+            return org.miaixz.bus.core.lang.Charset.UTF_8;
+        case 1:
+            return org.miaixz.bus.core.lang.Charset.UTF_16_BE;
+        case 2:
+            return org.miaixz.bus.core.lang.Charset.UTF_16_LE;
+        case 3:
+            return org.miaixz.bus.core.lang.Charset.UTF_32_BE;
+        case 4:
+            return org.miaixz.bus.core.lang.Charset.UTF_32_LE;
+        case -1:
+            return charset;
+        default:
+            throw new AssertionError();
         }
     }
 
     public static int checkDuration(String name, long duration, TimeUnit unit) {
-        if (duration < 0) throw new IllegalArgumentException(name + " < 0");
-        if (null == unit) throw new NullPointerException("unit == null");
+        if (duration < 0)
+            throw new IllegalArgumentException(name + " < 0");
+        if (null == unit)
+            throw new NullPointerException("unit == null");
         long millis = unit.toMillis(duration);
-        if (millis > Integer.MAX_VALUE) throw new IllegalArgumentException(name + " too large.");
-        if (millis == 0 && duration > 0) throw new IllegalArgumentException(name + " too small.");
+        if (millis > Integer.MAX_VALUE)
+            throw new IllegalArgumentException(name + " too large.");
+        if (millis == 0 && duration > 0)
+            throw new IllegalArgumentException(name + " too small.");
         return (int) millis;
     }
 
     public static int decodeHexDigit(char c) {
-        if (c >= Symbol.C_ZERO && c <= Symbol.C_NINE) return c - Symbol.C_ZERO;
-        if (c >= 'a' && c <= 'f') return c - 'a' + 10;
-        if (c >= 'A' && c <= 'F') return c - 'A' + 10;
+        if (c >= Symbol.C_ZERO && c <= Symbol.C_NINE)
+            return c - Symbol.C_ZERO;
+        if (c >= 'a' && c <= 'f')
+            return c - 'a' + 10;
+        if (c >= 'A' && c <= 'F')
+            return c - 'A' + 10;
         return -1;
     }
 
@@ -478,21 +465,25 @@ public class Builder {
         int compress = -1;
         int groupOffset = -1;
 
-        for (int i = pos; i < limit; ) {
-            if (b == address.length) return null;
+        for (int i = pos; i < limit;) {
+            if (b == address.length)
+                return null;
 
             if (i + 2 <= limit && input.regionMatches(i, Symbol.COLON + Symbol.COLON, 0, 2)) {
-                if (compress != -1) return null;
+                if (compress != -1)
+                    return null;
                 i += 2;
                 b += 2;
                 compress = b;
-                if (i == limit) break;
+                if (i == limit)
+                    break;
             } else if (b != 0) {
                 if (input.regionMatches(i, Symbol.COLON, 0, 1)) {
                     i++;
                 } else if (input.regionMatches(i, Symbol.DOT, 0, 1)) {
                     // If we see a '.', rewind to the beginning of the previous group and parse as IPv4.
-                    if (!decodeIpv4Suffix(input, groupOffset, limit, address, b - 2)) return null;
+                    if (!decodeIpv4Suffix(input, groupOffset, limit, address, b - 2))
+                        return null;
                     b += 2;
                     break;
                 } else {
@@ -505,18 +496,21 @@ public class Builder {
             for (; i < limit; i++) {
                 char c = input.charAt(i);
                 int hexDigit = decodeHexDigit(c);
-                if (hexDigit == -1) break;
+                if (hexDigit == -1)
+                    break;
                 value = (value << 4) + hexDigit;
             }
             int groupLength = i - groupOffset;
-            if (groupLength == 0 || groupLength > 4) return null;
+            if (groupLength == 0 || groupLength > 4)
+                return null;
 
             address[b++] = (byte) ((value >>> 8) & 0xff);
             address[b++] = (byte) (value & 0xff);
         }
 
         if (b != address.length) {
-            if (compress == -1) return null;
+            if (compress == -1)
+                return null;
             System.arraycopy(address, compress, address, address.length - (b - compress), b - compress);
             Arrays.fill(address, compress, compress + (address.length - b), (byte) 0);
         }
@@ -531,16 +525,17 @@ public class Builder {
     /**
      * Decodes an IPv4 address suffix of an IPv6 address, like 1111::5555:6666:192.168.0.1.
      */
-    private static boolean decodeIpv4Suffix(
-            String input, int pos, int limit, byte[] address, int addressOffset) {
+    private static boolean decodeIpv4Suffix(String input, int pos, int limit, byte[] address, int addressOffset) {
         int b = addressOffset;
 
-        for (int i = pos; i < limit; ) {
-            if (b == address.length) return false;
+        for (int i = pos; i < limit;) {
+            if (b == address.length)
+                return false;
 
             // Read a delimiter.
             if (b != addressOffset) {
-                if (input.charAt(i) != Symbol.C_DOT) return false;
+                if (input.charAt(i) != Symbol.C_DOT)
+                    return false;
                 i++;
             }
 
@@ -548,18 +543,23 @@ public class Builder {
             int groupOffset = i;
             for (; i < limit; i++) {
                 char c = input.charAt(i);
-                if (c < Symbol.C_ZERO || c > Symbol.C_NINE) break;
-                if (value == 0 && groupOffset != i) return false;
+                if (c < Symbol.C_ZERO || c > Symbol.C_NINE)
+                    break;
+                if (value == 0 && groupOffset != i)
+                    return false;
                 value = (value * 10) + c - Symbol.C_ZERO;
-                if (value > 255) return false;
+                if (value > 255)
+                    return false;
             }
             int groupLength = i - groupOffset;
-            if (groupLength == 0) return false;
+            if (groupLength == 0)
+                return false;
 
             address[b++] = (byte) value;
         }
 
-        if (b != addressOffset + 4) return false;
+        if (b != addressOffset + 4)
+            return false;
 
         return true;
     }
@@ -583,13 +583,15 @@ public class Builder {
         }
 
         Buffer result = new Buffer();
-        for (int i = 0; i < address.length; ) {
+        for (int i = 0; i < address.length;) {
             if (i == longestRunOffset) {
                 result.writeByte(Symbol.C_COLON);
                 i += longestRunLength;
-                if (i == Normal._16) result.writeByte(Symbol.C_COLON);
+                if (i == Normal._16)
+                    result.writeByte(Symbol.C_COLON);
             } else {
-                if (i > 0) result.writeByte(Symbol.C_COLON);
+                if (i > 0)
+                    result.writeByte(Symbol.C_COLON);
                 int group = (address[i] & 0xff) << 8 | address[i + 1] & 0xff;
                 result.writeHexadecimalUnsignedLong(group);
                 i += 2;
@@ -618,9 +620,7 @@ public class Builder {
      * Returns true if an HTTP request for {@code a} and {@code b} can reuse a connection.
      */
     public static boolean sameConnection(UnoUrl a, UnoUrl b) {
-        return a.host().equals(b.host())
-                && a.port() == b.port()
-                && a.scheme().equals(b.scheme());
+        return a.host().equals(b.host()) && a.port() == b.port() && a.scheme().equals(b.scheme());
     }
 
     /**

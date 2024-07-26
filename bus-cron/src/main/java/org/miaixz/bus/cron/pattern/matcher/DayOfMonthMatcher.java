@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cron.pattern.matcher;
 
 import org.miaixz.bus.core.center.date.culture.en.Month;
@@ -32,8 +32,7 @@ import org.miaixz.bus.core.center.date.culture.en.Month;
 import java.util.List;
 
 /**
- * 每月第几天匹配
- * 考虑每月的天数不同，且存在闰年情况，日匹配单独使用
+ * 每月第几天匹配 考虑每月的天数不同，且存在闰年情况，日匹配单独使用
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -75,11 +74,10 @@ public class DayOfMonthMatcher extends BoolArrayMatcher {
     }
 
     /**
-     * 获取指定值之后的匹配值，也可以是指定值本身
-     * 如果表达式中存在最后一天（如使用"L"），则：
+     * 获取指定值之后的匹配值，也可以是指定值本身 如果表达式中存在最后一天（如使用"L"），则：
      * <ul>
-     *     <li>4月、6月、9月、11月最多匹配到30日</li>
-     *     <li>4月闰年匹配到29日，非闰年28日</li>
+     * <li>4月、6月、9月、11月最多匹配到30日</li>
+     * <li>4月闰年匹配到29日，非闰年28日</li>
      * </ul>
      *
      * @param value      指定的值
@@ -127,6 +125,7 @@ public class DayOfMonthMatcher extends BoolArrayMatcher {
 
     /**
      * 是否匹配本月最后一天，规则如下：
+     * 
      * <pre>
      * 1、闰年2月匹配是否为29
      * 2、其它月份是否匹配最后一天的日期（可能为30或者31）

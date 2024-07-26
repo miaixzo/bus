@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -43,10 +43,8 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * 到源服务器的连接的规范。对于简单的连接，这是服务器的主机名和端口。如果显式请求了
- * 代理(或显式请求了{@linkplain Proxy#NO_PROXY no proxy})则还包括该代理信息
- * 对于安全连接，该地址还包括SSL套接字工厂、主机名验证器和证书
- * 共享相同的{@code Address}的HTTP请求也可能共享相同的{@link Connection}
+ * 到源服务器的连接的规范。对于简单的连接，这是服务器的主机名和端口。如果显式请求了 代理(或显式请求了{@linkplain Proxy#NO_PROXY no proxy})则还包括该代理信息
+ * 对于安全连接，该地址还包括SSL套接字工厂、主机名验证器和证书 共享相同的{@code Address}的HTTP请求也可能共享相同的{@link Connection}
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -96,20 +94,18 @@ public class Address {
     final CertificatePinner certificatePinner;
 
     public Address(String uriHost, int uriPort, DnsX dns, SocketFactory socketFactory,
-                   SSLSocketFactory sslSocketFactory, HostnameVerifier hostnameVerifier,
-                   CertificatePinner certificatePinner, Authenticator proxyAuthenticator,
-                   Proxy proxy, List<Protocol> protocols, List<ConnectionSuite> connectionSuites,
-                   ProxySelector proxySelector) {
-        this.url = new UnoUrl.Builder()
-                .scheme(null != sslSocketFactory ? Protocol.HTTPS.name : Protocol.HTTP.name)
-                .host(uriHost)
-                .port(uriPort)
-                .build();
+            SSLSocketFactory sslSocketFactory, HostnameVerifier hostnameVerifier, CertificatePinner certificatePinner,
+            Authenticator proxyAuthenticator, Proxy proxy, List<Protocol> protocols,
+            List<ConnectionSuite> connectionSuites, ProxySelector proxySelector) {
+        this.url = new UnoUrl.Builder().scheme(null != sslSocketFactory ? Protocol.HTTPS.name : Protocol.HTTP.name)
+                .host(uriHost).port(uriPort).build();
 
-        if (null == dns) throw new NullPointerException("dns == null");
+        if (null == dns)
+            throw new NullPointerException("dns == null");
         this.dns = dns;
 
-        if (null == socketFactory) throw new NullPointerException("socketFactory == null");
+        if (null == socketFactory)
+            throw new NullPointerException("socketFactory == null");
         this.socketFactory = socketFactory;
 
         if (null == proxyAuthenticator) {
@@ -117,13 +113,16 @@ public class Address {
         }
         this.proxyAuthenticator = proxyAuthenticator;
 
-        if (null == protocols) throw new NullPointerException("protocols == null");
+        if (null == protocols)
+            throw new NullPointerException("protocols == null");
         this.protocols = Builder.immutableList(protocols);
 
-        if (null == connectionSuites) throw new NullPointerException("connectionSpecs == null");
+        if (null == connectionSuites)
+            throw new NullPointerException("connectionSpecs == null");
         this.connectionSuites = Builder.immutableList(connectionSuites);
 
-        if (null == proxySelector) throw new NullPointerException("proxySelector == null");
+        if (null == proxySelector)
+            throw new NullPointerException("proxySelector == null");
         this.proxySelector = proxySelector;
 
         this.proxy = proxy;
@@ -133,8 +132,8 @@ public class Address {
     }
 
     /**
-     * Returns a URL with the hostname and port of the origin server. The path, query, and fragment of
-     * this URL are always empty, since they are not significant for planning a route.
+     * Returns a URL with the hostname and port of the origin server. The path, query, and fragment of this URL are
+     * always empty, since they are not significant for planning a route.
      */
     public UnoUrl url() {
         return url;
@@ -162,8 +161,8 @@ public class Address {
     }
 
     /**
-     * Returns the protocols the client supports. This method always returns a non-null list that
-     * contains minimally {@link Protocol#HTTP_1_1}.
+     * Returns the protocols the client supports. This method always returns a non-null list that contains minimally
+     * {@link Protocol#HTTP_1_1}.
      */
     public List<Protocol> protocols() {
         return protocols;
@@ -174,16 +173,16 @@ public class Address {
     }
 
     /**
-     * Returns this address's proxy selector. Only used if the proxy is null. If none of this
-     * selector's proxies are reachable, a direct connection will be attempted.
+     * Returns this address's proxy selector. Only used if the proxy is null. If none of this selector's proxies are
+     * reachable, a direct connection will be attempted.
      */
     public ProxySelector proxySelector() {
         return proxySelector;
     }
 
     /**
-     * Returns this address's explicitly-specified HTTP proxy, or null to delegate to the {@linkplain
-     * #proxySelector proxy selector}.
+     * Returns this address's explicitly-specified HTTP proxy, or null to delegate to the {@linkplain #proxySelector
+     * proxy selector}.
      */
     public Proxy proxy() {
         return proxy;
@@ -212,9 +211,7 @@ public class Address {
 
     @Override
     public boolean equals(Object other) {
-        return other instanceof Address
-                && url.equals(((Address) other).url)
-                && equalsNonHost((Address) other);
+        return other instanceof Address && url.equals(((Address) other).url) && equalsNonHost((Address) other);
     }
 
     @Override
@@ -234,12 +231,9 @@ public class Address {
     }
 
     boolean equalsNonHost(Address that) {
-        return this.dns.equals(that.dns)
-                && this.proxyAuthenticator.equals(that.proxyAuthenticator)
-                && this.protocols.equals(that.protocols)
-                && this.connectionSuites.equals(that.connectionSuites)
-                && this.proxySelector.equals(that.proxySelector)
-                && Objects.equals(this.proxy, that.proxy)
+        return this.dns.equals(that.dns) && this.proxyAuthenticator.equals(that.proxyAuthenticator)
+                && this.protocols.equals(that.protocols) && this.connectionSuites.equals(that.connectionSuites)
+                && this.proxySelector.equals(that.proxySelector) && Objects.equals(this.proxy, that.proxy)
                 && Objects.equals(this.sslSocketFactory, that.sslSocketFactory)
                 && Objects.equals(this.hostnameVerifier, that.hostnameVerifier)
                 && Objects.equals(this.certificatePinner, that.certificatePinner)
@@ -248,9 +242,8 @@ public class Address {
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder()
-                .append("Address{")
-                .append(url.host()).append(Symbol.COLON).append(url.port());
+        StringBuilder result = new StringBuilder().append("Address{").append(url.host()).append(Symbol.COLON)
+                .append(url.port());
 
         if (null != proxy) {
             result.append(", proxy=").append(proxy);

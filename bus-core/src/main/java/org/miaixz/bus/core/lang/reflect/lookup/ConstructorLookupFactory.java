@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.reflect.lookup;
 
 import java.lang.invoke.MethodHandles;
@@ -61,7 +61,7 @@ public class ConstructorLookupFactory implements LookupFactory {
         try {
             constructor = MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
         } catch (final NoSuchMethodException e) {
-            //可能是jdk8 以下版本
+            // 可能是jdk8 以下版本
             throw new IllegalStateException(
                     "There is no 'Lookup(Class, int)' constructor in java.lang.invoke.MethodHandles.", e);
         }

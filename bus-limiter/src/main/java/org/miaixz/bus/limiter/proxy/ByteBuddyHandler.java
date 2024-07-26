@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.limiter.proxy;
 
 import org.miaixz.bus.core.xyz.MethodKit;
@@ -68,7 +68,8 @@ public class ByteBuddyHandler implements InvocationHandler {
             realMethod = methodCache.get(name);
         } else {
             // 获取bean的方法且进行缓存到此对象
-            realMethod = MethodKit.getMethod(byteBuddyProxy.bean.getClass(), method.getName(), method.getParameterTypes());
+            realMethod = MethodKit.getMethod(byteBuddyProxy.bean.getClass(), method.getName(),
+                    method.getParameterTypes());
             methodCache.put(name, realMethod);
         }
 

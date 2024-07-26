@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.validate.magic.annotation;
 
 import org.miaixz.bus.validate.Builder;
@@ -44,7 +44,7 @@ import java.lang.annotation.*;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
+@Target({ ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD })
 @Complex(value = Builder._LENGTH, clazz = LengthMatcher.class)
 public @interface Length {
 
@@ -65,9 +65,7 @@ public @interface Length {
     int max() default Integer.MAX_VALUE;
 
     /**
-     * 如果长度为0,判断能否通过校验
-     * 默认为false
-     * true：表示长度为零,默认通过校验；false：表示长度为0,仍然要进行长度验证
+     * 如果长度为0,判断能否通过校验 默认为false true：表示长度为零,默认通过校验；false：表示长度为0,仍然要进行长度验证
      *
      * @return the boolean
      */

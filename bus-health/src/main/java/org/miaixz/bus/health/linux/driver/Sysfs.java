@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.linux.driver;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -195,7 +195,8 @@ public final class Sysfs {
     public static String queryBiosVersion(String biosRevision) {
         final String biosVersion = Builder.getStringFromFile(SysPath.DMI_ID + "bios_version").trim();
         if (!biosVersion.isEmpty()) {
-            return biosVersion + (StringKit.isBlank(biosRevision) ? Normal.EMPTY : " (revision " + biosRevision + Symbol.PARENTHESE_RIGHT);
+            return biosVersion + (StringKit.isBlank(biosRevision) ? Normal.EMPTY
+                    : " (revision " + biosRevision + Symbol.PARENTHESE_RIGHT);
         }
         return null;
     }

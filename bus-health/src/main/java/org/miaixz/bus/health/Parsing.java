@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -62,14 +62,18 @@ public final class Parsing {
     /**
      * Used for matching
      */
-    private static final java.util.regex.Pattern HERTZ_PATTERN = java.util.regex.Pattern.compile("(\\d+(.\\d+)?) ?([kKMGT]?Hz).*");
-    private static final java.util.regex.Pattern BYTES_PATTERN = java.util.regex.Pattern.compile("(\\d+) ?([kKMGT]?B?).*");
-    private static final java.util.regex.Pattern UNITS_PATTERN = java.util.regex.Pattern.compile("(\\d+(.\\d+)?)[\\s]?([kKMGT])?");
+    private static final java.util.regex.Pattern HERTZ_PATTERN = java.util.regex.Pattern
+            .compile("(\\d+(.\\d+)?) ?([kKMGT]?Hz).*");
+    private static final java.util.regex.Pattern BYTES_PATTERN = java.util.regex.Pattern
+            .compile("(\\d+) ?([kKMGT]?B?).*");
+    private static final java.util.regex.Pattern UNITS_PATTERN = java.util.regex.Pattern
+            .compile("(\\d+(.\\d+)?)[\\s]?([kKMGT])?");
 
     /**
      * java.util.regex.Pattern for [dd-[hh:[mm:[ss[.sss]]]]]
      */
-    private static final java.util.regex.Pattern DHMS = java.util.regex.Pattern.compile("(?:(\\d+)-)?(?:(\\d+):)??(?:(\\d+):)?(\\d+)(?:\\.(\\d+))?");
+    private static final java.util.regex.Pattern DHMS = java.util.regex.Pattern
+            .compile("(?:(\\d+)-)?(?:(\\d+):)??(?:(\\d+):)?(\\d+)(?:\\.(\\d+))?");
     /**
      * java.util.regex.Pattern for a UUID
      */
@@ -83,11 +87,13 @@ public final class Parsing {
     /**
      * java.util.regex.Pattern for Linux lspci machine readable
      */
-    private static final java.util.regex.Pattern LSPCI_MACHINE_READABLE = java.util.regex.Pattern.compile("(.+)\\s\\[(.*?)\\]");
+    private static final java.util.regex.Pattern LSPCI_MACHINE_READABLE = java.util.regex.Pattern
+            .compile("(.+)\\s\\[(.*?)\\]");
     /**
      * java.util.regex.Pattern for Linux lspci memory
      */
-    private static final java.util.regex.Pattern LSPCI_MEMORY_SIZE = java.util.regex.Pattern.compile(".+\\s\\[size=(\\d+)([kKMGT])\\]");
+    private static final java.util.regex.Pattern LSPCI_MEMORY_SIZE = java.util.regex.Pattern
+            .compile(".+\\s\\[size=(\\d+)([kKMGT])\\]");
     /**
      * Hertz related variables.
      */
@@ -103,10 +109,10 @@ public final class Parsing {
     private static final long EPOCH_DIFF = 11_644_473_600_000L;
     private static final int TZ_OFFSET = TimeZone.getDefault().getOffset(System.currentTimeMillis());
     // Fast decimal exponentiation: pow(10,y) --> POWERS_OF_10[y]
-    private static final long[] POWERS_OF_TEN = {1L, 10L, 100L, 1_000L, 10_000L, 100_000L, 1_000_000L, 10_000_000L,
+    private static final long[] POWERS_OF_TEN = { 1L, 10L, 100L, 1_000L, 10_000L, 100_000L, 1_000_000L, 10_000_000L,
             100_000_000L, 1_000_000_000L, 10_000_000_000L, 100_000_000_000L, 1_000_000_000_000L, 10_000_000_000_000L,
             100_000_000_000_000L, 1_000_000_000_000_000L, 10_000_000_000_000_000L, 100_000_000_000_000_000L,
-            1_000_000_000_000_000_000L};
+            1_000_000_000_000_000_000L };
     // Format returned by WMI for DateTime
     private static final DateTimeFormatter CIM_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddHHmmss.SSSSSSZZZZZ",
             Locale.US);
@@ -216,7 +222,7 @@ public final class Parsing {
      * @param text   The string to be parsed
      * @param length Length of the returned array.
      * @return A byte array of specified length, with each of the first length characters converted to a byte. If length
-     * is longer than the provided string length, will be filled with zeroes.
+     *         is longer than the provided string length, will be filled with zeroes.
      */
     public static byte[] asciiStringToByteArray(String text, int length) {
         return Arrays.copyOf(text.getBytes(Charset.US_ASCII), length);
@@ -247,7 +253,7 @@ public final class Parsing {
     /**
      * Convert a string to an integer representation.
      *
-     * @param text  A human readable ASCII string
+     * @param text A human readable ASCII string
      * @param size Number of characters to convert to the long. May not exceed 8.
      * @return An integer representing the string where each character is treated as a byte
      */
@@ -299,7 +305,7 @@ public final class Parsing {
      * @param size   Number of bytes to convert to the float. May not exceed 8.
      * @param fpBits Number of bits representing the decimal
      * @return A float; the integer portion representing the byte array as an integer shifted by the bits specified in
-     * fpBits; with the remaining bits used as a decimal
+     *         fpBits; with the remaining bits used as a decimal
      */
     public static float byteArrayToFloat(byte[] bytes, int size, int fpBits) {
         return byteArrayToLong(bytes, size) / (float) (1 << fpBits);
@@ -401,7 +407,7 @@ public final class Parsing {
      * @param s           The string to parse
      * @param defaultLong The value to return if parsing fails
      * @return The parsed long containing the same 64 bits that an unsigned long would contain (which may produce a
-     * negative value)
+     *         negative value)
      */
     public static long parseUnsignedLongOrDefault(String s, long defaultLong) {
         try {
@@ -533,7 +539,8 @@ public final class Parsing {
      */
     public static int getNthIntValue(String line, int n) {
         // Split the string by non-digits,
-        String[] split = Pattern.NOT_NUMBERS_PATTERN.split(Pattern.WITH_NOT_NUMBERS_PATTERN.matcher(line).replaceFirst(Normal.EMPTY));
+        String[] split = Pattern.NOT_NUMBERS_PATTERN
+                .split(Pattern.WITH_NOT_NUMBERS_PATTERN.matcher(line).replaceFirst(Normal.EMPTY));
         if (split.length >= n) {
             return parseIntOrDefault(split[n - 1], 0);
         }
@@ -779,7 +786,7 @@ public final class Parsing {
      *
      * @param cimDateTime A non-null DateTime String in CIM date format, e.g., <code>20160513072950.782000-420</code>
      * @return The parsed {@link java.time.OffsetDateTime} if the string is parsable, otherwise
-     * {@link Builder#UNIX_EPOCH}.
+     *         {@link Builder#UNIX_EPOCH}.
      */
     public static OffsetDateTime parseCimDateTimeToOffset(String cimDateTime) {
         // Keep first 22 characters: digits, decimal, and + or - sign
@@ -793,8 +800,8 @@ public final class Parsing {
                     cimDateTime.substring(0, 22) + offsetAsLocalTime.format(DateTimeFormatter.ISO_LOCAL_TIME),
                     Parsing.CIM_FORMAT);
         } catch (IndexOutOfBoundsException // if cimDate not 22+ chars
-                 | NumberFormatException // if TZ minutes doesn't parse
-                 | DateTimeParseException e) {
+                | NumberFormatException // if TZ minutes doesn't parse
+                | DateTimeParseException e) {
             Logger.trace("Unable to parse {} to CIM DateTime.", cimDateTime);
             return Builder.UNIX_EPOCH;
         }
@@ -830,26 +837,26 @@ public final class Parsing {
             mem[0] = matcher.group(1);
             mem[1] = matcher.group(3);
         } else {
-            mem = new String[]{count};
+            mem = new String[] { count };
         }
 
         double number = Parsing.parseDoubleOrDefault(mem[0], 0L);
         if (mem.length == 2 && mem[1] != null && mem[1].length() >= 1) {
             switch (mem[1].charAt(0)) {
-                case 'T':
-                    number *= 1_000_000_000_000L;
-                    break;
-                case 'G':
-                    number *= 1_000_000_000L;
-                    break;
-                case 'M':
-                    number *= 1_000_000L;
-                    break;
-                case 'K':
-                case 'k':
-                    number *= 1_000L;
-                    break;
-                default:
+            case 'T':
+                number *= 1_000_000_000_000L;
+                break;
+            case 'G':
+                number *= 1_000_000_000L;
+                break;
+            case 'M':
+                number *= 1_000_000L;
+                break;
+            case 'K':
+            case 'k':
+                number *= 1_000L;
+                break;
+            default:
             }
         }
         return (long) number;
@@ -876,21 +883,21 @@ public final class Parsing {
         long capacity = Parsing.parseLongOrDefault(mem[0], 0L);
         if (mem.length == 2 && mem[1].length() > 1) {
             switch (mem[1].charAt(0)) {
-                case 'T':
-                    capacity <<= 40;
-                    break;
-                case 'G':
-                    capacity <<= 30;
-                    break;
-                case 'M':
-                    capacity <<= 20;
-                    break;
-                case 'K':
-                case 'k':
-                    capacity <<= 10;
-                    break;
-                default:
-                    break;
+            case 'T':
+                capacity <<= 40;
+                break;
+            case 'G':
+                capacity <<= 30;
+                break;
+            case 'M':
+                capacity <<= 20;
+                break;
+            case 'K':
+            case 'k':
+                capacity <<= 10;
+                break;
+            default:
+                break;
             }
         }
         return capacity;
@@ -901,8 +908,8 @@ public final class Parsing {
      *
      * @param deviceId The DeviceID
      * @return A {@link Triplet} where the first element is the vendor ID, the second element is the product ID, and the
-     * third element is either a serial number or empty string if parsing was successful, or {@code null}
-     * otherwise
+     *         third element is either a serial number or empty string if parsing was successful, or {@code null}
+     *         otherwise
      */
     public static Triplet<String, String, String> parseDeviceIdToVendorProductSerial(String deviceId) {
         Matcher m = VENDOR_PRODUCT_ID_SERIAL.matcher(deviceId);
@@ -910,7 +917,8 @@ public final class Parsing {
             String vendorId = "0x" + m.group(1).toLowerCase(Locale.ROOT);
             String productId = "0x" + m.group(2).toLowerCase(Locale.ROOT);
             String serial = m.group(4);
-            return Triplet.of(vendorId, productId, !m.group(3).isEmpty() || serial.contains(Symbol.AND) ? Normal.EMPTY : serial);
+            return Triplet.of(vendorId, productId,
+                    !m.group(3).isEmpty() || serial.contains(Symbol.AND) ? Normal.EMPTY : serial);
         }
         return null;
     }
@@ -1245,8 +1253,8 @@ public final class Parsing {
      * @param values A delimited String to be parsed into the map
      * @param delim  the delimiter to use
      * @return An EnumMap populated in order using the delimited String values. If there are fewer String values than
-     * enum values, the later enum values are not mapped. The final enum value will contain the remainder of the
-     * String, including excess delimiters.
+     *         enum values, the later enum values are not mapped. The final enum value will contain the remainder of the
+     *         String, including excess delimiters.
      */
     public static <K extends Enum<K>> Map<K, String> stringToEnumMap(Class<K> clazz, String values, char delim) {
         EnumMap<K, String> map = new EnumMap<>(clazz);

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.safety.provider;
 
 import org.miaixz.bus.shade.safety.Complex;
@@ -35,7 +35,8 @@ import org.miaixz.bus.shade.safety.Complex;
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class EntryEncryptorProvider<E> extends WrappedEncryptorProvider implements EncryptorProvider, Complex<E> {
+public abstract class EntryEncryptorProvider<E> extends WrappedEncryptorProvider
+        implements EncryptorProvider, Complex<E> {
 
     protected final Complex<E> filter;
     protected final NopEncryptorProvider xNopEncryptor = new NopEncryptorProvider();

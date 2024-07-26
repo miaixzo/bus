@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.queue;
 
 import org.miaixz.bus.core.center.BoundedCollection;
@@ -32,8 +32,7 @@ import org.miaixz.bus.core.center.BoundedCollection;
 import java.util.*;
 
 /**
- * 有界优先队列
- * 按照给定的排序规则，排序元素，当队列满时，按照给定的排序规则淘汰末尾元素（去除末尾元素）
+ * 有界优先队列 按照给定的排序规则，排序元素，当队列满时，按照给定的排序规则淘汰末尾元素（去除末尾元素）
  *
  * @param <E> 成员类型
  * @author Kimi Liu
@@ -110,8 +109,7 @@ public class BoundedPriorityQueue<E> extends PriorityQueue<E> implements Bounded
     }
 
     /**
-     * 添加多个元素
-     * 参数为集合的情况请使用{@link PriorityQueue#addAll}
+     * 添加多个元素 参数为集合的情况请使用{@link PriorityQueue#addAll}
      *
      * @param c 元素数组
      * @return 是否发生改变

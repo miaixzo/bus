@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.screw.dialect.oracle;
 
 import lombok.Getter;
@@ -117,9 +117,7 @@ public class OracleColumn implements Column {
     @MappingField(value = "IS_GENERATEDCOLUMN")
     private String isGeneratedColumn;
     /**
-     * 指示此列是否自动增加
-     * YES --- 如果该列自动增加
-     * NO --- 如果该列不自动增加
+     * 指示此列是否自动增加 YES --- 如果该列自动增加 NO --- 如果该列不自动增加
      */
     @MappingField(value = "IS_AUTOINCREMENT")
     private String isAutoIncrement;
@@ -159,12 +157,8 @@ public class OracleColumn implements Column {
     @MappingField(value = "TYPE_NAME")
     private String typeName;
     /**
-     * 列表示给定列的指定列大小。
-     * 对于数值数据，这是最大精度。
-     * 对于字符数据，这是字符长度。
-     * 对于日期时间数据类型，这是 String 表示形式的字符长度（假定允许的最大小数秒组件的精度）。
-     * 对于二进制数据，这是字节长度。
-     * 对于 ROWID 数据类型，这是字节长度。对于列大小不适用的数据类型，则返回 Null。
+     * 列表示给定列的指定列大小。 对于数值数据，这是最大精度。 对于字符数据，这是字符长度。 对于日期时间数据类型，这是 String 表示形式的字符长度（假定允许的最大小数秒组件的精度）。 对于二进制数据，这是字节长度。 对于
+     * ROWID 数据类型，这是字节长度。对于列大小不适用的数据类型，则返回 Null。
      */
     @MappingField(value = "COLUMN_SIZE")
     private String columnSize;

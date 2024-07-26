@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.pinterest;
 
 import com.alibaba.fastjson.JSONObject;
@@ -66,10 +66,8 @@ public class PinterestProvider extends AbstractProvider {
         String response = doPostAuthorizationCode(callback.getCode());
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         this.checkResponse(accessTokenObject);
-        return AccToken.builder()
-                .accessToken(accessTokenObject.getString("access_token"))
-                .tokenType(accessTokenObject.getString("token_type"))
-                .build();
+        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
+                .tokenType(accessTokenObject.getString("token_type")).build();
     }
 
     @Override
@@ -80,16 +78,10 @@ public class PinterestProvider extends AbstractProvider {
         JSONObject object = JSONObject.parseObject(response);
         this.checkResponse(object);
         JSONObject userObj = object.getJSONObject("data");
-        return Material.builder()
-                .rawJson(userObj)
-                .uuid(userObj.getString("id"))
-                .avatar(getAvatarUrl(userObj))
+        return Material.builder().rawJson(userObj).uuid(userObj.getString("id")).avatar(getAvatarUrl(userObj))
                 .username(userObj.getString("username"))
                 .nickname(userObj.getString("first_name") + Symbol.SPACE + userObj.getString("last_name"))
-                .gender(Gender.UNKNOWN)
-                .remark(userObj.getString("bio"))
-                .token(accToken)
-                .source(complex.toString())
+                .gender(Gender.UNKNOWN).remark(userObj.getString("bio")).token(accToken).source(complex.toString())
                 .build();
     }
 
@@ -110,9 +102,8 @@ public class PinterestProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(Symbol.COMMA, false, this.getDefaultScopes(PinterestScope.values())))
-                .build();
+        return Builder.fromUrl(super.authorize(state)).queryParam("scope",
+                this.getScopes(Symbol.COMMA, false, this.getDefaultScopes(PinterestScope.values()))).build();
     }
 
     /**
@@ -123,10 +114,8 @@ public class PinterestProvider extends AbstractProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(complex.userInfo())
-                .queryParam("access_token", accToken.getAccessToken())
-                .queryParam("fields", "id,username,first_name,last_name,bio,image")
-                .build();
+        return Builder.fromUrl(complex.userInfo()).queryParam("access_token", accToken.getAccessToken())
+                .queryParam("fields", "id,username,first_name,last_name,bio,image").build();
     }
 
     /**

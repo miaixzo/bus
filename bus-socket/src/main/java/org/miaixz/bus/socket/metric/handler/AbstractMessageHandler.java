@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org sandao and other contributors.             ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket.metric.handler;
 
 import org.miaixz.bus.socket.*;
@@ -100,7 +100,7 @@ public abstract class AbstractMessageHandler<T> implements Handler<T>, Monitor {
      * 处理接收到的消息
      *
      * @param session 会话
-     * @param data     消息信息
+     * @param data    消息信息
      * @see Handler#process(Session, Object)
      */
     public abstract void process0(Session session, T data);
@@ -119,8 +119,8 @@ public abstract class AbstractMessageHandler<T> implements Handler<T>, Monitor {
     }
 
     /**
-     * @param session 会话
-     * @param status 状态
+     * @param session   会话
+     * @param status    状态
      * @param throwable 异常
      * @see #stateEvent(Session, Status, Throwable)
      */

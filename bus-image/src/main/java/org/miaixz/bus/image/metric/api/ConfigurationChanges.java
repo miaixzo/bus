@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.api;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -50,7 +50,8 @@ public class ConfigurationChanges {
         return diffs != null && diffs.isVerbose() ? obj : null;
     }
 
-    public static ModifiedObject addModifiedObjectIfVerbose(ConfigurationChanges diffs, String dn, ChangeType changeType) {
+    public static ModifiedObject addModifiedObjectIfVerbose(ConfigurationChanges diffs, String dn,
+            ChangeType changeType) {
         if (diffs == null || !diffs.isVerbose())
             return null;
 
@@ -95,15 +96,15 @@ public class ConfigurationChanges {
 
     @Override
     public String toString() {
-        if (isEmpty()) return "[]";
+        if (isEmpty())
+            return "[]";
 
         StringBuilder sb = new StringBuilder(objects.size() * Normal._64);
         for (ModifiedObject object : objects) {
             sb.append(object.changeType).append(Symbol.C_SPACE).append(object.dn).append(Symbol.C_LF);
             if (null != object.attributes) {
                 for (ModifiedAttribute attr : object.attributes) {
-                    sb.append(Symbol.SPACE).append(attr.name).append(": ")
-                            .append(attr.removedValues).append("=>")
+                    sb.append(Symbol.SPACE).append(attr.name).append(": ").append(attr.removedValues).append("=>")
                             .append(attr.addedValues).append(Symbol.C_LF);
                 }
             }
@@ -111,7 +112,9 @@ public class ConfigurationChanges {
         return sb.toString();
     }
 
-    public enum ChangeType {C, U, D}
+    public enum ChangeType {
+        C, U, D
+    }
 
     public static class ModifiedAttribute {
         private final String name;

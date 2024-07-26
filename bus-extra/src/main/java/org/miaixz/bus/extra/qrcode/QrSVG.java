@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.qrcode;
 
 import com.google.zxing.common.BitMatrix;
@@ -71,7 +71,8 @@ public class QrSVG {
         for (int y = 0; y < qrHeight; y++) {
             for (int x = 0; x < qrWidth; x++) {
                 if (matrix.get(x, y)) {
-                    sb.append(" M").append(x).append(Symbol.COMMA).append(y).append("h1v").append(moduleHeight).append("h-1z");
+                    sb.append(" M").append(x).append(Symbol.COMMA).append(y).append("h1v").append(moduleHeight)
+                            .append("h-1z");
                 }
             }
         }
@@ -112,7 +113,9 @@ public class QrSVG {
         }
         result.append(" /> \n");
         if (StringKit.isNotBlank(logoBase64)) {
-            result.append("<image xlink:href=\"").append(logoBase64).append("\" height=\"").append(logoHeight).append("\" width=\"").append(logoWidth).append("\" y=\"").append(logoY).append("\" x=\"").append(logoX).append("\" />\n");
+            result.append("<image xlink:href=\"").append(logoBase64).append("\" height=\"").append(logoHeight)
+                    .append("\" width=\"").append(logoWidth).append("\" y=\"").append(logoY).append("\" x=\"")
+                    .append(logoX).append("\" />\n");
         }
         result.append("</svg>");
         return result.toString();

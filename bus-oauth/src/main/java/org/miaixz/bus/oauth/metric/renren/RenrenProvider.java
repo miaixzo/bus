@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.renren;
 
 import com.alibaba.fastjson.JSONArray;
@@ -73,24 +73,15 @@ public class RenrenProvider extends AbstractProvider {
         String response = doGetUserInfo(accToken);
         JSONObject userObj = JSONObject.parseObject(response).getJSONObject("response");
 
-        return Material.builder()
-                .rawJson(userObj)
-                .uuid(userObj.getString("id"))
-                .avatar(getAvatarUrl(userObj))
-                .nickname(userObj.getString("name"))
-                .company(getCompany(userObj))
-                .gender(getGender(userObj))
-                .token(accToken)
-                .source(complex.toString())
-                .build();
+        return Material.builder().rawJson(userObj).uuid(userObj.getString("id")).avatar(getAvatarUrl(userObj))
+                .nickname(userObj.getString("name")).company(getCompany(userObj)).gender(getGender(userObj))
+                .token(accToken).source(complex.toString()).build();
     }
 
     @Override
     public Message refresh(AccToken accToken) {
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .data(getToken(this.refreshTokenUrl(accToken.getRefreshToken())))
-                .build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode())
+                .data(getToken(this.refreshTokenUrl(accToken.getRefreshToken()))).build();
     }
 
     private AccToken getToken(String url) {
@@ -100,13 +91,11 @@ public class RenrenProvider extends AbstractProvider {
             throw new AuthorizedException("Failed to get token from RenrenScope: " + jsonObject);
         }
 
-        return AccToken.builder()
-                .tokenType(jsonObject.getString("token_type"))
+        return AccToken.builder().tokenType(jsonObject.getString("token_type"))
                 .expireIn(jsonObject.getIntValue("expires_in"))
                 .accessToken(UrlEncoder.encodeAll(jsonObject.getString("access_token")))
                 .refreshToken(UrlEncoder.encodeAll(jsonObject.getString("refresh_token")))
-                .openId(jsonObject.getJSONObject("user").getString("id"))
-                .build();
+                .openId(jsonObject.getJSONObject("user").getString("id")).build();
     }
 
     private String getAvatarUrl(JSONObject userObj) {
@@ -141,10 +130,8 @@ public class RenrenProvider extends AbstractProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(complex.userInfo())
-                .queryParam("access_token", accToken.getAccessToken())
-                .queryParam("userId", accToken.getOpenId())
-                .build();
+        return Builder.fromUrl(complex.userInfo()).queryParam("access_token", accToken.getAccessToken())
+                .queryParam("userId", accToken.getOpenId()).build();
     }
 
     @Override

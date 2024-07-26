@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.GEMS_IMAG_01;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,51 +46,52 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.ImageLocation:
-            case PrivateTag.CenterRCoordOfPlaneImage:
-            case PrivateTag.CenterACoordOfPlaneImage:
-            case PrivateTag.CenterSCoordOfPlaneImage:
-            case PrivateTag.NormalRCoord:
-            case PrivateTag.NormalACoord:
-            case PrivateTag.NormalSCoord:
-            case PrivateTag.RCoordOfTopRightCorner:
-            case PrivateTag.ACoordOfTopRightCorner:
-            case PrivateTag.SCoordOfTopRightCorner:
-            case PrivateTag.RCoordOfBottomRightCorner:
-            case PrivateTag.ACoordOfBottomRightCorner:
-            case PrivateTag.SCoordOfBottomRightCorner:
-            case PrivateTag.TableStartLocation:
-            case PrivateTag.TableEndLocation:
-            case PrivateTag.ImageDimensionX:
-            case PrivateTag.ImageDimensionY:
-            case PrivateTag.NumberOfExcitations:
-                return VR.FL;
-            case PrivateTag.ForeignImageRevision:
-            case PrivateTag.RASLetterOfImageLocation:
-            case PrivateTag.RASLetterForSideOfImage:
-            case PrivateTag.RASLetterForAnteriorPosterior:
-            case PrivateTag.RASLetterForScoutStartLoc:
-            case PrivateTag.RASLetterForScoutEndLoc:
-                return VR.SH;
-            case PrivateTag.ImageArchiveFlag:
-            case PrivateTag.VmaMamp:
-            case PrivateTag.VmaMod:
-            case PrivateTag.VmaClipOrNoiseIndexBy10:
-            case PrivateTag.ImagingOptions:
-            case PrivateTag.ObliquePlane:
-                return VR.SL;
-            case PrivateTag.ScoutType:
-            case PrivateTag.VmaPhase:
-            case PrivateTag.SmartScanOnOffFlag:
-            case PrivateTag.ImagingMode:
-            case PrivateTag.PulseSequence:
-            case PrivateTag.PlaneType:
-                return VR.SS;
+
+        case PrivateTag.ImageLocation:
+        case PrivateTag.CenterRCoordOfPlaneImage:
+        case PrivateTag.CenterACoordOfPlaneImage:
+        case PrivateTag.CenterSCoordOfPlaneImage:
+        case PrivateTag.NormalRCoord:
+        case PrivateTag.NormalACoord:
+        case PrivateTag.NormalSCoord:
+        case PrivateTag.RCoordOfTopRightCorner:
+        case PrivateTag.ACoordOfTopRightCorner:
+        case PrivateTag.SCoordOfTopRightCorner:
+        case PrivateTag.RCoordOfBottomRightCorner:
+        case PrivateTag.ACoordOfBottomRightCorner:
+        case PrivateTag.SCoordOfBottomRightCorner:
+        case PrivateTag.TableStartLocation:
+        case PrivateTag.TableEndLocation:
+        case PrivateTag.ImageDimensionX:
+        case PrivateTag.ImageDimensionY:
+        case PrivateTag.NumberOfExcitations:
+            return VR.FL;
+        case PrivateTag.ForeignImageRevision:
+        case PrivateTag.RASLetterOfImageLocation:
+        case PrivateTag.RASLetterForSideOfImage:
+        case PrivateTag.RASLetterForAnteriorPosterior:
+        case PrivateTag.RASLetterForScoutStartLoc:
+        case PrivateTag.RASLetterForScoutEndLoc:
+            return VR.SH;
+        case PrivateTag.ImageArchiveFlag:
+        case PrivateTag.VmaMamp:
+        case PrivateTag.VmaMod:
+        case PrivateTag.VmaClipOrNoiseIndexBy10:
+        case PrivateTag.ImagingOptions:
+        case PrivateTag.ObliquePlane:
+            return VR.SL;
+        case PrivateTag.ScoutType:
+        case PrivateTag.VmaPhase:
+        case PrivateTag.SmartScanOnOffFlag:
+        case PrivateTag.ImagingMode:
+        case PrivateTag.PulseSequence:
+        case PrivateTag.PlaneType:
+            return VR.SS;
         }
         return VR.UN;
     }

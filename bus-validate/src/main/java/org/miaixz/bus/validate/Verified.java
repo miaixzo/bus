@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.validate;
 
 import lombok.EqualsAndHashCode;
@@ -46,8 +46,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 被校验对象
- * 注意: 当被校验对象为null时,无法获取到对象的Class,所以不会执行对象的Class上标记的任何校验注解
+ * 被校验对象 注意: 当被校验对象为null时,无法获取到对象的Class,所以不会执行对象的Class上标记的任何校验注解
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -75,8 +74,7 @@ public class Verified extends Provider {
     private Context context;
 
     /**
-     * 被校验对象
-     * 内部使用一个默认的校验器上下文
+     * 被校验对象 内部使用一个默认的校验器上下文
      *
      * @param object 被校验的原始对象
      */
@@ -99,8 +97,7 @@ public class Verified extends Provider {
     }
 
     /**
-     * 被校验对象
-     * 内部使用一个默认的校验器上下文
+     * 被校验对象 内部使用一个默认的校验器上下文
      *
      * @param object      被校验的原始对象
      * @param annotations 被校验对象上的所有注解
@@ -196,8 +193,7 @@ public class Verified extends Provider {
     }
 
     /**
-     * 执行校验
-     * 如果校验环境设置了快速失败的属性为true,那么一旦出现校验失败,则会抛出异常
+     * 执行校验 如果校验环境设置了快速失败的属性为true,那么一旦出现校验失败,则会抛出异常
      *
      * @return 校验结果收集器
      */

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.plugin.httpv;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -260,10 +260,12 @@ public class CoverCall implements Cancelable {
             CoverTasks.Listener<CoverResult.State> listener = client.httpv.executor().getCompleteListener();
             if (null != listener) {
                 if (listener.listen(client, state) && null != client.onClosed) {
-                    client.execute(() -> client.onClosed.on(this.webSocket, toClose(state, code, reason)), client.closedOnIO);
+                    client.execute(() -> client.onClosed.on(this.webSocket, toClose(state, code, reason)),
+                            client.closedOnIO);
                 }
             } else if (null != client.onClosed) {
-                client.execute(() -> client.onClosed.on(this.webSocket, toClose(state, code, reason)), client.closedOnIO);
+                client.execute(() -> client.onClosed.on(this.webSocket, toClose(state, code, reason)),
+                        client.closedOnIO);
             }
         }
 
@@ -327,13 +329,9 @@ public class CoverCall implements Cancelable {
         }
 
         /**
-         * 设置心跳间隔
-         * 覆盖原有的心跳模式，主要区别如下：
+         * 设置心跳间隔 覆盖原有的心跳模式，主要区别如下：
          * <p>
-         * 1、客户端发送的任何消息都具有一次心跳作用
-         * 2、服务器发送的任何消息都具有一次心跳作用
-         * 3、若服务器超过 3 * pongSeconds 秒没有回复心跳，才判断心跳超时
-         * 4、可指定心跳的具体内容（默认为空）
+         * 1、客户端发送的任何消息都具有一次心跳作用 2、服务器发送的任何消息都具有一次心跳作用 3、若服务器超过 3 * pongSeconds 秒没有回复心跳，才判断心跳超时 4、可指定心跳的具体内容（默认为空）
          *
          * @param pingSeconds 客户端心跳间隔秒数（0 表示不需要心跳）
          * @param pongSeconds 服务器心跳间隔秒数（0 表示不需要心跳）

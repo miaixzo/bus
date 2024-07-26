@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.io.sink.Sink;
@@ -54,27 +54,11 @@ public class Http2Codec implements HttpCodec {
     /**
      * See http://tools.ietf.org/html/draft-ietf-httpbis-http2-09#section-8.1.3.
      */
-    private static final List<String> HTTP_2_SKIPPED_REQUEST_HEADERS = Builder.immutableList(
-            HTTP.CONNECTION,
-            HTTP.HOST,
-            HTTP.KEEP_ALIVE,
-            HTTP.PROXY_CONNECTION,
-            HTTP.TE,
-            HTTP.TRANSFER_ENCODING,
-            HTTP.ENCODING,
-            HTTP.UPGRADE,
-            HTTP.TARGET_METHOD_UTF8,
-            HTTP.TARGET_PATH_UTF8,
-            HTTP.TARGET_SCHEME_UTF8,
-            HTTP.TARGET_AUTHORITY_UTF8);
-    private static final List<String> HTTP_2_SKIPPED_RESPONSE_HEADERS = Builder.immutableList(
-            HTTP.CONNECTION,
-            HTTP.HOST,
-            HTTP.KEEP_ALIVE,
-            HTTP.PROXY_CONNECTION,
-            HTTP.TE,
-            HTTP.TRANSFER_ENCODING,
-            HTTP.ENCODING,
+    private static final List<String> HTTP_2_SKIPPED_REQUEST_HEADERS = Builder.immutableList(HTTP.CONNECTION, HTTP.HOST,
+            HTTP.KEEP_ALIVE, HTTP.PROXY_CONNECTION, HTTP.TE, HTTP.TRANSFER_ENCODING, HTTP.ENCODING, HTTP.UPGRADE,
+            HTTP.TARGET_METHOD_UTF8, HTTP.TARGET_PATH_UTF8, HTTP.TARGET_SCHEME_UTF8, HTTP.TARGET_AUTHORITY_UTF8);
+    private static final List<String> HTTP_2_SKIPPED_RESPONSE_HEADERS = Builder.immutableList(HTTP.CONNECTION,
+            HTTP.HOST, HTTP.KEEP_ALIVE, HTTP.PROXY_CONNECTION, HTTP.TE, HTTP.TRANSFER_ENCODING, HTTP.ENCODING,
             HTTP.UPGRADE);
 
     private final NewChain chain;
@@ -84,13 +68,11 @@ public class Http2Codec implements HttpCodec {
     private volatile Http2Stream stream;
     private volatile boolean canceled;
 
-    public Http2Codec(Httpd client, RealConnection realConnection,
-                      NewChain chain, Http2Connection connection) {
+    public Http2Codec(Httpd client, RealConnection realConnection, NewChain chain, Http2Connection connection) {
         this.realConnection = realConnection;
         this.chain = chain;
         this.connection = connection;
-        this.protocol = client.protocols().contains(Protocol.H2_PRIOR_KNOWLEDGE)
-                ? Protocol.H2_PRIOR_KNOWLEDGE
+        this.protocol = client.protocols().contains(Protocol.H2_PRIOR_KNOWLEDGE) ? Protocol.H2_PRIOR_KNOWLEDGE
                 : Protocol.HTTP_2;
     }
 
@@ -108,8 +90,8 @@ public class Http2Codec implements HttpCodec {
         for (int i = 0, size = headers.size(); i < size; i++) {
             // header names must be lowercase.
             String name = StringKit.upperFirst(headers.name(i));
-            if (!HTTP_2_SKIPPED_REQUEST_HEADERS.contains(name) || name.equals(HTTP.TE)
-                    && "trailers".equals(headers.value(i))) {
+            if (!HTTP_2_SKIPPED_REQUEST_HEADERS.contains(name)
+                    || name.equals(HTTP.TE) && "trailers".equals(headers.value(i))) {
                 result.add(new Http2Header(name, headers.value(i)));
             }
         }
@@ -119,8 +101,7 @@ public class Http2Codec implements HttpCodec {
     /**
      * Returns headers for a name value block containing an HTTP/2 response.
      */
-    public static Response.Builder readHttp2HeadersList(Headers headerBlock,
-                                                        Protocol protocol) throws IOException {
+    public static Response.Builder readHttp2HeadersList(Headers headerBlock, Protocol protocol) throws IOException {
         StatusLine statusLine = null;
         Headers.Builder headersBuilder = new Headers.Builder();
         for (int i = 0, size = headerBlock.size(); i < size; i++) {
@@ -132,12 +113,10 @@ public class Http2Codec implements HttpCodec {
                 Internal.instance.addLenient(headersBuilder, name, value);
             }
         }
-        if (statusLine == null) throw new ProtocolException("Expected ':status' header not present");
+        if (statusLine == null)
+            throw new ProtocolException("Expected ':status' header not present");
 
-        return new Response.Builder()
-                .protocol(protocol)
-                .code(statusLine.code)
-                .message(statusLine.message)
+        return new Response.Builder().protocol(protocol).code(statusLine.code).message(statusLine.message)
                 .headers(headersBuilder.build());
     }
 
@@ -153,7 +132,8 @@ public class Http2Codec implements HttpCodec {
 
     @Override
     public void writeRequestHeaders(Request request) throws IOException {
-        if (stream != null) return;
+        if (stream != null)
+            return;
 
         boolean hasRequestBody = request.body() != null;
         List<Http2Header> requestHeaders = http2HeadersList(request);
@@ -206,7 +186,8 @@ public class Http2Codec implements HttpCodec {
     @Override
     public void cancel() {
         canceled = true;
-        if (stream != null) stream.closeLater(Http2ErrorCode.CANCEL);
+        if (stream != null)
+            stream.closeLater(Http2ErrorCode.CANCEL);
     }
 
 }

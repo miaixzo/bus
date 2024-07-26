@@ -24,16 +24,14 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cron;
 
 import org.miaixz.bus.cron.crontab.CronCrontab;
 import org.miaixz.bus.cron.crontab.Crontab;
 
 /**
- * 作业执行器
- * 执行具体的作业，执行完毕销毁
- * 作业执行器唯一关联一个作业，负责管理作业的运行的生命周期。
+ * 作业执行器 执行具体的作业，执行完毕销毁 作业执行器唯一关联一个作业，负责管理作业的运行的生命周期。
  *
  * @author Kimi Liu
  * @since Java 17+

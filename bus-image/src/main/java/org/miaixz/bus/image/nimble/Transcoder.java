@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 import org.miaixz.bus.core.io.file.FileName;
@@ -70,22 +70,20 @@ public class Transcoder {
      * Convert a DICOM image to a standard image with some rendering parameters
      *
      * @param srcPath the path of the source image
-     * @param dstPath the path of the destination image or the path of a directory in which the source
-     *                image filename will be used
+     * @param dstPath the path of the destination image or the path of a directory in which the source image filename
+     *                will be used
      * @param params  the standard image conversion parameters
      * @return
      * @throws Exception
      */
-    public static List<Path> dcm2image(Path srcPath, Path dstPath, TranscodeParam params)
-            throws Exception {
+    public static List<Path> dcm2image(Path srcPath, Path dstPath, TranscodeParam params) throws Exception {
         List<Path> outFiles = new ArrayList<>();
         Format format = params.getFormat();
         ImageReader reader = new ImageReader(IMAGE_READER_SPI);
         try (ImageFileInputStream inputStream = new ImageFileInputStream(srcPath)) {
-            MatOfInt map =
-                    format == Format.JPEG
-                            ? new MatOfInt(Imgcodecs.IMWRITE_JPEG_QUALITY, getCompressionRatio(params))
-                            : null;
+            MatOfInt map = format == Format.JPEG
+                    ? new MatOfInt(Imgcodecs.IMWRITE_JPEG_QUALITY, getCompressionRatio(params))
+                    : null;
             reader.setInput(inputStream);
             int nbFrames = reader.getImageDescriptor().getFrames();
             int indexSize = (int) Math.log10(nbFrames);
@@ -94,17 +92,12 @@ public class Transcoder {
                 PlanarImage img = reader.getPlanarImage(i, params.getReadParam());
                 boolean rawImg = isPreserveRawImage(params, format, img.type());
                 if (rawImg) {
-                    img =
-                            ImageRendering.getRawRenderedImage(
-                                    img, reader.getImageDescriptor(), params.getReadParam());
+                    img = ImageRendering.getRawRenderedImage(img, reader.getImageDescriptor(), params.getReadParam());
                 } else {
-                    img =
-                            ImageRendering.getDefaultRenderedImage(
-                                    img, reader.getImageDescriptor(), params.getReadParam(), i);
+                    img = ImageRendering.getDefaultRenderedImage(img, reader.getImageDescriptor(),
+                            params.getReadParam(), i);
                 }
-                Path outPath =
-                        writeImage(
-                                img, getOutputPath(srcPath, dstPath), format, map, i + 1, indexSize);
+                Path outPath = writeImage(img, getOutputPath(srcPath, dstPath), format, map, i + 1, indexSize);
                 outFiles.add(outPath);
             }
         } finally {
@@ -117,13 +110,12 @@ public class Transcoder {
      * Convert a DICOM image to another DICOM image with a specific transfer syntax
      *
      * @param srcPath the path of the source image
-     * @param dstPath the path of the destination image or the path of a directory in which the source
-     *                image filename will be used
+     * @param dstPath the path of the destination image or the path of a directory in which the source image filename
+     *                will be used
      * @param params  the DICOM conversion parameters
      * @throws IOException if an I/O error occurs
      */
-    public static Path dcm2dcm(Path srcPath, Path dstPath, TranscodeParam params)
-            throws IOException {
+    public static Path dcm2dcm(Path srcPath, Path dstPath, TranscodeParam params) throws IOException {
         Path outPath = adaptFileExtension(getOutputPath(srcPath, dstPath), ".dcm", ".dcm");
 
         try {
@@ -144,8 +136,7 @@ public class Transcoder {
      * @param params       the DICOM conversion parameters
      * @throws IOException if an I/O error occurs
      */
-    public static void dcm2dcm(Path srcPath, OutputStream outputStream, TranscodeParam params)
-            throws IOException {
+    public static void dcm2dcm(Path srcPath, OutputStream outputStream, TranscodeParam params) throws IOException {
         ImageReader reader = new ImageReader(IMAGE_READER_SPI);
         reader.setInput(new ImageFileInputStream(srcPath));
 
@@ -160,8 +151,7 @@ public class Transcoder {
         } else {
             dicomParams.setReleaseImageAfterProcessing(true);
         }
-        List<SupplierEx<PlanarImage, IOException>> images =
-                reader.getLazyPlanarImages(dicomParams, mask);
+        List<SupplierEx<PlanarImage, IOException>> images = reader.getLazyPlanarImages(dicomParams, mask);
         String dstTsuid = params.getOutputTsuid();
         JpegWriteParam writeParams = params.getWriteJpegParam();
         ImageDescriptor desc = imageMetaData.getImageDescriptor();
@@ -179,9 +169,8 @@ public class Transcoder {
             if (ImageOutputData.isNativeSyntax(dstTsuid)) {
                 imgData.writRawImageData(dos, dataSet);
             } else {
-                int[] jpegWriteParams =
-                        imgData.adaptTagsToCompressedImage(
-                                dataSet, imgData.getFirstImage().get(), desc, writeParams);
+                int[] jpegWriteParams = imgData.adaptTagsToCompressedImage(dataSet, imgData.getFirstImage().get(), desc,
+                        writeParams);
                 imgData.writeCompressedImageData(dos, dataSet, jpegWriteParams);
             }
         } catch (Exception e) {
@@ -245,16 +234,13 @@ public class Transcoder {
             return path;
         }
         if (suffix.endsWith(inExt)) {
-            return FileSystems.getDefault()
-                    .getPath(
-                            path.getParent().toString(),
-                            fname.substring(0, fname.length() - inExt.length()) + outExt);
+            return FileSystems.getDefault().getPath(path.getParent().toString(),
+                    fname.substring(0, fname.length() - inExt.length()) + outExt);
         }
         return path.resolveSibling(fname + outExt);
     }
 
-    private static Path writeImage(
-            PlanarImage img, Path path, Format ext, MatOfInt map, int index, int indexSize) {
+    private static Path writeImage(PlanarImage img, Path path, Format ext, MatOfInt map, int index, int indexSize) {
         Path outPath = adaptFileExtension(path, ".dcm", ext.extension);
         outPath = addFileIndex(outPath, index, indexSize);
         if (map == null) {
@@ -272,8 +258,8 @@ public class Transcoder {
     }
 
     /**
-     * Get the combined path. If output is a file, it is returned as is. If output is a directory, the
-     * input filename is added to the output path.
+     * Get the combined path. If output is a file, it is returned as is. If output is a directory, the input filename is
+     * added to the output path.
      *
      * @param input  The input filename
      * @param output The output path
@@ -286,7 +272,6 @@ public class Transcoder {
             return output;
         }
     }
-
 
     /**
      * Add a file index to the file name. The index number is added before the file extension.
@@ -302,17 +287,13 @@ public class Transcoder {
         }
         String pattern = "$1-%0" + indexSize + "d$2";
         String insert = String.format(pattern, index);
-        return path.resolveSibling(
-                path.getFileName().toString().replaceFirst("(.*?)(\\.[^.]+)?$", insert));
+        return path.resolveSibling(path.getFileName().toString().replaceFirst("(.*?)(\\.[^.]+)?$", insert));
     }
 
     public enum Format {
-        JPEG(".jpg", false, false, false, false),
-        PNG(".png", true, false, false, false),
-        TIF(".tif", true, false, true, true),
-        JP2(".jp2", true, false, false, false),
-        PNM(".pnm", true, false, false, false),
-        BMP(".bmp", false, false, false, false),
+        JPEG(".jpg", false, false, false, false), PNG(".png", true, false, false, false),
+        TIF(".tif", true, false, true, true), JP2(".jp2", true, false, false, false),
+        PNM(".pnm", true, false, false, false), BMP(".bmp", false, false, false, false),
         HDR(".hdr", false, false, false, true);
 
         final String extension;
@@ -321,12 +302,7 @@ public class Transcoder {
         final boolean support32F;
         final boolean support64F;
 
-        Format(
-                String ext,
-                boolean support16U,
-                boolean support16S,
-                boolean support32F,
-                boolean support64F) {
+        Format(String ext, boolean support16U, boolean support16S, boolean support32F, boolean support64F) {
             this.extension = ext;
             this.support16U = support16U;
             this.support16S = support16S;

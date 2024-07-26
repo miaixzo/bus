@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.driver.registry;
 
 import com.sun.jna.platform.win32.WinBase.FILETIME;
@@ -55,7 +55,7 @@ public final class ThreadPerformanceData {
      *
      * @param pids An optional collection of thread IDs to filter the list to. May be null for no filtering.
      * @return A map with Thread ID as the key and a {@link PerfCounterBlock} object populated with performance counter
-     * information if successful, or null otherwise.
+     *         information if successful, or null otherwise.
      */
     public static Map<Integer, PerfCounterBlock> buildThreadMapFromRegistry(Collection<Integer> pids) {
         // Grab the data from the registry.
@@ -108,7 +108,7 @@ public final class ThreadPerformanceData {
      *
      * @param pids An optional collection of process IDs to filter the list to. May be null for no filtering.
      * @return A map with Thread ID as the key and a {@link PerfCounterBlock} object populated with performance counter
-     * information.
+     *         information.
      */
     public static Map<Integer, PerfCounterBlock> buildThreadMapFromPerfCounters(Collection<Integer> pids) {
         return buildThreadMapFromPerfCounters(pids, null, -1);
@@ -121,10 +121,10 @@ public final class ThreadPerformanceData {
      * @param procName  Limit the matches to processes matching the given name.
      * @param threadNum Limit the matches to threads matching the given thread. Use -1 to match all threads.
      * @return A map with Thread ID as the key and a {@link PerfCounterBlock} object populated with performance counter
-     * information.
+     *         information.
      */
     public static Map<Integer, PerfCounterBlock> buildThreadMapFromPerfCounters(Collection<Integer> pids,
-                                                                                String procName, int threadNum) {
+            String procName, int threadNum) {
         if (PerfmonDisabled.PERF_PROC_DISABLED) {
             return Collections.emptyMap();
         }
@@ -195,8 +195,8 @@ public final class ThreadPerformanceData {
         private final int contextSwitches;
 
         public PerfCounterBlock(String name, int threadID, int owningProcessID, long startTime, long userTime,
-                                long kernelTime, int priority, int threadState, int threadWaitReason, long startAddress,
-                                int contextSwitches) {
+                long kernelTime, int priority, int threadState, int threadWaitReason, long startAddress,
+                int contextSwitches) {
             this.name = name;
             this.threadID = threadID;
             this.owningProcessID = owningProcessID;

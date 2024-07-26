@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.driver.perfmon;
 
 import com.sun.jna.platform.win32.VersionHelpers;
@@ -60,10 +60,13 @@ public final class ProcessorInformation {
         if (PerfmonDisabled.PERF_OS_DISABLED) {
             return Pair.of(Collections.emptyList(), Collections.emptyMap());
         }
-        return IS_WIN7_OR_GREATER ? PerfCounterWildcardQuery.queryInstancesAndValues(ProcessorTickCountProperty.class,
-                PerfmonConsts.PROCESSOR_INFORMATION, PerfmonConsts.WIN32_PERF_RAW_DATA_COUNTERS_PROCESSOR_INFORMATION_WHERE_NOT_NAME_LIKE_TOTAL)
-                : PerfCounterWildcardQuery.queryInstancesAndValues(ProcessorTickCountProperty.class, PerfmonConsts.PROCESSOR,
-                PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_OS_PROCESSOR_WHERE_NAME_NOT_TOTAL);
+        return IS_WIN7_OR_GREATER
+                ? PerfCounterWildcardQuery.queryInstancesAndValues(ProcessorTickCountProperty.class,
+                        PerfmonConsts.PROCESSOR_INFORMATION,
+                        PerfmonConsts.WIN32_PERF_RAW_DATA_COUNTERS_PROCESSOR_INFORMATION_WHERE_NOT_NAME_LIKE_TOTAL)
+                : PerfCounterWildcardQuery.queryInstancesAndValues(ProcessorTickCountProperty.class,
+                        PerfmonConsts.PROCESSOR,
+                        PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_OS_PROCESSOR_WHERE_NAME_NOT_TOTAL);
     }
 
     /**
@@ -76,7 +79,8 @@ public final class ProcessorInformation {
             return Pair.of(Collections.emptyList(), Collections.emptyMap());
         }
         return PerfCounterWildcardQuery.queryInstancesAndValues(ProcessorUtilityTickCountProperty.class,
-                PerfmonConsts.PROCESSOR_INFORMATION, PerfmonConsts.WIN32_PERF_RAW_DATA_COUNTERS_PROCESSOR_INFORMATION_WHERE_NOT_NAME_LIKE_TOTAL);
+                PerfmonConsts.PROCESSOR_INFORMATION,
+                PerfmonConsts.WIN32_PERF_RAW_DATA_COUNTERS_PROCESSOR_INFORMATION_WHERE_NOT_NAME_LIKE_TOTAL);
     }
 
     /**
@@ -101,7 +105,8 @@ public final class ProcessorInformation {
         if (PerfmonDisabled.PERF_OS_DISABLED) {
             return Pair.of(Collections.emptyList(), Collections.emptyMap());
         }
-        return PerfCounterWildcardQuery.queryInstancesAndValues(ProcessorFrequencyProperty.class, PerfmonConsts.PROCESSOR_INFORMATION,
+        return PerfCounterWildcardQuery.queryInstancesAndValues(ProcessorFrequencyProperty.class,
+                PerfmonConsts.PROCESSOR_INFORMATION,
                 PerfmonConsts.WIN32_PERF_RAW_DATA_COUNTERS_PROCESSOR_INFORMATION_WHERE_NOT_NAME_LIKE_TOTAL);
     }
 

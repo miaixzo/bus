@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.math;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -51,9 +51,7 @@ public class NumberValidator {
     }
 
     public static boolean isEqual(float a, float b) {
-        return Math.copySign(a - b, 1.0) <= FLOAT_EPSILON
-                || (a == b)
-                || (Float.isNaN(a) && Float.isNaN(b));
+        return Math.copySign(a - b, 1.0) <= FLOAT_EPSILON || (a == b) || (Float.isNaN(a) && Float.isNaN(b));
     }
 
     public static boolean isDifferent(float a, float b) {
@@ -69,9 +67,7 @@ public class NumberValidator {
     }
 
     public static boolean isEqual(double a, double b) {
-        return Math.copySign(a - b, 1.0) <= DOUBLE_EPSILON
-                || (a == b)
-                || (Double.isNaN(a) && Double.isNaN(b));
+        return Math.copySign(a - b, 1.0) <= DOUBLE_EPSILON || (a == b) || (Double.isNaN(a) && Double.isNaN(b));
     }
 
     public static boolean isDifferent(double a, double b) {
@@ -105,7 +101,8 @@ public class NumberValidator {
         boolean foundDigit = false;
         // deal with any possible sign up front
         final int start = (chars[0] == Symbol.C_MINUS || chars[0] == Symbol.C_PLUS) ? 1 : 0;
-        if (sz > start + 1 && chars[start] == '0' && !StringKit.contains(text, Symbol.C_DOT)) { // leading 0, skip if is a decimal number
+        if (sz > start + 1 && chars[start] == '0' && !StringKit.contains(text, Symbol.C_DOT)) { // leading 0, skip if is
+                                                                                                // a decimal number
             if (chars[start + 1] == 'x' || chars[start + 1] == 'X') { // leading 0x/0X
                 int i = start + 2;
                 if (i == sz) {
@@ -113,7 +110,8 @@ public class NumberValidator {
                 }
                 // checking hex (it can't be anything else)
                 for (; i < chars.length; i++) {
-                    if ((chars[i] < '0' || chars[i] > '9') && (chars[i] < 'a' || chars[i] > 'f') && (chars[i] < 'A' || chars[i] > 'F')) {
+                    if ((chars[i] < '0' || chars[i] > '9') && (chars[i] < 'a' || chars[i] > 'f')
+                            && (chars[i] < 'A' || chars[i] > 'F')) {
                         return false;
                     }
                 }
@@ -203,11 +201,12 @@ public class NumberValidator {
     /**
      * 判断字符串是否是整数
      *
-     * <p>支持格式:
+     * <p>
+     * 支持格式:
      * <ol>
-     * 		<li>10进制, 不能包含前导零</li>
-     * 		<li>8进制(以0开头)</li>
-     * 		<li>16进制(以0x或者0X开头)</li>
+     * <li>10进制, 不能包含前导零</li>
+     * <li>8进制(以0开头)</li>
+     * <li>16进制(以0x或者0X开头)</li>
      * </ol>
      *
      * @param s 校验的字符串, 只能含有 正负号、数字字符 和 {@literal X/x}
@@ -231,9 +230,9 @@ public class NumberValidator {
      * <p>
      * 支持格式:
      * <ol>
-     * 		<li>10进制, 不能包含前导零</li>
-     * 		<li>8进制(以0开头)</li>
-     * 		<li>16进制(以0x或者0X开头)</li>
+     * <li>10进制, 不能包含前导零</li>
+     * <li>8进制(以0开头)</li>
+     * <li>16进制(以0x或者0X开头)</li>
      * </ol>
      *
      * @param s 校验的字符串, 只能含有 正负号、数字字符、{@literal X/x} 和 后缀{@literal L/l}
@@ -274,8 +273,7 @@ public class NumberValidator {
     }
 
     /**
-     * 是否是质数（素数）
-     * 质数表的质数又称素数。指整数在一个大于1的自然数中,除了1和此整数自身外,没法被其他自然数整除的数。
+     * 是否是质数（素数） 质数表的质数又称素数。指整数在一个大于1的自然数中,除了1和此整数自身外,没法被其他自然数整除的数。
      *
      * @param n 数字
      * @return 是否是质数

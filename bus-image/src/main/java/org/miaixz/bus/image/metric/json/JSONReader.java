@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.json;
 
 import jakarta.json.stream.JsonLocation;
@@ -112,7 +112,8 @@ public class JSONReader {
 
     public Attributes readDataset(Attributes attrs) {
         boolean wrappedInArray = next() == Event.START_ARRAY;
-        if (wrappedInArray) next();
+        if (wrappedInArray)
+            next();
         expect(Event.START_OBJECT);
         if (attrs == null) {
             attrs = new Attributes();
@@ -120,7 +121,8 @@ public class JSONReader {
         fmi = null;
         next();
         doReadDataset(attrs);
-        if (wrappedInArray) next();
+        if (wrappedInArray)
+            next();
         return attrs;
     }
 
@@ -162,30 +164,30 @@ public class JSONReader {
         Element el = new Element();
         while (next() == Event.KEY_NAME) {
             switch (getString()) {
-                case "vr":
-                    try {
-                        el.vr = VR.valueOf(valueString());
-                    } catch (IllegalArgumentException e) {
-                        el.vr = ElementDictionary.getStandardElementDictionary().vrOf(tag);
-                        Logger.info("Invalid vr: '{}' at {} - treat as '{}'", getString(), parser.getLocation(), el.vr);
-                    }
-                    break;
-                case "Value":
-                    el.values = readValues();
-                    break;
-                case "InlineBinary":
-                    el.bytes = readInlineBinary();
-                    break;
-                case "BulkDataURI":
-                    el.bulkDataURI = valueString();
-                    break;
-                case "DataFragment":
-                    el.values = readDataFragments();
-                    break;
-                default:
-                    throw new JsonParsingException("Unexpected \"" + getString()
-                            + "\", expected \"Value\" or \"InlineBinary\""
-                            + " or \"BulkDataURI\" or  \"DataFragment\"", parser.getLocation());
+            case "vr":
+                try {
+                    el.vr = VR.valueOf(valueString());
+                } catch (IllegalArgumentException e) {
+                    el.vr = ElementDictionary.getStandardElementDictionary().vrOf(tag);
+                    Logger.info("Invalid vr: '{}' at {} - treat as '{}'", getString(), parser.getLocation(), el.vr);
+                }
+                break;
+            case "Value":
+                el.values = readValues();
+                break;
+            case "InlineBinary":
+                el.bytes = readInlineBinary();
+                break;
+            case "BulkDataURI":
+                el.bulkDataURI = valueString();
+                break;
+            case "DataFragment":
+                el.values = readDataFragments();
+                break;
+            default:
+                throw new JsonParsingException("Unexpected \"" + getString()
+                        + "\", expected \"Value\" or \"InlineBinary\"" + " or \"BulkDataURI\" or  \"DataFragment\"",
+                        parser.getLocation());
             }
         }
         expect(Event.END_OBJECT);
@@ -198,7 +200,8 @@ public class JSONReader {
         else if (el.bulkDataURI != null) {
             if (!skipBulkDataURI)
                 attrs.setValue(tag, el.vr, bulkDataCreator.create(null, el.bulkDataURI, false));
-        } else switch (el.vr) {
+        } else
+            switch (el.vr) {
             case AE:
             case AS:
             case AT:
@@ -249,7 +252,7 @@ public class JSONReader {
                     attrs.setBytes(tag, el.vr, el.bytes);
                 else
                     el.toFragments(attrs.newFragments(tag, el.vr, el.values.size()));
-        }
+            }
     }
 
     private List<Object> readValues() {
@@ -263,20 +266,20 @@ public class JSONReader {
         expect(Event.START_ARRAY);
         while (next() != Event.END_ARRAY) {
             switch (event) {
-                case START_OBJECT:
-                    list.add(readItemOrPersonName());
-                    break;
-                case VALUE_STRING:
-                    list.add(parser.getString());
-                    break;
-                case VALUE_NUMBER:
-                    list.add(parser.getBigDecimal());
-                    break;
-                case VALUE_NULL:
-                    list.add(null);
-                    break;
-                default:
-                    throw new JsonParsingException("Unexpected " + event, parser.getLocation());
+            case START_OBJECT:
+                list.add(readItemOrPersonName());
+                break;
+            case VALUE_STRING:
+                list.add(parser.getString());
+                break;
+            case VALUE_NUMBER:
+                list.add(parser.getBigDecimal());
+                break;
+            case VALUE_NULL:
+                list.add(null);
+                break;
+            default:
+                throw new JsonParsingException("Unexpected " + event, parser.getLocation());
             }
         }
         return list;
@@ -288,14 +291,14 @@ public class JSONReader {
         expect(Event.START_ARRAY);
         while (next() != Event.END_ARRAY) {
             switch (event) {
-                case START_OBJECT:
-                    list.add(readDataFragment());
-                    break;
-                case VALUE_NULL:
-                    list.add(null);
-                    break;
-                default:
-                    throw new JsonParsingException("Unexpected " + event, parser.getLocation());
+            case START_OBJECT:
+                list.add(readDataFragment());
+                break;
+            case VALUE_NULL:
+                list.add(null);
+                break;
+            default:
+                throw new JsonParsingException("Unexpected " + event, parser.getLocation());
             }
         }
         return list;
@@ -305,9 +308,7 @@ public class JSONReader {
         if (next() != Event.KEY_NAME)
             return null;
 
-        return (getString().length() == 8)
-                ? doReadDataset(new Attributes())
-                : readPersonName();
+        return (getString().length() == 8) ? doReadDataset(new Attributes()) : readPersonName();
     }
 
     private String readPersonName() {
@@ -318,8 +319,7 @@ public class JSONReader {
                 key = Group.valueOf(getString());
             } catch (IllegalArgumentException e) {
                 throw new JsonParsingException("Unexpected \"" + getString()
-                        + "\", expected \"Alphabetic\" or \"Ideographic\""
-                        + " or \"Phonetic\"", parser.getLocation());
+                        + "\", expected \"Alphabetic\" or \"Ideographic\"" + " or \"Phonetic\"", parser.getLocation());
             }
             pnGroups.put(key, valueString());
             next();
@@ -361,22 +361,20 @@ public class JSONReader {
         String bulkDataURI = null;
         while (next() == Event.KEY_NAME) {
             switch (getString()) {
-                case "BulkDataURI":
-                    bulkDataURI = valueString();
-                    break;
-                case "InlineBinary":
-                    bytes = readInlineBinary();
-                    break;
-                default:
-                    throw new JsonParsingException("Unexpected \"" + getString()
-                            + "\", expected \"InlineBinary\""
-                            + " or \"BulkDataURI\"", parser.getLocation());
+            case "BulkDataURI":
+                bulkDataURI = valueString();
+                break;
+            case "InlineBinary":
+                bytes = readInlineBinary();
+                break;
+            default:
+                throw new JsonParsingException(
+                        "Unexpected \"" + getString() + "\", expected \"InlineBinary\"" + " or \"BulkDataURI\"",
+                        parser.getLocation());
             }
         }
         expect(Event.END_OBJECT);
-        return bulkDataURI != null && !skipBulkDataURI
-                ? new BulkData(null, bulkDataURI, false)
-                : bytes;
+        return bulkDataURI != null && !skipBulkDataURI ? new BulkData(null, bulkDataURI, false) : bytes;
     }
 
     public JsonParser.Event getEvent() {
@@ -442,13 +440,13 @@ public class JSONReader {
 
     public boolean booleanValue() {
         switch (next()) {
-            case VALUE_FALSE:
-                return false;
-            case VALUE_TRUE:
-                return true;
+        case VALUE_FALSE:
+            return false;
+        case VALUE_TRUE:
+            return true;
         }
-        throw new JsonParsingException("Unexpected " + event
-                + ", expected VALUE_FALSE or VALUE_TRUE", parser.getLocation());
+        throw new JsonParsingException("Unexpected " + event + ", expected VALUE_FALSE or VALUE_TRUE",
+                parser.getLocation());
     }
 
     public Issuer issuerValue() {
@@ -482,14 +480,14 @@ public class JSONReader {
         int level = 0;
         do {
             switch (next()) {
-                case START_ARRAY:
-                case START_OBJECT:
-                    level++;
-                    break;
-                case END_OBJECT:
-                case END_ARRAY:
-                    level--;
-                    break;
+            case START_ARRAY:
+            case START_OBJECT:
+                level++;
+                break;
+            case END_OBJECT:
+            case END_ARRAY:
+                level--;
+                break;
             }
         } while (level > 0);
     }

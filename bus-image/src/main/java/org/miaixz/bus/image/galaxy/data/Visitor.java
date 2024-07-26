@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.data;
 
 /**
@@ -33,7 +33,6 @@ package org.miaixz.bus.image.galaxy.data;
  */
 public interface Visitor {
 
-    boolean visit(Attributes attrs, int tag, VR vr, Object value)
-            throws Exception;
+    boolean visit(Attributes attrs, int tag, VR vr, Object value) throws Exception;
 
 }

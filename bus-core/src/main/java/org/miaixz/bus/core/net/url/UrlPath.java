@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.net.url;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -173,11 +173,12 @@ public class UrlPath {
 
     /**
      * 构建path，前面带'/'
+     * 
      * <pre>
-     *     path = path-abempty / path-absolute / path-noscheme / path-rootless / path-empty
+     * path = path - abempty / path - absolute / path - noscheme / path - rootless / path - empty
      * </pre>
      *
-     * @param charset       encode编码，null表示不做encode
+     * @param charset encode编码，null表示不做encode
      * @return 如果没有任何内容，则返回空字符串""
      */
     public String build(final Charset charset) {

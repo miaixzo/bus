@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.freebsd.hardware;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -81,7 +81,8 @@ public final class FreeBsdHWDiskStore extends AbstractHWDiskStore {
         Map<String, Triplet<String, String, Long>> diskInfoMap = GeomDiskList.queryDisks();
 
         // Get list of disks from sysctl
-        List<String> devices = Arrays.asList(Pattern.SPACES_PATTERN.split(BsdSysctlKit.sysctl("kern.disks", Normal.EMPTY)));
+        List<String> devices = Arrays
+                .asList(Pattern.SPACES_PATTERN.split(BsdSysctlKit.sysctl("kern.disks", Normal.EMPTY)));
 
         // Run iostat -Ix to enumerate disks by name and get kb r/w
         List<String> iostat = Executor.runNative("iostat -Ix");
@@ -92,7 +93,8 @@ public final class FreeBsdHWDiskStore extends AbstractHWDiskStore {
                 Triplet<String, String, Long> storeInfo = diskInfoMap.get(split[0]);
                 FreeBsdHWDiskStore store = (storeInfo == null)
                         ? new FreeBsdHWDiskStore(split[0], Normal.UNKNOWN, Normal.UNKNOWN, 0L)
-                        : new FreeBsdHWDiskStore(split[0], storeInfo.getLeft(), storeInfo.getMiddle(), storeInfo.getRight());
+                        : new FreeBsdHWDiskStore(split[0], storeInfo.getLeft(), storeInfo.getMiddle(),
+                                storeInfo.getRight());
                 store.reads = (long) Parsing.parseDoubleOrDefault(split[1], 0d);
                 store.writes = (long) Parsing.parseDoubleOrDefault(split[2], 0d);
                 // In KB

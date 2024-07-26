@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.ssh.provider.sshj;
 
 import net.schmizz.sshj.SSHClient;
@@ -53,8 +53,7 @@ import java.util.List;
  * 在使用jsch 进行sftp协议下载文件时，总是中文乱码，而该框架源码又不允许设置编码。故：站在巨人的肩膀上，此类便孕育而出。
  *
  * <p>
- * 基于sshj 框架适配。
- * 参考：<a href="https://github.com/hierynomus/sshj">https://github.com/hierynomus/sshj</a>
+ * 基于sshj 框架适配。 参考：<a href="https://github.com/hierynomus/sshj">https://github.com/hierynomus/sshj</a>
  * </p>
  *
  * @author Kimi Liu
@@ -123,7 +122,8 @@ public class SshjSftp extends AbstractFtp {
      * @param charset 编码
      * @return SshjSftp
      */
-    public static SshjSftp of(final String sshHost, final int sshPort, final String sshUser, final String sshPass, final Charset charset) {
+    public static SshjSftp of(final String sshHost, final int sshPort, final String sshUser, final String sshPass,
+            final Charset charset) {
         return new SshjSftp(new FtpConfig(Connector.of(sshHost, sshPort, sshUser, sshPass), charset));
     }
 
@@ -280,7 +280,6 @@ public class SshjSftp extends AbstractFtp {
             return false;
         }
     }
-
 
     /**
      * 执行Linux 命令

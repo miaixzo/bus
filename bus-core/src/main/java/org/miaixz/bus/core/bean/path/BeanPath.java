@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.bean.path;
 
 import org.miaixz.bus.core.bean.path.node.NameNode;
@@ -39,11 +39,10 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 /**
- * Bean路径表达式，用于获取多层嵌套Bean中的字段值或Bean对象
- * 根据给定的表达式，查找Bean中对应的属性值对象。 表达式分为两种：
+ * Bean路径表达式，用于获取多层嵌套Bean中的字段值或Bean对象 根据给定的表达式，查找Bean中对应的属性值对象。 表达式分为两种：
  * <ol>
- *   <li>.表达式，可以获取Bean对象中的属性（字段）值或者Map中key对应的值</li>
- *   <li>[]表达式，可以获取集合等对象中对应index的值</li>
+ * <li>.表达式，可以获取Bean对象中的属性（字段）值或者Map中key对应的值</li>
+ * <li>[]表达式，可以获取集合等对象中对应index的值</li>
  * </ol>
  *
  * @author Kimi Liu
@@ -54,7 +53,7 @@ public class BeanPath implements Iterator<BeanPath> {
     /**
      * 表达式边界符号数组
      */
-    private static final char[] EXP_CHARS = {Symbol.C_DOT, Symbol.C_BRACKET_LEFT, Symbol.C_BRACKET_RIGHT};
+    private static final char[] EXP_CHARS = { Symbol.C_DOT, Symbol.C_BRACKET_LEFT, Symbol.C_BRACKET_RIGHT };
     private final Node node;
     private final String child;
 
@@ -69,7 +68,7 @@ public class BeanPath implements Iterator<BeanPath> {
 
         char c;
         boolean isNumStart = false;// 下标标识符开始
-        boolean isInWrap = false; //标识是否在引号内
+        boolean isInWrap = false; // 标识是否在引号内
         for (int i = 0; i < length; i++) {
             c = expression.charAt(i);
             if ('\'' == c) {
@@ -83,14 +82,16 @@ public class BeanPath implements Iterator<BeanPath> {
                 if (Symbol.C_BRACKET_RIGHT == c) {
                     // 中括号（数字下标）结束
                     if (!isNumStart) {
-                        throw new IllegalArgumentException(StringKit.format("Bad expression '{}':{}, we find ']' but no '[' !", expression, i));
+                        throw new IllegalArgumentException(
+                                StringKit.format("Bad expression '{}':{}, we find ']' but no '[' !", expression, i));
                     }
                     isNumStart = false;
                     // 中括号结束加入下标
                 } else {
                     if (isNumStart) {
                         // 非结束中括号情况下发现起始中括号报错（中括号未关闭）
-                        throw new IllegalArgumentException(StringKit.format("Bad expression '{}':{}, we find '[' but no ']' !", expression, i));
+                        throw new IllegalArgumentException(
+                                StringKit.format("Bad expression '{}':{}, we find '[' but no ']' !", expression, i));
                     } else if (Symbol.C_BRACKET_LEFT == c) {
                         // 数字下标开始
                         isNumStart = true;
@@ -111,7 +112,8 @@ public class BeanPath implements Iterator<BeanPath> {
 
         // 最后的节点
         if (isNumStart) {
-            throw new IllegalArgumentException(StringKit.format("Bad expression '{}':{}, we find '[' but no ']' !", expression, length - 1));
+            throw new IllegalArgumentException(
+                    StringKit.format("Bad expression '{}':{}, we find '[' but no ']' !", expression, length - 1));
         } else {
             this.node = NodeFactory.createNode(builder.toString());
             this.child = null;
@@ -207,7 +209,7 @@ public class BeanPath implements Iterator<BeanPath> {
         // 递归逐层查找子节点，赋值
         final Object newSubBean = childBeanPath.setValue(subBean, value);
         if (newSubBean != subBean) {
-            //对于数组对象，set新值后，会返回新的数组，此时将新对象再加入父bean中，覆盖旧数组
+            // 对于数组对象，set新值后，会返回新的数组，此时将新对象再加入父bean中，覆盖旧数组
             this.node.setValue(bean, newSubBean);
         }
         return bean;
@@ -215,10 +217,7 @@ public class BeanPath implements Iterator<BeanPath> {
 
     @Override
     public String toString() {
-        return "BeanPath{" +
-                "node=" + node +
-                ", child='" + child + '\'' +
-                '}';
+        return "BeanPath{" + "node=" + node + ", child='" + child + '\'' + '}';
     }
 
 }

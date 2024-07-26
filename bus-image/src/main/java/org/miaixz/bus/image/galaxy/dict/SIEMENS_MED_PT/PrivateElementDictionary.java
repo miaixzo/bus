@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_PT;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,19 +46,20 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.DecayCorrectionDateTime:
-                return VR.DT;
-            case PrivateTag.TimeSliceDuration:
-                return VR.IS;
-            case PrivateTag.RegistrationMatrixUID:
-                return VR.UI;
-            case PrivateTag.VolumeIndex:
-                return VR.US;
+
+        case PrivateTag.DecayCorrectionDateTime:
+            return VR.DT;
+        case PrivateTag.TimeSliceDuration:
+            return VR.IS;
+        case PrivateTag.RegistrationMatrixUID:
+            return VR.UI;
+        case PrivateTag.VolumeIndex:
+            return VR.US;
         }
         return VR.UN;
     }

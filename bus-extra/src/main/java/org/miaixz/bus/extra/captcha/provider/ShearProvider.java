@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.captcha.provider;
 
 import org.miaixz.bus.core.xyz.ColorKit;
@@ -102,13 +102,15 @@ public class ShearProvider extends AbstractProvider {
      * @param interfereCount 验证码干扰元素个数
      * @param sizeBaseHeight 字体的大小 高度的倍数
      */
-    public ShearProvider(final int width, final int height, final int codeCount, final int interfereCount, final float sizeBaseHeight) {
+    public ShearProvider(final int width, final int height, final int codeCount, final int interfereCount,
+            final float sizeBaseHeight) {
         super(width, height, new RandomStrategy(codeCount), interfereCount, sizeBaseHeight);
     }
 
     @Override
     public Image createImage(final String code) {
-        final BufferedImage image = new BufferedImage(width, height, (null == this.background) ? BufferedImage.TYPE_4BYTE_ABGR : BufferedImage.TYPE_INT_RGB);
+        final BufferedImage image = new BufferedImage(width, height,
+                (null == this.background) ? BufferedImage.TYPE_4BYTE_ABGR : BufferedImage.TYPE_INT_RGB);
         final Graphics2D g = ImageKit.createGraphics(image, this.background);
 
         try {
@@ -117,7 +119,8 @@ public class ShearProvider extends AbstractProvider {
             // 扭曲
             shear(g, this.width, this.height, ObjectKit.defaultIfNull(this.background, Color.WHITE));
             // 画干扰线
-            drawInterfere(g, 0, RandomKit.randomInt(this.height) + 1, this.width, RandomKit.randomInt(this.height) + 1, this.interfereCount, ColorKit.randomColor());
+            drawInterfere(g, 0, RandomKit.randomInt(this.height) + 1, this.width, RandomKit.randomInt(this.height) + 1,
+                    this.interfereCount, ColorKit.randomColor());
         } finally {
             g.dispose();
         }
@@ -168,7 +171,8 @@ public class ShearProvider extends AbstractProvider {
         final int phase = RandomKit.randomInt(2);
 
         for (int i = 0; i < h1; i++) {
-            final double d = (double) (period >> 1) * Math.sin((double) i / (double) period + (6.2831853071795862D * (double) phase) / (double) frames);
+            final double d = (double) (period >> 1)
+                    * Math.sin((double) i / (double) period + (6.2831853071795862D * (double) phase) / (double) frames);
             g.copyArea(0, i, w1, 1, (int) d, 0);
             g.setColor(color);
             g.drawLine((int) d, i, 0, i);
@@ -192,7 +196,8 @@ public class ShearProvider extends AbstractProvider {
         final int frames = 20;
         final int phase = 7;
         for (int i = 0; i < w1; i++) {
-            final double d = (double) (period >> 1) * Math.sin((double) i / (double) period + (6.2831853071795862D * (double) phase) / (double) frames);
+            final double d = (double) (period >> 1)
+                    * Math.sin((double) i / (double) period + (6.2831853071795862D * (double) phase) / (double) frames);
             g.copyArea(i, 0, 1, h1, 0, (int) d);
             g.setColor(color);
             // 擦除原位置的痕迹
@@ -213,7 +218,8 @@ public class ShearProvider extends AbstractProvider {
      * @param thickness 粗细
      * @param c         颜色
      */
-    private void drawInterfere(final Graphics g, final int x1, final int y1, final int x2, final int y2, final int thickness, final Color c) {
+    private void drawInterfere(final Graphics g, final int x1, final int y1, final int x2, final int y2,
+            final int thickness, final Color c) {
 
         // The thick line is in fact a filled polygon
         g.setColor(c);

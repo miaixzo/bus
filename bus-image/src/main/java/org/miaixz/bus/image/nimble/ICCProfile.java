@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 import org.miaixz.bus.image.Tag;
@@ -75,8 +75,7 @@ public final class ICCProfile {
             String opticalPathID = functionGroup.getString(Tag.OpticalPathIdentifier);
             if (opticalPathID != null) {
                 Optional<Attributes> match = opticalPathSequence.stream()
-                        .filter(item -> opticalPathID.equals(item.getString(Tag.OpticalPathIdentifier)))
-                        .findFirst();
+                        .filter(item -> opticalPathID.equals(item.getString(Tag.OpticalPathIdentifier))).findFirst();
                 if (match.isPresent()) {
                     byte[] b = match.get().getSafeBytes(Tag.ICCProfile);
                     if (b != null)
@@ -109,16 +108,14 @@ public final class ICCProfile {
         srgb("sRGB.icc") {
             @Override
             protected BufferedImage convertColor(BufferedImage bi) {
-                return isCS_sRGB(bi)
-                        ? BufferedImages.replaceColorModel(bi, srgb.colorModel)
+                return isCS_sRGB(bi) ? BufferedImages.replaceColorModel(bi, srgb.colorModel)
                         : BufferedImages.convertColor(bi, srgb.colorModel);
             }
         },
-        adobergb("adobeRGB.icc"),
-        rommrgb("rommRGB.icc");
+        adobergb("adobeRGB.icc"), rommrgb("rommRGB.icc");
 
-        private static final ColorModel CM_sRGB = ColorModelFactory.createRGBColorModel(
-                8, DataBuffer.TYPE_BYTE, ColorSpace.getInstance(ColorSpace.CS_sRGB));
+        private static final ColorModel CM_sRGB = ColorModelFactory.createRGBColorModel(8, DataBuffer.TYPE_BYTE,
+                ColorSpace.getInstance(ColorSpace.CS_sRGB));
         private final ColorModel colorModel;
 
         Option() {
@@ -139,18 +136,14 @@ public final class ICCProfile {
         }
 
         private static BufferedImage toRGB(BufferedImage bi, ColorModel cm) {
-            return cm instanceof PaletteColorModel
-                    ? BufferedImages.convertPalettetoRGB(bi, null)
-                    : cm.getColorSpace().getType() == ColorSpace.TYPE_YCbCr
-                    ? BufferedImages.convertYBRtoRGB(bi, null)
-                    : bi;
+            return cm instanceof PaletteColorModel ? BufferedImages.convertPalettetoRGB(bi, null)
+                    : cm.getColorSpace().getType() == ColorSpace.TYPE_YCbCr ? BufferedImages.convertYBRtoRGB(bi, null)
+                            : bi;
         }
 
         public BufferedImage adjust(BufferedImage bi) {
             ColorModel cm = bi.getColorModel();
-            return cm.getNumColorComponents() == 3
-                    ? convertColor(toRGB(bi, cm))
-                    : bi;
+            return cm.getNumColorComponents() == 3 ? convertColor(toRGB(bi, cm)) : bi;
         }
 
         protected BufferedImage convertColor(BufferedImage bi) {

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_DFR_01_MANIPULATED;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,44 +46,45 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.PixelShiftHorizontal:
-            case PrivateTag.PixelShiftVertical:
-                return VR.DS;
-            case PrivateTag._0017_xx25_:
-            case PrivateTag._0017_xx27_:
-            case PrivateTag.EdgeEnhancement:
-            case PrivateTag.Harmonization:
-            case PrivateTag.Landmark:
-                return VR.IS;
-            case PrivateTag.LeftMarker:
-            case PrivateTag.RightMarker:
-                return VR.LO;
-            case PrivateTag._0017_xxA1_:
-            case PrivateTag.ImageNameExtension1:
-            case PrivateTag.ImageNameExtension2:
-                return VR.SH;
-            case PrivateTag._0017_xx11_:
-            case PrivateTag._0017_xx12_:
-            case PrivateTag._0017_xx14_:
-            case PrivateTag._0017_xx15_:
-            case PrivateTag._0017_xx31_:
-            case PrivateTag._0017_xx32_:
-            case PrivateTag._0017_xx33_:
-            case PrivateTag._0017_xx35_:
-            case PrivateTag._0017_xx37_:
-            case PrivateTag._0017_xx38_:
-            case PrivateTag._0017_xx72_:
-            case PrivateTag._0017_xx73_:
-            case PrivateTag._0017_xx74_:
-            case PrivateTag._0017_xx79_:
-            case PrivateTag._0017_xx7A_:
-            case PrivateTag._0017_xx80_:
-                return VR.US;
+
+        case PrivateTag.PixelShiftHorizontal:
+        case PrivateTag.PixelShiftVertical:
+            return VR.DS;
+        case PrivateTag._0017_xx25_:
+        case PrivateTag._0017_xx27_:
+        case PrivateTag.EdgeEnhancement:
+        case PrivateTag.Harmonization:
+        case PrivateTag.Landmark:
+            return VR.IS;
+        case PrivateTag.LeftMarker:
+        case PrivateTag.RightMarker:
+            return VR.LO;
+        case PrivateTag._0017_xxA1_:
+        case PrivateTag.ImageNameExtension1:
+        case PrivateTag.ImageNameExtension2:
+            return VR.SH;
+        case PrivateTag._0017_xx11_:
+        case PrivateTag._0017_xx12_:
+        case PrivateTag._0017_xx14_:
+        case PrivateTag._0017_xx15_:
+        case PrivateTag._0017_xx31_:
+        case PrivateTag._0017_xx32_:
+        case PrivateTag._0017_xx33_:
+        case PrivateTag._0017_xx35_:
+        case PrivateTag._0017_xx37_:
+        case PrivateTag._0017_xx38_:
+        case PrivateTag._0017_xx72_:
+        case PrivateTag._0017_xx73_:
+        case PrivateTag._0017_xx74_:
+        case PrivateTag._0017_xx79_:
+        case PrivateTag._0017_xx7A_:
+        case PrivateTag._0017_xx80_:
+            return VR.US;
         }
         return VR.UN;
     }

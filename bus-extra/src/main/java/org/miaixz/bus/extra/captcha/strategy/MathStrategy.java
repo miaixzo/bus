@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.captcha.strategy;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -73,10 +73,7 @@ public class MathStrategy implements CodeStrategy {
         number1 = StringKit.padAfter(number1, this.numberLength, Symbol.C_SPACE);
         number2 = StringKit.padAfter(number2, this.numberLength, Symbol.C_SPACE);
 
-        return StringKit.builder()
-                .append(number1)
-                .append(RandomKit.randomChar(operators))
-                .append(number2)//
+        return StringKit.builder().append(number1).append(RandomKit.randomChar(operators)).append(number2)//
                 .append(Symbol.C_EQUAL).toString();
     }
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -33,8 +33,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import java.util.Locale;
 
 /**
- * {@link Locale}对象转换器
- * 只提供String转换支持
+ * {@link Locale}对象转换器 只提供String转换支持
  *
  * @author Kimi Liu
  * @since Java 17+

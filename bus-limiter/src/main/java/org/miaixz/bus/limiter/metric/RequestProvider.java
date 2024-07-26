@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.limiter.metric;
 
 import org.miaixz.bus.core.data.id.ID;
@@ -120,9 +120,12 @@ public class RequestProvider implements Provider {
         for (Serializable mark : map.keySet()) {
             count++;
             ResourceManager resourceManager = map.get(mark);
-            if (Objects.isNull(resourceManager)) continue;
-            if (resourceManager.isClear()) map.remove(mark);
-            if (count > 9) return;
+            if (Objects.isNull(resourceManager))
+                continue;
+            if (resourceManager.isClear())
+                map.remove(mark);
+            if (count > 9)
+                return;
         }
     }
 

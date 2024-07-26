@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.goalie.filter;
 
 import jakarta.annotation.PostConstruct;
@@ -65,7 +65,8 @@ public class DecryptFilter implements WebFilter {
     @PostConstruct
     public void init() {
         if (Algorithm.AES.getValue().equals(decrypt.getType())) {
-            crypto = new AES(Algorithm.Mode.CBC, Padding.PKCS7Padding, decrypt.getKey().getBytes(), decrypt.getOffset().getBytes());
+            crypto = new AES(Algorithm.Mode.CBC, Padding.PKCS7Padding, decrypt.getKey().getBytes(),
+                    decrypt.getOffset().getBytes());
         }
     }
 

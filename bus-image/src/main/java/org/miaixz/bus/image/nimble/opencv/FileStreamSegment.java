@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv;
 
 import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
@@ -35,6 +35,7 @@ import javax.imageio.stream.FileImageOutputStream;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.lang.reflect.Field;
+
 /**
  * @author Kimi Liu
  * @since Java 17+

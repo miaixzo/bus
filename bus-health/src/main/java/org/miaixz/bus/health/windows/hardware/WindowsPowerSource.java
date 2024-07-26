@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.hardware;
 
 import com.sun.jna.Memory;
@@ -55,7 +55,8 @@ import java.util.List;
 @ThreadSafe
 public final class WindowsPowerSource extends AbstractPowerSource {
 
-    private static final Guid.GUID GUID_DEVCLASS_BATTERY = Guid.GUID.fromString("{72631E54-78A4-11D0-BCF7-00AA00B7B32A}");
+    private static final Guid.GUID GUID_DEVCLASS_BATTERY = Guid.GUID
+            .fromString("{72631E54-78A4-11D0-BCF7-00AA00B7B32A}");
     private static final int CHAR_WIDTH = W32APITypeMapper.DEFAULT == W32APITypeMapper.UNICODE ? 2 : 1;
     private static final boolean X64 = Platform.is64Bit();
 
@@ -71,11 +72,11 @@ public final class WindowsPowerSource extends AbstractPowerSource {
     private static final int IOCTL_BATTERY_QUERY_INFORMATION = 0x294044;
 
     public WindowsPowerSource(String psName, String psDeviceName, double psRemainingCapacityPercent,
-                              double psTimeRemainingEstimated, double psTimeRemainingInstant, double psPowerUsageRate, double psVoltage,
-                              double psAmperage, boolean psPowerOnLine, boolean psCharging, boolean psDischarging,
-                              PowerSource.CapacityUnits psCapacityUnits, int psCurrentCapacity, int psMaxCapacity, int psDesignCapacity,
-                              int psCycleCount, String psChemistry, LocalDate psManufactureDate, String psManufacturer,
-                              String psSerialNumber, double psTemperature) {
+            double psTimeRemainingEstimated, double psTimeRemainingInstant, double psPowerUsageRate, double psVoltage,
+            double psAmperage, boolean psPowerOnLine, boolean psCharging, boolean psDischarging,
+            PowerSource.CapacityUnits psCapacityUnits, int psCurrentCapacity, int psMaxCapacity, int psDesignCapacity,
+            int psCycleCount, String psChemistry, LocalDate psManufactureDate, String psManufacturer,
+            String psSerialNumber, double psTemperature) {
         super(psName, psDeviceName, psRemainingCapacityPercent, psTimeRemainingEstimated, psTimeRemainingInstant,
                 psPowerUsageRate, psVoltage, psAmperage, psPowerOnLine, psCharging, psDischarging, psCapacityUnits,
                 psCurrentCapacity, psMaxCapacity, psDesignCapacity, psCycleCount, psChemistry, psManufactureDate,
@@ -124,8 +125,8 @@ public final class WindowsPowerSource extends AbstractPowerSource {
         // across all IOCTL entries if there are more than one.
 
         try (PowrProf.SystemBatteryState batteryState = new PowrProf.SystemBatteryState()) {
-            if (0 == PowrProf.INSTANCE.CallNtPowerInformation(PowrProf.POWER_INFORMATION_LEVEL.SystemBatteryState, null, 0,
-                    batteryState.getPointer(), batteryState.size()) && batteryState.batteryPresent > 0) {
+            if (0 == PowrProf.INSTANCE.CallNtPowerInformation(PowrProf.POWER_INFORMATION_LEVEL.SystemBatteryState, null,
+                    0, batteryState.getPointer(), batteryState.size()) && batteryState.batteryPresent > 0) {
                 if (batteryState.acOnLine == 0 && batteryState.charging == 0 && batteryState.discharging > 0) {
                     psTimeRemainingEstimated = batteryState.estimatedTime;
                 } else if (batteryState.charging > 0) {
@@ -149,10 +150,10 @@ public final class WindowsPowerSource extends AbstractPowerSource {
             // Limit search to 100 batteries max
             for (int idev = 0; !batteryFound && idev < 100; idev++) {
                 try (Struct.CloseableSpDeviceInterfaceData did = new Struct.CloseableSpDeviceInterfaceData();
-                     ByRef.CloseableIntByReference requiredSize = new ByRef.CloseableIntByReference();
-                     ByRef.CloseableIntByReference dwWait = new ByRef.CloseableIntByReference();
-                     ByRef.CloseableIntByReference dwTag = new ByRef.CloseableIntByReference();
-                     ByRef.CloseableIntByReference dwOut = new ByRef.CloseableIntByReference()) {
+                        ByRef.CloseableIntByReference requiredSize = new ByRef.CloseableIntByReference();
+                        ByRef.CloseableIntByReference dwWait = new ByRef.CloseableIntByReference();
+                        ByRef.CloseableIntByReference dwTag = new ByRef.CloseableIntByReference();
+                        ByRef.CloseableIntByReference dwOut = new ByRef.CloseableIntByReference()) {
                     did.cbSize = did.size();
                     if (SetupApi.INSTANCE.SetupDiEnumDeviceInterfaces(hdev, null, GUID_DEVCLASS_BATTERY, idev, did)) {
                         SetupApi.INSTANCE.SetupDiGetDeviceInterfaceDetail(hdev, did, null, 0, requiredSize, null);
@@ -175,10 +176,10 @@ public final class WindowsPowerSource extends AbstractPowerSource {
                                             WinNT.FILE_ATTRIBUTE_NORMAL, null);
                                     if (!WinBase.INVALID_HANDLE_VALUE.equals(hBattery)) {
                                         try (PowrProf.BATTERY_QUERY_INFORMATION bqi = new PowrProf.BATTERY_QUERY_INFORMATION();
-                                             PowrProf.BATTERY_INFORMATION bi = new PowrProf.BATTERY_INFORMATION();
-                                             PowrProf.BATTERY_WAIT_STATUS bws = new PowrProf.BATTERY_WAIT_STATUS();
-                                             PowrProf.BATTERY_STATUS bs = new PowrProf.BATTERY_STATUS();
-                                             PowrProf.BATTERY_MANUFACTURE_DATE bmd = new PowrProf.BATTERY_MANUFACTURE_DATE()) {
+                                                PowrProf.BATTERY_INFORMATION bi = new PowrProf.BATTERY_INFORMATION();
+                                                PowrProf.BATTERY_WAIT_STATUS bws = new PowrProf.BATTERY_WAIT_STATUS();
+                                                PowrProf.BATTERY_STATUS bs = new PowrProf.BATTERY_STATUS();
+                                                PowrProf.BATTERY_MANUFACTURE_DATE bmd = new PowrProf.BATTERY_MANUFACTURE_DATE()) {
                                             // Ask the battery for its tag.
                                             if (Kernel32.INSTANCE.DeviceIoControl(hBattery, IOCTL_BATTERY_QUERY_TAG,
                                                     dwWait.getPointer(), Integer.BYTES, dwTag.getPointer(),
@@ -323,7 +324,7 @@ public final class WindowsPowerSource extends AbstractPowerSource {
 
     private static String batteryQueryString(WinNT.HANDLE hBattery, int tag, int infoLevel) {
         try (PowrProf.BATTERY_QUERY_INFORMATION bqi = new PowrProf.BATTERY_QUERY_INFORMATION();
-             ByRef.CloseableIntByReference dwOut = new ByRef.CloseableIntByReference()) {
+                ByRef.CloseableIntByReference dwOut = new ByRef.CloseableIntByReference()) {
             bqi.BatteryTag = tag;
             bqi.InformationLevel = infoLevel;
             bqi.write();

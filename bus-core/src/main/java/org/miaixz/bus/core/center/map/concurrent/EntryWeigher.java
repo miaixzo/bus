@@ -24,25 +24,25 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map.concurrent;
 
 /**
- * A class that can determine the selector of an entry. The total selector threshold
- * is used to determine when an eviction is required.
+ * A class that can determine the selector of an entry. The total selector threshold is used to determine when an
+ * eviction is required.
  *
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
  * @see <a href="http://code.google.com/p/concurrentlinkedhashmap/">
- * http://code.google.com/p/concurrentlinkedhashmap/</a>
+ *      http://code.google.com/p/concurrentlinkedhashmap/</a>
  * @since Java 17+
  */
 public interface EntryWeigher<K, V> {
 
     /**
-     * Measures an entry's selector to determine how many units of capacity that
-     * the data and value consumes. An entry must consume a minimum of one unit.
+     * Measures an entry's selector to determine how many units of capacity that the data and value consumes. An entry
+     * must consume a minimum of one unit.
      *
      * @param key   the data to weigh
      * @param value the value to weigh

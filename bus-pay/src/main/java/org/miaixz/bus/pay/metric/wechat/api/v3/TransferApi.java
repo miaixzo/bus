@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pay.metric.wechat.api.v3;
 
 import org.miaixz.bus.pay.Matcher;
@@ -60,7 +60,8 @@ public enum TransferApi implements Matcher {
     /**
      * 微信支付明细单号查询明细单
      */
-    PARTNER_TRANSFER_QUERY_BY_DETAIL_ID("/v3/partner-transfer/batches/batch-id/%s/details/detail-id/%s", "微信支付明细单号查询明细单"),
+    PARTNER_TRANSFER_QUERY_BY_DETAIL_ID("/v3/partner-transfer/batches/batch-id/%s/details/detail-id/%s",
+            "微信支付明细单号查询明细单"),
 
     /**
      * 商家批次单号查询批次单
@@ -75,12 +76,14 @@ public enum TransferApi implements Matcher {
     /**
      * 商家明细单号查询明细单
      */
-    TRANSFER_QUERY_DETAIL_BY_OUT_BATCH_NO("/v3/transfer/batches/out-batch-no/%s/details/out-detail-no/%s", "商家明细单号查询明细单"),
+    TRANSFER_QUERY_DETAIL_BY_OUT_BATCH_NO("/v3/transfer/batches/out-batch-no/%s/details/out-detail-no/%s",
+            "商家明细单号查询明细单"),
 
     /**
      * 商家明细单号查询明细单
      */
-    PARTNER_TRANSFER_QUERY_DETAIL_BY_OUT_BATCH_NO("/v3/partner-transfer/batches/out-batch-no/%s/details/out-detail-no/%s", "商家明细单号查询明细单"),
+    PARTNER_TRANSFER_QUERY_DETAIL_BY_OUT_BATCH_NO(
+            "/v3/partner-transfer/batches/out-batch-no/%s/details/out-detail-no/%s", "商家明细单号查询明细单"),
 
     /**
      * 转账电子回单申请受理
@@ -153,4 +156,3 @@ public enum TransferApi implements Matcher {
     }
 
 }
-

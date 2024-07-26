@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -54,8 +54,9 @@ public class RunnerDetail extends Runner {
     public enum RunnerAccessLevel {
 
         NOT_PROTECTED, REF_PROTECTED;
-        private static JacksonJsonEnumHelper<RunnerAccessLevel> enumHelper =
-                new JacksonJsonEnumHelper<>(RunnerAccessLevel.class);
+
+        private static JacksonJsonEnumHelper<RunnerAccessLevel> enumHelper = new JacksonJsonEnumHelper<>(
+                RunnerAccessLevel.class);
 
         @JsonCreator
         public static RunnerAccessLevel forValue(String value) {

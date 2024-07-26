@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.mail;
 
 import jakarta.mail.Authenticator;
@@ -49,8 +49,7 @@ import java.util.Map.Entry;
  */
 public class MailKit {
     /**
-     * 使用配置文件中设置的账户发送文本邮件，发送给单个或多个收件人
-     * 多个收件人可以使用逗号“,”分隔，也可以通过分号“;”分隔
+     * 使用配置文件中设置的账户发送文本邮件，发送给单个或多个收件人 多个收件人可以使用逗号“,”分隔，也可以通过分号“;”分隔
      *
      * @param to      收件人
      * @param subject 标题
@@ -63,8 +62,7 @@ public class MailKit {
     }
 
     /**
-     * 使用配置文件中设置的账户发送HTML邮件，发送给单个或多个收件人
-     * 多个收件人可以使用逗号“,”分隔，也可以通过分号“;”分隔
+     * 使用配置文件中设置的账户发送HTML邮件，发送给单个或多个收件人 多个收件人可以使用逗号“,”分隔，也可以通过分号“;”分隔
      *
      * @param to      收件人
      * @param subject 标题
@@ -77,8 +75,7 @@ public class MailKit {
     }
 
     /**
-     * 使用配置文件中设置的账户发送邮件，发送单个或多个收件人
-     * 多个收件人可以使用逗号“,”分隔，也可以通过分号“;”分隔
+     * 使用配置文件中设置的账户发送邮件，发送单个或多个收件人 多个收件人可以使用逗号“,”分隔，也可以通过分号“;”分隔
      *
      * @param to      收件人
      * @param subject 标题
@@ -87,13 +84,13 @@ public class MailKit {
      * @param files   附件列表
      * @return message-data
      */
-    public static String send(final String to, final String subject, final String content, final boolean isHtml, final File... files) {
+    public static String send(final String to, final String subject, final String content, final boolean isHtml,
+            final File... files) {
         return send(splitAddress(to), subject, content, isHtml, files);
     }
 
     /**
-     * 使用配置文件中设置的账户发送邮件，发送单个或多个收件人
-     * 多个收件人、抄送人、密送人可以使用逗号“,”分隔，也可以通过分号“;”分隔
+     * 使用配置文件中设置的账户发送邮件，发送单个或多个收件人 多个收件人、抄送人、密送人可以使用逗号“,”分隔，也可以通过分号“;”分隔
      *
      * @param to      收件人，可以使用逗号“,”分隔，也可以通过分号“;”分隔
      * @param cc      抄送人，可以使用逗号“,”分隔，也可以通过分号“;”分隔
@@ -104,7 +101,8 @@ public class MailKit {
      * @param files   附件列表
      * @return message-data
      */
-    public static String send(final String to, final String cc, final String bcc, final String subject, final String content, final boolean isHtml, final File... files) {
+    public static String send(final String to, final String cc, final String bcc, final String subject,
+            final String content, final boolean isHtml, final File... files) {
         return send(splitAddress(to), splitAddress(cc), splitAddress(bcc), subject, content, isHtml, files);
     }
 
@@ -117,7 +115,8 @@ public class MailKit {
      * @param files   附件列表
      * @return message-data
      */
-    public static String sendText(final Collection<String> tos, final String subject, final String content, final File... files) {
+    public static String sendText(final Collection<String> tos, final String subject, final String content,
+            final File... files) {
         return send(tos, subject, content, false, files);
     }
 
@@ -130,7 +129,8 @@ public class MailKit {
      * @param files   附件列表
      * @return message-data
      */
-    public static String sendHtml(final Collection<String> tos, final String subject, final String content, final File... files) {
+    public static String sendHtml(final Collection<String> tos, final String subject, final String content,
+            final File... files) {
         return send(tos, subject, content, true, files);
     }
 
@@ -144,7 +144,8 @@ public class MailKit {
      * @param files   附件列表
      * @return message-data
      */
-    public static String send(final Collection<String> tos, final String subject, final String content, final boolean isHtml, final File... files) {
+    public static String send(final Collection<String> tos, final String subject, final String content,
+            final boolean isHtml, final File... files) {
         return send(tos, null, null, subject, content, isHtml, files);
     }
 
@@ -160,8 +161,10 @@ public class MailKit {
      * @param files   附件列表
      * @return message-data
      */
-    public static String send(final Collection<String> tos, final Collection<String> ccs, final Collection<String> bccs, final String subject, final String content, final boolean isHtml, final File... files) {
-        return send(GlobalMailAccount.INSTANCE.getAccount(), true, tos, ccs, bccs, subject, content, null, isHtml, files);
+    public static String send(final Collection<String> tos, final Collection<String> ccs, final Collection<String> bccs,
+            final String subject, final String content, final boolean isHtml, final File... files) {
+        return send(GlobalMailAccount.INSTANCE.getAccount(), true, tos, ccs, bccs, subject, content, null, isHtml,
+                files);
     }
 
     /**
@@ -175,7 +178,8 @@ public class MailKit {
      * @param files       附件列表
      * @return message-data
      */
-    public static String send(final MailAccount mailAccount, final String to, final String subject, final String content, final boolean isHtml, final File... files) {
+    public static String send(final MailAccount mailAccount, final String to, final String subject,
+            final String content, final boolean isHtml, final File... files) {
         return send(mailAccount, splitAddress(to), subject, content, isHtml, files);
     }
 
@@ -190,7 +194,8 @@ public class MailKit {
      * @param files       附件列表
      * @return message-data
      */
-    public static String send(final MailAccount mailAccount, final Collection<String> tos, final String subject, final String content, final boolean isHtml, final File... files) {
+    public static String send(final MailAccount mailAccount, final Collection<String> tos, final String subject,
+            final String content, final boolean isHtml, final File... files) {
         return send(mailAccount, tos, null, null, subject, content, isHtml, files);
     }
 
@@ -207,13 +212,14 @@ public class MailKit {
      * @param files       附件列表
      * @return message-data
      */
-    public static String send(final MailAccount mailAccount, final Collection<String> tos, final Collection<String> ccs, final Collection<String> bccs, final String subject, final String content, final boolean isHtml, final File... files) {
+    public static String send(final MailAccount mailAccount, final Collection<String> tos, final Collection<String> ccs,
+            final Collection<String> bccs, final String subject, final String content, final boolean isHtml,
+            final File... files) {
         return send(mailAccount, false, tos, ccs, bccs, subject, content, null, isHtml, files);
     }
 
     /**
-     * 使用配置文件中设置的账户发送HTML邮件，发送给单个或多个收件人
-     * 多个收件人可以使用逗号“,”分隔，也可以通过分号“;”分隔
+     * 使用配置文件中设置的账户发送HTML邮件，发送给单个或多个收件人 多个收件人可以使用逗号“,”分隔，也可以通过分号“;”分隔
      *
      * @param to       收件人
      * @param subject  标题
@@ -222,13 +228,13 @@ public class MailKit {
      * @param files    附件列表
      * @return message-data
      */
-    public static String sendHtml(final String to, final String subject, final String content, final Map<String, InputStream> imageMap, final File... files) {
+    public static String sendHtml(final String to, final String subject, final String content,
+            final Map<String, InputStream> imageMap, final File... files) {
         return send(to, subject, content, imageMap, true, files);
     }
 
     /**
-     * 使用配置文件中设置的账户发送邮件，发送单个或多个收件人
-     * 多个收件人可以使用逗号“,”分隔，也可以通过分号“;”分隔
+     * 使用配置文件中设置的账户发送邮件，发送单个或多个收件人 多个收件人可以使用逗号“,”分隔，也可以通过分号“;”分隔
      *
      * @param to       收件人
      * @param subject  标题
@@ -238,13 +244,13 @@ public class MailKit {
      * @param files    附件列表
      * @return message-data
      */
-    public static String send(final String to, final String subject, final String content, final Map<String, InputStream> imageMap, final boolean isHtml, final File... files) {
+    public static String send(final String to, final String subject, final String content,
+            final Map<String, InputStream> imageMap, final boolean isHtml, final File... files) {
         return send(splitAddress(to), subject, content, imageMap, isHtml, files);
     }
 
     /**
-     * 使用配置文件中设置的账户发送邮件，发送单个或多个收件人
-     * 多个收件人、抄送人、密送人可以使用逗号“,”分隔，也可以通过分号“;”分隔
+     * 使用配置文件中设置的账户发送邮件，发送单个或多个收件人 多个收件人、抄送人、密送人可以使用逗号“,”分隔，也可以通过分号“;”分隔
      *
      * @param to       收件人，可以使用逗号“,”分隔，也可以通过分号“;”分隔
      * @param cc       抄送人，可以使用逗号“,”分隔，也可以通过分号“;”分隔
@@ -256,7 +262,8 @@ public class MailKit {
      * @param files    附件列表
      * @return message-data
      */
-    public static String send(final String to, final String cc, final String bcc, final String subject, final String content, final Map<String, InputStream> imageMap, final boolean isHtml, final File... files) {
+    public static String send(final String to, final String cc, final String bcc, final String subject,
+            final String content, final Map<String, InputStream> imageMap, final boolean isHtml, final File... files) {
         return send(splitAddress(to), splitAddress(cc), splitAddress(bcc), subject, content, imageMap, isHtml, files);
     }
 
@@ -270,7 +277,8 @@ public class MailKit {
      * @param files    附件列表
      * @return message-data
      */
-    public static String sendHtml(final Collection<String> tos, final String subject, final String content, final Map<String, InputStream> imageMap, final File... files) {
+    public static String sendHtml(final Collection<String> tos, final String subject, final String content,
+            final Map<String, InputStream> imageMap, final File... files) {
         return send(tos, subject, content, imageMap, true, files);
     }
 
@@ -285,7 +293,8 @@ public class MailKit {
      * @param files    附件列表
      * @return message-data
      */
-    public static String send(final Collection<String> tos, final String subject, final String content, final Map<String, InputStream> imageMap, final boolean isHtml, final File... files) {
+    public static String send(final Collection<String> tos, final String subject, final String content,
+            final Map<String, InputStream> imageMap, final boolean isHtml, final File... files) {
         return send(tos, null, null, subject, content, imageMap, isHtml, files);
     }
 
@@ -302,8 +311,11 @@ public class MailKit {
      * @param files    附件列表
      * @return message-data
      */
-    public static String send(final Collection<String> tos, final Collection<String> ccs, final Collection<String> bccs, final String subject, final String content, final Map<String, InputStream> imageMap, final boolean isHtml, final File... files) {
-        return send(GlobalMailAccount.INSTANCE.getAccount(), true, tos, ccs, bccs, subject, content, imageMap, isHtml, files);
+    public static String send(final Collection<String> tos, final Collection<String> ccs, final Collection<String> bccs,
+            final String subject, final String content, final Map<String, InputStream> imageMap, final boolean isHtml,
+            final File... files) {
+        return send(GlobalMailAccount.INSTANCE.getAccount(), true, tos, ccs, bccs, subject, content, imageMap, isHtml,
+                files);
     }
 
     /**
@@ -318,7 +330,8 @@ public class MailKit {
      * @param files       附件列表
      * @return message-data
      */
-    public static String send(final MailAccount mailAccount, final String to, final String subject, final String content, final Map<String, InputStream> imageMap, final boolean isHtml, final File... files) {
+    public static String send(final MailAccount mailAccount, final String to, final String subject,
+            final String content, final Map<String, InputStream> imageMap, final boolean isHtml, final File... files) {
         return send(mailAccount, splitAddress(to), subject, content, imageMap, isHtml, files);
     }
 
@@ -334,7 +347,8 @@ public class MailKit {
      * @param files       附件列表
      * @return message-data
      */
-    public static String send(final MailAccount mailAccount, final Collection<String> tos, final String subject, final String content, final Map<String, InputStream> imageMap, final boolean isHtml, final File... files) {
+    public static String send(final MailAccount mailAccount, final Collection<String> tos, final String subject,
+            final String content, final Map<String, InputStream> imageMap, final boolean isHtml, final File... files) {
         return send(mailAccount, tos, null, null, subject, content, imageMap, isHtml, files);
     }
 
@@ -352,8 +366,9 @@ public class MailKit {
      * @param files       附件列表
      * @return message-data
      */
-    public static String send(final MailAccount mailAccount, final Collection<String> tos, final Collection<String> ccs, final Collection<String> bccs, final String subject, final String content, final Map<String, InputStream> imageMap,
-                              final boolean isHtml, final File... files) {
+    public static String send(final MailAccount mailAccount, final Collection<String> tos, final Collection<String> ccs,
+            final Collection<String> bccs, final String subject, final String content,
+            final Map<String, InputStream> imageMap, final boolean isHtml, final File... files) {
         return send(mailAccount, false, tos, ccs, bccs, subject, content, imageMap, isHtml, files);
     }
 
@@ -370,10 +385,7 @@ public class MailKit {
             authenticator = new Authenticator() {
                 @Override
                 protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(
-                            mailAccount.getUser(),
-                            String.valueOf(mailAccount.getPass())
-                    );
+                    return new PasswordAuthentication(mailAccount.getUser(), String.valueOf(mailAccount.getPass()));
                 }
             };
         }
@@ -397,8 +409,10 @@ public class MailKit {
      * @param files            附件列表
      * @return message-data
      */
-    private static String send(final MailAccount mailAccount, final boolean useGlobalSession, final Collection<String> tos, final Collection<String> ccs, final Collection<String> bccs, final String subject, final String content,
-                               final Map<String, InputStream> imageMap, final boolean isHtml, final File... files) {
+    private static String send(final MailAccount mailAccount, final boolean useGlobalSession,
+            final Collection<String> tos, final Collection<String> ccs, final Collection<String> bccs,
+            final String subject, final String content, final Map<String, InputStream> imageMap, final boolean isHtml,
+            final File... files) {
         final Mail mail = Mail.of(mailAccount).setUseGlobalSession(useGlobalSession);
 
         // 可选抄送人

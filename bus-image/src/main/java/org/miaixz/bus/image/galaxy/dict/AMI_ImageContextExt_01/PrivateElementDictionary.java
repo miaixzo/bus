@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.AMI_ImageContextExt_01;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,15 +46,16 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.WindowFunction:
-                return VR.CS;
-            case PrivateTag.WindowSlope:
-                return VR.DS;
+
+        case PrivateTag.WindowFunction:
+            return VR.CS;
+        case PrivateTag.WindowSlope:
+            return VR.DS;
         }
         return VR.UN;
     }

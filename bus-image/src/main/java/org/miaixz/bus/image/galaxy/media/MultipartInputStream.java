@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.media;
 
 import java.io.EOFException;
@@ -57,8 +57,7 @@ public class MultipartInputStream extends FilterInputStream {
         this.rpos = buffer.length;
     }
 
-    private static void readFully(InputStream in, byte[] b, int off, int len)
-            throws IOException {
+    private static void readFully(InputStream in, byte[] b, int off, int len) throws IOException {
         if (off < 0 || len < 0 || off + len > b.length)
             throw new IndexOutOfBoundsException();
         while (len > 0) {
@@ -134,7 +133,7 @@ public class MultipartInputStream extends FilterInputStream {
 
     @Override
     public void close() throws IOException {
-        //NOOP
+        // NOOP
     }
 
     public void skipAll() throws IOException {
@@ -143,9 +142,7 @@ public class MultipartInputStream extends FilterInputStream {
     }
 
     public boolean isZIP() throws IOException {
-        return !isBoundary()
-                && buffer[rpos] == 'P'
-                && buffer[rpos + 1] == 'K';
+        return !isBoundary() && buffer[rpos] == 'P' && buffer[rpos + 1] == 'K';
     }
 
     private boolean isBoundary() throws IOException {
@@ -199,8 +196,7 @@ public class MultipartInputStream extends FilterInputStream {
 
     private boolean readHeaderParam(Field field) throws IOException {
         field.reset();
-        OUTER:
-        while (!isBoundary()) {
+        OUTER: while (!isBoundary()) {
             field.growBuffer(buffer.length);
             while (rpos < buffer.length)
                 if (!field.append(buffer[rpos++]))

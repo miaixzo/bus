@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager.builtin;
 
 import org.miaixz.bus.core.lang.exception.PageException;
@@ -42,7 +42,7 @@ public class MetaObject {
     static {
         try {
             // 高版本中的 MetaObject.forObject 有 4 个参数，低版本是 1 个
-            //先判断当前使用的是否为高版本
+            // 先判断当前使用的是否为高版本
             Class.forName("org.apache.ibatis.reflection.ReflectorFactory");
             // 下面这个 MetaObjectWithCache 带反射的缓存信息
             Class<?> metaClass = Class.forName("org.miaixz.bus.pager.builtin.MetaObjectWithCache");

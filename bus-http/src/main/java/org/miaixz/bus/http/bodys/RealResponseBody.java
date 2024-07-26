@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.bodys;
 
 import org.miaixz.bus.core.io.source.BufferSource;
@@ -39,15 +39,13 @@ import org.miaixz.bus.core.lang.MediaType;
 public class RealResponseBody extends ResponseBody {
 
     /**
-     * 使用字符串避免在需要时才解析内容类型
-     * 这也避免了由格式不正确的内容类型引起的问题
+     * 使用字符串避免在需要时才解析内容类型 这也避免了由格式不正确的内容类型引起的问题
      */
     private final String mediaType;
     private final long length;
     private final BufferSource source;
 
-    public RealResponseBody(
-            String mediaType, long length, BufferSource source) {
+    public RealResponseBody(String mediaType, long length, BufferSource source) {
         this.mediaType = mediaType;
         this.length = length;
         this.source = source;

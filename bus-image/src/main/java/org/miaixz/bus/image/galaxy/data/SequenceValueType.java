@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.data;
 
 import java.util.Date;
@@ -73,20 +73,17 @@ enum SequenceValueType implements ValueType {
     }
 
     @Override
-    public String toString(Object val, boolean bigEndian, int valueIndex,
-                           String defVal) {
+    public String toString(Object val, boolean bigEndian, int valueIndex, String defVal) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Object toStrings(Object val, boolean bigEndian,
-                            SpecificCharacterSet cs) {
+    public Object toStrings(Object val, boolean bigEndian, SpecificCharacterSet cs) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public int toInt(Object val, boolean bigEndian, int valueIndex,
-                     int defVal) {
+    public int toInt(Object val, boolean bigEndian, int valueIndex, int defVal) {
         throw new UnsupportedOperationException();
     }
 
@@ -106,8 +103,7 @@ enum SequenceValueType implements ValueType {
     }
 
     @Override
-    public float toFloat(Object val, boolean bigEndian, int valueIndex,
-                         float defVal) {
+    public float toFloat(Object val, boolean bigEndian, int valueIndex, float defVal) {
         throw new UnsupportedOperationException();
     }
 
@@ -117,8 +113,7 @@ enum SequenceValueType implements ValueType {
     }
 
     @Override
-    public double toDouble(Object val, boolean bigEndian, int valueIndex,
-                           double defVal) {
+    public double toDouble(Object val, boolean bigEndian, int valueIndex, double defVal) {
         throw new UnsupportedOperationException();
     }
 
@@ -128,8 +123,7 @@ enum SequenceValueType implements ValueType {
     }
 
     @Override
-    public Date toDate(Object val, TimeZone tz, int valueIndex, boolean ceil,
-                       Date defVal, DatePrecision precision) {
+    public Date toDate(Object val, TimeZone tz, int valueIndex, boolean ceil, Date defVal, DatePrecision precision) {
         throw new UnsupportedOperationException();
     }
 
@@ -179,8 +173,7 @@ enum SequenceValueType implements ValueType {
     }
 
     @Override
-    public boolean prompt(Object val, boolean bigEndian,
-                          SpecificCharacterSet cs, int maxChars, StringBuilder sb) {
+    public boolean prompt(Object val, boolean bigEndian, SpecificCharacterSet cs, int maxChars, StringBuilder sb) {
         sb.append(val);
         return true;
     }

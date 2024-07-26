@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.notify.metric.unisms;
 
 import org.miaixz.bus.core.basic.entity.Message;
@@ -97,24 +97,24 @@ public class UniSmsProvider extends AbstractProvider<UniMaterial, Context> {
                     if (sb.length() > 0) {
                         sb.append('&');
                     }
-                    sb.append(((Map.Entry<?, ?>) stringObjectEntry).getKey()).append("=").append(((Map.Entry<?, ?>) stringObjectEntry).getValue());
+                    sb.append(((Map.Entry<?, ?>) stringObjectEntry).getKey()).append("=")
+                            .append(((Map.Entry<?, ?>) stringObjectEntry).getValue());
                 }
-                query.put("signature", Builder.hmacSha256(this.context.getAppSecret().getBytes()).digest(sb.toString()));
+                query.put("signature",
+                        Builder.hmacSha256(this.context.getAppSecret().getBytes()).digest(sb.toString()));
             }
-            url = this.getUrl(entity) + "?action=" + action + "&accessKeyId=" + this.context.getAppKey() + "&algorithm=" + query.get("algorithm") +
-                    "&timestamp=" + query.get("timestamp") + "&nonce=" + query.get("nonce") + "&signature=" + query.get("signature");
+            url = this.getUrl(entity) + "?action=" + action + "&accessKeyId=" + this.context.getAppKey() + "&algorithm="
+                    + query.get("algorithm") + "&timestamp=" + query.get("timestamp") + "&nonce=" + query.get("nonce")
+                    + "&signature=" + query.get("signature");
         }
 
-        String response = Httpx.post(url, JsonKit.toJsonString(bodys), headers,MediaType.APPLICATION_JSON);
+        String response = Httpx.post(url, JsonKit.toJsonString(bodys), headers, MediaType.APPLICATION_JSON);
 
         boolean succeed = Objects.equals(JsonKit.getValue(response, "code"), 0);
         String errcode = succeed ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
         String errmsg = succeed ? ErrorCode.SUCCESS.getDesc() : ErrorCode.FAILURE.getDesc();
 
-        return Message.builder()
-                .errcode(errcode)
-                .errmsg(errmsg)
-                .build();
+        return Message.builder().errcode(errcode).errmsg(errmsg).build();
     }
 
 }

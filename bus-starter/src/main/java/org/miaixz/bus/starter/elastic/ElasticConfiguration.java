@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.elastic;
 
 import jakarta.annotation.Resource;
@@ -50,7 +50,7 @@ import java.util.List;
  * @author <a href="mailto:congchun.zheng@gmail.com">Sixawn.ZHENG</a>
  * @since Java 17+
  */
-@EnableConfigurationProperties(value = {ElasticProperties.class})
+@EnableConfigurationProperties(value = { ElasticProperties.class })
 public class ElasticConfiguration {
 
     @Resource
@@ -64,8 +64,7 @@ public class ElasticConfiguration {
             throw new InternalException("初始化 RestClient 失败: 未配置 ElasticSearch 集群主机信息");
         }
 
-        HttpHost[] hosts = this.elasticProperties.getHostList().stream()
-                .map(this::buildHttpHost)
+        HttpHost[] hosts = this.elasticProperties.getHostList().stream().map(this::buildHttpHost)
                 .toArray(HttpHost[]::new);
 
         return RestClient.builder(hosts);
@@ -83,18 +82,15 @@ public class ElasticConfiguration {
     @Bean(name = "highLevelClient")
     public RestHighLevelClient highLevelClient(RestClientBuilder restClientBuilder) {
         // 异步 HttpClient 连接超时配置
-        restClientBuilder.setRequestConfigCallback(requestConfigBuilder ->
-                requestConfigBuilder
-                        .setConnectTimeout(this.elasticProperties.getConnectTimeout())
-                        .setSocketTimeout(this.elasticProperties.getSocketTimeout())
-                        .setConnectionRequestTimeout(this.elasticProperties.getConnectionRequestTimeout())
-        );
+        restClientBuilder.setRequestConfigCallback(requestConfigBuilder -> requestConfigBuilder
+                .setConnectTimeout(this.elasticProperties.getConnectTimeout())
+                .setSocketTimeout(this.elasticProperties.getSocketTimeout())
+                .setConnectionRequestTimeout(this.elasticProperties.getConnectionRequestTimeout()));
         // 异步 HttpClient 连接数配置
-        restClientBuilder.setHttpClientConfigCallback(httpAsyncClientBuilder ->
-                httpAsyncClientBuilder
-                        .setMaxConnTotal(this.elasticProperties.getMaxConnectTotal())
-                        .setMaxConnPerRoute(this.elasticProperties.getMaxConnectPerRoute()));
+        restClientBuilder.setHttpClientConfigCallback(httpAsyncClientBuilder -> httpAsyncClientBuilder
+                .setMaxConnTotal(this.elasticProperties.getMaxConnectTotal())
+                .setMaxConnPerRoute(this.elasticProperties.getMaxConnectPerRoute()));
         return new RestHighLevelClient(restClientBuilder);
     }
-    
+
 }

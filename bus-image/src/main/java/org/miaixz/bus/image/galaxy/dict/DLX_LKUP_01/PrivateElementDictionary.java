@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.DLX_LKUP_01;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,18 +46,17 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         int tmp = tag & 0xFFE00000;
-        tag &= tmp == 0x60000000 || tmp == 0x70000000
-                   ? 0xFFE0FFFF
-                   : 0xFFFF00FF;
+        tag &= tmp == 0x60000000 || tmp == 0x70000000 ? 0xFFE0FFFF : 0xFFFF00FF;
         switch (tag) {
-        
-            case PrivateTag.GrayPaletteColorLookupTableDescriptor:
-            case PrivateTag.GrayPaletteColorLookupTableData:
-                return VR.US;
+
+        case PrivateTag.GrayPaletteColorLookupTableDescriptor:
+        case PrivateTag.GrayPaletteColorLookupTableData:
+            return VR.US;
         }
         return VR.UN;
     }

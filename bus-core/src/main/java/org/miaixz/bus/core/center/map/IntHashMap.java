@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map;
 
 import java.io.IOException;
@@ -34,9 +34,8 @@ import java.util.Arrays;
 
 /**
  *
- * 基于哈希表的{@code IntMap}接口实现。这个实现提供了所有可选的map操作，并允许{@code null}值。
- * {@link IntHashMap} 类大致相当于{@link java.util.HashMap}，除了它使用{@code int}作为它的键。
- * 这个类不保证映射的顺序;特别是，它不能保证顺序在一段时间内保持不变。
+ * 基于哈希表的{@code IntMap}接口实现。这个实现提供了所有可选的map操作，并允许{@code null}值。 {@link IntHashMap}
+ * 类大致相当于{@link java.util.HashMap}，除了它使用{@code int}作为它的键。 这个类不保证映射的顺序;特别是，它不能保证顺序在一段时间内保持不变。
  *
  * @param <V> 值类型
  * @author Kimi Liu
@@ -74,8 +73,7 @@ public class IntHashMap<V> implements Cloneable, Serializable {
      */
     public IntHashMap(int expectedMaxSize) {
         if (expectedMaxSize < 0)
-            throw new IllegalArgumentException(
-                    "expectedMaxSize is negative: " + expectedMaxSize);
+            throw new IllegalArgumentException("expectedMaxSize is negative: " + expectedMaxSize);
 
         init(capacity(expectedMaxSize));
     }
@@ -95,9 +93,7 @@ public class IntHashMap<V> implements Cloneable, Serializable {
     }
 
     /**
-     * 返回此映射映射到指定键的值。
-     * 如果映射不包含此键的映射，则返回{@code null}。
-     * 返回值{@code null}并不一定表示映射中不包含该键的映射;也有可能映射显式地将键映射到{@code null}。
+     * 返回此映射映射到指定键的值。 如果映射不包含此键的映射，则返回{@code null}。 返回值{@code null}并不一定表示映射中不包含该键的映射;也有可能映射显式地将键映射到{@code null}。
      * {@code containsKey}操作可以用来区分这两种情况。
      *
      * @param key 要返回其关联值的键
@@ -139,8 +135,7 @@ public class IntHashMap<V> implements Cloneable, Serializable {
      *
      * @param key   与指定值关联的键
      * @param value 与指定键关联的值
-     * @return 与指定键关联的先前值，或如果键没有映射则返回 {@code null}。
-     * 返回 {@code null} 还可以指示 HashMap 先前将 {@code null} 与指定键关联。
+     * @return 与指定键关联的先前值，或如果键没有映射则返回 {@code null}。 返回 {@code null} 还可以指示 HashMap 先前将 {@code null} 与指定键关联。
      */
     public V put(int key, V value) {
         byte[] states = this.states;
@@ -171,8 +166,7 @@ public class IntHashMap<V> implements Cloneable, Serializable {
     }
 
     /**
-     * 将此映射的内容重新哈希到具有更大容量的新 {@code HashMap} 实例中。
-     * 当此映射中的键数超出其容量和加载因子时，会自动调用此方法
+     * 将此映射的内容重新哈希到具有更大容量的新 {@code HashMap} 实例中。 当此映射中的键数超出其容量和加载因子时，会自动调用此方法
      */
     public void rehash() {
         resize(keys.length);
@@ -182,8 +176,7 @@ public class IntHashMap<V> implements Cloneable, Serializable {
      * 如果存在，则从此映射中删除此键的映射
      *
      * @param key 要从映射中删除其映射的键。
-     * @return 与指定键关联的上一个值，如果键没有映射，则返回 {@code null}。
-     * 返回 {@code null} 还可以指示映射先前将 {@code null} 与指定键关联。
+     * @return 与指定键关联的上一个值，如果键没有映射，则返回 {@code null}。 返回 {@code null} 还可以指示映射先前将 {@code null} 与指定键关联。
      */
     public V remove(int key) {
         byte[] states = this.states;
@@ -285,8 +278,7 @@ public class IntHashMap<V> implements Cloneable, Serializable {
         free = (newLength >>> 1) - size;
     }
 
-    private void writeObject(java.io.ObjectOutputStream s)
-            throws java.io.IOException {
+    private void writeObject(java.io.ObjectOutputStream s) throws java.io.IOException {
         s.defaultWriteObject();
 
         byte[] states = this.states;

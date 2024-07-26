@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.safety.boot;
 
 import org.miaixz.bus.shade.safety.algorithm.Key;
@@ -59,7 +59,8 @@ public class BootURLConnection extends JarURLConnection {
     private final EncryptorProvider encryptorProvider;
     private final Key key;
 
-    public BootURLConnection(JarURLConnection jarURLConnection, DecryptorProvider decryptorProvider, EncryptorProvider encryptorProvider, Key key) throws MalformedURLException {
+    public BootURLConnection(JarURLConnection jarURLConnection, DecryptorProvider decryptorProvider,
+            EncryptorProvider encryptorProvider, Key key) throws MalformedURLException {
         super(jarURLConnection.getURL());
         this.jarURLConnection = jarURLConnection;
         this.decryptorProvider = decryptorProvider;

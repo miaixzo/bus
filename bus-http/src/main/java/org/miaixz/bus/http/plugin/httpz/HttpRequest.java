@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.plugin.httpz;
 
 import org.miaixz.bus.core.io.sink.BufferSink;
@@ -61,26 +61,14 @@ public abstract class HttpRequest {
     protected List<MultipartFile> list;
     protected Request.Builder builder = new Request.Builder();
 
-    protected HttpRequest(String url,
-                          Object tag,
-                          Map<String, String> params,
-                          Map<String, String> headers,
-                          List<MultipartFile> list,
-                          String body,
-                          MultipartBody multipartBody,
-                          String id) {
+    protected HttpRequest(String url, Object tag, Map<String, String> params, Map<String, String> headers,
+            List<MultipartFile> list, String body, MultipartBody multipartBody, String id) {
         this(url, tag, params, null, headers, list, body, multipartBody, id);
     }
 
-    protected HttpRequest(String url,
-                          Object tag,
-                          Map<String, String> params,
-                          Map<String, String> encodedParams,
-                          Map<String, String> headers,
-                          List<MultipartFile> list,
-                          String body,
-                          MultipartBody multipartBody,
-                          String id) {
+    protected HttpRequest(String url, Object tag, Map<String, String> params, Map<String, String> encodedParams,
+            Map<String, String> headers, List<MultipartFile> list, String body, MultipartBody multipartBody,
+            String id) {
         this.url = url;
         this.params = params;
         this.encodedParams = encodedParams;

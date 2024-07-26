@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.template.provider.beetl;
 
 import org.beetl.core.Configuration;
@@ -87,25 +87,24 @@ public class BeetlProvider implements TemplateProvider {
         }
 
         switch (config.getResourceMode()) {
-            case CLASSPATH:
-                return createGroupTemplate(new ClasspathResourceLoader(config.getPath(), config.getCharsetString()));
-            case FILE:
-                return createGroupTemplate(new FileResourceLoader(config.getPath(), config.getCharsetString()));
-            case WEB_ROOT:
-                return createGroupTemplate(new WebAppResourceLoader(config.getPath(), config.getCharsetString()));
-            case STRING:
-                return createGroupTemplate(new StringTemplateResourceLoader());
-            case COMPOSITE:
-                //TODO 需要定义复合资源加载器
-                return createGroupTemplate(new CompositeResourceLoader());
-            default:
-                return new GroupTemplate();
+        case CLASSPATH:
+            return createGroupTemplate(new ClasspathResourceLoader(config.getPath(), config.getCharsetString()));
+        case FILE:
+            return createGroupTemplate(new FileResourceLoader(config.getPath(), config.getCharsetString()));
+        case WEB_ROOT:
+            return createGroupTemplate(new WebAppResourceLoader(config.getPath(), config.getCharsetString()));
+        case STRING:
+            return createGroupTemplate(new StringTemplateResourceLoader());
+        case COMPOSITE:
+            // TODO 需要定义复合资源加载器
+            return createGroupTemplate(new CompositeResourceLoader());
+        default:
+            return new GroupTemplate();
         }
     }
 
     /**
-     * 创建自定义的模板组 {@link GroupTemplate}，配置文件使用全局默认
-     * 此时自定义的配置文件可在ClassPath中放入beetl.properties配置
+     * 创建自定义的模板组 {@link GroupTemplate}，配置文件使用全局默认 此时自定义的配置文件可在ClassPath中放入beetl.properties配置
      *
      * @param loader {@link ResourceLoader}，资源加载器
      * @return {@link GroupTemplate}

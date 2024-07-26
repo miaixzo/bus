@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.reader;
 
 import org.miaixz.bus.core.xyz.ByteKit;
@@ -48,14 +48,11 @@ import java.util.Iterator;
  */
 public class RLEImageioReader extends ImageReader {
 
-    private static final String UNKNOWN_IMAGE_TYPE =
-            "RLE Image Reader needs ImageReadParam.destination or "
-                    + "ImageReadParam.destinationType specified";
-    private static final String UNSUPPORTED_DATA_TYPE =
-            "Unsupported Data Type of ImageReadParam.destination or "
-                    + "ImageReadParam.destinationType: ";
-    private static final String MISMATCH_NUM_RLE_SEGMENTS =
-            "Number of RLE Segments does not match image type: ";
+    private static final String UNKNOWN_IMAGE_TYPE = "RLE Image Reader needs ImageReadParam.destination or "
+            + "ImageReadParam.destinationType specified";
+    private static final String UNSUPPORTED_DATA_TYPE = "Unsupported Data Type of ImageReadParam.destination or "
+            + "ImageReadParam.destinationType: ";
+    private static final String MISMATCH_NUM_RLE_SEGMENTS = "Number of RLE Segments does not match image type: ";
     private final int[] header = new int[16];
 
     private final byte[] buf = new byte[8192];
@@ -79,8 +76,7 @@ public class RLEImageioReader extends ImageReader {
     }
 
     @Override
-    public void setInput(Object input, boolean seekForwardOnly,
-                         boolean ignoreMetadata) {
+    public void setInput(Object input, boolean seekForwardOnly, boolean ignoreMetadata) {
         super.setInput(input, seekForwardOnly, ignoreMetadata);
         resetInternalState();
         iis = (ImageInputStream) input;
@@ -126,15 +122,13 @@ public class RLEImageioReader extends ImageReader {
         return null;
     }
 
-
     @Override
     public boolean canReadRaster() {
         return true;
     }
 
     @Override
-    public Raster readRaster(int imageIndex, ImageReadParam param)
-            throws IOException {
+    public Raster readRaster(int imageIndex, ImageReadParam param) throws IOException {
         checkIndex(imageIndex);
 
         WritableRaster raster = getDestinationRaster(param);
@@ -143,8 +137,7 @@ public class RLEImageioReader extends ImageReader {
     }
 
     @Override
-    public BufferedImage read(int imageIndex, ImageReadParam param)
-            throws IOException {
+    public BufferedImage read(int imageIndex, ImageReadParam param) throws IOException {
         checkIndex(imageIndex);
 
         BufferedImage bi = getDestination(param);
@@ -201,18 +194,17 @@ public class RLEImageioReader extends ImageReader {
 
     private void read(DataBuffer db) throws IOException {
         switch (db.getDataType()) {
-            case DataBuffer.TYPE_BYTE:
-                read(((DataBufferByte) db).getBankData());
-                break;
-            case DataBuffer.TYPE_USHORT:
-                read(((DataBufferUShort) db).getData());
-                break;
-            case DataBuffer.TYPE_SHORT:
-                read(((DataBufferShort) db).getData());
-                break;
-            default:
-                throw new IllegalArgumentException(
-                        UNSUPPORTED_DATA_TYPE + db.getDataType());
+        case DataBuffer.TYPE_BYTE:
+            read(((DataBufferByte) db).getBankData());
+            break;
+        case DataBuffer.TYPE_USHORT:
+            read(((DataBufferUShort) db).getData());
+            break;
+        case DataBuffer.TYPE_SHORT:
+            read(((DataBufferShort) db).getData());
+            break;
+        default:
+            throw new IllegalArgumentException(UNSUPPORTED_DATA_TYPE + db.getDataType());
         }
     }
 
@@ -239,7 +231,6 @@ public class RLEImageioReader extends ImageReader {
             this.bufPos = bufLen; // force fillBuffer on nextByte()
         }
     }
-
 
     private void readRLEHeader(int numSegments) throws IOException {
         fillBuffer();
@@ -272,8 +263,7 @@ public class RLEImageioReader extends ImageReader {
                 }
             }
         } catch (EOFException e) {
-            Logger.info("RLE Segment #{} too short, set missing {} bytes to 0",
-                    seg, data.length - pos);
+            Logger.info("RLE Segment #{} too short, set missing {} bytes to 0", seg, data.length - pos);
         } catch (IndexOutOfBoundsException e) {
             Logger.info("RLE Segment #{} too long, truncate surplus bytes", seg);
         }
@@ -317,8 +307,7 @@ public class RLEImageioReader extends ImageReader {
                 }
             }
         } catch (EOFException e) {
-            Logger.info("RLE Segment #{} too short, set missing {} bytes to 0",
-                    seg, data.length - pos);
+            Logger.info("RLE Segment #{} too short, set missing {} bytes to 0", seg, data.length - pos);
         } catch (IndexOutOfBoundsException e) {
             Logger.info("RLE Segment #{} to long, truncate surplus bytes", seg);
         }

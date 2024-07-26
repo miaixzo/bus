@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.resource;
 
 import org.miaixz.bus.core.lang.Charset;
@@ -76,7 +76,8 @@ public class CharSequenceResource implements Resource, Serializable {
      * @param name    资源名称
      * @param charset 编码
      */
-    public CharSequenceResource(final CharSequence data, final CharSequence name, final java.nio.charset.Charset charset) {
+    public CharSequenceResource(final CharSequence data, final CharSequence name,
+            final java.nio.charset.Charset charset) {
         this.data = data;
         this.name = name;
         this.charset = charset;

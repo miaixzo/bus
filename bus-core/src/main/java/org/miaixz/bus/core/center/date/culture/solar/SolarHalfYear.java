@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org 6tail and other contributors.              ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -40,7 +40,7 @@ import java.util.List;
  */
 public class SolarHalfYear extends Loops {
 
-    public static final String[] NAMES = {"上半年", "下半年"};
+    public static final String[] NAMES = { "上半年", "下半年" };
 
     /**
      * 年

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.mail;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -66,7 +66,7 @@ public enum GlobalMailAccount {
             try {
                 return new MailAccount(mailSettingPath);
             } catch (final InternalException ignore) {
-                //ignore
+                // ignore
             }
         }
         return null;

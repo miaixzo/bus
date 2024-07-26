@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.io.stream.FastByteArrayOutputStream;
@@ -73,8 +73,7 @@ public class ExceptionKit {
     }
 
     /**
-     * 使用运行时异常包装编译异常
-     * 如果传入参数已经是运行时异常，则直接返回，不再额外包装
+     * 使用运行时异常包装编译异常 如果传入参数已经是运行时异常，则直接返回，不再额外包装
      *
      * @param throwable 异常
      * @return 运行时异常
@@ -115,8 +114,7 @@ public class ExceptionKit {
     }
 
     /**
-     * 包装异常并重新抛出此异常
-     * {@link RuntimeException} 和{@link Error} 直接抛出，其它检查异常包装为{@link UndeclaredThrowableException} 后抛出
+     * 包装异常并重新抛出此异常 {@link RuntimeException} 和{@link Error} 直接抛出，其它检查异常包装为{@link UndeclaredThrowableException} 后抛出
      *
      * @param throwable 异常
      */
@@ -259,7 +257,8 @@ public class ExceptionKit {
      * @param replaceCharToStrMap 替换字符为指定字符串
      * @return 堆栈转为的字符串
      */
-    public static String stacktraceToString(final Throwable throwable, int limit, final Map<Character, String> replaceCharToStrMap) {
+    public static String stacktraceToString(final Throwable throwable, int limit,
+            final Map<Character, String> replaceCharToStrMap) {
         final FastByteArrayOutputStream baos = new FastByteArrayOutputStream();
         throwable.printStackTrace(new PrintStream(baos));
 
@@ -329,7 +328,8 @@ public class ExceptionKit {
      * @param exceptionClass 定义的引起异常的类
      * @return true 来自或者包含
      */
-    public static boolean isFromOrSuppressedThrowable(final Throwable throwable, final Class<? extends Throwable> exceptionClass) {
+    public static boolean isFromOrSuppressedThrowable(final Throwable throwable,
+            final Class<? extends Throwable> exceptionClass) {
         return convertFromOrSuppressedThrowable(throwable, exceptionClass, true) != null;
     }
 
@@ -341,7 +341,8 @@ public class ExceptionKit {
      * @param checkCause     判断cause
      * @return true 来自或者包含
      */
-    public static boolean isFromOrSuppressedThrowable(final Throwable throwable, final Class<? extends Throwable> exceptionClass, final boolean checkCause) {
+    public static boolean isFromOrSuppressedThrowable(final Throwable throwable,
+            final Class<? extends Throwable> exceptionClass, final boolean checkCause) {
         return convertFromOrSuppressedThrowable(throwable, exceptionClass, checkCause) != null;
     }
 
@@ -353,7 +354,8 @@ public class ExceptionKit {
      * @param exceptionClass 定义的引起异常的类
      * @return 结果为null 不是来自或者包含
      */
-    public static <T extends Throwable> T convertFromOrSuppressedThrowable(final Throwable throwable, final Class<T> exceptionClass) {
+    public static <T extends Throwable> T convertFromOrSuppressedThrowable(final Throwable throwable,
+            final Class<T> exceptionClass) {
         return convertFromOrSuppressedThrowable(throwable, exceptionClass, true);
     }
 
@@ -366,7 +368,8 @@ public class ExceptionKit {
      * @param checkCause     判断cause
      * @return 结果为null 不是来自或者包含
      */
-    public static <T extends Throwable> T convertFromOrSuppressedThrowable(final Throwable throwable, final Class<T> exceptionClass, final boolean checkCause) {
+    public static <T extends Throwable> T convertFromOrSuppressedThrowable(final Throwable throwable,
+            final Class<T> exceptionClass, final boolean checkCause) {
         if (throwable == null || exceptionClass == null) {
             return null;
         }
@@ -391,8 +394,7 @@ public class ExceptionKit {
     }
 
     /**
-     * 获取异常链上所有异常的集合，如果{@link Throwable} 对象没有cause，返回只有一个节点的List
-     * 如果传入null，返回空集合
+     * 获取异常链上所有异常的集合，如果{@link Throwable} 对象没有cause，返回只有一个节点的List 如果传入null，返回空集合
      *
      * <p>
      * 此方法来自Apache-Commons-Lang3
@@ -411,9 +413,7 @@ public class ExceptionKit {
     }
 
     /**
-     * 获取异常链中最尾端的异常，即异常最早发生的异常对象。
-     * 此方法通过调用{@link Throwable#getCause()} 直到没有cause为止，如果异常本身没有cause，返回异常本身
-     * 传入null返回也为null
+     * 获取异常链中最尾端的异常，即异常最早发生的异常对象。 此方法通过调用{@link Throwable#getCause()} 直到没有cause为止，如果异常本身没有cause，返回异常本身 传入null返回也为null
      *
      * @param throwable 异常对象，可能为null
      * @return 最尾端异常，传入null参数返回也为null

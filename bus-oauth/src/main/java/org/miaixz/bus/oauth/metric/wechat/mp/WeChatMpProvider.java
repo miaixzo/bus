@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.wechat.mp;
 
 import com.alibaba.fastjson.JSONObject;
@@ -77,44 +77,31 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
 
         String scope = accToken.getScope();
         if (!StringKit.isEmpty(scope) && !scope.contains("snsapi_userinfo")) {
-            return Material.builder()
-                    .rawJson(JSONObject.parseObject(JSONObject.toJSONString(accToken)))
-                    .uuid(openId)
-                    .snapshotUser(accToken.isSnapshotUser())
-                    .token(accToken)
-                    .source(complex.toString())
-                    .build();
+            return Material.builder().rawJson(JSONObject.parseObject(JSONObject.toJSONString(accToken))).uuid(openId)
+                    .snapshotUser(accToken.isSnapshotUser()).token(accToken).source(complex.toString()).build();
         }
 
         String response = doGetUserInfo(accToken);
         JSONObject object = JSONObject.parseObject(response);
 
         this.checkResponse(object);
-        String location = String.format("%s-%s-%s", object.getString("country"), object.getString("province"), object.getString("city"));
+        String location = String.format("%s-%s-%s", object.getString("country"), object.getString("province"),
+                object.getString("city"));
 
         if (object.containsKey("unionid")) {
             accToken.setUnionId(object.getString("unionid"));
         }
-        return Material.builder()
-                .rawJson(object)
-                .username(object.getString("nickname"))
-                .nickname(object.getString("nickname"))
-                .avatar(object.getString("headimgurl"))
-                .location(location)
-                .uuid(openId)
-                .snapshotUser(accToken.isSnapshotUser())
-                .gender(getWechatRealGender(object.getString("sex")))
-                .token(accToken)
-                .source(complex.toString())
+        return Material.builder().rawJson(object).username(object.getString("nickname"))
+                .nickname(object.getString("nickname")).avatar(object.getString("headimgurl")).location(location)
+                .uuid(openId).snapshotUser(accToken.isSnapshotUser())
+                .gender(getWechatRealGender(object.getString("sex"))).token(accToken).source(complex.toString())
                 .build();
     }
 
     @Override
     public Message refresh(AccToken oldToken) {
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .data(this.getToken(refreshTokenUrl(oldToken.getRefreshToken())))
-                .build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode())
+                .data(this.getToken(refreshTokenUrl(oldToken.getRefreshToken()))).build();
     }
 
     /**
@@ -140,14 +127,11 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
 
         this.checkResponse(accessTokenObject);
 
-        return AccToken.builder()
-                .accessToken(accessTokenObject.getString("access_token"))
+        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
                 .refreshToken(accessTokenObject.getString("refresh_token"))
-                .expireIn(accessTokenObject.getIntValue("expires_in"))
-                .openId(accessTokenObject.getString("openid"))
+                .expireIn(accessTokenObject.getIntValue("expires_in")).openId(accessTokenObject.getString("openid"))
                 .scope(accessTokenObject.getString("scope"))
-                .snapshotUser(accessTokenObject.getIntValue("is_snapshotuser") == 1)
-                .build();
+                .snapshotUser(accessTokenObject.getIntValue("is_snapshotuser") == 1).build();
     }
 
     /**
@@ -158,13 +142,11 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.authorize())
-                .queryParam("appid", context.getAppKey())
+        return Builder.fromUrl(complex.authorize()).queryParam("appid", context.getAppKey())
                 .queryParam("redirect_uri", UrlEncoder.encodeAll(context.getRedirectUri()))
                 .queryParam("response_type", "code")
                 .queryParam("scope", this.getScopes(Symbol.COMMA, false, this.getDefaultScopes(WechatMpScope.values())))
-                .queryParam("state", getRealState(state).concat("#wechat_redirect"))
-                .build();
+                .queryParam("state", getRealState(state).concat("#wechat_redirect")).build();
     }
 
     /**
@@ -175,12 +157,9 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
      */
     @Override
     protected String accessTokenUrl(String code) {
-        return Builder.fromUrl(complex.accessToken())
-                .queryParam("appid", context.getAppKey())
-                .queryParam("secret", context.getAppSecret())
-                .queryParam("code", code)
-                .queryParam("grant_type", "authorization_code")
-                .build();
+        return Builder.fromUrl(complex.accessToken()).queryParam("appid", context.getAppKey())
+                .queryParam("secret", context.getAppSecret()).queryParam("code", code)
+                .queryParam("grant_type", "authorization_code").build();
     }
 
     /**
@@ -191,11 +170,8 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(complex.userInfo())
-                .queryParam("access_token", accToken.getAccessToken())
-                .queryParam("openid", accToken.getOpenId())
-                .queryParam("lang", "zh_CN")
-                .build();
+        return Builder.fromUrl(complex.userInfo()).queryParam("access_token", accToken.getAccessToken())
+                .queryParam("openid", accToken.getOpenId()).queryParam("lang", "zh_CN").build();
     }
 
     /**
@@ -206,10 +182,7 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
      */
     @Override
     protected String refreshTokenUrl(String refreshToken) {
-        return Builder.fromUrl(complex.refresh())
-                .queryParam("appid", context.getAppKey())
-                .queryParam("grant_type", "refresh_token")
-                .queryParam("refresh_token", refreshToken)
-                .build();
+        return Builder.fromUrl(complex.refresh()).queryParam("appid", context.getAppKey())
+                .queryParam("grant_type", "refresh_token").queryParam("refresh_token", refreshToken).build();
     }
 }

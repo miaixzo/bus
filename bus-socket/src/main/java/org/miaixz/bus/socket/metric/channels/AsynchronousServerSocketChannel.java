@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org sandao and other contributors.             ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket.metric.channels;
 
 import org.miaixz.bus.socket.metric.handler.FutureCompletionHandler;
@@ -54,7 +54,8 @@ final class AsynchronousServerSocketChannel extends java.nio.channels.Asynchrono
     private boolean acceptPending;
     private int acceptInvoker;
 
-    AsynchronousServerSocketChannel(AsynchronousChannelGroup asynchronousChannelGroup, boolean lowMemory) throws IOException {
+    AsynchronousServerSocketChannel(AsynchronousChannelGroup asynchronousChannelGroup, boolean lowMemory)
+            throws IOException {
         super(asynchronousChannelGroup.provider());
         this.asynchronousChannelGroup = asynchronousChannelGroup;
         serverSocketChannel = ServerSocketChannel.open();
@@ -69,7 +70,8 @@ final class AsynchronousServerSocketChannel extends java.nio.channels.Asynchrono
     }
 
     @Override
-    public <T> java.nio.channels.AsynchronousServerSocketChannel setOption(SocketOption<T> name, T value) throws IOException {
+    public <T> java.nio.channels.AsynchronousServerSocketChannel setOption(SocketOption<T> name, T value)
+            throws IOException {
         serverSocketChannel.setOption(name, value);
         return this;
     }
@@ -97,7 +99,7 @@ final class AsynchronousServerSocketChannel extends java.nio.channels.Asynchrono
 
     public void doAccept() {
         try {
-            //此前通过Future调用,且触发了cancel
+            // 此前通过Future调用,且触发了cancel
             if (acceptFuture != null && acceptFuture.isDone()) {
                 resetAccept();
                 AsynchronousChannelGroup.removeOps(selectionKey, SelectionKey.OP_ACCEPT);
@@ -108,7 +110,8 @@ final class AsynchronousServerSocketChannel extends java.nio.channels.Asynchrono
                 socketChannel = serverSocketChannel.accept();
             }
             if (socketChannel != null) {
-                AsynchronousServerChannel asynchronousSocketChannel = new AsynchronousServerChannel(asynchronousChannelGroup, socketChannel, lowMemory);
+                AsynchronousServerChannel asynchronousSocketChannel = new AsynchronousServerChannel(
+                        asynchronousChannelGroup, socketChannel, lowMemory);
                 // 这行代码不要乱动
                 socketChannel.configureBlocking(false);
                 socketChannel.finishConnect();
@@ -124,13 +127,15 @@ final class AsynchronousServerSocketChannel extends java.nio.channels.Asynchrono
             else if (selectionKey == null) {
                 asynchronousChannelGroup.commonWorker.addRegister(selector -> {
                     try {
-                        selectionKey = serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT, AsynchronousServerSocketChannel.this);
+                        selectionKey = serverSocketChannel.register(selector, SelectionKey.OP_ACCEPT,
+                                AsynchronousServerSocketChannel.this);
                     } catch (ClosedChannelException e) {
                         acceptCompletionHandler.failed(e, attachment);
                     }
                 });
             } else {
-                AsynchronousChannelGroup.interestOps(asynchronousChannelGroup.commonWorker, selectionKey, SelectionKey.OP_ACCEPT);
+                AsynchronousChannelGroup.interestOps(asynchronousChannelGroup.commonWorker, selectionKey,
+                        SelectionKey.OP_ACCEPT);
             }
         } catch (IOException e) {
             this.acceptCompletionHandler.failed(e, attachment);

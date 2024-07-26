@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -56,103 +56,40 @@ import java.util.*;
  */
 public class MppsSCU {
 
-    private static final ElementDictionary dict =
-            ElementDictionary.getStandardElementDictionary();
+    private static final ElementDictionary dict = ElementDictionary.getStandardElementDictionary();
     private static final String IN_PROGRESS = "IN PROGRESS";
     private static final String COMPLETED = "COMPLETED";
     private static final String DISCONTINUED = "DISCONTINUED";
-    private static final int[] MPPS_TOP_LEVEL_ATTRS = {
-            Tag.SpecificCharacterSet,
-            Tag.Modality,
-            Tag.ProcedureCodeSequence,
-            Tag.ReferencedPatientSequence,
-            Tag.PatientName,
-            Tag.PatientID,
-            Tag.IssuerOfPatientID,
-            Tag.IssuerOfPatientIDQualifiersSequence,
-            Tag.PatientBirthDate,
-            Tag.PatientSex,
-            Tag.StudyID,
-            Tag.AdmissionID,
-            Tag.IssuerOfAdmissionIDSequence,
-            Tag.ServiceEpisodeID,
-            Tag.IssuerOfServiceEpisodeID,
-            Tag.ServiceEpisodeDescription,
-            Tag.PerformedProcedureStepStartDate,
-            Tag.PerformedProcedureStepStartTime,
-            Tag.PerformedProcedureStepID,
-            Tag.PerformedProcedureStepDescription,
-            Tag.PerformedProtocolCodeSequence,
-            Tag.CommentsOnThePerformedProcedureStep,
-    };
-    private static final int[] MPPS_TOP_LEVEL_TYPE_2_ATTRS = {
-            Tag.ProcedureCodeSequence,
-            Tag.ReferencedPatientSequence,
-            Tag.PatientName,
-            Tag.PatientID,
-            Tag.PatientBirthDate,
-            Tag.PatientSex,
-            Tag.StudyID,
-            Tag.PerformedStationName,
-            Tag.PerformedLocation,
-            Tag.PerformedProcedureStepDescription,
-            Tag.PerformedProcedureTypeDescription,
-            Tag.PerformedProtocolCodeSequence,
-    };
-    private static final int[] CREATE_MPPS_TOP_LEVEL_EMPTY_ATTRS = {
-            Tag.PerformedProcedureStepEndDate,
-            Tag.PerformedProcedureStepEndTime,
-            Tag.PerformedProcedureStepDiscontinuationReasonCodeSequence,
-            Tag.PerformedSeriesSequence
-    };
-    private static final int[] FINAL_MPPS_TOP_LEVEL_ATTRS = {
-            Tag.SpecificCharacterSet,
-            Tag.PerformedProcedureStepEndDate,
-            Tag.PerformedProcedureStepEndTime,
-            Tag.PerformedProcedureStepStatus,
-            Tag.PerformedProcedureStepDiscontinuationReasonCodeSequence,
-            Tag.PerformedSeriesSequence
-    };
-    private static final int[] SSA_ATTRS = {
-            Tag.AccessionNumber,
-            Tag.IssuerOfAccessionNumberSequence,
-            Tag.ReferencedStudySequence,
-            Tag.StudyInstanceUID,
-            Tag.RequestedProcedureDescription,
-            Tag.RequestedProcedureCodeSequence,
-            Tag.ScheduledProcedureStepDescription,
-            Tag.ScheduledProtocolCodeSequence,
-            Tag.ScheduledProcedureStepID,
-            Tag.OrderPlacerIdentifierSequence,
-            Tag.OrderFillerIdentifierSequence,
-            Tag.RequestedProcedureID,
-            Tag.PlacerOrderNumberImagingServiceRequest,
-            Tag.FillerOrderNumberImagingServiceRequest,
-    };
-    private static final int[] SSA_TYPE_2_ATTRS = {
-            Tag.AccessionNumber,
-            Tag.ReferencedStudySequence,
-            Tag.StudyInstanceUID,
-            Tag.RequestedProcedureDescription,
-            Tag.RequestedProcedureID,
-            Tag.ScheduledProcedureStepDescription,
-            Tag.ScheduledProtocolCodeSequence,
-            Tag.ScheduledProcedureStepID,
-    };
-    private static final int[] PERF_SERIES_ATTRS = {
-            Tag.SeriesDescription,
-            Tag.PerformingPhysicianName,
-            Tag.OperatorsName,
-            Tag.ProtocolName,
-            Tag.SeriesInstanceUID
-    };
-    private static final int[] PERF_SERIES_TYPE_2_ATTRS = {
-            Tag.RetrieveAETitle,
-            Tag.SeriesDescription,
-            Tag.PerformingPhysicianName,
-            Tag.OperatorsName,
-            Tag.ReferencedNonImageCompositeSOPInstanceSequence
-    };
+    private static final int[] MPPS_TOP_LEVEL_ATTRS = { Tag.SpecificCharacterSet, Tag.Modality,
+            Tag.ProcedureCodeSequence, Tag.ReferencedPatientSequence, Tag.PatientName, Tag.PatientID,
+            Tag.IssuerOfPatientID, Tag.IssuerOfPatientIDQualifiersSequence, Tag.PatientBirthDate, Tag.PatientSex,
+            Tag.StudyID, Tag.AdmissionID, Tag.IssuerOfAdmissionIDSequence, Tag.ServiceEpisodeID,
+            Tag.IssuerOfServiceEpisodeID, Tag.ServiceEpisodeDescription, Tag.PerformedProcedureStepStartDate,
+            Tag.PerformedProcedureStepStartTime, Tag.PerformedProcedureStepID, Tag.PerformedProcedureStepDescription,
+            Tag.PerformedProtocolCodeSequence, Tag.CommentsOnThePerformedProcedureStep, };
+    private static final int[] MPPS_TOP_LEVEL_TYPE_2_ATTRS = { Tag.ProcedureCodeSequence, Tag.ReferencedPatientSequence,
+            Tag.PatientName, Tag.PatientID, Tag.PatientBirthDate, Tag.PatientSex, Tag.StudyID, Tag.PerformedStationName,
+            Tag.PerformedLocation, Tag.PerformedProcedureStepDescription, Tag.PerformedProcedureTypeDescription,
+            Tag.PerformedProtocolCodeSequence, };
+    private static final int[] CREATE_MPPS_TOP_LEVEL_EMPTY_ATTRS = { Tag.PerformedProcedureStepEndDate,
+            Tag.PerformedProcedureStepEndTime, Tag.PerformedProcedureStepDiscontinuationReasonCodeSequence,
+            Tag.PerformedSeriesSequence };
+    private static final int[] FINAL_MPPS_TOP_LEVEL_ATTRS = { Tag.SpecificCharacterSet,
+            Tag.PerformedProcedureStepEndDate, Tag.PerformedProcedureStepEndTime, Tag.PerformedProcedureStepStatus,
+            Tag.PerformedProcedureStepDiscontinuationReasonCodeSequence, Tag.PerformedSeriesSequence };
+    private static final int[] SSA_ATTRS = { Tag.AccessionNumber, Tag.IssuerOfAccessionNumberSequence,
+            Tag.ReferencedStudySequence, Tag.StudyInstanceUID, Tag.RequestedProcedureDescription,
+            Tag.RequestedProcedureCodeSequence, Tag.ScheduledProcedureStepDescription,
+            Tag.ScheduledProtocolCodeSequence, Tag.ScheduledProcedureStepID, Tag.OrderPlacerIdentifierSequence,
+            Tag.OrderFillerIdentifierSequence, Tag.RequestedProcedureID, Tag.PlacerOrderNumberImagingServiceRequest,
+            Tag.FillerOrderNumberImagingServiceRequest, };
+    private static final int[] SSA_TYPE_2_ATTRS = { Tag.AccessionNumber, Tag.ReferencedStudySequence,
+            Tag.StudyInstanceUID, Tag.RequestedProcedureDescription, Tag.RequestedProcedureID,
+            Tag.ScheduledProcedureStepDescription, Tag.ScheduledProtocolCodeSequence, Tag.ScheduledProcedureStepID, };
+    private static final int[] PERF_SERIES_ATTRS = { Tag.SeriesDescription, Tag.PerformingPhysicianName,
+            Tag.OperatorsName, Tag.ProtocolName, Tag.SeriesInstanceUID };
+    private static final int[] PERF_SERIES_TYPE_2_ATTRS = { Tag.RetrieveAETitle, Tag.SeriesDescription,
+            Tag.PerformingPhysicianName, Tag.OperatorsName, Tag.ReferencedNonImageCompositeSOPInstanceSequence };
     private static final String ppsStartDate;
     private static final String ppsStartTime;
 
@@ -180,7 +117,7 @@ public class MppsSCU {
     private Attributes discontinuationReason;
     private Properties codes;
     private Association as;
-    //default response handler
+    // default response handler
     private RSPHandlerFactory rspHandlerFactory = new RSPHandlerFactory() {
 
         @Override
@@ -191,12 +128,11 @@ public class MppsSCU {
                 @Override
                 public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
                     switch (cmd.getInt(Tag.Status, -1)) {
-                        case Status.Success:
-                        case Status.AttributeListError:
-                        case Status.AttributeValueOutOfRange:
-                            mppsWithUID.iuid = cmd.getString(
-                                    Tag.AffectedSOPInstanceUID, mppsWithUID.iuid);
-                            addCreatedMpps(mppsWithUID);
+                    case Status.Success:
+                    case Status.AttributeListError:
+                    case Status.AttributeValueOutOfRange:
+                        mppsWithUID.iuid = cmd.getString(Tag.AffectedSOPInstanceUID, mppsWithUID.iuid);
+                        addCreatedMpps(mppsWithUID);
                     }
                     super.onDimseRSP(as, cmd, data);
                 }
@@ -280,46 +216,31 @@ public class MppsSCU {
             throw new IllegalStateException("codes not initialized");
         String codeMeaning = codes.getProperty(codeValue);
         if (codeMeaning == null)
-            throw new IllegalArgumentException("undefined code value: "
-                    + codeValue);
+            throw new IllegalArgumentException("undefined code value: " + codeValue);
         int endDesignator = codeValue.indexOf(Symbol.C_MINUS);
         Attributes attrs = new Attributes(3);
-        attrs.setString(Tag.CodeValue, VR.SH,
-                endDesignator >= 0
-                        ? codeValue.substring(endDesignator + 1)
-                        : codeValue);
+        attrs.setString(Tag.CodeValue, VR.SH, endDesignator >= 0 ? codeValue.substring(endDesignator + 1) : codeValue);
         attrs.setString(Tag.CodingSchemeDesignator, VR.SH,
-                endDesignator >= 0
-                        ? codeValue.substring(0, endDesignator)
-                        : "DCM");
+                endDesignator >= 0 ? codeValue.substring(0, endDesignator) : "DCM");
         attrs.setString(Tag.CodeMeaning, VR.LO, codeMeaning);
         this.discontinuationReason = attrs;
     }
 
     public void setTransferSyntaxes(String[] tss) {
-        rq.addPresentationContext(
-                new PresentationContext(1, UID.Verification.uid,
-                        UID.ImplicitVRLittleEndian.uid));
-        rq.addPresentationContext(
-                new PresentationContext(3,
-                        UID.ModalityPerformedProcedureStep.uid,
-                        tss));
+        rq.addPresentationContext(new PresentationContext(1, UID.Verification.uid, UID.ImplicitVRLittleEndian.uid));
+        rq.addPresentationContext(new PresentationContext(3, UID.ModalityPerformedProcedureStep.uid, tss));
     }
 
     public void scanFiles(List<String> fnames, boolean printout) {
         DicomFiles.scan(fnames, printout, (f, fmi, dsPos, ds) -> {
-            if (UID.ModalityPerformedProcedureStep.equals(
-                    fmi.getString(Tag.MediaStorageSOPClassUID))) {
-                return addMPPS(
-                        fmi.getString(Tag.MediaStorageSOPInstanceUID),
-                        ds);
+            if (UID.ModalityPerformedProcedureStep.equals(fmi.getString(Tag.MediaStorageSOPClassUID))) {
+                return addMPPS(fmi.getString(Tag.MediaStorageSOPInstanceUID), ds);
             }
             return addInstance(ds);
         });
     }
 
-    public void open() throws IOException, InterruptedException,
-            InternalException, GeneralSecurityException {
+    public void open() throws IOException, InterruptedException, InternalException, GeneralSecurityException {
         as = ae.connect(remote, rq);
     }
 
@@ -341,8 +262,7 @@ public class MppsSCU {
         as.waitForOutstandingRSP();
     }
 
-    private void createMpps(final MppsWithIUID mppsWithUID)
-            throws IOException, InterruptedException {
+    private void createMpps(final MppsWithIUID mppsWithUID) throws IOException, InterruptedException {
         final String iuid = mppsWithUID.iuid;
         Attributes mpps = mppsWithUID.mpps;
         mppsWithUID.mpps = new Attributes(mpps, FINAL_MPPS_TOP_LEVEL_ATTRS);
@@ -350,8 +270,8 @@ public class MppsSCU {
         for (int tag : CREATE_MPPS_TOP_LEVEL_EMPTY_ATTRS)
             mpps.setNull(tag, dict.vrOf(tag));
 
-        as.ncreate(UID.ModalityPerformedProcedureStep.uid,
-                iuid, mpps, null, rspHandlerFactory.createDimseRSPHandlerForNCreate(mppsWithUID));
+        as.ncreate(UID.ModalityPerformedProcedureStep.uid, iuid, mpps, null,
+                rspHandlerFactory.createDimseRSPHandlerForNCreate(mppsWithUID));
     }
 
     public void updateMpps() throws IOException, InterruptedException {
@@ -359,10 +279,9 @@ public class MppsSCU {
             setMpps(mppsWithIUID);
     }
 
-    private void setMpps(MppsWithIUID mppsWithIUID)
-            throws IOException, InterruptedException {
-        as.nset(UID.ModalityPerformedProcedureStep.uid,
-                mppsWithIUID.iuid, mppsWithIUID.mpps, null, rspHandlerFactory.createDimseRSPHandlerForNSet());
+    private void setMpps(MppsWithIUID mppsWithIUID) throws IOException, InterruptedException {
+        as.nset(UID.ModalityPerformedProcedureStep.uid, mppsWithIUID.iuid, mppsWithIUID.mpps, null,
+                rspHandlerFactory.createDimseRSPHandlerForNSet());
     }
 
     public boolean addInstance(Attributes inst) {
@@ -387,10 +306,10 @@ public class MppsSCU {
 
         int size = map.size();
         switch (size) {
-            case 0:
-                return ppsuid;
-            case 1:
-                map.values().iterator().next().iuid += ".1";
+        case 0:
+            return ppsuid;
+        case 1:
+            map.values().iterator().next().iuid += ".1";
         }
         return ppsuid + '.' + (size + 1);
     }
@@ -407,19 +326,15 @@ public class MppsSCU {
     private Attributes createMPPS(Attributes inst) {
         Attributes mpps = new Attributes();
         mpps.setString(Tag.PerformedStationAETitle, VR.AE, ae.getAETitle());
-        mpps.setString(Tag.PerformedProcedureStepStartDate, VR.DA,
-                inst.getString(Tag.StudyDate, ppsStartDate));
-        mpps.setString(Tag.PerformedProcedureStepStartTime, VR.TM,
-                inst.getString(Tag.StudyTime, ppsStartTime));
+        mpps.setString(Tag.PerformedProcedureStepStartDate, VR.DA, inst.getString(Tag.StudyDate, ppsStartDate));
+        mpps.setString(Tag.PerformedProcedureStepStartTime, VR.TM, inst.getString(Tag.StudyTime, ppsStartTime));
         for (int tag : MPPS_TOP_LEVEL_TYPE_2_ATTRS)
             mpps.setNull(tag, dict.vrOf(tag));
         mpps.addSelected(inst, MPPS_TOP_LEVEL_ATTRS);
         if (newPPSID || !mpps.containsValue(Tag.PerformedProcedureStepID))
             mpps.setString(Tag.PerformedProcedureStepID, VR.CS, mkPPSID());
-        mpps.setString(Tag.PerformedProcedureStepEndDate, VR.DA,
-                mpps.getString(Tag.PerformedProcedureStepStartDate));
-        mpps.setString(Tag.PerformedProcedureStepEndTime, VR.TM,
-                mpps.getString(Tag.PerformedProcedureStepStartTime));
+        mpps.setString(Tag.PerformedProcedureStepEndDate, VR.DA, mpps.getString(Tag.PerformedProcedureStepStartDate));
+        mpps.setString(Tag.PerformedProcedureStepEndTime, VR.TM, mpps.getString(Tag.PerformedProcedureStepStartTime));
         mpps.setString(Tag.PerformedProcedureStepStatus, VR.CS, finalStatus);
         Sequence dcrSeq = mpps.newSequence(Tag.PerformedProcedureStepDiscontinuationReasonCodeSequence, 1);
         if (discontinuationReason != null)
@@ -458,18 +373,15 @@ public class MppsSCU {
             if (endTime == null)
                 endTime = inst.getString(Tag.SeriesTime);
         }
-        if (endTime != null && endTime.compareTo(
-                mpps.getString(Tag.PerformedProcedureStepEndTime)) > 0)
+        if (endTime != null && endTime.compareTo(mpps.getString(Tag.PerformedProcedureStepEndTime)) > 0)
             mpps.setString(Tag.PerformedProcedureStepEndTime, VR.TM, endTime);
         Sequence prefSeriesSeq = mpps.getSequence(Tag.PerformedSeriesSequence);
         Attributes prefSeries = getPerfSeries(prefSeriesSeq, inst);
         Sequence refSOPSeq = prefSeries.getSequence(Tag.ReferencedImageSequence);
         Attributes refSOP = new Attributes();
         refSOPSeq.add(refSOP);
-        refSOP.setString(Tag.ReferencedSOPClassUID, VR.UI,
-                inst.getString(Tag.SOPClassUID));
-        refSOP.setString(Tag.ReferencedSOPInstanceUID, VR.UI,
-                inst.getString(Tag.SOPInstanceUID));
+        refSOP.setString(Tag.ReferencedSOPClassUID, VR.UI, inst.getString(Tag.SOPClassUID));
+        refSOP.setString(Tag.ReferencedSOPInstanceUID, VR.UI, inst.getString(Tag.SOPInstanceUID));
     }
 
     private Attributes getPerfSeries(Sequence prefSeriesSeq, Attributes inst) {

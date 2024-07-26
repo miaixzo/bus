@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.function;
 
 import org.miaixz.bus.core.xyz.ExceptionKit;
@@ -70,15 +70,13 @@ public interface SerConsumer3<P1, P2, P3> extends Serializable {
     }
 
     /**
-     * Returns a composed {@code SerConsumer3} that performs, in sequence, this
-     * operation followed by the {@code after} operation. If performing either
-     * operation throws an exception, it is relayed to the caller of the
-     * composed operation.  If performing this operation throws an exception,
-     * the {@code after} operation will not be performed.
+     * Returns a composed {@code SerConsumer3} that performs, in sequence, this operation followed by the {@code after}
+     * operation. If performing either operation throws an exception, it is relayed to the caller of the composed
+     * operation. If performing this operation throws an exception, the {@code after} operation will not be performed.
      *
      * @param after the operation to perform after this operation
-     * @return a composed {@code SerConsumer3} that performs in sequence this
-     * operation followed by the {@code after} operation
+     * @return a composed {@code SerConsumer3} that performs in sequence this operation followed by the {@code after}
+     *         operation
      * @throws NullPointerException if {@code after} is null
      */
     default SerConsumer3<P1, P2, P3> andThen(final SerConsumer3<P1, P2, P3> after) {

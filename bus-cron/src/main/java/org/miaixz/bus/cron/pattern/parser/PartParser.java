@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cron.pattern.parser;
 
 import org.miaixz.bus.core.center.date.culture.en.Month;
@@ -41,17 +41,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 定时任务表达式各个部分的解析器，根据{@link Part}指定不同部分，解析为{@link PartMatcher}
- * 每个部分支持：
+ * 定时任务表达式各个部分的解析器，根据{@link Part}指定不同部分，解析为{@link PartMatcher} 每个部分支持：
  * <ul>
- *   <li><strong>*</strong> ：表示匹配这个位置所有的时间</li>
- *   <li><strong>?</strong> ：表示匹配这个位置任意的时间（与"*"作用一致）</li>
- *   <li><strong>L</strong> ：表示匹配这个位置允许的最大值</li>
- *   <li><strong>*&#47;2</strong> ：表示间隔时间，例如在分上，表示每两分钟，同样*可以使用数字列表代替，逗号分隔</li>
- *   <li><strong>2-8</strong> ：表示连续区间，例如在分上，表示2,3,4,5,6,7,8分</li>
- *   <li><strong>2,3,5,8</strong> ：表示列表</li>
- *   <li><strong>wed</strong> ：表示周别名</li>
- *   <li><strong>jan</strong> ：表示月别名</li>
+ * <li><strong>*</strong> ：表示匹配这个位置所有的时间</li>
+ * <li><strong>?</strong> ：表示匹配这个位置任意的时间（与"*"作用一致）</li>
+ * <li><strong>L</strong> ：表示匹配这个位置允许的最大值</li>
+ * <li><strong>*&#47;2</strong> ：表示间隔时间，例如在分上，表示每两分钟，同样*可以使用数字列表代替，逗号分隔</li>
+ * <li><strong>2-8</strong> ：表示连续区间，例如在分上，表示2,3,4,5,6,7,8分</li>
+ * <li><strong>2,3,5,8</strong> ：表示列表</li>
+ * <li><strong>wed</strong> ：表示周别名</li>
+ * <li><strong>jan</strong> ：表示月别名</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -81,8 +80,7 @@ public class PartParser {
     }
 
     /**
-     * 是否为全匹配符
-     * 全匹配符指 * 或者 ?
+     * 是否为全匹配符 全匹配符指 * 或者 ?
      *
      * @param value 被检查的值
      * @return 是否为全匹配符
@@ -94,10 +92,10 @@ public class PartParser {
     /**
      * 将表达式解析为{@link PartMatcher}
      * <ul>
-     *     <li>* 或者 ? 返回{@link AlwaysTrueMatcher}</li>
-     *     <li>{@link Part#DAY_OF_MONTH} 返回{@link DayOfMonthMatcher}</li>
-     *     <li>{@link Part#YEAR} 返回{@link YearValueMatcher}</li>
-     *     <li>其他 返回{@link BoolArrayMatcher}</li>
+     * <li>* 或者 ? 返回{@link AlwaysTrueMatcher}</li>
+     * <li>{@link Part#DAY_OF_MONTH} 返回{@link DayOfMonthMatcher}</li>
+     * <li>{@link Part#YEAR} 返回{@link YearValueMatcher}</li>
+     * <li>其他 返回{@link BoolArrayMatcher}</li>
      * </ul>
      *
      * @param value 表达式
@@ -105,7 +103,7 @@ public class PartParser {
      */
     public PartMatcher parse(final String value) {
         if (isMatchAllString(value)) {
-            //兼容Quartz的"?"表达式，不会出现互斥情况，与"*"作用相同
+            // 兼容Quartz的"?"表达式，不会出现互斥情况，与"*"作用相同
             return new AlwaysTrueMatcher();
         }
 
@@ -115,18 +113,17 @@ public class PartParser {
         }
 
         switch (this.part) {
-            case DAY_OF_MONTH:
-                return new DayOfMonthMatcher(values);
-            case YEAR:
-                return new YearValueMatcher(values);
-            default:
-                return new BoolArrayMatcher(values);
+        case DAY_OF_MONTH:
+            return new DayOfMonthMatcher(values);
+        case YEAR:
+            return new YearValueMatcher(values);
+        default:
+            return new BoolArrayMatcher(values);
         }
     }
 
     /**
-     * 处理数组形式表达式
-     * 处理的形式包括：
+     * 处理数组形式表达式 处理的形式包括：
      * <ul>
      * <li><strong>a</strong> 或 <strong>*</strong></li>
      * <li><strong>a,b,c,d</strong></li>
@@ -146,8 +143,7 @@ public class PartParser {
     }
 
     /**
-     * 处理间隔形式的表达式
-     * 处理的形式包括：
+     * 处理间隔形式的表达式 处理的形式包括：
      * <ul>
      * <li><strong>a</strong> 或 <strong>*</strong></li>
      * <li><strong>a&#47;b</strong> 或 <strong>*&#47;b</strong></li>
@@ -196,12 +192,12 @@ public class PartParser {
 
         // 全部匹配形式
         if (value.length() <= 2) {
-            //根据步进的第一个数字确定起始时间，类似于 12/3则从12（秒、分等）开始
+            // 根据步进的第一个数字确定起始时间，类似于 12/3则从12（秒、分等）开始
             int minValue = part.getMin();
             if (!isMatchAllString(value)) {
                 minValue = Math.max(minValue, parseNumber(value, true));
             } else {
-                //在全匹配模式下，如果步进不存在，表示步进为1
+                // 在全匹配模式下，如果步进不存在，表示步进为1
                 if (step < 1) {
                     step = 1;
                 }
@@ -211,23 +207,23 @@ public class PartParser {
                 if (minValue > maxValue) {
                     throw new CrontabException("Invalid value {} > {}", minValue, maxValue);
                 }
-                //有步进
+                // 有步进
                 for (int i = minValue; i <= maxValue; i += step) {
                     results.add(i);
                 }
             } else {
-                //固定时间
+                // 固定时间
                 results.add(minValue);
             }
             return results;
         }
 
-        //Range模式
+        // Range模式
         final List<String> parts = CharsBacker.split(value, Symbol.MINUS);
         final int size = parts.size();
         if (size == 1) {// 普通值
             final int v1 = parseNumber(value, true);
-            if (step > 0) {//类似 20/2的形式
+            if (step > 0) {// 类似 20/2的形式
                 MathKit.appendRange(v1, part.getMax(), step, results);
             } else {
                 results.add(v1);
@@ -236,7 +232,7 @@ public class PartParser {
             final int v1 = parseNumber(parts.get(0), true);
             final int v2 = parseNumber(parts.get(1), true);
             if (step < 1) {
-                //在range模式下，如果步进不存在，表示步进为1
+                // 在range模式下，如果步进不存在，表示步进为1
                 step = 1;
             }
             if (v1 <= v2) {// 正常范围，例如：2-5
@@ -284,8 +280,8 @@ public class PartParser {
     /**
      * 解析别名支持包括：
      * <ul>
-     *     <li><strong>L 表示最大值</strong></li>
-     *     <li>{@link Part#MONTH}和{@link Part#DAY_OF_WEEK}别名</li>
+     * <li><strong>L 表示最大值</strong></li>
+     * <li>{@link Part#MONTH}和{@link Part#DAY_OF_WEEK}别名</li>
      * </ul>
      *
      * @param name 别名
@@ -299,12 +295,12 @@ public class PartParser {
         }
 
         switch (this.part) {
-            case MONTH:
-                // 月份从1开始
-                return Month.of(name).getIsoValue();
-            case DAY_OF_WEEK:
-                // 周从0开始，0表示周日
-                return Week.of(name).ordinal();
+        case MONTH:
+            // 月份从1开始
+            return Month.of(name).getIsoValue();
+        case DAY_OF_WEEK:
+            // 周从0开始，0表示周日
+            return Week.of(name).ordinal();
         }
 
         throw new CrontabException("Invalid alias value: [{}]", name);

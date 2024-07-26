@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.wrapper;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -41,8 +41,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
 
 /**
- * 允许定制处理程序执行链的工作流,可以注册任何数量的现有或自定义拦截器
- * 对于某些处理程序组,添加常见的预处理行为不需要修改每个处理程序实现
+ * 允许定制处理程序执行链的工作流,可以注册任何数量的现有或自定义拦截器 对于某些处理程序组,添加常见的预处理行为不需要修改每个处理程序实现
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,8 +51,7 @@ import org.springframework.web.servlet.ModelAndView;
 public class GenieWrapperHandler implements HandlerInterceptor {
 
     /**
-     * 获取客户端IP
-     * 默认检测的Header:
+     * 获取客户端IP 默认检测的Header:
      *
      * <pre>
      * 1、X-Forwarded-For
@@ -63,8 +61,7 @@ public class GenieWrapperHandler implements HandlerInterceptor {
      * </pre>
      *
      * <p>
-     * otherHeaderNames参数用于自定义检测的Header
-     * 需要注意的是，使用此方法获取的客户IP地址必须在Http服务器（例如Nginx）中配置头信息，否则容易造成IP伪造。
+     * otherHeaderNames参数用于自定义检测的Header 需要注意的是，使用此方法获取的客户IP地址必须在Http服务器（例如Nginx）中配置头信息，否则容易造成IP伪造。
      * </p>
      *
      * @param request          请求对象{@link HttpServletRequest}
@@ -72,7 +69,8 @@ public class GenieWrapperHandler implements HandlerInterceptor {
      * @return IP地址
      */
     public static String getClientIP(final HttpServletRequest request, final String... otherHeaderNames) {
-        String[] headers = {"X-Forwarded-For", "X-Real-IP", "Proxy-Client-IP", "WL-Proxy-Client-IP", "HTTP_CLIENT_IP", "HTTP_X_FORWARDED_FOR"};
+        String[] headers = { "X-Forwarded-For", "X-Real-IP", "Proxy-Client-IP", "WL-Proxy-Client-IP", "HTTP_CLIENT_IP",
+                "HTTP_X_FORWARDED_FOR" };
         if (ArrayKit.isNotEmpty(otherHeaderNames)) {
             headers = ArrayKit.addAll(headers, otherHeaderNames);
         }
@@ -81,9 +79,7 @@ public class GenieWrapperHandler implements HandlerInterceptor {
     }
 
     /**
-     * 获取客户端IP
-     * headerNames参数用于自定义检测的Header
-     * 需要注意的是，使用此方法获取的客户IP地址必须在Http服务器（例如Nginx）中配置头信息，否则容易造成IP伪造。
+     * 获取客户端IP headerNames参数用于自定义检测的Header 需要注意的是，使用此方法获取的客户IP地址必须在Http服务器（例如Nginx）中配置头信息，否则容易造成IP伪造。
      *
      * @param request     请求对象{@link HttpServletRequest}
      * @param headerNames 自定义头，通常在Http服务器（例如Nginx）中配置
@@ -103,9 +99,7 @@ public class GenieWrapperHandler implements HandlerInterceptor {
     }
 
     /**
-     * 业务处理器处理请求之前被调用,对用户的request进行处理,若返回值为true,
-     * 则继续调用后续的拦截器和目标方法；若返回值为false, 则终止请求；
-     * 这里可以加上登录校验,权限拦截、请求限流等
+     * 业务处理器处理请求之前被调用,对用户的request进行处理,若返回值为true, 则继续调用后续的拦截器和目标方法；若返回值为false, 则终止请求； 这里可以加上登录校验,权限拦截、请求限流等
      *
      * @param request  当前的HTTP请求
      * @param response 当前的HTTP响应
@@ -116,9 +110,7 @@ public class GenieWrapperHandler implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         final String method = request.getMethod().toUpperCase();
         this.requestInfo(request, method);
-        if (HTTP.GET.equals(method)
-                || HTTP.POST.equals(method)
-                || HTTP.PATCH.equals(method)
+        if (HTTP.GET.equals(method) || HTTP.POST.equals(method) || HTTP.PATCH.equals(method)
                 || HTTP.PUT.equals(method)) {
             if (request instanceof CacheRequestWrapper) {
                 CacheRequestWrapper cacheRequestWrapper = ((CacheRequestWrapper) request);
@@ -129,11 +121,8 @@ public class GenieWrapperHandler implements HandlerInterceptor {
     }
 
     /**
-     * 完成请求处理后回调,将调用处理程序执行的任何结果,
-     * 因此允许进行适当的资源清理等
-     * 注意:只有在拦截器的{@code preHandle} 方法返回{@code true}
-     * 与{@code postHandle}方法一样,将在每个方法上调用该方法,
-     * 在链中的拦截器的顺序是相反的,所以第一个拦截器是最后调用的
+     * 完成请求处理后回调,将调用处理程序执行的任何结果, 因此允许进行适当的资源清理等 注意:只有在拦截器的{@code preHandle} 方法返回{@code true}
+     * 与{@code postHandle}方法一样,将在每个方法上调用该方法, 在链中的拦截器的顺序是相反的,所以第一个拦截器是最后调用的
      *
      * @param request   当前的HTTP请求
      * @param response  当前的HTTP响应
@@ -141,11 +130,10 @@ public class GenieWrapperHandler implements HandlerInterceptor {
      * @param exception 处理程序执行时抛出异常
      */
     @Override
-    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception exception) {
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
+            Exception exception) {
         final String method = request.getMethod();
-        if (HTTP.POST.equals(method)
-                || HTTP.PATCH.equals(method)
-                || HTTP.PUT.equals(method)) {
+        if (HTTP.POST.equals(method) || HTTP.PATCH.equals(method) || HTTP.PUT.equals(method)) {
             if (response instanceof CacheResponseWrapper) {
                 CacheResponseWrapper cacheResponseWrapper = ((CacheResponseWrapper) response);
                 Logger.info("<== {}", new String(cacheResponseWrapper.getBody()).length());
@@ -154,13 +142,8 @@ public class GenieWrapperHandler implements HandlerInterceptor {
     }
 
     /**
-     * 拦截处理程序的执行 实际上是在HandlerAdapter之后调用的
-     * 调用处理程序,但在DispatcherServlet呈现视图之前
-     * 可以通过给定的ModelAndView向视图公开额外的模型对象
-     * DispatcherServlet在一个执行链中处理一个处理程序,由
-     * 任意数量的拦截器,处理程序本身在最后
-     * 使用这种方法,每个拦截器可以对一个执行进行后处理,
-     * 按执行链的相反顺序应用
+     * 拦截处理程序的执行 实际上是在HandlerAdapter之后调用的 调用处理程序,但在DispatcherServlet呈现视图之前 可以通过给定的ModelAndView向视图公开额外的模型对象
+     * DispatcherServlet在一个执行链中处理一个处理程序,由 任意数量的拦截器,处理程序本身在最后 使用这种方法,每个拦截器可以对一个执行进行后处理, 按执行链的相反顺序应用
      *
      * @param request      当前的HTTP请求
      * @param response     当前的HTTP响应
@@ -168,7 +151,8 @@ public class GenieWrapperHandler implements HandlerInterceptor {
      * @param modelAndView 处理程序返回的{code ModelAndView} 也可以是{@code null})
      */
     @Override
-    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler,
+            ModelAndView modelAndView) {
 
     }
 
@@ -181,27 +165,27 @@ public class GenieWrapperHandler implements HandlerInterceptor {
     private void requestInfo(HttpServletRequest request, String method) {
         String requestMethod = AnsiEncoder.encode(Ansi4BitColor.GREEN, " %s ", method);
         switch (method) {
-            case HTTP.ALL:
-                requestMethod = AnsiEncoder.encode(Ansi4BitColor.WHITE, " %s ", method);
-                break;
-            case HTTP.POST:
-                requestMethod = AnsiEncoder.encode(Ansi4BitColor.MAGENTA, " %s ", method);
-                break;
-            case HTTP.DELETE:
-                requestMethod = AnsiEncoder.encode(Ansi4BitColor.BLUE, " %s ", method);
-                break;
-            case HTTP.PUT:
-                requestMethod = AnsiEncoder.encode(Ansi4BitColor.RED, " %s ", method);
-                break;
-            case HTTP.OPTIONS:
-                requestMethod = AnsiEncoder.encode(Ansi4BitColor.YELLOW, " %s ", method);
-                break;
-            case HTTP.BEFORE:
-                requestMethod = AnsiEncoder.encode(Ansi4BitColor.BLACK, " %s ", method);
-                break;
-            case HTTP.AFTER:
-                requestMethod = AnsiEncoder.encode(Ansi4BitColor.CYAN, " %s ", method);
-                break;
+        case HTTP.ALL:
+            requestMethod = AnsiEncoder.encode(Ansi4BitColor.WHITE, " %s ", method);
+            break;
+        case HTTP.POST:
+            requestMethod = AnsiEncoder.encode(Ansi4BitColor.MAGENTA, " %s ", method);
+            break;
+        case HTTP.DELETE:
+            requestMethod = AnsiEncoder.encode(Ansi4BitColor.BLUE, " %s ", method);
+            break;
+        case HTTP.PUT:
+            requestMethod = AnsiEncoder.encode(Ansi4BitColor.RED, " %s ", method);
+            break;
+        case HTTP.OPTIONS:
+            requestMethod = AnsiEncoder.encode(Ansi4BitColor.YELLOW, " %s ", method);
+            break;
+        case HTTP.BEFORE:
+            requestMethod = AnsiEncoder.encode(Ansi4BitColor.BLACK, " %s ", method);
+            break;
+        case HTTP.AFTER:
+            requestMethod = AnsiEncoder.encode(Ansi4BitColor.CYAN, " %s ", method);
+            break;
         }
         Logger.info("{} {} {}", "==>", getClientIP(request), requestMethod, request.getRequestURL().toString());
     }

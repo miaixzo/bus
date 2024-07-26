@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.net;
 
 import java.io.IOException;
@@ -37,8 +37,7 @@ import java.io.OutputStream;
  */
 public abstract class PDVOutputStream extends OutputStream {
 
-    public abstract void copyFrom(InputStream in, int length)
-            throws IOException;
+    public abstract void copyFrom(InputStream in, int length) throws IOException;
 
     public abstract void copyFrom(InputStream in) throws IOException;
 

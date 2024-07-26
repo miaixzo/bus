@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org sandao and other contributors.             ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket.plugin;
 
 import org.miaixz.bus.logger.Logger;
@@ -53,9 +53,7 @@ public class SocketOptionPlugin<T> extends AbstractPlugin<T> {
     }
 
     /**
-     * 往socket channel中设置option值。
-     * 默认将通过{@link #setOption(SocketOption, Object)}指定的配置值绑定到每一个Socket中。
-     * 如果有个性化的需求,可以重新实现本方法。
+     * 往socket channel中设置option值。 默认将通过{@link #setOption(SocketOption, Object)}指定的配置值绑定到每一个Socket中。 如果有个性化的需求,可以重新实现本方法。
      *
      * @param channel 频道
      */
@@ -75,12 +73,8 @@ public class SocketOptionPlugin<T> extends AbstractPlugin<T> {
     /**
      * 设置Socket的TCP参数配置。
      * <p>
-     * AIO客户端的有效可选范围为：
-     * 1. StandardSocketOptions.SO_SNDBUF
-     * 2. StandardSocketOptions.SO_RCVBUF
-     * 3. StandardSocketOptions.SO_KEEPALIVE
-     * 4. StandardSocketOptions.SO_REUSEADDR
-     * 5. StandardSocketOptions.TCP_NODELAY
+     * AIO客户端的有效可选范围为： 1. StandardSocketOptions.SO_SNDBUF 2. StandardSocketOptions.SO_RCVBUF 3.
+     * StandardSocketOptions.SO_KEEPALIVE 4. StandardSocketOptions.SO_REUSEADDR 5. StandardSocketOptions.TCP_NODELAY
      * </p>
      *
      * @param <V>          泛型

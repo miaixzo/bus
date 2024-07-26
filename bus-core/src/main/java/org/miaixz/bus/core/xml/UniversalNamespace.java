@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xml;
 
 import org.miaixz.bus.core.center.map.BiMap;
@@ -38,8 +38,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 /**
- * 全局命名空间上下文
- * 见：https://www.ibm.com/developerworks/cn/xml/x-nmspccontext/
+ * 全局命名空间上下文 见：https://www.ibm.com/developerworks/cn/xml/x-nmspccontext/
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,8 +49,7 @@ public class UniversalNamespace implements NamespaceContext {
     private final BiMap<String, String> prefixUri = new BiMap<>(new HashMap<>());
 
     /**
-     * 此构造函数解析文档并存储其能找到的所有命名空间。
-     * 如果 toplevelOnly 为 true，则仅使用根目录中的命名空间。
+     * 此构造函数解析文档并存储其能找到的所有命名空间。 如果 toplevelOnly 为 true，则仅使用根目录中的命名空间。
      *
      * @param node         源节点
      * @param toplevelOnly 限制搜索以提高性能
@@ -61,7 +59,7 @@ public class UniversalNamespace implements NamespaceContext {
     }
 
     /**
-     *取单个节点，提取并存储命名空间属性。
+     * 取单个节点，提取并存储命名空间属性。
      *
      * @param node           检查节点
      * @param attributesOnly 如果为真，则不发生递归

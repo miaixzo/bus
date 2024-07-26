@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.pay;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
@@ -42,7 +42,7 @@ import org.springframework.context.annotation.Bean;
  * @author Kimi Liu
  * @since Java 17+
  */
-@EnableConfigurationProperties(value = {PayProperties.class})
+@EnableConfigurationProperties(value = { PayProperties.class })
 public class PayConfiguration {
 
     @Bean

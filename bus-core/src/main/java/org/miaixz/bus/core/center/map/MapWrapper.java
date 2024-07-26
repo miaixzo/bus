@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -49,7 +49,8 @@ import java.util.function.Supplier;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MapWrapper<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Wrapper<Map<K, V>>, Serializable, Cloneable {
+public class MapWrapper<K, V>
+        implements Map<K, V>, Iterable<Map.Entry<K, V>>, Wrapper<Map<K, V>>, Serializable, Cloneable {
 
     private static final long serialVersionUID = -1L;
     /**
@@ -58,8 +59,7 @@ public class MapWrapper<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, W
     private Map<K, V> raw;
 
     /**
-     * 构造
-     * 通过传入一个Map从而确定Map的类型，子类需创建一个空的Map，而非传入一个已有Map，否则值可能会被修改
+     * 构造 通过传入一个Map从而确定Map的类型，子类需创建一个空的Map，而非传入一个已有Map，否则值可能会被修改
      *
      * @param mapFactory 空Map创建工厂
      */
@@ -175,7 +175,6 @@ public class MapWrapper<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, W
         return raw.toString();
     }
 
-
     @Override
     public void forEach(final BiConsumer<? super K, ? super V> action) {
         raw.forEach(action);
@@ -249,7 +248,6 @@ public class MapWrapper<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, W
         out.defaultWriteObject();
         out.writeObject(this.raw);
     }
-
 
     private void readObject(final ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();

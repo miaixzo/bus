@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.PMI_Private_Calibration_Module_Version_2_0;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,29 +46,30 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.CalibrationObjectSize:
-            case PrivateTag.CalibrationObjectSDev:
-            case PrivateTag.CalibrationHorizontalPixelSpacing:
-            case PrivateTag.CalibrationVerticalPixelSpacing:
-            case PrivateTag.AutoMagnifyFactor:
-            case PrivateTag.HorizontalPixelSDev:
-            case PrivateTag.VerticalPixelSDev:
-                return VR.FL;
-            case PrivateTag.CalibrationFrameNumber:
-                return VR.IS;
-            case PrivateTag.CalibrationObjectUnit:
-                return VR.SH;
-            case PrivateTag.AveragedCalibrationsPerformed:
-                return VR.SS;
-            case PrivateTag.CalibrationMethod:
-            case PrivateTag.CalibrationMethodInfo:
-            case PrivateTag.CalibrationFileName:
-                return VR.ST;
+
+        case PrivateTag.CalibrationObjectSize:
+        case PrivateTag.CalibrationObjectSDev:
+        case PrivateTag.CalibrationHorizontalPixelSpacing:
+        case PrivateTag.CalibrationVerticalPixelSpacing:
+        case PrivateTag.AutoMagnifyFactor:
+        case PrivateTag.HorizontalPixelSDev:
+        case PrivateTag.VerticalPixelSDev:
+            return VR.FL;
+        case PrivateTag.CalibrationFrameNumber:
+            return VR.IS;
+        case PrivateTag.CalibrationObjectUnit:
+            return VR.SH;
+        case PrivateTag.AveragedCalibrationsPerformed:
+            return VR.SS;
+        case PrivateTag.CalibrationMethod:
+        case PrivateTag.CalibrationMethodInfo:
+        case PrivateTag.CalibrationFileName:
+            return VR.ST;
         }
         return VR.UN;
     }

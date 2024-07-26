@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.plugin.httpz;
 
 import org.miaixz.bus.core.lang.Fields;
@@ -93,13 +93,8 @@ public class HttpzState {
                 errorMsgs.removeFirst();
             }
             StringBuilder errorMsg = new StringBuilder();
-            errorMsg.append(DateKit.format(new Date(), Fields.NORM_DATETIME))
-                    .append(Symbol.HT)
-                    .append(url)
-                    .append(Symbol.HT)
-                    .append(e.getClass().getName())
-                    .append(Symbol.HT)
-                    .append(e.getMessage());
+            errorMsg.append(DateKit.format(new Date(), Fields.NORM_DATETIME)).append(Symbol.HT).append(url)
+                    .append(Symbol.HT).append(e.getClass().getName()).append(Symbol.HT).append(e.getMessage());
             errorMsgs.add(errorMsg.toString());
         }
     }

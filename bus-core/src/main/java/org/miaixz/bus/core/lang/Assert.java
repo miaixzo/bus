@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang;
 
 import org.miaixz.bus.core.xyz.*;
@@ -33,8 +33,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 /**
- * 断言
- * 断言某些对象或值是否符合规定，否则抛出异常。经常用于做变量检查
+ * 断言 断言某些对象或值是否符合规定，否则抛出异常。经常用于做变量检查
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,7 +41,6 @@ import java.util.function.Supplier;
 public class Assert {
 
     private static final String TEMPLATE_VALUE_MUST_BE_BETWEEN_AND = "The value must be between {} and {}.";
-
 
     /**
      * 断言是否为真，如果为 {@code false} 抛出给定的异常
@@ -56,7 +54,8 @@ public class Assert {
      * @param supplier   指定断言不通过时抛出的异常
      * @throws X if expression is {@code false}
      */
-    public static <X extends Throwable> void isTrue(final boolean expression, final Supplier<? extends X> supplier) throws X {
+    public static <X extends Throwable> void isTrue(final boolean expression, final Supplier<? extends X> supplier)
+            throws X {
         if (!expression) {
             throw supplier.get();
         }
@@ -74,7 +73,8 @@ public class Assert {
      * @param params           参数列表
      * @throws IllegalArgumentException if expression is {@code false}
      */
-    public static void isTrue(final boolean expression, final String errorMsgTemplate, final Object... params) throws IllegalArgumentException {
+    public static void isTrue(final boolean expression, final String errorMsgTemplate, final Object... params)
+            throws IllegalArgumentException {
         isTrue(expression, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
     }
 
@@ -93,13 +93,13 @@ public class Assert {
     }
 
     /**
-     * 断言是否为假，如果为 {@code true} 抛出指定类型异常
-     * 并使用指定的函数获取错误信息返回
+     * 断言是否为假，如果为 {@code true} 抛出指定类型异常 并使用指定的函数获取错误信息返回
+     * 
      * <pre class="code">
-     *  Assert.isFalse(i &gt; 0, ()-&gt;{
-     *      // to query relation message
-     *      return new IllegalArgumentException("relation message to return");
-     *  });
+     * Assert.isFalse(i &gt; 0, () -&gt; {
+     *     // to query relation message
+     *     return new IllegalArgumentException("relation message to return");
+     * });
      * </pre>
      *
      * @param <X>           异常类型
@@ -107,7 +107,8 @@ public class Assert {
      * @param errorSupplier 指定断言不通过时抛出的异常
      * @throws X if expression is {@code false}
      */
-    public static <X extends Throwable> void isFalse(final boolean expression, final Supplier<X> errorSupplier) throws X {
+    public static <X extends Throwable> void isFalse(final boolean expression, final Supplier<X> errorSupplier)
+            throws X {
         if (expression) {
             throw errorSupplier.get();
         }
@@ -125,7 +126,8 @@ public class Assert {
      * @param params           参数列表
      * @throws IllegalArgumentException if expression is {@code false}
      */
-    public static void isFalse(final boolean expression, final String errorMsgTemplate, final Object... params) throws IllegalArgumentException {
+    public static void isFalse(final boolean expression, final String errorMsgTemplate, final Object... params)
+            throws IllegalArgumentException {
         isFalse(expression, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
     }
 
@@ -144,13 +146,13 @@ public class Assert {
     }
 
     /**
-     * 断言对象是否为{@code null} ，如果不为{@code null} 抛出指定类型异常
-     * 并使用指定的函数获取错误信息返回
+     * 断言对象是否为{@code null} ，如果不为{@code null} 抛出指定类型异常 并使用指定的函数获取错误信息返回
+     * 
      * <pre class="code">
-     * Assert.isNull(value, ()-&gt;{
-     *      // to query relation message
-     *      return new IllegalArgumentException("relation message to return");
-     *  });
+     * Assert.isNull(value, () -&gt; {
+     *     // to query relation message
+     *     return new IllegalArgumentException("relation message to return");
+     * });
      * </pre>
      *
      * @param <X>           异常类型
@@ -166,6 +168,7 @@ public class Assert {
 
     /**
      * 断言对象是否为{@code null} ，如果不为{@code null} 抛出{@link IllegalArgumentException} 异常
+     * 
      * <pre class="code">
      * Assert.isNull(value, "The value must be null");
      * </pre>
@@ -175,12 +178,14 @@ public class Assert {
      * @param params           参数列表
      * @throws IllegalArgumentException if the object is not {@code null}
      */
-    public static void isNull(final Object object, final String errorMsgTemplate, final Object... params) throws IllegalArgumentException {
+    public static void isNull(final Object object, final String errorMsgTemplate, final Object... params)
+            throws IllegalArgumentException {
         isNull(object, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
     }
 
     /**
      * 断言对象是否为{@code null} ，如果不为{@code null} 抛出{@link IllegalArgumentException} 异常
+     * 
      * <pre class="code">
      * Assert.isNull(value);
      * </pre>
@@ -193,13 +198,13 @@ public class Assert {
     }
 
     /**
-     * 断言对象是否不为{@code null} ，如果为{@code null} 抛出指定类型异常
-     * 并使用指定的函数获取错误信息返回
+     * 断言对象是否不为{@code null} ，如果为{@code null} 抛出指定类型异常 并使用指定的函数获取错误信息返回
+     * 
      * <pre class="code">
-     * Assert.notNull(clazz, ()-&gt;{
-     *      // to query relation message
-     *      return new IllegalArgumentException("relation message to return");
-     *  });
+     * Assert.notNull(clazz, () -&gt; {
+     *     // to query relation message
+     *     return new IllegalArgumentException("relation message to return");
+     * });
      * </pre>
      *
      * @param <T>           被检查对象泛型类型
@@ -217,7 +222,9 @@ public class Assert {
     }
 
     /**
-     * 断言对象是否不为{@code null} ，如果为{@code null} 抛出{@link IllegalArgumentException} 异常 Assert that an object is not {@code null} .
+     * 断言对象是否不为{@code null} ，如果为{@code null} 抛出{@link IllegalArgumentException} 异常 Assert that an object is not
+     * {@code null} .
+     * 
      * <pre class="code">
      * Assert.notNull(clazz, "The class must not be null");
      * </pre>
@@ -229,12 +236,14 @@ public class Assert {
      * @return 被检查后的对象
      * @throws IllegalArgumentException if the object is {@code null}
      */
-    public static <T> T notNull(final T object, final String errorMsgTemplate, final Object... params) throws IllegalArgumentException {
+    public static <T> T notNull(final T object, final String errorMsgTemplate, final Object... params)
+            throws IllegalArgumentException {
         return notNull(object, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
     }
 
     /**
      * 断言对象是否不为{@code null} ，如果为{@code null} 抛出{@link IllegalArgumentException} 异常
+     * 
      * <pre class="code">
      * Assert.notNull(clazz);
      * </pre>
@@ -250,11 +259,12 @@ public class Assert {
 
     /**
      * 检查给定字符串是否为空，为空抛出自定义异常，并使用指定的函数获取错误信息返回。
+     * 
      * <pre class="code">
-     * Assert.notEmpty(name, ()-&gt;{
-     *      // to query relation message
-     *      return new IllegalArgumentException("relation message to return");
-     *  });
+     * Assert.notEmpty(name, () -&gt; {
+     *     // to query relation message
+     *     return new IllegalArgumentException("relation message to return");
+     * });
      * </pre>
      *
      * @param <X>           异常类型
@@ -265,7 +275,8 @@ public class Assert {
      * @throws X 被检查字符串为空抛出此异常
      * @see StringKit#isNotEmpty(CharSequence)
      */
-    public static <T extends CharSequence, X extends Throwable> T notEmpty(final T text, final Supplier<X> errorSupplier) throws X {
+    public static <T extends CharSequence, X extends Throwable> T notEmpty(final T text,
+            final Supplier<X> errorSupplier) throws X {
         if (StringKit.isEmpty(text)) {
             throw errorSupplier.get();
         }
@@ -287,7 +298,8 @@ public class Assert {
      * @throws IllegalArgumentException 被检查字符串为空
      * @see StringKit#isNotEmpty(CharSequence)
      */
-    public static <T extends CharSequence> T notEmpty(final T text, final String errorMsgTemplate, final Object... params) throws IllegalArgumentException {
+    public static <T extends CharSequence> T notEmpty(final T text, final String errorMsgTemplate,
+            final Object... params) throws IllegalArgumentException {
         return notEmpty(text, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
     }
 
@@ -305,17 +317,18 @@ public class Assert {
      * @see StringKit#isNotEmpty(CharSequence)
      */
     public static <T extends CharSequence> T notEmpty(final T text) throws IllegalArgumentException {
-        return notEmpty(text, "[Assertion failed] - this String argument must have length; it must not be null or empty");
+        return notEmpty(text,
+                "[Assertion failed] - this String argument must have length; it must not be null or empty");
     }
 
     /**
-     * 检查给定字符串是否为空白（null、空串或只包含空白符），为空抛出自定义异常。
-     * 并使用指定的函数获取错误信息返回
+     * 检查给定字符串是否为空白（null、空串或只包含空白符），为空抛出自定义异常。 并使用指定的函数获取错误信息返回
+     * 
      * <pre class="code">
-     * Assert.notBlank(name, ()-&gt;{
-     *      // to query relation message
-     *      return new IllegalArgumentException("relation message to return");
-     *  });
+     * Assert.notBlank(name, () -&gt; {
+     *     // to query relation message
+     *     return new IllegalArgumentException("relation message to return");
+     * });
      * </pre>
      *
      * @param <X>              异常类型
@@ -326,7 +339,8 @@ public class Assert {
      * @throws X 被检查字符串为空白
      * @see StringKit#isNotBlank(CharSequence)
      */
-    public static <T extends CharSequence, X extends Throwable> T notBlank(final T text, final Supplier<X> errorMsgSupplier) throws X {
+    public static <T extends CharSequence, X extends Throwable> T notBlank(final T text,
+            final Supplier<X> errorMsgSupplier) throws X {
         if (StringKit.isBlank(text)) {
             throw errorMsgSupplier.get();
         }
@@ -348,7 +362,8 @@ public class Assert {
      * @throws IllegalArgumentException 被检查字符串为空白
      * @see StringKit#isNotBlank(CharSequence)
      */
-    public static <T extends CharSequence> T notBlank(final T text, final String errorMsgTemplate, final Object... params) throws IllegalArgumentException {
+    public static <T extends CharSequence> T notBlank(final T text, final String errorMsgTemplate,
+            final Object... params) throws IllegalArgumentException {
         return notBlank(text, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
     }
 
@@ -366,17 +381,18 @@ public class Assert {
      * @see StringKit#isNotBlank(CharSequence)
      */
     public static <T extends CharSequence> T notBlank(final T text) throws IllegalArgumentException {
-        return notBlank(text, "[Assertion failed] - this String argument must have text; it must not be null, empty, or blank");
+        return notBlank(text,
+                "[Assertion failed] - this String argument must have text; it must not be null, empty, or blank");
     }
 
     /**
-     * 断言给定字符串是否不被另一个字符串包含（即是否为子串），并使用指定的函数获取错误信息返回
-     * 如果非子串，返回子串，如果是子串，则抛出{@link IllegalArgumentException}异常。
+     * 断言给定字符串是否不被另一个字符串包含（即是否为子串），并使用指定的函数获取错误信息返回 如果非子串，返回子串，如果是子串，则抛出{@link IllegalArgumentException}异常。
+     * 
      * <pre class="code">
-     * Assert.notContain(name, "rod", ()-&gt;{
-     *      // to query relation message
-     *      return new IllegalArgumentException("relation message to return ");
-     *  });
+     * Assert.notContain(name, "rod", () -&gt; {
+     *     // to query relation message
+     *     return new IllegalArgumentException("relation message to return ");
+     * });
      * </pre>
      *
      * @param <T>           字符串类型
@@ -388,7 +404,8 @@ public class Assert {
      * @throws X 非子串抛出异常
      * @see StringKit#contains(CharSequence, CharSequence)
      */
-    public static <T extends CharSequence, X extends Throwable> T notContain(final CharSequence textToSearch, final T substring, final Supplier<X> errorSupplier) throws X {
+    public static <T extends CharSequence, X extends Throwable> T notContain(final CharSequence textToSearch,
+            final T substring, final Supplier<X> errorSupplier) throws X {
         if (StringKit.contains(textToSearch, substring)) {
             throw errorSupplier.get();
         }
@@ -396,8 +413,8 @@ public class Assert {
     }
 
     /**
-     * 断言给定字符串是否不被另一个字符串包含（即是否为子串）
-     * 如果非子串，返回子串，如果是子串，则抛出{@link IllegalArgumentException}异常。
+     * 断言给定字符串是否不被另一个字符串包含（即是否为子串） 如果非子串，返回子串，如果是子串，则抛出{@link IllegalArgumentException}异常。
+     * 
      * <pre class="code">
      * Assert.notContain(name, "rod", "Name must not contain 'rod'");
      * </pre>
@@ -409,13 +426,16 @@ public class Assert {
      * @return 被检查的子串
      * @throws IllegalArgumentException 非子串抛出异常
      */
-    public static String notContain(final String textToSearch, final String subString, final String errorMsgTemplate, final Object... params) throws IllegalArgumentException {
-        return notContain(textToSearch, subString, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+    public static String notContain(final String textToSearch, final String subString, final String errorMsgTemplate,
+            final Object... params) throws IllegalArgumentException {
+        return notContain(textToSearch, subString,
+                () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
     }
 
     /**
      * 断言给定字符串是否不被另一个字符串包含（即是否为子串），即subString是否不是textToSearch的子串。
      * 如果非子串，返回子串，如果是子串，则抛出{@link IllegalArgumentException}异常。
+     * 
      * <pre class="code">
      * Assert.notContain(name, "rod");
      * </pre>
@@ -426,17 +446,18 @@ public class Assert {
      * @throws IllegalArgumentException 非子串抛出异常
      */
     public static String notContain(final String textToSearch, final String subString) throws IllegalArgumentException {
-        return notContain(textToSearch, subString, "[Assertion failed] - this String argument must not contain the substring [{}]", subString);
+        return notContain(textToSearch, subString,
+                "[Assertion failed] - this String argument must not contain the substring [{}]", subString);
     }
 
     /**
-     * 断言给定数组是否包含元素，数组必须不为 {@code null} 且至少包含一个元素
-     * 并使用指定的函数获取错误信息返回
+     * 断言给定数组是否包含元素，数组必须不为 {@code null} 且至少包含一个元素 并使用指定的函数获取错误信息返回
+     * 
      * <pre class="code">
-     * Assert.notEmpty(array, ()-&gt;{
-     *      // to query relation message
-     *      return new IllegalArgumentException("relation message to return");
-     *  });
+     * Assert.notEmpty(array, () -&gt; {
+     *     // to query relation message
+     *     return new IllegalArgumentException("relation message to return");
+     * });
      * </pre>
      *
      * @param <T>           数组元素类型
@@ -456,6 +477,7 @@ public class Assert {
 
     /**
      * 断言给定数组是否包含元素，数组必须不为 {@code null} 且至少包含一个元素
+     * 
      * <pre class="code">
      * Assert.notEmpty(array, "The array must have elements");
      * </pre>
@@ -467,12 +489,14 @@ public class Assert {
      * @return 被检查的数组
      * @throws IllegalArgumentException if the object array is {@code null} or has no elements
      */
-    public static <T> T[] notEmpty(final T[] array, final String errorMsgTemplate, final Object... params) throws IllegalArgumentException {
+    public static <T> T[] notEmpty(final T[] array, final String errorMsgTemplate, final Object... params)
+            throws IllegalArgumentException {
         return notEmpty(array, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
     }
 
     /**
      * 断言给定数组是否包含元素，数组必须不为 {@code null} 且至少包含一个元素
+     * 
      * <pre class="code">
      * Assert.notEmpty(array, "The array must have elements");
      * </pre>
@@ -487,13 +511,13 @@ public class Assert {
     }
 
     /**
-     * 断言给定数组是否不包含{@code null}元素，如果数组为空或 {@code null}将被认为不包含
-     * 并使用指定的函数获取错误信息返回
+     * 断言给定数组是否不包含{@code null}元素，如果数组为空或 {@code null}将被认为不包含 并使用指定的函数获取错误信息返回
+     * 
      * <pre class="code">
-     * Assert.noNullElements(array, ()-&gt;{
-     *      // to query relation message
-     *      return new IllegalArgumentException("relation message to return ");
-     *  });
+     * Assert.noNullElements(array, () -&gt; {
+     *     // to query relation message
+     *     return new IllegalArgumentException("relation message to return ");
+     * });
      * </pre>
      *
      * @param <T>           数组元素类型
@@ -504,7 +528,8 @@ public class Assert {
      * @throws X if the object array contains a {@code null} element
      * @see ArrayKit#hasNull(Object[])
      */
-    public static <T, X extends Throwable> T[] noNullElements(final T[] array, final Supplier<X> errorSupplier) throws X {
+    public static <T, X extends Throwable> T[] noNullElements(final T[] array, final Supplier<X> errorSupplier)
+            throws X {
         if (ArrayKit.hasNull(array)) {
             throw errorSupplier.get();
         }
@@ -513,6 +538,7 @@ public class Assert {
 
     /**
      * 断言给定数组是否不包含{@code null}元素，如果数组为空或 {@code null}将被认为不包含
+     * 
      * <pre class="code">
      * Assert.noNullElements(array, "The array must not have null elements");
      * </pre>
@@ -524,12 +550,14 @@ public class Assert {
      * @return 被检查的数组
      * @throws IllegalArgumentException if the object array contains a {@code null} element
      */
-    public static <T> T[] noNullElements(final T[] array, final String errorMsgTemplate, final Object... params) throws IllegalArgumentException {
+    public static <T> T[] noNullElements(final T[] array, final String errorMsgTemplate, final Object... params)
+            throws IllegalArgumentException {
         return noNullElements(array, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
     }
 
     /**
      * 断言给定数组是否不包含{@code null}元素，如果数组为空或 {@code null}将被认为不包含
+     * 
      * <pre class="code">
      * Assert.noNullElements(array);
      * </pre>
@@ -544,13 +572,13 @@ public class Assert {
     }
 
     /**
-     * 断言给定集合非空
-     * 并使用指定的函数获取错误信息返回
+     * 断言给定集合非空 并使用指定的函数获取错误信息返回
+     * 
      * <pre class="code">
-     * Assert.notEmpty(collection, ()-&gt;{
-     *      // to query relation message
-     *      return new IllegalArgumentException("relation message to return");
-     *  });
+     * Assert.notEmpty(collection, () -&gt; {
+     *     // to query relation message
+     *     return new IllegalArgumentException("relation message to return");
+     * });
      * </pre>
      *
      * @param <E>           集合元素类型
@@ -562,7 +590,8 @@ public class Assert {
      * @throws X if the collection is {@code null} or has no elements
      * @see CollKit#isNotEmpty(Iterable)
      */
-    public static <E, T extends Iterable<E>, X extends Throwable> T notEmpty(final T collection, final Supplier<X> errorSupplier) throws X {
+    public static <E, T extends Iterable<E>, X extends Throwable> T notEmpty(final T collection,
+            final Supplier<X> errorSupplier) throws X {
         if (CollKit.isEmpty(collection)) {
             throw errorSupplier.get();
         }
@@ -571,6 +600,7 @@ public class Assert {
 
     /**
      * 断言给定集合非空
+     * 
      * <pre class="code">
      * Assert.notEmpty(collection, "Collection must have elements");
      * </pre>
@@ -583,12 +613,14 @@ public class Assert {
      * @return 非空集合
      * @throws IllegalArgumentException if the collection is {@code null} or has no elements
      */
-    public static <E, T extends Iterable<E>> T notEmpty(final T collection, final String errorMsgTemplate, final Object... params) throws IllegalArgumentException {
+    public static <E, T extends Iterable<E>> T notEmpty(final T collection, final String errorMsgTemplate,
+            final Object... params) throws IllegalArgumentException {
         return notEmpty(collection, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
     }
 
     /**
      * 断言给定集合非空
+     * 
      * <pre class="code">
      * Assert.notEmpty(collection);
      * </pre>
@@ -600,17 +632,18 @@ public class Assert {
      * @throws IllegalArgumentException if the collection is {@code null} or has no elements
      */
     public static <E, T extends Iterable<E>> T notEmpty(final T collection) throws IllegalArgumentException {
-        return notEmpty(collection, "[Assertion failed] - this collection must not be empty: it must contain at least 1 element");
+        return notEmpty(collection,
+                "[Assertion failed] - this collection must not be empty: it must contain at least 1 element");
     }
 
     /**
-     * 断言给定Map非空
-     * 并使用指定的函数获取错误信息返回
+     * 断言给定Map非空 并使用指定的函数获取错误信息返回
+     * 
      * <pre class="code">
-     * Assert.notEmpty(map, ()-&gt;{
-     *      // to query relation message
-     *      return new IllegalArgumentException("relation message to return");
-     *  });
+     * Assert.notEmpty(map, () -&gt; {
+     *     // to query relation message
+     *     return new IllegalArgumentException("relation message to return");
+     * });
      * </pre>
      *
      * @param <K>           Key类型
@@ -623,7 +656,8 @@ public class Assert {
      * @throws X if the map is {@code null} or has no entries
      * @see MapKit#isNotEmpty(Map)
      */
-    public static <K, V, T extends Map<K, V>, X extends Throwable> T notEmpty(final T map, final Supplier<X> errorSupplier) throws X {
+    public static <K, V, T extends Map<K, V>, X extends Throwable> T notEmpty(final T map,
+            final Supplier<X> errorSupplier) throws X {
         if (MapKit.isEmpty(map)) {
             throw errorSupplier.get();
         }
@@ -632,6 +666,7 @@ public class Assert {
 
     /**
      * 断言给定Map非空
+     * 
      * <pre class="code">
      * Assert.notEmpty(map, "Map must have entries");
      * </pre>
@@ -645,12 +680,14 @@ public class Assert {
      * @return 被检查的Map
      * @throws IllegalArgumentException if the map is {@code null} or has no entries
      */
-    public static <K, V, T extends Map<K, V>> T notEmpty(final T map, final String errorMsgTemplate, final Object... params) throws IllegalArgumentException {
+    public static <K, V, T extends Map<K, V>> T notEmpty(final T map, final String errorMsgTemplate,
+            final Object... params) throws IllegalArgumentException {
         return notEmpty(map, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
     }
 
     /**
      * 断言给定Map非空
+     * 
      * <pre class="code">
      * Assert.notEmpty(map, "Map must have entries");
      * </pre>
@@ -668,6 +705,7 @@ public class Assert {
 
     /**
      * 断言给定对象是否是给定类的实例
+     * 
      * <pre class="code">
      * Assert.instanceOf(Foo.class, foo);
      * </pre>
@@ -685,6 +723,7 @@ public class Assert {
 
     /**
      * 断言给定对象是否是给定类的实例
+     * 
      * <pre class="code">
      * Assert.instanceOf(Foo.class, foo, "foo must be an instance of class Foo");
      * </pre>
@@ -698,7 +737,8 @@ public class Assert {
      * @throws IllegalArgumentException if the object is not an instance of clazz
      * @see Class#isInstance(Object)
      */
-    public static <T> T isInstanceOf(final Class<?> type, final T obj, final String errorMsgTemplate, final Object... params) throws IllegalArgumentException {
+    public static <T> T isInstanceOf(final Class<?> type, final T obj, final String errorMsgTemplate,
+            final Object... params) throws IllegalArgumentException {
         notNull(type, "Type to check against must not be null");
         if (!type.isInstance(obj)) {
             throw new IllegalArgumentException(StringKit.format(errorMsgTemplate, params));
@@ -708,6 +748,7 @@ public class Assert {
 
     /**
      * 断言 {@code superType.isAssignableFrom(subType)} 是否为 {@code true}.
+     * 
      * <pre class="code">
      * Assert.isAssignable(Number.class, myClass);
      * </pre>
@@ -722,6 +763,7 @@ public class Assert {
 
     /**
      * 断言 {@code superType.isAssignableFrom(subType)} 是否为 {@code true}.
+     * 
      * <pre class="code">
      * Assert.isAssignable(Number.class, myClass, "myClass must can be assignable to class Number");
      * </pre>
@@ -732,7 +774,8 @@ public class Assert {
      * @param params           参数列表
      * @throws IllegalArgumentException 如果子类非继承父类，抛出此异常
      */
-    public static void isAssignable(final Class<?> superType, final Class<?> subType, final String errorMsgTemplate, final Object... params) throws IllegalArgumentException {
+    public static void isAssignable(final Class<?> superType, final Class<?> subType, final String errorMsgTemplate,
+            final Object... params) throws IllegalArgumentException {
         notNull(superType, "Type to check against must not be null");
         if (subType == null || !superType.isAssignableFrom(subType)) {
             throw new IllegalArgumentException(StringKit.format(errorMsgTemplate, params));
@@ -740,20 +783,21 @@ public class Assert {
     }
 
     /**
-     * 检查boolean表达式，当检查结果为false时抛出 {@code IllegalStateException}。
-     * 并使用指定的函数获取错误信息返回
+     * 检查boolean表达式，当检查结果为false时抛出 {@code IllegalStateException}。 并使用指定的函数获取错误信息返回
+     * 
      * <pre class="code">
-     * Assert.state(data == null, ()-&gt;{
-     *      // to query relation message
-     *      return "relation message to return ";
-     *  });
+     * Assert.state(data == null, () -&gt; {
+     *     // to query relation message
+     *     return "relation message to return ";
+     * });
      * </pre>
      *
      * @param expression       boolean 表达式
      * @param errorMsgSupplier 错误抛出异常附带的消息生产接口
      * @throws IllegalStateException 表达式为 {@code false} 抛出此异常
      */
-    public static void state(final boolean expression, final Supplier<String> errorMsgSupplier) throws IllegalStateException {
+    public static void state(final boolean expression, final Supplier<String> errorMsgSupplier)
+            throws IllegalStateException {
         if (!expression) {
             throw new IllegalStateException(errorMsgSupplier.get());
         }
@@ -761,6 +805,7 @@ public class Assert {
 
     /**
      * 检查boolean表达式，当检查结果为false时抛出 {@code IllegalStateException}。
+     * 
      * <pre class="code">
      * Assert.state(data == null, "The data property must not already be initialized");
      * </pre>
@@ -770,7 +815,8 @@ public class Assert {
      * @param params           参数列表
      * @throws IllegalStateException 表达式为 {@code false} 抛出此异常
      */
-    public static void state(final boolean expression, final String errorMsgTemplate, final Object... params) throws IllegalStateException {
+    public static void state(final boolean expression, final String errorMsgTemplate, final Object... params)
+            throws IllegalStateException {
         if (!expression) {
             throw new IllegalStateException(StringKit.format(errorMsgTemplate, params));
         }
@@ -778,6 +824,7 @@ public class Assert {
 
     /**
      * 检查boolean表达式，当检查结果为false时抛出 {@code IllegalStateException}。
+     * 
      * <pre class="code">
      * Assert.state(data == null);
      * </pre>
@@ -802,7 +849,8 @@ public class Assert {
      * @throws IllegalArgumentException  如果size &lt; 0 抛出此异常
      * @throws IndexOutOfBoundsException 如果index &lt; 0或者 index &ge; size 抛出此异常
      */
-    public static int checkIndex(final int index, final int size) throws IllegalArgumentException, IndexOutOfBoundsException {
+    public static int checkIndex(final int index, final int size)
+            throws IllegalArgumentException, IndexOutOfBoundsException {
         return checkIndex(index, size, "[Assertion failed]");
     }
 
@@ -821,7 +869,8 @@ public class Assert {
      * @throws IllegalArgumentException  如果size &lt; 0 抛出此异常
      * @throws IndexOutOfBoundsException 如果index &lt; 0或者 index &ge; size 抛出此异常
      */
-    public static int checkIndex(final int index, final int size, final String errorMsgTemplate, final Object... params) throws IllegalArgumentException, IndexOutOfBoundsException {
+    public static int checkIndex(final int index, final int size, final String errorMsgTemplate, final Object... params)
+            throws IllegalArgumentException, IndexOutOfBoundsException {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException(badIndexMsg(index, size, errorMsgTemplate, params));
         }
@@ -839,7 +888,8 @@ public class Assert {
      * @return 经过检查后的值
      * @throws X if value is out of bound
      */
-    public static <X extends Throwable> int checkBetween(final int value, final int min, final int max, final Supplier<? extends X> errorSupplier) throws X {
+    public static <X extends Throwable> int checkBetween(final int value, final int min, final int max,
+            final Supplier<? extends X> errorSupplier) throws X {
         if (value < min || value > max) {
             throw errorSupplier.get();
         }
@@ -857,8 +907,10 @@ public class Assert {
      * @param params           异常信息参数，用于替换"{}"占位符
      * @return 经过检查后的值
      */
-    public static int checkBetween(final int value, final int min, final int max, final String errorMsgTemplate, final Object... params) {
-        return checkBetween(value, min, max, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+    public static int checkBetween(final int value, final int min, final int max, final String errorMsgTemplate,
+            final Object... params) {
+        return checkBetween(value, min, max,
+                () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
     }
 
     /**
@@ -884,7 +936,8 @@ public class Assert {
      * @return 经过检查后的值
      * @throws X if value is out of bound
      */
-    public static <X extends Throwable> long checkBetween(final long value, final long min, final long max, final Supplier<? extends X> errorSupplier) throws X {
+    public static <X extends Throwable> long checkBetween(final long value, final long min, final long max,
+            final Supplier<? extends X> errorSupplier) throws X {
         if (value < min || value > max) {
             throw errorSupplier.get();
         }
@@ -902,8 +955,10 @@ public class Assert {
      * @param params           异常信息参数，用于替换"{}"占位符
      * @return 经过检查后的值
      */
-    public static long checkBetween(final long value, final long min, final long max, final String errorMsgTemplate, final Object... params) {
-        return checkBetween(value, min, max, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+    public static long checkBetween(final long value, final long min, final long max, final String errorMsgTemplate,
+            final Object... params) {
+        return checkBetween(value, min, max,
+                () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
     }
 
     /**
@@ -929,7 +984,8 @@ public class Assert {
      * @return 经过检查后的值
      * @throws X if value is out of bound
      */
-    public static <X extends Throwable> double checkBetween(final double value, final double min, final double max, final Supplier<? extends X> errorSupplier) throws X {
+    public static <X extends Throwable> double checkBetween(final double value, final double min, final double max,
+            final Supplier<? extends X> errorSupplier) throws X {
         if (value < min || value > max) {
             throw errorSupplier.get();
         }
@@ -947,8 +1003,10 @@ public class Assert {
      * @param params           异常信息参数，用于替换"{}"占位符
      * @return 经过检查后的值
      */
-    public static double checkBetween(final double value, final double min, final double max, final String errorMsgTemplate, final Object... params) {
-        return checkBetween(value, min, max, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+    public static double checkBetween(final double value, final double min, final double max,
+            final String errorMsgTemplate, final Object... params) {
+        return checkBetween(value, min, max,
+                () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
     }
 
     /**
@@ -986,8 +1044,9 @@ public class Assert {
 
     /**
      * 断言两个对象是否不相等,如果两个对象相等 抛出IllegalArgumentException 异常
+     * 
      * <pre class="code">
-     *   Assert.notEquals(obj1,obj2);
+     * Assert.notEquals(obj1, obj2);
      * </pre>
      *
      * @param obj1 对象1
@@ -1000,8 +1059,9 @@ public class Assert {
 
     /**
      * 断言两个对象是否不相等,如果两个对象相等 抛出IllegalArgumentException 异常
+     * 
      * <pre class="code">
-     *   Assert.notEquals(obj1,obj2,"obj1 must be not equals obj2");
+     * Assert.notEquals(obj1, obj2, "obj1 must be not equals obj2");
      * </pre>
      *
      * @param obj1             对象1
@@ -1010,7 +1070,8 @@ public class Assert {
      * @param params           异常信息参数，用于替换"{}"占位符
      * @throws IllegalArgumentException obj1 must be not equals obj2
      */
-    public static void notEquals(final Object obj1, final Object obj2, final String errorMsgTemplate, final Object... params) throws IllegalArgumentException {
+    public static void notEquals(final Object obj1, final Object obj2, final String errorMsgTemplate,
+            final Object... params) throws IllegalArgumentException {
         notEquals(obj1, obj2, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
     }
 
@@ -1023,7 +1084,8 @@ public class Assert {
      * @param <X>           异常类型
      * @throws X obj1 must be not equals obj2
      */
-    public static <X extends Throwable> void notEquals(final Object obj1, final Object obj2, final Supplier<X> errorSupplier) throws X {
+    public static <X extends Throwable> void notEquals(final Object obj1, final Object obj2,
+            final Supplier<X> errorSupplier) throws X {
         if (ObjectKit.equals(obj1, obj2)) {
             throw errorSupplier.get();
         }
@@ -1031,8 +1093,9 @@ public class Assert {
 
     /**
      * 断言两个对象是否相等,如果两个对象不相等 抛出IllegalArgumentException 异常
+     * 
      * <pre class="code">
-     *   Assert.isEquals(obj1,obj2);
+     * Assert.isEquals(obj1, obj2);
      * </pre>
      *
      * @param obj1 对象1
@@ -1045,8 +1108,9 @@ public class Assert {
 
     /**
      * 断言两个对象是否相等,如果两个对象不相等 抛出IllegalArgumentException 异常
+     * 
      * <pre class="code">
-     *   Assert.isEquals(obj1,obj2,"obj1 must be equals obj2");
+     * Assert.isEquals(obj1, obj2, "obj1 must be equals obj2");
      * </pre>
      *
      * @param obj1             对象1
@@ -1055,7 +1119,8 @@ public class Assert {
      * @param params           异常信息参数，用于替换"{}"占位符
      * @throws IllegalArgumentException obj1 must be equals obj2
      */
-    public static void equals(final Object obj1, final Object obj2, final String errorMsgTemplate, final Object... params) throws IllegalArgumentException {
+    public static void equals(final Object obj1, final Object obj2, final String errorMsgTemplate,
+            final Object... params) throws IllegalArgumentException {
         equals(obj1, obj2, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
     }
 
@@ -1068,7 +1133,8 @@ public class Assert {
      * @param <X>           异常类型
      * @throws X obj1 must be equals obj2
      */
-    public static <X extends Throwable> void equals(final Object obj1, final Object obj2, final Supplier<X> errorSupplier) throws X {
+    public static <X extends Throwable> void equals(final Object obj1, final Object obj2,
+            final Supplier<X> errorSupplier) throws X {
         if (ObjectKit.notEquals(obj1, obj2)) {
             throw errorSupplier.get();
         }
@@ -1095,8 +1161,9 @@ public class Assert {
 
     /**
      * 断言给定的字符串包含有效的文本内容;也就是说，它不能是{@code null}，并且必须包含至少一个非空白字符。
+     * 
      * <pre class="code">
-     *     Assert.hasText(name, "'name' must not be empty");
+     * Assert.hasText(name, "'name' must not be empty");
      * </pre>
      *
      * @param text    要检查的字符串
@@ -1112,9 +1179,9 @@ public class Assert {
 
     /**
      * 断言给定的字符串包含有效的文本内容;也就是说，它不能是{@code null}，并且必须包含至少一个非空白字符。
+     * 
      * <pre class="code">
-     *  Assert.hasText(account.getName(),
-     *     () -&gt; "Name for account '" + account.getId() + "' must not be empty");
+     * Assert.hasText(account.getName(), () -&gt; "Name for account '" + account.getId() + "' must not be empty");
      * </pre>
      *
      * @param text            要检查的字符串

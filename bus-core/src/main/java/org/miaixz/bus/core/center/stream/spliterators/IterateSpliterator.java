@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.stream.spliterators;
 
 import java.util.Objects;
@@ -74,7 +74,8 @@ public class IterateSpliterator<T> extends Spliterators.AbstractSpliterator<T> {
      * @param <T>     流元素类型
      * @return this
      */
-    public static <T> IterateSpliterator<T> of(final T seed, final Predicate<? super T> hasNext, final UnaryOperator<T> next) {
+    public static <T> IterateSpliterator<T> of(final T seed, final Predicate<? super T> hasNext,
+            final UnaryOperator<T> next) {
         return new IterateSpliterator<>(seed, hasNext, next);
     }
 

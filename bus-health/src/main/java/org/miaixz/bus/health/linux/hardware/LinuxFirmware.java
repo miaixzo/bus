@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.linux.hardware;
 
 import org.miaixz.bus.core.center.regex.Pattern;
@@ -160,7 +160,7 @@ final class LinuxFirmware extends AbstractFirmware {
         private final String description;
 
         private VcGenCmdStrings(String releaseDate, String manufacturer, String version, String name,
-                                String description) {
+                String description) {
             this.releaseDate = releaseDate;
             this.manufacturer = manufacturer;
             this.version = version;

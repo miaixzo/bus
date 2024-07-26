@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.linux.hardware;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -46,8 +46,7 @@ import java.util.function.Supplier;
 @Immutable
 final class LinuxBaseboard extends AbstractBaseboard {
 
-    private final Supplier<Tuple> manufacturerModelVersionSerial = Memoizer.memoize(
-            CpuInfo::queryBoardInfo);
+    private final Supplier<Tuple> manufacturerModelVersionSerial = Memoizer.memoize(CpuInfo::queryBoardInfo);
     private final Supplier<String> manufacturer = Memoizer.memoize(this::queryManufacturer);
     private final Supplier<String> model = Memoizer.memoize(this::queryModel);
     private final Supplier<String> version = Memoizer.memoize(this::queryVersion);

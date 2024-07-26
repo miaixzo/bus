@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.excel;
 
 import org.apache.poi.ss.usermodel.Sheet;
@@ -80,7 +80,6 @@ public class WorkbookKit {
     public static Workbook createBook(final File excelFile) {
         return createBook(excelFile, false);
     }
-
 
     /**
      * 创建或加载工作簿
@@ -227,7 +226,6 @@ public class WorkbookKit {
         return createSXSSFBook(excelFile, null, readOnly);
     }
 
-
     /**
      * 创建或加载SXSSFWorkbook工作簿（读写模式）
      *
@@ -299,7 +297,8 @@ public class WorkbookKit {
      * @param useSharedStringsTable 是否使用共享字符串表，一般大量重复字符串时开启可节省内存
      * @return {@link SXSSFWorkbook}
      */
-    public static SXSSFWorkbook createSXSSFBook(final int rowAccessWindowSize, final boolean compressTmpFiles, final boolean useSharedStringsTable) {
+    public static SXSSFWorkbook createSXSSFBook(final int rowAccessWindowSize, final boolean compressTmpFiles,
+            final boolean useSharedStringsTable) {
         return new SXSSFWorkbook(null, rowAccessWindowSize, compressTmpFiles, useSharedStringsTable);
     }
 
@@ -319,8 +318,7 @@ public class WorkbookKit {
     }
 
     /**
-     * 获取或者创建sheet表
-     * 如果sheet表在Workbook中已经存在，则获取之，否则创建之
+     * 获取或者创建sheet表 如果sheet表在Workbook中已经存在，则获取之，否则创建之
      *
      * @param book      工作簿{@link Workbook}
      * @param sheetName 工作表名
@@ -339,9 +337,7 @@ public class WorkbookKit {
     }
 
     /**
-     * 获取或者创建sheet表
-     * 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之（命名为默认）
-     * 在读取中，此方法用于切换读取的sheet，在写出时，此方法用于新建或者切换sheet
+     * 获取或者创建sheet表 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之（命名为默认） 在读取中，此方法用于切换读取的sheet，在写出时，此方法用于新建或者切换sheet
      *
      * @param book       工作簿{@link Workbook}
      * @param sheetIndex 工作表序号
@@ -352,7 +348,7 @@ public class WorkbookKit {
         try {
             sheet = book.getSheetAt(sheetIndex);
         } catch (final IllegalArgumentException ignore) {
-            //ignore
+            // ignore
         }
         if (null == sheet) {
             sheet = book.createSheet();

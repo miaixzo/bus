@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.limiter;
 
 import org.miaixz.bus.core.xyz.ReflectKit;
@@ -42,7 +42,7 @@ import org.springframework.context.annotation.Bean;
  * @author Kimi Liu
  * @since Java 17+
  */
-@EnableConfigurationProperties(value = {LimiterProperties.class})
+@EnableConfigurationProperties(value = { LimiterProperties.class })
 public class LimiterConfiguration {
 
     @Bean

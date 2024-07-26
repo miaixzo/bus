@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper;
 
 import org.apache.ibatis.cache.Cache;
@@ -63,7 +63,8 @@ public class Builder {
      * @param column   列
      * @throws MapperException 异常
      */
-    public static void genId(Object target, String property, Class<? extends GenId> genClass, String table, String column) throws MapperException {
+    public static void genId(Object target, String property, Class<? extends GenId> genClass, String table,
+            String column) throws MapperException {
         try {
             GenId genId;
             if (CACHE.containsKey(genClass)) {

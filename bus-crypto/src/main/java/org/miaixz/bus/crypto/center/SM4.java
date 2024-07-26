@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.center;
 
 import org.miaixz.bus.core.lang.Algorithm;
@@ -43,9 +43,9 @@ import javax.crypto.spec.IvParameterSpec;
  * <p>
  * 国密算法包括：
  * <ol>
- *     <li>非对称加密和签名：SM2，asymmetric</li>
- *     <li>摘要签名算法：SM3，digest</li>
- *     <li>对称加密：SM4，symmetric</li>
+ * <li>非对称加密和签名：SM2，asymmetric</li>
+ * <li>摘要签名算法：SM3，digest</li>
+ * <li>对称加密：SM4，symmetric</li>
  * </ol>
  *
  * @author Kimi Liu
@@ -169,7 +169,7 @@ public class SM4 extends Crypto {
      * @param iv      加盐
      */
     public SM4(final String mode, final String padding, final byte[] key, final byte[] iv) {
-        this(mode, padding,//
+        this(mode, padding, //
                 Keeper.generateKey(Algorithm.SM4.getValue(), key),
                 ArrayKit.isEmpty(iv) ? null : new IvParameterSpec(iv));
     }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.setting.metric.ini;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -59,8 +59,7 @@ public class IniCommentService extends AbstractElement implements IniComment {
     /**
      * If the value changed, change the originalValue
      *
-     * @param newValue when value changes,
-     *                 like {@link #setValue(String)} or
+     * @param newValue when value changes, like {@link #setValue(String)} or
      *                 {@link #setValue(java.util.function.Function)}
      * @return the object
      */

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.beans;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -78,7 +78,7 @@ public class NamingRules {
      * 说明:把sql的数据类型转为java需要的类型
      *
      * @param sqlType sql类型
-     * @return String  java类型
+     * @return String java类型
      */
     public static String jdbcTypeToJavaType(String sqlType) {
         MySQLTypeConvert typeConvert = new MySQLTypeConvert();

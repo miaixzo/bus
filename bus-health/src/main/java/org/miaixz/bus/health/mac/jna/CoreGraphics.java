@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.mac.jna;
 
 import com.sun.jna.Library;
@@ -39,9 +39,8 @@ import org.miaixz.bus.health.Builder;
  * The Core Graphics framework is based on the Quartz advanced drawing engine. It provides low-level, lightweight 2D
  * rendering with unmatched output fidelity. You use this framework to handle path-based drawing, transformations, color
  * management, offscreen rendering, patterns, gradients and shadings, image data management, image creation, and image
- * masking, as well as PDF document creation, display, and parsing.
- * In macOS, Core Graphics also includes services for working with display hardware, low-level user input events, and
- * the windowing system.
+ * masking, as well as PDF document creation, display, and parsing. In macOS, Core Graphics also includes services for
+ * working with display hardware, low-level user input events, and the windowing system.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -66,7 +65,7 @@ public interface CoreGraphics extends Library {
     /**
      * A point with X and Y coordinates
      */
-    @FieldOrder({"x", "y"})
+    @FieldOrder({ "x", "y" })
     class CGPoint extends Structure {
         public double x;
         public double y;
@@ -76,7 +75,7 @@ public interface CoreGraphics extends Library {
     /**
      * A size with width and height
      */
-    @FieldOrder({"width", "height"})
+    @FieldOrder({ "width", "height" })
     class CGSize extends Structure {
         public double width;
         public double height;
@@ -85,7 +84,7 @@ public interface CoreGraphics extends Library {
     /**
      * A rectangle with origin and size
      */
-    @FieldOrder({"origin", "size"})
+    @FieldOrder({ "origin", "size" })
     class CGRect extends Structure implements AutoCloseable {
         public CGPoint origin;
         public CGSize size;

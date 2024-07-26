@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.function.FunctionX;
@@ -45,8 +45,7 @@ import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 
 /**
- * 正则相关工具类
- * 常用正则请见 {@link Validator}
+ * 正则相关工具类 常用正则请见 {@link Validator}
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -56,7 +55,8 @@ public class PatternKit extends RegexValidator {
     /**
      * 正则中需要被转义的关键字
      */
-    public static final Set<Character> RE_KEYS = SetKit.of('$', '(', ')', '*', '+', '.', '[', ']', '?', '\\', '^', '{', '}', '|');
+    public static final Set<Character> RE_KEYS = SetKit.of('$', '(', ')', '*', '+', '.', '[', ']', '?', '\\', '^', '{',
+            '}', '|');
 
     /**
      * 获得匹配的字符串，获得正则中分组0的内容
@@ -162,7 +162,8 @@ public class PatternKit extends RegexValidator {
      * @param groupName 匹配正则的分组名称
      * @return 匹配后得到的字符串，未匹配返回null
      */
-    public static String get(final java.util.regex.Pattern pattern, final CharSequence content, final String groupName) {
+    public static String get(final java.util.regex.Pattern pattern, final CharSequence content,
+            final String groupName) {
         if (null == content || null == pattern || null == groupName) {
             return null;
         }
@@ -173,14 +174,14 @@ public class PatternKit extends RegexValidator {
     }
 
     /**
-     * 在给定字符串中查找给定规则的字符，如果找到则使用{@link Consumer}处理之
-     * 如果内容中有多个匹配项，则只处理找到的第一个结果。
+     * 在给定字符串中查找给定规则的字符，如果找到则使用{@link Consumer}处理之 如果内容中有多个匹配项，则只处理找到的第一个结果。
      *
      * @param pattern  匹配的正则
      * @param content  被匹配的内容
      * @param consumer 匹配到的内容处理器
      */
-    public static void get(final java.util.regex.Pattern pattern, final CharSequence content, final Consumer<Matcher> consumer) {
+    public static void get(final java.util.regex.Pattern pattern, final CharSequence content,
+            final Consumer<Matcher> consumer) {
         if (null == content || null == pattern || null == consumer) {
             return;
         }
@@ -209,7 +210,8 @@ public class PatternKit extends RegexValidator {
      * @param withGroup0 是否包括分组0，此分组表示全匹配的信息
      * @return 匹配后得到的字符串数组，按照分组顺序依次列出，未匹配到返回空列表，任何一个参数为null返回null
      */
-    public static List<String> getAllGroups(final java.util.regex.Pattern pattern, final CharSequence content, final boolean withGroup0) {
+    public static List<String> getAllGroups(final java.util.regex.Pattern pattern, final CharSequence content,
+            final boolean withGroup0) {
         return getAllGroups(pattern, content, withGroup0, false);
     }
 
@@ -222,7 +224,8 @@ public class PatternKit extends RegexValidator {
      * @param findAll    是否查找所有匹配到的内容，{@code false}表示只读取第一个匹配到的内容
      * @return 匹配后得到的字符串数组，按照分组顺序依次列出，未匹配到返回空列表，任何一个参数为null返回null
      */
-    public static List<String> getAllGroups(final java.util.regex.Pattern pattern, final CharSequence content, final boolean withGroup0, final boolean findAll) {
+    public static List<String> getAllGroups(final java.util.regex.Pattern pattern, final CharSequence content,
+            final boolean withGroup0, final boolean findAll) {
         if (null == content || null == pattern) {
             return null;
         }
@@ -245,6 +248,7 @@ public class PatternKit extends RegexValidator {
 
     /**
      * 根据给定正则查找字符串中的匹配项，返回所有匹配的分组名对应分组值
+     * 
      * <pre>
      * pattern: (?&lt;year&gt;\\d+)-(?&lt;month&gt;\\d+)-(?&lt;day&gt;\\d+)
      * content: 2021-10-11
@@ -255,7 +259,8 @@ public class PatternKit extends RegexValidator {
      * @param content 被匹配的内容
      * @return 命名捕获组，key为分组名，value为对应值
      */
-    public static Map<String, String> getAllGroupNames(final java.util.regex.Pattern pattern, final CharSequence content) {
+    public static Map<String, String> getAllGroupNames(final java.util.regex.Pattern pattern,
+            final CharSequence content) {
         if (null == content || null == pattern) {
             return null;
         }
@@ -263,29 +268,27 @@ public class PatternKit extends RegexValidator {
         final Map<String, String> result = MapKit.newHashMap(m.groupCount());
         if (m.find()) {
             // 通过反射获取 namedGroups 方法
-            final Map<String, Integer> map =
-                    MethodKit.invoke(pattern, "namedGroups");
+            final Map<String, Integer> map = MethodKit.invoke(pattern, "namedGroups");
             map.forEach((key, value) -> result.put(key, m.group(value)));
         }
         return result;
     }
 
     /**
-     * 从content中匹配出多个值并根据template生成新的字符串
-     * 例如：
-     * content 2013年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2013-5
+     * 从content中匹配出多个值并根据template生成新的字符串 例如： content 2013年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2013-5
      *
      * @param pattern  匹配正则
      * @param content  被匹配的内容
      * @param template 生成内容模板，变量 $1 表示group1的内容，以此类推
      * @return 新字符串
      */
-    public static String extractMulti(final java.util.regex.Pattern pattern, final CharSequence content, String template) {
+    public static String extractMulti(final java.util.regex.Pattern pattern, final CharSequence content,
+            String template) {
         if (null == content || null == pattern || null == template) {
             return null;
         }
 
-        //提取模板中的编号
+        // 提取模板中的编号
         final TreeSet<Integer> varNums = new TreeSet<>((o1, o2) -> CompareKit.compare(o2, o1));
         final Matcher matcherForTemplate = Pattern.GROUP_VAR_PATTERN.matcher(template);
         while (matcherForTemplate.find()) {
@@ -303,10 +306,8 @@ public class PatternKit extends RegexValidator {
     }
 
     /**
-     * 从content中匹配出多个值并根据template生成新的字符串
-     * 匹配结束后会删除匹配内容之前的内容（包括匹配内容）
-     * 例如：
-     * content 2013年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2013-5
+     * 从content中匹配出多个值并根据template生成新的字符串 匹配结束后会删除匹配内容之前的内容（包括匹配内容） 例如： content 2013年5月 pattern (.*?)年(.*?)月 template：
+     * $1-$2 return 2013-5
      *
      * @param regex    匹配正则字符串
      * @param content  被匹配的内容
@@ -323,17 +324,16 @@ public class PatternKit extends RegexValidator {
     }
 
     /**
-     * 从content中匹配出多个值并根据template生成新的字符串
-     * 匹配结束后会删除匹配内容之前的内容（包括匹配内容）
-     * 例如：
-     * content 2013年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2013-5
+     * 从content中匹配出多个值并根据template生成新的字符串 匹配结束后会删除匹配内容之前的内容（包括匹配内容） 例如： content 2013年5月 pattern (.*?)年(.*?)月 template：
+     * $1-$2 return 2013-5
      *
      * @param pattern       匹配正则
      * @param contentHolder 被匹配的内容的Holder，value为内容正文，经过这个方法的原文将被去掉匹配之前的内容
      * @param template      生成内容模板，变量 $1 表示group1的内容，以此类推
      * @return 新字符串
      */
-    public static String extractMultiAndDelPre(final java.util.regex.Pattern pattern, final Mutable<CharSequence> contentHolder, String template) {
+    public static String extractMultiAndDelPre(final java.util.regex.Pattern pattern,
+            final Mutable<CharSequence> contentHolder, String template) {
         if (null == contentHolder || null == pattern || null == template) {
             return null;
         }
@@ -354,16 +354,15 @@ public class PatternKit extends RegexValidator {
     }
 
     /**
-     * 从content中匹配出多个值并根据template生成新的字符串
-     * 例如：
-     * content 2013年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2013-5
+     * 从content中匹配出多个值并根据template生成新的字符串 例如： content 2013年5月 pattern (.*?)年(.*?)月 template： $1-$2 return 2013-5
      *
      * @param regex         匹配正则字符串
      * @param contentHolder 被匹配的内容的Holder，value为内容正文，经过这个方法的原文将被去掉匹配之前的内容
      * @param template      生成内容模板，变量 $1 表示group1的内容，以此类推
      * @return 按照template拼接后的字符串
      */
-    public static String extractMultiAndDelPre(final String regex, final Mutable<CharSequence> contentHolder, final String template) {
+    public static String extractMultiAndDelPre(final String regex, final Mutable<CharSequence> contentHolder,
+            final String template) {
         if (null == contentHolder || null == regex || null == template) {
             return null;
         }
@@ -407,7 +406,8 @@ public class PatternKit extends RegexValidator {
      * @param replacement 替换的内容
      * @return 替换后剩余的内容
      */
-    public static String replaceFirst(final java.util.regex.Pattern pattern, final CharSequence content, final String replacement) {
+    public static String replaceFirst(final java.util.regex.Pattern pattern, final CharSequence content,
+            final String replacement) {
         if (null == pattern || StringKit.isEmpty(content)) {
             return StringKit.toStringOrNull(content);
         }
@@ -558,7 +558,8 @@ public class PatternKit extends RegexValidator {
      * @param collection 返回的集合类型
      * @return 结果集
      */
-    public static <T extends Collection<String>> T findAll(final String regex, final CharSequence content, final int group, final T collection) {
+    public static <T extends Collection<String>> T findAll(final String regex, final CharSequence content,
+            final int group, final T collection) {
         if (null == regex) {
             return collection;
         }
@@ -596,7 +597,8 @@ public class PatternKit extends RegexValidator {
      * @param group   正则的分组
      * @return 结果列表
      */
-    public static List<String> findAll(final java.util.regex.Pattern pattern, final CharSequence content, final int group) {
+    public static List<String> findAll(final java.util.regex.Pattern pattern, final CharSequence content,
+            final int group) {
         return findAll(pattern, content, group, new ArrayList<>());
     }
 
@@ -610,7 +612,8 @@ public class PatternKit extends RegexValidator {
      * @param collection 返回的集合类型
      * @return 结果集
      */
-    public static <T extends Collection<String>> T findAll(final java.util.regex.Pattern pattern, final CharSequence content, final int group, final T collection) {
+    public static <T extends Collection<String>> T findAll(final java.util.regex.Pattern pattern,
+            final CharSequence content, final int group, final T collection) {
         if (null == pattern || null == content) {
             return null;
         }
@@ -627,7 +630,8 @@ public class PatternKit extends RegexValidator {
      * @param content  被查找的内容
      * @param consumer 匹配结果处理函数
      */
-    public static void findAll(final java.util.regex.Pattern pattern, final CharSequence content, final Consumer<Matcher> consumer) {
+    public static void findAll(final java.util.regex.Pattern pattern, final CharSequence content,
+            final Consumer<Matcher> consumer) {
         if (null == pattern || null == content) {
             return;
         }
@@ -755,9 +759,7 @@ public class PatternKit extends RegexValidator {
     }
 
     /**
-     * 正则替换指定值
-     * 通过正则查找到字符串，然后把匹配到的字符串加入到replacementTemplate中，$1表示分组1的字符串
-     * 例如：原字符串是：中文1234，我想把1234换成(1234)，则可以：
+     * 正则替换指定值 通过正则查找到字符串，然后把匹配到的字符串加入到replacementTemplate中，$1表示分组1的字符串 例如：原字符串是：中文1234，我想把1234换成(1234)，则可以：
      *
      * <pre>
      * replaceAll("中文1234", "(\\d+)", "($1)"))
@@ -775,15 +777,15 @@ public class PatternKit extends RegexValidator {
     }
 
     /**
-     * 正则替换指定值
-     * 通过正则查找到字符串，然后把匹配到的字符串加入到replacementTemplate中，$1表示分组1的字符串
+     * 正则替换指定值 通过正则查找到字符串，然后把匹配到的字符串加入到replacementTemplate中，$1表示分组1的字符串
      *
      * @param content             文本
      * @param pattern             {@link java.util.regex.Pattern}
      * @param replacementTemplate 替换的文本模板，可以使用$1类似的变量提取正则匹配出的内容
      * @return 处理后的文本
      */
-    public static String replaceAll(final CharSequence content, final java.util.regex.Pattern pattern, String replacementTemplate) {
+    public static String replaceAll(final CharSequence content, final java.util.regex.Pattern pattern,
+            String replacementTemplate) {
         if (StringKit.isEmpty(content)) {
             return StringKit.toStringOrNull(content);
         }
@@ -818,11 +820,11 @@ public class PatternKit extends RegexValidator {
     }
 
     /**
-     * 替换所有正则匹配的文本，并使用自定义函数决定如何替换
-     * replaceFun可以通过{@link Matcher}提取出匹配到的内容的不同部分，然后经过重新处理、组装变成新的内容放回原位。
+     * 替换所有正则匹配的文本，并使用自定义函数决定如何替换 replaceFun可以通过{@link Matcher}提取出匹配到的内容的不同部分，然后经过重新处理、组装变成新的内容放回原位。
+     * 
      * <pre class="code">
-     *     replaceAll(this.content, "(\\d+)", parameters -&gt; "-" + parameters.group(1) + "-")
-     *     // 结果为："ZZZaaabbbccc中文-1234-"
+     * replaceAll(this.content, "(\\d+)", parameters -&gt; "-" + parameters.group(1) + "-")
+     * // 结果为："ZZZaaabbbccc中文-1234-"
      * </pre>
      *
      * @param text       要替换的字符串
@@ -830,16 +832,17 @@ public class PatternKit extends RegexValidator {
      * @param replaceFun 决定如何替换的函数
      * @return 替换后的文本
      */
-    public static String replaceAll(final CharSequence text, final String regex, final FunctionX<Matcher, String> replaceFun) {
+    public static String replaceAll(final CharSequence text, final String regex,
+            final FunctionX<Matcher, String> replaceFun) {
         return replaceAll(text, java.util.regex.Pattern.compile(regex), replaceFun);
     }
 
     /**
-     * 替换所有正则匹配的文本，并使用自定义函数决定如何替换
-     * replaceFun可以通过{@link Matcher}提取出匹配到的内容的不同部分，然后经过重新处理、组装变成新的内容放回原位。
+     * 替换所有正则匹配的文本，并使用自定义函数决定如何替换 replaceFun可以通过{@link Matcher}提取出匹配到的内容的不同部分，然后经过重新处理、组装变成新的内容放回原位。
+     * 
      * <pre class="code">
-     *     replaceAll(this.content, "(\\d+)", parameters -&gt; "-" + parameters.group(1) + "-")
-     *     // 结果为："ZZZaaabbbccc中文-1234-"
+     * replaceAll(this.content, "(\\d+)", parameters -&gt; "-" + parameters.group(1) + "-")
+     * // 结果为："ZZZaaabbbccc中文-1234-"
      * </pre>
      *
      * @param text       要替换的字符串
@@ -847,7 +850,8 @@ public class PatternKit extends RegexValidator {
      * @param replaceFun 决定如何替换的函数,可能被多次调用（当有多个匹配时）
      * @return 替换后的字符串
      */
-    public static String replaceAll(final CharSequence text, final java.util.regex.Pattern pattern, FunctionX<Matcher, String> replaceFun) {
+    public static String replaceAll(final CharSequence text, final java.util.regex.Pattern pattern,
+            FunctionX<Matcher, String> replaceFun) {
         if (null == pattern || StringKit.isEmpty(text)) {
             return StringKit.toStringOrNull(text);
         }
@@ -905,8 +909,7 @@ public class PatternKit extends RegexValidator {
     }
 
     /**
-     * 根据提供的匹配器和组名尝试获取匹配的字符串
-     * 此方法旨在方便地从匹配器中提取指定名称的组匹配的字符串。如果指定的组不存在，则通过捕获异常并返回null来优雅地处理错误。
+     * 根据提供的匹配器和组名尝试获取匹配的字符串 此方法旨在方便地从匹配器中提取指定名称的组匹配的字符串。如果指定的组不存在，则通过捕获异常并返回null来优雅地处理错误。
      *
      * @param matcher 匹配器对象，用于查找和匹配文本。
      * @param name    组的名称，用于指定要提取的匹配字符串的组。

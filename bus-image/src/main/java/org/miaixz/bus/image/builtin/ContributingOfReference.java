@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.builtin;
 
 import org.miaixz.bus.image.galaxy.data.Code;
@@ -40,10 +40,13 @@ public class ContributingOfReference {
     public static final Code ModifyingEquipment = new Code("109103", "DCM", null, "Modifying Equipment");
     public static final Code DeIdentifyingEquipment = new Code("109104", "DCM", null, "De-identifying Equipment");
     public static final Code FrameExtractingEquipment = new Code("109105", "DCM", null, "Frame Extracting Equipment");
-    public static final Code EnhancedMultiFrameConversionEquipment = new Code("109106", "DCM", null, "Enhanced Multi-frame Conversion Equipment Equipment");
-    public static final Code PortableMediaImporterEquipment = new Code("MEDIM", "DCM", null, "Portable Media Importer Equipment");
+    public static final Code EnhancedMultiFrameConversionEquipment = new Code("109106", "DCM", null,
+            "Enhanced Multi-frame Conversion Equipment Equipment");
+    public static final Code PortableMediaImporterEquipment = new Code("MEDIM", "DCM", null,
+            "Portable Media Importer Equipment");
     public static final Code FilmDigitizer = new Code("FILMD", "DCM", null, "Film Digitizer");
     public static final Code DocumentDigitizerEquipment = new Code("DOCD", "DCM", null, "Document Digitizer Equipment");
-    public static final Code VideoTapeDigitizerEquipment = new Code("VIDD", "DCM", null, "Video Tape Digitizer Equipment");
+    public static final Code VideoTapeDigitizerEquipment = new Code("VIDD", "DCM", null,
+            "Video Tape Digitizer Equipment");
 
 }

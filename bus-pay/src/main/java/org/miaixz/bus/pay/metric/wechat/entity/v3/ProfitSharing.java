@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pay.metric.wechat.entity.v3;
 
 import lombok.AllArgsConstructor;
@@ -38,8 +38,7 @@ import org.miaixz.bus.pay.metric.wechat.entity.Receiver;
 import java.util.List;
 
 /**
- * V3 分账
- * 支持: 请求单次分账、请求多次分账、添加分账接收方、删除分账接收方、完结分账
+ * V3 分账 支持: 请求单次分账、请求多次分账、添加分账接收方、删除分账接收方、完结分账
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -76,9 +75,7 @@ public class ProfitSharing extends Material {
      */
     private List<Receiver> receivers;
     /**
-     * 是否解冻剩余未分资金
-     * 1、如果为true，该笔订单剩余未分账的金额会解冻回分账方商户；
-     * 2、如果为false，该笔订单剩余未分账的金额不会解冻回分账方商户，可以对该笔订单再次进行分账。
+     * 是否解冻剩余未分资金 1、如果为true，该笔订单剩余未分账的金额会解冻回分账方商户； 2、如果为false，该笔订单剩余未分账的金额不会解冻回分账方商户，可以对该笔订单再次进行分账。
      */
     private boolean unfreeze_unsplit;
 

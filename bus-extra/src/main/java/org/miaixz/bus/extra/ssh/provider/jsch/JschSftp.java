@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.ssh.provider.jsch;
 
 import com.jcraft.jsch.*;
@@ -51,13 +51,13 @@ import java.util.Vector;
 import java.util.function.Predicate;
 
 /**
- * SFTP是Secure File Transfer Protocol的缩写，安全文件传送协议。可以为传输文件提供一种安全的加密方法。
- * SFTP 为 SSH的一部份，是一种传输文件到服务器的安全方式。SFTP是使用加密传输认证信息和传输的数据，所以，使用SFTP是非常安全的。
+ * SFTP是Secure File Transfer Protocol的缩写，安全文件传送协议。可以为传输文件提供一种安全的加密方法。 SFTP 为
+ * SSH的一部份，是一种传输文件到服务器的安全方式。SFTP是使用加密传输认证信息和传输的数据，所以，使用SFTP是非常安全的。
  * 但是，由于这种传输方式使用了加密/解密技术，所以传输效率比普通的FTP要低得多，如果您对网络安全性要求更高时，可以使用SFTP代替FTP。
  *
  * <p>
- * 此类为基于jsch的SFTP实现
- * 参考：<a href="https://www.cnblogs.com/longyg/archive/2012/06/25/2556576.html">https://www.cnblogs.com/longyg/archive/2012/06/25/2556576.html</a>
+ * 此类为基于jsch的SFTP实现 参考：<a href=
+ * "https://www.cnblogs.com/longyg/archive/2012/06/25/2556576.html">https://www.cnblogs.com/longyg/archive/2012/06/25/2556576.html</a>
  * </p>
  *
  * @author Kimi Liu
@@ -139,7 +139,8 @@ public class JschSftp extends AbstractFtp {
      * @param charset 编码
      * @return JschSftp
      */
-    public static JschSftp of(final String sshHost, final int sshPort, final String sshUser, final String sshPass, final Charset charset) {
+    public static JschSftp of(final String sshHost, final int sshPort, final String sshUser, final String sshPass,
+            final Charset charset) {
         return new JschSftp(new FtpConfig(Connector.of(sshHost, sshPort, sshUser, sshPass), charset));
     }
 
@@ -151,13 +152,8 @@ public class JschSftp extends AbstractFtp {
             if (null == this.session) {
                 final FtpConfig config = this.ftpConfig;
                 final Connector connector = config.getConnector();
-                this.session = new JschSession(Connector.of(
-                        connector.getHost(),
-                        connector.getPort(),
-                        connector.getUser(),
-                        connector.getPassword(),
-                        connector.getTimeout()))
-                        .getRaw();
+                this.session = new JschSession(Connector.of(connector.getHost(), connector.getPort(),
+                        connector.getUser(), connector.getPassword(), connector.getTimeout())).getRaw();
             }
 
             if (false == session.isConnected()) {
@@ -272,8 +268,7 @@ public class JschSftp extends AbstractFtp {
     }
 
     /**
-     * 遍历某个目录下所有文件或目录，不会递归遍历
-     * 此方法自动过滤"."和".."两种目录
+     * 遍历某个目录下所有文件或目录，不会递归遍历 此方法自动过滤"."和".."两种目录
      *
      * @param path      遍历某个目录下所有文件或目录
      * @param predicate 文件或目录过滤器，可以实现过滤器返回自己需要的文件或目录名列表，{@link Predicate#test(Object)}为{@code true}保留
@@ -288,8 +283,7 @@ public class JschSftp extends AbstractFtp {
     }
 
     /**
-     * 遍历某个目录下所有文件或目录，生成LsEntry列表，不会递归遍历
-     * 此方法自动过滤"."和".."两种目录
+     * 遍历某个目录下所有文件或目录，生成LsEntry列表，不会递归遍历 此方法自动过滤"."和".."两种目录
      *
      * @param path 遍历某个目录下所有文件或目录
      * @return 目录或文件名列表
@@ -299,8 +293,7 @@ public class JschSftp extends AbstractFtp {
     }
 
     /**
-     * 遍历某个目录下所有文件或目录，生成LsEntry列表，不会递归遍历
-     * 此方法自动过滤"."和".."两种目录
+     * 遍历某个目录下所有文件或目录，生成LsEntry列表，不会递归遍历 此方法自动过滤"."和".."两种目录
      *
      * @param path      遍历某个目录下所有文件或目录
      * @param predicate 文件或目录过滤器，可以实现过滤器返回自己需要的文件或目录名列表，{@link Predicate#test(Object)}为{@code true}保留
@@ -527,7 +520,8 @@ public class JschSftp extends AbstractFtp {
      * @param mode        {@link Mode} 模式
      * @return this
      */
-    public JschSftp put(final String srcFilePath, final String destPath, final SftpProgressMonitor monitor, final Mode mode) {
+    public JschSftp put(final String srcFilePath, final String destPath, final SftpProgressMonitor monitor,
+            final Mode mode) {
         try {
             getClient().put(srcFilePath, destPath, monitor, mode.ordinal());
         } catch (final SftpException e) {
@@ -545,7 +539,8 @@ public class JschSftp extends AbstractFtp {
      * @param mode      {@link Mode} 模式
      * @return this
      */
-    public JschSftp put(final InputStream srcStream, final String destPath, final SftpProgressMonitor monitor, final Mode mode) {
+    public JschSftp put(final InputStream srcStream, final String destPath, final SftpProgressMonitor monitor,
+            final Mode mode) {
         try {
             getClient().put(srcStream, destPath, monitor, mode.ordinal());
         } catch (final SftpException e) {
@@ -588,8 +583,7 @@ public class JschSftp extends AbstractFtp {
 
             if (!item.getAttrs().isDir()) {
                 // 本地不存在文件或者ftp上文件有修改则下载
-                if (!FileKit.exists(destFile)
-                        || (item.getAttrs().getMTime() > (destFile.lastModified() / 1000))) {
+                if (!FileKit.exists(destFile) || (item.getAttrs().getMTime() > (destFile.lastModified() / 1000))) {
                     download(srcFile, destFile);
                 }
             } else {
@@ -651,11 +645,8 @@ public class JschSftp extends AbstractFtp {
     @Override
     public String toString() {
         final Connector connector = this.ftpConfig.getConnector();
-        return "JschSftp{" +
-                "host='" + connector.getHost() + '\'' +
-                ", port=" + connector.getPort() +
-                ", user='" + connector.getUser() + '\'' +
-                '}';
+        return "JschSftp{" + "host='" + connector.getHost() + '\'' + ", port=" + connector.getPort() + ", user='"
+                + connector.getUser() + '\'' + '}';
     }
 
     /**

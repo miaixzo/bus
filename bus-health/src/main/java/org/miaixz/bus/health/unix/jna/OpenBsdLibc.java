@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.jna;
 
 import com.sun.jna.Native;
@@ -92,9 +92,9 @@ public interface OpenBsdLibc extends CLibrary {
     /**
      * OpenBSD Cache stats for memory
      */
-    @FieldOrder({"numbufs", "numbufpages", "numdirtypages", "numcleanpages", "pendingwrites", "pendingreads",
+    @FieldOrder({ "numbufs", "numbufpages", "numdirtypages", "numcleanpages", "pendingwrites", "pendingreads",
             "numwrites", "numreads", "cachehits", "busymapped", "dmapages", "highpages", "delwribufs", "kvaslots",
-            "kvaslots_avail", "highflips", "highflops", "dmaflips"})
+            "kvaslots_avail", "highflips", "highflops", "dmaflips" })
     class Bcachestats extends Structure {
         public long numbufs; // number of buffers allocated
         public long numbufpages; // number of pages in buffer cache
@@ -124,7 +124,7 @@ public interface OpenBsdLibc extends CLibrary {
     /**
      * Return type for BSD sysctl kern.boottime
      */
-    @FieldOrder({"tv_sec", "tv_usec"})
+    @FieldOrder({ "tv_sec", "tv_usec" })
     class Timeval extends Structure {
         public long tv_sec; // seconds
         public long tv_usec; // microseconds

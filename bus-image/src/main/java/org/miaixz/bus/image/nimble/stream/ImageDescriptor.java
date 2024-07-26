@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.stream;
 
 import org.miaixz.bus.image.Builder;
@@ -75,9 +75,7 @@ public final class ImageDescriptor {
         this.rows = dcm.getInt(Tag.Rows, 0);
         this.columns = dcm.getInt(Tag.Columns, 0);
         this.samples = dcm.getInt(Tag.SamplesPerPixel, 0);
-        this.photometric =
-                Photometric.fromString(
-                        dcm.getString(Tag.PhotometricInterpretation, "MONOCHROME2"));
+        this.photometric = Photometric.fromString(dcm.getString(Tag.PhotometricInterpretation, "MONOCHROME2"));
         this.pixelPresentation = dcm.getString(Tag.PixelPresentation);
         this.bitsAllocated = dcm.getInt(Tag.BitsAllocated, 8);
         this.bitsStored = dcm.getInt(Tag.BitsStored, bitsAllocated);
@@ -92,10 +90,8 @@ public final class ImageDescriptor {
         this.overlayData = OverlayData.getOverlayData(dcm, 0xffff);
         this.presentationLUTShape = dcm.getString(Tag.PresentationLUTShape);
         this.modality = dcm.getString(Tag.Modality);
-        this.pixelPaddingValue =
-                Builder.getIntegerFromDicomElement(dcm, Tag.PixelPaddingValue, null);
-        this.pixelPaddingRangeLimit =
-                Builder.getIntegerFromDicomElement(dcm, Tag.PixelPaddingRangeLimit, null);
+        this.pixelPaddingValue = Builder.getIntegerFromDicomElement(dcm, Tag.PixelPaddingValue, null);
+        this.pixelPaddingRangeLimit = Builder.getIntegerFromDicomElement(dcm, Tag.PixelPaddingRangeLimit, null);
         this.modalityLUT = new ModalityLutModule(dcm);
         this.voiLUT = new VoiLutModule(dcm);
     }
@@ -133,8 +129,7 @@ public final class ImageDescriptor {
     }
 
     public boolean hasPaletteColorLookupTable() {
-        return photometric == Photometric.PALETTE_COLOR
-                || "COLOR".equals(pixelPresentation);
+        return photometric == Photometric.PALETTE_COLOR || "COLOR".equals(pixelPresentation);
     }
 
     public int getPixelRepresentation() {

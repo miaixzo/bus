@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.set;
 
 import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
@@ -38,8 +38,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
- * Set包装类
- * 提供列表包装，用于在执行列表方法前后自定义处理逻辑
+ * Set包装类 提供列表包装，用于在执行列表方法前后自定义处理逻辑
  *
  * @param <E> 元素类型
  * @author Kimi Liu

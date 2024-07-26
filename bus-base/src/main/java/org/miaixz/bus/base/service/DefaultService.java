@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.base.service;
 
 import org.miaixz.bus.base.entity.BaseEntity;
@@ -43,15 +43,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 基于spring 实现BaseService 接口
- * 根据业务需要如无status，creator等相关属性内容
- * 重写此类及{@link BaseEntity} 业务类继承新类
+ * 基于spring 实现BaseService 接口 根据业务需要如无status，creator等相关属性内容 重写此类及{@link BaseEntity} 业务类继承新类
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class DefaultService<Mapper extends BaseMapper<T>, T extends BaseEntity>
-        implements BaseService<T> {
+public class DefaultService<Mapper extends BaseMapper<T>, T extends BaseEntity> implements BaseService<T> {
 
     @Autowired
     protected Mapper mapper;
@@ -216,15 +213,11 @@ public class DefaultService<Mapper extends BaseMapper<T>, T extends BaseEntity>
             PageContext.orderBy(entity.getOrderBy());
         }
         Page<T> list = (Page<T>) mapper.select(entity);
-        return Result.<T>builder()
-                .rows(list.getResult())
-                .total(list.getTotal())
-                .build();
+        return Result.<T>builder().rows(list.getResult()).total(list.getTotal()).build();
     }
 
     /**
-     * 更新对象属性值
-     * 数据状态/操作人/操作时间
+     * 更新对象属性值 数据状态/操作人/操作时间
      *
      * @param entity 对象
      * @return the string

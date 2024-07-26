@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.array.ArrayWrapper;
@@ -53,8 +53,7 @@ import java.util.stream.Collectors;
 public class ArrayKit extends PrimitiveArray {
 
     /**
-     * 转为数组，如果values为数组，返回，否则返回一个只有values一个元素的数组
-     * 注意：values的元素类型或其本身类型必须和提供的elementType完全一致
+     * 转为数组，如果values为数组，返回，否则返回一个只有values一个元素的数组 注意：values的元素类型或其本身类型必须和提供的elementType完全一致
      *
      * @param <A>         数组类型
      * @param values      元素值
@@ -79,12 +78,10 @@ public class ArrayKit extends PrimitiveArray {
      */
     public static <A> A wrapSingle(final Object value, final Class<?> elementType) {
         // 插入单个元素
-        final Object newInstance = Array.newInstance(
-                null == elementType ? value.getClass() : elementType, 1);
+        final Object newInstance = Array.newInstance(null == elementType ? value.getClass() : elementType, 1);
         Array.set(newInstance, 0, value);
         return (A) newInstance;
     }
-
 
     /**
      * 将集合转为数组，如果集合为{@code null}，则返回空的数组（元素个数为0）
@@ -142,12 +139,12 @@ public class ArrayKit extends PrimitiveArray {
     /**
      * 获取数组对象的元素类型，方法调用参数与返回结果举例：
      * <ul>
-     *     <li>Object[] = Object.class</li>
-     *     <li>String[] = String.class</li>
-     *     <li>int[] = int.class</li>
-     *     <li>Integer[] = Integer.class</li>
-     *     <li>null = null</li>
-     *     <li>String = null</li>
+     * <li>Object[] = Object.class</li>
+     * <li>String[] = String.class</li>
+     * <li>int[] = int.class</li>
+     * <li>Integer[] = Integer.class</li>
+     * <li>null = null</li>
+     * <li>String = null</li>
      * </ul>
      *
      * @param array 数组对象
@@ -160,12 +157,12 @@ public class ArrayKit extends PrimitiveArray {
     /**
      * 获取数组对象的元素类型，方法调用参数与返回结果举例：
      * <ul>
-     *     <li>Object[].class = Object.class</li>
-     *     <li>String[].class = String.class</li>
-     *     <li>int[].class = int.class</li>
-     *     <li>Integer[].class = Integer.class</li>
-     *     <li>null = null</li>
-     * 	   <li>String.class = null</li>
+     * <li>Object[].class = Object.class</li>
+     * <li>String[].class = String.class</li>
+     * <li>int[].class = int.class</li>
+     * <li>Integer[].class = Integer.class</li>
+     * <li>null = null</li>
+     * <li>String.class = null</li>
      * </ul>
      *
      * @param arrayClass 数组对象的class
@@ -176,9 +173,10 @@ public class ArrayKit extends PrimitiveArray {
     }
 
     /**
-     * 根据数组元素类型，获取数组的类型
-     * 方法是通过创建一个空数组从而获取其类型
-     * <p>本方法是 {@link #getComponentType(Class)}的逆方法</p>
+     * 根据数组元素类型，获取数组的类型 方法是通过创建一个空数组从而获取其类型
+     * <p>
+     * 本方法是 {@link #getComponentType(Class)}的逆方法
+     * </p>
      *
      * @param componentType 数组元素类型
      * @return 数组类型
@@ -188,9 +186,7 @@ public class ArrayKit extends PrimitiveArray {
     }
 
     /**
-     * 强转数组类型
-     * 强制转换的前提是数组元素类型可被强制转换
-     * 强制转换后会生成一个新数组
+     * 强转数组类型 强制转换的前提是数组元素类型可被强制转换 强制转换后会生成一个新数组
      *
      * @param type     数组类型或数组元素类型
      * @param arrayObj 原数组
@@ -198,7 +194,8 @@ public class ArrayKit extends PrimitiveArray {
      * @throws NullPointerException     提供参数为空
      * @throws IllegalArgumentException 参数arrayObj不是数组
      */
-    public static Object[] cast(final Class<?> type, final Object arrayObj) throws NullPointerException, IllegalArgumentException {
+    public static Object[] cast(final Class<?> type, final Object arrayObj)
+            throws NullPointerException, IllegalArgumentException {
         if (null == arrayObj) {
             throw new NullPointerException("Argument [arrayObj] is null !");
         }
@@ -217,8 +214,7 @@ public class ArrayKit extends PrimitiveArray {
     }
 
     /**
-     * 将新元素添加到已有数组中
-     * 添加新元素会生成一个新的数组，不影响原数组
+     * 将新元素添加到已有数组中 添加新元素会生成一个新的数组，不影响原数组
      *
      * @param <T>         数组元素类型
      * @param buffer      已有数组
@@ -234,8 +230,7 @@ public class ArrayKit extends PrimitiveArray {
     }
 
     /**
-     * 将新元素添加到已有数组中
-     * 添加新元素会生成一个新的数组，不影响原数组
+     * 将新元素添加到已有数组中 添加新元素会生成一个新的数组，不影响原数组
      *
      * @param <A>         数组类型
      * @param <T>         数组元素类型
@@ -322,8 +317,7 @@ public class ArrayKit extends PrimitiveArray {
     }
 
     /**
-     * 合并所有数组，返回合并后的新数组
-     * 忽略null的数组
+     * 合并所有数组，返回合并后的新数组 忽略null的数组
      *
      * @param <T>    数组元素类型
      * @param arrays 数组集合
@@ -360,10 +354,10 @@ public class ArrayKit extends PrimitiveArray {
     /**
      * 从数组中的指定位置开始，按顺序使用新元素替换旧元素
      * <ul>
-     *     <li>如果 指定位置 为负数，那么生成一个新数组，其中新元素按顺序放在数组头部</li>
-     *     <li>如果 指定位置 大于等于 旧数组长度，那么生成一个新数组，其中新元素按顺序放在数组尾部</li>
-     *     <li>如果 指定位置 加上 新元素数量 大于 旧数组长度，那么生成一个新数组，指定位置之前是旧数组元素，指定位置及之后为新元素</li>
-     *     <li>否则，从已有数组中的指定位置开始，按顺序使用新元素替换旧元素，返回旧数组</li>
+     * <li>如果 指定位置 为负数，那么生成一个新数组，其中新元素按顺序放在数组头部</li>
+     * <li>如果 指定位置 大于等于 旧数组长度，那么生成一个新数组，其中新元素按顺序放在数组尾部</li>
+     * <li>如果 指定位置 加上 新元素数量 大于 旧数组长度，那么生成一个新数组，指定位置之前是旧数组元素，指定位置及之后为新元素</li>
+     * <li>否则，从已有数组中的指定位置开始，按顺序使用新元素替换旧元素，返回旧数组</li>
      * </ul>
      *
      * @param <T>    数组元素类型
@@ -382,10 +376,10 @@ public class ArrayKit extends PrimitiveArray {
     /**
      * 从数组中的指定位置开始，按顺序使用新元素替换旧元素
      * <ul>
-     *     <li>如果 指定位置 为负数，那么生成一个新数组，其中新元素按顺序放在数组头部</li>
-     *     <li>如果 指定位置 大于等于 旧数组长度，那么生成一个新数组，其中新元素按顺序放在数组尾部</li>
-     *     <li>如果 指定位置 加上 新元素数量 大于 旧数组长度，那么生成一个新数组，指定位置之前是旧数组元素，指定位置及之后为新元素</li>
-     *     <li>否则，从已有数组中的指定位置开始，按顺序使用新元素替换旧元素，返回旧数组</li>
+     * <li>如果 指定位置 为负数，那么生成一个新数组，其中新元素按顺序放在数组头部</li>
+     * <li>如果 指定位置 大于等于 旧数组长度，那么生成一个新数组，其中新元素按顺序放在数组尾部</li>
+     * <li>如果 指定位置 加上 新元素数量 大于 旧数组长度，那么生成一个新数组，指定位置之前是旧数组元素，指定位置及之后为新元素</li>
+     * <li>否则，从已有数组中的指定位置开始，按顺序使用新元素替换旧元素，返回旧数组</li>
      * </ul>
      *
      * @param <A>    数组类型
@@ -402,9 +396,7 @@ public class ArrayKit extends PrimitiveArray {
     }
 
     /**
-     * 将新元素插入到已有数组中的某个位置
-     * 添加新元素会生成一个新的数组，不影响原数组
-     * 如果插入位置为负数，从原数组从后向前计数，若大于原数组长度，则空白处用null填充
+     * 将新元素插入到已有数组中的某个位置 添加新元素会生成一个新的数组，不影响原数组 如果插入位置为负数，从原数组从后向前计数，若大于原数组长度，则空白处用null填充
      *
      * @param <T>         数组元素类型
      * @param buffer      已有数组
@@ -417,9 +409,7 @@ public class ArrayKit extends PrimitiveArray {
     }
 
     /**
-     * 将新元素插入到已有数组中的某个位置
-     * 添加新元素会生成一个新的数组，不影响原数组
-     * 如果插入位置为负数，从原数组从后向前计数，若大于原数组长度，则空白处用默认值填充
+     * 将新元素插入到已有数组中的某个位置 添加新元素会生成一个新的数组，不影响原数组 如果插入位置为负数，从原数组从后向前计数，若大于原数组长度，则空白处用默认值填充
      *
      * @param <A>         数组类型
      * @param <E>         数组元素类型
@@ -434,8 +424,7 @@ public class ArrayKit extends PrimitiveArray {
     }
 
     /**
-     * 生成一个新的重新设置大小的数组
-     * 调整大小后，按顺序拷贝原数组到新数组中，新长度更小则截断
+     * 生成一个新的重新设置大小的数组 调整大小后，按顺序拷贝原数组到新数组中，新长度更小则截断
      *
      * @param <T>           数组元素类型
      * @param data          原数组
@@ -456,8 +445,7 @@ public class ArrayKit extends PrimitiveArray {
     }
 
     /**
-     * 生成一个新的重新设置大小的数组
-     * 调整大小后，按顺序拷贝原数组到新数组中，新长度更小则截断
+     * 生成一个新的重新设置大小的数组 调整大小后，按顺序拷贝原数组到新数组中，新长度更小则截断
      *
      * @param array   原数组
      * @param newSize 新的数组大小
@@ -474,15 +462,14 @@ public class ArrayKit extends PrimitiveArray {
         final int length = length(array);
         final Object newArray = Array.newInstance(array.getClass().getComponentType(), newSize);
         if (newSize > 0 && isNotEmpty(array)) {
-            //noinspection SuspiciousSystemArraycopy
+            // noinspection SuspiciousSystemArraycopy
             System.arraycopy(array, 0, newArray, 0, Math.min(length, newSize));
         }
         return newArray;
     }
 
     /**
-     * 生成一个新的重新设置大小的数组
-     * 调整大小后，按顺序拷贝原数组到新数组中，新长度更小则截断原数组
+     * 生成一个新的重新设置大小的数组 调整大小后，按顺序拷贝原数组到新数组中，新长度更小则截断原数组
      *
      * @param <T>     数组元素类型
      * @param buffer  原数组
@@ -494,8 +481,7 @@ public class ArrayKit extends PrimitiveArray {
     }
 
     /**
-     * 包装 {@link System#arraycopy(Object, int, Object, int, int)}
-     * 数组复制，源数组和目标数组都是从位置0开始复制，复制长度为源数组的长度
+     * 包装 {@link System#arraycopy(Object, int, Object, int, int)} 数组复制，源数组和目标数组都是从位置0开始复制，复制长度为源数组的长度
      *
      * @param <T>  目标数组类型
      * @param src  源数组
@@ -507,8 +493,7 @@ public class ArrayKit extends PrimitiveArray {
     }
 
     /**
-     * 包装 {@link System#arraycopy(Object, int, Object, int, int)}
-     * 数组复制，源数组和目标数组都是从位置0开始复制
+     * 包装 {@link System#arraycopy(Object, int, Object, int, int)} 数组复制，源数组和目标数组都是从位置0开始复制
      *
      * @param <T>    目标数组类型
      * @param src    源数组
@@ -521,8 +506,7 @@ public class ArrayKit extends PrimitiveArray {
     }
 
     /**
-     * 包装 {@link System#arraycopy(Object, int, Object, int, int)}
-     * 数组复制
+     * 包装 {@link System#arraycopy(Object, int, Object, int, int)} 数组复制
      *
      * @param <T>     目标数组类型
      * @param src     源数组
@@ -533,7 +517,7 @@ public class ArrayKit extends PrimitiveArray {
      * @return 目标数组
      */
     public static <T> T copy(final Object src, final int srcPos, final T dest, final int destPos, final int length) {
-        //noinspection SuspiciousSystemArraycopy
+        // noinspection SuspiciousSystemArraycopy
         System.arraycopy(src, srcPos, dest, destPos, length);
         return dest;
     }
@@ -580,11 +564,10 @@ public class ArrayKit extends PrimitiveArray {
     }
 
     /**
-     * 对每个数组元素执行指定操作，返回操作后的元素
-     * 这个Editor实现可以实现以下功能：
+     * 对每个数组元素执行指定操作，返回操作后的元素 这个Editor实现可以实现以下功能：
      * <ol>
-     *     <li>过滤出需要的对象，如果返回{@code null}则抛弃这个元素对象</li>
-     *     <li>修改元素对象，返回修改后的对象</li>
+     * <li>过滤出需要的对象，如果返回{@code null}则抛弃这个元素对象</li>
+     * <li>修改元素对象，返回修改后的对象</li>
      * </ol>
      *
      * @param <T>    数组元素类型
@@ -610,8 +593,7 @@ public class ArrayKit extends PrimitiveArray {
     }
 
     /**
-     * 过滤数组元素
-     * 保留 {@link Predicate#test(Object)}为{@code true}的元素
+     * 过滤数组元素 保留 {@link Predicate#test(Object)}为{@code true}的元素
      *
      * @param <T>       数组元素类型
      * @param array     数组
@@ -670,12 +652,7 @@ public class ArrayKit extends PrimitiveArray {
     }
 
     /**
-     * 映射键值（参考Python的zip()函数）
-     * 例如：
-     * keys = [a,b,c,d]
-     * values = [1,2,3,4]
-     * 则得到的Map是 {a=1, b=2, c=3, d=4}
-     * 如果两个数组长度不同，则只对应最短部分
+     * 映射键值（参考Python的zip()函数） 例如： keys = [a,b,c,d] values = [1,2,3,4] 则得到的Map是 {a=1, b=2, c=3, d=4} 如果两个数组长度不同，则只对应最短部分
      *
      * @param <K>     Key类型
      * @param <V>     Value类型
@@ -699,11 +676,7 @@ public class ArrayKit extends PrimitiveArray {
     }
 
     /**
-     * 映射键值（参考Python的zip()函数），返回Map无序
-     * 例如：
-     * keys = [a,b,c,d]
-     * values = [1,2,3,4]
-     * 则得到的Map是 {a=1, b=2, c=3, d=4}
+     * 映射键值（参考Python的zip()函数），返回Map无序 例如： keys = [a,b,c,d] values = [1,2,3,4] 则得到的Map是 {a=1, b=2, c=3, d=4}
      * 如果两个数组长度不同，则只对应最短部分
      *
      * @param <K>    Key类型
@@ -788,24 +761,24 @@ public class ArrayKit extends PrimitiveArray {
             try {
                 final String className = obj.getClass().getComponentType().getName();
                 switch (className) {
-                    case "long":
-                        return wrap((long[]) obj);
-                    case "int":
-                        return wrap((int[]) obj);
-                    case "short":
-                        return wrap((short[]) obj);
-                    case "char":
-                        return wrap((char[]) obj);
-                    case "byte":
-                        return wrap((byte[]) obj);
-                    case "boolean":
-                        return wrap((boolean[]) obj);
-                    case "float":
-                        return wrap((float[]) obj);
-                    case "double":
-                        return wrap((double[]) obj);
-                    default:
-                        return (Object[]) obj;
+                case "long":
+                    return wrap((long[]) obj);
+                case "int":
+                    return wrap((int[]) obj);
+                case "short":
+                    return wrap((short[]) obj);
+                case "char":
+                    return wrap((char[]) obj);
+                case "byte":
+                    return wrap((byte[]) obj);
+                case "boolean":
+                    return wrap((boolean[]) obj);
+                case "float":
+                    return wrap((float[]) obj);
+                case "double":
+                    return wrap((double[]) obj);
+                default:
+                    return (Object[]) obj;
                 }
             } catch (final Exception e) {
                 throw ExceptionKit.wrapRuntime(e);
@@ -815,8 +788,7 @@ public class ArrayKit extends PrimitiveArray {
     }
 
     /**
-     * 获取数组对象中指定index的值，支持负数，例如-1表示倒数第一个值
-     * 如果数组下标越界，返回null
+     * 获取数组对象中指定index的值，支持负数，例如-1表示倒数第一个值 如果数组下标越界，返回null
      *
      * @param <E>   数组元素类型
      * @param array 数组对象
@@ -889,16 +861,15 @@ public class ArrayKit extends PrimitiveArray {
      * @param suffix    每个元素添加的后缀，null表示不添加
      * @return 连接后的字符串
      */
-    public static <T> String join(final T[] array, final CharSequence delimiter, final String prefix, final String suffix) {
+    public static <T> String join(final T[] array, final CharSequence delimiter, final String prefix,
+            final String suffix) {
         if (null == array) {
             return null;
         }
 
         return StringJoiner.of(delimiter, prefix, suffix)
                 // 每个元素都添加前后缀
-                .setWrapElement(true)
-                .append(array)
-                .toString();
+                .setWrapElement(true).append(array).toString();
     }
 
     /**
@@ -933,8 +904,7 @@ public class ArrayKit extends PrimitiveArray {
     }
 
     /**
-     * 移除数组中对应位置的元素
-     * copier from commons-lang
+     * 移除数组中对应位置的元素 copier from commons-lang
      *
      * @param <T>   数组元素类型
      * @param array 数组对象，可以是对象数组，也可以原始类型数组
@@ -947,9 +917,7 @@ public class ArrayKit extends PrimitiveArray {
     }
 
     /**
-     * 移除数组中指定的元素
-     * 只会移除匹配到的第一个元素
-     * copier from commons-lang
+     * 移除数组中指定的元素 只会移除匹配到的第一个元素 copier from commons-lang
      *
      * @param <T>     数组元素类型
      * @param array   数组对象，可以是对象数组，也可以原始类型数组
@@ -1063,8 +1031,7 @@ public class ArrayKit extends PrimitiveArray {
     }
 
     /**
-     * 打乱数组顺序，会变更原数组
-     * 使用Fisher–Yates洗牌算法，以线性时间复杂度打乱数组顺序
+     * 打乱数组顺序，会变更原数组 使用Fisher–Yates洗牌算法，以线性时间复杂度打乱数组顺序
      *
      * @param <T>   元素类型
      * @param array 数组，会变更
@@ -1075,8 +1042,7 @@ public class ArrayKit extends PrimitiveArray {
     }
 
     /**
-     * 打乱数组顺序，会变更原数组
-     * 使用Fisher–Yates洗牌算法，以线性时间复杂度打乱数组顺序
+     * 打乱数组顺序，会变更原数组 使用Fisher–Yates洗牌算法，以线性时间复杂度打乱数组顺序
      *
      * @param <T>    元素类型
      * @param array  数组，会变更
@@ -1133,8 +1099,7 @@ public class ArrayKit extends PrimitiveArray {
     }
 
     /**
-     * 去重数组中的元素，去重后生成新的数组，原数组不变
-     * 此方法通过{@link LinkedHashSet} 去重
+     * 去重数组中的元素，去重后生成新的数组，原数组不变 此方法通过{@link LinkedHashSet} 去重
      *
      * @param <T>   数组元素类型
      * @param array 数组
@@ -1151,8 +1116,7 @@ public class ArrayKit extends PrimitiveArray {
     }
 
     /**
-     * 去重数组中的元素，去重后生成新的数组，原数组不变
-     * 此方法通过{@link LinkedHashSet} 去重
+     * 去重数组中的元素，去重后生成新的数组，原数组不变 此方法通过{@link LinkedHashSet} 去重
      *
      * @param <T>             数组元素类型
      * @param <K>             唯一键类型
@@ -1187,7 +1151,8 @@ public class ArrayKit extends PrimitiveArray {
      * @param <R>                 目标数组类型
      * @return 转换后的数组
      */
-    public static <T, R> R[] map(final Object array, final Class<R> targetComponentType, final Function<? super T, ? extends R> func) {
+    public static <T, R> R[] map(final Object array, final Class<R> targetComponentType,
+            final Function<? super T, ? extends R> func) {
         final int length = length(array);
         final R[] result = newArray(targetComponentType, length);
         for (int i = 0; i < length; i++) {
@@ -1233,7 +1198,7 @@ public class ArrayKit extends PrimitiveArray {
      * @return 集合
      */
     public static <T, R> R[] mapToArray(final T[] array, final Function<? super T, ? extends R> func,
-                                        final IntFunction<R[]> generator) {
+            final IntFunction<R[]> generator) {
         return Arrays.stream(array).map(func).toArray(generator);
     }
 
@@ -1319,8 +1284,7 @@ public class ArrayKit extends PrimitiveArray {
      * @param <A>          数组类型
      * @return 新的数组
      */
-    public static <A> A sub(final A array,
-                            final int beginInclude, final int endExclude) {
+    public static <A> A sub(final A array, final int beginInclude, final int endExclude) {
         return ArrayWrapper.of(array).getSub(beginInclude, endExclude);
     }
 
@@ -1334,8 +1298,7 @@ public class ArrayKit extends PrimitiveArray {
      * @param <A>          数组类型
      * @return 新的数组
      */
-    public static <A> A sub(final A array,
-                            final int beginInclude, final int endExclude, final int step) {
+    public static <A> A sub(final A array, final int beginInclude, final int endExclude, final int step) {
         return ArrayWrapper.of(array).getSub(beginInclude, endExclude, step);
     }
 
@@ -1384,7 +1347,9 @@ public class ArrayKit extends PrimitiveArray {
 
     /**
      * 判断数组中是否有相同元素
-     * <p>若传入空数组，则返回{@code false}</p>
+     * <p>
+     * 若传入空数组，则返回{@code false}
+     * </p>
      *
      * @param <T>   数组元素类型
      * @param array 数组
@@ -1402,9 +1367,9 @@ public class ArrayKit extends PrimitiveArray {
     /**
      * array数组是否以prefix开头，每个元素的匹配使用{@link ObjectKit#equals(Object, Object)}匹配。
      * <ul>
-     *     <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
-     *     <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
-     *     <li>prefix长度大于array，返回{@code false}</li>
+     * <li>array和prefix为同一个数组（即array == prefix），返回{@code true}</li>
+     * <li>array或prefix为空数组（null或length为0的数组），返回{@code true}</li>
+     * <li>prefix长度大于array，返回{@code false}</li>
      * </ul>
      *
      * @param array  数组
@@ -1430,7 +1395,6 @@ public class ArrayKit extends PrimitiveArray {
         }
         return true;
     }
-
 
     /**
      * 比较给定的数组和{@code Arrays.equals}，根据数组元素而不是数组引用执行相等性检查

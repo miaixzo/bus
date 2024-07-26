@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.feishu;
 
 import com.alibaba.fastjson.JSON;
@@ -69,8 +69,7 @@ public class FeishuProvider extends AbstractProvider {
     /**
      * 获取 app_access_token（企业自建应用）
      * <p>
-     * Token 有效期为 2 小时，在此期间调用该接口 token 不会改变。当 token 有效期小于 30 分的时候，再次请求获取 token 的时候，
-     * 会生成一个新的 token，与此同时老的 token 依然有效。
+     * Token 有效期为 2 小时，在此期间调用该接口 token 不会改变。当 token 有效期小于 30 分的时候，再次请求获取 token 的时候， 会生成一个新的 token，与此同时老的 token 依然有效。
      *
      * @return appAccessToken
      */
@@ -117,17 +116,9 @@ public class FeishuProvider extends AbstractProvider {
         JSONObject object = JSON.parseObject(response);
         this.checkResponse(object);
         JSONObject data = object.getJSONObject("data");
-        return Material.builder()
-                .rawJson(object)
-                .uuid(data.getString("union_id"))
-                .username(data.getString("name"))
-                .nickname(data.getString("name"))
-                .avatar(data.getString("avatar_url"))
-                .email(data.getString("email"))
-                .gender(Gender.UNKNOWN)
-                .token(accToken)
-                .source(complex.toString())
-                .build();
+        return Material.builder().rawJson(object).uuid(data.getString("union_id")).username(data.getString("name"))
+                .nickname(data.getString("name")).avatar(data.getString("avatar_url")).email(data.getString("email"))
+                .gender(Gender.UNKNOWN).token(accToken).source(complex.toString()).build();
     }
 
     @Override
@@ -136,10 +127,8 @@ public class FeishuProvider extends AbstractProvider {
         requestObject.put("app_access_token", this.getAppAccessToken());
         requestObject.put("grant_type", "refresh_token");
         requestObject.put("refresh_token", accToken.getRefreshToken());
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .data(getToken(requestObject, this.complex.refresh()))
-                .build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode())
+                .data(getToken(requestObject, this.complex.refresh())).build();
 
     }
 
@@ -150,24 +139,17 @@ public class FeishuProvider extends AbstractProvider {
         JSONObject jsonObject = JSON.parseObject(response);
         this.checkResponse(jsonObject);
         JSONObject data = jsonObject.getJSONObject("data");
-        return AccToken.builder()
-                .accessToken(data.getString("access_token"))
-                .refreshToken(data.getString("refresh_token"))
-                .expireIn(data.getIntValue("expires_in"))
-                .tokenType(data.getString("token_type"))
-                .openId(data.getString("open_id"))
-                .build();
+        return AccToken.builder().accessToken(data.getString("access_token"))
+                .refreshToken(data.getString("refresh_token")).expireIn(data.getIntValue("expires_in"))
+                .tokenType(data.getString("token_type")).openId(data.getString("open_id")).build();
     }
 
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.authorize())
-                .queryParam("app_id", context.getAppKey())
+        return Builder.fromUrl(complex.authorize()).queryParam("app_id", context.getAppKey())
                 .queryParam("redirect_uri", UrlEncoder.encodeAll(context.getRedirectUri()))
-                .queryParam("state", getRealState(state))
-                .build();
+                .queryParam("state", getRealState(state)).build();
     }
-
 
     /**
      * 校验响应内容是否正确

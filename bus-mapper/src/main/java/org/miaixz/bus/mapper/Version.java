@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2024 miaixz.org mybatis.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper;
 
 import org.miaixz.bus.core.lang.exception.VersionException;
@@ -54,7 +54,8 @@ public class Version {
      * @return the object
      * @throws VersionException 异常
      */
-    public static Object nextVersion(Class<? extends Version> nextVersionClass, Object version) throws VersionException {
+    public static Object nextVersion(Class<? extends Version> nextVersionClass, Object version)
+            throws VersionException {
         try {
             Version nextVersion;
             if (CACHE.containsKey(nextVersionClass)) {

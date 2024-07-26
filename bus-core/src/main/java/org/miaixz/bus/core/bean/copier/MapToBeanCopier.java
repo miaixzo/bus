@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.bean.copier;
 
 import org.miaixz.bus.core.bean.desc.PropDesc;
@@ -59,7 +59,8 @@ public class MapToBeanCopier<T> extends AbstractCopier<Map<?, ?>, T> {
      * @param targetType  目标泛型类型
      * @param copyOptions 拷贝选项
      */
-    public MapToBeanCopier(final Map<?, ?> source, final T target, final Type targetType, final CopyOptions copyOptions) {
+    public MapToBeanCopier(final Map<?, ?> source, final T target, final Type targetType,
+            final CopyOptions copyOptions) {
         super(source, target, copyOptions);
         // 针对MapWrapper特殊处理，提供的Map包装了忽略大小写的Map，则默认转Bean的时候也忽略大小写，如JSONObject
         if (source instanceof MapWrapper) {
@@ -78,7 +79,8 @@ public class MapToBeanCopier<T> extends AbstractCopier<Map<?, ?>, T> {
         if (null != copyOptions.editable) {
             // 检查限制类是否为target的父类或接口
             Assert.isTrue(copyOptions.editable.isInstance(target),
-                    "Target class [{}] not assignable to Editable class [{}]", actualEditable.getName(), copyOptions.editable.getName());
+                    "Target class [{}] not assignable to Editable class [{}]", actualEditable.getName(),
+                    copyOptions.editable.getName());
             actualEditable = copyOptions.editable;
         }
         final Map<String, PropDesc> targetPropDescMap = getBeanDesc(actualEditable).getPropMap(copyOptions.ignoreCase);
@@ -118,7 +120,8 @@ public class MapToBeanCopier<T> extends AbstractCopier<Map<?, ?>, T> {
             newValue = this.copyOptions.convertField(fieldType, newValue);
 
             // 目标赋值
-            tDesc.setValue(this.target, newValue, copyOptions.ignoreNullValue, copyOptions.ignoreError, copyOptions.override);
+            tDesc.setValue(this.target, newValue, copyOptions.ignoreNullValue, copyOptions.ignoreError,
+                    copyOptions.override);
         });
         return this.target;
     }

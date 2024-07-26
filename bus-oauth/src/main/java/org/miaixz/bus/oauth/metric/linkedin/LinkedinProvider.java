@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.linkedin;
 
 import com.alibaba.fastjson.JSONArray;
@@ -90,17 +90,9 @@ public class LinkedinProvider extends AbstractProvider {
 
         // 获取用户邮箱地址
         String email = this.getUserEmail(accessToken);
-        return Material.builder()
-                .rawJson(userInfoObject)
-                .uuid(userInfoObject.getString("id"))
-                .username(userName)
-                .nickname(userName)
-                .avatar(avatar)
-                .email(email)
-                .token(accToken)
-                .gender(Gender.UNKNOWN)
-                .source(complex.toString())
-                .build();
+        return Material.builder().rawJson(userInfoObject).uuid(userInfoObject.getString("id")).username(userName)
+                .nickname(userName).avatar(avatar).email(email).token(accToken).gender(Gender.UNKNOWN)
+                .source(complex.toString()).build();
     }
 
     /**
@@ -168,7 +160,8 @@ public class LinkedinProvider extends AbstractProvider {
         header.put("Connection", "Keep-Alive");
         header.put("Authorization", "Bearer " + accessToken);
 
-        String emailResponse = Httpx.get("https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))", null, header);
+        String emailResponse = Httpx.get(
+                "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))", null, header);
         JSONObject emailObj = JSONObject.parseObject(emailResponse);
 
         this.checkResponse(emailObj);
@@ -182,7 +175,8 @@ public class LinkedinProvider extends AbstractProvider {
         JSONObject firstNameObj = userInfoObject.getJSONObject(nameKey);
         JSONObject localizedObj = firstNameObj.getJSONObject("localized");
         JSONObject preferredLocaleObj = firstNameObj.getJSONObject("preferredLocale");
-        firstName = localizedObj.getString(preferredLocaleObj.getString("language") + Symbol.UNDERLINE + preferredLocaleObj.getString("country"));
+        firstName = localizedObj.getString(
+                preferredLocaleObj.getString("language") + Symbol.UNDERLINE + preferredLocaleObj.getString("country"));
         return firstName;
     }
 
@@ -193,7 +187,8 @@ public class LinkedinProvider extends AbstractProvider {
      */
     private void checkResponse(JSONObject object) {
         if (object.containsKey("error")) {
-            throw new AuthorizedException(ErrorCode.FAILURE.getCode(), object.getString("error_description"), complex.getName());
+            throw new AuthorizedException(ErrorCode.FAILURE.getCode(), object.getString("error_description"),
+                    complex.getName());
         }
     }
 
@@ -213,11 +208,9 @@ public class LinkedinProvider extends AbstractProvider {
 
         this.checkResponse(accessTokenObject);
 
-        return AccToken.builder()
-                .accessToken(accessTokenObject.getString("access_token"))
+        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
                 .expireIn(accessTokenObject.getIntValue("expires_in"))
-                .refreshToken(accessTokenObject.getString("refresh_token"))
-                .build();
+                .refreshToken(accessTokenObject.getString("refresh_token")).build();
     }
 
     /**

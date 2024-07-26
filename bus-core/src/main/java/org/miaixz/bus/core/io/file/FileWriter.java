@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.file;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -81,8 +81,7 @@ public class FileWriter extends FileWrapper {
     }
 
     /**
-     * 构造
-     * 编码使用 {@link Charset#UTF_8}
+     * 构造 编码使用 {@link Charset#UTF_8}
      *
      * @param file 文件
      */
@@ -91,8 +90,7 @@ public class FileWriter extends FileWrapper {
     }
 
     /**
-     * 构造
-     * 编码使用 {@link Charset#UTF_8}
+     * 构造 编码使用 {@link Charset#UTF_8}
      *
      * @param filePath 文件路径，相对路径会被转换为相对于ClassPath的路径
      */
@@ -212,7 +210,8 @@ public class FileWriter extends FileWrapper {
      * @return 目标文件
      * @throws InternalException IO异常
      */
-    public <T> File writeLines(final Iterable<T> list, final LineSeparator lineSeparator, final boolean isAppend) throws InternalException {
+    public <T> File writeLines(final Iterable<T> list, final LineSeparator lineSeparator, final boolean isAppend)
+            throws InternalException {
         try (final PrintWriter writer = getPrintWriter(isAppend)) {
             boolean isFirst = true;
             for (final T t : list) {
@@ -244,7 +243,8 @@ public class FileWriter extends FileWrapper {
      * @return 目标文件
      * @throws InternalException IO异常
      */
-    public File writeMap(final Map<?, ?> map, final String kvSeparator, final boolean isAppend) throws InternalException {
+    public File writeMap(final Map<?, ?> map, final String kvSeparator, final boolean isAppend)
+            throws InternalException {
         return writeMap(map, null, kvSeparator, isAppend);
     }
 
@@ -258,7 +258,8 @@ public class FileWriter extends FileWrapper {
      * @return 目标文件
      * @throws InternalException IO异常
      */
-    public File writeMap(final Map<?, ?> map, final LineSeparator lineSeparator, String kvSeparator, final boolean isAppend) throws InternalException {
+    public File writeMap(final Map<?, ?> map, final LineSeparator lineSeparator, String kvSeparator,
+            final boolean isAppend) throws InternalException {
         if (null == kvSeparator) {
             kvSeparator = " = ";
         }
@@ -310,7 +311,8 @@ public class FileWriter extends FileWrapper {
      * @return 目标文件
      * @throws InternalException IO异常
      */
-    public File write(final byte[] data, final int off, final int len, final boolean isAppend) throws InternalException {
+    public File write(final byte[] data, final int off, final int len, final boolean isAppend)
+            throws InternalException {
         try (final FileOutputStream out = new FileOutputStream(FileKit.touch(file), isAppend)) {
             out.write(data, off, len);
             out.flush();
@@ -321,8 +323,7 @@ public class FileWriter extends FileWrapper {
     }
 
     /**
-     * 将流的内容写入文件
-     * 此方法会自动关闭输入流
+     * 将流的内容写入文件 此方法会自动关闭输入流
      *
      * @param in 输入流，不关闭
      * @return dest
@@ -379,7 +380,8 @@ public class FileWriter extends FileWrapper {
      */
     public BufferedWriter getWriter(final boolean isAppend) throws InternalException {
         try {
-            return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(FileKit.touch(file), isAppend), charset));
+            return new BufferedWriter(
+                    new OutputStreamWriter(new FileOutputStream(FileKit.touch(file), isAppend), charset));
         } catch (final Exception e) {
             throw new InternalException(e);
         }

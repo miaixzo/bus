@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.object.ObjectValidator;
@@ -48,12 +48,12 @@ public class ObjectKit extends ObjectValidator {
     /**
      * 计算对象长度，支持类型包括：
      * <ul>
-     *     <li>{@code null}：默认返回{@code 0}；</li>
-     *     <li>数组：返回数组长度；</li>
-     *     <li>{@link CharSequence}：返回{@link CharSequence#length()}；</li>
-     *     <li>{@link Collection}：返回{@link Collection#size()}；</li>
-     *     <li>{@link Iterator}或{@link Iterable}：可迭代的元素数量；</li>
-     *     <li>{@link Enumeration}：返回可迭代的元素数量；</li>
+     * <li>{@code null}：默认返回{@code 0}；</li>
+     * <li>数组：返回数组长度；</li>
+     * <li>{@link CharSequence}：返回{@link CharSequence#length()}；</li>
+     * <li>{@link Collection}：返回{@link Collection#size()}；</li>
+     * <li>{@link Iterator}或{@link Iterable}：可迭代的元素数量；</li>
+     * <li>{@link Enumeration}：返回可迭代的元素数量；</li>
      * </ul>
      *
      * @param obj 被计算长度的对象
@@ -97,17 +97,13 @@ public class ObjectKit extends ObjectValidator {
     }
 
     /**
-     * 检查{@code obj}中是否包含{@code element}，若{@code obj}为{@code null}，则直接返回{@code false}。
-     * 支持类型包括：
+     * 检查{@code obj}中是否包含{@code element}，若{@code obj}为{@code null}，则直接返回{@code false}。 支持类型包括：
      * <ul>
-     *     <li>{@code null}：默认返回{@code false}；</li>
-     *     <li>{@link String}：等同{@link String#contains(CharSequence)}；</li>
-     *     <li>{@link Collection}：等同{@link Collection#contains(Object)}；</li>
-     *     <li>{@link Map}：等同{@link Map#containsValue(Object)}；</li>
-     *     <li>
-     *         {@link Iterator}、{@link Iterable}、{@link Enumeration}或数组：
-     *         等同于遍历后对其元素调用{@link #equals(Object, Object)}方法；
-     *     </li>
+     * <li>{@code null}：默认返回{@code false}；</li>
+     * <li>{@link String}：等同{@link String#contains(CharSequence)}；</li>
+     * <li>{@link Collection}：等同{@link Collection#contains(Object)}；</li>
+     * <li>{@link Map}：等同{@link Map#containsValue(Object)}；</li>
+     * <li>{@link Iterator}、{@link Iterable}、{@link Enumeration}或数组： 等同于遍历后对其元素调用{@link #equals(Object, Object)}方法；</li>
      * </ul>
      *
      * @param obj     对象
@@ -192,10 +188,10 @@ public class ObjectKit extends ObjectValidator {
     /**
      * 克隆对象
      * <ol>
-     *     <li>如果对象是数组，则等同于{@link ArrayKit#clone(Object)}；</li>
-     *     <li>如果对象实现了{@link Cloneable}接口，调用 {@link Object#clone()}方法；</li>
-     *     <li>如果对象实现了{@link Serializable}接口，执行深度克隆；</li>
-     *     <li>不符合上述任意情况则返回{@code null}；</li>
+     * <li>如果对象是数组，则等同于{@link ArrayKit#clone(Object)}；</li>
+     * <li>如果对象实现了{@link Cloneable}接口，调用 {@link Object#clone()}方法；</li>
+     * <li>如果对象实现了{@link Serializable}接口，执行深度克隆；</li>
+     * <li>不符合上述任意情况则返回{@code null}；</li>
      * </ol>
      *
      * @param <T> 对象类型
@@ -247,8 +243,7 @@ public class ObjectKit extends ObjectValidator {
     }
 
     /**
-     * 序列化后拷贝流的方式克隆
-     * 若对象未实现{@link Serializable}接口，则返回{@code null}
+     * 序列化后拷贝流的方式克隆 若对象未实现{@link Serializable}接口，则返回{@code null}
      *
      * @param <T> 对象类型
      * @param obj 被克隆对象
@@ -283,9 +278,7 @@ public class ObjectKit extends ObjectValidator {
     }
 
     /**
-     * 确定给定的对象是否相等，如果两个对象都是{@code null}，
-     * 则返回{@code true};如果只有一个对象是{@code null}，
-     * 则返回{@code false}
+     * 确定给定的对象是否相等，如果两个对象都是{@code null}， 则返回{@code true};如果只有一个对象是{@code null}， 则返回{@code false}
      *
      * @param o1 第一个比较对象
      * @param o2 第二个比较对象

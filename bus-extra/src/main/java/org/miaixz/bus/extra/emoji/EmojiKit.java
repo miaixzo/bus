@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.emoji;
 
 import com.vdurmont.emoji.Emoji;
@@ -130,8 +130,7 @@ public class EmojiKit {
     }
 
     /**
-     * 将字符串中的Unicode Emoji字符转换为别名表现形式（两个":"包围的格式），别名后会增加"|"并追加fitzpatrick类型
-     * 例如：{@code 👦🏿} 转换为 {@code :boy|type_6:}
+     * 将字符串中的Unicode Emoji字符转换为别名表现形式（两个":"包围的格式），别名后会增加"|"并追加fitzpatrick类型 例如：{@code 👦🏿} 转换为 {@code :boy|type_6:}
      *
      * @param text              包含Emoji Unicode字符的字符串
      * @param fitzpatrickAction {@link FitzpatrickAction}
@@ -167,6 +166,7 @@ public class EmojiKit {
 
     /**
      * 将字符串中的Unicode Emoji字符转换为HTML表现形式，例如：
+     * 
      * <pre>
      * 如果为hex形式，{@code 👦🏿} 转换为 {@code &#x1f466;}
      * 否则，{@code 👦🏿} 转换为 {@code &#128102;}
@@ -177,8 +177,7 @@ public class EmojiKit {
      * @return 替换后的字符串
      */
     public static String toHtml(final String text, final boolean isHex) {
-        return isHex ? EmojiParser.parseToHtmlHexadecimal(text) :
-                EmojiParser.parseToHtmlDecimal(text);
+        return isHex ? EmojiParser.parseToHtmlHexadecimal(text) : EmojiParser.parseToHtmlDecimal(text);
     }
 
     /**

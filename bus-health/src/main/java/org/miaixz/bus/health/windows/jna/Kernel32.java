@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.jna;
 
 import com.sun.jna.Native;
@@ -49,8 +49,8 @@ public interface Kernel32 extends com.sun.jna.platform.win32.Kernel32 {
      * @param ProcessorFeature The processor feature to be tested. This parameter can be one of the values in
      *                         {@link ProcessorFeature}.
      * @return If the feature is supported, the return value is true. If the feature is not supported, the return value
-     * is false. If the HAL does not support detection of the feature, whether or not the hardware supports the
-     * feature, the return value is also false.
+     *         is false. If the HAL does not support detection of the feature, whether or not the hardware supports the
+     *         feature, the return value is also false.
      */
     boolean IsProcessorFeaturePresent(int ProcessorFeature);
 

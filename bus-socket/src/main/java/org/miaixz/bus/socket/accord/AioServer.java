@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org sandao and other contributors.             ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket.accord;
 
 import org.miaixz.bus.core.xyz.IoKit;
@@ -61,8 +61,7 @@ public final class AioServer {
      */
     private static long threadSeqNumber;
     /**
-     * 客户端服务配置
-     * 调用AioClient的各setXX()方法，都是为了设置config的各配置项
+     * 客户端服务配置 调用AioClient的各setXX()方法，都是为了设置config的各配置项
      */
     private final Context context = new Context();
     /**
@@ -85,6 +84,7 @@ public final class AioServer {
      * read 内存池
      */
     private BufferPagePool readBufferPool = null;
+
     /**
      * 设置服务端启动必要参数配置
      *
@@ -116,7 +116,8 @@ public final class AioServer {
      * @throws IOException IO异常
      */
     public void start() throws IOException {
-        asynchronousChannelGroup = new AsynchronousChannelProvider(lowMemory).openAsynchronousChannelGroup(context.getThreadNum(), r -> new Thread(r, "Socket:Thread-" + (threadSeqNumber++)));
+        asynchronousChannelGroup = new AsynchronousChannelProvider(lowMemory).openAsynchronousChannelGroup(
+                context.getThreadNum(), r -> new Thread(r, "Socket:Thread-" + (threadSeqNumber++)));
         start(asynchronousChannelGroup);
     }
 
@@ -143,7 +144,8 @@ public final class AioServer {
             }
             // 绑定主机
             if (context.getHost() != null) {
-                serverSocketChannel.bind(new InetSocketAddress(context.getHost(), context.getPort()), context.getBacklog());
+                serverSocketChannel.bind(new InetSocketAddress(context.getHost(), context.getPort()),
+                        context.getBacklog());
             } else {
                 serverSocketChannel.bind(new InetSocketAddress(context.getPort()), context.getBacklog());
             }
@@ -156,7 +158,8 @@ public final class AioServer {
     }
 
     private void startAcceptThread() {
-        Supplier<VirtualBuffer> readBufferSupplier = () -> readBufferPool.allocateBufferPage().allocate(context.getReadBufferSize());
+        Supplier<VirtualBuffer> readBufferSupplier = () -> readBufferPool.allocateBufferPage()
+                .allocate(context.getReadBufferSize());
         serverSocketChannel.accept(null, new CompletionHandler<AsynchronousSocketChannel, Void>() {
             @Override
             public void completed(AsynchronousSocketChannel channel, Void attachment) {
@@ -181,11 +184,11 @@ public final class AioServer {
     /**
      * 为每个新建立的连接创建Session对象
      *
-     * @param channel 当前已建立连接通道
+     * @param channel            当前已建立连接通道
      * @param readBufferSupplier
      */
     private void createSession(AsynchronousSocketChannel channel, Supplier<VirtualBuffer> readBufferSupplier) {
-        //连接成功则构造AIOSession对象
+        // 连接成功则构造AIOSession对象
         TcpSession session = null;
         AsynchronousSocketChannel acceptChannel = channel;
         try {
@@ -194,7 +197,8 @@ public final class AioServer {
             }
             if (acceptChannel != null) {
                 acceptChannel.setOption(StandardSocketOptions.TCP_NODELAY, true);
-                session = new TcpSession(acceptChannel, this.context, writeBufferPool.allocateBufferPage(), readBufferSupplier);
+                session = new TcpSession(acceptChannel, this.context, writeBufferPool.allocateBufferPage(),
+                        readBufferSupplier);
             } else {
                 context.getProcessor().stateEvent(null, Status.REJECT_ACCEPT, null);
                 IoKit.close(channel);
@@ -295,9 +299,7 @@ public final class AioServer {
     }
 
     /**
-     * 设置读写内存池。
-     * 该方法适用于多个AioQuickServer、AioQuickClient共享内存池的场景，
-     * <b>以获得更好的性能表现</b>
+     * 设置读写内存池。 该方法适用于多个AioQuickServer、AioQuickClient共享内存池的场景， <b>以获得更好的性能表现</b>
      *
      * @param bufferPool 内存池对象
      * @return this
@@ -307,9 +309,7 @@ public final class AioServer {
     }
 
     /**
-     * 设置读写内存池。
-     * 该方法适用于多个AioQuickServer、AioQuickClient共享内存池的场景，
-     * <b>以获得更好的性能表现</b>
+     * 设置读写内存池。 该方法适用于多个AioQuickServer、AioQuickClient共享内存池的场景， <b>以获得更好的性能表现</b>
      *
      * @param readBufferPool  读内存池对象
      * @param writeBufferPool 写内存池对象

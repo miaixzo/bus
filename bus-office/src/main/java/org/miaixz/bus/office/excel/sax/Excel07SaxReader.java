@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.excel.sax;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -45,8 +45,8 @@ import java.io.InputStream;
 import java.util.Iterator;
 
 /**
- * Sax方式读取Excel文件
- * Excel2007格式说明见：<a href="http://www.cnblogs.com/wangmingshun/p/6654143.html">http://www.cnblogs.com/wangmingshun/p/6654143.html</a>
+ * Sax方式读取Excel文件 Excel2007格式说明见：<a href=
+ * "http://www.cnblogs.com/wangmingshun/p/6654143.html">http://www.cnblogs.com/wangmingshun/p/6654143.html</a>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -135,7 +135,8 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
      * @return this
      * @throws InternalException POI异常
      */
-    public Excel07SaxReader read(final OPCPackage opcPackage, final String idOrRidOrSheetName) throws InternalException {
+    public Excel07SaxReader read(final OPCPackage opcPackage, final String idOrRidOrSheetName)
+            throws InternalException {
         try {
             return read(new XSSFReader(opcPackage), idOrRidOrSheetName);
         } catch (final OpenXML4JException e) {
@@ -153,7 +154,8 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
      * @return this
      * @throws InternalException POI异常
      */
-    public Excel07SaxReader read(final XSSFReader xssfReader, final String idOrRidOrSheetName) throws InternalException {
+    public Excel07SaxReader read(final XSSFReader xssfReader, final String idOrRidOrSheetName)
+            throws InternalException {
         // 获取共享样式表，样式非必须
         try {
             this.handler.stylesTable = xssfReader.getStylesTable();
@@ -177,7 +179,8 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
      * @return this
      * @throws InternalException POI异常
      */
-    private Excel07SaxReader readSheets(final XSSFReader xssfReader, final String idOrRidOrSheetName) throws InternalException {
+    private Excel07SaxReader readSheets(final XSSFReader xssfReader, final String idOrRidOrSheetName)
+            throws InternalException {
         this.handler.sheetIndex = getSheetIndex(xssfReader, idOrRidOrSheetName);
         InputStream sheetInputStream = null;
         try {
@@ -212,9 +215,9 @@ public class Excel07SaxReader implements ExcelSaxReader<Excel07SaxReader> {
     /**
      * 获取sheet索引，从0开始
      * <ul>
-     *     <li>传入'rId'开头，直接去除rId前缀</li>
-     *     <li>传入纯数字，表示sheetIndex，通过{@link SheetRidReader}转换为rId</li>
-     *     <li>传入其它字符串，表示sheetName，通过{@link SheetRidReader}转换为rId</li>
+     * <li>传入'rId'开头，直接去除rId前缀</li>
+     * <li>传入纯数字，表示sheetIndex，通过{@link SheetRidReader}转换为rId</li>
+     * <li>传入其它字符串，表示sheetName，通过{@link SheetRidReader}转换为rId</li>
      * </ul>
      *
      * @param xssfReader         {@link XSSFReader}，Excel读取器

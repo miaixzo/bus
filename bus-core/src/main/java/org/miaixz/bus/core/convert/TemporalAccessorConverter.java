@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.center.date.DateTime;
@@ -44,8 +44,7 @@ import java.util.Date;
 import java.util.Objects;
 
 /**
- * JDK8中新加入的java.time包对象解析转换器
- * 支持的对象包括：
+ * JDK8中新加入的java.time包对象解析转换器 支持的对象包括：
  *
  * <pre>
  * java.time.Instant
@@ -174,7 +173,8 @@ public class TemporalAccessorConverter extends AbstractConverter {
      * @param formatter   格式
      * @return {@link TemporalAccessor}
      */
-    private TemporalAccessor parseWithFormat(final Class<?> targetClass, final CharSequence value, final DateTimeFormatter formatter) {
+    private TemporalAccessor parseWithFormat(final Class<?> targetClass, final CharSequence value,
+            final DateTimeFormatter formatter) {
         if (LocalDate.class == targetClass) {
             return LocalDate.parse(value, formatter);
         } else if (LocalDateTime.class == targetClass) {
@@ -217,7 +217,8 @@ public class TemporalAccessorConverter extends AbstractConverter {
      * @param temporalAccessor TemporalAccessor对象
      * @return java.time中的对象
      */
-    private TemporalAccessor parseFromTemporalAccessor(final Class<?> targetClass, final TemporalAccessor temporalAccessor) {
+    private TemporalAccessor parseFromTemporalAccessor(final Class<?> targetClass,
+            final TemporalAccessor temporalAccessor) {
         if (DayOfWeek.class == targetClass) {
             return DayOfWeek.from(temporalAccessor);
         } else if (Month.class == targetClass) {

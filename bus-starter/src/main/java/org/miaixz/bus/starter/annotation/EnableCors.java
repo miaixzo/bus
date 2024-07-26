@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.annotation;
 
 import org.miaixz.bus.starter.cors.CorsConfiguration;
@@ -40,9 +40,9 @@ import java.lang.annotation.*;
  */
 @Inherited
 @Documented
-@Target({ElementType.TYPE})
+@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-@Import({CorsConfiguration.class})
+@Import({ CorsConfiguration.class })
 public @interface EnableCors {
 
 }

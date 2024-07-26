@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.net;
 
 import org.miaixz.bus.image.metric.Association;
@@ -38,12 +38,9 @@ import org.miaixz.bus.image.metric.pdu.IdentityRQ;
  */
 public interface IdentityNegotiator {
 
-    default IdentityAC negotiate(Association as, IdentityRQ userIdentity)
-            throws AAssociateRJ {
+    default IdentityAC negotiate(Association as, IdentityRQ userIdentity) throws AAssociateRJ {
         return userIdentity != null && userIdentity.isPositiveResponseRequested()
-                ? new IdentityAC(userIdentity.getType() > 2
-                ? userIdentity.getPrimaryField()
-                : new byte[]{})
+                ? new IdentityAC(userIdentity.getType() > 2 ? userIdentity.getPrimaryField() : new byte[] {})
                 : null;
     }
 

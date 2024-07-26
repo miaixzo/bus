@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.hl7;
 
 import org.miaixz.bus.core.lang.Fields;
@@ -105,7 +105,7 @@ public class HL7Segment implements Serializable {
             count++;
 
         if (count == 1)
-            return new String[]{s};
+            return new String[] { s };
 
         String[] ss = new String[count];
         int delimPos2 = s.length();
@@ -128,16 +128,13 @@ public class HL7Segment implements Serializable {
         return new HL7Segment(s, s.charAt(3), s.substring(4, 8));
     }
 
-    static HL7Segment parse(byte[] b, int size, ParsePosition pos,
-                            char fieldSeparator, String encodingCharacters, String charsetName) {
+    static HL7Segment parse(byte[] b, int size, ParsePosition pos, char fieldSeparator, String encodingCharacters,
+            String charsetName) {
         String s = parse(b, size, pos, charsetName);
-        return s != null
-                ? new HL7Segment(s, fieldSeparator, encodingCharacters)
-                : null;
+        return s != null ? new HL7Segment(s, fieldSeparator, encodingCharacters) : null;
     }
 
-    private static String parse(byte[] b, int size, ParsePosition pos,
-                                String charsetName) {
+    private static String parse(byte[] b, int size, ParsePosition pos, String charsetName) {
         int off = pos.getIndex();
         int end = off;
         while (end < size && b[end] != Symbol.C_CR && b[end] != Symbol.C_LF)
@@ -152,17 +149,14 @@ public class HL7Segment implements Serializable {
 
         pos.setIndex(end);
         try {
-            return charsetName != null
-                    ? new String(b, off, len, charsetName)
-                    : new String(b, off, len);
+            return charsetName != null ? new String(b, off, len, charsetName) : new String(b, off, len);
         } catch (UnsupportedEncodingException e) {
             throw new IllegalArgumentException("charsetName: " + charsetName);
         }
     }
 
     public static String nextMessageControlID() {
-        return Integer.toString(
-                nextMessageControlID.getAndIncrement() & 0x7FFFFFFF);
+        return Integer.toString(nextMessageControlID.getAndIncrement() & 0x7FFFFFFF);
     }
 
     public static String timeStamp(Date date) {

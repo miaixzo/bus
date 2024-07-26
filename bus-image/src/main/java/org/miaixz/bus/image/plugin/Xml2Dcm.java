@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.image.Tag;
@@ -68,8 +68,7 @@ public class Xml2Dcm {
         return attrs;
     }
 
-    private static void parseXML(String fname, ContentHandlerAdapter ch)
-            throws Exception {
+    private static void parseXML(String fname, ContentHandlerAdapter ch) throws Exception {
         SAXParserFactory f = SAXParserFactory.newInstance();
         SAXParser p = f.newSAXParser();
         if (fname.equals("-")) {
@@ -130,19 +129,11 @@ public class Xml2Dcm {
     public void writeTo(OutputStream out) throws IOException {
         if (nofmi)
             fmi = null;
-        else if (fmi == null
-                ? withfmi
-                : tsuid != null && !tsuid.equals(
-                fmi.getString(Tag.TransferSyntaxUID, null))) {
+        else if (fmi == null ? withfmi : tsuid != null && !tsuid.equals(fmi.getString(Tag.TransferSyntaxUID, null))) {
             fmi = dataset.createFileMetaInformation(tsuid);
         }
-        ImageOutputStream dos = new ImageOutputStream(
-                new BufferedOutputStream(out),
-                fmi != null
-                        ? UID.ExplicitVRLittleEndian.uid
-                        : tsuid != null
-                        ? tsuid
-                        : UID.ImplicitVRLittleEndian.uid);
+        ImageOutputStream dos = new ImageOutputStream(new BufferedOutputStream(out),
+                fmi != null ? UID.ExplicitVRLittleEndian.uid : tsuid != null ? tsuid : UID.ImplicitVRLittleEndian.uid);
         dos.setEncodingOptions(encOpts);
         dos.writeDataset(fmi, dataset);
         dos.finish();

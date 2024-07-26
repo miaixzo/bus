@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.data;
 
 import org.miaixz.bus.image.Builder;
@@ -66,14 +66,12 @@ public class IDWithIssuer {
         }
     }
 
-    public static IDWithIssuer valueOf(Attributes attrs, int idTag,
-                                       int issuerSeqTag) {
+    public static IDWithIssuer valueOf(Attributes attrs, int idTag, int issuerSeqTag) {
         String id = attrs.getString(idTag);
         if (id == null)
             return null;
 
-        return new IDWithIssuer(id,
-                Issuer.valueOf(attrs.getNestedDataset(issuerSeqTag)));
+        return new IDWithIssuer(id, Issuer.valueOf(attrs.getNestedDataset(issuerSeqTag)));
     }
 
     public static IDWithIssuer pidOf(Attributes attrs) {
@@ -81,8 +79,7 @@ public class IDWithIssuer {
         if (id == null)
             return null;
 
-        IDWithIssuer result =
-                new IDWithIssuer(id, Issuer.fromIssuerOfPatientID(attrs));
+        IDWithIssuer result = new IDWithIssuer(id, Issuer.fromIssuerOfPatientID(attrs));
         result.setTypeOfPatientID(attrs.getString(Tag.TypeOfPatientID));
         result.setIdentifierTypeCode(identifierTypeCodeOf(attrs));
         return result;
@@ -90,9 +87,7 @@ public class IDWithIssuer {
 
     private static String identifierTypeCodeOf(Attributes attrs) {
         Attributes qualifiers = attrs.getNestedDataset(Tag.IssuerOfPatientIDQualifiersSequence);
-        return qualifiers != null
-                ? qualifiers.getString(Tag.IdentifierTypeCode)
-                : null;
+        return qualifiers != null ? qualifiers.getString(Tag.IdentifierTypeCode) : null;
     }
 
     public static Set<IDWithIssuer> pidsOf(Attributes attrs) {
@@ -127,12 +122,11 @@ public class IDWithIssuer {
         if (pid == null)
             return;
 
-        for (Iterator<IDWithIssuer> itr = pids.iterator(); itr.hasNext(); ) {
+        for (Iterator<IDWithIssuer> itr = pids.iterator(); itr.hasNext();) {
             IDWithIssuer next = itr.next();
             if (next.matches(pid, true, false)) {
                 // replace existing matching pid if it is lesser qualified
-                if (pid.issuer != null && (next.issuer == null
-                        || next.issuer.isLesserQualifiedThan(pid.issuer)))
+                if (pid.issuer != null && (next.issuer == null || next.issuer.isLesserQualifiedThan(pid.issuer)))
                     itr.remove();
                 else
                     return;
@@ -205,15 +199,14 @@ public class IDWithIssuer {
             return true;
         if (!(obj instanceof IDWithIssuer other))
             return false;
-        return (Objects.equals(id, other.getID())) &&
-                (Objects.equals(typeOfPatientID, other.getTypeOfPatientID())) &&
-                (Objects.equals(identifierTypeCode, other.getIdentifierTypeCode())) &&
-                (Objects.equals(issuer, other.issuer));
+        return (Objects.equals(id, other.getID())) && (Objects.equals(typeOfPatientID, other.getTypeOfPatientID()))
+                && (Objects.equals(identifierTypeCode, other.getIdentifierTypeCode()))
+                && (Objects.equals(issuer, other.issuer));
     }
 
     /**
-     * Test if this ID equals other ID and this issuer matches other issuer.
-     * If this ID equals other ID but only this or other is qualified by an issuer, the test fails.
+     * Test if this ID equals other ID and this issuer matches other issuer. If this ID equals other ID but only this or
+     * other is qualified by an issuer, the test fails.
      *
      * @param other-the @{code IDWithIssuer} to compare.
      * @return {@code true}, if this ID equals other ID and this issuer matches other issuer, otherwise {@code false}.
@@ -223,19 +216,17 @@ public class IDWithIssuer {
     }
 
     /**
-     * Test if this ID equals other ID and this issuer matches other issuer.
-     * If this ID equals other ID but only this or other is qualified by an issuer,
-     * the test returns the value passed by param <em>matchNoIssuer</em>.
+     * Test if this ID equals other ID and this issuer matches other issuer. If this ID equals other ID but only this or
+     * other is qualified by an issuer, the test returns the value passed by param <em>matchNoIssuer</em>.
      *
      * @param other             the @{code IDWithIssuer} to compare.
      * @param matchNoIssuer     value returned if only this or other is qualified by an issuer
-     * @param matchOnNoMismatch value returned if the issuer of this and the other includes different types of identifiers
+     * @param matchOnNoMismatch value returned if the issuer of this and the other includes different types of
+     *                          identifiers
      * @return {@code true}, if this ID equals other ID and this issuer matches other issuer, otherwise {@code false}.
      */
     public boolean matches(IDWithIssuer other, boolean matchNoIssuer, boolean matchOnNoMismatch) {
-        return id.equals(other.id)
-                && (issuer == null
-                ? (other.issuer == null || matchNoIssuer)
+        return id.equals(other.id) && (issuer == null ? (other.issuer == null || matchNoIssuer)
                 : issuer.matches(other.issuer, matchNoIssuer, matchOnNoMismatch));
     }
 
@@ -255,12 +246,10 @@ public class IDWithIssuer {
             issuer.toIssuerOfPatientID(attrs);
 
         if (identifierTypeCode != null) {
-            Attributes item = attrs.getNestedDataset(
-                    Tag.IssuerOfPatientIDQualifiersSequence);
+            Attributes item = attrs.getNestedDataset(Tag.IssuerOfPatientIDQualifiersSequence);
             if (item == null) {
                 item = new Attributes(1);
-                attrs.newSequence(Tag.IssuerOfPatientIDQualifiersSequence, 1)
-                        .add(item);
+                attrs.newSequence(Tag.IssuerOfPatientIDQualifiersSequence, 1).add(item);
             }
             item.setString(Tag.IdentifierTypeCode, VR.CS, identifierTypeCode);
         }

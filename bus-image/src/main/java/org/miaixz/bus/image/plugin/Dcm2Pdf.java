@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.image.Tag;
@@ -65,8 +65,8 @@ public class Dcm2Pdf {
             String sopCUID = attributes.getString(Tag.SOPClassUID);
             String ext = FileType.getFileExt(sopCUID);
             if (ext == null) {
-                Logger.info("DICOM file {} with {} SOP Class cannot be converted to bulkdata file",
-                        src, UID.nameOf(sopCUID));
+                Logger.info("DICOM file {} with {} SOP Class cannot be converted to bulkdata file", src,
+                        UID.nameOf(sopCUID));
                 return;
             }
             File destFile = destIsDir ? dest.resolve(src.getFileName() + ext).toFile() : dest.toFile();
@@ -82,12 +82,9 @@ public class Dcm2Pdf {
     }
 
     enum FileType {
-        PDF(UID.EncapsulatedPDFStorage.uid, ".pdf"),
-        CDA(UID.EncapsulatedCDAStorage.uid, ".xml"),
-        MTL(UID.EncapsulatedMTLStorage.uid, ".mtl"),
-        OBJ(UID.EncapsulatedOBJStorage.uid, ".obj"),
-        STL(UID.EncapsulatedSTLStorage.uid, ".stl"),
-        GENOZIP(UID.PrivateEncapsulatedGenozipStorage.uid, ".genozip"),
+        PDF(UID.EncapsulatedPDFStorage.uid, ".pdf"), CDA(UID.EncapsulatedCDAStorage.uid, ".xml"),
+        MTL(UID.EncapsulatedMTLStorage.uid, ".mtl"), OBJ(UID.EncapsulatedOBJStorage.uid, ".obj"),
+        STL(UID.EncapsulatedSTLStorage.uid, ".stl"), GENOZIP(UID.PrivateEncapsulatedGenozipStorage.uid, ".genozip"),
         VCF_BZIP2(UID.PrivateEncapsulatedBzip2VCFStorage.uid, ".vcfbz2"),
         DOC_BZIP2(UID.PrivateEncapsulatedBzip2DocumentStorage.uid, ".bz2");
 

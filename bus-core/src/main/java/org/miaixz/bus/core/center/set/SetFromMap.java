@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.set;
 
 import java.io.IOException;
@@ -45,8 +45,8 @@ public class SetFromMap<E> extends AbstractSet<E> implements Serializable {
 
     private static final long serialVersionUID = -1L;
 
-    private final Map<E, Boolean> m;  // The backing map
-    private transient Set<E> s;       // Its keySet
+    private final Map<E, Boolean> m; // The backing map
+    private transient Set<E> s; // Its keySet
 
     /**
      * 构造

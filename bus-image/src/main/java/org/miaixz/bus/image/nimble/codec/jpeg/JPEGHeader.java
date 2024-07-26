@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.codec.jpeg;
 
 import org.miaixz.bus.core.xyz.ByteKit;
@@ -44,12 +44,15 @@ public class JPEGHeader {
 
     public JPEGHeader(byte[] data, int lastMarker) {
         int n = 0;
-        for (int offset = 0; (offset = nextMarker(data, offset)) != -1; ) {
+        for (int offset = 0; (offset = nextMarker(data, offset)) != -1;) {
             n++;
             int marker = data[offset++] & 255;
-            if (JPEG.isStandalone(marker)) continue;
-            if (offset + 1 >= data.length) break;
-            if (marker == lastMarker) break;
+            if (JPEG.isStandalone(marker))
+                continue;
+            if (offset + 1 >= data.length)
+                break;
+            if (marker == lastMarker)
+                break;
             offset += ByteKit.bytesToUShortBE(data, offset);
         }
         this.data = data;
@@ -72,21 +75,24 @@ public class JPEGHeader {
 
     public int offsetOf(int marker) {
         for (int i = 0; i < offsets.length; i++) {
-            if (marker(i) == marker) return offsets[i];
+            if (marker(i) == marker)
+                return offsets[i];
         }
         return -1;
     }
 
     public int offsetSOF() {
         for (int i = 0; i < offsets.length; i++) {
-            if (JPEG.isSOF(marker(i))) return offsets[i];
+            if (JPEG.isSOF(marker(i)))
+                return offsets[i];
         }
         return -1;
     }
 
     public int offsetAfterAPP() {
         for (int i = 1; i < offsets.length; i++) {
-            if (!JPEG.isAPP(marker(i))) return offsets[i];
+            if (!JPEG.isAPP(marker(i)))
+                return offsets[i];
         }
         return -1;
     }
@@ -111,9 +117,11 @@ public class JPEGHeader {
      */
     public Attributes toAttributes(Attributes attrs) {
         int offsetSOF = offsetSOF();
-        if (offsetSOF == -1) return null;
+        if (offsetSOF == -1)
+            return null;
 
-        if (attrs == null) attrs = new Attributes(10);
+        if (attrs == null)
+            attrs = new Attributes(10);
 
         int sof = data[offsetSOF] & 255;
         int p = data[offsetSOF + 3] & 0xff;
@@ -122,9 +130,7 @@ public class JPEGHeader {
         int nf = data[offsetSOF + 3 + 5] & 0xff;
         attrs.setInt(Tag.SamplesPerPixel, VR.US, nf);
         if (nf == 3) {
-            attrs.setString(
-                    Tag.PhotometricInterpretation,
-                    VR.CS,
+            attrs.setString(Tag.PhotometricInterpretation, VR.CS,
                     (sof == JPEG.SOF3 || sof == JPEG.SOF55) ? "RGB" : "YBR_FULL_422");
             attrs.setInt(Tag.PlanarConfiguration, VR.US, 0);
         } else {
@@ -143,19 +149,20 @@ public class JPEGHeader {
 
     public String getTransferSyntaxUID() {
         int sofOffset = offsetSOF();
-        if (sofOffset == -1) return null;
+        if (sofOffset == -1)
+            return null;
 
         switch (data[sofOffset] & 255) {
-            case JPEG.SOF0:
-                return UID.JPEGBaseline8Bit.uid;
-            case JPEG.SOF1:
-                return UID.JPEGExtended12Bit.uid;
-            case JPEG.SOF2:
-                return UID.JPEGFullProgressionNonHierarchical1012.uid;
-            case JPEG.SOF3:
-                return ss() == 1 ? UID.JPEGLosslessSV1.uid : UID.JPEGLossless.uid;
-            case JPEG.SOF55:
-                return ss() == 0 ? UID.JPEGLSLossless.uid : UID.JPEGLSNearLossless.uid;
+        case JPEG.SOF0:
+            return UID.JPEGBaseline8Bit.uid;
+        case JPEG.SOF1:
+            return UID.JPEGExtended12Bit.uid;
+        case JPEG.SOF2:
+            return UID.JPEGFullProgressionNonHierarchical1012.uid;
+        case JPEG.SOF3:
+            return ss() == 1 ? UID.JPEGLosslessSV1.uid : UID.JPEGLossless.uid;
+        case JPEG.SOF55:
+            return ss() == 0 ? UID.JPEGLSLossless.uid : UID.JPEGLSNearLossless.uid;
         }
         return null;
     }

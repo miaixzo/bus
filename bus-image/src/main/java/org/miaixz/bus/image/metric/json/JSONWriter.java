@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.json;
 
 import jakarta.json.JsonValue;
@@ -44,10 +44,10 @@ import java.util.*;
 import java.util.function.LongFunction;
 
 /**
- * Allows conversion of DICOM files into JSON format.
- * See <a href="http://dicom.nema.org/medical/dicom/current/output/html/part18.html#sect_F.2">DICOM JSON Model</a>.
- * Implements {@link ImageInputHandler} so it can be attached to a
- * {@link ImageInputStream} to produce the JSON while being read. See sample usage below.
+ * Allows conversion of DICOM files into JSON format. See
+ * <a href="http://dicom.nema.org/medical/dicom/current/output/html/part18.html#sect_F.2">DICOM JSON Model</a>.
+ * Implements {@link ImageInputHandler} so it can be attached to a {@link ImageInputStream} to produce the JSON while
+ * being read. See sample usage below.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -90,8 +90,7 @@ public class JSONWriter implements ImageInputHandler {
         if (a2.length != length)
             return false;
 
-        outer:
-        for (Object o1 : a) {
+        outer: for (Object o1 : a) {
             for (Object o2 : a2)
                 if (o1.equals(o2))
                     continue outer;
@@ -113,8 +112,7 @@ public class JSONWriter implements ImageInputHandler {
     }
 
     /**
-     * Writes the given attributes as a full JSON object. Subsequent calls will generate a new JSON
-     * object.
+     * Writes the given attributes as a full JSON object. Subsequent calls will generate a new JSON object.
      */
     public void write(Attributes attrs) {
         gen.writeStartObject();
@@ -123,28 +121,25 @@ public class JSONWriter implements ImageInputHandler {
     }
 
     /**
-     * Writes the given attributes to JSON. Can be used to output multiple attributes (e.g. metadata,
-     * attributes) to the same JSON object.
+     * Writes the given attributes to JSON. Can be used to output multiple attributes (e.g. metadata, attributes) to the
+     * same JSON object.
      */
     public void writeAttributes(Attributes attrs) {
         final SpecificCharacterSet cs = attrs.getSpecificCharacterSet();
         try {
             attrs.accept(new Visitor() {
-                             @Override
-                             public boolean visit(Attributes attrs, int tag, VR vr, Object value)
-                                     throws Exception {
-                                 writeAttribute(tag, vr, value, cs, attrs);
-                                 return true;
-                             }
-                         },
-                    false);
+                @Override
+                public boolean visit(Attributes attrs, int tag, VR vr, Object value) throws Exception {
+                    writeAttribute(tag, vr, value, cs, attrs);
+                    return true;
+                }
+            }, false);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void writeAttribute(int tag, VR vr, Object value,
-                                SpecificCharacterSet cs, Attributes attrs) {
+    private void writeAttribute(int tag, VR vr, Object value, SpecificCharacterSet cs, Attributes attrs) {
         if (Tag.isGroupLength(tag))
             return;
 
@@ -153,8 +148,7 @@ public class JSONWriter implements ImageInputHandler {
         if (value instanceof Value)
             writeValue((Value) value, attrs.bigEndian());
         else
-            writeValue(vr, value, attrs.bigEndian(),
-                    attrs.getSpecificCharacterSet(vr), true);
+            writeValue(vr, value, attrs.bigEndian(), attrs.getSpecificCharacterSet(vr), true);
         gen.writeEnd();
     }
 
@@ -190,8 +184,7 @@ public class JSONWriter implements ImageInputHandler {
     }
 
     @Override
-    public void readValue(ImageInputStream dis, Attributes attrs)
-            throws IOException {
+    public void readValue(ImageInputStream dis, Attributes attrs) throws IOException {
         int tag = dis.tag();
         VR vr = dis.vr();
         long len = dis.unsignedLength();
@@ -212,85 +205,79 @@ public class JSONWriter implements ImageInputHandler {
                     writeBulkData(dis.createBulkData(dis));
                 } else {
                     byte[] b = dis.readValue();
-                    if (tag == Tag.TransferSyntaxUID
-                            || tag == Tag.SpecificCharacterSet
-                            || tag == Tag.PixelRepresentation
-                            || Tag.isPrivateCreator(tag))
+                    if (tag == Tag.TransferSyntaxUID || tag == Tag.SpecificCharacterSet
+                            || tag == Tag.PixelRepresentation || Tag.isPrivateCreator(tag))
                         attrs.setBytes(tag, vr, b);
-                    writeValue(vr, b, dis.bigEndian(),
-                            attrs.getSpecificCharacterSet(vr), false);
+                    writeValue(vr, b, dis.bigEndian(), attrs.getSpecificCharacterSet(vr), false);
                 }
             }
             gen.writeEnd();
         }
     }
 
-    private void writeValue(VR vr, Object val, boolean bigEndian,
-                            SpecificCharacterSet cs, boolean preserve) {
+    private void writeValue(VR vr, Object val, boolean bigEndian, SpecificCharacterSet cs, boolean preserve) {
         switch (vr) {
-            case AE:
-            case AS:
-            case AT:
-            case CS:
-            case DA:
-            case DS:
-            case DT:
-            case IS:
-            case LO:
-            case LT:
-            case PN:
-            case SH:
-            case ST:
-            case TM:
-            case UC:
-            case UI:
-            case UR:
-            case UT:
-                writeStringValues(vr, val, bigEndian, cs);
-                break;
-            case FL:
-            case FD:
-                writeDoubleValues(vr, val, bigEndian);
-                break;
-            case SL:
-            case SS:
-            case US:
-                writeIntValues(vr, val, bigEndian);
-                break;
-            case SV:
-                writeLongValues(Long::toString, vr, val, bigEndian);
-                break;
-            case UV:
-                writeLongValues(Long::toUnsignedString, vr, val, bigEndian);
-                break;
-            case UL:
-                writeUIntValues(vr, val, bigEndian);
-                break;
-            case OB:
-            case OD:
-            case OF:
-            case OL:
-            case OV:
-            case OW:
-            case UN:
-                writeInlineBinary(vr, (byte[]) val, bigEndian, preserve);
-                break;
-            case SQ:
-                assert true;
+        case AE:
+        case AS:
+        case AT:
+        case CS:
+        case DA:
+        case DS:
+        case DT:
+        case IS:
+        case LO:
+        case LT:
+        case PN:
+        case SH:
+        case ST:
+        case TM:
+        case UC:
+        case UI:
+        case UR:
+        case UT:
+            writeStringValues(vr, val, bigEndian, cs);
+            break;
+        case FL:
+        case FD:
+            writeDoubleValues(vr, val, bigEndian);
+            break;
+        case SL:
+        case SS:
+        case US:
+            writeIntValues(vr, val, bigEndian);
+            break;
+        case SV:
+            writeLongValues(Long::toString, vr, val, bigEndian);
+            break;
+        case UV:
+            writeLongValues(Long::toUnsignedString, vr, val, bigEndian);
+            break;
+        case UL:
+            writeUIntValues(vr, val, bigEndian);
+            break;
+        case OB:
+        case OD:
+        case OF:
+        case OL:
+        case OV:
+        case OW:
+        case UN:
+            writeInlineBinary(vr, (byte[]) val, bigEndian, preserve);
+            break;
+        case SQ:
+            assert true;
         }
     }
 
-    private void writeStringValues(VR vr, Object val, boolean bigEndian,
-                                   SpecificCharacterSet cs) {
+    private void writeStringValues(VR vr, Object val, boolean bigEndian, SpecificCharacterSet cs) {
         gen.writeStartArray("Value");
         Object o = vr.toStrings(val, bigEndian, cs);
-        String[] ss = (o instanceof String[])
-                ? (String[]) o
-                : new String[]{(String) o};
+        String[] ss = (o instanceof String[]) ? (String[]) o : new String[] { (String) o };
         for (String s : ss) {
             if (s == null || s.isEmpty())
                 gen.writeNull();
-            else switch (vr) {
+            else
+                switch (vr) {
                 case DS:
                     if (jsonTypeByVR.get(VR.DS) == JsonValue.ValueType.NUMBER) {
                         try {
@@ -315,7 +302,7 @@ public class JSONWriter implements ImageInputHandler {
                     break;
                 default:
                     gen.write(s);
-            }
+                }
         }
         gen.writeEnd();
     }
@@ -402,8 +389,7 @@ public class JSONWriter implements ImageInputHandler {
             gen.write(name, pn.toString(group, true));
     }
 
-    private void writeInlineBinary(VR vr, byte[] b, boolean bigEndian,
-                                   boolean preserve) {
+    private void writeInlineBinary(VR vr, byte[] b, boolean bigEndian, boolean preserve) {
         if (bigEndian)
             b = vr.toggleEndian(b, preserve);
         gen.write("InlineBinary", encodeBase64(b));
@@ -421,8 +407,7 @@ public class JSONWriter implements ImageInputHandler {
     }
 
     @Override
-    public void readValue(ImageInputStream dis, Sequence seq)
-            throws IOException {
+    public void readValue(ImageInputStream dis, Sequence seq) throws IOException {
         if (!hasItems.getLast()) {
             gen.writeStartArray("Value");
             hasItems.removeLast();
@@ -434,8 +419,7 @@ public class JSONWriter implements ImageInputHandler {
     }
 
     @Override
-    public void readValue(ImageInputStream dis, Fragments frags)
-            throws IOException {
+    public void readValue(ImageInputStream dis, Fragments frags) throws IOException {
         int len = dis.length();
         if (dis.isExcludeBulkData()) {
             dis.skipFully(len);
@@ -454,8 +438,7 @@ public class JSONWriter implements ImageInputHandler {
             if (dis.isIncludeBulkDataURI()) {
                 writeBulkData(dis.createBulkData(dis));
             } else {
-                writeInlineBinary(frags.vr(), dis.readValue(),
-                        dis.bigEndian(), false);
+                writeInlineBinary(frags.vr(), dis.readValue(), dis.bigEndian(), false);
             }
             gen.writeEnd();
         }

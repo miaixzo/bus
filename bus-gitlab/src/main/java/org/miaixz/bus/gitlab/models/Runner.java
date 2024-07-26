@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -53,8 +53,7 @@ public class Runner implements Serializable {
 
         ACTIVE, ONLINE, PAUSED, OFFLINE;
 
-        private static JacksonJsonEnumHelper<RunnerStatus> enumHelper =
-                new JacksonJsonEnumHelper<>(RunnerStatus.class);
+        private static JacksonJsonEnumHelper<RunnerStatus> enumHelper = new JacksonJsonEnumHelper<>(RunnerStatus.class);
 
         @JsonCreator
         public static RunnerStatus forValue(String value) {
@@ -77,8 +76,8 @@ public class Runner implements Serializable {
      */
     public enum RunnerType {
         INSTANCE_TYPE, GROUP_TYPE, PROJECT_TYPE;
-        private static JacksonJsonEnumHelper<RunnerType> enumHelper =
-                new JacksonJsonEnumHelper<>(RunnerType.class);
+
+        private static JacksonJsonEnumHelper<RunnerType> enumHelper = new JacksonJsonEnumHelper<>(RunnerType.class);
 
         @JsonCreator
         public static RunnerType forValue(String value) {
@@ -159,7 +158,6 @@ public class Runner implements Serializable {
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
     }
-
 
     public Runner withId(Long id) {
         this.id = id;

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.openbsd.hardware;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -47,9 +47,10 @@ final class OpenBsdVirtualMemory extends AbstractVirtualMemory {
 
     private final OpenBsdGlobalMemory global;
 
-    private final Supplier<Triplet<Integer, Integer, Integer>> usedTotalPgin = Memoizer.memoize(
-            OpenBsdVirtualMemory::queryVmstat, Memoizer.defaultExpiration());
-    private final Supplier<Integer> pgout = Memoizer.memoize(OpenBsdVirtualMemory::queryUvm, Memoizer.defaultExpiration());
+    private final Supplier<Triplet<Integer, Integer, Integer>> usedTotalPgin = Memoizer
+            .memoize(OpenBsdVirtualMemory::queryVmstat, Memoizer.defaultExpiration());
+    private final Supplier<Integer> pgout = Memoizer.memoize(OpenBsdVirtualMemory::queryUvm,
+            Memoizer.defaultExpiration());
 
     OpenBsdVirtualMemory(OpenBsdGlobalMemory freeBsdGlobalMemory) {
         this.global = freeBsdGlobalMemory;

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager.dialect.auto;
 
 import org.apache.ibatis.mapping.MappedStatement;
@@ -88,7 +88,8 @@ public class Defalut implements AutoDialect<String> {
     }
 
     @Override
-    public AbstractPaging extractDialect(String dialectKey, MappedStatement ms, DataSource dataSource, Properties properties) {
+    public AbstractPaging extractDialect(String dialectKey, MappedStatement ms, DataSource dataSource,
+            Properties properties) {
         if (dialectKey != null && urlMap.containsKey(dialectKey)) {
             return urlMap.get(dialectKey).extractDialect(dialectKey, ms, dataSource, properties);
         }

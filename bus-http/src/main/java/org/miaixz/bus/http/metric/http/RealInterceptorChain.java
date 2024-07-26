@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.http.Builder;
@@ -42,8 +42,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 承载整个拦截器链的具体拦截器链:
- * 所有应用程序拦截器、Http核心、所有网络拦截器，最后是网络调用者.
+ * 承载整个拦截器链的具体拦截器链: 所有应用程序拦截器、Http核心、所有网络拦截器，最后是网络调用者.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -61,9 +60,8 @@ public class RealInterceptorChain implements NewChain {
     private final int writeTimeout;
     private int calls;
 
-    public RealInterceptorChain(List<Interceptor> interceptors, Transmitter transmitter,
-                                Exchange exchange, int index, Request request, NewCall call,
-                                int connectTimeout, int readTimeout, int writeTimeout) {
+    public RealInterceptorChain(List<Interceptor> interceptors, Transmitter transmitter, Exchange exchange, int index,
+            Request request, NewCall call, int connectTimeout, int readTimeout, int writeTimeout) {
         this.interceptors = interceptors;
         this.transmitter = transmitter;
         this.exchange = exchange;
@@ -88,8 +86,8 @@ public class RealInterceptorChain implements NewChain {
     @Override
     public NewChain withConnectTimeout(int timeout, TimeUnit unit) {
         int millis = Builder.checkDuration("timeout", timeout, unit);
-        return new RealInterceptorChain(interceptors, transmitter, exchange, index, request, call,
-                millis, readTimeout, writeTimeout);
+        return new RealInterceptorChain(interceptors, transmitter, exchange, index, request, call, millis, readTimeout,
+                writeTimeout);
     }
 
     @Override
@@ -100,8 +98,8 @@ public class RealInterceptorChain implements NewChain {
     @Override
     public NewChain withReadTimeout(int timeout, TimeUnit unit) {
         int millis = Builder.checkDuration("timeout", timeout, unit);
-        return new RealInterceptorChain(interceptors, transmitter, exchange, index, request, call,
-                connectTimeout, millis, writeTimeout);
+        return new RealInterceptorChain(interceptors, transmitter, exchange, index, request, call, connectTimeout,
+                millis, writeTimeout);
     }
 
     @Override
@@ -112,8 +110,8 @@ public class RealInterceptorChain implements NewChain {
     @Override
     public NewChain withWriteTimeout(int timeout, TimeUnit unit) {
         int millis = Builder.checkDuration("timeout", timeout, unit);
-        return new RealInterceptorChain(interceptors, transmitter, exchange, index, request, call,
-                connectTimeout, readTimeout, millis);
+        return new RealInterceptorChain(interceptors, transmitter, exchange, index, request, call, connectTimeout,
+                readTimeout, millis);
     }
 
     public Transmitter transmitter() {
@@ -121,7 +119,8 @@ public class RealInterceptorChain implements NewChain {
     }
 
     public Exchange exchange() {
-        if (exchange == null) throw new IllegalStateException();
+        if (exchange == null)
+            throw new IllegalStateException();
         return exchange;
     }
 
@@ -140,34 +139,33 @@ public class RealInterceptorChain implements NewChain {
         return proceed(request, transmitter, exchange);
     }
 
-    public Response proceed(Request request, Transmitter transmitter, Exchange exchange)
-            throws IOException {
-        if (index >= interceptors.size()) throw new AssertionError();
+    public Response proceed(Request request, Transmitter transmitter, Exchange exchange) throws IOException {
+        if (index >= interceptors.size())
+            throw new AssertionError();
 
         calls++;
 
         // If we already have a stream, confirm that the incoming request will use it.
         if (this.exchange != null && !this.exchange.connection().supportsUrl(request.url())) {
-            throw new IllegalStateException("network interceptor " + interceptors.get(index - 1)
-                    + " must retain the same host and port");
+            throw new IllegalStateException(
+                    "network interceptor " + interceptors.get(index - 1) + " must retain the same host and port");
         }
 
         // If we already have a stream, confirm that this is the only call to chain.proceed().
         if (this.exchange != null && calls > 1) {
-            throw new IllegalStateException("network interceptor " + interceptors.get(index - 1)
-                    + " must call proceed() exactly once");
+            throw new IllegalStateException(
+                    "network interceptor " + interceptors.get(index - 1) + " must call proceed() exactly once");
         }
 
         // Call the next interceptor in the chain.
-        RealInterceptorChain next = new RealInterceptorChain(interceptors, transmitter, exchange,
-                index + 1, request, call, connectTimeout, readTimeout, writeTimeout);
+        RealInterceptorChain next = new RealInterceptorChain(interceptors, transmitter, exchange, index + 1, request,
+                call, connectTimeout, readTimeout, writeTimeout);
         Interceptor interceptor = interceptors.get(index);
         Response response = interceptor.intercept(next);
 
         // Confirm that the next interceptor made its required call to chain.proceed().
         if (exchange != null && index + 1 < interceptors.size() && next.calls != 1) {
-            throw new IllegalStateException("network interceptor " + interceptor
-                    + " must call proceed() exactly once");
+            throw new IllegalStateException("network interceptor " + interceptor + " must call proceed() exactly once");
         }
 
         // Confirm that the intercepted response isn't null.
@@ -176,8 +174,7 @@ public class RealInterceptorChain implements NewChain {
         }
 
         if (response.body() == null) {
-            throw new IllegalStateException(
-                    "interceptor " + interceptor + " returned a response with no body");
+            throw new IllegalStateException("interceptor " + interceptor + " returned a response with no body");
         }
 
         return response;

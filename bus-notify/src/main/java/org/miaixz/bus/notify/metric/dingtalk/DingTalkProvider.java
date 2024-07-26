@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.notify.metric.dingtalk;
 
 import lombok.Setter;
@@ -77,8 +77,7 @@ public class DingTalkProvider extends AbstractProvider<DingTalkMaterial, Context
         String errcode = JsonKit.getValue(response, "errcode");
         return Message.builder()
                 .errcode(String.valueOf(HTTP.HTTP_OK).equals(errcode) ? ErrorCode.SUCCESS.getCode() : errcode)
-                .errmsg(JsonKit.getValue(response, "errmsg"))
-                .build();
+                .errmsg(JsonKit.getValue(response, "errmsg")).build();
     }
 
     private String getToken(String url) {

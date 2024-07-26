@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.openbsd.hardware;
 
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -47,7 +47,8 @@ import java.util.function.Supplier;
  */
 @Immutable
 public class OpenBsdFirmware extends AbstractFirmware {
-    private final Supplier<Triplet<String, String, String>> manufVersRelease = Memoizer.memoize(OpenBsdFirmware::readDmesg);
+    private final Supplier<Triplet<String, String, String>> manufVersRelease = Memoizer
+            .memoize(OpenBsdFirmware::readDmesg);
 
     private static Triplet<String, String, String> readDmesg() {
         String version = null;

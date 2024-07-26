@@ -26,15 +26,11 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
 /**
- * 民俗文化
- * 由于区域文化差异对于年月日等相关统称也有所不同
- * cn - 中文区域
- * en - 英文区域
+ * 民俗文化 由于区域文化差异对于年月日等相关统称也有所不同 cn - 中文区域 en - 英文区域
  *
  * 其他区域根据相关内容实现或重写相关方法即可
  * <p>
- * 本包部分方法实现来自：
- * <a href="https://github.com/6tail/lunar-java">https://github.com/6tail/lunar-java</a>
+ * 本包部分方法实现来自： <a href="https://github.com/6tail/lunar-java">https://github.com/6tail/lunar-java</a>
  * </p>
  *
  * @author Kimi Liu

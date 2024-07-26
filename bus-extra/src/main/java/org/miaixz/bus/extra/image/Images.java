@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.image;
 
 import org.miaixz.bus.core.io.file.FileName;
@@ -102,8 +102,7 @@ public class Images implements Flushable, Serializable {
             if (srcImage.getType() == BufferedImage.TYPE_INT_ARGB
                     || srcImage.getType() == BufferedImage.TYPE_INT_ARGB_PRE
                     || srcImage.getType() == BufferedImage.TYPE_4BYTE_ABGR
-                    || srcImage.getType() == BufferedImage.TYPE_4BYTE_ABGR_PRE
-            ) {
+                    || srcImage.getType() == BufferedImage.TYPE_4BYTE_ABGR_PRE) {
                 targetImageType = ImageKit.IMAGE_TYPE_PNG;
             } else {
                 targetImageType = ImageKit.IMAGE_TYPE_JPG;
@@ -198,7 +197,7 @@ public class Images implements Flushable, Serializable {
         if (degree >= 90) {
             if (degree / 90 % 2 == 1) {
                 final int temp = height;
-                //noinspection SuspiciousNameCombination
+                // noinspection SuspiciousNameCombination
                 height = width;
                 width = temp;
             }
@@ -307,8 +306,7 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 缩放图像（按长宽缩放）
-     * 注意：目标长宽与原图不成比例会变形
+     * 缩放图像（按长宽缩放） 注意：目标长宽与原图不成比例会变形
      *
      * @param width  目标宽度
      * @param height 目标高度
@@ -319,8 +317,7 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 缩放图像（按长宽缩放）
-     * 注意：目标长宽与原图不成比例会变形
+     * 缩放图像（按长宽缩放） 注意：目标长宽与原图不成比例会变形
      *
      * @param width     目标宽度
      * @param height    目标高度
@@ -352,8 +349,7 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 等比缩放图像，此方法按照按照给定的长宽等比缩放图片，按照长宽缩放比最多的一边等比缩放，空白部分填充背景色
-     * 缩放后默认为jpeg格式
+     * 等比缩放图像，此方法按照按照给定的长宽等比缩放图片，按照长宽缩放比最多的一边等比缩放，空白部分填充背景色 缩放后默认为jpeg格式
      *
      * @param width      缩放后的宽度
      * @param height     缩放后的高度
@@ -411,8 +407,7 @@ public class Images implements Flushable, Serializable {
         final Image srcImage = getValidSrcImg();
         fixRectangle(rectangle, srcImage.getWidth(null), srcImage.getHeight(null));
 
-        final ImageFilter cropFilter = new CropImageFilter(
-                rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+        final ImageFilter cropFilter = new CropImageFilter(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
         this.targetImage = ImageKit.filter(cropFilter, srcImage);
         return this;
     }
@@ -505,8 +500,7 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 给图片添加文字水印
-     * 此方法只在给定位置写出一个水印字符串
+     * 给图片添加文字水印 此方法只在给定位置写出一个水印字符串
      *
      * @param pressText 水印文字
      * @param color     水印的字体颜色
@@ -516,13 +510,13 @@ public class Images implements Flushable, Serializable {
      * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @return 处理后的图像
      */
-    public Images pressText(final String pressText, final Color color, final Font font, final int x, final int y, final float alpha) {
+    public Images pressText(final String pressText, final Color color, final Font font, final int x, final int y,
+            final float alpha) {
         return pressText(ImageText.of(pressText, color, font, new Point(x, y), alpha));
     }
 
     /**
-     * 给图片添加文字水印
-     * 此方法只在给定位置写出一个水印字符串
+     * 给图片添加文字水印 此方法只在给定位置写出一个水印字符串
      *
      * @param imageText 显示的文本信息
      * @return 处理后的图像
@@ -569,7 +563,8 @@ public class Images implements Flushable, Serializable {
      * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @return 处理后的图像
      */
-    public Images pressTextFull(final String pressText, final Color color, Font font, final int lineHeight, final int degree, final float alpha) {
+    public Images pressTextFull(final String pressText, final Color color, Font font, final int lineHeight,
+            final int degree, final float alpha) {
         final BufferedImage targetImage = ImageKit.toBufferedImage(getValidSrcImg(), this.targetImageType);
 
         if (null == font) {
@@ -586,7 +581,7 @@ public class Images implements Flushable, Serializable {
         g.rotate(Math.toRadians(degree), targetWidth >> 1, targetHeight >> 1);
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, alpha));
 
-        //获取字符串本身的长宽
+        // 获取字符串本身的长宽
         Dimension dimension;
         try {
             dimension = ImageKit.getDimension(g.getFontMetrics(font), pressText);
@@ -627,8 +622,7 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 给图片添加图片水印
-     * 如果源图片对象为 {@link BufferedImage}，则绘制在源图片上，否则创建新的图片
+     * 给图片添加图片水印 如果源图片对象为 {@link BufferedImage}，则绘制在源图片上，否则创建新的图片
      *
      * @param pressImg  水印图片，可以使用{@link ImageIO#read(File)}方法读取文件
      * @param rectangle 矩形对象，表示矩形区域的x，y，width，height，x,y从背景图片中心计算
@@ -649,8 +643,7 @@ public class Images implements Flushable, Serializable {
      * @param lineHeight 行高
      * @param degree     旋转角度，（单位：弧度），以圆点（0,0）为圆心，正代表顺时针，负代表逆时针
      * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
-     * @return this
-     * imashimaro
+     * @return this imashimaro
      */
     public Images pressImageFull(final Image pressImage, final int lineHeight, final int degree, final float alpha) {
         final BufferedImage targetImage = ImageKit.toBufferedImage(getValidSrcImg(), this.targetImageType);
@@ -664,7 +657,7 @@ public class Images implements Flushable, Serializable {
         g.rotate(Math.toRadians(degree), targetWidth >> 1, targetHeight >> 1);
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, alpha));
 
-        //获取水印图片本身的长宽
+        // 获取水印图片本身的长宽
         final int pressImageWidth = pressImage.getWidth(null);
         final int pressImageHeight = pressImage.getHeight(null);
         final Dimension dimension = new Dimension(pressImageWidth, pressImageHeight);
@@ -685,8 +678,7 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 旋转图片为指定角度
-     * 来自：<a href="http://blog.51cto.com/cping1982/130066">http://blog.51cto.com/cping1982/130066</a>
+     * 旋转图片为指定角度 来自：<a href="http://blog.51cto.com/cping1982/130066">http://blog.51cto.com/cping1982/130066</a>
      *
      * @param degree 旋转角度
      * @return 旋转后的图片
@@ -706,12 +698,11 @@ public class Images implements Flushable, Serializable {
         // 创建画笔并填充背景色
         final Graphics2D graphics2d = ImageKit.createGraphics(targetImg, this.backgroundColor);
 
-        graphics2d.setRenderingHints(
-                RenderingHintsBuilder.of()
-                        // 抗锯齿
-                        .setAntialiasing(RenderingHintsBuilder.Antialias.ON)
-                        // 双线性插值
-                        .setInterpolation(RenderingHintsBuilder.Interpolation.BILINEAR).build());
+        graphics2d.setRenderingHints(RenderingHintsBuilder.of()
+                // 抗锯齿
+                .setAntialiasing(RenderingHintsBuilder.Antialias.ON)
+                // 双线性插值
+                .setInterpolation(RenderingHintsBuilder.Interpolation.BILINEAR).build());
 
         // 从中心旋转
         graphics2d.translate((rectangle.width - width) / 2D, (rectangle.height - height) / 2D);
@@ -788,8 +779,7 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 写出图像为结果设置格式
-     * 结果类型设定见{@link #setTargetImageType(String)}
+     * 写出图像为结果设置格式 结果类型设定见{@link #setTargetImageType(String)}
      *
      * @param out 写出到的目标流
      * @return this
@@ -802,8 +792,7 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 写出图像为结果设置格式
-     * 结果类型设定见{@link #setTargetImageType(String)}
+     * 写出图像为结果设置格式 结果类型设定见{@link #setTargetImageType(String)}
      *
      * @param targetImageStream 写出到的目标流
      * @return this
@@ -835,7 +824,7 @@ public class Images implements Flushable, Serializable {
         }
 
         if (targetFile.exists()) {
-            //noinspection ResultOfMethodCallIgnored
+            // noinspection ResultOfMethodCallIgnored
             targetFile.delete();
         }
 
@@ -864,7 +853,8 @@ public class Images implements Flushable, Serializable {
      * @param alpha         透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @return 绘制后的背景
      */
-    private BufferedImage draw(final BufferedImage backgroundImg, final Image img, final Rectangle rectangle, final float alpha) {
+    private BufferedImage draw(final BufferedImage backgroundImg, final Image img, final Rectangle rectangle,
+            final float alpha) {
         final Graphics2D g = backgroundImg.createGraphics();
         ImageKit.setAlpha(g, alpha);
 
@@ -883,12 +873,12 @@ public class Images implements Flushable, Serializable {
      * @see BufferedImage#TYPE_INT_RGB
      */
     private int getTypeInt() {
-        //noinspection SwitchStatementWithTooFewBranches
+        // noinspection SwitchStatementWithTooFewBranches
         switch (this.targetImageType) {
-            case ImageKit.IMAGE_TYPE_PNG:
-                return BufferedImage.TYPE_INT_ARGB;
-            default:
-                return BufferedImage.TYPE_INT_RGB;
+        case ImageKit.IMAGE_TYPE_PNG:
+            return BufferedImage.TYPE_INT_ARGB;
+        default:
+            return BufferedImage.TYPE_INT_RGB;
         }
     }
 
@@ -911,8 +901,7 @@ public class Images implements Flushable, Serializable {
     }
 
     /**
-     * 修正矩形框位置，如果{@link Images#setPositionBaseCentre(boolean)} 设为{@code true}，
-     * 则坐标修正为基于图形中心，否则基于左上角
+     * 修正矩形框位置，如果{@link Images#setPositionBaseCentre(boolean)} 设为{@code true}， 则坐标修正为基于图形中心，否则基于左上角
      *
      * @param rectangle  矩形
      * @param baseWidth  参考宽

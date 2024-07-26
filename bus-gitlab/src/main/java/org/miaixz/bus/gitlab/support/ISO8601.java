@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.support;
 
 import java.text.ParseException;
@@ -52,13 +52,12 @@ public class ISO8601 {
     public static final String UTC_PATTERN = "yyyy-MM-dd HH:mm:ss 'UTC'";
     public static final String DATE_ONLY_PATTERN = "yyyy-MM-dd";
 
-    private static final DateTimeFormatter ODT_WITH_MSEC_PARSER = new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd[['T'][ ]HH:mm:ss.SSS[ ][XXXXX][XXXX]]").toFormatter();
-    private static final DateTimeFormatter ODT_PARSER = new DateTimeFormatterBuilder().appendPattern("yyyy-MM-dd[['T'][ ]HH:mm:ss[.SSS][ ][XXX][X]]")
-            .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
-            .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
-            .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
-            .parseDefaulting(ChronoField.MILLI_OF_SECOND, 0)
-            .parseDefaulting(ChronoField.OFFSET_SECONDS, 0)
+    private static final DateTimeFormatter ODT_WITH_MSEC_PARSER = new DateTimeFormatterBuilder()
+            .appendPattern("yyyy-MM-dd[['T'][ ]HH:mm:ss.SSS[ ][XXXXX][XXXX]]").toFormatter();
+    private static final DateTimeFormatter ODT_PARSER = new DateTimeFormatterBuilder()
+            .appendPattern("yyyy-MM-dd[['T'][ ]HH:mm:ss[.SSS][ ][XXX][X]]").parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+            .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0).parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+            .parseDefaulting(ChronoField.MILLI_OF_SECOND, 0).parseDefaulting(ChronoField.OFFSET_SECONDS, 0)
             .toFormatter();
 
     /**
@@ -75,9 +74,8 @@ public class ISO8601 {
         }
 
         long time = date.getTime();
-        return (withMsec && time % 1000 != 0 ?
-                SafeDateFormatter.getDateFormat(OUTPUT_MSEC_PATTERN).format(date) :
-                SafeDateFormatter.getDateFormat(OUTPUT_PATTERN).format(date));
+        return (withMsec && time % 1000 != 0 ? SafeDateFormatter.getDateFormat(OUTPUT_MSEC_PATTERN).format(date)
+                : SafeDateFormatter.getDateFormat(OUTPUT_PATTERN).format(date));
     }
 
     /**
@@ -96,8 +94,8 @@ public class ISO8601 {
      * @return a ISO8601 formatted string for the current date and time
      */
     public static String getTimestamp(boolean withMsec) {
-        return (withMsec ? SafeDateFormatter.getDateFormat(PATTERN_MSEC).format(new Date()) :
-                SafeDateFormatter.getDateFormat(PATTERN).format(new Date()));
+        return (withMsec ? SafeDateFormatter.getDateFormat(PATTERN_MSEC).format(new Date())
+                : SafeDateFormatter.getDateFormat(PATTERN).format(new Date()));
     }
 
     /**
@@ -138,9 +136,9 @@ public class ISO8601 {
                 dateTimeString = dateTimeString.replace("UTC", "+0000");
             }
 
-            OffsetDateTime odt = (dateTimeString.length() > 25 ?
-                    OffsetDateTime.parse(dateTimeString, ODT_WITH_MSEC_PARSER) :
-                    OffsetDateTime.parse(dateTimeString, ODT_PARSER));
+            OffsetDateTime odt = (dateTimeString.length() > 25
+                    ? OffsetDateTime.parse(dateTimeString, ODT_WITH_MSEC_PARSER)
+                    : OffsetDateTime.parse(dateTimeString, ODT_PARSER));
 
             return (odt.toInstant());
         }
@@ -174,7 +172,8 @@ public class ISO8601 {
     // Set up ThreadLocal storage to save a thread local SimpleDateFormat keyed with the format string
     private static final class SafeDateFormatter {
 
-        private static final ThreadLocal<Map<String, SimpleDateFormat>> safeFormats = ThreadLocal.withInitial(() -> (new ConcurrentHashMap<>()));
+        private static final ThreadLocal<Map<String, SimpleDateFormat>> safeFormats = ThreadLocal
+                .withInitial(() -> (new ConcurrentHashMap<>()));
 
         private static SimpleDateFormat getDateFormat(String formatSpec) {
 

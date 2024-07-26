@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cache;
 
 import com.google.inject.AbstractModule;
@@ -79,8 +79,7 @@ public class Module extends AbstractModule {
         config.getCaches().forEach((name, cache) -> mapBinder.addBinding(name).toInstance(cache));
 
         // bind baseProvider
-        Optional.ofNullable(config.getHitting())
-                .ifPresent(mxBean -> bind(Hitting.class).toInstance(mxBean));
+        Optional.ofNullable(config.getHitting()).ifPresent(mxBean -> bind(Hitting.class).toInstance(mxBean));
 
         bind(AbstractReader.class).annotatedWith(Names.named("singleCacheReader")).to(SingleCacheReader.class);
         bind(AbstractReader.class).annotatedWith(Names.named("multiCacheReader")).to(MultiCacheReader.class);

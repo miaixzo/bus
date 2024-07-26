@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.GE_Generic_Data;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,16 +46,17 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag._6001_xx51_:
-            case PrivateTag._6001_xx52_:
-                return VR.LT;
-            case PrivateTag._6001_xx50_:
-                return VR.SQ;
+
+        case PrivateTag._6001_xx51_:
+        case PrivateTag._6001_xx52_:
+            return VR.LT;
+        case PrivateTag._6001_xx50_:
+            return VR.SQ;
         }
         return VR.UN;
     }

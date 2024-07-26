@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.screw.dialect;
 
 import lombok.Getter;
@@ -53,8 +53,7 @@ public class DatabaseQueryFactory implements Serializable {
     private DataSource dataSource;
 
     /**
-     * 构造函数私有化
-     * 禁止通过new方式实例化对象
+     * 构造函数私有化 禁止通过new方式实例化对象
      */
     private DatabaseQueryFactory() {
 
@@ -81,12 +80,11 @@ public class DatabaseQueryFactory implements Serializable {
             // 获取实现类
             Class<? extends DatabaseQuery> query = DatabaseType.getDbType(url).getImplClass();
             // 获取有参构造
-            Constructor<? extends DatabaseQuery> constructor = query
-                    .getConstructor(DataSource.class);
+            Constructor<? extends DatabaseQuery> constructor = query.getConstructor(DataSource.class);
             // 实例化
             return constructor.newInstance(dataSource);
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException
-                 | InvocationTargetException | SQLException e) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException
+                | SQLException e) {
             throw new InternalException(e);
         }
     }

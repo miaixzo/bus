@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.criteria;
 
 import org.miaixz.bus.core.center.function.FunctionX;
@@ -130,7 +130,8 @@ public class WeekendSqls {
         return WeekendSqlCriteria.<T>custom().andNotBetween(property, value1, value2);
     }
 
-    public static <T> WeekendSqlCriteria<T> andNotBetween(FunctionX<T, Object> FunctionX, Object value1, Object value2) {
+    public static <T> WeekendSqlCriteria<T> andNotBetween(FunctionX<T, Object> FunctionX, Object value1,
+            Object value2) {
         return WeekendSqlCriteria.<T>custom().andNotBetween(FunctionX, value1, value2);
     }
 

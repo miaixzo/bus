@@ -24,18 +24,16 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 /**
- * 进制转换工具类，可以转换为任意进制
- * 把一个十进制整数根据自己定义的进制规则进行转换
- * 主要应用一下情况：
+ * 进制转换工具类，可以转换为任意进制 把一个十进制整数根据自己定义的进制规则进行转换 主要应用一下情况：
  * <ul>
- *     <li>根据ID生成邀请码,并且尽可能的缩短。并且不希望直接猜测出和ID的关联</li>
- *     <li>短连接的生成，根据ID转成短连接，同样不希望被猜测到</li>
- *     <li>数字加密，通过两次不同进制的转换，让有规律的数字看起来没有任何规律</li>
- *     <li>....</li>
+ * <li>根据ID生成邀请码,并且尽可能的缩短。并且不希望直接猜测出和ID的关联</li>
+ * <li>短连接的生成，根据ID转成短连接，同样不希望被猜测到</li>
+ * <li>数字加密，通过两次不同进制的转换，让有规律的数字看起来没有任何规律</li>
+ * <li>....</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -44,11 +42,10 @@ package org.miaixz.bus.core.xyz;
 public class RadixKit {
 
     /**
-     * 把一个整型数值转换成自己定义的进制
-     * 长度即进制
+     * 把一个整型数值转换成自己定义的进制 长度即进制
      * <ul>
-     *   <li>encode("AB",10)  51转换成2进制，A=0;B=1 。 二进制1010，结果 BABA</li>
-     *   <li>encode("VIP",21)  21转换成3进制，V=0;I=1;P=2 ，三进制210 ,得到结果PIV </li>
+     * <li>encode("AB",10) 51转换成2进制，A=0;B=1 。 二进制1010，结果 BABA</li>
+     * <li>encode("VIP",21) 21转换成3进制，V=0;I=1;P=2 ，三进制210 ,得到结果PIV</li>
      * </ul>
      *
      * @param radixs 自定进制,不要重复，否则转不回来的。
@@ -56,7 +53,7 @@ public class RadixKit {
      * @return 自定义进制字符串
      */
     public static String encode(final String radixs, final int num) {
-        //考虑到负数问题
+        // 考虑到负数问题
         final long tmpNum = (num >= 0 ? num : (0x100000000L - (~num + 1)));
         return encode(radixs, tmpNum, 32);
     }

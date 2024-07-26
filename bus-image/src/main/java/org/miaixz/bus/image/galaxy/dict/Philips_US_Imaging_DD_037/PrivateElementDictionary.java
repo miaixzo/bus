@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.Philips_US_Imaging_DD_037;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,25 +46,26 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag._200D_xx06_:
-                return VR.FD;
-            case PrivateTag._200D_xx02_:
-            case PrivateTag._200D_xx03_:
-            case PrivateTag._200D_xx04_:
-            case PrivateTag._200D_xx08_:
-            case PrivateTag._200D_xx0A_:
-            case PrivateTag._200D_xx0C_:
-            case PrivateTag._200D_xx0D_:
-            case PrivateTag._200D_xx0E_:
-            case PrivateTag._200D_xx0F_:
-                return VR.IS;
-            case PrivateTag._200D_xx0B_:
-                return VR.LO;
+
+        case PrivateTag._200D_xx06_:
+            return VR.FD;
+        case PrivateTag._200D_xx02_:
+        case PrivateTag._200D_xx03_:
+        case PrivateTag._200D_xx04_:
+        case PrivateTag._200D_xx08_:
+        case PrivateTag._200D_xx0A_:
+        case PrivateTag._200D_xx0C_:
+        case PrivateTag._200D_xx0D_:
+        case PrivateTag._200D_xx0E_:
+        case PrivateTag._200D_xx0F_:
+            return VR.IS;
+        case PrivateTag._200D_xx0B_:
+            return VR.LO;
         }
         return VR.UN;
     }

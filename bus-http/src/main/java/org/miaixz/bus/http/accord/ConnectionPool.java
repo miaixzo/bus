@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.accord;
 
 import org.miaixz.bus.http.Address;
@@ -32,9 +32,7 @@ import org.miaixz.bus.http.Address;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 管理HTTP和HTTP/2连接的重用，以减少网络延迟。 共享相同的
- * {@link Address}的HTTP请求可能共享一个{@link Connection}
- * 该类实现了哪些连接保持开放以供将来使用的策略
+ * 管理HTTP和HTTP/2连接的重用，以减少网络延迟。 共享相同的 {@link Address}的HTTP请求可能共享一个{@link Connection} 该类实现了哪些连接保持开放以供将来使用的策略
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,9 +42,7 @@ public class ConnectionPool {
     public final RealConnectionPool delegate;
 
     /**
-     * 使用适合于单用户应用程序的调优参数创建新的连接池。
-     * 这个池中的调优参数可能在将来的Httpd版本中更改。
-     * 目前这个池最多可以容纳5个空闲连接，这些连接将在5分钟不活动后被清除
+     * 使用适合于单用户应用程序的调优参数创建新的连接池。 这个池中的调优参数可能在将来的Httpd版本中更改。 目前这个池最多可以容纳5个空闲连接，这些连接将在5分钟不活动后被清除
      */
     public ConnectionPool() {
         this(5, 5, TimeUnit.MINUTES);
@@ -66,8 +62,7 @@ public class ConnectionPool {
     }
 
     /**
-     * 返回池中的连接总数。注意，在Httpd 2.7之前，这只包括空闲连接 和HTTP/2连接
-     * 因为Httpd 2.7包含了所有的连接，包括活动的和非活动的。
+     * 返回池中的连接总数。注意，在Httpd 2.7之前，这只包括空闲连接 和HTTP/2连接 因为Httpd 2.7包含了所有的连接，包括活动的和非活动的。
      * 使用{@link #idleConnectionCount()}来计数当前未使用的连接
      *
      * @return 连接总数

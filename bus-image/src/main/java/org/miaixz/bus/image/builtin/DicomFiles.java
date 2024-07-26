@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.builtin;
 
 import org.miaixz.bus.core.xyz.IoKit;
@@ -97,8 +97,7 @@ public abstract class DicomFiles {
                 Attributes fmi = in.readFileMetaInformation();
                 long dsPos = in.getPosition();
                 Attributes ds = in.readDataset(-1, Tag.PixelData);
-                if (fmi == null
-                        || !fmi.containsValue(Tag.TransferSyntaxUID)
+                if (fmi == null || !fmi.containsValue(Tag.TransferSyntaxUID)
                         || !fmi.containsValue(Tag.MediaStorageSOPClassUID)
                         || !fmi.containsValue(Tag.MediaStorageSOPInstanceUID)) {
                     fmi = ds.createFileMetaInformation(in.getTransferSyntax());

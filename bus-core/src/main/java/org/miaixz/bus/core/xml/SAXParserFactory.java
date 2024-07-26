@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xml;
 
 /**
@@ -43,8 +43,8 @@ public class SAXParserFactory {
     /**
      * 获取全局{@link javax.xml.parsers.SAXParserFactory}
      * <ul>
-     *     <li>默认不验证</li>
-     *     <li>默认打开命名空间支持</li>
+     * <li>默认不验证</li>
+     * <li>默认打开命名空间支持</li>
      * </ul>
      *
      * @return {@link javax.xml.parsers.SAXParserFactory}
@@ -68,7 +68,8 @@ public class SAXParserFactory {
      * @param namespaceAware 是否打开命名空间支持
      * @return {@link javax.xml.parsers.SAXParserFactory}
      */
-    public static javax.xml.parsers.SAXParserFactory createFactory(final boolean validating, final boolean namespaceAware) {
+    public static javax.xml.parsers.SAXParserFactory createFactory(final boolean validating,
+            final boolean namespaceAware) {
         final javax.xml.parsers.SAXParserFactory factory = javax.xml.parsers.SAXParserFactory.newInstance();
         factory.setValidating(validating);
         factory.setNamespaceAware(namespaceAware);

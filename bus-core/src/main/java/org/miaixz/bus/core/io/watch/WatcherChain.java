@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.watch;
 
 import org.miaixz.bus.core.lang.Chain;
@@ -36,8 +36,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * 观察者链
- * 用于加入多个观察者
+ * 观察者链 用于加入多个观察者
  *
  * @author Kimi Liu
  * @since Java 17+

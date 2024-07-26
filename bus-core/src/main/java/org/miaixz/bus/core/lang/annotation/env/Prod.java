@@ -24,21 +24,20 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.annotation.env;
 
 import java.lang.annotation.*;
 
 /**
- * 生产环境
- * 表示当前方法性能安全性各方面达标,可以用于生产环境
+ * 生产环境 表示当前方法性能安全性各方面达标,可以用于生产环境
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Inherited
 @Documented
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ ElementType.TYPE, ElementType.METHOD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Prod {
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.cache.provider.*;
@@ -86,7 +86,6 @@ public class CacheKit {
     public static <K, V> LFUCache<K, V> newLFUCache(final int capacity) {
         return new LFUCache<>(capacity);
     }
-
 
     /**
      * 创建LRU (least recently used)最近最久未使用缓存.

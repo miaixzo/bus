@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 /**
@@ -58,8 +58,7 @@ public enum ColorSubsampling {
         public int indexOfY(int x, int y, int w) {
             int withoutBR = y / 2;
             int withBR = y - withoutBR;
-            return w * (withBR * 2 + withoutBR)
-                    + ((y % 2 == 0) ? (x * 2 - (x % 2)) : x);
+            return w * (withBR * 2 + withoutBR) + ((y % 2 == 0) ? (x * 2 - (x % 2)) : x);
         }
 
         @Override

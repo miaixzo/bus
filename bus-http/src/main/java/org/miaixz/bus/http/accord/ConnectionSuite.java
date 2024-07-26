@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.accord;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -37,11 +37,9 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * 指定HTTP传输通过的套接字连接的配置。对于{@code https:} url，这包括在协商安全连接时要使用
- * 的TLS版本和密码套件,只有在SSL套接字中也启用了连接规范中配置的TLS版本时，才会使用它们。例如，
+ * 指定HTTP传输通过的套接字连接的配置。对于{@code https:} url，这包括在协商安全连接时要使用 的TLS版本和密码套件,只有在SSL套接字中也启用了连接规范中配置的TLS版本时，才会使用它们。例如，
  * 如果SSL套接字没有启用TLS 1.3，即使它在连接规范中出现，也不会被使用。同样的策略也适用于密码套件
- * 使用{@link Builder#allEnabledTlsVersions()}和{@link Builder#allEnabledCipherSuites}
- * 将所有特性选择延迟到底层SSL套接字
+ * 使用{@link Builder#allEnabledTlsVersions()}和{@link Builder#allEnabledCipherSuites} 将所有特性选择延迟到底层SSL套接字
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -54,41 +52,30 @@ public class ConnectionSuite {
     public static final ConnectionSuite CLEARTEXT = new Builder(false).build();
 
     /**
-     * 等于Chrome 51支持的密码套件
-     * 所有这些套件都可以在Android 7.0上使用
+     * 等于Chrome 51支持的密码套件 所有这些套件都可以在Android 7.0上使用
      */
-    private static final CipherSuite[] APPROVED_CIPHER_SUITES = new CipherSuite[]{
+    private static final CipherSuite[] APPROVED_CIPHER_SUITES = new CipherSuite[] {
             // TLSv1.3
-            CipherSuite.TLS_AES_128_GCM_SHA256,
-            CipherSuite.TLS_AES_256_GCM_SHA384,
+            CipherSuite.TLS_AES_128_GCM_SHA256, CipherSuite.TLS_AES_256_GCM_SHA384,
             CipherSuite.TLS_CHACHA20_POLY1305_SHA256,
 
             // TLSv1.0, TLSv1.1, TLSv1.2
-            CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,
-            CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
-            CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,
-            CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
+            CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256, CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,
+            CipherSuite.TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384, CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,
             CipherSuite.TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256,
             CipherSuite.TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305_SHA256,
 
             // 请注意，以下密码套件都在HTTP/2的“坏密码套件”列表中。我们将继续包括他们，
             // 直到更好的套房是普遍可用的。例如，上面列出的更好的密码套件都没有随Android 4.4或Java 7一起发布
-            CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,
-            CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
-            CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256,
-            CipherSuite.TLS_RSA_WITH_AES_256_GCM_SHA384,
-            CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA,
-            CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA,
-            CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA,
-    };
+            CipherSuite.TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA, CipherSuite.TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA,
+            CipherSuite.TLS_RSA_WITH_AES_128_GCM_SHA256, CipherSuite.TLS_RSA_WITH_AES_256_GCM_SHA384,
+            CipherSuite.TLS_RSA_WITH_AES_128_CBC_SHA, CipherSuite.TLS_RSA_WITH_AES_256_CBC_SHA,
+            CipherSuite.TLS_RSA_WITH_3DES_EDE_CBC_SHA, };
     /**
      * 一个TLS连接与扩展，如SNI和ALPN可用
      */
-    public static final ConnectionSuite MODERN_TLS = new Builder(true)
-            .cipherSuites(APPROVED_CIPHER_SUITES)
-            .tlsVersions(TlsVersion.TLSv1_3, TlsVersion.TLSv1_2)
-            .supportsTlsExtensions(true)
-            .build();
+    public static final ConnectionSuite MODERN_TLS = new Builder(true).cipherSuites(APPROVED_CIPHER_SUITES)
+            .tlsVersions(TlsVersion.TLSv1_3, TlsVersion.TLSv1_2).supportsTlsExtensions(true).build();
 
     final boolean tls;
     final boolean supportsTlsExtensions;
@@ -150,31 +137,29 @@ public class ConnectionSuite {
      */
     private ConnectionSuite supportedSuite(SSLSocket sslSocket, boolean isFallback) {
         String[] cipherSuitesIntersection = null != cipherSuites
-                ? org.miaixz.bus.http.Builder.intersect(CipherSuite.ORDER_BY_NAME, sslSocket.getEnabledCipherSuites(), cipherSuites)
+                ? org.miaixz.bus.http.Builder.intersect(CipherSuite.ORDER_BY_NAME, sslSocket.getEnabledCipherSuites(),
+                        cipherSuites)
                 : sslSocket.getEnabledCipherSuites();
         String[] tlsVersionsIntersection = null != tlsVersions
-                ? org.miaixz.bus.http.Builder.intersect(org.miaixz.bus.http.Builder.NATURAL_ORDER, sslSocket.getEnabledProtocols(), tlsVersions)
+                ? org.miaixz.bus.http.Builder.intersect(org.miaixz.bus.http.Builder.NATURAL_ORDER,
+                        sslSocket.getEnabledProtocols(), tlsVersions)
                 : sslSocket.getEnabledProtocols();
 
         String[] supportedCipherSuites = sslSocket.getSupportedCipherSuites();
-        int indexOfFallbackScsv = org.miaixz.bus.http.Builder.indexOf(
-                CipherSuite.ORDER_BY_NAME, supportedCipherSuites, "TLS_FALLBACK_SCSV");
+        int indexOfFallbackScsv = org.miaixz.bus.http.Builder.indexOf(CipherSuite.ORDER_BY_NAME, supportedCipherSuites,
+                "TLS_FALLBACK_SCSV");
         if (isFallback && indexOfFallbackScsv != -1) {
-            cipherSuitesIntersection = org.miaixz.bus.http.Builder.concat(
-                    cipherSuitesIntersection, supportedCipherSuites[indexOfFallbackScsv]);
+            cipherSuitesIntersection = org.miaixz.bus.http.Builder.concat(cipherSuitesIntersection,
+                    supportedCipherSuites[indexOfFallbackScsv]);
         }
 
-        return new Builder(this)
-                .cipherSuites(cipherSuitesIntersection)
-                .tlsVersions(tlsVersionsIntersection)
-                .build();
+        return new Builder(this).cipherSuites(cipherSuitesIntersection).tlsVersions(tlsVersionsIntersection).build();
     }
 
     /**
-     * 如果当前配置的套接字支持此连接规范，则返回{@code true} 为了使套接字兼容，启用的密码套件和协议必须相交
-     * 对于密码套件，{@link #cipherSuites() required cipher suites}中至少有一个必须与套接字启用的密码
-     * 套件匹配。如果不需要密码套件，则套接字必须至少启用一个密码套件
-     * 对于协议，{@link #tlsVersions() required protocols}中至少有一个必须与套接字启用的协议匹配
+     * 如果当前配置的套接字支持此连接规范，则返回{@code true} 为了使套接字兼容，启用的密码套件和协议必须相交 对于密码套件，{@link #cipherSuites() required cipher
+     * suites}中至少有一个必须与套接字启用的密码 套件匹配。如果不需要密码套件，则套接字必须至少启用一个密码套件 对于协议，{@link #tlsVersions() required
+     * protocols}中至少有一个必须与套接字启用的协议匹配
      *
      * @param socket 安全套接字
      * @return the true/false
@@ -184,13 +169,14 @@ public class ConnectionSuite {
             return false;
         }
 
-        if (null != tlsVersions && !org.miaixz.bus.http.Builder.nonEmptyIntersection(
-                org.miaixz.bus.http.Builder.NATURAL_ORDER, tlsVersions, socket.getEnabledProtocols())) {
+        if (null != tlsVersions
+                && !org.miaixz.bus.http.Builder.nonEmptyIntersection(org.miaixz.bus.http.Builder.NATURAL_ORDER,
+                        tlsVersions, socket.getEnabledProtocols())) {
             return false;
         }
 
-        if (null != cipherSuites && !org.miaixz.bus.http.Builder.nonEmptyIntersection(
-                CipherSuite.ORDER_BY_NAME, cipherSuites, socket.getEnabledCipherSuites())) {
+        if (null != cipherSuites && !org.miaixz.bus.http.Builder.nonEmptyIntersection(CipherSuite.ORDER_BY_NAME,
+                cipherSuites, socket.getEnabledCipherSuites())) {
             return false;
         }
 
@@ -199,16 +185,22 @@ public class ConnectionSuite {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof ConnectionSuite)) return false;
-        if (other == this) return true;
+        if (!(other instanceof ConnectionSuite))
+            return false;
+        if (other == this)
+            return true;
 
         ConnectionSuite that = (ConnectionSuite) other;
-        if (this.tls != that.tls) return false;
+        if (this.tls != that.tls)
+            return false;
 
         if (tls) {
-            if (!Arrays.equals(this.cipherSuites, that.cipherSuites)) return false;
-            if (!Arrays.equals(this.tlsVersions, that.tlsVersions)) return false;
-            if (this.supportsTlsExtensions != that.supportsTlsExtensions) return false;
+            if (!Arrays.equals(this.cipherSuites, that.cipherSuites))
+                return false;
+            if (!Arrays.equals(this.tlsVersions, that.tlsVersions))
+                return false;
+            if (this.supportsTlsExtensions != that.supportsTlsExtensions)
+                return false;
         }
 
         return true;
@@ -231,11 +223,9 @@ public class ConnectionSuite {
             return "ConnectionSuite()";
         }
 
-        return "ConnectionSuite("
-                + "cipherSuites=" + Objects.toString(cipherSuites(), "[all enabled]")
-                + ", tlsVersions=" + Objects.toString(tlsVersions(), "[all enabled]")
-                + ", supportsTlsExtensions=" + supportsTlsExtensions
-                + Symbol.PARENTHESE_RIGHT;
+        return "ConnectionSuite(" + "cipherSuites=" + Objects.toString(cipherSuites(), "[all enabled]")
+                + ", tlsVersions=" + Objects.toString(tlsVersions(), "[all enabled]") + ", supportsTlsExtensions="
+                + supportsTlsExtensions + Symbol.PARENTHESE_RIGHT;
     }
 
     public static class Builder {
@@ -257,13 +247,15 @@ public class ConnectionSuite {
         }
 
         public Builder allEnabledCipherSuites() {
-            if (!tls) throw new IllegalStateException("no cipher suites for cleartext connections");
+            if (!tls)
+                throw new IllegalStateException("no cipher suites for cleartext connections");
             this.cipherSuites = null;
             return this;
         }
 
         public Builder cipherSuites(CipherSuite... cipherSuites) {
-            if (!tls) throw new IllegalStateException("no cipher suites for cleartext connections");
+            if (!tls)
+                throw new IllegalStateException("no cipher suites for cleartext connections");
 
             String[] strings = new String[cipherSuites.length];
             for (int i = 0; i < cipherSuites.length; i++) {
@@ -273,7 +265,8 @@ public class ConnectionSuite {
         }
 
         public Builder cipherSuites(String... cipherSuites) {
-            if (!tls) throw new IllegalStateException("no cipher suites for cleartext connections");
+            if (!tls)
+                throw new IllegalStateException("no cipher suites for cleartext connections");
 
             if (cipherSuites.length == 0) {
                 throw new IllegalArgumentException("At least one cipher suite is required");
@@ -284,13 +277,15 @@ public class ConnectionSuite {
         }
 
         public Builder allEnabledTlsVersions() {
-            if (!tls) throw new IllegalStateException("no TLS versions for cleartext connections");
+            if (!tls)
+                throw new IllegalStateException("no TLS versions for cleartext connections");
             this.tlsVersions = null;
             return this;
         }
 
         public Builder tlsVersions(TlsVersion... tlsVersions) {
-            if (!tls) throw new IllegalStateException("no TLS versions for cleartext connections");
+            if (!tls)
+                throw new IllegalStateException("no TLS versions for cleartext connections");
 
             String[] strings = new String[tlsVersions.length];
             for (int i = 0; i < tlsVersions.length; i++) {
@@ -301,7 +296,8 @@ public class ConnectionSuite {
         }
 
         public Builder tlsVersions(String... tlsVersions) {
-            if (!tls) throw new IllegalStateException("no TLS versions for cleartext connections");
+            if (!tls)
+                throw new IllegalStateException("no TLS versions for cleartext connections");
 
             if (tlsVersions.length == 0) {
                 throw new IllegalArgumentException("At least one TLS version is required");
@@ -312,7 +308,8 @@ public class ConnectionSuite {
         }
 
         public Builder supportsTlsExtensions(boolean supportsTlsExtensions) {
-            if (!tls) throw new IllegalStateException("no TLS extensions for cleartext connections");
+            if (!tls)
+                throw new IllegalStateException("no TLS extensions for cleartext connections");
             this.supportsTlsExtensions = supportsTlsExtensions;
             return this;
         }

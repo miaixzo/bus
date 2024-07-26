@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.screw.mapping;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -41,7 +41,7 @@ import java.lang.annotation.Target;
  * @since Java 17+
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target(value = {ElementType.FIELD})
+@Target(value = { ElementType.FIELD })
 public @interface MappingListField {
 
     /**

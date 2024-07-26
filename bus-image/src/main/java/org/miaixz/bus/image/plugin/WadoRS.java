@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.xyz.IoKit;
@@ -89,9 +89,7 @@ public class WadoRS {
     }
 
     private static void write(InputStream in, String fileName) throws IOException {
-        Path path = outDir != null
-                ? Files.createDirectories(Paths.get(outDir)).resolve(fileName)
-                : Paths.get(fileName);
+        Path path = outDir != null ? Files.createDirectories(Paths.get(outDir)).resolve(fileName) : Paths.get(fileName);
         try (OutputStream out = Files.newOutputStream(path)) {
             IoKit.copy(in, out);
         }
@@ -148,7 +146,7 @@ public class WadoRS {
     }
 
     TrustManager[] trustManagers() {
-        return new TrustManager[]{new X509TrustManager() {
+        return new TrustManager[] { new X509TrustManager() {
             public X509Certificate[] getAcceptedIssuers() {
                 return null;
             }
@@ -158,23 +156,19 @@ public class WadoRS {
 
             public void checkServerTrusted(X509Certificate[] certs, String authType) {
             }
-        }
-        };
+        } };
     }
 
     private String appendAcceptToURL(String url) {
-        return url
-                + (url.indexOf('?') != -1 ? "&" : "?")
-                + "accept="
-                + accept;
+        return url + (url.indexOf('?') != -1 ? "&" : "?") + "accept=" + accept;
     }
 
     private String uidFrom(String url) {
         return url.contains("metadata")
                 ? url.substring(url.substring(0, url.lastIndexOf('/')).lastIndexOf('/') + 1, url.lastIndexOf('/'))
                 : url.contains("?")
-                ? url.substring(url.substring(0, url.indexOf('?')).lastIndexOf('/') + 1, url.indexOf('?'))
-                : url.substring(url.lastIndexOf('/') + 1);
+                        ? url.substring(url.substring(0, url.indexOf('?')).lastIndexOf('/') + 1, url.indexOf('?'))
+                        : url.substring(url.lastIndexOf('/') + 1);
     }
 
     private void logOutgoing(URL url, Map<String, List<String>> headerFields) {
@@ -225,7 +219,8 @@ public class WadoRS {
                 public void bodyPart(int partNumber, MultipartInputStream multipartInputStream) throws IOException {
                     Map<String, List<String>> headerParams = multipartInputStream.readHeaderParams();
                     try {
-                        String fileName = fileName(partNumber, uid, partExtension(headerParams.get("content-type").get(0)));
+                        String fileName = fileName(partNumber, uid,
+                                partExtension(headerParams.get("content-type").get(0)));
                         Logger.info("Extract Part #{} {} \n{}", partNumber, fileName, headerParams);
                         write(multipartInputStream, fileName);
                     } catch (Exception e) {
@@ -253,9 +248,7 @@ public class WadoRS {
         String[] respContentTypeParams = contentType.split(";");
         for (String respContentTypeParam : respContentTypeParams)
             if (respContentTypeParam.replace(" ", "").startsWith("boundary="))
-                return respContentTypeParam
-                        .substring(respContentTypeParam.indexOf("=") + 1)
-                        .replaceAll("\"", "");
+                return respContentTypeParam.substring(respContentTypeParam.indexOf("=") + 1).replaceAll("\"", "");
 
         return null;
     }

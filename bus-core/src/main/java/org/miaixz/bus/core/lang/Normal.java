@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang;
 
 import org.miaixz.bus.core.io.file.FileType;
@@ -41,10 +41,7 @@ import java.util.Date;
 public class Normal {
 
     /**
-     * The number 1024
-     * 1.二进制计数的基本计量单位
-     * 2.广大程序员的共同节日
-     * 3.由于特殊性置顶
+     * The number 1024 1.二进制计数的基本计量单位 2.广大程序员的共同节日 3.由于特殊性置顶
      */
     public static final int _1024 = 2 << 10;
 
@@ -624,12 +621,11 @@ public class Normal {
     /**
      * 简体中文运算符
      */
-    public static final char[] OPERATOR_ZH = {
-            '加', '减', '乘', '除'
-    };
+    public static final char[] OPERATOR_ZH = { '加', '减', '乘', '除' };
 
     /**
      * 字节计量单位
+     * 
      * <pre>
      *     byte        1B     1
      *     kilobyte    1KB    1,024
@@ -638,16 +634,12 @@ public class Normal {
      *     terabyte    1TB    1,099,511,627,776
      * </pre>
      */
-    public static final String[] CAPACITY_NAMES = new String[]{
-            "B", "KB", "MB", "GB", "TB", "PB", "EB"
-    };
+    public static final String[] CAPACITY_NAMES = new String[] { "B", "KB", "MB", "GB", "TB", "PB", "EB" };
 
     /**
      * 七色
      */
-    public static final String[] COLOR = {
-            "白", "黒", "碧", "绿", "黄", "白", "赤", "白", "紫"
-    };
+    public static final String[] COLOR = { "白", "黒", "碧", "绿", "黄", "白", "赤", "白", "紫" };
 
     /**
      * 缺省的币种代码，为CNY（人民币）。
@@ -657,124 +649,88 @@ public class Normal {
     /**
      * 简体中文单位
      */
-    public static final String[] SIMPLE_UNITS = {
-            "", "十", "百", "千"
-    };
+    public static final String[] SIMPLE_UNITS = { "", "十", "百", "千" };
 
     /**
      * 繁体中文单位
      */
-    public static final String[] TRADITIONAL_UNITS = {
-            "", "拾", "佰", "仟"
-    };
+    public static final String[] TRADITIONAL_UNITS = { "", "拾", "佰", "仟" };
 
     /**
      * 简体中文形式
      */
-    public static final String[] SIMPLE_DIGITS = {
-            "零", "一", "二", "三", "四", "五", "六", "七", "八", "九"
-    };
+    public static final String[] SIMPLE_DIGITS = { "零", "一", "二", "三", "四", "五", "六", "七", "八", "九" };
 
     /**
      * 繁体中文形式
      */
-    public static final String[] TRADITIONAL_DIGITS = {
-            "零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖"
-    };
+    public static final String[] TRADITIONAL_DIGITS = { "零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖" };
 
     /**
      * 英文数字1-9
      */
-    public static final String[] EN_NUMBER = new String[]{
-            "", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN",
-            "EIGHT", "NINE"
-    };
+    public static final String[] EN_NUMBER = new String[] { "", "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN",
+            "EIGHT", "NINE" };
 
     /**
      * 英文数字10-19
      */
-    public static final String[] EN_NUMBER_TEEN = new String[]{
-            "TEN", "ELEVEN", "TWELVE", "THIRTEEN", "FOURTEEN",
-            "FIFTEEN", "SIXTEEN", "SEVENTEEN", "EIGHTEEN", "NINETEEN"
-    };
+    public static final String[] EN_NUMBER_TEEN = new String[] { "TEN", "ELEVEN", "TWELVE", "THIRTEEN", "FOURTEEN",
+            "FIFTEEN", "SIXTEEN", "SEVENTEEN", "EIGHTEEN", "NINETEEN" };
 
     /**
      * 英文数字10-90
      */
-    public static final String[] EN_NUMBER_TEN = new String[]{
-            "TEN", "TWENTY", "THIRTY", "FORTY", "FIFTY", "SIXTY",
-            "SEVENTY", "EIGHTY", "NINETY"
-    };
+    public static final String[] EN_NUMBER_TEN = new String[] { "TEN", "TWENTY", "THIRTY", "FORTY", "FIFTY", "SIXTY",
+            "SEVENTY", "EIGHTY", "NINETY" };
 
     /**
      * 英文数字千-亿
      */
-    public static final String[] EN_NUMBER_MORE = new String[]{
-            "", "THOUSAND", "MILLION", "BILLION", "TRILLION"
-    };
+    public static final String[] EN_NUMBER_MORE = new String[] { "", "THOUSAND", "MILLION", "BILLION", "TRILLION" };
 
     /**
      * 表示为真的字符串
      */
-    public static final String[] TRUE_ARRAY = {
-            "true", "t", "yes", "y", "ok", "1", "on", "是", "真", "正确",
-            "对", "對", "√"
-    };
+    public static final String[] TRUE_ARRAY = { "true", "t", "yes", "y", "ok", "1", "on", "是", "真", "正确", "对", "對",
+            "√" };
 
     /**
      * 表示为假的字符串
      */
-    public static final String[] FALSE_ARRAY = {
-            "false", "no", "n", "f", "0", "off", "否", "错", "錯", "假",
-            "×"
-    };
+    public static final String[] FALSE_ARRAY = { "false", "no", "n", "f", "0", "off", "否", "错", "錯", "假", "×" };
 
     /**
      * 用于建立十六进制字符的输出的小写字符数组
      */
-    public static final char[] DIGITS_16_LOWER = {
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b',
-            'c', 'd', 'e', 'f'
-    };
+    public static final char[] DIGITS_16_LOWER = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd',
+            'e', 'f' };
 
     /**
      * 用于建立十六进制字符的输出的大写字符数组
      */
-    public static final char[] DIGITS_16_UPPER = {
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B',
-            'C', 'D', 'E', 'F'
-    };
+    public static final char[] DIGITS_16_UPPER = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D',
+            'E', 'F' };
 
     /**
      * base64编码表
      */
-    public static final byte[] ENCODE_64_TABLE = {
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
-            'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X',
-            'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
-            'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v',
-            'w', 'x', 'y', 'z', '0', '1', '2', '3', '4', '5', '6', '7',
-            '8', '9', '+', '/'
-    };
+    public static final byte[] ENCODE_64_TABLE = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N',
+            'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i',
+            'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3',
+            '4', '5', '6', '7', '8', '9', '+', '/' };
 
     /**
      * base64解码表
      */
-    public static final byte[] DECODE_64_TABLE = {
-            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1,
-            62, -1, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1,
-            -1, -2, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11,
-            12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1,
-            -1, -1, -1, 63, -1, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
-            36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50,
-            51
-    };
+    public static final byte[] DECODE_64_TABLE = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62,
+            -1, 62, -1, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -2, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7,
+            8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, 63, -1, 26, 27, 28,
+            29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51 };
 
     /**
-     * 提供的URL是否为文件
-     * 文件协议包括"file", "vfsfile" 或 "vfs".
+     * 提供的URL是否为文件 文件协议包括"file", "vfsfile" 或 "vfs".
      *
      * @param url {@link URL}
      * @return 是否为文件
@@ -785,8 +741,7 @@ public class Normal {
     }
 
     /**
-     * 提供的URL是否为文件
-     * 文件协议包括"file".
+     * 提供的URL是否为文件 文件协议包括"file".
      *
      * @param url {@link URL}
      * @return 是否为文件
@@ -798,8 +753,7 @@ public class Normal {
     }
 
     /**
-     * 提供的URL是否为文件
-     * 文件协议包括"vfsfile" 或 "vfs".
+     * 提供的URL是否为文件 文件协议包括"vfsfile" 或 "vfs".
      *
      * @param url {@link URL}
      * @return 是否为文件
@@ -807,8 +761,7 @@ public class Normal {
     public static boolean isVfsURL(final URL url) {
         Assert.notNull(url, "URL must be not null");
         final String protocol = url.getProtocol();
-        return (URL_PROTOCOL_VFSFILE.equals(protocol) ||
-                URL_PROTOCOL_VFS.equals(protocol));
+        return (URL_PROTOCOL_VFSFILE.equals(protocol) || URL_PROTOCOL_VFS.equals(protocol));
     }
 
     /**
@@ -820,10 +773,8 @@ public class Normal {
     public static boolean isJarURL(final URL url) {
         Assert.notNull(url, "URL must be not null");
         final String protocol = url.getProtocol();
-        return (URL_PROTOCOL_JAR.equals(protocol) ||
-                URL_PROTOCOL_ZIP.equals(protocol) ||
-                URL_PROTOCOL_VFSZIP.equals(protocol) ||
-                URL_PROTOCOL_WSJAR.equals(protocol));
+        return (URL_PROTOCOL_JAR.equals(protocol) || URL_PROTOCOL_ZIP.equals(protocol)
+                || URL_PROTOCOL_VFSZIP.equals(protocol) || URL_PROTOCOL_WSJAR.equals(protocol));
     }
 
     /**
@@ -834,8 +785,7 @@ public class Normal {
      */
     public static boolean isJarFileURL(final URL url) {
         Assert.notNull(url, "URL must be not null");
-        return (URL_PROTOCOL_FILE.equals(url.getProtocol()) &&
-                url.getPath().toLowerCase().endsWith(FileType.JAR));
+        return (URL_PROTOCOL_FILE.equals(url.getProtocol()) && url.getPath().toLowerCase().endsWith(FileType.JAR));
     }
 
 }

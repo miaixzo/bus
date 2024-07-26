@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.mi;
 
 import com.alibaba.fastjson.JSONObject;
@@ -78,16 +78,13 @@ public class MiProvider extends AbstractProvider {
             throw new AuthorizedException(accessTokenObject.getString("error_description"));
         }
 
-        return AccToken.builder()
-                .accessToken(accessTokenObject.getString("access_token"))
-                .expireIn(accessTokenObject.getIntValue("expires_in"))
-                .scope(accessTokenObject.getString("scope"))
+        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
+                .expireIn(accessTokenObject.getIntValue("expires_in")).scope(accessTokenObject.getString("scope"))
                 .tokenType(accessTokenObject.getString("token_type"))
                 .refreshToken(accessTokenObject.getString("refresh_token"))
                 .openId(accessTokenObject.getString("openId"))
                 .macAlgorithm(accessTokenObject.getString("mac_algorithm"))
-                .macKey(accessTokenObject.getString("mac_key"))
-                .build();
+                .macKey(accessTokenObject.getString("mac_key")).build();
     }
 
     @Override
@@ -102,21 +99,14 @@ public class MiProvider extends AbstractProvider {
 
         JSONObject object = userProfile.getJSONObject("data");
 
-        Material authUser = Material.builder()
-                .rawJson(object)
-                .uuid(accToken.getOpenId())
-                .username(object.getString("miliaoNick"))
-                .nickname(object.getString("miliaoNick"))
-                .avatar(object.getString("miliaoIcon"))
-                .email(object.getString("mail"))
-                .gender(Gender.UNKNOWN)
-                .token(accToken)
-                .source(complex.toString())
-                .build();
+        Material authUser = Material.builder().rawJson(object).uuid(accToken.getOpenId())
+                .username(object.getString("miliaoNick")).nickname(object.getString("miliaoNick"))
+                .avatar(object.getString("miliaoIcon")).email(object.getString("mail")).gender(Gender.UNKNOWN)
+                .token(accToken).source(complex.toString()).build();
 
         // 获取用户邮箱手机号等信息
-        String emailPhoneUrl = MessageFormat.format("{0}?clientId={1}&token={2}", "https://open.account.xiaomi.com/user/phoneAndEmail", context
-                .getAppKey(), accToken.getAccessToken());
+        String emailPhoneUrl = MessageFormat.format("{0}?clientId={1}&token={2}",
+                "https://open.account.xiaomi.com/user/phoneAndEmail", context.getAppKey(), accToken.getAccessToken());
 
         String emailResponse = Httpx.get(emailPhoneUrl);
         JSONObject userEmailPhone = JSONObject.parseObject(emailResponse);
@@ -138,10 +128,8 @@ public class MiProvider extends AbstractProvider {
      */
     @Override
     public Message refresh(AccToken accToken) {
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .data(getToken(refreshTokenUrl(accToken.getRefreshToken())))
-                .build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode())
+                .data(getToken(refreshTokenUrl(accToken.getRefreshToken()))).build();
     }
 
     /**
@@ -152,8 +140,7 @@ public class MiProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(super.authorize(state))
-                .queryParam("skip_confirm", "false")
+        return Builder.fromUrl(super.authorize(state)).queryParam("skip_confirm", "false")
                 .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(MiScope.values())))
                 .build();
     }
@@ -166,10 +153,8 @@ public class MiProvider extends AbstractProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(complex.userInfo())
-                .queryParam("clientId", context.getAppKey())
-                .queryParam("token", accToken.getAccessToken())
-                .build();
+        return Builder.fromUrl(complex.userInfo()).queryParam("clientId", context.getAppKey())
+                .queryParam("token", accToken.getAccessToken()).build();
     }
 
 }

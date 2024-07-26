@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.codec;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -64,13 +64,10 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
     /**
      * 默认编解码字符串
      */
-    public static final char[] DEFAULT_ALPHABET = {
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-            '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'
-    };
+    public static final char[] DEFAULT_ALPHABET = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H',
+            'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3',
+            '4', '5', '6', '7', '8', '9', '0' };
     private static final int LOTTERY_MOD = 100;
     private static final double GUARD_THRESHOLD = 12;
     private static final double SEPARATOR_THRESHOLD = 3.5;
@@ -82,9 +79,8 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
     /**
      * 默认分隔符
      */
-    private static final char[] DEFAULT_SEPARATORS = {
-            'c', 'f', 'h', 'i', 's', 't', 'u', 'C', 'F', 'H', 'I', 'S', 'T', 'U'
-    };
+    private static final char[] DEFAULT_SEPARATORS = { 'c', 'f', 'h', 'i', 's', 't', 'u', 'C', 'F', 'H', 'I', 'S', 'T',
+            'U' };
 
     // algorithm properties
     private final char[] alphabet;
@@ -121,18 +117,17 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
         char[] tmpAlphabet = validateAndFilterAlphabet(alphabet, tmpSeparators);
 
         // check separator threshold
-        if (tmpSeparators.length == 0 ||
-                ((double) (tmpAlphabet.length / tmpSeparators.length)) > SEPARATOR_THRESHOLD) {
+        if (tmpSeparators.length == 0 || ((double) (tmpAlphabet.length / tmpSeparators.length)) > SEPARATOR_THRESHOLD) {
             final int minSeparatorsSize = (int) Math.ceil(tmpAlphabet.length / SEPARATOR_THRESHOLD);
             // check minimum size of separators
             if (minSeparatorsSize > tmpSeparators.length) {
                 // fill separators from alphabet
                 final int missingSeparators = minSeparatorsSize - tmpSeparators.length;
                 tmpSeparators = Arrays.copyOf(tmpSeparators, tmpSeparators.length + missingSeparators);
-                System.arraycopy(tmpAlphabet, 0, tmpSeparators,
-                        tmpSeparators.length - missingSeparators, missingSeparators);
-                System.arraycopy(tmpAlphabet, 0, tmpSeparators,
-                        tmpSeparators.length - missingSeparators, missingSeparators);
+                System.arraycopy(tmpAlphabet, 0, tmpSeparators, tmpSeparators.length - missingSeparators,
+                        missingSeparators);
+                System.arraycopy(tmpAlphabet, 0, tmpSeparators, tmpSeparators.length - missingSeparators,
+                        missingSeparators);
                 tmpAlphabet = Arrays.copyOfRange(tmpAlphabet, missingSeparators, tmpAlphabet.length);
             }
         }
@@ -153,8 +148,7 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
         }
 
         // create the separators set
-        separatorsSet = IntStream.range(0, separators.length)
-                .mapToObj(idx -> separators[idx])
+        separatorsSet = IntStream.range(0, separators.length).mapToObj(idx -> separators[idx])
                 .collect(Collectors.toSet());
     }
 
@@ -204,8 +198,8 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
         }
 
         // remove the prefix, if present
-        final String hex = hexNumbers.startsWith("0x") || hexNumbers.startsWith("0X") ?
-                hexNumbers.substring(2) : hexNumbers;
+        final String hex = hexNumbers.startsWith("0x") || hexNumbers.startsWith("0X") ? hexNumbers.substring(2)
+                : hexNumbers;
 
         // get the associated long value and encode it
         LongStream values = LongStream.empty();
@@ -235,38 +229,36 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
         final char[] currentAlphabet = Arrays.copyOf(alphabet, alphabet.length);
 
         // determine the lottery number
-        final long lotteryId = LongStream.range(0, numbers.length)
-                .reduce(0, (state, i) -> {
-                    final long number = numbers[(int) i];
-                    if (number < 0) {
-                        throw new IllegalArgumentException("invalid number: " + number);
-                    }
-                    return state + number % (i + LOTTERY_MOD);
-                });
+        final long lotteryId = LongStream.range(0, numbers.length).reduce(0, (state, i) -> {
+            final long number = numbers[(int) i];
+            if (number < 0) {
+                throw new IllegalArgumentException("invalid number: " + number);
+            }
+            return state + number % (i + LOTTERY_MOD);
+        });
         final char lottery = currentAlphabet[(int) (lotteryId % currentAlphabet.length)];
 
         // encode each number
         final StringBuilder global = new StringBuilder();
-        IntStream.range(0, numbers.length)
-                .forEach(idx -> {
-                    // derive alphabet
-                    deriveNewAlphabet(currentAlphabet, salt, lottery);
+        IntStream.range(0, numbers.length).forEach(idx -> {
+            // derive alphabet
+            deriveNewAlphabet(currentAlphabet, salt, lottery);
 
-                    // encode
-                    final int initialLength = global.length();
-                    translate(numbers[idx], currentAlphabet, global, initialLength);
+            // encode
+            final int initialLength = global.length();
+            translate(numbers[idx], currentAlphabet, global, initialLength);
 
-                    // prepend the lottery
-                    if (idx == 0) {
-                        global.insert(0, lottery);
-                    }
+            // prepend the lottery
+            if (idx == 0) {
+                global.insert(0, lottery);
+            }
 
-                    // append the separator, if more numbers are pending encoding
-                    if (idx + 1 < numbers.length) {
-                        final long n = numbers[idx] % (global.charAt(initialLength) + 1);
-                        global.append(separators[(int) (n % separators.length)]);
-                    }
-                });
+            // append the separator, if more numbers are pending encoding
+            if (idx + 1 < numbers.length) {
+                final long n = numbers[idx] % (global.charAt(initialLength) + 1);
+                global.append(separators[(int) (n % separators.length)]);
+            }
+        });
 
         // add the guards, if there's any space left
         if (minLength > global.length()) {
@@ -323,9 +315,7 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
         }
 
         final StringBuilder sb = new StringBuilder();
-        Arrays.stream(decode(hash))
-                .mapToObj(Long::toHexString)
-                .forEach(hex -> sb.append(hex, 1, hex.length()));
+        Arrays.stream(decode(hash)).mapToObj(Long::toHexString).forEach(hex -> sb.append(hex, 1, hex.length()));
         return sb.toString();
     }
 
@@ -343,12 +333,10 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
         }
 
         // create a set of the guards
-        final Set<Character> guardsSet = IntStream.range(0, guards.length)
-                .mapToObj(idx -> guards[idx])
+        final Set<Character> guardsSet = IntStream.range(0, guards.length).mapToObj(idx -> guards[idx])
                 .collect(Collectors.toSet());
         // count the total guards used
-        final int[] guardsIdx = IntStream.range(0, hash.length())
-                .filter(idx -> guardsSet.contains(hash.charAt(idx)))
+        final int[] guardsIdx = IntStream.range(0, hash.length()).filter(idx -> guardsSet.contains(hash.charAt(idx)))
                 .toArray();
         // get the start/end index base on the guards count
         final int startIdx, endIdx;
@@ -391,8 +379,7 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
                 if (block.length() > 0) {
                     // create the salt
                     if (saltLeft > 0) {
-                        System.arraycopy(currentAlphabet, 0, decodeSalt,
-                                alphabet.length - saltLeft, saltLeft);
+                        System.arraycopy(currentAlphabet, 0, decodeSalt, alphabet.length - saltLeft, saltLeft);
                     }
 
                     // shuffle the alphabet
@@ -417,8 +404,7 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
         return decodedValue;
     }
 
-    private StringBuilder translate(final long n, final char[] alphabet,
-                                    final StringBuilder sb, final int start) {
+    private StringBuilder translate(final long n, final char[] alphabet, final StringBuilder sb, final int start) {
         long input = n;
         do {
             // prepend the chosen char
@@ -435,10 +421,9 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
         long number = 0;
 
         final Map<Character, Integer> alphabetMapping = IntStream.range(0, alphabet.length)
-                .mapToObj(idx -> new Object[]{alphabet[idx], idx})
-                .collect(Collectors.groupingBy(arr -> (Character) arr[0],
-                        Collectors.mapping(arr -> (Integer) arr[1],
-                                Collectors.reducing(null, (a, b) -> a == null ? b : a))));
+                .mapToObj(idx -> new Object[] { alphabet[idx], idx })
+                .collect(Collectors.groupingBy(arr -> (Character) arr[0], Collectors.mapping(arr -> (Integer) arr[1],
+                        Collectors.reducing(null, (a, b) -> a == null ? b : a))));
 
         for (int i = 0; i < hash.length; ++i) {
             number += alphabetMapping.computeIfAbsent(hash[i], k -> {
@@ -476,27 +461,25 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
     private char[] validateAndFilterAlphabet(final char[] alphabet, final char[] separators) {
         // validate size
         if (alphabet.length < MIN_ALPHABET_LENGTH) {
-            throw new IllegalArgumentException(String.format("alphabet must contain at least %d unique " +
-                    "characters: %d", MIN_ALPHABET_LENGTH, alphabet.length));
+            throw new IllegalArgumentException(
+                    String.format("alphabet must contain at least %d unique " + "characters: %d", MIN_ALPHABET_LENGTH,
+                            alphabet.length));
         }
 
         final Set<Character> seen = new LinkedHashSet<>(alphabet.length);
-        final Set<Character> invalid = IntStream.range(0, separators.length)
-                .mapToObj(idx -> separators[idx])
+        final Set<Character> invalid = IntStream.range(0, separators.length).mapToObj(idx -> separators[idx])
                 .collect(Collectors.toSet());
 
         // add to seen set (without duplicates)
-        IntStream.range(0, alphabet.length)
-                .forEach(i -> {
-                    if (alphabet[i] == Symbol.C_SPACE) {
-                        throw new IllegalArgumentException(String.format("alphabet must not contain spaces: " +
-                                "index %d", i));
-                    }
-                    final Character c = alphabet[i];
-                    if (!invalid.contains(c)) {
-                        seen.add(c);
-                    }
-                });
+        IntStream.range(0, alphabet.length).forEach(i -> {
+            if (alphabet[i] == Symbol.C_SPACE) {
+                throw new IllegalArgumentException(String.format("alphabet must not contain spaces: " + "index %d", i));
+            }
+            final Character c = alphabet[i];
+            if (!invalid.contains(c)) {
+                seen.add(c);
+            }
+        });
 
         // create a new alphabet without the duplicates
         final char[] uniqueAlphabet = new char[seen.size()];
@@ -508,17 +491,12 @@ public class Hashids implements Encoder<long[], String>, Decoder<String, long[]>
     }
 
     private char[] filterSeparators(final char[] separators, final char[] alphabet) {
-        final Set<Character> valid = IntStream.range(0, alphabet.length)
-                .mapToObj(idx -> alphabet[idx])
+        final Set<Character> valid = IntStream.range(0, alphabet.length).mapToObj(idx -> alphabet[idx])
                 .collect(Collectors.toSet());
 
-        return IntStream.range(0, separators.length)
-                .mapToObj(idx -> (separators[idx]))
-                .filter(valid::contains)
+        return IntStream.range(0, separators.length).mapToObj(idx -> (separators[idx])).filter(valid::contains)
                 // ugly way to convert back to char[]
-                .map(c -> Character.toString(c))
-                .collect(Collectors.joining())
-                .toCharArray();
+                .map(c -> Character.toString(c)).collect(Collectors.joining()).toCharArray();
     }
 
     private char[] shuffle(final char[] alphabet, final char[] salt) {

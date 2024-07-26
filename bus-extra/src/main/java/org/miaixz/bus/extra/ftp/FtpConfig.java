@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.ftp;
 
 import org.miaixz.bus.extra.ssh.Connector;
@@ -84,7 +84,8 @@ public class FtpConfig implements Serializable {
      * @param serverLanguageCode 服务器语言
      * @param systemKey          系统关键字
      */
-    public FtpConfig(final Connector connector, final Charset charset, final String serverLanguageCode, final String systemKey) {
+    public FtpConfig(final Connector connector, final Charset charset, final String serverLanguageCode,
+            final String systemKey) {
         this.connector = connector;
         this.charset = charset;
         this.serverLanguageCode = serverLanguageCode;
@@ -121,8 +122,7 @@ public class FtpConfig implements Serializable {
     }
 
     /**
-     * 设置超时，注意此方法会调用{@link Connector#setTimeout(long)}
-     * 此方法需在{@link #setConnector(Connector)}后调用，否则会创建空的Connector
+     * 设置超时，注意此方法会调用{@link Connector#setTimeout(long)} 此方法需在{@link #setConnector(Connector)}后调用，否则会创建空的Connector
      *
      * @param timeout 链接超时
      * @return this

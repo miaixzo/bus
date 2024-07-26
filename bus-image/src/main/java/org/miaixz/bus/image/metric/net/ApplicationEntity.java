@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.net;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -46,13 +46,11 @@ import java.security.GeneralSecurityException;
 import java.util.*;
 
 /**
- * DICOM Part 15, Annex H compliant description of a DICOM network service.
- * A Network AE is an application entity that provides services on a network. A
- * Network AE will have the 16 same functional capability regardless of the
- * particular network connection used. If there are functional differences based
- * on selected network connection, then these are separate Network AEs. If there
- * are 18 functional differences based on other internal structures, then these
- * are separate Network AEs.
+ * DICOM Part 15, Annex H compliant description of a DICOM network service. A Network AE is an application entity that
+ * provides services on a network. A Network AE will have the 16 same functional capability regardless of the particular
+ * network connection used. If there are functional differences based on selected network connection, then these are
+ * separate Network AEs. If there are 18 functional differences based on other internal structures, then these are
+ * separate Network AEs.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -109,12 +107,10 @@ public class ApplicationEntity implements Serializable {
     public void setDevice(Device device) {
         if (device != null) {
             if (this.device != null)
-                throw new IllegalStateException("already owned by " +
-                        this.device.getDeviceName());
+                throw new IllegalStateException("already owned by " + this.device.getDeviceName());
             for (Connection conn : conns)
                 if (conn.getDevice() != device)
-                    throw new IllegalStateException(conn + " not owned by " +
-                            device.getDeviceName());
+                    throw new IllegalStateException(conn + " not owned by " + device.getDeviceName());
         }
         this.device = device;
     }
@@ -224,13 +220,11 @@ public class ApplicationEntity implements Serializable {
     }
 
     public void setPreferredTransferSyntaxes(String... transferSyntaxes) {
-        this.prefTransferSyntaxes =
-                Builder.requireContainsNoEmpty(transferSyntaxes, "empty transferSyntax");
+        this.prefTransferSyntaxes = Builder.requireContainsNoEmpty(transferSyntaxes, "empty transferSyntax");
     }
 
     public String[] getAcceptedCallingAETitles() {
-        return acceptedCallingAETs.toArray(
-                new String[acceptedCallingAETs.size()]);
+        return acceptedCallingAETs.toArray(new String[acceptedCallingAETs.size()]);
     }
 
     public void setAcceptedCallingAETitles(String... aets) {
@@ -239,8 +233,7 @@ public class ApplicationEntity implements Serializable {
     }
 
     public boolean isAcceptedCallingAETitle(String aet) {
-        return acceptedCallingAETs.isEmpty()
-                || acceptedCallingAETs.contains(aet);
+        return acceptedCallingAETs.isEmpty() || acceptedCallingAETs.contains(aet);
     }
 
     public String[] getOtherAETitles() {
@@ -273,8 +266,7 @@ public class ApplicationEntity implements Serializable {
         String[] aets = new String[masqueradeCallingAETs.size()];
         int i = 0;
         for (Map.Entry<String, String> entry : masqueradeCallingAETs.entrySet()) {
-            aets[i] = entry.getKey().equals(Symbol.STAR)
-                    ? entry.getValue()
+            aets[i] = entry.getKey().equals(Symbol.STAR) ? entry.getValue()
                     : Symbol.C_BRACKET_LEFT + entry.getKey() + Symbol.C_BRACKET_RIGHT + entry.getValue();
             i++;
         }
@@ -309,10 +301,7 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 获取网络AE支持的字符集
-     * 接收的数据集,该值应从PS3.3中的“特定
-     * 字符集定义的条款(0008,0005)”中选择。如果没有值
-     * 则表示网络AE仅支持默认字符*曲目(ISO IR 6)
+     * 获取网络AE支持的字符集 接收的数据集,该值应从PS3.3中的“特定 字符集定义的条款(0008,0005)”中选择。如果没有值 则表示网络AE仅支持默认字符*曲目(ISO IR 6)
      *
      * @return 支持的字符集的String数组
      */
@@ -321,9 +310,7 @@ public class ApplicationEntity implements Serializable {
     }
 
     /**
-     * 设置网络AE支持的字符集接收的数据集
-     * 该值应从PS3.3中的特定字符集定义的条款(0008,0005)中选择，如果没有值
-     * 则表示网络AE仅支持默认字符*曲目(ISO IR 6)
+     * 设置网络AE支持的字符集接收的数据集 该值应从PS3.3中的特定字符集定义的条款(0008,0005)中选择，如果没有值 则表示网络AE仅支持默认字符*曲目(ISO IR 6)
      *
      * @param characterSets 支持的字符集的String数组
      */
@@ -373,8 +360,7 @@ public class ApplicationEntity implements Serializable {
      * @return 布尔值。如果AE安装在网络上，则为True,如果不存在*，则从设备继承有关AE安装状态的信息
      */
     public boolean isInstalled() {
-        return device != null && device.isInstalled()
-                && (installed == null || installed.booleanValue());
+        return device != null && device.isInstalled() && (installed == null || installed.booleanValue());
     }
 
     public final Boolean getInstalled() {
@@ -391,8 +377,7 @@ public class ApplicationEntity implements Serializable {
     }
 
     public boolean isRoleSelectionNegotiationLenient() {
-        return roleSelectionNegotiationLenient != null
-                ? roleSelectionNegotiationLenient.booleanValue()
+        return roleSelectionNegotiationLenient != null ? roleSelectionNegotiationLenient.booleanValue()
                 : device != null && device.isRoleSelectionNegotiationLenient();
     }
 
@@ -432,9 +417,7 @@ public class ApplicationEntity implements Serializable {
             return handler;
 
         Device device = this.device;
-        return device != null
-                ? device.getDimseRQHandler()
-                : null;
+        return device != null ? device.getDimseRQHandler() : null;
     }
 
     public final void setDimseRQHandler(DimseRQHandler dimseRQHandler) {
@@ -451,8 +434,8 @@ public class ApplicationEntity implements Serializable {
             throw new IllegalStateException("Not attached to Device");
     }
 
-    public void onDimseRQ(Association as, PresentationContext pc, Dimse cmd,
-                          Attributes cmdAttrs, PDVInputStream data) throws IOException {
+    public void onDimseRQ(Association as, PresentationContext pc, Dimse cmd, Attributes cmdAttrs, PDVInputStream data)
+            throws IOException {
         DimseRQHandler tmp = getDimseRQHandler();
         if (tmp == null) {
             Logger.error("DimseRQHandler not initalized");
@@ -463,13 +446,10 @@ public class ApplicationEntity implements Serializable {
 
     public void addConnection(Connection conn) {
         if (conn.getProtocol() != Connection.Protocol.DICOM)
-            throw new IllegalArgumentException(
-                    "protocol != DICOM - " + conn.getProtocol());
-
+            throw new IllegalArgumentException("protocol != DICOM - " + conn.getProtocol());
 
         if (device != null && device != conn.getDevice())
-            throw new IllegalStateException(conn + " not contained by Device: " +
-                    device.getDeviceName());
+            throw new IllegalStateException(conn + " not contained by Device: " + device.getDeviceName());
         conns.add(conn);
     }
 
@@ -483,70 +463,59 @@ public class ApplicationEntity implements Serializable {
 
     public TransferCapability addTransferCapability(TransferCapability tc) {
         tc.setApplicationEntity(this);
-        TransferCapability prev = (tc.getRole() == TransferCapability.Role.SCU
-                ? scuTCs : scpTCs).put(tc.getSopClass(), tc);
+        TransferCapability prev = (tc.getRole() == TransferCapability.Role.SCU ? scuTCs : scpTCs).put(tc.getSopClass(),
+                tc);
         if (prev != null && prev != tc)
             prev.setApplicationEntity(null);
         return prev;
     }
 
-    public TransferCapability removeTransferCapabilityFor(String sopClass,
-                                                          TransferCapability.Role role) {
-        TransferCapability tc = (role == TransferCapability.Role.SCU ? scuTCs : scpTCs)
-                .remove(sopClass);
+    public TransferCapability removeTransferCapabilityFor(String sopClass, TransferCapability.Role role) {
+        TransferCapability tc = (role == TransferCapability.Role.SCU ? scuTCs : scpTCs).remove(sopClass);
         if (tc != null)
             tc.setApplicationEntity(null);
         return tc;
     }
 
     public Collection<TransferCapability> getTransferCapabilities() {
-        ArrayList<TransferCapability> tcs =
-                new ArrayList<>(scuTCs.size() + scpTCs.size());
+        ArrayList<TransferCapability> tcs = new ArrayList<>(scuTCs.size() + scpTCs.size());
         tcs.addAll(scpTCs.values());
         tcs.addAll(scuTCs.values());
         return tcs;
     }
 
-    public Collection<TransferCapability> getTransferCapabilitiesWithRole(
-            TransferCapability.Role role) {
+    public Collection<TransferCapability> getTransferCapabilitiesWithRole(TransferCapability.Role role) {
         return (role == TransferCapability.Role.SCU ? scuTCs : scpTCs).values();
     }
 
-    public TransferCapability getTransferCapabilityFor(
-            String sopClass, TransferCapability.Role role) {
+    public TransferCapability getTransferCapabilityFor(String sopClass, TransferCapability.Role role) {
         return (role == TransferCapability.Role.SCU ? scuTCs : scpTCs).get(sopClass);
     }
 
-    public boolean hasTransferCapabilityFor(
-            String sopClass, TransferCapability.Role role) {
+    public boolean hasTransferCapabilityFor(String sopClass, TransferCapability.Role role) {
         return (role == TransferCapability.Role.SCU ? scuTCs : scpTCs).containsKey(sopClass);
     }
 
-    public PresentationContext negotiate(AAssociateRQ rq, AAssociateAC ac,
-                                         PresentationContext rqpc) {
+    public PresentationContext negotiate(AAssociateRQ rq, AAssociateAC ac, PresentationContext rqpc) {
         String as = rqpc.getAbstractSyntax();
         TransferCapability tc = roleSelection(rq, ac, as);
         int pcid = rqpc.getPCID();
         if (tc == null)
-            return new PresentationContext(pcid,
-                    PresentationContext.ABSTRACT_SYNTAX_NOT_SUPPORTED,
+            return new PresentationContext(pcid, PresentationContext.ABSTRACT_SYNTAX_NOT_SUPPORTED,
                     rqpc.getTransferSyntax());
 
         String ts = tc.selectTransferSyntax(rqpc.getTransferSyntaxes());
         if (ts == null)
-            return new PresentationContext(pcid,
-                    PresentationContext.TRANSFER_SYNTAX_NOT_SUPPORTED,
+            return new PresentationContext(pcid, PresentationContext.TRANSFER_SYNTAX_NOT_SUPPORTED,
                     rqpc.getTransferSyntax());
 
         byte[] info = negotiate(rq.getExtNegotiationFor(as), tc);
         if (info != null)
             ac.addExtendedNegotiation(new ExtendedNegotiation(as, info));
-        return new PresentationContext(pcid,
-                PresentationContext.ACCEPTANCE, ts);
+        return new PresentationContext(pcid, PresentationContext.ACCEPTANCE, ts);
     }
 
-    private TransferCapability roleSelection(AAssociateRQ rq,
-                                             AAssociateAC ac, String asuid) {
+    private TransferCapability roleSelection(AAssociateRQ rq, AAssociateAC ac, String asuid) {
         RoleSelection rqrs = rq.getRoleSelectionFor(asuid);
         if (rqrs == null)
             return getTC(scpTCs, asuid, rq);
@@ -557,22 +526,18 @@ public class ApplicationEntity implements Serializable {
 
         TransferCapability tcscu = null;
         TransferCapability tcscp = null;
-        boolean scu = rqrs.isSCU()
-                && (tcscp = getTC(scpTCs, asuid, rq)) != null;
-        boolean scp = rqrs.isSCP()
-                && (tcscu = getTC(scuTCs, asuid, rq)) != null;
+        boolean scu = rqrs.isSCU() && (tcscp = getTC(scpTCs, asuid, rq)) != null;
+        boolean scp = rqrs.isSCP() && (tcscu = getTC(scuTCs, asuid, rq)) != null;
         ac.addRoleSelection(new RoleSelection(asuid, scu, scp));
         return scu ? tcscp : tcscu;
     }
 
-    private TransferCapability getTC(HashMap<String, TransferCapability> tcs,
-                                     String asuid, AAssociateRQ rq) {
+    private TransferCapability getTC(HashMap<String, TransferCapability> tcs, String asuid, AAssociateRQ rq) {
         TransferCapability tc = tcs.get(asuid);
         if (tc != null)
             return tc;
 
-        CommonExtended commonExtNeg =
-                rq.getCommonExtendedNegotiationFor(asuid);
+        CommonExtended commonExtNeg = rq.getCommonExtendedNegotiationFor(asuid);
         if (commonExtNeg != null) {
             for (String cuid : commonExtNeg.getRelatedGeneralSOPClassUIDs()) {
                 tc = tcs.get(cuid);
@@ -638,24 +603,20 @@ public class ApplicationEntity implements Serializable {
         return connect(findCompatibleConnection(remote), remote, rq);
     }
 
-    public Connection findCompatibleConnection(Connection remoteConn)
-            throws InternalException {
+    public Connection findCompatibleConnection(Connection remoteConn) throws InternalException {
         for (Connection conn : conns)
             if (conn.isInstalled() && conn.isCompatible(remoteConn))
                 return conn;
-        throw new InternalException(
-                "No compatible connection to " + remoteConn + " available on " + aet);
+        throw new InternalException("No compatible connection to " + remoteConn + " available on " + aet);
     }
 
-    public Compatible findCompatibleConnection(ApplicationEntity remote)
-            throws InternalException {
+    public Compatible findCompatibleConnection(ApplicationEntity remote) throws InternalException {
         for (Connection remoteConn : remote.conns)
             if (remoteConn.isInstalled() && remoteConn.isServer())
                 for (Connection conn : conns)
                     if (conn.isInstalled() && conn.isCompatible(remoteConn))
                         return new Compatible(conn, remoteConn);
-        throw new InternalException(
-                "No compatible connection to " + remote.getAETitle() + " available on " + aet);
+        throw new InternalException("No compatible connection to " + remote.getAETitle() + " available on " + aet);
     }
 
     public Association connect(ApplicationEntity remote, AAssociateRQ rq)
@@ -700,8 +661,7 @@ public class ApplicationEntity implements Serializable {
     }
 
     private void reconfigureAEExtensions(ApplicationEntity from) {
-        for (Iterator<Class<? extends AEExtension>> it =
-             extensions.keySet().iterator(); it.hasNext(); ) {
+        for (Iterator<Class<? extends AEExtension>> it = extensions.keySet().iterator(); it.hasNext();) {
             if (!from.extensions.containsKey(it.next()))
                 it.remove();
         }
@@ -712,8 +672,7 @@ public class ApplicationEntity implements Serializable {
                 try {
                     addAEExtension(ext = clazz.newInstance());
                 } catch (Exception e) {
-                    throw new RuntimeException(
-                            "Failed to instantiate " + clazz.getName(), e);
+                    throw new RuntimeException("Failed to instantiate " + clazz.getName(), e);
                 }
             ext.reconfigure(src);
         }
@@ -746,8 +705,7 @@ public class ApplicationEntity implements Serializable {
     public void addAEExtension(AEExtension ext) {
         Class<? extends AEExtension> clazz = ext.getClass();
         if (extensions.containsKey(clazz))
-            throw new IllegalStateException(
-                    "already contains AE Extension:" + clazz);
+            throw new IllegalStateException("already contains AE Extension:" + clazz);
 
         ext.setApplicationEntity(this);
         extensions.put(clazz, ext);
@@ -765,7 +723,6 @@ public class ApplicationEntity implements Serializable {
         return extensions.values();
     }
 
-
     public <T extends AEExtension> T getAEExtension(Class<T> clazz) {
         return (T) extensions.get(clazz);
     }
@@ -773,8 +730,7 @@ public class ApplicationEntity implements Serializable {
     public <T extends AEExtension> T getAEExtensionNotNull(Class<T> clazz) {
         T aeExt = getAEExtension(clazz);
         if (aeExt == null)
-            throw new IllegalStateException("No " + clazz.getName()
-                    + " configured for AE: " + aet);
+            throw new IllegalStateException("No " + clazz.getName() + " configured for AE: " + aet);
         return aeExt;
     }
 

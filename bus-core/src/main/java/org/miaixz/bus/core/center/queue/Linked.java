@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.queue;
 
 import java.util.Deque;
@@ -39,8 +39,8 @@ import java.util.Deque;
 public interface Linked<T extends Linked<T>> {
 
     /**
-     * Retrieves the previous element or {@code null} if either the element is
-     * unlinked or the first element on the deque.
+     * Retrieves the previous element or {@code null} if either the element is unlinked or the first element on the
+     * deque.
      *
      * @return 前一个值
      */
@@ -54,8 +54,7 @@ public interface Linked<T extends Linked<T>> {
     void setPrevious(T prev);
 
     /**
-     * Retrieves the next element or {@code null} if either the element is
-     * unlinked or the last element on the deque.
+     * Retrieves the next element or {@code null} if either the element is unlinked or the last element on the deque.
      *
      * @return 下一个值
      */

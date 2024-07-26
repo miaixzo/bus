@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.bean.BeanCache;
@@ -133,8 +133,10 @@ public class BeanKit {
      * @return 字段名和字段描述Map
      * @throws BeanException 获取属性异常
      */
-    public static Map<String, PropertyDescriptor> getPropertyDescriptorMap(final Class<?> clazz, final boolean ignoreCase) throws BeanException {
-        return BeanCache.INSTANCE.getPropertyDescriptorMap(clazz, ignoreCase, () -> internalGetPropertyDescriptorMap(clazz, ignoreCase));
+    public static Map<String, PropertyDescriptor> getPropertyDescriptorMap(final Class<?> clazz,
+            final boolean ignoreCase) throws BeanException {
+        return BeanCache.INSTANCE.getPropertyDescriptorMap(clazz, ignoreCase,
+                () -> internalGetPropertyDescriptorMap(clazz, ignoreCase));
     }
 
     /**
@@ -145,9 +147,11 @@ public class BeanKit {
      * @return 字段名和字段描述Map
      * @throws BeanException 获取属性异常
      */
-    private static Map<String, PropertyDescriptor> internalGetPropertyDescriptorMap(final Class<?> clazz, final boolean ignoreCase) throws BeanException {
+    private static Map<String, PropertyDescriptor> internalGetPropertyDescriptorMap(final Class<?> clazz,
+            final boolean ignoreCase) throws BeanException {
         final PropertyDescriptor[] propertyDescriptors = getPropertyDescriptors(clazz);
-        final Map<String, PropertyDescriptor> map = ignoreCase ? new CaseInsensitiveMap<>(propertyDescriptors.length, 1f)
+        final Map<String, PropertyDescriptor> map = ignoreCase
+                ? new CaseInsensitiveMap<>(propertyDescriptors.length, 1f)
                 : new HashMap<>(propertyDescriptors.length, 1);
 
         for (final PropertyDescriptor propertyDescriptor : propertyDescriptors) {
@@ -164,7 +168,8 @@ public class BeanKit {
      * @return PropertyDescriptor
      * @throws BeanException 获取属性异常
      */
-    public static PropertyDescriptor getPropertyDescriptor(final Class<?> clazz, final String fieldName) throws BeanException {
+    public static PropertyDescriptor getPropertyDescriptor(final Class<?> clazz, final String fieldName)
+            throws BeanException {
         return getPropertyDescriptor(clazz, fieldName, false);
     }
 
@@ -177,19 +182,19 @@ public class BeanKit {
      * @return PropertyDescriptor
      * @throws BeanException 获取属性异常
      */
-    public static PropertyDescriptor getPropertyDescriptor(final Class<?> clazz, final String fieldName, final boolean ignoreCase) throws BeanException {
+    public static PropertyDescriptor getPropertyDescriptor(final Class<?> clazz, final String fieldName,
+            final boolean ignoreCase) throws BeanException {
         final Map<String, PropertyDescriptor> map = getPropertyDescriptorMap(clazz, ignoreCase);
         return (null == map) ? null : map.get(fieldName);
     }
 
     /**
-     * 获得字段值，通过反射直接获得字段值，并不调用getXXX方法
-     * 对象同样支持Map类型，fieldNameOrIndex即为key
+     * 获得字段值，通过反射直接获得字段值，并不调用getXXX方法 对象同样支持Map类型，fieldNameOrIndex即为key
      *
      * <ul>
-     *     <li>Map: fieldNameOrIndex需为key，获取对应value</li>
-     *     <li>Collection: fieldNameOrIndex当为数字，返回index对应值，非数字遍历集合返回子bean对应name值</li>
-     *     <li>Array: fieldNameOrIndex当为数字，返回index对应值，非数字遍历数组返回子bean对应name值</li>
+     * <li>Map: fieldNameOrIndex需为key，获取对应value</li>
+     * <li>Collection: fieldNameOrIndex当为数字，返回index对应值，非数字遍历集合返回子bean对应name值</li>
+     * <li>Array: fieldNameOrIndex当为数字，返回index对应值，非数字遍历数组返回子bean对应name值</li>
      * </ul>
      *
      * @param bean             Bean对象
@@ -302,7 +307,8 @@ public class BeanKit {
      * @param copyOptions   拷贝选项，见 {@link CopyOptions}
      * @return Bean
      */
-    public static <T> T fillBean(final T bean, final ValueProvider<String> valueProvider, final CopyOptions copyOptions) {
+    public static <T> T fillBean(final T bean, final ValueProvider<String> valueProvider,
+            final CopyOptions copyOptions) {
         if (null == valueProvider) {
             return bean;
         }
@@ -327,8 +333,7 @@ public class BeanKit {
     }
 
     /**
-     * 将bean的部分属性转换成map
-     * 可选拷贝哪些属性值，默认是不忽略值为{@code null}的值的。
+     * 将bean的部分属性转换成map 可选拷贝哪些属性值，默认是不忽略值为{@code null}的值的。
      *
      * @param bean       beans
      * @param properties 需要拷贝的属性值，{@code null}或空表示拷贝所有值
@@ -359,7 +364,8 @@ public class BeanKit {
      * @param ignoreNullValue   是否忽略值为空的字段
      * @return Map
      */
-    public static Map<String, Object> beanToMap(final Object bean, final boolean isToUnderlineCase, final boolean ignoreNullValue) {
+    public static Map<String, Object> beanToMap(final Object bean, final boolean isToUnderlineCase,
+            final boolean ignoreNullValue) {
         if (null == bean) {
             return null;
         }
@@ -376,7 +382,7 @@ public class BeanKit {
      * @return Map
      */
     public static Map<String, Object> beanToMap(final Object bean, final Map<String, Object> targetMap,
-                                                final boolean isToUnderlineCase, final boolean ignoreNullValue) {
+            final boolean isToUnderlineCase, final boolean ignoreNullValue) {
         if (null == bean) {
             return null;
         }
@@ -389,8 +395,7 @@ public class BeanKit {
     }
 
     /**
-     * 对象转Map
-     * 通过实现{@link UnaryOperator} 可以自定义字段值，如果这个Editor返回null则忽略这个字段，以便实现：
+     * 对象转Map 通过实现{@link UnaryOperator} 可以自定义字段值，如果这个Editor返回null则忽略这个字段，以便实现：
      *
      * <pre>
      * 1. 字段筛选，可以去除不需要的字段
@@ -404,24 +409,19 @@ public class BeanKit {
      * @param keyEditor       属性字段（Map的key）编辑器，用于筛选、编辑key，如果这个Editor返回null则忽略这个字段
      * @return Map
      */
-    public static Map<String, Object> beanToMap(final Object bean,
-                                                final Map<String, Object> targetMap,
-                                                final boolean ignoreNullValue,
-                                                final UnaryOperator<MutableEntry<Object, Object>> keyEditor) {
+    public static Map<String, Object> beanToMap(final Object bean, final Map<String, Object> targetMap,
+            final boolean ignoreNullValue, final UnaryOperator<MutableEntry<Object, Object>> keyEditor) {
         if (null == bean) {
             return null;
         }
 
-        return BeanCopier.of(bean, targetMap,
-                CopyOptions.of()
-                        .setIgnoreNullValue(ignoreNullValue)
-                        .setFieldEditor(keyEditor)
-        ).copy();
+        return BeanCopier
+                .of(bean, targetMap, CopyOptions.of().setIgnoreNullValue(ignoreNullValue).setFieldEditor(keyEditor))
+                .copy();
     }
 
     /**
-     * 对象转Map
-     * 通过自定义{@link CopyOptions} 完成抓换选项，以便实现：
+     * 对象转Map 通过自定义{@link CopyOptions} 完成抓换选项，以便实现：
      *
      * <pre>
      * 1. 字段筛选，可以去除不需要的字段
@@ -436,7 +436,8 @@ public class BeanKit {
      * @param copyOptions 拷贝选项
      * @return Map
      */
-    public static Map<String, Object> beanToMap(final Object bean, final Map<String, Object> targetMap, final CopyOptions copyOptions) {
+    public static Map<String, Object> beanToMap(final Object bean, final Map<String, Object> targetMap,
+            final CopyOptions copyOptions) {
         if (null == bean) {
             return null;
         }
@@ -466,8 +467,7 @@ public class BeanKit {
     }
 
     /**
-     * 复制Bean对象属性
-     * 限制类用于限制拷贝的属性，例如一个类我只想复制其父类的一些属性，就可以将editable设置为父类
+     * 复制Bean对象属性 限制类用于限制拷贝的属性，例如一个类我只想复制其父类的一些属性，就可以将editable设置为父类
      *
      * @param <T>              目标类型
      * @param source           源Bean对象
@@ -493,8 +493,7 @@ public class BeanKit {
     }
 
     /**
-     * 复制Bean对象属性
-     * 限制类用于限制拷贝的属性，例如一个类我只想复制其父类的一些属性，就可以将editable设置为父类
+     * 复制Bean对象属性 限制类用于限制拷贝的属性，例如一个类我只想复制其父类的一些属性，就可以将editable设置为父类
      *
      * @param <T>         目标类型
      * @param source      源Bean对象
@@ -510,8 +509,7 @@ public class BeanKit {
     }
 
     /**
-     * 复制集合中的Bean属性
-     * 此方法遍历集合中每个Bean，复制其属性后加入一个新的{@link List}中。
+     * 复制集合中的Bean属性 此方法遍历集合中每个Bean，复制其属性后加入一个新的{@link List}中。
      *
      * @param collection 原Bean集合
      * @param targetType 目标Bean类型
@@ -523,8 +521,7 @@ public class BeanKit {
     }
 
     /**
-     * 复制集合中的Bean属性
-     * 此方法遍历集合中每个Bean，复制其属性后加入一个新的{@link List}中。
+     * 复制集合中的Bean属性 此方法遍历集合中每个Bean，复制其属性后加入一个新的{@link List}中。
      *
      * @param collection  原Bean集合
      * @param targetType  目标Bean类型
@@ -532,7 +529,8 @@ public class BeanKit {
      * @param <T>         Bean类型
      * @return 复制后的List
      */
-    public static <T> List<T> copyToList(final Collection<?> collection, final Class<T> targetType, final CopyOptions copyOptions) {
+    public static <T> List<T> copyToList(final Collection<?> collection, final Class<T> targetType,
+            final CopyOptions copyOptions) {
         if (null == collection) {
             return null;
         }
@@ -553,8 +551,7 @@ public class BeanKit {
     }
 
     /**
-     * 给定的Bean的类名是否匹配指定类名字符串
-     * 如果isSimple为{@code true}，则只匹配类名而忽略包名，例如：org.miaixz.TestEntity只匹配TestEntity
+     * 给定的Bean的类名是否匹配指定类名字符串 如果isSimple为{@code true}，则只匹配类名而忽略包名，例如：org.miaixz.TestEntity只匹配TestEntity
      * 如果isSimple为{@code false}，则匹配包括包名的全类名，例如：org.miaixz.TestEntity匹配org.miaixz.TestEntity
      *
      * @param bean          Bean
@@ -566,12 +563,12 @@ public class BeanKit {
         if (null == bean || StringKit.isBlank(beanClassName)) {
             return false;
         }
-        return ClassKit.getClassName(bean, isSimple).equals(isSimple ? StringKit.upperFirst(beanClassName) : beanClassName);
+        return ClassKit.getClassName(bean, isSimple)
+                .equals(isSimple ? StringKit.upperFirst(beanClassName) : beanClassName);
     }
 
     /**
-     * 编辑Bean的字段，static字段不会处理
-     * 例如需要对指定的字段做判空操作、null转""操作等等。
+     * 编辑Bean的字段，static字段不会处理 例如需要对指定的字段做判空操作、null转""操作等等。
      *
      * @param bean   beans
      * @param editor 编辑器函数
@@ -594,8 +591,7 @@ public class BeanKit {
     }
 
     /**
-     * 把Bean里面的String属性做trim操作。此方法直接对传入的Bean做修改。
-     * 通常bean直接用来绑定页面的input，用户的输入可能首尾存在空格，通常保存数据库前需要把首尾空格去掉
+     * 把Bean里面的String属性做trim操作。此方法直接对传入的Bean做修改。 通常bean直接用来绑定页面的input，用户的输入可能首尾存在空格，通常保存数据库前需要把首尾空格去掉
      *
      * @param <T>         Bean类型
      * @param bean        Bean对象
@@ -624,8 +620,7 @@ public class BeanKit {
     }
 
     /**
-     * 判断Bean是否为空对象，空对象表示本身为{@code null}或者所有属性都为{@code null}
-     * 此方法不判断static属性
+     * 判断Bean是否为空对象，空对象表示本身为{@code null}或者所有属性都为{@code null} 此方法不判断static属性
      *
      * @param bean             Bean对象
      * @param ignoreFieldNames 忽略检查的字段名
@@ -649,10 +644,8 @@ public class BeanKit {
         }
 
         // 相当于 hasNoneNullField
-        return checkBean(bean, field ->
-                (!ArrayKit.contains(ignoreFieldNames, field.getName()))
-                        && null != FieldKit.getFieldValue(bean, field)
-        );
+        return checkBean(bean, field -> (!ArrayKit.contains(ignoreFieldNames, field.getName()))
+                && null != FieldKit.getFieldValue(bean, field));
     }
 
     /**
@@ -702,8 +695,7 @@ public class BeanKit {
     }
 
     /**
-     * 判断是否有Setter方法
-     * 判定方法是否存在只有一个参数的setXXX方法
+     * 判断是否有Setter方法 判定方法是否存在只有一个参数的setXXX方法
      *
      * @param clazz 待测试类
      * @return 是否为Bean对象
@@ -729,8 +721,7 @@ public class BeanKit {
     }
 
     /**
-     * 判断是否为Bean对象
-     * 判定方法是否存在只有无参数的getXXX方法或者isXXX方法
+     * 判断是否为Bean对象 判定方法是否存在只有无参数的getXXX方法或者isXXX方法
      *
      * @param clazz 待测试类
      * @return 是否为Bean对象
@@ -761,7 +752,7 @@ public class BeanKit {
         if (ClassKit.isNormalClass(clazz)) {
             for (final Field field : clazz.getFields()) {
                 if (ModifierKit.isPublic(field) && !ModifierKit.isStatic(field)) {
-                    //非static的public字段
+                    // 非static的public字段
                     return true;
                 }
             }
@@ -770,40 +761,31 @@ public class BeanKit {
     }
 
     /**
-     * 判断Bean是否包含值为{@code null}的属性
-     * 对象本身为{@code null}也返回true
+     * 判断Bean是否包含值为{@code null}的属性 对象本身为{@code null}也返回true
      *
      * @param bean             Bean对象
      * @param ignoreFieldNames 忽略检查的字段名
      * @return 是否包含值为{@code null}的属性，{@code true} - 包含 / {@code false} - 不包含
      */
     public static boolean hasNullField(final Object bean, final String... ignoreFieldNames) {
-        return checkBean(bean, field ->
-                (!ArrayKit.contains(ignoreFieldNames, field.getName()))
-                        && null == FieldKit.getFieldValue(bean, field)
-        );
+        return checkBean(bean, field -> (!ArrayKit.contains(ignoreFieldNames, field.getName()))
+                && null == FieldKit.getFieldValue(bean, field));
     }
 
     /**
-     * 判断Bean是否包含值为{@code null}的属性，或当字段为{@link CharSequence}时，是否为isEmpty（null或""）
-     * 对象本身为{@code null}也返回true
+     * 判断Bean是否包含值为{@code null}的属性，或当字段为{@link CharSequence}时，是否为isEmpty（null或""） 对象本身为{@code null}也返回true
      *
      * @param bean             Bean对象
      * @param ignoreFieldNames 忽略检查的字段名
      * @return 是否包含值为{@code null}的属性，{@code true} - 包含 / {@code false} - 不包含
      */
     public static boolean hasEmptyField(final Object bean, final String... ignoreFieldNames) {
-        return checkBean(bean, field ->
-                (!ArrayKit.contains(ignoreFieldNames, field.getName()))
-                        && ObjectKit.isEmptyIfString(FieldKit.getFieldValue(bean, field))
-        );
+        return checkBean(bean, field -> (!ArrayKit.contains(ignoreFieldNames, field.getName()))
+                && ObjectKit.isEmptyIfString(FieldKit.getFieldValue(bean, field)));
     }
 
     /**
-     * 检查Bean
-     * 遍历Bean的字段并断言检查字段，当某个字段：
-     * 断言为{@code true} 时，返回{@code true}并不再检查后续字段；
-     * 断言为{@code false}时，继续检查后续字段
+     * 检查Bean 遍历Bean的字段并断言检查字段，当某个字段： 断言为{@code true} 时，返回{@code true}并不再检查后续字段； 断言为{@code false}时，继续检查后续字段
      *
      * @param bean      Bean
      * @param predicate 断言
@@ -827,10 +809,10 @@ public class BeanKit {
     /**
      * 获取Getter或Setter方法名对应的字段名称，规则如下：
      * <ul>
-     *     <li>getXxxx获取为xxxx，如getName得到name。</li>
-     *     <li>setXxxx获取为xxxx，如setName得到name。</li>
-     *     <li>isXxxx获取为xxxx，如isName得到name。</li>
-     *     <li>其它不满足规则的方法名抛出{@link IllegalArgumentException}</li>
+     * <li>getXxxx获取为xxxx，如getName得到name。</li>
+     * <li>setXxxx获取为xxxx，如setName得到name。</li>
+     * <li>isXxxx获取为xxxx，如isName得到name。</li>
+     * <li>其它不满足规则的方法名抛出{@link IllegalArgumentException}</li>
      * </ul>
      *
      * @param getterOrSetterName Getter或Setter方法名

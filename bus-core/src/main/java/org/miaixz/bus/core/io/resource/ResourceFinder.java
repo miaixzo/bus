@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.resource;
 
 import org.miaixz.bus.core.center.iterator.EnumerationIterator;
@@ -44,8 +44,7 @@ import java.util.jar.JarFile;
 import java.util.zip.ZipException;
 
 /**
- * 资源查找器
- * 参考Spring的PathMatchingResourcePatternResolver，实现classpath资源查找，利用{@link AntPathMatcher}筛选资源
+ * 资源查找器 参考Spring的PathMatchingResourcePatternResolver，实现classpath资源查找，利用{@link AntPathMatcher}筛选资源
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -160,7 +159,7 @@ public class ResourceFinder {
                 }
                 if (separatorIndex != -1) {
                     final String jarFileUrl = urlFile.substring(0, separatorIndex);
-                    rootEntryPath = urlFile.substring(separatorIndex + 2);  // both separators are 2 chars
+                    rootEntryPath = urlFile.substring(separatorIndex + 2); // both separators are 2 chars
                     jarFile = ZipKit.ofJar(jarFileUrl);
                 } else {
                     jarFile = new JarFile(urlFile);
@@ -232,8 +231,7 @@ public class ResourceFinder {
     }
 
     /**
-     * 根据给定的路径表达式，找到跟路径
-     * 根路径即不包含表达式的路径，如 "/WEB-INF/*.xml" 返回 "/WEB-INF/"
+     * 根据给定的路径表达式，找到跟路径 根路径即不包含表达式的路径，如 "/WEB-INF/*.xml" 返回 "/WEB-INF/"
      *
      * @param location 路径表达式
      * @return root dir

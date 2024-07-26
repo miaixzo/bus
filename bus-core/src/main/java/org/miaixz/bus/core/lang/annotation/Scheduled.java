@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.annotation;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -50,8 +50,7 @@ public @interface Scheduled {
     String cron() default Normal.EMPTY;
 
     /**
-     * 固定延迟 结束时间-开始时间
-     * 单位毫秒
+     * 固定延迟 结束时间-开始时间 单位毫秒
      *
      * @return 延迟
      */

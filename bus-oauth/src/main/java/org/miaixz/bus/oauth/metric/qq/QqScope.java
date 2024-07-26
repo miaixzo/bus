@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.qq;
 
 import lombok.AllArgsConstructor;
@@ -48,12 +48,9 @@ public enum QqScope implements AuthorizeScope {
     /**
      * 以下 scope 需要申请：http://wiki.connect.qq.com/openapi%e6%9d%83%e9%99%90%e7%94%b3%e8%af%b7
      */
-    GET_VIP_INFO("get_vip_info", "获取QQ会员的基本信息", false),
-    GET_VIP_RICH_INFO("get_vip_rich_info", "获取QQ会员的高级信息", false),
-    LIST_ALBUM("list_album", "获取用户QQ空间相册列表", false),
-    UPLOAD_PIC("upload_pic", "上传一张照片到QQ空间相册", false),
-    ADD_ALBUM("add_album", "在用户的空间相册里，创建一个新的个人相册", false),
-    LIST_PHOTO("list_photo", "获取用户QQ空间相册中的照片列表", false);
+    GET_VIP_INFO("get_vip_info", "获取QQ会员的基本信息", false), GET_VIP_RICH_INFO("get_vip_rich_info", "获取QQ会员的高级信息", false),
+    LIST_ALBUM("list_album", "获取用户QQ空间相册列表", false), UPLOAD_PIC("upload_pic", "上传一张照片到QQ空间相册", false),
+    ADD_ALBUM("add_album", "在用户的空间相册里，创建一个新的个人相册", false), LIST_PHOTO("list_photo", "获取用户QQ空间相册中的照片列表", false);
 
     private final String scope;
     private final String description;

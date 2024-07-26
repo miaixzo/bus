@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.image;
 
 import jakarta.annotation.Resource;
@@ -43,7 +43,7 @@ import org.springframework.context.annotation.Bean;
  * @author Kimi Liu
  * @since Java 17+
  */
-@EnableConfigurationProperties(value = {ImageProperties.class})
+@EnableConfigurationProperties(value = { ImageProperties.class })
 public class ImageConfiguration {
 
     @Resource
@@ -69,16 +69,20 @@ public class ImageConfiguration {
             }
             Args args = new Args();
             if (StringKit.isNotEmpty(this.properties.getNode().getSopClasses())) {
-                args.setSopClasses(ResourceKit.getResourceUrl(this.properties.getNode().getSopClasses(), ImageConfiguration.class));
+                args.setSopClasses(ResourceKit.getResourceUrl(this.properties.getNode().getSopClasses(),
+                        ImageConfiguration.class));
             }
             if (StringKit.isNotEmpty(this.properties.getNode().getSopClassesTCS())) {
-                args.setSopClassesTCS(ResourceKit.getResourceUrl(this.properties.getNode().getSopClassesTCS(), ImageConfiguration.class));
+                args.setSopClassesTCS(ResourceKit.getResourceUrl(this.properties.getNode().getSopClassesTCS(),
+                        ImageConfiguration.class));
             }
             if (StringKit.isNotEmpty(this.properties.getNode().getSopClassesUID())) {
-                args.setSopClassesUID(ResourceKit.getResourceUrl(this.properties.getNode().getSopClassesUID(), ImageConfiguration.class));
+                args.setSopClassesUID(ResourceKit.getResourceUrl(this.properties.getNode().getSopClassesUID(),
+                        ImageConfiguration.class));
             }
             return Centre.builder().args(args).efforts(efforts)
-                    .node(new Node(this.properties.getNode().getAeTitle(), this.properties.getNode().getHost(), Integer.valueOf(this.properties.getNode().getPort())))
+                    .node(new Node(this.properties.getNode().getAeTitle(), this.properties.getNode().getHost(),
+                            Integer.valueOf(this.properties.getNode().getPort())))
                     .storeSCP(new StoreSCP(this.properties.getDcmDir())).build();
         }
         return null;

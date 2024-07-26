@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.Applicare_Centricity_Radiology_Web_Version_2_0;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,15 +46,16 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.SecondarySpineLabel:
-                return VR.CS;
-            case PrivateTag.AdditionalTagsForPresentationState:
-                return VR.IS;
+
+        case PrivateTag.SecondarySpineLabel:
+            return VR.CS;
+        case PrivateTag.AdditionalTagsForPresentationState:
+            return VR.IS;
         }
         return VR.UN;
     }

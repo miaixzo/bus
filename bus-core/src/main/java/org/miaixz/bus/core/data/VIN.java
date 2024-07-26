@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.data;
 
 import org.miaixz.bus.core.center.regex.Pattern;
@@ -41,21 +41,22 @@ import java.util.Map;
  * <p>
  * 不同位数代表着不同意义，具体解释如下：
  * <ul>
- *     <li>1-3位：WMI制造商标示符，代表车辆制造商信息</li>
- *     <li>4-8位：VDS车型识别代码，代表车辆品牌、车系、车型及其排量等信息</li>
- *     <li>9位：校验位，通过公式计算出来，用于验证VIN码的正确性</li>
- *     <li>10位：年份代号，代表车辆生产的年份</li>
- *     <li>11位：工厂代码，代表车辆生产工厂信息</li>
- *     <li>12-17位：流水号，代表车辆的生产顺序号</li>
+ * <li>1-3位：WMI制造商标示符，代表车辆制造商信息</li>
+ * <li>4-8位：VDS车型识别代码，代表车辆品牌、车系、车型及其排量等信息</li>
+ * <li>9位：校验位，通过公式计算出来，用于验证VIN码的正确性</li>
+ * <li>10位：年份代号，代表车辆生产的年份</li>
+ * <li>11位：工厂代码，代表车辆生产工厂信息</li>
+ * <li>12-17位：流水号，代表车辆的生产顺序号</li>
  * </ul>
  * VIN码可以找到汽车详细的个人、工程、制造方面的信息，是判定一个汽车合法性及其历史的重要依据。
  * <p>
  * 本实现参考以下标准：
  * <ul>
- *     <li><a href="https://www.iso.org/standard/52200.html">ISO 3779</a></li>
- *     <li><a href="http://www.catarc.org.cn/upload/202004/24/202004241005284241.pdf">车辆识别代号管理办法</a></li>
- *     <li><a href="https://en.wikipedia.org/wiki/Vehicle_identification_number">Wikipedia</a></li>
- *     <li><a href="https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=E2EBF667F8C032B1EDFD6DF9C1114E02">GB 16735-2019</a></li>
+ * <li><a href="https://www.iso.org/standard/52200.html">ISO 3779</a></li>
+ * <li><a href="http://www.catarc.org.cn/upload/202004/24/202004241005284241.pdf">车辆识别代号管理办法</a></li>
+ * <li><a href="https://en.wikipedia.org/wiki/Vehicle_identification_number">Wikipedia</a></li>
+ * <li><a href="https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=E2EBF667F8C032B1EDFD6DF9C1114E02">GB
+ * 16735-2019</a></li>
  * </ul>
  *
  * @author Kimi Liu
@@ -66,16 +67,10 @@ public class VIN {
     /**
      * 加权系数，见附录A，表A.3
      */
-    private static final int[] WEIGHT = {8, 7, 6, 5, 4, 3, 2, 10, 0, 9, 8, 7, 6, 5, 4, 3, 2};
+    private static final int[] WEIGHT = { 8, 7, 6, 5, 4, 3, 2, 10, 0, 9, 8, 7, 6, 5, 4, 3, 2 };
     private static final int YEAR_LOOP = 30;
-    private static final char[] YEAR_ID = {
-            'A', 'B', 'C', 'D', 'E',
-            'F', 'G', 'H', 'J', 'K',
-            'L', 'M', 'N', 'P', 'R',
-            'S', 'T', 'V', 'W', 'X',
-            'Y', '1', '2', '3', '4',
-            '5', '6', '7', '8', '9'
-    };
+    private static final char[] YEAR_ID = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'L', 'M', 'N', 'P', 'R',
+            'S', 'T', 'V', 'W', 'X', 'Y', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
     private static final Map<Character, Integer> YEAR_MAP;
 
     static {
@@ -111,8 +106,8 @@ public class VIN {
     /**
      * 校验VIN码有效性，要求：
      * <ul>
-     *     <li>满足正则：{@link Pattern#CAR_VIN_PATTERN}</li>
-     *     <li>满足第9位校验位和计算的检验值一致</li>
+     * <li>满足正则：{@link Pattern#CAR_VIN_PATTERN}</li>
+     * <li>满足第9位校验位和计算的检验值一致</li>
      * </ul>
      *
      * @param vinCode VIN码
@@ -163,49 +158,49 @@ public class VIN {
      */
     private static int getVinValue(final char vinCodeChar) {
         switch (vinCodeChar) {
-            case '0':
-                return 0;
-            case '1':
-            case 'J':
-            case 'A':
-                return 1;
-            case '2':
-            case 'S':
-            case 'K':
-            case 'B':
-                return 2;
-            case '3':
-            case 'T':
-            case 'L':
-            case 'C':
-                return 3;
-            case '4':
-            case 'U':
-            case 'M':
-            case 'D':
-                return 4;
-            case '5':
-            case 'V':
-            case 'N':
-            case 'E':
-                return 5;
-            case '6':
-            case 'W':
-            case 'F':
-                return 6;
-            case '7':
-            case 'P':
-            case 'X':
-            case 'G':
-                return 7;
-            case '8':
-            case 'Y':
-            case 'H':
-                return 8;
-            case '9':
-            case 'Z':
-            case 'R':
-                return 9;
+        case '0':
+            return 0;
+        case '1':
+        case 'J':
+        case 'A':
+            return 1;
+        case '2':
+        case 'S':
+        case 'K':
+        case 'B':
+            return 2;
+        case '3':
+        case 'T':
+        case 'L':
+        case 'C':
+            return 3;
+        case '4':
+        case 'U':
+        case 'M':
+        case 'D':
+            return 4;
+        case '5':
+        case 'V':
+        case 'N':
+        case 'E':
+            return 5;
+        case '6':
+        case 'W':
+        case 'F':
+            return 6;
+        case '7':
+        case 'P':
+        case 'X':
+        case 'G':
+            return 7;
+        case '8':
+        case 'Y':
+        case 'H':
+            return 8;
+        case '9':
+        case 'Z':
+        case 'R':
+            return 9;
         }
         throw new IllegalArgumentException("Invalid VIN char: " + vinCodeChar);
     }
@@ -229,8 +224,7 @@ public class VIN {
     }
 
     /**
-     * 获取世界制造厂识别代号WMI（World Manufacturer Identifier）
-     * 对年产量大于或等于1000辆的完整车辆或非完整车辆制造,车辆识别代号的第一部分为世界制造)厂识别代号(WMI)
+     * 获取世界制造厂识别代号WMI（World Manufacturer Identifier） 对年产量大于或等于1000辆的完整车辆或非完整车辆制造,车辆识别代号的第一部分为世界制造)厂识别代号(WMI)
      * 对年产量小于1000辆的完整车辆和/或非完整车辆制造厂，第三部分的三、四、五位与第一部分的三位字码一起构成世界制造厂识别代号(WMI)
      *
      * @return WMI
@@ -306,8 +300,7 @@ public class VIN {
     }
 
     /**
-     * 生产序号
-     * 年产量大于1000为6位，年产量小于1000的为3位
+     * 生产序号 年产量大于1000为6位，年产量小于1000的为3位
      *
      * @return 生产序号 string
      */

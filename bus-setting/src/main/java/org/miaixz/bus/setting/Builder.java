@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.setting;
 
 import org.miaixz.bus.core.center.map.Dictionary;
@@ -43,8 +43,7 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * 构建器创建{@link IniSetting}示例
- * 非线程安全
+ * 构建器创建{@link IniSetting}示例 非线程安全
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -181,8 +180,7 @@ public class Builder {
     }
 
     /**
-     * 获取当前环境下的配置文件
-     * name可以为不包括扩展名的文件名（默认.properties），也可以是文件名全称
+     * 获取当前环境下的配置文件 name可以为不包括扩展名的文件名（默认.properties），也可以是文件名全称
      *
      * @param name 文件名，如果没有扩展名，默认为.properties
      * @return 当前环境下配置文件
@@ -192,8 +190,7 @@ public class Builder {
     }
 
     /**
-     * 获取给定路径找到的第一个配置文件
-     * * name可以为不包括扩展名的文件名（默认.properties为结尾），也可以是文件名全称
+     * 获取给定路径找到的第一个配置文件 * name可以为不包括扩展名的文件名（默认.properties为结尾），也可以是文件名全称
      *
      * @param names 文件名，如果没有扩展名，默认为.properties
      * @return 当前环境下配置文件
@@ -203,8 +200,7 @@ public class Builder {
     }
 
     /**
-     * 获取当前环境下的配置文件
-     * name可以为不包括扩展名的文件名（默认.setting为结尾），也可以是文件名全称
+     * 获取当前环境下的配置文件 name可以为不包括扩展名的文件名（默认.setting为结尾），也可以是文件名全称
      *
      * @param name 文件名，如果没有扩展名，默认为.setting
      * @return 当前环境下配置文件
@@ -214,8 +210,7 @@ public class Builder {
     }
 
     /**
-     * 获取给定路径找到的第一个配置文件
-     * * name可以为不包括扩展名的文件名（默认.setting为结尾），也可以是文件名全称
+     * 获取给定路径找到的第一个配置文件 * name可以为不包括扩展名的文件名（默认.setting为结尾），也可以是文件名全称
      *
      * @param names 文件名，如果没有扩展名，默认为.setting
      * @return 当前环境下配置文件

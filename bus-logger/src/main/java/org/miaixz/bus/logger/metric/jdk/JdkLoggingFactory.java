@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.logger.metric.jdk;
 
 import org.miaixz.bus.core.lang.Console;
@@ -69,7 +69,8 @@ public class JdkLoggingFactory extends AbstractFactory {
         // 避免循环引用，Log初始化的时候不使用相关工具类
         final InputStream in = ResourceKit.getStreamSafe("logging.properties");
         if (null == in) {
-            System.err.println("[WARN] Can not find [logging.properties], use [%JRE_HOME%/lib/logging.properties] as default!");
+            System.err.println(
+                    "[WARN] Can not find [logging.properties], use [%JRE_HOME%/lib/logging.properties] as default!");
             return;
         }
 

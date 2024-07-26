@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.data.id;
 
 import org.miaixz.bus.core.center.date.NonClock;
@@ -36,17 +36,15 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- * Twitter的Snowflake 算法
- * 分布式系统中，有一些需要使用全局唯一ID的场景，有些时候我们希望能使用一种简单一些的ID，并且希望ID能够按照时间有序生成。
- * snowflake的结构如下(每部分用-分开):
+ * Twitter的Snowflake 算法 分布式系统中，有一些需要使用全局唯一ID的场景，有些时候我们希望能使用一种简单一些的ID，并且希望ID能够按照时间有序生成。 snowflake的结构如下(每部分用-分开):
+ * 
  * <pre>
  * 符号位（1bit）- 时间戳相对值（41bit）- 数据中心标志（5bit）- 机器标志（5bit）- 递增序号（12bit）
  * (0) - (0000000000 0000000000 0000000000 0000000000 0) - (00000) - (00000) - (000000000000)
  * </pre>
- * 第一位为未使用(符号位表示正数)，接下来的41位为毫秒级时间(41位的长度可以使用69年)
- * 然后是5位datacenterId和5位workerId(10位的长度最多支持部署1024个节点）
- * 最后12位是毫秒内的计数（12位的计数顺序号支持每个节点每毫秒产生4096个ID序号）
- * 并且可以通过生成的id反推出生成时间,datacenterId和workerId
+ * 
+ * 第一位为未使用(符号位表示正数)，接下来的41位为毫秒级时间(41位的长度可以使用69年) 然后是5位datacenterId和5位workerId(10位的长度最多支持部署1024个节点）
+ * 最后12位是毫秒内的计数（12位的计数顺序号支持每个节点每毫秒产生4096个ID序号） 并且可以通过生成的id反推出生成时间,datacenterId和workerId
  * 参考：http://www.cnblogs.com/relucent/p/4955340.html
  * 关于长度是18还是19的问题见：https://blog.csdn.net/unifirst/article/details/80408050
  *
@@ -101,10 +99,8 @@ public class Snowflake implements Serializable {
     private final long dataCenterId;
     private final boolean useSystemClock;
     /**
-     * 当在低频模式下时，序号始终为0，导致生成ID始终为偶数
-     * 此属性用于限定一个随机上限，在不同毫秒下生成序号时，给定一个随机数，避免偶数问题。
-     * 注意次数必须小于{@link #SEQUENCE_MASK}，{@code 0}表示不使用随机数。
-     * 这个上限不包括值本身。
+     * 当在低频模式下时，序号始终为0，导致生成ID始终为偶数 此属性用于限定一个随机上限，在不同毫秒下生成序号时，给定一个随机数，避免偶数问题。
+     * 注意次数必须小于{@link #SEQUENCE_MASK}，{@code 0}表示不使用随机数。 这个上限不包括值本身。
      */
     private final long randomSequenceLimit;
 
@@ -158,7 +154,7 @@ public class Snowflake implements Serializable {
      * @param isUseSystemClock 是否使用{@link NonClock} 获取当前时间戳
      */
     public Snowflake(final Date epochDate, final long workerId, final long dataCenterId,
-                     final boolean isUseSystemClock) {
+            final boolean isUseSystemClock) {
         this(epochDate, workerId, dataCenterId, isUseSystemClock, 0);
     }
 
@@ -169,8 +165,8 @@ public class Snowflake implements Serializable {
      * @param isUseSystemClock    是否使用{@link NonClock} 获取当前时间戳
      * @param randomSequenceLimit 限定一个随机上限，在不同毫秒下生成序号时，给定一个随机数，避免偶数问题，0表示无随机，上限不包括值本身。
      */
-    public Snowflake(final Date epochDate, final long workerId, final long dataCenterId,
-                     final boolean isUseSystemClock, final long randomSequenceLimit) {
+    public Snowflake(final Date epochDate, final long workerId, final long dataCenterId, final boolean isUseSystemClock,
+            final long randomSequenceLimit) {
         this.twepoch = (null != epochDate) ? epochDate.getTime() : DEFAULT_TWEPOCH;
         this.workerId = Assert.checkBetween(workerId, 0, MAX_WORKER_ID);
         this.dataCenterId = Assert.checkBetween(dataCenterId, 0, MAX_DATA_CENTER_ID);
@@ -235,10 +231,8 @@ public class Snowflake implements Serializable {
 
         lastTimestamp = timestamp;
 
-        return ((timestamp - twepoch) << TIMESTAMP_LEFT_SHIFT)
-                | (dataCenterId << DATA_CENTER_ID_SHIFT)
-                | (workerId << WORKER_ID_SHIFT)
-                | sequence;
+        return ((timestamp - twepoch) << TIMESTAMP_LEFT_SHIFT) | (dataCenterId << DATA_CENTER_ID_SHIFT)
+                | (workerId << WORKER_ID_SHIFT) | sequence;
     }
 
     /**
@@ -269,15 +263,18 @@ public class Snowflake implements Serializable {
      * @param ignoreCenterAndWorker 是否忽略数据中心和机器节点的占位，忽略后可获得分布式环境全局可信赖的起终点。
      * @return data-ID起点，Value-ID终点
      */
-    public Pair<Long, Long> getIdScopeByTimestamp(final long timestampStart, final long timestampEnd, final boolean ignoreCenterAndWorker) {
+    public Pair<Long, Long> getIdScopeByTimestamp(final long timestampStart, final long timestampEnd,
+            final boolean ignoreCenterAndWorker) {
         final long startTimeMinId = (timestampStart - twepoch) << TIMESTAMP_LEFT_SHIFT;
         final long endTimeMinId = (timestampEnd - twepoch) << TIMESTAMP_LEFT_SHIFT;
         if (ignoreCenterAndWorker) {
             final long endId = endTimeMinId | ~(-1 << TIMESTAMP_LEFT_SHIFT);
             return Pair.of(startTimeMinId, endId);
         } else {
-            final long startId = startTimeMinId | (dataCenterId << DATA_CENTER_ID_SHIFT) | (workerId << WORKER_ID_SHIFT);
-            final long endId = endTimeMinId | (dataCenterId << DATA_CENTER_ID_SHIFT) | (workerId << WORKER_ID_SHIFT) | SEQUENCE_MASK;
+            final long startId = startTimeMinId | (dataCenterId << DATA_CENTER_ID_SHIFT)
+                    | (workerId << WORKER_ID_SHIFT);
+            final long endId = endTimeMinId | (dataCenterId << DATA_CENTER_ID_SHIFT) | (workerId << WORKER_ID_SHIFT)
+                    | SEQUENCE_MASK;
             return Pair.of(startId, endId);
         }
     }

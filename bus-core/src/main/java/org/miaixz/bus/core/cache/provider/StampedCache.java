@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.cache.provider;
 
 import org.miaixz.bus.core.center.iterator.CopiedIterator;
@@ -45,8 +45,7 @@ public abstract class StampedCache<K, V> extends AbstractCache<K, V> {
     private static final long serialVersionUID = -1L;
 
     /**
-     * 乐观锁，此处使用乐观锁解决读多写少的场景
-     * get时乐观读，再检查是否修改，修改则转入悲观读重新读一遍，可以有效解决在写时阻塞大量读操作的情况
+     * 乐观锁，此处使用乐观锁解决读多写少的场景 get时乐观读，再检查是否修改，修改则转入悲观读重新读一遍，可以有效解决在写时阻塞大量读操作的情况
      */
     protected final StampedLock lock = new StampedLock();
 

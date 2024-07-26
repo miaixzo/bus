@@ -24,13 +24,11 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.intern;
 
 /**
- * 规范化表示形式封装
- * 所谓规范化，即当两个对象equals时，规范化的对象则可以实现==
- * 此包中的相关封装类似于 {@link String#intern()}
+ * 规范化表示形式封装 所谓规范化，即当两个对象equals时，规范化的对象则可以实现== 此包中的相关封装类似于 {@link String#intern()}
  *
  * @param <T> 规范化的对象类型
  * @author Kimi Liu

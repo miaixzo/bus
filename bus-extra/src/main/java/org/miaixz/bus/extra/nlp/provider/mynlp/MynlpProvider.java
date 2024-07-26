@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.nlp.provider.mynlp;
 
 import com.mayabot.nlp.Mynlp;
@@ -35,9 +35,7 @@ import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;
 
 /**
- * MYNLP 中文NLP工具包分词实现
- * 项目地址：https://github.com/mayabot/mynlp/
- * {@link Lexer} 线程安全
+ * MYNLP 中文NLP工具包分词实现 项目地址：https://github.com/mayabot/mynlp/ {@link Lexer} 线程安全
  *
  * @author Kimi Liu
  * @since Java 17+

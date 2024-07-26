@@ -24,12 +24,11 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.math;
 
 /**
- * 通过位运算表示状态的工具类
- * 参数必须是 `偶数` 且 `大于等于0`
+ * 通过位运算表示状态的工具类 参数必须是 `偶数` 且 `大于等于0`
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -87,8 +86,8 @@ public class BitStatus {
     /**
      * 检查
      * <ul>
-     *     <li>必须大于0</li>
-     *     <li>必须为偶数</li>
+     * <li>必须大于0</li>
+     * <li>必须为偶数</li>
      * </ul>
      *
      * @param args 被检查的状态

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.center;
 
 import org.miaixz.bus.core.xyz.IoKit;
@@ -36,8 +36,7 @@ import java.io.OutputStream;
 import java.io.Serializable;
 
 /**
- * TEA（Corrected Block Tiny Encryption Algorithm）算法实现
- * 来自：https://github.com/xxtea/xxtea-java
+ * TEA（Corrected Block Tiny Encryption Algorithm）算法实现 来自：https://github.com/xxtea/xxtea-java
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -124,9 +123,7 @@ public class TEA implements Encryptor, Decryptor, Serializable {
     }
 
     private static int[] toIntArray(final byte[] data, final boolean includeLength) {
-        int n = (((data.length & 3) == 0)
-                ? (data.length >>> 2)
-                : ((data.length >>> 2) + 1));
+        int n = (((data.length & 3) == 0) ? (data.length >>> 2) : ((data.length >>> 2) + 1));
         final int[] result;
 
         if (includeLength) {
@@ -166,9 +163,7 @@ public class TEA implements Encryptor, Decryptor, Serializable {
         if (data.length == 0) {
             return data;
         }
-        return toByteArray(encrypt(
-                toIntArray(data, true),
-                toIntArray(fixKey(key), false)), false);
+        return toByteArray(encrypt(toIntArray(data, true), toIntArray(fixKey(key), false)), false);
     }
 
     @Override
@@ -181,9 +176,7 @@ public class TEA implements Encryptor, Decryptor, Serializable {
         if (data.length == 0) {
             return data;
         }
-        return toByteArray(decrypt(
-                toIntArray(data, false),
-                toIntArray(fixKey(key), false)), true);
+        return toByteArray(decrypt(toIntArray(data, false), toIntArray(fixKey(key), false)), true);
     }
 
     @Override

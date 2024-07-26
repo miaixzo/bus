@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.loader;
 
 import org.miaixz.bus.core.Loader;
@@ -32,9 +32,7 @@ import org.miaixz.bus.core.Loader;
 import java.io.Serializable;
 
 /**
- * 懒加载加载器
- * 在load方法被调用前，对象未被加载，直到被调用后才开始加载
- * 此加载器常用于对象比较庞大而不一定被使用的情况，用于减少启动时资源占用问题
+ * 懒加载加载器 在load方法被调用前，对象未被加载，直到被调用后才开始加载 此加载器常用于对象比较庞大而不一定被使用的情况，用于减少启动时资源占用问题
  * 此加载器使用双重检查（Double-Check）方式检查对象是否被加载，避免多线程下重复加载或加载丢失问题
  *
  * @param <T> 被加载对象类型
@@ -68,8 +66,7 @@ public abstract class LazyLoader<T> implements Loader<T>, Serializable {
     }
 
     /**
-     * 初始化被加载的对象
-     * 如果对象从未被加载过，调用此方法初始化加载对象，此方法只被调用一次
+     * 初始化被加载的对象 如果对象从未被加载过，调用此方法初始化加载对象，此方法只被调用一次
      *
      * @return 被加载的对象
      */

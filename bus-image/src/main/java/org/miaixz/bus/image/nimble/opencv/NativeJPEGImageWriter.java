@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv;
 
 import org.miaixz.bus.image.nimble.Photometric;
@@ -97,9 +97,8 @@ public class NativeJPEGImageWriter extends ImageWriter {
         ImageDescriptor desc = ((BytesWithImageImageDescriptor) stream).getImageDescriptor();
         Photometric pi = desc.getPhotometricInterpretation();
 
-        if (jpegParams.isCompressionLossless() && (Photometric.YBR_FULL_422 == pi
-                || Photometric.YBR_PARTIAL_422 == pi || Photometric.YBR_PARTIAL_420 == pi
-                || Photometric.YBR_ICT == pi || Photometric.YBR_RCT == pi)) {
+        if (jpegParams.isCompressionLossless() && (Photometric.YBR_FULL_422 == pi || Photometric.YBR_PARTIAL_422 == pi
+                || Photometric.YBR_PARTIAL_420 == pi || Photometric.YBR_ICT == pi || Photometric.YBR_RCT == pi)) {
             throw new IllegalArgumentException(
                     "True lossless encoder: Photometric interpretation is not supported: " + pi);
         }
@@ -140,9 +139,13 @@ public class NativeJPEGImageWriter extends ImageWriter {
                 params[Imgcodecs.DICOM_PARAM_INTERLEAVE_MODE] = Imgcodecs.ILV_SAMPLE; // Interleave mode
                 params[Imgcodecs.DICOM_PARAM_COLOR_MODEL] = epi; // Photometric interpretation
                 params[Imgcodecs.DICOM_PARAM_JPEG_MODE] = jpegParams.getMode(); // JPEG Codec mode
-                params[Imgcodecs.DICOM_PARAM_JPEG_QUALITY] = (int) (jpegParams.getCompressionQuality() * 100); // JPEG lossy quality
+                params[Imgcodecs.DICOM_PARAM_JPEG_QUALITY] = (int) (jpegParams.getCompressionQuality() * 100); // JPEG
+                                                                                                               // lossy
+                                                                                                               // quality
                 params[Imgcodecs.DICOM_PARAM_JPEG_PREDICTION] = jpegParams.getPrediction(); // JPEG lossless prediction
-                params[Imgcodecs.DICOM_PARAM_JPEG_PT_TRANSFORM] = jpegParams.getPointTransform(); // JPEG lossless transformation point
+                params[Imgcodecs.DICOM_PARAM_JPEG_PT_TRANSFORM] = jpegParams.getPointTransform(); // JPEG lossless
+                                                                                                  // transformation
+                                                                                                  // point
 
                 dicomParams = new MatOfInt(params);
                 buf = Imgcodecs.dicomJpgWrite(mat, dicomParams, "");

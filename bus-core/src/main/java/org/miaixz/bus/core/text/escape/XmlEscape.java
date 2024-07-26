@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text.escape;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -54,10 +54,10 @@ public class XmlEscape extends ReplacerChain {
      */
     protected static final String[][] BASIC_ESCAPE = {
             // {"'", "&apos;"}, // " - single-quote
-            {"\"", "&quot;"}, // " - double-quote
-            {Symbol.AND, "&amp;"}, // & - ampersand
-            {"<", "&lt;"}, // < - less-than
-            {">", "&gt;"}, // > - greater-than
+            { "\"", "&quot;" }, // " - double-quote
+            { Symbol.AND, "&amp;" }, // & - ampersand
+            { "<", "&lt;" }, // < - less-than
+            { ">", "&gt;" }, // > - greater-than
     };
     private static final long serialVersionUID = -1L;
 

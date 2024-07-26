@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cache.support;
 
 import org.miaixz.bus.cache.magic.AnnoHolder;
@@ -48,7 +48,7 @@ public class KeyGenerator {
     }
 
     public static Map[] generateMultiKey(AnnoHolder annoHolder, Object[] argValues) {
-        /*由于要将Collection内的元素作为Map的Key, 因此就要求元素必须实现的hashcode & equals方法*/
+        /* 由于要将Collection内的元素作为Map的Key, 因此就要求元素必须实现的hashcode & equals方法 */
         Map<Object, String> multiEntry2Key = new LinkedHashMap<>();
         Map<String, Object> key2MultiEntry = new LinkedHashMap<>();
 
@@ -78,11 +78,11 @@ public class KeyGenerator {
             ++i;
         }
 
-        return new Map[]{multiEntry2Key, key2MultiEntry};
+        return new Map[] { multiEntry2Key, key2MultiEntry };
     }
 
-    private static String doGenerateKey(Map<Integer, CacheKey> parameterIndex2CacheKey,
-                                        String prefix, String[] argNames, Object[] argValues) {
+    private static String doGenerateKey(Map<Integer, CacheKey> parameterIndex2CacheKey, String prefix,
+            String[] argNames, Object[] argValues) {
 
         StringBuilder sb = new StringBuilder(prefix);
         for (Map.Entry<Integer, CacheKey> entry : parameterIndex2CacheKey.entrySet()) {
@@ -100,8 +100,7 @@ public class KeyGenerator {
     }
 
     /**
-     * 获取当spel表达式为空(null or '')时, 默认的拼装keyPart
-     * 注意: 当multi的spel表达式为空时, 这时会将整个`Collection`实例作为keyPart(当然, 这种情况不会发生)...
+     * 获取当spel表达式为空(null or '')时, 默认的拼装keyPart 注意: 当multi的spel表达式为空时, 这时会将整个`Collection`实例作为keyPart(当然, 这种情况不会发生)...
      */
     private static Object getDefaultValue(Object[] argValues, int argIndex) {
         return argValues[argIndex];

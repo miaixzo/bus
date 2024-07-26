@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.net.url;
 
 import org.miaixz.bus.core.lang.Charset;
@@ -42,10 +42,10 @@ public class UrlEncoder {
     private static final java.nio.charset.Charset DEFAULT_CHARSET = Charset.UTF_8;
 
     /**
-     * 编码URL，默认使用UTF-8编码
-     * 将需要转换的内容（ASCII码形式之外的内容），用十六进制表示法转换出来，并在之前加上%开头。。不参与编码的字符：
+     * 编码URL，默认使用UTF-8编码 将需要转换的内容（ASCII码形式之外的内容），用十六进制表示法转换出来，并在之前加上%开头。。不参与编码的字符：
+     * 
      * <pre>
-     *     unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"
+     * unreserved = ALPHA / DIGIT / "-" / "." / "_" / "~"
      * </pre>
      *
      * @param url URL
@@ -57,10 +57,10 @@ public class UrlEncoder {
     }
 
     /**
-     * 编码URL
-     * 将需要转换的内容（ASCII码形式之外的内容），用十六进制表示法转换出来，并在之前加上%开头。不参与编码的字符：
+     * 编码URL 将需要转换的内容（ASCII码形式之外的内容），用十六进制表示法转换出来，并在之前加上%开头。不参与编码的字符：
+     * 
      * <pre>
-     *     unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"
+     * unreserved = ALPHA / DIGIT / "-" / "." / "_" / "~"
      * </pre>
      *
      * @param url     URL
@@ -73,9 +73,7 @@ public class UrlEncoder {
     }
 
     /**
-     * 编码URL，默认使用UTF-8编码
-     * 将需要转换的内容（ASCII码形式之外的内容），用十六进制表示法转换出来，并在之前加上%开头。
-     * 此方法用于POST请求中的请求体自动编码，转义大部分特殊字符
+     * 编码URL，默认使用UTF-8编码 将需要转换的内容（ASCII码形式之外的内容），用十六进制表示法转换出来，并在之前加上%开头。 此方法用于POST请求中的请求体自动编码，转义大部分特殊字符
      *
      * @param url URL
      * @return 编码后的URL
@@ -85,9 +83,7 @@ public class UrlEncoder {
     }
 
     /**
-     * 编码字符为URL中查询语句
-     * 将需要转换的内容（ASCII码形式之外的内容），用十六进制表示法转换出来，并在之前加上%开头。
-     * 此方法用于POST请求中的请求体自动编码，转义大部分特殊字符
+     * 编码字符为URL中查询语句 将需要转换的内容（ASCII码形式之外的内容），用十六进制表示法转换出来，并在之前加上%开头。 此方法用于POST请求中的请求体自动编码，转义大部分特殊字符
      *
      * @param url     被编码内容
      * @param charset 编码

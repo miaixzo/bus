@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -56,8 +56,7 @@ import java.util.UUID;
  */
 public class HL7Rcv {
 
-    private static final SAXTransformerFactory factory =
-            (SAXTransformerFactory) TransformerFactory.newInstance();
+    private static final SAXTransformerFactory factory = (SAXTransformerFactory) TransformerFactory.newInstance();
 
     private final Device device = new Device("hl7rcv");
     private final HL7DeviceExtension hl7Ext = new HL7DeviceExtension();
@@ -74,9 +73,7 @@ public class HL7Rcv {
         try {
             return HL7Rcv.this.onMessage(msg);
         } catch (Exception e) {
-            throw new HL7Exception(
-                    new ERRSegment(msg.msh()).setUserMessage(e.getMessage()),
-                    e);
+            throw new HL7Exception(new ERRSegment(msg.msh()).setUserMessage(e.getMessage()), e);
         }
     };
 
@@ -95,8 +92,7 @@ public class HL7Rcv {
     }
 
     public void setXSLT(URL xslt) throws Exception {
-        tpls = SAXTransformer.newTemplates(
-                new StreamSource(xslt.openStream(), xslt.toExternalForm()));
+        tpls = SAXTransformer.newTemplates(new StreamSource(xslt.openStream(), xslt.toExternalForm()));
     }
 
     public void setXSLTParameters(String[] xsltParams) {
@@ -111,23 +107,18 @@ public class HL7Rcv {
         this.useUUIDForFilename = useUUIDForFilename;
     }
 
-    private UnparsedHL7Message onMessage(UnparsedHL7Message msg)
-            throws Exception {
+    private UnparsedHL7Message onMessage(UnparsedHL7Message msg) throws Exception {
         if (storageDir != null)
-            storeToFile(msg.data(), new File(
-                    new File(storageDir, msg.msh().getMessageType()),
-                    useUUIDForFilename
-                            ? UUID.randomUUID().toString()
-                            : msg.msh().getField(9, "_NULL_")));
+            storeToFile(msg.data(), new File(new File(storageDir, msg.msh().getMessageType()),
+                    useUUIDForFilename ? UUID.randomUUID().toString() : msg.msh().getField(9, "_NULL_")));
         if (responseDelay > 0)
             try {
                 Thread.sleep(responseDelay);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
-        return new UnparsedHL7Message(tpls == null
-                ? HL7Message.makeACK(msg.msh(), HL7Exception.AA, null).getBytes(null)
-                : xslt(msg));
+        return new UnparsedHL7Message(
+                tpls == null ? HL7Message.makeACK(msg.msh(), HL7Exception.AA, null).getBytes(null) : xslt(msg));
     }
 
     private void storeToFile(byte[] data, File f) throws IOException {
@@ -141,8 +132,7 @@ public class HL7Rcv {
         }
     }
 
-    private byte[] xslt(UnparsedHL7Message msg)
-            throws Exception {
+    private byte[] xslt(UnparsedHL7Message msg) throws Exception {
         String charsetName = HL7Charset.toCharsetName(msg.msh().getField(17, charset));
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         TransformerHandler th = factory.newTransformerHandler(tpls);
@@ -152,11 +142,8 @@ public class HL7Rcv {
         if (xsltParams != null)
             for (int i = 1; i < xsltParams.length; i++, i++)
                 t.setParameter(xsltParams[i - 1], xsltParams[i]);
-        th.setResult(new SAXResult(new HL7ContentHandler(
-                new OutputStreamWriter(out, charsetName))));
-        new HL7Parser(th).parse(new InputStreamReader(
-                new ByteArrayInputStream(msg.data()),
-                charsetName));
+        th.setResult(new SAXResult(new HL7ContentHandler(new OutputStreamWriter(out, charsetName))));
+        new HL7Parser(th).parse(new InputStreamReader(new ByteArrayInputStream(msg.data()), charsetName));
         return out.toByteArray();
     }
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric;
 
 import org.miaixz.bus.image.metric.pdu.ExtendedNegotiation;
@@ -46,22 +46,18 @@ public class StorageOptions implements Serializable {
     private ElementCoercion elementCoercion;
 
     public StorageOptions() {
-        this(LevelOfSupport.UNSPECIFIED,
-                DigitalSignatureSupport.UNSPECIFIED,
-                ElementCoercion.UNSPECIFIED);
+        this(LevelOfSupport.UNSPECIFIED, DigitalSignatureSupport.UNSPECIFIED, ElementCoercion.UNSPECIFIED);
     }
 
-    public StorageOptions(LevelOfSupport levelOfSupport,
-                          DigitalSignatureSupport levelOfDigitalSignatureSupport,
-                          ElementCoercion getElementCoercion) {
+    public StorageOptions(LevelOfSupport levelOfSupport, DigitalSignatureSupport levelOfDigitalSignatureSupport,
+            ElementCoercion getElementCoercion) {
         this.levelOfSupport = levelOfSupport;
         this.digitalSignatureSupport = levelOfDigitalSignatureSupport;
         this.elementCoercion = getElementCoercion;
     }
 
     public static StorageOptions valueOf(ExtendedNegotiation extNeg) {
-        return new StorageOptions(
-                LevelOfSupport.valueOf(extNeg.getField(0, (byte) 3)),
+        return new StorageOptions(LevelOfSupport.valueOf(extNeg.getField(0, (byte) 3)),
                 DigitalSignatureSupport.valueOf(extNeg.getField(2, (byte) 0)),
                 ElementCoercion.valueOf(extNeg.getField(4, (byte) 2)));
     }
@@ -78,8 +74,7 @@ public class StorageOptions implements Serializable {
         return digitalSignatureSupport;
     }
 
-    public final void setDigitalSignatureSupport(
-            DigitalSignatureSupport digitalSignatureSupport) {
+    public final void setDigitalSignatureSupport(DigitalSignatureSupport digitalSignatureSupport) {
         this.digitalSignatureSupport = digitalSignatureSupport;
     }
 
@@ -92,17 +87,13 @@ public class StorageOptions implements Serializable {
     }
 
     public byte[] toExtendedNegotiationInformation() {
-        return new byte[]{
-                (byte) levelOfSupport.ordinal(), 0,
-                (byte) digitalSignatureSupport.ordinal(), 0,
-                (byte) elementCoercion.ordinal(), 0};
+        return new byte[] { (byte) levelOfSupport.ordinal(), 0, (byte) digitalSignatureSupport.ordinal(), 0,
+                (byte) elementCoercion.ordinal(), 0 };
     }
 
     @Override
     public int hashCode() {
-        return levelOfSupport.hashCode()
-                + digitalSignatureSupport.hashCode()
-                + elementCoercion.hashCode();
+        return levelOfSupport.hashCode() + digitalSignatureSupport.hashCode() + elementCoercion.hashCode();
     }
 
     @Override
@@ -113,16 +104,14 @@ public class StorageOptions implements Serializable {
         if (!(o instanceof StorageOptions other))
             return false;
 
-        return levelOfSupport == other.levelOfSupport
-                && digitalSignatureSupport == other.digitalSignatureSupport
+        return levelOfSupport == other.levelOfSupport && digitalSignatureSupport == other.digitalSignatureSupport
                 && elementCoercion == other.elementCoercion;
     }
 
     @Override
     public String toString() {
-        return "StorageOptions[levelOfSupport=" + levelOfSupport.ordinal()
-                + ", digitalSignatureSupport=" + digitalSignatureSupport.ordinal()
-                + ", elementCoercion=" + elementCoercion.ordinal() + "]";
+        return "StorageOptions[levelOfSupport=" + levelOfSupport.ordinal() + ", digitalSignatureSupport="
+                + digitalSignatureSupport.ordinal() + ", elementCoercion=" + elementCoercion.ordinal() + "]";
     }
 
     public enum LevelOfSupport {
@@ -130,12 +119,12 @@ public class StorageOptions implements Serializable {
 
         public static LevelOfSupport valueOf(int level) {
             switch (level) {
-                case 0:
-                    return LEVEL_0;
-                case 1:
-                    return LEVEL_1;
-                case 2:
-                    return LEVEL_2;
+            case 0:
+                return LEVEL_0;
+            case 1:
+                return LEVEL_1;
+            case 2:
+                return LEVEL_2;
             }
             return UNSPECIFIED;
         }
@@ -146,12 +135,12 @@ public class StorageOptions implements Serializable {
 
         public static DigitalSignatureSupport valueOf(int level) {
             switch (level) {
-                case 1:
-                    return LEVEL_1;
-                case 2:
-                    return LEVEL_2;
-                case 3:
-                    return LEVEL_3;
+            case 1:
+                return LEVEL_1;
+            case 2:
+                return LEVEL_2;
+            case 3:
+                return LEVEL_3;
             }
             return UNSPECIFIED;
         }
@@ -162,10 +151,10 @@ public class StorageOptions implements Serializable {
 
         public static ElementCoercion valueOf(int i) {
             switch (i) {
-                case 0:
-                    return NO;
-                case 1:
-                    return YES;
+            case 0:
+                return NO;
+            case 1:
+                return YES;
             }
             return UNSPECIFIED;
         }

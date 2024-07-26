@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.data;
 
 import java.io.Serializable;
@@ -61,18 +61,18 @@ public class ItemPointer implements Serializable {
     }
 
     public boolean equalsIgnoreItemIndex(ItemPointer that) {
-        return sequenceTag == that.sequenceTag &&
-                Objects.equals(privateCreator, that.privateCreator);
+        return sequenceTag == that.sequenceTag && Objects.equals(privateCreator, that.privateCreator);
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         ItemPointer that = (ItemPointer) o;
-        return sequenceTag == that.sequenceTag &&
-                itemIndex == that.itemIndex &&
-                Objects.equals(privateCreator, that.privateCreator);
+        return sequenceTag == that.sequenceTag && itemIndex == that.itemIndex
+                && Objects.equals(privateCreator, that.privateCreator);
     }
 
     @Override
@@ -82,11 +82,8 @@ public class ItemPointer implements Serializable {
 
     @Override
     public String toString() {
-        return "ItemPointer{" +
-                "sequenceTag=" + sequenceTag +
-                ", privateCreator='" + privateCreator + '\'' +
-                ", itemIndex=" + itemIndex +
-                '}';
+        return "ItemPointer{" + "sequenceTag=" + sequenceTag + ", privateCreator='" + privateCreator + '\''
+                + ", itemIndex=" + itemIndex + '}';
     }
 
 }

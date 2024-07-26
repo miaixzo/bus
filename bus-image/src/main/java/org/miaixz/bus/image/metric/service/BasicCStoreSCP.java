@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.service;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -53,8 +53,8 @@ public class BasicCStoreSCP extends AbstractImageService {
     }
 
     @Override
-    public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse,
-                          Attributes rq, PDVInputStream data) throws IOException {
+    public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes rq, PDVInputStream data)
+            throws IOException {
         if (dimse != Dimse.C_STORE_RQ)
             throw new ImageServiceException(Status.UnrecognizedOperation);
 
@@ -63,13 +63,13 @@ public class BasicCStoreSCP extends AbstractImageService {
         as.tryWriteDimseRSP(pc, rsp);
     }
 
-    protected void store(Association as, PresentationContext pc, Attributes rq,
-                         PDVInputStream data, Attributes rsp) throws IOException {
+    protected void store(Association as, PresentationContext pc, Attributes rq, PDVInputStream data, Attributes rsp)
+            throws IOException {
     }
 
     @Override
-    protected void onDimseRQ(Association as, PresentationContext pc,
-                             Dimse dimse, Attributes cmd, Attributes data) throws IOException {
+    protected void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes cmd, Attributes data)
+            throws IOException {
         throw new UnsupportedOperationException();
     }
 

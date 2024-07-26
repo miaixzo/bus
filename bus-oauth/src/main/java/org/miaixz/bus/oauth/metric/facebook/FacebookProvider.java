@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.facebook;
 
 import com.alibaba.fastjson.JSONObject;
@@ -61,11 +61,9 @@ public class FacebookProvider extends AbstractProvider {
         String response = doPostAuthorizationCode(callback.getCode());
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         this.checkResponse(accessTokenObject);
-        return AccToken.builder()
-                .accessToken(accessTokenObject.getString("access_token"))
+        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
                 .expireIn(accessTokenObject.getIntValue("expires_in"))
-                .tokenType(accessTokenObject.getString("token_type"))
-                .build();
+                .tokenType(accessTokenObject.getString("token_type")).build();
     }
 
     @Override
@@ -73,19 +71,10 @@ public class FacebookProvider extends AbstractProvider {
         String userInfo = doGetUserInfo(accToken);
         JSONObject object = JSONObject.parseObject(userInfo);
         this.checkResponse(object);
-        return Material.builder()
-                .rawJson(object)
-                .uuid(object.getString("id"))
-                .username(object.getString("name"))
-                .nickname(object.getString("name"))
-                .blog(object.getString("link"))
-                .avatar(getUserPicture(object))
-                .location(object.getString("locale"))
-                .email(object.getString("email"))
-                .gender(Gender.of(object.getString("gender")))
-                .token(accToken)
-                .source(complex.toString())
-                .build();
+        return Material.builder().rawJson(object).uuid(object.getString("id")).username(object.getString("name"))
+                .nickname(object.getString("name")).blog(object.getString("link")).avatar(getUserPicture(object))
+                .location(object.getString("locale")).email(object.getString("email"))
+                .gender(Gender.of(object.getString("gender"))).token(accToken).source(complex.toString()).build();
     }
 
     private String getUserPicture(JSONObject object) {
@@ -108,10 +97,8 @@ public class FacebookProvider extends AbstractProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(complex.userInfo())
-                .queryParam("access_token", accToken.getAccessToken())
-                .queryParam("fields", "id,name,birthday,gender,hometown,email,devices,picture.width(400),link")
-                .build();
+        return Builder.fromUrl(complex.userInfo()).queryParam("access_token", accToken.getAccessToken())
+                .queryParam("fields", "id,name,birthday,gender,hometown,email,devices,picture.width(400),link").build();
     }
 
     /**

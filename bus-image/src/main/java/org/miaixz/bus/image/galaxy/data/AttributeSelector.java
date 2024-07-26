@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.data;
 
 import org.miaixz.bus.image.Tag;
@@ -68,9 +68,7 @@ public class AttributeSelector implements Serializable {
     public static AttributeSelector valueOf(String s) {
         int fromIndex = s.lastIndexOf("DicomAttribute");
         try {
-            return new AttributeSelector(
-                    selectTag(s, fromIndex),
-                    selectPrivateCreator(s, fromIndex),
+            return new AttributeSelector(selectTag(s, fromIndex), selectPrivateCreator(s, fromIndex),
                     itemPointersOf(s, fromIndex));
         } catch (Exception e) {
             throw new IllegalArgumentException(s);
@@ -98,11 +96,9 @@ public class AttributeSelector implements Serializable {
         ArrayList<ItemPointer> list = new ArrayList<>();
         int fromIndex = 0;
         while (fromIndex < endIndex) {
-            list.add(new ItemPointer(
-                    selectPrivateCreator(s, fromIndex), selectTag(s, fromIndex),
+            list.add(new ItemPointer(selectPrivateCreator(s, fromIndex), selectTag(s, fromIndex),
                     selectNumber(s, fromIndex) - 1));
-            fromIndex = s.indexOf("DicomAttribute",
-                    fromIndex + MIN_ITEM_POINTER_STR_LEN);
+            fromIndex = s.indexOf("DicomAttribute", fromIndex + MIN_ITEM_POINTER_STR_LEN);
         }
         list.trimToSize();
         return list;
@@ -148,12 +144,13 @@ public class AttributeSelector implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         AttributeSelector that = (AttributeSelector) o;
-        return tag == that.tag &&
-                Objects.equals(privateCreator, that.privateCreator) &&
-                itemPointers.equals(that.itemPointers);
+        return tag == that.tag && Objects.equals(privateCreator, that.privateCreator)
+                && itemPointers.equals(that.itemPointers);
     }
 
     @Override
@@ -188,8 +185,7 @@ public class AttributeSelector implements Serializable {
         for (int i = 0; i < level; i++) {
             ItemPointer itemPointer = itemPointers.get(i);
             ItemPointer other = itemPointer(i);
-            if (!(itemPointer.itemIndex < 0 || other.itemIndex < 0
-                    ? itemPointer.equalsIgnoreItemIndex(other)
+            if (!(itemPointer.itemIndex < 0 || other.itemIndex < 0 ? itemPointer.equalsIgnoreItemIndex(other)
                     : itemPointer.equals(other))) {
                 return false;
             }

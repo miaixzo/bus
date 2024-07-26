@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.center;
 
 import org.bouncycastle.crypto.AlphabetMapper;
@@ -35,20 +35,18 @@ import org.miaixz.bus.crypto.Padding;
 import java.io.Serializable;
 
 /**
- * FPE(Format Preserving Encryption)实现，支持FF1和FF3-1模式。
- * 相关介绍见：https://anquan.baidu.com/article/193
+ * FPE(Format Preserving Encryption)实现，支持FF1和FF3-1模式。 相关介绍见：https://anquan.baidu.com/article/193
  *
  * <p>
- * FPE是一种格式保持与明文相同的加密方式，通常用于数据脱敏中，因为它需要保持明密文的格式相同，
- * 例如社保号经过加密之后并不是固定长度的杂文，而是相同格式、打乱的号码，依然是社保号的格式。
+ * FPE是一种格式保持与明文相同的加密方式，通常用于数据脱敏中，因为它需要保持明密文的格式相同， 例如社保号经过加密之后并不是固定长度的杂文，而是相同格式、打乱的号码，依然是社保号的格式。
  * </p>
  * <p>
  * FPE算法可以保证：
  *
  * <ul>
- *     <li>数据长度不变。加密前长度是N，加密后长度仍然是N</li>
- *     <li>数据类型不变，加密前是数字类型，加密后仍然是数字类型</li>
- *     <li>加密过程可逆，加密后的数据可以通过密钥解密还原原始数据</li>
+ * <li>数据长度不变。加密前长度是N，加密后长度仍然是N</li>
+ * <li>数据类型不变，加密前是数字类型，加密后仍然是数字类型</li>
+ * <li>加密过程可逆，加密后的数据可以通过密钥解密还原原始数据</li>
  * </ul>
  * <p>
  * 此类基于BouncyCastle实现
@@ -95,16 +93,15 @@ public class FPE implements Serializable {
 
         if (null == tweak) {
             switch (mode) {
-                case FF1:
-                    tweak = new byte[0];
-                    break;
-                case FF3_1:
-                    // FF3-1要求必须为56 bits
-                    tweak = new byte[7];
+            case FF1:
+                tweak = new byte[0];
+                break;
+            case FF3_1:
+                // FF3-1要求必须为56 bits
+                tweak = new byte[7];
             }
         }
-        this.aes = new AES(mode.value, Padding.NoPadding.name(),
-                Keeper.generateKey(mode.value, key),
+        this.aes = new AES(mode.value, Padding.NoPadding.name(), Keeper.generateKey(mode.value, key),
                 new FPEParameterSpec(mapper.getRadix(), tweak));
         this.mapper = mapper;
     }
@@ -164,8 +161,7 @@ public class FPE implements Serializable {
     }
 
     /**
-     * FPE模式
-     * FPE包括两种模式：FF1和FF3（FF2弃用），核心均为Feistel网络结构。
+     * FPE模式 FPE包括两种模式：FF1和FF3（FF2弃用），核心均为Feistel网络结构。
      */
     public enum FPEMode {
         /**

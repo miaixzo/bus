@@ -24,15 +24,14 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.check;
 
 import java.io.Serializable;
 import java.util.zip.Checksum;
 
 /**
- * CRC8 循环冗余校验码（Cyclic Redundancy Check）实现
- * 代码来自：<a href="https://github.com/BBSc0der">https://github.com/BBSc0der</a>
+ * CRC8 循环冗余校验码（Cyclic Redundancy Check）实现 代码来自：<a href="https://github.com/BBSc0der">https://github.com/BBSc0der</a>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -75,7 +74,8 @@ public class CRC8 implements Checksum, Serializable {
     }
 
     /**
-     * Updates the current check with the specified array of bytes. Equivalent to calling {@code update(buffer, 0, buffer.length)}.
+     * Updates the current check with the specified array of bytes. Equivalent to calling
+     * {@code update(buffer, 0, buffer.length)}.
      *
      * @param buffer the byte array to update the check with
      */
@@ -85,7 +85,7 @@ public class CRC8 implements Checksum, Serializable {
 
     @Override
     public void update(final int b) {
-        update(new byte[]{(byte) b}, 0, 1);
+        update(new byte[] { (byte) b }, 0, 1);
     }
 
     @Override

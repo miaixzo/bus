@@ -1,7 +1,7 @@
 language: java
 
 jdk:
-  - openjdk17
+  - openjdk21
 
 notifications:
   email: false
@@ -15,26 +15,32 @@ script:
   - cd bus-core && mvn install -DskipTests=true
   - cd ../bus-logger && mvn install -DskipTests=true
   - cd ../bus-setting && mvn install -DskipTests=true
-  - cd ../bus-proxy && mvn install -DskipTests=true
   - cd ../bus-opencv && mvn install -DskipTests=true
+  - cd ../bus-proxy && mvn install -DskipTests=true
   - cd ../bus-cron && mvn install -DskipTests=true
   - cd ../bus-crypto && mvn install -DskipTests=true
+  - cd ../bus-extra && mvn install -DskipTests=true
+  - cd ../bus-cache && mvn install -DskipTests=true
   - cd ../bus-gitlab && mvn install -DskipTests=true
   - cd ../bus-health && mvn install -DskipTests=true
   - cd ../bus-http && mvn install -DskipTests=true
+  - cd ../bus-goalie && mvn install -DskipTests=true
   - cd ../bus-image && mvn install -DskipTests=true
-  - cd ../bus-extra && mvn install -DskipTests=true
-  - cd ../bus-cache && mvn install -DskipTests=true
   - cd ../bus-limiter && mvn install -DskipTests=true
   - cd ../bus-mapper && mvn install -DskipTests=true
   - cd ../bus-notify && mvn install -DskipTests=true
   - cd ../bus-oauth && mvn install -DskipTests=true
   - cd ../bus-office && mvn install -DskipTests=true
   - cd ../bus-pager && mvn install -DskipTests=true
+  - cd ../bus-parent && mvn install -DskipTests=true
+  - cd ../bus-pay && mvn install -DskipTests=true
   - cd ../bus-sensitive && mvn install -DskipTests=true
+  - cd ../bus-shade && mvn install -DskipTests=true
   - cd ../bus-socket && mvn install -DskipTests=true
+  - cd ../bus-storage && mvn install -DskipTests=true
   - cd ../bus-tracer && mvn install -DskipTests=true
   - cd ../bus-validate && mvn install -DskipTests=true
   - cd ../bus-base && mvn install -DskipTests=true
   - cd ../bus-starter && mvn install -DskipTests=true
-  - cd ../bus-goalie && mvn install -DskipTests=true
+  - cd ../bus-bom && mvn install -DskipTests=true
+  - cd ../bus-all && mvn install -DskipTests=true

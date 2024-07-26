@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.support;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -46,18 +46,9 @@ import java.util.Set;
  */
 public class SimpleType {
 
-    public static final String[] JAVA8_DATE_TIME = {
-            "java.time.Instant",
-            "java.time.LocalDateTime",
-            "java.time.LocalDate",
-            "java.time.LocalTime",
-            "java.time.OffsetDateTime",
-            "java.time.OffsetTime",
-            "java.time.ZonedDateTime",
-            "java.time.Year",
-            "java.time.Month",
-            "java.time.YearMonth"
-    };
+    public static final String[] JAVA8_DATE_TIME = { "java.time.Instant", "java.time.LocalDateTime",
+            "java.time.LocalDate", "java.time.LocalTime", "java.time.OffsetDateTime", "java.time.OffsetTime",
+            "java.time.ZonedDateTime", "java.time.Year", "java.time.Month", "java.time.YearMonth" };
     private static final Set<Class<?>> SIMPLE_TYPE_SET = new HashSet<>();
 
     /**
@@ -79,7 +70,7 @@ public class SimpleType {
         SIMPLE_TYPE_SET.add(Class.class);
         SIMPLE_TYPE_SET.add(BigInteger.class);
         SIMPLE_TYPE_SET.add(BigDecimal.class);
-        //反射方式设置 java8 中的日期类型
+        // 反射方式设置 java8 中的日期类型
         for (String time : JAVA8_DATE_TIME) {
             registerSimpleTypeSilence(time);
         }
@@ -135,7 +126,7 @@ public class SimpleType {
         try {
             SIMPLE_TYPE_SET.add(Class.forName(clazz));
         } catch (ClassNotFoundException e) {
-            //ignore
+            // ignore
         }
     }
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.notify.metric.huawei;
 
 import lombok.AllArgsConstructor;
@@ -47,8 +47,7 @@ import org.miaixz.bus.notify.magic.Material;
 public class HuaweiMaterial extends Material {
 
     /**
-     * API默认请求地址
-     * 当 {@link Context} 中 endpoint 为空时使用地址
+     * API默认请求地址 当 {@link Context} 中 endpoint 为空时使用地址
      */
     @Override
     public String getUrl() {

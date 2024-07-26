@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.loader;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -40,12 +40,9 @@ public class AntFilter extends RegexFilter implements Filter {
     /**
      * 符号
      */
-    public static final String[] SYMBOLS = {
-            Symbol.BACKSLASH, Symbol.DOLLAR, Symbol.PARENTHESE_LEFT,
-            Symbol.PARENTHESE_RIGHT, Symbol.PLUS, Symbol.DOT,
-            Symbol.BRACKET_LEFT, Symbol.BRACKET_RIGHT, Symbol.CARET,
-            Symbol.BRACE_LEFT, Symbol.BRACE_RIGHT, Symbol.OR
-    };
+    public static final String[] SYMBOLS = { Symbol.BACKSLASH, Symbol.DOLLAR, Symbol.PARENTHESE_LEFT,
+            Symbol.PARENTHESE_RIGHT, Symbol.PLUS, Symbol.DOT, Symbol.BRACKET_LEFT, Symbol.BRACKET_RIGHT, Symbol.CARET,
+            Symbol.BRACE_LEFT, Symbol.BRACE_RIGHT, Symbol.OR };
 
     /**
      * 构造
@@ -64,13 +61,16 @@ public class AntFilter extends RegexFilter implements Filter {
      */
     private static String convert(String ant) {
         String regex = ant;
-        for (String symbol : SYMBOLS) regex = regex.replace(symbol, Symbol.C_BACKSLASH + symbol);
+        for (String symbol : SYMBOLS)
+            regex = regex.replace(symbol, Symbol.C_BACKSLASH + symbol);
         regex = regex.replace(Symbol.QUESTION_MARK, ".{1}");
         regex = regex.replace(Symbol.STAR + Symbol.STAR + Symbol.SLASH, "(.{0,}?/){0,}?");
         regex = regex.replace(Symbol.STAR + Symbol.STAR, ".{0,}?");
         regex = regex.replace(Symbol.STAR, "[^/]{0,}?");
-        while (regex.startsWith(Symbol.SLASH)) regex = regex.substring(1);
-        while (regex.endsWith(Symbol.SLASH)) regex = regex.substring(0, regex.length() - 1);
+        while (regex.startsWith(Symbol.SLASH))
+            regex = regex.substring(1);
+        while (regex.endsWith(Symbol.SLASH))
+            regex = regex.substring(0, regex.length() - 1);
         return regex;
     }
 

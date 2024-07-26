@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.mac.hardware;
 
 import com.sun.jna.Pointer;
@@ -76,7 +76,8 @@ public final class MacNetworkIF extends AbstractNetworkIF {
                 int count = ifArray.getCount();
                 for (int i = 0; i < count; i++) {
                     Pointer pNetIf = ifArray.getValueAtIndex(i);
-                    SystemConfiguration.SCNetworkInterfaceRef scNetIf = new SystemConfiguration.SCNetworkInterfaceRef(pNetIf);
+                    SystemConfiguration.SCNetworkInterfaceRef scNetIf = new SystemConfiguration.SCNetworkInterfaceRef(
+                            pNetIf);
                     CFStringRef cfName = SystemConfiguration.INSTANCE.SCNetworkInterfaceGetBSDName(scNetIf);
                     if (cfName != null && name.equals(cfName.stringValue())) {
                         CFStringRef cfDisplayName = SystemConfiguration.INSTANCE

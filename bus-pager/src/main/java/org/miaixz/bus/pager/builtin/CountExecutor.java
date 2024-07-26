@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager.builtin;
 
 import org.apache.ibatis.builder.annotation.ProviderSqlSource;
@@ -93,7 +93,9 @@ public abstract class CountExecutor {
      */
     public static String[] getProviderMethodArgumentNames(ProviderSqlSource providerSqlSource) {
         try {
-            return providerMethodArgumentNamesField != null ? (String[]) providerMethodArgumentNamesField.get(providerSqlSource) : null;
+            return providerMethodArgumentNamesField != null
+                    ? (String[]) providerMethodArgumentNamesField.get(providerSqlSource)
+                    : null;
         } catch (IllegalAccessException e) {
             throw new PageException("Get the ProviderSqlSource property value of providerMethodArgumentNames: " + e, e);
         }
@@ -127,12 +129,12 @@ public abstract class CountExecutor {
      * @return the long
      * @throws SQLException 异常
      */
-    public static Long executeManualCount(Executor executor, MappedStatement countMs,
-                                          Object parameter, BoundSql boundSql,
-                                          ResultHandler resultHandler) throws SQLException {
+    public static Long executeManualCount(Executor executor, MappedStatement countMs, Object parameter,
+            BoundSql boundSql, ResultHandler resultHandler) throws SQLException {
         CacheKey countKey = executor.createCacheKey(countMs, parameter, RowBounds.DEFAULT, boundSql);
         BoundSql countBoundSql = countMs.getBoundSql(parameter);
-        Object countResultList = executor.query(countMs, parameter, RowBounds.DEFAULT, resultHandler, countKey, countBoundSql);
+        Object countResultList = executor.query(countMs, parameter, RowBounds.DEFAULT, resultHandler, countKey,
+                countBoundSql);
         // 某些数据（如 TDEngine）查询 count 无结果时返回 null
         if (countResultList == null || ((List) countResultList).isEmpty()) {
             return 0L;
@@ -153,26 +155,28 @@ public abstract class CountExecutor {
      * @return the long
      * @throws SQLException 异常
      */
-    public static Long executeAutoCount(Dialect dialect, Executor executor, MappedStatement countMs,
-                                        Object parameter, BoundSql boundSql,
-                                        RowBounds rowBounds, ResultHandler resultHandler) throws SQLException {
+    public static Long executeAutoCount(Dialect dialect, Executor executor, MappedStatement countMs, Object parameter,
+            BoundSql boundSql, RowBounds rowBounds, ResultHandler resultHandler) throws SQLException {
         Map<String, Object> additionalParameters = getAdditionalParameter(boundSql);
         // 创建 count 查询的缓存 key
         CacheKey countKey = executor.createCacheKey(countMs, parameter, RowBounds.DEFAULT, boundSql);
         // 调用方言获取 count sql
         String countSql = dialect.getCountSql(countMs, boundSql, parameter, rowBounds, countKey);
         // countKey.update(countSql);
-        BoundSql countBoundSql = new BoundSql(countMs.getConfiguration(), countSql, boundSql.getParameterMappings(), parameter);
+        BoundSql countBoundSql = new BoundSql(countMs.getConfiguration(), countSql, boundSql.getParameterMappings(),
+                parameter);
         // 当使用动态 SQL 时，可能会产生临时的参数，这些参数需要手动设置到新的 BoundSql 中
         for (String key : additionalParameters.keySet()) {
             countBoundSql.setAdditionalParameter(key, additionalParameters.get(key));
         }
         // 对 boundSql 的拦截处理
         if (dialect instanceof BoundSqlHandler.Chain) {
-            countBoundSql = ((BoundSqlHandler.Chain) dialect).doBoundSql(BoundSqlHandler.Type.COUNT_SQL, countBoundSql, countKey);
+            countBoundSql = ((BoundSqlHandler.Chain) dialect).doBoundSql(BoundSqlHandler.Type.COUNT_SQL, countBoundSql,
+                    countKey);
         }
         // 执行 count 查询
-        Object countResultList = executor.query(countMs, parameter, RowBounds.DEFAULT, resultHandler, countKey, countBoundSql);
+        Object countResultList = executor.query(countMs, parameter, RowBounds.DEFAULT, resultHandler, countKey,
+                countBoundSql);
         // 某些数据（如 TDEngine）查询 count 无结果时返回 null
         if (countResultList == null || ((List) countResultList).isEmpty()) {
             return 0L;
@@ -196,8 +200,8 @@ public abstract class CountExecutor {
      * @throws SQLException 异常
      */
     public static <E> List<E> pageQuery(Dialect dialect, Executor executor, MappedStatement ms, Object parameter,
-                                        RowBounds rowBounds, ResultHandler resultHandler,
-                                        BoundSql boundSql, CacheKey cacheKey) throws SQLException {
+            RowBounds rowBounds, ResultHandler resultHandler, BoundSql boundSql, CacheKey cacheKey)
+            throws SQLException {
         // 判断是否需要进行分页查询
         if (dialect.beforePage(ms, parameter, rowBounds)) {
             // 生成分页的缓存 key
@@ -206,7 +210,8 @@ public abstract class CountExecutor {
             parameter = dialect.processParameterObject(ms, parameter, boundSql, pageKey);
             // 调用方言获取分页 sql
             String pageSql = dialect.getPageSql(ms, boundSql, parameter, rowBounds, pageKey);
-            BoundSql pageBoundSql = new BoundSql(ms.getConfiguration(), pageSql, boundSql.getParameterMappings(), parameter);
+            BoundSql pageBoundSql = new BoundSql(ms.getConfiguration(), pageSql, boundSql.getParameterMappings(),
+                    parameter);
 
             Map<String, Object> additionalParameters = getAdditionalParameter(boundSql);
             // 设置动态参数
@@ -215,7 +220,8 @@ public abstract class CountExecutor {
             }
             // 对 boundSql 的拦截处理
             if (dialect instanceof BoundSqlHandler.Chain) {
-                pageBoundSql = ((BoundSqlHandler.Chain) dialect).doBoundSql(BoundSqlHandler.Type.PAGE_SQL, pageBoundSql, pageKey);
+                pageBoundSql = ((BoundSqlHandler.Chain) dialect).doBoundSql(BoundSqlHandler.Type.PAGE_SQL, pageBoundSql,
+                        pageKey);
             }
             // 执行分页查询
             return executor.query(ms, parameter, RowBounds.DEFAULT, resultHandler, pageKey, pageBoundSql);

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.builtin.ldap;
 
 import org.miaixz.bus.logger.Logger;
@@ -50,10 +50,8 @@ class ReconnectDirContext implements Closeable {
     }
 
     private static boolean isLdap_connection_has_been_closed(NamingException e) {
-        return e instanceof CommunicationException
-                || e instanceof ServiceUnavailableException
-                || e instanceof NotContextException
-                || e.getMessage().startsWith("LDAP connection has been closed");
+        return e instanceof CommunicationException || e instanceof ServiceUnavailableException
+                || e instanceof NotContextException || e.getMessage().startsWith("LDAP connection has been closed");
     }
 
     public DirContext getDirCtx() {
@@ -78,7 +76,8 @@ class ReconnectDirContext implements Closeable {
         try {
             return ctx.getAttributes(name);
         } catch (NamingException e) {
-            if (!isLdap_connection_has_been_closed(e)) throw e;
+            if (!isLdap_connection_has_been_closed(e))
+                throw e;
             reconnect();
             return ctx.getAttributes(name);
         }
@@ -88,7 +87,8 @@ class ReconnectDirContext implements Closeable {
         try {
             return ctx.getAttributes(name, attrIds);
         } catch (NamingException e) {
-            if (!isLdap_connection_has_been_closed(e)) throw e;
+            if (!isLdap_connection_has_been_closed(e))
+                throw e;
             reconnect();
             return ctx.getAttributes(name, attrIds);
         }
@@ -98,7 +98,8 @@ class ReconnectDirContext implements Closeable {
         try {
             ctx.destroySubcontext(name);
         } catch (NamingException e) {
-            if (!isLdap_connection_has_been_closed(e)) throw e;
+            if (!isLdap_connection_has_been_closed(e))
+                throw e;
             reconnect();
             ctx.destroySubcontext(name);
         }
@@ -109,7 +110,8 @@ class ReconnectDirContext implements Closeable {
         try {
             return ctx.search(name, filter, cons);
         } catch (NamingException e) {
-            if (!isLdap_connection_has_been_closed(e)) throw e;
+            if (!isLdap_connection_has_been_closed(e))
+                throw e;
             reconnect();
             return ctx.search(name, filter, cons);
         }
@@ -119,7 +121,8 @@ class ReconnectDirContext implements Closeable {
         try {
             ctx.createSubcontext(name, attrs).close();
         } catch (NamingException e) {
-            if (!isLdap_connection_has_been_closed(e)) throw e;
+            if (!isLdap_connection_has_been_closed(e))
+                throw e;
             reconnect();
             ctx.createSubcontext(name, attrs).close();
         }
@@ -129,7 +132,8 @@ class ReconnectDirContext implements Closeable {
         try {
             return ctx.list(name);
         } catch (NamingException e) {
-            if (!isLdap_connection_has_been_closed(e)) throw e;
+            if (!isLdap_connection_has_been_closed(e))
+                throw e;
             reconnect();
             return ctx.list(name);
         }
@@ -139,7 +143,8 @@ class ReconnectDirContext implements Closeable {
         try {
             ctx.modifyAttributes(name, mods);
         } catch (NamingException e) {
-            if (!isLdap_connection_has_been_closed(e)) throw e;
+            if (!isLdap_connection_has_been_closed(e))
+                throw e;
             reconnect();
             ctx.modifyAttributes(name, mods);
         }
@@ -149,7 +154,8 @@ class ReconnectDirContext implements Closeable {
         try {
             ctx.modifyAttributes(name, mod_op, attrs);
         } catch (NamingException e) {
-            if (!isLdap_connection_has_been_closed(e)) throw e;
+            if (!isLdap_connection_has_been_closed(e))
+                throw e;
             reconnect();
             ctx.modifyAttributes(name, mod_op, attrs);
         }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.data;
 
 import java.util.Objects;
@@ -43,9 +43,7 @@ public class NullifyAttributesCoercion implements AttributesCoercion {
     }
 
     public static AttributesCoercion valueOf(int[] nullifyTags, AttributesCoercion next) {
-        return nullifyTags != null && nullifyTags.length > 0
-                ? new NullifyAttributesCoercion(nullifyTags, next)
-                : next;
+        return nullifyTags != null && nullifyTags.length > 0 ? new NullifyAttributesCoercion(nullifyTags, next) : next;
     }
 
     @Override

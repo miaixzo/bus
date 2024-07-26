@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.io.source.BufferSource;
@@ -34,10 +34,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * 仅{@link Protocol#HTTP_2 HTTP/2}
- * 在客户端处理服务器发起的HTTP请求
- * 返回true以请求取消已推的流。
- * 注意，这并不保证将来的帧不会到达流ID
+ * 仅{@link Protocol#HTTP_2 HTTP/2} 在客户端处理服务器发起的HTTP请求 返回true以请求取消已推的流。 注意，这并不保证将来的帧不会到达流ID
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -57,8 +54,7 @@ public interface PushObserver {
         }
 
         @Override
-        public boolean onData(int streamId, BufferSource source, int byteCount,
-                              boolean last) throws IOException {
+        public boolean onData(int streamId, BufferSource source, int byteCount, boolean last) throws IOException {
             source.skip(byteCount);
             return true;
         }
@@ -97,8 +93,7 @@ public interface PushObserver {
      * @return the true/false
      * @throws IOException 异常
      */
-    boolean onData(int streamId, BufferSource source, int byteCount, boolean last)
-            throws IOException;
+    boolean onData(int streamId, BufferSource source, int byteCount, boolean last) throws IOException;
 
     /**
      * 指示此流被取消的原因

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.mitra_object_utf8_attributes_1_0;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,27 +46,28 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag._0033_xx04_:
-                return VR.CS;
-            case PrivateTag._0033_xx0C_:
-                return VR.LO;
-            case PrivateTag._0033_xx02_:
-            case PrivateTag._0033_xx06_:
-            case PrivateTag._0033_xx08_:
-            case PrivateTag._0033_xx0A_:
-            case PrivateTag._0033_xx0E_:
-            case PrivateTag._0033_xx14_:
-            case PrivateTag._0033_xx15_:
-                return VR.OB;
-            case PrivateTag._0033_xx13_:
-            case PrivateTag._0033_xx16_:
-            case PrivateTag._0033_xx19_:
-                return VR.PN;
+
+        case PrivateTag._0033_xx04_:
+            return VR.CS;
+        case PrivateTag._0033_xx0C_:
+            return VR.LO;
+        case PrivateTag._0033_xx02_:
+        case PrivateTag._0033_xx06_:
+        case PrivateTag._0033_xx08_:
+        case PrivateTag._0033_xx0A_:
+        case PrivateTag._0033_xx0E_:
+        case PrivateTag._0033_xx14_:
+        case PrivateTag._0033_xx15_:
+            return VR.OB;
+        case PrivateTag._0033_xx13_:
+        case PrivateTag._0033_xx16_:
+        case PrivateTag._0033_xx19_:
+            return VR.PN;
         }
         return VR.UN;
     }

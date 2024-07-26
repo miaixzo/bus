@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.proxy;
 
 import java.lang.reflect.Method;
@@ -48,9 +48,8 @@ public interface Aspect {
     boolean before(Object target, Method method, Object[] args);
 
     /**
-     * 目标方法执行后的操作
-     * 如果 target.method 抛出异常且 {@link Aspect#afterException} 返回true,则不会执行此操作
-     * 如果 {@link Aspect#afterException} 返回false,则无论target.method是否抛出异常，均会执行此操作
+     * 目标方法执行后的操作 如果 target.method 抛出异常且 {@link Aspect#afterException} 返回true,则不会执行此操作 如果 {@link Aspect#afterException}
+     * 返回false,则无论target.method是否抛出异常，均会执行此操作
      *
      * @param target    目标对象
      * @param method    目标方法

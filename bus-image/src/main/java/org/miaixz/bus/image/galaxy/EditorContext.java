@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy;
 
 import org.miaixz.bus.image.Builder;
@@ -105,8 +105,7 @@ public class EditorContext {
     }
 
     public boolean hasPixelProcessing() {
-        return Objects.nonNull(getMaskArea())
-                || Builder.getEmptytoFalse(getProperties().getProperty("defacing"));
+        return Objects.nonNull(getMaskArea()) || Builder.getEmptytoFalse(getProperties().getProperty("defacing"));
     }
 
     /**

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.center;
 
 import org.miaixz.bus.core.lang.Algorithm;
@@ -52,9 +52,7 @@ public class ZUC extends Crypto {
      * @param iv        加盐，128位加盐是16bytes，256位是25bytes，{@code null}是随机加盐
      */
     public ZUC(final Algorithm algorithm, final byte[] key, final byte[] iv) {
-        super(algorithm.getValue(),
-                Keeper.generateKey(algorithm.getValue(), key),
-                generateIvParam(algorithm, iv));
+        super(algorithm.getValue(), Keeper.generateKey(algorithm.getValue(), key), generateIvParam(algorithm, iv));
     }
 
     /**
@@ -78,12 +76,12 @@ public class ZUC extends Crypto {
     private static IvParameterSpec generateIvParam(final Algorithm algorithm, byte[] iv) {
         if (null == iv) {
             switch (algorithm) {
-                case ZUC_128:
-                    iv = RandomKit.randomBytes(16);
-                    break;
-                case ZUC_256:
-                    iv = RandomKit.randomBytes(25);
-                    break;
+            case ZUC_128:
+                iv = RandomKit.randomBytes(16);
+                break;
+            case ZUC_256:
+                iv = RandomKit.randomBytes(25);
+                break;
             }
         }
         return new IvParameterSpec(iv);

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.function;
 
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
@@ -54,14 +54,17 @@ public class LambdaFactory {
 
     /**
      * 构建Lambda
+     * 
      * <pre>{@code
      * class Something {
      *     private Long data;
      *     private String name;
      *     // ... 省略GetterSetter方法
      * }
+     * 
      * Function<Something, Long> getIdFunction = LambdaFactory.buildLambda(Function.class, Something.class, "getId");
-     * BiConsumer<Something, String> setNameConsumer = LambdaFactory.buildLambda(BiConsumer.class, Something.class, "setName", String.class);
+     * BiConsumer<Something, String> setNameConsumer = LambdaFactory.buildLambda(BiConsumer.class, Something.class,
+     *         "setName", String.class);
      * }
      * </pre>
      *
@@ -72,13 +75,13 @@ public class LambdaFactory {
      * @param <F>                   Function类型
      * @return 接受Lambda的函数式接口对象
      */
-    public static <F> F build(final Class<F> functionInterfaceType, final Class<?> methodClass, final String methodName, final Class<?>... paramTypes) {
+    public static <F> F build(final Class<F> functionInterfaceType, final Class<?> methodClass, final String methodName,
+            final Class<?>... paramTypes) {
         return build(functionInterfaceType, MethodKit.getMethod(methodClass, methodName, paramTypes));
     }
 
     /**
-     * 根据提供的方法或构造对象，构建对应的Lambda函数
-     * 调用函数相当于执行对应的方法或构造
+     * 根据提供的方法或构造对象，构建对应的Lambda函数 调用函数相当于执行对应的方法或构造
      *
      * @param functionInterfaceType 接受Lambda的函数式接口类型
      * @param executable            方法对象，支持构造器
@@ -90,13 +93,11 @@ public class LambdaFactory {
         Assert.notNull(executable);
 
         final MutableEntry<Class<?>, Executable> cacheKey = new MutableEntry<>(functionInterfaceType, executable);
-        return (F) CACHE.computeIfAbsent(cacheKey,
-                key -> doBuildWithoutCache(functionInterfaceType, executable));
+        return (F) CACHE.computeIfAbsent(cacheKey, key -> doBuildWithoutCache(functionInterfaceType, executable));
     }
 
     /**
-     * 根据提供的方法或构造对象，构建对应的Lambda函数，即通过Lambda函数代理方法或构造
-     * 调用函数相当于执行对应的方法或构造
+     * 根据提供的方法或构造对象，构建对应的Lambda函数，即通过Lambda函数代理方法或构造 调用函数相当于执行对应的方法或构造
      *
      * @param funcType   接受Lambda的函数式接口类型
      * @param executable 方法对象，支持构造器
@@ -109,8 +110,7 @@ public class LambdaFactory {
         // 获取Lambda函数
         final Method invokeMethod = LambdaKit.getInvokeMethod(funcType);
         try {
-            return (F) metaFactory(funcType, invokeMethod, executable)
-                    .getTarget().invoke();
+            return (F) metaFactory(funcType, invokeMethod, executable).getTarget().invoke();
         } catch (final Throwable e) {
             throw new InternalException(e);
         }
@@ -125,8 +125,8 @@ public class LambdaFactory {
      * @return {@link CallSite}
      * @throws LambdaConversionException 权限等异常
      */
-    private static CallSite metaFactory(final Class<?> funcType, final Method funcMethod,
-                                        final Executable executable) throws LambdaConversionException {
+    private static CallSite metaFactory(final Class<?> funcType, final Method funcMethod, final Executable executable)
+            throws LambdaConversionException {
         // 查找上下文与调用者的访问权限
         final MethodHandles.Lookup caller = LookupKit.lookup(executable.getDeclaringClass());
         // 要实现的方法的名字
@@ -141,25 +141,12 @@ public class LambdaFactory {
         final MethodHandle implMethodHandle = LookupKit.unreflect(executable);
 
         if (ClassKit.isSerializable(funcType)) {
-            return LambdaMetafactory.altMetafactory(
-                    caller,
-                    invokeName,
-                    invokedType,
-                    samMethodType,
-                    implMethodHandle,
-                    MethodKit.methodType(executable),
-                    LambdaMetafactory.FLAG_SERIALIZABLE
-            );
+            return LambdaMetafactory.altMetafactory(caller, invokeName, invokedType, samMethodType, implMethodHandle,
+                    MethodKit.methodType(executable), LambdaMetafactory.FLAG_SERIALIZABLE);
         }
 
-        return LambdaMetafactory.metafactory(
-                caller,
-                invokeName,
-                invokedType,
-                samMethodType,
-                implMethodHandle,
-                MethodKit.methodType(executable)
-        );
+        return LambdaMetafactory.metafactory(caller, invokeName, invokedType, samMethodType, implMethodHandle,
+                MethodKit.methodType(executable));
     }
 
 }

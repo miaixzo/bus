@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http;
 
 import org.miaixz.bus.core.lang.Charset;
@@ -66,10 +66,7 @@ import java.util.stream.Collectors;
 public class Httpx {
 
     /**
-     * 懒汉安全加同步
-     * 私有的静态成员变量 只声明不创建
-     * 私有的构造方法
-     * 提供返回实例的静态方法
+     * 懒汉安全加同步 私有的静态成员变量 只声明不创建 私有的构造方法 提供返回实例的静态方法
      */
     private static Httpd httpd;
 
@@ -90,7 +87,8 @@ public class Httpx {
      * @param x509TrustManager 信任管理器
      */
     public Httpx(X509TrustManager x509TrustManager) {
-        this(null, null, 30, 30, 30, 64, 5, 5, 5, SSLContextBuilder.newSslSocketFactory(x509TrustManager), x509TrustManager, (hostname, session) -> true);
+        this(null, null, 30, 30, 30, 64, 5, 5, 5, SSLContextBuilder.newSslSocketFactory(x509TrustManager),
+                x509TrustManager, (hostname, session) -> true);
     }
 
     /**
@@ -100,9 +98,7 @@ public class Httpx {
      * @param readTimeout  读取
      * @param writeTimeout 输出
      */
-    public Httpx(int connTimeout,
-                 int readTimeout,
-                 int writeTimeout) {
+    public Httpx(int connTimeout, int readTimeout, int writeTimeout) {
         this(null, null, connTimeout, readTimeout, writeTimeout, Normal._64, 5, 5, 5);
     }
 
@@ -117,14 +113,10 @@ public class Httpx {
      * @param maxIdleConnections 最大连接
      * @param keepAliveDuration  链接时长
      */
-    public Httpx(int connTimeout,
-                 int readTimeout,
-                 int writeTimeout,
-                 int maxRequests,
-                 int maxRequestsPerHost,
-                 int maxIdleConnections,
-                 int keepAliveDuration) {
-        this(null, null, connTimeout, readTimeout, writeTimeout, maxRequests, maxRequestsPerHost, maxIdleConnections, keepAliveDuration);
+    public Httpx(int connTimeout, int readTimeout, int writeTimeout, int maxRequests, int maxRequestsPerHost,
+            int maxIdleConnections, int keepAliveDuration) {
+        this(null, null, connTimeout, readTimeout, writeTimeout, maxRequests, maxRequestsPerHost, maxIdleConnections,
+                keepAliveDuration);
     }
 
     /**
@@ -140,17 +132,10 @@ public class Httpx {
      * @param maxIdleConnections 最大连接
      * @param keepAliveDuration  链接时长
      */
-    public Httpx(DnsX dns,
-                 HttpProxy httpProxy,
-                 int connTimeout,
-                 int readTimeout,
-                 int writeTimeout,
-                 int maxRequests,
-                 int maxRequestsPerHost,
-                 int maxIdleConnections,
-                 int keepAliveDuration
-    ) {
-        this(dns, httpProxy, connTimeout, readTimeout, writeTimeout, maxRequests, maxRequestsPerHost, maxIdleConnections, keepAliveDuration, null, null, null);
+    public Httpx(DnsX dns, HttpProxy httpProxy, int connTimeout, int readTimeout, int writeTimeout, int maxRequests,
+            int maxRequestsPerHost, int maxIdleConnections, int keepAliveDuration) {
+        this(dns, httpProxy, connTimeout, readTimeout, writeTimeout, maxRequests, maxRequestsPerHost,
+                maxIdleConnections, keepAliveDuration, null, null, null);
     }
 
     /**
@@ -169,25 +154,15 @@ public class Httpx {
      * @param x509TrustManager   证书信任管理器
      * @param hostnameVerifier   主机名校验信息
      */
-    public Httpx(final DnsX dns,
-                 final HttpProxy httpProxy,
-                 int connTimeout,
-                 int readTimeout,
-                 int writeTimeout,
-                 int maxRequests,
-                 int maxRequestsPerHost,
-                 int maxIdleConnections,
-                 int keepAliveDuration,
-                 SSLSocketFactory sslSocketFactory,
-                 javax.net.ssl.X509TrustManager x509TrustManager,
-                 HostnameVerifier hostnameVerifier
-    ) {
+    public Httpx(final DnsX dns, final HttpProxy httpProxy, int connTimeout, int readTimeout, int writeTimeout,
+            int maxRequests, int maxRequestsPerHost, int maxIdleConnections, int keepAliveDuration,
+            SSLSocketFactory sslSocketFactory, javax.net.ssl.X509TrustManager x509TrustManager,
+            HostnameVerifier hostnameVerifier) {
         synchronized (Httpx.class) {
             Dispatcher dispatcher = new Dispatcher();
             dispatcher.setMaxRequests(maxRequests);
             dispatcher.setMaxRequestsPerHost(maxRequestsPerHost);
-            ConnectionPool connectPool = new ConnectionPool(maxIdleConnections,
-                    keepAliveDuration, TimeUnit.MINUTES);
+            ConnectionPool connectPool = new ConnectionPool(maxIdleConnections, keepAliveDuration, TimeUnit.MINUTES);
             Httpd.Builder builder = new Httpd.Builder();
 
             builder.dispatcher(dispatcher);
@@ -304,9 +279,10 @@ public class Httpx {
      * @param charset   自定义编码
      * @return the {@link String}
      */
-    public static String get(final String url, final Map<String, String> formMap, Map<String, String> headerMap, final String charset) {
-        return execute(Builder.builder().url(url).headerMap(headerMap).formMap(formMap)
-                .requestCharset(charset).responseCharset(charset).build());
+    public static String get(final String url, final Map<String, String> formMap, Map<String, String> headerMap,
+            final String charset) {
+        return execute(Builder.builder().url(url).headerMap(headerMap).formMap(formMap).requestCharset(charset)
+                .responseCharset(charset).build());
     }
 
     /**
@@ -341,8 +317,7 @@ public class Httpx {
     }
 
     /**
-     * form 方式 POST 请求
-     * application/x-www-form-urlencoded
+     * form 方式 POST 请求 application/x-www-form-urlencoded
      *
      * @param url     URL地址
      * @param formMap 查询参数
@@ -351,8 +326,7 @@ public class Httpx {
     public static String post(final String url, final Map<String, String> formMap) {
         String data = Normal.EMPTY;
         if (MapKit.isNotEmpty(formMap)) {
-            data = formMap.entrySet().stream()
-                    .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
+            data = formMap.entrySet().stream().map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
                     .collect(Collectors.joining(Symbol.AND));
         }
         return post(url, data, MediaType.APPLICATION_FORM_URLENCODED);
@@ -390,7 +364,8 @@ public class Httpx {
      * @param headerMap 头部数据
      * @return the {@link String}
      */
-    public static String post(final String url, final Map<String, String> formMap, final Map<String, String> headerMap) {
+    public static String post(final String url, final Map<String, String> formMap,
+            final Map<String, String> headerMap) {
         return post(url, formMap, headerMap, MediaType.APPLICATION_FORM_URLENCODED);
     }
 
@@ -408,7 +383,8 @@ public class Httpx {
                 .requestCharset(charset).responseCharset(charset).build());
     }
 
-    public static String post(final String url, final String data, final Map<String, String> headerMap, final String mediaType) {
+    public static String post(final String url, final String data, final Map<String, String> headerMap,
+            final String mediaType) {
         return execute(Builder.builder().url(url).method(HTTP.POST).data(data).headerMap(headerMap).mediaType(mediaType)
                 .requestCharset(Charset.DEFAULT_UTF_8).responseCharset(Charset.DEFAULT_UTF_8).build());
     }
@@ -422,7 +398,8 @@ public class Httpx {
      * @param charset   自定义编码
      * @return the {@link String}
      */
-    public static String post(final String url, final Map<String, String> formMap, final String mediaType, final String charset) {
+    public static String post(final String url, final Map<String, String> formMap, final String mediaType,
+            final String charset) {
         return execute(Builder.builder().url(url).method(HTTP.POST).formMap(formMap).mediaType(mediaType)
                 .requestCharset(charset).responseCharset(charset).build());
     }
@@ -436,7 +413,8 @@ public class Httpx {
      * @param mediaType 类型
      * @return the {@link String}
      */
-    public static String post(final String url, final Map<String, String> formMap, final Map<String, String> headerMap, final String mediaType) {
+    public static String post(final String url, final Map<String, String> formMap, final Map<String, String> headerMap,
+            final String mediaType) {
         return post(url, formMap, headerMap, mediaType, Charset.DEFAULT_UTF_8);
     }
 
@@ -450,7 +428,8 @@ public class Httpx {
      * @param charset   自定义编码
      * @return the {@link String}
      */
-    public static String post(final String url, final Map<String, String> formMap, final Map<String, String> headerMap, final String mediaType, final String charset) {
+    public static String post(final String url, final Map<String, String> formMap, final Map<String, String> headerMap,
+            final String mediaType, final String charset) {
         return execute(Builder.builder().url(url).method(HTTP.POST).headerMap(headerMap).formMap(formMap)
                 .mediaType(mediaType).requestCharset(charset).responseCharset(charset).build());
     }
@@ -458,16 +437,17 @@ public class Httpx {
     /**
      * 表单提交带文件上传
      *
-     * @param url      请求地址
-     * @param formMap  请求参数
-     * @param list     文件路径
+     * @param url     请求地址
+     * @param formMap 请求参数
+     * @param list    文件路径
      * @return the {@link String}
      */
     public static String post(final String url, final Map<String, String> formMap, final List<String> list) {
-        MediaType mediaType = MediaType.valueOf(MediaType.APPLICATION_FORM_URLENCODED + Symbol.SEMICOLON + Charset.DEFAULT_UTF_8);
+        MediaType mediaType = MediaType
+                .valueOf(MediaType.APPLICATION_FORM_URLENCODED + Symbol.SEMICOLON + Charset.DEFAULT_UTF_8);
         RequestBody bodyParams = RequestBody.create(mediaType, formMap.toString());
-        MultipartBody.Builder requestBodyBuilder = new MultipartBody.Builder().setType(MediaType.MULTIPART_FORM_DATA_TYPE)
-                .addFormDataPart("params", Normal.EMPTY, bodyParams);
+        MultipartBody.Builder requestBodyBuilder = new MultipartBody.Builder()
+                .setType(MediaType.MULTIPART_FORM_DATA_TYPE).addFormDataPart("params", Normal.EMPTY, bodyParams);
 
         File file;
         for (String path : list) {
@@ -524,10 +504,11 @@ public class Httpx {
                 String form = builder.formMap.entrySet().stream()
                         .map(entry -> String.format("%s=%s", entry.getKey(), entry.getValue()))
                         .collect(Collectors.joining(Symbol.AND));
-                builder.url = String.format("%s%s%s", builder.url, builder.url.contains(Symbol.QUESTION_MARK) ? Symbol.AND : Symbol.QUESTION_MARK, form);
+                builder.url = String.format("%s%s%s", builder.url,
+                        builder.url.contains(Symbol.QUESTION_MARK) ? Symbol.AND : Symbol.QUESTION_MARK, form);
             }
             request.get();
-        } else if (ArrayKit.contains(new String[]{HTTP.POST, HTTP.PUT, HTTP.DELETE, HTTP.PATCH}, method)) {
+        } else if (ArrayKit.contains(new String[] { HTTP.POST, HTTP.PUT, HTTP.DELETE, HTTP.PATCH }, method)) {
             if (StringKit.isNotEmpty(builder.data)) {
                 RequestBody requestBody = RequestBody.create(MediaType.valueOf(mediaType), builder.data);
                 request.method(method, requestBody);
@@ -576,7 +557,7 @@ public class Httpx {
     private static String enqueue(final Builder builder) {
         Request.Builder request = builder(builder);
         NewCall call = httpd.newCall(request.url(builder.url).build());
-        String[] result = {Normal.EMPTY};
+        String[] result = { Normal.EMPTY };
         call.enqueue(new Callback() {
             @Override
             public void onFailure(NewCall call, IOException e) {

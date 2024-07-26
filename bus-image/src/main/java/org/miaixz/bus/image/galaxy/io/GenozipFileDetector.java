@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.io;
 
 import org.miaixz.bus.core.xyz.StreamKit;
@@ -48,13 +48,8 @@ public class GenozipFileDetector extends FileTypeDetector {
     public String probeContentType(Path path) throws IOException {
         byte[] b = new byte[4];
         try (InputStream in = Files.newInputStream(path)) {
-            return StreamKit.readAvailable(in, b, 0, 4) == 4
-                    && b[0] == 0x27
-                    && b[1] == 0x05
-                    && b[2] == 0x20
-                    && b[3] == 0x12
-                    ? APPLICATION_VND_GENOZIP
-                    : null;
+            return StreamKit.readAvailable(in, b, 0, 4) == 4 && b[0] == 0x27 && b[1] == 0x05 && b[2] == 0x20
+                    && b[3] == 0x12 ? APPLICATION_VND_GENOZIP : null;
         }
     }
 

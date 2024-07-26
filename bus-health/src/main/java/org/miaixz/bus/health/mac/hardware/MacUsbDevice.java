@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.mac.hardware;
 
 import com.sun.jna.platform.mac.CoreFoundation;
@@ -58,13 +58,13 @@ public class MacUsbDevice extends AbstractUsbDevice {
     private static final String IOSERVICE = "IOService";
 
     public MacUsbDevice(String name, String vendor, String vendorId, String productId, String serialNumber,
-                        String uniqueDeviceId, List<UsbDevice> connectedDevices) {
+            String uniqueDeviceId, List<UsbDevice> connectedDevices) {
         super(name, vendor, vendorId, productId, serialNumber, uniqueDeviceId, connectedDevices);
     }
 
     /**
-     * Instantiates a list of {@link UsbDevice} objects, representing devices connected via a usb port
-     * (including internal devices).
+     * Instantiates a list of {@link UsbDevice} objects, representing devices connected via a usb port (including
+     * internal devices).
      * <p>
      * If the value of {@code tree} is true, the top level devices returned from this method are the USB Controllers;
      * connected hubs and devices in its device tree share that controller's bandwidth. If the value of {@code tree} is
@@ -167,8 +167,8 @@ public class MacUsbDevice extends AbstractUsbDevice {
      * @param hubMap       the map of hubs
      */
     private static void addDeviceAndChildrenToMaps(IORegistryEntry device, long parentId, Map<Long, String> nameMap,
-                                                   Map<Long, String> vendorMap, Map<Long, String> vendorIdMap, Map<Long, String> productIdMap,
-                                                   Map<Long, String> serialMap, Map<Long, List<Long>> hubMap) {
+            Map<Long, String> vendorMap, Map<Long, String> vendorIdMap, Map<Long, String> productIdMap,
+            Map<Long, String> serialMap, Map<Long, List<Long>> hubMap) {
 
         // Unique global identifier for this device
         long id = device.getRegistryEntryID();
@@ -230,7 +230,7 @@ public class MacUsbDevice extends AbstractUsbDevice {
      * @param vendorIdMap        the map of vendorIds
      */
     private static void getControllerIdByLocation(long id, CFTypeRef locationId, CFStringRef locationIDKey,
-                                                  CFStringRef ioPropertyMatchKey, Map<Long, String> vendorIdMap, Map<Long, String> productIdMap) {
+            CFStringRef ioPropertyMatchKey, Map<Long, String> vendorIdMap, Map<Long, String> productIdMap) {
         // Create a matching property dictionary from the locationId
         CFMutableDictionaryRef propertyDict = CF.CFDictionaryCreateMutable(CF.CFAllocatorGetDefault(), new CFIndex(0),
                 null, null);
@@ -292,8 +292,8 @@ public class MacUsbDevice extends AbstractUsbDevice {
      * @return A MacUsbDevice corresponding to this device
      */
     private static MacUsbDevice getDeviceAndChildren(Long registryEntryId, String vid, String pid,
-                                                     Map<Long, String> nameMap, Map<Long, String> vendorMap, Map<Long, String> vendorIdMap,
-                                                     Map<Long, String> productIdMap, Map<Long, String> serialMap, Map<Long, List<Long>> hubMap) {
+            Map<Long, String> nameMap, Map<Long, String> vendorMap, Map<Long, String> vendorIdMap,
+            Map<Long, String> productIdMap, Map<Long, String> serialMap, Map<Long, List<Long>> hubMap) {
         String vendorId = vendorIdMap.getOrDefault(registryEntryId, vid);
         String productId = productIdMap.getOrDefault(registryEntryId, pid);
         List<Long> childIds = hubMap.getOrDefault(registryEntryId, new ArrayList<>());
@@ -305,6 +305,7 @@ public class MacUsbDevice extends AbstractUsbDevice {
         Collections.sort(usbDevices);
         return new MacUsbDevice(nameMap.getOrDefault(registryEntryId, vendorId + Symbol.COLON + productId),
                 vendorMap.getOrDefault(registryEntryId, Normal.EMPTY), vendorId, productId,
-                serialMap.getOrDefault(registryEntryId, Normal.EMPTY), "0x" + Long.toHexString(registryEntryId), usbDevices);
+                serialMap.getOrDefault(registryEntryId, Normal.EMPTY), "0x" + Long.toHexString(registryEntryId),
+                usbDevices);
     }
 }

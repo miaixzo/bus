@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_CSA_REPORT;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,19 +46,20 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.ReportType:
-                return VR.CS;
-            case PrivateTag.ReportVersion:
-                return VR.LO;
-            case PrivateTag.SCSOPInstanceUID:
-                return VR.UI;
-            case PrivateTag.SRVariant:
-                return VR.US;
+
+        case PrivateTag.ReportType:
+            return VR.CS;
+        case PrivateTag.ReportVersion:
+            return VR.LO;
+        case PrivateTag.SCSOPInstanceUID:
+            return VR.UI;
+        case PrivateTag.SRVariant:
+            return VR.US;
         }
         return VR.UN;
     }

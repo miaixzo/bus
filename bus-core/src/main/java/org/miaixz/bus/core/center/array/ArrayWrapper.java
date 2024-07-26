@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.array;
 
 import org.miaixz.bus.core.center.iterator.ArrayIterator;
@@ -123,12 +123,12 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
     /**
      * 获取数组对象的元素类型，方法调用参数与返回结果举例：
      * <ul>
-     *     <li>Object[] = Object.class</li>
-     *     <li>String[] = String.class</li>
-     *     <li>int[] = int.class</li>
-     *     <li>Integer[] = Integer.class</li>
-     *     <li>null = null</li>
-     *     <li>String = null</li>
+     * <li>Object[] = Object.class</li>
+     * <li>String[] = String.class</li>
+     * <li>int[] = int.class</li>
+     * <li>Integer[] = Integer.class</li>
+     * <li>null = null</li>
+     * <li>String = null</li>
      * </ul>
      *
      * @return 元素类型
@@ -156,8 +156,7 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
     }
 
     /**
-     * 获取数组对象中指定index的值，支持负数，例如-1表示倒数第一个值
-     * 如果数组下标越界，返回null
+     * 获取数组对象中指定index的值，支持负数，例如-1表示倒数第一个值 如果数组下标越界，返回null
      *
      * @param index 下标，支持负数，-1表示最后一个元素
      * @return 值
@@ -320,7 +319,8 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
      * @param indexLimit     索引限制
      * @return this
      */
-    public ArrayWrapper<A, E> setOrPadding(final int index, final E value, final E paddingElement, final int indexLimit) {
+    public ArrayWrapper<A, E> setOrPadding(final int index, final E value, final E paddingElement,
+            final int indexLimit) {
         if (index < this.length) {
             Array.set(array, index, value);
         } else {
@@ -354,8 +354,7 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
     }
 
     /**
-     * 将新元素添加到已有数组中
-     * 添加新元素会生成一个新的数组，不影响原数组
+     * 将新元素添加到已有数组中 添加新元素会生成一个新的数组，不影响原数组
      *
      * @param element 新元素或新数组
      * @return 新数组
@@ -365,8 +364,7 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
     }
 
     /**
-     * 将新数组追加到已有数组中
-     * 追加新数组会生成一个新的数组，不影响原数组
+     * 将新数组追加到已有数组中 追加新数组会生成一个新的数组，不影响原数组
      *
      * @param array 需要追加的数组数组
      * @return 新数组
@@ -376,8 +374,7 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
     }
 
     /**
-     * 将新元素插入到已有数组中的某个位置
-     * 如果插入位置为负数，从原数组从后向前计数，若大于原数组长度，则空白处用默认值填充
+     * 将新元素插入到已有数组中的某个位置 如果插入位置为负数，从原数组从后向前计数，若大于原数组长度，则空白处用默认值填充
      *
      * @param index   插入位置，支持负数。此位置为对应此位置元素之前的空档
      * @param element 元素
@@ -388,8 +385,7 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
     }
 
     /**
-     * 将新元素插入到已有数组中的某个位置
-     * 如果插入位置为负数，从原数组从后向前计数，若大于原数组长度，则空白处用默认值填充
+     * 将新元素插入到已有数组中的某个位置 如果插入位置为负数，从原数组从后向前计数，若大于原数组长度，则空白处用默认值填充
      *
      * @param index         插入位置，支持负数。此位置为对应此位置元素之前的空档
      * @param arrayToInsert 新元素数组
@@ -433,10 +429,10 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
     /**
      * 从数组中的指定位置开始，按顺序使用新元素替换旧元素
      * <ul>
-     *     <li>如果 指定位置 为负数，那么生成一个新数组，其中新元素按顺序放在数组头部</li>
-     *     <li>如果 指定位置 大于等于 旧数组长度，那么生成一个新数组，其中新元素按顺序放在数组尾部</li>
-     *     <li>如果 指定位置 加上 新元素数量 大于 旧数组长度，那么生成一个新数组，指定位置之前是旧数组元素，指定位置及之后为新元素</li>
-     *     <li>否则，从已有数组中的指定位置开始，按顺序使用新元素替换旧元素，返回旧数组</li>
+     * <li>如果 指定位置 为负数，那么生成一个新数组，其中新元素按顺序放在数组头部</li>
+     * <li>如果 指定位置 大于等于 旧数组长度，那么生成一个新数组，其中新元素按顺序放在数组尾部</li>
+     * <li>如果 指定位置 加上 新元素数量 大于 旧数组长度，那么生成一个新数组，指定位置之前是旧数组元素，指定位置及之后为新元素</li>
+     * <li>否则，从已有数组中的指定位置开始，按顺序使用新元素替换旧元素，返回旧数组</li>
      * </ul>
      *
      * @param index  位置
@@ -569,7 +565,9 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
 
     /**
      * 检查数组是否有序，升序或者降序
-     * <p>若传入空数组，则返回{@code false}；元素全部相等，返回 {@code true}</p>
+     * <p>
+     * 若传入空数组，则返回{@code false}；元素全部相等，返回 {@code true}
+     * </p>
      *
      * @param comparator 比较器
      * @return 数组是否有序
@@ -600,8 +598,8 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
     /**
      * 数组是否有有序
      * <ul>
-     *     <li>反序，前一个小于后一个则返回错</li>
-     *     <li>正序，前一个大于后一个则返回错</li>
+     * <li>反序，前一个小于后一个则返回错</li>
+     * <li>正序，前一个大于后一个则返回错</li>
      * </ul>
      *
      * @param comparator {@link Comparator}

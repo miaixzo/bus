@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.Philips_Imaging_DD_067;
 
 /**
@@ -35,7 +35,7 @@ public class PrivateTag {
 
     public static final String PrivateCreator = "Philips Imaging DD 067";
 
-    /** (4001,xx00) VR=SQ VM=1  */
+    /** (4001,xx00) VR=SQ VM=1 */
     public static final int _4001_xx00_ = 0x40010000;
 
     /** (4001,xx01) VR=CS VM=1 ? */

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.data;
 
 /**
@@ -32,9 +32,5 @@ package org.miaixz.bus.image.galaxy.data;
  * @since Java 17+
  */
 public enum UpdatePolicy {
-    SUPPLEMENT,
-    MERGE,
-    OVERWRITE,
-    REPLACE,
-    PRESERVE
+    SUPPLEMENT, MERGE, OVERWRITE, REPLACE, PRESERVE
 }

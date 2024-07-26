@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org 6tail and other contributors.              ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -37,13 +37,9 @@ import org.miaixz.bus.core.center.date.culture.Samsara;
  */
 public class Sound extends Samsara {
 
-    public static final String[] NAMES = {
-            "海中金", "炉中火", "大林木", "路旁土", "剑锋金", "山头火",
-            "涧下水", "城头土", "白蜡金", "杨柳木", "泉中水", "屋上土",
-            "霹雳火", "松柏木", "长流水", "沙中金", "山下火", "平地木",
-            "壁上土", "金箔金", "覆灯火", "天河水", "大驿土", "钗钏金",
-            "桑柘木", "大溪水", "沙中土", "天上火", "石榴木", "大海水"
-    };
+    public static final String[] NAMES = { "海中金", "炉中火", "大林木", "路旁土", "剑锋金", "山头火", "涧下水", "城头土", "白蜡金", "杨柳木", "泉中水",
+            "屋上土", "霹雳火", "松柏木", "长流水", "沙中金", "山下火", "平地木", "壁上土", "金箔金", "覆灯火", "天河水", "大驿土", "钗钏金", "桑柘木", "大溪水",
+            "沙中土", "天上火", "石榴木", "大海水" };
 
     public Sound(int index) {
         super(NAMES, index);

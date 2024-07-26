@@ -24,14 +24,13 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.wrapper;
 
 import org.miaixz.bus.core.lang.Wrapper;
 
 /**
- * 简单包装对象
- * 通过继承此类，可以直接使用被包装的对象，用于简化和统一封装
+ * 简单包装对象 通过继承此类，可以直接使用被包装的对象，用于简化和统一封装
  *
  * @param <T> 被包装对象类型
  * @author Kimi Liu

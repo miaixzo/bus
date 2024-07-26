@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map.reference;
 
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
@@ -35,8 +35,7 @@ import java.lang.ref.ReferenceQueue;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * 线程安全的SoftMap实现
- * 键和值都为Soft引用，即，在GC报告内存不足时会被GC回收
+ * 线程安全的SoftMap实现 键和值都为Soft引用，即，在GC报告内存不足时会被GC回收
  *
  * @param <K> 键类型
  * @param <V> 值类型

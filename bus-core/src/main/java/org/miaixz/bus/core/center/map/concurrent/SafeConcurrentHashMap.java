@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map.concurrent;
 
 import org.miaixz.bus.core.lang.Keys;
@@ -35,10 +35,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 /**
- * 安全的ConcurrentHashMap实现
- * 此类用于解决在JDK8中调用{@link ConcurrentHashMap#computeIfAbsent(Object, Function)}可能造成的死循环问题。
+ * 安全的ConcurrentHashMap实现 此类用于解决在JDK8中调用{@link ConcurrentHashMap#computeIfAbsent(Object, Function)}可能造成的死循环问题。
  * <p>
- * 相关bug见：@see <a href="https://bugs.openjdk.java.net/browse/JDK-8161372">https://bugs.openjdk.java.net/browse/JDK-8161372</a>
+ * 相关bug见：@see
+ * <a href="https://bugs.openjdk.java.net/browse/JDK-8161372">https://bugs.openjdk.java.net/browse/JDK-8161372</a>
  * </p>
  *
  * @param <K> 键类型
@@ -92,8 +92,7 @@ public class SafeConcurrentHashMap<K, V> extends ConcurrentHashMap<K, V> {
      * @param loadFactor       增长系数
      * @param concurrencyLevel 并发级别，即Segment的个数
      */
-    public SafeConcurrentHashMap(final int initialCapacity,
-                                 final float loadFactor, final int concurrencyLevel) {
+    public SafeConcurrentHashMap(final int initialCapacity, final float loadFactor, final int concurrencyLevel) {
         super(initialCapacity, loadFactor, concurrencyLevel);
     }
 

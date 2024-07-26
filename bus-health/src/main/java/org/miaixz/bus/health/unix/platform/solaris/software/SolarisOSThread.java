@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.solaris.software;
 
 import com.sun.jna.Pointer;
@@ -49,8 +49,10 @@ import java.util.function.Supplier;
 public class SolarisOSThread extends AbstractOSThread {
 
     private final int threadId;
-    private final Supplier<SolarisLibc.SolarisLwpsInfo> lwpsinfo = Memoizer.memoize(this::queryLwpsInfo, Memoizer.defaultExpiration());
-    private final Supplier<SolarisLibc.SolarisPrUsage> prusage = Memoizer.memoize(this::queryPrUsage, Memoizer.defaultExpiration());
+    private final Supplier<SolarisLibc.SolarisLwpsInfo> lwpsinfo = Memoizer.memoize(this::queryLwpsInfo,
+            Memoizer.defaultExpiration());
+    private final Supplier<SolarisLibc.SolarisPrUsage> prusage = Memoizer.memoize(this::queryPrUsage,
+            Memoizer.defaultExpiration());
     private String name;
     private OSProcess.State state = OSProcess.State.INVALID;
     private long startMemoryAddress;

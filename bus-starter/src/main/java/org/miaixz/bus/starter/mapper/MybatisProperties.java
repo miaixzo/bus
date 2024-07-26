@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.mapper;
 
 import lombok.Getter;
@@ -74,8 +74,7 @@ public class MybatisProperties {
      */
     private String typeAliasesPackage;
     /**
-     * 用于过滤类型别名的超类
-     * 如果没有指定，MyBatis将从typeAliasesPackage中搜索的所有类作为类型别名处理
+     * 用于过滤类型别名的超类 如果没有指定，MyBatis将从typeAliasesPackage中搜索的所有类作为类型别名处理
      */
     private Class<?> typeAliasesSuperType;
     /**
@@ -95,8 +94,7 @@ public class MybatisProperties {
      */
     private Properties configurationProperties;
     /**
-     * 用于自定义默认设置的Configuration对象
-     * 如果指定了{@link #configLocation}，则不使用此属性
+     * 用于自定义默认设置的Configuration对象 如果指定了{@link #configLocation}，则不使用此属性
      */
     @NestedConfigurationProperty
     private Configuration configuration;

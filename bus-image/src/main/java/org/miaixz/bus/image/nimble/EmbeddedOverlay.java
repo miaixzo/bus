@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 import org.miaixz.bus.image.Tag;
@@ -36,9 +36,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Represents a pixel embedded overlay in DICOM attributes which is defined by the group offset and
- * the bit position. This type of overlay has been retired in DICOM standard, but it is still used
- * in some old DICOM files.
+ * Represents a pixel embedded overlay in DICOM attributes which is defined by the group offset and the bit position.
+ * This type of overlay has been retired in DICOM standard, but it is still used in some old DICOM files.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -60,11 +59,8 @@ public record EmbeddedOverlay(int groupOffset, int bitPosition) {
             if (dcm.getInt(Tag.OverlayBitsAllocated | gg0000, 1) != 1) {
                 int bitPosition = dcm.getInt(Tag.OverlayBitPosition | gg0000, 0);
                 if (bitPosition < bitsStored) {
-                    Logger.info(
-                            "Ignore embedded overlay #{} from bit #{} < bits stored: {}",
-                            (gg0000 >>> 17) + 1,
-                            bitPosition,
-                            bitsStored);
+                    Logger.info("Ignore embedded overlay #{} from bit #{} < bits stored: {}", (gg0000 >>> 17) + 1,
+                            bitPosition, bitsStored);
                 } else {
                     data.add(new EmbeddedOverlay(gg0000, bitPosition));
                 }

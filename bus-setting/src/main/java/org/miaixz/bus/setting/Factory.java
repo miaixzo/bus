@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.setting;
 
 import org.miaixz.bus.setting.format.ElementFormatter;
@@ -33,11 +33,7 @@ import org.miaixz.bus.setting.metric.ini.IniProperty;
 import org.miaixz.bus.setting.metric.ini.IniSection;
 
 /**
- * iniFormatter的函数接口
- * 通常，格式化程序需要三种格式，例如
- * {@link IniComment},
- * {@link IniSection},
- * {@link IniProperty}
+ * iniFormatter的函数接口 通常，格式化程序需要三种格式，例如 {@link IniComment}, {@link IniSection}, {@link IniProperty}
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -53,7 +49,7 @@ public interface Factory {
      * @return an {@link Format}
      */
     Format apply(ElementFormatter<IniComment> commentElementFormatter,
-                 ElementFormatter<IniSection> sectionElementFormatter,
-                 ElementFormatter<IniProperty> propertyElementFormatter);
+            ElementFormatter<IniSection> sectionElementFormatter,
+            ElementFormatter<IniProperty> propertyElementFormatter);
 
 }

@@ -24,12 +24,11 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.buffer;
 
 /**
- * 代码移植自<a href="https://github.com/biezhi/blade">blade</a>
- * 快速缓冲，将数据存放在缓冲集中，取代以往的单一数组
+ * 代码移植自<a href="https://github.com/biezhi/blade">blade</a> 快速缓冲，将数据存放在缓冲集中，取代以往的单一数组
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -279,8 +278,7 @@ public class FastByteBuffer {
     }
 
     /**
-     * 返回快速缓冲中的数据，如果缓冲区中的数据长度固定，则直接返回原始数组
-     * 注意此方法共享数组，不能修改数组内容！
+     * 返回快速缓冲中的数据，如果缓冲区中的数据长度固定，则直接返回原始数组 注意此方法共享数组，不能修改数组内容！
      *
      * @return 快速缓冲中的数据
      */

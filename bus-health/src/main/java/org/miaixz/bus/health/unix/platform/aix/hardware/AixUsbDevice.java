@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.aix.hardware;
 
 import org.miaixz.bus.core.center.regex.Pattern;
@@ -48,13 +48,13 @@ import java.util.function.Supplier;
 public class AixUsbDevice extends AbstractUsbDevice {
 
     public AixUsbDevice(String name, String vendor, String vendorId, String productId, String serialNumber,
-                        String uniqueDeviceId, List<UsbDevice> connectedDevices) {
+            String uniqueDeviceId, List<UsbDevice> connectedDevices) {
         super(name, vendor, vendorId, productId, serialNumber, uniqueDeviceId, connectedDevices);
     }
 
     /**
-     * Instantiates a list of {@link UsbDevice} objects, representing devices connected via a usb port
-     * (including internal devices).
+     * Instantiates a list of {@link UsbDevice} objects, representing devices connected via a usb port (including
+     * internal devices).
      * <p>
      * If the value of {@code tree} is true, the top level devices returned from this method are the USB Controllers;
      * connected hubs and devices in its device tree share that controller's bandwidth. If the value of {@code tree} is
@@ -78,7 +78,8 @@ public class AixUsbDevice extends AbstractUsbDevice {
             }
         }
         if (tree) {
-            return List.of(new AixUsbDevice("USB Controller", Normal.EMPTY, "0000", "0000", Normal.EMPTY, Normal.EMPTY, deviceList));
+            return List.of(new AixUsbDevice("USB Controller", Normal.EMPTY, "0000", "0000", Normal.EMPTY, Normal.EMPTY,
+                    deviceList));
         }
         return deviceList;
     }

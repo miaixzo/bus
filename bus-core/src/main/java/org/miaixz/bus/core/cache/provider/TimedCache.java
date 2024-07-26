@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.cache.provider;
 
 import org.miaixz.bus.core.cache.GlobalPruneTimer;
@@ -36,8 +36,7 @@ import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 
 /**
- * 定时缓存
- * 此缓存没有容量限制，对象只有在过期后才会被移除
+ * 定时缓存 此缓存没有容量限制，对象只有在过期后才会被移除
  *
  * @param <K> 键类型
  * @param <V> 值类型

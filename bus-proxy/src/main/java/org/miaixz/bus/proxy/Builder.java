@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.proxy;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -75,14 +75,10 @@ public final class Builder {
     }
 
     /**
-     * 创建动态代理对象
-     * 动态代理对象的创建原理是：
-     * 假设创建的代理对象名为 $Proxy0
-     * 1、根据传入的interfaces动态生成一个类，实现interfaces中的接口
-     * 2、通过传入的classloder将刚生成的类加载到jvm中。即将$Proxy0类load
-     * 3、调用$Proxy0的$Proxy0(InvocationHandler)构造函数 创建$Proxy0的对象，并且用interfaces参数遍历其所有接口的方法，这些实现方法的实现本质上是通过反射调用被代理对象的方法
-     * 4、将$Proxy0的实例返回给客户端。
-     * 5、当调用代理类的相应方法时，相当于调用 {@link InvocationHandler#invoke(Object, java.lang.reflect.Method, Object[])} 方法
+     * 创建动态代理对象 动态代理对象的创建原理是： 假设创建的代理对象名为 $Proxy0 1、根据传入的interfaces动态生成一个类，实现interfaces中的接口
+     * 2、通过传入的classloder将刚生成的类加载到jvm中。即将$Proxy0类load 3、调用$Proxy0的$Proxy0(InvocationHandler)构造函数
+     * 创建$Proxy0的对象，并且用interfaces参数遍历其所有接口的方法，这些实现方法的实现本质上是通过反射调用被代理对象的方法 4、将$Proxy0的实例返回给客户端。 5、当调用代理类的相应方法时，相当于调用
+     * {@link InvocationHandler#invoke(Object, java.lang.reflect.Method, Object[])} 方法
      *
      * @param <T>               被代理对象类型
      * @param classloader       被代理类对应的ClassLoader
@@ -90,7 +86,8 @@ public final class Builder {
      * @param interfaces        代理类中需要实现的被代理类的接口方法
      * @return 代理类
      */
-    public static <T> T newProxyInstance(final ClassLoader classloader, final InvocationHandler invocationHandler, final Class<?>... interfaces) {
+    public static <T> T newProxyInstance(final ClassLoader classloader, final InvocationHandler invocationHandler,
+            final Class<?>... interfaces) {
         return (T) Proxy.newProxyInstance(classloader, interfaces, invocationHandler);
     }
 

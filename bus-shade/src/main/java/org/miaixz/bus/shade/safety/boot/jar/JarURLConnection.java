@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.safety.boot.jar;
 
 import org.miaixz.bus.shade.safety.algorithm.Key;
@@ -58,7 +58,8 @@ public class JarURLConnection extends java.net.JarURLConnection {
     private final EncryptorProvider encryptorProvider;
     private final Key key;
 
-    public JarURLConnection(java.net.JarURLConnection jarURLConnection, DecryptorProvider decryptorProvider, EncryptorProvider encryptorProvider, Key key) throws MalformedURLException {
+    public JarURLConnection(java.net.JarURLConnection jarURLConnection, DecryptorProvider decryptorProvider,
+            EncryptorProvider encryptorProvider, Key key) throws MalformedURLException {
         super(jarURLConnection.getURL());
         this.jarURLConnection = jarURLConnection;
         this.decryptorProvider = decryptorProvider;

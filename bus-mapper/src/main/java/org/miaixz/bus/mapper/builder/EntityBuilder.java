@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.builder;
 
 import org.apache.ibatis.mapping.MappedStatement;
@@ -154,7 +154,8 @@ public class EntityBuilder {
             selectBuilder.append(entityColumn.getColumn());
             if (!skipAlias && !entityColumn.getColumn().equalsIgnoreCase(entityColumn.getProperty())) {
                 // 不等的时候分几种情况，例如`DESC`
-                if (entityColumn.getColumn().substring(1, entityColumn.getColumn().length() - 1).equalsIgnoreCase(entityColumn.getProperty())) {
+                if (entityColumn.getColumn().substring(1, entityColumn.getColumn().length() - 1)
+                        .equalsIgnoreCase(entityColumn.getProperty())) {
                     selectBuilder.append(Symbol.COMMA);
                 } else {
                     selectBuilder.append(" AS ").append(entityColumn.getProperty()).append(Symbol.COMMA);
@@ -207,7 +208,7 @@ public class EntityBuilder {
             keyProperties.add(column.getProperty());
         }
 
-        MetaObject.forObject(ms).setValue("keyProperties", keyProperties.toArray(new String[]{}));
+        MetaObject.forObject(ms).setValue("keyProperties", keyProperties.toArray(new String[] {}));
     }
 
 }

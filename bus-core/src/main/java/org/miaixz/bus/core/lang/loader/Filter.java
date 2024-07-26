@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.loader;
 
 import java.net.URL;
@@ -42,7 +42,7 @@ public interface Filter {
      *
      * @param name 资源名称,即相对路径
      * @param url  资源URL地址
-     * @return true: 加载  false: 不加载
+     * @return true: 加载 false: 不加载
      */
     boolean filtrate(String name, URL url);
 

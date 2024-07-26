@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date;
 
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -51,8 +51,7 @@ import java.util.concurrent.TimeUnit;
 public class Converter extends Formatter {
 
     /**
-     * {@link Calendar}类型时间转为{@link DateTime}
-     * 始终根据已有{@link Calendar} 产生新的{@link DateTime}对象
+     * {@link Calendar}类型时间转为{@link DateTime} 始终根据已有{@link Calendar} 产生新的{@link DateTime}对象
      *
      * @param calendar {@link Calendar}，如果传入{@code null}，返回{@code null}
      * @return 时间对象
@@ -65,10 +64,10 @@ public class Converter extends Formatter {
     }
 
     /**
-     * {@link TemporalAccessor}类型时间转为{@link DateTime}
-     * 始终根据已有{@link TemporalAccessor} 产生新的{@link DateTime}对象
+     * {@link TemporalAccessor}类型时间转为{@link DateTime} 始终根据已有{@link TemporalAccessor} 产生新的{@link DateTime}对象
      *
-     * @param temporalAccessor {@link TemporalAccessor},常用子类： {@link LocalDateTime}、 LocalDate，如果传入{@code null}，返回{@code null}
+     * @param temporalAccessor {@link TemporalAccessor},常用子类： {@link LocalDateTime}、
+     *                         LocalDate，如果传入{@code null}，返回{@code null}
      * @return 时间对象
      */
     public static DateTime date(final TemporalAccessor temporalAccessor) {
@@ -95,10 +94,8 @@ public class Converter extends Formatter {
     }
 
     /**
-     * {@link TemporalAccessor}转换为 时间戳（从1970-01-01T00:00:00Z开始的毫秒数）
-     * 如果为{@link Month}，调用{@link Month#getValue()}
-     * 如果为{@link DayOfWeek}，调用{@link DayOfWeek#getValue()}
-     * 如果为{@link Era}，调用{@link Era#getValue()}
+     * {@link TemporalAccessor}转换为 时间戳（从1970-01-01T00:00:00Z开始的毫秒数） 如果为{@link Month}，调用{@link Month#getValue()}
+     * 如果为{@link DayOfWeek}，调用{@link DayOfWeek#getValue()} 如果为{@link Era}，调用{@link Era#getValue()}
      *
      * @param temporalAccessor Date对象
      * @return {@link Instant}对象
@@ -160,22 +157,22 @@ public class Converter extends Formatter {
             return null;
         }
         switch (unit) {
-            case NANOSECONDS:
-                return ChronoUnit.NANOS;
-            case MICROSECONDS:
-                return ChronoUnit.MICROS;
-            case MILLISECONDS:
-                return ChronoUnit.MILLIS;
-            case SECONDS:
-                return ChronoUnit.SECONDS;
-            case MINUTES:
-                return ChronoUnit.MINUTES;
-            case HOURS:
-                return ChronoUnit.HOURS;
-            case DAYS:
-                return ChronoUnit.DAYS;
-            default:
-                throw new IllegalArgumentException("Unknown TimeUnit constant");
+        case NANOSECONDS:
+            return ChronoUnit.NANOS;
+        case MICROSECONDS:
+            return ChronoUnit.MICROS;
+        case MILLISECONDS:
+            return ChronoUnit.MILLIS;
+        case SECONDS:
+            return ChronoUnit.SECONDS;
+        case MINUTES:
+            return ChronoUnit.MINUTES;
+        case HOURS:
+            return ChronoUnit.HOURS;
+        case DAYS:
+            return ChronoUnit.DAYS;
+        default:
+            throw new IllegalArgumentException("Unknown TimeUnit constant");
         }
     }
 
@@ -191,29 +188,27 @@ public class Converter extends Formatter {
             return null;
         }
         switch (unit) {
-            case NANOS:
-                return TimeUnit.NANOSECONDS;
-            case MICROS:
-                return TimeUnit.MICROSECONDS;
-            case MILLIS:
-                return TimeUnit.MILLISECONDS;
-            case SECONDS:
-                return TimeUnit.SECONDS;
-            case MINUTES:
-                return TimeUnit.MINUTES;
-            case HOURS:
-                return TimeUnit.HOURS;
-            case DAYS:
-                return TimeUnit.DAYS;
-            default:
-                throw new IllegalArgumentException("ChronoUnit cannot be converted to TimeUnit: " + unit);
+        case NANOS:
+            return TimeUnit.NANOSECONDS;
+        case MICROS:
+            return TimeUnit.MICROSECONDS;
+        case MILLIS:
+            return TimeUnit.MILLISECONDS;
+        case SECONDS:
+            return TimeUnit.SECONDS;
+        case MINUTES:
+            return TimeUnit.MINUTES;
+        case HOURS:
+            return TimeUnit.HOURS;
+        case DAYS:
+            return TimeUnit.DAYS;
+        default:
+            throw new IllegalArgumentException("ChronoUnit cannot be converted to TimeUnit: " + unit);
         }
     }
 
-
     /**
-     * {@link Instant}转{@link LocalDateTime}，使用UTC时区
-     * 此方法自动将一个UTC时间转换为本地时间，如传入00:00，则结果为08:00
+     * {@link Instant}转{@link LocalDateTime}，使用UTC时区 此方法自动将一个UTC时间转换为本地时间，如传入00:00，则结果为08:00
      *
      * @param instant {@link Instant}
      * @return {@link LocalDateTime}
@@ -223,9 +218,7 @@ public class Converter extends Formatter {
     }
 
     /**
-     * {@link Instant}转{@link LocalDateTime}
-     * instant是一个无时区的时间戳，在转换为本地时间时，需指定这个时间戳所在时区
-     * 如果所在时区与当前时区不同，会转换时间
+     * {@link Instant}转{@link LocalDateTime} instant是一个无时区的时间戳，在转换为本地时间时，需指定这个时间戳所在时区 如果所在时区与当前时区不同，会转换时间
      *
      * @param instant {@link Instant}
      * @param zoneId  时区，如果给定的时区与当前时区不同，会转换时间
@@ -240,9 +233,7 @@ public class Converter extends Formatter {
     }
 
     /**
-     * {@link Instant}转{@link LocalDateTime}
-     * instant是一个无时区的时间戳，在转换为本地时间时，需指定这个时间戳所在时区
-     * 如果所在时区与当前时区不同，会转换时间
+     * {@link Instant}转{@link LocalDateTime} instant是一个无时区的时间戳，在转换为本地时间时，需指定这个时间戳所在时区 如果所在时区与当前时区不同，会转换时间
      *
      * @param instant  {@link Instant}
      * @param timeZone 时区，如果给定的时区与当前时区不同，会转换时间
@@ -259,7 +250,9 @@ public class Converter extends Formatter {
     /**
      * 毫秒转{@link LocalDateTime}，使用默认时区
      *
-     * <p>注意：此方法使用默认时区，如果非UTC，会产生时间偏移</p>
+     * <p>
+     * 注意：此方法使用默认时区，如果非UTC，会产生时间偏移
+     * </p>
      *
      * @param epochMilli 从1970-01-01T00:00:00Z开始计数的毫秒数
      * @return {@link LocalDateTime}
@@ -320,30 +313,25 @@ public class Converter extends Formatter {
         try {
             return LocalDateTime.from(temporalAccessor);
         } catch (final Exception ignore) {
-            //ignore
+            // ignore
         }
 
         try {
             return ZonedDateTime.from(temporalAccessor).toLocalDateTime();
         } catch (final Exception ignore) {
-            //ignore
+            // ignore
         }
 
         try {
             return LocalDateTime.ofInstant(Instant.from(temporalAccessor), ZoneId.systemDefault());
         } catch (final Exception ignore) {
-            //ignore
+            // ignore
         }
 
-        return LocalDateTime.of(
-                get(temporalAccessor, ChronoField.YEAR),
-                get(temporalAccessor, ChronoField.MONTH_OF_YEAR),
-                get(temporalAccessor, ChronoField.DAY_OF_MONTH),
-                get(temporalAccessor, ChronoField.HOUR_OF_DAY),
-                get(temporalAccessor, ChronoField.MINUTE_OF_HOUR),
-                get(temporalAccessor, ChronoField.SECOND_OF_MINUTE),
-                get(temporalAccessor, ChronoField.NANO_OF_SECOND)
-        );
+        return LocalDateTime.of(get(temporalAccessor, ChronoField.YEAR),
+                get(temporalAccessor, ChronoField.MONTH_OF_YEAR), get(temporalAccessor, ChronoField.DAY_OF_MONTH),
+                get(temporalAccessor, ChronoField.HOUR_OF_DAY), get(temporalAccessor, ChronoField.MINUTE_OF_HOUR),
+                get(temporalAccessor, ChronoField.SECOND_OF_MINUTE), get(temporalAccessor, ChronoField.NANO_OF_SECOND));
     }
 
     /**
@@ -360,7 +348,7 @@ public class Converter extends Formatter {
         try {
             return LocalDate.from(temporalAccessor);
         } catch (final Exception ignore) {
-            //ignore
+            // ignore
         }
 
         if (temporalAccessor instanceof LocalDateTime) {
@@ -369,11 +357,8 @@ public class Converter extends Formatter {
             return of(temporalAccessor).toLocalDate();
         }
 
-        return LocalDate.of(
-                get(temporalAccessor, ChronoField.YEAR),
-                get(temporalAccessor, ChronoField.MONTH_OF_YEAR),
-                get(temporalAccessor, ChronoField.DAY_OF_MONTH)
-        );
+        return LocalDate.of(get(temporalAccessor, ChronoField.YEAR), get(temporalAccessor, ChronoField.MONTH_OF_YEAR),
+                get(temporalAccessor, ChronoField.DAY_OF_MONTH));
     }
 
     /**
@@ -401,16 +386,11 @@ public class Converter extends Formatter {
             return ZonedDateTime.of(LocalDate.now(), (LocalTime) temporalAccessor, zoneId);
         }
 
-        return ZonedDateTime.of(
-                get(temporalAccessor, ChronoField.YEAR),
-                get(temporalAccessor, ChronoField.MONTH_OF_YEAR),
-                get(temporalAccessor, ChronoField.DAY_OF_MONTH),
-                get(temporalAccessor, ChronoField.HOUR_OF_DAY),
-                get(temporalAccessor, ChronoField.MINUTE_OF_HOUR),
-                get(temporalAccessor, ChronoField.SECOND_OF_MINUTE),
-                get(temporalAccessor, ChronoField.NANO_OF_SECOND),
-                zoneId
-        );
+        return ZonedDateTime.of(get(temporalAccessor, ChronoField.YEAR),
+                get(temporalAccessor, ChronoField.MONTH_OF_YEAR), get(temporalAccessor, ChronoField.DAY_OF_MONTH),
+                get(temporalAccessor, ChronoField.HOUR_OF_DAY), get(temporalAccessor, ChronoField.MINUTE_OF_HOUR),
+                get(temporalAccessor, ChronoField.SECOND_OF_MINUTE), get(temporalAccessor, ChronoField.NANO_OF_SECOND),
+                zoneId);
     }
 
     /**
@@ -420,13 +400,9 @@ public class Converter extends Formatter {
      * @return {@link DateTimeFormatter}
      */
     public static DateTimeFormatter ofPattern(final String pattern) {
-        return new DateTimeFormatterBuilder()
-                .appendPattern(pattern)
-                .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
-                .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
-                .parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
-                .parseDefaulting(ChronoField.MILLI_OF_SECOND, 0)
-                .toFormatter();
+        return new DateTimeFormatterBuilder().appendPattern(pattern).parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
+                .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0).parseDefaulting(ChronoField.SECOND_OF_MINUTE, 0)
+                .parseDefaulting(ChronoField.MILLI_OF_SECOND, 0).toFormatter();
     }
 
 }

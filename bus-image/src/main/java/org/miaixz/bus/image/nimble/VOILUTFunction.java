@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 /**
@@ -32,7 +32,5 @@ package org.miaixz.bus.image.nimble;
  * @since Java 17+
  */
 public enum VOILUTFunction {
-    LINEAR,
-    LINEAR_EXACT,
-    SIGMOID
+    LINEAR, LINEAR_EXACT, SIGMOID
 }

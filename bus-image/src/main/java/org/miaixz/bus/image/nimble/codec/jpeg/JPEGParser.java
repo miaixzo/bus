@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.codec.jpeg;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -46,8 +46,7 @@ import java.nio.channels.SeekableByteChannel;
  */
 public class JPEGParser implements XPEGParser {
 
-    private static final long JPEG2000_SIGNATURE_BOX =
-            0x6a5020200d0a870aL; // jP\040\040<CR><LF><0x87><LF>;
+    private static final long JPEG2000_SIGNATURE_BOX = 0x6a5020200d0a870aL; // jP\040\040<CR><LF><0x87><LF>;
     private static final int CONTIGUOUS_CODESTREAM_BOX = 0x6a703263; // jp2c;
 
     private final ByteBuffer buf = ByteBuffer.allocate(8);
@@ -59,27 +58,21 @@ public class JPEGParser implements XPEGParser {
         seekCodeStream(channel);
         codeStreamPosition = channel.position();
         switch (readUShort(channel)) {
-            case JPEG.FF_SOI:
-                params = new JPEGParams(channel);
-                break;
-            case JPEG.FF_SOC:
-                params = new JPEG2000Params(channel);
-                break;
-            default:
-                throw new InternalException("JPEG SOI/SOC marker not found");
+        case JPEG.FF_SOI:
+            params = new JPEGParams(channel);
+            break;
+        case JPEG.FF_SOC:
+            params = new JPEG2000Params(channel);
+            break;
+        default:
+            throw new InternalException("JPEG SOI/SOC marker not found");
         }
     }
 
     @Override
     public String toString() {
-        return "JPEGParser{"
-                + "codeStreamPos="
-                + codeStreamPosition
-                + ", posAfterAPP="
-                + positionAfterAPP
-                + ", "
-                + params
-                + '}';
+        return "JPEGParser{" + "codeStreamPos=" + codeStreamPosition + ", posAfterAPP=" + positionAfterAPP + ", "
+                + params + '}';
     }
 
     public Params getParams() {
@@ -103,13 +96,13 @@ public class JPEGParser implements XPEGParser {
 
     @Override
     public Attributes getAttributes(Attributes attrs) {
-        if (attrs == null) attrs = new Attributes(10);
+        if (attrs == null)
+            attrs = new Attributes(10);
 
         int samples = params.samplesPerPixel();
         attrs.setInt(Tag.SamplesPerPixel, VR.US, samples);
         if (samples == 3) {
-            attrs.setString(
-                    Tag.PhotometricInterpretation, VR.CS, params.colorPhotometricInterpretation());
+            attrs.setString(Tag.PhotometricInterpretation, VR.CS, params.colorPhotometricInterpretation());
             attrs.setInt(Tag.PlanarConfiguration, VR.US, 0);
         } else {
             attrs.setString(Tag.PhotometricInterpretation, VR.CS, "MONOCHROME2");
@@ -121,7 +114,8 @@ public class JPEGParser implements XPEGParser {
         attrs.setInt(Tag.BitsStored, VR.US, bitsStored);
         attrs.setInt(Tag.HighBit, VR.US, bitsStored - 1);
         attrs.setInt(Tag.PixelRepresentation, VR.US, params.pixelRepresentation());
-        if (params.lossyImageCompression()) attrs.setString(Tag.LossyImageCompression, VR.CS, "01");
+        if (params.lossyImageCompression())
+            attrs.setString(Tag.LossyImageCompression, VR.CS, "01");
         return attrs;
     }
 
@@ -188,8 +182,7 @@ public class JPEGParser implements XPEGParser {
 
     private void requiresFF(SeekableByteChannel channel, int v) throws IOException {
         if (v != 0xff)
-            throw new InternalException(
-                    String.format("unexpected %2XH on position %d", v, channel.position() - 4));
+            throw new InternalException(String.format("unexpected %2XH on position %d", v, channel.position() - 4));
     }
 
     public interface Params {
@@ -239,13 +232,9 @@ public class JPEGParser implements XPEGParser {
                     channel.read(buf);
 
                     byte[] values = buf.array();
-                    if (values[0] == 0x41
-                            && values[1] == 0x64
-                            && values[2] == 0x6F
-                            && values[3] == 0x62
-                            && values[4] == 0x65
-                            && values[11] == 0) {
-                        /* Found Adobe APP14 marker for RGB transform*/
+                    if (values[0] == 0x41 && values[1] == 0x64 && values[2] == 0x6F && values[3] == 0x62
+                            && values[4] == 0x65 && values[11] == 0) {
+                        /* Found Adobe APP14 marker for RGB transform */
                         rgb = true;
                     }
                 } else {
@@ -298,12 +287,8 @@ public class JPEGParser implements XPEGParser {
         public boolean isRgb() {
             // Not JFIF or has RGB Components, see
             // https://entropymine.wordpress.com/2018/10/22/how-is-a-jpeg-images-color-type-determined/
-            return !jfif
-                    && (rgb
-                    || (sofParams.limit() > 12
-                    && (sofParams.get(6) & 0xff) == 0x52
-                    && (sofParams.get(9) & 0xff) == 0x47
-                    && (sofParams.get(12) & 0xff) == 0x42));
+            return !jfif && (rgb || (sofParams.limit() > 12 && (sofParams.get(6) & 0xff) == 0x52
+                    && (sofParams.get(9) & 0xff) == 0x47 && (sofParams.get(12) & 0xff) == 0x42));
         }
 
         @Override
@@ -321,16 +306,16 @@ public class JPEGParser implements XPEGParser {
         @Override
         public String transferSyntaxUID() throws InternalException {
             switch (sof) {
-                case JPEG.SOF0:
-                    return UID.JPEGBaseline8Bit.uid;
-                case JPEG.SOF1:
-                    return UID.JPEGExtended12Bit.uid;
-                case JPEG.SOF2:
-                    return UID.JPEGFullProgressionNonHierarchical1012.uid;
-                case JPEG.SOF3:
-                    return sosParams.get(3) == 1 ? UID.JPEGLosslessSV1.uid : UID.JPEGLossless.uid;
-                case JPEG.SOF55:
-                    return sosParams.get(3) == 0 ? UID.JPEGLSLossless.uid : UID.JPEGLSNearLossless.uid;
+            case JPEG.SOF0:
+                return UID.JPEGBaseline8Bit.uid;
+            case JPEG.SOF1:
+                return UID.JPEGExtended12Bit.uid;
+            case JPEG.SOF2:
+                return UID.JPEGFullProgressionNonHierarchical1012.uid;
+            case JPEG.SOF3:
+                return sosParams.get(3) == 1 ? UID.JPEGLosslessSV1.uid : UID.JPEGLossless.uid;
+            case JPEG.SOF55:
+                return sosParams.get(3) == 0 ? UID.JPEGLSLossless.uid : UID.JPEGLSNearLossless.uid;
             }
             throw new InternalException(String.format("JPEG SOF%d not supported", sof & 0xf));
         }
@@ -350,16 +335,16 @@ public class JPEGParser implements XPEGParser {
             do {
                 segment = nextSegment(channel);
                 switch (segment.marker) {
-                    case JPEG.SIZ:
-                        channel.read(sizParams = ByteBuffer.allocate(segment.contentSize));
-                        break;
-                    case JPEG.COD:
-                        channel.read(codParams = ByteBuffer.allocate(segment.contentSize));
-                        break;
-                    case JPEG.TLM:
-                        tlm = true;
-                    default:
-                        skip(channel, segment.contentSize);
+                case JPEG.SIZ:
+                    channel.read(sizParams = ByteBuffer.allocate(segment.contentSize));
+                    break;
+                case JPEG.COD:
+                    channel.read(codParams = ByteBuffer.allocate(segment.contentSize));
+                    break;
+                case JPEG.TLM:
+                    tlm = true;
+                default:
+                    skip(channel, segment.contentSize);
                 }
             } while (segment.marker != JPEG.SOT);
             this.sizParams = sizParams;
@@ -399,17 +384,15 @@ public class JPEGParser implements XPEGParser {
 
         @Override
         public String colorPhotometricInterpretation() {
-            return codParams.get(4) == 0
-                    ? "RGB" // Multiple component transformation
+            return codParams.get(4) == 0 ? "RGB" // Multiple component transformation
                     : lossyImageCompression() ? "YBR_ICT" : "YBR_RCT";
         }
 
         @Override
         public String transferSyntaxUID() {
             return (sizParams.getShort(0) & 0b0100_0000_0000_0000) != 0
-                    ? lossyImageCompression()
-                    ? UID.HTJ2K.uid
-                    : isRPCL() ? UID.HTJ2KLosslessRPCL.uid : UID.HTJ2KLossless.uid
+                    ? lossyImageCompression() ? UID.HTJ2K.uid
+                            : isRPCL() ? UID.HTJ2KLosslessRPCL.uid : UID.HTJ2KLossless.uid
                     : lossyImageCompression() ? UID.JPEG2000.uid : UID.JPEG2000Lossless.uid;
         }
 
@@ -430,17 +413,13 @@ public class JPEGParser implements XPEGParser {
             sb.append(", numYTiles=").append(numYTiles());
             sb.append(", Csiz=").append(sizParams.getShort(34) & 0xffff);
             sb.append(", Comps{");
-            for (int i = 36; i + 2 < sizParams.limit(); ) {
+            for (int i = 36; i + 2 < sizParams.limit();) {
                 sb.append('{');
                 int ssiz = sizParams.get(i++);
-                if (ssiz < 0) sb.append('±');
-                sb.append((ssiz & 0x7f) + 1)
-                        .append(':')
-                        .append(sizParams.get(i++) & 0xff)
-                        .append(':')
-                        .append(sizParams.get(i++) & 0xff)
-                        .append('}')
-                        .append(',');
+                if (ssiz < 0)
+                    sb.append('±');
+                sb.append((ssiz & 0x7f) + 1).append(':').append(sizParams.get(i++) & 0xff).append(':')
+                        .append(sizParams.get(i++) & 0xff).append('}').append(',');
             }
             sb.setLength(sb.length() - 1);
             sb.append("}},\n  COD{Lcod=").append(codParams.limit() + 2);
@@ -456,12 +435,8 @@ public class JPEGParser implements XPEGParser {
             if (codParams.limit() > 10) {
                 sb.append(", Precincts{");
                 for (int i = 10; i < codParams.limit(); i++) {
-                    sb.append('{')
-                            .append(codParams.get(i) & 0xf)
-                            .append(',')
-                            .append((codParams.get(i) & 0xf0) >>> 4)
-                            .append('}')
-                            .append(',');
+                    sb.append('{').append(codParams.get(i) & 0xf).append(',').append((codParams.get(i) & 0xf0) >>> 4)
+                            .append('}').append(',');
                 }
                 sb.setLength(sb.length() - 1);
             }
@@ -471,26 +446,26 @@ public class JPEGParser implements XPEGParser {
 
         private String toTransformation(int i) {
             switch (i) {
-                case 0:
-                    return "9-7";
-                case 1:
-                    return "5-3";
+            case 0:
+                return "9-7";
+            case 1:
+                return "5-3";
             }
             return Integer.toString(i);
         }
 
         private String toProgressionOrder(int i) {
             switch (i) {
-                case 0:
-                    return "LRCP";
-                case 1:
-                    return "RLCP";
-                case 2:
-                    return "RPCL";
-                case 3:
-                    return "PCRL";
-                case 4:
-                    return "CPRL";
+            case 0:
+                return "LRCP";
+            case 1:
+                return "RLCP";
+            case 2:
+                return "RPCL";
+            case 3:
+                return "PCRL";
+            case 4:
+                return "CPRL";
             }
             return Integer.toString(i);
         }
@@ -498,18 +473,16 @@ public class JPEGParser implements XPEGParser {
         private String toBinaryString(int i) {
             String s = Integer.toBinaryString(i);
             int l = s.length();
-            if (l <= 4) return s;
+            if (l <= 4)
+                return s;
             StringBuilder sb = new StringBuilder(s);
-            while (l > 4) sb.insert(l -= 4, '_');
+            while (l > 4)
+                sb.insert(l -= 4, '_');
             return sb.toString();
         }
 
         private boolean isRPCL() {
-            return tlm
-                    && isProgressionOrderRPCL()
-                    && isBlockSize64x64()
-                    && numXTiles() == 1
-                    && numYTiles() == 1
+            return tlm && isProgressionOrderRPCL() && isBlockSize64x64() && numXTiles() == 1 && numYTiles() == 1
                     && (Math.min(rows(), columns()) >>> decompositions()) <= 64;
         }
 
@@ -535,12 +508,8 @@ public class JPEGParser implements XPEGParser {
 
         private int numTiles(int iSize, int iTsiz, int iTOsiz) {
             long tSize = sizParams.getInt(iTsiz) & 0xffffffffL;
-            return (int)
-                    (((sizParams.getInt(iSize) & 0xffffffffL)
-                            - (sizParams.getInt(iTOsiz) & 0xffffffffL)
-                            + tSize
-                            - 1)
-                            / tSize);
+            return (int) (((sizParams.getInt(iSize) & 0xffffffffL) - (sizParams.getInt(iTOsiz) & 0xffffffffL) + tSize
+                    - 1) / tSize);
         }
     }
 

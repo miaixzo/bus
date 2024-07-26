@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.io;
 
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -98,8 +98,8 @@ public class XSLTAttributesCoercion implements AttributesCoercion {
     public void coerce(Attributes attrs, Attributes modified) throws Exception {
         Attributes newAttrs;
         try {
-            newAttrs = SAXTransformer.transform(
-                    attrs, templates, includeNameSpaceDeclaration, includeKeyword, setupTransformer);
+            newAttrs = SAXTransformer.transform(attrs, templates, includeNameSpaceDeclaration, includeKeyword,
+                    setupTransformer);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

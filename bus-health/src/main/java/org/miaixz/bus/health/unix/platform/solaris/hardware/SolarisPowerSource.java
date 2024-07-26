@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.solaris.hardware;
 
 import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
@@ -49,7 +49,7 @@ import java.util.List;
 public final class SolarisPowerSource extends AbstractPowerSource {
 
     // One-time lookup to see which kstat module to use
-    private static final String[] KSTAT_BATT_MOD = {null, "battery", "acpi_drv"};
+    private static final String[] KSTAT_BATT_MOD = { null, "battery", "acpi_drv" };
 
     private static final int KSTAT_BATT_IDX;
 
@@ -66,11 +66,11 @@ public final class SolarisPowerSource extends AbstractPowerSource {
     }
 
     public SolarisPowerSource(String psName, String psDeviceName, double psRemainingCapacityPercent,
-                              double psTimeRemainingEstimated, double psTimeRemainingInstant, double psPowerUsageRate, double psVoltage,
-                              double psAmperage, boolean psPowerOnLine, boolean psCharging, boolean psDischarging,
-                              PowerSource.CapacityUnits psCapacityUnits, int psCurrentCapacity, int psMaxCapacity, int psDesignCapacity,
-                              int psCycleCount, String psChemistry, LocalDate psManufactureDate, String psManufacturer,
-                              String psSerialNumber, double psTemperature) {
+            double psTimeRemainingEstimated, double psTimeRemainingInstant, double psPowerUsageRate, double psVoltage,
+            double psAmperage, boolean psPowerOnLine, boolean psCharging, boolean psDischarging,
+            PowerSource.CapacityUnits psCapacityUnits, int psCurrentCapacity, int psMaxCapacity, int psDesignCapacity,
+            int psCycleCount, String psChemistry, LocalDate psManufactureDate, String psManufacturer,
+            String psSerialNumber, double psTemperature) {
         super(psName, psDeviceName, psRemainingCapacityPercent, psTimeRemainingEstimated, psTimeRemainingInstant,
                 psPowerUsageRate, psVoltage, psAmperage, psPowerOnLine, psCharging, psDischarging, psCapacityUnits,
                 psCurrentCapacity, psMaxCapacity, psDesignCapacity, psCycleCount, psChemistry, psManufactureDate,

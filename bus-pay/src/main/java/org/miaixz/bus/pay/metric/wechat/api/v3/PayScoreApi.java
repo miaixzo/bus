@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pay.metric.wechat.api.v3;
 
 import org.miaixz.bus.pay.Matcher;
@@ -75,7 +75,8 @@ public enum PayScoreApi implements Matcher {
     /**
      * 解除用户授权关系（授权协议号）
      */
-    PAY_SCORE_PERMISSIONS_AUTHORIZATION_CODE_TERMINATE("/v3/payscore/permissions/authorization-code/%s/terminate", "解除用户授权关系（授权协议号）"),
+    PAY_SCORE_PERMISSIONS_AUTHORIZATION_CODE_TERMINATE("/v3/payscore/permissions/authorization-code/%s/terminate",
+            "解除用户授权关系（授权协议号）"),
 
     /**
      * 查询与用户授权记录（openid）

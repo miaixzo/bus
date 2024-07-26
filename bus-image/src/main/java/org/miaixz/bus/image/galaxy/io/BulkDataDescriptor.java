@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.io;
 
 import org.miaixz.bus.image.Tag;
@@ -39,7 +39,8 @@ import java.util.List;
  */
 public interface BulkDataDescriptor {
 
-    BulkDataDescriptor DEFAULT = (itemPointer, privateCreator, tag, vr, length) -> BasicBulkDataDescriptor.isStandardBulkData(itemPointer, tag);
+    BulkDataDescriptor DEFAULT = (itemPointer, privateCreator, tag, vr, length) -> BasicBulkDataDescriptor
+            .isStandardBulkData(itemPointer, tag);
 
     BulkDataDescriptor PIXELDATA = (itemPointer, privateCreator, tag, vr, length) -> tag == Tag.PixelData;
 

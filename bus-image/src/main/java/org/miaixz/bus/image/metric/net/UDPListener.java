@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.net;
 
 import org.miaixz.bus.image.metric.Connection;
@@ -45,14 +45,14 @@ public class UDPListener implements Listener {
     private final UDPProtocolHandler handler;
     private final DatagramSocket ds;
 
-    public UDPListener(Connection conn, UDPProtocolHandler handler)
-            throws IOException {
+    public UDPListener(Connection conn, UDPProtocolHandler handler) throws IOException {
         this.conn = conn;
         this.handler = handler;
         try {
             ds = new DatagramSocket(conn.getBindPoint());
         } catch (BindException e) {
-            throw new IOException("Cannot start UDP listener on " + conn.getBindPoint().getHostName() + ":" + conn.getBindPoint().getPort(), e);
+            throw new IOException("Cannot start UDP listener on " + conn.getBindPoint().getHostName() + ":"
+                    + conn.getBindPoint().getPort(), e);
         }
         conn.setReceiveBufferSize(ds);
         conn.getDevice().execute(() -> listen());
@@ -69,16 +69,13 @@ public class UDPListener implements Listener {
                 ds.receive(dp);
                 InetAddress senderAddr = dp.getAddress();
                 if (conn.isBlackListed(dp.getAddress())) {
-                    Logger.info(
-                            "Ignore UDP datagram package received from blacklisted {}", senderAddr);
+                    Logger.info("Ignore UDP datagram package received from blacklisted {}", senderAddr);
                 } else {
-                    Logger.info(
-                            "Received UDP datagram package from {}", senderAddr);
+                    Logger.info("Received UDP datagram package from {}", senderAddr);
                     try {
                         handler.onReceive(conn, dp);
                     } catch (Throwable e) {
-                        Logger.warn(
-                                "Exception processing UDP received from {}:", senderAddr, e);
+                        Logger.warn("Exception processing UDP received from {}:", senderAddr, e);
                     }
                 }
             }
@@ -88,7 +85,6 @@ public class UDPListener implements Listener {
         }
         Logger.info("Stop UDP listener on {}", sockAddr);
     }
-
 
     @Override
     public SocketAddress getEndPoint() {

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.mac.hardware;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -84,8 +84,7 @@ final class MacGraphicsCard extends AbstractGraphicsCard {
                     // Save previous card
                     if (cardNum++ > 0) {
                         cardList.add(new MacGraphicsCard(name, deviceId, vendor,
-                                versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList),
-                                vram));
+                                versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList), vram));
                         versionInfoList.clear();
                     }
                     name = split[1].trim();

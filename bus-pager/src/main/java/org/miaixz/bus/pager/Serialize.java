@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager;
 
 import java.io.Serializable;
@@ -84,10 +84,7 @@ public class Serialize<T> implements Serializable {
 
     @Override
     public String toString() {
-        return "Serialize{" +
-                "total=" + total +
-                ", list=" + list +
-                '}';
+        return "Serialize{" + "total=" + total + ", list=" + list + '}';
     }
 
 }

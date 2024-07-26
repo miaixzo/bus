@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.lang.thread.*;
@@ -43,6 +43,7 @@ public class ThreadKit {
 
     /**
      * 获得一个新的线程池，默认的策略如下：
+     * 
      * <pre>
      *    1. 初始线程数为 0
      *    2. 最大线程数为Integer.MAX_VALUE
@@ -58,6 +59,7 @@ public class ThreadKit {
 
     /**
      * 获得一个新的线程池，只有单个线程，策略如下：
+     * 
      * <pre>
      *    1. 初始线程数为 1
      *    2. 最大线程数为 1
@@ -68,15 +70,12 @@ public class ThreadKit {
      * @return {@link ExecutorService}
      */
     public static ExecutorService newSingleExecutor() {
-        return ExecutorBuilder.of()
-                .setCorePoolSize(1)
-                .setMaxPoolSize(1)
-                .setKeepAliveTime(0)
-                .buildFinalizable();
+        return ExecutorBuilder.of().setCorePoolSize(1).setMaxPoolSize(1).setKeepAliveTime(0).buildFinalizable();
     }
 
     /**
      * 新建一个线程池，默认的策略如下：
+     * 
      * <pre>
      *    1. 初始线程数为poolSize指定的大小
      *    2. 最大线程数为poolSize指定的大小
@@ -91,45 +90,37 @@ public class ThreadKit {
     }
 
     /**
-     * 获得一个新的线程池
-     * 如果maximumPoolSize &gt;= corePoolSize，在没有新任务加入的情况下，多出的线程将最多保留60s
+     * 获得一个新的线程池 如果maximumPoolSize &gt;= corePoolSize，在没有新任务加入的情况下，多出的线程将最多保留60s
      *
      * @param corePoolSize    初始线程池大小
      * @param maximumPoolSize 最大线程池大小
      * @return {@link ThreadPoolExecutor}
      */
     public static ThreadPoolExecutor newExecutor(final int corePoolSize, final int maximumPoolSize) {
-        return ExecutorBuilder.of()
-                .setCorePoolSize(corePoolSize)
-                .setMaxPoolSize(maximumPoolSize)
-                .build();
+        return ExecutorBuilder.of().setCorePoolSize(corePoolSize).setMaxPoolSize(maximumPoolSize).build();
     }
 
     /**
-     * 获得一个新的线程池，并指定最大任务队列大小
-     * 如果maximumPoolSize &gt;= corePoolSize，在没有新任务加入的情况下，多出的线程将最多保留60s
+     * 获得一个新的线程池，并指定最大任务队列大小 如果maximumPoolSize &gt;= corePoolSize，在没有新任务加入的情况下，多出的线程将最多保留60s
      *
      * @param corePoolSize     初始线程池大小
      * @param maximumPoolSize  最大线程池大小
      * @param maximumQueueSize 最大任务队列大小
      * @return {@link ThreadPoolExecutor}
      */
-    public static ExecutorService newExecutor(final int corePoolSize, final int maximumPoolSize, final int maximumQueueSize) {
-        return ExecutorBuilder.of()
-                .setCorePoolSize(corePoolSize)
-                .setMaxPoolSize(maximumPoolSize)
-                .useLinkedBlockingQueue(maximumQueueSize)
-                .build();
+    public static ExecutorService newExecutor(final int corePoolSize, final int maximumPoolSize,
+            final int maximumQueueSize) {
+        return ExecutorBuilder.of().setCorePoolSize(corePoolSize).setMaxPoolSize(maximumPoolSize)
+                .useLinkedBlockingQueue(maximumQueueSize).build();
     }
 
     /**
-     * 获得一个新的线程池
-     * 传入阻塞系数，线程池的大小计算公式为：CPU可用核心数 / (1 - 阻塞因子)
-     * Blocking Coefficient(阻塞系数) = 阻塞时间／（阻塞时间+使用CPU的时间）
+     * 获得一个新的线程池 传入阻塞系数，线程池的大小计算公式为：CPU可用核心数 / (1 - 阻塞因子) Blocking Coefficient(阻塞系数) = 阻塞时间／（阻塞时间+使用CPU的时间）
      * 计算密集型任务的阻塞系数为0，而IO密集型任务的阻塞系数则接近于1。
      *
      * <p>
-     * see: <a href="http://blog.csdn.net/partner4java/article/details/9417663">http://blog.csdn.net/partner4java/article/details/9417663</a>
+     * see: <a href=
+     * "http://blog.csdn.net/partner4java/article/details/9417663">http://blog.csdn.net/partner4java/article/details/9417663</a>
      * </p>
      *
      * @param blockingCoefficient 阻塞系数，阻塞因子介于0~1之间的数，阻塞因子越大，线程池中的线程数越多。
@@ -147,10 +138,13 @@ public class ThreadKit {
 
     /**
      * 获取一个新的线程池，默认的策略如下
+     * 
      * <pre>
      *     1. 核心线程数与最大线程数为nThreads指定的大小
      *     2. 默认使用LinkedBlockingQueue，默认队列大小为1024
-     *     3. 如果isBlocked为{@code true}，当执行拒绝策略的时候会处于阻塞状态，直到能添加到队列中或者被{@link Thread#interrupt()}中断
+     *     3. 如果isBlocked为{@code
+     * true
+     * }，当执行拒绝策略的时候会处于阻塞状态，直到能添加到队列中或者被{@link Thread#interrupt()}中断
      * </pre>
      *
      * @param nThreads         线程池大小
@@ -158,16 +152,20 @@ public class ThreadKit {
      * @param isBlocked        是否使用{@link BlockPolicy}策略
      * @return {@link ExecutorService}
      */
-    public static ExecutorService newFixedExecutor(final int nThreads, final String threadNamePrefix, final boolean isBlocked) {
+    public static ExecutorService newFixedExecutor(final int nThreads, final String threadNamePrefix,
+            final boolean isBlocked) {
         return newFixedExecutor(nThreads, 1024, threadNamePrefix, isBlocked);
     }
 
     /**
      * 获取一个新的线程池，默认的策略如下
+     * 
      * <pre>
      *     1. 核心线程数与最大线程数为nThreads指定的大小
      *     2. 默认使用LinkedBlockingQueue
-     *     3. 如果isBlocked为{@code true}，当执行拒绝策略的时候会处于阻塞状态，直到能添加到队列中或者被{@link Thread#interrupt()}中断
+     *     3. 如果isBlocked为{@code
+     * true
+     * }，当执行拒绝策略的时候会处于阻塞状态，直到能添加到队列中或者被{@link Thread#interrupt()}中断
      * </pre>
      *
      * @param nThreads         线程池大小
@@ -176,13 +174,15 @@ public class ThreadKit {
      * @param isBlocked        是否使用{@link BlockPolicy}策略
      * @return {@link ThreadPoolExecutor}
      */
-    public static ThreadPoolExecutor newFixedExecutor(final int nThreads, final int maximumQueueSize, final String threadNamePrefix, final boolean isBlocked) {
+    public static ThreadPoolExecutor newFixedExecutor(final int nThreads, final int maximumQueueSize,
+            final String threadNamePrefix, final boolean isBlocked) {
         return newFixedExecutor(nThreads, maximumQueueSize, threadNamePrefix,
                 (isBlocked ? RejectPolicy.BLOCK : RejectPolicy.ABORT).getValue());
     }
 
     /**
      * 获得一个新的线程池，默认策略如下
+     * 
      * <pre>
      *     1. 核心线程数与最大线程数为nThreads指定的大小
      *     2. 默认使用LinkedBlockingQueue
@@ -194,16 +194,11 @@ public class ThreadKit {
      * @param handler          拒绝策略
      * @return {@link ThreadPoolExecutor}
      */
-    public static ThreadPoolExecutor newFixedExecutor(final int nThreads,
-                                                   final int maximumQueueSize,
-                                                   final String threadNamePrefix,
-                                                   final RejectedExecutionHandler handler) {
-        return ExecutorBuilder.of()
-                .setCorePoolSize(nThreads).setMaxPoolSize(nThreads)
+    public static ThreadPoolExecutor newFixedExecutor(final int nThreads, final int maximumQueueSize,
+            final String threadNamePrefix, final RejectedExecutionHandler handler) {
+        return ExecutorBuilder.of().setCorePoolSize(nThreads).setMaxPoolSize(nThreads)
                 .setWorkQueue(new LinkedBlockingQueue<>(maximumQueueSize))
-                .setThreadFactory(createThreadFactory(threadNamePrefix))
-                .setHandler(handler)
-                .build();
+                .setThreadFactory(createThreadFactory(threadNamePrefix)).setHandler(handler).build();
     }
 
     /**
@@ -231,8 +226,7 @@ public class ThreadKit {
     }
 
     /**
-     * 执行有返回值的异步方法
-     * Future代表一个异步执行的操作，通过get()方法可以获得操作的结果，如果异步操作还没有完成，则，get()会使当前线程阻塞
+     * 执行有返回值的异步方法 Future代表一个异步执行的操作，通过get()方法可以获得操作的结果，如果异步操作还没有完成，则，get()会使当前线程阻塞
      *
      * @param <T>  回调对象类型
      * @param task {@link Callable}
@@ -243,8 +237,7 @@ public class ThreadKit {
     }
 
     /**
-     * 执行有返回值的异步方法
-     * Future代表一个异步执行的操作，通过get()方法可以获得操作的结果，如果异步操作还没有完成，则，get()会使当前线程阻塞
+     * 执行有返回值的异步方法 Future代表一个异步执行的操作，通过get()方法可以获得操作的结果，如果异步操作还没有完成，则，get()会使当前线程阻塞
      *
      * @param runnable 可运行对象
      * @return {@link Future}
@@ -254,8 +247,7 @@ public class ThreadKit {
     }
 
     /**
-     * 新建一个CompletionService，调用其submit方法可以异步执行多个任务，最后调用take方法按照完成的顺序获得其结果。
-     * 若未完成，则会阻塞
+     * 新建一个CompletionService，调用其submit方法可以异步执行多个任务，最后调用take方法按照完成的顺序获得其结果。 若未完成，则会阻塞
      *
      * @param <T> 回调对象类型
      * @return {@link CompletionService}
@@ -265,8 +257,7 @@ public class ThreadKit {
     }
 
     /**
-     * 新建一个CompletionService，调用其submit方法可以异步执行多个任务，最后调用take方法按照完成的顺序获得其结果。
-     * 若未完成，则会阻塞
+     * 新建一个CompletionService，调用其submit方法可以异步执行多个任务，最后调用take方法按照完成的顺序获得其结果。 若未完成，则会阻塞
      *
      * @param <T>      回调对象类型
      * @param executor 执行器 {@link ExecutorService}
@@ -277,15 +268,15 @@ public class ThreadKit {
     }
 
     /**
-     * 新建一个CountDownLatch，一个同步辅助类，在完成一组正在其他线程中执行的操作之前，它允许一个或多个线程一直等待。
-     * 示例：等6个同学都离开教室，班长才能锁门。
+     * 新建一个CountDownLatch，一个同步辅助类，在完成一组正在其他线程中执行的操作之前，它允许一个或多个线程一直等待。 示例：等6个同学都离开教室，班长才能锁门。
+     * 
      * <pre>{@code
      * CountDownLatch latch = new CountDownLatch(6); // 总共任务是6
-     *  for (int x = 0; x < 6; x++) {
-     *   //具体生产任务，可以用线程池替换
-     *     new Thread(()->{
+     * for (int x = 0; x < 6; x++) {
+     *     // 具体生产任务，可以用线程池替换
+     *     new Thread(() -> {
      *         try {
-     *           //每个同学在教室待上几秒秒钟
+     *             // 每个同学在教室待上几秒秒钟
      *             int time = ThreadLocalRandom.current().nextInt(1, 5);
      *             TimeUnit.SECONDS.sleep(time);
      *         } catch (InterruptedException e) {
@@ -293,12 +284,13 @@ public class ThreadKit {
      *         }
      *         System.out.printf("同学【%s】，已经离开了教室%n", Thread.currentThread().getName());
      *         latch.countDown(); // 减1（每离开一个同学，减去1）,必须执行，可以放到 try...finally中
-     *     },"同学 - " + x).start();
+     *     }, "同学 - " + x).start();
      * }
      * latch.await(); // 等待计数为0后再解除阻塞；（等待所有同学离开）
      * System.out.println("【主线程】所有同学都离开了教室，开始锁教室大门了。");
      * }
      * </pre>
+     * 
      * 该示例，也可以用：{@link Phaser} 移相器 进行实现
      *
      * @param taskCount 任务数量
@@ -309,35 +301,38 @@ public class ThreadKit {
     }
 
     /**
-     * 新建一个CycleBarrier 循环栅栏，一个同步辅助类
-     * 示例：7个同学，集齐7个龙珠，7个同学一起召唤神龙；前后集齐了2次
+     * 新建一个CycleBarrier 循环栅栏，一个同步辅助类 示例：7个同学，集齐7个龙珠，7个同学一起召唤神龙；前后集齐了2次
+     * 
      * <pre>{@code
-     *         AtomicInteger times = new AtomicInteger();
-     *         CyclicBarrier barrier = new CyclicBarrier(7, ()->{
-     *             System.out.println("");
-     *             System.out.println("");
-     *             System.out.println("【循环栅栏业务处理】7个子线程 都收集了一颗龙珠，七颗龙珠已经收集齐全，开始召唤神龙。" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-     *             times.getAndIncrement();
-     *         }); // 现在设置的栅栏的数量为2
-     *         for (int x = 0; x < 7; x++) {   // 创建7个线程, 当然也可以使用线程池替换。
-     *             new Thread(() -> {
-     *                 while (times.get() < 2) {
-     *                     try {
-     *                         System.out.printf("【Barrier - 收集龙珠】当前的线程名称：%s%n", Thread.currentThread().getName());
-     *                         int time = ThreadLocalRandom.current().nextInt(1, 10); // 等待一段时间，模拟线程的执行时间
-     *                         TimeUnit.SECONDS.sleep(time); // 模拟业务延迟，收集龙珠的时间
-     *                         barrier.await(); // 等待，凑够了7个等待的线程
-     *                         System.err.printf("〖Barrier - 举起龙珠召唤神龙〗当前的线程名称：%s\t%s%n", Thread.currentThread().getName(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-     *                         if (barrier.getParties() >= 7) {
-     *                             barrier.reset(); // 重置栅栏，等待下一次的召唤。
-     *                         }
-     *                     } catch (Exception e) {
-     *                         e.printStackTrace();
-     *                     }
+     * AtomicInteger times = new AtomicInteger();
+     * CyclicBarrier barrier = new CyclicBarrier(7, () -> {
+     *     System.out.println("");
+     *     System.out.println("");
+     *     System.out.println("【循环栅栏业务处理】7个子线程 都收集了一颗龙珠，七颗龙珠已经收集齐全，开始召唤神龙。"
+     *             + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+     *     times.getAndIncrement();
+     * }); // 现在设置的栅栏的数量为2
+     * for (int x = 0; x < 7; x++) { // 创建7个线程, 当然也可以使用线程池替换。
+     *     new Thread(() -> {
+     *         while (times.get() < 2) {
+     *             try {
+     *                 System.out.printf("【Barrier - 收集龙珠】当前的线程名称：%s%n", Thread.currentThread().getName());
+     *                 int time = ThreadLocalRandom.current().nextInt(1, 10); // 等待一段时间，模拟线程的执行时间
+     *                 TimeUnit.SECONDS.sleep(time); // 模拟业务延迟，收集龙珠的时间
+     *                 barrier.await(); // 等待，凑够了7个等待的线程
+     *                 System.err.printf("〖Barrier - 举起龙珠召唤神龙〗当前的线程名称：%s\t%s%n", Thread.currentThread().getName(),
+     *                         LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+     *                 if (barrier.getParties() >= 7) {
+     *                     barrier.reset(); // 重置栅栏，等待下一次的召唤。
      *                 }
-     *             }, "线程 - " + x).start();
+     *             } catch (Exception e) {
+     *                 e.printStackTrace();
+     *             }
      *         }
+     *     }, "线程 - " + x).start();
+     * }
      * }</pre>
+     * 
      * 该示例，也可以用：{@link Phaser} 移相器 进行实现
      *
      * @param taskCount 任务数量
@@ -348,32 +343,31 @@ public class ThreadKit {
     }
 
     /**
-     * 新建一个Phaser，一个同步辅助类，jdk1.7提供，可以完全替代CountDownLatch；
-     * Pharser: 移相器、相位器，可重用同步屏障；
-     * 功能可以替换：{@link CyclicBarrier}（固定线程）循环栅栏、{@link CountDownLatch}（固定计数）倒数计数、加上分层功能
-     * 示例1：等6个同学都离开教室，班长才能锁门。
+     * 新建一个Phaser，一个同步辅助类，jdk1.7提供，可以完全替代CountDownLatch； Pharser: 移相器、相位器，可重用同步屏障；
+     * 功能可以替换：{@link CyclicBarrier}（固定线程）循环栅栏、{@link CountDownLatch}（固定计数）倒数计数、加上分层功能 示例1：等6个同学都离开教室，班长才能锁门。
+     * 
      * <pre>{@code
      * Phaser phaser = new Phaser(6); // 总共任务是6
-     *  for (int x = 0; x < 6; x++) {
-     *   //具体生产任务，可以用线程池替换
-     *     new Thread(()->{
+     * for (int x = 0; x < 6; x++) {
+     *     // 具体生产任务，可以用线程池替换
+     *     new Thread(() -> {
      *         try {
-     *             //每个同学在教室待上几秒秒钟
-     *           	int time = ThreadLocalRandom.current().nextInt(1, 5);
+     *             // 每个同学在教室待上几秒秒钟
+     *             int time = ThreadLocalRandom.current().nextInt(1, 5);
      *             TimeUnit.SECONDS.sleep(5);
      *         } catch (InterruptedException e) {
      *             e.printStackTrace();
      *         }
      *         System.out.printf("同学【%s】，已经离开了教室%n", Thread.currentThread().getName());
      *         phaser.arrive(); // 减1 等价于countDown()方法（每离开一个同学，减去1）,必须执行，可以放到 try...finally中
-     *     },"同学 - " + x).start();
+     *     }, "同学 - " + x).start();
      * }
      * phaser.awaitAdvance(phaser.getPhase()); // 等价于latch.await()方法 等待计数为0后再解除阻塞；（等待所有同学离开）
      * System.out.println("【主线程】所有同学都离开了教室，开始锁教室大门了。");
      * }
      * </pre>
-     * 示例2：7个同学，集齐7个龙珠，7个同学一起召唤神龙；
-     * 只需要：phaser.arrive(); --&gt; phaser.arriveAndAwaitAdvance() //等待其他的线程就位
+     * 
+     * 示例2：7个同学，集齐7个龙珠，7个同学一起召唤神龙； 只需要：phaser.arrive(); --&gt; phaser.arriveAndAwaitAdvance() //等待其他的线程就位
      * 该示例，也可以用：{@link CyclicBarrier} 进行实现
      *
      * @param taskCount 任务数量
@@ -617,8 +611,7 @@ public class ThreadKit {
     }
 
     /**
-     * 获取JVM中与当前线程同组的所有线程
-     * 使用数组二次拷贝方式，防止在线程列表获取过程中线程终止
+     * 获取JVM中与当前线程同组的所有线程 使用数组二次拷贝方式，防止在线程列表获取过程中线程终止
      *
      * @param group 线程组
      * @return 线程对象数组
@@ -682,7 +675,8 @@ public class ThreadKit {
      * @param isDaemon    是否守护线程
      * @return {@link ThreadFactory}
      */
-    public static ThreadFactory newNamedThreadFactory(final String prefix, final ThreadGroup threadGroup, final boolean isDaemon) {
+    public static ThreadFactory newNamedThreadFactory(final String prefix, final ThreadGroup threadGroup,
+            final boolean isDaemon) {
         return new NamedThreadFactory(prefix, threadGroup, isDaemon);
     }
 
@@ -695,7 +689,8 @@ public class ThreadKit {
      * @param handler     未捕获异常处理
      * @return {@link ThreadFactory}
      */
-    public static ThreadFactory newNamedThreadFactory(final String prefix, final ThreadGroup threadGroup, final boolean isDaemon, final UncaughtExceptionHandler handler) {
+    public static ThreadFactory newNamedThreadFactory(final String prefix, final ThreadGroup threadGroup,
+            final boolean isDaemon, final UncaughtExceptionHandler handler) {
         return new NamedThreadFactory(prefix, threadGroup, isDaemon, handler);
     }
 
@@ -715,10 +710,7 @@ public class ThreadKit {
     }
 
     /**
-     * 并发测试
-     * 此方法用于测试多线程下执行某些逻辑的并发性能
-     * 调用此方法会导致当前线程阻塞。
-     * 结束后可调用{@link ConcurrencyTester#getInterval()} 方法获取执行时间
+     * 并发测试 此方法用于测试多线程下执行某些逻辑的并发性能 调用此方法会导致当前线程阻塞。 结束后可调用{@link ConcurrencyTester#getInterval()} 方法获取执行时间
      *
      * @param threadSize 并发线程数
      * @param runnable   执行的逻辑实现
@@ -739,12 +731,11 @@ public class ThreadKit {
     }
 
     /**
-     * 开始执行一个定时任务，执行方式分fixedRate模式和fixedDelay模式。
-     * 注意：此方法的延迟和周期的单位均为毫秒。
+     * 开始执行一个定时任务，执行方式分fixedRate模式和fixedDelay模式。 注意：此方法的延迟和周期的单位均为毫秒。
      *
      * <ul>
-     *     <li>fixedRate 模式：以固定的频率执行。每period的时刻检查，如果上个任务完成，启动下个任务，否则等待上个任务结束后立即启动。</li>
-     *     <li>fixedDelay模式：以固定的延时执行。上次任务结束后等待period再执行下个任务。</li>
+     * <li>fixedRate 模式：以固定的频率执行。每period的时刻检查，如果上个任务完成，启动下个任务，否则等待上个任务结束后立即启动。</li>
+     * <li>fixedDelay模式：以固定的延时执行。上次任务结束后等待period再执行下个任务。</li>
      * </ul>
      *
      * @param executor              定时任务线程池，{@code null}新建一个默认线程池
@@ -754,11 +745,8 @@ public class ThreadKit {
      * @param fixedRateOrFixedDelay {@code true}表示fixedRate模式，{@code false}表示fixedDelay模式
      * @return {@link ScheduledExecutorService}
      */
-    public static ScheduledExecutorService schedule(final ScheduledExecutorService executor,
-                                                    final Runnable command,
-                                                    final long initialDelay,
-                                                    final long period,
-                                                    final boolean fixedRateOrFixedDelay) {
+    public static ScheduledExecutorService schedule(final ScheduledExecutorService executor, final Runnable command,
+            final long initialDelay, final long period, final boolean fixedRateOrFixedDelay) {
         return schedule(executor, command, initialDelay, period, TimeUnit.MILLISECONDS, fixedRateOrFixedDelay);
     }
 
@@ -766,8 +754,8 @@ public class ThreadKit {
      * 开始执行一个定时任务，执行方式分fixedRate模式和fixedDelay模式。
      *
      * <ul>
-     *     <li>fixedRate 模式：以固定的频率执行。每period的时刻检查，如果上个任务完成，启动下个任务，否则等待上个任务结束后立即启动。</li>
-     *     <li>fixedDelay模式：以固定的延时执行。上次任务结束后等待period再执行下个任务。</li>
+     * <li>fixedRate 模式：以固定的频率执行。每period的时刻检查，如果上个任务完成，启动下个任务，否则等待上个任务结束后立即启动。</li>
+     * <li>fixedDelay模式：以固定的延时执行。上次任务结束后等待period再执行下个任务。</li>
      * </ul>
      *
      * @param executor              定时任务线程池，{@code null}新建一个默认线程池
@@ -778,12 +766,8 @@ public class ThreadKit {
      * @param fixedRateOrFixedDelay {@code true}表示fixedRate模式，{@code false}表示fixedDelay模式
      * @return {@link ScheduledExecutorService}
      */
-    public static ScheduledExecutorService schedule(ScheduledExecutorService executor,
-                                                    final Runnable command,
-                                                    final long initialDelay,
-                                                    final long period,
-                                                    final TimeUnit timeUnit,
-                                                    final boolean fixedRateOrFixedDelay) {
+    public static ScheduledExecutorService schedule(ScheduledExecutorService executor, final Runnable command,
+            final long initialDelay, final long period, final TimeUnit timeUnit, final boolean fixedRateOrFixedDelay) {
         if (null == executor) {
             executor = createScheduledExecutor(2);
         }

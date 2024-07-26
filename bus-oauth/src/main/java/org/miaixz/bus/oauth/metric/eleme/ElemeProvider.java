@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.eleme;
 
 import com.alibaba.fastjson.JSON;
@@ -79,7 +79,8 @@ public class ElemeProvider extends AbstractProvider {
      * @param parameters 加密参数
      * @return Signature
      */
-    public static String sign(String appKey, String secret, long timestamp, String action, String token, Map<String, Object> parameters) {
+    public static String sign(String appKey, String secret, long timestamp, String action, String token,
+            Map<String, Object> parameters) {
         final Map<String, Object> sorted = new TreeMap<>(parameters);
         sorted.put("app_key", appKey);
         sorted.put("timestamp", timestamp);
@@ -107,12 +108,9 @@ public class ElemeProvider extends AbstractProvider {
 
         this.checkResponse(object);
 
-        return AccToken.builder()
-                .accessToken(object.getString("access_token"))
-                .refreshToken(object.getString("refresh_token"))
-                .tokenType(object.getString("token_type"))
-                .expireIn(object.getIntValue("expires_in"))
-                .build();
+        return AccToken.builder().accessToken(object.getString("access_token"))
+                .refreshToken(object.getString("refresh_token")).tokenType(object.getString("token_type"))
+                .expireIn(object.getIntValue("expires_in")).build();
     }
 
     @Override
@@ -128,14 +126,10 @@ public class ElemeProvider extends AbstractProvider {
 
         this.checkResponse(object);
 
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .data(AccToken.builder()
-                        .accessToken(object.getString("access_token"))
-                        .refreshToken(object.getString("refresh_token"))
-                        .tokenType(object.getString("token_type"))
-                        .expireIn(object.getIntValue("expires_in"))
-                        .build())
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode())
+                .data(AccToken.builder().accessToken(object.getString("access_token"))
+                        .refreshToken(object.getString("refresh_token")).tokenType(object.getString("token_type"))
+                        .expireIn(object.getIntValue("expires_in")).build())
                 .build();
     }
 
@@ -150,8 +144,8 @@ public class ElemeProvider extends AbstractProvider {
         Map<String, Object> metasHashMap = new HashMap<>(4);
         metasHashMap.put("app_key", context.getAppKey());
         metasHashMap.put("timestamp", timestamp);
-        String signature = sign(context.getAppKey(), context.getAppSecret(), timestamp, action, accToken
-                .getAccessToken(), parameters);
+        String signature = sign(context.getAppKey(), context.getAppSecret(), timestamp, action,
+                accToken.getAccessToken(), parameters);
 
         String requestId = this.getRequestId();
 
@@ -165,7 +159,8 @@ public class ElemeProvider extends AbstractProvider {
         paramsMap.put("signature", signature);
 
         Map<String, String> header = this.buildHeader(MediaType.APPLICATION_JSON, requestId, false);
-        String response = Httpx.post(complex.userInfo(), JSONObject.toJSONString(paramsMap), header, MediaType.APPLICATION_JSON);
+        String response = Httpx.post(complex.userInfo(), JSONObject.toJSONString(paramsMap), header,
+                MediaType.APPLICATION_JSON);
 
         JSONObject object = JSONObject.parseObject(response);
 
@@ -179,15 +174,9 @@ public class ElemeProvider extends AbstractProvider {
 
         JSONObject result = object.getJSONObject("result");
 
-        return Material.builder()
-                .rawJson(result)
-                .uuid(result.getString("userId"))
-                .username(result.getString("userName"))
-                .nickname(result.getString("userName"))
-                .gender(Gender.UNKNOWN)
-                .token(accToken)
-                .source(complex.toString())
-                .build();
+        return Material.builder().rawJson(result).uuid(result.getString("userId"))
+                .username(result.getString("userName")).nickname(result.getString("userName")).gender(Gender.UNKNOWN)
+                .token(accToken).source(complex.toString()).build();
     }
 
     private String getBasic(String appKey, String appSecret) {

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.service;
 
 import org.miaixz.bus.image.Dimse;
@@ -75,13 +75,8 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
 
     private ScheduledFuture<?> writePendingRSP;
 
-
-    public BasicRetrieveTask(Dimse rq,
-                             Association rqas,
-                             PresentationContext pc,
-                             Attributes rqCmd,
-                             List<T> insts,
-                             Association storeas) {
+    public BasicRetrieveTask(Dimse rq, Association rqas, PresentationContext pc, Attributes rqCmd, List<T> insts,
+            Association storeas) {
         this.rq = rq;
         this.rqas = rqas;
         this.storeas = storeas;
@@ -146,7 +141,7 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
         try {
             if (pendingRSPInterval > 0)
                 startWritePendingRSP();
-            for (Iterator<T> iter = insts.iterator(); iter.hasNext(); ) {
+            for (Iterator<T> iter = insts.iterator(); iter.hasNext();) {
                 T inst = iter.next();
                 if (canceled) {
                     status = Status.Cancel;
@@ -161,9 +156,8 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
                     dataWriter = createDataWriter(inst, tsuid);
                 } catch (Exception e) {
                     status = Status.OneOrMoreFailures;
-                    Logger.info("{}: Unable to retrieve {}/{} to {}", rqas,
-                            UID.nameOf(inst.cuid), UID.nameOf(inst.tsuid),
-                            storeas.getRemoteAET(), e);
+                    Logger.info("{}: Unable to retrieve {}/{} to {}", rqas, UID.nameOf(inst.cuid),
+                            UID.nameOf(inst.tsuid), storeas.getRemoteAET(), e);
                     failed.add(inst);
                     continue;
                 }
@@ -171,8 +165,8 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
                     cstore(storeas, inst, tsuid, dataWriter);
                 } catch (Exception e) {
                     status = Status.UnableToPerformSubOperations;
-                    Logger.warn("{}: Unable to perform sub-operation on association to {}",
-                            rqas, storeas.getRemoteAET(), e);
+                    Logger.warn("{}: Unable to perform sub-operation on association to {}", rqas,
+                            storeas.getRemoteAET(), e);
                     failed.add(inst);
                     while (iter.hasNext())
                         failed.add(iter.next());
@@ -188,17 +182,14 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
             try {
                 close();
             } catch (Throwable e) {
-                Logger.warn("Exception thrown by {}.close()",
-                        getClass().getName(), e);
+                Logger.warn("Exception thrown by {}.close()", getClass().getName(), e);
             }
         }
     }
 
     private void startWritePendingRSP() {
-        writePendingRSP = rqas.getApplicationEntity().getDevice()
-                .scheduleAtFixedRate(
-                        () -> BasicRetrieveTask.this.writePendingRSP(),
-                        0, pendingRSPInterval, TimeUnit.SECONDS);
+        writePendingRSP = rqas.getApplicationEntity().getDevice().scheduleAtFixedRate(
+                () -> BasicRetrieveTask.this.writePendingRSP(), 0, pendingRSPInterval, TimeUnit.SECONDS);
     }
 
     private void stopWritePendingRSP() {
@@ -213,8 +204,7 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
                     outstandingRSPLock.wait();
             }
         } catch (InterruptedException e) {
-            Logger.warn("{}: failed to wait for outstanding RSP on association to {}",
-                    rqas, storeas.getRemoteAET(), e);
+            Logger.warn("{}: failed to wait for outstanding RSP on association to {}", rqas, storeas.getRemoteAET(), e);
         }
     }
 
@@ -223,29 +213,23 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
             if (storeas.isReadyForDataTransfer())
                 storeas.release();
         } catch (IOException e) {
-            Logger.warn("{}: failed to release association to {}",
-                    rqas, storeas.getRemoteAET(), e);
+            Logger.warn("{}: failed to release association to {}", rqas, storeas.getRemoteAET(), e);
         }
     }
 
-    protected void cstore(Association storeas, T inst, String tsuid,
-                          DataWriter dataWriter) throws IOException, InterruptedException {
-        DimseRSPHandler rspHandler =
-                new CStoreRSPHandler(storeas.nextMessageID(), inst);
+    protected void cstore(Association storeas, T inst, String tsuid, DataWriter dataWriter)
+            throws IOException, InterruptedException {
+        DimseRSPHandler rspHandler = new CStoreRSPHandler(storeas.nextMessageID(), inst);
         if (isCMove())
-            storeas.cstore(inst.cuid, inst.iuid, priority,
-                    rqas.getRemoteAET(), msgId,
-                    dataWriter, tsuid, rspHandler);
+            storeas.cstore(inst.cuid, inst.iuid, priority, rqas.getRemoteAET(), msgId, dataWriter, tsuid, rspHandler);
         else
-            storeas.cstore(inst.cuid, inst.iuid, priority,
-                    dataWriter, tsuid, rspHandler);
+            storeas.cstore(inst.cuid, inst.iuid, priority, dataWriter, tsuid, rspHandler);
         synchronized (outstandingRSPLock) {
             outstandingRSP++;
         }
     }
 
-    protected String selectTransferSyntaxFor(Association storeas, T inst)
-            throws Exception {
+    protected String selectTransferSyntaxFor(Association storeas, T inst) throws Exception {
         return inst.tsuid;
     }
 
@@ -284,8 +268,7 @@ public class BasicRetrieveTask<T extends InstanceLocator> implements RetrieveTas
         } catch (IOException e) {
             pendingRSP = false;
             stopWritePendingRSP();
-            Logger.warn("{}: Unable to send C-GET or C-MOVE RSP on association to {}",
-                    rqas, rqas.getRemoteAET(), e);
+            Logger.warn("{}: Unable to send C-GET or C-MOVE RSP on association to {}", rqas, rqas.getRemoteAET(), e);
         }
     }
 

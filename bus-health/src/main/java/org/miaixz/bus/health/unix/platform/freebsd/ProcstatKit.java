@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.freebsd;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -51,7 +51,7 @@ public final class ProcstatKit {
      *
      * @param pid a process ID, optional
      * @return a map of process IDs to their current working directory. If {@code pid} is a negative number, all
-     * processes are returned; otherwise the map may contain only a single element for {@code pid}
+     *         processes are returned; otherwise the map may contain only a single element for {@code pid}
      */
     public static Map<Integer, String> getCwdMap(int pid) {
         List<String> procstat = Executor.runNative("procstat -f " + (pid < 0 ? "-a" : pid));

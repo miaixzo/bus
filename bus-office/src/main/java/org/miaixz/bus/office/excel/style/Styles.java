@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.excel.style;
 
 import org.apache.poi.ss.usermodel.*;
@@ -73,7 +73,8 @@ public class Styles {
      * @param valign    纵向位置
      * @return {@link CellStyle}
      */
-    public static CellStyle setAlign(final CellStyle cellStyle, final HorizontalAlignment halign, final VerticalAlignment valign) {
+    public static CellStyle setAlign(final CellStyle cellStyle, final HorizontalAlignment halign,
+            final VerticalAlignment valign) {
         cellStyle.setAlignment(halign);
         cellStyle.setVerticalAlignment(valign);
         return cellStyle;
@@ -87,7 +88,8 @@ public class Styles {
      * @param colorIndex 预定义颜色的short值，见{@link IndexedColors}枚举
      * @return {@link CellStyle}
      */
-    public static CellStyle setBorder(final CellStyle cellStyle, final BorderStyle borderSize, final IndexedColors colorIndex) {
+    public static CellStyle setBorder(final CellStyle cellStyle, final BorderStyle borderSize,
+            final IndexedColors colorIndex) {
         return setBorder(cellStyle, CellBorderStyle.of(borderSize, colorIndex));
     }
 
@@ -95,8 +97,7 @@ public class Styles {
      * 设置cell的四个边框粗细和颜色
      *
      * @param cellStyle       {@link CellStyle}
-     * @param cellBorderStyle {@link CellBorderStyle}单元格边框样式和颜色
-     *                        }
+     * @param cellBorderStyle {@link CellBorderStyle}单元格边框样式和颜色 }
      * @return {@link CellStyle}
      */
     public static CellStyle setBorder(final CellStyle cellStyle, final CellBorderStyle cellBorderStyle) {
@@ -111,7 +112,8 @@ public class Styles {
      * @param fillPattern 填充方式 {@link FillPatternType}枚举
      * @return {@link CellStyle}
      */
-    public static CellStyle setColor(final CellStyle cellStyle, final IndexedColors color, final FillPatternType fillPattern) {
+    public static CellStyle setColor(final CellStyle cellStyle, final IndexedColors color,
+            final FillPatternType fillPattern) {
         return setColor(cellStyle, color.index, fillPattern);
     }
 
@@ -137,7 +139,8 @@ public class Styles {
      * @param fillPattern 填充方式 {@link FillPatternType}枚举
      * @return {@link CellStyle}
      */
-    public static CellStyle setColor(final XSSFCellStyle cellStyle, final XSSFColor color, final FillPatternType fillPattern) {
+    public static CellStyle setColor(final XSSFCellStyle cellStyle, final XSSFColor color,
+            final FillPatternType fillPattern) {
         cellStyle.setFillForegroundColor(color);
         cellStyle.setFillPattern(ObjectKit.defaultIfNull(fillPattern, FillPatternType.SOLID_FOREGROUND));
         return cellStyle;
@@ -152,7 +155,8 @@ public class Styles {
      * @param fontName 字体名称，可以为null使用默认字体
      * @return {@link Font}
      */
-    public static Font createFont(final Workbook workbook, final short color, final short fontSize, final String fontName) {
+    public static Font createFont(final Workbook workbook, final short color, final short fontSize,
+            final String fontName) {
         final Font font = workbook.createFont();
         return setFontStyle(font, color, fontSize, fontName);
     }

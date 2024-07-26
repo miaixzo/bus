@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.ssh.provider.sshj;
 
 import net.schmizz.sshj.SSHClient;
@@ -111,9 +111,9 @@ public class SshjSession implements Session {
     }
 
     @Override
-    public void bindLocalPort(final InetSocketAddress localAddress, final InetSocketAddress remoteAddress) throws InternalException {
-        final Parameters params = new Parameters(
-                localAddress.getHostName(), localAddress.getPort(),
+    public void bindLocalPort(final InetSocketAddress localAddress, final InetSocketAddress remoteAddress)
+            throws InternalException {
+        final Parameters params = new Parameters(localAddress.getHostName(), localAddress.getPort(),
                 remoteAddress.getHostName(), remoteAddress.getPort());
         final ServerSocket ss;
         try {
@@ -129,7 +129,7 @@ public class SshjSession implements Session {
             this.localPortForwarderMap = new HashMap<>();
         }
 
-        //加入记录
+        // 加入记录
         this.localPortForwarderMap.put(localAddress.toString(), ss);
     }
 
@@ -143,12 +143,12 @@ public class SshjSession implements Session {
     }
 
     @Override
-    public void bindRemotePort(final InetSocketAddress remoteAddress, final InetSocketAddress localAddress) throws InternalException {
+    public void bindRemotePort(final InetSocketAddress remoteAddress, final InetSocketAddress localAddress)
+            throws InternalException {
         try {
             this.ssh.getRemotePortForwarder().bind(
                     new RemotePortForwarder.Forward(remoteAddress.getHostName(), remoteAddress.getPort()),
-                    new SocketForwardingConnectListener(localAddress)
-            );
+                    new SocketForwardingConnectListener(localAddress));
         } catch (final IOException e) {
             throw new InternalException(e);
         }
@@ -200,7 +200,7 @@ public class SshjSession implements Session {
         // 发送命令
         try {
             command = this.raw.exec(cmd);
-            //command.join();
+            // command.join();
         } catch (final IOException e) {
             throw new InternalException(e);
         }

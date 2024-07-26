@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.criteria;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -84,7 +84,6 @@ public class Sqls {
         return this;
     }
 
-
     public Sqls andLessThan(String property, Object value) {
         this.criteria.criterions.add(new Criterion(property, value, "<", "and"));
         return this;
@@ -125,7 +124,6 @@ public class Sqls {
         return this;
     }
 
-
     public Sqls orIsNull(String property) {
         this.criteria.criterions.add(new Criterion(property, "is null", "or"));
         return this;
@@ -135,7 +133,6 @@ public class Sqls {
         this.criteria.criterions.add(new Criterion(property, "is not null", "or"));
         return this;
     }
-
 
     public Sqls orEqualTo(String property, Object value) {
         this.criteria.criterions.add(new Criterion(property, value, Symbol.EQUAL, "or"));
@@ -233,7 +230,6 @@ public class Sqls {
             this.andOr = andOr;
         }
 
-
         public Criterion(String property, Object value, String condition, String andOr) {
             this.property = property;
             this.value = value;
@@ -264,12 +260,12 @@ public class Sqls {
         public Object[] getValues() {
             if (value != null) {
                 if (secondValue != null) {
-                    return new Object[]{value, secondValue};
+                    return new Object[] { value, secondValue };
                 } else {
-                    return new Object[]{value};
+                    return new Object[] { value };
                 }
             } else {
-                return new Object[]{};
+                return new Object[] {};
             }
         }
 

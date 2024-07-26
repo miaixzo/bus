@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -62,14 +62,14 @@ public class MppsSCP {
     private final BasicMPPSSCP mppsSCP = new BasicMPPSSCP() {
 
         @Override
-        protected Attributes create(Association as, Attributes rq,
-                                    Attributes rqAttrs, Attributes rsp) throws ImageServiceException {
+        protected Attributes create(Association as, Attributes rq, Attributes rqAttrs, Attributes rsp)
+                throws ImageServiceException {
             return MppsSCP.this.create(as, rq, rqAttrs);
         }
 
         @Override
-        protected Attributes set(Association as, Attributes rq, Attributes rqAttrs,
-                                 Attributes rsp) throws ImageServiceException {
+        protected Attributes set(Association as, Attributes rq, Attributes rqAttrs, Attributes rsp)
+                throws ImageServiceException {
             return MppsSCP.this.set(as, rq, rqAttrs);
         }
     };
@@ -103,8 +103,7 @@ public class MppsSCP {
         this.mppsNSetIOD = mppsNSetIOD;
     }
 
-    private Attributes create(Association as, Attributes rq, Attributes rqAttrs)
-            throws ImageServiceException {
+    private Attributes create(Association as, Attributes rq, Attributes rqAttrs) throws ImageServiceException {
         if (mppsNCreateIOD != null) {
             ValidationResult result = rqAttrs.validate(mppsNCreateIOD);
             if (!result.isValid())
@@ -116,16 +115,12 @@ public class MppsSCP {
         String iuid = rq.getString(Tag.AffectedSOPInstanceUID);
         File file = new File(storageDir, iuid);
         if (file.exists())
-            throw new ImageServiceException(Status.DuplicateSOPinstance).
-                    setUID(Tag.AffectedSOPInstanceUID, iuid);
+            throw new ImageServiceException(Status.DuplicateSOPinstance).setUID(Tag.AffectedSOPInstanceUID, iuid);
         ImageOutputStream out = null;
         Logger.info("{}: M-WRITE {}", as, file);
         try {
             out = new ImageOutputStream(file);
-            out.writeDataset(
-                    Attributes.createFileMetaInformation(iuid, cuid,
-                            UID.ExplicitVRLittleEndian.uid),
-                    rqAttrs);
+            out.writeDataset(Attributes.createFileMetaInformation(iuid, cuid, UID.ExplicitVRLittleEndian.uid), rqAttrs);
         } catch (IOException e) {
             Logger.warn(as + ": Failed to store MPPS:", e);
             throw new ImageServiceException(Status.ProcessingFailure, e);
@@ -135,8 +130,7 @@ public class MppsSCP {
         return null;
     }
 
-    private Attributes set(Association as, Attributes rq, Attributes rqAttrs)
-            throws ImageServiceException {
+    private Attributes set(Association as, Attributes rq, Attributes rqAttrs) throws ImageServiceException {
         if (mppsNSetIOD != null) {
             ValidationResult result = rqAttrs.validate(mppsNSetIOD);
             if (!result.isValid())
@@ -148,8 +142,7 @@ public class MppsSCP {
         String iuid = rq.getString(Tag.RequestedSOPInstanceUID);
         File file = new File(storageDir, iuid);
         if (!file.exists())
-            throw new ImageServiceException(Status.NoSuchObjectInstance).
-                    setUID(Tag.AffectedSOPInstanceUID, iuid);
+            throw new ImageServiceException(Status.NoSuchObjectInstance).setUID(Tag.AffectedSOPInstanceUID, iuid);
         Logger.info("{}: M-UPDATE {}", as, file);
         Attributes data;
         ImageInputStream in = null;
@@ -169,9 +162,7 @@ public class MppsSCP {
         ImageOutputStream out = null;
         try {
             out = new ImageOutputStream(file);
-            out.writeDataset(
-                    Attributes.createFileMetaInformation(iuid, cuid, UID.ExplicitVRLittleEndian.uid),
-                    data);
+            out.writeDataset(Attributes.createFileMetaInformation(iuid, cuid, UID.ExplicitVRLittleEndian.uid), data);
         } catch (IOException e) {
             Logger.warn(as + ": Failed to update MPPS:", e);
             throw new ImageServiceException(Status.ProcessingFailure, e);

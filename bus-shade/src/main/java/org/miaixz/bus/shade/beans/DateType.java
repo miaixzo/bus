@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.beans;
 
 /**
@@ -43,9 +43,7 @@ public enum DateType {
      */
     SQL_PACK,
     /**
-     * 使用 java.time 包下的
-     * java8 新的时间类型
+     * 使用 java.time 包下的 java8 新的时间类型
      */
     TIME_PACK
 }
-

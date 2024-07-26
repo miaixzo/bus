@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -35,8 +35,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * 忽略大小写的Map
- * 对KEY忽略大小写，get("Value")和get("value")获得的值相同，put进入的值也会被覆盖
+ * 忽略大小写的Map 对KEY忽略大小写，get("Value")和get("value")获得的值相同，put进入的值也会被覆盖
  *
  * @param <K> 键类型
  * @param <V> 值类型
@@ -64,8 +63,7 @@ public class CaseInsensitiveMap<K, V> extends FunctionKeyMap<K, V> {
     }
 
     /**
-     * 构造
-     * 注意此构造将传入的Map所有值复制到当前map中，不修改传入map
+     * 构造 注意此构造将传入的Map所有值复制到当前map中，不修改传入map
      *
      * @param m 被包装的自定义Map创建器
      */
@@ -95,13 +93,12 @@ public class CaseInsensitiveMap<K, V> extends FunctionKeyMap<K, V> {
     }
 
     /**
-     * 构造
-     * 注意此构造将传入的Map作为被包装的Map，针对任何修改，传入的Map都会被同样修改。
+     * 构造 注意此构造将传入的Map作为被包装的Map，针对任何修改，传入的Map都会被同样修改。
      *
      * @param emptyMapBuilder 被包装的自定义Map创建器
      */
     CaseInsensitiveMap(final MapBuilder<K, V> emptyMapBuilder) {
-        //  使Function可以被序列化
+        // 使Function可以被序列化
         super(emptyMapBuilder.build(), (Function<Object, K> & Serializable) (key) -> {
             if (key instanceof CharSequence) {
                 key = key.toString().toLowerCase();

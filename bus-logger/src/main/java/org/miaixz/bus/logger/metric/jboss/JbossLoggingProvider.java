@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.logger.metric.jboss;
 
 import org.jboss.logging.Logger;
@@ -141,25 +141,26 @@ public class JbossLoggingProvider extends AbstractProvider {
     }
 
     @Override
-    public void log(final String fqcn, final Level level, final Throwable t, final String format, final Object... args) {
+    public void log(final String fqcn, final Level level, final Throwable t, final String format,
+            final Object... args) {
         switch (level) {
-            case TRACE:
-                trace(fqcn, t, format, args);
-                break;
-            case DEBUG:
-                debug(fqcn, t, format, args);
-                break;
-            case INFO:
-                info(fqcn, t, format, args);
-                break;
-            case WARN:
-                warn(fqcn, t, format, args);
-                break;
-            case ERROR:
-                error(fqcn, t, format, args);
-                break;
-            default:
-                throw new Error(StringKit.format("Can not identify level: {}", level));
+        case TRACE:
+            trace(fqcn, t, format, args);
+            break;
+        case DEBUG:
+            debug(fqcn, t, format, args);
+            break;
+        case INFO:
+            info(fqcn, t, format, args);
+            break;
+        case WARN:
+            warn(fqcn, t, format, args);
+            break;
+        case ERROR:
+            error(fqcn, t, format, args);
+            break;
+        default:
+            throw new Error(StringKit.format("Can not identify level: {}", level));
         }
     }
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.source;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -81,7 +81,8 @@ public class RealSource implements BufferSource {
 
         if (buffer.size == 0) {
             long read = source.read(buffer, SectionBuffer.SIZE);
-            if (read == -1) return -1;
+            if (read == -1)
+                return -1;
         }
 
         long toRead = Math.min(byteCount, buffer.size);
@@ -105,10 +106,13 @@ public class RealSource implements BufferSource {
 
     @Override
     public boolean request(long byteCount) throws IOException {
-        if (byteCount < 0) throw new IllegalArgumentException("byteCount < 0: " + byteCount);
-        if (closed) throw new IllegalStateException("closed");
+        if (byteCount < 0)
+            throw new IllegalArgumentException("byteCount < 0: " + byteCount);
+        if (closed)
+            throw new IllegalStateException("closed");
         while (buffer.size < byteCount) {
-            if (source.read(buffer, SectionBuffer.SIZE) == -1) return false;
+            if (source.read(buffer, SectionBuffer.SIZE) == -1)
+                return false;
         }
         return true;
     }
@@ -133,13 +137,16 @@ public class RealSource implements BufferSource {
 
     @Override
     public int select(SegmentBuffer segmentBuffer) throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+        if (closed)
+            throw new IllegalStateException("closed");
 
         while (true) {
             int index = buffer.selectPrefix(segmentBuffer, true);
-            if (index == -1) return -1;
+            if (index == -1)
+                return -1;
             if (index == -2) {
-                if (source.read(buffer, SectionBuffer.SIZE) == -1L) return -1;
+                if (source.read(buffer, SectionBuffer.SIZE) == -1L)
+                    return -1;
             } else {
                 int selectedSize = segmentBuffer.byteStrings[index].size();
                 buffer.skip(selectedSize);
@@ -173,7 +180,8 @@ public class RealSource implements BufferSource {
             int offset = 0;
             while (buffer.size > 0) {
                 int read = buffer.read(sink, offset, (int) buffer.size);
-                if (read == -1) throw new AssertionError();
+                if (read == -1)
+                    throw new AssertionError();
                 offset += read;
             }
             throw e;
@@ -187,7 +195,8 @@ public class RealSource implements BufferSource {
 
         if (buffer.size == 0) {
             long read = source.read(buffer, SectionBuffer.SIZE);
-            if (read == -1) return -1;
+            if (read == -1)
+                return -1;
         }
 
         int toRead = (int) Math.min(byteCount, buffer.size);
@@ -198,7 +207,8 @@ public class RealSource implements BufferSource {
     public int read(ByteBuffer sink) throws IOException {
         if (buffer.size == 0) {
             long read = source.read(buffer, SectionBuffer.SIZE);
-            if (read == -1) return -1;
+            if (read == -1)
+                return -1;
         }
 
         return buffer.read(sink);
@@ -286,19 +296,20 @@ public class RealSource implements BufferSource {
 
     @Override
     public String readUtf8LineStrict(long limit) throws IOException {
-        if (limit < 0) throw new IllegalArgumentException("limit < 0: " + limit);
+        if (limit < 0)
+            throw new IllegalArgumentException("limit < 0: " + limit);
         long scanLength = limit == Long.MAX_VALUE ? Long.MAX_VALUE : limit + 1;
         long newline = indexOf((byte) Symbol.C_LF, 0, scanLength);
-        if (newline != -1) return buffer.readUtf8Line(newline);
-        if (scanLength < Long.MAX_VALUE
-                && request(scanLength) && buffer.getByte(scanLength - 1) == Symbol.C_CR
+        if (newline != -1)
+            return buffer.readUtf8Line(newline);
+        if (scanLength < Long.MAX_VALUE && request(scanLength) && buffer.getByte(scanLength - 1) == Symbol.C_CR
                 && request(scanLength + 1) && buffer.getByte(scanLength) == Symbol.C_LF) {
             return buffer.readUtf8Line(scanLength); // The line was 'limit' UTF-8 bytes followed by \r\n.
         }
         Buffer data = new Buffer();
         buffer.copyTo(data, 0, Math.min(Normal._32, buffer.size()));
-        throw new EOFException("\\n not found: limit=" + Math.min(buffer.size(), limit)
-                + " content=" + data.readByteString().hex() + '…');
+        throw new EOFException("\\n not found: limit=" + Math.min(buffer.size(), limit) + " content="
+                + data.readByteString().hex() + '…');
     }
 
     @Override
@@ -362,8 +373,8 @@ public class RealSource implements BufferSource {
             if ((b < Symbol.C_ZERO || b > Symbol.C_NINE) && (pos != 0 || b != Symbol.C_MINUS)) {
                 // Non-digit, or non-leading negative sign.
                 if (pos == 0) {
-                    throw new NumberFormatException(String.format(
-                            "Expected leading [0-9] or '-' character but was %#x", b));
+                    throw new NumberFormatException(
+                            String.format("Expected leading [0-9] or '-' character but was %#x", b));
                 }
                 break;
             }
@@ -381,8 +392,8 @@ public class RealSource implements BufferSource {
             if ((b < Symbol.C_ZERO || b > Symbol.C_NINE) && (b < 'a' || b > 'f') && (b < 'A' || b > 'F')) {
                 // Non-digit, or non-leading negative sign.
                 if (pos == 0) {
-                    throw new NumberFormatException(String.format(
-                            "Expected leading [0-9a-fA-F] character but was %#x", b));
+                    throw new NumberFormatException(
+                            String.format("Expected leading [0-9a-fA-F] character but was %#x", b));
                 }
                 break;
             }
@@ -393,7 +404,8 @@ public class RealSource implements BufferSource {
 
     @Override
     public void skip(long byteCount) throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+        if (closed)
+            throw new IllegalStateException("closed");
         while (byteCount > 0) {
             if (buffer.size == 0 && source.read(buffer, SectionBuffer.SIZE) == -1) {
                 throw new EOFException();
@@ -416,20 +428,22 @@ public class RealSource implements BufferSource {
 
     @Override
     public long indexOf(byte b, long fromIndex, long toIndex) throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+        if (closed)
+            throw new IllegalStateException("closed");
         if (fromIndex < 0 || toIndex < fromIndex) {
-            throw new IllegalArgumentException(
-                    String.format("fromIndex=%s toIndex=%s", fromIndex, toIndex));
+            throw new IllegalArgumentException(String.format("fromIndex=%s toIndex=%s", fromIndex, toIndex));
         }
 
         while (fromIndex < toIndex) {
             long result = buffer.indexOf(b, fromIndex, toIndex);
-            if (result != -1L) return result;
+            if (result != -1L)
+                return result;
 
             // The byte wasn't in the buffer. Give up if we've already reached our target size or if the
             // underlying stream is exhausted.
             long lastBufferSize = buffer.size;
-            if (lastBufferSize >= toIndex || source.read(buffer, SectionBuffer.SIZE) == -1) return -1L;
+            if (lastBufferSize >= toIndex || source.read(buffer, SectionBuffer.SIZE) == -1)
+                return -1L;
 
             // Continue the search from where we left off.
             fromIndex = Math.max(fromIndex, lastBufferSize);
@@ -444,14 +458,17 @@ public class RealSource implements BufferSource {
 
     @Override
     public long indexOf(ByteString bytes, long fromIndex) throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+        if (closed)
+            throw new IllegalStateException("closed");
 
         while (true) {
             long result = buffer.indexOf(bytes, fromIndex);
-            if (result != -1) return result;
+            if (result != -1)
+                return result;
 
             long lastBufferSize = buffer.size;
-            if (source.read(buffer, SectionBuffer.SIZE) == -1) return -1L;
+            if (source.read(buffer, SectionBuffer.SIZE) == -1)
+                return -1L;
 
             // Keep searching, picking up from where we left off.
             fromIndex = Math.max(fromIndex, lastBufferSize - bytes.size() + 1);
@@ -465,14 +482,17 @@ public class RealSource implements BufferSource {
 
     @Override
     public long indexOfElement(ByteString targetBytes, long fromIndex) throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+        if (closed)
+            throw new IllegalStateException("closed");
 
         while (true) {
             long result = buffer.indexOfElement(targetBytes, fromIndex);
-            if (result != -1) return result;
+            if (result != -1)
+                return result;
 
             long lastBufferSize = buffer.size;
-            if (source.read(buffer, SectionBuffer.SIZE) == -1) return -1L;
+            if (source.read(buffer, SectionBuffer.SIZE) == -1)
+                return -1L;
 
             // Keep searching, picking up from where we left off.
             fromIndex = Math.max(fromIndex, lastBufferSize);
@@ -485,20 +505,19 @@ public class RealSource implements BufferSource {
     }
 
     @Override
-    public boolean rangeEquals(long offset, ByteString bytes, int bytesOffset, int byteCount)
-            throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+    public boolean rangeEquals(long offset, ByteString bytes, int bytesOffset, int byteCount) throws IOException {
+        if (closed)
+            throw new IllegalStateException("closed");
 
-        if (offset < 0
-                || bytesOffset < 0
-                || byteCount < 0
-                || bytes.size() - bytesOffset < byteCount) {
+        if (offset < 0 || bytesOffset < 0 || byteCount < 0 || bytes.size() - bytesOffset < byteCount) {
             return false;
         }
         for (int i = 0; i < byteCount; i++) {
             long bufferOffset = offset + i;
-            if (!request(bufferOffset + 1)) return false;
-            if (buffer.getByte(bufferOffset) != bytes.getByte(bytesOffset + i)) return false;
+            if (!request(bufferOffset + 1))
+                return false;
+            if (buffer.getByte(bufferOffset) != bytes.getByte(bytesOffset + i))
+                return false;
         }
         return true;
     }
@@ -513,22 +532,26 @@ public class RealSource implements BufferSource {
         return new InputStream() {
             @Override
             public int read() throws IOException {
-                if (closed) throw new IOException("closed");
+                if (closed)
+                    throw new IOException("closed");
                 if (buffer.size == 0) {
                     long count = source.read(buffer, SectionBuffer.SIZE);
-                    if (count == -1) return -1;
+                    if (count == -1)
+                        return -1;
                 }
                 return buffer.readByte() & 0xff;
             }
 
             @Override
             public int read(byte[] data, int offset, int byteCount) throws IOException {
-                if (closed) throw new IOException("closed");
+                if (closed)
+                    throw new IOException("closed");
                 IoKit.checkOffsetAndCount(data.length, offset, byteCount);
 
                 if (buffer.size == 0) {
                     long count = source.read(buffer, SectionBuffer.SIZE);
-                    if (count == -1) return -1;
+                    if (count == -1)
+                        return -1;
                 }
 
                 return buffer.read(data, offset, byteCount);
@@ -536,7 +559,8 @@ public class RealSource implements BufferSource {
 
             @Override
             public int available() throws IOException {
-                if (closed) throw new IOException("closed");
+                if (closed)
+                    throw new IOException("closed");
                 return (int) Math.min(buffer.size, Integer.MAX_VALUE);
             }
 
@@ -559,7 +583,8 @@ public class RealSource implements BufferSource {
 
     @Override
     public void close() throws IOException {
-        if (closed) return;
+        if (closed)
+            return;
         closed = true;
         source.close();
         buffer.clear();

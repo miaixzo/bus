@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pay;
 
 import org.miaixz.bus.pay.metric.AbstractProvider;
@@ -57,7 +57,6 @@ public enum Registry implements Complex {
             // 消息验证地址
             // return "https://mapi.alipay.com/gateway.do?";
             return "https://openapi.alipay.com/gateway.do?";
-
 
         }
 
@@ -191,8 +190,7 @@ public enum Registry implements Complex {
              */
             ACTION("https://action.weixin.qq.com"),
             /**
-             * 刷脸支付
-             * PAY_APP
+             * 刷脸支付 PAY_APP
              */
             PAY_APP("https://payapp.weixin.qq.com");
 

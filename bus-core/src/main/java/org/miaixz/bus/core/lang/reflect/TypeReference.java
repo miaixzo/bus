@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.reflect;
 
 import org.miaixz.bus.core.xyz.TypeKit;
@@ -32,13 +32,14 @@ import org.miaixz.bus.core.xyz.TypeKit;
 import java.lang.reflect.Type;
 
 /**
- * Type类型参考
- * 通过构建一个类型参考子类，可以获取其泛型参数中的Type类型。例如：
+ * Type类型参考 通过构建一个类型参考子类，可以获取其泛型参数中的Type类型。例如：
  *
  * <pre>
- * TypeReference&lt;List&lt;String&gt;&gt; list = new TypeReference&lt;List&lt;String&gt;&gt;() {};
+ * TypeReference&lt;List&lt;String&gt;&gt; list = new TypeReference&lt;List&lt;String&gt;&gt;() {
+ * };
  * Type t = tr.getType();
  * </pre>
+ * 
  * 此类无法应用于通配符泛型参数（wildcard parameters），比如：{@code Class<?>} 或者 {@code List? extends CharSequence>}
  *
  * <p>

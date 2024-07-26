@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.mutable;
 
 import org.miaixz.bus.core.xyz.CompareKit;
@@ -189,9 +189,9 @@ public class MutableByte extends Number implements Comparable<MutableByte>, Muta
     /**
      * 相等需同时满足如下条件：
      * <ol>
-     * 	<li>非空</li>
-     * 	<li>类型为 MutableByte</li>
-     * 	<li>值相等</li>
+     * <li>非空</li>
+     * <li>类型为 MutableByte</li>
+     * <li>值相等</li>
      * </ol>
      *
      * @param obj 比对的对象

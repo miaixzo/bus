@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.setting.format;
 
 import org.miaixz.bus.setting.metric.ini.IniElement;
@@ -46,8 +46,8 @@ public interface ElementFormatter<E extends IniElement> {
     boolean check(String value);
 
     /**
-     * this method will not check value, so you should {@link #check(String)} first.
-     * However, not checking will not necessarily report an error, but may result in non-compliance.
+     * this method will not check value, so you should {@link #check(String)} first. However, not checking will not
+     * necessarily report an error, but may result in non-compliance.
      *
      * @param value a String value
      * @param line  line number

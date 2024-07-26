@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.stream;
 
 import org.miaixz.bus.core.io.StreamProgress;
@@ -141,7 +141,9 @@ public class StreamReader {
     /**
      * 从流中读取对象，即对象的反序列化
      *
-     * <p>注意！！！ 此方法不会检查反序列化安全，可能存在反序列化漏洞风险！！！</p>
+     * <p>
+     * 注意！！！ 此方法不会检查反序列化安全，可能存在反序列化漏洞风险！！！
+     * </p>
      *
      * <p>
      * 此方法使用了{@link ValidateObjectInputStream}中的黑白名单方式过滤类，用于避免反序列化漏洞

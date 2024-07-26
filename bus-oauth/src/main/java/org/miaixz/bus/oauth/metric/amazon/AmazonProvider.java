@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.amazon;
 
 import com.alibaba.fastjson.JSONObject;
@@ -111,11 +111,9 @@ public class AmazonProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        Builder builder = Builder.fromUrl(complex.authorize())
-                .queryParam("client_id", context.getAppKey())
+        Builder builder = Builder.fromUrl(complex.authorize()).queryParam("client_id", context.getAppKey())
                 .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(AmazonScope.values())))
-                .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("response_type", "code")
+                .queryParam("redirect_uri", context.getRedirectUri()).queryParam("response_type", "code")
                 .queryParam("state", getRealState(state));
 
         if (context.isPkce()) {
@@ -123,8 +121,8 @@ public class AmazonProvider extends AbstractProvider {
             String codeVerifier = Base64.encode(RandomKit.randomString(50));
             String codeChallengeMethod = "S256";
             String codeChallenge = generateCodeChallenge(codeChallengeMethod, codeVerifier);
-            builder.queryParam("code_challenge", codeChallenge)
-                    .queryParam("code_challenge_method", codeChallengeMethod);
+            builder.queryParam("code_challenge", codeChallenge).queryParam("code_challenge_method",
+                    codeChallengeMethod);
             // 缓存 codeVerifier 十分钟
             this.cache.cache(cacheKey, codeVerifier, TimeUnit.MINUTES.toMillis(10));
         }
@@ -161,9 +159,7 @@ public class AmazonProvider extends AbstractProvider {
         form.put("refresh_token", accToken.getRefreshToken());
         form.put("client_id", context.getAppKey());
         form.put("client_secret", context.getAppSecret());
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .data(getToken(form, this.complex.refresh()))
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).data(getToken(form, this.complex.refresh()))
                 .build();
 
     }
@@ -176,12 +172,9 @@ public class AmazonProvider extends AbstractProvider {
         String response = Httpx.post(url, param, header);
         JSONObject jsonObject = JSONObject.parseObject(response);
         this.checkResponse(jsonObject);
-        return AccToken.builder()
-                .accessToken(jsonObject.getString("access_token"))
-                .tokenType(jsonObject.getString("token_type"))
-                .expireIn(jsonObject.getIntValue("expires_in"))
-                .refreshToken(jsonObject.getString("refresh_token"))
-                .build();
+        return AccToken.builder().accessToken(jsonObject.getString("access_token"))
+                .tokenType(jsonObject.getString("token_type")).expireIn(jsonObject.getIntValue("expires_in"))
+                .refreshToken(jsonObject.getString("refresh_token")).build();
     }
 
     /**
@@ -191,7 +184,8 @@ public class AmazonProvider extends AbstractProvider {
      */
     private void checkResponse(JSONObject jsonObject) {
         if (jsonObject.containsKey("error")) {
-            throw new AuthorizedException(jsonObject.getString("error_description").concat(Symbol.SPACE) + jsonObject.getString("error_description"));
+            throw new AuthorizedException(jsonObject.getString("error_description").concat(Symbol.SPACE)
+                    + jsonObject.getString("error_description"));
         }
     }
 
@@ -213,20 +207,15 @@ public class AmazonProvider extends AbstractProvider {
         JSONObject jsonObject = JSONObject.parseObject(userInfo);
         this.checkResponse(jsonObject);
 
-        return Material.builder()
-                .rawJson(jsonObject)
-                .uuid(jsonObject.getString("user_id"))
-                .username(jsonObject.getString("name"))
-                .nickname(jsonObject.getString("name"))
-                .email(jsonObject.getString("email"))
-                .gender(Gender.UNKNOWN)
-                .source(complex.toString())
-                .token(accToken)
+        return Material.builder().rawJson(jsonObject).uuid(jsonObject.getString("user_id"))
+                .username(jsonObject.getString("name")).nickname(jsonObject.getString("name"))
+                .email(jsonObject.getString("email")).gender(Gender.UNKNOWN).source(complex.toString()).token(accToken)
                 .build();
     }
 
     private void checkToken(String accessToken) {
-        String tokenInfo = Httpx.get("https://api.amazon.com/auth/o2/tokeninfo?access_token=" + UrlEncoder.encodeAll(accessToken));
+        String tokenInfo = Httpx
+                .get("https://api.amazon.com/auth/o2/tokeninfo?access_token=" + UrlEncoder.encodeAll(accessToken));
         JSONObject jsonObject = JSONObject.parseObject(tokenInfo);
         if (!context.getAppKey().equals(jsonObject.getString("aud"))) {
             throw new AuthorizedException(ErrorCode.ILLEGAL_TOKEN.getCode());
@@ -235,11 +224,8 @@ public class AmazonProvider extends AbstractProvider {
 
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(complex.userInfo())
-                .queryParam("user_id", accToken.getUserId())
-                .queryParam("screen_name", accToken.getScreenName())
-                .queryParam("include_entities", true)
-                .build();
+        return Builder.fromUrl(complex.userInfo()).queryParam("user_id", accToken.getUserId())
+                .queryParam("screen_name", accToken.getScreenName()).queryParam("include_entities", true).build();
     }
 
 }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.sensitive.metric;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -35,9 +35,7 @@ import org.miaixz.bus.sensitive.Context;
 import org.miaixz.bus.sensitive.magic.annotation.Shield;
 
 /**
- * 邮箱脱敏策略
- * 脱敏规则：
- * 保留前三位,中间隐藏4位 其他正常显示
+ * 邮箱脱敏策略 脱敏规则： 保留前三位,中间隐藏4位 其他正常显示
  *
  * @author Kimi Liu
  * @since Java 17+

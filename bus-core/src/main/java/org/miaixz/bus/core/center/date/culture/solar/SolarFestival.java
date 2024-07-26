@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org 6tail and other contributors.              ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -41,10 +41,8 @@ import java.util.regex.Pattern;
  */
 public class SolarFestival extends Loops {
 
-    public static final String[] NAMES = {
-            "元旦", "三八妇女节", "植树节", "五一劳动节", "五四青年节",
-            "六一儿童节", "建党节", "八一建军节", "教师节", "国庆节"
-    };
+    public static final String[] NAMES = { "元旦", "三八妇女节", "植树节", "五一劳动节", "五四青年节", "六一儿童节", "建党节", "八一建军节", "教师节",
+            "国庆节" };
 
     public static String DATA = "@00001011950@01003081950@02003121979@03005011950@04005041950@05006011950@06007011941@07008011933@08009101985@09010011950";
 
@@ -95,7 +93,9 @@ public class SolarFestival extends Loops {
             return null;
         }
         int startYear = Integer.parseInt(data.substring(8), 10);
-        return year < startYear ? null : new SolarFestival(type, SolarDay.fromYmd(year, Integer.parseInt(data.substring(4, 6), 10), Integer.parseInt(data.substring(6, 8), 10)), startYear, data);
+        return year < startYear ? null
+                : new SolarFestival(type, SolarDay.fromYmd(year, Integer.parseInt(data.substring(4, 6), 10),
+                        Integer.parseInt(data.substring(6, 8), 10)), startYear, data);
     }
 
     public static SolarFestival fromYmd(int year, int month, int day) {
@@ -105,7 +105,8 @@ public class SolarFestival extends Loops {
         }
         String data = matcher.group();
         int startYear = Integer.parseInt(data.substring(8), 10);
-        return year < startYear ? null : new SolarFestival(EnumMap.Festival.DAY, SolarDay.fromYmd(year, month, day), startYear, data);
+        return year < startYear ? null
+                : new SolarFestival(EnumMap.Festival.DAY, SolarDay.fromYmd(year, month, day), startYear, data);
     }
 
     public SolarFestival next(int n) {

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.linux.hardware;
 
 import com.sun.jna.platform.linux.Udev;
@@ -240,7 +240,8 @@ public final class LinuxHWDiskStore extends AbstractHWDiskStore {
     }
 
     private static void computeDiskStats(LinuxHWDiskStore store, String devstat) {
-        long[] devstatArray = Parsing.parseStringToLongArray(devstat, UDEV_STAT_ORDERS, UDEV_STAT_LENGTH, Symbol.C_SPACE);
+        long[] devstatArray = Parsing.parseStringToLongArray(devstat, UDEV_STAT_ORDERS, UDEV_STAT_LENGTH,
+                Symbol.C_SPACE);
         store.timeStamp = System.currentTimeMillis();
 
         // Reads and writes are converted in bytes

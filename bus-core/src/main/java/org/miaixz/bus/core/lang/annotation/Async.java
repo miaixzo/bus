@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.annotation;
 
 import org.miaixz.bus.core.xyz.StringKit;
@@ -41,13 +41,11 @@ import java.lang.annotation.Target;
  * @since Java 17+
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target({ ElementType.TYPE, ElementType.METHOD })
 public @interface Async {
 
     /**
-     * 当一个“public void”方法被注释为“@Async”时,
-     * 框架会通过添加一个新方法作为原始方法的副本(名称)
-     * 来增强类是调用原始方法的结果
+     * 当一个“public void”方法被注释为“@Async”时, 框架会通过添加一个新方法作为原始方法的副本(名称) 来增强类是调用原始方法的结果
      */
     class MethodNameTransformer {
 
@@ -58,7 +56,7 @@ public @interface Async {
          * @return 与原始方法配对的异步方法的名称
          */
         public static String transform(String methodName) {
-            return StringKit.concat(true, new String[]{"__act_", methodName, "_async"});
+            return StringKit.concat(true, new String[] { "__act_", methodName, "_async" });
         }
     }
 

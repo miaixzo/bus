@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.hl7;
 
 /**
@@ -33,6 +33,5 @@ package org.miaixz.bus.image.metric.hl7;
  * @since Feb 2020
  */
 public enum MLLPRelease {
-    MLLP1,
-    MLLP2
+    MLLP1, MLLP2
 }

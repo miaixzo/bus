@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text;
 
 import org.miaixz.bus.core.center.iterator.ComputeIterator;
@@ -39,9 +39,7 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
- * 字符串切分迭代器
- * 此迭代器是字符串切分的懒模式实现，实例化后不完成切分，只有调用{@link #hasNext()}或遍历时才完成切分
- * 此迭代器非线程安全
+ * 字符串切分迭代器 此迭代器是字符串切分的懒模式实现，实例化后不完成切分，只有调用{@link #hasNext()}或遍历时才完成切分 此迭代器非线程安全
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -72,7 +70,8 @@ public class StringSplitter extends ComputeIterator<String> implements Serializa
      * @param limit           限制数量，小于等于0表示无限制
      * @param ignoreEmpty     是否忽略""
      */
-    public StringSplitter(final CharSequence text, final TextFinder separatorFinder, final int limit, final boolean ignoreEmpty) {
+    public StringSplitter(final CharSequence text, final TextFinder separatorFinder, final int limit,
+            final boolean ignoreEmpty) {
         Assert.notNull(text, "Text must be not null!");
         this.text = text.toString();
         this.finder = separatorFinder.setText(text);

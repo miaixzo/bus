@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric;
 
 import org.miaixz.bus.http.Response;
@@ -32,8 +32,7 @@ import org.miaixz.bus.http.Response;
 import java.io.IOException;
 
 /**
- * 观察、修改和潜在的短路请求，并返回相应的响应
- * 通常，拦截器在请求或响应上添加、删除或转换标头
+ * 观察、修改和潜在的短路请求，并返回相应的响应 通常，拦截器在请求或响应上添加、删除或转换标头
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,8 +49,7 @@ public interface Interceptor {
     Response intercept(NewChain chain) throws IOException;
 
     /**
-     * 说明该拦截器实现的作用
-     * 方便其他业务场景或者服务使用，例如链路追踪等
+     * 说明该拦截器实现的作用 方便其他业务场景或者服务使用，例如链路追踪等
      */
     default void instructions() {
 

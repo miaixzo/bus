@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core;
 
 import lombok.RequiredArgsConstructor;
@@ -78,8 +78,8 @@ public class Binder {
         SIMPLE_PREFIXES.put(Symbol.BRACKET_RIGHT, Symbol.BRACKET_LEFT);
         SIMPLE_PREFIXES.put(Symbol.PARENTHESE_RIGHT, Symbol.PARENTHESE_LEFT);
 
-        DEFAULT_HELPER = new Binder(DEFAULT_PLACEHOLDER_PREFIX, DEFAULT_PLACEHOLDER_SUFFIX,
-                DEFAULT_VALUE_SEPARATOR, true);
+        DEFAULT_HELPER = new Binder(DEFAULT_PLACEHOLDER_PREFIX, DEFAULT_PLACEHOLDER_SUFFIX, DEFAULT_VALUE_SEPARATOR,
+                true);
     }
 
     private final String placeholderPrefix;
@@ -107,10 +107,8 @@ public class Binder {
      * @param valueSeparator                 值分隔符
      * @param ignoreUnresolvablePlaceholders 忽略不可解析的占位符
      */
-    public Binder(String placeholderPrefix,
-                  String placeholderSuffix,
-                  String valueSeparator,
-                  boolean ignoreUnresolvablePlaceholders) {
+    public Binder(String placeholderPrefix, String placeholderSuffix, String valueSeparator,
+            boolean ignoreUnresolvablePlaceholders) {
 
         Assert.notNull(placeholderPrefix, "'placeholderPrefix' must not be null");
         Assert.notNull(placeholderSuffix, "'placeholderSuffix' must not be null");
@@ -208,8 +206,7 @@ public class Binder {
             FieldKit.setFieldValue(object, field, value);
             return;
         }
-        if (!(null == field.getType().getClassLoader()) && source
-                .containPrefix(key + Symbol.DOT)) {
+        if (!(null == field.getType().getClassLoader()) && source.containPrefix(key + Symbol.DOT)) {
             value = FieldKit.getFieldValue(object, field);
             if (null == value) {
                 value = bind(field.getType(), key);
@@ -254,20 +251,17 @@ public class Binder {
      * @param visitedPlaceholders 参数占位符
      * @return 替换后的字符串
      */
-    protected String parseStringValue(String value, Properties properties,
-                                      Set<String> visitedPlaceholders) {
+    protected String parseStringValue(String value, Properties properties, Set<String> visitedPlaceholders) {
         StringBuilder result = new StringBuilder(value);
         int startIndex = value.indexOf(this.placeholderPrefix);
         while (startIndex != -1) {
             int endIndex = findPlaceholderEndIndex(result, startIndex);
             if (endIndex != -1) {
-                String placeholder = result
-                        .substring(startIndex + this.placeholderPrefix.length(), endIndex);
+                String placeholder = result.substring(startIndex + this.placeholderPrefix.length(), endIndex);
                 String originalPlaceholder = placeholder;
                 if (!visitedPlaceholders.add(originalPlaceholder)) {
                     throw new IllegalArgumentException(
-                            "Circular placeholder reference '" + originalPlaceholder
-                                    + "' in property definitions");
+                            "Circular placeholder reference '" + originalPlaceholder + "' in property definitions");
                 }
                 // 递归
                 placeholder = parseStringValue(placeholder, properties, visitedPlaceholders);
@@ -281,11 +275,10 @@ public class Binder {
                     startIndex = result.indexOf(this.placeholderPrefix, startIndex + propVal.length());
                 } else if (this.ignoreUnresolvablePlaceholders) {
                     // 继续解析
-                    startIndex = result
-                            .indexOf(this.placeholderPrefix, endIndex + this.placeholderSuffix.length());
+                    startIndex = result.indexOf(this.placeholderPrefix, endIndex + this.placeholderSuffix.length());
                 } else {
-                    throw new IllegalArgumentException(String
-                            .format("Could not resolve placeholder '%s' in value '%s'", placeholder, value));
+                    throw new IllegalArgumentException(
+                            String.format("Could not resolve placeholder '%s' in value '%s'", placeholder, value));
                 }
                 visitedPlaceholders.remove(originalPlaceholder);
             } else {

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.acuson;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,26 +46,27 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag._0009_xx00_:
-            case PrivateTag._0009_xx01_:
-            case PrivateTag._0009_xx0a_:
-            case PrivateTag._0009_xx0b_:
-            case PrivateTag._0009_xx0c_:
-            case PrivateTag._0009_xx0d_:
-            case PrivateTag._0009_xx0e_:
-            case PrivateTag._0009_xx10_:
-            case PrivateTag._0009_xx12_:
-            case PrivateTag._0009_xx13_:
-                return VR.IS;
-            case PrivateTag._0009_xx08_:
-            case PrivateTag._0009_xx09_:
-            case PrivateTag._0009_xx14_:
-                return VR.LT;
+
+        case PrivateTag._0009_xx00_:
+        case PrivateTag._0009_xx01_:
+        case PrivateTag._0009_xx0a_:
+        case PrivateTag._0009_xx0b_:
+        case PrivateTag._0009_xx0c_:
+        case PrivateTag._0009_xx0d_:
+        case PrivateTag._0009_xx0e_:
+        case PrivateTag._0009_xx10_:
+        case PrivateTag._0009_xx12_:
+        case PrivateTag._0009_xx13_:
+            return VR.IS;
+        case PrivateTag._0009_xx08_:
+        case PrivateTag._0009_xx09_:
+        case PrivateTag._0009_xx14_:
+            return VR.LT;
         }
         return VR.UN;
     }

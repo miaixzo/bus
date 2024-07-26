@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.io;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -69,30 +69,29 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
 
     static boolean isStandardBulkData(List<ItemPointer> itemPointer, int tag) {
         switch (Tag.normalizeRepeatingGroup(tag)) {
-            case Tag.PixelDataProviderURL:
-            case Tag.AudioSampleData:
-            case Tag.CurveData:
-            case Tag.SpectroscopyData:
-            case Tag.RedPaletteColorLookupTableData:
-            case Tag.GreenPaletteColorLookupTableData:
-            case Tag.BluePaletteColorLookupTableData:
-            case Tag.AlphaPaletteColorLookupTableData:
-            case Tag.LargeRedPaletteColorLookupTableData:
-            case Tag.LargeGreenPaletteColorLookupTableData:
-            case Tag.LargeBluePaletteColorLookupTableData:
-            case Tag.SegmentedRedPaletteColorLookupTableData:
-            case Tag.SegmentedGreenPaletteColorLookupTableData:
-            case Tag.SegmentedBluePaletteColorLookupTableData:
-            case Tag.SegmentedAlphaPaletteColorLookupTableData:
-            case Tag.OverlayData:
-            case Tag.EncapsulatedDocument:
-            case Tag.FloatPixelData:
-            case Tag.DoubleFloatPixelData:
-            case Tag.PixelData:
-                return itemPointer.isEmpty();
-            case Tag.WaveformData:
-                return itemPointer.size() == 1
-                        && itemPointer.get(0).sequenceTag == Tag.WaveformSequence;
+        case Tag.PixelDataProviderURL:
+        case Tag.AudioSampleData:
+        case Tag.CurveData:
+        case Tag.SpectroscopyData:
+        case Tag.RedPaletteColorLookupTableData:
+        case Tag.GreenPaletteColorLookupTableData:
+        case Tag.BluePaletteColorLookupTableData:
+        case Tag.AlphaPaletteColorLookupTableData:
+        case Tag.LargeRedPaletteColorLookupTableData:
+        case Tag.LargeGreenPaletteColorLookupTableData:
+        case Tag.LargeBluePaletteColorLookupTableData:
+        case Tag.SegmentedRedPaletteColorLookupTableData:
+        case Tag.SegmentedGreenPaletteColorLookupTableData:
+        case Tag.SegmentedBluePaletteColorLookupTableData:
+        case Tag.SegmentedAlphaPaletteColorLookupTableData:
+        case Tag.OverlayData:
+        case Tag.EncapsulatedDocument:
+        case Tag.FloatPixelData:
+        case Tag.DoubleFloatPixelData:
+        case Tag.PixelData:
+            return itemPointer.isEmpty();
+        case Tag.WaveformData:
+            return itemPointer.size() == 1 && itemPointer.get(0).sequenceTag == Tag.WaveformSequence;
         }
         return false;
     }
@@ -152,8 +151,7 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
     public BasicBulkDataDescriptor addTagPath(int... tagPaths) {
         if (tagPaths.length == 0)
             throw new IllegalArgumentException("tagPaths.length == 0");
-        this.selectors.add(
-                new AttributeSelector(tagPaths[tagPaths.length - 1], null, toItemPointers(tagPaths)));
+        this.selectors.add(new AttributeSelector(tagPaths[tagPaths.length - 1], null, toItemPointers(tagPaths)));
         return this;
     }
 
@@ -212,8 +210,7 @@ public class BasicBulkDataDescriptor implements BulkDataDescriptor {
 
     @Override
     public boolean isBulkData(List<ItemPointer> itemPointers, String privateCreator, int tag, VR vr, int length) {
-        return !excludeDefaults && isStandardBulkData(itemPointers, tag)
-                || selected(itemPointers, privateCreator, tag)
+        return !excludeDefaults && isStandardBulkData(itemPointers, tag) || selected(itemPointers, privateCreator, tag)
                 || exeeds(length, lengthsThresholdByVR.get(vr));
     }
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SPI_P_Private_ICS_Release_1_2;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,29 +46,30 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag._0029_xx00_:
-            case PrivateTag._0029_xx01_:
-            case PrivateTag._0029_xx02_:
-            case PrivateTag._0029_xxA1_:
-                return VR.FD;
-            case PrivateTag._0029_xx30_:
-                return VR.LT;
-            case PrivateTag._0029_xx03_:
-            case PrivateTag._0029_xx04_:
-            case PrivateTag._0029_xx05_:
-            case PrivateTag._0029_xxA0_:
-            case PrivateTag._0029_xxA2_:
-            case PrivateTag._0029_xxA3_:
-            case PrivateTag._0029_xxA6_:
-                return VR.SL;
-            case PrivateTag._0029_xxA5_:
-            case PrivateTag._0029_xxD9_:
-                return VR.SQ;
+
+        case PrivateTag._0029_xx00_:
+        case PrivateTag._0029_xx01_:
+        case PrivateTag._0029_xx02_:
+        case PrivateTag._0029_xxA1_:
+            return VR.FD;
+        case PrivateTag._0029_xx30_:
+            return VR.LT;
+        case PrivateTag._0029_xx03_:
+        case PrivateTag._0029_xx04_:
+        case PrivateTag._0029_xx05_:
+        case PrivateTag._0029_xxA0_:
+        case PrivateTag._0029_xxA2_:
+        case PrivateTag._0029_xxA3_:
+        case PrivateTag._0029_xxA6_:
+            return VR.SL;
+        case PrivateTag._0029_xxA5_:
+        case PrivateTag._0029_xxD9_:
+            return VR.SQ;
         }
         return VR.UN;
     }

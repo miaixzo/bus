@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.resource;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -91,8 +91,7 @@ public class JarResource extends UrlResource {
     }
 
     /**
-     * 获取{@link JarFile}
-     * 首席按通过openConnection方式获取，如果得到的不是{@link JarURLConnection}，
+     * 获取{@link JarFile} 首席按通过openConnection方式获取，如果得到的不是{@link JarURLConnection}，
      * 则尝试去除WAR、JAR等协议分隔符，裁剪分隔符前段来直接获取{@link JarFile}。
      *
      * @return {@link JarFile}

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.logger;
 
 import org.miaixz.bus.core.xyz.CallerKit;
@@ -51,8 +51,7 @@ public class Logger {
     }
 
     /**
-     * Trace等级日志，小于debug
-     * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！
+     * Trace等级日志，小于debug 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！
      *
      * @param format 格式文本，{}代表变量
      * @param args   变量对应的参数
@@ -73,8 +72,7 @@ public class Logger {
     }
 
     /**
-     * Debug等级日志，小于Info
-     * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！
+     * Debug等级日志，小于Info 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！
      *
      * @param format 格式文本，{}代表变量
      * @param args   变量对应的参数
@@ -95,8 +93,7 @@ public class Logger {
     }
 
     /**
-     * Info等级日志，小于Warn
-     * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！
+     * Info等级日志，小于Warn 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！
      *
      * @param format 格式文本，{}代表变量
      * @param args   变量对应的参数
@@ -117,8 +114,7 @@ public class Logger {
     }
 
     /**
-     * Warn等级日志，小于Error
-     * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！
+     * Warn等级日志，小于Error 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！
      *
      * @param format 格式文本，{} 代表变量
      * @param args   变量对应的参数
@@ -128,8 +124,7 @@ public class Logger {
     }
 
     /**
-     * Warn等级日志，小于Error
-     * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！
+     * Warn等级日志，小于Error 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！
      *
      * @param e      需在日志中堆栈打印的异常
      * @param format 格式文本，{}代表变量
@@ -163,8 +158,7 @@ public class Logger {
     }
 
     /**
-     * Error等级日志
-     * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！
+     * Error等级日志 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！
      *
      * @param e 需在日志中堆栈打印的异常
      */
@@ -173,8 +167,7 @@ public class Logger {
     }
 
     /**
-     * Error等级日志
-     * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！
+     * Error等级日志 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！
      *
      * @param format 格式文本，{} 代表变量
      * @param args   变量对应的参数
@@ -184,8 +177,7 @@ public class Logger {
     }
 
     /**
-     * Error等级日志
-     * 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！
+     * Error等级日志 由于动态获取Log，效率较低，建议在非频繁调用的情况下使用！
      *
      * @param e      需在日志中堆栈打印的异常
      * @param format 格式文本，{}代表变量

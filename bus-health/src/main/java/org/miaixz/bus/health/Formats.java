@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -44,8 +44,7 @@ import java.util.concurrent.TimeUnit;
 public final class Formats {
 
     /**
-     * Binary prefixes, used in IEC Standard for naming bytes.
-     * Should be used for most representations of bytes
+     * Binary prefixes, used in IEC Standard for naming bytes. Should be used for most representations of bytes
      */
     private static final long KIBI = 1L << 10;
     private static final long MEBI = 1L << 20;

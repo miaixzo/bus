@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
@@ -85,9 +85,7 @@ public abstract class AbstractProvider implements Provider {
         if (null == scopes || scopes.length == 0) {
             return null;
         }
-        return Arrays.stream(scopes)
-                .filter((AuthorizeScope::isDefault))
-                .map(AuthorizeScope::getScope)
+        return Arrays.stream(scopes).filter((AuthorizeScope::isDefault)).map(AuthorizeScope::getScope)
                 .collect(Collectors.toList());
     }
 
@@ -177,12 +175,9 @@ public abstract class AbstractProvider implements Provider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.authorize())
-                .queryParam("response_type", "code")
-                .queryParam("client_id", context.getAppKey())
-                .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("state", getRealState(state))
-                .build();
+        return Builder.fromUrl(complex.authorize()).queryParam("response_type", "code")
+                .queryParam("client_id", context.getAppKey()).queryParam("redirect_uri", context.getRedirectUri())
+                .queryParam("state", getRealState(state)).build();
     }
 
     /**
@@ -192,12 +187,9 @@ public abstract class AbstractProvider implements Provider {
      * @return 返回获取accessToken的url
      */
     protected String accessTokenUrl(String code) {
-        return Builder.fromUrl(complex.accessToken())
-                .queryParam("code", code)
-                .queryParam("client_id", context.getAppKey())
-                .queryParam("client_secret", context.getAppSecret())
-                .queryParam("grant_type", "authorization_code")
-                .queryParam("redirect_uri", context.getRedirectUri())
+        return Builder.fromUrl(complex.accessToken()).queryParam("code", code)
+                .queryParam("client_id", context.getAppKey()).queryParam("client_secret", context.getAppSecret())
+                .queryParam("grant_type", "authorization_code").queryParam("redirect_uri", context.getRedirectUri())
                 .build();
     }
 
@@ -208,13 +200,9 @@ public abstract class AbstractProvider implements Provider {
      * @return 返回获取accessToken的url
      */
     protected String refreshTokenUrl(String refreshToken) {
-        return Builder.fromUrl(complex.refresh())
-                .queryParam("client_id", context.getAppKey())
-                .queryParam("client_secret", context.getAppSecret())
-                .queryParam("refresh_token", refreshToken)
-                .queryParam("grant_type", "refresh_token")
-                .queryParam("redirect_uri", context.getRedirectUri())
-                .build();
+        return Builder.fromUrl(complex.refresh()).queryParam("client_id", context.getAppKey())
+                .queryParam("client_secret", context.getAppSecret()).queryParam("refresh_token", refreshToken)
+                .queryParam("grant_type", "refresh_token").queryParam("redirect_uri", context.getRedirectUri()).build();
     }
 
     /**

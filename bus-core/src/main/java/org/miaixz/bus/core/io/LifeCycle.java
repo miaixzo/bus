@@ -24,14 +24,13 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io;
 
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 这是避免GC搅动和零填充所必需的
- * 这个池是一个线程安全的静态单例
+ * 这是避免GC搅动和零填充所必需的 这个池是一个线程安全的静态单例
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -71,10 +70,13 @@ public final class LifeCycle {
     }
 
     public static void recycle(SectionBuffer segment) {
-        if (segment.next != null || segment.prev != null) throw new IllegalArgumentException();
-        if (segment.shared) return; // This segment cannot be recycled.
+        if (segment.next != null || segment.prev != null)
+            throw new IllegalArgumentException();
+        if (segment.shared)
+            return; // This segment cannot be recycled.
         synchronized (LifeCycle.class) {
-            if (byteCount + SectionBuffer.SIZE > MAX_SIZE) return; // Pool is full.
+            if (byteCount + SectionBuffer.SIZE > MAX_SIZE)
+                return; // Pool is full.
             byteCount += SectionBuffer.SIZE;
             segment.next = next;
             segment.pos = segment.limit = 0;

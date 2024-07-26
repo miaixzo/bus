@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.iterator;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -35,8 +35,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * 包装 {@link NodeList} 的{@link Iterator}
- * 此 iterator 不支持 {@link #remove()} 方法。
+ * 包装 {@link NodeList} 的{@link Iterator} 此 iterator 不支持 {@link #remove()} 方法。
  *
  * @author Kimi Liu
  * @see NodeList

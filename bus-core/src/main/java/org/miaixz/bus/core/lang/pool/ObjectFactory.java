@@ -24,12 +24,11 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.pool;
 
 /**
- * 对象工厂接口，用于自定义对象创建、验证和销毁
- * 来自：https://github.com/DanielYWoo/fast-object-pool/
+ * 对象工厂接口，用于自定义对象创建、验证和销毁 来自：https://github.com/DanielYWoo/fast-object-pool/
  *
  * @param <T> 对象类型
  * @author Kimi Liu

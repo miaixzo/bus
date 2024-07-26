@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io;
 
 import java.io.IOException;
@@ -80,8 +80,8 @@ public class FastStringReader extends Reader {
     @Override
     public int read(final char[] charBuffer, final int off, final int len) throws IOException {
         ensureOpen();
-        if ((off < 0) || (off > charBuffer.length) || (len < 0) ||
-                ((off + len) > charBuffer.length) || ((off + len) < 0)) {
+        if ((off < 0) || (off > charBuffer.length) || (len < 0) || ((off + len) > charBuffer.length)
+                || ((off + len) < 0)) {
             throw new IndexOutOfBoundsException();
         }
 

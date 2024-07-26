@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric.anget;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -58,25 +58,25 @@ public class NOS extends UserAgent {
             new NOS("Windows 2003", "windows nt 5\\.2", "windows nt (5\\.2)"),
             new NOS("Windows XP", "windows nt 5\\.1", "windows nt (5\\.1)"),
             new NOS("Windows 2000", "windows nt 5\\.0", "windows nt (5\\.0)"),
-            new NOS("Windows Phone", "windows (ce|phone|mobile)( os)?", "windows (?:ce|phone|mobile) (\\d+([._]\\d+)*)"),
-            new NOS("Windows", "windows"),
-            new NOS("OSX", "os x (\\d+)[._](\\d+)", "os x (\\d+([._]\\d+)*)"),
+            new NOS("Windows Phone", "windows (ce|phone|mobile)( os)?",
+                    "windows (?:ce|phone|mobile) (\\d+([._]\\d+)*)"),
+            new NOS("Windows", "windows"), new NOS("OSX", "os x (\\d+)[._](\\d+)", "os x (\\d+([._]\\d+)*)"),
             new NOS("Android", "Android", "Android (\\d+([._]\\d+)*)"),
-            new NOS("Android", "XiaoMi|MI\\s+", "\\(X(\\d+([._]\\d+)*)"),
-            new NOS("Linux", "linux"),
+            new NOS("Android", "XiaoMi|MI\\s+", "\\(X(\\d+([._]\\d+)*)"), new NOS("Linux", "linux"),
             new NOS("Wii", "wii", "wii libnup/(\\d+([._]\\d+)*)"),
             new NOS("PS3", "playstation 3", "playstation 3; (\\d+([._]\\d+)*)"),
             new NOS("PSP", "playstation portable", "Portable\\); (\\d+([._]\\d+)*)"),
             new NOS("iPad", "\\(iPad.*os (\\d+)[._](\\d+)", "\\(iPad.*os (\\d+([._]\\d+)*)"),
             new NOS("iPhone", "\\(iPhone.*os (\\d+)[._](\\d+)", "\\(iPhone.*os (\\d+([._]\\d+)*)"),
-            new NOS("YPod", "iPod touch[\\s\\;]+iPhone.*os (\\d+)[._](\\d+)", "iPod touch[\\s\\;]+iPhone.*os (\\d+([._]\\d+)*)"),
+            new NOS("YPod", "iPod touch[\\s\\;]+iPhone.*os (\\d+)[._](\\d+)",
+                    "iPod touch[\\s\\;]+iPhone.*os (\\d+([._]\\d+)*)"),
             new NOS("YPad", "iPad[\\s\\;]+iPhone.*os (\\d+)[._](\\d+)", "iPad[\\s\\;]+iPhone.*os (\\d+([._]\\d+)*)"),
-            new NOS("YPhone", "iPhone[\\s\\;]+iPhone.*os (\\d+)[._](\\d+)", "iPhone[\\s\\;]+iPhone.*os (\\d+([._]\\d+)*)"),
+            new NOS("YPhone", "iPhone[\\s\\;]+iPhone.*os (\\d+)[._](\\d+)",
+                    "iPhone[\\s\\;]+iPhone.*os (\\d+([._]\\d+)*)"),
             new NOS("Symbian", "symbian(os)?"),
             new NOS("Darwin", "Darwin\\/([\\d\\w\\.\\-]+)", "Darwin\\/([\\d\\w\\.\\-]+)"),
             new NOS("Adobe Air", "AdobeAir\\/([\\d\\w\\.\\-]+)", "AdobeAir\\/([\\d\\w\\.\\-]+)"),
-            new NOS("Java", "Java[\\s]+([\\d\\w\\.\\-]+)", "Java[\\s]+([\\d\\w\\.\\-]+)")
-    );
+            new NOS("Java", "Java[\\s]+([\\d\\w\\.\\-]+)", "Java[\\s]+([\\d\\w\\.\\-]+)"));
     /**
      * 匹配正则
      */
@@ -85,7 +85,7 @@ public class NOS extends UserAgent {
     /**
      * 构造
      *
-     * @param name  系统名称
+     * @param name 系统名称
      * @param rule 关键字或表达式
      */
     public NOS(String name, String rule) {
@@ -96,7 +96,7 @@ public class NOS extends UserAgent {
      * 构造
      *
      * @param name         系统名称
-     * @param rule        关键字或表达式
+     * @param rule         关键字或表达式
      * @param versionRegex 版本正则表达式
      */
     public NOS(String name, String rule, String versionRegex) {
@@ -110,7 +110,7 @@ public class NOS extends UserAgent {
      * 添加自定义的系统类型
      *
      * @param name         浏览器名称
-     * @param rule        关键字或表达式
+     * @param rule         关键字或表达式
      * @param versionRegex 匹配版本的正则
      */
     synchronized public static void addOs(String name, String rule, String versionRegex) {

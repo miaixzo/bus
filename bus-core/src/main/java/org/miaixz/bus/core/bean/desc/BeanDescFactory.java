@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.bean.desc;
 
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
@@ -34,11 +34,10 @@ import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.core.xyz.RecordKit;
 
 /**
- * Bean描述信息工厂类
- * 通过不同的类和策略，生成对应的{@link BeanDesc}，策略包括：
+ * Bean描述信息工厂类 通过不同的类和策略，生成对应的{@link BeanDesc}，策略包括：
  * <ul>
- *     <li>当类为Record时，生成{@link RecordBeanDesc}</li>
- *     <li>当类为普通Bean时，生成{@link StrictBeanDesc}</li>
+ * <li>当类为Record时，生成{@link RecordBeanDesc}</li>
+ * <li>当类为普通Bean时，生成{@link StrictBeanDesc}</li>
  * </ul>
  *
  * @author Kimi Liu

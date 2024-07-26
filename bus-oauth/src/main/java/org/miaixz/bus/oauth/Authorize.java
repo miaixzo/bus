@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
@@ -90,8 +90,7 @@ public class Authorize {
         Complex[] complexes = this.concat(Registry.values(), this.complex);
         // 筛选符合条件的 Complex
         Complex complex = Arrays.stream(complexes).distinct()
-                .filter(authSource -> authSource.getName().equalsIgnoreCase(this.source))
-                .findAny()
+                .filter(authSource -> authSource.getName().equalsIgnoreCase(this.source)).findAny()
                 .orElseThrow(() -> new AuthorizedException(ErrorCode.NOT_IMPLEMENTED.getCode()));
 
         Class<? extends AbstractProvider> targetClass = complex.getTargetClass();
@@ -102,7 +101,8 @@ public class Authorize {
             if (this.cache == null) {
                 return targetClass.getDeclaredConstructor(Context.class).newInstance(this.context);
             } else {
-                return targetClass.getDeclaredConstructor(Context.class, ExtendCache.class).newInstance(this.context, this.complex);
+                return targetClass.getDeclaredConstructor(Context.class, ExtendCache.class).newInstance(this.context,
+                        this.complex);
             }
         } catch (Exception e) {
             e.printStackTrace();

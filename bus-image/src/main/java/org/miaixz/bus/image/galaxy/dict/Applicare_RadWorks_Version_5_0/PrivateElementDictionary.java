@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.Applicare_RadWorks_Version_5_0;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,71 +46,72 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.DICOMAETitle:
-                return VR.AE;
-            case PrivateTag.DeleteLock:
-            case PrivateTag._3109_xx04_:
-            case PrivateTag._3109_xx05_:
-            case PrivateTag._3109_xx06_:
-            case PrivateTag.Prior:
-            case PrivateTag.StatStudy:
-            case PrivateTag.Key:
-            case PrivateTag.LocalStudy:
-            case PrivateTag.Hostname:
-            case PrivateTag.RequestingProcedureName:
-            case PrivateTag.RequestingProcedureCode:
-            case PrivateTag.RequestStorageCommitment:
-            case PrivateTag.RequestedCompression:
-            case PrivateTag.StudyLocked:
-            case PrivateTag.WorkstationName:
-            case PrivateTag.ArchiveStatus:
-            case PrivateTag.Action:
-                return VR.CS;
-            case PrivateTag.ReceiveDate:
-            case PrivateTag.SystemDate:
-                return VR.DA;
-            case PrivateTag.NumberOfStudyRelatedImages:
-                return VR.IS;
-            case PrivateTag.ReceiveOrigin:
-            case PrivateTag.Folder:
-            case PrivateTag.ResultMessage:
-            case PrivateTag.CurrentUser:
-            case PrivateTag.WorklistName:
-            case PrivateTag.DestinationName:
-            case PrivateTag.OriginName:
-            case PrivateTag.NotificationComments:
-            case PrivateTag.TransactionComments:
-            case PrivateTag.SendFlag:
-            case PrivateTag.PrintFlag:
-            case PrivateTag.ArchiveFlag:
-            case PrivateTag.RequestingFacilityName:
-                return VR.LO;
-            case PrivateTag.NewSeenStatus:
-            case PrivateTag.TeachingACRCode:
-            case PrivateTag.TeachingSpecialInterestCode:
-                return VR.SH;
-            case PrivateTag.ExamRouting:
-            case PrivateTag.StudySequence:
-                return VR.SQ;
-            case PrivateTag.WorklistFilename:
-                return VR.ST;
-            case PrivateTag.ReceiveTime:
-            case PrivateTag.SystemTime:
-                return VR.TM;
-            case PrivateTag.WorklistUID:
-            case PrivateTag.ModalityStudyInstanceUID:
-            case PrivateTag.ReplacedStudyUID:
-            case PrivateTag.InternalListUID:
-                return VR.UI;
-            case PrivateTag._3109_xx07_:
-                return VR.UL;
-            case PrivateTag.DICOMPortNumber:
-                return VR.US;
+
+        case PrivateTag.DICOMAETitle:
+            return VR.AE;
+        case PrivateTag.DeleteLock:
+        case PrivateTag._3109_xx04_:
+        case PrivateTag._3109_xx05_:
+        case PrivateTag._3109_xx06_:
+        case PrivateTag.Prior:
+        case PrivateTag.StatStudy:
+        case PrivateTag.Key:
+        case PrivateTag.LocalStudy:
+        case PrivateTag.Hostname:
+        case PrivateTag.RequestingProcedureName:
+        case PrivateTag.RequestingProcedureCode:
+        case PrivateTag.RequestStorageCommitment:
+        case PrivateTag.RequestedCompression:
+        case PrivateTag.StudyLocked:
+        case PrivateTag.WorkstationName:
+        case PrivateTag.ArchiveStatus:
+        case PrivateTag.Action:
+            return VR.CS;
+        case PrivateTag.ReceiveDate:
+        case PrivateTag.SystemDate:
+            return VR.DA;
+        case PrivateTag.NumberOfStudyRelatedImages:
+            return VR.IS;
+        case PrivateTag.ReceiveOrigin:
+        case PrivateTag.Folder:
+        case PrivateTag.ResultMessage:
+        case PrivateTag.CurrentUser:
+        case PrivateTag.WorklistName:
+        case PrivateTag.DestinationName:
+        case PrivateTag.OriginName:
+        case PrivateTag.NotificationComments:
+        case PrivateTag.TransactionComments:
+        case PrivateTag.SendFlag:
+        case PrivateTag.PrintFlag:
+        case PrivateTag.ArchiveFlag:
+        case PrivateTag.RequestingFacilityName:
+            return VR.LO;
+        case PrivateTag.NewSeenStatus:
+        case PrivateTag.TeachingACRCode:
+        case PrivateTag.TeachingSpecialInterestCode:
+            return VR.SH;
+        case PrivateTag.ExamRouting:
+        case PrivateTag.StudySequence:
+            return VR.SQ;
+        case PrivateTag.WorklistFilename:
+            return VR.ST;
+        case PrivateTag.ReceiveTime:
+        case PrivateTag.SystemTime:
+            return VR.TM;
+        case PrivateTag.WorklistUID:
+        case PrivateTag.ModalityStudyInstanceUID:
+        case PrivateTag.ReplacedStudyUID:
+        case PrivateTag.InternalListUID:
+            return VR.UI;
+        case PrivateTag._3109_xx07_:
+            return VR.UL;
+        case PrivateTag.DICOMPortNumber:
+            return VR.US;
         }
         return VR.UN;
     }

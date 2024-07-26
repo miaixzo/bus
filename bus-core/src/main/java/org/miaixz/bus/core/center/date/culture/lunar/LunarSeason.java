@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org 6tail and other contributors.              ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -37,10 +37,7 @@ import org.miaixz.bus.core.center.date.culture.Samsara;
  */
 public class LunarSeason extends Samsara {
 
-    public static final String[] NAMES = {
-            "孟春", "仲春", "季春", "孟夏", "仲夏", "季夏",
-            "孟秋", "仲秋", "季秋", "孟冬", "仲冬", "季冬"
-    };
+    public static final String[] NAMES = { "孟春", "仲春", "季春", "孟夏", "仲夏", "季夏", "孟秋", "仲秋", "季秋", "孟冬", "仲冬", "季冬" };
 
     public LunarSeason(int index) {
         super(NAMES, index);

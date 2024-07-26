@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.image.metric.hl7.HL7Charset;
@@ -73,35 +73,27 @@ public class HL72Xml {
         this.charset = charset;
     }
 
-
-    public void parse(InputStream is) throws IOException,
-            TransformerConfigurationException, SAXException {
+    public void parse(InputStream is) throws IOException, TransformerConfigurationException, SAXException {
         byte[] buf = new byte[256];
         int len = is.read(buf);
         HL7Segment msh = HL7Segment.parseMSH(buf, buf.length);
         String charsetName = HL7Charset.toCharsetName(msh.getField(17, charset));
-        Reader reader = new InputStreamReader(
-                new SequenceInputStream(
-                        new ByteArrayInputStream(buf, 0, len), is),
+        Reader reader = new InputStreamReader(new SequenceInputStream(new ByteArrayInputStream(buf, 0, len), is),
                 charsetName);
         TransformerHandler th = getTransformerHandler();
-        th.getTransformer().setOutputProperty(OutputKeys.INDENT,
-                indent ? "yes" : "no");
+        th.getTransformer().setOutputProperty(OutputKeys.INDENT, indent ? "yes" : "no");
         th.setResult(new StreamResult(System.out));
         HL7Parser hl7Parser = new HL7Parser(th);
         hl7Parser.setIncludeNamespaceDeclaration(includeNamespaceDeclaration);
         hl7Parser.parse(reader);
     }
 
-    private TransformerHandler getTransformerHandler()
-            throws TransformerConfigurationException, IOException {
-        SAXTransformerFactory tf = (SAXTransformerFactory)
-                TransformerFactory.newInstance();
+    private TransformerHandler getTransformerHandler() throws TransformerConfigurationException, IOException {
+        SAXTransformerFactory tf = (SAXTransformerFactory) TransformerFactory.newInstance();
         if (xslt == null)
             return tf.newTransformerHandler();
 
-        TransformerHandler th = tf.newTransformerHandler(
-                new StreamSource(xslt.openStream(), xslt.toExternalForm()));
+        TransformerHandler th = tf.newTransformerHandler(new StreamSource(xslt.openStream(), xslt.toExternalForm()));
         return th;
     }
 

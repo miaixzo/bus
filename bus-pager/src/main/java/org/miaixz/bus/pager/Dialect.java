@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager;
 
 import org.apache.ibatis.cache.CacheKey;
@@ -96,7 +96,8 @@ public interface Dialect {
      * @param countKey        count 缓存 key
      * @return the object
      */
-    String getCountSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds, CacheKey countKey);
+    String getCountSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds,
+            CacheKey countKey);
 
     /**
      * 执行完 count 查询后
@@ -139,7 +140,8 @@ public interface Dialect {
      * @param pageKey         分页缓存 key
      * @return the object
      */
-    String getPageSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds, CacheKey pageKey);
+    String getPageSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds,
+            CacheKey pageKey);
 
     /**
      * 分页查询后，处理分页结果，拦截器中直接 return 该方法的返回值

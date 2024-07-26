@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.io.sink.BufferSink;
@@ -41,8 +41,7 @@ import java.io.IOException;
 import java.net.ProtocolException;
 
 /**
- * 这是链中的最后一个拦截器
- * 它对服务器进行网络调用
+ * 这是链中的最后一个拦截器 它对服务器进行网络调用
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -82,13 +81,11 @@ public class CallServerInterceptor implements Interceptor {
                 if (request.body().isDuplex()) {
                     // Prepare a duplex body so that the application can send a request body later.
                     exchange.flushRequest();
-                    BufferSink bufferedRequestBody = IoKit.buffer(
-                            exchange.createRequestBody(request, true));
+                    BufferSink bufferedRequestBody = IoKit.buffer(exchange.createRequestBody(request, true));
                     request.body().writeTo(bufferedRequestBody);
                 } else {
                     // Write the request body if the "Expect: 100-continue" expectation was met.
-                    BufferSink bufferedRequestBody = IoKit.buffer(
-                            exchange.createRequestBody(request, false));
+                    BufferSink bufferedRequestBody = IoKit.buffer(exchange.createRequestBody(request, false));
                     request.body().writeTo(bufferedRequestBody);
                     bufferedRequestBody.close();
                 }
@@ -114,22 +111,15 @@ public class CallServerInterceptor implements Interceptor {
             responseBuilder = exchange.readResponseHeaders(false);
         }
 
-        Response response = responseBuilder
-                .request(request)
-                .handshake(exchange.connection().handshake())
-                .sentRequestAtMillis(sentRequestMillis)
-                .receivedResponseAtMillis(System.currentTimeMillis())
-                .build();
+        Response response = responseBuilder.request(request).handshake(exchange.connection().handshake())
+                .sentRequestAtMillis(sentRequestMillis).receivedResponseAtMillis(System.currentTimeMillis()).build();
 
         int code = response.code();
         if (code == 100) {
             // server sent a 100-continue even though we did not request one.
             // try again to read the actual response
-            response = exchange.readResponseHeaders(false)
-                    .request(request)
-                    .handshake(exchange.connection().handshake())
-                    .sentRequestAtMillis(sentRequestMillis)
-                    .receivedResponseAtMillis(System.currentTimeMillis())
+            response = exchange.readResponseHeaders(false).request(request).handshake(exchange.connection().handshake())
+                    .sentRequestAtMillis(sentRequestMillis).receivedResponseAtMillis(System.currentTimeMillis())
                     .build();
 
             code = response.code();
@@ -139,13 +129,9 @@ public class CallServerInterceptor implements Interceptor {
 
         if (forWebSocket && code == 101) {
             // Connection is upgrading, but we need to ensure interceptors see a non-null response body.
-            response = response.newBuilder()
-                    .body(Builder.EMPTY_RESPONSE)
-                    .build();
+            response = response.newBuilder().body(Builder.EMPTY_RESPONSE).build();
         } else {
-            response = response.newBuilder()
-                    .body(exchange.openResponseBody(response))
-                    .build();
+            response = response.newBuilder().body(exchange.openResponseBody(response)).build();
         }
 
         if ("close".equalsIgnoreCase(response.request().header(HTTP.CONNECTION))
@@ -154,8 +140,7 @@ public class CallServerInterceptor implements Interceptor {
         }
 
         if ((code == 204 || code == 205) && response.body().length() > 0) {
-            throw new ProtocolException(
-                    "HTTP " + code + " had non-zero Content-Length: " + response.body().length());
+            throw new ProtocolException("HTTP " + code + " had non-zero Content-Length: " + response.body().length());
         }
 
         return response;

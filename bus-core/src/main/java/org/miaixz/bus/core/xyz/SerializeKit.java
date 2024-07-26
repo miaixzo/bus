@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.io.stream.FastByteArrayOutputStream;
@@ -34,8 +34,7 @@ import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 
 /**
- * 序列化工具类
- * 注意！此工具类依赖于JDK的序列化机制，某些版本的JDK中可能存在远程注入漏洞。
+ * 序列化工具类 注意！此工具类依赖于JDK的序列化机制，某些版本的JDK中可能存在远程注入漏洞。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,8 +42,7 @@ import java.io.Serializable;
 public class SerializeKit {
 
     /**
-     * 序列化后拷贝流的方式克隆
-     * 对象必须实现Serializable接口
+     * 序列化后拷贝流的方式克隆 对象必须实现Serializable接口
      *
      * @param <T> 对象类型
      * @param obj 被克隆对象
@@ -59,8 +57,7 @@ public class SerializeKit {
     }
 
     /**
-     * 序列化
-     * 对象必须实现Serializable接口
+     * 序列化 对象必须实现Serializable接口
      *
      * @param <T> 对象类型
      * @param obj 要被序列化的对象
@@ -76,8 +73,7 @@ public class SerializeKit {
     }
 
     /**
-     * 反序列化
-     * 对象必须实现Serializable接口
+     * 反序列化 对象必须实现Serializable接口
      *
      * <p>
      * 注意！！！ 此方法不会检查反序列化安全，可能存在反序列化漏洞风险！！！

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map;
 
 import java.util.Map;
@@ -33,8 +33,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
- * 自定义键和值转换的的Map
- * 继承此类后，通过实现{@link #customKey(Object)}和{@link #customValue(Object)}，按照给定规则加入到map或获取值。
+ * 自定义键和值转换的的Map 继承此类后，通过实现{@link #customKey(Object)}和{@link #customValue(Object)}，按照给定规则加入到map或获取值。
  *
  * @param <K> 键类型
  * @param <V> 值类型
@@ -46,8 +45,7 @@ public abstract class TransMap<K, V> extends MapWrapper<K, V> {
     private static final long serialVersionUID = -1L;
 
     /**
-     * 构造
-     * 通过传入一个Map从而确定Map的类型，子类需创建一个空的Map，而非传入一个已有Map，否则值可能会被修改
+     * 构造 通过传入一个Map从而确定Map的类型，子类需创建一个空的Map，而非传入一个已有Map，否则值可能会被修改
      *
      * @param mapFactory 空Map创建工厂
      */
@@ -56,8 +54,7 @@ public abstract class TransMap<K, V> extends MapWrapper<K, V> {
     }
 
     /**
-     * 构造
-     * 通过传入一个Map从而确定Map的类型，子类需创建一个空的Map，而非传入一个已有Map，否则值可能会被修改
+     * 构造 通过传入一个Map从而确定Map的类型，子类需创建一个空的Map，而非传入一个已有Map，否则值可能会被修改
      *
      * @param emptyMap Map 被包装的Map，必须为空Map，否则自定义key会无效
      */
@@ -122,7 +119,8 @@ public abstract class TransMap<K, V> extends MapWrapper<K, V> {
 
     @Override
     public V merge(final K key, final V value, final BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
-        return super.merge(customKey(key), customValue(value), (v1, v2) -> remappingFunction.apply(customValue(v1), customValue(v2)));
+        return super.merge(customKey(key), customValue(value),
+                (v1, v2) -> remappingFunction.apply(customValue(v1), customValue(v2)));
     }
 
     @Override

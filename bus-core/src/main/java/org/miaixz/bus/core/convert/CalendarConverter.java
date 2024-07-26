@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.xyz.StringKit;
@@ -75,7 +75,7 @@ public class CalendarConverter extends AbstractConverter {
 
         // Handle Long
         if (value instanceof Long) {
-            //此处使用自动拆装箱
+            // 此处使用自动拆装箱
             return org.miaixz.bus.core.center.date.Calendar.calendar((Long) value);
         }
 
@@ -84,9 +84,9 @@ public class CalendarConverter extends AbstractConverter {
         }
 
         final String valueStr = convertToString(value);
-        return org.miaixz.bus.core.center.date.Calendar.calendar(StringKit.isBlank(format) ?
-                org.miaixz.bus.core.center.date.Calendar.parse(valueStr) :
-                org.miaixz.bus.core.center.date.Calendar.parse(valueStr, format));
+        return org.miaixz.bus.core.center.date.Calendar
+                .calendar(StringKit.isBlank(format) ? org.miaixz.bus.core.center.date.Calendar.parse(valueStr)
+                        : org.miaixz.bus.core.center.date.Calendar.parse(valueStr, format));
     }
 
 }

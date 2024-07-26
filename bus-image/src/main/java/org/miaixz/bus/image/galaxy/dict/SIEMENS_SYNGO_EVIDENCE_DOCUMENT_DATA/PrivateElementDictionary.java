@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_EVIDENCE_DOCUMENT_DATA;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,26 +46,27 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.EvidenceDocumentTemplateVersion:
-            case PrivateTag.ImplementationVersion:
-                return VR.DS;
-            case PrivateTag.EvidenceDocumentTemplateName:
-            case PrivateTag.LogicalID:
-            case PrivateTag.OwnerClinicalTaskName:
-            case PrivateTag.OwnerTaskName:
-                return VR.LO;
-            case PrivateTag.ClinicalFindingData:
-            case PrivateTag.Metadata:
-            case PrivateTag.Predecessor:
-            case PrivateTag.ApplicationData:
-            case PrivateTag.OwnerSupportedTemplates:
-            case PrivateTag.VolumeCatalog:
-                return VR.OB;
+
+        case PrivateTag.EvidenceDocumentTemplateVersion:
+        case PrivateTag.ImplementationVersion:
+            return VR.DS;
+        case PrivateTag.EvidenceDocumentTemplateName:
+        case PrivateTag.LogicalID:
+        case PrivateTag.OwnerClinicalTaskName:
+        case PrivateTag.OwnerTaskName:
+            return VR.LO;
+        case PrivateTag.ClinicalFindingData:
+        case PrivateTag.Metadata:
+        case PrivateTag.Predecessor:
+        case PrivateTag.ApplicationData:
+        case PrivateTag.OwnerSupportedTemplates:
+        case PrivateTag.VolumeCatalog:
+            return VR.OB;
         }
         return VR.UN;
     }

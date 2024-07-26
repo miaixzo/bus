@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.stream;
 
 import org.miaixz.bus.core.io.ByteOrderMark;
@@ -45,15 +45,15 @@ import java.io.PushbackInputStream;
  * <li>FE FF = UTF-16, big-endian</li>
  * <li>FF FE = UTF-16, little-endian</li>
  * </ul>
- * 使用：
- * <code>
+ * 使用： <code>
  * String enc = "UTF-8"; // or NULL to use systemdefault
  * FileInputStream fis = new FileInputStream(file);
  * BOMInputStream uin = new BOMInputStream(fis, enc);
  * enc = uin.getCharset(); // check and skip possible BOM bytes
  * </code>
  * <p>
- * 参考： <a href="http://akini.mbnet.fi/java/unicodereader/UnicodeInputStream.java.txt">http://www.unicode.org/unicode/faq/utf_bom.html</a>
+ * 参考： <a href=
+ * "http://akini.mbnet.fi/java/unicodereader/UnicodeInputStream.java.txt">http://www.unicode.org/unicode/faq/utf_bom.html</a>
  * </p>
  *
  * @author Kimi Liu
@@ -125,8 +125,8 @@ public class BOMInputStream extends InputStream {
     }
 
     /**
-     * Read-ahead four bytes and check for BOM marks.
-     * Extra bytes are unread back to the stream, only BOM bytes are skipped.
+     * Read-ahead four bytes and check for BOM marks. Extra bytes are unread back to the stream, only BOM bytes are
+     * skipped.
      *
      * @throws IOException 读取引起的异常
      */

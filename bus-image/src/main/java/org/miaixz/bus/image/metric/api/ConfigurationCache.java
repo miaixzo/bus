@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.api;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -64,8 +64,7 @@ public abstract class ConfigurationCache<C, T> {
     public T get(String key) throws InternalException {
         long now = System.currentTimeMillis();
         CacheEntry<T> entry = cache.get(key);
-        if (entry == null
-                || (staleTimeout != 0 && now > entry.fetchTime + staleTimeout)) {
+        if (entry == null || (staleTimeout != 0 && now > entry.fetchTime + staleTimeout)) {
             T value = null;
             try {
                 value = find(conf, key);
@@ -77,8 +76,7 @@ public abstract class ConfigurationCache<C, T> {
         return entry.value;
     }
 
-    protected abstract T find(C conf, String key)
-            throws InternalException;
+    protected abstract T find(C conf, String key) throws InternalException;
 
     private static final class CacheEntry<T> {
         final T value;

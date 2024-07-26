@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map.multi;
 
 import org.miaixz.bus.core.center.function.SerConsumer3;
@@ -35,8 +35,7 @@ import org.miaixz.bus.core.xyz.MapKit;
 import java.util.*;
 
 /**
- * 表格数据结构定义
- * 此结构类似于Guava的Table接口，使用两个键映射到一个值，类似于表格结构。
+ * 表格数据结构定义 此结构类似于Guava的Table接口，使用两个键映射到一个值，类似于表格结构。
  *
  * @param <R> 行键类型
  * @param <C> 列键类型
@@ -47,16 +46,14 @@ import java.util.*;
 public interface Table<R, C, V> extends Iterable<Table.Cell<R, C, V>> {
 
     /**
-     * 是否包含指定行列的映射
-     * 行和列任意一个不存在都会返回{@code false}，如果行和列都存在，值为{@code null}，也会返回{@code true}
+     * 是否包含指定行列的映射 行和列任意一个不存在都会返回{@code false}，如果行和列都存在，值为{@code null}，也会返回{@code true}
      *
      * @param rowKey    行键
      * @param columnKey 列键
      * @return 是否包含映射
      */
     default boolean contains(final R rowKey, final C columnKey) {
-        return Optional.ofNullable(getRow(rowKey)).map((map) -> map.containsKey(columnKey))
-                .orElse(false);
+        return Optional.ofNullable(getRow(rowKey)).map((map) -> map.containsKey(columnKey)).orElse(false);
     }
 
     /**

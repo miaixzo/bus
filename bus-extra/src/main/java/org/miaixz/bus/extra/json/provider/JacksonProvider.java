@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.json.provider;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -54,8 +54,7 @@ public class JacksonProvider extends AbstractJsonProvider {
      * 构造
      */
     public JacksonProvider() {
-        objectMapper = new ObjectMapper()
-                .findAndRegisterModules()
+        objectMapper = new ObjectMapper().findAndRegisterModules()
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 

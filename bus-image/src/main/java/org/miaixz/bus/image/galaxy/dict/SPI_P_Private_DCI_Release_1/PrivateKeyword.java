@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SPI_P_Private_DCI_Release_1;
 
 /**
@@ -36,9 +36,9 @@ public class PrivateKeyword {
     public static final String PrivateCreator = "";
 
     public static String valueOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-                case PrivateTag.ECGTimeMapDataBitsAllocated:
+        case PrivateTag.ECGTimeMapDataBitsAllocated:
             return "ECGTimeMapDataBitsAllocated";
         case PrivateTag.ECGTimeMapDataBitsStored:
             return "ECGTimeMapDataBitsStored";

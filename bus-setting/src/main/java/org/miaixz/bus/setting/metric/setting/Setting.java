@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.setting.metric.setting;
 
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
@@ -35,8 +35,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import java.util.Map;
 
 /**
- * Setting工具类
- * 提供静态方法获取配置文件
+ * Setting工具类 提供静态方法获取配置文件
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,8 +48,7 @@ public class Setting {
     private static final Map<String, org.miaixz.bus.setting.Setting> CACHE_SETTING = new SafeConcurrentHashMap<>();
 
     /**
-     * 获取当前环境下的配置文件
-     * name可以为不包括扩展名的文件名（默认.setting为结尾），也可以是文件名全称
+     * 获取当前环境下的配置文件 name可以为不包括扩展名的文件名（默认.setting为结尾），也可以是文件名全称
      *
      * @param name 文件名，如果没有扩展名，默认为.setting
      * @return 当前环境下配置文件
@@ -66,8 +64,7 @@ public class Setting {
     }
 
     /**
-     * 获取给定路径找到的第一个配置文件
-     * name可以为不包括扩展名的文件名（默认.setting为结尾），也可以是文件名全称
+     * 获取给定路径找到的第一个配置文件 name可以为不包括扩展名的文件名（默认.setting为结尾），也可以是文件名全称
      *
      * @param names 文件名，如果没有扩展名，默认为.setting
      * @return 当前环境下配置文件
@@ -77,7 +74,7 @@ public class Setting {
             try {
                 return get(name);
             } catch (final InternalException e) {
-                //ignore
+                // ignore
             }
         }
         return null;

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.loader.classloader;
 
 import org.miaixz.bus.core.io.resource.Resource;
@@ -83,8 +83,7 @@ public class ResourceClassLoader<T extends Resource> extends SecureClassLoader {
     }
 
     /**
-     * 从给定资源中读取class的二进制流，然后生成类
-     * 如果这个类资源不存在，返回{@code null}
+     * 从给定资源中读取class的二进制流，然后生成类 如果这个类资源不存在，返回{@code null}
      *
      * @param name 类名
      * @return 定义的类

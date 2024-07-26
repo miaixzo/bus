@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.sensitive;
 
 import org.apache.ibatis.executor.statement.StatementHandler;
@@ -62,7 +62,8 @@ import java.util.Properties;
  * @version 6.0.6
  * @since Java 17+
  */
-@Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
+@Intercepts({
+        @Signature(type = StatementHandler.class, method = "prepare", args = { Connection.class, Integer.class }) })
 public class SensitiveStatementHandler extends AbstractSqlHandler implements Interceptor {
 
     /**
@@ -115,7 +116,8 @@ public class SensitiveStatementHandler extends AbstractSqlHandler implements Int
         this.type = properties.getProperty("type");
     }
 
-    private void handleParameters(Sensitive sensitive, Configuration configuration, BoundSql boundSql, Object param, SqlCommandType commandType) {
+    private void handleParameters(Sensitive sensitive, Configuration configuration, BoundSql boundSql, Object param,
+            SqlCommandType commandType) {
         Map<String, Object> newValues = new HashMap<>(Normal._16);
         MetaObject metaObject = configuration.newMetaObject(param);
 
@@ -141,7 +143,8 @@ public class SensitiveStatementHandler extends AbstractSqlHandler implements Int
                     if (ObjectKit.isNotEmpty(privacy) && StringKit.isNotEmpty(privacy.value())) {
                         if (Builder.ALL.equals(privacy.value()) || Builder.IN.equals(privacy.value())) {
                             Logger.debug("Write data encryption enabled ...");
-                            value = org.miaixz.bus.crypto.Builder.encrypt(this.type, this.key, value.toString(), Charset.UTF_8);
+                            value = org.miaixz.bus.crypto.Builder.encrypt(this.type, this.key, value.toString(),
+                                    Charset.UTF_8);
                         }
                     }
                 }

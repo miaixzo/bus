@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.aix.driver;
 
 import org.miaixz.bus.core.center.regex.Pattern;
@@ -73,7 +73,7 @@ public final class Lspv {
     }
 
     private static List<HWPartition> computeLogicalVolumes(String device,
-                                                           Map<String, Pair<Integer, Integer>> majMinMap) {
+            Map<String, Pair<Integer, Integer>> majMinMap) {
         List<HWPartition> partitions = new ArrayList<>();
         /*-
          $ lspv -L hdisk0

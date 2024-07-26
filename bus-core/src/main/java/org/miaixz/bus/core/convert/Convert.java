@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -55,9 +55,7 @@ import java.util.concurrent.TimeUnit;
 public class Convert {
 
     /**
-     * 转换为字符串
-     * 如果给定的值为null，或者转换失败，返回默认值
-     * 转换失败不会报错
+     * 转换为字符串 如果给定的值为null，或者转换失败，返回默认值 转换失败不会报错
      *
      * @param value        被转换的值
      * @param defaultValue 转换错误时的默认值
@@ -68,9 +66,7 @@ public class Convert {
     }
 
     /**
-     * 转换为字符串
-     * 如果给定的值为{@code null}，或者转换失败，返回默认值{@code null}
-     * 转换失败不会报错
+     * 转换为字符串 如果给定的值为{@code null}，或者转换失败，返回默认值{@code null} 转换失败不会报错
      *
      * @param value 被转换的值
      * @return 结果
@@ -80,9 +76,7 @@ public class Convert {
     }
 
     /**
-     * 转换为字符串
-     * 如果给定的值为{@code null}，或者转换失败，返回默认值"null"（即null这个字符串）
-     * 转换失败不会报错
+     * 转换为字符串 如果给定的值为{@code null}，或者转换失败，返回默认值"null"（即null这个字符串） 转换失败不会报错
      *
      * @param value 被转换的值
      * @return 结果
@@ -102,9 +96,7 @@ public class Convert {
     }
 
     /**
-     * 转换为字符
-     * 如果给定的值为null，或者转换失败，返回默认值
-     * 转换失败不会报错
+     * 转换为字符 如果给定的值为null，或者转换失败，返回默认值 转换失败不会报错
      *
      * @param value        被转换的值
      * @param defaultValue 转换错误时的默认值
@@ -115,9 +107,7 @@ public class Convert {
     }
 
     /**
-     * 转换为字符
-     * 如果给定的值为{@code null}，或者转换失败，返回默认值{@code null}
-     * 转换失败不会报错
+     * 转换为字符 如果给定的值为{@code null}，或者转换失败，返回默认值{@code null} 转换失败不会报错
      *
      * @param value 被转换的值
      * @return 结果
@@ -137,9 +127,7 @@ public class Convert {
     }
 
     /**
-     * 转换为byte
-     * 如果给定的值为{@code null}，或者转换失败，返回默认值
-     * 转换失败不会报错
+     * 转换为byte 如果给定的值为{@code null}，或者转换失败，返回默认值 转换失败不会报错
      *
      * @param value        被转换的值
      * @param defaultValue 转换错误时的默认值
@@ -150,9 +138,7 @@ public class Convert {
     }
 
     /**
-     * 转换为byte
-     * 如果给定的值为{@code null}，或者转换失败，返回默认值{@code null}
-     * 转换失败不会报错
+     * 转换为byte 如果给定的值为{@code null}，或者转换失败，返回默认值{@code null} 转换失败不会报错
      *
      * @param value 被转换的值
      * @return 结果
@@ -182,9 +168,7 @@ public class Convert {
     }
 
     /**
-     * 转换为Short
-     * 如果给定的值为{@code null}，或者转换失败，返回默认值
-     * 转换失败不会报错
+     * 转换为Short 如果给定的值为{@code null}，或者转换失败，返回默认值 转换失败不会报错
      *
      * @param value        被转换的值
      * @param defaultValue 转换错误时的默认值
@@ -195,9 +179,7 @@ public class Convert {
     }
 
     /**
-     * 转换为Short
-     * 如果给定的值为{@code null}，或者转换失败，返回默认值{@code null}
-     * 转换失败不会报错
+     * 转换为Short 如果给定的值为{@code null}，或者转换失败，返回默认值{@code null} 转换失败不会报错
      *
      * @param value 被转换的值
      * @return 结果
@@ -217,9 +199,7 @@ public class Convert {
     }
 
     /**
-     * 转换为Number
-     * 如果给定的值为空，或者转换失败，返回默认值
-     * 转换失败不会报错
+     * 转换为Number 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
      *
      * @param value        被转换的值
      * @param defaultValue 转换错误时的默认值
@@ -230,9 +210,7 @@ public class Convert {
     }
 
     /**
-     * 转换为Number
-     * 如果给定的值为空，或者转换失败，返回默认值{@code null}
-     * 转换失败不会报错
+     * 转换为Number 如果给定的值为空，或者转换失败，返回默认值{@code null} 转换失败不会报错
      *
      * @param value 被转换的值
      * @return 结果
@@ -252,9 +230,7 @@ public class Convert {
     }
 
     /**
-     * 转换为int
-     * 如果给定的值为空，或者转换失败，返回默认值
-     * 转换失败不会报错
+     * 转换为int 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
      *
      * @param value        被转换的值
      * @param defaultValue 转换错误时的默认值
@@ -265,9 +241,7 @@ public class Convert {
     }
 
     /**
-     * 转换为int
-     * 如果给定的值为{@code null}，或者转换失败，返回默认值{@code null}
-     * 转换失败不会报错
+     * 转换为int 如果给定的值为{@code null}，或者转换失败，返回默认值{@code null} 转换失败不会报错
      *
      * @param value 被转换的值
      * @return 结果
@@ -287,9 +261,7 @@ public class Convert {
     }
 
     /**
-     * 转换为long
-     * 如果给定的值为空，或者转换失败，返回默认值
-     * 转换失败不会报错
+     * 转换为long 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
      *
      * @param value        被转换的值
      * @param defaultValue 转换错误时的默认值
@@ -300,9 +272,7 @@ public class Convert {
     }
 
     /**
-     * 转换为long
-     * 如果给定的值为{@code null}，或者转换失败，返回默认值{@code null}
-     * 转换失败不会报错
+     * 转换为long 如果给定的值为{@code null}，或者转换失败，返回默认值{@code null} 转换失败不会报错
      *
      * @param value 被转换的值
      * @return 结果
@@ -322,9 +292,7 @@ public class Convert {
     }
 
     /**
-     * 转换为double
-     * 如果给定的值为空，或者转换失败，返回默认值
-     * 转换失败不会报错
+     * 转换为double 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
      *
      * @param value        被转换的值
      * @param defaultValue 转换错误时的默认值
@@ -335,9 +303,7 @@ public class Convert {
     }
 
     /**
-     * 转换为double
-     * 如果给定的值为空，或者转换失败，返回默认值{@code null}
-     * 转换失败不会报错
+     * 转换为double 如果给定的值为空，或者转换失败，返回默认值{@code null} 转换失败不会报错
      *
      * @param value 被转换的值
      * @return 结果
@@ -357,9 +323,7 @@ public class Convert {
     }
 
     /**
-     * 转换为Float
-     * 如果给定的值为空，或者转换失败，返回默认值
-     * 转换失败不会报错
+     * 转换为Float 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
      *
      * @param value        被转换的值
      * @param defaultValue 转换错误时的默认值
@@ -370,9 +334,7 @@ public class Convert {
     }
 
     /**
-     * 转换为Float
-     * 如果给定的值为空，或者转换失败，返回默认值{@code null}
-     * 转换失败不会报错
+     * 转换为Float 如果给定的值为空，或者转换失败，返回默认值{@code null} 转换失败不会报错
      *
      * @param value 被转换的值
      * @return 结果
@@ -392,9 +354,7 @@ public class Convert {
     }
 
     /**
-     * 转换为boolean
-     * String支持的值为：true、false、yes、ok、no，1,0 如果给定的值为空，或者转换失败，返回默认值
-     * 转换失败不会报错
+     * 转换为boolean String支持的值为：true、false、yes、ok、no，1,0 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
      *
      * @param value        被转换的值
      * @param defaultValue 转换错误时的默认值
@@ -405,9 +365,7 @@ public class Convert {
     }
 
     /**
-     * 转换为boolean
-     * 如果给定的值为空，或者转换失败，返回默认值{@code null}
-     * 转换失败不会报错
+     * 转换为boolean 如果给定的值为空，或者转换失败，返回默认值{@code null} 转换失败不会报错
      *
      * @param value 被转换的值
      * @return 结果
@@ -427,9 +385,7 @@ public class Convert {
     }
 
     /**
-     * 转换为BigInteger
-     * 如果给定的值为空，或者转换失败，返回默认值
-     * 转换失败不会报错
+     * 转换为BigInteger 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
      *
      * @param value        被转换的值
      * @param defaultValue 转换错误时的默认值
@@ -440,9 +396,7 @@ public class Convert {
     }
 
     /**
-     * 转换为BigInteger
-     * 如果给定的值为空，或者转换失败，返回默认值{@code null}
-     * 转换失败不会报错
+     * 转换为BigInteger 如果给定的值为空，或者转换失败，返回默认值{@code null} 转换失败不会报错
      *
      * @param value 被转换的值
      * @return 结果
@@ -452,9 +406,7 @@ public class Convert {
     }
 
     /**
-     * 转换为BigDecimal
-     * 如果给定的值为空，或者转换失败，返回默认值
-     * 转换失败不会报错
+     * 转换为BigDecimal 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
      *
      * @param value        被转换的值
      * @param defaultValue 转换错误时的默认值
@@ -465,9 +417,7 @@ public class Convert {
     }
 
     /**
-     * 转换为BigDecimal
-     * 如果给定的值为空，或者转换失败，返回null
-     * 转换失败不会报错
+     * 转换为BigDecimal 如果给定的值为空，或者转换失败，返回null 转换失败不会报错
      *
      * @param value 被转换的值
      * @return 结果
@@ -477,9 +427,7 @@ public class Convert {
     }
 
     /**
-     * 转换为Date
-     * 如果给定的值为空，或者转换失败，返回默认值
-     * 转换失败不会报错
+     * 转换为Date 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
      *
      * @param value        被转换的值
      * @param defaultValue 转换错误时的默认值
@@ -490,9 +438,7 @@ public class Convert {
     }
 
     /**
-     * LocalDateTime
-     * 如果给定的值为空，或者转换失败，返回默认值
-     * 转换失败不会报错
+     * LocalDateTime 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
      *
      * @param value        被转换的值
      * @param defaultValue 转换错误时的默认值
@@ -503,9 +449,7 @@ public class Convert {
     }
 
     /**
-     * 转换为LocalDateTime
-     * 如果给定的值为空，或者转换失败，返回{@code null}
-     * 转换失败不会报错
+     * 转换为LocalDateTime 如果给定的值为空，或者转换失败，返回{@code null} 转换失败不会报错
      *
      * @param value 被转换的值
      * @return 结果
@@ -515,9 +459,7 @@ public class Convert {
     }
 
     /**
-     * Instant
-     * 如果给定的值为空，或者转换失败，返回默认值
-     * 转换失败不会报错
+     * Instant 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
      *
      * @param value        被转换的值
      * @param defaultValue 转换错误时的默认值
@@ -528,9 +470,7 @@ public class Convert {
     }
 
     /**
-     * 转换为Date
-     * 如果给定的值为空，或者转换失败，返回{@code null}
-     * 转换失败不会报错
+     * 转换为Date 如果给定的值为空，或者转换失败，返回{@code null} 转换失败不会报错
      *
      * @param value 被转换的值
      * @return 结果
@@ -540,8 +480,7 @@ public class Convert {
     }
 
     /**
-     * 转换为Enum对象
-     * 如果给定的值为空，或者转换失败，返回默认值
+     * 转换为Enum对象 如果给定的值为空，或者转换失败，返回默认值
      *
      * @param <E>          枚举类型
      * @param clazz        Enum的Class
@@ -558,8 +497,7 @@ public class Convert {
     }
 
     /**
-     * 转换为Enum对象
-     * 如果给定的值为空，或者转换失败，返回默认值{@code null}
+     * 转换为Enum对象 如果给定的值为空，或者转换失败，返回默认值{@code null}
      *
      * @param <E>   枚举类型
      * @param clazz Enum的Class
@@ -578,7 +516,8 @@ public class Convert {
      * @param value          被转换的值
      * @return {@link Collection}
      */
-    public static Collection<?> toCollection(final Class<?> collectionType, final Class<?> elementType, final Object value) {
+    public static Collection<?> toCollection(final Class<?> collectionType, final Class<?> elementType,
+            final Object value) {
         return new CollectionConverter().convert(collectionType, elementType, value);
     }
 
@@ -645,7 +584,8 @@ public class Convert {
      * @param value     被转换的值
      * @return {@link Map}
      */
-    public static <K, V> Map<K, V> toMap(final Class<?> mapType, final Class<K> keyType, final Class<V> valueType, final Object value) {
+    public static <K, V> Map<K, V> toMap(final Class<?> mapType, final Class<K> keyType, final Class<V> valueType,
+            final Object value) {
         return (Map<K, V>) MapConverter.INSTANCE.convert(mapType, keyType, valueType, value);
     }
 
@@ -730,8 +670,7 @@ public class Convert {
     }
 
     /**
-     * 转换值为指定类型，不抛异常转换
-     * 当转换失败时返回{@code null}
+     * 转换值为指定类型，不抛异常转换 当转换失败时返回{@code null}
      *
      * @param <T>   目标类型
      * @param type  目标类型
@@ -743,8 +682,7 @@ public class Convert {
     }
 
     /**
-     * 转换值为指定类型，不抛异常转换
-     * 当转换失败时返回默认值
+     * 转换值为指定类型，不抛异常转换 当转换失败时返回默认值
      *
      * @param <T>          目标类型
      * @param type         目标类型
@@ -757,8 +695,7 @@ public class Convert {
     }
 
     /**
-     * 转换值为指定类型，可选是否不抛异常转换
-     * 当转换失败时返回默认值
+     * 转换值为指定类型，可选是否不抛异常转换 当转换失败时返回默认值
      *
      * @param <T>          目标类型
      * @param type         目标类型
@@ -767,7 +704,8 @@ public class Convert {
      * @param quietly      是否静默转换，true不抛异常
      * @return 转换后的值
      */
-    public static <T> T convertWithCheck(final Type type, final Object value, final T defaultValue, final boolean quietly) {
+    public static <T> T convertWithCheck(final Type type, final Object value, final T defaultValue,
+            final boolean quietly) {
         final CompositeConverter compositeConverter = CompositeConverter.getInstance();
         try {
             return compositeConverter.convert(type, value, defaultValue);
@@ -924,8 +862,7 @@ public class Convert {
     }
 
     /**
-     * 给定字符串转换字符编码
-     * 如果参数为空，则返回原字符串，不报错。
+     * 给定字符串转换字符编码 如果参数为空，则返回原字符串，不报错。
      *
      * @param text          被转码的字符串
      * @param sourceCharset 原字符集
@@ -1011,16 +948,14 @@ public class Convert {
      * @return 中文
      */
     public static String numberToChinese(final double number, final boolean isUseTraditional) {
-        return ChineseNumberFormatter.of()
-                .setUseTraditional(isUseTraditional)
-                .format(number);
+        return ChineseNumberFormatter.of().setUseTraditional(isUseTraditional).format(number);
     }
 
     /**
      * 数字中文表示形式转数字
      * <ul>
-     *     <li>一百一十二 - 112</li>
-     *     <li>一千零一十二 - 1012</li>
+     * <li>一百一十二 - 112</li>
+     * <li>一千零一十二 - 1012</li>
      * </ul>
      *
      * @param number 数字中文表示
@@ -1040,17 +975,11 @@ public class Convert {
         if (null == n) {
             return "零";
         }
-        return ChineseNumberFormatter.of()
-                .setUseTraditional(true)
-                .setMoneyMode(true)
-                .format(n.doubleValue());
+        return ChineseNumberFormatter.of().setUseTraditional(true).setMoneyMode(true).format(n.doubleValue());
     }
 
     /**
-     * 中文大写数字金额转换为数字，返回结果以元为单位的BigDecimal类型数字
-     * 如：
-     * “陆万柒仟伍佰伍拾陆元叁角贰分”返回“67556.32”
-     * “叁角贰分”返回“0.32”
+     * 中文大写数字金额转换为数字，返回结果以元为单位的BigDecimal类型数字 如： “陆万柒仟伍佰伍拾陆元叁角贰分”返回“67556.32” “叁角贰分”返回“0.32”
      *
      * @param chineseMoneyAmount 中文大写数字金额
      * @return 返回结果以元为单位的BigDecimal类型数字
@@ -1081,8 +1010,7 @@ public class Convert {
     }
 
     /**
-     * byte数组转short
-     * 默认以小端序转换
+     * byte数组转short 默认以小端序转换
      *
      * @param bytes byte数组
      * @return short值
@@ -1092,8 +1020,7 @@ public class Convert {
     }
 
     /**
-     * short转byte数组
-     * 默认以小端序转换
+     * short转byte数组 默认以小端序转换
      *
      * @param shortValue short值
      * @return byte数组
@@ -1103,8 +1030,7 @@ public class Convert {
     }
 
     /**
-     * byte[]转int值
-     * 默认以小端序转换
+     * byte[]转int值 默认以小端序转换
      *
      * @param bytes byte数组
      * @return int值
@@ -1114,8 +1040,7 @@ public class Convert {
     }
 
     /**
-     * int转byte数组
-     * 默认以小端序转换
+     * int转byte数组 默认以小端序转换
      *
      * @param intValue int值
      * @return byte数组
@@ -1125,9 +1050,8 @@ public class Convert {
     }
 
     /**
-     * long转byte数组
-     * 默认以小端序转换
-     * from: <a href="https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java">https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java</a>
+     * long转byte数组 默认以小端序转换 from: <a href=
+     * "https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java">https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java</a>
      *
      * @param longValue long值
      * @return byte数组
@@ -1137,9 +1061,8 @@ public class Convert {
     }
 
     /**
-     * byte数组转long
-     * 默认以小端序转换
-     * from: <a href="https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java">https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java</a>
+     * byte数组转long 默认以小端序转换 from: <a href=
+     * "https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java">https://stackoverflow.com/questions/4485128/how-do-i-convert-long-to-byte-and-back-in-java</a>
      *
      * @param bytes byte数组
      * @return long值

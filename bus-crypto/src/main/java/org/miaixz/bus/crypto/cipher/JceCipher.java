@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.cipher;
 
 import org.miaixz.bus.core.lang.Algorithm;
@@ -101,7 +101,8 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
      * @throws InvalidAlgorithmParameterException 无效算法参数
      * @throws InvalidKeyException                无效key
      */
-    public void init(final int mode, final JceParameters jceParameters) throws InvalidAlgorithmParameterException, InvalidKeyException {
+    public void init(final int mode, final JceParameters jceParameters)
+            throws InvalidAlgorithmParameterException, InvalidKeyException {
         final javax.crypto.Cipher cipher = this.raw;
         if (null != jceParameters.parameterSpec) {
             if (null != jceParameters.random) {

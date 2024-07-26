@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io;
 
 import org.miaixz.bus.core.convert.Convert;
@@ -56,17 +56,8 @@ public class CharsetDetector {
     private static final Charset[] DEFAULT_CHARSETS;
 
     static {
-        final String[] names = {
-                "UTF-8",
-                "GBK",
-                "GB2312",
-                "GB18030",
-                "UTF-16BE",
-                "UTF-16LE",
-                "UTF-16",
-                "BIG5",
-                "UNICODE",
-                "US-ASCII"};
+        final String[] names = { "UTF-8", "GBK", "GB2312", "GB18030", "UTF-16BE", "UTF-16LE", "UTF-16", "BIG5",
+                "UNICODE", "US-ASCII" };
         DEFAULT_CHARSETS = Convert.convert(Charset[].class, names);
     }
 
@@ -82,8 +73,7 @@ public class CharsetDetector {
     }
 
     /**
-     * 探测编码
-     * 注意：此方法会读取流的一部分，然后关闭流，如重复使用流，请使用支持reset方法的流
+     * 探测编码 注意：此方法会读取流的一部分，然后关闭流，如重复使用流，请使用支持reset方法的流
      *
      * @param in       流，使用后关闭此流
      * @param charsets 需要测试用的编码，null或空使用默认的编码数组
@@ -94,8 +84,7 @@ public class CharsetDetector {
     }
 
     /**
-     * 探测编码
-     * 注意：此方法会读取流的一部分，然后关闭流，如重复使用流，请使用支持reset方法的流
+     * 探测编码 注意：此方法会读取流的一部分，然后关闭流，如重复使用流，请使用支持reset方法的流
      *
      * @param bufferSize 自定义缓存大小，即每次检查的长度
      * @param in         流，使用后关闭此流

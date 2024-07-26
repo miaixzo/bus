@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.spring.env;
 
 import org.miaixz.bus.core.xyz.SetKit;
@@ -57,12 +57,11 @@ import java.util.Set;
 public class ScenesEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
 
     @Override
-    public void postProcessEnvironment(ConfigurableEnvironment environment,
-                                       SpringApplication application) {
+    public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
         ResourceLoader resourceLoader = application.getResourceLoader();
         resourceLoader = (resourceLoader != null) ? resourceLoader : new DefaultResourceLoader();
-        List<PropertySourceLoader> propertySourceLoaders = SpringFactoriesLoader.loadFactories(
-                PropertySourceLoader.class, getClass().getClassLoader());
+        List<PropertySourceLoader> propertySourceLoaders = SpringFactoriesLoader
+                .loadFactories(PropertySourceLoader.class, getClass().getClassLoader());
         String scenesValue = environment.getProperty(GeniusBuilder.BUS_SCENES);
         if (!StringKit.hasText(scenesValue)) {
             return;
@@ -81,14 +80,14 @@ public class ScenesEnvironmentPostProcessor implements EnvironmentPostProcessor,
         return Ordered.LOWEST_PRECEDENCE - 100;
     }
 
-    private List<SceneConfigDataReference> scenesResources(ResourceLoader resourceLoader, List<PropertySourceLoader> propertySourceLoaders,
-                                                           Set<String> scenes) {
+    private List<SceneConfigDataReference> scenesResources(ResourceLoader resourceLoader,
+            List<PropertySourceLoader> propertySourceLoaders, Set<String> scenes) {
         List<SceneConfigDataReference> resources = new ArrayList<>();
         if (scenes != null && !scenes.isEmpty()) {
             scenes.forEach(scene -> propertySourceLoaders.forEach(psl -> {
                 for (String extension : psl.getFileExtensions()) {
-                    String location =
-                            "classpath:/" + GeniusBuilder.BUS_SCENES_PATH + File.separator + scene + "." + extension;
+                    String location = "classpath:/" + GeniusBuilder.BUS_SCENES_PATH + File.separator + scene + "."
+                            + extension;
                     Resource resource = resourceLoader.getResource(location);
                     if (resource.exists()) {
                         resources.add(new SceneConfigDataReference(location, resource, psl));
@@ -99,25 +98,24 @@ public class ScenesEnvironmentPostProcessor implements EnvironmentPostProcessor,
         return resources;
     }
 
-
     /**
      * 将所有场景配置属性源处理到{@link org.springframework.core.env.Environment}。
      *
      * @param sceneConfigDataReferences 场景配置数据
      * @param environment               环境资源信息
      */
-    private void processAndApply(List<SceneConfigDataReference> sceneConfigDataReferences, ConfigurableEnvironment environment) {
-        for (SceneConfigDataReference sceneConfigDataReference :
-                sceneConfigDataReferences) {
+    private void processAndApply(List<SceneConfigDataReference> sceneConfigDataReferences,
+            ConfigurableEnvironment environment) {
+        for (SceneConfigDataReference sceneConfigDataReference : sceneConfigDataReferences) {
             try {
-                List<PropertySource<?>> propertySources = sceneConfigDataReference.propertySourceLoader.load(
-                        sceneConfigDataReference.getName(),
-                        sceneConfigDataReference.getResource());
+                List<PropertySource<?>> propertySources = sceneConfigDataReference.propertySourceLoader
+                        .load(sceneConfigDataReference.getName(), sceneConfigDataReference.getResource());
                 if (propertySources != null) {
                     propertySources.forEach(environment.getPropertySources()::addLast);
                 }
             } catch (IOException e) {
-                throw new IllegalStateException("IO error on loading scene config data from " + sceneConfigDataReference.name, e);
+                throw new IllegalStateException(
+                        "IO error on loading scene config data from " + sceneConfigDataReference.name, e);
             }
         }
     }
@@ -128,8 +126,7 @@ public class ScenesEnvironmentPostProcessor implements EnvironmentPostProcessor,
         private Resource resource;
         private PropertySourceLoader propertySourceLoader;
 
-        public SceneConfigDataReference(String name, Resource resource,
-                                        PropertySourceLoader propertySourceLoader) {
+        public SceneConfigDataReference(String name, Resource resource, PropertySourceLoader propertySourceLoader) {
             this.name = name;
             this.resource = resource;
             this.propertySourceLoader = propertySourceLoader;

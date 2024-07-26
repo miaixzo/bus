@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.validate;
 
 import org.miaixz.bus.core.instance.Instances;
@@ -87,9 +87,7 @@ public class Builder extends Validator {
     public static final String _TRUE = "True";
 
     /**
-     * 被校验对象
-     * 每次都创建一个新的对象,避免线程问题
-     * 可以使用 {@link ThreadLocal} 简单优化
+     * 被校验对象 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param <T>    对象
      * @param object 原始对象
@@ -100,9 +98,7 @@ public class Builder extends Validator {
     }
 
     /**
-     * 被校验对象
-     * 每次都创建一个新的对象,避免线程问题
-     * 可以使用 {@link ThreadLocal} 简单优化
+     * 被校验对象 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param <T>     对象
      * @param object  原始对象
@@ -116,8 +112,7 @@ public class Builder extends Validator {
     /**
      * 被校验对象
      * <p>
-     * 每次都创建一个新的对象,避免线程问题
-     * 可以使用 {@link ThreadLocal} 简单优化
+     * 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param <T>         对象
      * @param object      原始对象
@@ -131,8 +126,7 @@ public class Builder extends Validator {
     /**
      * 被校验对象
      * <p>
-     * 每次都创建一个新的对象,避免线程问题
-     * 可以使用 {@link ThreadLocal} 简单优化
+     * 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param <T>         对象
      * @param object      原始对象
@@ -147,8 +141,7 @@ public class Builder extends Validator {
     /**
      * 被校验对象
      * <p>
-     * 每次都创建一个新的对象,避免线程问题
-     * 可以使用 {@link ThreadLocal} 简单优化
+     * 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param <T>         对象
      * @param object      原始对象

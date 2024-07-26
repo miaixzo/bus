@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org sandao and other contributors.             ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket;
 
 import org.miaixz.bus.socket.buffer.WriteBuffer;
@@ -87,8 +87,7 @@ public abstract class Session {
     public abstract ByteBuffer readBuffer();
 
     /**
-     * 强制关闭当前Session
-     * 若此时还存留待输出的数据，则会导致该部分数据丢失
+     * 强制关闭当前Session 若此时还存留待输出的数据，则会导致该部分数据丢失
      */
     public final void close() {
         close(true);
@@ -125,7 +124,6 @@ public abstract class Session {
     public boolean isInvalid() {
         return status != SESSION_STATUS_ENABLED;
     }
-
 
     /**
      * 获取附件对象
@@ -166,9 +164,7 @@ public abstract class Session {
     public abstract InetSocketAddress getRemoteAddress() throws IOException;
 
     /**
-     * 获得数据输入流对象
-     * faster模式下调用该方法会触发UnsupportedOperationException异常。
-     * Handler采用异步处理消息的方式时，调用该方法可能会出现异常。
+     * 获得数据输入流对象 faster模式下调用该方法会触发UnsupportedOperationException异常。 Handler采用异步处理消息的方式时，调用该方法可能会出现异常。
      *
      * @return 输入流
      * @throws IOException IO异常

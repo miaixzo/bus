@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.builder;
 
 import org.apache.ibatis.executor.keygen.Jdbc3KeyGenerator;
@@ -58,20 +58,23 @@ public class SelectKeyBuilder {
      * @param executeBefore 执行策略
      * @param identity      自增信息
      */
-    public static void newSelectKeyMappedStatement(MappedStatement ms, EntityColumn column, Class<?> entityClass, Boolean executeBefore, String identity) {
+    public static void newSelectKeyMappedStatement(MappedStatement ms, EntityColumn column, Class<?> entityClass,
+            Boolean executeBefore, String identity) {
         String keyId = ms.getId() + SelectKeyGenerator.SELECT_KEY_SUFFIX;
         if (ms.getConfiguration().hasKeyGenerator(keyId)) {
             return;
         }
         Configuration configuration = ms.getConfiguration();
         KeyGenerator keyGenerator;
-        String IDENTITY = (column.getGenerator() == null || Normal.EMPTY.equals(column.getGenerator())) ? identity : column.getGenerator();
+        String IDENTITY = (column.getGenerator() == null || Normal.EMPTY.equals(column.getGenerator())) ? identity
+                : column.getGenerator();
         if ("JDBC".equalsIgnoreCase(IDENTITY)) {
             keyGenerator = new Jdbc3KeyGenerator();
         } else {
             SqlSource sqlSource = new RawSqlSource(configuration, IDENTITY, entityClass);
 
-            MappedStatement.Builder statementBuilder = new MappedStatement.Builder(configuration, keyId, sqlSource, SqlCommandType.SELECT);
+            MappedStatement.Builder statementBuilder = new MappedStatement.Builder(configuration, keyId, sqlSource,
+                    SqlCommandType.SELECT);
             statementBuilder.resource(ms.getResource());
             statementBuilder.fetchSize(null);
             statementBuilder.statementType(StatementType.STATEMENT);
@@ -85,20 +88,13 @@ public class SelectKeyBuilder {
             statementBuilder.timeout(configuration.getDefaultStatementTimeout());
 
             List<ParameterMapping> parameterMappings = new ArrayList<>();
-            ParameterMap.Builder inlineParameterMapBuilder = new ParameterMap.Builder(
-                    configuration,
-                    statementBuilder.id() + "-Inline",
-                    entityClass,
-                    parameterMappings);
+            ParameterMap.Builder inlineParameterMapBuilder = new ParameterMap.Builder(configuration,
+                    statementBuilder.id() + "-Inline", entityClass, parameterMappings);
             statementBuilder.parameterMap(inlineParameterMapBuilder.build());
 
             List<ResultMap> resultMaps = new ArrayList<>();
-            ResultMap.Builder inlineResultMapBuilder = new ResultMap.Builder(
-                    configuration,
-                    statementBuilder.id() + "-Inline",
-                    column.getJavaType(),
-                    new ArrayList<>(),
-                    null);
+            ResultMap.Builder inlineResultMapBuilder = new ResultMap.Builder(configuration,
+                    statementBuilder.id() + "-Inline", column.getJavaType(), new ArrayList<>(), null);
             resultMaps.add(inlineResultMapBuilder.build());
             statementBuilder.resultMaps(resultMaps);
             statementBuilder.resultSetType(null);
@@ -111,15 +107,16 @@ public class SelectKeyBuilder {
             try {
                 configuration.addMappedStatement(statement);
             } catch (Exception e) {
-                //ignore
+                // ignore
             }
             MappedStatement keyStatement = configuration.getMappedStatement(keyId, false);
             // 如果单独设置了 order，使用 column 提供的，否则使用全局的
-            keyGenerator = new SelectKeyGenerator(keyStatement, column.getOrder() != ORDER.DEFAULT ? (column.getOrder() == ORDER.BEFORE) : executeBefore);
+            keyGenerator = new SelectKeyGenerator(keyStatement,
+                    column.getOrder() != ORDER.DEFAULT ? (column.getOrder() == ORDER.BEFORE) : executeBefore);
             try {
                 configuration.addKeyGenerator(keyId, keyGenerator);
             } catch (Exception e) {
-                //ignore
+                // ignore
             }
         }
         try {
@@ -128,7 +125,7 @@ public class SelectKeyBuilder {
             msObject.setValue("keyProperties", column.getTable().getKeyProperties());
             msObject.setValue("keyColumns", column.getTable().getKeyColumns());
         } catch (Exception e) {
-            //ignore
+            // ignore
         }
     }
 

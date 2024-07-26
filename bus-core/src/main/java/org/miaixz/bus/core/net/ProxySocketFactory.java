@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.net;
 
 import javax.net.SocketFactory;
@@ -82,7 +82,8 @@ public class ProxySocketFactory extends SocketFactory {
     }
 
     @Override
-    public Socket createSocket(final InetAddress address, final int port, final InetAddress localAddr, final int localPort) throws IOException {
+    public Socket createSocket(final InetAddress address, final int port, final InetAddress localAddr,
+            final int localPort) throws IOException {
         if (proxy != null) {
             final Socket s = new Socket(proxy);
             s.bind(new InetSocketAddress(localAddr, localPort));
@@ -103,7 +104,8 @@ public class ProxySocketFactory extends SocketFactory {
     }
 
     @Override
-    public Socket createSocket(final String host, final int port, final InetAddress localAddr, final int localPort) throws IOException {
+    public Socket createSocket(final String host, final int port, final InetAddress localAddr, final int localPort)
+            throws IOException {
         if (proxy != null) {
             final Socket s = new Socket(proxy);
             s.bind(new InetSocketAddress(localAddr, localPort));

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.thread;
 
 import org.miaixz.bus.core.center.date.StopWatch;
@@ -65,8 +65,7 @@ public class ConcurrencyTester implements Closeable {
     }
 
     /**
-     * 执行测试
-     * 执行测试后不会关闭线程池，可以调用{@link #close()}释放线程池
+     * 执行测试 执行测试后不会关闭线程池，可以调用{@link #close()}释放线程池
      *
      * @param runnable 要测试的内容
      * @return this
@@ -75,10 +74,7 @@ public class ConcurrencyTester implements Closeable {
         this.sf.clearWorker();
 
         timeInterval.start();
-        this.sf
-                .addRepeatWorker(runnable)
-                .setBeginAtSameTime(true)
-                .start();
+        this.sf.addRepeatWorker(runnable).setBeginAtSameTime(true).start();
 
         timeInterval.stop();
         this.interval = timeInterval.getLastTaskTimeMillis();
@@ -89,8 +85,8 @@ public class ConcurrencyTester implements Closeable {
      * 重置测试器，重置包括：
      *
      * <ul>
-     *     <li>清空worker</li>
-     *     <li>重置计时器</li>
+     * <li>清空worker</li>
+     * <li>重置计时器</li>
      * </ul>
      *
      * @return this

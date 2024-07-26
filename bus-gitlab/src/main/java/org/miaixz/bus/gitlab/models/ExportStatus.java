@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -49,9 +49,9 @@ public class ExportStatus implements Serializable {
         NONE, STARTED, FINISHED,
 
         /**
-         * Represents that the export process has been completed successfully and the platform is
-         * performing some actions on the resulted file. For example, sending an email notifying
-         * the user to download the file, uploading the exported file to a web server, etc.
+         * Represents that the export process has been completed successfully and the platform is performing some
+         * actions on the resulted file. For example, sending an email notifying the user to download the file,
+         * uploading the exported file to a web server, etc.
          */
         AFTER_EXPORT_ACTION;
 

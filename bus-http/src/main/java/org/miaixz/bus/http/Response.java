@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
@@ -44,8 +44,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * HTTP响应。该类的实例不是不可变的:
- * 响应体是一次性的值，可能只使用一次，然后关闭。所有其他属性都是不可变的.
+ * HTTP响应。该类的实例不是不可变的: 响应体是一次性的值，可能只使用一次，然后关闭。所有其他属性都是不可变的.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -85,14 +84,14 @@ public class Response implements Closeable {
     }
 
     /**
-     * The wire-level request that initiated this HTTP response. This is not necessarily the same
-     * request issued by the application:
+     * The wire-level request that initiated this HTTP response. This is not necessarily the same request issued by the
+     * application:
      *
      * <ul>
-     *     <li>It may be transformed by the HTTP client. For example, the client may copy headers like
-     *         {@code Content-Length} from the request body.
-     *     <li>It may be the request generated in response to an HTTP redirect or authentication
-     *         challenge. In this case the request URL may be different than the initial request URL.
+     * <li>It may be transformed by the HTTP client. For example, the client may copy headers like
+     * {@code Content-Length} from the request body.
+     * <li>It may be the request generated in response to an HTTP redirect or authentication challenge. In this case the
+     * request URL may be different than the initial request URL.
      * </ul>
      */
     public Request request() {
@@ -114,8 +113,8 @@ public class Response implements Closeable {
     }
 
     /**
-     * Returns true if the code is in [200..300), which means the request was successfully received,
-     * understood, and accepted.
+     * Returns true if the code is in [200..300), which means the request was successfully received, understood, and
+     * accepted.
      */
     public boolean isSuccessful() {
         return code >= 200 && code < 300;
@@ -129,8 +128,8 @@ public class Response implements Closeable {
     }
 
     /**
-     * Returns the TLS handshake of the connection that carried this response, or null if the response
-     * was received without TLS.
+     * Returns the TLS handshake of the connection that carried this response, or null if the response was received
+     * without TLS.
      */
     public Handshake handshake() {
         return handshake;
@@ -154,24 +153,25 @@ public class Response implements Closeable {
     }
 
     /**
-     * Returns the trailers after the HTTP response, which may be empty. It is an error to call this
-     * before the entire HTTP response body has been consumed.
+     * Returns the trailers after the HTTP response, which may be empty. It is an error to call this before the entire
+     * HTTP response body has been consumed.
      */
     public Headers trailers() throws IOException {
-        if (exchange == null) throw new IllegalStateException("trailers not available");
+        if (exchange == null)
+            throw new IllegalStateException("trailers not available");
         return exchange.trailers();
     }
 
     /**
-     * Peeks up to {@code byteCount} bytes from the response body and returns them as a new response
-     * body. If fewer than {@code byteCount} bytes are in the response body, the full response body is
-     * returned. If more than {@code byteCount} bytes are in the response body, the returned value
-     * will be truncated to {@code byteCount} bytes.
+     * Peeks up to {@code byteCount} bytes from the response body and returns them as a new response body. If fewer than
+     * {@code byteCount} bytes are in the response body, the full response body is returned. If more than
+     * {@code byteCount} bytes are in the response body, the returned value will be truncated to {@code byteCount}
+     * bytes.
      * <p>
      * It is an error to call this method after the body has been consumed.
      *
-     * <strong>Warning:</strong> this method loads the requested bytes into memory. Most
-     * applications should set a modest limit on {@code byteCount}, such as 1 MiB.
+     * <strong>Warning:</strong> this method loads the requested bytes into memory. Most applications should set a
+     * modest limit on {@code byteCount}, such as 1 MiB.
      */
     public ResponseBody peekBody(long byteCount) throws IOException {
         BufferSource peeked = body.source().peek();
@@ -182,12 +182,12 @@ public class Response implements Closeable {
     }
 
     /**
-     * Returns a non-null value if this response was passed to {@link Callback#onResponse} or returned
-     * from {@link NewCall#execute()}. Response bodies must be {@linkplain ResponseBody closed} and may
-     * be consumed only once.
+     * Returns a non-null value if this response was passed to {@link Callback#onResponse} or returned from
+     * {@link NewCall#execute()}. Response bodies must be {@linkplain ResponseBody closed} and may be consumed only
+     * once.
      * <p>
-     * This always returns null on responses returned from {@link #cacheResponse}, {@link
-     * #networkResponse}, and {@link #priorResponse()}.
+     * This always returns null on responses returned from {@link #cacheResponse}, {@link #networkResponse}, and
+     * {@link #priorResponse()}.
      */
     public ResponseBody body() {
         return body;
@@ -202,56 +202,53 @@ public class Response implements Closeable {
      */
     public boolean isRedirect() {
         switch (code) {
-            case HTTP.HTTP_PERM_REDIRECT:
-            case HTTP.HTTP_TEMP_REDIRECT:
-            case HTTP.HTTP_MULT_CHOICE:
-            case HTTP.HTTP_MOVED_PERM:
-            case HTTP.HTTP_MOVED_TEMP:
-            case HTTP.HTTP_SEE_OTHER:
-                return true;
-            default:
-                return false;
+        case HTTP.HTTP_PERM_REDIRECT:
+        case HTTP.HTTP_TEMP_REDIRECT:
+        case HTTP.HTTP_MULT_CHOICE:
+        case HTTP.HTTP_MOVED_PERM:
+        case HTTP.HTTP_MOVED_TEMP:
+        case HTTP.HTTP_SEE_OTHER:
+            return true;
+        default:
+            return false;
         }
     }
 
     /**
-     * Returns the raw response received from the network. Will be null if this response didn't use
-     * the network, such as when the response is fully cached. The body of the returned response
-     * should not be read.
+     * Returns the raw response received from the network. Will be null if this response didn't use the network, such as
+     * when the response is fully cached. The body of the returned response should not be read.
      */
     public Response networkResponse() {
         return networkResponse;
     }
 
     /**
-     * Returns the raw response received from the cache. Will be null if this response didn't use the
-     * cache. For conditional get requests the cache response and network response may both be
-     * non-null. The body of the returned response should not be read.
+     * Returns the raw response received from the cache. Will be null if this response didn't use the cache. For
+     * conditional get requests the cache response and network response may both be non-null. The body of the returned
+     * response should not be read.
      */
     public Response cacheResponse() {
         return cacheResponse;
     }
 
     /**
-     * Returns the response for the HTTP redirect or authorization challenge that triggered this
-     * response, or null if this response wasn't triggered by an automatic retry. The body of the
-     * returned response should not be read because it has already been consumed by the redirecting
-     * client.
+     * Returns the response for the HTTP redirect or authorization challenge that triggered this response, or null if
+     * this response wasn't triggered by an automatic retry. The body of the returned response should not be read
+     * because it has already been consumed by the redirecting client.
      */
     public Response priorResponse() {
         return priorResponse;
     }
 
     /**
-     * Returns the RFC 7235 authorization challenges appropriate for this response's code. If the
-     * response code is 401 unauthorized, this returns the "WWW-Authenticate" challenges. If the
-     * response code is 407 proxy unauthorized, this returns the "Proxy-Authenticate" challenges.
-     * Otherwise this returns an empty list of challenges.
+     * Returns the RFC 7235 authorization challenges appropriate for this response's code. If the response code is 401
+     * unauthorized, this returns the "WWW-Authenticate" challenges. If the response code is 407 proxy unauthorized,
+     * this returns the "Proxy-Authenticate" challenges. Otherwise this returns an empty list of challenges.
      * <p>
-     * If a challenge uses the {@code token68} variant instead of auth params, there is exactly one
-     * auth param in the challenge at key {@code null}. Invalid headers and challenges are ignored.
-     * No semantic validation is done, for example that {@code Basic} auth must have a {@code realm}
-     * auth param, this is up to the caller that interprets these challenges.
+     * If a challenge uses the {@code token68} variant instead of auth params, there is exactly one auth param in the
+     * challenge at key {@code null}. Invalid headers and challenges are ignored. No semantic validation is done, for
+     * example that {@code Basic} auth must have a {@code realm} auth param, this is up to the caller that interprets
+     * these challenges.
      */
     public List<Challenge> challenges() {
         String responseField;
@@ -266,8 +263,8 @@ public class Response implements Closeable {
     }
 
     /**
-     * Returns the cache control directives for this response. This is never null, even if this
-     * response contains no {@code Cache-Control} header.
+     * Returns the cache control directives for this response. This is never null, even if this response contains no
+     * {@code Cache-Control} header.
      */
     public CacheControl cacheControl() {
         CacheControl result = cacheControl;
@@ -275,18 +272,18 @@ public class Response implements Closeable {
     }
 
     /**
-     * Returns a {@linkplain System#currentTimeMillis() timestamp} taken immediately before Http
-     * transmitted the initiating request over the network. If this response is being served from the
-     * cache then this is the timestamp of the original request.
+     * Returns a {@linkplain System#currentTimeMillis() timestamp} taken immediately before Http transmitted the
+     * initiating request over the network. If this response is being served from the cache then this is the timestamp
+     * of the original request.
      */
     public long sentRequestAtMillis() {
         return sentRequestAtMillis;
     }
 
     /**
-     * Returns a {@linkplain System#currentTimeMillis() timestamp} taken immediately after Http
-     * received this response's headers from the network. If this response is being served from the
-     * cache then this is the timestamp of the original response.
+     * Returns a {@linkplain System#currentTimeMillis() timestamp} taken immediately after Http received this response's
+     * headers from the network. If this response is being served from the cache then this is the timestamp of the
+     * original response.
      */
     public long receivedResponseAtMillis() {
         return receivedResponseAtMillis;
@@ -295,9 +292,8 @@ public class Response implements Closeable {
     /**
      * Closes the response body. Equivalent to {@code body().close()}.
      * <p>
-     * It is an error to close a response that is not eligible for a body. This includes the
-     * responses returned from {@link #cacheResponse}, {@link #networkResponse}, and {@link
-     * #priorResponse()}.
+     * It is an error to close a response that is not eligible for a body. This includes the responses returned from
+     * {@link #cacheResponse}, {@link #networkResponse}, and {@link #priorResponse()}.
      */
     @Override
     public void close() {
@@ -309,14 +305,7 @@ public class Response implements Closeable {
 
     @Override
     public String toString() {
-        return "Response{protocol="
-                + protocol
-                + ", code="
-                + code
-                + ", message="
-                + message
-                + ", url="
-                + request.url()
+        return "Response{protocol=" + protocol + ", code=" + code + ", message=" + message + ", url=" + request.url()
                 + Symbol.C_BRACE_RIGHT;
     }
 
@@ -381,8 +370,8 @@ public class Response implements Closeable {
         }
 
         /**
-         * Sets the header named {@code name} to {@code value}. If this request already has any headers
-         * with that name, they are all replaced.
+         * Sets the header named {@code name} to {@code value}. If this request already has any headers with that name,
+         * they are all replaced.
          */
         public Builder header(String name, String value) {
             headers.set(name, value);
@@ -390,8 +379,8 @@ public class Response implements Closeable {
         }
 
         /**
-         * Adds a header with {@code name} and {@code value}. Prefer this method for multiply-valued
-         * headers like "Set-Cookie".
+         * Adds a header with {@code name} and {@code value}. Prefer this method for multiply-valued headers like
+         * "Set-Cookie".
          */
         public Builder addHeader(String name, String value) {
             headers.add(name, value);
@@ -420,13 +409,15 @@ public class Response implements Closeable {
         }
 
         public Builder networkResponse(Response networkResponse) {
-            if (networkResponse != null) checkSupportResponse("networkResponse", networkResponse);
+            if (networkResponse != null)
+                checkSupportResponse("networkResponse", networkResponse);
             this.networkResponse = networkResponse;
             return this;
         }
 
         public Builder cacheResponse(Response cacheResponse) {
-            if (cacheResponse != null) checkSupportResponse("cacheResponse", cacheResponse);
+            if (cacheResponse != null)
+                checkSupportResponse("cacheResponse", cacheResponse);
             this.cacheResponse = cacheResponse;
             return this;
         }

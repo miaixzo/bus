@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.loader;
 
 import org.miaixz.bus.core.io.resource.Resource;
@@ -73,8 +73,10 @@ public class JarLoader extends ResourceLoader implements Loader {
     }
 
     public Enumeration<Resource> load(String path, boolean recursively, Filter filter) {
-        while (path.startsWith(Symbol.SLASH)) path = path.substring(1);
-        while (path.endsWith(Symbol.SLASH)) path = path.substring(0, path.length() - 1);
+        while (path.startsWith(Symbol.SLASH))
+            path = path.substring(1);
+        while (path.endsWith(Symbol.SLASH))
+            path = path.substring(0, path.length() - 1);
         return new Enumerator(context, jarFile, path, recursively, null != filter ? filter : Filters.ALWAYS);
     }
 
@@ -106,9 +108,8 @@ public class JarLoader extends ResourceLoader implements Loader {
                     continue;
                 }
                 String name = jarEntry.getName();
-                if (name.equals(path)
-                        || (recursively && name.startsWith(folder))
-                        || (!recursively && name.startsWith(folder) && name.indexOf(Symbol.SLASH, folder.length()) < 0)) {
+                if (name.equals(path) || (recursively && name.startsWith(folder)) || (!recursively
+                        && name.startsWith(folder) && name.indexOf(Symbol.SLASH, folder.length()) < 0)) {
                     try {
                         URL url = new URL(context, UrlEncoder.encodeAll(name, Charset.UTF_8));
                         if (filter.filtrate(name, url)) {

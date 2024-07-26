@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.nlp.provider.hanlp;
 
 import com.hankcs.hanlp.seg.common.Term;
@@ -35,8 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * HanLP分词结果实现
- * 项目地址：https://github.com/hankcs/HanLP
+ * HanLP分词结果实现 项目地址：https://github.com/hankcs/HanLP
  *
  * @author Kimi Liu
  * @since Java 17+

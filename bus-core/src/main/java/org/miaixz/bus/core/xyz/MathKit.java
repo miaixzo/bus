@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -43,9 +43,7 @@ import java.util.Locale;
 import java.util.Objects;
 
 /**
- * 数字工具类
- * 对于精确值计算应该使用 {@link BigDecimal}
- * JDK7中<strong>BigDecimal(double val)</strong>构造方法的结果有一定的不可预知性，例如：
+ * 数字工具类 对于精确值计算应该使用 {@link BigDecimal} JDK7中<strong>BigDecimal(double val)</strong>构造方法的结果有一定的不可预知性，例如：
  *
  * <pre>
  * new BigDecimal(0.1)和 BigDecimal.valueOf(0.1)
@@ -70,14 +68,12 @@ public class MathKit extends NumberValidator {
     /**
      * 0-20对应的阶乘，超过20的阶乘会超过Long.MAX_VALUE
      */
-    private static final long[] FACTORIALS = new long[]{
-            1L, 1L, 2L, 6L, 24L, 120L, 720L, 5040L, 40320L, 362880L, 3628800L, 39916800L, 479001600L, 6227020800L,
-            87178291200L, 1307674368000L, 20922789888000L, 355687428096000L, 6402373705728000L, 121645100408832000L,
-            2432902008176640000L};
+    private static final long[] FACTORIALS = new long[] { 1L, 1L, 2L, 6L, 24L, 120L, 720L, 5040L, 40320L, 362880L,
+            3628800L, 39916800L, 479001600L, 6227020800L, 87178291200L, 1307674368000L, 20922789888000L,
+            355687428096000L, 6402373705728000L, 121645100408832000L, 2432902008176640000L };
 
     /**
-     * 提供精确的加法运算
-     * 如果传入多个值为null或者空，则返回0
+     * 提供精确的加法运算 如果传入多个值为null或者空，则返回0
      *
      * @param values 多个被加值
      * @return 和
@@ -99,13 +95,10 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 提供精确的加法运算
-     * 如果传入多个值为null或者空，则返回
+     * 提供精确的加法运算 如果传入多个值为null或者空，则返回
      *
      * <p>
-     * 需要注意的是，在不同Locale下，数字的表示形式也是不同的，例如：
-     * 德国、荷兰、比利时、丹麦、意大利、罗马尼亚和欧洲大多地区使用`,`区分小数
-     * 也就是说，在这些国家地区，1.20表示120，而非1.2。
+     * 需要注意的是，在不同Locale下，数字的表示形式也是不同的，例如： 德国、荷兰、比利时、丹麦、意大利、罗马尼亚和欧洲大多地区使用`,`区分小数 也就是说，在这些国家地区，1.20表示120，而非1.2。
      * </p>
      *
      * @param values 多个被加值
@@ -128,8 +121,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 提供精确的减法运算
-     * 如果传入多个值为null或者空，则返回0
+     * 提供精确的减法运算 如果传入多个值为null或者空，则返回0
      *
      * @param values 多个被减值
      * @return 差
@@ -151,8 +143,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 提供精确的减法运算
-     * 如果传入多个值为null或者空，则返回0
+     * 提供精确的减法运算 如果传入多个值为null或者空，则返回0
      *
      * @param values 多个被减值
      * @return 差
@@ -174,8 +165,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 提供精确的乘法运算
-     * 如果传入多个值为null或者空，则返回0
+     * 提供精确的乘法运算 如果传入多个值为null或者空，则返回0
      *
      * @param values 多个被乘值
      * @return 积
@@ -202,8 +192,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 提供精确的乘法运算
-     * 如果传入多个值为null或者空，则返回0
+     * 提供精确的乘法运算 如果传入多个值为null或者空，则返回0
      *
      * @param values 多个被乘值
      * @return 积
@@ -322,9 +311,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 保留固定位数小数
-     * 采用四舍五入策略 {@link RoundingMode#HALF_UP}
-     * 例如保留2位小数：123.456789 = 123.46
+     * 保留固定位数小数 采用四舍五入策略 {@link RoundingMode#HALF_UP} 例如保留2位小数：123.456789 = 123.46
      *
      * @param v     值
      * @param scale 保留小数位数
@@ -335,9 +322,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 保留固定位数小数
-     * 采用四舍五入策略 {@link RoundingMode#HALF_UP}
-     * 例如保留2位小数：123.456789 = 123.46
+     * 保留固定位数小数 采用四舍五入策略 {@link RoundingMode#HALF_UP} 例如保留2位小数：123.456789 = 123.46
      *
      * @param v     值
      * @param scale 保留小数位数
@@ -348,9 +333,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 保留固定位数小数
-     * 采用四舍五入策略 {@link RoundingMode#HALF_UP}
-     * 例如保留2位小数：123.456789 = 123.46
+     * 保留固定位数小数 采用四舍五入策略 {@link RoundingMode#HALF_UP} 例如保留2位小数：123.456789 = 123.46
      *
      * @param number 数字值
      * @param scale  保留小数位数
@@ -361,9 +344,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 保留固定位数小数
-     * 采用四舍五入策略 {@link RoundingMode#HALF_UP}
-     * 例如保留2位小数：123.456789 = 123.46
+     * 保留固定位数小数 采用四舍五入策略 {@link RoundingMode#HALF_UP} 例如保留2位小数：123.456789 = 123.46
      *
      * @param numberStr 数字值的字符串表现形式
      * @param scale     保留小数位数
@@ -374,8 +355,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 保留固定位数小数
-     * 例如保留四位小数：123.456789 = 123.4567
+     * 保留固定位数小数 例如保留四位小数：123.456789 = 123.4567
      *
      * @param v            值
      * @param scale        保留小数位数
@@ -387,8 +367,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 保留固定位数小数
-     * 例如保留四位小数：123.456789 = 123.4567
+     * 保留固定位数小数 例如保留四位小数：123.456789 = 123.4567
      *
      * @param v            值
      * @param scale        保留小数位数
@@ -400,8 +379,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 保留固定位数小数
-     * 例如保留四位小数：123.456789 = 123.4567
+     * 保留固定位数小数 例如保留四位小数：123.456789 = 123.4567
      *
      * @param number       数字值
      * @param scale        保留小数位数，如果传入小于0，则默认0
@@ -423,8 +401,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 保留固定位数小数
-     * 例如保留四位小数：123.456789 = 123.4567
+     * 保留固定位数小数 例如保留四位小数：123.456789 = 123.4567
      *
      * @param numberStr    数字值的字符串表现形式
      * @param scale        保留小数位数
@@ -470,8 +447,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 格式化double
-     * 对 {@link DecimalFormat} 做封装
+     * 格式化double 对 {@link DecimalFormat} 做封装
      *
      * @param pattern 格式 格式中主要以 # 和 0 两种占位符号来指定数字长度。0 表示如果位数不足则以 0 填充，# 表示只要有可能就把数字拉上这个位置。
      *                <ul>
@@ -493,8 +469,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 格式化double
-     * 对 {@link DecimalFormat} 做封装
+     * 格式化double 对 {@link DecimalFormat} 做封装
      *
      * @param pattern 格式 格式中主要以 # 和 0 两种占位符号来指定数字长度。0 表示如果位数不足则以 0 填充，# 表示只要有可能就把数字拉上这个位置。
      *                <ul>
@@ -515,8 +490,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 格式化double
-     * 对 {@link DecimalFormat} 做封装
+     * 格式化double 对 {@link DecimalFormat} 做封装
      *
      * @param pattern 格式 格式中主要以 # 和 0 两种占位符号来指定数字长度。0 表示如果位数不足则以 0 填充，# 表示只要有可能就把数字拉上这个位置。
      *                <ul>
@@ -537,8 +511,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 格式化double
-     * 对 {@link DecimalFormat} 做封装
+     * 格式化double 对 {@link DecimalFormat} 做封装
      *
      * @param pattern      格式 格式中主要以 # 和 0 两种占位符号来指定数字长度。0 表示如果位数不足则以 0 填充，# 表示只要有可能就把数字拉上这个位置。
      *                     <ul>
@@ -613,8 +586,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 生成一个数字列表
-     * 自动判定正序反序
+     * 生成一个数字列表 自动判定正序反序
      *
      * @param startInclude 开始的数字（包含）
      * @param stopIncluded 结束的数字（包含）
@@ -625,8 +597,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 生成一个数字列表
-     * 自动判定正序反序
+     * 生成一个数字列表 自动判定正序反序
      *
      * @param startInclude 开始的数字（包含）
      * @param stopIncluded 结束的数字（不包含）
@@ -678,7 +649,8 @@ public class MathKit extends NumberValidator {
      * @param values       集合
      * @return 集合
      */
-    public static Collection<Integer> appendRange(final int startInclude, final int stopInclude, int step, final Collection<Integer> values) {
+    public static Collection<Integer> appendRange(final int startInclude, final int stopInclude, int step,
+            final Collection<Integer> values) {
         if (startInclude < stopInclude) {
             step = Math.abs(step);
         } else if (startInclude > stopInclude) {
@@ -731,14 +703,12 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 比较数字值是否相等，相等返回{@code true}
-     * 需要注意的是{@link BigDecimal}需要特殊处理
-     * BigDecimal使用compareTo方式判断，因为使用equals方法也判断小数位数，如2.0和2.00就不相等，
-     * 此方法判断值相等时忽略精度的，即0.00 == 0
+     * 比较数字值是否相等，相等返回{@code true} 需要注意的是{@link BigDecimal}需要特殊处理
+     * BigDecimal使用compareTo方式判断，因为使用equals方法也判断小数位数，如2.0和2.00就不相等， 此方法判断值相等时忽略精度的，即0.00 == 0
      *
      * <ul>
-     *     <li>如果用户提供两个Number都是{@link BigDecimal}，则通过调用{@link BigDecimal#compareTo(BigDecimal)}方法来判断是否相等</li>
-     *     <li>其他情况调用{@link Number#equals(Object)}比较</li>
+     * <li>如果用户提供两个Number都是{@link BigDecimal}，则通过调用{@link BigDecimal#compareTo(BigDecimal)}方法来判断是否相等</li>
+     * <li>其他情况调用{@link Number#equals(Object)}比较</li>
      * </ul>
      *
      * @param number1 数字1
@@ -756,8 +726,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 数字转字符串
-     * 调用{@link Number#toString()}，并去除尾小数点儿后多余的0
+     * 数字转字符串 调用{@link Number#toString()}，并去除尾小数点儿后多余的0
      *
      * @param number       A Number
      * @param defaultValue 如果number参数为{@code null}，返回此默认值
@@ -768,8 +737,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 数字转字符串
-     * 调用{@link Number#toString()}或 {@link BigDecimal#toPlainString()}，并去除尾小数点儿后多余的0
+     * 数字转字符串 调用{@link Number#toString()}或 {@link BigDecimal#toPlainString()}，并去除尾小数点儿后多余的0
      *
      * @param number A Number
      * @return A String.
@@ -779,8 +747,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 数字转字符串
-     * 调用{@link Number#toString()}或 {@link BigDecimal#toPlainString()}，并去除尾小数点儿后多余的0
+     * 数字转字符串 调用{@link Number#toString()}或 {@link BigDecimal#toPlainString()}，并去除尾小数点儿后多余的0
      *
      * @param number               A Number
      * @param isStripTrailingZeros 是否去除末尾多余0，例如5.0返回5
@@ -811,8 +778,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * {@link BigDecimal}数字转字符串
-     * 调用{@link BigDecimal#toPlainString()}，并去除尾小数点儿后多余的0
+     * {@link BigDecimal}数字转字符串 调用{@link BigDecimal#toPlainString()}，并去除尾小数点儿后多余的0
      *
      * @param bigDecimal A {@link BigDecimal}
      * @return A String.
@@ -822,8 +788,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * {@link BigDecimal}数字转字符串
-     * 调用{@link BigDecimal#toPlainString()}，可选去除尾小数点儿后多余的0
+     * {@link BigDecimal}数字转字符串 调用{@link BigDecimal#toPlainString()}，可选去除尾小数点儿后多余的0
      *
      * @param bigDecimal           A {@link BigDecimal}
      * @param isStripTrailingZeros 是否去除末尾多余0，例如5.0返回5
@@ -838,9 +803,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 数字转{@link BigDecimal}
-     * Float、Double等有精度问题，转换为字符串后再转换
-     * null转换为0
+     * 数字转{@link BigDecimal} Float、Double等有精度问题，转换为字符串后再转换 null转换为0
      *
      * @param number 数字
      * @return {@link BigDecimal}
@@ -865,9 +828,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 数字转{@link BigDecimal}
-     * null或""或空白符抛出{@link IllegalArgumentException}异常
-     * "NaN"转为{@link BigDecimal#ZERO}
+     * 数字转{@link BigDecimal} null或""或空白符抛出{@link IllegalArgumentException}异常 "NaN"转为{@link BigDecimal#ZERO}
      *
      * @param numberStr 数字字符串
      * @return {@link BigDecimal}
@@ -889,8 +850,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 数字转{@link BigInteger}
-     * null或"NaN"转换为0
+     * 数字转{@link BigInteger} null或"NaN"转换为0
      *
      * @param number 数字
      * @return {@link BigInteger}
@@ -909,8 +869,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 数字转{@link BigInteger}
-     * null或""或空白符转换为0
+     * 数字转{@link BigInteger} null或""或空白符转换为0
      *
      * @param numberStr 数字字符串
      * @return {@link BigInteger}
@@ -930,6 +889,7 @@ public class MathKit extends NumberValidator {
 
     /**
      * 计算等份个数
+     * 
      * <pre>
      *     (每份2)12   34  57
      *     (每份3)123  456 7
@@ -1037,8 +997,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 创建{@link BigInteger}，支持16进制、10进制和8进制，如果传入空白串返回null
-     * from Apache Common Lang
+     * 创建{@link BigInteger}，支持16进制、10进制和8进制，如果传入空白串返回null from Apache Common Lang
      *
      * @param numberStr 数字字符串
      * @return {@link BigInteger}
@@ -1048,8 +1007,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 判断两个数字是否相邻，例如1和2相邻，1和3不相邻
-     * 判断方法为做差取绝对值判断是否为1
+     * 判断两个数字是否相邻，例如1和2相邻，1和3不相邻 判断方法为做差取绝对值判断是否为1
      *
      * @param number1 数字1
      * @param number2 数字2
@@ -1060,8 +1018,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 判断两个数字是否相邻，例如1和2相邻，1和3不相邻
-     * 判断方法为做差取绝对值判断是否为1
+     * 判断两个数字是否相邻，例如1和2相邻，1和3不相邻 判断方法为做差取绝对值判断是否为1
      *
      * @param number1 数字1
      * @param number2 数字2
@@ -1072,8 +1029,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 把给定的总数平均分成N份，返回每份的个数
-     * 当除以分数有余数时每份+1
+     * 把给定的总数平均分成N份，返回每份的个数 当除以分数有余数时每份+1
      *
      * @param total     总数
      * @param partCount 份数
@@ -1084,8 +1040,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 把给定的总数平均分成N份，返回每份的个数
-     * 如果isPlusOneWhenHasRem为true，则当除以分数有余数时每份+1，否则丢弃余数部分
+     * 把给定的总数平均分成N份，返回每份的个数 如果isPlusOneWhenHasRem为true，则当除以分数有余数时每份+1，否则丢弃余数部分
      *
      * @param total               总数
      * @param partCount           份数
@@ -1112,8 +1067,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 提供精确的幂运算
-     * 如果n为负数，则返回1/a的-n次方，默认四舍五入
+     * 提供精确的幂运算 如果n为负数，则返回1/a的-n次方，默认四舍五入
      *
      * @param number 底数
      * @param n      指数，如果为负数，则返回1/a的-n次方
@@ -1124,8 +1078,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 提供精确的幂运算
-     * 如果n为负数，则返回1/a的-n次方，默认四舍五入
+     * 提供精确的幂运算 如果n为负数，则返回1/a的-n次方，默认四舍五入
      *
      * @param number       底数
      * @param scale        保留小数位数
@@ -1133,7 +1086,8 @@ public class MathKit extends NumberValidator {
      * @param n            指数，如果为负数，则返回1/a的-n次方
      * @return 幂的积
      */
-    public static BigDecimal pow(final BigDecimal number, final int n, final int scale, final RoundingMode roundingMode) {
+    public static BigDecimal pow(final BigDecimal number, final int n, final int scale,
+            final RoundingMode roundingMode) {
         if (n < 0) {
             // a的n次方，如果n为负数，则返回1/a的-n次方
             return BigDecimal.ONE.divide(pow(number, -n), scale, roundingMode);
@@ -1335,8 +1289,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 将指定字符串转换为{@link Number }
-     * 此方法不支持科学计数法
+     * 将指定字符串转换为{@link Number } 此方法不支持科学计数法
      *
      * @param numberStr    Number字符串
      * @param defaultValue 如果解析失败, 将返回defaultValue, 允许null
@@ -1354,13 +1307,10 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 将指定字符串转换为{@link Number} 对象
-     * 此方法不支持科学计数法
+     * 将指定字符串转换为{@link Number} 对象 此方法不支持科学计数法
      *
      * <p>
-     * 需要注意的是，在不同Locale下，数字的表示形式也是不同的，例如：
-     * 德国、荷兰、比利时、丹麦、意大利、罗马尼亚和欧洲大多地区使用`,`区分小数
-     * 也就是说，在这些国家地区，1.20表示120，而非1.2。
+     * 需要注意的是，在不同Locale下，数字的表示形式也是不同的，例如： 德国、荷兰、比利时、丹麦、意大利、罗马尼亚和欧洲大多地区使用`,`区分小数 也就是说，在这些国家地区，1.20表示120，而非1.2。
      * </p>
      *
      * @param numberStr Number字符串
@@ -1372,13 +1322,10 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 将指定字符串转换为{@link Number} 对象
-     * 此方法不支持科学计数法
+     * 将指定字符串转换为{@link Number} 对象 此方法不支持科学计数法
      *
      * <p>
-     * 需要注意的是，在不同Locale下，数字的表示形式也是不同的，例如：
-     * 德国、荷兰、比利时、丹麦、意大利、罗马尼亚和欧洲大多地区使用`,`区分小数
-     * 也就是说，在这些国家地区，1.20表示120，而非1.2。
+     * 需要注意的是，在不同Locale下，数字的表示形式也是不同的，例如： 德国、荷兰、比利时、丹麦、意大利、罗马尼亚和欧洲大多地区使用`,`区分小数 也就是说，在这些国家地区，1.20表示120，而非1.2。
      * </p>
      *
      * @param numberStr Number字符串
@@ -1391,9 +1338,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 检查是否为有效的数字
-     * 检查Double和Float是否为无限大，或者Not a Number
-     * 非数字类型和{@code null}将返回{@code false}
+     * 检查是否为有效的数字 检查Double和Float是否为无限大，或者Not a Number 非数字类型和{@code null}将返回{@code false}
      *
      * @param number 被检查类型
      * @return 检查结果，非数字类型和Null将返回true
@@ -1411,8 +1356,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 检查是否为有效的数字
-     * 检查double否为无限大，或者Not a Number（NaN）
+     * 检查是否为有效的数字 检查double否为无限大，或者Not a Number（NaN）
      *
      * @param number 被检查double
      * @return 检查结果
@@ -1422,8 +1366,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 检查是否为有效的数字
-     * 检查double否为无限大，或者Not a Number（NaN）
+     * 检查是否为有效的数字 检查double否为无限大，或者Not a Number（NaN）
      *
      * @param number 被检查double
      * @return 检查结果
@@ -1433,10 +1376,10 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 计算数学表达式的值，只支持加减乘除和取余
-     * 如：
+     * 计算数学表达式的值，只支持加减乘除和取余 如：
+     * 
      * <pre class="code">
-     *   calculate("(0*1--3)-5/-4-(3*(-2.13))") - 10.64
+     * calculate("(0*1--3)-5/-4-(3*(-2.13))") - 10.64
      * </pre>
      *
      * @param expression 数学表达式
@@ -1447,8 +1390,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * Number值转换为double
-     * float强制转换存在精度问题，此方法避免精度丢失
+     * Number值转换为double float强制转换存在精度问题，此方法避免精度丢失
      *
      * @param value 被转换的float值
      * @return double值
@@ -1484,11 +1426,11 @@ public class MathKit extends NumberValidator {
     /**
      * 判断给定数字是否为0
      * <ul>
-     *     <li>如果是{@link Byte}、{@link Short}、{@link Integer}、{@link Long}，直接转为long和0L比较</li>
-     *     <li>如果是{@link BigInteger}，使用{@link BigInteger#equals(Object)}</li>
-     *     <li>如果是{@link Float}，转为float与0f比较</li>
-     *     <li>如果是{@link Double}，转为double与0d比较</li>
-     *     <li>其它情况转为{@link BigDecimal}与{@link BigDecimal#ZERO}比较大小（使用compare）</li>
+     * <li>如果是{@link Byte}、{@link Short}、{@link Integer}、{@link Long}，直接转为long和0L比较</li>
+     * <li>如果是{@link BigInteger}，使用{@link BigInteger#equals(Object)}</li>
+     * <li>如果是{@link Float}，转为float与0f比较</li>
+     * <li>如果是{@link Double}，转为double与0d比较</li>
+     * <li>其它情况转为{@link BigDecimal}与{@link BigDecimal#ZERO}比较大小（使用compare）</li>
      * </ul>
      *
      * @param n 数字
@@ -1497,10 +1439,7 @@ public class MathKit extends NumberValidator {
     public static boolean isZero(final Number n) {
         Assert.notNull(n);
 
-        if (n instanceof Byte ||
-                n instanceof Short ||
-                n instanceof Integer ||
-                n instanceof Long) {
+        if (n instanceof Byte || n instanceof Short || n instanceof Integer || n instanceof Long) {
             return 0L == n.longValue();
         } else if (n instanceof BigInteger) {
             return equals(BigInteger.ZERO, n);
@@ -1513,16 +1452,15 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 整数转罗马数字
-     * 限制：[1,3999]的正整数
+     * 整数转罗马数字 限制：[1,3999]的正整数
      * <ul>
-     *     <li>I 1</li>
-     *     <li>V 5</li>
-     *     <li>X 10</li>
-     *     <li>L 50</li>
-     *     <li>C 100</li>
-     *     <li>D 500</li>
-     *     <li>M 1000</li>
+     * <li>I 1</li>
+     * <li>V 5</li>
+     * <li>X 10</li>
+     * <li>L 50</li>
+     * <li>C 100</li>
+     * <li>D 500</li>
+     * <li>M 1000</li>
      * </ul>
      *
      * @param num [1,3999]的正整数
@@ -1659,7 +1597,8 @@ public class MathKit extends NumberValidator {
         Assert.notNull(start, "Factorial start must be not null!");
         Assert.notNull(end, "Factorial end must be not null!");
         if (start.compareTo(BigInteger.ZERO) < 0 || end.compareTo(BigInteger.ZERO) < 0) {
-            throw new IllegalArgumentException(StringKit.format("Factorial start and end both must be > 0, but got start={}, end={}", start, end));
+            throw new IllegalArgumentException(
+                    StringKit.format("Factorial start and end both must be > 0, but got start={}, end={}", start, end));
         }
 
         if (start.equals(BigInteger.ZERO)) {
@@ -1692,7 +1631,8 @@ public class MathKit extends NumberValidator {
     public static long factorial(final long start, final long end) {
         // 负数没有阶乘
         if (start < 0 || end < 0) {
-            throw new IllegalArgumentException(StringKit.format("Factorial start and end both must be >= 0, but got start={}, end={}", start, end));
+            throw new IllegalArgumentException(StringKit
+                    .format("Factorial start and end both must be >= 0, but got start={}, end={}", start, end));
         }
         if (0L == start || start == end) {
             return 1L;
@@ -1728,14 +1668,14 @@ public class MathKit extends NumberValidator {
      */
     public static long factorial(final long n) {
         if (n < 0 || n > 20) {
-            throw new IllegalArgumentException(StringKit.format("Factorial must have n >= 0 and n <= 20 for n!, but got n = {}", n));
+            throw new IllegalArgumentException(
+                    StringKit.format("Factorial must have n >= 0 and n <= 20 for n!, but got n = {}", n));
         }
         return FACTORIALS[(int) n];
     }
 
     /**
-     * 平方根算法
-     * 推荐使用 {@link Math#sqrt(double)}
+     * 平方根算法 推荐使用 {@link Math#sqrt(double)}
      *
      * @param x 值
      * @return 平方根
@@ -1757,8 +1697,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 可以用于计算双色球、大乐透注数的方法
-     * 比如大乐透35选5可以这样调用processMultiple(7,5); 就是数学中的：C75=7*6/2*1
+     * 可以用于计算双色球、大乐透注数的方法 比如大乐透35选5可以这样调用processMultiple(7,5); 就是数学中的：C75=7*6/2*1
      *
      * @param selectNum 选中小球个数
      * @param minNum    最少要选中多少个小球
@@ -1771,9 +1710,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 最大公约数
-     * 见：https://stackoverflow.com/questions/4009198/java-get-greatest-common-divisor
-     * 来自Guava的IntMath.gcd
+     * 最大公约数 见：https://stackoverflow.com/questions/4009198/java-get-greatest-common-divisor 来自Guava的IntMath.gcd
      *
      * @param a 第一个值
      * @param b 第二个值
@@ -1781,9 +1718,8 @@ public class MathKit extends NumberValidator {
      */
     public static int gcd(int a, int b) {
         /*
-         * The reason we require both arguments to be >= 0 is because otherwise, what do you return on
-         * gcd(0, Integer.MIN_VALUE)? BigInteger.gcd would return positive 2^31, but positive 2^31
-         * isn't an int.
+         * The reason we require both arguments to be >= 0 is because otherwise, what do you return on gcd(0,
+         * Integer.MIN_VALUE)? BigInteger.gcd would return positive 2^31, but positive 2^31 isn't an int.
          */
         Assert.isTrue(a >= 0, "a must be >= 0");
         Assert.isTrue(b >= 0, "b must be >= 0");
@@ -1795,8 +1731,8 @@ public class MathKit extends NumberValidator {
             return a; // similar logic
         }
         /*
-         * Uses the binary GCD algorithm; see http://en.wikipedia.org/wiki/Binary_GCD_algorithm.
-         * This is >40% faster than the Euclidean algorithm in benchmarks.
+         * Uses the binary GCD algorithm; see http://en.wikipedia.org/wiki/Binary_GCD_algorithm. This is >40% faster
+         * than the Euclidean algorithm in benchmarks.
          */
         final int aTwos = Integer.numberOfTrailingZeros(a);
         a >>= aTwos; // divide out all 2s
@@ -1804,7 +1740,7 @@ public class MathKit extends NumberValidator {
         b >>= bTwos; // divide out all 2s
         while (a != b) { // both a, b are odd
             // The data to the binary GCD algorithm is as follows:
-            // Both a and b are odd.  Assume a > b; then gcd(a - b, b) = gcd(a, b).
+            // Both a and b are odd. Assume a > b; then gcd(a - b, b) = gcd(a, b).
             // But in gcd(a - b, b), a - b is even and b is odd, so we can divide out powers of two.
 
             // We bend over backwards to avoid branching, adapting a technique from

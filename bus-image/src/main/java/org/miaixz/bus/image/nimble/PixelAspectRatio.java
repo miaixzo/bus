@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 import org.miaixz.bus.image.Tag;
@@ -37,28 +37,22 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 public class PixelAspectRatio {
 
     public static float forImage(Attributes attrs) {
-        return forImage(attrs, Tag.PixelAspectRatio,
-                Tag.PixelSpacing,
-                Tag.ImagerPixelSpacing,
+        return forImage(attrs, Tag.PixelAspectRatio, Tag.PixelSpacing, Tag.ImagerPixelSpacing,
                 Tag.NominalScannedPixelSpacing);
     }
 
     public static float forPresentationState(Attributes attrs) {
-        return forImage(attrs, Tag.PresentationPixelAspectRatio,
-                Tag.PresentationPixelSpacing);
+        return forImage(attrs, Tag.PresentationPixelAspectRatio, Tag.PresentationPixelSpacing);
     }
 
-    private static float forImage(Attributes attrs, int aspectRatioTag,
-                                  int... pixelSpacingTags) {
+    private static float forImage(Attributes attrs, int aspectRatioTag, int... pixelSpacingTags) {
         int[] ratio = attrs.getInts(aspectRatioTag);
-        if (ratio != null && ratio.length == 2
-                && ratio[0] > 0 && ratio[1] > 0)
+        if (ratio != null && ratio.length == 2 && ratio[0] > 0 && ratio[1] > 0)
             return (float) ratio[0] / ratio[1];
 
         for (int pixelSpacingTag : pixelSpacingTags) {
             float[] spaces = attrs.getFloats(pixelSpacingTag);
-            if (spaces != null && spaces.length == 2
-                    && spaces[0] > 0 && spaces[1] > 0)
+            if (spaces != null && spaces.length == 2 && spaces[0] > 0 && spaces[1] > 0)
                 return spaces[0] / spaces[1];
         }
         return 1f;

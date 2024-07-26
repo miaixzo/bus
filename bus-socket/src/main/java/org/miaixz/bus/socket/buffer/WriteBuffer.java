@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org sandao and other contributors.             ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket.buffer;
 
 import java.io.IOException;
@@ -232,8 +232,7 @@ public final class WriteBuffer extends OutputStream {
     }
 
     /**
-     * 执行异步输出操作
-     * 此方法会将指定的字节流异步写入，并在完成时通知提供的消费者。
+     * 执行异步输出操作 此方法会将指定的字节流异步写入，并在完成时通知提供的消费者。
      *
      * @param bytes    待输出的字节流。
      * @param offset   字节流中开始输出的偏移量。
@@ -242,7 +241,8 @@ public final class WriteBuffer extends OutputStream {
      * @throws IOException           如果在写入过程中发生I/O错误。
      * @throws WritePendingException 如果已有写入操作未完成，此时再调用此方法会抛出此异常。
      */
-    public synchronized void write(byte[] bytes, int offset, int len, Consumer<WriteBuffer> consumer) throws IOException {
+    public synchronized void write(byte[] bytes, int offset, int len, Consumer<WriteBuffer> consumer)
+            throws IOException {
         if (completionConsumer != null) {
             throw new WritePendingException();
         }

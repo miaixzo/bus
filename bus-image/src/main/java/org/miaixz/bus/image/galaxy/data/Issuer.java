@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.data;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -46,8 +46,7 @@ public class Issuer implements Serializable {
     private String universalEntityID;
     private String universalEntityIDType;
 
-    public Issuer(String localNamespaceEntityID, String universalEntityID,
-                  String universalEntityIDType) {
+    public Issuer(String localNamespaceEntityID, String universalEntityID, String universalEntityIDType) {
         this.localNamespaceEntityID = localNamespaceEntityID;
         this.universalEntityID = universalEntityID;
         this.universalEntityIDType = universalEntityIDType;
@@ -69,21 +68,17 @@ public class Issuer implements Serializable {
     }
 
     public Issuer(String issuerOfPatientID, Attributes qualifiers) {
-        this(issuerOfPatientID,
-                qualifiers != null ? qualifiers.getString(Tag.UniversalEntityID) : null,
+        this(issuerOfPatientID, qualifiers != null ? qualifiers.getString(Tag.UniversalEntityID) : null,
                 qualifiers != null ? qualifiers.getString(Tag.UniversalEntityIDType) : null);
     }
 
     public Issuer(Attributes issuerItem) {
-        this(issuerItem.getString(Tag.LocalNamespaceEntityID),
-                issuerItem.getString(Tag.UniversalEntityID),
+        this(issuerItem.getString(Tag.LocalNamespaceEntityID), issuerItem.getString(Tag.UniversalEntityID),
                 issuerItem.getString(Tag.UniversalEntityIDType));
     }
 
     public Issuer(Issuer other) {
-        this(other.getLocalNamespaceEntityID(),
-                other.getUniversalEntityID(),
-                other.getUniversalEntityIDType());
+        this(other.getLocalNamespaceEntityID(), other.getUniversalEntityID(), other.getUniversalEntityIDType());
     }
 
     public static Issuer fromIssuerOfPatientID(Attributes attrs) {
@@ -95,9 +90,7 @@ public class Issuer implements Serializable {
             if (universalEntityID != null && universalEntityIDType != null)
                 return new Issuer(issuerOfPatientID, universalEntityID, universalEntityIDType);
         }
-        return (issuerOfPatientID != null)
-                ? new Issuer(issuerOfPatientID, null, null)
-                : null;
+        return (issuerOfPatientID != null) ? new Issuer(issuerOfPatientID, null, null) : null;
     }
 
     public static Issuer valueOf(Attributes issuerItem) {
@@ -110,9 +103,7 @@ public class Issuer implements Serializable {
 
         return (universalEntityID != null && universalEntityIDType != null)
                 ? new Issuer(localNamespaceEntityID, universalEntityID, universalEntityIDType)
-                : localNamespaceEntityID != null
-                ? new Issuer(localNamespaceEntityID, null, null)
-                : null;
+                : localNamespaceEntityID != null ? new Issuer(localNamespaceEntityID, null, null) : null;
     }
 
     private static String unescapeHL7Separators(String s) {
@@ -121,8 +112,7 @@ public class Issuer implements Serializable {
 
     private void validate() {
         if (localNamespaceEntityID == null && universalEntityID == null)
-            throw new IllegalArgumentException(
-                    "Missing Local Namespace Entity ID or Universal Entity ID");
+            throw new IllegalArgumentException("Missing Local Namespace Entity ID or Universal Entity ID");
         if (universalEntityID != null) {
             if (universalEntityIDType == null)
                 throw new IllegalArgumentException("Missing Universal Entity ID Type");
@@ -147,12 +137,10 @@ public class Issuer implements Serializable {
 
         boolean mergeLocalNamespace;
         boolean mergeUniversal;
-        if (mergeLocalNamespace = this.localNamespaceEntityID == null
-                && other.localNamespaceEntityID != null) {
+        if (mergeLocalNamespace = this.localNamespaceEntityID == null && other.localNamespaceEntityID != null) {
             this.localNamespaceEntityID = other.localNamespaceEntityID;
         }
-        if (mergeUniversal = this.universalEntityID == null
-                && other.universalEntityID != null) {
+        if (mergeUniversal = this.universalEntityID == null && other.universalEntityID != null) {
             this.universalEntityID = other.universalEntityID;
             this.universalEntityIDType = other.universalEntityIDType;
         }
@@ -161,9 +149,7 @@ public class Issuer implements Serializable {
 
     @Override
     public int hashCode() {
-        return 37 * (
-                37 * hashCode(localNamespaceEntityID)
-                        + hashCode(universalEntityID))
+        return 37 * (37 * hashCode(localNamespaceEntityID) + hashCode(universalEntityID))
                 + hashCode(universalEntityIDType);
     }
 
@@ -197,17 +183,13 @@ public class Issuer implements Serializable {
         if (other == null)
             return matchNoIssuer;
 
-        boolean matchLocal = localNamespaceEntityID != null
-                && other.getLocalNamespaceEntityID() != null;
-        boolean matchUniversal = universalEntityID != null
-                && other.getUniversalEntityID() != null;
+        boolean matchLocal = localNamespaceEntityID != null && other.getLocalNamespaceEntityID() != null;
+        boolean matchUniversal = universalEntityID != null && other.getUniversalEntityID() != null;
 
         return !matchLocal && !matchUniversal ? matchOnNoMismatch
-                : (!matchLocal
-                || localNamespaceEntityID.equals(other.getLocalNamespaceEntityID()))
-                && (!matchUniversal
-                || universalEntityID.equals(other.getUniversalEntityID())
-                && universalEntityIDType.equals(other.getUniversalEntityIDType()));
+                : (!matchLocal || localNamespaceEntityID.equals(other.getLocalNamespaceEntityID()))
+                        && (!matchUniversal || universalEntityID.equals(other.getUniversalEntityID())
+                                && universalEntityIDType.equals(other.getUniversalEntityIDType()));
     }
 
     @Override

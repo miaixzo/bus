@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.mail;
 
 import jakarta.activation.DataHandler;
@@ -207,8 +207,7 @@ public class Mail implements Builder<MimeMessage> {
     }
 
     /**
-     * 设置正文
-     * 正文可以是普通文本也可以是HTML（默认普通文本），可以通过调用{@link #setHtml(boolean)} 设置是否为HTML
+     * 设置正文 正文可以是普通文本也可以是HTML（默认普通文本），可以通过调用{@link #setHtml(boolean)} 设置是否为HTML
      *
      * @param content 正文
      * @return this
@@ -475,8 +474,7 @@ public class Mail implements Builder<MimeMessage> {
     }
 
     /**
-     * 获取默认邮件会话
-     * 如果为全局单例的会话，则全局只允许一个邮件帐号，否则每次发送邮件会新建一个新的会话
+     * 获取默认邮件会话 如果为全局单例的会话，则全局只允许一个邮件帐号，否则每次发送邮件会新建一个新的会话
      *
      * @return 邮件会话 {@link Session}
      */

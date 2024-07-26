@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.setting.format;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -37,11 +37,7 @@ import org.miaixz.bus.setting.metric.ini.IniSection;
 import java.util.Objects;
 
 /**
- * 默认的ini行格式器
- * 需要三种格式器之一
- * {@link IniComment },
- * {@link IniSection },
- * {@link IniProperty }
+ * 默认的ini行格式器 需要三种格式器之一 {@link IniComment }, {@link IniSection }, {@link IniProperty }
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -67,17 +63,15 @@ public class DefaultFormatter implements Format {
     private int effectiveLineNumber = 0;
 
     public DefaultFormatter(ElementFormatter<IniComment> commentElementFormatter,
-                            ElementFormatter<IniSection> sectionElementFormatter,
-                            ElementFormatter<IniProperty> propertyElementFormatter
-    ) {
+            ElementFormatter<IniSection> sectionElementFormatter,
+            ElementFormatter<IniProperty> propertyElementFormatter) {
         this.commentElementFormatter = commentElementFormatter;
         this.sectionElementFormatter = sectionElementFormatter;
         this.propertyElementFormatter = propertyElementFormatter;
     }
 
     /**
-     * format line as element.
-     * if empty line, return null.
+     * format line as element. if empty line, return null.
      *
      * @param raw line data
      * @return {@link IniElement}
@@ -102,29 +96,29 @@ public class DefaultFormatter implements Format {
         if (commentElementFormatter.check(line)) {
             element = commentElementFormatter.format(line, preEffectiveLineNumber);
         } else
-            // section?
-            if (sectionElementFormatter.check(line)) {
-                IniSection section = sectionElementFormatter.format(line, preEffectiveLineNumber);
-                // save last section
-                lastSection = section;
-                element = section;
-            } else
-                // property ?
-                if (propertyElementFormatter.check(line)) {
-                    IniProperty property = propertyElementFormatter.format(line, preEffectiveLineNumber);
-                    // set section if exists
-                    // In general it should be there, unless it's incorrectly formatted. If not, an exception is thrown.
-                    if (null == lastSection) {
-                        throw new InternalException("Cannot found section for property line " + lineNumber + " : " + line);
-                    }
-                    // set section for property
-                    property.setSection(lastSection);
-                    lastSection.add(property);
-                    element = property;
-                } else {
-                    // None of them
-                    throw new InternalException("No matching element type found for line " + lineNumber + " : " + line);
-                }
+        // section?
+        if (sectionElementFormatter.check(line)) {
+            IniSection section = sectionElementFormatter.format(line, preEffectiveLineNumber);
+            // save last section
+            lastSection = section;
+            element = section;
+        } else
+        // property ?
+        if (propertyElementFormatter.check(line)) {
+            IniProperty property = propertyElementFormatter.format(line, preEffectiveLineNumber);
+            // set section if exists
+            // In general it should be there, unless it's incorrectly formatted. If not, an exception is thrown.
+            if (null == lastSection) {
+                throw new InternalException("Cannot found section for property line " + lineNumber + " : " + line);
+            }
+            // set section for property
+            property.setSection(lastSection);
+            lastSection.add(property);
+            element = property;
+        } else {
+            // None of them
+            throw new InternalException("No matching element type found for line " + lineNumber + " : " + line);
+        }
 
         // if no throw, update effective line number.
         effectiveLineNumber = preEffectiveLineNumber;

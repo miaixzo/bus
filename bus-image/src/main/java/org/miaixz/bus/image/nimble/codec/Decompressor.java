@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.codec;
 
 import org.miaixz.bus.image.Tag;
@@ -94,8 +94,7 @@ public class Decompressor {
         this.rows = dataset.getInt(Tag.Rows, 0);
         this.cols = dataset.getInt(Tag.Columns, 0);
         this.samples = dataset.getInt(Tag.SamplesPerPixel, 0);
-        this.pmi = Photometric.fromString(
-                dataset.getString(Tag.PhotometricInterpretation, "MONOCHROME2"));
+        this.pmi = Photometric.fromString(dataset.getString(Tag.PhotometricInterpretation, "MONOCHROME2"));
         this.pmiAfterDecompression = pmi;
         this.bitsAllocated = dataset.getInt(Tag.BitsAllocated, 8);
         this.bitsStored = dataset.getInt(Tag.BitsStored, bitsAllocated);
@@ -108,30 +107,24 @@ public class Decompressor {
 
         if (pixeldata instanceof Fragments) {
             if (!tstype.isPixeldataEncapsulated())
-                throw new IllegalArgumentException("Encapusulated Pixel Data"
-                        + "with Transfer Syntax: " + tsuid);
+                throw new IllegalArgumentException("Encapusulated Pixel Data" + "with Transfer Syntax: " + tsuid);
             this.pixeldataFragments = (Fragments) pixeldata;
 
             int numFragments = pixeldataFragments.size();
-            if (frames == 1 ? (numFragments < 2)
-                    : (numFragments != frames + 1))
+            if (frames == 1 ? (numFragments < 2) : (numFragments != frames + 1))
                 throw new IllegalArgumentException(
-                        "Number of Pixel Data Fragments: "
-                                + numFragments + " does not match " + frames);
+                        "Number of Pixel Data Fragments: " + numFragments + " does not match " + frames);
 
             this.file = ((BulkData) pixeldataFragments.get(1)).getFile();
-            ImageReaderFactory.ImageReaderParam param =
-                    ImageReaderFactory.getImageReaderParam(tsuid);
+            ImageReaderFactory.ImageReaderParam param = ImageReaderFactory.getImageReaderParam(tsuid);
             if (param == null)
-                throw new UnsupportedOperationException(
-                        "Unsupported Transfer Syntax: " + tsuid);
+                throw new UnsupportedOperationException("Unsupported Transfer Syntax: " + tsuid);
 
             this.decompressor = ImageReaderFactory.getImageReader(param);
             Logger.debug("Decompressor: {}", decompressor.getClass().getName());
             this.readParam = decompressor.getDefaultReadParam();
             this.patchJpegLS = param.patchJPEGLS;
-            this.pmiAfterDecompression = pmi.isYBR() && TransferSyntaxType.isYBRCompression(tsuid)
-                    ? Photometric.RGB
+            this.pmiAfterDecompression = pmi.isYBR() && TransferSyntaxType.isYBRCompression(tsuid) ? Photometric.RGB
                     : pmi;
         } else {
             this.file = ((BulkData) pixeldata).getFile();
@@ -144,8 +137,7 @@ public class Decompressor {
 
     static int sizeOf(BufferedImage bi) {
         DataBuffer db = bi.getData().getDataBuffer();
-        return db.getSize() * db.getNumBanks()
-                * (DataBuffer.getDataTypeSize(db.getDataType()) >>> 3);
+        return db.getSize() * db.getNumBanks() * (DataBuffer.getDataTypeSize(db.getDataType()) >>> 3);
     }
 
     private static void bgr2rgb(byte[] bs) {
@@ -156,14 +148,13 @@ public class Decompressor {
         }
     }
 
-    private static void writeTo(SampleModel sm, short[] data, OutputStream out)
-            throws IOException {
+    private static void writeTo(SampleModel sm, short[] data, OutputStream out) throws IOException {
         int h = sm.getHeight();
         int w = sm.getWidth();
         int stride = ((ComponentSampleModel) sm).getScanlineStride();
         byte[] b = new byte[w * 2];
         for (int y = 0; y < h; ++y) {
-            for (int i = 0, j = y * stride; i < b.length; ) {
+            for (int i = 0, j = y * stride; i < b.length;) {
                 short s = data[j++];
                 b[i++] = (byte) s;
                 b[i++] = (byte) (s >> 8);
@@ -172,14 +163,13 @@ public class Decompressor {
         }
     }
 
-    private static void writeTo(SampleModel sm, int[] data, OutputStream out)
-            throws IOException {
+    private static void writeTo(SampleModel sm, int[] data, OutputStream out) throws IOException {
         int h = sm.getHeight();
         int w = sm.getWidth();
         int stride = ((SinglePixelPackedSampleModel) sm).getScanlineStride();
         byte[] b = new byte[w * 3];
         for (int y = 0; y < h; ++y) {
-            for (int i = 0, j = y * stride; i < b.length; ) {
+            for (int i = 0, j = y * stride; i < b.length;) {
                 int s = data[j++];
                 b[i++] = (byte) (s >> 16);
                 b[i++] = (byte) (s >> 8);
@@ -233,40 +223,27 @@ public class Decompressor {
             }
         });
         if (samples > 1) {
-            dataset.setString(Tag.PhotometricInterpretation, VR.CS,
-                    pmiAfterDecompression.toString());
+            dataset.setString(Tag.PhotometricInterpretation, VR.CS, pmiAfterDecompression.toString());
 
-            dataset.setInt(Tag.PlanarConfiguration, VR.US,
-                    tstype.getPlanarConfiguration());
+            dataset.setInt(Tag.PlanarConfiguration, VR.US, tstype.getPlanarConfiguration());
         }
         return true;
     }
 
-    protected BufferedImage createBufferedImage(int bitsStored,
-                                                boolean banded, boolean signed) {
-        int dataType = bitsAllocated > 8
-                ? (signed ? DataBuffer.TYPE_SHORT : DataBuffer.TYPE_USHORT)
+    protected BufferedImage createBufferedImage(int bitsStored, boolean banded, boolean signed) {
+        int dataType = bitsAllocated > 8 ? (signed ? DataBuffer.TYPE_SHORT : DataBuffer.TYPE_USHORT)
                 : DataBuffer.TYPE_BYTE;
         ComponentColorModel cm = samples == 1
-                ? new ComponentColorModel(
-                ColorSpace.getInstance(ColorSpace.CS_GRAY),
-                new int[]{bitsStored},
-                false, // hasAlpha
-                false, // isAlphaPremultiplied,
-                Transparency.OPAQUE,
-                dataType)
-                : new ComponentColorModel(
-                ColorSpace.getInstance(ColorSpace.CS_sRGB),
-                new int[]{bitsStored, bitsStored, bitsStored},
-                false, // hasAlpha
-                false, // isAlphaPremultiplied,
-                Transparency.OPAQUE,
-                dataType);
+                ? new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_GRAY), new int[] { bitsStored }, false, // hasAlpha
+                        false, // isAlphaPremultiplied,
+                        Transparency.OPAQUE, dataType)
+                : new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
+                        new int[] { bitsStored, bitsStored, bitsStored }, false, // hasAlpha
+                        false, // isAlphaPremultiplied,
+                        Transparency.OPAQUE, dataType);
 
-        SampleModel sm = banded
-                ? new BandedSampleModel(dataType, cols, rows, samples)
-                : new PixelInterleavedSampleModel(dataType, cols, rows,
-                samples, cols * samples, bandOffsets());
+        SampleModel sm = banded ? new BandedSampleModel(dataType, cols, rows, samples)
+                : new PixelInterleavedSampleModel(dataType, cols, rows, samples, cols * samples, bandOffsets());
         WritableRaster raster = Raster.createWritableRaster(sm, null);
         return new BufferedImage(cm, raster, false, null);
     }
@@ -294,34 +271,25 @@ public class Decompressor {
         }
     }
 
-    public FileImageInputStream createImageInputStream()
-            throws IOException {
+    public FileImageInputStream createImageInputStream() throws IOException {
         return new FileImageInputStream(file);
     }
 
-    public void writeFrameTo(ImageInputStream iis, int frameIndex,
-                             OutputStream out) throws IOException {
+    public void writeFrameTo(ImageInputStream iis, int frameIndex, OutputStream out) throws IOException {
         writeTo(decompressFrame(iis, frameIndex).getRaster(), out);
     }
 
-
-    protected BufferedImage decompressFrame(ImageInputStream iis, int index)
-            throws IOException {
-        SegmentedInputImageStream siis =
-                new SegmentedInputImageStream(iis, pixeldataFragments, index);
+    protected BufferedImage decompressFrame(ImageInputStream iis, int index) throws IOException {
+        SegmentedInputImageStream siis = new SegmentedInputImageStream(iis, pixeldataFragments, index);
         siis.setImageDescriptor(imageDescriptor);
-        decompressor.setInput(patchJpegLS != null
-                ? new PatchJPEGLSInputStream(siis, patchJpegLS)
-                : siis);
+        decompressor.setInput(patchJpegLS != null ? new PatchJPEGLSInputStream(siis, patchJpegLS) : siis);
         readParam.setDestination(bi);
         long start = System.currentTimeMillis();
         bi = decompressor.read(0, readParam);
         long end = System.currentTimeMillis();
         if (Logger.isDebugEnabled())
-            Logger.debug("Decompressed frame #{} 1:{} in {} ms",
-                    index + 1,
-                    (float) sizeOf(bi) / siis.getStreamPosition(),
-                    end - start);
+            Logger.debug("Decompressed frame #{} 1:{} in {} ms", index + 1,
+                    (float) sizeOf(bi) / siis.getStreamPosition(), end - start);
         return bi;
     }
 
@@ -329,26 +297,24 @@ public class Decompressor {
         SampleModel sm = raster.getSampleModel();
         DataBuffer db = raster.getDataBuffer();
         switch (db.getDataType()) {
-            case DataBuffer.TYPE_BYTE:
-                writeTo(sm, ((DataBufferByte) db).getBankData(), out);
-                break;
-            case DataBuffer.TYPE_USHORT:
-                writeTo(sm, ((DataBufferUShort) db).getData(), out);
-                break;
-            case DataBuffer.TYPE_SHORT:
-                writeTo(sm, ((DataBufferShort) db).getData(), out);
-                break;
-            case DataBuffer.TYPE_INT:
-                writeTo(sm, ((DataBufferInt) db).getData(), out);
-                break;
-            default:
-                throw new UnsupportedOperationException(
-                        "Unsupported Datatype: " + db.getDataType());
+        case DataBuffer.TYPE_BYTE:
+            writeTo(sm, ((DataBufferByte) db).getBankData(), out);
+            break;
+        case DataBuffer.TYPE_USHORT:
+            writeTo(sm, ((DataBufferUShort) db).getData(), out);
+            break;
+        case DataBuffer.TYPE_SHORT:
+            writeTo(sm, ((DataBufferShort) db).getData(), out);
+            break;
+        case DataBuffer.TYPE_INT:
+            writeTo(sm, ((DataBufferInt) db).getData(), out);
+            break;
+        default:
+            throw new UnsupportedOperationException("Unsupported Datatype: " + db.getDataType());
         }
     }
 
-    private void writeTo(SampleModel sm, byte[][] bankData, OutputStream out)
-            throws IOException {
+    private void writeTo(SampleModel sm, byte[][] bankData, OutputStream out) throws IOException {
         int h = sm.getHeight();
         int w = sm.getWidth();
         ComponentSampleModel csm = (ComponentSampleModel) sm;

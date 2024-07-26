@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.math;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -43,7 +43,8 @@ public class EnglishNumberFormatter {
     /**
      * 简洁计数单位
      */
-    private static final String[] NUMBER_SUFFIX = new String[]{"k", "w", "", "m", "", "", "b", "", "", "t", "", "", "p", "", "", "e"};
+    private static final String[] NUMBER_SUFFIX = new String[] { "k", "w", "", "m", "", "", "b", "", "", "t", "", "",
+            "p", "", "", "e" };
 
     /**
      * 将阿拉伯数字转为英文表达式
@@ -60,8 +61,7 @@ public class EnglishNumberFormatter {
     }
 
     /**
-     * 将阿拉伯数字转化为简洁计数单位，例如 2100 = 2.1k
-     * 范围默认只到w
+     * 将阿拉伯数字转化为简洁计数单位，例如 2100 = 2.1k 范围默认只到w
      *
      * @param value 被格式化的数字
      * @return 格式化后的数字
@@ -118,12 +118,12 @@ public class EnglishNumberFormatter {
         final String[] a = new String[5]; // 定义5个字串变量来存放解析出来的叁位一组的字串
 
         switch (lstrrev.length() % 3) {
-            case 1:
-                lstrrev += "00";
-                break;
-            case 2:
-                lstrrev += "0";
-                break;
+        case 1:
+            lstrrev += "00";
+            break;
+        case 2:
+            lstrrev += "0";
+            break;
         }
         StringBuilder lm = new StringBuilder(); // 用来存放转换后的整数部分
         for (int i = 0; i < lstrrev.length() / 3; i++) {
@@ -161,7 +161,6 @@ public class EnglishNumberFormatter {
     private static String parseMore(final int i) {
         return Normal.EN_NUMBER_MORE[i];
     }
-
 
     /**
      * 两位

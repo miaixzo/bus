@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.mapper;
 
 import org.apache.ibatis.session.SqlSessionFactory;
@@ -88,8 +88,7 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
     }
 
     /**
-     * 配置父扫描程序以搜索正确的接口
-     * 搜索所有接口或者只搜索扩展了markerInterface或annotationClass标注的接口
+     * 配置父扫描程序以搜索正确的接口 搜索所有接口或者只搜索扩展了markerInterface或annotationClass标注的接口
      */
     public void registerFilters() {
         boolean acceptAllInterfaces = true;
@@ -137,7 +136,8 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
         Set<BeanDefinitionHolder> beanDefinitions = super.doScan(basePackages);
 
         if (beanDefinitions.isEmpty()) {
-            Logger.warn("No MyBatis mapper was found in '" + Arrays.toString(basePackages) + "' package. Please check your configuration.");
+            Logger.warn("No MyBatis mapper was found in '" + Arrays.toString(basePackages)
+                    + "' package. Please check your configuration.");
         } else {
             processBeanDefinitions(beanDefinitions);
         }
@@ -150,16 +150,18 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
         for (BeanDefinitionHolder holder : beanDefinitions) {
             definition = (GenericBeanDefinition) holder.getBeanDefinition();
             if (Logger.isDebugEnabled()) {
-                Logger.debug("Creating MapperFactoryBean with name '" + holder.getBeanName()
-                        + "' and '" + definition.getBeanClassName() + "' mapperInterface");
+                Logger.debug("Creating MapperFactoryBean with name '" + holder.getBeanName() + "' and '"
+                        + definition.getBeanClassName() + "' mapperInterface");
             }
 
             // 映射器接口是bean的原始类，但是bean的实际类是MapperFactoryBean
-            definition.getConstructorArgumentValues().addGenericArgumentValue(definition.getBeanClassName()); // issue #59
+            definition.getConstructorArgumentValues().addGenericArgumentValue(definition.getBeanClassName()); // issue
+                                                                                                              // #59
             definition.setBeanClass(this.mapperFactoryBean.getClass());
-            //设置通用 Mapper
+            // 设置通用 Mapper
             if (StringKit.hasText(this.mapperBuilderBeanName)) {
-                definition.getPropertyValues().add("mapperBuilder", new RuntimeBeanReference(this.mapperBuilderBeanName));
+                definition.getPropertyValues().add("mapperBuilder",
+                        new RuntimeBeanReference(this.mapperBuilderBeanName));
             } else {
                 // 不做任何配置的时候使用默认方式
                 if (this.mapperBuilder == null) {
@@ -171,7 +173,8 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
 
             boolean explicitFactoryUsed = false;
             if (StringKit.hasText(this.sqlSessionFactoryBeanName)) {
-                definition.getPropertyValues().add("sqlSessionFactory", new RuntimeBeanReference(this.sqlSessionFactoryBeanName));
+                definition.getPropertyValues().add("sqlSessionFactory",
+                        new RuntimeBeanReference(this.sqlSessionFactoryBeanName));
                 explicitFactoryUsed = true;
             } else if (this.sqlSessionFactory != null) {
                 definition.getPropertyValues().add("sqlSessionFactory", this.sqlSessionFactory);
@@ -179,20 +182,24 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
             }
             if (StringKit.hasText(this.sqlSessionTemplateBeanName)) {
                 if (explicitFactoryUsed) {
-                    Logger.warn("Cannot use both: sqlSessionTemplate and sqlSessionFactory together. sqlSessionFactory is ignored.");
+                    Logger.warn(
+                            "Cannot use both: sqlSessionTemplate and sqlSessionFactory together. sqlSessionFactory is ignored.");
                 }
-                definition.getPropertyValues().add("sqlSessionTemplate", new RuntimeBeanReference(this.sqlSessionTemplateBeanName));
+                definition.getPropertyValues().add("sqlSessionTemplate",
+                        new RuntimeBeanReference(this.sqlSessionTemplateBeanName));
                 explicitFactoryUsed = true;
             } else if (this.sqlSessionTemplate != null) {
                 if (explicitFactoryUsed) {
-                    Logger.warn("Cannot use both: sqlSessionTemplate and sqlSessionFactory together. sqlSessionFactory is ignored.");
+                    Logger.warn(
+                            "Cannot use both: sqlSessionTemplate and sqlSessionFactory together. sqlSessionFactory is ignored.");
                 }
                 definition.getPropertyValues().add("sqlSessionTemplate", this.sqlSessionTemplate);
                 explicitFactoryUsed = true;
             }
             if (!explicitFactoryUsed) {
                 if (Logger.isDebugEnabled()) {
-                    Logger.debug("Enabling autowire by type for MapperFactoryBean with name '" + holder.getBeanName() + "'.");
+                    Logger.debug("Enabling autowire by type for MapperFactoryBean with name '" + holder.getBeanName()
+                            + "'.");
                 }
                 definition.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
             }
@@ -209,9 +216,9 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
         if (super.checkCandidate(beanName, beanDefinition)) {
             return true;
         } else {
-            Logger.warn("Skipping MapperFactoryBean with name '" + beanName
-                    + "' and '" + beanDefinition.getBeanClassName() + "' mapperInterface"
-                    + ". Bean already defined with the same name!");
+            Logger.warn(
+                    "Skipping MapperFactoryBean with name '" + beanName + "' and '" + beanDefinition.getBeanClassName()
+                            + "' mapperInterface" + ". Bean already defined with the same name!");
             return false;
         }
     }
@@ -267,9 +274,9 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
                 mapperBuilder.setConfig(property);
             }
         } catch (Exception e) {
-            Logger.warn("只有 Spring Boot 环境中可以通过 Environment(配置文件,环境变量,运行参数等方式) 配置通用 Mapper，" +
-                    "其他环境请通过 @EnableMapper 注解中的 mapperBuilderRef 或 properties 参数进行配置!" +
-                    "当然,如果你使用 org.miaixz.bus..mapper.Property 配置的通用 Mapper，可以忽略该警告!", e);
+            Logger.warn("只有 Spring Boot 环境中可以通过 Environment(配置文件,环境变量,运行参数等方式) 配置通用 Mapper，"
+                    + "其他环境请通过 @EnableMapper 注解中的 mapperBuilderRef 或 properties 参数进行配置!"
+                    + "当然,如果你使用 org.miaixz.bus..mapper.Property 配置的通用 Mapper，可以忽略该警告!", e);
         }
     }
 
@@ -288,12 +295,8 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
             int index = property.indexOf(Symbol.EQUAL);
             if (index < 0) {
                 throw new InternalException("通过 @EnableMapper 注解的 properties 参数配置出错:" + property + " !\n"
-                        + "请保证配置项按 properties 文件格式要求进行配置，例如：\n"
-                        + "properties = {\n"
-                        + "\t\"mappers=mapper.org.miaixz.bus.Mapper\",\n"
-                        + "\t\"notEmpty=true\"\n"
-                        + "}"
-                );
+                        + "请保证配置项按 properties 文件格式要求进行配置，例如：\n" + "properties = {\n"
+                        + "\t\"mappers=mapper.org.miaixz.bus.Mapper\",\n" + "\t\"notEmpty=true\"\n" + "}");
             }
             props.put(property.substring(0, index).trim(), property.substring(index + 1).trim());
         }

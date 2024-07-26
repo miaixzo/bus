@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.json.provider;
 
 import com.google.gson.*;
@@ -50,7 +50,7 @@ public class GsonProvider extends AbstractJsonProvider {
         gson = new GsonBuilder()
                 // 解决gson序列化时出现整型变为浮点型的问题
                 .registerTypeAdapter(new TypeToken<Map<Object, Object>>() {
-                        }.getType(),
+                }.getType(),
                         (JsonDeserializer<Map<Object, Object>>) (jsonElement, type, jsonDeserializationContext) -> {
                             Map<Object, Object> map = new LinkedHashMap<>();
                             JsonObject jsonObject = jsonElement.getAsJsonObject();
@@ -64,24 +64,22 @@ public class GsonProvider extends AbstractJsonProvider {
                                 }
                             }
                             return map;
-                        }
-                )
+                        })
                 .registerTypeAdapter(new TypeToken<List<Object>>() {
-                        }.getType(), (JsonDeserializer<List<Object>>) (jsonElement, type, jsonDeserializationContext) -> {
-                            List<Object> list = new LinkedList<>();
-                            JsonArray jsonArray = jsonElement.getAsJsonArray();
-                            for (int i = 0; i < jsonArray.size(); i++) {
-                                if (jsonArray.get(i).isJsonObject()) {
-                                    JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
-                                    Set<Map.Entry<String, JsonElement>> entrySet = jsonObject.entrySet();
-                                    list.addAll(entrySet);
-                                } else if (jsonArray.get(i).isJsonPrimitive()) {
-                                    list.add(jsonArray.get(i));
-                                }
-                            }
-                            return list;
+                }.getType(), (JsonDeserializer<List<Object>>) (jsonElement, type, jsonDeserializationContext) -> {
+                    List<Object> list = new LinkedList<>();
+                    JsonArray jsonArray = jsonElement.getAsJsonArray();
+                    for (int i = 0; i < jsonArray.size(); i++) {
+                        if (jsonArray.get(i).isJsonObject()) {
+                            JsonObject jsonObject = jsonArray.get(i).getAsJsonObject();
+                            Set<Map.Entry<String, JsonElement>> entrySet = jsonObject.entrySet();
+                            list.addAll(entrySet);
+                        } else if (jsonArray.get(i).isJsonPrimitive()) {
+                            list.add(jsonArray.get(i));
                         }
-                ).create();
+                    }
+                    return list;
+                }).create();
     }
 
     @Override

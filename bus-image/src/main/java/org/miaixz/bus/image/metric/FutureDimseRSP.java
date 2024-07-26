@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric;
 
 import org.miaixz.bus.image.Status;
@@ -51,8 +51,7 @@ public class FutureDimseRSP extends DimseRSPHandler implements DimseRSP {
     }
 
     @Override
-    public synchronized void onDimseRSP(Association as, Attributes cmd,
-                                        Attributes data) {
+    public synchronized void onDimseRSP(Association as, Attributes cmd, Attributes data) {
         super.onDimseRSP(as, cmd, data);
         Entry last = entry;
         while (last.next != null)
@@ -89,8 +88,8 @@ public class FutureDimseRSP extends DimseRSPHandler implements DimseRSP {
         if (!finished) {
             ex = as.getException();
             if (ex == null)
-                ex = new IOException("Association to " + as.getRemoteAET()
-                        + " released before receive of outstanding DIMSE RSP");
+                ex = new IOException(
+                        "Association to " + as.getRemoteAET() + " released before receive of outstanding DIMSE RSP");
             notifyAll();
         }
     }

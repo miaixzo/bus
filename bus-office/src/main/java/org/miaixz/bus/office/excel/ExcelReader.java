@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.excel;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -45,8 +45,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Excel读取器
- * 读取Excel工作簿
+ * Excel读取器 读取Excel工作簿
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -182,7 +181,8 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * @return {@link Sheet}
      * @throws IllegalArgumentException workbook为空或sheet不能存在
      */
-    private static Sheet getSheetOrCloseWorkbook(final Workbook workbook, final int sheetIndex) throws IllegalArgumentException {
+    private static Sheet getSheetOrCloseWorkbook(final Workbook workbook, final int sheetIndex)
+            throws IllegalArgumentException {
         Assert.notNull(workbook);
         final Sheet sheet;
         try {
@@ -219,8 +219,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     }
 
     /**
-     * 设置单元格值处理逻辑
-     * 当Excel中的值并不能满足我们的读取要求时，通过传入一个编辑接口，可以对单元格值自定义，例如对数字和日期类型值转换为字符串等
+     * 设置单元格值处理逻辑 当Excel中的值并不能满足我们的读取要求时，通过传入一个编辑接口，可以对单元格值自定义，例如对数字和日期类型值转换为字符串等
      *
      * @param cellEditor 单元格值处理接口
      * @return this
@@ -304,8 +303,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     }
 
     /**
-     * 读取工作簿中指定的Sheet，此方法为类流处理方式，当读到指定单元格时，会调用CellEditor接口
-     * 用户通过实现此接口，可以更加灵活地处理每个单元格的数据。
+     * 读取工作簿中指定的Sheet，此方法为类流处理方式，当读到指定单元格时，会调用CellEditor接口 用户通过实现此接口，可以更加灵活地处理每个单元格的数据。
      *
      * @param cellHandler 单元格处理器，用于处理读到的单元格及其数据
      */
@@ -314,8 +312,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     }
 
     /**
-     * 读取工作簿中指定的Sheet，此方法为类流处理方式，当读到指定单元格时，会调用CellEditor接口
-     * 用户通过实现此接口，可以更加灵活地处理每个单元格的数据。
+     * 读取工作簿中指定的Sheet，此方法为类流处理方式，当读到指定单元格时，会调用CellEditor接口 用户通过实现此接口，可以更加灵活地处理每个单元格的数据。
      *
      * @param startRowIndex 起始行（包含，从0开始计数）
      * @param endRowIndex   结束行（包含，从0开始计数）
@@ -343,8 +340,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     }
 
     /**
-     * 读取Excel为Map的列表，读取所有行，默认第一行做为标题，数据从第二行开始
-     * Map表示一行，标题为key，单元格内容为value
+     * 读取Excel为Map的列表，读取所有行，默认第一行做为标题，数据从第二行开始 Map表示一行，标题为key，单元格内容为value
      *
      * @return Map的列表
      */
@@ -353,8 +349,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     }
 
     /**
-     * 读取Excel为Map的列表
-     * Map表示一行，标题为key，单元格内容为value
+     * 读取Excel为Map的列表 Map表示一行，标题为key，单元格内容为value
      *
      * @param headerRowIndex 标题所在行，如果标题行在读取的内容行中间，这行做为数据将忽略
      * @param startRowIndex  起始行（包含，从0开始计数）
@@ -403,7 +398,8 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * @param beanType       每行对应Bean的类型
      * @return Map的列表
      */
-    public <T> List<T> read(final int headerRowIndex, final int startRowIndex, final int endRowIndex, final Class<T> beanType) {
+    public <T> List<T> read(final int headerRowIndex, final int startRowIndex, final int endRowIndex,
+            final Class<T> beanType) {
         final BeanSheetReader<T> reader = new BeanSheetReader<>(headerRowIndex, startRowIndex, endRowIndex, beanType);
         reader.setCellEditor(this.cellEditor);
         reader.setIgnoreEmptyRow(this.ignoreEmptyRow);
@@ -424,8 +420,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     }
 
     /**
-     * 读取为文本格式
-     * 使用{@link org.apache.poi.ss.extractor.ExcelExtractor} 提取Excel内容
+     * 读取为文本格式 使用{@link org.apache.poi.ss.extractor.ExcelExtractor} 提取Excel内容
      *
      * @param withSheetName 是否附带sheet名
      * @return Excel文本
@@ -465,11 +460,10 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     }
 
     /**
-     * 获取Excel写出器
-     * 在读取Excel并做一定编辑后，获取写出器写出，规则如下：
+     * 获取Excel写出器 在读取Excel并做一定编辑后，获取写出器写出，规则如下：
      * <ul>
-     *     <li>1. 当从流中读取时，转换为Writer直接使用Sheet对象，此时修改不会影响源文件，Writer中flush需要指定新的路径。</li>
-     *     <li>2. 当从文件读取时，直接获取文件及sheet名称，此时可以修改原文件。</li>
+     * <li>1. 当从流中读取时，转换为Writer直接使用Sheet对象，此时修改不会影响源文件，Writer中flush需要指定新的路径。</li>
+     * <li>2. 当从文件读取时，直接获取文件及sheet名称，此时可以修改原文件。</li>
      * </ul>
      *
      * @return {@link ExcelWriter}

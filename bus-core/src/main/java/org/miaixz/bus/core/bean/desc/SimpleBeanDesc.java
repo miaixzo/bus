@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.bean.desc;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -39,9 +39,9 @@ import java.util.Map;
 /**
  * 简单的Bean描述，只查找getter和setter方法，规则如下：
  * <ul>
- *     <li>不匹配字段，只查找getXXX、isXXX、setXXX方法。</li>
- *     <li>如果同时存在getXXX和isXXX，返回值为Boolean或boolean，isXXX优先。</li>
- *     <li>如果同时存在setXXX的多个重载方法，最小子类优先，如setXXX(List)优先于setXXX(Collection)</li>
+ * <li>不匹配字段，只查找getXXX、isXXX、setXXX方法。</li>
+ * <li>如果同时存在getXXX和isXXX，返回值为Boolean或boolean，isXXX优先。</li>
+ * <li>如果同时存在setXXX的多个重载方法，最小子类优先，如setXXX(List)优先于setXXX(Collection)</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -67,7 +67,8 @@ public class SimpleBeanDesc extends AbstractBeanDesc {
     private void init() {
         final Map<String, PropDesc> propMap = this.propMap;
 
-        final Method[] gettersAndSetters = MethodKit.getPublicMethods(this.beanClass, MethodKit::isGetterOrSetterIgnoreCase);
+        final Method[] gettersAndSetters = MethodKit.getPublicMethods(this.beanClass,
+                MethodKit::isGetterOrSetterIgnoreCase);
         boolean isSetter;
         int nameIndex;
         String methodName;
@@ -75,20 +76,20 @@ public class SimpleBeanDesc extends AbstractBeanDesc {
         for (final Method method : gettersAndSetters) {
             methodName = method.getName();
             switch (methodName.charAt(0)) {
-                case 's':
-                    isSetter = true;
-                    nameIndex = 3;
-                    break;
-                case 'g':
-                    isSetter = false;
-                    nameIndex = 3;
-                    break;
-                case 'i':
-                    isSetter = false;
-                    nameIndex = 2;
-                    break;
-                default:
-                    continue;
+            case 's':
+                isSetter = true;
+                nameIndex = 3;
+                break;
+            case 'g':
+                isSetter = false;
+                nameIndex = 3;
+                break;
+            case 'i':
+                isSetter = false;
+                nameIndex = 2;
+                break;
+            default:
+                continue;
             }
 
             fieldName = Introspector.decapitalize(StringKit.toStringOrNull(methodName.substring(nameIndex)));
@@ -98,16 +99,14 @@ public class SimpleBeanDesc extends AbstractBeanDesc {
                 propMap.put(fieldName, propDesc);
             } else {
                 if (isSetter) {
-                    if (null == propDesc.setter ||
-                            propDesc.setter.getParameterTypes()[0].isAssignableFrom(method.getParameterTypes()[0])) {
+                    if (null == propDesc.setter
+                            || propDesc.setter.getParameterTypes()[0].isAssignableFrom(method.getParameterTypes()[0])) {
                         // 如果存在多个重载的setter方法，选择参数类型最匹配的
                         propDesc.setter = method;
                     }
                 } else {
-                    if (null == propDesc.getter ||
-                            (BooleanKit.isBoolean(propDesc.getter.getReturnType()) &&
-                                    BooleanKit.isBoolean(method.getReturnType()) &&
-                                    methodName.startsWith(Normal.IS))) {
+                    if (null == propDesc.getter || (BooleanKit.isBoolean(propDesc.getter.getReturnType())
+                            && BooleanKit.isBoolean(method.getReturnType()) && methodName.startsWith(Normal.IS))) {
                         // 如果返回值为Boolean或boolean，isXXX优先于getXXX
                         propDesc.getter = method;
                     }

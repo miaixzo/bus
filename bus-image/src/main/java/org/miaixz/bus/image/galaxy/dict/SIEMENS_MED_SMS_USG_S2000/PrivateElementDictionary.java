@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_SMS_USG_S2000;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,67 +46,68 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag._0019_xx30_:
-                return VR.DS;
-            case PrivateTag.FrameRate:
-            case PrivateTag.BModeDynamicRange:
-            case PrivateTag.BModeOverallGain:
-            case PrivateTag.ColorFlowOverallGain:
-            case PrivateTag.ColorFlowMaximumVelocity:
-            case PrivateTag.DopplerDynamicRange:
-            case PrivateTag.DopplerOverallGain:
-            case PrivateTag.DopplerWallFilter:
-            case PrivateTag.DopplerGateSize:
-                return VR.FD;
-            case PrivateTag._0019_xx3B_:
-                return VR.LT;
-            case PrivateTag.PrivateCreatorVersion:
-            case PrivateTag.SieClearIndex:
-            case PrivateTag.BModeSubmode:
-            case PrivateTag.ClarifyVEIndex:
-            case PrivateTag.ColorFlowState:
-            case PrivateTag.ColorFlowSubmode:
-            case PrivateTag.DopplerSubmode:
-            case PrivateTag.MModeSubmode:
-                return VR.SH;
-            case PrivateTag.BurnedInGraphics:
-            case PrivateTag._0019_xx0E_:
-            case PrivateTag.BModeResolutionSpeedIndex:
-            case PrivateTag.BModeEdgeEnhanceIndex:
-            case PrivateTag.BModePersistenceIndex:
-            case PrivateTag.BModeMapIndex:
-            case PrivateTag._0019_xx27_:
-            case PrivateTag._0019_xx28_:
-            case PrivateTag._0019_xx29_:
-            case PrivateTag.BModeTintType:
-            case PrivateTag.BModeTintIndex:
-            case PrivateTag._0019_xx31_:
-            case PrivateTag.ImageFlag:
-            case PrivateTag.ColorFlowWallFilterIndex:
-            case PrivateTag.ColorFlowResolutionSpeedIndex:
-            case PrivateTag.ColorFlowSmoothIndex:
-            case PrivateTag.ColorFlowPersistenceIndex:
-            case PrivateTag.ColorFlowMapIndex:
-            case PrivateTag.ColorFlowPriorityIndex:
-            case PrivateTag.DopplerMapIndex:
-            case PrivateTag._0019_xx67_:
-            case PrivateTag.DopplerTimeFreqResIndex:
-            case PrivateTag.DopplerTraceInverted:
-            case PrivateTag.DopplerTintType:
-            case PrivateTag.DopplerTintIndex:
-            case PrivateTag.MModeDynamicRange:
-            case PrivateTag.MModeOverallGain:
-            case PrivateTag.MModeEdgeEnhanceIndex:
-            case PrivateTag.MModeMapIndex:
-            case PrivateTag.MModeTintType:
-            case PrivateTag.MModeTintIndex:
-            case PrivateTag._0019_xx95_:
-                return VR.US;
+
+        case PrivateTag._0019_xx30_:
+            return VR.DS;
+        case PrivateTag.FrameRate:
+        case PrivateTag.BModeDynamicRange:
+        case PrivateTag.BModeOverallGain:
+        case PrivateTag.ColorFlowOverallGain:
+        case PrivateTag.ColorFlowMaximumVelocity:
+        case PrivateTag.DopplerDynamicRange:
+        case PrivateTag.DopplerOverallGain:
+        case PrivateTag.DopplerWallFilter:
+        case PrivateTag.DopplerGateSize:
+            return VR.FD;
+        case PrivateTag._0019_xx3B_:
+            return VR.LT;
+        case PrivateTag.PrivateCreatorVersion:
+        case PrivateTag.SieClearIndex:
+        case PrivateTag.BModeSubmode:
+        case PrivateTag.ClarifyVEIndex:
+        case PrivateTag.ColorFlowState:
+        case PrivateTag.ColorFlowSubmode:
+        case PrivateTag.DopplerSubmode:
+        case PrivateTag.MModeSubmode:
+            return VR.SH;
+        case PrivateTag.BurnedInGraphics:
+        case PrivateTag._0019_xx0E_:
+        case PrivateTag.BModeResolutionSpeedIndex:
+        case PrivateTag.BModeEdgeEnhanceIndex:
+        case PrivateTag.BModePersistenceIndex:
+        case PrivateTag.BModeMapIndex:
+        case PrivateTag._0019_xx27_:
+        case PrivateTag._0019_xx28_:
+        case PrivateTag._0019_xx29_:
+        case PrivateTag.BModeTintType:
+        case PrivateTag.BModeTintIndex:
+        case PrivateTag._0019_xx31_:
+        case PrivateTag.ImageFlag:
+        case PrivateTag.ColorFlowWallFilterIndex:
+        case PrivateTag.ColorFlowResolutionSpeedIndex:
+        case PrivateTag.ColorFlowSmoothIndex:
+        case PrivateTag.ColorFlowPersistenceIndex:
+        case PrivateTag.ColorFlowMapIndex:
+        case PrivateTag.ColorFlowPriorityIndex:
+        case PrivateTag.DopplerMapIndex:
+        case PrivateTag._0019_xx67_:
+        case PrivateTag.DopplerTimeFreqResIndex:
+        case PrivateTag.DopplerTraceInverted:
+        case PrivateTag.DopplerTintType:
+        case PrivateTag.DopplerTintIndex:
+        case PrivateTag.MModeDynamicRange:
+        case PrivateTag.MModeOverallGain:
+        case PrivateTag.MModeEdgeEnhanceIndex:
+        case PrivateTag.MModeMapIndex:
+        case PrivateTag.MModeTintType:
+        case PrivateTag.MModeTintIndex:
+        case PrivateTag._0019_xx95_:
+            return VR.US;
         }
         return VR.UN;
     }

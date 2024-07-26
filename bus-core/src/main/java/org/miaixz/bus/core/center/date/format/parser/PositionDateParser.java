@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date.format.parser;
 
 import org.miaixz.bus.core.center.date.printer.DatePrinter;
@@ -42,8 +42,7 @@ import java.util.Date;
 public interface PositionDateParser extends DateParser, DatePrinter {
 
     /**
-     * 将日期字符串解析并转换为  {@link Date} 对象
-     * 等价于 {@link java.text.DateFormat#parse(String, ParsePosition)}
+     * 将日期字符串解析并转换为 {@link Date} 对象 等价于 {@link java.text.DateFormat#parse(String, ParsePosition)}
      *
      * @param source 日期字符串
      * @param pos    {@link ParsePosition}
@@ -52,8 +51,7 @@ public interface PositionDateParser extends DateParser, DatePrinter {
     Date parse(CharSequence source, ParsePosition pos);
 
     /**
-     * 根据给定格式更新{@link Calendar}
-     * 解析成功后，{@link ParsePosition#getIndex()}更新成转换到的位置
+     * 根据给定格式更新{@link Calendar} 解析成功后，{@link ParsePosition#getIndex()}更新成转换到的位置
      * 失败则{@link ParsePosition#getErrorIndex()}更新到解析失败的位置
      *
      * @param source   被转换的日期字符串

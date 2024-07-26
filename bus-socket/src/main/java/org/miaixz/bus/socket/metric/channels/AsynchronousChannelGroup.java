@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org sandao and other contributors.             ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket.metric.channels;
 
 import java.io.IOException;
@@ -80,14 +80,16 @@ class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChannelGrou
      *
      * @param provider The asynchronous channel provider for this group
      */
-    protected AsynchronousChannelGroup(AsynchronousChannelProvider provider, ExecutorService readExecutorService, int threadNum) throws IOException {
+    protected AsynchronousChannelGroup(AsynchronousChannelProvider provider, ExecutorService readExecutorService,
+            int threadNum) throws IOException {
         super(provider);
         // init threadPool for read
         this.readExecutorService = readExecutorService;
         this.readWorkers = new Worker[threadNum];
         for (int i = 0; i < threadNum; i++) {
             readWorkers[i] = new Worker(Selector.open(), selectionKey -> {
-                AsynchronousServerChannel asynchronousSocketChannel = (AsynchronousServerChannel) selectionKey.attachment();
+                AsynchronousServerChannel asynchronousSocketChannel = (AsynchronousServerChannel) selectionKey
+                        .attachment();
                 asynchronousSocketChannel.doRead(true);
             });
             this.readExecutorService.execute(readWorkers[i]);
@@ -100,26 +102,31 @@ class AsynchronousChannelGroup extends java.nio.channels.AsynchronousChannelGrou
             if (running) {
                 selectionKey.interestOps(selectionKey.interestOps() & ~SelectionKey.OP_WRITE);
             }
-            while (asynchronousSocketChannel.doWrite()) ;
+            while (asynchronousSocketChannel.doWrite())
+                ;
         });
         commonWorker = new Worker(Selector.open(), selectionKey -> {
             if (selectionKey.isAcceptable()) {
-                AsynchronousServerSocketChannel serverSocketChannel = (AsynchronousServerSocketChannel) selectionKey.attachment();
+                AsynchronousServerSocketChannel serverSocketChannel = (AsynchronousServerSocketChannel) selectionKey
+                        .attachment();
                 serverSocketChannel.doAccept();
             } else if (selectionKey.isConnectable()) {
                 Runnable runnable = (Runnable) selectionKey.attachment();
                 runnable.run();
             } else if (selectionKey.isReadable()) {
                 // 仅同步read会用到此线程资源
-                AsynchronousServerChannel asynchronousSocketChannel = (AsynchronousServerChannel) selectionKey.attachment();
+                AsynchronousServerChannel asynchronousSocketChannel = (AsynchronousServerChannel) selectionKey
+                        .attachment();
                 removeOps(selectionKey, SelectionKey.OP_READ);
                 asynchronousSocketChannel.doRead(true);
             } else {
-                throw new IllegalStateException("unexpect callback,key valid:" + selectionKey.isValid() + " ,interestOps:" + selectionKey.interestOps());
+                throw new IllegalStateException("unexpect callback,key valid:" + selectionKey.isValid()
+                        + " ,interestOps:" + selectionKey.interestOps());
             }
         });
 
-        commonExecutorService = new ThreadPoolExecutor(2, 2, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(), r -> new Thread(r, "Socket:common"));
+        commonExecutorService = new ThreadPoolExecutor(2, 2, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(),
+                r -> new Thread(r, "Socket:common"));
         commonExecutorService.execute(writeWorker);
         commonExecutorService.execute(commonWorker);
     }

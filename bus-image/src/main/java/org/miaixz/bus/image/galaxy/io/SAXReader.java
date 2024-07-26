@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.io;
 
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -62,13 +62,11 @@ public class SAXReader {
         return attrs;
     }
 
-    public static Attributes parse(String uri)
-            throws ParserConfigurationException, SAXException, IOException {
+    public static Attributes parse(String uri) throws ParserConfigurationException, SAXException, IOException {
         return parse(uri, null);
     }
 
-    public static Attributes parse(InputStream is)
-            throws ParserConfigurationException, SAXException, IOException {
+    public static Attributes parse(InputStream is) throws ParserConfigurationException, SAXException, IOException {
         return parse(is, null);
     }
 

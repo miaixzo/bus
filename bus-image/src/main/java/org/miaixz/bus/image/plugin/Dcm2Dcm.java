@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.xyz.IoKit;
@@ -71,9 +71,7 @@ public class Dcm2Dcm {
         try {
             return Double.valueOf(s);
         } catch (NumberFormatException e) {
-            return s.equalsIgnoreCase("true") ? Boolean.TRUE :
-                    s.equalsIgnoreCase("false") ? Boolean.FALSE
-                            : s;
+            return s.equalsIgnoreCase("true") ? Boolean.TRUE : s.equalsIgnoreCase("false") ? Boolean.FALSE : s;
         }
     }
 
@@ -81,8 +79,7 @@ public class Dcm2Dcm {
         this.tsuid = uid;
         this.tstype = TransferSyntaxType.forUID(uid);
         if (tstype == null) {
-            throw new IllegalArgumentException(
-                    "Unsupported Transfer Syntax: " + tsuid);
+            throw new IllegalArgumentException("Unsupported Transfer Syntax: " + tsuid);
         }
     }
 
@@ -166,8 +163,7 @@ public class Dcm2Dcm {
             String tsuid = this.tsuid;
             if (pixeldata != null) {
                 if (tstype.isPixeldataEncapsulated()) {
-                    tsuid = adjustTransferSyntax(tsuid,
-                            dataset.getInt(Tag.BitsStored, 8));
+                    tsuid = adjustTransferSyntax(tsuid, dataset.getInt(Tag.BitsStored, 8));
                     compressor = new Compressor(dataset, dis.getTransferSyntax());
                     compressor.compress(tsuid, params.toArray(new Property[params.size()]));
                 } else if (pixeldata instanceof Fragments)
@@ -204,15 +200,15 @@ public class Dcm2Dcm {
 
     private String adjustTransferSyntax(String tsuid, int bitsStored) {
         switch (tstype) {
-            case JPEG_BASELINE:
-                if (bitsStored > 8)
-                    return UID.JPEGExtended12Bit.uid;
-                break;
-            case JPEG_EXTENDED:
-                if (bitsStored <= 8)
-                    return UID.JPEGBaseline8Bit.uid;
-                break;
-            default:
+        case JPEG_BASELINE:
+            if (bitsStored > 8)
+                return UID.JPEGExtended12Bit.uid;
+            break;
+        case JPEG_EXTENDED:
+            if (bitsStored <= 8)
+                return UID.JPEGBaseline8Bit.uid;
+            break;
+        default:
         }
         return tsuid;
     }

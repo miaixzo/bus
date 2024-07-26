@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.function;
 
 import org.miaixz.bus.core.xyz.ExceptionKit;
@@ -46,13 +46,13 @@ import java.util.function.BinaryOperator;
 public interface BinaryOperatorX<T> extends BinaryOperator<T>, Serializable {
 
     /**
-     * Returns a {@code BinaryOperatorX} which returns the lesser of two elements
-     * according to the specified {@code Comparator}.
+     * Returns a {@code BinaryOperatorX} which returns the lesser of two elements according to the specified
+     * {@code Comparator}.
      *
      * @param <T>        the type of the input arguments of the compare
      * @param comparator a {@code Comparator} for comparing the two values
-     * @return a {@code SerBiUnOp} which returns the lesser of its operands,
-     * according to the supplied {@code Comparator}
+     * @return a {@code SerBiUnOp} which returns the lesser of its operands, according to the supplied
+     *         {@code Comparator}
      * @throws NullPointerException if the argument is null
      */
     static <T> BinaryOperatorX<T> minBy(final Comparator<? super T> comparator) {
@@ -61,13 +61,13 @@ public interface BinaryOperatorX<T> extends BinaryOperator<T>, Serializable {
     }
 
     /**
-     * Returns a {@code BinaryOperatorX} which returns the greater of two elements
-     * according to the specified {@code Comparator}.
+     * Returns a {@code BinaryOperatorX} which returns the greater of two elements according to the specified
+     * {@code Comparator}.
      *
      * @param <T>        the type of the input arguments of the compare
      * @param comparator a {@code Comparator} for comparing the two values
-     * @return a {@code SerBiUnOp} which returns the greater of its operands,
-     * according to the supplied {@code Comparator}
+     * @return a {@code SerBiUnOp} which returns the greater of its operands, according to the supplied
+     *         {@code Comparator}
      * @throws NullPointerException if the argument is null
      */
     static <T> BinaryOperatorX<T> maxBy(final Comparator<? super T> comparator) {
@@ -122,4 +122,3 @@ public interface BinaryOperatorX<T> extends BinaryOperator<T>, Serializable {
     }
 
 }
-

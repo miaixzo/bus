@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image;
 
 import lombok.Builder;
@@ -76,15 +76,10 @@ public class Option {
     @Builder.Default
     private boolean tcpNoDelay = true;
     @Builder.Default
-    private List<String> cipherSuites = List.of(
-            "SSL_RSA_WITH_NULL_SHA",
-            "TLS_RSA_WITH_AES_128_CBC_SHA",
-            "SSL_RSA_WITH_3DES_EDE_CBC_SHA"
-    );
+    private List<String> cipherSuites = List.of("SSL_RSA_WITH_NULL_SHA", "TLS_RSA_WITH_AES_128_CBC_SHA",
+            "SSL_RSA_WITH_3DES_EDE_CBC_SHA");
     @Builder.Default
-    private List<String> tlsProtocols = List.of(
-            "TLSv1", "SSLv3"
-    );
+    private List<String> tlsProtocols = List.of("TLSv1", "SSLv3");
 
     private boolean tlsNeedClientAuth;
     private String keystoreURL;

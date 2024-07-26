@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.service;
 
 import org.miaixz.bus.image.Dimse;
@@ -59,13 +59,12 @@ public abstract class AbstractImageService implements ImageService {
     }
 
     @Override
-    public void onDimseRQ(Association as, PresentationContext pc,
-                          Dimse dimse, Attributes cmd, PDVInputStream data) throws IOException {
+    public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes cmd, PDVInputStream data)
+            throws IOException {
         onDimseRQ(as, pc, dimse, cmd, readDataset(pc, data));
     }
 
-    private Attributes readDataset(PresentationContext pc, PDVInputStream data)
-            throws IOException {
+    private Attributes readDataset(PresentationContext pc, PDVInputStream data) throws IOException {
         if (data == null)
             return null;
 
@@ -74,8 +73,7 @@ public abstract class AbstractImageService implements ImageService {
         return dataset;
     }
 
-    protected abstract void onDimseRQ(Association as, PresentationContext pc,
-                                      Dimse dimse, Attributes cmd, Attributes data) throws IOException;
-
+    protected abstract void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes cmd,
+            Attributes data) throws IOException;
 
 }

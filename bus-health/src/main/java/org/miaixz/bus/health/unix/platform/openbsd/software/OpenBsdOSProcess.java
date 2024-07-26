@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.openbsd.software;
 
 import com.sun.jna.Memory;
@@ -70,7 +70,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         mib[0] = 1; // CTL_KERN
         mib[1] = 8; // KERN_ARGMAX
         try (Memory m = new Memory(Integer.BYTES);
-             ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(Integer.BYTES)) {
+                ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(Integer.BYTES)) {
             if (OpenBsdLibc.INSTANCE.sysctl(mib, mib.length, m, size, null, size_t.ZERO) == 0) {
                 ARGMAX = m.getInt(0);
             } else {
@@ -83,7 +83,8 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
 
     private final Supplier<List<String>> arguments = Memoizer.memoize(this::queryArguments);
     private final OpenBsdOperatingSystem os;
-    private final Supplier<Map<String, String>> environmentVariables = Memoizer.memoize(this::queryEnvironmentVariables);
+    private final Supplier<Map<String, String>> environmentVariables = Memoizer
+            .memoize(this::queryEnvironmentVariables);
     private final int bitness;
     private OSProcess.State state = OSProcess.State.INVALID;
 
@@ -160,7 +161,7 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
             mib[3] = 1; // KERN_PROC_ARGV
             // Allocate memory for arguments
             try (Memory m = new Memory(ARGMAX);
-                 ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(ARGMAX)) {
+                    ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(ARGMAX)) {
                 // Fetch arguments
                 if (OpenBsdLibc.INSTANCE.sysctl(mib, mib.length, m, size, null, size_t.ZERO) == 0) {
                     // Returns a null-terminated list of pointers to the actual data
@@ -197,7 +198,8 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         mib[2] = getProcessID();
         mib[3] = 3; // KERN_PROC_ENV
         // Allocate memory for environment variables
-        try (Memory m = new Memory(ARGMAX); ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(ARGMAX)) {
+        try (Memory m = new Memory(ARGMAX);
+                ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(ARGMAX)) {
             // Fetch environment variables
             if (OpenBsdLibc.INSTANCE.sysctl(mib, mib.length, m, size, null, size_t.ZERO) == 0) {
                 // Returns a null-terminated list of pointers to the actual data
@@ -379,7 +381,8 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
         List<String> procList = Executor.runNative(psCommand);
         if (procList.size() > 1) {
             // skip header row
-            Map<PsKeywords, String> psMap = Parsing.stringToEnumMap(PsKeywords.class, procList.get(1).trim(), Symbol.C_SPACE);
+            Map<PsKeywords, String> psMap = Parsing.stringToEnumMap(PsKeywords.class, procList.get(1).trim(),
+                    Symbol.C_SPACE);
             // Check if last (thus all) value populated
             if (psMap.containsKey(PsKeywords.ARGS)) {
                 updateThreadCount();
@@ -408,27 +411,27 @@ public class OpenBsdOSProcess extends AbstractOSProcess {
     private boolean updateAttributes(Map<PsKeywords, String> psMap) {
         long now = System.currentTimeMillis();
         switch (psMap.get(PsKeywords.STATE).charAt(0)) {
-            case 'R':
-                this.state = OSProcess.State.RUNNING;
-                break;
-            case 'I':
-            case 'S':
-                this.state = OSProcess.State.SLEEPING;
-                break;
-            case 'D':
-            case 'L':
-            case 'U':
-                this.state = OSProcess.State.WAITING;
-                break;
-            case 'Z':
-                this.state = OSProcess.State.ZOMBIE;
-                break;
-            case 'T':
-                this.state = OSProcess.State.STOPPED;
-                break;
-            default:
-                this.state = OSProcess.State.OTHER;
-                break;
+        case 'R':
+            this.state = OSProcess.State.RUNNING;
+            break;
+        case 'I':
+        case 'S':
+            this.state = OSProcess.State.SLEEPING;
+            break;
+        case 'D':
+        case 'L':
+        case 'U':
+            this.state = OSProcess.State.WAITING;
+            break;
+        case 'Z':
+            this.state = OSProcess.State.ZOMBIE;
+            break;
+        case 'T':
+            this.state = OSProcess.State.STOPPED;
+            break;
+        default:
+            this.state = OSProcess.State.OTHER;
+            break;
         }
         this.parentProcessID = Parsing.parseIntOrDefault(psMap.get(PsKeywords.PPID), 0);
         this.user = psMap.get(PsKeywords.USER);

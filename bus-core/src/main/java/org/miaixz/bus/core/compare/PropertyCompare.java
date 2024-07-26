@@ -24,14 +24,13 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.compare;
 
 import org.miaixz.bus.core.xyz.BeanKit;
 
 /**
- * Bean属性排序器
- * 支持读取Bean多层次下的属性
+ * Bean属性排序器 支持读取Bean多层次下的属性
  *
  * @param <T> 被比较的Bean
  * @author Kimi Liu
@@ -64,8 +63,7 @@ public class PropertyCompare<T> extends FunctionCompare<T> {
      * 构造
      *
      * @param property      属性名
-     * @param compareSelf   在字段值相同情况下，是否比较对象本身。
-     *                      如果此项为{@code false}，字段值比较后为0会导致对象被认为相同，可能导致被去重。
+     * @param compareSelf   在字段值相同情况下，是否比较对象本身。 如果此项为{@code false}，字段值比较后为0会导致对象被认为相同，可能导致被去重。
      * @param isNullGreater null值是否排在后（从小到大排序）
      */
     public PropertyCompare(final String property, final boolean compareSelf, final boolean isNullGreater) {

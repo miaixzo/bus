@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 import org.miaixz.bus.image.UID;
@@ -66,11 +66,11 @@ public class JpegWriteParam {
     public static JpegWriteParam buildDicomImageWriteParam(String tsuid) {
         TransferSyntaxType type = TransferSyntaxType.forUID(tsuid);
         switch (type) {
-            case NATIVE:
-            case RLE:
-            case JPIP:
-            case MPEG:
-                throw new IllegalStateException(tsuid + " is not supported for compression!");
+        case NATIVE:
+        case RLE:
+        case JPIP:
+        case MPEG:
+            throw new IllegalStateException(tsuid + " is not supported for compression!");
         }
         JpegWriteParam param = new JpegWriteParam(type, tsuid);
         param.losslessCompression = !TransferSyntaxType.isLossyCompression(tsuid);
@@ -137,11 +137,11 @@ public class JpegWriteParam {
     /**
      * JPEG-2000 Lossy compression ratio factor.
      *
-     * <p>Visually near-lossless typically achieves compression ratios of 10:1 to 20:1 (e.g.
-     * compressionRatioFactor = 10)
+     * <p>
+     * Visually near-lossless typically achieves compression ratios of 10:1 to 20:1 (e.g. compressionRatioFactor = 10)
      *
-     * <p>Lossy compression with acceptable degradation can have ratios of 50:1 to 100:1 (e.g.
-     * compressionRatioFactor = 50)
+     * <p>
+     * Lossy compression with acceptable degradation can have ratios of 50:1 to 100:1 (e.g. compressionRatioFactor = 50)
      *
      * @param compressionRatioFactor the compression ratio
      */
@@ -159,18 +159,18 @@ public class JpegWriteParam {
 
     public int getJpegMode() {
         switch (type) {
-            case JPEG_BASELINE:
-                return 0;
-            case JPEG_EXTENDED:
-                return 1;
-            case JPEG_SPECTRAL:
-                return 2;
-            case JPEG_PROGRESSIVE:
-                return 3;
-            case JPEG_LOSSLESS:
-                return 4;
-            default:
-                return 0;
+        case JPEG_BASELINE:
+            return 0;
+        case JPEG_EXTENDED:
+            return 1;
+        case JPEG_SPECTRAL:
+            return 2;
+        case JPEG_PROGRESSIVE:
+            return 3;
+        case JPEG_LOSSLESS:
+            return 4;
+        default:
+            return 0;
         }
     }
 
@@ -183,10 +183,7 @@ public class JpegWriteParam {
         if (sourceRegion == null) {
             return;
         }
-        if (sourceRegion.x < 0
-                || sourceRegion.y < 0
-                || sourceRegion.width <= 0
-                || sourceRegion.height <= 0) {
+        if (sourceRegion.x < 0 || sourceRegion.y < 0 || sourceRegion.width <= 0 || sourceRegion.height <= 0) {
             throw new IllegalArgumentException("sourceRegion has illegal values!");
         }
     }

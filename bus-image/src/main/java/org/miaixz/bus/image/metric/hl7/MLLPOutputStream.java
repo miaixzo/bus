@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.hl7;
 
 import java.io.FilterOutputStream;
@@ -44,7 +44,7 @@ public class MLLPOutputStream extends FilterOutputStream {
     /**
      * 消息结束
      */
-    private static final byte[] EOM = {0x1c, 0x0d};
+    private static final byte[] EOM = { 0x1c, 0x0d };
 
     private boolean somWritten;
 
@@ -59,8 +59,7 @@ public class MLLPOutputStream extends FilterOutputStream {
     }
 
     @Override
-    public synchronized void write(byte[] b, int off, int len)
-            throws IOException {
+    public synchronized void write(byte[] b, int off, int len) throws IOException {
         writeStartBlock();
         out.write(b, off, len);
     }
@@ -69,8 +68,7 @@ public class MLLPOutputStream extends FilterOutputStream {
         writeMessage(b, 0, b.length);
     }
 
-    public synchronized void writeMessage(byte[] b, int off, int len)
-            throws IOException {
+    public synchronized void writeMessage(byte[] b, int off, int len) throws IOException {
         if (somWritten)
             throw new IllegalStateException();
 

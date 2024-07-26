@@ -24,15 +24,14 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text.finder;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.CharKit;
 
 /**
- * 字符查找器
- * 查找指定字符在字符串中的位置信息
+ * 字符查找器 查找指定字符在字符串中的位置信息
  *
  * @author Kimi Liu
  * @since Java 17+

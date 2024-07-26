@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.data;
 
 import org.miaixz.bus.image.galaxy.io.ImageEncodingOptions;
@@ -81,11 +81,9 @@ public class Sequence extends ArrayList<Attributes> implements Value {
         boolean bigEndian = parent.bigEndian();
         for (Attributes attrs : c) {
             if (attrs.bigEndian() != bigEndian)
-                throw new IllegalArgumentException(
-                        "Endian of Item must match Endian of parent Data Set");
+                throw new IllegalArgumentException("Endian of Item must match Endian of parent Data Set");
             if (!attrs.isRoot())
-                throw new IllegalArgumentException(
-                        "Item already contained by Sequence");
+                throw new IllegalArgumentException("Item already contained by Sequence");
         }
         for (Attributes attrs : c)
             attrs.setParent(parent, privateCreator, tag);
@@ -174,12 +172,10 @@ public class Sequence extends ArrayList<Attributes> implements Value {
         int len = 0;
         for (Attributes item : this) {
             len += 8 + item.calcLength(encOpts, explicitVR);
-            if (item.isEmpty() ? encOpts.undefEmptyItemLength
-                    : encOpts.undefItemLength)
+            if (item.isEmpty() ? encOpts.undefEmptyItemLength : encOpts.undefItemLength)
                 len += 8;
         }
-        if (isEmpty() ? encOpts.undefEmptySequenceLength
-                : encOpts.undefSequenceLength)
+        if (isEmpty() ? encOpts.undefEmptySequenceLength : encOpts.undefSequenceLength)
             len += 8;
         length = len;
         return len;

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core;
 
 /**
@@ -36,8 +36,7 @@ package org.miaixz.bus.core;
 public interface Order extends Comparable<Order> {
 
     /**
-     * 优先级
-     * 越小优先级越高
+     * 优先级 越小优先级越高
      *
      * @return order
      */

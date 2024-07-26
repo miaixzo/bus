@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy;
 
 import org.miaixz.bus.core.xyz.StringKit;
@@ -44,10 +44,8 @@ public class RelatedSOPClasses {
 
     public void init(Properties props) {
         for (String cuid : props.stringPropertyNames()) {
-            commonExtNegs.put(
-                    cuid,
-                    new CommonExtended(
-                            cuid, UID.Storage.uid, StringKit.splitToArray(props.getProperty(cuid), ",")));
+            commonExtNegs.put(cuid,
+                    new CommonExtended(cuid, UID.Storage.uid, StringKit.splitToArray(props.getProperty(cuid), ",")));
         }
     }
 

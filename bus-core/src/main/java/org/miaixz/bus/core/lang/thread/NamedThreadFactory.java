@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.thread;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -38,8 +38,8 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 线程创建工厂类
- * 此工厂可选配置：
+ * 线程创建工厂类 此工厂可选配置：
+ * 
  * <pre>
  * 1. 自定义线程命名前缀
  * 2. 自定义是否守护线程
@@ -145,7 +145,8 @@ public class NamedThreadFactory implements ThreadFactory {
      * @param daemon   是否守护线程
      * @param priority 优先级
      */
-    public NamedThreadFactory(final Class<?> clazz, final String prefix, final ThreadGroup group, final boolean daemon, int priority) {
+    public NamedThreadFactory(final Class<?> clazz, final String prefix, final ThreadGroup group, final boolean daemon,
+            int priority) {
         this(clazz, prefix, group, daemon, priority, null);
     }
 
@@ -157,7 +158,8 @@ public class NamedThreadFactory implements ThreadFactory {
      * @param daemon  是否守护线程
      * @param handler 未捕获异常处理
      */
-    public NamedThreadFactory(final String prefix, ThreadGroup group, final boolean daemon, final UncaughtExceptionHandler handler) {
+    public NamedThreadFactory(final String prefix, ThreadGroup group, final boolean daemon,
+            final UncaughtExceptionHandler handler) {
         this(null, prefix, group, daemon, Thread.NORM_PRIORITY, handler);
     }
 
@@ -170,7 +172,8 @@ public class NamedThreadFactory implements ThreadFactory {
      * @param priority 优先级
      * @param handler  未捕获异常处理
      */
-    public NamedThreadFactory(final Class<?> clazz, final String prefix, ThreadGroup group, final boolean daemon, int priority, final UncaughtExceptionHandler handler) {
+    public NamedThreadFactory(final Class<?> clazz, final String prefix, ThreadGroup group, final boolean daemon,
+            int priority, final UncaughtExceptionHandler handler) {
         if (priority < Thread.MIN_PRIORITY || priority > Thread.MAX_PRIORITY) {
             throw new IllegalArgumentException(
                     "priority: " + priority + " (expected: Thread.MIN_PRIORITY <= priority <= Thread.MAX_PRIORITY)");

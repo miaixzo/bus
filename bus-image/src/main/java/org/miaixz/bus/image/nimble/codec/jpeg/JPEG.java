@@ -24,8 +24,9 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.codec.jpeg;
+
 /**
  * @author Kimi Liu
  * @since Java 17+
@@ -212,39 +213,39 @@ public class JPEG {
 
     public static boolean isStandalone(int marker) {
         switch (marker) {
-            case TEM:
-            case RST0:
-            case RST1:
-            case RST2:
-            case RST3:
-            case RST4:
-            case RST5:
-            case RST6:
-            case RST7:
-            case SOI:
-            case EOI:
-                return true;
+        case TEM:
+        case RST0:
+        case RST1:
+        case RST2:
+        case RST3:
+        case RST4:
+        case RST5:
+        case RST6:
+        case RST7:
+        case SOI:
+        case EOI:
+            return true;
         }
         return (marker & 0xF0) == JPEG2000_STANDALONE;
     }
 
     public static boolean isSOF(int marker) {
         switch (marker) {
-            case SOF0:
-            case SOF1:
-            case SOF2:
-            case SOF3:
-            case SOF5:
-            case SOF6:
-            case SOF7:
-            case SOF9:
-            case SOF10:
-            case SOF11:
-            case SOF13:
-            case SOF14:
-            case SOF15:
-            case SOF55:
-                return true;
+        case SOF0:
+        case SOF1:
+        case SOF2:
+        case SOF3:
+        case SOF5:
+        case SOF6:
+        case SOF7:
+        case SOF9:
+        case SOF10:
+        case SOF11:
+        case SOF13:
+        case SOF14:
+        case SOF15:
+        case SOF55:
+            return true;
         }
         return false;
     }

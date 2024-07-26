@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -71,16 +71,14 @@ public class StgCmtSCU {
     private int status;
     private final ImageService stgcmtResultHandler = new AbstractImageService(UID.StorageCommitmentPushModel.uid) {
         @Override
-        public void onDimseRQ(Association as, PresentationContext pc,
-                              Dimse dimse, Attributes cmd, Attributes data)
+        public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes cmd, Attributes data)
                 throws IOException {
             if (dimse != Dimse.N_EVENT_REPORT_RQ)
                 throw new ImageServiceException(Status.UnrecognizedOperation);
 
             int eventTypeID = cmd.getInt(Tag.EventTypeID, 0);
             if (eventTypeID != 1 && eventTypeID != 2)
-                throw new ImageServiceException(Status.NoSuchEventType)
-                        .setEventTypeID(eventTypeID);
+                throw new ImageServiceException(Status.NoSuchEventType).setEventTypeID(eventTypeID);
             String tuid = data.getString(Tag.TransactionUID);
             try {
                 Attributes rsp = Commands.mkNEventReportRSP(cmd, status);
@@ -143,23 +141,12 @@ public class StgCmtSCU {
     }
 
     public void setTransferSyntaxes(String[] tss) {
-        rq.addPresentationContext(
-                new PresentationContext(1, UID.Verification.uid,
-                        UID.ImplicitVRLittleEndian.uid));
-        rq.addPresentationContext(
-                new PresentationContext(2,
-                        UID.StorageCommitmentPushModel.uid,
-                        tss));
+        rq.addPresentationContext(new PresentationContext(1, UID.Verification.uid, UID.ImplicitVRLittleEndian.uid));
+        rq.addPresentationContext(new PresentationContext(2, UID.StorageCommitmentPushModel.uid, tss));
+        ae.addTransferCapability(new TransferCapability(null, UID.Verification.uid, TransferCapability.Role.SCP,
+                UID.ImplicitVRLittleEndian.uid));
         ae.addTransferCapability(
-                new TransferCapability(null,
-                        UID.Verification.uid,
-                        TransferCapability.Role.SCP,
-                        UID.ImplicitVRLittleEndian.uid));
-        ae.addTransferCapability(
-                new TransferCapability(null,
-                        UID.StorageCommitmentPushModel.uid,
-                        TransferCapability.Role.SCU,
-                        tss));
+                new TransferCapability(null, UID.StorageCommitmentPushModel.uid, TransferCapability.Role.SCU, tss));
     }
 
     public boolean addInstance(Attributes inst) {
@@ -178,8 +165,7 @@ public class StgCmtSCU {
         return true;
     }
 
-    public void open() throws IOException, InterruptedException,
-            InternalException, GeneralSecurityException {
+    public void open() throws IOException, InterruptedException, InternalException, GeneralSecurityException {
         as = ae.connect(remote, rq);
     }
 
@@ -252,14 +238,12 @@ public class StgCmtSCU {
             }
         };
 
-        as.naction(UID.StorageCommitmentPushModel.uid,
-                UID.StorageCommitmentPushModelInstance.uid,
-                1, actionInfo, null, rspHandler);
+        as.naction(UID.StorageCommitmentPushModel.uid, UID.StorageCommitmentPushModelInstance.uid, 1, actionInfo, null,
+                rspHandler);
         addOutstandingResult(tuid);
     }
 
-    private Attributes eventRecord(Association as, Attributes cmd, Attributes eventInfo)
-            throws ImageServiceException {
+    private Attributes eventRecord(Association as, Attributes cmd, Attributes eventInfo) throws ImageServiceException {
         if (storageDir == null)
             return null;
 
@@ -271,9 +255,7 @@ public class StgCmtSCU {
         Logger.info("{}: M-WRITE {}", as, file);
         try {
             out = new ImageOutputStream(file);
-            out.writeDataset(
-                    Attributes.createFileMetaInformation(iuid, cuid,
-                            UID.ExplicitVRLittleEndian.uid),
+            out.writeDataset(Attributes.createFileMetaInformation(iuid, cuid, UID.ExplicitVRLittleEndian.uid),
                     eventInfo);
         } catch (IOException e) {
             Logger.warn(as + ": Failed to store Storage Commitment Result:", e);

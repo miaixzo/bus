@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.builtin.ldap;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -63,15 +63,14 @@ public class LdapDicomConfigurationExtension {
             throws NamingException, InternalException {
     }
 
-    protected void loadFrom(Device device, Attributes attrs)
-            throws NamingException, CertificateException {
+    protected void loadFrom(Device device, Attributes attrs) throws NamingException, CertificateException {
     }
 
-    protected void loadChilds(Device device, String deviceDN)
-            throws NamingException, InternalException {
+    protected void loadChilds(Device device, String deviceDN) throws NamingException, InternalException {
     }
 
-    protected void storeDiffs(ConfigurationChanges.ModifiedObject ldapObj, Device prev, Device device, List<ModificationItem> mods) {
+    protected void storeDiffs(ConfigurationChanges.ModifiedObject ldapObj, Device prev, Device device,
+            List<ModificationItem> mods) {
     }
 
     protected void mergeChilds(ConfigurationChanges diffs, Device prev, Device device, String deviceDN)
@@ -84,15 +83,14 @@ public class LdapDicomConfigurationExtension {
     protected void storeChilds(ConfigurationChanges diffs, String aeDN, ApplicationEntity ae) {
     }
 
-    protected void loadFrom(ApplicationEntity ae, Attributes attrs)
-            throws NamingException {
+    protected void loadFrom(ApplicationEntity ae, Attributes attrs) throws NamingException {
     }
 
     protected void loadChilds(ApplicationEntity ae, String aeDN) throws NamingException, InternalException {
     }
 
     protected void storeDiffs(ConfigurationChanges.ModifiedObject ldapObj, ApplicationEntity a, ApplicationEntity b,
-                              List<ModificationItem> mods) {
+            List<ModificationItem> mods) {
     }
 
     protected void mergeChilds(ConfigurationChanges diffs, ApplicationEntity prev, ApplicationEntity ae, String aeDN) {

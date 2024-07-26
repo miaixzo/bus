@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.sensitive.magic.annotation;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -38,19 +38,14 @@ import org.miaixz.bus.sensitive.metric.StrategyProvider;
 import java.lang.annotation.*;
 
 /**
- * 标注在字段上,用以说明字段上那些类型需要脱敏
- * 脱敏后,插件在写请求后对数据脱敏后存在数据库,对读请求不拦截
- * 设计的考虑：
- * 本来想过将生效条件单独抽离为一个注解,这样可以达到条件注解的复用
- * 但是有一个缺点,当指定多个策略时,条件的注解就会太宽泛,无法保证精细到每一个策略生效的场景
- * 平衡的方式：
- * 在 Strategy 注解中,可以指定策略 默认是全部,如果指定,则只针对其中的某个策略生效
+ * 标注在字段上,用以说明字段上那些类型需要脱敏 脱敏后,插件在写请求后对数据脱敏后存在数据库,对读请求不拦截 设计的考虑： 本来想过将生效条件单独抽离为一个注解,这样可以达到条件注解的复用
+ * 但是有一个缺点,当指定多个策略时,条件的注解就会太宽泛,无法保证精细到每一个策略生效的场景 平衡的方式： 在 Strategy 注解中,可以指定策略 默认是全部,如果指定,则只针对其中的某个策略生效
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Documented
-@Target({ElementType.FIELD})
+@Target({ ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Shield {
 
@@ -62,16 +57,14 @@ public @interface Shield {
     String key() default Normal.EMPTY;
 
     /**
-     * 脱敏类型
-     * 不同的脱敏类型置换*的方式不同
+     * 脱敏类型 不同的脱敏类型置换*的方式不同
      *
      * @return the object
      */
     Builder.Type type() default Builder.Type.NONE;
 
     /**
-     * 脱敏模型
-     * 不同的脱敏类型脱敏模型可自定义模型
+     * 脱敏模型 不同的脱敏类型脱敏模型可自定义模型
      *
      * @return the object
      */

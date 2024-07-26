@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health;
 
 import org.miaixz.bus.core.convert.Convert;
@@ -55,10 +55,9 @@ import java.util.Properties;
 import java.util.function.Supplier;
 
 /**
- * System information. This is the main entry point.
- * This object provides getters which instantiate the appropriate
- * platform-specific implementations of {@link OperatingSystem}
- * (software) and {@link HardwareAbstractionLayer} (hardware).
+ * System information. This is the main entry point. This object provides getters which instantiate the appropriate
+ * platform-specific implementations of {@link OperatingSystem} (software) and {@link HardwareAbstractionLayer}
+ * (hardware).
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -163,7 +162,8 @@ public class Platform {
      * @return 路径前缀
      */
     public static String getNativeLibraryResourcePrefix() {
-        return getNativeLibraryResourcePrefix(getOSType(), System.getProperty("os.arch"), System.getProperty("os.name"));
+        return getNativeLibraryResourcePrefix(getOSType(), System.getProperty("os.arch"),
+                System.getProperty("os.name"));
     }
 
     /**
@@ -187,50 +187,50 @@ public class Platform {
             arch = "x86_64";
         }
         switch (osType) {
-            case com.sun.jna.Platform.ANDROID:
-                if (arch.startsWith("arm")) {
-                    arch = "arm";
-                }
-                osPrefix = "android-" + arch;
-                break;
-            case com.sun.jna.Platform.WINDOWS:
-                osPrefix = "win32-" + arch;
-                break;
-            case com.sun.jna.Platform.WINDOWSCE:
-                osPrefix = "w32ce-" + arch;
-                break;
-            case com.sun.jna.Platform.MAC:
-                osPrefix = "macos-" + arch;
-                break;
-            case com.sun.jna.Platform.LINUX:
-                osPrefix = "linux-" + arch;
-                break;
-            case com.sun.jna.Platform.SOLARIS:
-                osPrefix = "sunos-" + arch;
-                break;
-            case com.sun.jna.Platform.FREEBSD:
-                osPrefix = "freebsd-" + arch;
-                break;
-            case com.sun.jna.Platform.OPENBSD:
-                osPrefix = "openbsd-" + arch;
-                break;
-            case com.sun.jna.Platform.NETBSD:
-                osPrefix = "netbsd-" + arch;
-                break;
-            case com.sun.jna.Platform.KFREEBSD:
-                osPrefix = "kfreebsd-" + arch;
-                break;
-            case com.sun.jna.Platform.AIX:
-                osPrefix = "aix-" + arch;
-                break;
-            default:
-                osPrefix = name.toLowerCase();
-                int space = osPrefix.indexOf(Symbol.SPACE);
-                if (space != Normal.__1) {
-                    osPrefix = osPrefix.substring(0, space);
-                }
-                osPrefix += Symbol.MINUS + arch;
-                break;
+        case com.sun.jna.Platform.ANDROID:
+            if (arch.startsWith("arm")) {
+                arch = "arm";
+            }
+            osPrefix = "android-" + arch;
+            break;
+        case com.sun.jna.Platform.WINDOWS:
+            osPrefix = "win32-" + arch;
+            break;
+        case com.sun.jna.Platform.WINDOWSCE:
+            osPrefix = "w32ce-" + arch;
+            break;
+        case com.sun.jna.Platform.MAC:
+            osPrefix = "macos-" + arch;
+            break;
+        case com.sun.jna.Platform.LINUX:
+            osPrefix = "linux-" + arch;
+            break;
+        case com.sun.jna.Platform.SOLARIS:
+            osPrefix = "sunos-" + arch;
+            break;
+        case com.sun.jna.Platform.FREEBSD:
+            osPrefix = "freebsd-" + arch;
+            break;
+        case com.sun.jna.Platform.OPENBSD:
+            osPrefix = "openbsd-" + arch;
+            break;
+        case com.sun.jna.Platform.NETBSD:
+            osPrefix = "netbsd-" + arch;
+            break;
+        case com.sun.jna.Platform.KFREEBSD:
+            osPrefix = "kfreebsd-" + arch;
+            break;
+        case com.sun.jna.Platform.AIX:
+            osPrefix = "aix-" + arch;
+            break;
+        default:
+            osPrefix = name.toLowerCase();
+            int space = osPrefix.indexOf(Symbol.SPACE);
+            if (space != Normal.__1) {
+                osPrefix = osPrefix.substring(0, space);
+            }
+            osPrefix += Symbol.MINUS + arch;
+            break;
         }
         return osPrefix;
     }
@@ -375,8 +375,7 @@ public class Platform {
     }
 
     /**
-     * 返回Java虚拟机编译系统相关属性
-     * 如果没有编译系统,则返回<code>null</code>
+     * 返回Java虚拟机编译系统相关属性 如果没有编译系统,则返回<code>null</code>
      *
      * @return a {@link CompilationMXBean} ,如果没有编译系统,则返回<code>null</code>
      */
@@ -394,7 +393,8 @@ public class Platform {
     }
 
     /**
-     * Returns a list of {@link MemoryPoolMXBean} objects in the Java virtual machine. The Java virtual machine can have first or more memory pools. It may add or remove memory pools during execution.
+     * Returns a list of {@link MemoryPoolMXBean} objects in the Java virtual machine. The Java virtual machine can have
+     * first or more memory pools. It may add or remove memory pools during execution.
      *
      * @return a list of MemoryPoolMXBean objects.
      */
@@ -403,8 +403,8 @@ public class Platform {
     }
 
     /**
-     * Returns a list of {@link MemoryManagerMXBean} objects in the Java virtual machine. The Java virtual machine can have first or more memory managers. It may add or remove memory managers during
-     * execution.
+     * Returns a list of {@link MemoryManagerMXBean} objects in the Java virtual machine. The Java virtual machine can
+     * have first or more memory managers. It may add or remove memory managers during execution.
      *
      * @return a list of MemoryManagerMXBean objects.
      */
@@ -413,8 +413,9 @@ public class Platform {
     }
 
     /**
-     * Returns a list of {@link GarbageCollectorMXBean} objects in the Java virtual machine. The Java virtual machine may have first or more GarbageCollectorMXBean objects. It may add or remove
-     * GarbageCollectorMXBean during execution.
+     * Returns a list of {@link GarbageCollectorMXBean} objects in the Java virtual machine. The Java virtual machine
+     * may have first or more GarbageCollectorMXBean objects. It may add or remove GarbageCollectorMXBean during
+     * execution.
      *
      * @return a list of GarbageCollectorMXBean objects.
      */
@@ -433,45 +434,45 @@ public class Platform {
 
     private static OperatingSystem createOperatingSystem() {
         switch (CURRENT_PLATFORM) {
-            case WINDOWS:
-                return new WindowsOperatingSystem();
-            case LINUX:
-            case ANDROID:
-                return new LinuxOperatingSystem();
-            case MACOS:
-                return new MacOperatingSystem();
-            case SOLARIS:
-                return new SolarisOperatingSystem();
-            case FREEBSD:
-                return new FreeBsdOperatingSystem();
-            case AIX:
-                return new AixOperatingSystem();
-            case OPENBSD:
-                return new OpenBsdOperatingSystem();
-            default:
-                throw new UnsupportedOperationException(NOT_SUPPORTED + CURRENT_PLATFORM.getName());
+        case WINDOWS:
+            return new WindowsOperatingSystem();
+        case LINUX:
+        case ANDROID:
+            return new LinuxOperatingSystem();
+        case MACOS:
+            return new MacOperatingSystem();
+        case SOLARIS:
+            return new SolarisOperatingSystem();
+        case FREEBSD:
+            return new FreeBsdOperatingSystem();
+        case AIX:
+            return new AixOperatingSystem();
+        case OPENBSD:
+            return new OpenBsdOperatingSystem();
+        default:
+            throw new UnsupportedOperationException(NOT_SUPPORTED + CURRENT_PLATFORM.getName());
         }
     }
 
     private static HardwareAbstractionLayer createHardware() {
         switch (CURRENT_PLATFORM) {
-            case WINDOWS:
-                return new WindowsHardwareAbstractionLayer();
-            case LINUX:
-            case ANDROID:
-                return new LinuxHardwareAbstractionLayer();
-            case MACOS:
-                return new MacHardwareAbstractionLayer();
-            case SOLARIS:
-                return new SolarisHardwareAbstractionLayer();
-            case FREEBSD:
-                return new FreeBsdHardwareAbstractionLayer();
-            case AIX:
-                return new AixHardwareAbstractionLayer();
-            case OPENBSD:
-                return new OpenBsdHardwareAbstractionLayer();
-            default:
-                throw new UnsupportedOperationException(NOT_SUPPORTED + CURRENT_PLATFORM.getName());
+        case WINDOWS:
+            return new WindowsHardwareAbstractionLayer();
+        case LINUX:
+        case ANDROID:
+            return new LinuxHardwareAbstractionLayer();
+        case MACOS:
+            return new MacHardwareAbstractionLayer();
+        case SOLARIS:
+            return new SolarisHardwareAbstractionLayer();
+        case FREEBSD:
+            return new FreeBsdHardwareAbstractionLayer();
+        case AIX:
+            return new AixHardwareAbstractionLayer();
+        case OPENBSD:
+            return new OpenBsdHardwareAbstractionLayer();
+        default:
+            throw new UnsupportedOperationException(NOT_SUPPORTED + CURRENT_PLATFORM.getName());
         }
     }
 

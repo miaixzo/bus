@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.function.LambdaFactory;
@@ -52,32 +52,38 @@ public class LambdaKit {
     private static final WeakConcurrentMap<Object, LambdaX> CACHE = new WeakConcurrentMap<>();
 
     /**
-     * 通过对象的方法或类的静态方法引用，获取lambda实现类
-     * 传入lambda无参数但含有返回值的情况能够匹配到此方法：
+     * 通过对象的方法或类的静态方法引用，获取lambda实现类 传入lambda无参数但含有返回值的情况能够匹配到此方法：
      * <ul>
-     * 		<li>引用特定对象的实例方法：<pre>{@code
-     * 			MyTeacher myTeacher = new MyTeacher();
-     * 			Class<MyTeacher> supplierClass = LambdaKit.getRealClass(myTeacher::getAge);
-     * 			Assert.assertEquals(MyTeacher.class, supplierClass);
-     *            }</pre>
-     * 		</li>
-     * 		<li>引用静态无参方法：<pre>{@code
-     * 			Class<MyTeacher> staticSupplierClass = LambdaKit.getRealClass(MyTeacher::takeAge);
-     * 			Assert.assertEquals(MyTeacher.class, staticSupplierClass);
-     *            }</pre>
-     * 		</li>
+     * <li>引用特定对象的实例方法：
+     * 
+     * <pre>{@code
+     * MyTeacher myTeacher = new MyTeacher();
+     * Class<MyTeacher> supplierClass = LambdaKit.getRealClass(myTeacher::getAge);
+     * Assert.assertEquals(MyTeacher.class, supplierClass);
+     * }</pre>
+     * 
+     * </li>
+     * <li>引用静态无参方法：
+     * 
+     * <pre>{@code
+     * Class<MyTeacher> staticSupplierClass = LambdaKit.getRealClass(MyTeacher::takeAge);
+     * Assert.assertEquals(MyTeacher.class, staticSupplierClass);
+     * }</pre>
+     * 
+     * </li>
      * </ul>
      * 在以下场景无法获取到正确类型
+     * 
      * <pre>{@code
-     * 		// 枚举测试，只能获取到枚举类型
-     * 		Class<Enum<?>> enumSupplierClass = LambdaKit.getRealClass(LambdaKit.LambdaKindEnum.REF_NONE::ordinal);
-     * 		Assert.assertEquals(Enum.class, enumSupplierClass);
-     * 		// 调用父类方法，只能获取到父类类型
-     * 		Class<Entity<?>> superSupplierClass = LambdaKit.getRealClass(myTeacher::getId);
-     * 		Assert.assertEquals(Entity.class, superSupplierClass);
-     * 		// 引用父类静态带参方法，只能获取到父类类型
-     * 		Class<Entity<?>> staticSuperFunctionClass = LambdaKit.getRealClass(MyTeacher::takeId);
-     * 		Assert.assertEquals(Entity.class, staticSuperFunctionClass);
+     * // 枚举测试，只能获取到枚举类型
+     * Class<Enum<?>> enumSupplierClass = LambdaKit.getRealClass(LambdaKit.LambdaKindEnum.REF_NONE::ordinal);
+     * Assert.assertEquals(Enum.class, enumSupplierClass);
+     * // 调用父类方法，只能获取到父类类型
+     * Class<Entity<?>> superSupplierClass = LambdaKit.getRealClass(myTeacher::getId);
+     * Assert.assertEquals(Entity.class, superSupplierClass);
+     * // 引用父类静态带参方法，只能获取到父类类型
+     * Class<Entity<?>> staticSuperFunctionClass = LambdaKit.getRealClass(MyTeacher::takeId);
+     * Assert.assertEquals(Entity.class, staticSuperFunctionClass);
      * }</pre>
      *
      * @param func lambda
@@ -87,15 +93,12 @@ public class LambdaKit {
      */
     public static <R, T extends Serializable> Class<R> getRealClass(final T func) {
         final LambdaX lambdaX = resolve(func);
-        return (Class<R>) Optional.of(lambdaX)
-                .map(LambdaX::getInstantiatedMethodParameterTypes)
-                .filter(types -> types.length != 0).map(types -> types[types.length - 1])
-                .orElseGet(lambdaX::getClazz);
+        return (Class<R>) Optional.of(lambdaX).map(LambdaX::getInstantiatedMethodParameterTypes)
+                .filter(types -> types.length != 0).map(types -> types[types.length - 1]).orElseGet(lambdaX::getClazz);
     }
 
     /**
-     * 解析lambda表达式,加了缓存。
-     * 该缓存可能会在任意不定的时间被清除
+     * 解析lambda表达式,加了缓存。 该缓存可能会在任意不定的时间被清除
      *
      * @param func 需要解析的 lambda 对象（无参方法）
      * @param <T>  lambda的类型
@@ -139,10 +142,10 @@ public class LambdaKit {
     /**
      * 获取lambda表达式Getter或Setter函数（方法）对应的字段名称，规则如下：
      * <ul>
-     *     <li>getXxxx获取为xxxx，如getName得到name。</li>
-     *     <li>setXxxx获取为xxxx，如setName得到name。</li>
-     *     <li>isXxxx获取为xxxx，如isName得到name。</li>
-     *     <li>其它不满足规则的方法名抛出{@link IllegalArgumentException}</li>
+     * <li>getXxxx获取为xxxx，如getName得到name。</li>
+     * <li>setXxxx获取为xxxx，如setName得到name。</li>
+     * <li>isXxxx获取为xxxx，如isName得到name。</li>
+     * <li>其它不满足规则的方法名抛出{@link IllegalArgumentException}</li>
      * </ul>
      *
      * @param func 函数
@@ -221,7 +224,8 @@ public class LambdaKit {
      * @param <F>         函数式接口类型
      * @return Obj::method
      */
-    public static <F> F build(final Class<F> lambdaType, final Class<?> clazz, final String methodName, final Class<?>... paramsTypes) {
+    public static <F> F build(final Class<F> lambdaType, final Class<?> clazz, final String methodName,
+            final Class<?>... paramsTypes) {
         return LambdaFactory.build(lambdaType, clazz, methodName, paramsTypes);
     }
 
@@ -283,8 +287,7 @@ public class LambdaKit {
      * 解析lambda表达式,没加缓存
      *
      * <p>
-     * 通过反射调用实现序列化接口函数对象的writeReplace方法，从而拿到{@link SerializedLambda}
-     * 该对象中包含了lambda表达式的大部分信息。
+     * 通过反射调用实现序列化接口函数对象的writeReplace方法，从而拿到{@link SerializedLambda} 该对象中包含了lambda表达式的大部分信息。
      * </p>
      *
      * @param func 需要解析的 lambda 对象

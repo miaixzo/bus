@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import org.miaixz.bus.gitlab.GitLabApiForm;
@@ -64,7 +64,9 @@ public class ApprovalRuleParams implements Serializable {
     }
 
     /**
-     * @param appliesToAllProtectedBranches Whether the rule is applied to all protected branches. If set to true, the value of protected_branch_ids is ignored. Default is false. Introduced in GitLab 15.3.
+     * @param appliesToAllProtectedBranches Whether the rule is applied to all protected branches. If set to true, the
+     *                                      value of protected_branch_ids is ignored. Default is false. Introduced in
+     *                                      GitLab 15.3.
      * @return this ApprovalRuleParams instance
      */
     public ApprovalRuleParams withAppliesToAllProtectedBranches(Boolean appliesToAllProtectedBranches) {
@@ -91,7 +93,8 @@ public class ApprovalRuleParams implements Serializable {
     }
 
     /**
-     * @param reportType The report type required when the rule type is report_approver. The supported report types are license_scanning (Deprecated in GitLab 15.9) and code_coverage.
+     * @param reportType The report type required when the rule type is report_approver. The supported report types are
+     *                   license_scanning (Deprecated in GitLab 15.9) and code_coverage.
      * @return this ApprovalRuleParams instance
      */
     public ApprovalRuleParams withReportType(String reportType) {
@@ -100,7 +103,8 @@ public class ApprovalRuleParams implements Serializable {
     }
 
     /**
-     * @param ruleType The type of rule. any_approver is a pre-configured default rule with approvals_required at 0. Other rules are regular and report_approver.
+     * @param ruleType The type of rule. any_approver is a pre-configured default rule with approvals_required at 0.
+     *                 Other rules are regular and report_approver.
      * @return this ApprovalRuleParams instance
      */
     public ApprovalRuleParams withRuleType(String ruleType) {
@@ -109,7 +113,8 @@ public class ApprovalRuleParams implements Serializable {
     }
 
     /**
-     * @param userIds The IDs of users as approvers. If you provide both user_ids and usernames, both lists of users are added.
+     * @param userIds The IDs of users as approvers. If you provide both user_ids and usernames, both lists of users are
+     *                added.
      * @return this ApprovalRuleParams instance
      */
     public ApprovalRuleParams withUserIds(List<Long> userIds) {
@@ -118,7 +123,8 @@ public class ApprovalRuleParams implements Serializable {
     }
 
     /**
-     * @param usernames The usernames of approvers for this rule (same as user_ids but requires a list of usernames). If you provide both user_ids and usernames, both lists of users are added.
+     * @param usernames The usernames of approvers for this rule (same as user_ids but requires a list of usernames). If
+     *                  you provide both user_ids and usernames, both lists of users are added.
      * @return this ApprovalRuleParams instance
      */
     public ApprovalRuleParams withUsernames(List<String> usernames) {
@@ -132,15 +138,11 @@ public class ApprovalRuleParams implements Serializable {
      * @return a GitLabApiForm instance holding the form parameters for this ApprovalRuleParams instance
      */
     public GitLabApiForm getForm() {
-        return new GitLabApiForm()
-                .withParam("approvals_required", approvalsRequired, true)
+        return new GitLabApiForm().withParam("approvals_required", approvalsRequired, true)
                 .withParam("name", name, true)
                 .withParam("applies_to_all_protected_branches", appliesToAllProtectedBranches)
-                .withParam("group_ids", groupIds)
-                .withParam("protected_branch_ids", protectedBranchIds)
-                .withParam("report_type", reportType)
-                .withParam("rule_type", ruleType)
-                .withParam("user_ids", userIds)
+                .withParam("group_ids", groupIds).withParam("protected_branch_ids", protectedBranchIds)
+                .withParam("report_type", reportType).withParam("rule_type", ruleType).withParam("user_ids", userIds)
                 .withParam("usernames", usernames);
     }
 }

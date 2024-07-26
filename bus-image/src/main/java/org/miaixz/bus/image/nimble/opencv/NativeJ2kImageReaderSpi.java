@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv;
 
 import org.miaixz.bus.core.Version;
@@ -41,13 +41,13 @@ import java.util.Locale;
  */
 public class NativeJ2kImageReaderSpi extends ImageReaderSpi {
 
-    static final String[] SUFFIXES = {"jp2", "jp2k", "j2k", "j2c"};
-    static final String[] NAMES = {"jpeg2000-cv", "jpeg2000", "JP2KSimpleBox", "jpeg 2000", "JPEG 2000", "JPEG2000"};
-    static final String[] MIMES = {"image/jp2", "image/jp2k", "image/j2k", "image/j2c"};
+    static final String[] SUFFIXES = { "jp2", "jp2k", "j2k", "j2c" };
+    static final String[] NAMES = { "jpeg2000-cv", "jpeg2000", "JP2KSimpleBox", "jpeg 2000", "JPEG 2000", "JPEG2000" };
+    static final String[] MIMES = { "image/jp2", "image/jp2k", "image/j2k", "image/j2c" };
 
     public NativeJ2kImageReaderSpi() {
         super("Miaixz Team", Version._VERSION, NAMES, SUFFIXES, MIMES, NativeImageReader.class.getName(),
-                new Class[]{ImageInputStream.class}, new String[]{}, false, // supportsStandardStreamMetadataFormat
+                new Class[] { ImageInputStream.class }, new String[] {}, false, // supportsStandardStreamMetadataFormat
                 null, // nativeStreamMetadataFormatName
                 null, // nativeStreamMetadataFormatClassName
                 null, // extraStreamMetadataFormatNames

@@ -24,8 +24,9 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
+
 /**
  * @author Kimi Liu
  * @since Java 17+
@@ -59,7 +60,7 @@ public class ShortLookupTable extends LookupTable {
 
     @Override
     public void lookup(byte[] src, int srcPos, byte[] dest, int destPos, int length) {
-        for (int i = srcPos, endPos = srcPos + length, j = destPos; i < endPos; )
+        for (int i = srcPos, endPos = srcPos + length, j = destPos; i < endPos;)
             dest[j++] = (byte) lut[index(src[i++] & 0xff)];
     }
 
@@ -70,19 +71,19 @@ public class ShortLookupTable extends LookupTable {
 
     @Override
     public void lookup(short[] src, int srcPos, byte[] dest, int destPos, int length) {
-        for (int i = srcPos, endPos = srcPos + length, j = destPos; i < endPos; )
+        for (int i = srcPos, endPos = srcPos + length, j = destPos; i < endPos;)
             dest[j++] = (byte) lut[index(src[i++] & 0xffff)];
     }
 
     @Override
     public void lookup(byte[] src, int srcPos, short[] dest, int destPos, int length) {
-        for (int i = srcPos, endPos = srcPos + length, j = destPos; i < endPos; )
+        for (int i = srcPos, endPos = srcPos + length, j = destPos; i < endPos;)
             dest[j++] = lut[index(src[i++] & 0xff)];
     }
 
     @Override
     public void lookup(short[] src, int srcPos, short[] dest, int destPos, int length) {
-        for (int i = srcPos, endPos = srcPos + length, j = destPos; i < endPos; )
+        for (int i = srcPos, endPos = srcPos + length, j = destPos; i < endPos;)
             dest[j++] = lut[index(src[i++] & 0xffff)];
     }
 

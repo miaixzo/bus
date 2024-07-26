@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.spring;
 
 import org.miaixz.bus.core.lang.Keys;
@@ -56,8 +56,7 @@ public class GeniusBuilder {
             " ██╔████╔██║██║███████║██║ ╚███╔╝   ███╔╝    ██║   ██║██████╔╝██║  ███╗ ",
             " ██║╚██╔╝██║██║██╔══██║██║ ██╔██╗  ███╔╝     ██║   ██║██╔══██╗██║   ██║ ",
             " ██║ ╚═╝ ██║██║██║  ██║██║██╔╝ ██╗███████╗██╗╚██████╔╝██║  ██║╚██████╔╝ ",
-            " ╚═╝     ╚═╝╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝  "
-    };
+            " ╚═╝     ╚═╝╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═╝ ╚═════╝  " };
 
     /**
      * Bus key
@@ -280,18 +279,23 @@ public class GeniusBuilder {
     public static final String CLOUD_BOOTSTRAP_CONFIGURATION_CLASS = "org.springframework.cloud.bootstrap.BootstrapConfiguration";
 
     /**
-     * The running stage since JVM started to {@link SpringApplicationRunListener#started(ConfigurableApplicationContext, Duration)} ()}
+     * The running stage since JVM started to
+     * {@link SpringApplicationRunListener#started(ConfigurableApplicationContext, Duration)} ()}
      */
     public static final String JVM_STARTING_STAGE = "JvmStartingStage";
 
     /**
-     * The running stage since {@link SpringApplicationRunListener#started(ConfigurableApplicationContext, Duration)} ()} to
-     * {@link SpringApplicationRunListener#environmentPrepared(ConfigurableBootstrapContext, ConfigurableEnvironment)} (ConfigurableEnvironment)}}
+     * The running stage since {@link SpringApplicationRunListener#started(ConfigurableApplicationContext, Duration)}
+     * ()} to
+     * {@link SpringApplicationRunListener#environmentPrepared(ConfigurableBootstrapContext, ConfigurableEnvironment)}
+     * (ConfigurableEnvironment)}}
      */
     public static final String ENVIRONMENT_PREPARE_STAGE = "EnvironmentPrepareStage";
 
     /**
-     * The running stage since {@link SpringApplicationRunListener#environmentPrepared(ConfigurableBootstrapContext, ConfigurableEnvironment)} (ConfigurableEnvironment)} to
+     * The running stage since
+     * {@link SpringApplicationRunListener#environmentPrepared(ConfigurableBootstrapContext, ConfigurableEnvironment)}
+     * (ConfigurableEnvironment)} to
      * {@link SpringApplicationRunListener#contextPrepared(ConfigurableApplicationContext)}}
      */
     public static final String APPLICATION_CONTEXT_PREPARE_STAGE = "ApplicationContextPrepareStage";
@@ -330,8 +334,7 @@ public class GeniusBuilder {
      * @return true indicates spring cloud Bootstrap environment enabled
      */
     public static boolean isSpringCloudEnvironmentEnabled(Environment environment) {
-        return ClassKit.isPresent(CLOUD_BOOTSTRAP_CONFIGURATION_CLASS, null)
-                && bootstrapEnabled(environment);
+        return ClassKit.isPresent(CLOUD_BOOTSTRAP_CONFIGURATION_CLASS, null) && bootstrapEnabled(environment);
     }
 
     public static boolean bootstrapEnabled(Environment environment) {
@@ -372,7 +375,7 @@ public class GeniusBuilder {
         for (StackTraceElement stackTraceElement : stackTrace) {
             if ("loadContext".equals(stackTraceElement.getMethodName())
                     && "org.springframework.boot.test.context.SpringBootContextLoader"
-                    .equals(stackTraceElement.getClassName())) {
+                            .equals(stackTraceElement.getClassName())) {
                 TEST_ENV = true;
                 break;
             }
@@ -380,19 +383,15 @@ public class GeniusBuilder {
     }
 
     public static boolean isLoggingConfig(String key) {
-        return isLoggingPrefix(key)
-                || LOGGING_PATH.equals(key)
-                || Keys.FILE_ENCODING.equals(key);
+        return isLoggingPrefix(key) || LOGGING_PATH.equals(key) || Keys.FILE_ENCODING.equals(key);
     }
 
     public static boolean isLoggingPrefix(String key) {
-        return key.startsWith(LOGGING_LEVEL_PREFIX)
-                || key.startsWith(LOGGING_PATH_PREFIX);
+        return key.startsWith(LOGGING_LEVEL_PREFIX) || key.startsWith(LOGGING_PATH_PREFIX);
     }
 
     public static boolean isLoggingPattern(String key) {
-        return LOGGING_PATTERN_CONSOLE.equals(key)
-                || LOGGING_PATTERN_FILE.equals(key);
+        return LOGGING_PATTERN_CONSOLE.equals(key) || LOGGING_PATTERN_FILE.equals(key);
     }
 
 }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.goalie.handler;
 
 import org.miaixz.bus.core.xyz.AnnoKit;
@@ -102,9 +102,8 @@ public class ApiRequestMappingHandlerMapping extends RequestMappingHandlerMappin
         if (null == apiVersion || StringKit.isBlank(apiVersion.value())) {
             apiVersion = AnnoKit.getAnnotation(handlerType, ApiVersion.class);
         }
-        return null == apiVersion || StringKit.isBlank(apiVersion.value()) ? null : RequestMappingInfo
-                .paths(apiVersion.value())
-                .build();
+        return null == apiVersion || StringKit.isBlank(apiVersion.value()) ? null
+                : RequestMappingInfo.paths(apiVersion.value()).build();
     }
 
 }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang;
 
 import org.miaixz.bus.core.center.function.SupplierX;
@@ -157,9 +157,8 @@ public class Optional<T> {
      * 如果元素为空，则返回{@code null}，如果需要一个绝对不能为{@code null}的值，则使用{@link #orElseThrow()}
      *
      * <p>
-     * 如果需要一个绝对不能为 {@code null}的值，则使用{@link #orElseThrow()}
-     * 做此处修改的原因是，有时候我们确实需要返回一个null给前端，并且这样的时候并不少见
-     * 而使用 {@code .orElse(null)}需要写整整12个字符，用{@code .get()}就只需要6个啦
+     * 如果需要一个绝对不能为 {@code null}的值，则使用{@link #orElseThrow()} 做此处修改的原因是，有时候我们确实需要返回一个null给前端，并且这样的时候并不少见 而使用
+     * {@code .orElse(null)}需要写整整12个字符，用{@code .get()}就只需要6个啦
      *
      * @return 包裹里的元素，有可能为{@code null}
      */
@@ -170,16 +169,14 @@ public class Optional<T> {
     /**
      * 判断包裹里元素的值是否不存在，不存在为 {@code true}，否则为{@code false}
      *
-     * @return 包裹里元素的值不存在 则为 {@code true}，否则为{@code false}
-     * 这是jdk11{@link java.util.Optional}中的新函数
+     * @return 包裹里元素的值不存在 则为 {@code true}，否则为{@code false} 这是jdk11{@link java.util.Optional}中的新函数
      */
     public boolean isEmpty() {
         return value == null;
     }
 
     /**
-     * 获取异常
-     * 当调用 {@link #ofTry(SupplierX)}时，异常信息不会抛出，而是保存，调用此方法获取抛出的异常
+     * 获取异常 当调用 {@link #ofTry(SupplierX)}时，异常信息不会抛出，而是保存，调用此方法获取抛出的异常
      *
      * @return 异常
      */
@@ -188,8 +185,7 @@ public class Optional<T> {
     }
 
     /**
-     * 是否失败
-     * 当调用 {@link #ofTry(SupplierX)}时，抛出异常则表示失败
+     * 是否失败 当调用 {@link #ofTry(SupplierX)}时，抛出异常则表示失败
      *
      * @return 是否失败
      */
@@ -200,9 +196,11 @@ public class Optional<T> {
     /**
      * 如果包裹内容失败了，则执行传入的操作({@link Consumer#accept})
      *
-     * <p> 例如执行有异常就打印结果
+     * <p>
+     * 例如执行有异常就打印结果
+     * 
      * <pre>{@code
-     *     Optional.ofTry(() -> 1 / 0).ifFail(Console::logger);
+     * Optional.ofTry(() -> 1 / 0).ifFail(Console::logger);
      * }</pre>
      *
      * @param action 你想要执行的操作
@@ -222,9 +220,11 @@ public class Optional<T> {
     /**
      * 如果包裹内容失败了，同时是指定的异常执行传入的操作({@link Consumer#accept})
      *
-     * <p> 例如如果值存在就打印结果
+     * <p>
+     * 例如如果值存在就打印结果
+     * 
      * <pre>{@code
-     *     Optional.ofTry(() -> 1 / 0).ifFail(Console::logger, ArithmeticException.class);
+     * Optional.ofTry(() -> 1 / 0).ifFail(Console::logger, ArithmeticException.class);
      * }</pre>
      *
      * @param action 你想要执行的操作
@@ -233,7 +233,8 @@ public class Optional<T> {
      * @throws NullPointerException 如果包裹里的值存在，但你传入的操作为{@code null}时抛出
      */
     @SafeVarargs
-    public final Optional<T> ifFail(final Consumer<? super Throwable> action, final Class<? extends Throwable>... exs) throws NullPointerException {
+    public final Optional<T> ifFail(final Consumer<? super Throwable> action, final Class<? extends Throwable>... exs)
+            throws NullPointerException {
         Objects.requireNonNull(action, "action is null");
 
         if (isFail() && EasyStream.of(exs).anyMatch(e -> e.isAssignableFrom(throwable.getClass()))) {
@@ -255,7 +256,9 @@ public class Optional<T> {
     /**
      * 如果包裹里的值存在，就执行传入的操作({@link Consumer#accept})
      *
-     * <p> 例如如果值存在就打印结果
+     * <p>
+     * 例如如果值存在就打印结果
+     * 
      * <pre>{@code
      * Optional.ofNullable("Hello!").ifPresent(Console::logger);
      * }</pre>
@@ -272,9 +275,7 @@ public class Optional<T> {
     }
 
     /**
-     * 判断包裹里的值存在并且与给定的条件是否满足 ({@link Predicate#test}执行结果是否为true)
-     * 如果满足条件则返回本身
-     * 不满足条件或者元素本身为空时返回一个返回一个空的{@code Optional}
+     * 判断包裹里的值存在并且与给定的条件是否满足 ({@link Predicate#test}执行结果是否为true) 如果满足条件则返回本身 不满足条件或者元素本身为空时返回一个返回一个空的{@code Optional}
      *
      * @param predicate 给定的条件
      * @return 如果满足条件则返回本身, 不满足条件或者元素本身为空时返回一个空的{@code Optional}
@@ -290,13 +291,11 @@ public class Optional<T> {
     }
 
     /**
-     * 如果包裹里的值存在，就执行传入的操作({@link Function#apply})并返回一个包裹了该操作返回值的{@code Optional}
-     * 如果不存在，返回一个空的{@code Optional}
+     * 如果包裹里的值存在，就执行传入的操作({@link Function#apply})并返回一个包裹了该操作返回值的{@code Optional} 如果不存在，返回一个空的{@code Optional}
      *
      * @param mapper 值存在时执行的操作
      * @param <U>    操作返回值的类型
-     * @return 如果包裹里的值存在，就执行传入的操作({@link Function#apply})并返回一个包裹了该操作返回值的{@code Optional}，
-     * 如果不存在，返回一个空的{@code Optional}
+     * @return 如果包裹里的值存在，就执行传入的操作({@link Function#apply})并返回一个包裹了该操作返回值的{@code Optional}， 如果不存在，返回一个空的{@code Optional}
      * @throws NullPointerException 如果给定的操作为 {@code null}，抛出 {@code NPE}
      */
     public <U> Optional<U> map(final Function<? super T, ? extends U> mapper) {
@@ -311,14 +310,12 @@ public class Optional<T> {
     }
 
     /**
-     * 如果包裹里的值存在，就执行传入的操作({@link Function#apply})并返回该操作返回值
-     * 如果不存在，返回一个空的{@code Optional}
-     * 和 {@link Optional#map}的区别为 传入的操作返回值必须为 Optional
+     * 如果包裹里的值存在，就执行传入的操作({@link Function#apply})并返回该操作返回值 如果不存在，返回一个空的{@code Optional} 和 {@link Optional#map}的区别为
+     * 传入的操作返回值必须为 Optional
      *
      * @param mapper 值存在时执行的操作
      * @param <U>    操作返回值的类型
-     * @return 如果包裹里的值存在，就执行传入的操作({@link Function#apply})并返回该操作返回值
-     * 如果不存在，返回一个空的{@code Optional}
+     * @return 如果包裹里的值存在，就执行传入的操作({@link Function#apply})并返回该操作返回值 如果不存在，返回一个空的{@code Optional}
      * @throws NullPointerException 如果给定的操作为 {@code null}或者给定的操作执行结果为 {@code null}，抛出 {@code NPE}
      */
     public <U> Optional<U> flatMap(final Function<? super T, ? extends Optional<? extends U>> mapper) {
@@ -334,14 +331,12 @@ public class Optional<T> {
     }
 
     /**
-     * 如果包裹里的值存在，就执行传入的操作({@link Function#apply})并返回该操作返回值
-     * 如果不存在，返回一个空的{@code Optional}
-     * 和 {@link Optional#map}的区别为 传入的操作返回值必须为 {@link java.util.Optional}
+     * 如果包裹里的值存在，就执行传入的操作({@link Function#apply})并返回该操作返回值 如果不存在，返回一个空的{@code Optional} 和 {@link Optional#map}的区别为
+     * 传入的操作返回值必须为 {@link java.util.Optional}
      *
      * @param mapper 值存在时执行的操作
      * @param <U>    操作返回值的类型
-     * @return 如果包裹里的值存在，就执行传入的操作({@link Function#apply})并返回该操作返回值
-     * 如果不存在，返回一个空的{@code Optional}
+     * @return 如果包裹里的值存在，就执行传入的操作({@link Function#apply})并返回该操作返回值 如果不存在，返回一个空的{@code Optional}
      * @throws NullPointerException 如果给定的操作为 {@code null}或者给定的操作执行结果为 {@code null}，抛出 {@code NPE}
      * @see java.util.Optional#flatMap(Function)
      */
@@ -357,10 +352,10 @@ public class Optional<T> {
     }
 
     /**
-     * 如果包裹里元素的值存在，就执行对应的操作，并返回本身
-     * 如果不存在，返回一个空的{@code Optional}
+     * 如果包裹里元素的值存在，就执行对应的操作，并返回本身 如果不存在，返回一个空的{@code Optional}
      *
-     * <p>属于 {@link #ifPresent}的链式拓展
+     * <p>
+     * 属于 {@link #ifPresent}的链式拓展
      *
      * @param action 值存在时执行的操作
      * @return this
@@ -370,13 +365,13 @@ public class Optional<T> {
         return ifPresent(action);
     }
 
-
     /**
-     * 如果包裹里元素的值存在，就执行对应的操作集，并返回本身
-     * 如果不存在，返回一个空的{@code Optional}
+     * 如果包裹里元素的值存在，就执行对应的操作集，并返回本身 如果不存在，返回一个空的{@code Optional}
      *
-     * <p>属于 {@link #ifPresent}的链式拓展
-     * <p>属于 {@link #peek(Consumer)}的动态拓展
+     * <p>
+     * 属于 {@link #ifPresent}的链式拓展
+     * <p>
+     * 属于 {@link #peek(Consumer)}的动态拓展
      *
      * @param actions 值存在时执行的操作，动态参数，可传入数组，当数组为一个空数组时并不会抛出 {@code NPE}
      * @return this
@@ -406,10 +401,11 @@ public class Optional<T> {
     }
 
     /**
-     * 如果包裹里元素的值存在，就返回一个包含该元素的 {@link Stream},
-     * 否则返回一个空元素的 {@link Stream}
+     * 如果包裹里元素的值存在，就返回一个包含该元素的 {@link Stream}, 否则返回一个空元素的 {@link Stream}
      *
-     * <p> 该方法能将 Optional 中的元素传递给 {@link Stream}
+     * <p>
+     * 该方法能将 Optional 中的元素传递给 {@link Stream}
+     * 
      * <pre>{@code
      *     Stream<Optional<T>> os = ..
      *     Stream<T> s = os.flatMap(Optional::stream)
@@ -495,7 +491,8 @@ public class Optional<T> {
 
     /**
      * 如果包裹里的值存在，则返回该值，否则执行传入的操作，获取异常类型的返回值并抛出
-     * <p>往往是一个包含无参构造器的异常 例如传入{@code IllegalStateException::new}
+     * <p>
+     * 往往是一个包含无参构造器的异常 例如传入{@code IllegalStateException::new}
      *
      * @param <X>               异常类型
      * @param exceptionSupplier 值不存在时执行的操作，返回值继承 {@link Throwable}
@@ -530,8 +527,7 @@ public class Optional<T> {
     }
 
     /**
-     * 判断传入参数是否与 {@code Optional}相等
-     * 在以下情况下返回true
+     * 判断传入参数是否与 {@code Optional}相等 在以下情况下返回true
      * <ul>
      * <li>它也是一个 {@code Optional} 并且
      * <li>它们包裹住的元素都为空 或者
@@ -539,9 +535,8 @@ public class Optional<T> {
      * </ul>
      *
      * @param obj 一个要用来判断是否相等的参数
-     * @return 如果传入的参数也是一个 {@code Optional}并且它们包裹住的元素都为空
-     * 或者它们包裹住的元素之间相互 {@code equals()} 就返回{@code true}
-     * 否则返回 {@code false}
+     * @return 如果传入的参数也是一个 {@code Optional}并且它们包裹住的元素都为空 或者它们包裹住的元素之间相互 {@code equals()} 就返回{@code true} 否则返回
+     *         {@code false}
      */
     @Override
     public boolean equals(final Object obj) {

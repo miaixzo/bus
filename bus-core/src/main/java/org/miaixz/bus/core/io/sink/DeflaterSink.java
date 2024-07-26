@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.sink;
 
 import org.miaixz.bus.core.io.LifeCycle;
@@ -38,8 +38,7 @@ import java.io.IOException;
 import java.util.zip.Deflater;
 
 /**
- * 这种流体的强冲刷可能导致压缩降低 每一个
- * 调用{@link #flush}立即压缩所有当前缓存的数据
+ * 这种流体的强冲刷可能导致压缩降低 每一个 调用{@link #flush}立即压缩所有当前缓存的数据
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -55,13 +54,14 @@ public class DeflaterSink implements Sink {
     }
 
     /**
-     * This package-private constructor shares a buffer with its trusted caller.
-     * In general we can't share a BufferedSource because the deflater holds input
-     * bytes until they are inflated.
+     * This package-private constructor shares a buffer with its trusted caller. In general we can't share a
+     * BufferedSource because the deflater holds input bytes until they are inflated.
      */
     DeflaterSink(BufferSink sink, Deflater deflater) {
-        if (sink == null) throw new IllegalArgumentException("source == null");
-        if (deflater == null) throw new IllegalArgumentException("inflater == null");
+        if (sink == null)
+            throw new IllegalArgumentException("source == null");
+        if (deflater == null)
+            throw new IllegalArgumentException("inflater == null");
         this.sink = sink;
         this.deflater = deflater;
     }
@@ -131,7 +131,8 @@ public class DeflaterSink implements Sink {
 
     @Override
     public void close() throws IOException {
-        if (closed) return;
+        if (closed)
+            return;
 
         // Emit deflated data to the underlying sink. If this fails, we still need
         // to close the deflater and the sink; otherwise we risk leaking resources.
@@ -145,17 +146,20 @@ public class DeflaterSink implements Sink {
         try {
             deflater.end();
         } catch (Throwable e) {
-            if (thrown == null) thrown = e;
+            if (thrown == null)
+                thrown = e;
         }
 
         try {
             sink.close();
         } catch (Throwable e) {
-            if (thrown == null) thrown = e;
+            if (thrown == null)
+                thrown = e;
         }
         closed = true;
 
-        if (thrown != null) IoKit.sneakyRethrow(thrown);
+        if (thrown != null)
+            IoKit.sneakyRethrow(thrown);
     }
 
     @Override

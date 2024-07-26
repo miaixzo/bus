@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.screw.dialect;
 
 import lombok.Getter;
@@ -160,13 +160,13 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
      */
     private Connection getConnection() throws InternalException {
         try {
-            //不为空
+            // 不为空
             if (!Objects.isNull(connection) && !connection.isClosed()) {
                 return connection;
             }
-            //同步代码块
+            // 同步代码块
             synchronized (AbstractDatabaseQuery.class) {
-                //为空或者已经关闭
+                // 为空或者已经关闭
                 if (Objects.isNull(connection) || connection.isClosed()) {
                     this.connection = this.getDataSource().getConnection();
                 }
@@ -204,9 +204,9 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
     protected String getSchema() throws InternalException {
         try {
             String schema;
-            //获取数据库URL 用于判断数据库类型
+            // 获取数据库URL 用于判断数据库类型
             String url = this.getDataSource().getConnection().getMetaData().getURL();
-            //获取数据库名称
+            // 获取数据库名称
             String name = DatabaseType.getDbType(url).getName();
             if (DatabaseType.CACHEDB.getName().equals(name)) {
                 schema = verifySchema(this.getDataSource());
@@ -232,7 +232,7 @@ public abstract class AbstractDatabaseQuery implements DatabaseQuery {
     private String verifySchema(DataSource dataSource) throws SQLException {
         String schema = dataSource.getConnection().getSchema();
 
-        //验证是否有此Schema
+        // 验证是否有此Schema
         ResultSet resultSet = this.getConnection().getMetaData().getSchemas();
         while (resultSet.next()) {
             int columnCount = resultSet.getMetaData().getColumnCount();

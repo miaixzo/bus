@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.goalie;
 
 import jakarta.annotation.Resource;
@@ -67,7 +67,7 @@ import java.util.List;
  * @since Java 17+
  */
 @ConditionalOnWebApplication
-@EnableConfigurationProperties(value = {GoalieProperties.class})
+@EnableConfigurationProperties(value = { GoalieProperties.class })
 public class GoalieConfiguration {
 
     @Resource
@@ -99,7 +99,8 @@ public class GoalieConfiguration {
     @Bean
     WebFilter decryptFilter() {
         return this.goalieProperties.getServer().getDecrypt().isEnabled()
-                ? new DecryptFilter(this.goalieProperties.getServer().getDecrypt()) : null;
+                ? new DecryptFilter(this.goalieProperties.getServer().getDecrypt())
+                : null;
     }
 
     @Bean
@@ -110,13 +111,13 @@ public class GoalieConfiguration {
     @Bean
     WebFilter encryptFilter() {
         return this.goalieProperties.getServer().getEncrypt().isEnabled()
-                ? new EncryptFilter(this.goalieProperties.getServer().getEncrypt()) : null;
+                ? new EncryptFilter(this.goalieProperties.getServer().getEncrypt())
+                : null;
     }
 
     @Bean
     WebFilter limitFilter(LimiterRegistry registry) {
-        return this.goalieProperties.getServer().getLimit().isEnabled()
-                ? new LimitFilter(registry) : null;
+        return this.goalieProperties.getServer().getLimit().isEnabled() ? new LimitFilter(registry) : null;
     }
 
     @Bean
@@ -134,8 +135,8 @@ public class GoalieConfiguration {
         ApiRouterHandler apiRouterHandler = new ApiRouterHandler();
 
         RouterFunction<ServerResponse> routerFunction = RouterFunctions
-                .route(RequestPredicates.path(goalieProperties.getServer().getPath())
-                        .and(RequestPredicates.accept(MediaType.APPLICATION_FORM_URLENCODED)), apiRouterHandler::handle);
+                .route(RequestPredicates.path(goalieProperties.getServer().getPath()).and(
+                        RequestPredicates.accept(MediaType.APPLICATION_FORM_URLENCODED)), apiRouterHandler::handle);
 
         ServerCodecConfigurer configurer = ServerCodecConfigurer.create();
         configurer.defaultCodecs().maxInMemorySize(Config.MAX_INMEMORY_SIZE);
@@ -143,12 +144,10 @@ public class GoalieConfiguration {
         WebHandler webHandler = RouterFunctions.toWebHandler(routerFunction);
         HttpHandler handler = WebHttpHandlerBuilder.webHandler(webHandler)
                 .filters(filters -> filters.addAll(webFilters))
-                .exceptionHandlers(handlers -> handlers.addAll(webExceptionHandlers))
-                .codecConfigurer(configurer)
+                .exceptionHandlers(handlers -> handlers.addAll(webExceptionHandlers)).codecConfigurer(configurer)
                 .build();
         ReactorHttpHandlerAdapter adapter = new ReactorHttpHandlerAdapter(handler);
-        HttpServer server = HttpServer.create()
-                .port(goalieProperties.getServer().getPort()).handle(adapter);
+        HttpServer server = HttpServer.create().port(goalieProperties.getServer().getPort()).handle(adapter);
 
         return new Athlete(server);
     }

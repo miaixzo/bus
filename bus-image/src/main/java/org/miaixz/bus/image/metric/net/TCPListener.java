@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.net;
 
 import org.miaixz.bus.image.metric.Connection;
@@ -49,8 +49,7 @@ public class TCPListener implements Listener {
     private final TCPProtocolHandler handler;
     private final ServerSocket ss;
 
-    public TCPListener(Connection conn, TCPProtocolHandler handler)
-            throws IOException, GeneralSecurityException {
+    public TCPListener(Connection conn, TCPProtocolHandler handler) throws IOException, GeneralSecurityException {
         try {
 
             this.conn = conn;
@@ -65,8 +64,7 @@ public class TCPListener implements Listener {
         }
     }
 
-    public ServerSocket createTLSServerSocket(Connection conn)
-            throws IOException, GeneralSecurityException {
+    public ServerSocket createTLSServerSocket(Connection conn) throws IOException, GeneralSecurityException {
         SSLContext sslContext = conn.getDevice().sslContext();
         SSLServerSocketFactory ssf = sslContext.getServerSocketFactory();
         SSLServerSocket ss = (SSLServerSocket) ssf.createServerSocket();
@@ -83,9 +81,7 @@ public class TCPListener implements Listener {
             while (!ss.isClosed()) {
                 Logger.debug("Wait for connection on {}", sockAddr);
                 Socket s = ss.accept();
-                ConnectionMonitor monitor = conn.getDevice() != null
-                        ? conn.getDevice().getConnectionMonitor()
-                        : null;
+                ConnectionMonitor monitor = conn.getDevice() != null ? conn.getDevice().getConnectionMonitor() : null;
                 if (conn.isBlackListed(s.getInetAddress())) {
                     if (monitor != null)
                         monitor.onConnectionRejectedBlacklisted(conn, s);
@@ -119,7 +115,6 @@ public class TCPListener implements Listener {
         }
         Logger.info("Stop TCP Listener on {}", sockAddr);
     }
-
 
     @Override
     public SocketAddress getEndPoint() {

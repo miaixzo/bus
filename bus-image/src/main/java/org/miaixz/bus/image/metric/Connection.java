@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric;
 
 import org.miaixz.bus.core.lang.Charset;
@@ -47,14 +47,11 @@ import java.security.GeneralSecurityException;
 import java.util.*;
 
 /**
- * A DICOM Part 15, Annex H compliant class, <code>NetworkConnection</code>
- * encapsulates the properties associated with a connection to a TCP/IP network.
- * The <i>network connection</i> describes one TCP port on one network device.
- * This can be used for a TCP connection over which a DICOM association can be
- * negotiated with one or more Network AEs. It specifies 8 the hostname and TCP
- * port number. A network connection may support multiple Network AEs. The
- * Network AE selection takes place during association negotiation based on the
- * called and calling AE-titles.
+ * A DICOM Part 15, Annex H compliant class, <code>NetworkConnection</code> encapsulates the properties associated with
+ * a connection to a TCP/IP network. The <i>network connection</i> describes one TCP port on one network device. This
+ * can be used for a TCP connection over which a DICOM association can be negotiated with one or more Network AEs. It
+ * specifies 8 the hostname and TCP port number. A network connection may support multiple Network AEs. The Network AE
+ * selection takes place during association negotiation based on the called and calling AE-titles.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -75,7 +72,7 @@ public class Connection implements Serializable {
     public static final String TLS_RSA_WITH_3DES_EDE_CBC_SHA = "SSL_RSA_WITH_3DES_EDE_CBC_SHA";
     // to fit into SunJSSE TLS Application Data Length 16408
     public static final String TLS_RSA_WITH_AES_128_CBC_SHA = "TLS_RSA_WITH_AES_128_CBC_SHA";
-    public static final String[] DEFAULT_TLS_PROTOCOLS = {"TLSv1.2"};
+    public static final String[] DEFAULT_TLS_PROTOCOLS = { "TLSv1.2" };
 
     private static final EnumMap<Protocol, TCPProtocolHandler> tcpHandlers = new EnumMap<>(Protocol.class);
     private static final EnumMap<Protocol, UDPProtocolHandler> udpHandlers = new EnumMap<>(Protocol.class);
@@ -143,23 +140,19 @@ public class Connection implements Serializable {
         reconfigure(from);
     }
 
-    public static TCPProtocolHandler registerTCPProtocolHandler(
-            Protocol protocol, TCPProtocolHandler handler) {
+    public static TCPProtocolHandler registerTCPProtocolHandler(Protocol protocol, TCPProtocolHandler handler) {
         return tcpHandlers.put(protocol, handler);
     }
 
-    public static TCPProtocolHandler unregisterTCPProtocolHandler(
-            Protocol protocol) {
+    public static TCPProtocolHandler unregisterTCPProtocolHandler(Protocol protocol) {
         return tcpHandlers.remove(protocol);
     }
 
-    public static UDPProtocolHandler registerUDPProtocolHandler(
-            Protocol protocol, UDPProtocolHandler handler) {
+    public static UDPProtocolHandler registerUDPProtocolHandler(Protocol protocol, UDPProtocolHandler handler) {
         return udpHandlers.put(protocol, handler);
     }
 
-    public static UDPProtocolHandler unregisterUDPProtocolHandler(
-            Protocol protocol) {
+    public static UDPProtocolHandler unregisterUDPProtocolHandler(Protocol protocol) {
         return udpHandlers.remove(protocol);
     }
 
@@ -201,9 +194,7 @@ public class Connection implements Serializable {
     }
 
     /**
-     * 这是此特定连接的DNS名称
-     * 用于获取连接的当前IP地址主机名必须具有足够的资格
-     * 对于任何客户端DNS用户而言都是明确的
+     * 这是此特定连接的DNS名称 用于获取连接的当前IP地址主机名必须具有足够的资格 对于任何客户端DNS用户而言都是明确的
      *
      * @return 包含主机名的字符串
      */
@@ -212,9 +203,7 @@ public class Connection implements Serializable {
     }
 
     /**
-     * 这是此特定连接的DNS名称
-     * 用于获取连接的当前IP地址，主机名必须具有足够的资格
-     * 对于任何客户端DNS用户而言都是明确的
+     * 这是此特定连接的DNS名称 用于获取连接的当前IP地址，主机名必须具有足够的资格 对于任何客户端DNS用户而言都是明确的
      *
      * @param hostname 包含主机名的字符串
      */
@@ -227,8 +216,7 @@ public class Connection implements Serializable {
     }
 
     /**
-     * 监听套接字的绑定地址或{@code null}如果{@code null}，则将
-     * 侦听套接字绑定到{@link #getHostname()} 这是默认值
+     * 监听套接字的绑定地址或{@code null}如果{@code null}，则将 侦听套接字绑定到{@link #getHostname()} 这是默认值
      *
      * @return 连接的绑定地址或{@code null}
      */
@@ -237,8 +225,7 @@ public class Connection implements Serializable {
     }
 
     /**
-     * 监听套接字的绑定地址或{@code null} 如果{@code null}，
-     * 则将侦听套接字绑定到{@link #getHostname()}
+     * 监听套接字的绑定地址或{@code null} 如果{@code null}， 则将侦听套接字绑定到{@link #getHostname()}
      *
      * @param bindAddress 监听套接字的绑定地址或{@code null}
      */
@@ -252,9 +239,8 @@ public class Connection implements Serializable {
     }
 
     /**
-     * 传出连接的绑定地址，{@code "0.0.0.0"} 或{@code null}
-     * 如果{@code "0.0.0.0"}，系统将选择任何本地IP进行传出连接
-     * 如果{@code null}，则将传出连接绑定到 {@link #getHostname()}
+     * 传出连接的绑定地址，{@code "0.0.0.0"} 或{@code null} 如果{@code "0.0.0.0"}，系统将选择任何本地IP进行传出连接 如果{@code null}，则将传出连接绑定到
+     * {@link #getHostname()}
      *
      * @return 字符串
      */
@@ -263,9 +249,8 @@ public class Connection implements Serializable {
     }
 
     /**
-     * 传出连接的绑定地址， {@code "0.0.0.0"}或{@code null}
-     * 如果{@code "0.0.0.0"}，系统将选择任何本地IP进行传出*连接
-     * 如果{@code null}，则将传出连接绑定到 {@link #getHostname()}
+     * 传出连接的绑定地址， {@code "0.0.0.0"}或{@code null} 如果{@code "0.0.0.0"}，系统将选择任何本地IP进行传出*连接 如果{@code null}，则将传出连接绑定到
+     * {@link #getHostname()}
      *
      * @param bindAddress 传出连接的绑定地址或{@code null}
      */
@@ -296,7 +281,8 @@ public class Connection implements Serializable {
         return tlsEndpointIdentificationAlgorithm;
     }
 
-    public void setTlsEndpointIdentificationAlgorithm(EndpointIdentificationAlgorithm tlsEndpointIdentificationAlgorithm) {
+    public void setTlsEndpointIdentificationAlgorithm(
+            EndpointIdentificationAlgorithm tlsEndpointIdentificationAlgorithm) {
         this.tlsEndpointIdentificationAlgorithm = tlsEndpointIdentificationAlgorithm;
     }
 
@@ -336,8 +322,7 @@ public class Connection implements Serializable {
     }
 
     /**
-     * AE正在侦听的TCP端口，或仅用于启动关联的网络连接
-     * 有效的端口值在0到65535之间
+     * AE正在侦听的TCP端口，或仅用于启动关联的网络连接 有效的端口值在0到65535之间
      *
      * @param port 端口号或-1
      */
@@ -510,7 +495,7 @@ public class Connection implements Serializable {
     }
 
     /**
-     * Timeout in ms for receiving other outstanding DIMSE RSPs than C-MOVE  or C-GET RSPs.
+     * Timeout in ms for receiving other outstanding DIMSE RSPs than C-MOVE or C-GET RSPs.
      *
      * @return Timeout in ms or {@code 0} (= no timeout).
      */
@@ -519,7 +504,7 @@ public class Connection implements Serializable {
     }
 
     /**
-     * Timeout in ms for receiving other outstanding DIMSE RSPs than C-MOVE  or C-GET RSPs.
+     * Timeout in ms for receiving other outstanding DIMSE RSPs than C-MOVE or C-GET RSPs.
      *
      * @param timeout Timeout in ms or {@code 0} (= no timeout).
      */
@@ -546,22 +531,22 @@ public class Connection implements Serializable {
     }
 
     /**
-     * Indicates if the timer with the specified timeout for outstanding C-GET and C-MOVE RSPs shall be restarted
-     * on receive of pending RSPs.
+     * Indicates if the timer with the specified timeout for outstanding C-GET and C-MOVE RSPs shall be restarted on
+     * receive of pending RSPs.
      *
-     * @return if {@code false}, restart the timer with the specified timeout for outstanding C-GET and C-MOVE RSPs
-     * on receive of pending RSPs, otherwise not.
+     * @return if {@code false}, restart the timer with the specified timeout for outstanding C-GET and C-MOVE RSPs on
+     *         receive of pending RSPs, otherwise not.
      */
     public final boolean isRetrieveTimeoutTotal() {
         return retrieveTimeoutTotal;
     }
 
     /**
-     * Indicates if the timer with the specified timeout for outstanding C-GET and C-MOVE RSPs shall be restarted
-     * on receive of pending RSPs.
+     * Indicates if the timer with the specified timeout for outstanding C-GET and C-MOVE RSPs shall be restarted on
+     * receive of pending RSPs.
      *
-     * @param total if {@code false}, restart the timer with the specified timeout for outstanding C-GET and C-MOVE
-     *              RSPs on receive of pending RSPs, otherwise not.
+     * @param total if {@code false}, restart the timer with the specified timeout for outstanding C-GET and C-MOVE RSPs
+     *              on receive of pending RSPs, otherwise not.
      */
     public final void setRetrieveTimeoutTotal(boolean total) {
         this.retrieveTimeoutTotal = total;
@@ -586,9 +571,7 @@ public class Connection implements Serializable {
     }
 
     /**
-     * 此特定连接上支持的TLS CipherSuite
-     * TLS CipherSuites必须使用RFC-2246字符串
-     * 表示形式进行描述(例如“ SSL_RSA_WITH_3DES_EDE_CBC_SHA")
+     * 此特定连接上支持的TLS CipherSuite TLS CipherSuites必须使用RFC-2246字符串 表示形式进行描述(例如“ SSL_RSA_WITH_3DES_EDE_CBC_SHA")
      *
      * @return 包含受支持的密码套件的String数组
      */
@@ -597,9 +580,7 @@ public class Connection implements Serializable {
     }
 
     /**
-     * 此特定连接上支持的TLS CipherSuite
-     * TLS CipherSuites必须使用RFC-2246字符串
-     * 表示形式进行描述(例如"SSL_RSA_WITH_3DES_EDE_CBC_SHA")
+     * 此特定连接上支持的TLS CipherSuite TLS CipherSuites必须使用RFC-2246字符串 表示形式进行描述(例如"SSL_RSA_WITH_3DES_EDE_CBC_SHA")
      *
      * @param tlsCipherSuites 包含受支持的密码套件的String数组
      */
@@ -768,14 +749,12 @@ public class Connection implements Serializable {
     }
 
     /**
-     * 如果网络上安装了网络连接，则为True如果不存在
-     * 则将从设备继承有关网络连接*的安装状态的信息
+     * 如果网络上安装了网络连接，则为True如果不存在 则将从设备继承有关网络连接*的安装状态的信息
      *
      * @return boolean如果NetworkConnection安装在网络上，则为True
      */
     public boolean isInstalled() {
-        return device != null && device.isInstalled()
-                && (installed == null || installed.booleanValue());
+        return device != null && device.isInstalled() && (installed == null || installed.booleanValue());
     }
 
     public Boolean getInstalled() {
@@ -783,8 +762,7 @@ public class Connection implements Serializable {
     }
 
     /**
-     * 如果网络上安装了网络连接，则为True如果不存在
-     * 则将从设备继承有关网络连接*的安装状态的信息
+     * 如果网络上安装了网络连接，则为True如果不存在 则将从设备继承有关网络连接*的安装状态的信息
      *
      * @param installed 如果网络上安装了NetworkConnection，则为True
      */
@@ -804,9 +782,7 @@ public class Connection implements Serializable {
     }
 
     /**
-     * 获取我们应忽略的IP地址列表
-     * 在使用负载均衡器的环境中很有用。对于来自负载平衡交换机的TCP ping
-     * 我们不想剥离新的*线程并尝试协商关联。
+     * 获取我们应忽略的IP地址列表 在使用负载均衡器的环境中很有用。对于来自负载平衡交换机的TCP ping 我们不想剥离新的*线程并尝试协商关联。
      *
      * @return 返回应忽略的IP地址列表
      */
@@ -815,9 +791,7 @@ public class Connection implements Serializable {
     }
 
     /**
-     * 设置一个IP地址列表，我们应从中忽略连接
-     * 在使用负载均衡器的环境中很有用对于来自负载平衡交换机的TCP ping
-     * 我们不想剥离新的*线程并尝试协商关联
+     * 设置一个IP地址列表，我们应从中忽略连接 在使用负载均衡器的环境中很有用对于来自负载平衡交换机的TCP ping 我们不想剥离新的*线程并尝试协商关联
      *
      * @param blacklist IP地址列表，应将其忽略
      */
@@ -972,8 +946,7 @@ public class Connection implements Serializable {
         }
     }
 
-    public Socket connect(Connection remoteConn)
-            throws IOException, InternalException, GeneralSecurityException {
+    public Socket connect(Connection remoteConn) throws IOException, InternalException, GeneralSecurityException {
         checkInstalled();
         if (!protocol.isTCP())
             throw new IllegalStateException("Not a TCP Connection");
@@ -981,12 +954,9 @@ public class Connection implements Serializable {
         SocketAddress bindPoint = getClientBindPoint();
         String remoteHostname = remoteConn.getHostname();
         int remotePort = remoteConn.getPort();
-        Logger.info("Initiate connection from {} to {}:{}",
-                bindPoint, remoteHostname, remotePort);
+        Logger.info("Initiate connection from {} to {}:{}", bindPoint, remoteHostname, remotePort);
         Socket s = new Socket();
-        ConnectionMonitor monitor = device != null
-                ? device.getConnectionMonitor()
-                : null;
+        ConnectionMonitor monitor = device != null ? device.getConnectionMonitor() : null;
         try {
             s.bind(bindPoint);
             setReceiveBufferSize(s);
@@ -1003,8 +973,7 @@ public class Connection implements Serializable {
                 int proxyPort = ss.length > 1 ? Integer.parseInt(ss[1]) : 8080;
                 s.connect(new InetSocketAddress(ss[0], proxyPort), connectTimeout);
                 try {
-                    doProxyHandshake(s, remoteHostname, remotePort, userauth,
-                            connectTimeout);
+                    doProxyHandshake(s, remoteHostname, remotePort, userauth, connectTimeout);
                 } catch (IOException e) {
                     IoKit.close(s);
                     throw e;
@@ -1051,19 +1020,16 @@ public class Connection implements Serializable {
         return listener;
     }
 
-    private void doProxyHandshake(Socket s, String hostname, int port,
-                                  String userauth, int connectTimeout) throws IOException {
+    private void doProxyHandshake(Socket s, String hostname, int port, String userauth, int connectTimeout)
+            throws IOException {
         StringBuilder request = new StringBuilder(Normal._128);
-        request.append("CONNECT ")
-                .append(hostname).append(Symbol.C_COLON).append(port)
-                .append(" HTTP/1.1\r\nHost: ")
+        request.append("CONNECT ").append(hostname).append(Symbol.C_COLON).append(port).append(" HTTP/1.1\r\nHost: ")
                 .append(hostname).append(Symbol.C_COLON).append(port);
         if (userauth != null) {
             byte[] b = userauth.getBytes(Charset.UTF_8);
             char[] base64 = new char[(b.length + 2) / 3 * 4];
             Builder.encode(b, 0, b.length, base64, 0);
-            request.append("\r\nProxy-Authorization: basic ")
-                    .append(base64);
+            request.append("\r\nProxy-Authorization: basic ").append(base64);
         }
         request.append("\r\n\r\n");
         OutputStream out = s.getOutputStream();
@@ -1074,20 +1040,15 @@ public class Connection implements Serializable {
         String response = new HTTPResponse(s).toString();
         s.setSoTimeout(0);
         if (!response.startsWith("HTTP/1.1 2"))
-            throw new IOException("Unable to tunnel through " + s
-                    + ". Proxy returns \"" + response + '\"');
+            throw new IOException("Unable to tunnel through " + s + ". Proxy returns \"" + response + '\"');
     }
 
-    private SSLSocket createTLSSocket(Socket s, Connection remoteConn)
-            throws GeneralSecurityException, IOException {
+    private SSLSocket createTLSSocket(Socket s, Connection remoteConn) throws GeneralSecurityException, IOException {
         SSLContext sslContext = device.sslContext();
         SSLSocketFactory sf = sslContext.getSocketFactory();
-        SSLSocket ssl = (SSLSocket) sf.createSocket(s,
-                remoteConn.getHostname(), remoteConn.getPort(), true);
-        ssl.setEnabledProtocols(
-                intersect(remoteConn.getTlsProtocols(), getTlsProtocols()));
-        ssl.setEnabledCipherSuites(
-                intersect(remoteConn.getTlsCipherSuites(), getTlsCipherSuites()));
+        SSLSocket ssl = (SSLSocket) sf.createSocket(s, remoteConn.getHostname(), remoteConn.getPort(), true);
+        ssl.setEnabledProtocols(intersect(remoteConn.getTlsProtocols(), getTlsProtocols()));
+        ssl.setEnabledCipherSuites(intersect(remoteConn.getTlsCipherSuites(), getTlsCipherSuites()));
 
         if (tlsEndpointIdentificationAlgorithm != null) {
             SSLParameters parameters = ssl.getSSLParameters();
@@ -1126,12 +1087,9 @@ public class Connection implements Serializable {
     }
 
     public boolean equalsRDN(Connection other) {
-        return commonName != null
-                ? commonName.equals(other.commonName)
-                : other.commonName == null
-                && hostname.equals(other.hostname)
-                && port == other.port
-                && protocol == other.protocol;
+        return commonName != null ? commonName.equals(other.commonName)
+                : other.commonName == null && hostname.equals(other.hostname) && port == other.port
+                        && protocol == other.protocol;
     }
 
     public void reconfigure(Connection from) {
@@ -1187,8 +1145,7 @@ public class Connection implements Serializable {
     }
 
     public enum EndpointIdentificationAlgorithm {
-        HTTPS,
-        LDAPS
+        HTTPS, LDAPS
     }
 
     private static class HTTPResponse extends ByteArrayOutputStream {

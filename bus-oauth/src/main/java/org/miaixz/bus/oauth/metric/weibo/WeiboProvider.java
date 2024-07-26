@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.weibo;
 
 import com.alibaba.fastjson.JSONObject;
@@ -71,12 +71,9 @@ public class WeiboProvider extends AbstractProvider {
         if (accessTokenObject.containsKey("error")) {
             throw new AuthorizedException(accessTokenObject.getString("error_description"));
         }
-        return AccToken.builder()
-                .accessToken(accessTokenObject.getString("access_token"))
-                .uid(accessTokenObject.getString("uid"))
-                .openId(accessTokenObject.getString("uid"))
-                .expireIn(accessTokenObject.getIntValue("expires_in"))
-                .build();
+        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
+                .uid(accessTokenObject.getString("uid")).openId(accessTokenObject.getString("uid"))
+                .expireIn(accessTokenObject.getIntValue("expires_in")).build();
     }
 
     @Override
@@ -93,20 +90,14 @@ public class WeiboProvider extends AbstractProvider {
         if (object.containsKey("error")) {
             throw new AuthorizedException(object.getString("error"));
         }
-        return Material.builder()
-                .rawJson(object)
-                .uuid(object.getString("id"))
-                .username(object.getString("name"))
+        return Material.builder().rawJson(object).uuid(object.getString("id")).username(object.getString("name"))
                 .avatar(object.getString("profile_image_url"))
-                .blog(StringKit.isEmpty(object.getString("url")) ? "https://weibo.com/" + object.getString("profile_url") : object
-                        .getString("url"))
-                .nickname(object.getString("screen_name"))
-                .location(object.getString("location"))
-                .remark(object.getString("description"))
-                .gender(Gender.of(object.getString("gender")))
-                .token(accToken)
-                .source(complex.toString())
-                .build();
+                .blog(StringKit.isEmpty(object.getString("url"))
+                        ? "https://weibo.com/" + object.getString("profile_url")
+                        : object.getString("url"))
+                .nickname(object.getString("screen_name")).location(object.getString("location"))
+                .remark(object.getString("description")).gender(Gender.of(object.getString("gender"))).token(accToken)
+                .source(complex.toString()).build();
     }
 
     /**
@@ -117,10 +108,8 @@ public class WeiboProvider extends AbstractProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(complex.userInfo())
-                .queryParam("access_token", accToken.getAccessToken())
-                .queryParam("uid", accToken.getUid())
-                .build();
+        return Builder.fromUrl(complex.userInfo()).queryParam("access_token", accToken.getAccessToken())
+                .queryParam("uid", accToken.getUid()).build();
     }
 
     @Override
@@ -135,10 +124,7 @@ public class WeiboProvider extends AbstractProvider {
         String response = doGetRevoke(accToken);
         JSONObject object = JSONObject.parseObject(response);
         if (object.containsKey("error")) {
-            return Message.builder()
-                    .errcode(ErrorCode.FAILURE.getCode())
-                    .errmsg(object.getString("error"))
-                    .build();
+            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(object.getString("error")).build();
         }
         // 返回 result = true 表示取消授权成功，否则失败
         ErrorCode status = object.getBooleanValue("result") ? ErrorCode.SUCCESS : ErrorCode.FAILURE;

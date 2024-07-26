@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.annotation;
 
 import org.miaixz.bus.starter.sensitive.SensitiveConfiguration;
@@ -40,9 +40,9 @@ import java.lang.annotation.*;
  */
 @Inherited
 @Documented
-@Target({ElementType.TYPE})
+@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-@Import({SensitiveConfiguration.class})
+@Import({ SensitiveConfiguration.class })
 public @interface EnableSensitive {
 
 }

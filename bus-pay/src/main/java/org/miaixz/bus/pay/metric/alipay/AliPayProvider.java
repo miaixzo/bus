@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pay.metric.alipay;
 
 import com.alipay.api.*;
@@ -81,8 +81,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
         Assert.notBlank(this.context.getPrivateKey(), "[privateKey] not defined");
         Assert.notBlank(this.context.getPublicKey(), "[publicKey] not defined");
 
-        this.client = new DefaultAlipayClient(getUrl(), this.context.getAppId(), this.context.getPrivateKey(), HTTP.JSON,
-                Charset.DEFAULT_UTF_8, this.context.getPublicKey(), Algorithm.RSA2.getValue());
+        this.client = new DefaultAlipayClient(getUrl(), this.context.getAppId(), this.context.getPrivateKey(),
+                HTTP.JSON, Charset.DEFAULT_UTF_8, this.context.getPublicKey(), Algorithm.RSA2.getValue());
     }
 
     /**
@@ -112,7 +112,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayTradeAppPayResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradeAppPayResponse appPayToResponse(AlipayTradeAppPayModel model, String notifyUrl) throws AlipayApiException {
+    public AlipayTradeAppPayResponse appPayToResponse(AlipayTradeAppPayModel model, String notifyUrl)
+            throws AlipayApiException {
         AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest();
         request.setBizModel(model);
         request.setNotifyUrl(notifyUrl);
@@ -128,7 +129,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayTradeAppPayResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradeAppPayResponse appPayToResponse(AlipayTradeAppPayModel model, String notifyUrl, String appAuthToken) throws AlipayApiException {
+    public AlipayTradeAppPayResponse appPayToResponse(AlipayTradeAppPayModel model, String notifyUrl,
+            String appAuthToken) throws AlipayApiException {
         AlipayTradeAppPayRequest request = new AlipayTradeAppPayRequest();
         request.setBizModel(model);
         request.setNotifyUrl(notifyUrl);
@@ -146,7 +148,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @throws AlipayApiException 支付宝 Api 异常
      * @throws IOException        IO 异常
      */
-    public void wapPay(HttpServletResponse response, AlipayTradeWapPayModel model, String returnUrl, String notifyUrl) throws AlipayApiException, IOException {
+    public void wapPay(HttpServletResponse response, AlipayTradeWapPayModel model, String returnUrl, String notifyUrl)
+            throws AlipayApiException, IOException {
         String form = wapPayStr(model, returnUrl, notifyUrl);
         response.setContentType("text/html;charset=" + Charset.DEFAULT_UTF_8);
         PrintWriter out = response.getWriter();
@@ -166,7 +169,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @throws AlipayApiException 支付宝 Api 异常
      * @throws IOException        IO 异常
      */
-    public void wapPay(HttpServletResponse response, AlipayTradeWapPayModel model, String returnUrl, String notifyUrl, String appAuthToken) throws AlipayApiException, IOException {
+    public void wapPay(HttpServletResponse response, AlipayTradeWapPayModel model, String returnUrl, String notifyUrl,
+            String appAuthToken) throws AlipayApiException, IOException {
         String form = wapPayStr(model, returnUrl, notifyUrl, appAuthToken);
         response.setContentType("text/html;charset=" + Charset.DEFAULT_UTF_8);
         PrintWriter out = response.getWriter();
@@ -176,8 +180,7 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * WAP支付
-     * 为了解决 Filter 中使用 OutputStream getOutputStream() 和 PrintWriter getWriter() 冲突异常问题
+     * WAP支付 为了解决 Filter 中使用 OutputStream getOutputStream() 和 PrintWriter getWriter() 冲突异常问题
      *
      * @param response     {@link HttpServletResponse}
      * @param model        {@link AlipayTradeWapPayModel}
@@ -187,7 +190,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @throws AlipayApiException 支付宝 Api 异常
      * @throws IOException        IO 异常
      */
-    public void wapPayByOutputStream(HttpServletResponse response, AlipayTradeWapPayModel model, String returnUrl, String notifyUrl, String appAuthToken) throws AlipayApiException, IOException {
+    public void wapPayByOutputStream(HttpServletResponse response, AlipayTradeWapPayModel model, String returnUrl,
+            String notifyUrl, String appAuthToken) throws AlipayApiException, IOException {
         String form = wapPayStr(model, returnUrl, notifyUrl, appAuthToken);
         response.setContentType("text/html;charset=" + Charset.DEFAULT_UTF_8);
         OutputStream out = response.getOutputStream();
@@ -196,8 +200,7 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * WAP支付
-     * 为了解决 Filter 中使用 OutputStream getOutputStream() 和 PrintWriter getWriter() 冲突异常问题
+     * WAP支付 为了解决 Filter 中使用 OutputStream getOutputStream() 和 PrintWriter getWriter() 冲突异常问题
      *
      * @param response  {@link HttpServletResponse}
      * @param model     {@link AlipayTradeWapPayModel}
@@ -206,7 +209,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @throws AlipayApiException 支付宝 Api 异常
      * @throws IOException        IO 异常
      */
-    public void wapPayByOutputStream(HttpServletResponse response, AlipayTradeWapPayModel model, String returnUrl, String notifyUrl) throws AlipayApiException, IOException {
+    public void wapPayByOutputStream(HttpServletResponse response, AlipayTradeWapPayModel model, String returnUrl,
+            String notifyUrl) throws AlipayApiException, IOException {
         String form = wapPayStr(model, returnUrl, notifyUrl);
         response.setContentType("text/html;charset=" + Charset.DEFAULT_UTF_8);
         OutputStream out = response.getOutputStream();
@@ -223,7 +227,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {String}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public String wapPayStr(AlipayTradeWapPayModel model, String returnUrl, String notifyUrl) throws AlipayApiException {
+    public String wapPayStr(AlipayTradeWapPayModel model, String returnUrl, String notifyUrl)
+            throws AlipayApiException {
         AlipayTradeWapPayRequest aliPayRequest = new AlipayTradeWapPayRequest();
         aliPayRequest.setReturnUrl(returnUrl);
         aliPayRequest.setNotifyUrl(notifyUrl);
@@ -241,7 +246,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {String}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public String wapPayStr(AlipayTradeWapPayModel model, String returnUrl, String notifyUrl, String appAuthToken) throws AlipayApiException {
+    public String wapPayStr(AlipayTradeWapPayModel model, String returnUrl, String notifyUrl, String appAuthToken)
+            throws AlipayApiException {
         AlipayTradeWapPayRequest aliPayRequest = new AlipayTradeWapPayRequest();
         aliPayRequest.setReturnUrl(returnUrl);
         aliPayRequest.setNotifyUrl(notifyUrl);
@@ -251,15 +257,15 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 统一收单交易支付接口接口
-     * 适用于:条形码支付、声波支付等
+     * 统一收单交易支付接口接口 适用于:条形码支付、声波支付等
      *
      * @param model     {@link AlipayTradePayModel}
      * @param notifyUrl 异步通知URL
      * @return {@link AlipayTradePayResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradePayResponse tradePayToResponse(AlipayTradePayModel model, String notifyUrl) throws AlipayApiException {
+    public AlipayTradePayResponse tradePayToResponse(AlipayTradePayModel model, String notifyUrl)
+            throws AlipayApiException {
         AlipayTradePayRequest request = new AlipayTradePayRequest();
         // 填充业务参数
         request.setBizModel(model);
@@ -268,16 +274,16 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 统一收单交易支付接口接口
-     * 适用于:条形码支付、声波支付等
+     * 统一收单交易支付接口接口 适用于:条形码支付、声波支付等
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayTradePayModel}
-     * @param notifyUrl    异步通知URL
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayTradePayModel}
+     * @param notifyUrl 异步通知URL
      * @return {@link AlipayTradePayResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradePayResponse tradePayToResponse(Boolean certModel, AlipayTradePayModel model, String notifyUrl) throws AlipayApiException {
+    public AlipayTradePayResponse tradePayToResponse(Boolean certModel, AlipayTradePayModel model, String notifyUrl)
+            throws AlipayApiException {
         AlipayTradePayRequest request = new AlipayTradePayRequest();
         // 填充业务参数
         request.setBizModel(model);
@@ -286,8 +292,7 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 统一收单交易支付接口接口
-     * 适用于:条形码支付、声波支付等
+     * 统一收单交易支付接口接口 适用于:条形码支付、声波支付等
      *
      * @param model        {AlipayTradePayModel}
      * @param notifyUrl    异步通知URL
@@ -295,7 +300,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {AlipayTradePayResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradePayResponse tradePayToResponse(AlipayTradePayModel model, String notifyUrl, String appAuthToken) throws AlipayApiException {
+    public AlipayTradePayResponse tradePayToResponse(AlipayTradePayModel model, String notifyUrl, String appAuthToken)
+            throws AlipayApiException {
         AlipayTradePayRequest request = new AlipayTradePayRequest();
         request.setBizModel(model);
         request.setNotifyUrl(notifyUrl);
@@ -304,8 +310,7 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 统一收单交易支付接口接口
-     * 适用于:条形码支付、声波支付等
+     * 统一收单交易支付接口接口 适用于:条形码支付、声波支付等
      *
      * @param certModel    是否证书模式
      * @param model        {AlipayTradePayModel}
@@ -314,7 +319,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {AlipayTradePayResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradePayResponse tradePayToResponse(Boolean certModel, AlipayTradePayModel model, String notifyUrl, String appAuthToken) throws AlipayApiException {
+    public AlipayTradePayResponse tradePayToResponse(Boolean certModel, AlipayTradePayModel model, String notifyUrl,
+            String appAuthToken) throws AlipayApiException {
         AlipayTradePayRequest request = new AlipayTradePayRequest();
         request.setBizModel(model);
         request.setNotifyUrl(notifyUrl);
@@ -323,15 +329,15 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 统一收单线下交易预创建
-     * 适用于：扫码支付等
+     * 统一收单线下交易预创建 适用于：扫码支付等
      *
      * @param model     {@link AlipayTradePrecreateModel}
      * @param notifyUrl 异步通知URL
      * @return {@link AlipayTradePrecreateResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradePrecreateResponse tradePrecreatePayToResponse(AlipayTradePrecreateModel model, String notifyUrl) throws AlipayApiException {
+    public AlipayTradePrecreateResponse tradePrecreatePayToResponse(AlipayTradePrecreateModel model, String notifyUrl)
+            throws AlipayApiException {
         AlipayTradePrecreateRequest request = new AlipayTradePrecreateRequest();
         request.setBizModel(model);
         request.setNotifyUrl(notifyUrl);
@@ -339,16 +345,16 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 统一收单线下交易预创建
-     * 适用于：扫码支付等
+     * 统一收单线下交易预创建 适用于：扫码支付等
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayTradePrecreateModel}
-     * @param notifyUrl    异步通知URL
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayTradePrecreateModel}
+     * @param notifyUrl 异步通知URL
      * @return {@link AlipayTradePrecreateResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradePrecreateResponse tradePrecreatePayToResponse(Boolean certModel, AlipayTradePrecreateModel model, String notifyUrl) throws AlipayApiException {
+    public AlipayTradePrecreateResponse tradePrecreatePayToResponse(Boolean certModel, AlipayTradePrecreateModel model,
+            String notifyUrl) throws AlipayApiException {
         AlipayTradePrecreateRequest request = new AlipayTradePrecreateRequest();
         request.setBizModel(model);
         request.setNotifyUrl(notifyUrl);
@@ -356,16 +362,16 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 统一收单线下交易预创建
-     * 适用于：扫码支付等
+     * 统一收单线下交易预创建 适用于：扫码支付等
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayTradePrecreateModel}
-     * @param notifyUrl    异步通知URL
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayTradePrecreateModel}
+     * @param notifyUrl 异步通知URL
      * @return {@link AlipayTradePrecreateResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradePrecreateResponse tradePrecreatePayToResponse(Boolean certModel, AlipayTradePrecreateModel model, String notifyUrl, String appAuthToken) throws AlipayApiException {
+    public AlipayTradePrecreateResponse tradePrecreatePayToResponse(Boolean certModel, AlipayTradePrecreateModel model,
+            String notifyUrl, String appAuthToken) throws AlipayApiException {
         AlipayTradePrecreateRequest request = new AlipayTradePrecreateRequest();
         request.setBizModel(model);
         request.setNotifyUrl(notifyUrl);
@@ -373,8 +379,7 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 统一收单线下交易预创建
-     * 适用于：扫码支付等
+     * 统一收单线下交易预创建 适用于：扫码支付等
      *
      * @param model        {@link AlipayTradePrecreateModel}
      * @param notifyUrl    异步通知URL
@@ -382,7 +387,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayTradePrecreateResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradePrecreateResponse tradePrecreatePayToResponse(AlipayTradePrecreateModel model, String notifyUrl, String appAuthToken) throws AlipayApiException {
+    public AlipayTradePrecreateResponse tradePrecreatePayToResponse(AlipayTradePrecreateModel model, String notifyUrl,
+            String appAuthToken) throws AlipayApiException {
         AlipayTradePrecreateRequest request = new AlipayTradePrecreateRequest();
         request.setBizModel(model);
         request.setNotifyUrl(notifyUrl);
@@ -396,7 +402,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayFundTransToaccountTransferResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundTransToaccountTransferResponse transferToResponse(AlipayFundTransToaccountTransferModel model) throws AlipayApiException {
+    public AlipayFundTransToaccountTransferResponse transferToResponse(AlipayFundTransToaccountTransferModel model)
+            throws AlipayApiException {
         AlipayFundTransToaccountTransferRequest request = new AlipayFundTransToaccountTransferRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -405,12 +412,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 单笔转账到支付宝账户
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayFundTransToaccountTransferModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayFundTransToaccountTransferModel}
      * @return {@link AlipayFundTransToaccountTransferResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundTransToaccountTransferResponse transferToResponse(Boolean certModel, AlipayFundTransToaccountTransferModel model) throws AlipayApiException {
+    public AlipayFundTransToaccountTransferResponse transferToResponse(Boolean certModel,
+            AlipayFundTransToaccountTransferModel model) throws AlipayApiException {
         AlipayFundTransToaccountTransferRequest request = new AlipayFundTransToaccountTransferRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -423,7 +431,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayFundTransOrderQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundTransOrderQueryResponse transferQueryToResponse(AlipayFundTransOrderQueryModel model) throws AlipayApiException {
+    public AlipayFundTransOrderQueryResponse transferQueryToResponse(AlipayFundTransOrderQueryModel model)
+            throws AlipayApiException {
         AlipayFundTransOrderQueryRequest request = new AlipayFundTransOrderQueryRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -432,12 +441,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 转账查询接口
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayFundTransOrderQueryModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayFundTransOrderQueryModel}
      * @return {@link AlipayFundTransOrderQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundTransOrderQueryResponse transferQueryToResponse(Boolean certModel, AlipayFundTransOrderQueryModel model) throws AlipayApiException {
+    public AlipayFundTransOrderQueryResponse transferQueryToResponse(Boolean certModel,
+            AlipayFundTransOrderQueryModel model) throws AlipayApiException {
         AlipayFundTransOrderQueryRequest request = new AlipayFundTransOrderQueryRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -451,7 +461,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayFundTransUniTransferResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundTransUniTransferResponse uniTransferToResponse(AlipayFundTransUniTransferModel model, String appAuthToken) throws AlipayApiException {
+    public AlipayFundTransUniTransferResponse uniTransferToResponse(AlipayFundTransUniTransferModel model,
+            String appAuthToken) throws AlipayApiException {
         AlipayFundTransUniTransferRequest request = new AlipayFundTransUniTransferRequest();
         request.setBizModel(model);
         if (!StringKit.isEmpty(appAuthToken)) {
@@ -469,7 +480,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayFundTransUniTransferResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundTransUniTransferResponse uniTransferToResponse(Boolean certModel, AlipayFundTransUniTransferModel model, String appAuthToken) throws AlipayApiException {
+    public AlipayFundTransUniTransferResponse uniTransferToResponse(Boolean certModel,
+            AlipayFundTransUniTransferModel model, String appAuthToken) throws AlipayApiException {
         AlipayFundTransUniTransferRequest request = new AlipayFundTransUniTransferRequest();
         request.setBizModel(model);
         if (!StringKit.isEmpty(appAuthToken)) {
@@ -486,7 +498,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayFundTransCommonQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundTransCommonQueryResponse transCommonQueryToResponse(AlipayFundTransCommonQueryModel model, String appAuthToken) throws AlipayApiException {
+    public AlipayFundTransCommonQueryResponse transCommonQueryToResponse(AlipayFundTransCommonQueryModel model,
+            String appAuthToken) throws AlipayApiException {
         AlipayFundTransCommonQueryRequest request = new AlipayFundTransCommonQueryRequest();
         request.setBizModel(model);
         if (!StringKit.isEmpty(appAuthToken)) {
@@ -504,7 +517,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayFundTransCommonQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundTransCommonQueryResponse transCommonQueryToResponse(Boolean certModel, AlipayFundTransCommonQueryModel model, String appAuthToken) throws AlipayApiException {
+    public AlipayFundTransCommonQueryResponse transCommonQueryToResponse(Boolean certModel,
+            AlipayFundTransCommonQueryModel model, String appAuthToken) throws AlipayApiException {
         AlipayFundTransCommonQueryRequest request = new AlipayFundTransCommonQueryRequest();
         request.setBizModel(model);
         if (!StringKit.isEmpty(appAuthToken)) {
@@ -521,7 +535,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayFundAccountQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundAccountQueryResponse accountQueryToResponse(AlipayFundAccountQueryModel model, String appAuthToken) throws AlipayApiException {
+    public AlipayFundAccountQueryResponse accountQueryToResponse(AlipayFundAccountQueryModel model, String appAuthToken)
+            throws AlipayApiException {
         AlipayFundAccountQueryRequest request = new AlipayFundAccountQueryRequest();
         request.setBizModel(model);
         if (!StringKit.isEmpty(appAuthToken)) {
@@ -539,7 +554,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayFundAccountQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundAccountQueryResponse accountQueryToResponse(Boolean certModel, AlipayFundAccountQueryModel model, String appAuthToken) throws AlipayApiException {
+    public AlipayFundAccountQueryResponse accountQueryToResponse(Boolean certModel, AlipayFundAccountQueryModel model,
+            String appAuthToken) throws AlipayApiException {
         AlipayFundAccountQueryRequest request = new AlipayFundAccountQueryRequest();
         request.setBizModel(model);
         if (!StringKit.isEmpty(appAuthToken)) {
@@ -564,12 +580,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 统一收单线下交易查询接口
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayTradeQueryModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayTradeQueryModel}
      * @return {@link AlipayTradeQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradeQueryResponse tradeQueryToResponse(Boolean certModel, AlipayTradeQueryModel model) throws AlipayApiException {
+    public AlipayTradeQueryResponse tradeQueryToResponse(Boolean certModel, AlipayTradeQueryModel model)
+            throws AlipayApiException {
         AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -583,7 +600,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayTradeQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradeQueryResponse tradeQueryToResponse(AlipayTradeQueryModel model, String appAuthToken) throws AlipayApiException {
+    public AlipayTradeQueryResponse tradeQueryToResponse(AlipayTradeQueryModel model, String appAuthToken)
+            throws AlipayApiException {
         AlipayTradeQueryRequest request = new AlipayTradeQueryRequest();
         request.setBizModel(model);
         return execute(request, null, appAuthToken);
@@ -597,7 +615,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayTradeCancelResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradeCancelResponse tradeCancelToResponse(AlipayTradeCancelModel model, String appAuthToken) throws AlipayApiException {
+    public AlipayTradeCancelResponse tradeCancelToResponse(AlipayTradeCancelModel model, String appAuthToken)
+            throws AlipayApiException {
         AlipayTradeCancelRequest request = new AlipayTradeCancelRequest();
         request.setBizModel(model);
         return execute(request, null, appAuthToken);
@@ -619,12 +638,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 统一收单交易撤销接口
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayTradeCancelModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayTradeCancelModel}
      * @return {@link AlipayTradeCancelResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradeCancelResponse tradeCancelToResponse(Boolean certModel, AlipayTradeCancelModel model) throws AlipayApiException {
+    public AlipayTradeCancelResponse tradeCancelToResponse(Boolean certModel, AlipayTradeCancelModel model)
+            throws AlipayApiException {
         AlipayTradeCancelRequest request = new AlipayTradeCancelRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -638,7 +658,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayTradeCloseResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradeCloseResponse tradeCloseToResponse(AlipayTradeCloseModel model, String appAuthToken) throws AlipayApiException {
+    public AlipayTradeCloseResponse tradeCloseToResponse(AlipayTradeCloseModel model, String appAuthToken)
+            throws AlipayApiException {
         AlipayTradeCloseRequest request = new AlipayTradeCloseRequest();
         request.setBizModel(model);
         return execute(request, null, appAuthToken);
@@ -661,12 +682,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 统一收单交易关闭接口
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayTradeCloseModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayTradeCloseModel}
      * @return {@link AlipayTradeCloseResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradeCloseResponse tradeCloseToResponse(Boolean certModel, AlipayTradeCloseModel model) throws AlipayApiException {
+    public AlipayTradeCloseResponse tradeCloseToResponse(Boolean certModel, AlipayTradeCloseModel model)
+            throws AlipayApiException {
         AlipayTradeCloseRequest request = new AlipayTradeCloseRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -680,7 +702,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayTradeCreateResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradeCreateResponse tradeCreateToResponse(AlipayTradeCreateModel model, String notifyUrl) throws AlipayApiException {
+    public AlipayTradeCreateResponse tradeCreateToResponse(AlipayTradeCreateModel model, String notifyUrl)
+            throws AlipayApiException {
         AlipayTradeCreateRequest request = new AlipayTradeCreateRequest();
         request.setBizModel(model);
         request.setNotifyUrl(notifyUrl);
@@ -690,13 +713,14 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 统一收单交易创建接口
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayTradeCreateModel}
-     * @param notifyUrl    异步通知URL
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayTradeCreateModel}
+     * @param notifyUrl 异步通知URL
      * @return {@link AlipayTradeCreateResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradeCreateResponse tradeCreateToResponse(Boolean certModel, AlipayTradeCreateModel model, String notifyUrl) throws AlipayApiException {
+    public AlipayTradeCreateResponse tradeCreateToResponse(Boolean certModel, AlipayTradeCreateModel model,
+            String notifyUrl) throws AlipayApiException {
         AlipayTradeCreateRequest request = new AlipayTradeCreateRequest();
         request.setBizModel(model);
         request.setNotifyUrl(notifyUrl);
@@ -712,7 +736,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayTradeCreateResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradeCreateResponse tradeCreateToResponse(AlipayTradeCreateModel model, String notifyUrl, String appAuthToken) throws AlipayApiException {
+    public AlipayTradeCreateResponse tradeCreateToResponse(AlipayTradeCreateModel model, String notifyUrl,
+            String appAuthToken) throws AlipayApiException {
         AlipayTradeCreateRequest request = new AlipayTradeCreateRequest();
         request.setBizModel(model);
         request.setNotifyUrl(notifyUrl);
@@ -735,12 +760,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 统一收单交易退款接口
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayTradeRefundModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayTradeRefundModel}
      * @return {@link AlipayTradeRefundResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradeRefundResponse tradeRefundToResponse(Boolean certModel, AlipayTradeRefundModel model) throws AlipayApiException {
+    public AlipayTradeRefundResponse tradeRefundToResponse(Boolean certModel, AlipayTradeRefundModel model)
+            throws AlipayApiException {
         AlipayTradeRefundRequest request = new AlipayTradeRefundRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -754,7 +780,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayTradeRefundResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradeRefundResponse tradeRefundToResponse(AlipayTradeRefundModel model, String appAuthToken) throws AlipayApiException {
+    public AlipayTradeRefundResponse tradeRefundToResponse(AlipayTradeRefundModel model, String appAuthToken)
+            throws AlipayApiException {
         AlipayTradeRefundRequest request = new AlipayTradeRefundRequest();
         request.setBizModel(model);
         return execute(request, null, appAuthToken);
@@ -767,7 +794,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayTradePageRefundResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradePageRefundResponse tradeRefundToResponse(AlipayTradePageRefundModel model) throws AlipayApiException {
+    public AlipayTradePageRefundResponse tradeRefundToResponse(AlipayTradePageRefundModel model)
+            throws AlipayApiException {
         AlipayTradePageRefundRequest request = new AlipayTradePageRefundRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -776,12 +804,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 统一收单退款页面接口
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayTradePageRefundModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayTradePageRefundModel}
      * @return {@link AlipayTradePageRefundResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradePageRefundResponse tradeRefundToResponse(Boolean certModel, AlipayTradePageRefundModel model) throws AlipayApiException {
+    public AlipayTradePageRefundResponse tradeRefundToResponse(Boolean certModel, AlipayTradePageRefundModel model)
+            throws AlipayApiException {
         AlipayTradePageRefundRequest request = new AlipayTradePageRefundRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -795,7 +824,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayTradePageRefundResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradePageRefundResponse tradeRefundToResponse(AlipayTradePageRefundModel model, String appAuthToken) throws AlipayApiException {
+    public AlipayTradePageRefundResponse tradeRefundToResponse(AlipayTradePageRefundModel model, String appAuthToken)
+            throws AlipayApiException {
         AlipayTradePageRefundRequest request = new AlipayTradePageRefundRequest();
         request.setBizModel(model);
         return execute(request, null, appAuthToken);
@@ -808,7 +838,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayTradeFastpayRefundQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradeFastpayRefundQueryResponse tradeRefundQueryToResponse(AlipayTradeFastpayRefundQueryModel model) throws AlipayApiException {
+    public AlipayTradeFastpayRefundQueryResponse tradeRefundQueryToResponse(AlipayTradeFastpayRefundQueryModel model)
+            throws AlipayApiException {
         AlipayTradeFastpayRefundQueryRequest request = new AlipayTradeFastpayRefundQueryRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -817,12 +848,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 统一收单交易退款查询
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayTradeFastpayRefundQueryModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayTradeFastpayRefundQueryModel}
      * @return {@link AlipayTradeFastpayRefundQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradeFastpayRefundQueryResponse tradeRefundQueryToResponse(Boolean certModel, AlipayTradeFastpayRefundQueryModel model) throws AlipayApiException {
+    public AlipayTradeFastpayRefundQueryResponse tradeRefundQueryToResponse(Boolean certModel,
+            AlipayTradeFastpayRefundQueryModel model) throws AlipayApiException {
         AlipayTradeFastpayRefundQueryRequest request = new AlipayTradeFastpayRefundQueryRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -836,7 +868,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayTradeFastpayRefundQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradeFastpayRefundQueryResponse tradeRefundQueryToResponse(AlipayTradeFastpayRefundQueryModel model, String appAuthToken) throws AlipayApiException {
+    public AlipayTradeFastpayRefundQueryResponse tradeRefundQueryToResponse(AlipayTradeFastpayRefundQueryModel model,
+            String appAuthToken) throws AlipayApiException {
         AlipayTradeFastpayRefundQueryRequest request = new AlipayTradeFastpayRefundQueryRequest();
         request.setBizModel(model);
         return execute(request, null, appAuthToken);
@@ -857,12 +890,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 查询对账单下载地址
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayDataDataserviceBillDownloadurlQueryModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayDataDataserviceBillDownloadurlQueryModel}
      * @return 对账单下载地址
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public String billDownloadUrlQuery(Boolean certModel, AlipayDataDataserviceBillDownloadurlQueryModel model) throws AlipayApiException {
+    public String billDownloadUrlQuery(Boolean certModel, AlipayDataDataserviceBillDownloadurlQueryModel model)
+            throws AlipayApiException {
         AlipayDataDataserviceBillDownloadurlQueryResponse response = billDownloadUrlQueryToResponse(certModel, model);
         return response.getBillDownloadUrl();
     }
@@ -874,7 +908,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayDataDataserviceBillDownloadurlQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayDataDataserviceBillDownloadurlQueryResponse billDownloadUrlQueryToResponse(AlipayDataDataserviceBillDownloadurlQueryModel model) throws AlipayApiException {
+    public AlipayDataDataserviceBillDownloadurlQueryResponse billDownloadUrlQueryToResponse(
+            AlipayDataDataserviceBillDownloadurlQueryModel model) throws AlipayApiException {
         AlipayDataDataserviceBillDownloadurlQueryRequest request = new AlipayDataDataserviceBillDownloadurlQueryRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -883,12 +918,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 查询对账单下载地址
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayDataDataserviceBillDownloadurlQueryModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayDataDataserviceBillDownloadurlQueryModel}
      * @return {@link AlipayDataDataserviceBillDownloadurlQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayDataDataserviceBillDownloadurlQueryResponse billDownloadUrlQueryToResponse(Boolean certModel, AlipayDataDataserviceBillDownloadurlQueryModel model) throws AlipayApiException {
+    public AlipayDataDataserviceBillDownloadurlQueryResponse billDownloadUrlQueryToResponse(Boolean certModel,
+            AlipayDataDataserviceBillDownloadurlQueryModel model) throws AlipayApiException {
         AlipayDataDataserviceBillDownloadurlQueryRequest request = new AlipayDataDataserviceBillDownloadurlQueryRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -902,7 +938,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayDataDataserviceBillDownloadurlQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayDataDataserviceBillDownloadurlQueryResponse billDownloadUrlQueryToResponse(AlipayDataDataserviceBillDownloadurlQueryModel model, String appAuthToken) throws AlipayApiException {
+    public AlipayDataDataserviceBillDownloadurlQueryResponse billDownloadUrlQueryToResponse(
+            AlipayDataDataserviceBillDownloadurlQueryModel model, String appAuthToken) throws AlipayApiException {
         AlipayDataDataserviceBillDownloadurlQueryRequest request = new AlipayDataDataserviceBillDownloadurlQueryRequest();
         request.setBizModel(model);
         request.putOtherTextParam("app_auth_token", appAuthToken);
@@ -918,7 +955,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayDataDataserviceBillDownloadurlQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayDataDataserviceBillDownloadurlQueryResponse billDownloadUrlQueryToResponse(Boolean certModel, AlipayDataDataserviceBillDownloadurlQueryModel model, String appAuthToken) throws AlipayApiException {
+    public AlipayDataDataserviceBillDownloadurlQueryResponse billDownloadUrlQueryToResponse(Boolean certModel,
+            AlipayDataDataserviceBillDownloadurlQueryModel model, String appAuthToken) throws AlipayApiException {
         AlipayDataDataserviceBillDownloadurlQueryRequest request = new AlipayDataDataserviceBillDownloadurlQueryRequest();
         request.setBizModel(model);
         request.putOtherTextParam("app_auth_token", appAuthToken);
@@ -933,7 +971,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayTradeOrderSettleResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradeOrderSettleResponse tradeOrderSettleToResponse(AlipayTradeOrderSettleModel model, String appAuthToken) throws AlipayApiException {
+    public AlipayTradeOrderSettleResponse tradeOrderSettleToResponse(AlipayTradeOrderSettleModel model,
+            String appAuthToken) throws AlipayApiException {
         AlipayTradeOrderSettleRequest request = new AlipayTradeOrderSettleRequest();
         request.setBizModel(model);
         return execute(request, null, appAuthToken);
@@ -946,7 +985,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayTradeOrderSettleResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradeOrderSettleResponse tradeOrderSettleToResponse(AlipayTradeOrderSettleModel model) throws AlipayApiException {
+    public AlipayTradeOrderSettleResponse tradeOrderSettleToResponse(AlipayTradeOrderSettleModel model)
+            throws AlipayApiException {
         AlipayTradeOrderSettleRequest request = new AlipayTradeOrderSettleRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -955,12 +995,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 统一收单交易结算接口
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayTradeOrderSettleModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayTradeOrderSettleModel}
      * @return {@link AlipayTradeOrderSettleResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradeOrderSettleResponse tradeOrderSettleToResponse(Boolean certModel, AlipayTradeOrderSettleModel model) throws AlipayApiException {
+    public AlipayTradeOrderSettleResponse tradeOrderSettleToResponse(Boolean certModel,
+            AlipayTradeOrderSettleModel model) throws AlipayApiException {
         AlipayTradeOrderSettleRequest request = new AlipayTradeOrderSettleRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -976,7 +1017,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @throws AlipayApiException 支付宝 Api 异常
      * @throws IOException        IO 异常
      */
-    public void tradePage(HttpServletResponse response, AlipayTradePagePayModel model, String notifyUrl, String returnUrl) throws AlipayApiException, IOException {
+    public void tradePage(HttpServletResponse response, AlipayTradePagePayModel model, String notifyUrl,
+            String returnUrl) throws AlipayApiException, IOException {
         AlipayTradePagePayRequest request = new AlipayTradePagePayRequest();
         request.setBizModel(model);
         request.setNotifyUrl(notifyUrl);
@@ -993,14 +1035,16 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * 电脑网站支付(PC支付)
      *
      * @param response  {@link HttpServletResponse}
-     * @param method    GET/POST GET 返回url,POST 返回 FORM <a href="https://opensupport.alipay.com/support/helpcenter/192/201602488772?ant_source=antsupport">参考文章</a>
+     * @param method    GET/POST GET 返回url,POST 返回 FORM <a href=
+     *                  "https://opensupport.alipay.com/support/helpcenter/192/201602488772?ant_source=antsupport">参考文章</a>
      * @param model     {@link AlipayTradePagePayModel}
      * @param notifyUrl 异步通知URL
      * @param returnUrl 同步通知URL
      * @throws AlipayApiException 支付宝 Api 异常
      * @throws IOException        IO 异常
      */
-    public void tradePage(HttpServletResponse response, String method, AlipayTradePagePayModel model, String notifyUrl, String returnUrl) throws AlipayApiException, IOException {
+    public void tradePage(HttpServletResponse response, String method, AlipayTradePagePayModel model, String notifyUrl,
+            String returnUrl) throws AlipayApiException, IOException {
         AlipayTradePagePayRequest request = new AlipayTradePagePayRequest();
         request.setBizModel(model);
         request.setNotifyUrl(notifyUrl);
@@ -1024,7 +1068,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @throws AlipayApiException 支付宝 Api 异常
      * @throws IOException        IO 异常
      */
-    public void tradePage(HttpServletResponse response, AlipayTradePagePayModel model, String notifyUrl, String returnUrl, String appAuthToken) throws AlipayApiException, IOException {
+    public void tradePage(HttpServletResponse response, AlipayTradePagePayModel model, String notifyUrl,
+            String returnUrl, String appAuthToken) throws AlipayApiException, IOException {
         AlipayTradePagePayRequest request = new AlipayTradePagePayRequest();
         request.setBizModel(model);
         request.setNotifyUrl(notifyUrl);
@@ -1048,7 +1093,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @throws AlipayApiException 支付宝 Api 异常
      * @throws IOException        IO 异常
      */
-    public void tradePageByOutputStream(HttpServletResponse response, AlipayTradePagePayModel model, String notifyUrl, String returnUrl) throws AlipayApiException, IOException {
+    public void tradePageByOutputStream(HttpServletResponse response, AlipayTradePagePayModel model, String notifyUrl,
+            String returnUrl) throws AlipayApiException, IOException {
         AlipayTradePagePayRequest request = new AlipayTradePagePayRequest();
         request.setBizModel(model);
         request.setNotifyUrl(notifyUrl);
@@ -1071,7 +1117,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @throws AlipayApiException 支付宝 Api 异常
      * @throws IOException        IO 异常
      */
-    public void tradePageByOutputStream(HttpServletResponse response, AlipayTradePagePayModel model, String notifyUrl, String returnUrl, String appAuthToken) throws AlipayApiException, IOException {
+    public void tradePageByOutputStream(HttpServletResponse response, AlipayTradePagePayModel model, String notifyUrl,
+            String returnUrl, String appAuthToken) throws AlipayApiException, IOException {
         AlipayTradePagePayRequest request = new AlipayTradePagePayRequest();
         request.setBizModel(model);
         request.setNotifyUrl(notifyUrl);
@@ -1091,7 +1138,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayFundAuthOrderFreezeResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundAuthOrderFreezeResponse authOrderFreezeToResponse(AlipayFundAuthOrderFreezeModel model) throws AlipayApiException {
+    public AlipayFundAuthOrderFreezeResponse authOrderFreezeToResponse(AlipayFundAuthOrderFreezeModel model)
+            throws AlipayApiException {
         AlipayFundAuthOrderFreezeRequest request = new AlipayFundAuthOrderFreezeRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1100,12 +1148,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 资金预授权冻结接口
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayFundAuthOrderFreezeModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayFundAuthOrderFreezeModel}
      * @return {@link AlipayFundAuthOrderFreezeResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundAuthOrderFreezeResponse authOrderFreezeToResponse(Boolean certModel, AlipayFundAuthOrderFreezeModel model) throws AlipayApiException {
+    public AlipayFundAuthOrderFreezeResponse authOrderFreezeToResponse(Boolean certModel,
+            AlipayFundAuthOrderFreezeModel model) throws AlipayApiException {
         AlipayFundAuthOrderFreezeRequest request = new AlipayFundAuthOrderFreezeRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1118,7 +1167,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayFundAuthOrderUnfreezeResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundAuthOrderUnfreezeResponse authOrderUnfreezeToResponse(AlipayFundAuthOrderUnfreezeModel model) throws AlipayApiException {
+    public AlipayFundAuthOrderUnfreezeResponse authOrderUnfreezeToResponse(AlipayFundAuthOrderUnfreezeModel model)
+            throws AlipayApiException {
         AlipayFundAuthOrderUnfreezeRequest request = new AlipayFundAuthOrderUnfreezeRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1127,12 +1177,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 资金授权解冻接口
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayFundAuthOrderUnfreezeModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayFundAuthOrderUnfreezeModel}
      * @return {@link AlipayFundAuthOrderUnfreezeResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundAuthOrderUnfreezeResponse authOrderUnfreezeToResponse(Boolean certModel, AlipayFundAuthOrderUnfreezeModel model) throws AlipayApiException {
+    public AlipayFundAuthOrderUnfreezeResponse authOrderUnfreezeToResponse(Boolean certModel,
+            AlipayFundAuthOrderUnfreezeModel model) throws AlipayApiException {
         AlipayFundAuthOrderUnfreezeRequest request = new AlipayFundAuthOrderUnfreezeRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1145,7 +1196,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayFundAuthOrderVoucherCreateResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundAuthOrderVoucherCreateResponse authOrderVoucherCreateToResponse(AlipayFundAuthOrderVoucherCreateModel model) throws AlipayApiException {
+    public AlipayFundAuthOrderVoucherCreateResponse authOrderVoucherCreateToResponse(
+            AlipayFundAuthOrderVoucherCreateModel model) throws AlipayApiException {
         AlipayFundAuthOrderVoucherCreateRequest request = new AlipayFundAuthOrderVoucherCreateRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1154,12 +1206,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 资金预授权冻结接口
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayFundAuthOrderVoucherCreateModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayFundAuthOrderVoucherCreateModel}
      * @return {@link AlipayFundAuthOrderVoucherCreateResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundAuthOrderVoucherCreateResponse authOrderVoucherCreateToResponse(Boolean certModel, AlipayFundAuthOrderVoucherCreateModel model) throws AlipayApiException {
+    public AlipayFundAuthOrderVoucherCreateResponse authOrderVoucherCreateToResponse(Boolean certModel,
+            AlipayFundAuthOrderVoucherCreateModel model) throws AlipayApiException {
         AlipayFundAuthOrderVoucherCreateRequest request = new AlipayFundAuthOrderVoucherCreateRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1172,7 +1225,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayFundAuthOperationCancelResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundAuthOperationCancelResponse authOperationCancelToResponse(AlipayFundAuthOperationCancelModel model) throws AlipayApiException {
+    public AlipayFundAuthOperationCancelResponse authOperationCancelToResponse(AlipayFundAuthOperationCancelModel model)
+            throws AlipayApiException {
         AlipayFundAuthOperationCancelRequest request = new AlipayFundAuthOperationCancelRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1181,12 +1235,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 资金授权撤销接口
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayFundAuthOperationCancelModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayFundAuthOperationCancelModel}
      * @return {@link AlipayFundAuthOperationCancelResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundAuthOperationCancelResponse authOperationCancelToResponse(Boolean certModel, AlipayFundAuthOperationCancelModel model) throws AlipayApiException {
+    public AlipayFundAuthOperationCancelResponse authOperationCancelToResponse(Boolean certModel,
+            AlipayFundAuthOperationCancelModel model) throws AlipayApiException {
         AlipayFundAuthOperationCancelRequest request = new AlipayFundAuthOperationCancelRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1199,7 +1254,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayFundAuthOperationDetailQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundAuthOperationDetailQueryResponse authOperationDetailQueryToResponse(AlipayFundAuthOperationDetailQueryModel model) throws AlipayApiException {
+    public AlipayFundAuthOperationDetailQueryResponse authOperationDetailQueryToResponse(
+            AlipayFundAuthOperationDetailQueryModel model) throws AlipayApiException {
         AlipayFundAuthOperationDetailQueryRequest request = new AlipayFundAuthOperationDetailQueryRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1208,12 +1264,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 资金授权操作查询接口
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayFundAuthOperationDetailQueryModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayFundAuthOperationDetailQueryModel}
      * @return {@link AlipayFundAuthOperationDetailQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundAuthOperationDetailQueryResponse authOperationDetailQueryToResponse(Boolean certModel, AlipayFundAuthOperationDetailQueryModel model) throws AlipayApiException {
+    public AlipayFundAuthOperationDetailQueryResponse authOperationDetailQueryToResponse(Boolean certModel,
+            AlipayFundAuthOperationDetailQueryModel model) throws AlipayApiException {
         AlipayFundAuthOperationDetailQueryRequest request = new AlipayFundAuthOperationDetailQueryRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1226,7 +1283,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayFundCouponOrderAppPayResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundCouponOrderAppPayResponse fundCouponOrderAppPayToResponse(AlipayFundCouponOrderAppPayModel model) throws AlipayApiException {
+    public AlipayFundCouponOrderAppPayResponse fundCouponOrderAppPayToResponse(AlipayFundCouponOrderAppPayModel model)
+            throws AlipayApiException {
         AlipayFundCouponOrderAppPayRequest request = new AlipayFundCouponOrderAppPayRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1235,12 +1293,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 红包无线支付接口
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayFundCouponOrderAppPayModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayFundCouponOrderAppPayModel}
      * @return {@link AlipayFundCouponOrderAppPayResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundCouponOrderAppPayResponse fundCouponOrderAppPayToResponse(Boolean certModel, AlipayFundCouponOrderAppPayModel model) throws AlipayApiException {
+    public AlipayFundCouponOrderAppPayResponse fundCouponOrderAppPayToResponse(Boolean certModel,
+            AlipayFundCouponOrderAppPayModel model) throws AlipayApiException {
         AlipayFundCouponOrderAppPayRequest request = new AlipayFundCouponOrderAppPayRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1253,7 +1312,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayFundCouponOrderPagePayResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundCouponOrderPagePayResponse fundCouponOrderPagePayToResponse(AlipayFundCouponOrderPagePayModel model) throws AlipayApiException {
+    public AlipayFundCouponOrderPagePayResponse fundCouponOrderPagePayToResponse(
+            AlipayFundCouponOrderPagePayModel model) throws AlipayApiException {
         AlipayFundCouponOrderPagePayRequest request = new AlipayFundCouponOrderPagePayRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1262,12 +1322,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 红包页面支付接口
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayFundCouponOrderPagePayModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayFundCouponOrderPagePayModel}
      * @return {@link AlipayFundCouponOrderPagePayResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundCouponOrderPagePayResponse fundCouponOrderPagePayToResponse(Boolean certModel, AlipayFundCouponOrderPagePayModel model) throws AlipayApiException {
+    public AlipayFundCouponOrderPagePayResponse fundCouponOrderPagePayToResponse(Boolean certModel,
+            AlipayFundCouponOrderPagePayModel model) throws AlipayApiException {
         AlipayFundCouponOrderPagePayRequest request = new AlipayFundCouponOrderPagePayRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1280,7 +1341,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayFundCouponOrderAgreementPayResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundCouponOrderAgreementPayResponse fundCouponOrderAgreementPayToResponse(AlipayFundCouponOrderAgreementPayModel model) throws AlipayApiException {
+    public AlipayFundCouponOrderAgreementPayResponse fundCouponOrderAgreementPayToResponse(
+            AlipayFundCouponOrderAgreementPayModel model) throws AlipayApiException {
         AlipayFundCouponOrderAgreementPayRequest request = new AlipayFundCouponOrderAgreementPayRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1289,12 +1351,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 红包协议支付接口
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayFundCouponOrderAgreementPayModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayFundCouponOrderAgreementPayModel}
      * @return {@link AlipayFundCouponOrderAgreementPayResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundCouponOrderAgreementPayResponse fundCouponOrderAgreementPayToResponse(Boolean certModel, AlipayFundCouponOrderAgreementPayModel model) throws AlipayApiException {
+    public AlipayFundCouponOrderAgreementPayResponse fundCouponOrderAgreementPayToResponse(Boolean certModel,
+            AlipayFundCouponOrderAgreementPayModel model) throws AlipayApiException {
         AlipayFundCouponOrderAgreementPayRequest request = new AlipayFundCouponOrderAgreementPayRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1307,7 +1370,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayFundCouponOrderDisburseResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundCouponOrderDisburseResponse fundCouponOrderDisburseToResponse(AlipayFundCouponOrderDisburseModel model) throws AlipayApiException {
+    public AlipayFundCouponOrderDisburseResponse fundCouponOrderDisburseToResponse(
+            AlipayFundCouponOrderDisburseModel model) throws AlipayApiException {
         AlipayFundCouponOrderDisburseRequest request = new AlipayFundCouponOrderDisburseRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1316,12 +1380,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 红包打款接口
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayFundCouponOrderDisburseModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayFundCouponOrderDisburseModel}
      * @return {@link AlipayFundCouponOrderDisburseResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundCouponOrderDisburseResponse fundCouponOrderDisburseToResponse(Boolean certModel, AlipayFundCouponOrderDisburseModel model) throws AlipayApiException {
+    public AlipayFundCouponOrderDisburseResponse fundCouponOrderDisburseToResponse(Boolean certModel,
+            AlipayFundCouponOrderDisburseModel model) throws AlipayApiException {
         AlipayFundCouponOrderDisburseRequest request = new AlipayFundCouponOrderDisburseRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1334,7 +1399,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayFundCouponOrderRefundResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundCouponOrderRefundResponse fundCouponOrderRefundToResponse(AlipayFundCouponOrderRefundModel model) throws AlipayApiException {
+    public AlipayFundCouponOrderRefundResponse fundCouponOrderRefundToResponse(AlipayFundCouponOrderRefundModel model)
+            throws AlipayApiException {
         AlipayFundCouponOrderRefundRequest request = new AlipayFundCouponOrderRefundRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1343,12 +1409,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 红包退回接口
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayFundCouponOrderRefundModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayFundCouponOrderRefundModel}
      * @return {@link AlipayFundCouponOrderRefundResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundCouponOrderRefundResponse fundCouponOrderRefundToResponse(Boolean certModel, AlipayFundCouponOrderRefundModel model) throws AlipayApiException {
+    public AlipayFundCouponOrderRefundResponse fundCouponOrderRefundToResponse(Boolean certModel,
+            AlipayFundCouponOrderRefundModel model) throws AlipayApiException {
         AlipayFundCouponOrderRefundRequest request = new AlipayFundCouponOrderRefundRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1361,7 +1428,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayFundCouponOperationQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundCouponOperationQueryResponse fundCouponOperationQueryToResponse(AlipayFundCouponOperationQueryModel model) throws AlipayApiException {
+    public AlipayFundCouponOperationQueryResponse fundCouponOperationQueryToResponse(
+            AlipayFundCouponOperationQueryModel model) throws AlipayApiException {
         AlipayFundCouponOperationQueryRequest request = new AlipayFundCouponOperationQueryRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1370,12 +1438,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 红包退回接口
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayFundCouponOperationQueryModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayFundCouponOperationQueryModel}
      * @return {@link AlipayFundCouponOperationQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayFundCouponOperationQueryResponse fundCouponOperationQueryToResponse(Boolean certModel, AlipayFundCouponOperationQueryModel model) throws AlipayApiException {
+    public AlipayFundCouponOperationQueryResponse fundCouponOperationQueryToResponse(Boolean certModel,
+            AlipayFundCouponOperationQueryModel model) throws AlipayApiException {
         AlipayFundCouponOperationQueryRequest request = new AlipayFundCouponOperationQueryRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1390,7 +1459,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @throws UnsupportedEncodingException 编码异常
      */
     public String getOauth2Url(String appId, String redirectUri) throws UnsupportedEncodingException {
-        return new StringBuffer().append("https://openauth.alipay.com/oauth2/appToAppAuth.htm?app_id=").append(appId).append("&redirect_uri=").append(URLEncoder.encode(redirectUri, "UTF-8")).toString();
+        return new StringBuffer().append("https://openauth.alipay.com/oauth2/appToAppAuth.htm?app_id=").append(appId)
+                .append("&redirect_uri=").append(URLEncoder.encode(redirectUri, "UTF-8")).toString();
     }
 
     /**
@@ -1400,7 +1470,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayOpenAuthTokenAppResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayOpenAuthTokenAppResponse openAuthTokenAppToResponse(AlipayOpenAuthTokenAppModel model) throws AlipayApiException {
+    public AlipayOpenAuthTokenAppResponse openAuthTokenAppToResponse(AlipayOpenAuthTokenAppModel model)
+            throws AlipayApiException {
         AlipayOpenAuthTokenAppRequest request = new AlipayOpenAuthTokenAppRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1409,12 +1480,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 使用 app_auth_code 换取 app_auth_token
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayOpenAuthTokenAppModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayOpenAuthTokenAppModel}
      * @return {@link AlipayOpenAuthTokenAppResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayOpenAuthTokenAppResponse openAuthTokenAppToResponse(Boolean certModel, AlipayOpenAuthTokenAppModel model) throws AlipayApiException {
+    public AlipayOpenAuthTokenAppResponse openAuthTokenAppToResponse(Boolean certModel,
+            AlipayOpenAuthTokenAppModel model) throws AlipayApiException {
         AlipayOpenAuthTokenAppRequest request = new AlipayOpenAuthTokenAppRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1427,7 +1499,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayOpenAuthTokenAppQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayOpenAuthTokenAppQueryResponse openAuthTokenAppQueryToResponse(AlipayOpenAuthTokenAppQueryModel model) throws AlipayApiException {
+    public AlipayOpenAuthTokenAppQueryResponse openAuthTokenAppQueryToResponse(AlipayOpenAuthTokenAppQueryModel model)
+            throws AlipayApiException {
         AlipayOpenAuthTokenAppQueryRequest request = new AlipayOpenAuthTokenAppQueryRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1436,12 +1509,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 查询授权信息
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayOpenAuthTokenAppQueryModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayOpenAuthTokenAppQueryModel}
      * @return {@link AlipayOpenAuthTokenAppQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayOpenAuthTokenAppQueryResponse openAuthTokenAppQueryToResponse(Boolean certModel, AlipayOpenAuthTokenAppQueryModel model) throws AlipayApiException {
+    public AlipayOpenAuthTokenAppQueryResponse openAuthTokenAppQueryToResponse(Boolean certModel,
+            AlipayOpenAuthTokenAppQueryModel model) throws AlipayApiException {
         AlipayOpenAuthTokenAppQueryRequest request = new AlipayOpenAuthTokenAppQueryRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1454,7 +1528,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayCommerceCityfacilitatorVoucherGenerateResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayCommerceCityfacilitatorVoucherGenerateResponse voucherGenerateToResponse(AlipayCommerceCityfacilitatorVoucherGenerateModel model) throws AlipayApiException {
+    public AlipayCommerceCityfacilitatorVoucherGenerateResponse voucherGenerateToResponse(
+            AlipayCommerceCityfacilitatorVoucherGenerateModel model) throws AlipayApiException {
         AlipayCommerceCityfacilitatorVoucherGenerateRequest request = new AlipayCommerceCityfacilitatorVoucherGenerateRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1463,12 +1538,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 地铁购票发码
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayCommerceCityfacilitatorVoucherGenerateModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayCommerceCityfacilitatorVoucherGenerateModel}
      * @return {@link AlipayCommerceCityfacilitatorVoucherGenerateResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayCommerceCityfacilitatorVoucherGenerateResponse voucherGenerateToResponse(Boolean certModel, AlipayCommerceCityfacilitatorVoucherGenerateModel model) throws AlipayApiException {
+    public AlipayCommerceCityfacilitatorVoucherGenerateResponse voucherGenerateToResponse(Boolean certModel,
+            AlipayCommerceCityfacilitatorVoucherGenerateModel model) throws AlipayApiException {
         AlipayCommerceCityfacilitatorVoucherGenerateRequest request = new AlipayCommerceCityfacilitatorVoucherGenerateRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1481,7 +1557,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayCommerceCityfacilitatorVoucherRefundResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayCommerceCityfacilitatorVoucherRefundResponse metroRefundToResponse(AlipayCommerceCityfacilitatorVoucherRefundModel model) throws AlipayApiException {
+    public AlipayCommerceCityfacilitatorVoucherRefundResponse metroRefundToResponse(
+            AlipayCommerceCityfacilitatorVoucherRefundModel model) throws AlipayApiException {
         AlipayCommerceCityfacilitatorVoucherRefundRequest request = new AlipayCommerceCityfacilitatorVoucherRefundRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1490,12 +1567,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 地铁购票发码退款
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayCommerceCityfacilitatorVoucherRefundModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayCommerceCityfacilitatorVoucherRefundModel}
      * @return {@link AlipayCommerceCityfacilitatorVoucherRefundResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayCommerceCityfacilitatorVoucherRefundResponse metroRefundToResponse(Boolean certModel, AlipayCommerceCityfacilitatorVoucherRefundModel model) throws AlipayApiException {
+    public AlipayCommerceCityfacilitatorVoucherRefundResponse metroRefundToResponse(Boolean certModel,
+            AlipayCommerceCityfacilitatorVoucherRefundModel model) throws AlipayApiException {
         AlipayCommerceCityfacilitatorVoucherRefundRequest request = new AlipayCommerceCityfacilitatorVoucherRefundRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1508,7 +1586,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayCommerceCityfacilitatorStationQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayCommerceCityfacilitatorStationQueryResponse stationQueryToResponse(AlipayCommerceCityfacilitatorStationQueryModel model) throws AlipayApiException {
+    public AlipayCommerceCityfacilitatorStationQueryResponse stationQueryToResponse(
+            AlipayCommerceCityfacilitatorStationQueryModel model) throws AlipayApiException {
         AlipayCommerceCityfacilitatorStationQueryRequest request = new AlipayCommerceCityfacilitatorStationQueryRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1517,12 +1596,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 地铁车站数据查询
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayCommerceCityfacilitatorStationQueryModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayCommerceCityfacilitatorStationQueryModel}
      * @return {@link AlipayCommerceCityfacilitatorStationQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayCommerceCityfacilitatorStationQueryResponse stationQueryToResponse(Boolean certModel, AlipayCommerceCityfacilitatorStationQueryModel model) throws AlipayApiException {
+    public AlipayCommerceCityfacilitatorStationQueryResponse stationQueryToResponse(Boolean certModel,
+            AlipayCommerceCityfacilitatorStationQueryModel model) throws AlipayApiException {
         AlipayCommerceCityfacilitatorStationQueryRequest request = new AlipayCommerceCityfacilitatorStationQueryRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1535,7 +1615,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayCommerceCityfacilitatorVoucherBatchqueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayCommerceCityfacilitatorVoucherBatchqueryResponse voucherBatchqueryToResponse(AlipayCommerceCityfacilitatorVoucherBatchqueryModel model) throws AlipayApiException {
+    public AlipayCommerceCityfacilitatorVoucherBatchqueryResponse voucherBatchqueryToResponse(
+            AlipayCommerceCityfacilitatorVoucherBatchqueryModel model) throws AlipayApiException {
         AlipayCommerceCityfacilitatorVoucherBatchqueryRequest request = new AlipayCommerceCityfacilitatorVoucherBatchqueryRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1544,19 +1625,20 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 核销码批量查询
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayCommerceCityfacilitatorVoucherBatchqueryModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayCommerceCityfacilitatorVoucherBatchqueryModel}
      * @return {@link AlipayCommerceCityfacilitatorVoucherBatchqueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayCommerceCityfacilitatorVoucherBatchqueryResponse voucherBatchqueryToResponse(Boolean certModel, AlipayCommerceCityfacilitatorVoucherBatchqueryModel model) throws AlipayApiException {
+    public AlipayCommerceCityfacilitatorVoucherBatchqueryResponse voucherBatchqueryToResponse(Boolean certModel,
+            AlipayCommerceCityfacilitatorVoucherBatchqueryModel model) throws AlipayApiException {
         AlipayCommerceCityfacilitatorVoucherBatchqueryRequest request = new AlipayCommerceCityfacilitatorVoucherBatchqueryRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
     }
 
-
-    public void batchTrans(Map<String, String> params, String privateKey, String signType, HttpServletResponse response) throws IOException {
+    public void batchTrans(Map<String, String> params, String privateKey, String signType, HttpServletResponse response)
+            throws IOException {
         params.put("service", "batch_trans_notify");
         params.put("_input_charset", "UTF-8");
         params.put("pay_date", DateKit.format(new Date(), "YYYYMMDD"));
@@ -1588,7 +1670,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayEbppBillGetResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayEbppBillGetResponse ebppBillGet(Boolean certModel, String orderType, String merchantOrderNo) throws AlipayApiException {
+    public AlipayEbppBillGetResponse ebppBillGet(Boolean certModel, String orderType, String merchantOrderNo)
+            throws AlipayApiException {
         AlipayEbppBillGetRequest request = new AlipayEbppBillGetRequest();
         request.setOrderType(orderType);
         request.setMerchantOrderNo(merchantOrderNo);
@@ -1602,7 +1685,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link ZolozIdentificationUserWebInitializeResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public ZolozIdentificationUserWebInitializeResponse identificationUserWebInitialize(ZolozIdentificationUserWebInitializeModel model) throws AlipayApiException {
+    public ZolozIdentificationUserWebInitializeResponse identificationUserWebInitialize(
+            ZolozIdentificationUserWebInitializeModel model) throws AlipayApiException {
         ZolozIdentificationUserWebInitializeRequest request = new ZolozIdentificationUserWebInitializeRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1611,12 +1695,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * H5刷脸认证初始化
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link ZolozIdentificationUserWebInitializeModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link ZolozIdentificationUserWebInitializeModel}
      * @return {@link ZolozIdentificationUserWebInitializeResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public ZolozIdentificationUserWebInitializeResponse identificationUserWebInitialize(Boolean certModel, ZolozIdentificationUserWebInitializeModel model) throws AlipayApiException {
+    public ZolozIdentificationUserWebInitializeResponse identificationUserWebInitialize(Boolean certModel,
+            ZolozIdentificationUserWebInitializeModel model) throws AlipayApiException {
         ZolozIdentificationUserWebInitializeRequest request = new ZolozIdentificationUserWebInitializeRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1629,7 +1714,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link ZolozIdentificationUserWebQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public ZolozIdentificationUserWebQueryResponse identificationUserWebInitialize(ZolozIdentificationUserWebQueryModel model) throws AlipayApiException {
+    public ZolozIdentificationUserWebQueryResponse identificationUserWebInitialize(
+            ZolozIdentificationUserWebQueryModel model) throws AlipayApiException {
         ZolozIdentificationUserWebQueryRequest request = new ZolozIdentificationUserWebQueryRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1638,12 +1724,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * H5刷脸认证查询
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link ZolozIdentificationUserWebQueryModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link ZolozIdentificationUserWebQueryModel}
      * @return {@link ZolozIdentificationUserWebQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public ZolozIdentificationUserWebQueryResponse identificationUserWebInitialize(Boolean certModel, ZolozIdentificationUserWebQueryModel model) throws AlipayApiException {
+    public ZolozIdentificationUserWebQueryResponse identificationUserWebInitialize(Boolean certModel,
+            ZolozIdentificationUserWebQueryModel model) throws AlipayApiException {
         ZolozIdentificationUserWebQueryRequest request = new ZolozIdentificationUserWebQueryRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1656,7 +1743,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link ZolozAuthenticationCustomerFacemanageCreateResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public ZolozAuthenticationCustomerFacemanageCreateResponse authenticationCustomerFaceManageCreate(ZolozAuthenticationCustomerFacemanageCreateModel model) throws AlipayApiException {
+    public ZolozAuthenticationCustomerFacemanageCreateResponse authenticationCustomerFaceManageCreate(
+            ZolozAuthenticationCustomerFacemanageCreateModel model) throws AlipayApiException {
         ZolozAuthenticationCustomerFacemanageCreateRequest request = new ZolozAuthenticationCustomerFacemanageCreateRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1665,12 +1753,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 人脸入库
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link ZolozAuthenticationCustomerFacemanageCreateModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link ZolozAuthenticationCustomerFacemanageCreateModel}
      * @return {@link ZolozAuthenticationCustomerFacemanageCreateResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public ZolozAuthenticationCustomerFacemanageCreateResponse authenticationCustomerFaceManageCreate(Boolean certModel, ZolozAuthenticationCustomerFacemanageCreateModel model) throws AlipayApiException {
+    public ZolozAuthenticationCustomerFacemanageCreateResponse authenticationCustomerFaceManageCreate(Boolean certModel,
+            ZolozAuthenticationCustomerFacemanageCreateModel model) throws AlipayApiException {
         ZolozAuthenticationCustomerFacemanageCreateRequest request = new ZolozAuthenticationCustomerFacemanageCreateRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1683,7 +1772,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link ZolozAuthenticationCustomerFacemanageDeleteResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public ZolozAuthenticationCustomerFacemanageDeleteResponse authenticationCustomerFaceManageDelete(ZolozAuthenticationCustomerFacemanageDeleteModel model) throws AlipayApiException {
+    public ZolozAuthenticationCustomerFacemanageDeleteResponse authenticationCustomerFaceManageDelete(
+            ZolozAuthenticationCustomerFacemanageDeleteModel model) throws AlipayApiException {
         ZolozAuthenticationCustomerFacemanageDeleteRequest request = new ZolozAuthenticationCustomerFacemanageDeleteRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1692,12 +1782,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 人脸出库
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link ZolozAuthenticationCustomerFacemanageDeleteModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link ZolozAuthenticationCustomerFacemanageDeleteModel}
      * @return {@link ZolozAuthenticationCustomerFacemanageDeleteResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public ZolozAuthenticationCustomerFacemanageDeleteResponse authenticationCustomerFaceManageDelete(Boolean certModel, ZolozAuthenticationCustomerFacemanageDeleteModel model) throws AlipayApiException {
+    public ZolozAuthenticationCustomerFacemanageDeleteResponse authenticationCustomerFaceManageDelete(Boolean certModel,
+            ZolozAuthenticationCustomerFacemanageDeleteModel model) throws AlipayApiException {
         ZolozAuthenticationCustomerFacemanageDeleteRequest request = new ZolozAuthenticationCustomerFacemanageDeleteRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1710,7 +1801,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link ZolozAuthenticationCustomerFtokenQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public ZolozAuthenticationCustomerFtokenQueryResponse authenticationCustomerFTokenQuery(ZolozAuthenticationCustomerFtokenQueryModel model) throws AlipayApiException {
+    public ZolozAuthenticationCustomerFtokenQueryResponse authenticationCustomerFTokenQuery(
+            ZolozAuthenticationCustomerFtokenQueryModel model) throws AlipayApiException {
         ZolozAuthenticationCustomerFtokenQueryRequest request = new ZolozAuthenticationCustomerFtokenQueryRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1719,12 +1811,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 人脸 ftoken 查询消费接口
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link ZolozAuthenticationCustomerFtokenQueryModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link ZolozAuthenticationCustomerFtokenQueryModel}
      * @return {@link ZolozAuthenticationCustomerFtokenQueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public ZolozAuthenticationCustomerFtokenQueryResponse authenticationCustomerFTokenQuery(Boolean certModel, ZolozAuthenticationCustomerFtokenQueryModel model) throws AlipayApiException {
+    public ZolozAuthenticationCustomerFtokenQueryResponse authenticationCustomerFTokenQuery(Boolean certModel,
+            ZolozAuthenticationCustomerFtokenQueryModel model) throws AlipayApiException {
         ZolozAuthenticationCustomerFtokenQueryRequest request = new ZolozAuthenticationCustomerFtokenQueryRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1737,7 +1830,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link ZolozAuthenticationSmilepayInitializeResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public ZolozAuthenticationSmilepayInitializeResponse authenticationSmilePayInitialize(ZolozAuthenticationSmilepayInitializeModel model) throws AlipayApiException {
+    public ZolozAuthenticationSmilepayInitializeResponse authenticationSmilePayInitialize(
+            ZolozAuthenticationSmilepayInitializeModel model) throws AlipayApiException {
         ZolozAuthenticationSmilepayInitializeRequest request = new ZolozAuthenticationSmilepayInitializeRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1746,12 +1840,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 人脸初始化刷脸付
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link ZolozAuthenticationSmilepayInitializeModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link ZolozAuthenticationSmilepayInitializeModel}
      * @return {@link ZolozAuthenticationSmilepayInitializeResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public ZolozAuthenticationSmilepayInitializeResponse authenticationSmilePayInitialize(Boolean certModel, ZolozAuthenticationSmilepayInitializeModel model) throws AlipayApiException {
+    public ZolozAuthenticationSmilepayInitializeResponse authenticationSmilePayInitialize(Boolean certModel,
+            ZolozAuthenticationSmilepayInitializeModel model) throws AlipayApiException {
         ZolozAuthenticationSmilepayInitializeRequest request = new ZolozAuthenticationSmilepayInitializeRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1764,7 +1859,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link ZolozAuthenticationCustomerSmilepayInitializeResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public ZolozAuthenticationCustomerSmilepayInitializeResponse authenticationCustomerSmilePayInitialize(ZolozAuthenticationCustomerSmilepayInitializeModel model) throws AlipayApiException {
+    public ZolozAuthenticationCustomerSmilepayInitializeResponse authenticationCustomerSmilePayInitialize(
+            ZolozAuthenticationCustomerSmilepayInitializeModel model) throws AlipayApiException {
         ZolozAuthenticationCustomerSmilepayInitializeRequest request = new ZolozAuthenticationCustomerSmilepayInitializeRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1773,12 +1869,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 人脸初始化唤起zim
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link ZolozAuthenticationCustomerSmilepayInitializeModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link ZolozAuthenticationCustomerSmilepayInitializeModel}
      * @return {@link ZolozAuthenticationCustomerSmilepayInitializeResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public ZolozAuthenticationCustomerSmilepayInitializeResponse authenticationCustomerSmilePayInitialize(Boolean certModel, ZolozAuthenticationCustomerSmilepayInitializeModel model) throws AlipayApiException {
+    public ZolozAuthenticationCustomerSmilepayInitializeResponse authenticationCustomerSmilePayInitialize(
+            Boolean certModel, ZolozAuthenticationCustomerSmilepayInitializeModel model) throws AlipayApiException {
         ZolozAuthenticationCustomerSmilepayInitializeRequest request = new ZolozAuthenticationCustomerSmilepayInitializeRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1798,7 +1895,7 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 生态激励项目ISV代签约接口
      *
-     * @param certModel    是否证书模式
+     * @param certModel 是否证书模式
      * @return {@link AlipayCommerceAdContractSignResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
@@ -1814,7 +1911,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayTradeRoyaltyRelationBindResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradeRoyaltyRelationBindResponse tradeRoyaltyRelationBind(AlipayTradeRoyaltyRelationBindModel model) throws AlipayApiException {
+    public AlipayTradeRoyaltyRelationBindResponse tradeRoyaltyRelationBind(AlipayTradeRoyaltyRelationBindModel model)
+            throws AlipayApiException {
         AlipayTradeRoyaltyRelationBindRequest request = new AlipayTradeRoyaltyRelationBindRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1823,12 +1921,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 分账关系绑定
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayTradeRoyaltyRelationBindModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayTradeRoyaltyRelationBindModel}
      * @return {@link AlipayTradeRoyaltyRelationBindResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradeRoyaltyRelationBindResponse tradeRoyaltyRelationBind(Boolean certModel, AlipayTradeRoyaltyRelationBindModel model) throws AlipayApiException {
+    public AlipayTradeRoyaltyRelationBindResponse tradeRoyaltyRelationBind(Boolean certModel,
+            AlipayTradeRoyaltyRelationBindModel model) throws AlipayApiException {
         AlipayTradeRoyaltyRelationBindRequest request = new AlipayTradeRoyaltyRelationBindRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1841,7 +1940,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayTradeRoyaltyRelationUnbindResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradeRoyaltyRelationUnbindResponse tradeRoyaltyRelationUnBind(AlipayTradeRoyaltyRelationUnbindModel model) throws AlipayApiException {
+    public AlipayTradeRoyaltyRelationUnbindResponse tradeRoyaltyRelationUnBind(
+            AlipayTradeRoyaltyRelationUnbindModel model) throws AlipayApiException {
         AlipayTradeRoyaltyRelationUnbindRequest request = new AlipayTradeRoyaltyRelationUnbindRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1850,12 +1950,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 分账关系解绑
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayTradeRoyaltyRelationUnbindModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayTradeRoyaltyRelationUnbindModel}
      * @return {@link AlipayTradeRoyaltyRelationUnbindResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradeRoyaltyRelationUnbindResponse tradeRoyaltyRelationUnBind(Boolean certModel, AlipayTradeRoyaltyRelationUnbindModel model) throws AlipayApiException {
+    public AlipayTradeRoyaltyRelationUnbindResponse tradeRoyaltyRelationUnBind(Boolean certModel,
+            AlipayTradeRoyaltyRelationUnbindModel model) throws AlipayApiException {
         AlipayTradeRoyaltyRelationUnbindRequest request = new AlipayTradeRoyaltyRelationUnbindRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1868,7 +1969,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link AlipayTradeRoyaltyRelationBatchqueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradeRoyaltyRelationBatchqueryResponse tradeRoyaltyRelationBatchQuery(AlipayTradeRoyaltyRelationBatchqueryModel model) throws AlipayApiException {
+    public AlipayTradeRoyaltyRelationBatchqueryResponse tradeRoyaltyRelationBatchQuery(
+            AlipayTradeRoyaltyRelationBatchqueryModel model) throws AlipayApiException {
         AlipayTradeRoyaltyRelationBatchqueryRequest request = new AlipayTradeRoyaltyRelationBatchqueryRequest();
         request.setBizModel(model);
         return doExecute(request);
@@ -1877,12 +1979,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * 分账关系查询
      *
-     * @param certModel    是否证书模式
-     * @param model        {@link AlipayTradeRoyaltyRelationBatchqueryModel}
+     * @param certModel 是否证书模式
+     * @param model     {@link AlipayTradeRoyaltyRelationBatchqueryModel}
      * @return {@link AlipayTradeRoyaltyRelationBatchqueryResponse}
      * @throws AlipayApiException 支付宝 Api 异常
      */
-    public AlipayTradeRoyaltyRelationBatchqueryResponse tradeRoyaltyRelationBatchQuery(Boolean certModel, AlipayTradeRoyaltyRelationBatchqueryModel model) throws AlipayApiException {
+    public AlipayTradeRoyaltyRelationBatchqueryResponse tradeRoyaltyRelationBatchQuery(Boolean certModel,
+            AlipayTradeRoyaltyRelationBatchqueryModel model) throws AlipayApiException {
         AlipayTradeRoyaltyRelationBatchqueryRequest request = new AlipayTradeRoyaltyRelationBatchqueryRequest();
         request.setBizModel(model);
         return doExecute(certModel, request);
@@ -1895,7 +1998,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
         return this.client.execute(request);
     }
 
-    public <T extends AlipayResponse> T doExecute(Boolean certModel, AlipayRequest<T> request) throws AlipayApiException {
+    public <T extends AlipayResponse> T doExecute(Boolean certModel, AlipayRequest<T> request)
+            throws AlipayApiException {
         if (this.client == null) {
             throw new IllegalStateException("aliPayClient 未被初始化");
         }
@@ -1905,7 +2009,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
         return this.client.execute(request);
     }
 
-    public <T extends AlipayResponse> T doExecute(Boolean certModel, AlipayRequest<T> request, String authToken) throws AlipayApiException {
+    public <T extends AlipayResponse> T doExecute(Boolean certModel, AlipayRequest<T> request, String authToken)
+            throws AlipayApiException {
         if (this.client == null) {
             throw new IllegalStateException("aliPayClient 未被初始化");
         }
@@ -1915,7 +2020,8 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
         return execute(request, authToken);
     }
 
-    public <T extends AlipayResponse> T doExecute(AlipayRequest<T> request, String authToken) throws AlipayApiException {
+    public <T extends AlipayResponse> T doExecute(AlipayRequest<T> request, String authToken)
+            throws AlipayApiException {
         if (this.client == null) {
             throw new IllegalStateException("aliPayClient 未被初始化");
         }
@@ -1929,11 +2035,13 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
         return this.client.execute(request, authToken);
     }
 
-    public <T extends AlipayResponse> T execute(AlipayRequest<T> request, String accessToken, String appAuthToken) throws AlipayApiException {
+    public <T extends AlipayResponse> T execute(AlipayRequest<T> request, String accessToken, String appAuthToken)
+            throws AlipayApiException {
         return this.client.execute(request, accessToken, appAuthToken);
     }
 
-    public <T extends AlipayResponse> T execute(AlipayRequest<T> request, String accessToken, String appAuthToken, String targetAppId) throws AlipayApiException {
+    public <T extends AlipayResponse> T execute(AlipayRequest<T> request, String accessToken, String appAuthToken,
+            String targetAppId) throws AlipayApiException {
         return this.client.execute(request, accessToken, appAuthToken, targetAppId);
     }
 
@@ -1953,15 +2061,18 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
         return this.client.certificateExecute(request);
     }
 
-    public <T extends AlipayResponse> T certificateExecute(AlipayRequest<T> request, String authToken) throws AlipayApiException {
+    public <T extends AlipayResponse> T certificateExecute(AlipayRequest<T> request, String authToken)
+            throws AlipayApiException {
         return this.client.certificateExecute(request, authToken);
     }
 
-    public <T extends AlipayResponse> T certificateExecute(AlipayRequest<T> request, String accessToken, String appAuthToken) throws AlipayApiException {
+    public <T extends AlipayResponse> T certificateExecute(AlipayRequest<T> request, String accessToken,
+            String appAuthToken) throws AlipayApiException {
         return this.client.certificateExecute(request, accessToken, appAuthToken);
     }
 
-    public <T extends AlipayResponse> T certificateExecute(AlipayRequest<T> request, String accessToken, String appAuthToken, String targetAppId) throws AlipayApiException {
+    public <T extends AlipayResponse> T certificateExecute(AlipayRequest<T> request, String accessToken,
+            String appAuthToken, String targetAppId) throws AlipayApiException {
         return this.client.certificateExecute(request, accessToken, appAuthToken, targetAppId);
     }
 

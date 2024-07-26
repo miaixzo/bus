@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.setting.metric.toml;
 
 import org.miaixz.bus.core.io.resource.Resource;
@@ -46,14 +46,8 @@ public class Toml {
      * A DateTimeFormatter that uses the TOML format.
      */
     public static final DateTimeFormatter DATE_FORMATTER = new DateTimeFormatterBuilder()
-            .append(DateTimeFormatter.ISO_LOCAL_DATE)
-            .optionalStart()
-            .appendLiteral('T')
-            .append(DateTimeFormatter.ISO_LOCAL_TIME)
-            .optionalStart()
-            .appendOffsetId()
-            .optionalEnd()
-            .optionalEnd()
+            .append(DateTimeFormatter.ISO_LOCAL_DATE).optionalStart().appendLiteral('T')
+            .append(DateTimeFormatter.ISO_LOCAL_TIME).optionalStart().appendOffsetId().optionalEnd().optionalEnd()
             .toFormatter();
 
     /**

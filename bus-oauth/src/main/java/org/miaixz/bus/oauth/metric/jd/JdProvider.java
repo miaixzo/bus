@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.jd;
 
 import com.alibaba.fastjson.JSONObject;
@@ -67,14 +67,12 @@ public class JdProvider extends AbstractProvider {
     }
 
     /**
-     * 京东宙斯平台的签名字符串
-     * 宙斯签名规则过程如下:
-     * 将所有请求参数按照字母先后顺序排列，例如将access_token,app_key,method,timestamp,v 排序为access_token,app_key,method,timestamp,v
+     * 京东宙斯平台的签名字符串 宙斯签名规则过程如下: 将所有请求参数按照字母先后顺序排列，例如将access_token,app_key,method,timestamp,v
+     * 排序为access_token,app_key,method,timestamp,v
      * 1.把所有参数名和参数值进行拼接，例如：access_tokenxxxapp_keyxxxmethodxxxxxxtimestampxxxxxxvx
-     * 2.把appSecret夹在字符串的两端，例如：appSecret+XXXX+appSecret
-     * 3.使用MD5进行加密，再转化成大写
-     * link: http://open.jd.com/home/home#/doc/common?listId=890
-     * link: https://github.com/pingjiang/jd-open-api-sdk-src/blob/master/src/main/java/com/jd/open/api/sdk/DefaultJdClient.java
+     * 2.把appSecret夹在字符串的两端，例如：appSecret+XXXX+appSecret 3.使用MD5进行加密，再转化成大写 link:
+     * http://open.jd.com/home/home#/doc/common?listId=890 link:
+     * https://github.com/pingjiang/jd-open-api-sdk-src/blob/master/src/main/java/com/jd/open/api/sdk/DefaultJdClient.java
      *
      * @param appSecret 京东应用密钥
      * @param params    签名参数
@@ -106,26 +104,20 @@ public class JdProvider extends AbstractProvider {
 
         this.checkResponse(object);
 
-        return AccToken.builder()
-                .accessToken(object.getString("access_token"))
-                .expireIn(object.getIntValue("expires_in"))
-                .refreshToken(object.getString("refresh_token"))
-                .scope(object.getString("scope"))
-                .openId(object.getString("open_id"))
-                .build();
+        return AccToken.builder().accessToken(object.getString("access_token"))
+                .expireIn(object.getIntValue("expires_in")).refreshToken(object.getString("refresh_token"))
+                .scope(object.getString("scope")).openId(object.getString("open_id")).build();
     }
 
     /**
-     * 个人用户无法申请应用
-     * 暂时只能参考官网给出的返回结果解析
+     * 个人用户无法申请应用 暂时只能参考官网给出的返回结果解析
      *
      * @param object 请求返回结果
      * @return data JSONObject
      */
     private JSONObject getUserDataJsonObject(JSONObject object) {
         return object.getJSONObject("jingdong_user_getUserInfoByOpenId_response")
-                .getJSONObject("getuserinfobyappidandopenid_result")
-                .getJSONObject("data");
+                .getJSONObject("getuserinfobyappidandopenid_result").getJSONObject("data");
     }
 
     @Override
@@ -140,15 +132,10 @@ public class JdProvider extends AbstractProvider {
 
         this.checkResponse(object);
 
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .data(AccToken.builder()
-                        .accessToken(object.getString("access_token"))
-                        .expireIn(object.getIntValue("expires_in"))
-                        .refreshToken(object.getString("refresh_token"))
-                        .scope(object.getString("scope"))
-                        .openId(object.getString("open_id"))
-                        .build())
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode())
+                .data(AccToken.builder().accessToken(object.getString("access_token"))
+                        .expireIn(object.getIntValue("expires_in")).refreshToken(object.getString("refresh_token"))
+                        .scope(object.getString("scope")).openId(object.getString("open_id")).build())
                 .build();
     }
 
@@ -160,10 +147,8 @@ public class JdProvider extends AbstractProvider {
 
     @Override
     protected Material getUserInfo(AccToken accToken) {
-        Builder urlBuilder = Builder.fromUrl(complex.userInfo())
-                .queryParam("access_token", accToken.getAccessToken())
-                .queryParam("app_key", context.getAppKey())
-                .queryParam("method", "jingdong.user.getUserInfoByOpenId")
+        Builder urlBuilder = Builder.fromUrl(complex.userInfo()).queryParam("access_token", accToken.getAccessToken())
+                .queryParam("app_key", context.getAppKey()).queryParam("method", "jingdong.user.getUserInfoByOpenId")
                 .queryParam("360buy_param_json", "{\"openId\":\"" + accToken.getOpenId() + "\"}")
                 .queryParam("timestamp", LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")))
                 .queryParam("v", "2.0");
@@ -175,27 +160,17 @@ public class JdProvider extends AbstractProvider {
 
         JSONObject data = this.getUserDataJsonObject(object);
 
-        return Material.builder()
-                .rawJson(data)
-                .uuid(accToken.getOpenId())
-                .username(data.getString("nickName"))
-                .nickname(data.getString("nickName"))
-                .avatar(data.getString("imageUrl"))
-                .gender(Gender.of(data.getString("gendar")))
-                .token(accToken)
-                .source(complex.toString())
-                .build();
+        return Material.builder().rawJson(data).uuid(accToken.getOpenId()).username(data.getString("nickName"))
+                .nickname(data.getString("nickName")).avatar(data.getString("imageUrl"))
+                .gender(Gender.of(data.getString("gendar"))).token(accToken).source(complex.toString()).build();
     }
 
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.authorize())
-                .queryParam("app_key", context.getAppKey())
-                .queryParam("response_type", "code")
-                .queryParam("redirect_uri", context.getRedirectUri())
+        return Builder.fromUrl(complex.authorize()).queryParam("app_key", context.getAppKey())
+                .queryParam("response_type", "code").queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(JdScope.values())))
-                .queryParam("state", getRealState(state))
-                .build();
+                .queryParam("state", getRealState(state)).build();
     }
 
 }

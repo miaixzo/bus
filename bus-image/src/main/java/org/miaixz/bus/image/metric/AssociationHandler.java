@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric;
 
 import org.miaixz.bus.image.UID;
@@ -53,55 +53,43 @@ public class AssociationHandler {
         this.userIdNegotiator = Objects.requireNonNull(userIdNegotiator);
     }
 
-    protected AAssociateAC negotiate(Association as, AAssociateRQ rq)
-            throws IOException {
+    protected AAssociateAC negotiate(Association as, AAssociateRQ rq) throws IOException {
         if ((rq.getProtocolVersion() & 1) == 0)
-            throw new AAssociateRJ(AAssociateRJ.RESULT_REJECTED_PERMANENT,
-                    AAssociateRJ.SOURCE_SERVICE_PROVIDER_ACSE,
+            throw new AAssociateRJ(AAssociateRJ.RESULT_REJECTED_PERMANENT, AAssociateRJ.SOURCE_SERVICE_PROVIDER_ACSE,
                     AAssociateRJ.REASON_PROTOCOL_VERSION_NOT_SUPPORTED);
-        if (!rq.getApplicationContext().equals(
-                UID.DICOMApplicationContext))
-            throw new AAssociateRJ(AAssociateRJ.RESULT_REJECTED_PERMANENT,
-                    AAssociateRJ.SOURCE_SERVICE_USER,
+        if (!rq.getApplicationContext().equals(UID.DICOMApplicationContext))
+            throw new AAssociateRJ(AAssociateRJ.RESULT_REJECTED_PERMANENT, AAssociateRJ.SOURCE_SERVICE_USER,
                     AAssociateRJ.REASON_APP_CTX_NAME_NOT_SUPPORTED);
         ApplicationEntity ae = as.getApplicationEntity();
-        if (ae == null || !ae.getConnections().contains(as.getConnection())
-                || !ae.isInstalled() || !ae.isAssociationAcceptor())
-            throw new AAssociateRJ(AAssociateRJ.RESULT_REJECTED_PERMANENT,
-                    AAssociateRJ.SOURCE_SERVICE_USER,
+        if (ae == null || !ae.getConnections().contains(as.getConnection()) || !ae.isInstalled()
+                || !ae.isAssociationAcceptor())
+            throw new AAssociateRJ(AAssociateRJ.RESULT_REJECTED_PERMANENT, AAssociateRJ.SOURCE_SERVICE_USER,
                     AAssociateRJ.REASON_CALLED_AET_NOT_RECOGNIZED);
         if (!ae.isAcceptedCallingAETitle(rq.getCallingAET()))
-            throw new AAssociateRJ(AAssociateRJ.RESULT_REJECTED_PERMANENT,
-                    AAssociateRJ.SOURCE_SERVICE_USER,
+            throw new AAssociateRJ(AAssociateRJ.RESULT_REJECTED_PERMANENT, AAssociateRJ.SOURCE_SERVICE_USER,
                     AAssociateRJ.REASON_CALLING_AET_NOT_RECOGNIZED);
         IdentityAC userIdentity = getUserIdNegotiator().negotiate(as, rq.getUserIdentityRQ());
         if (ae.getDevice().isLimitOfAssociationsExceeded(rq))
-            throw new AAssociateRJ(AAssociateRJ.RESULT_REJECTED_TRANSIENT,
-                    AAssociateRJ.SOURCE_SERVICE_PROVIDER_PRES,
+            throw new AAssociateRJ(AAssociateRJ.RESULT_REJECTED_TRANSIENT, AAssociateRJ.SOURCE_SERVICE_PROVIDER_PRES,
                     AAssociateRJ.REASON_LOCAL_LIMIT_EXCEEDED);
         return makeAAssociateAC(as, rq, userIdentity);
     }
 
-    protected AAssociateAC makeAAssociateAC(Association as, AAssociateRQ rq,
-                                            IdentityAC userIdentity) {
+    protected AAssociateAC makeAAssociateAC(Association as, AAssociateRQ rq, IdentityAC userIdentity) {
         AAssociateAC ac = new AAssociateAC();
         ac.setImplVersionName(Implementation.getVersionName());
         ac.setCalledAET(rq.getCalledAET());
         ac.setCallingAET(rq.getCallingAET());
         Connection conn = as.getConnection();
         ac.setMaxPDULength(conn.getReceivePDULength());
-        ac.setMaxOpsInvoked(Association.minZeroAsMax(rq.getMaxOpsInvoked(),
-                conn.getMaxOpsPerformed()));
-        ac.setMaxOpsPerformed(Association.minZeroAsMax(rq.getMaxOpsPerformed(),
-                conn.getMaxOpsInvoked()));
+        ac.setMaxOpsInvoked(Association.minZeroAsMax(rq.getMaxOpsInvoked(), conn.getMaxOpsPerformed()));
+        ac.setMaxOpsPerformed(Association.minZeroAsMax(rq.getMaxOpsPerformed(), conn.getMaxOpsInvoked()));
         ac.setIdentityAC(userIdentity);
         ApplicationEntity ae = as.getApplicationEntity().transferCapabilitiesAE();
         for (PresentationContext rqpc : rq.getPresentationContexts())
-            ac.addPresentationContext(ae != null
-                    ? ae.negotiate(rq, ac, rqpc)
-                    : new PresentationContext(rqpc.getPCID(),
-                    PresentationContext.ABSTRACT_SYNTAX_NOT_SUPPORTED,
-                    rqpc.getTransferSyntax()));
+            ac.addPresentationContext(ae != null ? ae.negotiate(rq, ac, rqpc)
+                    : new PresentationContext(rqpc.getPCID(), PresentationContext.ABSTRACT_SYNTAX_NOT_SUPPORTED,
+                            rqpc.getTransferSyntax()));
         return ac;
     }
 

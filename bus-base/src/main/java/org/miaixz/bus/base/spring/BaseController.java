@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.base.spring;
 
 import org.miaixz.bus.base.service.BaseService;
@@ -145,7 +145,7 @@ public class BaseController<Service extends BaseService<T>, T> extends Controlle
      */
     @ResponseBody
     @RequestMapping(value = "/page", method = RequestMethod.GET)
-    public Object page(@Valid({"pageSize", "pageNo"}) T entity) {
+    public Object page(@Valid({ "pageSize", "pageNo" }) T entity) {
         return write(service.page(entity));
     }
 

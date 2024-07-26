@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pay.metric.alipay;
 
 import com.alipay.api.AlipayApiException;
@@ -53,7 +53,8 @@ public class AliPayBuilder {
      * @param signType 签名类型
      * @return 签名结果字符串
      */
-    public static String buildRequestMySign(Map<String, String> params, String key, String signType) throws AlipayApiException {
+    public static String buildRequestMySign(Map<String, String> params, String key, String signType)
+            throws AlipayApiException {
         // 把数组所有元素，按照“参数=参数值”的模式用“&”字符拼接成字符串
         String preStr = createLinkString(params);
         if (Algorithm.MD5.getValue().equals(signType)) {
@@ -148,14 +149,10 @@ public class AliPayBuilder {
      * @throws AlipayApiException
      */
     public static boolean rsaCertCheckV1ByContent(Map<String, String> params, String alipayPublicCertContent,
-                                                  String charset, String signType) throws AlipayApiException {
+            String charset, String signType) throws AlipayApiException {
 
-        String publicKey = Base64.encode(
-                AntCertificationUtil
-                        .getCertFromContent(alipayPublicCertContent)
-                        .getPublicKey()
-                        .getEncoded()
-        );
+        String publicKey = Base64
+                .encode(AntCertificationUtil.getCertFromContent(alipayPublicCertContent).getPublicKey().getEncoded());
         return AlipaySignature.rsaCheckV1(params, publicKey, charset, signType);
     }
 

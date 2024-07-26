@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.mac.software;
 
 import com.sun.jna.Native;
@@ -60,9 +60,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
- * The Mac File System contains {@link OSFileStore}s which are a storage pool, device, partition,
- * volume, concrete file system or other implementation specific means of file storage. In macOS, these are found in the
- * /Volumes directory.
+ * The Mac File System contains {@link OSFileStore}s which are a storage pool, device, partition, volume, concrete file
+ * system or other implementation specific means of file storage. In macOS, these are found in the /Volumes directory.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -168,7 +167,7 @@ public class MacFileSystem extends AbstractFileSystem {
                     // Skip non-local drives if requested, and exclude pseudo file systems
                     if ((localOnly && (flags & MNT_LOCAL) == 0) || !path.equals("/")
                             && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(path, volume,
-                            FS_PATH_INCLUDES, FS_PATH_EXCLUDES, FS_VOLUME_INCLUDES, FS_VOLUME_EXCLUDES))) {
+                                    FS_PATH_INCLUDES, FS_PATH_EXCLUDES, FS_VOLUME_INCLUDES, FS_VOLUME_EXCLUDES))) {
                         continue;
                     }
 
@@ -238,8 +237,8 @@ public class MacFileSystem extends AbstractFileSystem {
                     }
 
                     fsList.add(new MacOSFileStore(name, volume, name, path, options.toString(),
-                            uuid == null ? Normal.EMPTY : uuid, Normal.EMPTY, description, type, file.getFreeSpace(), file.getUsableSpace(),
-                            file.getTotalSpace(), fs[f].f_ffree, fs[f].f_files));
+                            uuid == null ? Normal.EMPTY : uuid, Normal.EMPTY, description, type, file.getFreeSpace(),
+                            file.getUsableSpace(), file.getTotalSpace(), fs[f].f_ffree, fs[f].f_files));
                 }
                 daVolumeNameKey.release();
                 // Close DA session

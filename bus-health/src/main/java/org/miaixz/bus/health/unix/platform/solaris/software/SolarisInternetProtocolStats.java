@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.solaris.software;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -68,46 +68,47 @@ public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats 
                     String[] split = stat.split(Symbol.EQUAL);
                     if (split.length == 2) {
                         switch (split[0].trim()) {
-                            case "tcpCurrEstab":
-                                connectionsEstablished = Parsing.parseLongOrDefault(split[1].trim(), 0L);
-                                break;
-                            case "tcpActiveOpens":
-                                connectionsActive = Parsing.parseLongOrDefault(split[1].trim(), 0L);
-                                break;
-                            case "tcpPassiveOpens":
-                                connectionsPassive = Parsing.parseLongOrDefault(split[1].trim(), 0L);
-                                break;
-                            case "tcpAttemptFails":
-                                connectionFailures = Parsing.parseLongOrDefault(split[1].trim(), 0L);
-                                break;
-                            case "tcpEstabResets":
-                                connectionsReset = Parsing.parseLongOrDefault(split[1].trim(), 0L);
-                                break;
-                            case "tcpOutSegs":
-                                segmentsSent = Parsing.parseLongOrDefault(split[1].trim(), 0L);
-                                break;
-                            case "tcpInSegs":
-                                segmentsReceived = Parsing.parseLongOrDefault(split[1].trim(), 0L);
-                                break;
-                            case "tcpRetransSegs":
-                                segmentsRetransmitted = Parsing.parseLongOrDefault(split[1].trim(), 0L);
-                                break;
-                            case "tcpInErr":
-                                // doesn't have tcp in second column
-                                inErrors = Parsing.getFirstIntValue(split[1].trim());
-                                break;
-                            case "tcpOutRsts":
-                                outResets = Parsing.parseLongOrDefault(split[1].trim(), 0L);
-                                break;
-                            default:
-                                break;
+                        case "tcpCurrEstab":
+                            connectionsEstablished = Parsing.parseLongOrDefault(split[1].trim(), 0L);
+                            break;
+                        case "tcpActiveOpens":
+                            connectionsActive = Parsing.parseLongOrDefault(split[1].trim(), 0L);
+                            break;
+                        case "tcpPassiveOpens":
+                            connectionsPassive = Parsing.parseLongOrDefault(split[1].trim(), 0L);
+                            break;
+                        case "tcpAttemptFails":
+                            connectionFailures = Parsing.parseLongOrDefault(split[1].trim(), 0L);
+                            break;
+                        case "tcpEstabResets":
+                            connectionsReset = Parsing.parseLongOrDefault(split[1].trim(), 0L);
+                            break;
+                        case "tcpOutSegs":
+                            segmentsSent = Parsing.parseLongOrDefault(split[1].trim(), 0L);
+                            break;
+                        case "tcpInSegs":
+                            segmentsReceived = Parsing.parseLongOrDefault(split[1].trim(), 0L);
+                            break;
+                        case "tcpRetransSegs":
+                            segmentsRetransmitted = Parsing.parseLongOrDefault(split[1].trim(), 0L);
+                            break;
+                        case "tcpInErr":
+                            // doesn't have tcp in second column
+                            inErrors = Parsing.getFirstIntValue(split[1].trim());
+                            break;
+                        case "tcpOutRsts":
+                            outResets = Parsing.parseLongOrDefault(split[1].trim(), 0L);
+                            break;
+                        default:
+                            break;
                         }
                     }
                 }
             }
         }
-        return new InternetProtocolStats.TcpStats(connectionsEstablished, connectionsActive, connectionsPassive, connectionFailures,
-                connectionsReset, segmentsSent, segmentsReceived, segmentsRetransmitted, inErrors, outResets);
+        return new InternetProtocolStats.TcpStats(connectionsEstablished, connectionsActive, connectionsPassive,
+                connectionFailures, connectionsReset, segmentsSent, segmentsReceived, segmentsRetransmitted, inErrors,
+                outResets);
     }
 
     private static InternetProtocolStats.UdpStats getUdpStats() {
@@ -127,26 +128,27 @@ public class SolarisInternetProtocolStats extends AbstractInternetProtocolStats 
                     String[] split = stat.split(Symbol.EQUAL);
                     if (split.length == 2) {
                         switch (split[0].trim()) {
-                            case "udpOutDatagrams":
-                                datagramsSent = Parsing.parseLongOrDefault(split[1].trim(), 0L);
-                                break;
-                            case "udpInDatagrams":
-                                datagramsReceived = Parsing.parseLongOrDefault(split[1].trim(), 0L);
-                                break;
-                            case "udpNoPorts":
-                                datagramsNoPort = Parsing.parseLongOrDefault(split[1].trim(), 0L);
-                                break;
-                            case "udpInErrors":
-                                datagramsReceivedErrors = Parsing.parseLongOrDefault(split[1].trim(), 0L);
-                                break;
-                            default:
-                                break;
+                        case "udpOutDatagrams":
+                            datagramsSent = Parsing.parseLongOrDefault(split[1].trim(), 0L);
+                            break;
+                        case "udpInDatagrams":
+                            datagramsReceived = Parsing.parseLongOrDefault(split[1].trim(), 0L);
+                            break;
+                        case "udpNoPorts":
+                            datagramsNoPort = Parsing.parseLongOrDefault(split[1].trim(), 0L);
+                            break;
+                        case "udpInErrors":
+                            datagramsReceivedErrors = Parsing.parseLongOrDefault(split[1].trim(), 0L);
+                            break;
+                        default:
+                            break;
                         }
                     }
                 }
             }
         }
-        return new InternetProtocolStats.UdpStats(datagramsSent, datagramsReceived, datagramsNoPort, datagramsReceivedErrors);
+        return new InternetProtocolStats.UdpStats(datagramsSent, datagramsReceived, datagramsNoPort,
+                datagramsReceivedErrors);
     }
 
     private static String[] splitOnPrefix(String s, String prefix) {

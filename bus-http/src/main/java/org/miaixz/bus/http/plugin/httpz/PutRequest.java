@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.plugin.httpz;
 
 import org.miaixz.bus.core.lang.MediaType;
@@ -48,14 +48,8 @@ import java.util.Map;
  */
 public class PutRequest extends HttpRequest {
 
-    public PutRequest(String url,
-                      Object tag,
-                      Map<String, String> params,
-                      Map<String, String> headers,
-                      List<MultipartFile> list,
-                      String body,
-                      MultipartBody multipartBody,
-                      String id) {
+    public PutRequest(String url, Object tag, Map<String, String> params, Map<String, String> headers,
+            List<MultipartFile> list, String body, MultipartBody multipartBody, String id) {
         super(url, tag, params, headers, list, body, multipartBody, id);
     }
 
@@ -73,8 +67,7 @@ public class PutRequest extends HttpRequest {
                 } else if (null != file.in) {
                     fileBody = createRequestBody(MediaType.APPLICATION_OCTET_STREAM_TYPE, file.in);
                 } else {
-                    fileBody = RequestBody.create(MediaType.valueOf(FileKit.getMimeType(file.name)),
-                            file.content);
+                    fileBody = RequestBody.create(MediaType.valueOf(FileKit.getMimeType(file.name)), file.content);
                 }
                 builder.addFormDataPart(file.part, file.name, fileBody);
             });
@@ -113,13 +106,9 @@ public class PutRequest extends HttpRequest {
 
     private void addParam(MultipartBody.Builder builder) {
         if (null != params && !params.isEmpty()) {
-            params.forEach((k, v) ->
-                    builder.addPart(Headers.of(
-                                    HTTP.CONTENT_DISPOSITION,
-                                    "form-data; name=" + k + Symbol.DOUBLE_QUOTES),
-                            RequestBody.create(null, v)
-                    )
-            );
+            params.forEach((k, v) -> builder.addPart(
+                    Headers.of(HTTP.CONTENT_DISPOSITION, "form-data; name=" + k + Symbol.DOUBLE_QUOTES),
+                    RequestBody.create(null, v)));
         }
     }
 

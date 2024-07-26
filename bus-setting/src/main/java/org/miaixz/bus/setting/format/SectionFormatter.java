@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.setting.format;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -73,8 +73,7 @@ public class SectionFormatter extends AbstractFormatter<IniSection> {
     }
 
     /**
-     * check this value.
-     * if this value's first char == {@code HEAD} value, pass.
+     * check this value. if this value's first char == {@code HEAD} value, pass.
      *
      * @param value value
      * @return true if can.
@@ -85,8 +84,8 @@ public class SectionFormatter extends AbstractFormatter<IniSection> {
     }
 
     /**
-     * this method will not check value, so you should {@link #check(String)} first.
-     * However, not checking will not necessarily report an error, but may result in non-compliance.
+     * this method will not check value, so you should {@link #check(String)} first. However, not checking will not
+     * necessarily report an error, but may result in non-compliance.
      *
      * @param value a String value
      * @param line  line number
@@ -96,7 +95,8 @@ public class SectionFormatter extends AbstractFormatter<IniSection> {
     public IniSection format(String value, int line) {
         int indexOfEnd = value.indexOf(end);
         if (indexOfEnd <= 0) {
-            throw new InternalException("can not found the end character '" + end + "' for section line " + line + " : " + value);
+            throw new InternalException(
+                    "can not found the end character '" + end + "' for section line " + line + " : " + value);
         }
 
         String sectionValue = value.substring(0, indexOfEnd + 1).trim();
@@ -107,7 +107,8 @@ public class SectionFormatter extends AbstractFormatter<IniSection> {
             if (commentElementFormatter.check(endOfValue)) {
                 comment = commentElementFormatter.format(endOfValue, line);
             } else {
-                throw new InternalException("can not format the value end of section value (" + line + Symbol.COLON + (indexOfEnd + 1) + ") :" + endOfValue);
+                throw new InternalException("can not format the value end of section value (" + line + Symbol.COLON
+                        + (indexOfEnd + 1) + ") :" + endOfValue);
             }
         }
 

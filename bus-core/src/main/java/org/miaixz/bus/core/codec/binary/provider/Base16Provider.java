@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.codec.binary.provider;
 
 import org.miaixz.bus.core.codec.Decoder;
@@ -35,9 +35,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import java.io.Serializable;
 
 /**
- * Base16（Hex）编码解码器
- * 十六进制（简写为hex或下标16）在数学中是一种逢16进1的进位制，一般用数字0到9和字母A到F表示（其中:A~F即10~15）。
- * 例如十进制数57，在二进制写作111001，在16进制写作39。
+ * Base16（Hex）编码解码器 十六进制（简写为hex或下标16）在数学中是一种逢16进1的进位制，一般用数字0到9和字母A到F表示（其中:A~F即10~15）。 例如十进制数57，在二进制写作111001，在16进制写作39。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -83,7 +81,7 @@ public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequ
     @Override
     public char[] encode(final byte[] data) {
         final int len = data.length;
-        final char[] out = new char[len << 1];//len*2
+        final char[] out = new char[len << 1];// len*2
         // 十六进制值中的两个字符
         for (int i = 0, j = 0; i < len; i++) {
             // 高位
@@ -124,8 +122,7 @@ public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequ
     }
 
     /**
-     * 将指定char值转换为Unicode字符串形式，常用于特殊字符（例如汉字）转Unicode形式
-     * 转换的字符串如果u后不足4位，则前面用0填充，例如：
+     * 将指定char值转换为Unicode字符串形式，常用于特殊字符（例如汉字）转Unicode形式 转换的字符串如果u后不足4位，则前面用0填充，例如：
      *
      * <pre>
      * 你 = &#92;u4f60
@@ -135,11 +132,7 @@ public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequ
      * @return Unicode表现形式
      */
     public String toUnicodeHex(final char ch) {
-        return "\\u" +
-                hexDigit(ch >> 12) +
-                hexDigit(ch >> 8) +
-                hexDigit(ch >> 4) +
-                hexDigit(ch);
+        return "\\u" + hexDigit(ch >> 12) + hexDigit(ch >> 8) + hexDigit(ch >> 4) + hexDigit(ch);
     }
 
     /**
@@ -149,9 +142,9 @@ public class Base16Provider implements Encoder<byte[], char[]>, Decoder<CharSequ
      * @param b       byte
      */
     public void appendHex(final StringBuilder builder, final byte b) {
-        //高位
+        // 高位
         builder.append(hexDigit(b >> 4));
-        //低位
+        // 低位
         builder.append(hexDigit(b));
     }
 

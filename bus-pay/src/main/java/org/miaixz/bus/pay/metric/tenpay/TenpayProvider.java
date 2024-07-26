@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pay.metric.tenpay;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
@@ -229,7 +229,6 @@ public class TenpayProvider extends AbstractProvider<Material, Context> {
     public String downloadHbBill(Map<String, String> params) {
         return doPost(TenpayApi.DOWNLOAD_HB_BILL_URL, params);
     }
-
 
     /**
      * 企业付款到余额

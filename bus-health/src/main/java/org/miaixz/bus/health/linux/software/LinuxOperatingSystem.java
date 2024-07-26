@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.linux.software;
 
 import com.sun.jna.Native;
@@ -96,7 +96,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      */
     private static final String OS_NAME = Executor.getFirstAnswer("uname -o");
     // PPID is 4th numeric value in proc pid stat; subtract 1 for 0-index
-    private static final int[] PPID_INDEX = {3};
+    private static final int[] PPID_INDEX = { 3 };
 
     static {
         boolean hasUdev = false;
@@ -187,7 +187,8 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
             return 0;
         }
         // Grab PPID
-        long[] statArray = Parsing.parseStringToLongArray(stat, PPID_INDEX, ProcessStat.PROC_PID_STAT_LENGTH, Symbol.C_SPACE);
+        long[] statArray = Parsing.parseStringToLongArray(stat, PPID_INDEX, ProcessStat.PROC_PID_STAT_LENGTH,
+                Symbol.C_SPACE);
         return (int) statArray[0];
     }
 
@@ -248,8 +249,9 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         }
         // If we've gotten this far with no match, use the distrib-release
         // filename (defaults will eventually give "Unknown")
-        String family = filenameToFamily(etcDistribRelease.replace("/etc/", Normal.EMPTY).replace("release", Normal.EMPTY)
-                .replace("version", Normal.EMPTY).replace(Symbol.MINUS, Normal.EMPTY).replace(Symbol.UNDERLINE, Normal.EMPTY));
+        String family = filenameToFamily(etcDistribRelease.replace("/etc/", Normal.EMPTY)
+                .replace("release", Normal.EMPTY).replace("version", Normal.EMPTY).replace(Symbol.MINUS, Normal.EMPTY)
+                .replace(Symbol.UNDERLINE, Normal.EMPTY));
         return Triplet.of(family, Normal.UNKNOWN, Normal.UNKNOWN);
     }
 
@@ -257,7 +259,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      * Attempts to read /etc/os-release
      *
      * @return a triplet with the parsed family, versionID and codeName if file successfully read and NAME= found, null
-     * otherwise
+     *         otherwise
      */
     private static Triplet<String, String, String> readOsRelease() {
         String family = null;
@@ -302,7 +304,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      * Attempts to execute `lsb_release -a`
      *
      * @return a triplet with the parsed family, versionID and codeName if the command successfully executed and
-     * Distributor ID: or Description: found, null otherwise
+     *         Distributor ID: or Description: found, null otherwise
      */
     private static Triplet<String, String, String> execLsbRelease() {
         String family = null;
@@ -343,7 +345,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      * Attempts to read /etc/lsb-release
      *
      * @return a triplet with the parsed family, versionID and codeName if file successfully read and and DISTRIB_ID or
-     * DISTRIB_DESCRIPTION, null otherwise
+     *         DISTRIB_DESCRIPTION, null otherwise
      */
     private static Triplet<String, String, String> readLsbRelease() {
         String family = null;
@@ -354,7 +356,8 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         for (String line : osRelease) {
             if (line.startsWith("DISTRIB_DESCRIPTION=")) {
                 Logger.debug(LSB_RELEASE_LOG, line);
-                line = line.replace("DISTRIB_DESCRIPTION=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY).trim();
+                line = line.replace("DISTRIB_DESCRIPTION=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY)
+                        .trim();
                 if (line.contains(RELEASE_DELIM)) {
                     Triplet<String, String, String> triplet = parseRelease(line, RELEASE_DELIM);
                     family = triplet.getLeft();
@@ -370,10 +373,12 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 family = line.replace("DISTRIB_ID=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY).trim();
             } else if (line.startsWith("DISTRIB_RELEASE=") && versionId.equals(Normal.UNKNOWN)) {
                 Logger.debug(LSB_RELEASE_LOG, line);
-                versionId = line.replace("DISTRIB_RELEASE=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY).trim();
+                versionId = line.replace("DISTRIB_RELEASE=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY)
+                        .trim();
             } else if (line.startsWith("DISTRIB_CODENAME=") && codeName.equals(Normal.UNKNOWN)) {
                 Logger.debug(LSB_RELEASE_LOG, line);
-                codeName = line.replace("DISTRIB_CODENAME=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY).trim();
+                codeName = line.replace("DISTRIB_CODENAME=", Normal.EMPTY).replaceAll(DOUBLE_QUOTES, Normal.EMPTY)
+                        .trim();
             }
         }
         return family == null ? null : Triplet.of(family, versionId, codeName);
@@ -384,7 +389,7 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
      *
      * @param filename The /etc/distrib-release file
      * @return a triplet with the parsed family, versionID and codeName if file successfully read and " release " or "
-     * VERSION " found, null otherwise
+     *         VERSION " found, null otherwise
      */
     private static Triplet<String, String, String> readDistribRelease(String filename) {
         if (new File(filename).exists()) {
@@ -482,8 +487,8 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                         f.getName().endsWith("_release") || //
                         f.getName().endsWith("_version")) //
                         && !(f.getName().endsWith("os-release") || //
-                        f.getName().endsWith("lsb-release") || //
-                        f.getName().endsWith("system-release")));
+                                f.getName().endsWith("lsb-release") || //
+                                f.getName().endsWith("system-release")));
         if (matchingFiles != null && matchingFiles.length > 0) {
             return matchingFiles[0].getPath();
         }
@@ -550,8 +555,8 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
                 }
             }
         }
-        OperatingSystem.OSVersionInfo versionInfo = new OperatingSystem.OSVersionInfo(familyVersionCodename.getMiddle(), familyVersionCodename.getRight(),
-                buildNumber);
+        OperatingSystem.OSVersionInfo versionInfo = new OperatingSystem.OSVersionInfo(familyVersionCodename.getMiddle(),
+                familyVersionCodename.getRight(), buildNumber);
         return Pair.of(familyVersionCodename.getLeft(), versionInfo);
     }
 
@@ -653,7 +658,8 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         // Get running services
         List<OSService> services = new ArrayList<>();
         Set<String> running = new HashSet<>();
-        for (OSProcess p : getChildProcesses(1, OperatingSystem.ProcessFiltering.ALL_PROCESSES, OperatingSystem.ProcessSorting.PID_ASC, 0)) {
+        for (OSProcess p : getChildProcesses(1, OperatingSystem.ProcessFiltering.ALL_PROCESSES,
+                OperatingSystem.ProcessSorting.PID_ASC, 0)) {
             OSService s = new OSService(p.getName(), p.getProcessID(), OSService.State.RUNNING);
             services.add(s);
             running.add(p.getName());

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date.format.parser;
 
 import org.miaixz.bus.core.center.date.DateTime;
@@ -32,8 +32,7 @@ import org.miaixz.bus.core.center.date.DateTime;
 import java.util.regex.Pattern;
 
 /**
- * 全局正则日期解析器
- * 通过使用预定义或自定义的正则规则，解析日期字符串
+ * 全局正则日期解析器 通过使用预定义或自定义的正则规则，解析日期字符串
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -87,13 +86,9 @@ public class NormalDateParser implements PredicateDateParser {
         // 周一般出现在日期头部，可选
         final String weekRegexWithSuff = "((?<week>[mwfts][oeruha][ndieut](\\w{3,6})?|(星期|周)[一二三四五六日])\\W+)?";
         // hh:mm:ss.SSSSZ hh:mm:ss.SSSS hh:mm:ss hh:mm
-        final String timeRegexWithPre = "(" +
-                "(\\W+|T)(at\\s)?(?<hour>\\d{1,2})" +
-                "\\W(?<minute>\\d{1,2})" +
-                "(\\W(?<second>\\d{1,2}))?秒?" +
-                "(?:[.,](?<nanosecond>\\d{1,9}))?(?<zero>z)?" +
-                "(\\s?(?<m>[ap]m))?" +
-                ")?";
+        final String timeRegexWithPre = "(" + "(\\W+|T)(at\\s)?(?<hour>\\d{1,2})" + "\\W(?<minute>\\d{1,2})"
+                + "(\\W(?<second>\\d{1,2}))?秒?" + "(?:[.,](?<nanosecond>\\d{1,9}))?(?<zero>z)?" + "(\\s?(?<m>[ap]m))?"
+                + ")?";
         // 月开头，类似：May 8
         final String dateRegexMonthFirst = monthRegex + "\\W+" + dayRegex;
         // 日开头，类似：02-Jan
@@ -109,26 +104,25 @@ public class NormalDateParser implements PredicateDateParser {
                 // 匹配：+08:00 +0800 +08
                 + "(\\s?[-+]\\d{1,2}:?(?:\\d{2})?)*"
                 // 匹配：(GMT Daylight Time)等
-                + "(\\s?[(]?[a-z ]+[)]?)?"
-                + ")";
+                + "(\\s?[(]?[a-z ]+[)]?)?" + ")";
         final String maskRegex = "(\\smsk m=[+-]\\d[.]\\d+)?";
 
         return RegexDateParser.of(
-                //【年月日时】类似：2009-Feb-08，时间部分可选，类似：5:57:51，05:57:51 +08:00
+                // 【年月日时】类似：2009-Feb-08，时间部分可选，类似：5:57:51，05:57:51 +08:00
                 yearRegex + "\\W" + dateRegexMonthFirst + timeRegexWithPre + zoneRegex + maskRegex,
-                //【年月日时】类似：2009-02-08或2014年04月08日，时间部分可选，类似：5:57:51，05:57:51 +08:00
+                // 【年月日时】类似：2009-02-08或2014年04月08日，时间部分可选，类似：5:57:51，05:57:51 +08:00
                 yearRegex + "\\W(?<month>\\d{1,2})(\\W(?<day>\\d{1,2}))?日?" + timeRegexWithPre + zoneRegex + maskRegex,
 
-                //【周月日年时】类似：May 8, 2009，时间部分可选，类似：5:57:51，05:57:51 +08:00
+                // 【周月日年时】类似：May 8, 2009，时间部分可选，类似：5:57:51，05:57:51 +08:00
                 weekRegexWithSuff + dateRegexMonthFirst + "\\W+" + yearRegex + timeRegexWithPre + zoneRegex + maskRegex,
-                //【周月日时年】类似：Mon Jan 2 15:04:05 MST 2006
+                // 【周月日时年】类似：Mon Jan 2 15:04:05 MST 2006
                 weekRegexWithSuff + dateRegexMonthFirst + timeRegexWithPre + zoneRegex + "\\W+" + yearRegex + maskRegex,
-                //【周日月年时】类似：Monday, 02-Jan-06 15:04:05 MST
+                // 【周日月年时】类似：Monday, 02-Jan-06 15:04:05 MST
                 weekRegexWithSuff + dateRegexDayFirst + "\\W+" + yearRegex + timeRegexWithPre + zoneRegex + maskRegex,
-                //【日月年时】MM/dd/yyyy, dd/MM/yyyy, 类似：4/12/2014 03:00:51，为避免歧义，只支持4位年
+                // 【日月年时】MM/dd/yyyy, dd/MM/yyyy, 类似：4/12/2014 03:00:51，为避免歧义，只支持4位年
                 "(?<dayOrMonth>\\d{1,2}\\W\\d{1,2})\\W(?<year>\\d{4})" + timeRegexWithPre + zoneRegex + maskRegex,
 
-                //纯数字日期时间
+                // 纯数字日期时间
                 // yyyy
                 // yyyyMM
                 // yyyyMMdd
@@ -137,8 +131,7 @@ public class NormalDateParser implements PredicateDateParser {
                 // millisecond(13)
                 // microsecond(16)
                 // nanosecond(19)
-                "^(?<number>\\d{4,19})$"
-        );
+                "^(?<number>\\d{4,19})$");
     }
 
     /**

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.thread;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -107,7 +107,8 @@ public class RetryableTask<T> {
      * @return 当前对象
      */
     @SafeVarargs
-    public static <T> RetryableTask<T> retryForExceptions(final Supplier<T> sup, final Class<? extends Throwable>... ths) {
+    public static <T> RetryableTask<T> retryForExceptions(final Supplier<T> sup,
+            final Class<? extends Throwable>... ths) {
         Assert.isTrue(ths.length != 0, "exs cannot be empty");
 
         final BiPredicate<T, Throwable> strategy = (t, e) -> {
@@ -128,7 +129,8 @@ public class RetryableTask<T> {
      * @param predicate 策略 {@link BiPredicate}，返回{@code true}时表示重试
      * @return 当前对象
      */
-    public static <T> RetryableTask<T> retryForPredicate(final Runnable run, final BiPredicate<T, Throwable> predicate) {
+    public static <T> RetryableTask<T> retryForPredicate(final Runnable run,
+            final BiPredicate<T, Throwable> predicate) {
         return retryForPredicate(() -> {
             run.run();
             return null;
@@ -139,11 +141,12 @@ public class RetryableTask<T> {
      * 重试根据指定的策略，没有返回值
      *
      * @param <T>       返回值类型
-     * @param sup       执行的方法 {@link  Supplier}
+     * @param sup       执行的方法 {@link Supplier}
      * @param predicate 策略 {@link BiPredicate}，返回{@code true}时表示重试
      * @return 当前对象
      */
-    public static <T> RetryableTask<T> retryForPredicate(final Supplier<T> sup, final BiPredicate<T, Throwable> predicate) {
+    public static <T> RetryableTask<T> retryForPredicate(final Supplier<T> sup,
+            final BiPredicate<T, Throwable> predicate) {
         return new RetryableTask<>(sup, predicate);
     }
 
@@ -215,7 +218,7 @@ public class RetryableTask<T> {
                 th = t;
             }
 
-            //判断重试
+            // 判断重试
             if (!this.predicate.test(this.result, th)) {
                 // 条件不满足时，跳出
                 break;
@@ -228,4 +231,3 @@ public class RetryableTask<T> {
     }
 
 }
-

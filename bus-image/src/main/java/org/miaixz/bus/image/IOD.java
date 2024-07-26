@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -77,19 +77,14 @@ public class IOD extends ArrayList<IOD.DataElement> {
 
     public static IOD valueOf(Code code) {
         IOD iod = new IOD();
-        iod.add(new DataElement(
-                Tag.CodeValue, VR.SH, DataElementType.TYPE_1, 1, 1, 0)
-                .setValues(code.getCodeValue()));
-        iod.add(new DataElement(
-                Tag.CodingSchemeDesignator, VR.SH, DataElementType.TYPE_1, 1, 1, 0)
+        iod.add(new DataElement(Tag.CodeValue, VR.SH, DataElementType.TYPE_1, 1, 1, 0).setValues(code.getCodeValue()));
+        iod.add(new DataElement(Tag.CodingSchemeDesignator, VR.SH, DataElementType.TYPE_1, 1, 1, 0)
                 .setValues(code.getCodingSchemeDesignator()));
         String codingSchemeVersion = code.getCodingSchemeVersion();
         if (codingSchemeVersion == null)
-            iod.add(new DataElement(
-                    Tag.CodingSchemeVersion, VR.SH, DataElementType.TYPE_0, -1, -1, 0));
+            iod.add(new DataElement(Tag.CodingSchemeVersion, VR.SH, DataElementType.TYPE_0, -1, -1, 0));
         else
-            iod.add(new DataElement(
-                    Tag.CodingSchemeVersion, VR.SH, DataElementType.TYPE_1, 1, 1, 0));
+            iod.add(new DataElement(Tag.CodingSchemeVersion, VR.SH, DataElementType.TYPE_1, 1, 1, 0));
 
         return iod;
     }
@@ -148,8 +143,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
         private Object values;
         private int lineNumber = -1;
 
-        public DataElement(int tag, VR vr, DataElementType type,
-                           int minVM, int maxVM, int valueNumber) {
+        public DataElement(int tag, VR vr, DataElementType type, int minVM, int maxVM, int valueNumber) {
             this.tag = tag;
             this.vr = vr;
             this.type = type;
@@ -173,7 +167,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
 
         public DataElement addItemIOD(IOD iod) {
             if (this.values == null) {
-                this.values = new IOD[]{iod};
+                this.values = new IOD[] { iod };
             } else {
                 IOD[] iods = (IOD[]) this.values;
                 iods = Arrays.copyOf(iods, iods.length + 1);
@@ -318,9 +312,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
         protected Attributes item(Attributes attrs) {
             for (int sqtag : itemPath) {
                 if (sqtag == -1)
-                    attrs = (sqtag == -1)
-                            ? attrs.getParent()
-                            : attrs.getNestedDataset(sqtag);
+                    attrs = (sqtag == -1) ? attrs.getParent() : attrs.getNestedDataset(sqtag);
             }
             return attrs;
         }
@@ -332,8 +324,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
         private final boolean matchNotPresent;
         private Object values;
 
-        public MemberOf(int tag, VR vr, int valueIndex,
-                        boolean matchNotPresent, int... itemPath) {
+        public MemberOf(int tag, VR vr, int valueIndex, boolean matchNotPresent, int... itemPath) {
             super(tag, itemPath);
             this.vr = vr;
             this.valueIndex = valueIndex;
@@ -444,123 +435,102 @@ public class IOD extends ArrayList<IOD.DataElement> {
         }
 
         @Override
-        public void startElement(String uri, String localName, String qName,
-                                 org.xml.sax.Attributes atts) throws SAXException {
+        public void startElement(String uri, String localName, String qName, org.xml.sax.Attributes atts)
+                throws SAXException {
             switch (qName) {
-                case "And":
-                    startCondition(qName, new And());
-                    break;
-                case "Code":
-                    startCode(
-                            atts.getValue("codeValue"),
-                            atts.getValue("codingSchemeDesignator"),
-                            atts.getValue("codingSchemeVersion"),
-                            atts.getValue("codeMeaning"));
-                    break;
-                case "DataElement":
-                    startDataElement(
-                            atts.getValue("tag"),
-                            atts.getValue("vr"),
-                            atts.getValue("type"),
-                            atts.getValue("vm"),
-                            atts.getValue("items"),
-                            atts.getValue("valueNumber"));
-                    break;
-                case "If":
-                    startIf(atts.getValue("id"), atts.getValue("idref"));
-                    break;
-                case "Item":
-                    startItem(atts.getValue("id"),
-                            atts.getValue("idref"),
-                            atts.getValue("type"));
-                    break;
-                case "MemberOf":
-                    startCondition(qName, memberOf(atts));
-                    break;
-                case "NotAnd":
-                    startCondition(qName, new And().not());
-                    break;
-                case "NotMemberOf":
-                    startCondition(qName, memberOf(atts).not());
-                    break;
-                case "NotOr":
-                    startCondition(qName, new Or().not());
-                    break;
-                case "NotPresent":
-                    startCondition(qName, present(atts).not());
-                    break;
-                case "Or":
-                    startCondition(qName, new Or());
-                    break;
-                case "Present":
-                    startCondition(qName, present(atts));
-                    break;
-                case "Value":
-                    startValue();
-                    break;
+            case "And":
+                startCondition(qName, new And());
+                break;
+            case "Code":
+                startCode(atts.getValue("codeValue"), atts.getValue("codingSchemeDesignator"),
+                        atts.getValue("codingSchemeVersion"), atts.getValue("codeMeaning"));
+                break;
+            case "DataElement":
+                startDataElement(atts.getValue("tag"), atts.getValue("vr"), atts.getValue("type"), atts.getValue("vm"),
+                        atts.getValue("items"), atts.getValue("valueNumber"));
+                break;
+            case "If":
+                startIf(atts.getValue("id"), atts.getValue("idref"));
+                break;
+            case "Item":
+                startItem(atts.getValue("id"), atts.getValue("idref"), atts.getValue("type"));
+                break;
+            case "MemberOf":
+                startCondition(qName, memberOf(atts));
+                break;
+            case "NotAnd":
+                startCondition(qName, new And().not());
+                break;
+            case "NotMemberOf":
+                startCondition(qName, memberOf(atts).not());
+                break;
+            case "NotOr":
+                startCondition(qName, new Or().not());
+                break;
+            case "NotPresent":
+                startCondition(qName, present(atts).not());
+                break;
+            case "Or":
+                startCondition(qName, new Or());
+                break;
+            case "Present":
+                startCondition(qName, present(atts));
+                break;
+            case "Value":
+                startValue();
+                break;
             }
         }
 
-        private Present present(org.xml.sax.Attributes atts)
-                throws SAXException {
+        private Present present(org.xml.sax.Attributes atts) throws SAXException {
             int[] tagPath = tagPathOf(atts.getValue("tag"));
             int lastIndex = tagPath.length - 1;
-            return new Present(tagPath[lastIndex],
-                    lastIndex > 0 ? Arrays.copyOf(tagPath, lastIndex)
-                            : new int[]{});
+            return new Present(tagPath[lastIndex], lastIndex > 0 ? Arrays.copyOf(tagPath, lastIndex) : new int[] {});
         }
 
-        private MemberOf memberOf(org.xml.sax.Attributes atts)
-                throws SAXException {
+        private MemberOf memberOf(org.xml.sax.Attributes atts) throws SAXException {
             int[] tagPath = tagPathOf(atts.getValue("tag"));
             int lastIndex = tagPath.length - 1;
-            return new MemberOf(
-                    tagPath[lastIndex],
-                    vrOf(atts.getValue("vr")),
+            return new MemberOf(tagPath[lastIndex], vrOf(atts.getValue("vr")),
                     valueNumberOf(atts.getValue("valueNumber"), 1) - 1,
                     matchNotPresentOf(atts.getValue("matchNotPresent")),
-                    lastIndex > 0 ? Arrays.copyOf(tagPath, lastIndex)
-                            : new int[]{});
+                    lastIndex > 0 ? Arrays.copyOf(tagPath, lastIndex) : new int[] {});
         }
 
-        private void startCode(String codeValue,
-                               String codingSchemeDesignator,
-                               String codingSchemeVersion,
-                               String codeMeaning) throws SAXException {
+        private void startCode(String codeValue, String codingSchemeDesignator, String codingSchemeVersion,
+                String codeMeaning) throws SAXException {
             if (codeValue == null)
                 throw new SAXException("missing codeValue attribute");
             if (codingSchemeDesignator == null)
                 throw new SAXException("missing codingSchemeDesignator attribute");
             if (codeMeaning == null)
                 throw new SAXException("missing codeMeaning attribute");
-            codes.add(new Code(codeValue, codingSchemeDesignator,
-                    codingSchemeVersion, codeMeaning));
+            codes.add(new Code(codeValue, codingSchemeDesignator, codingSchemeVersion, codeMeaning));
         }
 
         @Override
-        public void endElement(String uri, String localName, String qName)
-                throws SAXException {
+        public void endElement(String uri, String localName, String qName) throws SAXException {
             switch (qName) {
-                case "DataElement":
-                    endDataElement();
-                    break;
-                case "Item":
-                    endItem();
-                    break;
-                case "Value":
-                    endValue();
-                    break;
-                case "And":
-                case "If":
-                case "MemberOf":
-                case "NotAnd":
-                case "NotMemberOf":
-                case "NotOr":
-                case "NotPresent":
-                case "Or":
-                case "Present":
-                    endCondition(qName);
-                    break;
+            case "DataElement":
+                endDataElement();
+                break;
+            case "Item":
+                endItem();
+                break;
+            case "Value":
+                endValue();
+                break;
+            case "And":
+            case "If":
+            case "MemberOf":
+            case "NotAnd":
+            case "NotMemberOf":
+            case "NotOr":
+            case "NotPresent":
+            case "Or":
+            case "Present":
+                endCondition(qName);
+                break;
             }
             processCharacters = false;
             idref = null;
@@ -572,9 +542,8 @@ public class IOD extends ArrayList<IOD.DataElement> {
                 sb.append(ch, start, length);
         }
 
-        private void startDataElement(String tagStr, String vrStr,
-                                      String typeStr, String vmStr, String items,
-                                      String valueNumberStr) throws SAXException {
+        private void startDataElement(String tagStr, String vrStr, String typeStr, String vmStr, String items,
+                String valueNumberStr) throws SAXException {
             if (idref != null)
                 throw new SAXException("<Item> with idref must be empty");
 
@@ -600,13 +569,10 @@ public class IOD extends ArrayList<IOD.DataElement> {
                     }
                 } catch (IllegalArgumentException e) {
                     throw new SAXException(
-                            (vr == VR.SQ ? "invalid items=\""
-                                    : "invalid vm=\"")
-                                    + vm + Symbol.C_DOUBLE_QUOTES);
+                            (vr == VR.SQ ? "invalid items=\"" : "invalid vm=\"") + vm + Symbol.C_DOUBLE_QUOTES);
                 }
             }
-            DataElement el = new DataElement(tag, vr, type, minVM, maxVM,
-                    valueNumberOf(valueNumberStr, 0));
+            DataElement el = new DataElement(tag, vr, type, minVM, maxVM, valueNumberOf(valueNumberStr, 0));
             if (locator != null)
                 el.setLineNumber(locator.getLineNumber());
             iod.add(el);
@@ -652,15 +618,12 @@ public class IOD extends ArrayList<IOD.DataElement> {
             try {
                 int[] tagPath = new int[ss.length];
                 for (int i = 0; i < tagPath.length; i++)
-                    tagPath[i] = ss[i].equals(Symbol.DOUBLE_DOT)
-                            ? -1
-                            : (int) Long.parseLong(s, Normal._16);
+                    tagPath[i] = ss[i].equals(Symbol.DOUBLE_DOT) ? -1 : (int) Long.parseLong(s, Normal._16);
                 return tagPath;
             } catch (IllegalArgumentException e) {
                 throw new SAXException("invalid tag=\"" + s + Symbol.C_DOUBLE_QUOTES);
             }
         }
-
 
         private int valueNumberOf(String s, int def) throws SAXException {
             try {
@@ -673,7 +636,6 @@ public class IOD extends ArrayList<IOD.DataElement> {
         private boolean matchNotPresentOf(String s) {
             return s != null && s.equalsIgnoreCase("true");
         }
-
 
         private DataElement getLastDataElement() {
             IOD iod = iodStack.getLast();
@@ -728,8 +690,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
 
                 iod = id2iod.get(idref);
                 if (iod == null)
-                    throw new SAXException(
-                            "could not resolve <Item idref:\"" + idref + "\"/>");
+                    throw new SAXException("could not resolve <Item idref:\"" + idref + "\"/>");
             } else {
                 iod = new IOD();
                 if (type != null)
@@ -760,8 +721,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
             if (idref != null) {
                 cond = id2cond.get(idref);
                 if (cond == null)
-                    throw new SAXException(
-                            "could not resolve <If idref:\"" + idref + "\"/>");
+                    throw new SAXException("could not resolve <If idref:\"" + idref + "\"/>");
             } else {
                 cond = new And().id(id);
             }
@@ -771,8 +731,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
             this.idref = idref;
         }
 
-        private void startCondition(String name, Condition cond)
-                throws SAXException {
+        private void startCondition(String name, Condition cond) throws SAXException {
             if (!(elementConditions || itemConditions))
                 throw new SAXException("unexpected <" + name + '>');
 
@@ -792,8 +751,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
                     else
                         memberOf.setValues(values.toArray(new String[values.size()]));
                 } catch (Exception e) {
-                    throw new SAXException("unexpected <Value> contained by <"
-                            + name + ">");
+                    throw new SAXException("unexpected <Value> contained by <" + name + ">");
                 }
                 values.clear();
             }
@@ -802,8 +760,7 @@ public class IOD extends ArrayList<IOD.DataElement> {
                 try {
                     ((MemberOf) cond).setValues(codes.toArray(new Code[codes.size()]));
                 } catch (Exception e) {
-                    throw new SAXException("unexpected <Code> contained by <"
-                            + name + ">");
+                    throw new SAXException("unexpected <Code> contained by <" + name + ">");
                 }
                 codes.clear();
             }

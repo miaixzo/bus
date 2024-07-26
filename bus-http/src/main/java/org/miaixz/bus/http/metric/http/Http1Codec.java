@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
@@ -47,10 +47,8 @@ import java.net.ProtocolException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 可以用来发送HTTP/1.1消息的套接字连接。这个类严格执行以下生命周期:
- * 没有请求主体的交换器可以跳过创建和关闭请求主体。没有响应体的交换器可以
- * 调用{@link #newFixedLengthSource(long) newFixedLengthSource(0)}
- * 并可以跳过读取和关闭该源
+ * 可以用来发送HTTP/1.1消息的套接字连接。这个类严格执行以下生命周期: 没有请求主体的交换器可以跳过创建和关闭请求主体。没有响应体的交换器可以 调用{@link #newFixedLengthSource(long)
+ * newFixedLengthSource(0)} 并可以跳过读取和关闭该源
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -82,13 +80,12 @@ public class Http1Codec implements HttpCodec {
     private long headerLimit = HEADER_LIMIT;
 
     /**
-     * Received trailers. Null unless the response body uses chunked transfer-encoding and includes
-     * trailers. Undefined until the end of the response body.
+     * Received trailers. Null unless the response body uses chunked transfer-encoding and includes trailers. Undefined
+     * until the end of the response body.
      */
     private Headers trailers;
 
-    public Http1Codec(Httpd httpd, RealConnection realConnection,
-                      BufferSource source, BufferSink sink) {
+    public Http1Codec(Httpd httpd, RealConnection realConnection, BufferSource source, BufferSink sink) {
         this.httpd = httpd;
         this.realConnection = realConnection;
         this.source = source;
@@ -122,21 +119,20 @@ public class Http1Codec implements HttpCodec {
 
     @Override
     public void cancel() {
-        if (realConnection != null) realConnection.cancel();
+        if (realConnection != null)
+            realConnection.cancel();
     }
 
     /**
-     * Prepares the HTTP headers and sends them to the server.
-     * For streaming requests with a body, headers must be prepared <strong>before</strong> the
-     * output stream has been written to. Otherwise the body would need to be buffered!
-     * For non-streaming requests with a body, headers must be prepared <strong>after</strong> the
-     * output stream has been written to and closed. This ensures that the {@code Content-Length}
-     * header field receives the proper value.
+     * Prepares the HTTP headers and sends them to the server. For streaming requests with a body, headers must be
+     * prepared <strong>before</strong> the output stream has been written to. Otherwise the body would need to be
+     * buffered! For non-streaming requests with a body, headers must be prepared <strong>after</strong> the output
+     * stream has been written to and closed. This ensures that the {@code Content-Length} header field receives the
+     * proper value.
      */
     @Override
     public void writeRequestHeaders(Request request) throws IOException {
-        String requestLine = RequestLine.get(
-                request, realConnection.route().proxy().type());
+        String requestLine = RequestLine.get(request, realConnection.route().proxy().type());
         writeRequest(request.headers(), requestLine);
     }
 
@@ -200,13 +196,11 @@ public class Http1Codec implements HttpCodec {
      * Returns bytes of a request header for sending on an HTTP transport.
      */
     public void writeRequest(Headers headers, String requestLine) throws IOException {
-        if (state != STATE_IDLE) throw new IllegalStateException("state: " + state);
+        if (state != STATE_IDLE)
+            throw new IllegalStateException("state: " + state);
         sink.writeUtf8(requestLine).writeUtf8("\r\n");
         for (int i = 0, size = headers.size(); i < size; i++) {
-            sink.writeUtf8(headers.name(i))
-                    .writeUtf8(": ")
-                    .writeUtf8(headers.value(i))
-                    .writeUtf8(Symbol.CRLF);
+            sink.writeUtf8(headers.name(i)).writeUtf8(": ").writeUtf8(headers.value(i)).writeUtf8(Symbol.CRLF);
         }
         sink.writeUtf8(Symbol.CRLF);
         state = STATE_OPEN_REQUEST_BODY;
@@ -221,11 +215,8 @@ public class Http1Codec implements HttpCodec {
         try {
             StatusLine statusLine = StatusLine.parse(readHeaderLine());
 
-            Response.Builder responseBuilder = new Response.Builder()
-                    .protocol(statusLine.protocol)
-                    .code(statusLine.code)
-                    .message(statusLine.message)
-                    .headers(readHeaders());
+            Response.Builder responseBuilder = new Response.Builder().protocol(statusLine.protocol)
+                    .code(statusLine.code).message(statusLine.message).headers(readHeaders());
 
             if (expectContinue && statusLine.code == HTTP.HTTP_CONTINUE) {
                 return null;
@@ -242,8 +233,7 @@ public class Http1Codec implements HttpCodec {
             if (realConnection != null) {
                 address = realConnection.route().address().url().redact();
             }
-            throw new IOException("unexpected end of stream on "
-                    + address, e);
+            throw new IOException("unexpected end of stream on " + address, e);
         }
     }
 
@@ -259,47 +249,51 @@ public class Http1Codec implements HttpCodec {
     private Headers readHeaders() throws IOException {
         Headers.Builder headers = new Headers.Builder();
         // parse the result headers until the first blank line
-        for (String line; (line = readHeaderLine()).length() != 0; ) {
+        for (String line; (line = readHeaderLine()).length() != 0;) {
             Internal.instance.addLenient(headers, line);
         }
         return headers.build();
     }
 
     private Sink newChunkedSink() {
-        if (state != STATE_OPEN_REQUEST_BODY) throw new IllegalStateException("state: " + state);
+        if (state != STATE_OPEN_REQUEST_BODY)
+            throw new IllegalStateException("state: " + state);
         state = STATE_WRITING_REQUEST_BODY;
         return new ChunkedSink();
     }
 
     private Sink newKnownLengthSink() {
-        if (state != STATE_OPEN_REQUEST_BODY) throw new IllegalStateException("state: " + state);
+        if (state != STATE_OPEN_REQUEST_BODY)
+            throw new IllegalStateException("state: " + state);
         state = STATE_WRITING_REQUEST_BODY;
         return new KnownLengthSink();
     }
 
     private Source newFixedLengthSource(long length) {
-        if (state != STATE_OPEN_RESPONSE_BODY) throw new IllegalStateException("state: " + state);
+        if (state != STATE_OPEN_RESPONSE_BODY)
+            throw new IllegalStateException("state: " + state);
         state = STATE_READING_RESPONSE_BODY;
         return new FixedLengthSource(length);
     }
 
     private Source newChunkedSource(UnoUrl url) {
-        if (state != STATE_OPEN_RESPONSE_BODY) throw new IllegalStateException("state: " + state);
+        if (state != STATE_OPEN_RESPONSE_BODY)
+            throw new IllegalStateException("state: " + state);
         state = STATE_READING_RESPONSE_BODY;
         return new ChunkedSource(url);
     }
 
     private Source newUnknownLengthSource() {
-        if (state != STATE_OPEN_RESPONSE_BODY) throw new IllegalStateException("state: " + state);
+        if (state != STATE_OPEN_RESPONSE_BODY)
+            throw new IllegalStateException("state: " + state);
         state = STATE_READING_RESPONSE_BODY;
         realConnection.noNewExchanges();
         return new UnknownLengthSource();
     }
 
     /**
-     * Sets the delegate of {@code timeout} to {@link Timeout#NONE} and resets its underlying timeout
-     * to the default configuration. Use this to avoid unexpected sharing of timeouts between pooled
-     * connections.
+     * Sets the delegate of {@code timeout} to {@link Timeout#NONE} and resets its underlying timeout to the default
+     * configuration. Use this to avoid unexpected sharing of timeouts between pooled connections.
      */
     private void detachTimeout(AssignTimeout timeout) {
         Timeout oldDelegate = timeout.delegate();
@@ -309,12 +303,12 @@ public class Http1Codec implements HttpCodec {
     }
 
     /**
-     * The response body from a CONNECT should be empty, but if it is not then we should consume it
-     * before proceeding.
+     * The response body from a CONNECT should be empty, but if it is not then we should consume it before proceeding.
      */
     public void skipConnectBody(Response response) throws IOException {
         long contentLength = Headers.contentLength(response);
-        if (contentLength == -1L) return;
+        if (contentLength == -1L)
+            return;
         Source body = newFixedLengthSource(contentLength);
         Builder.skipAll(body, Integer.MAX_VALUE, TimeUnit.MILLISECONDS);
         body.close();
@@ -334,20 +328,23 @@ public class Http1Codec implements HttpCodec {
 
         @Override
         public void write(Buffer source, long byteCount) throws IOException {
-            if (closed) throw new IllegalStateException("closed");
+            if (closed)
+                throw new IllegalStateException("closed");
             Builder.checkOffsetAndCount(source.size(), 0, byteCount);
             sink.write(source, byteCount);
         }
 
         @Override
         public void flush() throws IOException {
-            if (closed) return; // Don't throw; this stream might have been closed on the caller's behalf.
+            if (closed)
+                return; // Don't throw; this stream might have been closed on the caller's behalf.
             sink.flush();
         }
 
         @Override
         public void close() throws IOException {
-            if (closed) return;
+            if (closed)
+                return;
             closed = true;
             detachTimeout(timeout);
             state = STATE_READ_RESPONSE_HEADERS;
@@ -355,8 +352,8 @@ public class Http1Codec implements HttpCodec {
     }
 
     /**
-     * An HTTP body with alternating chunk sizes and chunk bodies. It is the caller's responsibility
-     * to buffer chunks; typically by using a buffered sink with this sink.
+     * An HTTP body with alternating chunk sizes and chunk bodies. It is the caller's responsibility to buffer chunks;
+     * typically by using a buffered sink with this sink.
      */
     private class ChunkedSink implements Sink {
         private final AssignTimeout timeout = new AssignTimeout(sink.timeout());
@@ -372,8 +369,10 @@ public class Http1Codec implements HttpCodec {
 
         @Override
         public void write(Buffer source, long byteCount) throws IOException {
-            if (closed) throw new IllegalStateException("closed");
-            if (byteCount == 0) return;
+            if (closed)
+                throw new IllegalStateException("closed");
+            if (byteCount == 0)
+                return;
 
             sink.writeHexadecimalUnsignedLong(byteCount);
             sink.writeUtf8(Symbol.CRLF);
@@ -383,13 +382,15 @@ public class Http1Codec implements HttpCodec {
 
         @Override
         public synchronized void flush() throws IOException {
-            if (closed) return;
+            if (closed)
+                return;
             sink.flush();
         }
 
         @Override
         public synchronized void close() throws IOException {
-            if (closed) return;
+            if (closed)
+                return;
             closed = true;
             sink.writeUtf8("0\r\n\r\n");
             detachTimeout(timeout);
@@ -418,12 +419,14 @@ public class Http1Codec implements HttpCodec {
         }
 
         /**
-         * Closes the cache entry and makes the socket available for reuse. This should be invoked when
-         * the end of the body has been reached.
+         * Closes the cache entry and makes the socket available for reuse. This should be invoked when the end of the
+         * body has been reached.
          */
         final void responseBodyComplete() {
-            if (state == STATE_CLOSED) return;
-            if (state != STATE_READING_RESPONSE_BODY) throw new IllegalStateException("state: " + state);
+            if (state == STATE_CLOSED)
+                return;
+            if (state != STATE_READING_RESPONSE_BODY)
+                throw new IllegalStateException("state: " + state);
 
             detachTimeout(timeout);
 
@@ -446,9 +449,12 @@ public class Http1Codec implements HttpCodec {
 
         @Override
         public long read(Buffer sink, long byteCount) throws IOException {
-            if (byteCount < 0) throw new IllegalArgumentException("byteCount < 0: " + byteCount);
-            if (closed) throw new IllegalStateException("closed");
-            if (bytesRemaining == 0) return -1;
+            if (byteCount < 0)
+                throw new IllegalArgumentException("byteCount < 0: " + byteCount);
+            if (closed)
+                throw new IllegalStateException("closed");
+            if (bytesRemaining == 0)
+                return -1;
 
             long read = super.read(sink, Math.min(bytesRemaining, byteCount));
             if (read == -1) {
@@ -467,7 +473,8 @@ public class Http1Codec implements HttpCodec {
 
         @Override
         public void close() throws IOException {
-            if (closed) return;
+            if (closed)
+                return;
 
             if (bytesRemaining != 0 && !Builder.discard(this, DISCARD_STREAM_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {
                 realConnection.noNewExchanges(); // Unread bytes remain on the stream.
@@ -493,13 +500,17 @@ public class Http1Codec implements HttpCodec {
 
         @Override
         public long read(Buffer sink, long byteCount) throws IOException {
-            if (byteCount < 0) throw new IllegalArgumentException("byteCount < 0: " + byteCount);
-            if (closed) throw new IllegalStateException("closed");
-            if (!hasMoreChunks) return -1;
+            if (byteCount < 0)
+                throw new IllegalArgumentException("byteCount < 0: " + byteCount);
+            if (closed)
+                throw new IllegalStateException("closed");
+            if (!hasMoreChunks)
+                return -1;
 
             if (bytesRemainingInChunk == 0 || bytesRemainingInChunk == NO_CHUNK_YET) {
                 readChunkSize();
-                if (!hasMoreChunks) return -1;
+                if (!hasMoreChunks)
+                    return -1;
             }
 
             long read = super.read(sink, Math.min(byteCount, bytesRemainingInChunk));
@@ -538,7 +549,8 @@ public class Http1Codec implements HttpCodec {
 
         @Override
         public void close() throws IOException {
-            if (closed) return;
+            if (closed)
+                return;
             if (hasMoreChunks && !Builder.discard(this, DISCARD_STREAM_TIMEOUT_MILLIS, TimeUnit.MILLISECONDS)) {
                 realConnection.noNewExchanges(); // Unread bytes remain on the stream.
                 responseBodyComplete();
@@ -554,11 +566,13 @@ public class Http1Codec implements HttpCodec {
         private boolean inputExhausted;
 
         @Override
-        public long read(Buffer sink, long byteCount)
-                throws IOException {
-            if (byteCount < 0) throw new IllegalArgumentException("byteCount < 0: " + byteCount);
-            if (closed) throw new IllegalStateException("closed");
-            if (inputExhausted) return -1;
+        public long read(Buffer sink, long byteCount) throws IOException {
+            if (byteCount < 0)
+                throw new IllegalArgumentException("byteCount < 0: " + byteCount);
+            if (closed)
+                throw new IllegalStateException("closed");
+            if (inputExhausted)
+                return -1;
 
             long read = super.read(sink, byteCount);
             if (read == -1) {
@@ -571,7 +585,8 @@ public class Http1Codec implements HttpCodec {
 
         @Override
         public void close() throws IOException {
-            if (closed) return;
+            if (closed)
+                return;
             if (!inputExhausted) {
                 responseBodyComplete();
             }

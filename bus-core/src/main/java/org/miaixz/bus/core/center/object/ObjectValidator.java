@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.object;
 
 import org.miaixz.bus.core.text.CharsBacker;
@@ -42,8 +42,8 @@ import java.util.function.Supplier;
 /**
  * 对象检查工具类，提供字对象的blank和empty等检查
  * <ul>
- *     <li>empty定义：{@code null} or 空字对象：{@code ""}</li>
- *     <li>blank定义：{@code null} or 空字对象：{@code ""} or 空格、全角空格、制表符、换行符，等不可见字符</li>
+ * <li>empty定义：{@code null} or 空字对象：{@code ""}</li>
+ * <li>blank定义：{@code null} or 空字对象：{@code ""} or 空格、全角空格、制表符、换行符，等不可见字符</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -74,15 +74,13 @@ public class ObjectValidator {
     /**
      * 判断指定对象是否为空，支持类型包括：
      * <ul>
-     *     <li>{@code null}：默认返回{@code true}；</li>
-     *     <li>数组：等同于{@link ArrayKit#isEmpty(Object)}；</li>
-     *     <li>{@link CharSequence}：等同于{@link CharsBacker#isEmpty(CharSequence)}；</li>
-     *     <li>{@link Collection}：等同于{@link CollKit#isEmpty(Collection)}；</li>
-     *     <li>{@link Map}：等同于{@link MapKit#isEmpty(Map)}；</li>
-     *     <li>
-     *         {@link Iterator}或{@link Iterable}：等同于{@link IteratorKit#isEmpty(Iterator)}、
-     *         {@link IteratorKit#isEmpty(Iterable)}；
-     *     </li>
+     * <li>{@code null}：默认返回{@code true}；</li>
+     * <li>数组：等同于{@link ArrayKit#isEmpty(Object)}；</li>
+     * <li>{@link CharSequence}：等同于{@link CharsBacker#isEmpty(CharSequence)}；</li>
+     * <li>{@link Collection}：等同于{@link CollKit#isEmpty(Collection)}；</li>
+     * <li>{@link Map}：等同于{@link MapKit#isEmpty(Map)}；</li>
+     * <li>{@link Iterator}或{@link Iterable}：等同于{@link IteratorKit#isEmpty(Iterator)}、
+     * {@link IteratorKit#isEmpty(Iterable)}；</li>
      * </ul>
      *
      * @param obj 被判断的对象
@@ -129,18 +127,17 @@ public class ObjectValidator {
     /**
      * 如果对象是字符串是否为空白，空白的定义如下：
      * <ol>
-     *     <li>{@code null}</li>
-     *     <li>空字符串：{@code ""}</li>
-     *     <li>空格、全角空格、制表符、换行符，等不可见字符</li>
+     * <li>{@code null}</li>
+     * <li>空字符串：{@code ""}</li>
+     * <li>空格、全角空格、制表符、换行符，等不可见字符</li>
      * </ol>
      * <ul>
-     *     <li>{@code isBlankIfString(null)     // true}</li>
-     *     <li>{@code isBlankIfString("")       // true}</li>
-     *     <li>{@code isBlankIfString(" \t\n")  // true}</li>
-     *     <li>{@code isBlankIfString("abc")    // false}</li>
+     * <li>{@code isBlankIfString(null)     // true}</li>
+     * <li>{@code isBlankIfString("")       // true}</li>
+     * <li>{@code isBlankIfString(" \t\n")  // true}</li>
+     * <li>{@code isBlankIfString("abc")    // false}</li>
      * </ul>
-     * 注意：该方法与 {@link #isEmptyIfString(Object)} 的区别是：
-     * 该方法会校验空白字符，且性能相对于 {@link #isEmptyIfString(Object)} 略慢。
+     * 注意：该方法与 {@link #isEmptyIfString(Object)} 的区别是： 该方法会校验空白字符，且性能相对于 {@link #isEmptyIfString(Object)} 略慢。
      *
      * @param obj 对象
      * @return 如果为字符串是否为空串
@@ -158,17 +155,19 @@ public class ObjectValidator {
     /**
      * 如果对象是字符串是否为空串，空的定义如下：
      * <ol>
-     *     <li>{@code null}</li>
-     *     <li>空字符串：{@code ""}</li>
+     * <li>{@code null}</li>
+     * <li>空字符串：{@code ""}</li>
      * </ol>
      * <ul>
-     *     <li>{@code isEmptyIfString(null)     // true}</li>
-     *     <li>{@code isEmptyIfString("")       // true}</li>
-     *     <li>{@code isEmptyIfString(" \t\n")  // false}</li>
-     *     <li>{@code isEmptyIfString("abc")    // false}</li>
+     * <li>{@code isEmptyIfString(null)     // true}</li>
+     * <li>{@code isEmptyIfString("")       // true}</li>
+     * <li>{@code isEmptyIfString(" \t\n")  // false}</li>
+     * <li>{@code isEmptyIfString("abc")    // false}</li>
      * </ul>
      *
-     * <p>注意：该方法与 {@link #isBlankIfString(Object)} 的区别是：该方法不校验空白字符。</p>
+     * <p>
+     * 注意：该方法与 {@link #isBlankIfString(Object)} 的区别是：该方法不校验空白字符。
+     * </p>
      *
      * @param obj 对象
      * @return 如果为字符串是否为空串
@@ -184,6 +183,7 @@ public class ObjectValidator {
 
     /**
      * 如果给定对象为{@code null}返回默认值
+     * 
      * <pre>{@code
      * ObjectKit.defaultIfNull(null, null);      // = null
      * ObjectKit.defaultIfNull(null, "");        // = ""
@@ -226,7 +226,8 @@ public class ObjectValidator {
      * @param defaultValue 为空时的默认返回值
      * @return 被检查对象不为 {@code null} 返回处理后的结果，否则返回默认值
      */
-    public static <T, R> R defaultIfNull(final T source, final Function<? super T, ? extends R> handler, final R defaultValue) {
+    public static <T, R> R defaultIfNull(final T source, final Function<? super T, ? extends R> handler,
+            final R defaultValue) {
         return isNull(source) ? defaultValue : handler.apply(source);
     }
 
@@ -240,7 +241,8 @@ public class ObjectValidator {
      * @param defaultSupplier 为空时的默认值提供者
      * @return 被检查对象不为 {@code null} 返回处理后的结果，否则返回 {@link Supplier#get()} 提供的默认值
      */
-    public static <T, R> R defaultIfNull(final T source, final Function<? super T, ? extends R> handler, final Supplier<? extends R> defaultSupplier) {
+    public static <T, R> R defaultIfNull(final T source, final Function<? super T, ? extends R> handler,
+            final Supplier<? extends R> defaultSupplier) {
         if (isNotNull(source)) {
             return handler.apply(source);
         }
@@ -250,10 +252,10 @@ public class ObjectValidator {
     /**
      * 比较两个对象是否相等，满足下述任意条件即返回{@code true}：
      * <ul>
-     *     <li>若两对象皆为{@link BigDecimal}，且满足{@code 0 == obj1.compareTo(obj2)}</li>
-     *     <li>若两对象都为数组，调用Arrays.equals完成判断</li>
-     *     <li>{@code obj1 == null && obj2 == null}</li>
-     *     <li>{@code obj1.equals(obj2)}</li>
+     * <li>若两对象皆为{@link BigDecimal}，且满足{@code 0 == obj1.compareTo(obj2)}</li>
+     * <li>若两对象都为数组，调用Arrays.equals完成判断</li>
+     * <li>{@code obj1 == null && obj2 == null}</li>
+     * <li>{@code obj1.equals(obj2)}</li>
      * </ul>
      *
      * @param obj1 对象1
@@ -296,11 +298,10 @@ public class ObjectValidator {
     }
 
     /**
-     * 是否为有效的数字，主要用于检查浮点数是否为有意义的数值
-     * 若对象不为{@link Number}类型，则直接返回{@code true}，否则：
+     * 是否为有效的数字，主要用于检查浮点数是否为有意义的数值 若对象不为{@link Number}类型，则直接返回{@code true}，否则：
      * <ul>
-     *     <li>若对象类型为{@link Double}，则检查{@link Double#isInfinite()}或{@link Double#isNaN()}；</li>
-     *     <li>若对象类型为{@link Float}，则检查{@link Float#isInfinite()}或{@link Float#isNaN()}；</li>
+     * <li>若对象类型为{@link Double}，则检查{@link Double#isInfinite()}或{@link Double#isNaN()}；</li>
+     * <li>若对象类型为{@link Float}，则检查{@link Float#isInfinite()}或{@link Float#isNaN()}；</li>
      * </ul>
      *
      * @param obj 被检查对象

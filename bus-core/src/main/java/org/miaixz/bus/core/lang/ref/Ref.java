@@ -24,12 +24,11 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.ref;
 
 /**
- * 针对{@link java.lang.ref.Reference}的接口定义，用于扩展功能
- * 例如提供自定义的无需回收对象
+ * 针对{@link java.lang.ref.Reference}的接口定义，用于扩展功能 例如提供自定义的无需回收对象
  *
  * @param <T> 对象类型
  * @author Kimi Liu

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.annotation;
 
 import java.lang.annotation.*;
@@ -35,15 +35,13 @@ import java.lang.annotation.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Target({ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
+@Target({ ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Inject {
 
     /**
-     * 如果为真,且没有找到适当的绑定,则注入器将跳过此方法或字段的注入, 而不会产生错误
-     * 当应用到一个字段时,任何已经分配给该字段的默认值将保持不变
-     * 当应用于某个方法时,只有在找到的所有参数的绑定时才调用该方法
+     * 如果为真,且没有找到适当的绑定,则注入器将跳过此方法或字段的注入, 而不会产生错误 当应用到一个字段时,任何已经分配给该字段的默认值将保持不变 当应用于某个方法时,只有在找到的所有参数的绑定时才调用该方法
      *
      * @return the true/false
      */

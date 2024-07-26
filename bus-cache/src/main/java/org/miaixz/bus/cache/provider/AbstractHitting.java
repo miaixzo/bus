@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cache.provider;
 
 import jakarta.annotation.PreDestroy;
@@ -70,7 +70,8 @@ public abstract class AbstractHitting implements Hitting {
     private Properties sqls;
 
     protected AbstractHitting(Map<String, Object> context) {
-        InputStream in = this.getClass().getClassLoader().getResourceAsStream(Normal.META_INF + "/cache/bus.cache.yaml");
+        InputStream in = this.getClass().getClassLoader()
+                .getResourceAsStream(Normal.META_INF + "/cache/bus.cache.yaml");
         this.sqls = Builder.loadYaml(in, Properties.class);
 
         this.jdbcOperations = jdbcOperationsSupplier(context).get();
@@ -83,11 +84,7 @@ public abstract class AbstractHitting implements Hitting {
     }
 
     public AbstractHitting(String url, String username, String password) {
-        this(newHashMap(
-                "url", url,
-                "username", username,
-                "password", password
-        ));
+        this(newHashMap("url", url, "username", username, "password", password));
     }
 
     public static Map<String, Object> newHashMap(Object... keyValues) {
@@ -103,8 +100,7 @@ public abstract class AbstractHitting implements Hitting {
     }
 
     /**
-     * 1. create JdbcOperations
-     * 2. init db(like: load sql script, create table, init table...)
+     * 1. create JdbcOperations 2. init db(like: load sql script, create table, init table...)
      *
      * @param context :other parameters from constructor
      * @return initiated JdbOperations object
@@ -126,9 +122,7 @@ public abstract class AbstractHitting implements Hitting {
         // gather queue's all or before 100 data to a Map
         Map<String, AtomicLong> holdMap = new HashMap<>();
         while (null != (head = queue.poll()) && times <= 100) {
-            holdMap
-                    .computeIfAbsent(head.getLeft(), (key) -> new AtomicLong(0L))
-                    .addAndGet(head.getRight());
+            holdMap.computeIfAbsent(head.getLeft(), (key) -> new AtomicLong(0L)).addAndGet(head.getRight());
             ++times;
         }
 
@@ -155,16 +149,12 @@ public abstract class AbstractHitting implements Hitting {
         AtomicLong statisticsRequired = new AtomicLong(0);
 
         // gather pattern's hit rate
-        Map<String, Hitting.HittingDO> result = dataDOS.stream().collect(Collectors.toMap(
-                DataDO::getPattern,
-                (dataDO) -> {
+        Map<String, Hitting.HittingDO> result = dataDOS.stream()
+                .collect(Collectors.toMap(DataDO::getPattern, (dataDO) -> {
                     statisticsHit.addAndGet(dataDO.hitCount);
                     statisticsRequired.addAndGet(dataDO.requireCount);
                     return Hitting.HittingDO.newInstance(dataDO.hitCount, dataDO.requireCount);
-                },
-                Hitting.HittingDO::mergeShootingDO,
-                LinkedHashMap::new
-        ));
+                }, Hitting.HittingDO::mergeShootingDO, LinkedHashMap::new));
 
         // gather application all pattern's hit rate
         result.put(summaryName(), Hitting.HittingDO.newInstance(statisticsHit.get(), statisticsRequired.get()));

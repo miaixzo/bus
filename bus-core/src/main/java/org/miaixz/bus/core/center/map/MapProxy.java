@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map;
 
 import org.miaixz.bus.core.convert.Convert;
@@ -65,8 +65,7 @@ public class MapProxy implements Map<Object, Object>, TypeGetter<Object>, Invoca
     }
 
     /**
-     * 创建代理Map
-     * 此类对Map做一次包装，提供各种getXXX方法
+     * 创建代理Map 此类对Map做一次包装，提供各种getXXX方法
      *
      * @param map 被代理的Map
      * @return {@code MapProxy}
@@ -74,7 +73,6 @@ public class MapProxy implements Map<Object, Object>, TypeGetter<Object>, Invoca
     public static MapProxy of(final Map<?, ?> map) {
         return (map instanceof MapProxy) ? (MapProxy) map : new MapProxy(map);
     }
-
 
     @Override
     public Object getObject(final Object key, final Object defaultValue) {
@@ -105,7 +103,6 @@ public class MapProxy implements Map<Object, Object>, TypeGetter<Object>, Invoca
     public Object get(final Object key) {
         return map.get(key);
     }
-
 
     @Override
     public Object put(final Object key, final Object value) {
@@ -200,7 +197,7 @@ public class MapProxy implements Map<Object, Object>, TypeGetter<Object>, Invoca
      * @return 代理对象
      */
     public <T> T toProxyBean(final Class<T> interfaceClass) {
-        return (T) Proxy.newProxyInstance(ClassKit.getClassLoader(), new Class<?>[]{interfaceClass}, this);
+        return (T) Proxy.newProxyInstance(ClassKit.getClassLoader(), new Class<?>[] { interfaceClass }, this);
     }
 
 }

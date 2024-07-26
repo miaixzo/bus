@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.spring.Initializer;
 
 import org.miaixz.bus.logger.Logger;
@@ -55,7 +55,8 @@ public class BannerApplicationContextInitializer extends SwitchableApplicationCo
 
     @Override
     protected void doInitialize(ConfigurableApplicationContext context) {
-        Logger.info("The springboot " + context.getEnvironment().getProperty(GeniusBuilder.APP_NAME) + " application is starting");
+        Logger.info("The springboot " + context.getEnvironment().getProperty(GeniusBuilder.APP_NAME)
+                + " application is starting");
     }
 
 }

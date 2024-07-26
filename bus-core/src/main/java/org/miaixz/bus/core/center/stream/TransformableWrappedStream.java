@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.stream;
 
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
@@ -42,8 +42,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
- * {@link WrappedStream}的扩展，用于为实现类提供更多中间操作方法的增强接口，
- * 该接口提供的方法，返回值类型都为{@link Stream}。
+ * {@link WrappedStream}的扩展，用于为实现类提供更多中间操作方法的增强接口， 该接口提供的方法，返回值类型都为{@link Stream}。
  *
  * @param <T> 流中的元素类型
  * @param <S> {@link TransformableWrappedStream}的实现类类型
@@ -53,8 +52,7 @@ import java.util.stream.StreamSupport;
 public interface TransformableWrappedStream<T, S extends TransformableWrappedStream<T, S>> extends WrappedStream<T, S> {
 
     /**
-     * 将 现有元素 与 给定迭代器中对应位置的元素 使用 zipper 转换为新的元素，并返回新元素组成的流
-     * 新流的数量为两个集合中较小的数量, 即, 只合并下标位置相同的部分
+     * 将 现有元素 与 给定迭代器中对应位置的元素 使用 zipper 转换为新的元素，并返回新元素组成的流 新流的数量为两个集合中较小的数量, 即, 只合并下标位置相同的部分
      *
      * @param other  给定的迭代器
      * @param zipper 两个元素的合并器
@@ -62,16 +60,19 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      * @param <R>    合并后的结果对象类型
      * @return 合并后的结果对象的流
      */
-    default <U, R> EasyStream<R> zip(
-            final Iterable<U> other,
+    default <U, R> EasyStream<R> zip(final Iterable<U> other,
             final BiFunction<? super T, ? super U, ? extends R> zipper) {
         Objects.requireNonNull(zipper);
-        final Map<Integer, T> idxIdentityMap = mapIdx((e, idx) -> MapKit.entry(idx, e)).collect(CollectorKit.entryToMap());
-        final Map<Integer, U> idxOtherMap = EasyStream.of(other).mapIdx((e, idx) -> MapKit.entry(idx, e)).collect(CollectorKit.entryToMap());
+        final Map<Integer, T> idxIdentityMap = mapIdx((e, idx) -> MapKit.entry(idx, e))
+                .collect(CollectorKit.entryToMap());
+        final Map<Integer, U> idxOtherMap = EasyStream.of(other).mapIdx((e, idx) -> MapKit.entry(idx, e))
+                .collect(CollectorKit.entryToMap());
         if (idxIdentityMap.size() <= idxOtherMap.size()) {
-            return EasyStream.of(idxIdentityMap.keySet(), isParallel()).map(k -> zipper.apply(idxIdentityMap.get(k), idxOtherMap.get(k)));
+            return EasyStream.of(idxIdentityMap.keySet(), isParallel())
+                    .map(k -> zipper.apply(idxIdentityMap.get(k), idxOtherMap.get(k)));
         }
-        return EasyStream.of(idxOtherMap.keySet(), isParallel()).map(k -> zipper.apply(idxIdentityMap.get(k), idxOtherMap.get(k)));
+        return EasyStream.of(idxOtherMap.keySet(), isParallel())
+                .map(k -> zipper.apply(idxIdentityMap.get(k), idxOtherMap.get(k)));
     }
 
     /**
@@ -93,8 +94,7 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
         }
         return EasyStream.iterate(0, i -> i < size, i -> i + batchSize)
                 .map(skip -> EasyStream.of(list.subList(skip, Math.min(size, skip + batchSize)), isParallel()))
-                .parallel(isParallel())
-                .onClose(unwrap()::close);
+                .parallel(isParallel()).onClose(unwrap()::close);
     }
 
     /**
@@ -158,8 +158,8 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 通过删除或替换现有元素或者原地添加新的元素来修改列表，并以列表形式返回被修改的内容。此方法不会改变原列表。
-     * 类似js的<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/splice">splice</a>函数
+     * 通过删除或替换现有元素或者原地添加新的元素来修改列表，并以列表形式返回被修改的内容。此方法不会改变原列表。 类似js的<a href=
+     * "https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/splice">splice</a>函数
      *
      * @param start       起始下标
      * @param deleteCount 删除个数，正整数
@@ -168,29 +168,28 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      */
     default S splice(final int start, final int deleteCount, final T... items) {
         final List<T> elements = unwrap().collect(Collectors.toList());
-        return wrap(ListKit.splice(elements, start, deleteCount, items).stream())
-                .parallel(isParallel());
+        return wrap(ListKit.splice(elements, start, deleteCount, items).stream()).parallel(isParallel());
     }
 
     /**
-     * <p>遍历流中与断言匹配的元素，当遇到第一个不匹配的元素时终止，返回由匹配的元素组成的流。
-     * eg:
+     * <p>
+     * 遍历流中与断言匹配的元素，当遇到第一个不匹配的元素时终止，返回由匹配的元素组成的流。 eg:
+     * 
      * <pre>{@code
-     * EasyStream.of(1, 2, 3, 4, 5)
-     * 	.takeWhile(i -> Objects.equals(3, i)) // 获取元素，一直到遇到第一个3为止
-     * 	.toList(); // = [1, 2]
+     * EasyStream.of(1, 2, 3, 4, 5).takeWhile(i -> Objects.equals(3, i)) // 获取元素，一直到遇到第一个3为止
+     *         .toList(); // = [1, 2]
      * }</pre>
      *
-     * <p>与{@code JDK9}中的{@code takeWhile}方法不太一样，此操作为顺序且有状态的中间操作。
-     * 即使在并行流中，该操作仍然是顺序执行的，并且不影响后续的并行操作：
+     * <p>
+     * 与{@code JDK9}中的{@code takeWhile}方法不太一样，此操作为顺序且有状态的中间操作。 即使在并行流中，该操作仍然是顺序执行的，并且不影响后续的并行操作：
+     * 
      * <pre>{@code
-     * EasyStream.iterate(1, i -> i + 1)
-     * 	.parallel()
-     * 	.takeWhile(e -> e < 50) // 顺序执行
-     * 	.map(e -> e + 1) // 并发
-     * 	.map(String::valueOf) // 并发
-     * 	.toList();
+     * EasyStream.iterate(1, i -> i + 1).parallel().takeWhile(e -> e < 50) // 顺序执行
+     *         .map(e -> e + 1) // 并发
+     *         .map(String::valueOf) // 并发
+     *         .toList();
      * }</pre>
+     * 
      * 若非必要，不推荐在并行流中进行该操作。
      *
      * @param predicate 断言
@@ -202,24 +201,23 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 删除流中与断言匹配的元素，当遇到第一个不匹配的元素时终止，返回由剩余不匹配的元素组成的流。
-     * eg:
+     * 删除流中与断言匹配的元素，当遇到第一个不匹配的元素时终止，返回由剩余不匹配的元素组成的流。 eg:
+     * 
      * <pre>{@code
-     * EasyStream.of(1, 2, 3, 4, 5)
-     * 	.dropWhile(i -> !Objects.equals(3, i)) // 删除不为3的元素，一直到遇到第一个3为止
-     * 	.toList(); // = [3, 4, 5]
+     * EasyStream.of(1, 2, 3, 4, 5).dropWhile(i -> !Objects.equals(3, i)) // 删除不为3的元素，一直到遇到第一个3为止
+     *         .toList(); // = [3, 4, 5]
      * }</pre>
      *
-     * <p>与{@code JDK9}中的{@code dropWhile}方法不太一样，此操作为顺序且有状态的中间操作。
-     * 即使在并行流中，该操作仍然是顺序执行的，并且不影响后续的并行操作：
+     * <p>
+     * 与{@code JDK9}中的{@code dropWhile}方法不太一样，此操作为顺序且有状态的中间操作。 即使在并行流中，该操作仍然是顺序执行的，并且不影响后续的并行操作：
+     * 
      * <pre>{@code
-     * EasyStream.iterate(1, i -> i + 1)
-     * 	.parallel()
-     * 	.dropWhile(e -> e < 50) // 顺序执行
-     * 	.map(e -> e + 1) // 并发
-     * 	.map(String::valueOf) // 并发
-     * 	.toList();
+     * EasyStream.iterate(1, i -> i + 1).parallel().dropWhile(e -> e < 50) // 顺序执行
+     *         .map(e -> e + 1) // 并发
+     *         .map(String::valueOf) // 并发
+     *         .toList();
      * }</pre>
+     * 
      * 若非必要，不推荐在并行流中进行该操作。
      *
      * @param predicate 断言
@@ -231,8 +229,7 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 返回一个具有去重特征的流 非并行流(顺序流)下对于重复元素，保留遇到顺序中最先出现的元素，并行流情况下不能保证具体保留哪一个
-     * 这是一个有状态中间操作
+     * 返回一个具有去重特征的流 非并行流(顺序流)下对于重复元素，保留遇到顺序中最先出现的元素，并行流情况下不能保证具体保留哪一个 这是一个有状态中间操作
      *
      * @param <F>          参数类型
      * @param keyExtractor 去重依据
@@ -270,12 +267,11 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
      *
      * <pre>
      *     {@code
-     *     Stream.of("one", "two", "three", "four")
-     * 				.filter(e -> e.length() > 3)
-     * 				.peekIdx((e,i) -> System.out.println("Filtered value: " + e + " Filtered idx:" + i))
-     * 				.map(String::toUpperCase)
-     * 				.peekIdx((e,i) -> System.out.println("Mapped value: " + e + " Mapped idx:" + i))
-     * 				.collect(Collectors.toList());
+     * Stream.of("one", "two", "three", "four").filter(e -> e.length() > 3)
+     *         .peekIdx((e, i) -> System.out.println("Filtered value: " + e + " Filtered idx:" + i))
+     *         .map(String::toUpperCase)
+     *         .peekIdx((e, i) -> System.out.println("Mapped value: " + e + " Mapped idx:" + i))
+     *         .collect(Collectors.toList());
      * }</pre>
      *
      * @param action 指定的函数
@@ -374,8 +370,7 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 过滤元素，返回与 指定操作结果 匹配 指定值 的元素组成的流
-     * 这是一个无状态中间操作
+     * 过滤元素，返回与 指定操作结果 匹配 指定值 的元素组成的流 这是一个无状态中间操作
      *
      * @param <R>    返回类型
      * @param mapper 操作
@@ -388,11 +383,10 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 扩散流操作，可能影响流元素个数，将原有流元素执行mapper操作，返回多个流所有元素组成的流
-     * 这是一个无状态中间操作
-     * 例如，将users里所有user的id和parentId组合在一起，形成一个新的流:
+     * 扩散流操作，可能影响流元素个数，将原有流元素执行mapper操作，返回多个流所有元素组成的流 这是一个无状态中间操作 例如，将users里所有user的id和parentId组合在一起，形成一个新的流:
+     * 
      * <pre>{@code
-     *     EasyStream<Long> ids = EasyStream.of(users).flatMap(user -> FastStream.of(user.getId(), user.getParentId()));
+     * EasyStream<Long> ids = EasyStream.of(users).flatMap(user -> FastStream.of(user.getId(), user.getParentId()));
      * }</pre>
      *
      * @param mapper 操作，返回流
@@ -419,12 +413,11 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 扩散流操作，可能影响流元素个数，将原有流元素执行mapper操作, 转换为迭代器元素,
-     * 最后返回所有迭代器的所有元素组成的流
-     * 这是一个无状态中间操作
+     * 扩散流操作，可能影响流元素个数，将原有流元素执行mapper操作, 转换为迭代器元素, 最后返回所有迭代器的所有元素组成的流 这是一个无状态中间操作
      * 例如，将users里所有user的id和parentId组合在一起，形成一个新的流:
+     * 
      * <pre>{@code
-     *     EasyStream<Long> ids = EasyStream.of(users).flat(user -> FastStream.of(user.getId(), user.getParentId()));
+     * EasyStream<Long> ids = EasyStream.of(users).flat(user -> FastStream.of(user.getId(), user.getParentId()));
      * }</pre>
      *
      * @param mapper 操作，返回可迭代对象
@@ -437,9 +430,7 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 扩散流操作，可能影响流元素个数，对过滤后的非{@code null}元素执行mapper操作，转换为迭代器,
-     * 并过滤迭代器中为{@code null}的元素, 返回所有迭代器的所有非空元素组成的流
-     * 这是一个无状态中间操作
+     * 扩散流操作，可能影响流元素个数，对过滤后的非{@code null}元素执行mapper操作，转换为迭代器, 并过滤迭代器中为{@code null}的元素, 返回所有迭代器的所有非空元素组成的流 这是一个无状态中间操作
      *
      * @param mapper 操作，返回流
      * @param <R>    拆分后流的元素类型
@@ -452,13 +443,11 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 将树递归扁平化为集合，内置一个小递归
-     * 这是一个无状态中间操作
-     * eg:
+     * 将树递归扁平化为集合，内置一个小递归 这是一个无状态中间操作 eg:
+     * 
      * <pre>{@code
-     * List<Student> students = EasyStream.of(studentTree)
-     * 	.flatTree(Student::getChildren, Student::setChildren)
-     * 	.toList();
+     * List<Student> students = EasyStream.of(studentTree).flatTree(Student::getChildren, Student::setChildren)
+     *         .toList();
      * }</pre>
      *
      * @param childrenGetter 获取子节点的lambda，可以写作 {@code Student::getChildren}
@@ -470,15 +459,13 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
         Objects.requireNonNull(childrenSetter);
         final MutableObject<Function<T, EasyStream<T>>> recursiveRef = new MutableObject<>();
         final Function<T, EasyStream<T>> recursive = e -> EasyStream.of(childrenGetter.apply(e))
-                .flat(recursiveRef.get())
-                .unshift(e);
+                .flat(recursiveRef.get()).unshift(e);
         recursiveRef.set(recursive);
         return wrap(flatMap(recursive).peek(e -> childrenSetter.accept(e, null)));
     }
 
     /**
-     * 如果当前元素是集合，则会将集合中的元素解构出来
-     * 例如：{@code List<List<List<String>>> 解构成 List<String>}
+     * 如果当前元素是集合，则会将集合中的元素解构出来 例如：{@code List<List<List<String>>> 解构成 List<String>}
      *
      * @param <R> 函数执行后返回的List里面的类型
      * @return EasyStream 一个流
@@ -488,8 +475,7 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 返回与指定函数将元素作为参数执行的结果组成的流
-     * 这是一个无状态中间操作
+     * 返回与指定函数将元素作为参数执行的结果组成的流 这是一个无状态中间操作
      *
      * @param mapper 指定的函数
      * @param <R>    函数执行后返回的类型
@@ -502,8 +488,8 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 返回 元素 转换后 并且不为 {@code null} 的 新元素组成的流
-     * 这是一个无状态中间操作
+     * 返回 元素 转换后 并且不为 {@code null} 的 新元素组成的流 这是一个无状态中间操作
+     * 
      * <pre>{@code
      * // 等价于先调用map再调用nonNull
      * .nonNull().map(...).nonNull()...
@@ -532,8 +518,7 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     }
 
     /**
-     * 扩散流操作，可能影响流元素个数，将原有流元素执行mapper操作，返回多个流所有元素组成的流，操作带一个方法，调用该方法可增加元素
-     * 这是一个无状态中间操作
+     * 扩散流操作，可能影响流元素个数，将原有流元素执行mapper操作，返回多个流所有元素组成的流，操作带一个方法，调用该方法可增加元素 这是一个无状态中间操作
      *
      * @param mapper 操作，返回流
      * @param <R>    拆分后流的元素类型

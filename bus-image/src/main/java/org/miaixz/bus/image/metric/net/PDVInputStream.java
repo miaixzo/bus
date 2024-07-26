@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.net;
 
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -41,8 +41,7 @@ public abstract class PDVInputStream extends InputStream {
 
     public abstract Attributes readDataset(String tsuid) throws IOException;
 
-    public abstract void copyTo(OutputStream out, int length)
-            throws IOException;
+    public abstract void copyTo(OutputStream out, int length) throws IOException;
 
     public abstract void copyTo(OutputStream out) throws IOException;
 

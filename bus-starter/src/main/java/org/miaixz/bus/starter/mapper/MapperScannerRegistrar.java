@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -59,13 +59,16 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
     private Environment environment;
 
     @Override
-    public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry, BeanNameGenerator importBeanNameGenerator) {
-        ImportBeanDefinitionRegistrar.super.registerBeanDefinitions(importingClassMetadata, registry, importBeanNameGenerator);
+    public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry,
+            BeanNameGenerator importBeanNameGenerator) {
+        ImportBeanDefinitionRegistrar.super.registerBeanDefinitions(importingClassMetadata, registry,
+                importBeanNameGenerator);
     }
 
     @Override
     public void registerBeanDefinitions(AnnotationMetadata annotationMetadata, BeanDefinitionRegistry registry) {
-        AnnotationAttributes annoAttrs = AnnotationAttributes.fromMap(annotationMetadata.getAnnotationAttributes(EnableMapper.class.getName()));
+        AnnotationAttributes annoAttrs = AnnotationAttributes
+                .fromMap(annotationMetadata.getAnnotationAttributes(EnableMapper.class.getName()));
         ClassPathMapperScanner scanner = new ClassPathMapperScanner(registry);
         // Spring 3.1中需要这个检查
         if (resourceLoader != null) {
@@ -111,7 +114,8 @@ public class MapperScannerRegistrar implements ImportBeanDefinitionRegistrar, Re
         }
 
         if (CollKit.isEmpty(basePackages)) {
-            MybatisProperties properties = PlaceHolderBinder.bind(environment, MybatisProperties.class, GeniusBuilder.MYBATIS);
+            MybatisProperties properties = PlaceHolderBinder.bind(environment, MybatisProperties.class,
+                    GeniusBuilder.MYBATIS);
             if (properties != null && properties.getBasePackages() != null && properties.getBasePackages().length > 0) {
                 basePackages.addAll(Arrays.asList(properties.getBasePackages()));
             } else {

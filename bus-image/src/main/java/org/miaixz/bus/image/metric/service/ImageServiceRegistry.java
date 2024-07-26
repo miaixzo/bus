@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.service;
 
 import org.miaixz.bus.image.Dimse;
@@ -47,15 +47,13 @@ import java.util.HashMap;
  */
 public class ImageServiceRegistry implements DimseRQHandler {
 
-    private final HashMap<String, DimseRQHandler> services =
-            new HashMap<>();
+    private final HashMap<String, DimseRQHandler> services = new HashMap<>();
 
     public void addDicomService(ImageService service) {
         addDimseRQHandler(service, service.getSOPClasses());
     }
 
-    public synchronized void addDimseRQHandler(DimseRQHandler service,
-                                               String... sopClasses) {
+    public synchronized void addDimseRQHandler(DimseRQHandler service, String... sopClasses) {
         for (String uid : sopClasses)
             services.put(uid, service);
     }
@@ -70,27 +68,24 @@ public class ImageServiceRegistry implements DimseRQHandler {
     }
 
     @Override
-    public void onDimseRQ(Association as, PresentationContext pc,
-                          Dimse dimse, Attributes cmd, PDVInputStream data) throws IOException {
+    public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes cmd, PDVInputStream data)
+            throws IOException {
         try {
             lookupService(as, dimse, cmd).onDimseRQ(as, pc, dimse, cmd, data);
         } catch (ImageServiceException e) {
-            Logger.info("{}: processing {} failed. Caused by:\t",
-                    as,
-                    dimse.toString(cmd, pc.getPCID(), pc.getTransferSyntax()),
-                    e);
+            Logger.info("{}: processing {} failed. Caused by:\t", as,
+                    dimse.toString(cmd, pc.getPCID(), pc.getTransferSyntax()), e);
             rspForDimseRQException(as, pc, dimse, cmd, e);
         }
     }
 
     private void rspForDimseRQException(Association as, PresentationContext pc, Dimse dimse, Attributes cmd,
-                                        ImageServiceException e) {
+            ImageServiceException e) {
         Attributes rsp = e.mkRSP(dimse.commandFieldOfRSP(), cmd.getInt(Tag.MessageID, 0));
         as.tryWriteDimseRSP(pc, rsp, e.getDataset());
     }
 
-    private DimseRQHandler lookupService(Association as, Dimse dimse, Attributes cmd)
-            throws ImageServiceException {
+    private DimseRQHandler lookupService(Association as, Dimse dimse, Attributes cmd) throws ImageServiceException {
         String cuid = cmd.getString(dimse.tagOfSOPClassUID());
         if (cuid == null)
             throw new ImageServiceException(Status.MistypedArgument);
@@ -100,8 +95,7 @@ public class ImageServiceRegistry implements DimseRQHandler {
             return service;
 
         if (dimse == Dimse.C_STORE_RQ) {
-            CommonExtended commonExtNeg = as
-                    .getCommonExtendedNegotiationFor(cuid);
+            CommonExtended commonExtNeg = as.getCommonExtendedNegotiationFor(cuid);
             if (commonExtNeg != null) {
                 for (String uid : commonExtNeg.getRelatedGeneralSOPClassUIDs()) {
                     service = services.get(uid);
@@ -116,11 +110,8 @@ public class ImageServiceRegistry implements DimseRQHandler {
             if (service != null)
                 return service;
         }
-        throw new ImageServiceException(dimse.isCService()
-                ? Status.SOPclassNotSupported
-                : Status.NoSuchSOPclass);
+        throw new ImageServiceException(dimse.isCService() ? Status.SOPclassNotSupported : Status.NoSuchSOPclass);
     }
-
 
     @Override
     public void onClose(Association as) {

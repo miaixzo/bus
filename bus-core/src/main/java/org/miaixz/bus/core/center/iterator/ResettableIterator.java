@@ -24,14 +24,13 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.iterator;
 
 import java.util.Iterator;
 
 /**
- * 支持重置的{@link Iterator} 接口
- * 通过实现{@link #reset()}，重置此{@link Iterator}后可实现复用重新遍历
+ * 支持重置的{@link Iterator} 接口 通过实现{@link #reset()}，重置此{@link Iterator}后可实现复用重新遍历
  *
  * @param <E> 元素类型
  * @author Kimi Liu

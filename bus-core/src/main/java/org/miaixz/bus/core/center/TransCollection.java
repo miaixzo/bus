@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -54,8 +54,8 @@ public class TransCollection<F, T> extends AbstractCollection<T> {
     /**
      * 构造
      *
-     * @param from 源集合
-     * @param function       转换函数
+     * @param from     源集合
+     * @param function 转换函数
      */
     public TransCollection(final Collection<F> from, final Function<? super F, ? extends T> function) {
         this.from = Assert.notNull(from);
@@ -65,13 +65,14 @@ public class TransCollection<F, T> extends AbstractCollection<T> {
     /**
      * 使用给定的转换函数，转换源{@link Spliterator}为新类型的{@link Spliterator}
      *
-     * @param <F>             源元素类型
-     * @param <T>             目标元素类型
-     * @param from 源{@link Spliterator}
-     * @param function        转换函数
+     * @param <F>      源元素类型
+     * @param <T>      目标元素类型
+     * @param from     源{@link Spliterator}
+     * @param function 转换函数
      * @return 新类型的{@link Spliterator}
      */
-    public static <F, T> Spliterator<T> trans(final Spliterator<F> from, final Function<? super F, ? extends T> function) {
+    public static <F, T> Spliterator<T> trans(final Spliterator<F> from,
+            final Function<? super F, ? extends T> function) {
         return new TransSpliterator<>(from, function);
     }
 

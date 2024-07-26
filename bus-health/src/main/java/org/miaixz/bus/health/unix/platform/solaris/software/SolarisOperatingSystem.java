@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.solaris.software;
 
 import com.sun.jna.platform.unix.solaris.Kstat2;
@@ -310,7 +310,8 @@ public class SolarisOperatingSystem extends AbstractOperatingSystem {
             } else if (line.startsWith(Symbol.SPACE)) {
                 String[] split = Pattern.SPACES_PATTERN.split(line.trim());
                 if (split.length == 3) {
-                    services.add(new OSService(split[2], Parsing.parseIntOrDefault(split[1], 0), OSService.State.RUNNING));
+                    services.add(
+                            new OSService(split[2], Parsing.parseIntOrDefault(split[1], 0), OSService.State.RUNNING));
                 }
             } else if (line.startsWith("legacy_run")) {
                 for (String svc : legacySvcs) {

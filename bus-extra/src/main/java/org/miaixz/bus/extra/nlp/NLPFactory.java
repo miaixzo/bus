@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.nlp;
 
 import org.miaixz.bus.core.instance.Instances;
@@ -43,14 +43,14 @@ import org.miaixz.bus.logger.Logger;
 public class NLPFactory {
 
     /**
-     * 根据用户引入的模板引擎jar，自动创建对应的分词引擎对象
-     * 获得的是单例的TokenizerEngine
+     * 根据用户引入的模板引擎jar，自动创建对应的分词引擎对象 获得的是单例的TokenizerEngine
      *
      * @return 单例的TokenizerEngine
      */
     public static NLPProvider getEngine() {
         final NLPProvider engine = Instances.get(NLPProvider.class.getName(), NLPFactory::createEngine);
-        Logger.debug("Use [{}] Tokenizer Engine As Default.", StringKit.removeSuffix(engine.getClass().getSimpleName(), "Engine"));
+        Logger.debug("Use [{}] Tokenizer Engine As Default.",
+                StringKit.removeSuffix(engine.getClass().getSimpleName(), "Engine"));
         return engine;
     }
 

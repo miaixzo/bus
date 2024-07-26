@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.cache;
 
 import org.miaixz.bus.core.xyz.StringKit;
@@ -85,7 +85,8 @@ public enum GlobalPruneTimer {
         if (null != pruneTimer) {
             shutdownNow();
         }
-        this.pruneTimer = new ScheduledThreadPoolExecutor(1, r -> ThreadKit.newThread(r, StringKit.format("Pure-Timer-{}", cacheTaskNumber.getAndIncrement())));
+        this.pruneTimer = new ScheduledThreadPoolExecutor(1,
+                r -> ThreadKit.newThread(r, StringKit.format("Pure-Timer-{}", cacheTaskNumber.getAndIncrement())));
     }
 
     /**

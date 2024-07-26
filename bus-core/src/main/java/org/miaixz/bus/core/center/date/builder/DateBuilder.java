@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date.builder;
 
 import org.miaixz.bus.core.center.date.DateTime;
@@ -37,9 +37,7 @@ import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 /**
- * DateBuilder类用于构建和操作日期
- * 该类提供了多个方法来设置年、月、日等日期字段，以及获取构建的日期对象
- * 它是不可变的，因此每个设置方法都会返回一个新的DateBuilder实例
+ * DateBuilder类用于构建和操作日期 该类提供了多个方法来设置年、月、日等日期字段，以及获取构建的日期对象 它是不可变的，因此每个设置方法都会返回一个新的DateBuilder实例
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -53,13 +51,11 @@ public final class DateBuilder {
      */
     private int year;
     /**
-     * 月份
-     * 从1开始
+     * 月份 从1开始
      */
     private int month;
     /**
-     * 周数
-     * SO8601规范，1代表Monday，2代表Tuesday，以此类推。
+     * 周数 SO8601规范，1代表Monday，2代表Tuesday，以此类推。
      */
     private int week;
     /**
@@ -95,8 +91,7 @@ public final class DateBuilder {
      */
     private boolean flag;
     /**
-     * 时区偏移量
-     * 分钟
+     * 时区偏移量 分钟
      */
     private int zoneOffset;
     /**
@@ -456,8 +451,8 @@ public final class DateBuilder {
     /**
      * 将当前时间对象转换为{@link DateTime}类型。此方法根据是否设置了时区偏移量使用不同的转换策略。
      * <ul>
-     *     <li>如果时区偏移量未设置，则通过{@link Calendar}创建{@link DateTime}，无需转换时区。</li>
-     *     <li>如果时区偏移量已设置，则经过OffsetDateTime转换为本地时区的{@link DateTime}。</li>
+     * <li>如果时区偏移量未设置，则通过{@link Calendar}创建{@link DateTime}，无需转换时区。</li>
+     * <li>如果时区偏移量已设置，则经过OffsetDateTime转换为本地时区的{@link DateTime}。</li>
      * </ul>
      * 。
      *
@@ -473,8 +468,7 @@ public final class DateBuilder {
     }
 
     /**
-     * 转换为带时区信息的{@link DateTime}
-     * 此方法用于保留原始时间戳，并且不丢失时区信息
+     * 转换为带时区信息的{@link DateTime} 此方法用于保留原始时间戳，并且不丢失时区信息
      *
      * @return {@link DateTime}
      */
@@ -484,10 +478,8 @@ public final class DateBuilder {
     }
 
     /**
-     * 将当前对象的日期时间信息转换为{@link Calendar}实例。
-     * 如果`unixsecond`不为0，将根据unix时间戳（秒）和纳秒偏移量构造Calendar。
-     * 否则，根据提供的时区信息`zone`或`zoneOffset`来设置Calendar的时区。
-     * 最后，设置年、月、日、时、分、秒和毫秒信息。
+     * 将当前对象的日期时间信息转换为{@link Calendar}实例。 如果`unixsecond`不为0，将根据unix时间戳（秒）和纳秒偏移量构造Calendar。
+     * 否则，根据提供的时区信息`zone`或`zoneOffset`来设置Calendar的时区。 最后，设置年、月、日、时、分、秒和毫秒信息。
      *
      * @return Calendar 根据当前日期时间信息构建的Calendar实例。
      * @throws DateTimeException 如果时区偏移量无法转换为有效的时区ID，则抛出异常。
@@ -531,10 +523,8 @@ public final class DateBuilder {
     }
 
     /**
-     * 将当前对象的日期时间信息转换为{@link LocalDateTime}。
-     * 此方法根据对象中的时间信息（年、月、日、时、分、秒、纳秒）和时区信息（如果存在），
-     * 创建并返回一个LocalDateTime实例。时区信息可以是Unix时间戳中的秒数（unixsecond），
-     * 也可以是显式设置的时区偏移量（zoneOffsetSetted），或者使用默认时区（zone != null）。
+     * 将当前对象的日期时间信息转换为{@link LocalDateTime}。 此方法根据对象中的时间信息（年、月、日、时、分、秒、纳秒）和时区信息（如果存在），
+     * 创建并返回一个LocalDateTime实例。时区信息可以是Unix时间戳中的秒数（unixsecond）， 也可以是显式设置的时区偏移量（zoneOffsetSetted），或者使用默认时区（zone != null）。
      *
      * @return LocalDateTime 表示当前对象日期时间的LocalDateTime实例。
      */
@@ -571,11 +561,8 @@ public final class DateBuilder {
     }
 
     /**
-     * 将当前对象转换为 {@link OffsetDateTime}。
-     * 此方法根据 unixsecond、时区偏移量或时区来构建 OffsetDateTime。
-     * 如果 unixsecond 大于 0，将使用 unixsecond 和纳秒来创建 UTC 时间。
-     * 如果设置了时区偏移量，将使用该偏移量构造 {@link OffsetDateTime}。
-     * 如果设置了时区，将使用该时区构造 {@link OffsetDateTime}。
+     * 将当前对象转换为 {@link OffsetDateTime}。 此方法根据 unixsecond、时区偏移量或时区来构建 OffsetDateTime。 如果 unixsecond 大于 0，将使用 unixsecond
+     * 和纳秒来创建 UTC 时间。 如果设置了时区偏移量，将使用该偏移量构造 {@link OffsetDateTime}。 如果设置了时区，将使用该时区构造 {@link OffsetDateTime}。
      * 如果以上信息均未设置，则默认使用 UTC 时间戳 0 创建 OffsetDateTime。
      *
      * @return OffsetDateTime 表示当前时间的 OffsetDateTime 对象。
@@ -591,7 +578,9 @@ public final class DateBuilder {
             // 如果设置了 unix 时间戳，则使用它和纳秒创建 UTC 时间
             return OffsetDateTime.ofInstant(Instant.ofEpochSecond(unixsecond, nanosecond), ZoneKit.ZONE_ID_UTC);
         }
-        final LocalDateTime dateTime = LocalDateTime.of(year, month, day, hour, minute, second, nanosecond); // 创建 LocalDateTime 对象
+        final LocalDateTime dateTime = LocalDateTime.of(year, month, day, hour, minute, second, nanosecond); // 创建
+                                                                                                             // LocalDateTime
+                                                                                                             // 对象
 
         // 检查是否设置了时区偏移量
         if (flag) {

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.image;
 
 import java.awt.*;
@@ -73,7 +73,8 @@ public class ImageText implements Serializable {
      * @param alpha 透明度
      * @return DisplayText
      */
-    public static ImageText of(final String text, final Color color, final Font font, final Point point, final float alpha) {
+    public static ImageText of(final String text, final Color color, final Font font, final Point point,
+            final float alpha) {
         return new ImageText(text, color, font, point, alpha);
     }
 
@@ -176,10 +177,8 @@ public class ImageText implements Serializable {
             return false;
         }
         final ImageText that = (ImageText) o;
-        return Float.compare(alpha, that.alpha) == 0
-                && Objects.equals(pressText, that.pressText)
-                && Objects.equals(color, that.color)
-                && Objects.equals(font, that.font)
+        return Float.compare(alpha, that.alpha) == 0 && Objects.equals(pressText, that.pressText)
+                && Objects.equals(color, that.color) && Objects.equals(font, that.font)
                 && Objects.equals(point, that.point);
     }
 
@@ -190,13 +189,8 @@ public class ImageText implements Serializable {
 
     @Override
     public String toString() {
-        return "ImageText{" +
-                "pressText='" + pressText + '\'' +
-                ", color=" + color +
-                ", font=" + font +
-                ", point=" + point +
-                ", alpha=" + alpha +
-                '}';
+        return "ImageText{" + "pressText='" + pressText + '\'' + ", color=" + color + ", font=" + font + ", point="
+                + point + ", alpha=" + alpha + '}';
     }
 
 }

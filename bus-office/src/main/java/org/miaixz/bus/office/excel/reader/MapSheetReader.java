@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.excel.reader;
 
 import org.apache.poi.ss.usermodel.Sheet;
@@ -69,9 +69,11 @@ public class MapSheetReader extends AbstractSheetReader<List<Map<String, Object>
         }
 
         if (headerRowIndex < firstRowNum) {
-            throw new IndexOutOfBoundsException(StringKit.format("Header row index {} is lower than first row index {}.", headerRowIndex, firstRowNum));
+            throw new IndexOutOfBoundsException(StringKit
+                    .format("Header row index {} is lower than first row index {}.", headerRowIndex, firstRowNum));
         } else if (headerRowIndex > lastRowNum) {
-            throw new IndexOutOfBoundsException(StringKit.format("Header row index {} is greater than last row index {}.", headerRowIndex, lastRowNum));
+            throw new IndexOutOfBoundsException(StringKit
+                    .format("Header row index {} is greater than last row index {}.", headerRowIndex, lastRowNum));
         } else if (startRowIndex > lastRowNum) {
             // 只有标题行的Excel，起始行是1，标题行（最后的行号是0）
             return ListKit.empty();

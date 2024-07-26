@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text.placeholder.template;
 
 import org.miaixz.bus.core.bean.desc.BeanDesc;
@@ -41,7 +41,9 @@ import java.util.function.*;
 
 /**
  * 有前后缀的字符串模板
- * <p>例如，"{1}", "{name}", "#{data}"</p>
+ * <p>
+ * 例如，"{1}", "{name}", "#{data}"
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -69,10 +71,8 @@ public class NamedStringTemplate extends StringTemplate {
      */
     protected int indexedSegmentMaxIdx = 0;
 
-
-    protected NamedStringTemplate(final String template, final int features, final String prefix,
-                                  final String suffix, final char escape, final String defaultValue,
-                                  final UnaryOperator<String> defaultValueHandler) {
+    protected NamedStringTemplate(final String template, final int features, final String prefix, final String suffix,
+            final char escape, final String defaultValue, final UnaryOperator<String> defaultValueHandler) {
         super(template, escape, defaultValue, defaultValueHandler, features);
 
         Assert.notEmpty(prefix);
@@ -87,7 +87,8 @@ public class NamedStringTemplate extends StringTemplate {
         if (!placeholderSegments.isEmpty()) {
             for (final AbstractSegment segment : placeholderSegments) {
                 if (segment instanceof IndexedSegment) {
-                    this.indexedSegmentMaxIdx = Math.max(this.indexedSegmentMaxIdx, ((IndexedSegment) segment).getIndex());
+                    this.indexedSegmentMaxIdx = Math.max(this.indexedSegmentMaxIdx,
+                            ((IndexedSegment) segment).getIndex());
                 }
             }
         }
@@ -134,7 +135,8 @@ public class NamedStringTemplate extends StringTemplate {
                     hasDoubleEscape = true;
                 } else {
                     // 开始符号被转义，跳过，寻找下一个开始符号
-                    addLiteralSegment(isLastLiteralSegment, segments, template.substring(closeCursor, openCursor - 1) + prefix);
+                    addLiteralSegment(isLastLiteralSegment, segments,
+                            template.substring(closeCursor, openCursor - 1) + prefix);
                     isLastLiteralSegment = true;
                     closeCursor = openCursor + openLength;
                     openCursor = template.indexOf(prefix, closeCursor);
@@ -443,7 +445,8 @@ public class NamedStringTemplate extends StringTemplate {
      * 将占位符位置的值，按占位符下标值解析为字符串数组
      *
      * @param text                待解析的字符串，一般是格式化方法的返回值
-     * @param missingIndexHandler 根据 下标 返回 默认值，该参数可以为 {@code null}，仅在 {@link Feature#MATCH_EMPTY_VALUE_TO_DEFAULT_VALUE} 策略时生效
+     * @param missingIndexHandler 根据 下标 返回 默认值，该参数可以为 {@code null}，仅在 {@link Feature#MATCH_EMPTY_VALUE_TO_DEFAULT_VALUE}
+     *                            策略时生效
      * @return 字符串数组
      * @see #matchesIndexed(String, IntFunction)
      */
@@ -466,12 +469,13 @@ public class NamedStringTemplate extends StringTemplate {
      * 将占位符位置的值，按占位符下标值解析为字符串列表
      *
      * <p>
-     * 例如，模板中为 {@literal "This is between {1} and {2}"}，格式化结果为 {@literal "This is between 666 and 999"},
-     * 由于其最大下标为 2, 则解析结果中固定有 3 个元素，解析结果为 {@code [null, "666", "999"]}
+     * 例如，模板中为 {@literal "This is between {1} and {2}"}，格式化结果为 {@literal "This is between 666 and 999"}, 由于其最大下标为 2,
+     * 则解析结果中固定有 3 个元素，解析结果为 {@code [null, "666", "999"]}
      * </p>
      *
      * @param text                待解析的字符串，一般是格式化方法的返回值
-     * @param missingIndexHandler 根据 下标 返回 默认值，该参数可以为 {@code null}，仅在 {@link Feature#MATCH_EMPTY_VALUE_TO_DEFAULT_VALUE} 策略时生效
+     * @param missingIndexHandler 根据 下标 返回 默认值，该参数可以为 {@code null}，仅在 {@link Feature#MATCH_EMPTY_VALUE_TO_DEFAULT_VALUE}
+     *                            策略时生效
      * @return 字符串列表
      */
     public List<String> matchesIndexed(final String text, final IntFunction<String> missingIndexHandler) {
@@ -490,16 +494,17 @@ public class NamedStringTemplate extends StringTemplate {
      * 根据下标和下标占位符位置的值，自行提取结果值
      *
      * <p>
-     * 例如，模板中为 {@literal "This is between {1} and {2}"}，格式化结果为 {@literal "This is between 666 and 999"},
-     * 由于其最大下标为 2, 则解析结果中固定有 3 个元素，解析结果为 {@code [null, "666", "999"]}
+     * 例如，模板中为 {@literal "This is between {1} and {2}"}，格式化结果为 {@literal "This is between 666 and 999"}, 由于其最大下标为 2,
+     * 则解析结果中固定有 3 个元素，解析结果为 {@code [null, "666", "999"]}
      * </p>
      *
      * @param text                待解析的字符串，一般是格式化方法的返回值
      * @param idxValueConsumer    处理 下标 和 下标占位符位置的值 的消费者，例如：{@code (idx, value) -> list.set(idx, value)}
-     * @param missingIndexHandler 根据 下标 返回 默认值，该参数可以为 {@code null}，仅在 {@link Feature#MATCH_EMPTY_VALUE_TO_DEFAULT_VALUE} 策略时生效
+     * @param missingIndexHandler 根据 下标 返回 默认值，该参数可以为 {@code null}，仅在 {@link Feature#MATCH_EMPTY_VALUE_TO_DEFAULT_VALUE}
+     *                            策略时生效
      */
     public void matchesIndexed(final String text, final BiConsumer<Integer, String> idxValueConsumer,
-                               final IntFunction<String> missingIndexHandler) {
+            final IntFunction<String> missingIndexHandler) {
         if (text == null || CollKit.isEmpty(placeholderSegments) || !isMatches(text)) {
             return;
         }
@@ -556,13 +561,11 @@ public class NamedStringTemplate extends StringTemplate {
     public static class Builder extends AbstractBuilder<Builder, NamedStringTemplate> {
 
         /**
-         * 占位符前缀，默认为 {@link NamedStringTemplate#DEFAULT_PREFIX}
-         * 不能为空字符串
+         * 占位符前缀，默认为 {@link NamedStringTemplate#DEFAULT_PREFIX} 不能为空字符串
          */
         protected String prefix;
         /**
-         * 占位符后缀，默认为 {@link NamedStringTemplate#DEFAULT_SUFFIX}
-         * 不能为空字符串
+         * 占位符后缀，默认为 {@link NamedStringTemplate#DEFAULT_SUFFIX} 不能为空字符串
          */
         protected String suffix;
 
@@ -605,7 +608,8 @@ public class NamedStringTemplate extends StringTemplate {
             if (this.suffix == null) {
                 this.suffix = DEFAULT_SUFFIX;
             }
-            return new NamedStringTemplate(this.template, this.features, this.prefix, this.suffix, this.escape, this.defaultValue, this.defaultValueHandler);
+            return new NamedStringTemplate(this.template, this.features, this.prefix, this.suffix, this.escape,
+                    this.defaultValue, this.defaultValueHandler);
         }
 
         @Override

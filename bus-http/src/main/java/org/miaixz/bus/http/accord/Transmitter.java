@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.accord;
 
 import org.miaixz.bus.core.io.timout.AsyncTimeout;
@@ -48,8 +48,7 @@ import java.net.Socket;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 在Http的应用程序层和网络层之间建立桥梁
- * 该类公开:连接、请求、响应和流
+ * 在Http的应用程序层和网络层之间建立桥梁 该类公开:连接、请求、响应和流
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -98,21 +97,24 @@ public class Transmitter {
     }
 
     /**
-     * 在调用完全完成之前停止应用超时
-     * 这用于WebSockets和双工调用，其中超时只适用于初始设置
+     * 在调用完全完成之前停止应用超时 这用于WebSockets和双工调用，其中超时只适用于初始设置
      */
     public void timeoutEarlyExit() {
-        if (timeoutEarlyExit) throw new IllegalStateException();
+        if (timeoutEarlyExit)
+            throw new IllegalStateException();
         timeoutEarlyExit = true;
         timeout.exit();
     }
 
     private IOException timeoutExit(IOException cause) {
-        if (timeoutEarlyExit) return cause;
-        if (!timeout.exit()) return cause;
+        if (timeoutEarlyExit)
+            return cause;
+        if (!timeout.exit())
+            return cause;
 
         InterruptedIOException e = new InterruptedIOException("timeout");
-        if (cause != null) e.initCause(cause);
+        if (cause != null)
+            e.initCause(cause);
 
         return e;
     }
@@ -123,15 +125,15 @@ public class Transmitter {
     }
 
     /**
-     * Prepare to create a stream to carry {@code request}. This prefers to use the existing
-     * connection if it exists.
+     * Prepare to create a stream to carry {@code request}. This prefers to use the existing connection if it exists.
      */
     public void prepareToConnect(Request request) {
         if (this.request != null) {
             if (Builder.sameConnection(this.request.url(), request.url()) && exchangeFinder.hasRouteToTry()) {
                 return; // Already ready.
             }
-            if (exchange != null) throw new IllegalStateException();
+            if (exchange != null)
+                throw new IllegalStateException();
 
             if (exchangeFinder != null) {
                 maybeReleaseConnection(null, true);
@@ -140,8 +142,8 @@ public class Transmitter {
         }
 
         this.request = request;
-        this.exchangeFinder = new ExchangeFinder(this, connectionPool, createAddress(request.url()),
-                call, eventListener);
+        this.exchangeFinder = new ExchangeFinder(this, connectionPool, createAddress(request.url()), call,
+                eventListener);
     }
 
     private Address createAddress(UnoUrl url) {
@@ -154,9 +156,9 @@ public class Transmitter {
             certificatePinner = client.certificatePinner();
         }
 
-        return new Address(url.host(), url.port(), client.dns(), client.socketFactory(),
-                sslSocketFactory, hostnameVerifier, certificatePinner, client.proxyAuthenticator(),
-                client.proxy(), client.protocols(), client.connectionSpecs(), client.proxySelector());
+        return new Address(url.host(), url.port(), client.dns(), client.socketFactory(), sslSocketFactory,
+                hostnameVerifier, certificatePinner, client.proxyAuthenticator(), client.proxy(), client.protocols(),
+                client.connectionSpecs(), client.proxySelector());
     }
 
     /**
@@ -187,14 +189,14 @@ public class Transmitter {
     void acquireConnectionNoEvents(RealConnection connection) {
         assert (Thread.holdsLock(connectionPool));
 
-        if (this.connection != null) throw new IllegalStateException();
+        if (this.connection != null)
+            throw new IllegalStateException();
         this.connection = connection;
         connection.transmitters.add(new TransmitterReference(this, callStackTrace));
     }
 
     /**
-     * Remove the transmitter from the connection's list of allocations. Returns a socket that the
-     * caller should close.
+     * Remove the transmitter from the connection's list of allocations. Returns a socket that the caller should close.
      */
     Socket releaseConnectionNoEvents() {
         assert (Thread.holdsLock(connectionPool));
@@ -208,7 +210,8 @@ public class Transmitter {
             }
         }
 
-        if (index == -1) throw new IllegalStateException();
+        if (index == -1)
+            throw new IllegalStateException();
 
         RealConnection released = this.connection;
         released.transmitters.remove(index);
@@ -226,20 +229,19 @@ public class Transmitter {
 
     public void exchangeDoneDueToException() {
         synchronized (connectionPool) {
-            if (noMoreExchanges) throw new IllegalStateException();
+            if (noMoreExchanges)
+                throw new IllegalStateException();
             exchange = null;
         }
     }
 
     /**
-     * Releases resources held with the request or response of {@code exchange}. This should be called
-     * when the request completes normally or when it fails due to an exception, in which case {@code
-     * e} should be non-null.
-     * If the exchange was canceled or timed out, this will wrap {@code e} in an exception that
+     * Releases resources held with the request or response of {@code exchange}. This should be called when the request
+     * completes normally or when it fails due to an exception, in which case {@code
+     * e} should be non-null. If the exchange was canceled or timed out, this will wrap {@code e} in an exception that
      * provides that additional context. Otherwise {@code e} is returned as-is.
      */
-    IOException exchangeMessageDone(
-            Exchange exchange, boolean requestDone, boolean responseDone, IOException e) {
+    IOException exchangeMessageDone(Exchange exchange, boolean requestDone, boolean responseDone, IOException e) {
         boolean exchangeDone = false;
         synchronized (connectionPool) {
             if (exchange != this.exchange) {
@@ -247,11 +249,13 @@ public class Transmitter {
             }
             boolean changed = false;
             if (requestDone) {
-                if (!exchangeRequestDone) changed = true;
+                if (!exchangeRequestDone)
+                    changed = true;
                 this.exchangeRequestDone = true;
             }
             if (responseDone) {
-                if (!exchangeResponseDone) changed = true;
+                if (!exchangeResponseDone)
+                    changed = true;
                 this.exchangeResponseDone = true;
             }
             if (exchangeRequestDone && exchangeResponseDone && changed) {
@@ -274,10 +278,9 @@ public class Transmitter {
     }
 
     /**
-     * Release the connection if it is no longer needed. This is called after each exchange completes
-     * and after the call signals that no more exchanges are expected.
-     * If the transmitter was canceled or timed out, this will wrap {@code e} in an exception that
-     * provides that additional context. Otherwise {@code e} is returned as-is.
+     * Release the connection if it is no longer needed. This is called after each exchange completes and after the call
+     * signals that no more exchanges are expected. If the transmitter was canceled or timed out, this will wrap
+     * {@code e} in an exception that provides that additional context. Otherwise {@code e} is returned as-is.
      *
      * @param force true to release the connection even if more exchanges are expected for the call.
      */
@@ -293,7 +296,8 @@ public class Transmitter {
             socket = this.connection != null && exchange == null && (force || noMoreExchanges)
                     ? releaseConnectionNoEvents()
                     : null;
-            if (this.connection != null) releasedConnection = null;
+            if (this.connection != null)
+                releasedConnection = null;
             callEnd = noMoreExchanges && exchange == null;
         }
         IoKit.close(socket);
@@ -325,12 +329,11 @@ public class Transmitter {
     }
 
     /**
-     * Immediately closes the socket connection if it's currently held. Use this to interrupt an
-     * in-flight request from any thread. It's the caller's responsibility to close the request body
-     * and response body streams; otherwise resources may be leaked.
-     * This method is safe to be called concurrently, but provides limited guarantees. If a
-     * transport layer connection has been established (such as a HTTP/2 stream) that is terminated.
-     * Otherwise if a socket connection is being established, that is terminated.
+     * Immediately closes the socket connection if it's currently held. Use this to interrupt an in-flight request from
+     * any thread. It's the caller's responsibility to close the request body and response body streams; otherwise
+     * resources may be leaked. This method is safe to be called concurrently, but provides limited guarantees. If a
+     * transport layer connection has been established (such as a HTTP/2 stream) that is terminated. Otherwise if a
+     * socket connection is being established, that is terminated.
      */
     public void cancel() {
         Exchange exchangeToCancel;

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org sandao and other contributors.             ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket.metric;
 
 import java.util.Queue;
@@ -164,9 +164,9 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
         startTime = System.currentTimeMillis();
         while (running) {
             final long deadline = waitForNextTick();
-            //移除已取消的任务
+            // 移除已取消的任务
             processCancelledTasks();
-            //将新任务分配至各分桶
+            // 将新任务分配至各分桶
             transferTimeoutsToBuckets();
             wheel[(int) (tick & mask)].execute(deadline, tickDuration);
             tick++;
@@ -174,7 +174,7 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
     }
 
     private void transferTimeoutsToBuckets() {
-        //限制注册的个数，防止因此导致其他任务延迟
+        // 限制注册的个数，防止因此导致其他任务延迟
         for (int i = 0; i < 100000; i++) {
             HashedWheelSocketTask timeout = newTimeouts.poll();
             if (timeout == null) {
@@ -207,7 +207,7 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
         long deadline = startTime + tickDuration * (tick + 1);
 
         while (true) {
-            //时间对齐
+            // 时间对齐
             long currentTime = System.currentTimeMillis();
             if (deadline <= currentTime) {
                 return currentTime;
@@ -226,7 +226,8 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
         private static final int ST_INIT = 0;
         private static final int ST_CANCELLED = 1;
         private static final int ST_EXPIRED = 2;
-        private static final AtomicIntegerFieldUpdater<HashedWheelSocketTask> STATE_UPDATER = AtomicIntegerFieldUpdater.newUpdater(HashedWheelSocketTask.class, "state");
+        private static final AtomicIntegerFieldUpdater<HashedWheelSocketTask> STATE_UPDATER = AtomicIntegerFieldUpdater
+                .newUpdater(HashedWheelSocketTask.class, "state");
 
         private final HashedWheelTimer timer;
         private Runnable runnable;
@@ -296,7 +297,8 @@ public class HashedWheelTimer implements SocketTimer, Runnable {
             final long currentTime = System.nanoTime();
             long remaining = deadline - currentTime + timer.startTime;
 
-            StringBuilder buf = new StringBuilder(192).append(getClass().getSimpleName()).append('(').append("deadline: ");
+            StringBuilder buf = new StringBuilder(192).append(getClass().getSimpleName()).append('(')
+                    .append("deadline: ");
             if (remaining > 0) {
                 buf.append(remaining).append(" ns later");
             } else if (remaining < 0) {

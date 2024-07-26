@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric;
 
 import org.miaixz.bus.image.Dimse;
@@ -42,8 +42,7 @@ public class Commands {
     public static final int NO_DATASET = 0x0101;
     private static int withDatasetType = 0x0000;
 
-    public static Attributes mkCStoreRQ(int msgId, String cuid, String iuid,
-                                        int priority) {
+    public static Attributes mkCStoreRQ(int msgId, String cuid, String iuid, int priority) {
         Attributes rq = mkRQ(msgId, 0x0001, withDatasetType);
         rq.setString(Tag.AffectedSOPClassUID, VR.UI, cuid);
         rq.setString(Tag.AffectedSOPInstanceUID, VR.UI, iuid);
@@ -51,11 +50,10 @@ public class Commands {
         return rq;
     }
 
-    public static Attributes mkCStoreRQ(int msgId, String cuid, String iuid,
-                                        int priority, String moveOriginatorAET, int moveOriginatorMsgId) {
+    public static Attributes mkCStoreRQ(int msgId, String cuid, String iuid, int priority, String moveOriginatorAET,
+            int moveOriginatorMsgId) {
         Attributes rq = mkCStoreRQ(msgId, cuid, iuid, priority);
-        rq.setString(Tag.MoveOriginatorApplicationEntityTitle, VR.AE,
-                moveOriginatorAET);
+        rq.setString(Tag.MoveOriginatorApplicationEntityTitle, VR.AE, moveOriginatorAET);
         rq.setInt(Tag.MoveOriginatorMessageID, VR.US, moveOriginatorMsgId);
         return rq;
     }
@@ -86,8 +84,7 @@ public class Commands {
         return mkRSP(cmd, status, Dimse.C_GET_RQ);
     }
 
-    public static Attributes mkCMoveRQ(int msgId, String cuid, int priority,
-                                       String destination) {
+    public static Attributes mkCMoveRQ(int msgId, String cuid, int priority, String destination) {
         Attributes rq = mkRQ(msgId, 0x0021, withDatasetType);
         rq.setString(Tag.AffectedSOPClassUID, VR.UI, cuid);
         rq.setInt(Tag.Priority, VR.US, priority);
@@ -117,10 +114,8 @@ public class Commands {
         return mkRSP(cmd, status, Dimse.C_ECHO_RQ);
     }
 
-    public static Attributes mkNEventReportRQ(int msgId, String cuid,
-                                              String iuid, int eventTypeID, Attributes data) {
-        Attributes rq = mkRQ(msgId, 0x0100,
-                data == null ? NO_DATASET : withDatasetType);
+    public static Attributes mkNEventReportRQ(int msgId, String cuid, String iuid, int eventTypeID, Attributes data) {
+        Attributes rq = mkRQ(msgId, 0x0100, data == null ? NO_DATASET : withDatasetType);
         rq.setString(Tag.AffectedSOPClassUID, VR.UI, cuid);
         rq.setString(Tag.AffectedSOPInstanceUID, VR.UI, iuid);
         rq.setInt(Tag.EventTypeID, VR.US, eventTypeID);
@@ -131,8 +126,7 @@ public class Commands {
         return mkRSP(cmd, status, Dimse.N_EVENT_REPORT_RQ);
     }
 
-    public static Attributes mkNGetRQ(int msgId, String cuid, String iuid,
-                                      int[] tags) {
+    public static Attributes mkNGetRQ(int msgId, String cuid, String iuid, int[] tags) {
         Attributes rq = mkRQ(msgId, 0x0110, NO_DATASET);
         rq.setString(Tag.RequestedSOPClassUID, VR.UI, cuid);
         rq.setString(Tag.RequestedSOPInstanceUID, VR.UI, iuid);
@@ -156,10 +150,8 @@ public class Commands {
         return mkRSP(cmd, status, Dimse.N_SET_RQ);
     }
 
-    public static Attributes mkNActionRQ(int msgId, String cuid,
-                                         String iuid, int actionTypeID, Attributes data) {
-        Attributes rq = mkRQ(msgId, 0x0130,
-                data == null ? NO_DATASET : withDatasetType);
+    public static Attributes mkNActionRQ(int msgId, String cuid, String iuid, int actionTypeID, Attributes data) {
+        Attributes rq = mkRQ(msgId, 0x0130, data == null ? NO_DATASET : withDatasetType);
         rq.setString(Tag.RequestedSOPClassUID, VR.UI, cuid);
         rq.setString(Tag.RequestedSOPInstanceUID, VR.UI, iuid);
         rq.setInt(Tag.ActionTypeID, VR.US, actionTypeID);
@@ -208,19 +200,15 @@ public class Commands {
         Attributes rsp = new Attributes();
         rsp.setInt(Tag.CommandField, VR.US, rqCmd.commandFieldOfRSP());
         rsp.setInt(Tag.Status, VR.US, status);
-        rsp.setInt(Tag.MessageIDBeingRespondedTo, VR.US,
-                rq.getInt(Tag.MessageID, 0));
-        rsp.setString(Tag.AffectedSOPClassUID, VR.UI,
-                rq.getString(rqCmd.tagOfSOPClassUID()));
+        rsp.setInt(Tag.MessageIDBeingRespondedTo, VR.US, rq.getInt(Tag.MessageID, 0));
+        rsp.setString(Tag.AffectedSOPClassUID, VR.UI, rq.getString(rqCmd.tagOfSOPClassUID()));
         int tagOfIUID = rqCmd.tagOfSOPInstanceUID();
         if (tagOfIUID != 0)
-            rsp.setString(Tag.AffectedSOPInstanceUID, VR.UI,
-                    rq.getString(tagOfIUID));
+            rsp.setString(Tag.AffectedSOPInstanceUID, VR.UI, rq.getString(tagOfIUID));
         return rsp;
     }
 
-    public static void initNumberOfSuboperations(Attributes rsp,
-                                                 int remaining) {
+    public static void initNumberOfSuboperations(Attributes rsp, int remaining) {
         rsp.setInt(Tag.NumberOfRemainingSuboperations, VR.US, remaining);
         rsp.setInt(Tag.NumberOfCompletedSuboperations, VR.US, 0);
         rsp.setInt(Tag.NumberOfFailedSuboperations, VR.US, 0);
@@ -240,10 +228,8 @@ public class Commands {
     }
 
     public static void setWithDatasetType(int withDatasetType) {
-        if (withDatasetType == NO_DATASET
-                || (withDatasetType & 0xffff0000) != 0)
-            throw new IllegalArgumentException("withDatasetType: "
-                    + Integer.toHexString(withDatasetType) + "H");
+        if (withDatasetType == NO_DATASET || (withDatasetType & 0xffff0000) != 0)
+            throw new IllegalArgumentException("withDatasetType: " + Integer.toHexString(withDatasetType) + "H");
         Commands.withDatasetType = withDatasetType;
     }
 

@@ -26,8 +26,8 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
 /**
- * 引用工具封装，主要针对{@link java.lang.ref.Reference} 工具化封装
- * 主要封装包括：
+ * 引用工具封装，主要针对{@link java.lang.ref.Reference} 工具化封装 主要封装包括：
+ * 
  * <pre>
  * 1. {@link java.lang.ref.SoftReference} 软引用，在GC报告内存不足时会被GC回收
  * 2. {@link java.lang.ref.WeakReference} 弱引用，在GC时发现弱引用会回收其对象

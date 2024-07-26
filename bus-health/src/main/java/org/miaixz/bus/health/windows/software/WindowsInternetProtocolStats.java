@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.software;
 
 import com.sun.jna.Memory;
@@ -59,12 +59,14 @@ public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats 
         List<InternetProtocolStats.IPConnection> conns = new ArrayList<>();
         // Get size needed
         try (ByRef.CloseableIntByReference sizePtr = new ByRef.CloseableIntByReference()) {
-            int ret = IPHLP.GetExtendedTcpTable(null, sizePtr, false, IPHlpAPI.AF_INET, IPHlpAPI.TCP_TABLE_CLASS.TCP_TABLE_OWNER_PID_ALL, 0);
+            int ret = IPHLP.GetExtendedTcpTable(null, sizePtr, false, IPHlpAPI.AF_INET,
+                    IPHlpAPI.TCP_TABLE_CLASS.TCP_TABLE_OWNER_PID_ALL, 0);
             // Get buffer and populate table
             int size = sizePtr.getValue();
             Memory buf = new Memory(size);
             do {
-                ret = IPHLP.GetExtendedTcpTable(buf, sizePtr, false, IPHlpAPI.AF_INET, IPHlpAPI.TCP_TABLE_CLASS.TCP_TABLE_OWNER_PID_ALL, 0);
+                ret = IPHLP.GetExtendedTcpTable(buf, sizePtr, false, IPHlpAPI.AF_INET,
+                        IPHlpAPI.TCP_TABLE_CLASS.TCP_TABLE_OWNER_PID_ALL, 0);
                 if (ret == WinError.ERROR_INSUFFICIENT_BUFFER) {
                     size = sizePtr.getValue();
                     buf.close();
@@ -88,12 +90,14 @@ public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats 
         List<InternetProtocolStats.IPConnection> conns = new ArrayList<>();
         // Get size needed
         try (ByRef.CloseableIntByReference sizePtr = new ByRef.CloseableIntByReference()) {
-            int ret = IPHLP.GetExtendedTcpTable(null, sizePtr, false, IPHlpAPI.AF_INET6, IPHlpAPI.TCP_TABLE_CLASS.TCP_TABLE_OWNER_PID_ALL, 0);
+            int ret = IPHLP.GetExtendedTcpTable(null, sizePtr, false, IPHlpAPI.AF_INET6,
+                    IPHlpAPI.TCP_TABLE_CLASS.TCP_TABLE_OWNER_PID_ALL, 0);
             // Get buffer and populate table
             int size = sizePtr.getValue();
             Memory buf = new Memory(size);
             do {
-                ret = IPHLP.GetExtendedTcpTable(buf, sizePtr, false, IPHlpAPI.AF_INET6, IPHlpAPI.TCP_TABLE_CLASS.TCP_TABLE_OWNER_PID_ALL, 0);
+                ret = IPHLP.GetExtendedTcpTable(buf, sizePtr, false, IPHlpAPI.AF_INET6,
+                        IPHlpAPI.TCP_TABLE_CLASS.TCP_TABLE_OWNER_PID_ALL, 0);
                 if (ret == WinError.ERROR_INSUFFICIENT_BUFFER) {
                     size = sizePtr.getValue();
                     buf.close();
@@ -103,9 +107,10 @@ public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats 
             IPHlpAPI.MIB_TCP6TABLE_OWNER_PID tcpTable = new IPHlpAPI.MIB_TCP6TABLE_OWNER_PID(buf);
             for (int i = 0; i < tcpTable.dwNumEntries; i++) {
                 IPHlpAPI.MIB_TCP6ROW_OWNER_PID row = tcpTable.table[i];
-                conns.add(new InternetProtocolStats.IPConnection("tcp6", row.LocalAddr, Parsing.bigEndian16ToLittleEndian(row.dwLocalPort),
-                        row.RemoteAddr, Parsing.bigEndian16ToLittleEndian(row.dwRemotePort), stateLookup(row.State),
-                        0, 0, row.dwOwningPid));
+                conns.add(new InternetProtocolStats.IPConnection("tcp6", row.LocalAddr,
+                        Parsing.bigEndian16ToLittleEndian(row.dwLocalPort), row.RemoteAddr,
+                        Parsing.bigEndian16ToLittleEndian(row.dwRemotePort), stateLookup(row.State), 0, 0,
+                        row.dwOwningPid));
             }
             buf.close();
         }
@@ -116,12 +121,14 @@ public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats 
         List<InternetProtocolStats.IPConnection> conns = new ArrayList<>();
         // Get size needed
         try (ByRef.CloseableIntByReference sizePtr = new ByRef.CloseableIntByReference()) {
-            int ret = IPHLP.GetExtendedUdpTable(null, sizePtr, false, IPHlpAPI.AF_INET, IPHlpAPI.UDP_TABLE_CLASS.UDP_TABLE_OWNER_PID, 0);
+            int ret = IPHLP.GetExtendedUdpTable(null, sizePtr, false, IPHlpAPI.AF_INET,
+                    IPHlpAPI.UDP_TABLE_CLASS.UDP_TABLE_OWNER_PID, 0);
             // Get buffer and populate table
             int size = sizePtr.getValue();
             Memory buf = new Memory(size);
             do {
-                ret = IPHLP.GetExtendedUdpTable(buf, sizePtr, false, IPHlpAPI.AF_INET, IPHlpAPI.UDP_TABLE_CLASS.UDP_TABLE_OWNER_PID, 0);
+                ret = IPHLP.GetExtendedUdpTable(buf, sizePtr, false, IPHlpAPI.AF_INET,
+                        IPHlpAPI.UDP_TABLE_CLASS.UDP_TABLE_OWNER_PID, 0);
                 if (ret == WinError.ERROR_INSUFFICIENT_BUFFER) {
                     size = sizePtr.getValue();
                     buf.close();
@@ -132,8 +139,8 @@ public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats 
             for (int i = 0; i < udpTable.dwNumEntries; i++) {
                 IPHlpAPI.MIB_UDPROW_OWNER_PID row = udpTable.table[i];
                 conns.add(new InternetProtocolStats.IPConnection("udp4", Parsing.parseIntToIP(row.dwLocalAddr),
-                        Parsing.bigEndian16ToLittleEndian(row.dwLocalPort), new byte[0], 0, InternetProtocolStats.TcpState.NONE, 0, 0,
-                        row.dwOwningPid));
+                        Parsing.bigEndian16ToLittleEndian(row.dwLocalPort), new byte[0], 0,
+                        InternetProtocolStats.TcpState.NONE, 0, 0, row.dwOwningPid));
             }
             buf.close();
         }
@@ -144,12 +151,14 @@ public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats 
         List<InternetProtocolStats.IPConnection> conns = new ArrayList<>();
         // Get size needed
         try (ByRef.CloseableIntByReference sizePtr = new ByRef.CloseableIntByReference()) {
-            int ret = IPHLP.GetExtendedUdpTable(null, sizePtr, false, IPHlpAPI.AF_INET6, IPHlpAPI.UDP_TABLE_CLASS.UDP_TABLE_OWNER_PID, 0);
+            int ret = IPHLP.GetExtendedUdpTable(null, sizePtr, false, IPHlpAPI.AF_INET6,
+                    IPHlpAPI.UDP_TABLE_CLASS.UDP_TABLE_OWNER_PID, 0);
             // Get buffer and populate table
             int size = sizePtr.getValue();
             Memory buf = new Memory(size);
             do {
-                ret = IPHLP.GetExtendedUdpTable(buf, sizePtr, false, IPHlpAPI.AF_INET6, IPHlpAPI.UDP_TABLE_CLASS.UDP_TABLE_OWNER_PID, 0);
+                ret = IPHLP.GetExtendedUdpTable(buf, sizePtr, false, IPHlpAPI.AF_INET6,
+                        IPHlpAPI.UDP_TABLE_CLASS.UDP_TABLE_OWNER_PID, 0);
                 if (ret == WinError.ERROR_INSUFFICIENT_BUFFER) {
                     size = sizePtr.getValue();
                     buf.close();
@@ -159,9 +168,9 @@ public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats 
             IPHlpAPI.MIB_UDP6TABLE_OWNER_PID udpTable = new IPHlpAPI.MIB_UDP6TABLE_OWNER_PID(buf);
             for (int i = 0; i < udpTable.dwNumEntries; i++) {
                 IPHlpAPI.MIB_UDP6ROW_OWNER_PID row = udpTable.table[i];
-                conns.add(
-                        new InternetProtocolStats.IPConnection("udp6", row.ucLocalAddr, Parsing.bigEndian16ToLittleEndian(row.dwLocalPort),
-                                new byte[0], 0, InternetProtocolStats.TcpState.NONE, 0, 0, row.dwOwningPid));
+                conns.add(new InternetProtocolStats.IPConnection("udp6", row.ucLocalAddr,
+                        Parsing.bigEndian16ToLittleEndian(row.dwLocalPort), new byte[0], 0,
+                        InternetProtocolStats.TcpState.NONE, 0, 0, row.dwOwningPid));
             }
         }
         return conns;
@@ -169,31 +178,31 @@ public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats 
 
     private static InternetProtocolStats.TcpState stateLookup(int state) {
         switch (state) {
-            case 1:
-            case 12:
-                return InternetProtocolStats.TcpState.CLOSED;
-            case 2:
-                return InternetProtocolStats.TcpState.LISTEN;
-            case 3:
-                return InternetProtocolStats.TcpState.SYN_SENT;
-            case 4:
-                return InternetProtocolStats.TcpState.SYN_RECV;
-            case 5:
-                return InternetProtocolStats.TcpState.ESTABLISHED;
-            case 6:
-                return InternetProtocolStats.TcpState.FIN_WAIT_1;
-            case 7:
-                return InternetProtocolStats.TcpState.FIN_WAIT_2;
-            case 8:
-                return InternetProtocolStats.TcpState.CLOSE_WAIT;
-            case 9:
-                return InternetProtocolStats.TcpState.CLOSING;
-            case 10:
-                return InternetProtocolStats.TcpState.LAST_ACK;
-            case 11:
-                return InternetProtocolStats.TcpState.TIME_WAIT;
-            default:
-                return InternetProtocolStats.TcpState.UNKNOWN;
+        case 1:
+        case 12:
+            return InternetProtocolStats.TcpState.CLOSED;
+        case 2:
+            return InternetProtocolStats.TcpState.LISTEN;
+        case 3:
+            return InternetProtocolStats.TcpState.SYN_SENT;
+        case 4:
+            return InternetProtocolStats.TcpState.SYN_RECV;
+        case 5:
+            return InternetProtocolStats.TcpState.ESTABLISHED;
+        case 6:
+            return InternetProtocolStats.TcpState.FIN_WAIT_1;
+        case 7:
+            return InternetProtocolStats.TcpState.FIN_WAIT_2;
+        case 8:
+            return InternetProtocolStats.TcpState.CLOSE_WAIT;
+        case 9:
+            return InternetProtocolStats.TcpState.CLOSING;
+        case 10:
+            return InternetProtocolStats.TcpState.LAST_ACK;
+        case 11:
+            return InternetProtocolStats.TcpState.TIME_WAIT;
+        default:
+            return InternetProtocolStats.TcpState.UNKNOWN;
         }
     }
 
@@ -201,9 +210,9 @@ public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats 
     public InternetProtocolStats.TcpStats getTCPv4Stats() {
         try (Struct.CloseableMibTcpStats stats = new Struct.CloseableMibTcpStats()) {
             IPHLP.GetTcpStatisticsEx(stats, IPHlpAPI.AF_INET);
-            return new InternetProtocolStats.TcpStats(stats.dwCurrEstab, stats.dwActiveOpens, stats.dwPassiveOpens, stats.dwAttemptFails,
-                    stats.dwEstabResets, stats.dwOutSegs, stats.dwInSegs, stats.dwRetransSegs, stats.dwInErrs,
-                    stats.dwOutRsts);
+            return new InternetProtocolStats.TcpStats(stats.dwCurrEstab, stats.dwActiveOpens, stats.dwPassiveOpens,
+                    stats.dwAttemptFails, stats.dwEstabResets, stats.dwOutSegs, stats.dwInSegs, stats.dwRetransSegs,
+                    stats.dwInErrs, stats.dwOutRsts);
         }
     }
 
@@ -211,9 +220,9 @@ public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats 
     public InternetProtocolStats.TcpStats getTCPv6Stats() {
         try (Struct.CloseableMibTcpStats stats = new Struct.CloseableMibTcpStats()) {
             IPHLP.GetTcpStatisticsEx(stats, IPHlpAPI.AF_INET6);
-            return new InternetProtocolStats.TcpStats(stats.dwCurrEstab, stats.dwActiveOpens, stats.dwPassiveOpens, stats.dwAttemptFails,
-                    stats.dwEstabResets, stats.dwOutSegs, stats.dwInSegs, stats.dwRetransSegs, stats.dwInErrs,
-                    stats.dwOutRsts);
+            return new InternetProtocolStats.TcpStats(stats.dwCurrEstab, stats.dwActiveOpens, stats.dwPassiveOpens,
+                    stats.dwAttemptFails, stats.dwEstabResets, stats.dwOutSegs, stats.dwInSegs, stats.dwRetransSegs,
+                    stats.dwInErrs, stats.dwOutRsts);
         }
     }
 
@@ -221,7 +230,8 @@ public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats 
     public InternetProtocolStats.UdpStats getUDPv4Stats() {
         try (Struct.CloseableMibUdpStats stats = new Struct.CloseableMibUdpStats()) {
             IPHLP.GetUdpStatisticsEx(stats, IPHlpAPI.AF_INET);
-            return new InternetProtocolStats.UdpStats(stats.dwOutDatagrams, stats.dwInDatagrams, stats.dwNoPorts, stats.dwInErrors);
+            return new InternetProtocolStats.UdpStats(stats.dwOutDatagrams, stats.dwInDatagrams, stats.dwNoPorts,
+                    stats.dwInErrors);
         }
     }
 
@@ -242,7 +252,8 @@ public class WindowsInternetProtocolStats extends AbstractInternetProtocolStats 
     public InternetProtocolStats.UdpStats getUDPv6Stats() {
         try (Struct.CloseableMibUdpStats stats = new Struct.CloseableMibUdpStats()) {
             IPHLP.GetUdpStatisticsEx(stats, IPHlpAPI.AF_INET6);
-            return new InternetProtocolStats.UdpStats(stats.dwOutDatagrams, stats.dwInDatagrams, stats.dwNoPorts, stats.dwInErrors);
+            return new InternetProtocolStats.UdpStats(stats.dwOutDatagrams, stats.dwInDatagrams, stats.dwNoPorts,
+                    stats.dwInErrors);
         }
     }
 

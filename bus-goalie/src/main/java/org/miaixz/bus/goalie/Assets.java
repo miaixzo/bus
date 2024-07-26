@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.goalie;
 
 import lombok.Getter;
@@ -108,8 +108,10 @@ public class Assets {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (null == o || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (null == o || getClass() != o.getClass())
+            return false;
         Assets assets = (Assets) o;
         return id.equals(assets.id);
     }

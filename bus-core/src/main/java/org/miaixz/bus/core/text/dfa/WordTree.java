@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text.dfa;
 
 import org.miaixz.bus.core.center.stream.EasyStream;
@@ -37,11 +37,9 @@ import java.util.*;
 import java.util.function.Predicate;
 
 /**
- * DFA（Deterministic Finite Automaton 确定有穷自动机）
- * DFA单词树（以下简称单词树），常用于在某大段文字中快速查找某几个关键词是否存在。
- * 单词树使用group区分不同的关键字集合，不同的分组可以共享树枝，避免重复建树。
- * 单词树使用树状结构表示一组单词。
- * 例如：红领巾，红河 构建树后为：
+ * DFA（Deterministic Finite Automaton 确定有穷自动机） DFA单词树（以下简称单词树），常用于在某大段文字中快速查找某几个关键词是否存在。
+ * 单词树使用group区分不同的关键字集合，不同的分组可以共享树枝，避免重复建树。 单词树使用树状结构表示一组单词。 例如：红领巾，红河 构建树后为：
+ * 
  * <pre>
  *            红
  *            /\
@@ -49,6 +47,7 @@ import java.util.function.Predicate;
  *         /
  *       巾
  * </pre>
+ * 
  * 其中每个节点都是一个WordTree对象，查找时从上向下查找
  *
  * @author Kimi Liu
@@ -98,8 +97,7 @@ public class WordTree extends HashMap<Character, WordTree> {
     }
 
     /**
-     * 设置字符过滤规则，通过定义字符串过滤规则，过滤不需要的字符
-     * 当accept为false时，此字符不参与匹配
+     * 设置字符过滤规则，通过定义字符串过滤规则，过滤不需要的字符 当accept为false时，此字符不参与匹配
      *
      * @param charFilter 过滤函数
      * @return this
@@ -250,9 +248,8 @@ public class WordTree extends HashMap<Character, WordTree> {
 
     /**
      * 找出所有匹配的关键字
-     * <p>假如被检查文本是{@literal "abab"}
-     * 密集匹配原则：假如关键词有 ab,b，将匹配 [ab,b,ab]
-     * 贪婪匹配（最长匹配）原则：假如关键字a,ab，最长匹配将匹配[a, ab]
+     * <p>
+     * 假如被检查文本是{@literal "abab"} 密集匹配原则：假如关键词有 ab,b，将匹配 [ab,b,ab] 贪婪匹配（最长匹配）原则：假如关键字a,ab，最长匹配将匹配[a, ab]
      * </p>
      *
      * @param text           被检查的文本
@@ -261,16 +258,16 @@ public class WordTree extends HashMap<Character, WordTree> {
      * @param isGreedMatch   是否使用贪婪匹配（最长匹配）原则
      * @return 匹配的词列表
      */
-    public List<String> matchAll(final String text, final int limit, final boolean isDensityMatch, final boolean isGreedMatch) {
+    public List<String> matchAll(final String text, final int limit, final boolean isDensityMatch,
+            final boolean isGreedMatch) {
         final List<FoundWord> matchAllWords = matchAllWords(text, limit, isDensityMatch, isGreedMatch);
         return CollKit.map(matchAllWords, FoundWord::toString);
     }
 
     /**
      * 找出所有匹配的关键字
-     * <p>假如被检查文本是{@literal "abab"}
-     * 密集匹配原则：假如关键词有 ab,b，将匹配 [ab,b,ab,b]
-     * 贪婪匹配（最长匹配）原则：假如关键字a,ab，最长匹配将匹配[ab]
+     * <p>
+     * 假如被检查文本是{@literal "abab"} 密集匹配原则：假如关键词有 ab,b，将匹配 [ab,b,ab,b] 贪婪匹配（最长匹配）原则：假如关键字a,ab，最长匹配将匹配[ab]
      * </p>
      *
      * @param text           被检查的文本
@@ -279,7 +276,8 @@ public class WordTree extends HashMap<Character, WordTree> {
      * @param isGreedMatch   是否使用贪婪匹配（最长匹配）原则
      * @return 匹配的词列表
      */
-    public List<FoundWord> matchAllWords(final String text, final int limit, final boolean isDensityMatch, final boolean isGreedMatch) {
+    public List<FoundWord> matchAllWords(final String text, final int limit, final boolean isDensityMatch,
+            final boolean isGreedMatch) {
         if (null == text) {
             return null;
         }
@@ -288,7 +286,7 @@ public class WordTree extends HashMap<Character, WordTree> {
         WordTree current;
         final int length = text.length();
         final Predicate<Character> charFilter = this.charFilter;
-        //存放查找到的字符缓存。完整出现一个词时加到foundWords中，否则清空
+        // 存放查找到的字符缓存。完整出现一个词时加到foundWords中，否则清空
         final StringBuilder wordBuffer = StringKit.builder();
         final StringBuilder keyBuffer = StringKit.builder();
         char currentChar;
@@ -346,8 +344,8 @@ public class WordTree extends HashMap<Character, WordTree> {
     }
 
     /**
-     * 扁平化WordTree
-     * 例如：红领巾，红河 构建树后为：
+     * 扁平化WordTree 例如：红领巾，红河 构建树后为：
+     * 
      * <pre>
      *            红
      *            /\
@@ -355,7 +353,9 @@ public class WordTree extends HashMap<Character, WordTree> {
      *         /
      *       巾
      * </pre>
+     * 
      * 扁平化后得到
+     * 
      * <pre>
      *     红河
      *     红领巾
@@ -374,7 +374,8 @@ public class WordTree extends HashMap<Character, WordTree> {
      * @return 递归扁平化后的结果
      */
     private Iterable<String> innerFlatten(Entry<Character, WordTree> entry) {
-        List<String> list = EasyStream.of(entry.getValue().entrySet()).flat(this::innerFlatten).map(v -> entry.getKey() + v).toList();
+        List<String> list = EasyStream.of(entry.getValue().entrySet()).flat(this::innerFlatten)
+                .map(v -> entry.getKey() + v).toList();
         if (list.isEmpty()) {
             return EasyStream.of(StringKit.toStringOrNull(entry.getKey()));
         }
@@ -405,9 +406,7 @@ public class WordTree extends HashMap<Character, WordTree> {
     }
 
     /**
-     * 清除所有的词,
-     * 此方法调用后, wordTree 将被清空
-     * endCharacterSet 也将清空
+     * 清除所有的词, 此方法调用后, wordTree 将被清空 endCharacterSet 也将清空
      */
     @Override
     public void clear() {

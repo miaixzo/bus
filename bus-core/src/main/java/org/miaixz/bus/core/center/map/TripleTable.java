@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -36,9 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 三值表结构，可重复
- * 用于提供三种值相互查找操作
- * 查找方式为indexOf方式遍历查找，数据越多越慢。
+ * 三值表结构，可重复 用于提供三种值相互查找操作 查找方式为indexOf方式遍历查找，数据越多越慢。
  *
  * @param <L> 左值类型
  * @param <M> 中值类型
@@ -95,8 +93,7 @@ public class TripleTable<L, M, R> implements Serializable {
     }
 
     /**
-     * 通过中间值，查找左边值
-     * 如果有多个重复值，只返回找到的第一个值
+     * 通过中间值，查找左边值 如果有多个重复值，只返回找到的第一个值
      *
      * @param mValue 中间值
      * @return 左边值，未找到返回{@code null}
@@ -110,8 +107,7 @@ public class TripleTable<L, M, R> implements Serializable {
     }
 
     /**
-     * 通过右值，查找左边值
-     * 如果有多个重复值，只返回找到的第一个值
+     * 通过右值，查找左边值 如果有多个重复值，只返回找到的第一个值
      *
      * @param rValue 右值
      * @return 左边值，未找到返回{@code null}
@@ -125,8 +121,7 @@ public class TripleTable<L, M, R> implements Serializable {
     }
 
     /**
-     * 通过左值，查找中值
-     * 如果有多个重复值，只返回找到的第一个值
+     * 通过左值，查找中值 如果有多个重复值，只返回找到的第一个值
      *
      * @param lValue 左值
      * @return 中值，未找到返回{@code null}
@@ -140,8 +135,7 @@ public class TripleTable<L, M, R> implements Serializable {
     }
 
     /**
-     * 通过右值，查找中值
-     * 如果有多个重复值，只返回找到的第一个值
+     * 通过右值，查找中值 如果有多个重复值，只返回找到的第一个值
      *
      * @param rValue 右值
      * @return 中值，未找到返回{@code null}
@@ -185,8 +179,7 @@ public class TripleTable<L, M, R> implements Serializable {
     }
 
     /**
-     * 通过左值，查找右值
-     * 如果有多个重复值，只返回找到的第一个值
+     * 通过左值，查找右值 如果有多个重复值，只返回找到的第一个值
      *
      * @param lValue 左值
      * @return 右值，未找到返回{@code null}
@@ -200,8 +193,7 @@ public class TripleTable<L, M, R> implements Serializable {
     }
 
     /**
-     * 通过中间值，查找右值
-     * 如果有多个重复值，只返回找到的第一个值
+     * 通过中间值，查找右值 如果有多个重复值，只返回找到的第一个值
      *
      * @param mValue 中间值
      * @return 右值，未找到返回{@code null}
@@ -283,11 +275,7 @@ public class TripleTable<L, M, R> implements Serializable {
     public Triplet<L, M, R> getByLeft(final L lValue) {
         final int index = this.lefts.indexOf(lValue);
         if (index > -1) {
-            return new Triplet<>(
-                    lefts.get(index),
-                    middles.get(index),
-                    rights.get(index)
-            );
+            return new Triplet<>(lefts.get(index), middles.get(index), rights.get(index));
         }
         return null;
     }
@@ -301,11 +289,7 @@ public class TripleTable<L, M, R> implements Serializable {
     public Triplet<L, M, R> getByMiddle(final M mValue) {
         final int index = this.middles.indexOf(mValue);
         if (index > -1) {
-            return new Triplet<>(
-                    lefts.get(index),
-                    middles.get(index),
-                    rights.get(index)
-            );
+            return new Triplet<>(lefts.get(index), middles.get(index), rights.get(index));
         }
         return null;
     }
@@ -319,11 +303,7 @@ public class TripleTable<L, M, R> implements Serializable {
     public Triplet<L, M, R> getByRight(final R rValue) {
         final int index = this.rights.indexOf(rValue);
         if (index > -1) {
-            return new Triplet<>(
-                    lefts.get(index),
-                    middles.get(index),
-                    rights.get(index)
-            );
+            return new Triplet<>(lefts.get(index), middles.get(index), rights.get(index));
         }
         return null;
     }

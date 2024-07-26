@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.media;
 
 import org.miaixz.bus.core.xyz.ResourceKit;
@@ -73,25 +73,19 @@ public class RecordFactory {
         }
     }
 
-    public void loadConfiguration(String uri)
-            throws ParserConfigurationException, SAXException, IOException {
+    public void loadConfiguration(String uri) throws ParserConfigurationException, SAXException, IOException {
         Attributes attrs = parseXML(uri);
         Sequence sq = attrs.getSequence(Tag.DirectoryRecordSequence);
         if (sq == null)
-            throw new IllegalArgumentException(
-                    "Missing Directory Record Sequence in " + uri);
+            throw new IllegalArgumentException("Missing Directory Record Sequence in " + uri);
 
-        EnumMap<RecordType, int[]> recordKeys = new EnumMap<>(
-                RecordType.class);
-        HashMap<String, RecordType> recordTypes = new HashMap<>(
-                134);
+        EnumMap<RecordType, int[]> recordKeys = new EnumMap<>(RecordType.class);
+        HashMap<String, RecordType> recordTypes = new HashMap<>(134);
         HashMap<String, String> privateRecordUIDs = new HashMap<>();
         HashMap<String, int[]> privateRecordKeys = new HashMap<>();
         for (Attributes item : sq) {
-            RecordType type = RecordType.forCode(item.getString(
-                    Tag.DirectoryRecordType, null));
-            String privuid = type == RecordType.PRIVATE ? item.getString(
-                    Tag.PrivateRecordUID, null) : null;
+            RecordType type = RecordType.forCode(item.getString(Tag.DirectoryRecordType, null));
+            String privuid = type == RecordType.PRIVATE ? item.getString(Tag.PrivateRecordUID, null) : null;
             String[] cuids = item.getStrings(Tag.ReferencedSOPClassUIDInFile);
             if (cuids != null) {
                 if (type != RecordType.PRIVATE) {
@@ -110,27 +104,23 @@ public class RecordFactory {
             int[] keys = item.tags();
             if (privuid != null) {
                 if (privateRecordKeys.put(privuid, keys) != null)
-                    throw new IllegalArgumentException(
-                            "Duplicate Private Record UID: " + privuid);
+                    throw new IllegalArgumentException("Duplicate Private Record UID: " + privuid);
             } else {
                 if (recordKeys.put(type, keys) != null)
-                    throw new IllegalArgumentException(
-                            "Duplicate Record Type: " + type);
+                    throw new IllegalArgumentException("Duplicate Record Type: " + type);
             }
         }
         EnumSet<RecordType> missingTypes = EnumSet.allOf(RecordType.class);
         missingTypes.removeAll(recordKeys.keySet());
         if (!missingTypes.isEmpty())
-            throw new IllegalArgumentException("Missing Record Types: "
-                    + missingTypes);
+            throw new IllegalArgumentException("Missing Record Types: " + missingTypes);
         this.recordTypes = recordTypes;
         this.recordKeys = recordKeys;
         this.privateRecordUIDs = privateRecordUIDs;
         this.privateRecordKeys = privateRecordKeys;
     }
 
-    private Attributes parseXML(String uri)
-            throws ParserConfigurationException, SAXException, IOException {
+    private Attributes parseXML(String uri) throws ParserConfigurationException, SAXException, IOException {
         Attributes attrs = new Attributes();
         SAXParserFactory f = SAXParserFactory.newInstance();
         SAXParser parser = f.newSAXParser();
@@ -194,17 +184,14 @@ public class RecordFactory {
         return privateRecordKeys.put(uid, tmp);
     }
 
-    public Attributes createRecord(Attributes dataset, Attributes fmi,
-                                   String[] fileIDs) {
+    public Attributes createRecord(Attributes dataset, Attributes fmi, String[] fileIDs) {
         String cuid = fmi.getString(Tag.MediaStorageSOPClassUID, null);
         RecordType type = getRecordType(cuid);
-        return createRecord(type,
-                type == RecordType.PRIVATE ? getPrivateRecordUID(cuid) : null,
-                dataset, fmi, fileIDs);
+        return createRecord(type, type == RecordType.PRIVATE ? getPrivateRecordUID(cuid) : null, dataset, fmi, fileIDs);
     }
 
-    public Attributes createRecord(RecordType type, String privRecUID,
-                                   Attributes dataset, Attributes fmi, String[] fileIDs) {
+    public Attributes createRecord(RecordType type, String privRecUID, Attributes dataset, Attributes fmi,
+            String[] fileIDs) {
         if (type == null)
             throw new NullPointerException("type");
         if (dataset == null)
@@ -214,13 +201,11 @@ public class RecordFactory {
         int[] keys = null;
         if (type == RecordType.PRIVATE) {
             if (privRecUID == null)
-                throw new NullPointerException(
-                        "privRecUID must not be null for type = PRIVATE");
+                throw new NullPointerException("privRecUID must not be null for type = PRIVATE");
             keys = privateRecordKeys.get(privRecUID);
         } else {
             if (privRecUID != null)
-                throw new IllegalArgumentException(
-                        "privRecUID must be null for type != PRIVATE");
+                throw new IllegalArgumentException("privRecUID must be null for type != PRIVATE");
         }
         if (keys == null)
             keys = recordKeys.get(type);
@@ -233,12 +218,10 @@ public class RecordFactory {
             rec.setString(Tag.PrivateRecordUID, VR.UI, privRecUID);
         if (fileIDs != null) {
             rec.setString(Tag.ReferencedFileID, VR.CS, fileIDs);
-            rec.setString(Tag.ReferencedSOPClassUIDInFile, VR.UI,
-                    fmi.getString(Tag.MediaStorageSOPClassUID, null));
+            rec.setString(Tag.ReferencedSOPClassUIDInFile, VR.UI, fmi.getString(Tag.MediaStorageSOPClassUID, null));
             rec.setString(Tag.ReferencedSOPInstanceUIDInFile, VR.UI,
                     fmi.getString(Tag.MediaStorageSOPInstanceUID, null));
-            rec.setString(Tag.ReferencedTransferSyntaxUIDInFile, VR.UI,
-                    fmi.getString(Tag.TransferSyntaxUID, null));
+            rec.setString(Tag.ReferencedTransferSyntaxUIDInFile, VR.UI, fmi.getString(Tag.TransferSyntaxUID, null));
         }
         rec.addSelected(dataset, keys, 0, keys.length);
         Sequence contentSeq = dataset.getSequence(Tag.ContentSequence);
@@ -250,8 +233,7 @@ public class RecordFactory {
     private void copyConceptMod(Sequence srcSeq, Attributes rec) {
         Sequence dstSeq = null;
         for (Attributes item : srcSeq) {
-            if ("HAS CONCEPT MOD".equals(item.getString(Tag.RelationshipType,
-                    null))) {
+            if ("HAS CONCEPT MOD".equals(item.getString(Tag.RelationshipType, null))) {
                 if (dstSeq == null)
                     dstSeq = rec.newSequence(Tag.ContentSequence, 1);
                 dstSeq.add(new Attributes(item, false));

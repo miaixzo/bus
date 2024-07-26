@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -283,8 +283,7 @@ public class Device implements Serializable {
     }
 
     /**
-     * 设置该设备的制造商
-     * 这应该与该设备创建的SOP实例中的制造商(0008,0070)的值相同
+     * 设置该设备的制造商 这应该与该设备创建的SOP实例中的制造商(0008,0070)的值相同
      *
      * @param manufacturer 包含设备制造商的字符串
      */
@@ -302,8 +301,7 @@ public class Device implements Serializable {
     }
 
     /**
-     * 设置此设备的制造商型号名称
-     * 这应该与该设备创建的SOP实例中的制造商型号名称(0008,1090)的值相同
+     * 设置此设备的制造商型号名称 这应该与该设备创建的SOP实例中的制造商型号名称(0008,1090)的值相同
      *
      * @param manufacturerModelName 包含设备制造商模型名称的字符串
      */
@@ -321,8 +319,7 @@ public class Device implements Serializable {
     }
 
     /**
-     * 设置在该设备上运行(或由该设备实现)的软件版本
-     * 这应该与该设备创建的SOP实例中的软件版本(0018、1020)的值相同
+     * 设置在该设备上运行(或由该设备实现)的软件版本 这应该与该设备创建的SOP实例中的软件版本(0018、1020)的值相同
      *
      * @param softwareVersions 包含软件版本的字符串数组
      */
@@ -340,8 +337,7 @@ public class Device implements Serializable {
     }
 
     /**
-     * 设置属于此设备的工作站名称
-     * 这应该与此设备创建的SOP实例中的站名(0008,1010)的值相同
+     * 设置属于此设备的工作站名称 这应该与此设备创建的SOP实例中的站名(0008,1010)的值相同
      *
      * @param stationName 包含电台名称的字符串
      */
@@ -359,8 +355,7 @@ public class Device implements Serializable {
     }
 
     /**
-     * 设置此设备的序列号
-     * 这应该与该设备创建的SOP实例中的设备序列号(0018,1000)的值相同
+     * 设置此设备的序列号 这应该与该设备创建的SOP实例中的设备序列号(0018,1000)的值相同
      *
      * @param deviceSerialNumber 包含此设备的类型编解码器的字符串数组
      */
@@ -378,8 +373,7 @@ public class Device implements Serializable {
     }
 
     /**
-     * 设置与此设备关联的类型编解码器
-     * 表示一种设备，最适用于采集方式。如果适用，类型应该从PS3.16中上下文ID 30的内部值(0008,0100)列表中选择
+     * 设置与此设备关联的类型编解码器 表示一种设备，最适用于采集方式。如果适用，类型应该从PS3.16中上下文ID 30的内部值(0008,0100)列表中选择
      *
      * @param primaryDeviceTypes 主要设备类型
      */
@@ -397,8 +391,7 @@ public class Device implements Serializable {
     }
 
     /**
-     * 设置与此设备关联的机构名称;可能是它所驻留或代表的站点吗
-     * 是否应该与该设备创建的SOP实例中的机构名称(0008,0080)相同
+     * 设置与此设备关联的机构名称;可能是它所驻留或代表的站点吗 是否应该与该设备创建的SOP实例中的机构名称(0008,0080)相同
      *
      * @param names 包含机构名称值的字符串数组
      */
@@ -424,8 +417,7 @@ public class Device implements Serializable {
     }
 
     /**
-     * 获取操作该设备的机构的地址
-     * 是否与该设备创建的SOP实例中的机构地址(0008,0081)属性值相同
+     * 获取操作该设备的机构的地址 是否与该设备创建的SOP实例中的机构地址(0008,0081)属性值相同
      *
      * @param addresses 包含机构地址值的字符串数组
      */
@@ -443,8 +435,7 @@ public class Device implements Serializable {
     }
 
     /**
-     * 设置与此设备关联的部门名称
-     * 是否应该与该设备创建的SOP实例中的机构部门名称(0008,1040)的值相同
+     * 设置与此设备关联的部门名称 是否应该与该设备创建的SOP实例中的机构部门名称(0008,1040)的值相同
      *
      * @param names 包含部门名称值的字符串数组
      */
@@ -825,8 +816,7 @@ public class Device implements Serializable {
     public boolean removeConnection(Connection conn) {
         for (ApplicationEntity ae : aes.values())
             if (ae.getConnections().contains(conn))
-                throw new IllegalStateException(conn + " used by AE: " +
-                        ae.getAETitle());
+                throw new IllegalStateException(conn + " used by AE: " + ae.getAETitle());
 
         for (DeviceExtension ext : extensions.values())
             ext.verifyNotUsed(conn);
@@ -935,8 +925,7 @@ public class Device implements Serializable {
     public void addDeviceExtension(DeviceExtension ext) {
         Class<? extends DeviceExtension> clazz = ext.getClass();
         if (extensions.containsKey(clazz))
-            throw new IllegalStateException(
-                    "already contains Device Extension:" + clazz);
+            throw new IllegalStateException("already contains Device Extension:" + clazz);
 
         ext.setDevice(this);
         extensions.put(clazz, ext);
@@ -962,10 +951,8 @@ public class Device implements Serializable {
     }
 
     /**
-     * 返回指定的远程AE可以发起的最大开放关联数。如果超过了这个限制，那么来自AE的进一步关联请求将被拒绝
-     * Result = 2 - rejected-transient，
-     * Source = 1 - DICOM UL service-user，
-     * Reason = 2 - local-limit-exceeded
+     * 返回指定的远程AE可以发起的最大开放关联数。如果超过了这个限制，那么来自AE的进一步关联请求将被拒绝 Result = 2 - rejected-transient， Source = 1 - DICOM UL
+     * service-user， Reason = 2 - local-limit-exceeded
      *
      * @param callingAET 远程AE的AE名称
      * @return 开放关联的最大数目或无限制为0
@@ -978,10 +965,8 @@ public class Device implements Serializable {
     }
 
     /**
-     * 返回指定的远程AE可以发起的最大开放关联数。如果超过了这个限制，那么来自AE的进一步关联请求将被拒绝
-     * Result = 2 - rejected-transient，
-     * Source = 1 - DICOM UL service-user，
-     * Reason = 2 - local-limit-exceeded
+     * 返回指定的远程AE可以发起的最大开放关联数。如果超过了这个限制，那么来自AE的进一步关联请求将被拒绝 Result = 2 - rejected-transient， Source = 1 - DICOM UL
+     * service-user， Reason = 2 - local-limit-exceeded
      *
      * @param callingAET 远程AE的AE名称
      * @param limit      开放关联的最大数目或无限制为0
@@ -1083,7 +1068,7 @@ public class Device implements Serializable {
         Integer limit;
         return limitOpenAssociations > 0 && associations.size() > limitOpenAssociations
                 || (limit = limitAssociationsInitiatedBy.get(rq.getCallingAET())) != null
-                && getNumberOfAssociationsInitiatedBy(rq.getCallingAET()) > limit;
+                        && getNumberOfAssociationsInitiatedBy(rq.getCallingAET()) > limit;
     }
 
     public ApplicationEntity getApplicationEntity(String aet) {
@@ -1123,10 +1108,8 @@ public class Device implements Serializable {
         if (ret != null || keyStoreURL == null)
             return ret;
         String keyStorePin = keyStorePin();
-        km = ret = TrustAnyTrustManager.createKeyManager(
-                Builder.replaceSystemProperties(keyStoreType()),
-                Builder.replaceSystemProperties(keyStoreURL),
-                Builder.replaceSystemProperties(keyStorePin()),
+        km = ret = TrustAnyTrustManager.createKeyManager(Builder.replaceSystemProperties(keyStoreType()),
+                Builder.replaceSystemProperties(keyStoreURL), Builder.replaceSystemProperties(keyStorePin()),
                 Builder.replaceSystemProperties(keyPin(keyStorePin)));
         return ret;
     }
@@ -1143,13 +1126,11 @@ public class Device implements Serializable {
             return keyStorePin;
 
         if (keyStorePinProperty == null)
-            throw new IllegalStateException(
-                    "keyStoreURL requires keyStorePin or keyStorePinProperty");
+            throw new IllegalStateException("keyStoreURL requires keyStorePin or keyStorePinProperty");
 
         String pin = System.getProperty(keyStorePinProperty);
         if (pin == null)
-            throw new IllegalStateException(
-                    "No such keyStorePinProperty: " + keyStorePinProperty);
+            throw new IllegalStateException("No such keyStorePinProperty: " + keyStorePinProperty);
 
         return pin;
     }
@@ -1163,8 +1144,7 @@ public class Device implements Serializable {
 
         String pin = System.getProperty(keyStoreKeyPinProperty);
         if (pin == null)
-            throw new IllegalStateException(
-                    "No such keyPinProperty: " + keyStoreKeyPinProperty);
+            throw new IllegalStateException("No such keyPinProperty: " + keyStoreKeyPinProperty);
 
         return pin;
     }
@@ -1180,17 +1160,14 @@ public class Device implements Serializable {
 
     private TrustManager tm() throws GeneralSecurityException, IOException {
         TrustManager ret = tm;
-        if (ret != null
-                || trustStoreURL == null && authorizedNodeCertificates.isEmpty())
+        if (ret != null || trustStoreURL == null && authorizedNodeCertificates.isEmpty())
             return ret;
 
         tm = ret = trustStoreURL != null
-                ? TrustAnyTrustManager.createTrustManager(
-                Builder.replaceSystemProperties(trustStoreType()),
-                Builder.replaceSystemProperties(trustStoreURL),
-                Builder.replaceSystemProperties(trustStorePin()))
-                : TrustAnyTrustManager.createTrustManager(
-                getAllAuthorizedNodeCertificates());
+                ? TrustAnyTrustManager.createTrustManager(Builder.replaceSystemProperties(trustStoreType()),
+                        Builder.replaceSystemProperties(trustStoreURL),
+                        Builder.replaceSystemProperties(trustStorePin()))
+                : TrustAnyTrustManager.createTrustManager(getAllAuthorizedNodeCertificates());
         return ret;
     }
 
@@ -1206,13 +1183,11 @@ public class Device implements Serializable {
             return trustStorePin;
 
         if (trustStorePinProperty == null)
-            throw new IllegalStateException(
-                    "trustStoreURL requires trustStorePin or trustStorePinProperty");
+            throw new IllegalStateException("trustStoreURL requires trustStorePin or trustStorePinProperty");
 
         String pin = System.getProperty(trustStorePinProperty);
         if (pin == null)
-            throw new IllegalStateException(
-                    "No such trustStorePinProperty: " + trustStorePinProperty);
+            throw new IllegalStateException("No such trustStorePinProperty: " + trustStorePinProperty);
 
         return pin;
     }
@@ -1230,12 +1205,12 @@ public class Device implements Serializable {
 
     public KeyManager[] keyManagers() throws GeneralSecurityException, IOException {
         KeyManager tmp = km();
-        return tmp != null ? new KeyManager[]{tmp} : null;
+        return tmp != null ? new KeyManager[] { tmp } : null;
     }
 
     public TrustManager[] trustManagers() throws GeneralSecurityException, IOException {
         TrustManager tmp = tm();
-        return tmp != null ? new TrustManager[]{tmp} : null;
+        return tmp != null ? new TrustManager[] { tmp } : null;
     }
 
     public void execute(Runnable command) {
@@ -1245,33 +1220,25 @@ public class Device implements Serializable {
         executor.execute(command);
     }
 
-    public ScheduledFuture<?> schedule(Runnable command, long delay,
-                                       TimeUnit unit) {
+    public ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit) {
         if (scheduledExecutor == null)
-            throw new IllegalStateException(
-                    "scheduled executor service not initialized");
+            throw new IllegalStateException("scheduled executor service not initialized");
 
         return scheduledExecutor.schedule(command, delay, unit);
     }
 
-    public ScheduledFuture<?> scheduleAtFixedRate(Runnable command,
-                                                  long initialDelay, long period, TimeUnit unit) {
+    public ScheduledFuture<?> scheduleAtFixedRate(Runnable command, long initialDelay, long period, TimeUnit unit) {
         if (scheduledExecutor == null)
-            throw new IllegalStateException(
-                    "scheduled executor service not initialized");
+            throw new IllegalStateException("scheduled executor service not initialized");
 
-        return scheduledExecutor.scheduleAtFixedRate(command,
-                initialDelay, period, unit);
+        return scheduledExecutor.scheduleAtFixedRate(command, initialDelay, period, unit);
     }
 
-    public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command,
-                                                     long initialDelay, long delay, TimeUnit unit) {
+    public ScheduledFuture<?> scheduleWithFixedDelay(Runnable command, long initialDelay, long delay, TimeUnit unit) {
         if (scheduledExecutor == null)
-            throw new IllegalStateException(
-                    "scheduled executor service not initialized");
+            throw new IllegalStateException("scheduled executor service not initialized");
 
-        return scheduledExecutor.scheduleWithFixedDelay(command,
-                initialDelay, delay, unit);
+        return scheduledExecutor.scheduleWithFixedDelay(command, initialDelay, delay, unit);
     }
 
     @Override
@@ -1348,8 +1315,7 @@ public class Device implements Serializable {
         update(thisNodeCertificates, from);
     }
 
-    private boolean update(Map<String, X509Certificate[]> target,
-                           Map<String, X509Certificate[]> from) {
+    private boolean update(Map<String, X509Certificate[]> target, Map<String, X509Certificate[]> from) {
         boolean updated = target.keySet().retainAll(from.keySet());
         for (Entry<String, X509Certificate[]> e : from.entrySet()) {
             String key = e.getKey();
@@ -1411,16 +1377,14 @@ public class Device implements Serializable {
         }
     }
 
-    public void reconfigureConnections(List<Connection> conns,
-                                       List<Connection> src) {
+    public void reconfigureConnections(List<Connection> conns, List<Connection> src) {
         conns.clear();
         for (Connection conn : src)
             conns.add(connectionWithEqualsRDN(conn));
     }
 
     private void reconfigureDeviceExtensions(Device from) {
-        for (Iterator<Class<? extends DeviceExtension>> it =
-             extensions.keySet().iterator(); it.hasNext(); ) {
+        for (Iterator<Class<? extends DeviceExtension>> it = extensions.keySet().iterator(); it.hasNext();) {
             if (!from.extensions.containsKey(it.next()))
                 it.remove();
         }
@@ -1431,8 +1395,7 @@ public class Device implements Serializable {
                 try {
                     addDeviceExtension(ext = clazz.newInstance());
                 } catch (Exception e) {
-                    throw new RuntimeException(
-                            "Failed to instantiate " + clazz.getName(), e);
+                    throw new RuntimeException("Failed to instantiate " + clazz.getName(), e);
                 }
             ext.reconfigure(src);
         }
@@ -1449,8 +1412,7 @@ public class Device implements Serializable {
     public <T extends DeviceExtension> T getDeviceExtensionNotNull(Class<T> clazz) {
         T devExt = getDeviceExtension(clazz);
         if (devExt == null)
-            throw new IllegalStateException("No " + clazz.getName()
-                    + " configured for Device: " + deviceName);
+            throw new IllegalStateException("No " + clazz.getName() + " configured for Device: " + deviceName);
         return devExt;
     }
 

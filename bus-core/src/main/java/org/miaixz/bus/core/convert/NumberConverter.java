@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.lang.exception.ConvertException;
@@ -42,8 +42,7 @@ import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Function;
 
 /**
- * 数字转换器
- * 支持类型为：
+ * 数字转换器 支持类型为：
  * <ul>
  * <li>{@code java.lang.Byte}</li>
  * <li>{@code java.lang.Short}</li>
@@ -71,10 +70,10 @@ public class NumberConverter extends AbstractConverter {
     /**
      * 转换对象为数字，支持的对象包括：
      * <ul>
-     *     <li>Number对象</li>
-     *     <li>Boolean</li>
-     *     <li>byte[]</li>
-     *     <li>String</li>
+     * <li>Number对象</li>
+     * <li>Boolean</li>
+     * <li>byte[]</li>
+     * <li>String</li>
      * </ul>
      *
      * @param value      对象值
@@ -82,7 +81,8 @@ public class NumberConverter extends AbstractConverter {
      * @param toStrFunc  转换为字符串的函数
      * @return 转换后的数字
      */
-    protected static Number convert(final Object value, final Class<? extends Number> targetType, final Function<Object, String> toStrFunc) {
+    protected static Number convert(final Object value, final Class<? extends Number> targetType,
+            final Function<Object, String> toStrFunc) {
         // 枚举转换为数字默认为其顺序
         if (value instanceof Enum) {
             return convert(((Enum<?>) value).ordinal(), targetType, toStrFunc);
@@ -155,7 +155,7 @@ public class NumberConverter extends AbstractConverter {
                 return new AtomicLong(number.longValue());
             }
         } else if (LongAdder.class == targetType) {
-            //jdk8 新增
+            // jdk8 新增
             final Number number = convert(value, Long.class, toStrFunc);
             if (null != number) {
                 final LongAdder longValue = new LongAdder();
@@ -179,7 +179,7 @@ public class NumberConverter extends AbstractConverter {
             final String valueStr = toStrFunc.apply((value));
             return MathKit.parseDouble(valueStr);
         } else if (DoubleAdder.class == targetType) {
-            //jdk8 新增
+            // jdk8 新增
             final Number number = convert(value, Double.class, toStrFunc);
             if (null != number) {
                 final DoubleAdder doubleAdder = new DoubleAdder();
@@ -204,9 +204,7 @@ public class NumberConverter extends AbstractConverter {
     }
 
     /**
-     * 转换为BigDecimal
-     * 如果给定的值为空，或者转换失败，返回默认值
-     * 转换失败不会报错
+     * 转换为BigDecimal 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
      *
      * @param value     被转换的值
      * @param toStrFunc 转换为字符串的函数规则
@@ -224,9 +222,7 @@ public class NumberConverter extends AbstractConverter {
     }
 
     /**
-     * 转换为BigInteger
-     * 如果给定的值为空，或者转换失败，返回默认值
-     * 转换失败不会报错
+     * 转换为BigInteger 如果给定的值为空，或者转换失败，返回默认值 转换失败不会报错
      *
      * @param value     被转换的值
      * @param toStrFunc 转换为字符串的函数规则

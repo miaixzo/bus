@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.software;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -46,9 +46,8 @@ import java.util.List;
 public interface InternetProtocolStats {
 
     /**
-     * Get the TCP stats for IPv4 connections.
-     * On macOS connection information requires elevated permissions. Without elevatd permissions, segment data is
-     * estimated.
+     * Get the TCP stats for IPv4 connections. On macOS connection information requires elevated permissions. Without
+     * elevatd permissions, segment data is estimated.
      *
      * @return a {@link TcpStats} object encapsulating the stats.
      */
@@ -109,8 +108,8 @@ public interface InternetProtocolStats {
         private final long outResets;
 
         public TcpStats(long connectionsEstablished, long connectionsActive, long connectionsPassive,
-                        long connectionFailures, long connectionsReset, long segmentsSent, long segmentsReceived,
-                        long segmentsRetransmitted, long inErrors, long outResets) {
+                long connectionFailures, long connectionsReset, long segmentsSent, long segmentsReceived,
+                long segmentsRetransmitted, long inErrors, long outResets) {
             this.connectionsEstablished = connectionsEstablished;
             this.connectionsActive = connectionsActive;
             this.connectionsPassive = connectionsPassive;
@@ -245,7 +244,7 @@ public interface InternetProtocolStats {
         private final long datagramsReceivedErrors;
 
         public UdpStats(long datagramsSent, long datagramsReceived, long datagramsNoPort,
-                        long datagramsReceivedErrors) {
+                long datagramsReceivedErrors) {
             this.datagramsSent = datagramsSent;
             this.datagramsReceived = datagramsReceived;
             this.datagramsNoPort = datagramsNoPort;
@@ -314,7 +313,7 @@ public interface InternetProtocolStats {
         private final int owningProcessId;
 
         public IPConnection(String type, byte[] localAddress, int localPort, byte[] foreignAddress, int foreignPort,
-                            TcpState state, int transmitQueue, int receiveQueue, int owningProcessId) {
+                TcpState state, int transmitQueue, int receiveQueue, int owningProcessId) {
             this.type = type;
             this.localAddress = Arrays.copyOf(localAddress, localAddress.length);
             this.localPort = localPort;

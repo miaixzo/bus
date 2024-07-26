@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper;
 
 import org.miaixz.bus.mapper.annotation.RegisterMapper;
@@ -38,12 +38,7 @@ import org.miaixz.bus.mapper.common.*;
  * @since Java 17+
  */
 @RegisterMapper
-public interface Mapper<T> extends
-        BasicMapper<T>,
-        ConditionMapper<T>,
-        IdsMapper<T>,
-        RowBoundsMapper<T>,
-        SaveMapper<T>,
-        Marker {
+public interface Mapper<T>
+        extends BasicMapper<T>, ConditionMapper<T>, IdsMapper<T>, RowBoundsMapper<T>, SaveMapper<T>, Marker {
 
 }

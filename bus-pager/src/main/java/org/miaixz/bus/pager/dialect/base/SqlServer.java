@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager.dialect.base;
 
 import org.apache.ibatis.cache.CacheKey;
@@ -60,7 +60,8 @@ public class SqlServer extends AbstractPaging {
     protected ReplaceSql replaceSql;
 
     @Override
-    public String getCountSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds, CacheKey countKey) {
+    public String getCountSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds,
+            CacheKey countKey) {
         String sql = boundSql.getSql();
         String cacheSql = CACHE_COUNTSQL.get(sql);
         if (cacheSql != null) {
@@ -76,7 +77,8 @@ public class SqlServer extends AbstractPaging {
     }
 
     @Override
-    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
+    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql,
+            CacheKey pageKey) {
         return paramMap;
     }
 
@@ -99,14 +101,12 @@ public class SqlServer extends AbstractPaging {
     }
 
     /**
-     * 分页查询，Pager转换SQL时报错with(nolock)不识别的问题，
-     * 重写父类AbstractPaging.getPageSql转换出错的方法。
-     * 1. this.replaceSql.replace(sql);先转换成假的表名
-     * 2. 然后进行SQL转换
-     * 3. this.replaceSql.restore(sql);最后再恢复成真的with(nolock)
+     * 分页查询，Pager转换SQL时报错with(nolock)不识别的问题， 重写父类AbstractPaging.getPageSql转换出错的方法。 1.
+     * this.replaceSql.replace(sql);先转换成假的表名 2. 然后进行SQL转换 3. this.replaceSql.restore(sql);最后再恢复成真的with(nolock)
      */
     @Override
-    public String getPageSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds, CacheKey pageKey) {
+    public String getPageSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds,
+            CacheKey pageKey) {
         String sql = boundSql.getSql();
         Page page = this.getLocalPage();
         String orderBy = page.getOrderBy();
@@ -123,7 +123,8 @@ public class SqlServer extends AbstractPaging {
     @Override
     public void setProperties(Properties properties) {
         super.setProperties(properties);
-        this.sqlServerSqlParser = Builder.newInstance(properties.getProperty("sqlServerSqlParser"), SqlServerSqlParser.class, properties, DefaultSqlServerSqlParser::new);
+        this.sqlServerSqlParser = Builder.newInstance(properties.getProperty("sqlServerSqlParser"),
+                SqlServerSqlParser.class, properties, DefaultSqlServerSqlParser::new);
         String replaceSql = properties.getProperty("replaceSql");
         if (StringKit.isEmpty(replaceSql) || "regex".equalsIgnoreCase(replaceSql)) {
             this.replaceSql = new RegexWithNolock();

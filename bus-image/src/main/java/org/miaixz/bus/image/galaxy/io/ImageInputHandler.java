@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.io;
 
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -39,19 +39,14 @@ import java.io.IOException;
  */
 public interface ImageInputHandler {
 
-    void readValue(ImageInputStream dis, Attributes attrs)
-            throws IOException;
+    void readValue(ImageInputStream dis, Attributes attrs) throws IOException;
 
-    void readValue(ImageInputStream dis, Sequence seq)
-            throws IOException;
+    void readValue(ImageInputStream dis, Sequence seq) throws IOException;
 
-    void readValue(ImageInputStream dis, Fragments frags)
-            throws IOException;
+    void readValue(ImageInputStream dis, Fragments frags) throws IOException;
 
-    void startDataset(ImageInputStream dis)
-            throws IOException;
+    void startDataset(ImageInputStream dis) throws IOException;
 
-    void endDataset(ImageInputStream dis)
-            throws IOException;
+    void endDataset(ImageInputStream dis) throws IOException;
 
 }

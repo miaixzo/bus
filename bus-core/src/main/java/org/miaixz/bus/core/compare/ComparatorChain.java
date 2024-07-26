@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.compare;
 
 import org.miaixz.bus.core.lang.Chain;
@@ -33,9 +33,7 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * 比较器链。此链包装了多个比较器，最终比较结果按照比较器顺序综合多个比较器结果
- * 按照比较器链的顺序分别比较，如果比较出相等则转向下一个比较器，否则直接返回
- * 此类copy from Apache-commons-collections
+ * 比较器链。此链包装了多个比较器，最终比较结果按照比较器顺序综合多个比较器结果 按照比较器链的顺序分别比较，如果比较出相等则转向下一个比较器，否则直接返回 此类copy from Apache-commons-collections
  *
  * @param <E> 被比较的对象
  * @author Kimi Liu
@@ -99,8 +97,7 @@ public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<
     }
 
     /**
-     * 构造，使用已有的比较器列表和对应的BitSet
-     * BitSet中的boolean值需与list中的{@link Comparator}一一对应，true表示正序，false反序
+     * 构造，使用已有的比较器列表和对应的BitSet BitSet中的boolean值需与list中的{@link Comparator}一一对应，true表示正序，false反序
      *
      * @param list {@link Comparator} 列表
      * @param bits {@link Comparator} 列表对应的排序boolean值，true表示正序，false反序
@@ -203,7 +200,8 @@ public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<
      * @return this
      * @throws IndexOutOfBoundsException if index &lt; 0 or index &gt;= size()
      */
-    public ComparatorChain<E> setComparator(final int index, final Comparator<E> comparator) throws IndexOutOfBoundsException {
+    public ComparatorChain<E> setComparator(final int index, final Comparator<E> comparator)
+            throws IndexOutOfBoundsException {
         return setComparator(index, comparator, false);
     }
 
@@ -280,8 +278,7 @@ public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<
     }
 
     /**
-     * 执行比较
-     * 按照比较器链的顺序分别比较，如果比较出相等则转向下一个比较器，否则直接返回
+     * 执行比较 按照比较器链的顺序分别比较，如果比较出相等则转向下一个比较器，否则直接返回
      *
      * @param o1 第一个对象
      * @param o2 第二个对象
@@ -337,8 +334,7 @@ public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<
         if (object.getClass().equals(this.getClass())) {
             final ComparatorChain<?> otherChain = (ComparatorChain<?>) object;
             //
-            return Objects.equals(this.orderingBits, otherChain.orderingBits)
-                    && this.chain.equals(otherChain.chain);
+            return Objects.equals(this.orderingBits, otherChain.orderingBits) && this.chain.equals(otherChain.chain);
         }
         return false;
     }
@@ -350,7 +346,8 @@ public class ComparatorChain<E> implements Chain<Comparator<E>, ComparatorChain<
      */
     private void checkLocked() {
         if (lock == true) {
-            throw new UnsupportedOperationException("Comparator ordering cannot be changed after the first comparison is performed");
+            throw new UnsupportedOperationException(
+                    "Comparator ordering cannot be changed after the first comparison is performed");
         }
     }
 

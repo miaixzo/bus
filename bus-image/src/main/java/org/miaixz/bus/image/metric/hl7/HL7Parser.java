@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.hl7;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -64,9 +64,7 @@ public class HL7Parser {
     }
 
     public void parse(Reader reader) throws IOException, SAXException {
-        parse(reader instanceof BufferedReader
-                ? (BufferedReader) reader
-                : new BufferedReader(reader));
+        parse(reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader));
     }
 
     public void parse(BufferedReader reader) throws IOException, SAXException {
@@ -128,9 +126,7 @@ public class HL7Parser {
     }
 
     private boolean isHeaderSegment(String line) {
-        return (line.startsWith("MSH")
-                || line.startsWith("BHS")
-                || line.startsWith("FHS"));
+        return (line.startsWith("MSH") || line.startsWith("BHS") || line.startsWith("FHS"));
     }
 
     private void startDocument() throws SAXException {

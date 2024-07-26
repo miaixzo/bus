@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -47,11 +47,10 @@ import java.util.jar.Manifest;
  */
 public class ManifestKit {
 
-    private static final String[] MANIFEST_NAMES = {"Manifest.mf", "manifest.mf", "MANIFEST.MF"};
+    private static final String[] MANIFEST_NAMES = { "Manifest.mf", "manifest.mf", "MANIFEST.MF" };
 
     /**
-     * 根据 class 获取 所在 jar 包文件的 Manifest
-     * 如果这个类不在jar包中，返回{@code null}
+     * 根据 class 获取 所在 jar 包文件的 Manifest 如果这个类不在jar包中，返回{@code null}
      *
      * @param cls 类
      * @return Manifest

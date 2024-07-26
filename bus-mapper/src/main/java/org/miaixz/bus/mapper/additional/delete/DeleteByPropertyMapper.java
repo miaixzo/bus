@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.additional.delete;
 
 import org.apache.ibatis.annotations.DeleteProvider;
@@ -72,6 +72,7 @@ public interface DeleteByPropertyMapper<T> {
      * @return the int
      */
     @SelectProvider(type = DeletePropertyProvider.class, method = "dynamicSQL")
-    int deleteBetweenByProperty(@Param("fn") FunctionX<T, ?> fn, @Param("begin") Object begin, @Param("end") Object end);
+    int deleteBetweenByProperty(@Param("fn") FunctionX<T, ?> fn, @Param("begin") Object begin,
+            @Param("end") Object end);
 
 }

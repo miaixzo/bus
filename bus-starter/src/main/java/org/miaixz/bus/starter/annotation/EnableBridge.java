@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.annotation;
 
 import org.miaixz.bus.starter.bridge.BridgeConfiguration;
@@ -40,9 +40,9 @@ import java.lang.annotation.*;
  */
 @Inherited
 @Documented
-@Target({ElementType.TYPE})
+@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-@Import({BridgeConfiguration.class})
+@Import({ BridgeConfiguration.class })
 public @interface EnableBridge {
 
 }

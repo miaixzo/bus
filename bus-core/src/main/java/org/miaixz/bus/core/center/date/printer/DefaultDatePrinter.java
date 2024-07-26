@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date.printer;
 
 import java.io.Serializable;
@@ -34,9 +34,9 @@ import java.util.TimeZone;
 /**
  * 默认日期基本信息类，包括：
  * <ul>
- *     <li>{@link #getPattern()}返回{@code null}</li>
- *     <li>{@link #getTimeZone()} ()}返回{@link TimeZone#getDefault()}</li>
- *     <li>{@link #getLocale()} ()} ()}返回{@link Locale#getDefault()}</li>
+ * <li>{@link #getPattern()}返回{@code null}</li>
+ * <li>{@link #getTimeZone()} ()}返回{@link TimeZone#getDefault()}</li>
+ * <li>{@link #getLocale()} ()} ()}返回{@link Locale#getDefault()}</li>
  * </ul>
  *
  * @author Kimi Liu

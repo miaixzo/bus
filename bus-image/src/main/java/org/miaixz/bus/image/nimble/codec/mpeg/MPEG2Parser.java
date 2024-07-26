@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.codec.mpeg;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -49,26 +49,13 @@ public class MPEG2Parser implements XPEGParser {
     private static final int BUFFER_SIZE = 8162;
     private static final int SEQUENCE_HEADER_STREAM_ID = (byte) 0xb3;
     private static final int GOP_HEADER_STREAM_ID = (byte) 0xb8;
-    private static final String[] ASPECT_RATIO_1_1 = {"1", "1"};
-    private static final String[] ASPECT_RATIO_4_3 = {"4", "3"};
-    private static final String[] ASPECT_RATIO_16_9 = {"16", "9"};
-    private static final String[] ASPECT_RATIO_221_100 = {"221", "100"};
-    private static final String[][] ASPECT_RATIOS = {
-            ASPECT_RATIO_1_1,
-            ASPECT_RATIO_4_3,
-            ASPECT_RATIO_16_9,
-            ASPECT_RATIO_221_100
-    };
-    private static final int[] FPS = {
-            24, 1001,
-            24, 1000,
-            25, 1000,
-            30, 1001,
-            30, 1000,
-            50, 1000,
-            60, 1001,
-            60, 1000
-    };
+    private static final String[] ASPECT_RATIO_1_1 = { "1", "1" };
+    private static final String[] ASPECT_RATIO_4_3 = { "4", "3" };
+    private static final String[] ASPECT_RATIO_16_9 = { "16", "9" };
+    private static final String[] ASPECT_RATIO_221_100 = { "221", "100" };
+    private static final String[][] ASPECT_RATIOS = { ASPECT_RATIO_1_1, ASPECT_RATIO_4_3, ASPECT_RATIO_16_9,
+            ASPECT_RATIO_221_100 };
+    private static final int[] FPS = { 24, 1001, 24, 1000, 25, 1000, 30, 1001, 30, 1000, 50, 1000, 60, 1001, 60, 1000 };
 
     private final byte[] data = new byte[BUFFER_SIZE];
     private final ByteBuffer buf = ByteBuffer.wrap(data);
@@ -155,8 +142,7 @@ public class MPEG2Parser implements XPEGParser {
 
     @Override
     public String getTransferSyntaxUID(boolean fragmented) {
-        return frameRate <= 5 && columns <= 720
-                ? fragmented ? UID.MPEG2MPMLF.uid : UID.MPEG2MPML.uid
+        return frameRate <= 5 && columns <= 720 ? fragmented ? UID.MPEG2MPMLF.uid : UID.MPEG2MPML.uid
                 : fragmented ? UID.MPEG2MPHLF.uid : UID.MPEG2MPHL.uid;
     }
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.beans;
 
 import freemarker.template.Configuration;
@@ -48,7 +48,6 @@ public class Builder {
     public static final String SERVICE_IMPL = "ServiceImpl";
     public static final String CONTROLLER = "Controller";
     public static final String SUFFIX = ".ftl";
-
 
     // ①创建实体类
     public static Object createEntity(String url, TableEntity tableEntity) {
@@ -121,7 +120,8 @@ public class Builder {
             // 通过FreeMarker的Confuguration读取相应的模板文件
             Configuration configuration = new Configuration(Configuration.VERSION_2_3_28);
             // 设置模板路径
-            configuration.setClassForTemplateLoading(org.miaixz.bus.shade.beans.Builder.class, Symbol.C_SLASH + Normal.META_INF + "/template");
+            configuration.setClassForTemplateLoading(org.miaixz.bus.shade.beans.Builder.class,
+                    Symbol.C_SLASH + Normal.META_INF + "/template");
             // 设置默认字体
             configuration.setDefaultEncoding(Charset.DEFAULT_UTF_8);
             // 获取模板
@@ -136,9 +136,9 @@ public class Builder {
                 return "The file already exists:" + filePath;
             }
 
-            //设置输出流
+            // 设置输出流
             out = new FileWriter(file);
-            //模板输出静态文件
+            // 模板输出静态文件
             template.process(tableEntity, out);
             return "create a file :" + filePath;
         } catch (Exception e) {

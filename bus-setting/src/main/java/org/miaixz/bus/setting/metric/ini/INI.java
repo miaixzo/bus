@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.setting.metric.ini;
 
 import java.util.*;
@@ -74,7 +74,6 @@ public class INI {
     public INI(Supplier<List<IniElement>> listSupplier) {
         elements = listSupplier.get();
     }
-
 
     /**
      * 设置分区创建者功能
@@ -298,7 +297,6 @@ public class INI {
     public IniSetting build() {
         return new IniSetting(elements);
     }
-
 
     private void checkProps() {
         if (null != this.lastSection && !waitForSections.isEmpty()) {

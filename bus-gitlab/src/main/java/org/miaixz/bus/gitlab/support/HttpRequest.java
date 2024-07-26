@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.support;
 
 import jakarta.servlet.http.Cookie;
@@ -41,7 +41,7 @@ public class HttpRequest {
      * Build a String containing a very short multi-line dump of an HTTP request.
      *
      * @param fromMethod the method that this method was called from
-     * @param request the HTTP request build the request dump from
+     * @param request    the HTTP request build the request dump from
      * @return a String containing a very short multi-line dump of the HTTP request
      */
     public static String getShortRequestDump(String fromMethod, HttpServletRequest request) {
@@ -51,8 +51,8 @@ public class HttpRequest {
     /**
      * Build a String containing a short multi-line dump of an HTTP request.
      *
-     * @param fromMethod the method that this method was called from
-     * @param request the HTTP request build the request dump from
+     * @param fromMethod     the method that this method was called from
+     * @param request        the HTTP request build the request dump from
      * @param includeHeaders if true will include the HTTP headers in the dump
      * @return a String containing a short multi-line dump of the HTTP request
      */
@@ -86,11 +86,11 @@ public class HttpRequest {
     /**
      * Build a String containing a multi-line dump of an HTTP request.
      *
-     * @param fromMethod the method that this method was called from
-     * @param request the HTTP request build the request dump from
+     * @param fromMethod      the method that this method was called from
+     * @param request         the HTTP request build the request dump from
      * @param includePostData if true will include the POST data in the dump
-     * @return a String containing a multi-line dump of the HTTP request, If an error occurs,
-     * the message from the exception will be returned
+     * @return a String containing a multi-line dump of the HTTP request, If an error occurs, the message from the
+     *         exception will be returned
      */
     public static String getRequestDump(String fromMethod, HttpServletRequest request, boolean includePostData) {
 
@@ -123,7 +123,8 @@ public class HttpRequest {
             Cookie[] cookies = request.getCookies();
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
-                    String cstr = "\t" + cookie.getDomain() + "." + cookie.getPath() + "." + cookie.getName() + ": " + cookie.getValue() + "\n";
+                    String cstr = "\t" + cookie.getDomain() + "." + cookie.getPath() + "." + cookie.getName() + ": "
+                            + cookie.getValue() + "\n";
                     buf.append(cstr);
                 }
             }

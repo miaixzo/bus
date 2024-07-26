@@ -49,7 +49,7 @@
           socket-timeout: 60000
           connection-request-timeout: 60000
           max-connect-total: 2000
-          max-connect-per-route: 500  
+          max-connect-per-route: 500
       ```
     + 第二步: 在业务 Service 实现类中注入 RestHighLevelClient
       ```java

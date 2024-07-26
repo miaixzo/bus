@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.http___www_gemedicalsystems_com_it_solutions_orthoview_2_1;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,23 +46,24 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.OrthoViewSessionCompletionFlag:
-                return VR.CS;
-            case PrivateTag.OrthoViewSessionDateTime:
-                return VR.DT;
-            case PrivateTag.OrthoViewFileContent:
-                return VR.OB;
-            case PrivateTag.OrthoViewSessionCreator:
-                return VR.PN;
-            case PrivateTag.OrthoViewFileSequence:
-                return VR.SQ;
-            case PrivateTag.OrthoViewFileName:
-                return VR.ST;
+
+        case PrivateTag.OrthoViewSessionCompletionFlag:
+            return VR.CS;
+        case PrivateTag.OrthoViewSessionDateTime:
+            return VR.DT;
+        case PrivateTag.OrthoViewFileContent:
+            return VR.OB;
+        case PrivateTag.OrthoViewSessionCreator:
+            return VR.PN;
+        case PrivateTag.OrthoViewFileSequence:
+            return VR.SQ;
+        case PrivateTag.OrthoViewFileName:
+            return VR.ST;
         }
         return VR.UN;
     }

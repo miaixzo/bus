@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.bean.copier;
 
 import org.miaixz.bus.core.bean.desc.PropDesc;
@@ -70,12 +70,14 @@ public class BeanToBeanCopier<S, T> extends AbstractCopier<S, T> {
         if (null != copyOptions.editable) {
             // 检查限制类是否为target的父类或接口
             Assert.isTrue(copyOptions.editable.isInstance(target),
-                    "Target class [{}] not assignable to Editable class [{}]", actualEditable.getName(), copyOptions.editable.getName());
+                    "Target class [{}] not assignable to Editable class [{}]", actualEditable.getName(),
+                    copyOptions.editable.getName());
             actualEditable = copyOptions.editable;
         }
         final Map<String, PropDesc> targetPropDescMap = getBeanDesc(actualEditable).getPropMap(copyOptions.ignoreCase);
 
-        final Map<String, PropDesc> sourcePropDescMap = getBeanDesc(source.getClass()).getPropMap(copyOptions.ignoreCase);
+        final Map<String, PropDesc> sourcePropDescMap = getBeanDesc(source.getClass())
+                .getPropMap(copyOptions.ignoreCase);
         sourcePropDescMap.forEach((sFieldName, sDesc) -> {
             if (null == sFieldName || !sDesc.isReadable(copyOptions.transientSupport)) {
                 // 字段空或不可读，跳过
@@ -110,11 +112,12 @@ public class BeanToBeanCopier<S, T> extends AbstractCopier<S, T> {
 
             // 获取目标字段真实类型并转换源值
             final Type fieldType = TypeKit.getActualType(this.targetType, tDesc.getFieldType());
-            //sValue = Convert.convertWithCheck(fieldType, sValue, null, this.copyOptions.ignoreError);
+            // sValue = Convert.convertWithCheck(fieldType, sValue, null, this.copyOptions.ignoreError);
             sValue = this.copyOptions.convertField(fieldType, sValue);
 
             // 目标赋值
-            tDesc.setValue(this.target, sValue, copyOptions.ignoreNullValue, copyOptions.ignoreError, copyOptions.override);
+            tDesc.setValue(this.target, sValue, copyOptions.ignoreNullValue, copyOptions.ignoreError,
+                    copyOptions.override);
         });
         return this.target;
     }

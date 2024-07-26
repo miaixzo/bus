@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.template;
 
 import org.miaixz.bus.core.instance.Instances;
@@ -35,8 +35,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * 简单模板引擎工厂，用于根据用户引入的模板引擎jar，自动创建对应的模板引擎对象
- * 使用简单工厂（Simple Factory）模式
+ * 简单模板引擎工厂，用于根据用户引入的模板引擎jar，自动创建对应的模板引擎对象 使用简单工厂（Simple Factory）模式
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,20 +43,19 @@ import org.miaixz.bus.logger.Logger;
 public class TemplateFactory {
 
     /**
-     * 根据用户引入的模板引擎jar，自动创建对应的模板引擎对象
-     * 获得的是单例
+     * 根据用户引入的模板引擎jar，自动创建对应的模板引擎对象 获得的是单例
      *
      * @return 单例
      */
     public static TemplateProvider get() {
         final TemplateProvider engine = Instances.get(TemplateProvider.class.getName(), TemplateFactory::create);
-        Logger.debug("Use [{}] Template Engine As Default.", StringKit.removeSuffix(engine.getClass().getSimpleName(), "Engine"));
+        Logger.debug("Use [{}] Template Engine As Default.",
+                StringKit.removeSuffix(engine.getClass().getSimpleName(), "Engine"));
         return engine;
     }
 
     /**
-     * 根据用户引入的模板引擎jar，自动创建对应的模板引擎对象
-     * 推荐创建的引擎单例使用，此方法每次调用会返回新的引擎
+     * 根据用户引入的模板引擎jar，自动创建对应的模板引擎对象 推荐创建的引擎单例使用，此方法每次调用会返回新的引擎
      *
      * @return {@link TemplateProvider}
      */
@@ -66,8 +64,7 @@ public class TemplateFactory {
     }
 
     /**
-     * 根据用户引入的模板引擎jar，自动创建对应的模板引擎对象
-     * 推荐创建的引擎单例使用，此方法每次调用会返回新的引擎
+     * 根据用户引入的模板引擎jar，自动创建对应的模板引擎对象 推荐创建的引擎单例使用，此方法每次调用会返回新的引擎
      *
      * @param config 模板配置，包括编码、模板文件path等信息
      * @return {@link TemplateProvider}
@@ -77,8 +74,7 @@ public class TemplateFactory {
     }
 
     /**
-     * 根据用户引入的模板引擎jar，自动创建对应的模板引擎对象
-     * 推荐创建的引擎单例使用，此方法每次调用会返回新的引擎
+     * 根据用户引入的模板引擎jar，自动创建对应的模板引擎对象 推荐创建的引擎单例使用，此方法每次调用会返回新的引擎
      *
      * @param config 模板配置，包括编码、模板文件path等信息
      * @return {@link TemplateProvider}

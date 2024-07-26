@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.validate.magic.annotation;
 
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -34,14 +34,8 @@ import java.lang.annotation.*;
 /**
  * 校验异常注解,校验失败时将ValidateException替换为指定的异常并抛出.
  * <p>
- * 在被拦截方法的入参上使用,表明为全局校验异常.
- * 在对象内部校验的字段上标记,表明为字段异常.
- * 在校验器注解的定义上标记,表明为校验器异常.
- * 校验异常说明：
- * 当校验失败时,如果定义了全局校验异常,则抛出全局校验异常；
- * 然后判断如果定义了字段异常,则抛出字段异常；
- * 最后判断如果定义了校验器注解异常,则抛出校验器注解上定义的异常;
- * 如果都没定义,则抛出{@link ValidateException}
+ * 在被拦截方法的入参上使用,表明为全局校验异常. 在对象内部校验的字段上标记,表明为字段异常. 在校验器注解的定义上标记,表明为校验器异常. 校验异常说明： 当校验失败时,如果定义了全局校验异常,则抛出全局校验异常；
+ * 然后判断如果定义了字段异常,则抛出字段异常； 最后判断如果定义了校验器注解异常,则抛出校验器注解上定义的异常; 如果都没定义,则抛出{@link ValidateException}
  * </P>
  *
  * @author Kimi Liu
@@ -49,7 +43,7 @@ import java.lang.annotation.*;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.ANNOTATION_TYPE, ElementType.PARAMETER, ElementType.FIELD})
+@Target({ ElementType.ANNOTATION_TYPE, ElementType.PARAMETER, ElementType.FIELD })
 public @interface ValidEx {
 
     /**

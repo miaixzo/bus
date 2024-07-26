@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.hardware;
 
 import com.sun.jna.platform.win32.*;
@@ -60,8 +60,7 @@ final class WindowsGraphicsCard extends AbstractGraphicsCard {
     public static final String VENDOR = "ProviderName";
     public static final String QW_MEMORY_SIZE = "HardwareInformation.qwMemorySize";
     public static final String MEMORY_SIZE = "HardwareInformation.MemorySize";
-    public static final String DISPLAY_DEVICES_REGISTRY_PATH =
-            "SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}\\";
+    public static final String DISPLAY_DEVICES_REGISTRY_PATH = "SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}\\";
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
 
     /**
@@ -101,13 +100,15 @@ final class WindowsGraphicsCard extends AbstractGraphicsCard {
                 String name = Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, DRIVER_DESC);
                 String deviceId = "VideoController" + index++;
                 String vendor = Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, VENDOR);
-                String versionInfo = Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, DRIVER_VERSION);
+                String versionInfo = Advapi32Util.registryGetStringValue(WinReg.HKEY_LOCAL_MACHINE, fullKey,
+                        DRIVER_VERSION);
                 long vram = 0L;
 
                 if (Advapi32Util.registryValueExists(WinReg.HKEY_LOCAL_MACHINE, fullKey, QW_MEMORY_SIZE)) {
                     vram = Advapi32Util.registryGetLongValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, QW_MEMORY_SIZE);
                 } else if (Advapi32Util.registryValueExists(WinReg.HKEY_LOCAL_MACHINE, fullKey, MEMORY_SIZE)) {
-                    Object genericValue = Advapi32Util.registryGetValue(WinReg.HKEY_LOCAL_MACHINE, fullKey, MEMORY_SIZE);
+                    Object genericValue = Advapi32Util.registryGetValue(WinReg.HKEY_LOCAL_MACHINE, fullKey,
+                            MEMORY_SIZE);
                     if (genericValue instanceof Long) {
                         vram = (long) genericValue;
                     } else if (genericValue instanceof Integer) {
@@ -117,12 +118,10 @@ final class WindowsGraphicsCard extends AbstractGraphicsCard {
                     }
                 }
 
-                cardList.add(new WindowsGraphicsCard(
-                        StringKit.isBlank(name) ? Normal.UNKNOWN : name,
+                cardList.add(new WindowsGraphicsCard(StringKit.isBlank(name) ? Normal.UNKNOWN : name,
                         StringKit.isBlank(deviceId) ? Normal.UNKNOWN : deviceId,
                         StringKit.isBlank(vendor) ? Normal.UNKNOWN : vendor,
-                        StringKit.isBlank(versionInfo) ? Normal.UNKNOWN : versionInfo,
-                        vram));
+                        StringKit.isBlank(versionInfo) ? Normal.UNKNOWN : versionInfo, vram));
             } catch (Win32Exception e) {
                 if (e.getErrorCode() != WinError.ERROR_ACCESS_DENIED) {
                     // Ignore access denied errors, re-throw others

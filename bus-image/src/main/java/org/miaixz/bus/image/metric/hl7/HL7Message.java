@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.hl7;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -62,8 +62,7 @@ public class HL7Message extends ArrayList<HL7Segment> {
         String encodingCharacters = seg.getEncodingCharacters();
         String charsetName = HL7Charset.toCharsetName(seg.getField(17, defCharset));
         msg.add(seg);
-        while ((seg = HL7Segment.parse(
-                b, size, pos, fieldSeparator, encodingCharacters, charsetName)) != null)
+        while ((seg = HL7Segment.parse(b, size, pos, fieldSeparator, encodingCharacters, charsetName)) != null)
             msg.add(seg);
         msg.trimToSize();
         return msg;
@@ -71,8 +70,7 @@ public class HL7Message extends ArrayList<HL7Segment> {
 
     public static HL7Message makeACK(HL7Segment msh, String ackCode, String text) {
         int size = msh.size();
-        HL7Segment ackmsh = HL7Segment.makeMSH(size, msh.getFieldSeparator(),
-                msh.getEncodingCharacters());
+        HL7Segment ackmsh = HL7Segment.makeMSH(size, msh.getFieldSeparator(), msh.getEncodingCharacters());
         ackmsh.setField(2, msh.getField(4, null));
         ackmsh.setField(3, msh.getField(5, null));
         ackmsh.setField(4, msh.getField(2, null));
@@ -80,8 +78,7 @@ public class HL7Message extends ArrayList<HL7Segment> {
         ackmsh.setField(8, "ACK^" + eventType(msh) + "^ACK");
         for (int i = 10; i < size; i++)
             ackmsh.setField(i, msh.getField(i, null));
-        HL7Segment msa = new HL7Segment(4, msh.getFieldSeparator(),
-                msh.getEncodingCharacters());
+        HL7Segment msa = new HL7Segment(4, msh.getFieldSeparator(), msh.getEncodingCharacters());
         msa.setField(0, "MSA");
         msa.setField(1, ackCode);
         msa.setField(2, msh.getMessageControlID());
@@ -94,9 +91,7 @@ public class HL7Message extends ArrayList<HL7Segment> {
 
     public static String eventType(HL7Segment msh) {
         String messageType = msh.getMessageType();
-        return messageType == null || messageType.equals("")
-                ? messageType
-                : messageType.substring(4, 7);
+        return messageType == null || messageType.equals("") ? messageType : messageType.substring(4, 7);
     }
 
     public static HL7Message makePixQuery(String pid, String... domains) {

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.service;
 
 import org.miaixz.bus.image.Status;
@@ -51,8 +51,7 @@ public class BasicQueryTask implements QueryTask {
     protected volatile boolean canceled;
     protected boolean optionalKeysNotSupported = false;
 
-    public BasicQueryTask(Association as, PresentationContext pc,
-                          Attributes rq, Attributes keys) {
+    public BasicQueryTask(Association as, PresentationContext pc, Attributes rq, Attributes keys) {
         this.as = as;
         this.pc = pc;
         this.rq = rq;
@@ -81,9 +80,7 @@ public class BasicQueryTask implements QueryTask {
                 while (!canceled && hasMoreMatches()) {
                     Attributes match = adjust(nextMatch());
                     if (match != null) {
-                        int status = optionalKeysNotSupported
-                                ? Status.PendingWarning
-                                : Status.Pending;
+                        int status = optionalKeysNotSupported ? Status.PendingWarning : Status.Pending;
                         as.writeDimseRSP(pc, Commands.mkCFindRSP(rq, status), match);
                     }
                 }

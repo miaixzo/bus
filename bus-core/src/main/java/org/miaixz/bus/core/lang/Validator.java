@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang;
 
 import org.miaixz.bus.core.center.regex.Pattern;
@@ -40,8 +40,8 @@ import java.util.regex.Matcher;
  * 字段验证器（验证器），分两种类型的验证：
  *
  * <ul>
- *     <li>isXXX：通过返回boolean值判断是否满足给定格式。</li>
- *     <li>validateXXX：通过抛出异常{@link ValidateException}检查是否满足给定格式。</li>
+ * <li>isXXX：通过返回boolean值判断是否满足给定格式。</li>
+ * <li>validateXXX：通过抛出异常{@link ValidateException}检查是否满足给定格式。</li>
  * </ul>
  * <p>
  * 主要验证字段非空、是否为满足指定格式等（如是否为Email、电话等）
@@ -80,7 +80,8 @@ public class Validator {
      * @return 检查过后的值
      * @throws ValidateException 检查不满足条件抛出的异常
      */
-    public static boolean validateTrue(final boolean value, final String errorMsgTemplate, final Object... params) throws ValidateException {
+    public static boolean validateTrue(final boolean value, final String errorMsgTemplate, final Object... params)
+            throws ValidateException {
         if (isFalse(value)) {
             throw new ValidateException(errorMsgTemplate, params);
         }
@@ -96,7 +97,8 @@ public class Validator {
      * @return 检查过后的值
      * @throws ValidateException 检查不满足条件抛出的异常
      */
-    public static boolean validateFalse(final boolean value, final String errorMsgTemplate, final Object... params) throws ValidateException {
+    public static boolean validateFalse(final boolean value, final String errorMsgTemplate, final Object... params)
+            throws ValidateException {
         if (isTrue(value)) {
             throw new ValidateException(errorMsgTemplate, params);
         }
@@ -133,7 +135,8 @@ public class Validator {
      * @return 检查过后的值
      * @throws ValidateException 检查不满足条件抛出的异常
      */
-    public static <T> T validateNull(final T value, final String errorMsgTemplate, final Object... params) throws ValidateException {
+    public static <T> T validateNull(final T value, final String errorMsgTemplate, final Object... params)
+            throws ValidateException {
         if (isNotNull(value)) {
             throw new ValidateException(errorMsgTemplate, params);
         }
@@ -150,7 +153,8 @@ public class Validator {
      * @return 检查过后的值
      * @throws ValidateException 检查不满足条件抛出的异常
      */
-    public static <T> T validateNotNull(final T value, final String errorMsgTemplate, final Object... params) throws ValidateException {
+    public static <T> T validateNotNull(final T value, final String errorMsgTemplate, final Object... params)
+            throws ValidateException {
         if (isNull(value)) {
             throw new ValidateException(errorMsgTemplate, params);
         }
@@ -158,8 +162,7 @@ public class Validator {
     }
 
     /**
-     * 验证是否为空
-     * 对于String类型判定是否为empty(null 或 "")
+     * 验证是否为空 对于String类型判定是否为empty(null 或 "")
      *
      * @param value 值
      * @return 是否为空
@@ -170,8 +173,7 @@ public class Validator {
     }
 
     /**
-     * 验证是否为非空
-     * 对于String类型判定是否为empty(null 或 "")
+     * 验证是否为非空 对于String类型判定是否为empty(null 或 "")
      *
      * @param value 值
      * @return 是否为空
@@ -182,8 +184,7 @@ public class Validator {
     }
 
     /**
-     * 验证是否为空，非空时抛出异常
-     * 对于String类型判定是否为empty(null 或 "")
+     * 验证是否为空，非空时抛出异常 对于String类型判定是否为empty(null 或 "")
      *
      * @param <T>      值类型
      * @param value    值
@@ -199,8 +200,7 @@ public class Validator {
     }
 
     /**
-     * 验证是否为非空，为空时抛出异常
-     * 对于String类型判定是否为empty(null 或 "")
+     * 验证是否为非空，为空时抛出异常 对于String类型判定是否为empty(null 或 "")
      *
      * @param <T>      值类型
      * @param value    值
@@ -216,8 +216,7 @@ public class Validator {
     }
 
     /**
-     * 验证是否相等
-     * 当两值都为null返回true
+     * 验证是否相等 当两值都为null返回true
      *
      * @param t1 对象1
      * @param t2 对象2
@@ -236,7 +235,8 @@ public class Validator {
      * @return 相同值
      * @throws ValidateException 验证异常
      */
-    public static Object validateEqual(final Object t1, final Object t2, final String errorMsg) throws ValidateException {
+    public static Object validateEqual(final Object t1, final Object t2, final String errorMsg)
+            throws ValidateException {
         if (!equal(t1, t2)) {
             throw new ValidateException(errorMsg);
         }
@@ -251,45 +251,43 @@ public class Validator {
      * @param errorMsg 错误信息
      * @throws ValidateException 验证异常
      */
-    public static void validateNotEqual(final Object t1, final Object t2, final String errorMsg) throws ValidateException {
+    public static void validateNotEqual(final Object t1, final Object t2, final String errorMsg)
+            throws ValidateException {
         if (equal(t1, t2)) {
             throw new ValidateException(errorMsg);
         }
     }
 
     /**
-     * 验证是否非空且与指定值相等
-     * 当数据为空时抛出验证异常
-     * 当两值不等时抛出异常
+     * 验证是否非空且与指定值相等 当数据为空时抛出验证异常 当两值不等时抛出异常
      *
      * @param t1       对象1
      * @param t2       对象2
      * @param errorMsg 错误信息
      * @throws ValidateException 验证异常
      */
-    public static void validateNotEmptyAndEqual(final Object t1, final Object t2, final String errorMsg) throws ValidateException {
+    public static void validateNotEmptyAndEqual(final Object t1, final Object t2, final String errorMsg)
+            throws ValidateException {
         validateNotEmpty(t1, errorMsg);
         validateEqual(t1, t2, errorMsg);
     }
 
     /**
-     * 验证是否非空且与指定值相等
-     * 当数据为空时抛出验证异常
-     * 当两值相等时抛出异常
+     * 验证是否非空且与指定值相等 当数据为空时抛出验证异常 当两值相等时抛出异常
      *
      * @param t1       对象1
      * @param t2       对象2
      * @param errorMsg 错误信息
      * @throws ValidateException 验证异常
      */
-    public static void validateNotEmptyAndNotEqual(final Object t1, final Object t2, final String errorMsg) throws ValidateException {
+    public static void validateNotEmptyAndNotEqual(final Object t1, final Object t2, final String errorMsg)
+            throws ValidateException {
         validateNotEmpty(t1, errorMsg);
         validateNotEqual(t1, t2, errorMsg);
     }
 
     /**
-     * 通过正则表达式验证
-     * 不符合正则抛出{@link ValidateException} 异常
+     * 通过正则表达式验证 不符合正则抛出{@link ValidateException} 异常
      *
      * @param <T>      字符串类型
      * @param regex    正则
@@ -298,7 +296,8 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateMatchRegex(final String regex, final T value, final String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validateMatchRegex(final String regex, final T value,
+            final String errorMsg) throws ValidateException {
         if (!isMatchRegex(regex, value)) {
             throw new ValidateException(errorMsg);
         }
@@ -346,7 +345,8 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateGeneral(final T value, final String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validateGeneral(final T value, final String errorMsg)
+            throws ValidateException {
         if (!isGeneral(value)) {
             throw new ValidateException(errorMsg);
         }
@@ -383,7 +383,8 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateGeneral(final T value, final int min, final int max, final String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validateGeneral(final T value, final int min, final int max,
+            final String errorMsg) throws ValidateException {
         if (!isGeneral(value, min, max)) {
             throw new ValidateException(errorMsg);
         }
@@ -411,7 +412,8 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateGeneral(final T value, final int min, final String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validateGeneral(final T value, final int min, final String errorMsg)
+            throws ValidateException {
         return validateGeneral(value, min, 0, errorMsg);
     }
 
@@ -434,7 +436,8 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateLetter(final T value, final String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validateLetter(final T value, final String errorMsg)
+            throws ValidateException {
         if (!isLetter(value)) {
             throw new ValidateException(errorMsg);
         }
@@ -460,7 +463,8 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateUpperCase(final T value, final String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validateUpperCase(final T value, final String errorMsg)
+            throws ValidateException {
         if (!isUpperCase(value)) {
             throw new ValidateException(errorMsg);
         }
@@ -486,7 +490,8 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateLowerCase(final T value, final String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validateLowerCase(final T value, final String errorMsg)
+            throws ValidateException {
         if (!isLowerCase(value)) {
             throw new ValidateException(errorMsg);
         }
@@ -547,7 +552,8 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateWord(final T value, final String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validateWord(final T value, final String errorMsg)
+            throws ValidateException {
         if (!isWord(value)) {
             throw new ValidateException(errorMsg);
         }
@@ -573,7 +579,8 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateMoney(final T value, final String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validateMoney(final T value, final String errorMsg)
+            throws ValidateException {
         if (!isMoney(value)) {
             throw new ValidateException(errorMsg);
         }
@@ -600,7 +607,8 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateZipCode(final T value, final String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validateZipCode(final T value, final String errorMsg)
+            throws ValidateException {
         if (!isZipCode(value)) {
             throw new ValidateException(errorMsg);
         }
@@ -632,7 +640,8 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateEmail(final T value, final String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validateEmail(final T value, final String errorMsg)
+            throws ValidateException {
         if (!isEmail(value)) {
             throw new ValidateException(errorMsg);
         }
@@ -658,7 +667,8 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateMobile(final T value, final String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validateMobile(final T value, final String errorMsg)
+            throws ValidateException {
         if (!isMobile(value)) {
             throw new ValidateException(errorMsg);
         }
@@ -684,7 +694,8 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateCitizenIdNumber(final T value, final String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validateCitizenIdNumber(final T value, final String errorMsg)
+            throws ValidateException {
         if (!isCitizenId(value)) {
             throw new ValidateException(errorMsg);
         }
@@ -727,8 +738,7 @@ public class Validator {
     }
 
     /**
-     * 验证是否为生日
-     * 只支持以下几种格式：
+     * 验证是否为生日 只支持以下几种格式：
      * <ul>
      * <li>yyyyMMdd</li>
      * <li>yyyy-MM-dd</li>
@@ -760,7 +770,8 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateBirthday(final T value, final String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validateBirthday(final T value, final String errorMsg)
+            throws ValidateException {
         if (!isBirthday(value)) {
             throw new ValidateException(errorMsg);
         }
@@ -786,7 +797,8 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateIpv4(final T value, final String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validateIpv4(final T value, final String errorMsg)
+            throws ValidateException {
         if (!isIpv4(value)) {
             throw new ValidateException(errorMsg);
         }
@@ -812,7 +824,8 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateIpv6(final T value, final String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validateIpv6(final T value, final String errorMsg)
+            throws ValidateException {
         if (!isIpv6(value)) {
             throw new ValidateException(errorMsg);
         }
@@ -838,7 +851,8 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateMac(final T value, final String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validateMac(final T value, final String errorMsg)
+            throws ValidateException {
         if (!isMac(value)) {
             throw new ValidateException(errorMsg);
         }
@@ -864,7 +878,8 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validatePlateNumber(final T value, final String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validatePlateNumber(final T value, final String errorMsg)
+            throws ValidateException {
         if (!isPlateNumber(value)) {
             throw new ValidateException(errorMsg);
         }
@@ -898,7 +913,8 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateUrl(final T value, final String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validateUrl(final T value, final String errorMsg)
+            throws ValidateException {
         if (!isUrl(value)) {
             throw new ValidateException(errorMsg);
         }
@@ -934,7 +950,8 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateChinese(final T value, final String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validateChinese(final T value, final String errorMsg)
+            throws ValidateException {
         if (!isChinese(value)) {
             throw new ValidateException(errorMsg);
         }
@@ -960,7 +977,8 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateGeneralWithChinese(final T value, final String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validateGeneralWithChinese(final T value, final String errorMsg)
+            throws ValidateException {
         if (!isGeneralWithChinese(value)) {
             throw new ValidateException(errorMsg);
         }
@@ -968,8 +986,7 @@ public class Validator {
     }
 
     /**
-     * 验证是否为UUID
-     * 包括带横线标准格式和不带横线的简单模式
+     * 验证是否为UUID 包括带横线标准格式和不带横线的简单模式
      *
      * @param value 值
      * @return 是否为UUID
@@ -979,8 +996,7 @@ public class Validator {
     }
 
     /**
-     * 验证是否为UUID
-     * 包括带横线标准格式和不带横线的简单模式
+     * 验证是否为UUID 包括带横线标准格式和不带横线的简单模式
      *
      * @param <T>      字符串类型
      * @param value    值
@@ -988,7 +1004,8 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateUUID(final T value, final String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validateUUID(final T value, final String errorMsg)
+            throws ValidateException {
         if (!isUUID(value)) {
             throw new ValidateException(errorMsg);
         }
@@ -1014,7 +1031,8 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateHex(final T value, final String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validateHex(final T value, final String errorMsg)
+            throws ValidateException {
         if (!isHex(value)) {
             throw new ValidateException(errorMsg);
         }
@@ -1046,7 +1064,8 @@ public class Validator {
      * @param errorMsg 验证错误的信息
      * @throws ValidateException 验证异常
      */
-    public static void validateBetween(final Number value, final Number min, final Number max, final String errorMsg) throws ValidateException {
+    public static void validateBetween(final Number value, final Number min, final Number max, final String errorMsg)
+            throws ValidateException {
         if (!isBetween(value, min, max)) {
             throw new ValidateException(errorMsg);
         }
@@ -1073,6 +1092,7 @@ public class Validator {
 
     /**
      * 是否是有效的统一社会信用代码
+     * 
      * <pre>
      * 第一部分：登记管理部门代码1位 (数字或大写英文字母)
      * 第二部分：机构类别代码1位 (数字或大写英文字母)
@@ -1107,7 +1127,8 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateCarVin(final T value, final String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validateCarVin(final T value, final String errorMsg)
+            throws ValidateException {
         if (!isCarVin(value)) {
             throw new ValidateException(errorMsg);
         }
@@ -1115,8 +1136,7 @@ public class Validator {
     }
 
     /**
-     * 验证是否为驾驶证 别名：驾驶证档案编号、行驶证编号
-     * 仅限：中国驾驶证档案编号
+     * 验证是否为驾驶证 别名：驾驶证档案编号、行驶证编号 仅限：中国驾驶证档案编号
      *
      * @param value 值，12位数字字符串,eg:430101758218
      * @return 是否为档案编号
@@ -1125,18 +1145,16 @@ public class Validator {
         return isMatchRegex(Pattern.CAR_DRIVING_LICENCE_PATTERN, value);
     }
 
-
     /**
-     * 是否是中文姓名
-     * 维吾尔族姓名里面的点是 · 输入法中文状态下，键盘左上角数字1前面的那个符号；
-     * 错误字符：{@code ．.。．.}
-     * 正确维吾尔族姓名：
+     * 是否是中文姓名 维吾尔族姓名里面的点是 · 输入法中文状态下，键盘左上角数字1前面的那个符号； 错误字符：{@code ．.。．.} 正确维吾尔族姓名：
+     * 
      * <pre>
      * 霍加阿卜杜拉·麦提喀斯木
      * 玛合萨提别克·哈斯木别克
      * 阿布都热依木江·艾斯卡尔
      * 阿卜杜尼亚孜·毛力尼亚孜
      * </pre>
+     * 
      * <pre>
      * ----------
      * 错误示例：孟  伟                reason: 有空格
@@ -1149,6 +1167,7 @@ public class Validator {
      * 错误示例：李                   reason: 少于2位
      * ----------
      * </pre>
+     * 
      * 总结中文姓名：2-60位，只能是中文和 ·
      *
      * @param value 中文姓名
@@ -1158,9 +1177,8 @@ public class Validator {
         return isMatchRegex(Regex.CHINESE_NAME, value);
     }
 
-
     /**
-     * 验证是否为驾驶证  别名：驾驶证档案编号、行驶证编号
+     * 验证是否为驾驶证 别名：驾驶证档案编号、行驶证编号
      *
      * @param <T>      字符串类型
      * @param value    值
@@ -1168,7 +1186,8 @@ public class Validator {
      * @return 验证后的值
      * @throws ValidateException 验证异常
      */
-    public static <T extends CharSequence> T validateCarDrivingLicence(final T value, final String errorMsg) throws ValidateException {
+    public static <T extends CharSequence> T validateCarDrivingLicence(final T value, final String errorMsg)
+            throws ValidateException {
         if (!isCarDrivingLicence(value)) {
             throw new ValidateException(errorMsg);
         }
@@ -1198,7 +1217,8 @@ public class Validator {
      * @param max      最大长度
      * @param errorMsg 错误消息
      */
-    public static void validateByteLength(final CharSequence text, final int min, final int max, final String errorMsg) {
+    public static void validateByteLength(final CharSequence text, final int min, final int max,
+            final String errorMsg) {
         validateByteLength(text, min, max, Charset.UTF_8, errorMsg);
     }
 
@@ -1211,7 +1231,8 @@ public class Validator {
      * @param charset  字符编码
      * @param errorMsg 错误消息
      */
-    public static void validateByteLength(final CharSequence text, final int min, final int max, final java.nio.charset.Charset charset, final String errorMsg) {
+    public static void validateByteLength(final CharSequence text, final int min, final int max,
+            final java.nio.charset.Charset charset, final String errorMsg) {
         final int len = StringKit.byteLength(text, charset);
         if (len < min || len > max) {
             throw new ValidateException(errorMsg);
@@ -1221,9 +1242,9 @@ public class Validator {
     /**
      * 检查给定的index是否超出长度限制
      * <ul>
-     *     <li>数组调用setOrPadding时，最多允许padding的长度</li>
-     *     <li>List调用setOrPadding时，最多允许padding的长度</li>
-     *     <li>JSONArray调用setOrPadding时，最多允许padding的长度</li>
+     * <li>数组调用setOrPadding时，最多允许padding的长度</li>
+     * <li>List调用setOrPadding时，最多允许padding的长度</li>
+     * <li>JSONArray调用setOrPadding时，最多允许padding的长度</li>
      * </ul>
      *
      * @param index 索引

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric.http;
 
 /**
@@ -65,7 +65,8 @@ public enum Http2ErrorCode {
 
     public static Http2ErrorCode fromHttp2(int code) {
         for (Http2ErrorCode errorCode : Http2ErrorCode.values()) {
-            if (errorCode.httpCode == code) return errorCode;
+            if (errorCode.httpCode == code)
+                return errorCode;
         }
         return null;
     }

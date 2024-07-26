@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.api;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -43,21 +43,17 @@ public class ApplicationEntityCache extends ConfigurationCache<DicomConfiguratio
     }
 
     @Override
-    protected ApplicationEntity find(DicomConfiguration conf, String key)
-            throws InternalException {
+    protected ApplicationEntity find(DicomConfiguration conf, String key) throws InternalException {
         return conf.findApplicationEntity(key);
     }
 
     @Override
-    public ApplicationEntity findApplicationEntity(String aet)
-            throws InternalException {
+    public ApplicationEntity findApplicationEntity(String aet) throws InternalException {
         ApplicationEntity ae = get(aet);
         if (ae == null)
-            throw new NotFoundException(
-                    "Unknown AE: " + aet);
+            throw new NotFoundException("Unknown AE: " + aet);
         if (!ae.isInstalled())
-            throw new NotFoundException(
-                    "AE: " + aet + " not installed");
+            throw new NotFoundException("AE: " + aet + " not installed");
         return ae;
     }
 

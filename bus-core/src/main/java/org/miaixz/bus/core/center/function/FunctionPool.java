@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.function;
 
 import org.miaixz.bus.core.lang.Keys;
@@ -34,8 +34,7 @@ import java.lang.reflect.Constructor;
 import java.util.function.BiFunction;
 
 /**
- * 常用Lambda函数封装
- * 提供常用对象方法的Lambda包装，减少Lambda初始化时间。
+ * 常用Lambda函数封装 提供常用对象方法的Lambda包装，减少Lambda初始化时间。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,8 +43,7 @@ public class FunctionPool {
 
     /**
      * 通过{@code String(char[] value, boolean share)}这个内部构造生成一个Lambda函数
-     * 此函数通过传入char[]，实现zero-copy的String创建，效率很高。但是要求传入的char[]不可以在其他地方修改。
-     * 此函数只支持JKDK8
+     * 此函数通过传入char[]，实现zero-copy的String创建，效率很高。但是要求传入的char[]不可以在其他地方修改。 此函数只支持JKDK8
      */
     public static final BiFunction<char[], Boolean, String> STRING_CREATOR_JDK8;
 

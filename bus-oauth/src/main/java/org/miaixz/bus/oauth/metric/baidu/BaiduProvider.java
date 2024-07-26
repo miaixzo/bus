@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.baidu;
 
 import com.alibaba.fastjson.JSONObject;
@@ -79,22 +79,17 @@ public class BaiduProvider extends AbstractProvider {
         String userInfo = doGetUserInfo(accToken);
         JSONObject object = JSONObject.parseObject(userInfo);
         this.checkResponse(object);
-        return Material.builder()
-                .rawJson(object)
+        return Material.builder().rawJson(object)
                 .uuid(object.containsKey("userid") ? object.getString("userid") : object.getString("openid"))
-                .username(object.getString("username"))
-                .nickname(object.getString("username"))
-                .avatar(getAvatar(object))
-                .remark(object.getString("userdetail"))
-                .gender(Gender.of(object.getString("sex")))
-                .token(accToken)
-                .source(complex.toString())
-                .build();
+                .username(object.getString("username")).nickname(object.getString("username")).avatar(getAvatar(object))
+                .remark(object.getString("userdetail")).gender(Gender.of(object.getString("sex"))).token(accToken)
+                .source(complex.toString()).build();
     }
 
     private String getAvatar(JSONObject object) {
         String protrait = object.getString("portrait");
-        return StringKit.isEmpty(protrait) ? null : String.format("http://himg.bdimg.com/sys/portrait/item/%s.jpg", protrait);
+        return StringKit.isEmpty(protrait) ? null
+                : String.format("http://himg.bdimg.com/sys/portrait/item/%s.jpg", protrait);
     }
 
     @Override
@@ -109,17 +104,12 @@ public class BaiduProvider extends AbstractProvider {
 
     @Override
     public Message refresh(AccToken accToken) {
-        String refreshUrl = Builder.fromUrl(this.complex.refresh())
-                .queryParam("grant_type", "refresh_token")
+        String refreshUrl = Builder.fromUrl(this.complex.refresh()).queryParam("grant_type", "refresh_token")
                 .queryParam("refresh_token", accToken.getRefreshToken())
                 .queryParam("client_id", this.context.getAppKey())
-                .queryParam("client_secret", this.context.getAppSecret())
-                .build();
+                .queryParam("client_secret", this.context.getAppSecret()).build();
         String response = Httpx.get(refreshUrl);
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .data(this.getAuthToken(response))
-                .build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).data(this.getAuthToken(response)).build();
     }
 
     /**
@@ -130,8 +120,7 @@ public class BaiduProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(super.authorize(state))
-                .queryParam("display", "popup")
+        return Builder.fromUrl(super.authorize(state)).queryParam("display", "popup")
                 .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(BaiduScope.values())))
                 .build();
     }
@@ -143,7 +132,8 @@ public class BaiduProvider extends AbstractProvider {
      */
     private void checkResponse(JSONObject object) {
         if (object.containsKey("error") || object.containsKey("error_code")) {
-            String msg = object.containsKey("error_description") ? object.getString("error_description") : object.getString("error_msg");
+            String msg = object.containsKey("error_description") ? object.getString("error_description")
+                    : object.getString("error_msg");
             throw new AuthorizedException(msg);
         }
     }
@@ -151,11 +141,8 @@ public class BaiduProvider extends AbstractProvider {
     private AccToken getAuthToken(String response) {
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         this.checkResponse(accessTokenObject);
-        return AccToken.builder()
-                .accessToken(accessTokenObject.getString("access_token"))
-                .refreshToken(accessTokenObject.getString("refresh_token"))
-                .scope(accessTokenObject.getString("scope"))
-                .expireIn(accessTokenObject.getIntValue("expires_in"))
-                .build();
+        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
+                .refreshToken(accessTokenObject.getString("refresh_token")).scope(accessTokenObject.getString("scope"))
+                .expireIn(accessTokenObject.getIntValue("expires_in")).build();
     }
 }

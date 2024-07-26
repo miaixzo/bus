@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.wechat.ee;
 
 import com.alibaba.fastjson.JSONObject;
@@ -61,12 +61,9 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
 
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.authorize())
-                .queryParam("appid", context.getAppKey())
-                .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("state", getRealState(state))
-                .queryParam("usertype", context.getType())
-                .build();
+        return Builder.fromUrl(complex.authorize()).queryParam("appid", context.getAppKey())
+                .queryParam("redirect_uri", context.getRedirectUri()).queryParam("state", getRealState(state))
+                .queryParam("usertype", context.getType()).build();
     }
 
     @Override
@@ -89,10 +86,8 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
         try {
             String response = doGetAuthorizationCode(accessTokenUrl());
             JSONObject object = this.checkResponse(response);
-            AccToken accToken = AccToken.builder()
-                    .accessToken(object.getString("provider_access_token"))
-                    .expireIn(object.getIntValue("expires_in"))
-                    .build();
+            AccToken accToken = AccToken.builder().accessToken(object.getString("provider_access_token"))
+                    .expireIn(object.getIntValue("expires_in")).build();
             return accToken;
         } catch (Exception e) {
             throw new AuthorizedException("企业微信获取token失败", e);
@@ -113,16 +108,13 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
      * @return accessTokenUrl
      */
     protected String accessTokenUrl() {
-        return Builder.fromUrl(complex.accessToken())
-                .build();
+        return Builder.fromUrl(complex.accessToken()).build();
     }
 
     @Override
     protected Material getUserInfo(AccToken accToken) {
         JSONObject response = this.checkResponse(doGetUserInfo(accToken));
-        return Material.builder()
-                .rawJson(response)
-                .build();
+        return Material.builder().rawJson(response).build();
     }
 
     @Override
@@ -134,9 +126,7 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
 
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(complex.userInfo())
-                .queryParam("access_token", accToken.getAccessToken()).
-                build();
+        return Builder.fromUrl(complex.userInfo()).queryParam("access_token", accToken.getAccessToken()).build();
     }
 
     private JSONObject checkResponse(String response) {

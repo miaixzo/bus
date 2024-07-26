@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.mac.jna;
 
 import com.sun.jna.Native;
@@ -49,12 +49,12 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
      * Beta/Non-API do not commit to JNA
      */
     int IOConnectCallStructMethod(IOConnect connection, int selector, Structure inputStructure,
-                                  NativeLong structureInputSize, Structure outputStructure, NativeLongByReference structureOutputSize);
+            NativeLong structureInputSize, Structure outputStructure, NativeLongByReference structureOutputSize);
 
     /**
      * Holds the return value of SMC version query.
      */
-    @FieldOrder({"major", "minor", "build", "reserved", "release"})
+    @FieldOrder({ "major", "minor", "build", "reserved", "release" })
     class SMCKeyDataVers extends Structure {
         public byte major;
         public byte minor;
@@ -66,7 +66,7 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
     /**
      * Holds the return value of SMC pLimit query.
      */
-    @FieldOrder({"version", "length", "cpuPLimit", "gpuPLimit", "memPLimit"})
+    @FieldOrder({ "version", "length", "cpuPLimit", "gpuPLimit", "memPLimit" })
     class SMCKeyDataPLimitData extends Structure {
         public short version;
         public short length;
@@ -78,7 +78,7 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
     /**
      * Holds the return value of SMC KeyInfo query.
      */
-    @FieldOrder({"dataSize", "dataType", "dataAttributes"})
+    @FieldOrder({ "dataSize", "dataType", "dataAttributes" })
     class SMCKeyDataKeyInfo extends Structure {
         public int dataSize;
         public int dataType;
@@ -88,7 +88,7 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
     /**
      * Holds the return value of SMC query.
      */
-    @FieldOrder({"key", "vers", "pLimitData", "keyInfo", "result", "status", "data8", "data32", "bytes"})
+    @FieldOrder({ "key", "vers", "pLimitData", "keyInfo", "result", "status", "data8", "data32", "bytes" })
     class SMCKeyData extends Structure implements AutoCloseable {
         public int key;
         public SMCKeyDataVers vers;
@@ -109,7 +109,7 @@ public interface IOKit extends com.sun.jna.platform.mac.IOKit {
     /**
      * Holds an SMC value
      */
-    @FieldOrder({"key", "dataSize", "dataType", "bytes"})
+    @FieldOrder({ "key", "dataSize", "dataType", "bytes" })
     class SMCVal extends Structure implements AutoCloseable {
         public byte[] key = new byte[5];
         public int dataSize;

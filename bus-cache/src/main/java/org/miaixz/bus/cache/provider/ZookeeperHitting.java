@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cache.provider;
 
 import jakarta.annotation.PreDestroy;
@@ -81,11 +81,8 @@ public class ZookeeperHitting implements Hitting {
     }
 
     public ZookeeperHitting(String zkServer, String productName) {
-        this.client = CuratorFrameworkFactory.builder()
-                .connectString(zkServer)
-                .retryPolicy(new RetryNTimes(3, 0))
-                .namespace(NAME_SPACE)
-                .build();
+        this.client = CuratorFrameworkFactory.builder().connectString(zkServer).retryPolicy(new RetryNTimes(3, 0))
+                .namespace(NAME_SPACE).build();
         client.start();
 
         // append prefix and suffix
@@ -97,7 +94,8 @@ public class ZookeeperHitting implements Hitting {
             client.create().creatingParentsIfNeeded().forPath(requirePathPrefix);
         } catch (KeeperException.NodeExistsException ignored) {
         } catch (Exception e) {
-            throw new RuntimeException("create path: " + hitPathPrefix + ", " + requirePathPrefix + " on namespace: " + NAME_SPACE + " error", e);
+            throw new RuntimeException("create path: " + hitPathPrefix + ", " + requirePathPrefix + " on namespace: "
+                    + NAME_SPACE + " error", e);
         }
 
         executor.submit(() -> {
@@ -191,22 +189,22 @@ public class ZookeeperHitting implements Hitting {
         return null;
     }
 
-    private void dumpToZK(BlockingQueue<CachePair<String, Integer>> queue, Map<String, DistributedAtomicLong> counterMap, String zkPrefix) {
+    private void dumpToZK(BlockingQueue<CachePair<String, Integer>> queue,
+            Map<String, DistributedAtomicLong> counterMap, String zkPrefix) {
         long count = 0;
         CachePair<String, Integer> head;
 
         // 将queue中所有的 || 前100条数据聚合到一个暂存Map中
         Map<String, AtomicLong> holdMap = new HashMap<>();
         while (null != (head = queue.poll()) && count <= 100) {
-            holdMap
-                    .computeIfAbsent(head.getLeft(), (key) -> new AtomicLong(0L))
-                    .addAndGet(head.getRight());
+            holdMap.computeIfAbsent(head.getLeft(), (key) -> new AtomicLong(0L)).addAndGet(head.getRight());
             ++count;
         }
 
         holdMap.forEach((pattern, atomicCount) -> {
             String zkPath = String.format("%s/%s", zkPrefix, pattern);
-            DistributedAtomicLong counter = counterMap.computeIfAbsent(pattern, (key) -> new DistributedAtomicLong(client, zkPath, new RetryNTimes(10, 10)));
+            DistributedAtomicLong counter = counterMap.computeIfAbsent(pattern,
+                    (key) -> new DistributedAtomicLong(client, zkPath, new RetryNTimes(10, 10)));
             try {
                 counter.add(atomicCount.get()).postValue();
             } catch (Exception e) {

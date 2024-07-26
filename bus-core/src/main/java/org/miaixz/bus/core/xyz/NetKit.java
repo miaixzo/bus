@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.iterator.EnumerationIterator;
@@ -107,8 +107,7 @@ public class NetKit {
     }
 
     /**
-     * 是否为有效的端口
-     * 此方法并不检查端口是否被占用
+     * 是否为有效的端口 此方法并不检查端口是否被占用
      *
      * @param port 端口号
      * @return 是否有效
@@ -119,8 +118,7 @@ public class NetKit {
     }
 
     /**
-     * 查找1024~65535范围内的可用端口
-     * 此方法只检测给定范围内的随机一个端口，检测65535-1024次
+     * 查找1024~65535范围内的可用端口 此方法只检测给定范围内的随机一个端口，检测65535-1024次
      *
      * @return 可用的端口
      */
@@ -129,8 +127,7 @@ public class NetKit {
     }
 
     /**
-     * 查找指定范围内的可用端口，最大值为65535
-     * 此方法只检测给定范围内的随机一个端口，检测65535-minPort次
+     * 查找指定范围内的可用端口，最大值为65535 此方法只检测给定范围内的随机一个端口，检测65535-minPort次
      *
      * @param minPort 端口最小值（包含）
      * @return 可用的端口
@@ -140,8 +137,7 @@ public class NetKit {
     }
 
     /**
-     * 查找指定范围内的可用端口
-     * 此方法只检测给定范围内的随机一个端口，检测maxPort-minPort次
+     * 查找指定范围内的可用端口 此方法只检测给定范围内的随机一个端口，检测maxPort-minPort次
      *
      * @param minPort 端口最小值（包含）
      * @param maxPort 端口最大值（包含）
@@ -157,7 +153,8 @@ public class NetKit {
             }
         }
 
-        throw new InternalException("Could not find an available port in the range [{}, {}] after {} attempts", minPort, maxPort, maxPort - minPort);
+        throw new InternalException("Could not find an available port in the range [{}, {}] after {} attempts", minPort,
+                maxPort, maxPort - minPort);
     }
 
     /**
@@ -176,20 +173,22 @@ public class NetKit {
         }
 
         if (availablePorts.size() != numRequested) {
-            throw new InternalException("Could not find {} available  ports in the range [{}, {}]", numRequested, minPort, maxPort);
+            throw new InternalException("Could not find {} available  ports in the range [{}, {}]", numRequested,
+                    minPort, maxPort);
         }
 
         return availablePorts;
     }
 
     /**
-     * 判定是否为内网IPv4
-     * 私有IP：
+     * 判定是否为内网IPv4 私有IP：
+     * 
      * <pre>
      * A类 10.0.0.0-10.255.255.255
      * B类 172.16.0.0-172.31.255.255
      * C类 192.168.0.0-192.168.255.255
      * </pre>
+     * 
      * 当然，还有127这个网段是环回地址
      *
      * @param ipAddress IP地址
@@ -292,8 +291,7 @@ public class NetKit {
     }
 
     /**
-     * 获得本机的IPv4地址列表
-     * 返回的IP列表有序，按照系统设备顺序
+     * 获得本机的IPv4地址列表 返回的IP列表有序，按照系统设备顺序
      *
      * @return IP地址列表 {@link LinkedHashSet}
      */
@@ -319,8 +317,7 @@ public class NetKit {
     }
 
     /**
-     * 获得本机的IP地址列表（包括Ipv4和Ipv6）
-     * 返回的IP列表有序，按照系统设备顺序
+     * 获得本机的IP地址列表（包括Ipv4和Ipv6） 返回的IP列表有序，按照系统设备顺序
      *
      * @return IP地址列表 {@link LinkedHashSet}
      */
@@ -346,7 +343,8 @@ public class NetKit {
      * @param addressPredicate       过滤器，{@link Predicate#test(Object)}为{@code true}保留，null表示不过滤，获取所有地址
      * @return 过滤后的地址对象列表
      */
-    public static LinkedHashSet<InetAddress> localAddressList(final Predicate<NetworkInterface> networkInterfaceFilter, final Predicate<InetAddress> addressPredicate) {
+    public static LinkedHashSet<InetAddress> localAddressList(final Predicate<NetworkInterface> networkInterfaceFilter,
+            final Predicate<InetAddress> addressPredicate) {
         final Enumeration<NetworkInterface> networkInterfaces;
         try {
             networkInterfaces = NetworkInterface.getNetworkInterfaces();
@@ -376,9 +374,7 @@ public class NetKit {
     }
 
     /**
-     * 获取本机网卡IP地址，这个地址为所有网卡中非回路地址的第一个
-     * 如果获取失败调用 {@link InetAddress#getLocalHost()}方法获取。
-     * 此方法不会抛出异常，获取失败将返回{@code null}
+     * 获取本机网卡IP地址，这个地址为所有网卡中非回路地址的第一个 如果获取失败调用 {@link InetAddress#getLocalHost()}方法获取。 此方法不会抛出异常，获取失败将返回{@code null}
      * 参考：<a href="http://stackoverflow.com/questions/9481865/getting-the-ip-address-of-the-current-machine-using-java">
      * http://stackoverflow.com/questions/9481865/getting-the-ip-address-of-the-current-machine-using-java</a>
      *
@@ -396,9 +392,9 @@ public class NetKit {
      * 获取本机网卡IPv4地址，规则如下：
      *
      * <ul>
-     *     <li>必须非回路（loopback）地址、非局域网地址（siteLocal）、IPv4地址</li>
-     *     <li>多网卡则返回第一个满足条件的地址</li>
-     *     <li>如果无满足要求的地址，调用 {@link InetAddress#getLocalHost()} 获取地址</li>
+     * <li>必须非回路（loopback）地址、非局域网地址（siteLocal）、IPv4地址</li>
+     * <li>多网卡则返回第一个满足条件的地址</li>
+     * <li>如果无满足要求的地址，调用 {@link InetAddress#getLocalHost()} 获取地址</li>
      * </ul>
      *
      * <p>
@@ -443,7 +439,8 @@ public class NetKit {
      * @param data    需要发送的数据
      * @throws InternalException IO异常
      */
-    public static void netCat(final String host, final int port, final boolean isBlock, final ByteBuffer data) throws InternalException {
+    public static void netCat(final String host, final int port, final boolean isBlock, final ByteBuffer data)
+            throws InternalException {
         try (final SocketChannel channel = SocketChannel.open(createAddress(host, port))) {
             channel.configureBlocking(isBlock);
             channel.write(data);
@@ -474,8 +471,7 @@ public class NetKit {
     }
 
     /**
-     * 是否在CIDR规则配置范围内
-     * 方法来自：【成都】小邓
+     * 是否在CIDR规则配置范围内 方法来自：【成都】小邓
      *
      * @param ip   需要验证的IP
      * @param cidr CIDR规则
@@ -608,8 +604,9 @@ public class NetKit {
 
     /**
      * 获取DNS信息，如TXT信息：
+     * 
      * <pre class="code">
-     *     NetKit.attrNames("xxx.cn", "TXT")
+     * NetKit.attrNames("xxx.cn", "TXT")
      * </pre>
      *
      * @param hostName  主机域名
@@ -625,15 +622,14 @@ public class NetKit {
             try {
                 infos.add((String) attribute.get());
             } catch (final NamingException ignore) {
-                //ignore
+                // ignore
             }
         }
         return infos;
     }
 
     /**
-     * 获取地址名称，如果无名称返回地址
-     * 如果提供的地址为{@code null}返回{@code null}
+     * 获取地址名称，如果无名称返回地址 如果提供的地址为{@code null}返回{@code null}
      *
      * @param address {@link InetAddress}，提供{@code null}返回{@code null}
      * @return 地址名称或地址
@@ -687,8 +683,7 @@ public class NetKit {
 
         try {
             // 获取地址对应网卡
-            final NetworkInterface networkInterface =
-                    NetworkInterface.getByInetAddress(inetAddress);
+            final NetworkInterface networkInterface = NetworkInterface.getByInetAddress(inetAddress);
             if (null != networkInterface) {
                 return networkInterface.getHardwareAddress();
             }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.driver.registry;
 
 import com.sun.jna.platform.win32.WinBase;
@@ -58,7 +58,7 @@ public final class ProcessPerformanceData {
      *
      * @param pids An optional collection of process IDs to filter the list to. May be null for no filtering.
      * @return A map with Process ID as the key and a {@link PerfCounterBlock} object populated with performance counter
-     * information if successful, or null otherwise.
+     *         information if successful, or null otherwise.
      */
     public static Map<Integer, PerfCounterBlock> buildProcessMapFromRegistry(Collection<Integer> pids) {
         // Grab the data from the registry.
@@ -108,7 +108,7 @@ public final class ProcessPerformanceData {
      *
      * @param pids An optional collection of process IDs to filter the list to. May be null for no filtering.
      * @return A map with Process ID as the key and a {@link PerfCounterBlock} object populated with performance counter
-     * information.
+     *         information.
      */
     public static Map<Integer, PerfCounterBlock> buildProcessMapFromPerfCounters(Collection<Integer> pids) {
         return buildProcessMapFromPerfCounters(pids, null);
@@ -120,10 +120,10 @@ public final class ProcessPerformanceData {
      * @param pids     An optional collection of process IDs to filter the list to. May be null for no filtering.
      * @param procName Filter by this process name.
      * @return A map with Process ID as the key and a {@link PerfCounterBlock} object populated with performance counter
-     * information.
+     *         information.
      */
     public static Map<Integer, PerfCounterBlock> buildProcessMapFromPerfCounters(Collection<Integer> pids,
-                                                                                 String procName) {
+            String procName) {
         Map<Integer, PerfCounterBlock> processMap = new HashMap<>();
         Pair<List<String>, Map<ProcessPerformanceProperty, List<Long>>> instanceValues = ProcessInformation
                 .queryProcessCounters();
@@ -178,7 +178,7 @@ public final class ProcessPerformanceData {
         private final int pageFaults;
 
         public PerfCounterBlock(String name, int parentProcessID, int priority, long residentSetSize, long startTime,
-                                long upTime, long bytesRead, long bytesWritten, int pageFaults) {
+                long upTime, long bytesRead, long bytesWritten, int pageFaults) {
             this.name = name;
             this.parentProcessID = parentProcessID;
             this.priority = priority;

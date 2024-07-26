@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.annotation;
 
 import org.miaixz.bus.starter.cache.CacheConfiguration;
@@ -40,9 +40,9 @@ import java.lang.annotation.*;
  */
 @Inherited
 @Documented
-@Target({ElementType.TYPE})
+@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
-@Import({CacheConfiguration.class})
+@Import({ CacheConfiguration.class })
 public @interface EnableCache {
 
 }

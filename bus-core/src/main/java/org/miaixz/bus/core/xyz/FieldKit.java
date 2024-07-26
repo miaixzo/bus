@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
@@ -61,8 +61,7 @@ public class FieldKit {
     }
 
     /**
-     * 是否为父类引用字段
-     * 当字段所在类是对象子类时（对象中定义的非static的class），会自动生成一个以"this$0"为名称的字段，指向父类对象
+     * 是否为父类引用字段 当字段所在类是对象子类时（对象中定义的非static的class），会自动生成一个以"this$0"为名称的字段，指向父类对象
      *
      * @param field 字段
      * @return 是否为父类引用字段
@@ -141,8 +140,7 @@ public class FieldKit {
     }
 
     /**
-     * 获取指定类中字段名和字段对应的有序Map，包括其父类中的字段
-     * 如果子类与父类中存在同名字段，则父类字段忽略
+     * 获取指定类中字段名和字段对应的有序Map，包括其父类中的字段 如果子类与父类中存在同名字段，则父类字段忽略
      *
      * @param beanClass 类
      * @return 字段名和字段对应的Map，有序
@@ -157,8 +155,7 @@ public class FieldKit {
     }
 
     /**
-     * 获得一个类中所有字段列表，包括其父类中的字段
-     * 如果子类与父类中存在同名字段，则这两个字段同时存在，子类字段在前，父类字段在后。
+     * 获得一个类中所有字段列表，包括其父类中的字段 如果子类与父类中存在同名字段，则这两个字段同时存在，子类字段在前，父类字段在后。
      *
      * @param beanClass 类
      * @return 字段列表
@@ -168,10 +165,8 @@ public class FieldKit {
         return getFields(beanClass, null);
     }
 
-
     /**
-     * 获得一个类中所有满足条件的字段列表，包括其父类中的字段
-     * 如果子类与父类中存在同名字段，则这两个字段同时存在，子类字段在前，父类字段在后。
+     * 获得一个类中所有满足条件的字段列表，包括其父类中的字段 如果子类与父类中存在同名字段，则这两个字段同时存在，子类字段在前，父类字段在后。
      *
      * @param beanClass 类
      * @param filter    field过滤器，过滤掉不需要的field，{@link Predicate#test(Object)}为{@code true}保留，null表示全部保留
@@ -191,21 +186,22 @@ public class FieldKit {
      * @return 字段列表
      * @throws SecurityException 安全检查异常
      */
-    public static Field[] getDeclaredFields(final Class<?> beanClass, final Predicate<Field> filter) throws SecurityException {
+    public static Field[] getDeclaredFields(final Class<?> beanClass, final Predicate<Field> filter)
+            throws SecurityException {
         Assert.notNull(beanClass);
         return FIELDS_CACHE.computeIfAbsent(beanClass, FieldReflect::of).getDeclaredFields(filter);
     }
 
     /**
-     * 获得一个类中所有字段列表，直接反射获取，无缓存
-     * 如果子类与父类中存在同名字段，则这两个字段同时存在，子类字段在前，父类字段在后。
+     * 获得一个类中所有字段列表，直接反射获取，无缓存 如果子类与父类中存在同名字段，则这两个字段同时存在，子类字段在前，父类字段在后。
      *
      * @param beanClass            类
      * @param withSuperClassFields 是否包括父类的字段列表
      * @return 字段列表
      * @throws SecurityException 安全检查异常
      */
-    public static Field[] getFieldsDirectly(final Class<?> beanClass, final boolean withSuperClassFields) throws SecurityException {
+    public static Field[] getFieldsDirectly(final Class<?> beanClass, final boolean withSuperClassFields)
+            throws SecurityException {
         return FieldReflect.of(beanClass).getFieldsDirectly(withSuperClassFields);
     }
 
@@ -344,7 +340,8 @@ public class FieldKit {
      * @param value     值，值类型必须与字段类型匹配，不会自动转换对象类型
      * @throws InternalException 包装IllegalAccessException异常
      */
-    public static void setFieldValue(final Object obj, final String fieldName, final Object value) throws InternalException {
+    public static void setFieldValue(final Object obj, final String fieldName, final Object value)
+            throws InternalException {
         Assert.notNull(obj, "Object must be not null !");
         Assert.notBlank(fieldName);
 
@@ -401,12 +398,14 @@ public class FieldKit {
      * @param value 值，值类型必须与字段类型匹配
      * @throws InternalException 包装IllegalAccessException异常
      */
-    public static void setFieldValueExact(final Object obj, final Field field, final Object value) throws InternalException {
+    public static void setFieldValueExact(final Object obj, final Field field, final Object value)
+            throws InternalException {
         ReflectKit.setAccessible(field);
         try {
             field.set(obj instanceof Class ? null : obj, value);
         } catch (final IllegalAccessException e) {
-            throw new InternalException(e, "IllegalAccess for [{}.{}]", null == obj ? field.getDeclaringClass() : obj, field.getName());
+            throw new InternalException(e, "IllegalAccess for [{}.{}]", null == obj ? field.getDeclaringClass() : obj,
+                    field.getName());
         }
     }
 

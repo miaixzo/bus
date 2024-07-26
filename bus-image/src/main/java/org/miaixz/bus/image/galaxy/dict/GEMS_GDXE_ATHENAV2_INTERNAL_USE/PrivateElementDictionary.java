@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.GEMS_GDXE_ATHENAV2_INTERNAL_USE;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,18 +46,19 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.PPSStatus:
-                return VR.CS;
-            case PrivateTag.PixelDataReferences:
-            case PrivateTag.PixelDataReferencesTemporary:
-                return VR.LT;
-            case PrivateTag.AutoPushTag:
-                return VR.SS;
+
+        case PrivateTag.PPSStatus:
+            return VR.CS;
+        case PrivateTag.PixelDataReferences:
+        case PrivateTag.PixelDataReferencesTemporary:
+            return VR.LT;
+        case PrivateTag.AutoPushTag:
+            return VR.SS;
         }
         return VR.UN;
     }

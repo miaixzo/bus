@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.codec.jpeg;
 
 import org.miaixz.bus.logger.Logger;
@@ -40,8 +40,7 @@ public class PatchJPEGLSOutputStream extends ImageOutputStreamImpl {
     private byte[] jpegheader;
     private int jpegheaderIndex;
 
-    public PatchJPEGLSOutputStream(ImageOutputStream ios,
-                                   PatchJPEGLS patchJpegLS) throws IOException {
+    public PatchJPEGLSOutputStream(ImageOutputStream ios, PatchJPEGLS patchJpegLS) throws IOException {
         if (ios == null)
             throw new NullPointerException("ios");
         super.streamPos = ios.getStreamPosition();
@@ -59,8 +58,7 @@ public class PatchJPEGLSOutputStream extends ImageOutputStreamImpl {
             System.arraycopy(b, off, jpegheader, jpegheaderIndex, len0);
             jpegheaderIndex += len0;
             if (jpegheaderIndex >= jpegheader.length) {
-                JPEGLSCodingParam param =
-                        patchJpegLS.createJPEGLSCodingParam(jpegheader);
+                JPEGLSCodingParam param = patchJpegLS.createJPEGLSCodingParam(jpegheader);
                 if (param == null)
                     ios.write(jpegheader);
                 else {
@@ -86,7 +84,7 @@ public class PatchJPEGLSOutputStream extends ImageOutputStreamImpl {
             ios.write(b);
             streamPos++;
         } else
-            write(new byte[]{(byte) b}, 0, 1);
+            write(new byte[] { (byte) b }, 0, 1);
     }
 
     public int read() throws IOException {

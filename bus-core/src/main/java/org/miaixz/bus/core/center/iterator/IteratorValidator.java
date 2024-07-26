@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.iterator;
 
 import org.miaixz.bus.core.center.CollectionValidator;
@@ -41,8 +41,8 @@ import java.util.function.Predicate;
 /**
  * Iterator检查工具类，提供字对象的blank和empty等检查
  * <ul>
- *     <li>empty定义：{@code null} or 空字对象：{@code ""}</li>
- *     <li>blank定义：{@code null} or 空字对象：{@code ""} or 空格、全角空格、制表符、换行符，等不可见字符</li>
+ * <li>empty定义：{@code null} or 空字对象：{@code ""}</li>
+ * <li>blank定义：{@code null} or 空字对象：{@code ""} or 空格、全角空格、制表符、换行符，等不可见字符</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -93,9 +93,9 @@ public class IteratorValidator {
     /**
      * 是否包含{@code null}元素
      * <ul>
-     *     <li>Iterator为{@code null}，返回{@code true}</li>
-     *     <li>Iterator为空集合，即元素个数为0，返回{@code false}</li>
-     *     <li>Iterator中元素为""，返回{@code false}</li>
+     * <li>Iterator为{@code null}，返回{@code true}</li>
+     * <li>Iterator为空集合，即元素个数为0，返回{@code false}</li>
+     * <li>Iterator中元素为""，返回{@code false}</li>
      * </ul>
      *
      * @param iter 被检查的{@link Iterator}对象，如果为{@code null} 返回true
@@ -170,8 +170,8 @@ public class IteratorValidator {
     /**
      * 判断subIter是否为iter的子集合，不考虑顺序，只考虑元素数量。
      * <ul>
-     *     <li>如果两个集合为同一集合或，则返回true</li>
-     *     <li>如果两个集合元素都相同，则返回true（无论顺序相同与否）</li>
+     * <li>如果两个集合为同一集合或，则返回true</li>
+     * <li>如果两个集合元素都相同，则返回true（无论顺序相同与否）</li>
      * </ul>
      *
      * @param subIter 第一个Iterable对象，即子集合。
@@ -205,12 +205,11 @@ public class IteratorValidator {
     }
 
     /**
-     * 判断两个{@link Iterable}中的元素与其顺序是否相同
-     * 当满足下列情况时返回{@code true}：
+     * 判断两个{@link Iterable}中的元素与其顺序是否相同 当满足下列情况时返回{@code true}：
      * <ul>
-     *     <li>两个{@link Iterable}都为{@code null}；</li>
-     *     <li>两个{@link Iterable}满足{@code iterable1 == iterable2}；</li>
-     *     <li>两个{@link Iterable}所有具有相同下标的元素皆满足{@link Objects#equals(Object, Object)}；</li>
+     * <li>两个{@link Iterable}都为{@code null}；</li>
+     * <li>两个{@link Iterable}满足{@code iterable1 == iterable2}；</li>
+     * <li>两个{@link Iterable}所有具有相同下标的元素皆满足{@link Objects#equals(Object, Object)}；</li>
      * </ul>
      * 此方法来自Apache-Commons-Collections4。
      *
@@ -223,13 +222,12 @@ public class IteratorValidator {
     }
 
     /**
-     * 判断两个{@link Iterable}中的元素是否相同，可选是否判断顺序
-     * 当满足下列情况时返回{@code true}：
+     * 判断两个{@link Iterable}中的元素是否相同，可选是否判断顺序 当满足下列情况时返回{@code true}：
      * <ul>
-     *     <li>两个{@link Iterable}都为{@code null}；</li>
-     *     <li>两个{@link Iterable}满足{@code iterable1 == iterable2}；</li>
-     *     <li>如果忽略顺序，则计算两个集合中元素和数量是否相同</li>
-     *     <li>如果不忽略顺序，两个{@link Iterable}所有具有相同下标的元素皆满足{@link Objects#equals(Object, Object)}；</li>
+     * <li>两个{@link Iterable}都为{@code null}；</li>
+     * <li>两个{@link Iterable}满足{@code iterable1 == iterable2}；</li>
+     * <li>如果忽略顺序，则计算两个集合中元素和数量是否相同</li>
+     * <li>如果不忽略顺序，两个{@link Iterable}所有具有相同下标的元素皆满足{@link Objects#equals(Object, Object)}；</li>
      * </ul>
      *
      * @param iterable1   集合1
@@ -349,12 +347,7 @@ public class IteratorValidator {
     }
 
     /**
-     * 根据集合返回一个元素计数的 {@link Map}
-     * 所谓元素计数就是假如这个集合中某个元素出现了n次，那将这个元素做为key，n做为value
-     * 例如：[a,b,c,c,c] 得到：
-     * a: 1
-     * b: 1
-     * c: 3
+     * 根据集合返回一个元素计数的 {@link Map} 所谓元素计数就是假如这个集合中某个元素出现了n次，那将这个元素做为key，n做为value 例如：[a,b,c,c,c] 得到： a: 1 b: 1 c: 3
      *
      * @param <T>  集合元素类型
      * @param iter {@link Iterator}，如果为null返回一个空的Map

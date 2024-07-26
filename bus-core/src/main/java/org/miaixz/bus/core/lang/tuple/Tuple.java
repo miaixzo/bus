@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.tuple;
 
 import org.miaixz.bus.core.center.iterator.ArrayIterator;
@@ -38,8 +38,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
- * 不可变数组类型（元组），用于多值返回
- * 多值可以支持每个元素值类型不同
+ * 不可变数组类型（元组），用于多值返回 多值可以支持每个元素值类型不同
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -110,8 +109,7 @@ public class Tuple implements Iterable<Object>, Serializable, Cloneable {
     }
 
     /**
-     * 缓存Hash值，当为true时，此对象的hash值只被计算一次，常用于Tuple中的值不变时使用。
-     * 注意：当为true时，member变更对象后，hash值不会变更。
+     * 缓存Hash值，当为true时，此对象的hash值只被计算一次，常用于Tuple中的值不变时使用。 注意：当为true时，member变更对象后，hash值不会变更。
      *
      * @param cacheHash 是否缓存hash值
      * @return this

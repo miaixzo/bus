@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.data;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -40,8 +40,7 @@ import java.util.TimeZone;
  */
 public enum StringValueType implements ValueType {
 
-    ASCII(Symbol.BACKSLASH, null),
-    STRING(Symbol.BACKSLASH, null) {
+    ASCII(Symbol.BACKSLASH, null), STRING(Symbol.BACKSLASH, null) {
         @Override
         public boolean useSpecificCharacterSet() {
             return true;
@@ -84,9 +83,7 @@ public enum StringValueType implements ValueType {
             return s;
         }
     },
-    DA(Symbol.BACKSLASH, TemporalType.DA),
-    DT(Symbol.BACKSLASH, TemporalType.DT),
-    TM(Symbol.BACKSLASH, TemporalType.TM),
+    DA(Symbol.BACKSLASH, TemporalType.DA), DT(Symbol.BACKSLASH, TemporalType.DT), TM(Symbol.BACKSLASH, TemporalType.TM),
     PN("^=\\", null) {
         @Override
         public boolean useSpecificCharacterSet() {
@@ -108,25 +105,19 @@ public enum StringValueType implements ValueType {
         }
 
         @Override
-        public String toString(Object val, boolean bigEndian, int valueIndex,
-                               String defVal) {
+        public String toString(Object val, boolean bigEndian, int valueIndex, String defVal) {
 
             if (val instanceof double[] ds) {
-                return (valueIndex < ds.length
-                        && !Double.isNaN(ds[valueIndex]))
-                        ? Builder.formatDS(ds[valueIndex])
+                return (valueIndex < ds.length && !Double.isNaN(ds[valueIndex])) ? Builder.formatDS(ds[valueIndex])
                         : defVal;
             }
             return super.toString(val, bigEndian, valueIndex, defVal);
         }
 
         @Override
-        public Object toStrings(Object val, boolean bigEndian,
-                                SpecificCharacterSet cs) {
+        public Object toStrings(Object val, boolean bigEndian, SpecificCharacterSet cs) {
 
-            return (val instanceof double[])
-                    ? toStrings((double[]) val)
-                    : super.toStrings(val, bigEndian, cs);
+            return (val instanceof double[]) ? toStrings((double[]) val) : super.toStrings(val, bigEndian, cs);
         }
 
         private Object toStrings(double[] ds) {
@@ -141,12 +132,9 @@ public enum StringValueType implements ValueType {
         }
 
         @Override
-        public float toFloat(Object val, boolean bigEndian, int valueIndex,
-                             float defVal) {
+        public float toFloat(Object val, boolean bigEndian, int valueIndex, float defVal) {
             double[] ds = (double[]) val;
-            return valueIndex < ds.length && !Double.isNaN(ds[valueIndex])
-                    ? (float) ds[valueIndex]
-                    : defVal;
+            return valueIndex < ds.length && !Double.isNaN(ds[valueIndex]) ? (float) ds[valueIndex] : defVal;
         }
 
         @Override
@@ -159,12 +147,9 @@ public enum StringValueType implements ValueType {
         }
 
         @Override
-        public double toDouble(Object val, boolean bigEndian, int valueIndex,
-                               double defVal) {
+        public double toDouble(Object val, boolean bigEndian, int valueIndex, double defVal) {
             double[] ds = (double[]) val;
-            return valueIndex < ds.length && !Double.isNaN(ds[valueIndex])
-                    ? ds[valueIndex]
-                    : defVal;
+            return valueIndex < ds.length && !Double.isNaN(ds[valueIndex]) ? ds[valueIndex] : defVal;
         }
 
         @Override
@@ -195,8 +180,7 @@ public enum StringValueType implements ValueType {
         }
 
         @Override
-        public boolean prompt(Object val, boolean bigEndian,
-                              SpecificCharacterSet cs, int maxChars, StringBuilder sb) {
+        public boolean prompt(Object val, boolean bigEndian, SpecificCharacterSet cs, int maxChars, StringBuilder sb) {
             if (val instanceof double[])
                 val = toStrings((double[]) val);
             return super.prompt(val, bigEndian, cs, maxChars, sb);
@@ -217,25 +201,19 @@ public enum StringValueType implements ValueType {
         }
 
         @Override
-        public String toString(Object val, boolean bigEndian, int valueIndex,
-                               String defVal) {
+        public String toString(Object val, boolean bigEndian, int valueIndex, String defVal) {
 
             if (val instanceof long[] ls) {
-                return (valueIndex < ls.length
-                        && ls[valueIndex] != Integer.MIN_VALUE)
-                        ? Long.toString(ls[valueIndex])
+                return (valueIndex < ls.length && ls[valueIndex] != Integer.MIN_VALUE) ? Long.toString(ls[valueIndex])
                         : defVal;
             }
             return super.toString(val, bigEndian, valueIndex, defVal);
         }
 
         @Override
-        public Object toStrings(Object val, boolean bigEndian,
-                                SpecificCharacterSet cs) {
+        public Object toStrings(Object val, boolean bigEndian, SpecificCharacterSet cs) {
 
-            return (val instanceof long[])
-                    ? toStrings((long[]) val)
-                    : super.toStrings(val, bigEndian, cs);
+            return (val instanceof long[]) ? toStrings((long[]) val) : super.toStrings(val, bigEndian, cs);
         }
 
         private Object toStrings(long[] ls) {
@@ -270,9 +248,7 @@ public enum StringValueType implements ValueType {
         @Override
         public long toLong(Object val, boolean bigEndian, int valueIndex, long defVal) {
             long[] is = (long[]) val;
-            return valueIndex < is.length && is[valueIndex] != Integer.MIN_VALUE
-                    ? is[valueIndex]
-                    : defVal;
+            return valueIndex < is.length && is[valueIndex] != Integer.MIN_VALUE ? is[valueIndex] : defVal;
         }
 
         @Override
@@ -289,8 +265,7 @@ public enum StringValueType implements ValueType {
         }
 
         @Override
-        public boolean prompt(Object val, boolean bigEndian,
-                              SpecificCharacterSet cs, int maxChars, StringBuilder sb) {
+        public boolean prompt(Object val, boolean bigEndian, SpecificCharacterSet cs, int maxChars, StringBuilder sb) {
             if (val instanceof long[])
                 val = toStrings((long[]) val);
             return super.prompt(val, bigEndian, cs, maxChars, sb);
@@ -315,8 +290,7 @@ public enum StringValueType implements ValueType {
         return true;
     }
 
-    static boolean prompt(String[] ss, int maxChars,
-                          StringBuilder sb) {
+    static boolean prompt(String[] ss, int maxChars, StringBuilder sb) {
         int maxLength = sb.length() + maxChars;
         for (String s : ss) {
             if (s != null)
@@ -336,7 +310,8 @@ public enum StringValueType implements ValueType {
      */
     public static int[] longsToInts(long[] in) {
         int[] out = new int[in.length];
-        for (int i = 0; i < in.length; i++) out[i] = (int) in[i];
+        for (int i = 0; i < in.length; i++)
+            out[i] = (int) in[i];
         return out;
     }
 
@@ -345,7 +320,8 @@ public enum StringValueType implements ValueType {
      */
     public static long[] intsToLong(int[] in) {
         long[] out = new long[in.length];
-        for (int i = 0; i < in.length; i++) out[i] = in[i];
+        for (int i = 0; i < in.length; i++)
+            out[i] = in[i];
         return out;
     }
 
@@ -393,22 +369,19 @@ public enum StringValueType implements ValueType {
             return cs(cs).encode((String) val, delimiters);
 
         if (val instanceof String[])
-            return cs(cs).encode(
-                    Builder.concat((String[]) val, '\\'), delimiters);
+            return cs(cs).encode(Builder.concat((String[]) val, '\\'), delimiters);
 
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public String toString(Object val, boolean bigEndian, int valueIndex,
-                           String defVal) {
+    public String toString(Object val, boolean bigEndian, int valueIndex, String defVal) {
 
         if (val instanceof String)
             return (String) (valueIndex == 0 ? val : defVal);
 
         if (val instanceof String[] ss) {
-            return (valueIndex < ss.length && ss[valueIndex] != null && !ss[valueIndex].isEmpty())
-                    ? ss[valueIndex]
+            return (valueIndex < ss.length && ss[valueIndex] != null && !ss[valueIndex].isEmpty()) ? ss[valueIndex]
                     : defVal;
         }
 
@@ -416,15 +389,13 @@ public enum StringValueType implements ValueType {
     }
 
     @Override
-    public Object toStrings(Object val, boolean bigEndian,
-                            SpecificCharacterSet cs) {
+    public Object toStrings(Object val, boolean bigEndian, SpecificCharacterSet cs) {
 
         if (val instanceof byte[]) {
             return splitAndTrim(cs(cs).decode((byte[]) val), cs);
         }
 
-        if (val instanceof String
-                || val instanceof String[])
+        if (val instanceof String || val instanceof String[])
             return val;
 
         throw new UnsupportedOperationException();
@@ -435,8 +406,7 @@ public enum StringValueType implements ValueType {
     }
 
     @Override
-    public int toInt(Object val, boolean bigEndian, int valueIndex,
-                     int defVal) {
+    public int toInt(Object val, boolean bigEndian, int valueIndex, int defVal) {
         throw new UnsupportedOperationException();
     }
 
@@ -456,8 +426,7 @@ public enum StringValueType implements ValueType {
     }
 
     @Override
-    public float toFloat(Object val, boolean bigEndian, int valueIndex,
-                         float defVal) {
+    public float toFloat(Object val, boolean bigEndian, int valueIndex, float defVal) {
         throw new UnsupportedOperationException();
     }
 
@@ -467,8 +436,7 @@ public enum StringValueType implements ValueType {
     }
 
     @Override
-    public double toDouble(Object val, boolean bigEndian, int valueIndex,
-                           double defVal) {
+    public double toDouble(Object val, boolean bigEndian, int valueIndex, double defVal) {
         throw new UnsupportedOperationException();
     }
 
@@ -478,15 +446,12 @@ public enum StringValueType implements ValueType {
     }
 
     @Override
-    public Date toDate(Object val, TimeZone tz, int valueIndex, boolean ceil,
-                       Date defVal, DatePrecision precision) {
+    public Date toDate(Object val, TimeZone tz, int valueIndex, boolean ceil, Date defVal, DatePrecision precision) {
         if (temporalType == null)
             throw new UnsupportedOperationException();
 
         if (val instanceof String) {
-            return valueIndex == 0
-                    ? temporalType.parse(tz, (String) val, ceil, precision)
-                    : defVal;
+            return valueIndex == 0 ? temporalType.parse(tz, (String) val, ceil, precision) : defVal;
         }
         if (val instanceof String[] ss) {
             return (valueIndex < ss.length && ss[valueIndex] != null)
@@ -503,16 +468,15 @@ public enum StringValueType implements ValueType {
 
         if (val instanceof String) {
             precision.precisions = new DatePrecision[1];
-            return new Date[]{temporalType.parse(tz, (String) val, ceil,
-                    precision.precisions[0] = new DatePrecision())};
+            return new Date[] {
+                    temporalType.parse(tz, (String) val, ceil, precision.precisions[0] = new DatePrecision()) };
         }
         if (val instanceof String[] ss) {
             Date[] is = new Date[ss.length];
             precision.precisions = new DatePrecision[ss.length];
             for (int i = 0; i < is.length; i++) {
                 if (ss[i] != null) {
-                    is[i] = temporalType.parse(tz, ss[i], ceil,
-                            precision.precisions[i] = new DatePrecision());
+                    is[i] = temporalType.parse(tz, ss[i], ceil, precision.precisions[i] = new DatePrecision());
                 }
             }
             return is;
@@ -587,8 +551,7 @@ public enum StringValueType implements ValueType {
     }
 
     @Override
-    public boolean prompt(Object val, boolean bigEndian,
-                          SpecificCharacterSet cs, int maxChars, StringBuilder sb) {
+    public boolean prompt(Object val, boolean bigEndian, SpecificCharacterSet cs, int maxChars, StringBuilder sb) {
         if (val instanceof byte[])
             return prompt(cs(cs).decode((byte[]) val), maxChars, sb);
 

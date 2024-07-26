@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth;
 
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -33,15 +33,10 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 /**
- * OAuth平台的API地址的统一接口，提供以下方法：
- * 1) {@link Complex#authorize()}: 获取授权url. 必须实现
- * 2) {@link Complex#accessToken()}: 获取accessToken的url. 必须实现
- * 3) {@link Complex#userInfo()}: 获取用户信息的url. 必须实现
- * 4) {@link Complex#revoke()}: 获取取消授权的url. 非必须实现接口（部分平台不支持）
- * 5) {@link Complex#refresh()}: 获取刷新授权的url. 非必须实现接口（部分平台不支持）
- * 注：
- * ①、如需通过扩展实现第三方授权，请参考{@link Registry}自行创建对应的枚举类并实现{@link Complex}接口
- * ②、如果不是使用的枚举类，那么在授权成功后获取用户信息时，需要单独处理source字段的赋值
+ * OAuth平台的API地址的统一接口，提供以下方法： 1) {@link Complex#authorize()}: 获取授权url. 必须实现 2) {@link Complex#accessToken()}:
+ * 获取accessToken的url. 必须实现 3) {@link Complex#userInfo()}: 获取用户信息的url. 必须实现 4) {@link Complex#revoke()}: 获取取消授权的url.
+ * 非必须实现接口（部分平台不支持） 5) {@link Complex#refresh()}: 获取刷新授权的url. 非必须实现接口（部分平台不支持） 注：
+ * ①、如需通过扩展实现第三方授权，请参考{@link Registry}自行创建对应的枚举类并实现{@link Complex}接口 ②、如果不是使用的枚举类，那么在授权成功后获取用户信息时，需要单独处理source字段的赋值
  * ③、如果扩展了对应枚举类时，在{@link Provider#login(Callback)}中可以通过{@code xx.toString()}获取对应的source
  *
  * @author Kimi Liu

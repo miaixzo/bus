@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.taobao;
 
 import com.alibaba.fastjson.JSONObject;
@@ -68,15 +68,10 @@ public class TaobaoProvider extends AbstractProvider {
     private AccToken getAuthToken(JSONObject object) {
         this.checkResponse(object);
 
-        return AccToken.builder()
-                .accessToken(object.getString("access_token"))
-                .expireIn(object.getIntValue("expires_in"))
-                .tokenType(object.getString("token_type"))
-                .idToken(object.getString("id_token"))
-                .refreshToken(object.getString("refresh_token"))
-                .uid(object.getString("taobao_user_id"))
-                .openId(object.getString("taobao_open_uid"))
-                .build();
+        return AccToken.builder().accessToken(object.getString("access_token"))
+                .expireIn(object.getIntValue("expires_in")).tokenType(object.getString("token_type"))
+                .idToken(object.getString("id_token")).refreshToken(object.getString("refresh_token"))
+                .uid(object.getString("taobao_user_id")).openId(object.getString("taobao_open_uid")).build();
     }
 
     private void checkResponse(JSONObject object) {
@@ -95,15 +90,9 @@ public class TaobaoProvider extends AbstractProvider {
         accToken = this.getAuthToken(accessTokenObject);
 
         String nick = UrlDecoder.decode(accessTokenObject.getString("taobao_user_nick"));
-        return Material.builder()
-                .rawJson(accessTokenObject)
-                .uuid(StringKit.isEmpty(accToken.getUid()) ? accToken.getOpenId() : accToken.getUid())
-                .username(nick)
-                .nickname(nick)
-                .gender(Gender.UNKNOWN)
-                .token(accToken)
-                .source(complex.toString())
-                .build();
+        return Material.builder().rawJson(accessTokenObject)
+                .uuid(StringKit.isEmpty(accToken.getUid()) ? accToken.getOpenId() : accToken.getUid()).username(nick)
+                .nickname(nick).gender(Gender.UNKNOWN).token(accToken).source(complex.toString()).build();
     }
 
     @Override
@@ -111,9 +100,7 @@ public class TaobaoProvider extends AbstractProvider {
         String tokenUrl = refreshTokenUrl(oldToken.getRefreshToken());
         String response = Httpx.post(tokenUrl);
         JSONObject accessTokenObject = JSONObject.parseObject(response);
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .data(this.getAuthToken(accessTokenObject))
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).data(this.getAuthToken(accessTokenObject))
                 .build();
     }
 
@@ -125,13 +112,9 @@ public class TaobaoProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.authorize())
-                .queryParam("response_type", "code")
-                .queryParam("client_id", context.getAppKey())
-                .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("view", "web")
-                .queryParam("state", getRealState(state))
-                .build();
+        return Builder.fromUrl(complex.authorize()).queryParam("response_type", "code")
+                .queryParam("client_id", context.getAppKey()).queryParam("redirect_uri", context.getRedirectUri())
+                .queryParam("view", "web").queryParam("state", getRealState(state)).build();
     }
 
 }

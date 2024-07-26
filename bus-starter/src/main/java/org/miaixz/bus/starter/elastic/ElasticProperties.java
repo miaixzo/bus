@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.elastic;
 
 import lombok.Getter;
@@ -39,7 +39,10 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * <p>@description ElasticSearch 配置属性类 </p>
+ * <p>
+ * 
+ * @description ElasticSearch 配置属性类
+ *              </p>
  *
  * @author <a href="mailto:congchun.zheng@gmail.com">Sixawn.ZHENG</a>
  * @since Java 17+
@@ -49,8 +52,7 @@ import java.util.List;
 @ConfigurationProperties(prefix = GeniusBuilder.ELASTIC)
 public class ElasticProperties {
     /**
-     * 集群主机地址, 多个用英文逗号,隔开
-     * 格式: ip1:port,ip2:port
+     * 集群主机地址, 多个用英文逗号,隔开 格式: ip1:port,ip2:port
      */
     private String hosts;
     /**

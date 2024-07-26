@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.setting.magic;
 
 import org.miaixz.bus.core.bean.copier.CopyOptions;
@@ -47,8 +47,8 @@ import java.lang.reflect.Type;
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class AbstractSetting implements TypeGetter<CharSequence>,
-        GroupedTypeGetter<CharSequence, CharSequence>, Serializable {
+public abstract class AbstractSetting
+        implements TypeGetter<CharSequence>, GroupedTypeGetter<CharSequence, CharSequence>, Serializable {
 
     /**
      * 数组类型值默认分隔符
@@ -118,11 +118,12 @@ public abstract class AbstractSetting implements TypeGetter<CharSequence>,
     }
 
     /**
-     * 获得数组型默认逗号分隔
-     * 若配置文件中键值对类似于：
+     * 获得数组型默认逗号分隔 若配置文件中键值对类似于：
+     * 
      * <pre>
      *     a = 1,2,3,4
      * </pre>
+     * 
      * 则获取结果为：[1, 2, 3, 4]
      *
      * @param key   属性名
@@ -134,11 +135,12 @@ public abstract class AbstractSetting implements TypeGetter<CharSequence>,
     }
 
     /**
-     * 获得数组型，可自定义分隔符
-     * 假定分隔符为逗号，若配置文件中键值对类似于：
+     * 获得数组型，可自定义分隔符 假定分隔符为逗号，若配置文件中键值对类似于：
+     * 
      * <pre>
      *     a = 1,2,3,4
      * </pre>
+     * 
      * 则获取结果为：[1, 2, 3, 4]
      *
      * @param key       属性名
@@ -155,8 +157,7 @@ public abstract class AbstractSetting implements TypeGetter<CharSequence>,
     }
 
     /**
-     * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法
-     * 只支持基本类型的转换
+     * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法 只支持基本类型的转换
      *
      * @param <T>   Bean类型
      * @param group 分组
@@ -179,8 +180,7 @@ public abstract class AbstractSetting implements TypeGetter<CharSequence>,
     }
 
     /**
-     * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法
-     * 只支持基本类型的转换
+     * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法 只支持基本类型的转换
      *
      * @param <T>       Bean类型
      * @param group     分组
@@ -192,8 +192,7 @@ public abstract class AbstractSetting implements TypeGetter<CharSequence>,
     }
 
     /**
-     * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法
-     * 只支持基本类型的转换
+     * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法 只支持基本类型的转换
      *
      * @param <T>  bean类型
      * @param bean Bean
@@ -204,8 +203,7 @@ public abstract class AbstractSetting implements TypeGetter<CharSequence>,
     }
 
     /**
-     * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法
-     * 只支持基本类型的转换
+     * 将setting中的键值关系映射到对象中，原理是调用对象对应的set方法 只支持基本类型的转换
      *
      * @param <T>       bean类型
      * @param beanClass Bean类型

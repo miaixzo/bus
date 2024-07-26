@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.net;
 
 import org.miaixz.bus.image.metric.Association;
@@ -58,8 +58,7 @@ public enum State {
     },
     Sta2("Sta2 - Transport connection open") {
         @Override
-        public void onAAssociateRQ(Association as, AAssociateRQ rq)
-                throws IOException {
+        public void onAAssociateRQ(Association as, AAssociateRQ rq) throws IOException {
             as.handle(rq);
         }
 
@@ -176,18 +175,15 @@ public enum State {
         return name;
     }
 
-    public void onAAssociateRQ(Association as, AAssociateRQ rq)
-            throws IOException {
+    public void onAAssociateRQ(Association as, AAssociateRQ rq) throws IOException {
         as.unexpectedPDU("A-ASSOCIATE-RQ");
     }
 
-    public void onAAssociateAC(Association as, AAssociateAC ac)
-            throws IOException {
+    public void onAAssociateAC(Association as, AAssociateAC ac) throws IOException {
         as.unexpectedPDU("A-ASSOCIATE-AC");
     }
 
-    public void onAAssociateRJ(Association as, AAssociateRJ rj)
-            throws IOException {
+    public void onAAssociateRJ(Association as, AAssociateRJ rj) throws IOException {
         as.unexpectedPDU("A-ASSOCIATE-RJ");
     }
 

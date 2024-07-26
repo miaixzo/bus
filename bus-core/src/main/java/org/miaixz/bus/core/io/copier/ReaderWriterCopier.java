@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.copier;
 
 import org.miaixz.bus.core.io.StreamProgress;
@@ -112,7 +112,8 @@ public class ReaderWriterCopier extends IoCopier<Reader, Writer> {
      * @return 拷贝总长度
      * @throws IOException IO异常
      */
-    private long doCopy(final Reader source, final Writer target, final char[] buffer, final StreamProgress progress) throws IOException {
+    private long doCopy(final Reader source, final Writer target, final char[] buffer, final StreamProgress progress)
+            throws IOException {
         long numToRead = this.count > 0 ? this.count : Long.MAX_VALUE;
         long total = 0;
 

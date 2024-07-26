@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric.suffix;
 
 import org.miaixz.bus.core.io.source.BufferSource;
@@ -41,16 +41,15 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * A database of public suffixes provided by
- * <a href="https://publicsuffix.org/">publicsuffix.org</a>.
+ * A database of public suffixes provided by <a href="https://publicsuffix.org/">publicsuffix.org</a>.
  */
 public final class Suffixes {
 
     public static final String PUBLIC_SUFFIX_RESOURCE = "suffixes.gz";
 
-    private static final byte[] WILDCARD_LABEL = new byte[]{Symbol.C_STAR};
+    private static final byte[] WILDCARD_LABEL = new byte[] { Symbol.C_STAR };
     private static final String[] EMPTY_RULE = new String[0];
-    private static final String[] PREVAILING_RULE = new String[]{Symbol.STAR};
+    private static final String[] PREVAILING_RULE = new String[] { Symbol.STAR };
 
     private static final Suffixes instance = new Suffixes();
 
@@ -115,11 +114,13 @@ public final class Suffixes {
                 int byte1 = bytesToSearch[mid + publicSuffixByteIndex] & 0xff;
 
                 compareResult = byte0 - byte1;
-                if (compareResult != 0) break;
+                if (compareResult != 0)
+                    break;
 
                 publicSuffixByteIndex++;
                 currentLabelByteIndex++;
-                if (publicSuffixByteIndex == publicSuffixLength) break;
+                if (publicSuffixByteIndex == publicSuffixLength)
+                    break;
 
                 if (labels[currentLabelIndex].length == currentLabelByteIndex) {
                     // We've exhausted our current label. Either there are more labels to compare, in which
@@ -161,10 +162,13 @@ public final class Suffixes {
     }
 
     /**
-     * Returns the effective top-level domain plus one (eTLD+1) by referencing the public suffix list.
-     * Returns null if the domain is a public suffix or a private address.
+     * Returns the effective top-level domain plus one (eTLD+1) by referencing the public suffix list. Returns null if
+     * the domain is a public suffix or a private address.
      *
-     * <p>Here are some examples: <pre>{@code
+     * <p>
+     * Here are some examples:
+     * 
+     * <pre>{@code
      * assertEquals("google.com", getEffectiveTldPlusOne("google.com"));
      * assertEquals("google.com", getEffectiveTldPlusOne("www.google.com"));
      * assertNull(getEffectiveTldPlusOne("com"));
@@ -172,11 +176,11 @@ public final class Suffixes {
      * assertNull(getEffectiveTldPlusOne("mymacbook"));
      * }</pre>
      *
-     * @param domain A canonicalized domain. An International Domain Name (IDN) should be punycode
-     *               encoded.
+     * @param domain A canonicalized domain. An International Domain Name (IDN) should be punycode encoded.
      */
     public String getEffectiveTldPlusOne(String domain) {
-        if (domain == null) throw new NullPointerException("domain == null");
+        if (domain == null)
+            throw new NullPointerException("domain == null");
 
         // We use UTF-8 in the list so we need to convert to Unicode.
         String unicodeDomain = IDN.toUnicode(domain);
@@ -219,8 +223,8 @@ public final class Suffixes {
 
         synchronized (this) {
             if (publicSuffixListBytes == null) {
-                throw new IllegalStateException("Unable to load " + PUBLIC_SUFFIX_RESOURCE + " resource "
-                        + "from the classpath.");
+                throw new IllegalStateException(
+                        "Unable to load " + PUBLIC_SUFFIX_RESOURCE + " resource " + "from the classpath.");
             }
         }
 
@@ -263,8 +267,7 @@ public final class Suffixes {
         String exception = null;
         if (wildcardMatch != null) {
             for (int labelIndex = 0; labelIndex < domainLabelsUtf8Bytes.length - 1; labelIndex++) {
-                String rule = binarySearchBytes(
-                        publicSuffixExceptionListBytes, domainLabelsUtf8Bytes, labelIndex);
+                String rule = binarySearchBytes(publicSuffixExceptionListBytes, domainLabelsUtf8Bytes, labelIndex);
                 if (rule != null) {
                     exception = rule;
                     break;
@@ -280,23 +283,17 @@ public final class Suffixes {
             return PREVAILING_RULE;
         }
 
-        String[] exactRuleLabels = exactMatch != null
-                ? exactMatch.split("\\.")
-                : EMPTY_RULE;
+        String[] exactRuleLabels = exactMatch != null ? exactMatch.split("\\.") : EMPTY_RULE;
 
-        String[] wildcardRuleLabels = wildcardMatch != null
-                ? wildcardMatch.split("\\.")
-                : EMPTY_RULE;
+        String[] wildcardRuleLabels = wildcardMatch != null ? wildcardMatch.split("\\.") : EMPTY_RULE;
 
-        return exactRuleLabels.length > wildcardRuleLabels.length
-                ? exactRuleLabels
-                : wildcardRuleLabels;
+        return exactRuleLabels.length > wildcardRuleLabels.length ? exactRuleLabels : wildcardRuleLabels;
     }
 
     /**
-     * Reads the public suffix list treating the operation as uninterruptible. We always want to read
-     * the list otherwise we'll be left in a bad state. If the thread was interrupted prior to this
-     * operation, it will be re-interrupted after the list is read.
+     * Reads the public suffix list treating the operation as uninterruptible. We always want to read the list otherwise
+     * we'll be left in a bad state. If the thread was interrupted prior to this operation, it will be re-interrupted
+     * after the list is read.
      */
     private void readTheListUninterruptibly() {
         boolean interrupted = false;
@@ -325,7 +322,8 @@ public final class Suffixes {
         byte[] publicSuffixExceptionListBytes;
 
         InputStream resource = Suffixes.class.getResourceAsStream(PUBLIC_SUFFIX_RESOURCE);
-        if (resource == null) return;
+        if (resource == null)
+            return;
 
         try (BufferSource BufferSource = IoKit.buffer(new GzipSource(IoKit.source(resource)))) {
             int totalBytes = BufferSource.readInt();

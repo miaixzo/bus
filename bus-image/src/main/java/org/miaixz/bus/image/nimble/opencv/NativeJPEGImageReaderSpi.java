@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv;
 
 import org.miaixz.bus.core.Version;
@@ -41,13 +41,13 @@ import java.util.Locale;
  */
 public class NativeJPEGImageReaderSpi extends ImageReaderSpi {
 
-    static final String[] NAMES = {"jpeg-cv"};
+    static final String[] NAMES = { "jpeg-cv" };
     static final String[] SUFFIXES = {};
     static final String[] MIMES = {};
 
     public NativeJPEGImageReaderSpi() {
         super("Miaixz Team", Version._VERSION, NAMES, SUFFIXES, MIMES, NativeImageReader.class.getName(),
-                new Class[]{ImageInputStream.class}, new String[]{}, false, // supportsStandardStreamMetadataFormat
+                new Class[] { ImageInputStream.class }, new String[] {}, false, // supportsStandardStreamMetadataFormat
                 null, // nativeStreamMetadataFormatName
                 null, // nativeStreamMetadataFormatClassName
                 null, // extraStreamMetadataFormatNames

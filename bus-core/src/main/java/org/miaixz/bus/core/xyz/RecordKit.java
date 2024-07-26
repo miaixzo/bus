@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.bean.copier.ValueProvider;
@@ -36,8 +36,7 @@ import java.util.AbstractMap;
 import java.util.Map;
 
 /**
- * java.lang.Record 相关工具类封装
- * 来自于FastJSON2
+ * java.lang.Record 相关工具类封装 来自于FastJSON2
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -105,10 +104,8 @@ public class RecordKit {
         final Object[] components = MethodKit.invoke(recordClass, METHOD_GET_RECORD_COMPONENTS);
         final Map.Entry<String, Type>[] entries = new Map.Entry[components.length];
         for (int i = 0; i < components.length; i++) {
-            entries[i] = new AbstractMap.SimpleEntry<>(
-                    MethodKit.invoke(components[i], METHOD_COMPONENT_GET_NAME),
-                    MethodKit.invoke(components[i], METHOD_COMPONENT_GET_GENERIC_TYPE)
-            );
+            entries[i] = new AbstractMap.SimpleEntry<>(MethodKit.invoke(components[i], METHOD_COMPONENT_GET_NAME),
+                    MethodKit.invoke(components[i], METHOD_COMPONENT_GET_GENERIC_TYPE));
         }
 
         return entries;

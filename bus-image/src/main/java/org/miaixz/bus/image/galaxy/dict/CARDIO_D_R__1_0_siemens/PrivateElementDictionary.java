@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.CARDIO_D_R__1_0_siemens;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,20 +46,21 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.EdgeEnhancementGain:
-            case PrivateTag.DisplayedAreaBottomRightHandCornerFractional:
-            case PrivateTag.DisplayedAreaTopLeftHandCornerFractional:
-                return VR.FL;
-            case PrivateTag.EdgeEnhancementSequence:
-                return VR.SQ;
-            case PrivateTag.ConvolutionKernelSize:
-            case PrivateTag.ConvolutionKernelCoefficients:
-                return VR.US;
+
+        case PrivateTag.EdgeEnhancementGain:
+        case PrivateTag.DisplayedAreaBottomRightHandCornerFractional:
+        case PrivateTag.DisplayedAreaTopLeftHandCornerFractional:
+            return VR.FL;
+        case PrivateTag.EdgeEnhancementSequence:
+            return VR.SQ;
+        case PrivateTag.ConvolutionKernelSize:
+        case PrivateTag.ConvolutionKernelCoefficients:
+            return VR.US;
         }
         return VR.UN;
     }

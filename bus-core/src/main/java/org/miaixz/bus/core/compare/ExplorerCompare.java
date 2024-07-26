@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.compare;
 
 import org.miaixz.bus.core.xyz.StringKit;
@@ -37,15 +37,22 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Windows 资源管理器风格字符串比较器
- * 此比较器模拟了 Windows 资源管理器的文件名排序方式，可得到与其相同的排序结果。
+ * Windows 资源管理器风格字符串比较器 此比较器模拟了 Windows 资源管理器的文件名排序方式，可得到与其相同的排序结果。
  *
- * <p>假设有一个数组，包含若干个文件名 {@code {"xyz2.doc", "xyz1.doc", "xyz12.doc"}}</p>
- * <p>调用 {@code Arrays.sort(filenames);} 时，得到 {@code {"xyz1.doc", "xyz12.doc", "xyz2.doc" }}</p>
- * <p>调用 {@code Arrays.sort(filenames, new WindowsCompare());} 时，得到 {@code {"xyz1.doc", "xyz2.doc", "xyz12.doc" }}，这与在资源管理器中看到的相同</p>
+ * <p>
+ * 假设有一个数组，包含若干个文件名 {@code {"xyz2.doc", "xyz1.doc", "xyz12.doc"}}
+ * </p>
+ * <p>
+ * 调用 {@code Arrays.sort(filenames);} 时，得到 {@code {"xyz1.doc", "xyz12.doc", "xyz2.doc" }}
+ * </p>
+ * <p>
+ * 调用 {@code Arrays.sort(filenames, new WindowsCompare());} 时，得到 {@code {"xyz1.doc", "xyz2.doc", "xyz12.doc"
+ * }}，这与在资源管理器中看到的相同
+ * </p>
  *
  * @author Kimi Liu
- * @see <a href="https://stackoverflow.com/questions/23205020/java-sort-strings-like-windows-explorer">Java - Sort Strings like Windows Explorer</a>
+ * @see <a href="https://stackoverflow.com/questions/23205020/java-sort-strings-like-windows-explorer">Java - Sort
+ *      Strings like Windows Explorer</a>
  * @since Java 17+
  */
 public class ExplorerCompare implements Comparator<CharSequence> {

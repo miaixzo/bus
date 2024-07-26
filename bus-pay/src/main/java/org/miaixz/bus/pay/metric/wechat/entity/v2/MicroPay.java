@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pay.metric.wechat.entity.v2;
 
 import lombok.AllArgsConstructor;
@@ -35,8 +35,7 @@ import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.pay.magic.Material;
 
 /**
- * 付款码支付
- * 支持: 付款支付、支付押金（人脸支付）、支付押金（付款码支付）
+ * 付款码支付 支持: 付款支付、支付押金（人脸支付）、支付押金（付款码支付）
  *
  * @author Kimi Liu
  * @since Java 17+

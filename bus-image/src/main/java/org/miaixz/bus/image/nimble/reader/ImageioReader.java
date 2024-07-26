@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.reader;
 
 import org.miaixz.bus.core.xyz.ByteKit;
@@ -61,14 +61,15 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
- * Reads header and image data from a DICOM object.
- * Supports compressed and uncompressed images from a DicomMetaData object, an InputStream/DicomInputStream or an ImageInputStream.
- * For ImageInputStream, the access supports random/out of order reading from the input for everything except deflated streams.
- * For InputStream type data, only sequential access to images is supported, including deflated.
- * For DicomMetaData, random access is fully supported, and can have been read from a deflated stream.
- * Objects without pixel data are also supported, although only the metadata can be read from them (mostly for the use case that it is unknown whether or not there is
- * pixel data).
- * Tag values after the pixel data are not read up-front for performance reasons/ability to actually read them up front.  Call the relevant methods below to read that data.
+ * Reads header and image data from a DICOM object. Supports compressed and uncompressed images from a DicomMetaData
+ * object, an InputStream/DicomInputStream or an ImageInputStream. For ImageInputStream, the access supports random/out
+ * of order reading from the input for everything except deflated streams. For InputStream type data, only sequential
+ * access to images is supported, including deflated. For DicomMetaData, random access is fully supported, and can have
+ * been read from a deflated stream. Objects without pixel data are also supported, although only the metadata can be
+ * read from them (mostly for the use case that it is unknown whether or not there is pixel data). Tag values after the
+ * pixel data are not read up-front for performance reasons/ability to actually read them up front. Call the relevant
+ * methods below to read that data.
+ * 
  * @author Kimi Liu
  * @since Java 17+
  */
@@ -149,7 +150,8 @@ public class ImageioReader extends ImageReader implements Closeable {
                 if (offset != 1) {
                     // Handle > 4 gb total image size by assuming incrementing modulo 4gb
                     offset = offset | (lastOffset & 0xFFFFFF00000000L);
-                    if (offset < lastOffset) offset += 0x100000000L;
+                    if (offset < lastOffset)
+                        offset += 0x100000000L;
                     lastOffset = offset;
                     Logger.trace("Found offset {} for frame {}", offset, frame);
                 }
@@ -171,14 +173,12 @@ public class ImageioReader extends ImageReader implements Closeable {
     }
 
     @Override
-    public void setInput(Object input, boolean seekForwardOnly,
-                         boolean ignoreMetadata) {
+    public void setInput(Object input, boolean seekForwardOnly, boolean ignoreMetadata) {
         super.setInput(input, seekForwardOnly, ignoreMetadata);
         resetInternalState();
         if (input instanceof InputStream) {
             try {
-                dis = (input instanceof ImageInputStream)
-                        ? (ImageInputStream) input
+                dis = (input instanceof ImageInputStream) ? (ImageInputStream) input
                         : new ImageInputStream((InputStream) input);
             } catch (IOException e) {
                 throw new IllegalArgumentException(e.getMessage());
@@ -252,8 +252,7 @@ public class ImageioReader extends ImageReader implements Closeable {
     }
 
     @Override
-    public ImageTypeSpecifier getRawImageType(int frameIndex)
-            throws IOException {
+    public ImageTypeSpecifier getRawImageType(int frameIndex) throws IOException {
         readMetadata();
         checkIndex(frameIndex);
         ColorSpace cspace = colorSpaceOfFrame(frameIndex).orElse(sRGB);
@@ -273,8 +272,7 @@ public class ImageioReader extends ImageReader implements Closeable {
     }
 
     @Override
-    public Iterator<ImageTypeSpecifier> getImageTypes(int frameIndex)
-            throws IOException {
+    public Iterator<ImageTypeSpecifier> getImageTypes(int frameIndex) throws IOException {
         readMetadata();
         checkIndex(frameIndex);
         ColorSpace cspace = colorSpaceOfFrame(frameIndex).orElse(sRGB);
@@ -321,9 +319,8 @@ public class ImageioReader extends ImageReader implements Closeable {
     }
 
     /**
-     * Gets the stream metadata.  May not contain post pixel data unless
-     * there are no images or the getStreamMetadata has been called with the post pixel data
-     * node being specified.
+     * Gets the stream metadata. May not contain post pixel data unless there are no images or the getStreamMetadata has
+     * been called with the post pixel data node being specified.
      */
     @Override
     public ImageioMetaData getStreamMetadata() throws IOException {
@@ -332,16 +329,12 @@ public class ImageioReader extends ImageReader implements Closeable {
     }
 
     /**
-     * Gets the stream metadata.
-     * If nodeNames contains POST_PIXEL_DATA constant "postPixelData" then
-     * read the post pixel data as well.  In an InputStream instance that can
-     * only safely be done after all pixel data is read.  On imageInputStream it
-     * may be slow for large multiframes, but can safely be done at any time.
+     * Gets the stream metadata. If nodeNames contains POST_PIXEL_DATA constant "postPixelData" then read the post pixel
+     * data as well. In an InputStream instance that can only safely be done after all pixel data is read. On
+     * imageInputStream it may be slow for large multiframes, but can safely be done at any time.
      */
     @Override
-    public ImageioMetaData getStreamMetadata(String formatName,
-                                             Set<String> nodeNames)
-            throws IOException {
+    public ImageioMetaData getStreamMetadata(String formatName, Set<String> nodeNames) throws IOException {
         ImageioMetaData ret = getStreamMetadata();
         if (nodeNames != null && nodeNames.contains(POST_PIXEL_DATA)) {
             readPostPixeldata();
@@ -361,8 +354,7 @@ public class ImageioReader extends ImageReader implements Closeable {
     }
 
     @Override
-    public Raster readRaster(int frameIndex, ImageReadParam param)
-            throws IOException {
+    public Raster readRaster(int frameIndex, ImageReadParam param) throws IOException {
         readMetadata();
         checkIndex(frameIndex);
 
@@ -380,21 +372,16 @@ public class ImageioReader extends ImageReader implements Closeable {
                     Logger.debug("Finished decompressing frame #" + (frameIndex + 1));
                 return wr;
             }
-            WritableRaster wr = Raster.createWritableRaster(
-                    createSampleModel(dataType, banded), null);
+            WritableRaster wr = Raster.createWritableRaster(createSampleModel(dataType, banded), null);
             DataBuffer buf = wr.getDataBuffer();
             if (dis != null) {
                 dis.skipFully((long) (frameIndex - flushedFrames) * frameLength);
                 flushedFrames = frameIndex + 1;
             } else if (pixeldataBytes != null) {
-                iis.setByteOrder(bigEndian()
-                        ? ByteOrder.BIG_ENDIAN
-                        : ByteOrder.LITTLE_ENDIAN);
+                iis.setByteOrder(bigEndian() ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN);
                 iis.seek((long) frameIndex * frameLength);
             } else {
-                iis.setByteOrder(bigEndian()
-                        ? ByteOrder.BIG_ENDIAN
-                        : ByteOrder.LITTLE_ENDIAN);
+                iis.setByteOrder(bigEndian() ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN);
                 iis.seek(pixelData.offset() + (long) frameIndex * frameLength);
             }
             if (buf instanceof DataBufferByte) {
@@ -443,8 +430,7 @@ public class ImageioReader extends ImageReader implements Closeable {
     }
 
     @Override
-    public BufferedImage read(int frameIndex, ImageReadParam param)
-            throws IOException {
+    public BufferedImage read(int frameIndex, ImageReadParam param) throws IOException {
         readMetadata();
         checkIndex(frameIndex);
 
@@ -454,7 +440,8 @@ public class ImageioReader extends ImageReader implements Closeable {
             openiis();
             try {
                 javax.imageio.stream.ImageInputStream iisOfFrame = iisOfFrame(frameIndex);
-                // Reading this up front sets the required values so that opencv succeeds - it is less than optimal performance wise
+                // Reading this up front sets the required values so that opencv succeeds - it is less than optimal
+                // performance wise
                 iisOfFrame.length();
                 decompressor.setInput(iisOfFrame);
                 Logger.debug("Start decompressing frame #{}", (frameIndex + 1));
@@ -467,8 +454,7 @@ public class ImageioReader extends ImageReader implements Closeable {
         } else {
             raster = (WritableRaster) readRaster(frameIndex, param);
         }
-        return pmi.isMonochrome()
-                ? applyGrayscaleTransformations(frameIndex, param, raster)
+        return pmi.isMonochrome() ? applyGrayscaleTransformations(frameIndex, param, raster)
                 : applyColorTransformations(frameIndex, param, raster, bi);
     }
 
@@ -478,13 +464,7 @@ public class ImageioReader extends ImageReader implements Closeable {
         for (int i = 0; i < overlayGroupOffsets.length; i++) {
             overlayData[i] = extractOverlay(overlayGroupOffsets[i], raster);
         }
-        SampleModel sm = new PixelInterleavedSampleModel(
-                DataBuffer.TYPE_BYTE,
-                width,
-                height,
-                1,
-                width,
-                new int[1]);
+        SampleModel sm = new PixelInterleavedSampleModel(DataBuffer.TYPE_BYTE, width, height, 1, width, new int[1]);
         raster = applyLUTs(raster, frameIndex, param, sm, 8);
         for (int i = 0; i < overlayGroupOffsets.length; i++) {
             try {
@@ -499,15 +479,13 @@ public class ImageioReader extends ImageReader implements Closeable {
     }
 
     private BufferedImage applyColorTransformations(int frameIndex, ImageReadParam param, WritableRaster raster,
-                                                    BufferedImage bi) {
+            BufferedImage bi) {
         int[] overlayGroupOffsets = getActiveOverlayGroupOffsets(param);
         Optional<ColorSpace> iccColorSpace = colorSpaceOfFrame(frameIndex);
-        if (bi != null
-                && pmi != Photometric.PALETTE_COLOR
-                && bi.getColorModel().getColorSpace().getType()
-                == (pmiAfterDecompression.isYBR() ? ColorSpace.TYPE_YCbCr : ColorSpace.TYPE_RGB)
-                && overlayGroupOffsets.length == 0
-                && !iccColorSpace.isPresent()) {
+        if (bi != null && pmi != Photometric.PALETTE_COLOR
+                && bi.getColorModel().getColorSpace()
+                        .getType() == (pmiAfterDecompression.isYBR() ? ColorSpace.TYPE_YCbCr : ColorSpace.TYPE_RGB)
+                && overlayGroupOffsets.length == 0 && !iccColorSpace.isPresent()) {
             return bi;
         }
         ColorSpace colorSpace = iccColorSpace.orElse(sRGB);
@@ -530,7 +508,8 @@ public class ImageioReader extends ImageReader implements Closeable {
         }
         for (int i = 0; i < overlayGroupOffsets.length; i++) {
             try {
-                applyOverlayColor(overlayGroupOffsets[i], bi.getRaster(), frameIndex, param, bi.getColorModel().getColorSpace());
+                applyOverlayColor(overlayGroupOffsets[i], bi.getRaster(), frameIndex, param,
+                        bi.getColorModel().getColorSpace());
             } catch (IllegalArgumentException e) {
                 Logger.info(ignoreInvalidOverlay(overlayGroupOffsets[i], e));
             }
@@ -553,16 +532,16 @@ public class ImageioReader extends ImageReader implements Closeable {
 
         byte[] ovlyData = new byte[(((length + 7) >>> 3) + 1) & (~1)];
         if (bitPosition < bitsStored)
-            Logger.info("Ignore embedded overlay #{} from bit #{} < bits stored: {}",
-                    (gg0000 >>> 17) + 1, bitPosition, bitsStored);
+            Logger.info("Ignore embedded overlay #{} from bit #{} < bits stored: {}", (gg0000 >>> 17) + 1, bitPosition,
+                    bitsStored);
         else
             Overlays.extractFromPixeldata(raster, mask, ovlyData, 0, length);
         return ovlyData;
     }
 
     /**
-     * Generate an image input stream for the given frame, -1 for all frames (video, multi-component single frame)
-     * Does not necessarily support the length operation without seeking/reading to the end of the input.
+     * Generate an image input stream for the given frame, -1 for all frames (video, multi-component single frame) Does
+     * not necessarily support the length operation without seeking/reading to the end of the input.
      *
      * @param frameIndex
      * @return
@@ -576,13 +555,10 @@ public class ImageioReader extends ImageReader implements Closeable {
         } else if (pixelDataFragments == null) {
             return null;
         } else {
-            iisOfFrame = new SegmentedInputImageStream(
-                    iis, pixelDataFragments, frames == 1 ? -1 : frameIndex);
+            iisOfFrame = new SegmentedInputImageStream(iis, pixelDataFragments, frames == 1 ? -1 : frameIndex);
             ((SegmentedInputImageStream) iisOfFrame).setImageDescriptor(imageDescriptor);
         }
-        return patchJpegLS != null
-                ? new PatchJPEGLSInputStream(iisOfFrame, patchJpegLS)
-                : iisOfFrame;
+        return patchJpegLS != null ? new PatchJPEGLSInputStream(iisOfFrame, patchJpegLS) : iisOfFrame;
     }
 
     public Optional<ColorSpace> colorSpaceOfFrame(int frameIndex) {
@@ -597,20 +573,21 @@ public class ImageioReader extends ImageReader implements Closeable {
         assert frameIndex >= flushedFrames;
         if (frameIndex == flushedFrames)
             epdiis.seekCurrentFrame();
-        else while (frameIndex > flushedFrames) {
-            if (!epdiis.seekNextFrame()) {
-                throw new IOException("Data Fragments only contains " + (flushedFrames + 1) + " frames");
+        else
+            while (frameIndex > flushedFrames) {
+                if (!epdiis.seekNextFrame()) {
+                    throw new IOException("Data Fragments only contains " + (flushedFrames + 1) + " frames");
+                }
+                flushedFrames++;
             }
-            flushedFrames++;
-        }
     }
 
-    private void applyOverlayMonochrome(int gg0000, WritableRaster raster,
-                                        int frameIndex, ImageReadParam param, byte[] ovlyData) {
+    private void applyOverlayMonochrome(int gg0000, WritableRaster raster, int frameIndex, ImageReadParam param,
+            byte[] ovlyData) {
         Attributes ovlyAttrs = metadata.getAttributes();
-        int[] pixelValue = new int[]{0xff};
+        int[] pixelValue = new int[] { 0xff };
         if (param instanceof ImageioReadParam dParam) {
-            pixelValue = new int[]{dParam.getOverlayGrayscaleValue() >> 8};
+            pixelValue = new int[] { dParam.getOverlayGrayscaleValue() >> 8 };
             Attributes psAttrs = dParam.getPresentationState();
             if (psAttrs != null) {
                 if (psAttrs.containsValue(Tag.OverlayData | gg0000))
@@ -622,9 +599,9 @@ public class ImageioReader extends ImageReader implements Closeable {
     }
 
     private void applyOverlayColor(int gg0000, WritableRaster raster, int frameIndex, ImageReadParam param,
-                                   ColorSpace cspace) {
+            ColorSpace cspace) {
         Attributes ovlyAttrs = metadata.getAttributes();
-        int[] pixelValue = new int[]{0xff, 0xff, 0xff};
+        int[] pixelValue = new int[] { 0xff, 0xff, 0xff };
         if (param instanceof ImageioReadParam dParam) {
             pixelValue = dParam.getOverlayRGBPixelValue();
             Attributes psAttrs = dParam.getPresentationState();
@@ -643,56 +620,38 @@ public class ImageioReader extends ImageReader implements Closeable {
             if (psAttrs != null)
                 return Overlays.getActiveOverlayGroupOffsets(psAttrs);
             else
-                return Overlays.getActiveOverlayGroupOffsets(
-                        metadata.getAttributes(),
+                return Overlays.getActiveOverlayGroupOffsets(metadata.getAttributes(),
                         dParam.getOverlayActivationMask());
         }
-        return Overlays.getActiveOverlayGroupOffsets(
-                metadata.getAttributes(),
-                0xffff);
+        return Overlays.getActiveOverlayGroupOffsets(metadata.getAttributes(), 0xffff);
     }
 
-    private WritableRaster applyLUTs(WritableRaster raster,
-                                     int frameIndex, ImageReadParam param, SampleModel sm, int outBits) {
-        WritableRaster destRaster =
-                sm.getDataType() == raster.getSampleModel().getDataType()
-                        ? raster
-                        : Raster.createWritableRaster(sm, null);
+    private WritableRaster applyLUTs(WritableRaster raster, int frameIndex, ImageReadParam param, SampleModel sm,
+            int outBits) {
+        WritableRaster destRaster = sm.getDataType() == raster.getSampleModel().getDataType() ? raster
+                : Raster.createWritableRaster(sm, null);
         Attributes imgAttrs = metadata.getAttributes();
         StoredValue sv = StoredValue.valueOf(imgAttrs);
         LookupTableFactory lutParam = new LookupTableFactory(sv);
-        ImageioReadParam dParam = param instanceof ImageioReadParam
-                ? (ImageioReadParam) param
-                : new ImageioReadParam();
+        ImageioReadParam dParam = param instanceof ImageioReadParam ? (ImageioReadParam) param : new ImageioReadParam();
         Attributes psAttrs = dParam.getPresentationState();
         if (psAttrs != null) {
             lutParam.setModalityLUT(psAttrs);
-            lutParam.setVOI(
-                    selectVOILUT(psAttrs,
-                            imgAttrs.getString(Tag.SOPInstanceUID),
-                            frameIndex + 1),
-                    0, 0, false);
+            lutParam.setVOI(selectVOILUT(psAttrs, imgAttrs.getString(Tag.SOPInstanceUID), frameIndex + 1), 0, 0, false);
             lutParam.setPresentationLUT(psAttrs, false);
         } else {
-            Attributes sharedFctGroups = imgAttrs.getNestedDataset(
-                    Tag.SharedFunctionalGroupsSequence);
-            Attributes frameFctGroups = imgAttrs.getNestedDataset(
-                    Tag.PerFrameFunctionalGroupsSequence, frameIndex);
+            Attributes sharedFctGroups = imgAttrs.getNestedDataset(Tag.SharedFunctionalGroupsSequence);
+            Attributes frameFctGroups = imgAttrs.getNestedDataset(Tag.PerFrameFunctionalGroupsSequence, frameIndex);
             if (LookupTableFactory.applyModalityLUT(imgAttrs)) {
-                lutParam.setModalityLUT(
-                        selectFctGroup(imgAttrs, sharedFctGroups, frameFctGroups,
-                                Tag.PixelValueTransformationSequence));
+                lutParam.setModalityLUT(selectFctGroup(imgAttrs, sharedFctGroups, frameFctGroups,
+                        Tag.PixelValueTransformationSequence));
             }
             if (dParam.getWindowWidth() != 0) {
                 lutParam.setWindowCenter(dParam.getWindowCenter());
                 lutParam.setWindowWidth(dParam.getWindowWidth());
             } else
-                lutParam.setVOI(
-                        selectFctGroup(imgAttrs, sharedFctGroups, frameFctGroups,
-                                Tag.FrameVOILUTSequence),
-                        dParam.getWindowIndex(),
-                        dParam.getVOILUTIndex(),
-                        dParam.isPreferWindow());
+                lutParam.setVOI(selectFctGroup(imgAttrs, sharedFctGroups, frameFctGroups, Tag.FrameVOILUTSequence),
+                        dParam.getWindowIndex(), dParam.getVOILUTIndex(), dParam.isPreferWindow());
             if (dParam.isAutoWindowing())
                 lutParam.autoWindowing(imgAttrs, raster, dParam.isAddAutoWindow());
             lutParam.setPresentationLUT(imgAttrs, dParam.isIgnorePresentationLUTShape());
@@ -702,10 +661,8 @@ public class ImageioReader extends ImageReader implements Closeable {
         return destRaster;
     }
 
-    private Attributes selectFctGroup(Attributes imgAttrs,
-                                      Attributes sharedFctGroups,
-                                      Attributes frameFctGroups,
-                                      int tag) {
+    private Attributes selectFctGroup(Attributes imgAttrs, Attributes sharedFctGroups, Attributes frameFctGroups,
+            int tag) {
         if (frameFctGroups == null) {
             return imgAttrs;
         }
@@ -787,7 +744,8 @@ public class ImageioReader extends ImageReader implements Closeable {
      * Initializes the pixel data reading from an image input stream
      */
     private void initPixelDataIIS(ImageInputStream dis) throws IOException {
-        if (pixelDataLength == 0) return;
+        if (pixelDataLength == 0)
+            return;
         if (pixelDataLength > 0) {
             pixelData = new BulkData("pixeldata://", dis.getPosition(), dis.length(), dis.bigEndian());
             metadata.getAttributes().setValue(Tag.PixelData, pixelDataVR, pixelData);
@@ -815,21 +773,19 @@ public class ImageioReader extends ImageReader implements Closeable {
             banded = samples > 1 && ds.getInt(Tag.PlanarConfiguration, 0) != 0;
             bitsAllocated = ds.getInt(Tag.BitsAllocated, 8);
             bitsStored = ds.getInt(Tag.BitsStored, bitsAllocated);
-            dataType = bitsAllocated <= 8 ? DataBuffer.TYPE_BYTE
-                    : DataBuffer.TYPE_USHORT;
-            pmi = Photometric.fromString(
-                    ds.getString(Tag.PhotometricInterpretation, "MONOCHROME2"));
+            dataType = bitsAllocated <= 8 ? DataBuffer.TYPE_BYTE : DataBuffer.TYPE_USHORT;
+            pmi = Photometric.fromString(ds.getString(Tag.PhotometricInterpretation, "MONOCHROME2"));
             if (pixelDataLength != -1) {
                 pmiAfterDecompression = pmi;
                 this.frameLength = pmi.frameLength(width, height, samples, bitsAllocated);
             } else {
                 Attributes fmi = metadata.getFileMetaInformation();
                 if (fmi == null)
-                    throw new IllegalArgumentException("Missing File Meta Information for Data Set with compressed Pixel Data");
+                    throw new IllegalArgumentException(
+                            "Missing File Meta Information for Data Set with compressed Pixel Data");
 
                 String tsuid = fmi.getString(Tag.TransferSyntaxUID);
-                ImageReaderFactory.ImageReaderParam param =
-                        ImageReaderFactory.getImageReaderParam(tsuid);
+                ImageReaderFactory.ImageReaderParam param = ImageReaderFactory.getImageReaderParam(tsuid);
                 if (param == null)
                     throw new UnsupportedOperationException("Unsupported Transfer Syntax: " + tsuid);
                 TransferSyntaxType tsType = TransferSyntaxType.forUID(tsuid);
@@ -837,8 +793,7 @@ public class ImageioReader extends ImageReader implements Closeable {
                     Logger.info("Adjust invalid Bits Stored: {} of {} to 12", bitsStored, tsType);
                     bitsStored = 12;
                 }
-                pmiAfterDecompression = pmi.isYBR() && TransferSyntaxType.isYBRCompression(tsuid)
-                        ? Photometric.RGB
+                pmiAfterDecompression = pmi.isYBR() && TransferSyntaxType.isYBRCompression(tsuid) ? Photometric.RGB
                         : pmi;
                 this.rle = tsuid.equals(UID.RLELossless.uid);
                 this.decompressor = ImageReaderFactory.getImageReader(param);
@@ -853,9 +808,7 @@ public class ImageioReader extends ImageReader implements Closeable {
     }
 
     private ImageTypeSpecifier createImageType(int bits, int dataType, boolean banded, ColorSpace cspace) {
-        return new ImageTypeSpecifier(
-                createColorModel(bits, dataType, cspace),
-                createSampleModel(dataType, banded));
+        return new ImageTypeSpecifier(createColorModel(bits, dataType, cspace), createSampleModel(dataType, banded));
     }
 
     private ColorModel createColorModel(int bits, int dataType, ColorSpace cspace) {
@@ -892,19 +845,18 @@ public class ImageioReader extends ImageReader implements Closeable {
             throw new IndexOutOfBoundsException("imageIndex: " + frameIndex);
 
         if (dis != null && frameIndex < flushedFrames)
-            throw new IllegalStateException(
-                    "input stream position already after requested frame #" + (frameIndex + 1));
+            throw new IllegalStateException("input stream position already after requested frame #" + (frameIndex + 1));
     }
 
     /**
-     * Reads post-pixel data tags, will skip past any remaining images (which may be very slow), and
-     * add any post-pixel data information to the attributes object.
-     * NOTE: This read will read past image data, and may end up scanning/seeking through multiframe or video data in order to find the
-     * post pixel data.  This may be slow.
+     * Reads post-pixel data tags, will skip past any remaining images (which may be very slow), and add any post-pixel
+     * data information to the attributes object. NOTE: This read will read past image data, and may end up
+     * scanning/seeking through multiframe or video data in order to find the post pixel data. This may be slow.
      * Replaces the attributes object with a new one, thus is thread safe for other uses of the object.
      */
     public Attributes readPostPixeldata() throws IOException {
-        if (frames == 0) return metadata.getAttributes();
+        if (frames == 0)
+            return metadata.getAttributes();
 
         if (dis != null) {
             if (flushedFrames > frames) {

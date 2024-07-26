@@ -9,7 +9,7 @@
 
     String driver = properties.getString("driver");
     Assert.assertEquals(driver, "com.mysql.jdbc.Driver");
-    
+
     // 或者使用
     driver = Builder.get("test").get("driver");
     Assert.assertEquals("com.mysql.jdbc.Driver", driver);
@@ -20,14 +20,14 @@
 ```java
     // 得到输入流
     InputStream iniInput = this.class.getClassLoader().getResourceAsStream("test.ini");
-    
+
     // 通过默认的bufferedIniReader类读取ini文件
     Readers ir = new BufferedIniReader();
     Ini ini = ir.read(iniInput);
-    
+
     // 打印展示
     System.out.println(ini);
-    
+
     // 转化为properties文件并展示
     ini.toProperties().forEach((k, v) -> {
         System.out.println(k + "=" + v);

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.linux.driver.proc;
 
 import org.miaixz.bus.core.center.regex.Pattern;
@@ -76,10 +76,10 @@ public final class ProcessStat {
      *
      * @param pid The process ID for which to fetch stats
      * @return A triplet containing the process name as the first element, a character representing the process state as
-     * the second element, and an EnumMap as the third element, where the numeric values in {@link PidStat} are
-     * mapped to a {@link Long} value.
-     * <p>
-     * If the process doesn't exist, returns null.
+     *         the second element, and an EnumMap as the third element, where the numeric values in {@link PidStat} are
+     *         mapped to a {@link Long} value.
+     *         <p>
+     *         If the process doesn't exist, returns null.
      */
     public static Triplet<String, Character, Map<PidStat, Long>> getPidStats(int pid) {
         String stat = Builder.getStringFromFile(String.format(Locale.ROOT, ProcPath.PID_STAT, pid));
@@ -108,8 +108,8 @@ public final class ProcessStat {
      *
      * @param pid The process ID for which to fetch stats
      * @return An EnumMap where the numeric values in {@link PidStatM} are mapped to a {@link Long} value.
-     * <p>
-     * If the process doesn't exist, returns null.
+     *         <p>
+     *         If the process doesn't exist, returns null.
      */
     public static Map<PidStatM, Long> getPidStatM(int pid) {
         String statm = Builder.getStringFromFile(String.format(Locale.ROOT, ProcPath.PID_STATM, pid));
@@ -198,24 +198,24 @@ public final class ProcessStat {
     public static OSProcess.State getState(char stateValue) {
         OSProcess.State state;
         switch (stateValue) {
-            case 'R':
-                state = OSProcess.State.RUNNING;
-                break;
-            case 'S':
-                state = OSProcess.State.SLEEPING;
-                break;
-            case 'D':
-                state = OSProcess.State.WAITING;
-                break;
-            case 'Z':
-                state = OSProcess.State.ZOMBIE;
-                break;
-            case 'T':
-                state = OSProcess.State.STOPPED;
-                break;
-            default:
-                state = OSProcess.State.OTHER;
-                break;
+        case 'R':
+            state = OSProcess.State.RUNNING;
+            break;
+        case 'S':
+            state = OSProcess.State.SLEEPING;
+            break;
+        case 'D':
+            state = OSProcess.State.WAITING;
+            break;
+        case 'Z':
+            state = OSProcess.State.ZOMBIE;
+            break;
+        case 'T':
+            state = OSProcess.State.STOPPED;
+            break;
+        default:
+            state = OSProcess.State.OTHER;
+            break;
         }
         return state;
     }

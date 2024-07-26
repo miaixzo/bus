@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xml;
 
 import org.miaixz.bus.core.xyz.*;
@@ -117,8 +117,7 @@ public class XmlMapper {
     }
 
     /**
-     * XML转Java Bean
-     * 如果XML根节点只有一个，且节点名和Bean的名称一致，则直接转换子节点
+     * XML转Java Bean 如果XML根节点只有一个，且节点名和Bean的名称一致，则直接转换子节点
      *
      * @param <T>  bean类型
      * @param bean bean类

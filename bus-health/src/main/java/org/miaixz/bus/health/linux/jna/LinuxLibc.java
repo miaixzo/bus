@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.linux.jna;
 
 import com.sun.jna.Native;
@@ -78,15 +78,15 @@ public interface LinuxLibc extends LibC, CLibrary {
      * @param number sys call number
      * @param args   sys call arguments
      * @return The return value is defined by the system call being invoked. In general, a 0 return value indicates
-     * success. A -1 return value indicates an error, and an error code is stored in errno.
+     *         success. A -1 return value indicates an error, and an error code is stored in errno.
      */
     NativeLong syscall(NativeLong number, Object... args);
 
     /**
      * Return type for getutxent()
      */
-    @FieldOrder({"ut_type", "ut_pid", "ut_line", "ut_id", "ut_user", "ut_host", "ut_exit", "ut_session", "ut_tv",
-            "ut_addr_v6", "reserved"})
+    @FieldOrder({ "ut_type", "ut_pid", "ut_line", "ut_id", "ut_user", "ut_host", "ut_exit", "ut_session", "ut_tv",
+            "ut_addr_v6", "reserved" })
     class LinuxUtmpx extends Structure {
         public short ut_type; // Type of login.
         public int ut_pid; // Process ID of login process.
@@ -104,7 +104,7 @@ public interface LinuxLibc extends LibC, CLibrary {
     /**
      * Part of utmpx structure
      */
-    @FieldOrder({"e_termination", "e_exit"})
+    @FieldOrder({ "e_termination", "e_exit" })
     class Exit_status extends Structure {
         public short e_termination; // Process termination status
         public short e_exit; // Process exit status
@@ -113,7 +113,7 @@ public interface LinuxLibc extends LibC, CLibrary {
     /**
      * 32-bit timeval required for utmpx structure
      */
-    @FieldOrder({"tv_sec", "tv_usec"})
+    @FieldOrder({ "tv_sec", "tv_usec" })
     class Ut_Tv extends Structure {
         public int tv_sec; // seconds
         public int tv_usec; // microseconds

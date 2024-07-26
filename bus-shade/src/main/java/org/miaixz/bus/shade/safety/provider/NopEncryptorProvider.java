@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.safety.provider;
 
 import org.miaixz.bus.shade.safety.Builder;
@@ -42,10 +42,7 @@ public class NopEncryptorProvider implements EncryptorProvider {
 
     @Override
     public void encrypt(Key key, File src, File dest) throws IOException {
-        try (
-                FileInputStream fis = new FileInputStream(src);
-                FileOutputStream fos = new FileOutputStream(dest)
-        ) {
+        try (FileInputStream fis = new FileInputStream(src); FileOutputStream fos = new FileOutputStream(dest)) {
             encrypt(key, fis, fos);
         }
     }

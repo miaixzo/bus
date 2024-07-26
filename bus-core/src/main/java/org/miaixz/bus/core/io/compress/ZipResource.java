@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.compress;
 
 import java.io.Closeable;
@@ -49,8 +49,7 @@ public interface ZipResource extends Closeable {
     void read(final Consumer<ZipEntry> consumer, final int maxSizeDiff);
 
     /**
-     * 获取指定路径的文件流
-     * 如果是文件模式，则直接获取Entry对应的流，如果是流模式，则遍历entry后，找到对应流返回
+     * 获取指定路径的文件流 如果是文件模式，则直接获取Entry对应的流，如果是流模式，则遍历entry后，找到对应流返回
      *
      * @param path 路径
      * @return 文件流

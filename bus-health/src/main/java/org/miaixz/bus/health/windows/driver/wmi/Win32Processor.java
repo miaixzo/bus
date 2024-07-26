@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.driver.wmi;
 
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
@@ -49,7 +49,7 @@ public final class Win32Processor {
      * Returns processor voltage.
      *
      * @return Current voltage of the processor. If the eighth bit is set, bits 0-6 contain the voltage multiplied by
-     * 10. If the eighth bit is not set, then the bit setting in VoltageCaps represents the voltage value.
+     *         10. If the eighth bit is not set, then the bit setting in VoltageCaps represents the voltage value.
      */
     public static WmiResult<VoltProperty> queryVoltage() {
         WmiQuery<VoltProperty> voltQuery = new WmiQuery<>(WIN32_PROCESSOR, VoltProperty.class);
@@ -60,12 +60,12 @@ public final class Win32Processor {
      * Returns processor ID.
      *
      * @return Processor information that describes the processor features. For an x86 class CPU, the field format
-     * depends on the processor support of the CPUID instruction. If the instruction is supported, the property
-     * contains 2 (two) DWORD formatted values. The first is an offset of 08h-0Bh, which is the EAX value that a
-     * CPUID instruction returns with input EAX set to 1. The second is an offset of 0Ch-0Fh, which is the EDX
-     * value that the instruction returns. Only the first two bytes of the property are significant and contain
-     * the contents of the DX register at CPU reset—all others are set to 0 (zero), and the contents are in
-     * DWORD format.
+     *         depends on the processor support of the CPUID instruction. If the instruction is supported, the property
+     *         contains 2 (two) DWORD formatted values. The first is an offset of 08h-0Bh, which is the EAX value that a
+     *         CPUID instruction returns with input EAX set to 1. The second is an offset of 0Ch-0Fh, which is the EDX
+     *         value that the instruction returns. Only the first two bytes of the property are significant and contain
+     *         the contents of the DX register at CPU reset—all others are set to 0 (zero), and the contents are in
+     *         DWORD format.
      */
     public static WmiResult<ProcessorIdProperty> queryProcessorId() {
         WmiQuery<ProcessorIdProperty> idQuery = new WmiQuery<>(WIN32_PROCESSOR, ProcessorIdProperty.class);

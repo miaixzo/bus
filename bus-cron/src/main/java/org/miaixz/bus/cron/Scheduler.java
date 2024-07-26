@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cron;
 
 import org.miaixz.bus.core.data.id.ID;
@@ -55,11 +55,22 @@ import java.util.concurrent.locks.ReentrantLock;
  * 任务调度器
  * <p>
  * 调度器启动流程：
- * <pre>启动Timer = 启动TaskLauncher = 启动TaskExecutor</pre>
+ * 
+ * <pre>
+ * 启动Timer = 启动TaskLauncher = 启动TaskExecutor
+ * </pre>
+ * 
  * 调度器关闭流程:
- * <pre>关闭Timer = 关闭所有运行中的TaskLauncher = 关闭所有运行中的TaskExecutor</pre>
+ * 
+ * <pre>
+ * 关闭Timer = 关闭所有运行中的TaskLauncher = 关闭所有运行中的TaskExecutor
+ * </pre>
+ * 
  * 其中：
- * <pre>Launcher ：定时器每分钟调用一次（如果{@link Scheduler#isMatchSecond()}为{@code true}每秒调用一次），
+ * 
+ * <pre>Launcher ：定时器每分钟调用一次（如果{@link Scheduler#isMatchSecond()}为{@code
+ * true
+ * }每秒调用一次），
  * 负责检查<strong>Repertoire</strong>是否有匹配到此时间运行的Task
  * </pre>
  *
@@ -134,8 +145,7 @@ public class Scheduler implements Serializable {
     }
 
     /**
-     * 设置自定义线程池
-     * 自定义线程池时须考虑方法执行的线程是否为守护线程
+     * 设置自定义线程池 自定义线程池时须考虑方法执行的线程是否为守护线程
      *
      * @param threadExecutor 自定义线程池
      * @return this
@@ -162,8 +172,7 @@ public class Scheduler implements Serializable {
     }
 
     /**
-     * 设置是否为守护线程
-     * 如果为true，则在调用{@link #stop()}方法后执行的定时任务立即结束，否则等待执行完毕才结束。默认非守护线程
+     * 设置是否为守护线程 如果为true，则在调用{@link #stop()}方法后执行的定时任务立即结束，否则等待执行完毕才结束。默认非守护线程
      * 如果用户调用{@link #setThreadExecutor(ExecutorService)}自定义线程池则此参数无效
      *
      * @param on {@code true}为守护线程，否则非守护线程
@@ -224,8 +233,7 @@ public class Scheduler implements Serializable {
     }
 
     /**
-     * 批量加入配置文件中的定时任务
-     * 配置文件格式为： xxx.xxx.xxx.Class.method = * * * * *
+     * 批量加入配置文件中的定时任务 配置文件格式为： xxx.xxx.xxx.Class.method = * * * * *
      *
      * @param cronSetting 定时任务设置文件
      * @return this
@@ -233,7 +241,8 @@ public class Scheduler implements Serializable {
     public Scheduler schedule(final Setting cronSetting) {
         if (MapKit.isNotEmpty(cronSetting)) {
             String group;
-            for (final Entry<String, LinkedHashMap<String, String>> groupedEntry : cronSetting.getGroupedMap().entrySet()) {
+            for (final Entry<String, LinkedHashMap<String, String>> groupedEntry : cronSetting.getGroupedMap()
+                    .entrySet()) {
                 group = groupedEntry.getKey();
                 for (final Entry<String, String> entry : groupedEntry.getValue().entrySet()) {
                     String jobClass = entry.getKey();
@@ -454,9 +463,8 @@ public class Scheduler implements Serializable {
     }
 
     /**
-     * 停止定时任务
-     * 此方法调用后会将定时器进程立即结束，如果为守护线程模式，则正在执行的作业也会自动结束，否则作业线程将在执行完成后结束。
-     * 此方法并不会清除任务表中的任务，请调用{@link #clear()} 方法清空任务或者使用{@link #stop(boolean)}方法可选是否清空
+     * 停止定时任务 此方法调用后会将定时器进程立即结束，如果为守护线程模式，则正在执行的作业也会自动结束，否则作业线程将在执行完成后结束。 此方法并不会清除任务表中的任务，请调用{@link #clear()}
+     * 方法清空任务或者使用{@link #stop(boolean)}方法可选是否清空
      *
      * @return this
      */
@@ -465,8 +473,7 @@ public class Scheduler implements Serializable {
     }
 
     /**
-     * 停止定时任务
-     * 此方法调用后会将定时器进程立即结束，如果为守护线程模式，则正在执行的作业也会自动结束，否则作业线程将在执行完成后结束。
+     * 停止定时任务 此方法调用后会将定时器进程立即结束，如果为守护线程模式，则正在执行的作业也会自动结束，否则作业线程将在执行完成后结束。
      *
      * @param clearTasks 是否清除所有任务
      * @return this
@@ -482,11 +489,11 @@ public class Scheduler implements Serializable {
             this.timer.stopTimer();
             this.timer = null;
 
-            //停止线程池
+            // 停止线程池
             this.threadExecutor.shutdown();
             this.threadExecutor = null;
 
-            //可选是否清空任务表
+            // 可选是否清空任务表
             if (clearTasks) {
                 clear();
             }

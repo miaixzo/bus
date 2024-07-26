@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text;
 
 import org.miaixz.bus.core.xyz.MathKit;
@@ -39,11 +39,10 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class TextSimilarity {
 
     /**
-     * 利用莱文斯坦距离(Levenshtein distance)算法计算相似度，两个都是空串相似度为1，被认为是相同的串
-     * 比较方法为：
+     * 利用莱文斯坦距离(Levenshtein distance)算法计算相似度，两个都是空串相似度为1，被认为是相同的串 比较方法为：
      * <ul>
-     *     <li>只比较两个字符串字母、数字、汉字部分，其他符号去除</li>
-     *     <li>计算出两个字符串最大子串，除以最长的字符串，结果即为相似度</li>
+     * <li>只比较两个字符串字母、数字、汉字部分，其他符号去除</li>
+     * <li>计算出两个字符串最大子串，除以最长的字符串，结果即为相似度</li>
      * </ul>
      *
      * @param strA 字符串1
@@ -85,8 +84,8 @@ public class TextSimilarity {
     }
 
     /**
-     * 最长公共子串，采用动态规划算法。 其不要求所求得的字符在所给的字符串中是连续的。
-     * 算法解析见：<a href="https://leetcode-cn.com/problems/longest-common-subsequence/solution/zui-chang-gong-gong-zi-xu-lie-by-leetcod-y7u0/">zui-chang-gong-gong-zi-xu-lie-by-leetcod-y7u0</a>
+     * 最长公共子串，采用动态规划算法。 其不要求所求得的字符在所给的字符串中是连续的。 算法解析见：<a href=
+     * "https://leetcode-cn.com/problems/longest-common-subsequence/solution/zui-chang-gong-gong-zi-xu-lie-by-leetcod-y7u0/">zui-chang-gong-gong-zi-xu-lie-by-leetcod-y7u0</a>
      *
      * @param strA 字符串1
      * @param strB 字符串2
@@ -153,8 +152,7 @@ public class TextSimilarity {
     }
 
     /**
-     * 求公共子串，采用动态规划算法。 其不要求所求得的字符在所给的字符串中是连续的。
-     * 2023-04-06 优化堆内存占用，此处不需要matrix[m][n]的完整矩阵，仅需右下角值
+     * 求公共子串，采用动态规划算法。 其不要求所求得的字符在所给的字符串中是连续的。 2023-04-06 优化堆内存占用，此处不需要matrix[m][n]的完整矩阵，仅需右下角值
      *
      * @param strA 字符串1
      * @param strB 字符串2

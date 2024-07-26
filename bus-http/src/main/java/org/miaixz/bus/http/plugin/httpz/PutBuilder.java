@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.plugin.httpz;
 
 import org.miaixz.bus.core.lang.Charset;
@@ -55,16 +55,7 @@ public class PutBuilder extends RequestBuilder<PutBuilder> {
 
     @Override
     public RequestCall build() {
-        return new PutRequest(
-                url,
-                tag,
-                params,
-                headers,
-                list,
-                body,
-                multipartBody,
-                id).
-                build(httpd);
+        return new PutRequest(url, tag, params, headers, list, body, multipartBody, id).build(httpd);
     }
 
     public PutBuilder body(String body) {
@@ -95,8 +86,7 @@ public class PutBuilder extends RequestBuilder<PutBuilder> {
         return this;
     }
 
-    public PutBuilder addFile(String partName, String fileName, String content)
-            throws UnsupportedEncodingException {
+    public PutBuilder addFile(String partName, String fileName, String content) throws UnsupportedEncodingException {
         return addFile(partName, fileName, content, Charset.DEFAULT_UTF_8);
     }
 

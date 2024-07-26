@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MEDCOM_HEADER;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,46 +46,47 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.ReferencedTag:
-                return VR.AT;
-            case PrivateTag.MedComHeaderType:
-            case PrivateTag.PMTFInformation4:
-            case PrivateTag.ApplicationHeaderType:
-            case PrivateTag.ArchiveManagementFlagKeepOnline:
-            case PrivateTag.ArchiveManagementFlagDoNotArchive:
-            case PrivateTag.ImageLocationStatus:
-            case PrivateTag.ReferencedTagType:
-            case PrivateTag.ReferencedObjectDeviceType:
-                return VR.CS;
-            case PrivateTag.EstimatedRetrieveTime:
-            case PrivateTag.DataSizeOfRetrievedImages:
-                return VR.DS;
-            case PrivateTag.MedComHeaderVersion:
-            case PrivateTag.PMTFInformation1:
-            case PrivateTag.ApplicationHeaderID:
-            case PrivateTag.ApplicationHeaderVersion:
-            case PrivateTag.WorkflowControlFlags:
-                return VR.LO;
-            case PrivateTag.MedComHeaderInfo:
-            case PrivateTag.MedComHistoryInformation:
-            case PrivateTag.ApplicationHeaderInfo:
-            case PrivateTag.ReferencedObjectDeviceLocation:
-            case PrivateTag.ReferencedObjectID:
-                return VR.OB;
-            case PrivateTag.ApplicationHeaderSequence:
-            case PrivateTag.SiemensLinkSequence:
-                return VR.SQ;
-            case PrivateTag.PMTFInformation2:
-            case PrivateTag.PMTFInformation3:
-            case PrivateTag.PMTFInformation5:
-            case PrivateTag.ReferencedValueLength:
-            case PrivateTag.ReferencedObjectOffset:
-                return VR.UL;
+
+        case PrivateTag.ReferencedTag:
+            return VR.AT;
+        case PrivateTag.MedComHeaderType:
+        case PrivateTag.PMTFInformation4:
+        case PrivateTag.ApplicationHeaderType:
+        case PrivateTag.ArchiveManagementFlagKeepOnline:
+        case PrivateTag.ArchiveManagementFlagDoNotArchive:
+        case PrivateTag.ImageLocationStatus:
+        case PrivateTag.ReferencedTagType:
+        case PrivateTag.ReferencedObjectDeviceType:
+            return VR.CS;
+        case PrivateTag.EstimatedRetrieveTime:
+        case PrivateTag.DataSizeOfRetrievedImages:
+            return VR.DS;
+        case PrivateTag.MedComHeaderVersion:
+        case PrivateTag.PMTFInformation1:
+        case PrivateTag.ApplicationHeaderID:
+        case PrivateTag.ApplicationHeaderVersion:
+        case PrivateTag.WorkflowControlFlags:
+            return VR.LO;
+        case PrivateTag.MedComHeaderInfo:
+        case PrivateTag.MedComHistoryInformation:
+        case PrivateTag.ApplicationHeaderInfo:
+        case PrivateTag.ReferencedObjectDeviceLocation:
+        case PrivateTag.ReferencedObjectID:
+            return VR.OB;
+        case PrivateTag.ApplicationHeaderSequence:
+        case PrivateTag.SiemensLinkSequence:
+            return VR.SQ;
+        case PrivateTag.PMTFInformation2:
+        case PrivateTag.PMTFInformation3:
+        case PrivateTag.PMTFInformation5:
+        case PrivateTag.ReferencedValueLength:
+        case PrivateTag.ReferencedObjectOffset:
+            return VR.UL;
         }
         return VR.UN;
     }

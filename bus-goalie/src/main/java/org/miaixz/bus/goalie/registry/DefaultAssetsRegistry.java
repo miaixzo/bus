@@ -24,11 +24,10 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.goalie.registry;
 
 import org.miaixz.bus.goalie.Assets;
-
 
 /**
  * 抽象路由注册
@@ -59,4 +58,3 @@ public class DefaultAssetsRegistry extends AbstractRegistry<Assets> implements A
     }
 
 }
-

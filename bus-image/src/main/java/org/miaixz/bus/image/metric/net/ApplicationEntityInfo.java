@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.net;
 
 import org.miaixz.bus.image.metric.Connection;
@@ -128,8 +128,7 @@ public class ApplicationEntityInfo implements Serializable {
 
     @Override
     public String toString() {
-        return "ApplicationEntityInfo[dicomAETitle=" + aet
-                + "]";
+        return "ApplicationEntityInfo[dicomAETitle=" + aet + "]";
     }
 
 }

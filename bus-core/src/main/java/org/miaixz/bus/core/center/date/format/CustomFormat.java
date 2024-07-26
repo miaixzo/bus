@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date.format;
 
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
@@ -37,8 +37,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * 全局自定义格式
- * 用于定义用户指定的日期格式和输出日期的关系
+ * 全局自定义格式 用于定义用户指定的日期格式和输出日期的关系
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.resource;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -37,9 +37,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 
 /**
- * VFS资源封装
- * 支持VFS 3.x on JBoss AS 6+，JBoss AS 7 and WildFly 8+
- * 参考：org.springframework.core.io.VfsUtils
+ * VFS资源封装 支持VFS 3.x on JBoss AS 6+，JBoss AS 7 and WildFly 8+ 参考：org.springframework.core.io.VfsUtils
  *
  * @author Kimi Liu
  * @since Java 17+

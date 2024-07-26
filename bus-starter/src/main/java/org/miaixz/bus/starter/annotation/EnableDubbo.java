@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.annotation;
 
 import org.apache.dubbo.config.spring.context.annotation.DubboComponentScan;
@@ -43,7 +43,7 @@ import java.lang.annotation.*;
  */
 @Inherited
 @Documented
-@Target({ElementType.TYPE})
+@Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @EnableDubboConfig
 @DubboComponentScan
@@ -60,8 +60,7 @@ public @interface EnableDubbo {
     String[] basePackages() default {};
 
     /**
-     * packages to scan for annotated @DubboService classes.
-     * The package of each class specified will be scanned.
+     * packages to scan for annotated @DubboService classes. The package of each class specified will be scanned.
      *
      * @return classes from the base packages to scan
      * @see DubboComponentScan#basePackageClasses

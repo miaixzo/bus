@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org sandao and other contributors.             ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket.metric.message;
 
 import org.miaixz.bus.socket.Message;
@@ -64,10 +64,10 @@ public class StringMessage implements Message<String> {
             decoderMap.keySet().stream().filter(Session::isInvalid).forEach(decoderMap::remove);
         }
         FixedLengthFrameDecoder decoder = decoderMap.get(session);
-        //消息长度超过缓冲区容量
+        // 消息长度超过缓冲区容量
         if (decoder != null) {
             String content = bigContent(readBuffer, decoder);
-            //解码成功,释放解码器
+            // 解码成功,释放解码器
             if (content != null) {
                 decoderMap.remove(session);
             }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.Applicare_RadWorks_Version_6_0;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,41 +46,42 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.NonExistentTags:
-                return VR.AT;
-            case PrivateTag.AnnotationType:
-            case PrivateTag.AnnotationLineStyle:
-                return VR.CS;
-            case PrivateTag.AnnotationCreationDate:
-            case PrivateTag.AnnotationModificationDate:
-                return VR.DA;
-            case PrivateTag.AnnotationValue:
-                return VR.LO;
-            case PrivateTag.AnnotationCreator:
-            case PrivateTag.AnnotationModifier:
-                return VR.PN;
-            case PrivateTag.AnnotationLabel:
-                return VR.SH;
-            case PrivateTag.AnnotationModificationSequence:
-            case PrivateTag.RequestedPaletteColorLUT:
-                return VR.SQ;
-            case PrivateTag._4105_xx11_:
-                return VR.ST;
-            case PrivateTag.AnnotationCreationTime:
-            case PrivateTag.AnnotationModificationTime:
-                return VR.TM;
-            case PrivateTag.NonExistentObjects:
-            case PrivateTag.CutlineImageUID:
-            case PrivateTag.CutlineSetUID:
-                return VR.UI;
-            case PrivateTag.AnnotationColor:
-            case PrivateTag._4105_xx10_:
-                return VR.US;
+
+        case PrivateTag.NonExistentTags:
+            return VR.AT;
+        case PrivateTag.AnnotationType:
+        case PrivateTag.AnnotationLineStyle:
+            return VR.CS;
+        case PrivateTag.AnnotationCreationDate:
+        case PrivateTag.AnnotationModificationDate:
+            return VR.DA;
+        case PrivateTag.AnnotationValue:
+            return VR.LO;
+        case PrivateTag.AnnotationCreator:
+        case PrivateTag.AnnotationModifier:
+            return VR.PN;
+        case PrivateTag.AnnotationLabel:
+            return VR.SH;
+        case PrivateTag.AnnotationModificationSequence:
+        case PrivateTag.RequestedPaletteColorLUT:
+            return VR.SQ;
+        case PrivateTag._4105_xx11_:
+            return VR.ST;
+        case PrivateTag.AnnotationCreationTime:
+        case PrivateTag.AnnotationModificationTime:
+            return VR.TM;
+        case PrivateTag.NonExistentObjects:
+        case PrivateTag.CutlineImageUID:
+        case PrivateTag.CutlineSetUID:
+            return VR.UI;
+        case PrivateTag.AnnotationColor:
+        case PrivateTag._4105_xx10_:
+            return VR.US;
         }
         return VR.UN;
     }

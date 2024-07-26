@@ -24,15 +24,14 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office;
 
 import java.io.File;
 import java.io.InputStream;
 
 /**
- * 文档转换服务提供者.
- * 负责使用office管理器执行文档的转换.
+ * 文档转换服务提供者. 负责使用office管理器执行文档的转换.
  *
  * @author Kimi Liu
  * @since Java 17+

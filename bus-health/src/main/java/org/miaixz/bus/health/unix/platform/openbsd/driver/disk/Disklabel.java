@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.openbsd.driver.disk;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -146,8 +146,8 @@ public final class Disklabel {
                 Pair<Integer, Integer> majorMinor = getMajorMinor(diskName, name);
                 if (split.length > 5) {
                     long partSize = Parsing.parseLongOrDefault(split[1], 1L) * 512L;
-                    partitions.add(new HWPartition(split[0], split[0].substring(5), Normal.UNKNOWN,
-                            Normal.UNKNOWN, partSize, majorMinor.getLeft(), majorMinor.getRight(), split[5]));
+                    partitions.add(new HWPartition(split[0], split[0].substring(5), Normal.UNKNOWN, Normal.UNKNOWN,
+                            partSize, majorMinor.getLeft(), majorMinor.getRight(), split[5]));
                 }
             }
         }

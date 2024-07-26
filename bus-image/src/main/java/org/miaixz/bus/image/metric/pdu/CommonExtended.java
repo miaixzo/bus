@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.pdu;
 
 import org.miaixz.bus.image.Builder;
@@ -40,8 +40,7 @@ public class CommonExtended {
     private final String serviceCUID;
     private final String[] relSopCUIDs;
 
-    public CommonExtended(String sopCUID, String serviceCUID,
-                          String... relSopCUIDs) {
+    public CommonExtended(String sopCUID, String serviceCUID, String... relSopCUIDs) {
         if (sopCUID == null)
             throw new NullPointerException("sopCUID");
 
@@ -66,8 +65,7 @@ public class CommonExtended {
     }
 
     public int length() {
-        return 6 + sopCUID.length() + serviceCUID.length()
-                + getRelatedGeneralSOPClassUIDsLength();
+        return 6 + sopCUID.length() + serviceCUID.length() + getRelatedGeneralSOPClassUIDsLength();
     }
 
     @Override
@@ -76,20 +74,13 @@ public class CommonExtended {
     }
 
     StringBuilder promptTo(StringBuilder sb) {
-        sb.append("  CommonExtendedNegotiation[")
-                .append(Builder.LINE_SEPARATOR)
-                .append("    sopClass: ");
-        UID.promptTo(sopCUID, sb)
-                .append(Builder.LINE_SEPARATOR)
-                .append("    serviceClass: ");
-        UID.promptTo(serviceCUID, sb)
-                .append(Builder.LINE_SEPARATOR);
+        sb.append("  CommonExtendedNegotiation[").append(Builder.LINE_SEPARATOR).append("    sopClass: ");
+        UID.promptTo(sopCUID, sb).append(Builder.LINE_SEPARATOR).append("    serviceClass: ");
+        UID.promptTo(serviceCUID, sb).append(Builder.LINE_SEPARATOR);
         if (relSopCUIDs.length != 0) {
-            sb.append("    relatedSOPClasses:")
-                    .append(Builder.LINE_SEPARATOR);
+            sb.append("    relatedSOPClasses:").append(Builder.LINE_SEPARATOR);
             for (String uid : relSopCUIDs)
-                UID.promptTo(uid, sb.append("      "))
-                        .append(Builder.LINE_SEPARATOR);
+                UID.promptTo(uid, sb.append("      ")).append(Builder.LINE_SEPARATOR);
         }
         return sb.append("  ]");
     }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.mac;
 
 import com.sun.jna.NativeLong;
@@ -93,8 +93,8 @@ public final class SmcKit {
                 if (result == 0) {
                     return new IOConnect(connPtr.getValue());
                 } else if (Logger.isErrorEnabled()) {
-                    Logger.error(String.format(Locale.ROOT, "Unable to open connection to AppleSMC service. Error: 0x%08x",
-                            result));
+                    Logger.error(String.format(Locale.ROOT,
+                            "Unable to open connection to AppleSMC service. Error: 0x%08x", result));
                 }
             } finally {
                 smcService.release();

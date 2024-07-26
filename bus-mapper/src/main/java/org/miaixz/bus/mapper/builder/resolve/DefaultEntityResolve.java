@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.builder.resolve;
 
 import jakarta.persistence.*;
@@ -73,19 +73,19 @@ public class DefaultEntityResolve implements EntityResolve {
      */
     public static String convertByStyle(String text, EnumMap.Naming naming) {
         switch (naming) {
-            case CAMEL:
-                return camelToUnderline(text);
-            case UPPER_CASE:
-                return text.toUpperCase();
-            case LOWER_CASE:
-                return text.toLowerCase();
-            case CAMEL_UNDERLINE_LOWER_CASE:
-                return camelToUnderline(text).toLowerCase();
-            case CAMEL_UNDERLINE_UPPER_CASE:
-                return camelToUnderline(text).toUpperCase();
-            case NORMAL:
-            default:
-                return text;
+        case CAMEL:
+            return camelToUnderline(text);
+        case UPPER_CASE:
+            return text.toUpperCase();
+        case LOWER_CASE:
+            return text.toLowerCase();
+        case CAMEL_UNDERLINE_LOWER_CASE:
+            return camelToUnderline(text).toLowerCase();
+        case CAMEL_UNDERLINE_UPPER_CASE:
+            return camelToUnderline(text).toUpperCase();
+        case NORMAL:
+        default:
+            return text;
         }
     }
 
@@ -95,8 +95,7 @@ public class DefaultEntityResolve implements EntityResolve {
     public static String camelToUnderline(String text) {
         final int size;
         final char[] chars;
-        final StringBuilder sb = new StringBuilder(
-                (size = (chars = text.toCharArray()).length) * 3 / 2 + 1);
+        final StringBuilder sb = new StringBuilder((size = (chars = text.toCharArray()).length) * 3 / 2 + 1);
         char c;
         for (int i = 0; i < size; i++) {
             c = chars[i];
@@ -246,7 +245,8 @@ public class DefaultEntityResolve implements EntityResolve {
         entityColumn.setColumn(columnName);
         entityColumn.setJavaType(field.getJavaType());
         if (field.getJavaType().isPrimitive()) {
-            Logger.warn("通用 Mapper 警告信息: <[" + entityColumn + "]> 使用了基本类型，基本类型在动态 SQL 中由于存在默认值，因此任何时候都不等于 null，建议修改基本类型为对应的包装类型!");
+            Logger.warn("通用 Mapper 警告信息: <[" + entityColumn
+                    + "]> 使用了基本类型，基本类型在动态 SQL 中由于存在默认值，因此任何时候都不等于 null，建议修改基本类型为对应的包装类型!");
         }
         // OrderBy
         processOrderBy(entityTable, field, entityColumn);
@@ -312,7 +312,8 @@ public class DefaultEntityResolve implements EntityResolve {
      * @param entityColumn   对象列
      * @param generatedValue 注解
      */
-    protected void processGeneratedValue(EntityTable entityTable, EntityColumn entityColumn, GeneratedValue generatedValue) {
+    protected void processGeneratedValue(EntityTable entityTable, EntityColumn entityColumn,
+            GeneratedValue generatedValue) {
         if ("JDBC".equals(generatedValue.generator())) {
             entityColumn.setIdentity(true);
             entityColumn.setGenerator("JDBC");
@@ -335,10 +336,9 @@ public class DefaultEntityResolve implements EntityResolve {
                     entityColumn.setGenerator(generator);
                 }
             } else {
-                throw new MapperException(entityColumn.getProperty()
-                        + " - 该字段@GeneratedValue配置只允许以下几种形式:" +
-                        "\n1.useGeneratedKeys的@GeneratedValue(generator=\\\"JDBC\\\")  " +
-                        "\n2.类似mysql数据库的@GeneratedValue(strategy=GenerationType.IDENTITY[,generator=\"Mysql\"])");
+                throw new MapperException(entityColumn.getProperty() + " - 该字段@GeneratedValue配置只允许以下几种形式:"
+                        + "\n1.useGeneratedKeys的@GeneratedValue(generator=\\\"JDBC\\\")  "
+                        + "\n2.类似mysql数据库的@GeneratedValue(strategy=GenerationType.IDENTITY[,generator=\"Mysql\"])");
             }
         }
     }
@@ -383,8 +383,7 @@ public class DefaultEntityResolve implements EntityResolve {
             entityColumn.setIdentity(false);
             entityColumn.setGenIdClass(keySql.genId());
         } else {
-            throw new MapperException(entityTable.getEntityClass().getName()
-                    + " 类中的 @KeySql 注解配置无效!");
+            throw new MapperException(entityTable.getEntityClass().getName() + " 类中的 @KeySql 注解配置无效!");
         }
     }
 

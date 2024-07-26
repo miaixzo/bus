@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.data;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -42,13 +42,13 @@ public class Strength {
     /**
      * 简单密码字典
      */
-    private static final String[] DICTIONARY = {"password", "abc123", "iloveyou", "adobe123", "123123", "sunshine",
-            "1314520", "a1b2c3", "123qwe", "aaa111", "qweasd", "admin", "passwd"};
+    private static final String[] DICTIONARY = { "password", "abc123", "iloveyou", "adobe123", "123123", "sunshine",
+            "1314520", "a1b2c3", "123qwe", "aaa111", "qweasd", "admin", "passwd" };
     /**
      * 数字长度
      */
-    private static final int[] SIZE_TABLE = {9, 99, 999, 9999, 99999, 999999, 9999999, 99999999, 999999999,
-            Integer.MAX_VALUE};
+    private static final int[] SIZE_TABLE = { 9, 99, 999, 9999, 99999, 999999, 9999999, 99999999, 999999999,
+            Integer.MAX_VALUE };
 
     /**
      * 检查密码的健壮性
@@ -87,11 +87,13 @@ public class Strength {
         }
 
         if (len > 6 && countLetter(passwd, CHAR_TYPE.NUM) > 0 && countLetter(passwd, CHAR_TYPE.SMALL_LETTER) > 0
-                && countLetter(passwd, CHAR_TYPE.CAPITAL_LETTER) > 0 || countLetter(passwd, CHAR_TYPE.NUM) > 0
-                && countLetter(passwd, CHAR_TYPE.SMALL_LETTER) > 0 && countLetter(passwd, CHAR_TYPE.OTHER_CHAR) > 0
+                && countLetter(passwd, CHAR_TYPE.CAPITAL_LETTER) > 0
+                || countLetter(passwd, CHAR_TYPE.NUM) > 0 && countLetter(passwd, CHAR_TYPE.SMALL_LETTER) > 0
+                        && countLetter(passwd, CHAR_TYPE.OTHER_CHAR) > 0
                 || countLetter(passwd, CHAR_TYPE.NUM) > 0 && countLetter(passwd, CHAR_TYPE.CAPITAL_LETTER) > 0
-                && countLetter(passwd, CHAR_TYPE.OTHER_CHAR) > 0 || countLetter(passwd, CHAR_TYPE.SMALL_LETTER) > 0
-                && countLetter(passwd, CHAR_TYPE.CAPITAL_LETTER) > 0 && countLetter(passwd, CHAR_TYPE.OTHER_CHAR) > 0) {
+                        && countLetter(passwd, CHAR_TYPE.OTHER_CHAR) > 0
+                || countLetter(passwd, CHAR_TYPE.SMALL_LETTER) > 0 && countLetter(passwd, CHAR_TYPE.CAPITAL_LETTER) > 0
+                        && countLetter(passwd, CHAR_TYPE.OTHER_CHAR) > 0) {
             level++;
         }
 
@@ -103,23 +105,29 @@ public class Strength {
         if (len > 6 && countLetter(passwd, CHAR_TYPE.NUM) >= 3 && countLetter(passwd, CHAR_TYPE.SMALL_LETTER) >= 3
                 || countLetter(passwd, CHAR_TYPE.NUM) >= 3 && countLetter(passwd, CHAR_TYPE.CAPITAL_LETTER) >= 3
                 || countLetter(passwd, CHAR_TYPE.NUM) >= 3 && countLetter(passwd, CHAR_TYPE.OTHER_CHAR) >= 2
-                || countLetter(passwd, CHAR_TYPE.SMALL_LETTER) >= 3 && countLetter(passwd, CHAR_TYPE.CAPITAL_LETTER) >= 3
+                || countLetter(passwd, CHAR_TYPE.SMALL_LETTER) >= 3
+                        && countLetter(passwd, CHAR_TYPE.CAPITAL_LETTER) >= 3
                 || countLetter(passwd, CHAR_TYPE.SMALL_LETTER) >= 3 && countLetter(passwd, CHAR_TYPE.OTHER_CHAR) >= 2
-                || countLetter(passwd, CHAR_TYPE.CAPITAL_LETTER) >= 3 && countLetter(passwd, CHAR_TYPE.OTHER_CHAR) >= 2) {
+                || countLetter(passwd, CHAR_TYPE.CAPITAL_LETTER) >= 3
+                        && countLetter(passwd, CHAR_TYPE.OTHER_CHAR) >= 2) {
             level++;
         }
 
         if (len > 8 && countLetter(passwd, CHAR_TYPE.NUM) >= 2 && countLetter(passwd, CHAR_TYPE.SMALL_LETTER) >= 2
-                && countLetter(passwd, CHAR_TYPE.CAPITAL_LETTER) >= 2 || countLetter(passwd, CHAR_TYPE.NUM) >= 2
-                && countLetter(passwd, CHAR_TYPE.SMALL_LETTER) >= 2 && countLetter(passwd, CHAR_TYPE.OTHER_CHAR) >= 2
+                && countLetter(passwd, CHAR_TYPE.CAPITAL_LETTER) >= 2
+                || countLetter(passwd, CHAR_TYPE.NUM) >= 2 && countLetter(passwd, CHAR_TYPE.SMALL_LETTER) >= 2
+                        && countLetter(passwd, CHAR_TYPE.OTHER_CHAR) >= 2
                 || countLetter(passwd, CHAR_TYPE.NUM) >= 2 && countLetter(passwd, CHAR_TYPE.CAPITAL_LETTER) >= 2
-                && countLetter(passwd, CHAR_TYPE.OTHER_CHAR) >= 2 || countLetter(passwd, CHAR_TYPE.SMALL_LETTER) >= 2
-                && countLetter(passwd, CHAR_TYPE.CAPITAL_LETTER) >= 2 && countLetter(passwd, CHAR_TYPE.OTHER_CHAR) >= 2) {
+                        && countLetter(passwd, CHAR_TYPE.OTHER_CHAR) >= 2
+                || countLetter(passwd, CHAR_TYPE.SMALL_LETTER) >= 2
+                        && countLetter(passwd, CHAR_TYPE.CAPITAL_LETTER) >= 2
+                        && countLetter(passwd, CHAR_TYPE.OTHER_CHAR) >= 2) {
             level++;
         }
 
         if (len > 10 && countLetter(passwd, CHAR_TYPE.NUM) >= 2 && countLetter(passwd, CHAR_TYPE.SMALL_LETTER) >= 2
-                && countLetter(passwd, CHAR_TYPE.CAPITAL_LETTER) >= 2 && countLetter(passwd, CHAR_TYPE.OTHER_CHAR) >= 2) {
+                && countLetter(passwd, CHAR_TYPE.CAPITAL_LETTER) >= 2
+                && countLetter(passwd, CHAR_TYPE.OTHER_CHAR) >= 2) {
             level++;
         }
 
@@ -222,31 +230,30 @@ public class Strength {
     public static PASSWD_LEVEL getLevel(final String passwd) {
         final int level = check(passwd);
         switch (level) {
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-                return PASSWD_LEVEL.EASY;
-            case 4:
-            case 5:
-            case 6:
-                return PASSWD_LEVEL.MEDIUM;
-            case 7:
-            case 8:
-            case 9:
-                return PASSWD_LEVEL.STRONG;
-            case 10:
-            case 11:
-            case 12:
-                return PASSWD_LEVEL.VERY_STRONG;
-            default:
-                return PASSWD_LEVEL.EXTREMELY_STRONG;
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+            return PASSWD_LEVEL.EASY;
+        case 4:
+        case 5:
+        case 6:
+            return PASSWD_LEVEL.MEDIUM;
+        case 7:
+        case 8:
+        case 9:
+            return PASSWD_LEVEL.STRONG;
+        case 10:
+        case 11:
+        case 12:
+            return PASSWD_LEVEL.VERY_STRONG;
+        default:
+            return PASSWD_LEVEL.EXTREMELY_STRONG;
         }
     }
 
     /**
-     * Check character's type, includes num, capital letter, small letter and other character.
-     * 检查字符类型
+     * Check character's type, includes num, capital letter, small letter and other character. 检查字符类型
      *
      * @param c 字符
      * @return 类型
@@ -293,7 +300,7 @@ public class Strength {
      * @return 数字长度
      */
     private static int sizeOfInt(final int x) {
-        for (int i = 0; ; i++)
+        for (int i = 0;; i++)
             if (x <= SIZE_TABLE[i]) {
                 return i + 1;
             }

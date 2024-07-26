@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -60,98 +60,38 @@ public class Format extends java.text.Format {
 
     private static final long serialVersionUID = -1L;
 
-    private static final char[] CHARS = {
-            '0', '1', '2', '3', '4', '5', '6', '7',
-            '8', '9', 'a', 'b', 'c', 'd', 'e', 'f',
-            'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
-            'o', 'p', 'q', 'r', 's', 't', 'u', 'v'};
+    private static final char[] CHARS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e',
+            'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v' };
     private static final int LONG_BYTES = 8;
-    private static final DateTimeFormatter DA_PARSER =
-            new DateTimeFormatterBuilder()
-                    .appendValue(YEAR, 4)
-                    .optionalStart()
-                    .appendLiteral('.')
-                    .optionalEnd()
-                    .appendValue(MONTH_OF_YEAR, 2)
-                    .optionalStart()
-                    .appendLiteral('.')
-                    .optionalEnd()
-                    .appendValue(DAY_OF_MONTH, 2)
-                    .toFormatter();
-    private static final DateTimeFormatter DA_FORMATTER =
-            new DateTimeFormatterBuilder()
-                    .appendValue(YEAR, 4)
-                    .appendValue(MONTH_OF_YEAR, 2)
-                    .appendValue(DAY_OF_MONTH, 2)
-                    .toFormatter();
-    private static final DateTimeFormatter TM_PARSER =
-            new DateTimeFormatterBuilder()
-                    .appendValue(HOUR_OF_DAY, 2)
-                    .optionalStart()
-                    .optionalStart()
-                    .appendLiteral(':')
-                    .optionalEnd()
-                    .appendValue(MINUTE_OF_HOUR, 2)
-                    .optionalStart()
-                    .optionalStart()
-                    .appendLiteral(':')
-                    .optionalEnd()
-                    .appendValue(SECOND_OF_MINUTE, 2)
-                    .optionalStart()
-                    .appendFraction(NANO_OF_SECOND, 0, 6, true)
-                    .toFormatter();
-    private static final DateTimeFormatter TM_FORMATTER =
-            new DateTimeFormatterBuilder()
-                    .appendValue(HOUR_OF_DAY, 2)
-                    .appendValue(MINUTE_OF_HOUR, 2)
-                    .appendValue(SECOND_OF_MINUTE, 2)
-                    .appendFraction(NANO_OF_SECOND, 6, 6, true)
-                    .toFormatter();
-    private static final DateTimeFormatter DT_PARSER =
-            new DateTimeFormatterBuilder()
-                    .appendValue(YEAR, 4)
-                    .optionalStart()
-                    .appendValue(MONTH_OF_YEAR, 2)
-                    .optionalStart()
-                    .appendValue(DAY_OF_MONTH, 2)
-                    .optionalStart()
-                    .appendValue(HOUR_OF_DAY, 2)
-                    .optionalStart()
-                    .appendValue(MINUTE_OF_HOUR, 2)
-                    .optionalStart()
-                    .appendValue(SECOND_OF_MINUTE, 2)
-                    .optionalStart()
-                    .appendFraction(NANO_OF_SECOND, 0, 6, true)
-                    .optionalEnd()
-                    .optionalEnd()
-                    .optionalEnd()
-                    .optionalEnd()
-                    .optionalEnd()
-                    .optionalEnd()
-                    .optionalStart()
-                    .appendOffset("+HHMM", "+0000")
-                    .toFormatter();
-    private static final DateTimeFormatter DT_FORMATTER =
-            new DateTimeFormatterBuilder()
-                    .appendValue(YEAR, 4)
-                    .appendValue(MONTH_OF_YEAR, 2)
-                    .appendValue(DAY_OF_MONTH, 2)
-                    .appendValue(HOUR_OF_DAY, 2)
-                    .appendValue(MINUTE_OF_HOUR, 2)
-                    .appendValue(SECOND_OF_MINUTE, 2)
-                    .appendFraction(NANO_OF_SECOND, 6, 6, true)
-                    .optionalStart()
-                    .appendOffset("+HHMM", "+0000")
-                    .toFormatter();
+    private static final DateTimeFormatter DA_PARSER = new DateTimeFormatterBuilder().appendValue(YEAR, 4)
+            .optionalStart().appendLiteral('.').optionalEnd().appendValue(MONTH_OF_YEAR, 2).optionalStart()
+            .appendLiteral('.').optionalEnd().appendValue(DAY_OF_MONTH, 2).toFormatter();
+    private static final DateTimeFormatter DA_FORMATTER = new DateTimeFormatterBuilder().appendValue(YEAR, 4)
+            .appendValue(MONTH_OF_YEAR, 2).appendValue(DAY_OF_MONTH, 2).toFormatter();
+    private static final DateTimeFormatter TM_PARSER = new DateTimeFormatterBuilder().appendValue(HOUR_OF_DAY, 2)
+            .optionalStart().optionalStart().appendLiteral(':').optionalEnd().appendValue(MINUTE_OF_HOUR, 2)
+            .optionalStart().optionalStart().appendLiteral(':').optionalEnd().appendValue(SECOND_OF_MINUTE, 2)
+            .optionalStart().appendFraction(NANO_OF_SECOND, 0, 6, true).toFormatter();
+    private static final DateTimeFormatter TM_FORMATTER = new DateTimeFormatterBuilder().appendValue(HOUR_OF_DAY, 2)
+            .appendValue(MINUTE_OF_HOUR, 2).appendValue(SECOND_OF_MINUTE, 2).appendFraction(NANO_OF_SECOND, 6, 6, true)
+            .toFormatter();
+    private static final DateTimeFormatter DT_PARSER = new DateTimeFormatterBuilder().appendValue(YEAR, 4)
+            .optionalStart().appendValue(MONTH_OF_YEAR, 2).optionalStart().appendValue(DAY_OF_MONTH, 2).optionalStart()
+            .appendValue(HOUR_OF_DAY, 2).optionalStart().appendValue(MINUTE_OF_HOUR, 2).optionalStart()
+            .appendValue(SECOND_OF_MINUTE, 2).optionalStart().appendFraction(NANO_OF_SECOND, 0, 6, true).optionalEnd()
+            .optionalEnd().optionalEnd().optionalEnd().optionalEnd().optionalEnd().optionalStart()
+            .appendOffset("+HHMM", "+0000").toFormatter();
+    private static final DateTimeFormatter DT_FORMATTER = new DateTimeFormatterBuilder().appendValue(YEAR, 4)
+            .appendValue(MONTH_OF_YEAR, 2).appendValue(DAY_OF_MONTH, 2).appendValue(HOUR_OF_DAY, 2)
+            .appendValue(MINUTE_OF_HOUR, 2).appendValue(SECOND_OF_MINUTE, 2).appendFraction(NANO_OF_SECOND, 6, 6, true)
+            .optionalStart().appendOffset("+HHMM", "+0000").toFormatter();
     /**
      * Conversion from old to new Time API
      */
-    private static final DateTimeFormatter defaultDateFormatter =
-            DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
-    private static final DateTimeFormatter defaultTimeFormatter =
-            DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM);
-    private static final DateTimeFormatter defaultDateTimeFormatter =
-            DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);
+    private static final DateTimeFormatter defaultDateFormatter = DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM);
+    private static final DateTimeFormatter defaultTimeFormatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM);
+    private static final DateTimeFormatter defaultDateTimeFormatter = DateTimeFormatter
+            .ofLocalizedDateTime(FormatStyle.MEDIUM);
     private static TimeZone cachedTimeZone;
 
     private final String pattern;
@@ -181,17 +121,13 @@ public class Format extends java.text.Format {
     }
 
     private static Calendar cal(TimeZone tz) {
-        Calendar cal = (tz != null)
-                ? new GregorianCalendar(tz)
-                : new GregorianCalendar();
+        Calendar cal = (tz != null) ? new GregorianCalendar(tz) : new GregorianCalendar();
         cal.clear();
         return cal;
     }
 
     private static Calendar cal(TimeZone tz, Date date) {
-        Calendar cal = (tz != null)
-                ? new GregorianCalendar(tz)
-                : new GregorianCalendar();
+        Calendar cal = (tz != null) ? new GregorianCalendar(tz) : new GregorianCalendar();
         cal.setTime(date);
         return cal;
     }
@@ -205,8 +141,7 @@ public class Format extends java.text.Format {
         return formatDA(tz, date, new StringBuilder(8)).toString();
     }
 
-    public static StringBuilder formatDA(TimeZone tz, Date date,
-                                         StringBuilder toAppendTo) {
+    public static StringBuilder formatDA(TimeZone tz, Date date, StringBuilder toAppendTo) {
         return formatDT(cal(tz, date), toAppendTo, Calendar.DAY_OF_MONTH);
     }
 
@@ -215,12 +150,10 @@ public class Format extends java.text.Format {
     }
 
     public static String formatTM(TimeZone tz, Date date, DatePrecision precision) {
-        return formatTM(cal(tz, date), new StringBuilder(10),
-                precision.lastField).toString();
+        return formatTM(cal(tz, date), new StringBuilder(10), precision.lastField).toString();
     }
 
-    private static StringBuilder formatTM(Calendar cal,
-                                          StringBuilder toAppendTo, int lastField) {
+    private static StringBuilder formatTM(Calendar cal, StringBuilder toAppendTo, int lastField) {
         appendXX(cal.get(Calendar.HOUR_OF_DAY), toAppendTo);
         if (lastField > Calendar.HOUR_OF_DAY) {
             appendXX(cal.get(Calendar.MINUTE), toAppendTo);
@@ -243,13 +176,11 @@ public class Format extends java.text.Format {
         return formatDT(tz, date, new StringBuilder(23), precision).toString();
     }
 
-    public static StringBuilder formatDT(TimeZone tz, Date date,
-                                         StringBuilder toAppendTo, DatePrecision precision) {
+    public static StringBuilder formatDT(TimeZone tz, Date date, StringBuilder toAppendTo, DatePrecision precision) {
         Calendar cal = cal(tz, date);
         formatDT(cal, toAppendTo, precision.lastField);
         if (precision.includeTimezone) {
-            int offset = cal.get(Calendar.ZONE_OFFSET)
-                    + cal.get(Calendar.DST_OFFSET);
+            int offset = cal.get(Calendar.ZONE_OFFSET) + cal.get(Calendar.DST_OFFSET);
             appendZZZZZ(offset, toAppendTo);
         }
         return toAppendTo;
@@ -278,21 +209,18 @@ public class Format extends java.text.Format {
     }
 
     /**
-     * 在指定日期以指定时区的格式{@code(+|i)HHMM}从UTC返回时区偏移量
-     * 如果未指定日期，则考虑当前日期为夏令时
+     * 在指定日期以指定时区的格式{@code(+|i)HHMM}从UTC返回时区偏移量 如果未指定日期，则考虑当前日期为夏令时
      *
      * @param tz   时区
      * @param date 日期或{@code null}
      * @return 来自UTC的时区偏移量，格式为{@code (+|i)HHMM}
      */
     public static String formatTimezoneOffsetFromUTC(TimeZone tz, Date date) {
-        return appendZZZZZ(tz.getOffset(date == null
-                        ? System.currentTimeMillis() : date.getTime()),
+        return appendZZZZZ(tz.getOffset(date == null ? System.currentTimeMillis() : date.getTime()),
                 new StringBuilder(5)).toString();
     }
 
-    private static StringBuilder formatDT(Calendar cal, StringBuilder toAppendTo,
-                                          int lastField) {
+    private static StringBuilder formatDT(Calendar cal, StringBuilder toAppendTo, int lastField) {
         appendXXXX(cal.get(Calendar.YEAR), toAppendTo);
         if (lastField > Calendar.YEAR) {
             appendXX(cal.get(Calendar.MONTH) + 1, toAppendTo);
@@ -334,19 +262,14 @@ public class Format extends java.text.Format {
         if (!(length == 8 || length == 10 && !Character.isDigit(s.charAt(4)) && s.charAt(7) == s.charAt(4)))
             throw new IllegalArgumentException(s);
         int pos = 0;
-        cal.set(Calendar.YEAR,
-                parseDigit(s, pos++) * 1000 +
-                        parseDigit(s, pos++) * 100 +
-                        parseDigit(s, pos++) * 10 +
-                        parseDigit(s, pos++));
+        cal.set(Calendar.YEAR, parseDigit(s, pos++) * 1000 + parseDigit(s, pos++) * 100 + parseDigit(s, pos++) * 10
+                + parseDigit(s, pos++));
         if (length == 10)
             pos++;
-        cal.set(Calendar.MONTH,
-                parseDigit(s, pos++) * 10 + parseDigit(s, pos++) - 1);
+        cal.set(Calendar.MONTH, parseDigit(s, pos++) * 10 + parseDigit(s, pos++) - 1);
         if (length == 10)
             pos++;
-        cal.set(Calendar.DAY_OF_MONTH,
-                parseDigit(s, pos++) * 10 + parseDigit(s, pos++));
+        cal.set(Calendar.DAY_OF_MONTH, parseDigit(s, pos++) * 10 + parseDigit(s, pos++));
         if (ceil)
             ceil(cal, Calendar.DAY_OF_MONTH);
         return cal.getTime();
@@ -356,8 +279,7 @@ public class Format extends java.text.Format {
         return parseTM(tz, s, false, precision);
     }
 
-    public static Date parseTM(TimeZone tz, String s, boolean ceil,
-                               DatePrecision precision) {
+    public static Date parseTM(TimeZone tz, String s, boolean ceil, DatePrecision precision) {
         return parseTM(cal(tz), truncateTimeZone(s), ceil, precision);
     }
 
@@ -372,30 +294,26 @@ public class Format extends java.text.Format {
         return s;
     }
 
-    private static Date parseTM(Calendar cal, String s, boolean ceil,
-                                DatePrecision precision) {
+    private static Date parseTM(Calendar cal, String s, boolean ceil, DatePrecision precision) {
         int length = s.length();
         int pos = 0;
         if (pos + 2 > length)
             throw new IllegalArgumentException(s);
 
-        cal.set(precision.lastField = Calendar.HOUR_OF_DAY,
-                parseDigit(s, pos++) * 10 + parseDigit(s, pos++));
+        cal.set(precision.lastField = Calendar.HOUR_OF_DAY, parseDigit(s, pos++) * 10 + parseDigit(s, pos++));
         if (pos < length) {
             if (!Character.isDigit(s.charAt(pos)))
                 pos++;
             if (pos + 2 > length)
                 throw new IllegalArgumentException(s);
 
-            cal.set(precision.lastField = Calendar.MINUTE,
-                    parseDigit(s, pos++) * 10 + parseDigit(s, pos++));
+            cal.set(precision.lastField = Calendar.MINUTE, parseDigit(s, pos++) * 10 + parseDigit(s, pos++));
             if (pos < length) {
                 if (!Character.isDigit(s.charAt(pos)))
                     pos++;
                 if (pos + 2 > length)
                     throw new IllegalArgumentException(s);
-                cal.set(precision.lastField = Calendar.SECOND,
-                        parseDigit(s, pos++) * 10 + parseDigit(s, pos++));
+                cal.set(precision.lastField = Calendar.SECOND, parseDigit(s, pos++) * 10 + parseDigit(s, pos++));
                 int n = length - pos;
                 if (n > 0) {
                     if (s.charAt(pos++) != '.')
@@ -408,9 +326,11 @@ public class Format extends java.text.Format {
                             millis += d;
                         else if (i == 4 & d > 4) // round up
                             millis++;
-                        if (i < 3) millis *= 10;
+                        if (i < 3)
+                            millis *= 10;
                     }
-                    for (int i = n; i < 3; ++i) millis *= 10;
+                    for (int i = n; i < 3; ++i)
+                        millis *= 10;
                     cal.set(precision.lastField = Calendar.MILLISECOND, millis);
                     return cal.getTime();
                 }
@@ -423,7 +343,8 @@ public class Format extends java.text.Format {
 
     private static int parseDigit(String s, int index) {
         int d = s.charAt(index) - '0';
-        if (d < 0 || d > 9) throw new IllegalArgumentException(s);
+        if (d < 0 || d > 9)
+            throw new IllegalArgumentException(s);
         return d;
     }
 
@@ -453,22 +374,18 @@ public class Format extends java.text.Format {
     private static String tzid(String s) {
         int length = s.length();
         if (length > 4) {
-            char[] tzid = {'G', 'M', 'T', 0, 0, 0, Symbol.C_COLON, 0, 0};
+            char[] tzid = { 'G', 'M', 'T', 0, 0, 0, Symbol.C_COLON, 0, 0 };
             s.getChars(length - 5, length - 2, tzid, 3);
             s.getChars(length - 2, length, tzid, 7);
-            if ((tzid[3] == '+' || tzid[3] == '-')
-                    && Character.isDigit(tzid[4])
-                    && Character.isDigit(tzid[5])
-                    && Character.isDigit(tzid[7])
-                    && Character.isDigit(tzid[8])) {
+            if ((tzid[3] == '+' || tzid[3] == '-') && Character.isDigit(tzid[4]) && Character.isDigit(tzid[5])
+                    && Character.isDigit(tzid[7]) && Character.isDigit(tzid[8])) {
                 return new String(tzid);
             }
         }
         return null;
     }
 
-    public static Date parseDT(TimeZone tz, String s, boolean ceil,
-                               DatePrecision precision) {
+    public static Date parseDT(TimeZone tz, String s, boolean ceil, DatePrecision precision) {
         int length = s.length();
         TimeZone tz1 = safeTimeZone(s);
         if (precision.includeTimezone = tz1 != null) {
@@ -479,28 +396,22 @@ public class Format extends java.text.Format {
         int pos = 0;
         if (pos + 4 > length)
             throw new IllegalArgumentException(s);
-        cal.set(precision.lastField = Calendar.YEAR,
-                parseDigit(s, pos++) * 1000 +
-                        parseDigit(s, pos++) * 100 +
-                        parseDigit(s, pos++) * 10 +
-                        parseDigit(s, pos++));
+        cal.set(precision.lastField = Calendar.YEAR, parseDigit(s, pos++) * 1000 + parseDigit(s, pos++) * 100
+                + parseDigit(s, pos++) * 10 + parseDigit(s, pos++));
         if (pos < length) {
             if (!Character.isDigit(s.charAt(pos)))
                 pos++;
             if (pos + 2 > length)
                 throw new IllegalArgumentException(s);
-            cal.set(precision.lastField = Calendar.MONTH,
-                    parseDigit(s, pos++) * 10 + parseDigit(s, pos++) - 1);
+            cal.set(precision.lastField = Calendar.MONTH, parseDigit(s, pos++) * 10 + parseDigit(s, pos++) - 1);
             if (pos < length) {
                 if (!Character.isDigit(s.charAt(pos)))
                     pos++;
                 if (pos + 2 > length)
                     throw new IllegalArgumentException(s);
-                cal.set(precision.lastField = Calendar.DAY_OF_MONTH,
-                        parseDigit(s, pos++) * 10 + parseDigit(s, pos++));
+                cal.set(precision.lastField = Calendar.DAY_OF_MONTH, parseDigit(s, pos++) * 10 + parseDigit(s, pos++));
                 if (pos < length)
-                    return parseTM(cal, s.substring(pos, length), ceil,
-                            precision);
+                    return parseTM(cal, s.substring(pos, length), ceil, precision);
             }
         }
         if (ceil)
@@ -530,10 +441,8 @@ public class Format extends java.text.Format {
 
     public static Temporal parseDT(String value) {
         TemporalAccessor temporal = DT_PARSER.parse(value.trim());
-        LocalDate date =
-                temporal.isSupported(DAY_OF_MONTH)
-                        ? LocalDate.from(temporal)
-                        : LocalDate.of(temporal.get(YEAR), getMonth(temporal), 1);
+        LocalDate date = temporal.isSupported(DAY_OF_MONTH) ? LocalDate.from(temporal)
+                : LocalDate.of(temporal.get(YEAR), getMonth(temporal), 1);
         LocalTime time = temporal.isSupported(HOUR_OF_DAY) ? LocalTime.from(temporal) : LocalTime.MIN;
         LocalDateTime dateTime = LocalDateTime.of(date, time);
         return temporal.isSupported(OFFSET_SECONDS)
@@ -557,8 +466,7 @@ public class Format extends java.text.Format {
 
     public static Temporal parseDTMax(String value) {
         int length = lengthWithoutZone(value);
-        return length > 8
-                ? parseDT(value).plus(nanosToAdd(length - 8), ChronoUnit.NANOS)
+        return length > 8 ? parseDT(value).plus(nanosToAdd(length - 8), ChronoUnit.NANOS)
                 : parseDT(value).plus(1, yearsMonthsDays(length)).minus(1, ChronoUnit.NANOS);
     }
 
@@ -567,17 +475,18 @@ public class Format extends java.text.Format {
     }
 
     public static String truncateTM(String value, int maxLength) {
-        if (maxLength < 2) throw new IllegalArgumentException("maxLength %d < 2" + maxLength);
+        if (maxLength < 2)
+            throw new IllegalArgumentException("maxLength %d < 2" + maxLength);
 
         return truncate(value, value.length(), maxLength, 8);
     }
 
     public static String truncateDT(String value, int maxLength) {
-        if (maxLength < 4) throw new IllegalArgumentException("maxLength %d < 4" + maxLength);
+        if (maxLength < 4)
+            throw new IllegalArgumentException("maxLength %d < 4" + maxLength);
 
         int index = indexOfZone(value);
-        return index < 0
-                ? truncate(value, value.length(), maxLength, 16)
+        return index < 0 ? truncate(value, value.length(), maxLength, 16)
                 : truncate(value, index, maxLength, 16) + value.substring(index);
     }
 
@@ -586,32 +495,33 @@ public class Format extends java.text.Format {
         int index = tm.lastIndexOf(':');
         if (index > 0) {
             length--;
-            if (index > 4) length--;
+            if (index > 4)
+                length--;
         }
         return nanosToAdd(length);
     }
 
     private static long nanosToAdd(int length) {
         return switch (length) {
-            case 2 -> 3599999999999L;
-            case 4 -> 59999999999L;
-            case 6, 7 -> 999999999L;
-            case 8 -> 99999999L;
-            case 9 -> 9999999L;
-            case 10 -> 999999L;
-            case 11 -> 99999L;
-            case 12 -> 9999L;
-            case 13 -> 999L;
-            default -> throw new IllegalArgumentException("length: " + length);
+        case 2 -> 3599999999999L;
+        case 4 -> 59999999999L;
+        case 6, 7 -> 999999999L;
+        case 8 -> 99999999L;
+        case 9 -> 9999999L;
+        case 10 -> 999999L;
+        case 11 -> 99999L;
+        case 12 -> 9999L;
+        case 13 -> 999L;
+        default -> throw new IllegalArgumentException("length: " + length);
         };
     }
 
     private static ChronoUnit yearsMonthsDays(int length) {
         return switch (length) {
-            case 4 -> ChronoUnit.YEARS;
-            case 6 -> ChronoUnit.MONTHS;
-            case 8 -> ChronoUnit.DAYS;
-            default -> throw new IllegalArgumentException("length: " + length);
+        case 4 -> ChronoUnit.YEARS;
+        case 6 -> ChronoUnit.MONTHS;
+        case 8 -> ChronoUnit.DAYS;
+        default -> throw new IllegalArgumentException("length: " + length);
         };
     }
 
@@ -655,9 +565,7 @@ public class Format extends java.text.Format {
         } else if (date instanceof LocalDateTime || date instanceof ZonedDateTime) {
             return defaultDateTimeFormatter.withLocale(locale).format(date);
         } else if (date instanceof Instant) {
-            return defaultDateTimeFormatter
-                    .withLocale(locale)
-                    .format(((Instant) date).atZone(ZoneId.systemDefault()));
+            return defaultDateTimeFormatter.withLocale(locale).format(((Instant) date).atZone(ZoneId.systemDefault()));
         }
         return "";
     }
@@ -751,9 +659,7 @@ public class Format extends java.text.Format {
             int typeStart = tagStr.indexOf(Symbol.C_COMMA) + 1;
             boolean rnd = tagStr.startsWith("rnd");
             if (!rnd && !tagStr.startsWith("now")) {
-                int tagStrLen = typeStart != 0
-                        ? typeStart - 1
-                        : tagStr.length();
+                int tagStrLen = typeStart != 0 ? typeStart - 1 : tagStr.length();
 
                 int indexStart = tagStr.charAt(tagStrLen - 1) == Symbol.C_BRACKET_RIGHT
                         ? tagStr.lastIndexOf(Symbol.C_BRACKET_LEFT, tagStrLen - 3) + 1
@@ -768,7 +674,8 @@ public class Format extends java.text.Format {
             }
             if (typeStart != 0) {
                 int typeEnd = tagStr.indexOf(Symbol.C_COMMA, typeStart);
-                if (typeEnd < 0) typeEnd = tagStr.length();
+                if (typeEnd < 0)
+                    typeEnd = tagStr.length();
                 try {
                     if (tagStr.startsWith("date", typeStart)) {
                         types[i] = Type.date;
@@ -787,37 +694,37 @@ public class Format extends java.text.Format {
                     throw new IllegalArgumentException(pattern);
                 }
                 switch (types[i]) {
-                    case number:
-                    case date:
-                    case time:
-                    case choice:
-                        formatBuilder.append(',').append(types[i]).append(tagStr.substring(typeEnd));
-                        break;
-                    case offset:
-                        try {
-                            offsets[i] = Integer.parseInt(tagStr.substring(typeEnd + 1));
-                        } catch (IllegalArgumentException e) {
-                            throw new IllegalArgumentException(pattern);
-                        }
-                    case slice:
-                        try {
-                            slices[i] = new Slice(tagStr.substring(typeEnd + 1));
-                        } catch (RuntimeException e) {
-                            throw new IllegalArgumentException(pattern);
-                        }
+                case number:
+                case date:
+                case time:
+                case choice:
+                    formatBuilder.append(',').append(types[i]).append(tagStr.substring(typeEnd));
+                    break;
+                case offset:
+                    try {
+                        offsets[i] = Integer.parseInt(tagStr.substring(typeEnd + 1));
+                    } catch (IllegalArgumentException e) {
+                        throw new IllegalArgumentException(pattern);
+                    }
+                case slice:
+                    try {
+                        slices[i] = new Slice(tagStr.substring(typeEnd + 1));
+                    } catch (RuntimeException e) {
+                        throw new IllegalArgumentException(pattern);
+                    }
                 }
             } else {
                 types[i] = Type.none;
             }
             if (rnd) {
                 switch (types[i]) {
-                    case none:
-                        types[i] = Type.rnd;
-                    case uuid:
-                    case uid:
-                        break;
-                    default:
-                        throw new IllegalArgumentException(pattern);
+                case none:
+                    types[i] = Type.rnd;
+                case uuid:
+                case uid:
+                    break;
+                default:
+                    throw new IllegalArgumentException(pattern);
                 }
             }
             formatBuilder.append('}');
@@ -838,8 +745,7 @@ public class Format extends java.text.Format {
 
     private Object[] toArgs(Attributes attrs) {
         Object[] args = new Object[tagPaths.length];
-        outer:
-        for (int i = 0; i < args.length; i++) {
+        outer: for (int i = 0; i < args.length; i++) {
             Attributes item = attrs;
             int tag = 0;
             int[] tagPath = tagPaths[i];
@@ -848,7 +754,8 @@ public class Format extends java.text.Format {
                 tag = tagPath[last];
                 for (int j = 0; j < last; j++) {
                     item = item.getNestedDataset(tagPath[j]);
-                    if (item == null) continue outer;
+                    if (item == null)
+                        continue outer;
                 }
             }
             args[i] = types[i].toArg(item, tag, index[i], offsets[i], dateTimeOffsets[i], slices[i]);
@@ -870,44 +777,45 @@ public class Format extends java.text.Format {
         none {
             @Override
             Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
-                         UnaryOperator<String> splice) {
+                    UnaryOperator<String> splice) {
                 return attrs.getString(tag, index, "");
             }
         },
         upper {
             @Override
             Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
-                         UnaryOperator<String> splice) {
+                    UnaryOperator<String> splice) {
                 return attrs.getString(tag, index, "").toUpperCase();
             }
         },
         slice {
             @Override
             Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
-                         UnaryOperator<String> slice) {
+                    UnaryOperator<String> slice) {
                 return slice.apply(attrs.getString(tag, index));
             }
         },
         number {
             @Override
             Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
-                         UnaryOperator<String> splice) {
+                    UnaryOperator<String> splice) {
                 return attrs.getDouble(tag, index, 0.);
             }
         },
         offset {
             @Override
             Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
-                         UnaryOperator<String> splice) {
+                    UnaryOperator<String> splice) {
                 return Integer.toString(attrs.getInt(tag, index, 0) + offset);
             }
         },
         date {
             @Override
             Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
-                         UnaryOperator<String> splice) {
+                    UnaryOperator<String> splice) {
                 Date date = tag != 0 ? attrs.getDate(tag, index) : new Date();
-                if (!(dateTimeOffset instanceof Period dateOffset)) return date;
+                if (!(dateTimeOffset instanceof Period dateOffset))
+                    return date;
                 Calendar cal = Calendar.getInstance(attrs.getTimeZone());
                 cal.setTime(date);
                 cal.add(Calendar.YEAR, dateOffset.getYears());
@@ -919,9 +827,10 @@ public class Format extends java.text.Format {
         time {
             @Override
             Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
-                         UnaryOperator<String> splice) {
+                    UnaryOperator<String> splice) {
                 Date date = tag != 0 ? attrs.getDate(tag, index) : new Date();
-                if (!(dateTimeOffset instanceof Duration timeOffset)) return date;
+                if (!(dateTimeOffset instanceof Duration timeOffset))
+                    return date;
                 Calendar cal = Calendar.getInstance(attrs.getTimeZone());
                 cal.setTime(date);
                 cal.add(Calendar.SECOND, (int) timeOffset.getSeconds());
@@ -931,14 +840,14 @@ public class Format extends java.text.Format {
         choice {
             @Override
             Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
-                         UnaryOperator<String> splice) {
+                    UnaryOperator<String> splice) {
                 return attrs.getDouble(tag, index, 0.);
             }
         },
         hash {
             @Override
             Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
-                         UnaryOperator<String> splice) {
+                    UnaryOperator<String> splice) {
                 String s = attrs.getString(tag, index);
                 return s != null ? Tag.toHexString(s.hashCode()) : null;
             }
@@ -946,7 +855,7 @@ public class Format extends java.text.Format {
         md5 {
             @Override
             Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
-                         UnaryOperator<String> splice) {
+                    UnaryOperator<String> splice) {
                 String s = attrs.getString(tag, index);
                 return s != null ? getMD5String(s) : null;
             }
@@ -954,7 +863,7 @@ public class Format extends java.text.Format {
         urlencoded {
             @Override
             Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
-                         UnaryOperator<String> splice) {
+                    UnaryOperator<String> splice) {
                 String s = attrs.getString(tag, index);
                 return s != null ? URLEncoder.encode(s, StandardCharsets.UTF_8) : null;
             }
@@ -962,21 +871,21 @@ public class Format extends java.text.Format {
         rnd {
             @Override
             Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
-                         UnaryOperator<String> splice) {
+                    UnaryOperator<String> splice) {
                 return Tag.toHexString(ThreadLocalRandom.current().nextInt());
             }
         },
         uuid {
             @Override
             Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
-                         UnaryOperator<String> splice) {
+                    UnaryOperator<String> splice) {
                 return UUID.randomUUID();
             }
         },
         uid {
             @Override
             Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
-                         UnaryOperator<String> splice) {
+                    UnaryOperator<String> splice) {
                 return UID.createUID();
             }
         };
@@ -1010,7 +919,7 @@ public class Format extends java.text.Format {
         }
 
         abstract Object toArg(Attributes attrs, int tag, int index, int offset, Object dateTimeOffset,
-                              UnaryOperator<String> splice);
+                UnaryOperator<String> splice);
 
         String getMD5String(String s) {
             try {
@@ -1044,11 +953,9 @@ public class Format extends java.text.Format {
         public String apply(String s) {
             try {
                 int l = s.length();
-                return endIndex == 0
-                        ? s.substring(beginIndex < 0 ? Math.max(0, l + beginIndex) : beginIndex)
-                        : s.substring(
-                        beginIndex < 0 ? Math.max(0, l + beginIndex) : beginIndex,
-                        endIndex < 0 ? l + endIndex : Math.min(l, endIndex));
+                return endIndex == 0 ? s.substring(beginIndex < 0 ? Math.max(0, l + beginIndex) : beginIndex)
+                        : s.substring(beginIndex < 0 ? Math.max(0, l + beginIndex) : beginIndex,
+                                endIndex < 0 ? l + endIndex : Math.min(l, endIndex));
             } catch (RuntimeException e) {
                 return "";
             }

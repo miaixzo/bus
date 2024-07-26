@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.api;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -44,7 +44,6 @@ public interface IApplicationEntityCache {
 
     ApplicationEntity get(String aet) throws InternalException;
 
-    ApplicationEntity findApplicationEntity(String aet)
-            throws InternalException;
+    ApplicationEntity findApplicationEntity(String aet) throws InternalException;
 
 }

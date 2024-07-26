@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.loader;
 
 import java.io.File;
@@ -41,12 +41,15 @@ import java.util.jar.JarFile;
 public abstract class Loaders {
 
     /**
-     * 创建 classpath 资源加载器,也就是对{@link ClassLoader#getResources(String)}的增强封装
-     * 默认采用 {@link Thread#currentThread()}的{@link Thread#getContextClassLoader()},作为ClassLoader,
-     * 如果当前线程的上下文类加载器为{@code null} 则采用{@link ClassLoader#getSystemClassLoader()}.
-     * 示例：
-     * <p>1. Loaders.std().load("org/miaixz/bus/core/loader"); 加载classpath中"org/miaixz/bus/core/loader"目录下的所有资源,但不包括子目录 </p>
-     * <p>2. Loaders.std().load("org/", true); 加载classpath中"io/"目录下的所有资源,而且包括子目录 </p>
+     * 创建 classpath 资源加载器,也就是对{@link ClassLoader#getResources(String)}的增强封装 默认采用
+     * {@link Thread#currentThread()}的{@link Thread#getContextClassLoader()},作为ClassLoader, 如果当前线程的上下文类加载器为{@code null}
+     * 则采用{@link ClassLoader#getSystemClassLoader()}. 示例：
+     * <p>
+     * 1. Loaders.std().load("org/miaixz/bus/core/loader"); 加载classpath中"org/miaixz/bus/core/loader"目录下的所有资源,但不包括子目录
+     * </p>
+     * <p>
+     * 2. Loaders.std().load("org/", true); 加载classpath中"io/"目录下的所有资源,而且包括子目录
+     * </p>
      *
      * @return classpath 资源加载器
      */
@@ -55,10 +58,13 @@ public abstract class Loaders {
     }
 
     /**
-     * 创建 classpath 资源加载器,并且指定{@link ClassLoader}
-     * 示例：
-     * <p>1. Loaders.std().load("org/miaixz/bus/core/loader"); 加载classpath中"org/miaixz/bus/core/loader"目录下的所有资源,但不包括子目录 </p>
-     * <p>2. Loaders.std().load("org/", true); 加载classpath中"org/"目录下的所有资源,而且包括子目录 </p>
+     * 创建 classpath 资源加载器,并且指定{@link ClassLoader} 示例：
+     * <p>
+     * 1. Loaders.std().load("org/miaixz/bus/core/loader"); 加载classpath中"org/miaixz/bus/core/loader"目录下的所有资源,但不包括子目录
+     * </p>
+     * <p>
+     * 2. Loaders.std().load("org/", true); 加载classpath中"org/"目录下的所有资源,而且包括子目录
+     * </p>
      *
      * @param classLoader 加载器
      * @return classpath 资源加载器
@@ -68,11 +74,14 @@ public abstract class Loaders {
     }
 
     /**
-     * 创建按包名来加载的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器,
-     * 在这个创建方法中,实际委派给{@link Loaders#std()}资源加载器
+     * 创建按包名来加载的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器, 在这个创建方法中,实际委派给{@link Loaders#std()}资源加载器
      * 示例：在{@link Loaders#std()}创建的资源加载器中加载类资源路径表达实际上不太直观,往往采用包名的方式更清晰易懂
-     * <p>1. Loaders.pkg().load("io.loadkit"); 加载classpath中"io.loadkit"包下的所有资源,但不包括子包 </p>
-     * <p>2. Loaders.pkg().load("io", true); 加载classpath中"io"包下的所有资源,而且包括子子包 </p>
+     * <p>
+     * 1. Loaders.pkg().load("io.loadkit"); 加载classpath中"io.loadkit"包下的所有资源,但不包括子包
+     * </p>
+     * <p>
+     * 2. Loaders.pkg().load("io", true); 加载classpath中"io"包下的所有资源,而且包括子子包
+     * </p>
      *
      * @return 按包名来加载的资源加载器
      */
@@ -81,11 +90,15 @@ public abstract class Loaders {
     }
 
     /**
-     * 创建按包名来加载的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器,
-     * 在这个创建方法中,实际委派给{@link Loaders#std(ClassLoader)}资源加载器
+     * 创建按包名来加载的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器, 在这个创建方法中,实际委派给{@link Loaders#std(ClassLoader)}资源加载器
      * 示例：在{@link Loaders#std()}创建的资源加载器中加载类资源路径表达实际上不太直观,往往采用包名的方式更清晰易懂
-     * <p>1. Loaders.pkg().load("org.miaixz.bus.core.lang.loader"); 加载classpath中"org.miaixz.bus.core.lang.loader"包下的所有资源,但不包括子包 </p>
-     * <p>2. Loaders.pkg().load("org", true); 加载classpath中"org"包下的所有资源,而且包括子子包 </p>
+     * <p>
+     * 1. Loaders.pkg().load("org.miaixz.bus.core.lang.loader");
+     * 加载classpath中"org.miaixz.bus.core.lang.loader"包下的所有资源,但不包括子包
+     * </p>
+     * <p>
+     * 2. Loaders.pkg().load("org", true); 加载classpath中"org"包下的所有资源,而且包括子子包
+     * </p>
      *
      * @param classLoader 加载器
      * @return 按包名来加载的资源加载器
@@ -95,12 +108,17 @@ public abstract class Loaders {
     }
 
     /**
-     * 创建按包名来加载的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器,
-     * 在这个创建方法中,实际委派给delegate资源加载器
-     * 通过包装一个实际资源加载器可以实现更灵活的加载方式,例如：
-     * <p>1. Loaders.pkg(Loaders.ant()).load("org.miaixz.bus.core.lang.loader.*"); 加载org.miaixz.bus.core.loader包下的资源,但不递归加载子包 </p>
-     * <p>2. Loaders.pkg(Loaders.ant()).load("org.**"); 加载io包以及子包的资源,而且递归加载任意层次的子包 </p>
-     * <p>3. Loaders.pkg(Loaders.ant()).load("org.miaixz.bus.core.load???.*"); 加载io包下以load开头并且跟着三个字符的子包的所有资源 </p>
+     * 创建按包名来加载的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器, 在这个创建方法中,实际委派给delegate资源加载器 通过包装一个实际资源加载器可以实现更灵活的加载方式,例如：
+     * <p>
+     * 1. Loaders.pkg(Loaders.ant()).load("org.miaixz.bus.core.lang.loader.*");
+     * 加载org.miaixz.bus.core.loader包下的资源,但不递归加载子包
+     * </p>
+     * <p>
+     * 2. Loaders.pkg(Loaders.ant()).load("org.**"); 加载io包以及子包的资源,而且递归加载任意层次的子包
+     * </p>
+     * <p>
+     * 3. Loaders.pkg(Loaders.ant()).load("org.miaixz.bus.core.load???.*"); 加载io包下以load开头并且跟着三个字符的子包的所有资源
+     * </p>
      *
      * @param delegate 加载器
      * @return 按包名来加载的资源加载器
@@ -110,12 +128,17 @@ public abstract class Loaders {
     }
 
     /**
-     * 创建ANT风格路径表达式的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器,
-     * 在这个创建方法中,实际委派给{@link Loaders#std()}资源加载器
-     * 示例：
-     * <p>1. Loaders.ant().load("org/miaixz/bus/core/loader/*"); 加载org/miaixz/bus/core/loader/目录下的资源,但不包括子目录 </p>
-     * <p>2. Loaders.ant().load("io/**"); 加载io/目录下的资源以及递归加载所有子目录的资源 </p>
-     * <p>3. Loaders.ant().load("org/miaixz/bus/core/loader/*Loader.class"); 加载org/miaixz/bus/core/loader/目录下以Loader.class结尾的资源</p>
+     * 创建ANT风格路径表达式的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器, 在这个创建方法中,实际委派给{@link Loaders#std()}资源加载器 示例：
+     * <p>
+     * 1. Loaders.ant().load("org/miaixz/bus/core/loader/*"); 加载org/miaixz/bus/core/loader/目录下的资源,但不包括子目录
+     * </p>
+     * <p>
+     * 2. Loaders.ant().load("io/**"); 加载io/目录下的资源以及递归加载所有子目录的资源
+     * </p>
+     * <p>
+     * 3. Loaders.ant().load("org/miaixz/bus/core/loader/*Loader.class");
+     * 加载org/miaixz/bus/core/loader/目录下以Loader.class结尾的资源
+     * </p>
      *
      * @return 按包名来加载的资源加载器
      */
@@ -124,12 +147,17 @@ public abstract class Loaders {
     }
 
     /**
-     * 创建ANT风格路径表达式的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器,
-     * 在这个创建方法中,实际委派给{@link Loaders#std(ClassLoader)}资源加载器
-     * 示例：
-     * <p>1. Loaders.ant().load("org/miaixz/bus/core/loader/*"); 加载org/miaixz/bus/core/loader/目录下的资源,但不包括子目录 </p>
-     * <p>2. Loaders.ant().load("org/**"); 加载io/目录下的资源以及递归加载所有子目录的资源 </p>
-     * <p>3. Loaders.ant().load("org/miaixz/bus/core/loader/*Loader.class"); 加载org/miaixz/bus/core/loader/目录下以Loader.class结尾的资源</p>
+     * 创建ANT风格路径表达式的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器, 在这个创建方法中,实际委派给{@link Loaders#std(ClassLoader)}资源加载器 示例：
+     * <p>
+     * 1. Loaders.ant().load("org/miaixz/bus/core/loader/*"); 加载org/miaixz/bus/core/loader/目录下的资源,但不包括子目录
+     * </p>
+     * <p>
+     * 2. Loaders.ant().load("org/**"); 加载io/目录下的资源以及递归加载所有子目录的资源
+     * </p>
+     * <p>
+     * 3. Loaders.ant().load("org/miaixz/bus/core/loader/*Loader.class");
+     * 加载org/miaixz/bus/core/loader/目录下以Loader.class结尾的资源
+     * </p>
      *
      * @param classLoader 加载器
      * @return 按包名来加载的资源加载器
@@ -139,12 +167,17 @@ public abstract class Loaders {
     }
 
     /**
-     * 创建ANT风格路径表达式的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器,
-     * 在这个创建方法中,实际委派给delegate资源加载器
-     * 示例：
-     * <p>1. Loaders.ant().load("org/miaixz/bus/core/loader/*"); 加载org/miaixz/bus/core/loader/目录下的资源,但不包括子目录 </p>
-     * <p>2. Loaders.ant().load("org/**"); 加载io/目录下的资源以及递归加载所有子目录的资源 </p>
-     * <p>3. Loaders.ant().load("org/miaixz/bus/core/loader/*Loader.class"); 加载org/miaixz/bus/core/loader/目录下以Loader.class结尾的资源</p>
+     * 创建ANT风格路径表达式的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器, 在这个创建方法中,实际委派给delegate资源加载器 示例：
+     * <p>
+     * 1. Loaders.ant().load("org/miaixz/bus/core/loader/*"); 加载org/miaixz/bus/core/loader/目录下的资源,但不包括子目录
+     * </p>
+     * <p>
+     * 2. Loaders.ant().load("org/**"); 加载io/目录下的资源以及递归加载所有子目录的资源
+     * </p>
+     * <p>
+     * 3. Loaders.ant().load("org/miaixz/bus/core/loader/*Loader.class");
+     * 加载org/miaixz/bus/core/loader/目录下以Loader.class结尾的资源
+     * </p>
      *
      * @param delegate 加载器
      * @return 按包名来加载的资源加载器
@@ -154,11 +187,14 @@ public abstract class Loaders {
     }
 
     /**
-     * 创建正则表达式的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器,
-     * 在这个创建方法中,实际委派给{@link Loaders#std()}资源加载器
-     * 示例：
-     * <p>1. Loaders.regex().load("org/miaixz/bus/core/loader/\\w+Loader.class"); 加载org/miaixz/bus/core/loader/目录下以Loader.class结尾的资源 </p>
-     * <p>2. Loaders.regex().load("org/.*"); 加载io包下所有资源 </p>
+     * 创建正则表达式的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器, 在这个创建方法中,实际委派给{@link Loaders#std()}资源加载器 示例：
+     * <p>
+     * 1. Loaders.regex().load("org/miaixz/bus/core/loader/\\w+Loader.class");
+     * 加载org/miaixz/bus/core/loader/目录下以Loader.class结尾的资源
+     * </p>
+     * <p>
+     * 2. Loaders.regex().load("org/.*"); 加载io包下所有资源
+     * </p>
      *
      * @return 按包名来加载的资源加载器
      */
@@ -167,11 +203,14 @@ public abstract class Loaders {
     }
 
     /**
-     * 创建正则表达式的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器,
-     * 在这个创建方法中,实际委派给{@link Loaders#std(ClassLoader)}资源加载器
-     * 示例：
-     * <p>1. Loaders.regex().load("org/miaixz/bus/core/loader/\\w+Loader.class"); 加载org/miaixz/bus/core/loader/目录下以Loader.class结尾的资源 </p>
-     * <p>2. Loaders.regex().load("org/.*"); 加载io包下所有资源 </p>
+     * 创建正则表达式的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器, 在这个创建方法中,实际委派给{@link Loaders#std(ClassLoader)}资源加载器 示例：
+     * <p>
+     * 1. Loaders.regex().load("org/miaixz/bus/core/loader/\\w+Loader.class");
+     * 加载org/miaixz/bus/core/loader/目录下以Loader.class结尾的资源
+     * </p>
+     * <p>
+     * 2. Loaders.regex().load("org/.*"); 加载io包下所有资源
+     * </p>
      *
      * @param classLoader 加载器
      * @return 按包名来加载的资源加载器
@@ -181,11 +220,14 @@ public abstract class Loaders {
     }
 
     /**
-     * 创建正则表达式的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器,
-     * 在这个创建方法中,实际委派给delegate资源加载器
-     * 示例：
-     * <p>1. Loaders.regex().load("org/miaixz/bus/core/loader/\\w+Loader.class"); 加载org/miaixz/bus/core/loader/目录下以Loader.class结尾的资源 </p>
-     * <p>2. Loaders.regex().load("org/.*"); 加载io包下所有资源 </p>
+     * 创建正则表达式的资源加载器,这是一个委派加载器,自身并没有资源加载逻辑而是委派给实际的资源加载器, 在这个创建方法中,实际委派给delegate资源加载器 示例：
+     * <p>
+     * 1. Loaders.regex().load("org/miaixz/bus/core/loader/\\w+Loader.class");
+     * 加载org/miaixz/bus/core/loader/目录下以Loader.class结尾的资源
+     * </p>
+     * <p>
+     * 2. Loaders.regex().load("org/.*"); 加载io包下所有资源
+     * </p>
      *
      * @param delegate 加载器
      * @return 按包名来加载的资源加载器
@@ -262,9 +304,7 @@ public abstract class Loaders {
     /**
      * 创建lib包资源加载器
      * <p>
-     * 从当前JAR归档总加载动态库信息dll/so加载库
-     * 1.将文件从当前JAR存档复制到系统临时目录
-     * 2.JAR中的文件被复制到系统临时目录中，然后加载。退出后将删除临时文件.
+     * 从当前JAR归档总加载动态库信息dll/so加载库 1.将文件从当前JAR存档复制到系统临时目录 2.JAR中的文件被复制到系统临时目录中，然后加载。退出后将删除临时文件.
      *
      * @return 资源加载器
      */

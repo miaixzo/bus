@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.safety.complex;
 
 import org.miaixz.bus.shade.safety.Complex;
@@ -32,9 +32,7 @@ import org.miaixz.bus.shade.safety.Complex;
 import java.util.Collection;
 
 /**
- * ALL逻辑混合规则
- * 只要有一个规则不满足就立刻返回,
- * 如果没有规则的时候则认为所有规则都满足
+ * ALL逻辑混合规则 只要有一个规则不满足就立刻返回, 如果没有规则的时候则认为所有规则都满足
  *
  * @author Kimi Liu
  * @since Java 17+

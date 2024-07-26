@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.additional.update.batch;
 
 import org.apache.ibatis.annotations.Param;
@@ -43,10 +43,7 @@ import java.util.List;
 @RegisterMapper
 public interface BatchUpdateSelectiveMapper<T> {
 
-    @UpdateProvider(
-            type = BatchUpdateProvider.class,
-            method = "dynamicSQL"
-    )
+    @UpdateProvider(type = BatchUpdateProvider.class, method = "dynamicSQL")
     void batchUpdateSelective(@Param("list") List<? extends T> recordList);
 
 }

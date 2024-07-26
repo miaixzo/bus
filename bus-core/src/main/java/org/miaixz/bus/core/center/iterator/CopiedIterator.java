@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.iterator;
 
 import org.miaixz.bus.core.xyz.ListKit;
@@ -36,13 +36,11 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * 复制 {@link Iterator}
- * 为了解决并发情况下{@link Iterator}遍历导致的问题（当Iterator被修改会抛出ConcurrentModificationException）
+ * 复制 {@link Iterator} 为了解决并发情况下{@link Iterator}遍历导致的问题（当Iterator被修改会抛出ConcurrentModificationException）
  * ，故使用复制原Iterator的方式解决此问题
  *
  * <p>
- * 解决方法为：在构造方法中遍历Iterator中的元素，装入新的List中然后遍历之。
- * 当然，修改这个复制后的Iterator是没有意义的，因此remove方法将会抛出异常。
+ * 解决方法为：在构造方法中遍历Iterator中的元素，装入新的List中然后遍历之。 当然，修改这个复制后的Iterator是没有意义的，因此remove方法将会抛出异常。
  * </p>
  *
  * <p>

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.compare;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -34,8 +34,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import java.lang.reflect.Field;
 
 /**
- * Bean字段排序器
- * 参阅feilong-core中的PropertyComparator
+ * Bean字段排序器 参阅feilong-core中的PropertyComparator
  *
  * @param <T> 被比较的Bean
  * @author Kimi Liu
@@ -64,19 +63,16 @@ public class FieldCompare<T> extends FunctionCompare<T> {
         this(true, true, field);
     }
 
-
     /**
      * 构造
      *
      * @param nullGreater 是否{@code null}在后
-     * @param compareSelf 在字段值相同情况下，是否比较对象本身。
-     *                    如果此项为{@code false}，字段值比较后为0会导致对象被认为相同，可能导致被去重。
+     * @param compareSelf 在字段值相同情况下，是否比较对象本身。 如果此项为{@code false}，字段值比较后为0会导致对象被认为相同，可能导致被去重。
      * @param field       字段
      */
     public FieldCompare(final boolean nullGreater, final boolean compareSelf, final Field field) {
-        super(nullGreater, compareSelf, (bean) ->
-                (Comparable<?>) FieldKit.getFieldValue(bean,
-                        Assert.notNull(field, "Field must be not null!")));
+        super(nullGreater, compareSelf, (bean) -> (Comparable<?>) FieldKit.getFieldValue(bean,
+                Assert.notNull(field, "Field must be not null!")));
     }
 
     /**
@@ -89,7 +85,8 @@ public class FieldCompare<T> extends FunctionCompare<T> {
     private static Field getNonNullField(final Class<?> beanClass, final String fieldName) {
         final Field field = FieldKit.getField(beanClass, fieldName);
         if (field == null) {
-            throw new IllegalArgumentException(StringKit.format("Field [{}] not found in Class [{}]", fieldName, beanClass.getName()));
+            throw new IllegalArgumentException(
+                    StringKit.format("Field [{}] not found in Class [{}]", fieldName, beanClass.getName()));
         }
         return field;
     }

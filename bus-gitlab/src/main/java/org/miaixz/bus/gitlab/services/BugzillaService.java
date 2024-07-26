@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.services;
 
 import org.miaixz.bus.gitlab.GitLabApiForm;
@@ -38,12 +38,9 @@ public class BugzillaService extends NotificationService {
      */
     @Override
     public GitLabApiForm servicePropertiesForm() {
-        GitLabApiForm formData = new GitLabApiForm()
-                .withParam(DESCRIPTION_PROP, getDescription())
-                .withParam(ISSUES_URL_PROP, getIssuesUrl(), true)
-                .withParam(NEW_ISSUE_URL_PROP, getNewIssueUrl(), true)
-                .withParam(PROJECT_URL_PROP, getProjectUrl(), true)
-                .withParam(PUSH_EVENTS_PROP, getPushEvents())
+        GitLabApiForm formData = new GitLabApiForm().withParam(DESCRIPTION_PROP, getDescription())
+                .withParam(ISSUES_URL_PROP, getIssuesUrl(), true).withParam(NEW_ISSUE_URL_PROP, getNewIssueUrl(), true)
+                .withParam(PROJECT_URL_PROP, getProjectUrl(), true).withParam(PUSH_EVENTS_PROP, getPushEvents())
                 .withParam(TITLE_PROP, getTitle());
         return formData;
     }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.image.*;
@@ -67,99 +67,84 @@ public class StreamSCU {
     private final Status state;
     private final Args options;
     private final AtomicBoolean countdown = new AtomicBoolean(false);
-    private final ScheduledExecutorService closeAssociationExecutor =
-            Executors.newSingleThreadScheduledExecutor();
+    private final ScheduledExecutorService closeAssociationExecutor = Executors.newSingleThreadScheduledExecutor();
     private Attributes attrs;
     private boolean relExtNeg;
     private Association as;
-    private final TimerTask closeAssociationTask =
-            new TimerTask() {
-                public void run() {
-                    close(false);
-                }
-            };
+    private final TimerTask closeAssociationTask = new TimerTask() {
+        public void run() {
+            close(false);
+        }
+    };
     private int lastStatusCode = Integer.MIN_VALUE;
     private int nbStatusLog = 0;
     private int numberOfSuboperations = 0;
-    private final RSPHandlerFactory rspHandlerFactory =
-            () ->
-                    new DimseRSPHandler(as.nextMessageID()) {
+    private final RSPHandlerFactory rspHandlerFactory = () -> new DimseRSPHandler(as.nextMessageID()) {
 
-                        @Override
-                        public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
-                            super.onDimseRSP(as, cmd, data);
-                            onCStoreRSP(cmd);
+        @Override
+        public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
+            super.onDimseRSP(as, cmd, data);
+            onCStoreRSP(cmd);
 
-                            ImageProgress progress = state.getProgress();
-                            if (progress != null) {
-                                progress.setAttributes(cmd);
-                            }
-                        }
+            ImageProgress progress = state.getProgress();
+            if (progress != null) {
+                progress.setAttributes(cmd);
+            }
+        }
 
-                        private void onCStoreRSP(Attributes cmd) {
-                            int status = cmd.getInt(Tag.Status, -1);
-                            state.setStatus(status);
-                            ProgressStatus ps;
+        private void onCStoreRSP(Attributes cmd) {
+            int status = cmd.getInt(Tag.Status, -1);
+            state.setStatus(status);
+            ProgressStatus ps;
 
-                            switch (status) {
-                                case Status.Success:
-                                    ps = ProgressStatus.COMPLETED;
-                                    break;
-                                case Status.CoercionOfDataElements:
-                                case Status.ElementsDiscarded:
+            switch (status) {
+            case Status.Success:
+                ps = ProgressStatus.COMPLETED;
+                break;
+            case Status.CoercionOfDataElements:
+            case Status.ElementsDiscarded:
 
-                                case Status.DataSetDoesNotMatchSOPClassWarning:
-                                    ps = ProgressStatus.WARNING;
-                                    if (lastStatusCode != status && nbStatusLog < 3) {
-                                        nbStatusLog++;
-                                        lastStatusCode = status;
-                                        if (Logger.isDebugEnabled()) {
-                                            Logger.warn(
-                                                    "Received C-STORE-RSP with Status {}H{}",
-                                                    Tag.shortToHexString(status),
-                                                    "\r\n" + cmd);
-                                        } else {
-                                            Logger.warn(
-                                                    "Received C-STORE-RSP with Status {}H",
-                                                    Tag.shortToHexString(status));
-                                        }
-                                    }
-                                    break;
+            case Status.DataSetDoesNotMatchSOPClassWarning:
+                ps = ProgressStatus.WARNING;
+                if (lastStatusCode != status && nbStatusLog < 3) {
+                    nbStatusLog++;
+                    lastStatusCode = status;
+                    if (Logger.isDebugEnabled()) {
+                        Logger.warn("Received C-STORE-RSP with Status {}H{}", Tag.shortToHexString(status),
+                                "\r\n" + cmd);
+                    } else {
+                        Logger.warn("Received C-STORE-RSP with Status {}H", Tag.shortToHexString(status));
+                    }
+                }
+                break;
 
-                                default:
-                                    ps = ProgressStatus.FAILED;
-                                    if (lastStatusCode != status && nbStatusLog < 3) {
-                                        nbStatusLog++;
-                                        lastStatusCode = status;
-                                        if (Logger.isDebugEnabled()) {
-                                            Logger.error(
-                                                    "Received C-STORE-RSP with Status {}H{}",
-                                                    Tag.shortToHexString(status),
-                                                    "\r\n" + cmd);
-                                        } else {
-                                            Logger.error(
-                                                    "Received C-STORE-RSP with Status {}H",
-                                                    Tag.shortToHexString(status));
-                                        }
-                                    }
-                            }
-                            Builder.notifyProgession(state.getProgress(), cmd, ps, numberOfSuboperations);
-                        }
-                    };
+            default:
+                ps = ProgressStatus.FAILED;
+                if (lastStatusCode != status && nbStatusLog < 3) {
+                    nbStatusLog++;
+                    lastStatusCode = status;
+                    if (Logger.isDebugEnabled()) {
+                        Logger.error("Received C-STORE-RSP with Status {}H{}", Tag.shortToHexString(status),
+                                "\r\n" + cmd);
+                    } else {
+                        Logger.error("Received C-STORE-RSP with Status {}H", Tag.shortToHexString(status));
+                    }
+                }
+            }
+            Builder.notifyProgession(state.getProgress(), cmd, ps, numberOfSuboperations);
+        }
+    };
     private ScheduledFuture<?> scheduledFuture;
 
     public StreamSCU(Node callingNode, Node calledNode) throws IOException {
         this(null, callingNode, calledNode, null);
     }
 
-    public StreamSCU(Args params, Node callingNode, Node calledNode)
-            throws IOException {
+    public StreamSCU(Args params, Node callingNode, Node calledNode) throws IOException {
         this(params, callingNode, calledNode, null);
     }
 
-    public StreamSCU(
-            Args params, Node callingNode, Node calledNode, ImageProgress progress)
-            throws IOException {
+    public StreamSCU(Args params, Node callingNode, Node calledNode, ImageProgress progress) throws IOException {
         Objects.requireNonNull(callingNode);
         Objects.requireNonNull(calledNode);
         this.options = params == null ? new Args() : params;
@@ -173,8 +158,7 @@ public class StreamSCU {
 
         this.remote = new Connection();
 
-        rq.addPresentationContext(
-                new PresentationContext(1, UID.Verification.uid, UID.ImplicitVRLittleEndian.uid));
+        rq.addPresentationContext(new PresentationContext(1, UID.Verification.uid, UID.ImplicitVRLittleEndian.uid));
 
         options.configureConnect(rq, remote, calledNode);
         options.configureBind(ae, conn, callingNode);
@@ -346,31 +330,25 @@ public class StreamSCU {
                 rq.addCommonExtendedNegotiation(relSOPClasses.getCommonExtended(cuid));
             }
             if (!tsuid.equals(UID.ExplicitVRLittleEndian.uid)) {
-                rq.addPresentationContext(
-                        new PresentationContext(
-                                rq.getNumberOfPresentationContexts() * 2 + 1, cuid, UID.ExplicitVRLittleEndian.uid));
+                rq.addPresentationContext(new PresentationContext(rq.getNumberOfPresentationContexts() * 2 + 1, cuid,
+                        UID.ExplicitVRLittleEndian.uid));
             }
             if (!tsuid.equals(UID.ImplicitVRLittleEndian.uid)) {
-                rq.addPresentationContext(
-                        new PresentationContext(
-                                rq.getNumberOfPresentationContexts() * 2 + 1, cuid, UID.ImplicitVRLittleEndian.uid));
+                rq.addPresentationContext(new PresentationContext(rq.getNumberOfPresentationContexts() * 2 + 1, cuid,
+                        UID.ImplicitVRLittleEndian.uid));
             }
         }
-        rq.addPresentationContext(
-                new PresentationContext(rq.getNumberOfPresentationContexts() * 2 + 1, cuid, tsuid));
+        rq.addPresentationContext(new PresentationContext(rq.getNumberOfPresentationContexts() * 2 + 1, cuid, tsuid));
         return true;
     }
 
     public synchronized void triggerCloseExecutor() {
-        if ((scheduledFuture == null || scheduledFuture.isDone())
-                && countdown.compareAndSet(false, true)) {
-            scheduledFuture =
-                    closeAssociationExecutor.schedule(closeAssociationTask, 15, TimeUnit.SECONDS);
+        if ((scheduledFuture == null || scheduledFuture.isDone()) && countdown.compareAndSet(false, true)) {
+            scheduledFuture = closeAssociationExecutor.schedule(closeAssociationTask, 15, TimeUnit.SECONDS);
         }
     }
 
-    public void prepareTransfer(Centre service, String iuid, String cuid, String dstTsuid)
-            throws IOException {
+    public void prepareTransfer(Centre service, String iuid, String cuid, String dstTsuid) throws IOException {
         synchronized (this) {
             if (hasAssociation()) {
                 // Handle dynamically new SOPClassUID
@@ -407,9 +385,8 @@ public class StreamSCU {
     }
 
     /**
-     * Check if a new transfer syntax needs to be dynamically added to the association. If yes, wait
-     * until the end of the current transfers of the streamSCU and close association to add new
-     * transfer syntax.
+     * Check if a new transfer syntax needs to be dynamically added to the association. If yes, wait until the end of
+     * the current transfers of the streamSCU and close association to add new transfer syntax.
      *
      * @param cuid     cuid
      * @param dstTsuid List of transfer syntax of the association
@@ -441,21 +418,19 @@ public class StreamSCU {
                     Thread.currentThread().interrupt();
                 }
             }
-            Logger.info(
-                    "prepareTransfer: Close association to handle dynamically new SOPClassUID: {}", cuid);
+            Logger.info("prepareTransfer: Close association to handle dynamically new SOPClassUID: {}", cuid);
             close(true);
         }
     }
 
     /**
-     * Manage the map corresponding to the uids currently processed: remove the uid of the map if only
-     * 1 occurence, otherwise remove 1 occurence number
+     * Manage the map corresponding to the uids currently processed: remove the uid of the map if only 1 occurence,
+     * otherwise remove 1 occurence number
      *
      * @param iuid Uid to remove from the map
      */
     public void removeIUIDProcessed(String iuid) {
-        if (instanceUidsCurrentlyProcessed.containsKey(iuid)
-                && instanceUidsCurrentlyProcessed.get(iuid) < 2) {
+        if (instanceUidsCurrentlyProcessed.containsKey(iuid) && instanceUidsCurrentlyProcessed.get(iuid) < 2) {
             instanceUidsCurrentlyProcessed.remove(iuid);
         } else {
             instanceUidsCurrentlyProcessed.computeIfPresent(iuid, (k, v) -> v - 1);
@@ -463,14 +438,13 @@ public class StreamSCU {
     }
 
     /**
-     * Manage the map corresponding to the uids currently processed: add the uid to the map if uid not
-     * existing add 1 occurrence, otherwise add 1 occurence number to the existing uid
+     * Manage the map corresponding to the uids currently processed: add the uid to the map if uid not existing add 1
+     * occurrence, otherwise add 1 occurence number to the existing uid
      *
      * @param iuid Uid to add in the map
      */
     private void addIUIDProcessed(String iuid) {
-        if (instanceUidsCurrentlyProcessed.isEmpty()
-                || !instanceUidsCurrentlyProcessed.containsKey(iuid)) {
+        if (instanceUidsCurrentlyProcessed.isEmpty() || !instanceUidsCurrentlyProcessed.containsKey(iuid)) {
             instanceUidsCurrentlyProcessed.put(iuid, 1);
         } else {
             instanceUidsCurrentlyProcessed.computeIfPresent(iuid, (k, v) -> v + 1);

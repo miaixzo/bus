@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.xyz.IoKit;
@@ -61,16 +61,9 @@ public class Jpg2Dcm {
     private static final int BUFFER_SIZE = 8162;
     private static final ElementDictionary DICT = ElementDictionary.getStandardElementDictionary();
 
-    private static final int[] IUID_TAGS = {
-            Tag.StudyInstanceUID,
-            Tag.SeriesInstanceUID,
-            Tag.SOPInstanceUID
-    };
+    private static final int[] IUID_TAGS = { Tag.StudyInstanceUID, Tag.SeriesInstanceUID, Tag.SOPInstanceUID };
 
-    private static final int[] TYPE2_TAGS = {
-            Tag.ContentDate,
-            Tag.ContentTime
-    };
+    private static final int[] TYPE2_TAGS = { Tag.ContentDate, Tag.ContentTime };
     private final Attributes staticMetadata = new Attributes();
     private final byte[] buf = new byte[BUFFER_SIZE];
     private boolean noAPPn;
@@ -145,18 +138,19 @@ public class Jpg2Dcm {
         fileMetadata.addAll(staticMetadata);
         supplementMissingValue(fileMetadata, Tag.SOPClassUID, contentType.getSOPClassUID(photo));
         try (SeekableByteChannel channel = Files.newByteChannel(srcFilePath);
-             ImageOutputStream dos = new ImageOutputStream(destFilePath.toFile())) {
+                ImageOutputStream dos = new ImageOutputStream(destFilePath.toFile())) {
             XPEGParser parser = contentType.newParser(channel);
             parser.getAttributes(fileMetadata);
-            byte[] prefix = new byte[]{};
+            byte[] prefix = new byte[] {};
             if (noAPPn && parser.getPositionAfterAPPSegments() > 0) {
                 channel.position(parser.getPositionAfterAPPSegments());
-                prefix = new byte[]{(byte) 0xFF, (byte) JPEG.SOI};
+                prefix = new byte[] { (byte) 0xFF, (byte) JPEG.SOI };
             } else {
                 channel.position(parser.getCodeStreamPosition());
             }
             long codeStreamSize = channel.size() - channel.position() + prefix.length;
-            dos.writeDataset(fileMetadata.createFileMetaInformation(
+            dos.writeDataset(
+                    fileMetadata.createFileMetaInformation(
                             tsuid != null ? tsuid : parser.getTransferSyntaxUID(codeStreamSize > fragmentLength)),
                     fileMetadata);
             dos.writeHeader(Tag.PixelData, VR.OB, -1);
@@ -168,7 +162,7 @@ public class Jpg2Dcm {
                 copy(channel, len - prefix.length, dos);
                 if ((len & 1) != 0)
                     dos.write(0);
-                prefix = new byte[]{};
+                prefix = new byte[] {};
                 codeStreamSize -= len;
             } while (codeStreamSize > 0);
             dos.writeHeader(Tag.SequenceDelimitationItem, null, 0);
@@ -191,16 +185,13 @@ public class Jpg2Dcm {
         IMAGE_JPEG {
             @Override
             String getSampleMetadataFile(boolean photo) {
-                return photo
-                        ? "resource:vlPhotographicImageMetadata.xml"
+                return photo ? "resource:vlPhotographicImageMetadata.xml"
                         : "resource:secondaryCaptureImageMetadata.xml";
             }
 
             @Override
             String getSOPClassUID(boolean photo) {
-                return photo
-                        ? UID.VLPhotographicImageStorage.uid
-                        : UID.SecondaryCaptureImageStorage.uid;
+                return photo ? UID.VLPhotographicImageStorage.uid : UID.SecondaryCaptureImageStorage.uid;
             }
 
             @Override
@@ -223,17 +214,17 @@ public class Jpg2Dcm {
 
         static ContentType of(String type) {
             switch (type.toLowerCase()) {
-                case "image/jpeg":
-                case "image/jp2":
-                case "image/j2c":
-                case "image/jph":
-                case "image/jphc":
-                    return ContentType.IMAGE_JPEG;
-                case "video/mpeg":
-                    return ContentType.VIDEO_MPEG;
-                case "video/mp4":
-                case "video/quicktime":
-                    return ContentType.VIDEO_MP4;
+            case "image/jpeg":
+            case "image/jp2":
+            case "image/j2c":
+            case "image/jph":
+            case "image/jphc":
+                return ContentType.IMAGE_JPEG;
+            case "video/mpeg":
+                return ContentType.VIDEO_MPEG;
+            case "video/mp4":
+            case "video/quicktime":
+                return ContentType.VIDEO_MP4;
             }
             return null;
         }

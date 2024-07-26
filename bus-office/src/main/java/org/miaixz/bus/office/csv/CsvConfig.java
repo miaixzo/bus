@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.csv;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -84,9 +84,7 @@ public class CsvConfig<T extends CsvConfig<T>> implements Serializable {
     }
 
     /**
-     * 设置注释无效
-     * 当写出CSV时，{@link CsvWriter#writeComment(String)}将抛出异常
-     * 当读取CSV时，注释行按照正常行读取
+     * 设置注释无效 当写出CSV时，{@link CsvWriter#writeComment(String)}将抛出异常 当读取CSV时，注释行按照正常行读取
      *
      * @return this
      */

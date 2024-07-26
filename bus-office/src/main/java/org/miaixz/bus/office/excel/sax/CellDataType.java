@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.excel.sax;
 
 /**
@@ -90,7 +90,7 @@ public enum CellDataType {
      */
     public static CellDataType of(final String name) {
         if (null == name) {
-            //默认空
+            // 默认空
             return NULL;
         }
 

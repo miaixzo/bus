@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pay.metric.paypal;
 
 import org.miaixz.bus.core.xyz.ThreadKit;
@@ -49,8 +49,7 @@ public class PaypalBuilder {
      * @param <V>           泛型
      * @return V 结果
      */
-    public static <V extends Callback> V retryOnException(int retryLimit,
-                                                          Callable<V> retryCallable) {
+    public static <V extends Callback> V retryOnException(int retryLimit, Callable<V> retryCallable) {
         V v = null;
         for (int i = 0; i < retryLimit; i++) {
             try {
@@ -58,7 +57,8 @@ public class PaypalBuilder {
             } catch (Exception e) {
                 Logger.warn("retry on " + (i + 1) + " times v = " + (v == null ? null : v.getJson()), e);
             }
-            if (null != v && v.matching()) break;
+            if (null != v && v.matching())
+                break;
             Logger.error("retry on " + (i + 1) + " times but not matching v = " + (v == null ? null : v.getJson()));
         }
         return v;
@@ -73,9 +73,7 @@ public class PaypalBuilder {
      * @param <V>           泛型
      * @return V 结果
      */
-    public static <V extends Callback> V retryOnException(int retryLimit,
-                                                          long sleepMillis,
-                                                          Callable<V> retryCallable) {
+    public static <V extends Callback> V retryOnException(int retryLimit, long sleepMillis, Callable<V> retryCallable) {
         V v = null;
         for (int i = 0; i < retryLimit; i++) {
             try {

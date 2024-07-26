@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.nlp.provider.analysis;
 
 import org.apache.lucene.analysis.TokenStream;
@@ -36,8 +36,7 @@ import org.miaixz.bus.extra.nlp.NLPWord;
 import java.io.IOException;
 
 /**
- * Lucene-analysis分词抽象结果封装
- * 项目地址：https://github.com/apache/lucene-solr/tree/master/lucene/analysis
+ * Lucene-analysis分词抽象结果封装 项目地址：https://github.com/apache/lucene-solr/tree/master/lucene/analysis
  *
  * @author Kimi Liu
  * @since Java 17+

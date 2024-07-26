@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.plugin.httpv;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -80,8 +80,7 @@ public class Downloads {
     }
 
     /**
-     * 设置文件追加模式
-     * 用预断点续传和分块下载
+     * 设置文件追加模式 用预断点续传和分块下载
      *
      * @return Download
      */
@@ -192,8 +191,7 @@ public class Downloads {
                     while ((len = input.read(buff)) != -1) {
                         raFile.write(buff, 0, len);
                         doneBytes += len;
-                        if (status == Control.STATUS__CANCELED
-                                || status == Control.STATUS__PAUSED) {
+                        if (status == Control.STATUS__CANCELED || status == Control.STATUS__PAUSED) {
                             break;
                         }
                     }
@@ -222,8 +220,7 @@ public class Downloads {
                 file.delete();
             }
         }
-        if (status == Control.STATUS__DONE
-                && null != onSuccess) {
+        if (status == Control.STATUS__DONE && null != onSuccess) {
             executor.execute(() -> onSuccess.on(file), sOnIO);
         }
     }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.bridge;
 
 import io.vertx.core.Vertx;
@@ -39,8 +39,8 @@ import org.springframework.context.annotation.Import;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Import({BridgePropertyLoader.class})
-@EnableConfigurationProperties(value = {BridgeProperties.class})
+@Import({ BridgePropertyLoader.class })
+@EnableConfigurationProperties(value = { BridgeProperties.class })
 public class BridgeConfiguration {
 
     @Resource

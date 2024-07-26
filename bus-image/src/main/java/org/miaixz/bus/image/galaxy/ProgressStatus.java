@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy;
 
 /**
@@ -32,7 +32,5 @@ package org.miaixz.bus.image.galaxy;
  * @since Java 17+
  */
 public enum ProgressStatus {
-    FAILED,
-    WARNING,
-    COMPLETED
+    FAILED, WARNING, COMPLETED
 }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.center;
 
 import org.miaixz.bus.core.lang.Algorithm;
@@ -37,10 +37,8 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
 /**
- * 三重数据加密算法（英语：Triple Data Encryption Algorithm，缩写为TDEA，Triple DEA），或称3DES（Triple DES）
- * 使用 168 位的密钥对资料进行三次加密的一种机制；它通常（但非始终）提供极其强大的安全性。
- * 如果三个 56 位的子元素都相同，则三重 DES 向后兼容 DES。
- * Java中默认实现为：DESede/ECB/PKCS5Padding
+ * 三重数据加密算法（英语：Triple Data Encryption Algorithm，缩写为TDEA，Triple DEA），或称3DES（Triple DES） 使用 168
+ * 位的密钥对资料进行三次加密的一种机制；它通常（但非始终）提供极其强大的安全性。 如果三个 56 位的子元素都相同，则三重 DES 向后兼容 DES。 Java中默认实现为：DESede/ECB/PKCS5Padding
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -151,7 +149,8 @@ public class TDEA extends Crypto {
      * @param iv      加盐
      */
     public TDEA(final String mode, final String padding, final byte[] key, final byte[] iv) {
-        this(mode, padding, Keeper.generateKey(Algorithm.DESEDE.getValue(), key), null == iv ? null : new IvParameterSpec(iv));
+        this(mode, padding, Keeper.generateKey(Algorithm.DESEDE.getValue(), key),
+                null == iv ? null : new IvParameterSpec(iv));
     }
 
     /**

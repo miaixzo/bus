@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv;
 
 import org.opencv.core.Core;
@@ -39,6 +39,7 @@ import java.awt.image.*;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
+
 /**
  * @author Kimi Liu
  * @since Java 17+
@@ -72,25 +73,20 @@ public class ImageConversion {
         int dataType = convertToDataType(type);
 
         switch (channels) {
-            case 1:
-                cs = ColorSpace.getInstance(ColorSpace.CS_GRAY);
-                colorModel =
-                        new ComponentColorModel(
-                                cs, new int[]{bpp}, false, true, Transparency.OPAQUE, dataType);
-                raster = colorModel.createCompatibleWritableRaster(cols, rows);
-                break;
-            case 3:
-                cs = ColorSpace.getInstance(ColorSpace.CS_sRGB);
-                colorModel =
-                        new ComponentColorModel(
-                                cs, new int[]{bpp, bpp, bpp}, false, false, Transparency.OPAQUE, dataType);
-                raster =
-                        Raster.createInterleavedRaster(
-                                dataType, cols, rows, cols * channels, channels, new int[]{2, 1, 0}, null);
-                break;
-            default:
-                throw new UnsupportedOperationException(
-                        "No implementation to handle " + channels + " channels");
+        case 1:
+            cs = ColorSpace.getInstance(ColorSpace.CS_GRAY);
+            colorModel = new ComponentColorModel(cs, new int[] { bpp }, false, true, Transparency.OPAQUE, dataType);
+            raster = colorModel.createCompatibleWritableRaster(cols, rows);
+            break;
+        case 3:
+            cs = ColorSpace.getInstance(ColorSpace.CS_sRGB);
+            colorModel = new ComponentColorModel(cs, new int[] { bpp, bpp, bpp }, false, false, Transparency.OPAQUE,
+                    dataType);
+            raster = Raster.createInterleavedRaster(dataType, cols, rows, cols * channels, channels,
+                    new int[] { 2, 1, 0 }, null);
+            break;
+        default:
+            throw new UnsupportedOperationException("No implementation to handle " + channels + " channels");
         }
 
         DataBuffer buf = raster.getDataBuffer();
@@ -153,13 +149,13 @@ public class ImageConversion {
      */
     public static int convertToDataType(int cvType) {
         return switch (CvType.depth(cvType)) {
-            case CvType.CV_8U, CvType.CV_8S -> DataBuffer.TYPE_BYTE;
-            case CvType.CV_16U -> DataBuffer.TYPE_USHORT;
-            case CvType.CV_16S -> DataBuffer.TYPE_SHORT;
-            case CvType.CV_32S -> DataBuffer.TYPE_INT;
-            case CvType.CV_32F -> DataBuffer.TYPE_FLOAT;
-            case CvType.CV_64F -> DataBuffer.TYPE_DOUBLE;
-            default -> throw new UnsupportedOperationException("Unsupported CvType value: " + cvType);
+        case CvType.CV_8U, CvType.CV_8S -> DataBuffer.TYPE_BYTE;
+        case CvType.CV_16U -> DataBuffer.TYPE_USHORT;
+        case CvType.CV_16S -> DataBuffer.TYPE_SHORT;
+        case CvType.CV_32S -> DataBuffer.TYPE_INT;
+        case CvType.CV_32F -> DataBuffer.TYPE_FLOAT;
+        case CvType.CV_64F -> DataBuffer.TYPE_DOUBLE;
+        default -> throw new UnsupportedOperationException("Unsupported CvType value: " + cvType);
         };
     }
 
@@ -181,10 +177,9 @@ public class ImageConversion {
      * Converts a <code>RenderedImage</code> into a <code>Mat</code>.
      *
      * @param img    a <code>RenderedImage</code> to be converted
-     * @param region a Rectangle that specifies the region of the <code>RenderedImage</code> to be
-     *               converted
-     * @param toBGR  a boolean that specifies if the <code>Mat</code> should be converted to BGR.
-     *               Should be true for most cases.
+     * @param region a Rectangle that specifies the region of the <code>RenderedImage</code> to be converted
+     * @param toBGR  a boolean that specifies if the <code>Mat</code> should be converted to BGR. Should be true for
+     *               most cases.
      * @return a ImageCV
      */
     public static ImageCV toMat(RenderedImage img, Rectangle region, boolean toBGR) {
@@ -195,16 +190,14 @@ public class ImageConversion {
      * Converts a <code>RenderedImage</code> into a <code>Mat</code>.
      *
      * @param img            a <code>RenderedImage</code> to be converted
-     * @param region         a Rectangle that specifies the region of the <code>RenderedImage</code> to be
-     *                       converted
-     * @param toBGR          a boolean that specifies if the <code>Mat</code> should be converted to BGR. This
-     *                       should be true in most cases
-     * @param forceShortType a boolean that specifies if the <code>Mat</code> should be converted to a
-     *                       short type. This should be false in most cases
+     * @param region         a Rectangle that specifies the region of the <code>RenderedImage</code> to be converted
+     * @param toBGR          a boolean that specifies if the <code>Mat</code> should be converted to BGR. This should be
+     *                       true in most cases
+     * @param forceShortType a boolean that specifies if the <code>Mat</code> should be converted to a short type. This
+     *                       should be false in most cases
      * @return a ImageCV
      */
-    public static ImageCV toMat(
-            RenderedImage img, Rectangle region, boolean toBGR, boolean forceShortType) {
+    public static ImageCV toMat(RenderedImage img, Rectangle region, boolean toBGR, boolean forceShortType) {
         Raster raster = region == null ? img.getData() : img.getData(region);
         DataBuffer buf = raster.getDataBuffer();
         int[] samples = raster.getSampleModel().getSampleSize();
@@ -226,7 +219,7 @@ public class ImageConversion {
         }
 
         if (buf instanceof DataBufferByte bufferByte) {
-            if (Arrays.equals(offsets, new int[]{0, 0, 0})) {
+            if (Arrays.equals(offsets, new int[] { 0, 0, 0 })) {
                 Mat b = new Mat(raster.getHeight(), raster.getWidth(), CvType.CV_8UC1);
                 b.put(0, 0, bufferByte.getData(2));
                 Mat g = new Mat(raster.getHeight(), raster.getWidth(), CvType.CV_8UC1);
@@ -239,45 +232,37 @@ public class ImageConversion {
                 return dstImg;
             }
 
-            ImageCV mat =
-                    new ImageCV(raster.getHeight(), raster.getWidth(), CvType.CV_8UC(samples.length));
+            ImageCV mat = new ImageCV(raster.getHeight(), raster.getWidth(), CvType.CV_8UC(samples.length));
             mat.put(0, 0, ((DataBufferByte) buf).getData());
-            if (toBGR && Arrays.equals(offsets, new int[]{0, 1, 2})) {
+            if (toBGR && Arrays.equals(offsets, new int[] { 0, 1, 2 })) {
                 ImageCV dstImg = new ImageCV();
                 Imgproc.cvtColor(mat, dstImg, Imgproc.COLOR_RGB2BGR);
                 return dstImg;
-            } else if (!toBGR && Arrays.equals(offsets, new int[]{2, 1, 0})) {
+            } else if (!toBGR && Arrays.equals(offsets, new int[] { 2, 1, 0 })) {
                 ImageCV dstImg = new ImageCV();
                 Imgproc.cvtColor(mat, dstImg, Imgproc.COLOR_BGR2RGB);
                 return dstImg;
             }
             return mat;
         } else if (buf instanceof DataBufferUShort bufferUShort) {
-            ImageCV mat =
-                    new ImageCV(
-                            raster.getHeight(),
-                            raster.getWidth(),
-                            forceShortType ? CvType.CV_16SC(samples.length) : CvType.CV_16UC(samples.length));
+            ImageCV mat = new ImageCV(raster.getHeight(), raster.getWidth(),
+                    forceShortType ? CvType.CV_16SC(samples.length) : CvType.CV_16UC(samples.length));
             mat.put(0, 0, bufferUShort.getData());
             return mat;
         } else if (buf instanceof DataBufferShort bufferShort) {
-            ImageCV mat =
-                    new ImageCV(raster.getHeight(), raster.getWidth(), CvType.CV_16SC(samples.length));
+            ImageCV mat = new ImageCV(raster.getHeight(), raster.getWidth(), CvType.CV_16SC(samples.length));
             mat.put(0, 0, bufferShort.getData());
             return mat;
         } else if (buf instanceof DataBufferInt bufferInt) {
-            ImageCV mat =
-                    new ImageCV(raster.getHeight(), raster.getWidth(), CvType.CV_32SC(samples.length));
+            ImageCV mat = new ImageCV(raster.getHeight(), raster.getWidth(), CvType.CV_32SC(samples.length));
             mat.put(0, 0, bufferInt.getData());
             return mat;
         } else if (buf instanceof DataBufferFloat bufferFloat) {
-            ImageCV mat =
-                    new ImageCV(raster.getHeight(), raster.getWidth(), CvType.CV_32FC(samples.length));
+            ImageCV mat = new ImageCV(raster.getHeight(), raster.getWidth(), CvType.CV_32FC(samples.length));
             mat.put(0, 0, bufferFloat.getData());
             return mat;
         } else if (buf instanceof DataBufferDouble bufferDouble) {
-            ImageCV mat =
-                    new ImageCV(raster.getHeight(), raster.getWidth(), CvType.CV_64FC(samples.length));
+            ImageCV mat = new ImageCV(raster.getHeight(), raster.getWidth(), CvType.CV_64FC(samples.length));
             mat.put(0, 0, bufferDouble.getData());
             return mat;
         }
@@ -296,8 +281,7 @@ public class ImageConversion {
     }
 
     /**
-     * Converts a <code>RenderedImage</code> into a <code>BufferedImage</code> with a specific
-     * BufferedImage type.
+     * Converts a <code>RenderedImage</code> into a <code>BufferedImage</code> with a specific BufferedImage type.
      *
      * @param src a <code>RenderedImage</code> to be converted
      * @return a <code>BufferedImage</code>
@@ -320,8 +304,7 @@ public class ImageConversion {
      * @return <code>true</code> if the supplied <code>SampleModel</code> is a binary sample model
      */
     public static boolean isBinary(SampleModel sm) {
-        return sm instanceof MultiPixelPackedSampleModel model
-                && model.getPixelBitStride() == 1
+        return sm instanceof MultiPixelPackedSampleModel model && model.getPixelBitStride() == 1
                 && sm.getNumBands() == 1;
     }
 
@@ -356,8 +339,8 @@ public class ImageConversion {
     }
 
     /**
-     * Returns the binary data unpacked into an array of bytes. The line stride will be the width of
-     * the <code>Raster</code>.
+     * Returns the binary data unpacked into an array of bytes. The line stride will be the width of the
+     * <code>Raster</code>.
      *
      * @throws IllegalArgumentException if <code>isBinary()</code> returns <code>false</code> with the
      *                                  <code>SampleModel</code> of the supplied <code>Raster</code> as argument.
@@ -400,10 +383,8 @@ public class ImageConversion {
                 eltOffset += lineStride;
             }
         } else if (dataBuffer instanceof DataBufferShort || dataBuffer instanceof DataBufferUShort) {
-            short[] data =
-                    dataBuffer instanceof DataBufferShort bufferShort
-                            ? bufferShort.getData()
-                            : ((DataBufferUShort) dataBuffer).getData();
+            short[] data = dataBuffer instanceof DataBufferShort bufferShort ? bufferShort.getData()
+                    : ((DataBufferUShort) dataBuffer).getData();
             for (int y = rectY; y < maxY; y++) {
                 int bOffset = eltOffset * 16 + bitOffset;
                 for (int x = rectX; x < maxX; x++) {

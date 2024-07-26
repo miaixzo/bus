@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map.multi;
 
 import org.miaixz.bus.core.center.iterator.TransIterator;
@@ -36,15 +36,14 @@ import java.io.Serializable;
 import java.util.*;
 
 /**
- * 抽象{@link Table}接口实现
- * 默认实现了：
+ * 抽象{@link Table}接口实现 默认实现了：
  * <ul>
- *     <li>{@link #equals(Object)}</li>
- *     <li>{@link #hashCode()}</li>
- *     <li>{@link #toString()}</li>
- *     <li>{@link #values()}</li>
- *     <li>{@link #cellSet()}</li>
- *     <li>{@link #iterator()}</li>
+ * <li>{@link #equals(Object)}</li>
+ * <li>{@link #hashCode()}</li>
+ * <li>{@link #toString()}</li>
+ * <li>{@link #values()}</li>
+ * <li>{@link #cellSet()}</li>
+ * <li>{@link #iterator()}</li>
  * </ul>
  *
  * @param <R> 行类型
@@ -139,8 +138,7 @@ public abstract class AbstractTable<R, C, V> implements Table<R, C, V> {
             }
             if (obj instanceof Cell) {
                 final Cell<?, ?, ?> other = (Cell<?, ?, ?>) obj;
-                return ObjectKit.equals(rowKey, other.getRowKey())
-                        && ObjectKit.equals(columnKey, other.getColumnKey())
+                return ObjectKit.equals(rowKey, other.getRowKey()) && ObjectKit.equals(columnKey, other.getColumnKey())
                         && ObjectKit.equals(value, other.getValue());
             }
             return false;

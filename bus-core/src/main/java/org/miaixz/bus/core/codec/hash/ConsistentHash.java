@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.codec.hash;
 
 import org.miaixz.bus.core.xyz.HashKit;
@@ -35,9 +35,10 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 /**
- * 一致性Hash算法
- * 算法详解：<a href="http://blog.csdn.net/sparkliang/article/details/5279393">http://blog.csdn.net/sparkliang/article/details/5279393</a>
- * 算法实现：<a href="https://weblogs.java.net/blog/2007/11/27/consistent-hashing">https://weblogs.java.net/blog/2007/11/27/consistent-hashing</a>
+ * 一致性Hash算法 算法详解：<a href=
+ * "http://blog.csdn.net/sparkliang/article/details/5279393">http://blog.csdn.net/sparkliang/article/details/5279393</a>
+ * 算法实现：<a href=
+ * "https://weblogs.java.net/blog/2007/11/27/consistent-hashing">https://weblogs.java.net/blog/2007/11/27/consistent-hashing</a>
  *
  * @param <T> 节点类型
  * @author Kimi Liu
@@ -68,10 +69,10 @@ public class ConsistentHash<T> implements Serializable {
     public ConsistentHash(final int numberOfReplicas, final Collection<T> nodes) {
         this.numberOfReplicas = numberOfReplicas;
         this.hashFunc = key -> {
-            //默认使用FNV1hash算法
+            // 默认使用FNV1hash算法
             return HashKit.fnvHash(key.toString());
         };
-        //初始化节点
+        // 初始化节点
         for (final T node : nodes) {
             add(node);
         }
@@ -87,17 +88,14 @@ public class ConsistentHash<T> implements Serializable {
     public ConsistentHash(final Hash32<Object> hashFunc, final int numberOfReplicas, final Collection<T> nodes) {
         this.numberOfReplicas = numberOfReplicas;
         this.hashFunc = hashFunc;
-        //初始化节点
+        // 初始化节点
         for (final T node : nodes) {
             add(node);
         }
     }
 
     /**
-     * 增加节点
-     * 每增加一个节点，就会在闭环上增加给定复制节点数
-     * 例如复制节点数是2，则每调用此方法一次，增加两个虚拟节点，这两个节点指向同一Node
-     * 由于hash算法会调用node的toString方法，故按照toString去重
+     * 增加节点 每增加一个节点，就会在闭环上增加给定复制节点数 例如复制节点数是2，则每调用此方法一次，增加两个虚拟节点，这两个节点指向同一Node 由于hash算法会调用node的toString方法，故按照toString去重
      *
      * @param node 节点对象
      */
@@ -130,7 +128,7 @@ public class ConsistentHash<T> implements Serializable {
         }
         int hash = hashFunc.hash32(key);
         if (!circle.containsKey(hash)) {
-            final SortedMap<Integer, T> tailMap = circle.tailMap(hash);    //返回此映射的部分视图，其键大于等于 hash
+            final SortedMap<Integer, T> tailMap = circle.tailMap(hash); // 返回此映射的部分视图，其键大于等于 hash
             hash = tailMap.isEmpty() ? circle.firstKey() : tailMap.firstKey();
         }
         // 正好命中

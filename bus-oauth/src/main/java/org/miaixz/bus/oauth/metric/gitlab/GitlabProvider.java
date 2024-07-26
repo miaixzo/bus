@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.gitlab;
 
 import com.alibaba.fastjson.JSONObject;
@@ -63,13 +63,9 @@ public class GitlabProvider extends AbstractProvider {
 
         this.checkResponse(object);
 
-        return AccToken.builder()
-                .accessToken(object.getString("access_token"))
-                .refreshToken(object.getString("refresh_token"))
-                .idToken(object.getString("id_token"))
-                .tokenType(object.getString("token_type"))
-                .scope(object.getString("scope"))
-                .build();
+        return AccToken.builder().accessToken(object.getString("access_token"))
+                .refreshToken(object.getString("refresh_token")).idToken(object.getString("id_token"))
+                .tokenType(object.getString("token_type")).scope(object.getString("scope")).build();
     }
 
     @Override
@@ -79,21 +75,11 @@ public class GitlabProvider extends AbstractProvider {
 
         this.checkResponse(object);
 
-        return Material.builder()
-                .rawJson(object)
-                .uuid(object.getString("id"))
-                .username(object.getString("username"))
-                .nickname(object.getString("name"))
-                .avatar(object.getString("avatar_url"))
-                .blog(object.getString("web_url"))
-                .company(object.getString("organization"))
-                .location(object.getString("location"))
-                .email(object.getString("email"))
-                .remark(object.getString("bio"))
-                .gender(Gender.UNKNOWN)
-                .token(accToken)
-                .source(complex.toString())
-                .build();
+        return Material.builder().rawJson(object).uuid(object.getString("id")).username(object.getString("username"))
+                .nickname(object.getString("name")).avatar(object.getString("avatar_url"))
+                .blog(object.getString("web_url")).company(object.getString("organization"))
+                .location(object.getString("location")).email(object.getString("email")).remark(object.getString("bio"))
+                .gender(Gender.UNKNOWN).token(accToken).source(complex.toString()).build();
     }
 
     private void checkResponse(JSONObject object) {

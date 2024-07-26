@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab;
 
 import jakarta.ws.rs.core.GenericType;
@@ -44,13 +44,17 @@ public class TopicsApi extends AbstractApi {
     }
 
     /**
-     * <p>Get a list of Topics. </p>
+     * <p>
+     * Get a list of Topics.
+     * </p>
      *
-     * <strong>WARNING:</strong> Do not use this method to fetch Topics from https://gitlab.com,
-     * gitlab.com has many 1,000's of public topics and it will a long time to fetch all of them.
-     * Instead use {@link #getTopics(int itemsPerPage)} which will return a Pager of Topic instances.
+     * <strong>WARNING:</strong> Do not use this method to fetch Topics from https://gitlab.com, gitlab.com has many
+     * 1,000's of public topics and it will a long time to fetch all of them. Instead use
+     * {@link #getTopics(int itemsPerPage)} which will return a Pager of Topic instances.
      *
-     * <pre><code>GitLab Endpoint: GET /topics</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /topics</code>
+     * </pre>
      *
      * @return the list of topics viewable by the authenticated user
      * @throws GitLabApiException if any exception occurs
@@ -62,9 +66,11 @@ public class TopicsApi extends AbstractApi {
     /**
      * Get a list of topics in the specified page range.
      *
-     * <pre><code>GitLab Endpoint: GET /topics</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /topics</code>
+     * </pre>
      *
-     * @param page the page to get
+     * @param page    the page to get
      * @param perPage the number of Topic instances per page
      * @return the list of topics
      * @throws GitLabApiException if any exception occurs
@@ -78,7 +84,9 @@ public class TopicsApi extends AbstractApi {
     /**
      * Get a Pager of topics.
      *
-     * <pre><code>GitLab Endpoint: GET /topics</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /topics</code>
+     * </pre>
      *
      * @param itemsPerPage the number of Topic instances that will be fetched per page
      * @return the pager of topics
@@ -91,7 +99,9 @@ public class TopicsApi extends AbstractApi {
     /**
      * Get a Stream of topics.
      *
-     * <pre><code>GitLab Endpoint: GET /topics</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /topics</code>
+     * </pre>
      *
      * @return the stream of topics
      * @throws GitLabApiException if any exception occurs
@@ -103,7 +113,9 @@ public class TopicsApi extends AbstractApi {
     /**
      * Get all details of a topic.
      *
-     * <pre><code>GitLab Endpoint: GET /topics/:id</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /topics/:id</code>
+     * </pre>
      *
      * @param id the topic ID
      * @return the topic for the specified topic id
@@ -117,7 +129,9 @@ public class TopicsApi extends AbstractApi {
     /**
      * Get all details of a topic as an Optional instance.
      *
-     * <pre><code>GitLab Endpoint: GET /topics/:id</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /topics/:id</code>
+     * </pre>
      *
      * @param id the topic ID
      * @return the Topic for the specified topic id as an Optional instance
@@ -133,7 +147,9 @@ public class TopicsApi extends AbstractApi {
     /**
      * Creates a new Topic. Available only for users who can create topics.
      *
-     * <pre><code>GitLab Endpoint: POST /topics</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: POST /topics</code>
+     * </pre>
      *
      * @param params a TopicParams instance holding the parameters for the topic creation
      * @return the created Topic instance
@@ -147,25 +163,28 @@ public class TopicsApi extends AbstractApi {
     /**
      * Update a project topic.
      *
-     * <pre><code>GitLab Endpoint: PUT /topics/:id</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: PUT /topics/:id</code>
+     * </pre>
      *
-     * @param id the topic id
+     * @param id     the topic id
      * @param params a TopicParams instance holding the properties to Update
      * @return the updated Topic instance
      * @throws GitLabApiException at any exception
      */
     public Topic updateTopic(Integer id, TopicParams params) throws GitLabApiException {
-        Response response = putWithFormData(Response.Status.OK,
-                params.getForm(false), "topics", id);
+        Response response = putWithFormData(Response.Status.OK, params.getForm(false), "topics", id);
         return (response.readEntity(Topic.class));
     }
 
     /**
      * Uploads and sets the topic's avatar for the specified topic.
      *
-     * <pre><code>GitLab Endpoint: PUT /topics/:id</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: PUT /topics/:id</code>
+     * </pre>
      *
-     * @param id the topic in the form of an Integer
+     * @param id         the topic in the form of an Integer
      * @param avatarFile the File instance of the avatar file to upload
      * @return the updated Topic instance
      * @throws GitLabApiException if any exception occurs
@@ -178,7 +197,9 @@ public class TopicsApi extends AbstractApi {
     /**
      * Delete the topic's avatar for the specified topic.
      *
-     * <pre><code>GitLab Endpoint: PUT /topics/:id</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: PUT /topics/:id</code>
+     * </pre>
      *
      * @param id the topic in the form of an Integer
      * @return the updated Topic instance
@@ -190,9 +211,12 @@ public class TopicsApi extends AbstractApi {
     }
 
     /**
-     * Delete a topic. You must be an administrator to delete a project topic. When you delete a project topic, you also delete the topic assignment for projects.
+     * Delete a topic. You must be an administrator to delete a project topic. When you delete a project topic, you also
+     * delete the topic assignment for projects.
      *
-     * <pre><code>GitLab Endpoint: DELETE /topics/:id</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: DELETE /topics/:id</code>
+     * </pre>
      *
      * @param id the topic to deleted in the form of an Integer
      * @throws GitLabApiException if any exception occurs
@@ -205,9 +229,12 @@ public class TopicsApi extends AbstractApi {
     }
 
     /**
-     * Merge two topics together. You must be an administrator to merge a source topic into a target topic. When you merge topics, you delete the source topic and move all assigned projects to the target topic.
+     * Merge two topics together. You must be an administrator to merge a source topic into a target topic. When you
+     * merge topics, you delete the source topic and move all assigned projects to the target topic.
      *
-     * <pre><code>GitLab Endpoint: POST /topics/merge</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: POST /topics/merge</code>
+     * </pre>
      *
      * @param sourceTopicId ID of source project topic
      * @param targetTopicId ID of target project topic
@@ -215,7 +242,8 @@ public class TopicsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Topic mergeTopics(Integer sourceTopicId, Integer targetTopicId) throws GitLabApiException {
-        Response response = post(Response.Status.OK, new GitLabApiForm().withParam("source_topic_id", sourceTopicId).withParam("target_topic_id", targetTopicId), "topics/merge");
+        Response response = post(Response.Status.OK, new GitLabApiForm().withParam("source_topic_id", sourceTopicId)
+                .withParam("target_topic_id", targetTopicId), "topics/merge");
         return (response.readEntity(Topic.class));
     }
 }

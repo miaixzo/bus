@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.compare;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -34,8 +34,12 @@ import java.util.Comparator;
 /**
  * 按照指定类型顺序排序，对象顺序取决于对象对应的类在数组中的位置
  *
- * <p>如果对比的两个对象类型相同，返回{@code 0}，默认如果对象类型不在列表中，则排序在前</p>
- * <p>此类来自Spring，有所改造</p>
+ * <p>
+ * 如果对比的两个对象类型相同，返回{@code 0}，默认如果对象类型不在列表中，则排序在前
+ * </p>
+ * <p>
+ * 此类来自Spring，有所改造
+ * </p>
  *
  * @param <T> 用于比较的对象类型
  * @author Kimi Liu
@@ -66,7 +70,6 @@ public class InstanceCompare<T> implements Comparator<T> {
         this.atEndIfMiss = atEndIfMiss;
         this.instanceOrder = instanceOrder;
     }
-
 
     @Override
     public int compare(final T o1, final T o2) {

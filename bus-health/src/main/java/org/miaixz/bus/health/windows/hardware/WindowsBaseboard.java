@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.hardware;
 
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
@@ -49,8 +49,7 @@ import java.util.function.Supplier;
 @Immutable
 final class WindowsBaseboard extends AbstractBaseboard {
 
-    private final Supplier<Tuple> manufModelVersSerial = Memoizer.memoize(
-            WindowsBaseboard::queryManufModelVersSerial);
+    private final Supplier<Tuple> manufModelVersSerial = Memoizer.memoize(WindowsBaseboard::queryManufModelVersSerial);
 
     private static Tuple queryManufModelVersSerial() {
         String manufacturer = null;
@@ -65,7 +64,8 @@ final class WindowsBaseboard extends AbstractBaseboard {
             serialNumber = WmiKit.getString(win32BaseBoard, BaseBoardProperty.SERIALNUMBER, 0);
         }
         return new Tuple(StringKit.isBlank(manufacturer) ? Normal.UNKNOWN : manufacturer,
-                StringKit.isBlank(model) ? Normal.UNKNOWN : model, StringKit.isBlank(version) ? Normal.UNKNOWN : version,
+                StringKit.isBlank(model) ? Normal.UNKNOWN : model,
+                StringKit.isBlank(version) ? Normal.UNKNOWN : version,
                 StringKit.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber);
     }
 

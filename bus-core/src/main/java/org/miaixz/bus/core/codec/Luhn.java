@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.codec;
 
 import org.miaixz.bus.core.center.regex.Pattern;
@@ -34,9 +34,9 @@ import org.miaixz.bus.core.xyz.StringKit;
 /**
  * Luhn算法，也称为“模10”算法，是一种简单的校验和（Checksum）算法，在ISO/IEC 7812-1中定义，校验步骤如下：
  * <ol>
- *     <li>从右边第1个数字（校验数字）开始偶数位乘以2，如果小于10，直接返回，否则将个位数和十位数相加</li>
- *     <li>把步骤1种获得的乘积的各位数字与原号码中未乘2的各位数字相加</li>
- *     <li>如果步骤2得到的总和模10为0，则校验通过</li>
+ * <li>从右边第1个数字（校验数字）开始偶数位乘以2，如果小于10，直接返回，否则将个位数和十位数相加</li>
+ * <li>把步骤1种获得的乘积的各位数字与原号码中未乘2的各位数字相加</li>
+ * <li>如果步骤2得到的总和模10为0，则校验通过</li>
  * </ol>
  *
  * @author Kimi Liu
@@ -63,10 +63,9 @@ public class Luhn {
     }
 
     /**
-     * 计算校验位数字
-     * 忽略已有的校验位数字，根据前N位计算最后一位校验位数字
+     * 计算校验位数字 忽略已有的校验位数字，根据前N位计算最后一位校验位数字
      *
-     * @param text            被检查的数字
+     * @param text           被检查的数字
      * @param withCheckDigit 是否含有校验位
      * @return 校验位数字
      */

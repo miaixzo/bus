@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.mac.driver;
 
 import com.sun.jna.Pointer;
@@ -56,10 +56,9 @@ public final class WindowInfo {
      * @return A list of {@link OSDesktopWindow} objects representing the desktop windows.
      */
     public static List<OSDesktopWindow> queryDesktopWindows(boolean visibleOnly) {
-        CFArrayRef windowInfo = CoreGraphics.INSTANCE.CGWindowListCopyWindowInfo(
-                visibleOnly ? CoreGraphics.kCGWindowListOptionOnScreenOnly | CoreGraphics.kCGWindowListExcludeDesktopElements
-                        : CoreGraphics.kCGWindowListOptionAll,
-                CoreGraphics.kCGNullWindowID);
+        CFArrayRef windowInfo = CoreGraphics.INSTANCE.CGWindowListCopyWindowInfo(visibleOnly
+                ? CoreGraphics.kCGWindowListOptionOnScreenOnly | CoreGraphics.kCGWindowListExcludeDesktopElements
+                : CoreGraphics.kCGWindowListOptionAll, CoreGraphics.kCGNullWindowID);
         int numWindows = windowInfo.getCount();
         // Prepare a list to return
         List<OSDesktopWindow> windowList = new ArrayList<>();
@@ -106,7 +105,8 @@ public final class WindowInfo {
                         if (windowName.isEmpty()) {
                             windowName = windowOwnerName;
                         } else {
-                            windowName = windowName + Symbol.PARENTHESE_LEFT + windowOwnerName + Symbol.PARENTHESE_RIGHT;
+                            windowName = windowName + Symbol.PARENTHESE_LEFT + windowOwnerName
+                                    + Symbol.PARENTHESE_RIGHT;
                         }
 
                         windowList.add(new OSDesktopWindow(windowNumber, windowName, windowOwnerName, windowBounds,

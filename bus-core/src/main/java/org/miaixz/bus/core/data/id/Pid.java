@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.data.id;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -34,8 +34,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import java.lang.management.ManagementFactory;
 
 /**
- * 进程ID单例封装
- * 第一次访问时调用{@link ManagementFactory#getRuntimeMXBean()}获取PID信息，之后直接使用缓存值
+ * 进程ID单例封装 第一次访问时调用{@link ManagementFactory#getRuntimeMXBean()}获取PID信息，之后直接使用缓存值
  *
  * @author Kimi Liu
  * @since Java 17+

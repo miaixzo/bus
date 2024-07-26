@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
@@ -69,8 +69,10 @@ public class Http2Writer implements Closeable {
     }
 
     public synchronized void connectionPreface() throws IOException {
-        if (closed) throw new IOException("closed");
-        if (!client) return; // Nothing to write; servers don't send connection headers!
+        if (closed)
+            throw new IOException("closed");
+        if (!client)
+            return; // Nothing to write; servers don't send connection headers!
         if (Logger.isDebugEnabled()) {
             Logger.warn(String.format(">> CONNECTION %s", Http2.CONNECTION_PREFACE.hex()));
         }
@@ -82,7 +84,8 @@ public class Http2Writer implements Closeable {
      * Applies {@code peerSettings} and then sends a settings ACK.
      */
     public synchronized void applyAndAckSettings(Http2Settings peerSettings) throws IOException {
-        if (closed) throw new IOException("closed");
+        if (closed)
+            throw new IOException("closed");
         this.maxFrameSize = peerSettings.getMaxFrameSize(maxFrameSize);
         if (peerSettings.getHeaderTableSize() != -1) {
             hpackWriter.setHeaderTableSizeSetting(peerSettings.getHeaderTableSize());
@@ -96,20 +99,18 @@ public class Http2Writer implements Closeable {
     }
 
     /**
-     * HTTP/2 only. 发送推送header
-     * 推送promise包含所有与服务器发起的请求相关的头信息，以及一个{@code promise edstreamid}，
-     * 它将传递响应帧。推送承诺帧作为响应的一部分发送到{@code streamId}。{@code promisedStreamId}的
-     * 优先级比{@code streamId}大1
+     * HTTP/2 only. 发送推送header 推送promise包含所有与服务器发起的请求相关的头信息，以及一个{@code promise edstreamid}，
+     * 它将传递响应帧。推送承诺帧作为响应的一部分发送到{@code streamId}。{@code promisedStreamId}的 优先级比{@code streamId}大1
      *
      * @param streamId         客户端发起的流ID。必须是奇数.
      * @param promisedStreamId 服务器发起的流ID。必须是偶数.
-     * @param requestHeaders   最低限度包括 {@code :method}, {@code :scheme}, {@code :authority},
-     *                         and {@code :path}.
+     * @param requestHeaders   最低限度包括 {@code :method}, {@code :scheme}, {@code :authority}, and {@code :path}.
      * @throws IOException 异常
      */
-    public synchronized void pushPromise(int streamId, int promisedStreamId,
-                                         List<Http2Header> requestHeaders) throws IOException {
-        if (closed) throw new IOException("closed");
+    public synchronized void pushPromise(int streamId, int promisedStreamId, List<Http2Header> requestHeaders)
+            throws IOException {
+        if (closed)
+            throw new IOException("closed");
         hpackWriter.writeHeaders(requestHeaders);
 
         long byteCount = hpackBuffer.size();
@@ -120,18 +121,21 @@ public class Http2Writer implements Closeable {
         sink.writeInt(promisedStreamId & 0x7fffffff);
         sink.write(hpackBuffer, length);
 
-        if (byteCount > length) writeContinuationFrames(streamId, byteCount - length);
+        if (byteCount > length)
+            writeContinuationFrames(streamId, byteCount - length);
     }
 
     public synchronized void flush() throws IOException {
-        if (closed) throw new IOException("closed");
+        if (closed)
+            throw new IOException("closed");
         sink.flush();
     }
 
-    public synchronized void rstStream(int streamId, Http2ErrorCode errorCode)
-            throws IOException {
-        if (closed) throw new IOException("closed");
-        if (errorCode.httpCode == -1) throw new IllegalArgumentException();
+    public synchronized void rstStream(int streamId, Http2ErrorCode errorCode) throws IOException {
+        if (closed)
+            throw new IOException("closed");
+        if (errorCode.httpCode == -1)
+            throw new IllegalArgumentException();
 
         int length = 4;
         byte type = Http2.TYPE_RST_STREAM;
@@ -149,18 +153,18 @@ public class Http2Writer implements Closeable {
     }
 
     /**
-     * {@code source.length} may be longer than the max length of the variant's data frame.
-     * Implementations must send multiple frames as necessary.
+     * {@code source.length} may be longer than the max length of the variant's data frame. Implementations must send
+     * multiple frames as necessary.
      *
      * @param source    the buffer to draw bytes from. May be null if byteCount is 0.
-     * @param byteCount must be between 0 and the minimum of {@code source.length} and {@link
-     *                  #maxDataLength}.
+     * @param byteCount must be between 0 and the minimum of {@code source.length} and {@link #maxDataLength}.
      */
-    public synchronized void data(boolean outFinished, int streamId, Buffer source, int byteCount)
-            throws IOException {
-        if (closed) throw new IOException("closed");
+    public synchronized void data(boolean outFinished, int streamId, Buffer source, int byteCount) throws IOException {
+        if (closed)
+            throw new IOException("closed");
         byte flags = Http2.FLAG_NONE;
-        if (outFinished) flags |= Http2.FLAG_END_STREAM;
+        if (outFinished)
+            flags |= Http2.FLAG_END_STREAM;
         dataFrame(streamId, flags, source, byteCount);
     }
 
@@ -176,14 +180,16 @@ public class Http2Writer implements Closeable {
      * Write httpd's settings to the peer.
      */
     public synchronized void settings(Http2Settings settings) throws IOException {
-        if (closed) throw new IOException("closed");
+        if (closed)
+            throw new IOException("closed");
         int length = settings.size() * 6;
         byte type = Http2.TYPE_SETTINGS;
         byte flags = Http2.FLAG_NONE;
         int streamId = 0;
         frameHeader(streamId, length, type, flags);
         for (int i = 0; i < Http2Settings.COUNT; i++) {
-            if (!settings.isSet(i)) continue;
+            if (!settings.isSet(i))
+                continue;
             int id = i;
             if (id == 4) {
                 id = 3;
@@ -197,11 +203,12 @@ public class Http2Writer implements Closeable {
     }
 
     /**
-     * Send a connection-level ping to the peer. {@code ack} indicates this is a reply. The data in
-     * {@code payload1} and {@code payload2} opaque binary, and there are no rules on the content.
+     * Send a connection-level ping to the peer. {@code ack} indicates this is a reply. The data in {@code payload1} and
+     * {@code payload2} opaque binary, and there are no rules on the content.
      */
     public synchronized void ping(boolean ack, int payload1, int payload2) throws IOException {
-        if (closed) throw new IOException("closed");
+        if (closed)
+            throw new IOException("closed");
         int length = 8;
         byte type = Http2.TYPE_PING;
         byte flags = ack ? Http2.FLAG_ACK : Http2.FLAG_NONE;
@@ -221,8 +228,10 @@ public class Http2Writer implements Closeable {
      */
     public synchronized void goAway(int lastGoodStreamId, Http2ErrorCode errorCode, byte[] debugData)
             throws IOException {
-        if (closed) throw new IOException("closed");
-        if (errorCode.httpCode == -1) throw Http2.illegalArgument("errorCode.httpCode == -1");
+        if (closed)
+            throw new IOException("closed");
+        if (errorCode.httpCode == -1)
+            throw Http2.illegalArgument("errorCode.httpCode == -1");
         int length = 8 + debugData.length;
         byte type = Http2.TYPE_GOAWAY;
         byte flags = Http2.FLAG_NONE;
@@ -241,7 +250,8 @@ public class Http2Writer implements Closeable {
      * streamId}, or the connection if {@code streamId} is zero.
      */
     public synchronized void windowUpdate(int streamId, long windowSizeIncrement) throws IOException {
-        if (closed) throw new IOException("closed");
+        if (closed)
+            throw new IOException("closed");
         if (windowSizeIncrement == 0 || windowSizeIncrement > 0x7fffffffL) {
             throw Http2.illegalArgument("windowSizeIncrement == 0 || windowSizeIncrement > 0x7fffffffL: %s",
                     windowSizeIncrement);
@@ -261,7 +271,8 @@ public class Http2Writer implements Closeable {
         if (length > maxFrameSize) {
             throw Http2.illegalArgument("FRAME_SIZE_ERROR length > %d: %d", maxFrameSize, length);
         }
-        if ((streamId & 0x80000000) != 0) throw Http2.illegalArgument("reserved bit set: %s", streamId);
+        if ((streamId & 0x80000000) != 0)
+            throw Http2.illegalArgument("reserved bit set: %s", streamId);
         writeMedium(sink, length);
         sink.writeByte(type & 0xff);
         sink.writeByte(flags & 0xff);
@@ -283,20 +294,23 @@ public class Http2Writer implements Closeable {
         }
     }
 
-    public synchronized void headers(
-            boolean outFinished, int streamId, List<Http2Header> headerBlock) throws IOException {
-        if (closed) throw new IOException("closed");
+    public synchronized void headers(boolean outFinished, int streamId, List<Http2Header> headerBlock)
+            throws IOException {
+        if (closed)
+            throw new IOException("closed");
         hpackWriter.writeHeaders(headerBlock);
 
         long byteCount = hpackBuffer.size();
         int length = (int) Math.min(maxFrameSize, byteCount);
         byte type = Http2.TYPE_HEADERS;
         byte flags = byteCount == length ? Http2.FLAG_END_HEADERS : 0;
-        if (outFinished) flags |= Http2.FLAG_END_STREAM;
+        if (outFinished)
+            flags |= Http2.FLAG_END_STREAM;
         frameHeader(streamId, length, type, flags);
         sink.write(hpackBuffer, length);
 
-        if (byteCount > length) writeContinuationFrames(streamId, byteCount - length);
+        if (byteCount > length)
+            writeContinuationFrames(streamId, byteCount - length);
     }
 
 }

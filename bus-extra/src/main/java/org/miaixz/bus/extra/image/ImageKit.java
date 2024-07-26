@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.image;
 
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -53,9 +53,8 @@ import java.net.URL;
 import java.util.Iterator;
 
 /**
- * 图片处理工具类：
- * 功能：缩放图像、切割图像、旋转、图像类型转换、彩色转黑白、文字水印、图片水印等
- * 参考：<a href="http://blog.csdn.net/zhangzhikaixinya/article/details/8459400">http://blog.csdn.net/zhangzhikaixinya/article/details/8459400</a>
+ * 图片处理工具类： 功能：缩放图像、切割图像、旋转、图像类型转换、彩色转黑白、文字水印、图片水印等 参考：<a href=
+ * "http://blog.csdn.net/zhangzhikaixinya/article/details/8459400">http://blog.csdn.net/zhangzhikaixinya/article/details/8459400</a>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -105,8 +104,7 @@ public class ImageKit {
     }
 
     /**
-     * 缩放图像（按比例缩放）
-     * 缩放后默认为jpeg格式，此方法并不关闭流
+     * 缩放图像（按比例缩放） 缩放后默认为jpeg格式，此方法并不关闭流
      *
      * @param srcStream    源图像来源流
      * @param targetStream 缩放后的图像写出到的流
@@ -123,14 +121,14 @@ public class ImageKit {
     }
 
     /**
-     * 缩放图像（按比例缩放）
-     * 缩放后默认为jpeg格式，此方法并不关闭流
+     * 缩放图像（按比例缩放） 缩放后默认为jpeg格式，此方法并不关闭流
      *
      * @param srcStream    源图像来源流
      * @param targetStream 缩放后的图像写出到的流
      * @param scale        缩放比例。比例大于1时为放大，小于1大于0为缩小
      */
-    public static void scale(final ImageInputStream srcStream, final ImageOutputStream targetStream, final float scale) {
+    public static void scale(final ImageInputStream srcStream, final ImageOutputStream targetStream,
+            final float scale) {
         BufferedImage image = null;
         try {
             image = read(srcStream);
@@ -141,8 +139,7 @@ public class ImageKit {
     }
 
     /**
-     * 缩放图像（按比例缩放）
-     * 缩放后默认为jpeg格式，此方法并不关闭流
+     * 缩放图像（按比例缩放） 缩放后默认为jpeg格式，此方法并不关闭流
      *
      * @param srcImg   源图像来源流，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param destFile 缩放后的图像写出到的流
@@ -154,8 +151,7 @@ public class ImageKit {
     }
 
     /**
-     * 缩放图像（按比例缩放）
-     * 缩放后默认为jpeg格式，此方法并不关闭流
+     * 缩放图像（按比例缩放） 缩放后默认为jpeg格式，此方法并不关闭流
      *
      * @param srcImg 源图像来源流，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param out    缩放后的图像写出到的流
@@ -167,15 +163,15 @@ public class ImageKit {
     }
 
     /**
-     * 缩放图像（按比例缩放）
-     * 缩放后默认为jpeg格式，此方法并不关闭流
+     * 缩放图像（按比例缩放） 缩放后默认为jpeg格式，此方法并不关闭流
      *
      * @param srcImg          源图像来源流，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param destImageStream 缩放后的图像写出到的流
      * @param scale           缩放比例。比例大于1时为放大，小于1大于0为缩小
      * @throws InternalException IO异常
      */
-    public static void scale(final Image srcImg, final ImageOutputStream destImageStream, final float scale) throws InternalException {
+    public static void scale(final Image srcImg, final ImageOutputStream destImageStream, final float scale)
+            throws InternalException {
         writeJpg(scale(srcImg, scale), destImageStream);
     }
 
@@ -191,8 +187,7 @@ public class ImageKit {
     }
 
     /**
-     * 缩放图像（按长宽缩放）
-     * 注意：目标长宽与原图不成比例会变形
+     * 缩放图像（按长宽缩放） 注意：目标长宽与原图不成比例会变形
      *
      * @param srcImg 源图像来源流，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param width  目标宽度
@@ -204,8 +199,7 @@ public class ImageKit {
     }
 
     /**
-     * 缩放图像（按高度和宽度缩放）
-     * 缩放后默认格式与源图片相同，无法识别原图片默认JPG
+     * 缩放图像（按高度和宽度缩放） 缩放后默认格式与源图片相同，无法识别原图片默认JPG
      *
      * @param srcImageFile    源图像文件地址
      * @param targetImageFile 缩放后的图像地址
@@ -214,12 +208,12 @@ public class ImageKit {
      * @param fixedColor      补充的颜色，不补充为{@code null}
      * @throws InternalException IO异常
      */
-    public static void scale(final File srcImageFile, final File targetImageFile, final int width, final int height, final Color fixedColor) throws InternalException {
+    public static void scale(final File srcImageFile, final File targetImageFile, final int width, final int height,
+            final Color fixedColor) throws InternalException {
         Images images = null;
         try {
             images = Images.from(srcImageFile);
-            images.setTargetImageType(FileName.extName(targetImageFile))
-                    .scale(width, height, fixedColor)//
+            images.setTargetImageType(FileName.extName(targetImageFile)).scale(width, height, fixedColor)//
                     .write(targetImageFile);
         } finally {
             IoKit.flush(images);
@@ -227,8 +221,7 @@ public class ImageKit {
     }
 
     /**
-     * 缩放图像（按高度和宽度缩放）
-     * 缩放后默认为jpeg格式，此方法并不关闭流
+     * 缩放图像（按高度和宽度缩放） 缩放后默认为jpeg格式，此方法并不关闭流
      *
      * @param srcStream    源图像流
      * @param targetStream 缩放后的图像目标流
@@ -237,7 +230,8 @@ public class ImageKit {
      * @param fixedColor   比例不对时补充的颜色，不补充为{@code null}
      * @throws InternalException IO异常
      */
-    public static void scale(final InputStream srcStream, final OutputStream targetStream, final int width, final int height, final Color fixedColor) throws InternalException {
+    public static void scale(final InputStream srcStream, final OutputStream targetStream, final int width,
+            final int height, final Color fixedColor) throws InternalException {
         BufferedImage image = null;
         try {
             image = read(srcStream);
@@ -248,8 +242,7 @@ public class ImageKit {
     }
 
     /**
-     * 缩放图像（按高度和宽度缩放）
-     * 缩放后默认为jpeg格式，此方法并不关闭流
+     * 缩放图像（按高度和宽度缩放） 缩放后默认为jpeg格式，此方法并不关闭流
      *
      * @param srcStream    源图像流
      * @param targetStream 缩放后的图像目标流
@@ -258,7 +251,8 @@ public class ImageKit {
      * @param fixedColor   比例不对时补充的颜色，不补充为{@code null}
      * @throws InternalException IO异常
      */
-    public static void scale(final ImageInputStream srcStream, final ImageOutputStream targetStream, final int width, final int height, final Color fixedColor) throws InternalException {
+    public static void scale(final ImageInputStream srcStream, final ImageOutputStream targetStream, final int width,
+            final int height, final Color fixedColor) throws InternalException {
         BufferedImage image = null;
         try {
             image = read(srcStream);
@@ -269,8 +263,7 @@ public class ImageKit {
     }
 
     /**
-     * 缩放图像（按高度和宽度缩放）
-     * 缩放后默认为jpeg格式，此方法并不关闭流
+     * 缩放图像（按高度和宽度缩放） 缩放后默认为jpeg格式，此方法并不关闭流
      *
      * @param srcImage          源图像，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param targetImageStream 缩放后的图像目标流
@@ -279,13 +272,13 @@ public class ImageKit {
      * @param fixedColor        比例不对时补充的颜色，不补充为{@code null}
      * @throws InternalException IO异常
      */
-    public static void scale(final Image srcImage, final ImageOutputStream targetImageStream, final int width, final int height, final Color fixedColor) throws InternalException {
+    public static void scale(final Image srcImage, final ImageOutputStream targetImageStream, final int width,
+            final int height, final Color fixedColor) throws InternalException {
         writeJpg(scale(srcImage, width, height, fixedColor), targetImageStream);
     }
 
     /**
-     * 缩放图像（按高度和宽度缩放）
-     * 缩放后默认为jpeg格式
+     * 缩放图像（按高度和宽度缩放） 缩放后默认为jpeg格式
      *
      * @param srcImage   源图像，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param width      缩放后的宽度
@@ -338,7 +331,8 @@ public class ImageKit {
      * @param targetStream 切片后的图像输出流
      * @param rectangle    矩形对象，表示矩形区域的x，y，width，height
      */
-    public static void cut(final ImageInputStream srcStream, final ImageOutputStream targetStream, final Rectangle rectangle) {
+    public static void cut(final ImageInputStream srcStream, final ImageOutputStream targetStream,
+            final Rectangle rectangle) {
         BufferedImage image = null;
         try {
             image = read(srcStream);
@@ -356,7 +350,8 @@ public class ImageKit {
      * @param rectangle 矩形对象，表示矩形区域的x，y，width，height
      * @throws InternalException IO异常
      */
-    public static void cut(final Image srcImage, final File destFile, final Rectangle rectangle) throws InternalException {
+    public static void cut(final Image srcImage, final File destFile, final Rectangle rectangle)
+            throws InternalException {
         write(cut(srcImage, rectangle), destFile);
     }
 
@@ -368,7 +363,8 @@ public class ImageKit {
      * @param rectangle 矩形对象，表示矩形区域的x，y，width，height
      * @throws InternalException IO异常
      */
-    public static void cut(final Image srcImage, final OutputStream out, final Rectangle rectangle) throws InternalException {
+    public static void cut(final Image srcImage, final OutputStream out, final Rectangle rectangle)
+            throws InternalException {
         cut(srcImage, getImageOutputStream(out), rectangle);
     }
 
@@ -380,7 +376,8 @@ public class ImageKit {
      * @param rectangle         矩形对象，表示矩形区域的x，y，width，height
      * @throws InternalException IO异常
      */
-    public static void cut(final Image srcImage, final ImageOutputStream targetImageStream, final Rectangle rectangle) throws InternalException {
+    public static void cut(final Image srcImage, final ImageOutputStream targetImageStream, final Rectangle rectangle)
+            throws InternalException {
         writeJpg(cut(srcImage, rectangle), targetImageStream);
     }
 
@@ -428,7 +425,8 @@ public class ImageKit {
      * @param targetWidth  目标切片宽度。默认200
      * @param targetHeight 目标切片高度。默认150
      */
-    public static void slice(final File srcImageFile, final File descDir, final int targetWidth, final int targetHeight) {
+    public static void slice(final File srcImageFile, final File descDir, final int targetWidth,
+            final int targetHeight) {
         BufferedImage image = null;
         try {
             image = read(srcImageFile);
@@ -498,7 +496,8 @@ public class ImageKit {
      * @param rows         目标切片行数。默认2，必须是范围 [1, 20] 之内
      * @param cols         目标切片列数。默认2，必须是范围 [1, 20] 之内
      */
-    public static void sliceByRowsAndCols(final File srcImageFile, final File targetDir, final String formatName, final int rows, final int cols) {
+    public static void sliceByRowsAndCols(final File srcImageFile, final File targetDir, final String formatName,
+            final int rows, final int cols) {
         BufferedImage image = null;
         try {
             image = read(srcImageFile);
@@ -517,7 +516,8 @@ public class ImageKit {
      * @param rows       目标切片行数。默认2，必须是范围 [1, 20] 之内
      * @param cols       目标切片列数。默认2，必须是范围 [1, 20] 之内
      */
-    public static void sliceByRowsAndCols(final Image srcImage, final File destDir, final String formatName, int rows, int cols) {
+    public static void sliceByRowsAndCols(final Image srcImage, final File destDir, final String formatName, int rows,
+            int cols) {
         if (!destDir.exists()) {
             FileKit.mkdir(destDir);
         } else if (!destDir.isDirectory()) {
@@ -577,8 +577,7 @@ public class ImageKit {
     }
 
     /**
-     * 图像类型转换：GIF=JPG、GIF=PNG、PNG=JPG、PNG=GIF(X)、BMP=PNG
-     * 此方法并不关闭流
+     * 图像类型转换：GIF=JPG、GIF=PNG、PNG=JPG、PNG=GIF(X)、BMP=PNG 此方法并不关闭流
      *
      * @param srcStream    源图像流
      * @param formatName   包含格式非正式名称的 String：如JPG、JPEG、GIF等
@@ -595,14 +594,14 @@ public class ImageKit {
     }
 
     /**
-     * 图像类型转换：GIF=JPG、GIF=PNG、PNG=JPG、PNG=GIF(X)、BMP=PNG
-     * 此方法并不关闭流
+     * 图像类型转换：GIF=JPG、GIF=PNG、PNG=JPG、PNG=GIF(X)、BMP=PNG 此方法并不关闭流
      *
      * @param srcImage          源图像流，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param formatName        包含格式非正式名称的 String：如JPG、JPEG、GIF等
      * @param targetImageStream 目标图像输出流
      */
-    public static void convert(final Image srcImage, final String formatName, final ImageOutputStream targetImageStream) {
+    public static void convert(final Image srcImage, final String formatName,
+            final ImageOutputStream targetImageStream) {
         Images.from(srcImage).setTargetImageType(formatName).write(targetImageStream);
     }
 
@@ -623,8 +622,7 @@ public class ImageKit {
     }
 
     /**
-     * 彩色转为黑白
-     * 此方法并不关闭流
+     * 彩色转为黑白 此方法并不关闭流
      *
      * @param srcStream    源图像流
      * @param targetStream 目标图像流
@@ -640,8 +638,7 @@ public class ImageKit {
     }
 
     /**
-     * 彩色转为黑白
-     * 此方法并不关闭流
+     * 彩色转为黑白 此方法并不关闭流
      *
      * @param srcStream    源图像流
      * @param targetStream 目标图像流
@@ -667,8 +664,7 @@ public class ImageKit {
     }
 
     /**
-     * 彩色转为黑白
-     * 此方法并不关闭流
+     * 彩色转为黑白 此方法并不关闭流
      *
      * @param srcImage 源图像流，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param out      目标图像流
@@ -678,8 +674,7 @@ public class ImageKit {
     }
 
     /**
-     * 彩色转为黑白
-     * 此方法并不关闭流
+     * 彩色转为黑白 此方法并不关闭流
      *
      * @param srcImage          源图像流，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param targetImageStream 目标图像流
@@ -716,8 +711,7 @@ public class ImageKit {
     }
 
     /**
-     * 彩色转为黑白二值化图片
-     * 此方法并不关闭流
+     * 彩色转为黑白二值化图片 此方法并不关闭流
      *
      * @param srcStream    源图像流
      * @param targetStream 目标图像流
@@ -734,14 +728,14 @@ public class ImageKit {
     }
 
     /**
-     * 彩色转为黑白黑白二值化图片
-     * 此方法并不关闭流
+     * 彩色转为黑白黑白二值化图片 此方法并不关闭流
      *
      * @param srcStream    源图像流
      * @param targetStream 目标图像流
      * @param imageType    图片格式(扩展名)
      */
-    public static void binary(final ImageInputStream srcStream, final ImageOutputStream targetStream, final String imageType) {
+    public static void binary(final ImageInputStream srcStream, final ImageOutputStream targetStream,
+            final String imageType) {
         BufferedImage image = null;
         try {
             image = read(srcStream);
@@ -762,8 +756,7 @@ public class ImageKit {
     }
 
     /**
-     * 彩色转为黑白二值化图片
-     * 此方法并不关闭流，输出JPG格式
+     * 彩色转为黑白二值化图片 此方法并不关闭流，输出JPG格式
      *
      * @param srcImage  源图像，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param out       目标图像流
@@ -774,15 +767,15 @@ public class ImageKit {
     }
 
     /**
-     * 彩色转为黑白二值化图片
-     * 此方法并不关闭流，输出JPG格式
+     * 彩色转为黑白二值化图片 此方法并不关闭流，输出JPG格式
      *
      * @param srcImage          源图像，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param targetImageStream 目标图像流
      * @param imageType         图片格式(扩展名)
      * @throws InternalException IO异常
      */
-    public static void binary(final Image srcImage, final ImageOutputStream targetImageStream, final String imageType) throws InternalException {
+    public static void binary(final Image srcImage, final ImageOutputStream targetImageStream, final String imageType)
+            throws InternalException {
         write(binary(srcImage), imageType, targetImageStream);
     }
 
@@ -814,14 +807,14 @@ public class ImageKit {
     }
 
     /**
-     * 给图片添加文字水印
-     * 此方法并不关闭流
+     * 给图片添加文字水印 此方法并不关闭流
      *
      * @param srcStream    源图像流
      * @param targetStream 目标图像流
      * @param pressText    水印文本信息
      */
-    public static void pressText(final InputStream srcStream, final OutputStream targetStream, final ImageText pressText) {
+    public static void pressText(final InputStream srcStream, final OutputStream targetStream,
+            final ImageText pressText) {
         BufferedImage image = null;
         try {
             image = read(srcStream);
@@ -832,47 +825,46 @@ public class ImageKit {
     }
 
     /**
-     * 给图片添加文字水印
-     * 此方法并不关闭流
+     * 给图片添加文字水印 此方法并不关闭流
      *
      * @param srcImage   源图像，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param targetFile 目标流
      * @param pressText  水印文字信息
      * @throws InternalException IO异常
      */
-    public static void pressText(final Image srcImage, final File targetFile, final ImageText pressText) throws InternalException {
+    public static void pressText(final Image srcImage, final File targetFile, final ImageText pressText)
+            throws InternalException {
         write(pressText(srcImage, pressText), targetFile);
     }
 
     /**
-     * 给图片添加文字水印
-     * 此方法并不关闭流
+     * 给图片添加文字水印 此方法并不关闭流
      *
      * @param srcImage  源图像，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param to        目标流
      * @param pressText 水印文字信息
      * @throws InternalException IO异常
      */
-    public static void pressText(final Image srcImage, final OutputStream to, final ImageText pressText) throws InternalException {
+    public static void pressText(final Image srcImage, final OutputStream to, final ImageText pressText)
+            throws InternalException {
         pressText(srcImage, getImageOutputStream(to), pressText);
     }
 
     /**
-     * 给图片添加文字水印
-     * 此方法并不关闭流
+     * 给图片添加文字水印 此方法并不关闭流
      *
      * @param srcImage          源图像，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param targetImageStream 目标图像流
      * @param pressText         水印文字信息
      * @throws InternalException IO异常
      */
-    public static void pressText(final Image srcImage, final ImageOutputStream targetImageStream, final ImageText pressText) throws InternalException {
+    public static void pressText(final Image srcImage, final ImageOutputStream targetImageStream,
+            final ImageText pressText) throws InternalException {
         writeJpg(pressText(srcImage, pressText), targetImageStream);
     }
 
     /**
-     * 给图片添加文字水印
-     * 此方法并不关闭流
+     * 给图片添加文字水印 此方法并不关闭流
      *
      * @param srcImage  源图像，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param pressText 水印文字信息
@@ -883,8 +875,7 @@ public class ImageKit {
     }
 
     /**
-     * 给图片添加全屏文字水印
-     * 此方法并不关闭流
+     * 给图片添加全屏文字水印 此方法并不关闭流
      *
      * @param srcImage   源图像，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param pressText  水印文字
@@ -895,10 +886,10 @@ public class ImageKit {
      * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @return 处理后的图像
      */
-    public static Image pressTextFull(final Image srcImage, final String pressText, final Color color, final Font font, final int lineHeight, final int degree, final float alpha) {
+    public static Image pressTextFull(final Image srcImage, final String pressText, final Color color, final Font font,
+            final int lineHeight, final int degree, final float alpha) {
         return Images.from(srcImage).pressTextFull(pressText, color, font, lineHeight, degree, alpha).getImg();
     }
-
 
     /**
      * 给图片添加图片水印
@@ -910,7 +901,8 @@ public class ImageKit {
      * @param y               修正值。 默认在中间，偏移量相对于中间偏移
      * @param alpha           透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      */
-    public static void pressImage(final File srcImageFile, final File targetImageFile, final Image pressImg, final int x, final int y, final float alpha) {
+    public static void pressImage(final File srcImageFile, final File targetImageFile, final Image pressImg,
+            final int x, final int y, final float alpha) {
         BufferedImage image = null;
         try {
             image = read(srcImageFile);
@@ -921,8 +913,7 @@ public class ImageKit {
     }
 
     /**
-     * 给图片添加图片水印
-     * 此方法并不关闭流
+     * 给图片添加图片水印 此方法并不关闭流
      *
      * @param srcStream    源图像流
      * @param targetStream 目标图像流
@@ -931,7 +922,8 @@ public class ImageKit {
      * @param y            修正值。 默认在中间，偏移量相对于中间偏移
      * @param alpha        透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      */
-    public static void pressImage(final InputStream srcStream, final OutputStream targetStream, final Image pressImg, final int x, final int y, final float alpha) {
+    public static void pressImage(final InputStream srcStream, final OutputStream targetStream, final Image pressImg,
+            final int x, final int y, final float alpha) {
         BufferedImage image = null;
         try {
             image = read(srcStream);
@@ -942,8 +934,7 @@ public class ImageKit {
     }
 
     /**
-     * 给图片添加图片水印
-     * 此方法并不关闭流
+     * 给图片添加图片水印 此方法并不关闭流
      *
      * @param srcImage 源图像流，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param outFile  写出文件
@@ -953,13 +944,13 @@ public class ImageKit {
      * @param alpha    透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @throws InternalException IO异常
      */
-    public static void pressImage(final Image srcImage, final File outFile, final Image pressImg, final int x, final int y, final float alpha) throws InternalException {
+    public static void pressImage(final Image srcImage, final File outFile, final Image pressImg, final int x,
+            final int y, final float alpha) throws InternalException {
         write(pressImage(srcImage, pressImg, x, y, alpha), outFile);
     }
 
     /**
-     * 给图片添加图片水印，写出目标图片格式为JPG
-     * 此方法并不关闭流
+     * 给图片添加图片水印，写出目标图片格式为JPG 此方法并不关闭流
      *
      * @param srcImage 源图像流，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param out      目标图像流
@@ -969,13 +960,13 @@ public class ImageKit {
      * @param alpha    透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @throws InternalException IO异常
      */
-    public static void pressImage(final Image srcImage, final OutputStream out, final Image pressImg, final int x, final int y, final float alpha) throws InternalException {
+    public static void pressImage(final Image srcImage, final OutputStream out, final Image pressImg, final int x,
+            final int y, final float alpha) throws InternalException {
         pressImage(srcImage, getImageOutputStream(out), pressImg, x, y, alpha);
     }
 
     /**
-     * 给图片添加图片水印，写出目标图片格式为JPG
-     * 此方法并不关闭流
+     * 给图片添加图片水印，写出目标图片格式为JPG 此方法并不关闭流
      *
      * @param srcImage          源图像流，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param targetImageStream 目标图像流
@@ -985,13 +976,13 @@ public class ImageKit {
      * @param alpha             透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @throws InternalException IO异常
      */
-    public static void pressImage(final Image srcImage, final ImageOutputStream targetImageStream, final Image pressImg, final int x, final int y, final float alpha) throws InternalException {
+    public static void pressImage(final Image srcImage, final ImageOutputStream targetImageStream, final Image pressImg,
+            final int x, final int y, final float alpha) throws InternalException {
         writeJpg(pressImage(srcImage, pressImg, x, y, alpha), targetImageStream);
     }
 
     /**
-     * 给图片添加图片水印
-     * 此方法并不关闭流
+     * 给图片添加图片水印 此方法并不关闭流
      *
      * @param srcImage 源图像流，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param pressImg 水印图片，可以使用{@link ImageIO#read(File)}方法读取文件
@@ -1000,13 +991,13 @@ public class ImageKit {
      * @param alpha    透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @return 结果图片
      */
-    public static Image pressImage(final Image srcImage, final Image pressImg, final int x, final int y, final float alpha) {
+    public static Image pressImage(final Image srcImage, final Image pressImg, final int x, final int y,
+            final float alpha) {
         return Images.from(srcImage).pressImage(pressImg, x, y, alpha).getImg();
     }
 
     /**
-     * 给图片添加图片水印
-     * 此方法并不关闭流
+     * 给图片添加图片水印 此方法并不关闭流
      *
      * @param srcImage  源图像流，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param pressImg  水印图片，可以使用{@link ImageIO#read(File)}方法读取文件
@@ -1014,7 +1005,8 @@ public class ImageKit {
      * @param alpha     透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @return 结果图片
      */
-    public static Image pressImage(final Image srcImage, final Image pressImg, final Rectangle rectangle, final float alpha) {
+    public static Image pressImage(final Image srcImage, final Image pressImg, final Rectangle rectangle,
+            final float alpha) {
         return Images.from(srcImage).pressImage(pressImg, rectangle, alpha).getImg();
     }
 
@@ -1030,7 +1022,7 @@ public class ImageKit {
      * @throws InternalException IO异常
      */
     public static void pressImageFull(final File imageFile, final File targetFile, final File pressImageFile,
-                                      final int lineHeight, final int degree, final float alpha) throws InternalException {
+            final int lineHeight, final int degree, final float alpha) throws InternalException {
         BufferedImage image = null;
         try {
             image = read(imageFile);
@@ -1041,8 +1033,7 @@ public class ImageKit {
     }
 
     /**
-     * 给图片添加全屏图像水印，写出格式为JPG
-     * 此方法并不关闭流
+     * 给图片添加全屏图像水印，写出格式为JPG 此方法并不关闭流
      *
      * @param srcStream    源图像流
      * @param targetStream 目标图像流
@@ -1053,7 +1044,8 @@ public class ImageKit {
      * @throws InternalException IO异常
      */
     public static void pressImageFull(final InputStream srcStream, final OutputStream targetStream,
-                                      final InputStream pressStream, final int lineHeight, final int degree, final float alpha) throws InternalException {
+            final InputStream pressStream, final int lineHeight, final int degree, final float alpha)
+            throws InternalException {
         BufferedImage image = null;
         try {
             image = read(srcStream);
@@ -1064,8 +1056,7 @@ public class ImageKit {
     }
 
     /**
-     * 给图片添加全屏图像水印
-     * 此方法并不关闭流
+     * 给图片添加全屏图像水印 此方法并不关闭流
      *
      * @param srcImage   源图像，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param pressImage 水印图像，使用结束后需手动调用{@link #flush(Image)}释放资源
@@ -1074,13 +1065,13 @@ public class ImageKit {
      * @param alpha      透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @return 处理后的图像
      */
-    public static Image pressImageFull(final Image srcImage, final Image pressImage, final int lineHeight, final int degree, final float alpha) {
+    public static Image pressImageFull(final Image srcImage, final Image pressImage, final int lineHeight,
+            final int degree, final float alpha) {
         return Images.from(srcImage).pressImageFull(pressImage, lineHeight, degree, alpha).getImg();
     }
 
     /**
-     * 旋转图片为指定角度
-     * 此方法不会关闭输出流
+     * 旋转图片为指定角度 此方法不会关闭输出流
      *
      * @param imageFile 被旋转图像文件
      * @param degree    旋转角度
@@ -1098,8 +1089,7 @@ public class ImageKit {
     }
 
     /**
-     * 旋转图片为指定角度
-     * 此方法不会关闭输出流
+     * 旋转图片为指定角度 此方法不会关闭输出流
      *
      * @param image   需要旋转的图像，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param degree  旋转角度
@@ -1111,8 +1101,7 @@ public class ImageKit {
     }
 
     /**
-     * 旋转图片为指定角度
-     * 此方法不会关闭输出流
+     * 旋转图片为指定角度 此方法不会关闭输出流
      *
      * @param image  需要旋转的图像，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param degree 旋转角度
@@ -1124,21 +1113,20 @@ public class ImageKit {
     }
 
     /**
-     * 旋转图片为指定角度
-     * 此方法不会关闭输出流，输出格式为JPG
+     * 旋转图片为指定角度 此方法不会关闭输出流，输出格式为JPG
      *
      * @param image  需要旋转的图像，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param degree 旋转角度
      * @param out    输出图像流
      * @throws InternalException IO异常
      */
-    public static void rotate(final Image image, final int degree, final ImageOutputStream out) throws InternalException {
+    public static void rotate(final Image image, final int degree, final ImageOutputStream out)
+            throws InternalException {
         writeJpg(rotate(image, degree), out);
     }
 
     /**
-     * 旋转图片为指定角度
-     * 来自：<a href="http://blog.51cto.com/cping1982/130066">http://blog.51cto.com/cping1982/130066</a>
+     * 旋转图片为指定角度 来自：<a href="http://blog.51cto.com/cping1982/130066">http://blog.51cto.com/cping1982/130066</a>
      *
      * @param image  需要旋转的图像，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param degree 旋转角度
@@ -1216,7 +1204,8 @@ public class ImageKit {
      * @param quality   压缩比例，必须为0~1
      * @throws InternalException IO异常
      */
-    public static void compress(final File imageFile, final File outFile, final float quality) throws InternalException {
+    public static void compress(final File imageFile, final File outFile, final float quality)
+            throws InternalException {
         Images images = null;
         try {
             images = Images.from(imageFile);
@@ -1227,8 +1216,8 @@ public class ImageKit {
     }
 
     /**
-     * {@link Image} 转 {@link RenderedImage}
-     * 首先尝试强转，否则新建一个{@link BufferedImage}后重新绘制，使用 {@link BufferedImage#TYPE_INT_RGB} 模式。
+     * {@link Image} 转 {@link RenderedImage} 首先尝试强转，否则新建一个{@link BufferedImage}后重新绘制，使用
+     * {@link BufferedImage#TYPE_INT_RGB} 模式。
      *
      * @param img       {@link Image}
      * @param imageType 目标图片类型，例如jpg或png等
@@ -1243,8 +1232,7 @@ public class ImageKit {
     }
 
     /**
-     * {@link Image} 转 {@link BufferedImage}
-     * 首先尝试强转，否则新建一个{@link BufferedImage}后重新绘制，使用 imageType 模式
+     * {@link Image} 转 {@link BufferedImage} 首先尝试强转，否则新建一个{@link BufferedImage}后重新绘制，使用 imageType 模式
      *
      * @param img       {@link Image}
      * @param imageType 目标图片类型，例如jpg或png等
@@ -1259,9 +1247,8 @@ public class ImageKit {
     }
 
     /**
-     * {@link Image} 转 {@link BufferedImage}
-     * 如果源图片的RGB模式与目标模式一致，则直接转换，否则重新绘制
-     * 默认的，png图片使用 {@link BufferedImage#TYPE_INT_ARGB}模式，其它使用 {@link BufferedImage#TYPE_INT_RGB} 模式
+     * {@link Image} 转 {@link BufferedImage} 如果源图片的RGB模式与目标模式一致，则直接转换，否则重新绘制 默认的，png图片使用
+     * {@link BufferedImage#TYPE_INT_ARGB}模式，其它使用 {@link BufferedImage#TYPE_INT_RGB} 模式
      *
      * @param image     {@link Image}
      * @param imageType 目标图片类型，例如jpg或png等
@@ -1272,25 +1259,23 @@ public class ImageKit {
     }
 
     /**
-     * {@link Image} 转 {@link BufferedImage}
-     * 如果源图片的RGB模式与目标模式一致，则直接转换，否则重新绘制
-     * 默认的，png图片使用 {@link BufferedImage#TYPE_INT_ARGB}模式，其它使用 {@link BufferedImage#TYPE_INT_RGB} 模式
+     * {@link Image} 转 {@link BufferedImage} 如果源图片的RGB模式与目标模式一致，则直接转换，否则重新绘制 默认的，png图片使用
+     * {@link BufferedImage#TYPE_INT_ARGB}模式，其它使用 {@link BufferedImage#TYPE_INT_RGB} 模式
      *
      * @param image           {@link Image}
      * @param imageType       目标图片类型，例如jpg或png等
      * @param backgroundColor 背景色{@link Color}，{@code null} 表示默认背景色（黑色或者透明）
      * @return {@link BufferedImage}
      */
-    public static BufferedImage toBufferedImage(final Image image, final String imageType, final Color backgroundColor) {
-        final int type = IMAGE_TYPE_PNG.equalsIgnoreCase(imageType)
-                ? BufferedImage.TYPE_INT_ARGB
+    public static BufferedImage toBufferedImage(final Image image, final String imageType,
+            final Color backgroundColor) {
+        final int type = IMAGE_TYPE_PNG.equalsIgnoreCase(imageType) ? BufferedImage.TYPE_INT_ARGB
                 : BufferedImage.TYPE_INT_RGB;
         return toBufferedImage(image, type, backgroundColor);
     }
 
     /**
-     * {@link Image} 转 {@link BufferedImage}
-     * 如果源图片的RGB模式与目标模式一致，则直接转换，否则重新绘制
+     * {@link Image} 转 {@link BufferedImage} 如果源图片的RGB模式与目标模式一致，则直接转换，否则重新绘制
      *
      * @param image     {@link Image}
      * @param imageType 目标图片类型，{@link BufferedImage}中的常量，例如黑白等
@@ -1301,8 +1286,7 @@ public class ImageKit {
     }
 
     /**
-     * {@link Image} 转 {@link BufferedImage}
-     * 如果源图片的RGB模式与目标模式一致，则直接转换，否则重新绘制
+     * {@link Image} 转 {@link BufferedImage} 如果源图片的RGB模式与目标模式一致，则直接转换，否则重新绘制
      *
      * @param image           {@link Image}
      * @param imageType       目标图片类型，{@link BufferedImage}中的常量，例如黑白等
@@ -1371,10 +1355,7 @@ public class ImageKit {
     public static BufferedImage copyImage(Image img, final int imageType, final Color backgroundColor) {
         img = new ImageIcon(img).getImage();
 
-        final BufferedImage bImage = new BufferedImage(
-                img.getWidth(null),
-                img.getHeight(null),
-                imageType);
+        final BufferedImage bImage = new BufferedImage(img.getWidth(null), img.getHeight(null), imageType);
 
         final Graphics2D bGr = createGraphics(bImage, backgroundColor);
         try {
@@ -1427,9 +1408,7 @@ public class ImageKit {
      * @return Base64的字符串表现形式
      */
     public static String toBase64DataUri(final Image image, final String imageType) {
-        return UrlKit.getDataUri(
-                "image/" + imageType, "base64",
-                toBase64(image, imageType));
+        return UrlKit.getDataUri("image/" + imageType, "base64", toBase64(image, imageType));
     }
 
     /**
@@ -1480,7 +1459,8 @@ public class ImageKit {
      * @param out       图片输出地
      * @throws InternalException IO异常
      */
-    public static void createTransparentImage(final String text, final Font font, final Color fontColor, final ImageOutputStream out) throws InternalException {
+    public static void createTransparentImage(final String text, final Font font, final Color fontColor,
+            final ImageOutputStream out) throws InternalException {
         BufferedImage image = null;
         try {
             image = createImage(text, font, null, fontColor, BufferedImage.TYPE_INT_ARGB);
@@ -1500,7 +1480,8 @@ public class ImageKit {
      * @param out             图片输出地
      * @throws InternalException IO异常
      */
-    public static void createImage(final String text, final Font font, final Color backgroundColor, final Color fontColor, final ImageOutputStream out) throws InternalException {
+    public static void createImage(final String text, final Font font, final Color backgroundColor,
+            final Color fontColor, final ImageOutputStream out) throws InternalException {
         BufferedImage image = null;
         try {
             image = createImage(text, font, backgroundColor, fontColor, BufferedImage.TYPE_INT_ARGB);
@@ -1521,7 +1502,8 @@ public class ImageKit {
      * @return 图片
      * @throws InternalException IO异常
      */
-    public static BufferedImage createImage(final String text, final Font font, final Color backgroundColor, final Color fontColor, final int imageType) throws InternalException {
+    public static BufferedImage createImage(final String text, final Font font, final Color backgroundColor,
+            final Color fontColor, final int imageType) throws InternalException {
         // 获取font的样式应用在str上的整个矩形
         final Rectangle2D r = getRectangle(text, font);
         // 获取单个字符的高度
@@ -1585,14 +1567,14 @@ public class ImageKit {
     }
 
     /**
-     * 按照目标格式写出图像：GIF=JPG、GIF=PNG、PNG=JPG、PNG=GIF(X)、BMP=PNG
-     * 此方法并不关闭流
+     * 按照目标格式写出图像：GIF=JPG、GIF=PNG、PNG=JPG、PNG=GIF(X)、BMP=PNG 此方法并不关闭流
      *
      * @param srcStream    源图像流
      * @param formatName   包含格式非正式名称的 String：如JPG、JPEG、GIF等
      * @param targetStream 目标图像输出流
      */
-    public static void write(final ImageInputStream srcStream, final String formatName, final ImageOutputStream targetStream) {
+    public static void write(final ImageInputStream srcStream, final String formatName,
+            final ImageOutputStream targetStream) {
         BufferedImage image = null;
         try {
             image = read(srcStream);
@@ -1603,15 +1585,15 @@ public class ImageKit {
     }
 
     /**
-     * 写出图像：GIF=JPG、GIF=PNG、PNG=JPG、PNG=GIF(X)、BMP=PNG
-     * 此方法并不关闭流
+     * 写出图像：GIF=JPG、GIF=PNG、PNG=JPG、PNG=GIF(X)、BMP=PNG 此方法并不关闭流
      *
      * @param image     {@link Image}，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param imageType 图片类型（图片扩展名）
      * @param out       写出到的目标流
      * @throws InternalException IO异常
      */
-    public static void write(final Image image, final String imageType, final OutputStream out) throws InternalException {
+    public static void write(final Image image, final String imageType, final OutputStream out)
+            throws InternalException {
         write(image, imageType, getImageOutputStream(out));
     }
 
@@ -1627,15 +1609,15 @@ public class ImageKit {
     }
 
     /**
-     * 写出图像为指定格式：GIF=JPG、GIF=PNG、PNG=JPG、PNG=GIF(X)、BMP=PNG
-     * 此方法并不关闭流
+     * 写出图像为指定格式：GIF=JPG、GIF=PNG、PNG=JPG、PNG=GIF(X)、BMP=PNG 此方法并不关闭流
      *
      * @param image             {@link Image}，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param imageType         图片类型（图片扩展名）
      * @param targetImageStream 写出到的目标流
      * @throws InternalException IO异常
      */
-    public static void write(final Image image, final String imageType, final ImageOutputStream targetImageStream) throws InternalException {
+    public static void write(final Image image, final String imageType, final ImageOutputStream targetImageStream)
+            throws InternalException {
         write(image, imageType, targetImageStream, 1);
     }
 
@@ -1650,7 +1632,7 @@ public class ImageKit {
      * @throws InternalException IO异常
      */
     public static void write(final Image image, final String imageType, final ImageOutputStream out,
-                             final float quality, final Color backgroundColor) throws InternalException {
+            final float quality, final Color backgroundColor) throws InternalException {
         final BufferedImage bufferedImage = toBufferedImage(image, imageType, backgroundColor);
         write(bufferedImage, imageType, out, quality);
     }
@@ -1663,10 +1645,9 @@ public class ImageKit {
      * @param output    输出的Image流{@link ImageOutputStream}
      * @param quality   质量，数字为0~1（不包括0和1）表示质量压缩比，除此数字外设置表示不压缩
      */
-    public static void write(final Image image, final String imageType, final ImageOutputStream output, final float quality) {
-        ImageWriter.of(image, imageType)
-                .setQuality(quality)
-                .write(output);
+    public static void write(final Image image, final String imageType, final ImageOutputStream output,
+            final float quality) {
+        ImageWriter.of(image, imageType).setQuality(quality).write(output);
     }
 
     /**
@@ -1944,20 +1925,15 @@ public class ImageKit {
      * @param backgroundHeight 参考高（背景高）
      * @return 修正后的{@link Point}
      */
-    public static Point getPointBaseCentre(final Rectangle rectangle, final int backgroundWidth, final int backgroundHeight) {
-        return new Point(
-                rectangle.x + (Math.abs(backgroundWidth - rectangle.width) / 2), //
+    public static Point getPointBaseCentre(final Rectangle rectangle, final int backgroundWidth,
+            final int backgroundHeight) {
+        return new Point(rectangle.x + (Math.abs(backgroundWidth - rectangle.width) / 2), //
                 rectangle.y + (Math.abs(backgroundHeight - rectangle.height) / 2)//
         );
     }
 
     /**
-     * 背景移除
-     * 图片去底工具
-     * 将 "纯色背景的图片" 还原成 "透明背景的图片"
-     * 将纯色背景的图片转成矢量图
-     * 取图片边缘的像素点和获取到的图片主题色作为要替换的背景色
-     * 再加入一定的容差值,然后将所有像素点与该颜色进行比较
+     * 背景移除 图片去底工具 将 "纯色背景的图片" 还原成 "透明背景的图片" 将纯色背景的图片转成矢量图 取图片边缘的像素点和获取到的图片主题色作为要替换的背景色 再加入一定的容差值,然后将所有像素点与该颜色进行比较
      * 发现相同则将颜色不透明度设置为0,使颜色完全透明.
      *
      * @param inputPath  要处理图片的路径
@@ -1969,12 +1945,7 @@ public class ImageKit {
     }
 
     /**
-     * 背景移除
-     * 图片去底工具
-     * 将 "纯色背景的图片" 还原成 "透明背景的图片"
-     * 将纯色背景的图片转成矢量图
-     * 取图片边缘的像素点和获取到的图片主题色作为要替换的背景色
-     * 再加入一定的容差值,然后将所有像素点与该颜色进行比较
+     * 背景移除 图片去底工具 将 "纯色背景的图片" 还原成 "透明背景的图片" 将纯色背景的图片转成矢量图 取图片边缘的像素点和获取到的图片主题色作为要替换的背景色 再加入一定的容差值,然后将所有像素点与该颜色进行比较
      * 发现相同则将颜色不透明度设置为0,使颜色完全透明.
      *
      * @param input     需要进行操作的图片
@@ -1986,12 +1957,7 @@ public class ImageKit {
     }
 
     /**
-     * 背景移除
-     * 图片去底工具
-     * 将 "纯色背景的图片" 还原成 "透明背景的图片"
-     * 将纯色背景的图片转成矢量图
-     * 取图片边缘的像素点和获取到的图片主题色作为要替换的背景色
-     * 再加入一定的容差值,然后将所有像素点与该颜色进行比较
+     * 背景移除 图片去底工具 将 "纯色背景的图片" 还原成 "透明背景的图片" 将纯色背景的图片转成矢量图 取图片边缘的像素点和获取到的图片主题色作为要替换的背景色 再加入一定的容差值,然后将所有像素点与该颜色进行比较
      * 发现相同则将颜色不透明度设置为0,使颜色完全透明.
      *
      * @param input     需要进行操作的图片
@@ -1999,17 +1965,13 @@ public class ImageKit {
      * @param override  指定替换成的背景颜色 为null时背景为透明
      * @param tolerance 容差值[根据图片的主题色,加入容差值,值的取值范围在0~255之间]
      */
-    public static void backgroundRemoval(final File input, final File output, final Color override, final int tolerance) {
+    public static void backgroundRemoval(final File input, final File output, final Color override,
+            final int tolerance) {
         ImageRemoval.backgroundRemoval(input, output, override, tolerance);
     }
 
     /**
-     * 背景移除
-     * 图片去底工具
-     * 将 "纯色背景的图片" 还原成 "透明背景的图片"
-     * 将纯色背景的图片转成矢量图
-     * 取图片边缘的像素点和获取到的图片主题色作为要替换的背景色
-     * 再加入一定的容差值,然后将所有像素点与该颜色进行比较
+     * 背景移除 图片去底工具 将 "纯色背景的图片" 还原成 "透明背景的图片" 将纯色背景的图片转成矢量图 取图片边缘的像素点和获取到的图片主题色作为要替换的背景色 再加入一定的容差值,然后将所有像素点与该颜色进行比较
      * 发现相同则将颜色不透明度设置为0,使颜色完全透明.
      *
      * @param bufferedImage 需要进行处理的图片流
@@ -2017,17 +1979,13 @@ public class ImageKit {
      * @param tolerance     容差值[根据图片的主题色,加入容差值,值的取值范围在0~255之间]
      * @return 返回处理好的图片流
      */
-    public static BufferedImage backgroundRemoval(final BufferedImage bufferedImage, final Color override, final int tolerance) {
+    public static BufferedImage backgroundRemoval(final BufferedImage bufferedImage, final Color override,
+            final int tolerance) {
         return ImageRemoval.backgroundRemoval(bufferedImage, override, tolerance);
     }
 
     /**
-     * 背景移除
-     * 图片去底工具
-     * 将 "纯色背景的图片" 还原成 "透明背景的图片"
-     * 将纯色背景的图片转成矢量图
-     * 取图片边缘的像素点和获取到的图片主题色作为要替换的背景色
-     * 再加入一定的容差值,然后将所有像素点与该颜色进行比较
+     * 背景移除 图片去底工具 将 "纯色背景的图片" 还原成 "透明背景的图片" 将纯色背景的图片转成矢量图 取图片边缘的像素点和获取到的图片主题色作为要替换的背景色 再加入一定的容差值,然后将所有像素点与该颜色进行比较
      * 发现相同则将颜色不透明度设置为0,使颜色完全透明.
      *
      * @param outputStream 需要进行处理的图片字节数组流
@@ -2035,13 +1993,13 @@ public class ImageKit {
      * @param tolerance    容差值[根据图片的主题色,加入容差值,值的取值范围在0~255之间]
      * @return 返回处理好的图片流
      */
-    public static BufferedImage backgroundRemoval(final ByteArrayOutputStream outputStream, final Color override, final int tolerance) {
+    public static BufferedImage backgroundRemoval(final ByteArrayOutputStream outputStream, final Color override,
+            final int tolerance) {
         return ImageRemoval.backgroundRemoval(outputStream, override, tolerance);
     }
 
     /**
-     * 图片颜色转换
-     * 可以使用灰度 (gray)等
+     * 图片颜色转换 可以使用灰度 (gray)等
      *
      * @param colorSpace 颜色模式，如灰度等
      * @param image      被转换的图片
@@ -2052,8 +2010,7 @@ public class ImageKit {
     }
 
     /**
-     * 转换图片
-     * 可以使用一系列平移 (translation)、缩放 (scale)、翻转 (flip)、旋转 (rotation) 和错切 (shear) 来构造仿射变换。
+     * 转换图片 可以使用一系列平移 (translation)、缩放 (scale)、翻转 (flip)、旋转 (rotation) 和错切 (shear) 来构造仿射变换。
      *
      * @param xform 2D仿射变换，它执行从 2D 坐标到其他 2D 坐标的线性映射，保留了线的“直线性”和“平行性”。
      * @param image 被转换的图片
@@ -2082,8 +2039,7 @@ public class ImageKit {
      * @return 滤镜后的图片
      */
     public static Image filter(final ImageFilter filter, final Image image) {
-        return Toolkit.getDefaultToolkit().createImage(
-                new FilteredImageSource(image.getSource(), filter));
+        return Toolkit.getDefaultToolkit().createImage(new FilteredImageSource(image.getSource(), filter));
     }
 
     /**
@@ -2116,8 +2072,7 @@ public class ImageKit {
     }
 
     /**
-     * 获取文字居中高度的Y坐标（距离上边距距离）
-     * 此方法依赖FontMetrics，如果获取失败，默认为背景高度的1/3
+     * 获取文字居中高度的Y坐标（距离上边距距离） 此方法依赖FontMetrics，如果获取失败，默认为背景高度的1/3
      *
      * @param g                {@link Graphics2D}画笔
      * @param backgroundHeight 背景高度
@@ -2150,7 +2105,8 @@ public class ImageKit {
      * @param height 字符串背景高度
      * @return 画笔对象
      */
-    public static Graphics drawStringColourful(final Graphics g, final String text, final Font font, final int width, final int height) {
+    public static Graphics drawStringColourful(final Graphics g, final String text, final Font font, final int width,
+            final int height) {
         return drawString(g, text, font, null, width, height);
     }
 
@@ -2165,7 +2121,8 @@ public class ImageKit {
      * @param height 字符串背景的高度
      * @return 画笔对象
      */
-    public static Graphics drawString(final Graphics g, final String text, final Font font, final Color color, final int width, final int height) {
+    public static Graphics drawString(final Graphics g, final String text, final Font font, final Color color,
+            final int width, final int height) {
         // 抗锯齿
         enableAntialias(g);
         // 创建字体
@@ -2190,8 +2147,7 @@ public class ImageKit {
     }
 
     /**
-     * 绘制字符串，默认抗锯齿。
-     * 此方法定义一个矩形区域和坐标，文字基于这个区域中间偏移x,y绘制。
+     * 绘制字符串，默认抗锯齿。 此方法定义一个矩形区域和坐标，文字基于这个区域中间偏移x,y绘制。
      *
      * @param g         {@link Graphics}画笔
      * @param text      字符串
@@ -2200,12 +2156,13 @@ public class ImageKit {
      * @param rectangle 字符串绘制坐标和大小，此对象定义了绘制字符串的区域大小和偏移位置
      * @return 画笔对象
      */
-    public static Graphics drawString(final Graphics g, final String text, final Font font, final Color color, final Rectangle rectangle) {
+    public static Graphics drawString(final Graphics g, final String text, final Font font, final Color color,
+            final Rectangle rectangle) {
         // 背景长宽
         final int backgroundWidth = rectangle.width;
         final int backgroundHeight = rectangle.height;
 
-        //获取字符串本身的长宽
+        // 获取字符串本身的长宽
         Dimension dimension;
         try {
             dimension = getDimension(g.getFontMetrics(font), text);
@@ -2230,7 +2187,8 @@ public class ImageKit {
      * @param point 绘制字符串的位置坐标
      * @return 画笔对象
      */
-    public static Graphics drawString(final Graphics g, final String text, final Font font, final Color color, final Point point) {
+    public static Graphics drawString(final Graphics g, final String text, final Font font, final Color color,
+            final Point point) {
         // 抗锯齿
         enableAntialias(g);
 
@@ -2286,11 +2244,9 @@ public class ImageKit {
      */
     private static void enableAntialias(final Graphics g) {
         if (g instanceof Graphics2D) {
-            ((Graphics2D) g).setRenderingHints(
-                    RenderingHintsBuilder.of()
-                            .setAntialiasing(RenderingHintsBuilder.Antialias.ON)
-                            .setTextAntialias(RenderingHintsBuilder.TextAntialias.ON).build()
-            );
+            ((Graphics2D) g)
+                    .setRenderingHints(RenderingHintsBuilder.of().setAntialiasing(RenderingHintsBuilder.Antialias.ON)
+                            .setTextAntialias(RenderingHintsBuilder.TextAntialias.ON).build());
         }
     }
 
@@ -2325,8 +2281,7 @@ public class ImageKit {
     }
 
     /**
-     * 根据文件创建字体
-     * 首先尝试创建{@link Font#TRUETYPE_FONT}字体，此类字体无效则创建{@link Font#TYPE1_FONT}
+     * 根据文件创建字体 首先尝试创建{@link Font#TRUETYPE_FONT}字体，此类字体无效则创建{@link Font#TYPE1_FONT}
      *
      * @param fontFile 字体文件
      * @return {@link Font}
@@ -2347,8 +2302,7 @@ public class ImageKit {
     }
 
     /**
-     * 根据文件创建字体
-     * 首先尝试创建{@link Font#TRUETYPE_FONT}字体，此类字体无效则创建{@link Font#TYPE1_FONT}
+     * 根据文件创建字体 首先尝试创建{@link Font#TRUETYPE_FONT}字体，此类字体无效则创建{@link Font#TYPE1_FONT}
      *
      * @param fontStream 字体流
      * @return {@link Font}
@@ -2389,9 +2343,6 @@ public class ImageKit {
      * @return {@link Rectangle2D}
      */
     public static Rectangle2D getRectangle(final String text, final Font font) {
-        return font.getStringBounds(text,
-                new FontRenderContext(AffineTransform.getScaleInstance(1, 1),
-                        false,
-                        false));
+        return font.getStringBounds(text, new FontRenderContext(AffineTransform.getScaleInstance(1, 1), false, false));
     }
 }

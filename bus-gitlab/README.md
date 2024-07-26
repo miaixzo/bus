@@ -37,7 +37,7 @@ GitLab released GitLab Version 11.0 in June of 2018 which included many major ch
 server earlier than version 11.0, it is highly recommended that you either update your GitLab install or use a version
 of this library that was released around the same time as the version of GitLab you are using.
 
-**NOTICE**:  
+**NOTICE**:
 As of GitLab 11.0 support for the GitLab API v3 has been removed from the GitLab server (
 see https://about.gitlab.com/2018/06/01/api-v3-removal-impending/). Support for GitLab API v3 will be removed from this
 library sometime in 2019. If you are utilizing the v3 support, please update your code to use GitLab API v4.
@@ -158,7 +158,7 @@ still use GitLab-API by creating your GitLabApi instance as follows:
 GitLabApi gitLabApi = new GitLabApi(ApiVersion.V3, "http://your.gitlab.server.com", "YOUR_PRIVATE_TOKEN");
 ```
 
-**NOTICE**:  
+**NOTICE**:
 As of GitLab 11.0 support for the GitLab API v3 has been removed from the GitLab server (
 see https://about.gitlab.com/2018/06/01/api-v3-removal-impending/). Support for GitLab API v3 will be removed from this
 library sometime in 2019. If you are utilizing the v3 support, please update your code to use GitLab API v4.
@@ -223,7 +223,7 @@ List<Project> allProjects = projectPager.all();
 As of GitLab-API 4.9.2, all GitLabJ-API methods that return a List result have a similarlly named method that returns a
 Java 8 Stream. The Stream returning methods use the following naming convention:```getXxxxxStream()```.
 
-**IMPORTANT**  
+**IMPORTANT**
 The built-in methods that return a Stream do so using ___eager evaluation___, meaning all items are pre-fetched from the
 GitLab server and a Stream is returned which will stream those items.  **Eager evaluation does NOT support parallel
 reading of data from ther server, it does however allow for parallel processing of the Stream post data fetch.**
@@ -551,7 +551,7 @@ List<Pipeline> pipelines = gitLabApi.getPipelineApi().getPipelines(1234);
 #### ProjectApi
 
 ```
-// Get a list of accessible projects 
+// Get a list of accessible projects
 public List<Project> projects = gitLabApi.getProjectApi().getProjects();
 ```
 
@@ -598,7 +598,7 @@ List<Branch> branches = gitLabApi.getRepositoryApi().getBranches(projectId, sear
 
 ```
 // Get info (name, size, ...) and the content from a file in repository
-RepositoryFile file = gitLabApi.getRepositoryFileApi().getFile("file-path", 1234, "ref");   
+RepositoryFile file = gitLabApi.getRepositoryFileApi().getFile("file-path", 1234, "ref");
 ```
 
 #### ResourceLabelEventsApi

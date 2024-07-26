@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.mutable;
 
 import org.miaixz.bus.core.lang.Optional;
@@ -39,8 +39,7 @@ import java.util.function.UnaryOperator;
  * 提供可变值类型接口
  *
  * <p>
- * 相较于{@link Optional}或{@link java.util.Optional}，该所有实现类中的方法都<b>不区分值是否为{@code null}</b>，
- * 因此在使用前需要自行判断值是否为{@code null}，
+ * 相较于{@link Optional}或{@link java.util.Optional}，该所有实现类中的方法都<b>不区分值是否为{@code null}</b>， 因此在使用前需要自行判断值是否为{@code null}，
  * 确保不会因为{@code null}值而抛出{@link NullPointerException}的情况。
  * </p>
  *
@@ -187,8 +186,7 @@ public interface Mutable<T> {
     }
 
     /**
-     * 获取值，并将值转换为指定类型。
-     * 注意，值为null时，转换函数依然会被调用。
+     * 获取值，并将值转换为指定类型。 注意，值为null时，转换函数依然会被调用。
      *
      * @param function 转换函数
      * @param <R>      转换后的类型

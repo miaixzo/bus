@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.thread;
 
 import org.miaixz.bus.core.Builder;
@@ -105,10 +105,13 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
             workQueue = builder.workQueue;
         } else {
             // corePoolSize为0则要使用SynchronousQueue避免无限阻塞
-            workQueue = (corePoolSize <= 0) ? new SynchronousQueue<>() : new LinkedBlockingQueue<>(DEFAULT_QUEUE_CAPACITY);
+            workQueue = (corePoolSize <= 0) ? new SynchronousQueue<>()
+                    : new LinkedBlockingQueue<>(DEFAULT_QUEUE_CAPACITY);
         }
-        final ThreadFactory threadFactory = (null != builder.threadFactory) ? builder.threadFactory : Executors.defaultThreadFactory();
-        final RejectedExecutionHandler handler = ObjectKit.defaultIfNull(builder.handler, RejectPolicy.ABORT.getValue());
+        final ThreadFactory threadFactory = (null != builder.threadFactory) ? builder.threadFactory
+                : Executors.defaultThreadFactory();
+        final RejectedExecutionHandler handler = ObjectKit.defaultIfNull(builder.handler,
+                RejectPolicy.ABORT.getValue());
 
         final ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(//
                 corePoolSize, //
@@ -169,8 +172,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 设置队列，用于存在未执行的线程
-     * 可选队列有：
+     * 设置队列，用于存在未执行的线程 可选队列有：
      *
      * <pre>
      * 1. {@link SynchronousQueue}    它将任务直接提交给线程而不保持它们。当运行线程小于maxPoolSize时会创建新线程，否则触发异常策略
@@ -188,8 +190,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 使用{@link LinkedBlockingQueue} 作为等待队列
-     * 队列满时，运行线程小于maxPoolSize时会创建新线程，否则触发异常策略
+     * 使用{@link LinkedBlockingQueue} 作为等待队列 队列满时，运行线程小于maxPoolSize时会创建新线程，否则触发异常策略
      *
      * @param capacity 队列容量
      * @return this
@@ -199,8 +200,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 使用{@link ArrayBlockingQueue} 做为等待队列
-     * 有界队列，相对无界队列有利于控制队列大小，队列满时，运行线程小于maxPoolSize时会创建新线程，否则触发异常策略
+     * 使用{@link ArrayBlockingQueue} 做为等待队列 有界队列，相对无界队列有利于控制队列大小，队列满时，运行线程小于maxPoolSize时会创建新线程，否则触发异常策略
      *
      * @param capacity 队列容量
      * @return this
@@ -210,8 +210,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 使用{@link SynchronousQueue} 做为等待队列（非公平策略）
-     * 它将任务直接提交给线程而不保持它们。当运行线程小于maxPoolSize时会创建新线程，否则触发异常策略
+     * 使用{@link SynchronousQueue} 做为等待队列（非公平策略） 它将任务直接提交给线程而不保持它们。当运行线程小于maxPoolSize时会创建新线程，否则触发异常策略
      *
      * @return this
      */
@@ -220,8 +219,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 使用{@link SynchronousQueue} 做为等待队列
-     * 它将任务直接提交给线程而不保持它们。当运行线程小于maxPoolSize时会创建新线程，否则触发异常策略
+     * 使用{@link SynchronousQueue} 做为等待队列 它将任务直接提交给线程而不保持它们。当运行线程小于maxPoolSize时会创建新线程，否则触发异常策略
      *
      * @param fair 是否使用公平访问策略
      * @return this
@@ -243,8 +241,7 @@ public class ExecutorBuilder implements Builder<ThreadPoolExecutor> {
     }
 
     /**
-     * 设置当线程阻塞（block）时的异常处理器，所谓线程阻塞即线程池和等待队列已满，无法处理线程时采取的策略
-     * 此处可以使用JDK预定义的几种策略，见{@link RejectPolicy}枚举
+     * 设置当线程阻塞（block）时的异常处理器，所谓线程阻塞即线程池和等待队列已满，无法处理线程时采取的策略 此处可以使用JDK预定义的几种策略，见{@link RejectPolicy}枚举
      *
      * @param handler {@link RejectedExecutionHandler}
      * @return this

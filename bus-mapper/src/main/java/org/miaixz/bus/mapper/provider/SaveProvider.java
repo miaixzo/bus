@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.provider;
 
 import org.apache.ibatis.mapping.MappedStatement;
@@ -106,14 +106,16 @@ public class SaveProvider extends MapperTemplate {
                 sql.append(SqlBuilder.getIfCacheNotNull(column, column.getColumnHolder(null, "_cache", Symbol.COMMA)));
             } else {
                 // 其他情况值仍然存在原property中
-                sql.append(SqlBuilder.getIfNotNull(column, column.getColumnHolder(null, null, Symbol.COMMA), isNotEmpty()));
+                sql.append(SqlBuilder.getIfNotNull(column, column.getColumnHolder(null, null, Symbol.COMMA),
+                        isNotEmpty()));
             }
             // 当属性为null时，如果存在主键策略，会自动获取值，如果不存在，则使用null
             if (column.isIdentity()) {
                 sql.append(SqlBuilder.getIfCacheIsNull(column, column.getColumnHolder() + Symbol.COMMA));
             } else {
                 // 当null的时候，如果不指定jdbcType，oracle可能会报异常，指定VARCHAR不影响其他
-                sql.append(SqlBuilder.getIfIsNull(column, column.getColumnHolder(null, null, Symbol.COMMA), isNotEmpty()));
+                sql.append(
+                        SqlBuilder.getIfIsNull(column, column.getColumnHolder(null, null, Symbol.COMMA), isNotEmpty()));
             }
         }
         sql.append("</trim>");
@@ -136,13 +138,15 @@ public class SaveProvider extends MapperTemplate {
                     if (column.getGenerator() != null && column.getGenerator().equals("JDBC")) {
                         continue;
                     }
-                    throw new MapperException(ms.getId() + "对应的实体类" + entityClass.getName() + "中包含多个MySql的自动增长列,最多只能有一个!");
+                    throw new MapperException(
+                            ms.getId() + "对应的实体类" + entityClass.getName() + "中包含多个MySql的自动增长列,最多只能有一个!");
                 }
                 // 插入selectKey
                 SelectKeyBuilder.newSelectKeyMappedStatement(ms, column, entityClass, isBEFORE(), getIDENTITY(column));
                 hasIdentityKey = true;
             } else if (column.getGenIdClass() != null) {
-                sql.append("<bind name=\"").append(column.getColumn()).append("GenIdBind\" value=\"@org.miaixz.bus.mapper.Builder@genId(");
+                sql.append("<bind name=\"").append(column.getColumn())
+                        .append("GenIdBind\" value=\"@org.miaixz.bus.mapper.Builder@genId(");
                 sql.append("_parameter").append(", '").append(column.getProperty()).append("'");
                 sql.append(", @").append(column.getGenIdClass().getName()).append("@class");
                 sql.append(", '").append(tableName(entityClass)).append("'");

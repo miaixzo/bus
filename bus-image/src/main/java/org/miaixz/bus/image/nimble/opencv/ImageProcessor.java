@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv;
 
 import org.miaixz.bus.core.xyz.FileKit;
@@ -43,6 +43,7 @@ import java.awt.image.RenderedImage;
 import java.io.File;
 import java.util.List;
 import java.util.*;
+
 /**
  * @author Kimi Liu
  * @since Java 17+
@@ -56,8 +57,7 @@ public class ImageProcessor {
      *
      * @param img              the image
      * @param exclude8bitImage if true, exclude 8 bit image and return 0 and 255.
-     * @return the min/max values and their locations. Max is not inferior to min + 1 to avoid
-     * division by 0.
+     * @return the min/max values and their locations. Max is not inferior to min + 1 to avoid division by 0.
      * @throws OutOfMemoryError if the image is too large to be processed.
      */
     public static MinMaxLocResult findRawMinMaxValues(PlanarImage img, boolean exclude8bitImage)
@@ -85,11 +85,10 @@ public class ImageProcessor {
      * Performs a look-up table transform of an image.
      *
      * @param source the image. Only 8-bit images are supported.
-     * @param lut    the lookup table of 256 elements; in case of multi-channels input array, the table
-     *               should either have a single channel (in this case the same table is used for all channels)
-     *               or the same number of channels as in the input array.
-     * @return the result image with the same size and number of channels as src, and the same depth
-     * as lut.
+     * @param lut    the lookup table of 256 elements; in case of multi-channels input array, the table should either
+     *               have a single channel (in this case the same table is used for all channels) or the same number of
+     *               channels as in the input array.
+     * @return the result image with the same size and number of channels as src, and the same depth as lut.
      */
     public static ImageCV applyLUT(Mat source, byte[][] lut) {
         Mat srcImg = Objects.requireNonNull(source);
@@ -167,9 +166,8 @@ public class ImageProcessor {
      */
     public static ImageCV crop(Mat source, Rectangle area) {
         Objects.requireNonNull(source);
-        Rectangle rect =
-                Objects.requireNonNull(area)
-                        .intersection(new Rectangle(0, 0, source.width(), source.height()));
+        Rectangle rect = Objects.requireNonNull(area)
+                .intersection(new Rectangle(0, 0, source.width(), source.height()));
         if (area.width > 1 && area.height > 1) {
             return ImageCV.toImageCV(source.submat(new Rect(rect.x, rect.y, rect.width, rect.height)));
         }
@@ -181,8 +179,7 @@ public class ImageProcessor {
      *
      * @param source the image.
      * @param area   the rectangle to search for min/max values.
-     * @return the min/max values and their locations. Max is not inferior to min + 1 to avoid
-     * division by 0.
+     * @return the min/max values and their locations. Max is not inferior to min + 1 to avoid division by 0.
      */
     public static MinMaxLocResult minMaxLoc(RenderedImage source, Rectangle area) {
         Mat srcImg = ImageConversion.toMat(Objects.requireNonNull(source), area);
@@ -196,8 +193,7 @@ public class ImageProcessor {
      * @param keepImageCoordinates if true, the coordinates are not translated to the shape bounds.
      * @return the list of contours.
      */
-    public static List<MatOfPoint> transformShapeToContour(
-            Shape shape, boolean keepImageCoordinates) {
+    public static List<MatOfPoint> transformShapeToContour(Shape shape, boolean keepImageCoordinates) {
         Rectangle b = shape.getBounds();
         if (keepImageCoordinates) {
             b.x = 0;
@@ -212,16 +208,15 @@ public class ImageProcessor {
         while (!iterator.isDone()) {
             int segType = iterator.currentSegment(pts);
             switch (segType) {
-                case PathIterator.SEG_MOVETO -> {
-                    addSegment(p, cvPts, points);
-                    p = new MatOfPoint();
-                    cvPts.add(new Point(pts[0] - b.x, pts[1] - b.y));
-                }
-                case PathIterator.SEG_LINETO, PathIterator.SEG_CLOSE ->
-                        cvPts.add(new Point(pts[0] - b.x, pts[1] - b.y));
-                default -> {
-                    // should never append with FlatteningPathIterator
-                }
+            case PathIterator.SEG_MOVETO -> {
+                addSegment(p, cvPts, points);
+                p = new MatOfPoint();
+                cvPts.add(new Point(pts[0] - b.x, pts[1] - b.y));
+            }
+            case PathIterator.SEG_LINETO, PathIterator.SEG_CLOSE -> cvPts.add(new Point(pts[0] - b.x, pts[1] - b.y));
+            default -> {
+                // should never append with FlatteningPathIterator
+            }
             }
             iterator.next();
         }
@@ -261,13 +256,11 @@ public class ImageProcessor {
     /**
      * @param source       the image.
      * @param shape        the shape to apply on the image. If null, the whole image is processed.
-     * @param paddingValue the starting value to exclude. PaddingValue is applied only with one
-     *                     channel image.
+     * @param paddingValue the starting value to exclude. PaddingValue is applied only with one channel image.
      * @param paddingLimit the last value to exclude. If null only paddingValue is excluded.
      * @return a 5 double arrays: min, max, mean, standard deviation, pixel count.
      */
-    public static double[][] meanStdDev(
-            Mat source, Shape shape, Integer paddingValue, Integer paddingLimit) {
+    public static double[][] meanStdDev(Mat source, Shape shape, Integer paddingValue, Integer paddingLimit) {
         List<Mat> list = getMaskImage(source, shape, paddingValue, paddingLimit);
         if (list.size() < 2) {
             return null;
@@ -278,13 +271,11 @@ public class ImageProcessor {
     /**
      * @param source       the image.
      * @param mask         the shape to apply on the image. If null, the whole image is processed.
-     * @param paddingValue the starting value to exclude. PaddingValue is applied only with one
-     *                     channel image.
+     * @param paddingValue the starting value to exclude. PaddingValue is applied only with one channel image.
      * @param paddingLimit the last value to exclude. If null only paddingValue is excluded.
      * @return a 5 double arrays: min, max, mean, standard deviation, pixel count.
      */
-    public static double[][] meanStdDev(
-            Mat source, Mat mask, Integer paddingValue, Integer paddingLimit) {
+    public static double[][] meanStdDev(Mat source, Mat mask, Integer paddingValue, Integer paddingLimit) {
         if (source == null) {
             return null;
         }
@@ -338,21 +329,18 @@ public class ImageProcessor {
      *
      * @param source       the image.
      * @param shape        the shape to apply on the image. If null, the whole image is processed.
-     * @param paddingValue the starting value to exclude. PaddingValue is applied only with one
-     *                     channel image.
+     * @param paddingValue the starting value to exclude. PaddingValue is applied only with one channel image.
      * @param paddingLimit the last value to exclude. If null only paddingValue is excluded.
      * @return the source and mask images.
      */
-    public static List<Mat> getMaskImage(
-            Mat source, Shape shape, Integer paddingValue, Integer paddingLimit) {
+    public static List<Mat> getMaskImage(Mat source, Shape shape, Integer paddingValue, Integer paddingLimit) {
         Objects.requireNonNull(source);
         Mat srcImg;
         Mat mask = null;
         if (shape == null) {
             srcImg = source;
         } else {
-            Rectangle b =
-                    new Rectangle(0, 0, source.width(), source.height()).intersection(shape.getBounds());
+            Rectangle b = new Rectangle(0, 0, source.width(), source.height()).intersection(shape.getBounds());
             if (b.getWidth() < 1 || b.getHeight() < 1) {
                 return Collections.emptyList();
             }
@@ -367,8 +355,7 @@ public class ImageProcessor {
         return Arrays.asList(srcImg, mask);
     }
 
-    private static Mat getPixelPaddingMask(
-            Mat source, Mat mask, Integer paddingValue, Integer paddingLimit) {
+    private static Mat getPixelPaddingMask(Mat source, Mat mask, Integer paddingValue, Integer paddingLimit) {
         if (paddingValue != null && source.channels() == 1) {
             if (paddingLimit == null) {
                 paddingLimit = paddingValue;
@@ -392,13 +379,11 @@ public class ImageProcessor {
     }
 
     /**
-     * Returns the minimum and maximum pixel values and their locations according to the mask
-     * selection.
+     * Returns the minimum and maximum pixel values and their locations according to the mask selection.
      *
      * @param srcImg the image.
      * @param mask   the mask selection. If null, the whole image is processed.
-     * @return the min/max values and their locations. Max is not inferior to min + 1 to avoid
-     * division by 0.
+     * @return the min/max values and their locations. Max is not inferior to min + 1 to avoid division by 0.
      */
     public static MinMaxLocResult minMaxLoc(Mat srcImg, Mat mask) {
         List<Mat> channels = new ArrayList<>(Objects.requireNonNull(srcImg).channels());
@@ -445,8 +430,7 @@ public class ImageProcessor {
             throw new IllegalArgumentException(UNSUPPORTED_SIZE + dim);
         }
         ImageCV dstImg = new ImageCV();
-        Imgproc.resize(
-                Objects.requireNonNull(source), dstImg, new Size(dim.getWidth(), dim.getHeight()));
+        Imgproc.resize(Objects.requireNonNull(source), dstImg, new Size(dim.getWidth(), dim.getHeight()));
         return dstImg;
     }
 
@@ -454,26 +438,18 @@ public class ImageProcessor {
      * Resize the image to the specified dimension with a specific interpolation.
      *
      * @param source the image.
-     * @param dim    the expected dimension. param interpolation the interpolation method. See
-     *               cv.InterpolationFlags
+     * @param dim    the expected dimension. param interpolation the interpolation method. See cv.InterpolationFlags
      * @return the resized image.
      */
     public static ImageCV scale(Mat source, Dimension dim, Integer interpolation) {
-        if (interpolation == null
-                || interpolation < Imgproc.INTER_NEAREST
-                || interpolation > Imgproc.INTER_LANCZOS4) {
+        if (interpolation == null || interpolation < Imgproc.INTER_NEAREST || interpolation > Imgproc.INTER_LANCZOS4) {
             return scale(source, dim);
         }
         if (Objects.requireNonNull(dim).width < 1 || dim.height < 1) {
             throw new IllegalArgumentException(UNSUPPORTED_SIZE + dim);
         }
         ImageCV dstImg = new ImageCV();
-        Imgproc.resize(
-                Objects.requireNonNull(source),
-                dstImg,
-                new Size(dim.getWidth(), dim.getHeight()),
-                0,
-                0,
+        Imgproc.resize(Objects.requireNonNull(source), dstImg, new Size(dim.getWidth(), dim.getHeight()), 0, 0,
                 interpolation);
         return dstImg;
     }
@@ -511,9 +487,8 @@ public class ImageProcessor {
     public static ImageCV overlay(Mat source, Mat imgOverlay, Color color) {
         ImageCV srcImg = ImageCV.toImageCV(Objects.requireNonNull(source));
         Objects.requireNonNull(imgOverlay);
-        boolean type16bit =
-                CvType.depth(srcImg.type()) == CvType.CV_16U
-                        || CvType.depth(srcImg.type()) == CvType.CV_16S;
+        boolean type16bit = CvType.depth(srcImg.type()) == CvType.CV_16U
+                || CvType.depth(srcImg.type()) == CvType.CV_16S;
 
         if ((type16bit || isGray(color)) && srcImg.channels() == 1) {
             int maxColor = Math.max(color.getRed(), Math.max(color.getGreen(), color.getBlue()));
@@ -535,11 +510,8 @@ public class ImageProcessor {
             srcImg.copyTo(dstImg);
         }
 
-        Mat colorImg =
-                new Mat(
-                        dstImg.size(),
-                        CvType.CV_8UC3,
-                        new Scalar(color.getBlue(), color.getGreen(), color.getRed()));
+        Mat colorImg = new Mat(dstImg.size(), CvType.CV_8UC3,
+                new Scalar(color.getBlue(), color.getGreen(), color.getRed()));
         double alpha = color.getAlpha() / 255.0;
         if (alpha < 1.0) {
             ImageCV overlay = new ImageCV();
@@ -588,32 +560,19 @@ public class ImageProcessor {
         source.copyTo(dstImg);
         b.grow(1, 1);
         if (b.getY() > 0) {
-            Imgproc.rectangle(
-                    dstImg, new Point(0.0, 0.0), new Point(dstImg.width(), b.getMinY()), new Scalar(0), -1);
+            Imgproc.rectangle(dstImg, new Point(0.0, 0.0), new Point(dstImg.width(), b.getMinY()), new Scalar(0), -1);
         }
         if (b.getX() > 0) {
-            Imgproc.rectangle(
-                    dstImg,
-                    new Point(0.0, b.getMinY()),
-                    new Point(b.getMinX(), b.getMaxY()),
-                    new Scalar(0),
+            Imgproc.rectangle(dstImg, new Point(0.0, b.getMinY()), new Point(b.getMinX(), b.getMaxY()), new Scalar(0),
                     -1);
         }
         if (b.getX() < dstImg.width()) {
-            Imgproc.rectangle(
-                    dstImg,
-                    new Point(b.getMaxX(), b.getMinY()),
-                    new Point(dstImg.width(), b.getMaxY()),
-                    new Scalar(0),
-                    -1);
+            Imgproc.rectangle(dstImg, new Point(b.getMaxX(), b.getMinY()), new Point(dstImg.width(), b.getMaxY()),
+                    new Scalar(0), -1);
         }
         if (b.getY() < dstImg.height()) {
-            Imgproc.rectangle(
-                    dstImg,
-                    new Point(0.0, b.getMaxY()),
-                    new Point(dstImg.width(), dstImg.height()),
-                    new Scalar(0),
-                    -1);
+            Imgproc.rectangle(dstImg, new Point(0.0, b.getMaxY()), new Point(dstImg.width(), dstImg.height()),
+                    new Scalar(0), -1);
         }
         Core.addWeighted(dstImg, alpha, srcImg, 1 - alpha, 0.0, dstImg);
         return dstImg;
@@ -666,15 +625,15 @@ public class ImageProcessor {
     }
 
     /**
-     * Rotates the image in multiples of 90 degrees in three different ways: Rotate by 90 degrees
-     * clockwise (rotateCode = ROTATE_90_CLOCKWISE). Rotate by 180 degrees clockwise (rotateCode =
-     * ROTATE_180). Rotate by 270 degrees clockwise (rotateCode = ROTATE_90_COUNTERCLOCKWISE).
+     * Rotates the image in multiples of 90 degrees in three different ways: Rotate by 90 degrees clockwise (rotateCode
+     * = ROTATE_90_CLOCKWISE). Rotate by 180 degrees clockwise (rotateCode = ROTATE_180). Rotate by 270 degrees
+     * clockwise (rotateCode = ROTATE_90_COUNTERCLOCKWISE).
      *
      * @param source       the image.
-     * @param rotateCvType an enum to specify how to rotate the image; Core.ROTATE_90_CLOCKWISE,
-     *                     Core.ROTATE_180 and Core.ROTATE_90_COUNTERCLOCKWISE.
-     * @return the rotated image. The size is the same with ROTATE_180, and the rows and cols are
-     * switched for ROTATE_90_CLOCKWISE and ROTATE_90_COUNTERCLOCKWISE.
+     * @param rotateCvType an enum to specify how to rotate the image; Core.ROTATE_90_CLOCKWISE, Core.ROTATE_180 and
+     *                     Core.ROTATE_90_COUNTERCLOCKWISE.
+     * @return the rotated image. The size is the same with ROTATE_180, and the rows and cols are switched for
+     *         ROTATE_90_CLOCKWISE and ROTATE_90_COUNTERCLOCKWISE.
      */
     public static ImageCV getRotatedImage(Mat source, int rotateCvType) {
         if (rotateCvType < 0 || rotateCvType > 2) {
@@ -690,9 +649,9 @@ public class ImageProcessor {
      * Flips the image around vertical, horizontal, or both axes.
      *
      * @param source     the image.
-     * @param flipCvType a flag to specify how to flip the array; 0 means flipping around the x-axis
-     *                   (vertical flip), positive (e.g., 1) means flipping around y-axis (horizontal flip), and
-     *                   negative (e.g., -1) means flipping around both axes.
+     * @param flipCvType a flag to specify how to flip the array; 0 means flipping around the x-axis (vertical flip),
+     *                   positive (e.g., 1) means flipping around y-axis (horizontal flip), and negative (e.g., -1)
+     *                   means flipping around both axes.
      * @return the flipped image.
      */
     public static ImageCV flip(Mat source, int flipCvType) {
@@ -718,11 +677,7 @@ public class ImageProcessor {
         if (interpolation == null) {
             interpolation = Imgproc.INTER_LINEAR;
         }
-        Imgproc.warpAffine(
-                srcImg,
-                dstImg,
-                Objects.requireNonNull(matrix),
-                Objects.requireNonNull(boxSize),
+        Imgproc.warpAffine(srcImg, dstImg, Objects.requireNonNull(matrix), Objects.requireNonNull(boxSize),
                 interpolation);
 
         return dstImg;
@@ -732,8 +687,7 @@ public class ImageProcessor {
      * Returns Min/Max values and their locations.
      *
      * @param source the image.
-     * @return the min/max values and their locations. Max is not inferior to min + 1 to avoid
-     * division by 0.
+     * @return the min/max values and their locations. Max is not inferior to min + 1 to avoid division by 0.
      */
     public static MinMaxLocResult findMinMaxValues(Mat source) {
         if (source != null) {
@@ -746,14 +700,11 @@ public class ImageProcessor {
      * Returns Min/Max values and their locations excluding range of values provided.
      *
      * @param source       the image.
-     * @param paddingValue the starting value to exclude. PaddingValue is applied only with one
-     *                     channel image.
+     * @param paddingValue the starting value to exclude. PaddingValue is applied only with one channel image.
      * @param paddingLimit the last value to exclude. If null only paddingValue is excluded.
-     * @return the min/max values and their locations. Max is not inferior to min + 1 to avoid
-     * division by 0.
+     * @return the min/max values and their locations. Max is not inferior to min + 1 to avoid division by 0.
      */
-    public static MinMaxLocResult findMinMaxValues(
-            Mat source, Integer paddingValue, Integer paddingLimit) {
+    public static MinMaxLocResult findMinMaxValues(Mat source, Integer paddingValue, Integer paddingLimit) {
         if (source != null) {
             Mat mask = null;
             if (paddingValue != null && source.channels() == 1) {
@@ -786,16 +737,13 @@ public class ImageProcessor {
             throw new IllegalArgumentException(UNSUPPORTED_SIZE + iconDim);
         }
 
-        final double scale =
-                Math.min(iconDim.getHeight() / source.height(), iconDim.getWidth() / source.width());
+        final double scale = Math.min(iconDim.getHeight() / source.height(), iconDim.getWidth() / source.width());
         if (scale >= 1.0) {
             return ImageCV.toImageCV(source.toMat().clone());
         }
 
-        Size dim =
-                keepRatio
-                        ? new Size((int) (scale * source.width()), (int) (scale * source.height()))
-                        : new Size(iconDim.width, iconDim.height);
+        Size dim = keepRatio ? new Size((int) (scale * source.width()), (int) (scale * source.height()))
+                : new Size(iconDim.width, iconDim.height);
 
         Mat srcImg = Objects.requireNonNull(source).toMat();
         ImageCV dstImg = new ImageCV();
@@ -837,8 +785,7 @@ public class ImageProcessor {
     public static boolean writeThumbnail(Mat source, File file, int maxSize) {
         if (writeExceptReadOnly(file)) {
             try {
-                final double scale =
-                        Math.min(maxSize / (double) source.height(), (double) maxSize / source.width());
+                final double scale = Math.min(maxSize / (double) source.height(), (double) maxSize / source.width());
                 if (scale < 1.0) {
                     Size dim = new Size((int) (scale * source.width()), (int) (scale * source.height()));
                     try (ImageCV thumbnail = new ImageCV()) {
@@ -912,9 +859,8 @@ public class ImageProcessor {
      *
      * @param source the image to write
      * @param file   the output image file
-     * @param params the list of parameters to use for writing the image, see Imgcodecs.IMWRITE_*.
-     *               Format-specific parameters encoded as pairs (pId_1, pValue_1, pId_2, pValue_2...) see
-     *               cv::ImwriteFlags
+     * @param params the list of parameters to use for writing the image, see Imgcodecs.IMWRITE_*. Format-specific
+     *               parameters encoded as pairs (pId_1, pValue_1, pId_2, pValue_2...) see cv::ImwriteFlags
      * @return true if the image is written
      */
     public static boolean writeImage(Mat source, File file, MatOfInt params) {

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.limiter.metric;
 
 import org.miaixz.bus.core.cache.provider.TimedCache;
@@ -62,7 +62,8 @@ public class MethodProvider implements Provider {
     @Override
     public Object process(Object bean, Method method, Object[] args) {
         // 获取方法对应的key
-        String hotKey = StringKit.format("{}-{}", Builder.resolveMethodName(method), org.miaixz.bus.crypto.Builder.md5Hex(JsonKit.toJsonString(args)));
+        String hotKey = StringKit.format("{}-{}", Builder.resolveMethodName(method),
+                org.miaixz.bus.crypto.Builder.md5Hex(JsonKit.toJsonString(args)));
 
         // 缓存操作
         if (cache.containsKey(hotKey)) {

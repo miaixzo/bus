@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.amazon;
 
 import lombok.AllArgsConstructor;
@@ -46,7 +46,8 @@ public enum AmazonScope implements AuthorizeScope {
      */
     R_LITEPROFILE("profile", "The profile scope includes a user's name and email address", true),
     R_EMAILADDRESS("profile:user_id", "The profile:user_id scope only includes the user_id field of the profile", true),
-    W_MEMBER_SOCIAL("postal_code", "This includes the user's zip/postal code number from their primary shipping address", true);
+    W_MEMBER_SOCIAL("postal_code",
+            "This includes the user's zip/postal code number from their primary shipping address", true);
 
     private final String scope;
     private final String description;

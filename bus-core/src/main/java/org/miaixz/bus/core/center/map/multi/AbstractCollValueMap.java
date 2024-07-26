@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map.multi;
 
 import org.miaixz.bus.core.center.map.MapWrapper;
@@ -86,6 +86,7 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
 
     /**
      * 将集合中的全部元素对追加到指定键对应的值集合中，效果等同于：
+     * 
      * <pre>{@code
      * coll.forEach(t -> map.putValue(data, t))
      * }</pre>
@@ -99,12 +100,12 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
         if (ObjectKit.isNull(coll)) {
             return false;
         }
-        return super.computeIfAbsent(key, k -> createCollection())
-                .addAll(coll);
+        return super.computeIfAbsent(key, k -> createCollection()).addAll(coll);
     }
 
     /**
      * 向指定键对应的值集合追加值，效果等同于：
+     * 
      * <pre>{@code
      * map.computeIfAbsent(data, k -> new Collection()).add(value)
      * }</pre>
@@ -115,8 +116,7 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
      */
     @Override
     public boolean putValue(final K key, final V value) {
-        return super.computeIfAbsent(key, k -> createCollection())
-                .add(value);
+        return super.computeIfAbsent(key, k -> createCollection()).add(value);
     }
 
     /**
@@ -128,9 +128,7 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
      */
     @Override
     public boolean removeValue(final K key, final V value) {
-        return Optional.ofNullable(super.get(key))
-                .map(t -> t.remove(value))
-                .orElse(false);
+        return Optional.ofNullable(super.get(key)).map(t -> t.remove(value)).orElse(false);
     }
 
     /**
@@ -159,8 +157,7 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
     public MultiValueMap<K, V> filterAllValues(final BiPredicate<K, V> filter) {
         entrySet().forEach(e -> {
             final K k = e.getKey();
-            final Collection<V> coll = e.getValue().stream()
-                    .filter(v -> filter.test(k, v))
+            final Collection<V> coll = e.getValue().stream().filter(v -> filter.test(k, v))
                     .collect(Collectors.toCollection(this::createCollection));
             e.setValue(coll);
         });
@@ -177,8 +174,7 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
     public MultiValueMap<K, V> replaceAllValues(final BiFunction<K, V, V> operate) {
         entrySet().forEach(e -> {
             final K k = e.getKey();
-            final Collection<V> coll = e.getValue().stream()
-                    .map(v -> operate.apply(k, v))
+            final Collection<V> coll = e.getValue().stream().map(v -> operate.apply(k, v))
                     .collect(Collectors.toCollection(this::createCollection));
             e.setValue(coll);
         });
@@ -186,8 +182,7 @@ public abstract class AbstractCollValueMap<K, V> extends MapWrapper<K, Collectio
     }
 
     /**
-     * 创建集合
-     * 此方法用于创建在putValue后追加值所在的集合，子类实现此方法创建不同类型的集合
+     * 创建集合 此方法用于创建在putValue后追加值所在的集合，子类实现此方法创建不同类型的集合
      *
      * @return {@link Collection}
      */

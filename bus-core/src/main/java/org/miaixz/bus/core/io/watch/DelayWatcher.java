@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.watch;
 
 import org.miaixz.bus.core.center.ConcurrentHashSet;
@@ -35,11 +35,8 @@ import java.nio.file.*;
 import java.util.Set;
 
 /**
- * 延迟观察者
- * 使用此观察者通过定义一定的延迟时间，解决{@link WatchService}多个modify的问题
- * 在监听目录或文件时，如果这个文件有修改操作，会多次触发modify方法。
- * 此类通过维护一个Set将短时间内相同文件多次modify的事件合并处理触发，从而避免以上问题。
- * 注意：延迟只针对modify事件，其它事件无效
+ * 延迟观察者 使用此观察者通过定义一定的延迟时间，解决{@link WatchService}多个modify的问题 在监听目录或文件时，如果这个文件有修改操作，会多次触发modify方法。
+ * 此类通过维护一个Set将短时间内相同文件多次modify的事件合并处理触发，从而避免以上问题。 注意：延迟只针对modify事件，其它事件无效
  *
  * @author Kimi Liu
  * @since Java 17+

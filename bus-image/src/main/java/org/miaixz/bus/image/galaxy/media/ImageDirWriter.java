@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.media;
 
 import org.miaixz.bus.core.xyz.ByteKit;
@@ -53,20 +53,15 @@ public class ImageDirWriter extends ImageDirReader {
     private final static int NO_KNOWN_INCONSISTENCIES = 0;
     private final static int IN_USE = 0xFFFF;
     private final static int INACTIVE = 0;
-    private static final Comparator<Attributes> offsetComparator =
-            (item1, item2) -> {
-                long d = item1.getItemPosition() - item2.getItemPosition();
-                return d < 0 ? -1 : d > 0 ? 1 : 0;
-            };
-    private final byte[] dirInfoHeader = {
-            0x04, 0x00, 0x00, 0x12, 'U', 'L', 4, 0, 0, 0, 0, 0,
-            0x04, 0x00, 0x02, 0x12, 'U', 'L', 4, 0, 0, 0, 0, 0,
-            0x04, 0x00, 0x12, 0x12, 'U', 'S', 2, 0, 0, 0,
-            0x04, 0x00, 0x20, 0x12, 'S', 'Q', 0, 0, 0, 0, 0, 0};
-    private final byte[] dirRecordHeader = {
-            0x04, 0x00, 0x00, 0x14, 'U', 'L', 4, 0, 0, 0, 0, 0,
-            0x04, 0x00, 0x10, 0x14, 'U', 'S', 2, 0, 0, 0,
-            0x04, 0x00, 0x20, 0x14, 'U', 'L', 4, 0, 0, 0, 0, 0};
+    private static final Comparator<Attributes> offsetComparator = (item1, item2) -> {
+        long d = item1.getItemPosition() - item2.getItemPosition();
+        return d < 0 ? -1 : d > 0 ? 1 : 0;
+    };
+    private final byte[] dirInfoHeader = { 0x04, 0x00, 0x00, 0x12, 'U', 'L', 4, 0, 0, 0, 0, 0, 0x04, 0x00, 0x02, 0x12,
+            'U', 'L', 4, 0, 0, 0, 0, 0, 0x04, 0x00, 0x12, 0x12, 'U', 'S', 2, 0, 0, 0, 0x04, 0x00, 0x20, 0x12, 'S', 'Q',
+            0, 0, 0, 0, 0, 0 };
+    private final byte[] dirRecordHeader = { 0x04, 0x00, 0x00, 0x14, 'U', 'L', 4, 0, 0, 0, 0, 0, 0x04, 0x00, 0x10, 0x14,
+            'U', 'S', 2, 0, 0, 0, 0x04, 0x00, 0x20, 0x14, 'U', 'L', 4, 0, 0, 0, 0, 0 };
     private final ImageOutputStream out;
     private final int firstRecordPos;
     private final List<Attributes> dirtyRecords = new ArrayList<>();
@@ -76,16 +71,10 @@ public class ImageDirWriter extends ImageDirReader {
 
     private ImageDirWriter(File file) throws IOException {
         super(file, "rw");
-        out = new ImageOutputStream(new RAFOutputStreamAdapter(raf),
-                super.getTransferSyntaxUID());
+        out = new ImageOutputStream(new RAFOutputStreamAdapter(raf), super.getTransferSyntaxUID());
         int seqLen = in.length();
         boolean undefSeqLen = seqLen <= 0;
-        setEncodingOptions(
-                new ImageEncodingOptions(false,
-                        undefSeqLen,
-                        false,
-                        undefSeqLen,
-                        false));
+        setEncodingOptions(new ImageEncodingOptions(false, undefSeqLen, false, undefSeqLen, false));
         this.nextRecordPos = this.firstRecordPos = (int) in.getPosition();
         if (!isEmpty()) {
             if (seqLen > 0)
@@ -103,17 +92,16 @@ public class ImageDirWriter extends ImageDirReader {
         return new ImageDirWriter(file);
     }
 
-    public static void createEmptyDirectory(File file, String iuid,
-                                            String id, File descFile, String charset) throws IOException {
-        Attributes fmi = Attributes.createFileMetaInformation(iuid,
-                UID.MediaStorageDirectoryStorage.uid, UID.ExplicitVRLittleEndian.uid);
+    public static void createEmptyDirectory(File file, String iuid, String id, File descFile, String charset)
+            throws IOException {
+        Attributes fmi = Attributes.createFileMetaInformation(iuid, UID.MediaStorageDirectoryStorage.uid,
+                UID.ExplicitVRLittleEndian.uid);
         createEmptyDirectory(file, fmi, id, descFile, charset);
     }
 
-    public static void createEmptyDirectory(File file, Attributes fmi,
-                                            String id, File descFile, String charset) throws IOException {
-        Attributes fsInfo =
-                createFileSetInformation(file, id, descFile, charset);
+    public static void createEmptyDirectory(File file, Attributes fmi, String id, File descFile, String charset)
+            throws IOException {
+        Attributes fsInfo = createFileSetInformation(file, id, descFile, charset);
         ImageOutputStream out = new ImageOutputStream(file);
         try {
             out.writeDataset(fmi, fsInfo);
@@ -122,24 +110,16 @@ public class ImageDirWriter extends ImageDirReader {
         }
     }
 
-    private static Attributes createFileSetInformation(File file, String id,
-                                                       File descFile, String charset) {
+    private static Attributes createFileSetInformation(File file, String id, File descFile, String charset) {
         Attributes fsInfo = new Attributes(7);
         fsInfo.setString(Tag.FileSetID, VR.CS, id);
         if (descFile != null) {
-            fsInfo.setString(Tag.FileSetDescriptorFileID, VR.CS,
-                    toFileIDs(file, descFile));
+            fsInfo.setString(Tag.FileSetDescriptorFileID, VR.CS, toFileIDs(file, descFile));
             if (charset != null && !charset.isEmpty())
-                fsInfo.setString(
-                        Tag.SpecificCharacterSetOfFileSetDescriptorFile,
-                        VR.CS, charset);
+                fsInfo.setString(Tag.SpecificCharacterSetOfFileSetDescriptorFile, VR.CS, charset);
         }
-        fsInfo.setInt(
-                Tag.OffsetOfTheFirstDirectoryRecordOfTheRootDirectoryEntity,
-                VR.UL, 0);
-        fsInfo.setInt(
-                Tag.OffsetOfTheLastDirectoryRecordOfTheRootDirectoryEntity,
-                VR.UL, 0);
+        fsInfo.setInt(Tag.OffsetOfTheFirstDirectoryRecordOfTheRootDirectoryEntity, VR.UL, 0);
+        fsInfo.setInt(Tag.OffsetOfTheLastDirectoryRecordOfTheRootDirectoryEntity, VR.UL, 0);
         fsInfo.setInt(Tag.FileSetConsistencyFlag, VR.US, 0);
         fsInfo.setNull(Tag.DirectoryRecordSequence, VR.SQ);
         return fsInfo;
@@ -151,8 +131,7 @@ public class ImageDirWriter extends ImageDirReader {
         String dpath = dfilepath.substring(0, dend);
         String fpath = f.getAbsolutePath();
         if (dend == 0 || !fpath.startsWith(dpath))
-            throw new IllegalArgumentException("file: " + fpath
-                    + " not in directory: " + dfile.getAbsoluteFile());
+            throw new IllegalArgumentException("file: " + fpath + " not in directory: " + dfile.getAbsoluteFile());
         return Builder.split(fpath.substring(dend), File.separatorChar);
     }
 
@@ -164,8 +143,7 @@ public class ImageDirWriter extends ImageDirReader {
         out.setEncodingOptions(encOpts);
     }
 
-    public synchronized Attributes addRootDirectoryRecord(Attributes rec)
-            throws IOException {
+    public synchronized Attributes addRootDirectoryRecord(Attributes rec) throws IOException {
         Attributes lastRootRecord = readLastRootDirectoryRecord();
         if (lastRootRecord == null) {
             writeRecord(firstRecordPos, rec);
@@ -177,8 +155,7 @@ public class ImageDirWriter extends ImageDirReader {
         return rec;
     }
 
-    public synchronized Attributes addLowerDirectoryRecord(
-            Attributes parentRec, Attributes rec) throws IOException {
+    public synchronized Attributes addLowerDirectoryRecord(Attributes parentRec, Attributes rec) throws IOException {
         Attributes prevRec = lastChildRecords.get(parentRec);
         if (prevRec == null)
             prevRec = findLastLowerDirectoryRecord(parentRec);
@@ -186,8 +163,7 @@ public class ImageDirWriter extends ImageDirReader {
         if (prevRec != null)
             addRecord(Tag.OffsetOfTheNextDirectoryRecord, prevRec, rec);
         else
-            addRecord(Tag.OffsetOfReferencedLowerLevelDirectoryEntity,
-                    parentRec, rec);
+            addRecord(Tag.OffsetOfReferencedLowerLevelDirectoryEntity, parentRec, rec);
 
         lastChildRecords.put(parentRec, rec);
         return rec;
@@ -198,26 +174,22 @@ public class ImageDirWriter extends ImageDirReader {
         return patRec != null ? patRec : addRootDirectoryRecord(rec);
     }
 
-    public synchronized Attributes findOrAddStudyRecord(Attributes patRec, Attributes rec)
-            throws IOException {
+    public synchronized Attributes findOrAddStudyRecord(Attributes patRec, Attributes rec) throws IOException {
         Attributes studyRec = super.findStudyRecord(patRec, rec.getString(Tag.StudyInstanceUID));
         return studyRec != null ? studyRec : addLowerDirectoryRecord(patRec, rec);
     }
 
-    public synchronized Attributes findOrAddSeriesRecord(Attributes studyRec, Attributes rec)
-            throws IOException {
+    public synchronized Attributes findOrAddSeriesRecord(Attributes studyRec, Attributes rec) throws IOException {
         Attributes seriesRec = super.findSeriesRecord(studyRec, rec.getString(Tag.SeriesInstanceUID));
         return seriesRec != null ? seriesRec : addLowerDirectoryRecord(studyRec, rec);
     }
 
-    public synchronized boolean deleteRecord(Attributes rec)
-            throws IOException {
+    public synchronized boolean deleteRecord(Attributes rec) throws IOException {
         if (rec.getInt(Tag.RecordInUseFlag, 0) == INACTIVE)
             return false; // already disabled
 
-        for (Attributes lowerRec = readLowerDirectoryRecord(rec);
-             lowerRec != null;
-             lowerRec = readNextDirectoryRecord(lowerRec))
+        for (Attributes lowerRec = readLowerDirectoryRecord(rec); lowerRec != null; lowerRec = readNextDirectoryRecord(
+                lowerRec))
             deleteRecord(lowerRec);
 
         rec.setInt(Tag.RecordInUseFlag, VR.US, INACTIVE);
@@ -281,23 +253,15 @@ public class ImageDirWriter extends ImageDirReader {
     }
 
     private void updateDirInfoHeader() {
-        ByteKit.intToBytesLE(
-                getOffsetOfFirstRootDirectoryRecord(),
-                dirInfoHeader, 8);
-        ByteKit.intToBytesLE(
-                getOffsetOfLastRootDirectoryRecord(),
-                dirInfoHeader, 20);
-        ByteKit.intToBytesLE(
-                getEncodingOptions().undefSequenceLength
-                        ? -1 : nextRecordPos - firstRecordPos,
+        ByteKit.intToBytesLE(getOffsetOfFirstRootDirectoryRecord(), dirInfoHeader, 8);
+        ByteKit.intToBytesLE(getOffsetOfLastRootDirectoryRecord(), dirInfoHeader, 20);
+        ByteKit.intToBytesLE(getEncodingOptions().undefSequenceLength ? -1 : nextRecordPos - firstRecordPos,
                 dirInfoHeader, 42);
     }
 
     private void restoreDirInfo() {
-        setOffsetOfFirstRootDirectoryRecord(
-                ByteKit.bytesToIntLE(dirInfoHeader, 8));
-        setOffsetOfLastRootDirectoryRecord(
-                ByteKit.bytesToIntLE(dirInfoHeader, 20));
+        setOffsetOfFirstRootDirectoryRecord(ByteKit.bytesToIntLE(dirInfoHeader, 8));
+        setOffsetOfLastRootDirectoryRecord(ByteKit.bytesToIntLE(dirInfoHeader, 20));
     }
 
     private void writeDirInfoHeader() throws IOException {
@@ -307,15 +271,9 @@ public class ImageDirWriter extends ImageDirReader {
     }
 
     private void writeDirRecordHeader(Attributes rec) throws IOException {
-        ByteKit.intToBytesLE(
-                rec.getInt(Tag.OffsetOfTheNextDirectoryRecord, 0),
-                dirRecordHeader, 8);
-        ByteKit.shortToBytesLE(
-                rec.getInt(Tag.RecordInUseFlag, 0),
-                dirRecordHeader, 20);
-        ByteKit.intToBytesLE(
-                rec.getInt(Tag.OffsetOfReferencedLowerLevelDirectoryEntity, 0),
-                dirRecordHeader, 30);
+        ByteKit.intToBytesLE(rec.getInt(Tag.OffsetOfTheNextDirectoryRecord, 0), dirRecordHeader, 8);
+        ByteKit.shortToBytesLE(rec.getInt(Tag.RecordInUseFlag, 0), dirRecordHeader, 20);
+        ByteKit.intToBytesLE(rec.getInt(Tag.OffsetOfReferencedLowerLevelDirectoryEntity, 0), dirRecordHeader, 30);
         raf.seek(rec.getItemPosition() + 8);
         raf.write(dirRecordHeader);
     }
@@ -325,8 +283,7 @@ public class ImageDirWriter extends ImageDirReader {
         out.writeHeader(Tag.SequenceDelimitationItem, null, 0);
     }
 
-    private void addRecord(int tag, Attributes prevRec, Attributes rec)
-            throws IOException {
+    private void addRecord(int tag, Attributes prevRec, Attributes rec) throws IOException {
         prevRec.setInt(tag, VR.UL, nextRecordPos);
         markAsDirty(prevRec);
         writeRecord(nextRecordPos, rec);
@@ -334,8 +291,7 @@ public class ImageDirWriter extends ImageDirReader {
 
     private void writeRecord(int offset, Attributes rec) throws IOException {
         if (Logger.isInfoEnabled())
-            Logger.info("M-UPDATE {}: add {} Record", file,
-                    rec.getString(Tag.DirectoryRecordType, null));
+            Logger.info("M-UPDATE {}: add {} Record", file, rec.getString(Tag.DirectoryRecordType, null));
         Logger.debug("Directory Record:\n{}", rec);
         rec.setItemPosition(offset);
         if (rollbackLen == -1) {
@@ -364,7 +320,7 @@ public class ImageDirWriter extends ImageDirReader {
     }
 
     public synchronized int purge() throws IOException {
-        int[] count = {0};
+        int[] count = { 0 };
         purge(findFirstRootDirectoryRecordInUse(false), count);
         return count[0];
     }
@@ -372,8 +328,7 @@ public class ImageDirWriter extends ImageDirReader {
     private boolean purge(Attributes rec, int[] count) throws IOException {
         boolean purge = true;
         while (rec != null) {
-            if (purge(findLowerDirectoryRecordInUse(rec, false), count)
-                    && !rec.containsValue(Tag.ReferencedFileID)) {
+            if (purge(findLowerDirectoryRecordInUse(rec, false), count) && !rec.containsValue(Tag.ReferencedFileID)) {
                 deleteRecord(rec);
                 count[0]++;
             } else

@@ -32,4 +32,3 @@
  * @since Java 17+
  */
 package org.miaixz.bus.image.metric.hl7.api;
-

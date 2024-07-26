@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.image.galaxy.io.BasicBulkDataDescriptor;
@@ -123,8 +123,7 @@ public class Dcm2Xml {
         this.xmlVersion = xmlVersion;
     }
 
-    public void parse(ImageInputStream dis) throws IOException,
-            TransformerConfigurationException {
+    public void parse(ImageInputStream dis) throws IOException, TransformerConfigurationException {
         dis.setIncludeBulkData(includeBulkData);
         dis.setBulkDataDescriptor(bulkDataDescriptor);
         dis.setBulkDataDirectory(blkDirectory);
@@ -146,15 +145,12 @@ public class Dcm2Xml {
         dis.readDataset();
     }
 
-    private TransformerHandler getTransformerHandler()
-            throws TransformerConfigurationException {
-        SAXTransformerFactory tf = (SAXTransformerFactory)
-                TransformerFactory.newInstance();
+    private TransformerHandler getTransformerHandler() throws TransformerConfigurationException {
+        SAXTransformerFactory tf = (SAXTransformerFactory) TransformerFactory.newInstance();
         if (xsltURL == null)
             return tf.newTransformerHandler();
 
-        TransformerHandler th = tf.newTransformerHandler(
-                new StreamSource(xsltURL));
+        TransformerHandler th = tf.newTransformerHandler(new StreamSource(xsltURL));
         return th;
     }
 

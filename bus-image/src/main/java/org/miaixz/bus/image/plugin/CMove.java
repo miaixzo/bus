@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -52,11 +52,7 @@ public class CMove {
      * @param keys           匹配和返回键。没有值的Args是返回键
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度
      */
-    public static Status process(
-            Node callingNode,
-            Node calledNode,
-            String destinationAet,
-            ImageProgress progress,
+    public static Status process(Node callingNode, Node calledNode, String destinationAet, ImageProgress progress,
             ImageParam... keys) {
         return CMove.process(null, callingNode, calledNode, destinationAet, progress, keys);
     }
@@ -70,16 +66,10 @@ public class CMove {
      * @param keys           匹配和返回键。没有值的Args是返回键
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度
      */
-    public static Status process(
-            Args args,
-            Node callingNode,
-            Node calledNode,
-            String destinationAet,
-            ImageProgress progress,
-            ImageParam... keys) {
+    public static Status process(Args args, Node callingNode, Node calledNode, String destinationAet,
+            ImageProgress progress, ImageParam... keys) {
         if (callingNode == null || calledNode == null || destinationAet == null) {
-            throw new IllegalArgumentException(
-                    "callingNode, calledNode or destinationAet cannot be null!");
+            throw new IllegalArgumentException("callingNode, calledNode or destinationAet cannot be null!");
         }
         Args options = args == null ? new Args() : args;
 
@@ -94,9 +84,7 @@ public class CMove {
             options.configure(conn);
             options.configureTLS(conn, remote);
 
-            moveSCU.setInformationModel(
-                    getInformationModel(options),
-                    options.getTsuidOrder(),
+            moveSCU.setInformationModel(getInformationModel(options), options.getTsuidOrder(),
                     options.getQueryOptions().contains(QueryOption.RELATIONAL));
 
             Status dcmState = moveSCU.getState();
@@ -117,13 +105,10 @@ public class CMove {
                 moveSCU.retrieve();
                 Builder.forceGettingAttributes(dcmState, moveSCU);
                 long t3 = System.currentTimeMillis();
-                String timeMsg =
-                        MessageFormat.format(
-                                "DICOM C-MOVE connected in {2}ms from {0} to {1}. Sent files in {3}ms.",
-                                moveSCU.getAAssociateRQ().getCallingAET(),
-                                moveSCU.getAAssociateRQ().getCalledAET(),
-                                t2 - t1,
-                                t3 - t2);
+                String timeMsg = MessageFormat.format(
+                        "DICOM C-MOVE connected in {2}ms from {0} to {1}. Sent files in {3}ms.",
+                        moveSCU.getAAssociateRQ().getCallingAET(), moveSCU.getAAssociateRQ().getCalledAET(), t2 - t1,
+                        t3 - t2);
                 dcmState = Status.buildMessage(dcmState, timeMsg, null);
                 dcmState.addProcessTime(t1, t2, t3);
                 return dcmState;
@@ -143,12 +128,8 @@ public class CMove {
                 Thread.currentThread().interrupt();
             }
             Logger.error("movescu", e);
-            return Status.buildMessage(
-                    new Status(Status.UnableToProcess,
-                            "DICOM Move failed" + Symbol.COLON + Symbol.SPACE + e.getMessage(),
-                            null),
-                    null,
-                    e);
+            return Status.buildMessage(new Status(Status.UnableToProcess,
+                    "DICOM Move failed" + Symbol.COLON + Symbol.SPACE + e.getMessage(), null), null, e);
         }
     }
 

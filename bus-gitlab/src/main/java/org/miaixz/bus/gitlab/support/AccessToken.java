@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.support;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -46,24 +46,28 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * This class uses HTML scraping to create and revoke GitLab personal access tokens,
- * the user's Feed token, and for fetching the current Health Check access token.
+ * This class uses HTML scraping to create and revoke GitLab personal access tokens, the user's Feed token, and for
+ * fetching the current Health Check access token.
  *
- * <p>NOTE: This relies on HTML scraping and has been tested on GitLab-CE 11.0.0 to 11.10.1 for
- *          proper functionality.  It may not work on earlier or later versions.</p>
+ * <p>
+ * NOTE: This relies on HTML scraping and has been tested on GitLab-CE 11.0.0 to 11.10.1 for proper functionality. It
+ * may not work on earlier or later versions.
+ * </p>
  */
 public final class AccessToken {
 
     protected static final String USER_AGENT = "GitLab4J Client";
     protected static final String COOKIES_HEADER = "Set-Cookie";
     protected static final String NEW_USER_AUTHENTICITY_TOKEN_REGEX = "\"new_user\".*name=\\\"authenticity_token\\\"\\svalue=\\\"([^\\\"]*)\\\".*new_new_user";
-    protected static final Pattern NEW_USER_AUTHENTICITY_TOKEN_PATTERN = Pattern.compile(NEW_USER_AUTHENTICITY_TOKEN_REGEX);
+    protected static final Pattern NEW_USER_AUTHENTICITY_TOKEN_PATTERN = Pattern
+            .compile(NEW_USER_AUTHENTICITY_TOKEN_REGEX);
     protected static final String AUTHENTICITY_TOKEN_REGEX = "name=\\\"authenticity_token\\\"\\svalue=\\\"([^\\\"]*)\\\"";
     protected static final Pattern AUTHENTICITY_TOKEN_PATTERN = Pattern.compile(AUTHENTICITY_TOKEN_REGEX);
     protected static final String PERSONAL_ACCESS_TOKEN_REGEX = "name=\\\"created-personal-access-token\\\".*data-clipboard-text=\\\"([^\\\"]*)\\\".*\\/>";
     protected static final Pattern PERSONAL_ACCESS_TOKEN_PATTERN = Pattern.compile(PERSONAL_ACCESS_TOKEN_REGEX);
     protected static final String REVOKE_PERSONAL_ACCESS_TOKEN_REGEX = "href=\\\"([^\\\"]*)\\\"";
-    protected static final Pattern REVOKE_PERSONAL_ACCESS_TOKEN_PATTERN = Pattern.compile(REVOKE_PERSONAL_ACCESS_TOKEN_REGEX);
+    protected static final Pattern REVOKE_PERSONAL_ACCESS_TOKEN_PATTERN = Pattern
+            .compile(REVOKE_PERSONAL_ACCESS_TOKEN_REGEX);
     protected static final String FEED_TOKEN_REGEX = "name=\\\"feed_token\\\".*value=\\\"([^\\\"]*)\\\".*\\/>";
     protected static final Pattern FEED_TOKEN_PATTERN = Pattern.compile(FEED_TOKEN_REGEX);
     protected static final String HEALTH_CHECK_ACCESS_TOKEN_REGEX = "id=\"health-check-token\">([^<]*)<\\/code>";
@@ -72,16 +76,16 @@ public final class AccessToken {
     /**
      * Create a GitLab personal access token with the provided configuration.
      *
-     * @param baseUrl the GitLab server base URL
-     * @param username the user name to create the personal access token for
-     * @param password the password of the user to create the personal access token for
+     * @param baseUrl   the GitLab server base URL
+     * @param username  the user name to create the personal access token for
+     * @param password  the password of the user to create the personal access token for
      * @param tokenName the name for the new personal access token
-     * @param scopes an array of scopes for the new personal access token
+     * @param scopes    an array of scopes for the new personal access token
      * @return the created personal access token
      * @throws GitLabApiException if any exception occurs
      */
     public static final String createPersonalAccessToken(final String baseUrl, final String username,
-                                                         final String password, final String tokenName, final Scope[] scopes) throws GitLabApiException {
+            final String password, final String tokenName, final Scope[] scopes) throws GitLabApiException {
 
         if (scopes == null || scopes.length == 0) {
             throw new RuntimeException("scopes cannot be null or empty");
@@ -93,16 +97,16 @@ public final class AccessToken {
     /**
      * Create a GitLab personal access token with the provided configuration.
      *
-     * @param baseUrl the GitLab server base URL
-     * @param username the user name to create the personal access token for
-     * @param password the password of the user to create the personal access token for
+     * @param baseUrl   the GitLab server base URL
+     * @param username  the user name to create the personal access token for
+     * @param password  the password of the user to create the personal access token for
      * @param tokenName the name for the new personal access token
-     * @param scopes a List of scopes for the new personal access token
+     * @param scopes    a List of scopes for the new personal access token
      * @return the created personal access token
      * @throws GitLabApiException if any exception occurs
      */
     public static final String createPersonalAccessToken(final String baseUrl, final String username,
-                                                         final String password, final String tokenName, final List<Scope> scopes) throws GitLabApiException {
+            final String password, final String tokenName, final List<Scope> scopes) throws GitLabApiException {
 
         // Save the follow redirect state so it can be restored later
         boolean savedFollowRedirects = HttpURLConnection.getFollowRedirects();
@@ -116,13 +120,12 @@ public final class AccessToken {
             }
 
             /*******************************************************************************
-             * Step 1: Login and get the session cookie.                                   *
+             * Step 1: Login and get the session cookie. *
              *******************************************************************************/
             cookies = login(baseUrl, username, password);
 
             /*******************************************************************************
-             * Step 2: Go to the /profile/personal_access_tokens page to fetch a           *
-             * new authenticity token.                                                     *
+             * Step 2: Go to the /profile/personal_access_tokens page to fetch a * new authenticity token. *
              *******************************************************************************/
             String urlString = baseUrl + "/profile/personal_access_tokens";
             URL url = new URL(urlString);
@@ -147,8 +150,8 @@ public final class AccessToken {
             String csrfToken = matcher.group(1);
 
             /*******************************************************************************
-             * Step 3: Submit the /profile/personalccess_tokens page with the info to      *
-             * create a new personal access token.                                         *
+             * Step 3: Submit the /profile/personalccess_tokens page with the info to * create a new personal access
+             * token. *
              *******************************************************************************/
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("User-Agent", USER_AGENT);
@@ -229,15 +232,15 @@ public final class AccessToken {
     /**
      * Revoke the first matching GitLab personal access token.
      *
-     * @param baseUrl the GitLab server base URL
-     * @param username the user name to revoke the personal access token for
-     * @param password the password of the user to revoke the personal access token for
+     * @param baseUrl   the GitLab server base URL
+     * @param username  the user name to revoke the personal access token for
+     * @param password  the password of the user to revoke the personal access token for
      * @param tokenName the name of the personal access token to revoke
-     * @param scopes an array of scopes of the personal access token to revoke
+     * @param scopes    an array of scopes of the personal access token to revoke
      * @throws GitLabApiException if any exception occurs
      */
     public static final void revokePersonalAccessToken(final String baseUrl, final String username,
-                                                       final String password, final String tokenName, final Scope[] scopes) throws GitLabApiException {
+            final String password, final String tokenName, final Scope[] scopes) throws GitLabApiException {
 
         if (scopes == null || scopes.length == 0) {
             throw new RuntimeException("scopes cannot be null or empty");
@@ -249,15 +252,15 @@ public final class AccessToken {
     /**
      * Revoke the first matching GitLab personal access token.
      *
-     * @param baseUrl the GitLab server base URL
-     * @param username the user name to revoke the personal access token for
-     * @param password the password of the user to revoke the personal access token for
+     * @param baseUrl   the GitLab server base URL
+     * @param username  the user name to revoke the personal access token for
+     * @param password  the password of the user to revoke the personal access token for
      * @param tokenName the name of the personal access token to revoke
-     * @param scopes a List of scopes of the personal access token to revoke
+     * @param scopes    a List of scopes of the personal access token to revoke
      * @throws GitLabApiException if any exception occurs
      */
     public static final void revokePersonalAccessToken(final String baseUrl, final String username,
-                                                       final String password, final String tokenName, final List<Scope> scopes) throws GitLabApiException {
+            final String password, final String tokenName, final List<Scope> scopes) throws GitLabApiException {
 
         // Save the follow redirect state so it can be restored later
         boolean savedFollowRedirects = HttpURLConnection.getFollowRedirects();
@@ -271,13 +274,12 @@ public final class AccessToken {
             }
 
             /*******************************************************************************
-             * Step 1: Login and get the session cookie.                                   *
+             * Step 1: Login and get the session cookie. *
              *******************************************************************************/
             cookies = login(baseUrl, username, password);
 
             /*******************************************************************************
-             * Step 2: Go to the /profile/personal_access_tokens page and fetch the        *
-             *         authenticity token.                                                 *
+             * Step 2: Go to the /profile/personal_access_tokens page and fetch the * authenticity token. *
              *******************************************************************************/
             String urlString = baseUrl + "/profile/personal_access_tokens";
             URL url = new URL(urlString);
@@ -302,8 +304,8 @@ public final class AccessToken {
             String csrfToken = matcher.group(1);
 
             /*******************************************************************************
-             * Step 3: Submit the /profile/personal_access_tokens page with the info to    *
-             * revoke the first matching personal access token.                            *
+             * Step 3: Submit the /profile/personal_access_tokens page with the info to * revoke the first matching
+             * personal access token. *
              *******************************************************************************/
             int indexOfTokenName = content.indexOf("<td>" + tokenName + "</td>");
             if (indexOfTokenName == -1) {
@@ -396,14 +398,14 @@ public final class AccessToken {
     /**
      * Fetches the user's GitLab Feed token using HTML scraping.
      *
-     * @param baseUrl the GitLab server base URL
+     * @param baseUrl  the GitLab server base URL
      * @param username the user name the user to log in with
      * @param password the password of the provided username
      * @return the fetched Feed token
      * @throws GitLabApiException if any exception occurs
      */
-    public static final String getFeedToken(final String baseUrl, final String username,
-                                            final String password) throws GitLabApiException {
+    public static final String getFeedToken(final String baseUrl, final String username, final String password)
+            throws GitLabApiException {
 
         // Save the follow redirect state so it can be restored later
         boolean savedFollowRedirects = HttpURLConnection.getFollowRedirects();
@@ -422,8 +424,7 @@ public final class AccessToken {
             cookies = login(baseUrl, username, password);
 
             /*******************************************************************************
-             * Step 2: Go to the /profile/personal_access_tokens page and fetch the        *
-             *         Feed token.                                                         *
+             * Step 2: Go to the /profile/personal_access_tokens page and fetch the * Feed token. *
              *******************************************************************************/
             String urlString = baseUrl + "/profile/personal_access_tokens";
             URL url = new URL(urlString);
@@ -469,14 +470,14 @@ public final class AccessToken {
     /**
      * Fetches the GitLab health check access token using HTML scraping.
      *
-     * @param baseUrl the GitLab server base URL
+     * @param baseUrl  the GitLab server base URL
      * @param username the user name of an admin user to log in with
      * @param password the password of the provided username
      * @return the fetched health check access token
      * @throws GitLabApiException if any exception occurs
      */
     public static final String getHealthCheckAccessToken(final String baseUrl, final String username,
-                                                         final String password) throws GitLabApiException {
+            final String password) throws GitLabApiException {
 
         // Save the follow redirect state so it can be restored later
         boolean savedFollowRedirects = HttpURLConnection.getFollowRedirects();
@@ -495,8 +496,7 @@ public final class AccessToken {
             cookies = login(baseUrl, username, password);
 
             /*******************************************************************************
-             * Step 2: Go to the /admin/health_check page and fetch the * health check
-             * access token. *
+             * Step 2: Go to the /admin/health_check page and fetch the * health check access token. *
              *******************************************************************************/
             String urlString = baseUrl + "/admin/health_check";
             URL url = new URL(urlString);
@@ -542,14 +542,14 @@ public final class AccessToken {
     /**
      * Gets a GitLab session cookie by logging in the specified user.
      *
-     * @param baseUrl the GitLab server base URL
+     * @param baseUrl  the GitLab server base URL
      * @param username the user name to to login for
      * @param password the password of the user to login for
      * @return the GitLab seesion token as a cookie value
      * @throws GitLabApiException if any error occurs
      */
-    protected static final String login(final String baseUrl, final String username,
-                                        final String password) throws GitLabApiException {
+    protected static final String login(final String baseUrl, final String username, final String password)
+            throws GitLabApiException {
 
         // Save the follow redirect state so it can be restored later
         boolean savedFollowRedirects = HttpURLConnection.getFollowRedirects();
@@ -593,8 +593,8 @@ public final class AccessToken {
             String csrfToken = matcher.group(1);
 
             /*******************************************************************************
-             * Step 2: Submit the login form wih the session cookie and authenticity_token *
-             * fetching a new session cookie along the way.                                *
+             * Step 2: Submit the login form wih the session cookie and authenticity_token * fetching a new session
+             * cookie along the way. *
              *******************************************************************************/
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("User-Agent", USER_AGENT);
@@ -698,16 +698,17 @@ public final class AccessToken {
     }
 
     /**
-     * Adds the specified form param to the form data StringBuilder.  If the provided formData is null,
-     * will create the StringBuilder instance first.
+     * Adds the specified form param to the form data StringBuilder. If the provided formData is null, will create the
+     * StringBuilder instance first.
      *
      * @param formData the StringBuilder instance holding the form data, if null will create the StringBuilder
-     * @param name the form param name
-     * @param value the form param value
+     * @param name     the form param name
+     * @param value    the form param value
      * @return the form data StringBuilder
      * @throws GitLabApiException if any error occurs.
      */
-    public static final StringBuilder addFormData(StringBuilder formData, String name, String value) throws GitLabApiException {
+    public static final StringBuilder addFormData(StringBuilder formData, String name, String value)
+            throws GitLabApiException {
 
         if (formData == null) {
             formData = new StringBuilder();
@@ -756,10 +757,9 @@ public final class AccessToken {
         API,
 
         /**
-         * Allows to read (pull) container registry images if a project is private and
-         * authorization is required (introduced in GitLab 9.3).  If the GitLab server you
-         * are using does not have the Registry properly configured, using this scope will
-         * result in an exception.
+         * Allows to read (pull) container registry images if a project is private and authorization is required
+         * (introduced in GitLab 9.3). If the GitLab server you are using does not have the Registry properly
+         * configured, using this scope will result in an exception.
          */
         READ_REGISTRY,
 
@@ -769,14 +769,14 @@ public final class AccessToken {
         READ_REPOSITORY,
 
         /**
-         * Allows access to the read-only endpoints under /users. Essentially, any of the GET
-         * requests in the Users API are allowed (introduced in GitLab 8.15).
+         * Allows access to the read-only endpoints under /users. Essentially, any of the GET requests in the Users API
+         * are allowed (introduced in GitLab 8.15).
          */
         READ_USER,
 
         /**
-         * Allows performing API actions as any user in the system,
-         * if the authenticated user is an admin (introduced in GitLab 10.2).
+         * Allows performing API actions as any user in the system, if the authenticated user is an admin (introduced in
+         * GitLab 10.2).
          */
         SUDO,
 

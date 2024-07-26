@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http;
 
 import org.miaixz.bus.http.bodys.ResponseBody;
@@ -40,8 +40,7 @@ import java.io.IOException;
 public interface Callback<T> {
 
     /**
-     * 当请求由于取消、连接问题或超时而无法执行时调用
-     * 因为网络可能在交换期间失败，所以远程服务器可能在失败之前接受了请求
+     * 当请求由于取消、连接问题或超时而无法执行时调用 因为网络可能在交换期间失败，所以远程服务器可能在失败之前接受了请求
      *
      * @param call 调用者信息
      * @param ex   异常信息
@@ -62,10 +61,8 @@ public interface Callback<T> {
     }
 
     /**
-     * 当远程服务器成功返回HTTP响应时调用。回调可以继续使用{@link Response#body}读取响应体响应仍然是
-     * 活动的直到它的响应体是{@linkplain ResponseBody closed} 回调的接收者可以使用另一个线程上的响应体
-     * 注意，传输层的成功(接收HTTP响应代码、报头和正文)不一定表示应用程序层的
-     * 成功:{@code response}可能仍然表示不满意的HTTP响应代码，如404或500
+     * 当远程服务器成功返回HTTP响应时调用。回调可以继续使用{@link Response#body}读取响应体响应仍然是 活动的直到它的响应体是{@linkplain ResponseBody closed}
+     * 回调的接收者可以使用另一个线程上的响应体 注意，传输层的成功(接收HTTP响应代码、报头和正文)不一定表示应用程序层的 成功:{@code response}可能仍然表示不满意的HTTP响应代码，如404或500
      *
      * @param call     调用者信息
      * @param response 响应体

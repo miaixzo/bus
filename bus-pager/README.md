@@ -38,14 +38,14 @@
 
 在 pom.xml 中添加如下依赖：
 
-```xml  
+```xml
 
 <dependency>
     <groupId>org.miaixz</groupId>
     <artifactId>bus-pager</artifactId>
     <version>x.x.x</version>
 </dependency>
-```  
+```
 
 最新版本号可以从首页查看。
 
@@ -70,7 +70,7 @@
         </array>
     </property>
 </bean>
-```   
+```
 
 #### 3. 分页插件参数介绍
 
@@ -85,9 +85,9 @@
 **下面几个参数都是针对默认 dialect 情况下的参数。使用自定义 dialect 实现时，下面的参数没有任何作用。**
 
 1. `delegate`：分页插件会自动检测当前的数据库链接，自动选择合适的分页方式。 你可以配置`delegate`
-   属性来指定分页插件使用哪种方言。配置时，可以使用下面的缩写值：  
-   `oracle`,`mysql`,`mariadb`,`sqlite`,`hsqldb`,`postgresql`,`db2`,`sqlserver`,`informix`,`h2`,`sqlserver2012`,`derby`  
-   <b>特别注意：</b>使用 SqlServer2012 数据库时，需要手动指定为 `sqlserver2012`，否则会使用 SqlServer2005 的方式进行分页。  
+   属性来指定分页插件使用哪种方言。配置时，可以使用下面的缩写值：
+   `oracle`,`mysql`,`mariadb`,`sqlite`,`hsqldb`,`postgresql`,`db2`,`sqlserver`,`informix`,`h2`,`sqlserver2012`,`derby`
+   <b>特别注意：</b>使用 SqlServer2012 数据库时，需要手动指定为 `sqlserver2012`，否则会使用 SqlServer2005 的方式进行分页。
    你也可以实现 `AbstractPaging`，然后配置该属性为实现类的全限定名称即可使用自定义的实现方法。
 
 2. `offsetAsPageNo`：默认值为 `false`，该参数对使用 `RowBounds` 作为分页参数时有效。 当该参数设置为 `true`
@@ -265,7 +265,7 @@ total=PageContext.
 count(()->userMapper.
 
 selectLike(user));
-```  
+```
 
 下面对最常用的方式进行详细介绍
 
@@ -273,7 +273,7 @@ selectLike(user));
 
 ```java
 List<User> list=sqlSession.selectList("x.y.selectIf",null,new RowBounds(1,10));
-```  
+```
 
 使用这种调用方式时，你可以使用RowBounds参数进行分页，这种方式侵入性最小，我们可以看到，通过RowBounds方式调用只是使用了这个参数，并没有增加其他任何内容。
 
@@ -344,7 +344,7 @@ assertEquals(1,list2.get(0).
 getId());
 
 assertEquals(182,list2.size());
-```  
+```
 
 ##### 例三，使用`Page`的用法：
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map.reference;
 
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
@@ -36,8 +36,7 @@ import java.lang.ref.ReferenceQueue;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * 线程安全的WeakMap实现
- * 键为Weak引用，即，在GC时发现弱引用会回收其对象
+ * 线程安全的WeakMap实现 键为Weak引用，即，在GC时发现弱引用会回收其对象
  *
  * @param <K> 键类型
  * @param <V> 值类型

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.xyz.IoKit;
@@ -52,8 +52,7 @@ import java.util.stream.StreamSupport;
  */
 public class Dcm2Jpg {
 
-    private final ImageReader imageReader =
-            ImageIO.getImageReadersByFormatName("DICOM").next();
+    private final ImageReader imageReader = ImageIO.getImageReadersByFormatName("DICOM").next();
     private ReadImage readImage;
     private String suffix;
     private int frame = 1;
@@ -73,8 +72,7 @@ public class Dcm2Jpg {
     private ICCProfile.Option iccProfile = ICCProfile.Option.none;
 
     private static Predicate<Object> matchClassName(String clazz) {
-        Predicate<String> predicate = clazz.endsWith("*")
-                ? startsWith(clazz.substring(0, clazz.length() - 1))
+        Predicate<String> predicate = clazz.endsWith("*") ? startsWith(clazz.substring(0, clazz.length() - 1))
                 : clazz::equals;
         return w -> predicate.test(w.getClass().getName());
     }
@@ -94,17 +92,14 @@ public class Dcm2Jpg {
         }
     }
 
-    public void initImageWriter(String formatName, String suffix,
-                                String clazz, String compressionType, Number quality) {
+    public void initImageWriter(String formatName, String suffix, String clazz, String compressionType,
+            Number quality) {
         this.suffix = suffix != null ? suffix : formatName.toLowerCase();
-        Iterator<ImageWriter> imageWriters =
-                ImageIO.getImageWritersByFormatName(formatName);
+        Iterator<ImageWriter> imageWriters = ImageIO.getImageWritersByFormatName(formatName);
         if (!imageWriters.hasNext())
             throw new IllegalArgumentException(formatName);
         Iterable<ImageWriter> iterable = () -> imageWriters;
-        imageWriter = StreamSupport.stream(iterable.spliterator(), false)
-                .filter(matchClassName(clazz))
-                .findFirst()
+        imageWriter = StreamSupport.stream(iterable.spliterator(), false).filter(matchClassName(clazz)).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(StringKit.format(clazz, formatName)));
         imageWriteParam = imageWriter.getDefaultWriteParam();
         if (compressionType != null || quality != null) {
@@ -180,8 +175,7 @@ public class Dcm2Jpg {
         if (src.isDirectory()) {
             dest.mkdir();
             for (File file : src.listFiles())
-                mconvert(file, new File(dest,
-                        file.isFile() ? suffix(file) : file.getName()));
+                mconvert(file, new File(dest, file.isFile() ? suffix(file) : file.getName()));
             return;
         }
         if (dest.isDirectory())
@@ -212,8 +206,7 @@ public class Dcm2Jpg {
     }
 
     private ImageReadParam readParam() {
-        ImageioReadParam param =
-                (ImageioReadParam) imageReader.getDefaultReadParam();
+        ImageioReadParam param = (ImageioReadParam) imageReader.getDefaultReadParam();
         param.setWindowCenter(windowCenter);
         param.setWindowWidth(windowWidth);
         param.setAutoWindowing(autoWindowing);

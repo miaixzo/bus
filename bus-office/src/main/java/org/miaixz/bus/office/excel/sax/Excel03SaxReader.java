@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.excel.sax;
 
 import org.apache.poi.hssf.eventusermodel.EventWorkbookBuilder.SheetRecordCollectingListener;
@@ -51,8 +51,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Excel2003格式的事件-用户模型方式读取器，统一将此归类为Sax读取
- * 参考：http://www.cnblogs.com/wshsdlau/p/5643862.html
+ * Excel2003格式的事件-用户模型方式读取器，统一将此归类为Sax读取 参考：http://www.cnblogs.com/wshsdlau/p/5643862.html
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -121,7 +120,8 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
     }
 
     @Override
-    public Excel03SaxReader read(final InputStream excelStream, final String idOrRidOrSheetName) throws InternalException {
+    public Excel03SaxReader read(final InputStream excelStream, final String idOrRidOrSheetName)
+            throws InternalException {
         try {
             return read(new POIFSFileSystem(excelStream), idOrRidOrSheetName);
         } catch (final IOException e) {
@@ -222,7 +222,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
                 throw new InternalException("Sheet [{}] not exist!", this.sheetName);
             }
             if (this.curRid != -1 && isProcessCurrentSheet()) {
-                //只有在当前指定的sheet中，才触发结束事件，且curId=-1时也不处理，避免重复调用
+                // 只有在当前指定的sheet中，才触发结束事件，且curId=-1时也不处理，避免重复调用
                 processLastCellSheet();
             }
         } else if (isProcessCurrentSheet()) {
@@ -287,60 +287,60 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
         Object value = null;
 
         switch (record.getSid()) {
-            case BlankRecord.sid:
-                // 空白记录
-                addToRowCellList(((BlankRecord) record), Normal.EMPTY);
-                break;
-            case BoolErrRecord.sid:
-                // 布尔类型
-                final BoolErrRecord berec = (BoolErrRecord) record;
-                addToRowCellList(berec, berec.getBooleanValue());
-                break;
-            case FormulaRecord.sid:
-                // 公式类型
-                final FormulaRecord formulaRec = (FormulaRecord) record;
-                if (isOutputFormulaValues) {
-                    if (Double.isNaN(formulaRec.getValue())) {
-                        // Formula result is a string
-                        // This is stored in the next record
-                        isOutputNextStringRecord = true;
-                    } else {
-                        value = ExcelSax.getNumberOrDateValue(formulaRec, formulaRec.getValue(), this.formatListener);
-                    }
+        case BlankRecord.sid:
+            // 空白记录
+            addToRowCellList(((BlankRecord) record), Normal.EMPTY);
+            break;
+        case BoolErrRecord.sid:
+            // 布尔类型
+            final BoolErrRecord berec = (BoolErrRecord) record;
+            addToRowCellList(berec, berec.getBooleanValue());
+            break;
+        case FormulaRecord.sid:
+            // 公式类型
+            final FormulaRecord formulaRec = (FormulaRecord) record;
+            if (isOutputFormulaValues) {
+                if (Double.isNaN(formulaRec.getValue())) {
+                    // Formula result is a string
+                    // This is stored in the next record
+                    isOutputNextStringRecord = true;
                 } else {
-                    value = HSSFFormulaParser.toFormulaString(stubWorkbook, formulaRec.getParsedExpression());
+                    value = ExcelSax.getNumberOrDateValue(formulaRec, formulaRec.getValue(), this.formatListener);
                 }
-                addToRowCellList(formulaRec, value);
-                break;
-            case StringRecord.sid:
-                // 单元格中公式的字符串
-                if (isOutputNextStringRecord) {
-                    // String for formula
-                    // value = ((StringRecord) record).getString();
-                    isOutputNextStringRecord = false;
-                }
-                break;
-            case LabelRecord.sid:
-                final LabelRecord lrec = (LabelRecord) record;
-                value = lrec.getValue();
-                addToRowCellList(lrec, value);
-                break;
-            case LabelSSTRecord.sid:
-                // 字符串类型
-                final LabelSSTRecord lsrec = (LabelSSTRecord) record;
-                if (null != sstRecord) {
-                    value = sstRecord.getString(lsrec.getSSTIndex()).toString();
-                }
-                addToRowCellList(lsrec, ObjectKit.defaultIfNull(value, Normal.EMPTY));
-                break;
-            case NumberRecord.sid: // 数字类型
-                final NumberRecord numrec = (NumberRecord) record;
-                value = ExcelSax.getNumberOrDateValue(numrec, numrec.getValue(), this.formatListener);
-                // 向容器加入列值
-                addToRowCellList(numrec, value);
-                break;
-            default:
-                break;
+            } else {
+                value = HSSFFormulaParser.toFormulaString(stubWorkbook, formulaRec.getParsedExpression());
+            }
+            addToRowCellList(formulaRec, value);
+            break;
+        case StringRecord.sid:
+            // 单元格中公式的字符串
+            if (isOutputNextStringRecord) {
+                // String for formula
+                // value = ((StringRecord) record).getString();
+                isOutputNextStringRecord = false;
+            }
+            break;
+        case LabelRecord.sid:
+            final LabelRecord lrec = (LabelRecord) record;
+            value = lrec.getValue();
+            addToRowCellList(lrec, value);
+            break;
+        case LabelSSTRecord.sid:
+            // 字符串类型
+            final LabelSSTRecord lsrec = (LabelSSTRecord) record;
+            if (null != sstRecord) {
+                value = sstRecord.getString(lsrec.getSSTIndex()).toString();
+            }
+            addToRowCellList(lsrec, ObjectKit.defaultIfNull(value, Normal.EMPTY));
+            break;
+        case NumberRecord.sid: // 数字类型
+            final NumberRecord numrec = (NumberRecord) record;
+            value = ExcelSax.getNumberOrDateValue(numrec, numrec.getValue(), this.formatListener);
+            // 向容器加入列值
+            addToRowCellList(numrec, value);
+            break;
+        default:
+            break;
         }
     }
 
@@ -376,8 +376,8 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
     /**
      * 获取sheet索引，从0开始
      * <ul>
-     *     <li>传入'rId'开头，直接去除rId前缀</li>
-     *     <li>传入纯数字，表示sheetIndex，直接转换为rid</li>
+     * <li>传入'rId'开头，直接去除rId前缀</li>
+     * <li>传入纯数字，表示sheetIndex，直接转换为rid</li>
      * </ul>
      *
      * @param idOrRidOrSheetName Excel中的sheet id或者rid编号或sheet名称，从0开始，rid必须加rId前缀，例如rId0，如果为-1处理所有编号的sheet

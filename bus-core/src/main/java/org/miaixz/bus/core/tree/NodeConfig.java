@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.tree;
 
 import java.io.Serializable;
@@ -55,7 +55,6 @@ public class NodeConfig implements Serializable {
      * 可以配置递归深度 从0开始计算 默认此配置为空,即不限制
      */
     private Integer deep;
-
 
     /**
      * 获取ID对应的名称
@@ -145,7 +144,6 @@ public class NodeConfig implements Serializable {
     public String getParentIdKey() {
         return this.parentIdKey;
     }
-
 
     /**
      * 设置父点对应的名称

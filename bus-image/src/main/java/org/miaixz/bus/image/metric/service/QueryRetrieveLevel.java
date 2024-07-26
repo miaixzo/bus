@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.service;
 
 import org.miaixz.bus.image.IOD;
@@ -41,155 +41,117 @@ import org.miaixz.bus.image.galaxy.data.ValidationResult;
 public enum QueryRetrieveLevel {
     PATIENT {
         @Override
-        protected IOD queryKeysIOD(QueryRetrieveLevel rootLevel,
-                                   boolean relational) {
+        protected IOD queryKeysIOD(QueryRetrieveLevel rootLevel, boolean relational) {
             IOD iod = new IOD();
-            iod.add(new IOD.DataElement(Tag.StudyInstanceUID, VR.UI,
-                    IOD.DataElementType.TYPE_0, -1, -1, 0));
-            iod.add(new IOD.DataElement(Tag.SeriesInstanceUID, VR.UI,
-                    IOD.DataElementType.TYPE_0, -1, -1, 0));
-            iod.add(new IOD.DataElement(Tag.SOPInstanceUID, VR.UI,
-                    IOD.DataElementType.TYPE_0, -1, -1, 0));
+            iod.add(new IOD.DataElement(Tag.StudyInstanceUID, VR.UI, IOD.DataElementType.TYPE_0, -1, -1, 0));
+            iod.add(new IOD.DataElement(Tag.SeriesInstanceUID, VR.UI, IOD.DataElementType.TYPE_0, -1, -1, 0));
+            iod.add(new IOD.DataElement(Tag.SOPInstanceUID, VR.UI, IOD.DataElementType.TYPE_0, -1, -1, 0));
             return iod;
         }
 
         @Override
-        protected IOD retrieveKeysIOD(QueryRetrieveLevel rootLevel,
-                                      boolean relational) {
+        protected IOD retrieveKeysIOD(QueryRetrieveLevel rootLevel, boolean relational) {
             IOD iod = queryKeysIOD(rootLevel, relational);
-            iod.add(new IOD.DataElement(Tag.PatientID, VR.LO,
-                    IOD.DataElementType.TYPE_1, 1, 1, 0));
+            iod.add(new IOD.DataElement(Tag.PatientID, VR.LO, IOD.DataElementType.TYPE_1, 1, 1, 0));
             return iod;
         }
 
     },
     STUDY {
         @Override
-        protected IOD queryKeysIOD(QueryRetrieveLevel rootLevel,
-                                   boolean relational) {
+        protected IOD queryKeysIOD(QueryRetrieveLevel rootLevel, boolean relational) {
             IOD iod = new IOD();
             iod.add(new IOD.DataElement(Tag.PatientID, VR.LO,
-                    !relational && rootLevel == QueryRetrieveLevel.PATIENT
-                            ? IOD.DataElementType.TYPE_1
+                    !relational && rootLevel == QueryRetrieveLevel.PATIENT ? IOD.DataElementType.TYPE_1
                             : IOD.DataElementType.TYPE_3,
                     1, 1, 0));
-            iod.add(new IOD.DataElement(Tag.SeriesInstanceUID, VR.UI,
-                    IOD.DataElementType.TYPE_0, -1, -1, 0));
-            iod.add(new IOD.DataElement(Tag.SOPInstanceUID, VR.UI,
-                    IOD.DataElementType.TYPE_0, -1, -1, 0));
+            iod.add(new IOD.DataElement(Tag.SeriesInstanceUID, VR.UI, IOD.DataElementType.TYPE_0, -1, -1, 0));
+            iod.add(new IOD.DataElement(Tag.SOPInstanceUID, VR.UI, IOD.DataElementType.TYPE_0, -1, -1, 0));
             return iod;
         }
 
         @Override
-        protected IOD retrieveKeysIOD(QueryRetrieveLevel rootLevel,
-                                      boolean relational) {
+        protected IOD retrieveKeysIOD(QueryRetrieveLevel rootLevel, boolean relational) {
             IOD iod = queryKeysIOD(rootLevel, relational);
-            iod.add(new IOD.DataElement(Tag.StudyInstanceUID, VR.UI,
-                    IOD.DataElementType.TYPE_1, -1, -1, 0));
+            iod.add(new IOD.DataElement(Tag.StudyInstanceUID, VR.UI, IOD.DataElementType.TYPE_1, -1, -1, 0));
             return iod;
         }
     },
     SERIES {
         @Override
-        protected IOD queryKeysIOD(QueryRetrieveLevel rootLevel,
-                                   boolean relational) {
+        protected IOD queryKeysIOD(QueryRetrieveLevel rootLevel, boolean relational) {
             IOD iod = new IOD();
             iod.add(new IOD.DataElement(Tag.PatientID, VR.LO,
-                    !relational && rootLevel == QueryRetrieveLevel.PATIENT
-                            ? IOD.DataElementType.TYPE_1
+                    !relational && rootLevel == QueryRetrieveLevel.PATIENT ? IOD.DataElementType.TYPE_1
                             : IOD.DataElementType.TYPE_3,
                     1, 1, 0));
             iod.add(new IOD.DataElement(Tag.StudyInstanceUID, VR.UI,
-                    !relational
-                            ? IOD.DataElementType.TYPE_1
-                            : IOD.DataElementType.TYPE_3,
-                    1, 1, 0));
-            iod.add(new IOD.DataElement(Tag.SOPInstanceUID, VR.UI,
-                    IOD.DataElementType.TYPE_0, -1, -1, 0));
+                    !relational ? IOD.DataElementType.TYPE_1 : IOD.DataElementType.TYPE_3, 1, 1, 0));
+            iod.add(new IOD.DataElement(Tag.SOPInstanceUID, VR.UI, IOD.DataElementType.TYPE_0, -1, -1, 0));
             return iod;
         }
 
         @Override
-        protected IOD retrieveKeysIOD(QueryRetrieveLevel rootLevel,
-                                      boolean relational) {
+        protected IOD retrieveKeysIOD(QueryRetrieveLevel rootLevel, boolean relational) {
             IOD iod = queryKeysIOD(rootLevel, relational);
-            iod.add(new IOD.DataElement(Tag.SeriesInstanceUID, VR.UI,
-                    IOD.DataElementType.TYPE_1, -1, -1, 0));
+            iod.add(new IOD.DataElement(Tag.SeriesInstanceUID, VR.UI, IOD.DataElementType.TYPE_1, -1, -1, 0));
             return iod;
         }
     },
     IMAGE {
         @Override
-        protected IOD queryKeysIOD(QueryRetrieveLevel rootLevel,
-                                   boolean relational) {
+        protected IOD queryKeysIOD(QueryRetrieveLevel rootLevel, boolean relational) {
             IOD iod = new IOD();
             iod.add(new IOD.DataElement(Tag.PatientID, VR.LO,
-                    !relational && rootLevel == QueryRetrieveLevel.PATIENT
-                            ? IOD.DataElementType.TYPE_1
+                    !relational && rootLevel == QueryRetrieveLevel.PATIENT ? IOD.DataElementType.TYPE_1
                             : IOD.DataElementType.TYPE_3,
                     1, 1, 0));
             iod.add(new IOD.DataElement(Tag.StudyInstanceUID, VR.UI,
-                    !relational
-                            ? IOD.DataElementType.TYPE_1
-                            : IOD.DataElementType.TYPE_3,
-                    1, 1, 0));
+                    !relational ? IOD.DataElementType.TYPE_1 : IOD.DataElementType.TYPE_3, 1, 1, 0));
             iod.add(new IOD.DataElement(Tag.SeriesInstanceUID, VR.UI,
-                    !relational
-                            ? IOD.DataElementType.TYPE_1
-                            : IOD.DataElementType.TYPE_3,
-                    1, 1, 0));
+                    !relational ? IOD.DataElementType.TYPE_1 : IOD.DataElementType.TYPE_3, 1, 1, 0));
             return iod;
         }
 
         @Override
-        protected IOD retrieveKeysIOD(QueryRetrieveLevel rootLevel,
-                                      boolean relational) {
+        protected IOD retrieveKeysIOD(QueryRetrieveLevel rootLevel, boolean relational) {
             IOD iod = queryKeysIOD(rootLevel, relational);
-            iod.add(new IOD.DataElement(Tag.SOPInstanceUID, VR.UI,
-                    IOD.DataElementType.TYPE_1, -1, -1, 0));
+            iod.add(new IOD.DataElement(Tag.SOPInstanceUID, VR.UI, IOD.DataElementType.TYPE_1, -1, -1, 0));
             return iod;
         }
     },
     FRAME {
         @Override
-        protected IOD queryKeysIOD(QueryRetrieveLevel rootLevel,
-                                   boolean relational) {
+        protected IOD queryKeysIOD(QueryRetrieveLevel rootLevel, boolean relational) {
             throw new UnsupportedOperationException();
         }
 
         @Override
-        protected IOD retrieveKeysIOD(QueryRetrieveLevel rootLevel,
-                                      boolean relational) {
+        protected IOD retrieveKeysIOD(QueryRetrieveLevel rootLevel, boolean relational) {
             return IMAGE.retrieveKeysIOD(rootLevel, relational);
         }
     };
 
-    public static QueryRetrieveLevel valueOf(Attributes attrs,
-                                             String[] qrLevels) throws ImageServiceException {
+    public static QueryRetrieveLevel valueOf(Attributes attrs, String[] qrLevels) throws ImageServiceException {
         ValidationResult result = new ValidationResult();
-        attrs.validate(new IOD.DataElement(Tag.QueryRetrieveLevel, VR.LO,
-                        IOD.DataElementType.TYPE_1, 1, 1, 0).setValues(qrLevels),
-                result);
+        attrs.validate(new IOD.DataElement(Tag.QueryRetrieveLevel, VR.LO, IOD.DataElementType.TYPE_1, 1, 1, 0)
+                .setValues(qrLevels), result);
         check(result);
         return QueryRetrieveLevel.valueOf(attrs.getString(Tag.QueryRetrieveLevel));
     }
 
     private static void check(ValidationResult result) throws ImageServiceException {
         if (!result.isValid())
-            throw new ImageServiceException(
-                    Status.IdentifierDoesNotMatchSOPClass,
-                    result.getErrorComment())
+            throw new ImageServiceException(Status.IdentifierDoesNotMatchSOPClass, result.getErrorComment())
                     .setOffendingElements(result.getOffendingElements());
     }
 
-    public void validateQueryKeys(Attributes attrs,
-                                  QueryRetrieveLevel rootLevel, boolean relational)
+    public void validateQueryKeys(Attributes attrs, QueryRetrieveLevel rootLevel, boolean relational)
             throws ImageServiceException {
         check(attrs.validate(queryKeysIOD(rootLevel, relational)));
     }
 
-    public void validateRetrieveKeys(Attributes attrs,
-                                     QueryRetrieveLevel rootLevel, boolean relational)
+    public void validateRetrieveKeys(Attributes attrs, QueryRetrieveLevel rootLevel, boolean relational)
             throws ImageServiceException {
         check(attrs.validate(retrieveKeysIOD(rootLevel, relational)));
     }

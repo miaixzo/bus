@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.secure;
 
 import javax.security.auth.x500.X500Principal;
@@ -62,7 +62,8 @@ public class BasicTrustRootIndex implements TrustRootIndex {
     public X509Certificate findByIssuerAndSignature(X509Certificate cert) {
         X500Principal issuer = cert.getIssuerX500Principal();
         Set<X509Certificate> subjectCaCerts = subjectToCaCerts.get(issuer);
-        if (null == subjectCaCerts) return null;
+        if (null == subjectCaCerts)
+            return null;
 
         for (X509Certificate caCert : subjectCaCerts) {
             PublicKey publicKey = caCert.getPublicKey();
@@ -78,10 +79,10 @@ public class BasicTrustRootIndex implements TrustRootIndex {
 
     @Override
     public boolean equals(Object other) {
-        if (other == this) return true;
+        if (other == this)
+            return true;
         return other instanceof BasicTrustRootIndex
-                && ((BasicTrustRootIndex) other).subjectToCaCerts.equals(
-                subjectToCaCerts);
+                && ((BasicTrustRootIndex) other).subjectToCaCerts.equals(subjectToCaCerts);
     }
 
     @Override

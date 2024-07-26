@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.hl7.api;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -44,13 +44,11 @@ public class HL7ApplicationCache extends ConfigurationCache<HL7Configuration, HL
     }
 
     @Override
-    protected HL7Application find(HL7Configuration conf, String name)
-            throws InternalException {
+    protected HL7Application find(HL7Configuration conf, String name) throws InternalException {
         return conf.findHL7Application(name);
     }
 
-    public HL7Application findHL7Application(String name)
-            throws InternalException {
+    public HL7Application findHL7Application(String name) throws InternalException {
         HL7Application ae = get(name);
         if (ae == null)
             throw new NotFoundException("Unknown HL7 Application: " + name);

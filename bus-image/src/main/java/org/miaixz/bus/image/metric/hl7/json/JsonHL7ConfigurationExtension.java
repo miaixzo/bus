@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.hl7.json;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -42,6 +42,7 @@ public interface JsonHL7ConfigurationExtension {
 
     void storeTo(HL7Application hl7App, Device device, JSONWriter writer);
 
-    boolean loadHL7ApplicationExtension(Device device, HL7Application hl7App, JSONReader reader, ConfigurationDelegate config) throws InternalException;
+    boolean loadHL7ApplicationExtension(Device device, HL7Application hl7App, JSONReader reader,
+            ConfigurationDelegate config) throws InternalException;
 
 }

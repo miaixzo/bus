@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -55,45 +55,42 @@ import java.util.Date;
 public class UpsSCU {
 
     private static int status;
-    private static final ImageService upsscuNEventRqHandler =
-            new AbstractImageService(UID.UnifiedProcedureStepPush.uid) {
-                @Override
-                public void onDimseRQ(Association as, PresentationContext pc,
-                                      Dimse dimse, Attributes cmd, PDVInputStream data)
-                        throws IOException {
-                    if (dimse != Dimse.N_EVENT_REPORT_RQ)
-                        throw new ImageServiceException(Status.UnrecognizedOperation);
+    private static final ImageService upsscuNEventRqHandler = new AbstractImageService(
+            UID.UnifiedProcedureStepPush.uid) {
+        @Override
+        public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes cmd, PDVInputStream data)
+                throws IOException {
+            if (dimse != Dimse.N_EVENT_REPORT_RQ)
+                throw new ImageServiceException(Status.UnrecognizedOperation);
 
-                    int eventTypeID = cmd.getInt(Tag.EventTypeID, 0);
-                    if (eventTypeID == 0 || eventTypeID > 5)
-                        throw new ImageServiceException(Status.NoSuchEventType).setEventTypeID(eventTypeID);
+            int eventTypeID = cmd.getInt(Tag.EventTypeID, 0);
+            if (eventTypeID == 0 || eventTypeID > 5)
+                throw new ImageServiceException(Status.NoSuchEventType).setEventTypeID(eventTypeID);
 
-                    try {
-                        as.writeDimseRSP(pc, Commands.mkNEventReportRSP(cmd, status));
-                    } catch (InternalException e) {
-                        Logger.warn("{} << N-EVENT-RECORD-RSP failed: {}", as, e.getMessage());
-                    }
-                }
+            try {
+                as.writeDimseRSP(pc, Commands.mkNEventReportRSP(cmd, status));
+            } catch (InternalException e) {
+                Logger.warn("{} << N-EVENT-RECORD-RSP failed: {}", as, e.getMessage());
+            }
+        }
 
-                @Override
-                protected void onDimseRQ(Association as, PresentationContext pc,
-                                         Dimse dimse, Attributes cmd, Attributes data) {
-                    throw new UnsupportedOperationException();
-                }
-            };
+        @Override
+        protected void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes cmd, Attributes data) {
+            throw new UnsupportedOperationException();
+        }
+    };
     private final ApplicationEntity ae;
     private final Connection remote;
     private final AAssociateRQ rq = new AAssociateRQ();
     private Association as;
-    //default response handler
+    // default response handler
     private final RSPHandlerFactory rspHandlerFactory = new RSPHandlerFactory() {
         @Override
         public DimseRSPHandler createDimseRSPHandlerForCFind() {
             return new DimseRSPHandler(as.nextMessageID()) {
                 @Override
-                public void onDimseRSP(Association as, Attributes cmd,
-                                       Attributes data) {
-                    //TODO
+                public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
+                    // TODO
                 }
             };
         }
@@ -132,8 +129,7 @@ public class UpsSCU {
         public DimseRSPHandler createDimseRSPHandlerForNAction() {
             return new DimseRSPHandler(as.nextMessageID()) {
                 @Override
-                public void onDimseRSP(Association as, Attributes cmd,
-                                       Attributes data) {
+                public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
                     super.onDimseRSP(as, cmd, data);
                 }
             };
@@ -168,9 +164,7 @@ public class UpsSCU {
     }
 
     public void addVerificationPresentationContext() {
-        rq.addPresentationContext(
-                new PresentationContext(1, UID.Verification.uid,
-                        UID.ImplicitVRLittleEndian.uid));
+        rq.addPresentationContext(new PresentationContext(1, UID.Verification.uid, UID.ImplicitVRLittleEndian.uid));
     }
 
     public final void setUPSIUID(String upsiuid) {
@@ -206,8 +200,7 @@ public class UpsSCU {
         this.subscriptionAction = subscriptionAction;
     }
 
-    public void open() throws IOException, InterruptedException,
-            InternalException, GeneralSecurityException {
+    public void open() throws IOException, InterruptedException, InternalException, GeneralSecurityException {
         as = ae.connect(remote, rq);
     }
 
@@ -220,10 +213,7 @@ public class UpsSCU {
     }
 
     private void getUps() throws IOException, InterruptedException {
-        as.nget(operation.getNegotiatingSOPClassUID(),
-                UID.UnifiedProcedureStepPush.uid,
-                upsiuid,
-                tags,
+        as.nget(operation.getNegotiatingSOPClassUID(), UID.UnifiedProcedureStepPush.uid, upsiuid, tags,
                 rspHandlerFactory.createDimseRSPHandlerForNGet());
     }
 
@@ -234,23 +224,15 @@ public class UpsSCU {
     }
 
     private void actionOnUps(Attributes data, int actionTypeId) throws IOException, InterruptedException {
-        as.naction(operation.negotiatingSOPClassUID,
-                UID.UnifiedProcedureStepPush.uid,
-                upsiuid,
-                actionTypeId,
-                data,
-                null,
-                rspHandlerFactory.createDimseRSPHandlerForNAction());
+        as.naction(operation.negotiatingSOPClassUID, UID.UnifiedProcedureStepPush.uid, upsiuid, actionTypeId, data,
+                null, rspHandlerFactory.createDimseRSPHandlerForNAction());
     }
 
     enum Operation {
-        create(UID.UnifiedProcedureStepPush.uid, false),
-        update(UID.UnifiedProcedureStepPull.uid, true),
-        get(UID.UnifiedProcedureStepPush.uid, true),
-        changeState(UID.UnifiedProcedureStepPull.uid, true),
+        create(UID.UnifiedProcedureStepPush.uid, false), update(UID.UnifiedProcedureStepPull.uid, true),
+        get(UID.UnifiedProcedureStepPush.uid, true), changeState(UID.UnifiedProcedureStepPull.uid, true),
         requestCancel(UID.UnifiedProcedureStepPush.uid, true),
-        subscriptionAction(UID.UnifiedProcedureStepWatch.uid, false),
-        receive(UID.UnifiedProcedureStepEvent.uid, false);
+        subscriptionAction(UID.UnifiedProcedureStepWatch.uid, false), receive(UID.UnifiedProcedureStepEvent.uid, false);
 
         private final boolean checkUPSIUID;
         private String negotiatingSOPClassUID;

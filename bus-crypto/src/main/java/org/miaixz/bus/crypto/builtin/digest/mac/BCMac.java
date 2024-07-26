@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.builtin.digest.mac;
 
 import org.bouncycastle.crypto.CipherParameters;
@@ -32,8 +32,7 @@ import org.bouncycastle.crypto.params.KeyParameter;
 import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
 
 /**
- * BouncyCastle的MAC算法实现引擎，使用{@link org.bouncycastle.crypto.Mac} 实现摘要
- * 当引入BouncyCastle库时自动使用其作为Provider
+ * BouncyCastle的MAC算法实现引擎，使用{@link org.bouncycastle.crypto.Mac} 实现摘要 当引入BouncyCastle库时自动使用其作为Provider
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -57,7 +56,8 @@ public class BCMac extends SimpleWrapper<org.bouncycastle.crypto.Mac> implements
      * @param params 参数，例如密钥可以用{@link KeyParameter}
      * @return this
      */
-    private static org.bouncycastle.crypto.Mac initMac(final org.bouncycastle.crypto.Mac mac, final CipherParameters params) {
+    private static org.bouncycastle.crypto.Mac initMac(final org.bouncycastle.crypto.Mac mac,
+            final CipherParameters params) {
         mac.init(params);
         return mac;
     }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -43,13 +43,11 @@ import java.util.stream.Collectors;
  *
  * <p>
  * 该集合可以被视为以{@link TreeEntryNode#getKey()}作为key，{@link TreeEntryNode}实例作为value的{@link LinkedHashMap}。
- * 使用时，将每一对键与值对视为一个{@link TreeEntryNode}节点，节点的id即为{@link TreeEntryNode#getKey()}，
- * 任何情况下使用相同的key都将会访问到同一个节点。
+ * 使用时，将每一对键与值对视为一个{@link TreeEntryNode}节点，节点的id即为{@link TreeEntryNode#getKey()}， 任何情况下使用相同的key都将会访问到同一个节点。
  * </p>
  *
  * <p>
- * 节点通过key形成父子关系，并最终构成多叉树结构，多组平行的多叉树将在当前集合中构成森林。
- * 使用者可以通过{@link ForestMap}本身的方法来对森林进行操作或访问，
+ * 节点通过key形成父子关系，并最终构成多叉树结构，多组平行的多叉树将在当前集合中构成森林。 使用者可以通过{@link ForestMap}本身的方法来对森林进行操作或访问，
  * 也可以在获取到{@link TreeEntry}后，使用节点本身的方法对数进行操作或访问。
  * </p>
  *
@@ -136,11 +134,8 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
     /**
      * 将指定节点从当前{@link Map}中删除
      * <ul>
-     *     <li>若存在父节点或子节点，则将其断开其与父节点或子节点的引用关系；</li>
-     *     <li>
-     *         若同时存在父节点或子节点，则会在删除后将让子节点直接成为父节点的子节点，比如：
-     *         现有引用关系 a -&gt; b -&gt; c，删除 b 后，将有 a -&gt; c
-     *     </li>
+     * <li>若存在父节点或子节点，则将其断开其与父节点或子节点的引用关系；</li>
+     * <li>若同时存在父节点或子节点，则会在删除后将让子节点直接成为父节点的子节点，比如： 现有引用关系 a -&gt; b -&gt; c，删除 b 后，将有 a -&gt; c</li>
      * </ul>
      *
      * @param key 节点的key
@@ -195,16 +190,13 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
     }
 
     /**
-     * 由key与{@link TreeEntry}组成的键值对实体的{@link Set}集合。
-     * 注意，返回集合中{@link Map.Entry#setValue(Object)}不支持调用。
+     * 由key与{@link TreeEntry}组成的键值对实体的{@link Set}集合。 注意，返回集合中{@link Map.Entry#setValue(Object)}不支持调用。
      *
      * @return 集合
      */
     @Override
     public Set<Map.Entry<K, TreeEntry<K, V>>> entrySet() {
-        return nodes.entrySet().stream()
-                .map(this::wrap)
-                .collect(Collectors.toSet());
+        return nodes.entrySet().stream().map(this::wrap).collect(Collectors.toSet());
     }
 
     /**
@@ -217,8 +209,8 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
     /**
      * 添加一个节点
      * <ul>
-     *     <li>若key对应节点不存在，则以传入的键值创建一个新的节点；</li>
-     *     <li>若key对应节点存在，则将该节点的值替换为{@code node}指定的值；</li>
+     * <li>若key对应节点不存在，则以传入的键值创建一个新的节点；</li>
+     * <li>若key对应节点存在，则将该节点的值替换为{@code node}指定的值；</li>
      * </ul>
      *
      * @param key   节点的key
@@ -241,14 +233,15 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
     /**
      * 同时添加父子节点：
      * <ul>
-     *     <li>若{@code parentKey}或{@code childKey}对应的节点不存在，则会根据键值创建一个对应的节点；</li>
-     *     <li>若{@code parentKey}或{@code childKey}对应的节点存在，则会更新对应节点的值；</li>
+     * <li>若{@code parentKey}或{@code childKey}对应的节点不存在，则会根据键值创建一个对应的节点；</li>
+     * <li>若{@code parentKey}或{@code childKey}对应的节点存在，则会更新对应节点的值；</li>
      * </ul>
      * 该操作等同于：
+     * 
      * <pre>
-     *     TreeEntry&lt;K, V&gt;  parent = putNode(parentKey, parentValue);
-     *     TreeEntry&lt;K, V&gt;  child = putNode(childKey, childValue);
-     *     linkNodes(parentKey, childKey);
+     * TreeEntry&lt;K, V&gt; parent = putNode(parentKey, parentValue);
+     * TreeEntry&lt;K, V&gt; child = putNode(childKey, childValue);
+     * linkNodes(parentKey, childKey);
      * </pre>
      *
      * @param parentKey   父节点的key
@@ -267,8 +260,8 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
     /**
      * 添加子节点，并为子节点指定父节点：
      * <ul>
-     *     <li>若{@code parentKey}或{@code childKey}对应的节点不存在，则会根据键值创建一个对应的节点；</li>
-     *     <li>若{@code parentKey}或{@code childKey}对应的节点存在，则会更新对应节点的值；</li>
+     * <li>若{@code parentKey}或{@code childKey}对应的节点不存在，则会根据键值创建一个对应的节点；</li>
+     * <li>若{@code parentKey}或{@code childKey}对应的节点存在，则会更新对应节点的值；</li>
      * </ul>
      *
      * @param parentKey  父节点的key
@@ -319,10 +312,9 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
         }
         // 5.子节点存在，且已经与其他节点构成父子关系，但是不允许子节点直接修改其父节点
         else {
-            throw new IllegalArgumentException(StringKit.format(
-                    "[{}] has been used as child of [{}], can not be overwrite as child of [{}]",
-                    childNode.getKey(), childNode.getDeclaredParent().getKey(), parentKey
-            ));
+            throw new IllegalArgumentException(
+                    StringKit.format("[{}] has been used as child of [{}], can not be overwrite as child of [{}]",
+                            childNode.getKey(), childNode.getDeclaredParent().getKey(), parentKey));
         }
         consumer.accept(parentNode, childNode);
     }
@@ -460,8 +452,8 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
          * @param breakTraverse  是否终止遍历
          * @return 遍历到的最后一个节点
          */
-        TreeEntryNode<K, V> traverseParentNodes(
-                final boolean includeCurrent, final Consumer<TreeEntryNode<K, V>> consumer, Predicate<TreeEntryNode<K, V>> breakTraverse) {
+        TreeEntryNode<K, V> traverseParentNodes(final boolean includeCurrent,
+                final Consumer<TreeEntryNode<K, V>> consumer, Predicate<TreeEntryNode<K, V>> breakTraverse) {
             breakTraverse = ObjectKit.defaultIfNull(breakTraverse, n -> false);
             TreeEntryNode<K, V> curr = includeCurrent ? this : this.parent;
             while (ObjectKit.isNotNull(curr)) {
@@ -550,8 +542,9 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
          * @param breakTraverse  是否终止遍历，为null时默认总是返回{@code true}
          * @return 遍历到的最后一个节点
          */
-        TreeEntryNode<K, V> traverseChildNodes(
-                final boolean includeCurrent, final BiConsumer<Integer, TreeEntryNode<K, V>> consumer, BiPredicate<Integer, TreeEntryNode<K, V>> breakTraverse) {
+        TreeEntryNode<K, V> traverseChildNodes(final boolean includeCurrent,
+                final BiConsumer<Integer, TreeEntryNode<K, V>> consumer,
+                BiPredicate<Integer, TreeEntryNode<K, V>> breakTraverse) {
             breakTraverse = ObjectKit.defaultIfNull(breakTraverse, (i, n) -> false);
             final Deque<List<TreeEntryNode<K, V>>> keyNodeDeque = ListKit.ofLinked(ListKit.of(this));
             boolean needProcess = includeCurrent;
@@ -580,7 +573,6 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
             return lastNode;
         }
 
-
         /**
          * 添加子节点
          *
@@ -593,11 +585,8 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
             }
 
             // 检查循环引用
-            traverseParentNodes(true, s -> Assert.notEquals(
-                    s.key, child.key,
-                    "circular reference between [{}] and [{}]!",
-                    s.key, this.key
-            ), null);
+            traverseParentNodes(true, s -> Assert.notEquals(s.key, child.key,
+                    "circular reference between [{}] and [{}]!", s.key, this.key), null);
 
             // 调整该节点的信息
             child.parent = this;
@@ -676,8 +665,7 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
         }
 
         /**
-         * 比较目标对象与当前{@link TreeEntry}是否相等。
-         * 默认只要{@link TreeEntry#getKey()}的返回值相同，即认为两者相等
+         * 比较目标对象与当前{@link TreeEntry}是否相等。 默认只要{@link TreeEntry#getKey()}的返回值相同，即认为两者相等
          *
          * @param o 目标对象
          * @return 是否
@@ -687,7 +675,8 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
             if (this == o) {
                 return true;
             }
-            if (o == null || this.getClass().equals(o.getClass()) || ClassKit.isAssignable(this.getClass(), o.getClass())) {
+            if (o == null || this.getClass().equals(o.getClass())
+                    || ClassKit.isAssignable(this.getClass(), o.getClass())) {
                 return false;
             }
             final TreeEntry<?, ?> treeEntry = (TreeEntry<?, ?>) o;
@@ -695,8 +684,7 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
         }
 
         /**
-         * 返回当前{@link TreeEntry}的哈希值。
-         * 默认总是返回{@link TreeEntry#getKey()}的哈希值
+         * 返回当前{@link TreeEntry}的哈希值。 默认总是返回{@link TreeEntry#getKey()}的哈希值
          *
          * @return 哈希值
          */
@@ -712,7 +700,8 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
          * @return 节点
          */
         TreeEntryNode<K, V> copy(final V value) {
-            final TreeEntryNode<K, V> copiedNode = new TreeEntryNode<>(this.parent, this.key, ObjectKit.defaultIfNull(value, this.value));
+            final TreeEntryNode<K, V> copiedNode = new TreeEntryNode<>(this.parent, this.key,
+                    ObjectKit.defaultIfNull(value, this.value));
             copiedNode.children.putAll(children);
             return copiedNode;
         }
@@ -728,7 +717,8 @@ public class LinkedForestMap<K, V> implements ForestMap<K, V> {
      * @see #entrySet()
      * @see #values()
      */
-    public static class EntryNodeWrapper<K, V, N extends TreeEntry<K, V>> implements Map.Entry<K, TreeEntry<K, V>>, Wrapper<N> {
+    public static class EntryNodeWrapper<K, V, N extends TreeEntry<K, V>>
+            implements Map.Entry<K, TreeEntry<K, V>>, Wrapper<N> {
         private final N entryNode;
 
         EntryNodeWrapper(final N entryNode) {

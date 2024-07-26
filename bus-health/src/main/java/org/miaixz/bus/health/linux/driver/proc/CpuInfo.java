@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.linux.driver.proc;
 
 import org.miaixz.bus.core.center.regex.Pattern;
@@ -59,30 +59,30 @@ public final class CpuInfo {
             if (line.startsWith("CPU implementer")) {
                 int part = Parsing.parseLastInt(line, 0);
                 switch (part) {
-                    case 0x41:
-                        return "ARM";
-                    case 0x42:
-                        return "Broadcom";
-                    case 0x43:
-                        return "Cavium";
-                    case 0x44:
-                        return "DEC";
-                    case 0x4e:
-                        return "Nvidia";
-                    case 0x50:
-                        return "APM";
-                    case 0x51:
-                        return "Qualcomm";
-                    case 0x53:
-                        return "Samsung";
-                    case 0x56:
-                        return "Marvell";
-                    case 0x66:
-                        return "Faraday";
-                    case 0x69:
-                        return "Intel";
-                    default:
-                        return null;
+                case 0x41:
+                    return "ARM";
+                case 0x42:
+                    return "Broadcom";
+                case 0x43:
+                    return "Cavium";
+                case 0x44:
+                    return "DEC";
+                case 0x4e:
+                    return "Nvidia";
+                case 0x50:
+                    return "APM";
+                case 0x51:
+                    return "Qualcomm";
+                case 0x53:
+                    return "Samsung";
+                case 0x56:
+                    return "Marvell";
+                case 0x66:
+                    return "Faraday";
+                case 0x69:
+                    return "Intel";
+                default:
+                    return null;
                 }
             }
         }
@@ -93,7 +93,7 @@ public final class CpuInfo {
      * Gets the board manufacturer, model, version, and serial number from {@code /proc/cpuinfo}
      *
      * @return A quartet of strings for manufacturer, model, version, and serial number. Each one may be null if
-     * unknown.
+     *         unknown.
      */
     public static Tuple queryBoardInfo() {
         String pcManufacturer = null;
@@ -108,20 +108,20 @@ public final class CpuInfo {
                 continue;
             }
             switch (splitLine[0]) {
-                case "Hardware":
-                    pcModel = splitLine[1];
-                    break;
-                case "Revision":
-                    pcVersion = splitLine[1];
-                    if (pcVersion.length() > 1) {
-                        pcManufacturer = queryBoardManufacturer(pcVersion.charAt(1));
-                    }
-                    break;
-                case "Serial":
-                    pcSerialNumber = splitLine[1];
-                    break;
-                default:
-                    // Do nothing
+            case "Hardware":
+                pcModel = splitLine[1];
+                break;
+            case "Revision":
+                pcVersion = splitLine[1];
+                if (pcVersion.length() > 1) {
+                    pcManufacturer = queryBoardManufacturer(pcVersion.charAt(1));
+                }
+                break;
+            case "Serial":
+                pcSerialNumber = splitLine[1];
+                break;
+            default:
+                // Do nothing
             }
         }
         return new Tuple(pcManufacturer, pcModel, pcVersion, pcSerialNumber);
@@ -129,20 +129,20 @@ public final class CpuInfo {
 
     private static String queryBoardManufacturer(char digit) {
         switch (digit) {
-            case '0':
-                return "Sony UK";
-            case '1':
-                return "Egoman";
-            case '2':
-                return "Embest";
-            case '3':
-                return "Sony Japan";
-            case '4':
-                return "Embest";
-            case '5':
-                return "Stadium";
-            default:
-                return Normal.UNKNOWN;
+        case '0':
+            return "Sony UK";
+        case '1':
+            return "Egoman";
+        case '2':
+            return "Embest";
+        case '3':
+            return "Sony Japan";
+        case '4':
+            return "Embest";
+        case '5':
+            return "Stadium";
+        default:
+            return Normal.UNKNOWN;
         }
     }
 

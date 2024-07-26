@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.driver;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -44,7 +44,7 @@ import java.util.List;
 @ThreadSafe
 public final class Xrandr {
 
-    private static final String[] XRANDR_VERBOSE = {"xrandr", "--verbose"};
+    private static final String[] XRANDR_VERBOSE = { "xrandr", "--verbose" };
 
     private Xrandr() {
     }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.i18n;
 
 import jakarta.annotation.Resource;
@@ -39,7 +39,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
  * @author Kimi Liu
  * @since Java 17+
  */
-@EnableConfigurationProperties(value = {I18nProperties.class})
+@EnableConfigurationProperties(value = { I18nProperties.class })
 public class I18nConfiguration {
 
     @Resource

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.slack;
 
 import com.alibaba.fastjson.JSONArray;
@@ -73,12 +73,9 @@ public class SlackProvider extends AbstractProvider {
         String response = Httpx.get(accessTokenUrl(callback.getCode()), null, header);
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         this.checkResponse(accessTokenObject);
-        return AccToken.builder()
-                .accessToken(accessTokenObject.getString("access_token"))
-                .scope(accessTokenObject.getString("scope"))
-                .tokenType(accessTokenObject.getString("token_type"))
-                .uid(accessTokenObject.getJSONObject("authed_user").getString("id"))
-                .build();
+        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
+                .scope(accessTokenObject.getString("scope")).tokenType(accessTokenObject.getString("token_type"))
+                .uid(accessTokenObject.getJSONObject("authed_user").getString("id")).build();
     }
 
     @Override
@@ -91,16 +88,9 @@ public class SlackProvider extends AbstractProvider {
         this.checkResponse(object);
         JSONObject user = object.getJSONObject("user");
         JSONObject profile = user.getJSONObject("profile");
-        return Material.builder()
-                .rawJson(user)
-                .uuid(user.getString("id"))
-                .username(user.getString("name"))
-                .nickname(user.getString("real_name"))
-                .avatar(profile.getString("image_original"))
-                .email(profile.getString("email"))
-                .gender(Gender.UNKNOWN)
-                .token(accToken)
-                .source(complex.toString())
+        return Material.builder().rawJson(user).uuid(user.getString("id")).username(user.getString("name"))
+                .nickname(user.getString("real_name")).avatar(profile.getString("image_original"))
+                .email(profile.getString("email")).gender(Gender.UNKNOWN).token(accToken).source(complex.toString())
                 .build();
     }
 
@@ -137,9 +127,7 @@ public class SlackProvider extends AbstractProvider {
 
     @Override
     public String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(complex.userInfo())
-                .queryParam("user", accToken.getUid())
-                .build();
+        return Builder.fromUrl(complex.userInfo()).queryParam("user", accToken.getUid()).build();
     }
 
     /**
@@ -150,22 +138,17 @@ public class SlackProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.authorize())
-                .queryParam("client_id", context.getAppKey())
-                .queryParam("state", getRealState(state))
-                .queryParam("redirect_uri", context.getRedirectUri())
+        return Builder.fromUrl(complex.authorize()).queryParam("client_id", context.getAppKey())
+                .queryParam("state", getRealState(state)).queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("scope", this.getScopes(Symbol.COMMA, true, this.getDefaultScopes(SlackScope.values())))
                 .build();
     }
 
     @Override
     protected String accessTokenUrl(String code) {
-        return Builder.fromUrl(complex.accessToken())
-                .queryParam("code", code)
-                .queryParam("client_id", context.getAppKey())
-                .queryParam("client_secret", context.getAppSecret())
-                .queryParam("redirect_uri", context.getRedirectUri())
-                .build();
+        return Builder.fromUrl(complex.accessToken()).queryParam("code", code)
+                .queryParam("client_id", context.getAppKey()).queryParam("client_secret", context.getAppSecret())
+                .queryParam("redirect_uri", context.getRedirectUri()).build();
     }
 
 }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.Philips_PET_Private_Group;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,40 +46,41 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.SUVFactor:
-            case PrivateTag.ActivityConcentrationScaleFactor:
-                return VR.DS;
-            case PrivateTag.WorklistInfoFileName:
-                return VR.LO;
-            case PrivateTag._7053_xx04_:
-            case PrivateTag._7053_xx06_:
-                return VR.OB;
-            case PrivateTag._7053_xx07_:
-            case PrivateTag._7053_xx08_:
-            case PrivateTag._7053_xx12_:
-                return VR.SQ;
-            case PrivateTag._7053_xx13_:
-            case PrivateTag._7053_xx14_:
-            case PrivateTag._7053_xx15_:
-            case PrivateTag._7053_xx16_:
-            case PrivateTag._7053_xx17_:
-            case PrivateTag._7053_xx18_:
-                return VR.SS;
-            case PrivateTag.OriginalFileName:
-                return VR.ST;
-            case PrivateTag._7053_xxC2_:
-                return VR.UI;
-            case PrivateTag._7053_xx0F_:
-                return VR.UL;
-            case PrivateTag.PrivateData:
-            case PrivateTag._7053_xx10_:
-            case PrivateTag._7053_xx11_:
-                return VR.US;
+
+        case PrivateTag.SUVFactor:
+        case PrivateTag.ActivityConcentrationScaleFactor:
+            return VR.DS;
+        case PrivateTag.WorklistInfoFileName:
+            return VR.LO;
+        case PrivateTag._7053_xx04_:
+        case PrivateTag._7053_xx06_:
+            return VR.OB;
+        case PrivateTag._7053_xx07_:
+        case PrivateTag._7053_xx08_:
+        case PrivateTag._7053_xx12_:
+            return VR.SQ;
+        case PrivateTag._7053_xx13_:
+        case PrivateTag._7053_xx14_:
+        case PrivateTag._7053_xx15_:
+        case PrivateTag._7053_xx16_:
+        case PrivateTag._7053_xx17_:
+        case PrivateTag._7053_xx18_:
+            return VR.SS;
+        case PrivateTag.OriginalFileName:
+            return VR.ST;
+        case PrivateTag._7053_xxC2_:
+            return VR.UI;
+        case PrivateTag._7053_xx0F_:
+            return VR.UL;
+        case PrivateTag.PrivateData:
+        case PrivateTag._7053_xx10_:
+        case PrivateTag._7053_xx11_:
+            return VR.US;
         }
         return VR.UN;
     }

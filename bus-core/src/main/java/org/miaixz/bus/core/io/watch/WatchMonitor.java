@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.watch;
 
 import org.miaixz.bus.core.io.file.PathResolve;
@@ -39,10 +39,7 @@ import java.nio.file.Path;
 import java.nio.file.WatchEvent;
 
 /**
- * 路径监听器
- * 监听器可监听目录或文件
- * 如果监听的Path不存在，则递归创建空目录然后监听此空目录
- * 递归监听目录时，并不会监听新创建的目录
+ * 路径监听器 监听器可监听目录或文件 如果监听的Path不存在，则递归创建空目录然后监听此空目录 递归监听目录时，并不会监听新创建的目录
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -82,8 +79,8 @@ public class WatchMonitor extends Thread implements Closeable, Serializable {
     }
 
     /**
-     * 构造
-     * 例如设置：
+     * 构造 例如设置：
+     * 
      * <pre>
      * maxDepth &lt;= 1 表示只监听当前目录
      * maxDepth = 2 表示监听当前目录以及下层目录
@@ -102,8 +99,7 @@ public class WatchMonitor extends Thread implements Closeable, Serializable {
     }
 
     /**
-     * 设置监听
-     * 多个监听请使用{@link WatcherChain}
+     * 设置监听 多个监听请使用{@link WatcherChain}
      *
      * @param watcher 监听
      * @return WatchMonitor
@@ -145,9 +141,8 @@ public class WatchMonitor extends Thread implements Closeable, Serializable {
     }
 
     /**
-     * 当监听目录时，监听目录的最大深度
-     * 当设置值为1（或小于1）时，表示不递归监听子目录
-     * 例如设置：
+     * 当监听目录时，监听目录的最大深度 当设置值为1（或小于1）时，表示不递归监听子目录 例如设置：
+     * 
      * <pre>
      * maxDepth &lt;= 1 表示只监听当前目录
      * maxDepth = 2 表示监听当前目录以及下层目录
@@ -168,8 +163,8 @@ public class WatchMonitor extends Thread implements Closeable, Serializable {
     }
 
     /**
-     * 初始化
-     * 初始化包括：
+     * 初始化 初始化包括：
+     * 
      * <pre>
      * 1、解析传入的路径，判断其为目录还是文件
      * </pre>
@@ -184,7 +179,8 @@ public class WatchMonitor extends Thread implements Closeable, Serializable {
             if (null != lastPathEle) {
                 final String lastPathEleStr = lastPathEle.toString();
                 // 带有点表示有扩展名，按照未创建的文件对待。Linux下.d的为目录，排除之
-                if (StringKit.contains(lastPathEleStr, Symbol.C_DOT) && !StringKit.endWithIgnoreCase(lastPathEleStr, ".d")) {
+                if (StringKit.contains(lastPathEleStr, Symbol.C_DOT)
+                        && !StringKit.endWithIgnoreCase(lastPathEleStr, ".d")) {
                     this.file = this.dir;
                     this.dir = this.file.getParent();
                 }

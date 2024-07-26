@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager.dialect.base;
 
 import org.apache.ibatis.cache.CacheKey;
@@ -44,7 +44,8 @@ import java.util.Map;
 public class Db2 extends AbstractPaging {
 
     @Override
-    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
+    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql,
+            CacheKey pageKey) {
         paramMap.put(PAGEPARAMETER_FIRST, page.getStartRow() + 1);
         paramMap.put(PAGEPARAMETER_SECOND, page.getEndRow());
         // 处理pageKey

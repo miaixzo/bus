@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.annotation.resolve.elements;
 
 import org.miaixz.bus.core.lang.annotation.resolve.AnnotationMapping;
@@ -41,22 +41,14 @@ import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 /**
- * <p>支持可重复注解的增强{@link AnnotatedElement}，
- * 功能与{@link MetaAnnotatedElement}类似，但是存在下述差异：
+ * <p>
+ * 支持可重复注解的增强{@link AnnotatedElement}， 功能与{@link MetaAnnotatedElement}类似，但是存在下述差异：
  * <ul>
- *     <li>
- *         限制以同一根注解延伸出的树结构上——而不是{@link AnnotatedElement}上——每种类型注解只能保留一个，
- *         即当{@link AnnotatedElement}存在多个根注解有相同的元注解时，这些元注解会都会被扫描到；
- *     </li>
- *     <li>
- *         支持扫描{@link AnnotatedElement}可重复注解，即当当前实例指定的{@link RepeatableAnnotationCollector}
- *         支持从{@link AnnotatedElement}上直接声明的注解中获得可重复注解时，
- *         则将会自动将其展开直到不为容器注解为止。
- *         eg：
- *         A上存在注解<em>X</em>，该注解是一个容器注解，内部可重复注解<em>Y</em>，
- *         包含解析后，得到注解<em>X</em>与可重复注解<em>Y</em>,
- *         同理，若存在<em>X</em>、<em>Y</em>、<em>X</em>的嵌套关系，则解析后获得全部三者；
- *     </li>
+ * <li>限制以同一根注解延伸出的树结构上——而不是{@link AnnotatedElement}上——每种类型注解只能保留一个，
+ * 即当{@link AnnotatedElement}存在多个根注解有相同的元注解时，这些元注解会都会被扫描到；</li>
+ * <li>支持扫描{@link AnnotatedElement}可重复注解，即当当前实例指定的{@link RepeatableAnnotationCollector}
+ * 支持从{@link AnnotatedElement}上直接声明的注解中获得可重复注解时， 则将会自动将其展开直到不为容器注解为止。 eg： A上存在注解<em>X</em>，该注解是一个容器注解，内部可重复注解<em>Y</em>，
+ * 包含解析后，得到注解<em>X</em>与可重复注解<em>Y</em>, 同理，若存在<em>X</em>、<em>Y</em>、<em>X</em>的嵌套关系，则解析后获得全部三者；</li>
  * </ul>
  * 由于上述机制，当通过实例的{@link #getAnnotation(Class)}或{@link #getDeclaredAnnotation(Class)}
  * 方法获得指定类型注解时，若该类型注解存在多个，仅能尽可能获得最先被扫描到的那一个。
@@ -66,7 +58,8 @@ import java.util.stream.Collectors;
  * @see RepeatableAnnotationCollector
  * @since Java 17+
  */
-public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotation>> implements AnnotatedElement, Iterable<T> {
+public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotation>>
+        implements AnnotatedElement, Iterable<T> {
 
     /**
      * 包装的{@link AnnotatedElement}对象
@@ -94,8 +87,8 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
      * @param element        包装的{@link AnnotatedElement}对象
      * @param mappingFactory 创建{@link AnnotationMapping}的工厂方法
      */
-    RepeatableMetaAnnotatedElement(
-            final RepeatableAnnotationCollector repeatableCollector, final AnnotatedElement element, final BiFunction<T, Annotation, T> mappingFactory) {
+    RepeatableMetaAnnotatedElement(final RepeatableAnnotationCollector repeatableCollector,
+            final AnnotatedElement element, final BiFunction<T, Annotation, T> mappingFactory) {
         this.element = Objects.requireNonNull(element);
         this.mappingFactory = Objects.requireNonNull(mappingFactory);
         this.repeatableCollector = repeatableCollector;
@@ -125,23 +118,20 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
      * @return {@link AnnotatedElement}上的注解结构
      */
     public static <A extends AnnotationMapping<Annotation>> RepeatableMetaAnnotatedElement<A> create(
-            final RepeatableAnnotationCollector collector,
-            final AnnotatedElement element,
+            final RepeatableAnnotationCollector collector, final AnnotatedElement element,
             final BiFunction<A, Annotation, A> mappingFactory) {
         return new RepeatableMetaAnnotatedElement<>(collector, element, mappingFactory);
     }
 
     /**
-     * 指定注解是否在{@link #element}上直接声明的注解、直接声明的注解包含的可重复注解，
-     * 以及他们的元注解中存在
+     * 指定注解是否在{@link #element}上直接声明的注解、直接声明的注解包含的可重复注解， 以及他们的元注解中存在
      *
      * @param annotationType 注解类型
      * @return 是否
      */
     @Override
     public boolean isAnnotationPresent(final Class<? extends Annotation> annotationType) {
-        return aggregations.stream()
-                .anyMatch(aggregation -> aggregation.getMappings().containsKey(annotationType));
+        return aggregations.stream().anyMatch(aggregation -> aggregation.getMappings().containsKey(annotationType));
     }
 
     /**
@@ -153,13 +143,8 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
      */
     @Override
     public <A extends Annotation> A getAnnotation(final Class<A> annotationType) {
-        return aggregations.stream()
-                .map(Aggregation::getMappings)
-                .map(annotations -> annotations.get(annotationType))
-                .filter(Objects::nonNull)
-                .findFirst()
-                .map(T::getResolvedAnnotation)
-                .map(annotationType::cast)
+        return aggregations.stream().map(Aggregation::getMappings).map(annotations -> annotations.get(annotationType))
+                .filter(Objects::nonNull).findFirst().map(T::getResolvedAnnotation).map(annotationType::cast)
                 .orElse(null);
     }
 
@@ -170,11 +155,8 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
      */
     @Override
     public Annotation[] getAnnotations() {
-        return aggregations.stream()
-                .map(aggregation -> aggregation.getMappings().values())
-                .flatMap(Collection::stream)
-                .map(T::getResolvedAnnotation)
-                .toArray(Annotation[]::new);
+        return aggregations.stream().map(aggregation -> aggregation.getMappings().values()).flatMap(Collection::stream)
+                .map(T::getResolvedAnnotation).toArray(Annotation[]::new);
     }
 
     /**
@@ -186,11 +168,8 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
      */
     @Override
     public <A extends Annotation> A[] getAnnotationsByType(final Class<A> annotationType) {
-        return aggregations.stream()
-                .map(aggregation -> aggregation.getMappings().get(annotationType))
-                .filter(Objects::nonNull)
-                .map(T::getResolvedAnnotation)
-                .map(annotationType::cast)
+        return aggregations.stream().map(aggregation -> aggregation.getMappings().get(annotationType))
+                .filter(Objects::nonNull).map(T::getResolvedAnnotation).map(annotationType::cast)
                 .toArray(size -> ArrayKit.newArray(annotationType, size));
     }
 
@@ -201,11 +180,8 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
      */
     @Override
     public Annotation[] getDeclaredAnnotations() {
-        return aggregations.stream()
-                .filter(Aggregation::isDirect)
-                .map(Aggregation::getRoot)
-                .map(T::getResolvedAnnotation)
-                .toArray(Annotation[]::new);
+        return aggregations.stream().filter(Aggregation::isDirect).map(Aggregation::getRoot)
+                .map(T::getResolvedAnnotation).toArray(Annotation[]::new);
     }
 
     /**
@@ -217,14 +193,9 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
      */
     @Override
     public <A extends Annotation> A getDeclaredAnnotation(final Class<A> annotationType) {
-        return aggregations.stream()
-                .filter(Aggregation::isDirect)
-                .map(Aggregation::getRoot)
-                .filter(annotation -> Objects.equals(annotationType, annotation.annotationType()))
-                .findFirst()
-                .map(T::getResolvedAnnotation)
-                .map(annotationType::cast)
-                .orElse(null);
+        return aggregations.stream().filter(Aggregation::isDirect).map(Aggregation::getRoot)
+                .filter(annotation -> Objects.equals(annotationType, annotation.annotationType())).findFirst()
+                .map(T::getResolvedAnnotation).map(annotationType::cast).orElse(null);
     }
 
     /**
@@ -236,12 +207,9 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
      */
     @Override
     public <A extends Annotation> A[] getDeclaredAnnotationsByType(final Class<A> annotationType) {
-        return aggregations.stream()
-                .filter(Aggregation::isDirect)
-                .map(Aggregation::getRoot)
+        return aggregations.stream().filter(Aggregation::isDirect).map(Aggregation::getRoot)
                 .filter(annotation -> Objects.equals(annotationType, annotation.annotationType()))
-                .map(T::getResolvedAnnotation)
-                .map(annotationType::cast)
+                .map(T::getResolvedAnnotation).map(annotationType::cast)
                 .toArray(size -> ArrayKit.newArray(annotationType, size));
     }
 
@@ -269,7 +237,8 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
             return false;
         }
         final RepeatableMetaAnnotatedElement<?> that = (RepeatableMetaAnnotatedElement<?>) o;
-        return element.equals(that.element) && mappingFactory.equals(that.mappingFactory) && repeatableCollector.equals(that.repeatableCollector);
+        return element.equals(that.element) && mappingFactory.equals(that.mappingFactory)
+                && repeatableCollector.equals(that.repeatableCollector);
     }
 
     /**
@@ -289,10 +258,7 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
      */
     @Override
     public Iterator<T> iterator() {
-        return aggregations.stream()
-                .map(Aggregation::getMappings)
-                .map(Map::values)
-                .flatMap(Collection::stream)
+        return aggregations.stream().map(Aggregation::getMappings).map(Map::values).flatMap(Collection::stream)
                 .iterator();
     }
 
@@ -314,10 +280,8 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
      * 若当前注解是可重复注解的容器，则将其平铺后把可重复注解加入{@link #aggregations}
      */
     private List<Aggregation> collectRepeatable(final Annotation annotation) {
-        return repeatableCollector.getAllRepeatableAnnotations(annotation)
-                .stream()
-                .map(a -> new Aggregation(a, Objects.equals(a, annotation)))
-                .collect(Collectors.toList());
+        return repeatableCollector.getAllRepeatableAnnotations(annotation).stream()
+                .map(a -> new Aggregation(a, Objects.equals(a, annotation))).collect(Collectors.toList());
     }
 
     /**
@@ -387,8 +351,7 @@ public class RepeatableMetaAnnotatedElement<T extends AnnotationMapping<Annotati
         }
 
         /**
-         * 该注解是否需要映射
-         * 默认情况下，已经处理过、或在{@link java.lang}包下的注解不会被处理
+         * 该注解是否需要映射 默认情况下，已经处理过、或在{@link java.lang}包下的注解不会被处理
          */
         private boolean isNeedMapping(final Map<Class<? extends Annotation>, T> mappings, final Annotation annotation) {
             return !CharsBacker.startWith(annotation.annotationType().getName(), "java.lang.")

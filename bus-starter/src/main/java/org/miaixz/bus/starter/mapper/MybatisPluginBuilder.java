@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.mapper;
 
 import org.apache.ibatis.plugin.Interceptor;
@@ -55,13 +55,11 @@ public class MybatisPluginBuilder {
     public static List<Interceptor> plugins = new ArrayList<>();
 
     public static Interceptor[] build(Environment environment) {
-        List<Interceptor> list = ListKit.of(
-                new NatureSqlHandler(),
-                new ExplainSqlHandler()
-        );
+        List<Interceptor> list = ListKit.of(new NatureSqlHandler(), new ExplainSqlHandler());
 
         if (ObjectKit.isNotEmpty(environment)) {
-            MybatisProperties mybatisProperties = PlaceHolderBinder.bind(environment, MybatisProperties.class, GeniusBuilder.MYBATIS);
+            MybatisProperties mybatisProperties = PlaceHolderBinder.bind(environment, MybatisProperties.class,
+                    GeniusBuilder.MYBATIS);
             if (ObjectKit.isNotEmpty(mybatisProperties)) {
                 Properties p = new Properties();
                 p.setProperty("autoDelimitKeywords", mybatisProperties.getAutoDelimitKeywords());
@@ -74,7 +72,8 @@ public class MybatisPluginBuilder {
                 list.add(pageSqlHandler);
             }
 
-            SensitiveProperties sensitiveProperties = PlaceHolderBinder.bind(environment, SensitiveProperties.class, GeniusBuilder.MYBATIS);
+            SensitiveProperties sensitiveProperties = PlaceHolderBinder.bind(environment, SensitiveProperties.class,
+                    GeniusBuilder.MYBATIS);
             if (ObjectKit.isNotEmpty(sensitiveProperties)) {
                 Properties p = new Properties();
                 p.setProperty("debug", String.valueOf(sensitiveProperties.isDebug()));

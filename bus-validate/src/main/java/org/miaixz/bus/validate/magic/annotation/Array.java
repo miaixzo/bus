@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.validate.magic.annotation;
 
 import java.lang.annotation.*;
@@ -33,8 +33,7 @@ import java.lang.annotation.*;
  * 检查是否为数组或集合
  *
  * <p>
- * 在任意校验注解类型加上{@code @Array}注解, 会在运行时对该校验对象的类型进行判断
- * 如果是数组或者集合对象,则会对内部元素执行当前所有其他的校验器将, 否则执行对校验对象执行校验器
+ * 在任意校验注解类型加上{@code @Array}注解, 会在运行时对该校验对象的类型进行判断 如果是数组或者集合对象,则会对内部元素执行当前所有其他的校验器将, 否则执行对校验对象执行校验器
  * </P>
  *
  * @author Kimi Liu
@@ -42,7 +41,7 @@ import java.lang.annotation.*;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.ANNOTATION_TYPE})
+@Target({ ElementType.ANNOTATION_TYPE })
 public @interface Array {
 
 }

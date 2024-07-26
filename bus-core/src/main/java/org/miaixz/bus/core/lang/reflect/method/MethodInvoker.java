@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.reflect.method;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -77,8 +77,8 @@ public class MethodInvoker implements Invoker {
     }
 
     /**
-     * 执行方法句柄，{@link  MethodHandle#invokeWithArguments(Object...)}包装
-     * 非static方法需先调用{@link  MethodHandle#bindTo(Object)}绑定执行对象。
+     * 执行方法句柄，{@link MethodHandle#invokeWithArguments(Object...)}包装
+     * 非static方法需先调用{@link MethodHandle#bindTo(Object)}绑定执行对象。
      *
      * <p>
      * 需要注意的是，此处没有使用{@link MethodHandle#invoke(Object...)}，因为其参数第一个必须为对象或类。
@@ -102,14 +102,13 @@ public class MethodInvoker implements Invoker {
      * 执行接口或对象中的方法
      *
      * <pre class="code">
-     *     interface Duck {
-     *         default String quack() {
-     *             return "Quack";
-     *         }
+     * interface Duck {
+     *     default String quack() {
+     *         return "Quack";
      *     }
-     *     Duck duck = (Duck) Proxy.newProxyInstance(
-     *         ClassKit.getClassLoader(),
-     *         new Class[] { Duck.class },
+     * }
+     * 
+     * Duck duck = (Duck) Proxy.newProxyInstance(ClassKit.getClassLoader(), new Class[] { Duck.class },
      *         MethodInvoker::invoke);
      * </pre>
      *
@@ -129,14 +128,13 @@ public class MethodInvoker implements Invoker {
      * 执行接口或对象中的方法，参数类型不做转换，必须与方法参数类型完全匹配
      *
      * <pre class="code">
-     *     interface Duck {
-     *         default String quack() {
-     *             return "Quack";
-     *         }
+     * interface Duck {
+     *     default String quack() {
+     *         return "Quack";
      *     }
-     *     Duck duck = (Duck) Proxy.newProxyInstance(
-     *         MethodInvoker.getClassLoader(),
-     *         new Class[] { Duck.class },
+     * }
+     * 
+     * Duck duck = (Duck) Proxy.newProxyInstance(MethodInvoker.getClassLoader(), new Class[] { Duck.class },
      *         MethodInvoker::invoke);
      * </pre>
      *
@@ -147,7 +145,8 @@ public class MethodInvoker implements Invoker {
      * @return 结果
      * @throws InternalException 执行异常包装
      */
-    public static <T> T invokeExact(final Object obj, final Method method, final Object... args) throws InternalException {
+    public static <T> T invokeExact(final Object obj, final Method method, final Object... args)
+            throws InternalException {
         Assert.notNull(method, "Method must be not null!");
         java.lang.invoke.MethodHandle handle;
         try {
@@ -164,6 +163,7 @@ public class MethodInvoker implements Invoker {
 
     /**
      * 设置是否检查参数
+     * 
      * <pre>
      * 1. 参数个数是否与方法参数个数一致
      * 2. 如果某个参数为null但是方法这个位置的参数为原始类型，则赋予原始类型默认值
@@ -228,7 +228,8 @@ public class MethodInvoker implements Invoker {
     private void checkArgs(final Object[] args) {
         final Class<?>[] paramTypes = this.paramTypes;
         if (null != args) {
-            Assert.isTrue(args.length == paramTypes.length, "Params length [{}] is not fit for param length [{}] of method !", args.length, paramTypes.length);
+            Assert.isTrue(args.length == paramTypes.length,
+                    "Params length [{}] is not fit for param length [{}] of method !", args.length, paramTypes.length);
             Class<?> type;
             for (int i = 0; i < args.length; i++) {
                 type = paramTypes[i];

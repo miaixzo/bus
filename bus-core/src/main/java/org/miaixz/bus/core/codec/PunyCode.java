@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.codec;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -36,8 +36,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import java.util.List;
 
 /**
- * Punycode是一个根据RFC 3492标准而制定的编码系统，主要用于把域名从地方语言所采用的Unicode编码转换成为可用于DNS系统的编码
- * 参考：<a href="https://blog.csdn.net/a19881029/article/details/18262671">https://blog.csdn.net/a19881029/article/details/18262671</a>
+ * Punycode是一个根据RFC 3492标准而制定的编码系统，主要用于把域名从地方语言所采用的Unicode编码转换成为可用于DNS系统的编码 参考：<a href=
+ * "https://blog.csdn.net/a19881029/article/details/18262671">https://blog.csdn.net/a19881029/article/details/18262671</a>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -142,7 +142,7 @@ public class PunyCode {
                 }
                 if (c == n) {
                     int q = delta;
-                    for (int k = BASE; ; k += BASE) {
+                    for (int k = BASE;; k += BASE) {
                         final int t;
                         if (k <= bias) {
                             t = TMIN;
@@ -225,7 +225,7 @@ public class PunyCode {
         while (d < length) {
             final int oldi = i;
             int w = 1;
-            for (int k = BASE; ; k += BASE) {
+            for (int k = BASE;; k += BASE) {
                 if (d == length) {
                     throw new InternalException("BAD_INPUT");
                 }
@@ -282,6 +282,7 @@ public class PunyCode {
 
     /**
      * 将数字转为字符，对应关系为：
+     * 
      * <pre>
      *     0 -&gt; a
      *     1 -&gt; b
@@ -311,6 +312,7 @@ public class PunyCode {
 
     /**
      * 将字符转为数字，对应关系为：
+     * 
      * <pre>
      *     a -&gt; 0
      *     b -&gt; 1

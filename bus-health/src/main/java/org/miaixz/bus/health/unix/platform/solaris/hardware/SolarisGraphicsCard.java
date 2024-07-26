@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.solaris.hardware;
 
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -128,8 +128,7 @@ final class SolarisGraphicsCard extends AbstractGraphicsCard {
         // In case we reached end before saving
         if (PCI_CLASS_DISPLAY.equals(classCode)) {
             cardList.add(new SolarisGraphicsCard(name.isEmpty() ? Normal.UNKNOWN : name,
-                    productId.isEmpty() ? Normal.UNKNOWN : productId,
-                    vendorId.isEmpty() ? Normal.UNKNOWN : vendorId,
+                    productId.isEmpty() ? Normal.UNKNOWN : productId, vendorId.isEmpty() ? Normal.UNKNOWN : vendorId,
                     versionInfoList.isEmpty() ? Normal.UNKNOWN : String.join(", ", versionInfoList), 0L));
         }
         return cardList;

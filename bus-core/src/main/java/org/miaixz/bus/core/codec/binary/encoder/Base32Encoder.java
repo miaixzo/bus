@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.codec.binary.encoder;
 
 import org.miaixz.bus.core.codec.Encoder;
@@ -49,7 +49,7 @@ public class Base32Encoder implements Encoder<byte[], String> {
      * 16进制编码器
      */
     public static final Base32Encoder HEX_ENCODER = new Base32Encoder(HEX_ALPHABET, Symbol.C_EQUAL);
-    private static final int[] BASE32_FILL = {-1, 4, 1, 6, 3};
+    private static final int[] BASE32_FILL = { -1, 4, 1, 6, 3 };
     private final char[] alphabet;
     private final Character pad;
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.http___www_gemedicalsystems_com_it_solutions_rad_pacs_;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,16 +46,17 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.PacsExamnotesFlag:
-                return VR.CS;
-            case PrivateTag.ReferenceToPacsStudy:
-            case PrivateTag.ReferenceToPacsImage:
-                return VR.UT;
+
+        case PrivateTag.PacsExamnotesFlag:
+            return VR.CS;
+        case PrivateTag.ReferenceToPacsStudy:
+        case PrivateTag.ReferenceToPacsImage:
+            return VR.UT;
         }
         return VR.UN;
     }

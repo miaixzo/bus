@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.hl7.net;
 
 import org.miaixz.bus.image.metric.Connection;
@@ -83,8 +83,7 @@ public enum HL7ProtocolHandler implements TCPProtocolHandler {
                             monitor.onMessageProcessed(conn, s, msg, rsp, null);
                     } catch (HL7Exception e) {
                         Logger.info("{}: failed to process {}:\n", s, msg, e);
-                        rsp = new UnparsedHL7Message(
-                                HL7Message.makeACK(msg.msh(), e).getBytes(null));
+                        rsp = new UnparsedHL7Message(HL7Message.makeACK(msg.msh(), e).getBytes(null));
                         if (monitor != null)
                             monitor.onMessageProcessed(conn, s, msg, rsp, e);
                     }

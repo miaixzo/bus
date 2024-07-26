@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.net.tls;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -40,8 +40,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
 /**
- * 信任所有信任管理器，默认信任所有客户端和服务端证书
- * 注意此类慎用，信任全部可能会有中间人攻击风险
+ * 信任所有信任管理器，默认信任所有客户端和服务端证书 注意此类慎用，信任全部可能会有中间人攻击风险
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -55,12 +54,11 @@ public class TrustAnyTrustManager extends X509ExtendedTrustManager {
     /**
      * 信任所有
      */
-    public static final X509TrustManager[] TRUST_ANYS = {INSTANCE};
+    public static final X509TrustManager[] TRUST_ANYS = { INSTANCE };
     private static final X509Certificate[] EMPTY_X509_CERTIFICATE_ARRAY = {};
 
     /**
-     * 获取默认的{@link TrustManager}，为SunX509
-     * 此方法主要用于获取自签证书的{@link X509TrustManager}
+     * 获取默认的{@link TrustManager}，为SunX509 此方法主要用于获取自签证书的{@link X509TrustManager}
      *
      * @return {@link X509TrustManager} or {@code null}
      */
@@ -69,8 +67,7 @@ public class TrustAnyTrustManager extends X509ExtendedTrustManager {
     }
 
     /**
-     * 获取指定的{@link X509TrustManager}
-     * 此方法主要用于获取自签证书的{@link X509TrustManager}
+     * 获取指定的{@link X509TrustManager} 此方法主要用于获取自签证书的{@link X509TrustManager}
      *
      * @param keyStore {@link KeyStore}
      * @param provider 算法提供者，如bc，{@code null}表示默认
@@ -81,15 +78,15 @@ public class TrustAnyTrustManager extends X509ExtendedTrustManager {
     }
 
     /**
-     * 获取指定的{@link X509TrustManager}
-     * 此方法主要用于获取自签证书的{@link X509TrustManager}
+     * 获取指定的{@link X509TrustManager} 此方法主要用于获取自签证书的{@link X509TrustManager}
      *
      * @param keyStore  {@link KeyStore}
      * @param algorithm 算法名称，如"SunX509"，{@code null}表示默认SunX509
      * @param provider  算法提供者，如bc，{@code null}表示默认SunJSSE
      * @return {@link X509TrustManager} or {@code null}
      */
-    public static X509TrustManager getTrustManager(final KeyStore keyStore, final String algorithm, final Provider provider) {
+    public static X509TrustManager getTrustManager(final KeyStore keyStore, final String algorithm,
+            final Provider provider) {
         final TrustManager[] tms = getTrustManagers(keyStore, algorithm, provider);
         for (final TrustManager tm : tms) {
             if (tm instanceof X509TrustManager) {
@@ -101,8 +98,7 @@ public class TrustAnyTrustManager extends X509ExtendedTrustManager {
     }
 
     /**
-     * 获取默认的{@link TrustManager}，为SunX509
-     * 此方法主要用于获取自签证书的{@link TrustManager}
+     * 获取默认的{@link TrustManager}，为SunX509 此方法主要用于获取自签证书的{@link TrustManager}
      *
      * @return {@link X509TrustManager} or {@code null}
      */
@@ -111,8 +107,7 @@ public class TrustAnyTrustManager extends X509ExtendedTrustManager {
     }
 
     /**
-     * 获取指定的{@link TrustManager}
-     * 此方法主要用于获取自签证书的{@link TrustManager}
+     * 获取指定的{@link TrustManager} 此方法主要用于获取自签证书的{@link TrustManager}
      *
      * @param keyStore  {@link KeyStore}
      * @param algorithm 算法名称，如"SunX509"，{@code null}表示默认SunX509
@@ -165,15 +160,16 @@ public class TrustAnyTrustManager extends X509ExtendedTrustManager {
     }
 
     @Override
-    public void checkClientTrusted(final X509Certificate[] x509Certificates, final String s, final SSLEngine sslEngine) {
+    public void checkClientTrusted(final X509Certificate[] x509Certificates, final String s,
+            final SSLEngine sslEngine) {
     }
 
     @Override
-    public void checkServerTrusted(final X509Certificate[] x509Certificates, final String s, final SSLEngine sslEngine) {
+    public void checkServerTrusted(final X509Certificate[] x509Certificates, final String s,
+            final SSLEngine sslEngine) {
     }
 
-    public static KeyStore createKeyStore(X509Certificate... certs)
-            throws KeyStoreException {
+    public static KeyStore createKeyStore(X509Certificate... certs) throws KeyStoreException {
         KeyStore ks = KeyStore.getInstance("PKCS12");
         try {
             ks.load(null);
@@ -190,14 +186,12 @@ public class TrustAnyTrustManager extends X509ExtendedTrustManager {
     }
 
     public static KeyStore loadKeyStore(String type, String url, String password)
-            throws IOException, KeyStoreException, NoSuchAlgorithmException,
-            CertificateException {
+            throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
         return loadKeyStore(type, url, password.toCharArray());
     }
 
     public static KeyStore loadKeyStore(String type, String url, char[] password)
-            throws IOException, KeyStoreException, NoSuchAlgorithmException,
-            CertificateException {
+            throws IOException, KeyStoreException, NoSuchAlgorithmException, CertificateException {
         KeyStore ks = KeyStore.getInstance(type);
         InputStream in = IoKit.openFileOrURL(url);
         try {
@@ -208,17 +202,15 @@ public class TrustAnyTrustManager extends X509ExtendedTrustManager {
         return ks;
     }
 
-    public static KeyManager createKeyManager(String type, String url,
-                                              char[] storePassword, char[] keyPassword)
-            throws UnrecoverableKeyException, KeyStoreException,
-            NoSuchAlgorithmException, CertificateException, IOException {
+    public static KeyManager createKeyManager(String type, String url, char[] storePassword, char[] keyPassword)
+            throws UnrecoverableKeyException, KeyStoreException, NoSuchAlgorithmException, CertificateException,
+            IOException {
         return createKeyManager(loadKeyStore(type, url, storePassword), keyPassword);
     }
 
-    public static KeyManager createKeyManager(String type, String url,
-                                              String storePassword, String keyPassword)
-            throws UnrecoverableKeyException, KeyStoreException,
-            NoSuchAlgorithmException, CertificateException, IOException {
+    public static KeyManager createKeyManager(String type, String url, String storePassword, String keyPassword)
+            throws UnrecoverableKeyException, KeyStoreException, NoSuchAlgorithmException, CertificateException,
+            IOException {
         return createKeyManager(loadKeyStore(type, url, storePassword), keyPassword);
     }
 
@@ -230,8 +222,7 @@ public class TrustAnyTrustManager extends X509ExtendedTrustManager {
     public static KeyManager createKeyManager(KeyStore ks, char[] password)
             throws UnrecoverableKeyException, KeyStoreException {
         try {
-            KeyManagerFactory kmf = KeyManagerFactory
-                    .getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
             kmf.init(ks, password);
             KeyManager[] kms = kmf.getKeyManagers();
             return kms.length > 0 ? kms[0] : null;
@@ -240,11 +231,9 @@ public class TrustAnyTrustManager extends X509ExtendedTrustManager {
         }
     }
 
-    public static TrustManager createTrustManager(KeyStore ks)
-            throws KeyStoreException {
+    public static TrustManager createTrustManager(KeyStore ks) throws KeyStoreException {
         try {
-            TrustManagerFactory kmf = TrustManagerFactory
-                    .getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            TrustManagerFactory kmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
             kmf.init(ks);
             TrustManager[] tms = kmf.getTrustManagers();
             return tms.length > 0 ? tms[0] : null;
@@ -253,20 +242,17 @@ public class TrustAnyTrustManager extends X509ExtendedTrustManager {
         }
     }
 
-    public static TrustManager createTrustManager(X509Certificate... certs)
-            throws KeyStoreException {
+    public static TrustManager createTrustManager(X509Certificate... certs) throws KeyStoreException {
         return createTrustManager(createKeyStore(certs));
     }
 
     public static TrustManager createTrustManager(String type, String url, char[] password)
-            throws KeyStoreException, NoSuchAlgorithmException,
-            CertificateException, IOException {
+            throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
         return createTrustManager(loadKeyStore(type, url, password));
     }
 
     public static TrustManager createTrustManager(String type, String url, String password)
-            throws KeyStoreException, NoSuchAlgorithmException,
-            CertificateException, IOException {
+            throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
         return createTrustManager(loadKeyStore(type, url, password));
     }
 

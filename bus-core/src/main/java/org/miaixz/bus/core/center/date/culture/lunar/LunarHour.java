@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org 6tail and other contributors.              ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -270,7 +270,8 @@ public class LunarHour extends Loops {
         int year = solarTime.getYear();
         SolarTerms term = solarTime.getTerm();
         int index = term.getIndex() - 3;
-        if (index < 0 && term.getJulianDay().getSolarTime().isAfter(SolarTerms.fromIndex(year, 3).getJulianDay().getSolarTime())) {
+        if (index < 0 && term.getJulianDay().getSolarTime()
+                .isAfter(SolarTerms.fromIndex(year, 3).getJulianDay().getSolarTime())) {
             index += 24;
         }
         return LunarMonth.fromYm(year, 1).getSixtyCycle().next((int) Math.floor(index * 1D / 2));
@@ -294,7 +295,8 @@ public class LunarHour extends Loops {
     public SixtyCycle getSixtyCycle() {
         int earthBranchIndex = getIndexInDay() % 12;
         int heavenStemIndex = getDaySixtyCycle().getHeavenStem().getIndex() % 5 * 2 + earthBranchIndex;
-        return SixtyCycle.fromName(HeavenStem.fromIndex(heavenStemIndex).getName() + EarthBranch.fromIndex(earthBranchIndex).getName());
+        return SixtyCycle.fromName(
+                HeavenStem.fromIndex(heavenStemIndex).getName() + EarthBranch.fromIndex(earthBranchIndex).getName());
     }
 
     /**
@@ -303,7 +305,8 @@ public class LunarHour extends Loops {
      * @return 黄道黑道十二神
      */
     public TwelveStar getTwelveStar() {
-        return TwelveStar.fromIndex(getSixtyCycle().getEarthBranch().getIndex() + (8 - getDaySixtyCycle().getEarthBranch().getIndex() % 6) * 2);
+        return TwelveStar.fromIndex(getSixtyCycle().getEarthBranch().getIndex()
+                + (8 - getDaySixtyCycle().getEarthBranch().getIndex() % 6) * 2);
     }
 
     /**
@@ -315,8 +318,9 @@ public class LunarHour extends Loops {
         SolarDay solar = day.getSolarDay();
         SolarTerms dongZhi = SolarTerms.fromIndex(solar.getYear(), 0);
         SolarTerms xiaZhi = dongZhi.next(12);
-        boolean asc = !solar.isBefore(dongZhi.getJulianDay().getSolarDay()) && solar.isBefore(xiaZhi.getJulianDay().getSolarDay());
-        int start = new int[]{8, 5, 2}[day.getSixtyCycle().getEarthBranch().getIndex() % 3];
+        boolean asc = !solar.isBefore(dongZhi.getJulianDay().getSolarDay())
+                && solar.isBefore(xiaZhi.getJulianDay().getSolarDay());
+        int start = new int[] { 8, 5, 2 }[day.getSixtyCycle().getEarthBranch().getIndex() % 3];
         if (asc) {
             start = 8 - start;
         }
@@ -367,7 +371,8 @@ public class LunarHour extends Loops {
             return false;
         }
         LunarHour target = (LunarHour) o;
-        return day.equals(target.getLunarDay()) && hour == target.getHour() && minute == target.getMinute() && second == target.getSecond();
+        return day.equals(target.getLunarDay()) && hour == target.getHour() && minute == target.getMinute()
+                && second == target.getSecond();
     }
 
 }

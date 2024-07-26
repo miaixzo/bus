@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -79,27 +79,15 @@ public class StoreSCP {
     private int[] responseDelays;
     private final BasicCStoreSCP cstoreSCP = new BasicCStoreSCP(Symbol.STAR) {
         @Override
-        protected void store(
-                Association as,
-                PresentationContext pc,
-                Attributes rq,
-                PDVInputStream data,
-                Attributes rsp)
+        protected void store(Association as, PresentationContext pc, Attributes rq, PDVInputStream data, Attributes rsp)
                 throws IOException {
             if (authorizedCallingNodes != null && !authorizedCallingNodes.isEmpty()) {
                 Node sourceNode = Node.buildRemoteDicomNode(as);
-                boolean valid =
-                        authorizedCallingNodes.stream()
-                                .anyMatch(
-                                        n ->
-                                                n.getAet().equals(sourceNode.getAet())
-                                                        && (!n.isValidateHostname()
-                                                        || n.equalsHostname(sourceNode.getHostname())));
+                boolean valid = authorizedCallingNodes.stream().anyMatch(n -> n.getAet().equals(sourceNode.getAet())
+                        && (!n.isValidateHostname() || n.equalsHostname(sourceNode.getHostname())));
                 if (!valid) {
                     rsp.setInt(Tag.Status, VR.US, Status.NotAuthorized);
-                    Logger.error(
-                            "Refused: not authorized (124H). Source node: {}. SopUID: {}",
-                            sourceNode,
+                    Logger.error("Refused: not authorized (124H). Source node: {}. SopUID: {}", sourceNode,
                             rq.getString(Tag.AffectedSOPInstanceUID));
                     return;
                 }
@@ -158,8 +146,8 @@ public class StoreSCP {
 
     /**
      * @param storageDir             the base path of storage folder
-     * @param authorizedCallingNodes the list of authorized nodes to call store files
-     *                               (authorizedCallingNodes allow to check hostname unlike acceptedCallingAETitles)
+     * @param authorizedCallingNodes the list of authorized nodes to call store files (authorizedCallingNodes allow to
+     *                               check hostname unlike acceptedCallingAETitles)
      */
     public StoreSCP(String storageDir, List<Node> authorizedCallingNodes) {
         this(storageDir, authorizedCallingNodes, null);
@@ -179,7 +167,8 @@ public class StoreSCP {
     private static void renameTo(Association as, File from, File dest) throws IOException {
         Logger.info("{}: M-RENAME {} to {}", as, from, dest);
         Builder.prepareToWriteFile(dest);
-        if (!from.renameTo(dest)) throw new IOException("Failed to rename " + from + " to " + dest);
+        if (!from.renameTo(dest))
+            throw new IOException("Failed to rename " + from + " to " + dest);
     }
 
     private static Attributes parse(File file) throws IOException {
@@ -190,8 +179,7 @@ public class StoreSCP {
     }
 
     private void sleep(Association as, int[] delays) {
-        int responseDelay =
-                delays != null ? delays[(as.getNumberOfReceived(Dimse.C_STORE_RQ) - 1) % delays.length] : 0;
+        int responseDelay = delays != null ? delays[(as.getNumberOfReceived(Dimse.C_STORE_RQ) - 1) % delays.length] : 0;
         if (responseDelay > 0) {
             try {
                 Thread.sleep(responseDelay);
@@ -201,8 +189,7 @@ public class StoreSCP {
         }
     }
 
-    private void storeTo(Association as, Attributes fmi, PDVInputStream data, File file)
-            throws IOException {
+    private void storeTo(Association as, Attributes fmi, PDVInputStream data, File file) throws IOException {
         Logger.debug("{}: M-WRITE {}", as, file);
         file.getParentFile().mkdirs();
         try (ImageOutputStream out = new ImageOutputStream(file)) {
@@ -255,9 +242,8 @@ public class StoreSCP {
 
         for (String cuid : p.stringPropertyNames()) {
             String ts = p.getProperty(cuid);
-            TransferCapability tc =
-                    new TransferCapability(
-                            null, UID.toUID(cuid), TransferCapability.Role.SCP, UID.toUIDs(ts));
+            TransferCapability tc = new TransferCapability(null, UID.toUID(cuid), TransferCapability.Role.SCP,
+                    UID.toUIDs(ts));
             ae.addTransferCapability(tc);
         }
     }

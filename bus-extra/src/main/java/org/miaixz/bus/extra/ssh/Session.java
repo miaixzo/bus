@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.ssh;
 
 import org.miaixz.bus.core.lang.Wrapper;
@@ -49,8 +49,7 @@ public interface Session extends Wrapper<Object>, Closeable {
     boolean isConnected();
 
     /**
-     * 绑定端口到本地。 一个会话可绑定多个端口
-     * 当请求localHost:localPort时，通过SSH到服务器，转发请求到remoteHost:remotePort
+     * 绑定端口到本地。 一个会话可绑定多个端口 当请求localHost:localPort时，通过SSH到服务器，转发请求到remoteHost:remotePort
      * 此方法用于访问本地无法访问但是服务器可以访问的地址，如只有服务器能访问的内网数据库等
      *
      * @param localPort     本地端口
@@ -61,8 +60,7 @@ public interface Session extends Wrapper<Object>, Closeable {
     }
 
     /**
-     * 绑定端口到本地。 一个会话可绑定多个端口
-     * 当请求localHost:localPort时，通过SSH到服务器，转发请求到remoteHost:remotePort
+     * 绑定端口到本地。 一个会话可绑定多个端口 当请求localHost:localPort时，通过SSH到服务器，转发请求到remoteHost:remotePort
      * 此方法用于访问本地无法访问但是服务器可以访问的地址，如只有服务器能访问的内网数据库等
      *
      * @param localAddress  本地主机和端口
@@ -88,8 +86,7 @@ public interface Session extends Wrapper<Object>, Closeable {
     void unBindLocalPort(final InetSocketAddress localAddress);
 
     /**
-     * 绑定ssh服务端的serverPort端口, 到本地主机的port端口上.
-     * 即数据从ssh服务端的serverPort端口, 流经ssh客户端, 达到host:port上.
+     * 绑定ssh服务端的serverPort端口, 到本地主机的port端口上. 即数据从ssh服务端的serverPort端口, 流经ssh客户端, 达到host:port上.
      * 此方法用于在服务端访问本地资源，如服务器访问本机所在的数据库等。
      *
      * @param remoteAddress ssh服务端上要被绑定的地址

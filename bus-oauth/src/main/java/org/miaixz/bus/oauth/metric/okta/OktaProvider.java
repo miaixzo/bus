@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.okta;
 
 import com.alibaba.fastjson.JSONObject;
@@ -77,33 +77,26 @@ public class OktaProvider extends AbstractProvider {
         header.put("accept", MediaType.APPLICATION_JSON);
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
 
-        header.put("Authorization", "Basic " + Base64.encode(context.getAppKey().concat(Symbol.COLON).concat(context.getAppSecret())));
+        header.put("Authorization",
+                "Basic " + Base64.encode(context.getAppKey().concat(Symbol.COLON).concat(context.getAppSecret())));
         String response = Httpx.post(tokenUrl, null, header);
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         this.checkResponse(accessTokenObject);
-        return AccToken.builder()
-                .accessToken(accessTokenObject.getString("access_token"))
+        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
                 .tokenType(accessTokenObject.getString("token_type"))
-                .expireIn(accessTokenObject.getIntValue("expires_in"))
-                .scope(accessTokenObject.getString("scope"))
+                .expireIn(accessTokenObject.getIntValue("expires_in")).scope(accessTokenObject.getString("scope"))
                 .refreshToken(accessTokenObject.getString("refresh_token"))
-                .idToken(accessTokenObject.getString("id_token"))
-                .build();
+                .idToken(accessTokenObject.getString("id_token")).build();
     }
 
     @Override
     public Message refresh(AccToken accToken) {
         if (null == accToken.getRefreshToken()) {
-            return Message.builder()
-                    .errcode(ErrorCode.ILLEGAL_TOKEN.getCode())
-                    .errmsg(ErrorCode.ILLEGAL_TOKEN.getDesc())
-                    .build();
+            return Message.builder().errcode(ErrorCode.ILLEGAL_TOKEN.getCode())
+                    .errmsg(ErrorCode.ILLEGAL_TOKEN.getDesc()).build();
         }
         String refreshUrl = refreshTokenUrl(accToken.getRefreshToken());
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .data(this.getAuthToken(refreshUrl))
-                .build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).data(this.getAuthToken(refreshUrl)).build();
     }
 
     @Override
@@ -114,17 +107,10 @@ public class OktaProvider extends AbstractProvider {
         JSONObject object = JSONObject.parseObject(response);
         this.checkResponse(object);
         JSONObject address = object.getJSONObject("address");
-        return Material.builder()
-                .rawJson(object)
-                .uuid(object.getString("sub"))
-                .username(object.getString("name"))
-                .nickname(object.getString("nickname"))
-                .email(object.getString("email"))
+        return Material.builder().rawJson(object).uuid(object.getString("sub")).username(object.getString("name"))
+                .nickname(object.getString("nickname")).email(object.getString("email"))
                 .location(null == address ? null : address.getString("street_address"))
-                .gender(Gender.of(object.getString("sex")))
-                .token(accToken)
-                .source(complex.toString())
-                .build();
+                .gender(Gender.of(object.getString("sex"))).token(accToken).source(complex.toString()).build();
     }
 
     @Override
@@ -134,7 +120,8 @@ public class OktaProvider extends AbstractProvider {
         params.put("token_type_hint", "access_token");
 
         Map<String, String> header = new HashMap<>();
-        header.put("Authorization", "Basic " + Base64.encode(context.getAppKey().concat(Symbol.COLON).concat(context.getAppSecret())));
+        header.put("Authorization",
+                "Basic " + Base64.encode(context.getAppKey().concat(Symbol.COLON).concat(context.getAppSecret())));
         Httpx.post(revokeUrl(accToken), params, header);
         ErrorCode status = ErrorCode.SUCCESS;
         return Message.builder().errcode(status.getCode()).errmsg(status.getDesc()).build();
@@ -148,41 +135,42 @@ public class OktaProvider extends AbstractProvider {
 
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(String.format(complex.authorize(), context.getPrefix(), ObjectKit.defaultIfNull(context.getUnionId(), "default")))
-                .queryParam("response_type", "code")
-                .queryParam("prompt", "consent")
-                .queryParam("client_id", context.getAppKey())
-                .queryParam("redirect_uri", context.getRedirectUri())
+        return Builder
+                .fromUrl(String.format(complex.authorize(), context.getPrefix(),
+                        ObjectKit.defaultIfNull(context.getUnionId(), "default")))
+                .queryParam("response_type", "code").queryParam("prompt", "consent")
+                .queryParam("client_id", context.getAppKey()).queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(OktaScope.values())))
-                .queryParam("state", getRealState(state))
-                .build();
+                .queryParam("state", getRealState(state)).build();
     }
 
     @Override
     public String accessTokenUrl(String code) {
-        return Builder.fromUrl(String.format(complex.accessToken(), context.getPrefix(), ObjectKit.defaultIfNull(context.getUnionId(), "default")))
-                .queryParam("code", code)
-                .queryParam("grant_type", "authorization_code")
-                .queryParam("redirect_uri", context.getRedirectUri())
-                .build();
+        return Builder
+                .fromUrl(String.format(complex.accessToken(), context.getPrefix(),
+                        ObjectKit.defaultIfNull(context.getUnionId(), "default")))
+                .queryParam("code", code).queryParam("grant_type", "authorization_code")
+                .queryParam("redirect_uri", context.getRedirectUri()).build();
     }
 
     @Override
     protected String refreshTokenUrl(String refreshToken) {
-        return Builder.fromUrl(String.format(complex.refresh(), context.getPrefix(), ObjectKit.defaultIfNull(context.getUnionId(), "default")))
-                .queryParam("refresh_token", refreshToken)
-                .queryParam("grant_type", "refresh_token")
-                .build();
+        return Builder
+                .fromUrl(String.format(complex.refresh(), context.getPrefix(),
+                        ObjectKit.defaultIfNull(context.getUnionId(), "default")))
+                .queryParam("refresh_token", refreshToken).queryParam("grant_type", "refresh_token").build();
     }
 
     @Override
     protected String revokeUrl(AccToken accToken) {
-        return String.format(complex.revoke(), context.getPrefix(), ObjectKit.defaultIfNull(context.getUnionId(), "default"));
+        return String.format(complex.revoke(), context.getPrefix(),
+                ObjectKit.defaultIfNull(context.getUnionId(), "default"));
     }
 
     @Override
     public String userInfoUrl(AccToken accToken) {
-        return String.format(complex.userInfo(), context.getPrefix(), ObjectKit.defaultIfNull(context.getUnionId(), "default"));
+        return String.format(complex.userInfo(), context.getPrefix(),
+                ObjectKit.defaultIfNull(context.getUnionId(), "default"));
     }
 
 }

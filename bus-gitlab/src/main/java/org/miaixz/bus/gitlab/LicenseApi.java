@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab;
 
 import jakarta.ws.rs.core.Response;
@@ -36,6 +36,7 @@ import java.util.stream.Stream;
 
 /**
  * This class provides an entry point to all the GitLab API license calls.
+ * 
  * @see <a href="https://docs.gitlab.com/ce/api/license.html">License API</a>
  */
 public class LicenseApi extends AbstractApi {
@@ -47,7 +48,9 @@ public class LicenseApi extends AbstractApi {
     /**
      * Retrieve information about the current license.
      *
-     * <pre><code>GitLab Endpoint: GET /license</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /license</code>
+     * </pre>
      *
      * @return a License instance holding info about the current license
      * @throws GitLabApiException if any exception occurs
@@ -60,7 +63,9 @@ public class LicenseApi extends AbstractApi {
     /**
      * Retrieve information about the current license as the value of an Optional.
      *
-     * <pre><code>GitLab Endpoint: GET /license</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /license</code>
+     * </pre>
      *
      * @return the current license as the value of an Optional.
      */
@@ -75,7 +80,9 @@ public class LicenseApi extends AbstractApi {
     /**
      * Retrieve information about all licenses.
      *
-     * <pre><code>GitLab Endpoint: GET /licenses</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /licenses</code>
+     * </pre>
      *
      * @return a List of License instances
      * @throws GitLabApiException if any exception occurs
@@ -87,7 +94,9 @@ public class LicenseApi extends AbstractApi {
     /**
      * Get a Stream of all licenses.
      *
-     <pre><code>GitLab Endpoint: GET /licenses</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /licenses</code>
+     * </pre>
      *
      * @return a Stream of License instances
      * @throws GitLabApiException if any exception occurs
@@ -99,10 +108,11 @@ public class LicenseApi extends AbstractApi {
     /**
      * Get a Pager of all licenses.
      *
-     * <pre><code>GitLab Endpoint: GET /licenses</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /licenses</code>
+     * </pre>
      *
-     * @param itemsPerPage the number of LicenseTemplate instances that will be
-     *                     fetched per page
+     * @param itemsPerPage the number of LicenseTemplate instances that will be fetched per page
      * @return a Pager of license template
      * @throws GitLabApiException if any exception occurs
      */
@@ -113,7 +123,9 @@ public class LicenseApi extends AbstractApi {
     /**
      * Add a new license.
      *
-     * <pre><code>GitLab Endpoint: POST /license</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: POST /license</code>
+     * </pre>
      *
      * @param licenseString the license string for the license
      * @return a License instance for the added license
@@ -128,7 +140,9 @@ public class LicenseApi extends AbstractApi {
     /**
      * Deletes a license.
      *
-     * <pre><code>GitLab Endpoint: DELETE /license/:id</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: DELETE /license/:id</code>
+     * </pre>
      *
      * @param licenseId the ID of the license to delete
      * @return a License instance for the delete license

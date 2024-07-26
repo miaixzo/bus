@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.hl7.net;
 
 import org.miaixz.bus.image.metric.hl7.HL7Segment;
@@ -75,7 +75,7 @@ public class UnparsedHL7Message implements Serializable {
     }
 
     private static int replaceXdddd(byte[] src, int beginIndex, int endIndex, byte[] dest, int destPos) {
-        for (int i = beginIndex; i < endIndex; ) {
+        for (int i = beginIndex; i < endIndex;) {
             dest[destPos++] = (byte) parseHex(src[i++], src[i++]);
         }
         return endIndex - beginIndex;
@@ -112,15 +112,15 @@ public class UnparsedHL7Message implements Serializable {
     }
 
     private static boolean validHexAndNoSeparator(byte[] data, int beginIndex, int endIndex) {
-        if (((endIndex - beginIndex) & 1) != 0) return false;
+        if (((endIndex - beginIndex) & 1) != 0)
+            return false;
         int d;
-        for (int i = beginIndex; i < endIndex; ) {
-            if ((d = parseHex(data[i++], data[i++])) < 0
-                    || d == data[3]   // field separator
-                    || d == data[4]   // component separator
-                    || d == data[5]   // repetition separator
-                    || d == data[6]   // escape character
-                    || d == data[7]   // subcomponent separator
+        for (int i = beginIndex; i < endIndex;) {
+            if ((d = parseHex(data[i++], data[i++])) < 0 || d == data[3] // field separator
+                    || d == data[4] // component separator
+                    || d == data[5] // repetition separator
+                    || d == data[6] // escape character
+                    || d == data[7] // subcomponent separator
             ) {
                 return false;
             }
@@ -138,7 +138,8 @@ public class UnparsedHL7Message implements Serializable {
             d = ch - 0x41;
             if (d > 5) {
                 d = ch - 0x61;
-                if (d > 5) return -1;
+                if (d > 5)
+                    return -1;
             }
             if (d >= 0)
                 d += 10;
@@ -179,9 +180,9 @@ public class UnparsedHL7Message implements Serializable {
     }
 
     /**
-     * Return HL7 message with unescaped hexdata from \Xdddd\ escape sequences.
-     * Does not unescape \Xdddd\ escape sequences which contains a field separator,
-     * component separator, subcomponent separator, repetition separator or escape character.
+     * Return HL7 message with unescaped hexdata from \Xdddd\ escape sequences. Does not unescape \Xdddd\ escape
+     * sequences which contains a field separator, component separator, subcomponent separator, repetition separator or
+     * escape character.
      *
      * @return HL7 message with unescaped hexdata from \Xdddd\ escape sequences
      */

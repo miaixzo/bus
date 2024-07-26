@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.map.TripleTable;
@@ -49,27 +49,31 @@ import java.security.ProtectionDomain;
  * 其他相关方法请参考<strong>org.miaixz.bus.core.lang.reflect</strong>包下的类,相关类
  * </p>
  * <ul>
- *     <li>反射修改属性</li>
- *     <li>{@code ReflectKit#setFieldValue(Object, String, Object)} --p {@link FieldKit#setFieldValue(Object, String, Object)}</li>
- *     <li>修改private修饰可被外部访问</li>
- *     <li>{@code ReflectKit.setAccessible(ReflectKit.getMethodByName(Xxx.class, "xxxMethodName"))} --p {@link ReflectKit#setAccessible(AccessibleObject)} --p {@link MethodKit#getMethodByName(Class, String)} </li>
- *     <li>移除final属性</li>
- *     <li>{@code ReflectKit.removeFinalModify(Field)} --p {@link  ModifierKit#removeFinalModify(Field)}</li>
+ * <li>反射修改属性</li>
+ * <li>{@code ReflectKit#setFieldValue(Object, String, Object)} --p
+ * {@link FieldKit#setFieldValue(Object, String, Object)}</li>
+ * <li>修改private修饰可被外部访问</li>
+ * <li>{@code ReflectKit.setAccessible(ReflectKit.getMethodByName(Xxx.class, "xxxMethodName"))} --p
+ * {@link ReflectKit#setAccessible(AccessibleObject)} --p {@link MethodKit#getMethodByName(Class, String)}</li>
+ * <li>移除final属性</li>
+ * <li>{@code ReflectKit.removeFinalModify(Field)} --p {@link ModifierKit#removeFinalModify(Field)}</li>
  * </ul>
  * 在字节码中，类型表示如下：
  * <ul>
- *     <li>byte    =  B</li>
- *     <li>char    =  C</li>
- *     <li>double  =  D</li>
- *     <li>long    =  J</li>
- *     <li>short   =  S</li>
- *     <li>boolean =  Z</li>
- *     <li>void    =  V</li>
- *     <li>对象类型以“L”开头，“;”结尾，如Ljava/lang/Object;</li>
- *     <li>数组类型，每一位使用一个前置的[字符来描述，如：java.lang.String[][] = [[Ljava/lang/String;</li>
+ * <li>byte = B</li>
+ * <li>char = C</li>
+ * <li>double = D</li>
+ * <li>long = J</li>
+ * <li>short = S</li>
+ * <li>boolean = Z</li>
+ * <li>void = V</li>
+ * <li>对象类型以“L”开头，“;”结尾，如Ljava/lang/Object;</li>
+ * <li>数组类型，每一位使用一个前置的[字符来描述，如：java.lang.String[][] = [[Ljava/lang/String;</li>
  * </ul>
  *
- * <p>此类旨在通过类描述信息和类名查找对应的类，如动态加载类等</p>
+ * <p>
+ * 此类旨在通过类描述信息和类名查找对应的类，如动态加载类等
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -123,6 +127,7 @@ public class ReflectKit {
 
     /**
      * 9种原始类型对应表
+     * 
      * <pre>
      *     左：原始类型
      *     中：原始类型描述符
@@ -149,6 +154,7 @@ public class ReflectKit {
 
     /**
      * Class描述转Class
+     * 
      * <pre>{@code
      * "[Z" => boolean[].class
      * "[[Ljava/util/Map;" => java.util.Map[][].class
@@ -164,6 +170,7 @@ public class ReflectKit {
 
     /**
      * Class描述转Class
+     * 
      * <pre>{@code
      * "[Z" => boolean[].class
      * "[[Ljava/util/Map;" => java.util.Map[][].class
@@ -175,7 +182,8 @@ public class ReflectKit {
      * @return Class
      * @throws InternalException 类没有找到
      */
-    public static Class<?> descToClass(String desc, final boolean isInitialized, final ClassLoader cl) throws InternalException {
+    public static Class<?> descToClass(String desc, final boolean isInitialized, final ClassLoader cl)
+            throws InternalException {
         Assert.notNull(desc, "Name must not be null");
         final char firstChar = desc.charAt(0);
         final Class<?> clazz = PRIMITIVE_TABLE.getLeftByMiddle(firstChar);
@@ -184,8 +192,7 @@ public class ReflectKit {
         }
 
         // 去除尾部多余的"."和"/"
-        desc = StringKit.trim(desc, StringTrimer.TrimMode.SUFFIX, (c) ->
-                Symbol.C_SLASH == c || Symbol.C_DOT == c);
+        desc = StringKit.trim(desc, StringTrimer.TrimMode.SUFFIX, (c) -> Symbol.C_SLASH == c || Symbol.C_DOT == c);
 
         if ('L' == firstChar) {
             // 正常类的描述中需要去掉L;包装的修饰
@@ -198,6 +205,7 @@ public class ReflectKit {
 
     /**
      * 获取类描述，这是编译成class文件后的二进制名称
+     * 
      * <pre>{@code
      *    getDesc(boolean.class)       // Z
      *    getDesc(Boolean.class)       // Ljava/lang/Boolean;
@@ -231,18 +239,23 @@ public class ReflectKit {
     }
 
     /**
-     * 获取方法或构造描述
-     * 方法（appendName为{@code true}）：
+     * 获取方法或构造描述 方法（appendName为{@code true}）：
+     * 
      * <pre>{@code
      *    int do(int arg1) => "do(I)I"
      *    void do(String arg1,boolean arg2) => "do(Ljava/lang/String;Z)V"
      * }</pre>
+     * 
      * 构造：
+     * 
      * <pre>{@code
      *    "()V", "(Ljava/lang/String;I)V"
      * }</pre>
      *
-     * <p>当appendName为{@code false}时：</p>
+     * <p>
+     * 当appendName为{@code false}时：
+     * </p>
+     * 
      * <pre>{@code
      *    getDesc(Object.class.getMethod("hashCode"))                    // ()I
      *    getDesc(Object.class.getMethod("toString"))                    // ()Ljava/lang/String;
@@ -279,8 +292,7 @@ public class ReflectKit {
     }
 
     /**
-     * 获得类名称
-     * 数组输出xxx[]形式，其它类调用{@link Class#getName()}
+     * 获得类名称 数组输出xxx[]形式，其它类调用{@link Class#getName()}
      *
      * <pre>{@code
      * java.lang.Object[][].class => "java.lang.Object[][]"
@@ -295,21 +307,21 @@ public class ReflectKit {
             do {
                 sb.append("[]");
                 c = c.getComponentType();
-            }
-            while (c.isArray());
+            } while (c.isArray());
             return c.getName() + sb;
         }
         return c.getName();
     }
 
     /**
-     * 获取构造或方法的名称表示
-     * 构造：
+     * 获取构造或方法的名称表示 构造：
+     * 
      * <pre>
      * "()", "(java.lang.String,int)"
      * </pre>
      * <p>
      * 方法：
+     * 
      * <pre>
      *     "void do(int)", "void do()", "int do(java.lang.String,boolean)"
      * </pre>
@@ -353,8 +365,7 @@ public class ReflectKit {
     public static Class<?> nameToClass(String name, final boolean isInitialized, final ClassLoader cl) {
         Assert.notNull(name, "Name must not be null");
         // 去除尾部多余的"."和"/"
-        name = StringKit.trim(name, StringTrimer.TrimMode.SUFFIX, (c) ->
-                Symbol.C_SLASH == c || Symbol.C_DOT == c);
+        name = StringKit.trim(name, StringTrimer.TrimMode.SUFFIX, (c) -> Symbol.C_SLASH == c || Symbol.C_DOT == c);
 
         int c = 0;
         final int index = name.indexOf('[');
@@ -479,8 +490,7 @@ public class ReflectKit {
     }
 
     /**
-     * 设置方法为可访问（私有方法可以被外部调用），静默调用，抛出异常则跳过
-     * 注意此方法在jdk9+中抛出异常，须添加`--add-opens=java.base/java.lang=ALL-UNNAMED`启动参数
+     * 设置方法为可访问（私有方法可以被外部调用），静默调用，抛出异常则跳过 注意此方法在jdk9+中抛出异常，须添加`--add-opens=java.base/java.lang=ALL-UNNAMED`启动参数
      *
      * @param <T>              AccessibleObject的子类，比如Class、Method、Field等
      * @param accessibleObject 可设置访问权限的对象，比如Class、Method、Field等
@@ -497,8 +507,7 @@ public class ReflectKit {
     }
 
     /**
-     * 设置方法为可访问（私有方法可以被外部调用）
-     * 注意此方法在jdk9+中抛出异常，须添加`--add-opens=java.base/java.lang=ALL-UNNAMED`启动参数
+     * 设置方法为可访问（私有方法可以被外部调用） 注意此方法在jdk9+中抛出异常，须添加`--add-opens=java.base/java.lang=ALL-UNNAMED`启动参数
      *
      * @param <T>              AccessibleObject的子类，比如Class、Method、Field等
      * @param accessibleObject 可设置访问权限的对象，比如Class、Method、Field等
@@ -548,7 +557,8 @@ public class ReflectKit {
      */
     public static <T> Constructor<T>[] getConstructors(final Class<T> beanClass) throws SecurityException {
         Assert.notNull(beanClass);
-        return (Constructor<T>[]) CONSTRUCTORS_CACHE.computeIfAbsent(beanClass, (key) -> getConstructorsDirectly(beanClass));
+        return (Constructor<T>[]) CONSTRUCTORS_CACHE.computeIfAbsent(beanClass,
+                (key) -> getConstructorsDirectly(beanClass));
     }
 
     /**
@@ -563,8 +573,7 @@ public class ReflectKit {
     }
 
     /**
-     * 实例化对象
-     * 类必须有空构造函数
+     * 实例化对象 类必须有空构造函数
      *
      * @param <T>   对象类型
      * @param clazz 类名
@@ -589,8 +598,8 @@ public class ReflectKit {
     }
 
     /**
-     * 尝试遍历并调用此类的所有构造方法，直到构造成功并返回
-     * 对于某些特殊的接口，按照其默认实现实例化，例如：
+     * 尝试遍历并调用此类的所有构造方法，直到构造成功并返回 对于某些特殊的接口，按照其默认实现实例化，例如：
+     * 
      * <pre>
      *     Map       - HashMap
      *     Collction - ArrayList

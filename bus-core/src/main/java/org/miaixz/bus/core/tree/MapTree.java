@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.tree;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -64,8 +64,7 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
      * @param nodeConfig TreeNode配置
      */
     public MapTree(final NodeConfig nodeConfig) {
-        this.nodeConfig = ObjectKit.defaultIfNull(
-                nodeConfig, NodeConfig.DEFAULT_CONFIG);
+        this.nodeConfig = ObjectKit.defaultIfNull(nodeConfig, NodeConfig.DEFAULT_CONFIG);
     }
 
     /**
@@ -76,7 +75,8 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
      * @param intent 缩进量
      */
     private static void printTree(final MapTree<?> tree, final PrintWriter writer, final int intent) {
-        writer.println(StringKit.format("{}{}[{}]", StringKit.repeat(Symbol.C_SPACE, intent), tree.getName(), tree.getId()));
+        writer.println(
+                StringKit.format("{}{}[{}]", StringKit.repeat(Symbol.C_SPACE, intent), tree.getName(), tree.getId()));
         writer.flush();
 
         final List<? extends MapTree<?>> children = tree.getChildren();
@@ -120,8 +120,7 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
     }
 
     /**
-     * 获取ID对应的节点，如果有多个ID相同的节点，只返回第一个。
-     * 此方法只查找此节点及子节点，采用广度优先遍历。
+     * 获取ID对应的节点，如果有多个ID相同的节点，只返回第一个。 此方法只查找此节点及子节点，采用广度优先遍历。
      *
      * @param id ID
      * @return 节点
@@ -134,8 +133,7 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
      * 获取所有父节点名称列表
      *
      * <p>
-     * 比如有个人在研发1部，他上面有研发部，接着上面有技术中心
-     * 返回结果就是：[研发一部, 研发中心, 技术中心]
+     * 比如有个人在研发1部，他上面有研发部，接着上面有技术中心 返回结果就是：[研发一部, 研发中心, 技术中心]
      *
      * @param id                 节点ID
      * @param includeCurrentNode 是否包含当前节点的名称
@@ -149,8 +147,7 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
      * 获取所有父节点名称列表
      *
      * <p>
-     * 比如有个人在研发1部，他上面有研发部，接着上面有技术中心
-     * 返回结果就是：[研发一部, 研发中心, 技术中心]
+     * 比如有个人在研发1部，他上面有研发部，接着上面有技术中心 返回结果就是：[研发一部, 研发中心, 技术中心]
      *
      * @param includeCurrentNode 是否包含当前节点的名称
      * @return 所有父节点名称列表
@@ -279,8 +276,7 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
     }
 
     /**
-     * 递归过滤并生成新的树
-     * 通过{@link Predicate}指定的过滤规则，本节点或子节点满足过滤条件，则保留当前节点，否则抛弃节点及其子节点
+     * 递归过滤并生成新的树 通过{@link Predicate}指定的过滤规则，本节点或子节点满足过滤条件，则保留当前节点，否则抛弃节点及其子节点
      *
      * @param predicate 节点过滤规则函数，只需处理本级节点本身即可，{@link Predicate#test(Object)}为{@code true}保留，null表示全部保留
      * @return 过滤后的节点，{@code null} 表示不满足过滤要求，丢弃之
@@ -291,8 +287,7 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
     }
 
     /**
-     * 递归过滤当前树，注意此方法会修改当前树
-     * 通过{@link Predicate}指定的过滤规则，本节点或子节点满足过滤条件，则保留当前节点及其所有子节点，否则抛弃节点及其子节点
+     * 递归过滤当前树，注意此方法会修改当前树 通过{@link Predicate}指定的过滤规则，本节点或子节点满足过滤条件，则保留当前节点及其所有子节点，否则抛弃节点及其子节点
      *
      * @param predicate 节点过滤规则函数，只需处理本级节点本身即可，{@link Predicate#test(Object)}为{@code true}保留，null表示保留全部
      * @return 过滤后的节点，{@code null} 表示不满足过滤要求，丢弃之
@@ -368,8 +363,7 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
     }
 
     /**
-     * 递归克隆当前节点（即克隆整个树，保留字段值）
-     * 注意，此方法只会克隆节点，节点属性如果是引用类型，不会克隆
+     * 递归克隆当前节点（即克隆整个树，保留字段值） 注意，此方法只会克隆节点，节点属性如果是引用类型，不会克隆
      *
      * @return 新的节点
      */

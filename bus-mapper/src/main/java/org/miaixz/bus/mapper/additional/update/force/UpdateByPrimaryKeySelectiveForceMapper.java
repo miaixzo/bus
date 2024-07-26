@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.additional.update.force;
 
 import org.apache.ibatis.annotations.Param;
@@ -51,6 +51,7 @@ public interface UpdateByPrimaryKeySelectiveForceMapper<T> {
      * @return the int
      */
     @UpdateProvider(type = UpdateByPrimaryKeySelectiveForceProvider.class, method = "dynamicSQL")
-    int updateByPrimaryKeySelectiveForce(@Param("record") T record, @Param("forceUpdateProperties") List<String> forceUpdateProperties);
+    int updateByPrimaryKeySelectiveForce(@Param("record") T record,
+            @Param("forceUpdateProperties") List<String> forceUpdateProperties);
 
 }

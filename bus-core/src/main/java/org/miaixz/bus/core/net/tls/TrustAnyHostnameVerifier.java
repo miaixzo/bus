@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.net.tls;
 
 import org.miaixz.bus.core.center.regex.Pattern;
@@ -39,8 +39,7 @@ import java.security.cert.X509Certificate;
 import java.util.*;
 
 /**
- * https 域名校验，信任所有域名
- * 注意此类慎用，信任全部可能会有中间人攻击风险
+ * https 域名校验，信任所有域名 注意此类慎用，信任全部可能会有中间人攻击风险
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -107,8 +106,7 @@ public class TrustAnyHostnameVerifier implements HostnameVerifier {
     }
 
     public boolean verify(String host, X509Certificate certificate) {
-        return Pattern.IP_ADDRESS_PATTERN.matcher(host).matches()
-                ? verifyIpAddress(host, certificate)
+        return Pattern.IP_ADDRESS_PATTERN.matcher(host).matches() ? verifyIpAddress(host, certificate)
                 : verifyHostname(host, certificate);
     }
 

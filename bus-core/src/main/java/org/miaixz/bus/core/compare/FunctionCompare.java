@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.compare;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -47,11 +47,11 @@ public class FunctionCompare<T> extends NullCompare<T> {
      * 构造
      *
      * @param nullGreater 是否{@code null}在后
-     * @param compareSelf 在字段值相同情况下，是否比较对象本身。
-     *                    如果此项为{@code false}，字段值比较后为0会导致对象被认为相同，可能导致被去重。
+     * @param compareSelf 在字段值相同情况下，是否比较对象本身。 如果此项为{@code false}，字段值比较后为0会导致对象被认为相同，可能导致被去重。
      * @param func        比较项获取函数
      */
-    public FunctionCompare(final boolean nullGreater, final boolean compareSelf, final Function<T, Comparable<?>> func) {
+    public FunctionCompare(final boolean nullGreater, final boolean compareSelf,
+            final Function<T, Comparable<?>> func) {
         super(nullGreater, (a, b) -> {
             // 通过给定函数转换对象为指定规则的可比较对象
             final Comparable<?> v1;

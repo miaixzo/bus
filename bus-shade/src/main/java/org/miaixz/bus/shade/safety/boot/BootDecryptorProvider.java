@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.safety.boot;
 
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
@@ -53,8 +53,7 @@ import java.util.zip.Deflater;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BootDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntry>
-        implements DecryptorProvider {
+public class BootDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntry> implements DecryptorProvider {
 
     private final int level;
 
@@ -77,10 +76,7 @@ public class BootDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntr
 
     @Override
     public void decrypt(Key key, File src, File dest) throws IOException {
-        try (
-                FileInputStream fis = new FileInputStream(src);
-                FileOutputStream fos = new FileOutputStream(dest)
-        ) {
+        try (FileInputStream fis = new FileInputStream(src); FileOutputStream fos = new FileOutputStream(dest)) {
             decrypt(key, fis, fos);
         }
     }
@@ -98,10 +94,8 @@ public class BootDecryptorProvider extends EntryDecryptorProvider<JarArchiveEntr
             JarDecryptorProvider xJarDecryptor = new JarDecryptorProvider(decryptorProvider, level, filter);
             JarArchiveEntry entry;
             while (null != (entry = zis.getNextJarEntry())) {
-                if (entry.getName().startsWith(Builder.XJAR_SRC_DIR)
-                        || entry.getName().endsWith(Builder.XJAR_INF_DIR)
-                        || entry.getName().endsWith(Builder.XJAR_INF_DIR + Builder.XJAR_INF_IDX)
-                ) {
+                if (entry.getName().startsWith(Builder.XJAR_SRC_DIR) || entry.getName().endsWith(Builder.XJAR_INF_DIR)
+                        || entry.getName().endsWith(Builder.XJAR_INF_DIR + Builder.XJAR_INF_IDX)) {
                     continue;
                 }
                 // DIR ENTRY

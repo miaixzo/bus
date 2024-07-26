@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.hardware;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -34,10 +34,9 @@ import java.net.NetworkInterface;
 import java.util.Arrays;
 
 /**
- * A network interface in the machine, including statistics.
- * Thread safe for the designed use of retrieving the most recent data. Users should be aware that the
- * {@link #updateAttributes()} method may update attributes, including the time stamp, and should externally synchronize
- * such usage to ensure consistent calculations.
+ * A network interface in the machine, including statistics. Thread safe for the designed use of retrieving the most
+ * recent data. Users should be aware that the {@link #updateAttributes()} method may update attributes, including the
+ * time stamp, and should externally synchronize such usage to ensure consistent calculations.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -74,11 +73,10 @@ public interface NetworkIF {
     String getDisplayName();
 
     /**
-     * The {@code ifAlias} as described in RFC 2863.
-     * The ifAlias object allows a network manager to give one or more interfaces their own unique names, irrespective
-     * of any interface-stack relationship. Further, the ifAlias name is non-volatile, and thus an interface must retain
-     * its assigned ifAlias value across reboots, even if an agent chooses a new ifIndex value for the interface.
-     * Only implemented for Windows (Vista and newer) and Linux.
+     * The {@code ifAlias} as described in RFC 2863. The ifAlias object allows a network manager to give one or more
+     * interfaces their own unique names, irrespective of any interface-stack relationship. Further, the ifAlias name is
+     * non-volatile, and thus an interface must retain its assigned ifAlias value across reboots, even if an agent
+     * chooses a new ifIndex value for the interface. Only implemented for Windows (Vista and newer) and Linux.
      *
      * @return The {@code ifAlias} of the interface if available, otherwise the empty string.
      */
@@ -87,8 +85,7 @@ public interface NetworkIF {
     }
 
     /**
-     * The {@code ifOperStatus} as described in RFC 2863.
-     * Only implemented for Windows (Vista and newer) and Linux.
+     * The {@code ifOperStatus} as described in RFC 2863. Only implemented for Windows (Vista and newer) and Linux.
      *
      * @return The current operational state of the interface.
      */
@@ -99,27 +96,25 @@ public interface NetworkIF {
     /**
      * The interface Maximum Transmission Unit (MTU).
      *
-     * @return The MTU of the network interface.
-     * The value is a 32-bit integer which may be unsigned on some operating systems. On Windows, some
-     * non-physical interfaces (e.g., loopback) may return a value of -1 which is equivalent to the maximum
-     * unsigned integer value.
-     * This value is set when the {@link NetworkIF} is instantiated and may not be up to date.
+     * @return The MTU of the network interface. The value is a 32-bit integer which may be unsigned on some operating
+     *         systems. On Windows, some non-physical interfaces (e.g., loopback) may return a value of -1 which is
+     *         equivalent to the maximum unsigned integer value. This value is set when the {@link NetworkIF} is
+     *         instantiated and may not be up to date.
      */
     long getMTU();
 
     /**
      * The Media Access Control (MAC) address.
      *
-     * @return The MAC Address.
-     * This value is set when the {@link NetworkIF} is instantiated and may not be up to date.
+     * @return The MAC Address. This value is set when the {@link NetworkIF} is instantiated and may not be up to date.
      */
     String getMacaddr();
 
     /**
      * The Internet Protocol (IP) v4 address.
      *
-     * @return An array of IPv4 Addresses.
-     * This value is set when the {@link NetworkIF} is instantiated and may not be up to date.
+     * @return An array of IPv4 Addresses. This value is set when the {@link NetworkIF} is instantiated and may not be
+     *         up to date.
      */
     String[] getIPv4addr();
 
@@ -127,16 +122,16 @@ public interface NetworkIF {
      * The Internet Protocol (IP) v4 subnet masks.
      *
      * @return An array of IPv4 subnet mask lengths, corresponding to the IPv4 addresses from {@link #getIPv4addr()}.
-     * Ranges between 0-32.
-     * This value is set when the {@link NetworkIF} is instantiated and may not be up to date.
+     *         Ranges between 0-32. This value is set when the {@link NetworkIF} is instantiated and may not be up to
+     *         date.
      */
     Short[] getSubnetMasks();
 
     /**
      * The Internet Protocol (IP) v6 address.
      *
-     * @return An array of IPv6 Addresses.
-     * This value is set when the {@link NetworkIF} is instantiated and may not be up to date.
+     * @return An array of IPv6 Addresses. This value is set when the {@link NetworkIF} is instantiated and may not be
+     *         up to date.
      */
     String[] getIPv6addr();
 
@@ -144,16 +139,15 @@ public interface NetworkIF {
      * The Internet Protocol (IP) v6 address.
      *
      * @return The IPv6 address prefix lengths, corresponding to the IPv6 addresses from {@link #getIPv6addr()}. Ranges
-     * between 0-128.
-     * This value is set when the {@link NetworkIF} is instantiated and may not be up to date.
+     *         between 0-128. This value is set when the {@link NetworkIF} is instantiated and may not be up to date.
      */
     Short[] getPrefixLengths();
 
     /**
      * (Windows, macOS) The NDIS Interface Type. NDIS interface types are registered with the Internet Assigned Numbers
      * Authority (IANA), which publishes a list of interface types periodically in the Assigned Numbers RFC, or in a
-     * derivative of it that is specific to Internet network management number assignments.
-     * (Linux) ARP Protocol hardware identifiers defined in {@code include/uapi/linux/if_arp.h}
+     * derivative of it that is specific to Internet network management number assignments. (Linux) ARP Protocol
+     * hardware identifiers defined in {@code include/uapi/linux/if_arp.h}
      *
      * @return the ifType
      */
@@ -172,11 +166,11 @@ public interface NetworkIF {
     }
 
     /**
-     * (Windows Vista and higher) Set if a connector is present on the network interface.
-     * (Linux) Indicates the current physical link state of the interface.
+     * (Windows Vista and higher) Set if a connector is present on the network interface. (Linux) Indicates the current
+     * physical link state of the interface.
      *
      * @return {@code true} if there is a physical network adapter (Windows) or a connected cable (Linux), false
-     * otherwise
+     *         otherwise
      */
     default boolean isConnectorPresent() {
         return false;
@@ -185,81 +179,75 @@ public interface NetworkIF {
     /**
      * Getter for the field <code>bytesRecv</code>.
      *
-     * @return The Bytes Received.
-     * This value is set when the {@link NetworkIF} is instantiated and may not be up to date. To
-     * update this value, execute the {@link #updateAttributes()} method
+     * @return The Bytes Received. This value is set when the {@link NetworkIF} is instantiated and may not be up to
+     *         date. To update this value, execute the {@link #updateAttributes()} method
      */
     long getBytesRecv();
 
     /**
      * Getter for the field <code>bytesSent</code>.
      *
-     * @return The Bytes Sent.
-     * This value is set when the {@link NetworkIF} is instantiated and may not be up to date. To
-     * update this value, execute the {@link #updateAttributes()} method
+     * @return The Bytes Sent. This value is set when the {@link NetworkIF} is instantiated and may not be up to date.
+     *         To update this value, execute the {@link #updateAttributes()} method
      */
     long getBytesSent();
 
     /**
      * Getter for the field <code>packetsRecv</code>.
      *
-     * @return The Packets Received.
-     * This value is set when the {@link NetworkIF} is instantiated and may not be up to date. To
-     * update this value, execute the {@link #updateAttributes()} method
+     * @return The Packets Received. This value is set when the {@link NetworkIF} is instantiated and may not be up to
+     *         date. To update this value, execute the {@link #updateAttributes()} method
      */
     long getPacketsRecv();
 
     /**
      * Getter for the field <code>packetsSent</code>.
      *
-     * @return The Packets Sent.
-     * This value is set when the {@link NetworkIF} is instantiated and may not be up to date. To
-     * update this value, execute the {@link #updateAttributes()} method
+     * @return The Packets Sent. This value is set when the {@link NetworkIF} is instantiated and may not be up to date.
+     *         To update this value, execute the {@link #updateAttributes()} method
      */
     long getPacketsSent();
 
     /**
      * Getter for the field <code>inErrors</code>.
      *
-     * @return Input Errors.
-     * This value is set when the {@link NetworkIF} is instantiated and may not be up to date. To
-     * update this value, execute the {@link #updateAttributes()} method
+     * @return Input Errors. This value is set when the {@link NetworkIF} is instantiated and may not be up to date. To
+     *         update this value, execute the {@link #updateAttributes()} method
      */
     long getInErrors();
 
     /**
      * Getter for the field <code>outErrors</code>.
      *
-     * @return The Output Errors.
-     * This value is set when the {@link NetworkIF} is instantiated and may not be up to date. To
-     * update this value, execute the {@link #updateAttributes()} method
+     * @return The Output Errors. This value is set when the {@link NetworkIF} is instantiated and may not be up to
+     *         date. To update this value, execute the {@link #updateAttributes()} method
      */
     long getOutErrors();
 
     /**
      * Getter for the field <code>inDrops</code>.
      *
-     * @return Incoming/Received dropped packets. On Windows, returns discarded incoming packets.
-     * This value is set when the {@link NetworkIF} is instantiated and may not be up to date. To
-     * update this value, execute the {@link #updateAttributes()} method
+     * @return Incoming/Received dropped packets. On Windows, returns discarded incoming packets. This value is set when
+     *         the {@link NetworkIF} is instantiated and may not be up to date. To update this value, execute the
+     *         {@link #updateAttributes()} method
      */
     long getInDrops();
 
     /**
      * Getter for the field <code>collisions</code>.
      *
-     * @return Packet collisions. On Windows, returns discarded outgoing packets.
-     * This value is set when the {@link NetworkIF} is instantiated and may not be up to date. To
-     * update this value, execute the {@link #updateAttributes()} method
+     * @return Packet collisions. On Windows, returns discarded outgoing packets. This value is set when the
+     *         {@link NetworkIF} is instantiated and may not be up to date. To update this value, execute the
+     *         {@link #updateAttributes()} method
      */
     long getCollisions();
 
     /**
      * Getter for the field <code>speed</code>.
      *
-     * @return The speed of the network interface in bits per second.
-     * This value is set when the {@link NetworkIF} is instantiated and may not be up to date. To
-     * update this value, execute the {@link #updateAttributes()} method
+     * @return The speed of the network interface in bits per second. This value is set when the {@link NetworkIF} is
+     *         instantiated and may not be up to date. To update this value, execute the {@link #updateAttributes()}
+     *         method
      */
     long getSpeed();
 
@@ -286,8 +274,7 @@ public interface NetworkIF {
     boolean updateAttributes();
 
     /**
-     * The current operational state of a network interface.
-     * As described in RFC 2863.
+     * The current operational state of a network interface. As described in RFC 2863.
      */
     enum IfOperStatus {
         /**

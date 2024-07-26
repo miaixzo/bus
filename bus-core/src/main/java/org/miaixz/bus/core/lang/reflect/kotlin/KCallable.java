@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.reflect.kotlin;
 
 import org.miaixz.bus.core.xyz.ClassKit;
@@ -74,7 +74,7 @@ public class KCallable {
      * @return 参数列表
      */
     public static Object call(final Object kCallable, final Object... args) {
-        return MethodKit.invoke(kCallable, METHOD_CALL, new Object[]{args});
+        return MethodKit.invoke(kCallable, METHOD_CALL, new Object[] { args });
     }
 
 }

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.hooks.system;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -62,8 +62,8 @@ public class SystemHookManager implements HookManager {
     }
 
     /**
-     * Create a HookManager to handle GitLab system hook events which will be verified
-     * against the specified secretToken.
+     * Create a HookManager to handle GitLab system hook events which will be verified against the specified
+     * secretToken.
      *
      * @param secretToken the secret token to verify against
      */
@@ -90,8 +90,8 @@ public class SystemHookManager implements HookManager {
     }
 
     /**
-     * Parses and verifies an SystemHookEvent instance from the HTTP request and
-     * fires it off to the registered listeners.
+     * Parses and verifies an SystemHookEvent instance from the HTTP request and fires it off to the registered
+     * listeners.
      *
      * @param request the HttpServletRequest to read the Event instance from
      * @throws GitLabApiException if the parsed event is not supported
@@ -101,12 +101,12 @@ public class SystemHookManager implements HookManager {
     }
 
     /**
-     * Parses and verifies an SystemHookEvent instance from the HTTP request and
-     * fires it off to the registered listeners.
+     * Parses and verifies an SystemHookEvent instance from the HTTP request and fires it off to the registered
+     * listeners.
      *
      * @param request the HttpServletRequest to read the Event instance from
-     * @return the processed SystemHookEvent instance read from the request,null if the request
-     * not contain a system hook event
+     * @return the processed SystemHookEvent instance read from the request,null if the request not contain a system
+     *         hook event
      * @throws GitLabApiException if the parsed event is not supported
      */
     public SystemHookEvent handleRequest(HttpServletRequest request) throws GitLabApiException {
@@ -131,7 +131,7 @@ public class SystemHookManager implements HookManager {
             throw new GitLabApiException(message);
         }
 
-        // Get the JSON as a JsonNode tree.  We do not directly unmarshal the input as special handling must
+        // Get the JSON as a JsonNode tree. We do not directly unmarshal the input as special handling must
         // be done for "merge_request" events.
         JsonNode tree;
         try {
@@ -147,13 +147,13 @@ public class SystemHookManager implements HookManager {
             }
 
         } catch (Exception e) {
-            LOGGER.warning("Error reading JSON data, exception=" +
-                    e.getClass().getSimpleName() + ", error=" + e.getMessage());
+            LOGGER.warning(
+                    "Error reading JSON data, exception=" + e.getClass().getSimpleName() + ", error=" + e.getMessage());
             throw new GitLabApiException(e);
         }
 
         // NOTE: This is a hack based on the GitLab documentation and actual content of the "merge_request" event
-        // showing that the "event_name" property is missing from the merge_request system hook event.  The hack is
+        // showing that the "event_name" property is missing from the merge_request system hook event. The hack is
         // to inject the "event_name" node so that the polymorphic deserialization of a SystemHookEvent works correctly
         // when the system hook event is a "merge_request" event.
         if (!tree.has("event_name") && tree.has("object_kind")) {
@@ -197,8 +197,8 @@ public class SystemHookManager implements HookManager {
             return (event);
 
         } catch (Exception e) {
-            LOGGER.warning(String.format("Error processing event, exception=%s, error=%s",
-                    e.getClass().getSimpleName(), e.getMessage()));
+            LOGGER.warning(String.format("Error processing event, exception=%s, error=%s", e.getClass().getSimpleName(),
+                    e.getMessage()));
             throw new GitLabApiException(e);
         }
     }

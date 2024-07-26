@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cron.timings;
 
 import org.miaixz.bus.cron.crontab.TimerCrontab;
@@ -33,9 +33,7 @@ import org.miaixz.bus.logger.Logger;
 import java.util.function.Consumer;
 
 /**
- * 多层时间轮，常用于延时任务
- * 时间轮是一种环形数据结构，由多个槽组成，每个槽中存放任务集合
- * 一个单独的线程推进时间一槽一槽的移动，并执行槽中的任务
+ * 多层时间轮，常用于延时任务 时间轮是一种环形数据结构，由多个槽组成，每个槽中存放任务集合 一个单独的线程推进时间一槽一槽的移动，并执行槽中的任务
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -93,7 +91,8 @@ public class TimingWheel {
      * @param currentTime 当前时间
      * @param consumer    任务处理器
      */
-    public TimingWheel(final long tickMs, final int wheelSize, final long currentTime, final Consumer<TimerTaskList> consumer) {
+    public TimingWheel(final long tickMs, final int wheelSize, final long currentTime,
+            final Consumer<TimerTaskList> consumer) {
         this.tickMs = tickMs;
         this.wheelSize = wheelSize;
         this.interval = tickMs * wheelSize;

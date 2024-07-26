@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.safety.boot.jar;
 
 import org.miaixz.bus.shade.safety.Builder;
@@ -56,7 +56,8 @@ public class JarURLHandler extends URLStreamHandler {
     private final Key key;
     private final Set<String> indexes;
 
-    public JarURLHandler(DecryptorProvider decryptorProvider, EncryptorProvider encryptorProvider, Key key, ClassLoader classLoader) throws Exception {
+    public JarURLHandler(DecryptorProvider decryptorProvider, EncryptorProvider encryptorProvider, Key key,
+            ClassLoader classLoader) throws Exception {
         this.decryptorProvider = decryptorProvider;
         this.encryptorProvider = encryptorProvider;
         this.key = key;
@@ -70,16 +71,17 @@ public class JarURLHandler extends URLStreamHandler {
             InputStreamReader isr = new InputStreamReader(in);
             LineNumberReader lnr = new LineNumberReader(isr);
             String name;
-            while (null != (name = lnr.readLine())) indexes.add(classpath + name);
+            while (null != (name = lnr.readLine()))
+                indexes.add(classpath + name);
         }
     }
 
     @Override
     protected URLConnection openConnection(URL url) throws IOException {
         URLConnection urlConnection = new URL(url.toString()).openConnection();
-        return indexes.contains(url.toString())
-                && urlConnection instanceof java.net.JarURLConnection
-                ? new JarURLConnection((java.net.JarURLConnection) urlConnection, decryptorProvider, encryptorProvider, key)
+        return indexes.contains(url.toString()) && urlConnection instanceof java.net.JarURLConnection
+                ? new JarURLConnection((java.net.JarURLConnection) urlConnection, decryptorProvider, encryptorProvider,
+                        key)
                 : urlConnection;
     }
 

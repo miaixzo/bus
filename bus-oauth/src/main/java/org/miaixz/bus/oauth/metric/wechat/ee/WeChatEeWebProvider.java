@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.wechat.ee;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
@@ -52,14 +52,13 @@ public class WeChatEeWebProvider extends AbstractWeChatEeProvider {
 
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.authorize())
-                .queryParam("appid", context.getAppKey())
+        return Builder.fromUrl(complex.authorize()).queryParam("appid", context.getAppKey())
                 .queryParam("agentid", context.getUnionId())
                 .queryParam("redirect_uri", UrlEncoder.encodeAll(context.getRedirectUri()))
                 .queryParam("response_type", "code")
-                .queryParam("scope", this.getScopes(Symbol.COMMA, false, this.getDefaultScopes(WeChatEeWebScope.values())))
-                .queryParam("state", getRealState(state).concat("#wechat_redirect"))
-                .build();
+                .queryParam("scope",
+                        this.getScopes(Symbol.COMMA, false, this.getDefaultScopes(WeChatEeWebScope.values())))
+                .queryParam("state", getRealState(state).concat("#wechat_redirect")).build();
     }
 
 }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang;
 
 import org.miaixz.bus.core.convert.Convert;
@@ -43,8 +43,7 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * 系统属性名称常量池
- * 封装了包括Java运行时环境信息、Java虚拟机信息、Java类信息、OS信息、用户信息等
+ * 系统属性名称常量池 封装了包括Java运行时环境信息、Java虚拟机信息、Java类信息、OS信息、用户信息等
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -96,18 +95,15 @@ public class Keys {
      */
     public static final String USER_REGION = "user.region";
     /**
-     * 文件路径分隔符
-     * 在Unix和Linux下 是{@code '/'}; 在Windows下是 {@code '\'}
+     * 文件路径分隔符 在Unix和Linux下 是{@code '/'}; 在Windows下是 {@code '\'}
      */
     public static final String FILE_SEPARATOR = "file.separator";
     /**
-     * 多个PATH之间的分隔符
-     * 在Unix和Linux下 是{@code ':'}; 在Windows下是 {@code ';'}
+     * 多个PATH之间的分隔符 在Unix和Linux下 是{@code ':'}; 在Windows下是 {@code ';'}
      */
     public static final String PATH_SEPARATOR = "path.separator";
     /**
-     * 行分隔符
-     * Unix /n
+     * 行分隔符 Unix /n
      */
     public static final String LINE_SEPARATOR = "line.separator";
 
@@ -234,7 +230,6 @@ public class Keys {
      */
     public static final String DATE_LENIENT = "bus.date.lenient";
 
-
     /**
      * JDK版本
      */
@@ -320,8 +315,8 @@ public class Keys {
             value = System.getProperty(name);
         } catch (final SecurityException e) {
             if (!quiet) {
-                Console.error("Caught a SecurityException reading the system property '{}'; " +
-                        "the Keys property value will default to null.", name);
+                Console.error("Caught a SecurityException reading the system property '{}'; "
+                        + "the Keys property value will default to null.", name);
             }
         }
 
@@ -330,8 +325,8 @@ public class Keys {
                 value = System.getenv(name);
             } catch (final SecurityException e) {
                 if (!quiet) {
-                    Console.error("Caught a SecurityException reading the system env '{}'; " +
-                            "the Keys env value will default to null.", name);
+                    Console.error("Caught a SecurityException reading the system env '{}'; "
+                            + "the Keys env value will default to null.", name);
                 }
             }
         }
@@ -435,8 +430,7 @@ public class Keys {
     }
 
     /**
-     * 根据{@code java.specification.version}属性值，获取版本号
-     * 默认8
+     * 根据{@code java.specification.version}属性值，获取版本号 默认8
      *
      * @return 版本号
      */
@@ -457,8 +451,7 @@ public class Keys {
     }
 
     /**
-     * 获取指定容器环境的对象的属性
-     * 如获取DNS属性，则URI为类似：dns:miaixz.org
+     * 获取指定容器环境的对象的属性 如获取DNS属性，则URI为类似：dns:miaixz.org
      *
      * @param uri     URI字符串，格式为[scheme:][name]/[domain]
      * @param attrIds 需要获取的属性ID名称

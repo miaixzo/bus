@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab;
 
 import com.fasterxml.jackson.databind.JavaType;
@@ -43,11 +43,15 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
- * <p>This class defines an Iterator implementation that is used as a paging iterator for all API methods that
- * return a List of objects.  It hides the details of interacting with the GitLab API when paging is involved
- * simplifying accessing large lists of objects.</p>
+ * <p>
+ * This class defines an Iterator implementation that is used as a paging iterator for all API methods that return a
+ * List of objects. It hides the details of interacting with the GitLab API when paging is involved simplifying
+ * accessing large lists of objects.
+ * </p>
  *
- * <p>Example usage:</p>
+ * <p>
+ * Example usage:
+ * </p>
  *
  * <pre>
  *   // Get a Pager instance that will page through the projects with 10 projects per page
@@ -86,14 +90,15 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
     /**
      * Creates a Pager instance to access the API through the specified path and query parameters.
      *
-     * @param api the AbstractApi implementation to communicate through
-     * @param type the GitLab4J type that will be contained in the List
+     * @param api          the AbstractApi implementation to communicate through
+     * @param type         the GitLab4J type that will be contained in the List
      * @param itemsPerPage items per page
-     * @param queryParams HTTP query params
-     * @param pathArgs HTTP path arguments
+     * @param queryParams  HTTP query params
+     * @param pathArgs     HTTP path arguments
      * @throws GitLabApiException if any error occurs
      */
-    public Pager(AbstractApi api, Class<T> type, int itemsPerPage, MultivaluedMap<String, String> queryParams, Object... pathArgs) throws GitLabApiException {
+    public Pager(AbstractApi api, Class<T> type, int itemsPerPage, MultivaluedMap<String, String> queryParams,
+            Object... pathArgs) throws GitLabApiException {
 
         javaType = mapper.getTypeFactory().constructCollectionType(List.class, type);
 
@@ -130,7 +135,8 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
         this.pathArgs = pathArgs;
         this.itemsPerPage = getIntHeaderValue(response, PER_PAGE);
 
-        // Some API endpoints do not return the "X-Per-Page" header when there is only 1 page, check for that condition and act accordingly
+        // Some API endpoints do not return the "X-Per-Page" header when there is only 1 page, check for that condition
+        // and act accordingly
         if (this.itemsPerPage == -1) {
             this.itemsPerPage = itemsPerPage;
             totalPages = 1;
@@ -160,7 +166,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * Get the specified header value from the Response instance.
      *
      * @param response the Response instance to get the value from
-     * @param key the HTTP header key to get the value for
+     * @param key      the HTTP header key to get the value for
      * @return the specified header value from the Response instance, or null if the header is not present
      * @throws GitLabApiException if any error occurs
      */
@@ -179,7 +185,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * Get the specified integer header value from the Response instance.
      *
      * @param response the Response instance to get the value from
-     * @param key the HTTP header key to get the value for
+     * @param key      the HTTP header key to get the value for
      * @return the specified integer header value from the Response instance, or -1 if the header is not present
      * @throws GitLabApiException if any error occurs
      */
@@ -219,7 +225,8 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
     /**
      * Get the total number of pages returned by the GitLab API.
      *
-     * @return the total number of pages returned by the GitLab API, or -1 if the Kaminari limit of 10,000 has been exceeded
+     * @return the total number of pages returned by the GitLab API, or -1 if the Kaminari limit of 10,000 has been
+     *         exceeded
      */
     public int getTotalPages() {
         return (totalPages);
@@ -228,7 +235,8 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
     /**
      * Get the total number of items (T instances) returned by the GitLab API.
      *
-     * @return the total number of items (T instances) returned by the GitLab API, or -1 if the Kaminari limit of 10,000 has been exceeded
+     * @return the total number of items (T instances) returned by the GitLab API, or -1 if the Kaminari limit of 10,000
+     *         has been exceeded
      */
     public int getTotalItems() {
         return (totalItems);
@@ -258,7 +266,8 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      *
      * @return the next List in the iteration
      * @throws NoSuchElementException if the iteration has no more elements
-     * @throws RuntimeException if a GitLab API error occurs, will contain a wrapped GitLabApiException with the details of the error
+     * @throws RuntimeException       if a GitLab API error occurs, will contain a wrapped GitLabApiException with the
+     *                                details of the error
      */
     @Override
     public List<T> next() {
@@ -323,7 +332,8 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      * @param pageNumber the page to get
      * @return the specified page of List
      * @throws NoSuchElementException if the iteration has no more elements
-     * @throws RuntimeException if a GitLab API error occurs, will contain a wrapped GitLabApiException with the details of the error
+     * @throws RuntimeException       if a GitLab API error occurs, will contain a wrapped GitLabApiException with the
+     *                                details of the error
      */
     public List<T> page(int pageNumber) {
 
@@ -386,7 +396,7 @@ public class Pager<T> implements Iterator<List<T>>, Constants {
      *
      * @return a Stream instance which is pre-populated with all items from all pages
      * @throws IllegalStateException if Stream has already been issued
-     * @throws GitLabApiException if any other error occurs
+     * @throws GitLabApiException    if any other error occurs
      */
     public Stream<T> stream() throws GitLabApiException, IllegalStateException {
 

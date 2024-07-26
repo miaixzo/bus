@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.accord.platform;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
@@ -46,17 +46,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 访问特定于平台的特性.
- * 服务器名称指示(SNI)
- * 支持Android 2.3+
- * 支持Android 4.0+.
- * 支持Android 5.0+
- * 支持 OpenJDK 7+
- * 支持 OpenJDK 7 and 8 (via the JettyALPN-boot library)
- * 支持OpenJDK 9  SSLParameters和SSLSocket特性
- * 升级到Android 2.3+和OpenJDK 7+。没有用于恢复用于
- * 创建{@link SSLSocketFactory}的trustmanager的公共api
- * 支持Android 6.0+ {@code NetworkSecurityPolicy}
+ * 访问特定于平台的特性. 服务器名称指示(SNI) 支持Android 2.3+ 支持Android 4.0+. 支持Android 5.0+ 支持 OpenJDK 7+ 支持 OpenJDK 7 and 8 (via the
+ * JettyALPN-boot library) 支持OpenJDK 9 SSLParameters和SSLSocket特性 升级到Android 2.3+和OpenJDK 7+。没有用于恢复用于
+ * 创建{@link SSLSocketFactory}的trustmanager的公共api 支持Android 6.0+ {@code NetworkSecurityPolicy}
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -120,7 +112,8 @@ public class Platform {
                 Field field = c.getDeclaredField(fieldName);
                 field.setAccessible(true);
                 Object value = field.get(instance);
-                if (null == value || !fieldType.isInstance(value)) return null;
+                if (null == value || !fieldType.isInstance(value))
+                    return null;
                 return fieldType.cast(value);
             } catch (NoSuchFieldException ignored) {
             } catch (IllegalAccessException e) {
@@ -131,7 +124,8 @@ public class Platform {
         // 没有找到我们想要的地方。作为最后的尝试，请尝试查找委托上的值
         if (!fieldName.equals("delegate")) {
             Object delegate = readFieldOrNull(instance, Object.class, "delegate");
-            if (null != delegate) return readFieldOrNull(delegate, fieldType, fieldName);
+            if (null != delegate)
+                return readFieldOrNull(delegate, fieldType, fieldName);
         }
 
         return null;
@@ -147,8 +141,7 @@ public class Platform {
     }
 
     /**
-     * 管理哪些X509证书可用于对安全套接字的远程端进行身份验证。
-     * 决策可能基于可信的证书颁发机构、证书撤销列表、在线状态检查或其他方法
+     * 管理哪些X509证书可用于对安全套接字的远程端进行身份验证。 决策可能基于可信的证书颁发机构、证书撤销列表、在线状态检查或其他方法
      *
      * @param sslSocketFactory 安全套接字工厂
      * @return 信任证书管理器
@@ -160,7 +153,8 @@ public class Platform {
             // 创建SSLContext对象，并使用我们指定的信任证书管理器初始化
             Class<?> sslContextClass = Class.forName("sun.security.ssl.SSLContextImpl");
             Object context = readFieldOrNull(sslSocketFactory, sslContextClass, "context");
-            if (null == context) return null;
+            if (null == context)
+                return null;
             return readFieldOrNull(context, X509TrustManager.class, "trustManager");
         } catch (ClassNotFoundException e) {
             return null;
@@ -174,8 +168,7 @@ public class Platform {
      * @param hostname  客户端握手不为空;服务器端握手为空.
      * @param protocols 服务协议
      */
-    public void configureTlsExtensions(SSLSocket sslSocket, String hostname,
-                                       List<Protocol> protocols) {
+    public void configureTlsExtensions(SSLSocket sslSocket, String hostname, List<Protocol> protocols) {
     }
 
     /**
@@ -197,8 +190,7 @@ public class Platform {
         return null;
     }
 
-    public void connectSocket(Socket socket, InetSocketAddress address, int connectTimeout)
-            throws IOException {
+    public void connectSocket(Socket socket, InetSocketAddress address, int connectTimeout) throws IOException {
         socket.connect(address, connectTimeout);
     }
 
@@ -207,8 +199,7 @@ public class Platform {
     }
 
     /**
-     * 返回一个对象，该对象持有在执行此方法时创建的堆栈跟踪。
-     * 用于{@link java.io.Closeable}与{@link #logCloseableLeak(String, Object)}
+     * 返回一个对象，该对象持有在执行此方法时创建的堆栈跟踪。 用于{@link java.io.Closeable}与{@link #logCloseableLeak(String, Object)}
      *
      * @param closer 闭合器
      * @return 返回一个对象
@@ -235,10 +226,8 @@ public class Platform {
     public CertificateChainCleaner buildCertificateChainCleaner(SSLSocketFactory sslSocketFactory) {
         X509TrustManager trustManager = trustManager(sslSocketFactory);
         if (null == trustManager) {
-            throw new IllegalStateException("Unable to extract the trust manager on "
-                    + Platform.get()
-                    + ", sslSocketFactory is "
-                    + sslSocketFactory.getClass());
+            throw new IllegalStateException("Unable to extract the trust manager on " + Platform.get()
+                    + ", sslSocketFactory is " + sslSocketFactory.getClass());
         }
 
         return buildCertificateChainCleaner(trustManager);

@@ -24,33 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- *//*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- ~                                                                               ~
- ~ The MIT License (MIT)                                                         ~
- ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
- ~                                                                               ~
- ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
- ~ of this software and associated documentation files (the "Software"), to deal ~
- ~ in the Software without restriction, including without limitation the rights  ~
- ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
- ~ copies of the Software, and to permit persons to whom the Software is         ~
- ~ furnished to do so, subject to the following conditions:                      ~
- ~                                                                               ~
- ~ The above copyright notice and this permission notice shall be included in    ~
- ~ all copies or substantial portions of the Software.                           ~
- ~                                                                               ~
- ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
- ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
- ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
- ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
- ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
- ~ THE SOFTWARE.                                                                 ~
- ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin;
 
 import org.miaixz.bus.core.lang.Keys;
@@ -107,7 +81,7 @@ public class Java implements Serializable {
      * 例如：
      *
      * <ul>
-     * <li>JDK 1.2：<code>1.2f</code> </li>
+     * <li>JDK 1.2：<code>1.2f</code></li>
      * <li>JDK 1.3.1：<code>1.31f</code></li>
      * </ul>
      *
@@ -124,7 +98,7 @@ public class Java implements Serializable {
      * 例如：
      *
      * <ul>
-     * <li>JDK 1.2：<code>120</code> </li>
+     * <li>JDK 1.2：<code>120</code></li>
      * <li>JDK 1.3.1：<code>131</code></li>
      * </ul>
      *
@@ -177,8 +151,7 @@ public class Java implements Serializable {
     }
 
     /**
-     * 取得当前Java impl.的厂商(取自系统属性：<code>java.vendor</code>)
-     * 例如Sun JDK 1.4.2：<code>"Sun Microsystems Inc."</code>
+     * 取得当前Java impl.的厂商(取自系统属性：<code>java.vendor</code>) 例如Sun JDK 1.4.2：<code>"Sun Microsystems Inc."</code>
      *
      * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
      */
@@ -187,8 +160,7 @@ public class Java implements Serializable {
     }
 
     /**
-     * 取得当前Java impl.的厂商网站的URL(取自系统属性：<code>java.vendor.url</code>)
-     * 例如Sun JDK 1.4.2：<code>"http://java.sun.com/"</code>
+     * 取得当前Java impl.的厂商网站的URL(取自系统属性：<code>java.vendor.url</code>) 例如Sun JDK 1.4.2：<code>"http://java.sun.com/"</code>
      *
      * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
      */
@@ -197,8 +169,7 @@ public class Java implements Serializable {
     }
 
     /**
-     * 判断当前Java的版本
-     * 如果不能取得系统属性<code>java.version</code>(因为Java安全限制),则总是返回 <code>false</code>
+     * 判断当前Java的版本 如果不能取得系统属性<code>java.version</code>(因为Java安全限制),则总是返回 <code>false</code>
      *
      * @return 如果当前Java版本为8, 则返回<code>true</code>
      */
@@ -207,8 +178,7 @@ public class Java implements Serializable {
     }
 
     /**
-     * 判断当前Java的版本
-     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     * 判断当前Java的版本 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
      *
      * @return 如果当前Java版本为9，则返回<code>true</code>
      */
@@ -217,8 +187,7 @@ public class Java implements Serializable {
     }
 
     /**
-     * 判断当前Java的版本
-     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     * 判断当前Java的版本 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
      *
      * @return 如果当前Java版本为10，则返回<code>true</code>
      */
@@ -227,8 +196,7 @@ public class Java implements Serializable {
     }
 
     /**
-     * 判断当前Java的版本
-     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     * 判断当前Java的版本 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
      *
      * @return 如果当前Java版本为11，则返回<code>true</code>
      */
@@ -237,8 +205,7 @@ public class Java implements Serializable {
     }
 
     /**
-     * 判断当前Java的版本
-     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     * 判断当前Java的版本 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
      *
      * @return 如果当前Java版本为12，则返回<code>true</code>
      */
@@ -247,8 +214,7 @@ public class Java implements Serializable {
     }
 
     /**
-     * 判断当前Java的版本
-     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     * 判断当前Java的版本 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
      *
      * @return 如果当前Java版本为13，则返回<code>true</code>
      */
@@ -257,8 +223,7 @@ public class Java implements Serializable {
     }
 
     /**
-     * 判断当前Java的版本
-     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     * 判断当前Java的版本 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
      *
      * @return 如果当前Java版本为14，则返回<code>true</code>
      */
@@ -267,8 +232,7 @@ public class Java implements Serializable {
     }
 
     /**
-     * 判断当前Java的版本
-     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     * 判断当前Java的版本 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
      *
      * @return 如果当前Java版本为15，则返回<code>true</code>
      */
@@ -277,8 +241,7 @@ public class Java implements Serializable {
     }
 
     /**
-     * 判断当前Java的版本
-     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     * 判断当前Java的版本 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
      *
      * @return 如果当前Java版本为16，则返回<code>true</code>
      */
@@ -287,8 +250,7 @@ public class Java implements Serializable {
     }
 
     /**
-     * 判断当前Java的版本
-     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     * 判断当前Java的版本 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
      *
      * @return 如果当前Java版本为17，则返回<code>true</code>
      */
@@ -297,8 +259,7 @@ public class Java implements Serializable {
     }
 
     /**
-     * 判断当前Java的版本
-     * 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
+     * 判断当前Java的版本 如果不能取得系统属性<code>java.version</code>（因为Java安全限制），则总是返回 <code>false</code>
      *
      * @return 如果当前Java版本为18，则返回<code>true</code>
      */

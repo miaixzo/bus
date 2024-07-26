@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.service;
 
 import org.miaixz.bus.image.Dimse;
@@ -49,46 +49,45 @@ public class BasicMPPSSCP extends AbstractImageService {
 
     public static void mayNoLongerBeUpdated() throws ImageServiceException {
         throw new ImageServiceException(Status.ProcessingFailure,
-                "Performed Procedure Step Object may no longer be updated")
-                .setErrorID(0xA710);
+                "Performed Procedure Step Object may no longer be updated").setErrorID(0xA710);
     }
 
     @Override
-    public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse,
-                          Attributes rq, Attributes rqAttrs) throws IOException {
+    public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes rq, Attributes rqAttrs)
+            throws IOException {
         switch (dimse) {
-            case N_CREATE_RQ:
-                onNCreateRQ(as, pc, rq, rqAttrs);
-                break;
-            case N_SET_RQ:
-                onNSetRQ(as, pc, rq, rqAttrs);
-                break;
-            default:
-                throw new ImageServiceException(Status.UnrecognizedOperation);
+        case N_CREATE_RQ:
+            onNCreateRQ(as, pc, rq, rqAttrs);
+            break;
+        case N_SET_RQ:
+            onNSetRQ(as, pc, rq, rqAttrs);
+            break;
+        default:
+            throw new ImageServiceException(Status.UnrecognizedOperation);
         }
     }
 
-    protected void onNCreateRQ(Association as, PresentationContext pc,
-                               Attributes rq, Attributes rqAttrs) throws IOException {
+    protected void onNCreateRQ(Association as, PresentationContext pc, Attributes rq, Attributes rqAttrs)
+            throws IOException {
         Attributes rsp = Commands.mkNCreateRSP(rq, Status.Success);
         Attributes rspAttrs = create(as, rq, rqAttrs, rsp);
         as.tryWriteDimseRSP(pc, rsp, rspAttrs);
     }
 
-    protected Attributes create(Association as, Attributes rq,
-                                Attributes rqAttrs, Attributes rsp) throws ImageServiceException {
+    protected Attributes create(Association as, Attributes rq, Attributes rqAttrs, Attributes rsp)
+            throws ImageServiceException {
         return null;
     }
 
-    protected void onNSetRQ(Association as, PresentationContext pc,
-                            Attributes rq, Attributes rqAttrs) throws IOException {
+    protected void onNSetRQ(Association as, PresentationContext pc, Attributes rq, Attributes rqAttrs)
+            throws IOException {
         Attributes rsp = Commands.mkNSetRSP(rq, Status.Success);
         Attributes rspAttrs = set(as, rq, rqAttrs, rsp);
         as.tryWriteDimseRSP(pc, rsp, rspAttrs);
     }
 
-    protected Attributes set(Association as, Attributes rq, Attributes rqAttrs,
-                             Attributes rsp) throws ImageServiceException {
+    protected Attributes set(Association as, Attributes rq, Attributes rqAttrs, Attributes rsp)
+            throws ImageServiceException {
         return null;
     }
 

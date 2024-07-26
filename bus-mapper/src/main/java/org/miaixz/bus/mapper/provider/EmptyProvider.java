@@ -24,15 +24,14 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.provider;
 
 import org.miaixz.bus.mapper.builder.MapperBuilder;
 import org.miaixz.bus.mapper.builder.MapperTemplate;
 
 /**
- * 空方法Mapper接口默认MapperTemplate
- * 如BaseSelectMapper，接口纯继承，不包含任何方法
+ * 空方法Mapper接口默认MapperTemplate 如BaseSelectMapper，接口纯继承，不包含任何方法
  *
  * @author Kimi Liu
  * @since Java 17+

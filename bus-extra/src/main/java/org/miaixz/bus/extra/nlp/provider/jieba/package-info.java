@@ -26,8 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
 /**
- * Jieba分词引擎实现
- * 项目地址：https://github.com/huaban/jieba-analysis
+ * Jieba分词引擎实现 项目地址：https://github.com/huaban/jieba-analysis
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.setting.metric.ini;
 
 import org.miaixz.bus.core.lang.Keys;
@@ -59,7 +59,8 @@ public class IniSectionService extends AbstractElement implements IniSection {
         properties = new ArrayList<>();
     }
 
-    public IniSectionService(String value, String originalValue, int lineNumber, Supplier<List<IniProperty>> listSupplier) {
+    public IniSectionService(String value, String originalValue, int lineNumber,
+            Supplier<List<IniProperty>> listSupplier) {
         super(value, originalValue, lineNumber);
         properties = listSupplier.get();
     }
@@ -74,7 +75,8 @@ public class IniSectionService extends AbstractElement implements IniSection {
         properties = new ArrayList<>();
     }
 
-    public IniSectionService(String value, String originalValue, int lineNumber, IniComment comment, Supplier<List<IniProperty>> listSupplier) {
+    public IniSectionService(String value, String originalValue, int lineNumber, IniComment comment,
+            Supplier<List<IniProperty>> listSupplier) {
         super(value, originalValue, lineNumber, comment);
         properties = listSupplier.get();
     }
@@ -128,8 +130,7 @@ public class IniSectionService extends AbstractElement implements IniSection {
     }
 
     /**
-     * if you want to get the {@code IniProperty} list,
-     * use {@link #getList()} or {@link #getList(Supplier)}.
+     * if you want to get the {@code IniProperty} list, use {@link #getList()} or {@link #getList(Supplier)}.
      *
      * @return the real list.
      */

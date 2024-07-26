@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.validate.magic.annotation;
 
 import java.lang.annotation.*;
@@ -37,20 +37,18 @@ import java.lang.annotation.*;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER})
+@Target({ ElementType.TYPE, ElementType.METHOD, ElementType.PARAMETER })
 public @interface Valid {
 
     /**
-     * 校验属性
-     * 例如: {"id","name"}
+     * 校验属性 例如: {"id","name"}
      *
      * @return the array
      */
     String[] value() default {};
 
     /**
-     * 忽略属性
-     * 例如: {"created","creator"}
+     * 忽略属性 例如: {"created","creator"}
      *
      * @return the array
      */

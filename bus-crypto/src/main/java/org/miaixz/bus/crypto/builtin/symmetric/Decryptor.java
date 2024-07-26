@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.builtin.symmetric;
 
 import org.miaixz.bus.core.lang.Charset;
@@ -39,9 +39,9 @@ import java.io.OutputStream;
 /**
  * 对称解密器接口，提供：
  * <ul>
- *     <li>从bytes解密</li>
- *     <li>从Hex(16进制)解密</li>
- *     <li>从Base64解密</li>
+ * <li>从bytes解密</li>
+ * <li>从Hex(16进制)解密</li>
+ * <li>从Base64解密</li>
  * </ul>
  *
  * @author Kimi Liu

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.validate;
 
 import org.miaixz.bus.core.lang.exception.NoSuchException;
@@ -51,9 +51,7 @@ import java.util.stream.Collectors;
 public class Provider {
 
     /**
-     * 被校验对象
-     * 每次都创建一个新的对象,避免线程问题
-     * 可以使用 {@link ThreadLocal} 简单优化
+     * 被校验对象 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param <T>    对象
      * @param object 原始对象
@@ -64,9 +62,7 @@ public class Provider {
     }
 
     /**
-     * 被校验对象
-     * 每次都创建一个新的对象,避免线程问题
-     * 可以使用 {@link ThreadLocal} 简单优化
+     * 被校验对象 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param <T>     对象
      * @param object  原始对象
@@ -78,9 +74,7 @@ public class Provider {
     }
 
     /**
-     * 被校验对象
-     * 每次都创建一个新的对象,避免线程问题
-     * 可以使用 {@link ThreadLocal} 简单优化
+     * 被校验对象 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param <T>         对象
      * @param object      原始对象
@@ -92,9 +86,7 @@ public class Provider {
     }
 
     /**
-     * 被校验对象
-     * 每次都创建一个新的对象,避免线程问题
-     * 可以使用 {@link ThreadLocal} 简单优化
+     * 被校验对象 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param <T>         对象
      * @param object      原始对象
@@ -107,9 +99,7 @@ public class Provider {
     }
 
     /**
-     * 被校验对象
-     * 每次都创建一个新的对象,避免线程问题
-     * 可以使用 {@link ThreadLocal} 简单优化
+     * 被校验对象 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param <T>         对象
      * @param field       当前属性
@@ -177,8 +167,7 @@ public class Provider {
             if (null == list || list.isEmpty()) {
                 return false;
             } else {
-                return Arrays.stream(group)
-                        .anyMatch(neededGroup -> list.stream().anyMatch(neededGroup::equals));
+                return Arrays.stream(group).anyMatch(neededGroup -> list.stream().anyMatch(neededGroup::equals));
             }
         }
     }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date.format.parser;
 
 import org.miaixz.bus.core.lang.exception.DateException;
@@ -32,8 +32,7 @@ import org.miaixz.bus.core.lang.exception.DateException;
 import java.util.Date;
 
 /**
- * 日期解析接口，用于解析日期字符串为 {@link Date} 对象
- * Thanks to Apache Commons Lang 3.5
+ * 日期解析接口，用于解析日期字符串为 {@link Date} 对象 Thanks to Apache Commons Lang 3.5
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,7 +40,7 @@ import java.util.Date;
 public interface DateParser {
 
     /**
-     * 将日期字符串解析并转换为  {@link Date} 对象
+     * 将日期字符串解析并转换为 {@link Date} 对象
      *
      * @param source 被解析的日期字符串
      * @return {@link Date}对象

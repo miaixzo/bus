@@ -24,14 +24,13 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text.replacer;
 
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 区间字符串替换，指定区间，将区间中的所有字符去除，替换为指定的字符，字符重复次数为区间长度，即替换后字符串长度不变
- * 此方法使用{@link String#codePoints()}完成拆分替换
+ * 区间字符串替换，指定区间，将区间中的所有字符去除，替换为指定的字符，字符重复次数为区间长度，即替换后字符串长度不变 此方法使用{@link String#codePoints()}完成拆分替换
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -53,7 +52,8 @@ public class CharRangeReplacer extends StringReplacer {
      * @param replacedChar 被替换的字符串
      * @param isCodePoint  是否code point模式，此模式下emoji等会被作为单独的字符
      */
-    public CharRangeReplacer(final int beginInclude, final int endExclude, final char replacedChar, final boolean isCodePoint) {
+    public CharRangeReplacer(final int beginInclude, final int endExclude, final char replacedChar,
+            final boolean isCodePoint) {
         this.beginInclude = beginInclude;
         this.endExclude = endExclude;
         this.replacedChar = replacedChar;

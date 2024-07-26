@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.exception;
 
 /**
@@ -83,7 +83,8 @@ public class BeanException extends InternalException {
      * @param enableSuppression  是否启用抑制
      * @param writableStackTrace 堆栈跟踪是否应该是可写的
      */
-    public BeanException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
+    public BeanException(final String message, final Throwable cause, final boolean enableSuppression,
+            final boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.proxy;
 
 import org.miaixz.bus.core.instance.Instances;
@@ -33,8 +33,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * 代理引擎简单工厂
- * 根据用户引入代理库的不同，产生不同的代理引擎对象
+ * 代理引擎简单工厂 根据用户引入代理库的不同，产生不同的代理引擎对象
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,7 +47,8 @@ public class Factory {
      */
     public static Provider getEngine() {
         final Provider engine = Instances.get(Provider.class.getName(), Factory::createEngine);
-        Logger.debug("Use [{}] Engine As Default.", StringKit.removeSuffix(engine.getClass().getSimpleName(), "Engine"));
+        Logger.debug("Use [{}] Engine As Default.",
+                StringKit.removeSuffix(engine.getClass().getSimpleName(), "Engine"));
         return engine;
     }
 

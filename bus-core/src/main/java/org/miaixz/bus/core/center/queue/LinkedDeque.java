@@ -24,53 +24,44 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.queue;
 
 import java.util.*;
 
 /**
- * Linked list implementation of the {@link Deque} interface where the link
- * pointers are tightly integrated with the element. Linked deques have no
- * capacity restrictions; they grow as necessary to support usage. They are not
- * thread-safe; in the absence of external synchronization, they do not support
- * concurrent access by multiple threads. Null elements are prohibited.
+ * Linked list implementation of the {@link Deque} interface where the link pointers are tightly integrated with the
+ * element. Linked deques have no capacity restrictions; they grow as necessary to support usage. They are not
+ * thread-safe; in the absence of external synchronization, they do not support concurrent access by multiple threads.
+ * Null elements are prohibited.
  * <p>
- * Most <b>LinkedDeque</b> operations run in constant time by assuming that
- * the {@link Linked} parameter is associated with the deque instance. Any usage
- * that violates this assumption will result in non-deterministic behavior.
+ * Most <b>LinkedDeque</b> operations run in constant time by assuming that the {@link Linked} parameter is associated
+ * with the deque instance. Any usage that violates this assumption will result in non-deterministic behavior.
  * <p>
- * The iterators returned by this class are <em>not</em> <i>fail-fast</i>: If
- * the deque is modified at any time after the iterator is created, the iterator
- * will be in an unknown state. Thus, in the face of concurrent modification,
- * the iterator risks arbitrary, non-deterministic behavior at an undetermined
- * time in the future.
+ * The iterators returned by this class are <em>not</em> <i>fail-fast</i>: If the deque is modified at any time after
+ * the iterator is created, the iterator will be in an unknown state. Thus, in the face of concurrent modification, the
+ * iterator risks arbitrary, non-deterministic behavior at an undetermined time in the future.
  *
  * @param <E> the type of elements held in this collection
  * @author Kimi Liu
  * @see <a href="http://code.google.com/p/concurrentlinkedhashmap/">
- * http://code.google.com/p/concurrentlinkedhashmap/</a>
+ *      http://code.google.com/p/concurrentlinkedhashmap/</a>
  * @since Java 17+
  */
 public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> implements Deque<E> {
 
     /**
-     * Pointer to first node.
-     * Invariant: (first == null && last == null) ||
-     * (first.prev == null)
+     * Pointer to first node. Invariant: (first == null && last == null) || (first.prev == null)
      */
     E first;
 
     /**
-     * Pointer to last node.
-     * Invariant: (first == null && last == null) ||
-     * (last.next == null)
+     * Pointer to last node. Invariant: (first == null && last == null) || (last.next == null)
      */
     E last;
 
     /**
-     * Links the element to the front of the deque so that it becomes the first
-     * element.
+     * Links the element to the front of the deque so that it becomes the first element.
      *
      * @param e the unlinked element
      */
@@ -87,8 +78,7 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Links the element to the back of the deque so that it becomes the last
-     * element.
+     * Links the element to the back of the deque so that it becomes the last element.
      *
      * @param e the unlinked element
      */
@@ -173,8 +163,7 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     /**
      * {@inheritDoc}
      * <p>
-     * Beware that, unlike in most collections, this method is <em>NOT</em> a
-     * constant-time operation.
+     * Beware that, unlike in most collections, this method is <em>NOT</em> a constant-time operation.
      */
     @Override
     public int size() {
@@ -187,7 +176,7 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
 
     @Override
     public void clear() {
-        for (E e = first; e != null; ) {
+        for (E e = first; e != null;) {
             final E next = e.getNext();
             e.setPrevious(null);
             e.setNext(null);
@@ -203,14 +192,11 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
 
     // A fast-path containment check
     boolean contains(final Linked<?> e) {
-        return (e.getPrevious() != null)
-                || (e.getNext() != null)
-                || (e == first);
+        return (e.getPrevious() != null) || (e.getNext() != null) || (e == first);
     }
 
     /**
-     * Moves the element to the front of the deque so that it becomes the first
-     * element.
+     * Moves the element to the front of the deque so that it becomes the first element.
      *
      * @param e the linked element
      */
@@ -222,8 +208,7 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     }
 
     /**
-     * Moves the element to the back of the deque so that it becomes the last
-     * element.
+     * Moves the element to the back of the deque so that it becomes the last element.
      *
      * @param e the linked element
      */
@@ -293,7 +278,6 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
     public boolean add(final E e) {
         return offerLast(e);
     }
-
 
     @Override
     public void addFirst(final E e) {
@@ -437,8 +421,7 @@ public class LinkedDeque<E extends Linked<E>> extends AbstractCollection<E> impl
         }
 
         /**
-         * Retrieves the next element to traverse to or {@code null} if there are
-         * no more elements.
+         * Retrieves the next element to traverse to or {@code null} if there are no more elements.
          */
         abstract E computeNext();
     }

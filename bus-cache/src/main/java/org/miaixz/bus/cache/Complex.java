@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cache;
 
 import org.miaixz.bus.cache.magic.*;
@@ -67,26 +67,20 @@ public class Complex {
     private AbstractReader multiCacheReader;
 
     public static boolean isSwitchOn(Context config, Cached cached, Method method, Object[] args) {
-        return doIsSwitchOn(config.getCache() == Context.Switch.ON,
-                cached.expire(), cached.condition(),
-                method, args);
+        return doIsSwitchOn(config.getCache() == Context.Switch.ON, cached.expire(), cached.condition(), method, args);
     }
 
     public static boolean isSwitchOn(Context config, Invalid invalid, Method method, Object[] args) {
-        return doIsSwitchOn(config.getCache() == Context.Switch.ON,
-                CacheExpire.FOREVER, invalid.condition(),
-                method, args);
+        return doIsSwitchOn(config.getCache() == Context.Switch.ON, CacheExpire.FOREVER, invalid.condition(), method,
+                args);
     }
 
     public static boolean isSwitchOn(Context config, CachedGet cachedGet, Method method, Object[] args) {
-        return doIsSwitchOn(config.getCache() == Context.Switch.ON,
-                CacheExpire.FOREVER, cachedGet.condition(),
-                method, args);
+        return doIsSwitchOn(config.getCache() == Context.Switch.ON, CacheExpire.FOREVER, cachedGet.condition(), method,
+                args);
     }
 
-    private static boolean doIsSwitchOn(boolean openStat,
-                                        int expire,
-                                        String condition, Method method, Object[] args) {
+    private static boolean doIsSwitchOn(boolean openStat, int expire, String condition, Method method, Object[] args) {
         if (!openStat) {
             return false;
         }
@@ -95,7 +89,8 @@ public class Complex {
             return false;
         }
 
-        return (boolean) SpelCalculator.calcSpelValueWithContext(condition, ArgNameGenerator.getArgNames(method), args, true);
+        return (boolean) SpelCalculator.calcSpelValueWithContext(condition, ArgNameGenerator.getArgNames(method), args,
+                true);
     }
 
     public Object read(CachedGet cachedGet, Method method, ProxyChain baseInvoker) throws Throwable {

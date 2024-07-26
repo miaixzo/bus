@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.additional.upsert;
 
 import org.apache.ibatis.annotations.Param;
@@ -43,10 +43,7 @@ import java.util.List;
 @RegisterMapper
 public interface BatchUpsertMapper<T> {
 
-    @UpdateProvider(
-            type = BatchUpsertProvider.class,
-            method = "dynamicSQL"
-    )
+    @UpdateProvider(type = BatchUpsertProvider.class, method = "dynamicSQL")
     void batchUpsert(@Param("list") List<? extends T> recordList);
 
 }

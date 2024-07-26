@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -336,9 +336,11 @@ public class MergeRequestFilter implements Serializable {
     }
 
     public enum MergeRequestField {
-        LABELS, MILESTONE, AUTHOR_ID, AUTHOR_USERNAME, ASSIGNEE_ID, ASSIGNEE_USERNAME, REVIEWER_ID, REVIEWER_USERNAME, MY_REACTION_EMOJI;
+        LABELS, MILESTONE, AUTHOR_ID, AUTHOR_USERNAME, ASSIGNEE_ID, ASSIGNEE_USERNAME, REVIEWER_ID, REVIEWER_USERNAME,
+        MY_REACTION_EMOJI;
 
-        private static JacksonJsonEnumHelper<MergeRequestField> enumHelper = new JacksonJsonEnumHelper<>(MergeRequestField.class);
+        private static JacksonJsonEnumHelper<MergeRequestField> enumHelper = new JacksonJsonEnumHelper<>(
+                MergeRequestField.class);
 
         @JsonCreator
         public static MergeRequestField forValue(String value) {
@@ -468,7 +470,6 @@ public class MergeRequestFilter implements Serializable {
         return withNot(MergeRequestField.REVIEWER_USERNAME, reviewerUsername);
     }
 
-
     /**
      * Add my_reaction_emoji to the 'not' filter entry.
      *
@@ -501,36 +502,24 @@ public class MergeRequestFilter implements Serializable {
 
     @JsonIgnore
     public GitLabApiForm getQueryParams(int page, int perPage) {
-        return (getQueryParams()
-                .withParam(Constants.PAGE_PARAM, page)
-                .withParam(Constants.PER_PAGE_PARAM, perPage));
+        return (getQueryParams().withParam(Constants.PAGE_PARAM, page).withParam(Constants.PER_PAGE_PARAM, perPage));
     }
 
     @JsonIgnore
     public GitLabApiForm getQueryParams() {
-        GitLabApiForm params = new GitLabApiForm()
-                .withParam("iids", iids)
-                .withParam("state", state)
-                .withParam("order_by", orderBy)
-                .withParam("sort", sort)
-                .withParam("milestone", milestone)
+        GitLabApiForm params = new GitLabApiForm().withParam("iids", iids).withParam("state", state)
+                .withParam("order_by", orderBy).withParam("sort", sort).withParam("milestone", milestone)
                 .withParam("view", (simpleView != null && simpleView ? "simple" : null))
                 .withParam("labels", (labels != null ? String.join(",", labels) : null))
-                .withParam("created_after", createdAfter)
-                .withParam("created_before", createdBefore)
-                .withParam("updated_after", updatedAfter)
-                .withParam("updated_before", updatedBefore)
-                .withParam("scope", scope)
-                .withParam("assignee_id", assigneeId)
-                .withParam("my_reaction_emoji", myReactionEmoji)
-                .withParam("source_branch", sourceBranch)
-                .withParam("target_branch", targetBranch)
-                .withParam("search", search)
-                .withParam("in", in)
-                .withParam("wip", (wip == null ? null : wip ? "yes" : "no"))
-                .withParam("not", toStringMap(not), false);
+                .withParam("created_after", createdAfter).withParam("created_before", createdBefore)
+                .withParam("updated_after", updatedAfter).withParam("updated_before", updatedBefore)
+                .withParam("scope", scope).withParam("assignee_id", assigneeId)
+                .withParam("my_reaction_emoji", myReactionEmoji).withParam("source_branch", sourceBranch)
+                .withParam("target_branch", targetBranch).withParam("search", search).withParam("in", in)
+                .withParam("wip", (wip == null ? null : wip ? "yes" : "no")).withParam("not", toStringMap(not), false);
 
-        if (authorId != null && (scope == Constants.MergeRequestScope.ALL || scope == Constants.MergeRequestScope.ASSIGNED_TO_ME)) {
+        if (authorId != null
+                && (scope == Constants.MergeRequestScope.ALL || scope == Constants.MergeRequestScope.ASSIGNED_TO_ME)) {
             params.withParam("author_id", authorId);
         }
         return params;

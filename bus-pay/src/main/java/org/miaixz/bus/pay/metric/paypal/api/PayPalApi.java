@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pay.metric.paypal.api;
 
 import org.miaixz.bus.pay.Matcher;
@@ -61,7 +61,6 @@ public enum PayPalApi implements Matcher {
      * 退款查询
      */
     REFUND_QUERY("/v2/payments/refunds/%s", "退款查询");
-
 
     /**
      * 接口方法

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.hardware;
 
 import com.sun.jna.platform.win32.COM.COMException;
@@ -56,9 +56,12 @@ import java.util.regex.Matcher;
  */
 final class WindowsLogicalVolumeGroup extends AbstractLogicalVolumeGroup {
 
-    private static final java.util.regex.Pattern SP_OBJECT_ID = java.util.regex.Pattern.compile(".*ObjectId=.*SP:(\\{.*\\}).*");
-    private static final java.util.regex.Pattern PD_OBJECT_ID = java.util.regex.Pattern.compile(".*ObjectId=.*PD:(\\{.*\\}).*");
-    private static final java.util.regex.Pattern VD_OBJECT_ID = java.util.regex.Pattern.compile(".*ObjectId=.*VD:(\\{.*\\})(\\{.*\\}).*");
+    private static final java.util.regex.Pattern SP_OBJECT_ID = java.util.regex.Pattern
+            .compile(".*ObjectId=.*SP:(\\{.*\\}).*");
+    private static final java.util.regex.Pattern PD_OBJECT_ID = java.util.regex.Pattern
+            .compile(".*ObjectId=.*PD:(\\{.*\\}).*");
+    private static final java.util.regex.Pattern VD_OBJECT_ID = java.util.regex.Pattern
+            .compile(".*ObjectId=.*VD:(\\{.*\\})(\\{.*\\}).*");
 
     private static final boolean IS_WINDOWS8_OR_GREATER = VersionHelpers.IsWindows8OrGreater();
 

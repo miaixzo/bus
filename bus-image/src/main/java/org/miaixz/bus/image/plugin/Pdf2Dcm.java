@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.xyz.IoKit;
@@ -54,17 +54,9 @@ public class Pdf2Dcm {
     private static final long MAX_FILE_SIZE = 0x7FFFFFFE;
     private static final ElementDictionary DICT = ElementDictionary.getStandardElementDictionary();
 
-    private static final int[] IUID_TAGS = {
-            Tag.StudyInstanceUID,
-            Tag.SeriesInstanceUID,
-            Tag.SOPInstanceUID
-    };
+    private static final int[] IUID_TAGS = { Tag.StudyInstanceUID, Tag.SeriesInstanceUID, Tag.SOPInstanceUID };
 
-    private static final int[] TYPE2_TAGS = {
-            Tag.ContentDate,
-            Tag.ContentTime,
-            Tag.AcquisitionDateTime
-    };
+    private static final int[] TYPE2_TAGS = { Tag.ContentDate, Tag.ContentTime, Tag.AcquisitionDateTime };
 
     private static Attributes staticMetadata;
     private static FileContentType fileContentType;
@@ -72,37 +64,37 @@ public class Pdf2Dcm {
 
     private static FileContentType fileContentType(String s) {
         switch (s.toLowerCase(Locale.ENGLISH)) {
-            case "stl":
-            case "model/stl":
-            case "model/x.stl-binary":
-            case "application/sla":
-                return FileContentType.STL;
-            case "pdf":
-            case "application/pdf":
-                return FileContentType.PDF;
-            case "xml":
-            case "application/xml":
-                return FileContentType.CDA;
-            case "mtl":
-            case "model/mtl":
-                return FileContentType.MTL;
-            case "obj":
-            case "model/obj":
-                return FileContentType.OBJ;
-            case "genozip":
-            case "application/vnd.genozip":
-                return FileContentType.GENOZIP;
-            case "vcf.bz2":
-            case "vcfbzip2":
-            case "vcfbz2":
-            case "application/prs.vcfbzip2":
-                return FileContentType.VCF_BZIP2;
-            case "boz":
-            case "bz2":
-            case "application/x-bzip2":
-                return FileContentType.DOC_BZIP2;
-            default:
-                throw new IllegalArgumentException(s);
+        case "stl":
+        case "model/stl":
+        case "model/x.stl-binary":
+        case "application/sla":
+            return FileContentType.STL;
+        case "pdf":
+        case "application/pdf":
+            return FileContentType.PDF;
+        case "xml":
+        case "application/xml":
+            return FileContentType.CDA;
+        case "mtl":
+        case "model/mtl":
+            return FileContentType.MTL;
+        case "obj":
+        case "model/obj":
+            return FileContentType.OBJ;
+        case "genozip":
+        case "application/vnd.genozip":
+            return FileContentType.GENOZIP;
+        case "vcf.bz2":
+        case "vcfbzip2":
+        case "vcfbz2":
+        case "application/prs.vcfbzip2":
+            return FileContentType.VCF_BZIP2;
+        case "boz":
+        case "bz2":
+        case "application/x-bzip2":
+            return FileContentType.DOC_BZIP2;
+        default:
+            throw new IllegalArgumentException(s);
         }
     }
 
@@ -121,8 +113,7 @@ public class Pdf2Dcm {
     private Attributes createMetadata(FileContentType fileContentType, File srcFile) throws Exception {
         Attributes fileMetadata = SAXReader.parse(IoKit.openFileOrURL(fileContentType.getSampleMetadataFile()));
         fileMetadata.addAll(staticMetadata);
-        if ((fileContentType == FileContentType.STL
-                || fileContentType == FileContentType.OBJ)
+        if ((fileContentType == FileContentType.STL || fileContentType == FileContentType.OBJ)
                 && !fileMetadata.containsValue(Tag.FrameOfReferenceUID))
             fileMetadata.setString(Tag.FrameOfReferenceUID, VR.UI, UID.createUID());
         if (encapsulatedDocLength)
@@ -145,8 +136,8 @@ public class Pdf2Dcm {
     }
 
     private void convert(Path srcFilePath, Path destFilePath) throws Exception {
-        FileContentType fileContentType1 = fileContentType != null
-                ? fileContentType : FileContentType.valueOf(srcFilePath);
+        FileContentType fileContentType1 = fileContentType != null ? fileContentType
+                : FileContentType.valueOf(srcFilePath);
         File srcFile = srcFilePath.toFile();
         File destFile = destFilePath.toFile();
         Attributes fileMetadata = createMetadata(fileContentType1, srcFile);
@@ -161,12 +152,9 @@ public class Pdf2Dcm {
     }
 
     enum FileContentType {
-        PDF("resource:encapsulatedPDFMetadata.xml"),
-        CDA("resource:encapsulatedCDAMetadata.xml"),
-        STL("resource:encapsulatedSTLMetadata.xml"),
-        MTL("resource:encapsulatedMTLMetadata.xml"),
-        OBJ("resource:encapsulatedOBJMetadata.xml"),
-        GENOZIP("resource:encapsulatedGenozipMetadata.xml"),
+        PDF("resource:encapsulatedPDFMetadata.xml"), CDA("resource:encapsulatedCDAMetadata.xml"),
+        STL("resource:encapsulatedSTLMetadata.xml"), MTL("resource:encapsulatedMTLMetadata.xml"),
+        OBJ("resource:encapsulatedOBJMetadata.xml"), GENOZIP("resource:encapsulatedGenozipMetadata.xml"),
         VCF_BZIP2("resource:encapsulatedVCFBzip2Metadata.xml"),
         DOC_BZIP2("resource:encapsulatedDocumentBzip2Metadata.xml");
 

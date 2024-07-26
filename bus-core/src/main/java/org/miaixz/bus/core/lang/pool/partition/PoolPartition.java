@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.pool.partition;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -38,15 +38,11 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 对象池分区
- * 一个分区实际为一个小的对象池，持有一个阻塞队列。
- * 初始化时创建{@link PoolConfig#getMinSize()}个对象作为初始池对象.
+ * 对象池分区 一个分区实际为一个小的对象池，持有一个阻塞队列。 初始化时创建{@link PoolConfig#getMinSize()}个对象作为初始池对象.
  *
  * <p>
- * 当借出对象时，从队列头部取出并验证，验证通过后使用，验证不通过直接调用{@link #free(Poolable)} 销毁并重新获取，
- * 当池中对象都被借出（空了），创建新的对象并入队列，直到队列满为止，当满时等待归还，超时则报错。
- * 当归还对象时，验证对象，不可用销毁之，可用入队列。
- * 一个分区队列的实际
+ * 当借出对象时，从队列头部取出并验证，验证通过后使用，验证不通过直接调用{@link #free(Poolable)} 销毁并重新获取， 当池中对象都被借出（空了），创建新的对象并入队列，直到队列满为止，当满时等待归还，超时则报错。
+ * 当归还对象时，验证对象，不可用销毁之，可用入队列。 一个分区队列的实际
  * </p>
  *
  * @param <T> 对象类型
@@ -72,7 +68,8 @@ public class PoolPartition<T> implements ObjectPool<T> {
      * @param queue         阻塞队列类型
      * @param objectFactory 对象工厂，用于管理对象创建、检查和销毁
      */
-    public PoolPartition(final PoolConfig config, final BlockingQueue<Poolable<T>> queue, final ObjectFactory<T> objectFactory) {
+    public PoolPartition(final PoolConfig config, final BlockingQueue<Poolable<T>> queue,
+            final ObjectFactory<T> objectFactory) {
         this.config = config;
         this.queue = queue;
         this.objectFactory = objectFactory;
@@ -144,8 +141,7 @@ public class PoolPartition<T> implements ObjectPool<T> {
     }
 
     /**
-     * 扩容并填充对象池队列
-     * 如果传入的扩容大小大于可用大小（即扩容大小加现有大小大于最大大小，则实际扩容到最大）
+     * 扩容并填充对象池队列 如果传入的扩容大小大于可用大小（即扩容大小加现有大小大于最大大小，则实际扩容到最大）
      *
      * @param increaseSize 扩容大小
      * @return 实际扩容大小，0表示已经达到最大，未成功扩容
@@ -214,8 +210,7 @@ public class PoolPartition<T> implements ObjectPool<T> {
     }
 
     /**
-     * 从队列中取出头部的对象，如果队列为空，则等待
-     * 等待的时间取决于{@link PoolConfig#getMaxWait()}，小于等于0时一直等待，否则等待给定毫秒数
+     * 从队列中取出头部的对象，如果队列为空，则等待 等待的时间取决于{@link PoolConfig#getMaxWait()}，小于等于0时一直等待，否则等待给定毫秒数
      *
      * @return 取出的池对象
      * @throws InternalException 中断异常

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center;
 
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
@@ -44,16 +44,14 @@ public class ConcurrentHashSet<E> extends SetFromMap<E> {
     private static final long serialVersionUID = -1L;
 
     /**
-     * 构造
-     * 触发因子为默认的0.75
+     * 构造 触发因子为默认的0.75
      */
     public ConcurrentHashSet() {
         super(new SafeConcurrentHashMap<>());
     }
 
     /**
-     * 构造
-     * 触发因子为默认的0.75
+     * 构造 触发因子为默认的0.75
      *
      * @param initialCapacity 初始大小
      */
@@ -88,7 +86,8 @@ public class ConcurrentHashSet<E> extends SetFromMap<E> {
      * @param iter {@link Iterable}
      */
     public ConcurrentHashSet(final Iterable<E> iter) {
-        super(iter instanceof Collection ? new SafeConcurrentHashMap<>(((Collection<E>) iter).size()) : new SafeConcurrentHashMap<>());
+        super(iter instanceof Collection ? new SafeConcurrentHashMap<>(((Collection<E>) iter).size())
+                : new SafeConcurrentHashMap<>());
         if (iter instanceof Collection) {
             this.addAll((Collection<E>) iter);
         } else {

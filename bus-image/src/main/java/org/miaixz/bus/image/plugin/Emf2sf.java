@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.xyz.IoKit;
@@ -100,16 +100,12 @@ public class Emf2sf {
         }
     }
 
-    private void extract(File file, Attributes fmi, Attributes src, int frame)
-            throws IOException {
+    private void extract(File file, Attributes fmi, Attributes src, int frame) throws IOException {
         Attributes sf = extractor.extract(src, frame);
-        ImageOutputStream out = new ImageOutputStream(
-                new File(outDir, fname(file, frame + 1)));
+        ImageOutputStream out = new ImageOutputStream(new File(outDir, fname(file, frame + 1)));
         try {
-            out.writeDataset(fmi != null
-                    ? sf.createFileMetaInformation(
-                    fmi.getString(Tag.TransferSyntaxUID))
-                    : null, sf);
+            out.writeDataset(fmi != null ? sf.createFileMetaInformation(fmi.getString(Tag.TransferSyntaxUID)) : null,
+                    sf);
         } finally {
             IoKit.close(out);
         }

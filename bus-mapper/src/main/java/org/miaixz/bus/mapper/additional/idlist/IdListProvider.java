@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.additional.idlist;
 
 import org.apache.ibatis.mapping.MappedStatement;
@@ -39,8 +39,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 通过 ids 字符串的各种操作
- * ids 如 "1,2,3"
+ * 通过 ids 字符串的各种操作 ids 如 "1,2,3"
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -105,7 +104,8 @@ public class IdListProvider extends MapperTemplate {
         if (columnList.size() == 1) {
             EntityColumn column = columnList.iterator().next();
             if (notEmpty) {
-                sql.append("<bind name=\"notEmptyListCheck\" value=\"@org.miaixz.bus.mapper.additional.idlist.IdListProvider@notEmpty(");
+                sql.append(
+                        "<bind name=\"notEmptyListCheck\" value=\"@org.miaixz.bus.mapper.additional.idlist.IdListProvider@notEmpty(");
                 sql.append("idList, 'idList 不能为空')\"/>");
             }
             sql.append("<where>");

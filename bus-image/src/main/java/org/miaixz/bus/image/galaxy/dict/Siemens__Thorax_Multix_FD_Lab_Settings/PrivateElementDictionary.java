@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.Siemens__Thorax_Multix_FD_Lab_Settings;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,37 +46,38 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.AutoWindowExpansion:
-                return VR.DS;
-            case PrivateTag.TableObjectDistance:
-            case PrivateTag.TableDetectorDistance:
-                return VR.FD;
-            case PrivateTag._0019_xx00_:
-            case PrivateTag._0019_xx01_:
-            case PrivateTag.TotalDoseAreaProduct:
-            case PrivateTag._0019_xx04_:
-            case PrivateTag.SystemType:
-                return VR.LO;
-            case PrivateTag.AnatomicSortNumber:
-            case PrivateTag.AcquisitionSortNumber:
-                return VR.SH;
-            case PrivateTag.AutoWindowCenter:
-            case PrivateTag.AutoWindowWidth:
-                return VR.SL;
-            case PrivateTag.FilterID:
-            case PrivateTag.AutoWindowShift:
-                return VR.SS;
-            case PrivateTag._0019_xx03_:
-            case PrivateTag._0019_xx05_:
-            case PrivateTag.OrthoStepDistance:
-            case PrivateTag.AutoWindowFlag:
-            case PrivateTag.AnatomicCorrectView:
-                return VR.US;
+
+        case PrivateTag.AutoWindowExpansion:
+            return VR.DS;
+        case PrivateTag.TableObjectDistance:
+        case PrivateTag.TableDetectorDistance:
+            return VR.FD;
+        case PrivateTag._0019_xx00_:
+        case PrivateTag._0019_xx01_:
+        case PrivateTag.TotalDoseAreaProduct:
+        case PrivateTag._0019_xx04_:
+        case PrivateTag.SystemType:
+            return VR.LO;
+        case PrivateTag.AnatomicSortNumber:
+        case PrivateTag.AcquisitionSortNumber:
+            return VR.SH;
+        case PrivateTag.AutoWindowCenter:
+        case PrivateTag.AutoWindowWidth:
+            return VR.SL;
+        case PrivateTag.FilterID:
+        case PrivateTag.AutoWindowShift:
+            return VR.SS;
+        case PrivateTag._0019_xx03_:
+        case PrivateTag._0019_xx05_:
+        case PrivateTag.OrthoStepDistance:
+        case PrivateTag.AutoWindowFlag:
+        case PrivateTag.AnatomicCorrectView:
+            return VR.US;
         }
         return VR.UN;
     }

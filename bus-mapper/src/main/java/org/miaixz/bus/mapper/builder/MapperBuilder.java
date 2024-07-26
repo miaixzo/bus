@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.builder;
 
 import org.apache.ibatis.annotations.DeleteProvider;
@@ -122,7 +122,8 @@ public class MapperBuilder {
             }
             MapperTemplate mapperTemplate;
             try {
-                mapperTemplate = templateMap.getOrDefault(templateClass, (MapperTemplate) templateClass.getConstructor(Class.class, MapperBuilder.class).newInstance(mapperClass, this));
+                mapperTemplate = templateMap.getOrDefault(templateClass, (MapperTemplate) templateClass
+                        .getConstructor(Class.class, MapperBuilder.class).newInstance(mapperClass, this));
                 templateMap.put(templateClass, mapperTemplate);
             } catch (Exception e) {
                 Logger.error("实例化MapperTemplate对象失败:" + e, e);
@@ -130,7 +131,8 @@ public class MapperBuilder {
             }
             // 注册方法
             try {
-                mapperTemplate.addMethodMap(method.getName(), templateClass.getMethod(method.getName(), MappedStatement.class));
+                mapperTemplate.addMethodMap(method.getName(),
+                        templateClass.getMethod(method.getName(), MappedStatement.class));
             } catch (NoSuchMethodException e) {
                 Logger.error(templateClass.getName() + "中缺少" + method.getName() + "方法!", e);
                 throw new MapperException(templateClass.getName() + "中缺少" + method.getName() + "方法!");
@@ -149,7 +151,7 @@ public class MapperBuilder {
             registerClass.add(mapperClass);
             registerMapper.put(mapperClass, fromMapperClasses(mapperClass));
         }
-        //自动注册继承的接口
+        // 自动注册继承的接口
         Class<?>[] interfaces = mapperClass.getInterfaces();
         if (interfaces != null && interfaces.length > 0) {
             for (Class<?> anInterface : interfaces) {
@@ -257,8 +259,7 @@ public class MapperBuilder {
     }
 
     /**
-     * 配置完成后，执行下面的操作
-     * 处理configuration中全部的MappedStatement
+     * 配置完成后，执行下面的操作 处理configuration中全部的MappedStatement
      *
      * @param configuration 配置
      */
@@ -302,8 +303,7 @@ public class MapperBuilder {
         }
 
         // 如果是原生mybatisSqlSource的查询，添加ResultMap
-        if (ms.getSqlSource() instanceof RawSqlSource
-                && ms.getSqlCommandType() == SqlCommandType.SELECT) {
+        if (ms.getSqlSource() instanceof RawSqlSource && ms.getSqlCommandType() == SqlCommandType.SELECT) {
             if (ms.getResultMaps() != null && !ms.getResultMaps().isEmpty()) {
                 setRawSqlSourceMapper(ms);
             }
@@ -330,10 +330,8 @@ public class MapperBuilder {
             try {
                 EntityBuilder.setResolve(property.getResolveClass().newInstance());
             } catch (Exception e) {
-                Logger.error("创建 " + property.getResolveClass().getName()
-                        + " 实例失败，请保证该类有默认的构造方法!", e);
-                throw new MapperException("创建 " + property.getResolveClass().getName()
-                        + " 实例失败，请保证该类有默认的构造方法!", e);
+                Logger.error("创建 " + property.getResolveClass().getName() + " 实例失败，请保证该类有默认的构造方法!", e);
+                throw new MapperException("创建 " + property.getResolveClass().getName() + " 实例失败，请保证该类有默认的构造方法!", e);
             }
         }
         if (property.getMappers() != null && property.getMappers().size() > 0) {
@@ -350,7 +348,7 @@ public class MapperBuilder {
      */
     public void setProperties(Properties properties) {
         property.setProperties(properties);
-        //注册解析器
+        // 注册解析器
         if (properties != null) {
             String resolveClass = properties.getProperty("resolveClass");
             if (StringKit.isNotEmpty(resolveClass)) {
@@ -362,7 +360,7 @@ public class MapperBuilder {
                 }
             }
         }
-        //注册通用接口
+        // 注册通用接口
         if (properties != null) {
             String mapper = properties.getProperty("mappers");
             if (StringKit.isNotEmpty(mapper)) {
@@ -377,8 +375,7 @@ public class MapperBuilder {
     }
 
     /**
-     * 重新设置SqlSource
-     * 执行该方法前必须使用isMapperMethod判断，否则msIdCache会空
+     * 重新设置SqlSource 执行该方法前必须使用isMapperMethod判断，否则msIdCache会空
      *
      * @param ms             MappedStatement
      * @param mapperTemplate 模板信息
@@ -394,8 +391,7 @@ public class MapperBuilder {
     }
 
     /**
-     * 设置原生Mybatis查询的实体映射，
-     * JPA的注解优先级将高于mybatis自动映射
+     * 设置原生Mybatis查询的实体映射， JPA的注解优先级将高于mybatis自动映射
      */
     public void setRawSqlSourceMapper(MappedStatement ms) {
 

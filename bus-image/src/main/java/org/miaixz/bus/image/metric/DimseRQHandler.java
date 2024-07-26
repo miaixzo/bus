@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric;
 
 import org.miaixz.bus.image.Dimse;
@@ -40,8 +40,8 @@ import java.io.IOException;
  */
 public interface DimseRQHandler {
 
-    void onDimseRQ(Association as, PresentationContext pc, Dimse dimse,
-                   Attributes cmd, PDVInputStream data) throws IOException;
+    void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes cmd, PDVInputStream data)
+            throws IOException;
 
     void onClose(Association as);
 

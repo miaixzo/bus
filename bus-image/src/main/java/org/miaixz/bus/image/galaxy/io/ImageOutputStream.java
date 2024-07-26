@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.io;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -44,7 +44,7 @@ import java.util.zip.DeflaterOutputStream;
  */
 public class ImageOutputStream extends FilterOutputStream {
 
-    private static final byte[] DICM = {'D', 'I', 'C', 'M'};
+    private static final byte[] DICM = { 'D', 'I', 'C', 'M' };
     private final byte[] buf = new byte[12];
     private byte[] preamble = new byte[Normal._128];
     private boolean explicitVR;
@@ -53,21 +53,18 @@ public class ImageOutputStream extends FilterOutputStream {
     private ImageEncodingOptions encOpts = ImageEncodingOptions.DEFAULT;
     private Deflater deflater;
 
-    public ImageOutputStream(OutputStream out, String tsuid)
-            throws IOException {
+    public ImageOutputStream(OutputStream out, String tsuid) throws IOException {
         super(out);
         switchTransferSyntax(tsuid);
     }
 
     public ImageOutputStream(File file) throws IOException {
-        this(new BufferedOutputStream(new FileOutputStream(file)),
-                UID.ExplicitVRLittleEndian.uid);
+        this(new BufferedOutputStream(new FileOutputStream(file)), UID.ExplicitVRLittleEndian.uid);
     }
 
     public final void setPreamble(byte[] preamble) {
         if (preamble.length != Normal._128)
-            throw new IllegalArgumentException(
-                    "preamble.length=" + preamble.length);
+            throw new IllegalArgumentException("preamble.length=" + preamble.length);
         this.preamble = preamble.clone();
     }
 
@@ -96,30 +93,25 @@ public class ImageOutputStream extends FilterOutputStream {
 
     public void writeCommand(Attributes cmd) throws IOException {
         if (explicitVR || bigEndian)
-            throw new IllegalStateException("explicitVR=" + explicitVR
-                    + ", bigEndian=" + bigEndian);
+            throw new IllegalStateException("explicitVR=" + explicitVR + ", bigEndian=" + bigEndian);
         cmd.writeGroupTo(this, Tag.CommandGroupLength);
     }
 
     public void writeFileMetaInformation(Attributes fmi) throws IOException {
         if (!explicitVR || bigEndian || countingOutputStream != null)
-            throw new IllegalStateException("explicitVR=" + explicitVR
-                    + ", bigEndian=" + bigEndian
-                    + ", deflated=" + (countingOutputStream != null));
+            throw new IllegalStateException("explicitVR=" + explicitVR + ", bigEndian=" + bigEndian + ", deflated="
+                    + (countingOutputStream != null));
         write(preamble);
         write(DICM);
         fmi.writeGroupTo(this, Tag.FileMetaInformationGroupLength);
     }
 
-    public void writeDataset(Attributes fmi, Attributes dataset)
-            throws IOException {
+    public void writeDataset(Attributes fmi, Attributes dataset) throws IOException {
         if (fmi != null) {
             writeFileMetaInformation(fmi);
             switchTransferSyntax(fmi.getString(Tag.TransferSyntaxUID, null));
         }
-        if (dataset.bigEndian() != bigEndian
-                || encOpts.groupLength
-                || !encOpts.undefSequenceLength
+        if (dataset.bigEndian() != bigEndian || encOpts.groupLength || !encOpts.undefSequenceLength
                 || !encOpts.undefItemLength)
             dataset = new Attributes(dataset, bigEndian);
         if (encOpts.groupLength)
@@ -130,8 +122,7 @@ public class ImageOutputStream extends FilterOutputStream {
     public void switchTransferSyntax(String tsuid) {
         bigEndian = tsuid.equals(UID.ExplicitVRBigEndian.uid);
         explicitVR = !tsuid.equals(UID.ImplicitVRLittleEndian.uid);
-        if (tsuid.equals(UID.DeflatedExplicitVRLittleEndian.uid)
-                || tsuid.equals(UID.JPIPReferencedDeflate.uid)
+        if (tsuid.equals(UID.DeflatedExplicitVRLittleEndian.uid) || tsuid.equals(UID.JPIPReferencedDeflate.uid)
                 || tsuid.equals(UID.JPIPHTJ2KReferencedDeflate.uid)) {
             this.countingOutputStream = new CountingOutputStream(super.out);
             super.out = new DeflaterOutputStream(countingOutputStream,
@@ -160,16 +151,11 @@ public class ImageOutputStream extends FilterOutputStream {
         out.write(b, 0, headerLen);
     }
 
-
-    public void writeAttribute(int tag, VR vr, Object value,
-                               SpecificCharacterSet cs) throws IOException {
+    public void writeAttribute(int tag, VR vr, Object value, SpecificCharacterSet cs) throws IOException {
         if (value instanceof Value)
             writeAttribute(tag, vr, (Value) value);
         else
-            writeAttribute(tag, vr,
-                    (value instanceof byte[])
-                            ? (byte[]) value
-                            : vr.toBytes(value, cs));
+            writeAttribute(tag, vr, (value instanceof byte[]) ? (byte[]) value : vr.toBytes(value, cs));
     }
 
     public void writeAttribute(int tag, VR vr, byte[] val) throws IOException {
@@ -181,8 +167,7 @@ public class ImageOutputStream extends FilterOutputStream {
     }
 
     public void writeAttribute(int tag, VR vr, Value val) throws IOException {
-        if (val instanceof BulkData
-                && super.out instanceof ObjectOutputStream) {
+        if (val instanceof BulkData && super.out instanceof ObjectOutputStream) {
             writeHeader(tag, vr, BulkData.MAGIC_LEN);
             ((ObjectOutputStream) super.out).writeObject(val);
         } else {

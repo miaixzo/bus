@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_DLR_01;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,60 +46,61 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag._0019_xxA0_:
-            case PrivateTag._0019_xxA1_:
-                return VR.DS;
-            case PrivateTag.MeasurementMode:
-            case PrivateTag.ImageType:
-            case PrivateTag.SoftwareVersion:
-            case PrivateTag.MPMCode:
-            case PrivateTag.Latitude:
-            case PrivateTag.Sensitivity:
-            case PrivateTag.EDR:
-            case PrivateTag.LFix:
-            case PrivateTag.SFix:
-            case PrivateTag.PresetMode:
-            case PrivateTag.Region:
-            case PrivateTag.Subregion:
-            case PrivateTag.Orientation:
-            case PrivateTag.MarkOnFilm:
-            case PrivateTag.RotationOnDRC:
-            case PrivateTag.ReaderType:
-            case PrivateTag.SubModality:
-            case PrivateTag.ReaderSerialNumber:
-            case PrivateTag.CassetteScale:
-            case PrivateTag.CassetteMatrix:
-            case PrivateTag.CassetteSubmatrix:
-            case PrivateTag.Barcode:
-            case PrivateTag.ContrastType:
-            case PrivateTag.RotationAmount:
-            case PrivateTag.RotationCenter:
-            case PrivateTag.DensityShift:
-            case PrivateTag.FrequencyEnhancement:
-            case PrivateTag.FrequencyType:
-            case PrivateTag.KernelLength:
-            case PrivateTag.PLASource:
-            case PrivateTag.PLADestination:
-            case PrivateTag.UIDOriginalImage:
-            case PrivateTag._0019_xx76_:
-            case PrivateTag.PLAOfSecondaryDestination:
-            case PrivateTag.FilmFormat:
-            case PrivateTag.FilmSize:
-            case PrivateTag.FullFilmFormat:
-                return VR.LO;
-            case PrivateTag.ReaderHeader:
-                return VR.LT;
-            case PrivateTag.KernelMode:
-            case PrivateTag.ConvolutionMode:
-                return VR.UL;
-            case PrivateTag.FrequencyRank:
-            case PrivateTag.NumberOfHardcopies:
-                return VR.US;
+
+        case PrivateTag._0019_xxA0_:
+        case PrivateTag._0019_xxA1_:
+            return VR.DS;
+        case PrivateTag.MeasurementMode:
+        case PrivateTag.ImageType:
+        case PrivateTag.SoftwareVersion:
+        case PrivateTag.MPMCode:
+        case PrivateTag.Latitude:
+        case PrivateTag.Sensitivity:
+        case PrivateTag.EDR:
+        case PrivateTag.LFix:
+        case PrivateTag.SFix:
+        case PrivateTag.PresetMode:
+        case PrivateTag.Region:
+        case PrivateTag.Subregion:
+        case PrivateTag.Orientation:
+        case PrivateTag.MarkOnFilm:
+        case PrivateTag.RotationOnDRC:
+        case PrivateTag.ReaderType:
+        case PrivateTag.SubModality:
+        case PrivateTag.ReaderSerialNumber:
+        case PrivateTag.CassetteScale:
+        case PrivateTag.CassetteMatrix:
+        case PrivateTag.CassetteSubmatrix:
+        case PrivateTag.Barcode:
+        case PrivateTag.ContrastType:
+        case PrivateTag.RotationAmount:
+        case PrivateTag.RotationCenter:
+        case PrivateTag.DensityShift:
+        case PrivateTag.FrequencyEnhancement:
+        case PrivateTag.FrequencyType:
+        case PrivateTag.KernelLength:
+        case PrivateTag.PLASource:
+        case PrivateTag.PLADestination:
+        case PrivateTag.UIDOriginalImage:
+        case PrivateTag._0019_xx76_:
+        case PrivateTag.PLAOfSecondaryDestination:
+        case PrivateTag.FilmFormat:
+        case PrivateTag.FilmSize:
+        case PrivateTag.FullFilmFormat:
+            return VR.LO;
+        case PrivateTag.ReaderHeader:
+            return VR.LT;
+        case PrivateTag.KernelMode:
+        case PrivateTag.ConvolutionMode:
+            return VR.UL;
+        case PrivateTag.FrequencyRank:
+        case PrivateTag.NumberOfHardcopies:
+            return VR.US;
         }
         return VR.UN;
     }

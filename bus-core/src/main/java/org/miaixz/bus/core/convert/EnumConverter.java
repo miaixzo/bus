@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
@@ -55,10 +55,10 @@ public class EnumConverter extends AbstractConverter {
     /**
      * 尝试转换，转换规则为：
      * <ul>
-     *     <li>如果实现{@link Enumers}接口，则调用fromInt或fromStr转换</li>
-     *     <li>找到类似转换的静态方法调用实现转换且优先使用</li>
-     *     <li>约定枚举类应该提供 valueOf(String) 和 valueOf(Integer)用于转换</li>
-     *     <li>oriInt /name 转换托底</li>
+     * <li>如果实现{@link Enumers}接口，则调用fromInt或fromStr转换</li>
+     * <li>找到类似转换的静态方法调用实现转换且优先使用</li>
+     * <li>约定枚举类应该提供 valueOf(String) 和 valueOf(Integer)用于转换</li>
+     * <li>oriInt /name 转换托底</li>
      * </ul>
      *
      * @param value     被转换的值
@@ -95,7 +95,7 @@ public class EnumConverter extends AbstractConverter {
                 }
             }
         } catch (final Exception ignore) {
-            //ignore
+            // ignore
         }
 
         // oriInt 应该滞后使用 以 GB/T 2261.1-2003 性别编码为例，对应整数并非连续数字会导致数字转枚举时失败
@@ -112,7 +112,7 @@ public class EnumConverter extends AbstractConverter {
             try {
                 enumResult = Enum.valueOf(enumClass, (String) value);
             } catch (final IllegalArgumentException e) {
-                //ignore
+                // ignore
             }
         }
 
@@ -126,12 +126,11 @@ public class EnumConverter extends AbstractConverter {
      * @return 转换方法map，key为方法参数类型，value为方法
      */
     private static Map<Class<?>, Method> getMethodMap(final Class<?> enumClass) {
-        return VALUE_OF_METHOD_CACHE.computeIfAbsent(enumClass, (key) -> Arrays.stream(enumClass.getMethods())
-                .filter(ModifierKit::isStatic)
-                .filter(m -> m.getReturnType() == enumClass)
-                .filter(m -> m.getParameterCount() == 1)
-                .filter(m -> !"valueOf".equals(m.getName()))
-                .collect(Collectors.toMap(m -> m.getParameterTypes()[0], m -> m, (k1, k2) -> k1)));
+        return VALUE_OF_METHOD_CACHE.computeIfAbsent(enumClass,
+                (key) -> Arrays.stream(enumClass.getMethods()).filter(ModifierKit::isStatic)
+                        .filter(m -> m.getReturnType() == enumClass).filter(m -> m.getParameterCount() == 1)
+                        .filter(m -> !"valueOf".equals(m.getName()))
+                        .collect(Collectors.toMap(m -> m.getParameterTypes()[0], m -> m, (k1, k2) -> k1)));
     }
 
     @Override

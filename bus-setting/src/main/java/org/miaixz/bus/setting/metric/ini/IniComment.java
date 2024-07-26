@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.setting.metric.ini;
 
 /**
@@ -36,10 +36,8 @@ package org.miaixz.bus.setting.metric.ini;
 public interface IniComment extends IniElement {
 
     /**
-     * there may be comments at the end of each element.
-     * or null.
-     * if this element is comment, return itself.
-     * so, nullable, or see {@link #getCommentOptional}.
+     * there may be comments at the end of each element. or null. if this element is comment, return itself. so,
+     * nullable, or see {@link #getCommentOptional}.
      *
      * @return comment end of the element or null. if element, return itself.
      * @see #getCommentOptional()
@@ -57,8 +55,8 @@ public interface IniComment extends IniElement {
     }
 
     /**
-     * like {@link #toString()}, without comment value(if exists).
-     * comment to no comment string? no, return original value.
+     * like {@link #toString()}, without comment value(if exists). comment to no comment string? no, return original
+     * value.
      *
      * @return to string value without comment value.
      */

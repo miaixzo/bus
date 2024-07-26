@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv;
 
 import org.miaixz.bus.core.Version;
@@ -47,9 +47,9 @@ public class NativeJLSImageWriterSpi extends ImageWriterSpi {
 
     public NativeJLSImageWriterSpi(Class<? extends NativeJLSImageWriter> writer) {
         super("Miaixz Team", Version._VERSION, NativeJLSImageReaderSpi.NAMES, NativeJLSImageReaderSpi.SUFFIXES,
-                NativeJLSImageReaderSpi.MIMES, writer.getName(), new Class[]{ImageOutputStream.class},
-                new String[]{NativeJLSImageReaderSpi.class.getName()}, false, null, null, null, null, false, null, null,
-                null, null);
+                NativeJLSImageReaderSpi.MIMES, writer.getName(), new Class[] { ImageOutputStream.class },
+                new String[] { NativeJLSImageReaderSpi.class.getName() }, false, null, null, null, null, false, null,
+                null, null, null);
     }
 
     @Override

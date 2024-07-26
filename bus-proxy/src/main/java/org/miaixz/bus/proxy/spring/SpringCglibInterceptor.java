@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.proxy.spring;
 
 import org.miaixz.bus.proxy.Aspect;
@@ -56,7 +56,8 @@ public class SpringCglibInterceptor extends Interceptor implements MethodInterce
     }
 
     @Override
-    public Object intercept(final Object obj, final Method method, final Object[] args, final MethodProxy proxy) throws Throwable {
+    public Object intercept(final Object obj, final Method method, final Object[] args, final MethodProxy proxy)
+            throws Throwable {
         final Object target = this.target;
         Object result = null;
         // 开始前回调

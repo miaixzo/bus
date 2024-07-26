@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.software;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -91,7 +91,7 @@ public interface OSProcess {
      * ownership.
      *
      * @return A list of Strings representing the arguments. May return an empty list if there was a failure (for
-     * example, because the process is already dead or permission was denied).
+     *         example, because the process is already dead or permission was denied).
      */
     List<String> getArguments();
 
@@ -100,7 +100,7 @@ public interface OSProcess {
      * or same-user ownership.
      *
      * @return A map representing the environment variables and their values. May return an empty map if there was a
-     * failure (for example, because the process is already dead or permission was denied).
+     *         failure (for example, because the process is already dead or permission was denied).
      */
     Map<String, String> getEnvironmentVariables();
 
@@ -284,8 +284,8 @@ public interface OSProcess {
      * Solaris.
      *
      * @return the soft open file limit for the process if available. Returns -1 if the calling process is not the same
-     * as this OSProcess instance and the underlying operating system does not support retrieving the soft limit
-     * for other processes.
+     *         as this OSProcess instance and the underlying operating system does not support retrieving the soft limit
+     *         for other processes.
      */
     long getSoftOpenFileLimit();
 
@@ -296,8 +296,8 @@ public interface OSProcess {
      * Solaris.
      *
      * @return the hard open file limit for the process if available. Returns -1 if the calling process is not the same
-     * as this OSProcess instance and the underlying operating system does not support retrieving the hard limit
-     * for other processes.
+     *         as this OSProcess instance and the underlying operating system does not support retrieving the hard limit
+     *         for other processes.
      */
     long getHardOpenFileLimit();
 
@@ -325,8 +325,8 @@ public interface OSProcess {
      * @param proc An {@link OSProcess} object containing statistics for this same process collected at a prior point in
      *             time. May be null.
      * @return If the prior snapshot is for the same process at a prior point in time, the proportion of elapsed up time
-     * between the current process snapshot and the previous one that the process was executing in kernel or
-     * user mode. Returns cumulative load otherwise.
+     *         between the current process snapshot and the previous one that the process was executing in kernel or
+     *         user mode. Returns cumulative load otherwise.
      */
     double getProcessCpuLoadBetweenTicks(OSProcess proc);
 
@@ -358,7 +358,7 @@ public interface OSProcess {
      * longer exists.
      *
      * @return {@code true} if the update was successful, false if the update failed. In addition, on a failed update
-     * the process state will be changed to {@link State#INVALID}.
+     *         the process state will be changed to {@link State#INVALID}.
      */
     boolean updateAttributes();
 

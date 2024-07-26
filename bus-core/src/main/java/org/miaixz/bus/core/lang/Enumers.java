@@ -24,14 +24,13 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang;
 
 import java.io.Serializable;
 
 /**
- * 枚举元素通用接口，在自定义枚举上实现此接口可以用于数据转换
- * 数据库保存时建议保存 intVal()而非ordinal()防备需求变更
+ * 枚举元素通用接口，在自定义枚举上实现此接口可以用于数据转换 数据库保存时建议保存 intVal()而非ordinal()防备需求变更
  *
  * @param <E> Enum类型
  * @author Kimi Liu
@@ -110,4 +109,3 @@ public interface Enumers<E extends Enumers<E>> extends Serializable {
     }
 
 }
-

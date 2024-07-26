@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.builder;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -57,7 +57,8 @@ public class SqlBuilder {
         if (TableNames.class.isAssignableFrom(entityClass)) {
             StringBuilder sql = new StringBuilder();
             sql.append("<choose>");
-            sql.append("<when test=\"@org.miaixz.bus.mapper.OGNL@isDynamicParameter(_parameter) and dynamicTableName != null and dynamicTableName != ''\">");
+            sql.append(
+                    "<when test=\"@org.miaixz.bus.mapper.OGNL@isDynamicParameter(_parameter) and dynamicTableName != null and dynamicTableName != ''\">");
             sql.append("${dynamicTableName}\n");
             sql.append("</when>");
             // 不支持指定列的时候查询全部列
@@ -84,7 +85,9 @@ public class SqlBuilder {
             if (StringKit.isNotEmpty(parameterName)) {
                 StringBuilder sql = new StringBuilder();
                 sql.append("<choose>");
-                sql.append("<when test=\"@org.miaixz.bus.mapper.OGNL@isDynamicParameter(" + parameterName + ") and " + parameterName + ".dynamicTableName != null and " + parameterName + ".dynamicTableName != ''\">");
+                sql.append("<when test=\"@org.miaixz.bus.mapper.OGNL@isDynamicParameter(" + parameterName + ") and "
+                        + parameterName + ".dynamicTableName != null and " + parameterName
+                        + ".dynamicTableName != ''\">");
                 sql.append("${" + parameterName + ".dynamicTableName}");
                 sql.append("</when>");
                 // 不支持指定列的时候查询全部列
@@ -477,13 +480,15 @@ public class SqlBuilder {
         for (EntityColumn column : columnSet) {
             if (column.getEntityField().isAnnotationPresent(Version.class)) {
                 if (versionColumn != null) {
-                    throw new VersionException(entityClass.getName() + " 中包含多个带有 @Version 注解的字段，一个类中只能存在一个带有 @Version 注解的字段!");
+                    throw new VersionException(
+                            entityClass.getName() + " 中包含多个带有 @Version 注解的字段，一个类中只能存在一个带有 @Version 注解的字段!");
                 }
                 versionColumn = column;
             }
             if (column.getEntityField().isAnnotationPresent(LogicDelete.class)) {
                 if (logicDeleteColumn != null) {
-                    throw new VersionException(entityClass.getName() + " 中包含多个带有 @LogicDelete 注解的字段，一个类中只能存在一个带有 @LogicDelete 注解的字段!");
+                    throw new VersionException(
+                            entityClass.getName() + " 中包含多个带有 @LogicDelete 注解的字段，一个类中只能存在一个带有 @LogicDelete 注解的字段!");
                 }
                 logicDeleteColumn = column;
             }
@@ -492,8 +497,8 @@ public class SqlBuilder {
                     Version version = versionColumn.getEntityField().getAnnotation(Version.class);
                     String versionClass = version.nextVersion().getName();
                     sql.append("<bind name=\"").append(column.getProperty()).append("Version\" value=\"");
-                    sql.append("@org.miaixz.bus.mapper.Version@nextVersion(")
-                            .append(Symbol.AT).append(versionClass).append("@class, ");
+                    sql.append("@org.miaixz.bus.mapper.Version@nextVersion(").append(Symbol.AT).append(versionClass)
+                            .append("@class, ");
                     if (StringKit.isNotEmpty(entityName)) {
                         sql.append(entityName).append(".");
                     }
@@ -502,7 +507,8 @@ public class SqlBuilder {
                 } else if (column == logicDeleteColumn) {
                     sql.append(logicDeleteColumnEqualsValue(column, false)).append(Symbol.COMMA);
                 } else if (notNull) {
-                    sql.append(SqlBuilder.getIfNotNull(entityName, column, column.getColumnEqualsHolder(entityName) + Symbol.COMMA, notEmpty));
+                    sql.append(SqlBuilder.getIfNotNull(entityName, column,
+                            column.getColumnEqualsHolder(entityName) + Symbol.COMMA, notEmpty));
                 } else {
                     sql.append(column.getColumnEqualsHolder(entityName) + Symbol.COMMA);
                 }
@@ -521,7 +527,8 @@ public class SqlBuilder {
      * @param notEmpty    是否判断String类型!=''
      * @return the string
      */
-    public static String updateSetColumnsIgnoreVersion(Class<?> entityClass, String entityName, boolean notNull, boolean notEmpty) {
+    public static String updateSetColumnsIgnoreVersion(Class<?> entityClass, String entityName, boolean notNull,
+            boolean notEmpty) {
         StringBuilder sql = new StringBuilder();
         sql.append("<set>");
         // 获取全部列
@@ -532,22 +539,24 @@ public class SqlBuilder {
         for (EntityColumn column : columnSet) {
             if (column.getEntityField().isAnnotationPresent(LogicDelete.class)) {
                 if (logicDeleteColumn != null) {
-                    throw new VersionException(entityClass.getName() + " 中包含多个带有 @LogicDelete 注解的字段，一个类中只能存在一个带有 @LogicDelete 注解的字段!");
+                    throw new VersionException(
+                            entityClass.getName() + " 中包含多个带有 @LogicDelete 注解的字段，一个类中只能存在一个带有 @LogicDelete 注解的字段!");
                 }
                 logicDeleteColumn = column;
             }
             if (!column.isId() && column.isUpdatable()) {
                 if (column.getEntityField().isAnnotationPresent(Version.class)) {
-                    //ignore
+                    // ignore
                 } else if (column == logicDeleteColumn) {
                     sql.append(logicDeleteColumnEqualsValue(column, false)).append(Symbol.COMMA);
                 } else if (notNull) {
-                    sql.append(SqlBuilder.getIfNotNull(entityName, column, column.getColumnEqualsHolder(entityName) + Symbol.COMMA, notEmpty));
+                    sql.append(SqlBuilder.getIfNotNull(entityName, column,
+                            column.getColumnEqualsHolder(entityName) + Symbol.COMMA, notEmpty));
                 } else {
                     sql.append(column.getColumnEqualsHolder(entityName) + Symbol.COMMA);
                 }
             } else if (column.isId() && column.isUpdatable()) {
-                //set id = id,
+                // set id = id,
                 sql.append(column.getColumn()).append(" = ").append(column.getColumn()).append(Symbol.COMMA);
             }
         }
@@ -564,7 +573,8 @@ public class SqlBuilder {
      */
     public static String notAllNullParameterCheck(String parameterName, Set<EntityColumn> columnSet) {
         StringBuilder sql = new StringBuilder();
-        sql.append("<bind name=\"notAllNullParameterCheck\" value=\"@org.miaixz.bus.mapper.OGNL@notAllNullParameterCheck(");
+        sql.append(
+                "<bind name=\"notAllNullParameterCheck\" value=\"@org.miaixz.bus.mapper.OGNL@notAllNullParameterCheck(");
         sql.append(parameterName).append(", '");
         StringBuilder fields = new StringBuilder();
         for (EntityColumn column : columnSet) {
@@ -586,7 +596,8 @@ public class SqlBuilder {
      */
     public static String conditionHasAtLeastOneCriteriaCheck(String parameterName) {
         StringBuilder sql = new StringBuilder();
-        sql.append("<bind name=\"conditionHasAtLeastOneCriteriaCheck\" value=\"@org.miaixz.bus.mapper.OGNL@conditionHasAtLeastOneCriteriaCheck(");
+        sql.append(
+                "<bind name=\"conditionHasAtLeastOneCriteriaCheck\" value=\"@org.miaixz.bus.mapper.OGNL@conditionHasAtLeastOneCriteriaCheck(");
         sql.append(parameterName).append(")\"/>");
         return sql.toString();
     }
@@ -667,10 +678,10 @@ public class SqlBuilder {
         boolean hasLogicDelete = false;
 
         sql.append("<where>");
-        //获取全部列
+        // 获取全部列
         Set<EntityColumn> columnSet = EntityBuilder.getColumns(entityClass);
         EntityColumn logicDeleteColumn = SqlBuilder.getLogicDeleteColumn(entityClass);
-        //当某个列有主键策略时，不需要考虑他的属性是否为空，因为如果为空，一定会根据主键策略给他生成一个值
+        // 当某个列有主键策略时，不需要考虑他的属性是否为空，因为如果为空，一定会根据主键策略给他生成一个值
         for (EntityColumn column : columnSet) {
             if (!useVersion || !column.getEntityField().isAnnotationPresent(Version.class)) {
                 // 逻辑删除，后面拼接逻辑删除字段的未删除条件
@@ -716,7 +727,8 @@ public class SqlBuilder {
         for (EntityColumn column : columnSet) {
             if (column.getEntityField().isAnnotationPresent(Version.class)) {
                 if (hasVersion) {
-                    throw new VersionException(entityClass.getName() + " 中包含多个带有 @Version 注解的字段，一个类中只能存在一个带有 @Version 注解的字段!");
+                    throw new VersionException(
+                            entityClass.getName() + " 中包含多个带有 @Version 注解的字段，一个类中只能存在一个带有 @Version 注解的字段!");
                 }
                 hasVersion = true;
                 result = " AND " + column.getColumnEqualsHolder(entityName);
@@ -726,8 +738,7 @@ public class SqlBuilder {
     }
 
     /**
-     * 逻辑删除的where条件，没有逻辑删除注解则返回空字符串
-     * AND column = value
+     * 逻辑删除的where条件，没有逻辑删除注解则返回空字符串 AND column = value
      *
      * @param entityClass 实体Class对象
      * @param isDeleted   true：已经逻辑删除，false：未逻辑删除
@@ -739,13 +750,11 @@ public class SqlBuilder {
     }
 
     /**
-     * 返回格式: column = value
-     * 默认isDeletedValue = 1  notDeletedValue = 0
-     * 则返回is_deleted = 1 或 is_deleted = 0
+     * 返回格式: column = value 默认isDeletedValue = 1 notDeletedValue = 0 则返回is_deleted = 1 或 is_deleted = 0
      * 若没有逻辑删除注解，则返回空字符串
      *
      * @param entityClass 实体Class对象
-     * @param isDeleted   true 已经逻辑删除  false 未逻辑删除
+     * @param isDeleted   true 已经逻辑删除 false 未逻辑删除
      * @return the string
      */
     public static String logicDeleteColumnEqualsValue(Class<?> entityClass, boolean isDeleted) {
@@ -759,13 +768,11 @@ public class SqlBuilder {
     }
 
     /**
-     * 返回格式: column = value
-     * 默认isDeletedValue = 1  notDeletedValue = 0
-     * 则返回is_deleted = 1 或 is_deleted = 0
+     * 返回格式: column = value 默认isDeletedValue = 1 notDeletedValue = 0 则返回is_deleted = 1 或 is_deleted = 0
      * 若没有逻辑删除注解，则返回空字符串
      *
      * @param column    列
-     * @param isDeleted true 已经逻辑删除  false 未逻辑删除
+     * @param isDeleted true 已经逻辑删除 false 未逻辑删除
      * @return the string
      */
     public static String logicDeleteColumnEqualsValue(EntityColumn column, boolean isDeleted) {
@@ -822,7 +829,8 @@ public class SqlBuilder {
         for (EntityColumn column : columnSet) {
             if (column.getEntityField().isAnnotationPresent(LogicDelete.class)) {
                 if (hasLogicDelete) {
-                    throw new VersionException(entityClass.getName() + " 中包含多个带有 @LogicDelete 注解的字段，一个类中只能存在一个带有 @LogicDelete 注解的字段!");
+                    throw new VersionException(
+                            entityClass.getName() + " 中包含多个带有 @LogicDelete 注解的字段，一个类中只能存在一个带有 @LogicDelete 注解的字段!");
                 }
                 hasLogicDelete = true;
                 logicDeleteColumn = column;
@@ -861,7 +869,7 @@ public class SqlBuilder {
         sql.append("${selectColumn}");
         sql.append("</foreach>");
         sql.append("</when>");
-        //不支持指定列的时候查询全部列
+        // 不支持指定列的时候查询全部列
         sql.append("<otherwise>");
         sql.append(getAllColumns(entityClass));
         sql.append("</otherwise>");
@@ -950,7 +958,8 @@ public class SqlBuilder {
      */
     public static String conditionCheck(Class<?> entityClass) {
         StringBuilder sql = new StringBuilder();
-        sql.append("<bind name=\"checkConditionEntityClass\" value=\"@org.miaixz.bus.mapper.OGNL@checkConditionEntityClass(_parameter, '");
+        sql.append(
+                "<bind name=\"checkConditionEntityClass\" value=\"@org.miaixz.bus.mapper.OGNL@checkConditionEntityClass(_parameter, '");
         sql.append(entityClass.getName());
         sql.append("')\"/>");
         return sql.toString();
@@ -962,39 +971,25 @@ public class SqlBuilder {
      * @return the string
      */
     public static String conditionWhereClause() {
-        return "<if test=\"_parameter != null\">" +
-                "<where>\n" +
-                " ${@org.miaixz.bus.mapper.OGNL@andNotLogicDelete(_parameter)}" +
-                " <trim prefix=\"(\" prefixOverrides=\"and |or \" suffix=\")\">\n" +
-                "  <foreach collection=\"oredCriteria\" item=\"criteria\">\n" +
-                "    <if test=\"criteria.valid\">\n" +
-                "      ${@org.miaixz.bus.mapper.OGNL@andOr(criteria)}" +
-                "      <trim prefix=\"(\" prefixOverrides=\"and |or \" suffix=\")\">\n" +
-                "        <foreach collection=\"criteria.criteria\" item=\"criterion\">\n" +
-                "          <choose>\n" +
-                "            <when test=\"criterion.noValue\">\n" +
-                "              ${@org.miaixz.bus.mapper.OGNL@andOr(criterion)} ${criterion.condition}\n" +
-                "            </when>\n" +
-                "            <when test=\"criterion.singleValue\">\n" +
-                "              ${@org.miaixz.bus.mapper.OGNL@andOr(criterion)} ${criterion.condition} #{criterion.value}\n" +
-                "            </when>\n" +
-                "            <when test=\"criterion.betweenValue\">\n" +
-                "              ${@org.miaixz.bus.mapper.OGNL@andOr(criterion)} ${criterion.condition} #{criterion.value} and #{criterion.secondValue}\n" +
-                "            </when>\n" +
-                "            <when test=\"criterion.listValue\">\n" +
-                "              ${@org.miaixz.bus.mapper.OGNL@andOr(criterion)} ${criterion.condition}\n" +
-                "              <foreach close=\")\" collection=\"criterion.value\" item=\"listItem\" open=\"(\" separator=\",\">\n" +
-                "                #{listItem}\n" +
-                "              </foreach>\n" +
-                "            </when>\n" +
-                "          </choose>\n" +
-                "        </foreach>\n" +
-                "      </trim>\n" +
-                "    </if>\n" +
-                "  </foreach>\n" +
-                " </trim>\n" +
-                "</where>" +
-                "</if>";
+        return "<if test=\"_parameter != null\">" + "<where>\n"
+                + " ${@org.miaixz.bus.mapper.OGNL@andNotLogicDelete(_parameter)}"
+                + " <trim prefix=\"(\" prefixOverrides=\"and |or \" suffix=\")\">\n"
+                + "  <foreach collection=\"oredCriteria\" item=\"criteria\">\n" + "    <if test=\"criteria.valid\">\n"
+                + "      ${@org.miaixz.bus.mapper.OGNL@andOr(criteria)}"
+                + "      <trim prefix=\"(\" prefixOverrides=\"and |or \" suffix=\")\">\n"
+                + "        <foreach collection=\"criteria.criteria\" item=\"criterion\">\n" + "          <choose>\n"
+                + "            <when test=\"criterion.noValue\">\n"
+                + "              ${@org.miaixz.bus.mapper.OGNL@andOr(criterion)} ${criterion.condition}\n"
+                + "            </when>\n" + "            <when test=\"criterion.singleValue\">\n"
+                + "              ${@org.miaixz.bus.mapper.OGNL@andOr(criterion)} ${criterion.condition} #{criterion.value}\n"
+                + "            </when>\n" + "            <when test=\"criterion.betweenValue\">\n"
+                + "              ${@org.miaixz.bus.mapper.OGNL@andOr(criterion)} ${criterion.condition} #{criterion.value} and #{criterion.secondValue}\n"
+                + "            </when>\n" + "            <when test=\"criterion.listValue\">\n"
+                + "              ${@org.miaixz.bus.mapper.OGNL@andOr(criterion)} ${criterion.condition}\n"
+                + "              <foreach close=\")\" collection=\"criterion.value\" item=\"listItem\" open=\"(\" separator=\",\">\n"
+                + "                #{listItem}\n" + "              </foreach>\n" + "            </when>\n"
+                + "          </choose>\n" + "        </foreach>\n" + "      </trim>\n" + "    </if>\n"
+                + "  </foreach>\n" + " </trim>\n" + "</where>" + "</if>";
     }
 
     /**
@@ -1003,37 +998,24 @@ public class SqlBuilder {
      * @return the string
      */
     public static String updateByConditionWhereClause() {
-        return "<where>\n" +
-                " ${@org.miaixz.bus.mapper.OGNL@andNotLogicDelete(condition)}" +
-                " <trim prefix=\"(\" prefixOverrides=\"and |or \" suffix=\")\">\n" +
-                "  <foreach collection=\"condition.oredCriteria\" item=\"criteria\">\n" +
-                "    <if test=\"criteria.valid\">\n" +
-                "      ${@org.miaixz.bus.mapper.OGNL@andOr(criteria)}" +
-                "      <trim prefix=\"(\" prefixOverrides=\"and |or \" suffix=\")\">\n" +
-                "        <foreach collection=\"criteria.criteria\" item=\"criterion\">\n" +
-                "          <choose>\n" +
-                "            <when test=\"criterion.noValue\">\n" +
-                "              ${@org.miaixz.bus.mapper.OGNL@andOr(criterion)} ${criterion.condition}\n" +
-                "            </when>\n" +
-                "            <when test=\"criterion.singleValue\">\n" +
-                "              ${@org.miaixz.bus.mapper.OGNL@andOr(criterion)} ${criterion.condition} #{criterion.value}\n" +
-                "            </when>\n" +
-                "            <when test=\"criterion.betweenValue\">\n" +
-                "              ${@org.miaixz.bus.mapper.OGNL@andOr(criterion)} ${criterion.condition} #{criterion.value} and #{criterion.secondValue}\n" +
-                "            </when>\n" +
-                "            <when test=\"criterion.listValue\">\n" +
-                "              ${@org.miaixz.bus.mapper.OGNL@andOr(criterion)} ${criterion.condition}\n" +
-                "              <foreach close=\")\" collection=\"criterion.value\" item=\"listItem\" open=\"(\" separator=\",\">\n" +
-                "                #{listItem}\n" +
-                "              </foreach>\n" +
-                "            </when>\n" +
-                "          </choose>\n" +
-                "        </foreach>\n" +
-                "      </trim>\n" +
-                "    </if>\n" +
-                "  </foreach>\n" +
-                " </trim>\n" +
-                "</where>";
+        return "<where>\n" + " ${@org.miaixz.bus.mapper.OGNL@andNotLogicDelete(condition)}"
+                + " <trim prefix=\"(\" prefixOverrides=\"and |or \" suffix=\")\">\n"
+                + "  <foreach collection=\"condition.oredCriteria\" item=\"criteria\">\n"
+                + "    <if test=\"criteria.valid\">\n" + "      ${@org.miaixz.bus.mapper.OGNL@andOr(criteria)}"
+                + "      <trim prefix=\"(\" prefixOverrides=\"and |or \" suffix=\")\">\n"
+                + "        <foreach collection=\"criteria.criteria\" item=\"criterion\">\n" + "          <choose>\n"
+                + "            <when test=\"criterion.noValue\">\n"
+                + "              ${@org.miaixz.bus.mapper.OGNL@andOr(criterion)} ${criterion.condition}\n"
+                + "            </when>\n" + "            <when test=\"criterion.singleValue\">\n"
+                + "              ${@org.miaixz.bus.mapper.OGNL@andOr(criterion)} ${criterion.condition} #{criterion.value}\n"
+                + "            </when>\n" + "            <when test=\"criterion.betweenValue\">\n"
+                + "              ${@org.miaixz.bus.mapper.OGNL@andOr(criterion)} ${criterion.condition} #{criterion.value} and #{criterion.secondValue}\n"
+                + "            </when>\n" + "            <when test=\"criterion.listValue\">\n"
+                + "              ${@org.miaixz.bus.mapper.OGNL@andOr(criterion)} ${criterion.condition}\n"
+                + "              <foreach close=\")\" collection=\"criterion.value\" item=\"listItem\" open=\"(\" separator=\",\">\n"
+                + "                #{listItem}\n" + "              </foreach>\n" + "            </when>\n"
+                + "          </choose>\n" + "        </foreach>\n" + "      </trim>\n" + "    </if>\n"
+                + "  </foreach>\n" + " </trim>\n" + "</where>";
     }
 
 }

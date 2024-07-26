@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv.lut;
 
 import org.miaixz.bus.image.Builder;
@@ -59,9 +59,8 @@ public class VoiLutModule {
     /**
      * VOI LUT Module
      *
-     * @see <a
-     * href="http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.12.html">C.11.2
-     * VOI LUT Module</a>
+     * @see <a href="http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.12.html">C.11.2 VOI LUT
+     *      Module</a>
      */
     public VoiLutModule(Attributes dcm) {
         this.windowCenter = Collections.emptyList();
@@ -96,16 +95,12 @@ public class VoiLutModule {
             this.windowCenter = DoubleStream.of(wc.get()).boxed().collect(Collectors.toList());
             this.windowWidth = DoubleStream.of(ww.get()).boxed().collect(Collectors.toList());
             this.voiLutFunction = dcm.getString(Tag.VOILUTFunction);
-            String[] wexpl =
-                    Builder.getStringArrayFromDicomElement(dcm, Tag.WindowCenterWidthExplanation);
+            String[] wexpl = Builder.getStringArrayFromDicomElement(dcm, Tag.WindowCenterWidthExplanation);
             if (wexpl != null) {
                 this.windowCenterWidthExplanation = Stream.of(wexpl).toList();
             }
 
-            if ("MR".equals(modality)
-                    || "XA".equals(modality)
-                    || "XRF".equals(modality)
-                    || "PT".equals(modality)) {
+            if ("MR".equals(modality) || "XA".equals(modality) || "XRF".equals(modality) || "PT".equals(modality)) {
                 adaptWindowWidth(dcm);
             }
         }
@@ -130,10 +125,8 @@ public class VoiLutModule {
         } else if (!windowCenter.isEmpty() && windowWidth.isEmpty()) {
             Logger.debug("VOI Window Width is required if Window Center is present");
         } else if (windowWidth.size() != windowCenter.size()) {
-            Logger.debug(
-                    "VOI Window Center and Width attributes have different number of values : {} => {}",
-                    windowCenter.size(),
-                    windowWidth.size());
+            Logger.debug("VOI Window Center and Width attributes have different number of values : {} => {}",
+                    windowCenter.size(), windowWidth.size());
         }
     }
 
@@ -145,7 +138,8 @@ public class VoiLutModule {
              * IHE BIR: Windowing and Rendering 4.16.4.2.2.5.4
              *
              * If Rescale Slope and Rescale Intercept has been removed in ModalityLutModule then the Window Center and
-             * Window Width must be adapted. See https://groups.google.com/forum/#!topic/comp.protocols.dicom/iTCxWcsqjnM
+             * Window Width must be adapted. See
+             * https://groups.google.com/forum/#!topic/comp.protocols.dicom/iTCxWcsqjnM
              */
             int length = windowCenter.size();
             if (length != windowWidth.size()) {

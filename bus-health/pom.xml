@@ -26,8 +26,7 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
@@ -48,18 +47,18 @@
         </license>
     </licenses>
 
-    <scm>
-        <connection>scm:git@github.com:839128/bus.git</connection>
-        <developerConnection>scm:git@github.com:839128/bus.git</developerConnection>
-        <url>git@github.com:839128/bus.git</url>
-    </scm>
-
     <developers>
         <developer>
             <name>Kimi Liu</name>
             <url>https://github.com/839128/bus.git</url>
         </developer>
     </developers>
+
+    <scm>
+        <connection>scm:git@github.com:839128/bus.git</connection>
+        <developerConnection>scm:git@github.com:839128/bus.git</developerConnection>
+        <url>git@github.com:839128/bus.git</url>
+    </scm>
 
     <issueManagement>
         <system>Github Issue</system>
@@ -104,10 +103,10 @@
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
-                        <phase>package</phase>
                         <goals>
                             <goal>jar</goal>
                         </goals>
+                        <phase>package</phase>
                     </execution>
                 </executions>
             </plugin>
@@ -131,10 +130,10 @@
                 <executions>
                     <execution>
                         <id>sonatype-nexus-staging</id>
-                        <phase>verify</phase>
                         <goals>
                             <goal>sign</goal>
                         </goals>
+                        <phase>verify</phase>
                     </execution>
                 </executions>
             </plugin>
@@ -149,6 +148,90 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>10.0.3</version>
+                <configuration>
+                    <autoUpdate>true</autoUpdate>
+                    <nvdMaxRetryCount>25</nvdMaxRetryCount>
+                    <nvdApiDelay>32000</nvdApiDelay>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>2.43.0</version>
+                <configuration>
+                    <upToDateChecking>
+                        <enabled>false</enabled>
+                    </upToDateChecking>
+                    <formats>
+                        <format>
+                            <includes>
+                                <include>**/*.md</include>
+                                <include>**/*.yml</include>
+                                <include>**/*.yaml</include>
+                            </includes>
+                            <trimTrailingWhitespace />
+                            <endWithNewline />
+                            <indent>
+                                <spaces>true</spaces>
+                                <spacesPerTab>2</spacesPerTab>
+                            </indent>
+                        </format>
+                        <format>
+                            <includes>
+                                <include>**/*.xml</include>
+                            </includes>
+                            <trimTrailingWhitespace />
+                            <endWithNewline />
+                            <indent>
+                                <spaces>true</spaces>
+                                <spacesPerTab>4</spacesPerTab>
+                            </indent>
+                        </format>
+                    </formats>
+                    <java>
+                        <licenseHeader>
+                            <file>../.github/spotless/licenses/github.oshi</file>
+                        </licenseHeader>
+                        <eclipse>
+                            <file>../.github/spotless/spotless_format.xml</file>
+                        </eclipse>
+                        <removeUnusedImports />
+                    </java>
+                    <pom>
+                        <sortPom>
+                            <encoding>UTF-8</encoding>
+                            <nrOfIndentSpace>4</nrOfIndentSpace>
+                            <keepBlankLines>true</keepBlankLines>
+                            <indentBlankLines>false</indentBlankLines>
+                            <indentSchemaLocation>true</indentSchemaLocation>
+                            <spaceBeforeCloseEmptyElement>true</spaceBeforeCloseEmptyElement>
+                            <sortModules>false</sortModules>
+                            <sortExecutions>false</sortExecutions>
+                            <expandEmptyElements>false</expandEmptyElements>
+                            <sortProperties>false</sortProperties>
+                        </sortPom>
+                    </pom>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>apply</goal>
+                        </goals>
+                        <phase>clean</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
                 <version>1.6.0</version>
@@ -156,10 +239,10 @@
                 <executions>
                     <execution>
                         <id>flatten</id>
-                        <phase>process-resources</phase>
                         <goals>
                             <goal>flatten</goal>
                         </goals>
+                        <phase>process-resources</phase>
                         <configuration>
                             <updatePomFile>true</updatePomFile>
                             <outputDirectory>${project.build.directory}</outputDirectory>

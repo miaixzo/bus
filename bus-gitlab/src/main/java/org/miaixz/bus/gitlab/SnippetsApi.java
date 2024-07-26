@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab;
 
 import jakarta.ws.rs.core.GenericType;
@@ -48,7 +48,9 @@ public class SnippetsApi extends AbstractApi {
     /**
      * Get a list of the authenticated user's snippets.
      *
-     * <pre><code>GitLab Endpoint: GET /snippets</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /snippets</code>
+     * </pre>
      *
      * @param downloadContent indicating whether to download the snippet content
      * @return a list of authenticated user's snippets
@@ -72,7 +74,9 @@ public class SnippetsApi extends AbstractApi {
     /**
      * Get a list of the authenticated user's snippets.
      *
-     * <pre><code>GitLab Endpoint: GET /snippets</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /snippets</code>
+     * </pre>
      *
      * @return a list of authenticated user's snippets
      * @throws GitLabApiException if any exception occurs
@@ -84,7 +88,9 @@ public class SnippetsApi extends AbstractApi {
     /**
      * Get a Pager of the authenticated user's snippets.
      *
-     * <pre><code>GitLab Endpoint: GET /snippets</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /snippets</code>
+     * </pre>
      *
      * @param itemsPerPage the number of snippets per page
      * @return the Pager of snippets
@@ -97,7 +103,9 @@ public class SnippetsApi extends AbstractApi {
     /**
      * Get a Stream of the authenticated user's snippets.
      *
-     * <pre><code>GitLab Endpoint: GET /snippets</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /snippets</code>
+     * </pre>
      *
      * @return a Stream of authenticated user's snippets
      * @throws GitLabApiException if any exception occurs
@@ -109,7 +117,9 @@ public class SnippetsApi extends AbstractApi {
     /**
      * Get the content of a Snippet.
      *
-     * <pre><code>GitLab Endpoint: GET /snippets/:id/raw</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /snippets/:id/raw</code>
+     * </pre>
      *
      * @param snippetId the snippet ID to remove
      * @return the content of snippet
@@ -123,7 +133,7 @@ public class SnippetsApi extends AbstractApi {
     /**
      * Get a specific Snippet.
      *
-     * @param snippetId the snippet ID to get
+     * @param snippetId       the snippet ID to get
      * @param downloadContent indicating whether to download the snippet content
      * @return the snippet with the given id
      * @throws GitLabApiException if any exception occurs
@@ -158,7 +168,9 @@ public class SnippetsApi extends AbstractApi {
     /**
      * Get a specific snippet as an Optional instance.
      *
-     * <pre><code>GitLab Endpoint: GET /snippets/:snippet_id</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /snippets/:snippet_id</code>
+     * </pre>
      *
      * @param snippetId the ID of the snippet to get the Optional instance for
      * @return the specified Snippet as an Optional instance
@@ -170,9 +182,11 @@ public class SnippetsApi extends AbstractApi {
     /**
      * Get a specific snippet as an Optional instance.
      *
-     * <pre><code>GitLab Endpoint: GET /snippets/:snippet_id</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /snippets/:snippet_id</code>
+     * </pre>
      *
-     * @param snippetId the ID of the snippet to get the Optional instance for
+     * @param snippetId       the ID of the snippet to get the Optional instance for
      * @param downloadContent indicating whether to download the snippet content
      * @return the specified Snippet as an Optional instance
      */
@@ -187,17 +201,15 @@ public class SnippetsApi extends AbstractApi {
     /**
      * Create a new Snippet.
      *
-     * @param title the title of the snippet
+     * @param title    the title of the snippet
      * @param fileName the file name of the snippet
-     * @param content the content of the snippet
+     * @param content  the content of the snippet
      * @return the created Snippet
      * @throws GitLabApiException if any exception occurs
      */
     public Snippet createSnippet(String title, String fileName, String content) throws GitLabApiException {
-        GitLabApiForm formData = new GitLabApiForm()
-                .withParam("title", title, true)
-                .withParam("file_name", fileName, true)
-                .withParam("content", content, true);
+        GitLabApiForm formData = new GitLabApiForm().withParam("title", title, true)
+                .withParam("file_name", fileName, true).withParam("content", content, true);
         Response response = post(Response.Status.CREATED, formData, "snippets");
         return (response.readEntity(Snippet.class));
     }
@@ -205,21 +217,19 @@ public class SnippetsApi extends AbstractApi {
     /**
      * Create a new Snippet.
      *
-     * @param title the title of the snippet
-     * @param fileName the file name of the snippet
-     * @param content the content of the snippet
-     * @param visibility the visibility (Public, Internal, Private) of the snippet
+     * @param title       the title of the snippet
+     * @param fileName    the file name of the snippet
+     * @param content     the content of the snippet
+     * @param visibility  the visibility (Public, Internal, Private) of the snippet
      * @param description the description of the snippet
      * @return the created Snippet
      * @throws GitLabApiException if any exception occurs
      */
-    public Snippet createSnippet(String title, String fileName, String content, Visibility visibility, String description) throws GitLabApiException {
-        GitLabApiForm formData = new GitLabApiForm()
-                .withParam("title", title, true)
-                .withParam("file_name", fileName, true)
-                .withParam("content", content, true)
-                .withParam("visibility", visibility)
-                .withParam("description", description);
+    public Snippet createSnippet(String title, String fileName, String content, Visibility visibility,
+            String description) throws GitLabApiException {
+        GitLabApiForm formData = new GitLabApiForm().withParam("title", title, true)
+                .withParam("file_name", fileName, true).withParam("content", content, true)
+                .withParam("visibility", visibility).withParam("description", description);
         Response response = post(Response.Status.CREATED, formData, "snippets");
         return (response.readEntity(Snippet.class));
     }
@@ -227,7 +237,9 @@ public class SnippetsApi extends AbstractApi {
     /**
      * Removes Snippet.
      *
-     * <pre><code>GitLab Endpoint: DELETE /snippets/:id</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: DELETE /snippets/:id</code>
+     * </pre>
      *
      * @param snippetId the snippet ID to remove
      * @throws GitLabApiException if any exception occurs

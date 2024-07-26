@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.hardware.common;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -141,7 +141,7 @@ public abstract class AbstractNetworkIF implements NetworkIF {
 
         return includeLocalInterfaces ? interfaces
                 : getAllNetworkInterfaces().stream().parallel().filter(ni -> !isLocalInterface(ni))
-                .collect(Collectors.toList());
+                        .collect(Collectors.toList());
     }
 
     /**

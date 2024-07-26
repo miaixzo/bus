@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.setting;
 
 import org.miaixz.bus.core.center.function.SupplierX;
@@ -49,8 +49,7 @@ import java.util.*;
 import java.util.function.Consumer;
 
 /**
- * 设置工具类。 用于支持设置（配置）文件
- * 用于替换Properties类，提供功能更加强大的配置文件，同时对Properties文件向下兼容
+ * 设置工具类。 用于支持设置（配置）文件 用于替换Properties类，提供功能更加强大的配置文件，同时对Properties文件向下兼容
  *
  * <pre>
  *  1、支持变量，默认变量命名为 ${变量名}，变量只能识别读入行的变量，例如第6行的变量在第三行无法读取
@@ -339,8 +338,7 @@ public class Setting extends AbstractSetting implements Map<String, String> {
     }
 
     /**
-     * 持久化当前设置，会覆盖掉之前的设置
-     * 持久化不会保留之前的分组，注意如果配置文件在jar内部或者在exe中，此方法会报错。
+     * 持久化当前设置，会覆盖掉之前的设置 持久化不会保留之前的分组，注意如果配置文件在jar内部或者在exe中，此方法会报错。
      */
     public void store() {
         final URL resourceUrl = getSettingUrl();
@@ -349,8 +347,7 @@ public class Setting extends AbstractSetting implements Map<String, String> {
     }
 
     /**
-     * 持久化当前设置，会覆盖掉之前的设置
-     * 持久化不会保留之前的分组
+     * 持久化当前设置，会覆盖掉之前的设置 持久化不会保留之前的分组
      *
      * @param absolutePath 设置文件的绝对路径
      */
@@ -359,8 +356,7 @@ public class Setting extends AbstractSetting implements Map<String, String> {
     }
 
     /**
-     * 持久化当前设置，会覆盖掉之前的设置
-     * 持久化不会保留之前的分组
+     * 持久化当前设置，会覆盖掉之前的设置 持久化不会保留之前的分组
      *
      * @param file 设置文件
      */
@@ -412,8 +408,7 @@ public class Setting extends AbstractSetting implements Map<String, String> {
     }
 
     /**
-     * 设置变量的正则
-     * 正则只能有一个group表示变量本身，剩余为字符 例如 \$\{(name)\}表示${name}变量名为name的一个变量表示
+     * 设置变量的正则 正则只能有一个group表示变量本身，剩余为字符 例如 \$\{(name)\}表示${name}变量名为name的一个变量表示
      *
      * @param regex 正则
      * @return this
@@ -582,11 +577,11 @@ public class Setting extends AbstractSetting implements Map<String, String> {
     }
 
     /**
-     * 通过lambda批量设置值
-     * 实际使用时，可以使用getXXX的方法引用来完成键值对的赋值：
+     * 通过lambda批量设置值 实际使用时，可以使用getXXX的方法引用来完成键值对的赋值：
+     * 
      * <pre>
-     *     User user = GenericBuilder.of(User::new).with(User::setUsername, "bus").build();
-     *     Setting.of().setFields(user::getNickname, user::getUsername);
+     * User user = GenericBuilder.of(User::new).with(User::setUsername, "bus").build();
+     * Setting.of().setFields(user::getNickname, user::getUsername);
      * </pre>
      *
      * @param fields lambda,不能为空
@@ -598,8 +593,7 @@ public class Setting extends AbstractSetting implements Map<String, String> {
     }
 
     /**
-     * 将键值对加入到对应分组中
-     * 此方法用于与getXXX统一参数顺序
+     * 将键值对加入到对应分组中 此方法用于与getXXX统一参数顺序
      *
      * @param key   键
      * @param group 分组

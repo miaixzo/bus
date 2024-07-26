@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.data;
 
 import java.io.Serializable;
@@ -33,9 +33,9 @@ import java.util.Objects;
 /**
  * 坐标系转换相关工具类，主流坐标系包括：
  * <ul>
- *     <li>WGS84坐标系：即地球坐标系，中国外谷歌地图</li>
- *     <li>GCJ02坐标系：即火星坐标系，高德、腾讯、阿里等使用</li>
- *     <li>BD09坐标系：即百度坐标系，GCJ02坐标系经加密后的坐标系。百度、搜狗等使用</li>
+ * <li>WGS84坐标系：即地球坐标系，中国外谷歌地图</li>
+ * <li>GCJ02坐标系：即火星坐标系，高德、腾讯、阿里等使用</li>
+ * <li>BD09坐标系：即百度坐标系，GCJ02坐标系经加密后的坐标系。百度、搜狗等使用</li>
  * </ul>
  * <p>
  * 坐标转换相关参考: <a href="https://tool.lu/coordinate/">https://tool.lu/coordinate/</a>
@@ -68,8 +68,7 @@ public class Coordinate {
     public static final double CORRECTION_PARAM = 0.00669342162296594323D;
 
     /**
-     * 判断坐标是否在国外
-     * 火星坐标系 (GCJ-02)只对国内有效，国外无需转换
+     * 判断坐标是否在国外 火星坐标系 (GCJ-02)只对国内有效，国外无需转换
      *
      * @param lng 经度
      * @param lat 纬度
@@ -129,8 +128,7 @@ public class Coordinate {
     }
 
     /**
-     * 百度坐标系 (BD-09) 与 火星坐标系 (GCJ-02)的转换
-     * 即 百度 转 谷歌、高德
+     * 百度坐标系 (BD-09) 与 火星坐标系 (GCJ-02)的转换 即 百度 转 谷歌、高德
      *
      * @param lng 经度值
      * @param lat 纬度值
@@ -342,10 +340,7 @@ public class Coordinate {
 
         @Override
         public String toString() {
-            return "Point{" +
-                    "lng=" + lng +
-                    ", lat=" + lat +
-                    '}';
+            return "Point{" + "lng=" + lng + ", lat=" + lat + '}';
         }
     }
 

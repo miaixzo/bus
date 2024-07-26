@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org sandao and other contributors.             ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket.accord;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -108,7 +108,8 @@ public final class UdpChannel {
         responseTasks.offer(new ResponseUnit(session, virtualBuffer));
         synchronized (this) {
             if (selectionKey == null) {
-                worker.addRegister(selector -> selectionKey.interestOps(selectionKey.interestOps() | SelectionKey.OP_WRITE));
+                worker.addRegister(
+                        selector -> selectionKey.interestOps(selectionKey.interestOps() | SelectionKey.OP_WRITE));
             } else {
                 if ((selectionKey.interestOps() & SelectionKey.OP_WRITE) == 0) {
                     selectionKey.interestOps(selectionKey.interestOps() | SelectionKey.OP_WRITE);

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.solaris.hardware;
 
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -49,16 +49,15 @@ public class SolarisUsbDevice extends AbstractUsbDevice {
     private static final String PCI_TYPE_USB = "000c";
 
     public SolarisUsbDevice(String name, String vendor, String vendorId, String productId, String serialNumber,
-                            String uniqueDeviceId, List<UsbDevice> connectedDevices) {
+            String uniqueDeviceId, List<UsbDevice> connectedDevices) {
         super(name, vendor, vendorId, productId, serialNumber, uniqueDeviceId, connectedDevices);
     }
 
     /**
-     * Instantiates a list of {@link UsbDevice} objects, representing devices connected via a usb port
-     * (including internal devices).
-     * If the value of {@code tree} is true, the top level devices returned from this method are the USB Controllers;
-     * connected hubs and devices in its device tree share that controller's bandwidth. If the value of {@code tree} is
-     * false, USB devices (not controllers) are listed in a single flat list.
+     * Instantiates a list of {@link UsbDevice} objects, representing devices connected via a usb port (including
+     * internal devices). If the value of {@code tree} is true, the top level devices returned from this method are the
+     * USB Controllers; connected hubs and devices in its device tree share that controller's bandwidth. If the value of
+     * {@code tree} is false, USB devices (not controllers) are listed in a single flat list.
      *
      * @param tree If true, returns a list of controllers, which requires recursive iteration of connected devices. If
      *             false, returns a flat list of devices excluding controllers.
@@ -178,8 +177,8 @@ public class SolarisUsbDevice extends AbstractUsbDevice {
      * @return A SolarisUsbDevice corresponding to this device
      */
     private static SolarisUsbDevice getDeviceAndChildren(String devPath, String vid, String pid,
-                                                         Map<String, String> nameMap, Map<String, String> vendorIdMap, Map<String, String> productIdMap,
-                                                         Map<String, List<String>> hubMap) {
+            Map<String, String> nameMap, Map<String, String> vendorIdMap, Map<String, String> productIdMap,
+            Map<String, List<String>> hubMap) {
         String vendorId = vendorIdMap.getOrDefault(devPath, vid);
         String productId = productIdMap.getOrDefault(devPath, pid);
         List<String> childPaths = hubMap.getOrDefault(devPath, new ArrayList<>());
@@ -188,8 +187,8 @@ public class SolarisUsbDevice extends AbstractUsbDevice {
             usbDevices.add(getDeviceAndChildren(path, vendorId, productId, nameMap, vendorIdMap, productIdMap, hubMap));
         }
         Collections.sort(usbDevices);
-        return new SolarisUsbDevice(nameMap.getOrDefault(devPath, vendorId + Symbol.COLON + productId), Normal.EMPTY, vendorId, productId,
-                Normal.EMPTY, devPath, usbDevices);
+        return new SolarisUsbDevice(nameMap.getOrDefault(devPath, vendorId + Symbol.COLON + productId), Normal.EMPTY,
+                vendorId, productId, Normal.EMPTY, devPath, usbDevices);
     }
 
 }

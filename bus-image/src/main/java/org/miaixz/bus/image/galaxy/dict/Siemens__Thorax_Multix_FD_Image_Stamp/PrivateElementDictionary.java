@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.Siemens__Thorax_Multix_FD_Image_Stamp;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,17 +46,18 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag._0023_xx00_:
-            case PrivateTag._0023_xx01_:
-            case PrivateTag._0023_xx02_:
-            case PrivateTag._0023_xx03_:
-            case PrivateTag._0023_xx04_:
-                return VR.US;
+
+        case PrivateTag._0023_xx00_:
+        case PrivateTag._0023_xx01_:
+        case PrivateTag._0023_xx02_:
+        case PrivateTag._0023_xx03_:
+        case PrivateTag._0023_xx04_:
+            return VR.US;
         }
         return VR.UN;
     }

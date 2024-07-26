@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.nlp.provider.hanlp;
 
 import com.hankcs.hanlp.HanLP;
@@ -34,9 +34,7 @@ import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;
 
 /**
- * HanLP分词引擎实现
- * 项目地址：https://github.com/hankcs/HanLP
- * {@link Segment#seg(String)}方法线程安全
+ * HanLP分词引擎实现 项目地址：https://github.com/hankcs/HanLP {@link Segment#seg(String)}方法线程安全
  *
  * @author Kimi Liu
  * @since Java 17+

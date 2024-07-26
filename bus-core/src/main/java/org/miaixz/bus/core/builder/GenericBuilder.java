@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.builder;
 
 import org.miaixz.bus.core.Builder;
@@ -37,39 +37,35 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
- * 通用Builder
- * 参考: <a href="https://blog.csdn.net/weixin_43935907/article/details/105003719">一看就会的java8通用Builder</a>
- * <p>使用方法如下：</p>
+ * 通用Builder 参考: <a href="https://blog.csdn.net/weixin_43935907/article/details/105003719">一看就会的java8通用Builder</a>
+ * <p>
+ * 使用方法如下：
+ * </p>
+ * 
  * <pre>
- * Box box = GenericBuilder
- * 		.of(Box::new)
- * 		.with(Box::setId, 1024L)
- * 		.with(Box::setTitle, "Hello World!")
- * 		.with(Box::setLength, 9)
- * 		.with(Box::setWidth, 8)
- * 		.with(Box::setHeight, 7)
- * 		.build();
+ * Box box = GenericBuilder.of(Box::new).with(Box::setId, 1024L).with(Box::setTitle, "Hello World!")
+ *         .with(Box::setLength, 9).with(Box::setWidth, 8).with(Box::setHeight, 7).build();
  *
  * </pre>
  *
- * <p> 我们也可以对已创建的对象进行修改：</p>
+ * <p>
+ * 我们也可以对已创建的对象进行修改：
+ * </p>
+ * 
  * <pre>
- * Box boxModified = GenericBuilder
- * 		.of(() -&gt; box)
- * 		.with(Box::setTitle, "Hello Friend!")
- * 		.with(Box::setLength, 3)
- * 		.with(Box::setWidth, 4)
- * 		.with(Box::setHeight, 5)
- * 		.build();
+ * Box boxModified = GenericBuilder.of(() -&gt; box).with(Box::setTitle, "Hello Friend!").with(Box::setLength, 3)
+ *         .with(Box::setWidth, 4).with(Box::setHeight, 5).build();
  * </pre>
- * <p> 我们还可以对这样调用有参构造，这对于创建一些在有参构造中包含初始化函数的对象是有意义的：</p>
+ * <p>
+ * 我们还可以对这样调用有参构造，这对于创建一些在有参构造中包含初始化函数的对象是有意义的：
+ * </p>
+ * 
  * <pre>
- * Box box1 = GenericBuilder
- * 		.of(Box::new, 2048L, "Hello Partner!", 222, 333, 444)
- * 		.with(Box::alis)
- * 		.build();
+ * Box box1 = GenericBuilder.of(Box::new, 2048L, "Hello Partner!", 222, 333, 444).with(Box::alis).build();
  * </pre>
- * <p> 还可能这样构建Map对象：</p>
+ * <p>
+ * 还可能这样构建Map对象：
+ * </p>
  * {@code
  * HashMap<String, String> colorMap = GenericBuilder
  * .of(HashMap<String,String>::new)
@@ -131,7 +127,6 @@ public class GenericBuilder<T> implements Builder<T> {
         modifiers.add(consumer);
         return this;
     }
-
 
     /**
      * 调用1参数方法

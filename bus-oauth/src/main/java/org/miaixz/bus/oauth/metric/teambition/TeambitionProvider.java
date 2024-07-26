@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.teambition;
 
 import com.alibaba.fastjson.JSONObject;
@@ -77,10 +77,8 @@ public class TeambitionProvider extends AbstractProvider {
 
         this.checkResponse(accessTokenObject);
 
-        return AccToken.builder()
-                .accessToken(accessTokenObject.getString("access_token"))
-                .refreshToken(accessTokenObject.getString("refresh_token"))
-                .build();
+        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
+                .refreshToken(accessTokenObject.getString("refresh_token")).build();
     }
 
     @Override
@@ -96,18 +94,10 @@ public class TeambitionProvider extends AbstractProvider {
 
         accToken.setUid(object.getString("_id"));
 
-        return Material.builder()
-                .rawJson(object)
-                .uuid(object.getString("_id"))
-                .username(object.getString("name"))
-                .nickname(object.getString("name"))
-                .avatar(object.getString("avatarUrl"))
-                .blog(object.getString("website"))
-                .location(object.getString("location"))
-                .email(object.getString("email"))
-                .gender(Gender.UNKNOWN)
-                .token(accToken)
-                .source(complex.toString())
+        return Material.builder().rawJson(object).uuid(object.getString("_id")).username(object.getString("name"))
+                .nickname(object.getString("name")).avatar(object.getString("avatarUrl"))
+                .blog(object.getString("website")).location(object.getString("location"))
+                .email(object.getString("email")).gender(Gender.UNKNOWN).token(accToken).source(complex.toString())
                 .build();
     }
 
@@ -124,12 +114,9 @@ public class TeambitionProvider extends AbstractProvider {
 
         this.checkResponse(refreshTokenObject);
 
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .data(AccToken.builder()
-                        .accessToken(refreshTokenObject.getString("access_token"))
-                        .refreshToken(refreshTokenObject.getString("refresh_token"))
-                        .build())
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode())
+                .data(AccToken.builder().accessToken(refreshTokenObject.getString("access_token"))
+                        .refreshToken(refreshTokenObject.getString("refresh_token")).build())
                 .build();
     }
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.builtin;
 
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -45,8 +45,7 @@ public class DeIdentificationCoercion implements AttributesCoercion {
     }
 
     public static AttributesCoercion valueOf(DeIdentifier.Option[] options, AttributesCoercion next) {
-        return options != null && options.length > 0
-                ? new DeIdentificationCoercion(new DeIdentifier(options), next)
+        return options != null && options.length > 0 ? new DeIdentificationCoercion(new DeIdentifier(options), next)
                 : next;
     }
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.aix.hardware;
 
 import com.sun.jna.Native;
@@ -60,11 +60,12 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
     /**
      * Jiffies per second, used for process time counters.
      */
-    private static final long USER_HZ = Parsing.parseLongOrDefault(Executor.getFirstAnswer("getconf CLK_TCK"),
-            100L);
+    private static final long USER_HZ = Parsing.parseLongOrDefault(Executor.getFirstAnswer("getconf CLK_TCK"), 100L);
     private static final int SBITS = querySbits();
-    private final Supplier<perfstat_cpu_total_t> cpuTotal = Memoizer.memoize(PerfstatCpu::queryCpuTotal, Memoizer.defaultExpiration());
-    private final Supplier<perfstat_cpu_t[]> cpuProc = Memoizer.memoize(PerfstatCpu::queryCpu, Memoizer.defaultExpiration());
+    private final Supplier<perfstat_cpu_total_t> cpuTotal = Memoizer.memoize(PerfstatCpu::queryCpuTotal,
+            Memoizer.defaultExpiration());
+    private final Supplier<perfstat_cpu_t[]> cpuProc = Memoizer.memoize(PerfstatCpu::queryCpu,
+            Memoizer.defaultExpiration());
     private perfstat_partition_config_t config;
 
     private static int querySbits() {
@@ -116,8 +117,8 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
             cpuStepping = machineId.substring(s);
         }
 
-        return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, machineId, cpu64bit,
-                (long) (config.processorMHz * 1_000_000L));
+        return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, machineId,
+                cpu64bit, (long) (config.processorMHz * 1_000_000L));
     }
 
     @Override
@@ -156,27 +157,40 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
         List<CentralProcessor.ProcessorCache> caches = new ArrayList<>();
         int powerVersion = Parsing.getFirstIntValue(Executor.getFirstAnswer("uname -n"));
         switch (powerVersion) {
-            case 7:
-                caches.add(new CentralProcessor.ProcessorCache(3, 8, 128, (2 * 32) << 20, CentralProcessor.ProcessorCache.Type.UNIFIED));
-                caches.add(new CentralProcessor.ProcessorCache(2, 8, 128, 256 << 10, CentralProcessor.ProcessorCache.Type.UNIFIED));
-                caches.add(new CentralProcessor.ProcessorCache(1, 8, 128, 32 << 10, CentralProcessor.ProcessorCache.Type.DATA));
-                caches.add(new CentralProcessor.ProcessorCache(1, 4, 128, 32 << 10, CentralProcessor.ProcessorCache.Type.INSTRUCTION));
-                break;
-            case 8:
-                caches.add(new CentralProcessor.ProcessorCache(4, 8, 128, (16 * 16) << 20, CentralProcessor.ProcessorCache.Type.UNIFIED));
-                caches.add(new CentralProcessor.ProcessorCache(3, 8, 128, 40 << 20, CentralProcessor.ProcessorCache.Type.UNIFIED));
-                caches.add(new CentralProcessor.ProcessorCache(2, 8, 128, 512 << 10, CentralProcessor.ProcessorCache.Type.UNIFIED));
-                caches.add(new CentralProcessor.ProcessorCache(1, 8, 128, 64 << 10, CentralProcessor.ProcessorCache.Type.DATA));
-                caches.add(new CentralProcessor.ProcessorCache(1, 8, 128, 32 << 10, CentralProcessor.ProcessorCache.Type.INSTRUCTION));
-                break;
-            case 9:
-                caches.add(new CentralProcessor.ProcessorCache(3, 20, 128, (cores * 10L) << 20, CentralProcessor.ProcessorCache.Type.UNIFIED));
-                caches.add(new CentralProcessor.ProcessorCache(2, 8, 128, 512 << 10, CentralProcessor.ProcessorCache.Type.UNIFIED));
-                caches.add(new CentralProcessor.ProcessorCache(1, 8, 128, 32 << 10, CentralProcessor.ProcessorCache.Type.DATA));
-                caches.add(new CentralProcessor.ProcessorCache(1, 8, 128, 32 << 10, CentralProcessor.ProcessorCache.Type.INSTRUCTION));
-                break;
-            default:
-                // Don't guess
+        case 7:
+            caches.add(new CentralProcessor.ProcessorCache(3, 8, 128, (2 * 32) << 20,
+                    CentralProcessor.ProcessorCache.Type.UNIFIED));
+            caches.add(new CentralProcessor.ProcessorCache(2, 8, 128, 256 << 10,
+                    CentralProcessor.ProcessorCache.Type.UNIFIED));
+            caches.add(new CentralProcessor.ProcessorCache(1, 8, 128, 32 << 10,
+                    CentralProcessor.ProcessorCache.Type.DATA));
+            caches.add(new CentralProcessor.ProcessorCache(1, 4, 128, 32 << 10,
+                    CentralProcessor.ProcessorCache.Type.INSTRUCTION));
+            break;
+        case 8:
+            caches.add(new CentralProcessor.ProcessorCache(4, 8, 128, (16 * 16) << 20,
+                    CentralProcessor.ProcessorCache.Type.UNIFIED));
+            caches.add(new CentralProcessor.ProcessorCache(3, 8, 128, 40 << 20,
+                    CentralProcessor.ProcessorCache.Type.UNIFIED));
+            caches.add(new CentralProcessor.ProcessorCache(2, 8, 128, 512 << 10,
+                    CentralProcessor.ProcessorCache.Type.UNIFIED));
+            caches.add(new CentralProcessor.ProcessorCache(1, 8, 128, 64 << 10,
+                    CentralProcessor.ProcessorCache.Type.DATA));
+            caches.add(new CentralProcessor.ProcessorCache(1, 8, 128, 32 << 10,
+                    CentralProcessor.ProcessorCache.Type.INSTRUCTION));
+            break;
+        case 9:
+            caches.add(new CentralProcessor.ProcessorCache(3, 20, 128, (cores * 10L) << 20,
+                    CentralProcessor.ProcessorCache.Type.UNIFIED));
+            caches.add(new CentralProcessor.ProcessorCache(2, 8, 128, 512 << 10,
+                    CentralProcessor.ProcessorCache.Type.UNIFIED));
+            caches.add(new CentralProcessor.ProcessorCache(1, 8, 128, 32 << 10,
+                    CentralProcessor.ProcessorCache.Type.DATA));
+            caches.add(new CentralProcessor.ProcessorCache(1, 8, 128, 32 << 10,
+                    CentralProcessor.ProcessorCache.Type.INSTRUCTION));
+            break;
+        default:
+            // Don't guess
         }
         return caches;
     }
@@ -192,7 +206,8 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
         ticks[CentralProcessor.TickType.IOWAIT.ordinal()] = perfstat.wait * 1000L / USER_HZ;
         ticks[CentralProcessor.TickType.IRQ.ordinal()] = perfstat.devintrs * 1000L / USER_HZ;
         ticks[CentralProcessor.TickType.SOFTIRQ.ordinal()] = perfstat.softintrs * 1000L / USER_HZ;
-        ticks[CentralProcessor.TickType.STEAL.ordinal()] = (perfstat.idle_stolen_purr + perfstat.busy_stolen_purr) * 1000L / USER_HZ;
+        ticks[CentralProcessor.TickType.STEAL.ordinal()] = (perfstat.idle_stolen_purr + perfstat.busy_stolen_purr)
+                * 1000L / USER_HZ;
         return ticks;
     }
 
@@ -268,7 +283,8 @@ final class AixCentralProcessor extends AbstractCentralProcessor {
             ticks[i][CentralProcessor.TickType.IOWAIT.ordinal()] = cpu[i].wait * 1000L / USER_HZ;
             ticks[i][CentralProcessor.TickType.IRQ.ordinal()] = cpu[i].devintrs * 1000L / USER_HZ;
             ticks[i][CentralProcessor.TickType.SOFTIRQ.ordinal()] = cpu[i].softintrs * 1000L / USER_HZ;
-            ticks[i][CentralProcessor.TickType.STEAL.ordinal()] = (cpu[i].idle_stolen_purr + cpu[i].busy_stolen_purr) * 1000L / USER_HZ;
+            ticks[i][CentralProcessor.TickType.STEAL.ordinal()] = (cpu[i].idle_stolen_purr + cpu[i].busy_stolen_purr)
+                    * 1000L / USER_HZ;
         }
         return ticks;
     }

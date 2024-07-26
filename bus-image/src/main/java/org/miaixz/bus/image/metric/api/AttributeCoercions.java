@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.api;
 
 import org.miaixz.bus.image.Dimse;
@@ -40,8 +40,7 @@ import java.util.List;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class AttributeCoercions
-        implements Iterable<AttributeCoercion>, Serializable {
+public class AttributeCoercions implements Iterable<AttributeCoercion>, Serializable {
 
     private static final long serialVersionUID = -1L;
 
@@ -49,8 +48,7 @@ public class AttributeCoercions
 
     public void add(AttributeCoercion ac) {
         if (findByCommonName(ac.getCommonName()) != null)
-            throw new IllegalStateException("AttributeCoercion with cn: '"
-                    + ac.getCommonName() + "' already exists");
+            throw new IllegalStateException("AttributeCoercion with cn: '" + ac.getCommonName() + "' already exists");
         int index = Collections.binarySearch(list, ac);
         if (index < 0)
             index = -(index + 1);
@@ -77,8 +75,8 @@ public class AttributeCoercions
         return null;
     }
 
-    public AttributeCoercion findAttributeCoercion(String sopClass, Dimse dimse,
-                                                   TransferCapability.Role role, String aeTitle) {
+    public AttributeCoercion findAttributeCoercion(String sopClass, Dimse dimse, TransferCapability.Role role,
+            String aeTitle) {
         for (AttributeCoercion ac : list)
             if (ac.matchesCondition(sopClass, dimse, role, aeTitle))
                 return ac;

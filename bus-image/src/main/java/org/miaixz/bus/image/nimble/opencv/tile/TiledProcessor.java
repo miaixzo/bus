@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv.tile;
 
 import org.opencv.core.*;
@@ -32,13 +32,14 @@ import org.opencv.imgproc.Imgproc;
 
 /**
  * Not an API. This class is under development and can be changed or removed at any moment.
+ * 
  * @author Kimi Liu
  * @since Java 17+
  */
 public class TiledProcessor {
 
-    static void copyTileFromSource(
-            Mat sourceImage, Mat tileInput, Rect tile, int mBorderType, int borderX, int borderY) {
+    static void copyTileFromSource(Mat sourceImage, Mat tileInput, Rect tile, int mBorderType, int borderX,
+            int borderY) {
         int tx = 0;
         int ty = 0;
 
@@ -100,10 +101,8 @@ public class TiledProcessor {
             throw new IllegalStateException("");
         }
 
-        final int rowTiles =
-                (sourceImage.rows() / tileSize) + (sourceImage.rows() % tileSize != 0 ? 1 : 0);
-        final int colTiles =
-                (sourceImage.cols() / tileSize) + (sourceImage.cols() % tileSize != 0 ? 1 : 0);
+        final int rowTiles = (sourceImage.rows() / tileSize) + (sourceImage.rows() % tileSize != 0 ? 1 : 0);
+        final int colTiles = (sourceImage.cols() / tileSize) + (sourceImage.cols() % tileSize != 0 ? 1 : 0);
 
         Mat tileInput = new Mat(tileSize, tileSize, sourceImage.type());
         Mat tileOutput = new Mat(tileSize, tileSize, sourceImage.type());
@@ -113,17 +112,13 @@ public class TiledProcessor {
 
         for (int rowTile = 0; rowTile < rowTiles; rowTile++) {
             for (int colTile = 0; colTile < colTiles; colTile++) {
-                Rect srcTile =
-                        new Rect(
-                                colTile * tileSize - mPadding,
-                                rowTile * tileSize - mPadding,
-                                tileSize + 2 * mPadding,
-                                tileSize + 2 * mPadding);
+                Rect srcTile = new Rect(colTile * tileSize - mPadding, rowTile * tileSize - mPadding,
+                        tileSize + 2 * mPadding, tileSize + 2 * mPadding);
                 Rect dstTile = new Rect(colTile * tileSize, rowTile * tileSize, tileSize, tileSize);
                 copyTileFromSource(sourceImage, tileInput, srcTile, boderType, 0, 0);
                 processTileImpl(tileInput, tileOutput);
-                copyTileToResultImage(
-                        tileOutput, resultImage, new Rect(mPadding, mPadding, tileSize, tileSize), dstTile);
+                copyTileToResultImage(tileOutput, resultImage, new Rect(mPadding, mPadding, tileSize, tileSize),
+                        dstTile);
             }
         }
     }

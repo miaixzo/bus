@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.iterator;
 
 import java.io.Serializable;
@@ -43,7 +43,6 @@ public class IteratorEnumeration<E> implements Enumeration<E>, Serializable {
     private static final long serialVersionUID = -1L;
 
     private final Iterator<E> iterator;
-
 
     /**
      * 构造

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.cors;
 
 import jakarta.annotation.Resource;
@@ -44,7 +44,7 @@ import java.util.Arrays;
  * @author Kimi Liu
  * @since Java 17+
  */
-@EnableConfigurationProperties(value = {CorsProperties.class})
+@EnableConfigurationProperties(value = { CorsProperties.class })
 public class CorsConfiguration {
 
     @Resource

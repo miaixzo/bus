@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.jna;
 
 import com.sun.jna.Native;
@@ -55,8 +55,8 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
     /**
      * Contains information about the current state of the system battery.
      */
-    @FieldOrder({"acOnLine", "batteryPresent", "charging", "discharging", "spare1", "tag", "maxCapacity",
-            "remainingCapacity", "rate", "estimatedTime", "defaultAlert1", "defaultAlert2"})
+    @FieldOrder({ "acOnLine", "batteryPresent", "charging", "discharging", "spare1", "tag", "maxCapacity",
+            "remainingCapacity", "rate", "estimatedTime", "defaultAlert1", "defaultAlert2" })
     class SystemBatteryState extends Structure implements AutoCloseable {
         public byte acOnLine;
         public byte batteryPresent;
@@ -89,7 +89,7 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
     /**
      * Contains information about a processor.
      */
-    @FieldOrder({"number", "maxMhz", "currentMhz", "mhzLimit", "maxIdleState", "currentIdleState"})
+    @FieldOrder({ "number", "maxMhz", "currentMhz", "mhzLimit", "maxIdleState", "currentIdleState" })
     class ProcessorPowerInformation extends Structure {
         public int number;
         public int maxMhz;
@@ -109,7 +109,7 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
     }
 
     // MOVE?
-    @FieldOrder({"BatteryTag", "InformationLevel", "AtRate"})
+    @FieldOrder({ "BatteryTag", "InformationLevel", "AtRate" })
     class BATTERY_QUERY_INFORMATION extends Structure implements AutoCloseable {
         public int BatteryTag;
         public int InformationLevel;
@@ -121,8 +121,8 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
         }
     }
 
-    @FieldOrder({"Capabilities", "Technology", "Reserved", "Chemistry", "DesignedCapacity", "FullChargedCapacity",
-            "DefaultAlert1", "DefaultAlert2", "CriticalBias", "CycleCount"})
+    @FieldOrder({ "Capabilities", "Technology", "Reserved", "Chemistry", "DesignedCapacity", "FullChargedCapacity",
+            "DefaultAlert1", "DefaultAlert2", "CriticalBias", "CycleCount" })
     class BATTERY_INFORMATION extends Structure implements AutoCloseable {
         public int Capabilities;
         public byte Technology;
@@ -141,7 +141,7 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
         }
     }
 
-    @FieldOrder({"BatteryTag", "Timeout", "PowerState", "LowCapacity", "HighCapacity"})
+    @FieldOrder({ "BatteryTag", "Timeout", "PowerState", "LowCapacity", "HighCapacity" })
     class BATTERY_WAIT_STATUS extends Structure implements AutoCloseable {
         public int BatteryTag;
         public int Timeout;
@@ -155,7 +155,7 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
         }
     }
 
-    @FieldOrder({"PowerState", "Capacity", "Voltage", "Rate"})
+    @FieldOrder({ "PowerState", "Capacity", "Voltage", "Rate" })
     class BATTERY_STATUS extends Structure implements AutoCloseable {
         public int PowerState;
         public int Capacity;
@@ -168,7 +168,7 @@ public interface PowrProf extends com.sun.jna.platform.win32.PowrProf {
         }
     }
 
-    @FieldOrder({"Day", "Month", "Year"})
+    @FieldOrder({ "Day", "Month", "Year" })
     class BATTERY_MANUFACTURE_DATE extends Structure implements AutoCloseable {
         public byte Day;
         public byte Month;

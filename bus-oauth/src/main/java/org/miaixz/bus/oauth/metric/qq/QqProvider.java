@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.qq;
 
 import com.alibaba.fastjson.JSONObject;
@@ -88,30 +88,21 @@ public class QqProvider extends AbstractProvider {
         }
 
         String location = String.format("%s-%s", object.getString("province"), object.getString("city"));
-        return Material.builder()
-                .rawJson(object)
-                .username(object.getString("nickname"))
-                .nickname(object.getString("nickname"))
-                .avatar(avatar)
-                .location(location)
-                .uuid(openId)
-                .gender(Gender.of(object.getString("gender")))
-                .token(accToken)
-                .source(complex.toString())
-                .build();
+        return Material.builder().rawJson(object).username(object.getString("nickname"))
+                .nickname(object.getString("nickname")).avatar(avatar).location(location).uuid(openId)
+                .gender(Gender.of(object.getString("gender"))).token(accToken).source(complex.toString()).build();
     }
 
     /**
-     * 获取QQ用户的OpenId，支持自定义是否启用查询unionid的功能，如果启用查询unionid的功能，
-     * 那就需要开发者先通过邮件申请unionid功能，参考链接 {@see http://wiki.connect.qq.com/unionid%E4%BB%8B%E7%BB%8D}
+     * 获取QQ用户的OpenId，支持自定义是否启用查询unionid的功能，如果启用查询unionid的功能， 那就需要开发者先通过邮件申请unionid功能，参考链接
+     * {@see http://wiki.connect.qq.com/unionid%E4%BB%8B%E7%BB%8D}
      *
      * @param accToken 通过{@link QqProvider#getAccessToken(Callback)}获取到的{@code accToken}
      * @return openId
      */
     private String getOpenId(AccToken accToken) {
         String response = Httpx.get(Builder.fromUrl("https://graph.qq.com/oauth2.0/me")
-                .queryParam("access_token", accToken.getAccessToken())
-                .queryParam("unionid", context.isFlag() ? 1 : 0)
+                .queryParam("access_token", accToken.getAccessToken()).queryParam("unionid", context.isFlag() ? 1 : 0)
                 .build());
         String removePrefix = response.replace("callback(", "");
         String removeSuffix = removePrefix.replace(");", "");
@@ -135,10 +126,8 @@ public class QqProvider extends AbstractProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(complex.userInfo())
-                .queryParam("access_token", accToken.getAccessToken())
-                .queryParam("oauth_consumer_key", context.getAppKey())
-                .queryParam("openid", accToken.getOpenId())
+        return Builder.fromUrl(complex.userInfo()).queryParam("access_token", accToken.getAccessToken())
+                .queryParam("oauth_consumer_key", context.getAppKey()).queryParam("openid", accToken.getOpenId())
                 .build();
     }
 
@@ -147,11 +136,9 @@ public class QqProvider extends AbstractProvider {
         if (!accessTokenObject.containsKey("access_token") || accessTokenObject.containsKey("code")) {
             throw new AuthorizedException(accessTokenObject.get("msg"));
         }
-        return AccToken.builder()
-                .accessToken(accessTokenObject.get("access_token"))
+        return AccToken.builder().accessToken(accessTokenObject.get("access_token"))
                 .expireIn(Integer.parseInt(accessTokenObject.getOrDefault("expires_in", "0")))
-                .refreshToken(accessTokenObject.get("refresh_token"))
-                .build();
+                .refreshToken(accessTokenObject.get("refresh_token")).build();
     }
 
     @Override

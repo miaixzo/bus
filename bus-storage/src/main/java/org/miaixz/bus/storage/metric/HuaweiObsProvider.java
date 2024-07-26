@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.storage.metric;
 
 import com.obs.services.ObsClient;
@@ -62,7 +62,8 @@ public class HuaweiObsProvider extends AbstractProvider {
         Assert.notBlank(this.context.getAccessKey(), "[accessKey] not defined");
         Assert.notBlank(this.context.getSecretKey(), "[secure] not defined");
 
-        this.client = new ObsClient(this.context.getAccessKey(), this.context.getSecretKey(), this.context.getEndpoint());
+        this.client = new ObsClient(this.context.getAccessKey(), this.context.getSecretKey(),
+                this.context.getEndpoint());
     }
 
     @Override
@@ -72,9 +73,7 @@ public class HuaweiObsProvider extends AbstractProvider {
 
     @Override
     public Message download(String bucket, String fileName) {
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
@@ -84,9 +83,7 @@ public class HuaweiObsProvider extends AbstractProvider {
 
     @Override
     public Message download(String bucket, String fileName, File file) {
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .errmsg(ErrorCode.SUCCESS.getDesc())
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
                 .data(this.client.downloadFile(new DownloadFileRequest(bucket, this.context.getAccessKey(), fileName)))
                 .build();
     }
@@ -95,36 +92,26 @@ public class HuaweiObsProvider extends AbstractProvider {
     public Message list() {
         ListObjectsRequest request = new ListObjectsRequest(this.context.getBucket());
         ObjectListing objectListing = client.listObjects(request);
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .errmsg(ErrorCode.SUCCESS.getDesc())
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
                 .data(objectListing.getObjects().stream().map(item -> {
                     Map<String, Object> extend = new HashMap<>();
                     extend.put("tag", item.getMetadata().getEtag());
                     extend.put("storageClass", item.getMetadata().getObjectStorageClass());
                     extend.put("lastModified", item.getMetadata().getLastModified());
-                    return Material.builder()
-                            .name(item.getObjectKey())
-                            .owner(item.getOwner().getId())
+                    return Material.builder().name(item.getObjectKey()).owner(item.getOwner().getId())
                             .type(item.getMetadata().getContentType())
-                            .size(StringKit.toString(item.getMetadata().getContentLength()))
-                            .extend(extend).build();
-                }).collect(Collectors.toList()))
-                .build();
+                            .size(StringKit.toString(item.getMetadata().getContentLength())).extend(extend).build();
+                }).collect(Collectors.toList())).build();
     }
 
     @Override
     public Message rename(String oldName, String newName) {
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
     public Message rename(String bucket, String oldName, String newName) {
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
@@ -135,16 +122,12 @@ public class HuaweiObsProvider extends AbstractProvider {
     @Override
     public Message upload(String bucket, String fileName, InputStream content) {
         client.putObject(bucket, fileName, content);
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
     }
 
     @Override
     public Message upload(String bucket, String fileName, byte[] content) {
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
@@ -156,9 +139,7 @@ public class HuaweiObsProvider extends AbstractProvider {
     public Message remove(String bucket, String fileName) {
         this.client.deleteObject(bucket, fileName);
 
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
     }
 
     @Override

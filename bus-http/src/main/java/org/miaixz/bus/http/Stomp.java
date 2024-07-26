@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -174,9 +174,7 @@ public class Stomp {
      * @param data        消息
      */
     public void sendTo(String destination, String data) {
-        send(new Message(Builder.SEND,
-                Collections.singletonList(new Header(Header.DESTINATION, destination)),
-                data));
+        send(new Message(Builder.SEND, Collections.singletonList(new Header(Header.DESTINATION, destination)), data));
     }
 
     /**
@@ -250,8 +248,7 @@ public class Stomp {
             Logger.error("Attempted to subscribe to already-subscribed path!");
             return this;
         }
-        Subscriber subscriber = new Subscriber(UUID.randomUUID().toString(),
-                destination, callback, headers);
+        Subscriber subscriber = new Subscriber(UUID.randomUUID().toString(), destination, callback, headers);
         subscribers.put(destination, subscriber);
         subscriber.subscribe();
         return this;
@@ -313,8 +310,7 @@ public class Stomp {
                 String[] heartbeats = hbHeader.split(Symbol.COMMA);
                 int pingSeconds = Integer.parseInt(heartbeats[1]) / 1000;
                 int pongSeconds = Integer.parseInt(heartbeats[0]) / 1000;
-                cover.heatbeat(Math.max(pingSeconds, cover.pingSeconds()),
-                        Math.max(pongSeconds, cover.pongSeconds()));
+                cover.heatbeat(Math.max(pingSeconds, cover.pingSeconds()), Math.max(pongSeconds, cover.pongSeconds()));
 
             }
             synchronized (this) {
@@ -448,7 +444,8 @@ public class Stomp {
         public Header header(String key) {
             if (null != headers) {
                 for (Header header : headers) {
-                    if (header.getKey().equals(key)) return header;
+                    if (header.getKey().equals(key))
+                        return header;
                 }
             }
             return null;
@@ -463,7 +460,8 @@ public class Stomp {
             builder.append('\n');
             if (null != payload) {
                 builder.append(payload);
-                if (legacyWhitespace) builder.append("\n\n");
+                if (legacyWhitespace)
+                    builder.append("\n\n");
             }
             builder.append("\u0000");
             return builder.toString();

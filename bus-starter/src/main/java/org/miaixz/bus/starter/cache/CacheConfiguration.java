@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.cache;
 
 import jakarta.annotation.Resource;
@@ -42,7 +42,7 @@ import org.springframework.context.annotation.Bean;
  * @author Kimi Liu
  * @since Java 17+
  */
-@EnableConfigurationProperties(value = {CacheProperties.class})
+@EnableConfigurationProperties(value = { CacheProperties.class })
 public class CacheConfiguration {
 
     @Resource
@@ -55,25 +55,15 @@ public class CacheConfiguration {
                 Object provider = ClassKit.loadClass(this.properties.getType());
                 Context config = Context.newConfig(this.properties.getMap());
                 if (provider instanceof H2Hitting) {
-                    config.setHitting(new H2Hitting(
-                            this.properties.getProvider().getUrl(),
-                            this.properties.getProvider().getUsername(),
-                            this.properties.getProvider().getPassword()
-                    ));
+                    config.setHitting(new H2Hitting(this.properties.getProvider().getUrl(),
+                            this.properties.getProvider().getUsername(), this.properties.getProvider().getPassword()));
                 } else if (provider instanceof MySQLHitting) {
-                    config.setHitting(new MySQLHitting(
-                            BeanKit.beanToMap(this.properties)
-                    ));
+                    config.setHitting(new MySQLHitting(BeanKit.beanToMap(this.properties)));
                 } else if (provider instanceof SqliteHitting) {
-                    config.setHitting(new SqliteHitting(
-                            this.properties.getProvider().getUrl(),
-                            this.properties.getProvider().getUsername(),
-                            this.properties.getProvider().getPassword()
-                    ));
+                    config.setHitting(new SqliteHitting(this.properties.getProvider().getUrl(),
+                            this.properties.getProvider().getUsername(), this.properties.getProvider().getPassword()));
                 } else if (provider instanceof ZookeeperHitting) {
-                    config.setHitting(new ZookeeperHitting(
-                            this.properties.getProvider().getUrl()
-                    ));
+                    config.setHitting(new ZookeeperHitting(this.properties.getProvider().getUrl()));
                 } else if (provider instanceof MemoryHitting) {
                     config.setHitting(new MemoryHitting());
                 }

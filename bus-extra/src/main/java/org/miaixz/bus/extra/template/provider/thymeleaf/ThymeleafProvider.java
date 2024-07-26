@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.template.provider.thymeleaf;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -87,33 +87,34 @@ public class ThymeleafProvider implements TemplateProvider {
 
         final ITemplateResolver resolver;
         switch (config.getResourceMode()) {
-            case CLASSPATH:
-                final ClassLoaderTemplateResolver classLoaderResolver = new ClassLoaderTemplateResolver();
-                classLoaderResolver.setCharacterEncoding(config.getCharsetString());
-                classLoaderResolver.setTemplateMode(TemplateMode.HTML);
-                classLoaderResolver.setPrefix(StringKit.addSuffixIfNot(config.getPath(), "/"));
-                resolver = classLoaderResolver;
-                break;
-            case FILE:
-                final FileTemplateResolver fileResolver = new FileTemplateResolver();
-                fileResolver.setCharacterEncoding(config.getCharsetString());
-                fileResolver.setTemplateMode(TemplateMode.HTML);
-                fileResolver.setPrefix(StringKit.addSuffixIfNot(config.getPath(), "/"));
-                resolver = fileResolver;
-                break;
-            case WEB_ROOT:
-                final FileTemplateResolver webRootResolver = new FileTemplateResolver();
-                webRootResolver.setCharacterEncoding(config.getCharsetString());
-                webRootResolver.setTemplateMode(TemplateMode.HTML);
-                webRootResolver.setPrefix(StringKit.addSuffixIfNot(FileKit.getAbsolutePath(FileKit.file(FileKit.getWebRoot(), config.getPath())), "/"));
-                resolver = webRootResolver;
-                break;
-            case STRING:
-                resolver = new StringTemplateResolver();
-                break;
-            default:
-                resolver = new DefaultTemplateResolver();
-                break;
+        case CLASSPATH:
+            final ClassLoaderTemplateResolver classLoaderResolver = new ClassLoaderTemplateResolver();
+            classLoaderResolver.setCharacterEncoding(config.getCharsetString());
+            classLoaderResolver.setTemplateMode(TemplateMode.HTML);
+            classLoaderResolver.setPrefix(StringKit.addSuffixIfNot(config.getPath(), "/"));
+            resolver = classLoaderResolver;
+            break;
+        case FILE:
+            final FileTemplateResolver fileResolver = new FileTemplateResolver();
+            fileResolver.setCharacterEncoding(config.getCharsetString());
+            fileResolver.setTemplateMode(TemplateMode.HTML);
+            fileResolver.setPrefix(StringKit.addSuffixIfNot(config.getPath(), "/"));
+            resolver = fileResolver;
+            break;
+        case WEB_ROOT:
+            final FileTemplateResolver webRootResolver = new FileTemplateResolver();
+            webRootResolver.setCharacterEncoding(config.getCharsetString());
+            webRootResolver.setTemplateMode(TemplateMode.HTML);
+            webRootResolver.setPrefix(StringKit.addSuffixIfNot(
+                    FileKit.getAbsolutePath(FileKit.file(FileKit.getWebRoot(), config.getPath())), "/"));
+            resolver = webRootResolver;
+            break;
+        case STRING:
+            resolver = new StringTemplateResolver();
+            break;
+        default:
+            resolver = new DefaultTemplateResolver();
+            break;
         }
 
         final TemplateEngine engine = new TemplateEngine();

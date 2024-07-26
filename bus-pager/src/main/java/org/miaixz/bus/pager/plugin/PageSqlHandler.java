@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager.plugin;
 
 import org.apache.ibatis.cache.CacheKey;
@@ -65,12 +65,11 @@ import java.util.concurrent.Future;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Intercepts(
-        {
-                @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class}),
-                @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class, RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class}),
-        }
-)
+@Intercepts({
+        @Signature(type = Executor.class, method = "query", args = { MappedStatement.class, Object.class,
+                RowBounds.class, ResultHandler.class }),
+        @Signature(type = Executor.class, method = "query", args = { MappedStatement.class, Object.class,
+                RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class }), })
 public class PageSqlHandler extends SqlParserHandler implements Interceptor {
 
     private static boolean debug = false;
@@ -79,7 +78,6 @@ public class PageSqlHandler extends SqlParserHandler implements Interceptor {
     private volatile Dialect dialect;
     private String countSuffix = "_COUNT";
     private String default_dialect_class = "org.miaixz.bus.pager.PageContext";
-
 
     public static boolean isDebug() {
         return debug;
@@ -119,7 +117,8 @@ public class PageSqlHandler extends SqlParserHandler implements Interceptor {
             checkDialectExists();
             // 对 boundSql 的拦截处理
             if (dialect instanceof BoundSqlHandler.Chain) {
-                boundSql = ((BoundSqlHandler.Chain) dialect).doBoundSql(BoundSqlHandler.Type.ORIGINAL, boundSql, cacheKey);
+                boundSql = ((BoundSqlHandler.Chain) dialect).doBoundSql(BoundSqlHandler.Type.ORIGINAL, boundSql,
+                        cacheKey);
             }
             List resultList;
             // 调用方法判断是否需要进行分页，如果不需要，直接返回结果
@@ -142,8 +141,8 @@ public class PageSqlHandler extends SqlParserHandler implements Interceptor {
                         }
                     }
                 }
-                resultList = CountExecutor.pageQuery(dialect, executor,
-                        ms, parameter, rowBounds, resultHandler, boundSql, cacheKey);
+                resultList = CountExecutor.pageQuery(dialect, executor, ms, parameter, rowBounds, resultHandler,
+                        boundSql, cacheKey);
                 if (countFuture != null) {
                     Long count = countFuture.get();
                     dialect.afterCount(count, parameter, rowBounds);
@@ -166,7 +165,8 @@ public class PageSqlHandler extends SqlParserHandler implements Interceptor {
     private Future<Long> asyncCount(MappedStatement ms, BoundSql boundSql, Object parameter, RowBounds rowBounds) {
         Configuration configuration = ms.getConfiguration();
         // 异步不能复用 BoundSql，因为分页使用时会添加分页参数，这里需要复制一个新的
-        BoundSql countBoundSql = new BoundSql(configuration, boundSql.getSql(), new ArrayList<>(boundSql.getParameterMappings()), parameter);
+        BoundSql countBoundSql = new BoundSql(configuration, boundSql.getSql(),
+                new ArrayList<>(boundSql.getParameterMappings()), parameter);
         // 异步想要起作用需要新的数据库连接，需要独立的事务，创建新的Executor，因此异步查询只适合在独立查询中使用，如果混合增删改操作，不能开启异步
         Environment environment = configuration.getEnvironment();
         TransactionFactory transactionFactory = null;
@@ -190,8 +190,7 @@ public class PageSqlHandler extends SqlParserHandler implements Interceptor {
     }
 
     /**
-     * Spring bean 方式配置时，如果没有配置属性就不会执行下面的 setProperties 方法，就不会初始化
-     * 因此这里会出现 null 的情况 fixed #26
+     * Spring bean 方式配置时，如果没有配置属性就不会执行下面的 setProperties 方法，就不会初始化 因此这里会出现 null 的情况 fixed #26
      */
     private void checkDialectExists() {
         if (dialect == null) {
@@ -203,9 +202,8 @@ public class PageSqlHandler extends SqlParserHandler implements Interceptor {
         }
     }
 
-    private Long count(Executor executor, MappedStatement ms, Object parameter,
-                       RowBounds rowBounds, ResultHandler resultHandler,
-                       BoundSql boundSql) throws SQLException {
+    private Long count(Executor executor, MappedStatement ms, Object parameter, RowBounds rowBounds,
+            ResultHandler resultHandler, BoundSql boundSql) throws SQLException {
         String countMsId = this.countMsId.genCountMsId(ms, parameter, boundSql, countSuffix);
         Long count;
         // 先判断是否存在手写的 count 查询
@@ -224,7 +222,8 @@ public class PageSqlHandler extends SqlParserHandler implements Interceptor {
                     msCountMap.put(countMsId, countMs);
                 }
             }
-            count = CountExecutor.executeAutoCount(this.dialect, executor, countMs, parameter, boundSql, rowBounds, resultHandler);
+            count = CountExecutor.executeAutoCount(this.dialect, executor, countMs, parameter, boundSql, rowBounds,
+                    resultHandler);
         }
         return count;
     }

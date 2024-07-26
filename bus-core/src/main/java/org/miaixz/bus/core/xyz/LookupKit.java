@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.lang.Keys;
@@ -41,8 +41,7 @@ import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
 /**
- * {@link MethodHandles.Lookup}工具
- * {@link MethodHandles.Lookup}是一个方法句柄查找对象，用于在指定类中查找符合给定方法名称、方法类型的方法句柄。
+ * {@link MethodHandles.Lookup}工具 {@link MethodHandles.Lookup}是一个方法句柄查找对象，用于在指定类中查找符合给定方法名称、方法类型的方法句柄。
  *
  * <p>
  * jdk8中如果直接调用{@link MethodHandles#lookup()}获取到的{@link MethodHandles.Lookup}在调用findSpecial和unreflectSpecial
@@ -130,12 +129,11 @@ public class LookupKit {
     }
 
     /**
-     * 查找指定方法的方法句柄
-     * 此方法只会查找：
+     * 查找指定方法的方法句柄 此方法只会查找：
      * <ul>
-     *     <li>当前类的方法（包括构造方法和private方法）</li>
-     *     <li>父类的方法（包括构造方法和private方法）</li>
-     *     <li>当前类的static方法</li>
+     * <li>当前类的方法（包括构造方法和private方法）</li>
+     * <li>父类的方法（包括构造方法和private方法）</li>
+     * <li>当前类的static方法</li>
      * </ul>
      *
      * @param callerClass 方法所在类或接口
@@ -144,18 +142,17 @@ public class LookupKit {
      * @param argTypes    返回类型和参数类型列表
      * @return 方法句柄 {@link MethodHandle}，{@code null}表示未找到方法
      */
-    public static MethodHandle findMethod(final Class<?> callerClass, final String name,
-                                          final Class<?> returnType, final Class<?>... argTypes) {
+    public static MethodHandle findMethod(final Class<?> callerClass, final String name, final Class<?> returnType,
+            final Class<?>... argTypes) {
         return findMethod(callerClass, name, MethodType.methodType(returnType, argTypes));
     }
 
     /**
-     * 查找指定方法的方法句柄
-     * 此方法只会查找：
+     * 查找指定方法的方法句柄 此方法只会查找：
      * <ul>
-     *     <li>当前类的方法（包括构造方法和private方法）</li>
-     *     <li>父类的方法（包括构造方法和private方法）</li>
-     *     <li>当前类的static方法</li>
+     * <li>当前类的方法（包括构造方法和private方法）</li>
+     * <li>父类的方法（包括构造方法和private方法）</li>
+     * <li>当前类的static方法</li>
      * </ul>
      *
      * @param callerClass 方法所在类或接口
@@ -174,7 +171,7 @@ public class LookupKit {
         try {
             handle = lookup.findVirtual(callerClass, name, type);
         } catch (final IllegalAccessException | NoSuchMethodException ignore) {
-            //ignore
+            // ignore
         }
 
         // static方法
@@ -182,7 +179,7 @@ public class LookupKit {
             try {
                 handle = lookup.findStatic(callerClass, name, type);
             } catch (final IllegalAccessException | NoSuchMethodException ignore) {
-                //ignore
+                // ignore
             }
         }
 
@@ -191,7 +188,7 @@ public class LookupKit {
             try {
                 handle = lookup.findSpecial(callerClass, name, type, callerClass);
             } catch (final NoSuchMethodException ignore) {
-                //ignore
+                // ignore
             } catch (final IllegalAccessException e) {
                 throw new InternalException(e);
             }

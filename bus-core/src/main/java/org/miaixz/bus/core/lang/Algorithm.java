@@ -24,14 +24,13 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang;
 
 import javax.crypto.Cipher;
 
 /**
- * 签名算法类型
- * see: https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#Signature
+ * 签名算法类型 see: https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#Signature
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -228,8 +227,7 @@ public enum Algorithm {
      */
     DESEDE("DESede"),
     /**
-     * 分组加密算法
-     * RC2加密算法的执行速度是DES算法的两倍
+     * 分组加密算法 RC2加密算法的执行速度是DES算法的两倍
      */
     RC2("RC2"),
     /**
@@ -261,8 +259,7 @@ public enum Algorithm {
      */
     SM2("SM2"),
     /**
-     * 主要用于数字签名及验证、消息认证码生成及验证、随机数生成等
-     * 其安全性及效率与SHA-256相当
+     * 主要用于数字签名及验证、消息认证码生成及验证、随机数生成等 其安全性及效率与SHA-256相当
      */
     SM3("SM3"),
     /**
@@ -273,13 +270,11 @@ public enum Algorithm {
     /******************************* 其他算法 *******************************/
 
     /**
-     * 祖冲之算法-ZUC算法
-     * ZUC-128
+     * 祖冲之算法-ZUC算法 ZUC-128
      */
     ZUC_128("ZUC-128"),
     /**
-     * 祖冲之算法-ZUC算法
-     * ZUC-256
+     * 祖冲之算法-ZUC算法 ZUC-256
      */
     ZUC_256("ZUC-256"),
     /**
@@ -319,10 +314,10 @@ public enum Algorithm {
     }
 
     /**
-     * 模式
-     * 加密算法模式，是用来描述加密算法（此处特指分组密码，不包括流密码）在加密时对明文分组的模式，它代表了不同的分组方式
+     * 模式 加密算法模式，是用来描述加密算法（此处特指分组密码，不包括流密码）在加密时对明文分组的模式，它代表了不同的分组方式
      *
-     * @see <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#Cipher"> Cipher章节</a>
+     * @see <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#Cipher">
+     *      Cipher章节</a>
      */
     public enum Mode {
         /**
@@ -358,8 +353,7 @@ public enum Algorithm {
          */
         PCBC,
         /**
-         * GCM 全称为 Galois/Counter AnsiStyle。G是指GMAC，C是指CTR。
-         * 它在 CTR 加密的基础上增加 GMAC 的特性，解决了 CTR 不能对加密消息进行完整性校验的问题。
+         * GCM 全称为 Galois/Counter AnsiStyle。G是指GMAC，C是指CTR。 它在 CTR 加密的基础上增加 GMAC 的特性，解决了 CTR 不能对加密消息进行完整性校验的问题。
          */
         GCM
     }
@@ -384,7 +378,6 @@ public enum Algorithm {
          * 拆包模式
          */
         UNWRAP(javax.crypto.Cipher.UNWRAP_MODE);
-
 
         private final int value;
 

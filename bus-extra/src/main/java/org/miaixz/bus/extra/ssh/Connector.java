@@ -24,17 +24,17 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.ssh;
 
 /**
  * 连接者对象，提供一些连接的基本信息，包括：
  * <ul>
- *     <li>host：主机名</li>
- *     <li>port：端口</li>
- *     <li>user：用户名（默认root）</li>
- *     <li>password：密码</li>
- *     <li>timeout：连接超时毫秒数</li>
+ * <li>host：主机名</li>
+ * <li>port：端口</li>
+ * <li>user：用户名（默认root）</li>
+ * <li>password：密码</li>
+ * <li>timeout：连接超时毫秒数</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -103,7 +103,8 @@ public class Connector {
      * @param timeout  连接超时时长，0表示默认
      * @return Connector
      */
-    public static Connector of(final String host, final int port, final String user, final String password, final long timeout) {
+    public static Connector of(final String host, final int port, final String user, final String password,
+            final long timeout) {
         return new Connector(host, port, user, password, timeout);
     }
 
@@ -212,12 +213,7 @@ public class Connector {
      */
     @Override
     public String toString() {
-        return "Connector{" +
-                "host='" + host + '\'' +
-                ", port=" + port +
-                ", user='" + user + '\'' +
-                ", password='" + password + '\'' +
-                ", timeout=" + timeout +
-                '}';
+        return "Connector{" + "host='" + host + '\'' + ", port=" + port + ", user='" + user + '\'' + ", password='"
+                + password + '\'' + ", timeout=" + timeout + '}';
     }
 }

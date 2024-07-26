@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab;
 
 import jakarta.ws.rs.core.GenericType;
@@ -45,10 +45,12 @@ public class NamespaceApi extends AbstractApi {
     }
 
     /**
-     * Get a list of the namespaces of the authenticated user. If the user is an administrator,
-     * a list of all namespaces in the GitLab instance is created.
+     * Get a list of the namespaces of the authenticated user. If the user is an administrator, a list of all namespaces
+     * in the GitLab instance is created.
      *
-     * <pre><code>GitLab Endpoint: GET /namespaces</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /namespaces</code>
+     * </pre>
      *
      * @return a List of Namespace instances
      * @throws GitLabApiException if any exception occurs
@@ -58,12 +60,14 @@ public class NamespaceApi extends AbstractApi {
     }
 
     /**
-     * Get a list of the namespaces of the authenticated user. If the user is an administrator,
-     * a list of all namespaces in the GitLab instance is returned.
+     * Get a list of the namespaces of the authenticated user. If the user is an administrator, a list of all namespaces
+     * in the GitLab instance is returned.
      *
-     * <pre><code>GitLab Endpoint: GET /namespaces</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /namespaces</code>
+     * </pre>
      *
-     * @param page the page to get
+     * @param page    the page to get
      * @param perPage the number of Namespace instances per page
      * @return a List of Namespace instances in the specified page range
      * @throws GitLabApiException if any exception occurs
@@ -75,10 +79,12 @@ public class NamespaceApi extends AbstractApi {
     }
 
     /**
-     * Get a Pager of the namespaces of the authenticated user. If the user is an administrator,
-     * a Pager of all namespaces in the GitLab instance is returned.
+     * Get a Pager of the namespaces of the authenticated user. If the user is an administrator, a Pager of all
+     * namespaces in the GitLab instance is returned.
      *
-     * <pre><code>GitLab Endpoint: GET /namespaces</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /namespaces</code>
+     * </pre>
      *
      * @param itemsPerPage the number of Project instances that will be fetched per page
      * @return a Pager of Namespace instances
@@ -89,10 +95,12 @@ public class NamespaceApi extends AbstractApi {
     }
 
     /**
-     * Get a Stream of the namespaces of the authenticated user. If the user is an administrator,
-     * a Stream of all namespaces in the GitLab instance is returned.
+     * Get a Stream of the namespaces of the authenticated user. If the user is an administrator, a Stream of all
+     * namespaces in the GitLab instance is returned.
      *
-     * <pre><code>GitLab Endpoint: GET /namespaces</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /namespaces</code>
+     * </pre>
      *
      * @return a Stream of Namespace instances
      * @throws GitLabApiException if any exception occurs
@@ -104,7 +112,9 @@ public class NamespaceApi extends AbstractApi {
     /**
      * Get all namespaces that match a string in their name or path.
      *
-     * <pre><code>GitLab Endpoint: GET /namespaces?search=:query</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /namespaces?search=:query</code>
+     * </pre>
      *
      * @param query the search string
      * @return the Namespace List with the matching namespaces
@@ -117,16 +127,19 @@ public class NamespaceApi extends AbstractApi {
     /**
      * Get all namespaces that match a string in their name or path in the specified page range.
      *
-     * <pre><code>GitLab Endpoint: GET /namespaces?search=:query</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /namespaces?search=:query</code>
+     * </pre>
      *
-     * @param query the search string
-     * @param page the page to get
+     * @param query   the search string
+     * @param page    the page to get
      * @param perPage the number of Namespace instances per page
      * @return the Namespace List with the matching namespaces
      * @throws GitLabApiException if any exception occurs
      */
     public List<Namespace> findNamespaces(String query, int page, int perPage) throws GitLabApiException {
-        GitLabApiForm formData = new GitLabApiForm().withParam("search", query, true).withParam(PAGE_PARAM, page).withParam(PER_PAGE_PARAM, perPage);
+        GitLabApiForm formData = new GitLabApiForm().withParam("search", query, true).withParam(PAGE_PARAM, page)
+                .withParam(PER_PAGE_PARAM, perPage);
         Response response = get(Response.Status.OK, formData.asMap(), "namespaces");
         return (response.readEntity(new GenericType<List<Namespace>>() {
         }));
@@ -135,9 +148,11 @@ public class NamespaceApi extends AbstractApi {
     /**
      * Get a Pager of all namespaces that match a string in their name or path.
      *
-     * <pre><code>GitLab Endpoint: GET /namespaces?search=:query</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /namespaces?search=:query</code>
+     * </pre>
      *
-     * @param query the search string
+     * @param query        the search string
      * @param itemsPerPage the number of Project instances that will be fetched per page
      * @return a Pager of Namespace instances with the matching namespaces
      * @throws GitLabApiException if any exception occurs
@@ -150,7 +165,9 @@ public class NamespaceApi extends AbstractApi {
     /**
      * Get all namespaces that match a string in their name or path as a Stream.
      *
-     * <pre><code>GitLab Endpoint: GET /namespaces?search=:query</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /namespaces?search=:query</code>
+     * </pre>
      *
      * @param query the search string
      * @return a Stream with the matching namespaces
@@ -163,9 +180,12 @@ public class NamespaceApi extends AbstractApi {
     /**
      * Get all details of a namespace.
      *
-     * <pre><code>GitLab Endpoint: GET /namespaces/:id</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /namespaces/:id</code>
+     * </pre>
      *
-     * @param namespaceIdOrPath the namespace ID, path of the namespace, or a Namespace instance holding the namespace ID or path
+     * @param namespaceIdOrPath the namespace ID, path of the namespace, or a Namespace instance holding the namespace
+     *                          ID or path
      * @return the Namespace instance for the specified path
      * @throws GitLabApiException if any exception occurs
      */
@@ -178,9 +198,12 @@ public class NamespaceApi extends AbstractApi {
     /**
      * Get all details of a namespace as an Optional instance.
      *
-     * <pre><code>GitLab Endpoint: GET /namespaces/:id</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /namespaces/:id</code>
+     * </pre>
      *
-     * @param namespaceIdOrPath the namespace ID, path of the namespace, or a Namespace instance holding the namespace ID or path
+     * @param namespaceIdOrPath the namespace ID, path of the namespace, or a Namespace instance holding the namespace
+     *                          ID or path
      * @return the Group for the specified group path as an Optional instance
      */
     public Optional<Namespace> getOptionalNamespace(Object namespaceIdOrPath) {

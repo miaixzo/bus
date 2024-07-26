@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.pdu;
 
 import org.miaixz.bus.image.Builder;
@@ -42,13 +42,9 @@ public class PresentationContext {
     public static final int ABSTRACT_SYNTAX_NOT_SUPPORTED = 3;
     public static final int TRANSFER_SYNTAX_NOT_SUPPORTED = 4;
 
-    private static final String[] RESULTS = {
-            "0 - acceptance",
-            "1 - user-rejection",
-            "2 - no-reason (provider rejection)",
-            "3 - abstract-syntax-not-supported (provider rejection)",
-            "4 - transfer-syntaxes-not-supported (provider rejection)"
-    };
+    private static final String[] RESULTS = { "0 - acceptance", "1 - user-rejection",
+            "2 - no-reason (provider rejection)", "3 - abstract-syntax-not-supported (provider rejection)",
+            "4 - transfer-syntaxes-not-supported (provider rejection)" };
 
     private final int pcid;
     private final int result;
@@ -124,16 +120,14 @@ public class PresentationContext {
     }
 
     StringBuilder promptTo(StringBuilder sb) {
-        sb.append("  PresentationContext[id: ").append(pcid)
-                .append(Builder.LINE_SEPARATOR);
+        sb.append("  PresentationContext[id: ").append(pcid).append(Builder.LINE_SEPARATOR);
         if (as != null)
             UID.promptTo(as, sb.append("    as: "));
         else
             sb.append("    result: ").append(resultAsString(result));
         sb.append(Builder.LINE_SEPARATOR);
         for (String ts : tss)
-            UID.promptTo(ts, sb.append("    ts: "))
-                    .append(Builder.LINE_SEPARATOR);
+            UID.promptTo(ts, sb.append("    ts: ")).append(Builder.LINE_SEPARATOR);
         return sb.append("  ]");
     }
 

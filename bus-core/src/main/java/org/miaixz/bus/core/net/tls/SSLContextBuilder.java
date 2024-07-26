@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.net.tls;
 
 import org.miaixz.bus.core.Builder;
@@ -40,10 +40,10 @@ import java.util.Arrays;
 /**
  * {@link SSLContext}构建器，可以自定义：
  * <ul>
- *     <li>协议（protocol），默认TLS</li>
- *     <li>{@link KeyManager}，默认空</li>
- *     <li>{@link TrustManager}，默认{@link TrustAnyTrustManager}，即信任全部</li>
- *     <li>{@link SecureRandom}</li>
+ * <li>协议（protocol），默认TLS</li>
+ * <li>{@link KeyManager}，默认空</li>
+ * <li>{@link TrustManager}，默认{@link TrustAnyTrustManager}，即信任全部</li>
+ * <li>{@link SecureRandom}</li>
  * </ul>
  * 构建后可获得{@link SSLContext}，通过调用{@link SSLContext#getSocketFactory()}获取{@link javax.net.ssl.SSLSocketFactory}
  *
@@ -58,7 +58,6 @@ public class SSLContextBuilder implements Builder<SSLContext> {
     private KeyManager[] keyManagers;
     private TrustManager[] trustManagers = TrustAnyTrustManager.TRUST_ANYS;
     private SecureRandom secureRandom = new SecureRandom();
-
 
     /**
      * 创建 SSLContextBuilder
@@ -100,11 +99,9 @@ public class SSLContextBuilder implements Builder<SSLContext> {
      * @throws InternalException 包装 GeneralSecurityException异常
      */
     public static SSLContext createTrustAnySSLContext(final String protocol) throws InternalException {
-        return of()
-                .setProtocol(protocol)
+        return of().setProtocol(protocol)
                 // 信任所有服务端
-                .setTrustManagers(TrustAnyTrustManager.TRUST_ANYS)
-                .build();
+                .setTrustManagers(TrustAnyTrustManager.TRUST_ANYS).build();
     }
 
     /**
@@ -116,11 +113,10 @@ public class SSLContextBuilder implements Builder<SSLContext> {
      * @return {@link SSLContext}
      * @throws InternalException 包装 GeneralSecurityException异常
      */
-    public static SSLContext createSSLContext(final String protocol, final KeyManager keyManager, final TrustManager trustManager)
-            throws InternalException {
-        return createSSLContext(protocol,
-                keyManager == null ? null : new KeyManager[]{keyManager},
-                trustManager == null ? null : new TrustManager[]{trustManager});
+    public static SSLContext createSSLContext(final String protocol, final KeyManager keyManager,
+            final TrustManager trustManager) throws InternalException {
+        return createSSLContext(protocol, keyManager == null ? null : new KeyManager[] { keyManager },
+                trustManager == null ? null : new TrustManager[] { trustManager });
     }
 
     /**
@@ -132,11 +128,9 @@ public class SSLContextBuilder implements Builder<SSLContext> {
      * @return {@link SSLContext}
      * @throws InternalException 包装 GeneralSecurityException异常
      */
-    public static SSLContext createSSLContext(final String protocol, final KeyManager[] keyManagers, final TrustManager[] trustManagers) throws InternalException {
-        return of()
-                .setProtocol(protocol)
-                .setKeyManagers(keyManagers)
-                .setTrustManagers(trustManagers).build();
+    public static SSLContext createSSLContext(final String protocol, final KeyManager[] keyManagers,
+            final TrustManager[] trustManagers) throws InternalException {
+        return of().setProtocol(protocol).setKeyManagers(keyManagers).setTrustManagers(trustManagers).build();
     }
 
     /**
@@ -148,7 +142,7 @@ public class SSLContextBuilder implements Builder<SSLContext> {
     public static SSLSocketFactory newSslSocketFactory(X509TrustManager x509TrustManager) {
         try {
             SSLContext sslContext = getSSLContext();
-            sslContext.init(null, new TrustManager[]{x509TrustManager}, null);
+            sslContext.init(null, new TrustManager[] { x509TrustManager }, null);
             return sslContext.getSocketFactory();
         } catch (GeneralSecurityException e) {
             throw new AssertionError("No System TLS", e); // The system has no TLS. Just give up.
@@ -157,13 +151,12 @@ public class SSLContextBuilder implements Builder<SSLContext> {
 
     public static X509TrustManager newTrustManager() {
         try {
-            TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(
-                    TrustManagerFactory.getDefaultAlgorithm());
+            TrustManagerFactory trustManagerFactory = TrustManagerFactory
+                    .getInstance(TrustManagerFactory.getDefaultAlgorithm());
             trustManagerFactory.init((KeyStore) null);
             TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
             if (trustManagers.length != 1 || !(trustManagers[0] instanceof X509TrustManager)) {
-                throw new IllegalStateException("Unexpected default trust managers:"
-                        + Arrays.toString(trustManagers));
+                throw new IllegalStateException("Unexpected default trust managers:" + Arrays.toString(trustManagers));
             }
             return (X509TrustManager) trustManagers[0];
         } catch (GeneralSecurityException e) {

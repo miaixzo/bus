@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.cache;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -241,8 +241,7 @@ public class Cache implements Closeable, Flushable {
     }
 
     /**
-     * 始化缓存。这将包括从存储器中读取日志文件并构建必要的内存缓存信息
-     * 注意，如果应用程序选择不调用此方法来初始化缓存。默认情况下，将在第一次使用缓存时执行延迟初始化
+     * 始化缓存。这将包括从存储器中读取日志文件并构建必要的内存缓存信息 注意，如果应用程序选择不调用此方法来初始化缓存。默认情况下，将在第一次使用缓存时执行延迟初始化
      *
      * @throws IOException 初始化异常
      */
@@ -268,10 +267,8 @@ public class Cache implements Closeable, Flushable {
         cache.evictAll();
     }
 
-
     /**
-     * 在此缓存中的url上返回一个迭代器,该迭代器支持{@linkplain Iterator#remove}。
-     * 从迭代器中删除URL将从缓存中删除相应的响应。使用此来清除选定的响应
+     * 在此缓存中的url上返回一个迭代器,该迭代器支持{@linkplain Iterator#remove}。 从迭代器中删除URL将从缓存中删除相应的响应。使用此来清除选定的响应
      *
      * @return 迭代器
      * @throws IOException 异常
@@ -306,7 +303,8 @@ public class Cache implements Closeable, Flushable {
 
             @Override
             public String next() {
-                if (!hasNext()) throw new NoSuchElementException();
+                if (!hasNext())
+                    throw new NoSuchElementException();
                 String result = nextUrl;
                 nextUrl = null;
                 canRemove = true;
@@ -315,7 +313,8 @@ public class Cache implements Closeable, Flushable {
 
             @Override
             public void remove() {
-                if (!canRemove) throw new IllegalStateException("remove() before next()");
+                if (!canRemove)
+                    throw new IllegalStateException("remove() before next()");
                 delegate.remove();
             }
         };
@@ -407,6 +406,7 @@ public class Cache implements Closeable, Flushable {
 
         /**
          * 从输入流中读取项。一个典型的案例:
+         * 
          * <pre>{@code
          *   http://google.com/foo
          *   GET
@@ -420,7 +420,9 @@ public class Cache implements Closeable, Flushable {
          *   Cache-Control: max-age=600
          * }</pre>
          *
-         * <p>HTTPS文件是这样的:
+         * <p>
+         * HTTPS文件是这样的:
+         * 
          * <pre>{@code
          *   https://google.com/foo
          *   GET
@@ -469,9 +471,7 @@ public class Cache implements Closeable, Flushable {
                 String receivedResponseMillisString = responseHeadersBuilder.get(RECEIVED_MILLIS);
                 responseHeadersBuilder.removeAll(SENT_MILLIS);
                 responseHeadersBuilder.removeAll(RECEIVED_MILLIS);
-                sentRequestMillis = null != sendRequestMillisString
-                        ? Long.parseLong(sendRequestMillisString)
-                        : 0L;
+                sentRequestMillis = null != sendRequestMillisString ? Long.parseLong(sendRequestMillisString) : 0L;
                 receivedResponseMillis = null != receivedResponseMillisString
                         ? Long.parseLong(receivedResponseMillisString)
                         : 0L;
@@ -486,8 +486,7 @@ public class Cache implements Closeable, Flushable {
                     CipherSuite cipherSuite = CipherSuite.forJavaName(cipherSuiteString);
                     List<Certificate> peerCertificates = readCertificateList(source);
                     List<Certificate> localCertificates = readCertificateList(source);
-                    TlsVersion tlsVersion = !source.exhausted()
-                            ? TlsVersion.forJavaName(source.readUtf8LineStrict())
+                    TlsVersion tlsVersion = !source.exhausted() ? TlsVersion.forJavaName(source.readUtf8LineStrict())
                             : TlsVersion.SSLv3;
                     handshake = Handshake.get(tlsVersion, cipherSuite, peerCertificates, localCertificates);
                 } else {
@@ -514,42 +513,27 @@ public class Cache implements Closeable, Flushable {
         public void writeTo(DiskLruCache.Editor editor) throws IOException {
             BufferSink sink = IoKit.buffer(editor.newSink(ENTRY_METADATA));
 
-            sink.writeUtf8(url)
-                    .writeByte(Symbol.C_LF);
-            sink.writeUtf8(requestMethod)
-                    .writeByte(Symbol.C_LF);
-            sink.writeDecimalLong(varyHeaders.size())
-                    .writeByte(Symbol.C_LF);
+            sink.writeUtf8(url).writeByte(Symbol.C_LF);
+            sink.writeUtf8(requestMethod).writeByte(Symbol.C_LF);
+            sink.writeDecimalLong(varyHeaders.size()).writeByte(Symbol.C_LF);
             for (int i = 0, size = varyHeaders.size(); i < size; i++) {
-                sink.writeUtf8(varyHeaders.name(i))
-                        .writeUtf8(": ")
-                        .writeUtf8(varyHeaders.value(i))
+                sink.writeUtf8(varyHeaders.name(i)).writeUtf8(": ").writeUtf8(varyHeaders.value(i))
                         .writeByte(Symbol.C_LF);
             }
 
-            sink.writeUtf8(new StatusLine(protocol, code, message).toString())
-                    .writeByte(Symbol.C_LF);
-            sink.writeDecimalLong(responseHeaders.size() + 2)
-                    .writeByte(Symbol.C_LF);
+            sink.writeUtf8(new StatusLine(protocol, code, message).toString()).writeByte(Symbol.C_LF);
+            sink.writeDecimalLong(responseHeaders.size() + 2).writeByte(Symbol.C_LF);
             for (int i = 0, size = responseHeaders.size(); i < size; i++) {
-                sink.writeUtf8(responseHeaders.name(i))
-                        .writeUtf8(": ")
-                        .writeUtf8(responseHeaders.value(i))
+                sink.writeUtf8(responseHeaders.name(i)).writeUtf8(": ").writeUtf8(responseHeaders.value(i))
                         .writeByte(Symbol.C_LF);
             }
-            sink.writeUtf8(SENT_MILLIS)
-                    .writeUtf8(": ")
-                    .writeDecimalLong(sentRequestMillis)
-                    .writeByte(Symbol.C_LF);
-            sink.writeUtf8(RECEIVED_MILLIS)
-                    .writeUtf8(": ")
-                    .writeDecimalLong(receivedResponseMillis)
+            sink.writeUtf8(SENT_MILLIS).writeUtf8(": ").writeDecimalLong(sentRequestMillis).writeByte(Symbol.C_LF);
+            sink.writeUtf8(RECEIVED_MILLIS).writeUtf8(": ").writeDecimalLong(receivedResponseMillis)
                     .writeByte(Symbol.C_LF);
 
             if (isHttps()) {
                 sink.writeByte(Symbol.C_LF);
-                sink.writeUtf8(handshake.cipherSuite().javaName())
-                        .writeByte(Symbol.C_LF);
+                sink.writeUtf8(handshake.cipherSuite().javaName()).writeByte(Symbol.C_LF);
                 writeCertList(sink, handshake.peerCertificates());
                 writeCertList(sink, handshake.localCertificates());
                 sink.writeUtf8(handshake.tlsVersion().javaName()).writeByte(Symbol.C_LF);
@@ -563,7 +547,8 @@ public class Cache implements Closeable, Flushable {
 
         private List<Certificate> readCertificateList(BufferSource source) throws IOException {
             int length = readInt(source);
-            if (length == -1) return Collections.emptyList();
+            if (length == -1)
+                return Collections.emptyList();
 
             try {
                 CertificateFactory certificateFactory = CertificateFactory.getInstance("X.509");
@@ -580,16 +565,13 @@ public class Cache implements Closeable, Flushable {
             }
         }
 
-        private void writeCertList(BufferSink sink, List<Certificate> certificates)
-                throws IOException {
+        private void writeCertList(BufferSink sink, List<Certificate> certificates) throws IOException {
             try {
-                sink.writeDecimalLong(certificates.size())
-                        .writeByte(Symbol.C_LF);
+                sink.writeDecimalLong(certificates.size()).writeByte(Symbol.C_LF);
                 for (int i = 0, size = certificates.size(); i < size; i++) {
                     byte[] bytes = certificates.get(i).getEncoded();
                     String line = ByteString.of(bytes).base64();
-                    sink.writeUtf8(line)
-                            .writeByte(Symbol.C_LF);
+                    sink.writeUtf8(line).writeByte(Symbol.C_LF);
                 }
             } catch (CertificateEncodingException e) {
                 throw new IOException(e.getMessage());
@@ -597,30 +579,18 @@ public class Cache implements Closeable, Flushable {
         }
 
         public boolean matches(Request request, Response response) {
-            return url.equals(request.url().toString())
-                    && requestMethod.equals(request.method())
+            return url.equals(request.url().toString()) && requestMethod.equals(request.method())
                     && Headers.varyMatches(response, varyHeaders, request);
         }
 
         public Response response(DiskLruCache.Snapshot snapshot) {
             String mediaType = responseHeaders.get(HTTP.CONTENT_TYPE);
             String length = responseHeaders.get(HTTP.CONTENT_LENGTH);
-            Request request = new Request.Builder()
-                    .url(url)
-                    .method(requestMethod, null)
-                    .headers(varyHeaders)
-                    .build();
-            return new Response.Builder()
-                    .request(request)
-                    .protocol(protocol)
-                    .code(code)
-                    .message(message)
-                    .headers(responseHeaders)
-                    .body(new CacheResponseBody(snapshot, mediaType, length))
-                    .handshake(handshake)
-                    .sentRequestAtMillis(sentRequestMillis)
-                    .receivedResponseAtMillis(receivedResponseMillis)
-                    .build();
+            Request request = new Request.Builder().url(url).method(requestMethod, null).headers(varyHeaders).build();
+            return new Response.Builder().request(request).protocol(protocol).code(code).message(message)
+                    .headers(responseHeaders).body(new CacheResponseBody(snapshot, mediaType, length))
+                    .handshake(handshake).sentRequestAtMillis(sentRequestMillis)
+                    .receivedResponseAtMillis(receivedResponseMillis).build();
         }
     }
 
@@ -631,8 +601,7 @@ public class Cache implements Closeable, Flushable {
         private final String mediaType;
         private final String length;
 
-        CacheResponseBody(final DiskLruCache.Snapshot snapshot,
-                          String mediaType, String length) {
+        CacheResponseBody(final DiskLruCache.Snapshot snapshot, String mediaType, String length) {
             this.snapshot = snapshot;
             this.mediaType = mediaType;
             this.length = length;

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.thread;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -36,8 +36,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
 /**
- * 线程同步结束器
- * 在完成一组正在其他线程中执行的操作之前，它允许一个或多个线程一直等待。
+ * 线程同步结束器 在完成一组正在其他线程中执行的操作之前，它允许一个或多个线程一直等待。
  *
  * <pre>
  * ps:
@@ -150,16 +149,14 @@ public class SyncFinisher implements Closeable {
     }
 
     /**
-     * 开始工作
-     * 执行此方法后如果不再重复使用此对象，需调用{@link #stop()}关闭回收资源。
+     * 开始工作 执行此方法后如果不再重复使用此对象，需调用{@link #stop()}关闭回收资源。
      */
     public void start() {
         start(true);
     }
 
     /**
-     * 开始工作
-     * 执行此方法后如果不再重复使用此对象，需调用{@link #stop()}关闭回收资源。
+     * 开始工作 执行此方法后如果不再重复使用此对象，需调用{@link #stop()}关闭回收资源。
      *
      * @param sync 是否阻塞等待
      */
@@ -187,8 +184,8 @@ public class SyncFinisher implements Closeable {
     /**
      * 结束线程池。此方法执行两种情况：
      * <ol>
-     *     <li>执行start(true)后，调用此方法结束线程池回收资源</li>
-     *     <li>执行start(false)后，用户自行判断结束点执行此方法</li>
+     * <li>执行start(true)后，调用此方法结束线程池回收资源</li>
+     * <li>执行start(false)后，用户自行判断结束点执行此方法</li>
      * </ol>
      */
     public void stop() {
@@ -198,8 +195,8 @@ public class SyncFinisher implements Closeable {
     /**
      * 结束线程池。此方法执行两种情况：
      * <ol>
-     *     <li>执行start(true)后，调用此方法结束线程池回收资源</li>
-     *     <li>执行start(false)后，用户自行判断结束点执行此方法</li>
+     * <li>执行start(true)后，调用此方法结束线程池回收资源</li>
+     * <li>执行start(false)后，用户自行判断结束点执行此方法</li>
      * </ol>
      *
      * @param isStopNow 是否立即结束所有线程（包括正在执行的）
@@ -244,10 +241,8 @@ public class SyncFinisher implements Closeable {
      * @return {@link ExecutorService}
      */
     private ExecutorService buildExecutor() {
-        return ExecutorBuilder.of()
-                .setCorePoolSize(threadSize)
-                .setThreadFactory(new NamedThreadFactory("X-", null, false, exceptionHandler))
-                .build();
+        return ExecutorBuilder.of().setCorePoolSize(threadSize)
+                .setThreadFactory(new NamedThreadFactory("X-", null, false, exceptionHandler)).build();
     }
 
     /**

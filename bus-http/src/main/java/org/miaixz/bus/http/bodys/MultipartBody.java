@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.bodys;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -41,17 +41,16 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * The MIME Multipart/Related Content-type
- * 用于复合对象
+ * The MIME Multipart/Related Content-type 用于复合对象
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class MultipartBody extends RequestBody {
 
-    private static final byte[] COLONSPACE = {Symbol.C_COLON, Symbol.C_SPACE};
-    private static final byte[] CRLF = {Symbol.C_CR, Symbol.C_LF};
-    private static final byte[] DASHDASH = {Symbol.C_MINUS, Symbol.C_MINUS};
+    private static final byte[] COLONSPACE = { Symbol.C_COLON, Symbol.C_SPACE };
+    private static final byte[] CRLF = { Symbol.C_CR, Symbol.C_LF };
+    private static final byte[] DASHDASH = { Symbol.C_MINUS, Symbol.C_MINUS };
 
     private final ByteString boundary;
     private final MediaType originalType;
@@ -67,31 +66,29 @@ public class MultipartBody extends RequestBody {
     }
 
     /**
-     * Appends a quoted-string to a StringBuilder
-     * RFC 2388 is rather vague about how one should escape special characters in form-data
-     * parameters, and as it turns out Firefox and Chrome actually do rather different things, and
-     * both say in their comments that they're not really sure what the right approach is. We go with
-     * Chrome's behavior (which also experimentally seems to match what IE does), but if you actually
-     * want to have a good chance of things working, please avoid double-quotes, newlines, percent
-     * signs, and the like in your field names.
+     * Appends a quoted-string to a StringBuilder RFC 2388 is rather vague about how one should escape special
+     * characters in form-data parameters, and as it turns out Firefox and Chrome actually do rather different things,
+     * and both say in their comments that they're not really sure what the right approach is. We go with Chrome's
+     * behavior (which also experimentally seems to match what IE does), but if you actually want to have a good chance
+     * of things working, please avoid double-quotes, newlines, percent signs, and the like in your field names.
      */
     static void appendQuotedString(StringBuilder target, String key) {
         target.append(Symbol.C_DOUBLE_QUOTES);
         for (int i = 0, len = key.length(); i < len; i++) {
             char ch = key.charAt(i);
             switch (ch) {
-                case Symbol.C_LF:
-                    target.append("%0A");
-                    break;
-                case Symbol.C_CR:
-                    target.append("%0D");
-                    break;
-                case Symbol.C_DOUBLE_QUOTES:
-                    target.append("%22");
-                    break;
-                default:
-                    target.append(ch);
-                    break;
+            case Symbol.C_LF:
+                target.append("%0A");
+                break;
+            case Symbol.C_CR:
+                target.append("%0D");
+                break;
+            case Symbol.C_DOUBLE_QUOTES:
+                target.append("%22");
+                break;
+            default:
+                target.append(ch);
+                break;
             }
         }
         target.append(Symbol.C_DOUBLE_QUOTES);
@@ -131,7 +128,8 @@ public class MultipartBody extends RequestBody {
     @Override
     public long length() throws IOException {
         long result = contentLength;
-        if (result != -1L) return result;
+        if (result != -1L)
+            return result;
         return contentLength = writeOrCountBytes(null, true);
     }
 
@@ -141,9 +139,7 @@ public class MultipartBody extends RequestBody {
     }
 
     /**
-     * 将此请求写入{@code sink}或测量其内容长度。我们有一种方法可以
-     * 同时确保计数和内容是一致的，特别是当涉及到一些棘手的操作时，
-     * 比如测量报头字符串的编码长度，或者编码整数的位数长度
+     * 将此请求写入{@code sink}或测量其内容长度。我们有一种方法可以 同时确保计数和内容是一致的，特别是当涉及到一些棘手的操作时， 比如测量报头字符串的编码长度，或者编码整数的位数长度
      *
      * @param sink       缓冲区
      * @param countBytes 统计写入大小
@@ -169,25 +165,18 @@ public class MultipartBody extends RequestBody {
 
             if (null != headers) {
                 for (int h = 0, headerCount = headers.size(); h < headerCount; h++) {
-                    sink.writeUtf8(headers.name(h))
-                            .write(COLONSPACE)
-                            .writeUtf8(headers.value(h))
-                            .write(CRLF);
+                    sink.writeUtf8(headers.name(h)).write(COLONSPACE).writeUtf8(headers.value(h)).write(CRLF);
                 }
             }
 
             MediaType mediaType = body.mediaType();
             if (null != mediaType) {
-                sink.writeUtf8(HTTP.CONTENT_TYPE + ": ")
-                        .writeUtf8(mediaType.toString())
-                        .write(CRLF);
+                sink.writeUtf8(HTTP.CONTENT_TYPE + ": ").writeUtf8(mediaType.toString()).write(CRLF);
             }
 
             long contentLength = body.length();
             if (contentLength != -1) {
-                sink.writeUtf8("Content-Length: ")
-                        .writeDecimalLong(contentLength)
-                        .write(CRLF);
+                sink.writeUtf8("Content-Length: ").writeDecimalLong(contentLength).write(CRLF);
             } else if (countBytes) {
                 byteCountBuffer.clear();
                 return -1L;
@@ -260,8 +249,7 @@ public class MultipartBody extends RequestBody {
                 appendQuotedString(disposition, filename);
             }
 
-            Headers headers = new Headers.Builder()
-                    .addUnsafeNonAscii(HTTP.CONTENT_DISPOSITION, disposition.toString())
+            Headers headers = new Headers.Builder().addUnsafeNonAscii(HTTP.CONTENT_DISPOSITION, disposition.toString())
                     .build();
 
             return create(headers, body);
@@ -291,8 +279,9 @@ public class MultipartBody extends RequestBody {
         }
 
         /**
-         * Set the MIME type. Expected values for {@code type} are {@link MediaType#MULTIPART_MIXED} (the default), {@link
-         * MediaType#MULTIPART_ALTERNATIVE}, {@link MediaType#MULTIPART_DIGEST}, {@link MediaType#MULTIPART_PARALLEL} and {@link MediaType#APPLICATION_FORM_URLENCODED}.
+         * Set the MIME type. Expected values for {@code type} are {@link MediaType#MULTIPART_MIXED} (the default),
+         * {@link MediaType#MULTIPART_ALTERNATIVE}, {@link MediaType#MULTIPART_DIGEST},
+         * {@link MediaType#MULTIPART_PARALLEL} and {@link MediaType#APPLICATION_FORM_URLENCODED}.
          */
         public Builder setType(MediaType type) {
             if (null == type) {
@@ -337,7 +326,8 @@ public class MultipartBody extends RequestBody {
          * 增加part至请求体
          */
         public Builder addPart(Part part) {
-            if (part == null) throw new NullPointerException("part == null");
+            if (part == null)
+                throw new NullPointerException("part == null");
             parts.add(part);
             return this;
         }

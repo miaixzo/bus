@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_SMS_USG_ANTARES;
 
 /**
@@ -92,7 +92,7 @@ public class PrivateTag {
     /** (0019,xx2E) VR=SH VM=1 ? */
     public static final int _0019_xx2E_ = 0x0019002E;
 
-    /** (0019,xx31) VR=US VM=1  */
+    /** (0019,xx31) VR=US VM=1 */
     public static final int _0019_xx31_ = 0x00190031;
 
     /** (0019,xx3A) VR=US VM=1 ? */

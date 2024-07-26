@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 import org.miaixz.bus.image.Tag;
@@ -105,9 +105,7 @@ public class ImageMetaData extends IIOMetadata {
     }
 
     public String getMediaStorageSOPClassUID() {
-        return fileMetaInformation == null
-                ? null
-                : fileMetaInformation.getString(Tag.MediaStorageSOPClassUID);
+        return fileMetaInformation == null ? null : fileMetaInformation.getString(Tag.MediaStorageSOPClassUID);
     }
 
     public boolean isVideoTransferSyntaxUID() {

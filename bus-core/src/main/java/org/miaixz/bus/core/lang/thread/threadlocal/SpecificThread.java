@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.thread.threadlocal;
 
 /**
@@ -118,16 +118,14 @@ public class SpecificThread extends Thread {
     }
 
     /**
-     * 返回将线程局部变量绑定到此线程的内部数据结构。
-     * 请注意，此方法仅供内部使用，因此随时可能发生变化。
+     * 返回将线程局部变量绑定到此线程的内部数据结构。 请注意，此方法仅供内部使用，因此随时可能发生变化。
      */
     public final ThreadLocalMap getThreadLocalMap() {
         return threadLocalMap;
     }
 
     /**
-     * 设置将线程局部变量绑定到此线程的内部数据结构。
-     * 请注意，此方法仅供内部使用，因此随时可能发生变化。
+     * 设置将线程局部变量绑定到此线程的内部数据结构。 请注意，此方法仅供内部使用，因此随时可能发生变化。
      *
      * @param threadLocalMap 变量数据结构
      */

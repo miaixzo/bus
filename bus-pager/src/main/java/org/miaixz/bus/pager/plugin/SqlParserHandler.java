@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2024 miaixz.org mybatis.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager.plugin;
 
 import net.sf.jsqlparser.JSQLParserException;
@@ -80,7 +80,8 @@ public abstract class SqlParserHandler extends AbstractSqlHandler {
                     return sqlStringBuilder.toString();
                 }
             } catch (JSQLParserException e) {
-                throw new InternalException("Failed to process, please exclude the tableName or statementId.\n Error SQL: %s", e, sql);
+                throw new InternalException(
+                        "Failed to process, please exclude the tableName or statementId.\n Error SQL: %s", e, sql);
             }
         }
         return null;
@@ -133,8 +134,7 @@ public abstract class SqlParserHandler extends AbstractSqlHandler {
     }
 
     /**
-     * 判断是否允许执行
-     * 例如：逻辑删除只解析 delete , update 操作
+     * 判断是否允许执行 例如：逻辑删除只解析 delete , update 操作
      *
      * @param metaObject 元对象
      * @return true

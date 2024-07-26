@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import org.miaixz.bus.gitlab.Constants.PackageOrderBy;
@@ -35,7 +35,7 @@ import org.miaixz.bus.gitlab.GitLabApiForm;
 import java.io.Serializable;
 
 /**
- *  This class is used to filter Projects when getting lists of projects for a specified group.
+ * This class is used to filter Projects when getting lists of projects for a specified group.
  */
 public class PackageFilter implements Serializable {
     private static final long serialVersionUID = -1L;
@@ -129,14 +129,9 @@ public class PackageFilter implements Serializable {
      * @return a GitLabApiForm instance holding the query parameters for this ProjectFilter instance
      */
     public GitLabApiForm getQueryParams() {
-        return (new GitLabApiForm()
-                .withParam("order_by", orderBy)
-                .withParam("sort", sort)
-                .withParam("exclude_subgroups", excludeSubgroups)
-                .withParam("package_type", packageType)
-                .withParam("package_name", packageName)
-                .withParam("include_versionless", includeVersionless)
-                .withParam("status", status)
-        );
+        return (new GitLabApiForm().withParam("order_by", orderBy).withParam("sort", sort)
+                .withParam("exclude_subgroups", excludeSubgroups).withParam("package_type", packageType)
+                .withParam("package_name", packageName).withParam("include_versionless", includeVersionless)
+                .withParam("status", status));
     }
 }

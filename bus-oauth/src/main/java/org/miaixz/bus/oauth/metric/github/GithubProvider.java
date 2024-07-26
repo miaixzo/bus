@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.github;
 
 import com.alibaba.fastjson.JSONObject;
@@ -67,11 +67,8 @@ public class GithubProvider extends AbstractProvider {
 
         this.checkResponse(res.containsKey("error"), res.get("error_description"));
 
-        return AccToken.builder()
-                .accessToken(res.get("access_token"))
-                .scope(res.get("scope"))
-                .tokenType(res.get("token_type"))
-                .build();
+        return AccToken.builder().accessToken(res.get("access_token")).scope(res.get("scope"))
+                .tokenType(res.get("token_type")).build();
     }
 
     @Override
@@ -83,21 +80,11 @@ public class GithubProvider extends AbstractProvider {
 
         this.checkResponse(object.containsKey("error"), object.getString("error_description"));
 
-        return Material.builder()
-                .rawJson(object)
-                .uuid(object.getString("id"))
-                .username(object.getString("login"))
-                .avatar(object.getString("avatar_url"))
-                .blog(object.getString("blog"))
-                .nickname(object.getString("name"))
-                .company(object.getString("company"))
-                .location(object.getString("location"))
-                .email(object.getString("email"))
-                .remark(object.getString("bio"))
-                .gender(Gender.UNKNOWN)
-                .token(accToken)
-                .source(complex.toString())
-                .build();
+        return Material.builder().rawJson(object).uuid(object.getString("id")).username(object.getString("login"))
+                .avatar(object.getString("avatar_url")).blog(object.getString("blog"))
+                .nickname(object.getString("name")).company(object.getString("company"))
+                .location(object.getString("location")).email(object.getString("email")).remark(object.getString("bio"))
+                .gender(Gender.UNKNOWN).token(accToken).source(complex.toString()).build();
     }
 
     private void checkResponse(boolean error, String errorDescription) {

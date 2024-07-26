@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -58,16 +58,16 @@ public class RequestLine {
     }
 
     /**
-     * Returns true if the request line should contain the full URL with host and port (like "GET
-     * http://android.com/foo HTTP/1.1") or only the path (like "GET /foo HTTP/1.1").
+     * Returns true if the request line should contain the full URL with host and port (like "GET http://android.com/foo
+     * HTTP/1.1") or only the path (like "GET /foo HTTP/1.1").
      */
     private static boolean includeAuthorityInRequestLine(Request request, Proxy.Type proxyType) {
         return !request.isHttps() && proxyType == Proxy.Type.HTTP;
     }
 
     /**
-     * Returns the path to request, like the '/' in 'GET / HTTP/1.1'. Never empty, even if the request
-     * URL is. Includes the query component if it exists.
+     * Returns the path to request, like the '/' in 'GET / HTTP/1.1'. Never empty, even if the request URL is. Includes
+     * the query component if it exists.
      */
     public static String requestPath(UnoUrl url) {
         String path = url.encodedPath();

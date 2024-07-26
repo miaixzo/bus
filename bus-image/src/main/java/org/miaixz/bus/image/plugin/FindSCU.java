@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -68,8 +68,7 @@ import java.util.EnumSet;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * findscu应用程序为查询/检索、Modality工作列表管理、统一工作列表和过程步骤
- * 挂起协议Query/Retrieve 支持Query/Retrieve服务类实现一个服务类用户(SCU)
+ * findscu应用程序为查询/检索、Modality工作列表管理、统一工作列表和过程步骤 挂起协议Query/Retrieve 支持Query/Retrieve服务类实现一个服务类用户(SCU)
  * findscu只支持使用C-FIND消息的查询功能
  *
  * @author Kimi Liu
@@ -128,8 +127,7 @@ public class FindSCU implements AutoCloseable {
         if (!queryOptions.isEmpty()) {
             model.adjustQueryOptions(queryOptions);
             rq.addExtendedNegotiation(
-                    new ExtendedNegotiation(
-                            model.cuid, QueryOption.toExtendedNegotiationInformation(queryOptions)));
+                    new ExtendedNegotiation(model.cuid, QueryOption.toExtendedNegotiationInformation(queryOptions)));
         }
         if (model.level != null) {
             addLevel(model.level);
@@ -205,11 +203,7 @@ public class FindSCU implements AutoCloseable {
         return keys;
     }
 
-    public void open()
-            throws IOException,
-            InterruptedException,
-            InternalException,
-            GeneralSecurityException {
+    public void open() throws IOException, InterruptedException, InternalException, GeneralSecurityException {
         as = ae.connect(conn, remote, rq);
     }
 
@@ -248,32 +242,31 @@ public class FindSCU implements AutoCloseable {
     }
 
     private void query(Attributes keys) throws IOException, InterruptedException {
-        DimseRSPHandler rspHandler =
-                new DimseRSPHandler(as.nextMessageID()) {
+        DimseRSPHandler rspHandler = new DimseRSPHandler(as.nextMessageID()) {
 
-                    int cancelAfter;
-                    int numMatches;
+            int cancelAfter;
+            int numMatches;
 
-                    @Override
-                    public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
-                        super.onDimseRSP(as, cmd, data);
-                        int status = cmd.getInt(Tag.Status, -1);
-                        if (Status.isPending(status)) {
-                            onResult(data);
-                            ++numMatches;
-                            if (cancelAfter != 0 && numMatches >= cancelAfter) {
-                                try {
-                                    cancel(as);
-                                    cancelAfter = 0;
-                                } catch (IOException e) {
-                                    Logger.error("Building response", e);
-                                }
-                            }
-                        } else {
-                            state.setStatus(status);
+            @Override
+            public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
+                super.onDimseRSP(as, cmd, data);
+                int status = cmd.getInt(Tag.Status, -1);
+                if (Status.isPending(status)) {
+                    onResult(data);
+                    ++numMatches;
+                    if (cancelAfter != 0 && numMatches >= cancelAfter) {
+                        try {
+                            cancel(as);
+                            cancelAfter = 0;
+                        } catch (IOException e) {
+                            Logger.error("Building response", e);
                         }
                     }
-                };
+                } else {
+                    state.setStatus(status);
+                }
+            }
+        };
 
         query(keys, rspHandler);
     }
@@ -282,8 +275,7 @@ public class FindSCU implements AutoCloseable {
         query(keys, rspHandler);
     }
 
-    private void query(Attributes keys, DimseRSPHandler rspHandler)
-            throws IOException, InterruptedException {
+    private void query(Attributes keys, DimseRSPHandler rspHandler) throws IOException, InterruptedException {
         as.cfind(model.cuid, priority, keys, null, rspHandler);
     }
 
@@ -365,10 +357,8 @@ public class FindSCU implements AutoCloseable {
         PatientRoot(UID.PatientRootQueryRetrieveInformationModelFind.uid, "STUDY"),
         StudyRoot(UID.StudyRootQueryRetrieveInformationModelFind.uid, "STUDY"),
         PatientStudyOnly(UID.PatientStudyOnlyQueryRetrieveInformationModelFind.uid, "STUDY"),
-        MWL(UID.ModalityWorklistInformationModelFind.uid, null),
-        UPSPull(UID.UnifiedProcedureStepPull.uid, null),
-        UPSWatch(UID.UnifiedProcedureStepWatch.uid, null),
-        UPSQuery(UID.UnifiedProcedureStepQuery.uid, null),
+        MWL(UID.ModalityWorklistInformationModelFind.uid, null), UPSPull(UID.UnifiedProcedureStepPull.uid, null),
+        UPSWatch(UID.UnifiedProcedureStepWatch.uid, null), UPSQuery(UID.UnifiedProcedureStepQuery.uid, null),
         HangingProtocol(UID.HangingProtocolInformationModelFind.uid, null),
         ColorPalette(UID.ColorPaletteQueryRetrieveInformationModelFind.uid, null);
 
@@ -407,7 +397,8 @@ public class FindSCU implements AutoCloseable {
         public boolean visit(Attributes attrs, int tag, VR vr, Object val) {
             if (isNotEmptySequence(val)) {
                 Object o = keys.remove(tag);
-                if (isNotEmptySequence(o)) ((Sequence) val).get(0).addAll(((Sequence) o).get(0));
+                if (isNotEmptySequence(o))
+                    ((Sequence) val).get(0).addAll(((Sequence) o).get(0));
             }
             return true;
         }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_DFR_01_MANIPULATED;
 
 /**
@@ -53,7 +53,7 @@ public class PrivateTag {
     /** (0017,xx27) VR=IS VM=1 ? */
     public static final int _0017_xx27_ = 0x00170027;
 
-    /** (0017,xx29) VR=IS VM=1 Edge Enhancement  */
+    /** (0017,xx29) VR=IS VM=1 Edge Enhancement */
     public static final int EdgeEnhancement = 0x00170029;
 
     /** (0017,xx30) VR=IS VM=1 Harmonization % */

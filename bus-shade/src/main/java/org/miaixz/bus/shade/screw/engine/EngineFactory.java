@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.screw.engine;
 
 import lombok.Getter;
@@ -63,16 +63,14 @@ public class EngineFactory implements Serializable {
      */
     public TemplateEngine newInstance() {
         try {
-            //获取实现类
-            Class<? extends TemplateEngine> query = this.engineConfig.getProduceType()
-                    .getImplClass();
-            //获取有参构造
-            Constructor<? extends TemplateEngine> constructor = query
-                    .getConstructor(EngineConfig.class);
-            //实例化
+            // 获取实现类
+            Class<? extends TemplateEngine> query = this.engineConfig.getProduceType().getImplClass();
+            // 获取有参构造
+            Constructor<? extends TemplateEngine> constructor = query.getConstructor(EngineConfig.class);
+            // 实例化
             return constructor.newInstance(engineConfig);
         } catch (InstantiationException | IllegalAccessException | NoSuchMethodException
-                 | InvocationTargetException e) {
+                | InvocationTargetException e) {
             throw new InternalException(e);
         }
     }

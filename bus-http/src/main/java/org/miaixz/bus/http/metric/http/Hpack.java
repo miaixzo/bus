@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -42,19 +42,16 @@ import java.io.IOException;
 import java.util.*;
 
 /**
- * 读写HPACK v10.
- * 这个实现为动态表使用一个数组，为索引条目使用一个列表。
- * 动态条目被添加到数组中，从最后一个位置开始向前移动。当数组填满时，它被加倍.
+ * 读写HPACK v10. 这个实现为动态表使用一个数组，为索引条目使用一个列表。 动态条目被添加到数组中，从最后一个位置开始向前移动。当数组填满时，它被加倍.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 class Hpack {
 
-    static final Http2Header[] STATIC_HEADER_TABLE = new Http2Header[]{
+    static final Http2Header[] STATIC_HEADER_TABLE = new Http2Header[] {
             new Http2Header(Http2Header.TARGET_AUTHORITY, Normal.EMPTY),
-            new Http2Header(Http2Header.TARGET_METHOD, HTTP.GET),
-            new Http2Header(Http2Header.TARGET_METHOD, HTTP.POST),
+            new Http2Header(Http2Header.TARGET_METHOD, HTTP.GET), new Http2Header(Http2Header.TARGET_METHOD, HTTP.POST),
             new Http2Header(Http2Header.TARGET_PATH, Symbol.SLASH),
             new Http2Header(Http2Header.TARGET_PATH, "/index.html"),
             new Http2Header(Http2Header.TARGET_SCHEME, Protocol.HTTP.name),
@@ -66,54 +63,32 @@ class Hpack {
             new Http2Header(Http2Header.RESPONSE_STATUS, StringKit.toString(HTTP.HTTP_BAD_REQUEST)),
             new Http2Header(Http2Header.RESPONSE_STATUS, StringKit.toString(HTTP.HTTP_NOT_FOUND)),
             new Http2Header(Http2Header.RESPONSE_STATUS, StringKit.toString(HTTP.HTTP_INTERNAL_ERROR)),
-            new Http2Header(HTTP.ACCEPT_CHARSET, Normal.EMPTY),
-            new Http2Header(HTTP.ACCEPT_ENCODING, "gzip, deflate"),
-            new Http2Header(HTTP.ACCEPT_LANGUAGE, Normal.EMPTY),
-            new Http2Header(HTTP.ACCEPT_RANGES, Normal.EMPTY),
-            new Http2Header(HTTP.ACCEPT, Normal.EMPTY),
-            new Http2Header(HTTP.ACCESS_CONTROL_ALLOW_ORIGIN, Normal.EMPTY),
-            new Http2Header(HTTP.AGE, Normal.EMPTY),
-            new Http2Header(HTTP.ALLOW, Normal.EMPTY),
-            new Http2Header(HTTP.AUTHORIZATION, Normal.EMPTY),
-            new Http2Header(HTTP.CACHE_CONTROL, Normal.EMPTY),
+            new Http2Header(HTTP.ACCEPT_CHARSET, Normal.EMPTY), new Http2Header(HTTP.ACCEPT_ENCODING, "gzip, deflate"),
+            new Http2Header(HTTP.ACCEPT_LANGUAGE, Normal.EMPTY), new Http2Header(HTTP.ACCEPT_RANGES, Normal.EMPTY),
+            new Http2Header(HTTP.ACCEPT, Normal.EMPTY), new Http2Header(HTTP.ACCESS_CONTROL_ALLOW_ORIGIN, Normal.EMPTY),
+            new Http2Header(HTTP.AGE, Normal.EMPTY), new Http2Header(HTTP.ALLOW, Normal.EMPTY),
+            new Http2Header(HTTP.AUTHORIZATION, Normal.EMPTY), new Http2Header(HTTP.CACHE_CONTROL, Normal.EMPTY),
             new Http2Header(HTTP.CONTENT_DISPOSITION, Normal.EMPTY),
-            new Http2Header(HTTP.CONTENT_ENCODING, Normal.EMPTY),
-            new Http2Header(HTTP.CONTENT_LANGUAGE, Normal.EMPTY),
-            new Http2Header(HTTP.CONTENT_LENGTH, Normal.EMPTY),
-            new Http2Header(HTTP.CONTENT_LOCATION, Normal.EMPTY),
-            new Http2Header(HTTP.CONTENT_RANGE, Normal.EMPTY),
-            new Http2Header(HTTP.CONTENT_TYPE, Normal.EMPTY),
-            new Http2Header(HTTP.COOKIE, Normal.EMPTY),
-            new Http2Header(HTTP.DATE, Normal.EMPTY),
-            new Http2Header(HTTP.ETAG, Normal.EMPTY),
-            new Http2Header(HTTP.EXPECT, Normal.EMPTY),
-            new Http2Header(HTTP.EXPIRES, Normal.EMPTY),
-            new Http2Header(HTTP.FROM, Normal.EMPTY),
-            new Http2Header(HTTP.HOST, Normal.EMPTY),
-            new Http2Header(HTTP.IF_MATCH, Normal.EMPTY),
-            new Http2Header(HTTP.IF_MODIFIED_SINCE, Normal.EMPTY),
-            new Http2Header(HTTP.IF_NONE_MATCH, Normal.EMPTY),
-            new Http2Header(HTTP.IF_RANGE, Normal.EMPTY),
-            new Http2Header(HTTP.IF_UNMODIFIED_SINCE, Normal.EMPTY),
-            new Http2Header(HTTP.LAST_MODIFIED, Normal.EMPTY),
-            new Http2Header(HTTP.LINK, Normal.EMPTY),
-            new Http2Header(HTTP.LOCATION, Normal.EMPTY),
-            new Http2Header(HTTP.MAX_FORWARDS, Normal.EMPTY),
+            new Http2Header(HTTP.CONTENT_ENCODING, Normal.EMPTY), new Http2Header(HTTP.CONTENT_LANGUAGE, Normal.EMPTY),
+            new Http2Header(HTTP.CONTENT_LENGTH, Normal.EMPTY), new Http2Header(HTTP.CONTENT_LOCATION, Normal.EMPTY),
+            new Http2Header(HTTP.CONTENT_RANGE, Normal.EMPTY), new Http2Header(HTTP.CONTENT_TYPE, Normal.EMPTY),
+            new Http2Header(HTTP.COOKIE, Normal.EMPTY), new Http2Header(HTTP.DATE, Normal.EMPTY),
+            new Http2Header(HTTP.ETAG, Normal.EMPTY), new Http2Header(HTTP.EXPECT, Normal.EMPTY),
+            new Http2Header(HTTP.EXPIRES, Normal.EMPTY), new Http2Header(HTTP.FROM, Normal.EMPTY),
+            new Http2Header(HTTP.HOST, Normal.EMPTY), new Http2Header(HTTP.IF_MATCH, Normal.EMPTY),
+            new Http2Header(HTTP.IF_MODIFIED_SINCE, Normal.EMPTY), new Http2Header(HTTP.IF_NONE_MATCH, Normal.EMPTY),
+            new Http2Header(HTTP.IF_RANGE, Normal.EMPTY), new Http2Header(HTTP.IF_UNMODIFIED_SINCE, Normal.EMPTY),
+            new Http2Header(HTTP.LAST_MODIFIED, Normal.EMPTY), new Http2Header(HTTP.LINK, Normal.EMPTY),
+            new Http2Header(HTTP.LOCATION, Normal.EMPTY), new Http2Header(HTTP.MAX_FORWARDS, Normal.EMPTY),
             new Http2Header(HTTP.PROXY_AUTHENTICATE, Normal.EMPTY),
-            new Http2Header(HTTP.PROXY_AUTHORIZATION, Normal.EMPTY),
-            new Http2Header(HTTP.RANGE, Normal.EMPTY),
-            new Http2Header(HTTP.REFERER, Normal.EMPTY),
-            new Http2Header(HTTP.REFRESH, Normal.EMPTY),
-            new Http2Header(HTTP.RETRY_AFTER, Normal.EMPTY),
-            new Http2Header(HTTP.SERVER, Normal.EMPTY),
+            new Http2Header(HTTP.PROXY_AUTHORIZATION, Normal.EMPTY), new Http2Header(HTTP.RANGE, Normal.EMPTY),
+            new Http2Header(HTTP.REFERER, Normal.EMPTY), new Http2Header(HTTP.REFRESH, Normal.EMPTY),
+            new Http2Header(HTTP.RETRY_AFTER, Normal.EMPTY), new Http2Header(HTTP.SERVER, Normal.EMPTY),
             new Http2Header(HTTP.SET_COOKIE, Normal.EMPTY),
             new Http2Header(HTTP.STRICT_TRANSPORT_SECURITY, Normal.EMPTY),
-            new Http2Header(HTTP.TRANSFER_ENCODING, Normal.EMPTY),
-            new Http2Header(HTTP.USER_AGENT, Normal.EMPTY),
-            new Http2Header(HTTP.VARY, Normal.EMPTY),
-            new Http2Header(HTTP.VIA, Normal.EMPTY),
-            new Http2Header(HTTP.WWW_AUTHENTICATE, Normal.EMPTY)
-    };
+            new Http2Header(HTTP.TRANSFER_ENCODING, Normal.EMPTY), new Http2Header(HTTP.USER_AGENT, Normal.EMPTY),
+            new Http2Header(HTTP.VARY, Normal.EMPTY), new Http2Header(HTTP.VIA, Normal.EMPTY),
+            new Http2Header(HTTP.WWW_AUTHENTICATE, Normal.EMPTY) };
     static final Map<ByteString, Integer> NAME_TO_FIRST_INDEX = nameToFirstIndex();
     private static final int PREFIX_4_BITS = 0x0f;
     private static final int PREFIX_5_BITS = 0x1f;
@@ -134,8 +109,7 @@ class Hpack {
     }
 
     /**
-     * An HTTP/2 response cannot contain uppercase header characters and must be treated as
-     * malformed.
+     * An HTTP/2 response cannot contain uppercase header characters and must be treated as malformed.
      */
     static ByteString checkLowercase(ByteString name) throws IOException {
         for (int i = 0, length = name.size(); i < length; i++) {
@@ -199,16 +173,16 @@ class Hpack {
                     headerCount--;
                     entriesToEvict++;
                 }
-                System.arraycopy(dynamicTable, nextHeaderIndex + 1, dynamicTable,
-                        nextHeaderIndex + 1 + entriesToEvict, headerCount);
+                System.arraycopy(dynamicTable, nextHeaderIndex + 1, dynamicTable, nextHeaderIndex + 1 + entriesToEvict,
+                        headerCount);
                 nextHeaderIndex += entriesToEvict;
             }
             return entriesToEvict;
         }
 
         /**
-         * Read {@code byteCount} bytes of headers from the source stream. This implementation does not
-         * propagate the never indexed flag of a header.
+         * Read {@code byteCount} bytes of headers from the source stream. This implementation does not propagate the
+         * never indexed flag of a header.
          */
         void readHeaders() throws IOException {
             while (!source.exhausted()) {
@@ -225,8 +199,7 @@ class Hpack {
                     readLiteralHeaderWithIncrementalIndexingIndexedName(index - 1);
                 } else if ((b & 0x20) == 0x20) {
                     maxDynamicTableByteCount = readInt(b, PREFIX_5_BITS);
-                    if (maxDynamicTableByteCount < 0
-                            || maxDynamicTableByteCount > headerTableSizeSetting) {
+                    if (maxDynamicTableByteCount < 0 || maxDynamicTableByteCount > headerTableSizeSetting) {
                         throw new IOException("Invalid dynamic table size update " + maxDynamicTableByteCount);
                     }
                     adjustDynamicTableByteCount();
@@ -274,8 +247,7 @@ class Hpack {
             headerList.add(new Http2Header(name, value));
         }
 
-        private void readLiteralHeaderWithIncrementalIndexingIndexedName(int nameIndex)
-                throws IOException {
+        private void readLiteralHeaderWithIncrementalIndexingIndexedName(int nameIndex) throws IOException {
             ByteString name = getName(nameIndex);
             ByteString value = readByteString();
             insertIntoDynamicTable(-1, new Http2Header(name, value));
@@ -388,9 +360,8 @@ class Hpack {
         private static final int SETTINGS_HEADER_TABLE_SIZE = 4096;
 
         /**
-         * The decoder has ultimate control of the maximum size of the dynamic table but we can choose
-         * to use less. We'll put a cap at 16K. This is arbitrary but should be enough for most
-         * purposes.
+         * The decoder has ultimate control of the maximum size of the dynamic table but we can choose to use less.
+         * We'll put a cap at 16K. This is arbitrary but should be enough for most purposes.
          */
         private static final int SETTINGS_HEADER_TABLE_SIZE_LIMIT = 16384;
 
@@ -405,8 +376,8 @@ class Hpack {
         int headerCount = 0;
         int dynamicTableByteCount = 0;
         /**
-         * In the scenario where the dynamic table size changes multiple times between transmission of
-         * header blocks, we need to keep track of the smallest value in that interval.
+         * In the scenario where the dynamic table size changes multiple times between transmission of header blocks, we
+         * need to keep track of the smallest value in that interval.
          */
         private int smallestHeaderTableSizeSetting = Integer.MAX_VALUE;
         private boolean emitDynamicTableSizeUpdate;
@@ -442,8 +413,8 @@ class Hpack {
                     headerCount--;
                     entriesToEvict++;
                 }
-                System.arraycopy(dynamicTable, nextHeaderIndex + 1, dynamicTable,
-                        nextHeaderIndex + 1 + entriesToEvict, headerCount);
+                System.arraycopy(dynamicTable, nextHeaderIndex + 1, dynamicTable, nextHeaderIndex + 1 + entriesToEvict,
+                        headerCount);
                 Arrays.fill(dynamicTable, nextHeaderIndex + 1, nextHeaderIndex + 1 + entriesToEvict, null);
                 nextHeaderIndex += entriesToEvict;
             }
@@ -583,14 +554,13 @@ class Hpack {
 
         void setHeaderTableSizeSetting(int headerTableSizeSetting) {
             this.headerTableSizeSetting = headerTableSizeSetting;
-            int effectiveHeaderTableSize = Math.min(headerTableSizeSetting,
-                    SETTINGS_HEADER_TABLE_SIZE_LIMIT);
+            int effectiveHeaderTableSize = Math.min(headerTableSizeSetting, SETTINGS_HEADER_TABLE_SIZE_LIMIT);
 
-            if (maxDynamicTableByteCount == effectiveHeaderTableSize) return; // No change.
+            if (maxDynamicTableByteCount == effectiveHeaderTableSize)
+                return; // No change.
 
             if (effectiveHeaderTableSize < maxDynamicTableByteCount) {
-                smallestHeaderTableSizeSetting = Math.min(smallestHeaderTableSizeSetting,
-                        effectiveHeaderTableSize);
+                smallestHeaderTableSizeSetting = Math.min(smallestHeaderTableSizeSetting, effectiveHeaderTableSize);
             }
             emitDynamicTableSizeUpdate = true;
             maxDynamicTableByteCount = effectiveHeaderTableSize;

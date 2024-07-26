@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map;
 
 import java.util.Map;
@@ -45,8 +45,7 @@ public class FunctionKeyMap<K, V> extends CustomKeyMap<K, V> {
     private final Function<Object, K> keyFunc;
 
     /**
-     * 构造
-     * 注意提供的Map中不能有键值对，否则可能导致自定义key失效
+     * 构造 注意提供的Map中不能有键值对，否则可能导致自定义key失效
      *
      * @param emptyMap Map，提供的空map
      * @param keyFunc  自定义KEY的函数

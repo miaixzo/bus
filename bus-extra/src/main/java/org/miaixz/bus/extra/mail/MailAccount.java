@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.mail;
 
 import org.miaixz.bus.core.lang.Charset;
@@ -50,7 +50,8 @@ public class MailAccount implements Serializable {
     /**
      * 默认mail配置查询路径
      */
-    public static final String[] MAIL_SETTING_PATHS = new String[]{"config/mail.setting", "config/mailAccount.setting", "mail.setting"};
+    public static final String[] MAIL_SETTING_PATHS = new String[] { "config/mail.setting",
+            "config/mailAccount.setting", "mail.setting" };
     private static final long serialVersionUID = -1L;
     private static final String MAIL_PROTOCOL = "mail.transport.protocol";
     private static final String SMTP_HOST = "mail.smtp.host";
@@ -91,9 +92,7 @@ public class MailAccount implements Serializable {
      */
     private String user;
     /**
-     * 密码
-     * 使用char[]保存密码有利于及时擦除
-     * 见：https://www.cnblogs.com/okokabcd/p/16456966.html
+     * 密码 使用char[]保存密码有利于及时擦除 见：https://www.cnblogs.com/okokabcd/p/16456966.html
      */
     private char[] pass;
     /**
@@ -287,8 +286,7 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 设置发送方，遵循RFC-822标准
-     * 发件人可以是以下形式：
+     * 设置发送方，遵循RFC-822标准 发件人可以是以下形式：
      *
      * <pre>
      * 1. user@xxx.xx
@@ -334,8 +332,9 @@ public class MailAccount implements Serializable {
 
     /**
      * 设置字符集编码，此选项不会修改全局配置，若修改全局配置，请设置此项为{@code null}并设置：
+     * 
      * <pre>
-     * 	System.setProperty("mail.mime.charset", charset);
+     * System.setProperty("mail.mime.charset", charset);
      * </pre>
      *
      * @param charset 字符集编码，{@code null} 则表示使用全局设置的默认编码，全局编码为mail.mime.charset系统属性
@@ -356,8 +355,8 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 设置对于超长参数是否切分为多份，默认为false（国内邮箱附件不支持切分的附件名）
-     * 注意此项为全局设置，此项会调用
+     * 设置对于超长参数是否切分为多份，默认为false（国内邮箱附件不支持切分的附件名） 注意此项为全局设置，此项会调用
+     * 
      * <pre>
      * System.setProperty("mail.mime.splitlongparameters", true)
      * </pre>
@@ -379,11 +378,10 @@ public class MailAccount implements Serializable {
     }
 
     /**
-     * 设置对于文件名是否使用{@link #charset}编码，此选项不会修改全局配置
-     * 如果此选项设置为{@code false}，则是否编码取决于两个系统属性：
+     * 设置对于文件名是否使用{@link #charset}编码，此选项不会修改全局配置 如果此选项设置为{@code false}，则是否编码取决于两个系统属性：
      * <ul>
-     *     <li>mail.mime.encodefilename  是否编码附件文件名</li>
-     *     <li>mail.mime.charset         编码文件名的编码</li>
+     * <li>mail.mime.encodefilename 是否编码附件文件名</li>
+     * <li>mail.mime.charset 编码文件名的编码</li>
      * </ul>
      *
      * @param encodefilename 对于文件名是否使用{@link #charset}编码
@@ -572,7 +570,7 @@ public class MailAccount implements Serializable {
      * @return {@link Properties}
      */
     public Properties getSmtpProps() {
-        //全局系统参数
+        // 全局系统参数
         System.setProperty(SPLIT_LONG_PARAMS, String.valueOf(this.splitlongparameters));
 
         final Properties p = new Properties();
@@ -593,11 +591,11 @@ public class MailAccount implements Serializable {
         p.put(MAIL_DEBUG, String.valueOf(this.debug));
 
         if (this.starttlsEnable) {
-            //STARTTLS是对纯文本通信协议的扩展。它将纯文本连接升级为加密连接（TLS或SSL）， 而不是使用一个单独的加密通信端口。
+            // STARTTLS是对纯文本通信协议的扩展。它将纯文本连接升级为加密连接（TLS或SSL）， 而不是使用一个单独的加密通信端口。
             p.put(STARTTLS_ENABLE, "true");
 
             if (null == this.sslEnable) {
-                //为了兼容旧版本，当用户没有此项配置时，按照starttlsEnable开启状态时对待
+                // 为了兼容旧版本，当用户没有此项配置时，按照starttlsEnable开启状态时对待
                 this.sslEnable = true;
             }
         }
@@ -631,7 +629,8 @@ public class MailAccount implements Serializable {
 
         if (StringKit.isBlank(this.host)) {
             // 如果SMTP地址为空，默认使用smtp.<发件人邮箱后缀>
-            this.host = StringKit.format("smtp.{}", StringKit.subSuf(fromAddress, fromAddress.indexOf(Symbol.C_AT) + 1));
+            this.host = StringKit.format("smtp.{}",
+                    StringKit.subSuf(fromAddress, fromAddress.indexOf(Symbol.C_AT) + 1));
         }
         if (StringKit.isBlank(user)) {
             // 如果用户名为空，默认为发件人
@@ -655,8 +654,10 @@ public class MailAccount implements Serializable {
 
     @Override
     public String toString() {
-        return "MailAccount [host=" + host + ", port=" + port + ", auth=" + auth + ", user=" + user + ", pass=" + (ArrayKit.isEmpty(this.pass) ? "" : "******") + ", from=" + from + ", startttlsEnable="
-                + starttlsEnable + ", socketFactoryClass=" + socketFactoryClass + ", socketFactoryFallback=" + socketFactoryFallback + ", socketFactoryPort=" + socketFactoryPort + "]";
+        return "MailAccount [host=" + host + ", port=" + port + ", auth=" + auth + ", user=" + user + ", pass="
+                + (ArrayKit.isEmpty(this.pass) ? "" : "******") + ", from=" + from + ", startttlsEnable="
+                + starttlsEnable + ", socketFactoryClass=" + socketFactoryClass + ", socketFactoryFallback="
+                + socketFactoryFallback + ", socketFactoryPort=" + socketFactoryPort + "]";
     }
 
 }

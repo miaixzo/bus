@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv.lut;
 
 import org.miaixz.bus.core.xyz.IoKit;
@@ -52,8 +52,7 @@ import java.util.*;
  */
 public class PresetWindowLevel {
 
-    private static final Map<String, List<PresetWindowLevel>> presetListByModality =
-            getPresetListByModality();
+    private static final Map<String, List<PresetWindowLevel>> presetListByModality = getPresetListByModality();
 
     private final String name;
     private final double window;
@@ -68,8 +67,7 @@ public class PresetWindowLevel {
         this.shape = Objects.requireNonNull(shape);
     }
 
-    public static List<PresetWindowLevel> getPresetCollection(
-            ImageAdapter adapter, String type, WlPresentation wl) {
+    public static List<PresetWindowLevel> getPresetCollection(ImageAdapter adapter, String type, WlPresentation wl) {
         if (adapter == null || wl == null) {
             throw new IllegalArgumentException("Null parameter");
         }
@@ -86,17 +84,12 @@ public class PresetWindowLevel {
         List<String> wlExplanationList = vLut.getWindowCenterWidthExplanation();
         LutShape defaultLutShape = getDefaultLutShape(vLut, dicomKeyWord);
 
-        buildPreset(
-                levelList, windowList, wlExplanationList, dicomKeyWord, defaultLutShape, presetList);
+        buildPreset(levelList, windowList, wlExplanationList, dicomKeyWord, defaultLutShape, presetList);
 
         buildPresetFromLutData(adapter, wl, vLut, dicomKeyWord, presetList);
 
-        PresetWindowLevel autoLevel =
-                new PresetWindowLevel(
-                        "Auto Level [Image]",
-                        adapter.getFullDynamicWidth(wl),
-                        adapter.getFullDynamicCenter(wl),
-                        defaultLutShape);
+        PresetWindowLevel autoLevel = new PresetWindowLevel("Auto Level [Image]", adapter.getFullDynamicWidth(wl),
+                adapter.getFullDynamicCenter(wl), defaultLutShape);
         autoLevel.setKeyCode(0x30);
         presetList.add(autoLevel);
 
@@ -126,12 +119,8 @@ public class PresetWindowLevel {
         return defaultLutShape;
     }
 
-    private static void buildPresetFromLutData(
-            ImageAdapter adapter,
-            WlPresentation wl,
-            VoiLutModule vLut,
-            String dicomKeyWord,
-            ArrayList<PresetWindowLevel> presetList) {
+    private static void buildPresetFromLutData(ImageAdapter adapter, WlPresentation wl, VoiLutModule vLut,
+            String dicomKeyWord, ArrayList<PresetWindowLevel> presetList) {
         List<LookupTableCV> voiLUTsData = getVoiLutData(vLut, wl);
         List<String> voiLUTsExplanation = getVoiLUTExplanation(vLut, wl);
 
@@ -139,10 +128,9 @@ public class PresetWindowLevel {
             String defaultExplanation = "VOI LUT";
 
             for (int i = 0; i < voiLUTsData.size(); i++) {
-                String explanation =
-                        getPresetExplanation(voiLUTsExplanation, i, defaultExplanation + " " + i);
-                PresetWindowLevel preset =
-                        buildPresetFromLutData(adapter, voiLUTsData.get(i), wl, explanation + dicomKeyWord);
+                String explanation = getPresetExplanation(voiLUTsExplanation, i, defaultExplanation + " " + i);
+                PresetWindowLevel preset = buildPresetFromLutData(adapter, voiLUTsData.get(i), wl,
+                        explanation + dicomKeyWord);
                 if (preset == null) {
                     continue;
                 }
@@ -158,8 +146,7 @@ public class PresetWindowLevel {
         }
     }
 
-    private static String getPresetExplanation(
-            List<String> wlExplanationList, int index, String defaultExplanation) {
+    private static String getPresetExplanation(List<String> wlExplanationList, int index, String defaultExplanation) {
         String explanation = defaultExplanation;
         if (index < wlExplanationList.size()) {
             String wexpl = wlExplanationList.get(index);
@@ -170,13 +157,8 @@ public class PresetWindowLevel {
         return explanation;
     }
 
-    private static void buildPreset(
-            List<Double> levelList,
-            List<Double> windowList,
-            List<String> wlExplanationList,
-            String dicomKeyWord,
-            LutShape defaultLutShape,
-            ArrayList<PresetWindowLevel> presetList) {
+    private static void buildPreset(List<Double> levelList, List<Double> windowList, List<String> wlExplanationList,
+            String dicomKeyWord, LutShape defaultLutShape, ArrayList<PresetWindowLevel> presetList) {
         if (!levelList.isEmpty() && !windowList.isEmpty()) {
             String defaultExplanation = "Default";
 
@@ -184,9 +166,8 @@ public class PresetWindowLevel {
             for (int i = 0; i < levelList.size(); i++) {
                 String explanation = defaultExplanation + " " + k;
                 explanation = getPresetExplanation(wlExplanationList, i, explanation);
-                PresetWindowLevel preset =
-                        new PresetWindowLevel(
-                                explanation + dicomKeyWord, windowList.get(i), levelList.get(i), defaultLutShape);
+                PresetWindowLevel preset = new PresetWindowLevel(explanation + dicomKeyWord, windowList.get(i),
+                        levelList.get(i), defaultLutShape);
                 // Only set shortcuts for the two first presets
                 if (k == 1) {
                     preset.setKeyCode(0x31);
@@ -250,8 +231,8 @@ public class PresetWindowLevel {
         return luts;
     }
 
-    public static PresetWindowLevel buildPresetFromLutData(
-            ImageAdapter adapter, LookupTableCV voiLUTsData, WlPresentation wl, String explanation) {
+    public static PresetWindowLevel buildPresetFromLutData(ImageAdapter adapter, LookupTableCV voiLUTsData,
+            WlPresentation wl, String explanation) {
         if (adapter == null || voiLUTsData == null || explanation == null) {
             return null;
         }
@@ -284,8 +265,7 @@ public class PresetWindowLevel {
         double fullDynamicCenter = minValueLookup + fullDynamicWidth / 2f;
 
         LutShape newLutShape = new LutShape(voiLUTsData, explanation);
-        return new PresetWindowLevel(
-                newLutShape.toString(), fullDynamicWidth, fullDynamicCenter, newLutShape);
+        return new PresetWindowLevel(newLutShape.toString(), fullDynamicWidth, fullDynamicCenter, newLutShape);
     }
 
     public static Map<String, List<PresetWindowLevel>> getPresetListByModality() {
@@ -314,8 +294,7 @@ public class PresetWindowLevel {
             int eventType;
             while (xmler.hasNext()) {
                 eventType = xmler.next();
-                if (eventType == XMLStreamConstants.START_ELEMENT
-                        && "presets".equals(xmler.getName().getLocalPart())) {
+                if (eventType == XMLStreamConstants.START_ELEMENT && "presets".equals(xmler.getName().getLocalPart())) {
                     while (xmler.hasNext()) {
                         readPresetListByModality(xmler, presets);
                     }
@@ -330,8 +309,7 @@ public class PresetWindowLevel {
         return presets;
     }
 
-    public static Integer getIntegerTagAttribute(
-            XMLStreamReader xmler, String attribute, Integer defaultValue) {
+    public static Integer getIntegerTagAttribute(XMLStreamReader xmler, String attribute, Integer defaultValue) {
         if (attribute != null) {
             String val = xmler.getAttributeValue(null, attribute);
             try {
@@ -345,8 +323,7 @@ public class PresetWindowLevel {
         return defaultValue;
     }
 
-    private static void readPresetListByModality(
-            XMLStreamReader xmler, Map<String, List<PresetWindowLevel>> presets)
+    private static void readPresetListByModality(XMLStreamReader xmler, Map<String, List<PresetWindowLevel>> presets)
             throws XMLStreamException {
         int eventType = xmler.next();
         String key;
@@ -361,14 +338,12 @@ public class PresetWindowLevel {
                     String shape = xmler.getAttributeValue(null, "shape");
                     Integer keyCode = getIntegerTagAttribute(xmler, "key", null);
                     LutShape lutShape = LutShape.getLutShape(shape);
-                    PresetWindowLevel preset =
-                            new PresetWindowLevel(
-                                    name, window, level, lutShape == null ? LutShape.LINEAR : lutShape);
+                    PresetWindowLevel preset = new PresetWindowLevel(name, window, level,
+                            lutShape == null ? LutShape.LINEAR : lutShape);
                     if (keyCode != null) {
                         preset.setKeyCode(keyCode);
                     }
-                    List<PresetWindowLevel> presetList =
-                            presets.computeIfAbsent(modality, k -> new ArrayList<>());
+                    List<PresetWindowLevel> presetList = presets.computeIfAbsent(modality, k -> new ArrayList<>());
                     presetList.add(preset);
                 } catch (Exception e) {
                     Logger.error("Preset {} cannot be read from xml file", name, e);
@@ -427,10 +402,8 @@ public class PresetWindowLevel {
             return false;
         }
         PresetWindowLevel that = (PresetWindowLevel) o;
-        return Double.compare(that.window, window) == 0
-                && Double.compare(that.level, level) == 0
-                && name.equals(that.name)
-                && shape.equals(that.shape);
+        return Double.compare(that.window, window) == 0 && Double.compare(that.level, level) == 0
+                && name.equals(that.name) && shape.equals(that.shape);
     }
 
     @Override

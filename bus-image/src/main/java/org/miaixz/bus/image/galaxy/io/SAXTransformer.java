@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.io;
 
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -41,37 +41,28 @@ import javax.xml.transform.sax.TransformerHandler;
  */
 public abstract class SAXTransformer {
 
-    private static final SAXTransformerFactory factory =
-            (SAXTransformerFactory) TransformerFactory.newInstance();
+    private static final SAXTransformerFactory factory = (SAXTransformerFactory) TransformerFactory.newInstance();
 
     public static SAXWriter getSAXWriter(Templates templates, Attributes result)
             throws TransformerConfigurationException {
         return getSAXWriter(templates, result, null);
     }
 
-    public static SAXWriter getSAXWriter(Templates templates, Attributes result,
-                                         SetupTransformer setup)
+    public static SAXWriter getSAXWriter(Templates templates, Attributes result, SetupTransformer setup)
             throws TransformerConfigurationException {
-        return getSAXWriter(templates,
-                new SAXResult(new ContentHandlerAdapter(result)),
-                setup);
+        return getSAXWriter(templates, new SAXResult(new ContentHandlerAdapter(result)), setup);
     }
 
-    public static SAXWriter getSAXWriter(Templates templates, Result result)
-            throws TransformerConfigurationException {
+    public static SAXWriter getSAXWriter(Templates templates, Result result) throws TransformerConfigurationException {
         return getSAXWriter(templates, result, null);
     }
 
-    public static SAXWriter getSAXWriter(Templates templates, Result result,
-                                         SetupTransformer setup)
+    public static SAXWriter getSAXWriter(Templates templates, Result result, SetupTransformer setup)
             throws TransformerConfigurationException {
-        return getSAXWriter(factory.newTransformerHandler(templates),
-                result,
-                setup);
+        return getSAXWriter(factory.newTransformerHandler(templates), result, setup);
     }
 
-    public static SAXWriter getSAXWriter(Result result)
-            throws TransformerConfigurationException {
+    public static SAXWriter getSAXWriter(Result result) throws TransformerConfigurationException {
         return getSAXWriter(result, null);
     }
 
@@ -80,36 +71,29 @@ public abstract class SAXTransformer {
         return getSAXWriter(factory.newTransformerHandler(), result, setup);
     }
 
-    private static SAXWriter getSAXWriter(TransformerHandler th, Result result,
-                                          SetupTransformer setup) {
+    private static SAXWriter getSAXWriter(TransformerHandler th, Result result, SetupTransformer setup) {
         th.setResult(result);
         if (setup != null)
             setup.setup(th.getTransformer());
         return new SAXWriter(th);
     }
 
-    public static Attributes transform(Attributes ds, Templates templates,
-                                       boolean includeNameSpaceDeclaration, boolean includeKeword)
-            throws SAXException, TransformerConfigurationException {
-        return transform(ds, templates,
-                includeNameSpaceDeclaration, includeKeword, null);
+    public static Attributes transform(Attributes ds, Templates templates, boolean includeNameSpaceDeclaration,
+            boolean includeKeword) throws SAXException, TransformerConfigurationException {
+        return transform(ds, templates, includeNameSpaceDeclaration, includeKeword, null);
     }
 
-    public static Attributes transform(Attributes ds, Templates templates,
-                                       boolean includeNameSpaceDeclaration, boolean includeKeword,
-                                       SetupTransformer setup)
-            throws SAXException, TransformerConfigurationException {
+    public static Attributes transform(Attributes ds, Templates templates, boolean includeNameSpaceDeclaration,
+            boolean includeKeword, SetupTransformer setup) throws SAXException, TransformerConfigurationException {
         Attributes modify = new Attributes();
-        SAXWriter w = SAXTransformer.getSAXWriter(
-                templates, modify, setup);
+        SAXWriter w = SAXTransformer.getSAXWriter(templates, modify, setup);
         w.setIncludeNamespaceDeclaration(includeNameSpaceDeclaration);
         w.setIncludeKeyword(includeKeword);
         w.write(ds);
         return modify;
     }
 
-    public static Templates newTemplates(Source source)
-            throws TransformerConfigurationException {
+    public static Templates newTemplates(Source source) throws TransformerConfigurationException {
         return factory.newTemplates(source);
     }
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.driver.perfmon;
 
 import com.sun.jna.platform.win32.Advapi32Util;
@@ -46,10 +46,8 @@ import java.util.Locale;
 public final class PerfmonDisabled {
 
     public static final boolean PERF_OS_DISABLED = isDisabled(Config._WINDOWS_PERFOS_DIABLED, "PerfOS");
-    public static final boolean PERF_PROC_DISABLED = isDisabled(Config._WINDOWS_PERFPROC_DIABLED,
-            "PerfProc");
-    public static final boolean PERF_DISK_DISABLED = isDisabled(Config._WINDOWS_PERFDISK_DIABLED,
-            "PerfDisk");
+    public static final boolean PERF_PROC_DISABLED = isDisabled(Config._WINDOWS_PERFPROC_DIABLED, "PerfProc");
+    public static final boolean PERF_DISK_DISABLED = isDisabled(Config._WINDOWS_PERFDISK_DIABLED, "PerfDisk");
 
     /**
      * Everything in this class is static, never instantiate it

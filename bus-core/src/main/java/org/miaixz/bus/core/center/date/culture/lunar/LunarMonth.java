@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org 6tail and other contributors.              ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -49,10 +49,7 @@ import java.util.List;
  */
 public class LunarMonth extends Loops {
 
-    public static final String[] NAMES = {
-            "正月", "二月", "三月", "四月", "五月", "六月",
-            "七月", "八月", "九月", "十月", "十一月", "腊月"
-    };
+    public static final String[] NAMES = { "正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "腊月" };
 
     /**
      * 农历年
@@ -320,7 +317,9 @@ public class LunarMonth extends Loops {
      * @return 干支
      */
     public SixtyCycle getSixtyCycle() {
-        return SixtyCycle.fromName(HeavenStem.fromIndex((year.getSixtyCycle().getHeavenStem().getIndex() + 1) * 2 + indexInYear).getName() + EarthBranch.fromIndex(indexInYear + 2).getName());
+        return SixtyCycle.fromName(
+                HeavenStem.fromIndex((year.getSixtyCycle().getHeavenStem().getIndex() + 1) * 2 + indexInYear).getName()
+                        + EarthBranch.fromIndex(indexInYear + 2).getName());
     }
 
     /**
@@ -329,7 +328,8 @@ public class LunarMonth extends Loops {
      * @return 九星
      */
     public NineStar getNineStar() {
-        return NineStar.fromIndex(27 - year.getSixtyCycle().getEarthBranch().getIndex() % 3 * 3 - getSixtyCycle().getEarthBranch().getIndex());
+        return NineStar.fromIndex(27 - year.getSixtyCycle().getEarthBranch().getIndex() % 3 * 3
+                - getSixtyCycle().getEarthBranch().getIndex());
     }
 
     /**
@@ -339,7 +339,7 @@ public class LunarMonth extends Loops {
      */
     public Direction getJupiterDirection() {
         SixtyCycle sixtyCycle = getSixtyCycle();
-        int n = new int[]{7, -1, 1, 3}[sixtyCycle.getEarthBranch().next(-2).getIndex() % 4];
+        int n = new int[] { 7, -1, 1, 3 }[sixtyCycle.getEarthBranch().next(-2).getIndex() % 4];
         return n == -1 ? sixtyCycle.getHeavenStem().getDirection() : Direction.fromIndex(n);
     }
 

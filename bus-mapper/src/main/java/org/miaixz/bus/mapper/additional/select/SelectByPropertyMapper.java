@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.additional.select;
 
 import org.apache.ibatis.annotations.Param;
@@ -83,7 +83,8 @@ public interface SelectByPropertyMapper<T> {
      * @return the list
      */
     @SelectProvider(type = SelectPropertyProvider.class, method = "dynamicSQL")
-    List<T> selectBetweenByProperty(@Param("fn") FunctionX<T, ?> fn, @Param("begin") Object begin, @Param("end") Object end);
+    List<T> selectBetweenByProperty(@Param("fn") FunctionX<T, ?> fn, @Param("begin") Object begin,
+            @Param("end") Object end);
 
     /**
      * 根据属性及对应值进行查询，检查是否存在对应记录，查询条件使用等号

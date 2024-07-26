@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager.builtin;
 
 import org.miaixz.bus.core.xyz.StringKit;
@@ -93,8 +93,8 @@ public class PageParams {
                 if (offsetAsPageNo) {
                     page = new Page(rowBounds.getOffset(), rowBounds.getLimit(), rowBoundsWithCount);
                 } else {
-                    page = new Page(new int[]{rowBounds.getOffset(), rowBounds.getLimit()}, rowBoundsWithCount);
-                    //offsetAsPageNo=false的时候，由于PageNo问题，不能使用reasonable，这里会强制为false
+                    page = new Page(new int[] { rowBounds.getOffset(), rowBounds.getLimit() }, rowBoundsWithCount);
+                    // offsetAsPageNo=false的时候，由于PageNo问题，不能使用reasonable，这里会强制为false
                     page.setReasonable(false);
                 }
                 if (rowBounds instanceof RowBounds) {
@@ -113,11 +113,11 @@ public class PageParams {
             }
             PageContext.setLocalPage(page);
         }
-        //分页合理化
+        // 分页合理化
         if (page.getReasonable() == null) {
             page.setReasonable(reasonable);
         }
-        //当设置为true的时候，如果pagesize设置为0（或RowBounds的limit=0），就不执行分页，返回全部结果
+        // 当设置为true的时候，如果pagesize设置为0（或RowBounds的limit=0），就不执行分页，返回全部结果
         if (page.getPageSizeZero() == null) {
             page.setPageSizeZero(pageSizeZero);
         }

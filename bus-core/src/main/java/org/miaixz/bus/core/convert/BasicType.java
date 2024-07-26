@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.center.map.BiMap;
@@ -33,8 +33,7 @@ import java.util.HashMap;
 import java.util.Set;
 
 /**
- * 基本变量类型的枚举
- * 基本类型枚举包括原始类型和包装类型
+ * 基本变量类型的枚举 基本类型枚举包括原始类型和包装类型
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -24,14 +24,13 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text.dfa;
 
 import org.miaixz.bus.core.lang.range.DefaultSegment;
 
 /**
- * 匹配到的单词，包含单词，text中匹配单词的内容，以及匹配内容在text中的下标，
- * 下标可以用来做单词的进一步处理，如果替换成**
+ * 匹配到的单词，包含单词，text中匹配单词的内容，以及匹配内容在text中的下标， 下标可以用来做单词的进一步处理，如果替换成**
  *
  * @author Kimi Liu
  * @since Java 17+

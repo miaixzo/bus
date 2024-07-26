@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.http___www_gemedicalsystems_com_it_solutions_bamwallthickness_1_0;
 
 /**
@@ -36,9 +36,9 @@ public class PrivateKeyword {
     public static final String PrivateCreator = "";
 
     public static String valueOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-                case PrivateTag.BAMWallThicknessSessionDateTime:
+        case PrivateTag.BAMWallThicknessSessionDateTime:
             return "BAMWallThicknessSessionDateTime";
         case PrivateTag.BAMWallThicknessSessionCreator:
             return "BAMWallThicknessSessionCreator";

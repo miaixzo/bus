@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.hardware.common;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -69,7 +69,7 @@ public abstract class AbstractGlobalMemory implements GlobalMemory {
                 if (bank++ > 0) {
                     if (capacity > 0) {
                         pmList.add(new PhysicalMemory(bankLabel + locator, capacity, speed, manufacturer, memoryType,
-                                partNumber,serialNumber));
+                                partNumber, serialNumber));
                     }
                     bankLabel = Normal.UNKNOWN;
                     locator = Normal.EMPTY;
@@ -80,49 +80,47 @@ public abstract class AbstractGlobalMemory implements GlobalMemory {
                 String[] split = line.trim().split(Symbol.COLON);
                 if (split.length == 2) {
                     switch (split[0]) {
-                        case "Bank Locator":
-                            bankLabel = split[1].trim();
-                            break;
-                        case "Locator":
-                            locator = "/" + split[1].trim();
-                            break;
-                        case "Size":
-                            capacity = Parsing.parseDecimalMemorySizeToBinary(split[1].trim());
-                            break;
-                        case "Type":
-                            memoryType = split[1].trim();
-                            break;
-                        case "Speed":
-                            speed = Parsing.parseHertz(split[1]);
-                            break;
-                        case "Manufacturer":
-                            manufacturer = split[1].trim();
-                            break;
-                        case "PartNumber":
-                        case "Part Number":
-                            partNumber = split[1].trim();
-                            break;
-                        case "Serial Number":
-                            serialNumber = split[1].trim();
-                            break;
-                        default:
-                            break;
+                    case "Bank Locator":
+                        bankLabel = split[1].trim();
+                        break;
+                    case "Locator":
+                        locator = "/" + split[1].trim();
+                        break;
+                    case "Size":
+                        capacity = Parsing.parseDecimalMemorySizeToBinary(split[1].trim());
+                        break;
+                    case "Type":
+                        memoryType = split[1].trim();
+                        break;
+                    case "Speed":
+                        speed = Parsing.parseHertz(split[1]);
+                        break;
+                    case "Manufacturer":
+                        manufacturer = split[1].trim();
+                        break;
+                    case "PartNumber":
+                    case "Part Number":
+                        partNumber = split[1].trim();
+                        break;
+                    case "Serial Number":
+                        serialNumber = split[1].trim();
+                        break;
+                    default:
+                        break;
                     }
                 }
             }
         }
         if (capacity > 0) {
-            pmList.add(new PhysicalMemory(bankLabel + locator, capacity, speed, manufacturer, memoryType, partNumber, serialNumber));
+            pmList.add(new PhysicalMemory(bankLabel + locator, capacity, speed, manufacturer, memoryType, partNumber,
+                    serialNumber));
         }
         return pmList;
     }
 
     @Override
     public String toString() {
-        String sb = "Available: " +
-                Formats.formatBytes(getAvailable()) +
-                "/" +
-                Formats.formatBytes(getTotal());
+        String sb = "Available: " + Formats.formatBytes(getAvailable()) + "/" + Formats.formatBytes(getTotal());
         return sb;
     }
 

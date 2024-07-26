@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.file.visitor;
 
 import java.io.IOException;
@@ -54,8 +54,7 @@ public class DeleteVisitor extends SimpleFileVisitor<Path> {
     }
 
     /**
-     * 访问目录结束后删除目录，当执行此方法时，子文件或目录都已访问（删除）完毕
-     * 理论上当执行到此方法时，目录下已经被清空了
+     * 访问目录结束后删除目录，当执行此方法时，子文件或目录都已访问（删除）完毕 理论上当执行到此方法时，目录下已经被清空了
      *
      * @param dir 目录
      * @param e   异常

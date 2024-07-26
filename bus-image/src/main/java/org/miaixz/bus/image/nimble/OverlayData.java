@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 import org.miaixz.bus.image.Builder;
@@ -46,14 +46,8 @@ import java.util.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public record OverlayData(
-        int groupOffset,
-        int rows,
-        int columns,
-        int imageFrameOrigin,
-        int framesInOverlay,
-        int[] origin,
-        byte[] data) {
+public record OverlayData(int groupOffset, int rows, int columns, int imageFrameOrigin, int framesInOverlay,
+        int[] origin, byte[] data) {
 
     public static List<OverlayData> getOverlayData(Attributes dcm, int activationMask) {
         return getOverlayData(dcm, activationMask, false);
@@ -70,18 +64,10 @@ public record OverlayData(
                     int columns = dcm.getInt(Tag.OverlayColumns | gg0000, 0);
                     int imageFrameOrigin = dcm.getInt(Tag.ImageFrameOrigin | gg0000, 1);
                     int framesInOverlay = dcm.getInt(Tag.NumberOfFramesInOverlay | gg0000, 1);
-                    int[] origin =
-                            Builder.getIntArrayFromDicomElement(
-                                    dcm, (Tag.OverlayOrigin | gg0000), new int[]{1, 1});
-                    data.add(
-                            new OverlayData(
-                                    gg0000,
-                                    rows,
-                                    columns,
-                                    imageFrameOrigin,
-                                    framesInOverlay,
-                                    origin,
-                                    overData.get()));
+                    int[] origin = Builder.getIntArrayFromDicomElement(dcm, (Tag.OverlayOrigin | gg0000),
+                            new int[] { 1, 1 });
+                    data.add(new OverlayData(gg0000, rows, columns, imageFrameOrigin, framesInOverlay, origin,
+                            overData.get()));
                 }
             }
         }
@@ -100,12 +86,8 @@ public record OverlayData(
         return getOverlayData(dcm, activationMask, true);
     }
 
-    public static PlanarImage getOverlayImage(
-            final PlanarImage imageSource,
-            PlanarImage currentImage,
-            ImageDescriptor desc,
-            ImageReadParam params,
-            int frameIndex) {
+    public static PlanarImage getOverlayImage(final PlanarImage imageSource, PlanarImage currentImage,
+            ImageDescriptor desc, ImageReadParam params, int frameIndex) {
         Optional<PresentationLutObject> prDcm = params.getPresentationState();
         List<OverlayData> overlays = new ArrayList<>();
         prDcm.ifPresent(prDicomObject -> overlays.addAll(prDicomObject.getOverlays()));
@@ -116,29 +98,15 @@ public record OverlayData(
             int width = currentImage.width();
             int height = currentImage.height();
             if (width == imageSource.width() && height == imageSource.height()) {
-                return getOverlayImage(
-                        imageSource,
-                        currentImage,
-                        params,
-                        frameIndex,
-                        height,
-                        width,
-                        embeddedOverlays,
+                return getOverlayImage(imageSource, currentImage, params, frameIndex, height, width, embeddedOverlays,
                         overlays);
             }
         }
         return currentImage;
     }
 
-    private static ImageCV getOverlayImage(
-            PlanarImage imageSource,
-            PlanarImage currentImage,
-            ImageReadParam params,
-            int frameIndex,
-            int height,
-            int width,
-            List<EmbeddedOverlay> embeddedOverlays,
-            List<OverlayData> overlays) {
+    private static ImageCV getOverlayImage(PlanarImage imageSource, PlanarImage currentImage, ImageReadParam params,
+            int frameIndex, int height, int width, List<EmbeddedOverlay> embeddedOverlays, List<OverlayData> overlays) {
         ImageCV overlay = new ImageCV(height, width, CvType.CV_8UC1);
         byte[] pixelData = new byte[height * width];
         byte pixVal = (byte) 255;
@@ -157,12 +125,10 @@ public record OverlayData(
 
         applyOverlay(overlays, pixelData, frameIndex, width);
         overlay.put(0, 0, pixelData);
-        return ImageProcessor.overlay(
-                currentImage.toMat(), overlay, params.getOverlayColor().orElse(Color.WHITE));
+        return ImageProcessor.overlay(currentImage.toMat(), overlay, params.getOverlayColor().orElse(Color.WHITE));
     }
 
-    private static void applyOverlay(
-            List<OverlayData> overlays, byte[] pixelData, int frameIndex, int width) {
+    private static void applyOverlay(List<OverlayData> overlays, byte[] pixelData, int frameIndex, int width) {
         byte pixVal = (byte) 255;
         for (OverlayData data : overlays) {
             int imageFrameOrigin = data.imageFrameOrigin();
@@ -180,16 +146,8 @@ public record OverlayData(
         }
     }
 
-    private static void setOverlayPixelData(
-            int ovOff,
-            int ovWidth,
-            int ovHeight,
-            int x0,
-            int y0,
-            byte[] pix,
-            byte[] pixelData,
-            byte pixVal,
-            int width) {
+    private static void setOverlayPixelData(int ovOff, int ovWidth, int ovHeight, int x0, int y0, byte[] pix,
+            byte[] pixelData, byte pixVal, int width) {
         for (int j = y0; j < ovHeight; j++) {
             for (int i = x0; i < ovWidth; i++) {
                 int index = ovOff + (j - y0) * ovWidth + (i - x0);
@@ -201,8 +159,7 @@ public record OverlayData(
         }
     }
 
-    public static PlanarImage getOverlayImage(
-            PlanarImage imageSource, List<OverlayData> overlays, int frameIndex) {
+    public static PlanarImage getOverlayImage(PlanarImage imageSource, List<OverlayData> overlays, int frameIndex) {
         int width = imageSource.width();
         int height = imageSource.height();
         ImageCV overlay = new ImageCV(height, width, CvType.CV_8UC1);
@@ -214,16 +171,14 @@ public record OverlayData(
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         OverlayData that = (OverlayData) o;
-        return groupOffset == that.groupOffset
-                && rows == that.rows
-                && columns == that.columns
-                && imageFrameOrigin == that.imageFrameOrigin
-                && framesInOverlay == that.framesInOverlay
-                && Arrays.equals(origin, that.origin)
-                && Arrays.equals(data, that.data);
+        return groupOffset == that.groupOffset && rows == that.rows && columns == that.columns
+                && imageFrameOrigin == that.imageFrameOrigin && framesInOverlay == that.framesInOverlay
+                && Arrays.equals(origin, that.origin) && Arrays.equals(data, that.data);
     }
 
     @Override
@@ -236,14 +191,7 @@ public record OverlayData(
 
     @Override
     public String toString() {
-        return "OverlayData{"
-                + "groupOffset="
-                + groupOffset
-                + ", rows="
-                + rows
-                + ", columns="
-                + columns
-                + '}';
+        return "OverlayData{" + "groupOffset=" + groupOffset + ", rows=" + rows + ", columns=" + columns + '}';
     }
 
 }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.compress;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -38,8 +38,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * GZIP是用于Unix系统的文件压缩
- * gzip的基础是DEFLATE
+ * GZIP是用于Unix系统的文件压缩 gzip的基础是DEFLATE
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -87,8 +86,7 @@ public class Gzip implements Closeable {
      */
     public Gzip gzip() {
         try {
-            target = (target instanceof GZIPOutputStream) ?
-                    (GZIPOutputStream) target : new GZIPOutputStream(target);
+            target = (target instanceof GZIPOutputStream) ? (GZIPOutputStream) target : new GZIPOutputStream(target);
             IoKit.copy(source, target);
             ((GZIPOutputStream) target).finish();
         } catch (final IOException e) {
@@ -104,8 +102,7 @@ public class Gzip implements Closeable {
      */
     public Gzip unGzip() {
         try {
-            source = (source instanceof GZIPInputStream) ?
-                    (GZIPInputStream) source : new GZIPInputStream(source);
+            source = (source instanceof GZIPInputStream) ? (GZIPInputStream) source : new GZIPInputStream(source);
             IoKit.copy(source, target);
         } catch (final IOException e) {
             throw new InternalException(e);

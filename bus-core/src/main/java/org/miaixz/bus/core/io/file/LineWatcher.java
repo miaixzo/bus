@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.file;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
@@ -57,7 +57,8 @@ public class LineWatcher extends SimpleWatcher implements Runnable {
      * @param charset          编码
      * @param lineHandler      行处理器{@link ConsumerX}实现
      */
-    public LineWatcher(final RandomAccessFile randomAccessFile, final Charset charset, final ConsumerX<String> lineHandler) {
+    public LineWatcher(final RandomAccessFile randomAccessFile, final Charset charset,
+            final ConsumerX<String> lineHandler) {
         this.randomAccessFile = randomAccessFile;
         this.charset = charset;
         this.lineHandler = lineHandler;

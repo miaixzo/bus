@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.screw.dialect;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -36,8 +36,7 @@ import org.miaixz.bus.shade.screw.metadata.Table;
 import java.util.List;
 
 /**
- * 通用查询接口
- * 查询数据库信息
+ * 通用查询接口 查询数据库信息
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date.format.parser;
 
 import org.miaixz.bus.core.center.date.Calendar;
@@ -35,8 +35,7 @@ import java.io.Serializable;
 import java.util.Locale;
 
 /**
- * 通过给定的日期格式解析日期时间字符串。
- * 传入的日期格式会逐个尝试，直到解析成功，返回{@link java.util.Calendar}对象，否则抛出{@link DateException}异常。
+ * 通过给定的日期格式解析日期时间字符串。 传入的日期格式会逐个尝试，直到解析成功，返回{@link java.util.Calendar}对象，否则抛出{@link DateException}异常。
  *
  * @author Kimi Liu
  * @since Java 17+

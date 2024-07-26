@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.GEMS_IDI_01;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,20 +46,21 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.HeightMapPlaneDistance:
-            case PrivateTag.HeightMapPlaneOffset:
-            case PrivateTag.CentralProjectionDetectorSecondaryAngle:
-            case PrivateTag.DetectorActiveDimensions:
-                return VR.DS;
-            case PrivateTag.HeightMapPlaneIndices:
-            case PrivateTag.XMapPlaneIndices:
-            case PrivateTag.YMapPlaneIndices:
-                return VR.OW;
+
+        case PrivateTag.HeightMapPlaneDistance:
+        case PrivateTag.HeightMapPlaneOffset:
+        case PrivateTag.CentralProjectionDetectorSecondaryAngle:
+        case PrivateTag.DetectorActiveDimensions:
+            return VR.DS;
+        case PrivateTag.HeightMapPlaneIndices:
+        case PrivateTag.XMapPlaneIndices:
+        case PrivateTag.YMapPlaneIndices:
+            return VR.OW;
         }
         return VR.UN;
     }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map;
 
 import java.util.Comparator;
@@ -32,8 +32,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * 忽略大小写的{@link TreeMap}
- * 对KEY忽略大小写，get("Value")和get("value")获得的值相同，put进入的值也会被覆盖
+ * 忽略大小写的{@link TreeMap} 对KEY忽略大小写，get("Value")和get("value")获得的值相同，put进入的值也会被覆盖
  *
  * @param <K> 键类型
  * @param <V> 值类型

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org sandao and other contributors.             ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket.secure.ssl.factory;
 
 import javax.net.ssl.KeyManagerFactory;
@@ -95,21 +95,21 @@ public class PemServerSSLContextFactory implements SSLContextFactory {
         String line;
         while ((line = bufferedReader.readLine()) != null) {
             switch (line) {
-                case "-----BEGIN CERTIFICATE-----":
-                case "-----BEGIN PRIVATE KEY-----":
-                    sb.setLength(0);
-                    break;
-                case "-----END CERTIFICATE-----": {
-                    certificates.add(Base64.getDecoder().decode(sb.toString()));
-                    break;
-                }
-                case "-----END PRIVATE KEY-----": {
-                    keyBytes = Base64.getDecoder().decode(sb.toString());
-                    break;
-                }
-                default:
-                    sb.append(line);
-                    break;
+            case "-----BEGIN CERTIFICATE-----":
+            case "-----BEGIN PRIVATE KEY-----":
+                sb.setLength(0);
+                break;
+            case "-----END CERTIFICATE-----": {
+                certificates.add(Base64.getDecoder().decode(sb.toString()));
+                break;
+            }
+            case "-----END PRIVATE KEY-----": {
+                keyBytes = Base64.getDecoder().decode(sb.toString());
+                break;
+            }
+            default:
+                sb.append(line);
+                break;
             }
         }
     }

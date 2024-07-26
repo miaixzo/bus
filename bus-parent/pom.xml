@@ -26,10 +26,15 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 -->
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>3.3.1</version>
+    </parent>
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-parent</artifactId>
@@ -41,12 +46,6 @@
     <url>https://github.com/839128/bus</url>
     <inceptionYear>2015</inceptionYear>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>3.3.1</version>
-    </parent>
-
     <licenses>
         <license>
             <name>The MIT License (MIT)</name>
@@ -54,18 +53,18 @@
         </license>
     </licenses>
 
-    <scm>
-        <connection>scm:git@github.com:839128/bus.git</connection>
-        <developerConnection>scm:git@github.com:839128/bus.git</developerConnection>
-        <url>git@github.com:839128/bus.git</url>
-    </scm>
-
     <developers>
         <developer>
             <name>Kimi Liu</name>
             <url>https://github.com/839128/bus.git</url>
         </developer>
     </developers>
+
+    <scm>
+        <connection>scm:git@github.com:839128/bus.git</connection>
+        <developerConnection>scm:git@github.com:839128/bus.git</developerConnection>
+        <url>git@github.com:839128/bus.git</url>
+    </scm>
 
     <issueManagement>
         <system>Github Issue</system>
@@ -112,7 +111,7 @@
         <curator.version>5.6.0</curator.version>
         <guava.version>33.2.1-jre</guava.version>
         <hessian.version>4.0.66</hessian.version>
-        <mysql.version>8.4.0</mysql.version>
+        <mysql.version>9.0.0</mysql.version>
         <jersey.version>3.1.1</jersey.version>
         <jackson.version>2.17.2</jackson.version>
         <jna.version>5.14.0</jna.version>
@@ -332,8 +331,8 @@
                 <version>${logback.version}</version>
                 <exclusions>
                     <exclusion>
-                        <artifactId>slf4j-api</artifactId>
                         <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -442,8 +441,8 @@
                 <version>1.2.0</version>
                 <exclusions>
                     <exclusion>
-                        <artifactId>slf4j-api</artifactId>
                         <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -488,8 +487,8 @@
                 <version>${thymeleaf.version}</version>
                 <exclusions>
                     <exclusion>
-                        <artifactId>slf4j-api</artifactId>
                         <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
                     </exclusion>
                     <exclusion>
                         <groupId>org.javassist</groupId>
@@ -508,8 +507,8 @@
                 <version>1.0.2</version>
                 <exclusions>
                     <exclusion>
-                        <artifactId>commons-lang3</artifactId>
                         <groupId>org.apache.commons</groupId>
+                        <artifactId>commons-lang3</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -558,28 +557,28 @@
                 <version>1.3.1</version>
                 <exclusions>
                     <exclusion>
-                        <artifactId>logback-classic</artifactId>
                         <groupId>ch.qos.logback</groupId>
+                        <artifactId>logback-classic</artifactId>
                     </exclusion>
                     <exclusion>
-                        <artifactId>slf4j-api</artifactId>
                         <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
                     </exclusion>
                     <exclusion>
-                        <artifactId>pinyin4j</artifactId>
                         <groupId>com.belerweb</groupId>
+                        <artifactId>pinyin4j</artifactId>
                     </exclusion>
                     <exclusion>
+                        <groupId>org.apache.lucene</groupId>
                         <artifactId>lucene-core</artifactId>
-                        <groupId>org.apache.lucene</groupId>
                     </exclusion>
                     <exclusion>
+                        <groupId>org.apache.lucene</groupId>
                         <artifactId>lucene-analyzers-common</artifactId>
-                        <groupId>org.apache.lucene</groupId>
                     </exclusion>
                     <exclusion>
-                        <artifactId>jedis</artifactId>
                         <groupId>redis.clients</groupId>
+                        <artifactId>jedis</artifactId>
                     </exclusion>
                     <exclusion>
                         <groupId>org.apache.lucene</groupId>
@@ -1371,10 +1370,10 @@
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
-                        <phase>package</phase>
                         <goals>
                             <goal>jar</goal>
                         </goals>
+                        <phase>package</phase>
                     </execution>
                 </executions>
             </plugin>
@@ -1398,10 +1397,10 @@
                 <executions>
                     <execution>
                         <id>sonatype-nexus-staging</id>
-                        <phase>verify</phase>
                         <goals>
                             <goal>sign</goal>
                         </goals>
+                        <phase>verify</phase>
                     </execution>
                 </executions>
             </plugin>
@@ -1416,6 +1415,90 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+                <version>10.0.3</version>
+                <configuration>
+                    <autoUpdate>true</autoUpdate>
+                    <nvdMaxRetryCount>25</nvdMaxRetryCount>
+                    <nvdApiDelay>32000</nvdApiDelay>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>2.43.0</version>
+                <configuration>
+                    <upToDateChecking>
+                        <enabled>false</enabled>
+                    </upToDateChecking>
+                    <formats>
+                        <format>
+                            <includes>
+                                <include>**/*.md</include>
+                                <include>**/*.yml</include>
+                                <include>**/*.yaml</include>
+                            </includes>
+                            <trimTrailingWhitespace />
+                            <endWithNewline />
+                            <indent>
+                                <spaces>true</spaces>
+                                <spacesPerTab>2</spacesPerTab>
+                            </indent>
+                        </format>
+                        <format>
+                            <includes>
+                                <include>**/*.xml</include>
+                            </includes>
+                            <trimTrailingWhitespace />
+                            <endWithNewline />
+                            <indent>
+                                <spaces>true</spaces>
+                                <spacesPerTab>4</spacesPerTab>
+                            </indent>
+                        </format>
+                    </formats>
+                    <java>
+                        <licenseHeader>
+                            <file>../.github/spotless/licenses/miaixz.org</file>
+                        </licenseHeader>
+                        <eclipse>
+                            <file>../.github/spotless/spotless_format.xml</file>
+                        </eclipse>
+                        <removeUnusedImports />
+                    </java>
+                    <pom>
+                        <sortPom>
+                            <encoding>UTF-8</encoding>
+                            <nrOfIndentSpace>4</nrOfIndentSpace>
+                            <keepBlankLines>true</keepBlankLines>
+                            <indentBlankLines>false</indentBlankLines>
+                            <indentSchemaLocation>true</indentSchemaLocation>
+                            <spaceBeforeCloseEmptyElement>true</spaceBeforeCloseEmptyElement>
+                            <sortModules>false</sortModules>
+                            <sortExecutions>false</sortExecutions>
+                            <expandEmptyElements>false</expandEmptyElements>
+                            <sortProperties>false</sortProperties>
+                        </sortPom>
+                    </pom>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>apply</goal>
+                        </goals>
+                        <phase>clean</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
                 <version>1.6.0</version>
@@ -1423,10 +1506,10 @@
                 <executions>
                     <execution>
                         <id>flatten</id>
-                        <phase>process-resources</phase>
                         <goals>
                             <goal>flatten</goal>
                         </goals>
+                        <phase>process-resources</phase>
                         <configuration>
                             <updatePomFile>true</updatePomFile>
                             <outputDirectory>${project.build.directory}</outputDirectory>

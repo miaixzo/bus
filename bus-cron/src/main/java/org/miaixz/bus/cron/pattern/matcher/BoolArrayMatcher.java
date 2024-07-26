@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cron.pattern.matcher;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -103,7 +103,7 @@ public class BoolArrayMatcher implements PartMatcher {
 
     @Override
     public String toString() {
-        return StringKit.format("Matcher:{}", new Object[]{this.bValues});
+        return StringKit.format("Matcher:{}", new Object[] { this.bValues });
     }
 
 }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.freebsd.software;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -48,8 +48,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * The FreeBSD File System contains {@link OSFileStore}s which are a storage pool, device, partition,
- * volume, concrete file system or other implementation specific means of file storage.
+ * The FreeBSD File System contains {@link OSFileStore}s which are a storage pool, device, partition, volume, concrete
+ * file system or other implementation specific means of file storage.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -103,8 +103,7 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
                 if (split.length > 7) {
                     inodeFreeMap.put(split[0], Parsing.parseLongOrDefault(split[6], 0L));
                     // total is used + free
-                    inodeTotalMap.put(split[0],
-                            inodeFreeMap.get(split[0]) + Parsing.parseLongOrDefault(split[5], 0L));
+                    inodeTotalMap.put(split[0], inodeFreeMap.get(split[0]) + Parsing.parseLongOrDefault(split[5], 0L));
                 }
             }
         }
@@ -127,8 +126,8 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
 
             // Skip non-local drives if requested, and exclude pseudo file systems
             if ((localOnly && NETWORK_FS_TYPES.contains(type))
-                    || !path.equals("/") && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(path,
-                    volume, FS_PATH_INCLUDES, FS_PATH_EXCLUDES, FS_VOLUME_INCLUDES, FS_VOLUME_EXCLUDES))) {
+                    || !path.equals("/") && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(path, volume,
+                            FS_PATH_INCLUDES, FS_PATH_EXCLUDES, FS_VOLUME_INCLUDES, FS_VOLUME_EXCLUDES))) {
                 continue;
             }
 
@@ -155,8 +154,8 @@ public final class FreeBsdFileSystem extends AbstractFileSystem {
             // Match UUID
             String uuid = uuidMap.getOrDefault(name, Normal.EMPTY);
 
-            fsList.add(new LinuxOSFileStore(name, volume, name, path, options, uuid, Normal.EMPTY, description, type, freeSpace,
-                    usableSpace, totalSpace, inodeFreeMap.containsKey(path) ? inodeFreeMap.get(path) : 0L,
+            fsList.add(new LinuxOSFileStore(name, volume, name, path, options, uuid, Normal.EMPTY, description, type,
+                    freeSpace, usableSpace, totalSpace, inodeFreeMap.containsKey(path) ? inodeFreeMap.get(path) : 0L,
                     inodeTotalMap.containsKey(path) ? inodeTotalMap.get(path) : 0L));
         }
         return fsList;

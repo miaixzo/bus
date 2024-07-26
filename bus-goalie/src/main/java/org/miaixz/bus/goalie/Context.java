@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.goalie;
 
 import lombok.AllArgsConstructor;
@@ -99,9 +99,8 @@ public class Context {
     @AllArgsConstructor
     public enum Format {
         xml(new XmlProvider(), MediaType.parseMediaType(MediaType.APPLICATION_XML_VALUE + ";charset=UTF-8")),
-        json(new JsonProvider(), MediaType.APPLICATION_JSON),
-        pdf,
-        binary;
+        json(new JsonProvider(), MediaType.APPLICATION_JSON), pdf, binary;
+
         private Provider provider;
 
         private MediaType mediaType;
@@ -111,19 +110,13 @@ public class Context {
     @NoArgsConstructor
     @AllArgsConstructor
     public enum Channel {
-        web("1", 0),
-        app("2", 1),
-        ding("3", 1),
-        wechat("4", 1),
-        other("5", 0);
+        web("1", 0), app("2", 1), ding("3", 1), wechat("4", 1), other("5", 0);
 
         private String value;
         private Integer tokenType;
 
         public static Channel getChannel(String value) {
-            return Arrays.stream(Channel.values())
-                    .filter(c -> c.getValue().equals(value))
-                    .findFirst()
+            return Arrays.stream(Channel.values()).filter(c -> c.getValue().equals(value)).findFirst()
                     .orElse(Channel.other);
         }
     }

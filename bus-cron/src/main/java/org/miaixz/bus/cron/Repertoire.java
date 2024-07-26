@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cron;
 
 import org.miaixz.bus.core.center.map.TripleTable;
@@ -41,9 +41,7 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
- * 定时任务表
- * 任务表将ID、表达式、任务一一对应，定时任务执行过程中，会周期性检查定时任务表中的所有任务表达式匹配情况，从而执行其对应的任务
- * 任务的添加、移除使用读写锁保证线程安全性
+ * 定时任务表 任务表将ID、表达式、任务一一对应，定时任务执行过程中，会周期性检查定时任务表中的所有任务表达式匹配情况，从而执行其对应的任务 任务的添加、移除使用读写锁保证线程安全性
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -290,8 +288,8 @@ public class Repertoire implements Serializable {
         final int size = this.size();
         final StringBuilder builder = StringKit.builder();
         for (int i = 0; i < size; i++) {
-            builder.append(StringKit.format("[{}] [{}] [{}]\n",
-                    this.table.getLeft(i), this.table.getMiddle(i), this.table.getRight(i)));
+            builder.append(StringKit.format("[{}] [{}] [{}]\n", this.table.getLeft(i), this.table.getMiddle(i),
+                    this.table.getRight(i)));
         }
         return builder.toString();
     }

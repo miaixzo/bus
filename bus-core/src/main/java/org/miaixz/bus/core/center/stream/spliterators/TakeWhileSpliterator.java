@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.stream.spliterators;
 
 import java.util.Comparator;
@@ -50,7 +50,8 @@ public class TakeWhileSpliterator<T> implements Spliterator<T> {
         this.predicate = predicate;
     }
 
-    public static <T> TakeWhileSpliterator<T> create(final Spliterator<T> source, final Predicate<? super T> predicate) {
+    public static <T> TakeWhileSpliterator<T> create(final Spliterator<T> source,
+            final Predicate<? super T> predicate) {
         return new TakeWhileSpliterator<>(source, predicate);
     }
 
@@ -93,4 +94,3 @@ public class TakeWhileSpliterator<T> implements Spliterator<T> {
     }
 
 }
-

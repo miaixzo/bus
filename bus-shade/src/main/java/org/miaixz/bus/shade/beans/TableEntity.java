@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.beans;
 
 import lombok.Getter;
@@ -96,9 +96,10 @@ public class TableEntity implements Serializable {
 
     private String isDubbo;
 
-    public TableEntity(String project, String author, String version, String url, String user, String password, String database,
-                       String table, String agile, String entityUrl, String mapperUrl, String mapperXmlUrl,
-                       String serviceUrl, String serviceImplUrl, String controllerUrl, String isSwagger, String isDubbo, boolean isHump) {
+    public TableEntity(String project, String author, String version, String url, String user, String password,
+            String database, String table, String agile, String entityUrl, String mapperUrl, String mapperXmlUrl,
+            String serviceUrl, String serviceImplUrl, String controllerUrl, String isSwagger, String isDubbo,
+            boolean isHump) {
         super();
         this.project = project;
         this.author = author;
@@ -126,8 +127,9 @@ public class TableEntity implements Serializable {
         Connection con = null;
         PreparedStatement pstemt = null;
         ResultSet rs = null;
-        //sql
-        String sql = "select column_name,data_type,column_comment from information_schema.columns where table_schema='" + entity.getDatabase() + "' and table_name='" + entity.getTable() + Symbol.SINGLE_QUOTE;
+        // sql
+        String sql = "select column_name,data_type,column_comment from information_schema.columns where table_schema='"
+                + entity.getDatabase() + "' and table_name='" + entity.getTable() + Symbol.SINGLE_QUOTE;
         try {
             con = DriverManager.getConnection(entity.url, entity.user, entity.password);
             pstemt = con.prepareStatement(sql);
@@ -148,7 +150,7 @@ public class TableEntity implements Serializable {
                 ci.setComment(comment);
                 ci.setProperty(NamingRules.changeToJavaFiled(column, entity.isHump));
                 ci.setJavaType(NamingRules.jdbcTypeToJavaType(jdbcType));
-                //设置注解类型
+                // 设置注解类型
                 if (column.equalsIgnoreCase("id")) {
                     entity.setIdType(ci.getJavaType());
                     entity.setIdJdbcType(ci.getJdbcType());
@@ -169,16 +171,19 @@ public class TableEntity implements Serializable {
             throw new RuntimeException("自动生成实体类错误：" + e.getMessage());
         } finally {
             try {
-                if (null != rs) rs.close();
+                if (null != rs)
+                    rs.close();
             } catch (SQLException se2) {
             }
             // 关闭资源
             try {
-                if (null != pstemt) pstemt.close();
+                if (null != pstemt)
+                    pstemt.close();
             } catch (SQLException se2) {
-            }// 什么都不做
+            } // 什么都不做
             try {
-                if (null != con) con.close();
+                if (null != con)
+                    con.close();
             } catch (SQLException se) {
                 se.printStackTrace();
             }

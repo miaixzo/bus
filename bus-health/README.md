@@ -1,5 +1,5 @@
 #### 项目说明
---------------------------- 
+---------------------------
 Windows • Linux • Mac OS • Unix (Solaris, FreeBSD)
 
 Supported features
@@ -83,7 +83,7 @@ Swap used: 3.6 GiB/5 GiB
 Statistics for the system battery are provided.
 
 ```
-Power Sources: 
+Power Sources:
  Name: InternalBattery-0, Device Name: bq20z451,
  RemainingCapacityPercent: 100.0%, Time Remaining: 5:42, Time Remaining Instant: 5:42,
  Power Usage Rate: -16045.216mW, Voltage: 12.694V, Amperage: -1264.0mA,
@@ -101,14 +101,14 @@ Displays:
  Display 0:
   Manuf. ID=SAM, Product ID=2ad, Analog, Serial=HA19, ManufDate=3/2008, EDID v1.3
   41 x 27 cm (16.1 x 10.6 in)
-  Preferred Timing: Clock 106MHz, Active Pixels 3840x2880 
+  Preferred Timing: Clock 106MHz, Active Pixels 3840x2880
   Range Limits: Field Rate 56-75 Hz vertical, 30-81 Hz horizontal, Max clock: 140 MHz
   Monitor Name: SyncMaster
   Serial Number: H9FQ345476
  Display 1:
   Manuf. ID=SAM, Product ID=226, Analog, Serial=HA19, ManufDate=4/2007, EDID v1.3
   41 x 26 cm (16.1 x 10.2 in)
-  Preferred Timing: Clock 106MHz, Active Pixels 3840x2880 
+  Preferred Timing: Clock 106MHz, Active Pixels 3840x2880
   Range Limits: Field Rate 56-75 Hz vertical, 30-81 Hz horizontal, Max clock: 140 MHz
   Monitor Name: SyncMaster
   Serial Number: HMCP431880

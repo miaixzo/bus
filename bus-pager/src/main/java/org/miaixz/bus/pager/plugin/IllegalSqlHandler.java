@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2024 miaixz.org mybatis.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager.plugin;
 
 import net.sf.jsqlparser.expression.BinaryExpression;
@@ -65,28 +65,63 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 由于开发人员水平参差不齐，即使订了开发规范很多人也不遵守
- * <p>SQL是影响系统性能最重要的因素，所以拦截掉垃圾SQL语句</p>
- * <p>拦截SQL类型的场景</p>
- * <p>1.必须使用到索引，包含left jion连接字段，符合索引最左原则</p>
- * <p>必须使用索引好处，</p>
- * <p>1.1 如果因为动态SQL，bug导致update的where条件没有带上，全表更新上万条数据</p>
- * <p>1.2 如果检查到使用了索引，SQL性能基本不会太差</p>
- * <p>2.SQL尽量单表执行，有查询left jion的语句，必须在注释里面允许该SQL运行，否则会被拦截</p>
- * <p>SQL尽量单表执行的好处</p>
- * <p>2.1 查询条件简单、易于开理解和维护；</p>
- * <p>2.2 扩展性极强；(可为分库分表做准备)</p>
- * <p>2.3 缓存利用率高；</p>
- * <p>2.在字段上使用函数</p>
- * <p>3.where条件为空</p>
- * <p>4.where条件使用了 !=</p>
- * <p>5.where条件使用了 not 关键字</p>
- * <p>6.where条件使用了 or 关键字</p>
- * <p>7.where条件使用了 使用子查询</p>
+ * <p>
+ * SQL是影响系统性能最重要的因素，所以拦截掉垃圾SQL语句
+ * </p>
+ * <p>
+ * 拦截SQL类型的场景
+ * </p>
+ * <p>
+ * 1.必须使用到索引，包含left jion连接字段，符合索引最左原则
+ * </p>
+ * <p>
+ * 必须使用索引好处，
+ * </p>
+ * <p>
+ * 1.1 如果因为动态SQL，bug导致update的where条件没有带上，全表更新上万条数据
+ * </p>
+ * <p>
+ * 1.2 如果检查到使用了索引，SQL性能基本不会太差
+ * </p>
+ * <p>
+ * 2.SQL尽量单表执行，有查询left jion的语句，必须在注释里面允许该SQL运行，否则会被拦截
+ * </p>
+ * <p>
+ * SQL尽量单表执行的好处
+ * </p>
+ * <p>
+ * 2.1 查询条件简单、易于开理解和维护；
+ * </p>
+ * <p>
+ * 2.2 扩展性极强；(可为分库分表做准备)
+ * </p>
+ * <p>
+ * 2.3 缓存利用率高；
+ * </p>
+ * <p>
+ * 2.在字段上使用函数
+ * </p>
+ * <p>
+ * 3.where条件为空
+ * </p>
+ * <p>
+ * 4.where条件使用了 !=
+ * </p>
+ * <p>
+ * 5.where条件使用了 not 关键字
+ * </p>
+ * <p>
+ * 6.where条件使用了 or 关键字
+ * </p>
+ * <p>
+ * 7.where条件使用了 使用子查询
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Intercepts({@Signature(type = StatementHandler.class, method = "prepare", args = {Connection.class, Integer.class})})
+@Intercepts({
+        @Signature(type = StatementHandler.class, method = "prepare", args = { Connection.class, Integer.class }) })
 public class IllegalSqlHandler extends SqlParserHandler implements Interceptor {
 
     /**
@@ -105,7 +140,7 @@ public class IllegalSqlHandler extends SqlParserHandler implements Interceptor {
      * @param expression ignore
      */
     private static void validExpression(Expression expression) {
-        //where条件使用了 or 关键字
+        // where条件使用了 or 关键字
         if (expression instanceof OrExpression) {
             OrExpression orExpression = (OrExpression) expression;
             throw new InternalException("非法SQL，where条件中不能使用【or】关键字，错误or信息：" + orExpression.toString());
@@ -140,7 +175,7 @@ public class IllegalSqlHandler extends SqlParserHandler implements Interceptor {
      * @param connection ignore
      */
     private static void validJoins(List<Join> joins, Table table, Connection connection) {
-        //允许执行join，验证jion是否使用索引等等
+        // 允许执行join，验证jion是否使用索引等等
         if (null != joins) {
             for (Join join : joins) {
                 Table rightTable = (Table) join.getRightItem();
@@ -158,11 +193,11 @@ public class IllegalSqlHandler extends SqlParserHandler implements Interceptor {
      * @param connection ignore
      */
     private static void validUseIndex(Table table, String columnName, Connection connection) {
-        //是否使用索引
+        // 是否使用索引
         boolean useIndexFlag = false;
 
         String tableInfo = table.getName();
-        //表存在的索引
+        // 表存在的索引
         String dbName = null;
         String tableName;
         String[] tableArray = tableInfo.split("\\.");
@@ -206,11 +241,11 @@ public class IllegalSqlHandler extends SqlParserHandler implements Interceptor {
     private static void validWhere(Expression expression, Table table, Table joinTable, Connection connection) {
         validExpression(expression);
         if (expression instanceof BinaryExpression) {
-            //获得左边表达式
+            // 获得左边表达式
             Expression leftExpression = ((BinaryExpression) expression).getLeftExpression();
             validExpression(leftExpression);
 
-            //如果左边表达式为Column对象，则直接获得列名
+            // 如果左边表达式为Column对象，则直接获得列名
             if (leftExpression instanceof Column) {
                 Expression rightExpression = ((BinaryExpression) expression).getRightExpression();
                 if (null != joinTable && rightExpression instanceof Column) {
@@ -222,16 +257,16 @@ public class IllegalSqlHandler extends SqlParserHandler implements Interceptor {
                         validUseIndex(table, ((Column) leftExpression).getColumnName(), connection);
                     }
                 } else {
-                    //获得列名
+                    // 获得列名
                     validUseIndex(table, ((Column) leftExpression).getColumnName(), connection);
                 }
             }
-            //如果BinaryExpression，进行迭代
+            // 如果BinaryExpression，进行迭代
             else if (leftExpression instanceof BinaryExpression) {
                 validWhere(leftExpression, table, joinTable, connection);
             }
 
-            //获得右边表达式，并分解
+            // 获得右边表达式，并分解
             Expression rightExpression = ((BinaryExpression) expression).getRightExpression();
             validExpression(rightExpression);
         }
@@ -272,7 +307,7 @@ public class IllegalSqlHandler extends SqlParserHandler implements Interceptor {
                 rs = metadata.getIndexInfo(catalog, schema, tableName, false, true);
                 indexInfos = new ArrayList<>();
                 while (rs.next()) {
-                    //索引中的列序列号等于1，才有效
+                    // 索引中的列序列号等于1，才有效
                     if (Objects.equals(rs.getString(8), "1")) {
                         IndexInfo indexInfo = new IndexInfo();
                         indexInfo.setDbName(rs.getString(1));
@@ -304,7 +339,8 @@ public class IllegalSqlHandler extends SqlParserHandler implements Interceptor {
         String originalSql = boundSql.getSql();
         Logger.debug("Check for SQL : " + originalSql);
 
-        String md5Base64 = Base64.getEncoder().encodeToString(Builder.md5().digest(originalSql.getBytes(Charset.UTF_8)));
+        String md5Base64 = Base64.getEncoder()
+                .encodeToString(Builder.md5().digest(originalSql.getBytes(Charset.UTF_8)));
 
         if (cacheValidResult.contains(md5Base64)) {
             Logger.debug("The SQL has been checked : " + originalSql);
@@ -331,13 +367,13 @@ public class IllegalSqlHandler extends SqlParserHandler implements Interceptor {
             table = delete.getTable();
             joins = delete.getJoins();
         }
-        //where条件不能为空
+        // where条件不能为空
         if (null == where) {
             throw new InternalException("非法SQL，必须要有where条件");
         }
         validWhere(where, table, connection);
         validJoins(joins, table, connection);
-        //缓存验证结果
+        // 缓存验证结果
         cacheValidResult.add(md5Base64);
         return invocation.proceed();
     }

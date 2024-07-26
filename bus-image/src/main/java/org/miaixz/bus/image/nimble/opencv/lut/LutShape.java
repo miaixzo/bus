@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv.lut;
 
 import org.miaixz.bus.image.nimble.opencv.LookupTableCV;
@@ -41,8 +41,8 @@ public final class LutShape {
     public static final LutShape LOG = new LutShape(eFunction.LOG);
     public static final LutShape LOG_INV = new LutShape(eFunction.LOG_INV);
     /**
-     * A LutShape can be either a predefined function or a custom shape with a provided lookup table.
-     * That is a LutShape can be defined as a function or by a lookup but not both
+     * A LutShape can be either a predefined function or a custom shape with a provided lookup table. That is a LutShape
+     * can be defined as a function or by a lookup but not both
      */
     private final eFunction function;
     private final String explanation;
@@ -74,12 +74,12 @@ public final class LutShape {
         if (shape != null) {
             String val = shape.toUpperCase();
             return switch (val) {
-                case "LINEAR" -> LutShape.LINEAR;
-                case "SIGMOID" -> LutShape.SIGMOID;
-                case "SIGMOID_NORM" -> LutShape.SIGMOID_NORM;
-                case "LOG" -> LutShape.LOG;
-                case "LOG_INV" -> LutShape.LOG_INV;
-                default -> null;
+            case "LINEAR" -> LutShape.LINEAR;
+            case "SIGMOID" -> LutShape.SIGMOID;
+            case "SIGMOID_NORM" -> LutShape.SIGMOID_NORM;
+            case "LOG" -> LutShape.LOG;
+            case "LOG_INV" -> LutShape.LOG_INV;
+            default -> null;
             };
         }
         return null;
@@ -99,8 +99,8 @@ public final class LutShape {
     }
 
     /**
-     * LutShape objects are defined either by a factory function or by a custom LUT. They can be equal
-     * even if they have different explanation property
+     * LutShape objects are defined either by a factory function or by a custom LUT. They can be equal even if they have
+     * different explanation property
      */
     @Override
     public boolean equals(Object obj) {
@@ -120,10 +120,7 @@ public final class LutShape {
      * Other LUT functions have their own custom implementation
      */
     public enum eFunction {
-        LINEAR("Linear"),
-        SIGMOID("Sigmoid"),
-        SIGMOID_NORM("Sigmoid Normalize"),
-        LOG("Logarithmic"),
+        LINEAR("Linear"), SIGMOID("Sigmoid"), SIGMOID_NORM("Sigmoid Normalize"), LOG("Logarithmic"),
         LOG_INV("Logarithmic Inverse");
 
         final String explanation;

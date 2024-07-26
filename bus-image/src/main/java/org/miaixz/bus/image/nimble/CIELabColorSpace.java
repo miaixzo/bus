@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 import java.awt.color.ColorSpace;
@@ -80,7 +80,7 @@ public class CIELabColorSpace extends ColorSpace {
         double L = 116.0 * l - 16.0;
         double a = 500.0 * (f(colorvalue[0]) - l);
         double b = 200.0 * (l - f(colorvalue[2]));
-        return new float[]{(float) L, (float) a, (float) b};
+        return new float[] { (float) L, (float) a, (float) b };
     }
 
     @Override
@@ -95,7 +95,7 @@ public class CIELabColorSpace extends ColorSpace {
         double X = fInv(l + colorvalue[1] / 500.0);
         double Y = fInv(l);
         double Z = fInv(l - colorvalue[2] / 200.0);
-        return new float[]{(float) X, (float) Y, (float) Z};
+        return new float[] { (float) X, (float) Y, (float) Z };
     }
 
     @Override

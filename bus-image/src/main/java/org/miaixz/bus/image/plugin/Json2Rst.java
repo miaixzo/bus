@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import jakarta.json.Json;
@@ -71,10 +71,8 @@ public class Json2Rst {
         String outFileName = inFile.getName().replace(".schema.json", ".rst");
         File outFile = new File(outdir, outFileName);
         System.out.println(inFile + " => " + outFile);
-        try (
-                InputStreamReader is = new InputStreamReader(new FileInputStream(inFile));
-                PrintStream out = new PrintStream(new FileOutputStream(outFile))
-        ) {
+        try (InputStreamReader is = new InputStreamReader(new FileInputStream(inFile));
+                PrintStream out = new PrintStream(new FileOutputStream(outFile))) {
             JsonReader reader = Json.createReader(is);
             writeTo(reader.readObject(), out, outFileName);
         }
@@ -118,11 +116,11 @@ public class Json2Rst {
 
     private boolean isDefinedByDicom(String outFileName) {
         switch (outFileName) {
-            case "device.rst":
-            case "networkAE.rst":
-            case "networkConnection.rst":
-            case "transferCapability.rst":
-                return true;
+        case "device.rst":
+        case "networkAE.rst":
+        case "networkConnection.rst":
+        case "transferCapability.rst":
+            return true;
         }
         return false;
     }
@@ -158,7 +156,8 @@ public class Json2Rst {
             out.print(":doc:`");
             out.print(ref.substring(0, ref.length() - 12));
             out.print("` ");
-            if (items != null) out.print("(s)");
+            if (items != null)
+                out.print("(s)");
             if (totRefs.add(ref)) {
                 refs.add(ref);
                 inFiles.add(new File(indir, ref));
@@ -171,7 +170,8 @@ public class Json2Rst {
             out.println();
             out.print("    :ref:`");
             out.print(property.getString("title"));
-            if (items != null) out.print("(s)");
+            if (items != null)
+                out.print("(s)");
             out.print(" <");
             out.print(name);
             out.print(">`");
@@ -180,9 +180,7 @@ public class Json2Rst {
         out.print(isObj ? "object" : typeObj.getString("type"));
         out.print(",\"");
         out.print(ensureNoUndefinedSubstitutionReferenced(
-                formatURL(property.getString("description"))
-                        .replace("\"", "\"\"")
-                        .replaceAll("<br>", "\n\n\t")
+                formatURL(property.getString("description")).replace("\"", "\"\"").replaceAll("<br>", "\n\n\t")
                         .replaceAll("\\(hover on options to see their descriptions\\)", "")));
         JsonArray anEnum = typeObj.getJsonArray("enum");
         if (anEnum != null) {
@@ -195,11 +193,8 @@ public class Json2Rst {
                 out.println();
                 out.println();
                 out.print("    ");
-                String enumOption = anEnum.get(i).toString()
-                        .replace("\"", "");
-                out.print(enumOption.contains("|")
-                        ? enumOption.replaceAll("\\|", " (= ") + ")"
-                        : enumOption);
+                String enumOption = anEnum.get(i).toString().replace("\"", "");
+                out.print(enumOption.contains("|") ? enumOption.replaceAll("\\|", " (= ") + ")" : enumOption);
             }
         }
         if (!isObj) {
@@ -219,7 +214,8 @@ public class Json2Rst {
 
         String url = desc.substring(urlIndex + 9, desc.indexOf("\" target"));
         String placeholder = desc.substring(desc.indexOf("target=\"_blank\">") + 16, desc.indexOf("</a>"));
-        String desc2 = desc.substring(0, urlIndex) + '`' + placeholder + " <" + url + ">`_" + desc.substring(desc.indexOf("</a>") + 4);
+        String desc2 = desc.substring(0, urlIndex) + '`' + placeholder + " <" + url + ">`_"
+                + desc.substring(desc.indexOf("</a>") + 4);
         return desc2.contains("<a href") ? formatURL(desc2) : desc2;
     }
 

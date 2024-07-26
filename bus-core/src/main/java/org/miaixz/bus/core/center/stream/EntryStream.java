@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.stream;
 
 import org.miaixz.bus.core.center.ConcurrentHashSet;
@@ -42,8 +42,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
- * 参考StreamEx的EntryStream与vavr的Map，是针对键值对对象{@link Map.Entry}特化的单元素增强流实现。
- * 本身可视为一个元素类型为{@link Map.Entry}的{@link Stream}，
+ * 参考StreamEx的EntryStream与vavr的Map，是针对键值对对象{@link Map.Entry}特化的单元素增强流实现。 本身可视为一个元素类型为{@link Map.Entry}的{@link Stream}，
  * 用于支持流式处理{@link Map}集合中的、或其他键值对类型的数据。
  *
  * @param <K> 键类型
@@ -66,8 +65,8 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 根据键与值的集合创建键值对流，若两集合在相同下标的位置找不到对应的键或值，则使用{@code null}填充。
-     * 比如: {@code [1, 2, 3]}与{@code [1, 2]}合并，则得到{@code [{1=1}, {2=2}, {3=null}]}。
+     * 根据键与值的集合创建键值对流，若两集合在相同下标的位置找不到对应的键或值，则使用{@code null}填充。 比如: {@code [1, 2, 3]}与{@code [1, 2]}合并，则得到{@code [{1=1},
+     * {2=2}, {3=null}]}。
      *
      * @param <K>    键类型
      * @param <V>    值类型
@@ -95,17 +94,13 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
         final Iterator<K> keyItr = keys.iterator();
         final Iterator<V> valueItr = values.iterator();
         while (keyItr.hasNext() || valueItr.hasNext()) {
-            entries.add(ofEntry(
-                    keyItr.hasNext() ? keyItr.next() : null,
-                    valueItr.hasNext() ? valueItr.next() : null
-            ));
+            entries.add(ofEntry(keyItr.hasNext() ? keyItr.next() : null, valueItr.hasNext() ? valueItr.next() : null));
         }
         return of(entries);
     }
 
     /**
-     * 根据一个{@link Map}集合中的键值对创建一个串行流，
-     * 对流的操作不会影响到入参的{@code map}实例本身
+     * 根据一个{@link Map}集合中的键值对创建一个串行流， 对流的操作不会影响到入参的{@code map}实例本身
      *
      * @param map 集合
      * @param <K> 键类型
@@ -113,13 +108,11 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      * @return {@code EntryStream}实例
      */
     public static <K, V> EntryStream<K, V> of(final Map<K, V> map) {
-        return ObjectKit.isNull(map) ?
-                empty() : of(map.entrySet());
+        return ObjectKit.isNull(map) ? empty() : of(map.entrySet());
     }
 
     /**
-     * 根据一个{@link Map.Entry}类型的{@link Iterable}创建一个串行流，
-     * 对流的操作不会影响到入参的{@code entries}实例本身。
+     * 根据一个{@link Map.Entry}类型的{@link Iterable}创建一个串行流， 对流的操作不会影响到入参的{@code entries}实例本身。
      * 若输入流中存在元素为{@code null}，则会映射为一个键值皆为{@code null}的键值对。
      *
      * @param entries {@link Iterable}实例
@@ -128,8 +121,7 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      * @return {@code EntryStream}实例
      */
     public static <K, V> EntryStream<K, V> of(final Iterable<? extends Map.Entry<K, V>> entries) {
-        return ObjectKit.isNull(entries) ?
-                empty() : of(StreamSupport.stream(entries.spliterator(), false));
+        return ObjectKit.isNull(entries) ? empty() : of(StreamSupport.stream(entries.spliterator(), false));
     }
 
     /**
@@ -143,8 +135,8 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      * @param <V>         值类型
      * @return {@code EntryStream}实例
      */
-    public static <T, K, V> EntryStream<K, V> of(
-            final Iterable<T> source, final Function<? super T, ? extends K> keyMapper, final Function<? super T, ? extends V> valueMapper) {
+    public static <T, K, V> EntryStream<K, V> of(final Iterable<T> source,
+            final Function<? super T, ? extends K> keyMapper, final Function<? super T, ? extends V> valueMapper) {
         Objects.requireNonNull(keyMapper);
         Objects.requireNonNull(valueMapper);
         if (ObjectKit.isNull(source)) {
@@ -156,8 +148,7 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 包装一个已有的流，若入参为空则返回一个空的串行流。
-     * 若输入流中存在元素为{@code null}，则会映射为一个键值皆为{@code null}的键值对。
+     * 包装一个已有的流，若入参为空则返回一个空的串行流。 若输入流中存在元素为{@code null}，则会映射为一个键值皆为{@code null}的键值对。
      *
      * @param stream 流
      * @param <K>    键类型
@@ -165,8 +156,7 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      * @return {@code EntryStream}实例
      */
     public static <K, V> EntryStream<K, V> of(final Stream<? extends Map.Entry<K, V>> stream) {
-        return ObjectKit.isNull(stream) ?
-                empty() : new EntryStream<>(stream.map(EntryStream::ofEntry));
+        return ObjectKit.isNull(stream) ? empty() : new EntryStream<>(stream.map(EntryStream::ofEntry));
     }
 
     /**
@@ -184,9 +174,7 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      * 将键值对转为{@link AbstractMap.SimpleImmutableEntry}
      */
     static <K, V> Map.Entry<K, V> ofEntry(final Map.Entry<K, V> entry) {
-        return ObjectKit.defaultIfNull(
-                entry, e -> ofEntry(e.getKey(), e.getValue()), (Map.Entry<K, V>) EMPTY_ENTRY
-        );
+        return ObjectKit.defaultIfNull(entry, e -> ofEntry(e.getKey(), e.getValue()), (Map.Entry<K, V>) EMPTY_ENTRY);
     }
 
     /**
@@ -280,7 +268,8 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      * @return {@code EntryStream}实例
      */
     public EntryStream<K, V> nonNullKeyValue() {
-        return super.filter(e -> ObjectKit.isNotNull(e) && ObjectKit.isNotNull(e.getKey()) && ObjectKit.isNotNull(e.getValue()));
+        return super.filter(
+                e -> ObjectKit.isNotNull(e) && ObjectKit.isNotNull(e.getKey()) && ObjectKit.isNotNull(e.getValue()));
     }
 
     /**
@@ -426,9 +415,7 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      */
     public <N> EntryStream<N, V> mapKeys(final Function<? super K, ? extends N> mapper) {
         Objects.requireNonNull(mapper);
-        return new EntryStream<>(
-                stream.map(e -> ofEntry(mapper.apply(e.getKey()), e.getValue()))
-        );
+        return new EntryStream<>(stream.map(e -> ofEntry(mapper.apply(e.getKey()), e.getValue())));
     }
 
     /**
@@ -440,14 +427,11 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      */
     public <N> EntryStream<K, N> mapValues(final Function<? super V, ? extends N> mapper) {
         Objects.requireNonNull(mapper);
-        return new EntryStream<>(
-                stream.map(e -> ofEntry(e.getKey(), mapper.apply(e.getValue())))
-        );
+        return new EntryStream<>(stream.map(e -> ofEntry(e.getKey(), mapper.apply(e.getValue()))));
     }
 
     /**
-     * 返回与指定函数将元素作为参数执行的结果组成的流
-     * 这是一个无状态中间操作
+     * 返回与指定函数将元素作为参数执行的结果组成的流 这是一个无状态中间操作
      *
      * @param mapper 指定的函数
      * @param <R>    函数执行后返回流中元素的类型
@@ -472,11 +456,10 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * 扩散流操作，可能影响流元素个数，将原有流元素执行mapper操作，返回多个流所有元素组成的流
-     * 这是一个无状态中间操作
-     * 例如，将users里所有user的id和parentId组合在一起，形成一个新的流:
+     * 扩散流操作，可能影响流元素个数，将原有流元素执行mapper操作，返回多个流所有元素组成的流 这是一个无状态中间操作 例如，将users里所有user的id和parentId组合在一起，形成一个新的流:
+     * 
      * <pre>{@code
-     *     FastStream<Long> ids = FastStream.of(users).flatMap(user -> FastStream.of(user.getId(), user.getParentId()));
+     * FastStream<Long> ids = FastStream.of(users).flatMap(user -> FastStream.of(user.getId(), user.getParentId()));
      * }</pre>
      *
      * @param mapper 操作，返回流
@@ -490,9 +473,9 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     }
 
     /**
-     * <p>将原有流的键执行mapper操作映射为流，流中的所有所有元素仍然对应原本的值，
-     * 然后再返回由这些流中所有元素组成的流新{@code EntryStream}串行流。
-     * 效果类似：
+     * <p>
+     * 将原有流的键执行mapper操作映射为流，流中的所有所有元素仍然对应原本的值， 然后再返回由这些流中所有元素组成的流新{@code EntryStream}串行流。 效果类似：
+     * 
      * <pre>{@code
      * // unwrap = [{a = 1}, {b = 2}, {c = 3}]
      * unwrap.flatMapKey(data -> Stream.of(data + "1", data + "2"));
@@ -506,20 +489,16 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     public <N> EntryStream<N, V> flatMapKey(final Function<? super K, Stream<? extends N>> keyMapper) {
         Objects.requireNonNull(keyMapper);
         return new EntryStream<>(
-                stream.flatMap(e -> keyMapper
-                        .apply(e.getKey())
-                        .map(newKey -> ofEntry(newKey, e.getValue()))
-                )
-        );
+                stream.flatMap(e -> keyMapper.apply(e.getKey()).map(newKey -> ofEntry(newKey, e.getValue()))));
     }
 
     /**
-     * <p>将原有流的值执行mapper操作映射为流，流中的所有所有元素仍然对应原本的键，
-     * 然后再返回由这些流中所有元素组成的流新{@code EntryStream}串行流。
-     * 效果类似：
+     * <p>
+     * 将原有流的值执行mapper操作映射为流，流中的所有所有元素仍然对应原本的键， 然后再返回由这些流中所有元素组成的流新{@code EntryStream}串行流。 效果类似：
+     * 
      * <pre>{@code
      * // unwrap = [{a = 1}, {b = 2}, {c = 3}]
-     * unwrap.flatMapValue(num -> Stream.of(num, num+1));
+     * unwrap.flatMapValue(num -> Stream.of(num, num + 1));
      * // unwrap = [{a = 1}, {a = 2}, {b = 2}, {b = 3}, {c = 3}, {c = 4}]
      * }</pre>
      *
@@ -530,11 +509,7 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
     public <N> EntryStream<K, N> flatMapValue(final Function<? super V, Stream<? extends N>> valueMapper) {
         Objects.requireNonNull(valueMapper);
         return new EntryStream<>(
-                stream.flatMap(e -> valueMapper
-                        .apply(e.getValue())
-                        .map(newVal -> ofEntry(e.getKey(), newVal))
-                )
-        );
+                stream.flatMap(e -> valueMapper.apply(e.getValue()).map(newVal -> ofEntry(e.getKey(), newVal))));
     }
 
     /**
@@ -584,16 +559,14 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      * @return 集合
      * @see Collectors#groupingBy(Function, Supplier, Collector)
      */
-    public <N> Table<N, K, V> toTable(
-            final BiFunction<? super K, ? super V, ? extends N> rowKeyMapper, final Supplier<Map<K, V>> colMapFactory, final BinaryOperator<V> operator) {
+    public <N> Table<N, K, V> toTable(final BiFunction<? super K, ? super V, ? extends N> rowKeyMapper,
+            final Supplier<Map<K, V>> colMapFactory, final BinaryOperator<V> operator) {
         Objects.requireNonNull(rowKeyMapper);
         Objects.requireNonNull(colMapFactory);
         Objects.requireNonNull(operator);
-        final Map<N, Map<K, V>> rawMap = collect(Collectors.groupingBy(
-                e -> rowKeyMapper.apply(e.getKey(), e.getValue()),
-                HashMap::new,
-                Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, operator, colMapFactory)
-        ));
+        final Map<N, Map<K, V>> rawMap = collect(
+                Collectors.groupingBy(e -> rowKeyMapper.apply(e.getKey(), e.getValue()), HashMap::new,
+                        Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, operator, colMapFactory)));
         return new RowKeyTable<>(rawMap, colMapFactory::get);
     }
 
@@ -618,8 +591,8 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      * @param <N>           父集合的键类型
      * @return 集合
      */
-    public <N> Table<N, K, V> toTableByKey(
-            final Function<? super K, ? extends N> rowKeyMapper, final Supplier<Map<K, V>> colMapFactory, final BinaryOperator<V> operator) {
+    public <N> Table<N, K, V> toTableByKey(final Function<? super K, ? extends N> rowKeyMapper,
+            final Supplier<Map<K, V>> colMapFactory, final BinaryOperator<V> operator) {
         return toTable((k, v) -> rowKeyMapper.apply(k), colMapFactory, operator);
     }
 
@@ -644,8 +617,8 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      * @param <N>           父集合的键类型
      * @return 集合
      */
-    public <N> Table<N, K, V> toTableByValue(
-            final Function<? super V, ? extends N> rowKeyMapper, final Supplier<Map<K, V>> colMapFactory, final BinaryOperator<V> operator) {
+    public <N> Table<N, K, V> toTableByValue(final Function<? super V, ? extends N> rowKeyMapper,
+            final Supplier<Map<K, V>> colMapFactory, final BinaryOperator<V> operator) {
         return toTable((k, v) -> rowKeyMapper.apply(v), colMapFactory, operator);
     }
 
@@ -690,12 +663,10 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      * @param <M>        返回的map集合类型
      * @return 集合
      */
-    public <C extends Collection<V>, M extends Map<K, C>> M groupByKey(
-            final Supplier<M> mapFactory, final Collector<V, ?, C> collector) {
-        return super.collect(Collectors.groupingBy(
-                Map.Entry::getKey, mapFactory,
-                CollectorKit.transform(ArrayList::new, s -> s.stream().map(Map.Entry::getValue).collect(collector))
-        ));
+    public <C extends Collection<V>, M extends Map<K, C>> M groupByKey(final Supplier<M> mapFactory,
+            final Collector<V, ?, C> collector) {
+        return super.collect(Collectors.groupingBy(Map.Entry::getKey, mapFactory,
+                CollectorKit.transform(ArrayList::new, s -> s.stream().map(Map.Entry::getValue).collect(collector))));
     }
 
     /**
@@ -714,9 +685,7 @@ public class EntryStream<K, V> extends EnhancedWrappedStream<Map.Entry<K, V>, En
      * @return {@code EntryStream}实例
      */
     public EntryStream<V, K> inverse() {
-        return new EntryStream<>(
-                stream.map(e -> ofEntry(e.getValue(), e.getKey()))
-        );
+        return new EntryStream<>(stream.map(e -> ofEntry(e.getValue(), e.getKey())));
     }
 
     /**

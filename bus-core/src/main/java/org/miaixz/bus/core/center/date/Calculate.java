@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date;
 
 import org.miaixz.bus.core.center.date.culture.en.Week;
@@ -43,23 +43,21 @@ import java.time.temporal.*;
 public class Calculate extends Resolver {
 
     /**
-     * 当前日期是否在日期指定范围内
-     * 起始日期和结束日期可以互换
+     * 当前日期是否在日期指定范围内 起始日期和结束日期可以互换
      *
      * @param date      被检查的日期
      * @param beginDate 起始日期（包含）
      * @param endDate   结束日期（包含）
      * @return 是否在范围内
      */
-    public static boolean isIn(final TemporalAccessor date, final TemporalAccessor beginDate, final TemporalAccessor endDate) {
+    public static boolean isIn(final TemporalAccessor date, final TemporalAccessor beginDate,
+            final TemporalAccessor endDate) {
         return isIn(date, beginDate, endDate, true, true);
     }
 
     /**
-     * 当前日期是否在日期指定范围内
-     * 起始日期和结束日期可以互换
-     * 通过includeBegin, includeEnd参数控制日期范围区间是否为开区间，例如：传入参数：includeBegin=true, includeEnd=false，
-     * 则本方法会判断 date ∈ (beginDate, endDate] 是否成立
+     * 当前日期是否在日期指定范围内 起始日期和结束日期可以互换 通过includeBegin, includeEnd参数控制日期范围区间是否为开区间，例如：传入参数：includeBegin=true,
+     * includeEnd=false， 则本方法会判断 date ∈ (beginDate, endDate] 是否成立
      *
      * @param date         被检查的日期
      * @param beginDate    起始日期
@@ -68,8 +66,8 @@ public class Calculate extends Resolver {
      * @param includeEnd   时间范围是否包含结束日期
      * @return 是否在范围内
      */
-    public static boolean isIn(final TemporalAccessor date, final TemporalAccessor beginDate, final TemporalAccessor endDate,
-                               final boolean includeBegin, final boolean includeEnd) {
+    public static boolean isIn(final TemporalAccessor date, final TemporalAccessor beginDate,
+            final TemporalAccessor endDate, final boolean includeBegin, final boolean includeEnd) {
         if (date == null || beginDate == null || endDate == null) {
             throw new IllegalArgumentException("参数不可为null");
         }
@@ -96,12 +94,11 @@ public class Calculate extends Resolver {
     }
 
     /**
-     * 检查两个时间段是否有时间重叠
-     * 重叠指两个时间段是否有交集，注意此方法时间段重合时如：
+     * 检查两个时间段是否有时间重叠 重叠指两个时间段是否有交集，注意此方法时间段重合时如：
      * <ul>
-     *     <li>此方法未纠正开始时间小于结束时间</li>
-     *     <li>当realStartTime和realEndTime或startTime和endTime相等时,退化为判断区间是否包含点</li>
-     *     <li>当realStartTime和realEndTime和startTime和endTime相等时,退化为判断点与点是否相等</li>
+     * <li>此方法未纠正开始时间小于结束时间</li>
+     * <li>当realStartTime和realEndTime或startTime和endTime相等时,退化为判断区间是否包含点</li>
+     * <li>当realStartTime和realEndTime和startTime和endTime相等时,退化为判断点与点是否相等</li>
      * </ul>
      * See <a href="https://www.ics.uci.edu/~alspaugh/cls/shr/allen.html">准确的区间关系参考:艾伦区间代数</a>
      *
@@ -111,8 +108,9 @@ public class Calculate extends Resolver {
      * @param endTime       第二个时间段的结束时间
      * @return true 表示时间有重合
      */
-    public static boolean isOverlap(final ChronoLocalDateTime<?> realStartTime, final ChronoLocalDateTime<?> realEndTime,
-                                    final ChronoLocalDateTime<?> startTime, final ChronoLocalDateTime<?> endTime) {
+    public static boolean isOverlap(final ChronoLocalDateTime<?> realStartTime,
+            final ChronoLocalDateTime<?> realEndTime, final ChronoLocalDateTime<?> startTime,
+            final ChronoLocalDateTime<?> endTime) {
         // x>b||a>y 无交集
         // 则有交集的逻辑为 !(x>b||a>y)
         // 根据德摩根公式，可化简为 x<=b && a<=y 即 realStartTime<=endTime && startTime<=realEndTime
@@ -223,8 +221,8 @@ public class Calculate extends Resolver {
     /**
      * 修改为一天的结束时间
      * <ul>
-     * 	<li>毫秒不归零：2020-02-02 23:59:59,999</li>
-     * 	<li>毫秒归零：2020-02-02 23:59:59,000</li>
+     * <li>毫秒不归零：2020-02-02 23:59:59,999</li>
+     * <li>毫秒归零：2020-02-02 23:59:59,000</li>
      * </ul>
      *
      * @param time                日期时间
@@ -238,8 +236,8 @@ public class Calculate extends Resolver {
     /**
      * 修改为一天的结束时间
      * <ul>
-     * 	<li>毫秒不归零：2024-05-01 23:59:59,999</li>
-     * 	<li>毫秒归零：2024-05-01 23:59:59,000</li>
+     * <li>毫秒不归零：2024-05-01 23:59:59,999</li>
+     * <li>毫秒归零：2024-05-01 23:59:59,000</li>
      * </ul>
      *
      * @param date                日期
@@ -345,10 +343,10 @@ public class Calculate extends Resolver {
     /**
      * 获得指定日期是所在年份的第几周，如：
      * <ul>
-     *     <li>如果一年的第一天是星期一，则第一周从第一天开始，没有零周</li>
-     *     <li>如果一年的第二天是星期一，则第一周从第二天开始，而第一天在零周</li>
-     *     <li>如果一年的第4天是星期一，则第一周从第4天开始，第1至第3天在零周</li>
-     *     <li>如果一年的第5天是星期一，则第二周从第5天开始，第1至第4天在第一周</li>
+     * <li>如果一年的第一天是星期一，则第一周从第一天开始，没有零周</li>
+     * <li>如果一年的第二天是星期一，则第一周从第二天开始，而第一天在零周</li>
+     * <li>如果一年的第4天是星期一，则第一周从第4天开始，第1至第3天在零周</li>
+     * <li>如果一年的第5天是星期一，则第二周从第5天开始，第1至第4天在第一周</li>
      * </ul>
      *
      * @param date 日期（{@link LocalDate} 或者 {@link LocalDateTime}等）
@@ -361,8 +359,8 @@ public class Calculate extends Resolver {
     /**
      * 获取最大时间，提供参数是否将毫秒归零
      * <ul>
-     *     <li>如果{@code truncateMillisecond}为{@code false}，返回时间最大值，为：23:59:59,999</li>
-     *     <li>如果{@code truncateMillisecond}为{@code true}，返回时间最大值，为：23:59:59,000</li>
+     * <li>如果{@code truncateMillisecond}为{@code false}，返回时间最大值，为：23:59:59,999</li>
+     * <li>如果{@code truncateMillisecond}为{@code true}，返回时间最大值，为：23:59:59,000</li>
      * </ul>
      *
      * @param truncateMillisecond 是否毫秒归零
@@ -382,7 +380,8 @@ public class Calculate extends Resolver {
      * @return 偏移后的日期
      */
     public <T extends Temporal> T offset(final T temporal, final DayOfWeek dayOfWeek, final boolean isPrevious) {
-        return (T) temporal.with(isPrevious ? TemporalAdjusters.previous(dayOfWeek) : TemporalAdjusters.next(dayOfWeek));
+        return (T) temporal
+                .with(isPrevious ? TemporalAdjusters.previous(dayOfWeek) : TemporalAdjusters.next(dayOfWeek));
     }
 
 }

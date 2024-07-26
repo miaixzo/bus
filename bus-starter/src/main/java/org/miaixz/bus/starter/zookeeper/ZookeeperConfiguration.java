@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.zookeeper;
 
 import org.apache.curator.RetryPolicy;
@@ -47,14 +47,11 @@ public class ZookeeperConfiguration {
     @Bean(initMethod = "start", destroyMethod = "close")
     @ConditionalOnMissingBean(CuratorFramework.class)
     public CuratorFramework zkClient(ZookeeperProperties properties) {
-        RetryPolicy retryPolicy = new ExponentialBackoffRetry(properties.getBaseSleepTimeMs(), properties.getMaxRetries());
-        return CuratorFrameworkFactory.builder()
-                .connectString(properties.getConnectString())
-                .namespace(properties.getNamespace())
-                .sessionTimeoutMs(properties.getSessionTimeoutMs())
-                .connectionTimeoutMs(properties.getConnectionTimeoutMs())
-                .retryPolicy(retryPolicy)
-                .build();
+        RetryPolicy retryPolicy = new ExponentialBackoffRetry(properties.getBaseSleepTimeMs(),
+                properties.getMaxRetries());
+        return CuratorFrameworkFactory.builder().connectString(properties.getConnectString())
+                .namespace(properties.getNamespace()).sessionTimeoutMs(properties.getSessionTimeoutMs())
+                .connectionTimeoutMs(properties.getConnectionTimeoutMs()).retryPolicy(retryPolicy).build();
     }
 
 }

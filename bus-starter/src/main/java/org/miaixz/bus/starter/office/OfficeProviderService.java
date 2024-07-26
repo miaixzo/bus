@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.office;
 
 import lombok.RequiredArgsConstructor;
@@ -42,8 +42,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class OfficeProviderService {
 
-    public OfficeProviderService(Provider localProvider,
-                                 Provider onlineProvider) {
+    public OfficeProviderService(Provider localProvider, Provider onlineProvider) {
         Registry.getInstance().register(Registry.LOCAL, localProvider);
         Registry.getInstance().register(Registry.ONLINE, onlineProvider);
     }

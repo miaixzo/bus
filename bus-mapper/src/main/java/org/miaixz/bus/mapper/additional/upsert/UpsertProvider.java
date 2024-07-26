@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.additional.upsert;
 
 import org.apache.ibatis.mapping.MappedStatement;
@@ -71,7 +71,8 @@ public class UpsertProvider extends MapperTemplate {
         sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">");
         for (EntityColumn column : columns) {
             if (column.getGenIdClass() != null) {
-                sql.append("<bind name=\"").append(column.getColumn()).append("GenIdBind\" value=\"@org.miaixz.bus.mapper.Builder@genId(");
+                sql.append("<bind name=\"").append(column.getColumn())
+                        .append("GenIdBind\" value=\"@org.miaixz.bus.mapper.Builder@genId(");
                 sql.append("record").append(", '").append(column.getProperty()).append("'");
                 sql.append(", @").append(column.getGenIdClass().getCanonicalName()).append("@class");
                 sql.append(", '").append(tableName(entityClass)).append("'");

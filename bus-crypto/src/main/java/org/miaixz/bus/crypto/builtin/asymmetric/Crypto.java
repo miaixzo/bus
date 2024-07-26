@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.builtin.asymmetric;
 
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -103,10 +103,9 @@ public class Crypto extends AbstractCrypto<Crypto> {
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
-     * @param algorithm     {@link Algorithm}
+     * @param algorithm  {@link Algorithm}
      * @param privateKey 私钥Hex或Base64表示
      * @param publicKey  公钥Hex或Base64表示
      */
@@ -115,8 +114,7 @@ public class Crypto extends AbstractCrypto<Crypto> {
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param algorithm  {@link Algorithm}
      * @param privateKey 私钥
@@ -127,8 +125,7 @@ public class Crypto extends AbstractCrypto<Crypto> {
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param algorithm  {@link Algorithm}
      * @param privateKey 私钥
@@ -139,8 +136,7 @@ public class Crypto extends AbstractCrypto<Crypto> {
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param algorithm        非对称加密算法
      * @param privateKeyBase64 私钥Base64
@@ -151,25 +147,19 @@ public class Crypto extends AbstractCrypto<Crypto> {
     }
 
     /**
-     * 构造
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param algorithm  算法
      * @param privateKey 私钥
      * @param publicKey  公钥
      */
     public Crypto(final String algorithm, final byte[] privateKey, final byte[] publicKey) {
-        this(algorithm,
-                Keeper.generatePrivateKey(algorithm, privateKey),
-                Keeper.generatePublicKey(algorithm, publicKey)
-        );
+        this(algorithm, Keeper.generatePrivateKey(algorithm, privateKey),
+                Keeper.generatePublicKey(algorithm, publicKey));
     }
 
     /**
-     * 构造
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param algorithm  算法
      * @param privateKey 私钥
@@ -216,8 +206,7 @@ public class Crypto extends AbstractCrypto<Crypto> {
     }
 
     /**
-     * 获取{@link AlgorithmParameterSpec}
-     * 在某些算法中，需要特别的参数，例如在ECIES中，此处为IESParameterSpec
+     * 获取{@link AlgorithmParameterSpec} 在某些算法中，需要特别的参数，例如在ECIES中，此处为IESParameterSpec
      *
      * @return {@link AlgorithmParameterSpec}
      */
@@ -226,8 +215,7 @@ public class Crypto extends AbstractCrypto<Crypto> {
     }
 
     /**
-     * 设置{@link AlgorithmParameterSpec}
-     * 在某些算法中，需要特别的参数，例如在ECIES中，此处为IESParameterSpec
+     * 设置{@link AlgorithmParameterSpec} 在某些算法中，需要特别的参数，例如在ECIES中，此处为IESParameterSpec
      *
      * @param algorithmParameterSpec {@link AlgorithmParameterSpec}
      * @return this
@@ -327,7 +315,8 @@ public class Crypto extends AbstractCrypto<Crypto> {
      * @throws BadPaddingException       padding错误异常
      * @throws IOException               IO异常，不会被触发
      */
-    private byte[] doFinal(final byte[] data, final int maxBlockSize) throws IllegalBlockSizeException, BadPaddingException, IOException {
+    private byte[] doFinal(final byte[] data, final int maxBlockSize)
+            throws IllegalBlockSizeException, BadPaddingException, IOException {
         // 模长
         final int dataLength = data.length;
 
@@ -350,7 +339,8 @@ public class Crypto extends AbstractCrypto<Crypto> {
      * @throws BadPaddingException       padding错误异常
      * @throws IOException               IO异常，不会被触发
      */
-    private byte[] doFinalWithBlock(final byte[] data, final int maxBlockSize) throws IllegalBlockSizeException, BadPaddingException, IOException {
+    private byte[] doFinalWithBlock(final byte[] data, final int maxBlockSize)
+            throws IllegalBlockSizeException, BadPaddingException, IOException {
         final int dataLength = data.length;
         final FastByteArrayOutputStream out = new FastByteArrayOutputStream();
 

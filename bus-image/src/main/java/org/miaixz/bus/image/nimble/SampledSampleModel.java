@@ -24,12 +24,13 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferByte;
 import java.awt.image.SampleModel;
+
 /**
  * @author Kimi Liu
  * @since Java 17+
@@ -55,10 +56,7 @@ public class SampledSampleModel extends SampleModel {
 
     @Override
     public SampleModel createSubsetSampleModel(int[] bands) {
-        if (bands.length != 3
-                || bands[0] != 0
-                || bands[1] != 1
-                || bands[2] != 2)
+        if (bands.length != 3 || bands[0] != 0 || bands[1] != 1 || bands[2] != 2)
             throw new UnsupportedOperationException();
 
         return this;
@@ -93,7 +91,7 @@ public class SampledSampleModel extends SampleModel {
 
     @Override
     public int[] getSampleSize() {
-        return new int[]{8, 8, 8};
+        return new int[] { 8, 8, 8 };
     }
 
     @Override

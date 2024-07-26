@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.builtin;
 
 import org.miaixz.bus.image.galaxy.data.Code;
@@ -48,10 +48,12 @@ public class AnatomicRegion {
     public static final Code AntecubitalVein = new Code("128553008", "SCT", null, "Antecubital vein");
     public static final Code AnteriorCardiacVein = new Code("194996006", "SCT", null, "Anterior cardiac vein");
     public static final Code AnteriorCerebralArtery = new Code("60176003", "SCT", null, "Anterior cerebral artery");
-    public static final Code AnteriorCommunicatingArtery = new Code("8012006", "SCT", null, "Anterior communicating artery");
+    public static final Code AnteriorCommunicatingArtery = new Code("8012006", "SCT", null,
+            "Anterior communicating artery");
     public static final Code AnteriorSpinalArtery = new Code("17388009", "SCT", null, "Anterior spinal artery");
     public static final Code AnteriorTibialArtery = new Code("68053000", "SCT", null, "Anterior tibial artery");
-    public static final Code AnusRectumSigmoidColon = new Code("110612005", "SCT", null, "Anus, rectum and sigmoid colon");
+    public static final Code AnusRectumSigmoidColon = new Code("110612005", "SCT", null,
+            "Anus, rectum and sigmoid colon");
     public static final Code Aorta = new Code("15825003", "SCT", null, "Aorta");
     public static final Code AorticArch = new Code("57034009", "SCT", null, "Aortic arch");
     public static final Code Appendix = new Code("66754008", "SCT", null, "Appendix");
@@ -192,11 +194,13 @@ public class AnatomicRegion {
     public static final Code LeftHepaticVein = new Code("273202007", "SCT", null, "Left hepatic vein");
     public static final Code LeftHypochondriacRegion = new Code("133945003", "SCT", null, "Left hypochondriac region");
     public static final Code LeftInguinalRegion = new Code("85119005", "SCT", null, "Left inguinal region");
-    public static final Code LeftLowerQuadrantAbdomen = new Code("68505006", "SCT", null, "Left lower quadrant of abdomen");
+    public static final Code LeftLowerQuadrantAbdomen = new Code("68505006", "SCT", null,
+            "Left lower quadrant of abdomen");
     public static final Code LeftLumbarRegion = new Code("1017210004", "SCT", null, "Left lumbar region");
     public static final Code LeftPortalVein = new Code("70253006", "SCT", null, "Left portal vein");
     public static final Code LeftPulmonaryArtery = new Code("50408007", "SCT", null, "Left pulmonary artery");
-    public static final Code LeftUpperQuadrantAbdomen = new Code("86367003", "SCT", null, "Left upper quadrant of abdomen");
+    public static final Code LeftUpperQuadrantAbdomen = new Code("86367003", "SCT", null,
+            "Left upper quadrant of abdomen");
     public static final Code LeftVentricle = new Code("87878005", "SCT", null, "Left ventricle");
     public static final Code LingualArtery = new Code("113264009", "SCT", null, "Lingual artery");
     public static final Code Liver = new Code("10200004", "SCT", null, "Liver");
@@ -222,7 +226,8 @@ public class AnatomicRegion {
     public static final Code Neck = new Code("45048000", "SCT", null, "Neck");
     public static final Code NeckChest = new Code("417437006", "SCT", null, "Neck and Chest");
     public static final Code NeckChestAbdomen = new Code("416152001", "SCT", null, "Neck, Chest and Abdomen");
-    public static final Code NeckChestAbdomenPelvis = new Code("416319003", "SCT", null, "Neck, Chest, Abdomen and Pelvis");
+    public static final Code NeckChestAbdomenPelvis = new Code("416319003", "SCT", null,
+            "Neck, Chest, Abdomen and Pelvis");
     public static final Code Nose = new Code("45206002", "SCT", null, "Nose");
     public static final Code OccipitalArtery = new Code("31145008", "SCT", null, "Occipital artery");
     public static final Code OccipitalVein = new Code("32114007", "SCT", null, "Occipital vein");
@@ -232,13 +237,15 @@ public class AnatomicRegion {
     public static final Code Ovary = new Code("15497006", "SCT", null, "Ovary");
     public static final Code Pancreas = new Code("15776009", "SCT", null, "Pancreas");
     public static final Code PancreaticDuct = new Code("69930009", "SCT", null, "Pancreatic duct");
-    public static final Code PancreaticDuctBileDuctSystems = new Code("110621006", "SCT", null, "Pancreatic duct and bile duct systems");
+    public static final Code PancreaticDuctBileDuctSystems = new Code("110621006", "SCT", null,
+            "Pancreatic duct and bile duct systems");
     public static final Code Parasternal = new Code("91691001", "SCT", null, "Parasternal");
     public static final Code Parathyroid = new Code("111002", "SCT", null, "Parathyroid");
     public static final Code ParotidGland = new Code("45289007", "SCT", null, "Parotid gland");
     public static final Code Patella = new Code("64234005", "SCT", null, "Patella");
     public static final Code Pelvis = new Code("816092008", "SCT", null, "Pelvis");
-    public static final Code PelvisLowerExtremities = new Code("1231522001", "SCT", null, "Pelvis and lower extremities");
+    public static final Code PelvisLowerExtremities = new Code("1231522001", "SCT", null,
+            "Pelvis and lower extremities");
     public static final Code PenileArtery = new Code("282044005", "SCT", null, "Penile artery");
     public static final Code Penis = new Code("18911002", "SCT", null, "Penis");
     public static final Code Perineum = new Code("38864007", "SCT", null, "Perineum");
@@ -252,7 +259,8 @@ public class AnatomicRegion {
     public static final Code PoplitealVein = new Code("56849005", "SCT", null, "Popliteal vein");
     public static final Code PortalVein = new Code("32764006", "SCT", null, "Portal vein");
     public static final Code PosteriorCerebralArtery = new Code("70382005", "SCT", null, "Posterior cerebral artery");
-    public static final Code PosteriorCommunicatingArtery = new Code("43119007", "SCT", null, "Posterior communicating artery");
+    public static final Code PosteriorCommunicatingArtery = new Code("43119007", "SCT", null,
+            "Posterior communicating artery");
     public static final Code PosteriorTibialArtery = new Code("13363002", "SCT", null, "Posterior tibial artery");
     public static final Code ProfundaFemorisArtery = new Code("31677005", "SCT", null, "Profunda femoris artery");
     public static final Code ProfundaFemorisVein = new Code("23438002", "SCT", null, "Profunda femoris vein");
@@ -271,13 +279,16 @@ public class AnatomicRegion {
     public static final Code RightAtrium = new Code("73829009", "SCT", null, "Right atrium");
     public static final Code RightFemoralArtery = new Code("69833005", "SCT", null, "Right femoral artery");
     public static final Code RightHepaticVein = new Code("272998002", "SCT", null, "Right hepatic vein");
-    public static final Code RightHypochondriacRegion = new Code("133946002", "SCT", null, "Right hypochondriac region");
+    public static final Code RightHypochondriacRegion = new Code("133946002", "SCT", null,
+            "Right hypochondriac region");
     public static final Code RightInguinalRegion = new Code("37117007", "SCT", null, "Right inguinal region");
-    public static final Code RightLowerQuadrantAbdomen = new Code("48544008", "SCT", null, "Right lower quadrant of abdomen");
+    public static final Code RightLowerQuadrantAbdomen = new Code("48544008", "SCT", null,
+            "Right lower quadrant of abdomen");
     public static final Code RightLumbarRegion = new Code("1017211000", "SCT", null, "Right lumbar region");
     public static final Code RightPortalVein = new Code("73931004", "SCT", null, "Right portal vein");
     public static final Code RightPulmonaryArtery = new Code("78480002", "SCT", null, "Right pulmonary artery");
-    public static final Code RightUpperQuadrantAbdomen = new Code("50519007", "SCT", null, "Right upper quadrant of abdomen");
+    public static final Code RightUpperQuadrantAbdomen = new Code("50519007", "SCT", null,
+            "Right upper quadrant of abdomen");
     public static final Code RightVentricle = new Code("53085002", "SCT", null, "Right ventricle");
     public static final Code SacroiliacJoint = new Code("39723000", "SCT", null, "Sacroiliac joint");
     public static final Code Sacrum = new Code("54735007", "SCT", null, "Sacrum");
@@ -306,14 +317,18 @@ public class AnatomicRegion {
     public static final Code SubclavianVein = new Code("9454009", "SCT", null, "Subclavian vein");
     public static final Code Subcostal = new Code("19695001", "SCT", null, "Subcostal");
     public static final Code SubmandibularGland = new Code("54019009", "SCT", null, "Submandibular gland");
-    public static final Code SuperficialFemoralArtery = new Code("181349008", "SCT", null, "Superficial femoral artery");
+    public static final Code SuperficialFemoralArtery = new Code("181349008", "SCT", null,
+            "Superficial femoral artery");
     public static final Code SuperficialFemoralVein = new Code("397364003", "SCT", null, "Superficial femoral vein");
-    public static final Code SuperiorLeftPulmonaryVein = new Code("43863001", "SCT", null, "Superior left pulmonary vein");
+    public static final Code SuperiorLeftPulmonaryVein = new Code("43863001", "SCT", null,
+            "Superior left pulmonary vein");
     public static final Code SuperiorMesentericArtery = new Code("42258001", "SCT", null, "Superior mesenteric artery");
-    public static final Code SuperiorRightPulmonaryVein = new Code("8629005", "SCT", null, "Superior right pulmonary vein");
+    public static final Code SuperiorRightPulmonaryVein = new Code("8629005", "SCT", null,
+            "Superior right pulmonary vein");
     public static final Code SuperiorThyroidArtery = new Code("72021004", "SCT", null, "Superior thyroid artery");
     public static final Code SuperiorVenaCava = new Code("48345005", "SCT", null, "Superior vena cava");
-    public static final Code SupraclavicularRegionNeck = new Code("77621008", "SCT", null, "Supraclavicular region of neck");
+    public static final Code SupraclavicularRegionNeck = new Code("77621008", "SCT", null,
+            "Supraclavicular region of neck");
     public static final Code SuprapubicRegion = new Code("11708003", "SCT", null, "Suprapubic region");
     public static final Code TemporomandibularJoint = new Code("53620006", "SCT", null, "Temporomandibular joint");
     public static final Code Testis = new Code("40689003", "SCT", null, "Testis");

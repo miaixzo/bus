@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.DLX_LKUP_01;
 
 /**
@@ -36,13 +36,11 @@ public class PrivateKeyword {
     public static final String PrivateCreator = "DLX_LKUP_01";
 
     public static String valueOf(int tag) {
-    
+
         int tmp = tag & 0xFFE00000;
-        tag &= tmp == 0x60000000 || tmp == 0x70000000
-                   ? 0xFFE0FFFF
-                   : 0xFFFF00FF;
+        tag &= tmp == 0x60000000 || tmp == 0x70000000 ? 0xFFE0FFFF : 0xFFFF00FF;
         switch (tag) {
-                case PrivateTag.GrayPaletteColorLookupTableDescriptor:
+        case PrivateTag.GrayPaletteColorLookupTableDescriptor:
             return "GrayPaletteColorLookupTableDescriptor";
         case PrivateTag.GrayPaletteColorLookupTableData:
             return "GrayPaletteColorLookupTableData";

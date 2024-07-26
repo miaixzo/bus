@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.screw.dialect.mysql;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -45,10 +45,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * mysql 数据库查询
- * 这里需要注意一点，jdbc url 一定要带有 useInformationSchema=true
- * 或者通过配置文件方式配置上,这样才会走 {@link com.mysql.cj.jdbc.DatabaseMetaDataUsingInfoSchema}
- * 元数据查询，查询的数据库表为INFORMATION_SCHEMA
+ * mysql 数据库查询 这里需要注意一点，jdbc url 一定要带有 useInformationSchema=true 或者通过配置文件方式配置上,这样才会走
+ * {@link com.mysql.cj.jdbc.DatabaseMetaDataUsingInfoSchema} 元数据查询，查询的数据库表为INFORMATION_SCHEMA
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -72,7 +70,7 @@ public class MySqlDataBaseQuery extends AbstractDatabaseQuery {
     @Override
     public Database getDataBase() throws InternalException {
         MySqlDatabase model = new MySqlDatabase();
-        //当前数据库名称
+        // 当前数据库名称
         model.setDatabase(getCatalog());
         return model;
     }
@@ -86,10 +84,10 @@ public class MySqlDataBaseQuery extends AbstractDatabaseQuery {
     public List<MySqlTable> getTables() throws InternalException {
         ResultSet resultSet = null;
         try {
-            //查询
+            // 查询
             resultSet = getMetaData().getTables(getCatalog(), getSchema(), Builder.PERCENT_SIGN,
-                    new String[]{"TABLE"});
-            //映射
+                    new String[] { "TABLE" });
+            // 映射
             return Mapping.convertList(resultSet, MySqlTable.class);
         } catch (SQLException e) {
             throw new InternalException(e);
@@ -110,48 +108,44 @@ public class MySqlDataBaseQuery extends AbstractDatabaseQuery {
         Assert.notEmpty(table, "Table name can not be empty!");
         ResultSet resultSet = null;
         try {
-            //查询
+            // 查询
             resultSet = getMetaData().getColumns(getCatalog(), getSchema(), table, Builder.PERCENT_SIGN);
-            //映射
+            // 映射
             List<MySqlColumn> list = Mapping.convertList(resultSet, MySqlColumn.class);
-            //这里处理是为了如果是查询全部列呢？所以处理并获取唯一表名
-            List<String> tableNames = list.stream().map(MySqlColumn::getTableName)
-                    .collect(Collectors.toList()).stream().distinct().collect(Collectors.toList());
+            // 这里处理是为了如果是查询全部列呢？所以处理并获取唯一表名
+            List<String> tableNames = list.stream().map(MySqlColumn::getTableName).collect(Collectors.toList()).stream()
+                    .distinct().collect(Collectors.toList());
             if (CollKit.isEmpty(columnsCaching)) {
-                //查询全部
+                // 查询全部
                 if (table.equals(Builder.PERCENT_SIGN)) {
-                    //获取全部表列信息SQL
+                    // 获取全部表列信息SQL
                     String sql = "SELECT A.TABLE_NAME, A.COLUMN_NAME, A.COLUMN_TYPE, case when LOCATE('(', A.COLUMN_TYPE) > 0 then replace(substring(A.COLUMN_TYPE, LOCATE('(', A.COLUMN_TYPE) + 1), ')', '') else null end COLUMN_LENGTH FROM INFORMATION_SCHEMA.COLUMNS A WHERE A.TABLE_SCHEMA = '%s'";
-                    PreparedStatement statement = prepareStatement(
-                            String.format(sql, getDataBase().getDatabase()));
+                    PreparedStatement statement = prepareStatement(String.format(sql, getDataBase().getDatabase()));
                     resultSet = statement.executeQuery();
                     int fetchSize = 4284;
                     if (resultSet.getFetchSize() < fetchSize) {
                         resultSet.setFetchSize(fetchSize);
                     }
                 }
-                //单表查询
+                // 单表查询
                 else {
-                    //获取表列信息SQL 查询表名、列名、说明、数据类型
+                    // 获取表列信息SQL 查询表名、列名、说明、数据类型
                     String sql = "SELECT A.TABLE_NAME, A.COLUMN_NAME, A.COLUMN_TYPE, case when LOCATE('(', A.COLUMN_TYPE) > 0 then replace(substring(A.COLUMN_TYPE, LOCATE('(', A.COLUMN_TYPE) + 1), ')', '') else null end COLUMN_LENGTH FROM INFORMATION_SCHEMA.COLUMNS A WHERE A.TABLE_SCHEMA = '%s' and A.TABLE_NAME = '%s'";
-                    resultSet = prepareStatement(
-                            String.format(sql, getDataBase().getDatabase(), table)).executeQuery();
+                    resultSet = prepareStatement(String.format(sql, getDataBase().getDatabase(), table)).executeQuery();
                 }
-                List<MySqlColumn> inquires = Mapping.convertList(resultSet,
-                        MySqlColumn.class);
-                //处理列，表名为key，列名为值
-                tableNames.forEach(name -> columnsCaching.put(name, inquires.stream()
-                        .filter(i -> i.getTableName().equals(name)).collect(Collectors.toList())));
+                List<MySqlColumn> inquires = Mapping.convertList(resultSet, MySqlColumn.class);
+                // 处理列，表名为key，列名为值
+                tableNames.forEach(name -> columnsCaching.put(name,
+                        inquires.stream().filter(i -> i.getTableName().equals(name)).collect(Collectors.toList())));
             }
-            //处理备注信息
+            // 处理备注信息
             list.forEach(i -> {
-                //从缓存中根据表名获取列信息
+                // 从缓存中根据表名获取列信息
                 List<Column> columns = columnsCaching.get(i.getTableName());
                 columns.forEach(j -> {
-                    //列名表名一致
-                    if (i.getColumnName().equals(j.getColumnName())
-                            && i.getTableName().equals(j.getTableName())) {
-                        //放入列类型
+                    // 列名表名一致
+                    if (i.getColumnName().equals(j.getColumnName()) && i.getTableName().equals(j.getTableName())) {
+                        // 放入列类型
                         i.setColumnType(j.getColumnType());
                         i.setColumnLength(j.getColumnLength());
                     }
@@ -188,9 +182,9 @@ public class MySqlDataBaseQuery extends AbstractDatabaseQuery {
     public List<? extends PrimaryKey> getPrimaryKeys(String table) throws InternalException {
         ResultSet resultSet = null;
         try {
-            //查询
+            // 查询
             resultSet = getMetaData().getPrimaryKeys(getCatalog(), getSchema(), table);
-            //映射
+            // 映射
             return Mapping.convertList(resultSet, MySqlPrimaryKey.class);
         } catch (SQLException e) {
             throw new InternalException(e);
@@ -212,8 +206,7 @@ public class MySqlDataBaseQuery extends AbstractDatabaseQuery {
             // 由于单条循环查询存在性能问题，所以这里通过自定义SQL查询数据库主键信息
             String sql = "SELECT TABLE_SCHEMA AS TABLE_CAT, NULL AS TABLE_SCHEM, TABLE_NAME, COLUMN_NAME, SEQ_IN_INDEX AS KEY_SEQ, 'PRIMARY' AS PK_NAME FROM INFORMATION_SCHEMA.STATISTICS WHERE TABLE_SCHEMA = '%s' AND INDEX_NAME = 'PRIMARY' ORDER BY TABLE_SCHEMA, TABLE_NAME, INDEX_NAME, SEQ_IN_INDEX";
             // 拼接参数
-            resultSet = prepareStatement(String.format(sql, getDataBase().getDatabase()))
-                    .executeQuery();
+            resultSet = prepareStatement(String.format(sql, getDataBase().getDatabase())).executeQuery();
             return Mapping.convertList(resultSet, MySqlPrimaryKey.class);
         } catch (SQLException e) {
             throw new InternalException(e);

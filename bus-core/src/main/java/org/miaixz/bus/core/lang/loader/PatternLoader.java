@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.loader;
 
 import org.miaixz.bus.core.io.resource.Resource;
@@ -66,11 +66,7 @@ public abstract class PatternLoader extends DelegateLoader implements Loader {
         if (null != filter) {
             allFilter.add(filter);
         }
-        return delegate.load(
-                path(pattern),
-                recursively(pattern),
-                allFilter
-        );
+        return delegate.load(path(pattern), recursively(pattern), allFilter);
     }
 
     /**

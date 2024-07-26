@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -55,9 +55,7 @@ public class CStore {
      * @param files       文件路径的列表
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度信息
      */
-    public static Status process(Node callingNode,
-                                 Node calledNode,
-                                 List<String> files) {
+    public static Status process(Node callingNode, Node calledNode, List<String> files) {
         return process(null, callingNode, calledNode, files);
     }
 
@@ -68,10 +66,7 @@ public class CStore {
      * @param progress    处理的进度
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度信息
      */
-    public static Status process(Node callingNode,
-                                 Node calledNode,
-                                 List<String> files,
-                                 ImageProgress progress) {
+    public static Status process(Node callingNode, Node calledNode, List<String> files, ImageProgress progress) {
         return process(null, callingNode, calledNode, files, progress);
     }
 
@@ -82,10 +77,7 @@ public class CStore {
      * @param files       文件路径的列表
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度信息
      */
-    public static Status process(Args args,
-                                 Node callingNode,
-                                 Node calledNode,
-                                 List<String> files) {
+    public static Status process(Args args, Node callingNode, Node calledNode, List<String> files) {
         return process(args, callingNode, calledNode, files, null);
     }
 
@@ -97,11 +89,8 @@ public class CStore {
      * @param progress    处理的进度
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度信息
      */
-    public static Status process(Args args,
-                                 Node callingNode,
-                                 Node calledNode,
-                                 List<String> files,
-                                 ImageProgress progress) {
+    public static Status process(Args args, Node callingNode, Node calledNode, List<String> files,
+            ImageProgress progress) {
         if (null == callingNode || null == calledNode) {
             throw new IllegalArgumentException("callingNode or calledNode cannot be null!");
         }
@@ -150,14 +139,10 @@ public class CStore {
                     storeSCU.sendFiles();
                     Builder.forceGettingAttributes(dcmState, storeSCU);
                     long t3 = System.currentTimeMillis();
-                    String timeMsg =
-                            MessageFormat.format(
-                                    "DICOM C-STORE connected in {2}ms from {0} to {1}. Stored files in {3}ms. Total size {4}",
-                                    storeSCU.getAAssociateRQ().getCallingAET(),
-                                    storeSCU.getAAssociateRQ().getCalledAET(),
-                                    t2 - t1,
-                                    t3 - t2,
-                                    Builder.humanReadableByte(storeSCU.getTotalSize(), false));
+                    String timeMsg = MessageFormat.format(
+                            "DICOM C-STORE connected in {2}ms from {0} to {1}. Stored files in {3}ms. Total size {4}",
+                            storeSCU.getAAssociateRQ().getCallingAET(), storeSCU.getAAssociateRQ().getCalledAET(),
+                            t2 - t1, t3 - t2, Builder.humanReadableByte(storeSCU.getTotalSize(), false));
                     dcmState = Status.buildMessage(dcmState, timeMsg, null);
                     dcmState.addProcessTime(t1, t2, t3);
                     dcmState.setBytesSize(storeSCU.getTotalSize());
@@ -176,12 +161,8 @@ public class CStore {
             }
         } catch (Exception e) {
             Logger.error("storescu", e);
-            return Status.buildMessage(
-                    new Status(Status.UnableToProcess,
-                            "DICOM Store failed" + Symbol.COLON + Symbol.SPACE + e.getMessage(),
-                            null),
-                    null,
-                    e);
+            return Status.buildMessage(new Status(Status.UnableToProcess,
+                    "DICOM Store failed" + Symbol.COLON + Symbol.SPACE + e.getMessage(), null), null, e);
         } finally {
             IoKit.close(storeSCU);
         }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.io;
 
 import org.miaixz.bus.core.lang.MediaType;
@@ -47,13 +47,8 @@ import java.nio.file.spi.FileTypeDetector;
 public class ImageFileDetector extends FileTypeDetector {
 
     private static boolean isPart10(byte[] b134, int rlen) {
-        return rlen == 134
-                && b134[128] == 'D'
-                && b134[129] == 'I'
-                && b134[130] == 'C'
-                && b134[131] == 'M'
-                && b134[132] == 2
-                && b134[133] == 0;
+        return rlen == 134 && b134[128] == 'D' && b134[129] == 'I' && b134[130] == 'C' && b134[131] == 'M'
+                && b134[132] == 2 && b134[133] == 0;
     }
 
     private static boolean isIVR_LE(byte[] b134, int rlen) {
@@ -67,8 +62,8 @@ public class ImageFileDetector extends FileTypeDetector {
         int tagLE = ByteKit.bytesToTagLE(b134, 0);
         int tagBE = ByteKit.bytesToTagBE(b134, 0);
         VR vr = VR.valueOf(ByteKit.bytesToVR(b134, 4));
-        return vr != null && vr == ElementDictionary.getStandardElementDictionary().vrOf(
-                tagLE >= 0 && tagLE < tagBE ? tagLE : tagBE);
+        return vr != null && vr == ElementDictionary.getStandardElementDictionary()
+                .vrOf(tagLE >= 0 && tagLE < tagBE ? tagLE : tagBE);
     }
 
     @Override

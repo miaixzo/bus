@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.data;
 
 /**
@@ -32,10 +32,7 @@ package org.miaixz.bus.image.galaxy.data;
  * @since Java 17+
  */
 public enum HL7Separator {
-    FIELD("|", "\\F\\"),
-    COMPONENT("^", "\\S\\"),
-    SUBCOMPONENT("&", "\\T\\"),
-    REPETITION("~", "\\R\\"),
+    FIELD("|", "\\F\\"), COMPONENT("^", "\\S\\"), SUBCOMPONENT("&", "\\T\\"), REPETITION("~", "\\R\\"),
     ESCAPE("\\", "\\E\\");
 
     public final String separator;
@@ -47,19 +44,11 @@ public enum HL7Separator {
     }
 
     public static String escapeAll(String s) {
-        return FIELD.escape(
-                COMPONENT.escape(
-                        SUBCOMPONENT.escape(
-                                REPETITION.escape(
-                                        ESCAPE.escape(s)))));
+        return FIELD.escape(COMPONENT.escape(SUBCOMPONENT.escape(REPETITION.escape(ESCAPE.escape(s)))));
     }
 
     public static String unescapeAll(String s) {
-        return ESCAPE.unescape(
-                REPETITION.unescape(
-                        SUBCOMPONENT.unescape(
-                                COMPONENT.unescape(
-                                        FIELD.unescape(s)))));
+        return ESCAPE.unescape(REPETITION.unescape(SUBCOMPONENT.unescape(COMPONENT.unescape(FIELD.unescape(s)))));
     }
 
     public String escape(String s) {

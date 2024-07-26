@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.center.date.DateTime;
@@ -112,7 +112,8 @@ public class DateConverter extends AbstractConverter {
             }
         }
 
-        throw new ConvertException("Can not convert {}:[{}] to {}", value.getClass().getName(), value, targetClass.getName());
+        throw new ConvertException("Can not convert {}:[{}] to {}", value.getClass().getName(), value,
+                targetClass.getName());
     }
 
     /**
@@ -122,7 +123,7 @@ public class DateConverter extends AbstractConverter {
      * @return 目标类型对象
      */
     private java.util.Date wrap(final Class<?> targetClass, final Date date) {
-        if(targetClass == date.getClass()){
+        if (targetClass == date.getClass()) {
             return date;
         }
 
@@ -132,11 +133,11 @@ public class DateConverter extends AbstractConverter {
     /**
      * 时间戳转为子类型，支持：
      * <ul>
-     *     <li>{@link java.util.Date}</li>
-     *     <li>{@link DateTime}</li>
-     *     <li>{@link java.sql.Date}</li>
-     *     <li>{@link java.sql.Time}</li>
-     *     <li>{@link java.sql.Timestamp}</li>
+     * <li>{@link java.util.Date}</li>
+     * <li>{@link DateTime}</li>
+     * <li>{@link java.sql.Date}</li>
+     * <li>{@link java.sql.Time}</li>
+     * <li>{@link java.sql.Timestamp}</li>
      * </ul>
      *
      * @param mills Date

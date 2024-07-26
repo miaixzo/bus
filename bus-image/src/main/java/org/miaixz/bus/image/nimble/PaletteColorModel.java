@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 import org.miaixz.bus.image.Tag;
@@ -39,34 +39,25 @@ import java.awt.image.*;
  */
 public class PaletteColorModel extends ColorModel {
 
-    private static final int[] opaqueBits = {8, 8, 8};
+    private static final int[] opaqueBits = { 8, 8, 8 };
 
     private final LUT lut;
 
-    public PaletteColorModel(int bits, int dataType, ColorSpace cs,
-                             Attributes ds) {
+    public PaletteColorModel(int bits, int dataType, ColorSpace cs, Attributes ds) {
         super(bits, opaqueBits, cs, false, false, OPAQUE, dataType);
-        int[] rDesc = lutDescriptor(ds,
-                Tag.RedPaletteColorLookupTableDescriptor);
-        int[] gDesc = lutDescriptor(ds,
-                Tag.GreenPaletteColorLookupTableDescriptor);
-        int[] bDesc = lutDescriptor(ds,
-                Tag.BluePaletteColorLookupTableDescriptor);
-        byte[] r = lutData(ds, rDesc,
-                Tag.RedPaletteColorLookupTableData,
-                Tag.SegmentedRedPaletteColorLookupTableData);
-        byte[] g = lutData(ds, gDesc,
-                Tag.GreenPaletteColorLookupTableData,
+        int[] rDesc = lutDescriptor(ds, Tag.RedPaletteColorLookupTableDescriptor);
+        int[] gDesc = lutDescriptor(ds, Tag.GreenPaletteColorLookupTableDescriptor);
+        int[] bDesc = lutDescriptor(ds, Tag.BluePaletteColorLookupTableDescriptor);
+        byte[] r = lutData(ds, rDesc, Tag.RedPaletteColorLookupTableData, Tag.SegmentedRedPaletteColorLookupTableData);
+        byte[] g = lutData(ds, gDesc, Tag.GreenPaletteColorLookupTableData,
                 Tag.SegmentedGreenPaletteColorLookupTableData);
-        byte[] b = lutData(ds, bDesc,
-                Tag.BluePaletteColorLookupTableData,
+        byte[] b = lutData(ds, bDesc, Tag.BluePaletteColorLookupTableData,
                 Tag.SegmentedBluePaletteColorLookupTableData);
         lut = LUT.create(bits, r, g, b, rDesc[1], gDesc[1], bDesc[1]);
     }
 
     private PaletteColorModel(PaletteColorModel src, ColorSpace cs) {
-        super(src.pixel_bits, opaqueBits, cs, false, false,
-                src.getTransparency(), src.transferType);
+        super(src.pixel_bits, opaqueBits, cs, false, false, src.getTransparency(), src.transferType);
         int[] rgb = new int[1 << src.pixel_bits];
         for (int i = 0; i < rgb.length; i++) {
             rgb[i] = convertTo(src.getRGB(i), src.getColorSpace(), cs);
@@ -75,17 +66,10 @@ public class PaletteColorModel extends ColorModel {
     }
 
     private static int convertTo(int rgb, ColorSpace src, ColorSpace cs) {
-        float[] from = {
-                scaleRGB(rgb >> 16),
-                scaleRGB(rgb >> 8),
-                scaleRGB(rgb),
-        };
+        float[] from = { scaleRGB(rgb >> 16), scaleRGB(rgb >> 8), scaleRGB(rgb), };
         float[] ciexyz = src.toCIEXYZ(from);
         float[] to = cs.fromCIEXYZ(ciexyz);
-        return 0xff000000
-                | (unscaleRGB(to[0]) << 16)
-                | (unscaleRGB(to[1]) << 8)
-                | (unscaleRGB(to[2]));
+        return 0xff000000 | (unscaleRGB(to[0]) << 16) | (unscaleRGB(to[1]) << 8) | (unscaleRGB(to[2]));
     }
 
     private static int unscaleRGB(float value) {
@@ -106,16 +90,14 @@ public class PaletteColorModel extends ColorModel {
                 throw new IllegalArgumentException("Missing LUT Data!");
             }
             if (bits == 8) {
-                throw new IllegalArgumentException(
-                        "Segmented LUT Data with LUT Descriptor: bits=8");
+                throw new IllegalArgumentException("Segmented LUT Data with LUT Descriptor: bits=8");
             }
             data = new byte[len];
             new InflateSegmentedLut(segm, 0, data, 0).inflate(-1, 0);
         } else if (bits == 16 || data.length != len) {
             if (data.length != len << 1)
-                throw new IllegalArgumentException("Number of actual LUT entries: "
-                        + data.length + " mismatch specified value: "
-                        + len + " in LUT Descriptor");
+                throw new IllegalArgumentException("Number of actual LUT entries: " + data.length
+                        + " mismatch specified value: " + len + " in LUT Descriptor");
             int hilo = ds.bigEndian() ? 0 : 1;
             if (bits == 8)
                 hilo = 1 - hilo; // padded high bits -> use low bits
@@ -134,16 +116,13 @@ public class PaletteColorModel extends ColorModel {
             throw new IllegalArgumentException("Missing LUT Descriptor!");
         }
         if (desc.length != 3) {
-            throw new IllegalArgumentException(
-                    "Illegal number of LUT Descriptor values: " + desc.length);
+            throw new IllegalArgumentException("Illegal number of LUT Descriptor values: " + desc.length);
         }
         if (desc[0] < 0)
-            throw new IllegalArgumentException(
-                    "Illegal LUT Descriptor: len=" + desc[0]);
+            throw new IllegalArgumentException("Illegal LUT Descriptor: len=" + desc[0]);
         int bits = desc[2];
         if (bits != 8 && bits != 16)
-            throw new IllegalArgumentException(
-                    "Illegal LUT Descriptor: bits=" + bits);
+            throw new IllegalArgumentException("Illegal LUT Descriptor: bits=" + bits);
         return desc;
     }
 
@@ -154,8 +133,7 @@ public class PaletteColorModel extends ColorModel {
 
     @Override
     public boolean isCompatibleSampleModel(SampleModel sm) {
-        return sm.getTransferType() == transferType
-                && sm.getNumBands() == 1;
+        return sm.getTransferType() == transferType && sm.getNumBands() == 1;
     }
 
     @Override
@@ -185,20 +163,16 @@ public class PaletteColorModel extends ColorModel {
 
     @Override
     public WritableRaster createCompatibleWritableRaster(int w, int h) {
-        return Raster.createInterleavedRaster(
-                pixel_bits <= 8
-                        ? DataBuffer.TYPE_BYTE
-                        : DataBuffer.TYPE_USHORT,
-                w, h, 1, null);
+        return Raster.createInterleavedRaster(pixel_bits <= 8 ? DataBuffer.TYPE_BYTE : DataBuffer.TYPE_USHORT, w, h, 1,
+                null);
     }
 
     public BufferedImage convertToIntDiscrete(Raster raster) {
         if (!isCompatibleRaster(raster))
-            throw new IllegalArgumentException(
-                    "This raster is not compatible with this PaletteColorModel.");
+            throw new IllegalArgumentException("This raster is not compatible with this PaletteColorModel.");
 
-        ColorModel cm = new DirectColorModel(getColorSpace(), 24,
-                0xff0000, 0x00ff00, 0x0000ff, 0, false, DataBuffer.TYPE_INT);
+        ColorModel cm = new DirectColorModel(getColorSpace(), 24, 0xff0000, 0x00ff00, 0x0000ff, 0, false,
+                DataBuffer.TYPE_INT);
 
         int w = raster.getWidth();
         int h = raster.getHeight();
@@ -236,24 +210,21 @@ public class PaletteColorModel extends ColorModel {
                 int op = read();
                 int n = read();
                 switch (op) {
-                    case 0:
-                        y0 = discreteSegment(n);
-                        break;
-                    case 1:
-                        if (writePos == 0)
-                            throw new IllegalArgumentException(
-                                    "Linear segment cannot be the first segment");
-                        y0 = linearSegment(n, y0, read());
-                        break;
-                    case 2:
-                        if (segs >= 0)
-                            throw new IllegalArgumentException(
-                                    "nested indirect segment at index " + segPos);
-                        y0 = indirectSegment(n, y0);
-                        break;
-                    default:
-                        throw new IllegalArgumentException(
-                                "illegal op code " + op + " at index" + segPos);
+                case 0:
+                    y0 = discreteSegment(n);
+                    break;
+                case 1:
+                    if (writePos == 0)
+                        throw new IllegalArgumentException("Linear segment cannot be the first segment");
+                    y0 = linearSegment(n, y0, read());
+                    break;
+                case 2:
+                    if (segs >= 0)
+                        throw new IllegalArgumentException("nested indirect segment at index " + segPos);
+                    y0 = indirectSegment(n, y0);
+                    break;
+                default:
+                    throw new IllegalArgumentException("illegal op code " + op + " at index" + segPos);
                 }
             }
             return y0;
@@ -261,8 +232,7 @@ public class PaletteColorModel extends ColorModel {
 
         private int read() {
             if (readPos >= segm.length) {
-                throw new IllegalArgumentException(
-                        "Running out of data inflating segmented LUT");
+                throw new IllegalArgumentException("Running out of data inflating segmented LUT");
             }
             return segm[readPos++] & 0xffff;
         }
@@ -270,14 +240,15 @@ public class PaletteColorModel extends ColorModel {
         private void write(int y) {
             if (writePos >= data.length) {
                 throw new IllegalArgumentException(
-                        "Number of entries in inflated segmented LUT exceeds specified value: "
-                                + data.length + " in LUT Descriptor");
+                        "Number of entries in inflated segmented LUT exceeds specified value: " + data.length
+                                + " in LUT Descriptor");
             }
             data[writePos++] = (byte) (y >> 8);
         }
 
         private int discreteSegment(int n) {
-            while (n-- > 0) write(read());
+            while (n-- > 0)
+                write(read());
             return segm[readPos - 1] & 0xffff;
         }
 
@@ -302,11 +273,9 @@ public class PaletteColorModel extends ColorModel {
             mask = (1 << bits) - 1;
         }
 
-        public static LUT create(int bits, byte[] r, byte[] g, byte[] b,
-                                 int rOffset, int gOffset, int bOffset) {
+        public static LUT create(int bits, byte[] r, byte[] g, byte[] b, int rOffset, int gOffset, int bOffset) {
 
-            return r.length == g.length && g.length == b.length
-                    && rOffset == gOffset && gOffset == bOffset
+            return r.length == g.length && g.length == b.length && rOffset == gOffset && gOffset == bOffset
                     ? new Packed(bits, r, g, b, rOffset)
                     : new PerColor(bits, r, g, b, rOffset, gOffset, bOffset);
         }
@@ -336,10 +305,7 @@ public class PaletteColorModel extends ColorModel {
                 this.offset = offset;
                 rgb = new int[length];
                 for (int i = 0; i < r.length; i++)
-                    rgb[i] = 0xff000000
-                            | ((r[i] & 0xff) << 16)
-                            | ((g[i] & 0xff) << 8)
-                            | (b[i] & 0xff);
+                    rgb[i] = 0xff000000 | ((r[i] & 0xff) << 16) | ((g[i] & 0xff) << 8) | (b[i] & 0xff);
             }
 
             Packed(int bits, int[] rgb) {
@@ -383,8 +349,7 @@ public class PaletteColorModel extends ColorModel {
             final int gOffset;
             final int bOffset;
 
-            PerColor(int bits, byte[] r, byte[] g, byte[] b, int rOffset,
-                     int gbOffset, int bOffset) {
+            PerColor(int bits, byte[] r, byte[] g, byte[] b, int rOffset, int gbOffset, int bOffset) {
                 super(bits);
                 this.r = r;
                 this.g = g;
@@ -416,9 +381,7 @@ public class PaletteColorModel extends ColorModel {
 
             @Override
             public int getRGB(int pixel) {
-                return 0xff000000
-                        | (value(pixel, rOffset, r) << 16)
-                        | (value(pixel, gOffset, g) << 8)
+                return 0xff000000 | (value(pixel, rOffset, r) << 16) | (value(pixel, gOffset, g) << 8)
                         | (value(pixel, bOffset, b));
             }
 

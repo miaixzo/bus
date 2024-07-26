@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.microsoft;
 
 import com.alibaba.fastjson.JSONObject;
@@ -61,7 +61,6 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
         super(context, complex);
     }
 
-
     public AbstractMicrosoftProvider(Context context, Complex complex, ExtendCache cache) {
         super(context, complex, cache);
     }
@@ -86,13 +85,10 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
 
         this.checkResponse(accessTokenObject);
 
-        return AccToken.builder()
-                .accessToken(accessTokenObject.getString("access_token"))
-                .expireIn(accessTokenObject.getIntValue("expires_in"))
-                .scope(accessTokenObject.getString("scope"))
+        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
+                .expireIn(accessTokenObject.getIntValue("expires_in")).scope(accessTokenObject.getString("scope"))
                 .tokenType(accessTokenObject.getString("token_type"))
-                .refreshToken(accessTokenObject.getString("refresh_token"))
-                .build();
+                .refreshToken(accessTokenObject.getString("refresh_token")).build();
     }
 
     /**
@@ -114,17 +110,10 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
         String userInfo = Httpx.get(userInfoUrl(accToken), null, header);
         JSONObject object = JSONObject.parseObject(userInfo);
         this.checkResponse(object);
-        return Material.builder()
-                .rawJson(object)
-                .uuid(object.getString("id"))
-                .username(object.getString("userPrincipalName"))
-                .nickname(object.getString("displayName"))
-                .location(object.getString("officeLocation"))
-                .email(object.getString("mail"))
-                .gender(Gender.UNKNOWN)
-                .token(accToken)
-                .source(complex.toString())
-                .build();
+        return Material.builder().rawJson(object).uuid(object.getString("id"))
+                .username(object.getString("userPrincipalName")).nickname(object.getString("displayName"))
+                .location(object.getString("officeLocation")).email(object.getString("mail")).gender(Gender.UNKNOWN)
+                .token(accToken).source(complex.toString()).build();
     }
 
     /**
@@ -135,10 +124,8 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
      */
     @Override
     public Message refresh(AccToken accToken) {
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .data(getToken(refreshTokenUrl(accToken.getRefreshToken())))
-                .build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode())
+                .data(getToken(refreshTokenUrl(accToken.getRefreshToken()))).build();
     }
 
     /**
@@ -151,13 +138,10 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
     public String authorize(String state) {
         // 兼容 MicrosoftScope Entra ID 登录（原微软 AAD）
         String tenantId = StringKit.isEmpty(context.getUnionId()) ? "common" : context.getUnionId();
-        return Builder.fromUrl(String.format(complex.authorize(), tenantId))
-                .queryParam("response_type", "code")
-                .queryParam("client_id", context.getAppKey())
-                .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("state", getRealState(state))
-                .queryParam("response_mode", "query")
-                .queryParam("scope", this.getScopes(Symbol.SPACE, false, this.getDefaultScopes(MicrosoftScope.values())))
+        return Builder.fromUrl(String.format(complex.authorize(), tenantId)).queryParam("response_type", "code")
+                .queryParam("client_id", context.getAppKey()).queryParam("redirect_uri", context.getRedirectUri())
+                .queryParam("state", getRealState(state)).queryParam("response_mode", "query").queryParam("scope",
+                        this.getScopes(Symbol.SPACE, false, this.getDefaultScopes(MicrosoftScope.values())))
                 .build();
     }
 
@@ -170,14 +154,12 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
     @Override
     protected String accessTokenUrl(String code) {
         String tenantId = StringKit.isEmpty(context.getUnionId()) ? "common" : context.getUnionId();
-        return Builder.fromUrl(String.format(complex.accessToken(), tenantId))
-                .queryParam("code", code)
-                .queryParam("client_id", context.getAppKey())
-                .queryParam("client_secret", context.getAppSecret())
+        return Builder.fromUrl(String.format(complex.accessToken(), tenantId)).queryParam("code", code)
+                .queryParam("client_id", context.getAppKey()).queryParam("client_secret", context.getAppSecret())
                 .queryParam("grant_type", "authorization_code")
-                .queryParam("scope", this.getScopes(Symbol.SPACE, false, this.getDefaultScopes(MicrosoftScope.values())))
-                .queryParam("redirect_uri", context.getRedirectUri())
-                .build();
+                .queryParam("scope",
+                        this.getScopes(Symbol.SPACE, false, this.getDefaultScopes(MicrosoftScope.values())))
+                .queryParam("redirect_uri", context.getRedirectUri()).build();
     }
 
     /**
@@ -200,14 +182,12 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
     @Override
     protected String refreshTokenUrl(String refreshToken) {
         String tenantId = StringKit.isEmpty(context.getUnionId()) ? "common" : context.getUnionId();
-        return Builder.fromUrl(String.format(complex.refresh(), tenantId))
-                .queryParam("client_id", context.getAppKey())
-                .queryParam("client_secret", context.getAppSecret())
-                .queryParam("refresh_token", refreshToken)
+        return Builder.fromUrl(String.format(complex.refresh(), tenantId)).queryParam("client_id", context.getAppKey())
+                .queryParam("client_secret", context.getAppSecret()).queryParam("refresh_token", refreshToken)
                 .queryParam("grant_type", "refresh_token")
-                .queryParam("scope", this.getScopes(Symbol.SPACE, false, this.getDefaultScopes(MicrosoftScope.values())))
-                .queryParam("redirect_uri", context.getRedirectUri())
-                .build();
+                .queryParam("scope",
+                        this.getScopes(Symbol.SPACE, false, this.getDefaultScopes(MicrosoftScope.values())))
+                .queryParam("redirect_uri", context.getRedirectUri()).build();
     }
 
 }

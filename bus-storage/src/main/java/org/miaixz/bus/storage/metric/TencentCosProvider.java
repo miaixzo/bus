@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.storage.metric;
 
 import com.qcloud.cos.COSClient;
@@ -67,10 +67,8 @@ public class TencentCosProvider extends AbstractProvider {
         Assert.notBlank(this.context.getSecretKey(), "[secretKey] not defined");
         Assert.notBlank(this.context.getRegion(), "[region] not defined");
 
-        this.client = new COSClient(
-                new BasicCOSCredentials(this.context.getAccessKey(), this.context.getSecretKey()),
-                new ClientConfig(new Region(this.context.getRegion()))
-        );
+        this.client = new COSClient(new BasicCOSCredentials(this.context.getAccessKey(), this.context.getSecretKey()),
+                new ClientConfig(new Region(this.context.getRegion())));
     }
 
     @Override
@@ -81,43 +79,28 @@ public class TencentCosProvider extends AbstractProvider {
     @Override
     public Message download(String bucket, String fileName) {
         this.client.getObjectMetadata(bucket, fileName);
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .errmsg(ErrorCode.SUCCESS.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
     }
 
     @Override
     public Message download(String bucket, String fileName, File file) {
         this.client.getObject(new GetObjectRequest(bucket, fileName), file);
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .errmsg(ErrorCode.SUCCESS.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
     }
 
     @Override
     public Message download(String fileName, File file) {
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
     public Message rename(String oldName, String newName) {
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
     public Message rename(String bucket, String oldName, String newName) {
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
@@ -133,29 +116,20 @@ public class TencentCosProvider extends AbstractProvider {
         ObjectMetadata objectMetadata = new ObjectMetadata();
         try {
             objectMetadata.setContentLength(content.available());
-            PutObjectRequest request = new PutObjectRequest(this.context.getBucket(), fileName, content, objectMetadata);
+            PutObjectRequest request = new PutObjectRequest(this.context.getBucket(), fileName, content,
+                    objectMetadata);
             PutObjectResult result = this.client.putObject(request);
             if (StringKit.isEmpty(result.getETag())) {
-                return Message.builder()
-                        .errcode(ErrorCode.FAILURE.getCode())
-                        .errmsg(ErrorCode.FAILURE.getDesc())
+                return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc())
                         .build();
             }
-            return Message.builder()
-                    .errcode(ErrorCode.SUCCESS.getCode())
-                    .errmsg(ErrorCode.SUCCESS.getDesc())
-                    .data(Material.builder()
-                            .path(this.context.getPrefix() + fileName)
-                            .name(fileName))
-                    .build();
+            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
+                    .data(Material.builder().path(this.context.getPrefix() + fileName).name(fileName)).build();
 
         } catch (IOException e) {
             Logger.error("file upload failed", e.getMessage());
         }
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
@@ -170,46 +144,27 @@ public class TencentCosProvider extends AbstractProvider {
                 new ByteArrayInputStream(content), objectMetadata);
         PutObjectResult result = this.client.putObject(request);
         if (StringKit.isEmpty(result.getETag())) {
-            return Message.builder()
-                    .errcode(ErrorCode.FAILURE.getCode())
-                    .errmsg(ErrorCode.FAILURE.getDesc())
-                    .build();
+            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
         }
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .errmsg(ErrorCode.SUCCESS.getDesc())
-                .data(Material.builder()
-                        .name(fileName)
-                        .path(this.context.getPrefix() + fileName))
-                .build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
+                .data(Material.builder().name(fileName).path(this.context.getPrefix() + fileName)).build();
     }
 
     @Override
     public Message remove(String fileName) {
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
     public Message remove(String bucket, String fileName) {
         this.client.deleteObject(bucket, fileName);
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .errmsg(ErrorCode.SUCCESS.getDesc())
-                .data(Material.builder()
-                        .name(fileName)
-                        .path(this.context.getPrefix() + fileName))
-                .build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
+                .data(Material.builder().name(fileName).path(this.context.getPrefix() + fileName)).build();
     }
 
     @Override
     public Message remove(String bucket, Path path) {
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
 }

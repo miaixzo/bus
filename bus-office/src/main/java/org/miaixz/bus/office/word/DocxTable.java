@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.word;
 
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -162,8 +162,7 @@ public class DocxTable {
     }
 
     /**
-     * 获取或创建新行
-     * 存在则直接返回，不存在创建新的行
+     * 获取或创建新行 存在则直接返回，不存在创建新的行
      *
      * @param table {@link XWPFTable}
      * @param index 索引（行号），从0开始
@@ -179,8 +178,7 @@ public class DocxTable {
     }
 
     /**
-     * 获取或创建新单元格
-     * 存在则直接返回，不存在创建新的单元格
+     * 获取或创建新单元格 存在则直接返回，不存在创建新的单元格
      *
      * @param row   {@link XWPFTableRow} 行
      * @param index index 索引（列号），从0开始

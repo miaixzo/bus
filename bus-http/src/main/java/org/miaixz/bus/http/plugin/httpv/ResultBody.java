@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.plugin.httpv;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -131,7 +131,8 @@ public class ResultBody implements CoverResult.Body {
             throw new IllegalStateException("Task executor is null!");
         }
         if (cached) {
-            throw new IllegalStateException("After the cache is turned on, you cannot set a download progress callback!");
+            throw new IllegalStateException(
+                    "After the cache is turned on, you cannot set a download progress callback!");
         }
         this.onProcess = onProcess;
         return this;
@@ -180,8 +181,8 @@ public class ResultBody implements CoverResult.Body {
             if (stepBytes <= 0) {
                 stepBytes = Progress.DEFAULT_STEP_BYTES;
             }
-            return new ProgressStream(input, onProcess, totalBytes, stepBytes,
-                    rangeIgnored ? 0 : rangeStart, executor.getExecutor(onIO));
+            return new ProgressStream(input, onProcess, totalBytes, stepBytes, rangeIgnored ? 0 : rangeStart,
+                    executor.getExecutor(onIO));
         }
         return input;
     }
@@ -203,7 +204,7 @@ public class ResultBody implements CoverResult.Body {
         if (null != body) {
             return body.charStream();
         }
-        return new CharArrayReader(new char[]{});
+        return new CharArrayReader(new char[] {});
     }
 
     @Override
@@ -249,8 +250,7 @@ public class ResultBody implements CoverResult.Body {
                 throw new InternalException("Cannot create file [" + file.getAbsolutePath() + "]", e);
             }
         }
-        return executor.download(coverHttp, file, toByteStream(),
-                getRangeStart());
+        return executor.download(coverHttp, file, toByteStream(), getRangeStart());
     }
 
     @Override
@@ -271,7 +271,8 @@ public class ResultBody implements CoverResult.Body {
     public Downloads toFolder(File dir) {
         if (dir.exists() && !dir.isDirectory()) {
             response.close();
-            throw new InternalException("File download failed：[" + dir.getAbsolutePath() + "] Already exists and is not a directory !");
+            throw new InternalException(
+                    "File download failed：[" + dir.getAbsolutePath() + "] Already exists and is not a directory !");
         }
         if (!dir.exists()) {
             dir.mkdirs();
@@ -282,7 +283,8 @@ public class ResultBody implements CoverResult.Body {
     @Override
     public CoverResult.Body cache() {
         if (null != onProcess) {
-            throw new IllegalStateException("After the cache is turned on, you cannot set a download progress callback!");
+            throw new IllegalStateException(
+                    "After the cache is turned on, you cannot set a download progress callback!");
         }
         cached = true;
         return this;
@@ -372,8 +374,8 @@ public class ResultBody implements CoverResult.Body {
             fileName = fileName.substring(fileName.lastIndexOf(Symbol.SLASH) + 1);
         } else {
             try {
-                fileName = URLDecoder.decode(fileName.substring(
-                        fileName.indexOf("filename=") + 9), Charset.DEFAULT_UTF_8);
+                fileName = URLDecoder.decode(fileName.substring(fileName.indexOf("filename=") + 9),
+                        Charset.DEFAULT_UTF_8);
             } catch (UnsupportedEncodingException e) {
                 throw new InternalException("Failed to decode file name", e);
             }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.watch;
 
 import java.io.Serializable;
@@ -32,8 +32,7 @@ import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 
 /**
- * 空白WatchListener
- * 用户继承此类后实现需要监听的方法
+ * 空白WatchListener 用户继承此类后实现需要监听的方法
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -24,17 +24,17 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy;
 
 import java.nio.Buffer;
 
 /**
- * Utility to avoid {@link NoSuchMethodError} on builds with Java 9 running on Java 7 or Java 8
- * caused by overloaded methods for derived classes of {@link Buffer} with covariant return types
- * for {@link Buffer#clear()}, {@link Buffer#flip()}, {@link Buffer#limit(int)}, {@link Buffer#mark()},
- * {@link Buffer#position(int)}, {@link Buffer#reset()}, {@link Buffer#rewind()} added in Java 9.
- * Usage: replace {@code buffer.clear()} by {@code SafeBuffer.clear(buffer)}, ...
+ * Utility to avoid {@link NoSuchMethodError} on builds with Java 9 running on Java 7 or Java 8 caused by overloaded
+ * methods for derived classes of {@link Buffer} with covariant return types for {@link Buffer#clear()},
+ * {@link Buffer#flip()}, {@link Buffer#limit(int)}, {@link Buffer#mark()}, {@link Buffer#position(int)},
+ * {@link Buffer#reset()}, {@link Buffer#rewind()} added in Java 9. Usage: replace {@code buffer.clear()} by
+ * {@code SafeBuffer.clear(buffer)}, ...
  *
  * @author Kimi Liu
  * @since Java 17+

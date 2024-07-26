@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.builtin;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -45,14 +45,9 @@ import java.util.List;
 public class MultiframeExtractor {
 
     private static final HashMap<String, Impl> impls = new HashMap<>(8);
-    private static final int[] EXCLUDE_TAGS = {
-            Tag.ReferencedImageEvidenceSequence,
-            Tag.SourceImageEvidenceSequence,
-            Tag.DimensionIndexSequence,
-            Tag.NumberOfFrames,
-            Tag.SharedFunctionalGroupsSequence,
-            Tag.PerFrameFunctionalGroupsSequence,
-            Tag.PixelData};
+    private static final int[] EXCLUDE_TAGS = { Tag.ReferencedImageEvidenceSequence, Tag.SourceImageEvidenceSequence,
+            Tag.DimensionIndexSequence, Tag.NumberOfFrames, Tag.SharedFunctionalGroupsSequence,
+            Tag.PerFrameFunctionalGroupsSequence, Tag.PixelData };
 
     static {
         impls.put(UID.EnhancedCTImageStorage.uid, Impl.EnhancedCTImageExtractor);
@@ -63,9 +58,12 @@ public class MultiframeExtractor {
         impls.put(UID.XRay3DAngiographicImageStorage.uid, Impl.XRay3DAngiographicImageExtractor);
         impls.put(UID.NuclearMedicineImageStorage.uid, Impl.NuclearMedicineImageExtractor);
         impls.put(UID.UltrasoundMultiFrameImageStorage.uid, Impl.UltrasoundMultiFrameImageExtractor);
-        impls.put(UID.MultiFrameGrayscaleByteSecondaryCaptureImageStorage.uid, Impl.MultiFrameGrayscaleByteSecondaryCaptureImageExtractor);
-        impls.put(UID.MultiFrameGrayscaleWordSecondaryCaptureImageStorage.uid, Impl.MultiFrameGrayscaleWordSecondaryCaptureImageExtractor);
-        impls.put(UID.MultiFrameTrueColorSecondaryCaptureImageStorage.uid, Impl.MultiFrameTrueColorSecondaryCaptureImageExtractor);
+        impls.put(UID.MultiFrameGrayscaleByteSecondaryCaptureImageStorage.uid,
+                Impl.MultiFrameGrayscaleByteSecondaryCaptureImageExtractor);
+        impls.put(UID.MultiFrameGrayscaleWordSecondaryCaptureImageStorage.uid,
+                Impl.MultiFrameGrayscaleWordSecondaryCaptureImageExtractor);
+        impls.put(UID.MultiFrameTrueColorSecondaryCaptureImageStorage.uid,
+                Impl.MultiFrameTrueColorSecondaryCaptureImageExtractor);
         impls.put(UID.XRayAngiographicImageStorage.uid, Impl.XRayAngiographicImageExtractor);
         impls.put(UID.XRayRadiofluoroscopicImageStorage.uid, Impl.XRayRadiofluoroscopicImageExtractor);
         impls.put(UID.RTImageStorage.uid, Impl.RTImageExtractor);
@@ -88,8 +86,7 @@ public class MultiframeExtractor {
     private static Impl implFor(String mfcuid) {
         Impl impl = impls.get(mfcuid);
         if (impl == null)
-            throw new IllegalArgumentException(
-                    "Unsupported SOP Class: " + mfcuid);
+            throw new IllegalArgumentException("Unsupported SOP Class: " + mfcuid);
         return impl;
     }
 
@@ -97,8 +94,7 @@ public class MultiframeExtractor {
         return preserveSeriesInstanceUID;
     }
 
-    public final void setPreserveSeriesInstanceUID(
-            boolean preserveSeriesInstanceUID) {
+    public final void setPreserveSeriesInstanceUID(boolean preserveSeriesInstanceUID) {
         this.preserveSeriesInstanceUID = preserveSeriesInstanceUID;
     }
 
@@ -139,8 +135,7 @@ public class MultiframeExtractor {
      * @return 旧式单幅图像
      */
     public Attributes extract(Attributes emf, int frame) {
-        return implFor(emf.getString(Tag.SOPClassUID))
-                .extract(this, emf, frame);
+        return implFor(emf.getString(Tag.SOPClassUID)).extract(this, emf, frame);
     }
 
     private Attributes extract(Attributes emf, int frame, String cuid, boolean enhanced) {
@@ -149,8 +144,7 @@ public class MultiframeExtractor {
         if (enhanced) {
             Attributes sfgs = emf.getNestedDataset(Tag.SharedFunctionalGroupsSequence);
             if (sfgs == null)
-                throw new IllegalArgumentException(
-                        "Missing (5200,9229) Shared Functional Groups Sequence");
+                throw new IllegalArgumentException("Missing (5200,9229) Shared Functional Groups Sequence");
             Attributes fgs = emf.getNestedDataset(Tag.PerFrameFunctionalGroupsSequence, frame);
             if (fgs == null)
                 throw new IllegalArgumentException(
@@ -162,13 +156,12 @@ public class MultiframeExtractor {
         }
         addPixelData(dest, emf, frame);
         dest.setString(Tag.SOPClassUID, VR.UI, cuid);
-        dest.setString(Tag.SOPInstanceUID, VR.UI, uidMapper.get(
-                dest.getString(Tag.SOPInstanceUID)) + Symbol.C_DOT + (frame + 1));
+        dest.setString(Tag.SOPInstanceUID, VR.UI,
+                uidMapper.get(dest.getString(Tag.SOPInstanceUID)) + Symbol.C_DOT + (frame + 1));
         dest.setString(Tag.InstanceNumber, VR.IS,
                 createInstanceNumber(dest.getString(Tag.InstanceNumber, Normal.EMPTY), frame));
         if (!preserveSeriesInstanceUID)
-            dest.setString(Tag.SeriesInstanceUID, VR.UI, uidMapper.get(
-                    dest.getString(Tag.SeriesInstanceUID)));
+            dest.setString(Tag.SeriesInstanceUID, VR.UI, uidMapper.get(dest.getString(Tag.SeriesInstanceUID)));
         adjustReferencedImages(dest, Tag.ReferencedImageSequence);
         adjustReferencedImages(dest, Tag.SourceImageSequence);
         return dest;
@@ -180,7 +173,7 @@ public class MultiframeExtractor {
             return;
 
         ArrayList<Attributes> newRefs = new ArrayList<>();
-        for (Iterator<Attributes> itr = sq.iterator(); itr.hasNext(); ) {
+        for (Iterator<Attributes> itr = sq.iterator(); itr.hasNext();) {
             Attributes ref = itr.next();
             String cuid = legacySOPClassUID(ref.getString(Tag.ReferencedSOPClassUID));
             if (cuid == null)
@@ -189,8 +182,7 @@ public class MultiframeExtractor {
             itr.remove();
             String iuid = uidMapper.get(ref.getString(Tag.ReferencedSOPInstanceUID));
             int[] frames = ref.getInts(Tag.ReferencedFrameNumber);
-            int n = frames == null ? nofAccessor.getNumberOfFrames(iuid)
-                    : frames.length;
+            int n = frames == null ? nofAccessor.getNumberOfFrames(iuid) : frames.length;
             ref.remove(Tag.ReferencedFrameNumber);
             ref.setString(Tag.ReferencedSOPClassUID, VR.UI, cuid);
             for (int i = 0; i < n; i++) {
@@ -208,8 +200,7 @@ public class MultiframeExtractor {
         dest.addSelected(fgs, Tag.ReferencedImageSequence);
         Attributes fg;
         for (int sqTag : fgs.tags())
-            if (sqTag != Tag.ReferencedImageSequence
-                    && (fg = fgs.getNestedDataset(sqTag)) != null)
+            if (sqTag != Tag.ReferencedImageSequence && (fg = fgs.getNestedDataset(sqTag)) != null)
                 dest.addAll(fg);
     }
 
@@ -217,11 +208,9 @@ public class MultiframeExtractor {
         VR.Holder vr = new VR.Holder();
         Object pixelData = src.getValue(Tag.PixelData, vr);
         if (pixelData instanceof byte[]) {
-            dest.setBytes(Tag.PixelData, vr.vr, extractPixelData(
-                    (byte[]) pixelData, frame, calcFrameLength(src)));
+            dest.setBytes(Tag.PixelData, vr.vr, extractPixelData((byte[]) pixelData, frame, calcFrameLength(src)));
         } else if (pixelData instanceof BulkData) {
-            dest.setValue(Tag.PixelData, vr.vr, extractPixelData(
-                    (BulkData) pixelData, frame, calcFrameLength(src)));
+            dest.setValue(Tag.PixelData, vr.vr, extractPixelData((BulkData) pixelData, frame, calcFrameLength(src)));
         } else {
             Fragments destFrags = dest.newFragments(Tag.PixelData, vr.vr, 2);
             destFrags.add(null);
@@ -229,10 +218,8 @@ public class MultiframeExtractor {
         }
     }
 
-    private BulkData extractPixelData(BulkData src, int frame,
-                                      int length) {
-        return new BulkData(src.uriWithoutOffsetAndLength(),
-                src.offset() + (long) frame * length, length,
+    private BulkData extractPixelData(BulkData src, int frame, int length) {
+        return new BulkData(src.uriWithoutOffsetAndLength(), src.offset() + (long) frame * length, length,
                 src.bigEndian());
     }
 
@@ -243,9 +230,7 @@ public class MultiframeExtractor {
     }
 
     private int calcFrameLength(Attributes src) {
-        return src.getInt(Tag.Rows, 0)
-                * src.getInt(Tag.Columns, 0)
-                * (src.getInt(Tag.BitsAllocated, 8) >> 3)
+        return src.getInt(Tag.Rows, 0) * src.getInt(Tag.Columns, 0) * (src.getInt(Tag.BitsAllocated, 8) >> 3)
                 * src.getInt(Tag.NumberOfSamples, 1);
     }
 
@@ -255,8 +240,7 @@ public class MultiframeExtractor {
     }
 
     private enum Impl {
-        EnhancedCTImageExtractor(UID.CTImageStorage.uid, true),
-        EnhancedMRImageExtractor(UID.MRImageStorage.uid, true) {
+        EnhancedCTImageExtractor(UID.CTImageStorage.uid, true), EnhancedMRImageExtractor(UID.MRImageStorage.uid, true) {
             Attributes extract(MultiframeExtractor mfe, Attributes emf, int frame) {
                 Attributes sf = super.extract(mfe, emf, frame);
                 setEchoTime(sf);
@@ -286,8 +270,7 @@ public class MultiframeExtractor {
                     list.add("IR");
                 if ("YES".equals(sf.getString(Tag.EchoPlanarPulseSequence)))
                     list.add("EP");
-                sf.setString(Tag.ScanningSequence, VR.CS,
-                        list.toArray(new String[list.size()]));
+                sf.setString(Tag.ScanningSequence, VR.CS, list.toArray(new String[list.size()]));
             }
 
             void setSequenceVariant(Attributes sf) {
@@ -308,8 +291,7 @@ public class MultiframeExtractor {
                     list.add("OSP");
                 if (list.isEmpty())
                     list.add("NONE");
-                sf.setString(Tag.SequenceVariant, VR.CS,
-                        list.toArray(new String[list.size()]));
+                sf.setString(Tag.SequenceVariant, VR.CS, list.toArray(new String[list.size()]));
             }
 
             void setScanOptions(Attributes sf) {
@@ -338,8 +320,7 @@ public class MultiframeExtractor {
                 String fc = sf.getString(Tag.FlowCompensation);
                 if (fc != null && !"NONE".equals(fc))
                     list.add("FC");
-                sf.setString(Tag.ScanOptions, VR.CS,
-                        list.toArray(new String[list.size()]));
+                sf.setString(Tag.ScanOptions, VR.CS, list.toArray(new String[list.size()]));
             }
 
         },

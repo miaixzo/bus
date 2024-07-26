@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.cipher;
 
 import org.bouncycastle.crypto.*;
@@ -40,10 +40,10 @@ import java.util.Arrays;
 /**
  * 基于BouncyCastle库封装的加密解密实现，包装包括：
  * <ul>
- *     <li>{@link BufferedBlockCipher}</li>
- *     <li>{@link BlockCipher}</li>
- *     <li>{@link StreamCipher}</li>
- *     <li>{@link AEADBlockCipher}</li>
+ * <li>{@link BufferedBlockCipher}</li>
+ * <li>{@link BlockCipher}</li>
+ * <li>{@link StreamCipher}</li>
+ * <li>{@link AEADBlockCipher}</li>
  * </ul>
  *
  * @author Kimi Liu

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.stream;
 
 import java.io.IOException;
@@ -35,10 +35,9 @@ import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * A {@link SeekableByteChannel} implementation that wraps a byte[].
- * When this channel is used for writing an internal buffer grows to accommodate incoming data.
- * The natural size limit is the value of {@link Integer#MAX_VALUE} and it is not possible to {@link
- * #position(long) set the position} or {@link #truncate truncate} to a value bigger than that.
+ * A {@link SeekableByteChannel} implementation that wraps a byte[]. When this channel is used for writing an internal
+ * buffer grows to accommodate incoming data. The natural size limit is the value of {@link Integer#MAX_VALUE} and it is
+ * not possible to {@link #position(long) set the position} or {@link #truncate truncate} to a value bigger than that.
  * Internal buffer can be accessed via SeekableInMemoryByteChannel.array().
  *
  * @author Kimi Liu
@@ -54,8 +53,8 @@ public class SeekableInMemoryByteChannel implements SeekableByteChannel {
     /**
      * Constructor taking a byte array.
      *
-     * <p>This constructor is intended to be used with pre-allocated buffer or when reading from a
-     * given byte array.
+     * <p>
+     * This constructor is intended to be used with pre-allocated buffer or when reading from a given byte array.
      *
      * @param data input data or pre-allocated array.
      */
@@ -72,8 +71,8 @@ public class SeekableInMemoryByteChannel implements SeekableByteChannel {
     }
 
     /**
-     * Constructor taking a size of storage to be allocated.
-     * Creates a channel and allocates internal storage of a given size.
+     * Constructor taking a size of storage to be allocated. Creates a channel and allocates internal storage of a given
+     * size.
      *
      * @param size size of internal buffer to allocate, in bytes.
      */
@@ -82,10 +81,9 @@ public class SeekableInMemoryByteChannel implements SeekableByteChannel {
     }
 
     /**
-     * Returns this channel's position.
-     * This method violates the contract of {@link SeekableByteChannel#position()} as it will not
-     * throw any exception when invoked on a closed channel. Instead it will return the position the
-     * channel had when close has been called.
+     * Returns this channel's position. This method violates the contract of {@link SeekableByteChannel#position()} as
+     * it will not throw any exception when invoked on a closed channel. Instead it will return the position the channel
+     * had when close has been called.
      */
     @Override
     public long position() {
@@ -103,10 +101,9 @@ public class SeekableInMemoryByteChannel implements SeekableByteChannel {
     }
 
     /**
-     * Returns the current size of entity to which this channel is connected.
-     * This method violates the contract of {@link SeekableByteChannel#size} as it will not throw
-     * any exception when invoked on a closed channel. Instead it will return the size the channel had
-     * when close has been called.
+     * Returns the current size of entity to which this channel is connected. This method violates the contract of
+     * {@link SeekableByteChannel#size} as it will not throw any exception when invoked on a closed channel. Instead it
+     * will return the size the channel had when close has been called.
      */
     @Override
     public long size() {
@@ -114,9 +111,8 @@ public class SeekableInMemoryByteChannel implements SeekableByteChannel {
     }
 
     /**
-     * Truncates the entity, to which this channel is connected, to the given size.
-     * This method violates the contract of {@link SeekableByteChannel#truncate} as it will not
-     * throw any exception when invoked on a closed channel.
+     * Truncates the entity, to which this channel is connected, to the given size. This method violates the contract of
+     * {@link SeekableByteChannel#truncate} as it will not throw any exception when invoked on a closed channel.
      */
     @Override
     public SeekableByteChannel truncate(long newSize) {

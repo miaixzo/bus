@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.hl7.net;
 
 import org.miaixz.bus.image.metric.Connection;
@@ -45,10 +45,8 @@ public class HL7DeviceExtension extends DeviceExtension {
     private static final long serialVersionUID = -1L;
 
     static {
-        Connection.registerTCPProtocolHandler(
-                Connection.Protocol.HL7, HL7ProtocolHandler.INSTANCE);
-        Connection.registerTCPProtocolHandler(
-                Connection.Protocol.HL7_MLLP2, HL7ProtocolHandler.INSTANCE);
+        Connection.registerTCPProtocolHandler(Connection.Protocol.HL7, HL7ProtocolHandler.INSTANCE);
+        Connection.registerTCPProtocolHandler(Connection.Protocol.HL7_MLLP2, HL7ProtocolHandler.INSTANCE);
     }
 
     private final LinkedHashMap<String, HL7Application> hl7apps = new LinkedHashMap<>();
@@ -60,9 +58,7 @@ public class HL7DeviceExtension extends DeviceExtension {
     public void verifyNotUsed(Connection conn) {
         for (HL7Application app : hl7apps.values())
             if (app.getConnections().contains(conn))
-                throw new IllegalStateException(conn
-                        + " used by HL7 Application: "
-                        + app.getApplicationName());
+                throw new IllegalStateException(conn + " used by HL7 Application: " + app.getApplicationName());
     }
 
     public void addHL7Application(HL7Application hl7App) {
@@ -128,11 +124,9 @@ public class HL7DeviceExtension extends DeviceExtension {
     UnparsedHL7Message onMessage(Connection conn, Socket s, UnparsedHL7Message msg) throws HL7Exception {
         HL7Application hl7App = getHL7Application(msg.msh().getReceivingApplicationWithFacility(), true);
         if (hl7App == null || !hl7App.isInstalled() || !hl7App.getConnections().contains(conn))
-            throw new HL7Exception(
-                    new ERRSegment(msg.msh())
-                            .setHL7ErrorCode(ERRSegment.TABLE_VALUE_NOT_FOUND)
-                            .setErrorLocation(ERRSegment.RECEIVING_APPLICATION)
-                            .setUserMessage("Receiving Application and/or Facility not recognized"));
+            throw new HL7Exception(new ERRSegment(msg.msh()).setHL7ErrorCode(ERRSegment.TABLE_VALUE_NOT_FOUND)
+                    .setErrorLocation(ERRSegment.RECEIVING_APPLICATION)
+                    .setUserMessage("Receiving Application and/or Facility not recognized"));
         return hl7App.onMessage(conn, s, msg);
     }
 

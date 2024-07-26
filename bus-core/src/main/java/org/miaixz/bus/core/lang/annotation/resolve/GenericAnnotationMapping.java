@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.annotation.resolve;
 
 import org.miaixz.bus.core.text.CharsBacker;
@@ -132,13 +132,9 @@ public class GenericAnnotationMapping implements AnnotationMapping<Annotation> {
      */
     @Override
     public <R> R getAttributeValue(final String attributeName, final Class<R> attributeType) {
-        return Stream.of(attributes)
-                .filter(attribute -> CharsBacker.equals(attribute.getName(), attributeName))
-                .filter(attribute -> ClassKit.isAssignable(attributeType, attribute.getReturnType()))
-                .findFirst()
-                .map(method -> MethodKit.invoke(annotation, method))
-                .map(attributeType::cast)
-                .orElse(null);
+        return Stream.of(attributes).filter(attribute -> CharsBacker.equals(attribute.getName(), attributeName))
+                .filter(attribute -> ClassKit.isAssignable(attributeType, attribute.getReturnType())).findFirst()
+                .map(method -> MethodKit.invoke(annotation, method)).map(attributeType::cast).orElse(null);
     }
 
     /**

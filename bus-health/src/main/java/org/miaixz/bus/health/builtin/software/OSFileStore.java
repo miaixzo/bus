@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.software;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -59,7 +59,7 @@ public interface OSFileStore {
      * Label of the File System. An optional replacement for the name on Windows and Linux.
      *
      * @return The volume label of the file system. Only relevant on Windows and on Linux, if assigned; otherwise
-     * defaults to the FileSystem name. On other operating systems is redundant with the name.
+     *         defaults to the FileSystem name. On other operating systems is redundant with the name.
      */
     String getLabel();
 

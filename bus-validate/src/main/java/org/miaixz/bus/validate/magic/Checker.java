@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.validate.magic;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -60,8 +60,7 @@ public class Checker {
      * @return 校验结果
      * @throws ValidateException 如果校验环境的fast设置为true, 则校验失败时立刻抛出该异常
      */
-    public Collector object(Verified verified, Material material)
-            throws ValidateException {
+    public Collector object(Verified verified, Material material) throws ValidateException {
         Collector collector = new Collector(verified);
         Context context = verified.getContext();
 
@@ -95,24 +94,20 @@ public class Checker {
                     String[] xSkip = null == verified.getContext().getSkip() ? null : verified.getContext().getSkip();
 
                     // 过滤当前需跳过的属性
-                    if (ArrayKit.isNotEmpty(xSkip)
-                            && Arrays.asList(xSkip).contains(field.getName())) {
+                    if (ArrayKit.isNotEmpty(xSkip) && Arrays.asList(xSkip).contains(field.getName())) {
                         continue;
                     }
                     // 过滤当前需要校验的属性
-                    if (ArrayKit.isNotEmpty(xFields)
-                            && !Arrays.asList(xFields).contains(field.getName())) {
+                    if (ArrayKit.isNotEmpty(xFields) && !Arrays.asList(xFields).contains(field.getName())) {
                         continue;
                     }
                     // 属性校验开始
                     verified.getContext().setInside(false);
                     verified = new Verified(value, annotations, verified.getContext(), field.getName());
 
-                    if (null != value && Provider.isCollection(value)
-                            && hasInside(annotations)) {
+                    if (null != value && Provider.isCollection(value) && hasInside(annotations)) {
                         collector.collect(doCollectionInside(verified));
-                    } else if (null != value && Provider.isArray(value)
-                            && hasInside(annotations)) {
+                    } else if (null != value && Provider.isArray(value) && hasInside(annotations)) {
                         collector.collect(doArrayInside(verified));
                     }
                     if (verified.getList().isEmpty()) {
@@ -139,14 +134,14 @@ public class Checker {
     private Collector doObject(Verified verified, Material material) {
         Matcher matcher = (Matcher) Registry.getInstance().require(material.getName(), material.getClazz());
         if (ObjectKit.isEmpty(matcher)) {
-            throw new NoSuchException(String.format("无法找到指定的校验器, name:%s, class:%s",
-                    material.getName(),
+            throw new NoSuchException(String.format("无法找到指定的校验器, name:%s, class:%s", material.getName(),
                     null == material.getClazz() ? Normal.NULL : material.getClazz().getName()));
         }
         Object validatedTarget = verified.getObject();
         if (ObjectKit.isNotEmpty(validatedTarget) && material.isArray() && Provider.isArray(validatedTarget)) {
             return doArrayObject(verified, material);
-        } else if (ObjectKit.isNotEmpty(validatedTarget) && material.isArray() && Provider.isCollection(validatedTarget)) {
+        } else if (ObjectKit.isNotEmpty(validatedTarget) && material.isArray()
+                && Provider.isCollection(validatedTarget)) {
             return doCollection(verified, material);
         } else {
             boolean result = matcher.on(validatedTarget, material.getAnnotation(), verified.getContext());
@@ -168,7 +163,7 @@ public class Checker {
         Collector collector = new Collector(verified);
         Collection<?> collection = (Collection<?>) verified.getObject();
         for (Object item : collection) {
-            Verified itemTarget = new Verified(item, new Annotation[]{material.getAnnotation()},
+            Verified itemTarget = new Verified(item, new Annotation[] { material.getAnnotation() },
                     verified.getContext());
             Collector checked = itemTarget.access();
             collector.collect(checked);
@@ -188,8 +183,8 @@ public class Checker {
         Collector collector = new Collector(verified);
         Object[] array = (Object[]) verified.getObject();
         for (int i = 0; i < array.length; i++) {
-            Verified itemTarget = new Verified(array[i],
-                    new Annotation[]{material.getAnnotation()}, verified.getContext());
+            Verified itemTarget = new Verified(array[i], new Annotation[] { material.getAnnotation() },
+                    verified.getContext());
             Collector checked = itemTarget.access();
             collector.collect(checked);
         }

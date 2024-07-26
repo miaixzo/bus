@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.common;
 
 import org.miaixz.bus.mapper.annotation.RegisterMapper;
@@ -39,8 +39,6 @@ import org.miaixz.bus.mapper.common.sqlserver.InsertSelectiveMapper;
  * @since Java 17+
  */
 @RegisterMapper
-public interface SqlServerMapper<T> extends
-        InsertMapper<T>,
-        InsertSelectiveMapper<T> {
+public interface SqlServerMapper<T> extends InsertMapper<T>, InsertSelectiveMapper<T> {
 
 }

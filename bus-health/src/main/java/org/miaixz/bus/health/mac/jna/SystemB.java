@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.mac.jna;
 
 import com.sun.jna.Native;
@@ -75,7 +75,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     /**
      * Mac connection info
      */
-    @FieldOrder({"ut_user", "ut_id", "ut_line", "ut_pid", "ut_type", "ut_tv", "ut_host", "ut_pad"})
+    @FieldOrder({ "ut_user", "ut_id", "ut_line", "ut_pid", "ut_type", "ut_tv", "ut_host", "ut_pad" })
     class MacUtmpx extends Structure {
         public byte[] ut_user = new byte[UTX_USERSIZE]; // login name
         public byte[] ut_id = new byte[UTX_IDSIZE]; // id
@@ -90,7 +90,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     /**
      * Mac file descriptor info
      */
-    @FieldOrder({"proc_fd", "proc_fdtype"})
+    @FieldOrder({ "proc_fd", "proc_fdtype" })
     class ProcFdInfo extends Structure {
         public int proc_fd;
         public int proc_fdtype;
@@ -99,8 +99,8 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     /**
      * Mac internet socket info
      */
-    @FieldOrder({"insi_fport", "insi_lport", "insi_gencnt", "insi_flags", "insi_flow", "insi_vflag", "insi_ip_ttl",
-            "rfu_1", "insi_faddr", "insi_laddr", "insi_v4", "insi_v6"})
+    @FieldOrder({ "insi_fport", "insi_lport", "insi_gencnt", "insi_flags", "insi_flow", "insi_vflag", "insi_ip_ttl",
+            "rfu_1", "insi_faddr", "insi_laddr", "insi_v4", "insi_v6" })
     class InSockInfo extends Structure {
         public int insi_fport; /* foreign port */
         public int insi_lport; /* local port */
@@ -121,7 +121,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     /**
      * Mac TCP socket info
      */
-    @FieldOrder({"tcpsi_ini", "tcpsi_state", "tcpsi_timer", "tcpsi_mss", "tcpsi_flags", "rfu_1", "tcpsi_tp"})
+    @FieldOrder({ "tcpsi_ini", "tcpsi_state", "tcpsi_timer", "tcpsi_mss", "tcpsi_flags", "rfu_1", "tcpsi_tp" })
     class TcpSockInfo extends Structure {
         public InSockInfo tcpsi_ini;
         public int tcpsi_state;
@@ -135,9 +135,9 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     /**
      * Mack IP Socket Info
      */
-    @FieldOrder({"soi_stat", "soi_so", "soi_pcb", "soi_type", "soi_protocol", "soi_family", "soi_options",
+    @FieldOrder({ "soi_stat", "soi_so", "soi_pcb", "soi_type", "soi_protocol", "soi_family", "soi_options",
             "soi_linger", "soi_state", "soi_qlen", "soi_incqlen", "soi_qlimit", "soi_timeo", "soi_error", "soi_oobmark",
-            "soi_rcv", "soi_snd", "soi_kind", "rfu_1", "soi_proto"})
+            "soi_rcv", "soi_snd", "soi_kind", "rfu_1", "soi_proto" })
     class SocketInfo extends Structure {
         public long[] soi_stat = new long[17]; // vinfo_stat
         public long soi_so; /* opaque handle of socket */
@@ -164,7 +164,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     /**
      * Mac file info
      */
-    @FieldOrder({"fi_openflags", "fi_status", "fi_offset", "fi_type", "fi_guardflags"})
+    @FieldOrder({ "fi_openflags", "fi_status", "fi_offset", "fi_type", "fi_guardflags" })
     class ProcFileInfo extends Structure {
         public int fi_openflags;
         public int fi_status;
@@ -176,7 +176,7 @@ public interface SystemB extends com.sun.jna.platform.mac.SystemB, CLibrary {
     /**
      * Mac socket info
      */
-    @FieldOrder({"pfi", "psi"})
+    @FieldOrder({ "pfi", "psi" })
     class SocketFdInfo extends Structure implements AutoCloseable {
         public ProcFileInfo pfi;
         public SocketInfo psi;

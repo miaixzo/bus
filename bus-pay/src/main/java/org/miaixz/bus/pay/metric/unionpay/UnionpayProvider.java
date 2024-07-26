@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pay.metric.unionpay;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
@@ -78,7 +78,8 @@ public class UnionPayProvider extends AbstractProvider<Material, Context> {
      * @return {@link String} 返回完整的接口请求URL
      */
     public String getUrl(Complex complex) {
-        return (complex.isSandbox() ? Registry.UNIONPAY.sandbox() : Registry.UNIONPAY.service()).concat(complex.method());
+        return (complex.isSandbox() ? Registry.UNIONPAY.sandbox() : Registry.UNIONPAY.service())
+                .concat(complex.method());
     }
 
 }

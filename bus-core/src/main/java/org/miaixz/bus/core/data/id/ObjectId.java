@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.data.id;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -36,8 +36,7 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * MongoDB ID生成策略实现
- * ObjectId由以下几部分组成：
+ * MongoDB ID生成策略实现 ObjectId由以下几部分组成：
  *
  * <pre>
  * 1. Time 时间戳。
@@ -50,7 +49,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  *     | 时间戳 | 随机数 | 自增计数器 |
  *     |   4   |   4   |    4     |
  * </pre>
- * 参考：<a href="https://github.com/mongodb/mongo-java-driver/blob/master/bson/src/main/org/bson/types/ObjectId.java">ObjectId</a>
+ * 
+ * 参考：<a href=
+ * "https://github.com/mongodb/mongo-java-driver/blob/master/bson/src/main/org/bson/types/ObjectId.java">ObjectId</a>
  *
  * @author Kimi Liu
  * @since Java 17+

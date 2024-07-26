@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.linux.hardware;
 
 import com.sun.jna.platform.linux.Udev;
@@ -139,21 +139,21 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
 
     private static NetworkIF.IfOperStatus parseIfOperStatus(String operState) {
         switch (operState) {
-            case "up":
-                return NetworkIF.IfOperStatus.UP;
-            case "down":
-                return NetworkIF.IfOperStatus.DOWN;
-            case "testing":
-                return NetworkIF.IfOperStatus.TESTING;
-            case "dormant":
-                return NetworkIF.IfOperStatus.DORMANT;
-            case "notpresent":
-                return NetworkIF.IfOperStatus.NOT_PRESENT;
-            case "lowerlayerdown":
-                return NetworkIF.IfOperStatus.LOWER_LAYER_DOWN;
-            case "unknown":
-            default:
-                return NetworkIF.IfOperStatus.UNKNOWN;
+        case "up":
+            return NetworkIF.IfOperStatus.UP;
+        case "down":
+            return NetworkIF.IfOperStatus.DOWN;
+        case "testing":
+            return NetworkIF.IfOperStatus.TESTING;
+        case "dormant":
+            return NetworkIF.IfOperStatus.DORMANT;
+        case "notpresent":
+            return NetworkIF.IfOperStatus.NOT_PRESENT;
+        case "lowerlayerdown":
+            return NetworkIF.IfOperStatus.LOWER_LAYER_DOWN;
+        case "unknown":
+        default:
+            return NetworkIF.IfOperStatus.UNKNOWN;
         }
     }
 

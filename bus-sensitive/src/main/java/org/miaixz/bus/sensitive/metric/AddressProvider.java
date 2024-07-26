@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.sensitive.metric;
 
 import org.miaixz.bus.core.xyz.CollKit;
@@ -35,9 +35,7 @@ import org.miaixz.bus.sensitive.Context;
 import org.miaixz.bus.sensitive.magic.annotation.Shield;
 
 /**
- * 收货地址脱敏处理类
- * 地址只显示到地区,不显示详细地址；我们要对个人信息增强保护
- * 示例：北京市海淀区****
+ * 收货地址脱敏处理类 地址只显示到地区,不显示详细地址；我们要对个人信息增强保护 示例：北京市海淀区****
  *
  * @author Kimi Liu
  * @since Java 17+

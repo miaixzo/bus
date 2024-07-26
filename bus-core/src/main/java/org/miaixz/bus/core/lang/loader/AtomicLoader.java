@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.loader;
 
 import org.miaixz.bus.core.Loader;
@@ -33,12 +33,13 @@ import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * 原子引用加载器
- * 使用{@link AtomicReference} 实懒加载，过程如下
+ * 原子引用加载器 使用{@link AtomicReference} 实懒加载，过程如下
+ * 
  * <pre>
  * 1. 检查引用中是否有加载好的对象，有则返回
  * 2. 如果没有则初始化一个对象，并再次比较引用中是否有其它线程加载好的对象，无则加入，有则返回已有的
  * </pre>
+ * 
  * 当对象未被创建，对象的初始化操作在多线程情况下可能会被调用多次（多次创建对象），但是总是返回同一对象
  *
  * @param <T> 被加载对象类型
@@ -73,8 +74,7 @@ public abstract class AtomicLoader<T> implements Loader<T>, Serializable {
     }
 
     /**
-     * 初始化被加载的对象
-     * 如果对象从未被加载过，调用此方法初始化加载对象，此方法只被调用一次
+     * 初始化被加载的对象 如果对象从未被加载过，调用此方法初始化加载对象，此方法只被调用一次
      *
      * @return 被加载的对象
      */

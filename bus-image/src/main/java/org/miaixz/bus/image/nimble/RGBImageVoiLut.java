@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 import org.miaixz.bus.core.xyz.ByteKit;
@@ -83,32 +83,19 @@ public class RGBImageVoiLut {
             int[] rDesc = lutDescriptor(ds, Tag.RedPaletteColorLookupTableDescriptor);
             int[] gDesc = lutDescriptor(ds, Tag.GreenPaletteColorLookupTableDescriptor);
             int[] bDesc = lutDescriptor(ds, Tag.BluePaletteColorLookupTableDescriptor);
-            byte[] r =
-                    lutData(
-                            ds,
-                            rDesc,
-                            Tag.RedPaletteColorLookupTableData,
-                            Tag.SegmentedRedPaletteColorLookupTableData);
-            byte[] g =
-                    lutData(
-                            ds,
-                            gDesc,
-                            Tag.GreenPaletteColorLookupTableData,
-                            Tag.SegmentedGreenPaletteColorLookupTableData);
-            byte[] b =
-                    lutData(
-                            ds,
-                            bDesc,
-                            Tag.BluePaletteColorLookupTableData,
-                            Tag.SegmentedBluePaletteColorLookupTableData);
+            byte[] r = lutData(ds, rDesc, Tag.RedPaletteColorLookupTableData,
+                    Tag.SegmentedRedPaletteColorLookupTableData);
+            byte[] g = lutData(ds, gDesc, Tag.GreenPaletteColorLookupTableData,
+                    Tag.SegmentedGreenPaletteColorLookupTableData);
+            byte[] b = lutData(ds, bDesc, Tag.BluePaletteColorLookupTableData,
+                    Tag.SegmentedBluePaletteColorLookupTableData);
 
             if (source.depth() <= CvType.CV_8S && rDesc[1] == 0 && gDesc[1] == 0 && bDesc[1] == 0) {
                 // Replace the original image with the RGB image.
-                return ImageProcessor.applyLUT(source.toMat(), new byte[][]{b, g, r});
+                return ImageProcessor.applyLUT(source.toMat(), new byte[][] { b, g, r });
             } else {
-                LookupTableCV lookup =
-                        new LookupTableCV(
-                                new byte[][]{b, g, r}, new int[]{bDesc[1], gDesc[1], rDesc[1]}, true);
+                LookupTableCV lookup = new LookupTableCV(new byte[][] { b, g, r },
+                        new int[] { bDesc[1], gDesc[1], rDesc[1] }, true);
                 return lookup.lookup(source.toMat());
             }
         }
@@ -128,8 +115,7 @@ public class RGBImageVoiLut {
 
         // Three values of the LUT Descriptor describe the format of the LUT Data in the corresponding
         // Data Element
-        int[] descriptor =
-                Builder.getIntArrayFromDicomElement(dicomLutObject, Tag.LUTDescriptor, null);
+        int[] descriptor = Builder.getIntArrayFromDicomElement(dicomLutObject, Tag.LUTDescriptor, null);
 
         if (descriptor == null) {
             Logger.debug("Missing LUT Descriptor");
@@ -141,8 +127,7 @@ public class RGBImageVoiLut {
             int numEntries = (descriptor[0] <= 0) ? descriptor[0] + 0x10000 : descriptor[0];
 
             // Second value is mapped to the first entry in the LUT.
-            int offset =
-                    (short) descriptor[1]; // necessary to cast in order to get negative value when present
+            int offset = (short) descriptor[1]; // necessary to cast in order to get negative value when present
 
             // Third value specifies the number of bits for each entry in the LUT Data.
             int numBits = descriptor[2];
@@ -207,16 +192,13 @@ public class RGBImageVoiLut {
 
             if (lookupTable != null) {
                 if (dataLength != numEntries) {
-                    Logger.debug(
-                            "LUT Data length \"{}\" mismatch number of entries \"{}\" in LUT Descriptor ",
-                            dataLength,
-                            numEntries);
+                    Logger.debug("LUT Data length \"{}\" mismatch number of entries \"{}\" in LUT Descriptor ",
+                            dataLength, numEntries);
                 }
                 if (dataLength > (1 << numBits)) {
                     Logger.debug(
                             "Illegal LUT Data length \"{}\" with respect to the number of bits in LUT descriptor \"{}\"",
-                            dataLength,
-                            numBits);
+                            dataLength, numBits);
                 }
             }
         }
@@ -224,12 +206,10 @@ public class RGBImageVoiLut {
     }
 
     /**
-     * Minimum output is given for input value below (level - window/2)
-     * Maximum output is given for input value above (level + window/2)
-     * These Minimum and Maximum values depends on bitsStored and signed given attributes. ie :
-     * - when bitsStored=8 bits unsigned => minOutValue=0 and maxOutValue=255
-     * - when bitsStored=8 bits signed => minOutValue=-128 and maxOutValue=127
-     * - when bitsStored=16 bits unsigned => minOutValue= 0 and maxOutValue= 65535
+     * Minimum output is given for input value below (level - window/2) Maximum output is given for input value above
+     * (level + window/2) These Minimum and Maximum values depends on bitsStored and signed given attributes. ie : -
+     * when bitsStored=8 bits unsigned => minOutValue=0 and maxOutValue=255 - when bitsStored=8 bits signed =>
+     * minOutValue=-128 and maxOutValue=127 - when bitsStored=16 bits unsigned => minOutValue= 0 and maxOutValue= 65535
      * - when bitsStored=16 bits signed => minOutValue= -32768 and maxOutValue= 32767
      *
      * @param lutShape
@@ -240,18 +220,10 @@ public class RGBImageVoiLut {
      * @param bitsStored
      * @param isSigned
      * @param inverse
-     * @return a LookupTableJAI for data between minValue and maxValue according to all given
-     * parameters
+     * @return a LookupTableJAI for data between minValue and maxValue according to all given parameters
      */
-    public static LookupTableCV createVoiLut(
-            LutShape lutShape,
-            double window,
-            double level,
-            int minValue,
-            int maxValue,
-            int bitsStored,
-            boolean isSigned,
-            boolean inverse) {
+    public static LookupTableCV createVoiLut(LutShape lutShape, double window, double level, int minValue, int maxValue,
+            int bitsStored, boolean isSigned, boolean inverse) {
 
         if (lutShape == null) {
             return null;
@@ -273,92 +245,51 @@ public class RGBImageVoiLut {
 
         if (lutShape.getFunctionType() != null) {
             switch (lutShape.getFunctionType()) {
-                case LINEAR:
-                    setWindowLevelLinearLut(
-                            win, level, minInValue, outLut, minOutValue, maxOutValue, inverse);
-                    break;
-                case SIGMOID:
-                    setWindowLevelSigmoidLut(
-                            win, level, minInValue, outLut, minOutValue, maxOutValue, inverse);
-                    break;
-                case SIGMOID_NORM:
-                    setWindowLevelSigmoidLut(
-                            win, level, minInValue, outLut, minOutValue, maxOutValue, inverse, true);
-                    break;
-                case LOG:
-                    setWindowLevelLogarithmicLut(
-                            win, level, minInValue, outLut, minOutValue, maxOutValue, inverse);
-                    break;
-                case LOG_INV:
-                    setWindowLevelExponentialLut(
-                            win, level, minInValue, outLut, minOutValue, maxOutValue, inverse);
-                    break;
-                default:
-                    return null;
+            case LINEAR:
+                setWindowLevelLinearLut(win, level, minInValue, outLut, minOutValue, maxOutValue, inverse);
+                break;
+            case SIGMOID:
+                setWindowLevelSigmoidLut(win, level, minInValue, outLut, minOutValue, maxOutValue, inverse);
+                break;
+            case SIGMOID_NORM:
+                setWindowLevelSigmoidLut(win, level, minInValue, outLut, minOutValue, maxOutValue, inverse, true);
+                break;
+            case LOG:
+                setWindowLevelLogarithmicLut(win, level, minInValue, outLut, minOutValue, maxOutValue, inverse);
+                break;
+            case LOG_INV:
+                setWindowLevelExponentialLut(win, level, minInValue, outLut, minOutValue, maxOutValue, inverse);
+                break;
+            default:
+                return null;
             }
         } else {
-            setWindowLevelSequenceLut(
-                    win,
-                    level,
-                    lutShape.getLookup(),
-                    minInValue,
-                    maxInValue,
-                    outLut,
-                    minOutValue,
-                    maxOutValue,
-                    inverse);
+            setWindowLevelSequenceLut(win, level, lutShape.getLookup(), minInValue, maxInValue, outLut, minOutValue,
+                    maxOutValue, inverse);
         }
 
-        return (outLut instanceof byte[])
-                ? new LookupTableCV((byte[]) outLut, minInValue)
-                : //
+        return (outLut instanceof byte[]) ? new LookupTableCV((byte[]) outLut, minInValue) : //
                 new LookupTableCV((short[]) outLut, minInValue, isSigned);
     }
 
     /**
      * @return LookupTable with full range of possible input entries according to bitStored.<br>
-     * Note that isSigned is relevant for both input and output values
+     *         Note that isSigned is relevant for both input and output values
      */
     public static LookupTableCV createRescaleRampLut(LutParameters params) {
-        return createRescaleRampLut(
-                params.getIntercept(),
-                params.getSlope(),
-                params.getBitsStored(),
-                params.isSigned(),
-                params.isOutputSigned(),
-                params.getBitsOutput());
+        return createRescaleRampLut(params.getIntercept(), params.getSlope(), params.getBitsStored(), params.isSigned(),
+                params.isOutputSigned(), params.getBitsOutput());
     }
 
-    public static LookupTableCV createRescaleRampLut(
-            double intercept,
-            double slope,
-            int bitsStored,
-            boolean isSigned,
-            boolean outputSigned,
-            int bitsOutput) {
+    public static LookupTableCV createRescaleRampLut(double intercept, double slope, int bitsStored, boolean isSigned,
+            boolean outputSigned, int bitsOutput) {
 
-        return createRescaleRampLut(
-                intercept,
-                slope,
-                Integer.MIN_VALUE,
-                Integer.MAX_VALUE,
-                bitsStored,
-                isSigned,
-                false,
-                outputSigned,
-                bitsOutput);
+        return createRescaleRampLut(intercept, slope, Integer.MIN_VALUE, Integer.MAX_VALUE, bitsStored, isSigned, false,
+                outputSigned, bitsOutput);
     }
 
-    public static LookupTableCV createRescaleRampLut(
-            double intercept,
-            double slope,
-            int minValue,
-            int maxValue,
-            int bitsStored,
-            boolean isSigned,
-            boolean inverse,
-            boolean outputSigned,
-            int bitsOutput) {
+    public static LookupTableCV createRescaleRampLut(double intercept, double slope, int minValue, int maxValue,
+            int bitsStored, boolean isSigned, boolean inverse, boolean outputSigned, int bitsOutput) {
 
         int stored = (bitsStored > 16) ? 16 : ((bitsStored < 1) ? 1 : bitsStored);
 
@@ -389,28 +320,21 @@ public class RGBImageVoiLut {
             }
         }
 
-        return (outLut instanceof byte[])
-                ? new LookupTableCV((byte[]) outLut, minInValue)
-                : //
+        return (outLut instanceof byte[]) ? new LookupTableCV((byte[]) outLut, minInValue) : //
                 new LookupTableCV((short[]) outLut, minInValue, !outputSigned);
     }
 
     /**
      * Apply the pixel padding to the modality LUT
      */
-    public static void applyPixelPaddingToModalityLUT(
-            LookupTableCV modalityLookup, LutParameters lutparams) {
-        if (modalityLookup != null
-                && lutparams.isApplyPadding()
-                && lutparams.getPaddingMinValue() != null
+    public static void applyPixelPaddingToModalityLUT(LookupTableCV modalityLookup, LutParameters lutparams) {
+        if (modalityLookup != null && lutparams.isApplyPadding() && lutparams.getPaddingMinValue() != null
                 && modalityLookup.getDataType() <= DataBuffer.TYPE_SHORT) {
 
             int paddingValue = lutparams.getPaddingMinValue();
             Integer paddingLimit = lutparams.getPaddingMaxValue();
-            int paddingValueMin =
-                    (paddingLimit == null) ? paddingValue : Math.min(paddingValue, paddingLimit);
-            int paddingValueMax =
-                    (paddingLimit == null) ? paddingValue : Math.max(paddingValue, paddingLimit);
+            int paddingValueMin = (paddingLimit == null) ? paddingValue : Math.min(paddingValue, paddingLimit);
+            int paddingValueMax = (paddingLimit == null) ? paddingValue : Math.max(paddingValue, paddingLimit);
 
             int numPaddingValues = paddingValueMax - paddingValueMin + 1;
             int paddingValuesStartIndex = paddingValueMin - modalityLookup.getOffset();
@@ -441,25 +365,17 @@ public class RGBImageVoiLut {
             if (isDataTypeByte) {
                 byte fillVal = lutparams.isInversePaddingMLUT() ? (byte) 255 : (byte) 0;
                 byte[] data = (byte[]) outLut;
-                Arrays.fill(
-                        data, paddingValuesStartIndex, paddingValuesStartIndex + numPaddingValues, fillVal);
+                Arrays.fill(data, paddingValuesStartIndex, paddingValuesStartIndex + numPaddingValues, fillVal);
             } else {
                 short[] data = (short[]) outLut;
                 short fillVal = lutparams.isInversePaddingMLUT() ? data[data.length - 1] : data[0];
-                Arrays.fill(
-                        data, paddingValuesStartIndex, paddingValuesStartIndex + numPaddingValues, fillVal);
+                Arrays.fill(data, paddingValuesStartIndex, paddingValuesStartIndex + numPaddingValues, fillVal);
             }
         }
     }
 
-    private static void setWindowLevelLinearLutLegacy(
-            double window,
-            double level,
-            int minInValue,
-            Object outLut,
-            int minOutValue,
-            int maxOutValue,
-            boolean inverse) {
+    private static void setWindowLevelLinearLutLegacy(double window, double level, int minInValue, Object outLut,
+            int minOutValue, int maxOutValue, boolean inverse) {
 
         /** Pseudo code defined in Dicom Standard 2011 - PS 3.3 § C.11.2 VOI LUT Module */
         double lowLevel = (level - 0.5) - (window - 1.0) / 2.0;
@@ -473,11 +389,8 @@ public class RGBImageVoiLut {
             } else if ((i + minInValue) > highLevel) {
                 value = maxOutValue;
             } else {
-                value =
-                        (int)
-                                ((((i + minInValue) - (level - 0.5)) / (window - 1.0) + 0.5)
-                                        * (maxOutValue - minOutValue)
-                                        + minOutValue);
+                value = (int) ((((i + minInValue) - (level - 0.5)) / (window - 1.0) + 0.5) * (maxOutValue - minOutValue)
+                        + minOutValue);
             }
 
             value = (value >= maxOutValue) ? maxOutValue : ((value <= minOutValue) ? minOutValue : value);
@@ -491,14 +404,8 @@ public class RGBImageVoiLut {
         }
     }
 
-    private static void setWindowLevelLinearLut(
-            double window,
-            double level,
-            int minInValue,
-            Object outLut,
-            int minOutValue,
-            int maxOutValue,
-            boolean inverse) {
+    private static void setWindowLevelLinearLut(double window, double level, int minInValue, Object outLut,
+            int minOutValue, int maxOutValue, boolean inverse) {
 
         double slope = (maxOutValue - minOutValue) / window;
         double intercept = maxOutValue - slope * (level + (window / 2.0));
@@ -517,28 +424,14 @@ public class RGBImageVoiLut {
         }
     }
 
-    private static void setWindowLevelSigmoidLut(
-            double width,
-            double center,
-            int minInValue,
-            Object outLut,
-            int minOutValue,
-            int maxOutValue,
-            boolean inverse) {
+    private static void setWindowLevelSigmoidLut(double width, double center, int minInValue, Object outLut,
+            int minOutValue, int maxOutValue, boolean inverse) {
 
-        setWindowLevelSigmoidLut(
-                width, center, minInValue, outLut, minOutValue, maxOutValue, inverse, false);
+        setWindowLevelSigmoidLut(width, center, minInValue, outLut, minOutValue, maxOutValue, inverse, false);
     }
 
-    private static void setWindowLevelSigmoidLut(
-            double width,
-            double center,
-            int minInValue,
-            Object outLut,
-            int minOutValue,
-            int maxOutValue,
-            boolean inverse,
-            boolean normalize) {
+    private static void setWindowLevelSigmoidLut(double width, double center, int minInValue, Object outLut,
+            int minOutValue, int maxOutValue, boolean inverse, boolean normalize) {
 
         double nFactor = -20d; // factor defined by default in Dicom standard ( -20*2/10 = -4 )
         double outRange = maxOutValue - (double) minOutValue;
@@ -550,27 +443,21 @@ public class RGBImageVoiLut {
             double lowLevel = center - width / 2d;
             double highLevel = center + width / 2d;
 
-            minValue =
-                    minOutValue
-                            + outRange / (1d + Math.exp((2d * nFactor / 10d) * (lowLevel - center) / width));
-            double maxValue =
-                    minOutValue
-                            + outRange / (1d + Math.exp((2d * nFactor / 10d) * (highLevel - center) / width));
+            minValue = minOutValue + outRange / (1d + Math.exp((2d * nFactor / 10d) * (lowLevel - center) / width));
+            double maxValue = minOutValue
+                    + outRange / (1d + Math.exp((2d * nFactor / 10d) * (highLevel - center) / width));
             outRescaleRatio = (maxOutValue - minOutValue) / Math.abs(maxValue - minValue);
         }
 
         for (int i = 0; i < Array.getLength(outLut); i++) {
-            double value =
-                    outRange / (1d + Math.exp((2d * nFactor / 10d) * (i + minInValue - center) / width));
+            double value = outRange / (1d + Math.exp((2d * nFactor / 10d) * (i + minInValue - center) / width));
 
             if (normalize) {
                 value = (value - minValue) * outRescaleRatio;
             }
 
             value = (int) Math.round(value + minOutValue);
-            value =
-                    (int)
-                            ((value > maxOutValue) ? maxOutValue : ((value < minOutValue) ? minOutValue : value));
+            value = (int) ((value > maxOutValue) ? maxOutValue : ((value < minOutValue) ? minOutValue : value));
             value = (int) (inverse ? (maxOutValue + minOutValue - value) : value);
 
             if (outLut instanceof byte[]) {
@@ -581,28 +468,14 @@ public class RGBImageVoiLut {
         }
     }
 
-    private static void setWindowLevelExponentialLut(
-            double width,
-            double center,
-            int minInValue,
-            Object outLut,
-            int minOutValue,
-            int maxOutValue,
-            boolean inverse) {
+    private static void setWindowLevelExponentialLut(double width, double center, int minInValue, Object outLut,
+            int minOutValue, int maxOutValue, boolean inverse) {
 
-        setWindowLevelExponentialLut(
-                width, center, minInValue, outLut, minOutValue, maxOutValue, inverse, true);
+        setWindowLevelExponentialLut(width, center, minInValue, outLut, minOutValue, maxOutValue, inverse, true);
     }
 
-    private static void setWindowLevelExponentialLut(
-            double width,
-            double center,
-            int minInValue,
-            Object outLut,
-            int minOutValue,
-            int maxOutValue,
-            boolean inverse,
-            boolean normalize) {
+    private static void setWindowLevelExponentialLut(double width, double center, int minInValue, Object outLut,
+            int minOutValue, int maxOutValue, boolean inverse, boolean normalize) {
 
         double nFactor = 20d;
         double outRange = maxOutValue - (double) minOutValue;
@@ -615,8 +488,7 @@ public class RGBImageVoiLut {
             double highLevel = center + width / 2d;
 
             minValue = minOutValue + outRange * Math.exp((nFactor / 10d) * (lowLevel - center) / width);
-            double maxValue =
-                    minOutValue + outRange * Math.exp((nFactor / 10d) * (highLevel - center) / width);
+            double maxValue = minOutValue + outRange * Math.exp((nFactor / 10d) * (highLevel - center) / width);
             outRescaleRatio = (maxOutValue - minOutValue) / Math.abs(maxValue - minValue);
         }
 
@@ -628,9 +500,7 @@ public class RGBImageVoiLut {
             }
 
             value = (int) Math.round(value + minOutValue);
-            value =
-                    (int)
-                            ((value > maxOutValue) ? maxOutValue : ((value < minOutValue) ? minOutValue : value));
+            value = (int) ((value > maxOutValue) ? maxOutValue : ((value < minOutValue) ? minOutValue : value));
             value = (int) (inverse ? (maxOutValue + minOutValue - value) : value);
 
             if (outLut instanceof byte[]) {
@@ -641,28 +511,14 @@ public class RGBImageVoiLut {
         }
     }
 
-    private static void setWindowLevelLogarithmicLut(
-            double width,
-            double center,
-            int minInValue,
-            Object outLut,
-            int minOutValue,
-            int maxOutValue,
-            boolean inverse) {
+    private static void setWindowLevelLogarithmicLut(double width, double center, int minInValue, Object outLut,
+            int minOutValue, int maxOutValue, boolean inverse) {
 
-        setWindowLevelLogarithmicLut(
-                width, center, minInValue, outLut, minOutValue, maxOutValue, inverse, true);
+        setWindowLevelLogarithmicLut(width, center, minInValue, outLut, minOutValue, maxOutValue, inverse, true);
     }
 
-    private static void setWindowLevelLogarithmicLut(
-            double width,
-            double center,
-            int minInValue,
-            Object outLut,
-            int minOutValue,
-            int maxOutValue,
-            boolean inverse,
-            boolean normalize) {
+    private static void setWindowLevelLogarithmicLut(double width, double center, int minInValue, Object outLut,
+            int minOutValue, int maxOutValue, boolean inverse, boolean normalize) {
 
         double nFactor = 20d;
         double outRange = maxOutValue - (double) minOutValue;
@@ -674,10 +530,8 @@ public class RGBImageVoiLut {
             double lowLevel = center - width / 2d;
             double highLevel = center + width / 2d;
 
-            minValue =
-                    minOutValue + outRange * Math.log((nFactor / 10d) * (1 + (lowLevel - center) / width));
-            double maxValue =
-                    minOutValue + outRange * Math.log((nFactor / 10d) * (1 + (highLevel - center) / width));
+            minValue = minOutValue + outRange * Math.log((nFactor / 10d) * (1 + (lowLevel - center) / width));
+            double maxValue = minOutValue + outRange * Math.log((nFactor / 10d) * (1 + (highLevel - center) / width));
 
             outRescaleRatio = (maxOutValue - minOutValue) / Math.abs(maxValue - minValue);
         }
@@ -690,9 +544,7 @@ public class RGBImageVoiLut {
             }
 
             value = (int) Math.round(value + minOutValue);
-            value =
-                    (int)
-                            ((value > maxOutValue) ? maxOutValue : ((value < minOutValue) ? minOutValue : value));
+            value = (int) ((value > maxOutValue) ? maxOutValue : ((value < minOutValue) ? minOutValue : value));
             value = (int) (inverse ? (maxOutValue + minOutValue - value) : value);
 
             if (outLut instanceof byte[]) {
@@ -727,16 +579,8 @@ public class RGBImageVoiLut {
      * @param inverse
      * @return a normalized LookupTableJAI based upon given lutSequence <br>
      */
-    private static void setWindowLevelSequenceLut(
-            double width,
-            double center,
-            LookupTableCV lookupSequence,
-            int minInValue,
-            int maxInValue,
-            Object outLut,
-            int minOutValue,
-            int maxOutValue,
-            boolean inverse) {
+    private static void setWindowLevelSequenceLut(double width, double center, LookupTableCV lookupSequence,
+            int minInValue, int maxInValue, Object outLut, int minOutValue, int maxOutValue, boolean inverse) {
 
         final Object inLutDataArray = getLutDataArray(lookupSequence);
 
@@ -745,10 +589,8 @@ public class RGBImageVoiLut {
         }
 
         // Use this mask to get positive value assuming inLutData value is always unsigned
-        final int lutDataValueMask =
-                inLutDataArray instanceof byte[]
-                        ? 0x000000FF
-                        : (inLutDataArray instanceof short[] ? 0x0000FFFF : 0xFFFFFFFF);
+        final int lutDataValueMask = inLutDataArray instanceof byte[] ? 0x000000FF
+                : (inLutDataArray instanceof short[] ? 0x0000FFFF : 0xFFFFFFFF);
 
         double lowLevel = center - width / 2.0;
         double highLevel = center + width / 2.0;
@@ -789,15 +631,9 @@ public class RGBImageVoiLut {
             int valueUp = lutDataValueMask & Array.getInt(inLutDataArray, inValueRoundUp);
 
             // Linear Interpolation of the output value with respect to the rescaled ratio
-            value =
-                    (int)
-                            ((inValueRoundUp == inValueRoundDown)
-                                    ? valueDown
-                                    : Math.round(
-                                    valueDown
-                                            + (inValueRescaled - inValueRoundDown)
-                                            * (valueUp - valueDown)
-                                            / (inValueRoundUp - inValueRoundDown)));
+            value = (int) ((inValueRoundUp == inValueRoundDown) ? valueDown
+                    : Math.round(valueDown + (inValueRescaled - inValueRoundDown) * (valueUp - valueDown)
+                            / (inValueRoundUp - inValueRoundDown)));
 
             value = (int) Math.round(value * outRescaleRatio);
 
@@ -814,8 +650,7 @@ public class RGBImageVoiLut {
 
     public static double pixel2rescale(LookupTableCV lookup, double pixelValue) {
         if (lookup != null) {
-            if (pixelValue >= lookup.getOffset()
-                    && pixelValue <= lookup.getOffset() + lookup.getNumEntries() - 1) {
+            if (pixelValue >= lookup.getOffset() && pixelValue <= lookup.getOffset() + lookup.getNumEntries() - 1) {
                 return lookup.lookup(0, (int) pixelValue);
             }
         }
@@ -890,12 +725,8 @@ public class RGBImageVoiLut {
         } else if (bits == 16 || odata.get().length != len) {
             data = odata.get();
             if (data.length != len << 1) {
-                throw new IllegalArgumentException(
-                        "Number of actual LUT entries: "
-                                + data.length
-                                + " mismatch specified value: "
-                                + len
-                                + " in LUT Descriptor");
+                throw new IllegalArgumentException("Number of actual LUT entries: " + data.length
+                        + " mismatch specified value: " + len + " in LUT Descriptor");
             }
 
             int hilo = ds.bigEndian() ? 0 : 1;
@@ -911,7 +742,8 @@ public class RGBImageVoiLut {
 
     private static byte[] halfLength(byte[] data, int hilo) {
         byte[] bs = new byte[data.length >> 1];
-        for (int i = 0; i < bs.length; i++) bs[i] = data[(i << 1) | hilo];
+        for (int i = 0; i < bs.length; i++)
+            bs[i] = data[(i << 1) | hilo];
 
         return bs;
     }
@@ -935,21 +767,21 @@ public class RGBImageVoiLut {
                 int op = read();
                 int n = read();
                 switch (op) {
-                    case 0:
-                        y0 = discreteSegment(n);
-                        break;
-                    case 1:
-                        if (writePos == 0)
-                            throw new IllegalArgumentException("Linear segment cannot be the first segment");
-                        y0 = linearSegment(n, y0, read());
-                        break;
-                    case 2:
-                        if (segs >= 0)
-                            throw new IllegalArgumentException("nested indirect segment at index " + segPos);
-                        y0 = indirectSegment(n, y0);
-                        break;
-                    default:
-                        throw new IllegalArgumentException("illegal op code " + op + " at index" + segPos);
+                case 0:
+                    y0 = discreteSegment(n);
+                    break;
+                case 1:
+                    if (writePos == 0)
+                        throw new IllegalArgumentException("Linear segment cannot be the first segment");
+                    y0 = linearSegment(n, y0, read());
+                    break;
+                case 2:
+                    if (segs >= 0)
+                        throw new IllegalArgumentException("nested indirect segment at index " + segPos);
+                    y0 = indirectSegment(n, y0);
+                    break;
+                default:
+                    throw new IllegalArgumentException("illegal op code " + op + " at index" + segPos);
                 }
             }
             return y0;
@@ -965,21 +797,22 @@ public class RGBImageVoiLut {
         private void write(int y) {
             if (writePos >= data.length) {
                 throw new IllegalArgumentException(
-                        "Number of entries in inflated segmented LUT exceeds specified value: "
-                                + data.length
+                        "Number of entries in inflated segmented LUT exceeds specified value: " + data.length
                                 + " in LUT Descriptor");
             }
             data[writePos++] = (byte) (y >> 8);
         }
 
         private int discreteSegment(int n) {
-            while (n-- > 0) write(read());
+            while (n-- > 0)
+                write(read());
             return segm[readPos - 1] & 0xffff;
         }
 
         private int linearSegment(int n, int y0, int y1) {
             int dy = y1 - y0;
-            for (int j = 1; j <= n; j++) write(y0 + dy * j / n);
+            for (int j = 1; j <= n; j++)
+                write(y0 + dy * j / n);
             return y1;
         }
 

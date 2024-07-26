@@ -161,11 +161,11 @@ public @interface Cached {
 ```
 
 |     属性      | 描述                                                  | Ext                                                                        |
-:-----------:|-----------------------------------------------------|---------------------------------------------------------------------------- 
+:-----------:|-----------------------------------------------------|----------------------------------------------------------------------------
 |   `value`   | 指定缓存实现: `CacheXAspect`/`CacheXProxy`的`caches`参数的key | 选填: 默认为注入caches的第一个实现(即`caches`的第一个Entry实例)                                |
 |  `prefix`   | 缓存**key**的统一前缀                                      | 选填: 默认为`""`, 若方法无参或没有`@CacheKey`注解, 则必须在此配置一个`prefix`, 令其成为***缓存静态常量key*** |
 | `condition` | SpEL表达式                                             | 选填: 默认为`""`(`true`), 在CacheX执行前会先eval该表达式, 当表达式值为`true`才会执行缓存逻辑            |
-|  `expire`   | 缓存过期时间(秒)                                           | 选填: 默认为`Expire.FOREVER`                                                    | 
+|  `expire`   | 缓存过期时间(秒)                                           | 选填: 默认为`Expire.FOREVER`                                                    |
 
 ---
 
@@ -180,17 +180,17 @@ public @interface Cached {
 public @interface Invalid {
 
     /**
-     * @return as {@code @Cached} 
+     * @return as {@code @Cached}
      */
     String value() default "";
 
     /**
-     * @return as {@code @Cached} 
+     * @return as {@code @Cached}
      */
     String prefix() default "";
 
     /**
-     * @return as {@code @Cached} 
+     * @return as {@code @Cached}
      */
     String condition() default "";
 }
@@ -252,7 +252,7 @@ public @interface CachedGet {
     /**
      * @return Specifies the start keyExp on every key,
      * if the {@code Method} have non {@code param},
-     * {@code keyExp}consts{@code Method} 
+     * {@code keyExp}consts{@code Method}
      */
     String prefix() default "";
 

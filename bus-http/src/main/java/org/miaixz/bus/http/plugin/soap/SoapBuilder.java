@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.plugin.soap;
 
 import jakarta.xml.soap.*;
@@ -50,9 +50,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * SOAP 支持
- * 此对象用于构建一个SOAP消息，并通过HTTP接口发出消息内容。
- * SOAP消息本质上是一个XML文本，可以通过调用{@link #getString(boolean)} 方法获取消息体
+ * SOAP 支持 此对象用于构建一个SOAP消息，并通过HTTP接口发出消息内容。 SOAP消息本质上是一个XML文本，可以通过调用{@link #getString(boolean)} 方法获取消息体
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -60,9 +58,7 @@ import java.util.Map.Entry;
 public class SoapBuilder {
 
     /**
-     * Soap协议
-     * soap1.1 : text/xml
-     * soap1.2 : application/soap+xml
+     * Soap协议 soap1.1 : text/xml soap1.2 : application/soap+xml
      */
     private final Protocol protocol;
     /**
@@ -127,7 +123,6 @@ public class SoapBuilder {
         init(protocol);
     }
 
-
     /**
      * 创建SOAP客户端，默认使用soap1.2版本协议
      *
@@ -170,7 +165,8 @@ public class SoapBuilder {
      * @param prefix 命名空间前缀， {@code null}表示不使用前缀
      * @return {@link SOAPElement}子节点
      */
-    private static SOAPElement setParam(final SOAPElement ele, final String name, final Object value, final String prefix) {
+    private static SOAPElement setParam(final SOAPElement ele, final String name, final Object value,
+            final String prefix) {
         final SOAPElement childEle;
         try {
             if (StringKit.isNotBlank(prefix)) {
@@ -226,8 +222,7 @@ public class SoapBuilder {
     }
 
     /**
-     * 重置SOAP客户端，用于客户端复用
-     * 重置后需调用serMethod方法重新指定请求方法，并调用setParam方法重新定义参数
+     * 重置SOAP客户端，用于客户端复用 重置后需调用serMethod方法重新指定请求方法，并调用setParam方法重新定义参数
      *
      * @return this
      */
@@ -274,8 +269,7 @@ public class SoapBuilder {
     }
 
     /**
-     * 设置一个header
-     * 如果覆盖模式，则替换之前的值，否则加入到值列表中
+     * 设置一个header 如果覆盖模式，则替换之前的值，否则加入到值列表中
      *
      * @param name       Header名
      * @param value      Header值
@@ -322,7 +316,8 @@ public class SoapBuilder {
      * @param relay          relay属性
      * @return {@link SOAPHeaderElement}
      */
-    public SOAPHeaderElement addSOAPHeader(final QName name, final String actorURI, final String roleUri, final Boolean mustUnderstand, final Boolean relay) {
+    public SOAPHeaderElement addSOAPHeader(final QName name, final String actorURI, final String roleUri,
+            final Boolean mustUnderstand, final Boolean relay) {
         final SOAPHeaderElement ele = addSOAPHeader(name);
         try {
             if (StringKit.isNotBlank(roleUri)) {
@@ -416,9 +411,7 @@ public class SoapBuilder {
     }
 
     /**
-     * 设置请求方法
-     * 方法名自动识别前缀，前缀和方法名使用“:”分隔
-     * 当识别到前缀后，自动添加xmlns属性，关联到默认的namespaceURI
+     * 设置请求方法 方法名自动识别前缀，前缀和方法名使用“:”分隔 当识别到前缀后，自动添加xmlns属性，关联到默认的namespaceURI
      *
      * @param methodName 方法名
      * @return this
@@ -428,9 +421,7 @@ public class SoapBuilder {
     }
 
     /**
-     * 设置请求方法
-     * 方法名自动识别前缀，前缀和方法名使用“:”分隔
-     * 当识别到前缀后，自动添加xmlns属性，关联到传入的namespaceURI
+     * 设置请求方法 方法名自动识别前缀，前缀和方法名使用“:”分隔 当识别到前缀后，自动添加xmlns属性，关联到传入的namespaceURI
      *
      * @param methodName   方法名（可有前缀也可无）
      * @param namespaceURI 命名空间URI
@@ -512,8 +503,7 @@ public class SoapBuilder {
     }
 
     /**
-     * 获取方法节点
-     * 用于创建子节点等操作
+     * 获取方法节点 用于创建子节点等操作
      *
      * @return {@link SOAPBodyElement}
      */
@@ -609,33 +599,26 @@ public class SoapBuilder {
      */
     public Response sendForResponse() {
         try {
-            return Httpz.post().url(this.url)
-                    .addHeader(this.headers)
-                    .addParam(getString(false))
-                    .build()
-                    .execute();
+            return Httpz.post().url(this.url).addHeader(this.headers).addParam(getString(false)).build().execute();
         } catch (Exception e) {
             throw new InternalException(e);
         }
     }
 
     /**
-     * 获取请求的Content-Type，附加编码信息
-     * XML消息体的Content-Type
-     * soap1.1 : text/xml
-     * soap1.2 : application/soap+xml
-     * soap1.1与soap1.2区别:  https://www.cnblogs.com/qlqwjy/p/7577147.html
+     * 获取请求的Content-Type，附加编码信息 XML消息体的Content-Type soap1.1 : text/xml soap1.2 : application/soap+xml soap1.1与soap1.2区别:
+     * https://www.cnblogs.com/qlqwjy/p/7577147.html
      *
      * @return 请求的Content-Type
      */
     private String getXmlContentType() {
         switch (this.protocol) {
-            case SOAP_1_1:
-                return MediaType.TEXT_XML.concat(";charset=" + this.charset.toString());
-            case SOAP_1_2:
-                return MediaType.APPLICATION_SOAP_XML.concat(";charset=" + this.charset.toString());
-            default:
-                throw new InternalException("Unsupported protocol: {}", this.protocol);
+        case SOAP_1_1:
+            return MediaType.TEXT_XML.concat(";charset=" + this.charset.toString());
+        case SOAP_1_2:
+            return MediaType.APPLICATION_SOAP_XML.concat(";charset=" + this.charset.toString());
+        default:
+            throw new InternalException("Unsupported protocol: {}", this.protocol);
         }
     }
 

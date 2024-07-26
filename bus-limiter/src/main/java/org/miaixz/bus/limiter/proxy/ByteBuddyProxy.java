@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.limiter.proxy;
 
 import net.bytebuddy.ByteBuddy;
@@ -57,15 +57,11 @@ public class ByteBuddyProxy {
         Logger.debug("proxy {}.", originalClazz.getSimpleName());
         return new ByteBuddy().subclass(originalClazz)
                 .name(StringKit.format("{}$ByteBuddy${}", originalClazz.getName(), DateKit.current()))
-                .method(ElementMatchers.any())
-                .intercept(InvocationHandlerAdapter.of(new ByteBuddyHandler(this)))
+                .method(ElementMatchers.any()).intercept(InvocationHandlerAdapter.of(new ByteBuddyHandler(this)))
                 .attribute(MethodAttributeAppender.ForInstrumentedMethod.INCLUDING_RECEIVER)
-                .annotateType(bean.getClass().getAnnotations())
-                .make()
-                .load(ByteBuddyProxy.class.getClassLoader(), ClassLoadingStrategy.Default.INJECTION)
-                .getLoaded()
-                .getConstructor()
-                .newInstance();
+                .annotateType(bean.getClass().getAnnotations()).make()
+                .load(ByteBuddyProxy.class.getClassLoader(), ClassLoadingStrategy.Default.INJECTION).getLoaded()
+                .getConstructor().newInstance();
     }
 
 }

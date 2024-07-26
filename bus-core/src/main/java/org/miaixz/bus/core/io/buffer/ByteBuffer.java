@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.buffer;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -37,9 +37,7 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 
 /**
- * 由字节数组段组成的不可变字节字符串 该类的存在是为了实现
- * 缓冲区的有效快照 它被实现为一个段数组,加上一个目录
- * 两个半部分,描述段如何组成这个字节字符串
+ * 由字节数组段组成的不可变字节字符串 该类的存在是为了实现 缓冲区的有效快照 它被实现为一个段数组,加上一个目录 两个半部分,描述段如何组成这个字节字符串
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -177,8 +175,7 @@ public class ByteBuffer extends ByteString {
         for (int s = 0, segmentCount = segments.length; s < segmentCount; s++) {
             int segmentPos = directory[segmentCount + s];
             int nextSegmentOffset = directory[s];
-            System.arraycopy(segments[s], segmentPos, result, segmentOffset,
-                    nextSegmentOffset - segmentOffset);
+            System.arraycopy(segments[s], segmentPos, result, segmentOffset, nextSegmentOffset - segmentOffset);
             segmentOffset = nextSegmentOffset;
         }
         return result;
@@ -222,16 +219,17 @@ public class ByteBuffer extends ByteString {
     }
 
     @Override
-    public boolean rangeEquals(
-            int offset, ByteString other, int otherOffset, int byteCount) {
-        if (offset < 0 || offset > size() - byteCount) return false;
+    public boolean rangeEquals(int offset, ByteString other, int otherOffset, int byteCount) {
+        if (offset < 0 || offset > size() - byteCount)
+            return false;
         for (int s = segment(offset); byteCount > 0; s++) {
             int segmentOffset = s == 0 ? 0 : directory[s - 1];
             int segmentSize = directory[s] - segmentOffset;
             int stepSize = Math.min(byteCount, segmentOffset + segmentSize - offset);
             int segmentPos = directory[segments.length + s];
             int arrayOffset = offset - segmentOffset + segmentPos;
-            if (!other.rangeEquals(otherOffset, segments[s], arrayOffset, stepSize)) return false;
+            if (!other.rangeEquals(otherOffset, segments[s], arrayOffset, stepSize))
+                return false;
             offset += stepSize;
             otherOffset += stepSize;
             byteCount -= stepSize;
@@ -241,8 +239,7 @@ public class ByteBuffer extends ByteString {
 
     @Override
     public boolean rangeEquals(int offset, byte[] other, int otherOffset, int byteCount) {
-        if (offset < 0 || offset > size() - byteCount
-                || otherOffset < 0 || otherOffset > other.length - byteCount) {
+        if (offset < 0 || offset > size() - byteCount || otherOffset < 0 || otherOffset > other.length - byteCount) {
             return false;
         }
         for (int s = segment(offset); byteCount > 0; s++) {
@@ -251,7 +248,8 @@ public class ByteBuffer extends ByteString {
             int stepSize = Math.min(byteCount, segmentOffset + segmentSize - offset);
             int segmentPos = directory[segments.length + s];
             int arrayOffset = offset - segmentOffset + segmentPos;
-            if (!IoKit.arrayRangeEquals(segments[s], arrayOffset, other, otherOffset, stepSize)) return false;
+            if (!IoKit.arrayRangeEquals(segments[s], arrayOffset, other, otherOffset, stepSize))
+                return false;
             offset += stepSize;
             otherOffset += stepSize;
             byteCount -= stepSize;
@@ -280,16 +278,17 @@ public class ByteBuffer extends ByteString {
 
     @Override
     public boolean equals(Object o) {
-        if (o == this) return true;
-        return o instanceof ByteString
-                && ((ByteString) o).size() == size()
+        if (o == this)
+            return true;
+        return o instanceof ByteString && ((ByteString) o).size() == size()
                 && rangeEquals(0, ((ByteString) o), 0, size());
     }
 
     @Override
     public int hashCode() {
         int result = hashCode;
-        if (result != 0) return result;
+        if (result != 0)
+            return result;
 
         result = 1;
         int segmentOffset = 0;

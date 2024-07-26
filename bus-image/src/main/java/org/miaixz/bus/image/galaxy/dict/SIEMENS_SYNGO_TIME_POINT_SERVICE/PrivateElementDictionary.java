@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_TIME_POINT_SERVICE;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,16 +46,17 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.TimePointID:
-            case PrivateTag.TimePointInformation:
-                return VR.LO;
-            case PrivateTag.StudiesinTimePointSequence:
-                return VR.SQ;
+
+        case PrivateTag.TimePointID:
+        case PrivateTag.TimePointInformation:
+            return VR.LO;
+        case PrivateTag.StudiesinTimePointSequence:
+            return VR.SQ;
         }
         return VR.UN;
     }

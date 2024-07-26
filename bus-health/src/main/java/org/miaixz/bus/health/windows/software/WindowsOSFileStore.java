@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.software;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -53,8 +53,8 @@ public class WindowsOSFileStore extends AbstractOSFileStore {
     private long totalInodes;
 
     public WindowsOSFileStore(String name, String volume, String label, String mount, String options, String uuid,
-                              String logicalVolume, String description, String fsType, long freeSpace, long usableSpace, long totalSpace,
-                              long freeInodes, long totalInodes) {
+            String logicalVolume, String description, String fsType, long freeSpace, long usableSpace, long totalSpace,
+            long freeInodes, long totalInodes) {
         super(name, volume, label, mount, options, uuid);
         this.logicalVolume = logicalVolume;
         this.description = description;

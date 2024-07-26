@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.stackoverflow;
 
 import com.alibaba.fastjson.JSONObject;
@@ -77,35 +77,24 @@ public class StackOverflowProvider extends AbstractProvider {
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         this.checkResponse(accessTokenObject);
 
-        return AccToken.builder()
-                .accessToken(accessTokenObject.getString("access_token"))
-                .expireIn(accessTokenObject.getIntValue("expires"))
-                .build();
+        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
+                .expireIn(accessTokenObject.getIntValue("expires")).build();
     }
 
     @Override
     protected Material getUserInfo(AccToken accToken) {
         String userInfoUrl = Builder.fromUrl(this.complex.userInfo())
-                .queryParam("access_token", accToken.getAccessToken())
-                .queryParam("site", "stackoverflow")
-                .queryParam("key", this.context.getUnionId())
-                .build();
+                .queryParam("access_token", accToken.getAccessToken()).queryParam("site", "stackoverflow")
+                .queryParam("key", this.context.getUnionId()).build();
         String response = Httpx.get(userInfoUrl);
         JSONObject object = JSONObject.parseObject(response);
         this.checkResponse(object);
         JSONObject userObj = object.getJSONArray("items").getJSONObject(0);
 
-        return Material.builder()
-                .rawJson(userObj)
-                .uuid(userObj.getString("user_id"))
-                .avatar(userObj.getString("profile_image"))
-                .location(userObj.getString("location"))
-                .nickname(userObj.getString("display_name"))
-                .blog(userObj.getString("website_url"))
-                .gender(Gender.UNKNOWN)
-                .token(accToken)
-                .source(complex.toString())
-                .build();
+        return Material.builder().rawJson(userObj).uuid(userObj.getString("user_id"))
+                .avatar(userObj.getString("profile_image")).location(userObj.getString("location"))
+                .nickname(userObj.getString("display_name")).blog(userObj.getString("website_url"))
+                .gender(Gender.UNKNOWN).token(accToken).source(complex.toString()).build();
     }
 
     /**
@@ -117,7 +106,8 @@ public class StackOverflowProvider extends AbstractProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(super.authorize(state))
-                .queryParam("scope", this.getScopes(Symbol.COMMA, false, this.getDefaultScopes(StackoverflowScope.values())))
+                .queryParam("scope",
+                        this.getScopes(Symbol.COMMA, false, this.getDefaultScopes(StackoverflowScope.values())))
                 .build();
     }
 

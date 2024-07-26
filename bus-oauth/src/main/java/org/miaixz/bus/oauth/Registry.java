@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -770,8 +770,7 @@ public enum Registry implements Complex {
         }
     },
     /**
-     * Okta
-     * 团队/组织的域名不同，此处通过配置动态组装
+     * Okta 团队/组织的域名不同，此处通过配置动态组装
      */
     OKTA {
         @Override
@@ -946,8 +945,7 @@ public enum Registry implements Complex {
         }
 
         /**
-         * 该 API 获取到的是 access token
-         * https://slack.com/api/oauth.token 获取到的是 workspace token
+         * 该 API 获取到的是 access token https://slack.com/api/oauth.token 获取到的是 workspace token
          *
          * @return String
          */

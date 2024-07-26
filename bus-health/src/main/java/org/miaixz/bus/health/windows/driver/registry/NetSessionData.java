@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.driver.registry;
 
 import com.sun.jna.Pointer;
@@ -51,8 +51,8 @@ public final class NetSessionData {
     public static List<OSSession> queryUserSessions() {
         List<OSSession> sessions = new ArrayList<>();
         try (ByRef.CloseablePointerByReference bufptr = new ByRef.CloseablePointerByReference();
-             ByRef.CloseableIntByReference entriesread = new ByRef.CloseableIntByReference();
-             ByRef.CloseableIntByReference totalentries = new ByRef.CloseableIntByReference()) {
+                ByRef.CloseableIntByReference entriesread = new ByRef.CloseableIntByReference();
+                ByRef.CloseableIntByReference totalentries = new ByRef.CloseableIntByReference()) {
             if (0 == NET.NetSessionEnum(null, null, null, 10, bufptr, Netapi32.MAX_PREFERRED_LENGTH, entriesread,
                     totalentries, null)) {
                 Pointer buf = bufptr.getValue();

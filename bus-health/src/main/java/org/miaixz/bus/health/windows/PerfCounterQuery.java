@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows;
 
 import com.sun.jna.platform.win32.COM.Wbemcli;
@@ -70,17 +70,16 @@ public final class PerfCounterQuery {
      * enum.
      *
      * @param <T>          The enum type of {@code propertyEnum}
-     * @param propertyEnum An enum which implements
-     *                     {@link PerfCounterQuery.PdhCounterProperty} and contains the WMI
+     * @param propertyEnum An enum which implements {@link PerfCounterQuery.PdhCounterProperty} and contains the WMI
      *                     field (Enum value) and PDH Counter string (instance and counter)
      * @param perfObject   The PDH object for this counter; all counters on this object will be refreshed at the same
      *                     time
      * @param perfWmiClass The WMI PerfData_RawData_* class corresponding to the PDH object
      * @return An {@link EnumMap} of the values indexed by {@code propertyEnum} on success, or an empty map if both PDH
-     * and WMI queries failed.
+     *         and WMI queries failed.
      */
     public static <T extends Enum<T>> Map<T, Long> queryValues(Class<T> propertyEnum, String perfObject,
-                                                               String perfWmiClass) {
+            String perfWmiClass) {
         if (!FAILED_QUERY_CACHE.contains(perfObject)) {
             Map<T, Long> valueMap = queryValuesFromPDH(propertyEnum, perfObject);
             if (!valueMap.isEmpty()) {
@@ -97,13 +96,12 @@ public final class PerfCounterQuery {
      * Query the a Performance Counter using PDH for values corresponding to the property enum.
      *
      * @param <T>          The enum type of {@code propertyEnum}
-     * @param propertyEnum An enum which implements
-     *                     {@link PerfCounterQuery.PdhCounterProperty} and contains the WMI
+     * @param propertyEnum An enum which implements {@link PerfCounterQuery.PdhCounterProperty} and contains the WMI
      *                     field (Enum value) and PDH Counter string (instance and counter)
      * @param perfObject   The PDH object for this counter; all counters on this object will be refreshed at the same
      *                     time
      * @return An {@link EnumMap} of the values indexed by {@code propertyEnum} on success, or an empty map if the PDH
-     * query failed.
+     *         query failed.
      */
     public static <T extends Enum<T>> Map<T, Long> queryValuesFromPDH(Class<T> propertyEnum, String perfObject) {
         T[] props = propertyEnum.getEnumConstants();
@@ -135,12 +133,11 @@ public final class PerfCounterQuery {
      * Query the a Performance Counter using WMI for values corresponding to the property enum.
      *
      * @param <T>          The enum type of {@code propertyEnum}
-     * @param propertyEnum An enum which implements
-     *                     {@link PerfCounterQuery.PdhCounterProperty} and contains the WMI
+     * @param propertyEnum An enum which implements {@link PerfCounterQuery.PdhCounterProperty} and contains the WMI
      *                     field (Enum value) and PDH Counter string (instance and counter)
      * @param wmiClass     The WMI PerfData_RawData_* class corresponding to the PDH object
      * @return An {@link EnumMap} of the values indexed by {@code propertyEnum} if successful, an empty map if the WMI
-     * query failed.
+     *         query failed.
      */
     public static <T extends Enum<T>> Map<T, Long> queryValuesFromWMI(Class<T> propertyEnum, String wmiClass) {
         WmiQuery<T> query = new WmiQuery<>(wmiClass, propertyEnum);
@@ -149,20 +146,20 @@ public final class PerfCounterQuery {
         if (result.getResultCount() > 0) {
             for (T prop : propertyEnum.getEnumConstants()) {
                 switch (result.getCIMType(prop)) {
-                    case Wbemcli.CIM_UINT16:
-                        valueMap.put(prop, (long) WmiKit.getUint16(result, prop, 0));
-                        break;
-                    case Wbemcli.CIM_UINT32:
-                        valueMap.put(prop, WmiKit.getUint32asLong(result, prop, 0));
-                        break;
-                    case Wbemcli.CIM_UINT64:
-                        valueMap.put(prop, WmiKit.getUint64(result, prop, 0));
-                        break;
-                    case Wbemcli.CIM_DATETIME:
-                        valueMap.put(prop, WmiKit.getDateTime(result, prop, 0).toInstant().toEpochMilli());
-                        break;
-                    default:
-                        throw new ClassCastException("Unimplemented CIM Type Mapping.");
+                case Wbemcli.CIM_UINT16:
+                    valueMap.put(prop, (long) WmiKit.getUint16(result, prop, 0));
+                    break;
+                case Wbemcli.CIM_UINT32:
+                    valueMap.put(prop, WmiKit.getUint32asLong(result, prop, 0));
+                    break;
+                case Wbemcli.CIM_UINT64:
+                    valueMap.put(prop, WmiKit.getUint64(result, prop, 0));
+                    break;
+                case Wbemcli.CIM_DATETIME:
+                    valueMap.put(prop, WmiKit.getDateTime(result, prop, 0).toInstant().toEpochMilli());
+                    break;
+                default:
+                    throw new ClassCastException("Unimplemented CIM Type Mapping.");
                 }
             }
         }

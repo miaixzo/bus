@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cache.support;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -44,7 +44,8 @@ public class SpelCalculator {
 
     private static final ExpressionParser parser = new SpelExpressionParser();
 
-    public static Object calcSpelValueWithContext(String spel, String[] argNames, Object[] argValues, Object defaultValue) {
+    public static Object calcSpelValueWithContext(String spel, String[] argNames, Object[] argValues,
+            Object defaultValue) {
         if (StringKit.isEmpty(spel)) {
             return defaultValue;
         }

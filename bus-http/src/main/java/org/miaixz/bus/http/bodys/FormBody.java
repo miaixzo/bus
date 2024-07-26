@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.bodys;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
@@ -89,9 +89,7 @@ public class FormBody extends RequestBody {
     }
 
     /**
-     * 将此请求写入{@code sink}或测量其内容长度。我们有一种方法可以
-     * 同时确保计数和内容是一致的，特别是当涉及到一些棘手的操作时，比如
-     * 测量报头字符串的编码长度，或者编码整数的位数长度
+     * 将此请求写入{@code sink}或测量其内容长度。我们有一种方法可以 同时确保计数和内容是一致的，特别是当涉及到一些棘手的操作时，比如 测量报头字符串的编码长度，或者编码整数的位数长度
      *
      * @param sink       保存缓冲区
      * @param countBytes 是否统计数量
@@ -108,7 +106,8 @@ public class FormBody extends RequestBody {
         }
 
         for (int i = 0, size = encodedNames.size(); i < size; i++) {
-            if (i > 0) buffer.writeByte(Symbol.C_AND);
+            if (i > 0)
+                buffer.writeByte(Symbol.C_AND);
             buffer.writeUtf8(encodedNames.get(i));
             buffer.writeByte(Symbol.C_EQUAL);
             buffer.writeUtf8(encodedValues.get(i));

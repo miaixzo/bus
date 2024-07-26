@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.plugin.httpz;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
@@ -51,9 +51,7 @@ public abstract class FileInterceptor implements Interceptor, ProgressListener {
     @Override
     public Response intercept(NewChain chain) throws IOException {
         Response rsp = chain.proceed(chain.request());
-        return rsp.newBuilder()
-                .body(new DownloadFileProgressResponseBody(rsp.body(), this))
-                .build();
+        return rsp.newBuilder().body(new DownloadFileProgressResponseBody(rsp.body(), this)).build();
     }
 
     public abstract void updateProgress(long downloadLenth, long totalLength, boolean isFinish);

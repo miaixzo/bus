@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.driver.registry;
 
 import com.sun.jna.Pointer;
@@ -76,8 +76,9 @@ public final class ProcessWtsData {
     private static Map<Integer, WtsInfo> queryProcessWtsMapFromWTS(Collection<Integer> pids) {
         Map<Integer, WtsInfo> wtsMap = new HashMap<>();
         try (ByRef.CloseableIntByReference pCount = new ByRef.CloseableIntByReference(0);
-             ByRef.CloseablePointerByReference ppProcessInfo = new ByRef.CloseablePointerByReference();
-             ByRef.CloseableIntByReference infoLevel1 = new ByRef.CloseableIntByReference(Wtsapi32.WTS_PROCESS_INFO_LEVEL_1)) {
+                ByRef.CloseablePointerByReference ppProcessInfo = new ByRef.CloseablePointerByReference();
+                ByRef.CloseableIntByReference infoLevel1 = new ByRef.CloseableIntByReference(
+                        Wtsapi32.WTS_PROCESS_INFO_LEVEL_1)) {
             if (!Wtsapi32.INSTANCE.WTSEnumerateProcessesEx(Wtsapi32.WTS_CURRENT_SERVER_HANDLE, infoLevel1,
                     Wtsapi32.WTS_ANY_SESSION, ppProcessInfo, pCount)) {
                 Logger.error("Failed to enumerate Processes. Error code: {}", Kernel32.INSTANCE.GetLastError());
@@ -90,9 +91,9 @@ public final class ProcessWtsData {
             for (WTS_PROCESS_INFO_EX info : processInfo) {
                 if (pids == null || pids.contains(info.ProcessId)) {
                     wtsMap.put(info.ProcessId,
-                            new WtsInfo(info.pProcessName, Normal.EMPTY, info.NumberOfThreads, info.PagefileUsage & 0xffff_ffffL,
-                                    info.KernelTime.getValue() / 10_000L, info.UserTime.getValue() / 10_000,
-                                    info.HandleCount));
+                            new WtsInfo(info.pProcessName, Normal.EMPTY, info.NumberOfThreads,
+                                    info.PagefileUsage & 0xffff_ffffL, info.KernelTime.getValue() / 10_000L,
+                                    info.UserTime.getValue() / 10_000, info.HandleCount));
                 }
             }
             // Clean up memory
@@ -135,7 +136,7 @@ public final class ProcessWtsData {
         private final long openFiles;
 
         public WtsInfo(String name, String path, int threadCount, long virtualSize, long kernelTime, long userTime,
-                       long openFiles) {
+                long openFiles) {
             this.name = name;
             this.path = path;
             this.threadCount = threadCount;

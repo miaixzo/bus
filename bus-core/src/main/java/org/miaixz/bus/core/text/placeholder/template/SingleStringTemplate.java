@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text.placeholder.template;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -43,7 +43,9 @@ import java.util.function.UnaryOperator;
 
 /**
  * 单占位符字符串模板
- * <p>例如，"?", "{}", "$$$"</p>
+ * <p>
+ * 例如，"?", "{}", "$$$"
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -59,8 +61,8 @@ public class SingleStringTemplate extends StringTemplate {
      */
     protected String placeholder;
 
-    protected SingleStringTemplate(final String template, final int features, final String placeholder, final char escape,
-                                   final String defaultValue, final UnaryOperator<String> defaultValueHandler) {
+    protected SingleStringTemplate(final String template, final int features, final String placeholder,
+            final char escape, final String defaultValue, final UnaryOperator<String> defaultValueHandler) {
         super(template, escape, defaultValue, defaultValueHandler, features);
 
         Assert.notEmpty(placeholder);
@@ -114,13 +116,15 @@ public class SingleStringTemplate extends StringTemplate {
                 // 存在 双转义符
                 if (delimIndex > 1 && template.charAt(delimIndex - 2) == escape) {
                     // 转义符之前还有一个转义符，形如："//{"，占位符依旧有效
-                    addLiteralSegment(lastIsLiteralSegment, segments, template.substring(handledPosition, delimIndex - 1));
+                    addLiteralSegment(lastIsLiteralSegment, segments,
+                            template.substring(handledPosition, delimIndex - 1));
                     segments.add(singlePlaceholderSegment);
                     lastIsLiteralSegment = false;
                     handledPosition = delimIndex + placeholderLength;
                 } else {
                     // 占位符被转义，形如："/{"，当前字符并不是一个真正的占位符，而是普通字符串的一部分
-                    addLiteralSegment(lastIsLiteralSegment, segments, template.substring(handledPosition, delimIndex - 1) + placeholder.charAt(0));
+                    addLiteralSegment(lastIsLiteralSegment, segments,
+                            template.substring(handledPosition, delimIndex - 1) + placeholder.charAt(0));
                     lastIsLiteralSegment = true;
                     handledPosition = delimIndex + 1;
                 }
@@ -203,8 +207,12 @@ public class SingleStringTemplate extends StringTemplate {
     public static class Builder extends AbstractBuilder<Builder, SingleStringTemplate> {
         /**
          * 单占位符
-         * <p>例如："?"、"{}"</p>
-         * <p>默认为 {@link SingleStringTemplate#DEFAULT_PLACEHOLDER}</p>
+         * <p>
+         * 例如："?"、"{}"
+         * </p>
+         * <p>
+         * 默认为 {@link SingleStringTemplate#DEFAULT_PLACEHOLDER}
+         * </p>
          */
         protected String placeholder;
 

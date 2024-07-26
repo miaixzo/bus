@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.center;
 
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -82,8 +82,7 @@ public class Sign extends Asymmetric<Sign> {
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
      * @param algorithm  {@link Algorithm}
      * @param privateKey 私钥Hex或Base64表示
@@ -94,8 +93,7 @@ public class Sign extends Asymmetric<Sign> {
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
      * @param algorithm  {@link Algorithm}
      * @param privateKey 私钥
@@ -106,8 +104,7 @@ public class Sign extends Asymmetric<Sign> {
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
      * @param algorithm {@link Algorithm}
      * @param keyPair   密钥对（包括公钥和私钥）
@@ -117,8 +114,7 @@ public class Sign extends Asymmetric<Sign> {
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
      * @param algorithm  {@link Algorithm}
      * @param privateKey 私钥
@@ -129,8 +125,7 @@ public class Sign extends Asymmetric<Sign> {
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
      * @param algorithm  非对称加密算法
      * @param privateKey 私钥Base64
@@ -141,24 +136,19 @@ public class Sign extends Asymmetric<Sign> {
     }
 
     /**
-     * 构造
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
      * @param algorithm  算法
      * @param privateKey 私钥
      * @param publicKey  公钥
      */
     public Sign(final String algorithm, final byte[] privateKey, final byte[] publicKey) {
-        this(algorithm,
-                Keeper.generatePrivateKey(algorithm, privateKey),
-                Keeper.generatePublicKey(algorithm, publicKey)
-        );
+        this(algorithm, Keeper.generatePrivateKey(algorithm, privateKey),
+                Keeper.generatePublicKey(algorithm, publicKey));
     }
 
     /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
      * @param algorithm 算法，见{@link Algorithm}
      * @param keyPair   密钥对（包括公钥和私钥）
@@ -170,8 +160,7 @@ public class Sign extends Asymmetric<Sign> {
     /**
      * 构造
      * <p>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
      * @param algorithm  算法
      * @param privateKey 私钥
@@ -274,8 +263,7 @@ public class Sign extends Asymmetric<Sign> {
     }
 
     /**
-     * 生成签名，并转为16进制字符串
-     * 使用默认缓存大小，见 {@link Normal#_8192}
+     * 生成签名，并转为16进制字符串 使用默认缓存大小，见 {@link Normal#_8192}
      *
      * @param data 被签名数据
      * @return 签名
@@ -295,8 +283,7 @@ public class Sign extends Asymmetric<Sign> {
     }
 
     /**
-     * 生成签名，并转为16进制字符串
-     * 使用默认缓存大小，见 {@link Normal#_8192}
+     * 生成签名，并转为16进制字符串 使用默认缓存大小，见 {@link Normal#_8192}
      *
      * @param data         被签名数据
      * @param bufferLength 缓存长度，不足1使用 {@link Normal#_8192} 做为默认值
@@ -382,8 +369,7 @@ public class Sign extends Asymmetric<Sign> {
     }
 
     /**
-     * 设置{@link Certificate} 为PublicKey
-     * 如果Certificate是X509Certificate，我们需要检查是否有密钥扩展
+     * 设置{@link Certificate} 为PublicKey 如果Certificate是X509Certificate，我们需要检查是否有密钥扩展
      *
      * @param certificate {@link Certificate}
      * @return this

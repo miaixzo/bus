@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http;
 
 import java.net.InetAddress;
@@ -33,9 +33,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 解析主机名的IP地址的域名服务。大多数应用程序将使用默认的
- * {@linkplain #SYSTEM SYSTEM DNS服务}，应用程序可能提供
- * 它们自己的实现来使用不同的DNS服务器
+ * 解析主机名的IP地址的域名服务。大多数应用程序将使用默认的 {@linkplain #SYSTEM SYSTEM DNS服务}，应用程序可能提供 它们自己的实现来使用不同的DNS服务器
  * 选择IPv6地址、选择IPv4地址或强制使用特定的已知IP地址
  *
  * @author Kimi Liu
@@ -44,24 +42,23 @@ import java.util.List;
 public interface DnsX {
 
     /**
-     * 使用{@link InetAddress#getAllByName(String)}请求底层操作系统
-     * 查找IP地址的DNS。大多数自定义{@link DnsX}实现应该委托给这个实例.
+     * 使用{@link InetAddress#getAllByName(String)}请求底层操作系统 查找IP地址的DNS。大多数自定义{@link DnsX}实现应该委托给这个实例.
      */
     DnsX SYSTEM = hostname -> {
-        if (null == hostname) throw new UnknownHostException("hostname == null");
+        if (null == hostname)
+            throw new UnknownHostException("hostname == null");
         try {
             return Arrays.asList(InetAddress.getAllByName(hostname));
         } catch (NullPointerException e) {
-            UnknownHostException unknownHostException =
-                    new UnknownHostException("Broken system behaviour for dns lookup of " + hostname);
+            UnknownHostException unknownHostException = new UnknownHostException(
+                    "Broken system behaviour for dns lookup of " + hostname);
             unknownHostException.initCause(e);
             throw unknownHostException;
         }
     };
 
     /**
-     * 返回{@code hostname}的IP地址，按Httpd尝试的顺序排列。如果到地址的连接
-     * 失败，Httpd将重试下一个地址的连接，直到建立连接、耗尽IP地址集或超出限制
+     * 返回{@code hostname}的IP地址，按Httpd尝试的顺序排列。如果到地址的连接 失败，Httpd将重试下一个地址的连接，直到建立连接、耗尽IP地址集或超出限制
      *
      * @param hostname 主机名信息
      * @return ip地址信息

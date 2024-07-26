@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.lang.EnumMap;
@@ -220,30 +220,38 @@ public class ModifierKit {
     }
 
     /**
-     * 设置final的field字段可以被修改
-     * 只要不会被编译器内联优化的 final 属性就可以通过反射有效的进行修改 --  修改后代码中可使用到新的值;
-     * <p>以下属性，编译器会内联优化，无法通过反射修改：</p>
+     * 设置final的field字段可以被修改 只要不会被编译器内联优化的 final 属性就可以通过反射有效的进行修改 -- 修改后代码中可使用到新的值;
+     * <p>
+     * 以下属性，编译器会内联优化，无法通过反射修改：
+     * </p>
      * <ul>
-     *     <li> 基本类型 byte, char, short, int, long, float, double, boolean</li>
-     *     <li> Literal String 类型(直接双引号字符串)</li>
+     * <li>基本类型 byte, char, short, int, long, float, double, boolean</li>
+     * <li>Literal String 类型(直接双引号字符串)</li>
      * </ul>
-     * <p>以下属性，可以通过反射修改：</p>
+     * <p>
+     * 以下属性，可以通过反射修改：
+     * </p>
      * <ul>
-     *     <li>基本类型的包装类 Byte、Character、Short、Long、Float、Double、Boolean</li>
-     *     <li>字符串，通过 new String("")实例化</li>
-     *     <li>自定义java类</li>
+     * <li>基本类型的包装类 Byte、Character、Short、Long、Float、Double、Boolean</li>
+     * <li>字符串，通过 new String("")实例化</li>
+     * <li>自定义java类</li>
      * </ul>
+     * 
      * <pre class="code">
      * {@code
-     *      //示例，移除final修饰符
-     *      class JdbcDialects {private static final List<Number> dialects = new ArrayList<>();}
-     *      Field field = ReflectKit.getField(JdbcDialects.class, fieldName);
-     * 		ReflectKit.removeFinalModify(field);
-     * 		ReflectKit.setFieldValue(JdbcDialects.class, fieldName, dialects);
-     *    }
+     * // 示例，移除final修饰符
+     * class JdbcDialects {
+     *     private static final List<Number> dialects = new ArrayList<>();
+     * }
+     * Field field = ReflectKit.getField(JdbcDialects.class, fieldName);
+     * ReflectKit.removeFinalModify(field);
+     * ReflectKit.setFieldValue(JdbcDialects.class, fieldName, dialects);
+     * }
      * </pre>
      *
-     * <p>JDK9+此方法抛出NoSuchFieldException异常，原因是除非开放，否则模块外无法访问属性</p>
+     * <p>
+     * JDK9+此方法抛出NoSuchFieldException异常，原因是除非开放，否则模块外无法访问属性
+     * </p>
      *
      * @param field 被修改的field，不可以为空
      * @throws InternalException IllegalAccessException等异常包装
@@ -265,9 +273,9 @@ public class ModifierKit {
         }
 
         try {
-            //Field 的 modifiers 是私有的
+            // Field 的 modifiers 是私有的
             modifiersField.setAccessible(true);
-            // & ：位与运算符，按位与；  运算规则：两个数都转为二进制，然后从高位开始比较，如果两个数都为1则为1，否则为0。
+            // & ：位与运算符，按位与； 运算规则：两个数都转为二进制，然后从高位开始比较，如果两个数都为1则为1，否则为0。
             // ~ ：位非运算符，按位取反；运算规则：转成二进制，如果位为0，结果是1，如果位为1，结果是0.
             modifiersField.setInt(field, field.getModifiers() & ~java.lang.reflect.Modifier.FINAL);
         } catch (final IllegalAccessException e) {

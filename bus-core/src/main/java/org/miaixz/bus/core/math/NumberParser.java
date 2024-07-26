@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.math;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -37,19 +37,18 @@ import java.text.ParseException;
 import java.util.Locale;
 
 /**
- * 数字解析器
- * 用于将字符串解析为对应的数字类型，支持包括：
+ * 数字解析器 用于将字符串解析为对应的数字类型，支持包括：
  * <ul>
- *     <li>0开头的忽略开头的0</li>
- *     <li>空串返回0</li>
- *     <li>NaN返回0</li>
- *     <li>其它情况按照10进制转换</li>
- *     <li>.123形式返回0.123（按照小于0的小数对待）</li>
+ * <li>0开头的忽略开头的0</li>
+ * <li>空串返回0</li>
+ * <li>NaN返回0</li>
+ * <li>其它情况按照10进制转换</li>
+ * <li>.123形式返回0.123（按照小于0的小数对待）</li>
  * </ul>
  *
  * <p>
- *     构造时可选是否将NaN转为0，默认为true。
- *     参考：https://stackoverflow.com/questions/5876369/why-does-casting-double-nan-to-int-not-throw-an-exception-in-java
+ * 构造时可选是否将NaN转为0，默认为true。
+ * 参考：https://stackoverflow.com/questions/5876369/why-does-casting-double-nan-to-int-not-throw-an-exception-in-java
  * </p>
  *
  * @author Kimi Liu
@@ -260,18 +259,15 @@ public class NumberParser {
     }
 
     /**
-     * 将指定字符串转换为{@link Number} 对象
-     * 此方法不支持科学计数法
+     * 将指定字符串转换为{@link Number} 对象 此方法不支持科学计数法
      *
      * <ul>
-     *     <li>空白符和NaN转换为0</li>
-     *     <li>0x开头使用16进制解析为Long类型</li>
+     * <li>空白符和NaN转换为0</li>
+     * <li>0x开头使用16进制解析为Long类型</li>
      * </ul>
      *
      * <p>
-     * 需要注意的是，在不同Locale下，数字的表示形式也是不同的，例如：
-     * 德国、荷兰、比利时、丹麦、意大利、罗马尼亚和欧洲大多地区使用`,`区分小数
-     * 也就是说，在这些国家地区，1.20表示120，而非1.2。
+     * 需要注意的是，在不同Locale下，数字的表示形式也是不同的，例如： 德国、荷兰、比利时、丹麦、意大利、罗马尼亚和欧洲大多地区使用`,`区分小数 也就是说，在这些国家地区，1.20表示120，而非1.2。
      * </p>
      *
      * @param numberStr 数字字符串
@@ -294,8 +290,7 @@ public class NumberParser {
     }
 
     /**
-     * 使用{@link NumberFormat} 完成数字解析
-     * 如果为{@link DecimalFormat}
+     * 使用{@link NumberFormat} 完成数字解析 如果为{@link DecimalFormat}
      *
      * @return 数字
      */
@@ -323,8 +318,7 @@ public class NumberParser {
     }
 
     /**
-     * 是否空白串或者NaN
-     * 如果{@link #zeroIfNaN}为{@code false}，则抛出{@link NumberFormatException}
+     * 是否空白串或者NaN 如果{@link #zeroIfNaN}为{@code false}，则抛出{@link NumberFormatException}
      *
      * @return 是否空白串或者NaN
      */

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.iterator;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -38,9 +38,9 @@ import java.util.Objects;
 /**
  * 分批迭代工具，可以分批处理数据
  * <ol>
- *     <li>比如调用其他客户的接口，传入的入参有限，需要分批</li>
- *     <li>比如mysql/oracle用in语句查询，超过1000可以分批</li>
- *     <li>比如数据库取出游标，可以把游标里的数据一批一批处理</li>
+ * <li>比如调用其他客户的接口，传入的入参有限，需要分批</li>
+ * <li>比如mysql/oracle用in语句查询，超过1000可以分批</li>
+ * <li>比如数据库取出游标，可以把游标里的数据一批一批处理</li>
  * </ol>
  *
  * @param <T> 字段类型

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map.concurrent;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -41,7 +41,7 @@ import java.util.Set;
  *
  * @author Kimi Liu
  * @see <a href="http://code.google.com/p/concurrentlinkedhashmap/">
- * http://code.google.com/p/concurrentlinkedhashmap/</a>
+ *      http://code.google.com/p/concurrentlinkedhashmap/</a>
  * @since Java 17+
  */
 public final class Weighers {
@@ -51,25 +51,20 @@ public final class Weighers {
     }
 
     /**
-     * A entry weigher backed by the specified weigher. The selector of the value
-     * determines the selector of the entry.
+     * A entry weigher backed by the specified weigher. The selector of the value determines the selector of the entry.
      *
      * @param weigher the weigher to be "wrapped" in a entry weigher.
      * @param <K>     键类型
      * @param <V>     值类型
      * @return A entry weigher view of the specified weigher.
      */
-    public static <K, V> EntryWeigher<K, V> asEntryWeigher(
-            final Weigher<? super V> weigher) {
-        return (weigher == singleton())
-                ? Weighers.entrySingleton()
-                : new EntryWeigherView<>(weigher);
+    public static <K, V> EntryWeigher<K, V> asEntryWeigher(final Weigher<? super V> weigher) {
+        return (weigher == singleton()) ? Weighers.entrySingleton() : new EntryWeigherView<>(weigher);
     }
 
     /**
-     * A weigher where an entry has a selector of <b>1</b>. A map bounded with
-     * this weigher will evict when the number of data-value pairs exceeds the
-     * capacity.
+     * A weigher where an entry has a selector of <b>1</b>. A map bounded with this weigher will evict when the number
+     * of data-value pairs exceeds the capacity.
      *
      * @param <K> 键类型
      * @param <V> 值类型
@@ -80,9 +75,8 @@ public final class Weighers {
     }
 
     /**
-     * A weigher where a value has a selector of <b>1</b>. A map bounded with
-     * this weigher will evict when the number of data-value pairs exceeds the
-     * capacity.
+     * A weigher where a value has a selector of <b>1</b>. A map bounded with this weigher will evict when the number of
+     * data-value pairs exceeds the capacity.
      *
      * @param <V> 值类型
      * @return A weigher where a value takes one unit of capacity.
@@ -92,17 +86,14 @@ public final class Weighers {
     }
 
     /**
-     * A weigher where the value is a byte array and its selector is the number of
-     * bytes. A map bounded with this weigher will evict when the number of bytes
-     * exceeds the capacity rather than the number of data-value pairs in the map.
-     * This allows for restricting the capacity based on the memory-consumption
-     * and is primarily for usage by dedicated caching servers that hold the
-     * serialized data.
+     * A weigher where the value is a byte array and its selector is the number of bytes. A map bounded with this
+     * weigher will evict when the number of bytes exceeds the capacity rather than the number of data-value pairs in
+     * the map. This allows for restricting the capacity based on the memory-consumption and is primarily for usage by
+     * dedicated caching servers that hold the serialized data.
      * <p>
-     * A value with a selector of <b>0</b> will be rejected by the map. If a value
-     * with this selector can occur then the caller should eagerly evaluate the
-     * value and treat it as a removal operation. Alternatively, a custom weigher
-     * may be specified on the map to assign an empty value a positive selector.
+     * A value with a selector of <b>0</b> will be rejected by the map. If a value with this selector can occur then the
+     * caller should eagerly evaluate the value and treat it as a removal operation. Alternatively, a custom weigher may
+     * be specified on the map to assign an empty value a positive selector.
      *
      * @return A weigher where each byte takes one unit of capacity.
      */
@@ -111,16 +102,14 @@ public final class Weighers {
     }
 
     /**
-     * A weigher where the value is a {@link Iterable} and its selector is the
-     * number of elements. This weigher only should be used when the alternative
-     * {@link #collection()} weigher cannot be, as evaluation takes O(n) time. A
-     * map bounded with this weigher will evict when the total number of elements
-     * exceeds the capacity rather than the number of data-value pairs in the map.
+     * A weigher where the value is a {@link Iterable} and its selector is the number of elements. This weigher only
+     * should be used when the alternative {@link #collection()} weigher cannot be, as evaluation takes O(n) time. A map
+     * bounded with this weigher will evict when the total number of elements exceeds the capacity rather than the
+     * number of data-value pairs in the map.
      * <p>
-     * A value with a selector of <b>0</b> will be rejected by the map. If a value
-     * with this selector can occur then the caller should eagerly evaluate the
-     * value and treat it as a removal operation. Alternatively, a custom weigher
-     * may be specified on the map to assign an empty value a positive selector.
+     * A value with a selector of <b>0</b> will be rejected by the map. If a value with this selector can occur then the
+     * caller should eagerly evaluate the value and treat it as a removal operation. Alternatively, a custom weigher may
+     * be specified on the map to assign an empty value a positive selector.
      *
      * @param <E> 元素类型
      * @return A weigher where each element takes one unit of capacity.
@@ -130,15 +119,13 @@ public final class Weighers {
     }
 
     /**
-     * A weigher where the value is a {@link Collection} and its selector is the
-     * number of elements. A map bounded with this weigher will evict when the
-     * total number of elements exceeds the capacity rather than the number of
+     * A weigher where the value is a {@link Collection} and its selector is the number of elements. A map bounded with
+     * this weigher will evict when the total number of elements exceeds the capacity rather than the number of
      * data-value pairs in the map.
      * <p>
-     * A value with a selector of <b>0</b> will be rejected by the map. If a value
-     * with this selector can occur then the caller should eagerly evaluate the
-     * value and treat it as a removal operation. Alternatively, a custom weigher
-     * may be specified on the map to assign an empty value a positive selector.
+     * A value with a selector of <b>0</b> will be rejected by the map. If a value with this selector can occur then the
+     * caller should eagerly evaluate the value and treat it as a removal operation. Alternatively, a custom weigher may
+     * be specified on the map to assign an empty value a positive selector.
      *
      * @param <E> 元素类型
      * @return A weigher where each element takes one unit of capacity.
@@ -148,15 +135,13 @@ public final class Weighers {
     }
 
     /**
-     * A weigher where the value is a {@link List} and its selector is the number
-     * of elements. A map bounded with this weigher will evict when the total
-     * number of elements exceeds the capacity rather than the number of
-     * data-value pairs in the map.
+     * A weigher where the value is a {@link List} and its selector is the number of elements. A map bounded with this
+     * weigher will evict when the total number of elements exceeds the capacity rather than the number of data-value
+     * pairs in the map.
      * <p>
-     * A value with a selector of <b>0</b> will be rejected by the map. If a value
-     * with this selector can occur then the caller should eagerly evaluate the
-     * value and treat it as a removal operation. Alternatively, a custom weigher
-     * may be specified on the map to assign an empty value a positive selector.
+     * A value with a selector of <b>0</b> will be rejected by the map. If a value with this selector can occur then the
+     * caller should eagerly evaluate the value and treat it as a removal operation. Alternatively, a custom weigher may
+     * be specified on the map to assign an empty value a positive selector.
      *
      * @param <E> 元素类型
      * @return A weigher where each element takes one unit of capacity.
@@ -166,15 +151,13 @@ public final class Weighers {
     }
 
     /**
-     * A weigher where the value is a {@link Set} and its selector is the number
-     * of elements. A map bounded with this weigher will evict when the total
-     * number of elements exceeds the capacity rather than the number of
-     * data-value pairs in the map.
+     * A weigher where the value is a {@link Set} and its selector is the number of elements. A map bounded with this
+     * weigher will evict when the total number of elements exceeds the capacity rather than the number of data-value
+     * pairs in the map.
      * <p>
-     * A value with a selector of <b>0</b> will be rejected by the map. If a value
-     * with this selector can occur then the caller should eagerly evaluate the
-     * value and treat it as a removal operation. Alternatively, a custom weigher
-     * may be specified on the map to assign an empty value a positive selector.
+     * A value with a selector of <b>0</b> will be rejected by the map. If a value with this selector can occur then the
+     * caller should eagerly evaluate the value and treat it as a removal operation. Alternatively, a custom weigher may
+     * be specified on the map to assign an empty value a positive selector.
      *
      * @param <E> 元素类型
      * @return A weigher where each element takes one unit of capacity.
@@ -184,15 +167,13 @@ public final class Weighers {
     }
 
     /**
-     * A weigher where the value is a {@link Map} and its selector is the number of
-     * entries. A map bounded with this weigher will evict when the total number of
-     * entries across all values exceeds the capacity rather than the number of
-     * data-value pairs in the map.
+     * A weigher where the value is a {@link Map} and its selector is the number of entries. A map bounded with this
+     * weigher will evict when the total number of entries across all values exceeds the capacity rather than the number
+     * of data-value pairs in the map.
      * <p>
-     * A value with a selector of <b>0</b> will be rejected by the map. If a value
-     * with this selector can occur then the caller should eagerly evaluate the
-     * value and treat it as a removal operation. Alternatively, a custom weigher
-     * may be specified on the map to assign an empty value a positive selector.
+     * A value with a selector of <b>0</b> will be rejected by the map. If a value with this selector can occur then the
+     * caller should eagerly evaluate the value and treat it as a removal operation. Alternatively, a custom weigher may
+     * be specified on the map to assign an empty value a positive selector.
      *
      * @param <K> 键类型
      * @param <V> 值类型
@@ -278,8 +259,7 @@ public final class Weighers {
     }
 
     static final class EntryWeigherView<K, V> implements EntryWeigher<K, V>, Serializable {
-        private static final long serialVersionUID = -1L;
-        ;
+        private static final long serialVersionUID = -1L;;
         final Weigher<? super V> weigher;
 
         EntryWeigherView(final Weigher<? super V> weigher) {

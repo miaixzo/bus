@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -49,9 +49,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 /**
- * XML工具类
- * 此工具使用w3c dom工具，不需要依赖第三方包。
- * 工具类封装了XML文档的创建、读取、写出和部分XML操作
+ * XML工具类 此工具使用w3c dom工具，不需要依赖第三方包。 工具类封装了XML文档的创建、读取、写出和部分XML操作
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -68,9 +66,7 @@ public class XmlKit {
     public static final Pattern COMMENT_PATTERN = Pattern.compile("(?s)<!--.+?-->");
 
     /**
-     * 读取解析XML文件
-     * 如果给定内容以“&lt;”开头，表示这是一个XML内容，直接读取，否则按照路径处理
-     * 路径可以为相对路径，也可以是绝对路径，相对路径相对于ClassPath
+     * 读取解析XML文件 如果给定内容以“&lt;”开头，表示这是一个XML内容，直接读取，否则按照路径处理 路径可以为相对路径，也可以是绝对路径，相对路径相对于ClassPath
      *
      * @param pathOrContent 内容或路径
      * @return XML文档对象
@@ -106,8 +102,7 @@ public class XmlKit {
     }
 
     /**
-     * 读取解析XML文件
-     * 编码在XML中定义
+     * 读取解析XML文件 编码在XML中定义
      *
      * @param inputStream XML流
      * @return XML文档对象
@@ -129,8 +124,7 @@ public class XmlKit {
     }
 
     /**
-     * 读取解析XML文件
-     * 编码在XML中定义
+     * 读取解析XML文件 编码在XML中定义
      *
      * @param namespaceAware 是否打开命名空间支持
      * @param source         {@link InputSource}
@@ -159,8 +153,7 @@ public class XmlKit {
     }
 
     /**
-     * 使用Sax方式读取指定的XML
-     * 如果用户传入的contentHandler为{@link DefaultHandler}，则其接口都会被处理
+     * 使用Sax方式读取指定的XML 如果用户传入的contentHandler为{@link DefaultHandler}，则其接口都会被处理
      *
      * @param file           XML源文件,使用后自动关闭
      * @param contentHandler XML流处理器，用于按照Element处理xml
@@ -176,8 +169,7 @@ public class XmlKit {
     }
 
     /**
-     * 使用Sax方式读取指定的XML
-     * 如果用户传入的contentHandler为{@link DefaultHandler}，则其接口都会被处理
+     * 使用Sax方式读取指定的XML 如果用户传入的contentHandler为{@link DefaultHandler}，则其接口都会被处理
      *
      * @param reader         XML源Reader,使用后自动关闭
      * @param contentHandler XML流处理器，用于按照Element处理xml
@@ -191,8 +183,7 @@ public class XmlKit {
     }
 
     /**
-     * 使用Sax方式读取指定的XML
-     * 如果用户传入的contentHandler为{@link DefaultHandler}，则其接口都会被处理
+     * 使用Sax方式读取指定的XML 如果用户传入的contentHandler为{@link DefaultHandler}，则其接口都会被处理
      *
      * @param source         XML源流,使用后自动关闭
      * @param contentHandler XML流处理器，用于按照Element处理xml
@@ -206,8 +197,7 @@ public class XmlKit {
     }
 
     /**
-     * 使用Sax方式读取指定的XML
-     * 如果用户传入的contentHandler为{@link DefaultHandler}，则其接口都会被处理
+     * 使用Sax方式读取指定的XML 如果用户传入的contentHandler为{@link DefaultHandler}，则其接口都会被处理
      *
      * @param source         XML源，可以是文件、流、路径等
      * @param contentHandler XML流处理器，用于按照Element处理xml
@@ -217,9 +207,7 @@ public class XmlKit {
     }
 
     /**
-     * 将XML文档转换为String
-     * 字符编码使用XML文档中的编码，获取不到则使用UTF-8
-     * 默认非格式化输出，若想格式化请使用{@link #format(Document)}
+     * 将XML文档转换为String 字符编码使用XML文档中的编码，获取不到则使用UTF-8 默认非格式化输出，若想格式化请使用{@link #format(Document)}
      *
      * @param doc XML文档
      * @return XML字符串
@@ -229,8 +217,7 @@ public class XmlKit {
     }
 
     /**
-     * 将XML文档转换为String
-     * 字符编码使用XML文档中的编码，获取不到则使用UTF-8
+     * 将XML文档转换为String 字符编码使用XML文档中的编码，获取不到则使用UTF-8
      *
      * @param doc      XML文档
      * @param isPretty 是否格式化输出
@@ -241,8 +228,7 @@ public class XmlKit {
     }
 
     /**
-     * 将XML文档转换为String
-     * 字符编码使用XML文档中的编码，获取不到则使用UTF-8
+     * 将XML文档转换为String 字符编码使用XML文档中的编码，获取不到则使用UTF-8
      *
      * @param doc      XML文档
      * @param charset  编码
@@ -254,9 +240,8 @@ public class XmlKit {
     }
 
     /**
-     * 将XML文档转换为String
-     * 字符编码使用XML文档中的编码，获取不到则使用UTF-8
-     * 当{@code omitXmlDeclaration}为{@code true}时，表示忽略xml Declaration，即删掉
+     * 将XML文档转换为String 字符编码使用XML文档中的编码，获取不到则使用UTF-8 当{@code omitXmlDeclaration}为{@code true}时，表示忽略xml Declaration，即删掉
+     * 
      * <pre>{@code
      *     <?xml version="1.0" encoding="utf-8"?>
      * }</pre>
@@ -267,7 +252,8 @@ public class XmlKit {
      * @param omitXmlDeclaration 是否忽略 xml Declaration
      * @return XML字符串
      */
-    public static String toString(final Node doc, final java.nio.charset.Charset charset, final boolean isPretty, final boolean omitXmlDeclaration) {
+    public static String toString(final Node doc, final java.nio.charset.Charset charset, final boolean isPretty,
+            final boolean omitXmlDeclaration) {
         final StringWriter writer = StringKit.getWriter();
         write(doc, writer, charset, isPretty ? Normal._2 : 0, omitXmlDeclaration);
         return writer.toString();
@@ -294,19 +280,14 @@ public class XmlKit {
     }
 
     /**
-     * 将XML文档写入到文件
-     * 使用Document中的编码
+     * 将XML文档写入到文件 使用Document中的编码
      *
      * @param doc     XML文档
      * @param file    文件
      * @param charset 编码
      */
     public static void write(final Document doc, final File file, final java.nio.charset.Charset charset) {
-        XmlWriter.of(doc)
-                .setCharset(charset)
-                .setIndent(Normal._2)
-                .setOmitXmlDeclaration(false)
-                .write(file);
+        XmlWriter.of(doc).setCharset(charset).setIndent(Normal._2).setOmitXmlDeclaration(false).write(file);
     }
 
     /**
@@ -317,13 +298,14 @@ public class XmlKit {
      * @param charset 编码
      * @param indent  格式化输出中缩进量，小于1表示不格式化输出
      */
-    public static void write(final Node node, final Writer writer, final java.nio.charset.Charset charset, final int indent) {
+    public static void write(final Node node, final Writer writer, final java.nio.charset.Charset charset,
+            final int indent) {
         write(node, writer, charset, indent, false);
     }
 
     /**
-     * 将XML文档写出
-     * 当{@code omitXmlDeclaration}为{@code true}时，表示忽略xml Declaration，即删掉
+     * 将XML文档写出 当{@code omitXmlDeclaration}为{@code true}时，表示忽略xml Declaration，即删掉
+     * 
      * <pre>{@code
      *     <?xml version="1.0" encoding="utf-8"?>
      * }</pre>
@@ -334,11 +316,9 @@ public class XmlKit {
      * @param indent             格式化输出中缩进量，小于1表示不格式化输出
      * @param omitXmlDeclaration 是否忽略 xml Declaration
      */
-    public static void write(final Node node, final Writer writer, final java.nio.charset.Charset charset, final int indent, final boolean omitXmlDeclaration) {
-        XmlWriter.of(node)
-                .setCharset(charset)
-                .setIndent(indent)
-                .setOmitXmlDeclaration(omitXmlDeclaration)
+    public static void write(final Node node, final Writer writer, final java.nio.charset.Charset charset,
+            final int indent, final boolean omitXmlDeclaration) {
+        XmlWriter.of(node).setCharset(charset).setIndent(indent).setOmitXmlDeclaration(omitXmlDeclaration)
                 .write(writer);
     }
 
@@ -350,13 +330,14 @@ public class XmlKit {
      * @param charset 编码
      * @param indent  格式化输出中缩进量，小于1表示不格式化输出
      */
-    public static void write(final Node node, final OutputStream out, final java.nio.charset.Charset charset, final int indent) {
+    public static void write(final Node node, final OutputStream out, final java.nio.charset.Charset charset,
+            final int indent) {
         write(node, out, charset, indent, false);
     }
 
     /**
-     * 将XML文档写出
-     * 当{@code omitXmlDeclaration}为{@code true}时，表示忽略xml Declaration，即删掉
+     * 将XML文档写出 当{@code omitXmlDeclaration}为{@code true}时，表示忽略xml Declaration，即删掉
+     * 
      * <pre>{@code
      *     <?xml version="1.0" encoding="utf-8"?>
      * }</pre>
@@ -367,18 +348,13 @@ public class XmlKit {
      * @param indent             格式化输出中缩进量，小于1表示不格式化输出
      * @param omitXmlDeclaration 是否忽略 xml Declaration
      */
-    public static void write(final Node node, final OutputStream out,
-                             final java.nio.charset.Charset charset, final int indent, final boolean omitXmlDeclaration) {
-        XmlWriter.of(node)
-                .setCharset(charset)
-                .setIndent(indent)
-                .setOmitXmlDeclaration(omitXmlDeclaration)
-                .write(out);
+    public static void write(final Node node, final OutputStream out, final java.nio.charset.Charset charset,
+            final int indent, final boolean omitXmlDeclaration) {
+        XmlWriter.of(node).setCharset(charset).setIndent(indent).setOmitXmlDeclaration(omitXmlDeclaration).write(out);
     }
 
     /**
-     * 创建XML文档
-     * 创建的XML默认是utf8编码，修改编码的过程是在toStr和toFile方法里，即XML在转为文本的时候才定义编码
+     * 创建XML文档 创建的XML默认是utf8编码，修改编码的过程是在toStr和toFile方法里，即XML在转为文本的时候才定义编码
      *
      * @return XML文档
      */
@@ -387,8 +363,7 @@ public class XmlKit {
     }
 
     /**
-     * 创建XML文档
-     * 创建的XML默认是utf8编码，修改编码的过程是在toStr和toFile方法里，即XML在转为文本的时候才定义编码
+     * 创建XML文档 创建的XML默认是utf8编码，修改编码的过程是在toStr和toFile方法里，即XML在转为文本的时候才定义编码
      *
      * @param rootElementName 根节点名称
      * @return XML文档
@@ -398,8 +373,7 @@ public class XmlKit {
     }
 
     /**
-     * 创建XML文档
-     * 创建的XML默认是utf8编码，修改编码的过程是在toStr和toFile方法里，即XML在转为文本的时候才定义编码
+     * 创建XML文档 创建的XML默认是utf8编码，修改编码的过程是在toStr和toFile方法里，即XML在转为文本的时候才定义编码
      *
      * @param rootElementName 根节点名称
      * @param namespace       命名空间，无则传null
@@ -407,7 +381,8 @@ public class XmlKit {
      */
     public static Document createXml(final String rootElementName, final String namespace) {
         final Document doc = createXml();
-        doc.appendChild(null == namespace ? doc.createElement(rootElementName) : doc.createElementNS(namespace, rootElementName));
+        doc.appendChild(null == namespace ? doc.createElement(rootElementName)
+                : doc.createElementNS(namespace, rootElementName));
         return doc;
     }
 
@@ -467,7 +442,8 @@ public class XmlKit {
      * @return 节点列表
      */
     public static List<Element> getElements(final Element element, final String tagName) {
-        final NodeList nodeList = StringKit.isBlank(tagName) ? element.getChildNodes() : element.getElementsByTagName(tagName);
+        final NodeList nodeList = StringKit.isBlank(tagName) ? element.getChildNodes()
+                : element.getElementsByTagName(tagName);
         return transElements(element, nodeList);
     }
 
@@ -529,8 +505,7 @@ public class XmlKit {
     }
 
     /**
-     * 将NodeList转换为Element列表
-     * 非Element节点将被忽略
+     * 将NodeList转换为Element列表 非Element节点将被忽略
      *
      * @param parentEle 父节点，如果指定将返回此节点的所有直接子节点，null返回所有就节点
      * @param nodeList  NodeList
@@ -555,8 +530,7 @@ public class XmlKit {
     }
 
     /**
-     * 将可序列化的对象转换为XML写入文件，已经存在的文件将被覆盖
-     * Writes serializable object to a XML file. Existing file will be overwritten
+     * 将可序列化的对象转换为XML写入文件，已经存在的文件将被覆盖 Writes serializable object to a XML file. Existing file will be overwritten
      *
      * @param dest 目标文件
      * @param bean 对象
@@ -573,8 +547,7 @@ public class XmlKit {
     }
 
     /**
-     * XML转Java Bean
-     * 如果XML根节点只有一个，且节点名和Bean的名称一致，则直接转换子节点
+     * XML转Java Bean 如果XML根节点只有一个，且节点名和Bean的名称一致，则直接转换子节点
      *
      * @param <T>       bean类型
      * @param node      XML节点
@@ -596,8 +569,7 @@ public class XmlKit {
     }
 
     /**
-     * XML格式字符串转换为Map
-     * 只支持第一级别的XML，不支持多级XML
+     * XML格式字符串转换为Map 只支持第一级别的XML，不支持多级XML
      *
      * @param xmlStr XML字符串
      * @param result 结果Map类型
@@ -644,8 +616,8 @@ public class XmlKit {
     }
 
     /**
-     * 将Map转换为XML格式的字符串
-     * 当{@code omitXmlDeclaration}为{@code true}时，表示忽略xml Declaration，即
+     * 将Map转换为XML格式的字符串 当{@code omitXmlDeclaration}为{@code true}时，表示忽略xml Declaration，即
+     * 
      * <pre>{@code
      *     <?xml version="1.0" encoding="utf-8"?>
      * }</pre>
@@ -682,8 +654,8 @@ public class XmlKit {
     }
 
     /**
-     * 将Map转换为XML格式的字符串
-     * 当{@code omitXmlDeclaration}为{@code true}时，表示忽略xml Declaration，即删掉
+     * 将Map转换为XML格式的字符串 当{@code omitXmlDeclaration}为{@code true}时，表示忽略xml Declaration，即删掉
+     * 
      * <pre>{@code
      *     <?xml version="1.0" encoding="utf-8"?>
      * }</pre>
@@ -694,13 +666,14 @@ public class XmlKit {
      * @param omitXmlDeclaration 是否忽略 xml Declaration
      * @return XML格式的字符串
      */
-    public static String mapToXmlString(final Map<?, ?> data, final String rootName, final String namespace, final boolean omitXmlDeclaration) {
+    public static String mapToXmlString(final Map<?, ?> data, final String rootName, final String namespace,
+            final boolean omitXmlDeclaration) {
         return toString(mapToXml(data, rootName, namespace), Charset.UTF_8, false, omitXmlDeclaration);
     }
 
     /**
-     * 将Map转换为XML格式的字符串
-     * 当{@code omitXmlDeclaration}为{@code true}时，表示忽略xml Declaration，即删掉
+     * 将Map转换为XML格式的字符串 当{@code omitXmlDeclaration}为{@code true}时，表示忽略xml Declaration，即删掉
+     * 
      * <pre>{@code
      *     <?xml version="1.0" encoding="utf-8"?>
      * }</pre>
@@ -712,13 +685,14 @@ public class XmlKit {
      * @param omitXmlDeclaration 是否忽略 xml Declaration
      * @return XML格式的字符串
      */
-    public static String mapToXmlString(final Map<?, ?> data, final String rootName, final String namespace, final boolean isPretty, final boolean omitXmlDeclaration) {
+    public static String mapToXmlString(final Map<?, ?> data, final String rootName, final String namespace,
+            final boolean isPretty, final boolean omitXmlDeclaration) {
         return toString(mapToXml(data, rootName, namespace), Charset.UTF_8, isPretty, omitXmlDeclaration);
     }
 
     /**
-     * 将Map转换为XML格式的字符串
-     * 当{@code omitXmlDeclaration}为{@code true}时，表示忽略xml Declaration，即删掉
+     * 将Map转换为XML格式的字符串 当{@code omitXmlDeclaration}为{@code true}时，表示忽略xml Declaration，即删掉
+     * 
      * <pre>{@code
      *     <?xml version="1.0" encoding="utf-8"?>
      * }</pre>
@@ -731,7 +705,8 @@ public class XmlKit {
      * @param omitXmlDeclaration 是否忽略 xml Declaration
      * @return XML格式的字符串
      */
-    public static String mapToXmlString(final Map<?, ?> data, final String rootName, final String namespace, final java.nio.charset.Charset charset, final boolean isPretty, final boolean omitXmlDeclaration) {
+    public static String mapToXmlString(final Map<?, ?> data, final String rootName, final String namespace,
+            final java.nio.charset.Charset charset, final boolean isPretty, final boolean omitXmlDeclaration) {
         return toString(mapToXml(data, rootName, namespace), charset, isPretty, omitXmlDeclaration);
     }
 
@@ -795,8 +770,7 @@ public class XmlKit {
         if (null == bean) {
             return null;
         }
-        return mapToXml(BeanKit.beanToMap(bean, false, ignoreNull),
-                bean.getClass().getSimpleName(), namespace);
+        return mapToXml(BeanKit.beanToMap(bean, false, ignoreNull), bean.getClass().getSimpleName(), namespace);
     }
 
     /**
@@ -830,7 +804,8 @@ public class XmlKit {
      */
     public static Element appendChild(final Node node, final String tagName, final String namespace) {
         final Document doc = getOwnerDocument(node);
-        final Element child = (null == namespace) ? doc.createElement(tagName) : doc.createElementNS(namespace, tagName);
+        final Element child = (null == namespace) ? doc.createElement(tagName)
+                : doc.createElementNS(namespace, tagName);
         node.appendChild(child);
         return child;
     }

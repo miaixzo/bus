@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core;
 
 import java.io.Serializable;
@@ -43,6 +43,6 @@ public interface Builder<T> extends Serializable {
      *
      * @return 被构建的对象
      */
-     T build();
+    T build();
 
 }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.additional.aggregation;
 
 import org.apache.ibatis.annotations.Param;
@@ -44,14 +44,14 @@ import java.util.List;
 public interface AggregationMapper<T> {
 
     /**
-     * 根据condition和aggregateCondition进行聚合查询
-     * 分组不支持having条件过滤， 如需要建议使用xml文件
+     * 根据condition和aggregateCondition进行聚合查询 分组不支持having条件过滤， 如需要建议使用xml文件
      *
      * @param condition          条件
      * @param aggregateCondition 可以设置聚合查询的属性和分组属性
      * @return 返回聚合查询属性和分组属性的值
      */
     @SelectProvider(type = AggregationProvider.class, method = "dynamicSQL")
-    List<T> selectAggregationByCondition(@Param("condition") Object condition, @Param("aggregateCondition") AggregateCondition aggregateCondition);
+    List<T> selectAggregationByCondition(@Param("condition") Object condition,
+            @Param("aggregateCondition") AggregateCondition aggregateCondition);
 
 }

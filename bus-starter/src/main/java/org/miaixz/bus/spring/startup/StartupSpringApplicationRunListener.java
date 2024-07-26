@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.spring.startup;
 
 import org.miaixz.bus.core.xyz.StringKit;
@@ -73,12 +73,14 @@ public class StartupSpringApplicationRunListener implements SpringApplicationRun
 
     /**
      * 从{@link SpringApplicationRunListener#started(ConfigurableApplicationContext, Duration)}()}
-     * 到{@link SpringApplicationRunListener#environmentPrepared(ConfigurableBootstrapContext, ConfigurableEnvironment)} (ConfigurableEnvironment)}}的运行阶段
+     * 到{@link SpringApplicationRunListener#environmentPrepared(ConfigurableBootstrapContext, ConfigurableEnvironment)}
+     * (ConfigurableEnvironment)}}的运行阶段
      */
     private BaseStatics environmentPrepareStage;
 
     /**
-     * 从{@link SpringApplicationRunListener#environmentPrepared(ConfigurableBootstrapContext, ConfigurableEnvironment)} (ConfigurableEnvironment)}
+     * 从{@link SpringApplicationRunListener#environmentPrepared(ConfigurableBootstrapContext, ConfigurableEnvironment)}
+     * (ConfigurableEnvironment)}
      * 到{@link SpringApplicationRunListener#contextPrepared(ConfigurableApplicationContext)}}的运行阶段
      */
     private ChildrenStatics<BaseStatics> applicationContextPrepareStage;
@@ -104,7 +106,7 @@ public class StartupSpringApplicationRunListener implements SpringApplicationRun
 
     @Override
     public void environmentPrepared(ConfigurableBootstrapContext bootstrapContext,
-                                    ConfigurableEnvironment environment) {
+            ConfigurableEnvironment environment) {
         application.setBanner(new TextBanner());
         environmentPrepareStage = new BaseStatics();
         environmentPrepareStage.setName(GeniusBuilder.ENVIRONMENT_PREPARE_STAGE);
@@ -123,8 +125,7 @@ public class StartupSpringApplicationRunListener implements SpringApplicationRun
     @Override
     public void contextPrepared(ConfigurableApplicationContext context) {
         applicationContextPrepareStage = new ChildrenStatics<>();
-        applicationContextPrepareStage
-                .setName(GeniusBuilder.APPLICATION_CONTEXT_PREPARE_STAGE);
+        applicationContextPrepareStage.setName(GeniusBuilder.APPLICATION_CONTEXT_PREPARE_STAGE);
         applicationContextPrepareStage.setStartTime(environmentPrepareStage.getEndTime());
         applicationContextPrepareStage.setEndTime(System.currentTimeMillis());
         if (application instanceof StartupSpringApplication startupSpringApplication) {
@@ -140,13 +141,11 @@ public class StartupSpringApplicationRunListener implements SpringApplicationRun
         applicationContextLoadStage.setName(GeniusBuilder.APPLICATION_CONTEXT_LOAD_STAGE);
         applicationContextLoadStage.setStartTime(applicationContextPrepareStage.getEndTime());
         applicationContextLoadStage.setEndTime(System.currentTimeMillis());
-        context.getBeanFactory().addBeanPostProcessor(
-                new StartupReporterProcessor(startupReporter));
+        context.getBeanFactory().addBeanPostProcessor(new StartupReporterProcessor(startupReporter));
         context.getBeanFactory().registerSingleton("STARTUP_REPORTER_BEAN", startupReporter);
         StartupSmartLifecycle startupSmartLifecycle = new StartupSmartLifecycle(startupReporter);
         startupSmartLifecycle.setApplicationContext(context);
-        context.getBeanFactory().registerSingleton("STARTUP_SMART_LIfE_CYCLE",
-                startupSmartLifecycle);
+        context.getBeanFactory().registerSingleton("STARTUP_SMART_LIfE_CYCLE", startupSmartLifecycle);
     }
 
     @Override
@@ -154,8 +153,7 @@ public class StartupSpringApplicationRunListener implements SpringApplicationRun
         ChildrenStatics<ModuleStatics> applicationRefreshStage = (ChildrenStatics<ModuleStatics>) startupReporter
                 .getStageNyName(GeniusBuilder.APPLICATION_CONTEXT_REFRESH_STAGE);
         applicationRefreshStage.setStartTime(applicationContextLoadStage.getEndTime());
-        applicationRefreshStage.setCost(applicationRefreshStage.getEndTime()
-                - applicationRefreshStage.getStartTime());
+        applicationRefreshStage.setCost(applicationRefreshStage.getEndTime() - applicationRefreshStage.getStartTime());
 
         ModuleStatics rootModule = applicationRefreshStage.getChildren().get(0);
         rootModule.setStartTime(applicationRefreshStage.getStartTime());

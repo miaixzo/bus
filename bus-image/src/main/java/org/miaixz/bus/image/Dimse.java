@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -38,50 +38,33 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
  */
 public enum Dimse {
 
-    C_STORE_RQ(0x0001, Tag.AffectedSOPClassUID, Tag.AffectedSOPInstanceUID,
-            Tag.MessageID, ":C-STORE-RQ"),
-    C_STORE_RSP(0x8001, Tag.AffectedSOPClassUID, Tag.AffectedSOPInstanceUID,
-            Tag.MessageIDBeingRespondedTo, ":C-STORE-RSP"),
-    C_GET_RQ(0x0010, Tag.AffectedSOPClassUID, 0,
-            Tag.MessageID, ":C-GET-RQ"),
-    C_GET_RSP(0x8010, Tag.AffectedSOPClassUID, 0,
-            Tag.MessageIDBeingRespondedTo, ":C-GET-RSP"),
-    C_FIND_RQ(0x0020, Tag.AffectedSOPClassUID, 0,
-            Tag.MessageID, ":C-FIND-RQ"),
-    C_FIND_RSP(0x8020, Tag.AffectedSOPClassUID, 0,
-            Tag.MessageIDBeingRespondedTo, ":C-FIND-RSP"),
-    C_MOVE_RQ(0x0021, Tag.AffectedSOPClassUID, 0,
-            Tag.MessageID, ":C-MOVE-RQ"),
-    C_MOVE_RSP(0x8021, Tag.AffectedSOPClassUID, 0,
-            Tag.MessageIDBeingRespondedTo, ":C-MOVE-RSP"),
-    C_ECHO_RQ(0x0030, Tag.AffectedSOPClassUID, 0,
-            Tag.MessageID, ":C-ECHO-RQ"),
-    C_ECHO_RSP(0x8030, Tag.AffectedSOPClassUID, 0,
-            Tag.MessageIDBeingRespondedTo, ":C-ECHO-RSP"),
-    N_EVENT_REPORT_RQ(0x0100, Tag.AffectedSOPClassUID, Tag.AffectedSOPInstanceUID,
-            Tag.MessageID, ":N-EVENT-REPORT-RQ"),
-    N_EVENT_REPORT_RSP(0x8100, Tag.AffectedSOPClassUID, Tag.AffectedSOPInstanceUID,
-            Tag.MessageIDBeingRespondedTo, ":N-EVENT-REPORT-RSP"),
-    N_GET_RQ(0x0110, Tag.RequestedSOPClassUID, Tag.RequestedSOPInstanceUID,
-            Tag.MessageID, ":N-GET-RQ"),
-    N_GET_RSP(0x8110, Tag.AffectedSOPClassUID, Tag.AffectedSOPInstanceUID,
-            Tag.MessageIDBeingRespondedTo, ":N-GET-RSP"),
-    N_SET_RQ(0x0120, Tag.RequestedSOPClassUID, Tag.RequestedSOPInstanceUID,
-            Tag.MessageID, ":N-SET-RQ"),
-    N_SET_RSP(0x8120, Tag.AffectedSOPClassUID, Tag.AffectedSOPInstanceUID,
-            Tag.MessageIDBeingRespondedTo, ":N-SET-RSP"),
-    N_ACTION_RQ(0x0130, Tag.RequestedSOPClassUID, Tag.RequestedSOPInstanceUID,
-            Tag.MessageID, ":N-ACTION-RQ"),
-    N_ACTION_RSP(0x8130, Tag.AffectedSOPClassUID, Tag.AffectedSOPInstanceUID,
-            Tag.MessageIDBeingRespondedTo, ":N-ACTION-RSP"),
-    N_CREATE_RQ(0x0140, Tag.AffectedSOPClassUID, Tag.AffectedSOPInstanceUID,
-            Tag.MessageID, ":N-CREATE-RQ"),
-    N_CREATE_RSP(0x8140, Tag.AffectedSOPClassUID, Tag.AffectedSOPInstanceUID,
-            Tag.MessageIDBeingRespondedTo, ":N-CREATE-RSP"),
-    N_DELETE_RQ(0x0150, Tag.RequestedSOPClassUID, Tag.RequestedSOPInstanceUID,
-            Tag.MessageID, ":N-DELETE-RQ"),
-    N_DELETE_RSP(0x8150, Tag.AffectedSOPClassUID, Tag.AffectedSOPInstanceUID,
-            Tag.MessageIDBeingRespondedTo, ":N-DELETE-RSP"),
+    C_STORE_RQ(0x0001, Tag.AffectedSOPClassUID, Tag.AffectedSOPInstanceUID, Tag.MessageID, ":C-STORE-RQ"),
+    C_STORE_RSP(0x8001, Tag.AffectedSOPClassUID, Tag.AffectedSOPInstanceUID, Tag.MessageIDBeingRespondedTo,
+            ":C-STORE-RSP"),
+    C_GET_RQ(0x0010, Tag.AffectedSOPClassUID, 0, Tag.MessageID, ":C-GET-RQ"),
+    C_GET_RSP(0x8010, Tag.AffectedSOPClassUID, 0, Tag.MessageIDBeingRespondedTo, ":C-GET-RSP"),
+    C_FIND_RQ(0x0020, Tag.AffectedSOPClassUID, 0, Tag.MessageID, ":C-FIND-RQ"),
+    C_FIND_RSP(0x8020, Tag.AffectedSOPClassUID, 0, Tag.MessageIDBeingRespondedTo, ":C-FIND-RSP"),
+    C_MOVE_RQ(0x0021, Tag.AffectedSOPClassUID, 0, Tag.MessageID, ":C-MOVE-RQ"),
+    C_MOVE_RSP(0x8021, Tag.AffectedSOPClassUID, 0, Tag.MessageIDBeingRespondedTo, ":C-MOVE-RSP"),
+    C_ECHO_RQ(0x0030, Tag.AffectedSOPClassUID, 0, Tag.MessageID, ":C-ECHO-RQ"),
+    C_ECHO_RSP(0x8030, Tag.AffectedSOPClassUID, 0, Tag.MessageIDBeingRespondedTo, ":C-ECHO-RSP"),
+    N_EVENT_REPORT_RQ(0x0100, Tag.AffectedSOPClassUID, Tag.AffectedSOPInstanceUID, Tag.MessageID, ":N-EVENT-REPORT-RQ"),
+    N_EVENT_REPORT_RSP(0x8100, Tag.AffectedSOPClassUID, Tag.AffectedSOPInstanceUID, Tag.MessageIDBeingRespondedTo,
+            ":N-EVENT-REPORT-RSP"),
+    N_GET_RQ(0x0110, Tag.RequestedSOPClassUID, Tag.RequestedSOPInstanceUID, Tag.MessageID, ":N-GET-RQ"),
+    N_GET_RSP(0x8110, Tag.AffectedSOPClassUID, Tag.AffectedSOPInstanceUID, Tag.MessageIDBeingRespondedTo, ":N-GET-RSP"),
+    N_SET_RQ(0x0120, Tag.RequestedSOPClassUID, Tag.RequestedSOPInstanceUID, Tag.MessageID, ":N-SET-RQ"),
+    N_SET_RSP(0x8120, Tag.AffectedSOPClassUID, Tag.AffectedSOPInstanceUID, Tag.MessageIDBeingRespondedTo, ":N-SET-RSP"),
+    N_ACTION_RQ(0x0130, Tag.RequestedSOPClassUID, Tag.RequestedSOPInstanceUID, Tag.MessageID, ":N-ACTION-RQ"),
+    N_ACTION_RSP(0x8130, Tag.AffectedSOPClassUID, Tag.AffectedSOPInstanceUID, Tag.MessageIDBeingRespondedTo,
+            ":N-ACTION-RSP"),
+    N_CREATE_RQ(0x0140, Tag.AffectedSOPClassUID, Tag.AffectedSOPInstanceUID, Tag.MessageID, ":N-CREATE-RQ"),
+    N_CREATE_RSP(0x8140, Tag.AffectedSOPClassUID, Tag.AffectedSOPInstanceUID, Tag.MessageIDBeingRespondedTo,
+            ":N-CREATE-RSP"),
+    N_DELETE_RQ(0x0150, Tag.RequestedSOPClassUID, Tag.RequestedSOPInstanceUID, Tag.MessageID, ":N-DELETE-RQ"),
+    N_DELETE_RSP(0x8150, Tag.AffectedSOPClassUID, Tag.AffectedSOPInstanceUID, Tag.MessageIDBeingRespondedTo,
+            ":N-DELETE-RSP"),
     C_CANCEL_RQ(0x0FFF, 0, 0, Tag.MessageIDBeingRespondedTo, ":C-CANCEL-RQ");
 
     private final int commandField;
@@ -90,8 +73,7 @@ public enum Dimse {
     private final int tagOfMessageID;
     private final String prompt;
 
-    Dimse(int cmdField, int tagOfSOPClassUID, int tagOfSOPInstanceUID,
-          int tagOfMessageID, String prompt) {
+    Dimse(int cmdField, int tagOfSOPClassUID, int tagOfSOPInstanceUID, int tagOfMessageID, String prompt) {
         this.commandField = cmdField;
         this.tagOfSOPClassUID = tagOfSOPClassUID;
         this.tagOfSOPInstanceUID = tagOfSOPInstanceUID;
@@ -101,73 +83,70 @@ public enum Dimse {
 
     public static Dimse valueOf(int commandField) {
         switch (commandField) {
-            case 0x0001:
-                return C_STORE_RQ;
-            case 0x8001:
-                return C_STORE_RSP;
-            case 0x0010:
-                return C_GET_RQ;
-            case 0x8010:
-                return C_GET_RSP;
-            case 0x0020:
-                return C_FIND_RQ;
-            case 0x8020:
-                return C_FIND_RSP;
-            case 0x0021:
-                return C_MOVE_RQ;
-            case 0x8021:
-                return C_MOVE_RSP;
-            case 0x0030:
-                return C_ECHO_RQ;
-            case 0x8030:
-                return C_ECHO_RSP;
-            case 0x0100:
-                return N_EVENT_REPORT_RQ;
-            case 0x8100:
-                return N_EVENT_REPORT_RSP;
-            case 0x0110:
-                return N_GET_RQ;
-            case 0x8110:
-                return N_GET_RSP;
-            case 0x0120:
-                return N_SET_RQ;
-            case 0x8120:
-                return N_SET_RSP;
-            case 0x0130:
-                return N_ACTION_RQ;
-            case 0x8130:
-                return N_ACTION_RSP;
-            case 0x0140:
-                return N_CREATE_RQ;
-            case 0x8140:
-                return N_CREATE_RSP;
-            case 0x0150:
-                return N_DELETE_RQ;
-            case 0x8150:
-                return N_DELETE_RSP;
-            case 0x0FFF:
-                return C_CANCEL_RQ;
-            default:
-                throw new IllegalArgumentException("commandField: " + commandField);
+        case 0x0001:
+            return C_STORE_RQ;
+        case 0x8001:
+            return C_STORE_RSP;
+        case 0x0010:
+            return C_GET_RQ;
+        case 0x8010:
+            return C_GET_RSP;
+        case 0x0020:
+            return C_FIND_RQ;
+        case 0x8020:
+            return C_FIND_RSP;
+        case 0x0021:
+            return C_MOVE_RQ;
+        case 0x8021:
+            return C_MOVE_RSP;
+        case 0x0030:
+            return C_ECHO_RQ;
+        case 0x8030:
+            return C_ECHO_RSP;
+        case 0x0100:
+            return N_EVENT_REPORT_RQ;
+        case 0x8100:
+            return N_EVENT_REPORT_RSP;
+        case 0x0110:
+            return N_GET_RQ;
+        case 0x8110:
+            return N_GET_RSP;
+        case 0x0120:
+            return N_SET_RQ;
+        case 0x8120:
+            return N_SET_RSP;
+        case 0x0130:
+            return N_ACTION_RQ;
+        case 0x8130:
+            return N_ACTION_RSP;
+        case 0x0140:
+            return N_CREATE_RQ;
+        case 0x8140:
+            return N_CREATE_RSP;
+        case 0x0150:
+            return N_DELETE_RQ;
+        case 0x8150:
+            return N_DELETE_RSP;
+        case 0x0FFF:
+            return C_CANCEL_RQ;
+        default:
+            throw new IllegalArgumentException("commandField: " + commandField);
         }
     }
 
-    private static void promptIntTo(Attributes cmd, String name, int tag,
-                                    StringBuilder sb) {
+    private static void promptIntTo(Attributes cmd, String name, int tag, StringBuilder sb) {
         int val = cmd.getInt(tag, 0);
         if (val != 0 || cmd.containsValue(tag))
             sb.append(name).append(val);
     }
 
-    private static void promptStringTo(Attributes cmd, String name, int tag,
-                                       StringBuilder sb) {
+    private static void promptStringTo(Attributes cmd, String name, int tag, StringBuilder sb) {
         String s = cmd.getString(tag, null);
         if (s != null)
             sb.append(name).append(s);
     }
 
-    private static void promptUIDTo(Attributes cmd, String name, int tag,
-                                    StringBuilder sb) {
+    private static void promptUIDTo(Attributes cmd, String name, int tag, StringBuilder sb) {
         if (tag != 0) {
             String uid = cmd.getString(tag, null);
             if (uid != null)
@@ -185,19 +164,13 @@ public enum Dimse {
     }
 
     private static void promptMoveOriginatorTo(Attributes cmd, StringBuilder sb) {
-        String aet = cmd.getString(Tag.MoveOriginatorApplicationEntityTitle,
-                null);
+        String aet = cmd.getString(Tag.MoveOriginatorApplicationEntityTitle, null);
         if (aet != null)
-            sb.append(Builder.LINE_SEPARATOR)
-                    .append("  orig=")
-                    .append(aet)
-                    .append(" >> ")
-                    .append(cmd.getInt(Tag.MoveOriginatorMessageID, -1))
-                    .append(":C-MOVE-RQ");
+            sb.append(Builder.LINE_SEPARATOR).append("  orig=").append(aet).append(" >> ")
+                    .append(cmd.getInt(Tag.MoveOriginatorMessageID, -1)).append(":C-MOVE-RQ");
     }
 
-    private static void promptAttributeIdentifierListTo(Attributes cmd,
-                                                        StringBuilder sb) {
+    private static void promptAttributeIdentifierListTo(Attributes cmd, StringBuilder sb) {
         int[] tags = cmd.getInts(Tag.AttributeIdentifierList);
         if (tags == null)
             return;
@@ -258,38 +231,36 @@ public enum Dimse {
         StringBuilder sb = new StringBuilder();
         sb.append(cmdAttrs.getInt(tagOfMessageID, -1)).append(prompt).append("[pcid=").append(pcid);
         switch (this) {
-            case C_STORE_RQ:
-                promptIntTo(cmdAttrs, ", prior=", Tag.Priority, sb);
-                promptMoveOriginatorTo(cmdAttrs, sb);
-                break;
-            case C_FIND_RQ:
-            case C_GET_RQ:
-                promptIntTo(cmdAttrs, ", prior=", Tag.Priority, sb);
-                break;
-            case C_MOVE_RQ:
-                promptIntTo(cmdAttrs, ", prior=", Tag.Priority, sb);
-                promptMoveDestination(cmdAttrs, sb);
-                break;
-            case C_GET_RSP:
-            case C_MOVE_RSP:
-                promptNumberOfSubOpsTo(cmdAttrs, sb);
-                break;
-            case N_EVENT_REPORT_RQ:
-            case N_EVENT_REPORT_RSP:
-                promptIntTo(cmdAttrs, ", eventID=", Tag.EventTypeID, sb);
-                break;
-            case N_GET_RQ:
-                promptAttributeIdentifierListTo(cmdAttrs, sb);
-                break;
-            case N_ACTION_RQ:
-            case N_ACTION_RSP:
-                promptIntTo(cmdAttrs, ", actionID=", Tag.ActionTypeID, sb);
-                break;
+        case C_STORE_RQ:
+            promptIntTo(cmdAttrs, ", prior=", Tag.Priority, sb);
+            promptMoveOriginatorTo(cmdAttrs, sb);
+            break;
+        case C_FIND_RQ:
+        case C_GET_RQ:
+            promptIntTo(cmdAttrs, ", prior=", Tag.Priority, sb);
+            break;
+        case C_MOVE_RQ:
+            promptIntTo(cmdAttrs, ", prior=", Tag.Priority, sb);
+            promptMoveDestination(cmdAttrs, sb);
+            break;
+        case C_GET_RSP:
+        case C_MOVE_RSP:
+            promptNumberOfSubOpsTo(cmdAttrs, sb);
+            break;
+        case N_EVENT_REPORT_RQ:
+        case N_EVENT_REPORT_RSP:
+            promptIntTo(cmdAttrs, ", eventID=", Tag.EventTypeID, sb);
+            break;
+        case N_GET_RQ:
+            promptAttributeIdentifierListTo(cmdAttrs, sb);
+            break;
+        case N_ACTION_RQ:
+        case N_ACTION_RSP:
+            promptIntTo(cmdAttrs, ", actionID=", Tag.ActionTypeID, sb);
+            break;
         }
         if (isRSP()) {
-            sb.append(", status=")
-                    .append(Integer.toHexString(cmdAttrs.getInt(Tag.Status, -1)))
-                    .append('H');
+            sb.append(", status=").append(Integer.toHexString(cmdAttrs.getInt(Tag.Status, -1))).append('H');
             promptIntTo(cmdAttrs, ", errorID=", Tag.ErrorID, sb);
             promptStringTo(cmdAttrs, ", errorComment=", Tag.ErrorComment, sb);
             promptAttributeIdentifierListTo(cmdAttrs, sb);

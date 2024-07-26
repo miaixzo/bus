@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center;
 
 import org.miaixz.bus.core.center.array.ArrayValidator;
@@ -39,8 +39,8 @@ import java.util.function.Supplier;
 /**
  * Collection检查工具类，提供字对象的blank和empty等检查
  * <ul>
- *     <li>empty定义：{@code null} or 空字对象：{@code ""}</li>
- *     <li>blank定义：{@code null} or 空字对象：{@code ""} or 空格、全角空格、制表符、换行符，等不可见字符</li>
+ * <li>empty定义：{@code null} or 空字对象：{@code ""}</li>
+ * <li>blank定义：{@code null} or 空字对象：{@code ""} or 空格、全角空格、制表符、换行符，等不可见字符</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -124,13 +124,13 @@ public class CollectionValidator {
      * @param defaultSupplier 默认值懒加载函数
      * @return 非空（empty）的原集合或默认集合
      */
-    public static <T extends Collection<E>, E> T defaultIfEmpty(final T collection, final Function<T, T> handler, final Supplier<? extends T> defaultSupplier) {
+    public static <T extends Collection<E>, E> T defaultIfEmpty(final T collection, final Function<T, T> handler,
+            final Supplier<? extends T> defaultSupplier) {
         return isEmpty(collection) ? defaultSupplier.get() : handler.apply(collection);
     }
 
     /**
-     * 如果提供的集合为{@code null}，返回一个不可变的默认空集合，否则返回原集合
-     * 空集合使用{@link Collections#emptySet()}
+     * 如果提供的集合为{@code null}，返回一个不可变的默认空集合，否则返回原集合 空集合使用{@link Collections#emptySet()}
      *
      * @param <T> 集合元素类型
      * @param set 提供的集合，可能为null
@@ -141,8 +141,7 @@ public class CollectionValidator {
     }
 
     /**
-     * 如果提供的集合为{@code null}，返回一个不可变的默认空集合，否则返回原集合
-     * 空集合使用{@link Collections#emptyList()}
+     * 如果提供的集合为{@code null}，返回一个不可变的默认空集合，否则返回原集合 空集合使用{@link Collections#emptyList()}
      *
      * @param <T>  集合元素类型
      * @param list 提供的集合，可能为null
@@ -197,9 +196,9 @@ public class CollectionValidator {
     /**
      * 是否包含{@code null}元素
      * <ul>
-     *     <li>集合为{@code null}，返回{@code true}</li>
-     *     <li>集合为空集合，即元素个数为0，返回{@code false}</li>
-     *     <li>集合中元素为""，返回{@code false}</li>
+     * <li>集合为{@code null}，返回{@code true}</li>
+     * <li>集合为空集合，即元素个数为0，返回{@code false}</li>
+     * <li>集合中元素为""，返回{@code false}</li>
      * </ul>
      *
      * @param iterable 被检查的Iterable对象，如果为{@code null} 返回true
@@ -224,8 +223,8 @@ public class CollectionValidator {
     /**
      * 判断subCollection是否为collection的子集合，不考虑顺序，只考虑元素数量。
      * <ul>
-     *     <li>如果两个集合为同一集合或，则返回true</li>
-     *     <li>如果两个集合元素都相同，则返回true（无论顺序相同与否）</li>
+     * <li>如果两个集合为同一集合或，则返回true</li>
+     * <li>如果两个集合元素都相同，则返回true（无论顺序相同与否）</li>
      * </ul>
      *
      * @param subCollection 第一个Iterable对象，即子集合。
@@ -242,8 +241,8 @@ public class CollectionValidator {
     /**
      * 判断两个{@link Collection} 是否元素和顺序相同，返回{@code true}的条件是：
      * <ul>
-     *     <li>两个{@link Collection}必须长度相同</li>
-     *     <li>两个{@link Collection}元素相同index的对象必须equals，满足{@link Objects#equals(Object, Object)}</li>
+     * <li>两个{@link Collection}必须长度相同</li>
+     * <li>两个{@link Collection}元素相同index的对象必须equals，满足{@link Objects#equals(Object, Object)}</li>
      * </ul>
      *
      * @param list1 列表1
@@ -255,13 +254,12 @@ public class CollectionValidator {
     }
 
     /**
-     * 判断两个{@link Iterable}中的元素是否相同，可选是否判断顺序
-     * 当满足下列情况时返回{@code true}：
+     * 判断两个{@link Iterable}中的元素是否相同，可选是否判断顺序 当满足下列情况时返回{@code true}：
      * <ul>
-     *     <li>两个{@link Iterable}都为{@code null}；</li>
-     *     <li>两个{@link Iterable}满足{@code coll1 == coll2}；</li>
-     *     <li>如果忽略顺序，则计算两个集合中元素和数量是否相同</li>
-     *     <li>如果不忽略顺序，两个{@link Iterable}所有具有相同下标的元素皆满足{@link Objects#equals(Object, Object)}；</li>
+     * <li>两个{@link Iterable}都为{@code null}；</li>
+     * <li>两个{@link Iterable}满足{@code coll1 == coll2}；</li>
+     * <li>如果忽略顺序，则计算两个集合中元素和数量是否相同</li>
+     * <li>如果不忽略顺序，两个{@link Iterable}所有具有相同下标的元素皆满足{@link Objects#equals(Object, Object)}；</li>
      * </ul>
      *
      * @param coll1       集合1
@@ -280,11 +278,11 @@ public class CollectionValidator {
     /**
      * 获取Collection或者iterator的大小，此方法可以处理的对象类型如下：
      * <ul>
-     *   <li>Collection - the collection size</li>
-     *   <li>Map - the map size</li>
-     *   <li>Array - the array size</li>
-     *   <li>Iterator - the number of elements remaining in the iterator</li>
-     *   <li>Enumeration - the number of elements remaining in the enumeration</li>
+     * <li>Collection - the collection size</li>
+     * <li>Map - the map size</li>
+     * <li>Array - the array size</li>
+     * <li>Iterator - the number of elements remaining in the iterator</li>
+     * <li>Enumeration - the number of elements remaining in the enumeration</li>
      * </ul>
      *
      * @param object 可以为空的对象

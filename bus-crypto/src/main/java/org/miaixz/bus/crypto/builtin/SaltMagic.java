@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.builtin;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -39,8 +39,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 /**
- * 加盐值魔数
- * 用于在OpenSSL生成的密文中，提取加盐值等相关信息
+ * 加盐值魔数 用于在OpenSSL生成的密文中，提取加盐值等相关信息
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -75,8 +74,7 @@ public class SaltMagic {
     }
 
     /**
-     * 获取流中的加盐值
-     * 不关闭流
+     * 获取流中的加盐值 不关闭流
      *
      * @param in 流
      * @return salt
@@ -87,8 +85,7 @@ public class SaltMagic {
 
         try {
             final int readHeaderSize = in.read(headerBytes);
-            if (readHeaderSize < headerBytes.length ||
-                    !Arrays.equals(SALTED_MAGIC, headerBytes)) {
+            if (readHeaderSize < headerBytes.length || !Arrays.equals(SALTED_MAGIC, headerBytes)) {
                 throw new InternalException("Unexpected magic header " + StringKit.toString(headerBytes));
             }
 
@@ -118,8 +115,9 @@ public class SaltMagic {
 
     /**
      * 为加密后的数据添加Magic头，生成的密文格式为：
+     * 
      * <pre>
-     *     Salted__[salt][data]
+     * Salted__[salt][data]
      * </pre>
      *
      * @param data 数据
@@ -136,8 +134,9 @@ public class SaltMagic {
 
     /**
      * 获取Magic头，生成的密文格式为：
+     * 
      * <pre>
-     *     Salted__[salt]
+     * Salted__[salt]
      * </pre>
      *
      * @param salt 加盐值，必须8位，不能为{@code null}

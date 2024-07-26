@@ -26,10 +26,9 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
  */
 /**
- *  客户端平台支持
+ * 客户端平台支持
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 package org.miaixz.bus.http.accord.platform;
-

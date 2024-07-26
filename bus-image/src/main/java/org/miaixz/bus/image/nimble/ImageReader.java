@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -69,55 +69,39 @@ import java.util.*;
 import java.util.function.BooleanSupplier;
 
 /**
- * Reads image data from a DICOM object.
- * Supports all the DICOM objects containing pixel data. Use the OpenCV native library to read
- * compressed and uncompressed pixel data.
+ * Reads image data from a DICOM object. Supports all the DICOM objects containing pixel data. Use the OpenCV native
+ * library to read compressed and uncompressed pixel data.
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class ImageReader extends javax.imageio.ImageReader {
 
-    public static Set<Integer> BULK_TAGS =
-            Set.of(
-                    Tag.PixelDataProviderURL,
-                    Tag.AudioSampleData,
-                    Tag.CurveData,
-                    Tag.SpectroscopyData,
-                    Tag.RedPaletteColorLookupTableData,
-                    Tag.GreenPaletteColorLookupTableData,
-                    Tag.BluePaletteColorLookupTableData,
-                    Tag.AlphaPaletteColorLookupTableData,
-                    Tag.LargeRedPaletteColorLookupTableData,
-                    Tag.LargeGreenPaletteColorLookupTableData,
-                    Tag.LargeBluePaletteColorLookupTableData,
-                    Tag.SegmentedRedPaletteColorLookupTableData,
-                    Tag.SegmentedGreenPaletteColorLookupTableData,
-                    Tag.SegmentedBluePaletteColorLookupTableData,
-                    Tag.SegmentedAlphaPaletteColorLookupTableData,
-                    Tag.OverlayData,
-                    Tag.EncapsulatedDocument,
-                    Tag.FloatPixelData,
-                    Tag.DoubleFloatPixelData,
-                    Tag.PixelData);
-    public static final BulkDataDescriptor BULKDATA_DESCRIPTOR =
-            (itemPointer, privateCreator, tag, vr, length) -> {
-                var tagNormalized = Tag.normalizeRepeatingGroup(tag);
-                if (tagNormalized == Tag.WaveformData) {
-                    return itemPointer.size() == 1 && itemPointer.get(0).sequenceTag == Tag.WaveformSequence;
-                } else if (BULK_TAGS.contains(tagNormalized)) {
-                    return itemPointer.isEmpty();
-                }
+    public static Set<Integer> BULK_TAGS = Set.of(Tag.PixelDataProviderURL, Tag.AudioSampleData, Tag.CurveData,
+            Tag.SpectroscopyData, Tag.RedPaletteColorLookupTableData, Tag.GreenPaletteColorLookupTableData,
+            Tag.BluePaletteColorLookupTableData, Tag.AlphaPaletteColorLookupTableData,
+            Tag.LargeRedPaletteColorLookupTableData, Tag.LargeGreenPaletteColorLookupTableData,
+            Tag.LargeBluePaletteColorLookupTableData, Tag.SegmentedRedPaletteColorLookupTableData,
+            Tag.SegmentedGreenPaletteColorLookupTableData, Tag.SegmentedBluePaletteColorLookupTableData,
+            Tag.SegmentedAlphaPaletteColorLookupTableData, Tag.OverlayData, Tag.EncapsulatedDocument,
+            Tag.FloatPixelData, Tag.DoubleFloatPixelData, Tag.PixelData);
+    public static final BulkDataDescriptor BULKDATA_DESCRIPTOR = (itemPointer, privateCreator, tag, vr, length) -> {
+        var tagNormalized = Tag.normalizeRepeatingGroup(tag);
+        if (tagNormalized == Tag.WaveformData) {
+            return itemPointer.size() == 1 && itemPointer.get(0).sequenceTag == Tag.WaveformSequence;
+        } else if (BULK_TAGS.contains(tagNormalized)) {
+            return itemPointer.isEmpty();
+        }
 
-                if (Tag.isPrivateTag(tag)) {
-                    return length > 1000; // Do no read in memory private value more than 1 KB
-                }
+        if (Tag.isPrivateTag(tag)) {
+            return length > 1000; // Do no read in memory private value more than 1 KB
+        }
 
-                return switch (vr) {
-                    case OB, OD, OF, OL, OW, UN -> length > 64;
-                    default -> false;
-                };
-            };
+        return switch (vr) {
+        case OB, OD, OF, OL, OW, UN -> length > 64;
+        default -> false;
+        };
+    };
 
     static {
         // Load the native OpenCV library
@@ -134,8 +118,7 @@ public class ImageReader extends javax.imageio.ImageReader {
         super(originatingProvider);
     }
 
-    private static boolean isYbrModel(
-            SeekableByteChannel channel, Photometric pmi, ImageReadParam param)
+    private static boolean isYbrModel(SeekableByteChannel channel, Photometric pmi, ImageReadParam param)
             throws IOException {
         JPEGParser parser = new JPEGParser(channel);
         String tsuid = null;
@@ -162,36 +145,31 @@ public class ImageReader extends javax.imageio.ImageReader {
         return false;
     }
 
-    private static boolean ybr2rgb(
-            Photometric pmi, String tsuid, BooleanSupplier isYbrModel) {
+    private static boolean ybr2rgb(Photometric pmi, String tsuid, BooleanSupplier isYbrModel) {
         // Option only for IJG native decoder
         switch (pmi) {
-            case MONOCHROME1:
-            case MONOCHROME2:
-            case PALETTE_COLOR:
-            case YBR_ICT:
-            case YBR_RCT:
-                return false;
-            default:
-                break;
+        case MONOCHROME1:
+        case MONOCHROME2:
+        case PALETTE_COLOR:
+        case YBR_ICT:
+        case YBR_RCT:
+            return false;
+        default:
+            break;
         }
 
         return switch (UID.from(tsuid)) {
-            case UID.JPEGBaseline8Bit,
-                 UID.JPEGExtended12Bit,
-                 UID.JPEGSpectralSelectionNonHierarchical68,
-                 UID.JPEGFullProgressionNonHierarchical1012 -> {
-                if (pmi == Photometric.RGB) {
-                    yield isYbrModel.getAsBoolean();
-                }
-                yield true;
+        case UID.JPEGBaseline8Bit, UID.JPEGExtended12Bit, UID.JPEGSpectralSelectionNonHierarchical68, UID.JPEGFullProgressionNonHierarchical1012 -> {
+            if (pmi == Photometric.RGB) {
+                yield isYbrModel.getAsBoolean();
             }
-            default -> pmi.name().startsWith("YBR");
+            yield true;
+        }
+        default -> pmi.name().startsWith("YBR");
         };
     }
 
-    public static ImageCV applyReleaseImageAfterProcessing(
-            ImageCV imageCV, ImageReadParam param) {
+    public static ImageCV applyReleaseImageAfterProcessing(ImageCV imageCV, ImageReadParam param) {
         if (isReleaseImageAfterProcessing(param)) {
             imageCV.setReleasedAfterProcessing(true);
         }
@@ -210,23 +188,8 @@ public class ImageReader extends javax.imageio.ImageReader {
 
     public static boolean isSupportedSyntax(String uid) {
         return switch (UID.from(uid)) {
-            case UID.ImplicitVRLittleEndian,
-                 UID.ExplicitVRLittleEndian,
-                 UID.ExplicitVRBigEndian,
-                 UID.RLELossless,
-                 UID.JPEGBaseline8Bit,
-                 UID.JPEGExtended12Bit,
-                 UID.JPEGSpectralSelectionNonHierarchical68,
-                 UID.JPEGFullProgressionNonHierarchical1012,
-                 UID.JPEGLossless,
-                 UID.JPEGLosslessSV1,
-                 UID.JPEGLSLossless,
-                 UID.JPEGLSNearLossless,
-                 UID.JPEG2000Lossless,
-                 UID.JPEG2000,
-                 UID.JPEG2000MCLossless,
-                 UID.JPEG2000MC -> true;
-            default -> false;
+        case UID.ImplicitVRLittleEndian, UID.ExplicitVRLittleEndian, UID.ExplicitVRBigEndian, UID.RLELossless, UID.JPEGBaseline8Bit, UID.JPEGExtended12Bit, UID.JPEGSpectralSelectionNonHierarchical68, UID.JPEGFullProgressionNonHierarchical1012, UID.JPEGLossless, UID.JPEGLosslessSV1, UID.JPEGLSLossless, UID.JPEGLSNearLossless, UID.JPEG2000Lossless, UID.JPEG2000, UID.JPEG2000MCLossless, UID.JPEG2000MC -> true;
+        default -> false;
         };
     }
 
@@ -248,7 +211,8 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     public ImageDescriptor getImageDescriptor() {
-        if (bdis != null) return bdis.getImageDescriptor();
+        if (bdis != null)
+            return bdis.getImageDescriptor();
         return dis.getImageDescriptor();
     }
 
@@ -283,8 +247,8 @@ public class ImageReader extends javax.imageio.ImageReader {
     }
 
     /**
-     * Gets the stream metadata. May not contain post pixel data unless there are no images or the
-     * getStreamMetadata has been called with the post pixel data node being specified.
+     * Gets the stream metadata. May not contain post pixel data unless there are no images or the getStreamMetadata has
+     * been called with the post pixel data node being specified.
      */
     @Override
     public ImageMetaData getStreamMetadata() throws IOException {
@@ -354,75 +318,64 @@ public class ImageReader extends javax.imageio.ImageReader {
         resetInternalState();
     }
 
-    private boolean fileYbr2rgb(
-            Photometric pmi,
-            String tsuid,
-            ExtendSegmentedInputImageStream seg,
-            int frame,
+    private boolean fileYbr2rgb(Photometric pmi, String tsuid, ExtendSegmentedInputImageStream seg, int frame,
             ImageReadParam param) {
-        BooleanSupplier isYbrModel =
-                () -> {
-                    try (SeekableByteChannel channel =
-                                 Files.newByteChannel(dis.getPath(), StandardOpenOption.READ)) {
-                        channel.position(seg.segmentPositions()[frame]);
-                        return isYbrModel(channel, pmi, param);
-                    } catch (IOException e) {
-                        Logger.error("Cannot read jpeg header", e);
-                    }
-                    return false;
-                };
+        BooleanSupplier isYbrModel = () -> {
+            try (SeekableByteChannel channel = Files.newByteChannel(dis.getPath(), StandardOpenOption.READ)) {
+                channel.position(seg.segmentPositions()[frame]);
+                return isYbrModel(channel, pmi, param);
+            } catch (IOException e) {
+                Logger.error("Cannot read jpeg header", e);
+            }
+            return false;
+        };
         return ybr2rgb(pmi, tsuid, isYbrModel);
     }
 
-    private boolean byteYbr2rgb(
-            Photometric pmi, String tsuid, int frame, ImageReadParam param) {
-        BooleanSupplier isYbrModel =
-                () -> {
-                    try (SeekableInMemoryByteChannel channel =
-                                 new SeekableInMemoryByteChannel(bdis.getBytes(frame).array())) {
-                        return isYbrModel(channel, pmi, param);
-                    } catch (Exception e) {
-                        Logger.error("Cannot read jpeg header", e);
-                    }
-                    return false;
-                };
+    private boolean byteYbr2rgb(Photometric pmi, String tsuid, int frame, ImageReadParam param) {
+        BooleanSupplier isYbrModel = () -> {
+            try (SeekableInMemoryByteChannel channel = new SeekableInMemoryByteChannel(bdis.getBytes(frame).array())) {
+                return isYbrModel(channel, pmi, param);
+            } catch (Exception e) {
+                Logger.error("Cannot read jpeg header", e);
+            }
+            return false;
+        };
         return ybr2rgb(pmi, tsuid, isYbrModel);
     }
 
-    public List<SupplierEx<PlanarImage, IOException>> getLazyPlanarImages(
-            ImageReadParam param, Editable<PlanarImage> editor) {
+    public List<SupplierEx<PlanarImage, IOException>> getLazyPlanarImages(ImageReadParam param,
+            Editable<PlanarImage> editor) {
         int size = getImageDescriptor().getFrames();
         List<SupplierEx<PlanarImage, IOException>> suppliers = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             final int index = i;
-            suppliers.add(
-                    new SupplierEx<>() {
-                        boolean initialized;
+            suppliers.add(new SupplierEx<>() {
+                boolean initialized;
 
-                        public PlanarImage get() throws IOException {
-                            return delegate.get();
+                public PlanarImage get() throws IOException {
+                    return delegate.get();
+                }
+
+                private synchronized PlanarImage firstTime() throws IOException {
+                    if (!initialized) {
+                        PlanarImage img = getPlanarImage(index, param);
+                        PlanarImage value;
+                        if (editor == null) {
+                            value = img;
+                        } else {
+                            value = editor.process(img);
+                            img.release();
                         }
+                        delegate = () -> value;
+                        initialized = true;
+                    }
+                    return delegate.get();
+                }
 
-                        private synchronized PlanarImage firstTime() throws IOException {
-                            if (!initialized) {
-                                PlanarImage img = getPlanarImage(index, param);
-                                PlanarImage value;
-                                if (editor == null) {
-                                    value = img;
-                                } else {
-                                    value = editor.process(img);
-                                    img.release();
-                                }
-                                delegate = () -> value;
-                                initialized = true;
-                            }
-                            return delegate.get();
-                        }
+                SupplierEx<PlanarImage, IOException> delegate = this::firstTime;
 
-                        SupplierEx<PlanarImage, IOException> delegate = this::firstTime;
-
-
-                    });
+            });
         }
         return suppliers;
     }
@@ -448,13 +401,9 @@ public class ImageReader extends javax.imageio.ImageReader {
         PlanarImage out = img;
         if (getImageDescriptor().hasPaletteColorLookupTable()) {
             if (dis == null) {
-                out =
-                        RGBImageVoiLut.getRGBImageFromPaletteColorModel(
-                                out, bdis.getPaletteColorLookupTable());
+                out = RGBImageVoiLut.getRGBImageFromPaletteColorModel(out, bdis.getPaletteColorLookupTable());
             } else {
-                out =
-                        RGBImageVoiLut.getRGBImageFromPaletteColorModel(
-                                out, dis.getMetadata().getDicomObject());
+                out = RGBImageVoiLut.getRGBImageFromPaletteColorModel(out, dis.getMetadata().getDicomObject());
             }
         }
         if (param != null && param.getSourceRegion() != null) {
@@ -477,8 +426,7 @@ public class ImageReader extends javax.imageio.ImageReader {
         }
     }
 
-    protected PlanarImage getRawImageFromFile(int frame, ImageReadParam param)
-            throws IOException {
+    protected PlanarImage getRawImageFromFile(int frame, ImageReadParam param) throws IOException {
         if (dis == null) {
             throw new IOException("No DicomInputStream found");
         }
@@ -520,8 +468,7 @@ public class ImageReader extends javax.imageio.ImageReader {
             bigendian = pixeldataFragments.bigEndian();
         }
 
-        ExtendSegmentedInputImageStream seg =
-                buildSegmentedImageInputStream(frame, pixeldataFragments, bulkData);
+        ExtendSegmentedInputImageStream seg = buildSegmentedImageInputStream(frame, pixeldataFragments, bulkData);
         if (seg.segmentPositions() == null) {
             return null;
         }
@@ -529,14 +476,10 @@ public class ImageReader extends javax.imageio.ImageReader {
         String tsuid = dis.getMetadata().getTransferSyntaxUID();
         TransferSyntaxType type = TransferSyntaxType.forUID(tsuid);
         Photometric pmi = desc.getPhotometricInterpretation();
-        boolean rawData =
-                pixeldataFragments == null
-                        || type == TransferSyntaxType.NATIVE
-                        || type == TransferSyntaxType.RLE;
-        int dcmFlags =
-                (type.canEncodeSigned() && desc.isSigned())
-                        ? Imgcodecs.DICOM_FLAG_SIGNED
-                        : Imgcodecs.DICOM_FLAG_UNSIGNED;
+        boolean rawData = pixeldataFragments == null || type == TransferSyntaxType.NATIVE
+                || type == TransferSyntaxType.RLE;
+        int dcmFlags = (type.canEncodeSigned() && desc.isSigned()) ? Imgcodecs.DICOM_FLAG_SIGNED
+                : Imgcodecs.DICOM_FLAG_UNSIGNED;
         if (!rawData && fileYbr2rgb(pmi, tsuid, seg, frame, param)) {
             dcmFlags |= Imgcodecs.DICOM_FLAG_YBR;
             if (type == TransferSyntaxType.JPEG_LS) {
@@ -561,27 +504,15 @@ public class ImageReader extends javax.imageio.ImageReader {
             if (rawData) {
                 int bits = bitsStored <= 8 && desc.getBitsAllocated() > 8 ? 9 : bitsStored;
                 int streamVR = pixeldataVR.vr.numEndianBytes();
-                MatOfInt dicomparams =
-                        new MatOfInt(
-                                Imgcodecs.IMREAD_UNCHANGED,
-                                dcmFlags,
-                                desc.getColumns(),
-                                desc.getRows(),
-                                Imgcodecs.DICOM_CP_UNKNOWN,
-                                desc.getSamples(),
-                                bits,
-                                desc.isBanded() ? Imgcodecs.ILV_NONE : Imgcodecs.ILV_SAMPLE,
-                                streamVR);
-                ImageCV imageCV =
-                        ImageCV.toImageCV(
-                                Imgcodecs.dicomRawFileRead(
-                                        seg.path().toString(), positions, lengths, dicomparams, pmi.name()));
+                MatOfInt dicomparams = new MatOfInt(Imgcodecs.IMREAD_UNCHANGED, dcmFlags, desc.getColumns(),
+                        desc.getRows(), Imgcodecs.DICOM_CP_UNKNOWN, desc.getSamples(), bits,
+                        desc.isBanded() ? Imgcodecs.ILV_NONE : Imgcodecs.ILV_SAMPLE, streamVR);
+                ImageCV imageCV = ImageCV.toImageCV(
+                        Imgcodecs.dicomRawFileRead(seg.path().toString(), positions, lengths, dicomparams, pmi.name()));
                 return applyReleaseImageAfterProcessing(imageCV, param);
             }
-            ImageCV imageCV =
-                    ImageCV.toImageCV(
-                            Imgcodecs.dicomJpgFileRead(
-                                    seg.path().toString(), positions, lengths, dcmFlags, Imgcodecs.IMREAD_UNCHANGED));
+            ImageCV imageCV = ImageCV.toImageCV(Imgcodecs.dicomJpgFileRead(seg.path().toString(), positions, lengths,
+                    dcmFlags, Imgcodecs.IMREAD_UNCHANGED));
             return applyReleaseImageAfterProcessing(imageCV, param);
         } finally {
             closeMat(positions);
@@ -589,8 +520,7 @@ public class ImageReader extends javax.imageio.ImageReader {
         }
     }
 
-    protected PlanarImage getRawImageFromBytes(int frame, ImageReadParam param)
-            throws IOException {
+    protected PlanarImage getRawImageFromBytes(int frame, ImageReadParam param) throws IOException {
         if (bdis == null) {
             throw new IOException("No BytesWithImageDescriptor found");
         }
@@ -602,10 +532,8 @@ public class ImageReader extends javax.imageio.ImageReader {
         TransferSyntaxType type = TransferSyntaxType.forUID(tsuid);
         Photometric pmi = desc.getPhotometricInterpretation();
         boolean rawData = type == TransferSyntaxType.NATIVE || type == TransferSyntaxType.RLE;
-        int dcmFlags =
-                (type.canEncodeSigned() && desc.isSigned())
-                        ? Imgcodecs.DICOM_FLAG_SIGNED
-                        : Imgcodecs.DICOM_FLAG_UNSIGNED;
+        int dcmFlags = (type.canEncodeSigned() && desc.isSigned()) ? Imgcodecs.DICOM_FLAG_SIGNED
+                : Imgcodecs.DICOM_FLAG_UNSIGNED;
         if (!rawData && byteYbr2rgb(pmi, tsuid, frame, param)) {
             dcmFlags |= Imgcodecs.DICOM_FLAG_YBR;
             if (type == TransferSyntaxType.JPEG_LS) {
@@ -630,40 +558,28 @@ public class ImageReader extends javax.imageio.ImageReader {
             if (rawData) {
                 int bits = bitsStored <= 8 && desc.getBitsAllocated() > 8 ? 9 : bitsStored; // Fix #94
                 int streamVR = bdis.getPixelDataVR().numEndianBytes();
-                MatOfInt dicomparams =
-                        new MatOfInt(
-                                Imgcodecs.IMREAD_UNCHANGED,
-                                dcmFlags,
-                                desc.getColumns(),
-                                desc.getRows(),
-                                Imgcodecs.DICOM_CP_UNKNOWN,
-                                desc.getSamples(),
-                                bits,
-                                desc.isBanded() ? Imgcodecs.ILV_NONE : Imgcodecs.ILV_SAMPLE,
-                                streamVR);
-                ImageCV imageCV =
-                        ImageCV.toImageCV(Imgcodecs.dicomRawMatRead(buf, dicomparams, pmi.name()));
+                MatOfInt dicomparams = new MatOfInt(Imgcodecs.IMREAD_UNCHANGED, dcmFlags, desc.getColumns(),
+                        desc.getRows(), Imgcodecs.DICOM_CP_UNKNOWN, desc.getSamples(), bits,
+                        desc.isBanded() ? Imgcodecs.ILV_NONE : Imgcodecs.ILV_SAMPLE, streamVR);
+                ImageCV imageCV = ImageCV.toImageCV(Imgcodecs.dicomRawMatRead(buf, dicomparams, pmi.name()));
                 return applyReleaseImageAfterProcessing(imageCV, param);
             }
-            ImageCV imageCV =
-                    ImageCV.toImageCV(Imgcodecs.dicomJpgMatRead(buf, dcmFlags, Imgcodecs.IMREAD_UNCHANGED));
+            ImageCV imageCV = ImageCV.toImageCV(Imgcodecs.dicomJpgMatRead(buf, dcmFlags, Imgcodecs.IMREAD_UNCHANGED));
             return applyReleaseImageAfterProcessing(imageCV, param);
         } finally {
             closeMat(buf);
         }
     }
 
-    private ExtendSegmentedInputImageStream buildSegmentedImageInputStream(
-            int frameIndex, Fragments fragments, BulkData bulkData) throws IOException {
+    private ExtendSegmentedInputImageStream buildSegmentedImageInputStream(int frameIndex, Fragments fragments,
+            BulkData bulkData) throws IOException {
         long[] offsets;
         int[] length;
         ImageDescriptor desc = getImageDescriptor();
         boolean hasFragments = fragments != null;
         if (!hasFragments && bulkData != null) {
-            int frameLength =
-                    desc.getPhotometricInterpretation()
-                            .frameLength(
-                                    desc.getColumns(), desc.getRows(), desc.getSamples(), desc.getBitsAllocated());
+            int frameLength = desc.getPhotometricInterpretation().frameLength(desc.getColumns(), desc.getRows(),
+                    desc.getSamples(), desc.getBitsAllocated());
             offsets = new long[1];
             length = new int[offsets.length];
             offsets[0] = bulkData.offset() + (long) frameIndex * frameLength;
@@ -692,8 +608,8 @@ public class ImageReader extends javax.imageio.ImageReader {
                 } else {
                     // Multi-frames where each frames can have multiple fragments.
                     if (fragmentsPositions.isEmpty()) {
-                        try (SeekableByteChannel channel =
-                                     Files.newByteChannel(dis.getPath(), StandardOpenOption.READ)) {
+                        try (SeekableByteChannel channel = Files.newByteChannel(dis.getPath(),
+                                StandardOpenOption.READ)) {
                             for (int i = 1; i < nbFragments; i++) {
                                 BulkData b = (BulkData) fragments.get(i);
                                 channel.position(b.offset());
@@ -709,10 +625,8 @@ public class ImageReader extends javax.imageio.ImageReader {
 
                     if (fragmentsPositions.size() == numberOfFrame) {
                         int start = fragmentsPositions.get(frameIndex);
-                        int end =
-                                (frameIndex + 1) >= fragmentsPositions.size()
-                                        ? nbFragments
-                                        : fragmentsPositions.get(frameIndex + 1);
+                        int end = (frameIndex + 1) >= fragmentsPositions.size() ? nbFragments
+                                : fragmentsPositions.get(frameIndex + 1);
 
                         offsets = new long[end - start];
                         length = new int[offsets.length];

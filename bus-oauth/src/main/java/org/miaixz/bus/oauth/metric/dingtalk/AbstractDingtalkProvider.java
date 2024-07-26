@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.dingtalk;
 
 import com.alibaba.fastjson.JSON;
@@ -47,8 +47,7 @@ import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 /**
- * 钉钉 登录抽象类
- * 负责处理使用钉钉账号登录第三方网站和扫码登录第三方网站两种钉钉的登录方式
+ * 钉钉 登录抽象类 负责处理使用钉钉账号登录第三方网站和扫码登录第三方网站两种钉钉的登录方式
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -58,7 +57,6 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
     public AbstractDingtalkProvider(Context context, Complex complex) {
         super(context, complex);
     }
-
 
     public AbstractDingtalkProvider(Context context, Complex complex, ExtendCache cache) {
         super(context, complex, cache);
@@ -72,7 +70,8 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
      * @return Signature
      */
     public static String sign(String secretKey, String timestamp) {
-        byte[] signData = Builder.sign(secretKey.getBytes(Charset.UTF_8), timestamp.getBytes(Charset.UTF_8), Algorithm.HMACSHA256.getValue());
+        byte[] signData = Builder.sign(secretKey.getBytes(Charset.UTF_8), timestamp.getBytes(Charset.UTF_8),
+                Algorithm.HMACSHA256.getValue());
         return UrlEncoder.encodeAll(new String(Base64.encode(signData, false)));
     }
 
@@ -92,18 +91,10 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
             throw new AuthorizedException(object.getString("errmsg"));
         }
         object = object.getJSONObject("user_info");
-        AccToken token = AccToken.builder()
-                .openId(object.getString("openid"))
-                .unionId(object.getString("unionid"))
+        AccToken token = AccToken.builder().openId(object.getString("openid")).unionId(object.getString("unionid"))
                 .build();
-        return Material.builder()
-                .rawJson(object)
-                .uuid(object.getString("unionid"))
-                .nickname(object.getString("nick"))
-                .username(object.getString("nick"))
-                .gender(Gender.UNKNOWN)
-                .source(complex.toString())
-                .token(token)
+        return Material.builder().rawJson(object).uuid(object.getString("unionid")).nickname(object.getString("nick"))
+                .username(object.getString("nick")).gender(Gender.UNKNOWN).source(complex.toString()).token(token)
                 .build();
     }
 
@@ -115,13 +106,9 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.authorize())
-                .queryParam("response_type", "code")
-                .queryParam("appid", context.getAppKey())
-                .queryParam("scope", "snsapi_login")
-                .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("state", getRealState(state))
-                .build();
+        return Builder.fromUrl(complex.authorize()).queryParam("response_type", "code")
+                .queryParam("appid", context.getAppKey()).queryParam("scope", "snsapi_login")
+                .queryParam("redirect_uri", context.getRedirectUri()).queryParam("state", getRealState(state)).build();
     }
 
     /**
@@ -136,11 +123,8 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
         String timestamp = System.currentTimeMillis() + "";
         String urlEncodeSignature = sign(context.getAppSecret(), timestamp);
 
-        return Builder.fromUrl(complex.userInfo())
-                .queryParam("signature", urlEncodeSignature)
-                .queryParam("timestamp", timestamp)
-                .queryParam("accessKey", context.getAppKey())
-                .build();
+        return Builder.fromUrl(complex.userInfo()).queryParam("signature", urlEncodeSignature)
+                .queryParam("timestamp", timestamp).queryParam("accessKey", context.getAppKey()).build();
     }
 
 }

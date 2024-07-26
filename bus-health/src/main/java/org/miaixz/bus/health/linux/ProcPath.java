@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.linux;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -34,9 +34,9 @@ import org.miaixz.bus.health.Config;
 import java.io.File;
 
 /**
- * Provides constants for paths in the {@code /proc} filesystem on Linux.
- * If the user desires to configure a custom {@code /proc} path, it must be declared in the configuration file or
- * updated in the {@link Config} class prior to initializing this class.
+ * Provides constants for paths in the {@code /proc} filesystem on Linux. If the user desires to configure a custom
+ * {@code /proc} path, it must be declared in the configuration file or updated in the {@link Config} class prior to
+ * initializing this class.
  *
  * @author Kimi Liu
  * @since Java 17+

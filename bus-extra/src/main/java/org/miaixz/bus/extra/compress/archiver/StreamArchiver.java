@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.compress.archiver;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
@@ -49,14 +49,13 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * 数据归档封装，归档即将几个文件或目录打成一个压缩包
- * 支持的归档文件格式为：
+ * 数据归档封装，归档即将几个文件或目录打成一个压缩包 支持的归档文件格式为：
  * <ul>
- *     <li>{@link ArchiveStreamFactory#AR}</li>
- *     <li>{@link ArchiveStreamFactory#CPIO}</li>
- *     <li>{@link ArchiveStreamFactory#JAR}</li>
- *     <li>{@link ArchiveStreamFactory#TAR}</li>
- *     <li>{@link ArchiveStreamFactory#ZIP}</li>
+ * <li>{@link ArchiveStreamFactory#AR}</li>
+ * <li>{@link ArchiveStreamFactory#CPIO}</li>
+ * <li>{@link ArchiveStreamFactory#JAR}</li>
+ * <li>{@link ArchiveStreamFactory#TAR}</li>
+ * <li>{@link ArchiveStreamFactory#ZIP}</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -101,8 +100,7 @@ public class StreamArchiver implements Archiver {
             }
         }
 
-
-        //特殊设置
+        // 特殊设置
         if (this.out instanceof TarArchiveOutputStream) {
             ((TarArchiveOutputStream) out).setLongFileMode(TarArchiveOutputStream.LONGFILE_GNU);
         } else if (this.out instanceof ArArchiveOutputStream) {
@@ -135,7 +133,8 @@ public class StreamArchiver implements Archiver {
     }
 
     @Override
-    public StreamArchiver add(final File file, final String path, final Function<String, String> fileNameEditor, final Predicate<File> predicate) throws InternalException {
+    public StreamArchiver add(final File file, final String path, final Function<String, String> fileNameEditor,
+            final Predicate<File> predicate) throws InternalException {
         try {
             addInternal(file, path, fileNameEditor, predicate);
         } catch (final IOException e) {
@@ -164,7 +163,7 @@ public class StreamArchiver implements Archiver {
         try {
             finish();
         } catch (final Exception ignore) {
-            //ignore
+            // ignore
         }
         IoKit.closeQuietly(this.out);
     }
@@ -177,7 +176,8 @@ public class StreamArchiver implements Archiver {
      * @param fileNameEditor 文件名编辑器
      * @param predicate      文件过滤器，指定哪些文件或目录可以加入，当{@link Predicate#test(Object)}为{@code true}加入。
      */
-    private void addInternal(final File file, final String path, final Function<String, String> fileNameEditor, final Predicate<File> predicate) throws IOException {
+    private void addInternal(final File file, final String path, final Function<String, String> fileNameEditor,
+            final Predicate<File> predicate) throws IOException {
         if (null != predicate && !predicate.test(file)) {
             return;
         }

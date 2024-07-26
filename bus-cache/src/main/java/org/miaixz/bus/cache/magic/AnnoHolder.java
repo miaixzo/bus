@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cache.magic;
 
 import org.miaixz.bus.cache.magic.annotation.CacheKey;
@@ -40,7 +40,7 @@ public class AnnoHolder {
 
     private Method method;
 
-    //  cached 内容
+    // cached 内容
     private String cache;
     private String prefix;
     private int expire;
@@ -52,9 +52,8 @@ public class AnnoHolder {
 
     private String id;
 
-    private AnnoHolder(Method method,
-                       String cache, String prefix, int expire,
-                       Map<Integer, CacheKey> cacheKeyMap, int multiIndex, String id) {
+    private AnnoHolder(Method method, String cache, String prefix, int expire, Map<Integer, CacheKey> cacheKeyMap,
+            int multiIndex, String id) {
         this.method = method;
         this.cache = cache;
         this.prefix = prefix;

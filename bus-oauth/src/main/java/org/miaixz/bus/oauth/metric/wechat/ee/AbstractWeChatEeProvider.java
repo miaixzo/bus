@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.wechat.ee;
 
 import com.alibaba.fastjson.JSONObject;
@@ -54,7 +54,6 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
         super(context, complex);
     }
 
-
     public AbstractWeChatEeProvider(Context context, Complex complex, ExtendCache cache) {
         super(context, complex, cache);
     }
@@ -65,11 +64,8 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
 
         JSONObject object = this.checkResponse(response);
 
-        return AccToken.builder()
-                .accessToken(object.getString("access_token"))
-                .expireIn(object.getIntValue("expires_in"))
-                .code(callback.getCode())
-                .build();
+        return AccToken.builder().accessToken(object.getString("access_token"))
+                .expireIn(object.getIntValue("expires_in")).code(callback.getCode()).build();
     }
 
     @Override
@@ -85,17 +81,10 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
         String userTicket = object.getString("user_ticket");
         JSONObject userDetail = getUserDetail(accToken.getAccessToken(), userId, userTicket);
 
-        return Material.builder()
-                .rawJson(userDetail)
-                .username(userDetail.getString("name"))
-                .nickname(userDetail.getString("alias"))
-                .avatar(userDetail.getString("avatar"))
-                .location(userDetail.getString("address"))
-                .email(userDetail.getString("email"))
-                .uuid(userId)
-                .gender(getWechatRealGender(userDetail.getString("gender")))
-                .token(accToken)
-                .source(complex.toString())
+        return Material.builder().rawJson(userDetail).username(userDetail.getString("name"))
+                .nickname(userDetail.getString("alias")).avatar(userDetail.getString("avatar"))
+                .location(userDetail.getString("address")).email(userDetail.getString("email")).uuid(userId)
+                .gender(getWechatRealGender(userDetail.getString("gender"))).token(accToken).source(complex.toString())
                 .build();
     }
 
@@ -115,7 +104,6 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
         return object;
     }
 
-
     /**
      * 返回获取accessToken的url
      *
@@ -124,10 +112,8 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
      */
     @Override
     protected String accessTokenUrl(String code) {
-        return Builder.fromUrl(complex.accessToken())
-                .queryParam("corpid", context.getAppKey())
-                .queryParam("corpsecret", context.getAppSecret())
-                .build();
+        return Builder.fromUrl(complex.accessToken()).queryParam("corpid", context.getAppKey())
+                .queryParam("corpsecret", context.getAppSecret()).build();
     }
 
     /**
@@ -138,10 +124,8 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(complex.userInfo())
-                .queryParam("access_token", accToken.getAccessToken())
-                .queryParam("code", accToken.getCode())
-                .build();
+        return Builder.fromUrl(complex.userInfo()).queryParam("access_token", accToken.getAccessToken())
+                .queryParam("code", accToken.getCode()).build();
     }
 
     /**
@@ -155,17 +139,14 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
     private JSONObject getUserDetail(String accessToken, String userId, String userTicket) {
         // 用户基础信息
         String userInfoUrl = Builder.fromUrl("https://qyapi.weixin.qq.com/cgi-bin/user/get")
-                .queryParam("access_token", accessToken)
-                .queryParam("userid", userId)
-                .build();
+                .queryParam("access_token", accessToken).queryParam("userid", userId).build();
         String userInfoResponse = Httpx.get(userInfoUrl);
         JSONObject userInfo = checkResponse(userInfoResponse);
 
         // 用户敏感信息
         if (StringKit.isNotEmpty(userTicket)) {
             String userDetailUrl = Builder.fromUrl("https://qyapi.weixin.qq.com/cgi-bin/auth/getuserdetail")
-                    .queryParam("access_token", accessToken)
-                    .build();
+                    .queryParam("access_token", accessToken).build();
             JSONObject param = new JSONObject();
             param.put("user_ticket", userTicket);
             String userDetailResponse = Httpx.post(userDetailUrl, param.toJSONString(), MediaType.APPLICATION_JSON);

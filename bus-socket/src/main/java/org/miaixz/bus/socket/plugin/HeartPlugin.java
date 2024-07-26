@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org sandao and other contributors.             ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket.plugin;
 
 import org.miaixz.bus.logger.Logger;
@@ -83,8 +83,7 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
     }
 
     /**
-     * 心跳插件
-     * 心跳插件在断网场景可能会触发TCP Retransmission,导致无法感知到网络实际状态,可通过设置timeout关闭连接
+     * 心跳插件 心跳插件在断网场景可能会触发TCP Retransmission,导致无法感知到网络实际状态,可通过设置timeout关闭连接
      *
      * @param heartRate 心跳触发频率
      * @param timeout   消息超时时间
@@ -108,17 +107,17 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
     @Override
     public final void stateEvent(Status status, Session session, Throwable throwable) {
         switch (status) {
-            case NEW_SESSION:
-                sessionMap.put(session, System.currentTimeMillis());
-                registerHeart(session, heartRate);
-                // 注册心跳监测
-                break;
-            case SESSION_CLOSED:
-                // 移除心跳监测
-                sessionMap.remove(session);
-                break;
-            default:
-                break;
+        case NEW_SESSION:
+            sessionMap.put(session, System.currentTimeMillis());
+            registerHeart(session, heartRate);
+            // 注册心跳监测
+            break;
+        case SESSION_CLOSED:
+            // 移除心跳监测
+            sessionMap.remove(session);
+            break;
+        default:
+            break;
         }
     }
 
@@ -131,8 +130,7 @@ public abstract class HeartPlugin<T> extends AbstractPlugin<T> {
     public abstract void sendHeartRequest(Session session) throws IOException;
 
     /**
-     * 判断当前收到的消息是否为心跳消息。
-     * 心跳请求消息与响应消息可能相同，也可能不同，因实际场景而异，故接口定义不做区分。
+     * 判断当前收到的消息是否为心跳消息。 心跳请求消息与响应消息可能相同，也可能不同，因实际场景而异，故接口定义不做区分。
      *
      * @param session 会话
      * @param msg     消息

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.hl7;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -42,7 +42,7 @@ import java.io.Writer;
 public class HL7ContentHandler extends DefaultHandler {
 
     private final Writer writer;
-    private final char[] escape = {Symbol.C_BACKSLASH, 0, Symbol.C_BACKSLASH};
+    private final char[] escape = { Symbol.C_BACKSLASH, 0, Symbol.C_BACKSLASH };
     private final char[] delimiters = Delimiter.DEFAULT.toCharArray();
     private boolean ignoreCharacters = true;
 
@@ -51,66 +51,65 @@ public class HL7ContentHandler extends DefaultHandler {
     }
 
     @Override
-    public void startElement(String uri, String localName, String qName,
-                             Attributes atts) throws SAXException {
+    public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
         try {
             switch (qName.charAt(0)) {
-                case 'f':
-                    if (qName.equals("field")) {
-                        writer.write(delimiters[0]);
-                        ignoreCharacters = false;
-                        return;
-                    }
-                    break;
-                case 'c':
-                    if (qName.equals("component")) {
-                        writer.write(delimiters[1]);
-                        ignoreCharacters = false;
-                        return;
-                    }
-                    break;
-                case 'r':
-                    if (qName.equals("repeat")) {
-                        writer.write(delimiters[2]);
-                        ignoreCharacters = false;
-                        return;
-                    }
-                    break;
-                case 'e':
-                    if (qName.equals("escape")) {
-                        writer.write(delimiters[3]);
-                        ignoreCharacters = false;
-                        return;
-                    }
-                    break;
-                case 's':
-                    if (qName.equals("subcomponent")) {
-                        writer.write(delimiters[4]);
-                        ignoreCharacters = false;
-                        return;
-                    }
-                    break;
-                case 'M':
-                    if (qName.equals("MSH")) {
-                        startHeaderSegment(qName, atts);
-                        return;
-                    }
-                    break;
-                case 'B':
-                    if (qName.equals("BHS")) {
-                        startHeaderSegment(qName, atts);
-                        return;
-                    }
-                    break;
-                case 'F':
-                    if (qName.equals("FHS")) {
-                        startHeaderSegment(qName, atts);
-                        return;
-                    }
-                    break;
-                case 'h':
-                    if (qName.equals("hl7"))
-                        return;
+            case 'f':
+                if (qName.equals("field")) {
+                    writer.write(delimiters[0]);
+                    ignoreCharacters = false;
+                    return;
+                }
+                break;
+            case 'c':
+                if (qName.equals("component")) {
+                    writer.write(delimiters[1]);
+                    ignoreCharacters = false;
+                    return;
+                }
+                break;
+            case 'r':
+                if (qName.equals("repeat")) {
+                    writer.write(delimiters[2]);
+                    ignoreCharacters = false;
+                    return;
+                }
+                break;
+            case 'e':
+                if (qName.equals("escape")) {
+                    writer.write(delimiters[3]);
+                    ignoreCharacters = false;
+                    return;
+                }
+                break;
+            case 's':
+                if (qName.equals("subcomponent")) {
+                    writer.write(delimiters[4]);
+                    ignoreCharacters = false;
+                    return;
+                }
+                break;
+            case 'M':
+                if (qName.equals("MSH")) {
+                    startHeaderSegment(qName, atts);
+                    return;
+                }
+                break;
+            case 'B':
+                if (qName.equals("BHS")) {
+                    startHeaderSegment(qName, atts);
+                    return;
+                }
+                break;
+            case 'F':
+                if (qName.equals("FHS")) {
+                    startHeaderSegment(qName, atts);
+                    return;
+                }
+                break;
+            case 'h':
+                if (qName.equals("hl7"))
+                    return;
             }
             writer.write(qName);
         } catch (Exception e) {
@@ -131,35 +130,38 @@ public class HL7ContentHandler extends DefaultHandler {
     }
 
     @Override
-    public void endElement(String uri, String localName, String qName)
-            throws SAXException {
+    public void endElement(String uri, String localName, String qName) throws SAXException {
         ignoreCharacters = true;
         try {
             switch (qName.charAt(0)) {
-                case 'f':
-                    if (qName.equals("field")) return;
-                    break;
-                case 'c':
-                    if (qName.equals("component")) return;
-                    break;
-                case 'r':
-                    if (qName.equals("repeat")) return;
-                    break;
-                case 'e':
-                    if (qName.equals("escape")) {
-                        writer.write(delimiters[3]);
-                        ignoreCharacters = false;
-                        return;
-                    }
-                    break;
-                case 's':
-                    if (qName.equals("subcomponent")) return;
-                    break;
-                case 'h':
-                    if (qName.equals("hl7")) {
-                        writer.flush();
-                        return;
-                    }
+            case 'f':
+                if (qName.equals("field"))
+                    return;
+                break;
+            case 'c':
+                if (qName.equals("component"))
+                    return;
+                break;
+            case 'r':
+                if (qName.equals("repeat"))
+                    return;
+                break;
+            case 'e':
+                if (qName.equals("escape")) {
+                    writer.write(delimiters[3]);
+                    ignoreCharacters = false;
+                    return;
+                }
+                break;
+            case 's':
+                if (qName.equals("subcomponent"))
+                    return;
+                break;
+            case 'h':
+                if (qName.equals("hl7")) {
+                    writer.flush();
+                    return;
+                }
             }
             writer.write(Symbol.C_CR);
         } catch (Exception e) {
@@ -168,8 +170,7 @@ public class HL7ContentHandler extends DefaultHandler {
     }
 
     @Override
-    public void characters(char[] cbuf, int start, int length)
-            throws SAXException {
+    public void characters(char[] cbuf, int start, int length) throws SAXException {
         if (ignoreCharacters)
             return;
 

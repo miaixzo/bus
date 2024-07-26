@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.plugin.httpv;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -50,9 +50,7 @@ import java.util.List;
 public interface CoverResult {
 
     /**
-     * 构造一个 Results
-     * 此方法构造的 Results 不可设置进度回调，不可进行下载操作！
-     * 若需要，请使用方法： {@link #of(Response, CoverTasks.Executor)}
+     * 构造一个 Results 此方法构造的 Results 不可设置进度回调，不可进行下载操作！ 若需要，请使用方法： {@link #of(Response, CoverTasks.Executor)}
      *
      * @param response Response
      * @return Results
@@ -108,8 +106,7 @@ public interface CoverResult {
     String getHeader(String name);
 
     /**
-     * 获取响应报文体长度（从请求头内提取）
-     * 在 HEAD 请求时，该方法返回不为 0，但{@link Body#getLength()} 将返回 0
+     * 获取响应报文体长度（从请求头内提取） 在 HEAD 请求时，该方法返回不为 0，但{@link Body#getLength()} 将返回 0
      *
      * @return 长度
      */
@@ -126,8 +123,7 @@ public interface CoverResult {
     IOException getError();
 
     /**
-     * 关闭报文
-     * 未对报文体做任何消费时使用，比如只读取报文头
+     * 关闭报文 未对报文体做任何消费时使用，比如只读取报文头
      *
      * @return HttpResult
      */
@@ -166,7 +162,6 @@ public interface CoverResult {
      * HTTP响应报文体
      */
     interface Body {
-
 
         /**
          * @return 消息体转字节流
@@ -243,8 +238,7 @@ public interface CoverResult {
         Body setOnProcess(Callback<Progress> onProcess);
 
         /**
-         * 设置进度回调的步进字节，默认 8K（8192）
-         * 表示每接收 stepBytes 个字节，执行一次进度回调
+         * 设置进度回调的步进字节，默认 8K（8192） 表示每接收 stepBytes 个字节，执行一次进度回调
          *
          * @param stepBytes 步进字节
          * @return Body
@@ -252,8 +246,7 @@ public interface CoverResult {
         Body stepBytes(long stepBytes);
 
         /**
-         * 设置进度回调的步进比例
-         * 表示每接收 stepRate 比例，执行一次进度回调
+         * 设置进度回调的步进比例 表示每接收 stepRate 比例，执行一次进度回调
          *
          * @param stepRate 步进比例
          * @return Body
@@ -268,8 +261,7 @@ public interface CoverResult {
         Body setRangeIgnored();
 
         /**
-         * 下载到指定路径
-         * 同一个 Body 对象的 toXXX 类方法只可使用一个并且只能调用一次
+         * 下载到指定路径 同一个 Body 对象的 toXXX 类方法只可使用一个并且只能调用一次
          *
          * @param filePath 目标路径
          * @return 下载过程 #Download
@@ -277,8 +269,7 @@ public interface CoverResult {
         Downloads toFile(String filePath);
 
         /**
-         * 下载到指定文件
-         * 同一个 Body 对象的 toXXX 类方法只可使用一个并且只能调用一次
+         * 下载到指定文件 同一个 Body 对象的 toXXX 类方法只可使用一个并且只能调用一次
          *
          * @param file 目标文件
          * @return 下载过程 #Download
@@ -286,8 +277,7 @@ public interface CoverResult {
         Downloads toFile(File file);
 
         /**
-         * 下载到指定文件夹
-         * 同一个 Body 对象的 toXXX 类方法只可使用一个并且只能调用一次
+         * 下载到指定文件夹 同一个 Body 对象的 toXXX 类方法只可使用一个并且只能调用一次
          *
          * @param dirPath 目标目录
          * @return 下载过程 #Download
@@ -295,8 +285,7 @@ public interface CoverResult {
         Downloads toFolder(String dirPath);
 
         /**
-         * 下载到指定文件夹
-         * 同一个 Body 对象的 toXXX 类方法只可使用一个并且只能调用一次
+         * 下载到指定文件夹 同一个 Body 对象的 toXXX 类方法只可使用一个并且只能调用一次
          *
          * @param dir 目标目录
          * @return 下载过程 #Download
@@ -311,8 +300,7 @@ public interface CoverResult {
         Body cache();
 
         /**
-         * 关闭报文体
-         * 未对报文体做任何消费时使用，比如只读取长度
+         * 关闭报文体 未对报文体做任何消费时使用，比如只读取长度
          *
          * @return Body
          */
@@ -440,8 +428,8 @@ public interface CoverResult {
         @Override
         public String toString() {
             Body body = getBody();
-            String text = "RealResult [\n  state: " + state + ",\n  status: " + getStatus()
-                    + ",\n  headers: " + getHeaders();
+            String text = "RealResult [\n  state: " + state + ",\n  status: " + getStatus() + ",\n  headers: "
+                    + getHeaders();
             if (null != body) {
                 text += ",\n  contentType: " + body.getType();
             }

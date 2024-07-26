@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.logger.metric.console;
 
 import org.miaixz.bus.core.lang.ansi.Ansi4BitColor;
@@ -63,17 +63,17 @@ public class ColorLoggingProvider extends NormalLoggingProvider {
 
     private static Function<Level, Ansi4BitColor> colorFactory = (level -> {
         switch (level) {
-            case DEBUG:
-            case INFO:
-                return Ansi4BitColor.GREEN;
-            case WARN:
-                return Ansi4BitColor.YELLOW;
-            case ERROR:
-                return Ansi4BitColor.RED;
-            case TRACE:
-                return Ansi4BitColor.MAGENTA;
-            default:
-                return COLOR_NONE;
+        case DEBUG:
+        case INFO:
+            return Ansi4BitColor.GREEN;
+        case WARN:
+            return Ansi4BitColor.YELLOW;
+        case ERROR:
+            return Ansi4BitColor.RED;
+        case TRACE:
+            return Ansi4BitColor.MAGENTA;
+        default:
+            return COLOR_NONE;
         }
     });
 
@@ -105,13 +105,16 @@ public class ColorLoggingProvider extends NormalLoggingProvider {
     }
 
     @Override
-    public synchronized void log(final String fqcn, final Level level, final Throwable t, final String format, final Object... args) {
+    public synchronized void log(final String fqcn, final Level level, final Throwable t, final String format,
+            final Object... args) {
         if (!isEnabled(level)) {
             return;
         }
 
-        final String template = AnsiEncoder.encode(COLOR_TIME, "[%s]", colorFactory.apply(level), "[%-5s]%s", COLOR_CLASSNAME, "%-30s: ", COLOR_NONE, "%s%n");
-        System.out.format(template, DateKit.formatNow(), level.name(), " - ", ClassKit.getShortClassName(getName()), StringKit.format(format, args));
+        final String template = AnsiEncoder.encode(COLOR_TIME, "[%s]", colorFactory.apply(level), "[%-5s]%s",
+                COLOR_CLASSNAME, "%-30s: ", COLOR_NONE, "%s%n");
+        System.out.format(template, DateKit.formatNow(), level.name(), " - ", ClassKit.getShortClassName(getName()),
+                StringKit.format(format, args));
     }
 
 }

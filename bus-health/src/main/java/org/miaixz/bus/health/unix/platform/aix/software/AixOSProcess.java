@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.aix.software;
 
 import com.sun.jna.Native;
@@ -66,11 +66,14 @@ import java.util.stream.Stream;
 @ThreadSafe
 public class AixOSProcess extends AbstractOSProcess {
 
-    private final Supplier<Long> affinityMask = Memoizer.memoize(PerfstatCpu::queryCpuAffinityMask, Memoizer.defaultExpiration());
+    private final Supplier<Long> affinityMask = Memoizer.memoize(PerfstatCpu::queryCpuAffinityMask,
+            Memoizer.defaultExpiration());
     private final AixOperatingSystem os;
     private final Supplier<Integer> bitness = Memoizer.memoize(this::queryBitness);
-    private final Supplier<AixLibc.AixPsInfo> psinfo = Memoizer.memoize(this::queryPsInfo, Memoizer.defaultExpiration());
-    private final Supplier<Pair<List<String>, Map<String, String>>> cmdEnv = Memoizer.memoize(this::queryCommandlineEnvironment);
+    private final Supplier<AixLibc.AixPsInfo> psinfo = Memoizer.memoize(this::queryPsInfo,
+            Memoizer.defaultExpiration());
+    private final Supplier<Pair<List<String>, Map<String, String>>> cmdEnv = Memoizer
+            .memoize(this::queryCommandlineEnvironment);
     // Memoized copy from OperatingSystem
     private final Supplier<perfstat_process_t[]> procCpu;
     private String name;
@@ -95,7 +98,7 @@ public class AixOSProcess extends AbstractOSProcess {
     private OSProcess.State state = OSProcess.State.INVALID;
 
     public AixOSProcess(int pid, Pair<Long, Long> userSysCpuTime, Supplier<perfstat_process_t[]> procCpu,
-                        AixOperatingSystem os) {
+            AixOperatingSystem os) {
         super(pid);
         this.procCpu = procCpu;
         this.os = os;
@@ -111,29 +114,29 @@ public class AixOSProcess extends AbstractOSProcess {
     static OSProcess.State getStateFromOutput(char stateValue) {
         OSProcess.State state;
         switch (stateValue) {
-            case 'O':
-                state = OSProcess.State.INVALID;
-                break;
-            case 'R':
-            case 'A':
-                state = OSProcess.State.RUNNING;
-                break;
-            case 'I':
-                state = OSProcess.State.WAITING;
-                break;
-            case 'S':
-            case 'W':
-                state = OSProcess.State.SLEEPING;
-                break;
-            case 'Z':
-                state = OSProcess.State.ZOMBIE;
-                break;
-            case 'T':
-                state = OSProcess.State.STOPPED;
-                break;
-            default:
-                state = OSProcess.State.OTHER;
-                break;
+        case 'O':
+            state = OSProcess.State.INVALID;
+            break;
+        case 'R':
+        case 'A':
+            state = OSProcess.State.RUNNING;
+            break;
+        case 'I':
+            state = OSProcess.State.WAITING;
+            break;
+        case 'S':
+        case 'W':
+            state = OSProcess.State.SLEEPING;
+            break;
+        case 'Z':
+            state = OSProcess.State.ZOMBIE;
+            break;
+        case 'T':
+            state = OSProcess.State.STOPPED;
+            break;
+        default:
+            state = OSProcess.State.OTHER;
+            break;
         }
         return state;
     }

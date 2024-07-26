@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.io;
 
 import org.miaixz.bus.core.lang.MediaType;
@@ -55,16 +55,10 @@ public class Bzip2FileDetector extends FileTypeDetector {
     public String probeContentType(Path path) throws IOException {
         byte[] b = new byte[3];
         try (InputStream in = Files.newInputStream(path)) {
-            return StreamKit.readAvailable(in, b, 0, 3) == 3
-                    && b[0] == 0x42
-                    && b[1] == 0x5A
-                    && b[2] == 0x68
-                    ? endsWith(path.getFileName().toString().toLowerCase(),
-                    ".vcf.bz2",
-                    ".vcfbzip2",
-                    ".vcfbz2")
-                    ? MediaType.APPLICATION_PRS_VCFBZIP
-                    : MediaType.APPLICATION_X_BZIP2
+            return StreamKit.readAvailable(in, b, 0, 3) == 3 && b[0] == 0x42 && b[1] == 0x5A && b[2] == 0x68
+                    ? endsWith(path.getFileName().toString().toLowerCase(), ".vcf.bz2", ".vcfbzip2", ".vcfbz2")
+                            ? MediaType.APPLICATION_PRS_VCFBZIP
+                            : MediaType.APPLICATION_X_BZIP2
                     : null;
         }
     }

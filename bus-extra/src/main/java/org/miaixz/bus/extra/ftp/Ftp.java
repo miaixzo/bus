@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.ftp;
 
 import org.miaixz.bus.core.lang.Charset;
@@ -89,9 +89,9 @@ public interface Ftp extends Closeable {
     /**
      * 文件或目录是否存在
      * <ul>
-     *     <li>提供路径为空则返回{@code false}</li>
-     *     <li>提供路径非目录但是以'/'或'\'结尾返回{@code false}</li>
-     *     <li>文件名是'.'或者'..'返回{@code false}</li>
+     * <li>提供路径为空则返回{@code false}</li>
+     * <li>提供路径非目录但是以'/'或'\'结尾返回{@code false}</li>
+     * <li>文件名是'.'或者'..'返回{@code false}</li>
      * </ul>
      *
      * @param path 目录
@@ -154,8 +154,7 @@ public interface Ftp extends Closeable {
     boolean delDir(String dirPath);
 
     /**
-     * 将本地文件上传到目标服务器，目标文件名为destPath，若destPath为目录，则目标文件名将与file文件名相同。
-     * 覆盖模式
+     * 将本地文件上传到目标服务器，目标文件名为destPath，若destPath为目录，则目标文件名将与file文件名相同。 覆盖模式
      *
      * @param destPath 服务端路径，可以为{@code null} 或者相对路径或绝对路径
      * @param file     需要上传的文件

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.linux.hardware;
 
 import org.miaixz.bus.core.center.regex.Pattern;
@@ -51,10 +51,11 @@ final class LinuxVirtualMemory extends AbstractVirtualMemory {
 
     private final LinuxGlobalMemory global;
 
-    private final Supplier<Triplet<Long, Long, Long>> usedTotalCommitLim = Memoizer.memoize(LinuxVirtualMemory::queryMemInfo,
-            Memoizer.defaultExpiration());
+    private final Supplier<Triplet<Long, Long, Long>> usedTotalCommitLim = Memoizer
+            .memoize(LinuxVirtualMemory::queryMemInfo, Memoizer.defaultExpiration());
 
-    private final Supplier<Pair<Long, Long>> inOut = Memoizer.memoize(LinuxVirtualMemory::queryVmStat, Memoizer.defaultExpiration());
+    private final Supplier<Pair<Long, Long>> inOut = Memoizer.memoize(LinuxVirtualMemory::queryVmStat,
+            Memoizer.defaultExpiration());
 
     /**
      * Constructor for LinuxVirtualMemory.
@@ -75,18 +76,18 @@ final class LinuxVirtualMemory extends AbstractVirtualMemory {
             String[] memorySplit = Pattern.SPACES_PATTERN.split(checkLine);
             if (memorySplit.length > 1) {
                 switch (memorySplit[0]) {
-                    case "SwapTotal:":
-                        swapTotal = parseMeminfo(memorySplit);
-                        break;
-                    case "SwapFree:":
-                        swapFree = parseMeminfo(memorySplit);
-                        break;
-                    case "CommitLimit:":
-                        commitLimit = parseMeminfo(memorySplit);
-                        break;
-                    default:
-                        // do nothing with other lines
-                        break;
+                case "SwapTotal:":
+                    swapTotal = parseMeminfo(memorySplit);
+                    break;
+                case "SwapFree:":
+                    swapFree = parseMeminfo(memorySplit);
+                    break;
+                case "CommitLimit:":
+                    commitLimit = parseMeminfo(memorySplit);
+                    break;
+                default:
+                    // do nothing with other lines
+                    break;
                 }
             }
         }
@@ -101,15 +102,15 @@ final class LinuxVirtualMemory extends AbstractVirtualMemory {
             String[] memorySplit = Pattern.SPACES_PATTERN.split(checkLine);
             if (memorySplit.length > 1) {
                 switch (memorySplit[0]) {
-                    case "pswpin":
-                        swapPagesIn = Parsing.parseLongOrDefault(memorySplit[1], 0L);
-                        break;
-                    case "pswpout":
-                        swapPagesOut = Parsing.parseLongOrDefault(memorySplit[1], 0L);
-                        break;
-                    default:
-                        // do nothing with other lines
-                        break;
+                case "pswpin":
+                    swapPagesIn = Parsing.parseLongOrDefault(memorySplit[1], 0L);
+                    break;
+                case "pswpout":
+                    swapPagesOut = Parsing.parseLongOrDefault(memorySplit[1], 0L);
+                    break;
+                default:
+                    // do nothing with other lines
+                    break;
                 }
             }
         }

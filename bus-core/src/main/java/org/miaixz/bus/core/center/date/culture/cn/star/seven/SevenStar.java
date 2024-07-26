@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org 6tail and other contributors.              ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -38,7 +38,7 @@ import org.miaixz.bus.core.center.date.culture.cn.Week;
  */
 public class SevenStar extends Samsara {
 
-    public static final String[] NAMES = {"日", "月", "火", "水", "木", "金", "土"};
+    public static final String[] NAMES = { "日", "月", "火", "水", "木", "金", "土" };
 
     public SevenStar(int index) {
         super(NAMES, index);

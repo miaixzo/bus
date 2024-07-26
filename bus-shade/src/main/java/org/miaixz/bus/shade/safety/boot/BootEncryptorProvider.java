@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.safety.boot;
 
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
@@ -58,15 +58,15 @@ import java.util.zip.Deflater;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry>
-        implements EncryptorProvider {
+public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntry> implements EncryptorProvider {
 
     private static final Map<String, String> map = new HashMap<>();
 
     static {
         map.put("org.springframework.boot.loader.JarLauncher", "boot.safety.shade.org.miaixz.bus.BootJarLauncher");
         map.put("org.springframework.boot.loader.WarLauncher", "boot.safety.shade.org.miaixz.bus.BootWarLauncher");
-        map.put("org.springframework.boot.loader.PropertiesLauncher", "boot.safety.shade.org.miaixz.bus.BootPropertiesLauncher");
+        map.put("org.springframework.boot.loader.PropertiesLauncher",
+                "boot.safety.shade.org.miaixz.bus.BootPropertiesLauncher");
     }
 
     private final int level;
@@ -92,7 +92,8 @@ public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntr
         this(encryptorProvider, level, mode, new JarAllComplex());
     }
 
-    public BootEncryptorProvider(EncryptorProvider encryptorProvider, int level, int mode, Complex<JarArchiveEntry> filter) {
+    public BootEncryptorProvider(EncryptorProvider encryptorProvider, int level, int mode,
+            Complex<JarArchiveEntry> filter) {
         super(encryptorProvider, filter);
         this.level = level;
         this.mode = mode;
@@ -100,10 +101,7 @@ public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntr
 
     @Override
     public void encrypt(Key key, File src, File dest) throws IOException {
-        try (
-                FileInputStream fis = new FileInputStream(src);
-                FileOutputStream fos = new FileOutputStream(dest)
-        ) {
+        try (FileInputStream fis = new FileInputStream(src); FileOutputStream fos = new FileOutputStream(dest)) {
             encrypt(key, fis, fos);
         }
     }
@@ -123,10 +121,8 @@ public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntr
             JarArchiveEntry entry;
             Manifest manifest = null;
             while (null != (entry = zis.getNextJarEntry())) {
-                if (entry.getName().startsWith(Builder.XJAR_SRC_DIR)
-                        || entry.getName().endsWith(Builder.XJAR_INF_DIR)
-                        || entry.getName().endsWith(Builder.XJAR_INF_DIR + Builder.XJAR_INF_IDX)
-                ) {
+                if (entry.getName().startsWith(Builder.XJAR_SRC_DIR) || entry.getName().endsWith(Builder.XJAR_INF_DIR)
+                        || entry.getName().endsWith(Builder.XJAR_INF_DIR + Builder.XJAR_INF_IDX)) {
                     continue;
                 }
                 // DIR ENTRY
@@ -197,7 +193,8 @@ public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntr
                 zos.putArchiveEntry(xjarInfDir);
                 zos.closeArchiveEntry();
 
-                JarArchiveEntry xjarInfIdx = new JarArchiveEntry(Builder.BOOT_INF_CLASSES + Builder.XJAR_INF_DIR + Builder.XJAR_INF_IDX);
+                JarArchiveEntry xjarInfIdx = new JarArchiveEntry(
+                        Builder.BOOT_INF_CLASSES + Builder.XJAR_INF_DIR + Builder.XJAR_INF_IDX);
                 xjarInfIdx.setTime(System.currentTimeMillis());
                 zos.putArchiveEntry(xjarInfIdx);
                 for (String index : indexes) {
@@ -207,7 +204,9 @@ public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntr
                 zos.closeArchiveEntry();
             }
 
-            String mainClass = null != manifest && null != manifest.getMainAttributes() ? manifest.getMainAttributes().getValue("Main-Class") : null;
+            String mainClass = null != manifest && null != manifest.getMainAttributes()
+                    ? manifest.getMainAttributes().getValue("Main-Class")
+                    : null;
             if (null != mainClass) {
                 Injector.inject(zos);
             }

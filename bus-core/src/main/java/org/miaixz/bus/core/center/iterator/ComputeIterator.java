@@ -24,17 +24,15 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.iterator;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 /**
- * 带有计算属性的遍历器
- * 通过继承此抽象遍历器，实现{@link #computeNext()}计算下一个节点，即可完成节点遍历
- * 当调用{@link #hasNext()}时将此方法产生的节点缓存，直到调用{@link #next()}取出
- * 当无下一个节点时，须返回{@code null}表示遍历结束
+ * 带有计算属性的遍历器 通过继承此抽象遍历器，实现{@link #computeNext()}计算下一个节点，即可完成节点遍历
+ * 当调用{@link #hasNext()}时将此方法产生的节点缓存，直到调用{@link #next()}取出 当无下一个节点时，须返回{@code null}表示遍历结束
  *
  * @param <T> 节点类型
  * @author Kimi Liu
@@ -49,8 +47,7 @@ public abstract class ComputeIterator<T> implements Iterator<T> {
     private boolean finished;
 
     /**
-     * 计算新的节点，通过实现此方法，当调用{@link #hasNext()}时将此方法产生的节点缓存，直到调用{@link #next()}取出
-     * 当无下一个节点时，须返回{@code null}表示遍历结束
+     * 计算新的节点，通过实现此方法，当调用{@link #hasNext()}时将此方法产生的节点缓存，直到调用{@link #next()}取出 当无下一个节点时，须返回{@code null}表示遍历结束
      *
      * @return 节点值
      */

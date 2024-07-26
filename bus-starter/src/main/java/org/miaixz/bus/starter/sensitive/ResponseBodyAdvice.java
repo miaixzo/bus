@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.sensitive;
 
 import jakarta.annotation.Resource;
@@ -52,8 +52,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 请求响应处理类
- * 对加了@Encrypt的方法的数据进行加密操作
+ * 请求响应处理类 对加了@Encrypt的方法的数据进行加密操作
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -97,8 +96,7 @@ public class ResponseBodyAdvice extends BaseAdvice
     }
 
     @Override
-    public boolean supports(MethodParameter returnType,
-                            Class<? extends HttpMessageConverter<?>> converterType) {
+    public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
         Annotation[] annotations = returnType.getDeclaringClass().getAnnotations();
         if (ArrayKit.isNotEmpty(annotations)) {
             for (Annotation annotation : annotations) {
@@ -123,7 +121,8 @@ public class ResponseBodyAdvice extends BaseAdvice
      */
     @Override
     public Object beforeBodyWrite(Object body, MethodParameter parameter, MediaType mediaType,
-                                  Class<? extends HttpMessageConverter<?>> converterType, ServerHttpRequest request, ServerHttpResponse response) {
+            Class<? extends HttpMessageConverter<?>> converterType, ServerHttpRequest request,
+            ServerHttpResponse response) {
         if (ObjectKit.isNotEmpty(this.properties) && !this.properties.isDebug()) {
             try {
                 final Sensitive sensitive = parameter.getMethod().getAnnotation(Sensitive.class);
@@ -157,7 +156,6 @@ public class ResponseBodyAdvice extends BaseAdvice
         return body;
     }
 
-
     private void beforeBodyWrite(Sensitive sensitive, Object object) {
         if (ObjectKit.isEmpty(object)) {
             return;
@@ -183,8 +181,9 @@ public class ResponseBodyAdvice extends BaseAdvice
                                 throw new InternalException("Please check the request.crypto.encrypt");
                             }
                             Logger.debug("Response data encryption enabled ...");
-                            value = org.miaixz.bus.crypto.Builder.encrypt(this.properties.getEncrypt().getType(), this.properties.getEncrypt().getKey(), value, Charset.UTF_8);
-                            setValue(object, new String[]{property}, new String[]{value});
+                            value = org.miaixz.bus.crypto.Builder.encrypt(this.properties.getEncrypt().getType(),
+                                    this.properties.getEncrypt().getKey(), value, Charset.UTF_8);
+                            setValue(object, new String[] { property }, new String[] { value });
                         }
                     }
                 }

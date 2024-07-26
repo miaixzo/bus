@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.hardware.common;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -60,11 +60,9 @@ public abstract class AbstractFirmware implements Firmware {
 
     @Override
     public String toString() {
-        String sb = "manufacturer=" + getManufacturer() + ", " +
-                "name=" + getName() + ", " +
-                "description=" + getDescription() + ", " +
-                "version=" + getVersion() + ", " +
-                "release date=" + (getReleaseDate() == null ? "unknown" : getReleaseDate());
+        String sb = "manufacturer=" + getManufacturer() + ", " + "name=" + getName() + ", " + "description="
+                + getDescription() + ", " + "version=" + getVersion() + ", " + "release date="
+                + (getReleaseDate() == null ? "unknown" : getReleaseDate());
         return sb;
     }
 

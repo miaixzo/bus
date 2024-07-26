@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.hardware.common;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -43,7 +43,8 @@ import java.util.function.Supplier;
 @ThreadSafe
 public abstract class AbstractSensors implements Sensors {
 
-    private final Supplier<Double> cpuTemperature = Memoizer.memoize(this::queryCpuTemperature, Memoizer.defaultExpiration());
+    private final Supplier<Double> cpuTemperature = Memoizer.memoize(this::queryCpuTemperature,
+            Memoizer.defaultExpiration());
 
     private final Supplier<int[]> fanSpeeds = Memoizer.memoize(this::queryFanSpeeds, Memoizer.defaultExpiration());
 
@@ -72,9 +73,8 @@ public abstract class AbstractSensors implements Sensors {
 
     @Override
     public String toString() {
-        String sb = "CPU Temperature=" + getCpuTemperature() + "C, " +
-                "Fan Speeds=" + Arrays.toString(getFanSpeeds()) + ", " +
-                "CPU Voltage=" + getCpuVoltage();
+        String sb = "CPU Temperature=" + getCpuTemperature() + "C, " + "Fan Speeds=" + Arrays.toString(getFanSpeeds())
+                + ", " + "CPU Voltage=" + getCpuVoltage();
         return sb;
     }
 

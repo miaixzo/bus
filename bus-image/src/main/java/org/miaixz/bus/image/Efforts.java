@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image;
 
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -32,8 +32,7 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 import java.io.File;
 
 /**
- * 图像处理额外接触点
- * 即: 后续业务处理支持
+ * 图像处理额外接触点 即: 后续业务处理支持
  *
  * @author Kimi Liu
  * @since Java 17+

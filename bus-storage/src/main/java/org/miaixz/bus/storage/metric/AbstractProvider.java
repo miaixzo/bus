@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.storage.metric;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -67,8 +67,7 @@ public abstract class AbstractProvider implements Provider {
                 if (null != disposition) {
                     int index = disposition.indexOf("filename=");
                     if (index > 0) {
-                        fileName = disposition.substring(index + 10,
-                                disposition.length() - 1);
+                        fileName = disposition.substring(index + 10, disposition.length() - 1);
                     }
                 } else {
                     fileName = fileURL.substring(fileURL.lastIndexOf(Symbol.C_SLASH) + 1);
@@ -95,11 +94,13 @@ public abstract class AbstractProvider implements Provider {
             throw new InternalException("file download failed", e);
         } finally {
             try {
-                if (null != outputStream) outputStream.close();
+                if (null != outputStream)
+                    outputStream.close();
             } catch (Exception e2) {
             }
             try {
-                if (null != httpConn) httpConn.disconnect();
+                if (null != httpConn)
+                    httpConn.disconnect();
             } catch (Exception e2) {
             }
         }

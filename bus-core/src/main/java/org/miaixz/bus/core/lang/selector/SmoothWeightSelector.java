@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.selector;
 
 import org.miaixz.bus.core.xyz.CollKit;
@@ -33,11 +33,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 平滑加权轮询选择器
- * 思路: 比如 A : 5 , B : 3 , C : 2   (服务器 A,B,C 对应权重分别是 5,3,2)
- * ip: A,B,C
- * weight: 5,3,2 (计算得到 totalWeight = 10)
+ * 平滑加权轮询选择器 思路: 比如 A : 5 , B : 3 , C : 2 (服务器 A,B,C 对应权重分别是 5,3,2) ip: A,B,C weight: 5,3,2 (计算得到 totalWeight = 10)
  * currentWeight: 0,0,0 (当前ip的初始权重都为0)
+ * 
  * <pre>
  * 请求次数: |  currentWeight = currentWeight + weight  |  最大权重为  |  返回的ip为 |  最大的权重 - totalWeight,其余不变
  *      1   |           5,3,2    (0,0,0 + 5,3,2)       |     5      |      A     |      -5,3,2
@@ -51,6 +49,7 @@ import java.util.List;
  *      9   |           5,7,-2                         |     7      |     B      |       5,-3,-2
  *      10  |           10,0,0                         |     10     |     A      |        0,0,0
  * </pre>
+ * 
  * 至此结束: 可以看到负载轮询的策略是: A,B,C,A,A,B,A,C,B,A,
  *
  * @param <T> 对象类型

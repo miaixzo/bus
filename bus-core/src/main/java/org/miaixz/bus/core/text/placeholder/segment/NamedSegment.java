@@ -24,12 +24,14 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text.placeholder.segment;
 
 /**
  * 字符串模板-有前后缀的变量占位符 SectionBuffer
- * <p>例如，"{1}", "{name}", "#{data}"</p>
+ * <p>
+ * 例如，"{1}", "{name}", "#{data}"
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -37,14 +39,14 @@ package org.miaixz.bus.core.text.placeholder.segment;
 public class NamedSegment extends AbstractSegment {
 
     /**
-     * 占位符完整文本
-     * 例如：{@literal "{name}"->"{name}"}
+     * 占位符完整文本 例如：{@literal "{name}"->"{name}"}
      */
     private final String wholePlaceholder;
 
     /**
      * 构造
-     * @param name 占位符变量
+     * 
+     * @param name             占位符变量
      * @param wholePlaceholder 占位符完整文本
      */
     public NamedSegment(final String name, final String wholePlaceholder) {

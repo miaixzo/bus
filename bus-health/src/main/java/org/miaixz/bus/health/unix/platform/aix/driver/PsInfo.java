@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.aix.driver;
 
 import com.sun.jna.Memory;
@@ -223,7 +223,7 @@ public final class PsInfo {
      * @return The new starting pointer for the buffer
      */
     private static long conditionallyReadBufferFromStartOfPage(int fd, Memory buffer, size_t bufSize, long bufStart,
-                                                               long addr) {
+            long addr) {
         // If we don't have the right buffer, update it
         if (addr < bufStart || addr - bufStart > PAGE_SIZE) {
             long newStart = Math.floorDiv(addr, PAGE_SIZE) * PAGE_SIZE;

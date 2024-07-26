@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org 6tail and other contributors.              ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -51,11 +51,9 @@ import org.miaixz.bus.core.center.date.culture.lunar.LunarMonth;
  */
 public class SolarDay extends Loops {
 
-    public static final String[] NAMES = {
-            "1日", "2日", "3日", "4日", "5日", "6日", "7日", "8日", "9日", "10日", "11日",
-            "12日", "13日", "14日", "15日", "16日", "17日", "18日", "19日", "20日", "21日",
-            "22日", "23日", "24日", "25日", "26日", "27日", "28日", "29日", "30日", "31日"
-    };
+    public static final String[] NAMES = { "1日", "2日", "3日", "4日", "5日", "6日", "7日", "8日", "9日", "10日", "11日", "12日",
+            "13日", "14日", "15日", "16日", "17日", "18日", "19日", "20日", "21日", "22日", "23日", "24日", "25日", "26日", "27日",
+            "28日", "29日", "30日", "31日" };
 
     /**
      * 公历月
@@ -259,7 +257,8 @@ public class SolarDay extends Loops {
     public SolarWeek getSolarWeek(int start) {
         int y = getYear();
         int m = getMonth();
-        return SolarWeek.fromYm(y, m, (int) Math.ceil((day + fromYmd(y, m, 1).getWeek().next(-start).getIndex()) / 7D) - 1, start);
+        return SolarWeek.fromYm(y, m,
+                (int) Math.ceil((day + fromYmd(y, m, 1).getWeek().next(-start).getIndex()) / 7D) - 1, start);
     }
 
     /**
@@ -370,7 +369,8 @@ public class SolarDay extends Loops {
         if (isBefore(start) || isAfter(end)) {
             return null;
         }
-        return equals(end) ? new PlumRainDay(PlumRain.fromIndex(1), 0) : new PlumRainDay(PlumRain.fromIndex(0), subtract(start));
+        return equals(end) ? new PlumRainDay(PlumRain.fromIndex(1), 0)
+                : new PlumRainDay(PlumRain.fromIndex(0), subtract(start));
     }
 
     /**

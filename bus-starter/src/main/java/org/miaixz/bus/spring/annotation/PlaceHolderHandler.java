@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.spring.annotation;
 
 import org.miaixz.bus.core.xyz.MethodKit;
@@ -49,18 +49,16 @@ public class PlaceHolderHandler implements InvocationHandler {
 
     private final Environment environment;
 
-    public PlaceHolderHandler(Annotation delegate, PlaceHolderBinder binder,
-                              Environment environment) {
+    public PlaceHolderHandler(Annotation delegate, PlaceHolderBinder binder, Environment environment) {
         this.delegate = delegate;
         this.binder = binder;
         this.environment = environment;
     }
 
-
     public static boolean isObjectMethod(Method method) {
-        return method != null && (method.getDeclaringClass() == Object.class || MethodKit.isEqualsMethod(method) || MethodKit.isHashCodeMethod(method) || MethodKit.isToStringMethod(method));
+        return method != null && (method.getDeclaringClass() == Object.class || MethodKit.isEqualsMethod(method)
+                || MethodKit.isHashCodeMethod(method) || MethodKit.isToStringMethod(method));
     }
-
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -88,8 +86,8 @@ public class PlaceHolderHandler implements InvocationHandler {
         if (origin instanceof String) {
             return binder.bind(environment, (String) origin);
         } else if (origin instanceof Annotation && !(origin instanceof WrapperAnnotation)) {
-            return AnnotationWrapper.of((Annotation) origin).withBinder(binder)
-                    .withEnvironment(environment).wrap((Annotation) origin);
+            return AnnotationWrapper.of((Annotation) origin).withBinder(binder).withEnvironment(environment)
+                    .wrap((Annotation) origin);
         } else {
             return origin;
         }

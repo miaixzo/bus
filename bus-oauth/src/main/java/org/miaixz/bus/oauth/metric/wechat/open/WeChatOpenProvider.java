@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.wechat.open;
 
 import com.alibaba.fastjson.JSONObject;
@@ -77,31 +77,23 @@ public class WeChatOpenProvider extends AbstractWeChatProvider {
 
         this.checkResponse(object);
 
-        String location = String.format("%s-%s-%s", object.getString("country"), object.getString("province"), object.getString("city"));
+        String location = String.format("%s-%s-%s", object.getString("country"), object.getString("province"),
+                object.getString("city"));
 
         if (object.containsKey("unionid")) {
             accToken.setUnionId(object.getString("unionid"));
         }
 
-        return Material.builder()
-                .rawJson(object)
-                .username(object.getString("nickname"))
-                .nickname(object.getString("nickname"))
-                .avatar(object.getString("headimgurl"))
-                .location(location)
-                .uuid(openId)
-                .gender(getWechatRealGender(object.getString("sex")))
-                .token(accToken)
-                .source(complex.toString())
-                .build();
+        return Material.builder().rawJson(object).username(object.getString("nickname"))
+                .nickname(object.getString("nickname")).avatar(object.getString("headimgurl")).location(location)
+                .uuid(openId).gender(getWechatRealGender(object.getString("sex"))).token(accToken)
+                .source(complex.toString()).build();
     }
 
     @Override
     public Message refresh(AccToken oldToken) {
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .data(this.getToken(refreshTokenUrl(oldToken.getRefreshToken())))
-                .build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode())
+                .data(this.getToken(refreshTokenUrl(oldToken.getRefreshToken()))).build();
     }
 
     /**
@@ -127,11 +119,9 @@ public class WeChatOpenProvider extends AbstractWeChatProvider {
 
         this.checkResponse(accessTokenObject);
 
-        return AccToken.builder()
-                .accessToken(accessTokenObject.getString("access_token"))
+        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
                 .refreshToken(accessTokenObject.getString("refresh_token"))
-                .expireIn(accessTokenObject.getIntValue("expires_in"))
-                .openId(accessTokenObject.getString("openid"))
+                .expireIn(accessTokenObject.getIntValue("expires_in")).openId(accessTokenObject.getString("openid"))
                 .build();
     }
 
@@ -143,13 +133,9 @@ public class WeChatOpenProvider extends AbstractWeChatProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.authorize())
-                .queryParam("response_type", "code")
-                .queryParam("appid", context.getAppKey())
-                .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("scope", "snsapi_login")
-                .queryParam("state", getRealState(state))
-                .build();
+        return Builder.fromUrl(complex.authorize()).queryParam("response_type", "code")
+                .queryParam("appid", context.getAppKey()).queryParam("redirect_uri", context.getRedirectUri())
+                .queryParam("scope", "snsapi_login").queryParam("state", getRealState(state)).build();
     }
 
     /**
@@ -160,12 +146,8 @@ public class WeChatOpenProvider extends AbstractWeChatProvider {
      */
     @Override
     protected String accessTokenUrl(String code) {
-        return Builder.fromUrl(complex.accessToken())
-                .queryParam("code", code)
-                .queryParam("appid", context.getAppKey())
-                .queryParam("secret", context.getAppSecret())
-                .queryParam("grant_type", "authorization_code")
-                .build();
+        return Builder.fromUrl(complex.accessToken()).queryParam("code", code).queryParam("appid", context.getAppKey())
+                .queryParam("secret", context.getAppSecret()).queryParam("grant_type", "authorization_code").build();
     }
 
     /**
@@ -176,11 +158,8 @@ public class WeChatOpenProvider extends AbstractWeChatProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(complex.userInfo())
-                .queryParam("access_token", accToken.getAccessToken())
-                .queryParam("openid", accToken.getOpenId())
-                .queryParam("lang", "zh_CN")
-                .build();
+        return Builder.fromUrl(complex.userInfo()).queryParam("access_token", accToken.getAccessToken())
+                .queryParam("openid", accToken.getOpenId()).queryParam("lang", "zh_CN").build();
     }
 
     /**
@@ -191,11 +170,8 @@ public class WeChatOpenProvider extends AbstractWeChatProvider {
      */
     @Override
     protected String refreshTokenUrl(String refreshToken) {
-        return Builder.fromUrl(complex.refresh())
-                .queryParam("appid", context.getAppKey())
-                .queryParam("refresh_token", refreshToken)
-                .queryParam("grant_type", "refresh_token")
-                .build();
+        return Builder.fromUrl(complex.refresh()).queryParam("appid", context.getAppKey())
+                .queryParam("refresh_token", refreshToken).queryParam("grant_type", "refresh_token").build();
     }
 
 }

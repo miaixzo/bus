@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.stream.spliterators.DropWhileSpliterator;
@@ -88,9 +88,9 @@ public class StreamKit {
         if (null == iterable) {
             return Stream.empty();
         }
-        return iterable instanceof Collection ?
-                parallel ? ((Collection<T>) iterable).parallelStream() : ((Collection<T>) iterable).stream() :
-                StreamSupport.stream(iterable.spliterator(), parallel);
+        return iterable instanceof Collection
+                ? parallel ? ((Collection<T>) iterable).parallelStream() : ((Collection<T>) iterable).stream()
+                : StreamSupport.stream(iterable.spliterator(), parallel);
     }
 
     /**
@@ -209,17 +209,15 @@ public class StreamKit {
      * @return 字符串，如果stream为{@code null}，返回{@code null}
      */
     public static <T> String join(final Stream<T> stream, final CharSequence delimiter,
-                                  final Function<T, ? extends CharSequence> toStringFunc) {
+            final Function<T, ? extends CharSequence> toStringFunc) {
         if (null == stream) {
             return null;
         }
         return stream.collect(CollectorKit.joining(delimiter, toStringFunc));
     }
 
-
     /**
-     * 返回无限有序流
-     * 该流由 初始值 然后判断条件 以及执行 迭代函数 进行迭代获取到元素
+     * 返回无限有序流 该流由 初始值 然后判断条件 以及执行 迭代函数 进行迭代获取到元素
      *
      * @param <T>     元素类型
      * @param seed    初始值
@@ -234,11 +232,11 @@ public class StreamKit {
     }
 
     /**
-     * 指定一个层级结构的根节点（通常是树或图），
-     * 然后获取包含根节点在内，根节点所有层级结构中的节点组成的流。
-     * 该方法用于以平铺的方式按广度优先对图或树节点进行访问，可以使用并行流提高效率。
+     * 指定一个层级结构的根节点（通常是树或图）， 然后获取包含根节点在内，根节点所有层级结构中的节点组成的流。 该方法用于以平铺的方式按广度优先对图或树节点进行访问，可以使用并行流提高效率。
      *
-     * <p>eg:
+     * <p>
+     * eg:
+     * 
      * <pre>{@code
      * Tree root = // 构建树结构
      * // 搜索树结构中所有级别为3的节点，并按权重排序
@@ -255,17 +253,17 @@ public class StreamKit {
      * @return 包含根节点在内，根节点所有层级结构中的节点组成的流
      * @see HierarchyIterator
      */
-    public static <T> Stream<T> iterateHierarchies(
-            final T root, final Function<T, Collection<T>> discoverer, final Predicate<T> filter) {
+    public static <T> Stream<T> iterateHierarchies(final T root, final Function<T, Collection<T>> discoverer,
+            final Predicate<T> filter) {
         return ofIter(HierarchyIterator.breadthFirst(root, discoverer, filter));
     }
 
     /**
-     * 指定一个层级结构的根节点（通常是树或图），
-     * 然后获取包含根节点在内，根节点所有层级结构中的节点组成的流。
-     * 该方法用于以平铺的方式按广度优先对图或树节点进行访问，可以使用并行流提高效率。
+     * 指定一个层级结构的根节点（通常是树或图）， 然后获取包含根节点在内，根节点所有层级结构中的节点组成的流。 该方法用于以平铺的方式按广度优先对图或树节点进行访问，可以使用并行流提高效率。
      *
-     * <p>eg:
+     * <p>
+     * eg:
+     * 
      * <pre>{@code
      * Tree root = // 构建树结构
      * // 搜索树结构中所有级别为3的节点，并按权重排序
@@ -281,16 +279,21 @@ public class StreamKit {
      * @return 包含根节点在内，根节点所有层级结构中的节点组成的流
      * @see HierarchyIterator
      */
-    public static <T> Stream<T> iterateHierarchies(
-            final T root, final Function<T, Collection<T>> discoverer) {
+    public static <T> Stream<T> iterateHierarchies(final T root, final Function<T, Collection<T>> discoverer) {
         return ofIter(HierarchyIterator.breadthFirst(root, discoverer));
     }
 
     /**
      * 保留 与指定断言 匹配时的元素, 在第一次不匹配时终止, 抛弃当前(第一个不匹配元素)及后续所有元素
-     * <p>与 jdk9 中的 takeWhile 方法不太一样, 这里的实现是个 顺序的、有状态的中间操作</p>
-     * <p>本环节中是顺序执行的, 但是后续操作可以支持并行流</p>
-     * <p>但是不建议在并行流中使用, 除非你确定 takeWhile 之后的操作能在并行流中受益很多</p>
+     * <p>
+     * 与 jdk9 中的 takeWhile 方法不太一样, 这里的实现是个 顺序的、有状态的中间操作
+     * </p>
+     * <p>
+     * 本环节中是顺序执行的, 但是后续操作可以支持并行流
+     * </p>
+     * <p>
+     * 但是不建议在并行流中使用, 除非你确定 takeWhile 之后的操作能在并行流中受益很多
+     * </p>
      *
      * @param source    源流
      * @param <T>       元素类型
@@ -307,9 +310,15 @@ public class StreamKit {
 
     /**
      * 删除 与指定断言 匹配的元素, 在第一次不匹配时终止, 返回当前(第一个不匹配元素)及剩余元素组成的新流
-     * <p>与 jdk9 中的 dropWhile 方法不太一样, 这里的实现是个 顺序的、有状态的中间操作</p>
-     * <p>本环节中是顺序执行的, 但是后续操作可以支持并行流</p>
-     * <p>但是不建议在并行流中使用, 除非你确定 dropWhile 之后的操作能在并行流中受益很多</p>
+     * <p>
+     * 与 jdk9 中的 dropWhile 方法不太一样, 这里的实现是个 顺序的、有状态的中间操作
+     * </p>
+     * <p>
+     * 本环节中是顺序执行的, 但是后续操作可以支持并行流
+     * </p>
+     * <p>
+     * 但是不建议在并行流中使用, 除非你确定 dropWhile 之后的操作能在并行流中受益很多
+     * </p>
      *
      * @param source    源流
      * @param <T>       元素类型
@@ -324,8 +333,7 @@ public class StreamKit {
         return createStatefulNewStream(source, DropWhileSpliterator.of(source.spliterator(), predicate));
     }
 
-    public static void readFully(InputStream in, byte[] b, int off, int len)
-            throws IOException {
+    public static void readFully(InputStream in, byte[] b, int off, int len) throws IOException {
         if (readAvailable(in, b, off, len) < len)
             throw new EOFException();
     }
@@ -343,8 +351,7 @@ public class StreamKit {
         }
     }
 
-    public static int readAvailable(InputStream in, byte[] b, int off, int len)
-            throws IOException {
+    public static int readAvailable(InputStream in, byte[] b, int off, int len) throws IOException {
         if (off < 0 || len < 0 || off + len > b.length)
             throw new IndexOutOfBoundsException();
         int wpos = off;
@@ -360,8 +367,12 @@ public class StreamKit {
 
     /**
      * 根据 源流 和 新的Spliterator 生成新的流
-     * <p>这是一个 顺序的、有状态的流</p>
-     * <p>在新流的第一个节点是顺序执行的, 但是后续操作可以支持并行流</p>
+     * <p>
+     * 这是一个 顺序的、有状态的流
+     * </p>
+     * <p>
+     * 在新流的第一个节点是顺序执行的, 但是后续操作可以支持并行流
+     * </p>
      *
      * @param source         源流
      * @param newSpliterator 新流的Spliterator
@@ -369,7 +380,8 @@ public class StreamKit {
      * @param <R>            新流的元素类型
      * @return 新流
      */
-    private static <T, R> Stream<R> createStatefulNewStream(final Stream<T> source, final Spliterator<R> newSpliterator) {
+    private static <T, R> Stream<R> createStatefulNewStream(final Stream<T> source,
+            final Spliterator<R> newSpliterator) {
         // 创建新流
         Stream<R> newStream = StreamSupport.stream(newSpliterator, source.isParallel());
         // 如果旧流是并行流, 新流主动调用一个有状态的操作, 虽然没有意义, 但是可以让后续的无状态节点正常并发

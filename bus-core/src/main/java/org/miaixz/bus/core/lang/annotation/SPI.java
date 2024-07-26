@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.annotation;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -32,8 +32,7 @@ import org.miaixz.bus.core.lang.Normal;
 import java.lang.annotation.*;
 
 /**
- * 启用框架扩展和替换组件,服务提供发现机制,
- * 实现方制定接口并完成对接口的实现
+ * 启用框架扩展和替换组件,服务提供发现机制, 实现方制定接口并完成对接口的实现
  *
  * <pre>
  *   1.支持自定义实现类为单例/多例
@@ -65,8 +64,7 @@ public @interface SPI {
     String value() default Normal.EMPTY;
 
     /**
-     * 声明每次获取实现类时是否需要创建
-     * 新对象，也就是说，是否为单例对象
+     * 声明每次获取实现类时是否需要创建 新对象，也就是说，是否为单例对象
      *
      * @return 是否单例
      */

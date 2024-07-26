@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.secure;
 
 import org.miaixz.bus.core.net.HTTP;
@@ -56,27 +56,26 @@ public class NetAuthenticator implements Authenticator {
 
         for (int i = 0, size = challenges.size(); i < size; i++) {
             Challenge challenge = challenges.get(i);
-            if (!"Basic".equalsIgnoreCase(challenge.scheme())) continue;
+            if (!"Basic".equalsIgnoreCase(challenge.scheme()))
+                continue;
 
             PasswordAuthentication auth;
             if (proxyAuthorization) {
                 InetSocketAddress proxyAddress = (InetSocketAddress) proxy.address();
-                auth = java.net.Authenticator.requestPasswordAuthentication(
-                        proxyAddress.getHostName(), getConnectToInetAddress(proxy, url), proxyAddress.getPort(),
-                        url.scheme(), challenge.realm(), challenge.scheme(), url.url(),
-                        java.net.Authenticator.RequestorType.PROXY);
+                auth = java.net.Authenticator.requestPasswordAuthentication(proxyAddress.getHostName(),
+                        getConnectToInetAddress(proxy, url), proxyAddress.getPort(), url.scheme(), challenge.realm(),
+                        challenge.scheme(), url.url(), java.net.Authenticator.RequestorType.PROXY);
             } else {
-                auth = java.net.Authenticator.requestPasswordAuthentication(
-                        url.host(), getConnectToInetAddress(proxy, url), url.port(), url.scheme(),
-                        challenge.realm(), challenge.scheme(), url.url(), java.net.Authenticator.RequestorType.SERVER);
+                auth = java.net.Authenticator.requestPasswordAuthentication(url.host(),
+                        getConnectToInetAddress(proxy, url), url.port(), url.scheme(), challenge.realm(),
+                        challenge.scheme(), url.url(), java.net.Authenticator.RequestorType.SERVER);
             }
 
             if (null != auth) {
-                String credential = Credentials.basic(
-                        auth.getUserName(), new String(auth.getPassword()), challenge.charset());
+                String credential = Credentials.basic(auth.getUserName(), new String(auth.getPassword()),
+                        challenge.charset());
                 return request.newBuilder()
-                        .header(proxyAuthorization ? HTTP.PROXY_AUTHENTICATE : HTTP.AUTHORIZATION, credential)
-                        .build();
+                        .header(proxyAuthorization ? HTTP.PROXY_AUTHENTICATE : HTTP.AUTHORIZATION, credential).build();
             }
         }
 
@@ -84,8 +83,7 @@ public class NetAuthenticator implements Authenticator {
     }
 
     private InetAddress getConnectToInetAddress(Proxy proxy, UnoUrl url) throws IOException {
-        return (null != proxy && proxy.type() != Proxy.Type.DIRECT)
-                ? ((InetSocketAddress) proxy.address()).getAddress()
+        return (null != proxy && proxy.type() != Proxy.Type.DIRECT) ? ((InetSocketAddress) proxy.address()).getAddress()
                 : InetAddress.getByName(url.host());
     }
 

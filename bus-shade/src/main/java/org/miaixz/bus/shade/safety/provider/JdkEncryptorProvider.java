@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.safety.provider;
 
 import org.miaixz.bus.shade.safety.Builder;
@@ -55,10 +55,7 @@ public class JdkEncryptorProvider implements EncryptorProvider {
         if (!dest.getParentFile().exists() && !dest.getParentFile().mkdirs()) {
             throw new IOException("could not make directory: " + dest.getParentFile());
         }
-        try (
-                InputStream in = new FileInputStream(src);
-                OutputStream out = new FileOutputStream(dest)
-        ) {
+        try (InputStream in = new FileInputStream(src); OutputStream out = new FileOutputStream(dest)) {
             encrypt(key, in, out);
         }
     }

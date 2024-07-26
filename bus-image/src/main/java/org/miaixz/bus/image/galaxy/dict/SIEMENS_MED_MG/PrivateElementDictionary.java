@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_MG;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,21 +46,22 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.ListOfShadowOwnerCodes:
-            case PrivateTag.ListOfDisplayPrefix:
-            case PrivateTag.ListOfDisplayPostfix:
-            case PrivateTag.ListOfTextConcatenation:
-                return VR.LO;
-            case PrivateTag.ListOfGroupNumbers:
-            case PrivateTag.ListOfElementNumbers:
-            case PrivateTag.ListOfTotalDisplayLength:
-            case PrivateTag.ListOfTextPosition:
-                return VR.US;
+
+        case PrivateTag.ListOfShadowOwnerCodes:
+        case PrivateTag.ListOfDisplayPrefix:
+        case PrivateTag.ListOfDisplayPostfix:
+        case PrivateTag.ListOfTextConcatenation:
+            return VR.LO;
+        case PrivateTag.ListOfGroupNumbers:
+        case PrivateTag.ListOfElementNumbers:
+        case PrivateTag.ListOfTotalDisplayLength:
+        case PrivateTag.ListOfTextPosition:
+            return VR.US;
         }
         return VR.UN;
     }

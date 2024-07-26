@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io;
 
 import org.miaixz.bus.core.center.iterator.ComputeIterator;
@@ -43,9 +43,9 @@ import java.util.Iterator;
 /**
  * 行读取器，类似于BufferedInputStream，支持多行转义，规则如下：
  * <ul>
- *     <li>支持'\n'和'\r\n'两种换行符，不支持'\r'换行符</li>
- *     <li>如果想读取转义符，必须定义为'\\'</li>
- *     <li>多行转义后的换行符和空格都会被忽略</li>
+ * <li>支持'\n'和'\r\n'两种换行符，不支持'\r'换行符</li>
+ * <li>如果想读取转义符，必须定义为'\\'</li>
+ * <li>多行转义后的换行符和空格都会被忽略</li>
  * </ul>
  *
  * @author Kimi Liu

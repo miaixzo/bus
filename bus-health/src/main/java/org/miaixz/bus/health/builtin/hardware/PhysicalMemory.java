@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.hardware;
 
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -49,7 +49,7 @@ public class PhysicalMemory {
     private final String serialNumber;
 
     public PhysicalMemory(String bankLabel, long capacity, long clockSpeed, String manufacturer, String memoryType,
-                          String partNumber, String serialNumber) {
+            String partNumber, String serialNumber) {
         this.bankLabel = bankLabel;
         this.capacity = capacity;
         this.clockSpeed = clockSpeed;

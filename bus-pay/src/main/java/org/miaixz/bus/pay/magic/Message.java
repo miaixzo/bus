@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pay.magic;
 
 import lombok.AllArgsConstructor;
@@ -53,7 +53,7 @@ import java.util.Map;
 public class Message extends org.miaixz.bus.core.basic.entity.Message {
 
     private static final long serialVersionUID = -1L;
-    
+
     private String body;
     private byte[] bodyByte;
     private int status;

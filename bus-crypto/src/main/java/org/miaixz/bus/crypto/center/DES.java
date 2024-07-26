@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.center;
 
 import org.miaixz.bus.core.lang.Algorithm;
@@ -37,9 +37,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 
 /**
- * DES加密算法实现
- * DES全称为Data Encryption Standard，即数据加密标准，是一种使用密钥加密的块算法
- * Java中默认实现为：DES/ECB/PKCS5Padding
+ * DES加密算法实现 DES全称为Data Encryption Standard，即数据加密标准，是一种使用密钥加密的块算法 Java中默认实现为：DES/ECB/PKCS5Padding
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xml;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -48,8 +48,8 @@ import javax.xml.xpath.XPathFactory;
 public class XPath {
 
     /**
-     * 创建XPath
-     * Xpath相关文章：<a href="https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html">https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html</a>
+     * 创建XPath Xpath相关文章：<a href=
+     * "https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html">https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html</a>
      *
      * @return {@link javax.xml.xpath.XPath}
      */
@@ -58,8 +58,8 @@ public class XPath {
     }
 
     /**
-     * 通过XPath方式读取XML节点等信息
-     * Xpath相关文章：<a href="https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html">https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html</a>
+     * 通过XPath方式读取XML节点等信息 Xpath相关文章：<a href=
+     * "https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html">https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html</a>
      *
      * @param expression XPath表达式
      * @param source     资源，可以是Docunent、Node节点等
@@ -70,8 +70,8 @@ public class XPath {
     }
 
     /**
-     * 通过XPath方式读取XML的NodeList
-     * Xpath相关文章：<a href="https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html">https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html</a>
+     * 通过XPath方式读取XML的NodeList Xpath相关文章：<a href=
+     * "https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html">https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html</a>
      *
      * @param expression XPath表达式
      * @param source     资源，可以是Docunent、Node节点等
@@ -82,8 +82,8 @@ public class XPath {
     }
 
     /**
-     * 通过XPath方式读取XML节点等信息
-     * Xpath相关文章：<a href="https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html">https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html</a>
+     * 通过XPath方式读取XML节点等信息 Xpath相关文章：<a href=
+     * "https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html">https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html</a>
      *
      * @param expression XPath表达式
      * @param source     资源，可以是Docunent、Node节点等
@@ -94,8 +94,8 @@ public class XPath {
     }
 
     /**
-     * 通过XPath方式读取XML节点等信息
-     * Xpath相关文章：<a href="https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html">https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html</a>
+     * 通过XPath方式读取XML节点等信息 Xpath相关文章：<a href=
+     * "https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html">https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html</a>
      *
      * @param expression XPath表达式
      * @param source     资源，可以是Docunent、Node节点等
@@ -111,10 +111,10 @@ public class XPath {
     }
 
     /**
-     * 通过XPath方式读取XML节点等信息
-     * Xpath相关文章：
-     * <a href="https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html">https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html</a>
-     * <a href="https://www.ibm.com/developerworks/cn/xml/x-nmspccontext/">https://www.ibm.com/developerworks/cn/xml/x-nmspccontext/</a>
+     * 通过XPath方式读取XML节点等信息 Xpath相关文章： <a href=
+     * "https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html">https://www.ibm.com/developerworks/cn/xml/x-javaxpathapi.html</a>
+     * <a href=
+     * "https://www.ibm.com/developerworks/cn/xml/x-nmspccontext/">https://www.ibm.com/developerworks/cn/xml/x-nmspccontext/</a>
      *
      * @param expression XPath表达式
      * @param source     资源，可以是Docunent、Node节点等
@@ -122,7 +122,8 @@ public class XPath {
      * @param nsContext  {@link NamespaceContext}
      * @return 匹配返回类型的值
      */
-    public static Object getByXPath(final String expression, final Object source, final QName returnType, final NamespaceContext nsContext) {
+    public static Object getByXPath(final String expression, final Object source, final QName returnType,
+            final NamespaceContext nsContext) {
         final javax.xml.xpath.XPath xPath = createXPath();
         if (null != nsContext) {
             xPath.setNamespaceContext(nsContext);

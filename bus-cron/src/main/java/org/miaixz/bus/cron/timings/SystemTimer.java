@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cron.timings;
 
 import org.miaixz.bus.core.xyz.ThreadKit;
@@ -113,7 +113,7 @@ public class SystemTimer {
      * @param timerCrontab 任务
      */
     public void addTask(final TimerCrontab timerCrontab) {
-        //添加失败任务直接执行
+        // 添加失败任务直接执行
         if (!timeWheel.addTask(timerCrontab)) {
             ThreadKit.execAsync(timerCrontab.getTask());
         }
@@ -131,9 +131,9 @@ public class SystemTimer {
         try {
             final TimerTaskList timerTaskList = poll();
             if (null != timerTaskList) {
-                //推进时间
+                // 推进时间
                 timeWheel.advanceClock(timerTaskList.getExpire());
-                //执行过期任务（包含降级操作）
+                // 执行过期任务（包含降级操作）
                 timerTaskList.flush(this::addTask);
             }
         } catch (final InterruptedException ignore) {
@@ -149,9 +149,8 @@ public class SystemTimer {
      * @throws InterruptedException 中断异常
      */
     private TimerTaskList poll() throws InterruptedException {
-        return this.delayQueueTimeout > 0 ?
-                delayQueue.poll(delayQueueTimeout, TimeUnit.MILLISECONDS) :
-                delayQueue.poll();
+        return this.delayQueueTimeout > 0 ? delayQueue.poll(delayQueueTimeout, TimeUnit.MILLISECONDS)
+                : delayQueue.poll();
     }
 
 }

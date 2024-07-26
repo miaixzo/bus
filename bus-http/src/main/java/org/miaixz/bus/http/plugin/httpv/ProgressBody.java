@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.plugin.httpv;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
@@ -54,7 +54,7 @@ public class ProgressBody extends RequestBody {
     private BufferSink bufferedSink;
 
     public ProgressBody(RequestBody requestBody, Callback<Progress> onProcess, Executor callbackExecutor,
-                        long contentLength, long stepBytes) {
+            long contentLength, long stepBytes) {
         this.requestBody = requestBody;
         this.onProcess = onProcess;
         this.callbackExecutor = callbackExecutor;
@@ -79,7 +79,7 @@ public class ProgressBody extends RequestBody {
 
                 @Override
                 public void write(Buffer source, long byteCount) throws IOException {
-                    //这个方法会循环调用，byteCount 是每次调用上传的字节数。
+                    // 这个方法会循环调用，byteCount 是每次调用上传的字节数。
                     super.write(source, byteCount);
                     progress.addDoneBytes(byteCount);
                     if (progress.notDoneOrReached(step * stepBytes)) {
@@ -104,4 +104,3 @@ public class ProgressBody extends RequestBody {
     }
 
 }
-

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.notify.magic;
 
 import lombok.AllArgsConstructor;
@@ -58,8 +58,7 @@ public class Material {
     protected String sender;
 
     /**
-     * 接收者
-     * 采用','风格
+     * 接收者 采用','风格
      */
     protected String receive;
 
@@ -69,7 +68,7 @@ public class Material {
     protected String subject;
 
     /**
-     * 内容  Limit 28K
+     * 内容 Limit 28K
      */
     protected String content;
 

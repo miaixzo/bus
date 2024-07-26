@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.data;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -41,8 +41,7 @@ public class Implementation {
     private static String versionName() {
         StringBuilder sb = new StringBuilder(Normal._16);
         sb.append("miaixz-");
-        sb.append(Implementation.class.getPackage()
-                .getImplementationVersion());
+        sb.append(Implementation.class.getPackage().getImplementationVersion());
         return sb.substring(0, Math.min(16, sb.length()));
     }
 

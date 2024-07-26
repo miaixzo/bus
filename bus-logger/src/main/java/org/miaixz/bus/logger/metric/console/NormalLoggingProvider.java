@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.logger.metric.console;
 
 import org.miaixz.bus.core.center.map.Dictionary;
@@ -135,19 +135,17 @@ public class NormalLoggingProvider extends AbstractProvider {
     }
 
     @Override
-    public void log(final String fqcn, final Level level, final Throwable t, final String format, final Object... args) {
+    public void log(final String fqcn, final Level level, final Throwable t, final String format,
+            final Object... args) {
         if (!isEnabled(level)) {
             return;
         }
-        final Dictionary dict = Dictionary.of()
-                .set("date", DateKit.formatNow())
-                .set("level", level.toString())
-                .set("name", this.name)
-                .set("msg", StringKit.format(format, args));
+        final Dictionary dict = Dictionary.of().set("date", DateKit.formatNow()).set("level", level.toString())
+                .set("name", this.name).set("msg", StringKit.format(format, args));
 
         final String logMsg = StringKit.format("[{date}] [{level}] {name}: {msg}", dict);
 
-        //WARN以上级别打印至System.err
+        // WARN以上级别打印至System.err
         if (level.ordinal() >= Level.WARN.ordinal()) {
             Console.error(t, logMsg);
         } else {

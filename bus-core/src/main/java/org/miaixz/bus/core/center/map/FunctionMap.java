@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map;
 
 import java.util.Map;
@@ -47,26 +47,26 @@ public class FunctionMap<K, V> extends TransMap<K, V> {
     private final Function<Object, V> valueFunc;
 
     /**
-     * 构造
-     * 注意提供的Map中不能有键值对，否则可能导致自定义key失效
+     * 构造 注意提供的Map中不能有键值对，否则可能导致自定义key失效
      *
      * @param mapFactory Map，提供的空map
      * @param keyFunc    自定义KEY的函数
      * @param valueFunc  自定义value函数
      */
-    public FunctionMap(final Supplier<Map<K, V>> mapFactory, final Function<Object, K> keyFunc, final Function<Object, V> valueFunc) {
+    public FunctionMap(final Supplier<Map<K, V>> mapFactory, final Function<Object, K> keyFunc,
+            final Function<Object, V> valueFunc) {
         this(mapFactory.get(), keyFunc, valueFunc);
     }
 
     /**
-     * 构造
-     * 注意提供的Map中不能有键值对，否则可能导致自定义key失效
+     * 构造 注意提供的Map中不能有键值对，否则可能导致自定义key失效
      *
      * @param emptyMap  Map，提供的空map
      * @param keyFunc   自定义KEY的函数
      * @param valueFunc 自定义value函数
      */
-    public FunctionMap(final Map<K, V> emptyMap, final Function<Object, K> keyFunc, final Function<Object, V> valueFunc) {
+    public FunctionMap(final Map<K, V> emptyMap, final Function<Object, K> keyFunc,
+            final Function<Object, V> valueFunc) {
         super(emptyMap);
         this.keyFunc = keyFunc;
         this.valueFunc = valueFunc;
@@ -85,7 +85,6 @@ public class FunctionMap<K, V> extends TransMap<K, V> {
         }
         return (K) key;
     }
-
 
     @Override
     protected V customValue(final Object value) {

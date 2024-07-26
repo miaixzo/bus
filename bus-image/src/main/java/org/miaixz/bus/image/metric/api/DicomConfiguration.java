@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.api;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -43,8 +43,7 @@ import java.util.EnumSet;
  */
 public interface DicomConfiguration extends Closeable {
 
-    WebApplication[] listWebApplicationInfos(WebApplication keys)
-            throws InternalException;
+    WebApplication[] listWebApplicationInfos(WebApplication keys) throws InternalException;
 
     boolean configurationExists() throws InternalException;
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.function.FunctionX;
@@ -46,8 +46,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
- * 注解工具类
- * 快速获取注解对象、注解值等工具封装
+ * 注解工具类 快速获取注解对象、注解值等工具封装
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -106,7 +105,8 @@ public class AnnoKit {
      * @param annotationType 限定的
      * @return 注解对象数组
      */
-    public static <T> T[] getCombinationAnnotations(final AnnotatedElement annotationEle, final Class<T> annotationType) {
+    public static <T> T[] getCombinationAnnotations(final AnnotatedElement annotationEle,
+            final Class<T> annotationType) {
         return getAnnotations(annotationEle, true, annotationType);
     }
 
@@ -119,7 +119,8 @@ public class AnnoKit {
      * @param annotationType  限定的
      * @return 注解对象数组
      */
-    public static <T> T[] getAnnotations(final AnnotatedElement annotationEle, final boolean isToCombination, final Class<T> annotationType) {
+    public static <T> T[] getAnnotations(final AnnotatedElement annotationEle, final boolean isToCombination,
+            final Class<T> annotationType) {
         final Annotation[] annotations = getAnnotations(annotationEle, isToCombination,
                 (annotation -> null == annotationType || annotationType.isAssignableFrom(annotation.getClass())));
 
@@ -138,7 +139,8 @@ public class AnnoKit {
      * @param predicate       过滤器，{@link Predicate#test(Object)}返回{@code true}保留，否则不保留
      * @return 注解对象
      */
-    public static Annotation[] getAnnotations(final AnnotatedElement annotationEle, final boolean isToCombination, final Predicate<Annotation> predicate) {
+    public static Annotation[] getAnnotations(final AnnotatedElement annotationEle, final boolean isToCombination,
+            final Predicate<Annotation> predicate) {
         if (null == annotationEle) {
             return null;
         }
@@ -165,7 +167,8 @@ public class AnnoKit {
      * @param annotationType 注解类型
      * @return 注解对象
      */
-    public static <A extends Annotation> A getAnnotation(final AnnotatedElement annotationEle, final Class<A> annotationType) {
+    public static <A extends Annotation> A getAnnotation(final AnnotatedElement annotationEle,
+            final Class<A> annotationType) {
         return (null == annotationEle) ? null : toCombination(annotationEle).getAnnotation(annotationType);
     }
 
@@ -176,13 +179,13 @@ public class AnnoKit {
      * @param annotationType 注解类型
      * @return 是否包含指定注解
      */
-    public static boolean hasAnnotation(final AnnotatedElement annotationEle, final Class<? extends Annotation> annotationType) {
+    public static boolean hasAnnotation(final AnnotatedElement annotationEle,
+            final Class<? extends Annotation> annotationType) {
         return null != getAnnotation(annotationEle, annotationType);
     }
 
     /**
-     * 获取指定注解默认值
-     * 如果无指定的属性方法返回null
+     * 获取指定注解默认值 如果无指定的属性方法返回null
      *
      * @param <T>            注解值类型
      * @param annotationEle  {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
@@ -190,13 +193,13 @@ public class AnnoKit {
      * @return 注解对象
      * @throws InternalException 调用注解中的方法时执行异常
      */
-    public static <T> T getAnnotationValue(final AnnotatedElement annotationEle, final Class<? extends Annotation> annotationType) throws InternalException {
+    public static <T> T getAnnotationValue(final AnnotatedElement annotationEle,
+            final Class<? extends Annotation> annotationType) throws InternalException {
         return getAnnotationValue(annotationEle, annotationType, "value");
     }
 
     /**
-     * 获取指定注解属性的值
-     * 如果无指定的属性方法返回null
+     * 获取指定注解属性的值 如果无指定的属性方法返回null
      *
      * @param <A>           注解类型
      * @param <R>           注解类型值
@@ -205,20 +208,21 @@ public class AnnoKit {
      * @return 注解对象
      * @throws InternalException 调用注解中的方法时执行异常
      */
-    public static <A extends Annotation, R> R getAnnotationValue(final AnnotatedElement annotationEle, final FunctionX<A, R> propertyName) {
+    public static <A extends Annotation, R> R getAnnotationValue(final AnnotatedElement annotationEle,
+            final FunctionX<A, R> propertyName) {
         if (propertyName == null) {
             return null;
         } else {
             final LambdaX lambda = LambdaKit.resolve(propertyName);
             final String instantiatedMethodType = lambda.getLambda().getInstantiatedMethodType();
-            final Class<A> annotationClass = ClassKit.loadClass(StringKit.sub(instantiatedMethodType, 2, StringKit.indexOf(instantiatedMethodType, Symbol.C_SEMICOLON)));
+            final Class<A> annotationClass = ClassKit.loadClass(StringKit.sub(instantiatedMethodType, 2,
+                    StringKit.indexOf(instantiatedMethodType, Symbol.C_SEMICOLON)));
             return getAnnotationValue(annotationEle, annotationClass, lambda.getLambda().getImplMethodName());
         }
     }
 
     /**
-     * 获取指定注解属性的值
-     * 如果无指定的属性方法返回null
+     * 获取指定注解属性的值 如果无指定的属性方法返回null
      *
      * @param <T>            注解值类型
      * @param annotationEle  {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
@@ -227,7 +231,8 @@ public class AnnoKit {
      * @return 注解对象
      * @throws InternalException 调用注解中的方法时执行异常
      */
-    public static <T> T getAnnotationValue(final AnnotatedElement annotationEle, final Class<? extends Annotation> annotationType, final String propertyName) throws InternalException {
+    public static <T> T getAnnotationValue(final AnnotatedElement annotationEle,
+            final Class<? extends Annotation> annotationType, final String propertyName) throws InternalException {
         final Annotation annotation = getAnnotation(annotationEle, annotationType);
         if (null == annotation) {
             return null;
@@ -241,15 +246,15 @@ public class AnnoKit {
     }
 
     /**
-     * 获取指定注解中所有属性值
-     * 如果无指定的属性方法返回null
+     * 获取指定注解中所有属性值 如果无指定的属性方法返回null
      *
      * @param annotationEle  {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
      * @param annotationType 注解类型
      * @return 注解对象
      * @throws InternalException 调用注解中的方法时执行异常
      */
-    public static Map<String, Object> getAnnotationValueMap(final AnnotatedElement annotationEle, final Class<? extends Annotation> annotationType) throws InternalException {
+    public static Map<String, Object> getAnnotationValueMap(final AnnotatedElement annotationEle,
+            final Class<? extends Annotation> annotationType) throws InternalException {
         final Annotation annotation = getAnnotation(annotationEle, annotationType);
         if (null == annotation) {
             return null;
@@ -260,8 +265,7 @@ public class AnnoKit {
                 // 只读取无参方法
                 final String name = t.getName();
                 // 跳过自有的几个方法
-                return (!Normal.HASHCODE.equals(name))
-                        && (!Normal.TOSTRING.equals(name))
+                return (!Normal.HASHCODE.equals(name)) && (!Normal.TOSTRING.equals(name))
                         && (!"annotationType".equals(name));
             }
             return false;
@@ -324,15 +328,13 @@ public class AnnoKit {
     }
 
     /**
-     * 设置新的注解的属性（字段）值
-     * 注意此方法在jdk9+中抛出异常，须添加`--add-opens=java.base/java.lang=ALL-UNNAMED`启动参数
+     * 设置新的注解的属性（字段）值 注意此方法在jdk9+中抛出异常，须添加`--add-opens=java.base/java.lang=ALL-UNNAMED`启动参数
      *
      * @param annotation      注解对象
      * @param annotationField 注解属性（字段）名称
      * @param value           要更新的属性值
      */
-    public static void setValue(
-            final Annotation annotation, final String annotationField, final Object value) {
+    public static void setValue(final Annotation annotation, final String annotationField, final Object value) {
         final InvocationHandler invocationHandler = Proxy.getInvocationHandler(annotation);
         String memberAttributeName = JDK_MEMBER_ATTRIBUTE;
         // Spring合成注解
@@ -343,7 +345,8 @@ public class AnnoKit {
         else if (invocationHandler instanceof AnnotationMappingProxy) {
             memberAttributeName = BUS_MEMBER_ATTRIBUTE;
         }
-        final Map<String, Object> memberValues = (Map<String, Object>) FieldKit.getFieldValue(invocationHandler, memberAttributeName);
+        final Map<String, Object> memberValues = (Map<String, Object>) FieldKit.getFieldValue(invocationHandler,
+                memberAttributeName);
         memberValues.put(annotationField, value);
     }
 
@@ -355,12 +358,14 @@ public class AnnoKit {
      * @param <T>            注解类型
      * @return 别名支持后的注解
      */
-    public static <T extends Annotation> T getAnnotationAlias(final AnnotatedElement annotationEle, final Class<T> annotationType) {
+    public static <T extends Annotation> T getAnnotationAlias(final AnnotatedElement annotationEle,
+            final Class<T> annotationType) {
         final T annotation = getAnnotation(annotationEle, annotationType);
         if (null == annotation) {
             return null;
         }
-        return (T) Proxy.newProxyInstance(annotationType.getClassLoader(), new Class[]{annotationType}, new AnnotationProxy<>(annotation));
+        return (T) Proxy.newProxyInstance(annotationType.getClassLoader(), new Class[] { annotationType },
+                new AnnotationProxy<>(annotation));
     }
 
     /**
@@ -370,38 +375,33 @@ public class AnnoKit {
      * @return 注解属性
      */
     public static Method[] getAnnotationAttributes(final Class<? extends Annotation> annotationType) {
-        return Stream.of(MethodKit.getDeclaredMethods(annotationType))
-                .filter(AnnoKit::isAnnotationAttribute)
+        return Stream.of(MethodKit.getDeclaredMethods(annotationType)).filter(AnnoKit::isAnnotationAttribute)
                 .toArray(Method[]::new);
     }
 
     /**
      * 该方法是否是注解属性，需要满足下述条件：
      * <ul>
-     *     <li>不是{@link Object#equals(Object)}；</li>
-     *     <li>不是{@link Object#hashCode()}；</li>
-     *     <li>不是{@link Object#toString()}；</li>
-     *     <li>不是桥接方法；</li>
-     *     <li>不是合成方法；</li>
-     *     <li>不是静态方法；</li>
-     *     <li>是公共方法；</li>
-     *     <li>方法必须没有参数；</li>
-     *     <li>方法必须有返回值（返回值类型不为{@link Void}）；</li>
+     * <li>不是{@link Object#equals(Object)}；</li>
+     * <li>不是{@link Object#hashCode()}；</li>
+     * <li>不是{@link Object#toString()}；</li>
+     * <li>不是桥接方法；</li>
+     * <li>不是合成方法；</li>
+     * <li>不是静态方法；</li>
+     * <li>是公共方法；</li>
+     * <li>方法必须没有参数；</li>
+     * <li>方法必须有返回值（返回值类型不为{@link Void}）；</li>
      * </ul>
      *
      * @param attribute 方法对象
      * @return 是否
      */
     public static boolean isAnnotationAttribute(final Method attribute) {
-        return !MethodKit.isEqualsMethod(attribute)
-                && !MethodKit.isHashCodeMethod(attribute)
-                && !MethodKit.isToStringMethod(attribute)
-                && ArrayKit.isEmpty(attribute.getParameterTypes())
+        return !MethodKit.isEqualsMethod(attribute) && !MethodKit.isHashCodeMethod(attribute)
+                && !MethodKit.isToStringMethod(attribute) && ArrayKit.isEmpty(attribute.getParameterTypes())
                 && ObjectKit.notEquals(attribute.getReturnType(), Void.class)
-                && !Modifier.isStatic(attribute.getModifiers())
-                && Modifier.isPublic(attribute.getModifiers())
-                && !attribute.isBridge()
-                && !attribute.isSynthetic();
+                && !Modifier.isStatic(attribute.getModifiers()) && Modifier.isPublic(attribute.getModifiers())
+                && !attribute.isBridge() && !attribute.isSynthetic();
     }
 
     /**

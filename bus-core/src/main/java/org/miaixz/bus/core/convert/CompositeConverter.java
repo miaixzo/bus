@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.lang.Optional;
@@ -83,8 +83,7 @@ public class CompositeConverter extends RegisterConverter {
     }
 
     /**
-     * 转换值为指定类型
-     * 自定义转换器优先
+     * 转换值为指定类型 自定义转换器优先
      *
      * @param <T>          转换的目标类型（转换器转换到的类型）
      * @param type         类型
@@ -109,7 +108,8 @@ public class CompositeConverter extends RegisterConverter {
      * @return 转换后的值
      * @throws ConvertException 转换器不存在
      */
-    public <T> T convert(Type type, Object value, final T defaultValue, final boolean isCustomFirst) throws ConvertException {
+    public <T> T convert(Type type, Object value, final T defaultValue, final boolean isCustomFirst)
+            throws ConvertException {
         if (ObjectKit.isNull(value)) {
             return defaultValue;
         }
@@ -171,12 +171,12 @@ public class CompositeConverter extends RegisterConverter {
         }
 
         // 无法转换
-        throw new ConvertException("Can not convert from {}: [{}] to [{}]", value.getClass().getName(), value, type.getTypeName());
+        throw new ConvertException("Can not convert from {}: [{}] to [{}]", value.getClass().getName(), value,
+                type.getTypeName());
     }
 
     /**
-     * 特殊类型转换
-     * 包括：
+     * 特殊类型转换 包括：
      *
      * <pre>
      * Collection

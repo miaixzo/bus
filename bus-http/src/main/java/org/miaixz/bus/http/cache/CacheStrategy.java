@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.cache;
 
 import org.miaixz.bus.core.net.HTTP;
@@ -38,9 +38,7 @@ import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 给定一个请求和缓存的响应，这将确定是使用网络、缓存还是两者都使用
- * 选择缓存策略可能会向请求添加条件(比如条件get的“if - modified - since”报头)
- * 或向缓存的响应添加警告(如果缓存的数据可能过时)
+ * 给定一个请求和缓存的响应，这将确定是使用网络、缓存还是两者都使用 选择缓存策略可能会向请求添加条件(比如条件get的“if - modified - since”报头) 或向缓存的响应添加警告(如果缓存的数据可能过时)
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -67,35 +65,33 @@ public class CacheStrategy {
      *
      * @param response 相应信息
      * @param request  请求信息
-     * @return the  true/false
+     * @return the true/false
      */
     public static boolean isCacheable(Response response, Request request) {
         // 总是去网络获取非缓存的响应代码(RFC 7231 section 6.1)，这个实现不支持缓存部分内容
         switch (response.code()) {
-            case HTTP.HTTP_OK:
-            case HTTP.HTTP_NOT_AUTHORITATIVE:
-            case HTTP.HTTP_NO_CONTENT:
-            case HTTP.HTTP_MULT_CHOICE:
-            case HTTP.HTTP_MOVED_PERM:
-            case HTTP.HTTP_NOT_FOUND:
-            case HTTP.HTTP_BAD_METHOD:
-            case HTTP.HTTP_GONE:
-            case HTTP.HTTP_REQ_TOO_LONG:
-            case HTTP.HTTP_NOT_IMPLEMENTED:
-            case HTTP.HTTP_PERM_REDIRECT:
-                // 这些代码可以被缓存，除非标头禁止
+        case HTTP.HTTP_OK:
+        case HTTP.HTTP_NOT_AUTHORITATIVE:
+        case HTTP.HTTP_NO_CONTENT:
+        case HTTP.HTTP_MULT_CHOICE:
+        case HTTP.HTTP_MOVED_PERM:
+        case HTTP.HTTP_NOT_FOUND:
+        case HTTP.HTTP_BAD_METHOD:
+        case HTTP.HTTP_GONE:
+        case HTTP.HTTP_REQ_TOO_LONG:
+        case HTTP.HTTP_NOT_IMPLEMENTED:
+        case HTTP.HTTP_PERM_REDIRECT:
+            // 这些代码可以被缓存，除非标头禁止
+            break;
+        case HTTP.HTTP_MOVED_TEMP:
+        case HTTP.HTTP_TEMP_REDIRECT:
+            if (null != response.header(HTTP.EXPIRES) || response.cacheControl().maxAgeSeconds() != -1
+                    || response.cacheControl().isPublic() || response.cacheControl().isPrivate()) {
                 break;
-            case HTTP.HTTP_MOVED_TEMP:
-            case HTTP.HTTP_TEMP_REDIRECT:
-                if (null != response.header(HTTP.EXPIRES)
-                        || response.cacheControl().maxAgeSeconds() != -1
-                        || response.cacheControl().isPublic()
-                        || response.cacheControl().isPrivate()) {
-                    break;
-                }
-            default:
-                // 不能缓存所有其他代码
-                return false;
+            }
+        default:
+            // 不能缓存所有其他代码
+            return false;
         }
 
         // 针对请求或响应的'no-store'指令会阻止缓存响应。
@@ -175,8 +171,7 @@ public class CacheStrategy {
         }
 
         /**
-         * 如果请求包含保存服务器不发送客户机本地响应的条件，则返回true
-         * 当请求按照自己的条件加入队列时，将不使用内置的响应缓存。
+         * 如果请求包含保存服务器不发送客户机本地响应的条件，则返回true 当请求按照自己的条件加入队列时，将不使用内置的响应缓存。
          *
          * @param request 氢气信息
          * @return the true/false
@@ -203,7 +198,7 @@ public class CacheStrategy {
          * @return 如果请求可以使用网络，则返回要使用的策略
          */
         private CacheStrategy getCandidate() {
-            //没有缓存的响应.
+            // 没有缓存的响应.
             if (null == cacheResponse) {
                 return new CacheStrategy(request, null);
             }
@@ -273,9 +268,7 @@ public class CacheStrategy {
             Headers.Builder conditionalRequestHeaders = request.headers().newBuilder();
             Internal.instance.addLenient(conditionalRequestHeaders, conditionName, conditionValue);
 
-            Request conditionalRequest = request.newBuilder()
-                    .headers(conditionalRequestHeaders.build())
-                    .build();
+            Request conditionalRequest = request.newBuilder().headers(conditionalRequestHeaders.build()).build();
             return new CacheStrategy(conditionalRequest, cacheResponse);
         }
 
@@ -287,20 +280,15 @@ public class CacheStrategy {
             if (responseCaching.maxAgeSeconds() != -1) {
                 return TimeUnit.SECONDS.toMillis(responseCaching.maxAgeSeconds());
             } else if (null != expires) {
-                long servedMillis = null != servedDate
-                        ? servedDate.getTime()
-                        : receivedResponseMillis;
+                long servedMillis = null != servedDate ? servedDate.getTime() : receivedResponseMillis;
                 long delta = expires.getTime() - servedMillis;
                 return delta > 0 ? delta : 0;
-            } else if (null != lastModified
-                    && null == cacheResponse.request().url().query()) {
+            } else if (null != lastModified && null == cacheResponse.request().url().query()) {
 
                 // 根据HTTP RFC的建议并在Firefox中实现，
                 // 文档的最大值应该默认为其被提供时文档值的10%。
                 // 默认过期日期不用于包含查询的uri
-                long servedMillis = null != servedDate
-                        ? servedDate.getTime()
-                        : sentRequestMillis;
+                long servedMillis = null != servedDate ? servedDate.getTime() : sentRequestMillis;
                 long delta = servedMillis - lastModified.getTime();
                 return delta > 0 ? (delta / 10) : 0;
             }
@@ -311,11 +299,9 @@ public class CacheStrategy {
          * @return 返回响应的当前值(以毫秒为单位)。计算按RFC 7234规定，4.2.3计算值
          */
         private long cacheResponseAge() {
-            long apparentReceivedAge = null != servedDate
-                    ? Math.max(0, receivedResponseMillis - servedDate.getTime())
+            long apparentReceivedAge = null != servedDate ? Math.max(0, receivedResponseMillis - servedDate.getTime())
                     : 0;
-            long receivedAge = ageSeconds != -1
-                    ? Math.max(apparentReceivedAge, TimeUnit.SECONDS.toMillis(ageSeconds))
+            long receivedAge = ageSeconds != -1 ? Math.max(apparentReceivedAge, TimeUnit.SECONDS.toMillis(ageSeconds))
                     : apparentReceivedAge;
             long responseDuration = receivedResponseMillis - sentRequestMillis;
             long residentDuration = nowMillis - receivedResponseMillis;
@@ -323,8 +309,7 @@ public class CacheStrategy {
         }
 
         /**
-         * @return 如果computeFreshnessLifetime使用了启发式，则返回true
-         * 如果我们使用启发式来服务大于24小时的缓存响应，则需要附加一个警告
+         * @return 如果computeFreshnessLifetime使用了启发式，则返回true 如果我们使用启发式来服务大于24小时的缓存响应，则需要附加一个警告
          */
         private boolean isFreshnessLifetimeHeuristic() {
             return cacheResponse.cacheControl().maxAgeSeconds() == -1 && null == expires;

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.sensitive.metric;
 
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -33,8 +33,7 @@ import org.miaixz.bus.sensitive.Context;
 import org.miaixz.bus.sensitive.magic.annotation.Shield;
 
 /**
- * 公司开户银行联号
- * 前四位明文,后面脱敏
+ * 公司开户银行联号 前四位明文,后面脱敏
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,12 +47,8 @@ public class CnapsProvider extends AbstractProvider {
         }
         final Shield shield = context.getShield();
         String snapCard = object.toString();
-        return StringKit.padPre(
-                StringKit.left(snapCard, 4),
-                StringKit.length(snapCard),
-                StringKit.fill(10, shield.shadow()
-                )
-        );
+        return StringKit.padPre(StringKit.left(snapCard, 4), StringKit.length(snapCard),
+                StringKit.fill(10, shield.shadow()));
     }
 
 }

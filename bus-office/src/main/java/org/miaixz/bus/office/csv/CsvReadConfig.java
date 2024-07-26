@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.csv;
 
 import java.io.Serializable;
@@ -74,8 +74,7 @@ public class CsvReadConfig extends CsvConfig<CsvReadConfig> implements Serializa
     }
 
     /**
-     * 设置是否首行做为标题行，默认false
-     * 当设置为{@code true}时，默认标题行号是{@link #beginLineNo}，{@code false}为-1，表示无行号
+     * 设置是否首行做为标题行，默认false 当设置为{@code true}时，默认标题行号是{@link #beginLineNo}，{@code false}为-1，表示无行号
      *
      * @param containsHeader 是否首行做为标题行，默认false
      * @return this
@@ -141,8 +140,7 @@ public class CsvReadConfig extends CsvConfig<CsvReadConfig> implements Serializa
     }
 
     /**
-     * 设置每个字段是否去除两边空白符
-     * 如果字段以{@link #textDelimiter}包围，则保留两边空格
+     * 设置每个字段是否去除两边空白符 如果字段以{@link #textDelimiter}包围，则保留两边空格
      *
      * @param trimField 去除两边空白符
      * @return this

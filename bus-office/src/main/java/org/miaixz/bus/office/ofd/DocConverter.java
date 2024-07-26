@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.ofd;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -39,9 +39,9 @@ import java.nio.file.Path;
 /**
  * 基于{@code ofdrw-converter}文档转换，提供：
  * <ul>
- *     <li>OFD PDF  相互转换</li>
- *     <li>OFD TEXT 相互转换</li>
- *     <li>OFD 图片 相互转换</li>
+ * <li>OFD PDF 相互转换</li>
+ * <li>OFD TEXT 相互转换</li>
+ * <li>OFD 图片 相互转换</li>
  * </ul>
  * 具体见:https://toscode.gitee.com/ofdrw/ofdrw/blob/master/ofdrw-converter/doc/CONVERTER.md
  *

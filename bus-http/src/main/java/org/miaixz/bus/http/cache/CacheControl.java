@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.cache;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -35,8 +35,7 @@ import org.miaixz.bus.http.Headers;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 缓存控制头，带有来自服务器或客户端的缓存指令。
- * 这些指令设置了哪些响应可以存储，以及哪些请求可以由存储的响应来满足的策略
+ * 缓存控制头，带有来自服务器或客户端的缓存指令。 这些指令设置了哪些响应可以存储，以及哪些请求可以由存储的响应来满足的策略
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,13 +48,10 @@ public class CacheControl {
     public static final CacheControl FORCE_NETWORK = new Builder().noCache().build();
 
     /**
-     * 仅使用缓存的缓存控制请求指令，即使缓存的响应已过期。如果响应在缓存中不可用，
-     * 或者需要服务器验证，调用将失败
+     * 仅使用缓存的缓存控制请求指令，即使缓存的响应已过期。如果响应在缓存中不可用， 或者需要服务器验证，调用将失败
      */
-    public static final CacheControl FORCE_CACHE = new Builder()
-            .onlyIfCached()
-            .maxStale(Integer.MAX_VALUE, TimeUnit.SECONDS)
-            .build();
+    public static final CacheControl FORCE_CACHE = new Builder().onlyIfCached()
+            .maxStale(Integer.MAX_VALUE, TimeUnit.SECONDS).build();
 
     /**
      * 在请求中，它意味着不使用缓存来满足请求
@@ -70,8 +66,7 @@ public class CacheControl {
      */
     private final int maxAgeSeconds;
     /**
-     * "s-maxage"指令是共享缓存的最大年龄。不要和非共享缓存的"max-age"混淆，
-     * 就像在Firefox和Chrome中一样，这个指令在这个缓存中不受重视
+     * "s-maxage"指令是共享缓存的最大年龄。不要和非共享缓存的"max-age"混淆， 就像在Firefox和Chrome中一样，这个指令在这个缓存中不受重视
      */
     private final int sMaxAgeSeconds;
     private final boolean isPrivate;
@@ -80,9 +75,7 @@ public class CacheControl {
     private final int maxStaleSeconds;
     private final int minFreshSeconds;
     /**
-     * 这个字段的名称“only-if-cached”具有误导性。它的实际意思是“不要使用网络”
-     * 它是由客户端设置的，客户端只希望请求能够被缓存完全满足。缓存的响应将需要
-     * 验证(即。如果设置了此标头，则不允许使用条件获取
+     * 这个字段的名称“only-if-cached”具有误导性。它的实际意思是“不要使用网络” 它是由客户端设置的，客户端只希望请求能够被缓存完全满足。缓存的响应将需要 验证(即。如果设置了此标头，则不允许使用条件获取
      */
     private final boolean onlyIfCached;
     private final boolean noTransform;
@@ -90,10 +83,9 @@ public class CacheControl {
 
     String headerValue;
 
-    private CacheControl(boolean noCache, boolean noStore, int maxAgeSeconds, int sMaxAgeSeconds,
-                         boolean isPrivate, boolean isPublic, boolean mustRevalidate, int maxStaleSeconds,
-                         int minFreshSeconds, boolean onlyIfCached, boolean noTransform, boolean immutable,
-                         String headerValue) {
+    private CacheControl(boolean noCache, boolean noStore, int maxAgeSeconds, int sMaxAgeSeconds, boolean isPrivate,
+            boolean isPublic, boolean mustRevalidate, int maxStaleSeconds, int minFreshSeconds, boolean onlyIfCached,
+            boolean noTransform, boolean immutable, String headerValue) {
         this.noCache = noCache;
         this.noStore = noStore;
         this.maxAgeSeconds = maxAgeSeconds;
@@ -125,8 +117,7 @@ public class CacheControl {
     }
 
     /**
-     * 返回{@code headers}的缓存指令。
-     * 如果存在Cache-Control和Pragma头文件，则会同时显示它们
+     * 返回{@code headers}的缓存指令。 如果存在Cache-Control和Pragma头文件，则会同时显示它们
      *
      * @param headers headers
      * @return 缓存控制头
@@ -173,7 +164,8 @@ public class CacheControl {
                 String directive = value.substring(tokenStart, pos).trim();
                 String parameter;
 
-                if (pos == value.length() || value.charAt(pos) == Symbol.C_COMMA || value.charAt(pos) == Symbol.C_SEMICOLON) {
+                if (pos == value.length() || value.charAt(pos) == Symbol.C_COMMA
+                        || value.charAt(pos) == Symbol.C_SEMICOLON) {
                     pos++; // consume ',' or ';' (if necessary)
                     parameter = null;
                 } else {
@@ -227,9 +219,8 @@ public class CacheControl {
         if (!canUseHeaderValue) {
             headerValue = null;
         }
-        return new CacheControl(noCache, noStore, maxAgeSeconds, sMaxAgeSeconds, isPrivate, isPublic,
-                mustRevalidate, maxStaleSeconds, minFreshSeconds, onlyIfCached, noTransform, immutable,
-                headerValue);
+        return new CacheControl(noCache, noStore, maxAgeSeconds, sMaxAgeSeconds, isPrivate, isPublic, mustRevalidate,
+                maxStaleSeconds, minFreshSeconds, onlyIfCached, noTransform, immutable, headerValue);
     }
 
     public boolean noCache() {
@@ -288,18 +279,30 @@ public class CacheControl {
 
     private String headerValue() {
         StringBuilder result = new StringBuilder();
-        if (noCache) result.append("no-cache, ");
-        if (noStore) result.append("no-store, ");
-        if (maxAgeSeconds != -1) result.append("max-age=").append(maxAgeSeconds).append(", ");
-        if (sMaxAgeSeconds != -1) result.append("s-maxage=").append(sMaxAgeSeconds).append(", ");
-        if (isPrivate) result.append("private, ");
-        if (isPublic) result.append("public, ");
-        if (mustRevalidate) result.append("must-revalidate, ");
-        if (maxStaleSeconds != -1) result.append("max-stale=").append(maxStaleSeconds).append(", ");
-        if (minFreshSeconds != -1) result.append("min-fresh=").append(minFreshSeconds).append(", ");
-        if (onlyIfCached) result.append("only-if-cached, ");
-        if (noTransform) result.append("no-transform, ");
-        if (immutable) result.append("immutable, ");
+        if (noCache)
+            result.append("no-cache, ");
+        if (noStore)
+            result.append("no-store, ");
+        if (maxAgeSeconds != -1)
+            result.append("max-age=").append(maxAgeSeconds).append(", ");
+        if (sMaxAgeSeconds != -1)
+            result.append("s-maxage=").append(sMaxAgeSeconds).append(", ");
+        if (isPrivate)
+            result.append("private, ");
+        if (isPublic)
+            result.append("public, ");
+        if (mustRevalidate)
+            result.append("must-revalidate, ");
+        if (maxStaleSeconds != -1)
+            result.append("max-stale=").append(maxStaleSeconds).append(", ");
+        if (minFreshSeconds != -1)
+            result.append("min-fresh=").append(minFreshSeconds).append(", ");
+        if (onlyIfCached)
+            result.append("only-if-cached, ");
+        if (noTransform)
+            result.append("no-transform, ");
+        if (immutable)
+            result.append("immutable, ");
         if (result.length() == 0) {
             return Normal.EMPTY;
         }
@@ -345,11 +348,10 @@ public class CacheControl {
          * @return the builder
          */
         public Builder maxAge(int maxAge, TimeUnit timeUnit) {
-            if (maxAge < 0) throw new IllegalArgumentException("maxAge < 0: " + maxAge);
+            if (maxAge < 0)
+                throw new IllegalArgumentException("maxAge < 0: " + maxAge);
             long maxAgeSecondsLong = timeUnit.toSeconds(maxAge);
-            this.maxAgeSeconds = maxAgeSecondsLong > Integer.MAX_VALUE
-                    ? Integer.MAX_VALUE
-                    : (int) maxAgeSecondsLong;
+            this.maxAgeSeconds = maxAgeSecondsLong > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) maxAgeSecondsLong;
             return this;
         }
 
@@ -361,10 +363,10 @@ public class CacheControl {
          * @return the builder
          */
         public Builder maxStale(int maxStale, TimeUnit timeUnit) {
-            if (maxStale < 0) throw new IllegalArgumentException("maxStale < 0: " + maxStale);
+            if (maxStale < 0)
+                throw new IllegalArgumentException("maxStale < 0: " + maxStale);
             long maxStaleSecondsLong = timeUnit.toSeconds(maxStale);
-            this.maxStaleSeconds = maxStaleSecondsLong > Integer.MAX_VALUE
-                    ? Integer.MAX_VALUE
+            this.maxStaleSeconds = maxStaleSecondsLong > Integer.MAX_VALUE ? Integer.MAX_VALUE
                     : (int) maxStaleSecondsLong;
             return this;
         }
@@ -377,10 +379,10 @@ public class CacheControl {
          * @return the builder
          */
         public Builder minFresh(int minFresh, TimeUnit timeUnit) {
-            if (minFresh < 0) throw new IllegalArgumentException("minFresh < 0: " + minFresh);
+            if (minFresh < 0)
+                throw new IllegalArgumentException("minFresh < 0: " + minFresh);
             long minFreshSecondsLong = timeUnit.toSeconds(minFresh);
-            this.minFreshSeconds = minFreshSecondsLong > Integer.MAX_VALUE
-                    ? Integer.MAX_VALUE
+            this.minFreshSeconds = minFreshSecondsLong > Integer.MAX_VALUE ? Integer.MAX_VALUE
                     : (int) minFreshSecondsLong;
             return this;
         }

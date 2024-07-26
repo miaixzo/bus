@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -107,10 +107,8 @@ public class DcmDir {
         try {
             fsInfo.setFilesetUID(r.getFileSetUID());
             fsInfo.setFilesetID(r.getFileSetID());
-            fsInfo.setDescriptorFile(
-                    r.getDescriptorFile());
-            fsInfo.setDescriptorFileCharset(
-                    r.getDescriptorFileCharacterSet());
+            fsInfo.setDescriptorFile(r.getDescriptorFile());
+            fsInfo.setDescriptorFileCharset(r.getDescriptorFileCharacterSet());
             create(tmp);
             copyFrom(r);
         } finally {
@@ -133,18 +131,15 @@ public class DcmDir {
     private void copyFrom(ImageDirReader r) throws IOException {
         Attributes rec = r.findFirstRootDirectoryRecordInUse(false);
         while (rec != null) {
-            copyChildsFrom(r, rec,
-                    out.addRootDirectoryRecord(new Attributes(rec)));
+            copyChildsFrom(r, rec, out.addRootDirectoryRecord(new Attributes(rec)));
             rec = r.findNextDirectoryRecordInUse(rec, false);
         }
     }
 
-    private void copyChildsFrom(ImageDirReader r, Attributes src,
-                                Attributes dst) throws IOException {
+    private void copyChildsFrom(ImageDirReader r, Attributes src, Attributes dst) throws IOException {
         Attributes rec = r.findLowerDirectoryRecordInUse(src, false);
         while (rec != null) {
-            copyChildsFrom(r, rec,
-                    out.addLowerDirectoryRecord(dst, new Attributes(rec)));
+            copyChildsFrom(r, rec, out.addLowerDirectoryRecord(dst, new Attributes(rec)));
             rec = r.findNextDirectoryRecordInUse(rec, false);
         }
     }
@@ -192,11 +187,8 @@ public class DcmDir {
 
     private void create(File file) throws IOException {
         this.file = file;
-        ImageDirWriter.createEmptyDirectory(file,
-                UID.createUIDIfNull(fsInfo.getFilesetUID()),
-                fsInfo.getFilesetID(),
-                fsInfo.getDescriptorFile(),
-                fsInfo.getDescriptorFileCharset());
+        ImageDirWriter.createEmptyDirectory(file, UID.createUIDIfNull(fsInfo.getFilesetUID()), fsInfo.getFilesetID(),
+                fsInfo.getDescriptorFile(), fsInfo.getDescriptorFileCharset());
         in = out = ImageDirWriter.open(file);
         out.setEncodingOptions(encOpts);
         setCheckDuplicate(false);
@@ -214,9 +206,7 @@ public class DcmDir {
         checkIn();
         list("File Meta Information:", in.getFileMetaInformation());
         list("File-set Information:", in.getFileSetInformation());
-        list(inUse
-                        ? in.findFirstRootDirectoryRecordInUse(false)
-                        : in.readFirstRootDirectoryRecord(),
+        list(inUse ? in.findFirstRootDirectoryRecordInUse(false) : in.readFirstRootDirectoryRecord(),
                 new StringBuilder());
     }
 
@@ -225,20 +215,14 @@ public class DcmDir {
         System.out.println(attrs.toString(Integer.MAX_VALUE, width));
     }
 
-    private void list(Attributes rec, StringBuilder index)
-            throws IOException {
+    private void list(Attributes rec, StringBuilder index) throws IOException {
         int indexLen = index.length();
         int i = 1;
         while (rec != null) {
             index.append(i++).append(Symbol.C_DOT);
             list(heading(rec, index), rec);
-            list(inUse
-                            ? in.findLowerDirectoryRecordInUse(rec, false)
-                            : in.readLowerDirectoryRecord(rec),
-                    index);
-            rec = inUse
-                    ? in.findNextDirectoryRecordInUse(rec, false)
-                    : in.readNextDirectoryRecord(rec);
+            list(inUse ? in.findLowerDirectoryRecordInUse(rec, false) : in.readLowerDirectoryRecord(rec), index);
+            rec = inUse ? in.findNextDirectoryRecordInUse(rec, false) : in.readNextDirectoryRecord(rec);
             index.setLength(indexLen);
         }
     }
@@ -246,8 +230,7 @@ public class DcmDir {
     private String heading(Attributes rec, StringBuilder index) {
         int prefixLen = index.length();
         try {
-            return index.append(Symbol.C_SPACE)
-                    .append(rec.getString(Tag.DirectoryRecordType, Normal.EMPTY))
+            return index.append(Symbol.C_SPACE).append(rec.getString(Tag.DirectoryRecordType, Normal.EMPTY))
                     .append(Symbol.C_COLON).toString();
         } finally {
             index.setLength(prefixLen);
@@ -310,15 +293,13 @@ public class DcmDir {
             }
             Attributes patRec = in.findPatientRecord(pid);
             if (patRec == null) {
-                patRec = recFact.createRecord(RecordType.PATIENT, null,
-                        dataset, null, null);
+                patRec = recFact.createRecord(RecordType.PATIENT, null, dataset, null, null);
                 out.addRootDirectoryRecord(patRec);
                 num++;
             }
             Attributes studyRec = in.findStudyRecord(patRec, styuid);
             if (studyRec == null) {
-                studyRec = recFact.createRecord(RecordType.STUDY, null,
-                        dataset, null, null);
+                studyRec = recFact.createRecord(RecordType.STUDY, null, dataset, null, null);
                 out.addLowerDirectoryRecord(patRec, studyRec);
                 num++;
             }
@@ -326,8 +307,7 @@ public class DcmDir {
             if (seruid != null) {
                 Attributes seriesRec = in.findSeriesRecord(studyRec, seruid);
                 if (seriesRec == null) {
-                    seriesRec = recFact.createRecord(RecordType.SERIES, null,
-                            dataset, null, null);
+                    seriesRec = recFact.createRecord(RecordType.SERIES, null, dataset, null, null);
                     out.addLowerDirectoryRecord(studyRec, seriesRec);
                     num++;
                 }
@@ -380,8 +360,7 @@ public class DcmDir {
             din.setIncludeBulkData(ImageInputStream.IncludeBulkData.NO);
             Attributes fmi = din.readFileMetaInformation();
             Attributes dataset = din.readDataset(o -> o.tag() > Tag.SeriesInstanceUID);
-            iuid = (fmi != null)
-                    ? fmi.getString(Tag.MediaStorageSOPInstanceUID, null)
+            iuid = (fmi != null) ? fmi.getString(Tag.MediaStorageSOPInstanceUID, null)
                     : dataset.getString(Tag.SOPInstanceUID, null);
             if (iuid == null) {
                 return 0;
@@ -400,8 +379,7 @@ public class DcmDir {
         }
         Attributes instRec;
         if (styuid != null && seruid != null) {
-            Attributes patRec =
-                    in.findPatientRecord(pid == null ? styuid : pid);
+            Attributes patRec = in.findPatientRecord(pid == null ? styuid : pid);
             if (patRec == null) {
                 return 0;
             }
@@ -467,7 +445,8 @@ public class DcmDir {
 
         CSVParser(char delim, char quote, String header) {
             quot = quote;
-            String regex = delim + "(?=(?:[^\\/" + quot + "]*\\/" + quot + "[^\\/" + quot + "]*\\/" + quot + ")*[^\\/" + quot + "]*$)";
+            String regex = delim + "(?=(?:[^\\/" + quot + "]*\\/" + quot + "[^\\/" + quot + "]*\\/" + quot + ")*[^\\/"
+                    + quot + "]*$)";
             pattern = Pattern.compile(regex);
             String[] headers = parseFields(header);
             tags = new int[headers.length];
@@ -482,7 +461,8 @@ public class DcmDir {
             Attributes dataset = new Attributes();
             String[] fields = parseFields(line);
             if (fields.length > tags.length) {
-                Logger.warn("Number of values in line " + line + " does not match number of headers. Hence line is ignored.");
+                Logger.warn("Number of values in line " + line
+                        + " does not match number of headers. Hence line is ignored.");
                 return null;
             }
             for (int i = 0; i < fields.length; i++)
@@ -498,10 +478,9 @@ public class DcmDir {
         }
 
         private String decode(String field) {
-            char[] doubleQuote = new char[]{quot, quot};
+            char[] doubleQuote = new char[] { quot, quot };
             return !field.isEmpty() && field.charAt(0) == quot && field.charAt(field.length() - 1) == quot
-                    ? field.substring(1, field.length() - 1)
-                    .replace(String.valueOf(doubleQuote), String.valueOf(quot))
+                    ? field.substring(1, field.length() - 1).replace(String.valueOf(doubleQuote), String.valueOf(quot))
                     : field;
         }
     }

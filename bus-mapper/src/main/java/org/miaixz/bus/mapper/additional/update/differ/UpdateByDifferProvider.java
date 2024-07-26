@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.additional.update.differ;
 
 import org.apache.ibatis.mapping.MappedStatement;
@@ -93,7 +93,6 @@ public class UpdateByDifferProvider extends MapperTemplate {
         return sql.toString();
     }
 
-
     /**
      * 乐观锁字段条件
      *
@@ -107,7 +106,8 @@ public class UpdateByDifferProvider extends MapperTemplate {
         for (EntityColumn column : columnSet) {
             if (column.getEntityField().isAnnotationPresent(Version.class)) {
                 if (hasVersion) {
-                    throw new VersionException(entityClass.getName() + " 中包含多个带有 @Version 注解的字段，一个类中只能存在一个带有 @Version 注解的字段!");
+                    throw new VersionException(
+                            entityClass.getName() + " 中包含多个带有 @Version 注解的字段，一个类中只能存在一个带有 @Version 注解的字段!");
                 }
                 hasVersion = true;
                 result = " AND " + column.getColumnEqualsHolder(NEWER);
@@ -133,7 +133,8 @@ public class UpdateByDifferProvider extends MapperTemplate {
         for (EntityColumn column : columnSet) {
             if (column.getEntityField().isAnnotationPresent(Version.class)) {
                 if (versionColumn != null) {
-                    throw new VersionException(entityClass.getName() + " 中包含多个带有 @Version 注解的字段，一个类中只能存在一个带有 @Version 注解的字段!");
+                    throw new VersionException(
+                            entityClass.getName() + " 中包含多个带有 @Version 注解的字段，一个类中只能存在一个带有 @Version 注解的字段!");
                 }
                 versionColumn = column;
             }
@@ -142,8 +143,8 @@ public class UpdateByDifferProvider extends MapperTemplate {
                     Version version = versionColumn.getEntityField().getAnnotation(Version.class);
                     String versionClass = version.nextVersion().getName();
                     sql.append(column.getColumn()).append(" = ${@org.miaixz.bus.mapper.Version@nextVersion(")
-                            .append(Symbol.AT).append(versionClass).append("@class, ")
-                            .append(NEWER).append('.').append(column.getProperty()).append(")},");
+                            .append(Symbol.AT).append(versionClass).append("@class, ").append(NEWER).append('.')
+                            .append(column.getProperty()).append(")},");
                 } else {
                     sql.append(getIfNotEqual(column, column.getColumnEqualsHolder(NEWER) + Symbol.COMMA));
                 }

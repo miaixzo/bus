@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.lang.ref.Ref;
@@ -33,8 +33,8 @@ import org.miaixz.bus.core.lang.ref.ReferenceType;
 import java.lang.ref.*;
 
 /**
- * 引用工具类，主要针对{@link Reference} 工具化封装
- * 主要封装包括：
+ * 引用工具类，主要针对{@link Reference} 工具化封装 主要封装包括：
+ * 
  * <pre>
  * 1. {@link SoftReference} 软引用，在GC报告内存不足时会被GC回收
  * 2. {@link WeakReference} 弱引用，在GC时发现弱引用会回收其对象
@@ -69,14 +69,14 @@ public class ReferKit {
      */
     public static <T> Reference<T> of(final ReferenceType type, final T referent, final ReferenceQueue<T> queue) {
         switch (type) {
-            case SOFT:
-                return new SoftReference<>(referent, queue);
-            case WEAK:
-                return new WeakReference<>(referent, queue);
-            case PHANTOM:
-                return new PhantomReference<>(referent, queue);
-            default:
-                return null;
+        case SOFT:
+            return new SoftReference<>(referent, queue);
+        case WEAK:
+            return new WeakReference<>(referent, queue);
+        case PHANTOM:
+            return new PhantomReference<>(referent, queue);
+        default:
+            return null;
         }
     }
 

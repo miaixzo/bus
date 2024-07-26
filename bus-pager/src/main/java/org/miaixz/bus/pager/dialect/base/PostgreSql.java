@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager.dialect.base;
 
 import org.apache.ibatis.cache.CacheKey;
@@ -48,7 +48,8 @@ import java.util.Map;
 public class PostgreSql extends AbstractPaging {
 
     @Override
-    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey) {
+    public Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql,
+            CacheKey pageKey) {
         paramMap.put(PAGEPARAMETER_SECOND, page.getPageSize());
         paramMap.put(PAGEPARAMETER_FIRST, page.getStartRow());
         // 处理pageKey
@@ -58,10 +59,13 @@ public class PostgreSql extends AbstractPaging {
         if (boundSql.getParameterMappings() != null) {
             List<ParameterMapping> newParameterMappings = new ArrayList<>(boundSql.getParameterMappings());
             if (page.getStartRow() == 0) {
-                newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_SECOND, int.class).build());
+                newParameterMappings.add(
+                        new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_SECOND, int.class).build());
             } else {
-                newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_SECOND, int.class).build());
-                newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_FIRST, long.class).build());
+                newParameterMappings.add(
+                        new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_SECOND, int.class).build());
+                newParameterMappings.add(
+                        new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_FIRST, long.class).build());
             }
             org.apache.ibatis.reflection.MetaObject metaObject = MetaObject.forObject(boundSql);
             metaObject.setValue("parameterMappings", newParameterMappings);

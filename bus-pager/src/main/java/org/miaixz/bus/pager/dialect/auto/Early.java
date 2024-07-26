@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager.dialect.auto;
 
 import org.apache.ibatis.mapping.MappedStatement;
@@ -65,17 +65,19 @@ public class Early implements AutoDialect<String> {
                         conn.close();
                     }
                 } catch (SQLException e) {
-                    //ignore
+                    // ignore
                 }
             }
         }
     }
 
     @Override
-    public AbstractPaging extractDialect(String dialectKey, MappedStatement ms, DataSource dataSource, Properties properties) {
+    public AbstractPaging extractDialect(String dialectKey, MappedStatement ms, DataSource dataSource,
+            Properties properties) {
         String dialectStr = PageAutoDialect.fromJdbcUrl(dialectKey);
         if (dialectStr == null) {
-            throw new PageException("The database type cannot be obtained automatically, please specify it via the pagerDialect parameter!");
+            throw new PageException(
+                    "The database type cannot be obtained automatically, please specify it via the pagerDialect parameter!");
         }
         return PageAutoDialect.instanceDialect(dialectStr, properties);
     }

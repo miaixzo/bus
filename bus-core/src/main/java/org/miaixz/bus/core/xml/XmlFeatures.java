@@ -24,12 +24,11 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xml;
 
 /**
- * XXE安全相关参数
- * 见：https://blog.spoock.com/2018/10/23/java-xxe/
+ * XXE安全相关参数 见：https://blog.spoock.com/2018/10/23/java-xxe/
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -37,8 +36,8 @@ package org.miaixz.bus.core.xml;
 public class XmlFeatures {
 
     /**
-     * 禁用xml中的inline DOCTYPE 声明，即禁用DTD
-     * 不允许将外部实体包含在传入的 XML 文档中，从而防止XML实体注入（XML External Entities 攻击，利用能够在处理时动态构建文档的 XML 功能，注入外部实体）
+     * 禁用xml中的inline DOCTYPE 声明，即禁用DTD 不允许将外部实体包含在传入的 XML 文档中，从而防止XML实体注入（XML External Entities 攻击，利用能够在处理时动态构建文档的 XML
+     * 功能，注入外部实体）
      */
     public static final String DISALLOW_DOCTYPE_DECL = "http://apache.org/xml/features/disallow-doctype-decl";
     /**

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.mitra_object_attributes_1_0;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,17 +46,18 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag._0033_xx02_:
-            case PrivateTag._0033_xx04_:
-            case PrivateTag._0033_xx06_:
-            case PrivateTag._0033_xx08_:
-            case PrivateTag._0033_xx0A_:
-                return VR.LO;
+
+        case PrivateTag._0033_xx02_:
+        case PrivateTag._0033_xx04_:
+        case PrivateTag._0033_xx06_:
+        case PrivateTag._0033_xx08_:
+        case PrivateTag._0033_xx0A_:
+            return VR.LO;
         }
         return VR.UN;
     }

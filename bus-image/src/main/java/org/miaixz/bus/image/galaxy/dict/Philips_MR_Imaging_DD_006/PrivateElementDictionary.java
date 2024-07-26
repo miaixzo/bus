@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.Philips_MR_Imaging_DD_006;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,48 +46,49 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.MREMEGDirection:
-            case PrivateTag.SagittalSliceOrder:
-            case PrivateTag.CoronalSliceOrder:
-            case PrivateTag.TransversalSliceOrder:
-            case PrivateTag.SeriesOrientation:
-            case PrivateTag.MetalImplantStatus:
-            case PrivateTag.OrientationMirrorFlip:
-            case PrivateTag.SAROperationMode:
-                return VR.CS;
-            case PrivateTag.MaxDBDT:
-            case PrivateTag.MaxSAR:
-            case PrivateTag.GradientSlewRate:
-            case PrivateTag.B1RMS:
-                return VR.DS;
-            case PrivateTag.MREFrequency:
-            case PrivateTag.MREAmplitude:
-            case PrivateTag.MREMEGFrequency:
-            case PrivateTag.MREMEGPairs:
-            case PrivateTag.MREMEGAmplitude:
-            case PrivateTag.MRENumberOfPhaseDelays:
-            case PrivateTag.MREMotionMEGPhaseDelay:
-            case PrivateTag.InversionDelayTime:
-                return VR.FL;
-            case PrivateTag.MRENumberOfMotionCycles:
-            case PrivateTag.MRStackReverse:
-            case PrivateTag.MREPhaseDelayNumber:
-            case PrivateTag.NumberOfInversionDelays:
-            case PrivateTag.InversionDelayNumber:
-            case PrivateTag.SpatialGradient:
-                return VR.IS;
-            case PrivateTag.MREInversionAlgorithmVersion:
-            case PrivateTag.SARType:
-            case PrivateTag.AdditionalConstraints:
-            case PrivateTag._2005_xx86_:
-                return VR.LT;
-            case PrivateTag.ContrastInformationSequence:
-                return VR.SQ;
+
+        case PrivateTag.MREMEGDirection:
+        case PrivateTag.SagittalSliceOrder:
+        case PrivateTag.CoronalSliceOrder:
+        case PrivateTag.TransversalSliceOrder:
+        case PrivateTag.SeriesOrientation:
+        case PrivateTag.MetalImplantStatus:
+        case PrivateTag.OrientationMirrorFlip:
+        case PrivateTag.SAROperationMode:
+            return VR.CS;
+        case PrivateTag.MaxDBDT:
+        case PrivateTag.MaxSAR:
+        case PrivateTag.GradientSlewRate:
+        case PrivateTag.B1RMS:
+            return VR.DS;
+        case PrivateTag.MREFrequency:
+        case PrivateTag.MREAmplitude:
+        case PrivateTag.MREMEGFrequency:
+        case PrivateTag.MREMEGPairs:
+        case PrivateTag.MREMEGAmplitude:
+        case PrivateTag.MRENumberOfPhaseDelays:
+        case PrivateTag.MREMotionMEGPhaseDelay:
+        case PrivateTag.InversionDelayTime:
+            return VR.FL;
+        case PrivateTag.MRENumberOfMotionCycles:
+        case PrivateTag.MRStackReverse:
+        case PrivateTag.MREPhaseDelayNumber:
+        case PrivateTag.NumberOfInversionDelays:
+        case PrivateTag.InversionDelayNumber:
+        case PrivateTag.SpatialGradient:
+            return VR.IS;
+        case PrivateTag.MREInversionAlgorithmVersion:
+        case PrivateTag.SARType:
+        case PrivateTag.AdditionalConstraints:
+        case PrivateTag._2005_xx86_:
+            return VR.LT;
+        case PrivateTag.ContrastInformationSequence:
+            return VR.SQ;
         }
         return VR.UN;
     }

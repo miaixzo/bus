@@ -24,14 +24,13 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cron.pattern.matcher;
 
 import java.util.function.Predicate;
 
 /**
- * 表达式中的某个位置部分匹配器
- * 用于匹配日期位中对应数字是否匹配
+ * 表达式中的某个位置部分匹配器 用于匹配日期位中对应数字是否匹配
  *
  * @author Kimi Liu
  * @since Java 17+

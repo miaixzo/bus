@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.huawei;
 
 import com.alibaba.fastjson.JSONObject;
@@ -104,16 +104,9 @@ public class HuaweiProvider extends AbstractProvider {
 
         Gender gender = getRealGender(object);
 
-        return Material.builder()
-                .rawJson(object)
-                .uuid(object.getString("userID"))
-                .username(object.getString("userName"))
-                .nickname(object.getString("userName"))
-                .gender(gender)
-                .avatar(object.getString("headPictureURL"))
-                .token(accToken)
-                .source(complex.toString())
-                .build();
+        return Material.builder().rawJson(object).uuid(object.getString("userID"))
+                .username(object.getString("userName")).nickname(object.getString("userName")).gender(gender)
+                .avatar(object.getString("headPictureURL")).token(accToken).source(complex.toString()).build();
     }
 
     /**
@@ -139,11 +132,8 @@ public class HuaweiProvider extends AbstractProvider {
 
         this.checkResponse(object);
 
-        return AccToken.builder()
-                .accessToken(object.getString("access_token"))
-                .expireIn(object.getIntValue("expires_in"))
-                .refreshToken(object.getString("refresh_token"))
-                .build();
+        return AccToken.builder().accessToken(object.getString("access_token"))
+                .expireIn(object.getIntValue("expires_in")).refreshToken(object.getString("refresh_token")).build();
     }
 
     /**
@@ -154,8 +144,7 @@ public class HuaweiProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(super.authorize(state))
-                .queryParam("access_type", "offline")
+        return Builder.fromUrl(super.authorize(state)).queryParam("access_type", "offline")
                 .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(HuaweiScope.values())))
                 .build();
     }
@@ -168,12 +157,9 @@ public class HuaweiProvider extends AbstractProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(complex.userInfo())
-                .queryParam("nsp_ts", System.currentTimeMillis())
-                .queryParam("access_token", accToken.getAccessToken())
-                .queryParam("nsp_fmt", "JS")
-                .queryParam("nsp_svc", "OpenUP.User.getInfo")
-                .build();
+        return Builder.fromUrl(complex.userInfo()).queryParam("nsp_ts", System.currentTimeMillis())
+                .queryParam("access_token", accToken.getAccessToken()).queryParam("nsp_fmt", "JS")
+                .queryParam("nsp_svc", "OpenUP.User.getInfo").build();
     }
 
     /**
@@ -198,7 +184,8 @@ public class HuaweiProvider extends AbstractProvider {
             throw new AuthorizedException(object.getString("error"));
         }
         if (object.containsKey("error")) {
-            throw new AuthorizedException(object.getString("sub_error") + Symbol.COLON + object.getString("error_description"));
+            throw new AuthorizedException(
+                    object.getString("sub_error") + Symbol.COLON + object.getString("error_description"));
         }
     }
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.openbsd.software;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -138,9 +138,10 @@ public class OpenBsdOSThread extends AbstractOSThread {
         List<String> threadList = Executor.runNative(psCommand);
         String tidStr = Integer.toString(this.threadId);
         for (String psOutput : threadList) {
-            Map<OpenBsdOSProcess.PsThreadColumns, String> threadMap = Parsing.stringToEnumMap(OpenBsdOSProcess.PsThreadColumns.class, psOutput.trim(),
-                    Symbol.C_SPACE);
-            if (threadMap.containsKey(OpenBsdOSProcess.PsThreadColumns.ARGS) && tidStr.equals(threadMap.get(OpenBsdOSProcess.PsThreadColumns.TID))) {
+            Map<OpenBsdOSProcess.PsThreadColumns, String> threadMap = Parsing
+                    .stringToEnumMap(OpenBsdOSProcess.PsThreadColumns.class, psOutput.trim(), Symbol.C_SPACE);
+            if (threadMap.containsKey(OpenBsdOSProcess.PsThreadColumns.ARGS)
+                    && tidStr.equals(threadMap.get(OpenBsdOSProcess.PsThreadColumns.TID))) {
                 return updateAttributes(threadMap);
             }
         }
@@ -151,27 +152,27 @@ public class OpenBsdOSThread extends AbstractOSThread {
     private boolean updateAttributes(Map<OpenBsdOSProcess.PsThreadColumns, String> threadMap) {
         this.threadId = Parsing.parseIntOrDefault(threadMap.get(OpenBsdOSProcess.PsThreadColumns.TID), 0);
         switch (threadMap.get(OpenBsdOSProcess.PsThreadColumns.STATE).charAt(0)) {
-            case 'R':
-                this.state = OSProcess.State.RUNNING;
-                break;
-            case 'I':
-            case 'S':
-                this.state = OSProcess.State.SLEEPING;
-                break;
-            case 'D':
-            case 'L':
-            case 'U':
-                this.state = OSProcess.State.WAITING;
-                break;
-            case 'Z':
-                this.state = OSProcess.State.ZOMBIE;
-                break;
-            case 'T':
-                this.state = OSProcess.State.STOPPED;
-                break;
-            default:
-                this.state = OSProcess.State.OTHER;
-                break;
+        case 'R':
+            this.state = OSProcess.State.RUNNING;
+            break;
+        case 'I':
+        case 'S':
+            this.state = OSProcess.State.SLEEPING;
+            break;
+        case 'D':
+        case 'L':
+        case 'U':
+            this.state = OSProcess.State.WAITING;
+            break;
+        case 'Z':
+            this.state = OSProcess.State.ZOMBIE;
+            break;
+        case 'T':
+            this.state = OSProcess.State.STOPPED;
+            break;
+        default:
+            this.state = OSProcess.State.OTHER;
+            break;
         }
         // Avoid divide by zero for processes up less than a second
         long elapsedTime = Parsing.parseDHMSOrDefault(threadMap.get(OpenBsdOSProcess.PsThreadColumns.ETIME), 0L);
@@ -182,8 +183,10 @@ public class OpenBsdOSThread extends AbstractOSThread {
         this.kernelTime = 0L;
         this.userTime = Parsing.parseDHMSOrDefault(threadMap.get(OpenBsdOSProcess.PsThreadColumns.CPUTIME), 0L);
         this.startMemoryAddress = 0L;
-        long nonVoluntaryContextSwitches = Parsing.parseLongOrDefault(threadMap.get(OpenBsdOSProcess.PsThreadColumns.NIVCSW), 0L);
-        long voluntaryContextSwitches = Parsing.parseLongOrDefault(threadMap.get(OpenBsdOSProcess.PsThreadColumns.NVCSW), 0L);
+        long nonVoluntaryContextSwitches = Parsing
+                .parseLongOrDefault(threadMap.get(OpenBsdOSProcess.PsThreadColumns.NIVCSW), 0L);
+        long voluntaryContextSwitches = Parsing
+                .parseLongOrDefault(threadMap.get(OpenBsdOSProcess.PsThreadColumns.NVCSW), 0L);
         this.contextSwitches = voluntaryContextSwitches + nonVoluntaryContextSwitches;
         this.majorFaults = Parsing.parseLongOrDefault(threadMap.get(OpenBsdOSProcess.PsThreadColumns.MAJFLT), 0L);
         this.minorFaults = Parsing.parseLongOrDefault(threadMap.get(OpenBsdOSProcess.PsThreadColumns.MINFLT), 0L);

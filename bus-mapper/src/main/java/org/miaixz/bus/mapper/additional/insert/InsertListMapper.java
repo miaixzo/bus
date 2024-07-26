@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.additional.insert;
 
 import org.apache.ibatis.annotations.InsertProvider;
@@ -43,9 +43,7 @@ import java.util.List;
 public interface InsertListMapper<T> {
 
     /**
-     * 批量插入，支持批量插入的数据库可以使用，例如MySQL,H2等
-     * 不支持主键策略，插入前需要设置好主键的值
-     * 特别注意：该方法支持 @KeySql 注解的 genId 方式
+     * 批量插入，支持批量插入的数据库可以使用，例如MySQL,H2等 不支持主键策略，插入前需要设置好主键的值 特别注意：该方法支持 @KeySql 注解的 genId 方式
      *
      * @param recordList 记录值
      * @return the int

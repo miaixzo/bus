@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.setting.metric.ini;
 
 import org.miaixz.bus.core.lang.Keys;
@@ -43,9 +43,7 @@ import java.util.Iterator;
 import java.util.StringJoiner;
 
 /**
- * Ini数据,扩展{@code ArrayList <IniElement>}
- * 如果要向此ini添加空行，只需添加null
- * 如果您想创建Ini，则可以{@link Builder}
+ * Ini数据,扩展{@code ArrayList <IniElement>} 如果要向此ini添加空行，只需添加null 如果您想创建Ini，则可以{@link Builder}
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -88,8 +86,12 @@ public class IniSetting extends ArrayList<IniElement> {
     }
 
     /**
-     * <p> get properties.</p>
-     * <p>for example: </p>
+     * <p>
+     * get properties.
+     * </p>
+     * <p>
+     * for example:
+     * </p>
      * <p>
      * <code>
      * [se1] # section named 'se1'
@@ -100,14 +102,18 @@ public class IniSetting extends ArrayList<IniElement> {
      * [se2]
      * </code>
      * </p>
-     * <p>will be</p>
+     * <p>
+     * will be
+     * </p>
      * <p>
      * <code>
      * se1${delimiter}value1=value1
      * se1${delimiter}value2=value2
      * </code>
      * </p>
-     * <p>Suppose delimiter is'.'</p>
+     * <p>
+     * Suppose delimiter is'.'
+     * </p>
      * <p>
      * <code>
      * se1.value1=value1
@@ -162,16 +168,15 @@ public class IniSetting extends ArrayList<IniElement> {
             if (!withComment && element.isComment()) {
                 continue;
             }
-            text = null == element ? getNewLineSplit() :
-                    withComment ? element + getNewLineSplit() : element.toNoCommentString() + getNewLineSplit();
+            text = null == element ? getNewLineSplit()
+                    : withComment ? element + getNewLineSplit() : element.toNoCommentString() + getNewLineSplit();
             out.write(text.getBytes(charset));
         }
         out.flush();
     }
 
     /**
-     * write the {@link #toString()} value to output stream.
-     * charset is utf-8
+     * write the {@link #toString()} value to output stream. charset is utf-8
      *
      * @param out         output stream.
      * @param withComment write with comment
@@ -181,7 +186,6 @@ public class IniSetting extends ArrayList<IniElement> {
     public void write(OutputStream out, boolean withComment) throws IOException {
         write(out, org.miaixz.bus.core.lang.Charset.UTF_8, withComment);
     }
-
 
     /**
      * write the {@link #toString()} value to Writer.
@@ -196,8 +200,8 @@ public class IniSetting extends ArrayList<IniElement> {
             if (!withComment && element.isComment()) {
                 continue;
             }
-            text = null == element ? getNewLineSplit() :
-                    withComment ? element + getNewLineSplit() : element.toNoCommentString() + getNewLineSplit();
+            text = null == element ? getNewLineSplit()
+                    : withComment ? element + getNewLineSplit() : element.toNoCommentString() + getNewLineSplit();
             writer.write(text);
         }
         writer.flush();
@@ -240,8 +244,7 @@ public class IniSetting extends ArrayList<IniElement> {
     }
 
     /**
-     * write the {@link #toString()} value to File.
-     * charset is utf-8
+     * write the {@link #toString()} value to File. charset is utf-8
      *
      * @param file        file
      * @param withComment write with comment
@@ -270,8 +273,7 @@ public class IniSetting extends ArrayList<IniElement> {
     }
 
     /**
-     * write the {@link #toString()} value to Path(file).
-     * charset is utf-8
+     * write the {@link #toString()} value to Path(file). charset is utf-8
      *
      * @param path        path
      * @param withComment write with comment

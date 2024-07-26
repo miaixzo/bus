@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.selector;
 
 /**
@@ -71,7 +71,8 @@ public class SmoothWeightObject<T> extends WeightObject<T> {
 
     /**
      * setCurrentWeight
-     * <p>设置当前权重
+     * <p>
+     * 设置当前权重
      *
      * @param currentWeight 权重值
      */
