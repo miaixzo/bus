@@ -240,7 +240,7 @@
                     </formats>
                     <java>
                         <licenseHeader>
-                            <file>../.github/spotless/licenses/miaixz.org</file>
+                            <file>../.github/spotless/spotless_miaixz.org</file>
                         </licenseHeader>
                         <eclipse>
                             <file>../.github/spotless/spotless_format.xml</file>

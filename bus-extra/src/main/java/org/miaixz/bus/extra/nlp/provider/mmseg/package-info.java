@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 /**
  * mmseg4j分词引擎实现 项目地址：https://github.com/chenlb/mmseg4j-core
  *

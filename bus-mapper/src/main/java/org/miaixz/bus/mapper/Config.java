@@ -50,7 +50,7 @@ public class Config extends Configuration {
      *
      * @param mapperBuilder 逻辑处理类
      */
-    public void setMapperHelper(MapperBuilder mapperBuilder) {
+    public void setMapperBuilder(MapperBuilder mapperBuilder) {
         this.mapperBuilder = mapperBuilder;
     }
 

@@ -220,9 +220,6 @@
                         </format>
                     </formats>
                     <java>
-                        <licenseHeader>
-                            <file>../.github/spotless/licenses/mybatis.io</file>
-                        </licenseHeader>
                         <eclipse>
                             <file>../.github/spotless/spotless_format.xml</file>
                         </eclipse>

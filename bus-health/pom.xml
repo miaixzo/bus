@@ -199,9 +199,6 @@
                         </format>
                     </formats>
                     <java>
-                        <licenseHeader>
-                            <file>../.github/spotless/licenses/github.oshi</file>
-                        </licenseHeader>
                         <eclipse>
                             <file>../.github/spotless/spotless_format.xml</file>
                         </eclipse>

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 /**
  * 医学图形/图像处理 AR : Autorefracti MD : Bone Mineral Densitometry EPS : Cardiac Electrophysiology CR : Computed Radiography
  * CT : Computed Tomography DX : Digital Radiography ECG : Electrocardiography ES : Endoscopy XC : External-camera

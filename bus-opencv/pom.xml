@@ -184,9 +184,6 @@
                         </format>
                     </formats>
                     <java>
-                        <licenseHeader>
-                            <file>../.github/spotless/licenses/opencv.org</file>
-                        </licenseHeader>
                         <eclipse>
                             <file>../.github/spotless/spotless_format.xml</file>
                         </eclipse>

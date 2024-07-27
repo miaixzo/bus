@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 /**
  * 定时任务表达式匹配器，内部使用 单一表达式使用{@link org.miaixz.bus.cron.pattern.matcher.PatternMatcher}表示
  * {@link org.miaixz.bus.cron.pattern.matcher.PatternMatcher}由7个{@link org.miaixz.bus.cron.pattern.matcher.PartMatcher}组成，
