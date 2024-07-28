@@ -30,7 +30,7 @@ package org.miaixz.bus.pay;
 import org.miaixz.bus.pay.metric.AbstractProvider;
 import org.miaixz.bus.pay.metric.alipay.AliPayProvider;
 import org.miaixz.bus.pay.metric.jdpay.JdPayProvider;
-import org.miaixz.bus.pay.metric.paypal.PayPalProvider;
+import org.miaixz.bus.pay.metric.paypal.PaypalProvider;
 import org.miaixz.bus.pay.metric.tenpay.TenpayProvider;
 import org.miaixz.bus.pay.metric.unionpay.UnionPayProvider;
 import org.miaixz.bus.pay.metric.wechat.WechatPayProvider;
@@ -100,7 +100,7 @@ public enum Registry implements Complex {
 
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
-            return PayPalProvider.class;
+            return PaypalProvider.class;
         }
     },
     /**

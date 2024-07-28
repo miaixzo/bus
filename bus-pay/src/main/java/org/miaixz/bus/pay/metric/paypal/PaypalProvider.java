@@ -53,17 +53,17 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PayPalProvider extends AbstractProvider<Material, Context> {
+public class PaypalProvider extends AbstractProvider<Material, Context> {
 
-    public PayPalProvider(Context context) {
+    public PaypalProvider(Context context) {
         super(context);
     }
 
-    public PayPalProvider(Context context, Complex complex) {
+    public PaypalProvider(Context context, Complex complex) {
         super(context, complex);
     }
 
-    public PayPalProvider(Context context, Complex complex, ExtendCache cache) {
+    public PaypalProvider(Context context, Complex complex, ExtendCache cache) {
         super(context, complex, cache);
     }
 
