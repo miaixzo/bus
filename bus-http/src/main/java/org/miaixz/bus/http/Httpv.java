@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http;
 
 import org.miaixz.bus.core.lang.MediaType;
@@ -96,9 +96,8 @@ public class Httpv {
         this.httpd = builder.httpd();
         this.baseUrl = builder.baseUrl();
         this.mediaTypes = builder.getMediaTypes();
-        this.executor = new CoverTasks.Executor(httpd.dispatcher().executorService(),
-                builder.mainExecutor(), builder.downloadListener(),
-                builder.responseListener(), builder.exceptionListener(),
+        this.executor = new CoverTasks.Executor(httpd.dispatcher().executorService(), builder.mainExecutor(),
+                builder.downloadListener(), builder.responseListener(), builder.exceptionListener(),
                 builder.completeListener(), builder.msgConvertors());
         this.preprocessors = builder.preprocessors();
         this.preprocTimeoutTimes = builder.preprocTimeoutTimes();
@@ -171,9 +170,8 @@ public class Httpv {
     }
 
     public int preprocTimeoutMillis() {
-        return preprocTimeoutTimes * (httpd.connectTimeoutMillis()
-                + httpd.writeTimeoutMillis()
-                + httpd.readTimeoutMillis());
+        return preprocTimeoutTimes
+                * (httpd.connectTimeoutMillis() + httpd.writeTimeoutMillis() + httpd.readTimeoutMillis());
     }
 
     public int getTagTaskCount() {
@@ -216,23 +214,20 @@ public class Httpv {
         return executor;
     }
 
-    public void preprocess(CoverHttp<? extends CoverHttp<?>> coverHttp, Runnable request,
-                           boolean skipPreproc, boolean skipSerialPreproc) {
+    public void preprocess(CoverHttp<? extends CoverHttp<?>> coverHttp, Runnable request, boolean skipPreproc,
+            boolean skipSerialPreproc) {
         if (preprocessors.length == 0 || skipPreproc) {
             request.run();
             return;
         }
         int index = 0;
         if (skipSerialPreproc) {
-            while (index < preprocessors.length
-                    && preprocessors[index] instanceof SerialPreprocessor) {
+            while (index < preprocessors.length && preprocessors[index] instanceof SerialPreprocessor) {
                 index++;
             }
         }
         if (index < preprocessors.length) {
-            RealPreChain chain = new RealPreChain(preprocessors,
-                    coverHttp, request, index + 1,
-                    skipSerialPreproc);
+            RealPreChain chain = new RealPreChain(preprocessors, coverHttp, request, index + 1, skipSerialPreproc);
             preprocessors[index].doProcess(chain);
         } else {
             request.run();
@@ -249,19 +244,20 @@ public class Httpv {
             if (null != baseUrl) {
                 fullUrl = baseUrl;
             } else {
-                throw new InternalException("Before setting BaseUrl, you must specify a specific path to initiate a request!");
+                throw new InternalException(
+                        "Before setting BaseUrl, you must specify a specific path to initiate a request!");
             }
         } else {
-            boolean isFullPath = urlPath.startsWith(Protocol.HTTPS_PREFIX)
-                    || urlPath.startsWith(Protocol.HTTP_PREFIX)
-                    || urlPath.startsWith(Protocol.WSS_PREFIX)
-                    || urlPath.startsWith(Protocol.WS_PREFIX);
+            boolean isFullPath = urlPath.startsWith(Protocol.HTTPS_PREFIX) || urlPath.startsWith(Protocol.HTTP_PREFIX)
+                    || urlPath.startsWith(Protocol.WSS_PREFIX) || urlPath.startsWith(Protocol.WS_PREFIX);
             if (isFullPath) {
                 fullUrl = urlPath;
             } else if (null != baseUrl) {
                 fullUrl = baseUrl + urlPath;
             } else {
-                throw new InternalException("Before setting BaseUrl, you must use the full path URL to initiate the request. The current URL is：" + urlPath);
+                throw new InternalException(
+                        "Before setting BaseUrl, you must use the full path URL to initiate the request. The current URL is："
+                                + urlPath);
             }
         }
         if (websocket && fullUrl.startsWith(Protocol.HTTP.name)) {
@@ -438,9 +434,8 @@ public class Httpv {
                 Response response = chain.proceed(request);
                 ResponseBody body = response.body();
                 String type = response.header(HTTP.CONTENT_TYPE);
-                if (null == body || null != type && (type.contains("octet-stream")
-                        || type.contains("image") || type.contains("video")
-                        || type.contains("archive") || type.contains("word")
+                if (null == body || null != type && (type.contains("octet-stream") || type.contains("image")
+                        || type.contains("video") || type.contains("archive") || type.contains("word")
                         || type.contains("xls") || type.contains("pdf"))) {
                     // 若是下载文件，则必须指定在 IO 线程操作
                     return response;
@@ -605,8 +600,7 @@ public class Httpv {
 
         /**
          * @param convertor JSON 服务
-         * @return Builder
-         * 添加消息转换器
+         * @return Builder 添加消息转换器
          */
         public Builder addMsgConvertor(Convertor convertor) {
             if (null != convertor) {
@@ -617,8 +611,7 @@ public class Httpv {
 
         /**
          * @param charset 编码
-         * @return Builder
-         * 设置默认编码格式
+         * @return Builder 设置默认编码格式
          */
         public Builder charset(Charset charset) {
             if (null != charset) {
@@ -629,8 +622,7 @@ public class Httpv {
 
         /**
          * @param bodyType 请求体类型
-         * @return Builder
-         * 设置默认请求体类型
+         * @return Builder 设置默认请求体类型
          */
         public Builder bodyType(String bodyType) {
             if (null != bodyType) {
@@ -749,9 +741,9 @@ public class Httpv {
 
         private boolean noSerialPreprocess;
 
-        public RealPreChain(Preprocessor[] preprocessors, CoverHttp<?> coverHttp, Runnable request,
-                            int index, boolean noSerialPreprocess) {
-            this.index = index;        // index 大于等于 1
+        public RealPreChain(Preprocessor[] preprocessors, CoverHttp<?> coverHttp, Runnable request, int index,
+                boolean noSerialPreprocess) {
+            this.index = index; // index 大于等于 1
             this.preprocessors = preprocessors;
             this.coverHttp = coverHttp;
             this.request = request;
@@ -771,8 +763,7 @@ public class Httpv {
         @Override
         public void proceed() {
             if (noSerialPreprocess) {
-                while (index < preprocessors.length
-                        && preprocessors[index] instanceof SerialPreprocessor) {
+                while (index < preprocessors.length && preprocessors[index] instanceof SerialPreprocessor) {
                     index++;
                 }
             } else {

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.bean.copier.provider;
 
 import org.miaixz.bus.core.bean.copier.ValueProvider;
@@ -58,12 +58,12 @@ public class BeanValueProvider implements ValueProvider<String> {
     /**
      * 构造
      *
-     * @param bean Bean
+     * @param bean     Bean
      * @param beanDesc 自定义的{@link BeanDesc}，默认为{@link BeanKit#getBeanDesc(Class)}
      */
     public BeanValueProvider(final Object bean, BeanDesc beanDesc) {
         this.bean = bean;
-        if(null == beanDesc){
+        if (null == beanDesc) {
             beanDesc = BeanKit.getBeanDesc(bean.getClass());
         }
         this.beanDesc = beanDesc;

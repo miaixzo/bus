@@ -24,15 +24,14 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.hl7.net;
 
 /**
  * @author Kimi Liu
  * @since Java 17+
  */
-public class DefaultHL7Service extends DefaultHL7MessageListener
-        implements HL7Service {
+public class DefaultHL7Service extends DefaultHL7MessageListener implements HL7Service {
 
     private final String[] messageTypes;
 

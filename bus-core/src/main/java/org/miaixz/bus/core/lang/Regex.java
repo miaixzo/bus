@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang;
 
 import java.util.regex.Pattern;
@@ -71,8 +71,8 @@ public class Regex {
      */
     public static final String VALID_HEX = "[0-9a-fA-F]+";
     /**
-     * 单个中文汉字
-     * 参照维基百科汉字Unicode范围(<a href="https://zh.wikipedia.org/wiki/%E6%B1%89%E5%AD%97">https://zh.wikipedia.org/wiki/%E6%B1%89%E5%AD%97</a> 页面右侧)
+     * 单个中文汉字 参照维基百科汉字Unicode范围(<a href=
+     * "https://zh.wikipedia.org/wiki/%E6%B1%89%E5%AD%97">https://zh.wikipedia.org/wiki/%E6%B1%89%E5%AD%97</a> 页面右侧)
      */
     public static final String CHINESE = "[\u2E80-\u2EFF\u2F00-\u2FDF\u31C0-\u31EF\u3400-\u4DBF\u4E00-\u9FFF\uF900-\uFAFF\uD840\uDC00-\uD869\uDEDF\uD869\uDF00-\uD86D\uDF3F\uD86D\uDF40-\uD86E\uDC1F\uD86E\uDC20-\uD873\uDEAF\uD87E\uDC00-\uD87E\uDE1F]";
     /**
@@ -88,8 +88,7 @@ public class Regex {
      */
     public static final String IP_ADDRESS = "([0-9a-fA-F]*:[0-9a-fA-F:.]*)|([\\d.]+)";
     /**
-     * IP v4
-     * 采用分组方式便于解析地址的每一个段
+     * IP v4 采用分组方式便于解析地址的每一个段
      */
     public static final String IPV4 = "^(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)\\.(25[0-5]|2[0-4]\\d|[0-1]?\\d?\\d)$";
     /**
@@ -101,35 +100,29 @@ public class Regex {
      */
     public static final String MONEY = "^(\\d+(?:\\.\\d+)?)$";
     /**
-     * 邮件，符合RFC 5322规范，注意email 要宽松一点
-     * 正则来自：<a href="http://emailregex.com/">http://emailregex.com/</a>
-     * 参考：
+     * 邮件，符合RFC 5322规范，注意email 要宽松一点 正则来自：<a href="http://emailregex.com/">http://emailregex.com/</a> 参考：
      * <ul>
-     *     <li>https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address/44317754</li>
-     *     <li>https://stackoverflow.com/questions/201323/how-can-i-validate-an-email-address-using-a-regular-expression</li>
+     * <li>https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address/44317754</li>
+     * <li>https://stackoverflow.com/questions/201323/how-can-i-validate-an-email-address-using-a-regular-expression</li>
      * </ul>
      */
     public static final String EMAIL = "(?:[a-z0-9\\u4e00-\\u9fa5!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9\\u4e00-\\u9fa5!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9\\u4e00-\\u9fa5](?:[a-z0-9\\u4e00-\\u9fa5-]*[a-z0-9\\u4e00-\\u9fa5])?\\.)+[a-z0-9\\u4e00-\\u9fa5](?:[a-z0-9\\u4e00-\\u9fa5-]*[a-z0-9\\u4e00-\\u9fa5])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9\\u4e00-\\u9fa5-]*[a-z0-9\\u4e00-\\u9fa5]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)])";
 
     /**
-     * 移动电话
-     * eg: 中国大陆： +86  180 4953 1399，2位区域码标示+13位数字
+     * 移动电话 eg: 中国大陆： +86 180 4953 1399，2位区域码标示+13位数字
      */
     public static final String MOBILE = "(?:0|86|\\+86)?1[3-9]\\d{9}";
     public static final Pattern MOBILE_PATTERN = Pattern.compile(Regex.MOBILE);
     /**
-     * 中国香港移动电话
-     * eg: 中国香港： +852 5100 4810， 三位区域码+10位数字, 中国香港手机号码8位数
+     * 中国香港移动电话 eg: 中国香港： +852 5100 4810， 三位区域码+10位数字, 中国香港手机号码8位数
      */
     public static final String MOBILE_HK = "(?:0|852|\\+852)?\\d{8}";
     /**
-     * 中国台湾移动电话
-     * eg: 中国台湾： +886 09 60 000000， 三位区域码+号码以数字09开头 + 8位数字, 中国台湾手机号码10位数
+     * 中国台湾移动电话 eg: 中国台湾： +886 09 60 000000， 三位区域码+号码以数字09开头 + 8位数字, 中国台湾手机号码10位数
      */
     public static final String MOBILE_TW = "(?:0|886|\\+886)?(?:|-)09\\d{8}";
     /**
-     * 中国澳门移动电话
-     * eg: 中国澳门： +853 68 00000， 三位区域码 +号码以数字6开头 + 7位数字, 中国台湾手机号码8位数
+     * 中国澳门移动电话 eg: 中国澳门： +853 68 00000， 三位区域码 +号码以数字6开头 + 7位数字, 中国台湾手机号码8位数
      */
     public static final String MOBILE_MO = "(?:0|853|\\+853)?(?:|-)6\\d{7}";
     /**
@@ -155,8 +148,8 @@ public class Regex {
      */
     public static final String BIRTHDAY = "^(\\d{2,4})([/\\-.年]?)(\\d{1,2})([/\\-.月]?)(\\d{1,2})日?$";
     /**
-     * URI
-     * 定义见：<a href="https://www.ietf.org/rfc/rfc3986.html#appendix-B">https://www.ietf.org/rfc/rfc3986.html#appendix-B</a>
+     * URI 定义见：<a href=
+     * "https://www.ietf.org/rfc/rfc3986.html#appendix-B">https://www.ietf.org/rfc/rfc3986.html#appendix-B</a>
      */
     public static final String URI = "^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\\?([^#]*))?(#(.*))?";
     /**
@@ -164,8 +157,7 @@ public class Regex {
      */
     public static final String URL = "[a-zA-Z]+://[\\w-+&@#/%?=~_|!:,.;]*[\\w-+&@#/%=~_|]";
     /**
-     * Protocol URL（来自：<a href="http://urlregex.com/">http://urlregex.com/</a>）
-     * 此正则同时支持FTP、File等协议的URL
+     * Protocol URL（来自：<a href="http://urlregex.com/">http://urlregex.com/</a>） 此正则同时支持FTP、File等协议的URL
      */
     public static final String URL_HTTP = "(https?|ftp|file)://[\\w-+&@#/%?=~_|!:,.;]*[\\w-+&@#/%=~_|]";
     /**
@@ -195,13 +187,13 @@ public class Regex {
     /**
      * 中国车牌号码（兼容新能源车牌）
      */
-    public static final String PLATE_NUMBER =
-            "^(([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z](([0-9]{5}[ABCDEFGHJK])|([ABCDEFGHJK]([A-HJ-NP-Z0-9])[0-9]{4})))|" +
-                    "([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领]\\d{3}\\d{1,3}[领])|" +
-                    "([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z][A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳使领]))$";
+    public static final String PLATE_NUMBER = "^(([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z](([0-9]{5}[ABCDEFGHJK])|([ABCDEFGHJK]([A-HJ-NP-Z0-9])[0-9]{4})))|"
+            + "([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领]\\d{3}\\d{1,3}[领])|"
+            + "([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z][A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳使领]))$";
 
     /**
      * 统一社会信用代码
+     * 
      * <pre>
      * 第一部分：登记管理部门代码1位 (数字或大写英文字母)
      * 第二部分：机构类别代码1位 (数字或大写英文字母)
@@ -212,11 +204,10 @@ public class Regex {
      */
     public static final String CREDIT_CODE = "^[0-9A-HJ-NPQRTUWXY]{2}\\d{6}[0-9A-HJ-NPQRTUWXY]{10}$";
     /**
-     * 车架号（车辆识别代号由世界制造厂识别代号(WMI、车辆说明部分(VDS)车辆指示部分(VIS)三部分组成，共 17 位字码。）
-     * 别名：车辆识别代号、车辆识别码、车架号、十七位码
-     * 标准号：GB 16735-2019
-     * 标准官方地址：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=E2EBF667F8C032B1EDFD6DF9C1114E02
-     * 对年产量大于或等于1 000 辆的完整车辆和/或非完整车辆制造厂：
+     * 车架号（车辆识别代号由世界制造厂识别代号(WMI、车辆说明部分(VDS)车辆指示部分(VIS)三部分组成，共 17 位字码。） 别名：车辆识别代号、车辆识别码、车架号、十七位码 标准号：GB 16735-2019
+     * 标准官方地址：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=E2EBF667F8C032B1EDFD6DF9C1114E02 对年产量大于或等于1 000
+     * 辆的完整车辆和/或非完整车辆制造厂：
+     * 
      * <pre>
      *   第一部分为世界制造厂识别代号(WMI)，3位
      *   第二部分为车辆说明部分(VDS)，     6位
@@ -224,6 +215,7 @@ public class Regex {
      * </pre>
      * <p>
      * 对年产量小于 1 000 辆的完整车辆和/或非完整车辆制造厂：
+     * 
      * <pre>
      *   第一部分为世界制造广识别代号(WMI),3位;
      *   第二部分为车辆说明部分(VDS)，6位;
@@ -239,23 +231,19 @@ public class Regex {
     public static final String CAR_VIN = "^[A-HJ-NPR-Z0-9]{8}[X0-9]([A-HJ-NPR-Z0-9]{3}\\d{5}|[A-HJ-NPR-Z0-9]{5}\\d{3})$";
 
     /**
-     * 驾驶证  别名：驾驶证档案编号、行驶证编号
-     * eg:430101758218
-     * 12位数字字符串
-     * 仅限：中国驾驶证档案编号
+     * 驾驶证 别名：驾驶证档案编号、行驶证编号 eg:430101758218 12位数字字符串 仅限：中国驾驶证档案编号
      */
     public static final String CAR_DRIVING_LICENCE = "^[0-9]{12}$";
     /**
-     * 中文姓名
-     * 维吾尔族姓名里面的点是 · 输入法中文状态下，键盘左上角数字1前面的那个符号；
-     * 错误字符：{@code ．.。．.}
-     * 正确维吾尔族姓名：
+     * 中文姓名 维吾尔族姓名里面的点是 · 输入法中文状态下，键盘左上角数字1前面的那个符号； 错误字符：{@code ．.。．.} 正确维吾尔族姓名：
+     * 
      * <pre>
      * 霍加阿卜杜拉·麦提喀斯木
      * 玛合萨提别克·哈斯木别克
      * 阿布都热依木江·艾斯卡尔
      * 阿卜杜尼亚孜·毛力尼亚孜
      * </pre>
+     * 
      * <pre>
      * ----------
      * 错误示例：孟  伟                reason: 有空格
@@ -268,8 +256,8 @@ public class Regex {
      * 错误示例：李                   reason: 少于2位
      * ----------
      * </pre>
-     * 总结中文姓名：2-60位，只能是中文和维吾尔族的点·
-     * 放宽汉字范围：如生僻姓名 刘欣䶮yǎn
+     * 
+     * 总结中文姓名：2-60位，只能是中文和维吾尔族的点· 放宽汉字范围：如生僻姓名 刘欣䶮yǎn
      */
     public static final String CHINESE_NAME = "^[\u2E80-\u9FFF·]{2,60}$";
 

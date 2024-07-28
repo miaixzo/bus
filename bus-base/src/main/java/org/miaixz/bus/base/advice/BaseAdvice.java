@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.base.advice;
 
 import org.miaixz.bus.core.basic.advice.ErrorAdvice;
@@ -69,8 +69,7 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * 把值绑定到Model中,
-     * 使全局@RequestMapping可以获取到该值
+     * 把值绑定到Model中, 使全局@RequestMapping可以获取到该值
      *
      * @param model 对象
      */
@@ -80,8 +79,7 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * 全局异常拦截
-     * 处理全局异常
+     * 全局异常拦截 处理全局异常
      *
      * @param e 异常信息
      * @return 异常提示
@@ -110,8 +108,7 @@ public class BaseAdvice extends Controller {
     }
 
     /**
-     * 拦截业务异常
-     * 事务回滚处理
+     * 拦截业务异常 事务回滚处理
      *
      * @param e 异常信息
      * @return 异常提示
@@ -206,16 +203,14 @@ public class BaseAdvice extends Controller {
      */
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({MethodArgumentNotValidException.class, BindException.class})
+    @ExceptionHandler({ MethodArgumentNotValidException.class, BindException.class })
     public Object handleBodyValidException(MethodArgumentNotValidException e) {
         this.defaultExceptionHandler(e);
         return write(ErrorCode.EM_100511);
     }
 
     /**
-     * 业务处理器处理请求之前被调用,对用户的request进行处理,若返回值为true,
-     * 则继续调用后续的拦截器和目标方法；若返回值为false, 则终止请求；
-     * 这里可以加上登录校验,权限拦截、请求限流等
+     * 业务处理器处理请求之前被调用,对用户的request进行处理,若返回值为true, 则继续调用后续的拦截器和目标方法；若返回值为false, 则终止请求； 这里可以加上登录校验,权限拦截、请求限流等
      *
      * @param ex 对象参数
      */

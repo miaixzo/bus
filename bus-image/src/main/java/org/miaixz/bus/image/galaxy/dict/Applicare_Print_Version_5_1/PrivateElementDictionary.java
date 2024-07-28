@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.Applicare_Print_Version_5_1;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,25 +46,26 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.FontRelativeSize:
-                return VR.FD;
-            case PrivateTag.Font:
-                return VR.LO;
-            case PrivateTag.Annotations:
-                return VR.SQ;
-            case PrivateTag.MaskState:
-            case PrivateTag.FontSize:
-                return VR.UL;
-            case PrivateTag.Overlay:
-            case PrivateTag.PixelRep:
-            case PrivateTag.AnnotationLevel:
-            case PrivateTag.ShowCaliper:
-                return VR.US;
+
+        case PrivateTag.FontRelativeSize:
+            return VR.FD;
+        case PrivateTag.Font:
+            return VR.LO;
+        case PrivateTag.Annotations:
+            return VR.SQ;
+        case PrivateTag.MaskState:
+        case PrivateTag.FontSize:
+            return VR.UL;
+        case PrivateTag.Overlay:
+        case PrivateTag.PixelRep:
+        case PrivateTag.AnnotationLevel:
+        case PrivateTag.ShowCaliper:
+            return VR.US;
         }
         return VR.UN;
     }

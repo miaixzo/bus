@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org sandao and other contributors.             ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket;
 
 import java.nio.channels.AsynchronousSocketChannel;
@@ -32,16 +32,16 @@ import java.nio.channels.AsynchronousSocketChannel;
 /**
  * 网络监控器，提供通讯层面监控功能的接口
  * <p>
- * 并未单独提供配置监控服务的接口，用户在使用时仅需在Handler实现类中同时实现当前Monitor接口即可。
- * 在注册消息处理器时，若服务监测到该处理器同时实现了Monitor接口，则该监视器便会生效。
+ * 并未单独提供配置监控服务的接口，用户在使用时仅需在Handler实现类中同时实现当前Monitor接口即可。 在注册消息处理器时，若服务监测到该处理器同时实现了Monitor接口，则该监视器便会生效。
  * </p>
+ * 
  * <pre>
- *     public class MessageProcessorImpl implements Handler,Monitor{
+ * public class MessageProcessorImpl implements Handler, Monitor {
  *
- *     }
+ * }
  * </pre>
- * 注意:
- * 实现本接口时要关注acceptMonitor接口的返回值,如无特殊需求直接返回true，若返回false会拒绝本次连接。
+ * 
+ * 注意: 实现本接口时要关注acceptMonitor接口的返回值,如无特殊需求直接返回true，若返回false会拒绝本次连接。
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.compress.extractor;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
@@ -70,8 +70,7 @@ public class SevenZExtractor implements Extractor, RandomAccess {
      */
     public SevenZExtractor(final File file, final char[] password) {
         try {
-            this.sevenZFile = SevenZFile.builder()
-                    .setFile(file).setPassword(password).get();
+            this.sevenZFile = SevenZFile.builder().setFile(file).setPassword(password).get();
         } catch (final IOException e) {
             throw new InternalException(e);
         }
@@ -113,8 +112,7 @@ public class SevenZExtractor implements Extractor, RandomAccess {
      */
     public SevenZExtractor(final SeekableByteChannel channel, final char[] password) {
         try {
-            this.sevenZFile = SevenZFile.builder()
-                    .setSeekableByteChannel(channel).setPassword(password).get();
+            this.sevenZFile = SevenZFile.builder().setSeekableByteChannel(channel).setPassword(password).get();
         } catch (final IOException e) {
             throw new InternalException(e);
         }
@@ -172,7 +170,7 @@ public class SevenZExtractor implements Extractor, RandomAccess {
             outItemFile = FileKit.file(targetDir, entry.getName());
             if (entry.isDirectory()) {
                 // 创建对应目录
-                //noinspection ResultOfMethodCallIgnored
+                // noinspection ResultOfMethodCallIgnored
                 outItemFile.mkdirs();
             } else if (entry.hasStream()) {
                 // 读取entry对应数据流

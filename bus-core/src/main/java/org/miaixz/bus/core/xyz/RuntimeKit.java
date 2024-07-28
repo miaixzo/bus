@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.data.id.Pid;
@@ -67,7 +67,8 @@ public class RuntimeKit {
      * @return 执行结果
      * @throws InternalException IO异常
      */
-    public static String execForString(final java.nio.charset.Charset charset, final String... cmds) throws InternalException {
+    public static String execForString(final java.nio.charset.Charset charset, final String... cmds)
+            throws InternalException {
         return getResult(exec(cmds), charset);
     }
 
@@ -90,13 +91,13 @@ public class RuntimeKit {
      * @return 执行结果，按行区分
      * @throws InternalException IO异常
      */
-    public static List<String> execForLines(final java.nio.charset.Charset charset, final String... cmds) throws InternalException {
+    public static List<String> execForLines(final java.nio.charset.Charset charset, final String... cmds)
+            throws InternalException {
         return getResultLines(exec(cmds), charset);
     }
 
     /**
-     * 执行命令
-     * 命令带参数时参数可作为其中一个参数，也可以将命令和参数组合为一个字符串传入
+     * 执行命令 命令带参数时参数可作为其中一个参数，也可以将命令和参数组合为一个字符串传入
      *
      * @param cmds 命令
      * @return {@link Process}
@@ -112,8 +113,7 @@ public class RuntimeKit {
     }
 
     /**
-     * 执行命令
-     * 命令带参数时参数可作为其中一个参数，也可以将命令和参数组合为一个字符串传入
+     * 执行命令 命令带参数时参数可作为其中一个参数，也可以将命令和参数组合为一个字符串传入
      *
      * @param envp 环境变量参数，传入形式为key=value，null表示继承系统环境变量
      * @param cmds 命令
@@ -124,8 +124,7 @@ public class RuntimeKit {
     }
 
     /**
-     * 执行命令
-     * 命令带参数时参数可作为其中一个参数，也可以将命令和参数组合为一个字符串传入
+     * 执行命令 命令带参数时参数可作为其中一个参数，也可以将命令和参数组合为一个字符串传入
      *
      * @param envp 环境变量参数，传入形式为key=value，null表示继承系统环境变量
      * @param dir  执行命令所在目录（用于相对路径命令执行），null表示使用当前进程执行的目录
@@ -248,8 +247,7 @@ public class RuntimeKit {
      * 获得JVM可用的处理器数量（一般为CPU核心数）
      *
      * <p>
-     * 这里做一个特殊的处理,在特殊的CPU上面，会有获取不到CPU数量的情况，所以这里做一个保护;
-     * 默认给一个7，真实的CPU基本都是偶数，方便区分。
+     * 这里做一个特殊的处理,在特殊的CPU上面，会有获取不到CPU数量的情况，所以这里做一个保护; 默认给一个7，真实的CPU基本都是偶数，方便区分。
      * 如果不做处理，会出现创建线程池时{@link ThreadPoolExecutor}，抛出异常：{@link IllegalArgumentException}
      * </p>
      *
@@ -291,8 +289,7 @@ public class RuntimeKit {
     }
 
     /**
-     * 获得JVM最大可用内存，计算方法为：
-     * 最大内存-总内存+剩余内存
+     * 获得JVM最大可用内存，计算方法为： 最大内存-总内存+剩余内存
      *
      * @return 最大可用内存
      */
@@ -350,33 +347,33 @@ public class RuntimeKit {
         for (int i = 0; i < length; i++) {
             c = cmd.charAt(i);
             switch (c) {
-                case Symbol.C_SINGLE_QUOTE:
-                case Symbol.C_DOUBLE_QUOTES:
-                    if (inWrap) {
-                        if (c == stack.peek()) {
-                            //结束包装
-                            stack.pop();
-                            inWrap = false;
-                        }
-                        cache.append(c);
-                    } else {
-                        stack.push(c);
-                        cache.append(c);
-                        inWrap = true;
+            case Symbol.C_SINGLE_QUOTE:
+            case Symbol.C_DOUBLE_QUOTES:
+                if (inWrap) {
+                    if (c == stack.peek()) {
+                        // 结束包装
+                        stack.pop();
+                        inWrap = false;
                     }
-                    break;
-                case Symbol.C_SPACE:
-                    if (inWrap) {
-                        // 处于包装内
-                        cache.append(c);
-                    } else {
-                        cmds.add(cache.toString());
-                        cache.setLength(0);
-                    }
-                    break;
-                default:
                     cache.append(c);
-                    break;
+                } else {
+                    stack.push(c);
+                    cache.append(c);
+                    inWrap = true;
+                }
+                break;
+            case Symbol.C_SPACE:
+                if (inWrap) {
+                    // 处于包装内
+                    cache.append(c);
+                } else {
+                    cmds.add(cache.toString());
+                    cache.setLength(0);
+                }
+                break;
+            default:
+                cache.append(c);
+                break;
             }
         }
 

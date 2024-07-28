@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.builtin;
 
 import org.miaixz.bus.image.galaxy.data.Code;
@@ -35,76 +35,26 @@ import org.miaixz.bus.image.galaxy.data.Code;
  */
 public class ProcedureReasons {
 
-    public static final Code EquipmentFailure = new Code(
-            "110501",
-            "DCM",
-            null,
-            "Equipment failure");
-    public static final Code DuplicateOrder = new Code(
-            "110510",
-            "DCM",
-            null,
-            "Duplicate order");
-    public static final Code DiscontinuedForUnspecifiedReason = new Code(
-            "110513",
-            "DCM",
-            null,
+    public static final Code EquipmentFailure = new Code("110501", "DCM", null, "Equipment failure");
+    public static final Code DuplicateOrder = new Code("110510", "DCM", null, "Duplicate order");
+    public static final Code DiscontinuedForUnspecifiedReason = new Code("110513", "DCM", null,
             "Discontinued for unspecified reason");
-    public static final Code IncorrectWorklistEntrySelected = new Code(
-            "110514",
-            "DCM",
-            null,
+    public static final Code IncorrectWorklistEntrySelected = new Code("110514", "DCM", null,
             "Incorrect worklist entry selected");
-    public static final Code ObjectsIncorrectlyFormatted = new Code(
-            "110521",
-            "DCM",
-            null,
+    public static final Code ObjectsIncorrectlyFormatted = new Code("110521", "DCM", null,
             "Objects incorrectly formatted");
-    public static final Code ObjectTypesNotSupported = new Code(
-            "110522",
-            "DCM",
-            null,
-            "Object Types not supported");
-    public static final Code ObjectSetIncomplete = new Code(
-            "110523",
-            "DCM",
-            null,
-            "Object Set incomplete");
-    public static final Code MediaFailure = new Code(
-            "110524",
-            "DCM",
-            null,
-            "Media Failure");
-    public static final Code ResourcePreEmpted = new Code(
-            "110526",
-            "DCM",
-            null,
-            "Resource pre-empted");
-    public static final Code ResourceInadequate = new Code(
-            "110527",
-            "DCM",
-            null,
-            "Resource inadequate");
-    public static final Code DiscontinuedProcedureStepRescheduled = new Code(
-            "110528",
-            "DCM",
-            null,
+    public static final Code ObjectTypesNotSupported = new Code("110522", "DCM", null, "Object Types not supported");
+    public static final Code ObjectSetIncomplete = new Code("110523", "DCM", null, "Object Set incomplete");
+    public static final Code MediaFailure = new Code("110524", "DCM", null, "Media Failure");
+    public static final Code ResourcePreEmpted = new Code("110526", "DCM", null, "Resource pre-empted");
+    public static final Code ResourceInadequate = new Code("110527", "DCM", null, "Resource inadequate");
+    public static final Code DiscontinuedProcedureStepRescheduled = new Code("110528", "DCM", null,
             "Discontinued Procedure Step rescheduled");
-    public static final Code DiscontinuedProcedureStepReschedulingRecommended = new Code(
-            "110529",
-            "DCM",
-            null,
+    public static final Code DiscontinuedProcedureStepReschedulingRecommended = new Code("110529", "DCM", null,
             "Discontinued Procedure Step rescheduling recommended");
-    public static final Code WorkitemAssignmentRejectedByAssignedResource = new Code(
-            "110530",
-            "DCM",
-            null,
+    public static final Code WorkitemAssignmentRejectedByAssignedResource = new Code("110530", "DCM", null,
             "Workitem assignment rejected by assigned resource");
-    public static final Code WorkitemExpired = new Code(
-            "110533",
-            "DCM",
-            null,
-            "Workitem expired");
+    public static final Code WorkitemExpired = new Code("110533", "DCM", null, "Workitem expired");
     // TODO Include CID 9301 Modality PPS Discontinuation Reasons
     // TODO Include CID 60 Imaging Agent Administration Adverse Events
 

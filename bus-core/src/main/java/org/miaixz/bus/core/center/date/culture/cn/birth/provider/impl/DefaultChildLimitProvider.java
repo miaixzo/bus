@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org 6tail and other contributors.              ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -79,7 +79,9 @@ public class DefaultChildLimitProvider implements ChildLimitProvider {
             sm = sm.next(1);
         }
 
-        return new ChildLimitInfo(birthTime, SolarTime.fromYmdHms(sm.getYear(), sm.getMonth(), d, h, mi, birthTime.getSecond()), year, month, day, hour, minute);
+        return new ChildLimitInfo(birthTime,
+                SolarTime.fromYmdHms(sm.getYear(), sm.getMonth(), d, h, mi, birthTime.getSecond()), year, month, day,
+                hour, minute);
     }
 
 }

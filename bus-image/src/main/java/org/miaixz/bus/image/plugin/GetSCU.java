@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -63,11 +63,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class GetSCU implements AutoCloseable {
 
-    private static final int[] DEF_IN_FILTER = {
-            Tag.SOPInstanceUID,
-            Tag.StudyInstanceUID,
-            Tag.SeriesInstanceUID
-    };
+    private static final int[] DEF_IN_FILTER = { Tag.SOPInstanceUID, Tag.StudyInstanceUID, Tag.SeriesInstanceUID };
     private static final String TMP_DIR = "tmp";
     private final Device device = new Device("getscu");
     private final ApplicationEntity ae;
@@ -86,12 +82,7 @@ public class GetSCU implements AutoCloseable {
     private long totalSize = 0;
     private final BasicCStoreSCP storageSCP = new BasicCStoreSCP(Symbol.STAR) {
         @Override
-        protected void store(
-                Association as,
-                PresentationContext pc,
-                Attributes rq,
-                PDVInputStream data,
-                Attributes rsp)
+        protected void store(Association as, PresentationContext pc, Attributes rq, PDVInputStream data, Attributes rsp)
                 throws IOException {
             if (storageDir == null) {
                 return;
@@ -130,8 +121,7 @@ public class GetSCU implements AutoCloseable {
         state = new Status(progress);
     }
 
-    public static void storeTo(Association as, Attributes fmi, PDVInputStream data, File file)
-            throws IOException {
+    public static void storeTo(Association as, Attributes fmi, PDVInputStream data, File file) throws IOException {
         Logger.debug("{}: M-WRITE {}", as, file);
         file.getParentFile().mkdirs();
         ImageOutputStream out = new ImageOutputStream(file);
@@ -146,7 +136,8 @@ public class GetSCU implements AutoCloseable {
     private static void renameTo(Association as, File from, File dest) throws IOException {
         Logger.info("{}: M-RENAME {} to {}", as, from, dest);
         Builder.prepareToWriteFile(dest);
-        if (!from.renameTo(dest)) throw new IOException("Failed to rename " + from + " to " + dest);
+        if (!from.renameTo(dest))
+            throw new IOException("Failed to rename " + from + " to " + dest);
     }
 
     public ApplicationEntity getApplicationEntity() {
@@ -200,7 +191,7 @@ public class GetSCU implements AutoCloseable {
         this.model = model;
         rq.addPresentationContext(new PresentationContext(1, model.cuid, tss));
         if (relational) {
-            rq.addExtendedNegotiation(new ExtendedNegotiation(model.cuid, new byte[]{1}));
+            rq.addExtendedNegotiation(new ExtendedNegotiation(model.cuid, new byte[] { 1 }));
         }
         if (model.level != null) {
             addLevel(model.level);
@@ -224,15 +215,10 @@ public class GetSCU implements AutoCloseable {
         if (!rq.containsPresentationContextFor(cuid)) {
             rq.addRoleSelection(new RoleSelection(cuid, false, true));
         }
-        rq.addPresentationContext(
-                new PresentationContext(2 * rq.getNumberOfPresentationContexts() + 1, cuid, tsuids));
+        rq.addPresentationContext(new PresentationContext(2 * rq.getNumberOfPresentationContexts() + 1, cuid, tsuids));
     }
 
-    public void open()
-            throws IOException,
-            InterruptedException,
-            InternalException,
-            GeneralSecurityException {
+    public void open() throws IOException, InterruptedException, InternalException, GeneralSecurityException {
         as = ae.connect(conn, remote, rq);
     }
 
@@ -258,28 +244,24 @@ public class GetSCU implements AutoCloseable {
     }
 
     private void retrieve(Attributes keys) throws IOException, InterruptedException {
-        final DimseRSPHandler rspHandler =
-                new DimseRSPHandler(as.nextMessageID()) {
+        final DimseRSPHandler rspHandler = new DimseRSPHandler(as.nextMessageID()) {
 
-                    @Override
-                    public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
-                        super.onDimseRSP(as, cmd, data);
-                        updateProgress(as, cmd);
-                    }
-                };
+            @Override
+            public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
+                super.onDimseRSP(as, cmd, data);
+                updateProgress(as, cmd);
+            }
+        };
 
         retrieve(keys, rspHandler);
         if (cancelAfter > 0) {
-            device.schedule(
-                    () -> {
-                        try {
-                            rspHandler.cancel(as);
-                        } catch (IOException e) {
-                            Logger.error("Cancel C-GET", e);
-                        }
-                    },
-                    cancelAfter,
-                    TimeUnit.MILLISECONDS);
+            device.schedule(() -> {
+                try {
+                    rspHandler.cancel(as);
+                } catch (IOException e) {
+                    Logger.error("Cancel C-GET", e);
+                }
+            }, cancelAfter, TimeUnit.MILLISECONDS);
         }
     }
 
@@ -287,8 +269,7 @@ public class GetSCU implements AutoCloseable {
         retrieve(keys, rspHandler);
     }
 
-    private void retrieve(Attributes keys, DimseRSPHandler rspHandler)
-            throws IOException, InterruptedException {
+    private void retrieve(Attributes keys, DimseRSPHandler rspHandler) throws IOException, InterruptedException {
         this.rspHandler = rspHandler;
         as.cget(model.getCuid(), priority, keys, null, rspHandler);
     }

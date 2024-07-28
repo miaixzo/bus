@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.codec;
 
 import java.io.Serializable;
@@ -45,8 +45,7 @@ public class CompressionRules implements Iterable<CompressionRule>, Serializable
 
     public void add(CompressionRule rule) {
         if (findByCommonName(rule.getCommonName()) != null)
-            throw new IllegalStateException("CompressionRule with cn: '"
-                    + rule.getCommonName() + "' already exists");
+            throw new IllegalStateException("CompressionRule with cn: '" + rule.getCommonName() + "' already exists");
         int index = Collections.binarySearch(list, rule);
         if (index < 0)
             index = -(index + 1);

@@ -24,19 +24,16 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.excel.cell;
 
 import org.apache.poi.ss.usermodel.Cell;
 
 /**
- * 单元格编辑器接口
- * 在读取Excel值时，有时我们需要针对所有单元格统一处理结果值（如null转默认值）的情况，实现接口并调用
- * reader.setCellEditor()设置编辑器
- * 此接口可完成以下功能：
+ * 单元格编辑器接口 在读取Excel值时，有时我们需要针对所有单元格统一处理结果值（如null转默认值）的情况，实现接口并调用 reader.setCellEditor()设置编辑器 此接口可完成以下功能：
  * <ul>
- *     <li>对单元格进行编辑，如修改样式等。</li>
- *     <li>对单元格的值进行编辑，如根据单元格修改不同值，然后返回</li>
+ * <li>对单元格进行编辑，如修改样式等。</li>
+ * <li>对单元格的值进行编辑，如根据单元格修改不同值，然后返回</li>
  * </ul>
  *
  * @author Kimi Liu

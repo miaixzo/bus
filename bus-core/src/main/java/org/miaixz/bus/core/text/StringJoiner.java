@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text;
 
 import org.miaixz.bus.core.center.iterator.ArrayIterator;
@@ -42,13 +42,12 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * 字符串连接器（拼接器），通过给定的字符串和多个元素，拼接为一个字符串
- * 相较于{@link java.util.StringJoiner}提供更加灵活的配置，包括：
+ * 字符串连接器（拼接器），通过给定的字符串和多个元素，拼接为一个字符串 相较于{@link java.util.StringJoiner}提供更加灵活的配置，包括：
  * <ul>
- *     <li>支持任意Appendable接口实现</li>
- *     <li>支持每个元素单独wrap</li>
- *     <li>支持自定义null的处理逻辑</li>
- *     <li>支持自定义默认结果</li>
+ * <li>支持任意Appendable接口实现</li>
+ * <li>支持每个元素单独wrap</li>
+ * <li>支持自定义null的处理逻辑</li>
+ * <li>支持自定义默认结果</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -117,8 +116,8 @@ public class StringJoiner implements Appendable, Serializable {
      * @param prefix     前缀
      * @param suffix     后缀
      */
-    public StringJoiner(final Appendable appendable, final CharSequence delimiter,
-                        final CharSequence prefix, final CharSequence suffix) {
+    public StringJoiner(final Appendable appendable, final CharSequence delimiter, final CharSequence prefix,
+            final CharSequence suffix) {
         if (null != appendable) {
             this.appendable = appendable;
             checkHasContent(appendable);
@@ -235,11 +234,11 @@ public class StringJoiner implements Appendable, Serializable {
     /**
      * 追加对象到拼接器中，支持：
      * <ul>
-     *     <li>null，按照 {@link #nullMode} 策略追加</li>
-     *     <li>array，逐个追加</li>
-     *     <li>{@link Iterator}，逐个追加</li>
-     *     <li>{@link Iterable}，逐个追加</li>
-     *     <li>{@link Map.Entry}，追加键，分隔符，再追加值</li>
+     * <li>null，按照 {@link #nullMode} 策略追加</li>
+     * <li>array，逐个追加</li>
+     * <li>{@link Iterator}，逐个追加</li>
+     * <li>{@link Iterable}，逐个追加</li>
+     * <li>{@link Map.Entry}，追加键，分隔符，再追加值</li>
      * </ul>
      *
      * @param obj 对象，支持数组、集合等
@@ -313,7 +312,8 @@ public class StringJoiner implements Appendable, Serializable {
      * @param toStrFunc 元素对象转换为字符串的函数
      * @return this
      */
-    public <E> StringJoiner append(final Iterable<E> iterable, final Function<? super E, ? extends CharSequence> toStrFunc) {
+    public <E> StringJoiner append(final Iterable<E> iterable,
+            final Function<? super E, ? extends CharSequence> toStrFunc) {
         return append(IteratorKit.getIter(iterable), toStrFunc);
     }
 
@@ -325,7 +325,8 @@ public class StringJoiner implements Appendable, Serializable {
      * @param toStrFunc 元素对象转换为字符串的函数
      * @return this
      */
-    public <E> StringJoiner append(final Iterator<E> iterator, final Function<? super E, ? extends CharSequence> toStrFunc) {
+    public <E> StringJoiner append(final Iterator<E> iterator,
+            final Function<? super E, ? extends CharSequence> toStrFunc) {
         if (null != iterator) {
             while (iterator.hasNext()) {
                 append(toStrFunc.apply(iterator.next()));
@@ -343,15 +344,15 @@ public class StringJoiner implements Appendable, Serializable {
     public StringJoiner append(CharSequence csq, final int startInclude, int endExclude) {
         if (null == csq) {
             switch (this.nullMode) {
-                case IGNORE:
-                    return this;
-                case TO_EMPTY:
-                    csq = Normal.EMPTY;
-                    break;
-                case NULL_STRING:
-                    csq = Normal.NULL;
-                    endExclude = Normal.NULL.length();
-                    break;
+            case IGNORE:
+                return this;
+            case TO_EMPTY:
+                csq = Normal.EMPTY;
+                break;
+            case NULL_STRING:
+                csq = Normal.NULL;
+                endExclude = Normal.NULL.length();
+                break;
             }
         }
         try {
@@ -375,8 +376,7 @@ public class StringJoiner implements Appendable, Serializable {
     }
 
     /**
-     * 合并一个StrJoiner 到当前的StrJoiner
-     * 合并规则为，在尾部直接追加，当存在{@link #prefix}时，如果{@link #wrapElement}为{@code false}，则去除之。
+     * 合并一个StrJoiner 到当前的StrJoiner 合并规则为，在尾部直接追加，当存在{@link #prefix}时，如果{@link #wrapElement}为{@code false}，则去除之。
      *
      * @param stringJoiner 其他的StrJoiner
      * @return this
@@ -394,15 +394,13 @@ public class StringJoiner implements Appendable, Serializable {
     }
 
     /**
-     * 长度
-     * 长度计算方式为prefix + suffix + content
-     * 此方法结果与toString().length()一致。
+     * 长度 长度计算方式为prefix + suffix + content 此方法结果与toString().length()一致。
      *
      * @return 长度，如果结果为{@code null}，返回-1
      */
     public int length() {
-        return (this.appendable != null ? this.appendable.toString().length() + StringKit.length(suffix) :
-                null == this.emptyResult ? -1 : emptyResult.length());
+        return (this.appendable != null ? this.appendable.toString().length() + StringKit.length(suffix)
+                : null == this.emptyResult ? -1 : emptyResult.length());
     }
 
     @Override

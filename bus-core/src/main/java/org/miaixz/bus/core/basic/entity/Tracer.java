@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.basic.entity;
 
 import jakarta.persistence.Transient;
@@ -35,7 +35,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
- *  链路跟踪
+ * 链路跟踪
  *
  * @author Kimi Liu
  * @since Java 17+

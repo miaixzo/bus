@@ -24,14 +24,13 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.unit;
 
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 数据单位封装
- * 此类来自于：Spring-framework
+ * 数据单位封装 此类来自于：Spring-framework
  *
  * <pre>
  *     BYTES      1B      2^0     1
@@ -74,7 +73,6 @@ public enum DataUnit {
     private final String suffix;
 
     private final DataSize size;
-
 
     DataUnit(final String suffix, final DataSize size) {
         this.suffix = suffix;

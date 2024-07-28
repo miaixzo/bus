@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org sandao and other contributors.             ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket;
 
 /**
@@ -37,9 +37,7 @@ package org.miaixz.bus.socket;
 public interface Plugin<T> extends Monitor {
 
     /**
-     * 对请求消息进行预处理，并决策是否进行后续的Handler处理
-     * 若返回false，则当前消息将被忽略。
-     * 若返回true，该消息会正常秩序Handler.process
+     * 对请求消息进行预处理，并决策是否进行后续的Handler处理 若返回false，则当前消息将被忽略。 若返回true，该消息会正常秩序Handler.process
      *
      * @param session 会话
      * @param data    待处理的业务消息

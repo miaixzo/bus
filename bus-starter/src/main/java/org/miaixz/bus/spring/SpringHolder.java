@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.spring;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -40,8 +40,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Spring上下文等信息持有者
- * 扫描包配置项及其他属性等
+ * Spring上下文等信息持有者 扫描包配置项及其他属性等
  *
  * @author Kimi Liu
  * @since Java 17+

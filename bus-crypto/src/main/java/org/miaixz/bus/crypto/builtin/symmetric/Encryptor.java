@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.builtin.symmetric;
 
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -40,9 +40,9 @@ import java.io.OutputStream;
 /**
  * 对称加密器接口，提供：
  * <ul>
- *     <li>加密为bytes</li>
- *     <li>加密为Hex(16进制)</li>
- *     <li>加密为Base64</li>
+ * <li>加密为bytes</li>
+ * <li>加密为Hex(16进制)</li>
+ * <li>加密为Base64</li>
  * </ul>
  *
  * @author Kimi Liu

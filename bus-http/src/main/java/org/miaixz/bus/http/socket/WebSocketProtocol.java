@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.socket;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -68,15 +68,11 @@ public class WebSocketProtocol {
     static final int OPCODE_FLAG_CONTROL = 0b00001000;
 
     /**
-     * 字节1标记是否屏蔽了有效负载数据
-     * 如果设置了这个标志，接下来的四个字节表示掩码键
-     * 这些字节出现在{@link #B1_MASK_LENGTH}指定的任何附加字节之后
+     * 字节1标记是否屏蔽了有效负载数据 如果设置了这个标志，接下来的四个字节表示掩码键 这些字节出现在{@link #B1_MASK_LENGTH}指定的任何附加字节之后
      */
     static final int B1_FLAG_MASK = 0b10000000;
     /**
-     * 有效负载长度的字节1掩码
-     * 如果这个值是{@link #PAYLOAD_SHORT}，接下来的两个字节表示长度
-     * 如果这个值是{@link #PAYLOAD_LONG}，接下来的8个字节表示长度
+     * 有效负载长度的字节1掩码 如果这个值是{@link #PAYLOAD_SHORT}，接下来的两个字节表示长度 如果这个值是{@link #PAYLOAD_LONG}，接下来的8个字节表示长度
      */
     static final int B1_MASK_LENGTH = 0b01111111;
 
@@ -89,8 +85,7 @@ public class WebSocketProtocol {
     static final int OPCODE_CONTROL_PONG = 0xa;
 
     /**
-     * 帧有效载荷的最大长度。如果框架类型支持较大的有效负载，
-     * 则可以使用特殊值{@link #PAYLOAD_SHORT}或{@link #PAYLOAD_LONG}
+     * 帧有效载荷的最大长度。如果框架类型支持较大的有效负载， 则可以使用特殊值{@link #PAYLOAD_SHORT}或{@link #PAYLOAD_LONG}
      */
     static final long PAYLOAD_BYTE_MAX = 125L;
     /**
@@ -146,7 +141,8 @@ public class WebSocketProtocol {
 
     static void validateCloseCode(int code) {
         String message = closeCodeExceptionMessage(code);
-        if (null != message) throw new IllegalArgumentException(message);
+        if (null != message)
+            throw new IllegalArgumentException(message);
     }
 
     public static String acceptHeader(String key) {

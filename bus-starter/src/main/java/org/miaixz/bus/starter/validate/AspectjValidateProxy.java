@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.validate;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -45,24 +45,17 @@ import org.springframework.core.annotation.Order;
 public class AspectjValidateProxy {
 
     /**
-     * requestMapping
-     * putMapping
-     * postMapping
-     * patchMapping
-     * modelAttribute
-     * getMapping
-     * deleteMapping
-     * CrossOrigin
+     * requestMapping putMapping postMapping patchMapping modelAttribute getMapping deleteMapping CrossOrigin
      */
-    @Pointcut("@annotation(org.springframework.web.bind.annotation.RequestMapping)" +
-            "||@annotation(org.springframework.web.bind.annotation.PutMapping)" +
-            "||@annotation(org.springframework.web.bind.annotation.PostMapping)" +
-            "||@annotation(org.springframework.web.bind.annotation.PatchMapping)" +
-            "||@annotation(org.springframework.web.bind.annotation.ModelAttribute)" +
-            "||@annotation(org.springframework.web.bind.annotation.GetMapping)" +
-            "||@annotation(org.springframework.web.bind.annotation.DeleteMapping)" +
-            "||@annotation(org.springframework.web.bind.annotation.CrossOrigin)" +
-            "||execution(* *(@org.miaixz.bus.validate.magic.annotation.Valid (*), ..))")
+    @Pointcut("@annotation(org.springframework.web.bind.annotation.RequestMapping)"
+            + "||@annotation(org.springframework.web.bind.annotation.PutMapping)"
+            + "||@annotation(org.springframework.web.bind.annotation.PostMapping)"
+            + "||@annotation(org.springframework.web.bind.annotation.PatchMapping)"
+            + "||@annotation(org.springframework.web.bind.annotation.ModelAttribute)"
+            + "||@annotation(org.springframework.web.bind.annotation.GetMapping)"
+            + "||@annotation(org.springframework.web.bind.annotation.DeleteMapping)"
+            + "||@annotation(org.springframework.web.bind.annotation.CrossOrigin)"
+            + "||execution(* *(@org.miaixz.bus.validate.magic.annotation.Valid (*), ..))")
     public void match() {
 
     }

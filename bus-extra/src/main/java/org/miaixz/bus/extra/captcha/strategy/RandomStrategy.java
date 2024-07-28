@@ -24,15 +24,14 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.captcha.strategy;
 
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 随机字符验证码生成策略
- * 可以通过传入的基础集合和长度随机生成验证码字符
+ * 随机字符验证码生成策略 可以通过传入的基础集合和长度随机生成验证码字符
  *
  * @author Kimi Liu
  * @since Java 17+

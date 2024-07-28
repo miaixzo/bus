@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.qrcode;
 
 import com.google.zxing.BarcodeFormat;
@@ -293,20 +293,19 @@ public class QrConfig {
     }
 
     /**
-     * 是否开启ECI编码
-     * 如果enableEci=false,则二维码中不包含ECI信息，即：{@link #charset}字符编码设置为{@code null}, 二维码为英文字符，保持false最佳
+     * 是否开启ECI编码 如果enableEci=false,则二维码中不包含ECI信息，即：{@link #charset}字符编码设置为{@code null}, 二维码为英文字符，保持false最佳
      * 如果enableEci=true,则二维码中包含ECI信息，即：按照{@link #charset}编码进行设置, 二维码为包含中文，保持true最佳，否则会中文乱码
      *
      * <ul>
-     *     <li>参考1：<a href="https://github.com/nutzam/nutz-qrcode/issues/6">关于\000026的问题</a></li>
-     *     <li>参考2：<a href="https://en.wikipedia.org/wiki/Extended_Channel_Interpretation">ECI（Extended_Channel_Interpretation）模式</a></li>
-     *     <li>参考3：<a href="https://www.51cto.com/article/414082.html">二维码的生成细节和原理</a></li>
+     * <li>参考1：<a href="https://github.com/nutzam/nutz-qrcode/issues/6">关于\000026的问题</a></li>
+     * <li>参考2：<a href=
+     * "https://en.wikipedia.org/wiki/Extended_Channel_Interpretation">ECI（Extended_Channel_Interpretation）模式</a></li>
+     * <li>参考3：<a href="https://www.51cto.com/article/414082.html">二维码的生成细节和原理</a></li>
      * </ul>
      *
      * <p>
      * 二维码编码有ECI模式和非ECI模式的情况之分，在ECI模式下第一个字节是用作编码标识，而非ECI模式下直接就是数据流。
-     * ECI模式其实是更好的方案，这样子解码的时候可以根据标识采用不同的编码方式。而非ECI模式只能按照一种统一的方式处理了。
-     * 但是由于部分设备不支持ECI模式，所以就出现了无法识别的情况。
+     * ECI模式其实是更好的方案，这样子解码的时候可以根据标识采用不同的编码方式。而非ECI模式只能按照一种统一的方式处理了。 但是由于部分设备不支持ECI模式，所以就出现了无法识别的情况。
      * 使用扫码桩/扫码枪，可能会出现\000026的字符。使用手机扫描、其他二维码解析软件扫描，则不会出现。
      * </p>
      *
@@ -314,7 +313,9 @@ public class QrConfig {
      * ECI编码表可以看出UTF-8就是对应"\000026"（对应数字22）
      * </p>
      *
-     * <p> 总结建议：如果二维码内容全是字符，没有中文，就不用使用UTF-8等格式进行编码，只有使用中文等特殊符号才需要编码 </p>
+     * <p>
+     * 总结建议：如果二维码内容全是字符，没有中文，就不用使用UTF-8等格式进行编码，只有使用中文等特殊符号才需要编码
+     * </p>
      *
      * @param enableEci 是否开启ECI
      * @see EncodeHintType#PDF417_AUTO_ECI
@@ -469,7 +470,6 @@ public class QrConfig {
         this.format = format;
         return this;
     }
-
 
     /**
      * 转换为Zxing的二维码配置

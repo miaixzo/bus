@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 /**
  * 封装了Pinyin4j的引擎。
  *
@@ -34,6 +34,7 @@
  *
  * <p>
  * 引入：
+ * 
  * <pre>
  * &lt;dependency&gt;
  *     &lt;groupId&gt;com.belerweb&lt;/groupId&gt;

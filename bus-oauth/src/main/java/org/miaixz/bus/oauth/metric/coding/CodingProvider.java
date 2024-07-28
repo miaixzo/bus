@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org justauth.cn and other contributors.        ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.coding;
 
 import com.alibaba.fastjson.JSONObject;
@@ -61,11 +61,9 @@ public class CodingProvider extends AbstractProvider {
         String response = doGetAuthorizationCode(callback.getCode());
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         this.checkResponse(accessTokenObject);
-        return AccToken.builder()
-                .accessToken(accessTokenObject.getString("access_token"))
+        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
                 .expireIn(accessTokenObject.getIntValue("expires_in"))
-                .refreshToken(accessTokenObject.getString("refresh_token"))
-                .build();
+                .refreshToken(accessTokenObject.getString("refresh_token")).build();
     }
 
     @Override
@@ -75,21 +73,12 @@ public class CodingProvider extends AbstractProvider {
         this.checkResponse(object);
 
         object = object.getJSONObject("data");
-        return Material.builder()
-                .rawJson(object)
-                .uuid(object.getString("id"))
-                .username(object.getString("name"))
+        return Material.builder().rawJson(object).uuid(object.getString("id")).username(object.getString("name"))
                 .avatar("https://coding.net" + object.getString("avatar"))
-                .blog("https://coding.net" + object.getString("path"))
-                .nickname(object.getString("name"))
-                .company(object.getString("company"))
-                .location(object.getString("location"))
-                .gender(Gender.of(object.getString("sex")))
-                .email(object.getString("email"))
-                .remark(object.getString("slogan"))
-                .token(accToken)
-                .source(complex.toString())
-                .build();
+                .blog("https://coding.net" + object.getString("path")).nickname(object.getString("name"))
+                .company(object.getString("company")).location(object.getString("location"))
+                .gender(Gender.of(object.getString("sex"))).email(object.getString("email"))
+                .remark(object.getString("slogan")).token(accToken).source(complex.toString()).build();
     }
 
     /**
@@ -112,12 +101,10 @@ public class CodingProvider extends AbstractProvider {
     @Override
     public String authorize(String state) {
         return Builder.fromUrl(String.format(complex.authorize(), context.getPrefix()))
-                .queryParam("response_type", "code")
-                .queryParam("client_id", context.getAppKey())
+                .queryParam("response_type", "code").queryParam("client_id", context.getAppKey())
                 .queryParam("redirect_uri", context.getRedirectUri())
                 .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(CodingScope.values())))
-                .queryParam("state", getRealState(state))
-                .build();
+                .queryParam("state", getRealState(state)).build();
     }
 
     /**
@@ -128,12 +115,9 @@ public class CodingProvider extends AbstractProvider {
      */
     @Override
     public String accessTokenUrl(String code) {
-        return Builder.fromUrl(String.format(complex.accessToken(), context.getPrefix()))
-                .queryParam("code", code)
-                .queryParam("client_id", context.getAppKey())
-                .queryParam("client_secret", context.getAppSecret())
-                .queryParam("grant_type", "authorization_code")
-                .queryParam("redirect_uri", context.getRedirectUri())
+        return Builder.fromUrl(String.format(complex.accessToken(), context.getPrefix())).queryParam("code", code)
+                .queryParam("client_id", context.getAppKey()).queryParam("client_secret", context.getAppSecret())
+                .queryParam("grant_type", "authorization_code").queryParam("redirect_uri", context.getRedirectUri())
                 .build();
     }
 
@@ -146,8 +130,7 @@ public class CodingProvider extends AbstractProvider {
     @Override
     public String userInfoUrl(AccToken accToken) {
         return Builder.fromUrl(String.format(complex.userInfo(), context.getPrefix()))
-                .queryParam("access_token", accToken.getAccessToken())
-                .build();
+                .queryParam("access_token", accToken.getAccessToken()).build();
     }
 
 }

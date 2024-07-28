@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.tree.parser;
 
 import org.miaixz.bus.core.tree.MapTree;
@@ -47,4 +47,3 @@ public interface NodeParser<T, E> {
     void parse(T object, MapTree<E> treeNode);
 
 }
-

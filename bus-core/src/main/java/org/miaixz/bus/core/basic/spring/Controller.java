@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.basic.spring;
 
 import org.miaixz.bus.core.basic.entity.Message;
@@ -69,16 +69,9 @@ public class Controller {
     public static Object write(String errcode, Object data) {
         String errmsg = ErrorCode.require(errcode);
         if (StringKit.isNotEmpty(errmsg)) {
-            return Message.builder()
-                    .errcode(errcode)
-                    .errmsg(errmsg)
-                    .data(data)
-                    .build();
+            return Message.builder().errcode(errcode).errmsg(errmsg).data(data).build();
         }
-        return Message.builder()
-                .errcode(ErrorCode.EM_FAILURE)
-                .errmsg(ErrorCode.require(ErrorCode.EM_FAILURE))
-                .build();
+        return Message.builder().errcode(ErrorCode.EM_FAILURE).errmsg(ErrorCode.require(ErrorCode.EM_FAILURE)).build();
     }
 
     /**
@@ -91,15 +84,9 @@ public class Controller {
     public static Object write(String errcode, String errmsg) {
         String error = ErrorCode.require(errcode);
         if (StringKit.isNotEmpty(error)) {
-            return Message.builder()
-                    .errcode(errcode)
-                    .errmsg(errmsg)
-                    .build();
+            return Message.builder().errcode(errcode).errmsg(errmsg).build();
         }
-        return Message.builder()
-                .errcode(ErrorCode.EM_FAILURE)
-                .errmsg(ErrorCode.require(ErrorCode.EM_FAILURE))
-                .build();
+        return Message.builder().errcode(ErrorCode.EM_FAILURE).errmsg(ErrorCode.require(ErrorCode.EM_FAILURE)).build();
     }
 
     /**
@@ -112,15 +99,9 @@ public class Controller {
      */
     public static Object write(String errcode, String errmsg, String format) {
         if (StringKit.isNotEmpty(errcode) && StringKit.isNotEmpty(format)) {
-            return Message.builder()
-                    .errcode(errcode)
-                    .errmsg(StringKit.format(format, errmsg))
-                    .build();
+            return Message.builder().errcode(errcode).errmsg(StringKit.format(format, errmsg)).build();
         }
-        return Message.builder()
-                .errcode(ErrorCode.EM_FAILURE)
-                .errmsg(ErrorCode.require(ErrorCode.EM_FAILURE))
-                .build();
+        return Message.builder().errcode(ErrorCode.EM_FAILURE).errmsg(ErrorCode.require(ErrorCode.EM_FAILURE)).build();
     }
 
 }

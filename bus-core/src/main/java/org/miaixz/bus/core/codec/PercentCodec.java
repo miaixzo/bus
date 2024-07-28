@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.codec;
 
 import org.miaixz.bus.core.codec.binary.provider.Base16Provider;
@@ -44,19 +44,18 @@ import java.nio.charset.Charset;
 import java.util.BitSet;
 
 /**
- * 百分号编码(Percent-encoding), 也称作URL编码(URL encoding)。
- * 百分号编码可用于URI的编码，也可以用于"application/x-www-form-urlencoded"的MIME准备数据。
+ * 百分号编码(Percent-encoding), 也称作URL编码(URL encoding)。 百分号编码可用于URI的编码，也可以用于"application/x-www-form-urlencoded"的MIME准备数据。
  *
  * <p>
- * 百分号编码会对 URI 中不允许出现的字符或者其他特殊情况的允许的字符进行编码，对于被编码的字符，最终会转为以百分号"%“开头，后面跟着两位16进制数值的形式。
- * 举个例，空格符（SP）是不允许的字符，在 ASCII 码对应的二进制值是"00100000”，最终转为"%20"。
+ * 百分号编码会对 URI 中不允许出现的字符或者其他特殊情况的允许的字符进行编码，对于被编码的字符，最终会转为以百分号"%“开头，后面跟着两位16进制数值的形式。 举个例，空格符（SP）是不允许的字符，在 ASCII
+ * 码对应的二进制值是"00100000”，最终转为"%20"。
  * </p>
  * <p>
  * 对于不同场景应遵循不同规范：
  *
  * <ul>
- *     <li>URI：遵循RFC 3986保留字规范</li>
- *     <li>application/x-www-form-urlencoded，遵循W3C HTML Form content types规范，如空格须转+</li>
+ * <li>URI：遵循RFC 3986保留字规范</li>
+ * <li>application/x-www-form-urlencoded，遵循W3C HTML Form content types规范，如空格须转+</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -72,15 +71,13 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
     private final BitSet safeCharacters;
 
     /**
-     * 是否编码空格为+
-     * 如果为{@code true}，则将空格编码为"+"，此项只在"application/x-www-form-urlencoded"中使用
+     * 是否编码空格为+ 如果为{@code true}，则将空格编码为"+"，此项只在"application/x-www-form-urlencoded"中使用
      * 如果为{@code false}，则空格编码为"%20",此项一般用于URL的Query部分（RFC3986规范）
      */
     private boolean encodeSpaceAsPlus = false;
 
     /**
-     * 构造
-     * [a-zA-Z0-9]默认不被编码
+     * 构造 [a-zA-Z0-9]默认不被编码
      */
     public PercentCodec() {
         this(new BitSet(Normal._256));
@@ -109,7 +106,7 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
     public byte[] encode(final byte[] bytes) {
         // 初始容量计算，简单粗暴假设所有byte都需要转义，容量是三倍
         final ByteBuffer buffer = ByteBuffer.allocate(bytes.length * 3);
-        //noinspection ForLoopReplaceableByForEach
+        // noinspection ForLoopReplaceableByForEach
         for (int i = 0; i < bytes.length; i++) {
             encodeTo(buffer, bytes[i]);
         }
@@ -186,8 +183,7 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
     }
 
     /**
-     * {@link PercentCodec}构建器
-     * 由于{@link PercentCodec}本身应该是只读对象，因此将此对象的构建放在Builder中
+     * {@link PercentCodec}构建器 由于{@link PercentCodec}本身应该是只读对象，因此将此对象的构建放在Builder中
      */
     public static class Builder implements org.miaixz.bus.core.Builder<PercentCodec> {
         private static final long serialVersionUID = -1L;
@@ -224,8 +220,7 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
         }
 
         /**
-         * 增加安全字符
-         * 安全字符不被编码
+         * 增加安全字符 安全字符不被编码
          *
          * @param c 字符
          * @return this
@@ -236,8 +231,7 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
         }
 
         /**
-         * 增加安全字符
-         * 安全字符不被编码
+         * 增加安全字符 安全字符不被编码
          *
          * @param chars 安全字符
          * @return this
@@ -251,8 +245,7 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
         }
 
         /**
-         * 移除安全字符
-         * 安全字符不被编码
+         * 移除安全字符 安全字符不被编码
          *
          * @param c 字符
          * @return this
@@ -274,8 +267,7 @@ public class PercentCodec implements Encoder<byte[], byte[]>, Serializable {
         }
 
         /**
-         * 是否将空格编码为+
-         * 如果为{@code true}，则将空格编码为"+"，此项只在"application/x-www-form-urlencoded"中使用
+         * 是否将空格编码为+ 如果为{@code true}，则将空格编码为"+"，此项只在"application/x-www-form-urlencoded"中使用
          * 如果为{@code false}，则空格编码为"%20",此项一般用于URL的Query部分（RFC3986规范）
          *
          * @param encodeSpaceAsPlus 是否将空格编码为+

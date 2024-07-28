@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.base.entity;
 
 import jakarta.persistence.Transient;
@@ -177,13 +177,13 @@ public class BaseEntity extends Tracer {
     public <T> void setInsert(T entity) {
         String id = ObjectKit.isEmpty(getValue(entity, "id")) ? ID.objectId() : (String) getValue(entity, "id");
         String timestamp = StringKit.toString(DateKit.current());
-        String[] fields = {"id", "created"};
-        Object[] value = new Object[]{id, timestamp};
+        String[] fields = { "id", "created" };
+        Object[] value = new Object[] { id, timestamp };
         if (ObjectKit.isEmpty(getValue(entity, "creator"))) {
-            fields = new String[]{"id", "creator", "created"};
-            value = new Object[]{id,
+            fields = new String[] { "id", "creator", "created" };
+            value = new Object[] { id,
                     ObjectKit.isEmpty(getValue(entity, "x_user_id")) ? "-1" : getValue(entity, "x_user_id"),
-                    timestamp};
+                    timestamp };
         }
         this.setValue(entity, fields, value);
     }
@@ -196,12 +196,13 @@ public class BaseEntity extends Tracer {
      */
     public <T> void setUpdate(T entity) {
         String timestamp = StringKit.toString(DateKit.current());
-        String[] fields = {"modified"};
-        Object[] value = new Object[]{timestamp};
+        String[] fields = { "modified" };
+        Object[] value = new Object[] { timestamp };
         if (ObjectKit.isEmpty(getValue(entity, "modifier"))) {
-            fields = new String[]{"modifier", "modified"};
-            value = new Object[]{ObjectKit.isEmpty(getValue(entity, "x_user_id")) ? "-1" : getValue(entity, "x_user_id"),
-                    timestamp};
+            fields = new String[] { "modifier", "modified" };
+            value = new Object[] {
+                    ObjectKit.isEmpty(getValue(entity, "x_user_id")) ? "-1" : getValue(entity, "x_user_id"),
+                    timestamp };
         }
 
         this.setValue(entity, fields, value);

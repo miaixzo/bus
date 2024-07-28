@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.ssh.provider.jsch;
 
 import com.jcraft.jsch.Channel;
@@ -91,9 +91,11 @@ public class JschSession implements Session {
     }
 
     @Override
-    public void bindLocalPort(final InetSocketAddress localAddress, final InetSocketAddress remoteAddress) throws InternalException {
+    public void bindLocalPort(final InetSocketAddress localAddress, final InetSocketAddress remoteAddress)
+            throws InternalException {
         try {
-            this.raw.setPortForwardingL(localAddress.getHostName(), localAddress.getPort(), remoteAddress.getHostName(), remoteAddress.getPort());
+            this.raw.setPortForwardingL(localAddress.getHostName(), localAddress.getPort(), remoteAddress.getHostName(),
+                    remoteAddress.getPort());
         } catch (final JSchException e) {
             throw new InternalException(e, "From [{}] mapping to [{}] error！", localAddress, remoteAddress);
         }
@@ -109,7 +111,8 @@ public class JschSession implements Session {
     }
 
     @Override
-    public void bindRemotePort(final InetSocketAddress remoteAddress, final InetSocketAddress localAddress) throws InternalException {
+    public void bindRemotePort(final InetSocketAddress remoteAddress, final InetSocketAddress localAddress)
+            throws InternalException {
         try {
             this.raw.setPortForwardingR(remoteAddress.getHostName(), remoteAddress.getPort(),
                     localAddress.getHostName(), localAddress.getPort());

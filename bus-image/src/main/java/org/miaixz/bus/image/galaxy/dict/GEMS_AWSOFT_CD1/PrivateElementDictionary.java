@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.GEMS_AWSOFT_CD1;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,27 +46,28 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.DPOType:
-                return VR.CS;
-            case PrivateTag.DPODate:
-                return VR.DA;
-            case PrivateTag.ReferenceToOriginalInstance:
-            case PrivateTag.DPONumber:
-                return VR.IS;
-            case PrivateTag.DPOInvocationString:
-                return VR.LO;
-            case PrivateTag.DPOData:
-                return VR.OB;
-            case PrivateTag.DPOTime:
-                return VR.TM;
-            case PrivateTag.ReferenceToStudyUID:
-            case PrivateTag.ReferenceToSeriesUID:
-                return VR.UI;
+
+        case PrivateTag.DPOType:
+            return VR.CS;
+        case PrivateTag.DPODate:
+            return VR.DA;
+        case PrivateTag.ReferenceToOriginalInstance:
+        case PrivateTag.DPONumber:
+            return VR.IS;
+        case PrivateTag.DPOInvocationString:
+            return VR.LO;
+        case PrivateTag.DPOData:
+            return VR.OB;
+        case PrivateTag.DPOTime:
+            return VR.TM;
+        case PrivateTag.ReferenceToStudyUID:
+        case PrivateTag.ReferenceToSeriesUID:
+            return VR.UI;
         }
         return VR.UN;
     }

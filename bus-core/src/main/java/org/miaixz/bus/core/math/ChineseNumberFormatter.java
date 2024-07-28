@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.math;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -32,8 +32,8 @@ import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 数字转中文类
- * 包括：
+ * 数字转中文类 包括：
+ * 
  * <pre>
  * 1. 数字转中文大写形式，比如一百二十一
  * 2. 数字转金额用的大写形式，比如：壹佰贰拾壹
@@ -46,11 +46,10 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class ChineseNumberFormatter {
 
     /**
-     * 中文形式，奇数位置是简体，偶数位置是记账繁体，0共用
-     * 使用混合数组提高效率和数组复用
+     * 中文形式，奇数位置是简体，偶数位置是记账繁体，0共用 使用混合数组提高效率和数组复用
      */
-    static final char[] DIGITS = {'零', '一', '壹', '二', '贰', '三', '叁', '四', '肆', '五', '伍',
-            '六', '陆', '七', '柒', '八', '捌', '九', '玖'};
+    static final char[] DIGITS = { '零', '一', '壹', '二', '贰', '三', '叁', '四', '肆', '五', '伍', '六', '陆', '七', '柒', '八', '捌',
+            '九', '玖' };
     private boolean useTraditional;
     private boolean moneyMode;
     private boolean colloquialMode;
@@ -183,12 +182,16 @@ public class ChineseNumberFormatter {
     /**
      * 阿拉伯数字转换成中文.
      *
-     * <p>主要是对发票票面金额转换的扩展
-     * <p>如：-12.32
-     * <p>发票票面转换为：(负数)壹拾贰圆叁角贰分
-     * <p>而非：负壹拾贰元叁角贰分
-     * <p>共两点不同：1、(负数) 而非 负；2、圆 而非 元
-     * 2022/3/9
+     * <p>
+     * 主要是对发票票面金额转换的扩展
+     * <p>
+     * 如：-12.32
+     * <p>
+     * 发票票面转换为：(负数)壹拾贰圆叁角贰分
+     * <p>
+     * 而非：负壹拾贰元叁角贰分
+     * <p>
+     * 共两点不同：1、(负数) 而非 负；2、圆 而非 元 2022/3/9
      *
      * @param amount 数字
      * @return 格式化后的字符串
@@ -225,7 +228,7 @@ public class ChineseNumberFormatter {
         }
 
         if (0 == jiao && 0 == fen) {
-            //无小数部分的金额结尾
+            // 无小数部分的金额结尾
             if (isMoneyMode) {
                 chineseStr.append("整");
             }
@@ -279,7 +282,7 @@ public class ChineseNumberFormatter {
             return this.colloquialMode ? chinese.substring(1) : chinese;
         }
 
-        //将数字以万为单位分为多份
+        // 将数字以万为单位分为多份
         final int[] parts = new int[4];
         for (int i = 0; amount != 0; i++) {
             parts[i] = (int) (amount % 10000);
@@ -381,7 +384,8 @@ public class ChineseNumberFormatter {
                 lastIsZero = true;
             } else { // 取到的数字不是 0
                 final boolean isUseTraditional = this.useTraditional;
-                chineseStr.insert(0, numberToChinese(digit, isUseTraditional) + ChineseNumberParser.getUnitName(i, isUseTraditional));
+                chineseStr.insert(0, numberToChinese(digit, isUseTraditional)
+                        + ChineseNumberParser.getUnitName(i, isUseTraditional));
                 lastIsZero = false;
             }
             temp = temp / 10;

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.hl7.net;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -78,12 +78,10 @@ public class HL7Application implements Serializable {
     void setDevice(Device device) {
         if (device != null) {
             if (this.device != null)
-                throw new IllegalStateException("already owned by " +
-                        this.device.getDeviceName());
+                throw new IllegalStateException("already owned by " + this.device.getDeviceName());
             for (Connection conn : conns)
                 if (conn.getDevice() != device)
-                    throw new IllegalStateException(conn + " not owned by " +
-                            device.getDeviceName());
+                    throw new IllegalStateException(conn + " not owned by " + device.getDeviceName());
         }
         this.device = device;
     }
@@ -95,9 +93,7 @@ public class HL7Application implements Serializable {
     public void setApplicationName(String name) {
         if (name.isEmpty())
             throw new IllegalArgumentException("name cannot be empty");
-        HL7DeviceExtension ext = device != null
-                ? device.getDeviceExtension(HL7DeviceExtension.class)
-                : null;
+        HL7DeviceExtension ext = device != null ? device.getDeviceExtension(HL7DeviceExtension.class) : null;
         if (ext != null)
             ext.removeHL7Application(this.name);
         this.name = name;
@@ -122,8 +118,7 @@ public class HL7Application implements Serializable {
     }
 
     public String[] getAcceptedSendingApplications() {
-        return acceptedSendingApplications.toArray(
-                new String[acceptedSendingApplications.size()]);
+        return acceptedSendingApplications.toArray(new String[acceptedSendingApplications.size()]);
     }
 
     public void setAcceptedSendingApplications(String... names) {
@@ -145,8 +140,7 @@ public class HL7Application implements Serializable {
     }
 
     public String[] getAcceptedMessageTypes() {
-        return acceptedMessageTypes.toArray(
-                new String[acceptedMessageTypes.size()]);
+        return acceptedMessageTypes.toArray(new String[acceptedMessageTypes.size()]);
     }
 
     public void setAcceptedMessageTypes(String... types) {
@@ -179,8 +173,7 @@ public class HL7Application implements Serializable {
     }
 
     public boolean isInstalled() {
-        return device != null && device.isInstalled()
-                && (installed == null || installed.booleanValue());
+        return device != null && device.isInstalled() && (installed == null || installed.booleanValue());
     }
 
     public final Boolean getInstalled() {
@@ -188,8 +181,7 @@ public class HL7Application implements Serializable {
     }
 
     public void setInstalled(Boolean installed) {
-        if (installed != null && installed.booleanValue()
-                && device != null && !device.isInstalled())
+        if (installed != null && installed.booleanValue() && device != null && !device.isInstalled())
             throw new IllegalStateException("owning device not installed");
         this.installed = installed;
     }
@@ -200,9 +192,7 @@ public class HL7Application implements Serializable {
             return listener;
 
         HL7DeviceExtension hl7Ext = device.getDeviceExtension(HL7DeviceExtension.class);
-        return hl7Ext != null
-                ? hl7Ext.getHL7MessageListener()
-                : null;
+        return hl7Ext != null ? hl7Ext.getHL7MessageListener() : null;
     }
 
     public final void setHL7MessageListener(HL7MessageListener listener) {
@@ -211,12 +201,10 @@ public class HL7Application implements Serializable {
 
     public void addConnection(Connection conn) {
         if (!conn.getProtocol().isHL7())
-            throw new IllegalArgumentException(
-                    "protocol != HL7 - " + conn.getProtocol());
+            throw new IllegalArgumentException("protocol != HL7 - " + conn.getProtocol());
 
         if (device != null && device != conn.getDevice())
-            throw new IllegalStateException(conn + " not contained by " +
-                    device.getDeviceName());
+            throw new IllegalStateException(conn + " not contained by " + device.getDeviceName());
         conns.add(conn);
     }
 
@@ -233,37 +221,26 @@ public class HL7Application implements Serializable {
         validateMSH(msh);
         HL7MessageListener listener = getHL7MessageListener();
         if (listener == null)
-            throw new HL7Exception(new ERRSegment(msh)
-                    .setHL7ErrorCode(ERRSegment.APPLICATION_INTERNAL_ERROR)
+            throw new HL7Exception(new ERRSegment(msh).setHL7ErrorCode(ERRSegment.APPLICATION_INTERNAL_ERROR)
                     .setUserMessage("No HL7 Message Listener configured"));
         return listener.onMessage(this, conn, s, msg);
     }
 
     private void validateMSH(HL7Segment msh) throws HL7Exception {
-        String[] errorLocations = {
-                ERRSegment.SENDING_APPLICATION,     // MSH-3
-                ERRSegment.SENDING_FACILITY,        // MSH-4
-                ERRSegment.RECEIVING_APPLICATION,   // MSH-5
-                ERRSegment.RECEIVING_FACILITY,      // MSH-6
-                ERRSegment.MESSAGE_DATETIME,        // MSH-7
-                null,                               // MSH-8
-                ERRSegment.MESSAGE_CODE,            // MSH-9
-                ERRSegment.MESSAGE_CONTROL_ID,      // MSH-10
-                ERRSegment.MESSAGE_PROCESSING_ID,   // MSH-11
-                ERRSegment.MESSAGE_VERSION_ID,      // MSH-12
+        String[] errorLocations = { ERRSegment.SENDING_APPLICATION, // MSH-3
+                ERRSegment.SENDING_FACILITY, // MSH-4
+                ERRSegment.RECEIVING_APPLICATION, // MSH-5
+                ERRSegment.RECEIVING_FACILITY, // MSH-6
+                ERRSegment.MESSAGE_DATETIME, // MSH-7
+                null, // MSH-8
+                ERRSegment.MESSAGE_CODE, // MSH-9
+                ERRSegment.MESSAGE_CONTROL_ID, // MSH-10
+                ERRSegment.MESSAGE_PROCESSING_ID, // MSH-11
+                ERRSegment.MESSAGE_VERSION_ID, // MSH-12
         };
-        String[] userMsg = {
-                "Missing Sending Application",
-                "Missing Sending Facility",
-                "Missing Receiving Application",
-                "Missing Receiving Facility",
-                "Missing Date/Time of Message",
-                null,
-                "Missing Message Type",
-                "Missing Message Control ID",
-                "Missing Processing ID",
-                "Missing Version ID"
-        };
+        String[] userMsg = { "Missing Sending Application", "Missing Sending Facility", "Missing Receiving Application",
+                "Missing Receiving Facility", "Missing Date/Time of Message", null, "Missing Message Type",
+                "Missing Message Control ID", "Missing Processing ID", "Missing Version ID" };
         for (int hl7OptionalMSHField : optionalMSHFields) {
             try {
                 errorLocations[hl7OptionalMSHField - 3] = null;
@@ -274,34 +251,24 @@ public class HL7Application implements Serializable {
         for (int i = 0; i < errorLocations.length; i++) {
             if (errorLocations[i] != null)
                 if (msh.getField(i + 2, null) == null)
-                    throw new HL7Exception(
-                            new ERRSegment(msh)
-                                    .setHL7ErrorCode(ERRSegment.REQUIRED_FIELD_MISSING)
-                                    .setErrorLocation(errorLocations[i])
-                                    .setUserMessage(userMsg[i]));
+                    throw new HL7Exception(new ERRSegment(msh).setHL7ErrorCode(ERRSegment.REQUIRED_FIELD_MISSING)
+                            .setErrorLocation(errorLocations[i]).setUserMessage(userMsg[i]));
         }
         if (!(acceptedSendingApplications.isEmpty()
                 || acceptedSendingApplications.contains(msh.getSendingApplicationWithFacility())))
-            throw new HL7Exception(
-                    new ERRSegment(msh)
-                            .setHL7ErrorCode(ERRSegment.TABLE_VALUE_NOT_FOUND)
-                            .setErrorLocation(ERRSegment.SENDING_APPLICATION)
-                            .setUserMessage("Sending Application and/or Facility not recognized"));
+            throw new HL7Exception(new ERRSegment(msh).setHL7ErrorCode(ERRSegment.TABLE_VALUE_NOT_FOUND)
+                    .setErrorLocation(ERRSegment.SENDING_APPLICATION)
+                    .setUserMessage("Sending Application and/or Facility not recognized"));
         String messageType = msh.getMessageType();
-        if (!(acceptedMessageTypes.contains("*")
-                || acceptedMessageTypes.contains(messageType))) {
+        if (!(acceptedMessageTypes.contains("*") || acceptedMessageTypes.contains(messageType))) {
             if (unsupportedMessageCode(messageType.substring(0, 3)))
-                throw new HL7Exception(
-                        new ERRSegment(msh)
-                                .setHL7ErrorCode(ERRSegment.UNSUPPORTED_MESSAGE_TYPE)
-                                .setErrorLocation(ERRSegment.MESSAGE_CODE)
-                                .setUserMessage("Message Type - Message Code not supported"));
+                throw new HL7Exception(new ERRSegment(msh).setHL7ErrorCode(ERRSegment.UNSUPPORTED_MESSAGE_TYPE)
+                        .setErrorLocation(ERRSegment.MESSAGE_CODE)
+                        .setUserMessage("Message Type - Message Code not supported"));
 
-            throw new HL7Exception(
-                    new ERRSegment(msh)
-                            .setHL7ErrorCode(ERRSegment.UNSUPPORTED_EVENT_CODE)
-                            .setErrorLocation(ERRSegment.TRIGGER_EVENT)
-                            .setUserMessage("Message Type - Trigger Event not supported"));
+            throw new HL7Exception(new ERRSegment(msh).setHL7ErrorCode(ERRSegment.UNSUPPORTED_EVENT_CODE)
+                    .setErrorLocation(ERRSegment.TRIGGER_EVENT)
+                    .setUserMessage("Message Type - Trigger Event not supported"));
         }
     }
 
@@ -313,8 +280,7 @@ public class HL7Application implements Serializable {
         return true;
     }
 
-    public MLLPConnection connect(Connection remote)
-            throws IOException, InternalException, GeneralSecurityException {
+    public MLLPConnection connect(Connection remote) throws IOException, InternalException, GeneralSecurityException {
         return connect(findCompatibleConnection(remote), remote);
     }
 
@@ -333,13 +299,11 @@ public class HL7Application implements Serializable {
         return new MLLPConnection(sock);
     }
 
-    public HL7Connection open(Connection remote)
-            throws IOException, InternalException, GeneralSecurityException {
+    public HL7Connection open(Connection remote) throws IOException, InternalException, GeneralSecurityException {
         return new HL7Connection(this, connect(remote));
     }
 
-    public HL7Connection open(HL7Application remote)
-            throws IOException, InternalException, GeneralSecurityException {
+    public HL7Connection open(HL7Application remote) throws IOException, InternalException, GeneralSecurityException {
         return new HL7Connection(this, connect(remote));
     }
 
@@ -348,8 +312,7 @@ public class HL7Application implements Serializable {
         return new HL7Connection(this, connect(local, remote));
     }
 
-    public Compatible findCompatibleConnection(HL7Application remote)
-            throws InternalException {
+    public Compatible findCompatibleConnection(HL7Application remote) throws InternalException {
         for (Connection remoteConn : remote.conns)
             if (remoteConn.isInstalled() && remoteConn.isServer())
                 for (Connection conn : conns)
@@ -359,13 +322,11 @@ public class HL7Application implements Serializable {
                 "No compatible connection to " + remote.getApplicationName() + " available on " + name);
     }
 
-    public Connection findCompatibleConnection(Connection remoteConn)
-            throws InternalException {
+    public Connection findCompatibleConnection(Connection remoteConn) throws InternalException {
         for (Connection conn : conns)
             if (conn.isInstalled() && conn.isCompatible(remoteConn))
                 return conn;
-        throw new InternalException(
-                "No compatible connection to " + remoteConn + " available on " + name);
+        throw new InternalException("No compatible connection to " + remoteConn + " available on " + name);
     }
 
     private void checkInstalled() {
@@ -385,8 +346,7 @@ public class HL7Application implements Serializable {
     }
 
     private void reconfigureHL7ApplicationExtensions(HL7Application from) {
-        for (Iterator<Class<? extends HL7ApplicationExtension>> it =
-             extensions.keySet().iterator(); it.hasNext(); ) {
+        for (Iterator<Class<? extends HL7ApplicationExtension>> it = extensions.keySet().iterator(); it.hasNext();) {
             if (!from.extensions.containsKey(it.next()))
                 it.remove();
         }
@@ -397,8 +357,7 @@ public class HL7Application implements Serializable {
                 try {
                     addHL7ApplicationExtension(ext = clazz.newInstance());
                 } catch (Exception e) {
-                    throw new RuntimeException(
-                            "Failed to instantiate " + clazz.getName(), e);
+                    throw new RuntimeException("Failed to instantiate " + clazz.getName(), e);
                 }
             ext.reconfigure(src);
         }
@@ -422,8 +381,7 @@ public class HL7Application implements Serializable {
     public void addHL7ApplicationExtension(HL7ApplicationExtension ext) {
         Class<? extends HL7ApplicationExtension> clazz = ext.getClass();
         if (extensions.containsKey(clazz))
-            throw new IllegalStateException(
-                    "already contains AE Extension:" + clazz);
+            throw new IllegalStateException("already contains AE Extension:" + clazz);
 
         ext.setHL7Application(this);
         extensions.put(clazz, ext);
@@ -441,7 +399,6 @@ public class HL7Application implements Serializable {
         return extensions.values();
     }
 
-
     public <T extends HL7ApplicationExtension> T getHL7ApplicationExtension(Class<T> clazz) {
         return (T) extensions.get(clazz);
     }
@@ -449,8 +406,7 @@ public class HL7Application implements Serializable {
     public <T extends HL7ApplicationExtension> T getHL7AppExtensionNotNull(Class<T> clazz) {
         T hl7AppExt = getHL7ApplicationExtension(clazz);
         if (hl7AppExt == null)
-            throw new IllegalStateException("No " + clazz.getName()
-                    + " configured for HL7 Application: " + name);
+            throw new IllegalStateException("No " + clazz.getName() + " configured for HL7 Application: " + name);
         return hl7AppExt;
     }
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.center;
 
 import org.miaixz.bus.core.codec.binary.Base32;
@@ -32,14 +32,15 @@ import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.xyz.RandomKit;
 
 /**
- * HMAC-based one-time passwords (HOTP) 基于HMAC算法一次性密码生成器，
- * 规范见：<a href="https://tools.ietf.org/html/rfc4226">RFC 4226</a>
+ * HMAC-based one-time passwords (HOTP) 基于HMAC算法一次性密码生成器， 规范见：<a href="https://tools.ietf.org/html/rfc4226">RFC 4226</a>
  *
  * <p>
  * 基于事件同步，通过某一特定的事件次序及相同的种子值作为输入，通过HASH算法运算出一致的密码。
  * </p>
  *
- * <p>参考：https://github.com/jchambers/java-otp</p>
+ * <p>
+ * 参考：https://github.com/jchambers/java-otp
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -54,7 +55,7 @@ public class HOTP {
     /**
      * 数子量级
      */
-    private static final int[] MOD_DIVISORS = {1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000};
+    private static final int[] MOD_DIVISORS = { 1, 10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000 };
     private final HMac mac;
     private final int passwordLength;
     private final int modDivisor;
@@ -110,8 +111,7 @@ public class HOTP {
     /**
      * 生成一次性密码
      *
-     * @param counter 事件计数的值，8 字节的整数，称为移动因子（moving factor），
-     *                可以是基于计次的动移动因子，也可以是计时移动因子
+     * @param counter 事件计数的值，8 字节的整数，称为移动因子（moving factor）， 可以是基于计次的动移动因子，也可以是计时移动因子
      * @return 一次性密码的int值
      */
     public synchronized int generate(final long counter) {
@@ -157,11 +157,8 @@ public class HOTP {
      */
     private int truncate(final byte[] digest) {
         final int offset = digest[digest.length - 1] & 0x0f;
-        return ((digest[offset] & 0x7f) << 24 |
-                (digest[offset + 1] & 0xff) << 16 |
-                (digest[offset + 2] & 0xff) << 8 |
-                (digest[offset + 3] & 0xff)) %
-                this.modDivisor;
+        return ((digest[offset] & 0x7f) << 24 | (digest[offset + 1] & 0xff) << 16 | (digest[offset + 2] & 0xff) << 8
+                | (digest[offset + 3] & 0xff)) % this.modDivisor;
     }
 
 }

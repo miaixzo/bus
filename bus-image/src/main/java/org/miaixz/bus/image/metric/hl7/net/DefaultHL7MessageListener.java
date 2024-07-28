@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.hl7.net;
 
 import org.miaixz.bus.image.metric.Connection;
@@ -42,8 +42,7 @@ public class DefaultHL7MessageListener implements HL7MessageListener {
     @Override
     public UnparsedHL7Message onMessage(HL7Application hl7App, Connection conn, Socket s, UnparsedHL7Message msg)
             throws HL7Exception {
-        return new UnparsedHL7Message(
-                HL7Message.makeACK(msg.msh(), HL7Exception.AA, null).getBytes(null));
+        return new UnparsedHL7Message(HL7Message.makeACK(msg.msh(), HL7Exception.AA, null).getBytes(null));
     }
 
 }

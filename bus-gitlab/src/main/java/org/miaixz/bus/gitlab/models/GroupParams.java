@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import org.miaixz.bus.gitlab.Constants;
@@ -34,9 +34,8 @@ import org.miaixz.bus.gitlab.GroupApi;
 import java.io.Serializable;
 
 /**
- * This class is utilized by the {@link GroupApi#createGroup(GroupParams)}
- * and {@link GroupApi#updateGroup(Object, GroupParams)} methods to set
- * the parameters for the call to the GitLab API.
+ * This class is utilized by the {@link GroupApi#createGroup(GroupParams)} and
+ * {@link GroupApi#updateGroup(Object, GroupParams)} methods to set the parameters for the call to the GitLab API.
  */
 public class GroupParams implements Serializable {
     private static final long serialVersionUID = -1L;
@@ -75,7 +74,7 @@ public class GroupParams implements Serializable {
     }
 
     /**
-     * Prevent adding new members to project membership within this group.  For update only.
+     * Prevent adding new members to project membership within this group. For update only.
      *
      * @param membershipLock if true, prevent adding new members to project membership within this group
      * @return this GroupParms instance
@@ -86,7 +85,7 @@ public class GroupParams implements Serializable {
     }
 
     /**
-     * The ID of a project to load custom file templates from.  For update only.
+     * The ID of a project to load custom file templates from. For update only.
      *
      * @param fileTemplateProjectId the ID of a project to load custom file templates from
      * @return this GroupParms instance
@@ -195,19 +194,15 @@ public class GroupParams implements Serializable {
      */
     public GitLabApiForm getForm(boolean isCreate) {
 
-        GitLabApiForm form = new GitLabApiForm()
-                .withParam("name", name, isCreate)
-                .withParam("path", path, isCreate)
-                .withParam("description", description)
-                .withParam("visibility", visibility)
+        GitLabApiForm form = new GitLabApiForm().withParam("name", name, isCreate).withParam("path", path, isCreate)
+                .withParam("description", description).withParam("visibility", visibility)
                 .withParam("share_with_group_lock", shareWithGroupLock)
                 .withParam("require_two_factor_authentication", requireTwoFactorAuthentication)
                 .withParam("two_factor_grace_period", twoFactorGracePeriod)
                 .withParam("project_creation_level", projectCreationLevel)
                 .withParam("auto_devops_enabled", autoDevopsEnabled)
                 .withParam("subgroup_creation_level", subgroupCreationLevel)
-                .withParam("emails_disabled", emailsDisabled)
-                .withParam("lfs_enabled", lfsEnabled)
+                .withParam("emails_disabled", emailsDisabled).withParam("lfs_enabled", lfsEnabled)
                 .withParam("request_access_enabled", requestAccessEnabled)
                 .withParam("shared_runners_minutes_limit", sharedRunnersMinutesLimit)
                 .withParam("extra_shared_runners_minutes_limit", extraSharedRunnersMinutesLimit)
@@ -218,8 +213,8 @@ public class GroupParams implements Serializable {
         if (isCreate) {
             form.withParam("parent_id", parentId);
         } else {
-            form.withParam("membership_lock", membershipLock)
-                    .withParam("file_template_project_id", fileTemplateProjectId);
+            form.withParam("membership_lock", membershipLock).withParam("file_template_project_id",
+                    fileTemplateProjectId);
         }
 
         return (form);

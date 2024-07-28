@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_CM_VA0__LAB;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,21 +46,22 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.GeneratorIdentificationLabel:
-            case PrivateTag.GantryIdentificationLabel:
-            case PrivateTag.XRayTubeIdentificationLabel:
-            case PrivateTag.DetectorIdentificationLabel:
-            case PrivateTag.DASIdentificationLabel:
-            case PrivateTag.SMIIdentificationLabel:
-            case PrivateTag.CPUIdentificationLabel:
-                return VR.LO;
-            case PrivateTag.HeaderVersion:
-                return VR.SH;
+
+        case PrivateTag.GeneratorIdentificationLabel:
+        case PrivateTag.GantryIdentificationLabel:
+        case PrivateTag.XRayTubeIdentificationLabel:
+        case PrivateTag.DetectorIdentificationLabel:
+        case PrivateTag.DASIdentificationLabel:
+        case PrivateTag.SMIIdentificationLabel:
+        case PrivateTag.CPUIdentificationLabel:
+            return VR.LO;
+        case PrivateTag.HeaderVersion:
+            return VR.SH;
         }
         return VR.UN;
     }

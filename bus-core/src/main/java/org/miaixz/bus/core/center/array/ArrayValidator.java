@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.array;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -41,8 +41,8 @@ import java.util.function.Predicate;
 /**
  * Array检查工具类，提供字对象的blank和empty等检查
  * <ul>
- *     <li>empty定义：{@code null} or 空字对象：{@code ""}</li>
- *     <li>blank定义：{@code null} or 空字对象：{@code ""} or 空格、全角空格、制表符、换行符，等不可见字符</li>
+ * <li>empty定义：{@code null} or 空字对象：{@code ""}</li>
+ * <li>blank定义：{@code null} or 空字对象：{@code ""} or 空格、全角空格、制表符、换行符，等不可见字符</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -221,19 +221,25 @@ public class ArrayValidator {
     }
 
     /**
-     * <p>指定字符串数组中，是否包含空字符串。</p>
-     * <p>如果指定的字符串数组的长度为 0，或者其中的任意一个元素是空字符串，则返回 true。</p>
+     * <p>
+     * 指定字符串数组中，是否包含空字符串。
+     * </p>
+     * <p>
+     * 如果指定的字符串数组的长度为 0，或者其中的任意一个元素是空字符串，则返回 true。
+     * </p>
      * <ul>
-     *     <li>{@code hasBlank()                  // true}</li>
-     *     <li>{@code hasBlank("", null, " ")     // true}</li>
-     *     <li>{@code hasBlank("123", " ")        // true}</li>
-     *     <li>{@code hasBlank("123", "abc")      // false}</li>
+     * <li>{@code hasBlank()                  // true}</li>
+     * <li>{@code hasBlank("", null, " ")     // true}</li>
+     * <li>{@code hasBlank("123", " ")        // true}</li>
+     * <li>{@code hasBlank("123", "abc")      // false}</li>
      * </ul>
      *
-     * <p>注意：该方法与 {@link #isAllBlank(CharSequence...)} 的区别在于：</p>
+     * <p>
+     * 注意：该方法与 {@link #isAllBlank(CharSequence...)} 的区别在于：
+     * </p>
      * <ul>
-     *     <li>hasBlank(CharSequence...)            等价于 {@code isBlank(...) || isBlank(...) || ...}</li>
-     *     <li>{@link #isAllBlank(CharSequence...)} 等价于 {@code isBlank(...) && isBlank(...) && ...}</li>
+     * <li>hasBlank(CharSequence...) 等价于 {@code isBlank(...) || isBlank(...) || ...}</li>
+     * <li>{@link #isAllBlank(CharSequence...)} 等价于 {@code isBlank(...) && isBlank(...) && ...}</li>
      * </ul>
      *
      * @param args 字符串列表
@@ -263,19 +269,25 @@ public class ArrayValidator {
     }
 
     /**
-     * <p>指定字符串数组中的元素，是否全部为空字符串。</p>
-     * <p>如果指定的字符串数组的长度为 0，或者所有元素都是空字符串，则返回 true。</p>
+     * <p>
+     * 指定字符串数组中的元素，是否全部为空字符串。
+     * </p>
+     * <p>
+     * 如果指定的字符串数组的长度为 0，或者所有元素都是空字符串，则返回 true。
+     * </p>
      * <ul>
-     *     <li>{@code isAllBlank()                  // true}</li>
-     *     <li>{@code isAllBlank("", null, " ")     // true}</li>
-     *     <li>{@code isAllBlank("123", " ")        // false}</li>
-     *     <li>{@code isAllBlank("123", "abc")      // false}</li>
+     * <li>{@code isAllBlank()                  // true}</li>
+     * <li>{@code isAllBlank("", null, " ")     // true}</li>
+     * <li>{@code isAllBlank("123", " ")        // false}</li>
+     * <li>{@code isAllBlank("123", "abc")      // false}</li>
      * </ul>
      *
-     * <p>注意：该方法与 {@link #hasBlank(CharSequence...)} 的区别在于：</p>
+     * <p>
+     * 注意：该方法与 {@link #hasBlank(CharSequence...)} 的区别在于：
+     * </p>
      * <ul>
-     *     <li>{@link #hasBlank(CharSequence...)}   等价于 {@code isBlank(...) || isBlank(...) || ...}</li>
-     *     <li>isAllBlank(CharSequence...)          等价于 {@code isBlank(...) && isBlank(...) && ...}</li>
+     * <li>{@link #hasBlank(CharSequence...)} 等价于 {@code isBlank(...) || isBlank(...) || ...}</li>
+     * <li>isAllBlank(CharSequence...) 等价于 {@code isBlank(...) && isBlank(...) && ...}</li>
      * </ul>
      *
      * @param args 字符串列表
@@ -318,9 +330,7 @@ public class ArrayValidator {
     }
 
     /**
-     * 数组是否为空
-     * 此方法会匹配单一对象，如果此对象为{@code null}则返回true
-     * 如果此对象为非数组，理解为此对象为数组的第一个元素，则返回false
+     * 数组是否为空 此方法会匹配单一对象，如果此对象为{@code null}则返回true 如果此对象为非数组，理解为此对象为数组的第一个元素，则返回false
      * 如果此对象为数组对象，数组长度大于0的情况下返回false，否则返回true
      *
      * @param array 数组
@@ -348,9 +358,7 @@ public class ArrayValidator {
     }
 
     /**
-     * 数组是否为非空
-     * 此方法会匹配单一对象，如果此对象为{@code null}则返回false
-     * 如果此对象为非数组，理解为此对象为数组的第一个元素，则返回true
+     * 数组是否为非空 此方法会匹配单一对象，如果此对象为{@code null}则返回false 如果此对象为非数组，理解为此对象为数组的第一个元素，则返回true
      * 如果此对象为数组对象，数组长度大于0的情况下返回true，否则返回false
      *
      * @param array 数组
@@ -360,10 +368,11 @@ public class ArrayValidator {
         return !isEmpty(array);
     }
 
-
     /**
      * 检查数组是否有序，升序或者降序，使用指定比较器比较
-     * <p>若传入空数组或空比较器，则返回{@code false}；元素全部相等，返回 {@code true}</p>
+     * <p>
+     * 若传入空数组或空比较器，则返回{@code false}；元素全部相等，返回 {@code true}
+     * </p>
      *
      * @param <T>        数组元素类型
      * @param array      数组
@@ -392,7 +401,9 @@ public class ArrayValidator {
 
     /**
      * 检查数组是否有序，升序或者降序
-     * <p>若传入空数组，则返回{@code false}；元素全部相等，返回 {@code true}</p>
+     * <p>
+     * 若传入空数组，则返回{@code false}；元素全部相等，返回 {@code true}
+     * </p>
      *
      * @param <T>   数组元素类型，该类型需要实现Comparable接口
      * @param array 数组
@@ -419,8 +430,7 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否升序，即{@code array[i] <= array[i+1]}
-     * 若传入空数组，则返回{@code false}
+     * 检查数组是否升序，即{@code array[i] <= array[i+1]} 若传入空数组，则返回{@code false}
      *
      * @param array 数组
      * @return 数组是否升序
@@ -440,8 +450,7 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否降序，即{@code array[i] >= array[i+1]}
-     * 若传入空数组，则返回{@code false}
+     * 检查数组是否降序，即{@code array[i] >= array[i+1]} 若传入空数组，则返回{@code false}
      *
      * @param array 数组
      * @return 数组是否降序
@@ -461,8 +470,7 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否升序，即{@code array[i] <= array[i+1]}
-     * 若传入空数组，则返回{@code false}
+     * 检查数组是否升序，即{@code array[i] <= array[i+1]} 若传入空数组，则返回{@code false}
      *
      * @param array 数组
      * @return 数组是否升序
@@ -482,8 +490,7 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否降序，即{@code array[i] >= array[i+1]}
-     * 若传入空数组，则返回{@code false}
+     * 检查数组是否降序，即{@code array[i] >= array[i+1]} 若传入空数组，则返回{@code false}
      *
      * @param array 数组
      * @return 数组是否降序
@@ -503,8 +510,7 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否升序，即{@code array[i] <= array[i+1]}
-     * 若传入空数组，则返回{@code false}
+     * 检查数组是否升序，即{@code array[i] <= array[i+1]} 若传入空数组，则返回{@code false}
      *
      * @param array 数组
      * @return 数组是否升序
@@ -524,8 +530,7 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否降序，即{@code array[i] >= array[i+1]}
-     * 若传入空数组，则返回{@code false}
+     * 检查数组是否降序，即{@code array[i] >= array[i+1]} 若传入空数组，则返回{@code false}
      *
      * @param array 数组
      * @return 数组是否降序
@@ -545,8 +550,7 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否升序，即{@code array[i] <= array[i+1]}
-     * 若传入空数组，则返回{@code false}
+     * 检查数组是否升序，即{@code array[i] <= array[i+1]} 若传入空数组，则返回{@code false}
      *
      * @param array 数组
      * @return 数组是否升序
@@ -566,8 +570,7 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否降序，即{@code array[i] >= array[i+1]}
-     * 若传入空数组，则返回{@code false}
+     * 检查数组是否降序，即{@code array[i] >= array[i+1]} 若传入空数组，则返回{@code false}
      *
      * @param array 数组
      * @return 数组是否降序
@@ -587,8 +590,7 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否升序，即{@code array[i] <= array[i+1]}
-     * 若传入空数组，则返回{@code false}
+     * 检查数组是否升序，即{@code array[i] <= array[i+1]} 若传入空数组，则返回{@code false}
      *
      * @param array 数组
      * @return 数组是否升序
@@ -608,8 +610,7 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否降序，即{@code array[i] >= array[i+1]}
-     * 若传入空数组，则返回{@code false}
+     * 检查数组是否降序，即{@code array[i] >= array[i+1]} 若传入空数组，则返回{@code false}
      *
      * @param array 数组
      * @return 数组是否降序
@@ -629,8 +630,7 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否升序，即{@code array[i] <= array[i+1]}
-     * 若传入空数组，则返回{@code false}
+     * 检查数组是否升序，即{@code array[i] <= array[i+1]} 若传入空数组，则返回{@code false}
      *
      * @param array 数组
      * @return 数组是否升序
@@ -650,8 +650,7 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否降序，即{@code array[i] >= array[i+1]}
-     * 若传入空数组，则返回{@code false}
+     * 检查数组是否降序，即{@code array[i] >= array[i+1]} 若传入空数组，则返回{@code false}
      *
      * @param array 数组
      * @return 数组是否降序
@@ -671,8 +670,7 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否升序，即{@code array[i] <= array[i+1]}
-     * 若传入空数组，则返回{@code false}
+     * 检查数组是否升序，即{@code array[i] <= array[i+1]} 若传入空数组，则返回{@code false}
      *
      * @param array 数组
      * @return 数组是否升序
@@ -692,8 +690,7 @@ public class ArrayValidator {
     }
 
     /**
-     * 检查数组是否降序，即array[i] &gt;= array[i+1]
-     * 若传入空数组，则返回{@code false}
+     * 检查数组是否降序，即array[i] &gt;= array[i+1] 若传入空数组，则返回{@code false}
      *
      * @param array 数组
      * @return 数组是否降序
@@ -713,7 +710,9 @@ public class ArrayValidator {
 
     /**
      * 检查数组是否升序，即 {@code array[i].compareTo(array[i + 1]) <= 0}
-     * <p>若传入空数组，则返回{@code false}</p>
+     * <p>
+     * 若传入空数组，则返回{@code false}
+     * </p>
      *
      * @param <T>   数组元素类型，该类型需要实现Comparable接口
      * @param array 数组
@@ -737,7 +736,9 @@ public class ArrayValidator {
 
     /**
      * 检查数组是否降序，即 {@code array[i].compareTo(array[i + 1]) >= 0}
-     * <p>若传入空数组，则返回{@code false}</p>
+     * <p>
+     * 若传入空数组，则返回{@code false}
+     * </p>
      *
      * @param <T>   数组元素类型，该类型需要实现Comparable接口
      * @param array 数组
@@ -761,7 +762,9 @@ public class ArrayValidator {
 
     /**
      * 检查数组是否升序，使用指定的比较器比较，即 {@code compare.compare(array[i], array[i + 1]) <= 0}
-     * <p>若传入空数组或空比较器，则返回{@code false}</p>
+     * <p>
+     * 若传入空数组或空比较器，则返回{@code false}
+     * </p>
      *
      * @param <T>        数组元素类型
      * @param array      数组
@@ -785,7 +788,9 @@ public class ArrayValidator {
 
     /**
      * 检查数组是否降序，使用指定的比较器比较，即 {@code compare.compare(array[i], array[i + 1]) >= 0}
-     * <p>若传入空数组或空比较器，则返回{@code false}</p>
+     * <p>
+     * 若传入空数组或空比较器，则返回{@code false}
+     * </p>
      *
      * @param <T>        数组元素类型
      * @param array      数组
@@ -808,8 +813,7 @@ public class ArrayValidator {
     }
 
     /**
-     * 是否所有元素都为{@code null}或空对象，通过{@link ObjectKit#isEmpty(Object)} 判断元素
-     * 如果提供的数组本身为空，则返回{@code true}
+     * 是否所有元素都为{@code null}或空对象，通过{@link ObjectKit#isEmpty(Object)} 判断元素 如果提供的数组本身为空，则返回{@code true}
      *
      * @param <T>  元素类型
      * @param args 被检查的对象,一个或者多个
@@ -826,6 +830,7 @@ public class ArrayValidator {
 
     /**
      * 是否局部匹配，相当于对比以下子串是否相等
+     * 
      * <pre>
      *     array1[offset1, subArray.length]
      *                  ||
@@ -888,8 +893,12 @@ public class ArrayValidator {
 
     /**
      * 是否所有元素都为{@code null}或空对象，通过{@link ObjectKit#isEmpty(Object)} 判断元素
-     * <p>如果提供的数组本身为空，则返回{@code true}</p>
-     * <p><strong>限制条件：args的每个item不能是数组、不能是集合</strong></p>
+     * <p>
+     * 如果提供的数组本身为空，则返回{@code true}
+     * </p>
+     * <p>
+     * <strong>限制条件：args的每个item不能是数组、不能是集合</strong>
+     * </p>
      *
      * @param <T>  元素类型
      * @param args 被检查的对象,一个或者多个
@@ -903,7 +912,9 @@ public class ArrayValidator {
 
     /**
      * 是否所有元素都不为{@code null}或空对象，通过{@link ObjectKit#isEmpty(Object)} 判断元素
-     * <p>如果提供的数组本身为空，则返回{@code true}</p>
+     * <p>
+     * 如果提供的数组本身为空，则返回{@code true}
+     * </p>
      *
      * @param args 被检查的对象,一个或者多个
      * @return 是否都不为空
@@ -914,7 +925,9 @@ public class ArrayValidator {
 
     /**
      * 是否包含{@code null}元素
-     * <p>如果数组为null，则返回{@code true}，如果数组为空，则返回{@code false}</p>
+     * <p>
+     * 如果数组为null，则返回{@code true}，如果数组为空，则返回{@code false}
+     * </p>
      *
      * @param <T>   数组元素类型
      * @param array 被检查的数组
@@ -931,10 +944,11 @@ public class ArrayValidator {
         return array == null;
     }
 
-
     /**
      * 是否存在{@code null}或空对象，通过{@link ObjectKit#isEmpty(Object)} 判断元素
-     * <p>如果提供的数组本身为空，则返回{@code false}</p>
+     * <p>
+     * 如果提供的数组本身为空，则返回{@code false}
+     * </p>
      *
      * @param <T>  元素类型
      * @param args 被检查对象
@@ -953,8 +967,12 @@ public class ArrayValidator {
 
     /**
      * 是否存在{@code null}或空对象，通过{@link ObjectKit#isEmpty(Object)} 判断元素
-     * <p>如果提供的数组本身为空，则返回{@code false}</p>
-     * <p><strong>限制条件：args的每个item不能是数组、不能是集合</strong></p>
+     * <p>
+     * 如果提供的数组本身为空，则返回{@code false}
+     * </p>
+     * <p>
+     * <strong>限制条件：args的每个item不能是数组、不能是集合</strong>
+     * </p>
      *
      * @param <T>  元素类型
      * @param args 被检查对象
@@ -968,7 +986,9 @@ public class ArrayValidator {
 
     /**
      * 所有字段是否全为null
-     * <p>如果数组为{@code null}或者空，则返回 {@code true}</p>
+     * <p>
+     * 如果数组为{@code null}或者空，则返回 {@code true}
+     * </p>
      *
      * @param <T>   数组元素类型
      * @param array 被检查的数组
@@ -980,7 +1000,9 @@ public class ArrayValidator {
 
     /**
      * 是否所有元素都不为 {@code null}
-     * <p>如果提供的数组为null，则返回{@code false}，如果提供的数组为空，则返回{@code true}</p>
+     * <p>
+     * 如果提供的数组为null，则返回{@code false}，如果提供的数组为空，则返回{@code true}
+     * </p>
      *
      * @param <T>   数组元素类型
      * @param array 被检查的数组
@@ -992,7 +1014,9 @@ public class ArrayValidator {
 
     /**
      * 是否包含非{@code null}元素
-     * <p>如果数组是{@code null}或者空，返回{@code false}，否则当数组中有非{@code null}元素时返回{@code true}</p>
+     * <p>
+     * 如果数组是{@code null}或者空，返回{@code false}，否则当数组中有非{@code null}元素时返回{@code true}
+     * </p>
      *
      * @param <T>   数组元素类型
      * @param array 被检查的数组
@@ -1051,7 +1075,6 @@ public class ArrayValidator {
         return array[index];
     }
 
-
     /**
      * 返回数组中第一个匹配规则的值的位置
      *
@@ -1105,7 +1128,6 @@ public class ArrayValidator {
     public static <T> int indexOf(final T[] array, final Object value) {
         return ArrayWrapper.of(array).indexOf(value);
     }
-
 
     /**
      * 返回数组中指定元素所在位置，忽略大小写，未找到返回{@link Normal#__1}
@@ -1174,6 +1196,7 @@ public class ArrayValidator {
 
     /**
      * 是否局部匹配，相当于对比以下子串是否相等
+     * 
      * <pre>
      *     array1[offset1 : offset1 + length]
      *                  ||
@@ -1187,8 +1210,8 @@ public class ArrayValidator {
      * @param length  检查长度
      * @return 是否局部匹配
      */
-    public static boolean regionMatches(final byte[] array1, final int offset1,
-                                        final byte[] array2, final int offset2, final int length) {
+    public static boolean regionMatches(final byte[] array1, final int offset1, final byte[] array2, final int offset2,
+            final int length) {
         if (array1.length < offset1 + length) {
             throw new IndexOutOfBoundsException("[byte1] length must be >= [offset1 + length]");
         }
@@ -1203,7 +1226,6 @@ public class ArrayValidator {
         }
         return true;
     }
-
 
     /**
      * 数组或集合转String
@@ -1236,7 +1258,7 @@ public class ArrayValidator {
             try {
                 return Arrays.deepToString((Object[]) obj);
             } catch (final Exception ignore) {
-                //ignore
+                // ignore
             }
         }
 
@@ -1244,8 +1266,7 @@ public class ArrayValidator {
     }
 
     /**
-     * 获取数组长度
-     * 如果参数为{@code null}，返回0
+     * 获取数组长度 如果参数为{@code null}，返回0
      *
      * <pre>
      * ArrayKit.length(null)            = 0

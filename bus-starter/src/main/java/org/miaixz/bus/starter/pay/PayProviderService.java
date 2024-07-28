@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.pay;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
@@ -38,7 +38,7 @@ import org.miaixz.bus.pay.Registry;
 import org.miaixz.bus.pay.magic.ErrorCode;
 import org.miaixz.bus.pay.metric.alipay.AliPayProvider;
 import org.miaixz.bus.pay.metric.jdpay.JdPayProvider;
-import org.miaixz.bus.pay.metric.paypal.PayPalProvider;
+import org.miaixz.bus.pay.metric.paypal.PaypalProvider;
 import org.miaixz.bus.pay.metric.tenpay.TenpayProvider;
 import org.miaixz.bus.pay.metric.unionpay.UnionPayProvider;
 import org.miaixz.bus.pay.metric.wechat.WechatPayProvider;
@@ -105,7 +105,7 @@ public class PayProviderService {
         } else if (Registry.JDPAY.equals(registry)) {
             return new JdPayProvider(context, complex, cache);
         } else if (Registry.PAYPAL.equals(registry)) {
-            return new PayPalProvider(context, complex, cache);
+            return new PaypalProvider(context, complex, cache);
         } else if (Registry.TENPAY.equals(registry)) {
             return new TenpayProvider(context, complex, cache);
         } else if (Registry.UNIONPAY.equals(registry)) {

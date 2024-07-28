@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.common.basic;
 
 import org.miaixz.bus.mapper.annotation.RegisterMapper;
@@ -38,12 +38,7 @@ import org.miaixz.bus.mapper.common.basic.select.*;
  * @since Java 17+
  */
 @RegisterMapper
-public interface BasicSelectMapper<T> extends
-        SelectOneMapper<T>,
-        SelectMapper<T>,
-        SelectAllMapper<T>,
-        SelectCountMapper<T>,
-        SelectByPrimaryKeyMapper<T>,
-        ExistsWithPrimaryKeyMapper<T> {
+public interface BasicSelectMapper<T> extends SelectOneMapper<T>, SelectMapper<T>, SelectAllMapper<T>,
+        SelectCountMapper<T>, SelectByPrimaryKeyMapper<T>, ExistsWithPrimaryKeyMapper<T> {
 
 }

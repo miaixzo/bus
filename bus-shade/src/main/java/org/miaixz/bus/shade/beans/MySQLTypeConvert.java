@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.beans;
 
 /**
@@ -68,30 +68,30 @@ public class MySQLTypeConvert implements TypeConvert {
             return MySQLColumnType.STRING;
         } else if (t.contains("date") || t.contains("time") || t.contains("year")) {
             switch (dateType) {
-                case ONLY_DATE:
-                    return MySQLColumnType.DATE;
-                case SQL_PACK:
-                    switch (t) {
-                        case "date":
-                            return MySQLColumnType.DATE_SQL;
-                        case "time":
-                            return MySQLColumnType.TIME;
-                        case "year":
-                            return MySQLColumnType.DATE_SQL;
-                        default:
-                            return MySQLColumnType.TIMESTAMP;
-                    }
-                case TIME_PACK:
-                    switch (t) {
-                        case "date":
-                            return MySQLColumnType.LOCAL_DATE;
-                        case "time":
-                            return MySQLColumnType.LOCAL_TIME;
-                        case "year":
-                            return MySQLColumnType.YEAR;
-                        default:
-                            return MySQLColumnType.LOCAL_DATE_TIME;
-                    }
+            case ONLY_DATE:
+                return MySQLColumnType.DATE;
+            case SQL_PACK:
+                switch (t) {
+                case "date":
+                    return MySQLColumnType.DATE_SQL;
+                case "time":
+                    return MySQLColumnType.TIME;
+                case "year":
+                    return MySQLColumnType.DATE_SQL;
+                default:
+                    return MySQLColumnType.TIMESTAMP;
+                }
+            case TIME_PACK:
+                switch (t) {
+                case "date":
+                    return MySQLColumnType.LOCAL_DATE;
+                case "time":
+                    return MySQLColumnType.LOCAL_TIME;
+                case "year":
+                    return MySQLColumnType.YEAR;
+                default:
+                    return MySQLColumnType.LOCAL_DATE_TIME;
+                }
             }
         }
         return MySQLColumnType.STRING;

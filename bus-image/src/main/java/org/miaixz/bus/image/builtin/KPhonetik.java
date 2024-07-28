@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.builtin;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -59,85 +59,82 @@ public class KPhonetik implements FuzzyString {
             cur = next;
             next = i + 1 < in.length ? in[i + 1] : 0;
             switch (cur) {
+            case 'A':
+            case 'E':
+            case 'I':
+            case 'J':
+            case 'O':
+            case 'U':
+            case 'Y':
+            case 'Ä':
+            case 'Ö':
+            case 'Ü':
+                if (j > 0) {
+                    prevout = '0';
+                    continue;
+                }
+                curout = '0';
+                break;
+            case 'B':
+                curout = '1';
+                break;
+            case 'P':
+                curout = next == 'H' ? '3' : '1';
+                break;
+            case 'D':
+            case 'T':
+                curout = (next == 'C' || next == 'S' || next == 'Z') ? '8' : '2';
+                break;
+            case 'F':
+            case 'V':
+            case 'W':
+                curout = '3';
+                break;
+            case 'G':
+            case 'K':
+            case 'Q':
+                curout = '4';
+                break;
+            case 'C':
+                switch (next) {
                 case 'A':
-                case 'E':
-                case 'I':
-                case 'J':
-                case 'O':
-                case 'U':
-                case 'Y':
-                case 'Ä':
-                case 'Ö':
-                case 'Ü':
-                    if (j > 0) {
-                        prevout = '0';
-                        continue;
-                    }
-                    curout = '0';
-                    break;
-                case 'B':
-                    curout = '1';
-                    break;
-                case 'P':
-                    curout = next == 'H' ? '3' : '1';
-                    break;
-                case 'D':
-                case 'T':
-                    curout = (next == 'C' || next == 'S' || next == 'Z')
-                            ? '8' : '2';
-                    break;
-                case 'F':
-                case 'V':
-                case 'W':
-                    curout = '3';
-                    break;
-                case 'G':
+                case 'H':
                 case 'K':
+                case 'O':
                 case 'Q':
-                    curout = '4';
-                    break;
-                case 'C':
-                    switch (next) {
-                        case 'A':
-                        case 'H':
-                        case 'K':
-                        case 'O':
-                        case 'Q':
-                        case 'U':
-                        case 'X':
-                            curout = i == 0 || (prev != 'S' && prev != 'Z')
-                                    ? '4' : '8';
-                            break;
-                        case 'L':
-                        case 'R':
-                            curout = i == 0 ? '4' : '8';
-                            break;
-                    }
-                    break;
+                case 'U':
                 case 'X':
-                    if (prev != 'C' && prev != 'K' && prev != 'Q'
-                            && prevout != '4')
-                        out[j++] = prevout = '4';
-                    curout = '8';
+                    curout = i == 0 || (prev != 'S' && prev != 'Z') ? '4' : '8';
                     break;
                 case 'L':
-                    curout = '5';
-                    break;
-                case 'M':
-                case 'N':
-                    curout = '6';
-                    break;
                 case 'R':
-                    curout = '7';
+                    curout = i == 0 ? '4' : '8';
                     break;
-                case 'S':
-                case 'Z':
-                case 'ß':
-                    curout = '8';
-                    break;
-                default:
-                    prevout = 0;
-                    continue;
+                }
+                break;
+            case 'X':
+                if (prev != 'C' && prev != 'K' && prev != 'Q' && prevout != '4')
+                    out[j++] = prevout = '4';
+                curout = '8';
+                break;
+            case 'L':
+                curout = '5';
+                break;
+            case 'M':
+            case 'N':
+                curout = '6';
+                break;
+            case 'R':
+                curout = '7';
+                break;
+            case 'S':
+            case 'Z':
+            case 'ß':
+                curout = '8';
+                break;
+            default:
+                prevout = 0;
+                continue;
             }
             if (prevout != curout)
                 out[j++] = prevout = curout;

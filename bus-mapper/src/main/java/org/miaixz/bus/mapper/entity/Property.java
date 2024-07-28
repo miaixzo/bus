@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.entity;
 
 import org.miaixz.bus.core.lang.EnumMap;
@@ -158,8 +158,7 @@ public class Property {
     }
 
     /**
-     * 设置全局的schema,默认为空，如果设置了值，操作表时的sql会是schema.tablename
-     * 如果同时设置了catalog,优先使用catalog.tablename
+     * 设置全局的schema,默认为空，如果设置了值，操作表时的sql会是schema.tablename 如果同时设置了catalog,优先使用catalog.tablename
      *
      * @param schema 数据模型
      */
@@ -180,8 +179,8 @@ public class Property {
     }
 
     /**
-     * 序列的获取规则,使用{num}格式化参数，默认值为{0}.nextval，针对Oracle
-     * 可选参数一共3个，对应0,1,2,3分别为SequenceName，ColumnName, PropertyName，TableName
+     * 序列的获取规则,使用{num}格式化参数，默认值为{0}.nextval，针对Oracle 可选参数一共3个，对应0,1,2,3分别为SequenceName，ColumnName,
+     * PropertyName，TableName
      *
      * @param seqFormat 规则
      */
@@ -364,7 +363,6 @@ public class Property {
         if (StringKit.isNotEmpty(ORDER)) {
             setBefore(Boolean.valueOf(ORDER));
         }
-
 
         this.notEmpty = Boolean.valueOf(properties.getProperty("notEmpty"));
         this.enableMethodAnnotation = Boolean.valueOf(properties.getProperty("enableMethodAnnotation"));

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.lang.reflect.TypeReference;
@@ -66,7 +66,8 @@ public class CollectionConverter implements Converter {
      */
     public Collection<?> convert(final Type collectionType, final Type elementType, final Object value) {
         // 兼容EnumSet创建
-        final Collection<?> collection = CollKit.create(TypeKit.getClass(collectionType), TypeKit.getClass(elementType));
+        final Collection<?> collection = CollKit.create(TypeKit.getClass(collectionType),
+                TypeKit.getClass(elementType));
         return CollKit.addAll(collection, value, elementType);
     }
 

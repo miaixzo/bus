@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.solaris.driver;
 
 import com.sun.jna.Memory;
@@ -55,8 +55,7 @@ public final class PsInfo {
 
     private static final SolarisLibc LIBC = SolarisLibc.INSTANCE;
 
-    private static final long PAGE_SIZE = Parsing.parseLongOrDefault(Executor.getFirstAnswer("pagesize"),
-            4096L);
+    private static final long PAGE_SIZE = Parsing.parseLongOrDefault(Executor.getFirstAnswer("pagesize"), 4096L);
 
     /**
      * Reads /proc/pid/psinfo and returns data in a structure
@@ -65,7 +64,8 @@ public final class PsInfo {
      * @return A structure containing information for the requested process
      */
     public static SolarisLibc.SolarisPsInfo queryPsInfo(int pid) {
-        return new SolarisLibc.SolarisPsInfo(Builder.readAllBytesAsBuffer(String.format(Locale.ROOT, "/proc/%d/psinfo", pid)));
+        return new SolarisLibc.SolarisPsInfo(
+                Builder.readAllBytesAsBuffer(String.format(Locale.ROOT, "/proc/%d/psinfo", pid)));
     }
 
     /**
@@ -87,7 +87,8 @@ public final class PsInfo {
      * @return A structure containing information for the requested process
      */
     public static SolarisLibc.SolarisPrUsage queryPrUsage(int pid) {
-        return new SolarisLibc.SolarisPrUsage(Builder.readAllBytesAsBuffer(String.format(Locale.ROOT, "/proc/%d/usage", pid)));
+        return new SolarisLibc.SolarisPrUsage(
+                Builder.readAllBytesAsBuffer(String.format(Locale.ROOT, "/proc/%d/usage", pid)));
     }
 
     /**
@@ -106,7 +107,8 @@ public final class PsInfo {
      * Reads the pr_argc, pr_argv, pr_envp, and pr_dmodel fields from /proc/pid/psinfo
      *
      * @param pid    The process ID
-     * @param psinfo A populated {@link SolarisLibc.SolarisPsInfo} structure containing the offset pointers for these fields
+     * @param psinfo A populated {@link SolarisLibc.SolarisPsInfo} structure containing the offset pointers for these
+     *               fields
      * @return A quartet containing the argc, argv, envp and dmodel values, or null if unable to read
      */
     public static Tuple queryArgsEnvAddrs(int pid, SolarisLibc.SolarisPsInfo psinfo) {
@@ -136,7 +138,8 @@ public final class PsInfo {
      * Read the argument and environment strings from process address space
      *
      * @param pid    the process id
-     * @param psinfo A populated {@link SolarisLibc.SolarisPsInfo} structure containing the offset pointers for these fields
+     * @param psinfo A populated {@link SolarisLibc.SolarisPsInfo} structure containing the offset pointers for these
+     *               fields
      * @return A pair containing a list of the arguments and a map of environment variables
      */
     public static Pair<List<String>, Map<String, String>> queryArgsEnv(int pid, SolarisLibc.SolarisPsInfo psinfo) {
@@ -232,7 +235,7 @@ public final class PsInfo {
      * @return The new starting pointer for the buffer
      */
     private static long conditionallyReadBufferFromStartOfPage(int fd, Memory buffer, size_t bufSize, long bufStart,
-                                                               long addr) {
+            long addr) {
         // If we don't have the right buffer, update it
         if (addr < bufStart || addr - bufStart > PAGE_SIZE) {
             long newStart = Math.floorDiv(addr, PAGE_SIZE) * PAGE_SIZE;

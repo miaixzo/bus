@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.screw.process;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -81,8 +81,7 @@ public abstract class AbstractProcess implements Process {
     }
 
     /**
-     * 过滤表
-     * 存在指定生成和指定不生成，优先级为：如果指定生成，只会生成指定的表，未指定的不会生成，也不会处理忽略表
+     * 过滤表 存在指定生成和指定不生成，优先级为：如果指定生成，只会生成指定的表，未指定的不会生成，也不会处理忽略表
      *
      * @param tables {@link List} 处理前数据
      * @return {@link List} 处理过后的数据
@@ -90,15 +89,15 @@ public abstract class AbstractProcess implements Process {
     protected List<TableSchema> filterTables(List<TableSchema> tables) {
         ProcessConfig produceConfig = config.getProduceConfig();
         if (!Objects.isNull(config) && !Objects.isNull(config.getProduceConfig())) {
-            //指定生成的表名、前缀、后缀任意不为空，按照指定表生成，其余不生成，不会在处理忽略表
+            // 指定生成的表名、前缀、后缀任意不为空，按照指定表生成，其余不生成，不会在处理忽略表
             if (CollKit.isNotEmpty(produceConfig.getDesignatedTableName())
-                    //前缀
+                    // 前缀
                     || CollKit.isNotEmpty(produceConfig.getDesignatedTablePrefix())
-                    //后缀
+                    // 后缀
                     || CollKit.isNotEmpty(produceConfig.getDesignatedTableSuffix())) {
                 return handleDesignated(tables);
             }
-            //处理忽略表
+            // 处理忽略表
             else {
                 return handleIgnore(tables);
             }
@@ -116,30 +115,28 @@ public abstract class AbstractProcess implements Process {
         List<TableSchema> tableSchemas = new ArrayList<>();
         ProcessConfig produceConfig = this.config.getProduceConfig();
         if (!Objects.isNull(config) && !Objects.isNull(produceConfig)) {
-            //指定表名
+            // 指定表名
             if (CollKit.isNotEmpty(produceConfig.getDesignatedTableName())) {
                 List<String> list = produceConfig.getDesignatedTableName();
                 for (String name : list) {
-                    tableSchemas.addAll(tables.stream().filter(j -> j.getTableName().equals(name))
-                            .collect(Collectors.toList()));
+                    tableSchemas.addAll(
+                            tables.stream().filter(j -> j.getTableName().equals(name)).collect(Collectors.toList()));
                 }
             }
-            //指定表名前缀
+            // 指定表名前缀
             if (CollKit.isNotEmpty(produceConfig.getDesignatedTablePrefix())) {
                 List<String> list = produceConfig.getDesignatedTablePrefix();
                 for (String prefix : list) {
-                    tableSchemas
-                            .addAll(tables.stream().filter(j -> j.getTableName().startsWith(prefix))
-                                    .collect(Collectors.toList()));
+                    tableSchemas.addAll(tables.stream().filter(j -> j.getTableName().startsWith(prefix))
+                            .collect(Collectors.toList()));
                 }
             }
-            //指定表名后缀
+            // 指定表名后缀
             if (CollKit.isNotEmpty(produceConfig.getDesignatedTableSuffix())) {
                 List<String> list = produceConfig.getDesignatedTableSuffix();
                 for (String suffix : list) {
-                    tableSchemas
-                            .addAll(tables.stream().filter(j -> j.getTableName().endsWith(suffix))
-                                    .collect(Collectors.toList()));
+                    tableSchemas.addAll(tables.stream().filter(j -> j.getTableName().endsWith(suffix))
+                            .collect(Collectors.toList()));
                 }
             }
             return tableSchemas;
@@ -156,15 +153,14 @@ public abstract class AbstractProcess implements Process {
     private List<TableSchema> handleIgnore(List<TableSchema> tables) {
         ProcessConfig produceConfig = this.config.getProduceConfig();
         if (!Objects.isNull(this.config) && !Objects.isNull(produceConfig)) {
-            //处理忽略表名
+            // 处理忽略表名
             if (CollKit.isNotEmpty(produceConfig.getIgnoreTableName())) {
                 List<String> list = produceConfig.getIgnoreTableName();
                 for (String name : list) {
-                    tables = tables.stream().filter(j -> !j.getTableName().equals(name))
-                            .collect(Collectors.toList());
+                    tables = tables.stream().filter(j -> !j.getTableName().equals(name)).collect(Collectors.toList());
                 }
             }
-            //忽略表名前缀
+            // 忽略表名前缀
             if (CollKit.isNotEmpty(produceConfig.getIgnoreTablePrefix())) {
                 List<String> list = produceConfig.getIgnoreTablePrefix();
                 for (String prefix : list) {
@@ -172,7 +168,7 @@ public abstract class AbstractProcess implements Process {
                             .collect(Collectors.toList());
                 }
             }
-            //忽略表名后缀
+            // 忽略表名后缀
             if (CollKit.isNotEmpty(produceConfig.getIgnoreTableSuffix())) {
                 List<String> list = produceConfig.getIgnoreTableSuffix();
                 for (String suffix : list) {
@@ -218,11 +214,11 @@ public abstract class AbstractProcess implements Process {
         }
         // if file type is markdown
         if (config.getEngineConfig().getFileType().equals(EngineFileType.MD)) {
-            //escape xml
+            // escape xml
             BeanKit.trimStringField(dataModel);
             // columns
             tables.forEach(i -> {
-                //table escape xml
+                // table escape xml
                 BeanKit.trimStringField(i);
                 List<ColumnSchema> columns = i.getColumns();
                 // columns escape xml

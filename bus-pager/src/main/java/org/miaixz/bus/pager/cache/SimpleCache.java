@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager.cache;
 
 import org.apache.ibatis.cache.decorators.FifoCache;
@@ -59,7 +59,8 @@ public class SimpleCache<K, V> implements Cache<K, V> {
         String evictionClass = properties.getProperty(prefix + ".evictionClass");
         if (StringKit.isNotEmpty(evictionClass)) {
             try {
-                cacheBuilder.addDecorator((Class<? extends org.apache.ibatis.cache.Cache>) Class.forName(evictionClass));
+                cacheBuilder
+                        .addDecorator((Class<? extends org.apache.ibatis.cache.Cache>) Class.forName(evictionClass));
             } catch (ClassNotFoundException e) {
                 cacheBuilder.addDecorator(FifoCache.class);
             }

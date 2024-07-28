@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.instance;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -46,8 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public final class InstanceFactory implements Instance {
 
     /**
-     * 单例 map 对象
-     * 1. data 是 class 的全称
+     * 单例 map 对象 1. data 是 class 的全称
      */
     private final Map<String, Object> singletonMap = new ConcurrentHashMap<>();
     /**
@@ -107,16 +106,16 @@ public final class InstanceFactory implements Instance {
     public <T> T threadLocal(Class<T> clazz) {
         this.notNull(clazz);
 
-        //1. 校验 map 是否存在
+        // 1. 校验 map 是否存在
         Map<String, Object> map = mapThreadLocal.get();
         if (ObjectKit.isNull(map)) {
             map = new ConcurrentHashMap<>();
         }
 
-        //2. 获取对象
+        // 2. 获取对象
         T instance = this.getSingleton(clazz, map);
 
-        //3. 更新 threadLocal
+        // 3. 更新 threadLocal
         mapThreadLocal.set(map);
 
         return instance;
@@ -128,8 +127,8 @@ public final class InstanceFactory implements Instance {
 
         try {
             return clazz.getConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-                 InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException
+                | InvocationTargetException e) {
             throw new InternalException(e);
         }
     }
@@ -169,8 +168,7 @@ public final class InstanceFactory implements Instance {
      * @param instanceMap 实例化对象 map
      * @return 单例对象
      */
-    private <T> T getSingleton(final Class<T> clazz,
-                               final String group, final Map<String, Object> instanceMap) {
+    private <T> T getSingleton(final Class<T> clazz, final String group, final Map<String, Object> instanceMap) {
         this.notNull(clazz);
         Assert.notEmpty(group, "id");
 

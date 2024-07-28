@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.codec.binary;
 
 import org.miaixz.bus.core.codec.binary.provider.Base58Provider;
@@ -35,10 +35,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-
 /**
- * Base58工具类，提供Base58的编码和解码方案
- * 参考： <a href="https://github.com/Anujraval24/Base58Encoding">https://github.com/Anujraval24/Base58Encoding</a>
+ * Base58工具类，提供Base58的编码和解码方案 参考：
+ * <a href="https://github.com/Anujraval24/Base58Encoding">https://github.com/Anujraval24/Base58Encoding</a>
  * 规范见：<a href="https://en.bitcoin.it/wiki/Base58Check_encoding">https://en.bitcoin.it/wiki/Base58Check_encoding</a>
  *
  * @author Kimi Liu
@@ -49,8 +48,7 @@ public class Base58 {
     private static final int CHECKSUM_SIZE = 4;
 
     /**
-     * Base58编码
-     * 包含版本位和校验位
+     * Base58编码 包含版本位和校验位
      *
      * @param version 编码版本，{@code null}表示不包含版本位
      * @param data    被编码的数组，添加校验和。
@@ -71,8 +69,7 @@ public class Base58 {
     }
 
     /**
-     * Base58解码
-     * 解码包含标志位验证和版本呢位去除
+     * Base58解码 解码包含标志位验证和版本呢位去除
      *
      * @param encoded 被解码的base58字符串
      * @return 解码后的bytes
@@ -87,8 +84,7 @@ public class Base58 {
     }
 
     /**
-     * Base58解码
-     * 解码包含标志位验证和版本呢位去除
+     * Base58解码 解码包含标志位验证和版本呢位去除
      *
      * @param encoded     被解码的base58字符串
      * @param withVersion 是否包含版本位
@@ -150,8 +146,7 @@ public class Base58 {
     }
 
     /**
-     * 获取校验码
-     * 计算规则为对数据进行两次sha256计算，然后取{@link #CHECKSUM_SIZE}长度
+     * 获取校验码 计算规则为对数据进行两次sha256计算，然后取{@link #CHECKSUM_SIZE}长度
      *
      * @param data 数据
      * @return 校验码

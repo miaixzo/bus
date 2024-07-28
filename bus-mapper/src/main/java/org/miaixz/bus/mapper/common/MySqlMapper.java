@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.common;
 
 import org.miaixz.bus.mapper.annotation.RegisterMapper;
@@ -39,8 +39,6 @@ import org.miaixz.bus.mapper.common.special.InsertUseGeneratedKeysMapper;
  * @since Java 17+
  */
 @RegisterMapper
-public interface MySqlMapper<T> extends
-        InsertListMapper<T>,
-        InsertUseGeneratedKeysMapper<T> {
+public interface MySqlMapper<T> extends InsertListMapper<T>, InsertUseGeneratedKeysMapper<T> {
 
 }

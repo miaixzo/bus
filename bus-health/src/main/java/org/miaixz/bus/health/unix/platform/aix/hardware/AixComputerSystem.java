@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.aix.hardware;
 
 import org.miaixz.bus.core.center.regex.Pattern;
@@ -161,7 +161,7 @@ final class AixComputerSystem extends AbstractComputerSystem {
         private final String uuid;
 
         private LsattrStrings(String biosVendor, String biosPlatformVersion, String biosVersion, String manufacturer,
-                              String model, String serialNumber, String uuid) {
+                String model, String serialNumber, String uuid) {
             this.biosVendor = StringKit.isBlank(biosVendor) ? Normal.UNKNOWN : biosVendor;
             this.biosPlatformVersion = StringKit.isBlank(biosPlatformVersion) ? Normal.UNKNOWN : biosPlatformVersion;
             this.biosVersion = StringKit.isBlank(biosVersion) ? Normal.UNKNOWN : biosVersion;

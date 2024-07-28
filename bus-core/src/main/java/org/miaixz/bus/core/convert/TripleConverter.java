@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.lang.exception.ConvertException;
@@ -39,7 +39,7 @@ import java.util.Map;
 /**
  * {@link Triplet} 转换器，支持以下类型转为Triple：
  * <ul>
- *     <li>Bean，包含{@code getLeft}、{@code getMiddle}和{@code getRight}方法</li>
+ * <li>Bean，包含{@code getLeft}、{@code getMiddle}和{@code getRight}方法</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -60,18 +60,17 @@ public class TripleConverter implements Converter {
      * @param map       被转换的map
      * @return Entry
      */
-    private static Triplet<?, ?, ?> mapToTriple(final Type leftType, final Type middleType, final Type rightType, final Map map) {
+    private static Triplet<?, ?, ?> mapToTriple(final Type leftType, final Type middleType, final Type rightType,
+            final Map map) {
 
         final Object left = map.get("left");
         final Object middle = map.get("middle");
         final Object right = map.get("right");
 
         final CompositeConverter convert = CompositeConverter.getInstance();
-        return Triplet.of(
-                TypeKit.isUnknown(leftType) ? left : convert.convert(leftType, left),
+        return Triplet.of(TypeKit.isUnknown(leftType) ? left : convert.convert(leftType, left),
                 TypeKit.isUnknown(middleType) ? middle : convert.convert(middleType, middle),
-                TypeKit.isUnknown(rightType) ? right : convert.convert(rightType, right)
-        );
+                TypeKit.isUnknown(rightType) ? right : convert.convert(rightType, right));
     }
 
     @Override
@@ -96,8 +95,8 @@ public class TripleConverter implements Converter {
      * @return 转换后的Map
      * @throws ConvertException 转换异常或不支持的类型
      */
-    public Triplet<?, ?, ?> convert(final Type leftType, final Type middleType, final Type rightType, final Object value)
-            throws ConvertException {
+    public Triplet<?, ?, ?> convert(final Type leftType, final Type middleType, final Type rightType,
+            final Object value) throws ConvertException {
         Map map = null;
         if (BeanKit.isReadableBean(value.getClass())) {
             map = BeanKit.beanToMap(value);

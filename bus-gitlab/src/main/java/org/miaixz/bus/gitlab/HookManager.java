@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,24 +49,21 @@ public interface HookManager {
     void setSecretToken(String secretToken);
 
     /**
-     * Validate the provided secret token against the reference secret token. Returns true if
-     * the secret token is valid or there is no reference secret token to validate against,
-     * otherwise returns false.
+     * Validate the provided secret token against the reference secret token. Returns true if the secret token is valid
+     * or there is no reference secret token to validate against, otherwise returns false.
      *
      * @param secretToken the token to validate
      * @return true if the secret token is valid or there is no reference secret token to validate against
      */
     default public boolean isValidSecretToken(String secretToken) {
         String ourSecretToken = getSecretToken();
-        return (ourSecretToken == null ||
-                ourSecretToken.trim().isEmpty() ||
-                ourSecretToken.equals(secretToken) ? true : false);
+        return (ourSecretToken == null || ourSecretToken.trim().isEmpty() || ourSecretToken.equals(secretToken) ? true
+                : false);
     }
 
     /**
-     * Validate the provided secret token found in the HTTP header against the reference secret token.
-     * Returns true if the secret token is valid or there is no reference secret token to validate
-     * against, otherwise returns false.
+     * Validate the provided secret token found in the HTTP header against the reference secret token. Returns true if
+     * the secret token is valid or there is no reference secret token to validate against, otherwise returns false.
      *
      * @param request the HTTP request to verify the secret token
      * @return true if the secret token is valid or there is no reference secret token to validate against
@@ -82,8 +79,7 @@ public interface HookManager {
     }
 
     /**
-     * Parses and verifies an Event instance from the HTTP request and
-     * fires it off to the registered listeners.
+     * Parses and verifies an Event instance from the HTTP request and fires it off to the registered listeners.
      *
      * @param request the HttpServletRequest to read the Event instance from
      * @throws GitLabApiException if the parsed event is not supported

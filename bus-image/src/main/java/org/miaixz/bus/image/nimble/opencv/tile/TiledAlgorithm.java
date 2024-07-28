@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv.tile;
 
 import org.opencv.core.Mat;
@@ -53,22 +53,16 @@ public class TiledAlgorithm {
             throw new IllegalStateException("");
         }
 
-        final int rows =
-                (sourceImage.rows() / mTileSize) + (sourceImage.rows() % mTileSize != 0 ? 1 : 0);
-        final int cols =
-                (sourceImage.cols() / mTileSize) + (sourceImage.cols() % mTileSize != 0 ? 1 : 0);
+        final int rows = (sourceImage.rows() / mTileSize) + (sourceImage.rows() % mTileSize != 0 ? 1 : 0);
+        final int cols = (sourceImage.cols() / mTileSize) + (sourceImage.cols() % mTileSize != 0 ? 1 : 0);
 
         Mat tileInput = new Mat();
         Mat tileOutput = new Mat();
 
         for (int rowTile = 0; rowTile < rows; rowTile++) {
             for (int colTile = 0; colTile < cols; colTile++) {
-                Rect srcTile =
-                        new Rect(
-                                colTile * mTileSize - mPadding,
-                                rowTile * mTileSize - mPadding,
-                                mTileSize + 2 * mPadding,
-                                mTileSize + 2 * mPadding);
+                Rect srcTile = new Rect(colTile * mTileSize - mPadding, rowTile * mTileSize - mPadding,
+                        mTileSize + 2 * mPadding, mTileSize + 2 * mPadding);
                 Rect dstTile = new Rect(colTile * mTileSize, rowTile * mTileSize, mTileSize, mTileSize);
 
                 copySourceTile(sourceImage, tileInput, srcTile);

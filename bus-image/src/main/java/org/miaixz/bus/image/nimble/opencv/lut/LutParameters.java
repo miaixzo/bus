@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv.lut;
 
 import java.util.Objects;
@@ -48,16 +48,8 @@ public class LutParameters {
     private final int bitsOutput;
     private final boolean inversePaddingMLUT;
 
-    public LutParameters(
-            double intercept,
-            double slope,
-            boolean applyPadding,
-            Integer paddingMinValue,
-            Integer paddingMaxValue,
-            int bitsStored,
-            boolean signed,
-            boolean outputSigned,
-            int bitsOutput,
+    public LutParameters(double intercept, double slope, boolean applyPadding, Integer paddingMinValue,
+            Integer paddingMaxValue, int bitsStored, boolean signed, boolean outputSigned, int bitsOutput,
             boolean inversePaddingMLUT) {
         this.intercept = intercept;
         this.slope = slope;
@@ -73,16 +65,14 @@ public class LutParameters {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         LutParameters that = (LutParameters) o;
-        return Double.compare(that.intercept, intercept) == 0
-                && Double.compare(that.slope, slope) == 0
-                && bitsStored == that.bitsStored
-                && signed == that.signed
-                && applyPadding == that.applyPadding
-                && outputSigned == that.outputSigned
-                && bitsOutput == that.bitsOutput
+        return Double.compare(that.intercept, intercept) == 0 && Double.compare(that.slope, slope) == 0
+                && bitsStored == that.bitsStored && signed == that.signed && applyPadding == that.applyPadding
+                && outputSigned == that.outputSigned && bitsOutput == that.bitsOutput
                 && inversePaddingMLUT == that.inversePaddingMLUT
                 && Objects.equals(paddingMinValue, that.paddingMinValue)
                 && Objects.equals(paddingMaxValue, that.paddingMaxValue);
@@ -90,17 +80,8 @@ public class LutParameters {
 
     @Override
     public int hashCode() {
-        return Objects.hash(
-                intercept,
-                slope,
-                paddingMinValue,
-                paddingMaxValue,
-                bitsStored,
-                signed,
-                applyPadding,
-                outputSigned,
-                bitsOutput,
-                inversePaddingMLUT);
+        return Objects.hash(intercept, slope, paddingMinValue, paddingMaxValue, bitsStored, signed, applyPadding,
+                outputSigned, bitsOutput, inversePaddingMLUT);
     }
 
     public double getIntercept() {

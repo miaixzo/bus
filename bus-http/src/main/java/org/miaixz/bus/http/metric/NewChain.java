@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric;
 
 import org.miaixz.bus.http.NewCall;
@@ -56,8 +56,7 @@ public interface NewChain {
     Response proceed(Request request) throws IOException;
 
     /**
-     * 返回将执行请求的连接。这只在网络拦截器链中可用;
-     * 对于应用程序拦截器，这总是null
+     * 返回将执行请求的连接。这只在网络拦截器链中可用; 对于应用程序拦截器，这总是null
      *
      * @return 连接信息
      */

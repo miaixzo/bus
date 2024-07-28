@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv.seg;
 
 import org.miaixz.bus.core.xyz.StringKit;
@@ -73,8 +73,7 @@ public class RegionAttributes implements Comparable<RegionAttributes> {
         this.numberOfPixels = -1;
     }
 
-    public static <E extends RegionAttributes> Map<String, List<E>> groupRegions(
-            Collection<E> regions) {
+    public static <E extends RegionAttributes> Map<String, List<E>> groupRegions(Collection<E> regions) {
         Map<String, List<E>> map = new HashMap<>();
         for (E region : regions) {
             String prefix = region.getPrefix();
@@ -99,12 +98,7 @@ public class RegionAttributes implements Comparable<RegionAttributes> {
         if (colorRgb == null || colorRgb.length < 3) {
             byte[][] lut = ColorLut.MULTICOLOR.getByteLut().lutTable();
             int lutIndex = contourID % 256;
-            rgbColor =
-                    new Color(
-                            lut[0][lutIndex] & 0xFF,
-                            lut[1][lutIndex] & 0xFF,
-                            lut[2][lutIndex] & 0xFF,
-                            opacityInt);
+            rgbColor = new Color(lut[0][lutIndex] & 0xFF, lut[1][lutIndex] & 0xFF, lut[2][lutIndex] & 0xFF, opacityInt);
         } else {
             rgbColor = new Color(colorRgb[0], colorRgb[1], colorRgb[2], opacityInt);
         }
@@ -176,8 +170,7 @@ public class RegionAttributes implements Comparable<RegionAttributes> {
     }
 
     /**
-     * @param interiorOpacity the opacity of the interior of the contour. The value is between 0.0 and
-     *                        1.0.
+     * @param interiorOpacity the opacity of the interior of the contour. The value is between 0.0 and 1.0.
      */
     public void setInteriorOpacity(float interiorOpacity) {
         this.interiorOpacity = Math.max(0.0f, Math.min(interiorOpacity, 1.0f));

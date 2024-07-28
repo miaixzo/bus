@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.driver;
 
 import org.miaixz.bus.core.center.regex.Pattern;
@@ -50,7 +50,8 @@ import java.util.regex.Matcher;
 @ThreadSafe
 public final class Xwininfo {
 
-    private static final String[] NET_CLIENT_LIST_STACKING = Pattern.SPACES_PATTERN.split("xprop -root _NET_CLIENT_LIST_STACKING");
+    private static final String[] NET_CLIENT_LIST_STACKING = Pattern.SPACES_PATTERN
+            .split("xprop -root _NET_CLIENT_LIST_STACKING");
     private static final String[] XWININFO_ROOT_TREE = Pattern.SPACES_PATTERN.split("xwininfo -root -tree");
     private static final String[] XPROP_NET_WM_PID_ID = Pattern.SPACES_PATTERN.split("xprop _NET_WM_PID -id");
 
@@ -103,9 +104,10 @@ public final class Xwininfo {
                     if (!StringKit.isBlank(windowPath)) {
                         windowPathMap.put(id, windowPath);
                     }
-                    windowMap.put(id, new Rectangle(Parsing.parseIntOrDefault(m.group(6), 0),
-                            Parsing.parseIntOrDefault(m.group(7), 0), Parsing.parseIntOrDefault(m.group(4), 0),
-                            Parsing.parseIntOrDefault(m.group(5), 0)));
+                    windowMap.put(id,
+                            new Rectangle(Parsing.parseIntOrDefault(m.group(6), 0),
+                                    Parsing.parseIntOrDefault(m.group(7), 0), Parsing.parseIntOrDefault(m.group(4), 0),
+                                    Parsing.parseIntOrDefault(m.group(5), 0)));
                 }
             }
         }
@@ -116,8 +118,9 @@ public final class Xwininfo {
             String id = e.getKey();
             long pid = queryPidFromId(id);
             boolean visible = zOrderMap.containsKey(id);
-            windowList.add(new OSDesktopWindow(Parsing.hexStringToLong(id, 0L), windowNameMap.getOrDefault(id, Normal.EMPTY),
-                    windowPathMap.getOrDefault(id, Normal.EMPTY), e.getValue(), pid, zOrderMap.getOrDefault(id, 0), visible));
+            windowList.add(new OSDesktopWindow(Parsing.hexStringToLong(id, 0L),
+                    windowNameMap.getOrDefault(id, Normal.EMPTY), windowPathMap.getOrDefault(id, Normal.EMPTY),
+                    e.getValue(), pid, zOrderMap.getOrDefault(id, 0), visible));
         }
         return windowList;
     }

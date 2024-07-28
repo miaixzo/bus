@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date;
 
 import org.miaixz.bus.core.center.date.culture.en.Modify;
@@ -88,12 +88,12 @@ public class Calendar extends Calculate {
             // 统一时区
             cal2 = calendar(cal2, cal1.getTimeZone());
         }
-        return isSameYear(cal1, cal2) && cal1.get(java.util.Calendar.DAY_OF_YEAR) == cal2.get(java.util.Calendar.DAY_OF_YEAR);
+        return isSameYear(cal1, cal2)
+                && cal1.get(java.util.Calendar.DAY_OF_YEAR) == cal2.get(java.util.Calendar.DAY_OF_YEAR);
     }
 
     /**
-     * 比较两个日期是否为同一周
-     * 同一个周的意思是：ERA（公元）、year（年）、month（月）、week（周）都一致。
+     * 比较两个日期是否为同一周 同一个周的意思是：ERA（公元）、year（年）、month（月）、week（周）都一致。
      *
      * @param cal1  日期1
      * @param cal2  日期2
@@ -132,8 +132,7 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 比较两个日期是否为同一月
-     * 同一个月的意思是：ERA（公元）、year（年）、month（月）都一致。
+     * 比较两个日期是否为同一月 同一个月的意思是：ERA（公元）、year（年）、month（月）都一致。
      *
      * @param cal1 日期1
      * @param cal2 日期2
@@ -149,8 +148,7 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 比较两个日期是否为同一年
-     * 同一个年的意思是：ERA（公元）、year（年）都一致。
+     * 比较两个日期是否为同一年 同一个年的意思是：ERA（公元）、year（年）都一致。
      *
      * @param cal1 日期1
      * @param cal2 日期2
@@ -166,13 +164,12 @@ public class Calendar extends Calculate {
             cal2 = calendar(cal2, cal1.getTimeZone());
         }
 
-        return cal1.get(java.util.Calendar.YEAR) == cal2.get(java.util.Calendar.YEAR) &&
-                cal1.get(java.util.Calendar.ERA) == cal2.get(java.util.Calendar.ERA);
+        return cal1.get(java.util.Calendar.YEAR) == cal2.get(java.util.Calendar.YEAR)
+                && cal1.get(java.util.Calendar.ERA) == cal2.get(java.util.Calendar.ERA);
     }
 
     /**
-     * 检查两个Calendar时间戳是否相同
-     * 此方法检查两个Calendar的毫秒数时间戳是否相同
+     * 检查两个Calendar时间戳是否相同 此方法检查两个Calendar的毫秒数时间戳是否相同
      *
      * @param date1 时间1
      * @param date2 时间2
@@ -206,7 +203,8 @@ public class Calendar extends Calculate {
      * @return 是否为本月最后一天
      */
     public static boolean isLastDayOfMonth(final java.util.Calendar calendar) {
-        return calendar.get(java.util.Calendar.DAY_OF_MONTH) == calendar.getActualMaximum(java.util.Calendar.DAY_OF_MONTH);
+        return calendar.get(java.util.Calendar.DAY_OF_MONTH) == calendar
+                .getActualMaximum(java.util.Calendar.DAY_OF_MONTH);
     }
 
     /**
@@ -313,8 +311,7 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 修改日期为某个时间字段结束时间
-     * 可选是否归零毫秒。
+     * 修改日期为某个时间字段结束时间 可选是否归零毫秒。
      *
      * <p>
      * 有时候由于毫秒部分必须为0（如MySQL数据库中），因此在此加上选项。
@@ -325,7 +322,8 @@ public class Calendar extends Calculate {
      * @param truncateMillisecond 是否毫秒归零
      * @return 原{@link Calendar}
      */
-    public static java.util.Calendar ceiling(final java.util.Calendar calendar, final Various various, final boolean truncateMillisecond) {
+    public static java.util.Calendar ceiling(final java.util.Calendar calendar, final Various various,
+            final boolean truncateMillisecond) {
         return Modifier.modify(calendar, various.getValue(), Modify.CEILING, truncateMillisecond);
     }
 
@@ -524,14 +522,14 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 获得指定日期年份和季度
-     * 格式：[20131]表示2013年第一季度
+     * 获得指定日期年份和季度 格式：[20131]表示2013年第一季度
      *
      * @param cal 日期
      * @return 年和季度，格式类似于20131
      */
     public static String yearAndQuarter(final java.util.Calendar cal) {
-        return StringKit.builder().append(cal.get(java.util.Calendar.YEAR)).append(cal.get(java.util.Calendar.MONTH) / 3 + 1).toString();
+        return StringKit.builder().append(cal.get(java.util.Calendar.YEAR))
+                .append(cal.get(java.util.Calendar.MONTH) / 3 + 1).toString();
     }
 
     /**
@@ -589,8 +587,7 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 获得日期的某个部分
-     * 例如获得年的部分，则使用 getField(DatePart.YEAR)
+     * 获得日期的某个部分 例如获得年的部分，则使用 getField(DatePart.YEAR)
      *
      * @param calendar {@link java.util.Calendar}
      * @param field    表示日期的哪个部分的枚举 {@link Various}
@@ -672,7 +669,6 @@ public class Calendar extends Calculate {
         result.delete(0, result.length());
         result.append(temp);
 
-
         if (withTime) {
             // 时
             final int hour = calendar.get(java.util.Calendar.HOUR_OF_DAY);
@@ -692,9 +688,8 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 通过给定的日期格式解析日期时间字符串。
-     * 传入的日期格式会逐个尝试，直到解析成功，返回{@link java.util.Calendar}对象，否则抛出{@link DateException}异常。
-     * 方法来自：Apache Commons-Lang3
+     * 通过给定的日期格式解析日期时间字符串。 传入的日期格式会逐个尝试，直到解析成功，返回{@link java.util.Calendar}对象，否则抛出{@link DateException}异常。 方法来自：Apache
+     * Commons-Lang3
      *
      * @param text          日期时间字符串，非空
      * @param parsePatterns 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
@@ -702,14 +697,14 @@ public class Calendar extends Calculate {
      * @throws IllegalArgumentException 如果日期字符串或模式数组为空
      * @throws DateException            如果没有合适的日期模式
      */
-    public static java.util.Calendar parseByPatterns(final CharSequence text, final String... parsePatterns) throws DateException {
+    public static java.util.Calendar parseByPatterns(final CharSequence text, final String... parsePatterns)
+            throws DateException {
         return parseByPatterns(text, null, parsePatterns);
     }
 
     /**
-     * 通过给定的日期格式解析日期时间字符串。
-     * 传入的日期格式会逐个尝试，直到解析成功，返回{@link java.util.Calendar}对象，否则抛出{@link DateException}异常。
-     * 方法来自：Apache Commons-Lang3
+     * 通过给定的日期格式解析日期时间字符串。 传入的日期格式会逐个尝试，直到解析成功，返回{@link java.util.Calendar}对象，否则抛出{@link DateException}异常。 方法来自：Apache
+     * Commons-Lang3
      *
      * @param text          日期时间字符串，非空
      * @param locale        地区，当为{@code null}时使用{@link Locale#getDefault()}
@@ -718,14 +713,14 @@ public class Calendar extends Calculate {
      * @throws IllegalArgumentException 如果日期字符串或模式数组为空
      * @throws DateException            如果没有合适的日期模式
      */
-    public static java.util.Calendar parseByPatterns(final CharSequence text, final Locale locale, final String... parsePatterns) throws DateException {
+    public static java.util.Calendar parseByPatterns(final CharSequence text, final Locale locale,
+            final String... parsePatterns) throws DateException {
         return parseByPatterns(text, locale, true, parsePatterns);
     }
 
     /**
-     * 通过给定的日期格式解析日期时间字符串。
-     * 传入的日期格式会逐个尝试，直到解析成功，返回{@link java.util.Calendar}对象，否则抛出{@link DateException}异常。
-     * 方法来自：Apache Commons-Lang3
+     * 通过给定的日期格式解析日期时间字符串。 传入的日期格式会逐个尝试，直到解析成功，返回{@link java.util.Calendar}对象，否则抛出{@link DateException}异常。 方法来自：Apache
+     * Commons-Lang3
      *
      * @param text          日期时间字符串，非空
      * @param locale        地区，当为{@code null}时使用{@link Locale#getDefault()}
@@ -736,7 +731,8 @@ public class Calendar extends Calculate {
      * @throws DateException            如果没有合适的日期模式
      * @see java.util.Calendar#isLenient()
      */
-    public static java.util.Calendar parseByPatterns(final CharSequence text, final Locale locale, final boolean lenient, final String... parsePatterns) throws DateException {
+    public static java.util.Calendar parseByPatterns(final CharSequence text, final Locale locale,
+            final boolean lenient, final String... parsePatterns) throws DateException {
         if (text == null || parsePatterns == null) {
             throw new IllegalArgumentException("Date and Patterns must not be null");
         }
@@ -780,7 +776,8 @@ public class Calendar extends Calculate {
      * @param parser  {@link DateParser}
      * @return 解析后的 {@link java.util.Calendar}，解析失败返回{@code null}
      */
-    public static java.util.Calendar parse(final CharSequence text, final boolean lenient, final PositionDateParser parser) {
+    public static java.util.Calendar parse(final CharSequence text, final boolean lenient,
+            final PositionDateParser parser) {
         Assert.notBlank(text, "Date text must be not blank!");
         Assert.notNull(parser, "Parser must be not null!");
         final java.util.Calendar calendar = java.util.Calendar.getInstance(parser.getTimeZone(), parser.getLocale());
@@ -819,8 +816,8 @@ public class Calendar extends Calculate {
      * 计算相对于dateToCompare的年龄，常用于计算指定生日在某年的年龄
      * 按照《最高人民法院关于审理未成年人刑事案件具体应用法律若干问题的解释》第二条规定刑法第十七条规定的“周岁”，按照公历的年、月、日计算，从周岁生日的第二天起算。
      * <ul>
-     *     <li>2022-03-01出生，则相对2023-03-01，周岁为0，相对于2023-03-02才是1岁。</li>
-     *     <li>1999-02-28出生，则相对2000-02-29，周岁为1</li>
+     * <li>2022-03-01出生，则相对2023-03-01，周岁为0，相对于2023-03-02才是1岁。</li>
+     * <li>1999-02-28出生，则相对2000-02-29，周岁为1</li>
      * </ul>
      *
      * @param birthday      生日
@@ -835,8 +832,8 @@ public class Calendar extends Calculate {
      * 计算相对于dateToCompare的年龄（周岁），常用于计算指定生日在某年的年龄
      * 按照《最高人民法院关于审理未成年人刑事案件具体应用法律若干问题的解释》第二条规定刑法第十七条规定的“周岁”，按照公历的年、月、日计算，从周岁生日的第二天起算。
      * <ul>
-     *     <li>2022-03-01出生，则相对2023-03-01，周岁为0，相对于2023-03-02才是1岁。</li>
-     *     <li>1999-02-28出生，则相对2000-02-29，周岁为1</li>
+     * <li>2022-03-01出生，则相对2023-03-01，周岁为0，相对于2023-03-02才是1岁。</li>
+     * <li>1999-02-28出生，则相对2000-02-29，周岁为1</li>
      * </ul>
      *
      * @param birthday      生日
@@ -858,7 +855,7 @@ public class Calendar extends Calculate {
         // 复用cal
         cal.setTimeInMillis(birthday);
         int age = year - cal.get(java.util.Calendar.YEAR);
-        //当前日期，则为0岁
+        // 当前日期，则为0岁
         if (age == 0) {
             return 0;
         }

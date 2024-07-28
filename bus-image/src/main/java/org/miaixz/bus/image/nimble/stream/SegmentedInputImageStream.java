@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.stream;
 
 import org.miaixz.bus.core.xyz.ByteKit;
@@ -43,10 +43,9 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Treats a specified portion of an image input stream as it's own input stream.  Can handle open-ended
- * specified sub-regions by specifying a -1 frame, which will treat all fragments as though they are part
- * of the segment, and will look for new segments in the DICOM original data once the first part
- * is read past.
+ * Treats a specified portion of an image input stream as it's own input stream. Can handle open-ended specified
+ * sub-regions by specifying a -1 frame, which will treat all fragments as though they are part of the segment, and will
+ * look for new segments in the DICOM original data once the first part is read past.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -64,11 +63,11 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
     private ImageDescriptor imageDescriptor;
 
     /**
-     * Create a segmented input stream, that updates the bulk data entries as required, frameIndex
-     * of -1 means the entire object/value.
+     * Create a segmented input stream, that updates the bulk data entries as required, frameIndex of -1 means the
+     * entire object/value.
      */
-    public SegmentedInputImageStream(ImageInputStream stream,
-                                     Fragments pixeldataFragments, int frameIndex) throws IOException {
+    public SegmentedInputImageStream(ImageInputStream stream, Fragments pixeldataFragments, int frameIndex)
+            throws IOException {
         if (frameIndex == -1) {
             frameIndex = 0;
         } else {
@@ -81,7 +80,8 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
         seek(0);
     }
 
-    public SegmentedInputImageStream(ImageInputStream iis, long streamPosition, int length, boolean singleFrame) throws IOException {
+    public SegmentedInputImageStream(ImageInputStream iis, long streamPosition, int length, boolean singleFrame)
+            throws IOException {
         fragments = new Fragments(VR.OB, false, 16);
         if (!singleFrame) {
             lastSegment = 2;
@@ -93,9 +93,9 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
     }
 
     /**
-     * Just read from the raw data segment - this gets converted to an in-memory fragments object,
-     * which is then handled as a single fragment, with no basic offset table. Basically just an easy
-     * way to get an image input stream on a byte array.
+     * Just read from the raw data segment - this gets converted to an in-memory fragments object, which is then handled
+     * as a single fragment, with no basic offset table. Basically just an easy way to get an image input stream on a
+     * byte array.
      */
     public SegmentedInputImageStream(byte[] data) throws IOException {
         stream = null;
@@ -200,7 +200,8 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
         byte[] data = new byte[8];
         stream.seek(testOffset);
         int size = stream.read(data);
-        if (size < 8) return null;
+        if (size < 8)
+            return null;
         int tag = ByteKit.bytesToTagLE(data, 0);
         if (tag == Tag.SequenceDelimitationItem) {
             // Safe to read un-protected now as we know there are no more items to update.
@@ -208,7 +209,8 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
             return null;
         }
         if (tag != Tag.Item) {
-            throw new IOException("At " + testOffset + " isn't an Item(" + Integer.toHexString(Tag.Item) + "), but is " + Integer.toHexString(tag));
+            throw new IOException("At " + testOffset + " isn't an Item(" + Integer.toHexString(Tag.Item) + "), but is "
+                    + Integer.toHexString(tag));
         }
         int itemLen = ByteKit.bytesToIntLE(data, 4);
         BulkData bulk;
@@ -289,8 +291,8 @@ public class SegmentedInputImageStream extends ImageInputStreamImpl {
     }
 
     /**
-     * Reads all bytes from this input stream and writes the bytes to the given output stream. This method
-     * does not close either stream.
+     * Reads all bytes from this input stream and writes the bytes to the given output stream. This method does not
+     * close either stream.
      *
      * @param out the output stream, non-null
      * @return the number of bytes transferred

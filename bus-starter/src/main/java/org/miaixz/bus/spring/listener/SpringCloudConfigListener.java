@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.spring.listener;
 
 import org.miaixz.bus.core.xyz.ClassKit;
@@ -45,16 +45,15 @@ import java.util.*;
 import java.util.stream.StreamSupport;
 
 /**
- * 实现{@link ApplicationListener<ApplicationEnvironmentPreparedEvent>}以适应spring cloud环境
- * 用于将日志属性注册到spring cloud引导环境。
+ * 实现{@link ApplicationListener<ApplicationEnvironmentPreparedEvent>}以适应spring cloud环境 用于将日志属性注册到spring cloud引导环境。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SpringCloudConfigListener implements ApplicationListener<ApplicationEnvironmentPreparedEvent>, Ordered {
 
-    private final static MapPropertySource HIGH_PRIORITY_CONFIG = new MapPropertySource(
-            GeniusBuilder.BUS_HIGH_PRIORITY, new HashMap<>());
+    private final static MapPropertySource HIGH_PRIORITY_CONFIG = new MapPropertySource(GeniusBuilder.BUS_HIGH_PRIORITY,
+            new HashMap<>());
 
     /**
      * 配置日志信息
@@ -64,8 +63,7 @@ public class SpringCloudConfigListener implements ApplicationListener<Applicatio
     private void assemblyLogSetting(ConfigurableEnvironment environment) {
         StreamSupport.stream(environment.getPropertySources().spliterator(), false)
                 .filter(propertySource -> propertySource instanceof EnumerablePropertySource)
-                .map(propertySource -> Arrays
-                        .asList(((EnumerablePropertySource<?>) propertySource).getPropertyNames()))
+                .map(propertySource -> Arrays.asList(((EnumerablePropertySource<?>) propertySource).getPropertyNames()))
                 .flatMap(Collection::stream).filter(GeniusBuilder::isLoggingConfig)
                 .forEach((key) -> HIGH_PRIORITY_CONFIG.getSource().put(key, environment.getProperty(key)));
     }
@@ -112,9 +110,9 @@ public class SpringCloudConfigListener implements ApplicationListener<Applicatio
 
                 SpringApplication bootstrapApplication = new SpringApplicationBuilder()
                         .profiles(environment.getActiveProfiles()).bannerMode(Banner.Mode.OFF)
-                        .environment(bootstrapEnvironment).sources(sources.toArray(new Class[]{}))
-                        .registerShutdownHook(false).logStartupInfo(false).web(WebApplicationType.NONE)
-                        .listeners().initializers().build(event.getArgs());
+                        .environment(bootstrapEnvironment).sources(sources.toArray(new Class[] {}))
+                        .registerShutdownHook(false).logStartupInfo(false).web(WebApplicationType.NONE).listeners()
+                        .initializers().build(event.getArgs());
 
                 ConfigurableBootstrapContext bootstrapContext = event.getBootstrapContext();
                 ApplicationEnvironmentPreparedEvent bootstrapEvent = new ApplicationEnvironmentPreparedEvent(

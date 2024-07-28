@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto;
 
 import org.miaixz.bus.core.xyz.SPIKit;
@@ -53,8 +53,7 @@ public class Holder {
     }
 
     /**
-     * 设置是否使用自定义的{@link java.security.Provider}
-     * 如果设置为false，表示使用JDK默认的Provider
+     * 设置是否使用自定义的{@link java.security.Provider} 如果设置为false，表示使用JDK默认的Provider
      *
      * @param isUseCustomProvider 是否使用自定义{@link java.security.Provider}
      */

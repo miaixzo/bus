@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.loader;
 
 import org.miaixz.bus.core.io.resource.Resource;
@@ -33,9 +33,7 @@ import java.io.IOException;
 import java.util.Enumeration;
 
 /**
- * 资源加载器,充分采用惰性加载的逻辑,
- * 让资源的加载延后到{@link Enumeration#hasMoreElements()}
- * 调用时,避免无用的提前全部预加载
+ * 资源加载器,充分采用惰性加载的逻辑, 让资源的加载延后到{@link Enumeration#hasMoreElements()} 调用时,避免无用的提前全部预加载
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -43,8 +41,7 @@ import java.util.Enumeration;
 public interface Loader {
 
     /**
-     * 加载指定路径的所有资源,等效于Loader.load(path, false, Filters.ALWAYS)的调用
-     * 通常情况下不递归加载,但是子类可以改变此方法的行为,
+     * 加载指定路径的所有资源,等效于Loader.load(path, false, Filters.ALWAYS)的调用 通常情况下不递归加载,但是子类可以改变此方法的行为,
      * 例如ANT风格路径的资源加载器可以根据传入表达式来判断是否递归加载
      *
      * @param path 资源路径
@@ -74,8 +71,7 @@ public interface Loader {
     Enumeration<Resource> load(String path, Filter clazz) throws IOException;
 
     /**
-     * 加载动态库信息
-     * 例如: .dll/.so等
+     * 加载动态库信息 例如: .dll/.so等
      *
      * @param path  资源路径
      * @param clazz 对象信息

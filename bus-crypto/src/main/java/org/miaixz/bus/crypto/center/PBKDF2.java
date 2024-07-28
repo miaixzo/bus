@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.center;
 
 import org.miaixz.bus.core.lang.Algorithm;
@@ -35,8 +35,7 @@ import javax.crypto.SecretKey;
 import javax.crypto.spec.PBEKeySpec;
 
 /**
- * PBKDF2应用一个伪随机函数以导出密钥，PBKDF2简单而言就是将salted hash进行多次重复计算。
- * 参考：https://blog.csdn.net/huoji555/article/details/83659687
+ * PBKDF2应用一个伪随机函数以导出密钥，PBKDF2简单而言就是将salted hash进行多次重复计算。 参考：https://blog.csdn.net/huoji555/article/details/83659687
  *
  * @author Kimi Liu
  * @since Java 17+

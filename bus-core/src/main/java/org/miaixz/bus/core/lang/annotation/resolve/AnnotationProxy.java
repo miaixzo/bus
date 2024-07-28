@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.annotation.resolve;
 
 import org.miaixz.bus.core.lang.annotation.Alias;
@@ -39,8 +39,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 注解代理
- * 通过代理指定注解，可以自定义调用注解的方法逻辑，如支持{@link Alias} 注解
+ * 注解代理 通过代理指定注解，可以自定义调用注解的方法逻辑，如支持{@link Alias} 注解
  *
  * @param <T> 注解类型
  * @author Kimi Liu
@@ -74,7 +73,6 @@ public class AnnotationProxy<T extends Annotation> implements Annotation, Invoca
         this.attributes = initAttributes();
     }
 
-
     @Override
     public Class<? extends Annotation> annotationType() {
         return type;
@@ -102,8 +100,7 @@ public class AnnotationProxy<T extends Annotation> implements Annotation, Invoca
     }
 
     /**
-     * 初始化注解的属性
-     * 此方法预先调用所有注解的方法，将注解方法值缓存于attributes中
+     * 初始化注解的属性 此方法预先调用所有注解的方法，将注解方法值缓存于attributes中
      *
      * @return 属性（方法结果）映射
      */

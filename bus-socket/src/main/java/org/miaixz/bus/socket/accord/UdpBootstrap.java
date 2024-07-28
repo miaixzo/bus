@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket.accord;
 
 import org.miaixz.bus.socket.Context;
@@ -117,7 +117,7 @@ public class UdpBootstrap {
      */
     public UdpChannel open(String host, int port) throws IOException {
         // 初始化内存池
-        //初始化内存池
+        // 初始化内存池
         if (writeBufferPool == null) {
             this.writeBufferPool = BufferPagePool.DEFAULT_BUFFER_PAGE_POOL;
         }
@@ -131,11 +131,11 @@ public class UdpBootstrap {
             worker = new Worker(readBufferPool.allocateBufferPage(), writeBufferPool, this.context.getThreadNum());
         }
 
-
         DatagramChannel channel = DatagramChannel.open();
         channel.configureBlocking(false);
         if (port > 0) {
-            InetSocketAddress inetSocketAddress = host == null ? new InetSocketAddress(port) : new InetSocketAddress(host, port);
+            InetSocketAddress inetSocketAddress = host == null ? new InetSocketAddress(port)
+                    : new InetSocketAddress(host, port);
             channel.socket().bind(inetSocketAddress);
         }
         return new UdpChannel(channel, worker, this.context, writeBufferPool.allocateBufferPage());
@@ -174,9 +174,7 @@ public class UdpBootstrap {
     }
 
     /**
-     * 设置内存池
-     * 通过该方法设置的内存池，在AioServer执行shutdown时不会触发内存池的释放。
-     * 该方法适用于多个AioServer、AioClient共享内存池的场景。
+     * 设置内存池 通过该方法设置的内存池，在AioServer执行shutdown时不会触发内存池的释放。 该方法适用于多个AioServer、AioClient共享内存池的场景。
      * <b>在启用内存池的情况下会有更好的性能表现</b>
      *
      * @param bufferPool 内存池对象
@@ -189,4 +187,3 @@ public class UdpBootstrap {
     }
 
 }
-

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.support;
 
 import org.apache.ibatis.cache.Cache;
@@ -116,7 +116,7 @@ public class Reflector {
     }
 
     private static ClassLoader[] getClassLoaders() {
-        return new ClassLoader[]{Thread.currentThread().getContextClassLoader(), Reflector.class.getClassLoader()};
+        return new ClassLoader[] { Thread.currentThread().getContextClassLoader(), Reflector.class.getClassLoader() };
     }
 
     /**

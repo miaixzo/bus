@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_VOLUME;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,29 +46,30 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.ResamplingFlag:
-            case PrivateTag.NormalizationFlag:
-                return VR.CS;
-            case PrivateTag.VoxelSpacing:
-            case PrivateTag.VolumePositionPatient:
-            case PrivateTag.VolumeOrientationPatient:
-                return VR.DS;
-            case PrivateTag.VolumeLevel:
-                return VR.IS;
-            case PrivateTag.VolumeHistogram:
-            case PrivateTag.VolumeHistogramData:
-                return VR.OB;
-            case PrivateTag.SubVolumeSequence:
-                return VR.SQ;
-            case PrivateTag.HistogramNumberOfBins:
-                return VR.UL;
-            case PrivateTag.Slices:
-                return VR.US;
+
+        case PrivateTag.ResamplingFlag:
+        case PrivateTag.NormalizationFlag:
+            return VR.CS;
+        case PrivateTag.VoxelSpacing:
+        case PrivateTag.VolumePositionPatient:
+        case PrivateTag.VolumeOrientationPatient:
+            return VR.DS;
+        case PrivateTag.VolumeLevel:
+            return VR.IS;
+        case PrivateTag.VolumeHistogram:
+        case PrivateTag.VolumeHistogramData:
+            return VR.OB;
+        case PrivateTag.SubVolumeSequence:
+            return VR.SQ;
+        case PrivateTag.HistogramNumberOfBins:
+            return VR.UL;
+        case PrivateTag.Slices:
+            return VR.US;
         }
         return VR.UN;
     }

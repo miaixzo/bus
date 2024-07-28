@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.software.common;
 
 import com.sun.jna.Platform;
@@ -52,7 +52,8 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
     protected static final boolean USE_WHO_COMMAND = Config.get(Config._UNIX_WHOCOMMAND, false);
 
     private final Supplier<String> manufacturer = Memoizer.memoize(this::queryManufacturer);
-    private final Supplier<Pair<String, OSVersionInfo>> familyVersionInfo = Memoizer.memoize(this::queryFamilyVersionInfo);
+    private final Supplier<Pair<String, OSVersionInfo>> familyVersionInfo = Memoizer
+            .memoize(this::queryFamilyVersionInfo);
     private final Supplier<Integer> bitness = Memoizer.memoize(this::queryPlatformBitness);
 
     /**
@@ -65,7 +66,7 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
      * @return Set of children or descendants of parentPid
      */
     protected static Set<Integer> getChildrenOrDescendants(Collection<OSProcess> allProcs, int parentPid,
-                                                           boolean allDescendants) {
+            boolean allDescendants) {
         Map<Integer, Integer> parentPidMap = allProcs.stream()
                 .collect(Collectors.toMap(OSProcess::getProcessID, OSProcess::getParentProcessID));
         return getChildrenOrDescendants(parentPidMap, parentPid, allDescendants);
@@ -81,7 +82,7 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
      * @return Set of children or descendants of parentPid, including the parent
      */
     protected static Set<Integer> getChildrenOrDescendants(Map<Integer, Integer> parentPidMap, int parentPid,
-                                                           boolean allDescendants) {
+            boolean allDescendants) {
         // Set to hold results
         Set<Integer> descendantPids = new HashSet<>();
         descendantPids.add(parentPid);
@@ -159,7 +160,7 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
 
     @Override
     public List<OSProcess> getChildProcesses(int parentPid, Predicate<OSProcess> filter, Comparator<OSProcess> sort,
-                                             int limit) {
+            int limit) {
         // Get this pid and its children
         List<OSProcess> childProcs = queryChildProcesses(parentPid);
         // Extract the parent from the list
@@ -177,7 +178,7 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
 
     @Override
     public List<OSProcess> getDescendantProcesses(int parentPid, Predicate<OSProcess> filter,
-                                                  Comparator<OSProcess> sort, int limit) {
+            Comparator<OSProcess> sort, int limit) {
         // Get this pid and its descendants
         List<OSProcess> descendantProcs = queryDescendantProcesses(parentPid);
         // Extract the parent from the list
@@ -185,7 +186,8 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
         // Get the parent's start time
         long parentStartTime = parent == null ? 0 : parent.getStartTime();
         // Get descendants after parent
-        return queryDescendantProcesses(parentPid).stream().filter(filter == null ? ProcessFiltering.ALL_PROCESSES : filter)
+        return queryDescendantProcesses(parentPid).stream()
+                .filter(filter == null ? ProcessFiltering.ALL_PROCESSES : filter)
                 .filter(p -> p.getProcessID() != parentPid && p.getStartTime() >= parentStartTime)
                 .sorted(sort == null ? ProcessSorting.NO_SORTING : sort).limit(limit > 0 ? limit : Long.MAX_VALUE)
                 .collect(Collectors.toList());
@@ -196,7 +198,8 @@ public abstract class AbstractOperatingSystem implements OperatingSystem {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(getManufacturer()).append(Symbol.C_SPACE).append(getFamily()).append(Symbol.C_SPACE).append(getVersionInfo());
+        sb.append(getManufacturer()).append(Symbol.C_SPACE).append(getFamily()).append(Symbol.C_SPACE)
+                .append(getVersionInfo());
         return sb.toString();
     }
 

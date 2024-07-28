@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.lang.Charset;
@@ -36,8 +36,7 @@ import java.nio.CharBuffer;
 import java.util.Arrays;
 
 /**
- * {@link ByteBuffer} 、{@link CharBuffer}工具类
- * 此工具来自于 t-io 项目以及其它项目的相关部分收集
+ * {@link ByteBuffer} 、{@link CharBuffer}工具类 此工具来自于 t-io 项目以及其它项目的相关部分收集
  * ByteBuffer的相关介绍见：https://www.cnblogs.com/ruber/p/6857159.html
  *
  * @author Kimi Liu
@@ -110,7 +109,8 @@ public class BufferKit {
      * @param length    长度
      * @return 目标ByteBuffer
      */
-    public static ByteBuffer copy(final ByteBuffer src, final int srcStart, final ByteBuffer dest, final int destStart, final int length) {
+    public static ByteBuffer copy(final ByteBuffer src, final int srcStart, final ByteBuffer dest, final int destStart,
+            final int length) {
         System.arraycopy(src.array(), srcStart, dest.array(), destStart, length);
         return dest;
     }
@@ -150,8 +150,7 @@ public class BufferKit {
     }
 
     /**
-     * 读取指定长度的bytes
-     * 如果长度不足，则读取剩余部分，此时buffer必须为读模式
+     * 读取指定长度的bytes 如果长度不足，则读取剩余部分，此时buffer必须为读模式
      *
      * @param buffer    ByteBuffer
      * @param maxLength 最大长度
@@ -192,8 +191,7 @@ public class BufferKit {
     }
 
     /**
-     * 一行的末尾位置，查找位置时位移ByteBuffer到结束位置
-     * 支持的换行符如下：
+     * 一行的末尾位置，查找位置时位移ByteBuffer到结束位置 支持的换行符如下：
      *
      * <pre>
      * 1. \r\n
@@ -235,8 +233,7 @@ public class BufferKit {
     }
 
     /**
-     * 读取一行，如果buffer中最后一部分并非完整一行，则返回null
-     * 支持的换行符如下：
+     * 读取一行，如果buffer中最后一部分并非完整一行，则返回null 支持的换行符如下：
      *
      * <pre>
      * 1. \r\n

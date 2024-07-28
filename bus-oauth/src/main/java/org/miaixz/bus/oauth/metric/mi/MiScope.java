@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org justauth.cn and other contributors.        ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.mi;
 
 import lombok.AllArgsConstructor;
@@ -44,8 +44,7 @@ public enum MiScope implements AuthorizeScope {
     /**
      * {@code scope} 含义，以{@code description} 为准
      */
-    profile("user/profile", "获取用户的基本信息", true),
-    OPENID("user/openIdV2", "获取用户的OpenID", true),
+    profile("user/profile", "获取用户的基本信息", true), OPENID("user/openIdV2", "获取用户的OpenID", true),
     PHONE_EMAIL("user/phoneAndEmail", "获取用户的手机号和邮箱", true);
 
     private final String scope;

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.file;
 
 import org.miaixz.bus.core.io.file.visitor.DeleteVisitor;
@@ -100,9 +100,7 @@ public class PathRemover {
     }
 
     /**
-     * 删除文件或者文件夹，不追踪软链
-     * 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹
-     * 某个文件删除失败会终止删除操作
+     * 删除文件或者文件夹，不追踪软链 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹 某个文件删除失败会终止删除操作
      *
      * @throws InternalException IO异常
      */

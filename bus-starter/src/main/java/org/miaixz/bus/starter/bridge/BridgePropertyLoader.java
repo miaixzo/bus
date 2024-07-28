@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.bridge;
 
 import jakarta.annotation.Resource;
@@ -56,7 +56,7 @@ public class BridgePropertyLoader implements PropertySourceLoader, Ordered {
 
     @Override
     public String[] getFileExtensions() {
-        return new String[]{"properties", "yml", "yaml"};
+        return new String[] { "properties", "yml", "yaml" };
     }
 
     @Override
@@ -91,13 +91,9 @@ public class BridgePropertyLoader implements PropertySourceLoader, Ordered {
     }
 
     public void mergeProperties(Properties properties) {
-        String url = String.format("%s?method=%s&v=%s&format=%s&appKey=%s&profile=%s",
-                this.properties.getUrl(),
-                this.properties.getMethod(),
-                this.properties.getVersion(),
-                this.properties.getFormat(),
-                this.properties.getAppKey(),
-                this.properties.getProfile());
+        String url = String.format("%s?method=%s&v=%s&format=%s&appKey=%s&profile=%s", this.properties.getUrl(),
+                this.properties.getMethod(), this.properties.getVersion(), this.properties.getFormat(),
+                this.properties.getAppKey(), this.properties.getProfile());
         Logger.debug("fetch configs url:" + url);
         String response = Httpx.get(url);
         Map<String, Object> map = (Map<String, Object>) JsonKit.toMap(response).get("data");

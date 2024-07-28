@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.stream;
 
 import org.miaixz.bus.core.lang.Optional;
@@ -40,8 +40,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * {@link WrappedStream}的扩展，用于为实现类提供更多终端操作方法的增强接口，
- * 该接口提供的方法，返回值类型都不为{@link Stream}。
+ * {@link WrappedStream}的扩展，用于为实现类提供更多终端操作方法的增强接口， 该接口提供的方法，返回值类型都不为{@link Stream}。
  *
  * @param <T> 流中的元素类型
  * @param <S> {@link TerminableWrappedStream}的实现类类型
@@ -124,8 +123,8 @@ public interface TerminableWrappedStream<T, S extends TerminableWrappedStream<T,
      * @return map
      * @see #toMap(Function, Function, BinaryOperator, Supplier)
      */
-    default <K, U> Map<K, U> toMap(
-            final Function<? super T, ? extends K> keyMapper, final Function<? super T, ? extends U> valueMapper) {
+    default <K, U> Map<K, U> toMap(final Function<? super T, ? extends K> keyMapper,
+            final Function<? super T, ? extends U> valueMapper) {
         return this.toMap(keyMapper, valueMapper, (l, r) -> r);
     }
 
@@ -139,8 +138,8 @@ public interface TerminableWrappedStream<T, S extends TerminableWrappedStream<T,
      * @return map
      * @see #toMap(Function, Function, BinaryOperator, Supplier)
      */
-    default <K, U> Map<K, U> toUnmodifiableMap(
-            final Function<? super T, ? extends K> keyMapper, final Function<? super T, ? extends U> valueMapper) {
+    default <K, U> Map<K, U> toUnmodifiableMap(final Function<? super T, ? extends K> keyMapper,
+            final Function<? super T, ? extends U> valueMapper) {
         return Collections.unmodifiableMap(this.toMap(keyMapper, valueMapper));
     }
 
@@ -155,10 +154,8 @@ public interface TerminableWrappedStream<T, S extends TerminableWrappedStream<T,
      * @return map
      * @see #toMap(Function, Function, BinaryOperator, Supplier)
      */
-    default <K, U> Map<K, U> toMap(
-            final Function<? super T, ? extends K> keyMapper,
-            final Function<? super T, ? extends U> valueMapper,
-            final BinaryOperator<U> mergeFunction) {
+    default <K, U> Map<K, U> toMap(final Function<? super T, ? extends K> keyMapper,
+            final Function<? super T, ? extends U> valueMapper, final BinaryOperator<U> mergeFunction) {
         return this.toMap(keyMapper, valueMapper, mergeFunction, HashMap::new);
     }
 
@@ -173,13 +170,9 @@ public interface TerminableWrappedStream<T, S extends TerminableWrappedStream<T,
      * @return map
      * @see #toMap(Function, Function, BinaryOperator, Supplier)
      */
-    default <K, U> Map<K, U> toUnmodifiableMap(
-            final Function<? super T, ? extends K> keyMapper,
-            final Function<? super T, ? extends U> valueMapper,
-            final BinaryOperator<U> mergeFunction) {
-        return Collections.unmodifiableMap(
-                this.toMap(keyMapper, valueMapper, mergeFunction, HashMap::new)
-        );
+    default <K, U> Map<K, U> toUnmodifiableMap(final Function<? super T, ? extends K> keyMapper,
+            final Function<? super T, ? extends U> valueMapper, final BinaryOperator<U> mergeFunction) {
+        return Collections.unmodifiableMap(this.toMap(keyMapper, valueMapper, mergeFunction, HashMap::new));
     }
 
     /**
@@ -194,10 +187,8 @@ public interface TerminableWrappedStream<T, S extends TerminableWrappedStream<T,
      * @param <M>           map类型
      * @return map
      */
-    default <K, U, M extends Map<K, U>> M toMap(
-            final Function<? super T, ? extends K> keyMapper,
-            final Function<? super T, ? extends U> valueMapper,
-            final BinaryOperator<U> mergeFunction,
+    default <K, U, M extends Map<K, U>> M toMap(final Function<? super T, ? extends K> keyMapper,
+            final Function<? super T, ? extends U> valueMapper, final BinaryOperator<U> mergeFunction,
             final Supplier<M> mapSupplier) {
         Objects.requireNonNull(keyMapper);
         Objects.requireNonNull(valueMapper);
@@ -228,19 +219,17 @@ public interface TerminableWrappedStream<T, S extends TerminableWrappedStream<T,
     }
 
     /**
-     * 与给定的可迭代对象转换成map，key为现有元素，value为给定可迭代对象迭代的元素
-     * 至少包含全部的key，如果对应位置上的value不存在，则为null
+     * 与给定的可迭代对象转换成map，key为现有元素，value为给定可迭代对象迭代的元素 至少包含全部的key，如果对应位置上的value不存在，则为null
      *
      * @param other 可迭代对象
      * @param <R>   可迭代对象迭代的元素类型
-     * @return map，key为现有元素，value为给定可迭代对象迭代的元素;
-     * 至少包含全部的key，如果对应位置上的value不存在，则为null;
-     * 如果key重复, 则保留最后一个关联的value;
+     * @return map，key为现有元素，value为给定可迭代对象迭代的元素; 至少包含全部的key，如果对应位置上的value不存在，则为null; 如果key重复, 则保留最后一个关联的value;
      */
     default <R> Map<T, R> toZip(final Iterable<R> other) {
         Objects.requireNonNull(other);
         // value对象迭代器
-        final Iterator<R> iterator = Optional.ofNullable(other).map(Iterable::iterator).orElseGet(Collections::emptyIterator);
+        final Iterator<R> iterator = Optional.ofNullable(other).map(Iterable::iterator)
+                .orElseGet(Collections::emptyIterator);
         if (this.isParallel()) {
             final List<T> keyList = toList();
             final Map<T, R> map = new HashMap<>(keyList.size());
@@ -383,7 +372,8 @@ public interface TerminableWrappedStream<T, S extends TerminableWrappedStream<T,
      * @return 拼接后的字符串
      */
     default String join(final CharSequence delimiter, final CharSequence prefix, final CharSequence suffix) {
-        return unwrap().map(String::valueOf).collect(CollectorKit.joining(delimiter, prefix, suffix, Function.identity()));
+        return unwrap().map(String::valueOf)
+                .collect(CollectorKit.joining(delimiter, prefix, suffix, Function.identity()));
     }
 
     /**
@@ -409,8 +399,8 @@ public interface TerminableWrappedStream<T, S extends TerminableWrappedStream<T,
      * @return map
      * @see #group(Function, Supplier, Collector)
      */
-    default <K, A, D> Map<K, D> group(
-            final Function<? super T, ? extends K> classifier, final Collector<? super T, A, D> downstream) {
+    default <K, A, D> Map<K, D> group(final Function<? super T, ? extends K> classifier,
+            final Collector<? super T, A, D> downstream) {
         return this.group(classifier, HashMap::new, downstream);
     }
 
@@ -427,10 +417,8 @@ public interface TerminableWrappedStream<T, S extends TerminableWrappedStream<T,
      * @return map
      * @see CollectorKit#groupingBy(Function, Supplier, Collector)
      */
-    default <K, D, A, M extends Map<K, D>> M group(
-            final Function<? super T, ? extends K> classifier,
-            final Supplier<M> mapFactory,
-            final Collector<? super T, A, D> downstream) {
+    default <K, D, A, M extends Map<K, D>> M group(final Function<? super T, ? extends K> classifier,
+            final Supplier<M> mapFactory, final Collector<? super T, A, D> downstream) {
         Objects.requireNonNull(classifier);
         Objects.requireNonNull(mapFactory);
         Objects.requireNonNull(downstream);
@@ -457,7 +445,8 @@ public interface TerminableWrappedStream<T, S extends TerminableWrappedStream<T,
      * @return map
      * @see #partition(Predicate, Collector)
      */
-    default <C extends Collection<T>> Map<Boolean, C> partition(final Predicate<T> predicate, final Supplier<C> collFactory) {
+    default <C extends Collection<T>> Map<Boolean, C> partition(final Predicate<T> predicate,
+            final Supplier<C> collFactory) {
         return this.partition(predicate, Collectors.toCollection(collFactory));
     }
 
@@ -476,8 +465,7 @@ public interface TerminableWrappedStream<T, S extends TerminableWrappedStream<T,
     }
 
     /**
-     * 对流里面的每一个元素执行一个操作，操作带下标，并行流时下标永远为-1
-     * 这是一个终端操作
+     * 对流里面的每一个元素执行一个操作，操作带下标，并行流时下标永远为-1 这是一个终端操作
      *
      * @param action 操作
      */
@@ -488,8 +476,7 @@ public interface TerminableWrappedStream<T, S extends TerminableWrappedStream<T,
     }
 
     /**
-     * 对流里面的每一个元素按照顺序执行一个操作，操作带下标，并行流时下标永远为-1
-     * 这是一个终端操作
+     * 对流里面的每一个元素按照顺序执行一个操作，操作带下标，并行流时下标永远为-1 这是一个终端操作
      *
      * @param action 操作
      */

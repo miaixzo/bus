@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.center;
 
 import org.miaixz.bus.core.lang.Algorithm;
@@ -36,9 +36,9 @@ import org.miaixz.bus.crypto.builtin.digest.Digester;
  * <p>
  * 国密算法包括：
  * <ol>
- *     <li>非对称加密和签名：SM2，asymmetric</li>
- *     <li>摘要签名算法：SM3，digest</li>
- *     <li>对称加密：SM4，symmetric</li>
+ * <li>非对称加密和签名：SM2，asymmetric</li>
+ * <li>摘要签名算法：SM3，digest</li>
+ * <li>对称加密：SM4，symmetric</li>
  * </ol>
  *
  * @author Kimi Liu

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager.plugin;
 
 import org.apache.ibatis.cache.CacheKey;
@@ -58,11 +58,11 @@ import java.util.regex.Matcher;
  * @since Java 17+
  */
 @Intercepts(value = {
-        @Signature(type = Executor.class, method = "update", args = {MappedStatement.class, Object.class}),
-        @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class,
-                RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class}),
-        @Signature(type = Executor.class, method = "query", args = {MappedStatement.class, Object.class,
-                RowBounds.class, ResultHandler.class})})
+        @Signature(type = Executor.class, method = "update", args = { MappedStatement.class, Object.class }),
+        @Signature(type = Executor.class, method = "query", args = { MappedStatement.class, Object.class,
+                RowBounds.class, ResultHandler.class, CacheKey.class, BoundSql.class }),
+        @Signature(type = Executor.class, method = "query", args = { MappedStatement.class, Object.class,
+                RowBounds.class, ResultHandler.class }) })
 public class NatureSqlHandler extends SqlParserHandler implements Interceptor {
 
     private static void getSql(Configuration configuration, BoundSql boundSql, String sqlId, long time) {
@@ -73,9 +73,7 @@ public class NatureSqlHandler extends SqlParserHandler implements Interceptor {
         String id = ID.objectId();
         // 1.SQL语句多个空格全部使用一个空格代替
         // 2.防止参数值中有问号问题,全部动态替换
-        String sql = boundSql.getSql()
-                .replaceAll("[\\s]+", Symbol.SPACE)
-                .replaceAll("\\?", id);
+        String sql = boundSql.getSql().replaceAll("[\\s]+", Symbol.SPACE).replaceAll("\\?", id);
         if (!CollKit.isEmpty(parameterMappings) && null != parameterObject) {
             // 获取类型处理器注册器,类型处理器的功能是进行java类型和数据库类型的转换
             // 如果根据parameterObject.getClass()可以找到对应的类型,则替换
@@ -150,4 +148,3 @@ public class NatureSqlHandler extends SqlParserHandler implements Interceptor {
     }
 
 }
-

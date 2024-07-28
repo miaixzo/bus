@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date.format;
 
 import org.miaixz.bus.core.center.date.culture.en.Units;
@@ -35,12 +35,11 @@ import java.io.Serializable;
 import java.util.function.Function;
 
 /**
- * 时长格式化器，用于格式化输出两个日期相差的时长
- * 根据{@link Level}不同，调用{@link #format()}方法后返回类似于：
+ * 时长格式化器，用于格式化输出两个日期相差的时长 根据{@link Level}不同，调用{@link #format()}方法后返回类似于：
  * <ul>
- *    <li>XX小时XX分XX秒</li>
- *    <li>XX天XX小时</li>
- *    <li>XX月XX天XX小时</li>
+ * <li>XX小时XX分XX秒</li>
+ * <li>XX天XX小时</li>
+ * <li>XX月XX天XX小时</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -67,13 +66,11 @@ public class FormatPeriod implements Serializable {
      */
     private Function<Level, String> formatter = Level::getName;
     /**
-     * 是否为简化模式，此标记用于自定义是否输出各个位数中间为0的部分
-     * 如为{@code true}，输出 1小时3秒，为{@code false}输出 1小时0分3秒
+     * 是否为简化模式，此标记用于自定义是否输出各个位数中间为0的部分 如为{@code true}，输出 1小时3秒，为{@code false}输出 1小时0分3秒
      */
     private boolean simpleMode = true;
     /**
-     * 分隔符，默认为""
-     * 通过{@link #setSeparator(String)}进行调整
+     * 分隔符，默认为"" 通过{@link #setSeparator(String)}进行调整
      */
     private String separator = Normal.EMPTY;
 
@@ -218,8 +215,7 @@ public class FormatPeriod implements Serializable {
     }
 
     /**
-     * 是否为简化模式，此标记用于自定义是否输出各个位数中间为0的部分
-     * 如为{@code true}，输出 1小时3秒，为{@code false}输出 1小时0分3秒
+     * 是否为简化模式，此标记用于自定义是否输出各个位数中间为0的部分 如为{@code true}，输出 1小时3秒，为{@code false}输出 1小时0分3秒
      *
      * @param simpleMode 是否简化模式
      * @return this
@@ -257,8 +253,7 @@ public class FormatPeriod implements Serializable {
     }
 
     /**
-     * 等级数量是否有效
-     * 有效的定义是：levelMaxCount大于0（被设置），当前等级数量没有超过这个最大值
+     * 等级数量是否有效 有效的定义是：levelMaxCount大于0（被设置），当前等级数量没有超过这个最大值
      *
      * @param levelCount 登记数量
      * @return 是否有效

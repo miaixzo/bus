@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.codec.hash.metro;
 
 import org.miaixz.bus.core.codec.No128;
@@ -34,12 +34,10 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 /**
- * Apache 发布的MetroHash算法的128位实现，是一组用于非加密用例的最先进的哈希函数。
- * 除了卓越的性能外，他们还以算法生成而著称。
+ * Apache 发布的MetroHash算法的128位实现，是一组用于非加密用例的最先进的哈希函数。 除了卓越的性能外，他们还以算法生成而著称。
  *
  * <p>
- * 官方实现：https://github.com/jandrewrogers/MetroHash
- * 官方文档：http://www.jandrewrogers.com/2015/05/27/metrohash/
+ * 官方实现：https://github.com/jandrewrogers/MetroHash 官方文档：http://www.jandrewrogers.com/2015/05/27/metrohash/
  * 来自：https://github.com/postamar/java-metrohash/
  * </p>
  *

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image;
 
 import org.miaixz.bus.core.lang.Keys;
@@ -73,21 +73,15 @@ import java.util.stream.Stream;
  */
 public class Builder {
 
-    private static final char[] BASE64 = {
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '/'};
-    private static final byte[] INV_BASE64 = {
-            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-            -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1, -1, -1, 63, 52, 53, 54,
-            55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4,
-            5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23,
-            24, 25, -1, -1, -1, -1, -1, -1, 26, 27, 28, 29, 30, 31, 32, 33, 34,
-            35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51
-    };
+    private static final char[] BASE64 = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
+            'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+            'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3', '4',
+            '5', '6', '7', '8', '9', '+', '/' };
+    private static final byte[] INV_BASE64 = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 62, -1,
+            -1, -1, 63, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, -1, -1, -1, -1, -1, -1, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8,
+            9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, -1, -1, -1, -1, -1, -1, 26, 27, 28, 29,
+            30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51 };
     public static String LINE_SEPARATOR = System.getProperty(Keys.LINE_SEPARATOR);
 
     /**
@@ -114,16 +108,18 @@ public class Builder {
      * @param bytes number of bytes
      * @param si    true for SI units (powers of 1000), false for binary units (powers of 1024)
      * @return the human-readable size of the byte count
-     * @see <a href="https://programming.guide/worlds-most-copied-so-snippet.html">World's most copied
-     * StackOverflow snippet</a>
+     * @see <a href="https://programming.guide/worlds-most-copied-so-snippet.html">World's most copied StackOverflow
+     *      snippet</a>
      */
     public static String humanReadableByte(long bytes, boolean si) {
         int unit = si ? 1000 : 1024;
         long absBytes = bytes == Long.MIN_VALUE ? Long.MAX_VALUE : Math.abs(bytes);
-        if (absBytes < unit) return bytes + " B";
+        if (absBytes < unit)
+            return bytes + " B";
         int exp = (int) (Math.log(absBytes) / Math.log(unit));
         long th = (long) Math.ceil(Math.pow(unit, exp) * (unit - 0.05));
-        if (exp < 6 && absBytes >= th - ((th & 0xFFF) == 0xD00 ? 51 : 0)) exp++;
+        if (exp < 6 && absBytes >= th - ((th & 0xFFF) == 0xD00 ? 51 : 0))
+            exp++;
         String pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp - 1) + (si ? "" : "i");
         if (exp > 4) {
             bytes /= unit;
@@ -175,9 +171,7 @@ public class Builder {
                 if (delim < 0) {
                     addAttributes(attrs, Tag.toTags(StringKit.splitToArray(optVal, "/")));
                 } else {
-                    addAttributes(
-                            attrs,
-                            Tag.toTags(StringKit.splitToArray(optVal.substring(0, delim), "/")),
+                    addAttributes(attrs, Tag.toTags(StringKit.splitToArray(optVal.substring(0, delim), "/")),
                             optVal.substring(delim + 1));
                 }
             }
@@ -197,8 +191,7 @@ public class Builder {
         }
         if (uidSuffix != null) {
             data.setString(Tag.StudyInstanceUID, VR.UI, data.getString(Tag.StudyInstanceUID) + uidSuffix);
-            data.setString(
-                    Tag.SeriesInstanceUID, VR.UI, data.getString(Tag.SeriesInstanceUID) + uidSuffix);
+            data.setString(Tag.SeriesInstanceUID, VR.UI, data.getString(Tag.SeriesInstanceUID) + uidSuffix);
             data.setString(Tag.SOPInstanceUID, VR.UI, data.getString(Tag.SOPInstanceUID) + uidSuffix);
         }
         data.update(UpdatePolicy.OVERWRITE, attrs, null);
@@ -215,8 +208,7 @@ public class Builder {
         }
     }
 
-    public static void encode(byte[] src, int srcPos, int srcLen, char[] dest,
-                              int destPos) {
+    public static void encode(byte[] src, int srcPos, int srcLen, char[] dest, int destPos) {
         if (srcPos < 0 || srcLen < 0 || srcLen > src.length - srcPos)
             throw new IndexOutOfBoundsException();
         int destLen = (srcLen * 4 / 3 + 3) & ~3;
@@ -227,10 +219,8 @@ public class Builder {
         int r = srcLen - 3 * n;
         while (n-- > 0) {
             dest[destPos++] = BASE64[((b1 = src[srcPos++]) >>> 2) & 0x3F];
-            dest[destPos++] = BASE64[((b1 & 0x03) << 4)
-                    | (((b2 = src[srcPos++]) >>> 4) & 0x0F)];
-            dest[destPos++] = BASE64[((b2 & 0x0F) << 2)
-                    | (((b3 = src[srcPos++]) >>> 6) & 0x03)];
+            dest[destPos++] = BASE64[((b1 & 0x03) << 4) | (((b2 = src[srcPos++]) >>> 4) & 0x0F)];
+            dest[destPos++] = BASE64[((b2 & 0x0F) << 2) | (((b3 = src[srcPos++]) >>> 6) & 0x03)];
             dest[destPos++] = BASE64[b3 & 0x3F];
         }
         if (r > 0)
@@ -241,23 +231,19 @@ public class Builder {
                 dest[destPos++] = '=';
             } else {
                 dest[destPos++] = BASE64[((b1 = src[srcPos++]) >>> 2) & 0x3F];
-                dest[destPos++] = BASE64[((b1 & 0x03) << 4)
-                        | (((b2 = src[srcPos]) >>> 4) & 0x0F)];
+                dest[destPos++] = BASE64[((b1 & 0x03) << 4) | (((b2 = src[srcPos]) >>> 4) & 0x0F)];
                 dest[destPos++] = BASE64[(b2 & 0x0F) << 2];
                 dest[destPos++] = '=';
             }
     }
 
-    public static void decode(char[] ch, int off, int len, OutputStream out)
-            throws IOException {
+    public static void decode(char[] ch, int off, int len, OutputStream out) throws IOException {
         byte b2, b3;
         while ((len -= 2) >= 0) {
-            out.write((byte) ((INV_BASE64[ch[off++]] << 2)
-                    | ((b2 = INV_BASE64[ch[off++]]) >>> 4)));
+            out.write((byte) ((INV_BASE64[ch[off++]] << 2) | ((b2 = INV_BASE64[ch[off++]]) >>> 4)));
             if ((len-- == 0) || ch[off] == '=')
                 break;
-            out.write((byte) ((b2 << 4)
-                    | ((b3 = INV_BASE64[ch[off++]]) >>> 2)));
+            out.write((byte) ((b2 << 4) | ((b3 = INV_BASE64[ch[off++]]) >>> 2)));
             if ((len-- == 0) || ch[off] == '=')
                 break;
             out.write((byte) ((b3 << 6) | INV_BASE64[ch[off++]]));
@@ -285,43 +271,22 @@ public class Builder {
 
     public static boolean isVideo(String uid) {
         return switch (UID.from(uid)) {
-            case UID.MPEG2MPML,
-                 UID.MPEG2MPMLF,
-                 UID.MPEG2MPHL,
-                 UID.MPEG2MPHLF,
-                 UID.MPEG4HP41,
-                 UID.MPEG4HP41F,
-                 UID.MPEG4HP41BD,
-                 UID.MPEG4HP41BDF,
-                 UID.MPEG4HP422D,
-                 UID.MPEG4HP422DF,
-                 UID.MPEG4HP423D,
-                 UID.MPEG4HP423DF,
-                 UID.MPEG4HP42STEREO,
-                 UID.MPEG4HP42STEREOF,
-                 UID.HEVCMP51,
-                 UID.HEVCM10P51 -> true;
-            default -> false;
+        case UID.MPEG2MPML, UID.MPEG2MPMLF, UID.MPEG2MPHL, UID.MPEG2MPHLF, UID.MPEG4HP41, UID.MPEG4HP41F, UID.MPEG4HP41BD, UID.MPEG4HP41BDF, UID.MPEG4HP422D, UID.MPEG4HP422DF, UID.MPEG4HP423D, UID.MPEG4HP423DF, UID.MPEG4HP42STEREO, UID.MPEG4HP42STEREOF, UID.HEVCMP51, UID.HEVCM10P51 -> true;
+        default -> false;
         };
     }
 
     public static boolean isJpeg2000(String uid) {
         return switch (UID.from(uid)) {
-            case UID.JPEG2000Lossless,
-                 UID.JPEG2000,
-                 UID.JPEG2000MCLossless,
-                 UID.JPEG2000MC,
-                 UID.HTJ2KLossless,
-                 UID.HTJ2KLosslessRPCL,
-                 UID.HTJ2K -> true;
-            default -> false;
+        case UID.JPEG2000Lossless, UID.JPEG2000, UID.JPEG2000MCLossless, UID.JPEG2000MC, UID.HTJ2KLossless, UID.HTJ2KLosslessRPCL, UID.HTJ2K -> true;
+        default -> false;
         };
     }
 
     public static boolean isNative(String uid) {
         return switch (UID.from(uid)) {
-            case UID.ImplicitVRLittleEndian, UID.ExplicitVRLittleEndian, UID.ExplicitVRBigEndian -> true;
-            default -> false;
+        case UID.ImplicitVRLittleEndian, UID.ExplicitVRLittleEndian, UID.ExplicitVRBigEndian -> true;
+        default -> false;
         };
     }
 
@@ -343,15 +308,10 @@ public class Builder {
         } else if (value instanceof TemporalAccessor temporal) {
             str = Format.formatDateTime(temporal, locale);
         } else if (value instanceof TemporalAccessor[] temporal) {
-            str =
-                    Stream.of(temporal)
-                            .map(v -> Format.formatDateTime(v, locale))
-                            .collect(Collectors.joining(", "));
+            str = Stream.of(temporal).map(v -> Format.formatDateTime(v, locale)).collect(Collectors.joining(", "));
         } else if (value instanceof float[] array) {
-            str =
-                    IntStream.range(0, array.length)
-                            .mapToObj(i -> String.valueOf(array[i]))
-                            .collect(Collectors.joining(", "));
+            str = IntStream.range(0, array.length).mapToObj(i -> String.valueOf(array[i]))
+                    .collect(Collectors.joining(", "));
         } else if (value instanceof double[] array) {
             str = DoubleStream.of(array).mapToObj(String::valueOf).collect(Collectors.joining(", "));
         } else if (value instanceof int[] array) {
@@ -382,9 +342,8 @@ public class Builder {
                     if (pattern != null) {
                         fmLength += pattern.length() + 2;
                         try {
-                            str =
-                                    new DecimalFormat(pattern, DecimalFormatSymbols.getInstance())
-                                            .format(Double.parseDouble(str));
+                            str = new DecimalFormat(pattern, DecimalFormatSymbols.getInstance())
+                                    .format(Double.parseDouble(str));
                         } catch (NumberFormatException e) {
                             Logger.warn("Cannot apply pattern to decimal value", e);
                         }
@@ -446,21 +405,19 @@ public class Builder {
         return getStringArrayFromDicomElement(dicom, tag, (String) null);
     }
 
-    public static String[] getStringArrayFromDicomElement(
-            Attributes dicom, int tag, String privateCreatorID) {
+    public static String[] getStringArrayFromDicomElement(Attributes dicom, int tag, String privateCreatorID) {
         if (dicom == null || !dicom.containsValue(tag)) {
             return null;
         }
         return dicom.getStrings(privateCreatorID, tag);
     }
 
-    public static String[] getStringArrayFromDicomElement(
-            Attributes dicom, int tag, String[] defaultValue) {
+    public static String[] getStringArrayFromDicomElement(Attributes dicom, int tag, String[] defaultValue) {
         return getStringArrayFromDicomElement(dicom, tag, null, defaultValue);
     }
 
-    public static String[] getStringArrayFromDicomElement(
-            Attributes dicom, int tag, String privateCreatorID, String[] defaultValue) {
+    public static String[] getStringArrayFromDicomElement(Attributes dicom, int tag, String privateCreatorID,
+            String[] defaultValue) {
         if (dicom == null || !dicom.containsValue(tag)) {
             return defaultValue;
         }
@@ -478,8 +435,8 @@ public class Builder {
         return dicom.getDate(tag, defaultValue);
     }
 
-    public static Date[] getDatesFromDicomElement(
-            Attributes dicom, int tag, String privateCreatorID, Date[] defaultValue) {
+    public static Date[] getDatesFromDicomElement(Attributes dicom, int tag, String privateCreatorID,
+            Date[] defaultValue) {
         if (dicom == null || !dicom.containsValue(tag)) {
             return defaultValue;
         }
@@ -494,11 +451,7 @@ public class Builder {
         return getPatientAgeInPeriod(dicom, tag, null, null, computeOnlyIfNull);
     }
 
-    public static String getPatientAgeInPeriod(
-            Attributes dicom,
-            int tag,
-            String privateCreatorID,
-            String defaultValue,
+    public static String getPatientAgeInPeriod(Attributes dicom, int tag, String privateCreatorID, String defaultValue,
             boolean computeOnlyIfNull) {
         if (dicom == null) {
             return defaultValue;
@@ -511,14 +464,8 @@ public class Builder {
             }
         }
 
-        Date date =
-                getDate(
-                        dicom,
-                        Tag.ContentDate,
-                        Tag.AcquisitionDate,
-                        Tag.DateOfSecondaryCapture,
-                        Tag.SeriesDate,
-                        Tag.StudyDate);
+        Date date = getDate(dicom, Tag.ContentDate, Tag.AcquisitionDate, Tag.DateOfSecondaryCapture, Tag.SeriesDate,
+                Tag.StudyDate);
 
         if (date != null) {
             Date bithdate = dicom.getDate(Tag.PatientBirthDate);
@@ -559,8 +506,8 @@ public class Builder {
         return getFloatFromDicomElement(dicom, tag, null, defaultValue);
     }
 
-    public static Float getFloatFromDicomElement(
-            Attributes dicom, int tag, String privateCreatorID, Float defaultValue) {
+    public static Float getFloatFromDicomElement(Attributes dicom, int tag, String privateCreatorID,
+            Float defaultValue) {
         if (dicom == null || !dicom.containsValue(tag)) {
             return defaultValue;
         }
@@ -572,13 +519,12 @@ public class Builder {
         return defaultValue;
     }
 
-    public static Integer getIntegerFromDicomElement(
-            Attributes dicom, int tag, Integer defaultValue) {
+    public static Integer getIntegerFromDicomElement(Attributes dicom, int tag, Integer defaultValue) {
         return getIntegerFromDicomElement(dicom, tag, null, defaultValue);
     }
 
-    public static Integer getIntegerFromDicomElement(
-            Attributes dicom, int tag, String privateCreatorID, Integer defaultValue) {
+    public static Integer getIntegerFromDicomElement(Attributes dicom, int tag, String privateCreatorID,
+            Integer defaultValue) {
         if (dicom == null || !dicom.containsValue(tag)) {
             return defaultValue;
         }
@@ -594,8 +540,8 @@ public class Builder {
         return getDoubleFromDicomElement(dicom, tag, null, defaultValue);
     }
 
-    public static Double getDoubleFromDicomElement(
-            Attributes dicom, int tag, String privateCreatorID, Double defaultValue) {
+    public static Double getDoubleFromDicomElement(Attributes dicom, int tag, String privateCreatorID,
+            Double defaultValue) {
         if (dicom == null || !dicom.containsValue(tag)) {
             return defaultValue;
         }
@@ -611,8 +557,8 @@ public class Builder {
         return getIntArrayFromDicomElement(dicom, tag, null, defaultValue);
     }
 
-    public static int[] getIntArrayFromDicomElement(
-            Attributes dicom, int tag, String privateCreatorID, int[] defaultValue) {
+    public static int[] getIntArrayFromDicomElement(Attributes dicom, int tag, String privateCreatorID,
+            int[] defaultValue) {
         if (dicom == null || !dicom.containsValue(tag)) {
             return defaultValue;
         }
@@ -627,13 +573,12 @@ public class Builder {
         return defaultValue;
     }
 
-    public static float[] getFloatArrayFromDicomElement(
-            Attributes dicom, int tag, float[] defaultValue) {
+    public static float[] getFloatArrayFromDicomElement(Attributes dicom, int tag, float[] defaultValue) {
         return getFloatArrayFromDicomElement(dicom, tag, null, defaultValue);
     }
 
-    public static float[] getFloatArrayFromDicomElement(
-            Attributes dicom, int tag, String privateCreatorID, float[] defaultValue) {
+    public static float[] getFloatArrayFromDicomElement(Attributes dicom, int tag, String privateCreatorID,
+            float[] defaultValue) {
         if (dicom == null || !dicom.containsValue(tag)) {
             return defaultValue;
         }
@@ -648,13 +593,12 @@ public class Builder {
         return defaultValue;
     }
 
-    public static double[] getDoubleArrayFromDicomElement(
-            Attributes dicom, int tag, double[] defaultValue) {
+    public static double[] getDoubleArrayFromDicomElement(Attributes dicom, int tag, double[] defaultValue) {
         return getDoubleArrayFromDicomElement(dicom, tag, null, defaultValue);
     }
 
-    public static double[] getDoubleArrayFromDicomElement(
-            Attributes dicom, int tag, String privateCreatorID, double[] defaultValue) {
+    public static double[] getDoubleArrayFromDicomElement(Attributes dicom, int tag, String privateCreatorID,
+            double[] defaultValue) {
         if (dicom == null || !dicom.containsValue(tag)) {
             return defaultValue;
         }
@@ -679,12 +623,8 @@ public class Builder {
         return Collections.emptyList();
     }
 
-    public static boolean isImageFrameApplicableToReferencedImageSequence(
-            List<Attributes> refImgSeq,
-            int childTag,
-            String sopInstanceUID,
-            int frame,
-            boolean required) {
+    public static boolean isImageFrameApplicableToReferencedImageSequence(List<Attributes> refImgSeq, int childTag,
+            String sopInstanceUID, int frame, boolean required) {
         if (!required && (refImgSeq == null || refImgSeq.isEmpty())) {
             return true;
         }
@@ -771,21 +711,18 @@ public class Builder {
      *
      * @param dcm the DICOM attributes
      * @return the shape
-     * @see <a
-     * href="http://dicom.nema.org/MEDICAL/DICOM/current/output/chtml/part03/sect_C.7.6.11.html">C.7.6.11
-     * Display Shutter Module</a>
+     * @see <a href="http://dicom.nema.org/MEDICAL/DICOM/current/output/chtml/part03/sect_C.7.6.11.html">C.7.6.11
+     *      Display Shutter Module</a>
      */
     public static Area getShutterShape(Attributes dcm) {
         Area shape = null;
         String shutterShape = getStringFromDicomElement(dcm, Tag.ShutterShape);
         if (shutterShape != null) {
-            if (shutterShape.contains("RECTANGULAR")
-                    || shutterShape.contains("RECTANGLE")) { // $NON-NLS-1$ //$NON-NLS-2$
+            if (shutterShape.contains("RECTANGULAR") || shutterShape.contains("RECTANGLE")) { // $NON-NLS-1$
+                                                                                              // //$NON-NLS-2$
                 Rectangle2D rect = new Rectangle2D.Double();
-                rect.setFrameFromDiagonal(
-                        dcm.getInt(Tag.ShutterLeftVerticalEdge, 0),
-                        dcm.getInt(Tag.ShutterUpperHorizontalEdge, 0),
-                        dcm.getInt(Tag.ShutterRightVerticalEdge, 0),
+                rect.setFrameFromDiagonal(dcm.getInt(Tag.ShutterLeftVerticalEdge, 0),
+                        dcm.getInt(Tag.ShutterUpperHorizontalEdge, 0), dcm.getInt(Tag.ShutterRightVerticalEdge, 0),
                         dcm.getInt(Tag.ShutterLowerHorizontalEdge, 0));
                 if (rect.isEmpty()) {
                     Logger.error("Shutter rectangle has an empty area!");
@@ -799,11 +736,8 @@ public class Builder {
                     Ellipse2D ellipse = new Ellipse2D.Double();
                     double radius = dcm.getInt(Tag.RadiusOfCircularShutter, 0);
                     // Thanks DICOM for reversing x,y by row,column
-                    ellipse.setFrameFromCenter(
-                            centerOfCircularShutter[1],
-                            centerOfCircularShutter[0],
-                            centerOfCircularShutter[1] + radius,
-                            centerOfCircularShutter[0] + radius);
+                    ellipse.setFrameFromCenter(centerOfCircularShutter[1], centerOfCircularShutter[0],
+                            centerOfCircularShutter[1] + radius, centerOfCircularShutter[0] + radius);
                     if (ellipse.isEmpty()) {
                         Logger.error("Shutter ellipse has an empty area!");
                     } else {
@@ -843,9 +777,8 @@ public class Builder {
         int[] yPoints = polygon.ypoints;
         double area = 0;
         for (int i = 0; i < polygon.npoints; i++) {
-            area +=
-                    (xPoints[i] * yPoints[(i + 1) % polygon.npoints])
-                            - (xPoints[(i + 1) % polygon.npoints] * yPoints[i]);
+            area += (xPoints[i] * yPoints[(i + 1) % polygon.npoints])
+                    - (xPoints[(i + 1) % polygon.npoints] * yPoints[i]);
         }
         // Evaluating if this is a polygon, not a line
         return area != 0 && polygon.npoints > 2;
@@ -869,8 +802,7 @@ public class Builder {
         }
     }
 
-    public static void notifyProgession(
-            ImageProgress p, Attributes cmd, ProgressStatus ps, int numberOfSuboperations) {
+    public static void notifyProgession(ImageProgress p, Attributes cmd, ProgressStatus ps, int numberOfSuboperations) {
         if (p != null && cmd != null) {
             int c;
             int f;
@@ -906,12 +838,7 @@ public class Builder {
         }
     }
 
-    public static void notifyProgession(
-            Status state,
-            String iuid,
-            String cuid,
-            int status,
-            ProgressStatus ps,
+    public static void notifyProgession(Status state, String iuid, String cuid, int status, ProgressStatus ps,
             int numberOfSuboperations) {
         state.setStatus(status);
         ImageProgress p = state.getProgress();
@@ -1000,7 +927,7 @@ public class Builder {
             count++;
 
         if (count == 1)
-            return new String[]{s};
+            return new String[] { s };
 
         String[] ss = new String[count];
         int delimPos2 = s.length();
@@ -1028,21 +955,15 @@ public class Builder {
     }
 
     public static long parseIS(String s) {
-        return s != null && s.length() != 0
-                ? Long.parseLong(s)
-                : 0L;
+        return s != null && s.length() != 0 ? Long.parseLong(s) : 0L;
     }
 
     public static long parseUV(String s) {
-        return s != null && s.length() != 0
-                ? Long.parseUnsignedLong(s)
-                : 0L;
+        return s != null && s.length() != 0 ? Long.parseUnsignedLong(s) : 0L;
     }
 
     public static double parseDS(String s) {
-        return s != null && s.length() != 0
-                ? Double.parseDouble(s.replace(',', '.'))
-                : 0;
+        return s != null && s.length() != 0 ? Double.parseDouble(s.replace(',', '.')) : 0;
     }
 
     public static String formatDS(float f) {
@@ -1062,8 +983,7 @@ public class Builder {
         int skip = l - 16;
         int e = s.indexOf('E', l - 5);
         return e < 0 ? (skip > 0 ? s.substring(0, 16) : s)
-                : s.startsWith(".0", e - 2) ? cut(s, e - 2, e)
-                : skip > 0 ? cut(s, e - skip, e) : s;
+                : s.startsWith(".0", e - 2) ? cut(s, e - 2, e) : skip > 0 ? cut(s, e - skip, e) : s;
     }
 
     private static String cut(String s, int begin, int end) {
@@ -1074,16 +994,14 @@ public class Builder {
         return new String(ch);
     }
 
-    public static boolean matches(String s, String key,
-                                  boolean matchNullOrEmpty, boolean ignoreCase) {
+    public static boolean matches(String s, String key, boolean matchNullOrEmpty, boolean ignoreCase) {
         if (key == null || key.isEmpty())
             return true;
 
         if (s == null || s.isEmpty())
             return matchNullOrEmpty;
 
-        return containsWildCard(key)
-                ? compilePattern(key, ignoreCase).matcher(s).matches()
+        return containsWildCard(key) ? compilePattern(key, ignoreCase).matcher(s).matches()
                 : ignoreCase ? key.equalsIgnoreCase(s) : key.equals(s);
     }
 
@@ -1101,8 +1019,7 @@ public class Builder {
                 regex.append("\\Q").append(tk).append("\\E");
             }
         }
-        return Pattern.compile(regex.toString(),
-                ignoreCase ? Pattern.CASE_INSENSITIVE : 0);
+        return Pattern.compile(regex.toString(), ignoreCase ? Pattern.CASE_INSENSITIVE : 0);
     }
 
     public static boolean containsWildCard(String s) {
@@ -1126,8 +1043,8 @@ public class Builder {
     }
 
     /**
-     * Returns a {@code String} resulting from replacing all non-ASCII and non-printable characters
-     * in the specified {@code String} with {@code replacement} character.
+     * Returns a {@code String} resulting from replacing all non-ASCII and non-printable characters in the specified
+     * {@code String} with {@code replacement} character.
      *
      * @param s           - the specified string
      * @param replacement - the replacement character
@@ -1137,7 +1054,8 @@ public class Builder {
         char[] cs = s.toCharArray();
         int count = 0;
         for (int i = 0; i < cs.length; i++) {
-            if (cs[i] > 0x20 && cs[i] < 0x7F) continue;
+            if (cs[i] > 0x20 && cs[i] < 0x7F)
+                continue;
             cs[i] = replacement;
             count++;
         }
@@ -1162,8 +1080,7 @@ public class Builder {
                 break;
             }
             int k = s.lastIndexOf(':', j);
-            String val = s.startsWith("env.", i + 2)
-                    ? System.getenv(s.substring(i + 6, k < i ? j : k))
+            String val = s.startsWith("env.", i + 2) ? System.getenv(s.substring(i + 6, k < i ? j : k))
                     : System.getProperty(s.substring(i + 2, k < i ? j : k));
             sb.append(val != null ? val : k < 0 ? s.substring(i, j + 1) : s.substring(k + 1, j));
             i = s.indexOf("${", j + 1);
@@ -1200,44 +1117,44 @@ public class Builder {
     public static MediaType forTransferSyntax(String ts) {
         MediaType type;
         switch (UID.from(ts)) {
-            case UID.ExplicitVRLittleEndian:
-            case UID.ImplicitVRLittleEndian:
-                return MediaType.APPLICATION_OCTET_STREAM_TYPE;
-            case UID.RLELossless:
-                return MediaType.IMAGE_DICOM_RLE_TYPE;
-            case UID.JPEGBaseline8Bit:
-            case UID.JPEGExtended12Bit:
-            case UID.JPEGLossless:
-            case UID.JPEGLosslessSV1:
-                type = MediaType.IMAGE_JPEG_TYPE;
-                break;
-            case UID.JPEGLSLossless:
-            case UID.JPEGLSNearLossless:
-                type = MediaType.IMAGE_JLS_TYPE;
-                break;
-            case UID.JPEG2000Lossless:
-            case UID.JPEG2000:
-                type = MediaType.IMAGE_JP2_TYPE;
-                break;
-            case UID.JPEG2000MCLossless:
-            case UID.JPEG2000MC:
-                type = MediaType.IMAGE_JPX_TYPE;
-                break;
-            case UID.HTJ2KLossless:
-            case UID.HTJ2KLosslessRPCL:
-            case UID.HTJ2K:
-                type = MediaType.IMAGE_JPHC_TYPE;
-                break;
-            case UID.MPEG2MPML:
-            case UID.MPEG2MPHL:
-                type = MediaType.VIDEO_MPEG_TYPE;
-                break;
-            case UID.MPEG4HP41:
-            case UID.MPEG4HP41BD:
-                type = MediaType.VIDEO_MP4_TYPE;
-                break;
-            default:
-                throw new IllegalArgumentException("ts: " + ts);
+        case UID.ExplicitVRLittleEndian:
+        case UID.ImplicitVRLittleEndian:
+            return MediaType.APPLICATION_OCTET_STREAM_TYPE;
+        case UID.RLELossless:
+            return MediaType.IMAGE_DICOM_RLE_TYPE;
+        case UID.JPEGBaseline8Bit:
+        case UID.JPEGExtended12Bit:
+        case UID.JPEGLossless:
+        case UID.JPEGLosslessSV1:
+            type = MediaType.IMAGE_JPEG_TYPE;
+            break;
+        case UID.JPEGLSLossless:
+        case UID.JPEGLSNearLossless:
+            type = MediaType.IMAGE_JLS_TYPE;
+            break;
+        case UID.JPEG2000Lossless:
+        case UID.JPEG2000:
+            type = MediaType.IMAGE_JP2_TYPE;
+            break;
+        case UID.JPEG2000MCLossless:
+        case UID.JPEG2000MC:
+            type = MediaType.IMAGE_JPX_TYPE;
+            break;
+        case UID.HTJ2KLossless:
+        case UID.HTJ2KLosslessRPCL:
+        case UID.HTJ2K:
+            type = MediaType.IMAGE_JPHC_TYPE;
+            break;
+        case UID.MPEG2MPML:
+        case UID.MPEG2MPHL:
+            type = MediaType.VIDEO_MPEG_TYPE;
+            break;
+        case UID.MPEG4HP41:
+        case UID.MPEG4HP41BD:
+            type = MediaType.VIDEO_MP4_TYPE;
+            break;
+        default:
+            throw new IllegalArgumentException("ts: " + ts);
         }
         return new MediaType(type.getType(), type.getSubtype(), Collections.singletonMap("transfer-syntax", ts));
     }
@@ -1250,29 +1167,29 @@ public class Builder {
         String type = bulkdataMediaType.getType().toLowerCase();
         String subtype = bulkdataMediaType.getSubtype().toLowerCase();
         switch (type) {
-            case "image":
-                switch (subtype) {
-                    case "jpeg":
-                        return UID.JPEGLosslessSV1.uid;
-                    case "jls":
-                    case "x-jls":
-                        return UID.JPEGLSLossless.uid;
-                    case "jp2":
-                        return UID.JPEG2000Lossless.uid;
-                    case "jpx":
-                        return UID.JPEG2000MCLossless.uid;
-                    case "x-dicom-rle":
-                    case "dicom-rle":
-                        return UID.RLELossless.uid;
-                }
-            case "video":
-                switch (subtype) {
-                    case "mpeg":
-                        return UID.MPEG2MPML.uid;
-                    case "mp4":
-                    case "quicktime":
-                        return UID.MPEG4HP41.uid;
-                }
+        case "image":
+            switch (subtype) {
+            case "jpeg":
+                return UID.JPEGLosslessSV1.uid;
+            case "jls":
+            case "x-jls":
+                return UID.JPEGLSLossless.uid;
+            case "jp2":
+                return UID.JPEG2000Lossless.uid;
+            case "jpx":
+                return UID.JPEG2000MCLossless.uid;
+            case "x-dicom-rle":
+            case "dicom-rle":
+                return UID.RLELossless.uid;
+            }
+        case "video":
+            switch (subtype) {
+            case "mpeg":
+                return UID.MPEG2MPML.uid;
+            case "mp4":
+            case "quicktime":
+                return UID.MPEG4HP41.uid;
+            }
         }
         return UID.ExplicitVRLittleEndian.uid;
     }
@@ -1281,12 +1198,18 @@ public class Builder {
         String type = bulkdataMediaType.getType().toLowerCase();
         return type.equals("image") ? UID.SecondaryCaptureImageStorage.uid
                 : type.equals("video") ? UID.VideoPhotographicImageStorage.uid
-                : MediaType.equalsIgnoreParameters(bulkdataMediaType, MediaType.APPLICATION_PDF_TYPE) ? UID.EncapsulatedPDFStorage.uid
-                : MediaType.equalsIgnoreParameters(bulkdataMediaType, MediaType.APPLICATION_XML_TYPE) ? UID.EncapsulatedCDAStorage.uid
-                : MediaType.isSTLType(bulkdataMediaType) ? UID.EncapsulatedSTLStorage.uid
-                : MediaType.equalsIgnoreParameters(bulkdataMediaType, MediaType.MODEL_OBJ_TYPE) ? UID.EncapsulatedOBJStorage.uid
-                : MediaType.equalsIgnoreParameters(bulkdataMediaType, MediaType.MODEL_MTL_TYPE) ? UID.EncapsulatedMTLStorage.uid
-                : null;
+                        : MediaType.equalsIgnoreParameters(bulkdataMediaType, MediaType.APPLICATION_PDF_TYPE)
+                                ? UID.EncapsulatedPDFStorage.uid
+                                : MediaType.equalsIgnoreParameters(bulkdataMediaType, MediaType.APPLICATION_XML_TYPE)
+                                        ? UID.EncapsulatedCDAStorage.uid
+                                        : MediaType.isSTLType(bulkdataMediaType) ? UID.EncapsulatedSTLStorage.uid
+                                                : MediaType.equalsIgnoreParameters(bulkdataMediaType,
+                                                        MediaType.MODEL_OBJ_TYPE)
+                                                                ? UID.EncapsulatedOBJStorage.uid
+                                                                : MediaType.equalsIgnoreParameters(bulkdataMediaType,
+                                                                        MediaType.MODEL_MTL_TYPE)
+                                                                                ? UID.EncapsulatedMTLStorage.uid
+                                                                                : null;
     }
 
     public static String getTransferSyntax(MediaType type) {
@@ -1320,7 +1243,6 @@ public class Builder {
             IoKit.close(dis);
         }
     }
-
 
     public static Props loadRelSoap(URL url) {
         String name = "sop-classes-uid.properties";

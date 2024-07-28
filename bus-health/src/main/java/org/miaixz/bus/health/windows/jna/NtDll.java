@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.jna;
 
 import com.sun.jna.Native;
@@ -55,29 +55,29 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
      * tools rely on this behavior, so the odds of it going away are small.
      */
     int NtQueryInformationProcess(HANDLE ProcessHandle, int ProcessInformationClass, Pointer ProcessInformation,
-                                  int ProcessInformationLength, IntByReference ReturnLength);
+            int ProcessInformationLength, IntByReference ReturnLength);
 
-    @FieldOrder({"Reserved1", "PebBaseAddress", "Reserved2"})
+    @FieldOrder({ "Reserved1", "PebBaseAddress", "Reserved2" })
     class PROCESS_BASIC_INFORMATION extends Structure {
         public Pointer Reserved1;
         public Pointer PebBaseAddress;
         public Pointer[] Reserved2 = new Pointer[4];
     }
 
-    @FieldOrder({"pad", "pad2", "ProcessParameters"})
+    @FieldOrder({ "pad", "pad2", "ProcessParameters" })
     class PEB extends Structure {
         public byte[] pad = new byte[4];
         public Pointer[] pad2 = new Pointer[3];
         public Pointer ProcessParameters; // RTL_USER_PROCESS_PARAMETERS
     }
 
-    @FieldOrder({"MaximumLength", "Length", "Flags", "DebugFlags", "ConsoleHandle", "ConsoleFlags", "StandardInput",
+    @FieldOrder({ "MaximumLength", "Length", "Flags", "DebugFlags", "ConsoleHandle", "ConsoleFlags", "StandardInput",
             "StandardOutput", "StandardError", "CurrentDirectory", "DllPath", "ImagePathName", "CommandLine",
             "Environment", "StartingX", "StartingY", "CountX", "CountY", "CountCharsX", "CountCharsY", "FillAttribute",
             "WindowFlags", "ShowWindowFlags", "WindowTitle", "DesktopInfo", "ShellInfo", "RuntimeData",
             "CurrentDirectories", "EnvironmentSize", "EnvironmentVersion", "PackageDependencyData", "ProcessGroupId",
             "LoaderThreads", "RedirectionDllName", "HeapPartitionName", "DefaultThreadpoolCpuSetMasks",
-            "DefaultThreadpoolCpuSetMaskCount"})
+            "DefaultThreadpoolCpuSetMaskCount" })
     class RTL_USER_PROCESS_PARAMETERS extends Structure {
         public int MaximumLength;
         public int Length;
@@ -118,27 +118,27 @@ public interface NtDll extends com.sun.jna.platform.win32.NtDll {
         public int DefaultThreadpoolCpuSetMaskCount;
     }
 
-    @FieldOrder({"Length", "MaximumLength", "Buffer"})
+    @FieldOrder({ "Length", "MaximumLength", "Buffer" })
     class UNICODE_STRING extends Structure {
         public short Length;
         public short MaximumLength;
         public Pointer Buffer;
     }
 
-    @FieldOrder({"Length", "MaximumLength", "Buffer"})
+    @FieldOrder({ "Length", "MaximumLength", "Buffer" })
     class STRING extends Structure {
         public short Length;
         public short MaximumLength;
         public Pointer Buffer;
     }
 
-    @FieldOrder({"DosPath", "Handle"})
+    @FieldOrder({ "DosPath", "Handle" })
     class CURDIR extends Structure {
         public UNICODE_STRING DosPath;
         public Pointer Handle;
     }
 
-    @FieldOrder({"Flags", "Length", "TimeStamp", "DosPath"})
+    @FieldOrder({ "Flags", "Length", "TimeStamp", "DosPath" })
     class RTL_DRIVE_LETTER_CURDIR extends Structure {
         public short Flags;
         public short Length;

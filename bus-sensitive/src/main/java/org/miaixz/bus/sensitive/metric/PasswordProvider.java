@@ -24,15 +24,14 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.sensitive.metric;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.sensitive.Context;
 
 /**
- * 密码的脱敏策略：
- * 直接返回 null
+ * 密码的脱敏策略： 直接返回 null
  *
  * @author Kimi Liu
  * @since Java 17+

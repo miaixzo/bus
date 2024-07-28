@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.builtin.ldap;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -43,15 +43,13 @@ final class ResourceManager {
 
     private static final String APP_RESOURCE_FILE_NAME = "ldap.properties";
 
-    private static final WeakHashMap<ClassLoader, Properties> propertiesCache =
-            new WeakHashMap<>(11);
+    private static final WeakHashMap<ClassLoader, Properties> propertiesCache = new WeakHashMap<>(11);
 
     private static ClassLoader getContextClassLoader() {
         return Thread.currentThread().getContextClassLoader();
     }
 
-    private static InputStream getResourceAsStream(
-            final ClassLoader cl, final String name) {
+    private static InputStream getResourceAsStream(final ClassLoader cl, final String name) {
         return cl.getResourceAsStream(name);
     }
 
@@ -65,14 +63,12 @@ final class ResourceManager {
             props = new Properties();
             InputStream is = getResourceAsStream(cl, APP_RESOURCE_FILE_NAME);
             if (is == null) {
-                throw new InternalException(
-                        "Failed to access resource: " + APP_RESOURCE_FILE_NAME);
+                throw new InternalException("Failed to access resource: " + APP_RESOURCE_FILE_NAME);
             }
             try {
                 props.load(is);
             } catch (IOException e) {
-                throw new InternalException(
-                        "Failed to parse resource: " + APP_RESOURCE_FILE_NAME);
+                throw new InternalException("Failed to parse resource: " + APP_RESOURCE_FILE_NAME);
             } finally {
                 IoKit.close(is);
             }

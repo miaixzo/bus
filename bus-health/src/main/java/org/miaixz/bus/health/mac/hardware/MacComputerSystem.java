@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.mac.hardware;
 
 import com.sun.jna.Native;
@@ -51,8 +51,7 @@ import java.util.function.Supplier;
 @Immutable
 final class MacComputerSystem extends AbstractComputerSystem {
 
-    private final Supplier<Tuple> manufacturerModelSerialUUID = Memoizer.memoize(
-            MacComputerSystem::platformExpert);
+    private final Supplier<Tuple> manufacturerModelSerialUUID = Memoizer.memoize(MacComputerSystem::platformExpert);
 
     private static Tuple platformExpert() {
         String manufacturer = null;

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.media;
 
 import java.io.EOFException;
@@ -43,10 +43,9 @@ public class MultipartParser {
         this.boundary = boundary;
     }
 
-
     public void parse(InputStream in, Handler handler) throws IOException {
         new MultipartInputStream(in, "--" + boundary).skipAll(); // skip preamble
-        for (int i = 1; ; i++) {
+        for (int i = 1;; i++) {
             int ch1 = in.read();
             int ch2 = in.read();
             if ((ch1 | ch2) < 0)

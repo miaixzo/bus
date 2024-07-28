@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.captcha;
 
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -45,9 +45,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * 抽象验证码
- * 抽象验证码实现了验证码字符串的生成、验证，验证码图片的写出
- * 实现类通过实现{@link #createImage(String)} 方法生成图片对象
+ * 抽象验证码 抽象验证码实现了验证码字符串的生成、验证，验证码图片的写出 实现类通过实现{@link #createImage(String)} 方法生成图片对象
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -126,7 +124,8 @@ public abstract class AbstractProvider implements CaptchaProvider {
      * @param interfereCount 验证码干扰元素个数
      * @param sizeBaseHeight 字体的大小 高度的倍数
      */
-    public AbstractProvider(final int width, final int height, final CodeStrategy generator, final int interfereCount, final float sizeBaseHeight) {
+    public AbstractProvider(final int width, final int height, final CodeStrategy generator, final int interfereCount,
+            final float sizeBaseHeight) {
         this.width = width;
         this.height = height;
         this.generator = generator;
@@ -222,8 +221,7 @@ public abstract class AbstractProvider implements CaptchaProvider {
     }
 
     /**
-     * 获取验证码图
-     * 注意返回的{@link BufferedImage}使用完毕后需要调用{@link BufferedImage#flush()}释放资源
+     * 获取验证码图 注意返回的{@link BufferedImage}使用完毕后需要调用{@link BufferedImage#flush()}释放资源
      *
      * @return 验证码图
      */

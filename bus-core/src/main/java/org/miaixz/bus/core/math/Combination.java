@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.math;
 
 import org.miaixz.bus.core.xyz.MathKit;
@@ -36,8 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 组合，即C(n, m)
- * 排列组合相关类 参考：<a href="http://cgs1999.iteye.com/blog/2327664">http://cgs1999.iteye.com/blog/2327664</a>
+ * 组合，即C(n, m) 排列组合相关类 参考：<a href="http://cgs1999.iteye.com/blog/2327664">http://cgs1999.iteye.com/blog/2327664</a>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,8 +48,7 @@ public class Combination implements Serializable {
     private final String[] datas;
 
     /**
-     * 组合，即C(n, m)
-     * 排列组合相关类 参考：<a href="http://cgs1999.iteye.com/blog/2327664">http://cgs1999.iteye.com/blog/2327664</a>
+     * 组合，即C(n, m) 排列组合相关类 参考：<a href="http://cgs1999.iteye.com/blog/2327664">http://cgs1999.iteye.com/blog/2327664</a>
      *
      * @param datas 用于组合的数据
      */
@@ -80,7 +78,8 @@ public class Combination implements Serializable {
      */
     public static long countAll(final int n) {
         if (n < 0 || n > 63) {
-            throw new IllegalArgumentException(StringKit.format("countAll must have n >= 0 and n <= 63, but got n={}", n));
+            throw new IllegalArgumentException(
+                    StringKit.format("countAll must have n >= 0 and n <= 63, but got n={}", n));
         }
         return n == 63 ? Long.MAX_VALUE : (1L << n) - 1;
     }
@@ -118,7 +117,8 @@ public class Combination implements Serializable {
      * @param resultIndex 选择索引，从0开始
      * @param result      结果集
      */
-    private void select(final int dataIndex, final String[] resultList, final int resultIndex, final List<String[]> result) {
+    private void select(final int dataIndex, final String[] resultList, final int resultIndex,
+            final List<String[]> result) {
         final int resultLen = resultList.length;
         final int resultCount = resultIndex + 1;
         if (resultCount > resultLen) { // 全部选择完时，输出组合结果

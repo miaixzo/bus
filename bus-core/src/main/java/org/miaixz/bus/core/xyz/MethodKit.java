@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.bean.NullWrapper;
@@ -79,16 +79,13 @@ public class MethodKit {
     }
 
     /**
-     * 获得指定类本类及其父类中的Public方法名
-     * 去重重载的方法
+     * 获得指定类本类及其父类中的Public方法名 去重重载的方法
      *
      * @param clazz 类
      * @return 方法名Set
      */
     public static Set<String> getPublicMethodNames(final Class<?> clazz) {
-        return StreamKit.of(getPublicMethods(clazz))
-                .map(Method::getName)
-                .collect(Collectors.toSet());
+        return StreamKit.of(getPublicMethods(clazz)).map(Method::getName).collect(Collectors.toSet());
     }
 
     /**
@@ -101,7 +98,8 @@ public class MethodKit {
      * @return 方法
      * @throws SecurityException 无权访问抛出异常
      */
-    public static Method getPublicMethod(final Class<?> clazz, final boolean ignoreCase, final String methodName, final Class<?>... paramTypes) throws SecurityException {
+    public static Method getPublicMethod(final Class<?> clazz, final boolean ignoreCase, final String methodName,
+            final Class<?>... paramTypes) throws SecurityException {
         if (null == clazz || StringKit.isBlank(methodName)) {
             return null;
         }
@@ -121,7 +119,8 @@ public class MethodKit {
      * @return 方法
      * @throws SecurityException 无访问权限抛出异常
      */
-    public static Method getMethodOfObject(final Object obj, final String methodName, final Object... args) throws SecurityException {
+    public static Method getMethodOfObject(final Object obj, final String methodName, final Object... args)
+            throws SecurityException {
         if (null == obj || StringKit.isBlank(methodName)) {
             return null;
         }
@@ -141,7 +140,8 @@ public class MethodKit {
      * @return 方法
      * @throws SecurityException 无权访问抛出异常
      */
-    public static Method getMethodIgnoreCase(final Class<?> clazz, final String methodName, final Class<?>... paramTypes) throws SecurityException {
+    public static Method getMethodIgnoreCase(final Class<?> clazz, final String methodName,
+            final Class<?>... paramTypes) throws SecurityException {
         return getMethod(clazz, true, methodName, paramTypes);
     }
 
@@ -158,14 +158,13 @@ public class MethodKit {
      * @return 方法
      * @throws SecurityException 无权访问抛出异常
      */
-    public static Method getMethod(final Class<?> clazz, final String methodName, final Class<?>... paramTypes) throws SecurityException {
+    public static Method getMethod(final Class<?> clazz, final String methodName, final Class<?>... paramTypes)
+            throws SecurityException {
         return getMethod(clazz, false, methodName, paramTypes);
     }
 
     /**
-     * 查找指定方法 如果找不到对应的方法则返回{@code null}
-     * 此方法为精准获取方法名，即方法名和参数数量和类型必须一致，否则返回{@code null}。
-     * 如果查找的方法有多个同参数类型重载，查找第一个找到的方法
+     * 查找指定方法 如果找不到对应的方法则返回{@code null} 此方法为精准获取方法名，即方法名和参数数量和类型必须一致，否则返回{@code null}。 如果查找的方法有多个同参数类型重载，查找第一个找到的方法
      *
      * @param clazz      类，如果为{@code null}返回{@code null}
      * @param ignoreCase 是否忽略大小写
@@ -174,7 +173,8 @@ public class MethodKit {
      * @return 方法
      * @throws SecurityException 无权访问抛出异常
      */
-    public static Method getMethod(final Class<?> clazz, final boolean ignoreCase, final String methodName, final Class<?>... paramTypes) throws SecurityException {
+    public static Method getMethod(final Class<?> clazz, final boolean ignoreCase, final String methodName,
+            final Class<?>... paramTypes) throws SecurityException {
         if (null == clazz || StringKit.isBlank(methodName)) {
             return null;
         }
@@ -182,9 +182,7 @@ public class MethodKit {
     }
 
     /**
-     * 查找指定方法 如果找不到对应的方法则返回{@code null}
-     * 此方法为精准获取方法名，即方法名和参数数量和类型必须一致，否则返回{@code null}。
-     * 如果查找的方法有多个同参数类型重载，查找最后一个非协变桥接方法
+     * 查找指定方法 如果找不到对应的方法则返回{@code null} 此方法为精准获取方法名，即方法名和参数数量和类型必须一致，否则返回{@code null}。 如果查找的方法有多个同参数类型重载，查找最后一个非协变桥接方法
      *
      * @param methods    方法列表
      * @param ignoreCase 是否忽略大小写
@@ -193,7 +191,8 @@ public class MethodKit {
      * @return 方法
      * @throws SecurityException 无权访问抛出异常
      */
-    public static Method getMethod(final Method[] methods, final boolean ignoreCase, final String methodName, final Class<?>... paramTypes) throws SecurityException {
+    public static Method getMethod(final Method[] methods, final boolean ignoreCase, final String methodName,
+            final Class<?>... paramTypes) throws SecurityException {
         if (ArrayKit.isEmpty(methods) || StringKit.isBlank(methodName)) {
             return null;
         }
@@ -204,8 +203,7 @@ public class MethodKit {
                 if (StringKit.equals(methodName, method.getName(), ignoreCase)
                         && ClassKit.isAllAssignableFrom(method.getParameterTypes(), paramTypes)
                         // 排除协变桥接方法
-                        && (res == null
-                        || res.getReturnType().isAssignableFrom(method.getReturnType()))) {
+                        && (res == null || res.getReturnType().isAssignableFrom(method.getReturnType()))) {
                     res = method;
                 }
             }
@@ -241,7 +239,8 @@ public class MethodKit {
      * @return 方法
      * @throws SecurityException 无权访问抛出异常
      */
-    public static Method getMethodByNameIgnoreCase(final Class<?> clazz, final String methodName) throws SecurityException {
+    public static Method getMethodByNameIgnoreCase(final Class<?> clazz, final String methodName)
+            throws SecurityException {
         return getMethodByName(clazz, true, methodName);
     }
 
@@ -258,29 +257,27 @@ public class MethodKit {
      * @return 方法
      * @throws SecurityException 无权访问抛出异常
      */
-    public static Method getMethodByName(final Class<?> clazz, final boolean ignoreCase, final String methodName) throws SecurityException {
+    public static Method getMethodByName(final Class<?> clazz, final boolean ignoreCase, final String methodName)
+            throws SecurityException {
         if (null == clazz || StringKit.isBlank(methodName)) {
             return null;
         }
 
-        final Method[] methods = getMethods(clazz, (method ->
-                StringKit.equals(methodName, method.getName(), ignoreCase) && (method.getReturnType().isAssignableFrom(method.getReturnType()))));
+        final Method[] methods = getMethods(clazz, (method -> StringKit.equals(methodName, method.getName(), ignoreCase)
+                && (method.getReturnType().isAssignableFrom(method.getReturnType()))));
 
         return ArrayKit.isEmpty(methods) ? null : methods[0];
     }
 
     /**
-     * 获得指定类中的Public方法名
-     * 去重重载的方法
+     * 获得指定类中的Public方法名 去重重载的方法
      *
      * @param clazz 类
      * @return 方法名Set
      * @throws SecurityException 安全异常
      */
     public static Set<String> getMethodNames(final Class<?> clazz) throws SecurityException {
-        return StreamKit.of(getMethods(clazz, null))
-                .map(Method::getName)
-                .collect(Collectors.toSet());
+        return StreamKit.of(getMethods(clazz, null)).map(Method::getName).collect(Collectors.toSet());
     }
 
     /**
@@ -302,7 +299,8 @@ public class MethodKit {
      * @return 方法列表
      * @throws SecurityException 安全检查异常
      */
-    public static Method[] getMethods(final Class<?> clazz, final Predicate<Method> predicate) throws SecurityException {
+    public static Method[] getMethods(final Class<?> clazz, final Predicate<Method> predicate)
+            throws SecurityException {
         return METHODS_CACHE.computeIfAbsent(Assert.notNull(clazz), MethodReflect::of).getAllMethods(predicate);
     }
 
@@ -346,17 +344,17 @@ public class MethodKit {
      * @return 方法列表
      * @throws SecurityException 安全检查异常
      */
-    public static Method[] getDeclaredMethods(final Class<?> clazz, final Predicate<Method> predicate) throws SecurityException {
+    public static Method[] getDeclaredMethods(final Class<?> clazz, final Predicate<Method> predicate)
+            throws SecurityException {
         return METHODS_CACHE.computeIfAbsent(Assert.notNull(clazz), MethodReflect::of).getDeclaredMethods(predicate);
     }
 
     /**
-     * 获得一个类中所有方法列表，直接反射获取，无缓存
-     * 接口获取方法和默认方法，获取的方法包括：
+     * 获得一个类中所有方法列表，直接反射获取，无缓存 接口获取方法和默认方法，获取的方法包括：
      * <ul>
-     *     <li>本类中的所有方法（包括static方法）</li>
-     *     <li>父类中的所有方法（包括static方法）</li>
-     *     <li>Object中（包括static方法）</li>
+     * <li>本类中的所有方法（包括static方法）</li>
+     * <li>父类中的所有方法（包括static方法）</li>
+     * <li>Object中（包括static方法）</li>
      * </ul>
      *
      * @param beanClass            类或接口
@@ -365,7 +363,8 @@ public class MethodKit {
      * @return 方法列表
      * @throws SecurityException 安全检查异常
      */
-    public static Method[] getMethodsDirectly(final Class<?> beanClass, final boolean withSupers, final boolean withMethodFromObject) throws SecurityException {
+    public static Method[] getMethodsDirectly(final Class<?> beanClass, final boolean withSupers,
+            final boolean withMethodFromObject) throws SecurityException {
         return MethodReflect.of(Assert.notNull(beanClass)).getMethodsDirectly(withSupers, withMethodFromObject);
     }
 
@@ -376,11 +375,8 @@ public class MethodKit {
      * @return the true/false
      */
     public static boolean isObjectMethod(Method method) {
-        return method != null && (method.getDeclaringClass() == Object.class
-                || isEqualsMethod(method)
-                || isHashCodeMethod(method)
-                || isToStringMethod(method)
-        );
+        return method != null && (method.getDeclaringClass() == Object.class || isEqualsMethod(method)
+                || isHashCodeMethod(method) || isToStringMethod(method));
     }
 
     /**
@@ -390,8 +386,7 @@ public class MethodKit {
      * @return the true/false
      */
     public static boolean isAttributeMethod(Method method) {
-        return method != null && method.getParameterTypes().length == 0
-                && method.getReturnType() != void.class;
+        return method != null && method.getParameterTypes().length == 0 && method.getReturnType() != void.class;
     }
 
     /**
@@ -401,9 +396,7 @@ public class MethodKit {
      * @return the true/false
      */
     public static boolean isEqualsMethod(final Method method) {
-        if (method == null ||
-                1 != method.getParameterCount() ||
-                !Normal.EQUALS.equals(method.getName())) {
+        if (method == null || 1 != method.getParameterCount() || !Normal.EQUALS.equals(method.getName())) {
             return false;
         }
         return (method.getParameterTypes()[0] == Object.class);
@@ -416,9 +409,7 @@ public class MethodKit {
      * @return the true/false
      */
     public static boolean isHashCodeMethod(final Method method) {
-        return method != null
-                && Normal.HASHCODE.equals(method.getName())
-                && isEmptyParam(method);
+        return method != null && Normal.HASHCODE.equals(method.getName()) && isEmptyParam(method);
     }
 
     /**
@@ -428,9 +419,7 @@ public class MethodKit {
      * @return the true/false
      */
     public static boolean isToStringMethod(final Method method) {
-        return method != null
-                && Normal.TOSTRING.equals(method.getName())
-                && isEmptyParam(method);
+        return method != null && Normal.TOSTRING.equals(method.getName()) && isEmptyParam(method);
     }
 
     /**
@@ -446,9 +435,9 @@ public class MethodKit {
     /**
      * 检查给定方法是否为Getter或者Setter方法，规则为：
      * <ul>
-     *     <li>方法参数必须为0个或1个</li>
-     *     <li>如果是无参方法，则判断是否以“get”或“is”开头</li>
-     *     <li>如果方法参数1个，则判断是否以“set”开头</li>
+     * <li>方法参数必须为0个或1个</li>
+     * <li>如果是无参方法，则判断是否以“get”或“is”开头</li>
+     * <li>如果方法参数1个，则判断是否以“set”开头</li>
      * </ul>
      *
      * @param method 方法
@@ -461,10 +450,10 @@ public class MethodKit {
     /**
      * 检查给定方法是否为Getter或者Setter方法，规则为：
      * <ul>
-     *     <li>方法参数必须为0个或1个</li>
-     *     <li>方法名称不能是getClass</li>
-     *     <li>如果是无参方法，则判断是否以“get”或“is”开头</li>
-     *     <li>如果方法参数1个，则判断是否以“set”开头</li>
+     * <li>方法参数必须为0个或1个</li>
+     * <li>方法名称不能是getClass</li>
+     * <li>如果是无参方法，则判断是否以“get”或“is”开头</li>
+     * <li>如果方法参数1个，则判断是否以“set”开头</li>
      * </ul>
      *
      * @param method     方法
@@ -475,20 +464,20 @@ public class MethodKit {
         // 参数个数必须为1
         final int parameterCount = method.getParameterCount();
         switch (parameterCount) {
-            case 0:
-                return isGetter(method, ignoreCase);
-            case 1:
-                return isSetter(method, ignoreCase);
-            default:
-                return false;
+        case 0:
+            return isGetter(method, ignoreCase);
+        case 1:
+            return isSetter(method, ignoreCase);
+        default:
+            return false;
         }
     }
 
     /**
      * 检查给定方法是否为Setter方法，规则为：
      * <ul>
-     *     <li>方法参数必须为1个</li>
-     *     <li>判断是否以“set”开头</li>
+     * <li>方法参数必须为1个</li>
+     * <li>判断是否以“set”开头</li>
      * </ul>
      *
      * @param method     方法
@@ -521,10 +510,10 @@ public class MethodKit {
     /**
      * 检查给定方法是否为Getter方法，规则为：
      * <ul>
-     *     <li>方法参数必须为0个</li>
-     *     <li>方法名称不能是getClass</li>
-     *     <li>"is"开头返回必须为boolean或Boolean</li>
-     *     <li>是否以“get”</li>
+     * <li>方法参数必须为0个</li>
+     * <li>方法名称不能是getClass</li>
+     * <li>"is"开头返回必须为boolean或Boolean</li>
+     * <li>是否以“get”</li>
      * </ul>
      *
      * @param method     方法
@@ -577,8 +566,7 @@ public class MethodKit {
     }
 
     /**
-     * 执行方法
-     * 执行前要检查给定参数：
+     * 执行方法 执行前要检查给定参数：
      *
      * <pre>
      * 1. 参数个数是否与方法参数个数一致
@@ -592,7 +580,8 @@ public class MethodKit {
      * @return 结果
      * @throws InternalException 一些列异常的包装
      */
-    public static <T> T invokeWithCheck(final Object obj, final Method method, final Object... args) throws InternalException {
+    public static <T> T invokeWithCheck(final Object obj, final Method method, final Object... args)
+            throws InternalException {
         return MethodInvoker.of(method).setCheckArgs(true).invoke(obj, args);
     }
 
@@ -621,8 +610,7 @@ public class MethodKit {
     }
 
     /**
-     * 执行对象中指定方法
-     * 如果需要传递的参数为null,请使用NullWrapperBean来传递,不然会丢失类型信息
+     * 执行对象中指定方法 如果需要传递的参数为null,请使用NullWrapperBean来传递,不然会丢失类型信息
      *
      * @param <T>        返回对象类型
      * @param obj        方法所在对象
@@ -632,7 +620,8 @@ public class MethodKit {
      * @throws InternalException IllegalAccessException包装
      * @see NullWrapper
      */
-    public static <T> T invoke(final Object obj, final String methodName, final Object... args) throws InternalException {
+    public static <T> T invoke(final Object obj, final String methodName, final Object... args)
+            throws InternalException {
         Assert.notNull(obj, "Object to get method must be not null!");
         Assert.notBlank(methodName, "Method name must be not blank!");
 
@@ -644,10 +633,7 @@ public class MethodKit {
     }
 
     /**
-     * 执行方法
-     * 可执行Private方法，也可执行static方法
-     * 执行非static方法时，必须满足对象有默认构造方法
-     * 非单例模式，如果是非静态方法，每次创建一个新对象
+     * 执行方法 可执行Private方法，也可执行static方法 执行非static方法时，必须满足对象有默认构造方法 非单例模式，如果是非静态方法，每次创建一个新对象
      *
      * @param <T>                     对象类型
      * @param classNameWithMethodName 类名和方法名表达式
@@ -659,9 +645,7 @@ public class MethodKit {
     }
 
     /**
-     * 执行方法
-     * 可执行Private方法，也可执行static方法
-     * 执行非static方法时，必须满足对象有默认构造方法
+     * 执行方法 可执行Private方法，也可执行static方法 执行非static方法时，必须满足对象有默认构造方法
      *
      * @param <T>                     对象类型
      * @param classNameWithMethodName 类名和方法名表达式
@@ -689,10 +673,7 @@ public class MethodKit {
     }
 
     /**
-     * 执行方法
-     * 可执行Private方法，也可执行static方法
-     * 执行非static方法时，必须满足对象有默认构造方法
-     * 非单例模式，如果是非静态方法，每次创建一个新对象
+     * 执行方法 可执行Private方法，也可执行static方法 执行非static方法时，必须满足对象有默认构造方法 非单例模式，如果是非静态方法，每次创建一个新对象
      *
      * @param <T>        对象类型
      * @param className  类名，完整类路径
@@ -705,9 +686,7 @@ public class MethodKit {
     }
 
     /**
-     * 执行方法
-     * 可执行Private方法，也可执行static方法
-     * 执行非static方法时，必须满足对象有默认构造方法
+     * 执行方法 可执行Private方法，也可执行static方法 执行非static方法时，必须满足对象有默认构造方法
      *
      * @param <T>         对象类型
      * @param className   类名，完整类路径
@@ -716,7 +695,8 @@ public class MethodKit {
      * @param args        参数，必须严格对应指定方法的参数类型和数量
      * @return 返回结果
      */
-    public static <T> T invoke(final String className, final String methodName, final boolean isSingleton, final Object... args) {
+    public static <T> T invoke(final String className, final String methodName, final boolean isSingleton,
+            final Object... args) {
         final Class<?> clazz = ClassKit.loadClass(className);
         try {
             final Method method = getMethod(clazz, methodName, ClassKit.getClasses(args));
@@ -734,8 +714,7 @@ public class MethodKit {
     }
 
     /**
-     * 调用Getter方法.
-     * 支持多级,如：对象名.对象名.方法
+     * 调用Getter方法. 支持多级,如：对象名.对象名.方法
      *
      * @param object 对象
      * @param name   属性名
@@ -744,14 +723,13 @@ public class MethodKit {
     public static Object invokeGetter(Object object, String name) {
         for (String method : StringKit.splitToArray(name, Symbol.DOT)) {
             String getterMethodName = Normal.GET + StringKit.capitalize(method);
-            object = invoke(object, getterMethodName, new Class[]{}, new Object[]{});
+            object = invoke(object, getterMethodName, new Class[] {}, new Object[] {});
         }
         return object;
     }
 
     /**
-     * 调用Setter方法, 仅匹配方法名
-     * 支持多级,如：对象名.对象名.方法
+     * 调用Setter方法, 仅匹配方法名 支持多级,如：对象名.对象名.方法
      *
      * @param object 对象
      * @param name   属性名
@@ -762,7 +740,7 @@ public class MethodKit {
         for (int i = 0; i < names.length; i++) {
             if (i < names.length - 1) {
                 String getterMethodName = Normal.GET + StringKit.capitalize(names[i]);
-                object = invoke(object, getterMethodName, new Class[]{}, new Object[]{});
+                object = invoke(object, getterMethodName, new Class[] {}, new Object[] {});
             } else {
                 String setterMethodName = Normal.SET + StringKit.capitalize(names[i]);
                 invoke(object, setterMethodName, value);
@@ -773,11 +751,11 @@ public class MethodKit {
     /**
      * 检查用户传入参数：
      * <ul>
-     *     <li>1、忽略多余的参数</li>
-     *     <li>2、参数不够补齐默认值</li>
-     *     <li>3、通过NullWrapperBean传递的参数,会直接赋值null</li>
-     *     <li>4、传入参数为null，但是目标参数类型为原始类型，做转换</li>
-     *     <li>5、传入参数类型不对应，尝试转换类型</li>
+     * <li>1、忽略多余的参数</li>
+     * <li>2、参数不够补齐默认值</li>
+     * <li>3、通过NullWrapperBean传递的参数,会直接赋值null</li>
+     * <li>4、传入参数为null，但是目标参数类型为原始类型，做转换</li>
+     * <li>5、传入参数类型不对应，尝试转换类型</li>
      * </ul>
      *
      * @param method 方法
@@ -797,10 +775,10 @@ public class MethodKit {
                     // 越界或者空值
                     actualArgs[i] = ClassKit.getDefaultValue(parameterTypes[i]);
                 } else if (args[i] instanceof NullWrapper) {
-                    //如果是通过NullWrapperBean传递的null参数,直接赋值null
+                    // 如果是通过NullWrapperBean传递的null参数,直接赋值null
                     actualArgs[i] = null;
                 } else if (!parameterTypes[i].isAssignableFrom(args[i].getClass())) {
-                    //对于类型不同的字段，尝试转换，转换失败则使用原对象类型
+                    // 对于类型不同的字段，尝试转换，转换失败则使用原对象类型
                     final Object targetValue = Convert.convert(parameterTypes[i], args[i], args[i]);
                     if (null != targetValue) {
                         actualArgs[i] = targetValue;
@@ -815,11 +793,10 @@ public class MethodKit {
     }
 
     /**
-     * 获取指定{@link Executable}的{@link MethodType}
-     * 此方法主要是读取方法或构造中的方法列表，主要为：
+     * 获取指定{@link Executable}的{@link MethodType} 此方法主要是读取方法或构造中的方法列表，主要为：
      * <ul>
-     *     <li>方法：[返回类型, 参数1类型, 参数2类型, ...]</li>
-     *     <li>构造：[构造对应类类型, 参数1类型, 参数2类型, ...]</li>
+     * <li>方法：[返回类型, 参数1类型, 参数2类型, ...]</li>
+     * <li>构造：[构造对应类类型, 参数1类型, 参数2类型, ...]</li>
      * </ul>
      *
      * @param executable 方法或构造
@@ -828,7 +805,8 @@ public class MethodKit {
     public static MethodType methodType(final Executable executable) {
         if (executable instanceof Method) {
             final Method method = (Method) executable;
-            return MethodType.methodType(method.getReturnType(), method.getDeclaringClass(), method.getParameterTypes());
+            return MethodType.methodType(method.getReturnType(), method.getDeclaringClass(),
+                    method.getParameterTypes());
         } else {
             final Constructor<?> constructor = (Constructor<?>) executable;
             return MethodType.methodType(constructor.getDeclaringClass(), constructor.getParameterTypes());

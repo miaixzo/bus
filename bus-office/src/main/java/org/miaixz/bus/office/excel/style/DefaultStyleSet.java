@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.excel.style;
 
 import org.apache.poi.hssf.util.HSSFColor;
@@ -92,7 +92,6 @@ public class DefaultStyleSet implements StyleSet, Serializable {
         // 22表示：m/d/yy h:mm
         this.cellStyleForDate.setDataFormat((short) 22);
 
-
         // 默认链接样式
         this.cellStyleForHyperlink = Styles.cloneCellStyle(workbook, this.cellStyle);
         final Font font = workbook.createFont();
@@ -100,7 +99,6 @@ public class DefaultStyleSet implements StyleSet, Serializable {
         font.setColor(HSSFColor.HSSFColorPredefined.BLUE.getIndex());
         this.cellStyleForHyperlink.setFont(font);
     }
-
 
     @Override
     public CellStyle getStyleFor(final CellReference reference, final Object cellValue, final boolean isHeader) {
@@ -112,17 +110,15 @@ public class DefaultStyleSet implements StyleSet, Serializable {
             style = cellStyle;
         }
 
-        if (cellValue instanceof Date
-                || cellValue instanceof TemporalAccessor
-                || cellValue instanceof Calendar) {
+        if (cellValue instanceof Date || cellValue instanceof TemporalAccessor || cellValue instanceof Calendar) {
             // 日期单独定义格式
             if (null != this.cellStyleForDate) {
                 style = this.cellStyleForDate;
             }
         } else if (cellValue instanceof Number) {
             // 数字单独定义格式
-            if ((cellValue instanceof Double || cellValue instanceof Float || cellValue instanceof BigDecimal) &&
-                    null != this.cellStyleForNumber) {
+            if ((cellValue instanceof Double || cellValue instanceof Float || cellValue instanceof BigDecimal)
+                    && null != this.cellStyleForNumber) {
                 style = this.cellStyleForNumber;
             }
         } else if (cellValue instanceof Hyperlink) {
@@ -239,7 +235,8 @@ public class DefaultStyleSet implements StyleSet, Serializable {
      * @param ignoreHead 是否跳过头部样式
      * @return this
      */
-    public DefaultStyleSet setFont(final short color, final short fontSize, final String fontName, final boolean ignoreHead) {
+    public DefaultStyleSet setFont(final short color, final short fontSize, final String fontName,
+            final boolean ignoreHead) {
         final Font font = Styles.createFont(this.workbook, color, fontSize, fontName);
         return setFont(font, ignoreHead);
     }

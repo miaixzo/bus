@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.builder;
 
 import jakarta.persistence.Entity;
@@ -203,11 +203,8 @@ public class FieldBuilder {
                 }
             }
             Class<?> superClass = entityClass.getSuperclass();
-            if (superClass != null
-                    && !superClass.equals(Object.class)
-                    && (superClass.isAnnotationPresent(Entity.class)
-                    || (!Map.class.isAssignableFrom(superClass)
-                    && !Collection.class.isAssignableFrom(superClass)))) {
+            if (superClass != null && !superClass.equals(Object.class) && (superClass.isAnnotationPresent(Entity.class)
+                    || (!Map.class.isAssignableFrom(superClass) && !Collection.class.isAssignableFrom(superClass)))) {
                 return _getFields(entityClass.getSuperclass(), fieldList, ++level);
             }
             return fieldList;

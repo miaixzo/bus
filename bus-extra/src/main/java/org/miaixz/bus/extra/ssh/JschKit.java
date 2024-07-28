@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.ssh;
 
 import com.jcraft.jsch.Channel;
@@ -36,10 +36,7 @@ import org.miaixz.bus.extra.ssh.provider.jsch.ChannelType;
 import org.miaixz.bus.extra.ssh.provider.jsch.JschSession;
 
 /**
- * Jsch工具类
- * Jsch是Java Secure Channel的缩写。
- * JSch是一个SSH2的纯Java实现。
- * 它允许你连接到一个SSH服务器，并且可以使用端口转发，X11转发，文件传输等。
+ * Jsch工具类 Jsch是Java Secure Channel的缩写。 JSch是一个SSH2的纯Java实现。 它允许你连接到一个SSH服务器，并且可以使用端口转发，X11转发，文件传输等。
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,31 +46,32 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.Zoom:
-            case PrivateTag.Target:
-                return VR.DS;
-            case PrivateTag.TubeAngle:
-                return VR.IS;
-            case PrivateTag.RecognitionCode:
-            case PrivateTag._0009_xx50_:
-            case PrivateTag._0009_xx51_:
-            case PrivateTag.PDMEFIDPlaceholder:
-            case PrivateTag.PDMDataObjectTypeExtension:
-            case PrivateTag.Dummy:
-            case PrivateTag.Header:
-                return VR.LO;
-            case PrivateTag.LengthOfOriginalHeader:
-            case PrivateTag.LengthOfPixelmatrixInBytes:
-                return VR.UL;
-            case PrivateTag.ByteOffsetOfOriginalHeader:
-            case PrivateTag.ByteOffsetOfPixelmatrix:
-            case PrivateTag.ROIMask:
-                return VR.US;
+
+        case PrivateTag.Zoom:
+        case PrivateTag.Target:
+            return VR.DS;
+        case PrivateTag.TubeAngle:
+            return VR.IS;
+        case PrivateTag.RecognitionCode:
+        case PrivateTag._0009_xx50_:
+        case PrivateTag._0009_xx51_:
+        case PrivateTag.PDMEFIDPlaceholder:
+        case PrivateTag.PDMDataObjectTypeExtension:
+        case PrivateTag.Dummy:
+        case PrivateTag.Header:
+            return VR.LO;
+        case PrivateTag.LengthOfOriginalHeader:
+        case PrivateTag.LengthOfPixelmatrixInBytes:
+            return VR.UL;
+        case PrivateTag.ByteOffsetOfOriginalHeader:
+        case PrivateTag.ByteOffsetOfPixelmatrix:
+        case PrivateTag.ROIMask:
+            return VR.US;
         }
         return VR.UN;
     }

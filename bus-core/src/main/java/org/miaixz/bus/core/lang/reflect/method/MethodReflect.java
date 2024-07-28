@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.reflect.method;
 
 import org.miaixz.bus.core.center.set.UniqueKeySet;
@@ -73,6 +73,7 @@ public class MethodReflect {
 
     /**
      * 获取方法的唯一键，结构为:
+     * 
      * <pre>
      *     返回类型#方法名:参数1类型,参数2类型...
      * </pre>
@@ -167,13 +168,11 @@ public class MethodReflect {
     }
 
     /**
-     * 获取当前类层级结构中的所有方法。
-     * 等同于按广度优先遍历类及其所有父类与接口，并依次调用{@link Class#getDeclaredMethods()}。
-     * 返回的方法排序规则如下：
+     * 获取当前类层级结构中的所有方法。 等同于按广度优先遍历类及其所有父类与接口，并依次调用{@link Class#getDeclaredMethods()}。 返回的方法排序规则如下：
      * <ul>
-     *     <li>离{@code type}距离越近，则顺序越靠前；</li>
-     *     <li>与{@code type}距离相同，直接实现的接口方法优先于父类方法；</li>
-     *     <li>与{@code type}距离相同的接口，则顺序遵循接口在{@link Class#getInterfaces()}的顺序；</li>
+     * <li>离{@code type}距离越近，则顺序越靠前；</li>
+     * <li>与{@code type}距离相同，直接实现的接口方法优先于父类方法；</li>
+     * <li>与{@code type}距离相同的接口，则顺序遵循接口在{@link Class#getInterfaces()}的顺序；</li>
      * </ul>
      *
      * @param predicate 方法过滤器，{@code null}表示无过滤
@@ -191,12 +190,11 @@ public class MethodReflect {
     }
 
     /**
-     * 获得一个类中所有方法列表，直接反射获取，无缓存
-     * 接口获取方法和默认方法，获取的方法包括：
+     * 获得一个类中所有方法列表，直接反射获取，无缓存 接口获取方法和默认方法，获取的方法包括：
      * <ul>
-     *     <li>本类中的所有方法（包括static方法）</li>
-     *     <li>父类中的所有方法（包括static方法）</li>
-     *     <li>Object中（包括static方法）</li>
+     * <li>本类中的所有方法（包括static方法）</li>
+     * <li>父类中的所有方法（包括static方法）</li>
+     * <li>Object中（包括static方法）</li>
      * </ul>
      *
      * @param withSupers           是否包括父类或接口的方法列表
@@ -204,7 +202,8 @@ public class MethodReflect {
      * @return 方法列表
      * @throws SecurityException 安全检查异常
      */
-    public Method[] getMethodsDirectly(final boolean withSupers, final boolean withMethodFromObject) throws SecurityException {
+    public Method[] getMethodsDirectly(final boolean withSupers, final boolean withMethodFromObject)
+            throws SecurityException {
         final Class<?> clazz = this.clazz;
 
         if (clazz.isInterface()) {
@@ -222,7 +221,6 @@ public class MethodReflect {
             result.addAllIfAbsent(Arrays.asList(searchType.getDeclaredMethods()));
             // 实现接口的所有默认方法
             result.addAllIfAbsent(getDefaultMethodsFromInterface(searchType));
-
 
             searchType = (withSupers && !searchType.isInterface()) ? searchType.getSuperclass() : null;
         }

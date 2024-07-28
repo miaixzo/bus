@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.extend;
 
 import jakarta.json.stream.JsonParser;
@@ -82,27 +82,28 @@ public class JsonImageWriterConfiguration extends JsonConfigurationExtension {
             String[] imageWriteParam = {};
             while (reader.next() == JsonParser.Event.KEY_NAME) {
                 switch (reader.getString()) {
-                    case "dicomTransferSyntax":
-                        tsuid = reader.stringValue();
-                        break;
-                    case "dcmIIOFormatName":
-                        formatName = reader.stringValue();
-                        break;
-                    case "dcmJavaClassName":
-                        className = reader.stringValue();
-                        break;
-                    case "dcmPatchJPEGLS":
-                        patchJPEGLS = reader.stringValue();
-                        break;
-                    case "dcmImageWriteParam":
-                        imageWriteParam = reader.stringArray();
-                        break;
-                    default:
-                        reader.skipUnknownProperty();
+                case "dicomTransferSyntax":
+                    tsuid = reader.stringValue();
+                    break;
+                case "dcmIIOFormatName":
+                    formatName = reader.stringValue();
+                    break;
+                case "dcmJavaClassName":
+                    className = reader.stringValue();
+                    break;
+                case "dcmPatchJPEGLS":
+                    patchJPEGLS = reader.stringValue();
+                    break;
+                case "dcmImageWriteParam":
+                    imageWriteParam = reader.stringArray();
+                    break;
+                default:
+                    reader.skipUnknownProperty();
                 }
             }
             reader.expect(JsonParser.Event.END_OBJECT);
-            factory.put(tsuid, new ImageWriterFactory.ImageWriterParam(formatName, className, patchJPEGLS, imageWriteParam));
+            factory.put(tsuid,
+                    new ImageWriterFactory.ImageWriterParam(formatName, className, patchJPEGLS, imageWriteParam));
         }
         device.addDeviceExtension(new ImageWriterExtension(factory));
         return true;

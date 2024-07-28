@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.csv;
 
 import org.miaixz.bus.core.xyz.ListKit;
@@ -102,10 +102,7 @@ public class CsvData implements Iterable<CsvRow>, Serializable {
 
     @Override
     public String toString() {
-        return "CsvData{" +
-                "header=" + header +
-                ", rows=" + rows +
-                '}';
+        return "CsvData{" + "header=" + header + ", rows=" + rows + '}';
     }
 
 }

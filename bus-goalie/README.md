@@ -48,9 +48,9 @@ public class Assets {
 
 请求参数说明:
 
-| 参数     | 说明                                 |  
+| 参数     | 说明                                 |
 |--------|------------------------------------|
-| method | api的方法名   (xxx.xxx.xxx)            |  
+| method | api的方法名   (xxx.xxx.xxx)            |
 | v      | api的版本号,和method 一起使用 (1.1 ,1.2)    |
 | format | 接口返回的格式,目前支持（json,xml） 两种          |
 | sign   | 在配置文件中开启解密配置,若请求中包含sign字段,则对请求字段解密 |
@@ -125,7 +125,7 @@ public class AuthProviderImpl implements Authorize {
 @Component
 @Order("123")
 public class CustomFilter implements WebFilter {
-    
+
 }
 ```
 

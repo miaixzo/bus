@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.bean.desc;
 
 import org.miaixz.bus.core.xyz.FieldKit;
@@ -36,8 +36,7 @@ import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
- * Bean描述
- * 包括Record自定义字段及对应方法，getter方法与字段名同名，不支持setter
+ * Bean描述 包括Record自定义字段及对应方法，getter方法与字段名同名，不支持setter
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -65,7 +64,8 @@ public class RecordBeanDesc extends AbstractBeanDesc {
 
         final Method[] getters = MethodKit.getPublicMethods(beanClass, method -> 0 == method.getParameterCount());
         // 排除静态属性和对象子类
-        final Field[] fields = FieldKit.getFields(beanClass, field -> !ModifierKit.isStatic(field) && !FieldKit.isOuterClassField(field));
+        final Field[] fields = FieldKit.getFields(beanClass,
+                field -> !ModifierKit.isStatic(field) && !FieldKit.isOuterClassField(field));
         for (final Field field : fields) {
             for (final Method getter : getters) {
                 if (field.getName().equals(getter.getName())) {

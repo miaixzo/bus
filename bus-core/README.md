@@ -59,7 +59,7 @@ Loaders.std(otherClassLoader);
 Loaders.pkg().load("org.miaixz.bus.core.loader"); // 不递归
 Loaders.pkg().load("org.miaixz.bus.core.loader", true); // 递归
 // 递归加载io.loadkit包下名称以Loader.class结尾的资源
-Loaders.pkg().load("org.miaixz.bus.core.loader", (name, url) -> name.endsWith("Loader.class")); 
+Loaders.pkg().load("org.miaixz.bus.core.loader", (name, url) -> name.endsWith("Loader.class"));
 ```
 
 ```java

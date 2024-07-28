@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.freebsd.driver.disk;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -94,8 +94,7 @@ public final class GeomPartList {
                     if (partName != null) {
                         // FreeBSD Major # is 0.
                         // Minor # is filesize of /dev entry.
-                        int minor = Parsing
-                                .parseIntOrDefault(Executor.getFirstAnswer(STAT_FILESIZE + partName), 0);
+                        int minor = Parsing.parseIntOrDefault(Executor.getFirstAnswer(STAT_FILESIZE + partName), 0);
                         partList.add(new HWPartition(identification, partName, type, uuid, size, 0, minor, mountPoint));
                         partName = null;
                         identification = Normal.UNKNOWN;

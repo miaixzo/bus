@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text.placeholder;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -37,8 +37,7 @@ import java.util.Objects;
 import java.util.function.UnaryOperator;
 
 /**
- * 一个简单的占位符解析器。给定占位符的左右边界符号以及转义符，
- * 将允许把一段字符串中的占位符解析并替换为指定内容，支持指定转义符对边界符号进行转义。
+ * 一个简单的占位符解析器。给定占位符的左右边界符号以及转义符， 将允许把一段字符串中的占位符解析并替换为指定内容，支持指定转义符对边界符号进行转义。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -82,8 +81,7 @@ public class PlaceholderParser implements UnaryOperator<String> {
      * @param prefix    占位符开始符号，不允许为空
      * @param suffix    占位符结束符号，不允许为空
      */
-    public PlaceholderParser(
-            final UnaryOperator<String> processor, final String prefix, final String suffix) {
+    public PlaceholderParser(final UnaryOperator<String> processor, final String prefix, final String suffix) {
         this(processor, prefix, suffix, Symbol.C_BACKSLASH);
     }
 
@@ -95,8 +93,8 @@ public class PlaceholderParser implements UnaryOperator<String> {
      * @param suffix    占位符结束符号，不允许为空
      * @param escape    转义符
      */
-    public PlaceholderParser(
-            final UnaryOperator<String> processor, final String prefix, final String suffix, final char escape) {
+    public PlaceholderParser(final UnaryOperator<String> processor, final String prefix, final String suffix,
+            final char escape) {
         Assert.isFalse(CharsValidator.isEmpty(prefix), "开始符号不能为空");
         Assert.isFalse(CharsValidator.isEmpty(suffix), "结束符号不能为空");
         this.processor = Objects.requireNonNull(processor);

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.mac;
 
 import com.sun.jna.Memory;
@@ -89,7 +89,7 @@ public final class SysctlKit {
     public static long sysctl(String name, long def) {
         int uint64Size = com.sun.jna.platform.mac.SystemB.UINT64_SIZE;
         try (Memory p = new Memory(uint64Size);
-             CloseableSizeTByReference size = new CloseableSizeTByReference(uint64Size)) {
+                CloseableSizeTByReference size = new CloseableSizeTByReference(uint64Size)) {
             if (0 != SystemB.INSTANCE.sysctlbyname(name, p, size, null, size_t.ZERO)) {
                 Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
                 return def;
@@ -162,7 +162,7 @@ public final class SysctlKit {
      *
      * @param name name of the sysctl
      * @return An allocated memory buffer containing the result on success, null otherwise. Its value on failure is
-     * undefined.
+     *         undefined.
      */
     public static Memory sysctl(String name) {
         try (CloseableSizeTByReference size = new CloseableSizeTByReference()) {

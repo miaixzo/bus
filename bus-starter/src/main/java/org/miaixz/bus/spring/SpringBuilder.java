@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.spring;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -139,8 +139,10 @@ public class SpringBuilder implements ApplicationContextAware {
     public static <T> T getBean(TypeReference<T> reference) {
         final ParameterizedType parameterizedType = (ParameterizedType) reference.getType();
         final Class<T> rawType = (Class<T>) parameterizedType.getRawType();
-        final Class<?>[] genericTypes = Arrays.stream(parameterizedType.getActualTypeArguments()).map(type -> (Class<?>) type).toArray(Class[]::new);
-        final String[] beanNames = getBeanFactory().getBeanNamesForType(ResolvableType.forClassWithGenerics(rawType, genericTypes));
+        final Class<?>[] genericTypes = Arrays.stream(parameterizedType.getActualTypeArguments())
+                .map(type -> (Class<?>) type).toArray(Class[]::new);
+        final String[] beanNames = getBeanFactory()
+                .getBeanNamesForType(ResolvableType.forClassWithGenerics(rawType, genericTypes));
         return getBean(beanNames[0], rawType);
     }
 
@@ -227,8 +229,7 @@ public class SpringBuilder implements ApplicationContextAware {
     }
 
     /**
-     * 动态向Spring注册Bean
-     * 由{@link org.springframework.beans.factory.BeanFactory} 实现，通过工具开放API
+     * 动态向Spring注册Bean 由{@link org.springframework.beans.factory.BeanFactory} 实现，通过工具开放API
      *
      * @param clazz 类型
      * @param bean  对象
@@ -240,8 +241,7 @@ public class SpringBuilder implements ApplicationContextAware {
     }
 
     /**
-     * 注销bean
-     * 将Spring中的bean注销，请谨慎使用
+     * 注销bean 将Spring中的bean注销，请谨慎使用
      *
      * @param beanName bean名称
      */
@@ -276,8 +276,7 @@ public class SpringBuilder implements ApplicationContextAware {
     }
 
     /**
-     * 发布事件
-     * Spring 4.2+ 版本事件可以不再是{@link ApplicationEvent}的子类
+     * 发布事件 Spring 4.2+ 版本事件可以不再是{@link ApplicationEvent}的子类
      *
      * @param event 待发布的事件
      */

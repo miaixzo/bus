@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.tracer;
 
 import jakarta.annotation.Resource;
@@ -36,7 +36,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  * @author Kimi Liu
  * @since Java 17+
  */
-@EnableConfigurationProperties(value = {TracerProperties.class})
+@EnableConfigurationProperties(value = { TracerProperties.class })
 @AutoConfigureAfter(WebMvcAutoConfiguration.class)
 public class TracerConfiguration {
 

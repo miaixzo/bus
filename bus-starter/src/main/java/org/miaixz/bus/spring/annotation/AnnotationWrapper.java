@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.spring.annotation;
 
 import org.springframework.core.env.Environment;
@@ -103,9 +103,8 @@ public class AnnotationWrapper<A extends Annotation> {
 
     private A build() {
         ClassLoader cl = this.getClass().getClassLoader();
-        Class<?>[] exposedInterface = {delegate.annotationType(), WrapperAnnotation.class};
-        return (A) Proxy.newProxyInstance(cl, exposedInterface,
-                new PlaceHolderHandler(delegate, binder, environment));
+        Class<?>[] exposedInterface = { delegate.annotationType(), WrapperAnnotation.class };
+        return (A) Proxy.newProxyInstance(cl, exposedInterface, new PlaceHolderHandler(delegate, binder, environment));
     }
 
 }

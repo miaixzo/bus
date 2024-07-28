@@ -24,15 +24,14 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.builtin;
 
 import java.io.File;
 import java.io.InputStream;
 
 /**
- * 文档转换器的默认实现。此实现将使用提供的office manager执行文档转换.
- * 必须启动所提供的office管理器才能被此转换器使用.
+ * 文档转换器的默认实现。此实现将使用提供的office manager执行文档转换. 必须启动所提供的office管理器才能被此转换器使用.
  *
  * @author Kimi Liu
  * @since Java 17+

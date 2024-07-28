@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.secure;
 
 import org.miaixz.bus.core.lang.Charset;
@@ -48,8 +48,7 @@ public class Challenge {
      */
     private final String scheme;
     /**
-     * 返回验证参数，包括{@code realm}和{@code charset}(如果存在的话)，
-     * 但以字符串的形式返回。映射的键是小写的，应该不区分大小写
+     * 返回验证参数，包括{@code realm}和{@code charset}(如果存在的话)， 但以字符串的形式返回。映射的键是小写的，应该不区分大小写
      */
     private final Map<String, String> authParams;
 
@@ -103,8 +102,8 @@ public class Challenge {
     }
 
     /**
-     * Returns the auth params, including {@code realm} and {@code charset} if present, but as
-     * strings. The map's keys are lowercase and should be treated case-insensitively.
+     * Returns the auth params, including {@code realm} and {@code charset} if present, but as strings. The map's keys
+     * are lowercase and should be treated case-insensitively.
      */
     public Map<String, String> authParams() {
         return authParams;
@@ -133,8 +132,7 @@ public class Challenge {
 
     @Override
     public boolean equals(Object other) {
-        return other instanceof Challenge
-                && ((Challenge) other).scheme.equals(scheme)
+        return other instanceof Challenge && ((Challenge) other).scheme.equals(scheme)
                 && ((Challenge) other).authParams.equals(authParams);
     }
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.iterator;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -34,8 +34,7 @@ import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
 /**
- * 包装 {@link Iterator}并根据{@link Predicate}定义，过滤元素输出
- * 类实现来自Apache Commons Collection
+ * 包装 {@link Iterator}并根据{@link Predicate}定义，过滤元素输出 类实现来自Apache Commons Collection
  *
  * @param <E> 元素类型
  * @author Kimi Liu

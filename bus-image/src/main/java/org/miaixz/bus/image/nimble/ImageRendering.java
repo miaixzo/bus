@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 import org.miaixz.bus.core.xyz.MathKit;
@@ -48,15 +48,14 @@ import java.util.Optional;
  */
 public class ImageRendering {
 
-    public static PlanarImage getRawRenderedImage(
-            final PlanarImage imageSource, ImageDescriptor desc, ImageReadParam params) {
+    public static PlanarImage getRawRenderedImage(final PlanarImage imageSource, ImageDescriptor desc,
+            ImageReadParam params) {
         PlanarImage img = getImageWithoutEmbeddedOverlay(imageSource, desc);
         ImageAdapter adapter = new ImageAdapter(img, desc);
         return getModalityLutImage(imageSource, adapter, params);
     }
 
-    public static PlanarImage getModalityLutImage(
-            PlanarImage img, ImageAdapter adapter, ImageReadParam params) {
+    public static PlanarImage getModalityLutImage(PlanarImage img, ImageAdapter adapter, ImageReadParam params) {
         WindLevelParameters p = new WindLevelParameters(adapter, params);
         int datatype = Objects.requireNonNull(img).type();
 
@@ -67,24 +66,20 @@ public class ImageRendering {
         return img;
     }
 
-    public static PlanarImage getDefaultRenderedImage(
-            final PlanarImage imageSource,
-            ImageDescriptor desc,
-            ImageReadParam params,
-            int frameIndex) {
+    public static PlanarImage getDefaultRenderedImage(final PlanarImage imageSource, ImageDescriptor desc,
+            ImageReadParam params, int frameIndex) {
         PlanarImage img = getImageWithoutEmbeddedOverlay(imageSource, desc);
         img = getVoiLutImage(img, desc, params);
         return OverlayData.getOverlayImage(imageSource, img, desc, params, frameIndex);
     }
 
-    public static PlanarImage getVoiLutImage(
-            final PlanarImage imageSource, ImageDescriptor desc, ImageReadParam params) {
+    public static PlanarImage getVoiLutImage(final PlanarImage imageSource, ImageDescriptor desc,
+            ImageReadParam params) {
         ImageAdapter adapter = new ImageAdapter(imageSource, desc);
         return getVoiLutImage(imageSource, adapter, params);
     }
 
-    public static PlanarImage getVoiLutImage(
-            PlanarImage imageSource, ImageAdapter adapter, ImageReadParam params) {
+    public static PlanarImage getVoiLutImage(PlanarImage imageSource, ImageAdapter adapter, ImageReadParam params) {
         WindLevelParameters p = new WindLevelParameters(adapter, params);
         int datatype = Objects.requireNonNull(imageSource).type();
 
@@ -96,14 +91,12 @@ public class ImageRendering {
         return null;
     }
 
-    private static ImageCV getImageForByteOrShortData(
-            PlanarImage imageSource, ImageAdapter adapter, WindLevelParameters p) {
+    private static ImageCV getImageForByteOrShortData(PlanarImage imageSource, ImageAdapter adapter,
+            WindLevelParameters p) {
         ImageDescriptor desc = adapter.getImageDescriptor();
         LookupTableCV modalityLookup = adapter.getModalityLookup(p, p.isInverseLut());
-        ImageCV imageModalityTransformed =
-                modalityLookup == null
-                        ? imageSource.toImageCV()
-                        : modalityLookup.lookup(imageSource.toMat());
+        ImageCV imageModalityTransformed = modalityLookup == null ? imageSource.toImageCV()
+                : modalityLookup.lookup(imageSource.toMat());
 
         /**
          * C.11.2.1.2 Window center and window width
@@ -115,8 +108,7 @@ public class ImageRendering {
                 || MathKit.isEqual(p.getWindow(), 255.0) && MathKit.isEqual(p.getLevel(), 127.5))
                 && !desc.getPhotometricInterpretation().isMonochrome()) {
             /*
-             * If photometric interpretation is not monochrome do not apply VOILUT. It is necessary for
-             * PALETTE_COLOR.
+             * If photometric interpretation is not monochrome do not apply VOILUT. It is necessary for PALETTE_COLOR.
              */
             return imageModalityTransformed;
         }
@@ -131,13 +123,12 @@ public class ImageRendering {
             return voiLookup.lookup(imageModalityTransformed);
         }
 
-        ImageCV imageVoiTransformed =
-                voiLookup == null ? imageModalityTransformed : voiLookup.lookup(imageModalityTransformed);
+        ImageCV imageVoiTransformed = voiLookup == null ? imageModalityTransformed
+                : voiLookup.lookup(imageModalityTransformed);
         return prLut.get().lookup(imageVoiTransformed);
     }
 
-    private static ImageCV getImageWithFloatOrIntData(
-            PlanarImage imageSource, WindLevelParameters p, int datatype) {
+    private static ImageCV getImageWithFloatOrIntData(PlanarImage imageSource, WindLevelParameters p, int datatype) {
         double low = p.getLevel() - p.getWindow() / 2.0;
         double high = p.getLevel() + p.getWindow() / 2.0;
         double range = high - low;
@@ -151,14 +142,13 @@ public class ImageRendering {
     }
 
     /**
-     * For overlays encoded in Overlay Data Element (60xx,3000), Overlay Bits Allocated (60xx,0100) is
-     * always 1 and Overlay Bit Position (60xx,0102) is always 0.
+     * For overlays encoded in Overlay Data Element (60xx,3000), Overlay Bits Allocated (60xx,0100) is always 1 and
+     * Overlay Bit Position (60xx,0102) is always 0.
      *
      * @param img the image source
      * @return the bit mask for removing the pixel overlay
-     * @see <a
-     * href="http://dicom.nema.org/medical/dicom/current/output/chtml/part05/chapter_8.html">8.1.2
-     * Overlay data encoding of related data elements</a>
+     * @see <a href="http://dicom.nema.org/medical/dicom/current/output/chtml/part05/chapter_8.html">8.1.2 Overlay data
+     *      encoding of related data elements</a>
      */
     public static PlanarImage getImageWithoutEmbeddedOverlay(PlanarImage img, ImageDescriptor desc) {
         Objects.requireNonNull(img);

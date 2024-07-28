@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.socket;
 
 import lombok.Getter;
@@ -33,9 +33,7 @@ import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * 配置信息
- * 1. 默认读取配置文件信息
- * 2. 可以自己从写部分类等
+ * 配置信息 1. 默认读取配置文件信息 2. 可以自己从写部分类等
  *
  * @author Kimi Liu
  * @since Java 17+

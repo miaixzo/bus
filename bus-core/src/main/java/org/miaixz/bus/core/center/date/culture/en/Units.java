@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date.culture.en;
 
 import java.time.temporal.ChronoUnit;
@@ -75,18 +75,18 @@ public enum Units {
      */
     public static Units of(final ChronoUnit unit) {
         switch (unit) {
-            case MICROS:
-                return Units.MS;
-            case SECONDS:
-                return Units.SECOND;
-            case MINUTES:
-                return Units.MINUTE;
-            case HOURS:
-                return Units.HOUR;
-            case DAYS:
-                return Units.DAY;
-            case WEEKS:
-                return Units.WEEK;
+        case MICROS:
+            return Units.MS;
+        case SECONDS:
+            return Units.SECOND;
+        case MINUTES:
+            return Units.MINUTE;
+        case HOURS:
+            return Units.HOUR;
+        case DAYS:
+            return Units.DAY;
+        case WEEKS:
+            return Units.WEEK;
         }
         return null;
     }
@@ -99,18 +99,18 @@ public enum Units {
      */
     public static ChronoUnit toChronoUnit(final Units unit) {
         switch (unit) {
-            case MS:
-                return ChronoUnit.MICROS;
-            case SECOND:
-                return ChronoUnit.SECONDS;
-            case MINUTE:
-                return ChronoUnit.MINUTES;
-            case HOUR:
-                return ChronoUnit.HOURS;
-            case DAY:
-                return ChronoUnit.DAYS;
-            case WEEK:
-                return ChronoUnit.WEEKS;
+        case MS:
+            return ChronoUnit.MICROS;
+        case SECOND:
+            return ChronoUnit.SECONDS;
+        case MINUTE:
+            return ChronoUnit.MINUTES;
+        case HOUR:
+            return ChronoUnit.HOURS;
+        case DAY:
+            return ChronoUnit.DAYS;
+        case WEEK:
+            return ChronoUnit.WEEKS;
         }
         return null;
     }

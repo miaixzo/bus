@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.builtin;
 
 import org.miaixz.bus.image.galaxy.data.Code;
@@ -51,14 +51,16 @@ public class AcquisitionModality {
     public static final Code GeneralMicroscopy = new Code("GM", "DCM", null, "General Microscopy");
     public static final Code HemodynamicWaveform = new Code("HD", "DCM", null, "Hemodynamic Waveform");
     public static final Code IntraOralRadiography = new Code("IO", "DCM", null, "Intra-oral Radiography");
-    public static final Code IntravascularOpticalCoherence = new Code("IVOCT", "DCM", null, "Intravascular Optical Coherence Tomography");
+    public static final Code IntravascularOpticalCoherence = new Code("IVOCT", "DCM", null,
+            "Intravascular Optical Coherence Tomography");
     public static final Code IntravascularUltrasound = new Code("IVUS", "DCM", null, "Intravascular Ultrasound");
     public static final Code Keratometry = new Code("KER", "DCM", null, "Keratometry");
     public static final Code Lensometry = new Code("LEN", "DCM", null, "Lensometry");
     public static final Code MagneticResonance = new Code("MR", "DCM", null, "Magnetic Resonance");
     public static final Code Mammography = new Code("MG", "DCM", null, "Mammography");
     public static final Code NuclearMedicine = new Code("NM", "DCM", null, "Nuclear Medicine");
-    public static final Code OphthalmicAxialMeasurements = new Code("OAM", "DCM", null, "Ophthalmic Axial Measurements");
+    public static final Code OphthalmicAxialMeasurements = new Code("OAM", "DCM", null,
+            "Ophthalmic Axial Measurements");
     public static final Code OpticalCoherenceTomography = new Code("OCT", "DCM", null, "Optical Coherence Tomography");
     public static final Code OphthalmicMapping = new Code("OPM", "DCM", null, "Ophthalmic Mapping");
     public static final Code OphthalmicPhotography = new Code("OP", "DCM", null, "Ophthalmic Photography");
@@ -79,45 +81,15 @@ public class AcquisitionModality {
     private static final Map<String, Code> MODALITIES = new HashMap<>(50);
 
     static {
-        Code[] codes = {
-                Autorefraction,
-                BoneMineralDensitometry,
-                UltrasoundBoneDensitometry,
-                CardiacElectrophysiology,
-                ComputedRadiography,
-                ComputedTomography,
-                DigitalRadiography,
-                Electrocardiography,
-                Endoscopy,
-                ExternalCameraPhotography,
-                GeneralMicroscopy,
-                HemodynamicWaveform,
-                IntraOralRadiography,
-                IntravascularOpticalCoherence,
-                IntravascularUltrasound,
-                Keratometry,
-                Lensometry,
-                MagneticResonance,
-                Mammography,
-                NuclearMedicine,
-                OphthalmicAxialMeasurements,
-                OpticalCoherenceTomography,
-                OphthalmicMapping,
-                OphthalmicPhotography,
-                OphthalmicRefraction,
-                OphthalmicTomography,
-                OphthalmicVisualField,
-                OpticalSurfaceScanner,
-                PanoramicXRay,
-                PositronEmissionTomography,
-                Radiofluoroscopy,
-                RadiographicImaging,
-                SlideMicroscopy,
-                SubjectiveRefraction,
-                Ultrasound,
-                VisualAcuity,
-                XRayAngiography
-        };
+        Code[] codes = { Autorefraction, BoneMineralDensitometry, UltrasoundBoneDensitometry, CardiacElectrophysiology,
+                ComputedRadiography, ComputedTomography, DigitalRadiography, Electrocardiography, Endoscopy,
+                ExternalCameraPhotography, GeneralMicroscopy, HemodynamicWaveform, IntraOralRadiography,
+                IntravascularOpticalCoherence, IntravascularUltrasound, Keratometry, Lensometry, MagneticResonance,
+                Mammography, NuclearMedicine, OphthalmicAxialMeasurements, OpticalCoherenceTomography,
+                OphthalmicMapping, OphthalmicPhotography, OphthalmicRefraction, OphthalmicTomography,
+                OphthalmicVisualField, OpticalSurfaceScanner, PanoramicXRay, PositronEmissionTomography,
+                Radiofluoroscopy, RadiographicImaging, SlideMicroscopy, SubjectiveRefraction, Ultrasound, VisualAcuity,
+                XRayAngiography };
         for (Code code : codes) {
             MODALITIES.put(code.getCodeValue(), code);
         }

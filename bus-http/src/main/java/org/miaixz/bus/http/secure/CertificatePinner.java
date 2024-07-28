@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.secure;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -38,12 +38,8 @@ import java.security.cert.X509Certificate;
 import java.util.*;
 
 /**
- * 限制哪些证书受信任。将证书固定起来可以防御对证书颁发机构的攻击。
- * 它还可以防止通过应用程序用户知道或不知道的中间人证书颁发机构进行连接
- * 固定证书限制了服务器团队更新其TLS证书的能力。通过固定证书，
- * 您将承担额外的操作复杂性，并限制您在证书颁发机构之间迁移的能力。
- * 未经服务器的TLS管理员许可，请勿使用证书固定!
- * 如果{@link javax.net.ssl.TrustManager}不接受自签名证书,
+ * 限制哪些证书受信任。将证书固定起来可以防御对证书颁发机构的攻击。 它还可以防止通过应用程序用户知道或不知道的中间人证书颁发机构进行连接 固定证书限制了服务器团队更新其TLS证书的能力。通过固定证书，
+ * 您将承担额外的操作复杂性，并限制您在证书颁发机构之间迁移的能力。 未经服务器的TLS管理员许可，请勿使用证书固定! 如果{@link javax.net.ssl.TrustManager}不接受自签名证书,
  * 则{@link CertificatePinner}不能用于pin自签名证书
  *
  * @author Kimi Liu
@@ -62,9 +58,8 @@ public class CertificatePinner {
     }
 
     /**
-     * Returns the SHA-256 of {@code certificate}'s public key.
-     * In Http and earlier, this returned a SHA-1 hash of the public key. Both types are
-     * supported, but SHA-256 is preferred.
+     * Returns the SHA-256 of {@code certificate}'s public key. In Http and earlier, this returned a SHA-1 hash of the
+     * public key. Both types are supported, but SHA-256 is preferred.
      */
     public static String pin(Certificate certificate) {
         if (!(certificate instanceof X509Certificate)) {
@@ -83,11 +78,11 @@ public class CertificatePinner {
 
     @Override
     public boolean equals(Object other) {
-        if (other == this) return true;
+        if (other == this)
+            return true;
         return other instanceof CertificatePinner
-                && (Objects.equals(certificateChainCleaner,
-                ((CertificatePinner) other).certificateChainCleaner)
-                && pins.equals(((CertificatePinner) other).pins));
+                && (Objects.equals(certificateChainCleaner, ((CertificatePinner) other).certificateChainCleaner)
+                        && pins.equals(((CertificatePinner) other).pins));
     }
 
     @Override
@@ -103,13 +98,12 @@ public class CertificatePinner {
      *
      * @param hostname         主机名
      * @param peerCertificates 证书信息
-     * @throws SSLPeerUnverifiedException 如果{@code peerCertificates}
-     *                                    与{@code hostname}所固定的证书不匹配
+     * @throws SSLPeerUnverifiedException 如果{@code peerCertificates} 与{@code hostname}所固定的证书不匹配
      */
-    public void check(String hostname, List<Certificate> peerCertificates)
-            throws SSLPeerUnverifiedException {
+    public void check(String hostname, List<Certificate> peerCertificates) throws SSLPeerUnverifiedException {
         List<Pin> pins = findMatchingPins(hostname);
-        if (pins.isEmpty()) return;
+        if (pins.isEmpty())
+            return;
 
         if (null != certificateChainCleaner) {
             peerCertificates = certificateChainCleaner.clean(peerCertificates, hostname);
@@ -125,11 +119,15 @@ public class CertificatePinner {
             for (int p = 0, pinsSize = pins.size(); p < pinsSize; p++) {
                 Pin pin = pins.get(p);
                 if (pin.hashAlgorithm.equals("sha256/")) {
-                    if (sha256 == null) sha256 = sha256(x509Certificate);
-                    if (pin.hash.equals(sha256)) return; // Success!
+                    if (sha256 == null)
+                        sha256 = sha256(x509Certificate);
+                    if (pin.hash.equals(sha256))
+                        return; // Success!
                 } else if (pin.hashAlgorithm.equals("sha1/")) {
-                    if (sha1 == null) sha1 = sha1(x509Certificate);
-                    if (pin.hash.equals(sha1)) return; // Success!
+                    if (sha1 == null)
+                        sha1 = sha1(x509Certificate);
+                    if (pin.hash.equals(sha1))
+                        return; // Success!
                 } else {
                     throw new AssertionError("unsupported hashAlgorithm: " + pin.hashAlgorithm);
                 }
@@ -137,13 +135,12 @@ public class CertificatePinner {
         }
 
         // If we couldn't find a matching pin, format a nice exception.
-        StringBuilder message = new StringBuilder()
-                .append("Certificate pinning failure!")
+        StringBuilder message = new StringBuilder().append("Certificate pinning failure!")
                 .append("\n  Peer certificate chain:");
         for (int c = 0, certsSize = peerCertificates.size(); c < certsSize; c++) {
             X509Certificate x509Certificate = (X509Certificate) peerCertificates.get(c);
-            message.append("\n    ").append(pin(x509Certificate))
-                    .append(": ").append(x509Certificate.getSubjectDN().getName());
+            message.append("\n    ").append(pin(x509Certificate)).append(": ")
+                    .append(x509Certificate.getSubjectDN().getName());
         }
         message.append("\n  Pinned certificates for ").append(hostname).append(Symbol.COLON);
         for (int p = 0, pinsSize = pins.size(); p < pinsSize; p++) {
@@ -156,20 +153,20 @@ public class CertificatePinner {
     /**
      * @deprecated replaced with {@link #check(String, List)}.
      */
-    public void check(String hostname, Certificate... peerCertificates)
-            throws SSLPeerUnverifiedException {
+    public void check(String hostname, Certificate... peerCertificates) throws SSLPeerUnverifiedException {
         check(hostname, Arrays.asList(peerCertificates));
     }
 
     /**
-     * Returns list of matching certificates' pins for the hostname. Returns an empty list if the
-     * hostname does not have pinned certificates.
+     * Returns list of matching certificates' pins for the hostname. Returns an empty list if the hostname does not have
+     * pinned certificates.
      */
     List<Pin> findMatchingPins(String hostname) {
         List<Pin> result = Collections.emptyList();
         for (Pin pin : pins) {
             if (pin.matches(hostname)) {
-                if (result.isEmpty()) result = new ArrayList<>();
+                if (result.isEmpty())
+                    result = new ArrayList<>();
                 result.add(pin);
             }
         }
@@ -179,10 +176,8 @@ public class CertificatePinner {
     /**
      * Returns a certificate pinner that uses {@code certificateChainCleaner}.
      */
-    public CertificatePinner withCertificateChainCleaner(
-            CertificateChainCleaner certificateChainCleaner) {
-        return Objects.equals(this.certificateChainCleaner, certificateChainCleaner)
-                ? this
+    public CertificatePinner withCertificateChainCleaner(CertificateChainCleaner certificateChainCleaner) {
+        return Objects.equals(this.certificateChainCleaner, certificateChainCleaner) ? this
                 : new CertificatePinner(pins, certificateChainCleaner);
     }
 
@@ -228,9 +223,8 @@ public class CertificatePinner {
         boolean matches(String hostname) {
             if (pattern.startsWith(WILDCARD)) {
                 int firstDot = hostname.indexOf(Symbol.C_DOT);
-                return (hostname.length() - firstDot - 1) == canonicalHostname.length()
-                        && hostname.regionMatches(false, firstDot + 1, canonicalHostname, 0,
-                        canonicalHostname.length());
+                return (hostname.length() - firstDot - 1) == canonicalHostname.length() && hostname.regionMatches(false,
+                        firstDot + 1, canonicalHostname, 0, canonicalHostname.length());
             }
 
             return hostname.equals(canonicalHostname);
@@ -238,10 +232,8 @@ public class CertificatePinner {
 
         @Override
         public boolean equals(Object other) {
-            return other instanceof Pin
-                    && pattern.equals(((Pin) other).pattern)
-                    && hashAlgorithm.equals(((Pin) other).hashAlgorithm)
-                    && hash.equals(((Pin) other).hash);
+            return other instanceof Pin && pattern.equals(((Pin) other).pattern)
+                    && hashAlgorithm.equals(((Pin) other).hashAlgorithm) && hash.equals(((Pin) other).hash);
         }
 
         @Override
@@ -270,12 +262,12 @@ public class CertificatePinner {
          * 用于{@code pattern} 的证书
          *
          * @param pattern lowner -case主机名或通配符模式，如{@code *.example.com}.
-         * @param pins    SHA-256或SHA-1散列。每个pin是证书主题公钥信息的散列，用base64编码，
-         *                以{@code sha256/}或{@code sha1/}为前缀
+         * @param pins    SHA-256或SHA-1散列。每个pin是证书主题公钥信息的散列，用base64编码， 以{@code sha256/}或{@code sha1/}为前缀
          * @return 构建器
          */
         public Builder add(String pattern, String... pins) {
-            if (null == pattern) throw new NullPointerException("pattern == null");
+            if (null == pattern)
+                throw new NullPointerException("pattern == null");
 
             for (String pin : pins) {
                 this.pins.add(new Pin(pattern, pin));

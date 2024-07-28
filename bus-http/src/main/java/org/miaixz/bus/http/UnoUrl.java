@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
@@ -40,9 +40,8 @@ import java.net.URL;
 import java.util.*;
 
 /**
- * 统一资源定位器(URL)，其模式为{@code http}或{@code https}。使用这个类来组合和分解Internet地址
- * 这个类有一个现代的API。它避免了惩罚性的检查异常:{@link #get get()}对无效的输入抛出{@link IllegalArgumentException}，
- * 或者{@link #parse parse()}如果输入是无效的URL，则返回null。您甚至可以明确每个组件是否已经编码
+ * 统一资源定位器(URL)，其模式为{@code http}或{@code https}。使用这个类来组合和分解Internet地址 这个类有一个现代的API。它避免了惩罚性的检查异常:{@link #get
+ * get()}对无效的输入抛出{@link IllegalArgumentException}， 或者{@link #parse parse()}如果输入是无效的URL，则返回null。您甚至可以明确每个组件是否已经编码
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -82,14 +81,12 @@ public class UnoUrl {
      */
     private final String password;
     /**
-     * 规范路径段的列表。此列表始终包含至少一个元素，该元素可以是空字符串。
-     * 每个段的格式是前导的‘/’，所以如果路径段是["a"， "b"， ""]，那么编码的路径就是"/a/b/".
+     * 规范路径段的列表。此列表始终包含至少一个元素，该元素可以是空字符串。 每个段的格式是前导的‘/’，所以如果路径段是["a"， "b"， ""]，那么编码的路径就是"/a/b/".
      */
     private final List<String> pathSegments;
 
     /**
-     * 交替，解码的查询名称和值，或空无查询。名称可以为空或非空，但绝不为空
-     * 如果名称没有对应的'='分隔符，或为空，或为非空，则值为空.
+     * 交替，解码的查询名称和值，或空无查询。名称可以为空或非空，但绝不为空 如果名称没有对应的'='分隔符，或为空，或为非空，则值为空.
      */
     private final List<String> queryNamesAndValues;
 
@@ -113,15 +110,12 @@ public class UnoUrl {
         this.queryNamesAndValues = null != builder.encodedQueryNamesAndValues
                 ? percentDecode(builder.encodedQueryNamesAndValues, true)
                 : null;
-        this.fragment = null != builder.encodedFragment
-                ? percentDecode(builder.encodedFragment, false)
-                : null;
+        this.fragment = null != builder.encodedFragment ? percentDecode(builder.encodedFragment, false) : null;
         this.url = builder.toString();
     }
 
     /**
-     * Returns 80 if {@code scheme.equals("http")}, 443 if {@code scheme.equals("https")} and -1
-     * otherwise.
+     * Returns 80 if {@code scheme.equals("http")}, 443 if {@code scheme.equals("https")} and -1 otherwise.
      */
     public static int defaultPort(String scheme) {
         if (Protocol.HTTP.name.equals(scheme)) {
@@ -144,7 +138,8 @@ public class UnoUrl {
         for (int i = 0, size = namesAndValues.size(); i < size; i += 2) {
             String name = namesAndValues.get(i);
             String value = namesAndValues.get(i + 1);
-            if (i > 0) out.append(Symbol.C_AND);
+            if (i > 0)
+                out.append(Symbol.C_AND);
             out.append(name);
             if (null != value) {
                 out.append(Symbol.C_EQUAL);
@@ -154,16 +149,16 @@ public class UnoUrl {
     }
 
     /**
-     * Cuts {@code encodedQuery} up into alternating parameter names and values. This divides a query
-     * string like {@code subject=math&easy&problem=5-2=3} into the list {@code ["subject", "math",
-     * "easy", null, "problem", "5-2=3"]}. Note that values may be null and may contain '='
-     * characters.
+     * Cuts {@code encodedQuery} up into alternating parameter names and values. This divides a query string like
+     * {@code subject=math&easy&problem=5-2=3} into the list {@code ["subject", "math",
+     * "easy", null, "problem", "5-2=3"]}. Note that values may be null and may contain '=' characters.
      */
     static List<String> queryStringToNamesAndValues(String encodedQuery) {
         List<String> result = new ArrayList<>();
-        for (int pos = 0; pos <= encodedQuery.length(); ) {
+        for (int pos = 0; pos <= encodedQuery.length();) {
             int ampersandOffset = encodedQuery.indexOf(Symbol.C_AND, pos);
-            if (ampersandOffset == -1) ampersandOffset = encodedQuery.length();
+            if (ampersandOffset == -1)
+                ampersandOffset = encodedQuery.length();
 
             int equalsOffset = encodedQuery.indexOf(Symbol.C_EQUAL, pos);
             if (equalsOffset == -1 || equalsOffset > ampersandOffset) {
@@ -179,8 +174,8 @@ public class UnoUrl {
     }
 
     /**
-     * Returns a new {@code HttpUrl} representing {@code url} if it is a well-formed HTTP or HTTPS
-     * URL, or null if it isn't.
+     * Returns a new {@code HttpUrl} representing {@code url} if it is a well-formed HTTP or HTTPS URL, or null if it
+     * isn't.
      */
     public static UnoUrl parse(String url) {
         try {
@@ -200,8 +195,8 @@ public class UnoUrl {
     }
 
     /**
-     * Returns an {@link UnoUrl} for {@code url} if its protocol is {@code http} or {@code https}, or
-     * null if it has any other protocol.
+     * Returns an {@link UnoUrl} for {@code url} if its protocol is {@code http} or {@code https}, or null if it has any
+     * other protocol.
      */
     public static UnoUrl get(URL url) {
         return parse(url.toString());
@@ -250,21 +245,19 @@ public class UnoUrl {
     }
 
     static boolean percentEncoded(String encoded, int pos, int limit) {
-        return pos + 2 < limit
-                && encoded.charAt(pos) == Symbol.C_PERCENT
+        return pos + 2 < limit && encoded.charAt(pos) == Symbol.C_PERCENT
                 && org.miaixz.bus.http.Builder.decodeHexDigit(encoded.charAt(pos + 1)) != -1
                 && org.miaixz.bus.http.Builder.decodeHexDigit(encoded.charAt(pos + 2)) != -1;
     }
 
     /**
-     * Returns a substring of {@code input} on the range {@code [pos..limit)} with the following
-     * transformations:
+     * Returns a substring of {@code input} on the range {@code [pos..limit)} with the following transformations:
      * <ul>
-     *   <li>Tabs, newlines, form feeds and carriage returns are skipped.
-     *   <li>In queries, ' ' is encoded to '+' and '+' is encoded to "%2B".
-     *   <li>Characters in {@code encodeSet} are percent-encoded.
-     *   <li>Control characters and non-ASCII characters are percent-encoded.
-     *   <li>All other characters are copied without transformation.
+     * <li>Tabs, newlines, form feeds and carriage returns are skipped.
+     * <li>In queries, ' ' is encoded to '+' and '+' is encoded to "%2B".
+     * <li>Characters in {@code encodeSet} are percent-encoded.
+     * <li>Control characters and non-ASCII characters are percent-encoded.
+     * <li>All other characters are copied without transformation.
      * </ul>
      *
      * @param alreadyEncoded true to leave '%' as-is; false to convert it to '%25'.
@@ -273,45 +266,38 @@ public class UnoUrl {
      * @param asciiOnly      true to encode all non-ASCII codepoints.
      * @param charset        which charset to use, null equals UTF-8.
      */
-    static String canonicalize(String input, int pos, int limit, String encodeSet,
-                               boolean alreadyEncoded, boolean strict, boolean plusIsSpace, boolean asciiOnly,
-                               java.nio.charset.Charset charset) {
+    static String canonicalize(String input, int pos, int limit, String encodeSet, boolean alreadyEncoded,
+            boolean strict, boolean plusIsSpace, boolean asciiOnly, java.nio.charset.Charset charset) {
         int codePoint;
         for (int i = pos; i < limit; i += Character.charCount(codePoint)) {
             codePoint = input.codePointAt(i);
-            if (codePoint < 0x20
-                    || codePoint == 0x7f
-                    || codePoint >= 0x80 && asciiOnly
+            if (codePoint < 0x20 || codePoint == 0x7f || codePoint >= 0x80 && asciiOnly
                     || encodeSet.indexOf(codePoint) != -1
                     || codePoint == Symbol.C_PERCENT && (!alreadyEncoded || strict && !percentEncoded(input, i, limit))
                     || codePoint == Symbol.C_PLUS && plusIsSpace) {
                 Buffer out = new Buffer();
                 out.writeUtf8(input, pos, i);
-                canonicalize(out, input, i, limit, encodeSet, alreadyEncoded, strict, plusIsSpace,
-                        asciiOnly, charset);
+                canonicalize(out, input, i, limit, encodeSet, alreadyEncoded, strict, plusIsSpace, asciiOnly, charset);
                 return out.readUtf8();
             }
         }
         return input.substring(pos, limit);
     }
 
-    static void canonicalize(Buffer out, String input, int pos, int limit, String encodeSet,
-                             boolean alreadyEncoded, boolean strict, boolean plusIsSpace, boolean asciiOnly,
-                             java.nio.charset.Charset charset) {
+    static void canonicalize(Buffer out, String input, int pos, int limit, String encodeSet, boolean alreadyEncoded,
+            boolean strict, boolean plusIsSpace, boolean asciiOnly, java.nio.charset.Charset charset) {
         Buffer encodedCharBuffer = null;
         int codePoint;
         for (int i = pos; i < limit; i += Character.charCount(codePoint)) {
             codePoint = input.codePointAt(i);
-            if (alreadyEncoded
-                    && (codePoint == Symbol.C_HT || codePoint == Symbol.C_LF || codePoint == '\f' || codePoint == Symbol.C_CR)) {
+            if (alreadyEncoded && (codePoint == Symbol.C_HT || codePoint == Symbol.C_LF || codePoint == '\f'
+                    || codePoint == Symbol.C_CR)) {
 
             } else if (codePoint == Symbol.C_PLUS && plusIsSpace) {
                 out.writeUtf8(alreadyEncoded ? Symbol.PLUS : "%2B");
-            } else if (codePoint < 0x20
-                    || codePoint == 0x7f
-                    || codePoint >= 0x80 && asciiOnly
-                    || encodeSet.indexOf(codePoint) != -1
-                    || codePoint == Symbol.C_PERCENT && (!alreadyEncoded || strict && !percentEncoded(input, i, limit))) {
+            } else if (codePoint < 0x20 || codePoint == 0x7f || codePoint >= 0x80 && asciiOnly
+                    || encodeSet.indexOf(codePoint) != -1 || codePoint == Symbol.C_PERCENT
+                            && (!alreadyEncoded || strict && !percentEncoded(input, i, limit))) {
 
                 if (null == encodedCharBuffer) {
                     encodedCharBuffer = new Buffer();
@@ -336,16 +322,14 @@ public class UnoUrl {
     }
 
     public static String canonicalize(String input, String encodeSet, boolean alreadyEncoded, boolean strict,
-                                      boolean plusIsSpace, boolean asciiOnly, java.nio.charset.Charset charset) {
-        return canonicalize(
-                input, 0, input.length(), encodeSet, alreadyEncoded, strict, plusIsSpace, asciiOnly,
+            boolean plusIsSpace, boolean asciiOnly, java.nio.charset.Charset charset) {
+        return canonicalize(input, 0, input.length(), encodeSet, alreadyEncoded, strict, plusIsSpace, asciiOnly,
                 charset);
     }
 
     static String canonicalize(String input, String encodeSet, boolean alreadyEncoded, boolean strict,
-                               boolean plusIsSpace, boolean asciiOnly) {
-        return canonicalize(
-                input, 0, input.length(), encodeSet, alreadyEncoded, strict, plusIsSpace, asciiOnly, null);
+            boolean plusIsSpace, boolean asciiOnly) {
+        return canonicalize(input, 0, input.length(), encodeSet, alreadyEncoded, strict, plusIsSpace, asciiOnly, null);
     }
 
     /**
@@ -360,17 +344,17 @@ public class UnoUrl {
     }
 
     /**
-     * Returns this URL as a {@link URI java.net.URI}. Because {@code URI} is more strict than this
-     * class, the returned URI may be semantically different from this URL:
+     * Returns this URL as a {@link URI java.net.URI}. Because {@code URI} is more strict than this class, the returned
+     * URI may be semantically different from this URL:
      *
      * <ul>
-     *     <li>Characters forbidden by URI like {@code [} and {@code |} will be escaped.
-     *     <li>Invalid percent-encoded sequences like {@code %xx} will be encoded like {@code %25xx}.
-     *     <li>Whitespace and control characters in the fragment will be stripped.
+     * <li>Characters forbidden by URI like {@code [} and {@code |} will be escaped.
+     * <li>Invalid percent-encoded sequences like {@code %xx} will be encoded like {@code %25xx}.
+     * <li>Whitespace and control characters in the fragment will be stripped.
      * </ul>
      * <p>
-     * These differences may have a significant consequence when the URI is interpreted by a
-     * webserver. For this reason the {@linkplain URI URI class} and this method should be avoided.
+     * These differences may have a significant consequence when the URI is interpreted by a webserver. For this reason
+     * the {@linkplain URI URI class} and this method should be avoided.
      */
     public URI uri() {
         String uri = newBuilder().reencodeForUri().toString();
@@ -401,7 +385,8 @@ public class UnoUrl {
      * Returns the username, or an empty string if none is set.
      */
     public String encodedUsername() {
-        if (username.isEmpty()) return Normal.EMPTY;
+        if (username.isEmpty())
+            return Normal.EMPTY;
         int usernameStart = scheme.length() + 3;
         int usernameEnd = org.miaixz.bus.http.Builder.delimiterOffset(url, usernameStart, url.length(), ":@");
         return url.substring(usernameStart, usernameEnd);
@@ -436,7 +421,8 @@ public class UnoUrl {
      * @return 返回密码
      */
     public String encodedPassword() {
-        if (password.isEmpty()) return Normal.EMPTY;
+        if (password.isEmpty())
+            return Normal.EMPTY;
         int passwordStart = url.indexOf(Symbol.C_COLON, scheme.length() + 3) + 1;
         int passwordEnd = url.indexOf(Symbol.C_AT);
         return url.substring(passwordStart, passwordEnd);
@@ -460,17 +446,17 @@ public class UnoUrl {
 
     /**
      * <ul>
-     *   <li>A regular host name, like {@code android.com}.
-     *   <li>An IPv4 address, like {@code 127.0.0.1}.
-     *   <li>An IPv6 address, like {@code ::1}.
-     *   <li>An encoded IDN, like {@code xn--n3h.net}.
+     * <li>A regular host name, like {@code android.com}.
+     * <li>An IPv4 address, like {@code 127.0.0.1}.
+     * <li>An IPv6 address, like {@code ::1}.
+     * <li>An encoded IDN, like {@code xn--n3h.net}.
      * </ul>
      *
      * <ul>
-     *   <li>{@code http://android.com/}{@code "android.com"}</li>
-     *   <li>{@code http://127.0.0.1/}{@code "127.0.0.1"}</li>
-     *   <li>{@code http://[::1]/}{@code "::1"}</li>
-     *   <li>{@code http://xn--n3h.net/}{@code "xn--n3h.net"}</li>
+     * <li>{@code http://android.com/}{@code "android.com"}</li>
+     * <li>{@code http://127.0.0.1/}{@code "127.0.0.1"}</li>
+     * <li>{@code http://[::1]/}{@code "::1"}</li>
+     * <li>{@code http://xn--n3h.net/}{@code "xn--n3h.net"}</li>
      * </ul>
      *
      * @return 主机host
@@ -493,8 +479,8 @@ public class UnoUrl {
     }
 
     /**
-     * Returns the number of segments in this URL's path. This is also the number of slashes in the
-     * URL's path, like 3 in {@code http://host/a/b/c}. This is always at least 1.
+     * Returns the number of segments in this URL's path. This is also the number of slashes in the URL's path, like 3
+     * in {@code http://host/a/b/c}. This is always at least 1.
      *
      * <ul>
      * <li>{@code http://host/}{@code 1}</li>
@@ -541,7 +527,7 @@ public class UnoUrl {
         int pathStart = url.indexOf(Symbol.C_SLASH, scheme.length() + 3);
         int pathEnd = org.miaixz.bus.http.Builder.delimiterOffset(url, pathStart, url.length(), "?#");
         List<String> result = new ArrayList<>();
-        for (int i = pathStart; i < pathEnd; ) {
+        for (int i = pathStart; i < pathEnd;) {
             i++;
             int segmentEnd = org.miaixz.bus.http.Builder.delimiterOffset(url, i, pathEnd, Symbol.C_SLASH);
             result.add(url.substring(i, segmentEnd));
@@ -567,9 +553,8 @@ public class UnoUrl {
     }
 
     /**
-     * Returns the query of this URL, encoded for use in HTTP resource resolution. The returned string
-     * may be null (for URLs with no query), empty (for URLs with an empty query) or non-empty (all
-     * other URLs).
+     * Returns the query of this URL, encoded for use in HTTP resource resolution. The returned string may be null (for
+     * URLs with no query), empty (for URLs with an empty query) or non-empty (all other URLs).
      *
      * <ul>
      * <li>{@code http://host/}null</li>
@@ -583,16 +568,17 @@ public class UnoUrl {
      * @return the string
      */
     public String encodedQuery() {
-        if (null == queryNamesAndValues) return null;
+        if (null == queryNamesAndValues)
+            return null;
         int queryStart = url.indexOf(Symbol.C_QUESTION_MARK) + 1;
         int queryEnd = org.miaixz.bus.http.Builder.delimiterOffset(url, queryStart, url.length(), Symbol.C_SHAPE);
         return url.substring(queryStart, queryEnd);
     }
 
     /**
-     * Returns this URL's query, like {@code "abc"} for {@code http://host/?abc}. Most callers should
-     * prefer {@link #queryParameterName} and {@link #queryParameterValue} because these methods offer
-     * direct access to individual query parameters.
+     * Returns this URL's query, like {@code "abc"} for {@code http://host/?abc}. Most callers should prefer
+     * {@link #queryParameterName} and {@link #queryParameterValue} because these methods offer direct access to
+     * individual query parameters.
      *
      * <ul>
      * <li>{@code http://host/}null</li>
@@ -606,7 +592,8 @@ public class UnoUrl {
      * @return the string
      */
     public String query() {
-        if (null == queryNamesAndValues) return null;
+        if (null == queryNamesAndValues)
+            return null;
         StringBuilder result = new StringBuilder();
         namesAndValuesToQueryString(result, queryNamesAndValues);
         return result.toString();
@@ -614,8 +601,8 @@ public class UnoUrl {
 
     /**
      * Returns the number of query parameters in this URL, like 2 for {@code
-     * http://host/?a=apple&b=banana}. If this URL has no query this returns 0. Otherwise it returns
-     * one more than the number of {@code "&"} separators in the query.
+     * http://host/?a=apple&b=banana}. If this URL has no query this returns 0. Otherwise it returns one more than the
+     * number of {@code "&"} separators in the query.
      *
      * <ul>
      * <li>{@code http://host/}{@code 0}</li>
@@ -632,8 +619,8 @@ public class UnoUrl {
     }
 
     /**
-     * Returns the first query parameter named {@code name} decoded using UTF-8, or null if there is
-     * no such query parameter.
+     * Returns the first query parameter named {@code name} decoded using UTF-8, or null if there is no such query
+     * parameter.
      *
      * <ul>
      * <li>{@code http://host/}null</li>
@@ -647,7 +634,8 @@ public class UnoUrl {
      * @return the string
      */
     public String queryParameter(String name) {
-        if (null == queryNamesAndValues) return null;
+        if (null == queryNamesAndValues)
+            return null;
         for (int i = 0, size = queryNamesAndValues.size(); i < size; i += 2) {
             if (name.equals(queryNamesAndValues.get(i))) {
                 return queryNamesAndValues.get(i + 1);
@@ -671,7 +659,8 @@ public class UnoUrl {
      * @return the set
      */
     public Set<String> queryParameterNames() {
-        if (null == queryNamesAndValues) return Collections.emptySet();
+        if (null == queryNamesAndValues)
+            return Collections.emptySet();
         Set<String> result = new LinkedHashSet<>();
         for (int i = 0, size = queryNamesAndValues.size(); i < size; i += 2) {
             result.add(queryNamesAndValues.get(i));
@@ -680,8 +669,8 @@ public class UnoUrl {
     }
 
     /**
-     * Returns all values for the query parameter {@code name} ordered by their appearance in this
-     * URL. For example this returns {@code ["banana"]} for {@code queryParameterValue("b")} on {@code
+     * Returns all values for the query parameter {@code name} ordered by their appearance in this URL. For example this
+     * returns {@code ["banana"]} for {@code queryParameterValue("b")} on {@code
      * http://host/?a=apple&b=banana}.
      *
      * <ul>
@@ -699,7 +688,8 @@ public class UnoUrl {
      * @return the list
      */
     public List<String> queryParameterValues(String name) {
-        if (null == queryNamesAndValues) return Collections.emptyList();
+        if (null == queryNamesAndValues)
+            return Collections.emptyList();
         List<String> result = new ArrayList<>();
         for (int i = 0, size = queryNamesAndValues.size(); i < size; i += 2) {
             if (name.equals(queryNamesAndValues.get(i))) {
@@ -710,9 +700,9 @@ public class UnoUrl {
     }
 
     /**
-     * Returns the name of the query parameter at {@code index}. For example this returns {@code "a"}
-     * for {@code queryParameterName(0)} on {@code http://host/?a=apple&b=banana}. This throws if
-     * {@code index} is not less than the {@linkplain #querySize query size}.
+     * Returns the name of the query parameter at {@code index}. For example this returns {@code "a"} for
+     * {@code queryParameterName(0)} on {@code http://host/?a=apple&b=banana}. This throws if {@code index} is not less
+     * than the {@linkplain #querySize query size}.
      *
      * <ul>
      * <li>{@code http://host/}exceptionexception</li>
@@ -728,14 +718,15 @@ public class UnoUrl {
      * @return the string
      */
     public String queryParameterName(int index) {
-        if (null == queryNamesAndValues) throw new IndexOutOfBoundsException();
+        if (null == queryNamesAndValues)
+            throw new IndexOutOfBoundsException();
         return queryNamesAndValues.get(index * 2);
     }
 
     /**
      * Returns the value of the query parameter at {@code index}. For example this returns {@code
-     * "apple"} for {@code queryParameterName(0)} on {@code http://host/?a=apple&b=banana}. This
-     * throws if {@code index} is not less than the {@linkplain #querySize query size}.
+     * "apple"} for {@code queryParameterName(0)} on {@code http://host/?a=apple&b=banana}. This throws if {@code index}
+     * is not less than the {@linkplain #querySize query size}.
      *
      * <ul>
      * <li>{@code http://host/}exceptionexception</li>
@@ -751,7 +742,8 @@ public class UnoUrl {
      * @return the string
      */
     public String queryParameterValue(int index) {
-        if (null == queryNamesAndValues) throw new IndexOutOfBoundsException();
+        if (null == queryNamesAndValues)
+            throw new IndexOutOfBoundsException();
         return queryNamesAndValues.get(index * 2 + 1);
     }
 
@@ -767,7 +759,8 @@ public class UnoUrl {
      * @return the string
      */
     public String encodedFragment() {
-        if (null == fragment) return null;
+        if (null == fragment)
+            return null;
         int fragmentStart = url.indexOf(Symbol.C_SHAPE) + 1;
         return url.substring(fragmentStart);
     }
@@ -788,11 +781,7 @@ public class UnoUrl {
     }
 
     public String redact() {
-        return newBuilder("/...")
-                .username(Normal.EMPTY)
-                .password(Normal.EMPTY)
-                .build()
-                .toString();
+        return newBuilder("/...").username(Normal.EMPTY).password(Normal.EMPTY).build().toString();
     }
 
     public UnoUrl resolve(String link) {
@@ -815,8 +804,8 @@ public class UnoUrl {
     }
 
     /**
-     * Returns a builder for the URL that would be retrieved by following {@code link} from this URL,
-     * or null if the resulting URL is not well-formed.
+     * Returns a builder for the URL that would be retrieved by following {@code link} from this URL, or null if the
+     * resulting URL is not well-formed.
      */
     public Builder newBuilder(String link) {
         try {
@@ -868,24 +857,22 @@ public class UnoUrl {
         }
 
         /**
-         * Returns the index of the ':' in {@code input} that is after scheme characters. Returns -1 if
-         * {@code input} does not have a scheme that starts at {@code pos}.
+         * Returns the index of the ':' in {@code input} that is after scheme characters. Returns -1 if {@code input}
+         * does not have a scheme that starts at {@code pos}.
          */
         private static int schemeDelimiterOffset(String input, int pos, int limit) {
-            if (limit - pos < 2) return -1;
+            if (limit - pos < 2)
+                return -1;
 
             char c0 = input.charAt(pos);
-            if ((c0 < 'a' || c0 > 'z') && (c0 < 'A' || c0 > 'Z')) return -1;
+            if ((c0 < 'a' || c0 > 'z') && (c0 < 'A' || c0 > 'Z'))
+                return -1;
 
             for (int i = pos + 1; i < limit; i++) {
                 char c = input.charAt(i);
 
-                if ((c >= 'a' && c <= 'z')
-                        || (c >= 'A' && c <= 'Z')
-                        || (c >= Symbol.C_ZERO && c <= Symbol.C_NINE)
-                        || c == Symbol.C_PLUS
-                        || c == Symbol.C_MINUS
-                        || c == Symbol.C_DOT) {
+                if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= Symbol.C_ZERO && c <= Symbol.C_NINE)
+                        || c == Symbol.C_PLUS || c == Symbol.C_MINUS || c == Symbol.C_DOT) {
                     continue;
                 } else if (c == Symbol.C_COLON) {
                     return i;
@@ -920,13 +907,14 @@ public class UnoUrl {
         private static int portColonOffset(String input, int pos, int limit) {
             for (int i = pos; i < limit; i++) {
                 switch (input.charAt(i)) {
-                    case Symbol.C_BRACKET_LEFT:
-                        while (++i < limit) {
-                            if (input.charAt(i) == Symbol.C_BRACKET_RIGHT) break;
-                        }
-                        break;
-                    case Symbol.C_COLON:
-                        return i;
+                case Symbol.C_BRACKET_LEFT:
+                    while (++i < limit) {
+                        if (input.charAt(i) == Symbol.C_BRACKET_RIGHT)
+                            break;
+                    }
+                    break;
+                case Symbol.C_COLON:
+                    return i;
                 }
             }
             return limit;
@@ -940,7 +928,8 @@ public class UnoUrl {
             try {
                 String portString = canonicalize(input, pos, limit, Normal.EMPTY, false, false, false, true, null);
                 int i = Integer.parseInt(portString);
-                if (i > 0 && i <= 65535) return i;
+                if (i > 0 && i <= 65535)
+                    return i;
                 return -1;
             } catch (NumberFormatException e) {
                 return -1;
@@ -961,45 +950,49 @@ public class UnoUrl {
         }
 
         public Builder username(String username) {
-            if (null == username) throw new NullPointerException("username == null");
+            if (null == username)
+                throw new NullPointerException("username == null");
             this.encodedUsername = canonicalize(username, USERNAME_ENCODE_SET, false, false, false, true);
             return this;
         }
 
         public Builder encodedUsername(String encodedUsername) {
-            if (null == encodedUsername) throw new NullPointerException("encodedUsername == null");
-            this.encodedUsername = canonicalize(
-                    encodedUsername, USERNAME_ENCODE_SET, true, false, false, true);
+            if (null == encodedUsername)
+                throw new NullPointerException("encodedUsername == null");
+            this.encodedUsername = canonicalize(encodedUsername, USERNAME_ENCODE_SET, true, false, false, true);
             return this;
         }
 
         public Builder password(String password) {
-            if (null == password) throw new NullPointerException("password == null");
+            if (null == password)
+                throw new NullPointerException("password == null");
             this.encodedPassword = canonicalize(password, PASSWORD_ENCODE_SET, false, false, false, true);
             return this;
         }
 
         public Builder encodedPassword(String encodedPassword) {
-            if (null == encodedPassword) throw new NullPointerException("encodedPassword == null");
-            this.encodedPassword = canonicalize(
-                    encodedPassword, PASSWORD_ENCODE_SET, true, false, false, true);
+            if (null == encodedPassword)
+                throw new NullPointerException("encodedPassword == null");
+            this.encodedPassword = canonicalize(encodedPassword, PASSWORD_ENCODE_SET, true, false, false, true);
             return this;
         }
 
         /**
-         * @param host either a regular hostname, International Domain Name, IPv4 address, or IPv6
-         *             address.
+         * @param host either a regular hostname, International Domain Name, IPv4 address, or IPv6 address.
          */
         public Builder host(String host) {
-            if (null == host) throw new NullPointerException("host == null");
+            if (null == host)
+                throw new NullPointerException("host == null");
             String encoded = canonicalizeHost(host, 0, host.length());
-            if (null == encoded) throw new IllegalArgumentException("unexpected host: " + host);
+            if (null == encoded)
+                throw new IllegalArgumentException("unexpected host: " + host);
             this.host = encoded;
             return this;
         }
 
         public Builder port(int port) {
-            if (port <= 0 || port > 65535) throw new IllegalArgumentException("unexpected port: " + port);
+            if (port <= 0 || port > 65535)
+                throw new IllegalArgumentException("unexpected port: " + port);
             this.port = port;
             return this;
         }
@@ -1009,17 +1002,19 @@ public class UnoUrl {
         }
 
         public Builder addPathSegment(String pathSegment) {
-            if (null == pathSegment) throw new NullPointerException("pathSegment == null");
+            if (null == pathSegment)
+                throw new NullPointerException("pathSegment == null");
             push(pathSegment, 0, pathSegment.length(), false, false);
             return this;
         }
 
         /**
-         * Adds a set of path segments separated by a slash (either {@code \} or {@code /}). If
-         * {@code pathSegments} starts with a slash, the resulting URL will have empty path segment.
+         * Adds a set of path segments separated by a slash (either {@code \} or {@code /}). If {@code pathSegments}
+         * starts with a slash, the resulting URL will have empty path segment.
          */
         public Builder addPathSegments(String pathSegments) {
-            if (null == pathSegments) throw new NullPointerException("pathSegments == null");
+            if (null == pathSegments)
+                throw new NullPointerException("pathSegments == null");
             return addPathSegments(pathSegments, false);
         }
 
@@ -1033,8 +1028,7 @@ public class UnoUrl {
 
         /**
          * Adds a set of encoded path segments separated by a slash (either {@code \} or {@code /}). If
-         * {@code encodedPathSegments} starts with a slash, the resulting URL will have empty path
-         * segment.
+         * {@code encodedPathSegments} starts with a slash, the resulting URL will have empty path segment.
          */
         public Builder addEncodedPathSegments(String encodedPathSegments) {
             if (null == encodedPathSegments) {
@@ -1046,7 +1040,8 @@ public class UnoUrl {
         private Builder addPathSegments(String pathSegments, boolean alreadyEncoded) {
             int offset = 0;
             do {
-                int segmentEnd = org.miaixz.bus.http.Builder.delimiterOffset(pathSegments, offset, pathSegments.length(), "/\\");
+                int segmentEnd = org.miaixz.bus.http.Builder.delimiterOffset(pathSegments, offset,
+                        pathSegments.length(), "/\\");
                 boolean addTrailingSlash = segmentEnd < pathSegments.length();
                 push(pathSegments, offset, segmentEnd, addTrailingSlash, alreadyEncoded);
                 offset = segmentEnd + 1;
@@ -1055,10 +1050,10 @@ public class UnoUrl {
         }
 
         public Builder setPathSegment(int index, String pathSegment) {
-            if (null == pathSegment) throw new NullPointerException("pathSegment == null");
-            String canonicalPathSegment = canonicalize(
-                    pathSegment, 0, pathSegment.length(), PATH_SEGMENT_ENCODE_SET, false, false, false, true,
-                    null);
+            if (null == pathSegment)
+                throw new NullPointerException("pathSegment == null");
+            String canonicalPathSegment = canonicalize(pathSegment, 0, pathSegment.length(), PATH_SEGMENT_ENCODE_SET,
+                    false, false, false, true, null);
             if (isDot(canonicalPathSegment) || isDotDot(canonicalPathSegment)) {
                 throw new IllegalArgumentException("unexpected path segment: " + pathSegment);
             }
@@ -1070,9 +1065,8 @@ public class UnoUrl {
             if (null == encodedPathSegment) {
                 throw new NullPointerException("encodedPathSegment == null");
             }
-            String canonicalPathSegment = canonicalize(encodedPathSegment,
-                    0, encodedPathSegment.length(), PATH_SEGMENT_ENCODE_SET, true, false, false, true,
-                    null);
+            String canonicalPathSegment = canonicalize(encodedPathSegment, 0, encodedPathSegment.length(),
+                    PATH_SEGMENT_ENCODE_SET, true, false, false, true, null);
             encodedPathSegments.set(index, canonicalPathSegment);
             if (isDot(canonicalPathSegment) || isDotDot(canonicalPathSegment)) {
                 throw new IllegalArgumentException("unexpected path segment: " + encodedPathSegment);
@@ -1089,7 +1083,8 @@ public class UnoUrl {
         }
 
         public Builder encodedPath(String encodedPath) {
-            if (null == encodedPath) throw new NullPointerException("encodedPath == null");
+            if (null == encodedPath)
+                throw new NullPointerException("encodedPath == null");
             if (!encodedPath.startsWith(Symbol.SLASH)) {
                 throw new IllegalArgumentException("unexpected encodedPath: " + encodedPath);
             }
@@ -1099,16 +1094,14 @@ public class UnoUrl {
 
         public Builder query(String query) {
             this.encodedQueryNamesAndValues = null != query
-                    ? queryStringToNamesAndValues(canonicalize(
-                    query, QUERY_ENCODE_SET, false, false, true, true))
+                    ? queryStringToNamesAndValues(canonicalize(query, QUERY_ENCODE_SET, false, false, true, true))
                     : null;
             return this;
         }
 
         public Builder encodedQuery(String encodedQuery) {
             this.encodedQueryNamesAndValues = null != encodedQuery
-                    ? queryStringToNamesAndValues(
-                    canonicalize(encodedQuery, QUERY_ENCODE_SET, true, false, true, true))
+                    ? queryStringToNamesAndValues(canonicalize(encodedQuery, QUERY_ENCODE_SET, true, false, true, true))
                     : null;
             return this;
         }
@@ -1117,13 +1110,13 @@ public class UnoUrl {
          * Encodes the query parameter using UTF-8 and adds it to this URL's query string.
          */
         public Builder addQueryParameter(String name, String value) {
-            if (null == name) throw new NullPointerException("name == null");
-            if (null == encodedQueryNamesAndValues) encodedQueryNamesAndValues = new ArrayList<>();
+            if (null == name)
+                throw new NullPointerException("name == null");
+            if (null == encodedQueryNamesAndValues)
+                encodedQueryNamesAndValues = new ArrayList<>();
+            encodedQueryNamesAndValues.add(canonicalize(name, QUERY_COMPONENT_ENCODE_SET, false, false, true, true));
             encodedQueryNamesAndValues.add(
-                    canonicalize(name, QUERY_COMPONENT_ENCODE_SET, false, false, true, true));
-            encodedQueryNamesAndValues.add(null != value
-                    ? canonicalize(value, QUERY_COMPONENT_ENCODE_SET, false, false, true, true)
-                    : null);
+                    null != value ? canonicalize(value, QUERY_COMPONENT_ENCODE_SET, false, false, true, true) : null);
             return this;
         }
 
@@ -1131,10 +1124,12 @@ public class UnoUrl {
          * Adds the pre-encoded query parameter to this URL's query string.
          */
         public Builder addEncodedQueryParameter(String encodedName, String encodedValue) {
-            if (null == encodedName) throw new NullPointerException("encodedName == null");
-            if (null == encodedQueryNamesAndValues) encodedQueryNamesAndValues = new ArrayList<>();
-            encodedQueryNamesAndValues.add(
-                    canonicalize(encodedName, QUERY_COMPONENT_REENCODE_SET, true, false, true, true));
+            if (null == encodedName)
+                throw new NullPointerException("encodedName == null");
+            if (null == encodedQueryNamesAndValues)
+                encodedQueryNamesAndValues = new ArrayList<>();
+            encodedQueryNamesAndValues
+                    .add(canonicalize(encodedName, QUERY_COMPONENT_REENCODE_SET, true, false, true, true));
             encodedQueryNamesAndValues.add(null != encodedValue
                     ? canonicalize(encodedValue, QUERY_COMPONENT_REENCODE_SET, true, false, true, true)
                     : null);
@@ -1154,17 +1149,20 @@ public class UnoUrl {
         }
 
         public Builder removeAllQueryParameters(String name) {
-            if (name == null) throw new NullPointerException("name == null");
-            if (encodedQueryNamesAndValues == null) return this;
-            String nameToRemove = canonicalize(
-                    name, QUERY_COMPONENT_ENCODE_SET, false, false, true, true);
+            if (name == null)
+                throw new NullPointerException("name == null");
+            if (encodedQueryNamesAndValues == null)
+                return this;
+            String nameToRemove = canonicalize(name, QUERY_COMPONENT_ENCODE_SET, false, false, true, true);
             removeAllCanonicalQueryParameters(nameToRemove);
             return this;
         }
 
         public Builder removeAllEncodedQueryParameters(String encodedName) {
-            if (null == encodedName) throw new NullPointerException("encodedName == null");
-            if (null == encodedQueryNamesAndValues) return this;
+            if (null == encodedName)
+                throw new NullPointerException("encodedName == null");
+            if (null == encodedQueryNamesAndValues)
+                return this;
             removeAllCanonicalQueryParameters(
                     canonicalize(encodedName, QUERY_COMPONENT_REENCODE_SET, true, false, true, true));
             return this;
@@ -1198,8 +1196,8 @@ public class UnoUrl {
         }
 
         /**
-         * Re-encodes the components of this URL so that it satisfies (obsolete) RFC 2396, which is
-         * particularly strict for certain components.
+         * Re-encodes the components of this URL so that it satisfies (obsolete) RFC 2396, which is particularly strict
+         * for certain components.
          */
         Builder reencodeForUri() {
             for (int i = 0, size = encodedPathSegments.size(); i < size; i++) {
@@ -1217,15 +1215,16 @@ public class UnoUrl {
                 }
             }
             if (null != encodedFragment) {
-                encodedFragment = canonicalize(
-                        encodedFragment, FRAGMENT_ENCODE_SET_URI, true, true, false, false);
+                encodedFragment = canonicalize(encodedFragment, FRAGMENT_ENCODE_SET_URI, true, true, false, false);
             }
             return this;
         }
 
         public UnoUrl build() {
-            if (null == scheme) throw new IllegalStateException("scheme == null");
-            if (null == host) throw new IllegalStateException("host == null");
+            if (null == scheme)
+                throw new IllegalStateException("scheme == null");
+            if (null == host)
+                throw new IllegalStateException("host == null");
             return new UnoUrl(this);
         }
 
@@ -1300,8 +1299,7 @@ public class UnoUrl {
             } else if (null != base) {
                 this.scheme = base.scheme;
             } else {
-                throw new IllegalArgumentException(
-                        "Expected URL scheme 'http' or 'https' but no colon was found");
+                throw new IllegalArgumentException("Expected URL scheme 'http' or 'https' but no colon was found");
             }
 
             boolean hasUsername = false;
@@ -1309,61 +1307,55 @@ public class UnoUrl {
             int slashCount = slashCount(input, pos, limit);
             if (slashCount >= 2 || base == null || !base.scheme.equals(this.scheme)) {
                 pos += slashCount;
-                authority:
-                while (true) {
-                    int componentDelimiterOffset = org.miaixz.bus.http.Builder.delimiterOffset(input, pos, limit, "@/\\?#");
-                    int c = componentDelimiterOffset != limit
-                            ? input.charAt(componentDelimiterOffset)
-                            : -1;
+                authority: while (true) {
+                    int componentDelimiterOffset = org.miaixz.bus.http.Builder.delimiterOffset(input, pos, limit,
+                            "@/\\?#");
+                    int c = componentDelimiterOffset != limit ? input.charAt(componentDelimiterOffset) : -1;
                     switch (c) {
-                        case Symbol.C_AT:
-                            if (!hasPassword) {
-                                int passwordColonOffset = org.miaixz.bus.http.Builder.delimiterOffset(
-                                        input, pos, componentDelimiterOffset, Symbol.C_COLON);
-                                String canonicalUsername = canonicalize(
-                                        input, pos, passwordColonOffset, USERNAME_ENCODE_SET, true, false, false, true,
-                                        null);
-                                this.encodedUsername = hasUsername
-                                        ? this.encodedUsername + "%40" + canonicalUsername
-                                        : canonicalUsername;
-                                if (passwordColonOffset != componentDelimiterOffset) {
-                                    hasPassword = true;
-                                    this.encodedPassword = canonicalize(input, passwordColonOffset + 1,
-                                            componentDelimiterOffset, PASSWORD_ENCODE_SET, true, false, false, true,
-                                            null);
-                                }
-                                hasUsername = true;
-                            } else {
-                                this.encodedPassword = this.encodedPassword + "%40" + canonicalize(input, pos,
-                                        componentDelimiterOffset, PASSWORD_ENCODE_SET, true, false, false, true,
-                                        null);
+                    case Symbol.C_AT:
+                        if (!hasPassword) {
+                            int passwordColonOffset = org.miaixz.bus.http.Builder.delimiterOffset(input, pos,
+                                    componentDelimiterOffset, Symbol.C_COLON);
+                            String canonicalUsername = canonicalize(input, pos, passwordColonOffset,
+                                    USERNAME_ENCODE_SET, true, false, false, true, null);
+                            this.encodedUsername = hasUsername ? this.encodedUsername + "%40" + canonicalUsername
+                                    : canonicalUsername;
+                            if (passwordColonOffset != componentDelimiterOffset) {
+                                hasPassword = true;
+                                this.encodedPassword = canonicalize(input, passwordColonOffset + 1,
+                                        componentDelimiterOffset, PASSWORD_ENCODE_SET, true, false, false, true, null);
                             }
-                            pos = componentDelimiterOffset + 1;
-                            break;
+                            hasUsername = true;
+                        } else {
+                            this.encodedPassword = this.encodedPassword + "%40" + canonicalize(input, pos,
+                                    componentDelimiterOffset, PASSWORD_ENCODE_SET, true, false, false, true, null);
+                        }
+                        pos = componentDelimiterOffset + 1;
+                        break;
 
-                        case -1:
-                        case Symbol.C_SLASH:
-                        case Symbol.C_BACKSLASH:
-                        case Symbol.C_QUESTION_MARK:
-                        case Symbol.C_SHAPE:
-                            int portColonOffset = portColonOffset(input, pos, componentDelimiterOffset);
-                            if (portColonOffset + 1 < componentDelimiterOffset) {
-                                host = canonicalizeHost(input, pos, portColonOffset);
-                                port = parsePort(input, portColonOffset + 1, componentDelimiterOffset);
-                                if (port == -1) {
-                                    throw new IllegalArgumentException("Invalid URL port: "
-                                            + input.substring(portColonOffset + 1, componentDelimiterOffset));
-                                }
-                            } else {
-                                host = canonicalizeHost(input, pos, portColonOffset);
-                                port = defaultPort(scheme);
+                    case -1:
+                    case Symbol.C_SLASH:
+                    case Symbol.C_BACKSLASH:
+                    case Symbol.C_QUESTION_MARK:
+                    case Symbol.C_SHAPE:
+                        int portColonOffset = portColonOffset(input, pos, componentDelimiterOffset);
+                        if (portColonOffset + 1 < componentDelimiterOffset) {
+                            host = canonicalizeHost(input, pos, portColonOffset);
+                            port = parsePort(input, portColonOffset + 1, componentDelimiterOffset);
+                            if (port == -1) {
+                                throw new IllegalArgumentException("Invalid URL port: "
+                                        + input.substring(portColonOffset + 1, componentDelimiterOffset));
                             }
-                            if (null == host) {
-                                throw new IllegalArgumentException(
-                                        INVALID_HOST + ": " + input.substring(pos, portColonOffset) + Symbol.C_DOUBLE_QUOTES);
-                            }
-                            pos = componentDelimiterOffset;
-                            break authority;
+                        } else {
+                            host = canonicalizeHost(input, pos, portColonOffset);
+                            port = defaultPort(scheme);
+                        }
+                        if (null == host) {
+                            throw new IllegalArgumentException(INVALID_HOST + ": "
+                                    + input.substring(pos, portColonOffset) + Symbol.C_DOUBLE_QUOTES);
+                        }
+                        pos = componentDelimiterOffset;
+                        break authority;
                     }
                 }
             } else {
@@ -1383,15 +1375,16 @@ public class UnoUrl {
             pos = pathDelimiterOffset;
 
             if (pos < limit && input.charAt(pos) == Symbol.C_QUESTION_MARK) {
-                int queryDelimiterOffset = org.miaixz.bus.http.Builder.delimiterOffset(input, pos, limit, Symbol.C_SHAPE);
-                this.encodedQueryNamesAndValues = queryStringToNamesAndValues(canonicalize(
-                        input, pos + 1, queryDelimiterOffset, QUERY_ENCODE_SET, true, false, true, true, null));
+                int queryDelimiterOffset = org.miaixz.bus.http.Builder.delimiterOffset(input, pos, limit,
+                        Symbol.C_SHAPE);
+                this.encodedQueryNamesAndValues = queryStringToNamesAndValues(canonicalize(input, pos + 1,
+                        queryDelimiterOffset, QUERY_ENCODE_SET, true, false, true, true, null));
                 pos = queryDelimiterOffset;
             }
 
             if (pos < limit && input.charAt(pos) == Symbol.C_SHAPE) {
-                this.encodedFragment = canonicalize(
-                        input, pos + 1, limit, FRAGMENT_ENCODE_SET, true, false, false, false, null);
+                this.encodedFragment = canonicalize(input, pos + 1, limit, FRAGMENT_ENCODE_SET, true, false, false,
+                        false, null);
             }
 
             return this;
@@ -1410,22 +1403,22 @@ public class UnoUrl {
                 encodedPathSegments.set(encodedPathSegments.size() - 1, Normal.EMPTY);
             }
 
-            for (int i = pos; i < limit; ) {
+            for (int i = pos; i < limit;) {
                 int pathSegmentDelimiterOffset = org.miaixz.bus.http.Builder.delimiterOffset(input, i, limit, "/\\");
                 boolean segmentHasTrailingSlash = pathSegmentDelimiterOffset < limit;
                 push(input, i, pathSegmentDelimiterOffset, segmentHasTrailingSlash, true);
                 i = pathSegmentDelimiterOffset;
-                if (segmentHasTrailingSlash) i++;
+                if (segmentHasTrailingSlash)
+                    i++;
             }
         }
 
         /**
          * Adds a path segment. If the input is ".." or equivalent, this pops a path segment.
          */
-        private void push(String input, int pos, int limit, boolean addTrailingSlash,
-                          boolean alreadyEncoded) {
-            String segment = canonicalize(
-                    input, pos, limit, PATH_SEGMENT_ENCODE_SET, alreadyEncoded, false, false, true, null);
+        private void push(String input, int pos, int limit, boolean addTrailingSlash, boolean alreadyEncoded) {
+            String segment = canonicalize(input, pos, limit, PATH_SEGMENT_ENCODE_SET, alreadyEncoded, false, false,
+                    true, null);
             if (isDot(segment)) {
                 return;
             }
@@ -1448,18 +1441,13 @@ public class UnoUrl {
         }
 
         private boolean isDotDot(String input) {
-            return input.equals(Symbol.DOUBLE_DOT)
-                    || input.equalsIgnoreCase("%2e.")
-                    || input.equalsIgnoreCase(".%2e")
+            return input.equals(Symbol.DOUBLE_DOT) || input.equalsIgnoreCase("%2e.") || input.equalsIgnoreCase(".%2e")
                     || input.equalsIgnoreCase("%2e%2e");
         }
 
         /**
-         * 删除路径段。当这个方法返回时，最后一个段总是""，这意味着编码后的路径将以/结尾
-         * 1. 出现 "/a/b/c/" yields "/a/b/". 在本例中，路径段的
-         * 列表从["a", "b", "c", ""] to ["a", "b", ""].
-         * 2. 出现 "/a/b/c" also yields "/a/b/". 路径段的
-         * 列表从["a", "b", "c"] to ["a", "b", ""].
+         * 删除路径段。当这个方法返回时，最后一个段总是""，这意味着编码后的路径将以/结尾 1. 出现 "/a/b/c/" yields "/a/b/". 在本例中，路径段的 列表从["a", "b", "c", ""] to
+         * ["a", "b", ""]. 2. 出现 "/a/b/c" also yields "/a/b/". 路径段的 列表从["a", "b", "c"] to ["a", "b", ""].
          */
         private void pop() {
             String removed = encodedPathSegments.remove(encodedPathSegments.size() - 1);

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.data;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -46,8 +46,7 @@ public class ValidationResult {
     private ArrayList<IOD.DataElement> notAllowedAttributes;
     private ArrayList<InvalidAttributeValue> invalidAttributeValues;
 
-    private static StringBuilder errorComment(StringBuilder sb, String prompt,
-                                              int[] tags) {
+    private static StringBuilder errorComment(StringBuilder sb, String prompt, int[] tags) {
         sb.append(prompt);
         String prefix = tags.length > 1 ? "s: " : ": ";
         for (int tag : tags) {
@@ -74,9 +73,7 @@ public class ValidationResult {
     }
 
     public boolean isValid() {
-        return !hasMissingAttributes()
-                && !hasMissingAttributeValues()
-                && !hasInvalidAttributeValues()
+        return !hasMissingAttributes() && !hasMissingAttributeValues() && !hasInvalidAttributeValues()
                 && !hasNotAllowedAttributes();
     }
 
@@ -96,13 +93,11 @@ public class ValidationResult {
         addInvalidAttributeValue(dataElement, reason, null, null);
     }
 
-    public void addInvalidAttributeValue(IOD.DataElement dataElement,
-                                         Invalid reason, ValidationResult[] itemValidationResult, IOD[] missingItems) {
+    public void addInvalidAttributeValue(IOD.DataElement dataElement, Invalid reason,
+            ValidationResult[] itemValidationResult, IOD[] missingItems) {
         if (invalidAttributeValues == null)
             invalidAttributeValues = new ArrayList<>();
-        invalidAttributeValues.add(
-                new InvalidAttributeValue(dataElement, reason,
-                        itemValidationResult, missingItems));
+        invalidAttributeValues.add(new InvalidAttributeValue(dataElement, reason, itemValidationResult, missingItems));
     }
 
     public void addNotAllowedAttribute(IOD.DataElement el) {
@@ -126,7 +121,7 @@ public class ValidationResult {
     public int[] tagsOfInvalidAttributeValues() {
         List<InvalidAttributeValue> list = invalidAttributeValues;
         if (list == null)
-            return new int[]{};
+            return new int[] {};
 
         int[] tags = new int[list.size()];
         for (int i = 0; i < tags.length; i++)
@@ -135,9 +130,7 @@ public class ValidationResult {
     }
 
     public int[] getOffendingElements() {
-        return cat(tagsOfMissingAttributes(),
-                tagsOfMissingAttributeValues(),
-                tagsOfInvalidAttributeValues(),
+        return cat(tagsOfMissingAttributes(), tagsOfMissingAttributeValues(), tagsOfInvalidAttributeValues(),
                 tagsOfNotAllowedAttributes());
     }
 
@@ -156,7 +149,7 @@ public class ValidationResult {
 
     private int[] tagsOf(List<IOD.DataElement> list) {
         if (list == null)
-            return new int[]{};
+            return new int[] {};
 
         int[] tags = new int[list.size()];
         for (int i = 0; i < tags.length; i++)
@@ -167,17 +160,13 @@ public class ValidationResult {
     public String getErrorComment() {
         StringBuilder sb = new StringBuilder();
         if (notAllowedAttributes != null)
-            return errorComment(sb, "Not allowed Attribute",
-                    tagsOfNotAllowedAttributes()).toString();
+            return errorComment(sb, "Not allowed Attribute", tagsOfNotAllowedAttributes()).toString();
         if (missingAttributes != null)
-            return errorComment(sb, "Missing Attribute",
-                    tagsOfMissingAttributes()).toString();
+            return errorComment(sb, "Missing Attribute", tagsOfMissingAttributes()).toString();
         if (missingAttributeValues != null)
-            return errorComment(sb, "Missing Value of Attribute",
-                    tagsOfMissingAttributeValues()).toString();
+            return errorComment(sb, "Missing Value of Attribute", tagsOfMissingAttributeValues()).toString();
         if (invalidAttributeValues != null)
-            return errorComment(sb, "Invalid Attribute",
-                    tagsOfInvalidAttributeValues()).toString();
+            return errorComment(sb, "Invalid Attribute", tagsOfInvalidAttributeValues()).toString();
         return null;
     }
 
@@ -188,17 +177,14 @@ public class ValidationResult {
 
         StringBuilder sb = new StringBuilder();
         if (notAllowedAttributes != null)
-            errorComment(sb, "Not allowed Attribute",
-                    tagsOfNotAllowedAttributes()).append(Builder.LINE_SEPARATOR);
+            errorComment(sb, "Not allowed Attribute", tagsOfNotAllowedAttributes()).append(Builder.LINE_SEPARATOR);
         if (missingAttributes != null)
-            errorComment(sb, "Missing Attribute",
-                    tagsOfMissingAttributes()).append(Builder.LINE_SEPARATOR);
+            errorComment(sb, "Missing Attribute", tagsOfMissingAttributes()).append(Builder.LINE_SEPARATOR);
         if (missingAttributeValues != null)
-            errorComment(sb, "Missing Value of Attribute",
-                    tagsOfMissingAttributeValues()).append(Builder.LINE_SEPARATOR);
+            errorComment(sb, "Missing Value of Attribute", tagsOfMissingAttributeValues())
+                    .append(Builder.LINE_SEPARATOR);
         if (invalidAttributeValues != null)
-            errorComment(sb, "Invalid Attribute",
-                    tagsOfInvalidAttributeValues()).append(Builder.LINE_SEPARATOR);
+            errorComment(sb, "Invalid Attribute", tagsOfInvalidAttributeValues()).append(Builder.LINE_SEPARATOR);
 
         return sb.substring(0, sb.length() - 1);
     }
@@ -223,8 +209,7 @@ public class ValidationResult {
             appendInvalidAttributeValues(level, attrs, "Invalid Attribute Values:", sb);
     }
 
-    private void appendTextTo(int level, Attributes attrs, String title,
-                              List<IOD.DataElement> list, StringBuilder sb) {
+    private void appendTextTo(int level, Attributes attrs, String title, List<IOD.DataElement> list, StringBuilder sb) {
         appendPrefixTo(level, sb);
         sb.append(title).append(Builder.LINE_SEPARATOR);
         for (IOD.DataElement el : list) {
@@ -239,8 +224,7 @@ public class ValidationResult {
             sb.append(" // IOD line #").append(lineNumber);
     }
 
-    private void appendInvalidAttributeValues(int level, Attributes attrs,
-                                              String title, StringBuilder sb) {
+    private void appendInvalidAttributeValues(int level, Attributes attrs, String title, StringBuilder sb) {
         appendPrefixTo(level, sb);
         sb.append(title);
         sb.append(Builder.LINE_SEPARATOR);
@@ -251,9 +235,7 @@ public class ValidationResult {
             Object value = attrs.getValue(tag, vr);
             sb.append(Symbol.C_SPACE).append(vr.vr);
             sb.append(" [");
-            vr.vr.prompt(value,
-                    attrs.bigEndian(),
-                    attrs.getSpecificCharacterSet(vr.vr), 200, sb);
+            vr.vr.prompt(value, attrs.bigEndian(), attrs.getSpecificCharacterSet(vr.vr), 200, sb);
             sb.append(Symbol.C_BRACKET_RIGHT);
             if (iav.reason != Invalid.Item) {
                 sb.append(" Invalid ").append(iav.reason);
@@ -274,8 +256,7 @@ public class ValidationResult {
                     ValidationResult itemResult = iav.itemValidationResults[i];
                     if (!itemResult.isValid()) {
                         appendPrefixTo(level + 1, sb);
-                        sb.append("Invalid Item ").append(i + 1).append(Symbol.C_COLON)
-                                .append(Builder.LINE_SEPARATOR);
+                        sb.append("Invalid Item ").append(i + 1).append(Symbol.C_COLON).append(Builder.LINE_SEPARATOR);
                         itemResult.appendTextTo(level + 1, seq.get(i), sb);
                     }
                 }
@@ -285,9 +266,7 @@ public class ValidationResult {
 
     private void appendAttribute(int level, int tag, StringBuilder sb) {
         appendPrefixTo(level, sb);
-        sb.append(Tag.toString(tag))
-                .append(Symbol.C_SPACE)
-                .append(ElementDictionary.keywordOf(tag, null));
+        sb.append(Tag.toString(tag)).append(Symbol.C_SPACE).append(ElementDictionary.keywordOf(tag, null));
     }
 
     private void appendPrefixTo(int level, StringBuilder sb) {
@@ -296,12 +275,7 @@ public class ValidationResult {
     }
 
     public enum Invalid {
-        VR,
-        VM,
-        Value,
-        Item,
-        MultipleItems,
-        Code
+        VR, VM, Value, Item, MultipleItems, Code
     }
 
     public class InvalidAttributeValue {
@@ -311,7 +285,7 @@ public class ValidationResult {
         public final IOD[] missingItems;
 
         public InvalidAttributeValue(IOD.DataElement dataElement, Invalid reason,
-                                     ValidationResult[] itemValidationResults, IOD[] missingItems) {
+                ValidationResult[] itemValidationResults, IOD[] missingItems) {
             this.dataElement = dataElement;
             this.reason = reason;
             this.itemValidationResults = itemValidationResults;

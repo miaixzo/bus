@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.screw.engine;
 
 import freemarker.cache.ClassTemplateLoader;
@@ -53,28 +53,27 @@ public class FreemarkerEngine extends AbstractEngine {
     /**
      * freemarker 配置实例化
      */
-    private final Configuration configuration = new Configuration(
-            Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
+    private final Configuration configuration = new Configuration(Configuration.DEFAULT_INCOMPATIBLE_IMPROVEMENTS);
 
     {
         try {
             String path = getEngineConfig().getCustomTemplate();
-            //自定义模板
+            // 自定义模板
             if (StringKit.isNotBlank(path) && FileKit.exists(path)) {
-                //获取父目录
+                // 获取父目录
                 String parent = Objects.requireNonNull(FileKit.file(path)).getParent();
-                //设置模板加载路径
+                // 设置模板加载路径
                 configuration.setDirectoryForTemplateLoading(new File(parent));
             }
-            //加载自带模板
+            // 加载自带模板
             else {
-                //模板存放路径
+                // 模板存放路径
                 configuration.setTemplateLoader(
                         new ClassTemplateLoader(this.getClass(), TemplateType.FREEMARKER.getTemplateDir()));
             }
-            //编码
+            // 编码
             configuration.setDefaultEncoding(Charset.DEFAULT_UTF_8);
-            //国际化
+            // 国际化
             configuration.setLocale(new Locale(Builder.DEFAULT_LOCALE));
         } catch (Exception e) {
             throw new InternalException(e);
@@ -104,17 +103,15 @@ public class FreemarkerEngine extends AbstractEngine {
                 String fileName = new File(path).getName();
                 template = configuration.getTemplate(fileName);
             }
-            //获取系统默认的模板
+            // 获取系统默认的模板
             else {
-                template = configuration
-                        .getTemplate(getEngineConfig().getFileType().getTemplateNamePrefix()
-                                + TemplateType.FREEMARKER.getSuffix());
+                template = configuration.getTemplate(
+                        getEngineConfig().getFileType().getTemplateNamePrefix() + TemplateType.FREEMARKER.getSuffix());
             }
             // create file
             File file = getFile(docName);
             // writer freemarker
-            try (Writer out = new BufferedWriter(
-                    new OutputStreamWriter(new FileOutputStream(file), Charset.UTF_8))) {
+            try (Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), Charset.UTF_8))) {
                 // process
                 template.process(info, out);
                 // open the output directory

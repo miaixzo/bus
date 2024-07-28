@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab;
 
 import jakarta.ws.rs.core.MediaType;
@@ -42,20 +42,20 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This class is provides a simplified interface to a GitLab API server, and divides the API up into
- * a separate API class for each concern.
+ * This class is provides a simplified interface to a GitLab API server, and divides the API up into a separate API
+ * class for each concern.
  */
 public class GitLabApi implements AutoCloseable {
 
     private final static Logger LOGGER = Logger.getLogger(GitLabApi.class.getName());
 
     /**
-     * GitLab4J default per page.  GitLab will ignore anything over 100.
+     * GitLab4J default per page. GitLab will ignore anything over 100.
      */
     public static final int DEFAULT_PER_PAGE = 96;
     // Used to keep track of GitLabApiExceptions on calls that return Optional<?>
-    private static final Map<Integer, GitLabApiException> optionalExceptionMap =
-            Collections.synchronizedMap(new WeakHashMap<Integer, GitLabApiException>());
+    private static final Map<Integer, GitLabApiException> optionalExceptionMap = Collections
+            .synchronizedMap(new WeakHashMap<Integer, GitLabApiException>());
     private ApiVersion apiVersion;
 
     GitLabApiClient apiClient;
@@ -63,9 +63,8 @@ public class GitLabApi implements AutoCloseable {
     private Map<String, Object> clientConfigProperties;
 
     /**
-     * Constructs a GitLabApi instance set up to interact with the GitLab server
-     * using GitLab API version 4.  This is the primary way to authenticate with
-     * the GitLab REST API.
+     * Constructs a GitLabApi instance set up to interact with the GitLab server using GitLab API version 4. This is the
+     * primary way to authenticate with the GitLab REST API.
      *
      * @param hostUrl             the URL of the GitLab server
      * @param personalAccessToken the private token to use for access to the API
@@ -73,6 +72,7 @@ public class GitLabApi implements AutoCloseable {
     public GitLabApi(String hostUrl, String personalAccessToken) {
         this(ApiVersion.V4, hostUrl, personalAccessToken, null);
     }
+
     private int defaultPerPage = DEFAULT_PER_PAGE;
 
     private ApplicationsApi applicationsApi;
@@ -131,9 +131,9 @@ public class GitLabApi implements AutoCloseable {
     /**
      * Constructs a GitLabApi instance set up to interact with the GitLab server using GitLab API version 4.
      *
-     * @param hostUrl the URL of the GitLab server
+     * @param hostUrl             the URL of the GitLab server
      * @param personalAccessToken the private token to use for access to the API
-     * @param secretToken use this token to validate received payloads
+     * @param secretToken         use this token to validate received payloads
      */
     public GitLabApi(String hostUrl, String personalAccessToken, String secretToken) {
         this(ApiVersion.V4, hostUrl, Constants.TokenType.PRIVATE, personalAccessToken, secretToken);
@@ -153,10 +153,10 @@ public class GitLabApi implements AutoCloseable {
     /**
      * Constructs a GitLabApi instance set up to interact with the GitLab server using the specified GitLab API version.
      *
-     * @param apiVersion the ApiVersion specifying which version of the API to use
-     * @param hostUrl the URL of the GitLab server
+     * @param apiVersion          the ApiVersion specifying which version of the API to use
+     * @param hostUrl             the URL of the GitLab server
      * @param personalAccessToken the private token to use for access to the API
-     * @param secretToken use this token to validate received payloads
+     * @param secretToken         use this token to validate received payloads
      */
     public GitLabApi(ApiVersion apiVersion, String hostUrl, String personalAccessToken, String secretToken) {
         this(apiVersion, hostUrl, personalAccessToken, secretToken, null);
@@ -166,9 +166,9 @@ public class GitLabApi implements AutoCloseable {
      * Constructs a GitLabApi instance set up to interact with the GitLab server using the specified GitLab API version.
      *
      * @param apiVersion the ApiVersion specifying which version of the API to use
-     * @param hostUrl the URL of the GitLab server
-     * @param tokenType the type of auth the token is for, PRIVATE or ACCESS
-     * @param authToken the token to use for access to the API
+     * @param hostUrl    the URL of the GitLab server
+     * @param tokenType  the type of auth the token is for, PRIVATE or ACCESS
+     * @param authToken  the token to use for access to the API
      */
     public GitLabApi(ApiVersion apiVersion, String hostUrl, Constants.TokenType tokenType, String authToken) {
         this(apiVersion, hostUrl, tokenType, authToken, null);
@@ -177,7 +177,7 @@ public class GitLabApi implements AutoCloseable {
     /**
      * Constructs a GitLabApi instance set up to interact with the GitLab server using GitLab API version 4.
      *
-     * @param hostUrl the URL of the GitLab server
+     * @param hostUrl   the URL of the GitLab server
      * @param tokenType the type of auth the token is for, PRIVATE or ACCESS
      * @param authToken the token to use for access to the API
      */
@@ -194,7 +194,8 @@ public class GitLabApi implements AutoCloseable {
      * @param authToken   the token to use for access to the API
      * @param secretToken use this token to validate received payloads
      */
-    public GitLabApi(ApiVersion apiVersion, String hostUrl, Constants.TokenType tokenType, String authToken, String secretToken) {
+    public GitLabApi(ApiVersion apiVersion, String hostUrl, Constants.TokenType tokenType, String authToken,
+            String secretToken) {
         this(apiVersion, hostUrl, tokenType, authToken, secretToken, null);
     }
 
@@ -219,8 +220,10 @@ public class GitLabApi implements AutoCloseable {
      * @param secretToken            use this token to validate received payloads
      * @param clientConfigProperties Map instance with additional properties for the Jersey client connection
      */
-    public GitLabApi(ApiVersion apiVersion, String hostUrl, String personalAccessToken, String secretToken, Map<String, Object> clientConfigProperties) {
-        this(apiVersion, hostUrl, Constants.TokenType.PRIVATE, personalAccessToken, secretToken, clientConfigProperties);
+    public GitLabApi(ApiVersion apiVersion, String hostUrl, String personalAccessToken, String secretToken,
+            Map<String, Object> clientConfigProperties) {
+        this(apiVersion, hostUrl, Constants.TokenType.PRIVATE, personalAccessToken, secretToken,
+                clientConfigProperties);
     }
 
     /**
@@ -232,7 +235,8 @@ public class GitLabApi implements AutoCloseable {
      * @param secretToken            use this token to validate received payloads
      * @param clientConfigProperties Map instance with additional properties for the Jersey client connection
      */
-    public GitLabApi(String hostUrl, Constants.TokenType tokenType, String authToken, String secretToken, Map<String, Object> clientConfigProperties) {
+    public GitLabApi(String hostUrl, Constants.TokenType tokenType, String authToken, String secretToken,
+            Map<String, Object> clientConfigProperties) {
         this(ApiVersion.V4, hostUrl, tokenType, authToken, secretToken, clientConfigProperties);
     }
 
@@ -244,8 +248,10 @@ public class GitLabApi implements AutoCloseable {
      * @param secretToken            use this token to validate received payloads
      * @param clientConfigProperties Map instance with additional properties for the Jersey client connection
      */
-    public GitLabApi(String hostUrl, String personalAccessToken, String secretToken, Map<String, Object> clientConfigProperties) {
-        this(ApiVersion.V4, hostUrl, Constants.TokenType.PRIVATE, personalAccessToken, secretToken, clientConfigProperties);
+    public GitLabApi(String hostUrl, String personalAccessToken, String secretToken,
+            Map<String, Object> clientConfigProperties) {
+        this(ApiVersion.V4, hostUrl, Constants.TokenType.PRIVATE, personalAccessToken, secretToken,
+                clientConfigProperties);
     }
 
     /**
@@ -269,7 +275,8 @@ public class GitLabApi implements AutoCloseable {
      * @param secretToken            use this token to validate received payloads
      * @param clientConfigProperties Map instance with additional properties for the Jersey client connection
      */
-    public GitLabApi(ApiVersion apiVersion, String hostUrl, Constants.TokenType tokenType, String authToken, String secretToken, Map<String, Object> clientConfigProperties) {
+    public GitLabApi(ApiVersion apiVersion, String hostUrl, Constants.TokenType tokenType, String authToken,
+            String secretToken, Map<String, Object> clientConfigProperties) {
         this.apiVersion = apiVersion;
         this.gitLabServerUrl = hostUrl;
         this.clientConfigProperties = clientConfigProperties;
@@ -286,10 +293,12 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * <p>Logs into GitLab using OAuth2 with the provided {@code username} and {@code password},
-     * and creates a new {@code GitLabApi} instance using returned access token.</p>
+     * <p>
+     * Logs into GitLab using OAuth2 with the provided {@code username} and {@code password}, and creates a new
+     * {@code GitLabApi} instance using returned access token.
+     * </p>
      *
-     * @param url GitLab URL
+     * @param url      GitLab URL
      * @param username user name for which private token should be obtained
      * @param password a CharSequence containing the password for a given {@code username}
      * @return new {@code GitLabApi} instance configured for a user-specific token
@@ -300,10 +309,12 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * <p>Logs into GitLab using OAuth2 with the provided {@code username} and {@code password},
-     * and creates a new {@code GitLabApi} instance using returned access token.</p>
+     * <p>
+     * Logs into GitLab using OAuth2 with the provided {@code username} and {@code password}, and creates a new
+     * {@code GitLabApi} instance using returned access token.
+     * </p>
      *
-     * @param url GitLab URL
+     * @param url      GitLab URL
      * @param username user name for which private token should be obtained
      * @param password a char array holding the password for a given {@code username}
      * @return new {@code GitLabApi} instance configured for a user-specific token
@@ -317,117 +328,135 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * <p>Logs into GitLab using OAuth2 with the provided {@code username} and {@code password},
-     * and creates a new {@code GitLabApi} instance using returned access token.</p>
+     * <p>
+     * Logs into GitLab using OAuth2 with the provided {@code username} and {@code password}, and creates a new
+     * {@code GitLabApi} instance using returned access token.
+     * </p>
      *
-     * @param url GitLab URL
-     * @param username user name for which private token should be obtained
-     * @param password a CharSequence containing the password for a given {@code username}
+     * @param url                     GitLab URL
+     * @param username                user name for which private token should be obtained
+     * @param password                a CharSequence containing the password for a given {@code username}
      * @param ignoreCertificateErrors if true will set up the Jersey system ignore SSL certificate errors
      * @return new {@code GitLabApi} instance configured for a user-specific token
      * @throws GitLabApiException GitLabApiException if any exception occurs during execution
      */
-    public static GitLabApi oauth2Login(String url, String username, CharSequence password, boolean ignoreCertificateErrors) throws GitLabApiException {
+    public static GitLabApi oauth2Login(String url, String username, CharSequence password,
+            boolean ignoreCertificateErrors) throws GitLabApiException {
         return (GitLabApi.oauth2Login(ApiVersion.V4, url, username, password, null, null, ignoreCertificateErrors));
     }
 
     /**
-     * <p>Logs into GitLab using OAuth2 with the provided {@code username} and {@code password},
-     * and creates a new {@code GitLabApi} instance using returned access token.</p>
+     * <p>
+     * Logs into GitLab using OAuth2 with the provided {@code username} and {@code password}, and creates a new
+     * {@code GitLabApi} instance using returned access token.
+     * </p>
      *
-     * @param url GitLab URL
-     * @param username user name for which private token should be obtained
-     * @param password a char array holding the password for a given {@code username}
+     * @param url                     GitLab URL
+     * @param username                user name for which private token should be obtained
+     * @param password                a char array holding the password for a given {@code username}
      * @param ignoreCertificateErrors if true will set up the Jersey system ignore SSL certificate errors
      * @return new {@code GitLabApi} instance configured for a user-specific token
      * @throws GitLabApiException GitLabApiException if any exception occurs during execution
      */
-    public static GitLabApi oauth2Login(String url, String username, char[] password, boolean ignoreCertificateErrors) throws GitLabApiException {
+    public static GitLabApi oauth2Login(String url, String username, char[] password, boolean ignoreCertificateErrors)
+            throws GitLabApiException {
 
         try (SecretString secretPassword = new SecretString(password)) {
-            return (GitLabApi.oauth2Login(ApiVersion.V4, url, username, secretPassword, null, null, ignoreCertificateErrors));
+            return (GitLabApi.oauth2Login(ApiVersion.V4, url, username, secretPassword, null, null,
+                    ignoreCertificateErrors));
         }
     }
 
     /**
-     * <p>Logs into GitLab using OAuth2 with the provided {@code username} and {@code password},
-     * and creates a new {@code GitLabApi} instance using returned access token.</p>
+     * <p>
+     * Logs into GitLab using OAuth2 with the provided {@code username} and {@code password}, and creates a new
+     * {@code GitLabApi} instance using returned access token.
+     * </p>
      *
-     * @param url GitLab URL
-     * @param username user name for which private token should be obtained
-     * @param password a CharSequence containing the password for a given {@code username}
-     * @param secretToken use this token to validate received payloads
-     * @param clientConfigProperties Map instance with additional properties for the Jersey client connection
+     * @param url                     GitLab URL
+     * @param username                user name for which private token should be obtained
+     * @param password                a CharSequence containing the password for a given {@code username}
+     * @param secretToken             use this token to validate received payloads
+     * @param clientConfigProperties  Map instance with additional properties for the Jersey client connection
      * @param ignoreCertificateErrors if true will set up the Jersey system ignore SSL certificate errors
      * @return new {@code GitLabApi} instance configured for a user-specific token
      * @throws GitLabApiException GitLabApiException if any exception occurs during execution
      */
     public static GitLabApi oauth2Login(String url, String username, CharSequence password, String secretToken,
-                                        Map<String, Object> clientConfigProperties, boolean ignoreCertificateErrors) throws GitLabApiException {
-        return (GitLabApi.oauth2Login(ApiVersion.V4, url, username, password, secretToken, clientConfigProperties, ignoreCertificateErrors));
+            Map<String, Object> clientConfigProperties, boolean ignoreCertificateErrors) throws GitLabApiException {
+        return (GitLabApi.oauth2Login(ApiVersion.V4, url, username, password, secretToken, clientConfigProperties,
+                ignoreCertificateErrors));
     }
 
     /**
-     * <p>Logs into GitLab using OAuth2 with the provided {@code username} and {@code password},
-     * and creates a new {@code GitLabApi} instance using returned access token.</p>
+     * <p>
+     * Logs into GitLab using OAuth2 with the provided {@code username} and {@code password}, and creates a new
+     * {@code GitLabApi} instance using returned access token.
+     * </p>
      *
-     * @param url GitLab URL
-     * @param username user name for which private token should be obtained
-     * @param password a char array holding the password for a given {@code username}
-     * @param secretToken use this token to validate received payloads
-     * @param clientConfigProperties Map instance with additional properties for the Jersey client connection
+     * @param url                     GitLab URL
+     * @param username                user name for which private token should be obtained
+     * @param password                a char array holding the password for a given {@code username}
+     * @param secretToken             use this token to validate received payloads
+     * @param clientConfigProperties  Map instance with additional properties for the Jersey client connection
      * @param ignoreCertificateErrors if true will set up the Jersey system ignore SSL certificate errors
      * @return new {@code GitLabApi} instance configured for a user-specific token
      * @throws GitLabApiException GitLabApiException if any exception occurs during execution
      */
     public static GitLabApi oauth2Login(String url, String username, char[] password, String secretToken,
-                                        Map<String, Object> clientConfigProperties, boolean ignoreCertificateErrors) throws GitLabApiException {
+            Map<String, Object> clientConfigProperties, boolean ignoreCertificateErrors) throws GitLabApiException {
 
         try (SecretString secretPassword = new SecretString(password)) {
-            return (GitLabApi.oauth2Login(ApiVersion.V4, url, username, secretPassword,
-                    secretToken, clientConfigProperties, ignoreCertificateErrors));
+            return (GitLabApi.oauth2Login(ApiVersion.V4, url, username, secretPassword, secretToken,
+                    clientConfigProperties, ignoreCertificateErrors));
         }
     }
 
     /**
-     * <p>Logs into GitLab using OAuth2 with the provided {@code username} and {@code password},
-     * and creates a new {@code GitLabApi} instance using returned access token.</p>
+     * <p>
+     * Logs into GitLab using OAuth2 with the provided {@code username} and {@code password}, and creates a new
+     * {@code GitLabApi} instance using returned access token.
+     * </p>
      *
-     * @param url GitLab URL
-     * @param apiVersion the ApiVersion specifying which version of the API to use
-     * @param username user name for which private token should be obtained
-     * @param password a char array holding the password for a given {@code username}
-     * @param secretToken use this token to validate received payloads
-     * @param clientConfigProperties Map instance with additional properties for the Jersey client connection
+     * @param url                     GitLab URL
+     * @param apiVersion              the ApiVersion specifying which version of the API to use
+     * @param username                user name for which private token should be obtained
+     * @param password                a char array holding the password for a given {@code username}
+     * @param secretToken             use this token to validate received payloads
+     * @param clientConfigProperties  Map instance with additional properties for the Jersey client connection
      * @param ignoreCertificateErrors if true will set up the Jersey system ignore SSL certificate errors
      * @return new {@code GitLabApi} instance configured for a user-specific token
      * @throws GitLabApiException GitLabApiException if any exception occurs during execution
      */
-    public static GitLabApi oauth2Login(ApiVersion apiVersion, String url, String username, char[] password, String secretToken,
-                                        Map<String, Object> clientConfigProperties, boolean ignoreCertificateErrors) throws GitLabApiException {
+    public static GitLabApi oauth2Login(ApiVersion apiVersion, String url, String username, char[] password,
+            String secretToken, Map<String, Object> clientConfigProperties, boolean ignoreCertificateErrors)
+            throws GitLabApiException {
 
         try (SecretString secretPassword = new SecretString(password)) {
-            return (GitLabApi.oauth2Login(apiVersion, url, username, secretPassword,
-                    secretToken, clientConfigProperties, ignoreCertificateErrors));
+            return (GitLabApi.oauth2Login(apiVersion, url, username, secretPassword, secretToken,
+                    clientConfigProperties, ignoreCertificateErrors));
         }
     }
 
     /**
-     * <p>Logs into GitLab using OAuth2 with the provided {@code username} and {@code password},
-     * and creates a new {@code GitLabApi} instance using returned access token.</p>
+     * <p>
+     * Logs into GitLab using OAuth2 with the provided {@code username} and {@code password}, and creates a new
+     * {@code GitLabApi} instance using returned access token.
+     * </p>
      *
-     * @param url GitLab URL
-     * @param apiVersion the ApiVersion specifying which version of the API to use
-     * @param username user name for which private token should be obtained
-     * @param password password for a given {@code username}
-     * @param secretToken use this token to validate received payloads
-     * @param clientConfigProperties Map instance with additional properties for the Jersey client connection
+     * @param url                     GitLab URL
+     * @param apiVersion              the ApiVersion specifying which version of the API to use
+     * @param username                user name for which private token should be obtained
+     * @param password                password for a given {@code username}
+     * @param secretToken             use this token to validate received payloads
+     * @param clientConfigProperties  Map instance with additional properties for the Jersey client connection
      * @param ignoreCertificateErrors if true will set up the Jersey system ignore SSL certificate errors
      * @return new {@code GitLabApi} instance configured for a user-specific token
      * @throws GitLabApiException GitLabApiException if any exception occurs during execution
      */
     public static GitLabApi oauth2Login(ApiVersion apiVersion, String url, String username, CharSequence password,
-                                        String secretToken, Map<String, Object> clientConfigProperties, boolean ignoreCertificateErrors) throws GitLabApiException {
+            String secretToken, Map<String, Object> clientConfigProperties, boolean ignoreCertificateErrors)
+            throws GitLabApiException {
 
         if (username == null || username.trim().length() == 0) {
             throw new IllegalArgumentException("both username and email cannot be empty or null");
@@ -449,9 +478,11 @@ public class GitLabApi implements AutoCloseable {
 
         try (Oauth2LoginStreamingOutput stream = new Oauth2LoginStreamingOutput(username, password)) {
 
-            Response response = new Oauth2Api(gitLabApi).post(Response.Status.OK, stream, MediaType.APPLICATION_JSON, "oauth", "token");
+            Response response = new Oauth2Api(gitLabApi).post(Response.Status.OK, stream, MediaType.APPLICATION_JSON,
+                    "oauth", "token");
             OauthTokenResponse oauthToken = response.readEntity(OauthTokenResponse.class);
-            gitLabApi = new GitLabApi(apiVersion, url, Constants.TokenType.OAUTH2_ACCESS, oauthToken.getAccessToken(), secretToken, clientConfigProperties);
+            gitLabApi = new GitLabApi(apiVersion, url, Constants.TokenType.OAUTH2_ACCESS, oauthToken.getAccessToken(),
+                    secretToken, clientConfigProperties);
             if (ignoreCertificateErrors) {
                 gitLabApi.setIgnoreCertificateErrors(true);
             }
@@ -474,10 +505,10 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Return the Optional instances contained value, if present, otherwise throw the exception that is
-     * associated with the Optional instance.
+     * Return the Optional instances contained value, if present, otherwise throw the exception that is associated with
+     * the Optional instance.
      *
-     * @param <T> the type for the Optional parameter
+     * @param <T>      the type for the Optional parameter
      * @param optional the Optional instance to get the value for
      * @return the value of the Optional instance if no exception is associated with it
      * @throws GitLabApiException if there was an exception associated with the Optional instance
@@ -493,12 +524,12 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Get the exception associated with the provided Optional instance, or null if no exception is
-     * associated with the Optional instance.
+     * Get the exception associated with the provided Optional instance, or null if no exception is associated with the
+     * Optional instance.
      *
      * @param optional the Optional instance to get the exception for
-     * @return the exception associated with the provided Optional instance, or null if no exception is
-     * associated with the Optional instance
+     * @return the exception associated with the provided Optional instance, or null if no exception is associated with
+     *         the Optional instance
      */
     public static final GitLabApiException getOptionalException(Optional<?> optional) {
         return (optionalExceptionMap.get(System.identityHashCode(optional)));
@@ -507,13 +538,14 @@ public class GitLabApi implements AutoCloseable {
     /**
      * Create a new GitLabApi instance that is logically a duplicate of this instance, with the exception of sudo state.
      *
-     * @return a new GitLabApi instance that is logically a duplicate of this instance, with the exception of sudo state.
+     * @return a new GitLabApi instance that is logically a duplicate of this instance, with the exception of sudo
+     *         state.
      */
     public final GitLabApi duplicate() {
 
         Long sudoUserId = this.getSudoAsId();
-        GitLabApi gitLabApi = new GitLabApi(apiVersion, gitLabServerUrl,
-                getTokenType(), getAuthToken(), getSecretToken(), clientConfigProperties);
+        GitLabApi gitLabApi = new GitLabApi(apiVersion, gitLabServerUrl, getTokenType(), getAuthToken(),
+                getSecretToken(), clientConfigProperties);
         if (sudoUserId != null) {
             gitLabApi.apiClient.setSudoAsId(sudoUserId);
         }
@@ -537,8 +569,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Enable the logging of the requests to and the responses from the GitLab server API
-     * using the GitLab4J shared Logger instance and Level.FINE as the level.
+     * Enable the logging of the requests to and the responses from the GitLab server API using the GitLab4J shared
+     * Logger instance and Level.FINE as the level.
      *
      * @return this GitLabApi instance
      */
@@ -548,8 +580,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Enable the logging of the requests to and the responses from the GitLab server API
-     * using the GitLab4J shared Logger instance.
+     * Enable the logging of the requests to and the responses from the GitLab server API using the GitLab4J shared
+     * Logger instance.
      *
      * @param level the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
      * @return this GitLabApi instance
@@ -563,24 +595,23 @@ public class GitLabApi implements AutoCloseable {
      * Sets the per request connect and read timeout.
      *
      * @param connectTimeout the per request connect timeout in milliseconds, can be null to use default
-     * @param readTimeout the per request read timeout in milliseconds, can be null to use default
+     * @param readTimeout    the per request read timeout in milliseconds, can be null to use default
      */
     public void setRequestTimeout(Integer connectTimeout, Integer readTimeout) {
         apiClient.setRequestTimeout(connectTimeout, readTimeout);
     }
 
     /**
-     * Enable the logging of the requests to and the responses from the GitLab server API
-     * using the GitLab4J shared Logger instance and Level.FINE as the level.
+     * Enable the logging of the requests to and the responses from the GitLab server API using the GitLab4J shared
+     * Logger instance and Level.FINE as the level.
      */
     public void enableRequestResponseLogging() {
         enableRequestResponseLogging(LOGGER, Level.FINE);
     }
 
     /**
-     * Enable the logging of the requests to and the responses from the GitLab server API
-     * using the GitLab4J shared Logger instance. Logging will NOT include entity logging and
-     * will mask PRIVATE-TOKEN and Authorization headers.
+     * Enable the logging of the requests to and the responses from the GitLab server API using the GitLab4J shared
+     * Logger instance. Logging will NOT include entity logging and will mask PRIVATE-TOKEN and Authorization headers.
      *
      * @param level the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
      */
@@ -613,49 +644,48 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Enable the logging of the requests to and the responses from the GitLab server API using the
-     * specified logger. Logging will NOT include entity logging and will mask PRIVATE-TOKEN
-     * and Authorization headers..
+     * Enable the logging of the requests to and the responses from the GitLab server API using the specified logger.
+     * Logging will NOT include entity logging and will mask PRIVATE-TOKEN and Authorization headers..
      *
      * @param logger the Logger instance to log to
-     * @param level the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
+     * @param level  the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
      */
     public void enableRequestResponseLogging(Logger logger, Level level) {
         enableRequestResponseLogging(logger, level, 0);
     }
 
     /**
-     * Enable the logging of the requests to and the responses from the GitLab server API using the
-     * GitLab4J shared Logger instance. Logging will mask PRIVATE-TOKEN and Authorization headers.
+     * Enable the logging of the requests to and the responses from the GitLab server API using the GitLab4J shared
+     * Logger instance. Logging will mask PRIVATE-TOKEN and Authorization headers.
      *
-     * @param level the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
-     * @param maxEntitySize maximum number of entity bytes to be logged.  When logging if the maxEntitySize
-     * is reached, the entity logging  will be truncated at maxEntitySize and "...more..." will be added at
-     * the end of the log entry. If maxEntitySize is &lt;= 0, entity logging will be disabled
+     * @param level         the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
+     * @param maxEntitySize maximum number of entity bytes to be logged. When logging if the maxEntitySize is reached,
+     *                      the entity logging will be truncated at maxEntitySize and "...more..." will be added at the
+     *                      end of the log entry. If maxEntitySize is &lt;= 0, entity logging will be disabled
      */
     public void enableRequestResponseLogging(Level level, int maxEntitySize) {
         enableRequestResponseLogging(LOGGER, level, maxEntitySize);
     }
 
     /**
-     * Enable the logging of the requests to and the responses from the GitLab server API using the
-     * specified logger. Logging will mask PRIVATE-TOKEN and Authorization headers.
+     * Enable the logging of the requests to and the responses from the GitLab server API using the specified logger.
+     * Logging will mask PRIVATE-TOKEN and Authorization headers.
      *
-     * @param logger the Logger instance to log to
-     * @param level the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
-     * @param maxEntitySize maximum number of entity bytes to be logged.  When logging if the maxEntitySize
-     * is reached, the entity logging  will be truncated at maxEntitySize and "...more..." will be added at
-     * the end of the log entry. If maxEntitySize is &lt;= 0, entity logging will be disabled
+     * @param logger        the Logger instance to log to
+     * @param level         the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
+     * @param maxEntitySize maximum number of entity bytes to be logged. When logging if the maxEntitySize is reached,
+     *                      the entity logging will be truncated at maxEntitySize and "...more..." will be added at the
+     *                      end of the log entry. If maxEntitySize is &lt;= 0, entity logging will be disabled
      */
     public void enableRequestResponseLogging(Logger logger, Level level, int maxEntitySize) {
         enableRequestResponseLogging(logger, level, maxEntitySize, MaskingLoggingFilter.DEFAULT_MASKED_HEADER_NAMES);
     }
 
     /**
-     * Enable the logging of the requests to and the responses from the GitLab server API using the
-     * GitLab4J shared Logger instance.
+     * Enable the logging of the requests to and the responses from the GitLab server API using the GitLab4J shared
+     * Logger instance.
      *
-     * @param level the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
+     * @param level             the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
      * @param maskedHeaderNames a list of header names that should have the values masked
      */
     public void enableRequestResponseLogging(Level level, List<String> maskedHeaderNames) {
@@ -663,11 +693,10 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Enable the logging of the requests to and the responses from the GitLab server API using the
-     * specified logger.
+     * Enable the logging of the requests to and the responses from the GitLab server API using the specified logger.
      *
-     * @param logger the Logger instance to log to
-     * @param level the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
+     * @param logger            the Logger instance to log to
+     * @param level             the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
      * @param maskedHeaderNames a list of header names that should have the values masked
      */
     public void enableRequestResponseLogging(Logger logger, Level level, List<String> maskedHeaderNames) {
@@ -675,8 +704,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Sets up all future calls to the GitLab API to be done as another user specified by sudoAsUsername.
-     * To revert back to normal non-sudo operation you must call unsudo(), or pass null as the username.
+     * Sets up all future calls to the GitLab API to be done as another user specified by sudoAsUsername. To revert back
+     * to normal non-sudo operation you must call unsudo(), or pass null as the username.
      *
      * @param sudoAsUsername the username to sudo as, null will turn off sudo
      * @throws GitLabApiException if any exception occurs
@@ -706,8 +735,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Sets up all future calls to the GitLab API to be done as another user specified by provided user ID.
-     * To revert back to normal non-sudo operation you must call unsudo(), or pass null as the sudoAsId.
+     * Sets up all future calls to the GitLab API to be done as another user specified by provided user ID. To revert
+     * back to normal non-sudo operation you must call unsudo(), or pass null as the sudoAsId.
      *
      * @param sudoAsId the ID of the user to sudo as, null will turn off sudo
      * @throws GitLabApiException if any exception occurs
@@ -729,13 +758,14 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Enable the logging of the requests to and the responses from the GitLab server API using the
-     * GitLab4J shared Logger instance.
+     * Enable the logging of the requests to and the responses from the GitLab server API using the GitLab4J shared
+     * Logger instance.
      *
      * @param level             the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
-     * @param maxEntitySize     maximum number of entity bytes to be logged.  When logging if the maxEntitySize
-     *                          is reached, the entity logging  will be truncated at maxEntitySize and "...more..." will be added at
-     *                          the end of the log entry. If maxEntitySize is &lt;= 0, entity logging will be disabled
+     * @param maxEntitySize     maximum number of entity bytes to be logged. When logging if the maxEntitySize is
+     *                          reached, the entity logging will be truncated at maxEntitySize and "...more..." will be
+     *                          added at the end of the log entry. If maxEntitySize is &lt;= 0, entity logging will be
+     *                          disabled
      * @param maskedHeaderNames a list of header names that should have the values masked
      */
     public void enableRequestResponseLogging(Level level, int maxEntitySize, List<String> maskedHeaderNames) {
@@ -753,6 +783,7 @@ public class GitLabApi implements AutoCloseable {
 
     /**
      * Set auth token supplier for gitlab api client.
+     * 
      * @param authTokenSupplier - supplier which provide actual auth token
      */
     public void setAuthTokenSupplier(Supplier<String> authTokenSupplier) {
@@ -814,8 +845,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Return the GitLabApiClient associated with this instance. This is used by all the sub API classes
-     * to communicate with the GitLab API.
+     * Return the GitLabApiClient associated with this instance. This is used by all the sub API classes to communicate
+     * with the GitLab API.
      *
      * @return the GitLabApiClient associated with this instance
      */
@@ -860,8 +891,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the ApplicationsApi instance owned by this GitLabApi instance. The ApplicationsApi is used
-     * to perform all OAUTH application related API calls.
+     * Gets the ApplicationsApi instance owned by this GitLabApi instance. The ApplicationsApi is used to perform all
+     * OAUTH application related API calls.
      *
      * @return the ApplicationsApi instance owned by this GitLabApi instance
      */
@@ -879,8 +910,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the ApplicationSettingsApi instance owned by this GitLabApi instance. The ApplicationSettingsApi is used
-     * to perform all application settingsrelated API calls.
+     * Gets the ApplicationSettingsApi instance owned by this GitLabApi instance. The ApplicationSettingsApi is used to
+     * perform all application settingsrelated API calls.
      *
      * @return the ApplicationsApi instance owned by this GitLabApi instance
      */
@@ -898,8 +929,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the AuditEventApi instance owned by this GitLabApi instance. The AuditEventApi is used
-     * to perform all instance audit event API calls.
+     * Gets the AuditEventApi instance owned by this GitLabApi instance. The AuditEventApi is used to perform all
+     * instance audit event API calls.
      *
      * @return the AuditEventApi instance owned by this GitLabApi instance
      */
@@ -917,8 +948,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the AwardEmojiApi instance owned by this GitLabApi instance. The AwardEmojiApi is used
-     * to perform all award emoji related API calls.
+     * Gets the AwardEmojiApi instance owned by this GitLabApi instance. The AwardEmojiApi is used to perform all award
+     * emoji related API calls.
      *
      * @return the AwardEmojiApi instance owned by this GitLabApi instance
      */
@@ -936,8 +967,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the BoardsApi instance owned by this GitLabApi instance. The BoardsApi is used
-     * to perform all Issue Boards related API calls.
+     * Gets the BoardsApi instance owned by this GitLabApi instance. The BoardsApi is used to perform all Issue Boards
+     * related API calls.
      *
      * @return the BoardsApi instance owned by this GitLabApi instance
      */
@@ -955,8 +986,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the CommitsApi instance owned by this GitLabApi instance. The CommitsApi is used
-     * to perform all commit related API calls.
+     * Gets the CommitsApi instance owned by this GitLabApi instance. The CommitsApi is used to perform all commit
+     * related API calls.
      *
      * @return the CommitsApi instance owned by this GitLabApi instance
      */
@@ -974,8 +1005,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the ContainerRegistryApi instance owned by this GitLabApi instance. The ContainerRegistryApi is used
-     * to perform all Docker Registry related API calls.
+     * Gets the ContainerRegistryApi instance owned by this GitLabApi instance. The ContainerRegistryApi is used to
+     * perform all Docker Registry related API calls.
      *
      * @return the ContainerRegistryApi instance owned by this GitLabApi instance
      */
@@ -993,8 +1024,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the DeployKeysApi instance owned by this GitLabApi instance. The DeployKeysApi is used
-     * to perform all deploy key related API calls.
+     * Gets the DeployKeysApi instance owned by this GitLabApi instance. The DeployKeysApi is used to perform all deploy
+     * key related API calls.
      *
      * @return the DeployKeysApi instance owned by this GitLabApi instance
      */
@@ -1012,8 +1043,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the DeployKeysApi instance owned by this GitLabApi instance. The DeploymentsApi is used
-     * to perform all deployment related API calls.
+     * Gets the DeployKeysApi instance owned by this GitLabApi instance. The DeploymentsApi is used to perform all
+     * deployment related API calls.
      *
      * @return the DeploymentsApi instance owned by this GitLabApi instance
      */
@@ -1031,23 +1062,24 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Enable the logging of the requests to and the responses from the GitLab server API using the
-     * specified logger.
+     * Enable the logging of the requests to and the responses from the GitLab server API using the specified logger.
      *
-     * @param logger the Logger instance to log to
-     * @param level the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
-     * @param maxEntitySize maximum number of entity bytes to be logged.  When logging if the maxEntitySize
-     * is reached, the entity logging  will be truncated at maxEntitySize and "...more..." will be added at
-     * the end of the log entry. If maxEntitySize is &lt;= 0, entity logging will be disabled
+     * @param logger            the Logger instance to log to
+     * @param level             the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
+     * @param maxEntitySize     maximum number of entity bytes to be logged. When logging if the maxEntitySize is
+     *                          reached, the entity logging will be truncated at maxEntitySize and "...more..." will be
+     *                          added at the end of the log entry. If maxEntitySize is &lt;= 0, entity logging will be
+     *                          disabled
      * @param maskedHeaderNames a list of header names that should have the values masked
      */
-    public void enableRequestResponseLogging(Logger logger, Level level, int maxEntitySize, List<String> maskedHeaderNames) {
+    public void enableRequestResponseLogging(Logger logger, Level level, int maxEntitySize,
+            List<String> maskedHeaderNames) {
         apiClient.enableRequestResponseLogging(logger, level, maxEntitySize, maskedHeaderNames);
     }
 
     /**
-     * Gets the DiscussionsApi instance owned by this GitLabApi instance. The DiscussionsApi is used
-     * to perform all discussion related API calls.
+     * Gets the DiscussionsApi instance owned by this GitLabApi instance. The DiscussionsApi is used to perform all
+     * discussion related API calls.
      *
      * @return the DiscussionsApi instance owned by this GitLabApi instance
      */
@@ -1065,8 +1097,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the EnvironmentsApi instance owned by this GitLabApi instance. The EnvironmentsApi is used
-     * to perform all environment related API calls.
+     * Gets the EnvironmentsApi instance owned by this GitLabApi instance. The EnvironmentsApi is used to perform all
+     * environment related API calls.
      *
      * @return the EnvironmentsApi instance owned by this GitLabApi instance
      */
@@ -1084,8 +1116,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the EpicsApi instance owned by this GitLabApi instance. The EpicsApi is used
-     * to perform all Epics and Epic Issues related API calls.
+     * Gets the EpicsApi instance owned by this GitLabApi instance. The EpicsApi is used to perform all Epics and Epic
+     * Issues related API calls.
      *
      * @return the EpicsApi instance owned by this GitLabApi instance
      */
@@ -1103,8 +1135,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the EventsApi instance owned by this GitLabApi instance. The EventsApi is used
-     * to perform all events related API calls.
+     * Gets the EventsApi instance owned by this GitLabApi instance. The EventsApi is used to perform all events related
+     * API calls.
      *
      * @return the EventsApi instance owned by this GitLabApi instance
      */
@@ -1122,8 +1154,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the ExternalStatusCheckApi instance owned by this GitLabApi instance. The ExternalStatusCheckApi is used
-     * to perform all the external status checks related API calls.
+     * Gets the ExternalStatusCheckApi instance owned by this GitLabApi instance. The ExternalStatusCheckApi is used to
+     * perform all the external status checks related API calls.
      *
      * @return the ExternalStatusCheckApi instance owned by this GitLabApi instance
      */
@@ -1141,7 +1173,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the GitLabCiYamlApi instance owned by this GitLabApi instance. The GitLabCiYamlApi is used to get Gitlab CI YAML templates.
+     * Gets the GitLabCiYamlApi instance owned by this GitLabApi instance. The GitLabCiYamlApi is used to get Gitlab CI
+     * YAML templates.
      *
      * @return the GitLabCiYamlApi instance owned by this GitLabApi instance
      */
@@ -1154,10 +1187,9 @@ public class GitLabApi implements AutoCloseable {
         return gitLabCiYaml;
     }
 
-
     /**
-     * Gets the GroupApi instance owned by this GitLabApi instance. The GroupApi is used
-     * to perform all group related API calls.
+     * Gets the GroupApi instance owned by this GitLabApi instance. The GroupApi is used to perform all group related
+     * API calls.
      *
      * @return the GroupApi instance owned by this GitLabApi instance
      */
@@ -1175,8 +1207,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the HealthCheckApi instance owned by this GitLabApi instance. The HealthCheckApi is used
-     * to perform all admin level gitlab health monitoring.
+     * Gets the HealthCheckApi instance owned by this GitLabApi instance. The HealthCheckApi is used to perform all
+     * admin level gitlab health monitoring.
      *
      * @return the HealthCheckApi instance owned by this GitLabApi instance
      */
@@ -1194,8 +1226,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the ImportExportApi instance owned by this GitLabApi instance. The ImportExportApi is used
-     * to perform all project import/export related API calls.
+     * Gets the ImportExportApi instance owned by this GitLabApi instance. The ImportExportApi is used to perform all
+     * project import/export related API calls.
      *
      * @return the ImportExportApi instance owned by this GitLabApi instance
      */
@@ -1213,8 +1245,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the IssuesApi instance owned by this GitLabApi instance. The IssuesApi is used
-     * to perform all issue related API calls.
+     * Gets the IssuesApi instance owned by this GitLabApi instance. The IssuesApi is used to perform all issue related
+     * API calls.
      *
      * @return the IssuesApi instance owned by this GitLabApi instance
      */
@@ -1232,8 +1264,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the JobApi instance owned by this GitLabApi instance. The JobApi is used
-     * to perform all jobs related API calls.
+     * Gets the JobApi instance owned by this GitLabApi instance. The JobApi is used to perform all jobs related API
+     * calls.
      *
      * @return the JobsApi instance owned by this GitLabApi instance
      */
@@ -1264,8 +1296,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the LicenseApi instance owned by this GitLabApi instance. The LicenseApi is used
-     * to perform all license related API calls.
+     * Gets the LicenseApi instance owned by this GitLabApi instance. The LicenseApi is used to perform all license
+     * related API calls.
      *
      * @return the LicenseApi instance owned by this GitLabApi instance
      */
@@ -1283,8 +1315,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the LicenseTemplatesApi instance owned by this GitLabApi instance. The LicenseTemplatesApi is used
-     * to perform all license template related API calls.
+     * Gets the LicenseTemplatesApi instance owned by this GitLabApi instance. The LicenseTemplatesApi is used to
+     * perform all license template related API calls.
      *
      * @return the LicenseTemplatesApi instance owned by this GitLabApi instance
      */
@@ -1301,10 +1333,9 @@ public class GitLabApi implements AutoCloseable {
         return (licenseTemplatesApi);
     }
 
-
     /**
-     * Gets the MarkdownApi instance owned by this GitLabApi instance. The MarkdownApi is used
-     * to perform all markdown related API calls.
+     * Gets the MarkdownApi instance owned by this GitLabApi instance. The MarkdownApi is used to perform all markdown
+     * related API calls.
      *
      * @return the MarkdownApi instance owned by this GitLabApi instance
      */
@@ -1322,8 +1353,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the MergeRequestApi instance owned by this GitLabApi instance. The MergeRequestApi is used
-     * to perform all merge request related API calls.
+     * Gets the MergeRequestApi instance owned by this GitLabApi instance. The MergeRequestApi is used to perform all
+     * merge request related API calls.
      *
      * @return the MergeRequestApi instance owned by this GitLabApi instance
      */
@@ -1359,8 +1390,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the NamespaceApi instance owned by this GitLabApi instance. The NamespaceApi is used
-     * to perform all namespace related API calls.
+     * Gets the NamespaceApi instance owned by this GitLabApi instance. The NamespaceApi is used to perform all
+     * namespace related API calls.
      *
      * @return the NamespaceApi instance owned by this GitLabApi instance
      */
@@ -1378,8 +1409,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the NotesApi instance owned by this GitLabApi instance. The NotesApi is used
-     * to perform all notes related API calls.
+     * Gets the NotesApi instance owned by this GitLabApi instance. The NotesApi is used to perform all notes related
+     * API calls.
      *
      * @return the NotesApi instance owned by this GitLabApi instance
      */
@@ -1397,8 +1428,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the NotesApi instance owned by this GitLabApi instance. The NotesApi is used
-     * to perform all notes related API calls.
+     * Gets the NotesApi instance owned by this GitLabApi instance. The NotesApi is used to perform all notes related
+     * API calls.
      *
      * @return the NotesApi instance owned by this GitLabApi instance
      */
@@ -1416,8 +1447,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the PackagesApi instance owned by this GitLabApi instance. The PackagesApi is used
-     * to perform all Package related API calls.
+     * Gets the PackagesApi instance owned by this GitLabApi instance. The PackagesApi is used to perform all Package
+     * related API calls.
      *
      * @return the PackagesApi instance owned by this GitLabApi instance
      */
@@ -1435,8 +1466,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the PipelineApi instance owned by this GitLabApi instance. The PipelineApi is used
-     * to perform all pipeline related API calls.
+     * Gets the PipelineApi instance owned by this GitLabApi instance. The PipelineApi is used to perform all pipeline
+     * related API calls.
      *
      * @return the PipelineApi instance owned by this GitLabApi instance
      */
@@ -1454,8 +1485,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the ProjectApi instance owned by this GitLabApi instance. The ProjectApi is used
-     * to perform all project related API calls.
+     * Gets the ProjectApi instance owned by this GitLabApi instance. The ProjectApi is used to perform all project
+     * related API calls.
      *
      * @return the ProjectApi instance owned by this GitLabApi instance
      */
@@ -1473,8 +1504,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the ProtectedBranchesApi instance owned by this GitLabApi instance. The ProtectedBranchesApi is used
-     * to perform all protection related actions on a branch of a project.
+     * Gets the ProtectedBranchesApi instance owned by this GitLabApi instance. The ProtectedBranchesApi is used to
+     * perform all protection related actions on a branch of a project.
      *
      * @return the ProtectedBranchesApi instance owned by this GitLabApi instance
      */
@@ -1492,8 +1523,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the ReleaseLinksApi instance owned by this GitLabApi instance. The ReleaseLinksApi is used
-     * to perform all Release Links related API calls.
+     * Gets the ReleaseLinksApi instance owned by this GitLabApi instance. The ReleaseLinksApi is used to perform all
+     * Release Links related API calls.
      *
      * @return the ReleaseLinksApi instance owned by this GitLabApi instance
      */
@@ -1511,8 +1542,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the ReleasesApi instance owned by this GitLabApi instance. The ReleasesApi is used
-     * to perform all release related API calls.
+     * Gets the ReleasesApi instance owned by this GitLabApi instance. The ReleasesApi is used to perform all release
+     * related API calls.
      *
      * @return the ReleasesApi instance owned by this GitLabApi instance
      */
@@ -1530,8 +1561,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the RepositoryApi instance owned by this GitLabApi instance. The RepositoryApi is used
-     * to perform all repository related API calls.
+     * Gets the RepositoryApi instance owned by this GitLabApi instance. The RepositoryApi is used to perform all
+     * repository related API calls.
      *
      * @return the RepositoryApi instance owned by this GitLabApi instance
      */
@@ -1549,8 +1580,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the RepositoryFileApi instance owned by this GitLabApi instance. The RepositoryFileApi is used
-     * to perform all repository files related API calls.
+     * Gets the RepositoryFileApi instance owned by this GitLabApi instance. The RepositoryFileApi is used to perform
+     * all repository files related API calls.
      *
      * @return the RepositoryFileApi instance owned by this GitLabApi instance
      */
@@ -1568,8 +1599,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the ResourceLabelEventsApi instance owned by this GitLabApi instance. The ResourceLabelEventsApi
-     * is used to perform all Resource Label Events related API calls.
+     * Gets the ResourceLabelEventsApi instance owned by this GitLabApi instance. The ResourceLabelEventsApi is used to
+     * perform all Resource Label Events related API calls.
      *
      * @return the ResourceLabelEventsApi instance owned by this GitLabApi instance
      */
@@ -1587,8 +1618,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the ResourceStateEventsApi instance owned by this GitLabApi instance. The ResourceStateEventsApi
-     * is used to perform all Resource State Events related API calls.
+     * Gets the ResourceStateEventsApi instance owned by this GitLabApi instance. The ResourceStateEventsApi is used to
+     * perform all Resource State Events related API calls.
      *
      * @return the ResourceStateEventsApi instance owned by this GitLabApi instance
      */
@@ -1606,8 +1637,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the RunnersApi instance owned by this GitLabApi instance. The RunnersApi is used
-     * to perform all Runner related API calls.
+     * Gets the RunnersApi instance owned by this GitLabApi instance. The RunnersApi is used to perform all Runner
+     * related API calls.
      *
      * @return the RunnerApi instance owned by this GitLabApi instance
      */
@@ -1625,8 +1656,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the SearchApi instance owned by this GitLabApi instance. The SearchApi is used
-     * to perform search related API calls.
+     * Gets the SearchApi instance owned by this GitLabApi instance. The SearchApi is used to perform search related API
+     * calls.
      *
      * @return the SearchApi instance owned by this GitLabApi instance
      */
@@ -1644,8 +1675,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the ServicesApi instance owned by this GitLabApi instance. The ServicesApi is used
-     * to perform all services related API calls.
+     * Gets the ServicesApi instance owned by this GitLabApi instance. The ServicesApi is used to perform all services
+     * related API calls.
      *
      * @return the ServicesApi instance owned by this GitLabApi instance
      */
@@ -1663,8 +1694,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the SystemHooksApi instance owned by this GitLabApi instance. All methods
-     * require administrator authorization.
+     * Gets the SystemHooksApi instance owned by this GitLabApi instance. All methods require administrator
+     * authorization.
      *
      * @return the SystemHooksApi instance owned by this GitLabApi instance
      */
@@ -1682,8 +1713,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the TagsApi instance owned by this GitLabApi instance. The TagsApi is used
-     * to perform all tag and release related API calls.
+     * Gets the TagsApi instance owned by this GitLabApi instance. The TagsApi is used to perform all tag and release
+     * related API calls.
      *
      * @return the TagsApi instance owned by this GitLabApi instance
      */
@@ -1701,8 +1732,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the TagsApi instance owned by this GitLabApi instance. The TagsApi is used
-     * to perform all tag and release related API calls.
+     * Gets the TagsApi instance owned by this GitLabApi instance. The TagsApi is used to perform all tag and release
+     * related API calls.
      *
      * @return the TagsApi instance owned by this GitLabApi instance
      */
@@ -1720,8 +1751,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the SnippetsApi instance owned by this GitLabApi instance. The SnippetsApi is used
-     * to perform all snippet related API calls.
+     * Gets the SnippetsApi instance owned by this GitLabApi instance. The SnippetsApi is used to perform all snippet
+     * related API calls.
      *
      * @return the SnippetsApi instance owned by this GitLabApi instance
      */
@@ -1738,7 +1769,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the TodosApi instance owned by this GitLabApi instance. The TodosApi is used to perform all Todo related API calls.
+     * Gets the TodosApi instance owned by this GitLabApi instance. The TodosApi is used to perform all Todo related API
+     * calls.
      *
      * @return the TodosApi instance owned by this GitLabApi instance
      */
@@ -1755,8 +1787,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the UserApi instance owned by this GitLabApi instance. The UserApi is used
-     * to perform all user related API calls.
+     * Gets the UserApi instance owned by this GitLabApi instance. The UserApi is used to perform all user related API
+     * calls.
      *
      * @return the UserApi instance owned by this GitLabApi instance
      */
@@ -1774,7 +1806,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the WikisApi instance owned by this GitLabApi instance. The WikisApi is used to perform all wiki related API calls.
+     * Gets the WikisApi instance owned by this GitLabApi instance. The WikisApi is used to perform all wiki related API
+     * calls.
      *
      * @return the WikisApi instance owned by this GitLabApi instance
      */
@@ -1791,7 +1824,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the KeysApi instance owned by this GitLabApi instance. The KeysApi is used to look up users by their ssh key signatures
+     * Gets the KeysApi instance owned by this GitLabApi instance. The KeysApi is used to look up users by their ssh key
+     * signatures
      *
      * @return the KeysApi instance owned by this GitLabApi instance
      */
@@ -1805,8 +1839,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the MetadataApi instance owned by this GitlabApi instance. The MetadataApi is used to
-     * retrieve metadata information for this GitLab instance
+     * Gets the MetadataApi instance owned by this GitlabApi instance. The MetadataApi is used to retrieve metadata
+     * information for this GitLab instance
      *
      * @return the MetadataApi instance owned by this GitlabApi instance
      */
@@ -1829,8 +1863,8 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Gets the DeployTokensApi instance owned by this GitLabApi instance. The DeployTokensApi is used
-     * to perform all deploy token related API calls.
+     * Gets the DeployTokensApi instance owned by this GitLabApi instance. The DeployTokensApi is used to perform all
+     * deploy token related API calls.
      *
      * @return the DeployTokensApi instance owned by this GitLabApi instance
      */

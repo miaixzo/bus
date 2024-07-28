@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.sensitive;
 
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
@@ -57,7 +57,8 @@ import java.util.Properties;
  * @version 6.0.6
  * @since Java 17+
  */
-@Intercepts({@Signature(type = ResultSetHandler.class, method = "handleResultSets", args = {java.sql.Statement.class})})
+@Intercepts({
+        @Signature(type = ResultSetHandler.class, method = "handleResultSets", args = { java.sql.Statement.class }) })
 public class SensitiveResultSetHandler extends AbstractSqlHandler implements Interceptor {
 
     /**
@@ -73,7 +74,6 @@ public class SensitiveResultSetHandler extends AbstractSqlHandler implements Int
      */
     private String key;
 
-
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
         final List<Object> results = (List<Object>) invocation.proceed();
@@ -86,7 +86,8 @@ public class SensitiveResultSetHandler extends AbstractSqlHandler implements Int
             final ResultSetHandler statementHandler = realTarget(invocation.getTarget());
             final MetaObject metaObject = SystemMetaObject.forObject(statementHandler);
             final MappedStatement mappedStatement = getMappedStatement(metaObject, MAPPEDSTATEMENT);
-            final ResultMap resultMap = mappedStatement.getResultMaps().isEmpty() ? null : mappedStatement.getResultMaps().get(0);
+            final ResultMap resultMap = mappedStatement.getResultMaps().isEmpty() ? null
+                    : mappedStatement.getResultMaps().get(0);
 
             Sensitive sensitive = results.get(0).getClass().getAnnotation(Sensitive.class);
             if (ObjectKit.isEmpty(sensitive)) {
@@ -107,7 +108,8 @@ public class SensitiveResultSetHandler extends AbstractSqlHandler implements Int
                                 String value = (String) objMetaObject.getValue(property);
                                 if (StringKit.isNotEmpty(value)) {
                                     Logger.debug("Query data decryption enabled ...");
-                                    String decryptValue = org.miaixz.bus.crypto.Builder.decrypt(this.type, this.key, value, Charset.UTF_8);
+                                    String decryptValue = org.miaixz.bus.crypto.Builder.decrypt(this.type, this.key,
+                                            value, Charset.UTF_8);
                                     objMetaObject.setValue(property, decryptValue);
                                 }
                             }

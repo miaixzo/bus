@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.sensitive;
 
 import jakarta.annotation.Resource;
@@ -40,7 +40,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  */
 @Getter
 @Setter
-@EnableConfigurationProperties(value = {SensitiveProperties.Encrypt.class, SensitiveProperties.Decrypt.class})
+@EnableConfigurationProperties(value = { SensitiveProperties.Encrypt.class, SensitiveProperties.Decrypt.class })
 @ConfigurationProperties(prefix = GeniusBuilder.SENSITIVE)
 public class SensitiveProperties {
 

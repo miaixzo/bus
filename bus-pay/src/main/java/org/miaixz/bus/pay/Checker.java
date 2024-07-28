@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pay;
 
 import org.miaixz.bus.core.xyz.StringKit;
@@ -45,8 +45,7 @@ public class Checker {
      * @return true or false
      */
     public static boolean isSupportedPay(Context context, Complex complex) {
-        boolean isSupported = StringKit.isNotEmpty(context.getAppKey())
-                && StringKit.isNotEmpty(context.getAppSecret());
+        boolean isSupported = StringKit.isNotEmpty(context.getAppKey()) && StringKit.isNotEmpty(context.getAppSecret());
 
         return isSupported;
     }

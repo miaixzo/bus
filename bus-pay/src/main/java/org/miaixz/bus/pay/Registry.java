@@ -24,13 +24,13 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pay;
 
 import org.miaixz.bus.pay.metric.AbstractProvider;
 import org.miaixz.bus.pay.metric.alipay.AliPayProvider;
 import org.miaixz.bus.pay.metric.jdpay.JdPayProvider;
-import org.miaixz.bus.pay.metric.paypal.PayPalProvider;
+import org.miaixz.bus.pay.metric.paypal.PaypalProvider;
 import org.miaixz.bus.pay.metric.tenpay.TenpayProvider;
 import org.miaixz.bus.pay.metric.unionpay.UnionPayProvider;
 import org.miaixz.bus.pay.metric.wechat.WechatPayProvider;
@@ -57,7 +57,6 @@ public enum Registry implements Complex {
             // 消息验证地址
             // return "https://mapi.alipay.com/gateway.do?";
             return "https://openapi.alipay.com/gateway.do?";
-
 
         }
 
@@ -101,7 +100,7 @@ public enum Registry implements Complex {
 
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
-            return PayPalProvider.class;
+            return PaypalProvider.class;
         }
     },
     /**
@@ -191,8 +190,7 @@ public enum Registry implements Complex {
              */
             ACTION("https://action.weixin.qq.com"),
             /**
-             * 刷脸支付
-             * PAY_APP
+             * 刷脸支付 PAY_APP
              */
             PAY_APP("https://payapp.weixin.qq.com");
 

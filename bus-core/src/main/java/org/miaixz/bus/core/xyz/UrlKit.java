@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.convert.Convert;
@@ -54,6 +54,7 @@ import java.util.Map;
  * 统一资源定位符，描述了一台特定服务器上某资源的特定位置。
  * </p>
  * URL组成：
+ * 
  * <pre>
  *   协议://主机名[:端口]/ 路径/[:参数] [?查询]#Fragment
  *   protocol :// hostname[:port] / path / [:parameters][?query]#fragment
@@ -211,8 +212,7 @@ public class UrlKit {
     }
 
     /**
-     * 获取相对于给定URL的新的URL
-     * 来自：org.springframework.core.io.UrlResource#createRelativeURL
+     * 获取相对于给定URL的新的URL 来自：org.springframework.core.io.UrlResource#createRelativeURL
      *
      * @param url          基础URL
      * @param relativePath 相对路径
@@ -302,9 +302,7 @@ public class UrlKit {
     }
 
     /**
-     * 从URL对象中获取不被编码的路径Path
-     * 对于本地路径，URL对象的getPath方法对于包含中文或空格时会被编码，导致本读路径读取错误。
-     * 此方法将URL转为URI后获取路径用于解决路径被编码的问题
+     * 从URL对象中获取不被编码的路径Path 对于本地路径，URL对象的getPath方法对于包含中文或空格时会被编码，导致本读路径读取错误。 此方法将URL转为URI后获取路径用于解决路径被编码的问题
      *
      * @param url {@link URL}
      * @return 路径
@@ -411,9 +409,9 @@ public class UrlKit {
      * 标准化URL字符串，包括：
      *
      * <ol>
-     *     <li>自动补齐“http://”头</li>
-     *     <li>去除开头的\或者/</li>
-     *     <li>替换\为/</li>
+     * <li>自动补齐“http://”头</li>
+     * <li>去除开头的\或者/</li>
+     * <li>替换\为/</li>
      * </ol>
      *
      * @param url URL字符串
@@ -427,9 +425,9 @@ public class UrlKit {
      * 标准化URL字符串，包括：
      *
      * <ol>
-     *     <li>自动补齐“http://”头</li>
-     *     <li>去除开头的\或者/</li>
-     *     <li>替换\为/</li>
+     * <li>自动补齐“http://”头</li>
+     * <li>去除开头的\或者/</li>
+     * <li>替换\为/</li>
      * </ol>
      *
      * @param url          URL字符串
@@ -444,10 +442,10 @@ public class UrlKit {
      * 标准化URL字符串，包括：
      *
      * <ol>
-     *     <li>自动补齐“http://”头</li>
-     *     <li>去除开头的\或者/</li>
-     *     <li>替换\为/</li>
-     *     <li>如果replaceSlash为true，则替换多个/为一个</li>
+     * <li>自动补齐“http://”头</li>
+     * <li>去除开头的\或者/</li>
+     * <li>替换\为/</li>
+     * <li>如果replaceSlash为true，则替换多个/为一个</li>
      * </ol>
      *
      * @param url          URL字符串
@@ -502,9 +500,7 @@ public class UrlKit {
     }
 
     /**
-     * 将Map形式的Form表单数据转换为Url参数形式
-     * paramMap中如果key为空（null和""）会被忽略，如果value为null，会被做为空白符（""）
-     * 会自动url编码键和值
+     * 将Map形式的Form表单数据转换为Url参数形式 paramMap中如果key为空（null和""）会被忽略，如果value为null，会被做为空白符（""） 会自动url编码键和值
      *
      * <pre>
      * key1=v1&amp;key2=&amp;key3=v3
@@ -520,8 +516,8 @@ public class UrlKit {
 
     /**
      * Data URI Scheme封装，数据格式为Base64。data URI scheme 允许我们使用内联（inline-code）的方式在网页中包含数据，
-     * 目的是将一些小的数据，直接嵌入到网页中，从而不用再从外部文件载入。常用于将图片嵌入网页。
-     * Data URI的格式规范：
+     * 目的是将一些小的数据，直接嵌入到网页中，从而不用再从外部文件载入。常用于将图片嵌入网页。 Data URI的格式规范：
+     * 
      * <pre>
      *     data:[&lt;mime type&gt;][;charset=&lt;charset&gt;][;&lt;encoding&gt;],&lt;encoded data&gt;
      * </pre>
@@ -535,9 +531,9 @@ public class UrlKit {
     }
 
     /**
-     * Data URI Scheme封装。data URI scheme 允许我们使用内联（inline-code）的方式在网页中包含数据，
-     * 目的是将一些小的数据，直接嵌入到网页中，从而不用再从外部文件载入。常用于将图片嵌入网页。
+     * Data URI Scheme封装。data URI scheme 允许我们使用内联（inline-code）的方式在网页中包含数据， 目的是将一些小的数据，直接嵌入到网页中，从而不用再从外部文件载入。常用于将图片嵌入网页。
      * Data URI的格式规范：
+     * 
      * <pre>
      *     data:[&lt;mime type&gt;][;charset=&lt;charset&gt;][;&lt;encoding&gt;],&lt;encoded data&gt;
      * </pre>
@@ -552,9 +548,9 @@ public class UrlKit {
     }
 
     /**
-     * Data URI Scheme封装。data URI scheme 允许我们使用内联（inline-code）的方式在网页中包含数据，
-     * 目的是将一些小的数据，直接嵌入到网页中，从而不用再从外部文件载入。常用于将图片嵌入网页。
+     * Data URI Scheme封装。data URI scheme 允许我们使用内联（inline-code）的方式在网页中包含数据， 目的是将一些小的数据，直接嵌入到网页中，从而不用再从外部文件载入。常用于将图片嵌入网页。
      * Data URI的格式规范：
+     * 
      * <pre>
      *     data:[&lt;mime type&gt;][;charset=&lt;charset&gt;][;&lt;encoding&gt;],&lt;encoded data&gt;
      * </pre>
@@ -565,7 +561,8 @@ public class UrlKit {
      * @param data     编码后的数据
      * @return Data URI字符串
      */
-    public static String getDataUri(final String mimeType, final java.nio.charset.Charset charset, final String encoding, final String data) {
+    public static String getDataUri(final String mimeType, final java.nio.charset.Charset charset,
+            final String encoding, final String data) {
         final StringBuilder builder = StringKit.builder("data:");
         if (StringKit.isNotBlank(mimeType)) {
             builder.append(mimeType);
@@ -584,8 +581,8 @@ public class UrlKit {
     /**
      * 获取URL对应数据长度
      * <ul>
-     *     <li>如果URL为文件，转换为文件获取文件长度。</li>
-     *     <li>其它情况获取{@link URLConnection#getContentLengthLong()}</li>
+     * <li>如果URL为文件，转换为文件获取文件长度。</li>
+     * <li>其它情况获取{@link URLConnection#getContentLengthLong()}</li>
      * </ul>
      *
      * @param url URL
@@ -642,9 +639,7 @@ public class UrlKit {
     }
 
     /**
-     * 将Map形式的Form表单数据转换为Url参数形式
-     * paramMap中如果key为空（null和""）会被忽略，如果value为null，会被做为空白符（""）
-     * 会自动url编码键和值
+     * 将Map形式的Form表单数据转换为Url参数形式 paramMap中如果key为空（null和""）会被忽略，如果value为null，会被做为空白符（""） 会自动url编码键和值
      * 此方法用于拼接URL中的Query部分，并不适用于POST请求中的表单
      *
      * <pre>
@@ -660,9 +655,7 @@ public class UrlKit {
     }
 
     /**
-     * 将Map形式的Form表单数据转换为Url参数形式
-     * paramMap中如果key为空（null和""）会被忽略，如果value为null，会被做为空白符（""）
-     * 会自动url编码键和值
+     * 将Map形式的Form表单数据转换为Url参数形式 paramMap中如果key为空（null和""）会被忽略，如果value为null，会被做为空白符（""） 会自动url编码键和值
      *
      * <pre>
      * key1=v1&amp;key2=&amp;key3=v3
@@ -673,15 +666,17 @@ public class UrlKit {
      * @param encodeMode 编码模式
      * @return url参数
      */
-    public static String toQuery(final Map<String, ?> paramMap, final java.nio.charset.Charset charset, final UrlQuery.EncodeMode encodeMode) {
+    public static String toQuery(final Map<String, ?> paramMap, final java.nio.charset.Charset charset,
+            final UrlQuery.EncodeMode encodeMode) {
         return UrlQuery.of(paramMap, encodeMode).build(charset);
     }
 
     /**
-     * 对URL参数做编码，只编码键和值
-     * 提供的值可以是url附带参数，但是不能只是url
+     * 对URL参数做编码，只编码键和值 提供的值可以是url附带参数，但是不能只是url
      *
-     * <p>注意，此方法只能标准化整个URL，并不适合于单独编码参数值</p>
+     * <p>
+     * 注意，此方法只能标准化整个URL，并不适合于单独编码参数值
+     * </p>
      *
      * @param urlWithParams url和参数，可以包含url本身，也可以单独参数
      * @param charset       编码
@@ -719,7 +714,9 @@ public class UrlKit {
     /**
      * 标准化参数字符串，即URL中？后的部分
      *
-     * <p>注意，此方法只能标准化整个URL，并不适合于单独编码参数值</p>
+     * <p>
+     * 注意，此方法只能标准化整个URL，并不适合于单独编码参数值
+     * </p>
      *
      * @param queryPart 参数字符串
      * @param charset   编码
@@ -751,7 +748,8 @@ public class UrlKit {
                         builder.append(RFC3986.QUERY_PARAM_NAME.encode(name, charset)).append(Symbol.C_EQUAL);
                     } else {
                         builder.append(RFC3986.QUERY_PARAM_NAME.encode(name, charset)).append(Symbol.C_EQUAL)
-                                .append(RFC3986.QUERY_PARAM_VALUE.encode(queryPart.substring(pos, i), charset)).append(Symbol.C_AND);
+                                .append(RFC3986.QUERY_PARAM_VALUE.encode(queryPart.substring(pos, i), charset))
+                                .append(Symbol.C_AND);
                     }
                     name = null;
                 }
@@ -800,7 +798,8 @@ public class UrlKit {
      * @param charset   字符集
      * @return 参数Map
      */
-    public static Map<String, List<String>> decodeQueryList(final String paramsStr, final java.nio.charset.Charset charset) {
+    public static Map<String, List<String>> decodeQueryList(final String paramsStr,
+            final java.nio.charset.Charset charset) {
         final Map<CharSequence, CharSequence> queryMap = UrlQuery.of(paramsStr, charset).getQueryMap();
         if (MapKit.isEmpty(queryMap)) {
             return MapKit.empty();
@@ -808,7 +807,7 @@ public class UrlKit {
 
         final Map<String, List<String>> params = new LinkedHashMap<>();
         queryMap.forEach((key, value) -> {
-            if(null != key && null != value){
+            if (null != key && null != value) {
                 final List<String> values = params.computeIfAbsent(key.toString(), k -> new ArrayList<>(1));
                 // 一般是一个参数
                 values.add(StringKit.toStringOrNull(value));

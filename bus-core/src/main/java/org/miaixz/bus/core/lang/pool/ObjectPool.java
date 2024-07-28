@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.pool;
 
 import java.io.Closeable;
@@ -33,14 +33,14 @@ import java.io.Serializable;
 /**
  * 对象池接口，提供：
  * <ul>
- *     <li>{@link #borrowObject()}        对象借出。</li>
- *     <li>{@link #returnObject(Poolable)}对象归还。</li>
+ * <li>{@link #borrowObject()} 对象借出。</li>
+ * <li>{@link #returnObject(Poolable)}对象归还。</li>
  * </ul>
  * 对于对象池中对象维护，通过{@link PoolConfig#getMaxIdle()}控制，规则如下：
  * <ul>
- *     <li>如果借出量很多，则不断扩容，直到达到{@link PoolConfig#getMaxSize()}</li>
- *     <li>如果池对象闲置超出{@link PoolConfig#getMaxIdle()}，则销毁。</li>
- *     <li>实际使用中，池中对象可能少于{@link PoolConfig#getMinSize()}</li>
+ * <li>如果借出量很多，则不断扩容，直到达到{@link PoolConfig#getMaxSize()}</li>
+ * <li>如果池对象闲置超出{@link PoolConfig#getMaxIdle()}，则销毁。</li>
+ * <li>实际使用中，池中对象可能少于{@link PoolConfig#getMinSize()}</li>
  * </ul>
  *
  * @param <T> 对象类型
@@ -52,10 +52,10 @@ public interface ObjectPool<T> extends Closeable, Serializable {
     /**
      * 借出对象，流程如下：
      * <ol>
-     *     <li>从池中取出对象</li>
-     *     <li>检查对象可用性</li>
-     *     <li>如果无可用对象，扩容池并创建新对象</li>
-     *     <li>继续取对象</li>
+     * <li>从池中取出对象</li>
+     * <li>检查对象可用性</li>
+     * <li>如果无可用对象，扩容池并创建新对象</li>
+     * <li>继续取对象</li>
      * </ol>
      *
      * @return 对象
@@ -65,9 +65,9 @@ public interface ObjectPool<T> extends Closeable, Serializable {
     /**
      * 归还对象，流程如下：
      * <ol>
-     *     <li>检查对象可用性</li>
-     *     <li>不可用则销毁之</li>
-     *     <li>可用则入池</li>
+     * <li>检查对象可用性</li>
+     * <li>不可用则销毁之</li>
+     * <li>可用则入池</li>
      * </ol>
      *
      * @param obj 对象

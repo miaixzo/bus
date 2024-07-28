@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.common;
 
 import org.miaixz.bus.mapper.annotation.RegisterMapper;
@@ -41,10 +41,7 @@ import org.miaixz.bus.mapper.common.basic.BasicUpdateMapper;
  * @since Java 17+
  */
 @RegisterMapper
-public interface BasicMapper<T> extends
-        BasicSelectMapper<T>,
-        BasicInsertMapper<T>,
-        BasicUpdateMapper<T>,
-        BasicDeleteMapper<T> {
+public interface BasicMapper<T>
+        extends BasicSelectMapper<T>, BasicInsertMapper<T>, BasicUpdateMapper<T>, BasicDeleteMapper<T> {
 
 }

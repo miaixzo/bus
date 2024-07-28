@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org 6tail and other contributors.              ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -40,9 +40,7 @@ public class Week extends Samsara {
 
     public static final String[] NAMES = org.miaixz.bus.core.center.date.culture.en.Week.get("name");
 
-    public static final String[] WHICH = {
-            "第一周", "第二周", "第三周", "第四周", "第五周", "第六周"
-    };
+    public static final String[] WHICH = { "第一周", "第二周", "第三周", "第四周", "第五周", "第六周" };
 
     public Week(int index) {
         super(NAMES, index);

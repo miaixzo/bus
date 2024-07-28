@@ -24,19 +24,15 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.basic.service;
 
 import org.miaixz.bus.core.lang.Console;
 import org.miaixz.bus.core.xyz.ExceptionKit;
 
 /**
- * 异常信息处理
- * 此类未找到实现的情况下，采用默认实现
- * 可以根据不同业务需求，重写方法实现对应业务逻辑即可
- * 项目中可通过SPI形式接入
- * 例：META-INF/services/org.miaixz.bus.core.basics.service.ErrorService
- * <code>
+ * 异常信息处理 此类未找到实现的情况下，采用默认实现 可以根据不同业务需求，重写方法实现对应业务逻辑即可 项目中可通过SPI形式接入
+ * 例：META-INF/services/org.miaixz.bus.core.basics.service.ErrorService <code>
  * org.miaixz.bus.xxx.BusinessErrorService
  * ......
  * </code>

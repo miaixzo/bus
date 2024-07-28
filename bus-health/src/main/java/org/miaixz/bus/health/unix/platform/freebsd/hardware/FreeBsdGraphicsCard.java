@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.freebsd.hardware;
 
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -117,7 +117,8 @@ final class FreeBsdGraphicsCard extends AbstractGraphicsCard {
                     String key = split[0].trim();
                     if (key.equals("vendor")) {
                         vendorId = Parsing.getSingleQuoteStringValue(line)
-                                + (vendorId.equals(Normal.UNKNOWN) ? Normal.EMPTY : " (" + vendorId + Symbol.PARENTHESE_RIGHT);
+                                + (vendorId.equals(Normal.UNKNOWN) ? Normal.EMPTY
+                                        : " (" + vendorId + Symbol.PARENTHESE_RIGHT);
                     } else if (key.equals("device")) {
                         name = Parsing.getSingleQuoteStringValue(line);
                     }
@@ -127,8 +128,7 @@ final class FreeBsdGraphicsCard extends AbstractGraphicsCard {
         // In case we reached end before saving
         if (PCI_CLASS_DISPLAY.equals(classCode)) {
             cardList.add(new FreeBsdGraphicsCard(name.isEmpty() ? Normal.UNKNOWN : name,
-                    productId.isEmpty() ? Normal.UNKNOWN : productId,
-                    vendorId.isEmpty() ? Normal.UNKNOWN : vendorId,
+                    productId.isEmpty() ? Normal.UNKNOWN : productId, vendorId.isEmpty() ? Normal.UNKNOWN : vendorId,
                     versionInfo.isEmpty() ? Normal.UNKNOWN : versionInfo, 0L));
         }
         return cardList;

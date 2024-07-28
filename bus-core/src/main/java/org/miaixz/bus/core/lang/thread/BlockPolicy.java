@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.thread;
 
 import java.util.concurrent.RejectedExecutionException;
@@ -33,10 +33,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.function.Consumer;
 
 /**
- * 当任务队列过长时处于阻塞状态，直到添加到队列中
- * 如果阻塞过程中被中断，就会抛出{@link InterruptedException}异常
- * 有时候在线程池内访问第三方接口，只希望固定并发数去访问，并且不希望丢弃任务时使用此策略，队列满的时候会处于阻塞状态(例如刷库的场景)
- * 其他系统内置的拒绝策略，见定义的枚举 {@link RejectPolicy} 线程拒绝策略枚举.
+ * 当任务队列过长时处于阻塞状态，直到添加到队列中 如果阻塞过程中被中断，就会抛出{@link InterruptedException}异常
+ * 有时候在线程池内访问第三方接口，只希望固定并发数去访问，并且不希望丢弃任务时使用此策略，队列满的时候会处于阻塞状态(例如刷库的场景) 其他系统内置的拒绝策略，见定义的枚举 {@link RejectPolicy} 线程拒绝策略枚举.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,8 +42,7 @@ import java.util.function.Consumer;
 public class BlockPolicy implements RejectedExecutionHandler {
 
     /**
-     * 线程池关闭时，为避免任务丢失，留下处理方法
-     * 如果需要由调用方来运行，可以{@code new BlockPolicy(Runnable::run)}
+     * 线程池关闭时，为避免任务丢失，留下处理方法 如果需要由调用方来运行，可以{@code new BlockPolicy(Runnable::run)}
      */
     private final Consumer<Runnable> handlerwhenshutdown;
 

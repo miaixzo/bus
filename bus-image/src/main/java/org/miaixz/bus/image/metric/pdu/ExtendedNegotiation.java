@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.pdu;
 
 import org.miaixz.bus.image.Builder;
@@ -69,17 +69,11 @@ public class ExtendedNegotiation {
     }
 
     StringBuilder promptTo(StringBuilder sb) {
-        sb.append("  ExtendedNegotiation[")
-                .append(Builder.LINE_SEPARATOR)
-                .append("    sopClass: ");
-        UID.promptTo(cuid, sb)
-                .append(Builder.LINE_SEPARATOR)
-                .append("    info: [");
+        sb.append("  ExtendedNegotiation[").append(Builder.LINE_SEPARATOR).append("    sopClass: ");
+        UID.promptTo(cuid, sb).append(Builder.LINE_SEPARATOR).append("    info: [");
         for (byte b : info)
             sb.append(b).append(", ");
-        return sb.append(']')
-                .append(Builder.LINE_SEPARATOR)
-                .append("  ]");
+        return sb.append(']').append(Builder.LINE_SEPARATOR).append("  ]");
     }
 
 }

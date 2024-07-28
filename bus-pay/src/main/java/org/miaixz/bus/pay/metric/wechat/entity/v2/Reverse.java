@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pay.metric.wechat.entity.v2;
 
 import lombok.AllArgsConstructor;
@@ -35,8 +35,7 @@ import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.pay.magic.Material;
 
 /**
- * 撤销订单
- * 支持: 普通支付撤销订单、刷脸支付撤销订单
+ * 撤销订单 支持: 普通支付撤销订单、刷脸支付撤销订单
  *
  * @author Kimi Liu
  * @since Java 17+

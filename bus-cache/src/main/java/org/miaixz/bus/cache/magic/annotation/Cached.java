@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cache.magic.annotation;
 
 import org.miaixz.bus.cache.magic.CacheExpire;
@@ -42,21 +42,19 @@ import java.lang.annotation.*;
 public @interface Cached {
 
     /**
-     * @return Specifies the <b>Used cache implementation</b>,
-     * default the first {@code caches} config in {@code CacheAspect}
+     * @return Specifies the <b>Used cache implementation</b>, default the first {@code caches} config in
+     *         {@code CacheAspect}
      */
     String value() default Normal.EMPTY;
 
     /**
-     * @return Specifies the start prefix on every key,
-     * if the {@code Method} have non {@code param},
-     * {@code prefix} is the <b>consts key</b> used by this {@code Method}
+     * @return Specifies the start prefix on every key, if the {@code Method} have non {@code param}, {@code prefix} is
+     *         the <b>consts key</b> used by this {@code Method}
      */
     String prefix() default Normal.EMPTY;
 
     /**
-     * @return use <b>SpEL</b>,
-     * when this spel is {@code true}, this {@code Method} will go through by cache
+     * @return use <b>SpEL</b>, when this spel is {@code true}, this {@code Method} will go through by cache
      */
     String condition() default Normal.EMPTY;
 

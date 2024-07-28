@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.stream.EasyStream;
@@ -49,8 +49,8 @@ public class CollectorKit {
     /**
      * 说明已包含IDENTITY_FINISH特征 为 Characteristics.IDENTITY_FINISH 的缩写
      */
-    public static final Set<Collector.Characteristics> CH_ID
-            = Collections.unmodifiableSet(EnumSet.of(Collector.Characteristics.IDENTITY_FINISH));
+    public static final Set<Collector.Characteristics> CH_ID = Collections
+            .unmodifiableSet(EnumSet.of(Collector.Characteristics.IDENTITY_FINISH));
     /**
      * 说明不包含IDENTITY_FINISH特征
      */
@@ -76,7 +76,7 @@ public class CollectorKit {
      * @return {@link Collector}
      */
     public static <T> Collector<T, ?, String> joining(final CharSequence delimiter,
-                                                      final Function<T, ? extends CharSequence> toStringFunc) {
+            final Function<T, ? extends CharSequence> toStringFunc) {
         return joining(delimiter, Normal.EMPTY, Normal.EMPTY, toStringFunc);
     }
 
@@ -90,19 +90,12 @@ public class CollectorKit {
      * @param <T>          对象类型
      * @return {@link Collector}
      */
-    public static <T> Collector<T, ?, String> joining(final CharSequence delimiter,
-                                                      final CharSequence prefix,
-                                                      final CharSequence suffix,
-                                                      final Function<T, ? extends CharSequence> toStringFunc) {
-        return new SimpleCollector<>(
-                () -> new StringJoiner(delimiter, prefix, suffix),
-                (joiner, ele) -> joiner.add(toStringFunc.apply(ele)),
-                StringJoiner::merge,
-                StringJoiner::toString,
-                Collections.emptySet()
-        );
+    public static <T> Collector<T, ?, String> joining(final CharSequence delimiter, final CharSequence prefix,
+            final CharSequence suffix, final Function<T, ? extends CharSequence> toStringFunc) {
+        return new SimpleCollector<>(() -> new StringJoiner(delimiter, prefix, suffix),
+                (joiner, ele) -> joiner.add(toStringFunc.apply(ele)), StringJoiner::merge, StringJoiner::toString,
+                Collections.emptySet());
     }
-
 
     /**
      * 提供对null值友好的groupingBy操作的{@link Collector}实现，可指定map类型
@@ -117,9 +110,9 @@ public class CollectorKit {
      * @param <M>        最后返回结果Map类型
      * @return {@link Collector}
      */
-    public static <T, K, D, A, M extends Map<K, D>> Collector<T, ?, M> groupingBy(final Function<? super T, ? extends K> classifier,
-                                                                                  final Supplier<M> mapFactory,
-                                                                                  final Collector<? super T, A, D> downstream) {
+    public static <T, K, D, A, M extends Map<K, D>> Collector<T, ?, M> groupingBy(
+            final Function<? super T, ? extends K> classifier, final Supplier<M> mapFactory,
+            final Collector<? super T, A, D> downstream) {
         final Supplier<A> downstreamSupplier = downstream.supplier();
         final BiConsumer<A, ? super T> downstreamAccumulator = downstream.accumulator();
         final BiConsumer<Map<K, A>, T> accumulator = (m, t) -> {
@@ -158,7 +151,7 @@ public class CollectorKit {
      * @return {@link Collector}
      */
     public static <T, K, A, D> Collector<T, ?, Map<K, D>> groupingBy(final Function<? super T, ? extends K> classifier,
-                                                                     final Collector<? super T, A, D> downstream) {
+            final Collector<? super T, A, D> downstream) {
         return groupingBy(classifier, HashMap::new, downstream);
     }
 
@@ -170,13 +163,13 @@ public class CollectorKit {
      * @param <K>        实体中的分组依据对应类型，也是Map中key的类型
      * @return {@link Collector}
      */
-    public static <T, K> Collector<T, ?, Map<K, List<T>>> groupingBy(final Function<? super T, ? extends K> classifier) {
+    public static <T, K> Collector<T, ?, Map<K, List<T>>> groupingBy(
+            final Function<? super T, ? extends K> classifier) {
         return groupingBy(classifier, Collectors.toList());
     }
 
     /**
-     * 提供对null值友好的groupingBy操作的{@link Collector}实现，
-     * 对集合分组，然后对分组后的值集合进行映射
+     * 提供对null值友好的groupingBy操作的{@link Collector}实现， 对集合分组，然后对分组后的值集合进行映射
      *
      * @param classifier       分组依据
      * @param valueMapper      值映射方法
@@ -190,18 +183,14 @@ public class CollectorKit {
      * @return {@link Collector}
      */
     public static <T, K, R, C extends Collection<R>, M extends Map<K, C>> Collector<T, ?, M> groupingBy(
-            final Function<? super T, ? extends K> classifier,
-            final Function<? super T, ? extends R> valueMapper,
-            final Supplier<C> valueCollFactory,
-            final Supplier<M> mapFactory) {
-        return groupingBy(classifier, mapFactory, Collectors.mapping(
-                valueMapper, Collectors.toCollection(valueCollFactory)
-        ));
+            final Function<? super T, ? extends K> classifier, final Function<? super T, ? extends R> valueMapper,
+            final Supplier<C> valueCollFactory, final Supplier<M> mapFactory) {
+        return groupingBy(classifier, mapFactory,
+                Collectors.mapping(valueMapper, Collectors.toCollection(valueCollFactory)));
     }
 
     /**
-     * 提供对null值友好的groupingBy操作的{@link Collector}实现，
-     * 对集合分组，然后对分组后的值集合进行映射
+     * 提供对null值友好的groupingBy操作的{@link Collector}实现， 对集合分组，然后对分组后的值集合进行映射
      *
      * @param classifier       分组依据
      * @param valueMapper      值映射方法
@@ -213,15 +202,13 @@ public class CollectorKit {
      * @return {@link Collector}
      */
     public static <T, K, R, C extends Collection<R>> Collector<T, ?, Map<K, C>> groupingBy(
-            final Function<? super T, ? extends K> classifier,
-            final Function<? super T, ? extends R> valueMapper,
+            final Function<? super T, ? extends K> classifier, final Function<? super T, ? extends R> valueMapper,
             final Supplier<C> valueCollFactory) {
         return groupingBy(classifier, valueMapper, valueCollFactory, HashMap::new);
     }
 
     /**
-     * 提供对null值友好的groupingBy操作的{@link Collector}实现，
-     * 对集合分组，然后对分组后的值集合进行映射
+     * 提供对null值友好的groupingBy操作的{@link Collector}实现， 对集合分组，然后对分组后的值集合进行映射
      *
      * @param classifier  分组依据
      * @param valueMapper 值映射方法
@@ -231,8 +218,7 @@ public class CollectorKit {
      * @return {@link Collector}
      */
     public static <T, K, R> Collector<T, ?, Map<K, List<R>>> groupingBy(
-            final Function<? super T, ? extends K> classifier,
-            final Function<? super T, ? extends R> valueMapper) {
+            final Function<? super T, ? extends K> classifier, final Function<? super T, ? extends R> valueMapper) {
         return groupingBy(classifier, valueMapper, ArrayList::new, HashMap::new);
     }
 
@@ -247,7 +233,7 @@ public class CollectorKit {
      * @return 对null友好的 toMap 操作的 {@link Collector}实现
      */
     public static <T, K, U> Collector<T, ?, Map<K, U>> toMap(final Function<? super T, ? extends K> keyMapper,
-                                                             final Function<? super T, ? extends U> valueMapper) {
+            final Function<? super T, ? extends U> valueMapper) {
         return toMap(keyMapper, valueMapper, (l, r) -> r);
     }
 
@@ -275,8 +261,7 @@ public class CollectorKit {
      * @return 对null友好的 toMap 操作的 {@link Collector}实现
      */
     public static <T, K, U> Collector<T, ?, Map<K, U>> toMap(final Function<? super T, ? extends K> keyMapper,
-                                                             final Function<? super T, ? extends U> valueMapper,
-                                                             final BinaryOperator<U> mergeFunction) {
+            final Function<? super T, ? extends U> valueMapper, final BinaryOperator<U> mergeFunction) {
         return toMap(keyMapper, valueMapper, mergeFunction, HashMap::new);
     }
 
@@ -293,13 +278,11 @@ public class CollectorKit {
      * @param <M>           map的类型
      * @return 对null友好的 toMap 操作的 {@link Collector}实现
      */
-    public static <T, K, U, M extends Map<K, U>>
-    Collector<T, ?, M> toMap(final Function<? super T, ? extends K> keyMapper,
-                             final Function<? super T, ? extends U> valueMapper,
-                             final BinaryOperator<U> mergeFunction,
-                             final Supplier<M> mapSupplier) {
-        final BiConsumer<M, T> accumulator
-                = (map, element) -> map.put(Optional.ofNullable(element).map(keyMapper).get(), Optional.ofNullable(element).map(valueMapper).get());
+    public static <T, K, U, M extends Map<K, U>> Collector<T, ?, M> toMap(
+            final Function<? super T, ? extends K> keyMapper, final Function<? super T, ? extends U> valueMapper,
+            final BinaryOperator<U> mergeFunction, final Supplier<M> mapSupplier) {
+        final BiConsumer<M, T> accumulator = (map, element) -> map.put(
+                Optional.ofNullable(element).map(keyMapper).get(), Optional.ofNullable(element).map(valueMapper).get());
         return new SimpleCollector<>(mapSupplier, accumulator, mapMerger(mergeFunction), CH_ID);
     }
 
@@ -322,8 +305,7 @@ public class CollectorKit {
     }
 
     /**
-     * 聚合这种数据类型:{@code Collection<Map<K,V>> => Map<K,List<V>>}
-     * 其中key相同的value，会累加到List中
+     * 聚合这种数据类型:{@code Collection<Map<K,V>> => Map<K,List<V>>} 其中key相同的value，会累加到List中
      *
      * @param <K> key的类型
      * @param <V> value的类型
@@ -334,8 +316,7 @@ public class CollectorKit {
     }
 
     /**
-     * 聚合这种数据类型:{@code Collection<Map<K,V>> => Map<K,List<V>>}
-     * 其中key相同的value，会累加到List中
+     * 聚合这种数据类型:{@code Collection<Map<K,V>> => Map<K,List<V>>} 其中key相同的value，会累加到List中
      *
      * @param mapSupplier 可自定义map的类型如concurrentHashMap等
      * @param <K>         key的类型
@@ -343,18 +324,18 @@ public class CollectorKit {
      * @param <R>         返回值的类型
      * @return 聚合后的map
      */
-    public static <K, V, R extends Map<K, List<V>>> Collector<Map<K, V>, ?, R> reduceListMap(final Supplier<R> mapSupplier) {
+    public static <K, V, R extends Map<K, List<V>>> Collector<Map<K, V>, ?, R> reduceListMap(
+            final Supplier<R> mapSupplier) {
         return Collectors.reducing(mapSupplier.get(), value -> {
-                    final R result = mapSupplier.get();
-                    value.forEach((k, v) -> result.computeIfAbsent(k, i -> new ArrayList<>()).add(v));
-                    return result;
-                }, (l, r) -> {
-                    final R resultMap = mapSupplier.get();
-                    resultMap.putAll(l);
-                    r.forEach((k, v) -> resultMap.computeIfAbsent(k, i -> new ArrayList<>()).addAll(v));
-                    return resultMap;
-                }
-        );
+            final R result = mapSupplier.get();
+            value.forEach((k, v) -> result.computeIfAbsent(k, i -> new ArrayList<>()).add(v));
+            return result;
+        }, (l, r) -> {
+            final R resultMap = mapSupplier.get();
+            resultMap.putAll(l);
+            r.forEach((k, v) -> resultMap.computeIfAbsent(k, i -> new ArrayList<>()).addAll(v));
+            return resultMap;
+        });
     }
 
     /**
@@ -398,12 +379,11 @@ public class CollectorKit {
     }
 
     /**
-     * 收集元素，将其转为指定{@link Collection}集合后，再对该集合进行转换，并最终返回转换后的结果。
-     * 返回的收集器的效果等同于：
+     * 收集元素，将其转为指定{@link Collection}集合后，再对该集合进行转换，并最终返回转换后的结果。 返回的收集器的效果等同于：
+     * 
      * <pre>{@code
-     * 	Collection<T> coll = Stream.of(a, b, c, d)
-     * 		.collect(Collectors.toColl(collFactory));
-     * 	R result = mapper.apply(coll);
+     * Collection<T> coll = Stream.of(a, b, c, d).collect(Collectors.toColl(collFactory));
+     * R result = mapper.apply(coll);
      * }</pre>
      *
      * @param collFactory 中间收集输入元素的集合的创建方法
@@ -413,25 +393,22 @@ public class CollectorKit {
      * @param <C>         中间收集输入元素的集合类型
      * @return 收集器
      */
-    public static <T, R, C extends Collection<T>> Collector<T, C, R> transform(
-            final Supplier<C> collFactory, final Function<C, R> mapper) {
+    public static <T, R, C extends Collection<T>> Collector<T, C, R> transform(final Supplier<C> collFactory,
+            final Function<C, R> mapper) {
         Objects.requireNonNull(collFactory);
         Objects.requireNonNull(mapper);
-        return new SimpleCollector<>(
-                collFactory, C::add, (l1, l2) -> {
+        return new SimpleCollector<>(collFactory, C::add, (l1, l2) -> {
             l1.addAll(l2);
             return l1;
-        }, mapper, CH_NOID
-        );
+        }, mapper, CH_NOID);
     }
 
     /**
-     * 收集元素，将其转为{@link ArrayList}集合后，再对该集合进行转换，并最终返回转换后的结果。
-     * 返回的收集器的效果等同于：
+     * 收集元素，将其转为{@link ArrayList}集合后，再对该集合进行转换，并最终返回转换后的结果。 返回的收集器的效果等同于：
+     * 
      * <pre>{@code
-     * 	List<T> coll = Stream.of(a, b, c, d)
-     * 		.collect(Collectors.toList());
-     * 	R result = mapper.apply(coll);
+     * List<T> coll = Stream.of(a, b, c, d).collect(Collectors.toList());
+     * R result = mapper.apply(coll);
      * }</pre>
      *
      * @param mapper 最终将元素集合映射为返回值的方法
@@ -464,14 +441,12 @@ public class CollectorKit {
      * @param <R>        结束类型
      * @return 一个用于过滤元素的 {@link java.util.stream.Collector}
      */
-    public static <T, A, R>
-    Collector<T, ?, R> filtering(final Predicate<? super T> predicate,
-                                 final Collector<? super T, A, R> downstream) {
+    public static <T, A, R> Collector<T, ?, R> filtering(final Predicate<? super T> predicate,
+            final Collector<? super T, A, R> downstream) {
         final BiConsumer<A, ? super T> downstreamAccumulator = downstream.accumulator();
         return new SimpleCollector<>(downstream.supplier(),
                 (r, t) -> Optional.of(t).filter(predicate).ifPresent(e -> downstreamAccumulator.accept(r, e)),
-                downstream.combiner(), downstream.finisher(),
-                downstream.characteristics());
+                downstream.combiner(), downstream.finisher(), downstream.characteristics());
     }
 
 }

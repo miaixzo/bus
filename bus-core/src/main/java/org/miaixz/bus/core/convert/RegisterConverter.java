@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
@@ -95,7 +95,8 @@ public class RegisterConverter implements Converter, Serializable {
         }
 
         // 无法转换
-        throw new ConvertException("Can not convert from {}: [{}] to [{}]", value.getClass().getName(), value, targetType.getTypeName());
+        throw new ConvertException("Can not convert from {}: [{}] to [{}]", value.getClass().getName(), value,
+                targetType.getTypeName());
     }
 
     /**
@@ -203,7 +204,7 @@ public class RegisterConverter implements Converter, Serializable {
         defaultConverterMap.put(SoftReference.class, ReferenceConverter.INSTANCE);
         defaultConverterMap.put(AtomicReference.class, new AtomicReferenceConverter());
 
-        //AtomicXXXArray
+        // AtomicXXXArray
         defaultConverterMap.put(AtomicIntegerArray.class, new AtomicIntegerArrayConverter());
         defaultConverterMap.put(AtomicLongArray.class, new AtomicLongArrayConverter());
 

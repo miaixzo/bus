@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.freebsd;
 
 import com.sun.jna.Memory;
@@ -59,7 +59,8 @@ public final class BsdSysctlKit {
      */
     public static int sysctl(String name, int def) {
         int intSize = FreeBsdLibc.INT_SIZE;
-        try (Memory p = new Memory(intSize); ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(intSize)) {
+        try (Memory p = new Memory(intSize);
+                ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(intSize)) {
             if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, size, null, size_t.ZERO)) {
                 Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
                 return def;
@@ -78,7 +79,7 @@ public final class BsdSysctlKit {
     public static long sysctl(String name, long def) {
         int uint64Size = FreeBsdLibc.UINT64_SIZE;
         try (Memory p = new Memory(uint64Size);
-             ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(uint64Size)) {
+                ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(uint64Size)) {
             if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, size, null, size_t.ZERO)) {
                 Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
                 return def;
@@ -135,7 +136,7 @@ public final class BsdSysctlKit {
      *
      * @param name name of the sysctl
      * @return An allocated memory buffer containing the result on success, null otherwise. Its value on failure is
-     * undefined.
+     *         undefined.
      */
     public static Memory sysctl(String name) {
         try (ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference()) {

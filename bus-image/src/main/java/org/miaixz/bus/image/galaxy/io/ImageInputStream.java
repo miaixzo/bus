@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.io;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -53,27 +53,17 @@ import java.util.zip.InflaterInputStream;
  */
 public class ImageInputStream extends FilterInputStream implements ImageInputHandler, BulkDataCreator {
 
-    private static final String VALUE_TOO_LARGE =
-            "tag value too large, must be less than 2Gib";
+    private static final String VALUE_TOO_LARGE = "tag value too large, must be less than 2Gib";
 
-    private static final String UNEXPECTED_NON_ZERO_ITEM_LENGTH =
-            "Unexpected item value of {} #{} @ {} during {}";
-    private static final String UNEXPECTED_ATTRIBUTE =
-            "Unexpected attribute {} #{} @ {} during {}";
-    private static final String MISSING_TRANSFER_SYNTAX =
-            "Missing Transfer Syntax (0002,0010) - assume Explicit VR Little Endian";
-    private static final String MISSING_FMI_LENGTH =
-            "Missing or wrong File Meta Information Group Length (0002,0000)";
-    private static final String NOT_A_DICOM_STREAM =
-            "Not a DICOM Stream";
-    private static final String IMPLICIT_VR_BIG_ENDIAN =
-            "Implicit VR Big Endian encoded DICOM Stream";
-    private static final String DEFLATED_WITH_ZLIB_HEADER =
-            "Deflated DICOM Stream with ZLIB Header";
-    private static final String SEQUENCE_EXCEED_ENCODED_LENGTH =
-            "Actual length of Sequence %s exceeds encoded length: %d";
-    private static final String TREAT_SQ_AS_UN =
-            "Actual length of Sequence {} exceeds encoded length: {} - treat as UN";
+    private static final String UNEXPECTED_NON_ZERO_ITEM_LENGTH = "Unexpected item value of {} #{} @ {} during {}";
+    private static final String UNEXPECTED_ATTRIBUTE = "Unexpected attribute {} #{} @ {} during {}";
+    private static final String MISSING_TRANSFER_SYNTAX = "Missing Transfer Syntax (0002,0010) - assume Explicit VR Little Endian";
+    private static final String MISSING_FMI_LENGTH = "Missing or wrong File Meta Information Group Length (0002,0000)";
+    private static final String NOT_A_DICOM_STREAM = "Not a DICOM Stream";
+    private static final String IMPLICIT_VR_BIG_ENDIAN = "Implicit VR Big Endian encoded DICOM Stream";
+    private static final String DEFLATED_WITH_ZLIB_HEADER = "Deflated DICOM Stream with ZLIB Header";
+    private static final String SEQUENCE_EXCEED_ENCODED_LENGTH = "Actual length of Sequence %s exceeds encoded length: %d";
+    private static final String TREAT_SQ_AS_UN = "Actual length of Sequence {} exceeds encoded length: {} - treat as UN";
     private static final int TREAT_SQ_AS_UN_MAX_EXCEED_LENGTH = 1024;
     private static final int ZLIB_HEADER = 0x789c;
     private static final int DEF_ALLOCATE_LIMIT = 0x4000000; // 64MiB
@@ -149,10 +139,10 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
     }
 
     /**
-     * Create a new DicomInputStream for the given input stream, Transfer Syntax UID and read limit.
-     * It ensures to never read more than the limit from the stream by wrapping it with a {@link LimitedInputStream}.
-     * The limit also helps to avoid OutOfMemory errors on parsing corrupt DICOM streams without the need to create
-     * temporary arrays when allocating large tag values. (See also {@link #setAllocateLimit}.)
+     * Create a new DicomInputStream for the given input stream, Transfer Syntax UID and read limit. It ensures to never
+     * read more than the limit from the stream by wrapping it with a {@link LimitedInputStream}. The limit also helps
+     * to avoid OutOfMemory errors on parsing corrupt DICOM streams without the need to create temporary arrays when
+     * allocating large tag values. (See also {@link #setAllocateLimit}.)
      *
      * @param in    input stream to read data from
      * @param tsuid Transfer Syntax UID
@@ -165,10 +155,10 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
     }
 
     /**
-     * Create a new DicomInputStream for the given input stream and read limit.
-     * It ensures to never read more than the limit from the stream by wrapping it with a {@link LimitedInputStream}.
-     * The limit also helps to avoid OutOfMemory errors on parsing corrupt DICOM streams without the need to create
-     * temporary arrays when allocating large tag values. (See also {@link #setAllocateLimit}.)
+     * Create a new DicomInputStream for the given input stream and read limit. It ensures to never read more than the
+     * limit from the stream by wrapping it with a {@link LimitedInputStream}. The limit also helps to avoid OutOfMemory
+     * errors on parsing corrupt DICOM streams without the need to create temporary arrays when allocating large tag
+     * values. (See also {@link #setAllocateLimit}.)
      *
      * @param in    input stream to read data from
      * @param limit limit in bytes
@@ -180,8 +170,8 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
     }
 
     /**
-     * Create a new DicomInputStream for the given file.
-     * A limit will be set by reading the length of the file (see also #createWithLimit).
+     * Create a new DicomInputStream for the given file. A limit will be set by reading the length of the file (see also
+     * #createWithLimit).
      *
      * @param file file to read
      * @return new DicomInputStream
@@ -189,7 +179,8 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
      */
     public static ImageInputStream createWithLimitFromFileLength(File file) throws IOException {
         long fileLength = file.length();
-        // Some operating systems may return 0 length for pathnames denoting system-dependent entities such as devices or pipes
+        // Some operating systems may return 0 length for pathnames denoting system-dependent entities such as devices
+        // or pipes
         if (fileLength > 0) {
             InputStream in = limited(new BufferedInputStream(new FileInputStream(file)), fileLength);
             ImageInputStream dicomInputStream;
@@ -217,8 +208,8 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
     public static String toAttributePath(List<ItemPointer> itemPointers, int tag) {
         StringBuilder sb = new StringBuilder();
         for (ItemPointer itemPointer : itemPointers) {
-            sb.append(Symbol.C_SLASH).append(Tag.toHexString(itemPointer.sequenceTag))
-                    .append(Symbol.C_SLASH).append(itemPointer.itemIndex);
+            sb.append(Symbol.C_SLASH).append(Tag.toHexString(itemPointer.sequenceTag)).append(Symbol.C_SLASH)
+                    .append(itemPointer.itemIndex);
         }
         sb.append(Symbol.C_SLASH).append(Tag.toHexString(tag));
         return sb.toString();
@@ -249,23 +240,20 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
     }
 
     /**
-     * Sets the limit of initial allocated memory for element values. If the
-     * value length exceeds the limit, a byte array with the specified size is
-     * allocated. If the array can filled with bytes read from this
-     * <code>DicomInputStream</code>, the byte array is reallocated with
-     * twice the previous length and filled again. That continues until
-     * the twice of the previous length exceeds the actual value length. Then
-     * the byte array is reallocated with actual value length and filled with
-     * the remaining bytes for the value from this <code>DicomInputStream</code>.
+     * Sets the limit of initial allocated memory for element values. If the value length exceeds the limit, a byte
+     * array with the specified size is allocated. If the array can filled with bytes read from this
+     * <code>DicomInputStream</code>, the byte array is reallocated with twice the previous length and filled again.
+     * That continues until the twice of the previous length exceeds the actual value length. Then the byte array is
+     * reallocated with actual value length and filled with the remaining bytes for the value from this
+     * <code>DicomInputStream</code>.
      * <p>
-     * The rational of the incrementing allocation of byte arrays is to avoid
-     * OutOfMemoryErrors on parsing corrupted DICOM streams.
+     * The rational of the incrementing allocation of byte arrays is to avoid OutOfMemoryErrors on parsing corrupted
+     * DICOM streams.
      * <p>
      * By default, the limit is set to 67108864 (64 MiB).
      * <p>
-     * Note: If a limit is given using {@link #createWithLimit} or
-     * {@link #createWithLimitFromFileLength} or by supplying a {@link LimitedInputStream},
-     * then this allocateLimit will be ignored (except for deflated data) and no
+     * Note: If a limit is given using {@link #createWithLimit} or {@link #createWithLimitFromFileLength} or by
+     * supplying a {@link LimitedInputStream}, then this allocateLimit will be ignored (except for deflated data) and no
      * temporary arrays need to be created.
      *
      * @param allocateLimit limit of initial allocated memory or -1 for no limit
@@ -416,8 +404,8 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
     }
 
     /**
-     * Returns value length of last parsed data element header. May be negative for value length >= 2^31.
-     * -1 indicates an Undefined Length.
+     * Returns value length of last parsed data element header. May be negative for value length >= 2^31. -1 indicates
+     * an Undefined Length.
      *
      * @return value length of last parsed data element header.
      */
@@ -426,8 +414,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
     }
 
     /**
-     * Returns value length of last parsed data element header.
-     * -1 indicates an Undefined Length.
+     * Returns value length of last parsed data element header. -1 indicates an Undefined Length.
      *
      * @return value length of last parsed data element header.
      */
@@ -530,8 +517,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
 
     public void readFully(short[] s, int off, int len) throws IOException {
         if (off < 0 || len < 0 || off + len > s.length || off + len < 0) {
-            throw new IndexOutOfBoundsException
-                    ("off < 0 || len < 0 || off + len > s.length!");
+            throw new IndexOutOfBoundsException("off < 0 || len < 0 || off + len > s.length!");
         }
 
         if (byteBuf == null)
@@ -547,8 +533,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
     }
 
     private InternalException tagValueTooLargeException() {
-        return new InternalException(
-                String.format("0x%s %s", Tag.toHexString(tag), VALUE_TOO_LARGE));
+        return new InternalException(String.format("0x%s %s", Tag.toHexString(tag), VALUE_TOO_LARGE));
     }
 
     public void readHeader() throws IOException {
@@ -561,36 +546,36 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
         readFully(buf, 0, 8);
         encodedVR = 0;
         switch (tag = ByteKit.bytesToTag(buf, 0, bigEndian)) {
-            case Tag.Item:
-            case Tag.ItemDelimitationItem:
-            case Tag.SequenceDelimitationItem:
-                vr = null;
-                break;
-            default:
-                if (explicitVR) {
-                    vr = VR.valueOf(encodedVR = ByteKit.bytesToVR(buf, 4));
-                    if (vr == null) {
-                        vr = ElementDictionary.getStandardElementDictionary().vrOf(tag);
-                        if (!stopPredicate.test(this))
-                            Logger.warn("Unrecognized VR code: {}H for {} - treat as {}",
-                                    Tag.shortToHexString(encodedVR), Tag.toString(tag), vr);
-                    }
-                    if (vr.headerLength() == 8) {
-                        // This length can't overflow since length field is only 16 bits in this case.
-                        length = ByteKit.bytesToUShort(buf, 6, bigEndian);
-                        return;
-                    }
-                    readFully(buf, 4, 4);
-                } else {
-                    vr = VR.UN;
+        case Tag.Item:
+        case Tag.ItemDelimitationItem:
+        case Tag.SequenceDelimitationItem:
+            vr = null;
+            break;
+        default:
+            if (explicitVR) {
+                vr = VR.valueOf(encodedVR = ByteKit.bytesToVR(buf, 4));
+                if (vr == null) {
+                    vr = ElementDictionary.getStandardElementDictionary().vrOf(tag);
+                    if (!stopPredicate.test(this))
+                        Logger.warn("Unrecognized VR code: {}H for {} - treat as {}", Tag.shortToHexString(encodedVR),
+                                Tag.toString(tag), vr);
                 }
+                if (vr.headerLength() == 8) {
+                    // This length can't overflow since length field is only 16 bits in this case.
+                    length = ByteKit.bytesToUShort(buf, 6, bigEndian);
+                    return;
+                }
+                readFully(buf, 4, 4);
+            } else {
+                vr = VR.UN;
+            }
         }
         length = toLongOrUndefined(ByteKit.bytesToInt(buf, 4, bigEndian));
     }
 
     public boolean readItemHeader() throws IOException {
         String methodName = "readItemHeader()";
-        for (; ; ) {
+        for (;;) {
             readHeader();
             if (tag == Tag.Item)
                 return true;
@@ -605,8 +590,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
 
     public Attributes readCommand() throws IOException {
         if (bigEndian || explicitVR)
-            throw new IllegalStateException(
-                    "bigEndian=" + bigEndian + ", explicitVR=" + explicitVR);
+            throw new IllegalStateException("bigEndian=" + bigEndian + ", explicitVR=" + explicitVR);
         Attributes attrs = new Attributes(9);
         readAllAttributes(attrs);
         return attrs;
@@ -625,9 +609,9 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
     }
 
     /**
-     * @deprecated Use one of the other {@link #readDataset()} methods instead. If you want to
-     * specify a length limit, you may supply a {@link LimitedInputStream} or use
-     * {@link #createWithLimit} or {@link #createWithLimitFromFileLength}.
+     * @deprecated Use one of the other {@link #readDataset()} methods instead. If you want to specify a length limit,
+     *             you may supply a {@link LimitedInputStream} or use {@link #createWithLimit} or
+     *             {@link #createWithLimitFromFileLength}.
      */
     @Deprecated
     public Attributes readDataset(int len, int stopTag) throws IOException {
@@ -643,9 +627,9 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
     }
 
     /**
-     * @deprecated Use one of the other {@link #readDataset()} methods instead. If you want to
-     * specify a length limit, you may supply a {@link LimitedInputStream} or use
-     * {@link #createWithLimit} or {@link #createWithLimitFromFileLength}.
+     * @deprecated Use one of the other {@link #readDataset()} methods instead. If you want to specify a length limit,
+     *             you may supply a {@link LimitedInputStream} or use {@link #createWithLimit} or
+     *             {@link #createWithLimitFromFileLength}.
      */
     @Deprecated
     public Attributes readDataset(long len, Predicate<ImageInputStream> stopPredicate) throws IOException {
@@ -660,9 +644,9 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
 
     public Attributes readFileMetaInformation() throws IOException {
         if (!hasfmi)
-            return null;  // No File Meta Information
+            return null; // No File Meta Information
         if (fileMetaInformation != null)
-            return fileMetaInformation;  // already read
+            return fileMetaInformation; // already read
 
         Attributes attrs = new Attributes(bigEndian, 9);
         while (pos != fmiEndPos) {
@@ -675,8 +659,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
             }
             if (vr != null) {
                 if (vr == VR.UN)
-                    vr = ElementDictionary.getStandardElementDictionary()
-                            .vrOf(tag);
+                    vr = ElementDictionary.getStandardElementDictionary().vrOf(tag);
                 handler.readValue(this, attrs);
             } else
                 skipAttribute(UNEXPECTED_ATTRIBUTE, "readFileMetaInformation()");
@@ -713,42 +696,42 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
             if (vr != null) {
                 if (vr == VR.UN) {
                     switch (tag) {
-                        case Tag.SmallestValidPixelValue:
-                        case Tag.LargestValidPixelValue:
-                        case Tag.SmallestImagePixelValue:
-                        case Tag.LargestImagePixelValue:
-                        case Tag.SmallestPixelValueInSeries:
-                        case Tag.LargestPixelValueInSeries:
-                        case Tag.SmallestImagePixelValueInPlane:
-                        case Tag.LargestImagePixelValueInPlane:
-                        case Tag.PixelPaddingValue:
-                        case Tag.PixelPaddingRangeLimit:
-                        case Tag.GrayLookupTableDescriptor:
-                        case Tag.RedPaletteColorLookupTableDescriptor:
-                        case Tag.GreenPaletteColorLookupTableDescriptor:
-                        case Tag.BluePaletteColorLookupTableDescriptor:
-                        case Tag.LargeRedPaletteColorLookupTableDescriptor:
-                        case Tag.LargeGreenPaletteColorLookupTableDescriptor:
-                        case Tag.LargeBluePaletteColorLookupTableDescriptor:
-                        case Tag.RealWorldValueLastValueMapped:
-                        case Tag.RealWorldValueFirstValueMapped:
-                        case Tag.HistogramFirstBinValue:
-                        case Tag.HistogramLastBinValue:
-                            vr = attrs.getRoot().getInt(Tag.PixelRepresentation, 0) == 0 ? VR.US : VR.SS;
-                            break;
-                        case Tag.PurposeOfReferenceCodeSequence:
-                            vr = probeObservationClass() ? VR.CS : VR.SQ;
-                            break;
-                        default:
-                            vr = ElementDictionary.vrOf(tag, attrs.getPrivateCreator(tag));
-                            if (vr == VR.UN && length == UNDEFINED_LENGTH)
-                                vr = VR.SQ; // assumes UN with undefined length are SQ,
-                            // will fail on UN fragments!
+                    case Tag.SmallestValidPixelValue:
+                    case Tag.LargestValidPixelValue:
+                    case Tag.SmallestImagePixelValue:
+                    case Tag.LargestImagePixelValue:
+                    case Tag.SmallestPixelValueInSeries:
+                    case Tag.LargestPixelValueInSeries:
+                    case Tag.SmallestImagePixelValueInPlane:
+                    case Tag.LargestImagePixelValueInPlane:
+                    case Tag.PixelPaddingValue:
+                    case Tag.PixelPaddingRangeLimit:
+                    case Tag.GrayLookupTableDescriptor:
+                    case Tag.RedPaletteColorLookupTableDescriptor:
+                    case Tag.GreenPaletteColorLookupTableDescriptor:
+                    case Tag.BluePaletteColorLookupTableDescriptor:
+                    case Tag.LargeRedPaletteColorLookupTableDescriptor:
+                    case Tag.LargeGreenPaletteColorLookupTableDescriptor:
+                    case Tag.LargeBluePaletteColorLookupTableDescriptor:
+                    case Tag.RealWorldValueLastValueMapped:
+                    case Tag.RealWorldValueFirstValueMapped:
+                    case Tag.HistogramFirstBinValue:
+                    case Tag.HistogramLastBinValue:
+                        vr = attrs.getRoot().getInt(Tag.PixelRepresentation, 0) == 0 ? VR.US : VR.SS;
+                        break;
+                    case Tag.PurposeOfReferenceCodeSequence:
+                        vr = probeObservationClass() ? VR.CS : VR.SQ;
+                        break;
+                    default:
+                        vr = ElementDictionary.vrOf(tag, attrs.getPrivateCreator(tag));
+                        if (vr == VR.UN && length == UNDEFINED_LENGTH)
+                            vr = VR.SQ; // assumes UN with undefined length are SQ,
+                        // will fail on UN fragments!
                     }
                 }
                 excludeBulkData = includeBulkData == IncludeBulkData.NO && isBulkData(attrs);
-                includeBulkDataURI = length != 0 && vr != VR.SQ
-                        && includeBulkData == IncludeBulkData.URI && isBulkData(attrs);
+                includeBulkDataURI = length != 0 && vr != VR.SQ && includeBulkData == IncludeBulkData.URI
+                        && isBulkData(attrs);
                 handler.readValue(this, attrs);
             } else
                 skipAttribute(UNEXPECTED_ATTRIBUTE, "readAttributes()");
@@ -760,8 +743,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
     }
 
     @Override
-    public void readValue(ImageInputStream dis, Attributes attrs)
-            throws IOException {
+    public void readValue(ImageInputStream dis, Attributes attrs) throws IOException {
         checkIsThis(dis);
         if (excludeBulkData) {
             if (length == UNDEFINED_LENGTH) {
@@ -775,8 +757,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
             readSequence(length, attrs, tag);
         } else if (length == UNDEFINED_LENGTH) {
             readFragments(attrs, tag, vr);
-        } else if (length == BulkData.MAGIC_LEN
-                && super.in instanceof ObjectInputStream) {
+        } else if (length == BulkData.MAGIC_LEN && super.in instanceof ObjectInputStream) {
             attrs.setValue(tag, vr, deserializeBulkData((ObjectInputStream) super.in));
         } else if (includeBulkDataURI) {
             attrs.setValue(tag, vr, bulkDataCreator.createBulkData(this));
@@ -800,18 +781,20 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
     }
 
     public void skipSequence() throws IOException {
-        while (readItemHeader()) skipItem();
+        while (readItemHeader())
+            skipItem();
     }
 
     public void skipItem() throws IOException {
         if (length == UNDEFINED_LENGTH) {
-            for (; ; ) {
+            for (;;) {
                 readHeader();
                 if (length == UNDEFINED_LENGTH) {
                     skipSequence();
                 } else {
                     skipFully(length);
-                    if (tag == Tag.ItemDelimitationItem) break;
+                    if (tag == Tag.ItemDelimitationItem)
+                        break;
                 }
             }
         } else {
@@ -827,8 +810,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
             skipFully(length);
         } else {
             if (blkOut == null) {
-                File blkfile = File.createTempFile(blkFilePrefix,
-                        blkFileSuffix, blkDirectory);
+                File blkfile = File.createTempFile(blkFilePrefix, blkFileSuffix, blkDirectory);
                 if (blkFiles == null)
                     blkFiles = new ArrayList<>();
                 blkFiles.add(blkfile);
@@ -851,13 +833,11 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
     }
 
     private boolean isBulkData(Attributes attrs) {
-        return bulkDataDescriptor.isBulkData(itemPointers,
-                attrs.getPrivateCreator(tag), tag, vr, (int) length);
+        return bulkDataDescriptor.isBulkData(itemPointers, attrs.getPrivateCreator(tag), tag, vr, (int) length);
     }
 
     @Override
-    public void readValue(ImageInputStream dis, Sequence seq)
-            throws IOException {
+    public void readValue(ImageInputStream dis, Sequence seq) throws IOException {
         checkIsThis(dis);
         if (length == 0) {
             seq.add(new Attributes(seq.getParent().bigEndian(), 0));
@@ -870,15 +850,13 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
     }
 
     @Override
-    public void readValue(ImageInputStream dis, Fragments frags)
-            throws IOException {
+    public void readValue(ImageInputStream dis, Fragments frags) throws IOException {
         checkIsThis(dis);
         if (excludeBulkData) {
             skipFully(length);
         } else if (length == 0) {
-            frags.add(new byte[]{});
-        } else if (length == BulkData.MAGIC_LEN
-                && super.in instanceof ObjectInputStream) {
+            frags.add(new byte[] {});
+        } else if (length == BulkData.MAGIC_LEN && super.in instanceof ObjectInputStream) {
             frags.add(deserializeBulkData((ObjectInputStream) super.in));
         } else if (includeBulkDataURI) {
             frags.add(bulkDataCreator.createBulkData(this));
@@ -914,8 +892,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
         skipFully(length);
     }
 
-    private void readSequence(long len, Attributes attrs, int sqtag)
-            throws IOException {
+    private void readSequence(long len, Attributes attrs, int sqtag) throws IOException {
         if (len == 0) {
             attrs.setNull(sqtag, VR.SQ);
             return;
@@ -982,8 +959,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
     public Attributes readItem() throws IOException {
         readHeader();
         if (tag != Tag.Item)
-            throw new IOException("Unexpected attribute "
-                    + Tag.toString(tag) + " #" + length + " @ " + pos);
+            throw new IOException("Unexpected attribute " + Tag.toString(tag) + " #" + length + " @ " + pos);
         Attributes attrs = new Attributes(bigEndian);
         attrs.setItemPosition(tagPos);
         readItemValue(attrs, length);
@@ -995,8 +971,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
         readAttributes(attrs, length, dis -> dis.tag == Tag.ItemDelimitationItem);
     }
 
-    private void readFragments(Attributes attrs, int fragsTag, VR vr)
-            throws IOException {
+    private void readFragments(Attributes attrs, int fragsTag, VR vr) throws IOException {
         Fragments frags = new Fragments(vr, attrs.bigEndian(), 10);
         String privateCreator = attrs.getPrivateCreator(fragsTag);
         for (int i = 0; readItemHeader(); ++i) {
@@ -1020,13 +995,10 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
         try {
             boolean limitedStream = in instanceof LimitedInputStream;
             if (limitedStream && valLen > ((LimitedInputStream) in).getRemaining()) {
-                throw new EOFException(
-                        "Length " + valLen + " for tag " + Tag.toString(tag) + " @ " + tagPos +
-                                " exceeds remaining " + ((LimitedInputStream) in).getRemaining() + " (pos: " + pos + ")");
+                throw new EOFException("Length " + valLen + " for tag " + Tag.toString(tag) + " @ " + tagPos
+                        + " exceeds remaining " + ((LimitedInputStream) in).getRemaining() + " (pos: " + pos + ")");
             }
-            int allocLen = allocateLimit != -1 && !limitedStream
-                    ? Math.min(valLen, allocateLimit)
-                    : valLen;
+            int allocLen = allocateLimit != -1 && !limitedStream ? Math.min(valLen, allocateLimit) : valLen;
             byte[] value = new byte[allocLen];
             readFully(value, 0, allocLen);
             while (allocLen < valLen) {
@@ -1041,8 +1013,7 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
             }
             return value;
         } catch (IOException e) {
-            Logger.warn("IOException during read of {} #{} @ {}",
-                    Tag.toString(tag), length, tagPos, e);
+            Logger.warn("IOException during read of {} #{} @ {}", Tag.toString(tag), length, tagPos, e);
             throw e;
         }
     }
@@ -1051,15 +1022,13 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
         this.tsuid = tsuid;
         bigEndian = tsuid.equals(UID.ExplicitVRBigEndian.uid);
         explicitVR = !tsuid.equals(UID.ImplicitVRLittleEndian.uid);
-        if (tsuid.equals(UID.DeflatedExplicitVRLittleEndian.uid)
-                || tsuid.equals(UID.JPIPReferencedDeflate.uid)
+        if (tsuid.equals(UID.DeflatedExplicitVRLittleEndian.uid) || tsuid.equals(UID.JPIPReferencedDeflate.uid)
                 || tsuid.equals(UID.JPIPHTJ2KReferencedDeflate.uid)) {
             if (hasZLIBHeader()) {
                 Logger.warn(DEFLATED_WITH_ZLIB_HEADER);
                 super.in = new InflaterInputStream(super.in);
             } else {
-                super.in = new InflaterInputStream(super.in,
-                        inflater = new Inflater(true));
+                super.in = new InflaterInputStream(super.in, inflater = new Inflater(true));
             }
         }
     }
@@ -1079,13 +1048,9 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
         mark(b134.length);
         int rlen = StreamKit.readAvailable(this, b134, 0, b134.length);
         if (rlen == b134.length) {
-            if (b134[preambleLength] == 'D'
-                    && b134[preambleLength + 1] == 'I'
-                    && b134[preambleLength + 2] == 'C'
-                    && b134[preambleLength + 3] == 'M'
-                    && b134[preambleLength + 4] == 2
-                    && b134[preambleLength + 5] == 0
-            ) {
+            if (b134[preambleLength] == 'D' && b134[preambleLength + 1] == 'I' && b134[preambleLength + 2] == 'C'
+                    && b134[preambleLength + 3] == 'M' && b134[preambleLength + 4] == 2
+                    && b134[preambleLength + 5] == 0) {
                 preamble = new byte[preambleLength];
                 System.arraycopy(b134, 0, preamble, 0, preambleLength);
                 reset();
@@ -1094,24 +1059,19 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
                 rlen = StreamKit.readAvailable(this, b134, 0, b134.length);
             }
         }
-        if (rlen < 8
-                || !guessTransferSyntax(b134, rlen, false)
-                && !guessTransferSyntax(b134, rlen, true))
+        if (rlen < 8 || !guessTransferSyntax(b134, rlen, false) && !guessTransferSyntax(b134, rlen, true))
             throw new InternalException(NOT_A_DICOM_STREAM);
         reset();
-        hasfmi = Tag.isFileMetaInformation(
-                ByteKit.bytesToTag(b134, 0, bigEndian));
+        hasfmi = Tag.isFileMetaInformation(ByteKit.bytesToTag(b134, 0, bigEndian));
     }
 
-    private boolean guessTransferSyntax(byte[] b132, int rlen, boolean bigEndian)
-            throws InternalException {
+    private boolean guessTransferSyntax(byte[] b132, int rlen, boolean bigEndian) throws InternalException {
         int tag1 = ByteKit.bytesToTag(b132, 0, bigEndian);
         VR vr = ElementDictionary.vrOf(tag1, null);
         if (vr == VR.UN)
             return false;
         if (ByteKit.bytesToVR(b132, 4) == vr.code()) {
-            this.tsuid = bigEndian ? UID.ExplicitVRBigEndian.uid
-                    : UID.ExplicitVRLittleEndian.uid;
+            this.tsuid = bigEndian ? UID.ExplicitVRBigEndian.uid : UID.ExplicitVRLittleEndian.uid;
             this.bigEndian = bigEndian;
             this.explicitVR = true;
             return true;
@@ -1139,6 +1099,8 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
         return true;
     }
 
-    public enum IncludeBulkData {NO, YES, URI}
+    public enum IncludeBulkData {
+        NO, YES, URI
+    }
 
 }

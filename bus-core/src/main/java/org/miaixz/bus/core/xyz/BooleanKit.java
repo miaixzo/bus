@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -105,7 +105,9 @@ public class BooleanKit {
 
     /**
      * 转换字符串为boolean值
-     * <p>该字符串 是否在 {@link #TRUE_SET} 中，存在则为 {@code true}，否则为 {@code false}</p>
+     * <p>
+     * 该字符串 是否在 {@link #TRUE_SET} 中，存在则为 {@code true}，否则为 {@code false}
+     * </p>
      *
      * @param valueStr 字符串，不区分大小写，前后可以有空格 {@link String#trim()}
      * @return boolean值
@@ -118,10 +120,8 @@ public class BooleanKit {
     }
 
     /**
-     * 转换字符串为Boolean值
-     * 如果字符串在 {@link #TRUE_SET} 中，返回 {@link Boolean#TRUE}
-     * 如果字符串在 {@link #FALSE_SET} 中，返回 {@link Boolean#FALSE}
-     * 其他情况返回{@code null}
+     * 转换字符串为Boolean值 如果字符串在 {@link #TRUE_SET} 中，返回 {@link Boolean#TRUE} 如果字符串在 {@link #FALSE_SET} 中，返回
+     * {@link Boolean#FALSE} 其他情况返回{@code null}
      *
      * @param valueStr 字符串，不区分大小写，前后可以有空格 {@link String#trim()}
      * @return the boolean
@@ -355,7 +355,8 @@ public class BooleanKit {
      * @param nullString  当值为 {@code null}时返回此字符串, 可能为 {@code null}
      * @return 结果值
      */
-    public static String toString(final Boolean bool, final String trueString, final String falseString, final String nullString) {
+    public static String toString(final Boolean bool, final String trueString, final String falseString,
+            final String nullString) {
         if (bool == null) {
             return nullString;
         }
@@ -391,7 +392,9 @@ public class BooleanKit {
 
     /**
      * Boolean数组所有元素相 与 的结果
-     * <p>注意：{@code null} 元素 被当作 {@code true}</p>
+     * <p>
+     * 注意：{@code null} 元素 被当作 {@code true}
+     * </p>
      *
      * <pre>
      *   BooleanKit.and(Boolean.TRUE, Boolean.TRUE)                 = Boolean.TRUE
@@ -450,7 +453,9 @@ public class BooleanKit {
 
     /**
      * Boolean数组所有元素 或 的结果
-     * <p>注意：{@code null} 元素 被当作 {@code false}</p>
+     * <p>
+     * 注意：{@code null} 元素 被当作 {@code false}
+     * </p>
      *
      * <pre>
      *   BooleanKit.or(Boolean.TRUE, Boolean.TRUE)                  = Boolean.TRUE

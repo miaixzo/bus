@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.ansi;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -35,9 +35,9 @@ import java.awt.color.ColorSpace;
 /**
  * 表示以 LAB 形式存储的颜色
  * <ul>
- *     <li>L: 亮度</li>
- *     <li>a: 正数代表红色，负端代表绿色</li>
- *     <li>b: 正数代表黄色，负端代表蓝色</li>
+ * <li>L: 亮度</li>
+ * <li>a: 正数代表红色，负端代表绿色</li>
+ * <li>b: 正数代表黄色，负端代表蓝色</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -83,11 +83,8 @@ public class LabColor {
     }
 
     /**
-     * 从xyz换算
-     * L=116f(y)-16
-     * a=500[f(x/0.982)-f(y)]
-     * b=200[f(y)-f(z/1.183 )]
-     * 其中： f(x)=7.787x+0.138, x<0.008856; f(x)=(x)1/3,x>0.008856
+     * 从xyz换算 L=116f(y)-16 a=500[f(x/0.982)-f(y)] b=200[f(y)-f(z/1.183 )] 其中： f(x)=7.787x+0.138, x<0.008856;
+     * f(x)=(x)1/3,x>0.008856
      *
      * @param x X
      * @param y Y
@@ -98,7 +95,7 @@ public class LabColor {
         final double l = (f(y) - 16.0) * 116.0;
         final double a = (f(x) - f(y)) * 500.0;
         final double b = (f(y) - f(z)) * 200.0;
-        return new float[]{(float) l, (float) a, (float) b};
+        return new float[] { (float) l, (float) a, (float) b };
     }
 
     private static double f(final double t) {
@@ -118,8 +115,8 @@ public class LabColor {
         final double deltaA = this.a - other.a;
         final double deltaB = this.b - other.b;
         final double deltaH = Math.sqrt(Math.max(0.0, deltaA * deltaA + deltaB * deltaB - deltaC * deltaC));
-        return Math.sqrt(Math.max(0.0, Math.pow((this.l - other.l), 2)
-                + Math.pow(deltaC / (1 + 0.045 * c1), 2) + Math.pow(deltaH / (1 + 0.015 * c1), 2.0)));
+        return Math.sqrt(Math.max(0.0, Math.pow((this.l - other.l), 2) + Math.pow(deltaC / (1 + 0.045 * c1), 2)
+                + Math.pow(deltaH / (1 + 0.015 * c1), 2.0)));
     }
 
     private float[] fromXyz(final float[] xyz) {

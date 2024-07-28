@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -73,8 +73,7 @@ public class Http2Header {
     public boolean equals(Object other) {
         if (other instanceof Http2Header) {
             Http2Header that = (Http2Header) other;
-            return this.name.equals(that.name)
-                    && this.value.equals(that.value);
+            return this.name.equals(that.name) && this.value.equals(that.value);
         }
         return false;
     }

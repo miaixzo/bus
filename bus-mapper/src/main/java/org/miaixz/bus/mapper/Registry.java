@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -37,17 +37,10 @@ import org.miaixz.bus.core.lang.Normal;
  */
 public enum Registry {
 
-    DB2("VALUES IDENTITY_VAL_LOCAL()"),
-    MYSQL("SELECT LAST_INSERT_ID()"),
-    SQLSERVER("SELECT SCOPE_IDENTITY()"),
-    CLOUDSCAPE("VALUES IDENTITY_VAL_LOCAL()"),
-    DERBY("VALUES IDENTITY_VAL_LOCAL()"),
-    HSQLDB("CALL IDENTITY()"),
-    SYBASE("SELECT @@IDENTITY"),
-    DB2_MF("SELECT IDENTITY_VAL_LOCAL() FROM SYSIBM.SYSDUMMY1"),
-    INFORMIX("select dbinfo('sqlca.sqlerrd1') from systables where tabid=1"),
-    DEFAULT(Normal.EMPTY),
-    NULL(Normal.EMPTY);
+    DB2("VALUES IDENTITY_VAL_LOCAL()"), MYSQL("SELECT LAST_INSERT_ID()"), SQLSERVER("SELECT SCOPE_IDENTITY()"),
+    CLOUDSCAPE("VALUES IDENTITY_VAL_LOCAL()"), DERBY("VALUES IDENTITY_VAL_LOCAL()"), HSQLDB("CALL IDENTITY()"),
+    SYBASE("SELECT @@IDENTITY"), DB2_MF("SELECT IDENTITY_VAL_LOCAL() FROM SYSIBM.SYSDUMMY1"),
+    INFORMIX("select dbinfo('sqlca.sqlerrd1') from systables where tabid=1"), DEFAULT(Normal.EMPTY), NULL(Normal.EMPTY);
 
     private String identityRetrievalStatement;
 

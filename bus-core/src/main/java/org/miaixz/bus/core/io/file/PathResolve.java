@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.file;
 
 import org.miaixz.bus.core.io.resource.FileResource;
@@ -105,8 +105,7 @@ public class PathResolve {
     }
 
     /**
-     * 递归遍历目录以及子目录中的所有文件
-     * 如果提供path为文件，直接返回过滤结果
+     * 递归遍历目录以及子目录中的所有文件 如果提供path为文件，直接返回过滤结果
      *
      * @param path       当前遍历文件或目录
      * @param fileFilter 文件过滤规则对象，选择要保留的文件，只对文件有效，不过滤目录，null表示接收全部文件
@@ -117,8 +116,7 @@ public class PathResolve {
     }
 
     /**
-     * 递归遍历目录以及子目录中的所有文件
-     * 如果提供path为文件，直接返回过滤结果
+     * 递归遍历目录以及子目录中的所有文件 如果提供path为文件，直接返回过滤结果
      *
      * @param path       当前遍历文件或目录
      * @param maxDepth   遍历最大深度，-1表示遍历到没有目录为止
@@ -130,8 +128,7 @@ public class PathResolve {
     }
 
     /**
-     * 递归遍历目录以及子目录中的所有文件
-     * 如果提供path为文件，直接返回过滤结果
+     * 递归遍历目录以及子目录中的所有文件 如果提供path为文件，直接返回过滤结果
      *
      * @param path          当前遍历文件或目录
      * @param maxDepth      遍历最大深度，-1表示遍历到没有目录为止
@@ -139,7 +136,8 @@ public class PathResolve {
      * @param fileFilter    文件过滤规则对象，选择要保留的文件，只对文件有效，不过滤目录，null表示接收全部文件
      * @return 文件列表
      */
-    public static List<File> loopFiles(final Path path, final int maxDepth, final boolean isFollowLinks, final FileFilter fileFilter) {
+    public static List<File> loopFiles(final Path path, final int maxDepth, final boolean isFollowLinks,
+            final FileFilter fileFilter) {
         final List<File> fileList = new ArrayList<>();
 
         if (!exists(path, isFollowLinks)) {
@@ -199,7 +197,8 @@ public class PathResolve {
      * @param isFollowLinks 是否追踪到软链对应的真实地址
      * @see Files#walkFileTree(Path, java.util.Set, int, FileVisitor)
      */
-    public static void walkFiles(final Path start, int maxDepth, final boolean isFollowLinks, final FileVisitor<? super Path> visitor) {
+    public static void walkFiles(final Path start, int maxDepth, final boolean isFollowLinks,
+            final FileVisitor<? super Path> visitor) {
         if (maxDepth < 0) {
             // < 0 表示遍历到最底层
             maxDepth = Integer.MAX_VALUE;
@@ -213,9 +212,7 @@ public class PathResolve {
     }
 
     /**
-     * 删除文件或者文件夹，不追踪软链
-     * 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹
-     * 某个文件删除失败会终止删除操作
+     * 删除文件或者文件夹，不追踪软链 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹 某个文件删除失败会终止删除操作
      *
      * @param path 文件对象
      * @throws InternalException IO异常
@@ -236,8 +233,8 @@ public class PathResolve {
     /**
      * 拷贝资源到目标文件
      * <ul>
-     *     <li>如果src为{@link FileResource}，调用文件拷贝。</li>
-     *     <li>其它，调用JDK7+的 {@link Files#copy(InputStream, Path, CopyOption...)}。</li>
+     * <li>如果src为{@link FileResource}，调用文件拷贝。</li>
+     * <li>其它，调用JDK7+的 {@link Files#copy(InputStream, Path, CopyOption...)}。</li>
      * </ul>
      *
      * @param src     源文件资源{@link Resource}实现
@@ -246,7 +243,8 @@ public class PathResolve {
      * @return 目标Path
      * @throws InternalException IO异常
      */
-    public static Path copy(final Resource src, final Path target, final CopyOption... options) throws InternalException {
+    public static Path copy(final Resource src, final Path target, final CopyOption... options)
+            throws InternalException {
         Assert.notNull(src, "Source is null !");
         if (src instanceof FileResource) {
             return copy(((FileResource) src).getFile().toPath(), target, options);
@@ -267,7 +265,8 @@ public class PathResolve {
      * @return 目标Path
      * @throws InternalException IO异常
      */
-    public static Path copy(final InputStream src, final Path target, final CopyOption... options) throws InternalException {
+    public static Path copy(final InputStream src, final Path target, final CopyOption... options)
+            throws InternalException {
         Assert.notNull(target, "Destination File or directory is null !");
 
         // 创建级联父目录
@@ -303,13 +302,13 @@ public class PathResolve {
     /**
      * 复制src到target中
      * <ul>
-     *     <li>src路径和target路径相同时，不执行操作</li>
-     *     <li>src为文件，target为已存在目录，则拷贝到目录下，文件名不变。</li>
-     *     <li>src为文件，target为不存在路径，则目标以文件对待（自动创建父级目录），相当于拷贝后重命名，比如：/dest/aaa，如果aaa不存在，则aaa被当作文件名</li>
-     *     <li>src为文件，target是一个已存在的文件，则当{@link CopyOption}设为覆盖时会被覆盖，默认不覆盖，抛出{@link FileAlreadyExistsException}</li>
-     *     <li>src为目录，target为已存在目录，整个src目录连同其目录拷贝到目标目录中</li>
-     *     <li>src为目录，target为不存在路径，则自动创建目标为新目录，并只拷贝src内容到目标目录中，相当于重命名目录。</li>
-     *     <li>src为目录，target为文件，抛出{@link IllegalArgumentException}</li>
+     * <li>src路径和target路径相同时，不执行操作</li>
+     * <li>src为文件，target为已存在目录，则拷贝到目录下，文件名不变。</li>
+     * <li>src为文件，target为不存在路径，则目标以文件对待（自动创建父级目录），相当于拷贝后重命名，比如：/dest/aaa，如果aaa不存在，则aaa被当作文件名</li>
+     * <li>src为文件，target是一个已存在的文件，则当{@link CopyOption}设为覆盖时会被覆盖，默认不覆盖，抛出{@link FileAlreadyExistsException}</li>
+     * <li>src为目录，target为已存在目录，整个src目录连同其目录拷贝到目标目录中</li>
+     * <li>src为目录，target为不存在路径，则自动创建目标为新目录，并只拷贝src内容到目标目录中，相当于重命名目录。</li>
+     * <li>src为目录，target为文件，抛出{@link IllegalArgumentException}</li>
      * </ul>
      *
      * @param src     源文件路径，如果为目录会在目标中创建新目录
@@ -325,13 +324,13 @@ public class PathResolve {
     /**
      * 复制src的内容到target中
      * <ul>
-     *     <li>src路径和target路径相同时，不执行操作</li>
-     *     <li>src为文件，target为已存在目录，则拷贝到目录下，文件名不变。</li>
-     *     <li>src为文件，target为不存在路径，则目标以文件对待（自动创建父级目录），相当于拷贝后重命名，比如：/dest/aaa，如果aaa不存在，则aaa被当作文件名</li>
-     *     <li>src为文件，target是一个已存在的文件，则当{@link CopyOption}设为覆盖时会被覆盖，默认不覆盖，抛出{@link FileAlreadyExistsException}</li>
-     *     <li>src为目录，target为已存在目录，整个src目录下的内容拷贝到目标目录中</li>
-     *     <li>src为目录，target为不存在路径，则自动创建目标为新目录，整个src目录下的内容拷贝到目标目录中，相当于重命名目录。</li>
-     *     <li>src为目录，target为文件，抛出IO异常</li>
+     * <li>src路径和target路径相同时，不执行操作</li>
+     * <li>src为文件，target为已存在目录，则拷贝到目录下，文件名不变。</li>
+     * <li>src为文件，target为不存在路径，则目标以文件对待（自动创建父级目录），相当于拷贝后重命名，比如：/dest/aaa，如果aaa不存在，则aaa被当作文件名</li>
+     * <li>src为文件，target是一个已存在的文件，则当{@link CopyOption}设为覆盖时会被覆盖，默认不覆盖，抛出{@link FileAlreadyExistsException}</li>
+     * <li>src为目录，target为已存在目录，整个src目录下的内容拷贝到目标目录中</li>
+     * <li>src为目录，target为不存在路径，则自动创建目标为新目录，整个src目录下的内容拷贝到目标目录中，相当于重命名目录。</li>
+     * <li>src为目录，target为文件，抛出IO异常</li>
      * </ul>
      *
      * @param src     源文件路径，如果为目录只在目标中创建新目录
@@ -340,13 +339,13 @@ public class PathResolve {
      * @return Path
      * @throws InternalException IO异常
      */
-    public static Path copyContent(final Path src, final Path target, final CopyOption... options) throws InternalException {
+    public static Path copyContent(final Path src, final Path target, final CopyOption... options)
+            throws InternalException {
         return PathCopier.of(src, target, options).copyContent();
     }
 
     /**
-     * 判断是否为目录，如果file为null，则返回false
-     * 此方法不会追踪到软链对应的真实地址，即软链被当作文件
+     * 判断是否为目录，如果file为null，则返回false 此方法不会追踪到软链对应的真实地址，即软链被当作文件
      *
      * @param path {@link Path}
      * @return 如果为目录true
@@ -358,8 +357,8 @@ public class PathResolve {
     /**
      * 判断是否存在且为非目录
      * <ul>
-     *     <li>如果path为{@code null}，返回{@code false}</li>
-     *     <li>如果path不存在，返回{@code false}</li>
+     * <li>如果path为{@code null}，返回{@code false}</li>
+     * <li>如果path不存在，返回{@code false}</li>
      * </ul>
      *
      * @param path          {@link Path}
@@ -457,7 +456,8 @@ public class PathResolve {
      * @return {@link BasicFileAttributes}
      * @throws InternalException IO异常
      */
-    public static BasicFileAttributes getAttributes(final Path path, final boolean isFollowLinks) throws InternalException {
+    public static BasicFileAttributes getAttributes(final Path path, final boolean isFollowLinks)
+            throws InternalException {
         if (null == path) {
             return null;
         }
@@ -505,7 +505,8 @@ public class PathResolve {
      * @return BufferedReader对象
      * @throws InternalException IO异常
      */
-    public static BufferedReader getReader(final Path path, final java.nio.charset.Charset charset) throws InternalException {
+    public static BufferedReader getReader(final Path path, final java.nio.charset.Charset charset)
+            throws InternalException {
         return IoKit.toReader(getInputStream(path), charset);
     }
 
@@ -560,13 +561,13 @@ public class PathResolve {
     /**
      * 移动文件或目录到目标中，例如：
      * <ul>
-     *     <li>如果src和target为同一文件或目录，直接返回target。</li>
-     *     <li>如果src为文件，target为目录，则移动到目标目录下，存在同名文件则按照是否覆盖参数执行。</li>
-     *     <li>如果src为文件，target为文件，则按照是否覆盖参数执行。</li>
-     *     <li>如果src为文件，target为不存在的路径，则重命名源文件到目标指定的文件，如moveContent("/a/b", "/c/d"), d不存在，则b变成d。</li>
-     *     <li>如果src为目录，target为文件，抛出{@link IllegalArgumentException}</li>
-     *     <li>如果src为目录，target为目录，则将源目录及其内容移动到目标路径目录中，如move("/a/b", "/c/d")，结果为"/c/d/b"</li>
-     *     <li>如果src为目录，target为不存在的路径，则重命名src到target，如move("/a/b", "/c/d")，结果为"/c/d/"，相当于b重命名为d</li>
+     * <li>如果src和target为同一文件或目录，直接返回target。</li>
+     * <li>如果src为文件，target为目录，则移动到目标目录下，存在同名文件则按照是否覆盖参数执行。</li>
+     * <li>如果src为文件，target为文件，则按照是否覆盖参数执行。</li>
+     * <li>如果src为文件，target为不存在的路径，则重命名源文件到目标指定的文件，如moveContent("/a/b", "/c/d"), d不存在，则b变成d。</li>
+     * <li>如果src为目录，target为文件，抛出{@link IllegalArgumentException}</li>
+     * <li>如果src为目录，target为目录，则将源目录及其内容移动到目标路径目录中，如move("/a/b", "/c/d")，结果为"/c/d/b"</li>
+     * <li>如果src为目录，target为不存在的路径，则重命名src到target，如move("/a/b", "/c/d")，结果为"/c/d/"，相当于b重命名为d</li>
      * </ul>
      *
      * @param src        源文件或目录路径
@@ -581,12 +582,12 @@ public class PathResolve {
     /**
      * 移动文件或目录内容到目标中，例如：
      * <ul>
-     *     <li>如果src为文件，target为目录，则移动到目标目录下，存在同名文件则按照是否覆盖参数执行。</li>
-     *     <li>如果src为文件，target为文件，则按照是否覆盖参数执行。</li>
-     *     <li>如果src为文件，target为不存在的路径，则重命名源文件到目标指定的文件，如moveContent("/a/b", "/c/d"), d不存在，则b变成d。</li>
-     *     <li>如果src为目录，target为文件，抛出{@link IllegalArgumentException}</li>
-     *     <li>如果src为目录，target为目录，则将源目录下的内容移动到目标路径目录中，源目录不删除。</li>
-     *     <li>如果src为目录，target为不存在的路径，则创建目标路径为目录，将源目录下的内容移动到目标路径目录中，源目录不删除。</li>
+     * <li>如果src为文件，target为目录，则移动到目标目录下，存在同名文件则按照是否覆盖参数执行。</li>
+     * <li>如果src为文件，target为文件，则按照是否覆盖参数执行。</li>
+     * <li>如果src为文件，target为不存在的路径，则重命名源文件到目标指定的文件，如moveContent("/a/b", "/c/d"), d不存在，则b变成d。</li>
+     * <li>如果src为目录，target为文件，抛出{@link IllegalArgumentException}</li>
+     * <li>如果src为目录，target为目录，则将源目录下的内容移动到目标路径目录中，源目录不删除。</li>
+     * <li>如果src为目录，target为不存在的路径，则创建目标路径为目录，将源目录下的内容移动到目标路径目录中，源目录不删除。</li>
      * </ul>
      *
      * @param src        源文件或目录路径
@@ -599,8 +600,7 @@ public class PathResolve {
     }
 
     /**
-     * 检查两个文件是否是同一个文件
-     * 所谓文件相同，是指Path对象是否指向同一个文件或文件夹
+     * 检查两个文件是否是同一个文件 所谓文件相同，是指Path对象是否指向同一个文件或文件夹
      *
      * @param file1 文件1
      * @param file2 文件2
@@ -617,7 +617,6 @@ public class PathResolve {
         final boolean exists1 = exists(file1, false);
         final boolean exists2 = exists(file2, false);
 
-
         if (exists1 && exists2) {
             return isSameFile(file1, file2);
         }
@@ -626,8 +625,7 @@ public class PathResolve {
     }
 
     /**
-     * 检查两个文件是否是同一个文件
-     * 所谓文件相同，是指Path对象是否指向同一个文件或文件夹
+     * 检查两个文件是否是同一个文件 所谓文件相同，是指Path对象是否指向同一个文件或文件夹
      *
      * @param file1 文件1，必须存在
      * @param file2 文件2，必须存在
@@ -704,9 +702,7 @@ public class PathResolve {
     }
 
     /**
-     * 将Path路径转换为标准的绝对路径
-     * 如果{@link Path#isAbsolute()}为{@code true}，表示已经是绝对路径，返回本身
-     * 如果是相对路径，则返回相对于系统默认目录的路径（一般为项目路径）
+     * 将Path路径转换为标准的绝对路径 如果{@link Path#isAbsolute()}为{@code true}，表示已经是绝对路径，返回本身 如果是相对路径，则返回相对于系统默认目录的路径（一般为项目路径）
      *
      * @param path 文件或目录Path
      * @return 转换后的Path
@@ -719,10 +715,7 @@ public class PathResolve {
     }
 
     /**
-     * 获取实际路径，路径文件必须存在
-     * 如果给定Path是软链接（符号链接），则返回指向的实际链接
-     * 如果路径不存在，会直接抛出NoSuchFileException异常
-     * 无论给定是何种类型的路径，返回都是唯一的路径（总是equals）
+     * 获取实际路径，路径文件必须存在 如果给定Path是软链接（符号链接），则返回指向的实际链接 如果路径不存在，会直接抛出NoSuchFileException异常 无论给定是何种类型的路径，返回都是唯一的路径（总是equals）
      *
      * @param path 路径
      * @return 实际路径
@@ -804,7 +797,8 @@ public class PathResolve {
      * @return 临时文件
      * @throws InternalException IO异常
      */
-    public static Path createTempFile(final String prefix, final String suffix, final Path dir) throws InternalException {
+    public static Path createTempFile(final String prefix, final String suffix, final Path dir)
+            throws InternalException {
         int exceptionsCount = 0;
         while (true) {
             try {
@@ -828,7 +822,7 @@ public class PathResolve {
      * @return 选项
      */
     public static LinkOption[] getLinkOptions(final boolean isFollowLinks) {
-        return isFollowLinks ? new LinkOption[0] : new LinkOption[]{LinkOption.NOFOLLOW_LINKS};
+        return isFollowLinks ? new LinkOption[0] : new LinkOption[] { LinkOption.NOFOLLOW_LINKS };
     }
 
     /**
@@ -838,8 +832,7 @@ public class PathResolve {
      * @return 选项
      */
     public static Set<FileVisitOption> getFileVisitOption(final boolean isFollowLinks) {
-        return isFollowLinks ? EnumSet.of(FileVisitOption.FOLLOW_LINKS) :
-                EnumSet.noneOf(FileVisitOption.class);
+        return isFollowLinks ? EnumSet.of(FileVisitOption.FOLLOW_LINKS) : EnumSet.noneOf(FileVisitOption.class);
     }
 
 }

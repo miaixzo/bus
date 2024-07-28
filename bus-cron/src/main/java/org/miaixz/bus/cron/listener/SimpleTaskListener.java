@@ -24,14 +24,13 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cron.listener;
 
 import org.miaixz.bus.cron.Executor;
 
 /**
- * 简单监听实现，不做任何操作
- * 继承此监听后实现需要的方法即可
+ * 简单监听实现，不做任何操作 继承此监听后实现需要的方法即可
  *
  * @author Kimi Liu
  * @since Java 17+

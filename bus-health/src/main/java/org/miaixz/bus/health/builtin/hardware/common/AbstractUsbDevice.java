@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.hardware.common;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -54,7 +54,7 @@ public abstract class AbstractUsbDevice implements UsbDevice {
     private final List<UsbDevice> connectedDevices;
 
     protected AbstractUsbDevice(String name, String vendor, String vendorId, String productId, String serialNumber,
-                                String uniqueDeviceId, List<UsbDevice> connectedDevices) {
+            String uniqueDeviceId, List<UsbDevice> connectedDevices) {
         this.name = name;
         this.vendor = vendor;
         this.vendorId = vendorId;

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.excel.sax;
 
 import org.apache.poi.hssf.eventusermodel.FormatTrackingHSSFListener;
@@ -69,9 +69,7 @@ public class ExcelSax {
      * @return {@link ExcelSaxReader}
      */
     public static ExcelSaxReader<?> createSaxReader(final boolean isXlsx, final RowHandler rowHandler) {
-        return isXlsx
-                ? new Excel07SaxReader(rowHandler)
-                : new Excel03SaxReader(rowHandler);
+        return isXlsx ? new Excel07SaxReader(rowHandler) : new Excel03SaxReader(rowHandler);
     }
 
     /**
@@ -83,7 +81,8 @@ public class ExcelSax {
      * @param numFmtString  数字格式名
      * @return 数据值
      */
-    public static Object getDataValue(CellDataType cellDataType, final String value, final SharedStrings sharedStrings, final String numFmtString) {
+    public static Object getDataValue(CellDataType cellDataType, final String value, final SharedStrings sharedStrings,
+            final String numFmtString) {
         if (null == value) {
             return null;
         }
@@ -94,43 +93,43 @@ public class ExcelSax {
 
         Object result = null;
         switch (cellDataType) {
-            case BOOL:
-                result = (value.charAt(0) != '0');
-                break;
-            case ERROR:
-                result = StringKit.format("\\\"ERROR: {} ", value);
-                break;
-            case FORMULA:
-                result = StringKit.format("\"{}\"", value);
-                break;
-            case INLINESTR:
-                result = new XSSFRichTextString(value).toString();
-                break;
-            case SSTINDEX:
-                try {
-                    final int index = Integer.parseInt(value);
-                    result = sharedStrings.getItemAt(index).getString();
-                } catch (final NumberFormatException e) {
-                    result = value;
-                }
-                break;
-            case DATE:
-                try {
-                    result = getDateValue(value);
-                } catch (final Exception e) {
-                    result = value;
-                }
-                break;
-            default:
-                try {
-                    result = getNumberValue(value, numFmtString);
-                } catch (final NumberFormatException ignore) {
-                }
+        case BOOL:
+            result = (value.charAt(0) != '0');
+            break;
+        case ERROR:
+            result = StringKit.format("\\\"ERROR: {} ", value);
+            break;
+        case FORMULA:
+            result = StringKit.format("\"{}\"", value);
+            break;
+        case INLINESTR:
+            result = new XSSFRichTextString(value).toString();
+            break;
+        case SSTINDEX:
+            try {
+                final int index = Integer.parseInt(value);
+                result = sharedStrings.getItemAt(index).getString();
+            } catch (final NumberFormatException e) {
+                result = value;
+            }
+            break;
+        case DATE:
+            try {
+                result = getDateValue(value);
+            } catch (final Exception e) {
+                result = value;
+            }
+            break;
+        default:
+            try {
+                result = getNumberValue(value, numFmtString);
+            } catch (final NumberFormatException ignore) {
+            }
 
-                if (null == result) {
-                    result = value;
-                }
-                break;
+            if (null == result) {
+                result = value;
+            }
+            break;
         }
         return result;
     }
@@ -175,7 +174,8 @@ public class ExcelSax {
         final char[] preLetter = preXfd.toCharArray();
         final char[] letter = xfd.toCharArray();
         // 用字母表示则最多三位，每26个字母进一位
-        final int res = (letter[0] - preLetter[0]) * 26 * 26 + (letter[1] - preLetter[1]) * 26 + (letter[2] - preLetter[2]);
+        final int res = (letter[0] - preLetter[0]) * 26 * 26 + (letter[1] - preLetter[1]) * 26
+                + (letter[2] - preLetter[2]);
         return res - 1;
     }
 
@@ -188,13 +188,15 @@ public class ExcelSax {
      * @throws InternalException   POI异常，包装了SAXException
      * @throws RevisedException    IO异常，如流关闭或异常等
      */
-    public static void readFrom(final InputStream xmlDocStream, final ContentHandler handler) throws DependencyException, InternalException, RevisedException {
+    public static void readFrom(final InputStream xmlDocStream, final ContentHandler handler)
+            throws DependencyException, InternalException, RevisedException {
         final XMLReader xmlReader;
         try {
             xmlReader = XMLHelper.newXMLReader();
         } catch (final SAXException | ParserConfigurationException e) {
             if (e.getMessage().contains("org.apache.xerces.parsers.SAXParser")) {
-                throw new DependencyException(e, "You need to add 'xerces:xercesImpl' to your project and version >= 2.11.0");
+                throw new DependencyException(e,
+                        "You need to add 'xerces:xercesImpl' to your project and version >= 2.11.0");
             } else {
                 throw new InternalException(e);
             }
@@ -216,7 +218,8 @@ public class ExcelSax {
      * @param formatListener {@link FormatTrackingHSSFListener}
      * @return 是否为日期格式
      */
-    public static boolean isDateFormat(final CellValueRecordInterface cell, final FormatTrackingHSSFListener formatListener) {
+    public static boolean isDateFormat(final CellValueRecordInterface cell,
+            final FormatTrackingHSSFListener formatListener) {
         final int formatIndex = formatListener.getFormatIndex(cell);
         final String formatString = formatListener.getFormatString(cell);
         return isDateFormat(formatIndex, formatString);
@@ -262,7 +265,8 @@ public class ExcelSax {
      * @param formatListener {@link FormatTrackingHSSFListener}
      * @return 值，可能为Date或Double或Long
      */
-    public static Object getNumberOrDateValue(final CellValueRecordInterface cell, final double value, final FormatTrackingHSSFListener formatListener) {
+    public static Object getNumberOrDateValue(final CellValueRecordInterface cell, final double value,
+            final FormatTrackingHSSFListener formatListener) {
         if (isDateFormat(cell, formatListener)) {
             // 可能为日期格式
             return getDateValue(value);

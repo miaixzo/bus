@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.file;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -43,9 +43,13 @@ import java.util.concurrent.ConcurrentSkipListMap;
 /**
  * 文件类型判断工具类
  *
- * <p>此工具根据文件的前几位bytes猜测文件类型，对于文本、zip判断不准确，对于视频、图片类型判断准确</p>
+ * <p>
+ * 此工具根据文件的前几位bytes猜测文件类型，对于文本、zip判断不准确，对于视频、图片类型判断准确
+ * </p>
  *
- * <p>需要注意的是，xlsx、docx等Office2007格式，全部识别为zip，因为新版采用了OpenXML格式，这些格式本质上是XML文件打包为zip</p>
+ * <p>
+ * 需要注意的是，xlsx、docx等Office2007格式，全部识别为zip，因为新版采用了OpenXML格式，这些格式本质上是XML文件打包为zip
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -144,7 +148,8 @@ public class FileType {
 
         /**
          * 图片格式
-         */ {
+         */
+        {
             put(".jpe", "image/jpeg");
             put(".jpeg", "image/jpeg");
             put(".jpg", "image/jpeg");
@@ -185,7 +190,8 @@ public class FileType {
 
         /**
          * 文档
-         */ {
+         */
+        {
             // txt
             put(".txt", "text/plain");
             // css
@@ -409,7 +415,8 @@ public class FileType {
 
         /**
          * 压缩文档
-         */ {
+         */
+        {
             put(".7z", "application/x-7z-compressed");
             put(".z", "application/x-compress");
             put(".zip", "application/x-zip-compressed");
@@ -420,10 +427,10 @@ public class FileType {
             put(".tar", "application/x-tar");
         }
 
-
         /**
          * 视频
-         */ {
+         */
+        {
             put(".flv", "video/x-flv");
             put(".3gp", "video/3gpp");
             put(".avi", "video/x-msvideo");
@@ -471,7 +478,8 @@ public class FileType {
 
         /**
          * 音频
-         */ {
+         */
+        {
             put(".mp3", "audio/mpeg");
             put(".wma", "audio/x-ms-wma");
             put(".aa", "audio/audible");
@@ -512,7 +520,8 @@ public class FileType {
 
         /**
          * 其他
-         */ {
+         */
+        {
             // xml类型文件
             put(".asa", "application/xml");
             put(".asax", "application/xml");
@@ -757,7 +766,8 @@ public class FileType {
 
         /**
          * 文件信息头
-         */ {
+         */
+        {
             // JPEG (jpg)
             put("ffd8ffe", "jpg");
             // PNG (png)
@@ -855,7 +865,7 @@ public class FileType {
             put("474946", "gif"); // GIF (gif)
             put("FFd8FF", "jpg"); // JPEG (jpg)
             put("4949BC", "jxr"); // jxr
-            put("1F8B08", "gz"); //  gzip
+            put("1F8B08", "gz"); // gzip
             put("425A68", "bz2"); // bz2
 
             // check string
@@ -873,8 +883,7 @@ public class FileType {
     }
 
     /**
-     * 增加文件类型映射
-     * 如果已经存在将覆盖之前的映射
+     * 增加文件类型映射 如果已经存在将覆盖之前的映射
      *
      * @param fileStreamHexHead 文件流头部Hex信息
      * @param extName           文件扩展名
@@ -926,9 +935,7 @@ public class FileType {
     }
 
     /**
-     * 根据文件流的头部信息获得文件类型
-     * 注意此方法会读取头部一些bytes，造成此流接下来读取时缺少部分bytes
-     * 因此如果想复用此流，流需支持{@link InputStream#reset()}方法。
+     * 根据文件流的头部信息获得文件类型 注意此方法会读取头部一些bytes，造成此流接下来读取时缺少部分bytes 因此如果想复用此流，流需支持{@link InputStream#reset()}方法。
      *
      * @param in      {@link InputStream}
      * @param isExact 是否精确匹配，如果为false，使用前64个bytes匹配，如果为true，使用前8192bytes匹配
@@ -939,15 +946,11 @@ public class FileType {
         if (null == in) {
             return null;
         }
-        return isExact
-                ? getType(readHex8192Upper(in))
-                : getType(readHex64Upper(in));
+        return isExact ? getType(readHex8192Upper(in)) : getType(readHex64Upper(in));
     }
 
     /**
-     * 根据文件流的头部信息获得文件类型
-     * 注意此方法会读取头部64个bytes，造成此流接下来读取时缺少部分bytes
-     * 因此如果想复用此流，流需支持{@link InputStream#reset()}方法。
+     * 根据文件流的头部信息获得文件类型 注意此方法会读取头部64个bytes，造成此流接下来读取时缺少部分bytes 因此如果想复用此流，流需支持{@link InputStream#reset()}方法。
      *
      * @param in {@link InputStream}
      * @return 类型，文件的扩展名，未找到为{@code null}
@@ -958,9 +961,7 @@ public class FileType {
     }
 
     /**
-     * 根据文件流的头部信息获得文件类型
-     * 注意此方法会读取头部64个bytes，造成此流接下来读取时缺少部分bytes
-     * 因此如果想复用此流，流需支持{@link InputStream#reset()}方法。
+     * 根据文件流的头部信息获得文件类型 注意此方法会读取头部64个bytes，造成此流接下来读取时缺少部分bytes 因此如果想复用此流，流需支持{@link InputStream#reset()}方法。
      *
      * <pre>
      *     1、无法识别类型默认按照扩展名识别
@@ -978,9 +979,7 @@ public class FileType {
     }
 
     /**
-     * 根据文件流的头部信息获得文件类型
-     * 注意此方法会读取头部一些bytes，造成此流接下来读取时缺少部分bytes
-     * 因此如果想复用此流，流需支持{@link InputStream#reset()}方法。
+     * 根据文件流的头部信息获得文件类型 注意此方法会读取头部一些bytes，造成此流接下来读取时缺少部分bytes 因此如果想复用此流，流需支持{@link InputStream#reset()}方法。
      *
      * <pre>
      *     1、无法识别类型默认按照扩展名识别
@@ -994,7 +993,8 @@ public class FileType {
      * @return 类型，文件的扩展名，未找到为{@code null}
      * @throws InternalException 读取流引起的异常
      */
-    public static String getType(final InputStream in, final String filename, final boolean isExact) throws InternalException {
+    public static String getType(final InputStream in, final String filename, final boolean isExact)
+            throws InternalException {
         String typeName = getType(in, isExact);
         if (null == typeName) {
             // 未成功识别类型，扩展名辅助识别

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text.dfa;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -111,8 +111,7 @@ public final class Sensitive {
     }
 
     /**
-     * 设置字符过滤规则，通过定义字符串过滤规则，过滤不需要的字符
-     * 当accept为false时，此字符不参与匹配
+     * 设置字符过滤规则，通过定义字符串过滤规则，过滤不需要的字符 当accept为false时，此字符不参与匹配
      *
      * @param charFilter 过滤函数
      */
@@ -153,16 +152,15 @@ public final class Sensitive {
     }
 
     /**
-     * 查找敏感词，返回找到的所有敏感词
-     * 密集匹配原则：假如关键词有 ab,b，文本是abab，将匹配 [ab,b,ab]
-     * 贪婪匹配（最长匹配）原则：假如关键字a,ab，最长匹配将匹配[a, ab]
+     * 查找敏感词，返回找到的所有敏感词 密集匹配原则：假如关键词有 ab,b，文本是abab，将匹配 [ab,b,ab] 贪婪匹配（最长匹配）原则：假如关键字a,ab，最长匹配将匹配[a, ab]
      *
      * @param text           文本
      * @param isDensityMatch 是否使用密集匹配原则
      * @param isGreedMatch   是否使用贪婪匹配（最长匹配）原则
      * @return 敏感词
      */
-    public static List<FoundWord> getFoundAllSensitive(final String text, final boolean isDensityMatch, final boolean isGreedMatch) {
+    public static List<FoundWord> getFoundAllSensitive(final String text, final boolean isDensityMatch,
+            final boolean isGreedMatch) {
         return sensitiveTree.matchAllWords(text, -1, isDensityMatch, isGreedMatch);
     }
 
@@ -184,7 +182,8 @@ public final class Sensitive {
      * @param sensitiveProcessor 敏感词处理器，默认按匹配内容的字符数替换成*
      * @return 敏感词过滤处理后的文本
      */
-    public static String sensitiveFilter(final String text, final boolean isGreedMatch, SensitiveProcessor sensitiveProcessor) {
+    public static String sensitiveFilter(final String text, final boolean isGreedMatch,
+            SensitiveProcessor sensitiveProcessor) {
         if (StringKit.isEmpty(text)) {
             return text;
         }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.watch;
 
 import java.nio.file.StandardWatchEventKinds;
@@ -65,11 +65,11 @@ public enum WatchKind {
     /**
      * 全部事件
      */
-    public static final WatchEvent.Kind<?>[] ALL = {//
-            OVERFLOW.getValue(),      //事件丢失
-            MODIFY.getValue(), //修改
-            CREATE.getValue(),  //创建
-            DELETE.getValue()   //删除
+    public static final WatchEvent.Kind<?>[] ALL = { //
+            OVERFLOW.getValue(), // 事件丢失
+            MODIFY.getValue(), // 修改
+            CREATE.getValue(), // 创建
+            DELETE.getValue() // 删除
     };
 
     private final WatchEvent.Kind<?> value;

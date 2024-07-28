@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.data;
 
 import java.io.Serializable;
@@ -54,8 +54,7 @@ public class ValueSelector implements Serializable {
     public static ValueSelector valueOf(String s) {
         int fromIndex = s.lastIndexOf("DicomAttribute");
         try {
-            return new ValueSelector(AttributeSelector.valueOf(s),
-                    AttributeSelector.selectNumber(s, fromIndex) - 1);
+            return new ValueSelector(AttributeSelector.valueOf(s), AttributeSelector.selectNumber(s, fromIndex) - 1);
         } catch (Exception e) {
             throw new IllegalArgumentException(s);
         }
@@ -88,10 +87,7 @@ public class ValueSelector implements Serializable {
     @Override
     public String toString() {
         if (text == null)
-            text = attributeSelector.toStringBuilder()
-                    .append("/Value[@number=\"")
-                    .append(valueIndex + 1)
-                    .append("\"]")
+            text = attributeSelector.toStringBuilder().append("/Value[@number=\"").append(valueIndex + 1).append("\"]")
                     .toString();
         return text;
     }

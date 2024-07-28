@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.compress;
 
 import org.miaixz.bus.core.lang.exception.ValidateException;
@@ -57,12 +57,13 @@ public class ZipSecurity {
 
         final long compressedSize = entry.getCompressedSize();
         final long uncompressedSize = entry.getSize();
-        //Console.logger(entry.getName(), compressedSize, uncompressedSize);
+        // Console.logger(entry.getName(), compressedSize, uncompressedSize);
         if (compressedSize < 0 || uncompressedSize < 0 ||
-                // 默认压缩比例是100倍，一旦发现压缩率超过这个阈值，被认为是Zip bomb
+        // 默认压缩比例是100倍，一旦发现压缩率超过这个阈值，被认为是Zip bomb
                 compressedSize * maxSizeDiff < uncompressedSize) {
-            throw new ValidateException("Zip bomb attack detected, invalid sizes: compressed {}, uncompressed {}, name {}",
-                    compressedSize, uncompressedSize, entry.getName());
+            throw new ValidateException(
+                    "Zip bomb attack detected, invalid sizes: compressed {}, uncompressed {}, name {}", compressedSize,
+                    uncompressedSize, entry.getName());
         }
         return entry;
     }

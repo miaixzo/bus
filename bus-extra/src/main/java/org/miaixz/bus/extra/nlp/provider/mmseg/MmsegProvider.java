@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.nlp.provider.mmseg;
 
 import com.chenlb.mmseg4j.ComplexSeg;
@@ -36,9 +36,7 @@ import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;
 
 /**
- * mmseg4j分词引擎实现
- * 项目地址：https://github.com/chenlb/mmseg4j-core
- * {@link MMSeg}非线程安全，故单独创建之
+ * mmseg4j分词引擎实现 项目地址：https://github.com/chenlb/mmseg4j-core {@link MMSeg}非线程安全，故单独创建之
  *
  * @author Kimi Liu
  * @since Java 17+

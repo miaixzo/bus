@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows;
 
 import com.sun.jna.platform.win32.COM.COMException;
@@ -89,15 +89,14 @@ public class WmiQueryHandler {
         } catch (NoSuchMethodException | SecurityException e) {
             Logger.error("Failed to find or access a no-arg constructor for {}", customClass);
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-                 | InvocationTargetException e) {
+                | InvocationTargetException e) {
             Logger.error("Failed to create a new instance of {}", customClass);
         }
         return null;
     }
 
     /**
-     * Define a subclass to be instantiated by {@link #createInstance()}. The class must extend
-     * {@link WmiQueryHandler}.
+     * Define a subclass to be instantiated by {@link #createInstance()}. The class must extend {@link WmiQueryHandler}.
      *
      * @param instanceClass The class to instantiate with {@link #createInstance()}.
      */
@@ -144,18 +143,18 @@ public class WmiQueryHandler {
             if (!WmiKit.OHM_NAMESPACE.equals(query.getNameSpace())) {
                 final int hresult = e.getHresult() == null ? -1 : e.getHresult().intValue();
                 switch (hresult) {
-                    case Wbemcli.WBEM_E_INVALID_NAMESPACE:
-                        Logger.warn("COM exception: Invalid Namespace {}", query.getNameSpace());
-                        break;
-                    case Wbemcli.WBEM_E_INVALID_CLASS:
-                        Logger.warn("COM exception: Invalid Class {}", query.getWmiClassName());
-                        break;
-                    case Wbemcli.WBEM_E_INVALID_QUERY:
-                        Logger.warn("COM exception: Invalid Query: {}", WmiKit.queryToString(query));
-                        break;
-                    default:
-                        handleComException(query, e);
-                        break;
+                case Wbemcli.WBEM_E_INVALID_NAMESPACE:
+                    Logger.warn("COM exception: Invalid Namespace {}", query.getNameSpace());
+                    break;
+                case Wbemcli.WBEM_E_INVALID_CLASS:
+                    Logger.warn("COM exception: Invalid Class {}", query.getWmiClassName());
+                    break;
+                case Wbemcli.WBEM_E_INVALID_QUERY:
+                    Logger.warn("COM exception: Invalid Query: {}", WmiKit.queryToString(query));
+                    break;
+                default:
+                    handleComException(query, e);
+                    break;
                 }
                 failedWmiClassNames.add(query.getWmiClassName());
             }
@@ -218,17 +217,17 @@ public class WmiQueryHandler {
     protected boolean initCOM(int coInitThreading) {
         WinNT.HRESULT hres = Ole32.INSTANCE.CoInitializeEx(null, coInitThreading);
         switch (hres.intValue()) {
-            // Successful local initialization (S_OK) or was already initialized
-            // (S_FALSE) but still needs uninit
-            case COMUtils.S_OK:
-            case COMUtils.S_FALSE:
-                return true;
-            // COM was already initialized with a different threading model
-            case WinError.RPC_E_CHANGED_MODE:
-                return false;
-            // Any other results is impossible
-            default:
-                throw new COMException("Failed to initialize COM library.", hres);
+        // Successful local initialization (S_OK) or was already initialized
+        // (S_FALSE) but still needs uninit
+        case COMUtils.S_OK:
+        case COMUtils.S_FALSE:
+            return true;
+        // COM was already initialized with a different threading model
+        case WinError.RPC_E_CHANGED_MODE:
+            return false;
+        // Any other results is impossible
+        default:
+            throw new COMException("Failed to initialize COM library.", hres);
         }
     }
 
@@ -240,8 +239,8 @@ public class WmiQueryHandler {
     }
 
     /**
-     * Returns the current threading model for COM initialization, is required to match if an external program
-     * has COM initialized already.
+     * Returns the current threading model for COM initialization, is required to match if an external program has COM
+     * initialized already.
      *
      * @return The current threading model
      */
@@ -250,8 +249,8 @@ public class WmiQueryHandler {
     }
 
     /**
-     * Switches the current threading model for COM initialization, is required to match if an external program
-     * has COM initialized already.
+     * Switches the current threading model for COM initialization, is required to match if an external program has COM
+     * initialized already.
      *
      * @return The new threading model after switching
      */

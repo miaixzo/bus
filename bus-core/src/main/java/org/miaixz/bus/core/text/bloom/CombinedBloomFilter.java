@@ -24,15 +24,11 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text.bloom;
 
 /**
- * 组合BloomFilter 实现
- * 1.构建hash算法
- * 2.散列hash映射到数组的bit位置
- * 3.验证
- * 此实现方式可以指定Hash算法
+ * 组合BloomFilter 实现 1.构建hash算法 2.散列hash映射到数组的bit位置 3.验证 此实现方式可以指定Hash算法
  *
  * @author Kimi Liu
  * @since Java 17+

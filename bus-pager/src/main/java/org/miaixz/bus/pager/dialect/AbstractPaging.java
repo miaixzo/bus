@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager.dialect;
 
 import org.apache.ibatis.builder.annotation.ProviderSqlSource;
@@ -77,19 +77,22 @@ public abstract class AbstractPaging extends AbstractDialect {
     }
 
     @Override
-    public final boolean skip(MappedStatement ms, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
+    public final boolean skip(MappedStatement ms, Object parameterObject,
+            org.apache.ibatis.session.RowBounds rowBounds) {
         // 该方法不会被调用
         return true;
     }
 
     @Override
-    public boolean beforeCount(MappedStatement ms, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
+    public boolean beforeCount(MappedStatement ms, Object parameterObject,
+            org.apache.ibatis.session.RowBounds rowBounds) {
         Page page = getLocalPage();
         return !page.isOrderByOnly() && page.isCount();
     }
 
     @Override
-    public String getCountSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds, CacheKey countKey) {
+    public String getCountSql(MappedStatement ms, BoundSql boundSql, Object parameterObject,
+            org.apache.ibatis.session.RowBounds rowBounds, CacheKey countKey) {
         Page<Object> page = getLocalPage();
         String countColumn = page.getCountColumn();
         if (StringKit.isNotEmpty(countColumn)) {
@@ -122,7 +125,8 @@ public abstract class AbstractPaging extends AbstractDialect {
     }
 
     @Override
-    public Object processParameterObject(MappedStatement ms, Object parameterObject, BoundSql boundSql, CacheKey pageKey) {
+    public Object processParameterObject(MappedStatement ms, Object parameterObject, BoundSql boundSql,
+            CacheKey pageKey) {
         // 处理参数
         Page page = getLocalPage();
         // 如果只是 order by 就不必处理参数
@@ -140,7 +144,8 @@ public abstract class AbstractPaging extends AbstractDialect {
             paramMap = new HashMap<>();
             // sqlSource为ProviderSqlSource时，处理只有1个参数的情况
             if (ms.getSqlSource() instanceof ProviderSqlSource) {
-                String[] providerMethodArgumentNames = CountExecutor.getProviderMethodArgumentNames((ProviderSqlSource) ms.getSqlSource());
+                String[] providerMethodArgumentNames = CountExecutor
+                        .getProviderMethodArgumentNames((ProviderSqlSource) ms.getSqlSource());
                 if (providerMethodArgumentNames != null && providerMethodArgumentNames.length == 1) {
                     paramMap.put(providerMethodArgumentNames[0], parameterObject);
                     paramMap.put("param1", parameterObject);
@@ -148,7 +153,8 @@ public abstract class AbstractPaging extends AbstractDialect {
             }
             // 动态sql时的判断条件不会出现在ParameterMapping中，但是必须有，所以这里需要收集所有的getter属性
             // TypeHandlerRegistry可以直接处理的会作为一个直接使用的对象进行处理
-            boolean hasTypeHandler = ms.getConfiguration().getTypeHandlerRegistry().hasTypeHandler(parameterObject.getClass());
+            boolean hasTypeHandler = ms.getConfiguration().getTypeHandlerRegistry()
+                    .hasTypeHandler(parameterObject.getClass());
             org.apache.ibatis.reflection.MetaObject metaObject = MetaObject.forObject(parameterObject);
             // 需要针对注解形式的MyProviderSqlSource保存原值
             if (!hasTypeHandler) {
@@ -160,11 +166,9 @@ public abstract class AbstractPaging extends AbstractDialect {
             if (boundSql.getParameterMappings() != null && boundSql.getParameterMappings().size() > 0) {
                 for (ParameterMapping parameterMapping : boundSql.getParameterMappings()) {
                     String name = parameterMapping.getProperty();
-                    if (!name.equals(PAGEPARAMETER_FIRST)
-                            && !name.equals(PAGEPARAMETER_SECOND)
+                    if (!name.equals(PAGEPARAMETER_FIRST) && !name.equals(PAGEPARAMETER_SECOND)
                             && paramMap.get(name) == null) {
-                        if (hasTypeHandler
-                                || parameterMapping.getJavaType().equals(parameterObject.getClass())) {
+                        if (hasTypeHandler || parameterMapping.getJavaType().equals(parameterObject.getClass())) {
                             paramMap.put(name, parameterObject);
                             break;
                         }
@@ -185,10 +189,12 @@ public abstract class AbstractPaging extends AbstractDialect {
      * @param pageKey  CacheKey
      * @return 结果
      */
-    public abstract Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page, BoundSql boundSql, CacheKey pageKey);
+    public abstract Object processPageParameter(MappedStatement ms, Map<String, Object> paramMap, Page page,
+            BoundSql boundSql, CacheKey pageKey);
 
     @Override
-    public boolean beforePage(MappedStatement ms, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
+    public boolean beforePage(MappedStatement ms, Object parameterObject,
+            org.apache.ibatis.session.RowBounds rowBounds) {
         Page page = getLocalPage();
         if (page.isOrderByOnly() || page.getPageSize() > 0) {
             return true;
@@ -197,7 +203,8 @@ public abstract class AbstractPaging extends AbstractDialect {
     }
 
     @Override
-    public String getPageSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds, CacheKey pageKey) {
+    public String getPageSql(MappedStatement ms, BoundSql boundSql, Object parameterObject,
+            org.apache.ibatis.session.RowBounds rowBounds, CacheKey pageKey) {
         String sql = boundSql.getSql();
         Page page = getLocalPage();
         // 支持 order by
@@ -259,8 +266,10 @@ public abstract class AbstractPaging extends AbstractDialect {
     protected void handleParameter(BoundSql boundSql, MappedStatement ms, Class<?> firstClass, Class<?> secondClass) {
         if (boundSql.getParameterMappings() != null) {
             List<ParameterMapping> newParameterMappings = new ArrayList<>(boundSql.getParameterMappings());
-            newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_FIRST, firstClass).build());
-            newParameterMappings.add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_SECOND, secondClass).build());
+            newParameterMappings
+                    .add(new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_FIRST, firstClass).build());
+            newParameterMappings.add(
+                    new ParameterMapping.Builder(ms.getConfiguration(), PAGEPARAMETER_SECOND, secondClass).build());
             org.apache.ibatis.reflection.MetaObject metaObject = MetaObject.forObject(boundSql);
             metaObject.setValue("parameterMappings", newParameterMappings);
         }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.driver.wmi;
 
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
@@ -53,9 +53,9 @@ public final class OhmHardware {
      * @return The sensor value.
      */
     public static WmiResult<IdentifierProperty> queryHwIdentifier(WmiQueryHandler h, String typeToQuery,
-                                                                  String typeName) {
-        WmiQuery<IdentifierProperty> cpuIdentifierQuery = new WmiQuery<>(WmiKit.OHM_NAMESPACE, HARDWARE + " WHERE " + typeToQuery + "Type=\"" + typeName + '\"',
-                IdentifierProperty.class);
+            String typeName) {
+        WmiQuery<IdentifierProperty> cpuIdentifierQuery = new WmiQuery<>(WmiKit.OHM_NAMESPACE,
+                HARDWARE + " WHERE " + typeToQuery + "Type=\"" + typeName + '\"', IdentifierProperty.class);
         return h.queryWMI(cpuIdentifierQuery, false);
     }
 

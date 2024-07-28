@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.support;
 
 import jakarta.annotation.Priority;
@@ -48,13 +48,11 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 /**
- * This class logs request and response info masking HTTP header values that are known to
- * contain sensitive information.
+ * This class logs request and response info masking HTTP header values that are known to contain sensitive information.
  *
- * This class was patterned after org.glassfish.jersey.logging.LoggingInterceptor, but written in
- * such a way that it could be sub-classed and have its behavior modified.
+ * This class was patterned after org.glassfish.jersey.logging.LoggingInterceptor, but written in such a way that it
+ * could be sub-classed and have its behavior modified.
  */
 @Priority(Integer.MIN_VALUE)
 public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponseFilter, WriterInterceptor {
@@ -62,8 +60,8 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
     /**
      * Default list of header names that should be masked.
      */
-    public static final List<String> DEFAULT_MASKED_HEADER_NAMES =
-            Collections.unmodifiableList(Arrays.asList("PRIVATE-TOKEN", "Authorization", "Proxy-Authorization"));
+    public static final List<String> DEFAULT_MASKED_HEADER_NAMES = Collections
+            .unmodifiableList(Arrays.asList("PRIVATE-TOKEN", "Authorization", "Proxy-Authorization"));
 
     /**
      * Prefix for request log entries.
@@ -76,7 +74,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
     protected static final String RESPONSE_PREFIX = "< ";
 
     /**
-     * Prefix that marks the beginning of a request or response section. 
+     * Prefix that marks the beginning of a request or response section.
      */
     protected static final String SECTION_PREFIX = "- ";
 
@@ -100,7 +98,7 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
      * Creates a masking logging filter for the specified logger with entity logging disabled.
      *
      * @param logger the logger to log messages to
-     * @param level level at which the messages will be logged
+     * @param level  level at which the messages will be logged
      */
     public MaskingLoggingFilter(final Logger logger, final Level level) {
         this(logger, level, 0, null);
@@ -109,11 +107,11 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
     /**
      * Creates a masking logging filter for the specified logger.
      *
-     * @param logger the logger to log messages to
-     * @param level level at which the messages will be logged
-     * @param maxEntitySize maximum number of entity bytes to be logged.  When logging if the maxEntitySize
-     * is reached, the entity logging  will be truncated at maxEntitySize and "...more..." will be added at
-     * the end of the log entry. If maxEntitySize is &lt;= 0, entity logging will be disabled
+     * @param logger        the logger to log messages to
+     * @param level         level at which the messages will be logged
+     * @param maxEntitySize maximum number of entity bytes to be logged. When logging if the maxEntitySize is reached,
+     *                      the entity logging will be truncated at maxEntitySize and "...more..." will be added at the
+     *                      end of the log entry. If maxEntitySize is &lt;= 0, entity logging will be disabled
      */
     public MaskingLoggingFilter(final Logger logger, final Level level, final int maxEntitySize) {
         this(logger, level, maxEntitySize, null);
@@ -122,8 +120,8 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
     /**
      * Creates a masking logging filter for the specified logger with entity logging disabled.
      *
-     * @param logger the logger to log messages to
-     * @param level level at which the messages will be logged
+     * @param logger            the logger to log messages to
+     * @param level             level at which the messages will be logged
      * @param maskedHeaderNames a list of header names that should have the values masked
      */
     public MaskingLoggingFilter(final Logger logger, final Level level, final List<String> maskedHeaderNames) {
@@ -133,14 +131,16 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
     /**
      * Creates a masking logging filter for the specified logger.
      *
-     * @param logger the logger to log messages to
-     * @param level level at which the messages will be logged
-     * @param maxEntitySize maximum number of entity bytes to be logged.  When logging if the maxEntitySize
-     * is reached, the entity logging  will be truncated at maxEntitySize and "...more..." will be added at
-     * the end of the log entry. If maxEntitySize is &lt;= 0, entity logging will be disabled
+     * @param logger            the logger to log messages to
+     * @param level             level at which the messages will be logged
+     * @param maxEntitySize     maximum number of entity bytes to be logged. When logging if the maxEntitySize is
+     *                          reached, the entity logging will be truncated at maxEntitySize and "...more..." will be
+     *                          added at the end of the log entry. If maxEntitySize is &lt;= 0, entity logging will be
+     *                          disabled
      * @param maskedHeaderNames a list of header names that should have the values masked
      */
-    public MaskingLoggingFilter(final Logger logger, final Level level, final int maxEntitySize, final List<String> maskedHeaderNames) {
+    public MaskingLoggingFilter(final Logger logger, final Level level, final int maxEntitySize,
+            final List<String> maskedHeaderNames) {
         this.logger = logger;
         this.level = level;
         this.maxEntitySize = maxEntitySize;
@@ -153,8 +153,8 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
     /**
      * Set the list of header names to mask values for. If null, will clear the header names to mask.
      *
-     * @param maskedHeaderNames a list of header names that should have the values masked, if null, will clear
-     * the header names to mask
+     * @param maskedHeaderNames a list of header names that should have the values masked, if null, will clear the
+     *                          header names to mask
      */
     public void setMaskedHeaderNames(final List<String> maskedHeaderNames) {
         this.maskedHeaderNames.clear();
@@ -190,44 +190,38 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
         return (sb);
     }
 
-    protected void printRequestLine(final StringBuilder sb, final String note, final long id, final String method, final URI uri) {
-        appendId(sb, id).append(SECTION_PREFIX)
-                .append(note)
-                .append(" on thread ").append(Thread.currentThread().getName())
-                .append('\n');
-        appendId(sb, id).append(REQUEST_PREFIX).append(method).append(' ')
-                .append(uri.toASCIIString()).append('\n');
+    protected void printRequestLine(final StringBuilder sb, final String note, final long id, final String method,
+            final URI uri) {
+        appendId(sb, id).append(SECTION_PREFIX).append(note).append(" on thread ")
+                .append(Thread.currentThread().getName()).append('\n');
+        appendId(sb, id).append(REQUEST_PREFIX).append(method).append(' ').append(uri.toASCIIString()).append('\n');
     }
 
     protected void printResponseLine(final StringBuilder sb, final String note, final long id, final int status) {
-        appendId(sb, id).append(SECTION_PREFIX)
-                .append(note)
-                .append(" on thread ").append(Thread.currentThread().getName()).append('\n');
-        appendId(sb, id).append(RESPONSE_PREFIX)
-                .append(Integer.toString(status))
-                .append('\n');
+        appendId(sb, id).append(SECTION_PREFIX).append(note).append(" on thread ")
+                .append(Thread.currentThread().getName()).append('\n');
+        appendId(sb, id).append(RESPONSE_PREFIX).append(Integer.toString(status)).append('\n');
     }
 
     protected Set<Entry<String, List<String>>> getSortedHeaders(final Set<Entry<String, List<String>>> headers) {
         final TreeSet<Entry<String, List<String>>> sortedHeaders = new TreeSet<Entry<String, List<String>>>(
-                (Entry<String, List<String>> o1, Entry<String, List<String>> o2) -> o1.getKey().compareToIgnoreCase(o2.getKey()));
+                (Entry<String, List<String>> o1, Entry<String, List<String>> o2) -> o1.getKey()
+                        .compareToIgnoreCase(o2.getKey()));
         sortedHeaders.addAll(headers);
         return sortedHeaders;
     }
 
     /**
-     * Logs each of the HTTP headers, masking the value of the header if the header key is
-     * in the list of masked header names.
+     * Logs each of the HTTP headers, masking the value of the header if the header key is in the list of masked header
+     * names.
      *
-     * @param sb the StringBuilder to build up the logging info in
-     * @param id the ID for the logging line
-     * @param prefix the logging line prefix character
+     * @param sb      the StringBuilder to build up the logging info in
+     * @param id      the ID for the logging line
+     * @param prefix  the logging line prefix character
      * @param headers a MultiValue map holding the header keys and values
      */
-    protected void printHeaders(final StringBuilder sb,
-                                final long id,
-                                final String prefix,
-                                final MultivaluedMap<String, String> headers) {
+    protected void printHeaders(final StringBuilder sb, final long id, final String prefix,
+            final MultivaluedMap<String, String> headers) {
 
         getSortedHeaders(headers.entrySet()).forEach(h -> {
 
@@ -264,7 +258,8 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
         sb.append('\n');
     }
 
-    private InputStream logResponseEntity(final StringBuilder sb, InputStream stream, final Charset charset) throws IOException {
+    private InputStream logResponseEntity(final StringBuilder sb, InputStream stream, final Charset charset)
+            throws IOException {
 
         if (maxEntitySize <= 0) {
             return (stream);
@@ -337,16 +332,16 @@ public class MaskingLoggingFilter implements ClientRequestFilter, ClientResponse
         }
 
         MediaType mediaType = context.getMediaType();
-        if (mediaType.isCompatible(MediaType.APPLICATION_JSON_TYPE) ||
-                mediaType.isCompatible(MediaType.APPLICATION_FORM_URLENCODED_TYPE)) {
+        if (mediaType.isCompatible(MediaType.APPLICATION_JSON_TYPE)
+                || mediaType.isCompatible(MediaType.APPLICATION_FORM_URLENCODED_TYPE)) {
             log(stream.getStringBuilder(MessageUtils.getCharset(mediaType)));
         }
 
     }
 
     /**
-     * This class is responsible for logging the request entities, it will truncate at maxEntitySize
-     * and add "...more..." to the end of the entity log string.
+     * This class is responsible for logging the request entities, it will truncate at maxEntitySize and add
+     * "...more..." to the end of the entity log string.
      */
     protected class LoggingStream extends FilterOutputStream {
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.common.basic;
 
 import org.miaixz.bus.mapper.annotation.RegisterMapper;
@@ -39,8 +39,6 @@ import org.miaixz.bus.mapper.common.basic.update.UpdateByPrimaryKeySelectiveMapp
  * @since Java 17+
  */
 @RegisterMapper
-public interface BasicUpdateMapper<T> extends
-        UpdateByPrimaryKeyMapper<T>,
-        UpdateByPrimaryKeySelectiveMapper<T> {
+public interface BasicUpdateMapper<T> extends UpdateByPrimaryKeyMapper<T>, UpdateByPrimaryKeySelectiveMapper<T> {
 
 }

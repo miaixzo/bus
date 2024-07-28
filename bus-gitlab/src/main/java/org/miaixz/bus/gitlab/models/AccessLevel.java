@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -36,7 +36,8 @@ import java.util.Map;
 
 public enum AccessLevel {
 
-    INVALID(-1), NONE(0), MINIMAL_ACCESS(5), GUEST(10), REPORTER(20), DEVELOPER(30), MAINTAINER(40), OWNER(50), ADMIN(60);
+    INVALID(-1), NONE(0), MINIMAL_ACCESS(5), GUEST(10), REPORTER(20), DEVELOPER(30), MAINTAINER(40), OWNER(50),
+    ADMIN(60);
 
     private static Map<Integer, AccessLevel> valuesMap = new HashMap<>(9);
     public final Integer value;
@@ -44,6 +45,7 @@ public enum AccessLevel {
     AccessLevel(int value) {
         this.value = value;
     }
+
     static {
         for (AccessLevel accessLevel : AccessLevel.values())
             valuesMap.put(accessLevel.value, accessLevel);

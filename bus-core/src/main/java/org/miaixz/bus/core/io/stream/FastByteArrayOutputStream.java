@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.stream;
 
 import org.miaixz.bus.core.io.buffer.FastByteBuffer;
@@ -36,10 +36,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 /**
- * 基于快速缓冲FastByteBuffer的OutputStream，随着数据的增长自动扩充缓冲区
- * 可以通过{@link #toByteArray()}和 {@link #toString()}来获取数据
- * {@link #close()}方法无任何效果，当流被关闭后不会抛出IOException
- * 这种设计避免重新分配内存块而是分配新增的缓冲区，缓冲区不会被GC，数据也不会被拷贝到其他缓冲区。
+ * 基于快速缓冲FastByteBuffer的OutputStream，随着数据的增长自动扩充缓冲区 可以通过{@link #toByteArray()}和 {@link #toString()}来获取数据
+ * {@link #close()}方法无任何效果，当流被关闭后不会抛出IOException 这种设计避免重新分配内存块而是分配新增的缓冲区，缓冲区不会被GC，数据也不会被拷贝到其他缓冲区。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -122,7 +120,6 @@ public class FastByteArrayOutputStream extends OutputStream {
         }
     }
 
-
     /**
      * 转为Byte数组
      *
@@ -133,8 +130,7 @@ public class FastByteArrayOutputStream extends OutputStream {
     }
 
     /**
-     * 转为Byte数组，如果缓冲区中的数据长度固定，则直接返回原始数组
-     * 注意此方法共享数组，不能修改数组内容！
+     * 转为Byte数组，如果缓冲区中的数据长度固定，则直接返回原始数组 注意此方法共享数组，不能修改数组内容！
      *
      * @return Byte数组
      */
@@ -154,8 +150,7 @@ public class FastByteArrayOutputStream extends OutputStream {
      * @return 字符串
      */
     public String toString(final java.nio.charset.Charset charset) {
-        return new String(toByteArray(),
-                ObjectKit.defaultIfNull(charset, Charset::defaultCharset));
+        return new String(toByteArray(), ObjectKit.defaultIfNull(charset, Charset::defaultCharset));
     }
 
 }

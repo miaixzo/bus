@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.image;
 
 import org.miaixz.bus.core.Builder;
@@ -37,16 +37,16 @@ import java.util.Map;
 /**
  * 定义和管理键和关联值的集合构建器，提供配置包括：
  * <ol>
- *     <li>{@link RenderingHints#KEY_ANTIALIASING}        抗锯齿 </li>
- *     <li>{@link RenderingHints#KEY_TEXT_ANTIALIASING}   文本抗锯齿</li>
- *     <li>{@link RenderingHints#KEY_COLOR_RENDERING}     颜色着色的渲染方式</li>
- *     <li>{@link RenderingHints#KEY_DITHERING}           抖动</li>
- *     <li>{@link RenderingHints#KEY_FRACTIONALMETRICS}   字体规格</li>
- *     <li>{@link RenderingHints#KEY_INTERPOLATION}       内插</li>
- *     <li>{@link RenderingHints#KEY_ALPHA_INTERPOLATION} alpha合成微调</li>
- *     <li>{@link RenderingHints#KEY_RENDERING}           着色</li>
- *     <li>{@link RenderingHints#KEY_STROKE_CONTROL}      笔划规范化控制</li>
- *     <li>{@link RenderingHints#KEY_TEXT_LCD_CONTRAST}   LCD文本对比呈现</li>
+ * <li>{@link RenderingHints#KEY_ANTIALIASING} 抗锯齿</li>
+ * <li>{@link RenderingHints#KEY_TEXT_ANTIALIASING} 文本抗锯齿</li>
+ * <li>{@link RenderingHints#KEY_COLOR_RENDERING} 颜色着色的渲染方式</li>
+ * <li>{@link RenderingHints#KEY_DITHERING} 抖动</li>
+ * <li>{@link RenderingHints#KEY_FRACTIONALMETRICS} 字体规格</li>
+ * <li>{@link RenderingHints#KEY_INTERPOLATION} 内插</li>
+ * <li>{@link RenderingHints#KEY_ALPHA_INTERPOLATION} alpha合成微调</li>
+ * <li>{@link RenderingHints#KEY_RENDERING} 着色</li>
+ * <li>{@link RenderingHints#KEY_STROKE_CONTROL} 笔划规范化控制</li>
+ * <li>{@link RenderingHints#KEY_TEXT_LCD_CONTRAST} LCD文本对比呈现</li>
  * </ol>
  *
  * @author Kimi Liu
@@ -124,8 +124,7 @@ public class RenderingHintsBuilder implements Builder<RenderingHints> {
     }
 
     /**
-     * 设置控制如何处理抖动
-     * 抖动是用一组有限的颜色合成出一个更大范围的颜色的过程，方法是给相邻像素着色以产生不在该组颜色中的新的颜色幻觉。
+     * 设置控制如何处理抖动 抖动是用一组有限的颜色合成出一个更大范围的颜色的过程，方法是给相邻像素着色以产生不在该组颜色中的新的颜色幻觉。
      *
      * @param dither 如何处理抖动，{@code null}表示移除此选项
      * @return this
@@ -157,9 +156,7 @@ public class RenderingHintsBuilder implements Builder<RenderingHints> {
     }
 
     /**
-     * 设置怎样做内插
-     * 在对一个源图像做变形时，变形后的像素很少能够恰好对应目标像素位置。
-     * 在这种情况下，每个变形后的像素的颜色值不得不由周围的像素决定。内插就是实现上述过程。
+     * 设置怎样做内插 在对一个源图像做变形时，变形后的像素很少能够恰好对应目标像素位置。 在这种情况下，每个变形后的像素的颜色值不得不由周围的像素决定。内插就是实现上述过程。
      *
      * @param interpolation 内插方式，{@code null}表示移除此选项
      * @return this
@@ -223,8 +220,7 @@ public class RenderingHintsBuilder implements Builder<RenderingHints> {
     }
 
     /**
-     * 设置LCD文本对比呈现
-     * ，100 到 250 之间的正整数。通常，有用值的范围缩小到 140-180
+     * 设置LCD文本对比呈现 ，100 到 250 之间的正整数。通常，有用值的范围缩小到 140-180
      *
      * @param textLCDContrast LCD文本对比呈现，100 到 250 之间的正整数
      * @return this
@@ -413,8 +409,7 @@ public class RenderingHintsBuilder implements Builder<RenderingHints> {
     }
 
     /**
-     * 控制如何处理抖动
-     * 抖动是用一组有限的颜色合成出一个更大范围的颜色的过程，方法是给相邻像素着色以产生不在该组颜色中的新的颜色幻觉。
+     * 控制如何处理抖动 抖动是用一组有限的颜色合成出一个更大范围的颜色的过程，方法是给相邻像素着色以产生不在该组颜色中的新的颜色幻觉。
      *
      * @see RenderingHints#VALUE_DITHER_ENABLE
      * @see RenderingHints#VALUE_DITHER_DISABLE
@@ -488,9 +483,7 @@ public class RenderingHintsBuilder implements Builder<RenderingHints> {
     }
 
     /**
-     * 内插
-     * 在对一个源图像做变形时，变形后的像素很少能够恰好对应目标像素位置。
-     * 在这种情况下，每个变形后的像素的颜色值不得不由周围的像素决定。内插就是实现上述过程。
+     * 内插 在对一个源图像做变形时，变形后的像素很少能够恰好对应目标像素位置。 在这种情况下，每个变形后的像素的颜色值不得不由周围的像素决定。内插就是实现上述过程。
      *
      * @see RenderingHints#VALUE_INTERPOLATION_BICUBIC
      * @see RenderingHints#VALUE_INTERPOLATION_BILINEAR

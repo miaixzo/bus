@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.safety.boot;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -55,7 +55,8 @@ public class BootClassLoader extends LaunchedClassLoader {
 
     private final BootURLHandler bootURLHandler;
 
-    public BootClassLoader(URL[] urls, ClassLoader parent, DecryptorProvider decryptorProvider, EncryptorProvider encryptorProvider, Key key) throws Exception {
+    public BootClassLoader(URL[] urls, ClassLoader parent, DecryptorProvider decryptorProvider,
+            EncryptorProvider encryptorProvider, Key key) throws Exception {
         super(true, urls, parent);
         this.bootURLHandler = new BootURLHandler(decryptorProvider, encryptorProvider, key, this);
     }

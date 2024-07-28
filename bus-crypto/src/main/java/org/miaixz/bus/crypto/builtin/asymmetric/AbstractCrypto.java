@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.builtin.asymmetric;
 
 import java.security.PrivateKey;
@@ -37,8 +37,7 @@ import java.security.PublicKey;
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class AbstractCrypto<T extends AbstractCrypto<T>>
-        extends Asymmetric<T>
+public abstract class AbstractCrypto<T extends AbstractCrypto<T>> extends Asymmetric<T>
         implements Encryptor, Decryptor {
 
     private static final long serialVersionUID = -1L;
@@ -46,8 +45,7 @@ public abstract class AbstractCrypto<T extends AbstractCrypto<T>>
     /**
      * 构造
      * <p>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param algorithm  算法
      * @param privateKey 私钥

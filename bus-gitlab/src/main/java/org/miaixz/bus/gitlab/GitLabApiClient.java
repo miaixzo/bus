@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab;
 
 import jakarta.ws.rs.client.*;
@@ -54,7 +54,6 @@ import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-
 /**
  * This class utilizes the Jersey client package to communicate with a GitLab API endpoint.
  */
@@ -80,11 +79,11 @@ public class GitLabApiClient implements AutoCloseable {
     private Integer readTimeout;
 
     /**
-     * Construct an instance to communicate with a GitLab API server using the specified GitLab API version,
-     * server URL, private token, and secret token.
+     * Construct an instance to communicate with a GitLab API server using the specified GitLab API version, server URL,
+     * private token, and secret token.
      *
-     * @param apiVersion the ApiVersion specifying which version of the API to use
-     * @param hostUrl the URL to the GitLab API server
+     * @param apiVersion   the ApiVersion specifying which version of the API to use
+     * @param hostUrl      the URL to the GitLab API server
      * @param privateToken the private token to authenticate with
      */
     public GitLabApiClient(GitLabApi.ApiVersion apiVersion, String hostUrl, String privateToken) {
@@ -92,15 +91,16 @@ public class GitLabApiClient implements AutoCloseable {
     }
 
     /**
-     * Construct an instance to communicate with a GitLab API server using the specified GitLab API version,
-     * server URL, auth token type, private or access token, and secret token.
+     * Construct an instance to communicate with a GitLab API server using the specified GitLab API version, server URL,
+     * auth token type, private or access token, and secret token.
      *
      * @param apiVersion the ApiVersion specifying which version of the API to use
-     * @param hostUrl the URL to the GitLab API server
-     * @param tokenType the type of auth the token is for, PRIVATE or ACCESS
-     * @param authToken the token to authenticate with
+     * @param hostUrl    the URL to the GitLab API server
+     * @param tokenType  the type of auth the token is for, PRIVATE or ACCESS
+     * @param authToken  the token to authenticate with
      */
-    public GitLabApiClient(GitLabApi.ApiVersion apiVersion, String hostUrl, Constants.TokenType tokenType, String authToken) {
+    public GitLabApiClient(GitLabApi.ApiVersion apiVersion, String hostUrl, Constants.TokenType tokenType,
+            String authToken) {
         this(apiVersion, hostUrl, tokenType, authToken, null);
     }
 
@@ -108,7 +108,7 @@ public class GitLabApiClient implements AutoCloseable {
      * Construct an instance to communicate with a GitLab API server using GitLab API version 4, and the specified
      * server URL, private token, and secret token.
      *
-     * @param hostUrl the URL to the GitLab API server
+     * @param hostUrl      the URL to the GitLab API server
      * @param privateToken the private token to authenticate with
      */
     public GitLabApiClient(String hostUrl, String privateToken) {
@@ -119,7 +119,7 @@ public class GitLabApiClient implements AutoCloseable {
      * Construct an instance to communicate with a GitLab API server using GitLab API version 4, and the specified
      * server URL, private token, and secret token.
      *
-     * @param hostUrl the URL to the GitLab API server
+     * @param hostUrl   the URL to the GitLab API server
      * @param tokenType the type of auth the token is for, PRIVATE or ACCESS
      * @param authToken the token to authenticate with
      */
@@ -128,29 +128,30 @@ public class GitLabApiClient implements AutoCloseable {
     }
 
     /**
-     * Construct an instance to communicate with a GitLab API server using the specified GitLab API version,
-     * server URL, private token, and secret token.
+     * Construct an instance to communicate with a GitLab API server using the specified GitLab API version, server URL,
+     * private token, and secret token.
      *
-     * @param apiVersion the ApiVersion specifying which version of the API to use
-     * @param hostUrl the URL to the GitLab API server
+     * @param apiVersion   the ApiVersion specifying which version of the API to use
+     * @param hostUrl      the URL to the GitLab API server
      * @param privateToken the private token to authenticate with
-     * @param secretToken use this token to validate received payloads
+     * @param secretToken  use this token to validate received payloads
      */
     public GitLabApiClient(GitLabApi.ApiVersion apiVersion, String hostUrl, String privateToken, String secretToken) {
         this(apiVersion, hostUrl, Constants.TokenType.PRIVATE, privateToken, secretToken, null);
     }
 
     /**
-     * Construct an instance to communicate with a GitLab API server using the specified GitLab API version,
-     * server URL, private token, and secret token.
+     * Construct an instance to communicate with a GitLab API server using the specified GitLab API version, server URL,
+     * private token, and secret token.
      *
-     * @param apiVersion the ApiVersion specifying which version of the API to use
-     * @param hostUrl the URL to the GitLab API server
-     * @param tokenType the type of auth the token is for, PRIVATE or ACCESS
-     * @param authToken the token to authenticate with
+     * @param apiVersion  the ApiVersion specifying which version of the API to use
+     * @param hostUrl     the URL to the GitLab API server
+     * @param tokenType   the type of auth the token is for, PRIVATE or ACCESS
+     * @param authToken   the token to authenticate with
      * @param secretToken use this token to validate received payloads
      */
-    public GitLabApiClient(GitLabApi.ApiVersion apiVersion, String hostUrl, Constants.TokenType tokenType, String authToken, String secretToken) {
+    public GitLabApiClient(GitLabApi.ApiVersion apiVersion, String hostUrl, Constants.TokenType tokenType,
+            String authToken, String secretToken) {
         this(apiVersion, hostUrl, tokenType, authToken, secretToken, null);
     }
 
@@ -158,9 +159,9 @@ public class GitLabApiClient implements AutoCloseable {
      * Construct an instance to communicate with a GitLab API server using GitLab API version 4, and the specified
      * server URL, private token, and secret token.
      *
-     * @param hostUrl the URL to the GitLab API server
+     * @param hostUrl      the URL to the GitLab API server
      * @param privateToken the private token to authenticate with
-     * @param secretToken use this token to validate received payloads
+     * @param secretToken  use this token to validate received payloads
      */
     public GitLabApiClient(String hostUrl, String privateToken, String secretToken) {
         this(GitLabApi.ApiVersion.V4, hostUrl, Constants.TokenType.PRIVATE, privateToken, secretToken, null);
@@ -170,9 +171,9 @@ public class GitLabApiClient implements AutoCloseable {
      * Construct an instance to communicate with a GitLab API server using GitLab API version 4, and the specified
      * server URL, private token, and secret token.
      *
-     * @param hostUrl the URL to the GitLab API server
-     * @param tokenType the type of auth the token is for, PRIVATE or ACCESS
-     * @param authToken the token to authenticate with
+     * @param hostUrl     the URL to the GitLab API server
+     * @param tokenType   the type of auth the token is for, PRIVATE or ACCESS
+     * @param authToken   the token to authenticate with
      * @param secretToken use this token to validate received payloads
      */
     public GitLabApiClient(String hostUrl, Constants.TokenType tokenType, String authToken, String secretToken) {
@@ -183,41 +184,45 @@ public class GitLabApiClient implements AutoCloseable {
      * Construct an instance to communicate with a GitLab API server using GitLab API version 4, and the specified
      * server URL and private token.
      *
-     * @param hostUrl the URL to the GitLab API server
-     * @param privateToken the private token to authenticate with
-     * @param secretToken use this token to validate received payloads
+     * @param hostUrl                the URL to the GitLab API server
+     * @param privateToken           the private token to authenticate with
+     * @param secretToken            use this token to validate received payloads
      * @param clientConfigProperties the properties given to Jersey's clientconfig
      */
-    public GitLabApiClient(String hostUrl, String privateToken, String secretToken, Map<String, Object> clientConfigProperties) {
-        this(GitLabApi.ApiVersion.V4, hostUrl, Constants.TokenType.PRIVATE, privateToken, secretToken, clientConfigProperties);
+    public GitLabApiClient(String hostUrl, String privateToken, String secretToken,
+            Map<String, Object> clientConfigProperties) {
+        this(GitLabApi.ApiVersion.V4, hostUrl, Constants.TokenType.PRIVATE, privateToken, secretToken,
+                clientConfigProperties);
     }
 
     /**
-     * Construct an instance to communicate with a GitLab API server using the specified GitLab API version,
-     * server URL and private token.
+     * Construct an instance to communicate with a GitLab API server using the specified GitLab API version, server URL
+     * and private token.
      *
-     * @param apiVersion the ApiVersion specifying which version of the API to use
-     * @param hostUrl the URL to the GitLab API server
-     * @param privateToken the private token to authenticate with
-     * @param secretToken use this token to validate received payloads
+     * @param apiVersion             the ApiVersion specifying which version of the API to use
+     * @param hostUrl                the URL to the GitLab API server
+     * @param privateToken           the private token to authenticate with
+     * @param secretToken            use this token to validate received payloads
      * @param clientConfigProperties the properties given to Jersey's clientconfig
      */
-    public GitLabApiClient(GitLabApi.ApiVersion apiVersion, String hostUrl, String privateToken, String secretToken, Map<String, Object> clientConfigProperties) {
+    public GitLabApiClient(GitLabApi.ApiVersion apiVersion, String hostUrl, String privateToken, String secretToken,
+            Map<String, Object> clientConfigProperties) {
         this(apiVersion, hostUrl, Constants.TokenType.PRIVATE, privateToken, secretToken, clientConfigProperties);
     }
 
     /**
-     * Construct an instance to communicate with a GitLab API server using the specified GitLab API version,
-     * server URL and private token.
+     * Construct an instance to communicate with a GitLab API server using the specified GitLab API version, server URL
+     * and private token.
      *
-     * @param apiVersion the ApiVersion specifying which version of the API to use
-     * @param hostUrl the URL to the GitLab API server
-     * @param tokenType the type of auth the token is for, PRIVATE or ACCESS
-     * @param authToken the private token to authenticate with
-     * @param secretToken use this token to validate received payloads
+     * @param apiVersion             the ApiVersion specifying which version of the API to use
+     * @param hostUrl                the URL to the GitLab API server
+     * @param tokenType              the type of auth the token is for, PRIVATE or ACCESS
+     * @param authToken              the private token to authenticate with
+     * @param secretToken            use this token to validate received payloads
      * @param clientConfigProperties the properties given to Jersey's clientconfig
      */
-    public GitLabApiClient(GitLabApi.ApiVersion apiVersion, String hostUrl, Constants.TokenType tokenType, String authToken, String secretToken, Map<String, Object> clientConfigProperties) {
+    public GitLabApiClient(GitLabApi.ApiVersion apiVersion, String hostUrl, Constants.TokenType tokenType,
+            String authToken, String secretToken, Map<String, Object> clientConfigProperties) {
 
         // Remove the trailing "/" from the hostUrl if present
         this.hostUrl = (hostUrl.endsWith("/") ? hostUrl.replaceAll("/$", "") : hostUrl);
@@ -264,16 +269,18 @@ public class GitLabApiClient implements AutoCloseable {
     /**
      * Enable the logging of the requests to and the responses from the GitLab server API.
      *
-     * @param logger the Logger instance to log to
-     * @param level the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
-     * @param maxEntityLength maximum number of entity bytes to be logged.  When logging if the maxEntitySize
-     * is reached, the entity logging  will be truncated at maxEntitySize and "...more..." will be added at
-     * the end of the log entry. If maxEntitySize is <= 0, entity logging will be disabled
+     * @param logger            the Logger instance to log to
+     * @param level             the logging level (SEVERE, WARNING, INFO, CONFIG, FINE, FINER, FINEST)
+     * @param maxEntityLength   maximum number of entity bytes to be logged. When logging if the maxEntitySize is
+     *                          reached, the entity logging will be truncated at maxEntitySize and "...more..." will be
+     *                          added at the end of the log entry. If maxEntitySize is <= 0, entity logging will be
+     *                          disabled
      * @param maskedHeaderNames a list of header names that should have the values masked
      */
     void enableRequestResponseLogging(Logger logger, Level level, int maxEntityLength, List<String> maskedHeaderNames) {
 
-        MaskingLoggingFilter loggingFilter = new MaskingLoggingFilter(logger, level, maxEntityLength, maskedHeaderNames);
+        MaskingLoggingFilter loggingFilter = new MaskingLoggingFilter(logger, level, maxEntityLength,
+                maskedHeaderNames);
         clientConfig.register(loggingFilter);
 
         // Recreate the Client instance if already created.
@@ -286,7 +293,7 @@ public class GitLabApiClient implements AutoCloseable {
      * Sets the per request connect and read timeout.
      *
      * @param connectTimeout the per request connect timeout in milliseconds, can be null to use default
-     * @param readTimeout the per request read timeout in milliseconds, can be null to use default
+     * @param readTimeout    the per request read timeout in milliseconds, can be null to use default
      */
     void setRequestTimeout(Integer connectTimeout, Integer readTimeout) {
         this.connectTimeout = connectTimeout;
@@ -350,8 +357,7 @@ public class GitLabApiClient implements AutoCloseable {
     }
 
     /**
-     * Construct a REST URL with the specified path arguments using
-     * Gitlab base url.
+     * Construct a REST URL with the specified path arguments using Gitlab base url.
      *
      * @param pathArgs variable list of arguments used to build the URI
      * @return a REST URL with the specified path arguments
@@ -393,11 +399,11 @@ public class GitLabApiClient implements AutoCloseable {
     }
 
     /**
-     * Perform an HTTP GET call with the specified query parameters and path objects, returning
-     * a ClientResponse instance with the data returned from the endpoint.
+     * Perform an HTTP GET call with the specified query parameters and path objects, returning a ClientResponse
+     * instance with the data returned from the endpoint.
      *
      * @param queryParams multivalue map of request parameters
-     * @param pathArgs variable list of arguments used to build the URI
+     * @param pathArgs    variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws IOException if an error occurs while constructing the URL
      */
@@ -407,11 +413,11 @@ public class GitLabApiClient implements AutoCloseable {
     }
 
     /**
-     * Perform an HTTP GET call with the specified query parameters and URL, returning
-     * a ClientResponse instance with the data returned from the endpoint.
+     * Perform an HTTP GET call with the specified query parameters and URL, returning a ClientResponse instance with
+     * the data returned from the endpoint.
      *
      * @param queryParams multivalue map of request parameters
-     * @param url the fully formed path to the GitLab API endpoint
+     * @param url         the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
      */
     protected Response get(MultivaluedMap<String, String> queryParams, URL url) {
@@ -419,27 +425,28 @@ public class GitLabApiClient implements AutoCloseable {
     }
 
     /**
-     * Perform an HTTP GET call with the specified query parameters and path objects, returning
-     * a ClientResponse instance with the data returned from the endpoint.
+     * Perform an HTTP GET call with the specified query parameters and path objects, returning a ClientResponse
+     * instance with the data returned from the endpoint.
      *
      * @param queryParams multivalue map of request parameters
-     * @param accepts if non-empty will set the Accepts header to this value
-     * @param pathArgs variable list of arguments used to build the URI
+     * @param accepts     if non-empty will set the Accepts header to this value
+     * @param pathArgs    variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws IOException if an error occurs while constructing the URL
      */
-    protected Response getWithAccepts(MultivaluedMap<String, String> queryParams, String accepts, Object... pathArgs) throws IOException {
+    protected Response getWithAccepts(MultivaluedMap<String, String> queryParams, String accepts, Object... pathArgs)
+            throws IOException {
         URL url = getApiUrl(pathArgs);
         return (getWithAccepts(queryParams, url, accepts));
     }
 
     /**
-     * Perform an HTTP GET call with the specified query parameters and URL, returning
-     * a ClientResponse instance with the data returned from the endpoint.
+     * Perform an HTTP GET call with the specified query parameters and URL, returning a ClientResponse instance with
+     * the data returned from the endpoint.
      *
      * @param queryParams multivalue map of request parameters
-     * @param url the fully formed path to the GitLab API endpoint
-     * @param accepts if non-empty will set the Accepts header to this value
+     * @param url         the fully formed path to the GitLab API endpoint
+     * @param accepts     if non-empty will set the Accepts header to this value
      * @return a ClientResponse instance with the data returned from the endpoint
      */
     protected Response getWithAccepts(MultivaluedMap<String, String> queryParams, URL url, String accepts) {
@@ -447,11 +454,11 @@ public class GitLabApiClient implements AutoCloseable {
     }
 
     /**
-     * Perform an HTTP HEAD call with the specified query parameters and path objects, returning
-     * a ClientResponse instance with the data returned from the endpoint.
+     * Perform an HTTP HEAD call with the specified query parameters and path objects, returning a ClientResponse
+     * instance with the data returned from the endpoint.
      *
      * @param queryParams multivalue map of request parameters
-     * @param pathArgs variable list of arguments used to build the URI
+     * @param pathArgs    variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws IOException if an error occurs while constructing the URL
      */
@@ -461,11 +468,11 @@ public class GitLabApiClient implements AutoCloseable {
     }
 
     /**
-     * Perform an HTTP HEAD call with the specified query parameters and URL, returning
-     * a ClientResponse instance with the data returned from the endpoint.
+     * Perform an HTTP HEAD call with the specified query parameters and URL, returning a ClientResponse instance with
+     * the data returned from the endpoint.
      *
      * @param queryParams multivalue map of request parameters
-     * @param url the fully formed path to the GitLab API endpoint
+     * @param url         the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
      */
     protected Response head(MultivaluedMap<String, String> queryParams, URL url) {
@@ -473,11 +480,11 @@ public class GitLabApiClient implements AutoCloseable {
     }
 
     /**
-     * Perform an HTTP PATCH call with the specified query parameters and path objects, returning
-     * a ClientResponse instance with the data returned from the endpoint.
+     * Perform an HTTP PATCH call with the specified query parameters and path objects, returning a ClientResponse
+     * instance with the data returned from the endpoint.
      *
      * @param queryParams multivalue map of request parameters
-     * @param pathArgs variable list of arguments used to build the URI
+     * @param pathArgs    variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws IOException if an error occurs while constructing the URL
      */
@@ -487,23 +494,22 @@ public class GitLabApiClient implements AutoCloseable {
     }
 
     /**
-     * Perform an HTTP PATCH call with the specified query parameters and URL, returning
-     * a ClientResponse instance with the data returned from the endpoint.
+     * Perform an HTTP PATCH call with the specified query parameters and URL, returning a ClientResponse instance with
+     * the data returned from the endpoint.
      *
      * @param queryParams multivalue map of request parameters
-     * @param url the fully formed path to the GitLab API endpoint
+     * @param url         the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
      */
     protected Response patch(MultivaluedMap<String, String> queryParams, URL url) {
         Entity<?> empty = Entity.text("");
         // use "X-HTTP-Method-Override" header on POST to override to unsupported PATCH
-        return (invocation(url, queryParams)
-                .header("X-HTTP-Method-Override", "PATCH").post(empty));
+        return (invocation(url, queryParams).header("X-HTTP-Method-Override", "PATCH").post(empty));
     }
 
     /**
-     * Perform an HTTP POST call with the specified form data and path objects, returning
-     * a ClientResponse instance with the data returned from the endpoint.
+     * Perform an HTTP POST call with the specified form data and path objects, returning a ClientResponse instance with
+     * the data returned from the endpoint.
      *
      * @param formData the Form containing the name/value pairs
      * @param pathArgs variable list of arguments used to build the URI
@@ -516,11 +522,11 @@ public class GitLabApiClient implements AutoCloseable {
     }
 
     /**
-     * Perform an HTTP POST call with the specified form data and path objects, returning
-     * a ClientResponse instance with the data returned from the endpoint.
+     * Perform an HTTP POST call with the specified form data and path objects, returning a ClientResponse instance with
+     * the data returned from the endpoint.
      *
      * @param queryParams multivalue map of request parameters
-     * @param pathArgs variable list of arguments used to build the URI
+     * @param pathArgs    variable list of arguments used to build the URI
      * @return a Response instance with the data returned from the endpoint
      * @throws IOException if an error occurs while constructing the URL
      */
@@ -530,16 +536,17 @@ public class GitLabApiClient implements AutoCloseable {
     }
 
     /**
-     * Perform an HTTP POST call with the specified form data and URL, returning
-     * a ClientResponse instance with the data returned from the endpoint.
+     * Perform an HTTP POST call with the specified form data and URL, returning a ClientResponse instance with the data
+     * returned from the endpoint.
      *
      * @param formData the Form containing the name/value pairs
-     * @param url the fully formed path to the GitLab API endpoint
+     * @param url      the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
      */
     protected Response post(Form formData, URL url) {
         if (formData instanceof GitLabApiForm) {
-            return (invocation(url, null).post(Entity.entity(formData.asMap(), MediaType.APPLICATION_FORM_URLENCODED_TYPE)));
+            return (invocation(url, null)
+                    .post(Entity.entity(formData.asMap(), MediaType.APPLICATION_FORM_URLENCODED_TYPE)));
         } else if (formData != null) {
             return (invocation(url, null).post(Entity.entity(formData, MediaType.APPLICATION_FORM_URLENCODED_TYPE)));
         } else {
@@ -548,22 +555,23 @@ public class GitLabApiClient implements AutoCloseable {
     }
 
     /**
-     * Perform an HTTP POST call with the specified form data and URL, returning
-     * a ClientResponse instance with the data returned from the endpoint.
+     * Perform an HTTP POST call with the specified form data and URL, returning a ClientResponse instance with the data
+     * returned from the endpoint.
      *
      * @param queryParams multivalue map of request parametersformData the Form containing the name/value pairs
-     * @param url the fully formed path to the GitLab API endpoint
+     * @param url         the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
      */
     protected Response post(MultivaluedMap<String, String> queryParams, URL url) {
-        return (invocation(url, queryParams).post(Entity.entity(new Form(), MediaType.APPLICATION_FORM_URLENCODED_TYPE)));
+        return (invocation(url, queryParams)
+                .post(Entity.entity(new Form(), MediaType.APPLICATION_FORM_URLENCODED_TYPE)));
     }
 
     /**
-     * Perform an HTTP POST call with the specified payload object and URL, returning
-     * a ClientResponse instance with the data returned from the endpoint.
+     * Perform an HTTP POST call with the specified payload object and URL, returning a ClientResponse instance with the
+     * data returned from the endpoint.
      *
-     * @param payload the object instance that will be serialized to JSON and used as the POST data
+     * @param payload  the object instance that will be serialized to JSON and used as the POST data
      * @param pathArgs variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws IOException if an error occurs while constructing the URL
@@ -575,12 +583,12 @@ public class GitLabApiClient implements AutoCloseable {
     }
 
     /**
-     * Perform an HTTP POST call with the specified StreamingOutput, MediaType, and path objects, returning
-     * a ClientResponse instance with the data returned from the endpoint.
+     * Perform an HTTP POST call with the specified StreamingOutput, MediaType, and path objects, returning a
+     * ClientResponse instance with the data returned from the endpoint.
      *
-     * @param stream the StreamingOutput instance that contains the POST data
+     * @param stream    the StreamingOutput instance that contains the POST data
      * @param mediaType the content-type of the POST data
-     * @param pathArgs variable list of arguments used to build the URI
+     * @param pathArgs  variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws IOException if an error occurs while constructing the URL
      */
@@ -590,60 +598,65 @@ public class GitLabApiClient implements AutoCloseable {
     }
 
     /**
-     * Perform a file upload using the specified media type, returning
-     * a ClientResponse instance with the data returned from the endpoint.
+     * Perform a file upload using the specified media type, returning a ClientResponse instance with the data returned
+     * from the endpoint.
      *
-     * @param name the name for the form field that contains the file name
-     * @param fileToUpload a File instance pointing to the file to upload
+     * @param name            the name for the form field that contains the file name
+     * @param fileToUpload    a File instance pointing to the file to upload
      * @param mediaTypeString unused; will be removed in the next major version
-     * @param pathArgs variable list of arguments used to build the URI
+     * @param pathArgs        variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws IOException if an error occurs while constructing the URL
      */
-    protected Response upload(String name, File fileToUpload, String mediaTypeString, Object... pathArgs) throws IOException {
+    protected Response upload(String name, File fileToUpload, String mediaTypeString, Object... pathArgs)
+            throws IOException {
         return upload(name, fileToUpload, mediaTypeString, null, pathArgs);
     }
 
     /**
-     * Perform a file upload using the specified media type, returning
-     * a ClientResponse instance with the data returned from the endpoint.
+     * Perform a file upload using the specified media type, returning a ClientResponse instance with the data returned
+     * from the endpoint.
      *
-     * @param name the name for the form field that contains the file name
-     * @param fileToUpload a File instance pointing to the file to upload
+     * @param name            the name for the form field that contains the file name
+     * @param fileToUpload    a File instance pointing to the file to upload
      * @param mediaTypeString unused; will be removed in the next major version
-     * @param formData the Form containing the name/value pairs
-     * @param pathArgs variable list of arguments used to build the URI
+     * @param formData        the Form containing the name/value pairs
+     * @param pathArgs        variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws IOException if an error occurs while constructing the URL
      */
-    protected Response upload(String name, File fileToUpload, String mediaTypeString, Form formData, Object... pathArgs) throws IOException {
+    protected Response upload(String name, File fileToUpload, String mediaTypeString, Form formData, Object... pathArgs)
+            throws IOException {
         URL url = getApiUrl(pathArgs);
         return (upload(name, fileToUpload, mediaTypeString, formData, url));
     }
 
     /**
-     * Perform a file upload using multipart/form-data, returning
-     * a ClientResponse instance with the data returned from the endpoint.
+     * Perform a file upload using multipart/form-data, returning a ClientResponse instance with the data returned from
+     * the endpoint.
      *
-     * @param name the name for the form field that contains the file name
-     * @param fileToUpload a File instance pointing to the file to upload
+     * @param name            the name for the form field that contains the file name
+     * @param fileToUpload    a File instance pointing to the file to upload
      * @param mediaTypeString unused; will be removed in the next major version
-     * @param formData the Form containing the name/value pairs
-     * @param url the fully formed path to the GitLab API endpoint
+     * @param formData        the Form containing the name/value pairs
+     * @param url             the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws IOException if an error occurs while constructing the URL
      */
-    protected Response upload(String name, File fileToUpload, String mediaTypeString, Form formData, URL url) throws IOException {
+    protected Response upload(String name, File fileToUpload, String mediaTypeString, Form formData, URL url)
+            throws IOException {
         FileDataBodyPart filePart = new FileDataBodyPart(name, fileToUpload);
         return upload(filePart, formData, url);
     }
 
-    protected Response upload(String name, InputStream inputStream, String filename, String mediaTypeString, Object... pathArgs) throws IOException {
+    protected Response upload(String name, InputStream inputStream, String filename, String mediaTypeString,
+            Object... pathArgs) throws IOException {
         URL url = getApiUrl(pathArgs);
         return (upload(name, inputStream, filename, mediaTypeString, null, url));
     }
 
-    protected Response upload(String name, InputStream inputStream, String filename, String mediaTypeString, Form formData, URL url) throws IOException {
+    protected Response upload(String name, InputStream inputStream, String filename, String mediaTypeString,
+            Form formData, URL url) throws IOException {
         StreamDataBodyPart streamDataBodyPart = new StreamDataBodyPart(name, inputStream, filename);
         return upload(streamDataBodyPart, formData, url);
     }
@@ -665,12 +678,12 @@ public class GitLabApiClient implements AutoCloseable {
     }
 
     /**
-     * Perform a file upload using multipart/form-data using the HTTP PUT method, returning
-     * a ClientResponse instance with the data returned from the endpoint.
+     * Perform a file upload using multipart/form-data using the HTTP PUT method, returning a ClientResponse instance
+     * with the data returned from the endpoint.
      *
-     * @param name the name for the form field that contains the file name
+     * @param name         the name for the form field that contains the file name
      * @param fileToUpload a File instance pointing to the file to upload
-     * @param pathArgs variable list of arguments used to build the URI
+     * @param pathArgs     variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws IOException if an error occurs while constructing the URL
      */
@@ -680,13 +693,13 @@ public class GitLabApiClient implements AutoCloseable {
     }
 
     /**
-     * Perform a file upload using multipart/form-data using the HTTP PUT method, returning
-     * a ClientResponse instance with the data returned from the endpoint.
+     * Perform a file upload using multipart/form-data using the HTTP PUT method, returning a ClientResponse instance
+     * with the data returned from the endpoint.
      *
-     * @param name the name for the form field that contains the file name
+     * @param name         the name for the form field that contains the file name
      * @param fileToUpload a File instance pointing to the file to upload
-
-     * @param url the fully formed path to the GitLab API endpoint
+     * 
+     * @param url          the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws IOException if an error occurs while constructing the URL
      */
@@ -704,11 +717,11 @@ public class GitLabApiClient implements AutoCloseable {
     }
 
     /**
-     * Perform an HTTP PUT call with the specified form data and path objects, returning
-     * a ClientResponse instance with the data returned from the endpoint.
+     * Perform an HTTP PUT call with the specified form data and path objects, returning a ClientResponse instance with
+     * the data returned from the endpoint.
      *
      * @param queryParams multivalue map of request parameters
-     * @param pathArgs variable list of arguments used to build the URI
+     * @param pathArgs    variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws IOException if an error occurs while constructing the URL
      */
@@ -718,11 +731,11 @@ public class GitLabApiClient implements AutoCloseable {
     }
 
     /**
-     * Perform an HTTP PUT call with the specified form data and URL, returning
-     * a ClientResponse instance with the data returned from the endpoint.
+     * Perform an HTTP PUT call with the specified form data and URL, returning a ClientResponse instance with the data
+     * returned from the endpoint.
      *
      * @param queryParams multivalue map of request parameters
-     * @param url the fully formed path to the GitLab API endpoint
+     * @param url         the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
      */
     protected Response put(MultivaluedMap<String, String> queryParams, URL url) {
@@ -735,8 +748,8 @@ public class GitLabApiClient implements AutoCloseable {
     }
 
     /**
-     * Perform an HTTP PUT call with the specified form data and path objects, returning
-     * a ClientResponse instance with the data returned from the endpoint.
+     * Perform an HTTP PUT call with the specified form data and path objects, returning a ClientResponse instance with
+     * the data returned from the endpoint.
      *
      * @param formData the Form containing the name/value pairs
      * @param pathArgs variable list of arguments used to build the URI
@@ -749,25 +762,26 @@ public class GitLabApiClient implements AutoCloseable {
     }
 
     /**
-     * Perform an HTTP PUT call with the specified form data and URL, returning
-     * a ClientResponse instance with the data returned from the endpoint.
+     * Perform an HTTP PUT call with the specified form data and URL, returning a ClientResponse instance with the data
+     * returned from the endpoint.
      *
      * @param formData the Form containing the name/value pairs
-     * @param url the fully formed path to the GitLab API endpoint
+     * @param url      the fully formed path to the GitLab API endpoint
      * @return a ClientResponse instance with the data returned from the endpoint
      */
     protected Response put(Form formData, URL url) {
         if (formData instanceof GitLabApiForm)
-            return (invocation(url, null).put(Entity.entity(formData.asMap(), MediaType.APPLICATION_FORM_URLENCODED_TYPE)));
+            return (invocation(url, null)
+                    .put(Entity.entity(formData.asMap(), MediaType.APPLICATION_FORM_URLENCODED_TYPE)));
         else
             return (invocation(url, null).put(Entity.entity(formData, MediaType.APPLICATION_FORM_URLENCODED_TYPE)));
     }
 
     /**
-     * Perform an HTTP PUT call with the specified payload object and URL, returning
-     * a ClientResponse instance with the data returned from the endpoint.
+     * Perform an HTTP PUT call with the specified payload object and URL, returning a ClientResponse instance with the
+     * data returned from the endpoint.
      *
-     * @param payload the object instance that will be serialized to JSON and used as the PUT data
+     * @param payload  the object instance that will be serialized to JSON and used as the PUT data
      * @param pathArgs variable list of arguments used to build the URI
      * @return a ClientResponse instance with the data returned from the endpoint
      * @throws IOException if an error occurs while constructing the URL
@@ -779,11 +793,11 @@ public class GitLabApiClient implements AutoCloseable {
     }
 
     /**
-     * Perform an HTTP DELETE call with the specified form data and path objects, returning
-     * a Response instance with the data returned from the endpoint.
+     * Perform an HTTP DELETE call with the specified form data and path objects, returning a Response instance with the
+     * data returned from the endpoint.
      *
      * @param queryParams multivalue map of request parameters
-     * @param pathArgs variable list of arguments used to build the URI
+     * @param pathArgs    variable list of arguments used to build the URI
      * @return a Response instance with the data returned from the endpoint
      * @throws IOException if an error occurs while constructing the URL
      */
@@ -792,11 +806,11 @@ public class GitLabApiClient implements AutoCloseable {
     }
 
     /**
-     * Perform an HTTP DELETE call with the specified form data and URL, returning
-     * a Response instance with the data returned from the endpoint.
+     * Perform an HTTP DELETE call with the specified form data and URL, returning a Response instance with the data
+     * returned from the endpoint.
      *
      * @param queryParams multivalue map of request parameters
-     * @param url the fully formed path to the GitLab API endpoint
+     * @param url         the fully formed path to the GitLab API endpoint
      * @return a Response instance with the data returned from the endpoint
      */
     protected Response delete(MultivaluedMap<String, String> queryParams, URL url) {
@@ -837,8 +851,10 @@ public class GitLabApiClient implements AutoCloseable {
             }
         }
 
-        String authHeader = (tokenType == Constants.TokenType.OAUTH2_ACCESS ? AUTHORIZATION_HEADER : PRIVATE_TOKEN_HEADER);
-        String authValue = (tokenType == Constants.TokenType.OAUTH2_ACCESS ? "Bearer " + authToken.get() : authToken.get());
+        String authHeader = (tokenType == Constants.TokenType.OAUTH2_ACCESS ? AUTHORIZATION_HEADER
+                : PRIVATE_TOKEN_HEADER);
+        String authValue = (tokenType == Constants.TokenType.OAUTH2_ACCESS ? "Bearer " + authToken.get()
+                : authToken.get());
         Invocation.Builder builder = target.request();
         if (accept == null || accept.trim().length() == 0) {
             builder = builder.header(authHeader, authValue);
@@ -918,7 +934,7 @@ public class GitLabApiClient implements AutoCloseable {
     private boolean setupIgnoreCertificateErrors() {
 
         // Create a TrustManager that trusts all certificates
-        TrustManager[] trustAllCerts = new TrustManager[]{new X509ExtendedTrustManager() {
+        TrustManager[] trustAllCerts = new TrustManager[] { new X509ExtendedTrustManager() {
             @Override
             public X509Certificate[] getAcceptedIssuers() {
                 return null;
@@ -933,21 +949,25 @@ public class GitLabApiClient implements AutoCloseable {
             }
 
             @Override
-            public void checkClientTrusted(X509Certificate[] chain, String authType, Socket socket) throws CertificateException {
+            public void checkClientTrusted(X509Certificate[] chain, String authType, Socket socket)
+                    throws CertificateException {
             }
 
             @Override
-            public void checkClientTrusted(X509Certificate[] chain, String authType, SSLEngine engine) throws CertificateException {
+            public void checkClientTrusted(X509Certificate[] chain, String authType, SSLEngine engine)
+                    throws CertificateException {
             }
 
             @Override
-            public void checkServerTrusted(X509Certificate[] chain, String authType, Socket socket) throws CertificateException {
+            public void checkServerTrusted(X509Certificate[] chain, String authType, Socket socket)
+                    throws CertificateException {
             }
 
             @Override
-            public void checkServerTrusted(X509Certificate[] chain, String authType, SSLEngine engine) throws CertificateException {
+            public void checkServerTrusted(X509Certificate[] chain, String authType, SSLEngine engine)
+                    throws CertificateException {
             }
-        }};
+        } };
 
         // Ignore differences between given hostname and certificate hostname
         HostnameVerifier hostnameVerifier = new HostnameVerifier() {
@@ -973,6 +993,7 @@ public class GitLabApiClient implements AutoCloseable {
 
     /**
      * Set auth token supplier for gitlab api client.
+     * 
      * @param authTokenSupplier - supplier which provide actual auth token
      */
     public void setAuthTokenSupplier(Supplier<String> authTokenSupplier) {

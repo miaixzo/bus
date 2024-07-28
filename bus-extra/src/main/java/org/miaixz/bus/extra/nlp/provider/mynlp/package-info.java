@@ -24,10 +24,9 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 /**
- * MYNLP 中文NLP工具包分词实现
- * 项目地址：https://github.com/mayabot/mynlp/
+ * MYNLP 中文NLP工具包分词实现 项目地址：https://github.com/mayabot/mynlp/
  *
  * @author Kimi Liu
  * @since Java 17+

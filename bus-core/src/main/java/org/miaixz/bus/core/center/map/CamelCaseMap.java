@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -36,8 +36,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * 驼峰Key风格的Map
- * 对KEY转换为驼峰，get("int_value")和get("intValue")获得的值相同，put进入的值也会被覆盖
+ * 驼峰Key风格的Map 对KEY转换为驼峰，get("int_value")和get("intValue")获得的值相同，put进入的值也会被覆盖
  *
  * @param <K> 键类型
  * @param <V> 值类型
@@ -95,8 +94,7 @@ public class CamelCaseMap<K, V> extends FunctionKeyMap<K, V> {
     }
 
     /**
-     * 构造
-     * 注意此构造将传入的Map作为被包装的Map，针对任何修改，传入的Map都会被同样修改。
+     * 构造 注意此构造将传入的Map作为被包装的Map，针对任何修改，传入的Map都会被同样修改。
      *
      * @param emptyMapBuilder Map构造器，必须构造空的Map
      */

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.storage.metric;
 
 import com.amazonaws.ClientConfiguration;
@@ -73,18 +73,15 @@ public class JdYunOssProvider extends AbstractProvider {
 
         ClientConfiguration config = new ClientConfiguration();
 
-        AwsClientBuilder.EndpointConfiguration endpointConfig =
-                new AwsClientBuilder.EndpointConfiguration(this.context.getEndpoint(), this.context.getRegion());
+        AwsClientBuilder.EndpointConfiguration endpointConfig = new AwsClientBuilder.EndpointConfiguration(
+                this.context.getEndpoint(), this.context.getRegion());
 
-        AWSCredentials awsCredentials = new BasicAWSCredentials(this.context.getAccessKey(), this.context.getSecretKey());
+        AWSCredentials awsCredentials = new BasicAWSCredentials(this.context.getAccessKey(),
+                this.context.getSecretKey());
         AWSCredentialsProvider awsCredentialsProvider = new AWSStaticCredentialsProvider(awsCredentials);
 
-        client = AmazonS3Client.builder()
-                .withEndpointConfiguration(endpointConfig)
-                .withClientConfiguration(config)
-                .withCredentials(awsCredentialsProvider)
-                .disableChunkedEncoding()
-                .withPathStyleAccessEnabled(true)
+        client = AmazonS3Client.builder().withEndpointConfiguration(endpointConfig).withClientConfiguration(config)
+                .withCredentials(awsCredentialsProvider).disableChunkedEncoding().withPathStyleAccessEnabled(true)
                 .build();
     }
 
@@ -95,9 +92,7 @@ public class JdYunOssProvider extends AbstractProvider {
 
     @Override
     public Message download(String bucket, String fileName) {
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg("failure to provide services").build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg("failure to provide services").build();
     }
 
     @Override
@@ -108,9 +103,7 @@ public class JdYunOssProvider extends AbstractProvider {
     @Override
     public Message download(String bucket, String fileName, File file) {
         this.client.getObject(new GetObjectRequest(bucket, fileName), file);
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
     }
 
     @Override
@@ -118,35 +111,25 @@ public class JdYunOssProvider extends AbstractProvider {
         ListObjectsRequest request = new ListObjectsRequest().withBucketName(this.context.getBucket());
         ObjectListing objectListing = client.listObjects(request);
 
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .errmsg(ErrorCode.SUCCESS.getDesc())
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
                 .data(objectListing.getObjectSummaries().stream().map(item -> {
                     Map<String, Object> extend = new HashMap<>();
                     extend.put("tag", item.getETag());
                     extend.put("storageClass", item.getStorageClass());
                     extend.put("lastModified", item.getLastModified());
-                    return Material.builder()
-                            .name(item.getKey())
-                            .owner(item.getOwner().getDisplayName())
-                            .size(StringKit.toString(item.getSize()))
-                            .extend(extend).build();
-                }).collect(Collectors.toList()))
-                .build();
+                    return Material.builder().name(item.getKey()).owner(item.getOwner().getDisplayName())
+                            .size(StringKit.toString(item.getSize())).extend(extend).build();
+                }).collect(Collectors.toList())).build();
     }
 
     @Override
     public Message rename(String oldName, String newName) {
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg("failure to provide services").build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg("failure to provide services").build();
     }
 
     @Override
     public Message rename(String bucket, String oldName, String newName) {
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
@@ -157,16 +140,12 @@ public class JdYunOssProvider extends AbstractProvider {
     @Override
     public Message upload(String bucket, String fileName, InputStream content) {
         client.putObject(bucket, fileName, content, null);
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
     }
 
     @Override
     public Message upload(String bucket, String fileName, byte[] content) {
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
@@ -177,9 +156,7 @@ public class JdYunOssProvider extends AbstractProvider {
     @Override
     public Message remove(String bucket, String fileName) {
         this.client.deleteObject(bucket, fileName);
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
     }
 
     @Override

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org 6tail and other contributors.              ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -91,7 +91,8 @@ public class EightChar extends Tradition {
      * @param hour  时柱
      */
     public EightChar(String year, String month, String day, String hour) {
-        this(SixtyCycle.fromName(year), SixtyCycle.fromName(month), SixtyCycle.fromName(day), SixtyCycle.fromName(hour));
+        this(SixtyCycle.fromName(year), SixtyCycle.fromName(month), SixtyCycle.fromName(day),
+                SixtyCycle.fromName(hour));
     }
 
     /**
@@ -145,7 +146,8 @@ public class EightChar extends Tradition {
      * @return 胎息
      */
     public SixtyCycle getFetalBreath() {
-        return SixtyCycle.fromName(day.getHeavenStem().next(5).getName() + EarthBranch.fromIndex(13 - day.getEarthBranch().getIndex()).getName());
+        return SixtyCycle.fromName(day.getHeavenStem().next(5).getName()
+                + EarthBranch.fromIndex(13 - day.getEarthBranch().getIndex()).getName());
     }
 
     /**
@@ -157,7 +159,8 @@ public class EightChar extends Tradition {
         int offset = month.getEarthBranch().next(-1).getIndex() + hour.getEarthBranch().next(-1).getIndex();
         offset = (offset >= 14 ? 26 : 14) - offset;
         offset -= 1;
-        return SixtyCycle.fromName(HeavenStem.fromIndex((year.getHeavenStem().getIndex() + 1) * 2 + offset).getName() + EarthBranch.fromIndex(2 + offset).getName());
+        return SixtyCycle.fromName(HeavenStem.fromIndex((year.getHeavenStem().getIndex() + 1) * 2 + offset).getName()
+                + EarthBranch.fromIndex(2 + offset).getName());
     }
 
     /**
@@ -169,7 +172,8 @@ public class EightChar extends Tradition {
         int offset = month.getEarthBranch().getIndex() + hour.getEarthBranch().getIndex();
         offset %= 12;
         offset -= 1;
-        return SixtyCycle.fromName(HeavenStem.fromIndex((year.getHeavenStem().getIndex() + 1) * 2 + offset).getName() + EarthBranch.fromIndex(2 + offset).getName());
+        return SixtyCycle.fromName(HeavenStem.fromIndex((year.getHeavenStem().getIndex() + 1) * 2 + offset).getName()
+                + EarthBranch.fromIndex(2 + offset).getName());
     }
 
     /**
@@ -226,7 +230,8 @@ public class EightChar extends Tradition {
                         mi = solarTime.getMinute();
                         s = solarTime.getSecond();
                     }
-                    SolarTime time = SolarTime.fromYmdHms(solarDay.getYear(), solarDay.getMonth(), solarDay.getDay(), h, mi, s);
+                    SolarTime time = SolarTime.fromYmdHms(solarDay.getYear(), solarDay.getMonth(), solarDay.getDay(), h,
+                            mi, s);
                     // 验证一下
                     if (time.getLunarHour().getEightChar().equals(this)) {
                         l.add(time);

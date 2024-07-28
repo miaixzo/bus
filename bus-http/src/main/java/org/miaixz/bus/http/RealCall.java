@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http;
 
 import org.miaixz.bus.core.io.timout.Timeout;
@@ -68,8 +68,7 @@ public class RealCall implements NewCall {
     public final Request originalRequest;
     public final boolean forWebSocket;
     /**
-     * 在{@link NewCall}和{@link Transmitter}之间有一个循环
-     * 这是在创建调用实例之后立即设置的
+     * 在{@link NewCall}和{@link Transmitter}之间有一个循环 这是在创建调用实例之后立即设置的
      */
     private Transmitter transmitter;
     /**
@@ -98,7 +97,8 @@ public class RealCall implements NewCall {
     @Override
     public Response execute() throws IOException {
         synchronized (this) {
-            if (executed) throw new IllegalStateException("Already Executed");
+            if (executed)
+                throw new IllegalStateException("Already Executed");
             executed = true;
         }
         transmitter.timeoutEnter();
@@ -114,7 +114,8 @@ public class RealCall implements NewCall {
     @Override
     public void enqueue(Callback responseCallback) {
         synchronized (this) {
-            if (executed) throw new IllegalStateException("Already Executed");
+            if (executed)
+                throw new IllegalStateException("Already Executed");
             executed = true;
         }
         transmitter.callStart();
@@ -147,13 +148,11 @@ public class RealCall implements NewCall {
     }
 
     /**
-     * 返回描述此调用的字符串
-     * 不包含完整的URL，因为它可能包含敏感信息
+     * 返回描述此调用的字符串 不包含完整的URL，因为它可能包含敏感信息
      */
     public String toLoggableString() {
-        return (isCanceled() ? "canceled " : Normal.EMPTY)
-                + (forWebSocket ? "web socket" : "call")
-                + " to " + redactedUrl();
+        return (isCanceled() ? "canceled " : Normal.EMPTY) + (forWebSocket ? "web socket" : "call") + " to "
+                + redactedUrl();
     }
 
     public String redactedUrl() {
@@ -173,9 +172,8 @@ public class RealCall implements NewCall {
         }
         interceptors.add(new CallServerInterceptor(forWebSocket));
 
-        NewChain chain = new RealInterceptorChain(interceptors, transmitter, null, 0,
-                originalRequest, this, client.connectTimeoutMillis(),
-                client.readTimeoutMillis(), client.writeTimeoutMillis());
+        NewChain chain = new RealInterceptorChain(interceptors, transmitter, null, 0, originalRequest, this,
+                client.connectTimeoutMillis(), client.readTimeoutMillis(), client.writeTimeoutMillis());
 
         boolean calledNoMoreExchanges = false;
         try {
@@ -226,8 +224,7 @@ public class RealCall implements NewCall {
         }
 
         /**
-         * 尝试在{@code executorService}上排队这个异步调用
-         * 如果执行程序已经关闭，则将尝试通过调用失败来进行清理
+         * 尝试在{@code executorService}上排队这个异步调用 如果执行程序已经关闭，则将尝试通过调用失败来进行清理
          */
         public void executeOn(ExecutorService executorService) {
             assert (!Thread.holdsLock(client.dispatcher()));

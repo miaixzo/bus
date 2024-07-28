@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.hl7.net;
 
 import org.miaixz.bus.image.metric.Connection;
@@ -40,12 +40,11 @@ public interface HL7ConnectionMonitor {
 
     void onMessageReceived(Connection conn, Socket s, UnparsedHL7Message msg);
 
-    void onMessageProcessed(Connection conn, Socket s, UnparsedHL7Message msg,
-                            UnparsedHL7Message rsp, HL7Exception ex);
+    void onMessageProcessed(Connection conn, Socket s, UnparsedHL7Message msg, UnparsedHL7Message rsp, HL7Exception ex);
 
     void onMessageSent(HL7Application hl7App, Socket s, UnparsedHL7Message msg, Exception ex);
 
-    void onMessageResponse(HL7Application hl7App, Socket s, UnparsedHL7Message msg,
-                           UnparsedHL7Message rsp, Exception ex);
+    void onMessageResponse(HL7Application hl7App, Socket s, UnparsedHL7Message msg, UnparsedHL7Message rsp,
+            Exception ex);
 
 }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.linux.software;
 
 import com.sun.jna.Native;
@@ -52,9 +52,9 @@ import java.nio.file.Paths;
 import java.util.*;
 
 /**
- * The Linux File System contains {@link OSFileStore}s which are a storage pool, device, partition,
- * volume, concrete file system or other implementation specific means of file storage. In Linux, these are found in the
- * /proc/mount filesystem, excluding temporary and kernel mounts.
+ * The Linux File System contains {@link OSFileStore}s which are a storage pool, device, partition, volume, concrete
+ * file system or other implementation specific means of file storage. In Linux, these are found in the /proc/mount
+ * filesystem, excluding temporary and kernel mounts.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -74,7 +74,7 @@ public class LinuxFileSystem extends AbstractFileSystem {
     private static final String UNICODE_SPACE = "\\040";
 
     private static List<OSFileStore> getFileStoreMatching(String nameToMatch, Map<String, String> uuidMap,
-                                                          boolean localOnly) {
+            boolean localOnly) {
         List<OSFileStore> fsList = new ArrayList<>();
 
         Map<String, String> labelMap = queryLabelMap();
@@ -105,8 +105,8 @@ public class LinuxFileSystem extends AbstractFileSystem {
 
             // Skip non-local drives if requested, and exclude pseudo file systems
             if ((localOnly && NETWORK_FS_TYPES.contains(type))
-                    || !path.equals("/") && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(path,
-                    volume, FS_PATH_INCLUDES, FS_PATH_EXCLUDES, FS_VOLUME_INCLUDES, FS_VOLUME_EXCLUDES))) {
+                    || !path.equals("/") && (PSEUDO_FS_TYPES.contains(type) || Builder.isFileStoreExcluded(path, volume,
+                            FS_PATH_INCLUDES, FS_PATH_EXCLUDES, FS_VOLUME_INCLUDES, FS_VOLUME_EXCLUDES))) {
                 continue;
             }
 

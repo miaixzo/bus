@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text.escape;
 
 import org.miaixz.bus.core.text.replacer.LookupReplacer;
@@ -45,7 +45,7 @@ public class XmlUnescape extends ReplacerChain {
     /**
      * 特定字符反转义
      */
-    protected static final String[][] OTHER_UNESCAPE = new String[][]{new String[]{"&apos;", "'"}};
+    protected static final String[][] OTHER_UNESCAPE = new String[][] { new String[] { "&apos;", "'" } };
     private static final long serialVersionUID = -1L;
 
     /**

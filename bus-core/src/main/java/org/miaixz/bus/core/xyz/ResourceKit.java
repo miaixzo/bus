@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.iterator.EnumerationIterator;
@@ -131,8 +131,7 @@ public class ResourceKit {
     }
 
     /**
-     * 获得资源的URL
-     * 路径用/分隔，例如:
+     * 获得资源的URL 路径用/分隔，例如:
      *
      * <pre>
      * config/a/db.config
@@ -148,8 +147,7 @@ public class ResourceKit {
     }
 
     /**
-     * 获取指定路径下的资源列表
-     * 路径格式必须为目录格式,用/分隔，例如:
+     * 获取指定路径下的资源列表 路径格式必须为目录格式,用/分隔，例如:
      *
      * <pre>
      * config/a
@@ -164,8 +162,7 @@ public class ResourceKit {
     }
 
     /**
-     * 获取指定路径下的资源列表
-     * 路径格式必须为目录格式,用/分隔，例如:
+     * 获取指定路径下的资源列表 路径格式必须为目录格式,用/分隔，例如:
      *
      * <pre>
      * config/a
@@ -181,8 +178,7 @@ public class ResourceKit {
     }
 
     /**
-     * 获取指定路径下的资源Iterator
-     * 路径格式必须为目录格式,用/分隔，例如:
+     * 获取指定路径下的资源Iterator 路径格式必须为目录格式,用/分隔，例如:
      *
      * <pre>
      * config/a
@@ -197,8 +193,7 @@ public class ResourceKit {
     }
 
     /**
-     * 获取指定路径下的资源Iterator
-     * 路径格式必须为目录格式,用/分隔，例如:
+     * 获取指定路径下的资源Iterator 路径格式必须为目录格式,用/分隔，例如:
      *
      * <pre>
      * config/a
@@ -232,8 +227,7 @@ public class ResourceKit {
     }
 
     /**
-     * 获取{@link Resource} 资源对象
-     * 如果提供路径为绝对路径或路径以file:开头，返回{@link FileResource}，否则返回{@link ClassPathResource}
+     * 获取{@link Resource} 资源对象 如果提供路径为绝对路径或路径以file:开头，返回{@link FileResource}，否则返回{@link ClassPathResource}
      *
      * @param path 路径，可以是绝对路径，也可以是相对路径（相对ClassPath）
      * @return {@link Resource} 资源对象
@@ -283,11 +277,10 @@ public class ResourceKit {
     }
 
     /**
-     * 获取同名的所有资源
-     * 资源的加载顺序是：
+     * 获取同名的所有资源 资源的加载顺序是：
      * <ul>
-     *     <li>1. 首先在本项目下查找资源文件</li>
-     *     <li>2. 按照classpath定义的顺序，去对应路径或jar包下寻找资源文件</li>
+     * <li>1. 首先在本项目下查找资源文件</li>
+     * <li>2. 按照classpath定义的顺序，去对应路径或jar包下寻找资源文件</li>
      * </ul>
      *
      * @param resource    资源名
@@ -304,14 +297,14 @@ public class ResourceKit {
     }
 
     /**
-     * 加载配置文件内容到{@link Properties}中
-     * 需要注意的是，如果资源文件的扩展名是.xml，会调用{@link Properties#loadFromXML(InputStream)} 读取。
+     * 加载配置文件内容到{@link Properties}中 需要注意的是，如果资源文件的扩展名是.xml，会调用{@link Properties#loadFromXML(InputStream)} 读取。
      *
      * @param properties {@link Properties}文件
      * @param resource   资源
      * @param charset    编码，对XML无效，默认UTF-8
      */
-    public static void loadTo(final Properties properties, final Resource resource, final java.nio.charset.Charset charset) {
+    public static void loadTo(final Properties properties, final Resource resource,
+            final java.nio.charset.Charset charset) {
         Assert.notNull(properties);
         Assert.notNull(resource);
         final String filename = resource.getName();
@@ -324,8 +317,7 @@ public class ResourceKit {
             }
         } else {
             // .properties
-            try (final BufferedReader reader = resource.getReader(
-                    ObjectKit.defaultIfNull(charset, Charset.UTF_8))) {
+            try (final BufferedReader reader = resource.getReader(ObjectKit.defaultIfNull(charset, Charset.UTF_8))) {
                 properties.load(reader);
             } catch (final IOException e) {
                 throw new InternalException(e);
@@ -342,8 +334,8 @@ public class ResourceKit {
      * @param charset      编码，对XML无效，默认UTF-8
      * @param isOverride   是否覆盖模式
      */
-    public static void loadAllTo(final Properties properties, final String resourceName,
-                                 final ClassLoader classLoader, final java.nio.charset.Charset charset, final boolean isOverride) {
+    public static void loadAllTo(final Properties properties, final String resourceName, final ClassLoader classLoader,
+            final java.nio.charset.Charset charset, final boolean isOverride) {
         if (isOverride) {
             for (final Resource resource : getResources(resourceName, classLoader)) {
                 loadTo(properties, resource, charset);

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -40,14 +40,16 @@ import java.util.function.Predicate;
  * Byte Order Mark (BOM) 头描述
  * BOM定义：<a href="http://www.unicode.org/unicode/faq/utf_bom.html">http://www.unicode.org/unicode/faq/utf_bom.html</a>
  * <ul>
- * 	<li>EF BB BF = UTF-8</li>
- * 	<li>FE FF = UTF-16BE, big-endian</li>
- * 	<li>FF FE =  UTF-16LE, little-endian</li>
- * 	<li>00 00 FE FF = UTF-32BE, big-endian</li>
- * 	<li>FF FE 00 00 = UTF-32LE, little-endian</li>
+ * <li>EF BB BF = UTF-8</li>
+ * <li>FE FF = UTF-16BE, big-endian</li>
+ * <li>FF FE = UTF-16LE, little-endian</li>
+ * <li>00 00 FE FF = UTF-32BE, big-endian</li>
+ * <li>FF FE 00 00 = UTF-32LE, little-endian</li>
  * </ul>
  *
- * <p>来自：Apache-commons-io</p>
+ * <p>
+ * 来自：Apache-commons-io
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -57,39 +59,31 @@ public class ByteOrderMark implements Predicate<byte[]>, Comparable<ByteOrderMar
     /**
      * UTF-8 BOM.
      */
-    public static final ByteOrderMark UTF_8 = new ByteOrderMark(Charset.DEFAULT_UTF_8,
-            (byte) 0xEF, (byte) 0xBB, (byte) 0xBF);
+    public static final ByteOrderMark UTF_8 = new ByteOrderMark(Charset.DEFAULT_UTF_8, (byte) 0xEF, (byte) 0xBB,
+            (byte) 0xBF);
 
     /**
      * UTF-16BE BOM (Big-Endian).
      */
-    public static final ByteOrderMark UTF_16BE = new ByteOrderMark("UTF-16BE",
-            (byte) 0xFE, (byte) 0xFF);
+    public static final ByteOrderMark UTF_16BE = new ByteOrderMark("UTF-16BE", (byte) 0xFE, (byte) 0xFF);
     /**
      * UTF-16LE BOM (Little-Endian).
      */
-    public static final ByteOrderMark UTF_16LE = new ByteOrderMark("UTF-16LE",
-            (byte) 0xFF, (byte) 0xFE);
+    public static final ByteOrderMark UTF_16LE = new ByteOrderMark("UTF-16LE", (byte) 0xFF, (byte) 0xFE);
     /**
      * UTF-32BE BOM (Big-Endian).
      */
-    public static final ByteOrderMark UTF_32BE = new ByteOrderMark("UTF-32BE",
-            (byte) 0x00, (byte) 0x00, (byte) 0xFE, (byte) 0xFF);
+    public static final ByteOrderMark UTF_32BE = new ByteOrderMark("UTF-32BE", (byte) 0x00, (byte) 0x00, (byte) 0xFE,
+            (byte) 0xFF);
     /**
      * UTF-32LE BOM (Little-Endian).
      */
-    public static final ByteOrderMark UTF_32LE = new ByteOrderMark("UTF-32LE",
-            (byte) 0xFF, (byte) 0xFE, (byte) 0x00, (byte) 0x00);
+    public static final ByteOrderMark UTF_32LE = new ByteOrderMark("UTF-32LE", (byte) 0xFF, (byte) 0xFE, (byte) 0x00,
+            (byte) 0x00);
     /**
      * 预定义的所有BOM信息
      */
-    public static final ByteOrderMark[] ALL = new ByteOrderMark[]{
-            UTF_32BE,
-            UTF_32LE,
-            UTF_8,
-            UTF_16BE,
-            UTF_16LE
-    };
+    public static final ByteOrderMark[] ALL = new ByteOrderMark[] { UTF_32BE, UTF_32LE, UTF_8, UTF_16BE, UTF_16LE };
     private static final long serialVersionUID = -1L;
 
     private final String charsetName;
@@ -149,8 +143,7 @@ public class ByteOrderMark implements Predicate<byte[]>, Comparable<ByteOrderMar
     }
 
     /**
-     * 是否匹配头部BOM信息
-     * 当提供的长度小于BOM需要检查的长度时，返回{code false}
+     * 是否匹配头部BOM信息 当提供的长度小于BOM需要检查的长度时，返回{code false}
      *
      * @param headBytes 头部bytes
      * @return 是否匹配头部BOM信息

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.net;
 
 import org.miaixz.bus.image.Device;
@@ -48,8 +48,7 @@ public class DeviceExtension implements Serializable {
 
     public void setDevice(Device device) {
         if (device != null && this.device != null)
-            throw new IllegalStateException(
-                    "already owned by Device: " + device.getDeviceName());
+            throw new IllegalStateException("already owned by Device: " + device.getDeviceName());
         this.device = device;
     }
 

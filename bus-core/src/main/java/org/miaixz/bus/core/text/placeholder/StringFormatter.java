@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text.placeholder;
 
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
@@ -48,13 +48,9 @@ public class StringFormatter {
     private static final WeakConcurrentMap<Map.Entry<CharSequence, Object>, StringTemplate> CACHE = new WeakConcurrentMap<>();
 
     /**
-     * 格式化字符串
-     * 此方法只是简单将占位符 {} 按照顺序替换为参数
-     * 如果想输出 {} 使用 \\转义 { 即可，如果想输出 {} 之前的 \ 使用双转义符 \\\\ 即可
-     * 例：
-     * 通常使用：format("this is {} for {}", "a", "b") = this is a for b
-     * 转义{}： format("this is \\{} for {}", "a", "b") = this is {} for a
-     * 转义\： format("this is \\\\{} for {}", "a", "b") = this is \a for b
+     * 格式化字符串 此方法只是简单将占位符 {} 按照顺序替换为参数 如果想输出 {} 使用 \\转义 { 即可，如果想输出 {} 之前的 \ 使用双转义符 \\\\ 即可 例： 通常使用：format("this is {}
+     * for {}", "a", "b") = this is a for b 转义{}： format("this is \\{} for {}", "a", "b") = this is {} for a 转义\：
+     * format("this is \\\\{} for {}", "a", "b") = this is \a for b
      *
      * @param strPattern 字符串模板
      * @param argArray   参数列表
@@ -65,13 +61,9 @@ public class StringFormatter {
     }
 
     /**
-     * 格式化字符串
-     * 此方法只是简单将指定占位符 按照顺序替换为参数
-     * 如果想输出占位符使用 \\转义即可，如果想输出占位符之前的 \ 使用双转义符 \\\\ 即可
-     * 例：
-     * 通常使用：format("this is {} for {}", "{}", "a", "b") = this is a for b
-     * 转义{}： format("this is \\{} for {}", "{}", "a", "b") = this is {} for a
-     * 转义\： format("this is \\\\{} for {}", "{}", "a", "b") = this is \a for b
+     * 格式化字符串 此方法只是简单将指定占位符 按照顺序替换为参数 如果想输出占位符使用 \\转义即可，如果想输出占位符之前的 \ 使用双转义符 \\\\ 即可 例： 通常使用：format("this is {} for {}",
+     * "{}", "a", "b") = this is a for b 转义{}： format("this is \\{} for {}", "{}", "a", "b") = this is {} for a 转义\：
+     * format("this is \\\\{} for {}", "{}", "a", "b") = this is \a for b
      *
      * @param strPattern  字符串模板
      * @param placeHolder 占位符，例如{}
@@ -82,14 +74,12 @@ public class StringFormatter {
         if (StringKit.isBlank(strPattern) || StringKit.isBlank(placeHolder) || ArrayKit.isEmpty(argArray)) {
             return strPattern;
         }
-        return ((SingleStringTemplate) CACHE.computeIfAbsent(MutableEntry.of(strPattern, placeHolder), k ->
-                StringTemplate.of(strPattern).placeholder(placeHolder).build()))
-                .format(argArray);
+        return ((SingleStringTemplate) CACHE.computeIfAbsent(MutableEntry.of(strPattern, placeHolder),
+                k -> StringTemplate.of(strPattern).placeholder(placeHolder).build())).format(argArray);
     }
 
     /**
-     * 格式化文本，使用 {varName} 占位
-     * map = {a: "aValue", b: "bValue"} format("{a} and {b}", map) = aValue and bValue
+     * 格式化文本，使用 {varName} 占位 map = {a: "aValue", b: "bValue"} format("{a} and {b}", map) = aValue and bValue
      *
      * @param template   文本模板，被替换的部分用 {data} 表示
      * @param map        参数值对

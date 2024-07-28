@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -72,12 +72,10 @@ public class WebApplication {
     public void setDevice(Device device) {
         if (device != null) {
             if (this.device != null)
-                throw new IllegalStateException("already owned by " +
-                        this.device.getDeviceName());
+                throw new IllegalStateException("already owned by " + this.device.getDeviceName());
             for (Connection conn : conns)
                 if (conn.getDevice() != device)
-                    throw new IllegalStateException(conn + " not owned by " +
-                            device.getDeviceName());
+                    throw new IllegalStateException(conn + " not owned by " + device.getDeviceName());
         }
         this.device = device;
     }
@@ -138,8 +136,7 @@ public class WebApplication {
     }
 
     public boolean isInstalled() {
-        return device != null && device.isInstalled()
-                && (installed == null || installed.booleanValue());
+        return device != null && device.isInstalled() && (installed == null || installed.booleanValue());
     }
 
     public final Boolean getInstalled() {
@@ -147,8 +144,7 @@ public class WebApplication {
     }
 
     public void setInstalled(Boolean installed) {
-        if (installed != null && installed.booleanValue()
-                && device != null && !device.isInstalled())
+        if (installed != null && installed.booleanValue() && device != null && !device.isInstalled())
             throw new IllegalStateException("owning device not installed");
         this.installed = installed;
     }
@@ -171,11 +167,9 @@ public class WebApplication {
 
     public void addConnection(Connection conn) {
         if (conn.getProtocol() != Connection.Protocol.HTTP)
-            throw new IllegalArgumentException(
-                    "Web Application does not support protocol " + conn.getProtocol());
+            throw new IllegalArgumentException("Web Application does not support protocol " + conn.getProtocol());
         if (device != null && device != conn.getDevice())
-            throw new IllegalStateException(conn + " not contained by " +
-                    device.getDeviceName());
+            throw new IllegalStateException(conn + " not contained by " + device.getDeviceName());
         conns.add(conn);
     }
 
@@ -192,12 +186,8 @@ public class WebApplication {
     }
 
     public StringBuilder getServiceURL(Connection conn) {
-        return new StringBuilder(Normal._64)
-                .append(conn.isTls() ? Protocol.HTTPS_PREFIX : Protocol.HTTP_PREFIX)
-                .append(conn.getHostname())
-                .append(Symbol.C_COLON)
-                .append(conn.getPort())
-                .append(servicePath);
+        return new StringBuilder(Normal._64).append(conn.isTls() ? Protocol.HTTPS_PREFIX : Protocol.HTTP_PREFIX)
+                .append(conn.getHostname()).append(Symbol.C_COLON).append(conn.getPort()).append(servicePath);
     }
 
     public boolean removeConnection(Connection conn) {
@@ -260,42 +250,16 @@ public class WebApplication {
 
     @Override
     public String toString() {
-        return "WebApplication[name=" + applicationName
-                + ",serviceClasses=" + serviceClasses
-                + ",path=" + servicePath
-                + ",aet=" + aeTitle
-                + ",applicationClusters=" + Arrays.toString(applicationClusters)
-                + ",keycloakClientID=" + keycloakClientID
-                + ",properties=" + properties
-                + ",installed=" + installed
+        return "WebApplication[name=" + applicationName + ",serviceClasses=" + serviceClasses + ",path=" + servicePath
+                + ",aet=" + aeTitle + ",applicationClusters=" + Arrays.toString(applicationClusters)
+                + ",keycloakClientID=" + keycloakClientID + ",properties=" + properties + ",installed=" + installed
                 + ']';
     }
 
     public enum ServiceClass {
-        WADO_URI,
-        WADO_RS,
-        STOW_RS,
-        QIDO_RS,
-        UPS_RS,
-        MWL_RS,
-        MPPS_RS,
-        QIDO_COUNT,
-        DCM_ARC,
-        DCM_ARC_AET,
-        DCM_ARC_AET_DIFF,
-        PAM,
-        REJECT,
-        MOVE,
-        MOVE_MATCHING,
-        UPS_MATCHING,
-        ELASTICSEARCH,
-        PROMETHEUS,
-        GRAFANA,
-        XDS_RS,
-        AGFA_BLOB,
-        J4C_ROUTER,
-        FHIR,
-        WORKFLOW_MANAGER
+        WADO_URI, WADO_RS, STOW_RS, QIDO_RS, UPS_RS, MWL_RS, MPPS_RS, QIDO_COUNT, DCM_ARC, DCM_ARC_AET,
+        DCM_ARC_AET_DIFF, PAM, REJECT, MOVE, MOVE_MATCHING, UPS_MATCHING, ELASTICSEARCH, PROMETHEUS, GRAFANA, XDS_RS,
+        AGFA_BLOB, J4C_ROUTER, FHIR, WORKFLOW_MANAGER
     }
 
 }

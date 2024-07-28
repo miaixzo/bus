@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.io.file.PathResolve;
@@ -41,8 +41,7 @@ import java.net.URL;
 import java.nio.file.*;
 
 /**
- * 监听工具类
- * 主要负责文件监听器的快捷创建
+ * 监听工具类 主要负责文件监听器的快捷创建
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -404,7 +403,8 @@ public class WatchKit {
      * @param events    监听事件
      * @return {@link WatchKey}
      */
-    public static WatchKey register(final Watchable watchable, final WatchService watcher, final WatchEvent.Kind<?>... events) {
+    public static WatchKey register(final Watchable watchable, final WatchService watcher,
+            final WatchEvent.Kind<?>... events) {
         try {
             return watchable.register(watcher, events);
         } catch (final IOException e) {

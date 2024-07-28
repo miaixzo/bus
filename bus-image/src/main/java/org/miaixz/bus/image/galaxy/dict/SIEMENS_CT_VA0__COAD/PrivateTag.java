@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_CT_VA0__COAD;
 
 /**
@@ -59,10 +59,10 @@ public class PrivateTag {
     /** (0019,xx50) VR=DS VM=1 Detector Alignment */
     public static final int DetectorAlignment = 0x00190050;
 
-    /** (0019,xx52) VR=DS VM=1 ?  */
+    /** (0019,xx52) VR=DS VM=1 ? */
     public static final int _0019_xx52_ = 0x00190052;
 
-    /** (0019,xx54) VR=DS VM=1 ?  */
+    /** (0019,xx54) VR=DS VM=1 ? */
     public static final int _0019_xx54_ = 0x00190054;
 
     /** (0019,xx60) VR=DS VM=1 Focus Alignment */

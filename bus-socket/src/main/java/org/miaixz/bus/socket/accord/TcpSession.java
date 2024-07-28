@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket.accord;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -54,14 +54,14 @@ import java.util.function.Supplier;
  * <ol>
  * <li>{@link TcpSession#close()}</li>
  * <li>{@link TcpSession#close(boolean)}</li>
- * <li>{@link TcpSession#getAttachment()} </li>
- * <li>{@link TcpSession#getInputStream()} </li>
- * <li>{@link TcpSession#getInputStream(int)} </li>
- * <li>{@link TcpSession#getLocalAddress()} </li>
- * <li>{@link TcpSession#getRemoteAddress()} </li>
- * <li>{@link TcpSession#getSessionID()} </li>
- * <li>{@link TcpSession#isInvalid()} </li>
- * <li>{@link TcpSession#setAttachment(Object)}  </li>
+ * <li>{@link TcpSession#getAttachment()}</li>
+ * <li>{@link TcpSession#getInputStream()}</li>
+ * <li>{@link TcpSession#getInputStream(int)}</li>
+ * <li>{@link TcpSession#getLocalAddress()}</li>
+ * <li>{@link TcpSession#getRemoteAddress()}</li>
+ * <li>{@link TcpSession#getSessionID()}</li>
+ * <li>{@link TcpSession#isInvalid()}</li>
+ * <li>{@link TcpSession#setAttachment(Object)}</li>
  * </ol>
  *
  * @author Kimi Liu
@@ -86,8 +86,7 @@ public final class TcpSession extends Session {
      */
     private final Supplier<VirtualBuffer> readBufferSupplier;
     /**
-     * 读缓冲
-     * 大小取决于AioClient/AioServer设置的setReadBufferSize
+     * 读缓冲 大小取决于AioClient/AioServer设置的setReadBufferSize
      */
     private VirtualBuffer readBuffer;
     /**
@@ -102,12 +101,14 @@ public final class TcpSession extends Session {
     /**
      * @param channel Socket通道
      */
-    public TcpSession(AsynchronousSocketChannel channel, Context context, BufferPage writeBufferPage, Supplier<VirtualBuffer> readBufferSupplier) {
+    public TcpSession(AsynchronousSocketChannel channel, Context context, BufferPage writeBufferPage,
+            Supplier<VirtualBuffer> readBufferSupplier) {
         this.channel = channel;
         this.context = context;
         this.readBufferSupplier = readBufferSupplier;
-        byteBuf = new WriteBuffer(writeBufferPage, this::continueWrite, this.context.getWriteBufferSize(), this.context.getWriteBufferCapacity());
-        //触发状态机
+        byteBuf = new WriteBuffer(writeBufferPage, this::continueWrite, this.context.getWriteBufferSize(),
+                this.context.getWriteBufferCapacity());
+        // 触发状态机
         this.context.getProcessor().stateEvent(this, Status.NEW_SESSION, null);
         doRead();
     }
@@ -119,8 +120,7 @@ public final class TcpSession extends Session {
     }
 
     /**
-     * 触发AIO的写操作,
-     * 需要调用控制同步
+     * 触发AIO的写操作, 需要调用控制同步
      */
     void writeCompleted(int result) {
         Monitor monitor = context.getMonitor();
@@ -194,7 +194,9 @@ public final class TcpSession extends Session {
     @Override
     public ByteBuffer readBuffer() {
         return readBuffer.buffer();
-    }    /**
+    }
+
+    /**
      * 读事件回调处理
      */
     private static final CompletionHandler<Integer, TcpSession> READ_COMPLETION_HANDLER = new CompletionHandler<>() {
@@ -228,7 +230,7 @@ public final class TcpSession extends Session {
     }
 
     void readCompleted(int result) {
-        //释放缓冲区
+        // 释放缓冲区
         if (result == AsynchronousChannelProvider.READ_MONITOR_SIGNAL) {
             this.readBuffer.clean();
             this.readBuffer = null;
@@ -297,7 +299,9 @@ public final class TcpSession extends Session {
         readBuffer.compact();
         // 读缓冲区已满
         if (!readBuffer.hasRemaining()) {
-            InternalException exception = new InternalException("readBuffer overflow. The current TCP connection will be closed. Please fix your " + context.getProtocol().getClass().getSimpleName() + "#decode bug.");
+            InternalException exception = new InternalException(
+                    "readBuffer overflow. The current TCP connection will be closed. Please fix your "
+                            + context.getProtocol().getClass().getSimpleName() + "#decode bug.");
             handler.stateEvent(this, Status.DECODE_EXCEPTION, exception);
             throw exception;
         }
@@ -376,8 +380,7 @@ public final class TcpSession extends Session {
     /**
      * 获得数据输入流对象。
      * <p>
-     * faster模式下调用该方法会触发UnsupportedOperationException异常。
-     * Handler采用异步处理消息的方式时，调用该方法可能会出现异常。
+     * faster模式下调用该方法会触发UnsupportedOperationException异常。 Handler采用异步处理消息的方式时，调用该方法可能会出现异常。
      * </p>
      *
      * @return 同步读操作的流对象

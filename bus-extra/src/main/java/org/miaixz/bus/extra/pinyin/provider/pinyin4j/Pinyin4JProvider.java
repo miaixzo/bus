@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.pinyin.provider.pinyin4j;
 
 import net.sourceforge.pinyin4j.PinyinHelper;
@@ -46,6 +46,7 @@ import org.miaixz.bus.extra.pinyin.PinyinProvider;
  *
  * <p>
  * 引入：
+ * 
  * <pre>
  * &lt;dependency&gt;
  *     &lt;groupId&gt;com.belerweb&lt;/groupId&gt;
@@ -59,7 +60,7 @@ import org.miaixz.bus.extra.pinyin.PinyinProvider;
  */
 public class Pinyin4JProvider implements PinyinProvider {
 
-    //设置汉子拼音输出的格式
+    // 设置汉子拼音输出的格式
     private HanyuPinyinOutputFormat format;
 
     /**

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date;
 
 import org.miaixz.bus.core.center.date.format.CustomFormat;
@@ -53,14 +53,8 @@ import java.util.TimeZone;
 import java.util.function.Function;
 
 /**
- * 日期格式化和解析
- * yyyy-MM-dd
- * HH:mm:ss
- * yyyy-MM-dd HH:mm:ss
- * yyyy-MM-dd HH:mm:ss.SSS
- * yyyy-MM-dd HH:mm:ss.SSSSSS
- * yyyy-MM-dd HH:mm:ss.SSSSSSSSS
- * yyyy-MM-dd'T'HH:mm:ss.SSSZ等等，支持毫秒、微秒和纳秒等精确时间
+ * 日期格式化和解析 yyyy-MM-dd HH:mm:ss yyyy-MM-dd HH:mm:ss yyyy-MM-dd HH:mm:ss.SSS yyyy-MM-dd HH:mm:ss.SSSSSS yyyy-MM-dd
+ * HH:mm:ss.SSSSSSSSS yyyy-MM-dd'T'HH:mm:ss.SSSZ等等，支持毫秒、微秒和纳秒等精确时间
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -82,7 +76,8 @@ public class Formatter {
     /**
      * 简单年月格式 {@link DateTimeFormatter}：yyyyMM
      */
-    public static final DateTimeFormatter SIMPLE_MONTH_FORMATTER = FormatBuilder.getDateTimeInstance(Fields.SIMPLE_MONTH);
+    public static final DateTimeFormatter SIMPLE_MONTH_FORMATTER = FormatBuilder
+            .getDateTimeInstance(Fields.SIMPLE_MONTH);
     /**
      * 标准日期格式 {@link FormatBuilder}：yyyy-MM-dd
      */
@@ -98,7 +93,8 @@ public class Formatter {
     /**
      * 标准日期格式 {@link DateTimeFormatter}：HH:mm
      */
-    public static final DateTimeFormatter NORM_HOUR_MINUTE_FORMATTER = FormatBuilder.getDateTimeInstance(Fields.NORM_HOUR_MINUTE);
+    public static final DateTimeFormatter NORM_HOUR_MINUTE_FORMATTER = FormatBuilder
+            .getDateTimeInstance(Fields.NORM_HOUR_MINUTE);
     /**
      * 标准时间格式 {@link FormatBuilder}：HH:mm:ss
      */
@@ -110,11 +106,13 @@ public class Formatter {
     /**
      * 标准日期时间格式，精确到分 {@link FormatBuilder}：yyyy-MM-dd HH:mm
      */
-    public static final FormatBuilder NORM_DATETIME_MINUTE_FORMAT = FormatBuilder.getInstance(Fields.NORM_DATETIME_MINUTE);
+    public static final FormatBuilder NORM_DATETIME_MINUTE_FORMAT = FormatBuilder
+            .getInstance(Fields.NORM_DATETIME_MINUTE);
     /**
      * 标准日期格式 {@link DateTimeFormatter}：yyyy-MM-dd HH:mm
      */
-    public static final DateTimeFormatter NORM_DATETIME_MINUTE_FORMATTER = FormatBuilder.getDateTimeInstance(Fields.NORM_DATETIME_MINUTE);
+    public static final DateTimeFormatter NORM_DATETIME_MINUTE_FORMATTER = FormatBuilder
+            .getDateTimeInstance(Fields.NORM_DATETIME_MINUTE);
     /**
      * 标准日期时间格式，精确到秒 {@link FormatBuilder}：yyyy-MM-dd HH:mm:ss
      */
@@ -122,7 +120,8 @@ public class Formatter {
     /**
      * 标准日期时间格式，精确到秒 {@link DateTimeFormatter}：yyyy-MM-dd HH:mm:ss
      */
-    public static final DateTimeFormatter NORM_DATETIME_FORMATTER = FormatBuilder.getDateTimeInstance(Fields.NORM_DATETIME);
+    public static final DateTimeFormatter NORM_DATETIME_FORMATTER = FormatBuilder
+            .getDateTimeInstance(Fields.NORM_DATETIME);
     /**
      * 标准日期时间格式，精确到毫秒 {@link FormatBuilder}：yyyy-MM-dd HH:mm:ss.SSS
      */
@@ -130,15 +129,18 @@ public class Formatter {
     /**
      * 标准日期时间格式，精确到毫秒 {@link DateTimeFormatter}：yyyy-MM-dd HH:mm:ss.SSS
      */
-    public static final DateTimeFormatter NORM_DATETIME_MS_FORMATTER = FormatBuilder.getDateTimeInstance(Fields.NORM_DATETIME_MS);
+    public static final DateTimeFormatter NORM_DATETIME_MS_FORMATTER = FormatBuilder
+            .getDateTimeInstance(Fields.NORM_DATETIME_MS);
     /**
      * ISO8601日期时间格式，精确到毫秒 {@link FormatBuilder}：yyyy-MM-dd HH:mm:ss,SSS
      */
-    public static final FormatBuilder NORM_DATETIME_COMMA_MS_FORMAT = FormatBuilder.getInstance(Fields.NORM_DATETIME_COMMA_MS);
+    public static final FormatBuilder NORM_DATETIME_COMMA_MS_FORMAT = FormatBuilder
+            .getInstance(Fields.NORM_DATETIME_COMMA_MS);
     /**
      * 标准日期格式 {@link DateTimeFormatter}：yyyy-MM-dd HH:mm:ss,SSS
      */
-    public static final DateTimeFormatter NORM_DATETIME_COMMA_MS_FORMATTER = FormatBuilder.getDateTimeInstance(Fields.NORM_DATETIME_COMMA_MS);
+    public static final DateTimeFormatter NORM_DATETIME_COMMA_MS_FORMATTER = FormatBuilder
+            .getDateTimeInstance(Fields.NORM_DATETIME_COMMA_MS);
     /**
      * 标准日期格式 {@link FormatBuilder}：MM月dd日
      */
@@ -162,7 +164,8 @@ public class Formatter {
     /**
      * 标准日期格式 {@link DateTimeFormatter}：yyyy年MM月dd日HH时mm分ss秒
      */
-    public static final DateTimeFormatter CN_DATE_TIME_FORMATTER = FormatBuilder.getDateTimeInstance(Fields.CN_DATE_TIME);
+    public static final DateTimeFormatter CN_DATE_TIME_FORMATTER = FormatBuilder
+            .getDateTimeInstance(Fields.CN_DATE_TIME);
     /**
      * 标准日期格式 {@link FormatBuilder}：yyyyMMdd
      */
@@ -178,7 +181,8 @@ public class Formatter {
     /**
      * 标准日期格式 {@link DateTimeFormatter}：HHmm
      */
-    public static final DateTimeFormatter PURE_HOUR_MINUTE_FORMATTER = FormatBuilder.getDateTimeInstance(Fields.PURE_HOUR_MINUTE);
+    public static final DateTimeFormatter PURE_HOUR_MINUTE_FORMATTER = FormatBuilder
+            .getDateTimeInstance(Fields.PURE_HOUR_MINUTE);
     /**
      * 标准日期格式 {@link FormatBuilder}：HHmmss
      */
@@ -194,7 +198,8 @@ public class Formatter {
     /**
      * 标准日期格式 {@link DateTimeFormatter}：yyyyMMddHHmmss
      */
-    public static final DateTimeFormatter PURE_DATETIME_FORMATTER = FormatBuilder.getDateTimeInstance(Fields.PURE_DATETIME);
+    public static final DateTimeFormatter PURE_DATETIME_FORMATTER = FormatBuilder
+            .getDateTimeInstance(Fields.PURE_DATETIME);
     /**
      * 标准日期格式 {@link FormatBuilder}：yyyyMMddHHmmssSSS
      */
@@ -202,17 +207,20 @@ public class Formatter {
     /**
      * 格式化通配符: {@link FormatBuilder} yyyyMMddHHmmss.SSS
      */
-    public static final FormatBuilder PURE_DATETIME_TIP_FORMAT = FormatBuilder.getInstance(Fields.PURE_DATETIME_TIP_PATTERN);
+    public static final FormatBuilder PURE_DATETIME_TIP_FORMAT = FormatBuilder
+            .getInstance(Fields.PURE_DATETIME_TIP_PATTERN);
     /**
-     * 标准日期格式 {@link DateTimeFormatter}：yyyyMMddHHmmssSSS
-     * see https://stackoverflow.com/questions/22588051/is-java-time-failing-to-parse-fraction-of-second
-     * jdk8 bug at: https://bugs.openjdk.java.net/browse/JDK-8031085
+     * 标准日期格式 {@link DateTimeFormatter}：yyyyMMddHHmmssSSS see
+     * https://stackoverflow.com/questions/22588051/is-java-time-failing-to-parse-fraction-of-second jdk8 bug at:
+     * https://bugs.openjdk.java.net/browse/JDK-8031085
      */
-    public static final DateTimeFormatter PURE_DATETIME_MS_FORMATTER = new DateTimeFormatterBuilder().appendPattern(Fields.PURE_DATETIME).appendValue(ChronoField.MILLI_OF_SECOND, 3).toFormatter();
+    public static final DateTimeFormatter PURE_DATETIME_MS_FORMATTER = new DateTimeFormatterBuilder()
+            .appendPattern(Fields.PURE_DATETIME).appendValue(ChronoField.MILLI_OF_SECOND, 3).toFormatter();
     /**
      * HTTP头中日期时间格式 {@link FormatBuilder}：EEE, dd MMM yyyy HH:mm:ss GMT
      */
-    public static final FormatBuilder HTTP_DATETIME_FORMAT_GMT = FormatBuilder.getInstance(Fields.HTTP_DATETIME, TimeZone.getTimeZone("GMT"), Locale.US);
+    public static final FormatBuilder HTTP_DATETIME_FORMAT_GMT = FormatBuilder.getInstance(Fields.HTTP_DATETIME,
+            TimeZone.getTimeZone("GMT"), Locale.US);
     /**
      * HTTP头中日期时间格式 {@link FormatBuilder}：EEE, dd MMM yyyy HH:mm:ss z
      */
@@ -236,11 +244,13 @@ public class Formatter {
     /**
      * ISO8601时间{@link FormatBuilder}：yyyy-MM-dd'T'HH:mm:ssZ，Z表示一个时间偏移，如+0800
      */
-    public static final FormatBuilder ISO8601_WITH_ZONE_OFFSET_FORMAT = FormatBuilder.getInstance(Fields.ISO8601_WITH_ZONE_OFFSET);
+    public static final FormatBuilder ISO8601_WITH_ZONE_OFFSET_FORMAT = FormatBuilder
+            .getInstance(Fields.ISO8601_WITH_ZONE_OFFSET);
     /**
      * ISO8601时间{@link FormatBuilder}：yyyy-MM-dd'T'HH:mm:ssXXX
      */
-    public static final FormatBuilder ISO8601_WITH_XXX_OFFSET_FORMAT = FormatBuilder.getInstance(Fields.ISO8601_WITH_XXX_OFFSET);
+    public static final FormatBuilder ISO8601_WITH_XXX_OFFSET_FORMAT = FormatBuilder
+            .getInstance(Fields.ISO8601_WITH_XXX_OFFSET);
     /**
      * ISO8601时间{@link FormatBuilder}：yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
      */
@@ -248,16 +258,17 @@ public class Formatter {
     /**
      * ISO8601时间{@link FormatBuilder}：yyyy-MM-dd'T'HH:mm:ss.SSSZ
      */
-    public static final FormatBuilder ISO8601_MS_WITH_ZONE_OFFSET_FORMAT = FormatBuilder.getInstance(Fields.ISO8601_MS_WITH_ZONE_OFFSET);
+    public static final FormatBuilder ISO8601_MS_WITH_ZONE_OFFSET_FORMAT = FormatBuilder
+            .getInstance(Fields.ISO8601_MS_WITH_ZONE_OFFSET);
     /**
      * UTC时间{@link FormatBuilder}：yyyy-MM-dd'T'HH:mm:ss.SSSXXX
      */
-    public static final FormatBuilder ISO8601_MS_WITH_XXX_OFFSET_FORMAT = FormatBuilder.getInstance(Fields.ISO8601_MS_WITH_XXX_OFFSET);
+    public static final FormatBuilder ISO8601_MS_WITH_XXX_OFFSET_FORMAT = FormatBuilder
+            .getInstance(Fields.ISO8601_MS_WITH_XXX_OFFSET);
     /**
      * 只有时分秒的最大时间
      */
     public static final LocalTime MAX_HMS = LocalTime.of(23, 59, 59);
-
 
     /**
      * 将指定的日期转换成Unix时间戳
@@ -307,8 +318,7 @@ public class Formatter {
     }
 
     /**
-     * 格式化日期时间
-     * 格式 yyyy-MM-dd HH:mm:ss
+     * 格式化日期时间 格式 yyyy-MM-dd HH:mm:ss
      *
      * @param localDateTime 被格式化的日期
      * @return 格式化后的字符串
@@ -329,8 +339,7 @@ public class Formatter {
     }
 
     /**
-     * 格式化日期时间为指定格式
-     * 如果为{@link Month}，调用{@link Month#toString()}
+     * 格式化日期时间为指定格式 如果为{@link Month}，调用{@link Month#toString()}
      *
      * @param time      {@link TemporalAccessor}
      * @param formatter 日期格式化器，预定义的格式见：{@link DateTimeFormatter}
@@ -367,8 +376,7 @@ public class Formatter {
     }
 
     /**
-     * 格式化日期时间为指定格式
-     * 如果为{@link Month}，调用{@link Month#toString()}
+     * 格式化日期时间为指定格式 如果为{@link Month}，调用{@link Month#toString()}
      *
      * @param time   {@link TemporalAccessor}
      * @param format 日期格式
@@ -379,7 +387,8 @@ public class Formatter {
             return null;
         }
 
-        if (time instanceof DayOfWeek || time instanceof java.time.Month || time instanceof Era || time instanceof MonthDay) {
+        if (time instanceof DayOfWeek || time instanceof java.time.Month || time instanceof Era
+                || time instanceof MonthDay) {
             return time.toString();
         }
 
@@ -442,8 +451,7 @@ public class Formatter {
     }
 
     /**
-     * 创建{@link SimpleDateFormat}，注意此对象非线程安全！
-     * 此对象默认为严格格式模式，即parse时如果格式不正确会报错。
+     * 创建{@link SimpleDateFormat}，注意此对象非线程安全！ 此对象默认为严格格式模式，即parse时如果格式不正确会报错。
      *
      * @param pattern 表达式
      * @return {@link SimpleDateFormat}
@@ -453,8 +461,7 @@ public class Formatter {
     }
 
     /**
-     * 创建{@link SimpleDateFormat}，注意此对象非线程安全！
-     * 此对象默认为严格格式模式，即parse时如果格式不正确会报错。
+     * 创建{@link SimpleDateFormat}，注意此对象非线程安全！ 此对象默认为严格格式模式，即parse时如果格式不正确会报错。
      *
      * @param pattern  表达式
      * @param locale   {@link Locale}，{@code null}表示默认

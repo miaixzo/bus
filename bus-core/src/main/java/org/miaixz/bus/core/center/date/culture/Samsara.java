@@ -24,12 +24,11 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date.culture;
 
 /**
- * 轮回的信息
- * 季度/月/星期/日/小时/分钟等
+ * 轮回的信息 季度/月/星期/日/小时/分钟等
  *
  * @author Kimi Liu
  * @since Java 17+

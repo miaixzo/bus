@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.check.crc16;
 
 import org.miaixz.bus.core.xyz.HexKit;
@@ -34,8 +34,7 @@ import java.io.Serializable;
 import java.util.zip.Checksum;
 
 /**
- * CRC16 Checksum，用于提供多种CRC16算法的通用实现
- * 通过继承此类，重写update和reset完成相应算法。
+ * CRC16 Checksum，用于提供多种CRC16算法的通用实现 通过继承此类，重写update和reset完成相应算法。
  *
  * @author Kimi Liu
  * @since Java 17+

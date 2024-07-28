@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -44,8 +44,7 @@ public class Xml2HL7 {
     private static void parseXML(String fname) throws Exception {
         SAXParserFactory f = SAXParserFactory.newInstance();
         SAXParser p = f.newSAXParser();
-        HL7ContentHandler ch = new HL7ContentHandler(
-                new OutputStreamWriter(System.out));
+        HL7ContentHandler ch = new HL7ContentHandler(new OutputStreamWriter(System.out));
         if (fname.equals(Symbol.MINUS)) {
             p.parse(System.in, ch);
         } else {
@@ -67,8 +66,7 @@ public class Xml2HL7 {
         if (arg0.equals("-V") || arg0.equals("--version")) {
             Package p = Xml2HL7.class.getPackage();
             String s = p.getName();
-            System.out.println(s.substring(s.lastIndexOf('.') + 1) + ": " +
-                    p.getImplementationVersion());
+            System.out.println(s.substring(s.lastIndexOf('.') + 1) + ": " + p.getImplementationVersion());
             System.exit(0);
         }
         if (arg0.startsWith("-") && arg0.length() > 1) {

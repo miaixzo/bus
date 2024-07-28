@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.GEIIS;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,34 +46,35 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag._004B_xx13_:
-            case PrivateTag._0009_xx12_:
-                return VR.IS;
-            case PrivateTag.AssigningAuthorityForPatientID:
-                return VR.LO;
-            case PrivateTag._004B_xx15_:
-                return VR.LT;
-            case PrivateTag.GEPrivateImageThumbnailSequence:
-                return VR.SQ;
-            case PrivateTag.OriginalStudyInstanceUID:
-            case PrivateTag.OriginalSeriesInstanceUID:
-            case PrivateTag.OriginalSOPInstanceUID:
-                return VR.UI;
-            case PrivateTag.ShiftCount:
-            case PrivateTag.Offset:
-            case PrivateTag.ActualFrameNumber:
-            case PrivateTag.CompressionType:
-            case PrivateTag.MultiframeOffsets:
-            case PrivateTag.MultiResolutionLevels:
-            case PrivateTag.SubbandRows:
-            case PrivateTag.SubbandColumns:
-            case PrivateTag.SubbandBytecounts:
-                return VR.UL;
+
+        case PrivateTag._004B_xx13_:
+        case PrivateTag._0009_xx12_:
+            return VR.IS;
+        case PrivateTag.AssigningAuthorityForPatientID:
+            return VR.LO;
+        case PrivateTag._004B_xx15_:
+            return VR.LT;
+        case PrivateTag.GEPrivateImageThumbnailSequence:
+            return VR.SQ;
+        case PrivateTag.OriginalStudyInstanceUID:
+        case PrivateTag.OriginalSeriesInstanceUID:
+        case PrivateTag.OriginalSOPInstanceUID:
+            return VR.UI;
+        case PrivateTag.ShiftCount:
+        case PrivateTag.Offset:
+        case PrivateTag.ActualFrameNumber:
+        case PrivateTag.CompressionType:
+        case PrivateTag.MultiframeOffsets:
+        case PrivateTag.MultiResolutionLevels:
+        case PrivateTag.SubbandRows:
+        case PrivateTag.SubbandColumns:
+        case PrivateTag.SubbandBytecounts:
+            return VR.UL;
         }
         return VR.UN;
     }

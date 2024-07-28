@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.pdu;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -48,39 +48,22 @@ public class AAbort extends IOException {
     public static final int UNEXPECTED_PDU_PARAMETER = 5;
     public static final int INVALID_PDU_PARAMETER_VALUE = 6;
 
-    private static final String[] SOURCES = {
-            "0 - service-user",
-            "1",
-            "2 - service-provider",
-    };
+    private static final String[] SOURCES = { "0 - service-user", "1", "2 - service-provider", };
 
-    private static final String[] SERVICE_USER_REASONS = {
-            "0",
-    };
+    private static final String[] SERVICE_USER_REASONS = { "0", };
 
-    private static final String[] SERVICE_PROVIDER_REASONS = {
-            "0 - reason-not-specified",
-            "1 - unrecognized-PDU",
-            "2 - unexpected-PDU",
-            "3",
-            "4 - unrecognized-PDU-parameter",
-            "5 - unexpected-PDU-parameter",
-            "6 - invalid-PDU-parameter-value"
-    };
+    private static final String[] SERVICE_PROVIDER_REASONS = { "0 - reason-not-specified", "1 - unrecognized-PDU",
+            "2 - unexpected-PDU", "3", "4 - unrecognized-PDU-parameter", "5 - unexpected-PDU-parameter",
+            "6 - invalid-PDU-parameter-value" };
 
-    private static final String[][] REASONS = {
-            SERVICE_USER_REASONS,
-            Normal.EMPTY_STRING_ARRAY,
-            SERVICE_PROVIDER_REASONS
-    };
+    private static final String[][] REASONS = { SERVICE_USER_REASONS, Normal.EMPTY_STRING_ARRAY,
+            SERVICE_PROVIDER_REASONS };
 
     private final int source;
     private final int reason;
 
     public AAbort(int source, int reason) {
-        super("A-ABORT[source: " + toString(SOURCES, source)
-                + ", reason: " + toReason(source, reason)
-                + ']');
+        super("A-ABORT[source: " + toString(SOURCES, source) + ", reason: " + toReason(source, reason) + ']');
         this.source = source;
         this.reason = reason;
     }

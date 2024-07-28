@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.jdbc;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -51,8 +51,8 @@ public class AspectjJdbcProxy {
     /**
      * 扫描所有含有@DataSource注解的类
      */
-    @Pointcut("@annotation(org.miaixz.bus.starter.jdbc.DataSource)" +
-            "||execution(* *(@org.miaixz.bus.starter.jdbc.DataSource (*), ..))")
+    @Pointcut("@annotation(org.miaixz.bus.starter.jdbc.DataSource)"
+            + "||execution(* *(@org.miaixz.bus.starter.jdbc.DataSource (*), ..))")
     public void match() {
 
     }
@@ -77,15 +77,13 @@ public class AspectjJdbcProxy {
         if (null != dataSource) {
             // 设置数据源key值
             DataSourceHolder.setKey(dataSource.value());
-            Logger.info("Switch datasource to [{}] in method [{}]",
-                    DataSourceHolder.getKey(), point.getSignature());
+            Logger.info("Switch datasource to [{}] in method [{}]", DataSourceHolder.getKey(), point.getSignature());
         }
         // 继续执行该方法
         Object object = point.proceed();
         // 恢复默认数据源
         DataSourceHolder.remove();
-        Logger.info("Restore datasource to [{}] in method [{}]",
-                DataSourceHolder.getKey(), point.getSignature());
+        Logger.info("Restore datasource to [{}] in method [{}]", DataSourceHolder.getKey(), point.getSignature());
         return object;
     }
 

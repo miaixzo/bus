@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.loader;
 
 import org.miaixz.bus.core.io.resource.Resource;
@@ -83,7 +83,8 @@ public class AntLoader extends PatternLoader implements Loader {
      */
     protected String path(String ant) {
         int index = Integer.MAX_VALUE - 1;
-        if (ant.contains(Symbol.STAR) && ant.indexOf(Symbol.C_STAR) < index) index = ant.indexOf(Symbol.C_STAR);
+        if (ant.contains(Symbol.STAR) && ant.indexOf(Symbol.C_STAR) < index)
+            index = ant.indexOf(Symbol.C_STAR);
         if (ant.contains(Symbol.QUESTION_MARK) && ant.indexOf(Symbol.C_QUESTION_MARK) < index)
             index = ant.indexOf(Symbol.C_QUESTION_MARK);
         return ant.substring(0, ant.lastIndexOf(Symbol.C_SLASH, index) + 1);

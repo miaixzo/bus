@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.xyz.MapKit;
@@ -33,8 +33,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import java.util.Map;
 
 /**
- * {@link StackTraceElement} 转换器
- * 只支持Map方式转换
+ * {@link StackTraceElement} 转换器 只支持Map方式转换
  *
  * @author Kimi Liu
  * @since Java 17+

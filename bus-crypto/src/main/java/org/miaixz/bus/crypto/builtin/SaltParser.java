@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.builtin;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -36,8 +36,8 @@ import java.security.MessageDigest;
 import java.util.Arrays;
 
 /**
- * OpenSSL中加盐解析器
- * 参考：
+ * OpenSSL中加盐解析器 参考：
+ * 
  * <pre>
  *     https://stackoverflow.com/questions/11783062/how-to-decrypt-file-in-java-encrypted-with-openssl-command-using-aes
  *     https://stackoverflow.com/questions/32508961/java-equivalent-of-an-openssl-aes-cbc-encryption

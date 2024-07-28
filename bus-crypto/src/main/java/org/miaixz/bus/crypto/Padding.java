@@ -24,15 +24,15 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto;
 
 /**
- * 补码方式
- * 补码方式是在分组密码中，当明文长度不是分组长度的整数倍时，需要在最后一个分组中填充一些数据使其凑满一个分组的长度。
+ * 补码方式 补码方式是在分组密码中，当明文长度不是分组长度的整数倍时，需要在最后一个分组中填充一些数据使其凑满一个分组的长度。
  *
  * @author Kimi Liu
- * @see <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#Cipher"> Cipher章节</a>
+ * @see <a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#Cipher">
+ *      Cipher章节</a>
  * @since Java 17+
  */
 public enum Padding {
@@ -45,7 +45,8 @@ public enum Padding {
      */
     ZeroPadding,
     /**
-     * This padding for block ciphers is described in 5.2 Block Encryption Algorithms in the W3C's "XML Encryption Syntax and Processing" document.
+     * This padding for block ciphers is described in 5.2 Block Encryption Algorithms in the W3C's "XML Encryption
+     * Syntax and Processing" document.
      */
     ISO10126Padding,
     /**
@@ -57,11 +58,13 @@ public enum Padding {
      */
     PKCS1Padding,
     /**
-     * The padding scheme described in RSA Laboratories, "PKCS #5: Password-Based Encryption Standard," version 1.5, November 1993.
+     * The padding scheme described in RSA Laboratories, "PKCS #5: Password-Based Encryption Standard," version 1.5,
+     * November 1993.
      */
     PKCS5Padding,
     /**
-     * The padding scheme described in RSA Laboratories, "PKCS #7: Password-Based Encryption Standard," version 1.5, November 1993.
+     * The padding scheme described in RSA Laboratories, "PKCS #7: Password-Based Encryption Standard," version 1.5,
+     * November 1993.
      */
     PKCS7Padding,
     /**

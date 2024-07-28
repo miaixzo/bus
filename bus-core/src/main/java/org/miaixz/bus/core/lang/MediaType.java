@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang;
 
 import lombok.Getter;
@@ -163,7 +163,8 @@ public class MediaType {
     /**
      * A {@link MediaType} constant representing {@value #APPLICATION_FORM_URLENCODED} media type.
      */
-    public static final MediaType APPLICATION_FORM_URLENCODED_TYPE = new MediaType("application", "x-www-form-urlencoded");
+    public static final MediaType APPLICATION_FORM_URLENCODED_TYPE = new MediaType("application",
+            "x-www-form-urlencoded");
 
     /**
      * A {@code String} constant representing {@value #MULTIPART_FORM_DATA} media type.
@@ -460,7 +461,8 @@ public class MediaType {
     /**
      * A {@link MediaType} constant representing {@value #MULTIPART_RELATED_APPLICATION_DICOM} media type.
      */
-    public final static MediaType MULTIPART_RELATED_APPLICATION_DICOM_TYPE = new MediaType("multipart", "related", Collections.singletonMap("type", APPLICATION_DICOM));
+    public final static MediaType MULTIPART_RELATED_APPLICATION_DICOM_TYPE = new MediaType("multipart", "related",
+            Collections.singletonMap("type", APPLICATION_DICOM));
 
     /**
      * A {@code String} constant representing {@value #MULTIPART_RELATED_APPLICATION_DICOM_XML} media type.
@@ -469,7 +471,8 @@ public class MediaType {
     /**
      * A {@link MediaType} constant representing {@value #MULTIPART_RELATED_APPLICATION_DICOM_XML} media type.
      */
-    public final static MediaType MULTIPART_RELATED_APPLICATION_DICOM_XML_TYPE = new MediaType("multipart", "related", Collections.singletonMap("type", APPLICATION_DICOM_XML));
+    public final static MediaType MULTIPART_RELATED_APPLICATION_DICOM_XML_TYPE = new MediaType("multipart", "related",
+            Collections.singletonMap("type", APPLICATION_DICOM_XML));
 
     /**
      * A {@code String} constant representing {@value #MODEL_STL} media type.
@@ -554,7 +557,8 @@ public class MediaType {
     public static final String TOKEN = "([a-zA-Z0-9-!#$%&'*+.^_`{|}~]+)";
     public static final String QUOTED = "\"([^\"]*)\"";
     public static final Pattern TYPE_SUBTYPE = Pattern.compile(TOKEN + Symbol.SLASH + TOKEN);
-    public static final Pattern PARAMETER = Pattern.compile(";\\s*(?:" + TOKEN + "=(?:" + TOKEN + Symbol.OR + QUOTED + "))?");
+    public static final Pattern PARAMETER = Pattern
+            .compile(";\\s*(?:" + TOKEN + "=(?:" + TOKEN + Symbol.OR + QUOTED + "))?");
 
     public final String type;
     public final String subtype;
@@ -594,7 +598,8 @@ public class MediaType {
         this.type = null == type ? MEDIA_TYPE_WILDCARD : type;
         this.subtype = null == subtype ? MEDIA_TYPE_WILDCARD : subtype;
         this.charset = null == charset ? Charset.DEFAULT_UTF_8 : charset;
-        this.mediaType = null == mediaType ? this.type + Symbol.C_SLASH + this.subtype + ";charset=" + this.charset : mediaType;
+        this.mediaType = null == mediaType ? this.type + Symbol.C_SLASH + this.subtype + ";charset=" + this.charset
+                : mediaType;
         if (MapKit.isNotEmpty(params)) {
             params = new TreeMap((Comparator<String>) (o1, o2) -> o1.compareToIgnoreCase(o2));
         }
@@ -624,7 +629,8 @@ public class MediaType {
         for (int s = typeSubtype.end(); s < text.length(); s = parameter.end()) {
             parameter.region(s, text.length());
             if (!parameter.lookingAt()) {
-                throw new IllegalArgumentException("Parameter is not formatted correctly: " + text.substring(s) + " for:" + text);
+                throw new IllegalArgumentException(
+                        "Parameter is not formatted correctly: " + text.substring(s) + " for:" + text);
             }
 
             String name = parameter.group(1);
@@ -634,14 +640,14 @@ public class MediaType {
             String charsetParameter;
             String token = parameter.group(2);
             if (null != token) {
-                charsetParameter = (token.startsWith(Symbol.SINGLE_QUOTE) && token.endsWith(Symbol.SINGLE_QUOTE) && token.length() > 2)
-                        ? token.substring(1, token.length() - 1)
-                        : token;
+                charsetParameter = (token.startsWith(Symbol.SINGLE_QUOTE) && token.endsWith(Symbol.SINGLE_QUOTE)
+                        && token.length() > 2) ? token.substring(1, token.length() - 1) : token;
             } else {
                 charsetParameter = parameter.group(3);
             }
             if (null != charset && !charsetParameter.equalsIgnoreCase(charset)) {
-                throw new IllegalArgumentException("Multiple charsets defined: " + charset + " and: " + charsetParameter + " for: " + text);
+                throw new IllegalArgumentException(
+                        "Multiple charsets defined: " + charset + " and: " + charsetParameter + " for: " + text);
             }
             charset = charsetParameter;
         }
@@ -667,8 +673,7 @@ public class MediaType {
             return false;
         } else {
             MediaType other = (MediaType) object;
-            return this.type.equalsIgnoreCase(other.type)
-                    && this.subtype.equalsIgnoreCase(other.subtype)
+            return this.type.equalsIgnoreCase(other.type) && this.subtype.equalsIgnoreCase(other.subtype)
                     && this.parameters.equals(other.parameters);
         }
     }
@@ -714,8 +719,7 @@ public class MediaType {
     }
 
     /**
-     * 返回此媒体类型的字符集,或者{@code defaultValue},
-     * 如果此媒体类型没有指定字符集,则当前运行时不支持该字符集
+     * 返回此媒体类型的字符集,或者{@code defaultValue}, 如果此媒体类型没有指定字符集,则当前运行时不支持该字符集
      *
      * @param defaultValue 字符集
      * @return the charset
@@ -729,22 +733,16 @@ public class MediaType {
     }
 
     /**
-     * 检查此媒体类型是否与其他媒体类型兼容
-     * 例如:image/*与image/jpeg、image/png等兼容
-     * 忽略媒体类型参数 这个函数是可交换的
+     * 检查此媒体类型是否与其他媒体类型兼容 例如:image/*与image/jpeg、image/png等兼容 忽略媒体类型参数 这个函数是可交换的
      *
      * @param mediaType 要比较的媒体类型.
      * @return 如果类型兼容, 则为true, 否则为false.
      */
     public boolean isCompatible(MediaType mediaType) {
-        return null != mediaType
-                && (type.equals(MEDIA_TYPE_WILDCARD)
-                || mediaType.type.equals(MEDIA_TYPE_WILDCARD)
+        return null != mediaType && (type.equals(MEDIA_TYPE_WILDCARD) || mediaType.type.equals(MEDIA_TYPE_WILDCARD)
                 || (type.equalsIgnoreCase(mediaType.type)
-                && (subtype.equals(MEDIA_TYPE_WILDCARD)
-                || mediaType.subtype.equals(MEDIA_TYPE_WILDCARD)))
-                || (type.equalsIgnoreCase(mediaType.type)
-                && this.subtype.equalsIgnoreCase(mediaType.subtype)));
+                        && (subtype.equals(MEDIA_TYPE_WILDCARD) || mediaType.subtype.equals(MEDIA_TYPE_WILDCARD)))
+                || (type.equalsIgnoreCase(mediaType.type) && this.subtype.equalsIgnoreCase(mediaType.subtype)));
     }
 
     public static boolean isSTLType(MediaType mediaType) {
@@ -754,8 +752,7 @@ public class MediaType {
     }
 
     public static boolean isSTLType(String type) {
-        return MODEL_STL.equalsIgnoreCase(type)
-                || MODEL_X_STL_BINARY.equalsIgnoreCase(type)
+        return MODEL_STL.equalsIgnoreCase(type) || MODEL_X_STL_BINARY.equalsIgnoreCase(type)
                 || APPLICATION_SLA.equalsIgnoreCase(type);
     }
 

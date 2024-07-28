@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.compare;
 
 import java.io.Serializable;
@@ -32,8 +32,7 @@ import java.util.Comparator;
 import java.util.Objects;
 
 /**
- * {@code null}友好的比较器包装，如果nullGreater，则{@code null} &gt; non-null，否则反之。
- * 如果二者皆为{@code null}，则为相等，返回0。
+ * {@code null}友好的比较器包装，如果nullGreater，则{@code null} &gt; non-null，否则反之。 如果二者皆为{@code null}，则为相等，返回0。
  * 如果二者都非{@code null}，则使用传入的比较器排序。
  * 传入比较器为{@code null}，则看被比较的两个对象是否都实现了{@link Comparable}实现则调用{@link Comparable#compareTo(Object)}。
  * 如果两者至少一个未实现，则视为所有元素相等。
@@ -87,8 +86,7 @@ public class NullCompare<T> implements Comparator<T>, Serializable {
     }
 
     /**
-     * 不检查{@code null}的比较方法
-     * 用户可自行重写此方法自定义比较方式
+     * 不检查{@code null}的比较方法 用户可自行重写此方法自定义比较方式
      *
      * @param a A值
      * @param b B值

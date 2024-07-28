@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto;
 
 import org.miaixz.bus.core.lang.Algorithm;
@@ -62,8 +62,7 @@ public interface Cipher {
     void init(Algorithm.Type mode, Parameters parameters);
 
     /**
-     * 根据输入长度，获取输出长度，输出长度与算法相关
-     * 输出长度只针对本次输入关联，即len长度的数据对应输出长度加doFinal的长度
+     * 根据输入长度，获取输出长度，输出长度与算法相关 输出长度只针对本次输入关联，即len长度的数据对应输出长度加doFinal的长度
      *
      * @param len 输入长度
      * @return 输出长度，-1表示非块加密
@@ -83,8 +82,7 @@ public interface Cipher {
     int process(byte[] in, int inOff, int len, byte[] out, int outOff);
 
     /**
-     * 处理最后一块数据
-     * 当{@link #process(byte[], int, int, byte[], int)}处理完数据后非完整块数据，此方法用于处理块中剩余的bytes
+     * 处理最后一块数据 当{@link #process(byte[], int, int, byte[], int)}处理完数据后非完整块数据，此方法用于处理块中剩余的bytes
      * 如加密数据要求128bit，即16byes的整数，单数处理数据后为15bytes，此时根据padding方式不同，可填充剩余1byte为指定值（如填充0）
      * 当对数据进行分段加密时，需要首先多次执行process方法，在最后一块数据处理完后执行此方法。
      *

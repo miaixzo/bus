@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.AMI_Sequence_AnnotElements_01;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,15 +46,16 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.AnnotationElementPosition:
-                return VR.DS;
-            case PrivateTag.AnnotationElementText:
-                return VR.LT;
+
+        case PrivateTag.AnnotationElementPosition:
+            return VR.DS;
+        case PrivateTag.AnnotationElementText:
+            return VR.LT;
         }
         return VR.UN;
     }

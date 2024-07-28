@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket.plugin;
 
 import org.miaixz.bus.logger.Logger;
@@ -51,7 +51,6 @@ public final class IdleStatePlugin<T> extends AbstractPlugin<T> {
         thread.setDaemon(true);
         return thread;
     });
-
 
     private final int idleTimeout;
 
@@ -94,10 +93,12 @@ public final class IdleStatePlugin<T> extends AbstractPlugin<T> {
             }
             this.task = timer.scheduleWithFixedDelay(() -> {
                 long currentTime = System.currentTimeMillis();
-                if ((currentTime - readTimestamp) > IdleStatePlugin.this.idleTimeout || (currentTime - writeTimestamp) > IdleStatePlugin.this.idleTimeout) {
+                if ((currentTime - readTimestamp) > IdleStatePlugin.this.idleTimeout
+                        || (currentTime - writeTimestamp) > IdleStatePlugin.this.idleTimeout) {
                     try {
                         if (asynchronousSocketChannel.isOpen() && Logger.isDebugEnabled()) {
-                            Logger.debug("close session:{} by IdleStatePlugin", asynchronousSocketChannel.getRemoteAddress());
+                            Logger.debug("close session:{} by IdleStatePlugin",
+                                    asynchronousSocketChannel.getRemoteAddress());
                         }
                         close();
                     } catch (IOException e) {
@@ -108,7 +109,8 @@ public final class IdleStatePlugin<T> extends AbstractPlugin<T> {
         }
 
         @Override
-        public <A> void read(ByteBuffer dst, long timeout, TimeUnit unit, A attachment, CompletionHandler<Integer, ? super A> handler) {
+        public <A> void read(ByteBuffer dst, long timeout, TimeUnit unit, A attachment,
+                CompletionHandler<Integer, ? super A> handler) {
             if (IdleStatePlugin.this.readMonitor) {
                 readTimestamp = System.currentTimeMillis();
             }
@@ -116,7 +118,8 @@ public final class IdleStatePlugin<T> extends AbstractPlugin<T> {
         }
 
         @Override
-        public <A> void write(ByteBuffer src, long timeout, TimeUnit unit, A attachment, CompletionHandler<Integer, ? super A> handler) {
+        public <A> void write(ByteBuffer src, long timeout, TimeUnit unit, A attachment,
+                CompletionHandler<Integer, ? super A> handler) {
             if (IdleStatePlugin.this.writeMonitor) {
                 writeTimestamp = System.currentTimeMillis();
             }

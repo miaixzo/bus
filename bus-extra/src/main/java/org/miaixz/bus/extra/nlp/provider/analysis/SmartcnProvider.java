@@ -24,14 +24,13 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.nlp.provider.analysis;
 
 import org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer;
 
 /**
- * Lucene-smartcn分词引擎实现
- * 项目地址：https://github.com/apache/lucene-solr/tree/master/lucene/analysis/smartcn
+ * Lucene-smartcn分词引擎实现 项目地址：https://github.com/apache/lucene-solr/tree/master/lucene/analysis/smartcn
  *
  * @author Kimi Liu
  * @since Java 17+

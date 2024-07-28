@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_Ultrasound_SC2000;
 
 /**
@@ -134,7 +134,7 @@ public class PrivateTag {
     /** (0129,xx22) VR=OB VM=1 Values of Cine Parameters */
     public static final int ValuesOfCineParameters = 0x01290022;
 
-    /** (0129,xx29) VR=OB VM=1  */
+    /** (0129,xx29) VR=OB VM=1 */
     public static final int _0129_xx29_ = 0x01290029;
 
     /** (0129,xx30) VR=CS VM=1 Raw Data Object Type */

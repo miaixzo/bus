@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -48,8 +48,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
     private static final long serialVersionUID = -1L;
 
     /**
-     * 记录当前堆栈,可查找到page在何处创建
-     * 需开启page.debug
+     * 记录当前堆栈,可查找到page在何处创建 需开启page.debug
      */
     private final String stackTrace = PageSqlHandler.isDebug() ? Builder.current() : null;
     /**
@@ -151,9 +150,7 @@ public class Page<E> extends ArrayList<E> implements Closeable {
      * @param rowBounds 分页对象
      * @param count     总数
      *                  <p>
-     *                  int[] rowBounds
-     *                  0 : offset
-     *                  1 : limit
+     *                  int[] rowBounds 0 : offset 1 : limit
      */
     public Page(int[] rowBounds, boolean count) {
         super(0);
@@ -163,7 +160,8 @@ public class Page<E> extends ArrayList<E> implements Closeable {
             this.pageNo = 1;
         } else {
             this.pageSize = rowBounds[1];
-            this.pageNo = rowBounds[1] != 0 ? (int) (Math.ceil(((double) rowBounds[0] + rowBounds[1]) / rowBounds[1])) : 0;
+            this.pageNo = rowBounds[1] != 0 ? (int) (Math.ceil(((double) rowBounds[0] + rowBounds[1]) / rowBounds[1]))
+                    : 0;
         }
         this.startRow = rowBounds[0];
         this.count = count;
@@ -287,8 +285,8 @@ public class Page<E> extends ArrayList<E> implements Closeable {
      */
     public <E> Page<E> setOrderBy(String orderBy) {
         if (Builder.check(orderBy)) {
-            throw new PageException("order by [" + orderBy + "] has a risk of SQL injection, " +
-                    "if you want to avoid SQL injection verification, you can call Page.setUnsafeOrderBy");
+            throw new PageException("order by [" + orderBy + "] has a risk of SQL injection, "
+                    + "if you want to avoid SQL injection verification, you can call Page.setUnsafeOrderBy");
         }
         this.orderBy = orderBy;
         return (Page<E>) this;
@@ -513,7 +511,6 @@ public class Page<E> extends ArrayList<E> implements Closeable {
         return asyncCount(false);
     }
 
-
     public boolean asyncCount() {
         return this.asyncCount != null && this.asyncCount;
     }
@@ -617,17 +614,9 @@ public class Page<E> extends ArrayList<E> implements Closeable {
 
     @Override
     public String toString() {
-        return "Page{" +
-                "count=" + count +
-                ", pageNo=" + pageNo +
-                ", pageSize=" + pageSize +
-                ", startRow=" + startRow +
-                ", endRow=" + endRow +
-                ", total=" + total +
-                ", pages=" + pages +
-                ", reasonable=" + reasonable +
-                ", pageSizeZero=" + pageSizeZero +
-                '}' + super.toString();
+        return "Page{" + "count=" + count + ", pageNo=" + pageNo + ", pageSize=" + pageSize + ", startRow=" + startRow
+                + ", endRow=" + endRow + ", total=" + total + ", pages=" + pages + ", reasonable=" + reasonable
+                + ", pageSizeZero=" + pageSizeZero + '}' + super.toString();
     }
 
     @Override

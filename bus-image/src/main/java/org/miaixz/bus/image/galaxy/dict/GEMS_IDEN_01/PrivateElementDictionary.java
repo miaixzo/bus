@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.GEMS_IDEN_01;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,34 +46,35 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.FullFidelity:
-                return VR.LO;
-            case PrivateTag._0009_xx17_:
-            case PrivateTag._0009_xxE2_:
-                return VR.LT;
-            case PrivateTag.SuiteId:
-            case PrivateTag.ProductId:
-            case PrivateTag._0009_xx2F_:
-            case PrivateTag.ServiceId:
-            case PrivateTag.MobileLocationNumber:
-            case PrivateTag.GenesisVersionNow:
-                return VR.SH;
-            case PrivateTag.ImageActualDate:
-            case PrivateTag.ActualSeriesDataTimeStamp:
-                return VR.SL;
-            case PrivateTag.EquipmentUID:
-                return VR.UI;
-            case PrivateTag.ExamRecordChecksum:
-            case PrivateTag.SeriesSuiteID:
-                return VR.UL;
-            case PrivateTag._0009_xx1A_:
-            case PrivateTag._0009_xx20_:
-                return VR.US;
+
+        case PrivateTag.FullFidelity:
+            return VR.LO;
+        case PrivateTag._0009_xx17_:
+        case PrivateTag._0009_xxE2_:
+            return VR.LT;
+        case PrivateTag.SuiteId:
+        case PrivateTag.ProductId:
+        case PrivateTag._0009_xx2F_:
+        case PrivateTag.ServiceId:
+        case PrivateTag.MobileLocationNumber:
+        case PrivateTag.GenesisVersionNow:
+            return VR.SH;
+        case PrivateTag.ImageActualDate:
+        case PrivateTag.ActualSeriesDataTimeStamp:
+            return VR.SL;
+        case PrivateTag.EquipmentUID:
+            return VR.UI;
+        case PrivateTag.ExamRecordChecksum:
+        case PrivateTag.SeriesSuiteID:
+            return VR.UL;
+        case PrivateTag._0009_xx1A_:
+        case PrivateTag._0009_xx20_:
+            return VR.US;
         }
         return VR.UN;
     }

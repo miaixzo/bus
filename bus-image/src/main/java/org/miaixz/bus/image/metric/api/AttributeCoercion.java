@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.api;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -49,24 +49,19 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
     private final Condition condition;
     private final String uri;
 
-    public AttributeCoercion(String commonName, String[] sopClasses,
-                             Dimse dimse, TransferCapability.Role role, String[] aeTitles, String uri) {
+    public AttributeCoercion(String commonName, String[] sopClasses, Dimse dimse, TransferCapability.Role role,
+            String[] aeTitles, String uri) {
         if (commonName == null)
             throw new NullPointerException("commonName");
         if (commonName.isEmpty())
             throw new IllegalArgumentException("commonName cannot be empty");
 
         this.commonName = commonName;
-        this.condition = new Condition(
-                Builder.maskNull(sopClasses),
-                dimse,
-                role,
-                Builder.maskNull(aeTitles));
+        this.condition = new Condition(Builder.maskNull(sopClasses), dimse, role, Builder.maskNull(aeTitles));
         this.uri = uri;
     }
 
-    private static void promptCUIDsTo(StringBuilder sb, String indent,
-                                      String[] cuids) {
+    private static void promptCUIDsTo(StringBuilder sb, String indent, String[] cuids) {
         if (cuids.length == 0)
             return;
         sb.append(indent).append("cuids: ");
@@ -76,8 +71,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
         sb.append(Builder.LINE_SEPARATOR);
     }
 
-    private static void promptAETsTo(StringBuilder sb, String indent,
-                                     String[] aets) {
+    private static void promptAETsTo(StringBuilder sb, String indent, String[] aets) {
         if (aets.length == 0)
             return;
         sb.append(indent).append("aets: ");
@@ -111,8 +105,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
         return uri;
     }
 
-    public boolean matchesCondition(String sopClass, Dimse dimse, TransferCapability.Role role,
-                                    String aeTitle) {
+    public boolean matchesCondition(String sopClass, Dimse dimse, TransferCapability.Role role, String aeTitle) {
         return condition.matches(sopClass, dimse, role, aeTitle);
     }
 
@@ -128,16 +121,13 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
 
     public StringBuilder promptTo(StringBuilder sb, String indent) {
         String indent2 = indent + Symbol.SPACE;
-        Builder.appendLine(sb, indent,
-                "AttributeCoercion[cn: ", commonName);
+        Builder.appendLine(sb, indent, "AttributeCoercion[cn: ", commonName);
         Builder.appendLine(sb, indent2, "dimse: ", condition.dimse);
         Builder.appendLine(sb, indent2, "role: ", condition.role);
         promptCUIDsTo(sb, indent2, condition.sopClasses);
         promptAETsTo(sb, indent2, condition.aeTitles);
-        Builder.appendLine(sb, indent2, "cuids: ",
-                Arrays.toString(condition.sopClasses));
-        Builder.appendLine(sb, indent2, "aets: ",
-                Arrays.toString(condition.aeTitles));
+        Builder.appendLine(sb, indent2, "cuids: ", Arrays.toString(condition.sopClasses));
+        Builder.appendLine(sb, indent2, "aets: ", Arrays.toString(condition.aeTitles));
         Builder.appendLine(sb, indent2, "uri: ", uri);
         return sb.append(indent).append(Symbol.C_BRACKET_RIGHT);
     }
@@ -152,8 +142,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
         final String[] aeTitles;
         final int weight;
 
-        public Condition(String[] sopClasses, Dimse dimse, TransferCapability.Role role,
-                         String[] aeTitles) {
+        public Condition(String[] sopClasses, Dimse dimse, TransferCapability.Role role, String[] aeTitles) {
             if (dimse == null)
                 throw new NullPointerException("dimse");
             if (role == null)
@@ -163,8 +152,7 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
             this.dimse = dimse;
             this.role = role;
             this.aeTitles = aeTitles;
-            this.weight = (aeTitles.length != 0 ? 2 : 0)
-                    + (sopClasses.length != 0 ? 1 : 0);
+            this.weight = (aeTitles.length != 0 ? 2 : 0) + (sopClasses.length != 0 ? 1 : 0);
         }
 
         private static boolean isEmptyOrContains(Object[] a, Object o) {
@@ -183,11 +171,8 @@ public class AttributeCoercion implements Serializable, Comparable<AttributeCoer
             return o.weight - weight;
         }
 
-        public boolean matches(String sopClass, Dimse dimse, TransferCapability.Role role,
-                               String aeTitle) {
-            return this.dimse == dimse
-                    && this.role == role
-                    && isEmptyOrContains(this.aeTitles, aeTitle)
+        public boolean matches(String sopClass, Dimse dimse, TransferCapability.Role role, String aeTitle) {
+            return this.dimse == dimse && this.role == role && isEmptyOrContains(this.aeTitles, aeTitle)
                     && isEmptyOrContains(this.sopClasses, sopClass);
         }
 

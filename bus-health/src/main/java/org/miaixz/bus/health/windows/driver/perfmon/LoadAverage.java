@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.driver.perfmon;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -44,12 +44,12 @@ import java.util.Map;
 @ThreadSafe
 public final class LoadAverage {
 
-    private static final double[] EXP_WEIGHT = new double[]{
+    private static final double[] EXP_WEIGHT = new double[] {
             // 1-, 5-, and 15-minute exponential smoothing weight
-            Math.exp(-5d / 60d), Math.exp(-5d / 300d), Math.exp(-5d / 900d)};
+            Math.exp(-5d / 60d), Math.exp(-5d / 300d), Math.exp(-5d / 900d) };
     // Daemon thread for Load Average
     private static Thread loadAvgThread = null;
-    private static double[] loadAverages = new double[]{-1d, -1d, -1d};
+    private static double[] loadAverages = new double[] { -1d, -1d, -1d };
 
     public static double[] queryLoadAverage(int nelem) {
         synchronized (loadAverages) {

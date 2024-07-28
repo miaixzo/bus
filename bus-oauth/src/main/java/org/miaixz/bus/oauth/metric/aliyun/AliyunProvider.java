@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org justauth.cn and other contributors.        ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.aliyun;
 
 import com.alibaba.fastjson.JSONObject;
@@ -57,27 +57,18 @@ public class AliyunProvider extends AbstractProvider {
     protected AccToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
         JSONObject accessTokenObject = JSONObject.parseObject(response);
-        return AccToken.builder()
-                .accessToken(accessTokenObject.getString("access_token"))
+        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
                 .expireIn(accessTokenObject.getIntValue("expires_in"))
-                .tokenType(accessTokenObject.getString("token_type"))
-                .idToken(accessTokenObject.getString("id_token"))
-                .refreshToken(accessTokenObject.getString("refresh_token"))
-                .build();
+                .tokenType(accessTokenObject.getString("token_type")).idToken(accessTokenObject.getString("id_token"))
+                .refreshToken(accessTokenObject.getString("refresh_token")).build();
     }
 
     @Override
     protected Material getUserInfo(AccToken accToken) {
         String userInfo = doGetUserInfo(accToken);
         JSONObject object = JSONObject.parseObject(userInfo);
-        return Material.builder()
-                .rawJson(object)
-                .uuid(object.getString("sub"))
-                .username(object.getString("login_name"))
-                .nickname(object.getString("name"))
-                .gender(Gender.UNKNOWN)
-                .token(accToken)
-                .source(complex.toString())
+        return Material.builder().rawJson(object).uuid(object.getString("sub")).username(object.getString("login_name"))
+                .nickname(object.getString("name")).gender(Gender.UNKNOWN).token(accToken).source(complex.toString())
                 .build();
     }
 

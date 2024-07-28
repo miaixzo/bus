@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.bean.copier;
 
 import org.miaixz.bus.core.bean.desc.BeanDesc;
@@ -70,8 +70,7 @@ public abstract class AbstractCopier<S, T> implements Copier<T> {
     }
 
     /**
-     * 获取Bean描述信息
-     * 如果用户自定义了{@link BeanDesc}实现，则使用，否则使用默认的规则
+     * 获取Bean描述信息 如果用户自定义了{@link BeanDesc}实现，则使用，否则使用默认的规则
      *
      * @param actualEditable 需要解析的类
      * @return {@link BeanDesc}

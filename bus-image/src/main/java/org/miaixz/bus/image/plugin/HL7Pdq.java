@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -63,7 +63,8 @@ public class HL7Pdq extends Device {
 
     private static int countQueryParams(Iterator<String> args) {
         int count = 0;
-        while (args.hasNext() && args.next().charAt(0) == '@') count++;
+        while (args.hasNext() && args.next().charAt(0) == '@')
+            count++;
         return count;
     }
 

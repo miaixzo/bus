@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.jdbc;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -83,7 +83,8 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
             try {
                 Field sourceMapField = AbstractRoutingDataSource.class.getDeclaredField("resolvedDataSources");
                 sourceMapField.setAccessible(true);
-                Map<Object, javax.sql.DataSource> sourceMap = (Map<Object, javax.sql.DataSource>) sourceMapField.get(getInstance().getDefaultDataSource());
+                Map<Object, javax.sql.DataSource> sourceMap = (Map<Object, javax.sql.DataSource>) sourceMapField
+                        .get(getInstance().getDefaultDataSource());
                 sourceMap.put(key, dataSource);
                 keySet.add(key);
                 sourceMapField.setAccessible(false);
@@ -101,9 +102,7 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
     }
 
     /**
-     * AbstractRoutingDataSource
-     * 抽象类实现方法，
-     * 即获取当前线程数据源的key
+     * AbstractRoutingDataSource 抽象类实现方法， 即获取当前线程数据源的key
      *
      * @return 当前数据源key
      */
@@ -111,7 +110,8 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
     protected Object determineCurrentLookupKey() {
         String key = DataSourceHolder.getKey();
         if (!keySet.contains(key)) {
-            logger.info(String.format("can not found datasource by key: '%s',this session may use default datasource", key));
+            logger.info(String.format("can not found datasource by key: '%s',this session may use default datasource",
+                    key));
         }
         Logger.debug("The current datasource key ：{}", Objects.requireNonNullElse(key, "dataSource"));
         return key;

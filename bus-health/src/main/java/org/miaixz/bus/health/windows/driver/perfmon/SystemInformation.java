@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.driver.perfmon;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -54,7 +54,8 @@ public final class SystemInformation {
         if (PerfmonDisabled.PERF_OS_DISABLED) {
             return Collections.emptyMap();
         }
-        return PerfCounterQuery.queryValues(ContextSwitchProperty.class, PerfmonConsts.SYSTEM, PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_OS_SYSTEM);
+        return PerfCounterQuery.queryValues(ContextSwitchProperty.class, PerfmonConsts.SYSTEM,
+                PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_OS_SYSTEM);
     }
 
     /**

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.source;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
@@ -34,9 +34,7 @@ import java.io.Closeable;
 import java.io.IOException;
 
 /**
- * 提供一个字节流 使用此接口从任何地方读取数据
- * 它的位置:来自网络、存储或内存中的缓冲区 来源可能
- * 分层以转换提供的数据,例如解压、解密或移除协议框架
+ * 提供一个字节流 使用此接口从任何地方读取数据 它的位置:来自网络、存储或内存中的缓冲区 来源可能 分层以转换提供的数据,例如解压、解密或移除协议框架
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,8 +42,7 @@ import java.io.IOException;
 public interface Source extends Closeable {
 
     /**
-     * 从中删除至少1个字节，最多为{@code byteCount}字节， 并将它们
-     * 附加到{@code sink}。返回读取的字节数，如果该源已耗尽，则返回-1
+     * 从中删除至少1个字节，最多为{@code byteCount}字节， 并将它们 附加到{@code sink}。返回读取的字节数，如果该源已耗尽，则返回-1
      *
      * @param sink      缓冲
      * @param byteCount 长度大小
@@ -62,8 +59,7 @@ public interface Source extends Closeable {
     Timeout timeout();
 
     /**
-     * 关闭此源并释放此源持有的资源.
-     * 读取闭源是一个错误。多次关闭源是安全的.
+     * 关闭此源并释放此源持有的资源. 读取闭源是一个错误。多次关闭源是安全的.
      *
      * @throws IOException 异常
      */

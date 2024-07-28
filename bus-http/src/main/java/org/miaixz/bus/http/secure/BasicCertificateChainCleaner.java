@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.secure;
 
 import javax.net.ssl.SSLPeerUnverifiedException;
@@ -34,9 +34,7 @@ import java.security.cert.X509Certificate;
 import java.util.*;
 
 /**
- * 使用一组可信根证书来构建可信链的证书链清理器。
- * 这个类复制了在TLS握手期间执行的clean chain构建。我们更喜欢它们
- * 存在的其他机制，比如{@code AndroidCertificateChainCleaner}
+ * 使用一组可信根证书来构建可信链的证书链清理器。 这个类复制了在TLS握手期间执行的clean chain构建。我们更喜欢它们 存在的其他机制，比如{@code AndroidCertificateChainCleaner}
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -55,21 +53,18 @@ public class BasicCertificateChainCleaner extends CertificateChainCleaner {
     }
 
     /**
-     * Returns a cleaned chain for {@code chain}.
-     * This method throws if the complete chain to a trusted CA certificate cannot be constructed.
-     * This is unexpected unless the trust root index in this class has a different trust manager than
-     * what was used to establish {@code chain}.
+     * Returns a cleaned chain for {@code chain}. This method throws if the complete chain to a trusted CA certificate
+     * cannot be constructed. This is unexpected unless the trust root index in this class has a different trust manager
+     * than what was used to establish {@code chain}.
      */
     @Override
-    public List<Certificate> clean(List<Certificate> chain, String hostname)
-            throws SSLPeerUnverifiedException {
+    public List<Certificate> clean(List<Certificate> chain, String hostname) throws SSLPeerUnverifiedException {
         Deque<Certificate> queue = new ArrayDeque<>(chain);
         List<Certificate> result = new ArrayList<>();
         result.add(queue.removeFirst());
         boolean foundTrustedCertificate = false;
 
-        followIssuerChain:
-        for (int c = 0; c < MAX_SIGNERS; c++) {
+        followIssuerChain: for (int c = 0; c < MAX_SIGNERS; c++) {
             X509Certificate toVerify = (X509Certificate) result.get(result.size() - 1);
 
             // 如果此证书已由可信证书签署，请使用该证书。将受信任证书添加到链的末尾，除非它已经存在
@@ -88,7 +83,7 @@ public class BasicCertificateChainCleaner extends CertificateChainCleaner {
             }
 
             // 在签署此证书的链中搜索证书。这通常是链中的下一个元素,但它可以是任何元素.
-            for (Iterator<Certificate> i = queue.iterator(); i.hasNext(); ) {
+            for (Iterator<Certificate> i = queue.iterator(); i.hasNext();) {
                 X509Certificate signingCert = (X509Certificate) i.next();
                 if (verifySignature(toVerify, signingCert)) {
                     i.remove();
@@ -103,8 +98,7 @@ public class BasicCertificateChainCleaner extends CertificateChainCleaner {
             }
 
             // 最后一个链接不可信,失败
-            throw new SSLPeerUnverifiedException(
-                    "Failed to find a trusted cert that signed " + toVerify);
+            throw new SSLPeerUnverifiedException("Failed to find a trusted cert that signed " + toVerify);
         }
 
         throw new SSLPeerUnverifiedException("Certificate chain too long: " + result);
@@ -114,7 +108,8 @@ public class BasicCertificateChainCleaner extends CertificateChainCleaner {
      * Returns true if {@code toVerify} was signed by {@code signingCert}'s public key.
      */
     private boolean verifySignature(X509Certificate toVerify, X509Certificate signingCert) {
-        if (!toVerify.getIssuerDN().equals(signingCert.getSubjectDN())) return false;
+        if (!toVerify.getIssuerDN().equals(signingCert.getSubjectDN()))
+            return false;
         try {
             toVerify.verify(signingCert.getPublicKey());
             return true;
@@ -130,7 +125,8 @@ public class BasicCertificateChainCleaner extends CertificateChainCleaner {
 
     @Override
     public boolean equals(Object other) {
-        if (other == this) return true;
+        if (other == this)
+            return true;
         return other instanceof BasicCertificateChainCleaner
                 && ((BasicCertificateChainCleaner) other).trustRootIndex.equals(trustRootIndex);
     }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.date.DateTime;
@@ -56,8 +56,7 @@ public class RandomKit {
     public static final String BASE_CHAR_NUMBER = Normal.ALPHABET.toUpperCase() + Normal.LOWER_ALPHABET_NUMBER;
 
     /**
-     * 获取随机数生成器对象
-     * ThreadLocalRandom是JDK 7之后提供并发产生随机数，能够解决多个线程发生的竞争争夺。
+     * 获取随机数生成器对象 ThreadLocalRandom是JDK 7之后提供并发产生随机数，能够解决多个线程发生的竞争争夺。
      *
      * <p>
      * 注意：此方法返回的{@link ThreadLocalRandom}不可以在多线程环境下共享对象，否则有重复随机数问题。
@@ -81,11 +80,11 @@ public class RandomKit {
     }
 
     /**
-     * 获取SHA1PRNG的{@link SecureRandom}，类提供加密的强随机数生成器 (RNG)
-     * 注意：此方法获取的是伪随机序列发生器PRNG（pseudo-random number generator）
+     * 获取SHA1PRNG的{@link SecureRandom}，类提供加密的强随机数生成器 (RNG) 注意：此方法获取的是伪随机序列发生器PRNG（pseudo-random number generator）
      *
      * <p>
-     * 相关说明见：<a href="https://stackoverflow.com/questions/137212/how-to-solve-slow-java-securerandom">how-to-solve-slow-java-securerandom</a>
+     * 相关说明见：<a href=
+     * "https://stackoverflow.com/questions/137212/how-to-solve-slow-java-securerandom">how-to-solve-slow-java-securerandom</a>
      * </p>
      *
      * @return {@link SecureRandom}
@@ -95,11 +94,11 @@ public class RandomKit {
     }
 
     /**
-     * 获取SHA1PRNG的{@link SecureRandom}，类提供加密的强随机数生成器 (RNG)
-     * 注意：此方法获取的是伪随机序列发生器PRNG（pseudo-random number generator）
+     * 获取SHA1PRNG的{@link SecureRandom}，类提供加密的强随机数生成器 (RNG) 注意：此方法获取的是伪随机序列发生器PRNG（pseudo-random number generator）
      *
      * <p>
-     * 相关说明见：<a href="https://stackoverflow.com/questions/137212/how-to-solve-slow-java-securerandom">how-to-solve-slow-java-securerandom</a>
+     * 相关说明见：<a href=
+     * "https://stackoverflow.com/questions/137212/how-to-solve-slow-java-securerandom">how-to-solve-slow-java-securerandom</a>
      * </p>
      *
      * @param seed 随机数种子
@@ -111,12 +110,13 @@ public class RandomKit {
     }
 
     /**
-     * 获取SHA1PRNG的{@link SecureRandom}，类提供加密的强随机数生成器 (RNG)
-     * 注意：此方法获取的是伪随机序列发生器PRNG（pseudo-random number generator）,在Linux下噪声生成时可能造成较长时间停顿。
-     * see: <a href="http://ifeve.com/jvm-random-and-entropy-source/">http://ifeve.com/jvm-random-and-entropy-source/</a>
+     * 获取SHA1PRNG的{@link SecureRandom}，类提供加密的强随机数生成器 (RNG) 注意：此方法获取的是伪随机序列发生器PRNG（pseudo-random number
+     * generator）,在Linux下噪声生成时可能造成较长时间停顿。 see:
+     * <a href="http://ifeve.com/jvm-random-and-entropy-source/">http://ifeve.com/jvm-random-and-entropy-source/</a>
      *
      * <p>
-     * 相关说明见：<a href="https://stackoverflow.com/questions/137212/how-to-solve-slow-java-securerandom">how-to-solve-slow-java-securerandom</a>
+     * 相关说明见：<a href=
+     * "https://stackoverflow.com/questions/137212/how-to-solve-slow-java-securerandom">how-to-solve-slow-java-securerandom</a>
      * </p>
      *
      * @param seed 随机数种子
@@ -136,8 +136,7 @@ public class RandomKit {
     }
 
     /**
-     * 获取algorithms/providers中提供的强安全随机生成器
-     * 注意：此方法可能造成阻塞或性能问题
+     * 获取algorithms/providers中提供的强安全随机生成器 注意：此方法可能造成阻塞或性能问题
      *
      * @return {@link SecureRandom}
      */
@@ -381,7 +380,7 @@ public class RandomKit {
      * @return 随机数
      */
     public static double randomDouble(final double minInclude, final double maxExclude, final int scale,
-                                      final RoundingMode roundingMode) {
+            final RoundingMode roundingMode) {
         return MathKit.round(randomDouble(minInclude, maxExclude), scale, roundingMode).doubleValue();
     }
 
@@ -530,8 +529,7 @@ public class RandomKit {
     }
 
     /**
-     * 随机获得列表中的一定量的元素，返回List
-     * 此方法与{@link #randomEles(List, int)} 不同点在于，不会获取重复位置的元素
+     * 随机获得列表中的一定量的元素，返回List 此方法与{@link #randomEles(List, int)} 不同点在于，不会获取重复位置的元素
      *
      * @param source 列表
      * @param count  随机取出的个数

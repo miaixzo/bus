@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MR_EXTRACTED_CSA_HEADER;
 
 /**
@@ -36,9 +36,9 @@ public class PrivateKeyword {
     public static final String PrivateCreator = "";
 
     public static String valueOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-                case PrivateTag.ExtractedMRHeaderInformationSequence:
+        case PrivateTag.ExtractedMRHeaderInformationSequence:
             return "ExtractedMRHeaderInformationSequence";
         case PrivateTag.ExtractedMRHeaderCreatorIdentificationCode:
             return "ExtractedMRHeaderCreatorIdentificationCode";

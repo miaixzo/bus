@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.excel;
 
 import org.apache.poi.common.usermodel.HyperlinkType;
@@ -154,8 +154,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
-     * 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之。
-     * 在读取中，此方法用于切换读取的sheet，在写出时，此方法用于新建或者切换sheet。
+     * 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之。 在读取中，此方法用于切换读取的sheet，在写出时，此方法用于新建或者切换sheet。
      *
      * @param sheetName sheet名
      * @return this
@@ -165,8 +164,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
-     * 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之（命名为默认）
-     * 在读取中，此方法用于切换读取的sheet，在写出时，此方法用于新建或者切换sheet
+     * 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之（命名为默认） 在读取中，此方法用于切换读取的sheet，在写出时，此方法用于新建或者切换sheet
      *
      * @param sheetIndex sheet序号，从0开始计数
      * @return this
@@ -294,7 +292,6 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
         return null;
     }
 
-
     /**
      * 获取或者创建行
      *
@@ -364,8 +361,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
-     * 获取或创建某一行的样式，返回样式后可以设置样式内容
-     * 需要注意，此方法返回行样式，设置背景色在单元格设置值后会被覆盖，需要单独设置其单元格的样式。
+     * 获取或创建某一行的样式，返回样式后可以设置样式内容 需要注意，此方法返回行样式，设置背景色在单元格设置值后会被覆盖，需要单独设置其单元格的样式。
      *
      * @param y Y坐标，从0计数，即行号
      * @return {@link CellStyle}
@@ -388,8 +384,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
-     * 获取或创建某一列的样式，返回样式后可以设置样式内容
-     * 需要注意，此方法返回行样式，设置背景色在单元格设置值后会被覆盖，需要单独设置其单元格的样式。
+     * 获取或创建某一列的样式，返回样式后可以设置样式内容 需要注意，此方法返回行样式，设置背景色在单元格设置值后会被覆盖，需要单独设置其单元格的样式。
      *
      * @param x X坐标，从0计数，即列号
      * @return {@link CellStyle}
@@ -543,8 +538,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
     }
 
     /**
-     * 关闭工作簿
-     * 如果用户设定了目标文件，先写出目标文件后给关闭工作簿
+     * 关闭工作簿 如果用户设定了目标文件，先写出目标文件后给关闭工作簿
      */
     @Override
     public void close() {

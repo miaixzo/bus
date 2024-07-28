@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.software;
 
 import com.sun.jna.Memory;
@@ -68,11 +68,9 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class WindowsOSProcess extends AbstractOSProcess {
 
-    private static final boolean USE_BATCH_COMMANDLINE = Config
-            .get(Config._WINDOWS_COMMANDLINE_BATCH, false);
+    private static final boolean USE_BATCH_COMMANDLINE = Config.get(Config._WINDOWS_COMMANDLINE_BATCH, false);
 
-    private static final boolean USE_PROCSTATE_SUSPENDED = Config
-            .get(Config._WINDOWS_PROCSTATE_SUSPENDED, false);
+    private static final boolean USE_PROCSTATE_SUSPENDED = Config.get(Config._WINDOWS_PROCSTATE_SUSPENDED, false);
 
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
     private static final boolean IS_WINDOWS7_OR_GREATER = VersionHelpers.IsWindows7OrGreater();
@@ -80,8 +78,8 @@ public class WindowsOSProcess extends AbstractOSProcess {
     // track the OperatingSystem object that created this
     private final WindowsOperatingSystem os;
     private final Supplier<Pair<String, String>> groupInfo = Memoizer.memoize(this::queryGroupInfo);
-    private final Supplier<Triplet<String, String, Map<String, String>>> cwdCmdEnv = Memoizer.memoize(
-            this::queryCwdCommandlineEnvironment);
+    private final Supplier<Triplet<String, String, Map<String, String>>> cwdCmdEnv = Memoizer
+            .memoize(this::queryCwdCommandlineEnvironment);
     private final Supplier<String> currentWorkingDirectory = Memoizer.memoize(this::queryCwd);
     private Map<Integer, ThreadPerformanceData.PerfCounterBlock> tcb;
     private String name;
@@ -106,8 +104,8 @@ public class WindowsOSProcess extends AbstractOSProcess {
     private long pageFaults;
 
     public WindowsOSProcess(int pid, WindowsOperatingSystem os,
-                            Map<Integer, ProcessPerformanceData.PerfCounterBlock> processMap, Map<Integer, WtsInfo> processWtsMap,
-                            Map<Integer, ThreadPerformanceData.PerfCounterBlock> threadMap) {
+            Map<Integer, ProcessPerformanceData.PerfCounterBlock> processMap, Map<Integer, WtsInfo> processWtsMap,
+            Map<Integer, ThreadPerformanceData.PerfCounterBlock> threadMap) {
         super(pid);
         // Save a copy of OS creating this object for later use
         this.os = os;
@@ -125,7 +123,8 @@ public class WindowsOSProcess extends AbstractOSProcess {
     private static String readUnicodeString(HANDLE h, org.miaixz.bus.health.windows.jna.NtDll.UNICODE_STRING s) {
         if (s.Length > 0) {
             // Add space for null terminator
-            try (Memory m = new Memory(s.Length + 2L); ByRef.CloseableIntByReference nRead = new ByRef.CloseableIntByReference()) {
+            try (Memory m = new Memory(s.Length + 2L);
+                    ByRef.CloseableIntByReference nRead = new ByRef.CloseableIntByReference()) {
                 m.clear(); // really only need null in last 2 bytes but this is easier
                 Kernel32.INSTANCE.ReadProcessMemory(h, s.Buffer, m, s.Length, nRead);
                 if (nRead.getValue() > 0) {
@@ -266,7 +265,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
         final HANDLE pHandle = Kernel32.INSTANCE.OpenProcess(WinNT.PROCESS_QUERY_INFORMATION, false, getProcessID());
         if (pHandle != null) {
             try (ByRef.CloseableULONGptrByReference processAffinity = new ByRef.CloseableULONGptrByReference();
-                 ByRef.CloseableULONGptrByReference systemAffinity = new ByRef.CloseableULONGptrByReference()) {
+                    ByRef.CloseableULONGptrByReference systemAffinity = new ByRef.CloseableULONGptrByReference()) {
                 if (Kernel32.INSTANCE.GetProcessAffinityMask(pHandle, processAffinity, systemAffinity)) {
                     return Pointer.nativeValue(processAffinity.getValue().toPointer());
                 }
@@ -291,7 +290,7 @@ public class WindowsOSProcess extends AbstractOSProcess {
     public List<OSThread> getThreadDetails() {
         Map<Integer, ThreadPerformanceData.PerfCounterBlock> threads = tcb == null
                 ? ThreadPerformanceData.buildThreadMapFromPerfCounters(Collections.singleton(this.getProcessID()),
-                this.getName(), -1)
+                        this.getName(), -1)
                 : tcb;
         return threads.entrySet().stream().parallel()
                 .map(entry -> new WindowsOSThread(getProcessID(), entry.getKey(), this.name, entry.getValue()))
@@ -502,8 +501,9 @@ public class WindowsOSProcess extends AbstractOSProcess {
                     try (ByRef.CloseableIntByReference nRead = new ByRef.CloseableIntByReference()) {
                         // Start by getting the address of the PEB
                         org.miaixz.bus.health.windows.jna.NtDll.PROCESS_BASIC_INFORMATION pbi = new org.miaixz.bus.health.windows.jna.NtDll.PROCESS_BASIC_INFORMATION();
-                        int ret = org.miaixz.bus.health.windows.jna.NtDll.INSTANCE.NtQueryInformationProcess(h, org.miaixz.bus.health.windows.jna.NtDll.PROCESS_BASIC_INFORMATION,
-                                pbi.getPointer(), pbi.size(), nRead);
+                        int ret = org.miaixz.bus.health.windows.jna.NtDll.INSTANCE.NtQueryInformationProcess(h,
+                                org.miaixz.bus.health.windows.jna.NtDll.PROCESS_BASIC_INFORMATION, pbi.getPointer(),
+                                pbi.size(), nRead);
                         if (ret != 0) {
                             return defaultCwdCommandlineEnvironment();
                         }

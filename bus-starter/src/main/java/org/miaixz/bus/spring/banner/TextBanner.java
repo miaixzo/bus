@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.spring.banner;
 
 import org.miaixz.bus.core.Version;
@@ -53,7 +53,8 @@ public class TextBanner implements Banner {
             printStream.println(AnsiOutput.toString(AnsiColor.BRIGHT_GREEN, line));
         }
 
-        String springVersion = GeniusBuilder.SPRING_BOOT_BANNER + String.format("(v%s)", SpringBootVersion.getVersion());
+        String springVersion = GeniusBuilder.SPRING_BOOT_BANNER
+                + String.format("(v%s)", SpringBootVersion.getVersion());
         String busVersion = GeniusBuilder.BUS_BOOT_BANNER + String.format("(v%s)", Version.all());
 
         StringBuilder padding = new StringBuilder();
@@ -61,9 +62,7 @@ public class TextBanner implements Banner {
             padding.append(Symbol.SPACE);
         }
 
-        printStream.println(AnsiOutput.toString(
-                AnsiColor.BRIGHT_MAGENTA, springVersion,
-                padding.toString(),
+        printStream.println(AnsiOutput.toString(AnsiColor.BRIGHT_MAGENTA, springVersion, padding.toString(),
                 AnsiColor.BRIGHT_MAGENTA, busVersion));
         printStream.println();
     }

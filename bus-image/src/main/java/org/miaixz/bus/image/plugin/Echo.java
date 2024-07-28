@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.xyz.IoKit;
@@ -35,6 +35,7 @@ import org.miaixz.bus.image.metric.net.ApplicationEntity;
 import org.miaixz.bus.logger.Logger;
 
 import java.text.MessageFormat;
+
 /**
  * @author Kimi Liu
  * @since Java 17+
@@ -65,8 +66,7 @@ public class Echo {
      * @param calledNode  被调用的DICOM节点配置
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度信息
      */
-    public static Status process(
-            Args args, Node callingNode, Node calledNode) {
+    public static Status process(Args args, Node callingNode, Node calledNode) {
         if (callingNode == null || calledNode == null) {
             throw new IllegalArgumentException("callingNode or calledNode cannot be null!");
         }
@@ -100,13 +100,10 @@ public class Echo {
                 long t2 = System.currentTimeMillis();
                 Attributes rsp = storeSCU.echo();
                 long t3 = System.currentTimeMillis();
-                String message =
-                        MessageFormat.format(
-                                "Successful DICOM Echo. Connected in {2}ms from {0} to {1}. Service execution in {3}ms.",
-                                storeSCU.getAAssociateRQ().getCallingAET(),
-                                storeSCU.getAAssociateRQ().getCalledAET(),
-                                t2 - t1,
-                                t3 - t2);
+                String message = MessageFormat.format(
+                        "Successful DICOM Echo. Connected in {2}ms from {0} to {1}. Service execution in {3}ms.",
+                        storeSCU.getAAssociateRQ().getCallingAET(), storeSCU.getAAssociateRQ().getCalledAET(), t2 - t1,
+                        t3 - t2);
                 Status dcmState = new Status(rsp.getInt(Tag.Status, Status.Success), message, null);
                 dcmState.addProcessTime(t1, t2, t3);
                 return dcmState;
@@ -120,8 +117,7 @@ public class Echo {
             }
             String message = "DICOM Echo failed, storescu: " + e.getMessage();
             Logger.error(message, e);
-            return Status.buildMessage(
-                    new Status(Status.UnableToProcess, message, null), null, e);
+            return Status.buildMessage(new Status(Status.UnableToProcess, message, null), null, e);
         }
     }
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.linux.hardware;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -101,10 +101,8 @@ final class LinuxSoundCard extends AbstractSoundCard {
 
     /**
      * Retrieves the codec of the sound card contained in the <b>codec</b> file. The name of the codec is always the
-     * first line of that file.
-     * <b>Working</b>
-     * This converts the codec file into key value pairs using the {@link Builder} class and then returns the value of
-     * the <b>Codec</b> key.
+     * first line of that file. <b>Working</b> This converts the codec file into key value pairs using the
+     * {@link Builder} class and then returns the value of the <b>Codec</b> key.
      *
      * @param cardDir The sound card directory
      * @return The name of the codec
@@ -150,7 +148,8 @@ final class LinuxSoundCard extends AbstractSoundCard {
      */
     private static String getCardName(File file) {
         String cardName = "Not Found..";
-        Map<String, String> cardNamePairs = Builder.getKeyValueMapFromFile(ProcPath.ASOUND + "/" + CARDS_FILE, Symbol.COLON);
+        Map<String, String> cardNamePairs = Builder.getKeyValueMapFromFile(ProcPath.ASOUND + "/" + CARDS_FILE,
+                Symbol.COLON);
         String cardId = Builder.getStringFromFile(file.getPath() + "/" + ID_FILE);
         for (Map.Entry<String, String> entry : cardNamePairs.entrySet()) {
             if (entry.getKey().contains(cardId)) {

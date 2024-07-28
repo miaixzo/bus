@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image;
 
 import lombok.AllArgsConstructor;
@@ -50,9 +50,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 /**
- * 进程服务管理器
- * 1. 端口监听进程
- * 2. 设备服务进程
+ * 进程服务管理器 1. 端口监听进程 2. 设备服务进程
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -171,8 +169,8 @@ public class Centre {
         if (null != sopClassesTCS) {
             storeSCP.sopClassesTCS(sopClassesTCS);
         } else {
-            storeSCP.getApplicationEntity()
-                    .addTransferCapability(new TransferCapability(null, Symbol.STAR, TransferCapability.Role.SCP, Symbol.STAR));
+            storeSCP.getApplicationEntity().addTransferCapability(
+                    new TransferCapability(null, Symbol.STAR, TransferCapability.Role.SCP, Symbol.STAR));
         }
 
         executor = Executors.newCachedThreadPool();

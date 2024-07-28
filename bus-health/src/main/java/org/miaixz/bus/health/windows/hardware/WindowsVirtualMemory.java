@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.hardware;
 
 import com.sun.jna.platform.win32.Kernel32;
@@ -55,10 +55,11 @@ final class WindowsVirtualMemory extends AbstractVirtualMemory {
 
     private final WindowsGlobalMemory global;
 
-    private final Supplier<Long> used = Memoizer.memoize(WindowsVirtualMemory::querySwapUsed, Memoizer.defaultExpiration());
+    private final Supplier<Long> used = Memoizer.memoize(WindowsVirtualMemory::querySwapUsed,
+            Memoizer.defaultExpiration());
 
-    private final Supplier<Triplet<Long, Long, Long>> totalVmaxVused = Memoizer.memoize(
-            WindowsVirtualMemory::querySwapTotalVirtMaxVirtUsed, Memoizer.defaultExpiration());
+    private final Supplier<Triplet<Long, Long, Long>> totalVmaxVused = Memoizer
+            .memoize(WindowsVirtualMemory::querySwapTotalVirtMaxVirtUsed, Memoizer.defaultExpiration());
 
     private final Supplier<Pair<Long, Long>> swapInOut = Memoizer.memoize(WindowsVirtualMemory::queryPageSwaps,
             Memoizer.defaultExpiration());

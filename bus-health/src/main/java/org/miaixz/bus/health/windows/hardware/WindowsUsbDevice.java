@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.hardware;
 
 import com.sun.jna.platform.win32.Guid.GUID;
@@ -55,16 +55,15 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
             "{3ABF6F2D-71C4-462A-8A92-1E6861E6AF27}");
 
     public WindowsUsbDevice(String name, String vendor, String vendorId, String productId, String serialNumber,
-                            String uniqueDeviceId, List<UsbDevice> connectedDevices) {
+            String uniqueDeviceId, List<UsbDevice> connectedDevices) {
         super(name, vendor, vendorId, productId, serialNumber, uniqueDeviceId, connectedDevices);
     }
 
     /**
-     * Instantiates a list of {@link UsbDevice} objects, representing devices connected via a usb port
-     * (including internal devices).
-     * If the value of {@code tree} is true, the top level devices returned from this method are the USB Controllers;
-     * connected hubs and devices in its device tree share that controller's bandwidth. If the value of {@code tree} is
-     * false, USB devices (not controllers) are listed in a single flat list.
+     * Instantiates a list of {@link UsbDevice} objects, representing devices connected via a usb port (including
+     * internal devices). If the value of {@code tree} is true, the top level devices returned from this method are the
+     * USB Controllers; connected hubs and devices in its device tree share that controller's bandwidth. If the value of
+     * {@code tree} is false, USB devices (not controllers) are listed in a single flat list.
      *
      * @param tree If true, returns a list of controllers, which requires recursive iteration of connected devices. If
      *             false, returns a flat list of devices excluding controllers.
@@ -95,8 +94,7 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
     }
 
     private static List<UsbDevice> queryUsbDevices() {
-        Tuple controllerDevices = DeviceTree
-                .queryDeviceTree(GUID_DEVINTERFACE_USB_HOST_CONTROLLER);
+        Tuple controllerDevices = DeviceTree.queryDeviceTree(GUID_DEVINTERFACE_USB_HOST_CONTROLLER);
         Map<Integer, Integer> parentMap = controllerDevices.get(1);
         Map<Integer, String> nameMap = controllerDevices.get(2);
         Map<Integer, String> deviceIdMap = controllerDevices.get(3);
@@ -115,8 +113,8 @@ public class WindowsUsbDevice extends AbstractUsbDevice {
     }
 
     private static WindowsUsbDevice queryDeviceAndChildren(Integer device, Map<Integer, Integer> parentMap,
-                                                           Map<Integer, String> nameMap, Map<Integer, String> deviceIdMap, Map<Integer, String> mfgMap, String vid,
-                                                           String pid, String parentSerial) {
+            Map<Integer, String> nameMap, Map<Integer, String> deviceIdMap, Map<Integer, String> mfgMap, String vid,
+            String pid, String parentSerial) {
         // Parse vendor and product IDs from the device ID
         // If this doesn't work, use the IDs from the parent
         String vendorId = vid;

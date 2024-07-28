@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.pinyin.provider.houbb;
 
 import com.github.houbb.pinyin.constant.enums.PinyinStyleEnum;
@@ -40,6 +40,7 @@ import org.miaixz.bus.extra.pinyin.PinyinProvider;
  *
  * <p>
  * 引入：
+ * 
  * <pre>
  * &lt;dependency&gt;
  *     &lt;groupId&gt;com.github.houbb&lt;/groupId&gt;

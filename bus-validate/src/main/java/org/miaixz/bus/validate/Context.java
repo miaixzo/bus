@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.validate;
 
 import lombok.Getter;
@@ -59,10 +59,7 @@ public class Context {
     private List<String> group = new ArrayList<>();
 
     /**
-     * 全局校验异常
-     * 当校验失败时,如果定义了全局校验异常,则抛出全局校验异常；
-     * 然后判断如果定义了字段异常,则抛出字段异常；
-     * 最后判断如果定义了校验器注解异常,则抛出校验器注解上定义的异常;
+     * 全局校验异常 当校验失败时,如果定义了全局校验异常,则抛出全局校验异常； 然后判断如果定义了字段异常,则抛出字段异常； 最后判断如果定义了校验器注解异常,则抛出校验器注解上定义的异常;
      * 如果都没定义,则抛出{@link ValidateException}
      */
     private Class<? extends ValidateException> exception;
@@ -83,9 +80,7 @@ public class Context {
     private Checker checker;
 
     /**
-     * 快速失败, 默认：true
-     * true: 表示如果参数一旦校验,立刻抛出校验失败异常
-     * false: 即使存在参数校验失败,也必须等到该参数所有的校验器执行后,才会抛出异常
+     * 快速失败, 默认：true true: 表示如果参数一旦校验,立刻抛出校验失败异常 false: 即使存在参数校验失败,也必须等到该参数所有的校验器执行后,才会抛出异常
      */
     private boolean fast = true;
 

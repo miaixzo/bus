@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.software;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -76,8 +76,8 @@ public interface OSThread {
      * @param thread An {@link OSThread} object containing statistics for this same thread collected at a prior point in
      *               time. May be null.
      * @return If the prior snapshot is for the same thread at a prior point in time, the proportion of elapsed up time
-     * between the current thread snapshot and the previous one that the thread was executing in kernel or user
-     * mode. Returns cumulative load otherwise.
+     *         between the current thread snapshot and the previous one that the thread was executing in kernel or user
+     *         mode. Returns cumulative load otherwise.
      */
     double getThreadCpuLoadBetweenTicks(OSThread thread);
 
@@ -163,7 +163,7 @@ public interface OSThread {
      * longer exists. Not implemented for macOS, as thread ID is simply an index and not unique.
      *
      * @return {@code true} if the update was successful, false if the update failed. In addition, on a failed update
-     * the thread state will be changed to {@link OSProcess.State#INVALID}.
+     *         the thread state will be changed to {@link OSProcess.State#INVALID}.
      */
     default boolean updateAttributes() {
         return false;

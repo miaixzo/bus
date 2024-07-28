@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pay.metric.paypal;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
@@ -53,17 +53,17 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PayPalProvider extends AbstractProvider<Material, Context> {
+public class PaypalProvider extends AbstractProvider<Material, Context> {
 
-    public PayPalProvider(Context context) {
+    public PaypalProvider(Context context) {
         super(context);
     }
 
-    public PayPalProvider(Context context, Complex complex) {
+    public PaypalProvider(Context context, Complex complex) {
         super(context, complex);
     }
 
-    public PayPalProvider(Context context, Complex complex, ExtendCache cache) {
+    public PaypalProvider(Context context, Complex complex, ExtendCache cache) {
         super(context, complex, cache);
     }
 
@@ -72,10 +72,9 @@ public class PayPalProvider extends AbstractProvider<Material, Context> {
     }
 
     public static Map<String, String> getBaseHeaders(AccessToken accessToken, String payPalRequestId,
-                                                     String payPalPartnerAttributionId, String prefer) {
-        if (accessToken == null ||
-                StringKit.isEmpty(accessToken.getTokenType()) ||
-                StringKit.isEmpty(accessToken.getAccessToken())) {
+            String payPalPartnerAttributionId, String prefer) {
+        if (accessToken == null || StringKit.isEmpty(accessToken.getTokenType())
+                || StringKit.isEmpty(accessToken.getAccessToken())) {
             throw new RuntimeException("accessToken is null");
         }
         Map<String, String> headers = new HashMap<>(3);
@@ -121,7 +120,9 @@ public class PayPalProvider extends AbstractProvider<Material, Context> {
         Map<String, String> headers = new HashMap<>(3);
         headers.put("Accept", MediaType.APPLICATION_JSON);
         headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        headers.put("Authorization", "Basic ".concat(Base64.encode((this.context.getAppKey().concat(":").concat(this.context.getAppSecret())).getBytes(StandardCharsets.UTF_8))));
+        headers.put("Authorization",
+                "Basic ".concat(Base64.encode((this.context.getAppKey().concat(":").concat(this.context.getAppSecret()))
+                        .getBytes(StandardCharsets.UTF_8))));
         Map<String, String> params = new HashMap<>(1);
         params.put("grant_type", "client_credentials");
         return post(getUrl(PayPalApi.GET_TOKEN), params, headers);
@@ -130,7 +131,7 @@ public class PayPalProvider extends AbstractProvider<Material, Context> {
     /**
      * 创建订单
      *
-     * @param data   请求参数
+     * @param data 请求参数
      * @return {@link Message} 请求返回的结果
      */
     public Message createOrder(String data) {
@@ -141,8 +142,8 @@ public class PayPalProvider extends AbstractProvider<Material, Context> {
     /**
      * 更新订单
      *
-     * @param id     订单号
-     * @param data   请求参数
+     * @param id   订单号
+     * @param data 请求参数
      * @return {@link Message} 请求返回的结果
      */
     public Message updateOrder(String id, String data) {
@@ -166,8 +167,8 @@ public class PayPalProvider extends AbstractProvider<Material, Context> {
     /**
      * 确认订单
      *
-     * @param id     订单号
-     * @param data   请求参数
+     * @param id   订单号
+     * @param data 请求参数
      * @return {@link Message} 请求返回的结果
      */
     public Message captureOrder(String id, String data) {
@@ -179,7 +180,7 @@ public class PayPalProvider extends AbstractProvider<Material, Context> {
     /**
      * 查询确认的订单
      *
-
+     * 
      * @param captureId 订单号
      * @return {@link Message} 请求返回的结果
      */
@@ -192,7 +193,7 @@ public class PayPalProvider extends AbstractProvider<Material, Context> {
     /**
      * 退款
      *
-
+     * 
      * @param captureId 订单号
      * @param data      请求参数
      * @return {@link Message} 请求返回的结果
@@ -205,7 +206,8 @@ public class PayPalProvider extends AbstractProvider<Material, Context> {
 
     /**
      * 查询退款
-     * @param id     订单号
+     * 
+     * @param id 订单号
      * @return {@link Message} 请求返回的结果
      */
     public Message refundQuery(String id) {
@@ -215,7 +217,7 @@ public class PayPalProvider extends AbstractProvider<Material, Context> {
     }
 
     /**
-     * 通过 clientId 来获取  AccessToken
+     * 通过 clientId 来获取 AccessToken
      *
      * @param forceRefresh 是否强制刷新
      * @return {@link AccessToken}

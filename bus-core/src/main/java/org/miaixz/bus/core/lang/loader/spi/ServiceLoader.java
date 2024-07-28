@@ -24,14 +24,13 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.loader.spi;
 
 import java.util.List;
 
 /**
- * SPI服务加载接口
- * 用户实现此接口用于制定不同的服务加载方式
+ * SPI服务加载接口 用户实现此接口用于制定不同的服务加载方式
  *
  * @param <S> 服务对象类型
  * @author Kimi Liu

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.screw.dialect.mariadb;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -81,10 +81,10 @@ public class MariaDbDataBaseQuery extends AbstractDatabaseQuery {
     public List<MariadbTable> getTables() throws InternalException {
         ResultSet resultSet = null;
         try {
-            //查询
+            // 查询
             resultSet = getMetaData().getTables(getCatalog(), getSchema(), Builder.PERCENT_SIGN,
-                    new String[]{"TABLE"});
-            //映射
+                    new String[] { "TABLE" });
+            // 映射
             return Mapping.convertList(resultSet, MariadbTable.class);
         } catch (SQLException e) {
             throw new InternalException(e);
@@ -104,49 +104,44 @@ public class MariaDbDataBaseQuery extends AbstractDatabaseQuery {
         Assert.notEmpty(table, "Table name can not be empty!");
         ResultSet resultSet = null;
         try {
-            //查询
+            // 查询
             resultSet = getMetaData().getColumns(getCatalog(), getSchema(), table, Builder.PERCENT_SIGN);
-            //映射
-            List<MariadbColumn> list = Mapping.convertList(resultSet,
-                    MariadbColumn.class);
-            //这里处理是为了如果是查询全部列呢？所以处理并获取唯一表名
-            List<String> tableNames = list.stream().map(MariadbColumn::getTableName)
-                    .collect(Collectors.toList()).stream().distinct().collect(Collectors.toList());
+            // 映射
+            List<MariadbColumn> list = Mapping.convertList(resultSet, MariadbColumn.class);
+            // 这里处理是为了如果是查询全部列呢？所以处理并获取唯一表名
+            List<String> tableNames = list.stream().map(MariadbColumn::getTableName).collect(Collectors.toList())
+                    .stream().distinct().collect(Collectors.toList());
             if (CollKit.isEmpty(columnsCaching)) {
-                //查询全部
+                // 查询全部
                 if (table.equals(Builder.PERCENT_SIGN)) {
-                    //获取全部表列信息SQL
+                    // 获取全部表列信息SQL
                     String sql = "SELECT A.TABLE_NAME, A.COLUMN_NAME, A.COLUMN_TYPE, case when LOCATE('(', A.COLUMN_TYPE) > 0 then replace(substring(A.COLUMN_TYPE, LOCATE('(', A.COLUMN_TYPE) + 1), ')', '') else null end COLUMN_LENGTH FROM INFORMATION_SCHEMA.COLUMNS A WHERE A.TABLE_SCHEMA = '%s'";
-                    PreparedStatement statement = prepareStatement(
-                            String.format(sql, getDataBase().getDatabase()));
+                    PreparedStatement statement = prepareStatement(String.format(sql, getDataBase().getDatabase()));
                     resultSet = statement.executeQuery();
                     int fetchSize = 4284;
                     if (resultSet.getFetchSize() < fetchSize) {
                         resultSet.setFetchSize(fetchSize);
                     }
                 }
-                //单表查询
+                // 单表查询
                 else {
-                    //获取表列信息SQL 查询表名、列名、说明、数据类型
+                    // 获取表列信息SQL 查询表名、列名、说明、数据类型
                     String sql = "SELECT A.TABLE_NAME, A.COLUMN_NAME, A.COLUMN_TYPE, case when LOCATE('(', A.COLUMN_TYPE) > 0 then replace(substring(A.COLUMN_TYPE, LOCATE('(', A.COLUMN_TYPE) + 1), ')', '') else null end COLUMN_LENGTH FROM INFORMATION_SCHEMA.COLUMNS A WHERE A.TABLE_SCHEMA = '%s' and A.TABLE_NAME = '%s'";
-                    resultSet = prepareStatement(
-                            String.format(sql, getDataBase().getDatabase(), table)).executeQuery();
+                    resultSet = prepareStatement(String.format(sql, getDataBase().getDatabase(), table)).executeQuery();
                 }
-                List<MariadbColumn> inquires = Mapping.convertList(resultSet,
-                        MariadbColumn.class);
-                //处理列，表名为key，列名为值
-                tableNames.forEach(name -> columnsCaching.put(name, inquires.stream()
-                        .filter(i -> i.getTableName().equals(name)).collect(Collectors.toList())));
+                List<MariadbColumn> inquires = Mapping.convertList(resultSet, MariadbColumn.class);
+                // 处理列，表名为key，列名为值
+                tableNames.forEach(name -> columnsCaching.put(name,
+                        inquires.stream().filter(i -> i.getTableName().equals(name)).collect(Collectors.toList())));
             }
-            //处理备注信息
+            // 处理备注信息
             list.forEach(i -> {
-                //从缓存中根据表名获取列信息
+                // 从缓存中根据表名获取列信息
                 List<Column> columns = columnsCaching.get(i.getTableName());
                 columns.forEach(j -> {
-                    //列名表名一致
-                    if (i.getColumnName().equals(j.getColumnName())
-                            && i.getTableName().equals(j.getTableName())) {
-                        //放入列类型
+                    // 列名表名一致
+                    if (i.getColumnName().equals(j.getColumnName()) && i.getTableName().equals(j.getTableName())) {
+                        // 放入列类型
                         i.setColumnType(j.getColumnType());
                         i.setColumnLength(j.getColumnLength());
                     }
@@ -168,7 +163,7 @@ public class MariaDbDataBaseQuery extends AbstractDatabaseQuery {
      */
     @Override
     public List<? extends Column> getTableColumns() throws InternalException {
-        //获取全部列
+        // 获取全部列
         return getTableColumns(Builder.PERCENT_SIGN);
     }
 
@@ -183,9 +178,9 @@ public class MariaDbDataBaseQuery extends AbstractDatabaseQuery {
     public List<? extends PrimaryKey> getPrimaryKeys(String table) throws InternalException {
         ResultSet resultSet = null;
         try {
-            //查询
+            // 查询
             resultSet = getMetaData().getPrimaryKeys(getCatalog(), getSchema(), table);
-            //映射
+            // 映射
             return Mapping.convertList(resultSet, MariadbPrimaryKey.class);
         } catch (SQLException e) {
             throw new InternalException(e);

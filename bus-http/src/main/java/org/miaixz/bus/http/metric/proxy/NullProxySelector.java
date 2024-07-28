@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric.proxy;
 
 import java.io.IOException;
@@ -36,8 +36,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 代理选择器
- * 返回{@link Proxy#NO_PROXY}
+ * 代理选择器 返回{@link Proxy#NO_PROXY}
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,7 +49,6 @@ public class NullProxySelector extends ProxySelector {
             throw new IllegalArgumentException("URI must not be null");
         }
         return Collections.singletonList(Proxy.NO_PROXY);
-
 
     }
 

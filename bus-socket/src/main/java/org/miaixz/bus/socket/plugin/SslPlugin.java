@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket.plugin;
 
 import org.miaixz.bus.socket.buffer.BufferPagePool;
@@ -58,7 +58,8 @@ public final class SslPlugin<T> extends AbstractPlugin<T> {
         this(factory, sslEngine -> sslEngine.setUseClientMode(false), BufferPagePool.DEFAULT_BUFFER_PAGE_POOL);
     }
 
-    public SslPlugin(SSLContextFactory factory, Consumer<SSLEngine> consumer, BufferPagePool bufferPagePool) throws Exception {
+    public SslPlugin(SSLContextFactory factory, Consumer<SSLEngine> consumer, BufferPagePool bufferPagePool)
+            throws Exception {
         this.bufferPagePool = bufferPagePool;
         sslService = new SslService(factory.create(), consumer);
     }
@@ -75,20 +76,21 @@ public final class SslPlugin<T> extends AbstractPlugin<T> {
         this(factory, clientAuth, BufferPagePool.DEFAULT_BUFFER_PAGE_POOL);
     }
 
-    public SslPlugin(ServerSSLContextFactory factory, ClientAuth clientAuth, BufferPagePool bufferPagePool) throws Exception {
+    public SslPlugin(ServerSSLContextFactory factory, ClientAuth clientAuth, BufferPagePool bufferPagePool)
+            throws Exception {
         this(factory, sslEngine -> {
             sslEngine.setUseClientMode(false);
             switch (clientAuth) {
-                case OPTIONAL:
-                    sslEngine.setWantClientAuth(true);
-                    break;
-                case REQUIRE:
-                    sslEngine.setNeedClientAuth(true);
-                    break;
-                case NONE:
-                    break;
-                default:
-                    throw new Error("Unknown auth " + clientAuth);
+            case OPTIONAL:
+                sslEngine.setWantClientAuth(true);
+                break;
+            case REQUIRE:
+                sslEngine.setNeedClientAuth(true);
+                break;
+            case NONE:
+                break;
+            default:
+                throw new Error("Unknown auth " + clientAuth);
             }
         }, bufferPagePool);
     }

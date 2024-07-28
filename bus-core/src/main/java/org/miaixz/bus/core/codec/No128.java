@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.codec;
 
 import java.nio.ByteOrder;
@@ -33,8 +33,8 @@ import java.util.Objects;
 /**
  * 128位数字表示，分为：
  * <ul>
- *     <li>最高有效位（Most Significant Bit），64 bit（8 bytes）</li>
- *     <li>最低有效位（Least Significant Bit），64 bit（8 bytes）</li>
+ * <li>最高有效位（Most Significant Bit），64 bit（8 bytes）</li>
+ * <li>最低有效位（Least Significant Bit），64 bit（8 bytes）</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -103,8 +103,8 @@ public class No128 extends Number implements Comparable<No128> {
     /**
      * 获取高低位数组，规则为：
      * <ul>
-     *     <li>{@link ByteOrder#LITTLE_ENDIAN}，则long[0]：低位，long[1]：高位</li>
-     *     <li>{@link ByteOrder#BIG_ENDIAN}，则long[0]：高位，long[1]：低位</li>
+     * <li>{@link ByteOrder#LITTLE_ENDIAN}，则long[0]：低位，long[1]：高位</li>
+     * <li>{@link ByteOrder#BIG_ENDIAN}，则long[0]：高位，long[1]：低位</li>
      * </ul>
      *
      * @param byteOrder 端续
@@ -112,9 +112,9 @@ public class No128 extends Number implements Comparable<No128> {
      */
     public long[] getLongArray(final ByteOrder byteOrder) {
         if (byteOrder == ByteOrder.BIG_ENDIAN) {
-            return new long[]{leastSigBits, mostSigBits};
+            return new long[] { leastSigBits, mostSigBits };
         } else {
-            return new long[]{mostSigBits, leastSigBits};
+            return new long[] { mostSigBits, leastSigBits };
         }
     }
 

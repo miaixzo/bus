@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -59,7 +59,6 @@ public class CommitStatusFilter implements Serializable {
         return this;
     }
 
-
     public CommitStatusFilter withAll(Boolean all) {
         this.all = all;
         return this;
@@ -67,17 +66,12 @@ public class CommitStatusFilter implements Serializable {
 
     @JsonIgnore
     public GitLabApiForm getQueryParams(int page, int perPage) {
-        return (getQueryParams()
-                .withParam(Constants.PAGE_PARAM, page)
-                .withParam(Constants.PER_PAGE_PARAM, perPage));
+        return (getQueryParams().withParam(Constants.PAGE_PARAM, page).withParam(Constants.PER_PAGE_PARAM, perPage));
     }
 
     @JsonIgnore
     public GitLabApiForm getQueryParams() {
-        return (new GitLabApiForm()
-                .withParam("ref", ref)
-                .withParam("stage", stage)
-                .withParam("name", name)
+        return (new GitLabApiForm().withParam("ref", ref).withParam("stage", stage).withParam("name", name)
                 .withParam("all", all));
     }
 }

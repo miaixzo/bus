@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.net.HTTP;
@@ -32,8 +32,7 @@ import org.miaixz.bus.core.net.HTTP;
 import java.util.Arrays;
 
 /**
- * 设置描述发送对等点的特征，接收对等点使用这些特征
- * 设置的作用域是{@link Http2Connection connection}
+ * 设置描述发送对等点的特征，接收对等点使用这些特征 设置的作用域是{@link Http2Connection connection}
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -130,14 +129,14 @@ public class Http2Settings {
     }
 
     /**
-     * 将{@code other}写入其中。如果使用this和{@code other}
-     * 填充任何设置，则将保留{@code other}中的值和标志
+     * 将{@code other}写入其中。如果使用this和{@code other} 填充任何设置，则将保留{@code other}中的值和标志
      *
      * @param other 设置信息
      */
     public void merge(Http2Settings other) {
         for (int i = 0; i < COUNT; i++) {
-            if (!other.isSet(i)) continue;
+            if (!other.isSet(i))
+                continue;
             set(i, other.get(i));
         }
     }

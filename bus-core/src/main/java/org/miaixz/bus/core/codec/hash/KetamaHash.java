@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.codec.hash;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -59,9 +59,7 @@ public class KetamaHash implements Hash64<byte[]>, Hash32<byte[]> {
     @Override
     public long hash64(final byte[] key) {
         final byte[] bKey = md5(key);
-        return ((long) (bKey[3] & 0xFF) << 24)
-                | ((long) (bKey[2] & 0xFF) << 16)
-                | ((long) (bKey[1] & 0xFF) << 8)
+        return ((long) (bKey[3] & 0xFF) << 24) | ((long) (bKey[2] & 0xFF) << 16) | ((long) (bKey[1] & 0xFF) << 8)
                 | (bKey[0] & 0xFF);
     }
 

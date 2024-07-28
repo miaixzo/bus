@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.codec.No128;
@@ -34,8 +34,7 @@ import org.miaixz.bus.core.codec.hash.metro.MetroHash128;
 import org.miaixz.bus.core.codec.hash.metro.MetroHash64;
 
 /**
- * Hash算法大全
- * 推荐使用FNV1算法
+ * Hash算法大全 推荐使用FNV1算法
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -381,7 +380,8 @@ public class HashKit {
         int hash = 0;
 
         for (int i = 0; i < text.length(); i++) {
-            hash ^= ((i & 1) == 0) ? ((hash << 7) ^ text.charAt(i) ^ (hash >> 3)) : (~((hash << 11) ^ text.charAt(i) ^ (hash >> 5)));
+            hash ^= ((i & 1) == 0) ? ((hash << 7) ^ text.charAt(i) ^ (hash >> 3))
+                    : (~((hash << 11) ^ text.charAt(i) ^ (hash >> 5)));
         }
 
         return hash;

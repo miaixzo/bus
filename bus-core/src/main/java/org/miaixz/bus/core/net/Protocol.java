@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.net;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -33,10 +33,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 import java.io.IOException;
 
 /**
- * 协议vs计划 它的名字是:{@link java.net.URL#getProtocol()}
- * 返回{@linkplain java.net.URI#getScheme() scheme} (http, https, etc.)，
- * 而不是协议(http/1.1, spdy/3.1，等等) 请使用这个协议来识别它是如何被分割的
- * Httpd使用协议这个词来标识HTTP消息是如何构造的
+ * 协议vs计划 它的名字是:{@link java.net.URL#getProtocol()} 返回{@linkplain java.net.URI#getScheme() scheme} (http, https, etc.)，
+ * 而不是协议(http/1.1, spdy/3.1，等等) 请使用这个协议来识别它是如何被分割的 Httpd使用协议这个词来标识HTTP消息是如何构造的
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -60,23 +58,19 @@ public enum Protocol {
      */
     HTTP_1_0("HTTP/1.0"),
     /**
-     * 包含持久连接的plaintext
-     * 此版本的Httpd实现了RFC 7230，并跟踪对该规范的修订
+     * 包含持久连接的plaintext 此版本的Httpd实现了RFC 7230，并跟踪对该规范的修订
      */
     HTTP_1_1("HTTP/1.1"),
     /**
-     * IETF的二进制框架协议，包括头压缩、在同一个套接字上多路复用多个请求和服务器推送
-     * HTTP/1.1语义是在HTTP/2上分层的
+     * IETF的二进制框架协议，包括头压缩、在同一个套接字上多路复用多个请求和服务器推送 HTTP/1.1语义是在HTTP/2上分层的
      */
     HTTP_2("h2"),
     /**
-     * HTTP/3 是用于交换信息的超文本传输协议的第三个主要版本
-     * HTTP/3 在 QUIC 上运行，QUIC 以 RFC 9000 的形式发布。
+     * HTTP/3 是用于交换信息的超文本传输协议的第三个主要版本 HTTP/3 在 QUIC 上运行，QUIC 以 RFC 9000 的形式发布。
      */
     HTTP_3("h3"),
     /**
-     * Chromium的二进制框架协议，包括标头压缩、在同一个套接字上多路复用多个请求和服务器推送
-     * HTTP/1.1语义在SPDY/3上分层.
+     * Chromium的二进制框架协议，包括标头压缩、在同一个套接字上多路复用多个请求和服务器推送 HTTP/1.1语义在SPDY/3上分层.
      */
     SPDY_3("spdy/3.1"),
     /**
@@ -84,8 +78,7 @@ public enum Protocol {
      */
     H2_PRIOR_KNOWLEDGE("h2_prior_knowledge"),
     /**
-     * QUIC(快速UDP互联网连接)是一个新的多路复用和UDP之上的安全传输，
-     * 从底层设计和优化的HTTP/2语义。HTTP/1.1语义是在HTTP/2上分层的
+     * QUIC(快速UDP互联网连接)是一个新的多路复用和UDP之上的安全传输， 从底层设计和优化的HTTP/2语义。HTTP/1.1语义是在HTTP/2上分层的
      */
     QUIC("quic"),
     /**
@@ -97,7 +90,7 @@ public enum Protocol {
      */
     SOAP_1_2("SOAP 1.2 Protocol"),
     /**
-     *the ws
+     * the ws
      */
     WS("ws"),
     /**
@@ -265,7 +258,6 @@ public enum Protocol {
     public static boolean isLocalHost(String url) {
         return StringKit.isEmpty(url) || url.contains(HOST_IPV4) || url.contains(HOST_LOCAL);
     }
-
 
     /**
      * 是否为https协议或本地主机（域名）

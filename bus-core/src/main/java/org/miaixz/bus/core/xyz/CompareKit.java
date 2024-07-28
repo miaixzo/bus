@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.compare.IndexedCompare;
@@ -118,9 +118,9 @@ public class CompareKit {
      * 获取自然排序器，即默认排序器
      *
      * <ul>
-     *     <li>如需对null友好操作如下</li>
-     *     <li>{@code Comparator.nullsLast(CompareKit.natural())}</li>
-     *     <li>{@code Comparator.nullsFirst(CompareKit.natural())}</li>
+     * <li>如需对null友好操作如下</li>
+     * <li>{@code Comparator.nullsLast(CompareKit.natural())}</li>
+     * <li>{@code Comparator.nullsFirst(CompareKit.natural())}</li>
      * </ul>
      *
      * @param <E> 排序节点类型
@@ -134,9 +134,9 @@ public class CompareKit {
      * 获取反序排序器，即默认自然排序的反序排序器
      *
      * <ul>
-     *     <li>如需对null友好操作如下</li>
-     *     <li>{@code Comparator.nullsLast(CompareKit.naturalReverse())}</li>
-     *     <li>{@code Comparator.nullsFirst(CompareKit.naturalReverse())}</li>
+     * <li>如需对null友好操作如下</li>
+     * <li>{@code Comparator.nullsLast(CompareKit.naturalReverse())}</li>
+     * <li>{@code Comparator.nullsFirst(CompareKit.naturalReverse())}</li>
      * </ul>
      *
      * @param <E> 排序节点类型
@@ -150,9 +150,9 @@ public class CompareKit {
      * 获取反序排序器，即默认排序器
      *
      * <ul>
-     *     <li>如需对null友好操作如下</li>
-     *     <li>{@code Comparator.nullsLast(CompareKit.reverse())}</li>
-     *     <li>{@code Comparator.nullsFirst(CompareKit.reverse())}</li>
+     * <li>如需对null友好操作如下</li>
+     * <li>{@code Comparator.nullsLast(CompareKit.reverse())}</li>
+     * <li>{@code Comparator.nullsFirst(CompareKit.reverse())}</li>
      * </ul>
      *
      * @param <E>        排序节点类型
@@ -164,8 +164,7 @@ public class CompareKit {
     }
 
     /**
-     * 对象比较，比较结果取决于comparator，如果被比较对象为null，传入的comparator对象应处理此情况
-     * 如果传入comparator为null，则使用默认规则比较（此时被比较对象必须实现Comparable接口）
+     * 对象比较，比较结果取决于comparator，如果被比较对象为null，传入的comparator对象应处理此情况 如果传入comparator为null，则使用默认规则比较（此时被比较对象必须实现Comparable接口）
      * 一般而言，如果c1 &lt; c2，返回数小于0，c1==c2返回0，c1 &gt; c2 大于0
      *
      * @param <T>        被比较对象类型
@@ -242,7 +241,7 @@ public class CompareKit {
         }
 
         if (o1 instanceof Comparable && o2 instanceof Comparable) {
-            //如果bean可比较，直接比较bean
+            // 如果bean可比较，直接比较bean
             return ((Comparable) o1).compareTo(o2);
         }
 
@@ -287,9 +286,7 @@ public class CompareKit {
     }
 
     /**
-     * 索引比较器
-     * 通过keyExtractor函数，提取对象的某个属性或规则，根据提供的排序数组，完成比较
-     * objs中缺失的，默认排序在前面(atEndIfMiss=false)
+     * 索引比较器 通过keyExtractor函数，提取对象的某个属性或规则，根据提供的排序数组，完成比较 objs中缺失的，默认排序在前面(atEndIfMiss=false)
      *
      * @param keyExtractor 从对象中提取中文(参与比较的内容)
      * @param objs         参与排序的数组，数组的元素位置决定了对象的排序先后
@@ -297,14 +294,13 @@ public class CompareKit {
      * @param <U>          数组对象类型
      * @return 索引比较器
      */
-    public static <T, U> Comparator<T> comparingIndexed(final Function<? super T, ? extends U> keyExtractor, final U[] objs) {
+    public static <T, U> Comparator<T> comparingIndexed(final Function<? super T, ? extends U> keyExtractor,
+            final U[] objs) {
         return comparingIndexed(keyExtractor, false, objs);
     }
 
     /**
-     * 索引比较器
-     * 通过keyExtractor函数，提取对象的某个属性或规则，根据提供的排序数组，完成比较
-     * objs中缺失的，默认排序在前面(atEndIfMiss=false)
+     * 索引比较器 通过keyExtractor函数，提取对象的某个属性或规则，根据提供的排序数组，完成比较 objs中缺失的，默认排序在前面(atEndIfMiss=false)
      *
      * @param keyExtractor 从对象中提取中文(参与比较的内容)
      * @param objs         参与排序的集合对象，数组的元素位置决定了对象的排序先后
@@ -312,13 +308,14 @@ public class CompareKit {
      * @param <U>          数组对象类型
      * @return 索引比较器
      */
-    public static <T, U> Comparator<T> comparingIndexed(final Function<? super T, ? extends U> keyExtractor, final Iterable<U> objs) {
-        return comparingIndexed(keyExtractor, false, ArrayKit.ofArray(objs, (Class<U>) objs.iterator().next().getClass()));
+    public static <T, U> Comparator<T> comparingIndexed(final Function<? super T, ? extends U> keyExtractor,
+            final Iterable<U> objs) {
+        return comparingIndexed(keyExtractor, false,
+                ArrayKit.ofArray(objs, (Class<U>) objs.iterator().next().getClass()));
     }
 
     /**
-     * 索引比较器
-     * 通过keyExtractor函数，提取对象的某个属性或规则，根据提供的排序数组，完成比较
+     * 索引比较器 通过keyExtractor函数，提取对象的某个属性或规则，根据提供的排序数组，完成比较
      *
      * @param keyExtractor 从对象中提取排序键的函数(参与比较的内容)
      * @param atEndIfMiss  如果不在列表中是否排在后边; true:排在后边; false:排在前边
@@ -327,7 +324,8 @@ public class CompareKit {
      * @param <U>          数组对象类型
      * @return 索引比较器
      */
-    public static <T, U> Comparator<T> comparingIndexed(final Function<? super T, ? extends U> keyExtractor, final boolean atEndIfMiss, final U... objs) {
+    public static <T, U> Comparator<T> comparingIndexed(final Function<? super T, ? extends U> keyExtractor,
+            final boolean atEndIfMiss, final U... objs) {
         Objects.requireNonNull(keyExtractor);
         final IndexedCompare<U> indexedComparator = new IndexedCompare<>(atEndIfMiss, objs);
         return (o1, o2) -> indexedComparator.compare(keyExtractor.apply(o1), keyExtractor.apply(o2));
@@ -423,8 +421,7 @@ public class CompareKit {
     }
 
     /**
-     * 给定的{@code value}是否在{@code c1}和{@code c2}的范围内
-     * 即 {@code min(c1,c2) <= value <= max(c1,c2)}
+     * 给定的{@code value}是否在{@code c1}和{@code c2}的范围内 即 {@code min(c1,c2) <= value <= max(c1,c2)}
      *
      * @param <T>   被比较对象类型
      * @param value 检查的对象，可以为{@code null}
@@ -437,8 +434,7 @@ public class CompareKit {
     }
 
     /**
-     * 给定的{@code value}是否在{@code c1}和{@code c2}的范围内，但是不包括边界
-     * 即 {@code min(c1,c2) < value < max(c1,c2)}
+     * 给定的{@code value}是否在{@code c1}和{@code c2}的范围内，但是不包括边界 即 {@code min(c1,c2) < value < max(c1,c2)}
      *
      * @param <T>   被比较对象类型
      * @param value 检查的对象，可以为{@code null}

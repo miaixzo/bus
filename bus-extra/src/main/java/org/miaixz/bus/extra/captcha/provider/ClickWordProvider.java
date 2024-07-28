@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.captcha.provider;
 
 import org.miaixz.bus.extra.captcha.AbstractProvider;
@@ -39,7 +39,6 @@ import java.awt.*;
  * @since Java 17+
  */
 public class ClickWordProvider extends AbstractProvider {
-
 
     public ClickWordProvider(int width, int height, int codeCount, int interfereCount) {
         super(width, height, codeCount, interfereCount);

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.KINETDX_GRAPHICS;
 
 /**
@@ -35,7 +35,7 @@ public class PrivateTag {
 
     public static final String PrivateCreator = "KINETDX_GRAPHICS";
 
-    /** (0021,xxA4) VR=OB VM=1  */
+    /** (0021,xxA4) VR=OB VM=1 */
     public static final int _0021_xxA4_ = 0x002100A4;
 
 }

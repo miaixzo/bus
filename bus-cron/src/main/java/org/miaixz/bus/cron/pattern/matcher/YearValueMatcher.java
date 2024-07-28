@@ -24,15 +24,14 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cron.pattern.matcher;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
 /**
- * 年匹配
- * 考虑年数字太大，不适合boolean数组，单独使用{@link LinkedHashSet}匹配
+ * 年匹配 考虑年数字太大，不适合boolean数组，单独使用{@link LinkedHashSet}匹配
  *
  * @author Kimi Liu
  * @since Java 17+

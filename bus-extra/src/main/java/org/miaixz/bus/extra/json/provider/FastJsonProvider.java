@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.json.provider;
 
 import com.alibaba.fastjson.JSON;
@@ -44,9 +44,7 @@ import java.util.Map;
  */
 public class FastJsonProvider extends AbstractJsonProvider {
 
-    private static final SerializerFeature[] FEATURES = {
-            SerializerFeature.SortField
-    };
+    private static final SerializerFeature[] FEATURES = { SerializerFeature.SortField };
 
     /**
      * 构造

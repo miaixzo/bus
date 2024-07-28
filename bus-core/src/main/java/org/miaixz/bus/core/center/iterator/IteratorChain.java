@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.iterator;
 
 import org.miaixz.bus.core.lang.Chain;
@@ -51,8 +51,7 @@ public class IteratorChain<T> implements Iterator<T>, Chain<Iterator<T>, Iterato
     protected int currentIter = -1;
 
     /**
-     * 构造
-     * 可以使用 {@link #addChain(Iterator)} 方法加入更多的集合。
+     * 构造 可以使用 {@link #addChain(Iterator)} 方法加入更多的集合。
      */
     public IteratorChain() {
 

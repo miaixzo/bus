@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.linux.hardware;
 
 import com.sun.jna.platform.linux.Udev;
@@ -59,13 +59,13 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
     private static final String ATTR_SERIAL = "serial";
 
     public LinuxUsbDevice(String name, String vendor, String vendorId, String productId, String serialNumber,
-                          String uniqueDeviceId, List<UsbDevice> connectedDevices) {
+            String uniqueDeviceId, List<UsbDevice> connectedDevices) {
         super(name, vendor, vendorId, productId, serialNumber, uniqueDeviceId, connectedDevices);
     }
 
     /**
-     * Instantiates a list of {@link UsbDevice} objects, representing devices connected via a usb port
-     * (including internal devices).
+     * Instantiates a list of {@link UsbDevice} objects, representing devices connected via a usb port (including
+     * internal devices).
      * <p>
      * If the value of {@code tree} is true, the top level devices returned from this method are the USB Controllers;
      * connected hubs and devices in its device tree share that controller's bandwidth. If the value of {@code tree} is
@@ -199,8 +199,8 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
      * @return A LinuxUsbDevice corresponding to this device
      */
     private static LinuxUsbDevice getDeviceAndChildren(String devPath, String vid, String pid,
-                                                       Map<String, String> nameMap, Map<String, String> vendorMap, Map<String, String> vendorIdMap,
-                                                       Map<String, String> productIdMap, Map<String, String> serialMap, Map<String, List<String>> hubMap) {
+            Map<String, String> nameMap, Map<String, String> vendorMap, Map<String, String> vendorIdMap,
+            Map<String, String> productIdMap, Map<String, String> serialMap, Map<String, List<String>> hubMap) {
         String vendorId = vendorIdMap.getOrDefault(devPath, vid);
         String productId = productIdMap.getOrDefault(devPath, pid);
         List<String> childPaths = hubMap.getOrDefault(devPath, new ArrayList<>());
@@ -211,8 +211,8 @@ public class LinuxUsbDevice extends AbstractUsbDevice {
         }
         Collections.sort(usbDevices);
         return new LinuxUsbDevice(nameMap.getOrDefault(devPath, vendorId + Symbol.COLON + productId),
-                vendorMap.getOrDefault(devPath, Normal.EMPTY), vendorId, productId, serialMap.getOrDefault(devPath, Normal.EMPTY), devPath,
-                usbDevices);
+                vendorMap.getOrDefault(devPath, Normal.EMPTY), vendorId, productId,
+                serialMap.getOrDefault(devPath, Normal.EMPTY), devPath, usbDevices);
     }
 
 }

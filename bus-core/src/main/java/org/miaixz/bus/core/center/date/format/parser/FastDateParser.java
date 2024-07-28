@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date.format.parser;
 
 import org.miaixz.bus.core.center.date.format.FormatBuilder;
@@ -118,8 +118,8 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     private transient List<StrategyAndWidth> list;
 
     /**
-     * Constructs a new FastDateParser.
-     * Use {@link FormatBuilder#getInstance(String, TimeZone, Locale)} or another variation of the factory methods of {@link FormatBuilder} to get a cached FastDateParser instance.
+     * Constructs a new FastDateParser. Use {@link FormatBuilder#getInstance(String, TimeZone, Locale)} or another
+     * variation of the factory methods of {@link FormatBuilder} to get a cached FastDateParser instance.
      *
      * @param pattern  non-null {@link java.text.SimpleDateFormat} compatible pattern
      * @param timeZone non-null time zone to use
@@ -166,21 +166,21 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         for (int i = 0; i < value.length(); ++i) {
             final char c = value.charAt(i);
             switch (c) {
-                case '\\':
-                case '^':
-                case Symbol.C_DOLLAR:
-                case '.':
-                case '|':
-                case '?':
-                case Symbol.C_STAR:
-                case Symbol.C_PLUS:
-                case Symbol.C_PARENTHESE_LEFT:
-                case ')':
-                case '[':
-                case '{':
-                    sb.append('\\');
-                default:
-                    sb.append(c);
+            case '\\':
+            case '^':
+            case Symbol.C_DOLLAR:
+            case '.':
+            case '|':
+            case '?':
+            case Symbol.C_STAR:
+            case Symbol.C_PLUS:
+            case Symbol.C_PARENTHESE_LEFT:
+            case ')':
+            case '[':
+            case '{':
+                sb.append('\\');
+            default:
+                sb.append(c);
             }
         }
         return sb;
@@ -195,7 +195,8 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      * @param regex  The regular expression to build
      * @return The map of string display names to field values
      */
-    private static Map<String, Integer> appendDisplayNames(final Calendar cal, final Locale locale, final int field, final StringBuilder regex) {
+    private static Map<String, Integer> appendDisplayNames(final Calendar cal, final Locale locale, final int field,
+            final StringBuilder regex) {
         final Map<String, Integer> values = new HashMap<>();
 
         final Map<String, Integer> displayNames = cal.getDisplayNames(field, Calendar.ALL_STYLES, locale);
@@ -228,7 +229,8 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     /**
-     * Initialize derived fields from defining fields. This is called from constructor and from readObject (de-serialization)
+     * Initialize derived fields from defining fields. This is called from constructor and from readObject
+     * (de-serialization)
      *
      * @param definingCalendar the {@link java.util.Calendar} instance used to initialize this FastDateParser
      */
@@ -236,7 +238,7 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         list = new ArrayList<>();
 
         final StrategyParser fm = new StrategyParser(definingCalendar);
-        for (; ; ) {
+        for (;;) {
             final StrategyAndWidth field = fm.getNextStrategy();
             if (field == null) {
                 break;
@@ -266,8 +268,8 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         if (date == null) {
             // Add a note re supported date range
             if (locale.equals(JAPANESE_IMPERIAL)) {
-                throw new DateException("(The " + locale + " locale does not support dates before 1868 AD)\n" +
-                        "Unparseable date: \"" + source, pp.getErrorIndex());
+                throw new DateException("(The " + locale + " locale does not support dates before 1868 AD)\n"
+                        + "Unparseable date: \"" + source, pp.getErrorIndex());
             }
             throw new DateException("Unparseable date: " + source, pp.getErrorIndex());
         }
@@ -317,54 +319,54 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
      */
     private Strategy getStrategy(final char f, final int width, final Calendar definingCalendar) {
         switch (f) {
-            default:
-                throw new IllegalArgumentException("Format '" + f + "' not supported");
-            case 'D':
-                return DAY_OF_YEAR_STRATEGY;
-            case 'E':
-                return getLocaleSpecificStrategy(Calendar.DAY_OF_WEEK, definingCalendar);
-            case 'F':
-                return DAY_OF_WEEK_IN_MONTH_STRATEGY;
-            case 'G':
-                return getLocaleSpecificStrategy(Calendar.ERA, definingCalendar);
-            case 'H': // Hour in day (0-23)
-                return HOUR_OF_DAY_STRATEGY;
-            case 'K': // Hour in am/pm (0-11)
-                return HOUR_STRATEGY;
-            case 'M':
-                return width >= 3 ? getLocaleSpecificStrategy(Calendar.MONTH, definingCalendar) : NUMBER_MONTH_STRATEGY;
-            case 'S':
-                return MILLISECOND_STRATEGY;
-            case 'W':
-                return WEEK_OF_MONTH_STRATEGY;
-            case 'a':
-                return getLocaleSpecificStrategy(Calendar.AM_PM, definingCalendar);
-            case 'd':
-                return DAY_OF_MONTH_STRATEGY;
-            case 'h': // Hour in am/pm (1-12), i.e. midday/midnight is 12, not 0
-                return HOUR12_STRATEGY;
-            case 'k': // Hour in day (1-24), i.e. midnight is 24, not 0
-                return HOUR24_OF_DAY_STRATEGY;
-            case 'm':
-                return MINUTE_STRATEGY;
-            case 's':
-                return SECOND_STRATEGY;
-            case 'u':
-                return DAY_OF_WEEK_STRATEGY;
-            case 'w':
-                return WEEK_OF_YEAR_STRATEGY;
-            case 'y':
-            case 'Y':
-                return width > 2 ? LITERAL_YEAR_STRATEGY : ABBREVIATED_YEAR_STRATEGY;
-            case 'X':
-                return ISO8601TimeZoneStrategy.getStrategy(width);
-            case 'Z':
-                if (width == 2) {
-                    return ISO8601TimeZoneStrategy.ISO_8601_3_STRATEGY;
-                }
-                //$FALL-THROUGH$
-            case 'z':
-                return getLocaleSpecificStrategy(Calendar.ZONE_OFFSET, definingCalendar);
+        default:
+            throw new IllegalArgumentException("Format '" + f + "' not supported");
+        case 'D':
+            return DAY_OF_YEAR_STRATEGY;
+        case 'E':
+            return getLocaleSpecificStrategy(Calendar.DAY_OF_WEEK, definingCalendar);
+        case 'F':
+            return DAY_OF_WEEK_IN_MONTH_STRATEGY;
+        case 'G':
+            return getLocaleSpecificStrategy(Calendar.ERA, definingCalendar);
+        case 'H': // Hour in day (0-23)
+            return HOUR_OF_DAY_STRATEGY;
+        case 'K': // Hour in am/pm (0-11)
+            return HOUR_STRATEGY;
+        case 'M':
+            return width >= 3 ? getLocaleSpecificStrategy(Calendar.MONTH, definingCalendar) : NUMBER_MONTH_STRATEGY;
+        case 'S':
+            return MILLISECOND_STRATEGY;
+        case 'W':
+            return WEEK_OF_MONTH_STRATEGY;
+        case 'a':
+            return getLocaleSpecificStrategy(Calendar.AM_PM, definingCalendar);
+        case 'd':
+            return DAY_OF_MONTH_STRATEGY;
+        case 'h': // Hour in am/pm (1-12), i.e. midday/midnight is 12, not 0
+            return HOUR12_STRATEGY;
+        case 'k': // Hour in day (1-24), i.e. midnight is 24, not 0
+            return HOUR24_OF_DAY_STRATEGY;
+        case 'm':
+            return MINUTE_STRATEGY;
+        case 's':
+            return SECOND_STRATEGY;
+        case 'u':
+            return DAY_OF_WEEK_STRATEGY;
+        case 'w':
+            return WEEK_OF_YEAR_STRATEGY;
+        case 'y':
+        case 'Y':
+            return width > 2 ? LITERAL_YEAR_STRATEGY : ABBREVIATED_YEAR_STRATEGY;
+        case 'X':
+            return ISO8601TimeZoneStrategy.getStrategy(width);
+        case 'Z':
+            if (width == 2) {
+                return ISO8601TimeZoneStrategy.ISO_8601_3_STRATEGY;
+            }
+            //$FALL-THROUGH$
+        case 'z':
+            return getLocaleSpecificStrategy(Calendar.ZONE_OFFSET, definingCalendar);
         }
     }
 
@@ -379,7 +381,8 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         final ConcurrentMap<Locale, Strategy> cache = getCache(field);
         Strategy strategy = cache.get(locale);
         if (strategy == null) {
-            strategy = field == Calendar.ZONE_OFFSET ? new TimeZoneStrategy(locale) : new CaseInsensitiveTextStrategy(field, definingCalendar, locale);
+            strategy = field == Calendar.ZONE_OFFSET ? new TimeZoneStrategy(locale)
+                    : new CaseInsensitiveTextStrategy(field, definingCalendar, locale);
             final Strategy inCache = cache.putIfAbsent(locale, strategy);
             if (inCache != null) {
                 return inCache;
@@ -423,7 +426,8 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
             return false;
         }
 
-        abstract boolean parse(FastDateParser parser, Calendar calendar, CharSequence source, ParsePosition pos, int maxWidth);
+        abstract boolean parse(FastDateParser parser, Calendar calendar, CharSequence source, ParsePosition pos,
+                int maxWidth);
     }
 
     /**
@@ -442,7 +446,8 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         }
 
         @Override
-        boolean parse(final FastDateParser parser, final Calendar calendar, final CharSequence source, final ParsePosition pos, final int maxWidth) {
+        boolean parse(final FastDateParser parser, final Calendar calendar, final CharSequence source,
+                final ParsePosition pos, final int maxWidth) {
             final Matcher matcher = pattern.matcher(source.subSequence(pos.getIndex(), source.length()));
             if (!matcher.lookingAt()) {
                 pos.setErrorIndex(pos.getIndex());
@@ -473,7 +478,8 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         }
 
         @Override
-        boolean parse(final FastDateParser parser, final Calendar calendar, final CharSequence source, final ParsePosition pos, final int maxWidth) {
+        boolean parse(final FastDateParser parser, final Calendar calendar, final CharSequence source,
+                final ParsePosition pos, final int maxWidth) {
             for (int idx = 0; idx < formatField.length(); ++idx) {
                 final int sIdx = idx + pos.getIndex();
                 if (sIdx == source.length()) {
@@ -545,7 +551,8 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
         }
 
         @Override
-        boolean parse(final FastDateParser parser, final Calendar calendar, final CharSequence source, final ParsePosition pos, final int maxWidth) {
+        boolean parse(final FastDateParser parser, final Calendar calendar, final CharSequence source,
+                final ParsePosition pos, final int maxWidth) {
             int idx = pos.getIndex();
             int last = source.length();
 
@@ -638,13 +645,13 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
                 TzInfo tzInfo = standard;
                 for (int i = 1; i < zoneNames.length; ++i) {
                     switch (i) {
-                        case 3: // offset 3 is long daylight savings (or summertime) name
-                            // offset 4 is the short summertime name
-                            tzInfo = new TzInfo(tz, true);
-                            break;
-                        case 5: // offset 5 starts additional names, probably standard time
-                            tzInfo = standard;
-                            break;
+                    case 3: // offset 3 is long daylight savings (or summertime) name
+                        // offset 4 is the short summertime name
+                        tzInfo = new TzInfo(tz, true);
+                        break;
+                    case 5: // offset 5 starts additional names, probably standard time
+                        tzInfo = standard;
+                        break;
                     }
                     if (zoneNames[i] != null) {
                         final String key = zoneNames[i].toLowerCase(locale);
@@ -697,7 +704,8 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
 
         private static final Strategy ISO_8601_1_STRATEGY = new ISO8601TimeZoneStrategy("(Z|(?:[+-]\\d{2}))");
         private static final Strategy ISO_8601_2_STRATEGY = new ISO8601TimeZoneStrategy("(Z|(?:[+-]\\d{2}\\d{2}))");
-        private static final Strategy ISO_8601_3_STRATEGY = new ISO8601TimeZoneStrategy("(Z|(?:[+-]\\d{2}(?::)\\d{2}))");
+        private static final Strategy ISO_8601_3_STRATEGY = new ISO8601TimeZoneStrategy(
+                "(Z|(?:[+-]\\d{2}(?::)\\d{2}))");
 
         /**
          * Construct a Strategy that parses a TimeZone
@@ -712,18 +720,19 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
          * Factory method for ISO8601TimeZoneStrategies.
          *
          * @param tokenLen a token indicating the length of the TimeZone String to be formatted.
-         * @return a ISO8601TimeZoneStrategy that can format TimeZone String of length {@code tokenLen}. If no such strategy exists, an IllegalArgumentException will be thrown.
+         * @return a ISO8601TimeZoneStrategy that can format TimeZone String of length {@code tokenLen}. If no such
+         *         strategy exists, an IllegalArgumentException will be thrown.
          */
         static Strategy getStrategy(final int tokenLen) {
             switch (tokenLen) {
-                case 1:
-                    return ISO_8601_1_STRATEGY;
-                case 2:
-                    return ISO_8601_2_STRATEGY;
-                case 3:
-                    return ISO_8601_3_STRATEGY;
-                default:
-                    throw new IllegalArgumentException("invalid number of X");
+            case 1:
+                return ISO_8601_1_STRATEGY;
+            case 2:
+                return ISO_8601_2_STRATEGY;
+            case 3:
+                return ISO_8601_3_STRATEGY;
+            default:
+                throw new IllegalArgumentException("invalid number of X");
             }
         }
 

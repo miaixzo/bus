@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.function.FunctionPool;
@@ -43,7 +43,7 @@ import java.util.Map;
  * 字符串工具类
  *
  * @author Kimi Liu
- * @see CharsBacker#split(CharSequence, CharSequence)  对字符串分割
+ * @see CharsBacker#split(CharSequence, CharSequence) 对字符串分割
  * @see ArrayKit#hasBlank(CharSequence...) 对多个字符串判空
  * @since Java 17+
  */
@@ -84,6 +84,7 @@ public class StringKit extends CharsBacker {
 
     /**
      * 将对象转为字符串
+     * 
      * <pre>
      * 	 1、Byte数组和ByteBuffer会被转换为对应字符串的数组
      * 	 2、char[]会直接构造String
@@ -223,8 +224,7 @@ public class StringKit extends CharsBacker {
     }
 
     /**
-     * 反转字符串
-     * 例如：abcd = dcba
+     * 反转字符串 例如：abcd = dcba
      *
      * @param text 被反转的字符串
      * @return 反转后的字符串
@@ -234,8 +234,7 @@ public class StringKit extends CharsBacker {
     }
 
     /**
-     * 将已有字符串填充为规定长度，如果已有字符串超过这个长度则返回这个字符串
-     * 字符填充于字符串前
+     * 将已有字符串填充为规定长度，如果已有字符串超过这个长度则返回这个字符串 字符填充于字符串前
      *
      * @param text       被填充的字符串
      * @param filledChar 填充的字符
@@ -247,8 +246,7 @@ public class StringKit extends CharsBacker {
     }
 
     /**
-     * 将已有字符串填充为规定长度，如果已有字符串超过这个长度则返回这个字符串
-     * 字符填充于字符串后
+     * 将已有字符串填充为规定长度，如果已有字符串超过这个长度则返回这个字符串 字符填充于字符串后
      *
      * @param text       被填充的字符串
      * @param filledChar 填充的字符
@@ -338,8 +336,7 @@ public class StringKit extends CharsBacker {
     }
 
     /**
-     * 格式化文本，使用 {varName} 占位
-     * map = {a: "aValue", b: "bValue"} format("{a} and {b}", map) = aValue and bValue
+     * 格式化文本，使用 {varName} 占位 map = {a: "aValue", b: "bValue"} format("{a} and {b}", map) = aValue and bValue
      *
      * @param template 文本模板，被替换的部分用 {data} 表示
      * @param map      参数值对
@@ -350,8 +347,7 @@ public class StringKit extends CharsBacker {
     }
 
     /**
-     * 格式化文本，使用 {varName} 占位
-     * map = {a: "aValue", b: "bValue"} format("{a} and {b}", map) = aValue and bValue
+     * 格式化文本，使用 {varName} 占位 map = {a: "aValue", b: "bValue"} format("{a} and {b}", map) = aValue and bValue
      *
      * @param template   文本模板，被替换的部分用 {data} 表示
      * @param map        参数值对
@@ -363,9 +359,7 @@ public class StringKit extends CharsBacker {
     }
 
     /**
-     * 检查给定的{@code String}是否包含实际的文本。
-     * 更具体地说，如果{@code String}不是{@code null}，
-     * 那么这个方法返回{@code true}，它的长度大于0，并且至少包含一个非空白字符
+     * 检查给定的{@code String}是否包含实际的文本。 更具体地说，如果{@code String}不是{@code null}， 那么这个方法返回{@code true}，它的长度大于0，并且至少包含一个非空白字符
      *
      * @param text 要检查的{@code String}(可能是{@code null})
      * @return 如果{@code String}不是{@code null}，那么它的长度大于0，并且不包含空格
@@ -391,9 +385,7 @@ public class StringKit extends CharsBacker {
      * @param prefixLength 前边信息长度
      * @return 构建后的新字符串
      */
-    public static String build(final Object original,
-                               final String middle,
-                               final int prefixLength) {
+    public static String build(final Object original, final String middle, final int prefixLength) {
         if (ObjectKit.isNull(original)) {
             return null;
         }
@@ -419,8 +411,7 @@ public class StringKit extends CharsBacker {
     }
 
     /**
-     * 按{@link Character#toTitleCase(int)}
-     * 将第一个字符更改为标题大小写.其他字符没有改变
+     * 按{@link Character#toTitleCase(int)} 将第一个字符更改为标题大小写.其他字符没有改变
      *
      * <pre>
      * StringKit.capitalize(null)  = null
@@ -448,7 +439,7 @@ public class StringKit extends CharsBacker {
         final int[] newCodePoints = new int[strLen];
         int outOffset = 0;
         newCodePoints[outOffset++] = newCodePoint;
-        for (int inOffset = Character.charCount(firstCodepoint); inOffset < strLen; ) {
+        for (int inOffset = Character.charCount(firstCodepoint); inOffset < strLen;) {
             final int codepoint = text.codePointAt(inOffset);
             newCodePoints[outOffset++] = codepoint;
             inOffset += Character.charCount(codepoint);
@@ -485,7 +476,7 @@ public class StringKit extends CharsBacker {
         final int[] newCodePoints = new int[strLen];
         int outOffset = 0;
         newCodePoints[outOffset++] = newCodePoint;
-        for (int inOffset = Character.charCount(firstCodepoint); inOffset < strLen; ) {
+        for (int inOffset = Character.charCount(firstCodepoint); inOffset < strLen;) {
             final int codepoint = text.codePointAt(inOffset);
             newCodePoints[outOffset++] = codepoint;
             inOffset += Character.charCount(codepoint);

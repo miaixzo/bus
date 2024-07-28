@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map;
 
 import java.util.HashMap;
@@ -116,8 +116,7 @@ public class TolerantMap<K, V> extends MapWrapper<K, V> {
             return false;
         }
         final TolerantMap<?, ?> that = (TolerantMap<?, ?>) o;
-        return getRaw().equals(that.getRaw())
-                && Objects.equals(defaultValue, that.defaultValue);
+        return getRaw().equals(that.getRaw()) && Objects.equals(defaultValue, that.defaultValue);
     }
 
     @Override

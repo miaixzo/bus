@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.stream;
 
 import java.nio.file.Path;
@@ -41,11 +41,12 @@ public record ExtendSegmentedInputImageStream(
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         ExtendSegmentedInputImageStream that = (ExtendSegmentedInputImageStream) o;
-        return Objects.equals(path, that.path)
-                && Arrays.equals(segmentPositions, that.segmentPositions)
+        return Objects.equals(path, that.path) && Arrays.equals(segmentPositions, that.segmentPositions)
                 && Arrays.equals(segmentLengths, that.segmentLengths)
                 && Objects.equals(imageDescriptor, that.imageDescriptor);
     }

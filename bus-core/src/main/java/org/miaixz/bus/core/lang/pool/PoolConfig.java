@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.pool;
 
 import java.io.Serializable;
@@ -32,10 +32,10 @@ import java.io.Serializable;
 /**
  * 对象池配置，提供基本的配置项，包括：
  * <ul>
- *     <li>最小池大小（初始大小）</li>
- *     <li>最大池大小</li>
- *     <li>最长等待时间</li>
- *     <li>最长空闲时间</li>
+ * <li>最小池大小（初始大小）</li>
+ * <li>最大池大小</li>
+ * <li>最长等待时间</li>
+ * <li>最长空闲时间</li>
  * </ul>
  *
  * @author Kimi Liu

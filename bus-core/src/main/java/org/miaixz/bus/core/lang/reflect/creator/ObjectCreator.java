@@ -24,12 +24,11 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.reflect.creator;
 
 /**
- * 对象创建器，用于自定义创建指定类型、指定参数的对象
- * 也叫对象初始化器。
+ * 对象创建器，用于自定义创建指定类型、指定参数的对象 也叫对象初始化器。
  *
  * @param <T> 对象类型
  * @author Kimi Liu

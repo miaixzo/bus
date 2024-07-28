@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.compress;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -35,8 +35,7 @@ import java.io.PushbackInputStream;
 import java.util.zip.Inflater;
 
 /**
- * {@link java.util.zip.InflaterInputStream}包装实现，实现"deflate"算法解压
- * 参考：org.apache.hc.client5.http.entity.DeflateInputStream
+ * {@link java.util.zip.InflaterInputStream}包装实现，实现"deflate"算法解压 参考：org.apache.hc.client5.http.entity.DeflateInputStream
  *
  * @author Kimi Liu
  * @since Java 17+

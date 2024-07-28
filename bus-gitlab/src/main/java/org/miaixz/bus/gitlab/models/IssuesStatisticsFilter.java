@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -38,7 +38,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- *  This class is used to filter issues when getting issue statistics. of them.
+ * This class is used to filter issues when getting issue statistics. of them.
  */
 public class IssuesStatisticsFilter implements Serializable {
     private static final long serialVersionUID = -1L;
@@ -131,16 +131,10 @@ public class IssuesStatisticsFilter implements Serializable {
     @JsonIgnore
     public GitLabApiForm getQueryParams() throws GitLabApiException {
 
-        return (new GitLabApiForm()
-                .withParam("labels", (labels != null ? String.join(",", labels) : null))
-                .withParam("iids", iids)
-                .withParam("milestone", milestone)
-                .withParam("scope", scope)
-                .withParam("author_id", authorId)
-                .withParam("assignee_id", assigneeId)
-                .withParam("my_reaction_emoji", myReactionEmoji)
-                .withParam("search", search)
-                .withParam("in", in)
+        return (new GitLabApiForm().withParam("labels", (labels != null ? String.join(",", labels) : null))
+                .withParam("iids", iids).withParam("milestone", milestone).withParam("scope", scope)
+                .withParam("author_id", authorId).withParam("assignee_id", assigneeId)
+                .withParam("my_reaction_emoji", myReactionEmoji).withParam("search", search).withParam("in", in)
                 .withParam("created_after", ISO8601.toString(createdAfter, false))
                 .withParam("created_before", ISO8601.toString(createdBefore, false))
                 .withParam("updated_after", ISO8601.toString(updatedAfter, false))

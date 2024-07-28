@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.codec.binary;
 
 import org.miaixz.bus.core.lang.Charset;
@@ -34,10 +34,10 @@ import org.miaixz.bus.core.lang.Symbol;
 import java.util.Objects;
 
 /**
- * Crockford`s Base32实现
- * 来自：https://gist.github.com/markov/5206312
+ * Crockford`s Base32实现 来自：https://gist.github.com/markov/5206312
  *
- * <p>Provides Base32 encoding and decoding as defined by <a href="http://www.ietf.org/rfc/rfc4648.txt">RFC 4648</a>.
+ * <p>
+ * Provides Base32 encoding and decoding as defined by <a href="http://www.ietf.org/rfc/rfc4648.txt">RFC 4648</a>.
  * However it uses a custom alphabet first coined by Douglas Crockford. Only addition to the alphabet is that 'u' and
  * 'U' characters decode as if they were 'V' to improve mistakes by human input.
  * </p>
@@ -64,8 +64,7 @@ public class Crockford {
      */
     private static final int MASK_5BITS = 0x1f;
     /**
-     * BASE32 characters are 5 bits in length.
-     * They are formed by taking a block of five octets to form a 40-bit string,
+     * BASE32 characters are 5 bits in length. They are formed by taking a block of five octets to form a 40-bit string,
      * which is converted into eight BASE32 characters.
      */
     private static final int BITS_PER_ENCODED_BYTE = 5;
@@ -75,11 +74,8 @@ public class Crockford {
      * This array is a lookup table that translates 5-bit positive integer index values into their "Base32 Alphabet"
      * equivalents as specified in Table 3 of RFC 2045.
      */
-    private static final byte[] ENCODE_TABLE = {
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'J', 'K', 'M',
-            'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'
-    };
+    private static final byte[] ENCODE_TABLE = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D',
+            'E', 'F', 'G', 'H', 'J', 'K', 'M', 'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z' };
     /**
      * Convenience variable to help us determine when our buffer is going to run out of room and needs resizing.
      * <code>decodeSize = {@link #BYTES_PER_ENCODED_BLOCK} - 1 + lineSeparator.length;</code>
@@ -103,18 +99,18 @@ public class Crockford {
      */
     protected int pos;
     /**
-     * Boolean flag to indicate the EOF has been reached. Once EOF has been reached, this object becomes useless,
-     * and must be thrown away.
+     * Boolean flag to indicate the EOF has been reached. Once EOF has been reached, this object becomes useless, and
+     * must be thrown away.
      */
     protected boolean eof;
     /**
-     * Writes to the buffer only occur after every 3/5 reads when encoding, and every 4/8 reads when decoding.
-     * This variable helps track that.
+     * Writes to the buffer only occur after every 3/5 reads when encoding, and every 4/8 reads when decoding. This
+     * variable helps track that.
      */
     protected int modulus;
     /**
-     * Place holder for the bytes we're dealing with for our based logic.
-     * Bitwise operations store and extract the encoding or decoding from this variable.
+     * Place holder for the bytes we're dealing with for our based logic. Bitwise operations store and extract the
+     * encoding or decoding from this variable.
      */
     private long bitWorkArea;
 
@@ -140,31 +136,30 @@ public class Crockford {
     }
 
     /**
-     * Checks if a byte value is whitespace or not.
-     * Whitespace is taken to mean: space, tab, CR, LF
+     * Checks if a byte value is whitespace or not. Whitespace is taken to mean: space, tab, CR, LF
      *
      * @param byteToCheck the byte to check
      * @return true if byte is whitespace, false otherwise
      */
     protected static boolean isWhiteSpace(final byte byteToCheck) {
         switch (byteToCheck) {
-            case Symbol.C_SPACE:
-            case '\n':
-            case '\r':
-            case '\t':
-                return true;
-            default:
-                return false;
+        case Symbol.C_SPACE:
+        case '\n':
+        case '\r':
+        case '\t':
+            return true;
+        default:
+            return false;
         }
     }
 
     /**
-     * Tests a given String to see if it contains only valid characters within the alphabet.
-     * The method treats whitespace and PAD as valid.
+     * Tests a given String to see if it contains only valid characters within the alphabet. The method treats
+     * whitespace and PAD as valid.
      *
      * @param base32 String to test
-     * @return {@code true} if all characters in the String are valid characters in the alphabet or if
-     * the String is empty; {@code false}, otherwise
+     * @return {@code true} if all characters in the String are valid characters in the alphabet or if the String is
+     *         empty; {@code false}, otherwise
      * @see #isInAlphabet(byte[], boolean)
      */
     public static boolean isInAlphabet(final String base32) {
@@ -172,18 +167,17 @@ public class Crockford {
     }
 
     /**
-     * Tests a given byte array to see if it contains only valid characters within the alphabet.
-     * The method optionally treats whitespace and pad as valid.
+     * Tests a given byte array to see if it contains only valid characters within the alphabet. The method optionally
+     * treats whitespace and pad as valid.
      *
      * @param arrayOctet byte array to test
      * @param allowWSPad if {@code true}, then whitespace and PAD are also allowed
      * @return {@code true} if all bytes are valid characters in the alphabet or if the byte array is empty;
-     * {@code false}, otherwise
+     *         {@code false}, otherwise
      */
     public static boolean isInAlphabet(final byte[] arrayOctet, final boolean allowWSPad) {
         for (final byte b : arrayOctet) {
-            if (!isInAlphabet(b) &&
-                    (!allowWSPad || (b != Symbol.C_EQUAL) && !isWhiteSpace(b))) {
+            if (!isInAlphabet(b) && (!allowWSPad || (b != Symbol.C_EQUAL) && !isWhiteSpace(b))) {
                 return false;
             }
         }
@@ -256,127 +250,127 @@ public class Crockford {
 
     private static byte decode(final byte octet) {
         switch (octet) {
-            case '0':
-            case 'O':
-            case 'o':
-                return 0;
+        case '0':
+        case 'O':
+        case 'o':
+            return 0;
 
-            case '1':
-            case 'I':
-            case 'i':
-            case 'L':
-            case 'l':
-                return 1;
+        case '1':
+        case 'I':
+        case 'i':
+        case 'L':
+        case 'l':
+            return 1;
 
-            case '2':
-                return 2;
-            case '3':
-                return 3;
-            case '4':
-                return 4;
-            case '5':
-                return 5;
-            case '6':
-                return 6;
-            case '7':
-                return 7;
-            case '8':
-                return 8;
-            case '9':
-                return 9;
+        case '2':
+            return 2;
+        case '3':
+            return 3;
+        case '4':
+            return 4;
+        case '5':
+            return 5;
+        case '6':
+            return 6;
+        case '7':
+            return 7;
+        case '8':
+            return 8;
+        case '9':
+            return 9;
 
-            case 'A':
-            case 'a':
-                return 10;
+        case 'A':
+        case 'a':
+            return 10;
 
-            case 'B':
-            case 'b':
-                return 11;
+        case 'B':
+        case 'b':
+            return 11;
 
-            case 'C':
-            case 'c':
-                return 12;
+        case 'C':
+        case 'c':
+            return 12;
 
-            case 'D':
-            case 'd':
-                return 13;
+        case 'D':
+        case 'd':
+            return 13;
 
-            case 'E':
-            case 'e':
-                return 14;
+        case 'E':
+        case 'e':
+            return 14;
 
-            case 'F':
-            case 'f':
-                return 15;
+        case 'F':
+        case 'f':
+            return 15;
 
-            case 'G':
-            case 'g':
-                return 16;
+        case 'G':
+        case 'g':
+            return 16;
 
-            case 'H':
-            case 'h':
-                return 17;
+        case 'H':
+        case 'h':
+            return 17;
 
-            case 'J':
-            case 'j':
-                return 18;
+        case 'J':
+        case 'j':
+            return 18;
 
-            case 'K':
-            case 'k':
-                return 19;
+        case 'K':
+        case 'k':
+            return 19;
 
-            case 'M':
-            case 'm':
-                return 20;
+        case 'M':
+        case 'm':
+            return 20;
 
-            case 'N':
-            case 'n':
-                return 21;
+        case 'N':
+        case 'n':
+            return 21;
 
-            case 'P':
-            case 'p':
-                return 22;
+        case 'P':
+        case 'p':
+            return 22;
 
-            case 'Q':
-            case 'q':
-                return 23;
+        case 'Q':
+        case 'q':
+            return 23;
 
-            case 'R':
-            case 'r':
-                return 24;
+        case 'R':
+        case 'r':
+            return 24;
 
-            case 'S':
-            case 's':
-                return 25;
+        case 'S':
+        case 's':
+            return 25;
 
-            case 'T':
-            case 't':
-                return 26;
+        case 'T':
+        case 't':
+            return 26;
 
-            case 'U':
-            case 'u':
-            case 'V':
-            case 'v':
-                return 27;
+        case 'U':
+        case 'u':
+        case 'V':
+        case 'v':
+            return 27;
 
-            case 'W':
-            case 'w':
-                return 28;
+        case 'W':
+        case 'w':
+            return 28;
 
-            case 'X':
-            case 'x':
-                return 29;
+        case 'X':
+        case 'x':
+            return 29;
 
-            case 'Y':
-            case 'y':
-                return 30;
+        case 'Y':
+        case 'y':
+            return 30;
 
-            case 'Z':
-            case 'z':
-                return 31;
+        case 'Z':
+        case 'z':
+            return 31;
 
-            default:
-                return -1;
+        default:
+            return -1;
         }
     }
 
@@ -385,7 +379,7 @@ public class Crockford {
      *
      * @return The amount of buffered data available for reading.
      */
-    int available() {  // package protected for access from I/O streams
+    int available() { // package protected for access from I/O streams
         return buffer != null ? pos : 0;
     }
 
@@ -415,13 +409,13 @@ public class Crockford {
     }
 
     /**
-     * Extracts buffered data into the provided byte[] array, starting at position bPos,
-     * up to a maximum of bAvail bytes. Returns how many bytes were actually extracted.
+     * Extracts buffered data into the provided byte[] array, starting at position bPos, up to a maximum of bAvail
+     * bytes. Returns how many bytes were actually extracted.
      *
      * @param b byte[] array to extract the buffered data into.
      * @return The number of bytes successfully extracted into the provided byte[] array.
      */
-    int readResults(final byte[] b) {  // package protected for access from I/O streams
+    int readResults(final byte[] b) { // package protected for access from I/O streams
         if (buffer != null) {
             final int len = available();
             System.arraycopy(buffer, 0, b, 0, len);
@@ -545,13 +539,14 @@ public class Crockford {
      * Calculates the amount of space needed to encode the supplied array.
      *
      * @param pArray byte[] array which will later be encoded
-     * @return amount of space needed to encode the supplied array.
-     * Returns a long since a max-len array will require &gt; Integer.MAX_VALUE
+     * @return amount of space needed to encode the supplied array. Returns a long since a max-len array will require
+     *         &gt; Integer.MAX_VALUE
      */
     public long getEncodedLength(final byte[] pArray) {
         // Calculate non-chunked size - rounded up to allow for padding
         // cast to long is needed to avoid possibility of overflow
-        return ((pArray.length + BYTES_PER_UNENCODED_BLOCK - 1) / BYTES_PER_UNENCODED_BLOCK) * (long) BYTES_PER_ENCODED_BLOCK;
+        return ((pArray.length + BYTES_PER_UNENCODED_BLOCK - 1) / BYTES_PER_UNENCODED_BLOCK)
+                * (long) BYTES_PER_ENCODED_BLOCK;
     }
 
     /**
@@ -568,7 +563,8 @@ public class Crockford {
      *
      * @param in      byte[] array of ascii data to Base32 decode.
      * @param inPos   Position to start reading data from.
-     * @param inAvail Amount of bytes available from input for encoding.Output is written to {@link #buffer} as 8-bit octets, using {@link #pos} as the buffer position
+     * @param inAvail Amount of bytes available from input for encoding.Output is written to {@link #buffer} as 8-bit
+     *                octets, using {@link #pos} as the buffer position
      */
     void decode(final byte[] in, int inPos, final int inAvail) { // package protected for access from I/O streams
         if (eof) {
@@ -606,38 +602,38 @@ public class Crockford {
         if (eof && modulus >= 2) { // if modulus < 2, nothing to do
             ensureBufferSize(decodeSize);
 
-            //  we ignore partial bytes, i.e. only multiples of 8 count
+            // we ignore partial bytes, i.e. only multiples of 8 count
             switch (modulus) {
-                case 2: // 10 bits, drop 2 and output one byte
-                    buffer[pos++] = (byte) ((bitWorkArea >> 2) & MASK_8BITS);
-                    break;
-                case 3: // 15 bits, drop 7 and output 1 byte
-                    buffer[pos++] = (byte) ((bitWorkArea >> 7) & MASK_8BITS);
-                    break;
-                case 4: // 20 bits = 2*8 + 4
-                    bitWorkArea = bitWorkArea >> 4; // drop 4 bits
-                    buffer[pos++] = (byte) ((bitWorkArea >> 8) & MASK_8BITS);
-                    buffer[pos++] = (byte) ((bitWorkArea) & MASK_8BITS);
-                    break;
-                case 5: // 25bits = 3*8 + 1
-                    bitWorkArea = bitWorkArea >> 1;
-                    buffer[pos++] = (byte) ((bitWorkArea >> 16) & MASK_8BITS);
-                    buffer[pos++] = (byte) ((bitWorkArea >> 8) & MASK_8BITS);
-                    buffer[pos++] = (byte) ((bitWorkArea) & MASK_8BITS);
-                    break;
-                case 6: // 30bits = 3*8 + 6
-                    bitWorkArea = bitWorkArea >> 6;
-                    buffer[pos++] = (byte) ((bitWorkArea >> 16) & MASK_8BITS);
-                    buffer[pos++] = (byte) ((bitWorkArea >> 8) & MASK_8BITS);
-                    buffer[pos++] = (byte) ((bitWorkArea) & MASK_8BITS);
-                    break;
-                case 7: // 35 = 4*8 +3
-                    bitWorkArea = bitWorkArea >> 3;
-                    buffer[pos++] = (byte) ((bitWorkArea >> 24) & MASK_8BITS);
-                    buffer[pos++] = (byte) ((bitWorkArea >> 16) & MASK_8BITS);
-                    buffer[pos++] = (byte) ((bitWorkArea >> 8) & MASK_8BITS);
-                    buffer[pos++] = (byte) ((bitWorkArea) & MASK_8BITS);
-                    break;
+            case 2: // 10 bits, drop 2 and output one byte
+                buffer[pos++] = (byte) ((bitWorkArea >> 2) & MASK_8BITS);
+                break;
+            case 3: // 15 bits, drop 7 and output 1 byte
+                buffer[pos++] = (byte) ((bitWorkArea >> 7) & MASK_8BITS);
+                break;
+            case 4: // 20 bits = 2*8 + 4
+                bitWorkArea = bitWorkArea >> 4; // drop 4 bits
+                buffer[pos++] = (byte) ((bitWorkArea >> 8) & MASK_8BITS);
+                buffer[pos++] = (byte) ((bitWorkArea) & MASK_8BITS);
+                break;
+            case 5: // 25bits = 3*8 + 1
+                bitWorkArea = bitWorkArea >> 1;
+                buffer[pos++] = (byte) ((bitWorkArea >> 16) & MASK_8BITS);
+                buffer[pos++] = (byte) ((bitWorkArea >> 8) & MASK_8BITS);
+                buffer[pos++] = (byte) ((bitWorkArea) & MASK_8BITS);
+                break;
+            case 6: // 30bits = 3*8 + 6
+                bitWorkArea = bitWorkArea >> 6;
+                buffer[pos++] = (byte) ((bitWorkArea >> 16) & MASK_8BITS);
+                buffer[pos++] = (byte) ((bitWorkArea >> 8) & MASK_8BITS);
+                buffer[pos++] = (byte) ((bitWorkArea) & MASK_8BITS);
+                break;
+            case 7: // 35 = 4*8 +3
+                bitWorkArea = bitWorkArea >> 3;
+                buffer[pos++] = (byte) ((bitWorkArea >> 24) & MASK_8BITS);
+                buffer[pos++] = (byte) ((bitWorkArea >> 16) & MASK_8BITS);
+                buffer[pos++] = (byte) ((bitWorkArea >> 8) & MASK_8BITS);
+                buffer[pos++] = (byte) ((bitWorkArea) & MASK_8BITS);
+                break;
             }
         }
     }
@@ -665,55 +661,55 @@ public class Crockford {
             ensureBufferSize(encodeSize);
             final int savedPos = pos;
             switch (modulus) { // % 5
-                case 1: // Only 1 octet; take top 5 bits then remainder
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 3) & MASK_5BITS]; // 8-1*5 = 3
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea << 2) & MASK_5BITS]; // 5-3=2
-                    if (usePaddingCharacter) {
-                        buffer[pos++] = Symbol.C_EQUAL;
-                        buffer[pos++] = Symbol.C_EQUAL;
-                        buffer[pos++] = Symbol.C_EQUAL;
-                        buffer[pos++] = Symbol.C_EQUAL;
-                        buffer[pos++] = Symbol.C_EQUAL;
-                        buffer[pos++] = Symbol.C_EQUAL;
-                    }
-                    break;
+            case 1: // Only 1 octet; take top 5 bits then remainder
+                buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 3) & MASK_5BITS]; // 8-1*5 = 3
+                buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea << 2) & MASK_5BITS]; // 5-3=2
+                if (usePaddingCharacter) {
+                    buffer[pos++] = Symbol.C_EQUAL;
+                    buffer[pos++] = Symbol.C_EQUAL;
+                    buffer[pos++] = Symbol.C_EQUAL;
+                    buffer[pos++] = Symbol.C_EQUAL;
+                    buffer[pos++] = Symbol.C_EQUAL;
+                    buffer[pos++] = Symbol.C_EQUAL;
+                }
+                break;
 
-                case 2: // 2 octets = 16 bits to use
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 11) & MASK_5BITS]; // 16-1*5 = 11
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 6) & MASK_5BITS]; // 16-2*5 = 6
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 1) & MASK_5BITS]; // 16-3*5 = 1
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea << 4) & MASK_5BITS]; // 5-1 = 4
-                    if (usePaddingCharacter) {
-                        buffer[pos++] = Symbol.C_EQUAL;
-                        buffer[pos++] = Symbol.C_EQUAL;
-                        buffer[pos++] = Symbol.C_EQUAL;
-                        buffer[pos++] = Symbol.C_EQUAL;
-                    }
-                    break;
-                case 3: // 3 octets = 24 bits to use
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 19) & MASK_5BITS]; // 24-1*5 = 19
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 14) & MASK_5BITS]; // 24-2*5 = 14
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 9) & MASK_5BITS]; // 24-3*5 = 9
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 4) & MASK_5BITS]; // 24-4*5 = 4
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea << 1) & MASK_5BITS]; // 5-4 = 1
-                    if (usePaddingCharacter) {
-                        buffer[pos++] = Symbol.C_EQUAL;
-                        buffer[pos++] = Symbol.C_EQUAL;
-                        buffer[pos++] = Symbol.C_EQUAL;
-                    }
-                    break;
-                case 4: // 4 octets = 32 bits to use
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 27) & MASK_5BITS]; // 32-1*5 = 27
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 22) & MASK_5BITS]; // 32-2*5 = 22
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 17) & MASK_5BITS]; // 32-3*5 = 17
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 12) & MASK_5BITS]; // 32-4*5 = 12
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 7) & MASK_5BITS]; // 32-5*5 =  7
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 2) & MASK_5BITS]; // 32-6*5 =  2
-                    buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea << 3) & MASK_5BITS]; // 5-2 = 3
-                    if (usePaddingCharacter) {
-                        buffer[pos++] = Symbol.C_EQUAL;
-                    }
-                    break;
+            case 2: // 2 octets = 16 bits to use
+                buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 11) & MASK_5BITS]; // 16-1*5 = 11
+                buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 6) & MASK_5BITS]; // 16-2*5 = 6
+                buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 1) & MASK_5BITS]; // 16-3*5 = 1
+                buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea << 4) & MASK_5BITS]; // 5-1 = 4
+                if (usePaddingCharacter) {
+                    buffer[pos++] = Symbol.C_EQUAL;
+                    buffer[pos++] = Symbol.C_EQUAL;
+                    buffer[pos++] = Symbol.C_EQUAL;
+                    buffer[pos++] = Symbol.C_EQUAL;
+                }
+                break;
+            case 3: // 3 octets = 24 bits to use
+                buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 19) & MASK_5BITS]; // 24-1*5 = 19
+                buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 14) & MASK_5BITS]; // 24-2*5 = 14
+                buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 9) & MASK_5BITS]; // 24-3*5 = 9
+                buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 4) & MASK_5BITS]; // 24-4*5 = 4
+                buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea << 1) & MASK_5BITS]; // 5-4 = 1
+                if (usePaddingCharacter) {
+                    buffer[pos++] = Symbol.C_EQUAL;
+                    buffer[pos++] = Symbol.C_EQUAL;
+                    buffer[pos++] = Symbol.C_EQUAL;
+                }
+                break;
+            case 4: // 4 octets = 32 bits to use
+                buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 27) & MASK_5BITS]; // 32-1*5 = 27
+                buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 22) & MASK_5BITS]; // 32-2*5 = 22
+                buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 17) & MASK_5BITS]; // 32-3*5 = 17
+                buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 12) & MASK_5BITS]; // 32-4*5 = 12
+                buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 7) & MASK_5BITS]; // 32-5*5 = 7
+                buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea >> 2) & MASK_5BITS]; // 32-6*5 = 2
+                buffer[pos++] = ENCODE_TABLE[(int) (bitWorkArea << 3) & MASK_5BITS]; // 5-2 = 3
+                if (usePaddingCharacter) {
+                    buffer[pos++] = Symbol.C_EQUAL;
+                }
+                break;
             }
         } else {
             for (int i = 0; i < inAvail; i++) {

@@ -24,16 +24,14 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager.builtin;
 
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 
 /**
- * 构建当前查询对应的 count 方法 id
- * 返回的 msId 会先判断是否存在自定义的方法，存在就直接使用
- * 如果不存在，会根据当前的 msId 创建 MappedStatement
+ * 构建当前查询对应的 count 方法 id 返回的 msId 会先判断是否存在自定义的方法，存在就直接使用 如果不存在，会根据当前的 msId 创建 MappedStatement
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -54,7 +52,6 @@ public interface CountMsId {
      * @param countSuffix 配置的 count 后缀
      * @return count 查询丢的 msId
      */
-    String genCountMsId(MappedStatement ms, Object parameter,
-                        BoundSql boundSql, String countSuffix);
+    String genCountMsId(MappedStatement ms, Object parameter, BoundSql boundSql, String countSuffix);
 
 }

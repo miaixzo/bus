@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.ansi;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -33,10 +33,10 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 /**
  * ANSI 8-bit前景或背景色（即8位编码，共256种颜色（2^8） ）
  * <ul>
- *     <li>0-7：                        标准颜色（同ESC [ 30–37 m）</li>
- *     <li>8-15：                       高强度颜色（同ESC [ 90–97 m）</li>
- *     <li>16-231（6 × 6 × 6 共 216色）： 16 + 36 × r + 6 × g + b (0 ≤ r, g, b ≤ 5)</li>
- *     <li>232-255：                    从黑到白的24阶灰度色</li>
+ * <li>0-7： 标准颜色（同ESC [ 30–37 m）</li>
+ * <li>8-15： 高强度颜色（同ESC [ 90–97 m）</li>
+ * <li>16-231（6 × 6 × 6 共 216色）： 16 + 36 × r + 6 × g + b (0 ≤ r, g, b ≤ 5)</li>
+ * <li>232-255： 从黑到白的24阶灰度色</li>
  * </ul>
  *
  * @author Kimi Liu

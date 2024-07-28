@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -50,14 +50,10 @@ public class JiraService extends NotificationService {
      */
     @Override
     public GitLabApiForm servicePropertiesForm() {
-        GitLabApiForm formData = new GitLabApiForm()
-                .withParam("merge_requests_events", getMergeRequestsEvents())
-                .withParam(COMMIT_EVENTS_PROP, getCommitEvents())
-                .withParam(URL_PROP, getUrl(), true)
-                .withParam(API_URL_PROP, getApiUrl())
-                .withParam(PROJECT_KEY_PROP, getProjectKey())
-                .withParam(USERNAME_PROP, getUsername(), true)
-                .withParam("password", getPassword(), true)
+        GitLabApiForm formData = new GitLabApiForm().withParam("merge_requests_events", getMergeRequestsEvents())
+                .withParam(COMMIT_EVENTS_PROP, getCommitEvents()).withParam(URL_PROP, getUrl(), true)
+                .withParam(API_URL_PROP, getApiUrl()).withParam(PROJECT_KEY_PROP, getProjectKey())
+                .withParam(USERNAME_PROP, getUsername(), true).withParam("password", getPassword(), true)
                 .withParam(JIRA_ISSUE_TRANSITION_ID_PROP, getJiraIssueTransitionId());
         return formData;
     }
@@ -172,6 +168,7 @@ public class JiraService extends NotificationService {
 
     /**
      * Make sure jiraIssueTransitionId is an integer and not an empty string.
+     * 
      * @param properties the Map holding the properties
      */
     private void fixJiraIssueTransitionId(Map<String, Object> properties) {

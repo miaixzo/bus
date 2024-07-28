@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.ftp;
 
 import org.miaixz.bus.core.io.file.FileName;
@@ -115,7 +115,7 @@ public abstract class AbstractFtp implements Ftp {
 
         final String now = pwd();
         if (dirs.length > 0 && StringKit.isEmpty(dirs[0])) {
-            //首位为空，表示以/开头
+            // 首位为空，表示以/开头
             this.cd(Symbol.SLASH);
         }
         for (final String s : dirs) {
@@ -129,7 +129,7 @@ public abstract class AbstractFtp implements Ftp {
                     exist = false;
                 }
                 if (!exist) {
-                    //目录不存在时创建
+                    // 目录不存在时创建
                     mkdir(s);
                     cd(s);
                 }
@@ -140,8 +140,7 @@ public abstract class AbstractFtp implements Ftp {
     }
 
     /**
-     * 下载文件-避免未完成的文件
-     * 此方法原理是先在目标文件同级目录下创建临时文件，下载之，等下载完毕后重命名，避免因下载错误导致的文件不完整。
+     * 下载文件-避免未完成的文件 此方法原理是先在目标文件同级目录下创建临时文件，下载之，等下载完毕后重命名，避免因下载错误导致的文件不完整。
      *
      * @param path           文件路径
      * @param outFile        输出文件或目录

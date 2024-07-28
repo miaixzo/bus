@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.i18n;
 
 import org.springframework.context.MessageSource;
@@ -32,8 +32,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Component;
 
 /**
- * 获取本地 i18n 资源
- * key = value
+ * 获取本地 i18n 资源 key = value
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -67,7 +66,7 @@ public class I18nMessage {
      * @return 返回获取到的结果
      */
     public String getMessage(String code, Object[] args, String defaultMessage) {
-        //这里使用比较方便的方法,不依赖request.
+        // 这里使用比较方便的方法,不依赖request.
         return messageSource.getMessage(code, args, defaultMessage, LocaleContextHolder.getLocale());
     }
 

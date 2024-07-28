@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.source;
 
 import org.miaixz.bus.core.io.LifeCycle;
@@ -60,25 +60,28 @@ public final class InflaterSource implements Source {
     }
 
     /**
-     * 此包私有构造函数与其受信任的调用者共享一个缓冲区。
-     * 一般来说，我们不能共享 BufferedSource，因为 inflater 会保留输入字节，直到它们被溢出为止。
+     * 此包私有构造函数与其受信任的调用者共享一个缓冲区。 一般来说，我们不能共享 BufferedSource，因为 inflater 会保留输入字节，直到它们被溢出为止。
      *
      * @param source   缓冲源
      * @param inflater 缓冲区
      */
     InflaterSource(BufferSource source, Inflater inflater) {
-        if (source == null) throw new IllegalArgumentException("source == null");
-        if (inflater == null) throw new IllegalArgumentException("inflater == null");
+        if (source == null)
+            throw new IllegalArgumentException("source == null");
+        if (inflater == null)
+            throw new IllegalArgumentException("inflater == null");
         this.source = source;
         this.inflater = inflater;
     }
 
     @Override
-    public long read(
-            Buffer sink, long byteCount) throws IOException {
-        if (byteCount < 0) throw new IllegalArgumentException("byteCount < 0: " + byteCount);
-        if (closed) throw new IllegalStateException("closed");
-        if (byteCount == 0) return 0;
+    public long read(Buffer sink, long byteCount) throws IOException {
+        if (byteCount < 0)
+            throw new IllegalArgumentException("byteCount < 0: " + byteCount);
+        if (closed)
+            throw new IllegalStateException("closed");
+        if (byteCount == 0)
+            return 0;
 
         while (true) {
             boolean sourceExhausted = refill();
@@ -102,7 +105,8 @@ public final class InflaterSource implements Source {
                     }
                     return -1;
                 }
-                if (sourceExhausted) throw new EOFException("source exhausted prematurely");
+                if (sourceExhausted)
+                    throw new EOFException("source exhausted prematurely");
             } catch (DataFormatException e) {
                 throw new IOException(e);
             }
@@ -110,14 +114,15 @@ public final class InflaterSource implements Source {
     }
 
     /**
-     * 如果需要输入，则用压缩数据重新填充缓冲区。（并且仅在需要输入时才有效）
-     * 如果缓冲区需要输入但源已耗尽，则返回 true。
+     * 如果需要输入，则用压缩数据重新填充缓冲区。（并且仅在需要输入时才有效） 如果缓冲区需要输入但源已耗尽，则返回 true。
      */
     public boolean refill() throws IOException {
-        if (!inflater.needsInput()) return false;
+        if (!inflater.needsInput())
+            return false;
 
         releaseInflatedBytes();
-        if (inflater.getRemaining() != 0) throw new IllegalStateException("?");
+        if (inflater.getRemaining() != 0)
+            throw new IllegalStateException("?");
 
         // 如果源中有压缩字节，则将它们分配给缓冲区
         if (source.exhausted()) {
@@ -135,7 +140,8 @@ public final class InflaterSource implements Source {
      * 当缓冲区处理完压缩数据后，将其从缓冲区中移除。
      */
     private void releaseInflatedBytes() throws IOException {
-        if (bufferBytesHeldByInflater == 0) return;
+        if (bufferBytesHeldByInflater == 0)
+            return;
         int toRelease = bufferBytesHeldByInflater - inflater.getRemaining();
         bufferBytesHeldByInflater -= toRelease;
         source.skip(toRelease);
@@ -148,7 +154,8 @@ public final class InflaterSource implements Source {
 
     @Override
     public void close() throws IOException {
-        if (closed) return;
+        if (closed)
+            return;
         inflater.end();
         closed = true;
         source.close();

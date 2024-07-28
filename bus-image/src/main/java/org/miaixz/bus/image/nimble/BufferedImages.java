@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 import org.miaixz.bus.image.Tag;
@@ -75,8 +75,8 @@ public class BufferedImages {
 
     public static BufferedImage convertYBRtoRGB(BufferedImage src, BufferedImage dst) {
         if (src.getColorModel().getTransferType() != DataBuffer.TYPE_BYTE) {
-            throw new UnsupportedOperationException(
-                    "Cannot convert color model to RGB: unsupported transferType" + src.getColorModel().getTransferType());
+            throw new UnsupportedOperationException("Cannot convert color model to RGB: unsupported transferType"
+                    + src.getColorModel().getTransferType());
         }
         if (src.getColorModel().getNumComponents() != 3) {
             throw new IllegalArgumentException("Unsupported colorModel: " + src.getColorModel());
@@ -85,8 +85,8 @@ public class BufferedImages {
         int width = src.getWidth();
         int height = src.getHeight();
         if (dst == null) {
-            ColorModel cmodel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[]{8, 8, 8},
-                    false, false, Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
+            ColorModel cmodel = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB),
+                    new int[] { 8, 8, 8 }, false, false, Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
             SampleModel sampleModel = cmodel.createCompatibleSampleModel(width, height);
             DataBuffer dataBuffer = sampleModel.createDataBuffer();
             WritableRaster rasterDst = Raster.createWritableRaster(sampleModel, dataBuffer, null);
@@ -118,15 +118,14 @@ public class BufferedImages {
     public static BufferedImage convertPalettetoRGB(BufferedImage src, BufferedImage dst) {
         ColorModel pcm = src.getColorModel();
         if (!(pcm instanceof PaletteColorModel || pcm instanceof IndexColorModel)) {
-            throw new UnsupportedOperationException(
-                    "Cannot convert " + pcm.getClass().getName() + " to RGB");
+            throw new UnsupportedOperationException("Cannot convert " + pcm.getClass().getName() + " to RGB");
         }
 
         int width = src.getWidth();
         int height = src.getHeight();
         if (dst == null) {
-            ColorModel cmodel = new ComponentColorModel(pcm.getColorSpace(), new int[]{8, 8, 8},
-                    false, false, Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
+            ColorModel cmodel = new ComponentColorModel(pcm.getColorSpace(), new int[] { 8, 8, 8 }, false, false,
+                    Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
             SampleModel sampleModel = cmodel.createCompatibleSampleModel(width, height);
             DataBuffer dataBuffer = sampleModel.createDataBuffer();
             WritableRaster rasterDst = Raster.createWritableRaster(sampleModel, dataBuffer, null);
@@ -160,8 +159,7 @@ public class BufferedImages {
             return dst;
         }
 
-        short[] srcData = srcBuffer instanceof DataBufferUShort
-                ? ((DataBufferUShort) srcBuffer).getData()
+        short[] srcData = srcBuffer instanceof DataBufferUShort ? ((DataBufferUShort) srcBuffer).getData()
                 : ((DataBufferShort) srcBuffer).getData();
         byte[] dstData = ((DataBufferByte) dst.getRaster().getDataBuffer()).getData();
         for (int i = 0; i < srcData.length; i++) {
@@ -175,21 +173,15 @@ public class BufferedImages {
     }
 
     public static BufferedImage convertColor(BufferedImage bi, ColorModel colorModel) {
-        BufferedImage dest = new BufferedImage(colorModel,
-                Raster.createWritableRaster(
-                        colorModel.createCompatibleSampleModel(
-                                bi.getWidth(),
-                                bi.getHeight()),
-                        null),
-                false,
-                null);
+        BufferedImage dest = new BufferedImage(colorModel, Raster.createWritableRaster(
+                colorModel.createCompatibleSampleModel(bi.getWidth(), bi.getHeight()), null), false, null);
         new ColorConvertOp(null).filter(bi, dest);
         return dest;
     }
 
     /**
-     * Set Image Pixel Module Attributes from Buffered Image. Supports Buffered Images with ColorSpace GRAY or RGB
-     * and with a DataBuffer containing one bank of unsigned byte data.
+     * Set Image Pixel Module Attributes from Buffered Image. Supports Buffered Images with ColorSpace GRAY or RGB and
+     * with a DataBuffer containing one bank of unsigned byte data.
      *
      * @param bi    Buffered Image
      * @param attrs Data Set to supplement with Image Pixel Module Attributes or {@code null}
@@ -207,20 +199,18 @@ public class BufferedImages {
         int rows = raster.getHeight();
         int columns = raster.getWidth();
         switch (cs.getType()) {
-            case ColorSpace.TYPE_GRAY:
-                return toImagePixelModule(1, "MONOCHROME2", rows, columns,
-                        toMonochrome2PixelData(raster), attrs);
-            case ColorSpace.TYPE_RGB:
-                return toImagePixelModule(3, "RGB", rows, columns,
-                        toRGBPixelData(raster), attrs);
-            default:
-                throw new UnsupportedOperationException(toString(cs));
+        case ColorSpace.TYPE_GRAY:
+            return toImagePixelModule(1, "MONOCHROME2", rows, columns, toMonochrome2PixelData(raster), attrs);
+        case ColorSpace.TYPE_RGB:
+            return toImagePixelModule(3, "RGB", rows, columns, toRGBPixelData(raster), attrs);
+        default:
+            throw new UnsupportedOperationException(toString(cs));
         }
     }
 
     /**
-     * Set Image Pixel Module Attributes from read image. Supports reading animated GIFs and single frame images
-     * with ColorSpace GRAY or RGB and with a DataBuffer containing one bank of unsigned byte data.
+     * Set Image Pixel Module Attributes from read image. Supports reading animated GIFs and single frame images with
+     * ColorSpace GRAY or RGB and with a DataBuffer containing one bank of unsigned byte data.
      *
      * @param reader image reader
      * @param attrs  Data Set to supplement with Image Pixel Module Attributes or {@code null}.
@@ -264,13 +254,10 @@ public class BufferedImages {
         return attrs;
     }
 
-    private static void mergeFrame(Graphics graphics, BufferedImage src, Node metadata)
-            throws IIOInvalidTreeException {
+    private static void mergeFrame(Graphics graphics, BufferedImage src, Node metadata) throws IIOInvalidTreeException {
         Node imageDescriptor = getChildNode(metadata, "ImageDescriptor");
-        graphics.drawImage(src,
-                getIntAttribute(imageDescriptor, "imageLeftPosition"),
-                getIntAttribute(imageDescriptor, "imageTopPosition"),
-                null);
+        graphics.drawImage(src, getIntAttribute(imageDescriptor, "imageLeftPosition"),
+                getIntAttribute(imageDescriptor, "imageTopPosition"), null);
     }
 
     private static Node getMetadata(IIOImage iioImage) {
@@ -280,7 +267,6 @@ public class BufferedImages {
     private static String getDelayTime(Node node) throws IIOInvalidTreeException {
         return getStringAttribute(getChildNode(node, "GraphicControlExtension"), "delayTime");
     }
-
 
     private static String getStringAttribute(Node node, String name) throws IIOInvalidTreeException {
         Node attr = node.getAttributes().getNamedItem(name);
@@ -409,8 +395,8 @@ public class BufferedImages {
         return (ComponentSampleModel) sb;
     }
 
-    private static Attributes toImagePixelModule(int samples, String pmi, int rows, int columns,
-                                                 byte[] pixelData, Attributes attrs) {
+    private static Attributes toImagePixelModule(int samples, String pmi, int rows, int columns, byte[] pixelData,
+            Attributes attrs) {
         if (attrs == null) {
             attrs = new Attributes(13);
         }

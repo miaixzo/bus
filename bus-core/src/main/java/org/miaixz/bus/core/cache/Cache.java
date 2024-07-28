@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.cache;
 
 import org.miaixz.bus.core.cache.provider.CacheObject;
@@ -67,8 +67,7 @@ public interface Cache<K, V> extends Iterable<V>, Serializable {
     void put(K key, V object);
 
     /**
-     * 将对象加入到缓存，使用指定失效时长
-     * 如果缓存空间满了，{@link #prune()} 将被调用以获得空间来存放新对象
+     * 将对象加入到缓存，使用指定失效时长 如果缓存空间满了，{@link #prune()} 将被调用以获得空间来存放新对象
      *
      * @param key     键
      * @param object  缓存的对象
@@ -77,8 +76,7 @@ public interface Cache<K, V> extends Iterable<V>, Serializable {
     void put(K key, V object, long timeout);
 
     /**
-     * 从缓存中获得对象，当对象不在缓存中或已经过期返回{@code null}
-     * 调用此方法时，会检查上次调用时间，如果与当前时间差值大于超时时间返回{@code null}，否则返回值。
+     * 从缓存中获得对象，当对象不在缓存中或已经过期返回{@code null} 调用此方法时，会检查上次调用时间，如果与当前时间差值大于超时时间返回{@code null}，否则返回值。
      * 每次调用此方法会刷新最后访问时间，也就是说会重新计算超时时间。
      *
      * @param key 键
@@ -90,8 +88,7 @@ public interface Cache<K, V> extends Iterable<V>, Serializable {
     }
 
     /**
-     * 从缓存中获得对象，当对象不在缓存中或已经过期（与当前时间差值大于超时时间）返回 {@link SupplierX} 回调产生的对象，否则返回值。
-     * 每次调用此方法会刷新最后访问时间，也就是说会重新计算超时时间。
+     * 从缓存中获得对象，当对象不在缓存中或已经过期（与当前时间差值大于超时时间）返回 {@link SupplierX} 回调产生的对象，否则返回值。 每次调用此方法会刷新最后访问时间，也就是说会重新计算超时时间。
      *
      * @param key      键
      * @param supplier 如果不存在回调方法，用于生产值对象
@@ -125,8 +122,7 @@ public interface Cache<K, V> extends Iterable<V>, Serializable {
     V get(K key, boolean isUpdateLastAccess, final long timeout, SupplierX<V> supplier);
 
     /**
-     * 从缓存中获得对象，当对象不在缓存中或已经过期（与当前时间差值大于超时时间）返回{@code null}，否则返回值。
-     * 每次调用此方法会可选是否刷新最后访问时间，{@code true}表示会重新计算超时时间。
+     * 从缓存中获得对象，当对象不在缓存中或已经过期（与当前时间差值大于超时时间）返回{@code null}，否则返回值。 每次调用此方法会可选是否刷新最后访问时间，{@code true}表示会重新计算超时时间。
      *
      * @param key                键
      * @param isUpdateLastAccess 是否更新最后访问时间，即重新计算超时时间。

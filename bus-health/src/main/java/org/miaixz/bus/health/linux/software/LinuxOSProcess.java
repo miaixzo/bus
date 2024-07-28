@@ -24,22 +24,8 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.linux.software;
-
-import com.sun.jna.platform.unix.Resource;
-import org.miaixz.bus.core.center.regex.Pattern;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.health.*;
-import org.miaixz.bus.health.builtin.software.OSThread;
-import org.miaixz.bus.health.builtin.software.common.AbstractOSProcess;
-import org.miaixz.bus.health.linux.ProcPath;
-import org.miaixz.bus.health.linux.driver.proc.ProcessStat;
-import org.miaixz.bus.health.linux.jna.LinuxLibc;
-import org.miaixz.bus.logger.Logger;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -54,6 +40,21 @@ import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.health.*;
+import org.miaixz.bus.health.builtin.software.OSThread;
+import org.miaixz.bus.health.builtin.software.common.AbstractOSProcess;
+import org.miaixz.bus.health.linux.ProcPath;
+import org.miaixz.bus.health.linux.driver.proc.ProcessStat;
+import org.miaixz.bus.health.linux.jna.LinuxLibc;
+import org.miaixz.bus.logger.Logger;
+
+import com.sun.jna.platform.unix.Resource;
+
 /**
  * OSProcess implementation
  *
@@ -63,8 +64,7 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class LinuxOSProcess extends AbstractOSProcess {
 
-    private static final boolean LOG_PROCFS_WARNING = Config.get(Config._LINUX_PROCFS_LOGWARNING,
-            false);
+    private static final boolean LOG_PROCFS_WARNING = Config.get(Config._LINUX_PROCFS_LOGWARNING, false);
 
     // Get a list of orders to pass to Parsing
     private static final int[] PROC_PID_STAT_ORDERS = new int[ProcPidStat.values().length];
@@ -80,7 +80,8 @@ public class LinuxOSProcess extends AbstractOSProcess {
     private final LinuxOperatingSystem os;
     private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
     private final Supplier<List<String>> arguments = Memoizer.memoize(this::queryArguments);
-    private final Supplier<Map<String, String>> environmentVariables = Memoizer.memoize(this::queryEnvironmentVariables);
+    private final Supplier<Map<String, String>> environmentVariables = Memoizer
+            .memoize(this::queryEnvironmentVariables);
     private String path = Normal.EMPTY;
     private final Supplier<Integer> bitness = Memoizer.memoize(this::queryBitness);
     private String userID;
@@ -157,8 +158,8 @@ public class LinuxOSProcess extends AbstractOSProcess {
     }
 
     private String queryCommandLine() {
-        return Arrays.stream(Builder
-                        .getStringFromFile(String.format(Locale.ROOT, ProcPath.PID_CMDLINE, getProcessID())).split("\0"))
+        return Arrays.stream(
+                Builder.getStringFromFile(String.format(Locale.ROOT, ProcPath.PID_CMDLINE, getProcessID())).split("\0"))
                 .collect(Collectors.joining(Symbol.SPACE));
     }
 
@@ -169,7 +170,8 @@ public class LinuxOSProcess extends AbstractOSProcess {
 
     private List<String> queryArguments() {
         return Collections.unmodifiableList(Parsing.parseByteArrayToStrings(
-                Builder.readAllBytes(String.format(Locale.ROOT, ProcPath.PID_CMDLINE, getProcessID()))));
+                Builder.readAllBytes(String.format(Locale.ROOT, ProcPath.PID_CMDLINE, getProcessID()),
+                        LOG_PROCFS_WARNING)));
     }
 
     @Override
@@ -278,7 +280,8 @@ public class LinuxOSProcess extends AbstractOSProcess {
     @Override
     public List<OSThread> getThreadDetails() {
         return ProcessStat.getThreadIds(getProcessID()).stream().parallel()
-                .map(id -> new LinuxOSThread(getProcessID(), id)).filter(OSThread.ThreadFiltering.VALID_THREAD).collect(Collectors.toList());
+                .map(id -> new LinuxOSThread(getProcessID(), id)).filter(OSThread.ThreadFiltering.VALID_THREAD)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -398,8 +401,8 @@ public class LinuxOSProcess extends AbstractOSProcess {
         // We can get name and status more easily from /proc/pid/status which we
         // call later, so just get the numeric bits here
         // See man proc for how to parse /proc/[pid]/stat
-        long[] statArray = Parsing.parseStringToLongArray(stat, PROC_PID_STAT_ORDERS,
-                ProcessStat.PROC_PID_STAT_LENGTH, Symbol.C_SPACE);
+        long[] statArray = Parsing.parseStringToLongArray(stat, PROC_PID_STAT_ORDERS, ProcessStat.PROC_PID_STAT_LENGTH,
+                Symbol.C_SPACE);
 
         // BOOTTIME is in seconds and start time from proc/pid/stat is in jiffies.
         // Combine units to jiffies and convert to millijiffies before hz division to

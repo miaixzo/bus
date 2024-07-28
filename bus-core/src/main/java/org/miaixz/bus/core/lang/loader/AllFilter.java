@@ -24,16 +24,14 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.loader;
 
 import java.net.URL;
 import java.util.Collection;
 
 /**
- * ALL逻辑复合过滤器,即所有过滤器都满足的时候才满足,
- * 只要有一个过滤器不满足就立刻返回不满足,
- * 如果没有过滤器的时候则认为所有过滤器都满足
+ * ALL逻辑复合过滤器,即所有过滤器都满足的时候才满足, 只要有一个过滤器不满足就立刻返回不满足, 如果没有过滤器的时候则认为所有过滤器都满足
  *
  * @author Kimi Liu
  * @since Java 17+

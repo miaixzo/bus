@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SPI_P_PCR_Release_2;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,49 +46,50 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag._0019_xx40_:
-            case PrivateTag._0019_xxA3_:
-            case PrivateTag._0019_xxA4_:
-            case PrivateTag._0019_xxA5_:
-            case PrivateTag._0019_xxA6_:
-            case PrivateTag._0019_xxA7_:
-            case PrivateTag._0019_xxA8_:
-            case PrivateTag._0019_xxA9_:
-            case PrivateTag._0019_xxAA_:
-            case PrivateTag._0019_xxAB_:
-            case PrivateTag._0019_xxAC_:
-            case PrivateTag._0019_xxAD_:
-            case PrivateTag._0019_xxAE_:
-            case PrivateTag._0019_xxB5_:
-            case PrivateTag._0019_xxB6_:
-            case PrivateTag._0019_xxB8_:
-                return VR.DS;
-            case PrivateTag._0019_xx20_:
-            case PrivateTag._0019_xxB2_:
-            case PrivateTag._0019_xxB3_:
-            case PrivateTag._0019_xxB4_:
-                return VR.IS;
-            case PrivateTag._0019_xx21_:
-            case PrivateTag._0019_xx60_:
-            case PrivateTag._0019_xx90_:
-                return VR.LO;
-            case PrivateTag._0019_xxA1_:
-            case PrivateTag._0019_xxAF_:
-            case PrivateTag._0019_xxB0_:
-            case PrivateTag._0019_xxB1_:
-            case PrivateTag._0019_xxB7_:
-            case PrivateTag._0019_xxB9_:
-            case PrivateTag._0019_xxBA_:
-                return VR.ST;
-            case PrivateTag._0019_xx10_:
-            case PrivateTag._0019_xx30_:
-            case PrivateTag._0019_xx80_:
-                return VR.US;
+
+        case PrivateTag._0019_xx40_:
+        case PrivateTag._0019_xxA3_:
+        case PrivateTag._0019_xxA4_:
+        case PrivateTag._0019_xxA5_:
+        case PrivateTag._0019_xxA6_:
+        case PrivateTag._0019_xxA7_:
+        case PrivateTag._0019_xxA8_:
+        case PrivateTag._0019_xxA9_:
+        case PrivateTag._0019_xxAA_:
+        case PrivateTag._0019_xxAB_:
+        case PrivateTag._0019_xxAC_:
+        case PrivateTag._0019_xxAD_:
+        case PrivateTag._0019_xxAE_:
+        case PrivateTag._0019_xxB5_:
+        case PrivateTag._0019_xxB6_:
+        case PrivateTag._0019_xxB8_:
+            return VR.DS;
+        case PrivateTag._0019_xx20_:
+        case PrivateTag._0019_xxB2_:
+        case PrivateTag._0019_xxB3_:
+        case PrivateTag._0019_xxB4_:
+            return VR.IS;
+        case PrivateTag._0019_xx21_:
+        case PrivateTag._0019_xx60_:
+        case PrivateTag._0019_xx90_:
+            return VR.LO;
+        case PrivateTag._0019_xxA1_:
+        case PrivateTag._0019_xxAF_:
+        case PrivateTag._0019_xxB0_:
+        case PrivateTag._0019_xxB1_:
+        case PrivateTag._0019_xxB7_:
+        case PrivateTag._0019_xxB9_:
+        case PrivateTag._0019_xxBA_:
+            return VR.ST;
+        case PrivateTag._0019_xx10_:
+        case PrivateTag._0019_xx30_:
+        case PrivateTag._0019_xx80_:
+            return VR.US;
         }
         return VR.UN;
     }

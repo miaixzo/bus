@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.Philips_US_Imaging_DD_109;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,40 +46,41 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag._200D_xx03_:
-            case PrivateTag._200D_xx07_:
-            case PrivateTag._200D_xx08_:
-            case PrivateTag._200D_xx0E_:
-            case PrivateTag._200D_xx14_:
-                return VR.CS;
-            case PrivateTag._200D_xx0F_:
-            case PrivateTag._200D_xx11_:
-                return VR.LO;
-            case PrivateTag._200D_xx09_:
-            case PrivateTag._200D_xx0B_:
-                return VR.OB;
-            case PrivateTag._200D_xx04_:
-            case PrivateTag._200D_xx10_:
-            case PrivateTag._200D_xx12_:
-                return VR.SL;
-            case PrivateTag._200D_xx01_:
-            case PrivateTag._200D_xx0D_:
-                return VR.SQ;
-            case PrivateTag._200D_xx02_:
-                return VR.ST;
-            case PrivateTag._200D_xx05_:
-            case PrivateTag._200D_xx06_:
-            case PrivateTag._200D_xx0A_:
-            case PrivateTag._200D_xx0C_:
-                return VR.UL;
-            case PrivateTag._200D_xx00_:
-            case PrivateTag._200D_xx13_:
-                return VR.US;
+
+        case PrivateTag._200D_xx03_:
+        case PrivateTag._200D_xx07_:
+        case PrivateTag._200D_xx08_:
+        case PrivateTag._200D_xx0E_:
+        case PrivateTag._200D_xx14_:
+            return VR.CS;
+        case PrivateTag._200D_xx0F_:
+        case PrivateTag._200D_xx11_:
+            return VR.LO;
+        case PrivateTag._200D_xx09_:
+        case PrivateTag._200D_xx0B_:
+            return VR.OB;
+        case PrivateTag._200D_xx04_:
+        case PrivateTag._200D_xx10_:
+        case PrivateTag._200D_xx12_:
+            return VR.SL;
+        case PrivateTag._200D_xx01_:
+        case PrivateTag._200D_xx0D_:
+            return VR.SQ;
+        case PrivateTag._200D_xx02_:
+            return VR.ST;
+        case PrivateTag._200D_xx05_:
+        case PrivateTag._200D_xx06_:
+        case PrivateTag._200D_xx0A_:
+        case PrivateTag._200D_xx0C_:
+            return VR.UL;
+        case PrivateTag._200D_xx00_:
+        case PrivateTag._200D_xx13_:
+            return VR.US;
         }
         return VR.UN;
     }

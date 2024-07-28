@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.sensitive;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -36,8 +36,8 @@ import org.springframework.context.annotation.Import;
  * @author Kimi Liu
  * @since Java 17+
  */
-@EnableConfigurationProperties(value = {SensitiveProperties.class})
-@Import({RequestBodyAdvice.class, ResponseBodyAdvice.class})
+@EnableConfigurationProperties(value = { SensitiveProperties.class })
+@Import({ RequestBodyAdvice.class, ResponseBodyAdvice.class })
 public class SensitiveConfiguration {
 
 }

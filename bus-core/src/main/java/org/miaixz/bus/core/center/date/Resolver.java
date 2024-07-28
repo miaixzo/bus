@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date;
 
 import org.miaixz.bus.core.center.date.format.CustomFormat;
@@ -89,7 +89,7 @@ public class Resolver extends Converter {
     /**
      * 构建DateTime对象
      *
-     * @param date    Date字符串
+     * @param date   Date字符串
      * @param format 格式化器 {@link SimpleDateFormat}
      * @return DateTime对象
      */
@@ -100,8 +100,8 @@ public class Resolver extends Converter {
     /**
      * 构建DateTime对象
      *
-     * @param date Date字符串
-     * @param parser  格式化器,{@link FormatBuilder}
+     * @param date   Date字符串
+     * @param parser 格式化器,{@link FormatBuilder}
      * @return DateTime对象
      */
     public static DateTime parse(final CharSequence date, final PositionDateParser parser) {
@@ -111,7 +111,7 @@ public class Resolver extends Converter {
     /**
      * 构建DateTime对象
      *
-     * @param date Date字符串
+     * @param date    Date字符串
      * @param parser  格式化器,{@link FormatBuilder}
      * @param lenient 是否宽容模式
      * @return DateTime对象
@@ -123,7 +123,7 @@ public class Resolver extends Converter {
     /**
      * 构建DateTime对象
      *
-     * @param date   Date字符串
+     * @param date      Date字符串
      * @param formatter 格式化器,{@link DateTimeFormatter}
      * @return DateTime对象
      */
@@ -134,8 +134,8 @@ public class Resolver extends Converter {
     /**
      * 将特定格式的日期转换为Date对象
      *
-     * @param date 特定格式的日期
-     * @param format  格式，例如yyyy-MM-dd
+     * @param date   特定格式的日期
+     * @param format 格式，例如yyyy-MM-dd
      * @return 日期对象
      */
     public static DateTime parse(final CharSequence date, final String format) {
@@ -145,9 +145,9 @@ public class Resolver extends Converter {
     /**
      * 将特定格式的日期转换为Date对象
      *
-     * @param date 特定格式的日期
-     * @param format  格式，例如yyyy-MM-dd
-     * @param locale  区域信息
+     * @param date   特定格式的日期
+     * @param format 格式，例如yyyy-MM-dd
+     * @param locale 区域信息
      * @return 日期对象
      */
     public static DateTime parse(final CharSequence date, final String format, final Locale locale) {
@@ -159,8 +159,7 @@ public class Resolver extends Converter {
     }
 
     /**
-     * 通过给定的日期格式解析日期时间字符串
-     * 传入的日期格式会逐个尝试，直到解析成功，返回{@link DateTime}对象，否则抛出{@link DateException}异常
+     * 通过给定的日期格式解析日期时间字符串 传入的日期格式会逐个尝试，直到解析成功，返回{@link DateTime}对象，否则抛出{@link DateException}异常
      *
      * @param date          日期时间字符串，非空
      * @param parsePatterns 需要尝试的日期时间格式数组，非空, 见SimpleDateFormat
@@ -271,8 +270,8 @@ public class Resolver extends Converter {
     /**
      * 解析日期时间字符串为{@link LocalDateTime}，支持：
      * <ul>
-     *     <li>{@link DateTimeFormatter#ISO_LOCAL_DATE_TIME} yyyy-MM-dd'T'HH:mm:ss格式，例如：2007-12-03T10:15:30</li>
-     *     <li>yyyy-MM-dd HH:mm:ss</li>
+     * <li>{@link DateTimeFormatter#ISO_LOCAL_DATE_TIME} yyyy-MM-dd'T'HH:mm:ss格式，例如：2007-12-03T10:15:30</li>
+     * <li>yyyy-MM-dd HH:mm:ss</li>
      * </ul>
      *
      * @param date 日期时间字符串
@@ -287,8 +286,7 @@ public class Resolver extends Converter {
     }
 
     /**
-     * 标准化日期，默认处理以空格区分的日期时间格式，空格前为日期，空格后为时间：
-     * 将以下字符替换为"-"
+     * 标准化日期，默认处理以空格区分的日期时间格式，空格前为日期，空格后为时间： 将以下字符替换为"-"
      *
      * <pre>
      * "."
@@ -341,7 +339,7 @@ public class Resolver extends Converter {
             builder.append(Symbol.C_SPACE);
             String timePart = dateAndTime.get(1).replaceAll("[时分秒]", Symbol.COLON);
             timePart = StringKit.removeSuffix(timePart, Symbol.COLON);
-            //将ISO8601中的逗号替换为.
+            // 将ISO8601中的逗号替换为.
             timePart = timePart.replace(Symbol.C_COMMA, '.');
             builder.append(timePart);
         }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.linux.software;
 
 import org.miaixz.bus.core.center.regex.Pattern;
@@ -54,7 +54,8 @@ import java.util.Map;
 @ThreadSafe
 public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
 
-    private static List<InternetProtocolStats.IPConnection> queryConnections(String protocol, int ipver, Map<Long, Integer> pidMap) {
+    private static List<InternetProtocolStats.IPConnection> queryConnections(String protocol, int ipver,
+            Map<Long, Integer> pidMap) {
         List<InternetProtocolStats.IPConnection> conns = new ArrayList<>();
         for (String s : Builder.readFile(ProcPath.NET + "/" + protocol + (ipver == 6 ? "6" : Normal.EMPTY))) {
             if (s.indexOf(Symbol.C_COLON) >= 0) {
@@ -65,8 +66,9 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
                     InternetProtocolStats.TcpState state = stateLookup(Parsing.hexStringToInt(split[3], 0));
                     Pair<Integer, Integer> txQrxQ = parseHexColonHex(split[4]);
                     long inode = Parsing.parseLongOrDefault(split[9], 0);
-                    conns.add(new InternetProtocolStats.IPConnection(protocol + ipver, lAddr.getLeft(), lAddr.getRight(), fAddr.getLeft(), fAddr.getRight(),
-                            state, txQrxQ.getLeft(), txQrxQ.getRight(), pidMap.getOrDefault(inode, -1)));
+                    conns.add(new InternetProtocolStats.IPConnection(protocol + ipver, lAddr.getLeft(),
+                            lAddr.getRight(), fAddr.getLeft(), fAddr.getRight(), state, txQrxQ.getLeft(),
+                            txQrxQ.getRight(), pidMap.getOrDefault(inode, -1)));
                 }
             }
         }
@@ -104,31 +106,31 @@ public class LinuxInternetProtocolStats extends AbstractInternetProtocolStats {
 
     private static InternetProtocolStats.TcpState stateLookup(int state) {
         switch (state) {
-            case 0x01:
-                return InternetProtocolStats.TcpState.ESTABLISHED;
-            case 0x02:
-                return InternetProtocolStats.TcpState.SYN_SENT;
-            case 0x03:
-                return InternetProtocolStats.TcpState.SYN_RECV;
-            case 0x04:
-                return InternetProtocolStats.TcpState.FIN_WAIT_1;
-            case 0x05:
-                return InternetProtocolStats.TcpState.FIN_WAIT_2;
-            case 0x06:
-                return InternetProtocolStats.TcpState.TIME_WAIT;
-            case 0x07:
-                return InternetProtocolStats.TcpState.CLOSED;
-            case 0x08:
-                return InternetProtocolStats.TcpState.CLOSE_WAIT;
-            case 0x09:
-                return InternetProtocolStats.TcpState.LAST_ACK;
-            case 0x0A:
-                return InternetProtocolStats.TcpState.LISTEN;
-            case 0x0B:
-                return InternetProtocolStats.TcpState.CLOSING;
-            case 0x00:
-            default:
-                return InternetProtocolStats.TcpState.UNKNOWN;
+        case 0x01:
+            return InternetProtocolStats.TcpState.ESTABLISHED;
+        case 0x02:
+            return InternetProtocolStats.TcpState.SYN_SENT;
+        case 0x03:
+            return InternetProtocolStats.TcpState.SYN_RECV;
+        case 0x04:
+            return InternetProtocolStats.TcpState.FIN_WAIT_1;
+        case 0x05:
+            return InternetProtocolStats.TcpState.FIN_WAIT_2;
+        case 0x06:
+            return InternetProtocolStats.TcpState.TIME_WAIT;
+        case 0x07:
+            return InternetProtocolStats.TcpState.CLOSED;
+        case 0x08:
+            return InternetProtocolStats.TcpState.CLOSE_WAIT;
+        case 0x09:
+            return InternetProtocolStats.TcpState.LAST_ACK;
+        case 0x0A:
+            return InternetProtocolStats.TcpState.LISTEN;
+        case 0x0B:
+            return InternetProtocolStats.TcpState.CLOSING;
+        case 0x00:
+        default:
+            return InternetProtocolStats.TcpState.UNKNOWN;
         }
     }
 

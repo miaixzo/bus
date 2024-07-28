@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.hardware;
 
 import com.sun.jna.platform.win32.*;
@@ -74,17 +74,17 @@ final class WindowsDisplay extends AbstractDisplay {
                 SetupApi.DIGCF_PRESENT | SetupApi.DIGCF_DEVICEINTERFACE);
         if (!hDevInfo.equals(WinBase.INVALID_HANDLE_VALUE)) {
             try (Struct.CloseableSpDeviceInterfaceData deviceInterfaceData = new Struct.CloseableSpDeviceInterfaceData();
-                 Struct.CloseableSpDevinfoData info = new Struct.CloseableSpDevinfoData()) {
+                    Struct.CloseableSpDevinfoData info = new Struct.CloseableSpDevinfoData()) {
                 deviceInterfaceData.cbSize = deviceInterfaceData.size();
 
                 for (int memberIndex = 0; SU.SetupDiEnumDeviceInfo(hDevInfo, memberIndex, info); memberIndex++) {
-                    WinReg.HKEY key = SU.SetupDiOpenDevRegKey(hDevInfo, info, SetupApi.DICS_FLAG_GLOBAL, 0, SetupApi.DIREG_DEV,
-                            WinNT.KEY_QUERY_VALUE);
+                    WinReg.HKEY key = SU.SetupDiOpenDevRegKey(hDevInfo, info, SetupApi.DICS_FLAG_GLOBAL, 0,
+                            SetupApi.DIREG_DEV, WinNT.KEY_QUERY_VALUE);
 
                     byte[] edid = new byte[1];
 
                     try (ByRef.CloseableIntByReference pType = new ByRef.CloseableIntByReference();
-                         ByRef.CloseableIntByReference lpcbData = new ByRef.CloseableIntByReference()) {
+                            ByRef.CloseableIntByReference lpcbData = new ByRef.CloseableIntByReference()) {
                         if (ADV.RegQueryValueEx(key, "EDID", 0, pType, edid, lpcbData) == WinError.ERROR_MORE_DATA) {
                             edid = new byte[lpcbData.getValue()];
                             if (ADV.RegQueryValueEx(key, "EDID", 0, pType, edid, lpcbData) == WinError.ERROR_SUCCESS) {

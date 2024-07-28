@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv;
 
 import org.miaixz.bus.image.galaxy.data.BulkData;
@@ -78,11 +78,8 @@ public abstract class StreamSegment {
 
     public static boolean supportsInputStream(Object iis) {
         // This list must reflect getStreamSegment()'s implementation
-        return
-                (iis instanceof SegmentedImageStream) ||
-                        (iis instanceof SegmentedInputImageStream) ||
-                        (iis instanceof BytesWithImageImageDescriptor)
-                ;
+        return (iis instanceof SegmentedImageStream) || (iis instanceof SegmentedInputImageStream)
+                || (iis instanceof BytesWithImageImageDescriptor);
     }
 
     private static StreamSegment getFileStreamSegment(SegmentedInputImageStream iis) {
@@ -102,8 +99,8 @@ public abstract class StreamSegment {
                 if (seg != null) {
                     RandomAccessFile raf = (RandomAccessFile) fRaf.get(fstream);
                     /*
-                     * PS 3.5.8.2 Though a fragment may not contain encoded data from more than one frame, the
-                     * encoded data from one frame may span multiple fragments. See note in Section 8.2.
+                     * PS 3.5.8.2 Though a fragment may not contain encoded data from more than one frame, the encoded
+                     * data from one frame may span multiple fragments. See note in Section 8.2.
                      */
                     return new FileStreamSegment(raf, seg[0], seg[1], iis.getImageDescriptor());
                 }
@@ -157,7 +154,7 @@ public abstract class StreamSegment {
                     }
                 }
             }
-            return new long[][]{segPositions, segLength};
+            return new long[][] { segPositions, segLength };
         }
         return null;
     }

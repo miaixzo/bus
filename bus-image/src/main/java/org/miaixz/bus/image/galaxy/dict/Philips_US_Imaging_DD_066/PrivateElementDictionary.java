@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.Philips_US_Imaging_DD_066;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,18 +46,19 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag._200D_xx01_:
-            case PrivateTag._200D_xx02_:
-            case PrivateTag._200D_xx03_:
-            case PrivateTag._200D_xx04_:
-                return VR.LO;
-            case PrivateTag._200D_xx00_:
-                return VR.OB;
+
+        case PrivateTag._200D_xx01_:
+        case PrivateTag._200D_xx02_:
+        case PrivateTag._200D_xx03_:
+        case PrivateTag._200D_xx04_:
+            return VR.LO;
+        case PrivateTag._200D_xx00_:
+            return VR.OB;
         }
         return VR.UN;
     }

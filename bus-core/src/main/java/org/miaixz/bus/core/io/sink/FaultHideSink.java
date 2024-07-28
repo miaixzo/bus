@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.sink;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
@@ -32,8 +32,7 @@ import org.miaixz.bus.core.io.buffer.Buffer;
 import java.io.IOException;
 
 /**
- * 不会抛出IOExceptions的接收器，
- * 即使底层接收器抛出了IOExceptions
+ * 不会抛出IOExceptions的接收器， 即使底层接收器抛出了IOExceptions
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -62,7 +61,8 @@ public class FaultHideSink extends AssignSink {
 
     @Override
     public void flush() throws IOException {
-        if (hasErrors) return;
+        if (hasErrors)
+            return;
         try {
             super.flush();
         } catch (IOException e) {
@@ -73,7 +73,8 @@ public class FaultHideSink extends AssignSink {
 
     @Override
     public void close() throws IOException {
-        if (hasErrors) return;
+        if (hasErrors)
+            return;
         try {
             super.close();
         } catch (IOException e) {

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper;
 
 import org.miaixz.bus.core.lang.exception.VersionException;
@@ -54,7 +54,8 @@ public class Version {
      * @return the object
      * @throws VersionException 异常
      */
-    public static Object nextVersion(Class<? extends Version> nextVersionClass, Object version) throws VersionException {
+    public static Object nextVersion(Class<? extends Version> nextVersionClass, Object version)
+            throws VersionException {
         try {
             Version nextVersion;
             if (CACHE.containsKey(nextVersionClass)) {

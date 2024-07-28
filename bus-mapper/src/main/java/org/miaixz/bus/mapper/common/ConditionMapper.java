@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.common;
 
 import org.miaixz.bus.mapper.annotation.RegisterMapper;
@@ -38,12 +38,8 @@ import org.miaixz.bus.mapper.common.condition.*;
  * @since Java 17+
  */
 @RegisterMapper
-public interface ConditionMapper<T> extends
-        SelectByConditionMapper<T>,
-        SelectOneByConditionMapper<T>,
-        SelectCountByConditionMapper<T>,
-        DeleteByConditionMapper<T>,
-        UpdateByConditionMapper<T>,
-        UpdateByConditionSelectiveMapper<T> {
+public interface ConditionMapper<T>
+        extends SelectByConditionMapper<T>, SelectOneByConditionMapper<T>, SelectCountByConditionMapper<T>,
+        DeleteByConditionMapper<T>, UpdateByConditionMapper<T>, UpdateByConditionSelectiveMapper<T> {
 
 }

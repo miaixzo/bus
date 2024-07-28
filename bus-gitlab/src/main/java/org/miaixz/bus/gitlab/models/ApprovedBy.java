@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -33,8 +33,8 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 import java.io.Serializable;
 
 /**
- * This class is used by various models to represent the approved_by property,
- * which can contain a User or Group instance.
+ * This class is used by various models to represent the approved_by property, which can contain a User or Group
+ * instance.
  */
 public class ApprovedBy implements Serializable {
     private static final long serialVersionUID = -1L;
@@ -67,8 +67,8 @@ public class ApprovedBy implements Serializable {
     }
 
     /**
-     * Return the user or group that represents this ApprovedBy instance.  Returned
-     * object will either be an instance of a User or Group.
+     * Return the user or group that represents this ApprovedBy instance. Returned object will either be an instance of
+     * a User or Group.
      *
      * @return the user or group that represents this ApprovedBy instance
      */

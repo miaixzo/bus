@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.aix.hardware;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -45,10 +45,11 @@ import java.util.List;
 public final class AixPowerSource extends AbstractPowerSource {
 
     public AixPowerSource(String name, String deviceName, double remainingCapacityPercent,
-                          double timeRemainingEstimated, double timeRemainingInstant, double powerUsageRate, double voltage,
-                          double amperage, boolean powerOnLine, boolean charging, boolean discharging, PowerSource.CapacityUnits capacityUnits,
-                          int currentCapacity, int maxCapacity, int designCapacity, int cycleCount, String chemistry,
-                          LocalDate manufactureDate, String manufacturer, String serialNumber, double temperature) {
+            double timeRemainingEstimated, double timeRemainingInstant, double powerUsageRate, double voltage,
+            double amperage, boolean powerOnLine, boolean charging, boolean discharging,
+            PowerSource.CapacityUnits capacityUnits, int currentCapacity, int maxCapacity, int designCapacity,
+            int cycleCount, String chemistry, LocalDate manufactureDate, String manufacturer, String serialNumber,
+            double temperature) {
         super(name, deviceName, remainingCapacityPercent, timeRemainingEstimated, timeRemainingInstant, powerUsageRate,
                 voltage, amperage, powerOnLine, charging, discharging, capacityUnits, currentCapacity, maxCapacity,
                 designCapacity, cycleCount, chemistry, manufactureDate, manufacturer, serialNumber, temperature);

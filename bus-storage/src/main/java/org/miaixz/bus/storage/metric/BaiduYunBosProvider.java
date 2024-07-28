@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.storage.metric;
 
 import com.baidubce.auth.DefaultBceCredentials;
@@ -79,9 +79,7 @@ public class BaiduYunBosProvider extends AbstractProvider {
 
     @Override
     public Message download(String bucket, String fileName) {
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
@@ -93,9 +91,7 @@ public class BaiduYunBosProvider extends AbstractProvider {
     public Message download(String bucket, String fileName, File file) {
         this.client.getObject(new GetObjectRequest(bucket, fileName), file);
 
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
     }
 
     @Override
@@ -103,35 +99,25 @@ public class BaiduYunBosProvider extends AbstractProvider {
         ListObjectsRequest request = new ListObjectsRequest(this.context.getBucket());
         ListObjectsResponse objectListing = this.client.listObjects(request);
 
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .errmsg(ErrorCode.SUCCESS.getDesc())
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
                 .data(objectListing.getContents().stream().map(item -> {
                     Map<String, Object> extend = new HashMap<>();
                     extend.put("tag", item.getETag());
                     extend.put("storageClass", item.getStorageClass());
                     extend.put("lastModified", item.getLastModified());
-                    return Material.builder()
-                            .name(item.getKey())
-                            .owner(item.getOwner().getDisplayName())
-                            .size(StringKit.toString(item.getSize()))
-                            .extend(extend).build();
-                }).collect(Collectors.toList()))
-                .build();
+                    return Material.builder().name(item.getKey()).owner(item.getOwner().getDisplayName())
+                            .size(StringKit.toString(item.getSize())).extend(extend).build();
+                }).collect(Collectors.toList())).build();
     }
 
     @Override
     public Message rename(String oldName, String newName) {
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
     public Message rename(String bucket, String oldName, String newName) {
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
@@ -142,17 +128,13 @@ public class BaiduYunBosProvider extends AbstractProvider {
     @Override
     public Message upload(String bucket, String fileName, InputStream content) {
         this.client.putObject(bucket, fileName, content);
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
     }
 
     @Override
     public Message upload(String bucket, String fileName, byte[] content) {
         this.client.putObject(bucket, fileName, content);
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
     }
 
     @Override
@@ -163,9 +145,7 @@ public class BaiduYunBosProvider extends AbstractProvider {
     @Override
     public Message remove(String bucket, String fileName) {
         client.deleteObject(bucket, fileName);
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
     }
 
     @Override

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.mac.hardware;
 
 import com.sun.jna.Native;
@@ -49,8 +49,7 @@ import java.util.function.Supplier;
 @Immutable
 final class MacBaseboard extends AbstractBaseboard {
 
-    private final Supplier<Tuple> manufModelVersSerial = Memoizer.memoize(
-            MacBaseboard::queryPlatform);
+    private final Supplier<Tuple> manufModelVersSerial = Memoizer.memoize(MacBaseboard::queryPlatform);
 
     private static Tuple queryPlatform() {
         String manufacturer = null;
@@ -88,7 +87,8 @@ final class MacBaseboard extends AbstractBaseboard {
             platformExpert.release();
         }
         return new Tuple(StringKit.isBlank(manufacturer) ? "Apple Inc." : manufacturer,
-                StringKit.isBlank(model) ? Normal.UNKNOWN : model, StringKit.isBlank(version) ? Normal.UNKNOWN : version,
+                StringKit.isBlank(model) ? Normal.UNKNOWN : model,
+                StringKit.isBlank(version) ? Normal.UNKNOWN : version,
                 StringKit.isBlank(serialNumber) ? Normal.UNKNOWN : serialNumber);
     }
 

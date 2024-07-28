@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.file.visitor;
 
 import org.miaixz.bus.core.io.file.PathResolve;
@@ -34,8 +34,7 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 
 /**
- * 文件移动操作的FileVisitor实现，用于递归遍历移动目录和文件，此类非线程安全
- * 此类在遍历源目录并移动过程中会自动创建目标目录中不存在的上级目录。
+ * 文件移动操作的FileVisitor实现，用于递归遍历移动目录和文件，此类非线程安全 此类在遍历源目录并移动过程中会自动创建目标目录中不存在的上级目录。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -64,8 +63,7 @@ public class MoveVisitor extends SimpleFileVisitor<Path> {
     }
 
     @Override
-    public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs)
-            throws IOException {
+    public FileVisitResult preVisitDirectory(final Path dir, final BasicFileAttributes attrs) throws IOException {
         initTarget();
         // 将当前目录相对于源路径转换为相对于目标路径
         final Path targetDir = target.resolve(source.relativize(dir));
@@ -78,8 +76,7 @@ public class MoveVisitor extends SimpleFileVisitor<Path> {
     }
 
     @Override
-    public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs)
-            throws IOException {
+    public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
         initTarget();
         Files.move(file, target.resolve(source.relativize(file)), copyOptions);
         return FileVisitResult.CONTINUE;

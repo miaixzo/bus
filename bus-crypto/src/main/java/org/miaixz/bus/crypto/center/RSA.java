@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.center;
 
 import org.miaixz.bus.core.lang.Algorithm;
@@ -45,8 +45,7 @@ import java.security.spec.RSAPublicKeySpec;
 /**
  * RSA公钥/私钥/签名加密解密
  * <p>
- * 由于非对称加密速度极其缓慢，一般文件不使用它来加密而是使用对称加密，
- * 非对称加密算法可以用来对对称加密的密钥加密，这样保证密钥的安全也就保证了数据的安全
+ * 由于非对称加密速度极其缓慢，一般文件不使用它来加密而是使用对称加密， 非对称加密算法可以用来对对称加密的密钥加密，这样保证密钥的安全也就保证了数据的安全
  * </p>
  *
  * @author Kimi Liu
@@ -78,9 +77,7 @@ public class RSA extends Crypto {
     }
 
     /**
-     * 构造
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey 私钥Hex或Base64表示
      * @param publicKey  公钥Hex或Base64表示
@@ -90,22 +87,18 @@ public class RSA extends Crypto {
     }
 
     /**
-     * 构造
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
-     * @param rsaAlgorithm  自定义RSA算法，例如RSA/ECB/PKCS1Padding
-     * @param privateKey 私钥Hex或Base64表示
-     * @param publicKey  公钥Hex或Base64表示
+     * @param rsaAlgorithm 自定义RSA算法，例如RSA/ECB/PKCS1Padding
+     * @param privateKey   私钥Hex或Base64表示
+     * @param publicKey    公钥Hex或Base64表示
      */
     public RSA(final String rsaAlgorithm, final String privateKey, final String publicKey) {
         super(rsaAlgorithm, privateKey, publicKey);
     }
 
     /**
-     * 构造
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey 私钥
      * @param publicKey  公钥
@@ -115,9 +108,7 @@ public class RSA extends Crypto {
     }
 
     /**
-     * 构造
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param modulus         N特征值
      * @param privateExponent d特征值
@@ -128,9 +119,7 @@ public class RSA extends Crypto {
     }
 
     /**
-     * 构造
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey 私钥
      * @param publicKey  公钥
@@ -140,9 +129,7 @@ public class RSA extends Crypto {
     }
 
     /**
-     * 构造
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param rsaAlgorithm 自定义RSA算法，例如RSA/ECB/PKCS1Padding
      * @param privateKey   私钥

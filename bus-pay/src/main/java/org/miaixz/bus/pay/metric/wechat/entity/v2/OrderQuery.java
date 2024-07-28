@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pay.metric.wechat.entity.v2;
 
 import lombok.AllArgsConstructor;
@@ -35,8 +35,7 @@ import lombok.experimental.SuperBuilder;
 import org.miaixz.bus.pay.magic.Material;
 
 /**
- * 查询订单
- * 支持: 普通订单查询、刷脸支付订单、查询分账结果、回退结果查询
+ * 查询订单 支持: 普通订单查询、刷脸支付订单、查询分账结果、回退结果查询
  *
  * @author Kimi Liu
  * @since Java 17+

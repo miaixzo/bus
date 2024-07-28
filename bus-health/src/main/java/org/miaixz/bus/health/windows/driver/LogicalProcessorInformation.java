@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.driver;
 
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
@@ -74,29 +74,29 @@ public final class LogicalProcessorInformation {
 
         for (SYSTEM_LOGICAL_PROCESSOR_INFORMATION_EX info : procInfo) {
             switch (info.relationship) {
-                case LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorPackage:
-                    // could assign a package to more than one processor group
-                    packages.add(((PROCESSOR_RELATIONSHIP) info).groupMask);
-                    break;
-                case LOGICAL_PROCESSOR_RELATIONSHIP.RelationCache:
-                    CACHE_RELATIONSHIP cache = (CACHE_RELATIONSHIP) info;
-                    caches.add(new CentralProcessor.ProcessorCache(cache.level, cache.associativity, cache.lineSize, cache.size,
-                            CentralProcessor.ProcessorCache.Type.values()[cache.type]));
-                    break;
-                case LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorCore:
-                    PROCESSOR_RELATIONSHIP core = ((PROCESSOR_RELATIONSHIP) info);
-                    // for Core, groupCount is always 1
-                    cores.add(core.groupMask[0]);
-                    if (IS_WIN10_OR_GREATER) {
-                        coreEfficiencyMap.put(core.groupMask[0], (int) core.efficiencyClass);
-                    }
-                    break;
-                case LOGICAL_PROCESSOR_RELATIONSHIP.RelationNumaNode:
-                    numaNodes.add((NUMA_NODE_RELATIONSHIP) info);
-                    break;
-                default:
-                    // Ignore Group info
-                    break;
+            case LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorPackage:
+                // could assign a package to more than one processor group
+                packages.add(((PROCESSOR_RELATIONSHIP) info).groupMask);
+                break;
+            case LOGICAL_PROCESSOR_RELATIONSHIP.RelationCache:
+                CACHE_RELATIONSHIP cache = (CACHE_RELATIONSHIP) info;
+                caches.add(new CentralProcessor.ProcessorCache(cache.level, cache.associativity, cache.lineSize,
+                        cache.size, CentralProcessor.ProcessorCache.Type.values()[cache.type]));
+                break;
+            case LOGICAL_PROCESSOR_RELATIONSHIP.RelationProcessorCore:
+                PROCESSOR_RELATIONSHIP core = ((PROCESSOR_RELATIONSHIP) info);
+                // for Core, groupCount is always 1
+                cores.add(core.groupMask[0]);
+                if (IS_WIN10_OR_GREATER) {
+                    coreEfficiencyMap.put(core.groupMask[0], (int) core.efficiencyClass);
+                }
+                break;
+            case LOGICAL_PROCESSOR_RELATIONSHIP.RelationNumaNode:
+                numaNodes.add((NUMA_NODE_RELATIONSHIP) info);
+                break;
+            default:
+                // Ignore Group info
+                break;
             }
         }
         // Windows doesn't define core, cache, and package numbers, so we define our own
@@ -139,18 +139,20 @@ public final class LogicalProcessorInformation {
                     int pkgId = getMatchingPackage(packages, group, lp);
                     corePkgMap.put(coreId, pkgId);
                     pkgCpuidMap.put(coreId, processorIdMap.getOrDefault(pkgId, Normal.EMPTY));
-                    CentralProcessor.LogicalProcessor logProc = new CentralProcessor.LogicalProcessor(lp, coreId, pkgId, nodeNum, group);
+                    CentralProcessor.LogicalProcessor logProc = new CentralProcessor.LogicalProcessor(lp, coreId, pkgId,
+                            nodeNum, group);
                     logProcs.add(logProc);
                 }
             }
         }
-        List<CentralProcessor.PhysicalProcessor> physProcs = getPhysProcs(cores, coreEfficiencyMap, corePkgMap, pkgCpuidMap);
+        List<CentralProcessor.PhysicalProcessor> physProcs = getPhysProcs(cores, coreEfficiencyMap, corePkgMap,
+                pkgCpuidMap);
         return Triplet.of(logProcs, physProcs, AbstractCentralProcessor.orderedProcCaches(caches));
     }
 
     private static List<CentralProcessor.PhysicalProcessor> getPhysProcs(List<GROUP_AFFINITY> cores,
-                                                                         Map<GROUP_AFFINITY, Integer> coreEfficiencyMap, Map<Integer, Integer> corePkgMap,
-                                                                         Map<Integer, String> coreCpuidMap) {
+            Map<GROUP_AFFINITY, Integer> coreEfficiencyMap, Map<Integer, Integer> corePkgMap,
+            Map<Integer, String> coreCpuidMap) {
         List<CentralProcessor.PhysicalProcessor> physProcs = new ArrayList<>();
         for (int coreId = 0; coreId < cores.size(); coreId++) {
             int efficiency = coreEfficiencyMap.getOrDefault(cores.get(coreId), 0);

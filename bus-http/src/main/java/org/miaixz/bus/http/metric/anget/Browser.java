@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric.anget;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -83,31 +83,25 @@ public class Browser extends UserAgent {
             new Browser("MSEdge", "Edge|Edg", "(?:edge|Edg|EdgA)\\/([\\d\\w\\.\\-]+)"),
             // issues I7OTCU
             new Browser("Chrome", "chrome|(iphone.*crios.*safari)", "(?:Chrome|CriOS)\\/([\\d\\w\\.\\-]+)"),
-            //new Browser("Chrome", "chrome", Other_Version),
-            new Browser("Firefox", "firefox", OTHER_VERSION),
-            new Browser("IEMobile", "iemobile", OTHER_VERSION),
+            // new Browser("Chrome", "chrome", Other_Version),
+            new Browser("Firefox", "firefox", OTHER_VERSION), new Browser("IEMobile", "iemobile", OTHER_VERSION),
             new Browser("Android Browser", "android", "version\\/([\\d\\w\\.\\-]+)"),
             new Browser("Safari", "safari", "version\\/([\\d\\w\\.\\-]+)"),
-            new Browser("Opera", "opera", OTHER_VERSION),
-            new Browser("Konqueror", "konqueror", OTHER_VERSION),
+            new Browser("Opera", "opera", OTHER_VERSION), new Browser("Konqueror", "konqueror", OTHER_VERSION),
             new Browser("PS3", "playstation 3", "([\\d\\w\\.\\-]+)\\)\\s*$"),
             new Browser("PSP", "playstation portable", "([\\d\\w\\.\\-]+)\\)?\\s*$"),
             new Browser("Lotus", "lotus.notes", "Lotus-Notes\\/([\\w.]+)"),
             new Browser("Thunderbird", "thunderbird", OTHER_VERSION),
-            new Browser("Netscape", "netscape", OTHER_VERSION),
-            new Browser("Seamonkey", "seamonkey", OTHER_VERSION),
+            new Browser("Netscape", "netscape", OTHER_VERSION), new Browser("Seamonkey", "seamonkey", OTHER_VERSION),
             new Browser("Outlook", "microsoft.outlook", OTHER_VERSION),
-            new Browser("Evolution", "evolution", OTHER_VERSION),
-            new Browser("MSIE", "msie", "msie ([\\d\\w\\.\\-]+)"),
-            new Browser("MSIE11", "rv:11", "rv:([\\d\\w\\.\\-]+)"),
-            new Browser("Gabble", "Gabble", OTHER_VERSION),
+            new Browser("Evolution", "evolution", OTHER_VERSION), new Browser("MSIE", "msie", "msie ([\\d\\w\\.\\-]+)"),
+            new Browser("MSIE11", "rv:11", "rv:([\\d\\w\\.\\-]+)"), new Browser("Gabble", "Gabble", OTHER_VERSION),
             new Browser("Yammer Desktop", "AdobeAir", "([\\d\\w\\.\\-]+)\\/Yammer"),
             new Browser("Yammer Mobile", "Yammer[\\s]+([\\d\\w\\.\\-]+)", "Yammer[\\s]+([\\d\\w\\.\\-]+)"),
             new Browser("Apache HTTP Client", "Apache\\\\-HttpClient", "Apache\\-HttpClient\\/([\\d\\w\\.\\-]+)"),
             new Browser("BlackBerry", "BlackBerry", "BlackBerry[\\d]+\\/([\\d\\w\\.\\-]+)"),
             // issue#I847JY 百度浏览器
-            new Browser("Baidu", "Baidu", "baiduboxapp\\/([\\d\\w\\.\\-]+)")
-    );
+            new Browser("Baidu", "Baidu", "baiduboxapp\\/([\\d\\w\\.\\-]+)"));
 
     /**
      * 匹配正则
@@ -130,7 +124,6 @@ public class Browser extends UserAgent {
             this.pattern = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
         }
     }
-
 
     /**
      * 添加自定义的浏览器类型
@@ -163,13 +156,9 @@ public class Browser extends UserAgent {
      */
     public boolean isMobile() {
         final String name = this.getName();
-        return "PSP".equals(name) ||
-                "Yammer Mobile".equals(name) ||
-                "Android Browser".equals(name) ||
-                "IEMobile".equals(name) ||
-                "MicroMessenger".equals(name) ||
-                "miniProgram".equals(name) ||
-                "DingTalk".equals(name);
+        return "PSP".equals(name) || "Yammer Mobile".equals(name) || "Android Browser".equals(name)
+                || "IEMobile".equals(name) || "MicroMessenger".equals(name) || "miniProgram".equals(name)
+                || "DingTalk".equals(name);
     }
 
 }

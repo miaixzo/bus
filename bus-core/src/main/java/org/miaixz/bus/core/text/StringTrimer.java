@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text;
 
 import org.miaixz.bus.core.xyz.CharKit;
@@ -35,8 +35,7 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 /**
- * 字符串头尾指定字符去除器
- * 按照断言，除去字符串头尾部的断言为真的字符，如果字符串是{@code null}，依然返回{@code null}
+ * 字符串头尾指定字符去除器 按照断言，除去字符串头尾部的断言为真的字符，如果字符串是{@code null}，依然返回{@code null}
  *
  * @author Kimi Liu
  * @since Java 17+

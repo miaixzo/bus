@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.openbsd.hardware;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -51,11 +51,11 @@ import java.util.Set;
 public final class OpenBsdPowerSource extends AbstractPowerSource {
 
     public OpenBsdPowerSource(String psName, String psDeviceName, double psRemainingCapacityPercent,
-                              double psTimeRemainingEstimated, double psTimeRemainingInstant, double psPowerUsageRate, double psVoltage,
-                              double psAmperage, boolean psPowerOnLine, boolean psCharging, boolean psDischarging,
-                              PowerSource.CapacityUnits psCapacityUnits, int psCurrentCapacity, int psMaxCapacity, int psDesignCapacity,
-                              int psCycleCount, String psChemistry, LocalDate psManufactureDate, String psManufacturer,
-                              String psSerialNumber, double psTemperature) {
+            double psTimeRemainingEstimated, double psTimeRemainingInstant, double psPowerUsageRate, double psVoltage,
+            double psAmperage, boolean psPowerOnLine, boolean psCharging, boolean psDischarging,
+            PowerSource.CapacityUnits psCapacityUnits, int psCurrentCapacity, int psMaxCapacity, int psDesignCapacity,
+            int psCycleCount, String psChemistry, LocalDate psManufactureDate, String psManufacturer,
+            String psSerialNumber, double psTemperature) {
         super(psName, psDeviceName, psRemainingCapacityPercent, psTimeRemainingEstimated, psTimeRemainingInstant,
                 psPowerUsageRate, psVoltage, psAmperage, psPowerOnLine, psCharging, psDischarging, psCapacityUnits,
                 psCurrentCapacity, psMaxCapacity, psDesignCapacity, psCycleCount, psChemistry, psManufactureDate,
@@ -111,7 +111,8 @@ public final class OpenBsdPowerSource extends AbstractPowerSource {
                 } else if (split[0].contains("temp0")) {
                     psTemperature = Parsing.parseDoubleOrDefault(split[1], 0d);
                 } else if (split[0].contains("watthour") || split[0].contains("amphour")) {
-                    psCapacityUnits = split[0].contains("watthour") ? PowerSource.CapacityUnits.MWH : PowerSource.CapacityUnits.MAH;
+                    psCapacityUnits = split[0].contains("watthour") ? PowerSource.CapacityUnits.MWH
+                            : PowerSource.CapacityUnits.MAH;
                     if (line.contains("remaining")) {
                         psCurrentCapacity = (int) (1000d * Parsing.parseDoubleOrDefault(split[1], 0d));
                     } else if (line.contains("full")) {

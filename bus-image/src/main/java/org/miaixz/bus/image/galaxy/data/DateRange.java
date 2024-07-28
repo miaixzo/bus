@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.data;
 
 import java.io.Serializable;
@@ -60,8 +60,7 @@ public class DateRange implements Serializable {
     }
 
     public boolean contains(Date when) {
-        return !(start != null && start.after(when)
-                || end != null && end.before(when));
+        return !(start != null && start.after(when) || end != null && end.before(when));
     }
 
     @Override
@@ -72,8 +71,7 @@ public class DateRange implements Serializable {
         if (!(obj instanceof DateRange other))
             return false;
 
-        return (Objects.equals(start, other.start))
-                && (Objects.equals(end, other.end));
+        return (Objects.equals(start, other.start)) && (Objects.equals(end, other.end));
     }
 
     @Override

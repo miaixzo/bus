@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io;
 
 import org.miaixz.bus.core.io.stream.BOMInputStream;
@@ -36,8 +36,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
 /**
- * 读取带BOM头的流内容的Reader，如果非bom的流或无法识别的编码，则默认UTF-8
- * BOM定义：http://www.unicode.org/unicode/faq/utf_bom.html
+ * 读取带BOM头的流内容的Reader，如果非bom的流或无法识别的编码，则默认UTF-8 BOM定义：http://www.unicode.org/unicode/faq/utf_bom.html
  *
  * <ul>
  * <li>00 00 FE FF = UTF-32, big-endian</li>
@@ -46,8 +45,7 @@ import java.io.UnsupportedEncodingException;
  * <li>FE FF = UTF-16, big-endian</li>
  * <li>FF FE = UTF-16, little-endian</li>
  * </ul>
- * 使用：
- * <code>
+ * 使用： <code>
  * FileInputStream fis = new FileInputStream(file);
  * BomReader uin = new BomReader(fis);
  * </code>

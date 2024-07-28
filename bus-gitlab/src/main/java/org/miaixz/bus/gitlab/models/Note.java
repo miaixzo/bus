@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -49,6 +49,7 @@ public class Note implements Serializable {
     public static enum OrderBy {
 
         CREATED_AT, UPDATED_AT;
+
         private static JacksonJsonEnumHelper<OrderBy> enumHelper = new JacksonJsonEnumHelper<>(OrderBy.class);
 
         @JsonCreator
@@ -67,12 +68,15 @@ public class Note implements Serializable {
         }
     }
 
-    // This is not used because the GitLab example JSON is using a funny string for the MERGE_REQUEST notable_type ("Merge request").
+    // This is not used because the GitLab example JSON is using a funny string for the MERGE_REQUEST notable_type
+    // ("Merge request").
     // Once they fix the bug, the notableType field can be changed from String to NotableType.
     public static enum NoteableType {
 
         COMMIT, EPIC, ISSUE, MERGE_REQUEST, SNIPPET;
-        private static JacksonJsonEnumHelper<NoteableType> enumHelper = new JacksonJsonEnumHelper<>(NoteableType.class, true, true);
+
+        private static JacksonJsonEnumHelper<NoteableType> enumHelper = new JacksonJsonEnumHelper<>(NoteableType.class,
+                true, true);
 
         @JsonCreator
         public static NoteableType forValue(String value) {
@@ -296,6 +300,7 @@ public class Note implements Serializable {
     public static enum Type {
 
         DISCUSSION_NOTE, DIFF_NOTE;
+
         private static JacksonJsonEnumHelper<Type> enumHelper = new JacksonJsonEnumHelper<>(Type.class, true, true);
 
         @JsonCreator

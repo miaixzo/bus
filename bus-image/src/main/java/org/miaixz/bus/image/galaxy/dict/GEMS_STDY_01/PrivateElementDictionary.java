@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.GEMS_STDY_01;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,23 +46,24 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.StartTimeSecsInFirstAxial:
-                return VR.FD;
-            case PrivateTag.NumberOfSeriesInStudy:
-            case PrivateTag.NumberOfUnarchivedSeries:
-            case PrivateTag.NumberOfUpdatesToHeader:
-                return VR.SL;
-            case PrivateTag.HasMPPSRelatedTags:
-                return VR.SQ;
-            case PrivateTag.ReferenceImageField:
-            case PrivateTag.SummaryImage:
-            case PrivateTag.IndicatesIfStudyHasCompleteInfo:
-                return VR.SS;
+
+        case PrivateTag.StartTimeSecsInFirstAxial:
+            return VR.FD;
+        case PrivateTag.NumberOfSeriesInStudy:
+        case PrivateTag.NumberOfUnarchivedSeries:
+        case PrivateTag.NumberOfUpdatesToHeader:
+            return VR.SL;
+        case PrivateTag.HasMPPSRelatedTags:
+            return VR.SQ;
+        case PrivateTag.ReferenceImageField:
+        case PrivateTag.SummaryImage:
+        case PrivateTag.IndicatesIfStudyHasCompleteInfo:
+            return VR.SS;
         }
         return VR.UN;
     }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.sensitive.metric;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -38,9 +38,7 @@ import org.miaixz.bus.sensitive.magic.annotation.Shield;
 /**
  * 中文名称脱敏策略：
  * <p>
- * 0. 少于等于1个字 直接返回
- * 1. 两个字 隐藏姓
- * 2. 三个及其以上 只保留第一个和最后一个 其他用星号代替
+ * 0. 少于等于1个字 直接返回 1. 两个字 隐藏姓 2. 三个及其以上 只保留第一个和最后一个 其他用星号代替
  *
  * @author Kimi Liu
  * @since Java 17+

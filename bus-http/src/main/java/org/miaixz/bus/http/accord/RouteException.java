@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.accord;
 
 import org.miaixz.bus.http.Builder;
@@ -32,8 +32,8 @@ import org.miaixz.bus.http.Builder;
 import java.io.IOException;
 
 /**
- * An exception thrown to indicate a problem connecting via a single Route. Multiple attempts may
- * have been made with alternative protocols, none of which were successful.
+ * An exception thrown to indicate a problem connecting via a single Route. Multiple attempts may have been made with
+ * alternative protocols, none of which were successful.
  */
 public final class RouteException extends RuntimeException {
 

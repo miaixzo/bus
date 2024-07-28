@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text.bloom;
 
 import java.util.BitSet;
@@ -47,7 +47,6 @@ public abstract class AbstractFilter implements BloomFilter {
      * 容量
      */
     protected int size;
-
 
     /**
      * 构造

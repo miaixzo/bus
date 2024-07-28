@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.qrcode;
 
 import com.google.zxing.BarcodeFormat;
@@ -51,8 +51,8 @@ import java.util.Map;
 /**
  * 基于Zxing的二维码工具类，支持：
  * <ul>
- *     <li>二维码生成和识别，见{@link BarcodeFormat#QR_CODE}</li>
- *     <li>条形码生成和识别，见{@link BarcodeFormat#CODE_39}等很多标准格式</li>
+ * <li>二维码生成和识别，见{@link BarcodeFormat#QR_CODE}</li>
+ * <li>条形码生成和识别，见{@link BarcodeFormat#CODE_39}等很多标准格式</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -81,20 +81,21 @@ public class QrCodeKit {
      * @param imageType 类型（图片扩展名），见{@link #QR_TYPE_SVG}、 {@link #QR_TYPE_TXT}、{@link ImageKit}
      * @return 图片 Base64 编码字符串
      */
-    public static String generateAsBase64DataUri(final String content, final QrConfig qrConfig, final String imageType) {
+    public static String generateAsBase64DataUri(final String content, final QrConfig qrConfig,
+            final String imageType) {
         switch (imageType) {
-            case QR_TYPE_SVG:
-                return svgToBase64DataUri(generateAsSvg(content, qrConfig));
-            case QR_TYPE_TXT:
-                return txtToBase64DataUri(generateAsAsciiArt(content, qrConfig));
-            default:
-                BufferedImage img = null;
-                try {
-                    img = generate(content, qrConfig);
-                    return ImageKit.toBase64DataUri(img, imageType);
-                } finally {
-                    ImageKit.flush(img);
-                }
+        case QR_TYPE_SVG:
+            return svgToBase64DataUri(generateAsSvg(content, qrConfig));
+        case QR_TYPE_TXT:
+            return txtToBase64DataUri(generateAsAsciiArt(content, qrConfig));
+        default:
+            BufferedImage img = null;
+            try {
+                img = generate(content, qrConfig);
+                return ImageKit.toBase64DataUri(img, imageType);
+            } finally {
+                ImageKit.flush(img);
+            }
         }
     }
 
@@ -149,20 +150,20 @@ public class QrCodeKit {
     public static File generate(final String content, final QrConfig config, final File targetFile) {
         final String extName = FileName.extName(targetFile);
         switch (extName) {
-            case QR_TYPE_SVG:
-                FileKit.writeUtf8String(generateAsSvg(content, config), targetFile);
-                break;
-            case QR_TYPE_TXT:
-                FileKit.writeUtf8String(generateAsAsciiArt(content, config), targetFile);
-                break;
-            default:
-                BufferedImage image = null;
-                try {
-                    image = generate(content, config);
-                    ImageKit.write(image, targetFile);
-                } finally {
-                    ImageKit.flush(image);
-                }
+        case QR_TYPE_SVG:
+            FileKit.writeUtf8String(generateAsSvg(content, config), targetFile);
+            break;
+        case QR_TYPE_TXT:
+            FileKit.writeUtf8String(generateAsAsciiArt(content, config), targetFile);
+            break;
+        default:
+            BufferedImage image = null;
+            try {
+                image = generate(content, config);
+                ImageKit.write(image, targetFile);
+            } finally {
+                ImageKit.flush(image);
+            }
         }
 
         return targetFile;
@@ -177,7 +178,8 @@ public class QrCodeKit {
      * @param imageType 类型（图片扩展名），见{@link #QR_TYPE_SVG}、 {@link #QR_TYPE_TXT}、{@link ImageKit}
      * @param out       目标流
      */
-    public static void generate(final String content, final int width, final int height, final String imageType, final OutputStream out) {
+    public static void generate(final String content, final int width, final int height, final String imageType,
+            final OutputStream out) {
         generate(content, QrConfig.of(width, height), imageType, out);
     }
 
@@ -189,22 +191,23 @@ public class QrCodeKit {
      * @param imageType 图片类型（图片扩展名），见{@link ImageKit}
      * @param out       目标流
      */
-    public static void generate(final String content, final QrConfig config, final String imageType, final OutputStream out) {
+    public static void generate(final String content, final QrConfig config, final String imageType,
+            final OutputStream out) {
         switch (imageType) {
-            case QR_TYPE_SVG:
-                IoKit.write(out, false, generateAsSvg(content, config));
-                break;
-            case QR_TYPE_TXT:
-                IoKit.write(out, false, generateAsAsciiArt(content, config));
-                break;
-            default:
-                BufferedImage img = null;
-                try {
-                    img = generate(content, config);
-                    ImageKit.write(img, imageType, out);
-                } finally {
-                    ImageKit.flush(img);
-                }
+        case QR_TYPE_SVG:
+            IoKit.write(out, false, generateAsSvg(content, config));
+            break;
+        case QR_TYPE_TXT:
+            IoKit.write(out, false, generateAsAsciiArt(content, config));
+            break;
+        default:
+            BufferedImage img = null;
+            try {
+                img = generate(content, config);
+                ImageKit.write(img, imageType, out);
+            } finally {
+                ImageKit.flush(img);
+            }
         }
     }
 
@@ -221,8 +224,7 @@ public class QrCodeKit {
     }
 
     /**
-     * 生成二维码或条形码图片
-     * 只有二维码时QrConfig中的图片才有效
+     * 生成二维码或条形码图片 只有二维码时QrConfig中的图片才有效
      *
      * @param content 文本内容
      * @param config  二维码配置，包括宽度、高度、边距、颜色等
@@ -286,8 +288,7 @@ public class QrCodeKit {
     }
 
     /**
-     * 将二维码或条形码图片解码为文本
-     * 此方法会尝试使用{@link HybridBinarizer}和{@link GlobalHistogramBinarizer}两种模式解析
+     * 将二维码或条形码图片解码为文本 此方法会尝试使用{@link HybridBinarizer}和{@link GlobalHistogramBinarizer}两种模式解析
      * 需要注意部分二维码如果不带logo，使用PureBarcode模式会解析失败，此时须设置此选项为false。
      *
      * @param image         {@link Image} 二维码图片
@@ -300,8 +301,7 @@ public class QrCodeKit {
     }
 
     /**
-     * 将二维码或条形码图片解码为文本
-     * 此方法会尝试使用{@link HybridBinarizer}和{@link GlobalHistogramBinarizer}两种模式解析
+     * 将二维码或条形码图片解码为文本 此方法会尝试使用{@link HybridBinarizer}和{@link GlobalHistogramBinarizer}两种模式解析
      * 需要注意部分二维码如果不带logo，使用PureBarcode模式会解析失败，此时须设置此选项为false。
      *
      * @param image {@link Image} 二维码图片
@@ -323,7 +323,8 @@ public class QrCodeKit {
     public static BufferedImage toImage(final BitMatrix matrix, final int foreColor, final Integer backColor) {
         final int width = matrix.getWidth();
         final int height = matrix.getHeight();
-        final BufferedImage image = new BufferedImage(width, height, null == backColor ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB);
+        final BufferedImage image = new BufferedImage(width, height,
+                null == backColor ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB);
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 if (matrix.get(x, y)) {
@@ -390,7 +391,9 @@ public class QrCodeKit {
 
     /**
      * 将SVG字符串转换为Base64数据URI格式。
-     * <p>此方法通过将SVG内容编码为Base64，并将其封装在数据URI中，以便于在HTML或CSS中直接嵌入SVG图像。</p>
+     * <p>
+     * 此方法通过将SVG内容编码为Base64，并将其封装在数据URI中，以便于在HTML或CSS中直接嵌入SVG图像。
+     * </p>
      *
      * @param svg SVG图像的内容，为字符串形式。
      * @return 转换后的Base64数据URI字符串，可用于直接在HTML或CSS中显示SVG图像。

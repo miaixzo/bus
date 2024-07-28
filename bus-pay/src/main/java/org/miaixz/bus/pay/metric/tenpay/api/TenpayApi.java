@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pay.metric.tenpay.api;
 
 import org.miaixz.bus.pay.Matcher;
@@ -93,7 +93,6 @@ public enum TenpayApi implements Matcher {
      * 企业付款对账单下载
      */
     DOWNLOAD_TRANSFER_BILL_URL("/pay/qpay_epay_statement_down.cgi", "企业付款对账单下载");
-
 
     /**
      * 接口方法

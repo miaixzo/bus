@@ -24,13 +24,11 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cron;
 
 /**
- * 作业启动器
- * 负责检查 {@link Repertoire} 是否有匹配到此时运行的Task
- * 检查完毕后启动器结束
+ * 作业启动器 负责检查 {@link Repertoire} 是否有匹配到此时运行的Task 检查完毕后启动器结束
  *
  * @author Kimi Liu
  * @since Java 17+

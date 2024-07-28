@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket.buffer;
 
 import java.util.concurrent.ScheduledFuture;
@@ -76,7 +76,6 @@ public final class BufferPagePool {
         }
     }
 
-
     /**
      * 申请内存页
      *
@@ -89,7 +88,6 @@ public final class BufferPagePool {
         }
         throw new IllegalStateException("buffer pool is disable");
     }
-
 
     /**
      * 释放回收内存
@@ -121,4 +119,3 @@ public final class BufferPagePool {
     }, 500, 1000, TimeUnit.MILLISECONDS);
 
 }
-

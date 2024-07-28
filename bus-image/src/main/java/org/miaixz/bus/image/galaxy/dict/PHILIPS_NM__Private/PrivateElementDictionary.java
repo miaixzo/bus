@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.PHILIPS_NM__Private;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,34 +46,35 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.AlignmentTranslations:
-            case PrivateTag.AlignmentRotations:
-            case PrivateTag.AlignmentTimestamp:
-            case PrivateTag._7051_xx26_:
-                return VR.DS;
-            case PrivateTag.SegmentStartPosition:
-            case PrivateTag.SegmentStopPosition:
-            case PrivateTag.RelativeCOROffsetXDirection:
-            case PrivateTag.RelativeCOROffsetZDirection:
-                return VR.FL;
-            case PrivateTag._7051_xx27_:
-            case PrivateTag._7051_xx28_:
-            case PrivateTag._7051_xx29_:
-                return VR.IS;
-            case PrivateTag._7051_xx25_:
-                return VR.LO;
-            case PrivateTag.RelatedXraySeriesInstanceUID:
-                return VR.UI;
-            case PrivateTag.CurrentSegment:
-            case PrivateTag.NumberOfSegments:
-            case PrivateTag.CurrentRotationNumber:
-            case PrivateTag.NumberOfRotations:
-                return VR.US;
+
+        case PrivateTag.AlignmentTranslations:
+        case PrivateTag.AlignmentRotations:
+        case PrivateTag.AlignmentTimestamp:
+        case PrivateTag._7051_xx26_:
+            return VR.DS;
+        case PrivateTag.SegmentStartPosition:
+        case PrivateTag.SegmentStopPosition:
+        case PrivateTag.RelativeCOROffsetXDirection:
+        case PrivateTag.RelativeCOROffsetZDirection:
+            return VR.FL;
+        case PrivateTag._7051_xx27_:
+        case PrivateTag._7051_xx28_:
+        case PrivateTag._7051_xx29_:
+            return VR.IS;
+        case PrivateTag._7051_xx25_:
+            return VR.LO;
+        case PrivateTag.RelatedXraySeriesInstanceUID:
+            return VR.UI;
+        case PrivateTag.CurrentSegment:
+        case PrivateTag.NumberOfSegments:
+        case PrivateTag.CurrentRotationNumber:
+        case PrivateTag.NumberOfRotations:
+            return VR.US;
         }
         return VR.UN;
     }

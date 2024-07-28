@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center;
 
 import java.util.Spliterator;
@@ -47,8 +47,8 @@ public class TransSpliterator<F, T> implements Spliterator<T> {
     /**
      * 构造
      *
-     * @param from 源iterator
-     * @param function        函数
+     * @param from     源iterator
+     * @param function 函数
      */
     public TransSpliterator(final Spliterator<F> from, final Function<? super F, ? extends T> function) {
         this.from = from;
@@ -57,8 +57,7 @@ public class TransSpliterator<F, T> implements Spliterator<T> {
 
     @Override
     public boolean tryAdvance(final Consumer<? super T> action) {
-        return from.tryAdvance(
-                fromElement -> action.accept(function.apply(fromElement)));
+        return from.tryAdvance(fromElement -> action.accept(function.apply(fromElement)));
     }
 
     @Override
@@ -79,8 +78,7 @@ public class TransSpliterator<F, T> implements Spliterator<T> {
 
     @Override
     public int characteristics() {
-        return from.characteristics()
-                & ~(Spliterator.DISTINCT | Spliterator.NONNULL | Spliterator.SORTED);
+        return from.characteristics() & ~(Spliterator.DISTINCT | Spliterator.NONNULL | Spliterator.SORTED);
     }
 
 }

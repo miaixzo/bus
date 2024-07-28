@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.pinyin.provider.jpinyin;
 
 import com.github.stuxuhai.jpinyin.PinyinFormat;
@@ -34,8 +34,8 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.extra.pinyin.PinyinProvider;
 
 /**
- * 封装了Jpinyin的引擎。
- * 引入：
+ * 封装了Jpinyin的引擎。 引入：
+ * 
  * <pre>
  * &lt;dependency&gt;
  *     &lt;groupId&gt;com.github.stuxuhai&lt;/groupId&gt;
@@ -49,7 +49,7 @@ import org.miaixz.bus.extra.pinyin.PinyinProvider;
  */
 public class JPinyinProvider implements PinyinProvider {
 
-    //设置汉子拼音输出的格式
+    // 设置汉子拼音输出的格式
     private PinyinFormat format;
 
     /**
@@ -80,7 +80,6 @@ public class JPinyinProvider implements PinyinProvider {
         }
         this.format = format;
     }
-
 
     @Override
     public String getPinyin(final char c) {

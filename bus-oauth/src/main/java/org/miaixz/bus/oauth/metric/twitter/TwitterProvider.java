@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org justauth.cn and other contributors.        ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.twitter;
 
 import com.alibaba.fastjson.JSONObject;
@@ -97,13 +97,16 @@ public class TwitterProvider extends AbstractProvider {
      * @param tokenSecret oauth token secret
      * @return BASE64 encoded signature string
      */
-    public static String sign(Map<String, String> params, String method, String baseUrl, String apiSecret, String tokenSecret) {
+    public static String sign(Map<String, String> params, String method, String baseUrl, String apiSecret,
+            String tokenSecret) {
         TreeMap<String, String> map = new TreeMap<>(params);
 
         String text = Builder.parseMapToString(map, true);
-        String baseStr = method.toUpperCase() + Symbol.AND + UrlEncoder.encodeAll(baseUrl) + Symbol.AND + UrlEncoder.encodeAll(text);
+        String baseStr = method.toUpperCase() + Symbol.AND + UrlEncoder.encodeAll(baseUrl) + Symbol.AND
+                + UrlEncoder.encodeAll(text);
         String signKey = apiSecret + Symbol.AND + (StringKit.isEmpty(tokenSecret) ? "" : tokenSecret);
-        byte[] signature = Builder.sign(signKey.getBytes(Charset.UTF_8), baseStr.getBytes(Charset.UTF_8), Algorithm.HMACSHA1.getValue());
+        byte[] signature = Builder.sign(signKey.getBytes(Charset.UTF_8), baseStr.getBytes(Charset.UTF_8),
+                Algorithm.HMACSHA1.getValue());
 
         return new String(Base64.encode(signature, false));
     }
@@ -117,9 +120,7 @@ public class TwitterProvider extends AbstractProvider {
     @Override
     public String authorize(String state) {
         AccToken token = this.getRequestToken();
-        return Builder.fromUrl(complex.authorize())
-                .queryParam("oauth_token", token.getOauthToken())
-                .build();
+        return Builder.fromUrl(complex.authorize()).queryParam("oauth_token", token.getOauthToken()).build();
     }
 
     /**
@@ -142,11 +143,8 @@ public class TwitterProvider extends AbstractProvider {
 
         Map<String, String> res = Builder.parseStringToMap(requestToken);
 
-        return AccToken.builder()
-                .oauthToken(res.get("oauth_token"))
-                .oauthTokenSecret(res.get("oauth_token_secret"))
-                .oauthCallbackConfirmed(Boolean.valueOf(res.get("oauth_callback_confirmed")))
-                .build();
+        return AccToken.builder().oauthToken(res.get("oauth_token")).oauthTokenSecret(res.get("oauth_token_secret"))
+                .oauthCallbackConfirmed(Boolean.valueOf(res.get("oauth_callback_confirmed"))).build();
     }
 
     /**
@@ -160,8 +158,8 @@ public class TwitterProvider extends AbstractProvider {
         Map<String, String> headerMap = buildOauthParams();
         headerMap.put("oauth_token", callback.getOauth_token());
         headerMap.put("oauth_verifier", callback.getOauth_verifier());
-        headerMap.put("oauth_signature", sign(headerMap, "POST", complex.accessToken(), context.getAppSecret(), callback
-                .getOauth_token()));
+        headerMap.put("oauth_signature",
+                sign(headerMap, "POST", complex.accessToken(), context.getAppSecret(), callback.getOauth_token()));
 
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", buildHeader(headerMap));
@@ -173,12 +171,9 @@ public class TwitterProvider extends AbstractProvider {
 
         Map<String, String> requestToken = Builder.parseStringToMap(response);
 
-        return AccToken.builder()
-                .oauthToken(requestToken.get("oauth_token"))
-                .oauthTokenSecret(requestToken.get("oauth_token_secret"))
-                .userId(requestToken.get("user_id"))
-                .screenName(requestToken.get("screen_name"))
-                .build();
+        return AccToken.builder().oauthToken(requestToken.get("oauth_token"))
+                .oauthTokenSecret(requestToken.get("oauth_token_secret")).userId(requestToken.get("user_id"))
+                .screenName(requestToken.get("screen_name")).build();
     }
 
     @Override
@@ -190,27 +185,20 @@ public class TwitterProvider extends AbstractProvider {
         params.put("include_entities", Boolean.toString(true));
         params.put("include_email", Boolean.toString(true));
 
-        form.put("oauth_signature", sign(params, "GET", complex.userInfo(), context.getAppSecret(), accToken.getOauthTokenSecret()));
+        form.put("oauth_signature",
+                sign(params, "GET", complex.userInfo(), context.getAppSecret(), accToken.getOauthTokenSecret()));
 
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", buildHeader(form));
         String response = Httpx.get(userInfoUrl(accToken), null, header);
         JSONObject userInfo = JSONObject.parseObject(response);
 
-        return Material.builder()
-                .rawJson(userInfo)
-                .uuid(userInfo.getString("id_str"))
-                .username(userInfo.getString("screen_name"))
-                .nickname(userInfo.getString("name"))
-                .remark(userInfo.getString("description"))
-                .avatar(userInfo.getString("profile_image_url_https"))
-                .blog(userInfo.getString("url"))
-                .location(userInfo.getString("location"))
-                .avatar(userInfo.getString("profile_image_url"))
-                .email(userInfo.getString("email"))
-                .source(complex.toString())
-                .token(accToken)
-                .build();
+        return Material.builder().rawJson(userInfo).uuid(userInfo.getString("id_str"))
+                .username(userInfo.getString("screen_name")).nickname(userInfo.getString("name"))
+                .remark(userInfo.getString("description")).avatar(userInfo.getString("profile_image_url_https"))
+                .blog(userInfo.getString("url")).location(userInfo.getString("location"))
+                .avatar(userInfo.getString("profile_image_url")).email(userInfo.getString("email"))
+                .source(complex.toString()).token(accToken).build();
     }
 
     private Map<String, String> buildOauthParams() {
@@ -227,7 +215,8 @@ public class TwitterProvider extends AbstractProvider {
         final StringBuilder sb = new StringBuilder(PREAMBLE + Symbol.SPACE);
 
         for (Map.Entry<String, String> param : oauthParams.entrySet()) {
-            sb.append(param.getKey()).append("=\"").append(UrlEncoder.encodeAll(param.getValue())).append('"').append(", ");
+            sb.append(param.getKey()).append("=\"").append(UrlEncoder.encodeAll(param.getValue())).append('"')
+                    .append(", ");
         }
 
         return sb.deleteCharAt(sb.length() - 2).toString();
@@ -235,10 +224,8 @@ public class TwitterProvider extends AbstractProvider {
 
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(complex.userInfo())
-                .queryParam("include_entities", true)
-                .queryParam("include_email", true)
-                .build();
+        return Builder.fromUrl(complex.userInfo()).queryParam("include_entities", true)
+                .queryParam("include_email", true).build();
     }
 
 }

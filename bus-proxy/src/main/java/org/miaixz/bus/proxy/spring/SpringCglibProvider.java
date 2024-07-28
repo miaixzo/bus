@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.proxy.spring;
 
 import org.miaixz.bus.core.xyz.ClassKit;
@@ -44,8 +44,7 @@ import java.lang.reflect.Constructor;
 public class SpringCglibProvider implements Provider {
 
     /**
-     * 创建代理对象
-     * 某些对象存在非空参数构造，则需遍历查找需要的构造完成代理对象构建。
+     * 创建代理对象 某些对象存在非空参数构造，则需遍历查找需要的构造完成代理对象构建。
      *
      * @param <T>         代理对象类型
      * @param enhancer    {@link Enhancer}

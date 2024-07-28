@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.data;
 
 import org.miaixz.bus.image.Format;
@@ -40,47 +40,41 @@ import java.util.TimeZone;
 enum TemporalType {
     DA {
         @Override
-        public Date parse(TimeZone tz, String s, boolean ceil,
-                          DatePrecision precision) {
+        public Date parse(TimeZone tz, String s, boolean ceil, DatePrecision precision) {
             precision.lastField = Calendar.DAY_OF_MONTH;
             return Format.parseDA(null, s, ceil);
         }
 
         @Override
-        public String format(TimeZone tz, Date date,
-                             DatePrecision precision) {
+        public String format(TimeZone tz, Date date, DatePrecision precision) {
             return Format.formatDA(tz, date);
         }
-    }, DT {
+    },
+    DT {
         @Override
-        public Date parse(TimeZone tz, String s, boolean ceil,
-                          DatePrecision precision) {
+        public Date parse(TimeZone tz, String s, boolean ceil, DatePrecision precision) {
             return Format.parseDT(tz, s, ceil, precision);
         }
 
         @Override
-        public String format(TimeZone tz, Date date,
-                             DatePrecision precision) {
+        public String format(TimeZone tz, Date date, DatePrecision precision) {
             return Format.formatDT(tz, date, precision);
         }
-    }, TM {
+    },
+    TM {
         @Override
-        public Date parse(TimeZone tz, String s, boolean ceil,
-                          DatePrecision precision) {
+        public Date parse(TimeZone tz, String s, boolean ceil, DatePrecision precision) {
             return Format.parseTM(null, s, ceil, precision);
         }
 
         @Override
-        public String format(TimeZone tz, Date date,
-                             DatePrecision precision) {
+        public String format(TimeZone tz, Date date, DatePrecision precision) {
             return Format.formatTM(tz, date, precision);
         }
     };
 
-    public abstract Date parse(TimeZone tz, String val, boolean ceil,
-                               DatePrecision precision);
+    public abstract Date parse(TimeZone tz, String val, boolean ceil, DatePrecision precision);
 
-    public abstract String format(TimeZone tz, Date date,
-                                  DatePrecision precision);
+    public abstract String format(TimeZone tz, Date date, DatePrecision precision);
 
 }

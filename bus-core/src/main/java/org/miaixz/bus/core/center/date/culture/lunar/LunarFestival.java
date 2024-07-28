@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org 6tail and other contributors.              ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -42,10 +42,8 @@ import java.util.regex.Pattern;
  */
 public class LunarFestival extends Loops {
 
-    public static final String[] NAMES = {
-            "春节", "元宵节", "龙头节", "上巳节", "清明节", "端午节", "七夕节",
-            "中元节", "中秋节", "重阳节", "冬至节", "腊八节", "除夕"
-    };
+    public static final String[] NAMES = { "春节", "元宵节", "龙头节", "上巳节", "清明节", "端午节", "七夕节", "中元节", "中秋节", "重阳节", "冬至节",
+            "腊八节", "除夕" };
 
     public static String DATA = "@0000101@0100115@0200202@0300303@04107@0500505@0600707@0700715@0800815@0900909@10124@1101208@122";
 
@@ -93,15 +91,16 @@ public class LunarFestival extends Loops {
         String data = matcher.group();
         EnumMap.Festival type = EnumMap.Festival.fromCode(data.charAt(3) - '0');
         switch (type) {
-            case DAY:
-                return new LunarFestival(type, LunarDay.fromYmd(year, Integer.parseInt(data.substring(4, 6), 10), Integer.parseInt(data.substring(6), 10)), null, data);
-            case TERM:
-                SolarTerms solarTerm = SolarTerms.fromIndex(year, Integer.parseInt(data.substring(4), 10));
-                return new LunarFestival(type, solarTerm.getJulianDay().getSolarDay().getLunarDay(), solarTerm, data);
-            case EVE:
-                return new LunarFestival(type, LunarDay.fromYmd(year + 1, 1, 1).next(-1), null, data);
-            default:
-                return null;
+        case DAY:
+            return new LunarFestival(type, LunarDay.fromYmd(year, Integer.parseInt(data.substring(4, 6), 10),
+                    Integer.parseInt(data.substring(6), 10)), null, data);
+        case TERM:
+            SolarTerms solarTerm = SolarTerms.fromIndex(year, Integer.parseInt(data.substring(4), 10));
+            return new LunarFestival(type, solarTerm.getJulianDay().getSolarDay().getLunarDay(), solarTerm, data);
+        case EVE:
+            return new LunarFestival(type, LunarDay.fromYmd(year + 1, 1, 1).next(-1), null, data);
+        default:
+            return null;
         }
     }
 
@@ -125,7 +124,9 @@ public class LunarFestival extends Loops {
         }
         LunarDay lunarDay = LunarDay.fromYmd(year, month, day);
         LunarDay nextDay = lunarDay.next(1);
-        return nextDay.getMonth() == 1 && nextDay.getDay() == 1 ? new LunarFestival(EnumMap.Festival.EVE, lunarDay, null, matcher.group()) : null;
+        return nextDay.getMonth() == 1 && nextDay.getDay() == 1
+                ? new LunarFestival(EnumMap.Festival.EVE, lunarDay, null, matcher.group())
+                : null;
     }
 
     public LunarFestival next(int n) {

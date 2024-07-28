@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -46,7 +46,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- *  This class is used to filter issues when getting lists of them.
+ * This class is used to filter issues when getting lists of them.
  */
 public class IssueFilter implements Serializable {
     private static final long serialVersionUID = -1L;
@@ -62,7 +62,8 @@ public class IssueFilter implements Serializable {
     private IssueState state;
 
     /**
-     * Comma-separated list of label names, issues must have all labels to be returned. No+Label lists all issues with no labels.
+     * Comma-separated list of label names, issues must have all labels to be returned. No+Label lists all issues with
+     * no labels.
      */
     private List<String> labels;
 
@@ -72,7 +73,8 @@ public class IssueFilter implements Serializable {
     private String milestone;
 
     /**
-     * {@link Constants.IssueScope} Return issues for the given scope: created_by_me, assigned_to_me or all. For versions before 11.0, use the now deprecated created-by-me or assigned-to-me scopes instead.
+     * {@link Constants.IssueScope} Return issues for the given scope: created_by_me, assigned_to_me or all. For
+     * versions before 11.0, use the now deprecated created-by-me or assigned-to-me scopes instead.
      */
     private IssueScope scope;
 
@@ -137,7 +139,8 @@ public class IssueFilter implements Serializable {
     private Map<IssueField, Object> not;
 
     public enum IssueField {
-        ASSIGNEE_ID, ASSIGNEE_USERNAME, AUTHOR_ID, AUTHOR_USERNAME, IIDS, ITERATION_ID, ITERATION_TITLE, LABELS, MILESTONE, MILESTONE_ID;
+        ASSIGNEE_ID, ASSIGNEE_USERNAME, AUTHOR_ID, AUTHOR_USERNAME, IIDS, ITERATION_ID, ITERATION_TITLE, LABELS,
+        MILESTONE, MILESTONE_ID;
 
         private static JacksonJsonEnumHelper<IssueField> enumHelper = new JacksonJsonEnumHelper<>(IssueField.class);
 
@@ -156,7 +159,6 @@ public class IssueFilter implements Serializable {
             return (enumHelper.toString(this));
         }
     }
-
 
     /*- properties -*/
     public List<String> getIids() {
@@ -416,6 +418,7 @@ public class IssueFilter implements Serializable {
      * Add iids to the 'not' filter entry.
      *
      * @param iids the iids to add to the filter
+     * 
      * @return the reference to this IssueFilter instance
      */
     public IssueFilter withoutIids(String... iids) {
@@ -505,31 +508,21 @@ public class IssueFilter implements Serializable {
     /*- params generator -*/
     @JsonIgnore
     public GitLabApiForm getQueryParams(int page, int perPage) {
-        return (getQueryParams()
-                .withParam(Constants.PAGE_PARAM, page)
-                .withParam(Constants.PER_PAGE_PARAM, perPage));
+        return (getQueryParams().withParam(Constants.PAGE_PARAM, page).withParam(Constants.PER_PAGE_PARAM, perPage));
     }
 
     @JsonIgnore
     public GitLabApiForm getQueryParams() {
-        return (new GitLabApiForm()
-                .withParam("iids", iids)
-                .withParam("state", state)
+        return (new GitLabApiForm().withParam("iids", iids).withParam("state", state)
                 .withParam("labels", (labels != null ? String.join(",", labels) : null))
-                .withParam("milestone", milestone)
-                .withParam("scope", scope)
-                .withParam("author_id", authorId)
-                .withParam("assignee_id", assigneeId)
-                .withParam("my_reaction_emoji", myReactionEmoji)
-                .withParam("order_by", orderBy)
-                .withParam("sort", sort)
-                .withParam("search", search)
+                .withParam("milestone", milestone).withParam("scope", scope).withParam("author_id", authorId)
+                .withParam("assignee_id", assigneeId).withParam("my_reaction_emoji", myReactionEmoji)
+                .withParam("order_by", orderBy).withParam("sort", sort).withParam("search", search)
                 .withParam("created_after", ISO8601.toString(createdAfter, false))
                 .withParam("created_before", ISO8601.toString(createdBefore, false))
                 .withParam("updated_after", ISO8601.toString(updatedAfter, false))
                 .withParam("updated_before", ISO8601.toString(updatedBefore, false)))
-                .withParam("iteration_title", iterationTitle)
-                .withParam("not", toStringMap(not), false);
+                        .withParam("iteration_title", iterationTitle).withParam("not", toStringMap(not), false);
     }
 
     private Map<String, Object> toStringMap(Map<IssueField, Object> map) {

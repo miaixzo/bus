@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text.replacer;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -32,8 +32,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 查找替换器
- * 查找给定的字符串，并全部替换为新的字符串，其它字符不变
+ * 查找替换器 查找给定的字符串，并全部替换为新的字符串，其它字符不变
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -56,7 +55,8 @@ public class SearchReplacer extends StringReplacer {
      * @param replacement 被替换的字符串
      * @param ignoreCase  是否忽略大小写
      */
-    public SearchReplacer(final int fromIndex, final CharSequence searchText, final CharSequence replacement, final boolean ignoreCase) {
+    public SearchReplacer(final int fromIndex, final CharSequence searchText, final CharSequence replacement,
+            final boolean ignoreCase) {
         this.fromIndex = Math.max(fromIndex, 0);
         this.searchText = Assert.notEmpty(searchText, "'searchStr' must be not empty!");
         this.searchTextLength = searchText.length();
@@ -81,8 +81,7 @@ public class SearchReplacer extends StringReplacer {
             return Normal.EMPTY;
         }
 
-        final StringBuilder result = new StringBuilder(
-                strLength - this.searchTextLength + this.replacement.length());
+        final StringBuilder result = new StringBuilder(strLength - this.searchTextLength + this.replacement.length());
         if (0 != fromIndex) {
             // 开始部分
             result.append(text.subSequence(0, fromIndex));
@@ -90,7 +89,7 @@ public class SearchReplacer extends StringReplacer {
 
         // 替换部分
         int pos = fromIndex;
-        int consumed;//处理过的字符数
+        int consumed;// 处理过的字符数
         while ((consumed = replace(text, pos, result)) > 0) {
             pos += consumed;
         }
@@ -111,7 +110,7 @@ public class SearchReplacer extends StringReplacer {
             // 替换的部分
             out.append(replacement);
 
-            //已经处理的长度 = 无需替换的长度（查找字符串位置 - 开始的位置） + 替换的长度
+            // 已经处理的长度 = 无需替换的长度（查找字符串位置 - 开始的位置） + 替换的长度
             return index - pos + searchTextLength;
         }
 

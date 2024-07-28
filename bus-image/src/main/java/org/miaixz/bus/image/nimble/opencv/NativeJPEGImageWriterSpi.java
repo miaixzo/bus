@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -50,9 +50,9 @@ public class NativeJPEGImageWriterSpi extends ImageWriterSpi {
 
     public NativeJPEGImageWriterSpi(Class<? extends NativeJPEGImageWriter> writer) {
         super("Miaixz Team", "1.0", NativeJPEGImageReaderSpi.NAMES, NativeJPEGImageReaderSpi.SUFFIXES,
-                NativeJPEGImageReaderSpi.MIMES, writer.getName(), new Class[]{ImageOutputStream.class},
-                new String[]{NativeJPEGImageReaderSpi.class.getName()}, false, null, null, null, null, false, null, null,
-                null, null);
+                NativeJPEGImageReaderSpi.MIMES, writer.getName(), new Class[] { ImageOutputStream.class },
+                new String[] { NativeJPEGImageReaderSpi.class.getName() }, false, null, null, null, null, false, null,
+                null, null, null);
     }
 
     public static boolean checkCommonJpgRequirement(ImageTypeSpecifier type) {

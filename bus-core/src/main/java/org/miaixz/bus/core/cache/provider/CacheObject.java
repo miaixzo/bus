@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.cache.provider;
 
 import org.miaixz.bus.core.xyz.DateKit;
@@ -130,7 +130,8 @@ public class CacheObject<K, V> implements Serializable {
 
     @Override
     public String toString() {
-        return "CacheObject [data=" + key + ", obj=" + obj + ", lastAccess=" + lastAccess + ", accessCount=" + accessCount + ", ttl=" + ttl + "]";
+        return "CacheObject [data=" + key + ", obj=" + obj + ", lastAccess=" + lastAccess + ", accessCount="
+                + accessCount + ", ttl=" + ttl + "]";
     }
 
     /**

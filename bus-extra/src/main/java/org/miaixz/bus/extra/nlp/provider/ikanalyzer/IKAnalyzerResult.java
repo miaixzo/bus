@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.nlp.provider.ikanalyzer;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -36,8 +36,7 @@ import org.wltea.analyzer.core.Lexeme;
 import java.io.IOException;
 
 /**
- * IKAnalyzer分词结果实现
- * 项目地址：https://github.com/yozhao/IKAnalyzer
+ * IKAnalyzer分词结果实现 项目地址：https://github.com/yozhao/IKAnalyzer
  *
  * @author Kimi Liu
  * @since Java 17+

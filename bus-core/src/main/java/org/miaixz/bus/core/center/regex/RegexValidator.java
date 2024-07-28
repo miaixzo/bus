@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.regex;
 
 import org.miaixz.bus.core.xyz.StringKit;
@@ -32,8 +32,8 @@ import org.miaixz.bus.core.xyz.StringKit;
 /**
  * 对象检查工具类，提供字对象的blank和empty等检查
  * <ul>
- *     <li>empty定义：{@code null} or 空字对象：{@code ""}</li>
- *     <li>blank定义：{@code null} or 空字对象：{@code ""} or 空格、全角空格、制表符、换行符，等不可见字符</li>
+ * <li>empty定义：{@code null} or 空字对象：{@code ""}</li>
+ * <li>blank定义：{@code null} or 空字对象：{@code ""} or 空格、全角空格、制表符、换行符，等不可见字符</li>
  * </ul>
  *
  * @author Kimi Liu

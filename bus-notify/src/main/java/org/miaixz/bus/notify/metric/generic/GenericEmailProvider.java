@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.notify.metric.generic;
 
 import jakarta.activation.DataHandler;
@@ -75,15 +75,11 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
             }
             Logger.error(message);
         }
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .errmsg(ErrorCode.SUCCESS.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
     }
 
     /**
-     * 将一个地址字符串解析为多个地址
-     * 地址间使用" "、","、";"分隔
+     * 将一个地址字符串解析为多个地址 地址间使用" "、","、";"分隔
      *
      * @param address 地址字符串
      * @param charset 编码
@@ -96,7 +92,7 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
         } catch (AddressException e) {
             throw new InternalException(e);
         }
-        //编码用户名
+        // 编码用户名
         if (ArrayKit.isNotEmpty(addresses)) {
             for (InternetAddress internetAddress : addresses) {
                 try {
@@ -111,8 +107,7 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
     }
 
     /**
-     * 将多个字符串邮件地址转为{@link InternetAddress}列表
-     * 单个字符串地址可以是多个地址合并的字符串
+     * 将多个字符串邮件地址转为{@link InternetAddress}列表 单个字符串地址可以是多个地址合并的字符串
      *
      * @param address 地址数组
      * @param charset 编码(主要用于中文用户名的编码)
@@ -179,7 +174,8 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
 
         // 正文
         final BodyPart body = new MimeBodyPart();
-        body.setContent(entity.getContent(), StringKit.format("text/{}; charset={}", Material.Type.HTML.equals(entity.getType()) ? "html" : "plain", entity.getCharset()));
+        body.setContent(entity.getContent(), StringKit.format("text/{}; charset={}",
+                Material.Type.HTML.equals(entity.getType()) ? "html" : "plain", entity.getCharset()));
         mainPart.addBodyPart(body);
 
         // 附件
@@ -190,7 +186,8 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
                 bodyPart = new MimeBodyPart();
                 bodyPart.setDataHandler(new DataHandler(dataSource));
                 try {
-                    bodyPart.setFileName(MimeUtility.encodeText(dataSource.getName(), entity.getCharset().name(), null));
+                    bodyPart.setFileName(
+                            MimeUtility.encodeText(dataSource.getName(), entity.getCharset().name(), null));
                 } catch (UnsupportedEncodingException e) {
 
                 }
@@ -201,21 +198,23 @@ public class GenericEmailProvider extends AbstractProvider<GenericMaterial, Cont
         msg.setContent(mainPart);
 
         // 收件人
-        msg.setRecipients(MimeMessage.RecipientType.TO, getAddress(StringKit.splitToArray(entity.getReceive(), Symbol.COMMA), charset));
+        msg.setRecipients(MimeMessage.RecipientType.TO,
+                getAddress(StringKit.splitToArray(entity.getReceive(), Symbol.COMMA), charset));
         // 抄送人
         if (StringKit.isNotEmpty(entity.getCcs())) {
-            msg.setRecipients(MimeMessage.RecipientType.CC, getAddress(StringKit.splitToArray(entity.getCcs(), Symbol.COMMA), charset));
+            msg.setRecipients(MimeMessage.RecipientType.CC,
+                    getAddress(StringKit.splitToArray(entity.getCcs(), Symbol.COMMA), charset));
         }
         // 密送人
         if (StringKit.isNotEmpty(entity.getBccs())) {
-            msg.setRecipients(MimeMessage.RecipientType.BCC, getAddress(StringKit.splitToArray(entity.getBccs(), Symbol.COMMA), charset));
+            msg.setRecipients(MimeMessage.RecipientType.BCC,
+                    getAddress(StringKit.splitToArray(entity.getBccs(), Symbol.COMMA), charset));
         }
         return msg;
     }
 
     /**
-     * 获取默认邮件会话
-     * 如果为全局单例的会话,则全局只允许一个邮件帐号,否则每次发送邮件会新建一个新的会话
+     * 获取默认邮件会话 如果为全局单例的会话,则全局只允许一个邮件帐号,否则每次发送邮件会新建一个新的会话
      *
      * @param template 是否使用单例Session
      * @return 邮件会话 {@link Session}

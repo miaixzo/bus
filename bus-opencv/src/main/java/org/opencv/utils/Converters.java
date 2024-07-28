@@ -1,3 +1,30 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org opencv.org and other contributors.         ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
 package org.opencv.utils;
 
 import org.opencv.core.*;
@@ -170,8 +197,7 @@ public class Converters {
                 pts.add(new Point(buff[i * 2], buff[i * 2 + 1]));
             }
         } else {
-            throw new IllegalArgumentException(
-                    "Input Mat should be of CV_32SC2, CV_32FC2 or CV_64FC2 type\n" + m);
+            throw new IllegalArgumentException("Input Mat should be of CV_32SC2, CV_32FC2 or CV_64FC2 type\n" + m);
         }
     }
 
@@ -215,8 +241,7 @@ public class Converters {
                 pts.add(new Point3(buff[i * 3], buff[i * 3 + 1], buff[i * 3 + 2]));
             }
         } else {
-            throw new IllegalArgumentException(
-                    "Input Mat should be of CV_32SC3, CV_32FC3 or CV_64FC3 type\n" + m);
+            throw new IllegalArgumentException("Input Mat should be of CV_32SC3, CV_32FC3 or CV_64FC3 type\n" + m);
         }
     }
 
@@ -243,8 +268,7 @@ public class Converters {
             throw new IllegalArgumentException("mats == null");
         int count = m.rows();
         if (CvType.CV_32SC2 != m.type() || m.cols() != 1)
-            throw new IllegalArgumentException(
-                    "CvType.CV_32SC2 != m.type() ||  m.cols()!=1\n" + m);
+            throw new IllegalArgumentException("CvType.CV_32SC2 != m.type() ||  m.cols()!=1\n" + m);
 
         mats.clear();
         int[] buff = new int[count * 2];
@@ -277,8 +301,7 @@ public class Converters {
             throw new IllegalArgumentException("fs == null");
         int count = m.rows();
         if (CvType.CV_32FC1 != m.type() || m.cols() != 1)
-            throw new IllegalArgumentException(
-                    "CvType.CV_32FC1 != m.type() ||  m.cols()!=1\n" + m);
+            throw new IllegalArgumentException("CvType.CV_32FC1 != m.type() ||  m.cols()!=1\n" + m);
 
         fs.clear();
         float[] buff = new float[count];
@@ -310,8 +333,7 @@ public class Converters {
             throw new IllegalArgumentException("Output List can't be null");
         int count = m.rows();
         if (CvType.CV_8UC1 != m.type() || m.cols() != 1)
-            throw new IllegalArgumentException(
-                    "CvType.CV_8UC1 != m.type() ||  m.cols()!=1\n" + m);
+            throw new IllegalArgumentException("CvType.CV_8UC1 != m.type() ||  m.cols()!=1\n" + m);
 
         us.clear();
         byte[] buff = new byte[count];
@@ -360,8 +382,7 @@ public class Converters {
             throw new IllegalArgumentException("is == null");
         int count = m.rows();
         if (CvType.CV_32SC1 != m.type() || m.cols() != 1)
-            throw new IllegalArgumentException(
-                    "CvType.CV_32SC1 != m.type() ||  m.cols()!=1\n" + m);
+            throw new IllegalArgumentException("CvType.CV_32SC1 != m.type() ||  m.cols()!=1\n" + m);
 
         is.clear();
         int[] buff = new int[count];
@@ -376,8 +397,7 @@ public class Converters {
             throw new IllegalArgumentException("Output List can't be null");
         int count = m.rows();
         if (CvType.CV_8SC1 != m.type() || m.cols() != 1)
-            throw new IllegalArgumentException(
-                    "CvType.CV_8SC1 != m.type() ||  m.cols()!=1\n" + m);
+            throw new IllegalArgumentException("CvType.CV_8SC1 != m.type() ||  m.cols()!=1\n" + m);
 
         bs.clear();
         byte[] buff = new byte[count];
@@ -412,8 +432,7 @@ public class Converters {
             throw new IllegalArgumentException("rs == null");
         int count = m.rows();
         if (CvType.CV_32SC4 != m.type() || m.cols() != 1)
-            throw new IllegalArgumentException(
-                    "CvType.CV_32SC4 != m.type() ||  m.rows()!=1\n" + m);
+            throw new IllegalArgumentException("CvType.CV_32SC4 != m.type() ||  m.rows()!=1\n" + m);
 
         rs.clear();
         int[] buff = new int[4 * count];
@@ -448,8 +467,7 @@ public class Converters {
             throw new IllegalArgumentException("rs == null");
         int count = m.rows();
         if (CvType.CV_64FC4 != m.type() || m.cols() != 1)
-            throw new IllegalArgumentException(
-                                                         "CvType.CV_64FC4 != m.type() ||  m.rows()!=1\n" + m);
+            throw new IllegalArgumentException("CvType.CV_64FC4 != m.type() ||  m.rows()!=1\n" + m);
 
         rs.clear();
         double[] buff = new double[4 * count];
@@ -487,15 +505,14 @@ public class Converters {
             throw new IllegalArgumentException("Output List can't be null");
         int count = m.rows();
         if (CvType.CV_64FC(7) != m.type() || m.cols() != 1)
-            throw new IllegalArgumentException(
-                    "CvType.CV_64FC(7) != m.type() ||  m.cols()!=1\n" + m);
+            throw new IllegalArgumentException("CvType.CV_64FC(7) != m.type() ||  m.cols()!=1\n" + m);
 
         kps.clear();
         double[] buff = new double[7 * count];
         m.get(0, 0, buff);
         for (int i = 0; i < count; i++) {
-            kps.add(new KeyPoint((float) buff[7 * i], (float) buff[7 * i + 1], (float) buff[7 * i + 2], (float) buff[7 * i + 3],
-                    (float) buff[7 * i + 4], (int) buff[7 * i + 5], (int) buff[7 * i + 6]));
+            kps.add(new KeyPoint((float) buff[7 * i], (float) buff[7 * i + 1], (float) buff[7 * i + 2],
+                    (float) buff[7 * i + 3], (float) buff[7 * i + 4], (int) buff[7 * i + 5], (int) buff[7 * i + 6]));
         }
     }
 
@@ -643,8 +660,7 @@ public class Converters {
             throw new IllegalArgumentException("ds == null");
         int count = m.rows();
         if (CvType.CV_64FC1 != m.type() || m.cols() != 1)
-            throw new IllegalArgumentException(
-                    "CvType.CV_64FC1 != m.type() ||  m.cols()!=1\n" + m);
+            throw new IllegalArgumentException("CvType.CV_64FC1 != m.type() ||  m.cols()!=1\n" + m);
 
         ds.clear();
         double[] buff = new double[count];
@@ -679,14 +695,14 @@ public class Converters {
             throw new IllegalArgumentException("Output List can't be null");
         int count = m.rows();
         if (CvType.CV_64FC4 != m.type() || m.cols() != 1)
-            throw new IllegalArgumentException(
-                    "CvType.CV_64FC4 != m.type() ||  m.cols()!=1\n" + m);
+            throw new IllegalArgumentException("CvType.CV_64FC4 != m.type() ||  m.cols()!=1\n" + m);
 
         matches.clear();
         double[] buff = new double[4 * count];
         m.get(0, 0, buff);
         for (int i = 0; i < count; i++) {
-            matches.add(new DMatch((int) buff[4 * i], (int) buff[4 * i + 1], (int) buff[4 * i + 2], (float) buff[4 * i + 3]));
+            matches.add(new DMatch((int) buff[4 * i], (int) buff[4 * i + 1], (int) buff[4 * i + 2],
+                    (float) buff[4 * i + 3]));
         }
     }
 
@@ -760,11 +776,11 @@ public class Converters {
             float[] buff = new float[5 * count];
             for (int i = 0; i < count; i++) {
                 RotatedRect r = rs.get(i);
-                buff[5 * i] = (float)r.center.x;
-                buff[5 * i + 1] = (float)r.center.y;
-                buff[5 * i + 2] = (float)r.size.width;
-                buff[5 * i + 3] = (float)r.size.height;
-                buff[5 * i + 4] = (float)r.angle;
+                buff[5 * i] = (float) r.center.x;
+                buff[5 * i + 1] = (float) r.center.y;
+                buff[5 * i + 2] = (float) r.size.width;
+                buff[5 * i + 3] = (float) r.size.height;
+                buff[5 * i + 4] = (float) r.angle;
             }
             res.put(0, 0, buff);
         } else {
@@ -778,14 +794,14 @@ public class Converters {
             throw new IllegalArgumentException("rs == null");
         int count = m.rows();
         if (CvType.CV_32FC(5) != m.type() || m.cols() != 1)
-            throw new IllegalArgumentException(
-                    "CvType.CV_32FC5 != m.type() ||  m.rows()!=1\n" + m);
+            throw new IllegalArgumentException("CvType.CV_32FC5 != m.type() ||  m.rows()!=1\n" + m);
 
         rs.clear();
         float[] buff = new float[5 * count];
         m.get(0, 0, buff);
         for (int i = 0; i < count; i++) {
-            rs.add(new RotatedRect(new Point(buff[5 * i], buff[5 * i + 1]), new Size(buff[5 * i + 2], buff[5 * i + 3]), buff[5 * i + 4]));
+            rs.add(new RotatedRect(new Point(buff[5 * i], buff[5 * i + 1]), new Size(buff[5 * i + 2], buff[5 * i + 3]),
+                    buff[5 * i + 4]));
         }
     }
 }

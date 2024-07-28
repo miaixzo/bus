@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.stream;
 
 import org.miaixz.bus.core.xyz.CollKit;
@@ -34,8 +34,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * 带有类验证的对象流，用于避免反序列化漏洞
- * 详细见：https://xz.aliyun.com/t/41/
+ * 带有类验证的对象流，用于避免反序列化漏洞 详细见：https://xz.aliyun.com/t/41/
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,7 +51,8 @@ public class ValidateObjectInputStream extends ObjectInputStream {
      * @param acceptClasses 白名单的类
      * @throws IOException IO异常
      */
-    public ValidateObjectInputStream(final InputStream inputStream, final Class<?>... acceptClasses) throws IOException {
+    public ValidateObjectInputStream(final InputStream inputStream, final Class<?>... acceptClasses)
+            throws IOException {
         super(inputStream);
         accept(acceptClasses);
     }

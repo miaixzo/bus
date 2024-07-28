@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.CollectionOperation;
@@ -60,8 +60,7 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 /**
- * 集合相关工具类
- * 此工具方法针对{@link Collection}或{@link Iterable}及其实现类封装的工具
+ * 集合相关工具类 此工具方法针对{@link Collection}或{@link Iterable}及其实现类封装的工具
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -98,8 +97,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 根据函数生成的KEY去重集合，如根据Bean的某个或者某些字段完成去重。
-     * 去重可选是保留最先加入的值还是后加入的值
+     * 根据函数生成的KEY去重集合，如根据Bean的某个或者某些字段完成去重。 去重可选是保留最先加入的值还是后加入的值
      *
      * @param <T>        集合元素类型
      * @param <K>        唯一键类型
@@ -108,7 +106,8 @@ public class CollKit extends CollectionStream {
      * @param override   是否覆盖模式，如果为{@code true}，加入的新值会覆盖相同key的旧值，否则会忽略新加值
      * @return {@link List}
      */
-    public static <T, K> List<T> distinct(final Collection<T> collection, final Function<T, K> key, final boolean override) {
+    public static <T, K> List<T> distinct(final Collection<T> collection, final Function<T, K> key,
+            final boolean override) {
         if (isEmpty(collection)) {
             return new ArrayList<>();
         }
@@ -123,10 +122,8 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 多个集合的并集
-     * 针对一个集合中存在多个相同元素的情况，计算两个集合中此元素的个数，保留最多的个数
-     * 例如：集合1：[a, b, c, c, c]，集合2：[a, b, c, c]
-     * 结果：[a, b, c, c, c]，此结果中只保留了三个c
+     * 多个集合的并集 针对一个集合中存在多个相同元素的情况，计算两个集合中此元素的个数，保留最多的个数 例如：集合1：[a, b, c, c, c]，集合2：[a, b, c, c] 结果：[a, b, c, c,
+     * c]，此结果中只保留了三个c
      *
      * @param <T>   集合元素类型
      * @param colls 集合数组
@@ -138,10 +135,8 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 多个集合的非重复并集，类似于SQL中的“UNION DISTINCT”
-     * 针对一个集合中存在多个相同元素的情况，只保留一个
-     * 例如：集合1：[a, b, c, c, c]，集合2：[a, b, c, c]
-     * 结果：[a, b, c]，此结果中只保留了一个c
+     * 多个集合的非重复并集，类似于SQL中的“UNION DISTINCT” 针对一个集合中存在多个相同元素的情况，只保留一个 例如：集合1：[a, b, c, c, c]，集合2：[a, b, c, c] 结果：[a, b,
+     * c]，此结果中只保留了一个c
      *
      * @param <T>   集合元素类型
      * @param colls 列表集合
@@ -153,10 +148,8 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 多个集合的完全并集，类似于SQL中的“UNION ALL”
-     * 针对一个集合中存在多个相同元素的情况，保留全部元素
-     * 例如：集合1：[a, b, c, c, c]，集合2：[a, b, c, c]
-     * 结果：[a, b, c, c, c, a, b, c, c]
+     * 多个集合的完全并集，类似于SQL中的“UNION ALL” 针对一个集合中存在多个相同元素的情况，保留全部元素 例如：集合1：[a, b, c, c, c]，集合2：[a, b, c, c] 结果：[a, b, c, c,
+     * c, a, b, c, c]
      *
      * @param <T>   集合元素类型
      * @param colls 集合数组
@@ -168,10 +161,8 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 多个集合的交集
-     * 针对一个集合中存在多个相同元素的情况，计算两个集合中此元素的个数，保留最少的个数
-     * 例如：集合1：[a, b, c, c, c]，集合2：[a, b, c, c]
-     * 结果：[a, b, c, c]，此结果中只保留了两个c
+     * 多个集合的交集 针对一个集合中存在多个相同元素的情况，计算两个集合中此元素的个数，保留最少的个数 例如：集合1：[a, b, c, c, c]，集合2：[a, b, c, c] 结果：[a, b, c,
+     * c]，此结果中只保留了两个c
      *
      * @param <T>   集合元素类型
      * @param colls 集合列表
@@ -183,10 +174,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 多个集合的交集
-     * 针对一个集合中存在多个相同元素的情况，只保留一个
-     * 例如：集合1：[a, b, c, c, c]，集合2：[a, b, c, c]
-     * 结果：[a, b, c]，此结果中只保留了一个c
+     * 多个集合的交集 针对一个集合中存在多个相同元素的情况，只保留一个 例如：集合1：[a, b, c, c, c]，集合2：[a, b, c, c] 结果：[a, b, c]，此结果中只保留了一个c
      *
      * @param <T>   集合元素类型
      * @param colls 集合列表
@@ -198,17 +186,15 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 两个集合的差集
-     * 针对一个集合中存在多个相同元素的情况，计算两个集合中此元素的个数，保留两个集合中此元素个数差的个数
-     * 例如：
+     * 两个集合的差集 针对一个集合中存在多个相同元素的情况，计算两个集合中此元素的个数，保留两个集合中此元素个数差的个数 例如：
      *
      * <pre>
      *     disjunction([a, b, c, c, c], [a, b, c, c]) - [c]
      *     disjunction([a, b], [])                    - [a, b]
      *     disjunction([a, b, c], [b, c, d])          - [a, d]
      * </pre>
-     * 任意一个集合为空，返回另一个集合
-     * 两个集合无差集则返回空集合
+     * 
+     * 任意一个集合为空，返回另一个集合 两个集合无差集则返回空集合
      *
      * @param <T>   集合元素类型
      * @param coll1 集合1
@@ -289,7 +275,6 @@ public class CollKit extends CollectionStream {
         }
     }
 
-
     /**
      * 自定义函数判断集合是否包含某类值
      *
@@ -336,9 +321,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 集合1中是否包含集合2中所有的元素。
-     * 当集合1和集合2都为空时，返回{@code true}
-     * 当集合2为空时，返回{@code true}
+     * 集合1中是否包含集合2中所有的元素。 当集合1和集合2都为空时，返回{@code true} 当集合2为空时，返回{@code true}
      *
      * @param coll1 集合1
      * @param coll2 集合2
@@ -385,12 +368,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 根据集合返回一个元素计数的 {@link Map}
-     * 所谓元素计数就是假如这个集合中某个元素出现了n次，那将这个元素做为key，n做为value
-     * 例如：[a,b,c,c,c] 得到：
-     * a: 1
-     * b: 1
-     * c: 3
+     * 根据集合返回一个元素计数的 {@link Map} 所谓元素计数就是假如这个集合中某个元素出现了n次，那将这个元素做为key，n做为value 例如：[a,b,c,c,c] 得到： a: 1 b: 1 c: 3
      *
      * @param <T>        集合元素类型
      * @param collection 集合
@@ -411,13 +389,13 @@ public class CollKit extends CollectionStream {
      * @return 连接后的字符串
      * @see IteratorKit#join(Iterator, CharSequence, Function)
      */
-    public static <T> String join(final Iterable<T> iterable, final CharSequence conjunction, final Function<T, ? extends CharSequence> func) {
+    public static <T> String join(final Iterable<T> iterable, final CharSequence conjunction,
+            final Function<T, ? extends CharSequence> func) {
         return IteratorKit.join(IteratorKit.getIter(iterable), conjunction, func);
     }
 
     /**
-     * 以 conjunction 为分隔符将集合转换为字符串
-     * 如果集合元素为数组、{@link Iterable}或{@link Iterator}，则递归组合其为字符串
+     * 以 conjunction 为分隔符将集合转换为字符串 如果集合元素为数组、{@link Iterable}或{@link Iterator}，则递归组合其为字符串
      *
      * @param <T>         集合元素类型
      * @param iterable    {@link Iterable}
@@ -442,7 +420,8 @@ public class CollKit extends CollectionStream {
      * @param suffix      每个元素添加的后缀，null表示不添加
      * @return 连接后的字符串
      */
-    public static <T> String join(final Iterable<T> iterable, final CharSequence conjunction, final String prefix, final String suffix) {
+    public static <T> String join(final Iterable<T> iterable, final CharSequence conjunction, final String prefix,
+            final String suffix) {
         if (null == iterable) {
             return null;
         }
@@ -450,8 +429,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 切取部分数据
-     * 切取后的栈将减少这些元素
+     * 切取部分数据 切取后的栈将减少这些元素
      *
      * @param <T>             集合元素类型
      * @param surplusAlaDatas 原数据
@@ -475,8 +453,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 切取部分数据
-     * 切取后的栈将减少这些元素
+     * 切取部分数据 切取后的栈将减少这些元素
      *
      * @param <T>             集合元素类型
      * @param surplusAlaDatas 原数据
@@ -500,8 +477,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 新建{@link BlockingQueue}
-     * 在队列为空时，获取元素的线程会等待队列变为非空。当队列满时，存储元素的线程会等待队列可用。
+     * 新建{@link BlockingQueue} 在队列为空时，获取元素的线程会等待队列变为非空。当队列满时，存储元素的线程会等待队列可用。
      *
      * @param <T>      集合类型
      * @param capacity 容量
@@ -520,6 +496,7 @@ public class CollKit extends CollectionStream {
 
     /**
      * 根据给定的集合类型，返回对应的空集合，支持类型包括：
+     * 
      * <pre>
      *     1. NavigableSet
      *     2. SortedSet
@@ -708,8 +685,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 编辑，此方法产生一个新集合
-     * 编辑过程通过传入的Editor实现来返回需要的元素内容，这个Editor实现可以实现以下功能：
+     * 编辑，此方法产生一个新集合 编辑过程通过传入的Editor实现来返回需要的元素内容，这个Editor实现可以实现以下功能：
      *
      * <pre>
      * 1、过滤出需要的对象，如果返回null表示这个元素对象抛弃
@@ -743,8 +719,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 过滤
-     * 过滤过程通过传入的{@link Predicate}实现来过滤返回需要的元素内容，可以实现以下功能：
+     * 过滤 过滤过程通过传入的{@link Predicate}实现来过滤返回需要的元素内容，可以实现以下功能：
      *
      * <pre>
      * 1、过滤出需要的对象，{@link Predicate#test(Object)}方法返回true的对象将被加入结果集合中
@@ -778,11 +753,12 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 移除集合中满足条件的所有元素，此方法在原集合上直接修改
-     * 通过实现{@link Predicate}接口，完成元素的移除，可以实现以下功能：
+     * 移除集合中满足条件的所有元素，此方法在原集合上直接修改 通过实现{@link Predicate}接口，完成元素的移除，可以实现以下功能：
      *
      * <pre>
-     * 1、移除指定对象，{@link Predicate#test(Object)}方法返回{@code true}的对象将被使用{@link Iterator#remove()}方法移除。
+     * 1、移除指定对象，{@link Predicate#test(Object)}方法返回{@code
+     * true
+     * }的对象将被使用{@link Iterator#remove()}方法移除。
      * </pre>
      *
      * @param <T>       集合类型
@@ -836,8 +812,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 移除集合中的多个元素，并将结果存放到指定的集合
-     * 此方法直接修改原集合
+     * 移除集合中的多个元素，并将结果存放到指定的集合 此方法直接修改原集合
      *
      * @param <T>              集合类型
      * @param <E>              集合元素类型
@@ -846,7 +821,8 @@ public class CollKit extends CollectionStream {
      * @param predicate        用于是否移除判断的过滤器
      * @return 移除结果的集合
      */
-    public static <T extends Collection<E>, E> T removeWithAddIf(final T targetCollection, final T resultCollection, final Predicate<? super E> predicate) {
+    public static <T extends Collection<E>, E> T removeWithAddIf(final T targetCollection, final T resultCollection,
+            final Predicate<? super E> predicate) {
         Objects.requireNonNull(predicate);
         final Iterator<E> each = targetCollection.iterator();
         while (each.hasNext()) {
@@ -860,8 +836,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 移除集合中的多个元素，并将结果存放到生成的新集合中后返回
-     * 此方法直接修改原集合
+     * 移除集合中的多个元素，并将结果存放到生成的新集合中后返回 此方法直接修改原集合
      *
      * @param <T>              集合类型
      * @param <E>              集合元素类型
@@ -869,15 +844,15 @@ public class CollKit extends CollectionStream {
      * @param predicate        用于是否移除判断的过滤器
      * @return 移除结果的集合
      */
-    public static <T extends Collection<E>, E> List<E> removeWithAddIf(final T targetCollection, final Predicate<? super E> predicate) {
+    public static <T extends Collection<E>, E> List<E> removeWithAddIf(final T targetCollection,
+            final Predicate<? super E> predicate) {
         final List<E> removed = new ArrayList<>();
         removeWithAddIf(targetCollection, removed, predicate);
         return removed;
     }
 
     /**
-     * 通过func自定义一个规则，此规则将原集合中的元素转换成新的元素，生成新的列表返回
-     * 例如提供的是一个Bean列表，通过Function接口实现获取某个字段值，返回这个字段值组成的新列表
+     * 通过func自定义一个规则，此规则将原集合中的元素转换成新的元素，生成新的列表返回 例如提供的是一个Bean列表，通过Function接口实现获取某个字段值，返回这个字段值组成的新列表
      * 默认忽略映射后{@code null}的情况
      *
      * @param <T>        集合元素类型
@@ -891,8 +866,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 通过func自定义一个规则，此规则将原集合中的元素转换成新的元素，生成新的列表返回
-     * 例如提供的是一个Bean列表，通过Function接口实现获取某个字段值，返回这个字段值组成的新列表
+     * 通过func自定义一个规则，此规则将原集合中的元素转换成新的元素，生成新的列表返回 例如提供的是一个Bean列表，通过Function接口实现获取某个字段值，返回这个字段值组成的新列表
      *
      * @param <T>        集合元素类型
      * @param <R>        返回集合元素类型
@@ -902,22 +876,20 @@ public class CollKit extends CollectionStream {
      * @return 抽取后的新列表
      * @see java.util.stream.Stream#map(Function)
      */
-    public static <T, R> List<R> map(final Iterable<T> collection, final Function<? super T, ? extends R> mapper, final boolean ignoreNull) {
+    public static <T, R> List<R> map(final Iterable<T> collection, final Function<? super T, ? extends R> mapper,
+            final boolean ignoreNull) {
         if (ignoreNull) {
             return StreamKit.of(collection)
                     // 检查映射前的结果
-                    .filter(Objects::nonNull)
-                    .map(mapper)
+                    .filter(Objects::nonNull).map(mapper)
                     // 检查映射后的结果
-                    .filter(Objects::nonNull)
-                    .collect(Collectors.toList());
+                    .filter(Objects::nonNull).collect(Collectors.toList());
         }
         return StreamKit.of(collection).map(mapper).collect(Collectors.toList());
     }
 
     /**
-     * 获取给定Bean列表中指定字段名对应字段值的列表
-     * 列表元素支持Bean与Map
+     * 获取给定Bean列表中指定字段名对应字段值的列表 列表元素支持Bean与Map
      *
      * @param collection Bean集合或Map集合
      * @param fieldName  字段名或map的键
@@ -928,15 +900,15 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 获取给定Bean列表中指定字段名对应字段值的列表
-     * 列表元素支持Bean与Map
+     * 获取给定Bean列表中指定字段名对应字段值的列表 列表元素支持Bean与Map
      *
      * @param collection Bean集合或Map集合
      * @param fieldName  字段名或map的键
      * @param ignoreNull 是否忽略值为{@code null}的字段
      * @return 字段值列表
      */
-    public static List<Object> getFieldValues(final Iterable<?> collection, final String fieldName, final boolean ignoreNull) {
+    public static List<Object> getFieldValues(final Iterable<?> collection, final String fieldName,
+            final boolean ignoreNull) {
         return map(collection, bean -> {
             if (bean instanceof Map) {
                 return ((Map<?, ?>) bean).get(fieldName);
@@ -947,8 +919,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 获取给定Bean列表中指定字段名对应字段值的列表
-     * 列表元素支持Bean与Map
+     * 获取给定Bean列表中指定字段名对应字段值的列表 列表元素支持Bean与Map
      *
      * @param <T>         元素类型
      * @param collection  Bean集合或Map集合
@@ -956,14 +927,14 @@ public class CollKit extends CollectionStream {
      * @param elementType 元素类型类
      * @return 字段值列表
      */
-    public static <T> List<T> getFieldValues(final Iterable<?> collection, final String fieldName, final Class<T> elementType) {
+    public static <T> List<T> getFieldValues(final Iterable<?> collection, final String fieldName,
+            final Class<T> elementType) {
         final Collection<Object> fieldValues = getFieldValues(collection, fieldName);
         return Convert.toList(elementType, fieldValues);
     }
 
     /**
-     * 字段值与列表值对应的Map，常用于元素对象中有唯一ID时需要按照这个ID查找对象的情况
-     * 例如：车牌号 = 车
+     * 字段值与列表值对应的Map，常用于元素对象中有唯一ID时需要按照这个ID查找对象的情况 例如：车牌号 = 车
      *
      * @param <K>       字段名对应值得类型，不确定请使用Object
      * @param <V>       对象类型
@@ -985,7 +956,8 @@ public class CollKit extends CollectionStream {
      * @param fieldNameForValue 做为值的字段名（会通过反射获取其值）
      * @return 某个字段值与对象对应Map
      */
-    public static <K, V> Map<K, V> fieldValueAsMap(final Iterable<?> iterable, final String fieldNameForKey, final String fieldNameForValue) {
+    public static <K, V> Map<K, V> fieldValueAsMap(final Iterable<?> iterable, final String fieldNameForKey,
+            final String fieldNameForValue) {
         return IteratorKit.fieldValueAsMap(IteratorKit.getIter(iterable), fieldNameForKey, fieldNameForValue);
     }
 
@@ -1028,10 +1000,8 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 查找第一个匹配元素对象
-     * 如果集合元素是Map，则比对键和值是否相同，相同则返回
-     * 如果为普通Bean，则通过反射比对元素字段名对应的字段值是否相同，相同则返回
-     * 如果给定字段值参数是{@code null} 且元素对象中的字段值也为{@code null}则认为相同
+     * 查找第一个匹配元素对象 如果集合元素是Map，则比对键和值是否相同，相同则返回 如果为普通Bean，则通过反射比对元素字段名对应的字段值是否相同，相同则返回 如果给定字段值参数是{@code null}
+     * 且元素对象中的字段值也为{@code null}则认为相同
      *
      * @param <T>        集合元素类型
      * @param collection 集合，集合元素可以是Bean或者Map
@@ -1074,8 +1044,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 获取匹配规则定义中匹配到元素的第一个位置
-     * 此方法对于某些无序集合的位置信息，以转换为数组后的位置为准。
+     * 获取匹配规则定义中匹配到元素的第一个位置 此方法对于某些无序集合的位置信息，以转换为数组后的位置为准。
      *
      * @param <T>        元素类型
      * @param collection 集合
@@ -1096,8 +1065,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 获取匹配规则定义中匹配到元素的最后位置
-     * 此方法对于某些无序集合的位置信息，以转换为数组后的位置为准。
+     * 获取匹配规则定义中匹配到元素的最后位置 此方法对于某些无序集合的位置信息，以转换为数组后的位置为准。
      *
      * @param <T>        元素类型
      * @param collection 集合
@@ -1123,8 +1091,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 获取匹配规则定义中匹配到元素的所有位置
-     * 此方法对于某些无序集合的位置信息，以转换为数组后的位置为准。
+     * 获取匹配规则定义中匹配到元素的所有位置 此方法对于某些无序集合的位置信息，以转换为数组后的位置为准。
      *
      * @param <T>        元素类型
      * @param collection 集合
@@ -1136,8 +1103,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 获取匹配规则定义中匹配到元素的所有位置
-     * 此方法对于某些无序集合的位置信息，以转换为数组后的位置为准。
+     * 获取匹配规则定义中匹配到元素的所有位置 此方法对于某些无序集合的位置信息，以转换为数组后的位置为准。
      *
      * @param <T>        元素类型
      * @param collection 集合
@@ -1160,11 +1126,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 映射键值（参考Python的zip()函数）
-     * 例如：
-     * keys = a,b,c,d
-     * values = 1,2,3,4
-     * delimiter = , 则得到的Map是 {a=1, b=2, c=3, d=4}
+     * 映射键值（参考Python的zip()函数） 例如： keys = a,b,c,d values = 1,2,3,4 delimiter = , 则得到的Map是 {a=1, b=2, c=3, d=4}
      * 如果两个数组长度不同，则只对应最短部分
      *
      * @param keys      键列表
@@ -1173,16 +1135,14 @@ public class CollKit extends CollectionStream {
      * @param isOrder   是否有序
      * @return Map
      */
-    public static Map<String, String> zip(final String keys, final String values, final String delimiter, final boolean isOrder) {
-        return ArrayKit.zip(CharsBacker.splitToArray(keys, delimiter), CharsBacker.splitToArray(values, delimiter), isOrder);
+    public static Map<String, String> zip(final String keys, final String values, final String delimiter,
+            final boolean isOrder) {
+        return ArrayKit.zip(CharsBacker.splitToArray(keys, delimiter), CharsBacker.splitToArray(values, delimiter),
+                isOrder);
     }
 
     /**
-     * 映射键值（参考Python的zip()函数），返回Map无序
-     * 例如：
-     * keys = a,b,c,d
-     * values = 1,2,3,4
-     * delimiter = , 则得到的Map是 {a=1, b=2, c=3, d=4}
+     * 映射键值（参考Python的zip()函数），返回Map无序 例如： keys = a,b,c,d values = 1,2,3,4 delimiter = , 则得到的Map是 {a=1, b=2, c=3, d=4}
      * 如果两个数组长度不同，则只对应最短部分
      *
      * @param keys      键列表
@@ -1195,12 +1155,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 映射键值（参考Python的zip()函数）
-     * 例如：
-     * keys = [a,b,c,d]
-     * values = [1,2,3,4]
-     * 则得到的Map是 {a=1, b=2, c=3, d=4}
-     * 如果两个数组长度不同，则只对应最短部分
+     * 映射键值（参考Python的zip()函数） 例如： keys = [a,b,c,d] values = [1,2,3,4] 则得到的Map是 {a=1, b=2, c=3, d=4} 如果两个数组长度不同，则只对应最短部分
      *
      * @param <K>    键类型
      * @param <V>    值类型
@@ -1241,8 +1196,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * Iterator转换为Enumeration
-     * Adapt the specified {@link Iterator} to the {@link Enumeration} interface.
+     * Iterator转换为Enumeration Adapt the specified {@link Iterator} to the {@link Enumeration} interface.
      *
      * @param <E>  集合元素类型
      * @param iter {@link Iterator}
@@ -1253,8 +1207,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * {@link Iterable}转为{@link Collection}
-     * 首先尝试强转，强转失败则构建一个新的{@link ArrayList}
+     * {@link Iterable}转为{@link Collection} 首先尝试强转，强转失败则构建一个新的{@link ArrayList}
      *
      * @param <E>      集合元素类型
      * @param iterable {@link Iterable}
@@ -1265,10 +1218,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 行转列，合并相同的键，值合并为列表
-     * 将Map列表中相同key的值组成列表做为Map的value
-     * 是{@link #toMapList(Map)}的逆方法
-     * 比如传入数据：
+     * 行转列，合并相同的键，值合并为列表 将Map列表中相同key的值组成列表做为Map的value 是{@link #toMapList(Map)}的逆方法 比如传入数据：
      *
      * <pre>
      * [
@@ -1278,7 +1228,9 @@ public class CollKit extends CollectionStream {
      *  {a: 4}
      * ]
      * </pre>
+     * 
      * 结果是：
+     * 
      * <pre>
      * {
      *   a: [1,2,3,4]
@@ -1298,9 +1250,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 列转行。将Map中值列表分别按照其位置与key组成新的map。
-     * 是{@link #toListMap(Iterable)}的逆方法
-     * 比如传入数据：
+     * 列转行。将Map中值列表分别按照其位置与key组成新的map。 是{@link #toListMap(Iterable)}的逆方法 比如传入数据：
      *
      * <pre>
      * {
@@ -1309,7 +1259,9 @@ public class CollKit extends CollectionStream {
      *   c: [1]
      * }
      * </pre>
+     * 
      * 结果是：
+     * 
      * <pre>
      * [
      *  {a: 1, b: 1, c: 1}
@@ -1330,8 +1282,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 将指定对象全部加入到集合中
-     * 提供的对象如果为集合类型，会自动转换为目标元素类型
+     * 将指定对象全部加入到集合中 提供的对象如果为集合类型，会自动转换为目标元素类型
      *
      * @param <T>        元素类型
      * @param collection 被加入的集合
@@ -1343,9 +1294,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 将指定对象全部加入到集合中
-     * 提供的对象如果为集合类型，会自动转换为目标元素类型
-     * 如果为String，支持类似于[1,2,3,4] 或者 1,2,3,4 这种格式
+     * 将指定对象全部加入到集合中 提供的对象如果为集合类型，会自动转换为目标元素类型 如果为String，支持类似于[1,2,3,4] 或者 1,2,3,4 这种格式
      *
      * @param <T>         元素类型
      * @param collection  被加入的集合
@@ -1370,7 +1319,7 @@ public class CollKit extends CollectionStream {
             iter = CharsBacker.splitTrim(arrayStr, Symbol.COMMA).iterator();
         } else if (value instanceof Map && BeanKit.isWritableBean(TypeKit.getClass(elementType))) {
             // 如果值为Map，而目标为一个Bean，则Map应整体转换为Bean，而非拆分成Entry转换
-            iter = new ArrayIterator<>(new Object[]{value});
+            iter = new ArrayIterator<>(new Object[] { value });
         } else {
             iter = IteratorKit.getIter(value);
         }
@@ -1459,8 +1408,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 获取集合中指定下标的元素值，下标可以为负数，例如-1表示最后一个元素
-     * 如果元素越界，返回null
+     * 获取集合中指定下标的元素值，下标可以为负数，例如-1表示最后一个元素 如果元素越界，返回null
      *
      * @param <T>        元素类型
      * @param collection 集合
@@ -1622,7 +1570,8 @@ public class CollKit extends CollectionStream {
      * @param comparator      {@link Comparator}
      * @return {@link LinkedList}
      */
-    public static <K, V> LinkedHashMap<K, V> sortToMap(final Collection<Map.Entry<K, V>> entryCollection, final Comparator<Map.Entry<K, V>> comparator) {
+    public static <K, V> LinkedHashMap<K, V> sortToMap(final Collection<Map.Entry<K, V>> entryCollection,
+            final Comparator<Map.Entry<K, V>> comparator) {
         final List<Map.Entry<K, V>> list = new LinkedList<>(entryCollection);
         list.sort(comparator);
 
@@ -1642,7 +1591,8 @@ public class CollKit extends CollectionStream {
      * @param comparator {@link Comparator}
      * @return {@link LinkedList}
      */
-    public static <K, V> LinkedHashMap<K, V> sortByEntry(final Map<K, V> map, final Comparator<Map.Entry<K, V>> comparator) {
+    public static <K, V> LinkedHashMap<K, V> sortByEntry(final Map<K, V> map,
+            final Comparator<Map.Entry<K, V>> comparator) {
         return sortToMap(map.entrySet(), comparator);
     }
 
@@ -1720,8 +1670,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 循环遍历Map，使用{@link SerConsumer3} 接受遍历的每条数据，并针对每条数据做处理
-     * 和JDK8中的map.forEach不同的是，此方法支持index
+     * 循环遍历Map，使用{@link SerConsumer3} 接受遍历的每条数据，并针对每条数据做处理 和JDK8中的map.forEach不同的是，此方法支持index
      *
      * @param <K>        Key类型
      * @param <V>        Value类型
@@ -1791,8 +1740,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 根据元素的指定字段值分组，非Bean都放在第一个分组中
-     * 例如：{@code
+     * 根据元素的指定字段值分组，非Bean都放在第一个分组中 例如：{@code
      * CollKit.groupByFunc(list, TestBean::getAge)
      * }
      *
@@ -1971,7 +1919,8 @@ public class CollKit extends CollectionStream {
      * @param function   转换函数
      * @return 新类型的集合
      */
-    public static <F, T> Collection<T> trans(final Collection<F> collection, final Function<? super F, ? extends T> function) {
+    public static <F, T> Collection<T> trans(final Collection<F> collection,
+            final Function<? super F, ? extends T> function) {
         return new TransCollection<>(collection, function);
     }
 
@@ -1984,15 +1933,17 @@ public class CollKit extends CollectionStream {
      * @param iterable    集合
      * @param map         映射集
      * @param keyGenerate 映射键生成函数
-     * @param biConsumer  封装映射到的值函数
-     *                    nick_wys
+     * @param biConsumer  封装映射到的值函数 nick_wys
      */
-    public static <E, K, V> void setValueByMap(final Iterable<E> iterable, final Map<K, V> map, final Function<E, K> keyGenerate, final BiConsumer<E, V> biConsumer) {
-        iterable.forEach(x -> Optional.ofNullable(map.get(keyGenerate.apply(x))).ifPresent(y -> biConsumer.accept(x, y)));
+    public static <E, K, V> void setValueByMap(final Iterable<E> iterable, final Map<K, V> map,
+            final Function<E, K> keyGenerate, final BiConsumer<E, V> biConsumer) {
+        iterable.forEach(
+                x -> Optional.ofNullable(map.get(keyGenerate.apply(x))).ifPresent(y -> biConsumer.accept(x, y)));
     }
 
     /**
      * 一个对象不为空且不存在于该集合中时，加入到该集合中
+     * 
      * <pre>
      *     null, null -&gt; false
      *     [], null -&gt; false
@@ -2007,8 +1958,7 @@ public class CollKit extends CollectionStream {
      * @param object     要添加到集合的对象
      * @param <T>        集合元素类型
      * @param <S>        要添加的元素类型【为集合元素类型的类型或子类型】
-     * @return 是否添加成功
-     * Cloud-Style
+     * @return 是否添加成功 Cloud-Style
      */
     public static <T, S extends T> boolean addIfAbsent(final Collection<T> collection, final S object) {
         if (object == null || collection == null || collection.contains(object)) {
@@ -2048,8 +1998,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 解构多层集合
-     * 例如：{@code List<List<List<String>>> 解构成 List<String>}
+     * 解构多层集合 例如：{@code List<List<List<String>>> 解构成 List<String>}
      *
      * @param <T>        元素类型
      * @param collection 需要解构的集合
@@ -2060,9 +2009,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 解构多层集合
-     * 例如：{@code List<List<List<String>>> 解构成 List<String>}
-     * skipNull如果为true, 则解构后的集合里不包含null值，为false则会包含null值。
+     * 解构多层集合 例如：{@code List<List<List<String>>> 解构成 List<String>} skipNull如果为true, 则解构后的集合里不包含null值，为false则会包含null值。
      *
      * @param <T>        元素类型
      * @param collection 需要结构的集合
@@ -2123,7 +2070,7 @@ public class CollKit extends CollectionStream {
         if (modulo <= 1) {
             return 0;
         }
-        for (; ; ) {
+        for (;;) {
             final int current = atomicInteger.get();
             final int next = (current + 1) % modulo;
             if (atomicInteger.compareAndSet(current, next)) {
@@ -2133,8 +2080,7 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 通过cas操作 实现对指定值内的回环累加
-     * 此方法一般用于大量数据完成回环累加（如数据库中的值大于int最大值）
+     * 通过cas操作 实现对指定值内的回环累加 此方法一般用于大量数据完成回环累加（如数据库中的值大于int最大值）
      *
      * @param modulo     回环周期值
      * @param atomicLong 原子操作类
@@ -2146,7 +2092,7 @@ public class CollKit extends CollectionStream {
         if (modulo <= 1) {
             return 0;
         }
-        for (; ; ) {
+        for (;;) {
             final long current = atomicLong.get();
             final long next = (current + 1) % modulo;
             if (atomicLong.compareAndSet(current, next)) {

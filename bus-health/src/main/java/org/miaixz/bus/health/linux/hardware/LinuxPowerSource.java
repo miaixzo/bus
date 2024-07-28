@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.linux.hardware;
 
 import com.sun.jna.platform.linux.Udev;
@@ -56,11 +56,11 @@ import java.util.*;
 public final class LinuxPowerSource extends AbstractPowerSource {
 
     public LinuxPowerSource(String psName, String psDeviceName, double psRemainingCapacityPercent,
-                            double psTimeRemainingEstimated, double psTimeRemainingInstant, double psPowerUsageRate, double psVoltage,
-                            double psAmperage, boolean psPowerOnLine, boolean psCharging, boolean psDischarging,
-                            PowerSource.CapacityUnits psCapacityUnits, int psCurrentCapacity, int psMaxCapacity, int psDesignCapacity,
-                            int psCycleCount, String psChemistry, LocalDate psManufactureDate, String psManufacturer,
-                            String psSerialNumber, double psTemperature) {
+            double psTimeRemainingEstimated, double psTimeRemainingInstant, double psPowerUsageRate, double psVoltage,
+            double psAmperage, boolean psPowerOnLine, boolean psCharging, boolean psDischarging,
+            PowerSource.CapacityUnits psCapacityUnits, int psCurrentCapacity, int psMaxCapacity, int psDesignCapacity,
+            int psCycleCount, String psChemistry, LocalDate psManufactureDate, String psManufacturer,
+            String psSerialNumber, double psTemperature) {
         super(psName, psDeviceName, psRemainingCapacityPercent, psTimeRemainingEstimated, psTimeRemainingInstant,
                 psPowerUsageRate, psVoltage, psAmperage, psPowerOnLine, psCharging, psDischarging, psCapacityUnits,
                 psCurrentCapacity, psMaxCapacity, psDesignCapacity, psCycleCount, psChemistry, psManufactureDate,
@@ -112,8 +112,8 @@ public final class LinuxPowerSource extends AbstractPowerSource {
                                 try {
                                     if (Parsing.parseIntOrDefault(device.getPropertyValue("POWER_SUPPLY_PRESENT"),
                                             1) > 0
-                                            && Parsing.parseIntOrDefault(
-                                            device.getPropertyValue("POWER_SUPPLY_ONLINE"), 1) > 0) {
+                                            && Parsing.parseIntOrDefault(device.getPropertyValue("POWER_SUPPLY_ONLINE"),
+                                                    1) > 0) {
                                         psName = getOrDefault(device, "POWER_SUPPLY_NAME", name);
                                         String status = device.getPropertyValue("POWER_SUPPLY_STATUS");
                                         psCharging = "Charging".equals(status);
@@ -163,10 +163,8 @@ public final class LinuxPowerSource extends AbstractPowerSource {
 
                                         psCycleCount = Parsing.parseIntOrDefault(
                                                 device.getPropertyValue("POWER_SUPPLY_CYCLE_COUNT"), -1);
-                                        psChemistry = getOrDefault(device, "POWER_SUPPLY_TECHNOLOGY",
-                                                Normal.UNKNOWN);
-                                        psDeviceName = getOrDefault(device, "POWER_SUPPLY_MODEL_NAME",
-                                                Normal.UNKNOWN);
+                                        psChemistry = getOrDefault(device, "POWER_SUPPLY_TECHNOLOGY", Normal.UNKNOWN);
+                                        psDeviceName = getOrDefault(device, "POWER_SUPPLY_MODEL_NAME", Normal.UNKNOWN);
                                         psManufacturer = getOrDefault(device, "POWER_SUPPLY_MANUFACTURER",
                                                 Normal.UNKNOWN);
                                         psSerialNumber = getOrDefault(device, "POWER_SUPPLY_SERIAL_NUMBER",
@@ -217,8 +215,8 @@ public final class LinuxPowerSource extends AbstractPowerSource {
                     psDischarging = "Discharging".equals(status);
 
                     if (psMap.containsKey("POWER_SUPPLY_CAPACITY")) {
-                        psRemainingCapacityPercent = Parsing.parseIntOrDefault(psMap.get("POWER_SUPPLY_CAPACITY"),
-                                -100) / 100d;
+                        psRemainingCapacityPercent = Parsing.parseIntOrDefault(psMap.get("POWER_SUPPLY_CAPACITY"), -100)
+                                / 100d;
                     }
                     if (psMap.containsKey("POWER_SUPPLY_ENERGY_NOW")) {
                         psCurrentCapacity = Parsing.parseIntOrDefault(psMap.get("POWER_SUPPLY_ENERGY_NOW"), -1);

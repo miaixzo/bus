@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map.multi;
 
 import org.miaixz.bus.core.center.function.SupplierX;
@@ -57,7 +57,8 @@ public class CollectionValueMap<K, V> extends AbstractCollValueMap<K, V> {
      * @param mapFactory  生成集合的工厂方法
      * @param collFactory 生成值集合的工厂方法
      */
-    public CollectionValueMap(final Supplier<Map<K, Collection<V>>> mapFactory, final SupplierX<Collection<V>> collFactory) {
+    public CollectionValueMap(final Supplier<Map<K, Collection<V>>> mapFactory,
+            final SupplierX<Collection<V>> collFactory) {
         super(mapFactory);
         this.collFactory = collFactory;
     }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date;
 
 import org.miaixz.bus.core.center.date.culture.en.Various;
@@ -76,7 +76,8 @@ public class Boundary extends Range<DateTime> {
      * @param isIncludeStart 是否包含开始的时间
      * @param isIncludeEnd   是否包含结束的时间
      */
-    public Boundary(final Date start, final Date end, final Various unit, final int step, final boolean isIncludeStart, final boolean isIncludeEnd) {
+    public Boundary(final Date start, final Date end, final Various unit, final int step, final boolean isIncludeStart,
+            final boolean isIncludeEnd) {
         super(DateKit.date(start), DateKit.date(end), (current, end1, index) -> {
             final DateTime dt = DateKit.date(start).offsetNew(unit, (index + 1) * step);
             if (dt.isAfter(end1)) {

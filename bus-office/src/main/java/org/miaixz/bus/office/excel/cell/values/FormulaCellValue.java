@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.excel.cell.values;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -35,8 +35,8 @@ import org.miaixz.bus.office.excel.cell.CellValue;
  * 公式类型的值
  *
  * <ul>
- *     <li>在Sax读取模式时，此对象用于接收单元格的公式以及公式结果值信息</li>
- *     <li>在写出模式时，用于定义写出的单元格类型为公式</li>
+ * <li>在Sax读取模式时，此对象用于接收单元格的公式以及公式结果值信息</li>
+ * <li>在写出模式时，用于定义写出的单元格类型为公式</li>
  * </ul>
  *
  * @author Kimi Liu

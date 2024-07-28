@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.GE_____From_Adantage_Review_CS;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,18 +46,19 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.CREDRMode:
-            case PrivateTag.CRLatitude:
-            case PrivateTag.CRGroupNumber:
-            case PrivateTag.CRImageSerialNumber:
-            case PrivateTag.CRBarCodeNumber:
-            case PrivateTag.CRFilmOutputExposures:
-                return VR.LO;
+
+        case PrivateTag.CREDRMode:
+        case PrivateTag.CRLatitude:
+        case PrivateTag.CRGroupNumber:
+        case PrivateTag.CRImageSerialNumber:
+        case PrivateTag.CRBarCodeNumber:
+        case PrivateTag.CRFilmOutputExposures:
+            return VR.LO;
         }
         return VR.UN;
     }

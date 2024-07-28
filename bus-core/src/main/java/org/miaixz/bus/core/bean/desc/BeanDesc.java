@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.bean.desc;
 
 import java.io.Serializable;
@@ -33,8 +33,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Bean信息描述做为BeanInfo替代方案，此对象持有JavaBean中的setters和getters等相关信息描述
- * 查找Getter和Setter方法时会：
+ * Bean信息描述做为BeanInfo替代方案，此对象持有JavaBean中的setters和getters等相关信息描述 查找Getter和Setter方法时会：
  *
  * <pre>
  * 1. 忽略字段和方法名的大小写

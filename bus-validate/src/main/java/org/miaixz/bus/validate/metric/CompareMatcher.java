@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.validate.metric;
 
 import org.miaixz.bus.core.xyz.FieldKit;
@@ -57,36 +57,36 @@ public class CompareMatcher implements Matcher<Object, Compare> {
             if (MathKit.isNumber(value.toString())) {
                 int _compValue = new BigDecimal(value.toString()).compareTo(new BigDecimal(object.toString()));
                 switch (annotation.cond()) {
-                    case EQ:
-                        _matched = _compValue == 0;
-                        break;
-                    case NOT_EQ:
-                        _matched = _compValue != 0;
-                        break;
-                    case GT:
-                        _matched = _compValue > 0;
-                        break;
-                    case LT:
-                        _matched = _compValue < 0;
-                        break;
-                    case GT_EQ:
-                        _matched = _compValue >= 0;
-                        break;
-                    case LT_EQ:
-                        _matched = _compValue <= 0;
-                        break;
-                    default:
+                case EQ:
+                    _matched = _compValue == 0;
+                    break;
+                case NOT_EQ:
+                    _matched = _compValue != 0;
+                    break;
+                case GT:
+                    _matched = _compValue > 0;
+                    break;
+                case LT:
+                    _matched = _compValue < 0;
+                    break;
+                case GT_EQ:
+                    _matched = _compValue >= 0;
+                    break;
+                case LT_EQ:
+                    _matched = _compValue <= 0;
+                    break;
+                default:
 
                 }
             } else {
                 switch (annotation.cond()) {
-                    case EQ:
-                        _matched = StringKit.equals(value.toString(), object.toString());
-                        break;
-                    case NOT_EQ:
-                        _matched = !StringKit.equals(value.toString(), object.toString());
-                        break;
-                    default:
+                case EQ:
+                    _matched = StringKit.equals(value.toString(), object.toString());
+                    break;
+                case NOT_EQ:
+                    _matched = !StringKit.equals(value.toString(), object.toString());
+                    break;
+                default:
                 }
             }
         }

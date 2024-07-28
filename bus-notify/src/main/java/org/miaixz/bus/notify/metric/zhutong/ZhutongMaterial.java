@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.notify.metric.zhutong;
 
 import lombok.AllArgsConstructor;
@@ -49,15 +49,12 @@ import org.miaixz.bus.notify.magic.Material;
 public class ZhutongMaterial extends Material {
 
     /**
-     * 模板变量名称
-     * 查看地址：https://mix2.zthysms.com/index.html#/TemplateManagement
-     * 允许为空，为空，使用无模板形式，发送短信
+     * 模板变量名称 查看地址：https://mix2.zthysms.com/index.html#/TemplateManagement 允许为空，为空，使用无模板形式，发送短信
      */
     private String templateName;
 
     /**
-     * API默认请求地址
-     * 当 {@link Context} 中 endpoint 为空时使用地址
+     * API默认请求地址 当 {@link Context} 中 endpoint 为空时使用地址
      */
     @Override
     public String getUrl() {

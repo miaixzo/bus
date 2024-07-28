@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.pdu;
 
 import org.miaixz.bus.core.lang.Charset;
@@ -42,28 +42,19 @@ public class IdentityRQ {
     public static final int SAML = 4;
     public static final int JWT = 5;
 
-    private static final String[] TYPES = {
-            "0",
-            "1 - Username",
-            "2 - Username and passcode",
-            "3 - Kerberos Service ticket",
-            "4 - SAML Assertion",
-            "5 - JSON Web Token (JWT)"
-    };
+    private static final String[] TYPES = { "0", "1 - Username", "2 - Username and passcode",
+            "3 - Kerberos Service ticket", "4 - SAML Assertion", "5 - JSON Web Token (JWT)" };
 
     private final int type;
     private final boolean rspReq;
     private final byte[] primaryField;
     private final byte[] secondaryField;
 
-    public IdentityRQ(int type, boolean rspReq, byte[] primaryField,
-                      byte[] secondaryField) {
+    public IdentityRQ(int type, boolean rspReq, byte[] primaryField, byte[] secondaryField) {
         this.type = type;
         this.rspReq = rspReq;
         this.primaryField = primaryField.clone();
-        this.secondaryField = secondaryField != null
-                ? secondaryField.clone()
-                : new byte[0];
+        this.secondaryField = secondaryField != null ? secondaryField.clone() : new byte[0];
     }
 
     public IdentityRQ(int type, boolean rspReq, byte[] primaryField) {
@@ -140,32 +131,21 @@ public class IdentityRQ {
     }
 
     StringBuilder promptTo(StringBuilder sb) {
-        sb.append("  UserIdentity[")
-                .append(Builder.LINE_SEPARATOR)
-                .append("    type: ")
-                .append(typeAsString(type))
+        sb.append("  UserIdentity[").append(Builder.LINE_SEPARATOR).append("    type: ").append(typeAsString(type))
                 .append(Builder.LINE_SEPARATOR);
-        if (type == USERNAME
-                || type == USERNAME_PASSCODE)
-            sb.append("    username: ")
-                    .append(getUsername());
+        if (type == USERNAME || type == USERNAME_PASSCODE)
+            sb.append("    username: ").append(getUsername());
         else
-            sb.append("    primaryField: byte[")
-                    .append(primaryField.length)
-                    .append(']');
+            sb.append("    primaryField: byte[").append(primaryField.length).append(']');
         if (type == USERNAME_PASSCODE) {
-            sb.append(Builder.LINE_SEPARATOR)
-                    .append("    passcode: ");
-            for (int i = secondaryField.length; --i >= 0; )
+            sb.append(Builder.LINE_SEPARATOR).append("    passcode: ");
+            for (int i = secondaryField.length; --i >= 0;)
                 sb.append('*');
         } else if (secondaryField.length > 0) {
-            sb.append(Builder.LINE_SEPARATOR)
-                    .append("    secondaryField: byte[")
-                    .append(secondaryField.length)
+            sb.append(Builder.LINE_SEPARATOR).append("    secondaryField: byte[").append(secondaryField.length)
                     .append(']');
         }
-        return sb.append(Builder.LINE_SEPARATOR)
-                .append("  ]");
+        return sb.append(Builder.LINE_SEPARATOR).append("  ]");
     }
 
 }

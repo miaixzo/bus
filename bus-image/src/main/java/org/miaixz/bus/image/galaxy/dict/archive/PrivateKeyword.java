@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.archive;
 
 /**
@@ -36,9 +36,9 @@ public class PrivateKeyword {
     public static final String PrivateCreator = "";
 
     public static String valueOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-                case PrivateTag.PatientCreateDateTime:
+        case PrivateTag.PatientCreateDateTime:
             return "PatientCreateDateTime";
         case PrivateTag.PatientUpdateDateTime:
             return "PatientUpdateDateTime";
@@ -120,6 +120,8 @@ public class PrivateKeyword {
             return "SeriesExternalRetrieveAETitle";
         case PrivateTag.StudyExternalRetrieveAETitle:
             return "StudyExternalRetrieveAETitle";
+        case PrivateTag.SeriesAccessControlID:
+            return "SeriesAccessControlID";
         case PrivateTag.StorageID:
             return "StorageID";
         case PrivateTag.StoragePath:

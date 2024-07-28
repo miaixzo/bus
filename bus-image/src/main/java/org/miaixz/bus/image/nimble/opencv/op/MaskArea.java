@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv.op;
 
 import org.miaixz.bus.image.nimble.opencv.ImageCV;
@@ -60,8 +60,7 @@ public class MaskArea {
             Color c = maskArea.getColor();
             ImageCV dstImg = new ImageCV();
             srcImg.copyTo(dstImg);
-            Scalar color =
-                    c == null ? new Scalar(0, 0, 0) : new Scalar(c.getBlue(), c.getGreen(), c.getRed());
+            Scalar color = c == null ? new Scalar(0, 0, 0) : new Scalar(c.getBlue(), c.getGreen(), c.getRed());
             for (Shape shape : maskArea.getShapeList()) {
                 if (c == null && shape instanceof Rectangle r) {
                     r = r.intersection(new Rectangle(0, 0, srcImg.width(), srcImg.height()));

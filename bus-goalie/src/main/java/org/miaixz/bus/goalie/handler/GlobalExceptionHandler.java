@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.goalie.handler;
 
 import io.netty.handler.timeout.ReadTimeoutException;
@@ -93,8 +93,8 @@ public class GlobalExceptionHandler extends Controller implements ErrorWebExcept
             formatBody = Context.Format.json.getProvider().serialize(message);
         }
         DataBuffer db = response.bufferFactory().wrap(formatBody.getBytes());
-        return response.writeWith(Mono.just(db))
-                .doOnTerminate(() -> Logger.info("traceId:{},exec time :{}ms", exchange.getLogPrefix(), System.currentTimeMillis() - context.getStartTime()));
+        return response.writeWith(Mono.just(db)).doOnTerminate(() -> Logger.info("traceId:{},exec time :{}ms",
+                exchange.getLogPrefix(), System.currentTimeMillis() - context.getStartTime()));
     }
 
 }

@@ -24,14 +24,13 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pay;
 
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 交易类型匹配
- * 即多场景支付业务支持
+ * 交易类型匹配 即多场景支付业务支持
  *
  * @author Kimi Liu
  * @since Java 17+

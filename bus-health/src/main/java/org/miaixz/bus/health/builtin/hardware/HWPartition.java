@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.hardware;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -65,7 +65,7 @@ public class HWPartition {
      * @param mountPoint     Where the partition is mounted
      */
     public HWPartition(String identification, String name, String type, String uuid, long size, int major, int minor,
-                       String mountPoint) {
+            String mountPoint) {
         this.identification = identification;
         this.name = name;
         this.type = type;

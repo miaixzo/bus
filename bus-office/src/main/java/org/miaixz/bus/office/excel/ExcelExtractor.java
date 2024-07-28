@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.excel;
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -57,8 +57,7 @@ public class ExcelExtractor {
     }
 
     /**
-     * 读取为文本格式
-     * 使用{@link org.apache.poi.ss.extractor.ExcelExtractor} 提取Excel内容
+     * 读取为文本格式 使用{@link org.apache.poi.ss.extractor.ExcelExtractor} 提取Excel内容
      *
      * @param wb            {@link Workbook}
      * @param withSheetName 是否附带sheet名

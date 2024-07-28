@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cron.pattern.matcher;
 
 import org.miaixz.bus.core.xyz.DateKit;
@@ -36,6 +36,7 @@ import java.util.TimeZone;
 
 /**
  * 单一表达式的匹配器，匹配器由7个{@link PartMatcher}组成，分别是：
+ * 
  * <pre>
  *         0      1     2        3         4       5        6
  *      SECOND MINUTE HOUR DAY_OF_MONTH MONTH DAY_OF_WEEK YEAR
@@ -59,23 +60,12 @@ public class PatternMatcher {
      * @param dayOfWeekMatcher  周匹配器
      * @param yearMatcher       年匹配器
      */
-    public PatternMatcher(final PartMatcher secondMatcher,
-                          final PartMatcher minuteMatcher,
-                          final PartMatcher hourMatcher,
-                          final PartMatcher dayOfMonthMatcher,
-                          final PartMatcher monthMatcher,
-                          final PartMatcher dayOfWeekMatcher,
-                          final PartMatcher yearMatcher) {
+    public PatternMatcher(final PartMatcher secondMatcher, final PartMatcher minuteMatcher,
+            final PartMatcher hourMatcher, final PartMatcher dayOfMonthMatcher, final PartMatcher monthMatcher,
+            final PartMatcher dayOfWeekMatcher, final PartMatcher yearMatcher) {
 
-        matchers = new PartMatcher[]{
-                secondMatcher,
-                minuteMatcher,
-                hourMatcher,
-                dayOfMonthMatcher,
-                monthMatcher,
-                dayOfWeekMatcher,
-                yearMatcher
-        };
+        matchers = new PartMatcher[] { secondMatcher, minuteMatcher, hourMatcher, dayOfMonthMatcher, monthMatcher,
+                dayOfWeekMatcher, yearMatcher };
     }
 
     /**
@@ -87,7 +77,8 @@ public class PatternMatcher {
      * @param isLeapYear 是否闰年
      * @return 是否匹配
      */
-    private static boolean matchDayOfMonth(final PartMatcher matcher, final int dayOfMonth, final int month, final boolean isLeapYear) {
+    private static boolean matchDayOfMonth(final PartMatcher matcher, final int dayOfMonth, final int month,
+            final boolean isLeapYear) {
         return ((matcher instanceof DayOfMonthMatcher) //
                 ? ((DayOfMonthMatcher) matcher).match(dayOfMonth, month, isLeapYear) //
                 : matcher.test(dayOfMonth));
@@ -135,7 +126,8 @@ public class PatternMatcher {
      * @param year       年
      * @return 如果匹配返回 {@code true}, 否则返回 {@code false}
      */
-    private boolean match(final int second, final int minute, final int hour, final int dayOfMonth, final int month, final int dayOfWeek, final int year) {
+    private boolean match(final int second, final int minute, final int hour, final int dayOfMonth, final int month,
+            final int dayOfWeek, final int year) {
         return ((second < 0) || matchers[0].test(second)) // 匹配秒（非秒匹配模式下始终返回true）
                 && matchers[1].test(minute)// 匹配分
                 && matchers[2].test(hour)// 匹配时
@@ -146,12 +138,11 @@ public class PatternMatcher {
     }
 
     /**
-     * 获取下一个匹配日期时间
-     * 获取方法是，先从年开始查找对应部分的下一个值：
+     * 获取下一个匹配日期时间 获取方法是，先从年开始查找对应部分的下一个值：
      * <ul>
-     *     <li>如果此部分下个值不变，获取下一个部分</li>
-     *     <li>如果此部分下个值大于给定值，以下所有值置为最小值</li>
-     *     <li>如果此部分下个值小于给定值，回退到上一个值获取下一个新值，之后的值置为最小值</li>
+     * <li>如果此部分下个值不变，获取下一个部分</li>
+     * <li>如果此部分下个值大于给定值，以下所有值置为最小值</li>
+     * <li>如果此部分下个值小于给定值，回退到上一个值获取下一个新值，之后的值置为最小值</li>
      * </ul>
      *
      * <pre>
@@ -159,8 +150,7 @@ public class PatternMatcher {
      *     下 &lt;-----------------&gt; 上
      * </pre>
      *
-     * @param values 时间字段值，{second, minute, hour, dayOfMonth, monthBase1, dayOfWeekBase0, year},
-     *               注意这个字段值会被修改
+     * @param values 时间字段值，{second, minute, hour, dayOfMonth, monthBase1, dayOfWeekBase0, year}, 注意这个字段值会被修改
      * @param zone   时区
      * @return {@link Calendar}，毫秒数为0
      */
@@ -180,12 +170,11 @@ public class PatternMatcher {
     }
 
     /**
-     * 获取下一个匹配日期时间
-     * 获取方法是，先从年开始查找对应部分的下一个值：
+     * 获取下一个匹配日期时间 获取方法是，先从年开始查找对应部分的下一个值：
      * <ul>
-     *     <li>如果此部分下个值不变，获取下一个部分</li>
-     *     <li>如果此部分下个值大于给定值，以下所有值置为最小值</li>
-     *     <li>如果此部分下个值小于给定值，回退到上一个值获取下一个新值，之后的值置为最小值</li>
+     * <li>如果此部分下个值不变，获取下一个部分</li>
+     * <li>如果此部分下个值大于给定值，以下所有值置为最小值</li>
+     * <li>如果此部分下个值小于给定值，回退到上一个值获取下一个新值，之后的值置为最小值</li>
      * </ul>
      *
      * <pre>{@code
@@ -253,9 +242,9 @@ public class PatternMatcher {
     /**
      * 获取指定部分的下一个匹配值，三种结果：
      * <ul>
-     *     <li>结果值大于原值：此部分已更新，后续部分取匹配的最小值。</li>
-     *     <li>结果值小于原值：此部分获取到了最小值，上一个部分需要继续取下一个值。</li>
-     *     <li>结果值等于原值：此部分匹配，获取下一个部分的next值</li>
+     * <li>结果值大于原值：此部分已更新，后续部分取匹配的最小值。</li>
+     * <li>结果值小于原值：此部分获取到了最小值，上一个部分需要继续取下一个值。</li>
+     * <li>结果值等于原值：此部分匹配，获取下一个部分的next值</li>
      * </ul>
      *
      * @param newValues   时间字段值，{second, minute, hour, dayOfMonth, monthBase1, dayOfWeekBase0, year}
@@ -266,7 +255,8 @@ public class PatternMatcher {
         if (partOrdinal == Part.DAY_OF_MONTH.ordinal() && matchers[partOrdinal] instanceof DayOfMonthMatcher) {
             final boolean isLeapYear = DateKit.isLeapYear(newValues[Part.YEAR.ordinal()]);
             final int month = newValues[Part.MONTH.ordinal()];
-            return ((DayOfMonthMatcher) matchers[partOrdinal]).nextAfter(newValues[partOrdinal] + plusValue, month, isLeapYear);
+            return ((DayOfMonthMatcher) matchers[partOrdinal]).nextAfter(newValues[partOrdinal] + plusValue, month,
+                    isLeapYear);
         }
 
         return matchers[partOrdinal].nextAfter(newValues[partOrdinal] + plusValue);
@@ -321,8 +311,8 @@ public class PatternMatcher {
     /**
      * 设置对应部分修正后的值
      * <ul>
-     *     <li>月在表达式中从1开始，但是{@link Calendar}中是从0开始的，需要-1</li>
-     *     <li>周在表达式中从0开始（0表示周日），但是{@link Calendar}中是从1开始的（1表示周日），需要+1</li>
+     * <li>月在表达式中从1开始，但是{@link Calendar}中是从0开始的，需要-1</li>
+     * <li>周在表达式中从0开始（0表示周日），但是{@link Calendar}中是从1开始的（1表示周日），需要+1</li>
      * </ul>
      *
      * @param calendar {@link Calendar}
@@ -332,12 +322,12 @@ public class PatternMatcher {
      */
     private Calendar setValue(final Calendar calendar, final Part part, int value) {
         switch (part) {
-            case MONTH:
-                value -= 1;
-                break;
-            case DAY_OF_WEEK:
-                value += 1;
-                break;
+        case MONTH:
+            value -= 1;
+            break;
+        case DAY_OF_WEEK:
+            value += 1;
+            break;
         }
         calendar.set(part.getCalendarField(), value);
         return calendar;

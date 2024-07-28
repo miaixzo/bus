@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -103,7 +103,10 @@ public class NativeJ2kImageWriter extends ImageWriter {
                 params[Imgcodecs.DICOM_PARAM_BITS_PER_SAMPLE] = desc.getBitsCompressed(); // Bits per sample
                 params[Imgcodecs.DICOM_PARAM_INTERLEAVE_MODE] = Imgcodecs.ILV_SAMPLE; // Interleave mode
                 params[Imgcodecs.DICOM_PARAM_COLOR_MODEL] = epi; // Photometric interpretation
-                params[Imgcodecs.DICOM_PARAM_J2K_COMPRESSION_FACTOR] = j2kParams.getCompressionRatiofactor(); // JPEG-2000 lossy ratio factor
+                params[Imgcodecs.DICOM_PARAM_J2K_COMPRESSION_FACTOR] = j2kParams.getCompressionRatiofactor(); // JPEG-2000
+                                                                                                              // lossy
+                                                                                                              // ratio
+                                                                                                              // factor
 
                 dicomParams = new MatOfInt(params);
                 buf = Imgcodecs.dicomJpgWrite(mat, dicomParams, Normal.EMPTY);

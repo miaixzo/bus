@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.pinyin.provider.bopomofo4j;
 
 import com.rnkrsoft.bopomofo4j.Bopomofo4j;
@@ -41,6 +41,7 @@ import org.miaixz.bus.extra.pinyin.PinyinProvider;
  *
  * <p>
  * 引入：
+ * 
  * <pre>
  * &lt;dependency&gt;
  *     &lt;groupId&gt;com.rnkrsoft.bopomofo4j&lt;/groupId&gt;

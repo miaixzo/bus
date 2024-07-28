@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.accord.platform;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -56,8 +56,7 @@ public class JdkPlatform extends Platform {
 
     public static JdkPlatform buildIfSupported() {
         try {
-            Method setProtocolMethod =
-                    SSLParameters.class.getMethod("setApplicationProtocols", String[].class);
+            Method setProtocolMethod = SSLParameters.class.getMethod("setApplicationProtocols", String[].class);
             Method getProtocolMethod = SSLSocket.class.getMethod("getApplicationProtocol");
 
             return new JdkPlatform(setProtocolMethod, getProtocolMethod);
@@ -69,15 +68,13 @@ public class JdkPlatform extends Platform {
     }
 
     @Override
-    public void configureTlsExtensions(SSLSocket sslSocket, String hostname,
-                                       List<Protocol> protocols) {
+    public void configureTlsExtensions(SSLSocket sslSocket, String hostname, List<Protocol> protocols) {
         try {
             SSLParameters sslParameters = sslSocket.getSSLParameters();
 
             List<String> names = alpnProtocolNames(protocols);
 
-            setProtocolMethod.invoke(sslParameters,
-                    new Object[]{names.toArray(new String[names.size()])});
+            setProtocolMethod.invoke(sslParameters, new Object[] { names.toArray(new String[names.size()]) });
 
             sslSocket.setSSLParameters(sslParameters);
         } catch (IllegalAccessException | InvocationTargetException e) {
@@ -114,7 +111,7 @@ public class JdkPlatform extends Platform {
     public X509TrustManager trustManager(SSLSocketFactory sslSocketFactory) {
         // Not supported due to access checks on JDK 9+:
         // java.lang.reflect.InaccessibleObjectException: Unable to make member of class
-        // sun.security.ssl.SSLSocketFactoryImpl accessible:  module java.base does not export
+        // sun.security.ssl.SSLSocketFactoryImpl accessible: module java.base does not export
         // sun.security.ssl to unnamed module @xxx
         throw new UnsupportedOperationException(
                 "clientBuilder.sslSocketFactory(SSLSocketFactory) not supported on JDK 9+");

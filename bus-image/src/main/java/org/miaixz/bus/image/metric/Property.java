@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric;
 
 import java.io.Serializable;
@@ -48,9 +48,7 @@ public class Property implements Serializable {
         if (value == null)
             throw new NullPointerException("value");
 
-        if (!(value instanceof String
-                || value instanceof Boolean
-                || value instanceof Number))
+        if (!(value instanceof String || value instanceof Boolean || value instanceof Number))
             throw new IllegalArgumentException("value: " + value.getClass());
 
         this.name = name;
@@ -67,9 +65,7 @@ public class Property implements Serializable {
         try {
             return Double.valueOf(s);
         } catch (NumberFormatException e) {
-            return s.equalsIgnoreCase("true") ? Boolean.TRUE :
-                    s.equalsIgnoreCase("false") ? Boolean.FALSE
-                            : s;
+            return s.equalsIgnoreCase("true") ? Boolean.TRUE : s.equalsIgnoreCase("false") ? Boolean.FALSE : s;
         }
     }
 
@@ -111,8 +107,7 @@ public class Property implements Serializable {
             return false;
 
         Property other = (Property) obj;
-        return name.equals(other.name)
-                && value.equals(other.value);
+        return name.equals(other.name) && value.equals(other.value);
     }
 
     @Override
@@ -121,9 +116,7 @@ public class Property implements Serializable {
     }
 
     public void setAt(Object o) {
-        String setterName = "set"
-                + name.substring(0, 1).toUpperCase(Locale.ENGLISH)
-                + name.substring(1);
+        String setterName = "set" + name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
         try {
             Class<?> clazz = o.getClass();
             if (value instanceof String) {
@@ -132,16 +125,13 @@ public class Property implements Serializable {
                 clazz.getMethod(setterName, boolean.class).invoke(o, value);
             } else { // value instanceof Number
                 try {
-                    clazz.getMethod(setterName, double.class)
-                            .invoke(o, ((Number) value).doubleValue());
+                    clazz.getMethod(setterName, double.class).invoke(o, ((Number) value).doubleValue());
                 } catch (NoSuchMethodException e) {
                     try {
-                        clazz.getMethod(setterName, float.class)
-                                .invoke(o, ((Number) value).floatValue());
+                        clazz.getMethod(setterName, float.class).invoke(o, ((Number) value).floatValue());
                     } catch (NoSuchMethodException e2) {
                         try {
-                            clazz.getMethod(setterName, int.class)
-                                    .invoke(o, ((Number) value).intValue());
+                            clazz.getMethod(setterName, int.class).invoke(o, ((Number) value).intValue());
                         } catch (NoSuchMethodException e3) {
                             throw e;
                         }

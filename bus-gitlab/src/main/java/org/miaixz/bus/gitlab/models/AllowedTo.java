@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import org.miaixz.bus.gitlab.GitLabApiForm;
@@ -32,8 +32,8 @@ import org.miaixz.bus.gitlab.GitLabApiForm;
 import java.io.Serializable;
 
 /**
- * This class is used by the ProtectedBranchesAPi to set up the
- * allowed_to_push, allowed_to_merge, and allowed_to_unprotect values.
+ * This class is used by the ProtectedBranchesAPi to set up the allowed_to_push, allowed_to_merge, and
+ * allowed_to_unprotect values.
  */
 public class AllowedTo implements Serializable {
     private static final long serialVersionUID = -1L;
@@ -43,35 +43,33 @@ public class AllowedTo implements Serializable {
     private Long groupId;
 
     public AllowedTo(AccessLevel accessLevel, Long userId, Long groupId) {
-		this.accessLevel = accessLevel;
-		this.userId = userId;
-		this.groupId = groupId;
+        this.accessLevel = accessLevel;
+        this.userId = userId;
+        this.groupId = groupId;
     }
 
     public AllowedTo withAccessLevel(AccessLevel accessLevel) {
-		this.accessLevel = accessLevel;
-		return (this);
+        this.accessLevel = accessLevel;
+        return (this);
     }
 
     public AllowedTo withUserId(Long userId) {
-		this.userId = userId;
-		return (this);
+        this.userId = userId;
+        return (this);
     }
 
     public AllowedTo withGroupId(Long groupId) {
-		this.groupId = groupId;
-		return (this);
+        this.groupId = groupId;
+        return (this);
     }
 
     public GitLabApiForm getForm(GitLabApiForm form, String allowedToName) {
 
-		if (form == null) {
-			form = new GitLabApiForm();
-		}
+        if (form == null) {
+            form = new GitLabApiForm();
+        }
 
-		return (form
-				.withParam(allowedToName + "[][access_level]", accessLevel)
-				.withParam(allowedToName + "[][user_id]", userId)
-				.withParam(allowedToName + "[][group_id]", groupId));
+        return (form.withParam(allowedToName + "[][access_level]", accessLevel)
+                .withParam(allowedToName + "[][user_id]", userId).withParam(allowedToName + "[][group_id]", groupId));
     }
 }

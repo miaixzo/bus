@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.io.sink.Sink;
@@ -45,8 +45,7 @@ import java.io.IOException;
 public interface HttpCodec {
 
     /**
-     * 丢弃输入数据流时要使用的超时。由于这是用于连接重用，
-     * 因此此超时时间应该大大少于建立新连接所需的时间.
+     * 丢弃输入数据流时要使用的超时。由于这是用于连接重用， 因此此超时时间应该大大少于建立新连接所需的时间.
      */
     int DISCARD_STREAM_TIMEOUT_MILLIS = 100;
 
@@ -89,8 +88,7 @@ public interface HttpCodec {
     /**
      * 从HTTP传输解析响应头的字节
      *
-     * @param expectContinue 如果这是一个带有“100”响应代码的中间响应，
-     *                       则返回null。否则，此方法永远不会返回null.
+     * @param expectContinue 如果这是一个带有“100”响应代码的中间响应， 则返回null。否则，此方法永远不会返回null.
      * @return 响应构建器
      * @throws IOException 异常
      */

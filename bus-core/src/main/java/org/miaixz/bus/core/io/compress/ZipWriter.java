@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.compress;
 
 import org.miaixz.bus.core.io.resource.Resource;
@@ -176,7 +176,8 @@ public class ZipWriter implements Closeable {
      * @return this
      * @throws InternalException IO异常
      */
-    public ZipWriter add(final boolean withSrcDir, final FileFilter filter, final File... files) throws InternalException {
+    public ZipWriter add(final boolean withSrcDir, final FileFilter filter, final File... files)
+            throws InternalException {
         for (final File file : files) {
             // 如果只是压缩一个文件，则需要截取该文件的父目录
             String srcRootDir;
@@ -212,8 +213,7 @@ public class ZipWriter implements Closeable {
     }
 
     /**
-     * 添加文件流到压缩包，添加后关闭输入文件流
-     * 如果输入流为{@code null}，则只创建空目录
+     * 添加文件流到压缩包，添加后关闭输入文件流 如果输入流为{@code null}，则只创建空目录
      *
      * @param path 压缩的路径, {@code null}和""表示根目录下
      * @param in   需要压缩的输入流，使用完后自动关闭，{@code null}表示加入空目录
@@ -234,8 +234,7 @@ public class ZipWriter implements Closeable {
     }
 
     /**
-     * 对流中的数据加入到压缩文件
-     * 路径列表和流列表长度必须一致
+     * 对流中的数据加入到压缩文件 路径列表和流列表长度必须一致
      *
      * @param paths 流数据在压缩文件中的路径或文件名
      * @param ins   要压缩的源，添加完成后自动关闭流
@@ -269,9 +268,7 @@ public class ZipWriter implements Closeable {
     }
 
     /**
-     * 递归压缩文件夹或压缩文件
-     * srcRootDir决定了路径截取的位置，例如：
-     * file的路径为d:/a/b/c/d.txt，srcRootDir为d:/a/b，则压缩后的文件与目录为结构为c/d.txt
+     * 递归压缩文件夹或压缩文件 srcRootDir决定了路径截取的位置，例如： file的路径为d:/a/b/c/d.txt，srcRootDir为d:/a/b，则压缩后的文件与目录为结构为c/d.txt
      *
      * @param srcRootDir 被压缩的文件夹根目录
      * @param file       当前递归压缩的文件或目录对象
@@ -304,8 +301,7 @@ public class ZipWriter implements Closeable {
     }
 
     /**
-     * 添加文件流到压缩包，添加后关闭输入文件流
-     * 如果输入流为{@code null}，则只创建空目录
+     * 添加文件流到压缩包，添加后关闭输入文件流 如果输入流为{@code null}，则只创建空目录
      *
      * @param path 压缩的路径, {@code null}和""表示根目录下
      * @param in   需要压缩的输入流，使用完后自动关闭，{@code null}表示加入空目录

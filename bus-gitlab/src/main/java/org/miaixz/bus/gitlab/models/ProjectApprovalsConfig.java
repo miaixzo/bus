@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -90,7 +90,8 @@ public class ProjectApprovalsConfig implements Serializable {
         this.disableOverridingApproversPerMergeRequest = disableOverridingApproversPerMergeRequest;
     }
 
-    public ProjectApprovalsConfig withDisableOverridingApproversPerMergeRequest(Boolean disableOverridingApproversPerMergeRequest) {
+    public ProjectApprovalsConfig withDisableOverridingApproversPerMergeRequest(
+            Boolean disableOverridingApproversPerMergeRequest) {
         this.disableOverridingApproversPerMergeRequest = disableOverridingApproversPerMergeRequest;
         return (this);
     }
@@ -116,7 +117,8 @@ public class ProjectApprovalsConfig implements Serializable {
         this.mergeRequestsDisableCommittersApproval = mergeRequestsDisableCommittersApproval;
     }
 
-    public ProjectApprovalsConfig withMergeRequestsDisableCommittersApproval(Boolean mergeRequestsDisableCommittersApproval) {
+    public ProjectApprovalsConfig withMergeRequestsDisableCommittersApproval(
+            Boolean mergeRequestsDisableCommittersApproval) {
         this.mergeRequestsDisableCommittersApproval = mergeRequestsDisableCommittersApproval;
         return (this);
     }
@@ -141,8 +143,7 @@ public class ProjectApprovalsConfig implements Serializable {
      */
     @JsonIgnore
     public GitLabApiForm getForm() {
-        return new GitLabApiForm()
-                .withParam("approvals_before_merge", approvalsBeforeMerge)
+        return new GitLabApiForm().withParam("approvals_before_merge", approvalsBeforeMerge)
                 .withParam("reset_approvals_on_push", resetApprovalsOnPush)
                 .withParam("selective_code_owner_removals", selectiveCodeOwnerRemovals)
                 .withParam("disable_overriding_approvers_per_merge_request", disableOverridingApproversPerMergeRequest)

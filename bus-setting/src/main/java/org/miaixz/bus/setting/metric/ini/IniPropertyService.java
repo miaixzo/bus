@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.setting.metric.ini;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -146,11 +146,8 @@ public class IniPropertyService extends AbstractElement implements IniProperty {
     }
 
     /**
-     * default ini property's comment is null.
-     * there may be comments at the end of each element.
-     * or null.
-     * if this element is comment, return itself.
-     * so, nullable, or see {@link #getCommentOptional}.
+     * default ini property's comment is null. there may be comments at the end of each element. or null. if this
+     * element is comment, return itself. so, nullable, or see {@link #getCommentOptional}.
      *
      * @return comment end of the element or null. if element, return itself.
      * @see #getCommentOptional()

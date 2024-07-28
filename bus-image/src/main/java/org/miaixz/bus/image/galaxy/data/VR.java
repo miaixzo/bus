@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.data;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -220,8 +220,7 @@ public enum VR {
     private final ValueType valueType;
     private final boolean inlineBinary;
 
-    VR(int code, int headerLength, int paddingByte, ValueType valueType,
-       boolean inlineBinary) {
+    VR(int code, int headerLength, int paddingByte, ValueType valueType, boolean inlineBinary) {
         this.code = code;
         this.headerLength = headerLength;
         this.paddingByte = paddingByte;
@@ -285,8 +284,7 @@ public enum VR {
         return valueType.toStrings(val, bigEndian, cs);
     }
 
-    public String toString(Object val, boolean bigEndian, int valueIndex,
-                           String defVal) {
+    public String toString(Object val, boolean bigEndian, int valueIndex, String defVal) {
         return valueType.toString(val, bigEndian, valueIndex, defVal);
     }
 
@@ -314,8 +312,7 @@ public enum VR {
         return valueType.toFloats(val, bigEndian);
     }
 
-    public double toDouble(Object val, boolean bigEndian, int valueIndex,
-                           double defVal) {
+    public double toDouble(Object val, boolean bigEndian, int valueIndex, double defVal) {
         return valueType.toDouble(val, bigEndian, valueIndex, defVal);
     }
 
@@ -323,8 +320,7 @@ public enum VR {
         return valueType.toDoubles(val, bigEndian);
     }
 
-    public Date toDate(Object val, TimeZone tz, int valueIndex, boolean ceil,
-                       Date defVal, DatePrecision precision) {
+    public Date toDate(Object val, TimeZone tz, int valueIndex, boolean ceil, Date defVal, DatePrecision precision) {
         return valueType.toDate(val, tz, valueIndex, ceil, defVal, precision);
     }
 
@@ -364,8 +360,7 @@ public enum VR {
         return valueType.toValue(ds, tz, precision);
     }
 
-    public boolean prompt(Object val, boolean bigEndian,
-                          SpecificCharacterSet cs, int maxChars, StringBuilder sb) {
+    public boolean prompt(Object val, boolean bigEndian, SpecificCharacterSet cs, int maxChars, StringBuilder sb) {
         return valueType.prompt(val, bigEndian, cs, maxChars, sb);
     }
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
@@ -39,10 +39,7 @@ import java.time.Instant;
 import java.util.*;
 
 /**
- * 单个HTTP消息的头字段。值是未解释的字符串;
- * 使用{@code Request}和{@code Response}解释头信息
- * 该类维护HTTP消息中的头字段的顺序
- * 这个类从值中删除空白。它从不返回带开头或结尾空白的值
+ * 单个HTTP消息的头字段。值是未解释的字符串; 使用{@code Request}和{@code Response}解释头信息 该类维护HTTP消息中的头字段的顺序 这个类从值中删除空白。它从不返回带开头或结尾空白的值
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -69,11 +66,12 @@ public class Headers {
     }
 
     /**
-     * Returns headers for the alternating header names and values. There must be an even number of
-     * arguments, and they must alternate between header names and values.
+     * Returns headers for the alternating header names and values. There must be an even number of arguments, and they
+     * must alternate between header names and values.
      */
     public static Headers of(String... namesAndValues) {
-        if (namesAndValues == null) throw new NullPointerException("namesAndValues == null");
+        if (namesAndValues == null)
+            throw new NullPointerException("namesAndValues == null");
         if (namesAndValues.length % 2 != 0) {
             throw new IllegalArgumentException("Expected alternating header names and values");
         }
@@ -81,7 +79,8 @@ public class Headers {
         // Make a defensive copy and clean it up.
         namesAndValues = namesAndValues.clone();
         for (int i = 0; i < namesAndValues.length; i++) {
-            if (namesAndValues[i] == null) throw new IllegalArgumentException("Headers cannot be null");
+            if (namesAndValues[i] == null)
+                throw new IllegalArgumentException("Headers cannot be null");
             namesAndValues[i] = namesAndValues[i].trim();
         }
 
@@ -99,7 +98,8 @@ public class Headers {
      * Returns headers for the header names and values in the {@link Map}.
      */
     public static Headers of(Map<String, String> headers) {
-        if (headers == null) throw new NullPointerException("headers == null");
+        if (headers == null)
+            throw new NullPointerException("headers == null");
 
         String[] namesAndValues = new String[headers.size() * 2];
         int i = 0;
@@ -120,24 +120,27 @@ public class Headers {
     }
 
     static void checkName(String name) {
-        if (null == name) throw new NullPointerException("name == null");
-        if (name.isEmpty()) throw new IllegalArgumentException("name is empty");
+        if (null == name)
+            throw new NullPointerException("name == null");
+        if (name.isEmpty())
+            throw new IllegalArgumentException("name is empty");
         for (int i = 0, length = name.length(); i < length; i++) {
             char c = name.charAt(i);
             if (c <= '\u0020' || c >= '\u007f') {
-                throw new IllegalArgumentException(String.format(
-                        "Unexpected char %#04x at %d in header name: %s", (int) c, i, name));
+                throw new IllegalArgumentException(
+                        String.format("Unexpected char %#04x at %d in header name: %s", (int) c, i, name));
             }
         }
     }
 
     static void checkValue(String value, String name) {
-        if (null == value) throw new NullPointerException("value for name " + name + " == null");
+        if (null == value)
+            throw new NullPointerException("value for name " + name + " == null");
         for (int i = 0, length = value.length(); i < length; i++) {
             char c = value.charAt(i);
             if ((c <= '\u001f' && c != Symbol.C_HT) || c >= '\u007f') {
-                throw new IllegalArgumentException(String.format(
-                        "Unexpected char %#04x at %d in %s value: %s", (int) c, i, name, value));
+                throw new IllegalArgumentException(
+                        String.format("Unexpected char %#04x at %d in %s value: %s", (int) c, i, name, value));
             }
         }
     }
@@ -151,7 +154,8 @@ public class Headers {
     }
 
     private static long stringToLong(String s) {
-        if (s == null) return -1;
+        if (s == null)
+            return -1;
         try {
             return Long.parseLong(s);
         } catch (NumberFormatException e) {
@@ -163,10 +167,10 @@ public class Headers {
      * Returns true if none of the Vary headers have changed between {@code cachedRequest} and {@code
      * newRequest}.
      */
-    public static boolean varyMatches(
-            Response cachedResponse, Headers cachedRequest, Request newRequest) {
+    public static boolean varyMatches(Response cachedResponse, Headers cachedRequest, Request newRequest) {
         for (String field : varyFields(cachedResponse)) {
-            if (!Objects.equals(cachedRequest.values(field), newRequest.headers(field))) return false;
+            if (!Objects.equals(cachedRequest.values(field), newRequest.headers(field)))
+                return false;
         }
         return true;
     }
@@ -195,7 +199,8 @@ public class Headers {
     public static Set<String> varyFields(Headers responseHeaders) {
         Set<String> result = Collections.emptySet();
         for (int i = 0, size = responseHeaders.size(); i < size; i++) {
-            if (!"Vary".equalsIgnoreCase(responseHeaders.name(i))) continue;
+            if (!"Vary".equalsIgnoreCase(responseHeaders.name(i)))
+                continue;
 
             String value = responseHeaders.value(i);
             if (result.isEmpty()) {
@@ -209,8 +214,7 @@ public class Headers {
     }
 
     /**
-     * Returns the subset of the headers in {@code response}'s request that impact the content of
-     * response's body.
+     * Returns the subset of the headers in {@code response}'s request that impact the content of response's body.
      */
     public static Headers varyHeaders(Response response) {
         // Use the request headers sent over the network, since that's what the
@@ -222,12 +226,12 @@ public class Headers {
     }
 
     /**
-     * Returns the subset of the headers in {@code requestHeaders} that impact the content of
-     * response's body.
+     * Returns the subset of the headers in {@code requestHeaders} that impact the content of response's body.
      */
     public static Headers varyHeaders(Headers requestHeaders, Headers responseHeaders) {
         Set<String> varyFields = varyFields(responseHeaders);
-        if (varyFields.isEmpty()) return org.miaixz.bus.http.Builder.EMPTY_HEADERS;
+        if (varyFields.isEmpty())
+            return org.miaixz.bus.http.Builder.EMPTY_HEADERS;
 
         Headers.Builder result = new Headers.Builder();
         for (int i = 0, size = requestHeaders.size(); i < size; i++) {
@@ -240,11 +244,9 @@ public class Headers {
     }
 
     /**
-     * Parse RFC 7235 challenges. This is awkward because we need to look ahead to know how to
-     * interpret a token.
+     * Parse RFC 7235 challenges. This is awkward because we need to look ahead to know how to interpret a token.
      * <p>
-     * For example, the first line has a parameter name/value pair and the second line has a single
-     * token68:
+     * For example, the first line has a parameter name/value pair and the second line has a single token68:
      *
      * <pre>   {@code
      *
@@ -279,7 +281,8 @@ public class Headers {
             if (peek == null) {
                 skipWhitespaceAndCommas(header);
                 peek = readToken(header);
-                if (peek == null) return;
+                if (peek == null)
+                    return;
             }
 
             String schemeName = peek;
@@ -288,7 +291,8 @@ public class Headers {
             boolean commaPrefixed = skipWhitespaceAndCommas(header);
             peek = readToken(header);
             if (peek == null) {
-                if (!header.exhausted()) return; // Expected a token; got something else.
+                if (!header.exhausted())
+                    return; // Expected a token; got something else.
                 result.add(new Challenge(schemeName, Collections.emptyMap()));
                 return;
             }
@@ -298,8 +302,8 @@ public class Headers {
 
             // It's a token68 because there isn't a value after it.
             if (!commaPrefixed && (commaSuffixed || header.exhausted())) {
-                result.add(new Challenge(schemeName, Collections.singletonMap(
-                        null, peek + repeat(Symbol.C_EQUAL, eqCount))));
+                result.add(new Challenge(schemeName,
+                        Collections.singletonMap(null, peek + repeat(Symbol.C_EQUAL, eqCount))));
                 peek = null;
                 continue;
             }
@@ -310,21 +314,27 @@ public class Headers {
             while (true) {
                 if (peek == null) {
                     peek = readToken(header);
-                    if (skipWhitespaceAndCommas(header)) break; // We peeked a scheme name followed by ','.
+                    if (skipWhitespaceAndCommas(header))
+                        break; // We peeked a scheme name followed by ','.
                     eqCount = skipAll(header, (byte) Symbol.C_EQUAL);
                 }
-                if (eqCount == 0) break; // We peeked a scheme name.
-                if (eqCount > 1) return; // Unexpected '=' characters.
-                if (skipWhitespaceAndCommas(header)) return; // Unexpected ','.
+                if (eqCount == 0)
+                    break; // We peeked a scheme name.
+                if (eqCount > 1)
+                    return; // Unexpected '=' characters.
+                if (skipWhitespaceAndCommas(header))
+                    return; // Unexpected ','.
 
-                String parameterValue = !header.exhausted() && header.getByte(0) == '"'
-                        ? readQuotedString(header)
+                String parameterValue = !header.exhausted() && header.getByte(0) == '"' ? readQuotedString(header)
                         : readToken(header);
-                if (parameterValue == null) return; // Expected a value.
+                if (parameterValue == null)
+                    return; // Expected a value.
                 String replaced = parameters.put(peek, parameterValue);
                 peek = null;
-                if (replaced != null) return; // Unexpected duplicate parameter.
-                if (!skipWhitespaceAndCommas(header) && !header.exhausted()) return; // Expected ',' or EOF.
+                if (replaced != null)
+                    return; // Unexpected duplicate parameter.
+                if (!skipWhitespaceAndCommas(header) && !header.exhausted())
+                    return; // Expected ',' or EOF.
             }
             result.add(new Challenge(schemeName, parameters));
         }
@@ -359,16 +369,17 @@ public class Headers {
     }
 
     /**
-     * Reads a double-quoted string, unescaping quoted pairs like {@code \"} to the 2nd character in
-     * each sequence. Returns the unescaped string, or null if the buffer isn't prefixed with a
-     * double-quoted string.
+     * Reads a double-quoted string, unescaping quoted pairs like {@code \"} to the 2nd character in each sequence.
+     * Returns the unescaped string, or null if the buffer isn't prefixed with a double-quoted string.
      */
     private static String readQuotedString(Buffer buffer) {
-        if (buffer.readByte() != '\"') throw new IllegalArgumentException();
+        if (buffer.readByte() != '\"')
+            throw new IllegalArgumentException();
         Buffer result = new Buffer();
         while (true) {
             long i = buffer.indexOfElement(org.miaixz.bus.http.Builder.QUOTED_STRING_DELIMITERS);
-            if (i == -1L) return null; // Unterminated quoted string.
+            if (i == -1L)
+                return null; // Unterminated quoted string.
 
             if (buffer.getByte(i) == '"') {
                 result.write(buffer, i);
@@ -376,7 +387,8 @@ public class Headers {
                 return result.readUtf8();
             }
 
-            if (buffer.size() == i + 1L) return null; // Dangling escape.
+            if (buffer.size() == i + 1L)
+                return null; // Dangling escape.
             result.write(buffer, i);
             buffer.readByte(); // Consume '\'.
             result.write(buffer, 1L); // The escaped character.
@@ -384,16 +396,16 @@ public class Headers {
     }
 
     /**
-     * Consumes and returns a non-empty token, terminating at special characters . Returns null if the buffer is empty or prefixed with a delimiter.
+     * Consumes and returns a non-empty token, terminating at special characters . Returns null if the buffer is empty
+     * or prefixed with a delimiter.
      */
     private static String readToken(Buffer buffer) {
         try {
             long tokenSize = buffer.indexOfElement(org.miaixz.bus.http.Builder.TOKEN_DELIMITERS);
-            if (tokenSize == -1L) tokenSize = buffer.size();
+            if (tokenSize == -1L)
+                tokenSize = buffer.size();
 
-            return tokenSize != 0L
-                    ? buffer.readUtf8(tokenSize)
-                    : null;
+            return tokenSize != 0L ? buffer.readUtf8(tokenSize) : null;
         } catch (EOFException e) {
             throw new AssertionError();
         }
@@ -406,10 +418,12 @@ public class Headers {
     }
 
     public static void receiveHeaders(CookieJar cookieJar, UnoUrl url, Headers headers) {
-        if (cookieJar == CookieJar.NO_COOKIES) return;
+        if (cookieJar == CookieJar.NO_COOKIES)
+            return;
 
         List<Cookie> cookies = Cookie.parseAll(url, headers);
-        if (cookies.isEmpty()) return;
+        if (cookies.isEmpty())
+            return;
 
         cookieJar.saveFromResponse(url, cookies);
     }
@@ -424,16 +438,14 @@ public class Headers {
         }
 
         int responseCode = response.code();
-        if ((responseCode < HTTP.HTTP_CONTINUE || responseCode >= 200)
-                && responseCode != HTTP.HTTP_NO_CONTENT
+        if ((responseCode < HTTP.HTTP_CONTINUE || responseCode >= 200) && responseCode != HTTP.HTTP_NO_CONTENT
                 && responseCode != HTTP.HTTP_NOT_MODIFIED) {
             return true;
         }
 
         // If the Content-Length or Transfer-Encoding headers disagree with the response code, the
         // response is malformed. For best compatibility, we honor the headers.
-        if (contentLength(response) != -1
-                || "chunked".equalsIgnoreCase(response.header("Transfer-Encoding"))) {
+        if (contentLength(response) != -1 || "chunked".equalsIgnoreCase(response.header("Transfer-Encoding"))) {
             return true;
         }
 
@@ -454,8 +466,8 @@ public class Headers {
     }
 
     /**
-     * Returns the next non-whitespace character in {@code input} that is white space. Result is
-     * undefined if input contains newline characters.
+     * Returns the next non-whitespace character in {@code input} that is white space. Result is undefined if input
+     * contains newline characters.
      */
     public static int skipWhitespace(String input, int pos) {
         for (; pos < input.length(); pos++) {
@@ -468,8 +480,8 @@ public class Headers {
     }
 
     /**
-     * Returns {@code value} as a positive integer, or 0 if it is negative, or {@code defaultValue} if
-     * it cannot be parsed.
+     * Returns {@code value} as a positive integer, or 0 if it is negative, or {@code defaultValue} if it cannot be
+     * parsed.
      */
     public static int parseSeconds(String value, int defaultValue) {
         try {
@@ -505,8 +517,8 @@ public class Headers {
     }
 
     /**
-     * Returns the last value corresponding to the specified field parsed as an HTTP date, or null if
-     * either the field is absent or cannot be parsed as a date.
+     * Returns the last value corresponding to the specified field parsed as an HTTP date, or null if either the field
+     * is absent or cannot be parsed as a date.
      */
     public Date getDate(String name) {
         String value = get(name);
@@ -514,8 +526,8 @@ public class Headers {
     }
 
     /**
-     * Returns the last value corresponding to the specified field parsed as an HTTP date, or null if
-     * either the field is absent or cannot be parsed as a date.
+     * Returns the last value corresponding to the specified field parsed as an HTTP date, or null if either the field
+     * is absent or cannot be parsed as a date.
      */
     public Instant getInstant(String name) {
         Date value = getDate(name);
@@ -561,19 +573,18 @@ public class Headers {
         List<String> result = null;
         for (int i = 0, size = size(); i < size; i++) {
             if (name.equalsIgnoreCase(name(i))) {
-                if (result == null) result = new ArrayList<>(2);
+                if (result == null)
+                    result = new ArrayList<>(2);
                 result.add(value(i));
             }
         }
-        return result != null
-                ? Collections.unmodifiableList(result)
-                : Collections.emptyList();
+        return result != null ? Collections.unmodifiableList(result) : Collections.emptyList();
     }
 
     /**
-     * Returns the number of bytes required to encode these headers using HTTP/1.1. This is also the
-     * approximate size of HTTP/2 headers before they are compressed with HPACK. This value is
-     * intended to be used as a metric: smaller headers are more efficient to encode and transmit.
+     * Returns the number of bytes required to encode these headers using HTTP/1.1. This is also the approximate size of
+     * HTTP/2 headers before they are compressed with HPACK. This value is intended to be used as a metric: smaller
+     * headers are more efficient to encode and transmit.
      */
     public long byteCount() {
         // Each header name has 2 bytes of overhead for ': ' and every header value has 2 bytes of
@@ -588,10 +599,11 @@ public class Headers {
     }
 
     /**
-     * Returns true if {@code other} is a {@code Headers} object with the same headers, with the same
-     * casing, in the same order. Note that two headers instances may be <i>semantically</i> equal
-     * but not equal according to this method. In particular, none of the following sets of headers
-     * are equal according to this method: <pre>   {@code
+     * Returns true if {@code other} is a {@code Headers} object with the same headers, with the same casing, in the
+     * same order. Note that two headers instances may be <i>semantically</i> equal but not equal according to this
+     * method. In particular, none of the following sets of headers are equal according to this method:
+     * 
+     * <pre>   {@code
      *
      *   1. Original
      *   Content-Type: text/html
@@ -610,13 +622,12 @@ public class Headers {
      *   Content-Length: 050
      * }</pre>
      * <p>
-     * Applications that require semantically equal headers should convert them into a canonical form
-     * before comparing them for equality.
+     * Applications that require semantically equal headers should convert them into a canonical form before comparing
+     * them for equality.
      */
     @Override
     public boolean equals(Object other) {
-        return other instanceof Headers
-                && Arrays.equals(((Headers) other).namesAndValues, namesAndValues);
+        return other instanceof Headers && Arrays.equals(((Headers) other).namesAndValues, namesAndValues);
     }
 
     @Override
@@ -646,8 +657,7 @@ public class Headers {
         final List<String> namesAndValues = new ArrayList<>(20);
 
         /**
-         * Add a header line without any validation. Only appropriate for headers from the remote peer
-         * or cache.
+         * Add a header line without any validation. Only appropriate for headers from the remote peer or cache.
          */
         public Builder addLenient(String line) {
             int index = line.indexOf(Symbol.COLON, 1);
@@ -681,8 +691,7 @@ public class Headers {
         }
 
         /**
-         * Add a header with the specified name and value. Does validation of header names, allowing
-         * non-ASCII values.
+         * Add a header with the specified name and value. Does validation of header names, allowing non-ASCII values.
          */
         public Builder addUnsafeNonAscii(String name, String value) {
             checkName(name);
@@ -701,46 +710,48 @@ public class Headers {
         }
 
         /**
-         * Add a header with the specified name and formatted date. Does validation of header names and
-         * value.
+         * Add a header with the specified name and formatted date. Does validation of header names and value.
          */
         public Builder add(String name, Date value) {
-            if (value == null) throw new NullPointerException("value for name " + name + " == null");
+            if (value == null)
+                throw new NullPointerException("value for name " + name + " == null");
             add(name, org.miaixz.bus.http.Builder.format(value));
             return this;
         }
 
         /**
-         * Add a header with the specified name and formatted instant. Does validation of header names
-         * and value.
+         * Add a header with the specified name and formatted instant. Does validation of header names and value.
          */
         public Builder add(String name, Instant value) {
-            if (value == null) throw new NullPointerException("value for name " + name + " == null");
+            if (value == null)
+                throw new NullPointerException("value for name " + name + " == null");
             return add(name, new Date(value.toEpochMilli()));
         }
 
         /**
-         * Set a field with the specified date. If the field is not found, it is added. If the field is
-         * found, the existing values are replaced.
+         * Set a field with the specified date. If the field is not found, it is added. If the field is found, the
+         * existing values are replaced.
          */
         public Builder set(String name, Date value) {
-            if (value == null) throw new NullPointerException("value for name " + name + " == null");
+            if (value == null)
+                throw new NullPointerException("value for name " + name + " == null");
             set(name, org.miaixz.bus.http.Builder.format(value));
             return this;
         }
 
         /**
-         * Set a field with the specified instant. If the field is not found, it is added. If the field
-         * is found, the existing values are replaced.
+         * Set a field with the specified instant. If the field is not found, it is added. If the field is found, the
+         * existing values are replaced.
          */
         public Builder set(String name, Instant value) {
-            if (value == null) throw new NullPointerException("value for name " + name + " == null");
+            if (value == null)
+                throw new NullPointerException("value for name " + name + " == null");
             return set(name, new Date(value.toEpochMilli()));
         }
 
         /**
-         * Add a field with the specified value without any validation. Only appropriate for headers
-         * from the remote peer or cache.
+         * Add a field with the specified value without any validation. Only appropriate for headers from the remote
+         * peer or cache.
          */
         Builder addLenient(String name, String value) {
             namesAndValues.add(name);
@@ -760,8 +771,8 @@ public class Headers {
         }
 
         /**
-         * Set a field with the specified value. If the field is not found, it is added. If the field is
-         * found, the existing values are replaced.
+         * Set a field with the specified value. If the field is not found, it is added. If the field is found, the
+         * existing values are replaced.
          */
         public Builder set(String name, String value) {
             checkName(name);

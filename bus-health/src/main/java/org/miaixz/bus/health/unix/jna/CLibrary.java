@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.jna;
 
 import com.sun.jna.Library;
@@ -176,7 +176,7 @@ public interface CLibrary extends LibCAPI, Library {
     // Last argument is really off_t
     ssize_t pread(int fildes, Pointer buf, size_t nbyte, NativeLong offset);
 
-    @FieldOrder({"sa_family", "sa_data"})
+    @FieldOrder({ "sa_family", "sa_data" })
     class Sockaddr extends Structure {
         public short sa_family;
         public byte[] sa_data = new byte[14];
@@ -225,8 +225,8 @@ public interface CLibrary extends LibCAPI, Library {
         public long ip6s_localout; // 88
     }
 
-    @FieldOrder({"ai_flags", "ai_family", "ai_socktype", "ai_protocol", "ai_addrlen", "ai_addr", "ai_canonname",
-            "ai_next"})
+    @FieldOrder({ "ai_flags", "ai_family", "ai_socktype", "ai_protocol", "ai_addrlen", "ai_addr", "ai_canonname",
+            "ai_next" })
     class Addrinfo extends Structure implements AutoCloseable {
         public int ai_flags;
         public int ai_family;

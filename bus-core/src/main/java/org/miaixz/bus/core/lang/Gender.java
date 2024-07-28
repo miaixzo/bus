@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang;
 
 import lombok.AllArgsConstructor;
@@ -43,13 +43,9 @@ import java.util.Arrays;
 public enum Gender {
 
     /**
-     * MALE/FAMALE为正常值,通过{@link Gender#of(String)}
-     * 方法获取真实的性别UNKNOWN为容错值,部分平台不会返回用户性别,
-     * 为了方便统一,使用UNKNOWN标记所有未知或不可测的用户性别信息
+     * MALE/FAMALE为正常值,通过{@link Gender#of(String)} 方法获取真实的性别UNKNOWN为容错值,部分平台不会返回用户性别, 为了方便统一,使用UNKNOWN标记所有未知或不可测的用户性别信息
      */
-    MALE(1, "M", "男"),
-    FEMALE(0, "F", "女"),
-    UNKNOWN(-1, "U", "未知");
+    MALE(1, "M", "男"), FEMALE(0, "F", "女"), UNKNOWN(-1, "U", "未知");
 
     private final int key;
     private final String code;
@@ -59,11 +55,11 @@ public enum Gender {
         if (null == code) {
             return UNKNOWN;
         }
-        String[] males = {"M", "男", Symbol.ONE, "MALE"};
+        String[] males = { "M", "男", Symbol.ONE, "MALE" };
         if (Arrays.asList(males).contains(code.toUpperCase())) {
             return MALE;
         }
-        String[] females = {"F", "女", Symbol.ZERO, "FEMALE"};
+        String[] females = { "F", "女", Symbol.ZERO, "FEMALE" };
         if (Arrays.asList(females).contains(code.toUpperCase())) {
             return FEMALE;
         }

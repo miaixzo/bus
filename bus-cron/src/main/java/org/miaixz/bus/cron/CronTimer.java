@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cron;
 
 import org.miaixz.bus.core.center.date.culture.en.Units;
@@ -34,8 +34,7 @@ import org.miaixz.bus.logger.Logger;
 import java.io.Serializable;
 
 /**
- * 定时任务计时器
- * 计时器线程每隔一分钟（一秒钟）检查一次任务列表，一旦匹配到执行对应的Task
+ * 定时任务计时器 计时器线程每隔一分钟（一秒钟）检查一次任务列表，一旦匹配到执行对应的Task
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -69,6 +68,7 @@ public class CronTimer extends Thread implements Serializable {
 
     /**
      * 检查是否为有效的sleep毫秒数，包括：
+     * 
      * <pre>
      *     1. 是否&gt;0，防止用户向未来调整时间
      *     1. 是否&lt;两倍的间隔单位，防止用户向历史调整时间
@@ -80,7 +80,7 @@ public class CronTimer extends Thread implements Serializable {
      */
     private static boolean isValidSleepMillis(final long millis, final long timerUnit) {
         return millis > 0 &&
-                // 防止用户向前调整时间导致的长时间sleep
+        // 防止用户向前调整时间导致的长时间sleep
                 millis < (2 * timerUnit);
     }
 

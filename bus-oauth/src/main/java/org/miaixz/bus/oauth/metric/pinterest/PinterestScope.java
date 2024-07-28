@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org justauth.cn and other contributors.        ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.pinterest;
 
 import lombok.AllArgsConstructor;
@@ -46,8 +46,11 @@ public enum PinterestScope implements AuthorizeScope {
      */
     READ_PUBLIC("read_public", "Use GET method on a user’s Pins, boards.", true),
     WRITE_PUBLIC("write_public", "Use PATCH, POST and DELETE methods on a user’s Pins and boards.", false),
-    READ_RELATIONSHIPS("read_relationships", "Use GET method on a user’s follows and followers (on boards, users and interests).", false),
-    WRITE_RELATIONSHIPS("write_relationships", "Use PATCH, POST and DELETE methods on a user’s follows and followers (on boards, users and interests).", false);
+    READ_RELATIONSHIPS("read_relationships",
+            "Use GET method on a user’s follows and followers (on boards, users and interests).", false),
+    WRITE_RELATIONSHIPS("write_relationships",
+            "Use PATCH, POST and DELETE methods on a user’s follows and followers (on boards, users and interests).",
+            false);
 
     private final String scope;
     private final String description;

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.driver.perfmon;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -63,16 +63,17 @@ public final class ThreadInformation {
      * @return Thread counters for each thread.
      */
     public static Pair<List<String>, Map<ThreadPerformanceProperty, List<Long>>> queryThreadCounters(String name,
-                                                                                                     int threadNum) {
+            int threadNum) {
         String procName = name.toLowerCase(Locale.ROOT);
         if (threadNum >= 0) {
-            return PerfCounterWildcardQuery.queryInstancesAndValues(
-                    ThreadPerformanceProperty.class, PerfmonConsts.THREAD, PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_PROC_THREAD
-                            + " WHERE Name LIKE \\\"" + procName + "\\\" AND IDThread=" + threadNum,
+            return PerfCounterWildcardQuery.queryInstancesAndValues(ThreadPerformanceProperty.class,
+                    PerfmonConsts.THREAD, PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_PROC_THREAD + " WHERE Name LIKE \\\""
+                            + procName + "\\\" AND IDThread=" + threadNum,
                     procName + "/" + threadNum);
         }
         return PerfCounterWildcardQuery.queryInstancesAndValues(ThreadPerformanceProperty.class, PerfmonConsts.THREAD,
-                PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_PROC_THREAD + " WHERE Name LIKE \\\"" + procName + "\\\"", procName + "/*");
+                PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_PROC_THREAD + " WHERE Name LIKE \\\"" + procName + "\\\"",
+                procName + "/*");
     }
 
     /**

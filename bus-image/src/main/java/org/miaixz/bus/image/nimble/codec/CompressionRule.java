@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.codec;
 
 import org.miaixz.bus.image.Builder;
@@ -47,14 +47,11 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
     private final String tsuid;
     private final Property[] imageWriteParams;
 
-    public CompressionRule(String commonName, String[] pmis, int[] bitsStored,
-                           int pixelRepresentation, String[] aeTitles, String[] sopClasses,
-                           String[] bodyPartExamined, String tsuid, String... params) {
+    public CompressionRule(String commonName, String[] pmis, int[] bitsStored, int pixelRepresentation,
+            String[] aeTitles, String[] sopClasses, String[] bodyPartExamined, String tsuid, String... params) {
         this.commonName = commonName;
-        this.condition = new Condition(pmis, bitsStored, pixelRepresentation,
-                Builder.maskNull(aeTitles),
-                Builder.maskNull(sopClasses),
-                Builder.maskNull(bodyPartExamined));
+        this.condition = new Condition(pmis, bitsStored, pixelRepresentation, Builder.maskNull(aeTitles),
+                Builder.maskNull(sopClasses), Builder.maskNull(bodyPartExamined));
         this.tsuid = tsuid;
         this.imageWriteParams = Property.valueOf(params);
     }
@@ -104,8 +101,7 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
         return condition.compareTo(o.condition);
     }
 
-    private static class Condition
-            implements Comparable<Condition>, Serializable {
+    private static class Condition implements Comparable<Condition>, Serializable {
 
         private static final long serialVersionUID = -1L;
 
@@ -117,8 +113,8 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
         final String[] bodyPartExamined;
         final int weight;
 
-        Condition(String[] pmis, int[] bitsStored, int pixelRepresentation,
-                  String[] aeTitles, String[] sopClasses, String[] bodyPartExamined) {
+        Condition(String[] pmis, int[] bitsStored, int pixelRepresentation, String[] aeTitles, String[] sopClasses,
+                String[] bodyPartExamined) {
             this.pmis = EnumSet.noneOf(Photometric.class);
             for (String pmi : pmis)
                 this.pmis.add(Photometric.fromString(pmi));
@@ -127,8 +123,7 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
             this.aeTitles = aeTitles;
             this.sopClasses = sopClasses;
             this.bodyPartExamined = bodyPartExamined;
-            this.weight = (aeTitles.length != 0 ? 4 : 0)
-                    + (sopClasses.length != 0 ? 2 : 0)
+            this.weight = (aeTitles.length != 0 ? 4 : 0) + (sopClasses.length != 0 ? 2 : 0)
                     + (bodyPartExamined.length != 0 ? 1 : 0);
         }
 
@@ -184,8 +179,7 @@ public class CompressionRule implements Comparable<CompressionRule>, Serializabl
         }
 
         private boolean matchPixelRepresentation(int pixelRepresentation) {
-            return this.pixelRepresentation == -1
-                    || this.pixelRepresentation == pixelRepresentation;
+            return this.pixelRepresentation == -1 || this.pixelRepresentation == pixelRepresentation;
         }
 
         private boolean matchBitStored(int bitsStored) {

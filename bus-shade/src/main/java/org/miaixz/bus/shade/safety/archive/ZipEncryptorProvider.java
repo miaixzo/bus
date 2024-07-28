@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.safety.archive;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
@@ -68,10 +68,7 @@ public class ZipEncryptorProvider extends EntryEncryptorProvider<ZipArchiveEntry
 
     @Override
     public void encrypt(Key key, File src, File dest) throws IOException {
-        try (
-                FileInputStream fis = new FileInputStream(src);
-                FileOutputStream fos = new FileOutputStream(dest)
-        ) {
+        try (FileInputStream fis = new FileInputStream(src); FileOutputStream fos = new FileOutputStream(dest)) {
             encrypt(key, fis, fos);
         }
     }

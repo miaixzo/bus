@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.spring.autoproxy;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -45,8 +45,7 @@ public class ExcludeBeanNameAutoProxy extends BeanNameAutoProxyCreator {
     private List<String> excludeBeanNames;
 
     /**
-     * 设置不应该自动用代理包装的bean的名称。
-     * 名称可以以"*"结尾指定要匹配的前缀，例如:“myBean,tx*”将匹配名为“myBean”的bean和所有名称以“tx”开头的bean。
+     * 设置不应该自动用代理包装的bean的名称。 名称可以以"*"结尾指定要匹配的前缀，例如:“myBean,tx*”将匹配名为“myBean”的bean和所有名称以“tx”开头的bean。
      *
      * @see org.springframework.beans.factory.FactoryBean
      * @see org.springframework.beans.factory.BeanFactory#FACTORY_BEAN_PREFIX

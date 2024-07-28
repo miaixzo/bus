@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date;
 
 import org.miaixz.bus.core.center.date.culture.en.Month;
@@ -54,13 +54,11 @@ import java.util.Locale;
 import java.util.TimeZone;
 
 /**
- * 包装{@link Date}
- * 此类继承了{@link Date}，并提供扩展方法，如时区等。
- * 此类重写了父类的{@code toString()}方法，返回值为"yyyy-MM-dd HH:mm:ss"格式
+ * 包装{@link Date} 此类继承了{@link Date}，并提供扩展方法，如时区等。 此类重写了父类的{@code toString()}方法，返回值为"yyyy-MM-dd HH:mm:ss"格式
  * 相对于{@link Date}，此类定义了时区，用于标识日期所在时区，默认为当前时区
  * <ul>
- *     <li>当使用默认时区时，与LocalDateTime类似，标识本地时间</li>
- *     <li>当使用指定时区时，与ZonedDateTime类似，标识某个地区的时间</li>
+ * <li>当使用默认时区时，与LocalDateTime类似，标识本地时间</li>
+ * <li>当使用指定时区时，与ZonedDateTime类似，标识某个地区的时间</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -110,10 +108,7 @@ public class DateTime extends Date {
      * @param date 日期
      */
     public DateTime(final Date date) {
-        this(
-                date,
-                (date instanceof DateTime) ? ((DateTime) date).timeZone : TimeZone.getDefault()
-        );
+        this(date, (date instanceof DateTime) ? ((DateTime) date).timeZone : TimeZone.getDefault());
     }
 
     /**
@@ -232,8 +227,7 @@ public class DateTime extends Date {
      * @see Fields
      */
     public DateTime(final CharSequence date, final String format) {
-        this(CustomFormat.isCustomFormat(format)
-                ? CustomFormat.parse(date, format)
+        this(CustomFormat.isCustomFormat(format) ? CustomFormat.parse(date, format)
                 : parse(date, DateKit.newSimpleFormat(format)));
     }
 
@@ -336,10 +330,8 @@ public class DateTime extends Date {
     }
 
     /**
-     * 设置全局的，是否使用{@link Date}默认的toString()格式
-     * 如果为{@code true}，则调用toString()时返回"EEE MMM dd HH:mm:ss zzz yyyy"格式，
-     * 如果为{@code false}，则返回"yyyy-MM-dd HH:mm:ss"，
-     * 默认为{@code false}
+     * 设置全局的，是否使用{@link Date}默认的toString()格式 如果为{@code true}，则调用toString()时返回"EEE MMM dd HH:mm:ss zzz yyyy"格式，
+     * 如果为{@code false}，则返回"yyyy-MM-dd HH:mm:ss"， 默认为{@code false}
      *
      * @param customUseJdkToStringStyle 是否使用{@link Date}默认的toString()格式
      */
@@ -377,7 +369,8 @@ public class DateTime extends Date {
      * @param lenient 是否宽容模式
      * @return {@link java.util.Calendar}
      */
-    private static java.util.Calendar parse(final CharSequence date, final PositionDateParser parser, final boolean lenient) {
+    private static java.util.Calendar parse(final CharSequence date, final PositionDateParser parser,
+            final boolean lenient) {
         Assert.notNull(parser, "Parser or DateFromat must be not null !");
         Assert.notBlank(date, "Date String must be not blank !");
 
@@ -391,8 +384,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 调整日期和时间
-     * 如果此对象为可变对象，返回自身，否则返回新对象，设置是否可变对象见{@link #setMutable(boolean)}
+     * 调整日期和时间 如果此对象为可变对象，返回自身，否则返回新对象，设置是否可变对象见{@link #setMutable(boolean)}
      *
      * @param datePart 调整的部分 {@link Various}
      * @param offset   偏移量，正数为向后偏移，负数为向前偏移
@@ -411,8 +403,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 调整日期和时间
-     * 返回调整后的新DateTime，不影响原对象
+     * 调整日期和时间 返回调整后的新DateTime，不影响原对象
      *
      * @param datePart 调整的部分 {@link Various}
      * @param offset   偏移量，正数为向后偏移，负数为向前偏移
@@ -425,8 +416,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 获得日期的某个部分
-     * 例如获得年的部分，则使用 getField(DatePart.YEAR)
+     * 获得日期的某个部分 例如获得年的部分，则使用 getField(DatePart.YEAR)
      *
      * @param field 表示日期的哪个部分的枚举 {@link Various}
      * @return 某个部分的值
@@ -436,8 +426,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 获得日期的某个部分
-     * 例如获得年的部分，则使用 getField(Calendar.YEAR)
+     * 获得日期的某个部分 例如获得年的部分，则使用 getField(Calendar.YEAR)
      *
      * @param field 表示日期的哪个部分的int值 {@link java.util.Calendar}
      * @return 某个部分的值
@@ -447,8 +436,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 设置日期的某个部分
-     * 如果此对象为可变对象，返回自身，否则返回新对象，设置是否可变对象见{@link #setMutable(boolean)}
+     * 设置日期的某个部分 如果此对象为可变对象，返回自身，否则返回新对象，设置是否可变对象见{@link #setMutable(boolean)}
      *
      * @param field 表示日期的哪个部分的枚举 {@link Various}
      * @param value 值
@@ -459,8 +447,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 设置日期的某个部分
-     * 如果此对象为可变对象，返回自身，否则返回新对象，设置是否可变对象见{@link #setMutable(boolean)}
+     * 设置日期的某个部分 如果此对象为可变对象，返回自身，否则返回新对象，设置是否可变对象见{@link #setMutable(boolean)}
      *
      * @param field 表示日期的哪个部分的int值 {@link java.util.Calendar}
      * @param value 值
@@ -532,8 +519,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 获得月份，从1开始计数
-     * 由于{@link java.util.Calendar} 中的月份按照0开始计数，导致某些需求容易误解，因此如果想用1表示一月，2表示二月则调用此方法
+     * 获得月份，从1开始计数 由于{@link java.util.Calendar} 中的月份按照0开始计数，导致某些需求容易误解，因此如果想用1表示一月，2表示二月则调用此方法
      *
      * @return 月份
      */
@@ -551,10 +537,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 获得指定日期是所在年份的第几周
-     * 此方法返回值与一周的第一天有关，比如：
-     * 2016年1月3日为周日，如果一周的第一天为周日，那这天是第二周（返回2）
-     * 如果一周的第一天为周一，那这天是第一周（返回1）
+     * 获得指定日期是所在年份的第几周 此方法返回值与一周的第一天有关，比如： 2016年1月3日为周日，如果一周的第一天为周日，那这天是第二周（返回2） 如果一周的第一天为周一，那这天是第一周（返回1）
      * 跨年的那个星期得到的结果总是1
      *
      * @return 周
@@ -565,10 +548,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 获得指定日期是所在月份的第几周
-     * 此方法返回值与一周的第一天有关，比如：
-     * 2016年1月3日为周日，如果一周的第一天为周日，那这天是第二周（返回2）
-     * 如果一周的第一天为周一，那这天是第一周（返回1）
+     * 获得指定日期是所在月份的第几周 此方法返回值与一周的第一天有关，比如： 2016年1月3日为周日，如果一周的第一天为周日，那这天是第二周（返回2） 如果一周的第一天为周一，那这天是第一周（返回1）
      *
      * @return 周
      * @see #setFirstDayOfWeek(Week)
@@ -633,8 +613,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 获得指定日期的分钟数部分
-     * 例如：10:04:15.250 =》 4
+     * 获得指定日期的分钟数部分 例如：10:04:15.250 =》 4
      *
      * @return 分钟数
      */
@@ -737,7 +716,8 @@ public class DateTime extends Date {
         if (null == locale) {
             locale = Locale.getDefault(Locale.Category.FORMAT);
         }
-        final java.util.Calendar cal = (null != zone) ? java.util.Calendar.getInstance(zone, locale) : java.util.Calendar.getInstance(locale);
+        final java.util.Calendar cal = (null != zone) ? java.util.Calendar.getInstance(zone, locale)
+                : java.util.Calendar.getInstance(locale);
         cal.setFirstDayOfWeek(firstDayOfWeek.getCode());
         if (minimalDaysInFirstWeek > 0) {
             cal.setMinimalDaysInFirstWeek(minimalDaysInFirstWeek);
@@ -747,8 +727,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 转换为 {@link Date}
-     * 考虑到很多框架（例如Hibernate）的兼容性，提供此方法返回JDK原生的Date对象
+     * 转换为 {@link Date} 考虑到很多框架（例如Hibernate）的兼容性，提供此方法返回JDK原生的Date对象
      *
      * @return {@link Date}
      */
@@ -799,8 +778,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 当前日期是否在日期指定范围内
-     * 起始日期和结束日期可以互换
+     * 当前日期是否在日期指定范围内 起始日期和结束日期可以互换
      *
      * @param beginDate 起始日期（包含）
      * @param endDate   结束日期（包含）
@@ -811,8 +789,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 当前日期是否在日期指定范围内
-     * 起始日期和结束日期可以互换
+     * 当前日期是否在日期指定范围内 起始日期和结束日期可以互换
      *
      * @param date      被检查的日期
      * @param beginDate 起始日期（包含）
@@ -824,10 +801,8 @@ public class DateTime extends Date {
     }
 
     /**
-     * 当前日期是否在日期指定范围内
-     * 起始日期和结束日期可以互换
-     * 通过includeBegin, includeEnd参数控制日期范围区间是否为开区间，例如：传入参数：includeBegin=true, includeEnd=false，
-     * 则本方法会判断 date ∈ (beginDate, endDate] 是否成立
+     * 当前日期是否在日期指定范围内 起始日期和结束日期可以互换 通过includeBegin, includeEnd参数控制日期范围区间是否为开区间，例如：传入参数：includeBegin=true,
+     * includeEnd=false， 则本方法会判断 date ∈ (beginDate, endDate] 是否成立
      *
      * @param date         被检查的日期
      * @param beginDate    起始日期
@@ -836,8 +811,8 @@ public class DateTime extends Date {
      * @param includeEnd   时间范围是否包含结束日期
      * @return 是否在范围内
      */
-    public boolean isIn(final Date date, final Date beginDate, final Date endDate,
-                        final boolean includeBegin, final boolean includeEnd) {
+    public boolean isIn(final Date date, final Date beginDate, final Date endDate, final boolean includeBegin,
+            final boolean includeEnd) {
         if (date == null || beginDate == null || endDate == null) {
             throw new IllegalArgumentException("参数不可为null");
         }
@@ -916,8 +891,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 对象是否可变
-     * 如果为不可变对象，以下方法将返回新方法：
+     * 对象是否可变 如果为不可变对象，以下方法将返回新方法：
      * <ul>
      * <li>{@link DateTime#offset(Various, int)}</li>
      * <li>{@link DateTime#setField(Various, int)}</li>
@@ -958,9 +932,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 设置一周的第一天
-     * JDK的Calendar中默认一周的第一天是周日，将此默认值设置为周一
-     * 设置一周的第一天主要影响{@link #weekOfMonth()}和{@link #weekOfYear()} 两个方法
+     * 设置一周的第一天 JDK的Calendar中默认一周的第一天是周日，将此默认值设置为周一 设置一周的第一天主要影响{@link #weekOfMonth()}和{@link #weekOfYear()} 两个方法
      *
      * @param firstDayOfWeek 一周的第一天
      * @return this
@@ -1031,10 +1003,9 @@ public class DateTime extends Date {
     }
 
     /**
-     * 转为字符串，如果时区被设置，会转换为其时区对应的时间，否则转换为当前地点对应的时区
-     * 可以调用{@link DateTime#setUseJdkToStringStyle(boolean)} 方法自定义默认的风格
-     * 如果{@link #useJdkToStringStyle}为{@code true}，返回"EEE MMM dd HH:mm:ss zzz yyyy"格式，
-     * 如果为{@code false}，则返回"yyyy-MM-dd HH:mm:ss"
+     * 转为字符串，如果时区被设置，会转换为其时区对应的时间，否则转换为当前地点对应的时区 可以调用{@link DateTime#setUseJdkToStringStyle(boolean)} 方法自定义默认的风格
+     * 如果{@link #useJdkToStringStyle}为{@code true}，返回"EEE MMM dd HH:mm:ss zzz yyyy"格式， 如果为{@code false}，则返回"yyyy-MM-dd
+     * HH:mm:ss"
      *
      * @return 格式字符串
      */
@@ -1047,8 +1018,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 转为"yyyy-MM-dd HH:mm:ss" 格式字符串
-     * 时区使用当前地区的默认时区
+     * 转为"yyyy-MM-dd HH:mm:ss" 格式字符串 时区使用当前地区的默认时区
      *
      * @return "yyyy-MM-dd HH:mm:ss" 格式字符串
      */
@@ -1057,8 +1027,7 @@ public class DateTime extends Date {
     }
 
     /**
-     * 转为"yyyy-MM-dd HH:mm:ss" 格式字符串
-     * 如果时区不为{@code null}，会转换为其时区对应的时间，否则转换为当前时间对应的时区
+     * 转为"yyyy-MM-dd HH:mm:ss" 格式字符串 如果时区不为{@code null}，会转换为其时区对应的时间，否则转换为当前时间对应的时区
      *
      * @param timeZone 时区
      * @return "yyyy-MM-dd HH:mm:ss" 格式字符串

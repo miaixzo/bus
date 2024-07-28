@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.aix.hardware;
 
 import com.sun.jna.platform.unix.aix.Perfstat.perfstat_memory_total_t;
@@ -110,8 +110,7 @@ final class AixGlobalMemory extends AbstractGlobalMemory {
                 } else if (s.startsWith("Physical Location:")) {
                     locator = "/" + s.substring(18).trim();
                 } else if (s.startsWith("Size")) {
-                    capacity = Parsing.parseLongOrDefault(Parsing.removeLeadingDots(s.substring(4).trim()),
-                            0L) << 20;
+                    capacity = Parsing.parseLongOrDefault(Parsing.removeLeadingDots(s.substring(4).trim()), 0L) << 20;
                 } else if (s.startsWith("Hardware Location Code")) {
                     // Save previous bank
                     if (capacity > 0) {
@@ -127,14 +126,14 @@ final class AixGlobalMemory extends AbstractGlobalMemory {
                 if (s.startsWith("Hardware Location Code")) {
                     locator = Parsing.removeLeadingDots(s.substring(23).trim());
                 } else if (s.startsWith("Size")) {
-                    capacity = Parsing.parseLongOrDefault(Parsing.removeLeadingDots(s.substring(4).trim()),
-                            0L) << 20;
+                    capacity = Parsing.parseLongOrDefault(Parsing.removeLeadingDots(s.substring(4).trim()), 0L) << 20;
                 } else if (s.startsWith("Part Number") || s.startsWith("FRU Number")) {
                     partNumber = Parsing.removeLeadingDots(s.substring(11).trim());
                 } else if (s.startsWith("Physical Location:")) {
                     // Save previous bank
                     if (capacity > 0) {
-                        pmList.add(new PhysicalMemory(locator, capacity, 0L, "IBM", Normal.UNKNOWN, partNumber, Normal.UNKNOWN));
+                        pmList.add(new PhysicalMemory(locator, capacity, 0L, "IBM", Normal.UNKNOWN, partNumber,
+                                Normal.UNKNOWN));
                     }
                     partNumber = Normal.UNKNOWN;
                     locator = Normal.EMPTY;

@@ -24,15 +24,14 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.function;
 
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 /**
- * 断言与一元操作符的组合
- * 此接口用于组合断言和操作，如果{@link #test(Object)}为{@code true}，则执行{@link #apply(Object)}，否则不执行
+ * 断言与一元操作符的组合 此接口用于组合断言和操作，如果{@link #test(Object)}为{@code true}，则执行{@link #apply(Object)}，否则不执行
  *
  * @param <T> 被操作对象类型
  * @author Kimi Liu

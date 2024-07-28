@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.codec.binary.provider;
 
 import org.miaixz.bus.core.codec.Decoder;
@@ -37,8 +37,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 
 /**
- * Base62编码解码实现，常用于短URL
- * From https://github.com/seruco/base62
+ * Base62编码解码实现，常用于短URL From https://github.com/seruco/base62
  *
  * @author Kimi Liu
  * @since Java 17+

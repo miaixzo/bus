@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.pdu;
 
 import org.miaixz.bus.image.Builder;
@@ -71,15 +71,9 @@ public class RoleSelection {
     }
 
     StringBuilder promptTo(StringBuilder sb) {
-        sb.append("  RoleSelection[")
-                .append(Builder.LINE_SEPARATOR)
-                .append("    sopClass: ");
-        return UID.promptTo(cuid, sb)
-                .append(Builder.LINE_SEPARATOR)
-                .append("    scu: ").append(scu)
-                .append(Builder.LINE_SEPARATOR)
-                .append("    scp: ").append(scp)
-                .append(Builder.LINE_SEPARATOR)
+        sb.append("  RoleSelection[").append(Builder.LINE_SEPARATOR).append("    sopClass: ");
+        return UID.promptTo(cuid, sb).append(Builder.LINE_SEPARATOR).append("    scu: ").append(scu)
+                .append(Builder.LINE_SEPARATOR).append("    scp: ").append(scp).append(Builder.LINE_SEPARATOR)
                 .append("  ]");
     }
 

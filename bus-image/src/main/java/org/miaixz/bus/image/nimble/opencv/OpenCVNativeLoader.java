@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -37,9 +37,7 @@ import org.opencv.core.Core;
 import java.io.IOException;
 
 /**
- * OpenCV动态库加载
- * 1. 默认加载运行环境下的opencv动态库
- * 2. 加载失败会重试加载jar中的opencv动态库
+ * OpenCV动态库加载 1. 默认加载运行环境下的opencv动态库 2. 加载失败会重试加载jar中的opencv动态库
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -56,10 +54,11 @@ public class OpenCVNativeLoader extends org.opencv.osgi.OpenCVNativeLoader {
             super.init();
         } catch (UnsatisfiedLinkError e) {
             try {
-                Loaders.nat().load(Symbol.SLASH + Normal.LIB_PROTOCOL_JAR
-                                + Symbol.SLASH + Platform.getNativeLibraryResourcePrefix() + Symbol.SLASH
+                Loaders.nat()
+                        .load(Symbol.SLASH + Normal.LIB_PROTOCOL_JAR + Symbol.SLASH
+                                + Platform.getNativeLibraryResourcePrefix() + Symbol.SLASH
                                 + System.mapLibraryName(Core.NATIVE_LIBRARY_NAME),
-                        org.opencv.osgi.OpenCVNativeLoader.class);
+                                org.opencv.osgi.OpenCVNativeLoader.class);
             } catch (IOException ie) {
                 Logger.error("Failed to load the native OpenCV library.");
             }

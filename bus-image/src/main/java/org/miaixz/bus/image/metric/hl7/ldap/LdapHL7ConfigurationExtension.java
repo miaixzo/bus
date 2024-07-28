@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.hl7.ldap;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -59,7 +59,8 @@ public class LdapHL7ConfigurationExtension {
         return config != null ? config.getDicomConfiguration() : null;
     }
 
-    public void storeTo(ConfigurationChanges.ModifiedObject ldapObj, HL7Application hl7App, String deviceDN, Attributes attrs) {
+    public void storeTo(ConfigurationChanges.ModifiedObject ldapObj, HL7Application hl7App, String deviceDN,
+            Attributes attrs) {
     }
 
     public void storeChilds(ConfigurationChanges diffs, String appDN, HL7Application hl7App) throws NamingException {
@@ -71,7 +72,8 @@ public class LdapHL7ConfigurationExtension {
     public void loadChilds(HL7Application hl7App, String appDN) throws NamingException, InternalException {
     }
 
-    public void storeDiffs(ConfigurationChanges.ModifiedObject ldapObj, HL7Application a, HL7Application b, List<ModificationItem> mods) {
+    public void storeDiffs(ConfigurationChanges.ModifiedObject ldapObj, HL7Application a, HL7Application b,
+            List<ModificationItem> mods) {
     }
 
     public void mergeChilds(ConfigurationChanges diffs, HL7Application prev, HL7Application hl7App, String appDN)

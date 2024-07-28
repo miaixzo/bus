@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.lang.loader.spi.ListServiceLoader;
@@ -35,14 +35,14 @@ import java.util.List;
 import java.util.ServiceConfigurationError;
 
 /**
- * 服务提供接口SPI（Service Provider interface）相关类
- * SPI机制中的服务加载工具类，流程如下
+ * 服务提供接口SPI（Service Provider interface）相关类 SPI机制中的服务加载工具类，流程如下
  *
  * <pre>
  *     1、创建接口，并创建实现类
  *     2、ClassPath/META-INF/services下创建与接口全限定类名相同的文件
  *     3、文件内容填写实现类的全限定类名
  * </pre>
+ * 
  * 相关介绍见：<a href="https://www.jianshu.com/p/3a3edbcd8f24">https://www.jianshu.com/p/3a3edbcd8f24</a>
  *
  * @author Kimi Liu

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.reflect.kotlin;
 
 import org.miaixz.bus.core.xyz.ClassKit;
@@ -34,8 +34,7 @@ import java.lang.reflect.Method;
 import java.util.Objects;
 
 /**
- * kotlin.reflect.KParameter实例表示类
- * 通过反射获取Kotlin中KParameter相关属性值
+ * kotlin.reflect.KParameter实例表示类 通过反射获取Kotlin中KParameter相关属性值
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -106,10 +105,7 @@ public class KParameter {
 
     @Override
     public String toString() {
-        return "KotlinParameter{" +
-                "name='" + name + '\'' +
-                ", type=" + type +
-                '}';
+        return "KotlinParameter{" + "name='" + name + '\'' + ", type=" + type + '}';
     }
 
 }

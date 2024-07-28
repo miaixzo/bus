@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cache;
 
 import org.miaixz.bus.cache.magic.CacheKeys;
@@ -66,8 +66,7 @@ public class Manage {
 
             long start = System.currentTimeMillis();
             Object result = cacheImpl.getRight().read(key);
-            Logger.info("cache [{}] read single cost: [{}] ms",
-                    cacheImpl.getLeft(),
+            Logger.info("cache [{}] read single cost: [{}] ms", cacheImpl.getLeft(),
                     (System.currentTimeMillis() - start));
 
             return result;
@@ -84,8 +83,7 @@ public class Manage {
 
                 long start = System.currentTimeMillis();
                 cacheImpl.getRight().write(key, value, expire);
-                Logger.info("cache [{}] write single cost: [{}] ms",
-                        cacheImpl.getLeft(),
+                Logger.info("cache [{}] write single cost: [{}] ms", cacheImpl.getLeft(),
                         (System.currentTimeMillis() - start));
 
             } catch (Throwable e) {
@@ -104,8 +102,7 @@ public class Manage {
 
                 long start = System.currentTimeMillis();
                 Map<String, Object> cacheMap = cacheImpl.getRight().read(keys);
-                Logger.info("cache [{}] read batch cost: [{}] ms",
-                        cacheImpl.getLeft(),
+                Logger.info("cache [{}] read batch cost: [{}] ms", cacheImpl.getLeft(),
                         (System.currentTimeMillis() - start));
 
                 // collect not nit keys, keep order when full shooting
@@ -134,8 +131,7 @@ public class Manage {
 
             long start = System.currentTimeMillis();
             cacheImpl.getRight().write(keyValueMap, expire);
-            Logger.info("cache [{}] write batch cost: [{}] ms",
-                    cacheImpl.getLeft(),
+            Logger.info("cache [{}] write batch cost: [{}] ms", cacheImpl.getLeft(),
                     (System.currentTimeMillis() - start));
 
         } catch (Exception e) {
@@ -150,8 +146,7 @@ public class Manage {
 
                 long start = System.currentTimeMillis();
                 cacheImpl.getRight().remove(keys);
-                Logger.info("cache [{}] remove cost: [{}] ms",
-                        cacheImpl.getLeft(),
+                Logger.info("cache [{}] remove cost: [{}] ms", cacheImpl.getLeft(),
                         (System.currentTimeMillis() - start));
 
             } catch (Throwable e) {

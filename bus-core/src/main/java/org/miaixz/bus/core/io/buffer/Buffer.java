@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.buffer;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -137,7 +137,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public void require(long byteCount) throws EOFException {
-        if (size < byteCount) throw new EOFException();
+        if (size < byteCount)
+            throw new EOFException();
     }
 
     @Override
@@ -155,7 +156,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         return new InputStream() {
             @Override
             public int read() {
-                if (size > 0) return readByte() & 0xff;
+                if (size > 0)
+                    return readByte() & 0xff;
                 return -1;
             }
 
@@ -192,7 +194,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     /**
-     * 从这里复制{@code byteCount}字节，从{@code offset}开始，复制到  {@code out}.
+     * 从这里复制{@code byteCount}字节，从{@code offset}开始，复制到 {@code out}.
      *
      * @param out       输出流
      * @param offset    偏移量
@@ -205,7 +207,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
             throw new IllegalArgumentException("out == null");
         }
         IoKit.checkOffsetAndCount(size, offset, byteCount);
-        if (byteCount == 0) return this;
+        if (byteCount == 0)
+            return this;
 
         SectionBuffer s = head;
         for (; offset >= (s.limit - s.pos); s = s.next) {
@@ -236,7 +239,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
             throw new IllegalArgumentException("out == null");
         }
         IoKit.checkOffsetAndCount(size, offset, byteCount);
-        if (byteCount == 0) return this;
+        if (byteCount == 0)
+            return this;
 
         out.size += byteCount;
 
@@ -325,7 +329,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * @throws IOException 抛出异常
      */
     public final Buffer readFrom(InputStream in, long byteCount) throws IOException {
-        if (byteCount < 0) throw new IllegalArgumentException("byteCount < 0: " + byteCount);
+        if (byteCount < 0)
+            throw new IllegalArgumentException("byteCount < 0: " + byteCount);
         readFrom(in, byteCount, false);
         return this;
     }
@@ -344,7 +349,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
                     head = tail.pop();
                     LifeCycle.recycle(tail);
                 }
-                if (forever) return;
+                if (forever)
+                    return;
                 throw new EOFException();
             }
             tail.limit += bytesRead;
@@ -354,13 +360,13 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     /**
-     * Returns the number of bytes in segments that are not writable. This is the
-     * number of bytes that can be flushed immediately to an underlying sink
-     * without harming throughput.
+     * Returns the number of bytes in segments that are not writable. This is the number of bytes that can be flushed
+     * immediately to an underlying sink without harming throughput.
      */
     public final long completeSegmentByteCount() {
         long result = size;
-        if (result == 0) return 0;
+        if (result == 0)
+            return 0;
 
         SectionBuffer tail = head.prev;
         if (tail.limit < SectionBuffer.SIZE && tail.owner) {
@@ -372,7 +378,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public byte readByte() {
-        if (size == 0) throw new IllegalStateException("size == 0");
+        if (size == 0)
+            throw new IllegalStateException("size == 0");
 
         SectionBuffer segment = head;
         int pos = segment.pos;
@@ -403,35 +410,36 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         if (size - pos > pos) {
             for (SectionBuffer s = head; true; s = s.next) {
                 int segmentByteCount = s.limit - s.pos;
-                if (pos < segmentByteCount) return s.data[s.pos + (int) pos];
+                if (pos < segmentByteCount)
+                    return s.data[s.pos + (int) pos];
                 pos -= segmentByteCount;
             }
         } else {
             pos -= size;
             for (SectionBuffer s = head.prev; true; s = s.prev) {
                 pos += s.limit - s.pos;
-                if (pos >= 0) return s.data[s.pos + (int) pos];
+                if (pos >= 0)
+                    return s.data[s.pos + (int) pos];
             }
         }
     }
 
     @Override
     public short readShort() {
-        if (size < 2) throw new IllegalStateException("size < 2: " + size);
+        if (size < 2)
+            throw new IllegalStateException("size < 2: " + size);
 
         SectionBuffer segment = head;
         int pos = segment.pos;
         int limit = segment.limit;
 
         if (limit - pos < 2) {
-            int s = (readByte() & 0xff) << 8
-                    | (readByte() & 0xff);
+            int s = (readByte() & 0xff) << 8 | (readByte() & 0xff);
             return (short) s;
         }
 
         byte[] data = segment.data;
-        int s = (data[pos++] & 0xff) << 8
-                | (data[pos++] & 0xff);
+        int s = (data[pos++] & 0xff) << 8 | (data[pos++] & 0xff);
         size -= 2;
 
         if (pos == limit) {
@@ -446,23 +454,20 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public int readInt() {
-        if (size < 4) throw new IllegalStateException("size < 4: " + size);
+        if (size < 4)
+            throw new IllegalStateException("size < 4: " + size);
 
         SectionBuffer segment = head;
         int pos = segment.pos;
         int limit = segment.limit;
 
         if (limit - pos < 4) {
-            return (readByte() & 0xff) << 24
-                    | (readByte() & 0xff) << 16
-                    | (readByte() & 0xff) << 8
+            return (readByte() & 0xff) << 24 | (readByte() & 0xff) << 16 | (readByte() & 0xff) << 8
                     | (readByte() & 0xff);
         }
 
         byte[] data = segment.data;
-        int i = (data[pos++] & 0xff) << 24
-                | (data[pos++] & 0xff) << 16
-                | (data[pos++] & 0xff) << 8
+        int i = (data[pos++] & 0xff) << 24 | (data[pos++] & 0xff) << 16 | (data[pos++] & 0xff) << 8
                 | (data[pos++] & 0xff);
         size -= 4;
 
@@ -478,26 +483,21 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public long readLong() {
-        if (size < 8) throw new IllegalStateException("size < 8: " + size);
+        if (size < 8)
+            throw new IllegalStateException("size < 8: " + size);
 
         SectionBuffer segment = head;
         int pos = segment.pos;
         int limit = segment.limit;
 
         if (limit - pos < 8) {
-            return (readInt() & 0xffffffffL) << Normal._32
-                    | (readInt() & 0xffffffffL);
+            return (readInt() & 0xffffffffL) << Normal._32 | (readInt() & 0xffffffffL);
         }
 
         byte[] data = segment.data;
-        long v = (data[pos++] & 0xffL) << 56
-                | (data[pos++] & 0xffL) << 48
-                | (data[pos++] & 0xffL) << 40
-                | (data[pos++] & 0xffL) << Normal._32
-                | (data[pos++] & 0xffL) << 24
-                | (data[pos++] & 0xffL) << 16
-                | (data[pos++] & 0xffL) << 8
-                | (data[pos++] & 0xffL);
+        long v = (data[pos++] & 0xffL) << 56 | (data[pos++] & 0xffL) << 48 | (data[pos++] & 0xffL) << 40
+                | (data[pos++] & 0xffL) << Normal._32 | (data[pos++] & 0xffL) << 24 | (data[pos++] & 0xffL) << 16
+                | (data[pos++] & 0xffL) << 8 | (data[pos++] & 0xffL);
         size -= 8;
 
         if (pos == limit) {
@@ -527,7 +527,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public long readDecimalLong() {
-        if (size == 0) throw new IllegalStateException("size == 0");
+        if (size == 0)
+            throw new IllegalStateException("size == 0");
 
         long value = 0;
         int seen = 0;
@@ -552,7 +553,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
                     // Detect when the digit would cause an overflow.
                     if (value < overflowZone || value == overflowZone && digit < overflowDigit) {
                         Buffer buffer = new Buffer().writeDecimalLong(value).writeByte(b);
-                        if (!negative) buffer.readByte(); // Skip negative sign.
+                        if (!negative)
+                            buffer.readByte(); // Skip negative sign.
                         throw new NumberFormatException("Number too large: " + buffer.readUtf8());
                     }
                     value *= 10;
@@ -585,7 +587,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public long readHexadecimalUnsignedLong() {
-        if (size == 0) throw new IllegalStateException("size == 0");
+        if (size == 0)
+            throw new IllegalStateException("size == 0");
 
         long value = 0;
         int seen = 0;
@@ -653,7 +656,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     @Override
     public int select(SegmentBuffer segmentBuffer) {
         int index = selectPrefix(segmentBuffer, false);
-        if (index == -1) return -1;
+        if (index == -1)
+            return -1;
 
         // If the prefix match actually matched a full byte string, consume it and return it.
         int selectedSize = segmentBuffer.byteStrings[index].size();
@@ -666,19 +670,16 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     /**
-     * 返回此缓冲区前缀的选项中的值的索引。如果没有找到值，则返回-1
-     * 此方法执行两个同步迭代:迭代trie和迭代这个缓冲区。当它在trie中到达一个结果时，
-     * 当它在trie中不匹配时，以及当缓冲区耗尽时，它将返回
+     * 返回此缓冲区前缀的选项中的值的索引。如果没有找到值，则返回-1 此方法执行两个同步迭代:迭代trie和迭代这个缓冲区。当它在trie中到达一个结果时， 当它在trie中不匹配时，以及当缓冲区耗尽时，它将返回
      *
-     * @param selectTruncated 如果可能的结果出现但被截断，则true返回-2
-     *                        例如，如果缓冲区包含[ab]，并且选项是[abc, abd]，则返回-2
-     *                        请注意，由于选项是按优先顺序列出的，而且第一个选项可能是另一个选项的前缀，
-     *                        这使得情况变得复杂。例如，如果缓冲区包含[ab]而选项是[abc, a]，则返回-2
+     * @param selectTruncated 如果可能的结果出现但被截断，则true返回-2 例如，如果缓冲区包含[ab]，并且选项是[abc, abd]，则返回-2
+     *                        请注意，由于选项是按优先顺序列出的，而且第一个选项可能是另一个选项的前缀， 这使得情况变得复杂。例如，如果缓冲区包含[ab]而选项是[abc, a]，则返回-2
      */
     public int selectPrefix(SegmentBuffer segmentBuffer, boolean selectTruncated) {
         SectionBuffer head = this.head;
         if (head == null) {
-            if (selectTruncated) return -2; // A result is present but truncated.
+            if (selectTruncated)
+                return -2; // A result is present but truncated.
             return segmentBuffer.indexOf(ByteString.EMPTY);
         }
 
@@ -692,8 +693,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
         int prefixIndex = -1;
 
-        navigateTrie:
-        while (true) {
+        navigateTrie: while (true) {
             int scanOrSelect = trie[triePos++];
 
             int possiblePrefixIndex = trie[triePos++];
@@ -711,7 +711,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
                 int trieLimit = triePos + scanByteCount;
                 while (true) {
                     int b = data[pos++] & 0xff;
-                    if (b != trie[triePos++]) return prefixIndex; // Fail 'cause we found a mismatch.
+                    if (b != trie[triePos++])
+                        return prefixIndex; // Fail 'cause we found a mismatch.
                     boolean scanComplete = (triePos == trieLimit);
 
                     // Advance to the next buffer segment if this one is exhausted.
@@ -721,7 +722,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
                         data = s.data;
                         limit = s.limit;
                         if (s == head) {
-                            if (!scanComplete) break navigateTrie; // We were exhausted before the scan completed.
+                            if (!scanComplete)
+                                break navigateTrie; // We were exhausted before the scan completed.
                             s = null; // We were exhausted at the end of the scan.
                         }
                     }
@@ -737,7 +739,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
                 int b = data[pos++] & 0xff;
                 int selectLimit = triePos + selectChoiceCount;
                 while (true) {
-                    if (triePos == selectLimit) return prefixIndex; // Fail 'cause we didn't find a match.
+                    if (triePos == selectLimit)
+                        return prefixIndex; // Fail 'cause we didn't find a match.
 
                     if (b == trie[triePos]) {
                         nextStep = trie[triePos + selectChoiceCount];
@@ -759,12 +762,14 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
                 }
             }
 
-            if (nextStep >= 0) return nextStep; // Found a matching option.
+            if (nextStep >= 0)
+                return nextStep; // Found a matching option.
             triePos = -nextStep; // Found another node to continue the search.
         }
 
         // We break out of the loop above when we've exhausted the buffer without exhausting the trie.
-        if (selectTruncated) return -2; // The buffer is a prefix of at least one option.
+        if (selectTruncated)
+            return -2; // The buffer is a prefix of at least one option.
         return prefixIndex; // Return any matches we encountered while searching for a deeper match.
     }
 
@@ -818,7 +823,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         if (byteCount > Integer.MAX_VALUE) {
             throw new IllegalArgumentException("byteCount > Integer.MAX_VALUE: " + byteCount);
         }
-        if (byteCount == 0) return Normal.EMPTY;
+        if (byteCount == 0)
+            return Normal.EMPTY;
 
         SectionBuffer s = head;
         if (s.pos + byteCount > s.limit) {
@@ -856,18 +862,19 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public String readUtf8LineStrict(long limit) throws EOFException {
-        if (limit < 0) throw new IllegalArgumentException("limit < 0: " + limit);
+        if (limit < 0)
+            throw new IllegalArgumentException("limit < 0: " + limit);
         long scanLength = limit == Long.MAX_VALUE ? Long.MAX_VALUE : limit + 1;
         long newline = indexOf((byte) Symbol.C_LF, 0, scanLength);
-        if (newline != -1) return readUtf8Line(newline);
-        if (scanLength < size()
-                && getByte(scanLength - 1) == Symbol.C_CR && getByte(scanLength) == Symbol.C_LF) {
+        if (newline != -1)
+            return readUtf8Line(newline);
+        if (scanLength < size() && getByte(scanLength - 1) == Symbol.C_CR && getByte(scanLength) == Symbol.C_LF) {
             return readUtf8Line(scanLength);
         }
         Buffer data = new Buffer();
         copyTo(data, 0, Math.min(Normal._32, size()));
-        throw new EOFException("\\n not found: limit=" + Math.min(size(), limit)
-                + " content=" + data.readByteString().hex() + '…');
+        throw new EOFException(
+                "\\n not found: limit=" + Math.min(size(), limit) + " content=" + data.readByteString().hex() + '…');
     }
 
     public String readUtf8Line(long newline) throws EOFException {
@@ -885,7 +892,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public int readUtf8CodePoint() throws EOFException {
-        if (size == 0) throw new EOFException();
+        if (size == 0)
+            throw new EOFException();
 
         byte b0 = getByte(0);
         int codePoint;
@@ -922,8 +930,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         }
 
         if (size < byteCount) {
-            throw new EOFException("size < " + byteCount + ": " + size
-                    + " (to read code point prefixed 0x" + Integer.toHexString(b0) + Symbol.PARENTHESE_RIGHT);
+            throw new EOFException("size < " + byteCount + ": " + size + " (to read code point prefixed 0x"
+                    + Integer.toHexString(b0) + Symbol.PARENTHESE_RIGHT);
         }
 
         for (int i = 1; i < byteCount; i++) {
@@ -986,7 +994,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         int offset = 0;
         while (offset < sink.length) {
             int read = read(sink, offset, sink.length - offset);
-            if (read == -1) throw new EOFException();
+            if (read == -1)
+                throw new EOFException();
             offset += read;
         }
     }
@@ -1093,11 +1102,10 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
             throw new IllegalArgumentException("endIndex < beginIndex: " + endIndex + " < " + beginIndex);
         }
         if (endIndex > string.length()) {
-            throw new IllegalArgumentException(
-                    "endIndex > string.length: " + endIndex + " > " + string.length());
+            throw new IllegalArgumentException("endIndex > string.length: " + endIndex + " > " + string.length());
         }
 
-        for (int i = beginIndex; i < endIndex; ) {
+        for (int i = beginIndex; i < endIndex;) {
             int c = string.charAt(i);
 
             if (c < 0x80) {
@@ -1113,7 +1121,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
                 // improvement over independent calls to writeByte().
                 while (i < runLimit) {
                     c = string.charAt(i);
-                    if (c >= 0x80) break;
+                    if (c >= 0x80)
+                        break;
                     data[segmentOffset + i++] = (byte) c; // 0xxxxxxx
                 }
 
@@ -1145,8 +1154,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
                 }
 
                 // UTF-16 high surrogate: 110110xxxxxxxxxx (10 bits)
-                // UTF-16 low surrogate:  110111yyyyyyyyyy (10 bits)
-                // Unicode code point:    00010000000000000000 + xxxxxxxxxxyyyyyyyyyy (21 bits)
+                // UTF-16 low surrogate: 110111yyyyyyyyyy (10 bits)
+                // Unicode code point: 00010000000000000000 + xxxxxxxxxxyyyyyyyyyy (21 bits)
                 int codePoint = 0x010000 + ((c & ~0xd800) << 10 | low & ~0xdc00);
 
                 // Emit a 21-bit character with 4 bytes.
@@ -1191,8 +1200,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
             writeByte(codePoint & 0x3f | 0x80); // 10xxxxxx
 
         } else {
-            throw new IllegalArgumentException(
-                    "Unexpected code point: " + Integer.toHexString(codePoint));
+            throw new IllegalArgumentException("Unexpected code point: " + Integer.toHexString(codePoint));
         }
 
         return this;
@@ -1215,8 +1223,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
             throw new IllegalArgumentException("endIndex < beginIndex: " + endIndex + " < " + beginIndex);
         }
         if (endIndex > string.length()) {
-            throw new IllegalArgumentException(
-                    "endIndex > string.length: " + endIndex + " > " + string.length());
+            throw new IllegalArgumentException("endIndex > string.length: " + endIndex + " > " + string.length());
         }
         if (null == charset) {
             throw new IllegalArgumentException("charset == null");
@@ -1285,7 +1292,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
             throw new IllegalArgumentException("source == null");
         }
         long totalBytesRead = 0;
-        for (long readCount; (readCount = source.read(this, SectionBuffer.SIZE)) != -1; ) {
+        for (long readCount; (readCount = source.read(this, SectionBuffer.SIZE)) != -1;) {
             totalBytesRead += readCount;
         }
         return totalBytesRead;
@@ -1295,7 +1302,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     public BufferSink write(Source source, long byteCount) throws IOException {
         while (byteCount > 0) {
             long read = source.read(this, byteCount);
-            if (read == -1) throw new EOFException();
+            if (read == -1)
+                throw new EOFException();
             byteCount -= read;
         }
         return this;
@@ -1384,23 +1392,12 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         }
 
         int width = v < 100000000L
-                ? v < 10000L
-                ? v < 100L
-                ? v < 10L ? 1 : 2
-                : v < 1000L ? 3 : 4
-                : v < 1000000L
-                ? v < 100000L ? 5 : 6
-                : v < 10000000L ? 7 : 8
-                : v < 1000000000000L
-                ? v < 10000000000L
-                ? v < 1000000000L ? 9 : 10
-                : v < 100000000000L ? 11 : 12
-                : v < 1000000000000000L
-                ? v < 10000000000000L ? 13
-                : v < 100000000000000L ? 14 : 15
-                : v < 100000000000000000L
-                ? v < 10000000000000000L ? 16 : 17
-                : v < 1000000000000000000L ? 18 : 19;
+                ? v < 10000L ? v < 100L ? v < 10L ? 1 : 2 : v < 1000L ? 3 : 4
+                        : v < 1000000L ? v < 100000L ? 5 : 6 : v < 10000000L ? 7 : 8
+                : v < 1000000000000L ? v < 10000000000L ? v < 1000000000L ? 9 : 10 : v < 100000000000L ? 11 : 12
+                        : v < 1000000000000000L ? v < 10000000000000L ? 13 : v < 100000000000000L ? 14 : 15
+                                : v < 100000000000000000L ? v < 10000000000000000L ? 16 : 17
+                                        : v < 1000000000000000000L ? 18 : 19;
         if (negative) {
             ++width;
         }
@@ -1443,12 +1440,12 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     /**
      * @param minimumCapacity int
-     * @return segment SectionBuffer
-     * Returns a tail segment that we can write at least {@code minimumCapacity}
-     * bytes to, creating it if necessary.
+     * @return segment SectionBuffer Returns a tail segment that we can write at least {@code minimumCapacity} bytes to,
+     *         creating it if necessary.
      */
     public SectionBuffer writableSegment(int minimumCapacity) {
-        if (minimumCapacity < 1 || minimumCapacity > SectionBuffer.SIZE) throw new IllegalArgumentException();
+        if (minimumCapacity < 1 || minimumCapacity > SectionBuffer.SIZE)
+            throw new IllegalArgumentException();
 
         if (null == head) {
             head = LifeCycle.take(); // Acquire a first segment.
@@ -1532,8 +1529,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     /**
-     * Returns the index of {@code b} in this at or beyond {@code fromIndex}, or
-     * -1 if this buffer does not contain {@code b} in that range.
+     * Returns the index of {@code b} in this at or beyond {@code fromIndex}, or -1 if this buffer does not contain
+     * {@code b} in that range.
      */
     @Override
     public long indexOf(byte b, long fromIndex) {
@@ -1547,14 +1544,15 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
                     String.format("size=%s fromIndex=%s toIndex=%s", size, fromIndex, toIndex));
         }
 
-        if (toIndex > size) toIndex = size;
-        if (fromIndex == toIndex) return -1L;
+        if (toIndex > size)
+            toIndex = size;
+        if (fromIndex == toIndex)
+            return -1L;
 
         SectionBuffer s;
         long offset;
 
-        findSegmentAndOffset:
-        {
+        findSegmentAndOffset: {
             s = head;
             if (null == s) {
                 return -1L;
@@ -1566,7 +1564,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
                 }
             } else {
                 offset = 0L;
-                for (long nextOffset; (nextOffset = offset + (s.limit - s.pos)) < fromIndex; ) {
+                for (long nextOffset; (nextOffset = offset + (s.limit - s.pos)) < fromIndex;) {
                     s = s.next;
                     offset = nextOffset;
                 }
@@ -1598,14 +1596,15 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public long indexOf(ByteString bytes, long fromIndex) throws IOException {
-        if (bytes.size() == 0) throw new IllegalArgumentException("bytes is empty");
-        if (fromIndex < 0) throw new IllegalArgumentException("fromIndex < 0");
+        if (bytes.size() == 0)
+            throw new IllegalArgumentException("bytes is empty");
+        if (fromIndex < 0)
+            throw new IllegalArgumentException("fromIndex < 0");
 
         SectionBuffer s;
         long offset;
 
-        findSegmentAndOffset:
-        {
+        findSegmentAndOffset: {
             s = head;
             if (null == s) {
                 return -1L;
@@ -1617,7 +1616,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
                 }
             } else {
                 offset = 0L;
-                for (long nextOffset; (nextOffset = offset + (s.limit - s.pos)) < fromIndex; ) {
+                for (long nextOffset; (nextOffset = offset + (s.limit - s.pos)) < fromIndex;) {
                     s = s.next;
                     offset = nextOffset;
                 }
@@ -1652,13 +1651,13 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public long indexOfElement(ByteString targetBytes, long fromIndex) {
-        if (fromIndex < 0) throw new IllegalArgumentException("fromIndex < 0");
+        if (fromIndex < 0)
+            throw new IllegalArgumentException("fromIndex < 0");
 
         SectionBuffer s;
         long offset;
 
-        findSegmentAndOffset:
-        {
+        findSegmentAndOffset: {
 
             s = head;
             if (null == s) {
@@ -1671,7 +1670,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
                 }
             } else {
                 offset = 0L;
-                for (long nextOffset; (nextOffset = offset + (s.limit - s.pos)) < fromIndex; ) {
+                for (long nextOffset; (nextOffset = offset + (s.limit - s.pos)) < fromIndex;) {
                     s = s.next;
                     offset = nextOffset;
                 }
@@ -1707,7 +1706,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
                 for (int pos = (int) (s.pos + fromIndex - offset), limit = s.limit; pos < limit; pos++) {
                     int b = data[pos];
                     for (byte t : targetByteArray) {
-                        if (b == t) return pos - s.pos + offset;
+                        if (b == t)
+                            return pos - s.pos + offset;
                     }
                 }
 
@@ -1727,12 +1727,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     @Override
-    public boolean rangeEquals(
-            long offset, ByteString bytes, int bytesOffset, int byteCount) {
-        if (offset < 0
-                || bytesOffset < 0
-                || byteCount < 0
-                || size - offset < byteCount
+    public boolean rangeEquals(long offset, ByteString bytes, int bytesOffset, int byteCount) {
+        if (offset < 0 || bytesOffset < 0 || byteCount < 0 || size - offset < byteCount
                 || bytes.size() - bytesOffset < byteCount) {
             return false;
         }
@@ -1745,15 +1741,15 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     /**
-     * Returns true if the range within this buffer starting at {@code segmentPos} in {@code segment}
-     * is equal to {@code bytes[bytesOffset..bytesLimit)}.
+     * Returns true if the range within this buffer starting at {@code segmentPos} in {@code segment} is equal to
+     * {@code bytes[bytesOffset..bytesLimit)}.
      */
-    private boolean rangeEquals(
-            SectionBuffer segment, int segmentPos, ByteString bytes, int bytesOffset, int bytesLimit) {
+    private boolean rangeEquals(SectionBuffer segment, int segmentPos, ByteString bytes, int bytesOffset,
+            int bytesLimit) {
         int segmentLimit = segment.limit;
         byte[] data = segment.data;
 
-        for (int i = bytesOffset; i < bytesLimit; ) {
+        for (int i = bytesOffset; i < bytesLimit;) {
             if (segmentPos == segmentLimit) {
                 segment = segment.next;
                 data = segment.data;
@@ -1892,11 +1888,15 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Buffer)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof Buffer))
+            return false;
         Buffer that = (Buffer) o;
-        if (size != that.size) return false;
-        if (size == 0) return true;
+        if (size != that.size)
+            return false;
+        if (size == 0)
+            return true;
 
         SectionBuffer sa = this.head;
         SectionBuffer sb = that.head;
@@ -1907,7 +1907,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
             count = Math.min(sa.limit - posA, sb.limit - posB);
 
             for (int i = 0; i < count; i++) {
-                if (sa.data[posA++] != sb.data[posB++]) return false;
+                if (sa.data[posA++] != sb.data[posB++])
+                    return false;
             }
 
             if (posA == sa.limit) {
@@ -1941,8 +1942,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     }
 
     /**
-     * Returns a human-readable string that describes the contents of this buffer. Typically this
-     * is a string like {@code [text=Hello]} or {@code [hex=0000ffff]}.
+     * Returns a human-readable string that describes the contents of this buffer. Typically this is a string like
+     * {@code [text=Hello]} or {@code [hex=0000ffff]}.
      */
     @Override
     public String toString() {
@@ -1955,7 +1956,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
     @Override
     public Buffer clone() {
         Buffer result = new Buffer();
-        if (size == 0) return result;
+        if (size == 0)
+            return result;
 
         result.head = head.sharedCopy();
         result.head.next = result.head.prev = result.head;
@@ -1980,7 +1982,8 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
      * Returns an immutable copy of the first {@code byteCount} bytes of this buffer as a byte string.
      */
     public ByteString snapshot(int byteCount) {
-        if (byteCount == 0) return ByteString.EMPTY;
+        if (byteCount == 0)
+            return ByteString.EMPTY;
         return new ByteBuffer(this, byteCount);
     }
 
@@ -2026,25 +2029,25 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         private SectionBuffer segment;
 
         /**
-         * Seeks to the next range of bytes, advancing the offset by {@code end - start}. Returns the
-         * size of the readable range (at least 1), or -1 if we have reached the end of the buffer and
-         * there are no more bytes to read.
+         * Seeks to the next range of bytes, advancing the offset by {@code end - start}. Returns the size of the
+         * readable range (at least 1), or -1 if we have reached the end of the buffer and there are no more bytes to
+         * read.
          */
         public int next() {
-            if (offset == buffer.size) throw new IllegalStateException();
-            if (offset == -1L) return seek(0L);
+            if (offset == buffer.size)
+                throw new IllegalStateException();
+            if (offset == -1L)
+                return seek(0L);
             return seek(offset + (end - start));
         }
 
         /**
-         * Reposition the cursor so that the data at {@code offset} is readable at {@code data[start]}.
-         * Returns the number of bytes readable in {@code data} (at least 1), or -1 if there are no data
-         * to read.
+         * Reposition the cursor so that the data at {@code offset} is readable at {@code data[start]}. Returns the
+         * number of bytes readable in {@code data} (at least 1), or -1 if there are no data to read.
          */
         public int seek(long offset) {
             if (offset < -1 || offset > buffer.size) {
-                throw new ArrayIndexOutOfBoundsException(
-                        String.format("offset=%s > size=%s", offset, buffer.size));
+                throw new ArrayIndexOutOfBoundsException(String.format("offset=%s > size=%s", offset, buffer.size));
             }
 
             if (offset == -1 || offset == buffer.size) {
@@ -2114,19 +2117,18 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         }
 
         /**
-         * Change the size of the buffer so that it equals {@code newSize} by either adding new
-         * capacity at the end or truncating the buffer at the end. Newly added capacity may span
-         * multiple segments.
+         * Change the size of the buffer so that it equals {@code newSize} by either adding new capacity at the end or
+         * truncating the buffer at the end. Newly added capacity may span multiple segments.
          *
-         * As a side-effect this cursor will {@link #seek seek}. If the buffer is being enlarged it
-         * will move {@link #offset} to the first byte of newly-added capacity. This is the size of the
-         * buffer prior to the {@code resizeBuffer()} call. If the buffer is being shrunk it will move
-         * {@link #offset} to the end of the buffer.
+         * As a side-effect this cursor will {@link #seek seek}. If the buffer is being enlarged it will move
+         * {@link #offset} to the first byte of newly-added capacity. This is the size of the buffer prior to the
+         * {@code resizeBuffer()} call. If the buffer is being shrunk it will move {@link #offset} to the end of the
+         * buffer.
          *
-         * Warning: it is the caller’s responsibility to write new data to every byte of the
-         * newly-allocated capacity. Failure to do so may cause serious security problems as the data
-         * in the returned buffers is not zero filled. Buffers may contain dirty pooled segments that
-         * hold very sensitive data from other parts of the current process.
+         * Warning: it is the caller’s responsibility to write new data to every byte of the newly-allocated capacity.
+         * Failure to do so may cause serious security problems as the data in the returned buffers is not zero filled.
+         * Buffers may contain dirty pooled segments that hold very sensitive data from other parts of the current
+         * process.
          *
          * @return the previous size of the buffer.
          */
@@ -2144,7 +2146,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
                     throw new IllegalArgumentException("newSize < 0: " + newSize);
                 }
                 // Shrink the buffer by either shrinking segments or removing them.
-                for (long bytesToSubtract = oldSize - newSize; bytesToSubtract > 0; ) {
+                for (long bytesToSubtract = oldSize - newSize; bytesToSubtract > 0;) {
                     SectionBuffer tail = buffer.head.prev;
                     int tailSize = tail.limit - tail.pos;
                     if (tailSize <= bytesToSubtract) {
@@ -2165,7 +2167,7 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
             } else if (newSize > oldSize) {
                 // Enlarge the buffer by either enlarging segments or adding them.
                 boolean needsToSeek = true;
-                for (long bytesToAdd = newSize - oldSize; bytesToAdd > 0; ) {
+                for (long bytesToAdd = newSize - oldSize; bytesToAdd > 0;) {
                     SectionBuffer tail = buffer.writableSegment(1);
                     int segmentBytesToAdd = (int) Math.min(bytesToAdd, SectionBuffer.SIZE - tail.limit);
                     tail.limit += segmentBytesToAdd;
@@ -2189,26 +2191,24 @@ public class Buffer implements BufferSource, BufferSink, Cloneable, ByteChannel 
         }
 
         /**
-         * Grow the buffer by adding a <strong>contiguous range</strong> of capacity in a single
-         * segment. This adds at least {@code minByteCount} bytes but may add up to a full segment of
-         * additional capacity.
+         * Grow the buffer by adding a <strong>contiguous range</strong> of capacity in a single segment. This adds at
+         * least {@code minByteCount} bytes but may add up to a full segment of additional capacity.
          *
-         * As a side-effect this cursor will {@link #seek seek}. It will move {@link #offset} to the
-         * first byte of newly-added capacity. This is the size of the buffer prior to the {@code
+         * As a side-effect this cursor will {@link #seek seek}. It will move {@link #offset} to the first byte of
+         * newly-added capacity. This is the size of the buffer prior to the {@code
          * expandBuffer()} call.
          *
-         * If {@code minByteCount} bytes are available in the buffer's current tail segment that will
-         * be used; otherwise another segment will be allocated and appended. In either case this
-         * returns the number of bytes of capacity added to this buffer.
+         * If {@code minByteCount} bytes are available in the buffer's current tail segment that will be used; otherwise
+         * another segment will be allocated and appended. In either case this returns the number of bytes of capacity
+         * added to this buffer.
          *
-         * Warning: it is the caller’s responsibility to either write new data to every byte of the
-         * newly-allocated capacity, or to {@link #resizeBuffer shrink} the buffer to the data written.
-         * Failure to do so may cause serious security problems as the data in the returned buffers is
-         * not zero filled. Buffers may contain dirty pooled segments that hold very sensitive data from
-         * other parts of the current process.
+         * Warning: it is the caller’s responsibility to either write new data to every byte of the newly-allocated
+         * capacity, or to {@link #resizeBuffer shrink} the buffer to the data written. Failure to do so may cause
+         * serious security problems as the data in the returned buffers is not zero filled. Buffers may contain dirty
+         * pooled segments that hold very sensitive data from other parts of the current process.
          *
-         * @param minByteCount the size of the contiguous capacity. Must be positive and not greater
-         *                     than the capacity size of a single segment (8 KiB).
+         * @param minByteCount the size of the contiguous capacity. Must be positive and not greater than the capacity
+         *                     size of a single segment (8 KiB).
          * @return the number of bytes expanded by. Not less than {@code minByteCount}.
          */
         public final long expandBuffer(int minByteCount) {

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.pdu;
 
 import org.miaixz.bus.image.Dimse;
@@ -128,15 +128,7 @@ public class PDUEncoder extends PDVOutputStream {
             }
             Logger.debug("{}: stop A-ABORT timeout", as);
         }
-        byte[] b = {
-                (byte) pdutype,
-                0,
-                0, 0, 0, 4,
-                0,
-                (byte) result,
-                (byte) source,
-                (byte) reason
-        };
+        byte[] b = { (byte) pdutype, 0, 0, 0, 0, 4, 0, (byte) result, (byte) source, (byte) reason };
         try {
             out.write(b);
             out.flush();
@@ -267,8 +259,7 @@ public class PDUEncoder extends PDVOutputStream {
         encodeStringItem(ItemType.IMPL_VERSION_NAME, rqac.getImplVersionName());
         for (ExtendedNegotiation extNeg : rqac.getExtendedNegotiations())
             encode(extNeg);
-        for (CommonExtended extNeg :
-                rqac.getCommonExtendedNegotiations())
+        for (CommonExtended extNeg : rqac.getCommonExtendedNegotiations())
             encode(extNeg);
         encode(rqac.getUserIdentityRQ());
         encode(rqac.getUserIdentityAC());
@@ -370,7 +361,7 @@ public class PDUEncoder extends PDVOutputStream {
     @Override
     public void copyFrom(InputStream in) throws IOException {
         checkThread();
-        for (; ; ) {
+        for (;;) {
             flushPDataTF();
             int copy = in.read(buf, pos, free());
             if (copy == -1)
@@ -403,8 +394,7 @@ public class PDUEncoder extends PDVOutputStream {
         put(pdvpcid);
         put(pdvcmd | last);
         pos = endpos;
-        Logger.trace("{} << PDV[len={}, pcid={}, mch={}]",
-                as, pdvlen, pdvpcid, (pdvcmd | last));
+        Logger.trace("{} << PDV[len={}, pcid={}, mch={}]", as, pdvlen, pdvpcid, (pdvcmd | last));
     }
 
     public void writePDataTF() throws IOException {
@@ -413,13 +403,11 @@ public class PDUEncoder extends PDVOutputStream {
         put(PDUType.P_DATA_TF);
         put(0);
         putInt(pdulen);
-        Logger.trace("{} << P-DATA-TF[len={}]",
-                as, pdulen);
+        Logger.trace("{} << P-DATA-TF[len={}]", as, pdulen);
         writePDU(pdulen);
     }
 
-    public void writeDIMSE(PresentationContext pc, Attributes cmd,
-                           DataWriter dataWriter) throws IOException {
+    public void writeDIMSE(PresentationContext pc, Attributes cmd, DataWriter dataWriter) throws IOException {
         synchronized (dimseLock) {
             int pcid = pc.getPCID();
             String tsuid = pc.getTransferSyntax();
@@ -439,8 +427,7 @@ public class PDUEncoder extends PDVOutputStream {
 
             pdvpcid = pcid;
             pdvcmd = PDVType.COMMAND;
-            ImageOutputStream cmdout =
-                    new ImageOutputStream(this, UID.ImplicitVRLittleEndian.uid);
+            ImageOutputStream cmdout = new ImageOutputStream(this, UID.ImplicitVRLittleEndian.uid);
             cmdout.writeCommand(cmd);
             cmdout.close();
             if (dataWriter != null) {

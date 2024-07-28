@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.service;
 
 import org.miaixz.bus.image.Dimse;
@@ -47,8 +47,8 @@ public class BasicCMoveSCP extends AbstractImageService {
     }
 
     @Override
-    public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse,
-                          Attributes cmd, Attributes keys) throws IOException {
+    public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes cmd, Attributes keys)
+            throws IOException {
         if (dimse != Dimse.C_MOVE_RQ)
             throw new ImageServiceException(Status.UnrecognizedOperation);
 
@@ -59,8 +59,7 @@ public class BasicCMoveSCP extends AbstractImageService {
             as.tryWriteDimseRSP(pc, Commands.mkCMoveRSP(cmd, Status.Success));
     }
 
-    protected RetrieveTask calculateMatches(Association as, PresentationContext pc,
-                                            Attributes rq, Attributes keys) {
+    protected RetrieveTask calculateMatches(Association as, PresentationContext pc, Attributes rq, Attributes keys) {
         return null;
     }
 

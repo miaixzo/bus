@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.goalie;
 
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -61,7 +61,7 @@ public interface Handler {
      * @param result   返回结果
      */
     default void postHandle(ServerHttpRequest request, ServerHttpResponse response, Object service, Object args,
-                            Object result) {
+            Object result) {
 
     }
 
@@ -76,7 +76,7 @@ public interface Handler {
      * @param exception 业务异常
      */
     default void afterCompletion(ServerHttpRequest request, ServerHttpResponse response, Object service, Object args,
-                                 Object result, Exception exception) {
+            Object result, Exception exception) {
 
     }
 

@@ -1,8 +1,8 @@
 <p align="center">
-	<a href="https://www.miaixz.org"><img src="../LOGO.svg" width="45%"></a>
+  <a href="https://www.miaixz.org"><img src="../LOGO.svg" width="45%"></a>
 </p>
 <p align="center">
-	👉 <a href="https://www.miaixz.org">https://www.miaixz.org</a> 👈
+  👉 <a href="https://www.miaixz.org">https://www.miaixz.org</a> 👈
 </p>
 
 ## 📚bus-parent 模块介绍
@@ -30,7 +30,7 @@
     <groupId>org.miaixz</groupId>
     <artifactId>bus-all</artifactId>
 </dependency>
-``` 
+```
 
 或者，单独引入某个模块
 

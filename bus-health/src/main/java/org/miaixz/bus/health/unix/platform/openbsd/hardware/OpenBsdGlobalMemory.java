@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.openbsd.hardware;
 
 import com.sun.jna.Memory;
@@ -48,7 +48,8 @@ import java.util.function.Supplier;
 @ThreadSafe
 final class OpenBsdGlobalMemory extends AbstractGlobalMemory {
 
-    private final Supplier<Long> available = Memoizer.memoize(OpenBsdGlobalMemory::queryAvailable, Memoizer.defaultExpiration());
+    private final Supplier<Long> available = Memoizer.memoize(OpenBsdGlobalMemory::queryAvailable,
+            Memoizer.defaultExpiration());
 
     private final Supplier<Long> total = Memoizer.memoize(OpenBsdGlobalMemory::queryPhysMem);
 

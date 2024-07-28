@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.bodys;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -41,26 +41,21 @@ import org.miaixz.bus.http.Response;
 import java.io.*;
 
 /**
- * 从源服务器到客户机应用程序的一次性流，包含响应主体的原始字节。 到web服务器的活动连接支持每个响应主体。
- * 这对客户机应用程序施加了义务和限制，每个响应主体由一个有限的资源(如socket(实时网络响应)或一个打开的
- * 文件(用于缓存的响应)来支持。如果不关闭响应体，将会泄漏资源并减慢或崩溃
- * 这个类和{@link Response}都实现了{@link Closeable}。关闭一个响应就是关闭它的响应体。如果您
- * 调用{@link NewCall#execute()}或实现{@link Callback#onResponse}，则必须通过
- * 调用以下任何方法来关闭此主体:
+ * 从源服务器到客户机应用程序的一次性流，包含响应主体的原始字节。 到web服务器的活动连接支持每个响应主体。 这对客户机应用程序施加了义务和限制，每个响应主体由一个有限的资源(如socket(实时网络响应)或一个打开的
+ * 文件(用于缓存的响应)来支持。如果不关闭响应体，将会泄漏资源并减慢或崩溃 这个类和{@link Response}都实现了{@link Closeable}。关闭一个响应就是关闭它的响应体。如果您
+ * 调用{@link NewCall#execute()}或实现{@link Callback#onResponse}，则必须通过 调用以下任何方法来关闭此主体:
  * <ul>
- *   <li>Response.close()</li>
- *   <li>Response.body().close()</li>
- *   <li>Response.body().source().close()</li>
- *   <li>Response.body().charStream().close()</li>
- *   <li>Response.body().byteStream().close()</li>
- *   <li>Response.body().bytes()</li>
- *   <li>Response.body().string()</li>
+ * <li>Response.close()</li>
+ * <li>Response.body().close()</li>
+ * <li>Response.body().source().close()</li>
+ * <li>Response.body().charStream().close()</li>
+ * <li>Response.body().byteStream().close()</li>
+ * <li>Response.body().bytes()</li>
+ * <li>Response.body().string()</li>
  * </ul>
- * 这个类可以用来传输非常大的响应。例如，可以使用这个类来读取大于分配给当前进程的整个内存的响应。
- * 它甚至可以传输大于当前设备总存储的响应，这是视频流应用程序的一个常见需求
+ * 这个类可以用来传输非常大的响应。例如，可以使用这个类来读取大于分配给当前进程的整个内存的响应。 它甚至可以传输大于当前设备总存储的响应，这是视频流应用程序的一个常见需求
  * 因为这个类不会在内存中缓冲完整的响应，所以应用程序可能不会重新读取响应的字节。使用{@link #bytes()}
- * 或{@link #string()}将整个响应读入内存。或者使用{@link #source()}、{@link #byteStream()}
- * 或{@link #charStream()}来处理响应
+ * 或{@link #string()}将整个响应读入内存。或者使用{@link #source()}、{@link #byteStream()} 或{@link #charStream()}来处理响应
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -123,9 +118,7 @@ public abstract class ResponseBody implements Closeable {
      * @param content   内容
      * @return 新响应体
      */
-    public static ResponseBody create(final MediaType mediaType,
-                                      final long length,
-                                      final BufferSource content) {
+    public static ResponseBody create(final MediaType mediaType, final long length, final BufferSource content) {
         if (null == content) {
             throw new NullPointerException("source == null");
         }
@@ -151,8 +144,7 @@ public abstract class ResponseBody implements Closeable {
     public abstract MediaType mediaType();
 
     /**
-     * Returns the number of bytes in that will returned by {@link #bytes}, or {@link #byteStream}, or
-     * -1 if unknown.
+     * Returns the number of bytes in that will returned by {@link #bytes}, or {@link #byteStream}, or -1 if unknown.
      */
     public abstract long length();
 
@@ -163,9 +155,8 @@ public abstract class ResponseBody implements Closeable {
     public abstract BufferSource source();
 
     /**
-     * Returns the response as a byte array.
-     * This method loads entire response body into memory. If the response body is very large this
-     * may trigger an {@link OutOfMemoryError}. Prefer to stream the response body if this is a
+     * Returns the response as a byte array. This method loads entire response body into memory. If the response body is
+     * very large this may trigger an {@link OutOfMemoryError}. Prefer to stream the response body if this is a
      * possibility for your response.
      */
     public final byte[] bytes() throws IOException {
@@ -179,22 +170,17 @@ public abstract class ResponseBody implements Closeable {
             bytes = source.readByteArray();
         }
         if (contentLength != -1 && contentLength != bytes.length) {
-            throw new IOException("Content-Length ("
-                    + contentLength
-                    + ") and stream length ("
-                    + bytes.length
-                    + ") disagree");
+            throw new IOException(
+                    "Content-Length (" + contentLength + ") and stream length (" + bytes.length + ") disagree");
         }
         return bytes;
     }
 
     /**
-     * Returns the response as a character stream.
-     * If the response starts with a ByteOrder Mark (BOM), it is consumed and used to determine
-     * the charset of the response bytes.
-     * Otherwise if the response has a Content-Type header that specifies a charset, that is used
-     * to determine the charset of the response bytes.
-     * Otherwise the response bytes are decoded as UTF-8.
+     * Returns the response as a character stream. If the response starts with a ByteOrder Mark (BOM), it is consumed
+     * and used to determine the charset of the response bytes. Otherwise if the response has a Content-Type header that
+     * specifies a charset, that is used to determine the charset of the response bytes. Otherwise the response bytes
+     * are decoded as UTF-8.
      */
     public final Reader charStream() {
         Reader r = reader;
@@ -202,14 +188,11 @@ public abstract class ResponseBody implements Closeable {
     }
 
     /**
-     * Returns the response as a string.
-     * If the response starts with a ByteOrder Mark (BOM), it is consumed and used to determine the charset of the response bytes.
-     * Otherwise if the response has a Content-Type header that specifies a charset, that is used
-     * to determine the charset of the response bytes.
-     * Otherwise the response bytes are decoded as UTF-8.
-     * This method loads entire response body into memory. If the response body is very large this
-     * may trigger an {@link OutOfMemoryError}. Prefer to stream the response body if this is a
-     * possibility for your response.
+     * Returns the response as a string. If the response starts with a ByteOrder Mark (BOM), it is consumed and used to
+     * determine the charset of the response bytes. Otherwise if the response has a Content-Type header that specifies a
+     * charset, that is used to determine the charset of the response bytes. Otherwise the response bytes are decoded as
+     * UTF-8. This method loads entire response body into memory. If the response body is very large this may trigger an
+     * {@link OutOfMemoryError}. Prefer to stream the response body if this is a possibility for your response.
      */
     public final String string() throws IOException {
         try (BufferSource source = source()) {
@@ -243,7 +226,8 @@ public abstract class ResponseBody implements Closeable {
 
         @Override
         public int read(char[] cbuf, int off, int len) throws IOException {
-            if (closed) throw new IOException("Stream closed");
+            if (closed)
+                throw new IOException("Stream closed");
 
             Reader delegate = this.delegate;
             if (null == delegate) {

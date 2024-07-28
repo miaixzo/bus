@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy;
 
 import java.io.FilterInputStream;
@@ -44,7 +44,8 @@ public final class LimitedInputStream extends FilterInputStream {
 
     public LimitedInputStream(InputStream in, long limit, boolean closeSource) {
         super(Objects.requireNonNull(in));
-        if (limit <= 0) throw new IllegalArgumentException("limit must be > 0");
+        if (limit <= 0)
+            throw new IllegalArgumentException("limit must be > 0");
         this.remaining = limit;
         this.closeSource = closeSource;
     }
@@ -97,7 +98,8 @@ public final class LimitedInputStream extends FilterInputStream {
 
     @Override
     public void close() throws IOException {
-        if (closeSource) in.close();
+        if (closeSource)
+            in.close();
     }
 
     public long getRemaining() {

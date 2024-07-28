@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.wrapper;
 
 import jakarta.annotation.Resource;
@@ -62,7 +62,7 @@ import java.util.Arrays;
  * @author Kimi Liu
  * @since Java 17+
  */
-@EnableConfigurationProperties(value = {WrapperProperties.class})
+@EnableConfigurationProperties(value = { WrapperProperties.class })
 public class WrapperConfiguration implements WebMvcRegistrations {
 
     @Resource
@@ -111,7 +111,7 @@ public class WrapperConfiguration implements WebMvcRegistrations {
             RequestMappingInfo requestMappingInfo = super.getMappingForMethod(method, handlerType);
             if (null != requestMappingInfo
                     && (handlerType.isAnnotationPresent(Controller.class)
-                    || handlerType.isAnnotationPresent(RestController.class))
+                            || handlerType.isAnnotationPresent(RestController.class))
                     && ObjectKit.isNotEmpty(properties.getBasePackages())) {
                 AntPathMatcher antPathMatcher = new AntPathMatcher(Symbol.DOT);
                 for (String basePackage : properties.getBasePackages()) {
@@ -119,11 +119,14 @@ public class WrapperConfiguration implements WebMvcRegistrations {
                     if (antPathMatcher.matchStart(packName, basePackage)
                             || antPathMatcher.matchStart(basePackage, packName)) {
                         String[] arrays = StringKit.splitToArray(basePackage, Symbol.DOT);
-                        String prefix = StringKit.splitToArray(packName, arrays[arrays.length - 1])[1].replace(Symbol.C_DOT, Symbol.C_SLASH);
-                        Logger.debug("Create a URL request mapping '" + prefix + Arrays.toString(requestMappingInfo.getPathPatternsCondition().getPatterns().toArray())
+                        String prefix = StringKit.splitToArray(packName, arrays[arrays.length - 1])[1]
+                                .replace(Symbol.C_DOT, Symbol.C_SLASH);
+                        Logger.debug("Create a URL request mapping '" + prefix
+                                + Arrays.toString(requestMappingInfo.getPathPatternsCondition().getPatterns().toArray())
                                 + "' for " + packName + Symbol.C_DOT + handlerType.getSimpleName());
 
-                        requestMappingInfo = RequestMappingInfo.paths(prefix).options(getBuilderConfiguration()).build().combine(requestMappingInfo);
+                        requestMappingInfo = RequestMappingInfo.paths(prefix).options(getBuilderConfiguration()).build()
+                                .combine(requestMappingInfo);
                     }
                 }
             }
@@ -135,7 +138,8 @@ public class WrapperConfiguration implements WebMvcRegistrations {
     class BodyCacheFilter extends OncePerRequestFilter {
 
         @Override
-        protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+                FilterChain filterChain) throws ServletException, IOException {
             final String method = request.getMethod();
             // 如果不是 POST PATCH PUT 等有流的接口则无需进行类型转换,提高性能
             if (HTTP.POST.equals(method) || HTTP.PATCH.equals(method) || HTTP.PUT.equals(method)) {

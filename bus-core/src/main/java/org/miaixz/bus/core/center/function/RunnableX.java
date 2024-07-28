@@ -24,9 +24,8 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.function;
-
 
 import org.miaixz.bus.core.xyz.ExceptionKit;
 
@@ -54,13 +53,10 @@ public interface RunnableX extends Runnable, Serializable {
     }
 
     /**
-     * When an object implementing interface {@code Runnable} is used
-     * to create a thread, starting the thread causes the object's
-     * {@code run} method to be called in that separately executing
-     * thread.
+     * When an object implementing interface {@code Runnable} is used to create a thread, starting the thread causes the
+     * object's {@code run} method to be called in that separately executing thread.
      * <p>
-     * The general contract of the method {@code run} is that it may
-     * take any action whatsoever.
+     * The general contract of the method {@code run} is that it may take any action whatsoever.
      *
      * @throws Exception wrapped checked exception
      * @see Thread#run()
@@ -68,13 +64,10 @@ public interface RunnableX extends Runnable, Serializable {
     void running() throws Throwable;
 
     /**
-     * When an object implementing interface {@code Runnable} is used
-     * to create a thread, starting the thread causes the object's
-     * {@code run} method to be called in that separately executing
-     * thread.
+     * When an object implementing interface {@code Runnable} is used to create a thread, starting the thread causes the
+     * object's {@code run} method to be called in that separately executing thread.
      * <p>
-     * The general contract of the method {@code run} is that it may
-     * take any action whatsoever.
+     * The general contract of the method {@code run} is that it may take any action whatsoever.
      *
      * @see Thread#run()
      */

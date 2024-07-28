@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.jna;
 
 import com.sun.jna.Native;
@@ -74,8 +74,8 @@ public interface SolarisLibc extends CLibrary {
     /**
      * Connection info
      */
-    @FieldOrder({"ut_user", "ut_id", "ut_line", "ut_pid", "ut_type", "ut_exit", "ut_tv", "ut_session", "pad",
-            "ut_syslen", "ut_host"})
+    @FieldOrder({ "ut_user", "ut_id", "ut_line", "ut_pid", "ut_type", "ut_exit", "ut_tv", "ut_session", "pad",
+            "ut_syslen", "ut_host" })
     class SolarisUtmpx extends Structure {
         public byte[] ut_user = new byte[UTX_USERSIZE]; // user login name
         public byte[] ut_id = new byte[UTX_IDSIZE]; // etc/inittab id (usually line #)
@@ -93,7 +93,7 @@ public interface SolarisLibc extends CLibrary {
     /**
      * Part of utmpx structure
      */
-    @FieldOrder({"e_termination", "e_exit"})
+    @FieldOrder({ "e_termination", "e_exit" })
     class Exit_status extends Structure {
         public short e_termination; // Process termination status
         public short e_exit; // Process exit status
@@ -102,7 +102,7 @@ public interface SolarisLibc extends CLibrary {
     /**
      * 32/64-bit timeval required for utmpx structure
      */
-    @FieldOrder({"tv_sec", "tv_usec"})
+    @FieldOrder({ "tv_sec", "tv_usec" })
     class Timeval extends Structure {
         public NativeLong tv_sec; // seconds
         public NativeLong tv_usec; // microseconds

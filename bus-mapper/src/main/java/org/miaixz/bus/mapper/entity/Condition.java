@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.entity;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -114,11 +114,10 @@ public class Condition implements TableNames {
         oredCriteria = new ArrayList<>();
         this.entityClass = entityClass;
         table = EntityBuilder.getEntityTable(entityClass);
-        //根据李领北建议修改#159
+        // 根据李领北建议修改#159
         propertyMap = table.getPropertyMap();
         this.ORDERBY = new OrderBy(this, propertyMap);
     }
-
 
     private Condition(Builder builder) {
         this.exists = builder.exists;
@@ -162,7 +161,8 @@ public class Condition implements TableNames {
                 if (propertyMap.containsKey(property)) {
                     this.excludeColumns.add(propertyMap.get(property).getColumn());
                 } else {
-                    throw new MapperException("类 " + entityClass.getSimpleName() + " 不包含属性 \'" + property + "\'，或该属性被@Transient注释！");
+                    throw new MapperException(
+                            "类 " + entityClass.getSimpleName() + " 不包含属性 \'" + property + "\'，或该属性被@Transient注释！");
                 }
             }
         }
@@ -184,7 +184,8 @@ public class Condition implements TableNames {
                 if (propertyMap.containsKey(property)) {
                     this.selectColumns.add(propertyMap.get(property).getColumn());
                 } else {
-                    throw new MapperException("类 " + entityClass.getSimpleName() + " 不包含属性 \'" + property + "\'，或该属性被@Transient注释！");
+                    throw new MapperException(
+                            "类 " + entityClass.getSimpleName() + " 不包含属性 \'" + property + "\'，或该属性被@Transient注释！");
                 }
             }
         }
@@ -266,7 +267,7 @@ public class Condition implements TableNames {
 
     public Set<String> getSelectColumns() {
         if (selectColumns != null && selectColumns.size() > 0) {
-            //不需要处理
+            // 不需要处理
         } else if (excludeColumns != null && excludeColumns.size() > 0) {
             Collection<EntityColumn> entityColumns = propertyMap.values();
             selectColumns = new LinkedHashSet<>(entityColumns.size() - excludeColumns.size());
@@ -598,10 +599,10 @@ public class Condition implements TableNames {
             org.apache.ibatis.reflection.MetaObject metaObject = MetaObject.forObject(param);
             String[] properties = metaObject.getGetterNames();
             for (String property : properties) {
-                //属性和列对应Map中有此属性
+                // 属性和列对应Map中有此属性
                 if (propertyMap.get(property) != null) {
                     Object value = metaObject.getValue(property);
-                    //属性值不为空
+                    // 属性值不为空
                     if (value != null) {
                         andEqualTo(property, value);
                     }
@@ -620,10 +621,10 @@ public class Condition implements TableNames {
             org.apache.ibatis.reflection.MetaObject metaObject = MetaObject.forObject(param);
             String[] properties = metaObject.getGetterNames();
             for (String property : properties) {
-                //属性和列对应Map中有此属性
+                // 属性和列对应Map中有此属性
                 if (propertyMap.get(property) != null) {
                     Object value = metaObject.getValue(property);
-                    //属性值不为空
+                    // 属性值不为空
                     if (value != null) {
                         andEqualTo(property, value);
                     } else {
@@ -737,10 +738,10 @@ public class Condition implements TableNames {
             org.apache.ibatis.reflection.MetaObject metaObject = MetaObject.forObject(param);
             String[] properties = metaObject.getGetterNames();
             for (String property : properties) {
-                //属性和列对应Map中有此属性
+                // 属性和列对应Map中有此属性
                 if (propertyMap.get(property) != null) {
                     Object value = metaObject.getValue(property);
-                    //属性值不为空
+                    // 属性值不为空
                     if (value != null) {
                         orEqualTo(property, value);
                     }
@@ -759,10 +760,10 @@ public class Condition implements TableNames {
             org.apache.ibatis.reflection.MetaObject metaObject = MetaObject.forObject(param);
             String[] properties = metaObject.getGetterNames();
             for (String property : properties) {
-                //属性和列对应Map中有此属性
+                // 属性和列对应Map中有此属性
                 if (propertyMap.get(property) != null) {
                     Object value = metaObject.getValue(property);
-                    //属性值不为空
+                    // 属性值不为空
                     if (value != null) {
                         orEqualTo(property, value);
                     } else {
@@ -1121,7 +1122,8 @@ public class Condition implements TableNames {
             return new Condition(this);
         }
 
-        private void transformCriterion(Criteria criteria, String condition, String property, Object[] values, String andOr) {
+        private void transformCriterion(Criteria criteria, String condition, String property, Object[] values,
+                String andOr) {
             if (values.length == 0) {
                 if ("and".equals(andOr)) {
                     criteria.addCriterion(column(property) + Symbol.SPACE + condition);
@@ -1136,9 +1138,11 @@ public class Condition implements TableNames {
                 }
             } else if (values.length == 2) {
                 if ("and".equals(andOr)) {
-                    criteria.addCriterion(column(property) + Symbol.SPACE + condition, values[0], values[1], property(property));
+                    criteria.addCriterion(column(property) + Symbol.SPACE + condition, values[0], values[1],
+                            property(property));
                 } else {
-                    criteria.addOrCriterion(column(property) + Symbol.SPACE + condition, values[0], values[1], property(property));
+                    criteria.addOrCriterion(column(property) + Symbol.SPACE + condition, values[0], values[1],
+                            property(property));
                 }
             }
         }

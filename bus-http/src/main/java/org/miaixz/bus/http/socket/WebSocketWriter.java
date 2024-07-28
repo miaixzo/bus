@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.socket;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -37,8 +37,7 @@ import java.io.IOException;
 import java.util.Random;
 
 /**
- * RFC 6455兼容的WebSocket帧写入器
- * 这个类不是线程安全的
+ * RFC 6455兼容的WebSocket帧写入器 这个类不是线程安全的
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -61,8 +60,10 @@ public class WebSocketWriter {
     boolean activeWriter;
 
     WebSocketWriter(boolean isClient, BufferSink sink, Random random) {
-        if (sink == null) throw new NullPointerException("sink == null");
-        if (random == null) throw new NullPointerException("random == null");
+        if (sink == null)
+            throw new NullPointerException("sink == null");
+        if (random == null)
+            throw new NullPointerException("random == null");
         this.isClient = isClient;
         this.sink = sink;
         this.sinkBuffer = sink.buffer();
@@ -90,8 +91,8 @@ public class WebSocketWriter {
     /**
      * Send a close frame with optional code and reason.
      *
-     * @param code   Status code as defined by <a
-     *               href="http://tools.ietf.org/html/rfc6455#section-7.4">Section 7.4 of RFC 6455</a> or {@code 0}.
+     * @param code   Status code as defined by <a href="http://tools.ietf.org/html/rfc6455#section-7.4">Section 7.4 of
+     *               RFC 6455</a> or {@code 0}.
      * @param reason Reason for shutting down or {@code null}.
      */
     void writeClose(int code, ByteString reason) throws IOException {
@@ -116,7 +117,8 @@ public class WebSocketWriter {
     }
 
     private void writeControlFrame(int opcode, ByteString payload) throws IOException {
-        if (writerClosed) throw new IOException("closed");
+        if (writerClosed)
+            throw new IOException("closed");
 
         int length = payload.size();
         if (length > WebSocketProtocol.PAYLOAD_BYTE_MAX) {
@@ -153,8 +155,8 @@ public class WebSocketWriter {
     }
 
     /**
-     * Stream a message payload as a series of frames. This allows control frames to be interleaved
-     * between parts of the message.
+     * Stream a message payload as a series of frames. This allows control frames to be interleaved between parts of the
+     * message.
      */
     Sink newMessageSink(int formatOpcode, long contentLength) {
         if (activeWriter) {
@@ -171,9 +173,9 @@ public class WebSocketWriter {
         return frameSink;
     }
 
-    void writeMessageFrame(int formatOpcode, long byteCount, boolean isFirstFrame,
-                           boolean isFinal) throws IOException {
-        if (writerClosed) throw new IOException("closed");
+    void writeMessageFrame(int formatOpcode, long byteCount, boolean isFirstFrame, boolean isFinal) throws IOException {
+        if (writerClosed)
+            throw new IOException("closed");
 
         int b0 = isFirstFrame ? formatOpcode : WebSocketProtocol.OPCODE_CONTINUATION;
         if (isFinal) {
@@ -226,13 +228,13 @@ public class WebSocketWriter {
 
         @Override
         public void write(Buffer source, long byteCount) throws IOException {
-            if (closed) throw new IOException("closed");
+            if (closed)
+                throw new IOException("closed");
 
             buffer.write(source, byteCount);
 
             // Determine if this is a buffered write which we can defer until close() flushes.
-            boolean deferWrite = isFirstFrame
-                    && contentLength != -1
+            boolean deferWrite = isFirstFrame && contentLength != -1
                     && buffer.size() > contentLength - 8192 /* segment size */;
 
             long emitCount = buffer.completeSegmentByteCount();
@@ -244,7 +246,8 @@ public class WebSocketWriter {
 
         @Override
         public void flush() throws IOException {
-            if (closed) throw new IOException("closed");
+            if (closed)
+                throw new IOException("closed");
 
             writeMessageFrame(formatOpcode, buffer.size(), isFirstFrame, false /* final */);
             isFirstFrame = false;
@@ -257,7 +260,8 @@ public class WebSocketWriter {
 
         @Override
         public void close() throws IOException {
-            if (closed) throw new IOException("closed");
+            if (closed)
+                throw new IOException("closed");
 
             writeMessageFrame(formatOpcode, buffer.size(), isFirstFrame, true /* final */);
             closed = true;

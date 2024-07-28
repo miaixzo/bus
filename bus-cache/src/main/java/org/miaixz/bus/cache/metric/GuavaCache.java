@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cache.metric;
 
 import com.google.common.cache.CacheBuilder;
@@ -48,10 +48,7 @@ public class GuavaCache implements CacheX {
     private LoadingCache<String, Object> guavaCache;
 
     public GuavaCache(long size, long expire) {
-        guavaCache = CacheBuilder
-                .newBuilder()
-                .maximumSize(size)
-                .expireAfterWrite(expire, TimeUnit.MILLISECONDS)
+        guavaCache = CacheBuilder.newBuilder().maximumSize(size).expireAfterWrite(expire, TimeUnit.MILLISECONDS)
                 .build(new CacheLoader<>() {
                     @Override
                     public Object load(String key) {

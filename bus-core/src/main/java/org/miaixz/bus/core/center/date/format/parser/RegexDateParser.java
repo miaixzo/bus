@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date.format.parser;
 
 import org.miaixz.bus.core.center.date.builder.DateBuilder;
@@ -48,8 +48,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 使用正则列表方式的日期解析器
- * 通过定义若干的日期正则，遍历匹配到给定正则后，按照正则方式解析为日期
+ * 使用正则列表方式的日期解析器 通过定义若干的日期正则，遍历匹配到给定正则后，按照正则方式解析为日期
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -58,8 +57,7 @@ public class RegexDateParser implements DateParser, Serializable {
 
     private static final long serialVersionUID = -1L;
 
-
-    private static final int[] NSS = {100000000, 10000000, 1000000, 100000, 10000, 1000, 100, 10, 1};
+    private static final int[] NSS = { 100000000, 10000000, 1000000, 100000, 10000, 1000, 100, 10, 1 };
     private static final Pattern ZONE_OFFSET_PATTERN = Pattern.compile("[-+]\\d{1,2}:?(?:\\d{2})?");
     private static final WordTree ZONE_TREE = WordTree.of(TimeZone.getAvailableIDs());
 
@@ -180,23 +178,32 @@ public class RegexDateParser implements DateParser, Serializable {
         }
 
         // year
-        Optional.ofNullable(PatternKit.group(matcher, "year")).ifPresent((year) -> dateBuilder.setYear(parseYear(year)));
+        Optional.ofNullable(PatternKit.group(matcher, "year"))
+                .ifPresent((year) -> dateBuilder.setYear(parseYear(year)));
         // dayOrMonth, dd/mm or mm/dd
-        Optional.ofNullable(PatternKit.group(matcher, "dayOrMonth")).ifPresent((dayOrMonth) -> parseDayOrMonth(dayOrMonth, dateBuilder, preferMonthFirst));
+        Optional.ofNullable(PatternKit.group(matcher, "dayOrMonth"))
+                .ifPresent((dayOrMonth) -> parseDayOrMonth(dayOrMonth, dateBuilder, preferMonthFirst));
         // month
-        Optional.ofNullable(PatternKit.group(matcher, "month")).ifPresent((month) -> dateBuilder.setMonth(parseMonth(month)));
+        Optional.ofNullable(PatternKit.group(matcher, "month"))
+                .ifPresent((month) -> dateBuilder.setMonth(parseMonth(month)));
         // week
-        Optional.ofNullable(PatternKit.group(matcher, "week")).ifPresent((week) -> dateBuilder.setWeek(parseWeek(week)));
+        Optional.ofNullable(PatternKit.group(matcher, "week"))
+                .ifPresent((week) -> dateBuilder.setWeek(parseWeek(week)));
         // day
-        Optional.ofNullable(PatternKit.group(matcher, "day")).ifPresent((day) -> dateBuilder.setDay(parseNumberLimit(day, 1, 31)));
+        Optional.ofNullable(PatternKit.group(matcher, "day"))
+                .ifPresent((day) -> dateBuilder.setDay(parseNumberLimit(day, 1, 31)));
         // hour
-        Optional.ofNullable(PatternKit.group(matcher, "hour")).ifPresent((hour) -> dateBuilder.setHour(parseNumberLimit(hour, 0, 23)));
+        Optional.ofNullable(PatternKit.group(matcher, "hour"))
+                .ifPresent((hour) -> dateBuilder.setHour(parseNumberLimit(hour, 0, 23)));
         // minute
-        Optional.ofNullable(PatternKit.group(matcher, "minute")).ifPresent((minute) -> dateBuilder.setMinute(parseNumberLimit(minute, 0, 59)));
+        Optional.ofNullable(PatternKit.group(matcher, "minute"))
+                .ifPresent((minute) -> dateBuilder.setMinute(parseNumberLimit(minute, 0, 59)));
         // second
-        Optional.ofNullable(PatternKit.group(matcher, "second")).ifPresent((second) -> dateBuilder.setSecond(parseNumberLimit(second, 0, 59)));
+        Optional.ofNullable(PatternKit.group(matcher, "second"))
+                .ifPresent((second) -> dateBuilder.setSecond(parseNumberLimit(second, 0, 59)));
         // nanoseconds
-        Optional.ofNullable(PatternKit.group(matcher, "nanosecond")).ifPresent((ns) -> dateBuilder.setNanosecond(parseNano(ns)));
+        Optional.ofNullable(PatternKit.group(matcher, "nanosecond"))
+                .ifPresent((ns) -> dateBuilder.setNanosecond(parseNano(ns)));
         // am or pm
         Optional.ofNullable(PatternKit.group(matcher, "m")).ifPresent((m) -> {
             if (CharKit.equals('p', m.charAt(0), true)) {
@@ -238,60 +245,60 @@ public class RegexDateParser implements DateParser, Serializable {
     private static void parseNumberDate(final String number, final DateBuilder dateBuilder) {
         final int length = number.length();
         switch (length) {
-            case 4:
-                // yyyy
-                dateBuilder.setYear(Integer.parseInt(number));
-                break;
-            case 6:
-                // yyyyMM
-                dateBuilder.setYear(parseInt(number, 0, 4));
-                dateBuilder.setMonth(parseInt(number, 4, 6));
-                break;
-            case 8:
-                // yyyyMMdd
-                dateBuilder.setYear(parseInt(number, 0, 4));
-                dateBuilder.setMonth(parseInt(number, 4, 6));
-                dateBuilder.setDay(parseInt(number, 6, 8));
-                break;
-            case 14:
-                dateBuilder.setYear(parseInt(number, 0, 4));
-                dateBuilder.setMonth(parseInt(number, 4, 6));
-                dateBuilder.setDay(parseInt(number, 6, 8));
-                dateBuilder.setHour(parseInt(number, 8, 10));
-                dateBuilder.setMinute(parseInt(number, 10, 12));
-                dateBuilder.setSecond(parseInt(number, 12, 14));
-                break;
-            case 10:
-                // unixtime(10)
-                dateBuilder.setUnixsecond(parseLong(number));
-                break;
-            case 13:
-                // millisecond(13)
-                dateBuilder.setMillisecond(parseLong(number));
-                break;
-            case 16:
-                // microsecond(16)
-                dateBuilder.setUnixsecond(parseLong(number.substring(0, 10)));
-                dateBuilder.setNanosecond(parseInt(number, 10, 16));
-                break;
-            case 19:
-                // nanosecond(19)
-                dateBuilder.setUnixsecond(parseLong(number.substring(0, 10)));
-                dateBuilder.setNanosecond(parseInt(number, 10, 19));
-                break;
+        case 4:
+            // yyyy
+            dateBuilder.setYear(Integer.parseInt(number));
+            break;
+        case 6:
+            // yyyyMM
+            dateBuilder.setYear(parseInt(number, 0, 4));
+            dateBuilder.setMonth(parseInt(number, 4, 6));
+            break;
+        case 8:
+            // yyyyMMdd
+            dateBuilder.setYear(parseInt(number, 0, 4));
+            dateBuilder.setMonth(parseInt(number, 4, 6));
+            dateBuilder.setDay(parseInt(number, 6, 8));
+            break;
+        case 14:
+            dateBuilder.setYear(parseInt(number, 0, 4));
+            dateBuilder.setMonth(parseInt(number, 4, 6));
+            dateBuilder.setDay(parseInt(number, 6, 8));
+            dateBuilder.setHour(parseInt(number, 8, 10));
+            dateBuilder.setMinute(parseInt(number, 10, 12));
+            dateBuilder.setSecond(parseInt(number, 12, 14));
+            break;
+        case 10:
+            // unixtime(10)
+            dateBuilder.setUnixsecond(parseLong(number));
+            break;
+        case 13:
+            // millisecond(13)
+            dateBuilder.setMillisecond(parseLong(number));
+            break;
+        case 16:
+            // microsecond(16)
+            dateBuilder.setUnixsecond(parseLong(number.substring(0, 10)));
+            dateBuilder.setNanosecond(parseInt(number, 10, 16));
+            break;
+        case 19:
+            // nanosecond(19)
+            dateBuilder.setUnixsecond(parseLong(number.substring(0, 10)));
+            dateBuilder.setNanosecond(parseInt(number, 10, 19));
+            break;
         }
     }
 
     private static int parseYear(final String year) {
         final int length = year.length();
         switch (length) {
-            case 4:
-                return Integer.parseInt(year);
-            case 2:
-                final int num = Integer.parseInt(year);
-                return (num > 50 ? 1900 : 2000) + num;
-            default:
-                throw new DateException("Invalid year: [{}]", year);
+        case 4:
+            return Integer.parseInt(year);
+        case 2:
+            final int num = Integer.parseInt(year);
+            return (num > 50 ? 1900 : 2000) + num;
+        default:
+            throw new DateException("Invalid year: [{}]", year);
         }
     }
 
@@ -302,7 +309,8 @@ public class RegexDateParser implements DateParser, Serializable {
      * @param dateBuilder      {@link DateBuilder}
      * @param preferMonthFirst 是否月份在前
      */
-    private static void parseDayOrMonth(final String dayOrMonth, final DateBuilder dateBuilder, final boolean preferMonthFirst) {
+    private static void parseDayOrMonth(final String dayOrMonth, final DateBuilder dateBuilder,
+            final boolean preferMonthFirst) {
         final char next = dayOrMonth.charAt(1);
         final int a;
         final int b;

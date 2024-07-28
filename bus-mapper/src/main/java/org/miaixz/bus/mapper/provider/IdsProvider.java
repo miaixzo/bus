@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.provider;
 
 import org.apache.ibatis.mapping.MappedStatement;
@@ -38,8 +38,7 @@ import org.miaixz.bus.mapper.entity.EntityColumn;
 import java.util.Set;
 
 /**
- * 通过 ids 字符串的各种操作
- * ids 如 "1,2,3"
+ * 通过 ids 字符串的各种操作 ids 如 "1,2,3"
  *
  * @author Kimi Liu
  * @since Java 17+

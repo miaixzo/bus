@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.annotation.resolve.elements;
 
 import org.miaixz.bus.core.center.stream.EasyStream;
@@ -43,19 +43,17 @@ import java.util.*;
 import java.util.function.BiFunction;
 
 /**
- * <p>注解元素映射，用于包装一个{@link AnnotatedElement}，然后将被包装的元素上，
- * 直接声明的注解以及这些注解的元组全部解析为{@link ResolvedAnnotationMapping}。
+ * <p>
+ * 注解元素映射，用于包装一个{@link AnnotatedElement}，然后将被包装的元素上， 直接声明的注解以及这些注解的元组全部解析为{@link ResolvedAnnotationMapping}。
  * 从而用于支持对元注解的访问操作。
  *
- * <p>默认情况下，总是不扫描{@link java.lang}包下的注解，
- * 并且在当前实例中，{@link Inherited}注解将不生效，
+ * <p>
+ * 默认情况下，总是不扫描{@link java.lang}包下的注解， 并且在当前实例中，{@link Inherited}注解将不生效，
  * 即通过<em>directly</em>方法将无法获得父类上带有{@link Inherited}的注解。
  *
- * <p>在一个{@link MetaAnnotatedElement}中，
- * {@link AnnotatedElement}上同类型的注解或元注解只会被保留一个，
- * 即当出现两个根注解都具有相同元注解时，仅有第一个根注解上的元注解会被保留，
- * 因此当通过{@link #getAnnotationsByType(Class)}
- * 或{@link #getDeclaredAnnotationsByType(Class)}方法用于只能获得一个注解对象。
+ * <p>
+ * 在一个{@link MetaAnnotatedElement}中， {@link AnnotatedElement}上同类型的注解或元注解只会被保留一个， 即当出现两个根注解都具有相同元注解时，仅有第一个根注解上的元注解会被保留，
+ * 因此当通过{@link #getAnnotationsByType(Class)} 或{@link #getDeclaredAnnotationsByType(Class)}方法用于只能获得一个注解对象。
  *
  * @param <T> AnnotationMapping类型
  * @author Kimi Liu
@@ -112,8 +110,7 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
      * @return 注解映射对象
      */
     public Optional<T> getMapping(final Class<? extends Annotation> annotationType) {
-        return Optional.ofNullable(annotationType)
-                .map(getAnnotationMappings()::get);
+        return Optional.ofNullable(annotationType).map(getAnnotationMappings()::get);
     }
 
     /**
@@ -132,8 +129,7 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
      * @return 注解映射对象
      */
     public Optional<T> getDeclaredMapping(final Class<? extends Annotation> annotationType) {
-        return EasyStream.of(getAnnotationMappings().values())
-                .filter(T::isRoot)
+        return EasyStream.of(getAnnotationMappings().values()).filter(T::isRoot)
                 .findFirst(mapping -> ObjectKit.equals(annotationType, mapping.annotationType()));
     }
 
@@ -145,8 +141,7 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
      */
     @Override
     public boolean isAnnotationPresent(final Class<? extends Annotation> annotationType) {
-        return getMapping(annotationType)
-                .isPresent();
+        return getMapping(annotationType).isPresent();
     }
 
     /**
@@ -158,10 +153,7 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
      */
     @Override
     public <A extends Annotation> A getAnnotation(final Class<A> annotationType) {
-        return getMapping(annotationType)
-                .map(T::getResolvedAnnotation)
-                .map(annotationType::cast)
-                .orElse(null);
+        return getMapping(annotationType).map(T::getResolvedAnnotation).map(annotationType::cast).orElse(null);
     }
 
     /**
@@ -173,10 +165,7 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
      */
     @Override
     public <A extends Annotation> A getDeclaredAnnotation(final Class<A> annotationType) {
-        return getDeclaredMapping(annotationType)
-                .map(T::getResolvedAnnotation)
-                .map(annotationType::cast)
-                .orElse(null);
+        return getDeclaredMapping(annotationType).map(T::getResolvedAnnotation).map(annotationType::cast).orElse(null);
     }
 
     /**
@@ -190,7 +179,7 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
     public <A extends Annotation> A[] getAnnotationsByType(final Class<A> annotationType) {
         final A result = getAnnotation(annotationType);
         if (Objects.nonNull(result)) {
-            return (A[]) new Annotation[]{result};
+            return (A[]) new Annotation[] { result };
         }
         return ArrayKit.newArray(annotationType, 0);
     }
@@ -206,7 +195,7 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
     public <A extends Annotation> A[] getDeclaredAnnotationsByType(final Class<A> annotationType) {
         final A result = getDeclaredAnnotation(annotationType);
         if (Objects.nonNull(result)) {
-            return (A[]) new Annotation[]{result};
+            return (A[]) new Annotation[] { result };
         }
         return ArrayKit.newArray(annotationType, 0);
     }
@@ -218,9 +207,7 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
      */
     @Override
     public Annotation[] getDeclaredAnnotations() {
-        return getAnnotationMappings().values().stream()
-                .filter(T::isRoot)
-                .map(T::getResolvedAnnotation)
+        return getAnnotationMappings().values().stream().filter(T::isRoot).map(T::getResolvedAnnotation)
                 .toArray(Annotation[]::new);
     }
 
@@ -231,9 +218,7 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
      */
     @Override
     public Annotation[] getAnnotations() {
-        return getAnnotationMappings().values().stream()
-                .map(T::getResolvedAnnotation)
-                .toArray(Annotation[]::new);
+        return getAnnotationMappings().values().stream().map(T::getResolvedAnnotation).toArray(Annotation[]::new);
     }
 
     /**
@@ -285,8 +270,7 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
     }
 
     /**
-     * 该注解是否需要映射
-     * 默认情况下，已经处理过、或在{@link java.lang}包下的注解不会被处理
+     * 该注解是否需要映射 默认情况下，已经处理过、或在{@link java.lang}包下的注解不会被处理
      *
      * @param mappings   当前已处理的注解
      * @param annotation 注解对象
@@ -305,8 +289,7 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
     }
 
     /**
-     * 扫描{@link AnnotatedElement}上直接声明的注解，然后按广度优先扫描这些注解的元注解，
-     * 直到将所有类型的注解对象皆加入{@link #annotationMappings}为止
+     * 扫描{@link AnnotatedElement}上直接声明的注解，然后按广度优先扫描这些注解的元注解， 直到将所有类型的注解对象皆加入{@link #annotationMappings}为止
      */
     private void initAnnotationMappingsIfNecessary() {
         // 双重检查保证初始化过程线程安全
@@ -326,11 +309,8 @@ public class MetaAnnotatedElement<T extends AnnotationMapping<Annotation>> imple
      */
     private void initAnnotationMappings(final Map<Class<? extends Annotation>, T> mappings) {
         final Deque<T> deque = new LinkedList<>();
-        Arrays.stream(AnnoKit.getDeclaredAnnotations(element))
-                .filter(m -> isNeedMapping(mappings, m))
-                .map(annotation -> createMapping(null, annotation))
-                .filter(Objects::nonNull)
-                .forEach(deque::addLast);
+        Arrays.stream(AnnoKit.getDeclaredAnnotations(element)).filter(m -> isNeedMapping(mappings, m))
+                .map(annotation -> createMapping(null, annotation)).filter(Objects::nonNull).forEach(deque::addLast);
         while (!deque.isEmpty()) {
             // 若已有该类型的注解，则不再进行扫描
             final T mapping = deque.removeFirst();

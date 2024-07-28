@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.aix.software;
 
 import com.sun.jna.Native;
@@ -262,7 +262,8 @@ public class AixOperatingSystem extends AbstractOperatingSystem {
                 String installedService = Executor.getFirstAnswer(file.getAbsolutePath() + " status");
                 // Apache httpd daemon is running with PID 3997858.
                 if (installedService.contains("running")) {
-                    services.add(new OSService(file.getName(), Parsing.parseLastInt(installedService, 0), OSService.State.RUNNING));
+                    services.add(new OSService(file.getName(), Parsing.parseLastInt(installedService, 0),
+                            OSService.State.RUNNING));
                 } else {
                     services.add(new OSService(file.getName(), 0, OSService.State.STOPPED));
                 }

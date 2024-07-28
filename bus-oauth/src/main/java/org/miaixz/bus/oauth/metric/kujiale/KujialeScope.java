@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org justauth.cn and other contributors.        ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.kujiale;
 
 import lombok.AllArgsConstructor;
@@ -44,8 +44,7 @@ public enum KujialeScope implements AuthorizeScope {
     /**
      * {@code scope} 含义，以{@code description} 为准
      */
-    GET_USER_INFO("get_user_info", "获取用户的基本信息", true),
-    GET_DESIGN("get_design", "获取指定方案详情", false),
+    GET_USER_INFO("get_user_info", "获取用户的基本信息", true), GET_DESIGN("get_design", "获取指定方案详情", false),
     GET_BUDGET_LIST("get_budget_list", "获取清单预算概览数据", false);
 
     private final String scope;

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket.plugin;
 
 import org.miaixz.bus.logger.Logger;
@@ -107,7 +107,6 @@ public final class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnabl
         HashedWheelTimer.DEFAULT_TIMER.scheduleWithFixedDelay(this, seconds, TimeUnit.SECONDS);
     }
 
-
     @Override
     public boolean process(Session session, T data) {
         processMsgNum.increment();
@@ -117,17 +116,17 @@ public final class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnabl
     @Override
     public void stateEvent(Status status, Session session, Throwable throwable) {
         switch (status) {
-            case PROCESS_EXCEPTION:
-                processFailNum.increment();
-                break;
-            case NEW_SESSION:
-                newConnect.increment();
-                break;
-            case SESSION_CLOSED:
-                disConnect.increment();
-                break;
-            default:
-                break;
+        case PROCESS_EXCEPTION:
+            processFailNum.increment();
+            break;
+        case NEW_SESSION:
+            newConnect.increment();
+            break;
+        case SESSION_CLOSED:
+            disConnect.increment();
+            break;
+        default:
+            break;
         }
     }
 
@@ -145,17 +144,14 @@ public final class MonitorPlugin<T> extends AbstractPlugin<T> implements Runnabl
         totalProcessMsgNum += curProcessMsgNum;
         totalConnect += connectCount;
         Logger.info("\r\n-----" + seconds + "seconds ----\r\ninflow:\t\t" + curInFlow * 1.0 / (1024 * 1024) + "(MB)"
-                + "\r\noutflow:\t" + curOutFlow * 1.0 / (1024 * 1024) + "(MB)"
-                + "\r\nprocess fail:\t" + curDiscardNum
-                + "\r\nprocess count:\t" + curProcessMsgNum
-                + "\r\nprocess total:\t" + totalProcessMsgNum
+                + "\r\noutflow:\t" + curOutFlow * 1.0 / (1024 * 1024) + "(MB)" + "\r\nprocess fail:\t" + curDiscardNum
+                + "\r\nprocess count:\t" + curProcessMsgNum + "\r\nprocess total:\t" + totalProcessMsgNum
                 + "\r\nread count:\t" + curReadCount + "\twrite count:\t" + curWriteCount
-                + (udp ? "" : "\r\nconnect count:\t" + connectCount
-                + "\r\ndisconnect count:\t" + disConnectCount
-                + "\r\nonline count:\t" + onlineCount
-                + "\r\nconnected total:\t" + totalConnect)
-                + "\r\nRequests/sec:\t" + curProcessMsgNum * 1.0 / seconds
-                + "\r\nTransfer/sec:\t" + (curInFlow * 1.0 / (1024 * 1024) / seconds) + "(MB)");
+                + (udp ? ""
+                        : "\r\nconnect count:\t" + connectCount + "\r\ndisconnect count:\t" + disConnectCount
+                                + "\r\nonline count:\t" + onlineCount + "\r\nconnected total:\t" + totalConnect)
+                + "\r\nRequests/sec:\t" + curProcessMsgNum * 1.0 / seconds + "\r\nTransfer/sec:\t"
+                + (curInFlow * 1.0 / (1024 * 1024) / seconds) + "(MB)");
     }
 
     private long getAndReset(LongAdder longAdder) {

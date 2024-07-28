@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.nlp.provider.jcseg;
 
 import org.lionsoul.jcseg.ISegment;
@@ -40,9 +40,7 @@ import java.io.IOException;
 import java.io.StringReader;
 
 /**
- * Jcseg分词引擎实现
- * 项目地址：https://gitee.com/lionsoul/jcseg
- * {@link ISegment}非线程安全，每次单独创建
+ * Jcseg分词引擎实现 项目地址：https://gitee.com/lionsoul/jcseg {@link ISegment}非线程安全，每次单独创建
  *
  * @author Kimi Liu
  * @since Java 17+

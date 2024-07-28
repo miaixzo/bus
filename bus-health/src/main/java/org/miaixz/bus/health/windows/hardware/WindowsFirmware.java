@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.hardware;
 
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
@@ -49,8 +49,8 @@ import java.util.function.Supplier;
 @Immutable
 final class WindowsFirmware extends AbstractFirmware {
 
-    private final Supplier<Tuple> manufNameDescVersRelease = Memoizer.memoize(
-            WindowsFirmware::queryManufNameDescVersRelease);
+    private final Supplier<Tuple> manufNameDescVersRelease = Memoizer
+            .memoize(WindowsFirmware::queryManufNameDescVersRelease);
 
     private static Tuple queryManufNameDescVersRelease() {
         String manufacturer = null;

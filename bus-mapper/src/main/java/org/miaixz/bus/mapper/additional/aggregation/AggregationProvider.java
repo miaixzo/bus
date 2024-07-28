@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.additional.aggregation;
 
 import org.apache.ibatis.mapping.MappedStatement;
@@ -55,8 +55,10 @@ public class AggregationProvider extends MapperTemplate {
         super(mapperClass, mapperBuilder);
     }
 
-    public static String aggregationSelectClause(Class<?> entityClass, String wrapKeyword, AggregateCondition condition) {
-        Assert.notEmpty(condition.getAggregateProperty(), "aggregateProperty must have length; it must not be null or empty");
+    public static String aggregationSelectClause(Class<?> entityClass, String wrapKeyword,
+            AggregateCondition condition) {
+        Assert.notEmpty(condition.getAggregateProperty(),
+                "aggregateProperty must have length; it must not be null or empty");
         Assert.notNull(condition.getAggregateType(), "aggregateType is required; it must not be null");
         EntityTable entityTable = EntityBuilder.getEntityTable(entityClass);
         Map<String, EntityColumn> propertyMap = entityTable.getPropertyMap();
@@ -117,7 +119,8 @@ public class AggregationProvider extends MapperTemplate {
         if (isCheckConditionEntityClass()) {
             sql.append(SqlBuilder.conditionCheck(entityClass));
         }
-        sql.append("SELECT ${@org.miaixz.bus.mapper.additional.aggregation.AggregationProvider@aggregationSelectClause(");
+        sql.append(
+                "SELECT ${@org.miaixz.bus.mapper.additional.aggregation.AggregationProvider@aggregationSelectClause(");
         sql.append(Symbol.AT).append(entityClass.getName()).append("@class");
         sql.append(", '").append(getConfig().getWrapKeyword()).append("'");
         sql.append(", aggregateCondition");

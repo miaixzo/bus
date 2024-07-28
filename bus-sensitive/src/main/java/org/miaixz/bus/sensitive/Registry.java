@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.sensitive;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -38,8 +38,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 系统中内置的策略映射
- * 注解和实现之间映射
+ * 系统中内置的策略映射 注解和实现之间映射
  *
  * @author Kimi Liu
  * @since Java 17+

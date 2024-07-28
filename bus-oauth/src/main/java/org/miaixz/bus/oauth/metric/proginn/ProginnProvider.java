@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org justauth.cn and other contributors.        ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.proginn;
 
 import com.alibaba.fastjson.JSONObject;
@@ -71,13 +71,10 @@ public class ProginnProvider extends AbstractProvider {
         String response = Httpx.post(Registry.PROGINN.accessToken(), params);
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         this.checkResponse(accessTokenObject);
-        return AccToken.builder()
-                .accessToken(accessTokenObject.getString("access_token"))
-                .refreshToken(accessTokenObject.getString("refresh_token"))
-                .uid(accessTokenObject.getString("uid"))
+        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
+                .refreshToken(accessTokenObject.getString("refresh_token")).uid(accessTokenObject.getString("uid"))
                 .tokenType(accessTokenObject.getString("token_type"))
-                .expireIn(accessTokenObject.getIntValue("expires_in"))
-                .build();
+                .expireIn(accessTokenObject.getIntValue("expires_in")).build();
     }
 
     @Override
@@ -85,16 +82,9 @@ public class ProginnProvider extends AbstractProvider {
         String userInfo = doGetUserInfo(accToken);
         JSONObject object = JSONObject.parseObject(userInfo);
         this.checkResponse(object);
-        return Material.builder()
-                .rawJson(object)
-                .uuid(object.getString("uid"))
-                .username(object.getString("nickname"))
-                .nickname(object.getString("nickname"))
-                .avatar(object.getString("avatar"))
-                .email(object.getString("email"))
-                .gender(Gender.UNKNOWN)
-                .token(accToken)
-                .source(complex.toString())
+        return Material.builder().rawJson(object).uuid(object.getString("uid")).username(object.getString("nickname"))
+                .nickname(object.getString("nickname")).avatar(object.getString("avatar"))
+                .email(object.getString("email")).gender(Gender.UNKNOWN).token(accToken).source(complex.toString())
                 .build();
     }
 

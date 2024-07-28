@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.function;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -39,10 +39,9 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 /**
- * 存放lambda信息
- * 此类是{@link SerializedLambda}信息的扩充和补充类，包括：
+ * 存放lambda信息 此类是{@link SerializedLambda}信息的扩充和补充类，包括：
  * <ul>
- *     <li>实例化后的对象方法参数类型，一般用于方法引用</li>
+ * <li>实例化后的对象方法参数类型，一般用于方法引用</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -80,8 +79,8 @@ public class LambdaX {
         final boolean isMethod = executable instanceof Method;
         final boolean isConstructor = executable instanceof Constructor;
         Assert.isTrue(isMethod || isConstructor, "Unsupported executable type: " + executable.getClass());
-        this.returnType = isMethod ?
-                ((Method) executable).getGenericReturnType() : ((Constructor<?>) executable).getDeclaringClass();
+        this.returnType = isMethod ? ((Method) executable).getGenericReturnType()
+                : ((Constructor<?>) executable).getDeclaringClass();
 
         // lambda info
         this.parameterTypes = executable.getGenericParameterTypes();
@@ -93,8 +92,9 @@ public class LambdaX {
         // types
         final String instantiatedMethodType = lambda.getInstantiatedMethodType();
         final int index = instantiatedMethodType.indexOf(";)");
-        this.instantiatedMethodParameterTypes = (index > -1) ?
-                getInstantiatedMethodParamTypes(instantiatedMethodType.substring(1, index + 1)) : EMPTY_TYPE;
+        this.instantiatedMethodParameterTypes = (index > -1)
+                ? getInstantiatedMethodParamTypes(instantiatedMethodType.substring(1, index + 1))
+                : EMPTY_TYPE;
     }
 
     /**
@@ -115,7 +115,8 @@ public class LambdaX {
                 }
                 if (instantiatedTypeNames[i].endsWith(Symbol.SEMICOLON)) {
                     // 如果以 ";" 结尾，删除 ";"
-                    instantiatedTypeNames[i] = instantiatedTypeNames[i].substring(0, instantiatedTypeNames[i].length() - 1);
+                    instantiatedTypeNames[i] = instantiatedTypeNames[i].substring(0,
+                            instantiatedTypeNames[i].length() - 1);
                 }
             }
             types[i] = ClassKit.loadClass(instantiatedTypeNames[i]);

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 import java.awt.*;
@@ -33,20 +33,19 @@ import java.awt.image.ColorModel;
 import java.awt.image.DataBuffer;
 import java.awt.image.Raster;
 import java.awt.image.SampleModel;
+
 /**
  * @author Kimi Liu
  * @since Java 17+
  */
 public class SampledColorModel extends ColorModel {
 
-    private static final int[] BITS = {8, 8, 8};
+    private static final int[] BITS = { 8, 8, 8 };
 
     private final ColorSubsampling subsampling;
 
-    public SampledColorModel(ColorSpace cspace,
-                             ColorSubsampling subsampling) {
-        super(24, BITS, cspace, false, false,
-                Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
+    public SampledColorModel(ColorSpace cspace, ColorSubsampling subsampling) {
+        super(24, BITS, cspace, false, false, Transparency.OPAQUE, DataBuffer.TYPE_BYTE);
         this.subsampling = subsampling;
     }
 
@@ -109,11 +108,9 @@ public class SampledColorModel extends ColorModel {
     public int getRGB(Object inData) {
         byte[] ba = (byte[]) inData;
         ColorSpace cs = getColorSpace();
-        float[] fba = new float[]{(ba[0] & 0xFF) / 255f,
-                (ba[1] & 0xFF) / 255f, (ba[2] & 0xFF) / 255f};
+        float[] fba = new float[] { (ba[0] & 0xFF) / 255f, (ba[1] & 0xFF) / 255f, (ba[2] & 0xFF) / 255f };
         float[] rgb = cs.toRGB(fba);
-        int ret = (((int) (rgb[0] * 255)) << 16)
-                | (((int) (rgb[1] * 255)) << 8) | (((int) (rgb[2] * 255)));
+        int ret = (((int) (rgb[0] * 255)) << 16) | (((int) (rgb[1] * 255)) << 8) | (((int) (rgb[2] * 255)));
         return ret;
     }
 

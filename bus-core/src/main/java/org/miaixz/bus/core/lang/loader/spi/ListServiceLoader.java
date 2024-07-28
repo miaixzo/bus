@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.loader.spi;
 
 import org.miaixz.bus.core.cache.SimpleCache;
@@ -44,23 +44,24 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * 列表类型的服务加载器，用于替换JDK提供的{@link java.util.ServiceLoader}
- * 相比JDK，增加了：
+ * 列表类型的服务加载器，用于替换JDK提供的{@link java.util.ServiceLoader} 相比JDK，增加了：
  * <ul>
- *     <li>可选服务存储位置（默认位于META-INF/services/）。</li>
- *     <li>可自定义编码。</li>
- *     <li>可自定义加载指定的服务实例。</li>
- *     <li>可自定义加载指定的服务类，由用户决定如何实例化（如传入自定义构造参数等）。</li>
- *     <li>提供更加灵活的服务加载机制，当选择加载指定服务时，其它服务无需加载。</li>
+ * <li>可选服务存储位置（默认位于META-INF/services/）。</li>
+ * <li>可自定义编码。</li>
+ * <li>可自定义加载指定的服务实例。</li>
+ * <li>可自定义加载指定的服务类，由用户决定如何实例化（如传入自定义构造参数等）。</li>
+ * <li>提供更加灵活的服务加载机制，当选择加载指定服务时，其它服务无需加载。</li>
  * </ul>
  *
  * <p>
  * 服务文件默认位于"META-INF/services/"下，文件名为服务接口类全名。内容类似于：
+ * 
  * <pre>
  *     # 我是注释
  *     service.Service1
  *     service.Service2
  * </pre>
+ * 
  * 通过调用{@link #getService(int)}方法，传入序号，即可获取对应服务。
  *
  * @param <S> 服务类型
@@ -81,8 +82,8 @@ public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
      * @param classLoader  自定义类加载器, {@code null}表示使用默认当前的类加载器
      * @param charset      编码，默认UTF-8
      */
-    public ListServiceLoader(final String pathPrefix, final Class<S> serviceClass,
-                             final ClassLoader classLoader, final Charset charset) {
+    public ListServiceLoader(final String pathPrefix, final Class<S> serviceClass, final ClassLoader classLoader,
+            final Charset charset) {
         super(pathPrefix, serviceClass, classLoader, charset);
         this.serviceNames = new ArrayList<>();
         this.serviceCache = new SimpleCache<>(new HashMap<>());
@@ -123,7 +124,7 @@ public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
      * @return KVServiceLoader
      */
     public static <S> ListServiceLoader<S> of(final String pathPrefix, final Class<S> serviceClass,
-                                              final ClassLoader classLoader) {
+            final ClassLoader classLoader) {
         return new ListServiceLoader<>(pathPrefix, serviceClass, classLoader, null);
     }
 
@@ -131,9 +132,7 @@ public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
     public void load() {
         // 解析同名的所有service资源
         // 按照资源加载优先级，先加载和解析的资源优先使用，后加载的同名资源丢弃
-        final MultiResource resources = ResourceKit.getResources(
-                pathPrefix + serviceClass.getName(),
-                this.classLoader);
+        final MultiResource resources = ResourceKit.getResources(pathPrefix + serviceClass.getName(), this.classLoader);
         for (final Resource resource : resources) {
             parse(resource);
         }
@@ -230,8 +229,7 @@ public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
      * @return 下一个行号，-1表示读取完毕
      * @throws IOException IO异常
      */
-    private int parseLine(final Resource resource, final BufferedReader reader, final int lineNo)
-            throws IOException {
+    private int parseLine(final Resource resource, final BufferedReader reader, final int lineNo) throws IOException {
         String line = reader.readLine();
         if (line == null) {
             // 结束
@@ -290,7 +288,8 @@ public class ListServiceLoader<S> extends AbstractServiceLoader<S> {
      * @param msg      消息
      */
     private void fail(final Resource resource, final int lineNo, final String msg) {
-        throw new InternalException(this.serviceClass + Symbol.COLON + resource.getUrl() + Symbol.COLON + lineNo + ": " + msg);
+        throw new InternalException(
+                this.serviceClass + Symbol.COLON + resource.getUrl() + Symbol.COLON + lineNo + ": " + msg);
     }
 
     /**

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.resource;
 
 import org.miaixz.bus.core.lang.Charset;
@@ -39,7 +39,6 @@ import org.miaixz.bus.core.lang.Charset;
 public class StringResource extends CharSequenceResource {
 
     private static final long serialVersionUID = -1L;
-
 
     /**
      * 构造，使用UTF8编码

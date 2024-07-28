@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.codec.hash;
 
 import org.miaixz.bus.core.codec.No128;
@@ -33,12 +33,10 @@ import org.miaixz.bus.core.xyz.ByteKit;
 import java.util.Arrays;
 
 /**
- * Google发布的Hash计算算法：CityHash64 与 CityHash128。
- * 它们分别根据字串计算 64 和 128 位的散列值。这些算法不适用于加密，但适合用在散列表等处。
+ * Google发布的Hash计算算法：CityHash64 与 CityHash128。 它们分别根据字串计算 64 和 128 位的散列值。这些算法不适用于加密，但适合用在散列表等处。
  *
  * <p>
- * 代码来自：https://github.com/rolandhe/string-tools
- * 原始算法：https://github.com/google/cityhash
+ * 代码来自：https://github.com/rolandhe/string-tools 原始算法：https://github.com/google/cityhash
  * </p>
  *
  * @author Kimi Liu
@@ -50,7 +48,7 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
     private static final long k0 = 0xc3a5c85c97cb3127L;
     private static final long k1 = 0xb492b66fbe98f273L;
     private static final long k2 = 0x9ae16a3b2f90404fL;
-    // Magic numbers for 32-bit hashing.  Copied from Murmur3.
+    // Magic numbers for 32-bit hashing. Copied from Murmur3.
     private static final int c1 = 0xcc9e2d51;
     private static final int c2 = 0x1b873593;
     /**
@@ -89,8 +87,8 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
         return h;
     }
 
-    private static No128 weakHashLen32WithSeeds(
-            final long w, final long x, final long y, final long z, long a, long b) {
+    private static No128 weakHashLen32WithSeeds(final long w, final long x, final long y, final long z, long a,
+            long b) {
         a += w;
         b = Long.rotateRight(b + a + z, 21);
         final long c = a;
@@ -100,15 +98,10 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
         return new No128(b + c, a + z);
     }
 
-    // Return a 16-byte hash for s[0] ... s[31], a, and b.  Quick and dirty.
-    private static No128 weakHashLen32WithSeeds(
-            final byte[] byteArray, final int start, final long a, final long b) {
-        return weakHashLen32WithSeeds(fetch64(byteArray, start),
-                fetch64(byteArray, start + 8),
-                fetch64(byteArray, start + 16),
-                fetch64(byteArray, start + 24),
-                a,
-                b);
+    // Return a 16-byte hash for s[0] ... s[31], a, and b. Quick and dirty.
+    private static No128 weakHashLen32WithSeeds(final byte[] byteArray, final int start, final long a, final long b) {
+        return weakHashLen32WithSeeds(fetch64(byteArray, start), fetch64(byteArray, start + 8),
+                fetch64(byteArray, start + 16), fetch64(byteArray, start + 24), a, b);
     }
 
     @Override
@@ -126,9 +119,7 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
     public int hash32(final byte[] data) {
         final int len = data.length;
         if (len <= 24) {
-            return len <= 12 ?
-                    (len <= 4 ? hash32Len0to4(data) : hash32Len5to12(data)) :
-                    hash32Len13to24(data);
+            return len <= 12 ? (len <= 4 ? hash32Len0to4(data) : hash32Len5to12(data)) : hash32Len13to24(data);
         }
 
         // len > 24
@@ -282,9 +273,8 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
     @Override
     public No128 hash128(final byte[] data) {
         final int len = data.length;
-        return len >= 16 ?
-                hash128(data, 16, new No128(fetch64(data, 8) + k0, fetch64(data, 0))) :
-                hash128(data, 0, new No128(k1, k0));
+        return len >= 16 ? hash128(data, 16, new No128(fetch64(data, 8) + k0, fetch64(data, 0)))
+                : hash128(data, 0, new No128(k1, k0));
     }
 
     /**
@@ -305,7 +295,7 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
             return cityMurmur(Arrays.copyOfRange(byteArray, start, byteArray.length), seed);
         }
 
-        // We expect len >= 128 to be the common case.  Keep 56 bytes of state:
+        // We expect len >= 128 to be the common case. Keep 56 bytes of state:
         // v, w, x, y, and z.
         No128 v = new No128(0L, 0L);
         No128 w = new No128(0L, 0L);
@@ -352,7 +342,7 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
         v.setLeastSigBits(v.getLeastSigBits() * k0);
 
         // If 0 < len < 128, hash up to 4 chunks of 32 bytes each from the end of s.
-        for (int tail_done = 0; tail_done < len; ) {
+        for (int tail_done = 0; tail_done < len;) {
             tail_done += 32;
             y = Long.rotateRight(x + y, 42) * k0 + v.getMostSigBits();
             w.setLeastSigBits(w.getLeastSigBits() + fetch64(byteArray, pos + len - tail_done + 16));
@@ -363,7 +353,7 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
             v.setLeastSigBits(v.getLeastSigBits() * k0);
         }
         // At this point our 56 bytes of state should contain more than
-        // enough information for a strong 128-bit hash.  We use two
+        // enough information for a strong 128-bit hash. We use two
         // different 56-byte-to-8-byte hashes to get a 16-byte final result.
         x = hashLen16(x, v.getLeastSigBits());
         y = hashLen16(y + z, w.getLeastSigBits());
@@ -500,11 +490,11 @@ public class CityHash implements Hash32<byte[]>, Hash64<byte[]>, Hash128<byte[]>
         long c;
         long d;
         int l = len - 16;
-        if (l <= 0) {  // len <= 16
+        if (l <= 0) { // len <= 16
             a = shiftMix(a * k1) * k1;
             c = b * k1 + hashLen0to16(byteArray);
             d = shiftMix(a + (len >= 8 ? fetch64(byteArray, 0) : c));
-        } else {  // len > 16
+        } else { // len > 16
             c = hashLen16(fetch64(byteArray, len - 8) + k1, a);
             d = hashLen16(b + len, c + fetch64(byteArray, len - 16));
             a += d;

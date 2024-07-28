@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.resource;
 
 import org.miaixz.bus.core.io.file.FileName;
@@ -37,9 +37,7 @@ import org.miaixz.bus.core.xyz.*;
 import java.net.URL;
 
 /**
- * ClassPath单一资源访问类
- * 传入路径path必须为相对路径，如果传入绝对路径，Linux路径会去掉开头的“/”，而Windows路径会直接报错。
- * 传入的path所指向的资源必须存在，否则报错
+ * ClassPath单一资源访问类 传入路径path必须为相对路径，如果传入绝对路径，Linux路径会去掉开头的“/”，而Windows路径会直接报错。 传入的path所指向的资源必须存在，否则报错
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -111,8 +109,7 @@ public class ClassPathResource extends UrlResource {
     }
 
     /**
-     * 获得绝对路径Path
-     * 对于不存在的资源，返回拼接后的绝对路径
+     * 获得绝对路径Path 对于不存在的资源，返回拼接后的绝对路径
      *
      * @return 绝对路径path
      */

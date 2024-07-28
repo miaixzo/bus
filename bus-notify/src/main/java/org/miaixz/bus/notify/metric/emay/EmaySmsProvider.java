@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.notify.metric.emay;
 
 import org.miaixz.bus.core.basic.entity.Message;
@@ -60,7 +60,8 @@ public class EmaySmsProvider extends AbstractProvider<EmayMaterial, Context> {
 
     @Override
     public Message send(EmayMaterial entity) {
-        Map<String, String> bodys = getParamsMap(context.getAppKey(), context.getAppSecret(), entity.getReceive(), entity.getContent());
+        Map<String, String> bodys = getParamsMap(context.getAppKey(), context.getAppSecret(), entity.getReceive(),
+                entity.getContent());
         Map<String, String> headers = MapKit.newHashMap(1, true);
         headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
 
@@ -68,13 +69,12 @@ public class EmaySmsProvider extends AbstractProvider<EmayMaterial, Context> {
         String errcode = JsonKit.getValue(response, "errcode");
         return Message.builder()
                 .errcode(String.valueOf(HTTP.HTTP_OK).equals(errcode) ? ErrorCode.SUCCESS.getCode() : errcode)
-                .errmsg(JsonKit.getValue(response, "errmsg"))
-                .build();
+                .errmsg(JsonKit.getValue(response, "errmsg")).build();
     }
 
     private static Map<String, String> getParamsMap(String appId, String secretKey, String phone, String message) {
         Map<String, String> params = new HashMap<>();
-        // 时间戳(必填)  格式：yyyyMMddHHmmss
+        // 时间戳(必填) 格式：yyyyMMddHHmmss
         String timestamp = DateKit.format(new Date(), DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
         String sign = Builder.md5(appId + secretKey + timestamp);
         params.put("appId", appId);

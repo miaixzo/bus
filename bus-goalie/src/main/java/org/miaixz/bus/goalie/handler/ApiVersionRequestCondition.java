@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.goalie.handler;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -63,7 +63,8 @@ public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVers
     private static Set<TerminalVersionExpression> parseByTerminalVersion(TerminalVersion[] terminalVersions) {
         Set<TerminalVersionExpression> expressions = new LinkedHashSet<>();
         for (TerminalVersion terminalVersion : terminalVersions) {
-            expressions.add(new TerminalVersionExpression(terminalVersion.terminals(), terminalVersion.version(), terminalVersion.op()));
+            expressions.add(new TerminalVersionExpression(terminalVersion.terminals(), terminalVersion.version(),
+                    terminalVersion.op()));
         }
         return expressions;
     }
@@ -75,7 +76,7 @@ public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVers
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(expression);
             while (matcher.find()) {
-                int[] terminals = new int[]{};
+                int[] terminals = new int[] {};
                 String version = Normal.EMPTY;
                 TerminalVersion.Version operator = TerminalVersion.Version.NIL;
                 for (int i = 1; i <= matcher.groupCount(); i++) {
@@ -221,20 +222,20 @@ public class ApiVersionRequestCondition extends AbstractRequestCondition<ApiVers
                 }
                 int i = clientVersion.compareToIgnoreCase(checkVersion);
                 switch (operator) {
-                    case GT:
-                        return i > 0;
-                    case GTE:
-                        return i >= 0;
-                    case LT:
-                        return i < 0;
-                    case LTE:
-                        return i <= 0;
-                    case EQ:
-                        return i == 0;
-                    case NE:
-                        return i != 0;
-                    default:
-                        break;
+                case GT:
+                    return i > 0;
+                case GTE:
+                    return i >= 0;
+                case LT:
+                    return i < 0;
+                case LTE:
+                    return i <= 0;
+                case EQ:
+                    return i == 0;
+                case NE:
+                    return i != 0;
+                default:
+                    break;
                 }
             }
             return true;

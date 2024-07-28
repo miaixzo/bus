@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.codec.binary.decoder;
 
 import org.miaixz.bus.core.codec.Decoder;
@@ -62,7 +62,6 @@ public class Base62Decoder implements Decoder<byte[], byte[]> {
             lookupTable[alphabet[i]] = (byte) i;
         }
     }
-
 
     @Override
     public byte[] decode(final byte[] encoded) {

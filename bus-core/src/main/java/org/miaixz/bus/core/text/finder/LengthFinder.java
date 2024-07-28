@@ -24,14 +24,13 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text.finder;
 
 import org.miaixz.bus.core.lang.Assert;
 
 /**
- * 固定长度查找器
- * 给定一个长度，查找的位置为from + length，一般用于分段截取
+ * 固定长度查找器 给定一个长度，查找的位置为from + length，一般用于分段截取
  *
  * @author Kimi Liu
  * @since Java 17+

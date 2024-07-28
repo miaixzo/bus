@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.codec.binary;
 
 import org.miaixz.bus.core.codec.binary.decoder.Base64Decoder;
@@ -40,8 +40,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * Base64工具类，提供Base64的编码和解码方案
- * base64编码是用64（2的6次方）个ASCII字符来表示256（2的8次方）个ASCII字符，
+ * Base64工具类，提供Base64的编码和解码方案 base64编码是用64（2的6次方）个ASCII字符来表示256（2的8次方）个ASCII字符，
  * 也就是三位二进制数组经过编码后变为四位的ASCII字符显示，长度比原来增加1/3。
  *
  * @author Kimi Liu
@@ -60,9 +59,7 @@ public class Base64 {
         if (arr == null) {
             return null;
         }
-        return lineSep ?
-                java.util.Base64.getMimeEncoder().encode(arr) :
-                java.util.Base64.getEncoder().encode(arr);
+        return lineSep ? java.util.Base64.getMimeEncoder().encode(arr) : java.util.Base64.getEncoder().encode(arr);
     }
 
     /**
@@ -201,8 +198,7 @@ public class Base64 {
      * @param dest    字符信息
      * @param destPos 开始位置
      */
-    public static void encode(byte[] src, int srcPos, int srcLen, char[] dest,
-                              int destPos) {
+    public static void encode(byte[] src, int srcPos, int srcLen, char[] dest, int destPos) {
         if (srcPos < 0 || srcLen < 0 || srcLen > src.length - srcPos)
             throw new IndexOutOfBoundsException();
         int destLen = (srcLen * 4 / 3 + 3) & ~3;
@@ -313,8 +309,7 @@ public class Base64 {
                         | ((b2 = Normal.DECODE_64_TABLE[ch[off++]]) >>> 4)));
                 if ((len-- == 0) || ch[off] == Symbol.C_EQUAL)
                     break;
-                out.write((byte) ((b2 << 4)
-                        | ((b3 = Normal.DECODE_64_TABLE[ch[off++]]) >>> 2)));
+                out.write((byte) ((b2 << 4) | ((b3 = Normal.DECODE_64_TABLE[ch[off++]]) >>> 2)));
                 if ((len-- == 0) || ch[off] == Symbol.C_EQUAL)
                     break;
                 out.write((byte) ((b3 << 6) | Normal.DECODE_64_TABLE[ch[off++]]));
@@ -375,13 +370,13 @@ public class Base64 {
 
     private static boolean isWhiteSpace(final byte byteToCheck) {
         switch (byteToCheck) {
-            case Symbol.C_SPACE:
-            case '\n':
-            case '\r':
-            case '\t':
-                return true;
-            default:
-                return false;
+        case Symbol.C_SPACE:
+        case '\n':
+        case '\r':
+        case '\t':
+            return true;
+        default:
+            return false;
         }
     }
 

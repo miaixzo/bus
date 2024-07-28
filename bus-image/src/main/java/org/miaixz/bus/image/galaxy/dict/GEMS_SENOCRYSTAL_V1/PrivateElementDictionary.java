@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.GEMS_SENOCRYSTAL_V1;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,21 +46,22 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.ClinicalView:
-                return VR.CS;
-            case PrivateTag.ExposureDose:
-            case PrivateTag.ImplantDisplacement:
-            case PrivateTag.PaddleType:
-            case PrivateTag.ProcessingType:
-            case PrivateTag.WindowingType:
-            case PrivateTag.Saturation:
-            case PrivateTag.Clip:
-                return VR.IS;
+
+        case PrivateTag.ClinicalView:
+            return VR.CS;
+        case PrivateTag.ExposureDose:
+        case PrivateTag.ImplantDisplacement:
+        case PrivateTag.PaddleType:
+        case PrivateTag.ProcessingType:
+        case PrivateTag.WindowingType:
+        case PrivateTag.Saturation:
+        case PrivateTag.Clip:
+            return VR.IS;
         }
         return VR.UN;
     }

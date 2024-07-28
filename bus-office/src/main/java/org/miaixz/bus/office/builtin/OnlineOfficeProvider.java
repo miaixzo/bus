@@ -24,15 +24,14 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.builtin;
 
 import java.io.File;
 import java.io.InputStream;
 
 /**
- * 在线转换器将向LibreOffice在线服务器发送转换请求.
- * 按预期工作,它必须与在线office管理器一起使用.
+ * 在线转换器将向LibreOffice在线服务器发送转换请求. 按预期工作,它必须与在线office管理器一起使用.
  *
  * @author Kimi Liu
  * @since Java 17+

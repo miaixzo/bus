@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.limiter.magic;
 
 /**
@@ -35,7 +35,5 @@ package org.miaixz.bus.limiter.magic;
  */
 public enum StrategyMode {
 
-    FALLBACK,
-    HOT_METHOD,
-    REQUEST_LIMIT
+    FALLBACK, HOT_METHOD, REQUEST_LIMIT
 }

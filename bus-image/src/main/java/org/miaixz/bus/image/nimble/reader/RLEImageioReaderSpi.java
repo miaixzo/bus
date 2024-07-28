@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.reader;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -43,26 +43,24 @@ public class RLEImageioReaderSpi extends ImageReaderSpi {
 
     private static final String vendorName = "org.miaixz";
     private static final String version = Implementation.getVersionName();
-    private static final String[] formatNames = {"rle", "RLE"};
-    private static final Class<?>[] inputTypes = {ImageInputStream.class};
-    private static final String[] entensions = {Normal.EMPTY};
-    private static final String[] mimeType = {Normal.EMPTY};
+    private static final String[] formatNames = { "rle", "RLE" };
+    private static final Class<?>[] inputTypes = { ImageInputStream.class };
+    private static final String[] entensions = { Normal.EMPTY };
+    private static final String[] mimeType = { Normal.EMPTY };
 
     public RLEImageioReaderSpi() {
-        super(vendorName, version, formatNames,
-                entensions,  // suffixes
-                mimeType,  // MIMETypes
-                RLEImageioReader.class.getName(), inputTypes,
-                null,  // writerSpiNames
+        super(vendorName, version, formatNames, entensions, // suffixes
+                mimeType, // MIMETypes
+                RLEImageioReader.class.getName(), inputTypes, null, // writerSpiNames
                 false, // supportsStandardStreamMetadataFormat
-                null,  // nativeStreamMetadataFormatName
-                null,  // nativeStreamMetadataFormatClassName
-                null,  // extraStreamMetadataFormatNames
-                null,  // extraStreamMetadataFormatClassNames
+                null, // nativeStreamMetadataFormatName
+                null, // nativeStreamMetadataFormatClassName
+                null, // extraStreamMetadataFormatNames
+                null, // extraStreamMetadataFormatClassNames
                 false, // supportsStandardImageMetadataFormat
-                null,  // nativeImageMetadataFormatName
-                null,  // nativeImageMetadataFormatClassName
-                null,  // extraImageMetadataFormatNames
+                null, // nativeImageMetadataFormatName
+                null, // nativeImageMetadataFormatClassName
+                null, // extraImageMetadataFormatNames
                 null); // extraImageMetadataFormatClassNames
     }
 

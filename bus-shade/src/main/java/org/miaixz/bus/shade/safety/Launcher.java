@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.safety;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -138,22 +138,22 @@ public class Launcher {
             Set<String> names = key.stringPropertyNames();
             for (String name : names) {
                 switch (name.toLowerCase()) {
-                    case Builder.XJAR_KEY_ALGORITHM:
-                        algorithm = key.getProperty(name);
-                        break;
-                    case Builder.XJAR_KEY_KEYSIZE:
-                        keysize = Integer.valueOf(key.getProperty(name));
-                        break;
-                    case Builder.XJAR_KEY_IVSIZE:
-                        ivsize = Integer.valueOf(key.getProperty(name));
-                        break;
-                    case Builder.XJAR_KEY_PASSWORD:
-                        password = key.getProperty(name);
-                        break;
-                    case Builder.XJAR_KEY_HOLD:
-                        hold = key.getProperty(name);
-                    default:
-                        break;
+                case Builder.XJAR_KEY_ALGORITHM:
+                    algorithm = key.getProperty(name);
+                    break;
+                case Builder.XJAR_KEY_KEYSIZE:
+                    keysize = Integer.valueOf(key.getProperty(name));
+                    break;
+                case Builder.XJAR_KEY_IVSIZE:
+                    ivsize = Integer.valueOf(key.getProperty(name));
+                    break;
+                case Builder.XJAR_KEY_PASSWORD:
+                    password = key.getProperty(name);
+                    break;
+                case Builder.XJAR_KEY_HOLD:
+                    hold = key.getProperty(name);
+                default:
+                    break;
                 }
             }
         }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.validate.magic.annotation;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -44,7 +44,7 @@ import java.lang.annotation.*;
  */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD})
+@Target({ ElementType.ANNOTATION_TYPE, ElementType.METHOD, ElementType.PARAMETER, ElementType.FIELD })
 @Complex(value = Builder._REGEX, clazz = RegexMatcher.class)
 public @interface Regex {
 
@@ -52,9 +52,7 @@ public @interface Regex {
     String pattern() default Normal.EMPTY;
 
     /**
-     * 如果长度为0,判断能否通过校验
-     * 默认为false
-     * true：表示长度为零,默认通过校验；false：表示长度为0,仍然要进行正则验证
+     * 如果长度为0,判断能否通过校验 默认为false true：表示长度为零,默认通过校验；false：表示长度为0,仍然要进行正则验证
      *
      * @return the boolean
      */

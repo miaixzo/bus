@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.dubbo;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -35,7 +35,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  * @author Kimi Liu
  * @since Java 17+
  */
-@EnableConfigurationProperties(value = {DubboProperties.class})
+@EnableConfigurationProperties(value = { DubboProperties.class })
 public class DubboConfiguration {
 
 }

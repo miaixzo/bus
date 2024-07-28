@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.compress.extractor;
 
 import org.apache.commons.compress.archivers.ArchiveEntry;
@@ -184,7 +184,7 @@ public class StreamExtractor implements Extractor {
             outItemFile = FileKit.file(targetDir, entry.getName());
             if (entry.isDirectory()) {
                 // 创建对应目录
-                //noinspection ResultOfMethodCallIgnored
+                // noinspection ResultOfMethodCallIgnored
                 outItemFile.mkdirs();
             } else {
                 FileKit.copy(in, outItemFile);

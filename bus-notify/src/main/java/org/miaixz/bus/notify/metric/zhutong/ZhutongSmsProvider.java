@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.notify.metric.zhutong;
 
 import org.miaixz.bus.core.basic.entity.Message;
@@ -48,14 +48,10 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * 助通短信发送
- * 1. 自定义短信发送 无需定义模板 https://doc.zthysms.com/web/#/1/14
- * 2. 模板短信发送  需定义模板   https://doc.zthysms.com/web/#/1/13
- * appKey           ：username  助通终端用户管理的用户名，非登录账号密码
- * appSecret        ：password  终端用户管理的密码
- * signature        ：短信签名可以为空，为空发送【自定义短信】无需要提前创建短信模板; 不为空发送:【模板短信】
- * templateId       ：模板id可以为空，为空发送【自定义短信】无需要提前创建短信模板; 不为空发送:【模板短信】
- * templateName     ：模板变量名称可以为空，为空发送【自定义短信】无需要提前创建短信模板; 不为空发送:【模板短信】
+ * 助通短信发送 1. 自定义短信发送 无需定义模板 https://doc.zthysms.com/web/#/1/14 2. 模板短信发送 需定义模板 https://doc.zthysms.com/web/#/1/13 appKey
+ * ：username 助通终端用户管理的用户名，非登录账号密码 appSecret ：password 终端用户管理的密码 signature ：短信签名可以为空，为空发送【自定义短信】无需要提前创建短信模板; 不为空发送:【模板短信】
+ * templateId ：模板id可以为空，为空发送【自定义短信】无需要提前创建短信模板; 不为空发送:【模板短信】 templateName ：模板变量名称可以为空，为空发送【自定义短信】无需要提前创建短信模板;
+ * 不为空发送:【模板短信】
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -104,19 +100,18 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongMaterial, Contex
             throw new ValidateException("助通短信：自定义短信发送内容必须包含签名信息，如：【助通科技】您的验证码是8888！");
         }
 
-
         String url = this.getUrl(entity) + "v2/sendSms";
         long tKey = System.currentTimeMillis() / 1000;
         Map<String, String> bodys = new HashMap<>(5);
-        //账号
+        // 账号
         bodys.put("username", username);
-        //密码
+        // 密码
         bodys.put("password", Builder.md5(Builder.md5(password) + tKey));
-        //tKey
+        // tKey
         bodys.put("tKey", tKey + "");
-        //手机号
+        // 手机号
         bodys.put("mobile", entity.getReceive());
-        //内容
+        // 内容
         bodys.put("content", entity.getContent());
 
         Map<String, String> headers = MapKit.newHashMap(1, true);
@@ -128,10 +123,7 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongMaterial, Contex
         String errcode = succeed ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
         String errmsg = succeed ? ErrorCode.SUCCESS.getDesc() : ErrorCode.FAILURE.getDesc();
 
-        return Message.builder()
-                .errcode(errcode)
-                .errmsg(errmsg)
-                .build();
+        return Message.builder().errcode(errcode).errmsg(errmsg).build();
     }
 
     /**
@@ -147,31 +139,31 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongMaterial, Contex
             throw new InternalException("助通短信：模板短信模板id不能为空！！");
         }
 
-        //地址
+        // 地址
         String url = this.getUrl(entity) + "v2/sendSmsTp";
-        //请求入参
+        // 请求入参
         Map<String, String> bodys = new HashMap<>();
-        //账号
+        // 账号
         bodys.put("username", this.context.getAppKey());
-        //tKey
+        // tKey
         long tKey = System.currentTimeMillis() / 1000;
         bodys.put("tKey", String.valueOf(tKey));
-        //明文密码
+        // 明文密码
         bodys.put("password", Builder.md5(Builder.md5(this.context.getAppSecret()) + tKey));
-        //模板ID
+        // 模板ID
         bodys.put("tpId", entity.getTemplate());
-        //签名
+        // 签名
         bodys.put("signature", entity.getSignature());
-        //扩展号
+        // 扩展号
         bodys.put("ext", "");
-        //自定义参数
+        // 自定义参数
         bodys.put("extend", "");
-        //发送记录集合
+        // 发送记录集合
         Map records = new HashMap<>();
 
         for (String mobile : StringKit.split(entity.getReceive(), Symbol.COMMA)) {
             Map<String, String> record = new HashMap<>();
-            //手机号
+            // 手机号
             record.put("mobile", mobile);
             record.put("tpContent", entity.getContent());
             records.putAll(record);
@@ -187,10 +179,7 @@ public class ZhutongSmsProvider extends AbstractProvider<ZhutongMaterial, Contex
         String errcode = succeed ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
         String errmsg = succeed ? ErrorCode.SUCCESS.getDesc() : ErrorCode.FAILURE.getDesc();
 
-        return Message.builder()
-                .errcode(errcode)
-                .errmsg(errmsg)
-                .build();
+        return Message.builder().errcode(errcode).errmsg(errmsg).build();
     }
 
     private void validator(String requestUrl, String username, String password) {

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv;
 
 /**
@@ -212,17 +212,8 @@ public class ImageParameters {
 
     @Override
     public String toString() {
-        String buf = "Size:" + width +
-                "x" +
-                height +
-                " Bits/Sample:" +
-                bitsPerSample +
-                " Samples/Pixel:" +
-                samplesPerPixel +
-                " Bytes/Line:" +
-                bytesPerLine +
-                " Signed:" +
-                signedData;
+        String buf = "Size:" + width + "x" + height + " Bits/Sample:" + bitsPerSample + " Samples/Pixel:"
+                + samplesPerPixel + " Bytes/Line:" + bytesPerLine + " Signed:" + signedData;
         return buf;
     }
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.setting.magic;
 
 import org.miaixz.bus.core.lang.Charset;
@@ -40,10 +40,7 @@ import java.net.URL;
 import java.util.*;
 
 /**
- * 分组化的Set集合类
- * 在配置文件中可以用中括号分隔不同的分组，每个分组会放在独立的Set中，用group区别
- * 无分组的集合和`[]`分组集合会合并成员，重名的分组也会合并成员
- * 分组配置文件如下：
+ * 分组化的Set集合类 在配置文件中可以用中括号分隔不同的分组，每个分组会放在独立的Set中，用group区别 无分组的集合和`[]`分组集合会合并成员，重名的分组也会合并成员 分组配置文件如下：
  *
  * <pre>
  * [group1]
@@ -67,7 +64,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
     /**
      * 分组行识别的环绕标记
      */
-    private static final char[] GROUP_SURROUND = {'[', ']'};
+    private static final char[] GROUP_SURROUND = { '[', ']' };
 
     /**
      * 本设置对象的字符集
@@ -79,8 +76,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
     private URL groupedSetUrl;
 
     /**
-     * 基本构造
-     * 需自定义初始化配置文件
+     * 基本构造 需自定义初始化配置文件
      *
      * @param charset 字符集
      */
@@ -288,8 +284,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
     }
 
     /**
-     * 是否在给定分组的集合中包含指定值
-     * 如果给定分组对应集合不存在，则返回false
+     * 是否在给定分组的集合中包含指定值 如果给定分组对应集合不存在，则返回false
      *
      * @param group       分组名
      * @param value       测试的值
@@ -314,8 +309,7 @@ public class GroupedSet extends HashMap<String, LinkedHashSet<String>> {
     }
 
     /**
-     * 是否在给定分组的集合中全部包含指定值集合
-     * 如果给定分组对应集合不存在，则返回false
+     * 是否在给定分组的集合中全部包含指定值集合 如果给定分组对应集合不存在，则返回false
      *
      * @param group  分组名
      * @param values 测试的值集合

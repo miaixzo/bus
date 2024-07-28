@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.sensitive;
 
 import com.alibaba.fastjson.serializer.BeanContext;
@@ -44,11 +44,8 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * 默认的上下文过滤器
- * {@link Entry} 放在对象时,则不用特殊处理
- * 只需要处理 集合、数组集合
- * 注意： 和 {@link Builder#on(Object)} 的区别
- * 因为 FastJSON 本身的转换问题,如果对象中存储的是集合对象列表,会导致显示不是信息本身
+ * 默认的上下文过滤器 {@link Entry} 放在对象时,则不用特殊处理 只需要处理 集合、数组集合 注意： 和 {@link Builder#on(Object)} 的区别 因为 FastJSON
+ * 本身的转换问题,如果对象中存储的是集合对象列表,会导致显示不是信息本身
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -104,10 +101,10 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
             return handleSensitive(sensitiveContext, field);
         }
 
-        //2. 处理 @Entry 注解
+        // 2. 处理 @Entry 注解
         final Class fieldTypeClass = field.getType();
         if (TypeKit.isJavaBean(fieldTypeClass)) {
-            //不作处理,因为 json 本身就会进行递归处理
+            // 不作处理,因为 json 本身就会进行递归处理
             return value;
         }
         if (TypeKit.isMap(fieldTypeClass)) {
@@ -122,7 +119,7 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
                 final Class entryFieldClass = firstArrayEntry.getClass();
 
                 if (isBaseType(entryFieldClass)) {
-                    //2, 基础值,直接循环设置即可
+                    // 2, 基础值,直接循环设置即可
                     final int arrayLength = arrays.length;
                     Object newArray = Array.newInstance(entryFieldClass, arrayLength);
                     for (int i = 0; i < arrayLength; i++) {
@@ -143,7 +140,7 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
                 Object firstCollectionEntry = ArrayKit.firstNonNull(entryCollection);
 
                 if (isBaseType(firstCollectionEntry.getClass())) {
-                    //2, 基础值,直接循环设置即可
+                    // 2, 基础值,直接循环设置即可
                     List<Object> newResultList = new ArrayList<>(entryCollection.size());
                     for (Object entry : entryCollection) {
                         sensitiveContext.setEntry(entry);
@@ -165,13 +162,12 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
      * @param context 上下文
      * @param field   当前字段
      */
-    private Object handleSensitive(final Context context,
-                                   final java.lang.reflect.Field field) {
+    private Object handleSensitive(final Context context, final java.lang.reflect.Field field) {
         try {
             // 原始字段值
             final Object originalFieldVal = context.getEntry();
 
-            //处理 @Sensitive
+            // 处理 @Sensitive
             Shield sensitive = field.getAnnotation(Shield.class);
             if (ObjectKit.isNotNull(sensitive)) {
                 Class<? extends ConditionProvider> conditionClass = sensitive.condition();
@@ -201,17 +197,14 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
             }
             sensitiveContext.setEntry(null);
             return originalFieldVal;
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-                 InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException
+                | InvocationTargetException e) {
             throw new InternalException(e);
         }
     }
 
     /**
-     * 特殊类型
-     * (1)map
-     * (2)对象
-     * (3)集合/数组
+     * 特殊类型 (1)map (2)对象 (3)集合/数组
      *
      * @param fieldTypeClass 字段类型
      * @return 是否
@@ -221,10 +214,8 @@ public class Filter implements com.alibaba.fastjson.serializer.ContextValueFilte
             return true;
         }
 
-        if (TypeKit.isJavaBean(fieldTypeClass)
-                || TypeKit.isArray(fieldTypeClass)
-                || TypeKit.isCollection(fieldTypeClass)
-                || TypeKit.isMap(fieldTypeClass)) {
+        if (TypeKit.isJavaBean(fieldTypeClass) || TypeKit.isArray(fieldTypeClass)
+                || TypeKit.isCollection(fieldTypeClass) || TypeKit.isMap(fieldTypeClass)) {
             return false;
         }
         return true;

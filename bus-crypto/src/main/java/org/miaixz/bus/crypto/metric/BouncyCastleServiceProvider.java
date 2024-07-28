@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.metric;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -49,7 +49,8 @@ public class BouncyCastleServiceProvider implements BouncyCastleProvider {
 
     @Override
     public java.security.Provider create() {
-        java.security.Provider provider = Security.getProvider(org.bouncycastle.jce.provider.BouncyCastleProvider.PROVIDER_NAME);
+        java.security.Provider provider = Security
+                .getProvider(org.bouncycastle.jce.provider.BouncyCastleProvider.PROVIDER_NAME);
         if (null == provider) {
             provider = new org.bouncycastle.jce.provider.BouncyCastleProvider();
         }

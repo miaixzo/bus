@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.ssh;
 
 import org.apache.sshd.client.SshClient;
@@ -64,9 +64,7 @@ public class MinaKit {
         final ClientSession session;
         final boolean success;
         try {
-            session = sshClient
-                    .connect(connector.getUser(), connector.getHost(), connector.getPort())
-                    .verify()
+            session = sshClient.connect(connector.getUser(), connector.getHost(), connector.getPort()).verify()
                     .getSession();
 
             session.addPasswordIdentity(connector.getPassword());

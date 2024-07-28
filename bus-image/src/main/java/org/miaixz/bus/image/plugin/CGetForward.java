@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -80,148 +80,122 @@ public class CGetForward implements AutoCloseable {
     private final Args args;
     private final Centre streamSCUService;
     private int priority;
-    private final BasicCStoreSCP storageSCP =
-            new BasicCStoreSCP("*") {
-                @Override
-                protected void store(
-                        Association as,
-                        PresentationContext pc,
-                        Attributes rq,
-                        PDVInputStream data,
-                        Attributes rsp)
-                        throws IOException {
+    private final BasicCStoreSCP storageSCP = new BasicCStoreSCP("*") {
+        @Override
+        protected void store(Association as, PresentationContext pc, Attributes rq, PDVInputStream data, Attributes rsp)
+                throws IOException {
 
-                    ImageProgress p = streamSCU.getState().getProgress();
-                    if (p != null) {
-                        if (p.isCancel()) {
-                            IoKit.close(CGetForward.this);
-                            return;
-                        }
+            ImageProgress p = streamSCU.getState().getProgress();
+            if (p != null) {
+                if (p.isCancel()) {
+                    IoKit.close(CGetForward.this);
+                    return;
+                }
+            }
+
+            try {
+                String cuid = rq.getString(Tag.AffectedSOPClassUID);
+                String iuid = rq.getString(Tag.AffectedSOPInstanceUID);
+                String tsuid = pc.getTransferSyntax();
+
+                if (streamSCU.hasAssociation()) {
+                    // Handle dynamically new SOPClassUID
+                    Set<String> tss = streamSCU.getTransferSyntaxesFor(cuid);
+                    if (!tss.contains(tsuid)) {
+                        streamSCU.close(true);
                     }
 
-                    try {
-                        String cuid = rq.getString(Tag.AffectedSOPClassUID);
-                        String iuid = rq.getString(Tag.AffectedSOPInstanceUID);
-                        String tsuid = pc.getTransferSyntax();
+                    // Add Presentation Context for the association
+                    streamSCU.addData(cuid, tsuid);
 
-                        if (streamSCU.hasAssociation()) {
-                            // Handle dynamically new SOPClassUID
-                            Set<String> tss = streamSCU.getTransferSyntaxesFor(cuid);
-                            if (!tss.contains(tsuid)) {
-                                streamSCU.close(true);
-                            }
-
-                            // Add Presentation Context for the association
-                            streamSCU.addData(cuid, tsuid);
-
-                            if (!streamSCU.isReadyForDataTransfer()) {
-                                // If connection has been closed just reopen
-                                streamSCU.open();
-                            }
-                        } else {
-                            streamSCUService.start();
-                            // Add Presentation Context for the association
-                            streamSCU.addData(cuid, tsuid);
-                            streamSCU.open();
-                        }
-
-                        ImageInputStream in = null;
-                        try {
-                            if (!streamSCU.isReadyForDataTransfer()) {
-                                throw new IllegalStateException("Association not ready for transfer.");
-                            }
-                            DataWriter dataWriter;
-                            AdaptTransferSyntax syntax =
-                                    new AdaptTransferSyntax(tsuid, streamSCU.selectTransferSyntax(cuid, tsuid));
-                            if ((args == null || !args.hasEditors())
-                                    && syntax.getRequested().equals(tsuid)) {
-                                dataWriter = new InputStreamDataWriter(data);
-                            } else {
-                                EditorContext context =
-                                        new EditorContext(
-                                                syntax.getOriginal(),
-                                                Node.buildRemoteDicomNode(as),
-                                                streamSCU.getRemoteDicomNode());
-                                in = new ImageInputStream(data, tsuid);
-                                in.setIncludeBulkData(ImageInputStream.IncludeBulkData.URI);
-                                Attributes attributes = in.readDataset();
-                                if (args != null && args.hasEditors()) {
-                                    args.getEditors().forEach(e -> e.apply(attributes, context));
-                                    iuid = attributes.getString(Tag.SOPInstanceUID);
-                                    cuid = attributes.getString(Tag.SOPClassUID);
-                                }
-
-                                if (context.getAbort() == EditorContext.Abort.FILE_EXCEPTION) {
-                                    data.skipAll();
-                                    throw new IllegalStateException(context.getAbortMessage());
-                                } else if (context.getAbort() == EditorContext.Abort.CONNECTION_EXCEPTION) {
-                                    as.abort();
-                                    throw new AbortException(
-                                            "DICOM associtation abort. " + context.getAbortMessage());
-                                }
-
-                                BytesWithImageDescriptor desc =
-                                        ImageAdapter.imageTranscode(attributes, syntax, context);
-                                dataWriter =
-                                        ImageAdapter.buildDataWriter(attributes, syntax, context.getEditable(), desc);
-                            }
-
-                            streamSCU.cstore(cuid, iuid, priority, dataWriter, syntax.getSuitable());
-                        } catch (AbortException e) {
-                            Builder.notifyProgession(
-                                    streamSCU.getState(),
-                                    rq.getString(Tag.AffectedSOPInstanceUID),
-                                    rq.getString(Tag.AffectedSOPClassUID),
-                                    Status.ProcessingFailure,
-                                    ProgressStatus.FAILED,
-                                    streamSCU.getNumberOfSuboperations());
-                            throw e;
-                        } catch (Exception e) {
-                            if (e instanceof InterruptedException) {
-                                Thread.currentThread().interrupt();
-                            }
-                            Logger.error("Error when forwarding to the final destination", e);
-                            Builder.notifyProgession(
-                                    streamSCU.getState(),
-                                    rq.getString(Tag.AffectedSOPInstanceUID),
-                                    rq.getString(Tag.AffectedSOPClassUID),
-                                    Status.ProcessingFailure,
-                                    ProgressStatus.FAILED,
-                                    streamSCU.getNumberOfSuboperations());
-                        } finally {
-                            IoKit.close(in);
-                        }
-
-                    } catch (Exception e) {
-                        throw new ImageServiceException(Status.ProcessingFailure, e);
+                    if (!streamSCU.isReadyForDataTransfer()) {
+                        // If connection has been closed just reopen
+                        streamSCU.open();
                     }
+                } else {
+                    streamSCUService.start();
+                    // Add Presentation Context for the association
+                    streamSCU.addData(cuid, tsuid);
+                    streamSCU.open();
                 }
 
-                class AbortException extends IllegalStateException {
-                    private static final long serialVersionUID = -1153741718853819887L;
-
-                    public AbortException(String s) {
-                        super(s);
+                ImageInputStream in = null;
+                try {
+                    if (!streamSCU.isReadyForDataTransfer()) {
+                        throw new IllegalStateException("Association not ready for transfer.");
                     }
+                    DataWriter dataWriter;
+                    AdaptTransferSyntax syntax = new AdaptTransferSyntax(tsuid,
+                            streamSCU.selectTransferSyntax(cuid, tsuid));
+                    if ((args == null || !args.hasEditors()) && syntax.getRequested().equals(tsuid)) {
+                        dataWriter = new InputStreamDataWriter(data);
+                    } else {
+                        EditorContext context = new EditorContext(syntax.getOriginal(), Node.buildRemoteDicomNode(as),
+                                streamSCU.getRemoteDicomNode());
+                        in = new ImageInputStream(data, tsuid);
+                        in.setIncludeBulkData(ImageInputStream.IncludeBulkData.URI);
+                        Attributes attributes = in.readDataset();
+                        if (args != null && args.hasEditors()) {
+                            args.getEditors().forEach(e -> e.apply(attributes, context));
+                            iuid = attributes.getString(Tag.SOPInstanceUID);
+                            cuid = attributes.getString(Tag.SOPClassUID);
+                        }
+
+                        if (context.getAbort() == EditorContext.Abort.FILE_EXCEPTION) {
+                            data.skipAll();
+                            throw new IllegalStateException(context.getAbortMessage());
+                        } else if (context.getAbort() == EditorContext.Abort.CONNECTION_EXCEPTION) {
+                            as.abort();
+                            throw new AbortException("DICOM associtation abort. " + context.getAbortMessage());
+                        }
+
+                        BytesWithImageDescriptor desc = ImageAdapter.imageTranscode(attributes, syntax, context);
+                        dataWriter = ImageAdapter.buildDataWriter(attributes, syntax, context.getEditable(), desc);
+                    }
+
+                    streamSCU.cstore(cuid, iuid, priority, dataWriter, syntax.getSuitable());
+                } catch (AbortException e) {
+                    Builder.notifyProgession(streamSCU.getState(), rq.getString(Tag.AffectedSOPInstanceUID),
+                            rq.getString(Tag.AffectedSOPClassUID), Status.ProcessingFailure, ProgressStatus.FAILED,
+                            streamSCU.getNumberOfSuboperations());
+                    throw e;
+                } catch (Exception e) {
+                    if (e instanceof InterruptedException) {
+                        Thread.currentThread().interrupt();
+                    }
+                    Logger.error("Error when forwarding to the final destination", e);
+                    Builder.notifyProgession(streamSCU.getState(), rq.getString(Tag.AffectedSOPInstanceUID),
+                            rq.getString(Tag.AffectedSOPClassUID), Status.ProcessingFailure, ProgressStatus.FAILED,
+                            streamSCU.getNumberOfSuboperations());
+                } finally {
+                    IoKit.close(in);
                 }
-            };
+
+            } catch (Exception e) {
+                throw new ImageServiceException(Status.ProcessingFailure, e);
+            }
+        }
+
+        class AbortException extends IllegalStateException {
+            private static final long serialVersionUID = -1153741718853819887L;
+
+            public AbortException(String s) {
+                super(s);
+            }
+        }
+    };
     private InformationModel model;
     private Association as;
 
     /**
-     * @param args            the optional advanced parameters (proxy, authentication, connection and
-     *                        TLS) for the final destination
+     * @param args            the optional advanced parameters (proxy, authentication, connection and TLS) for the final
+     *                        destination
      * @param callingNode     the calling DICOM node configuration
      * @param destinationNode the final DICOM node configuration
      * @param progress        the progress handler
      * @throws IOException
      */
-    public CGetForward(
-            Args args,
-            Node callingNode,
-            Node destinationNode,
-            ImageProgress progress)
-            throws IOException {
+    public CGetForward(Args args, Node callingNode, Node destinationNode, ImageProgress progress) throws IOException {
         this.args = args;
         this.ae = new ApplicationEntity("GETSCU");
         this.device.addConnection(conn);
@@ -238,95 +212,51 @@ public class CGetForward implements AutoCloseable {
      * @param destinationNode the final destination DICOM node configuration
      * @param progress        the progress handler
      * @param studyUID        the study instance UID to retrieve
-     * @return The DicomSate instance which contains the DICOM response, the DICOM status, the error
-     * message and the progression.
+     * @return The DicomSate instance which contains the DICOM response, the DICOM status, the error message and the
+     *         progression.
      */
-    public static Status processStudy(
-            Node callingNode,
-            Node calledNode,
-            Node destinationNode,
-            ImageProgress progress,
+    public static Status processStudy(Node callingNode, Node calledNode, Node destinationNode, ImageProgress progress,
             String studyUID) {
-        return process(
-                null, null, callingNode, calledNode, destinationNode, progress, "STUDY", studyUID);
+        return process(null, null, callingNode, calledNode, destinationNode, progress, "STUDY", studyUID);
     }
 
     /**
-     * @param args            the C-GET optional advanced parameters (proxy, authentication, connection and
-     *                        TLS)
-     * @param forwardParams   the C-Store optional advanced parameters (proxy, authentication,
-     *                        connection and TLS)
+     * @param args            the C-GET optional advanced parameters (proxy, authentication, connection and TLS)
+     * @param forwardParams   the C-Store optional advanced parameters (proxy, authentication, connection and TLS)
      * @param callingNode     the calling DICOM node configuration
      * @param calledNode      the called DICOM node configuration
      * @param destinationNode the final destination DICOM node configuration
      * @param progress        the progress handler
      * @param studyUID        the study instance UID to retrieve
-     * @return The DicomSate instance which contains the DICOM response, the DICOM status, the error
-     * message and the progression.
+     * @return The DicomSate instance which contains the DICOM response, the DICOM status, the error message and the
+     *         progression.
      */
-    public static Status processStudy(
-            Args args,
-            Args forwardParams,
-            Node callingNode,
-            Node calledNode,
-            Node destinationNode,
-            ImageProgress progress,
-            String studyUID) {
-        return process(
-                args,
-                forwardParams,
-                callingNode,
-                calledNode,
-                destinationNode,
-                progress,
-                "STUDY",
-                studyUID);
+    public static Status processStudy(Args args, Args forwardParams, Node callingNode, Node calledNode,
+            Node destinationNode, ImageProgress progress, String studyUID) {
+        return process(args, forwardParams, callingNode, calledNode, destinationNode, progress, "STUDY", studyUID);
     }
 
     /**
-     * @param getParams       the C-GET optional advanced parameters (proxy, authentication, connection and
-     *                        TLS)
-     * @param forwardParams   the C-Store optional advanced parameters (proxy, authentication,
-     *                        connection and TLS)
+     * @param getParams       the C-GET optional advanced parameters (proxy, authentication, connection and TLS)
+     * @param forwardParams   the C-Store optional advanced parameters (proxy, authentication, connection and TLS)
      * @param callingNode     the calling DICOM node configuration
      * @param calledNode      the called DICOM node configuration
      * @param destinationNode the final destination DICOM node configuration
      * @param progress        the progress handler
      * @param seriesUID       the series instance UID to retrieve
-     * @return The DicomSate instance which contains the DICOM response, the DICOM status, the error
-     * message and the progression.
+     * @return The DicomSate instance which contains the DICOM response, the DICOM status, the error message and the
+     *         progression.
      */
-    public static Status processSeries(
-            Args getParams,
-            Args forwardParams,
-            Node callingNode,
-            Node calledNode,
-            Node destinationNode,
-            ImageProgress progress,
-            String seriesUID) {
-        return process(
-                getParams,
-                forwardParams,
-                callingNode,
-                calledNode,
-                destinationNode,
-                progress,
-                "SERIES",
+    public static Status processSeries(Args getParams, Args forwardParams, Node callingNode, Node calledNode,
+            Node destinationNode, ImageProgress progress, String seriesUID) {
+        return process(getParams, forwardParams, callingNode, calledNode, destinationNode, progress, "SERIES",
                 seriesUID);
     }
 
-    private static Status process(
-            Args args,
-            Args forwardParams,
-            Node callingNode,
-            Node calledNode,
-            Node destinationNode,
-            ImageProgress progress,
-            String queryRetrieveLevel,
-            String queryUID) {
+    private static Status process(Args args, Args forwardParams, Node callingNode, Node calledNode,
+            Node destinationNode, ImageProgress progress, String queryRetrieveLevel, String queryUID) {
         if (callingNode == null || calledNode == null || destinationNode == null) {
-            throw new IllegalArgumentException(
-                    "callingNode, calledNode or destinationNode cannot be null!");
+            throw new IllegalArgumentException("callingNode, calledNode or destinationNode cannot be null!");
         }
         Args options = args == null ? new Args() : args;
 
@@ -344,9 +274,7 @@ public class CGetForward implements AutoCloseable {
 
             forward.setPriority(options.getPriority());
 
-            forward.setInformationModel(
-                    getInformationModel(options),
-                    options.getTsuidOrder(),
+            forward.setInformationModel(getInformationModel(options), options.getTsuidOrder(),
                     options.getQueryOptions().contains(QueryOption.RELATIONAL));
 
             configureRelatedSOPClass(forward, null);
@@ -358,8 +286,7 @@ public class CGetForward implements AutoCloseable {
                 forward.addKey(Tag.QueryRetrieveLevel, "STUDY");
                 forward.addKey(Tag.StudyInstanceUID, queryUID);
             } else {
-                throw new IllegalArgumentException(
-                        queryRetrieveLevel + " is not supported as query retrieve level!");
+                throw new IllegalArgumentException(queryRetrieveLevel + " is not supported as query retrieve level!");
             }
 
             service.start();
@@ -371,13 +298,10 @@ public class CGetForward implements AutoCloseable {
                 forward.retrieve();
                 Builder.forceGettingAttributes(dcmState, forward);
                 long t3 = System.currentTimeMillis();
-                String timeMsg =
-                        MessageFormat.format(
-                                "DICOM C-GET connected in {2}ms from {0} to {1}. Get files in {3}ms.",
-                                forward.getAAssociateRQ().getCallingAET(),
-                                forward.getAAssociateRQ().getCalledAET(),
-                                t2 - t1,
-                                t3 - t2);
+                String timeMsg = MessageFormat.format(
+                        "DICOM C-GET connected in {2}ms from {0} to {1}. Get files in {3}ms.",
+                        forward.getAAssociateRQ().getCallingAET(), forward.getAAssociateRQ().getCalledAET(), t2 - t1,
+                        t3 - t2);
                 return Status.buildMessage(dcmState, timeMsg, null);
             } catch (Exception e) {
                 if (e instanceof InterruptedException) {
@@ -393,8 +317,7 @@ public class CGetForward implements AutoCloseable {
             }
         } catch (Exception e) {
             Logger.error("getscu", e);
-            return new Status(Status.UnableToProcess,
-                    "DICOM Get failed" + Symbol.COLON + Symbol.SPACE + e.getMessage(),
+            return new Status(Status.UnableToProcess, "DICOM Get failed" + Symbol.COLON + Symbol.SPACE + e.getMessage(),
                     null);
         }
     }
@@ -471,7 +394,7 @@ public class CGetForward implements AutoCloseable {
         this.model = model;
         rq.addPresentationContext(new PresentationContext(1, model.cuid, tss));
         if (relational) {
-            rq.addExtendedNegotiation(new ExtendedNegotiation(model.cuid, new byte[]{1}));
+            rq.addExtendedNegotiation(new ExtendedNegotiation(model.cuid, new byte[] { 1 }));
         }
         if (model.level != null) {
             addLevel(model.level);
@@ -491,15 +414,10 @@ public class CGetForward implements AutoCloseable {
         if (!rq.containsPresentationContextFor(cuid)) {
             rq.addRoleSelection(new RoleSelection(cuid, false, true));
         }
-        rq.addPresentationContext(
-                new PresentationContext(2 * rq.getNumberOfPresentationContexts() + 1, cuid, tsuids));
+        rq.addPresentationContext(new PresentationContext(2 * rq.getNumberOfPresentationContexts() + 1, cuid, tsuids));
     }
 
-    public void open()
-            throws IOException,
-            InterruptedException,
-            InternalException,
-            GeneralSecurityException {
+    public void open() throws IOException, InterruptedException, InternalException, GeneralSecurityException {
         as = ae.connect(conn, remote, rq);
     }
 
@@ -517,34 +435,32 @@ public class CGetForward implements AutoCloseable {
     }
 
     private void retrieve(Attributes keys) throws IOException, InterruptedException {
-        DimseRSPHandler rspHandler =
-                new DimseRSPHandler(as.nextMessageID()) {
+        DimseRSPHandler rspHandler = new DimseRSPHandler(as.nextMessageID()) {
 
-                    @Override
-                    public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
-                        super.onDimseRSP(as, cmd, data);
-                        ImageProgress p = streamSCU.getState().getProgress();
-                        if (p != null) {
-                            // Set only the initial state
-                            if (streamSCU.getNumberOfSuboperations() == 0) {
-                                streamSCU.setNumberOfSuboperations(Builder.getTotalOfSuboperations(cmd));
-                            }
-                            if (p.isCancel()) {
-                                try {
-                                    this.cancel(as);
-                                } catch (IOException e) {
-                                    Logger.error("Cancel C-GET", e);
-                                }
-                            }
+            @Override
+            public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
+                super.onDimseRSP(as, cmd, data);
+                ImageProgress p = streamSCU.getState().getProgress();
+                if (p != null) {
+                    // Set only the initial state
+                    if (streamSCU.getNumberOfSuboperations() == 0) {
+                        streamSCU.setNumberOfSuboperations(Builder.getTotalOfSuboperations(cmd));
+                    }
+                    if (p.isCancel()) {
+                        try {
+                            this.cancel(as);
+                        } catch (IOException e) {
+                            Logger.error("Cancel C-GET", e);
                         }
                     }
-                };
+                }
+            }
+        };
 
         retrieve(keys, rspHandler);
     }
 
-    private void retrieve(Attributes keys, DimseRSPHandler rspHandler)
-            throws IOException, InterruptedException {
+    private void retrieve(Attributes keys, DimseRSPHandler rspHandler) throws IOException, InterruptedException {
         as.cget(model.cuid, priority, keys, null, rspHandler);
     }
 

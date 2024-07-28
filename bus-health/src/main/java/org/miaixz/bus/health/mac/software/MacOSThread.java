@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.mac.software;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -48,8 +48,8 @@ public class MacOSThread extends AbstractOSThread {
     private final long upTime;
     private final int priority;
 
-    public MacOSThread(int pid, int threadId, OSProcess.State state, long kernelTime, long userTime, long startTime, long upTime,
-                       int priority) {
+    public MacOSThread(int pid, int threadId, OSProcess.State state, long kernelTime, long userTime, long startTime,
+            long upTime, int priority) {
         super(pid);
         this.threadId = threadId;
         this.state = state;

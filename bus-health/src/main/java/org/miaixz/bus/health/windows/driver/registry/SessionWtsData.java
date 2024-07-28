@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.driver.registry;
 
 import com.sun.jna.Pointer;
@@ -71,9 +71,9 @@ public final class SessionWtsData {
         List<OSSession> sessions = new ArrayList<>();
         if (IS_VISTA_OR_GREATER) {
             try (ByRef.CloseablePointerByReference ppSessionInfo = new ByRef.CloseablePointerByReference();
-                 ByRef.CloseableIntByReference pCount = new ByRef.CloseableIntByReference();
-                 ByRef.CloseablePointerByReference ppBuffer = new ByRef.CloseablePointerByReference();
-                 ByRef.CloseableIntByReference pBytes = new ByRef.CloseableIntByReference()) {
+                    ByRef.CloseableIntByReference pCount = new ByRef.CloseableIntByReference();
+                    ByRef.CloseablePointerByReference ppBuffer = new ByRef.CloseablePointerByReference();
+                    ByRef.CloseableIntByReference pBytes = new ByRef.CloseableIntByReference()) {
                 if (WTS.WTSEnumerateSessions(Wtsapi32.WTS_CURRENT_SERVER_HANDLE, 0, 1, ppSessionInfo, pCount)) {
                     Pointer pSessionInfo = ppSessionInfo.getValue();
                     if (pCount.getValue() > 0) {
@@ -135,8 +135,8 @@ public final class SessionWtsData {
 
     /**
      * Per WTS_INFO_CLASS docs, the IP address is offset by two bytes from the start of the Address member of the
-     * WTS_CLIENT_ADDRESS structure. Also contrary to docs, IPv4 is not a null terminated string.
-     * This method converts the byte[20] to an int[4] parseable by existing code
+     * WTS_CLIENT_ADDRESS structure. Also contrary to docs, IPv4 is not a null terminated string. This method converts
+     * the byte[20] to an int[4] parseable by existing code
      *
      * @param address The 20-byte array from the WTS_CLIENT_ADDRESS structure
      * @return A 4-int array for {@link Parsing#parseUtAddrV6toIP}

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket.secure.ssl.factory;
 
 import javax.net.ssl.SSLContext;
@@ -63,7 +63,7 @@ public class ClientSSLContextFactory implements SSLContextFactory {
             tmf.init(ts);
             trustManagers = tmf.getTrustManagers();
         } else {
-            trustManagers = new TrustManager[]{new X509TrustManager() {
+            trustManagers = new TrustManager[] { new X509TrustManager() {
                 @Override
                 public void checkClientTrusted(X509Certificate[] x509Certificates, String s) {
                 }
@@ -76,7 +76,7 @@ public class ClientSSLContextFactory implements SSLContextFactory {
                 public X509Certificate[] getAcceptedIssuers() {
                     return new X509Certificate[0];
                 }
-            }};
+            } };
         }
         SSLContext sslContext = SSLContext.getInstance("TLS");
         sslContext.init(null, trustManagers, new SecureRandom());

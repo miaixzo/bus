@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 /**
@@ -36,8 +36,7 @@ package org.miaixz.bus.core.xyz;
 public class UnicodeKit {
 
     /**
-     * Unicode字符串转为普通字符串
-     * Unicode字符串的表现方式为：\\uXXXX
+     * Unicode字符串转为普通字符串 Unicode字符串的表现方式为：\\uXXXX
      *
      * @param unicode Unicode字符串
      * @return 普通字符串
@@ -52,21 +51,21 @@ public class UnicodeKit {
         int i;
         int pos = 0;
         while ((i = StringKit.indexOfIgnoreCase(unicode, "\\u", pos)) != -1) {
-            sb.append(unicode, pos, i);//写入Unicode符之前的部分
+            sb.append(unicode, pos, i);// 写入Unicode符之前的部分
             pos = i;
             if (i + 5 < len) {
                 final char c;
                 try {
                     c = (char) Integer.parseInt(unicode.substring(i + 2, i + 6), 16);
                     sb.append(c);
-                    pos = i + 6;//跳过整个Unicode符
+                    pos = i + 6;// 跳过整个Unicode符
                 } catch (final NumberFormatException e) {
-                    //非法Unicode符，跳过
-                    sb.append(unicode, pos, i + 2);//写入"\\u"
+                    // 非法Unicode符，跳过
+                    sb.append(unicode, pos, i + 2);// 写入"\\u"
                     pos = i + 2;
                 }
             } else {
-                //非Unicode符，结束
+                // 非Unicode符，结束
                 break;
             }
         }

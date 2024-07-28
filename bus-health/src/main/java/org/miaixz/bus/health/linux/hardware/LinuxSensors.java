@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.linux.hardware;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -54,7 +54,7 @@ final class LinuxSensors extends AbstractSensors {
     private static final String TEMP = "temp";
     private static final String FAN = "fan";
     private static final String VOLTAGE = "in";
-    private static final String[] SENSORS = {TEMP, FAN, VOLTAGE};
+    private static final String[] SENSORS = { TEMP, FAN, VOLTAGE };
 
     // Base HWMON path, adds 0, 1, etc. to end for various sensors
     private static final String HWMON = "hwmon";
@@ -207,7 +207,7 @@ final class LinuxSensors extends AbstractSensors {
             if (fanStr != null) {
                 List<Integer> speeds = new ArrayList<>();
                 int fan = 1;
-                for (; ; ) {
+                for (;;) {
                     String fanPath = String.format(Locale.ROOT, "%s%d_input", fanStr, fan);
                     if (!new File(fanPath).exists()) {
                         // No file found, we've reached max fans

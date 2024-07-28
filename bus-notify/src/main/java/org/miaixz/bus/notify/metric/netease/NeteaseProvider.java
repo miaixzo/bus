@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.notify.metric.netease;
 
 import org.miaixz.bus.core.basic.entity.Message;
@@ -50,8 +50,8 @@ import java.util.Map;
  */
 public abstract class NeteaseProvider<T extends Material, K extends Context> extends AbstractProvider<T, K> {
 
-    private static final char[] HEX_DIGITS = {'0', '1', '2', '3', '4', '5',
-            '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+    private static final char[] HEX_DIGITS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd',
+            'e', 'f' };
 
     public NeteaseProvider(K properties) {
         super(properties);
@@ -62,8 +62,7 @@ public abstract class NeteaseProvider<T extends Material, K extends Context> ext
             return null;
         }
         try {
-            MessageDigest messageDigest
-                    = MessageDigest.getInstance("sha1");
+            MessageDigest messageDigest = MessageDigest.getInstance("sha1");
             messageDigest.update(value.getBytes());
             return getFormattedText(messageDigest.digest());
         } catch (Exception e) {
@@ -97,8 +96,7 @@ public abstract class NeteaseProvider<T extends Material, K extends Context> ext
         String response = Httpx.post(routerUrl, map, header);
         Logger.debug("netease result：{}", response);
         String code = JsonKit.getValue(response, "Code");
-        return Message.builder()
-                .errcode(String.valueOf(HTTP.HTTP_OK).equals(code) ? ErrorCode.SUCCESS.getCode() : code)
+        return Message.builder().errcode(String.valueOf(HTTP.HTTP_OK).equals(code) ? ErrorCode.SUCCESS.getCode() : code)
                 .errmsg(JsonKit.getValue(response, "desc")).build();
     }
 

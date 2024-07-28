@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.file;
 
 import org.miaixz.bus.core.lang.Charset;
@@ -38,9 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 文件追加器
- * 持有一个文件，在内存中积累一定量的数据后统一追加到文件
- * 此类只有在写入文件时打开文件，并在写入结束后关闭之。因此此类不需要关闭
+ * 文件追加器 持有一个文件，在内存中积累一定量的数据后统一追加到文件 此类只有在写入文件时打开文件，并在写入结束后关闭之。因此此类不需要关闭
  * 在调用append方法后会缓存于内存，只有超过容量后才会一次性写入文件，因此内存中随时有剩余未写入文件的内容，在最后必须调用flush方法将剩余内容刷入文件
  *
  * @author Kimi Liu
@@ -87,7 +85,8 @@ public class FileAppender implements Serializable {
      * @param capacity      当行数积累多少条时刷入到文件
      * @param isNewLineMode 追加内容是否为新行
      */
-    public FileAppender(final File destFile, final java.nio.charset.Charset charset, final int capacity, final boolean isNewLineMode) {
+    public FileAppender(final File destFile, final java.nio.charset.Charset charset, final int capacity,
+            final boolean isNewLineMode) {
         this(destFile, charset, capacity, isNewLineMode, null);
     }
 
@@ -100,7 +99,8 @@ public class FileAppender implements Serializable {
      * @param isNewLineMode 追加内容是否为新行
      * @param lock          是否加锁，添加则使用给定锁保护写出，保证线程安全，{@code null}则表示无锁
      */
-    public FileAppender(final File destFile, final java.nio.charset.Charset charset, final int capacity, final boolean isNewLineMode, final java.util.concurrent.locks.Lock lock) {
+    public FileAppender(final File destFile, final java.nio.charset.Charset charset, final int capacity,
+            final boolean isNewLineMode, final java.util.concurrent.locks.Lock lock) {
         this.capacity = capacity;
         this.list = new ArrayList<>(capacity);
         this.isNewLineMode = isNewLineMode;

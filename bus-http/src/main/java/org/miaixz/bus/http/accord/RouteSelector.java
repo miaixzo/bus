@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.accord;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -39,8 +39,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
- * 选择连接到源服务器的路由。每个连接都需要选择代理
- * 服务器、IP地址和TLS模式。连接也可以循环使用
+ * 选择连接到源服务器的路由。每个连接都需要选择代理 服务器、IP地址和TLS模式。连接也可以循环使用
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -65,8 +64,7 @@ public class RouteSelector {
      */
     private List<InetSocketAddress> inetSocketAddresses = Collections.emptyList();
 
-    public RouteSelector(Address address, RouteDatabase routeDatabase, NewCall call,
-                         EventListener eventListener) {
+    public RouteSelector(Address address, RouteDatabase routeDatabase, NewCall call, EventListener eventListener) {
         this.address = address;
         this.routeDatabase = routeDatabase;
         this.call = call;
@@ -76,8 +74,7 @@ public class RouteSelector {
     }
 
     /**
-     * 从{@link InetSocketAddress}获取“主机”
-     * 这将返回一个包含实际主机名或数字IP地址的字符串。
+     * 从{@link InetSocketAddress}获取“主机” 这将返回一个包含实际主机名或数字IP地址的字符串。
      *
      * @param socketAddress 套接字通信地址
      * @return 主机名或者host
@@ -151,8 +148,7 @@ public class RouteSelector {
         } else {
             // 尝试每一个ProxySelector选项，直到有一个连接成功
             List<Proxy> proxiesOrNull = address.proxySelector().select(url.uri());
-            proxies = proxiesOrNull != null && !proxiesOrNull.isEmpty()
-                    ? Builder.immutableList(proxiesOrNull)
+            proxies = proxiesOrNull != null && !proxiesOrNull.isEmpty() ? Builder.immutableList(proxiesOrNull)
                     : Builder.immutableList(Proxy.NO_PROXY);
         }
         nextProxyIndex = 0;
@@ -175,8 +171,8 @@ public class RouteSelector {
      */
     private Proxy nextProxy() throws IOException {
         if (!hasNextProxy()) {
-            throw new SocketException("No route to " + address.url().host()
-                    + "; exhausted proxy configurations: " + proxies);
+            throw new SocketException(
+                    "No route to " + address.url().host() + "; exhausted proxy configurations: " + proxies);
         }
         Proxy result = proxies.get(nextProxyIndex++);
         resetNextInetSocketAddress(result);
@@ -209,8 +205,8 @@ public class RouteSelector {
         }
 
         if (socketPort < 1 || socketPort > 65535) {
-            throw new SocketException("No route to " + socketHost + Symbol.COLON + socketPort
-                    + "; port is out of range");
+            throw new SocketException(
+                    "No route to " + socketHost + Symbol.COLON + socketPort + "; port is out of range");
         }
 
         if (proxy.type() == Proxy.Type.SOCKS) {

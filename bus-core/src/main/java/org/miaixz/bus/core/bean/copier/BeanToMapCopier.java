@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.bean.copier;
 
 import org.miaixz.bus.core.bean.desc.PropDesc;
@@ -57,7 +57,8 @@ public class BeanToMapCopier extends AbstractCopier<Object, Map> {
      * @param targetType  目标泛型类型
      * @param copyOptions 拷贝选项
      */
-    public BeanToMapCopier(final Object source, final Map target, final Type targetType, final CopyOptions copyOptions) {
+    public BeanToMapCopier(final Object source, final Map target, final Type targetType,
+            final CopyOptions copyOptions) {
         super(source, target, copyOptions);
         this.targetType = targetType;
     }
@@ -68,7 +69,8 @@ public class BeanToMapCopier extends AbstractCopier<Object, Map> {
         if (null != copyOptions.editable) {
             // 检查限制类是否为target的父类或接口
             Assert.isTrue(copyOptions.editable.isInstance(source),
-                    "Source class [{}] not assignable to Editable class [{}]", actualEditable.getName(), copyOptions.editable.getName());
+                    "Source class [{}] not assignable to Editable class [{}]", actualEditable.getName(),
+                    copyOptions.editable.getName());
             actualEditable = copyOptions.editable;
         }
 
@@ -100,7 +102,7 @@ public class BeanToMapCopier extends AbstractCopier<Object, Map> {
             // 获取目标值真实类型并转换源值
             final Type[] typeArguments = TypeKit.getTypeArguments(this.targetType);
             if (null != typeArguments && typeArguments.length > 1) {
-                //sValue = Convert.convertWithCheck(typeArguments[1], sValue, null, this.copyOptions.ignoreError);
+                // sValue = Convert.convertWithCheck(typeArguments[1], sValue, null, this.copyOptions.ignoreError);
                 sValue = this.copyOptions.convertField(typeArguments[1], sValue);
             }
 

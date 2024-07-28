@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket.metric.message;
 
 import org.miaixz.bus.socket.Message;
@@ -64,10 +64,10 @@ public class StringMessage implements Message<String> {
             decoderMap.keySet().stream().filter(Session::isInvalid).forEach(decoderMap::remove);
         }
         FixedLengthFrameDecoder decoder = decoderMap.get(session);
-        //消息长度超过缓冲区容量
+        // 消息长度超过缓冲区容量
         if (decoder != null) {
             String content = bigContent(readBuffer, decoder);
-            //解码成功,释放解码器
+            // 解码成功,释放解码器
             if (content != null) {
                 decoderMap.remove(session);
             }

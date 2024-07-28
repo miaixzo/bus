@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.logger.metric.jdk;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -133,26 +133,27 @@ public class JdkLoggingProvider extends AbstractProvider {
     }
 
     @Override
-    public void log(final String fqcn, final org.miaixz.bus.logger.Level level, final Throwable t, final String format, final Object... args) {
+    public void log(final String fqcn, final org.miaixz.bus.logger.Level level, final Throwable t, final String format,
+            final Object... args) {
         final Level jdkLevel;
         switch (level) {
-            case TRACE:
-                jdkLevel = Level.FINEST;
-                break;
-            case DEBUG:
-                jdkLevel = Level.FINE;
-                break;
-            case INFO:
-                jdkLevel = Level.INFO;
-                break;
-            case WARN:
-                jdkLevel = Level.WARNING;
-                break;
-            case ERROR:
-                jdkLevel = Level.SEVERE;
-                break;
-            default:
-                throw new Error(StringKit.format("Can not identify level: {}", level));
+        case TRACE:
+            jdkLevel = Level.FINEST;
+            break;
+        case DEBUG:
+            jdkLevel = Level.FINE;
+            break;
+        case INFO:
+            jdkLevel = Level.INFO;
+            break;
+        case WARN:
+            jdkLevel = Level.WARNING;
+            break;
+        case ERROR:
+            jdkLevel = Level.SEVERE;
+            break;
+        default:
+            throw new Error(StringKit.format("Can not identify level: {}", level));
         }
         logIfEnabled(fqcn, jdkLevel, t, format, args);
     }
@@ -166,7 +167,8 @@ public class JdkLoggingProvider extends AbstractProvider {
      * @param format    消息模板
      * @param args      参数
      */
-    private void logIfEnabled(final String fqcn, final Level level, final Throwable throwable, final String format, final Object[] args) {
+    private void logIfEnabled(final String fqcn, final Level level, final Throwable throwable, final String format,
+            final Object[] args) {
         if (logger.isLoggable(level)) {
             final LogRecord record = new LogRecord(level, StringKit.format(format, args));
             record.setLoggerName(getName());

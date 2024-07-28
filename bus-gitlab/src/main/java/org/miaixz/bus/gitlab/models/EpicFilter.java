@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -42,7 +42,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- *  This class is used to filter Groups when getting lists of epics.
+ * This class is used to filter Groups when getting lists of epics.
  */
 public class EpicFilter implements Serializable {
     private static final long serialVersionUID = -1L;
@@ -289,22 +289,15 @@ public class EpicFilter implements Serializable {
      * @return a GitLabApiForm instance holding the query parameters for this GroupFilter instance
      */
     public GitLabApiForm getQueryParams() {
-        return (new GitLabApiForm()
-                .withParam("author_id", authorId)
-                .withParam("author_username", authorUsername)
-                .withParam("labels", labels)
-                .withParam("order_by", orderBy)
-                .withParam("sort", sort)
-                .withParam("search", search)
-                .withParam("state", state)
+        return (new GitLabApiForm().withParam("author_id", authorId).withParam("author_username", authorUsername)
+                .withParam("labels", labels).withParam("order_by", orderBy).withParam("sort", sort)
+                .withParam("search", search).withParam("state", state)
                 .withParam("created_after", ISO8601.toString(createdAfter, false))
                 .withParam("updated_after", ISO8601.toString(updatedAfter, false))
                 .withParam("updated_before", ISO8601.toString(updatedBefore, false))
                 .withParam("include_ancestor_groups", includeAncestorGroups)
                 .withParam("include_descendant_groups", includeDescendantGroups)
-                .withParam("my_reaction_emoji", myReactionEmoji)
-                .withParam("not", toStringMap(not), false)
-        );
+                .withParam("my_reaction_emoji", myReactionEmoji).withParam("not", toStringMap(not), false));
     }
 
     private Map<String, Object> toStringMap(Map<EpicField, Object> map) {

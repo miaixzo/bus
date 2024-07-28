@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.driver.wmi;
 
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
@@ -53,10 +53,8 @@ public final class OhmSensor {
      * @return The sensor value.
      */
     public static WmiResult<ValueProperty> querySensorValue(WmiQueryHandler h, String identifier, String sensorType) {
-        String sb = SENSOR + " WHERE Parent = \"" + identifier +
-                "\" AND SensorType=\"" + sensorType + '\"';
-        WmiQuery<ValueProperty> ohmSensorQuery = new WmiQuery<>(WmiKit.OHM_NAMESPACE, sb,
-                ValueProperty.class);
+        String sb = SENSOR + " WHERE Parent = \"" + identifier + "\" AND SensorType=\"" + sensorType + '\"';
+        WmiQuery<ValueProperty> ohmSensorQuery = new WmiQuery<>(WmiKit.OHM_NAMESPACE, sb, ValueProperty.class);
         return h.queryWMI(ohmSensorQuery, false);
     }
 

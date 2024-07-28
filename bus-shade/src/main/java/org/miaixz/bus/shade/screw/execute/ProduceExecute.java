@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.screw.execute;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -51,9 +51,9 @@ public class ProduceExecute extends AbstractExecute {
     public void execute() {
         try {
             long start = System.currentTimeMillis();
-            //处理数据
+            // 处理数据
             DataSchema dataModel = new DataModelProcess(config).process();
-            //产生文档
+            // 产生文档
             TemplateEngine produce = new EngineFactory(config.getEngineConfig()).newInstance();
             produce.produce(dataModel, getDocName(dataModel.getDatabase()));
             Logger.debug("database document generation complete time consuming:{}ms",

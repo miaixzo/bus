@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv.seg;
 
 import java.awt.*;
@@ -91,8 +91,7 @@ public class Segment extends ArrayList<Point2D> {
         setPoints(points, null, forceClose, dim);
     }
 
-    public void setPoints(
-            float[] points, AffineTransform inverse, boolean forceClose, Dimension dim) {
+    public void setPoints(float[] points, AffineTransform inverse, boolean forceClose, Dimension dim) {
         double[] pts;
         Objects.requireNonNull(points);
         if (inverse == null) {
@@ -109,8 +108,7 @@ public class Segment extends ArrayList<Point2D> {
         setPoints(points, null, forceClose, dim);
     }
 
-    public void setPoints(
-            double[] points, AffineTransform inverse, boolean forceClose, Dimension dim) {
+    public void setPoints(double[] points, AffineTransform inverse, boolean forceClose, Dimension dim) {
         double[] pts;
         if (inverse == null) {
             pts = points;

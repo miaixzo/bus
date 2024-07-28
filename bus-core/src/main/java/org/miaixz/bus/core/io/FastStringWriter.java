@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io;
 
 import java.io.Writer;
@@ -83,29 +83,24 @@ public final class FastStringWriter extends Writer {
         this.stringBuilder.append((char) c);
     }
 
-
     @Override
     public void write(final String text) {
         this.stringBuilder.append(text);
     }
-
 
     @Override
     public void write(final String text, final int off, final int len) {
         this.stringBuilder.append(text, off, off + len);
     }
 
-
     @Override
     public void write(final char[] c) {
         this.stringBuilder.append(c, 0, c.length);
     }
 
-
     @Override
     public void write(final char[] c, final int off, final int len) {
-        if ((off < 0) || (off > c.length) || (len < 0) ||
-                ((off + len) > c.length) || ((off + len) < 0)) {
+        if ((off < 0) || (off > c.length) || (len < 0) || ((off + len) > c.length) || ((off + len) < 0)) {
             throw new IndexOutOfBoundsException();
         } else if (len == 0) {
             return;
@@ -118,12 +113,10 @@ public final class FastStringWriter extends Writer {
         // Nothing to be flushed
     }
 
-
     @Override
     public void close() {
         // Nothing to be closed
     }
-
 
     @Override
     public String toString() {

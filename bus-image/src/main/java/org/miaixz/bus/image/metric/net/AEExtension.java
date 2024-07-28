@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.net;
 
 import java.io.Serializable;
@@ -45,8 +45,7 @@ public class AEExtension implements Serializable {
 
     void setApplicationEntity(ApplicationEntity ae) {
         if (ae != null && this.ae != null)
-            throw new IllegalStateException(
-                    "already owned by AE: " + ae.getAETitle());
+            throw new IllegalStateException("already owned by AE: " + ae.getAETitle());
         this.ae = ae;
     }
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -57,11 +57,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class MoveSCU extends Device implements AutoCloseable {
 
-    private static final int[] DEF_IN_FILTER = {
-            Tag.SOPInstanceUID,
-            Tag.StudyInstanceUID,
-            Tag.SeriesInstanceUID
-    };
+    private static final int[] DEF_IN_FILTER = { Tag.SOPInstanceUID, Tag.StudyInstanceUID, Tag.SeriesInstanceUID };
     private final ApplicationEntity ae = new ApplicationEntity("MOVESCU");
     private final Connection conn = new Connection();
     private final Connection remote = new Connection();
@@ -104,7 +100,7 @@ public class MoveSCU extends Device implements AutoCloseable {
         this.model = model;
         rq.addPresentationContext(new PresentationContext(1, model.cuid, tss));
         if (relational) {
-            rq.addExtendedNegotiation(new ExtendedNegotiation(model.cuid, new byte[]{1}));
+            rq.addExtendedNegotiation(new ExtendedNegotiation(model.cuid, new byte[] { 1 }));
         }
         if (model.level != null) {
             addLevel(model.level);
@@ -148,11 +144,7 @@ public class MoveSCU extends Device implements AutoCloseable {
         return keys;
     }
 
-    public void open()
-            throws IOException,
-            InterruptedException,
-            InternalException,
-            GeneralSecurityException {
+    public void open() throws IOException, InterruptedException, InternalException, GeneralSecurityException {
         as = ae.connect(conn, remote, rq);
     }
 
@@ -178,40 +170,36 @@ public class MoveSCU extends Device implements AutoCloseable {
     }
 
     private void retrieve(Attributes keys) throws IOException, InterruptedException {
-        DimseRSPHandler rspHandler =
-                new DimseRSPHandler(as.nextMessageID()) {
+        DimseRSPHandler rspHandler = new DimseRSPHandler(as.nextMessageID()) {
 
-                    @Override
-                    public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
-                        super.onDimseRSP(as, cmd, data);
-                        ImageProgress p = state.getProgress();
-                        if (p != null) {
-                            p.setAttributes(cmd);
-                            if (p.isCancel()) {
-                                try {
-                                    this.cancel(as);
-                                } catch (IOException e) {
-                                    Logger.error("Cancel C-MOVE", e);
-                                }
-                            }
+            @Override
+            public void onDimseRSP(Association as, Attributes cmd, Attributes data) {
+                super.onDimseRSP(as, cmd, data);
+                ImageProgress p = state.getProgress();
+                if (p != null) {
+                    p.setAttributes(cmd);
+                    if (p.isCancel()) {
+                        try {
+                            this.cancel(as);
+                        } catch (IOException e) {
+                            Logger.error("Cancel C-MOVE", e);
                         }
                     }
-                };
+                }
+            }
+        };
         as.cmove(model.cuid, priority, keys, null, destination, rspHandler);
         if (cancelAfter > 0) {
-            schedule(
-                    () -> {
-                        try {
-                            rspHandler.cancel(as);
-                            if (releaseEager) {
-                                as.release();
-                            }
-                        } catch (IOException e) {
-                            Logger.error("Cancel after C-MOVE", e);
-                        }
-                    },
-                    cancelAfter,
-                    TimeUnit.MILLISECONDS);
+            schedule(() -> {
+                try {
+                    rspHandler.cancel(as);
+                    if (releaseEager) {
+                        as.release();
+                    }
+                } catch (IOException e) {
+                    Logger.error("Cancel after C-MOVE", e);
+                }
+            }, cancelAfter, TimeUnit.MILLISECONDS);
         }
     }
 

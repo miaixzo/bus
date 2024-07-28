@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cache.magic;
 
 import org.miaixz.bus.cache.Context;
@@ -55,28 +55,24 @@ public class MultiCacheReader extends AbstractReader {
     @Inject(optional = true)
     private Hitting baseHitting;
 
-    private static Map mergeMap(Class<?> resultMapType,
-                                Map proceedEntryValueMap,
-                                Map<String, Object> key2MultiEntry,
-                                Map<String, Object> hitKeyValueMap) {
+    private static Map mergeMap(Class<?> resultMapType, Map proceedEntryValueMap, Map<String, Object> key2MultiEntry,
+            Map<String, Object> hitKeyValueMap) {
 
         Map resultMap = Addables.newMap(resultMapType, proceedEntryValueMap);
         mergeCacheValueToResultMap(resultMap, hitKeyValueMap, key2MultiEntry);
         return resultMap;
     }
 
-    private static Map toMap(Class<?> resultMapType,
-                             Map<String, Object> key2MultiEntry,
-                             Map<String, Object> hitKeyValueMap) {
+    private static Map toMap(Class<?> resultMapType, Map<String, Object> key2MultiEntry,
+            Map<String, Object> hitKeyValueMap) {
         Map resultMap = Addables.newMap(resultMapType, null);
         mergeCacheValueToResultMap(resultMap, hitKeyValueMap, key2MultiEntry);
         return resultMap;
     }
 
     // 将缓存命中的内容都合并到返回值内
-    private static void mergeCacheValueToResultMap(Map resultMap,
-                                                   Map<String, Object> hitKeyValueMap,
-                                                   Map<String, Object> key2MultiEntry) {
+    private static void mergeCacheValueToResultMap(Map resultMap, Map<String, Object> hitKeyValueMap,
+            Map<String, Object> key2MultiEntry) {
         for (Map.Entry<String, Object> entry : hitKeyValueMap.entrySet()) {
             Object inCacheValue = entry.getValue();
             if (PreventObjects.isPrevent(inCacheValue)) {
@@ -90,16 +86,14 @@ public class MultiCacheReader extends AbstractReader {
         }
     }
 
-    private static Collection mergeCollection(Class<?> collectionType,
-                                              Collection proceedCollection,
-                                              Map<String, Object> hitKeyValueMap) {
+    private static Collection mergeCollection(Class<?> collectionType, Collection proceedCollection,
+            Map<String, Object> hitKeyValueMap) {
         Collection resultCollection = Addables.newCollection(collectionType, proceedCollection);
         mergeCacheValueToResultCollection(resultCollection, hitKeyValueMap);
         return resultCollection;
     }
 
-    private static Collection toCollection(Class<?> collectionType,
-                                           Map<String, Object> hitKeyValueMap) {
+    private static Collection toCollection(Class<?> collectionType, Map<String, Object> hitKeyValueMap) {
 
         Collection resultCollection = Addables.newCollection(collectionType, null);
 
@@ -109,7 +103,7 @@ public class MultiCacheReader extends AbstractReader {
     }
 
     private static void mergeCacheValueToResultCollection(Collection resultCollection,
-                                                          Map<String, Object> hitKeyValueMap) {
+            Map<String, Object> hitKeyValueMap) {
         for (Object inCacheValue : hitKeyValueMap.values()) {
             if (PreventObjects.isPrevent(inCacheValue)) {
                 continue;
@@ -120,7 +114,8 @@ public class MultiCacheReader extends AbstractReader {
     }
 
     @Override
-    public Object read(AnnoHolder annoHolder, MethodHolder methodHolder, ProxyChain baseInvoker, boolean needWrite) throws Throwable {
+    public Object read(AnnoHolder annoHolder, MethodHolder methodHolder, ProxyChain baseInvoker, boolean needWrite)
+            throws Throwable {
         // compose keys
         Map[] pair = KeyGenerator.generateMultiKey(annoHolder, baseInvoker.getArguments());
         Map<String, Object> key2MultiEntry = pair[1];
@@ -144,9 +139,8 @@ public class MultiCacheReader extends AbstractReader {
         return result;
     }
 
-    private Object handlePartHit(ProxyChain baseInvoker, CacheKeys cacheKeys,
-                                 AnnoHolder annoHolder, MethodHolder methodHolder,
-                                 Map[] pair, boolean needWrite) throws Throwable {
+    private Object handlePartHit(ProxyChain baseInvoker, CacheKeys cacheKeys, AnnoHolder annoHolder,
+            MethodHolder methodHolder, Map[] pair, boolean needWrite) throws Throwable {
 
         Map<Object, String> multiEntry2Key = pair[0];
         Map<String, Object> key2MultiEntry = pair[1];
@@ -155,7 +149,8 @@ public class MultiCacheReader extends AbstractReader {
         Map<String, Object> hitKeyValueMap = cacheKeys.getHitKeyMap();
 
         // 用未命中的keys调用方法
-        Object[] missArgs = toMissArgs(missKeys, key2MultiEntry, baseInvoker.getArguments(), annoHolder.getMultiIndex());
+        Object[] missArgs = toMissArgs(missKeys, key2MultiEntry, baseInvoker.getArguments(),
+                annoHolder.getMultiIndex());
         Object proceed = doLogInvoke(() -> baseInvoker.proceed(missArgs));
 
         Object result;
@@ -168,7 +163,8 @@ public class MultiCacheReader extends AbstractReader {
                 // 为了兼容@CachedGet注解, 客户端缓存
                 if (needWrite) {
                     // 将方法调用返回的map转换成key_value_map写入Cache
-                    Map<String, Object> keyValueMap = KeyValue.mapToKeyValue(proceedEntryValueMap, missKeys, multiEntry2Key, config.getPrevent());
+                    Map<String, Object> keyValueMap = KeyValue.mapToKeyValue(proceedEntryValueMap, missKeys,
+                            multiEntry2Key, config.getPrevent());
                     cacheManager.writeBatch(annoHolder.getCache(), keyValueMap, annoHolder.getExpire());
                 }
                 // 将方法调用返回的map与从Cache中读取的key_value_map合并返回
@@ -179,7 +175,8 @@ public class MultiCacheReader extends AbstractReader {
                 // 为了兼容@CachedGet注解, 客户端缓存
                 if (needWrite) {
                     // 将方法调用返回的collection转换成key_value_map写入Cache
-                    Map<String, Object> keyValueMap = KeyValue.collectionToKeyValue(proceedCollection, annoHolder.getId(), missKeys, multiEntry2Key, config.getPrevent());
+                    Map<String, Object> keyValueMap = KeyValue.collectionToKeyValue(proceedCollection,
+                            annoHolder.getId(), missKeys, multiEntry2Key, config.getPrevent());
                     cacheManager.writeBatch(annoHolder.getCache(), keyValueMap, annoHolder.getExpire());
                 }
                 // 将方法调用返回的collection与从Cache中读取的key_value_map合并返回
@@ -210,8 +207,8 @@ public class MultiCacheReader extends AbstractReader {
         return Arrays.asList((Object[]) proceed);
     }
 
-    private Object handleFullHit(ProxyChain baseInvoker, Map<String, Object> keyValueMap,
-                                 MethodHolder methodHolder, Map<String, Object> key2Id) throws Throwable {
+    private Object handleFullHit(ProxyChain baseInvoker, Map<String, Object> keyValueMap, MethodHolder methodHolder,
+            Map<String, Object> key2Id) throws Throwable {
 
         Object result;
         Class<?> returnType = methodHolder.getReturnType();
@@ -235,12 +232,9 @@ public class MultiCacheReader extends AbstractReader {
         return result;
     }
 
-    private Object[] toMissArgs(Set<String> missKeys, Map<String, Object> keyIdMap,
-                                Object[] args, int multiIndex) {
+    private Object[] toMissArgs(Set<String> missKeys, Map<String, Object> keyIdMap, Object[] args, int multiIndex) {
 
-        List<Object> missedMultiEntries = missKeys.stream()
-                .map(keyIdMap::get)
-                .collect(Collectors.toList());
+        List<Object> missedMultiEntries = missKeys.stream().map(keyIdMap::get).collect(Collectors.toList());
 
         Class<?> multiArgType = args[multiIndex].getClass();
 
@@ -257,8 +251,7 @@ public class MultiCacheReader extends AbstractReader {
         // 计数
         int hitCount = cacheKeys.getHitKeyMap().size();
         int totalCount = hitCount + missKeys.size();
-        Logger.info("multi cache hit rate: {}/{}, missed keys: {}",
-                hitCount, totalCount, missKeys);
+        Logger.info("multi cache hit rate: {}/{}, missed keys: {}", hitCount, totalCount, missKeys);
 
         if (null != this.baseHitting) {
             // 分组模板

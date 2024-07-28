@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.reflect;
 
 import org.miaixz.bus.core.center.iterator.EnumerationIterator;
@@ -65,8 +65,7 @@ public class ClassScanner implements Serializable {
      */
     private final String packageName;
     /**
-     * 包名，最后跟一个点，表示包名，避免在检查前缀时的歧义
-     * 如果包名指定为空，不跟点
+     * 包名，最后跟一个点，表示包名，避免在检查前缀时的歧义 如果包名指定为空，不跟点
      */
     private final String packageNameWithDot;
     /**
@@ -139,7 +138,8 @@ public class ClassScanner implements Serializable {
      * @param classPredicate 过滤器，无需传入null
      * @param charset        编码
      */
-    public ClassScanner(String packageName, final Predicate<Class<?>> classPredicate, final java.nio.charset.Charset charset) {
+    public ClassScanner(String packageName, final Predicate<Class<?>> classPredicate,
+            final java.nio.charset.Charset charset) {
         packageName = StringKit.toStringOrEmpty(packageName);
         this.packageName = packageName;
         this.packageNameWithDot = StringKit.addSuffixIfNot(packageName, Symbol.DOT);
@@ -156,19 +156,20 @@ public class ClassScanner implements Serializable {
      * @param annotationClass 注解类
      * @return 类集合
      */
-    public static Set<Class<?>> scanAllPackageByAnnotation(final String packageName, final Class<? extends Annotation> annotationClass) {
+    public static Set<Class<?>> scanAllPackageByAnnotation(final String packageName,
+            final Class<? extends Annotation> annotationClass) {
         return scanAllPackage(packageName, clazz -> clazz.isAnnotationPresent(annotationClass));
     }
 
     /**
-     * 扫描指定包路径下所有包含指定注解的类
-     * 如果classpath下已经有类，不再扫描其他加载的jar或者类
+     * 扫描指定包路径下所有包含指定注解的类 如果classpath下已经有类，不再扫描其他加载的jar或者类
      *
      * @param packageName     包路径
      * @param annotationClass 注解类
      * @return 类集合
      */
-    public static Set<Class<?>> scanPackageByAnnotation(final String packageName, final Class<? extends Annotation> annotationClass) {
+    public static Set<Class<?>> scanPackageByAnnotation(final String packageName,
+            final Class<? extends Annotation> annotationClass) {
         return scanPackage(packageName, clazz -> clazz.isAnnotationPresent(annotationClass));
     }
 
@@ -184,8 +185,7 @@ public class ClassScanner implements Serializable {
     }
 
     /**
-     * 扫描指定包路径下所有指定类或接口的子类或实现类，不包括指定父类本身
-     * 如果classpath下已经有类，不再扫描其他加载的jar或者类
+     * 扫描指定包路径下所有指定类或接口的子类或实现类，不包括指定父类本身 如果classpath下已经有类，不再扫描其他加载的jar或者类
      *
      * @param packageName 包路径
      * @param superClass  父类或接口（不包括）
@@ -224,8 +224,7 @@ public class ClassScanner implements Serializable {
     }
 
     /**
-     * 扫描包路径下和所有在classpath中加载的类，满足class过滤器条件的所有class文件，
-     * 如果包路径为 com.abs + A.class 但是输入 abs会产生classNotFoundException
+     * 扫描包路径下和所有在classpath中加载的类，满足class过滤器条件的所有class文件， 如果包路径为 com.abs + A.class 但是输入 abs会产生classNotFoundException
      * 因为className 应该为 com.abs.A 现在却成为abs.A,此工具类对该异常进行忽略处理
      *
      * @param packageName 包路径 com | com. | com.abs | com.abs.
@@ -237,9 +236,8 @@ public class ClassScanner implements Serializable {
     }
 
     /**
-     * 扫描包路径下满足class过滤器条件的所有class文件，
-     * 如果包路径为 com.abs + A.class 但是输入 abs会产生classNotFoundException
-     * 因为className 应该为 com.abs.A 现在却成为abs.A,此工具类对该异常进行忽略处理
+     * 扫描包路径下满足class过滤器条件的所有class文件， 如果包路径为 com.abs + A.class 但是输入 abs会产生classNotFoundException 因为className 应该为
+     * com.abs.A 现在却成为abs.A,此工具类对该异常进行忽略处理
      *
      * @param packageName 包路径 com | com. | com.abs | com.abs.
      * @param classFilter class过滤器，过滤掉不需要的class
@@ -250,8 +248,7 @@ public class ClassScanner implements Serializable {
     }
 
     /**
-     * 扫描包路径下满足class过滤器条件的所有class文件
-     * 此方法首先扫描指定包名下的资源目录，如果未扫描到，则扫描整个classpath中所有加载的类
+     * 扫描包路径下满足class过滤器条件的所有class文件 此方法首先扫描指定包名下的资源目录，如果未扫描到，则扫描整个classpath中所有加载的类
      *
      * @return 类集合
      */
@@ -266,18 +263,18 @@ public class ClassScanner implements Serializable {
      * @return 类集合
      */
     public Set<Class<?>> scan(final boolean forceScanJavaClassPaths) {
-        //多次扫描时,清理上次扫描历史
+        // 多次扫描时,清理上次扫描历史
         this.classes.clear();
         this.classesOfLoadError.clear();
 
         for (final URL url : ResourceKit.getResourceUrlIter(this.packagePath, this.classLoader)) {
             switch (url.getProtocol()) {
-                case "file":
-                    scanFile(new File(UrlDecoder.decode(url.getFile(), this.charset)), null);
-                    break;
-                case "jar":
-                    scanJar(new JarResource(url).getJarFile());
-                    break;
+            case "file":
+                scanFile(new File(UrlDecoder.decode(url.getFile(), this.charset)), null);
+                break;
+            case "jar":
+                scanJar(new JarResource(url).getJarFile());
+                break;
             }
         }
 
@@ -352,7 +349,7 @@ public class ClassScanner implements Serializable {
                         // 8为classes长度，fileName.length() - 6为".class"的长度
                         .substring(rootDir.length(), fileName.length() - 6)//
                         .replace(File.separatorChar, Symbol.C_DOT);//
-                //加入满足条件的类
+                // 加入满足条件的类
                 addIfAccept(className);
             } else if (fileName.endsWith(FileType.JAR)) {
                 try {
@@ -439,12 +436,12 @@ public class ClassScanner implements Serializable {
         final int classLen = className.length();
         final int packageLen = this.packageName.length();
         if (classLen == packageLen) {
-            //类名和包名长度一致，用户可能传入的包名是类名
+            // 类名和包名长度一致，用户可能传入的包名是类名
             if (className.equals(this.packageName)) {
                 addIfAccept(loadClass(className));
             }
         } else if (classLen > packageLen) {
-            //检查类名是否以指定包名为前缀，包名后加.
+            // 检查类名是否以指定包名为前缀，包名后加.
             if (".".equals(this.packageNameWithDot) || className.startsWith(this.packageNameWithDot)) {
                 addIfAccept(loadClass(className));
             }

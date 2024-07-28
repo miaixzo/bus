@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.bean;
 
 import org.miaixz.bus.core.bean.desc.PropDesc;
@@ -40,8 +40,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 动态Bean，通过反射对Bean的相关方法做操作
- * 支持Map和普通Bean和Collection
+ * 动态Bean，通过反射对Bean的相关方法做操作 支持Map和普通Bean和Collection
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -247,7 +246,8 @@ public class DynaBean implements Cloneable, Serializable {
         final DynaBean other = (DynaBean) obj;
         if (bean == null) {
             return other.bean == null;
-        } else return bean.equals(other.bean);
+        } else
+            return bean.equals(other.bean);
     }
 
     @Override

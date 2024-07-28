@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.codec.jpeg;
 
 import org.miaixz.bus.image.nimble.codec.BytesWithImageImageDescriptor;
@@ -43,15 +43,13 @@ import java.util.Arrays;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PatchJPEGLSInputStream extends ImageInputStreamImpl
-        implements BytesWithImageImageDescriptor {
+public class PatchJPEGLSInputStream extends ImageInputStreamImpl implements BytesWithImageImageDescriptor {
 
     private final ImageInputStream iis;
     private long patchPos;
     private byte[] patch;
 
-    public PatchJPEGLSInputStream(ImageInputStream iis,
-                                  PatchJPEGLS patchJPEGLS) throws IOException {
+    public PatchJPEGLSInputStream(ImageInputStream iis, PatchJPEGLS patchJPEGLS) throws IOException {
         if (iis == null)
             throw new NullPointerException("iis");
 
@@ -73,9 +71,8 @@ public class PatchJPEGLSInputStream extends ImageInputStreamImpl
     public ImageDescriptor getImageDescriptor() {
         return (iis instanceof EncapsulatedPixelDataImageInputStream)
                 ? ((EncapsulatedPixelDataImageInputStream) iis).getImageDescriptor()
-                : (iis instanceof SegmentedInputImageStream)
-                ? ((SegmentedInputImageStream) iis).getImageDescriptor()
-                : null;
+                : (iis instanceof SegmentedInputImageStream) ? ((SegmentedInputImageStream) iis).getImageDescriptor()
+                        : null;
     }
 
     private byte[] firstBytesOf(ImageInputStream iis) throws IOException {
@@ -104,9 +101,7 @@ public class PatchJPEGLSInputStream extends ImageInputStreamImpl
         if (patch == null)
             return pos;
         long index = pos - patchPos;
-        return index < 0 ? pos
-                : index < patch.length ? patchPos
-                : pos - patch.length;
+        return index < 0 ? pos : index < patch.length ? patchPos : pos - patch.length;
     }
 
     public boolean isCached() {
@@ -133,9 +128,7 @@ public class PatchJPEGLSInputStream extends ImageInputStreamImpl
     public int read() throws IOException {
         int ch;
         long index;
-        if (patch != null
-                && (index = streamPos - patchPos) >= 0
-                && index < patch.length)
+        if (patch != null && (index = streamPos - patchPos) >= 0 && index < patch.length)
             ch = patch[(int) index];
         else
             ch = iis.read();

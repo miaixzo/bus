@@ -24,14 +24,13 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.plugin.httpv;
 
 import org.miaixz.bus.http.Httpv;
 
 /**
- * 预处理器，支持异步
- * 在HTTP请求任务正式开始之前执行
+ * 预处理器，支持异步 在HTTP请求任务正式开始之前执行
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,7 +43,6 @@ public interface Preprocessor {
      * @param chain 预处理器链
      */
     void doProcess(PreChain chain);
-
 
     interface PreChain {
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cache.support;
 
 import org.miaixz.bus.cache.Context;
@@ -41,10 +41,8 @@ import java.util.Set;
  */
 public class KeyValue {
 
-    public static Map<String, Object> mapToKeyValue(Map proceedEntryValueMap,
-                                                    Set<String> missKeys,
-                                                    Map<Object, String> multiEntry2Key,
-                                                    Context.Switch prevent) {
+    public static Map<String, Object> mapToKeyValue(Map proceedEntryValueMap, Set<String> missKeys,
+            Map<Object, String> multiEntry2Key, Context.Switch prevent) {
         Map<String, Object> keyValueMap = new HashMap<>(proceedEntryValueMap.size());
         proceedEntryValueMap.forEach((multiArgEntry, value) -> {
             String key = multiEntry2Key.get(multiArgEntry);
@@ -64,7 +62,8 @@ public class KeyValue {
         return keyValueMap;
     }
 
-    public static Map<String, Object> collectionToKeyValue(Collection proceedCollection, String idSpel, Set<String> missKeys, Map<Object, String> id2Key, Context.Switch prevent) {
+    public static Map<String, Object> collectionToKeyValue(Collection proceedCollection, String idSpel,
+            Set<String> missKeys, Map<Object, String> id2Key, Context.Switch prevent) {
         Map<String, Object> keyValueMap = new HashMap<>(proceedCollection.size());
 
         for (Object value : proceedCollection) {

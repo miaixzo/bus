@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.loader;
 
 import org.miaixz.bus.core.io.resource.Resource;
@@ -67,10 +67,7 @@ public class NatLoader extends StdLoader implements Loader {
             throw new IllegalArgumentException("The filename has to be at least 3 characters long.");
         }
 
-        File dir = new File(
-                System.getProperty(Keys.JAVA_IO_TMPDIR),
-                StringKit.toString(System.nanoTime())
-        );
+        File dir = new File(System.getProperty(Keys.JAVA_IO_TMPDIR), StringKit.toString(System.nanoTime()));
 
         if (!dir.mkdir())
             throw new IOException("Failed to create temp directory " + dir.getName());
@@ -92,9 +89,7 @@ public class NatLoader extends StdLoader implements Loader {
         try {
             System.load(file.getAbsolutePath());
         } finally {
-            if (FileSystems.getDefault()
-                    .supportedFileAttributeViews()
-                    .contains("posix")) {
+            if (FileSystems.getDefault().supportedFileAttributeViews().contains("posix")) {
                 file.delete();
             } else {
                 file.deleteOnExit();

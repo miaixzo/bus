@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.reflect.creator;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -35,8 +35,7 @@ import org.miaixz.bus.core.xyz.LookupKit;
 import java.lang.invoke.MethodHandle;
 
 /**
- * 默认对象实例化器
- * 通过传入对象类型和构造函数的参数，调用对应的构造方法创建对象。
+ * 默认对象实例化器 通过传入对象类型和构造函数的参数，调用对应的构造方法创建对象。
  *
  * @param <T> 对象类型
  * @author Kimi Liu

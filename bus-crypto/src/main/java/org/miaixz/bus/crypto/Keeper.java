@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto;
 
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
@@ -74,6 +74,7 @@ import java.security.spec.*;
 
 /**
  * 密钥工具
+ * 
  * <pre>
  * 1、生成密钥（单密钥、密钥对）
  * 2、读取密钥文件
@@ -122,8 +123,7 @@ public class Keeper {
     }
 
     /**
-     * 生成 {@link SecretKey}，仅用于对称加密和摘要算法密钥生成
-     * 当指定keySize&lt;0时，AES默认长度为128，其它算法不指定。
+     * 生成 {@link SecretKey}，仅用于对称加密和摘要算法密钥生成 当指定keySize&lt;0时，AES默认长度为128，其它算法不指定。
      *
      * @param algorithm 算法，支持PBE算法
      * @param keySize   密钥长度，&lt;0表示不设定密钥长度，即使用默认长度
@@ -134,8 +134,7 @@ public class Keeper {
     }
 
     /**
-     * 生成 {@link SecretKey}，仅用于对称加密和摘要算法密钥生成
-     * 当指定keySize&lt;0时，AES默认长度为128，其它算法不指定。
+     * 生成 {@link SecretKey}，仅用于对称加密和摘要算法密钥生成 当指定keySize&lt;0时，AES默认长度为128，其它算法不指定。
      *
      * @param algorithm 算法，支持PBE算法
      * @param keySize   密钥长度，&lt;0表示不设定密钥长度，即使用默认长度
@@ -200,8 +199,7 @@ public class Keeper {
         if (null == key) {
             secretKey = generateKey(algorithm);
         } else {
-            secretKey = generateKey(algorithm,
-                    Builder.createKeySpec(algorithm, key));
+            secretKey = generateKey(algorithm, Builder.createKeySpec(algorithm, key));
         }
         return secretKey;
     }
@@ -243,8 +241,8 @@ public class Keeper {
     /**
      * 检查{@link KeyPair} 是否为空，空的条件是：
      * <ul>
-     *     <li>keyPair本身为{@code null}</li>
-     *     <li>{@link KeyPair#getPrivate()}和{@link KeyPair#getPublic()}都为{@code null}</li>
+     * <li>keyPair本身为{@code null}</li>
+     * <li>{@link KeyPair#getPrivate()}和{@link KeyPair#getPublic()}都为{@code null}</li>
      * </ul>
      *
      * @param keyPair 密钥对
@@ -258,9 +256,8 @@ public class Keeper {
     }
 
     /**
-     * 生成RSA私钥，仅用于非对称加密
-     * 采用PKCS#8规范，此规范定义了私钥信息语法和加密私钥语法
-     * 算法见：<a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyFactory">...</a>
+     * 生成RSA私钥，仅用于非对称加密 采用PKCS#8规范，此规范定义了私钥信息语法和加密私钥语法 算法见：<a href=
+     * "https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyFactory">...</a>
      *
      * @param key 密钥，必须为DER编码存储
      * @return RSA私钥 {@link PrivateKey}
@@ -270,9 +267,8 @@ public class Keeper {
     }
 
     /**
-     * 生成私钥，仅用于非对称加密
-     * 采用PKCS#8规范，此规范定义了私钥信息语法和加密私钥语法
-     * 算法见：<a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyFactory">...</a>
+     * 生成私钥，仅用于非对称加密 采用PKCS#8规范，此规范定义了私钥信息语法和加密私钥语法 算法见：<a href=
+     * "https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyFactory">...</a>
      *
      * @param algorithm 算法，如RSA、EC、SM2等
      * @param key       密钥，PKCS#8格式
@@ -286,8 +282,8 @@ public class Keeper {
     }
 
     /**
-     * 生成私钥，仅用于非对称加密
-     * 算法见：<a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyFactory">...</a>
+     * 生成私钥，仅用于非对称加密 算法见：<a href=
+     * "https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyFactory">...</a>
      *
      * @param algorithm 算法，如RSA、EC、SM2等
      * @param keySpec   {@link KeySpec}
@@ -322,9 +318,8 @@ public class Keeper {
     }
 
     /**
-     * 生成RSA公钥，仅用于非对称加密
-     * 采用X509证书规范
-     * 算法见：<a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyFactory">...</a>
+     * 生成RSA公钥，仅用于非对称加密 采用X509证书规范 算法见：<a href=
+     * "https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyFactory">...</a>
      *
      * @param key 密钥，必须为DER编码存储
      * @return 公钥 {@link PublicKey}
@@ -334,9 +329,8 @@ public class Keeper {
     }
 
     /**
-     * 生成公钥，仅用于非对称加密
-     * 采用X509证书规范
-     * 算法见：<a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyFactory">...</a>
+     * 生成公钥，仅用于非对称加密 采用X509证书规范 算法见：<a href=
+     * "https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyFactory">...</a>
      *
      * @param algorithm 算法
      * @param key       密钥，必须为DER编码存储
@@ -350,8 +344,8 @@ public class Keeper {
     }
 
     /**
-     * 生成公钥，仅用于非对称加密
-     * 算法见：<a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyFactory">...</a>
+     * 生成公钥，仅用于非对称加密 算法见：<a href=
+     * "https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyFactory">...</a>
      *
      * @param algorithm 算法
      * @param keySpec   {@link KeySpec}
@@ -391,8 +385,7 @@ public class Keeper {
      * @return 公钥
      */
     public static PublicKey getRSAPublicKey(final String modulus, final String publicExponent) {
-        return getRSAPublicKey(
-                new BigInteger(modulus, 16), new BigInteger(publicExponent, 16));
+        return getRSAPublicKey(new BigInteger(modulus, 16), new BigInteger(publicExponent, 16));
     }
 
     /**
@@ -412,8 +405,8 @@ public class Keeper {
     }
 
     /**
-     * 生成用于非对称加密的公钥和私钥，仅用于非对称加密
-     * 密钥对生成算法见：<a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyPairGenerator">...</a>
+     * 生成用于非对称加密的公钥和私钥，仅用于非对称加密 密钥对生成算法见：<a href=
+     * "https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyPairGenerator">...</a>
      *
      * @param algorithm 非对称加密算法
      * @return {@link KeyPair}
@@ -429,8 +422,8 @@ public class Keeper {
     }
 
     /**
-     * 生成用于非对称加密的公钥和私钥
-     * 密钥对生成算法见：<a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyPairGenerator">...</a>
+     * 生成用于非对称加密的公钥和私钥 密钥对生成算法见：<a href=
+     * "https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyPairGenerator">...</a>
      *
      * @param algorithm 非对称加密算法
      * @param keySize   密钥模（modulus ）长度
@@ -441,8 +434,8 @@ public class Keeper {
     }
 
     /**
-     * 生成用于非对称加密的公钥和私钥
-     * 密钥对生成算法见：<a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyPairGenerator">...</a>
+     * 生成用于非对称加密的公钥和私钥 密钥对生成算法见：<a href=
+     * "https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyPairGenerator">...</a>
      *
      * @param algorithm 非对称加密算法
      * @param keySize   密钥模（modulus ）长度
@@ -460,8 +453,8 @@ public class Keeper {
     }
 
     /**
-     * 生成用于非对称加密的公钥和私钥
-     * 密钥对生成算法见：<a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyPairGenerator">...</a>
+     * 生成用于非对称加密的公钥和私钥 密钥对生成算法见：<a href=
+     * "https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyPairGenerator">...</a>
      *
      * @param algorithm 非对称加密算法
      * @param params    {@link AlgorithmParameterSpec}
@@ -472,27 +465,29 @@ public class Keeper {
     }
 
     /**
-     * 生成用于非对称加密的公钥和私钥
-     * 密钥对生成算法见：<a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyPairGenerator">...</a>
+     * 生成用于非对称加密的公钥和私钥 密钥对生成算法见：<a href=
+     * "https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyPairGenerator">...</a>
      *
      * @param algorithm 非对称加密算法
      * @param param     {@link AlgorithmParameterSpec}
      * @param seed      种子
      * @return {@link KeyPair}
      */
-    public static KeyPair generateKeyPair(final String algorithm, final byte[] seed, final AlgorithmParameterSpec param) {
+    public static KeyPair generateKeyPair(final String algorithm, final byte[] seed,
+            final AlgorithmParameterSpec param) {
         return generateKeyPair(algorithm, DEFAULT_KEY_SIZE, seed, param);
     }
 
     /**
-     * 生成用于非对称加密的公钥和私钥
-     * 密钥对生成算法见：<a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyPairGenerator">...</a>
+     * 生成用于非对称加密的公钥和私钥 密钥对生成算法见：<a href=
+     * "https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyPairGenerator">...</a>
      *
      * <p>
      * 对于非对称加密算法，密钥长度有严格限制，具体如下：
      *
      * <p>
      * <b>RSA：</b>
+     * 
      * <pre>
      * RS256、PS256：2048 bits
      * RS384、PS384：3072 bits
@@ -501,6 +496,7 @@ public class Keeper {
      *
      * <p>
      * <b>EC（Elliptic Curve）：</b>
+     * 
      * <pre>
      * EC256：256 bits
      * EC384：384 bits
@@ -513,19 +509,21 @@ public class Keeper {
      * @param params    {@link AlgorithmParameterSpec}
      * @return {@link KeyPair}
      */
-    public static KeyPair generateKeyPair(final String algorithm, final int keySize, final byte[] seed, final AlgorithmParameterSpec... params) {
+    public static KeyPair generateKeyPair(final String algorithm, final int keySize, final byte[] seed,
+            final AlgorithmParameterSpec... params) {
         return generateKeyPair(algorithm, keySize, RandomKit.createSecureRandom(seed), params);
     }
 
     /**
-     * 生成用于非对称加密的公钥和私钥
-     * 密钥对生成算法见：<a href="https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyPairGenerator">...</a>
+     * 生成用于非对称加密的公钥和私钥 密钥对生成算法见：<a href=
+     * "https://docs.oracle.com/javase/7/docs/technotes/guides/security/StandardNames.html#KeyPairGenerator">...</a>
      *
      * <p>
      * 对于非对称加密算法，密钥长度有严格限制，具体如下：
      *
      * <p>
      * <b>RSA：</b>
+     * 
      * <pre>
      * RS256、PS256：2048 bits
      * RS384、PS384：3072 bits
@@ -534,6 +532,7 @@ public class Keeper {
      *
      * <p>
      * <b>EC（Elliptic Curve）：</b>
+     * 
      * <pre>
      * EC256：256 bits
      * EC384：384 bits
@@ -546,7 +545,8 @@ public class Keeper {
      * @param params    {@link AlgorithmParameterSpec}
      * @return {@link KeyPair}
      */
-    public static KeyPair generateKeyPair(String algorithm, int keySize, final SecureRandom random, final AlgorithmParameterSpec... params) {
+    public static KeyPair generateKeyPair(String algorithm, int keySize, final SecureRandom random,
+            final AlgorithmParameterSpec... params) {
         algorithm = getAlgorithmAfterWith(algorithm);
         final KeyPairGenerator keyPairGen = getKeyPairGenerator(algorithm);
 
@@ -593,7 +593,8 @@ public class Keeper {
      * @param alias    别名
      * @return {@link KeyPair}
      */
-    public static KeyPair getKeyPair(final String type, final InputStream in, final char[] password, final String alias) {
+    public static KeyPair getKeyPair(final String type, final InputStream in, final char[] password,
+            final String alias) {
         final KeyStore keyStore = readKeyStore(type, in, password);
         return getKeyPair(keyStore, password, alias);
     }
@@ -713,8 +714,7 @@ public class Keeper {
     }
 
     /**
-     * 获取用于密钥生成的算法
-     * 获取XXXwithXXX算法的后半部分算法，如果为ECDSA或SM2，返回算法为EC
+     * 获取用于密钥生成的算法 获取XXXwithXXX算法的后半部分算法，如果为ECDSA或SM2，返回算法为EC
      *
      * @param algorithm XXXwithXXX算法
      * @return 算法
@@ -730,19 +730,16 @@ public class Keeper {
         if (indexOfWith > 0) {
             algorithm = StringKit.subSuf(algorithm, indexOfWith + "with".length());
         }
-        if ("ECDSA".equalsIgnoreCase(algorithm)
-                || "SM2".equalsIgnoreCase(algorithm)
-                || "ECIES".equalsIgnoreCase(algorithm)
-        ) {
+        if ("ECDSA".equalsIgnoreCase(algorithm) || "SM2".equalsIgnoreCase(algorithm)
+                || "ECIES".equalsIgnoreCase(algorithm)) {
             algorithm = "EC";
         }
         return algorithm;
     }
 
     /**
-     * 读取X.509 Certification文件中的公钥
-     * Certification为证书文件
-     * see: <a href="https://www.cnblogs.com/yinliang/p/10115519.html">...</a>
+     * 读取X.509 Certification文件中的公钥 Certification为证书文件 see:
+     * <a href="https://www.cnblogs.com/yinliang/p/10115519.html">...</a>
      *
      * @param in {@link InputStream} 如果想从文件读取.cer文件，使用 {@link FileKit#getInputStream(File)} 读取
      * @return {@link KeyStore}
@@ -756,8 +753,7 @@ public class Keeper {
     }
 
     /**
-     * 编码压缩EC公钥（基于BouncyCastle）
-     * 见：<a href="https://www.cnblogs.com/xinzhao/p/8963724.html">...</a>
+     * 编码压缩EC公钥（基于BouncyCastle） 见：<a href="https://www.cnblogs.com/xinzhao/p/8963724.html">...</a>
      *
      * @param publicKey {@link PublicKey}，必须为org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey
      * @return 压缩得到的X
@@ -777,9 +773,8 @@ public class Keeper {
     }
 
     /**
-     * 读取密钥库(Java Key Store，JKS) KeyStore文件
-     * KeyStore文件用于数字证书的密钥对保存
-     * see: <a href="http://snowolf.iteye.com/blog/391931">...</a>
+     * 读取密钥库(Java Key Store，JKS) KeyStore文件 KeyStore文件用于数字证书的密钥对保存 see:
+     * <a href="http://snowolf.iteye.com/blog/391931">...</a>
      *
      * @param keyFile  证书文件
      * @param password 密码
@@ -790,9 +785,8 @@ public class Keeper {
     }
 
     /**
-     * 读取密钥库(Java Key Store，JKS) KeyStore文件
-     * KeyStore文件用于数字证书的密钥对保存
-     * see: <a href="http://snowolf.iteye.com/blog/391931">...</a>
+     * 读取密钥库(Java Key Store，JKS) KeyStore文件 KeyStore文件用于数字证书的密钥对保存 see:
+     * <a href="http://snowolf.iteye.com/blog/391931">...</a>
      *
      * @param in       {@link InputStream} 如果想从文件读取.keystore文件，使用 {@link FileKit#getInputStream(File)} 读取
      * @param password 密码
@@ -803,8 +797,7 @@ public class Keeper {
     }
 
     /**
-     * 读取PKCS12 KeyStore文件
-     * KeyStore文件用于数字证书的密钥对保存
+     * 读取PKCS12 KeyStore文件 KeyStore文件用于数字证书的密钥对保存
      *
      * @param keyFile  证书文件
      * @param password 密码
@@ -815,8 +808,7 @@ public class Keeper {
     }
 
     /**
-     * 读取PKCS12 KeyStore文件
-     * KeyStore文件用于数字证书的密钥对保存
+     * 读取PKCS12 KeyStore文件 KeyStore文件用于数字证书的密钥对保存
      *
      * @param in       {@link InputStream} 如果想从文件读取.keystore文件，使用 {@link FileKit#getInputStream(File)} 读取
      * @param password 密码
@@ -827,9 +819,7 @@ public class Keeper {
     }
 
     /**
-     * 读取KeyStore文件
-     * KeyStore文件用于数字证书的密钥对保存
-     * see: <a href="http://snowolf.iteye.com/blog/391931">...</a>
+     * 读取KeyStore文件 KeyStore文件用于数字证书的密钥对保存 see: <a href="http://snowolf.iteye.com/blog/391931">...</a>
      *
      * @param type     类型
      * @param keyFile  证书文件
@@ -847,9 +837,7 @@ public class Keeper {
     }
 
     /**
-     * 读取KeyStore文件
-     * KeyStore文件用于数字证书的密钥对保存
-     * see: <a href="http://snowolf.iteye.com/blog/391931">...</a>
+     * 读取KeyStore文件 KeyStore文件用于数字证书的密钥对保存 see: <a href="http://snowolf.iteye.com/blog/391931">...</a>
      *
      * @param type     类型
      * @param in       {@link InputStream} 如果想从文件读取.keystore文件，使用 {@link FileKit#getInputStream(File)} 读取
@@ -902,8 +890,7 @@ public class Keeper {
     }
 
     /**
-     * 从pem文件中读取公钥或私钥
-     * 根据类型返回 {@link PublicKey} 或者 {@link PrivateKey}
+     * 从pem文件中读取公钥或私钥 根据类型返回 {@link PublicKey} 或者 {@link PrivateKey}
      *
      * @param keyStream pem流
      * @return {@link Key}，null表示无法识别的密钥类型
@@ -912,7 +899,7 @@ public class Keeper {
         final PemObject object = readPemObject(keyStream);
         final String type = object.getType();
         if (StringKit.isNotBlank(type)) {
-            //private
+            // private
             if (type.endsWith("EC PRIVATE KEY")) {
                 try {
                     // 尝试PKCS#8
@@ -942,7 +929,7 @@ public class Keeper {
             }
         }
 
-        //表示无法识别的密钥类型
+        // 表示无法识别的密钥类型
         return null;
     }
 
@@ -1061,8 +1048,7 @@ public class Keeper {
     }
 
     /**
-     * 编码压缩EC公钥（基于BouncyCastle），即Q值
-     * 见：https://www.cnblogs.com/xinzhao/p/8963724.html
+     * 编码压缩EC公钥（基于BouncyCastle），即Q值 见：https://www.cnblogs.com/xinzhao/p/8963724.html
      *
      * @param publicKey    {@link PublicKey}，必须为org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey
      * @param isCompressed 是否压缩
@@ -1073,8 +1059,7 @@ public class Keeper {
     }
 
     /**
-     * 解码恢复EC压缩公钥,支持Base64和Hex编码,（基于BouncyCastle）
-     * 见：https://www.cnblogs.com/xinzhao/p/8963724.html
+     * 解码恢复EC压缩公钥,支持Base64和Hex编码,（基于BouncyCastle） 见：https://www.cnblogs.com/xinzhao/p/8963724.html
      *
      * @param encode    压缩公钥
      * @param curveName EC曲线名
@@ -1097,7 +1082,8 @@ public class Keeper {
         final ECPoint point = EC5Util.convertPoint(curve.decodePoint(encodeByte));
 
         // 根据曲线恢复公钥格式
-        final ECNamedCurveSpec ecSpec = new ECNamedCurveSpec(curveName, curve, x9ECParameters.getG(), x9ECParameters.getN());
+        final ECNamedCurveSpec ecSpec = new ECNamedCurveSpec(curveName, curve, x9ECParameters.getG(),
+                x9ECParameters.getN());
         return generatePublicKey("EC", new ECPublicKeySpec(point, ecSpec));
     }
 
@@ -1125,7 +1111,8 @@ public class Keeper {
      */
     public static ECPublicKeyParameters getPublicParams(final ECPrivateKeyParameters privateKeyParameters) {
         final ECDomainParameters domainParameters = privateKeyParameters.getParameters();
-        final org.bouncycastle.math.ec.ECPoint q = new FixedPointCombMultiplier().multiply(domainParameters.getG(), privateKeyParameters.getD());
+        final org.bouncycastle.math.ec.ECPoint q = new FixedPointCombMultiplier().multiply(domainParameters.getG(),
+                privateKeyParameters.getD());
         return new ECPublicKeyParameters(q, domainParameters);
     }
 
@@ -1179,7 +1166,8 @@ public class Keeper {
      * @param domainParameters ECDomainParameters
      * @return ECPublicKeyParameters，x或y为{@code null}则返回{@code null}
      */
-    public static ECPublicKeyParameters toPublicParams(final String x, final String y, final ECDomainParameters domainParameters) {
+    public static ECPublicKeyParameters toPublicParams(final String x, final String y,
+            final ECDomainParameters domainParameters) {
         return toPublicParams(Builder.decode(x), Builder.decode(y), domainParameters);
     }
 
@@ -1191,11 +1179,13 @@ public class Keeper {
      * @param domainParameters ECDomainParameters曲线参数
      * @return ECPublicKeyParameters
      */
-    public static ECPublicKeyParameters toPublicParams(final byte[] xBytes, final byte[] yBytes, final ECDomainParameters domainParameters) {
+    public static ECPublicKeyParameters toPublicParams(final byte[] xBytes, final byte[] yBytes,
+            final ECDomainParameters domainParameters) {
         if (null == xBytes || null == yBytes) {
             return null;
         }
-        return toPublicParams(BigIntegers.fromUnsignedByteArray(xBytes), BigIntegers.fromUnsignedByteArray(yBytes), domainParameters);
+        return toPublicParams(BigIntegers.fromUnsignedByteArray(xBytes), BigIntegers.fromUnsignedByteArray(yBytes),
+                domainParameters);
     }
 
     /**
@@ -1206,7 +1196,8 @@ public class Keeper {
      * @param domainParameters ECDomainParameters
      * @return ECPublicKeyParameters
      */
-    public static ECPublicKeyParameters toPublicParams(final BigInteger x, final BigInteger y, final ECDomainParameters domainParameters) {
+    public static ECPublicKeyParameters toPublicParams(final BigInteger x, final BigInteger y,
+            final ECDomainParameters domainParameters) {
         if (null == x || null == y) {
             return null;
         }
@@ -1221,7 +1212,8 @@ public class Keeper {
      * @param domainParameters ECDomainParameters
      * @return ECPublicKeyParameters
      */
-    public static ECPublicKeyParameters toPublicParams(final String pointEncoded, final ECDomainParameters domainParameters) {
+    public static ECPublicKeyParameters toPublicParams(final String pointEncoded,
+            final ECDomainParameters domainParameters) {
         final ECCurve curve = domainParameters.getCurve();
         return toPublicParams(curve.decodePoint(Builder.decode(pointEncoded)), domainParameters);
     }
@@ -1233,7 +1225,8 @@ public class Keeper {
      * @param domainParameters ECDomainParameters
      * @return ECPublicKeyParameters
      */
-    public static ECPublicKeyParameters toPublicParams(final byte[] pointEncoded, final ECDomainParameters domainParameters) {
+    public static ECPublicKeyParameters toPublicParams(final byte[] pointEncoded,
+            final ECDomainParameters domainParameters) {
         final ECCurve curve = domainParameters.getCurve();
         return toPublicParams(curve.decodePoint(pointEncoded), domainParameters);
     }
@@ -1245,7 +1238,8 @@ public class Keeper {
      * @param domainParameters ECDomainParameters
      * @return ECPublicKeyParameters
      */
-    public static ECPublicKeyParameters toPublicParams(final org.bouncycastle.math.ec.ECPoint point, final ECDomainParameters domainParameters) {
+    public static ECPublicKeyParameters toPublicParams(final org.bouncycastle.math.ec.ECPoint point,
+            final ECDomainParameters domainParameters) {
         return new ECPublicKeyParameters(point, domainParameters);
     }
 
@@ -1331,7 +1325,8 @@ public class Keeper {
      * @param domainParameters ECDomainParameters
      * @return ECPrivateKeyParameters
      */
-    public static ECPrivateKeyParameters toPrivateParams(final BigInteger d, final ECDomainParameters domainParameters) {
+    public static ECPrivateKeyParameters toPrivateParams(final BigInteger d,
+            final ECDomainParameters domainParameters) {
         if (null == d) {
             return null;
         }
@@ -1364,7 +1359,8 @@ public class Keeper {
     public static PrivateKey toSm2PrivateKey(final ECPrivateKey privateKey) {
         try {
             final PrivateKeyInfo info = new PrivateKeyInfo(
-                    new AlgorithmIdentifier(X9ObjectIdentifiers.id_ecPublicKey, Builder.ID_SM2_PUBLIC_KEY_PARAM), privateKey);
+                    new AlgorithmIdentifier(X9ObjectIdentifiers.id_ecPublicKey, Builder.ID_SM2_PUBLIC_KEY_PARAM),
+                    privateKey);
             return generatePrivateKey("SM2", info.getEncoded());
         } catch (final IOException e) {
             throw new InternalException(e);
@@ -1395,9 +1391,9 @@ public class Keeper {
      * 尝试解析转换各种类型私钥为{@link ECPrivateKeyParameters}，支持包括：
      *
      * <ul>
-     *     <li>D值</li>
-     *     <li>PKCS#8</li>
-     *     <li>PKCS#1</li>
+     * <li>D值</li>
+     * <li>PKCS#8</li>
+     * <li>PKCS#1</li>
      * </ul>
      *
      * @param privateKeyBytes 私钥
@@ -1415,7 +1411,7 @@ public class Keeper {
         }
 
         PrivateKey privateKey;
-        //尝试PKCS#8
+        // 尝试PKCS#8
         try {
             privateKey = generatePrivateKey("sm2", privateKeyBytes);
         } catch (final Exception ignore) {
@@ -1430,9 +1426,9 @@ public class Keeper {
      * 尝试解析转换各种类型公钥为{@link ECPublicKeyParameters}，支持包括：
      *
      * <ul>
-     *     <li>Q值</li>
-     *     <li>X.509</li>
-     *     <li>PKCS#1</li>
+     * <li>Q值</li>
+     * <li>X.509</li>
+     * <li>PKCS#1</li>
      * </ul>
      *
      * @param publicKeyBytes 公钥
@@ -1450,7 +1446,7 @@ public class Keeper {
         }
 
         PublicKey publicKey;
-        //尝试X.509
+        // 尝试X.509
         try {
             publicKey = generatePublicKey("sm2", publicKeyBytes);
         } catch (final Exception ignore) {
@@ -1462,9 +1458,7 @@ public class Keeper {
     }
 
     /**
-     * 读取X.509 Certification文件
-     * Certification为证书文件
-     * see: <a href="http://snowolf.iteye.com/blog/391931">...</a>
+     * 读取X.509 Certification文件 Certification为证书文件 see: <a href="http://snowolf.iteye.com/blog/391931">...</a>
      *
      * @param in {@link InputStream} 如果想从文件读取.cer文件，使用 {@link FileKit#getInputStream(File)} 读取
      * @return {@link KeyStore}
@@ -1474,9 +1468,7 @@ public class Keeper {
     }
 
     /**
-     * 读取X.509 Certification文件
-     * Certification为证书文件
-     * see: <a href="http://snowolf.iteye.com/blog/391931">...</a>
+     * 读取X.509 Certification文件 Certification为证书文件 see: <a href="http://snowolf.iteye.com/blog/391931">...</a>
      *
      * @param in       {@link InputStream} 如果想从文件读取.cer文件，使用 {@link FileKit#getInputStream(File)} 读取
      * @param password 密码
@@ -1488,9 +1480,7 @@ public class Keeper {
     }
 
     /**
-     * 读取Certification文件
-     * Certification为证书文件
-     * see: <a href="http://snowolf.iteye.com/blog/391931">...</a>
+     * 读取Certification文件 Certification为证书文件 see: <a href="http://snowolf.iteye.com/blog/391931">...</a>
      *
      * @param type     类型，例如X.509
      * @param in       {@link InputStream} 如果想从文件读取.cer文件，使用 {@link FileKit#getInputStream(File)} 读取
@@ -1498,7 +1488,8 @@ public class Keeper {
      * @param alias    别名
      * @return {@link KeyStore}
      */
-    public static Certificate readCertificate(final String type, final InputStream in, final char[] password, final String alias) {
+    public static Certificate readCertificate(final String type, final InputStream in, final char[] password,
+            final String alias) {
         final KeyStore keyStore = readKeyStore(type, in, password);
         try {
             return keyStore.getCertificate(alias);
@@ -1508,9 +1499,7 @@ public class Keeper {
     }
 
     /**
-     * 读取Certification文件
-     * Certification为证书文件
-     * see: <a href="http://snowolf.iteye.com/blog/391931">...</a>
+     * 读取Certification文件 Certification为证书文件 see: <a href="http://snowolf.iteye.com/blog/391931">...</a>
      *
      * @param type 类型，例如X.509
      * @param in   {@link InputStream} 如果想从文件读取.cer文件，使用 {@link FileKit#getInputStream(File)} 读取
@@ -1550,7 +1539,8 @@ public class Keeper {
 
         final CertificateFactory factory;
         try {
-            factory = (null == provider) ? CertificateFactory.getInstance(type) : CertificateFactory.getInstance(type, provider);
+            factory = (null == provider) ? CertificateFactory.getInstance(type)
+                    : CertificateFactory.getInstance(type, provider);
         } catch (final CertificateException e) {
             throw new CryptoException(e);
         }

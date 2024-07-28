@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.notify.metric.baidu;
 
 import org.miaixz.bus.core.basic.entity.Message;
@@ -58,10 +58,8 @@ public class BaiduSmsProvider extends AbstractProvider<BaiduMaterial, Context> {
         bodys.put("contentVar", entity.getParams());
         String response = Httpx.post(this.getUrl(entity), bodys);
         String errcode = JsonKit.getValue(response, "errcode");
-        return Message.builder()
-                .errcode("200".equals(errcode) ? ErrorCode.SUCCESS.getCode() : errcode)
-                .errmsg(JsonKit.getValue(response, "errmsg"))
-                .build();
+        return Message.builder().errcode("200".equals(errcode) ? ErrorCode.SUCCESS.getCode() : errcode)
+                .errmsg(JsonKit.getValue(response, "errmsg")).build();
     }
 
 }

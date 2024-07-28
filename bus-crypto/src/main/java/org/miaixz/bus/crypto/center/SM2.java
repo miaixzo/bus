@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.center;
 
 import org.bouncycastle.crypto.CipherParameters;
@@ -56,16 +56,14 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 
 /**
- * 国密SM2非对称算法实现，基于BC库
- * SM2算法只支持公钥加密，私钥解密
- * 参考：https://blog.csdn.net/pridas/article/details/86118774
+ * 国密SM2非对称算法实现，基于BC库 SM2算法只支持公钥加密，私钥解密 参考：https://blog.csdn.net/pridas/article/details/86118774
  *
  * <p>
  * 国密算法包括：
  * <ol>
- *     <li>非对称加密和签名：SM2，asymmetric</li>
- *     <li>摘要签名算法：SM3，digest</li>
- *     <li>对称加密：SM4，symmetric</li>
+ * <li>非对称加密和签名：SM2，asymmetric</li>
+ * <li>摘要签名算法：SM3，digest</li>
+ * <li>对称加密：SM4，symmetric</li>
  * </ol>
  *
  * @author Kimi Liu
@@ -112,9 +110,7 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 构造
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey 私钥Hex或Base64表示，必须使用PKCS#8规范
      * @param publicKey  公钥Hex或Base64表示，必须使用X509规范
@@ -124,24 +120,17 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 构造
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey 私钥，可以使用PKCS#8、D值或PKCS#1规范
      * @param publicKey  公钥，可以使用X509、Q值或PKCS#1规范
      */
     public SM2(final byte[] privateKey, final byte[] publicKey) {
-        this(
-                Keeper.decodePrivateKeyParams(privateKey),
-                Keeper.decodePublicKeyParams(publicKey)
-        );
+        this(Keeper.decodePrivateKeyParams(privateKey), Keeper.decodePublicKeyParams(publicKey));
     }
 
     /**
-     * 构造
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey 私钥
      * @param publicKey  公钥
@@ -157,9 +146,7 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 构造
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey  私钥16进制（私钥D值）
      * @param privateKeyX 公钥X16进制
@@ -170,23 +157,18 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 构造
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey 私钥（D值）
      * @param publicKeyX 公钥X
      * @param publicKeyY 公钥Y
      */
     public SM2(final byte[] privateKey, final byte[] publicKeyX, final byte[] publicKeyY) {
-        this(Keeper.toSm2PrivateParams(privateKey),
-                Keeper.toSm2PublicParams(publicKeyX, publicKeyY));
+        this(Keeper.toSm2PrivateParams(privateKey), Keeper.toSm2PublicParams(publicKeyX, publicKeyY));
     }
 
     /**
-     * 构造
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey 私钥，可以为null
      * @param publicKey  公钥，可以为null
@@ -199,9 +181,7 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 初始化
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密（签名）或者解密（校验）
+     * 初始化 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密（签名）或者解密（校验）
      *
      * @return this
      */
@@ -346,8 +326,7 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 用私钥对信息生成数字签名，签名格式为ASN1
-     * * 在硬件签名中，返回结果为R+S，可以通过调用{@link Builder#rsAsn1ToPlain(byte[])}方法转换之。
+     * 用私钥对信息生成数字签名，签名格式为ASN1 * 在硬件签名中，返回结果为R+S，可以通过调用{@link Builder#rsAsn1ToPlain(byte[])}方法转换之。
      *
      * @param data 加密数据
      * @return 签名
@@ -368,8 +347,7 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 用私钥对信息生成数字签名，签名格式为ASN1
-     * 在硬件签名中，返回结果为R+S，可以通过调用{@link Builder#rsAsn1ToPlain(byte[])}方法转换之。
+     * 用私钥对信息生成数字签名，签名格式为ASN1 在硬件签名中，返回结果为R+S，可以通过调用{@link Builder#rsAsn1ToPlain(byte[])}方法转换之。
      *
      * @param data 被签名的数据数据
      * @param id   可以为null，若为null，则默认withId为字节数组:"1234567812345678".getBytes()
@@ -584,12 +562,12 @@ public class SM2 extends AbstractCrypto<SM2> {
      */
     private CipherParameters getCipherParameters(final KeyType keyType) {
         switch (keyType) {
-            case PublicKey:
-                Assert.notNull(this.publicKeyParams, "PublicKey must be not null !");
-                return this.publicKeyParams;
-            case PrivateKey:
-                Assert.notNull(this.privateKeyParams, "PrivateKey must be not null !");
-                return this.privateKeyParams;
+        case PublicKey:
+            Assert.notNull(this.publicKeyParams, "PublicKey must be not null !");
+            return this.publicKeyParams;
+        case PrivateKey:
+            Assert.notNull(this.privateKeyParams, "PrivateKey must be not null !");
+            return this.privateKeyParams;
         }
 
         return null;

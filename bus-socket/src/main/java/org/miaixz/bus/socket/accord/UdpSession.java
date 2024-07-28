@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket.accord;
 
 import org.miaixz.bus.socket.Session;
@@ -52,7 +52,8 @@ public final class UdpSession extends Session {
     public UdpSession(final UdpChannel udpChannel, final SocketAddress remote, BufferPage writeBufferPage) {
         this.udpChannel = udpChannel;
         this.remote = remote;
-        this.byteBuf = new WriteBuffer(writeBufferPage, buffer -> udpChannel.write(buffer, this), udpChannel.context.getWriteBufferSize(), 1);
+        this.byteBuf = new WriteBuffer(writeBufferPage, buffer -> udpChannel.write(buffer, this),
+                udpChannel.context.getWriteBufferSize(), 1);
         udpChannel.context.getProcessor().stateEvent(this, Status.NEW_SESSION, null);
     }
 

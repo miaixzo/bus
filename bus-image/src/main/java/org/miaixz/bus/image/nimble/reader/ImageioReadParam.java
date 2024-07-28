@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.reader;
 
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -86,8 +86,8 @@ public class ImageioReadParam extends ImageReadParam {
     }
 
     /**
-     * Specifies if the calculated Window Center/Width shall be added to the metadata.
-     * By default the calculated Window Center/Width is not added to the metadata.
+     * Specifies if the calculated Window Center/Width shall be added to the metadata. By default the calculated Window
+     * Center/Width is not added to the metadata.
      *
      * @param addAutoWindow {@code true} if the calculated Window Center/Width shall be added to the metadata.
      */
@@ -160,7 +160,7 @@ public class ImageioReadParam extends ImageReadParam {
     }
 
     public int[] getOverlayRGBPixelValue() {
-        return new int[]{(overlayRGBValue >> 16) & 0xff, (overlayRGBValue >> 8) & 0xff, overlayRGBValue & 0xff};
+        return new int[] { (overlayRGBValue >> 16) & 0xff, (overlayRGBValue >> 8) & 0xff, overlayRGBValue & 0xff };
     }
 
 }

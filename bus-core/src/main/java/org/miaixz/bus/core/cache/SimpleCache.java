@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.cache;
 
 import org.miaixz.bus.core.center.function.SupplierX;
@@ -82,9 +82,7 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
     /**
      * 构造
      * <p>
-     * 通过自定义Map初始化，可以自定义缓存实现。
-     * 比如使用{@link WeakHashMap}则会自动清理key，使用HashMap则不会清理
-     * 同时，传入的Map对象也可以自带初始化的键值对，防止在get时创建
+     * 通过自定义Map初始化，可以自定义缓存实现。 比如使用{@link WeakHashMap}则会自动清理key，使用HashMap则不会清理 同时，传入的Map对象也可以自带初始化的键值对，防止在get时创建
      * </p>
      *
      * @param initMap 初始Map，用于定义Map类型

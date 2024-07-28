@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MR_PHOENIX_ATTRIBUTES;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,18 +46,19 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.SequenceFileName:
-                return VR.LT;
-            case PrivateTag.MdsModeMask:
-            case PrivateTag.CountOfPseudoAttributes:
-                return VR.UL;
-            case PrivateTag.Dixon:
-                return VR.US;
+
+        case PrivateTag.SequenceFileName:
+            return VR.LT;
+        case PrivateTag.MdsModeMask:
+        case PrivateTag.CountOfPseudoAttributes:
+            return VR.UL;
+        case PrivateTag.Dixon:
+            return VR.US;
         }
         return VR.UN;
     }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.iterator;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -35,19 +35,18 @@ import java.io.*;
 import java.nio.charset.Charset;
 
 /**
- * 将Reader包装为一个按照行读取的Iterator
- * 此对象遍历结束后，应关闭之，推荐使用方式:
+ * 将Reader包装为一个按照行读取的Iterator 此对象遍历结束后，应关闭之，推荐使用方式:
  *
  * <pre>
  * LineIterator it = null;
  * try {
- * 	it = new LineIterator(reader);
- * 	while (it.hasNext()) {
- * 		String line = it.nextLine();
- * 		// do something with line
- *    }
+ *     it = new LineIterator(reader);
+ *     while (it.hasNext()) {
+ *         String line = it.nextLine();
+ *         // do something with line
+ *     }
  * } finally {
- * 		it.close();
+ *     it.close();
  * }
  * </pre>
  *

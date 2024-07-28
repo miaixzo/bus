@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text.replacer;
 
 import java.util.HashMap;
@@ -32,12 +32,8 @@ import java.util.LinkedList;
 import java.util.Map;
 
 /**
- * 高效替换器，通过查找指定关键字，替换对应的值
- * 基于AC自动机算法实现，需要被替换的原字符串越大，替换的键值对越多，效率提升越明显
- * 注意: 如果需要被替换的关键字出现交叉,最先匹配中的关键字会被替换
- * 1、"abc","ab"   会优先替换"ab"
- * 2、"abed","be"  会优先替换"abed"
- * 3、"abc", "ciphers"  会优先替换"abc"
+ * 高效替换器，通过查找指定关键字，替换对应的值 基于AC自动机算法实现，需要被替换的原字符串越大，替换的键值对越多，效率提升越明显 注意: 如果需要被替换的关键字出现交叉,最先匹配中的关键字会被替换 1、"abc","ab"
+ * 会优先替换"ab" 2、"abed","be" 会优先替换"abed" 3、"abc", "ciphers" 会优先替换"abc"
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -137,7 +133,7 @@ public class HighMultiReplacer extends StringReplacer {
 
             // 单独处理根结点的所有孩子结点
             for (final Node x : root.children.values()) {
-                /*根结点的所有孩子结点的fail都指向根结点*/
+                /* 根结点的所有孩子结点的fail都指向根结点 */
                 x.fail = root;
                 queue.addLast(x);// 所有根结点的孩子结点入列
             }
@@ -147,7 +143,7 @@ public class HighMultiReplacer extends StringReplacer {
                 final Node p = queue.removeFirst();
                 for (final Map.Entry<Character, Node> entry : p.children.entrySet()) {
 
-                    /*孩子结点入列*/
+                    /* 孩子结点入列 */
                     queue.addLast(entry.getValue());
                     // 从p.fail开始找起
                     Node failTo = p.fail;

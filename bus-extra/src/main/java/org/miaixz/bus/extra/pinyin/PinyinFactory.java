@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.pinyin;
 
 import org.miaixz.bus.core.instance.Instances;
@@ -35,8 +35,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * 简单拼音引擎工厂，用于根据用户引入的拼音库jar，自动创建对应的拼音引擎对象
- * 使用简单工厂（Simple Factory）模式
+ * 简单拼音引擎工厂，用于根据用户引入的拼音库jar，自动创建对应的拼音引擎对象 使用简单工厂（Simple Factory）模式
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -50,13 +49,13 @@ public class PinyinFactory {
      */
     public static PinyinProvider get() {
         final PinyinProvider engine = Instances.get(PinyinProvider.class.getName(), PinyinFactory::create);
-        Logger.debug("Use [{}] Pinyin Provider As Default.", StringKit.removeSuffix(engine.getClass().getSimpleName(), "Engine"));
+        Logger.debug("Use [{}] Pinyin Provider As Default.",
+                StringKit.removeSuffix(engine.getClass().getSimpleName(), "Engine"));
         return engine;
     }
 
     /**
-     * 根据用户引入的拼音引擎jar，自动创建对应的拼音引擎对象
-     * 推荐创建的引擎单例使用，此方法每次调用会返回新的引擎
+     * 根据用户引入的拼音引擎jar，自动创建对应的拼音引擎对象 推荐创建的引擎单例使用，此方法每次调用会返回新的引擎
      *
      * @return {@link PinyinProvider}
      */
@@ -85,8 +84,7 @@ public class PinyinFactory {
     }
 
     /**
-     * 根据用户引入的拼音引擎jar，自动创建对应的拼音引擎对象
-     * 推荐创建的引擎单例使用，此方法每次调用会返回新的引擎
+     * 根据用户引入的拼音引擎jar，自动创建对应的拼音引擎对象 推荐创建的引擎单例使用，此方法每次调用会返回新的引擎
      *
      * @return {@link PinyinProvider}
      */

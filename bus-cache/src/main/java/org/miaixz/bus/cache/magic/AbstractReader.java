@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cache.magic;
 
 import org.miaixz.bus.logger.Logger;
@@ -36,10 +36,8 @@ import org.miaixz.bus.proxy.invoker.ProxyChain;
  */
 public abstract class AbstractReader {
 
-    public abstract Object read(AnnoHolder annoHolder,
-                                MethodHolder methodHolder,
-                                ProxyChain baseInvoker,
-                                boolean needWrite) throws Throwable;
+    public abstract Object read(AnnoHolder annoHolder, MethodHolder methodHolder, ProxyChain baseInvoker,
+            boolean needWrite) throws Throwable;
 
     Object doLogInvoke(ThrowableSupplier<Object> throwableSupplier) throws Throwable {
         long start = System.currentTimeMillis();

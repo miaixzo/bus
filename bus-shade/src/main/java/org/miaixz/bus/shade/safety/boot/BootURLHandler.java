@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.safety.boot;
 
 import org.miaixz.bus.shade.safety.Builder;
@@ -57,7 +57,8 @@ public class BootURLHandler extends Handler {
     private final Key key;
     private final Set<String> indexes;
 
-    public BootURLHandler(DecryptorProvider decryptorProvider, EncryptorProvider encryptorProvider, Key key, ClassLoader classLoader) throws Exception {
+    public BootURLHandler(DecryptorProvider decryptorProvider, EncryptorProvider encryptorProvider, Key key,
+            ClassLoader classLoader) throws Exception {
         this.decryptorProvider = decryptorProvider;
         this.encryptorProvider = encryptorProvider;
         this.key = key;
@@ -71,15 +72,15 @@ public class BootURLHandler extends Handler {
             InputStreamReader isr = new InputStreamReader(in);
             LineNumberReader lnr = new LineNumberReader(isr);
             String name;
-            while (null != (name = lnr.readLine())) indexes.add(classpath + name);
+            while (null != (name = lnr.readLine()))
+                indexes.add(classpath + name);
         }
     }
 
     @Override
     protected URLConnection openConnection(URL url) throws IOException {
         URLConnection urlConnection = super.openConnection(url);
-        return indexes.contains(url.toString())
-                && urlConnection instanceof JarURLConnection
+        return indexes.contains(url.toString()) && urlConnection instanceof JarURLConnection
                 ? new BootURLConnection((JarURLConnection) urlConnection, decryptorProvider, encryptorProvider, key)
                 : urlConnection;
     }

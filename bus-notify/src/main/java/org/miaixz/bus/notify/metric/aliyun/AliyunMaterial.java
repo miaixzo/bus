@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.notify.metric.aliyun;
 
 import lombok.AllArgsConstructor;
@@ -48,8 +48,7 @@ public class AliyunMaterial extends Material {
     private String playTimes;
 
     /**
-     * API默认请求地址
-     * 当 {@link Context} 中 endpoint 为空时使用地址
+     * API默认请求地址 当 {@link Context} 中 endpoint 为空时使用地址
      */
     @Override
     public String getUrl() {

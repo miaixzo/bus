@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.sink;
 
 import org.miaixz.bus.core.io.SectionBuffer;
@@ -37,9 +37,7 @@ import java.util.zip.CRC32;
 import java.util.zip.Deflater;
 
 /**
- * 这相当于使用{@link Deflater}同步刷新选项
- * 该类不提供任何部分刷新机制 为获得最佳性能,
- * 只在应用程序行为需要时调用{@link #flush}
+ * 这相当于使用{@link Deflater}同步刷新选项 该类不提供任何部分刷新机制 为获得最佳性能, 只在应用程序行为需要时调用{@link #flush}
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -57,8 +55,7 @@ public class GzipSink implements Sink {
     private final Deflater deflater;
 
     /**
-     * The deflater sink takes care of moving data between decompressed source and
-     * compressed sink buffers.
+     * The deflater sink takes care of moving data between decompressed source and compressed sink buffers.
      */
     private final DeflaterSink deflaterSink;
     /**
@@ -80,8 +77,10 @@ public class GzipSink implements Sink {
 
     @Override
     public void write(Buffer source, long byteCount) throws IOException {
-        if (byteCount < 0) throw new IllegalArgumentException("byteCount < 0: " + byteCount);
-        if (byteCount == 0) return;
+        if (byteCount < 0)
+            throw new IllegalArgumentException("byteCount < 0: " + byteCount);
+        if (byteCount == 0)
+            return;
 
         updateCrc(source, byteCount);
         deflaterSink.write(source, byteCount);
@@ -99,7 +98,8 @@ public class GzipSink implements Sink {
 
     @Override
     public void close() throws IOException {
-        if (closed) return;
+        if (closed)
+            return;
 
         // This method delegates to the DeflaterSink for finishing the deflate process
         // but keeps responsibility for releasing the deflater's resources. This is
@@ -117,13 +117,15 @@ public class GzipSink implements Sink {
         try {
             deflater.end();
         } catch (Throwable e) {
-            if (thrown == null) thrown = e;
+            if (thrown == null)
+                thrown = e;
         }
 
         try {
             sink.close();
         } catch (Throwable e) {
-            if (thrown == null) thrown = e;
+            if (thrown == null)
+                thrown = e;
         }
         closed = true;
 
@@ -133,8 +135,7 @@ public class GzipSink implements Sink {
     }
 
     /**
-     * Returns the {@link Deflater}.
-     * Use it to access stats, dictionary, compression level, etc.
+     * Returns the {@link Deflater}. Use it to access stats, dictionary, compression level, etc.
      */
     public final Deflater deflater() {
         return deflater;

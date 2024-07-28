@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.csv;
 
 import org.miaixz.bus.core.center.iterator.ComputeIterator;
@@ -177,7 +177,8 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
                 if (firstLineFieldCount < 0) {
                     firstLineFieldCount = fieldCount;
                 } else if (fieldCount != firstLineFieldCount) {
-                    throw new InternalException(String.format("Line %d has %d fields, but first line has %d fields", lineNo, fieldCount, firstLineFieldCount));
+                    throw new InternalException(String.format("Line %d has %d fields, but first line has %d fields",
+                            lineNo, fieldCount, firstLineFieldCount));
                 }
             }
 
@@ -186,7 +187,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
                 maxFieldCount = fieldCount;
             }
 
-            //初始化标题
+            // 初始化标题
             if (lineNo == config.headerLineNo && null == header) {
                 initHeader(currentFields);
                 // 作为标题行后，此行跳过，下一行做为第一行
@@ -217,12 +218,12 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
             }
         }
 
-        header = new CsvRow(this.lineNo, Collections.unmodifiableMap(localHeaderMap), Collections.unmodifiableList(currentFields));
+        header = new CsvRow(this.lineNo, Collections.unmodifiableMap(localHeaderMap),
+                Collections.unmodifiableList(currentFields));
     }
 
     /**
-     * 读取一行数据，如果读取结束，返回size为0的List
-     * 空行是size为1的List，唯一元素是""
+     * 读取一行数据，如果读取结束，返回size为0的List 空行是size为1的List，唯一元素是""
      *
      * <p>
      * 行号要考虑注释行和引号包装的内容中的换行
@@ -243,8 +244,8 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
 
         final StringBuilder currentField = this.currentField;
         final Buffer buf = this.buf;
-        int preChar = this.preChar;//前一个特殊分界字符
-        int copyLen = 0; //拷贝长度
+        int preChar = this.preChar;// 前一个特殊分界字符
+        int copyLen = 0; // 拷贝长度
         boolean inComment = false;
 
         while (true) {
@@ -259,14 +260,14 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
                     finished = true;
 
                     if (currentField.length() > 0 || preChar == config.fieldSeparator) {
-                        //剩余部分作为一个字段
+                        // 剩余部分作为一个字段
                         addField(currentFields, currentField.toString());
                         currentField.setLength(0);
                     }
                     break;
                 }
 
-                //重置
+                // 重置
                 copyLen = 0;
             }
 
@@ -277,7 +278,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
                 // 判断行首字符为指定注释字符的注释开始，直到遇到换行符
                 // 行首分两种，1是preChar < 0表示文本开始，2是换行符后紧跟就是下一行的开始
                 // 如果注释符出现在包装符内，被认为是普通字符
-                if(!inQuotes && null != this.config.commentCharacter && c == this.config.commentCharacter){
+                if (!inQuotes && null != this.config.commentCharacter && c == this.config.commentCharacter) {
                     inComment = true;
                 }
             }
@@ -295,7 +296,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
             }
 
             if (inQuotes) {
-                //引号内，作为内容，直到引号结束
+                // 引号内，作为内容，直到引号结束
                 if (c == config.textDelimiter) {
                     // End of quoted text
                     inQuotes = false;
@@ -310,7 +311,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
             } else {
                 // 非引号内
                 if (c == config.fieldSeparator) {
-                    //一个字段结束
+                    // 一个字段结束
                     if (copyLen > 0) {
                         buf.appendTo(currentField, copyLen);
                         copyLen = 0;
@@ -434,8 +435,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
         }
 
         /**
-         * 读取到缓存
-         * 全量读取，会重置Buffer中所有数据
+         * 读取到缓存 全量读取，会重置Buffer中所有数据
          *
          * @param reader {@link Reader}
          */
@@ -453,8 +453,7 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
         }
 
         /**
-         * 先获取当前字符，再将当前位置后移一位
-         * 此方法不检查是否到了数组末尾，请自行使用{@link #hasRemaining()}判断。
+         * 先获取当前字符，再将当前位置后移一位 此方法不检查是否到了数组末尾，请自行使用{@link #hasRemaining()}判断。
          *
          * @return 当前位置字符
          * @see #hasRemaining()

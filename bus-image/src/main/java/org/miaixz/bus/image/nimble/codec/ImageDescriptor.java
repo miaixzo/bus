@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.codec;
 
 import org.miaixz.bus.image.Tag;
@@ -61,8 +61,7 @@ public final class ImageDescriptor {
         this.rows = attrs.getInt(Tag.Rows, 0);
         this.columns = attrs.getInt(Tag.Columns, 0);
         this.samples = attrs.getInt(Tag.SamplesPerPixel, 0);
-        this.photometric = Photometric.fromString(
-                attrs.getString(Tag.PhotometricInterpretation, "MONOCHROME2"));
+        this.photometric = Photometric.fromString(attrs.getString(Tag.PhotometricInterpretation, "MONOCHROME2"));
         this.bitsAllocated = attrs.getInt(Tag.BitsAllocated, 8);
         this.bitsStored = attrs.getInt(Tag.BitsStored, bitsAllocated);
         this.pixelRepresentation = attrs.getInt(Tag.PixelRepresentation, 0);
@@ -71,8 +70,8 @@ public final class ImageDescriptor {
         this.bodyPartExamined = attrs.getString(Tag.BodyPartExamined);
         this.frames = attrs.getInt(Tag.NumberOfFrames, 1);
         this.embeddedOverlays = Overlays.getEmbeddedOverlayGroupOffsets(attrs);
-        this.bitsCompressed = Math.min(bitsAllocated, Math.max(bitsStored,
-                (bitsCompressed < 0 && isSigned()) ? -bitsCompressed : bitsCompressed));
+        this.bitsCompressed = Math.min(bitsAllocated,
+                Math.max(bitsStored, (bitsCompressed < 0 && isSigned()) ? -bitsCompressed : bitsCompressed));
     }
 
     public int getRows() {

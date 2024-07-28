@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.builtin.digest;
 
 import org.miaixz.bus.core.lang.Algorithm;
@@ -45,8 +45,7 @@ import java.security.MessageDigest;
 import java.security.Provider;
 
 /**
- * 摘要算法
- * 注意：此对象实例化后为非线程安全！
+ * 摘要算法 注意：此对象实例化后为非线程安全！
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -127,8 +126,7 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
     }
 
     /**
-     * 设置加盐的位置，只有盐值存在时有效
-     * 加盐的位置指盐位于数据byte数组中的位置，例如：
+     * 设置加盐的位置，只有盐值存在时有效 加盐的位置指盐位于数据byte数组中的位置，例如：
      *
      * <pre>
      * data: 0123456
@@ -212,8 +210,7 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
     }
 
     /**
-     * 生成文件摘要
-     * 使用默认缓存大小，见 {@link Normal#_8192}
+     * 生成文件摘要 使用默认缓存大小，见 {@link Normal#_8192}
      *
      * @param file 被摘要文件
      * @return 摘要bytes
@@ -230,8 +227,7 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
     }
 
     /**
-     * 生成文件摘要，并转为16进制字符串
-     * 使用默认缓存大小，见 {@link Normal#_8192}
+     * 生成文件摘要，并转为16进制字符串 使用默认缓存大小，见 {@link Normal#_8192}
      *
      * @param file 被摘要文件
      * @return 摘要
@@ -290,8 +286,7 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
     }
 
     /**
-     * 生成摘要，并转为16进制字符串
-     * 使用默认缓存大小，见 {@link Normal#_8192}
+     * 生成摘要，并转为16进制字符串 使用默认缓存大小，见 {@link Normal#_8192}
      *
      * @param data 被摘要数据
      * @return 摘要
@@ -328,8 +323,7 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
     }
 
     /**
-     * 生成摘要，并转为16进制字符串
-     * 使用默认缓存大小，见 {@link Normal#_8192}
+     * 生成摘要，并转为16进制字符串 使用默认缓存大小，见 {@link Normal#_8192}
      *
      * @param data         被摘要数据
      * @param bufferLength 缓存长度，不足1使用 {@link Normal#_8192} 做为默认值
@@ -423,8 +417,7 @@ public class Digester extends SimpleWrapper<MessageDigest> implements Serializab
     }
 
     /**
-     * 重复计算摘要，取决于{@link #digestCount} 值
-     * 每次计算摘要前都会重置{@link #digest}
+     * 重复计算摘要，取决于{@link #digestCount} 值 每次计算摘要前都会重置{@link #digest}
      *
      * @param digestData 第一次摘要过的数据
      * @return 摘要

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date.format;
 
 import org.miaixz.bus.core.center.date.format.parser.FastDateParser;
@@ -50,11 +50,8 @@ import java.util.TimeZone;
  * FastFormat 是一个线程安全的 {@link java.text.SimpleDateFormat} 实现。
  *
  * <p>
- * 通过以下静态方法获得此对象:
- * {@link #getInstance(String, TimeZone, Locale)}
- * {@link #getDateInstance(int, TimeZone, Locale)}
- * {@link #getTimeInstance(int, TimeZone, Locale)}
- * {@link #getDateTimeInstance(int, int, TimeZone, Locale)}
+ * 通过以下静态方法获得此对象: {@link #getInstance(String, TimeZone, Locale)} {@link #getDateInstance(int, TimeZone, Locale)}
+ * {@link #getTimeInstance(int, TimeZone, Locale)} {@link #getDateTimeInstance(int, int, TimeZone, Locale)}
  * </p>
  *
  * @author Kimi Liu
@@ -109,10 +106,12 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
      * @param pattern      使用{@link java.text.SimpleDateFormat} 相同的日期格式
      * @param timeZone     非空时区 {@link TimeZone}
      * @param locale       {@link Locale} 日期地理位置
-     * @param centuryStart The start of the 100 year period to use as the "default century" for 2 digit year parsing. If centuryStart is null, defaults to now - 80 years
+     * @param centuryStart The start of the 100 year period to use as the "default century" for 2 digit year parsing. If
+     *                     centuryStart is null, defaults to now - 80 years
      * @throws NullPointerException if pattern, timeZone, or locale is null.
      */
-    protected FormatBuilder(final String pattern, final TimeZone timeZone, final Locale locale, final Date centuryStart) {
+    protected FormatBuilder(final String pattern, final TimeZone timeZone, final Locale locale,
+            final Date centuryStart) {
         printer = new FastDatePrinter(pattern, timeZone, locale);
         parser = new FastDateParser(pattern, timeZone, locale, centuryStart);
     }
@@ -127,8 +126,7 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
     }
 
     /**
-     * 获得 FastFormat 实例，使用默认地区
-     * 支持缓存
+     * 获得 FastFormat 实例，使用默认地区 支持缓存
      *
      * @param pattern 使用{@link java.text.SimpleDateFormat} 相同的日期格式
      * @return FastFormat
@@ -139,8 +137,7 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
     }
 
     /**
-     * 获得 FastFormat 实例
-     * 支持缓存
+     * 获得 FastFormat 实例 支持缓存
      *
      * @param pattern  使用{@link java.text.SimpleDateFormat} 相同的日期格式
      * @param timeZone 时区{@link TimeZone}
@@ -152,8 +149,7 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
     }
 
     /**
-     * 获得 FastFormat 实例
-     * 支持缓存
+     * 获得 FastFormat 实例 支持缓存
      *
      * @param pattern 使用{@link java.text.SimpleDateFormat} 相同的日期格式
      * @param locale  {@link Locale} 日期地理位置
@@ -165,8 +161,7 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
     }
 
     /**
-     * 获得 FastFormat 实例
-     * 支持缓存
+     * 获得 FastFormat 实例 支持缓存
      *
      * @param pattern  使用{@link java.text.SimpleDateFormat} 相同的日期格式
      * @param timeZone 时区{@link TimeZone}
@@ -179,8 +174,7 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
     }
 
     /**
-     * 获得 FastFormat 实例
-     * 支持缓存
+     * 获得 FastFormat 实例 支持缓存
      *
      * @param style date style: FULL, LONG, MEDIUM, or SHORT
      * @return 本地化 FastFormat
@@ -190,8 +184,7 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
     }
 
     /**
-     * 获得 FastFormat 实例
-     * 支持缓存
+     * 获得 FastFormat 实例 支持缓存
      *
      * @param style  date style: FULL, LONG, MEDIUM, or SHORT
      * @param locale {@link Locale} 日期地理位置
@@ -202,8 +195,7 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
     }
 
     /**
-     * 获得 FastFormat 实例
-     * 支持缓存
+     * 获得 FastFormat 实例 支持缓存
      *
      * @param style    date style: FULL, LONG, MEDIUM, or SHORT
      * @param timeZone 时区{@link TimeZone}
@@ -214,8 +206,7 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
     }
 
     /**
-     * 获得 FastFormat 实例
-     * 支持缓存
+     * 获得 FastFormat 实例 支持缓存
      *
      * @param style    date style: FULL, LONG, MEDIUM, or SHORT
      * @param timeZone 时区{@link TimeZone}
@@ -227,8 +218,7 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
     }
 
     /**
-     * 获得 FastFormat 实例
-     * 支持缓存
+     * 获得 FastFormat 实例 支持缓存
      *
      * @param style time style: FULL, LONG, MEDIUM, or SHORT
      * @return 本地化 FastFormat
@@ -238,8 +228,7 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
     }
 
     /**
-     * 获得 FastFormat 实例
-     * 支持缓存
+     * 获得 FastFormat 实例 支持缓存
      *
      * @param style  time style: FULL, LONG, MEDIUM, or SHORT
      * @param locale {@link Locale} 日期地理位置
@@ -250,8 +239,7 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
     }
 
     /**
-     * 获得 FastFormat 实例
-     * 支持缓存
+     * 获得 FastFormat 实例 支持缓存
      *
      * @param style    time style: FULL, LONG, MEDIUM, or SHORT
      * @param timeZone optional time zone, overrides time zone of formatted time
@@ -262,8 +250,7 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
     }
 
     /**
-     * 获得 FastFormat 实例
-     * 支持缓存
+     * 获得 FastFormat 实例 支持缓存
      *
      * @param style    time style: FULL, LONG, MEDIUM, or SHORT
      * @param timeZone optional time zone, overrides time zone of formatted time
@@ -275,8 +262,7 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
     }
 
     /**
-     * 获得 FastFormat 实例
-     * 支持缓存
+     * 获得 FastFormat 实例 支持缓存
      *
      * @param dateStyle date style: FULL, LONG, MEDIUM, or SHORT
      * @param timeStyle time style: FULL, LONG, MEDIUM, or SHORT
@@ -287,8 +273,7 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
     }
 
     /**
-     * 获得 FastFormat 实例
-     * 支持缓存
+     * 获得 FastFormat 实例 支持缓存
      *
      * @param dateStyle date style: FULL, LONG, MEDIUM, or SHORT
      * @param timeStyle time style: FULL, LONG, MEDIUM, or SHORT
@@ -300,8 +285,7 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
     }
 
     /**
-     * 获得 FastFormat 实例
-     * 支持缓存
+     * 获得 FastFormat 实例 支持缓存
      *
      * @param dateStyle date style: FULL, LONG, MEDIUM, or SHORT
      * @param timeStyle time style: FULL, LONG, MEDIUM, or SHORT
@@ -313,8 +297,7 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
     }
 
     /**
-     * 获得 FastFormat 实例
-     * 支持缓存
+     * 获得 FastFormat 实例 支持缓存
      *
      * @param dateStyle date style: FULL, LONG, MEDIUM, or SHORT
      * @param timeStyle time style: FULL, LONG, MEDIUM, or SHORT
@@ -322,7 +305,8 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
      * @param locale    {@link Locale} 日期地理位置
      * @return 本地化 FastFormat
      */
-    public static FormatBuilder getDateTimeInstance(final int dateStyle, final int timeStyle, final TimeZone timeZone, final Locale locale) {
+    public static FormatBuilder getDateTimeInstance(final int dateStyle, final int timeStyle, final TimeZone timeZone,
+            final Locale locale) {
         return CACHE.getDateTimeInstance(dateStyle, timeStyle, timeZone, locale);
     }
 
@@ -407,8 +391,7 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
     }
 
     /**
-     * 估算生成的日期字符串长度
-     * 实际生成的字符串长度小于或等于此值
+     * 估算生成的日期字符串长度 实际生成的字符串长度小于或等于此值
      *
      * @return 日期字符串长度
      */
@@ -417,8 +400,7 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
     }
 
     /**
-     * 便捷获取 DateTimeFormatter
-     * 由于 {@link Fields} 很大一部分的格式没有提供 {@link DateTimeFormatter},因此这里提供快捷获取方式
+     * 便捷获取 DateTimeFormatter 由于 {@link Fields} 很大一部分的格式没有提供 {@link DateTimeFormatter},因此这里提供快捷获取方式
      *
      * @return DateTimeFormatter
      */
@@ -450,7 +432,8 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
 
     @Override
     public String toString() {
-        return "FastFormat[" + printer.getPattern() + Symbol.COMMA + printer.getLocale() + Symbol.COMMA + printer.getTimeZone().getID() + "]";
+        return "FastFormat[" + printer.getPattern() + Symbol.COMMA + printer.getLocale() + Symbol.COMMA
+                + printer.getTimeZone().getID() + "]";
     }
 
 }

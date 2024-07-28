@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.codec;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -102,8 +102,8 @@ public class ImageReaderFactory implements Serializable {
                 if (iter.hasNext())
                     reader = iter.next();
                 else {
-                    Logger.warn("No preferred Reader {} for format: {} - use {}",
-                            param.className, param.formatName, reader.getClass().getName());
+                    Logger.warn("No preferred Reader {} for format: {} - use {}", param.className, param.formatName,
+                            reader.getClass().getName());
                     break;
                 }
             }
@@ -131,8 +131,8 @@ public class ImageReaderFactory implements Serializable {
                 if (iter.hasNext())
                     spi = iter.next();
                 else {
-                    Logger.warn("No preferred Reader {} for format: {} - use {}",
-                            param.className, param.formatName, spi.getPluginClassName());
+                    Logger.warn("No preferred Reader {} for format: {} - use {}", param.className, param.formatName,
+                            spi.getPluginClassName());
                     break;
                 }
             }
@@ -190,20 +190,17 @@ public class ImageReaderFactory implements Serializable {
         public final PatchJPEGLS patchJPEGLS;
         public final Property[] imageReadParams;
 
-        public ImageReaderParam(String formatName, String className,
-                                PatchJPEGLS patchJPEGLS, Property[] imageReadParams) {
+        public ImageReaderParam(String formatName, String className, PatchJPEGLS patchJPEGLS,
+                Property[] imageReadParams) {
             this.formatName = formatName;
             this.className = nullify(className);
             this.patchJPEGLS = patchJPEGLS;
             this.imageReadParams = imageReadParams;
         }
 
-        public ImageReaderParam(String formatName, String className,
-                                String patchJPEGLS, String... imageWriteParams) {
+        public ImageReaderParam(String formatName, String className, String patchJPEGLS, String... imageWriteParams) {
             this(formatName, className,
-                    patchJPEGLS != null && !patchJPEGLS.isEmpty()
-                            ? PatchJPEGLS.valueOf(patchJPEGLS)
-                            : null,
+                    patchJPEGLS != null && !patchJPEGLS.isEmpty() ? PatchJPEGLS.valueOf(patchJPEGLS) : null,
                     Property.valueOf(imageWriteParams));
         }
 
@@ -213,14 +210,19 @@ public class ImageReaderFactory implements Serializable {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
 
             ImageReaderParam that = (ImageReaderParam) o;
 
-            if (!formatName.equals(that.formatName)) return false;
-            if (!Objects.equals(className, that.className)) return false;
-            if (patchJPEGLS != that.patchJPEGLS) return false;
+            if (!formatName.equals(that.formatName))
+                return false;
+            if (!Objects.equals(className, that.className))
+                return false;
+            if (patchJPEGLS != that.patchJPEGLS)
+                return false;
             return Arrays.equals(imageReadParams, that.imageReadParams);
 
         }
@@ -236,12 +238,9 @@ public class ImageReaderFactory implements Serializable {
 
         @Override
         public String toString() {
-            return "ImageReaderParam{" +
-                    "formatName='" + formatName + Symbol.C_SINGLE_QUOTE +
-                    ", className='" + className + Symbol.C_SINGLE_QUOTE +
-                    ", patchJPEGLS=" + patchJPEGLS +
-                    ", imageReadParams=" + Arrays.toString(imageReadParams) +
-                    '}';
+            return "ImageReaderParam{" + "formatName='" + formatName + Symbol.C_SINGLE_QUOTE + ", className='"
+                    + className + Symbol.C_SINGLE_QUOTE + ", patchJPEGLS=" + patchJPEGLS + ", imageReadParams="
+                    + Arrays.toString(imageReadParams) + '}';
         }
     }
 

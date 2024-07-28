@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.codec.binary.decoder;
 
 import org.miaixz.bus.core.codec.Decoder;
@@ -88,7 +88,7 @@ public class Base58Decoder implements Decoder<CharSequence, byte[]> {
         // Convert base-58 digits to base-256 digits.
         final byte[] decoded = new byte[encoded.length()];
         int outputStart = decoded.length;
-        for (int inputStart = zeros; inputStart < input58.length; ) {
+        for (int inputStart = zeros; inputStart < input58.length;) {
             decoded[--outputStart] = Base58Provider.divmod(input58, inputStart, 58, 256);
             if (input58[inputStart] == 0) {
                 ++inputStart; // optimization - skip leading zeros

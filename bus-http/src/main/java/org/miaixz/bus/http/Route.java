@@ -24,17 +24,14 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http;
 
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 
-
 /**
- * 连接用于到达抽象源服务器的具体路由
- * 在创建连接时，客户机有许多选项
- * 每个路由都是这些选项的特定选择
+ * 连接用于到达抽象源服务器的具体路由 在创建连接时，客户机有许多选项 每个路由都是这些选项的特定选择
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -67,8 +64,8 @@ public class Route {
     /**
      * Returns the {@link Proxy} of this route.
      *
-     * <strong>Warning:</strong> This may disagree with {@link Address#proxy} when it is null. When
-     * the address's proxy is null, the proxy selector is used.
+     * <strong>Warning:</strong> This may disagree with {@link Address#proxy} when it is null. When the address's proxy
+     * is null, the proxy selector is used.
      */
     public Proxy proxy() {
         return proxy;
@@ -79,8 +76,8 @@ public class Route {
     }
 
     /**
-     * Returns true if this route tunnels HTTPS through an HTTP proxy. See <a
-     * href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817, Section 5.2</a>.
+     * Returns true if this route tunnels HTTPS through an HTTP proxy. See
+     * <a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817, Section 5.2</a>.
      */
     public boolean requiresTunnel() {
         return address.sslSocketFactory != null && proxy.type() == Proxy.Type.HTTP;
@@ -88,9 +85,7 @@ public class Route {
 
     @Override
     public boolean equals(Object other) {
-        return other instanceof Route
-                && ((Route) other).address.equals(address)
-                && ((Route) other).proxy.equals(proxy)
+        return other instanceof Route && ((Route) other).address.equals(address) && ((Route) other).proxy.equals(proxy)
                 && ((Route) other).inetSocketAddress.equals(inetSocketAddress);
     }
 

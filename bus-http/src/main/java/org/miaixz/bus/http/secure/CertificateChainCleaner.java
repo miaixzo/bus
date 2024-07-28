@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.secure;
 
 import org.miaixz.bus.http.accord.platform.Platform;
@@ -36,11 +36,8 @@ import java.security.cert.X509Certificate;
 import java.util.List;
 
 /**
- * 从Java在TLS api中构建的原始数组中计算有效的证书链。
- * 清理链返回一个证书列表，  其中第一个元素是{@code chain[0]}，
- * 每个证书由后面的证书签名，最后一个证书是受信任的CA证书
- * 使用链清理器可以省略与TLS握手无关的意外证书，
- * 并提取受信任的CA证书，以便进行证书固定
+ * 从Java在TLS api中构建的原始数组中计算有效的证书链。 清理链返回一个证书列表， 其中第一个元素是{@code chain[0]}， 每个证书由后面的证书签名，最后一个证书是受信任的CA证书
+ * 使用链清理器可以省略与TLS握手无关的意外证书， 并提取受信任的CA证书，以便进行证书固定
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -55,7 +52,6 @@ public abstract class CertificateChainCleaner {
         return new BasicCertificateChainCleaner(new BasicTrustRootIndex(caCerts));
     }
 
-    public abstract List<Certificate> clean(List<Certificate> chain, String hostname)
-            throws SSLPeerUnverifiedException;
+    public abstract List<Certificate> clean(List<Certificate> chain, String hostname) throws SSLPeerUnverifiedException;
 
 }

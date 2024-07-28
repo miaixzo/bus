@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.socket;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -62,8 +62,7 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
     private static final List<Protocol> ONLY_HTTP1 = Collections.singletonList(Protocol.HTTP_1_1);
 
     /**
-     * 要加入队列的最大字节数。而不是排队超过这个限制，我们拆掉web套接字!有可能我们写得比别人读得快
-     * 16 MiB
+     * 要加入队列的最大字节数。而不是排队超过这个限制，我们拆掉web套接字!有可能我们写得比别人读得快 16 MiB
      */
     private static final long MAX_QUEUE_SIZE = Normal._16 * Normal._1024 * Normal._1024;
 
@@ -108,8 +107,7 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
      */
     private ScheduledExecutorService executor;
     /**
-     * 此web套接字持有的流。在读取所有传入消息和写入所有传出消息之前，这是非空的
-     * 当读者和作者都精疲力尽，或者出现任何失败时，它就关闭了
+     * 此web套接字持有的流。在读取所有传入消息和写入所有传出消息之前，这是非空的 当读者和作者都精疲力尽，或者出现任何失败时，它就关闭了
      */
     private Streams streams;
     /**
@@ -162,8 +160,7 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
      */
     private boolean awaitingPong;
 
-    public RealWebSocket(Request request, WebSocketListener listener, Random random,
-                         long pingIntervalMillis) {
+    public RealWebSocket(Request request, WebSocketListener listener, Random random, long pingIntervalMillis) {
         if (!HTTP.GET.equals(request.method())) {
             throw new IllegalArgumentException("Request must be GET: " + request.method());
         }
@@ -202,16 +199,10 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
     }
 
     public void connect(Httpd client) {
-        client = client.newBuilder()
-                .eventListener(EventListener.NONE)
-                .protocols(ONLY_HTTP1)
-                .build();
-        final Request request = originalRequest.newBuilder()
-                .header(HTTP.UPGRADE, "websocket")
-                .header(HTTP.CONNECTION, HTTP.UPGRADE)
-                .header(HTTP.SEC_WEBSOCKET_KEY, key)
-                .header(HTTP.SEC_WEBSOCKET_VERSION, "13")
-                .build();
+        client = client.newBuilder().eventListener(EventListener.NONE).protocols(ONLY_HTTP1).build();
+        final Request request = originalRequest.newBuilder().header(HTTP.UPGRADE, "websocket")
+                .header(HTTP.CONNECTION, HTTP.UPGRADE).header(HTTP.SEC_WEBSOCKET_KEY, key)
+                .header(HTTP.SEC_WEBSOCKET_VERSION, "13").build();
         call = Internal.instance.newWebSocketCall(client, request);
         call.enqueue(new Callback() {
             @Override
@@ -222,7 +213,8 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
                     checkUpgradeSuccess(response, exchange);
                     streams = exchange.newWebSocketStreams();
                 } catch (IOException e) {
-                    if (exchange != null) exchange.webSocketUpgradeFailed();
+                    if (exchange != null)
+                        exchange.webSocketUpgradeFailed();
                     failWebSocket(e, response);
                     IoKit.close(response);
                     return;
@@ -248,14 +240,14 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
 
     void checkUpgradeSuccess(Response response, Exchange exchange) throws IOException {
         if (response.code() != 101) {
-            throw new ProtocolException("Expected HTTP 101 response but was '"
-                    + response.code() + Symbol.SPACE + response.message() + Symbol.SINGLE_QUOTE);
+            throw new ProtocolException("Expected HTTP 101 response but was '" + response.code() + Symbol.SPACE
+                    + response.message() + Symbol.SINGLE_QUOTE);
         }
 
         String headerConnection = response.header(HTTP.CONNECTION);
         if (!HTTP.UPGRADE.equalsIgnoreCase(headerConnection)) {
-            throw new ProtocolException("Expected 'Connection' header value 'Upgrade' but was '"
-                    + headerConnection + Symbol.SINGLE_QUOTE);
+            throw new ProtocolException(
+                    "Expected 'Connection' header value 'Upgrade' but was '" + headerConnection + Symbol.SINGLE_QUOTE);
         }
 
         String headerUpgrade = response.header(HTTP.UPGRADE);
@@ -265,11 +257,10 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
         }
 
         String headerAccept = response.header(HTTP.SEC_WEBSOCKET_ACCEPT);
-        String acceptExpected = ByteString.encodeUtf8(key + WebSocketProtocol.ACCEPT_MAGIC)
-                .sha1().base64();
+        String acceptExpected = ByteString.encodeUtf8(key + WebSocketProtocol.ACCEPT_MAGIC).sha1().base64();
         if (!acceptExpected.equals(headerAccept)) {
-            throw new ProtocolException("Expected 'Sec-WebSocket-Accept' header value '"
-                    + acceptExpected + "' but was '" + headerAccept + "'");
+            throw new ProtocolException("Expected 'Sec-WebSocket-Accept' header value '" + acceptExpected
+                    + "' but was '" + headerAccept + "'");
         }
 
         if (exchange == null) {
@@ -283,8 +274,8 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
             this.writer = new WebSocketWriter(streams.client, streams.sink, random);
             this.executor = new ScheduledThreadPoolExecutor(1, Builder.threadFactory(name, false));
             if (pingIntervalMillis != 0) {
-                executor.scheduleAtFixedRate(
-                        new PingRunnable(), pingIntervalMillis, pingIntervalMillis, TimeUnit.MILLISECONDS);
+                executor.scheduleAtFixedRate(new PingRunnable(), pingIntervalMillis, pingIntervalMillis,
+                        TimeUnit.MILLISECONDS);
             }
             if (!messageAndCloseQueue.isEmpty()) {
                 runWriter(); // Send messages that were enqueued before we were connected.
@@ -305,8 +296,8 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
     }
 
     /**
-     * For testing: receive a single frame and return true if there are more frames to read. Invoked
-     * only by the reader thread.
+     * For testing: receive a single frame and return true if there are more frames to read. Invoked only by the reader
+     * thread.
      */
     boolean processNextFrame() {
         try {
@@ -361,7 +352,8 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
     @Override
     public synchronized void onReadPing(ByteString payload) {
         // Don't respond to pings after we've failed or sent the close frame.
-        if (failed || (enqueuedClose && messageAndCloseQueue.isEmpty())) return;
+        if (failed || (enqueuedClose && messageAndCloseQueue.isEmpty()))
+            return;
 
         pongQueue.add(payload);
         runWriter();
@@ -377,17 +369,20 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
 
     @Override
     public void onReadClose(int code, String reason) {
-        if (code == -1) throw new IllegalArgumentException();
+        if (code == -1)
+            throw new IllegalArgumentException();
 
         Streams toClose = null;
         synchronized (this) {
-            if (receivedCloseCode != -1) throw new IllegalStateException("already closed");
+            if (receivedCloseCode != -1)
+                throw new IllegalStateException("already closed");
             receivedCloseCode = code;
             receivedCloseReason = reason;
             if (enqueuedClose && messageAndCloseQueue.isEmpty()) {
                 toClose = this.streams;
                 this.streams = null;
-                if (null != cancelFuture) cancelFuture.cancel(false);
+                if (null != cancelFuture)
+                    cancelFuture.cancel(false);
                 this.executor.shutdown();
             }
         }
@@ -407,19 +402,22 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
 
     @Override
     public boolean send(String text) {
-        if (text == null) throw new NullPointerException("text == null");
+        if (text == null)
+            throw new NullPointerException("text == null");
         return send(ByteString.encodeUtf8(text), WebSocketProtocol.OPCODE_TEXT);
     }
 
     @Override
     public boolean send(ByteString bytes) {
-        if (bytes == null) throw new NullPointerException("bytes == null");
+        if (bytes == null)
+            throw new NullPointerException("bytes == null");
         return send(bytes, WebSocketProtocol.OPCODE_BINARY);
     }
 
     private synchronized boolean send(ByteString data, int formatOpcode) {
         // Don't send new frames after we've failed or enqueued a close frame.
-        if (failed || enqueuedClose) return false;
+        if (failed || enqueuedClose)
+            return false;
 
         // If this frame overflows the buffer, reject it and close the web socket.
         if (queueSize + data.size() > MAX_QUEUE_SIZE) {
@@ -436,7 +434,8 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
 
     synchronized boolean pong(ByteString payload) {
         // Don't send pongs after we've failed or sent the close frame.
-        if (failed || (enqueuedClose && messageAndCloseQueue.isEmpty())) return false;
+        if (failed || (enqueuedClose && messageAndCloseQueue.isEmpty()))
+            return false;
 
         pongQueue.add(payload);
         runWriter();
@@ -455,11 +454,13 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
         if (null != reason) {
             reasonBytes = ByteString.encodeUtf8(reason);
             if (reasonBytes.size() > WebSocketProtocol.CLOSE_MESSAGE_MAX) {
-                throw new IllegalArgumentException("reason.size() > " + WebSocketProtocol.CLOSE_MESSAGE_MAX + ": " + reason);
+                throw new IllegalArgumentException(
+                        "reason.size() > " + WebSocketProtocol.CLOSE_MESSAGE_MAX + ": " + reason);
             }
         }
 
-        if (failed || enqueuedClose) return false;
+        if (failed || enqueuedClose)
+            return false;
 
         // Immediately prevent further frames from being enqueued.
         enqueuedClose = true;
@@ -479,10 +480,8 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
     }
 
     /**
-     * 尝试从队列中删除单个帧并发送它。这种写法更倾向于在不太紧急的信息和较短的框架前
-     * 例如，可能调用者将对后面跟着ping的消息进行排队，但这会发送后面跟着消息的ping
-     * 如果无法发送帧因为没有任何帧进入队列，或者因为web套接字没有连接不执行任何操作并返回false。
-     * 否则，该方法将返回true，调用者应立即再次调用该方法，直到它返回false为止.
+     * 尝试从队列中删除单个帧并发送它。这种写法更倾向于在不太紧急的信息和较短的框架前 例如，可能调用者将对后面跟着ping的消息进行排队，但这会发送后面跟着消息的ping
+     * 如果无法发送帧因为没有任何帧进入队列，或者因为web套接字没有连接不执行任何操作并返回false。 否则，该方法将返回true，调用者应立即再次调用该方法，直到它返回false为止.
      * 此方法只能由写线程调用。一次可能只有一个线程调用这个方法
      *
      * @return the true/false
@@ -530,8 +529,8 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
 
             } else if (messageOrClose instanceof Message) {
                 ByteString data = ((Message) messageOrClose).data;
-                BufferSink sink = IoKit.buffer(writer.newMessageSink(
-                        ((Message) messageOrClose).formatOpcode, data.size()));
+                BufferSink sink = IoKit
+                        .buffer(writer.newMessageSink(((Message) messageOrClose).formatOpcode, data.size()));
                 sink.write(data);
                 sink.close();
                 synchronized (this) {
@@ -559,7 +558,8 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
         WebSocketWriter writer;
         int failedPing;
         synchronized (this) {
-            if (failed) return;
+            if (failed)
+                return;
             writer = this.writer;
             failedPing = awaitingPong ? sentPingCount : -1;
             sentPingCount++;
@@ -567,9 +567,8 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
         }
 
         if (failedPing != -1) {
-            failWebSocket(new SocketTimeoutException("sent ping but didn't receive pong within "
-                            + pingIntervalMillis + "ms (after " + (failedPing - 1) + " successful ping/pongs)"),
-                    null);
+            failWebSocket(new SocketTimeoutException("sent ping but didn't receive pong within " + pingIntervalMillis
+                    + "ms (after " + (failedPing - 1) + " successful ping/pongs)"), null);
             return;
         }
 
@@ -583,12 +582,15 @@ public class RealWebSocket implements WebSocket, WebSocketReader.FrameCallback {
     public void failWebSocket(Exception e, Response response) {
         Streams streamsToClose;
         synchronized (this) {
-            if (failed) return; // Already failed.
+            if (failed)
+                return; // Already failed.
             failed = true;
             streamsToClose = this.streams;
             this.streams = null;
-            if (null != cancelFuture) cancelFuture.cancel(false);
-            if (null != executor) executor.shutdown();
+            if (null != cancelFuture)
+                cancelFuture.cancel(false);
+            if (null != executor)
+                executor.shutdown();
         }
 
         try {

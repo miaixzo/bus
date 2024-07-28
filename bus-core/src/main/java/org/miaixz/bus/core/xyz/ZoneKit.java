@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import java.time.ZoneId;
@@ -96,8 +96,8 @@ public class ZoneKit {
      * @return 时区ID，未找到返回{@code null}
      */
     public static String getAvailableID(final int rawOffset, final TimeUnit timeUnit) {
-        final String[] availableIDs = TimeZone.getAvailableIDs(
-                (int) ObjectKit.defaultIfNull(timeUnit, TimeUnit.MILLISECONDS).toMillis(rawOffset));
+        final String[] availableIDs = TimeZone
+                .getAvailableIDs((int) ObjectKit.defaultIfNull(timeUnit, TimeUnit.MILLISECONDS).toMillis(rawOffset));
         return ArrayKit.isEmpty(availableIDs) ? null : availableIDs[0];
     }
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.center;
 
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -43,10 +43,8 @@ import java.io.Serializable;
 import java.security.MessageDigest;
 
 /**
- * MAC摘要算法（此类兼容和JCE的 {@code javax.crypto.Mac}对象和BC库的{@code org.bouncycastle.crypto.Mac}对象）
- * MAC，全称为“Message Authentication Code”，中文名“消息鉴别码”
- * 主要是利用指定算法，以一个密钥和一个消息为输入，生成一个消息摘要作为输出。
- * 一般的，消息鉴别码用于验证传输于两个共同享有一个密钥的单位之间的消息。
+ * MAC摘要算法（此类兼容和JCE的 {@code javax.crypto.Mac}对象和BC库的{@code org.bouncycastle.crypto.Mac}对象） MAC，全称为“Message
+ * Authentication Code”，中文名“消息鉴别码” 主要是利用指定算法，以一个密钥和一个消息为输入，生成一个消息摘要作为输出。 一般的，消息鉴别码用于验证传输于两个共同享有一个密钥的单位之间的消息。
  * 注意：此对象实例化后为非线程安全！
  *
  * @author Kimi Liu
@@ -145,8 +143,7 @@ public class Mac implements Serializable {
     }
 
     /**
-     * 生成文件摘要
-     * 使用默认缓存大小，见 {@link Normal#_8192}
+     * 生成文件摘要 使用默认缓存大小，见 {@link Normal#_8192}
      *
      * @param file 被摘要文件
      * @return 摘要bytes
@@ -163,8 +160,7 @@ public class Mac implements Serializable {
     }
 
     /**
-     * 生成文件摘要，并转为16进制字符串
-     * 使用默认缓存大小，见 {@link Normal#_8192}
+     * 生成文件摘要，并转为16进制字符串 使用默认缓存大小，见 {@link Normal#_8192}
      *
      * @param file 被摘要文件
      * @return 摘要
@@ -204,8 +200,7 @@ public class Mac implements Serializable {
     }
 
     /**
-     * 生成摘要，并转为16进制字符串
-     * 使用默认缓存大小，见 {@link Normal#_8192}
+     * 生成摘要，并转为16进制字符串 使用默认缓存大小，见 {@link Normal#_8192}
      *
      * @param data 被摘要数据
      * @return 摘要
@@ -226,8 +221,7 @@ public class Mac implements Serializable {
     }
 
     /**
-     * 生成摘要，并转为16进制字符串
-     * 使用默认缓存大小，见 {@link Normal#_8192}
+     * 生成摘要，并转为16进制字符串 使用默认缓存大小，见 {@link Normal#_8192}
      *
      * @param data         被摘要数据
      * @param bufferLength 缓存长度，不足1使用 {@link Normal#_8192} 做为默认值
@@ -238,8 +232,7 @@ public class Mac implements Serializable {
     }
 
     /**
-     * 验证生成的摘要与给定的摘要比较是否一致
-     * 简单比较每个byte位是否相同
+     * 验证生成的摘要与给定的摘要比较是否一致 简单比较每个byte位是否相同
      *
      * @param digest          生成的摘要
      * @param digestToCompare 需要比较的摘要

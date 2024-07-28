@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.Philips_MR_Imaging_DD_002;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,42 +46,43 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.BlobInFile:
-            case PrivateTag.BlobFlag:
-                return VR.CS;
-            case PrivateTag.ParentID:
-                return VR.IS;
-            case PrivateTag.UserName:
-            case PrivateTag.PassWord:
-            case PrivateTag.ServerName:
-            case PrivateTag.DataBaseName:
-            case PrivateTag.RootName:
-            case PrivateTag.DMIApplicationName:
-            case PrivateTag.RootId:
-            case PrivateTag.ParentType:
-            case PrivateTag.BlobName:
-            case PrivateTag.ApplicationName:
-            case PrivateTag.TypeName:
-            case PrivateTag.VersionStr:
-            case PrivateTag.CommentStr:
-            case PrivateTag.BlobFilename:
-                return VR.LO;
-            case PrivateTag.SeriesTransactionUID:
-                return VR.LT;
-            case PrivateTag.BlobData:
-                return VR.OW;
-            case PrivateTag.ActualBlobSize:
-            case PrivateTag.BlobOffset:
-                return VR.SL;
-            case PrivateTag.BlobDataObjectArray:
-                return VR.SQ;
-            case PrivateTag.NumberOfRequestExcerpts:
-                return VR.UL;
+
+        case PrivateTag.BlobInFile:
+        case PrivateTag.BlobFlag:
+            return VR.CS;
+        case PrivateTag.ParentID:
+            return VR.IS;
+        case PrivateTag.UserName:
+        case PrivateTag.PassWord:
+        case PrivateTag.ServerName:
+        case PrivateTag.DataBaseName:
+        case PrivateTag.RootName:
+        case PrivateTag.DMIApplicationName:
+        case PrivateTag.RootId:
+        case PrivateTag.ParentType:
+        case PrivateTag.BlobName:
+        case PrivateTag.ApplicationName:
+        case PrivateTag.TypeName:
+        case PrivateTag.VersionStr:
+        case PrivateTag.CommentStr:
+        case PrivateTag.BlobFilename:
+            return VR.LO;
+        case PrivateTag.SeriesTransactionUID:
+            return VR.LT;
+        case PrivateTag.BlobData:
+            return VR.OW;
+        case PrivateTag.ActualBlobSize:
+        case PrivateTag.BlobOffset:
+            return VR.SL;
+        case PrivateTag.BlobDataObjectArray:
+            return VR.SQ;
+        case PrivateTag.NumberOfRequestExcerpts:
+            return VR.UL;
         }
         return VR.UN;
     }

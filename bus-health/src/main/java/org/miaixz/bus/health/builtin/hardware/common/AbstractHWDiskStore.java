@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.hardware.common;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -75,15 +75,12 @@ public abstract class AbstractHWDiskStore implements HWDiskStore {
     @Override
     public String toString() {
         boolean readwrite = getReads() > 0 || getWrites() > 0;
-        String sb = getName() + ": " +
-                "(model: " + getModel() +
-                " - S/N: " + getSerial() + ") " +
-                "size: " + (getSize() > 0 ? Formats.formatBytesDecimal(getSize()) : "?") + ", " +
-                "reads: " + (readwrite ? getReads() : "?") +
-                " (" + (readwrite ? Formats.formatBytes(getReadBytes()) : "?") + "), " +
-                "writes: " + (readwrite ? getWrites() : "?") +
-                " (" + (readwrite ? Formats.formatBytes(getWriteBytes()) : "?") + "), " +
-                "xfer: " + (readwrite ? getTransferTime() : "?");
+        String sb = getName() + ": " + "(model: " + getModel() + " - S/N: " + getSerial() + ") " + "size: "
+                + (getSize() > 0 ? Formats.formatBytesDecimal(getSize()) : "?") + ", " + "reads: "
+                + (readwrite ? getReads() : "?") + " (" + (readwrite ? Formats.formatBytes(getReadBytes()) : "?")
+                + "), " + "writes: " + (readwrite ? getWrites() : "?") + " ("
+                + (readwrite ? Formats.formatBytes(getWriteBytes()) : "?") + "), " + "xfer: "
+                + (readwrite ? getTransferTime() : "?");
         return sb;
     }
 }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.nlp.provider.mmseg;
 
 import com.chenlb.mmseg4j.MMSeg;
@@ -35,8 +35,7 @@ import org.miaixz.bus.extra.nlp.NLPWord;
 import java.io.IOException;
 
 /**
- * mmseg4j分词结果实现
- * 项目地址：https://github.com/chenlb/mmseg4j-core
+ * mmseg4j分词结果实现 项目地址：https://github.com/chenlb/mmseg4j-core
  *
  * @author Kimi Liu
  * @since Java 17+

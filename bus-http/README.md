@@ -58,7 +58,7 @@ Thread(new Runnable() {
 }).
 
 start();
-``` 
+```
 
 2.1. POST方式提交String 这种方式与前面的区别就是在构造Request对象时，需要多构造一个RequestBody对象，用它来携带我们要提交的数据。在构造
 RequestBody 需要指定MediaType，用于描述请求/响应
@@ -91,32 +91,32 @@ enqueue(new Callback() {
         Logger.info("onResponse: " + delegate.body().string());
     }
 });
-``` 
+```
 
 响应内容
 
 ```text
-    http/1.1 200 OK 
-    Date:Sat, 10 Mar 2018 05:23:20 GMT 
+    http/1.1 200 OK
+    Date:Sat, 10 Mar 2018 05:23:20 GMT
     Content-Type:text/html;charsets=utf-8
     Content-Length:18
-    Server:GitHub.com 
-    Status:200 OK 
+    Server:GitHub.com
+    Status:200 OK
     X-RateLimit-Limit:60
     X-RateLimit-Remaining:52
     X-RateLimit-Reset:1520661052
     X-CommonMarker-Version:0.17.4
     Access-Control-Expose-Headers:ETag, Link, Retry-After, X-GitHub-OTP, X-RateLimit-Limit, X-RateLimit-Remaining, X-RateLimit-Reset, X-OAuth-Scopes, X-Accepted-OAuth-Scopes, X-Poll-Interval
-    
+
     Access-Control-Allow-Origin:*
     Content-Security-Policy:default-src 'none'
-    Strict-Transport-Security:max-age=31536000; includeSubdomains; preload 
-    X-Content-Type-Options:nosniff 
-    X-Frame-Options:deny 
-    X-XSS-Protection:1; mode=block 
+    Strict-Transport-Security:max-age=31536000; includeSubdomains; preload
+    X-Content-Type-Options:nosniff
+    X-Frame-Options:deny
+    X-XSS-Protection:1; mode=block
     X-Runtime-rack:0.019668
-    Vary:Accept-Encoding 
-    X-GitHub-Request-Id:1474:20A83:5CC0B6:7A7C1B:5AA36BC8 
+    Vary:Accept-Encoding
+    X-GitHub-Request-Id:1474:20A83:5CC0B6:7A7C1B:5AA36BC8
     onResponse: <p>I am Jdqm.</p>
 ```
 
@@ -206,7 +206,7 @@ Request request = new Request.Builder()
         .url("https://en.wikipedia.org/w/index.php")
         .post(requestBody)
         .build();
-    
+
     httpd.
 
 newCall(request).
@@ -335,7 +335,7 @@ enqueue(new Callback() {
 ```text
     Sending request http://www.publicobject.com/helloworld.txt on null
     User-Agent: Httpd Example
-            
+
     Received delegate for https://publicobject.com/helloworld.txt in 1265.9ms
     Server: nginx/1.10.0 (Ubuntu)
     Date: Wed, 28 Mar 2018 08:19:48 GMT
@@ -530,7 +530,7 @@ public class HttpvConfig implements Config {
         // 在这里对 HTTP.Builder 做一些自定义的配置
         builder.baseUrl("https://api.miaixz.org");
         // 如果项目中添加了 fastjson 或  gson 或  jackson 依赖
-        // Httpv 会自动注入它们提供的 Convertor 
+        // Httpv 会自动注入它们提供的 Convertor
         // 所以这里就不需要再配置 Convertor 了 (内部实现自动注入的原理也是 SPI)
         // 但如果没有添加这些依赖，那还需要自定义一个 Convertor
         builder.addMsgConvertor(new MyMsgConvertor());
@@ -610,8 +610,8 @@ get()
 getBody()
         .
 
-stepBytes(1024)   // 设置每接收 1024 个字节执行一次进度回调（不设置默认为 8192）  
-//     .stepRate(0.01)    // 设置每接收 1% 执行一次进度回调（不设置以 StepBytes 为准）  
+stepBytes(1024)   // 设置每接收 1024 个字节执行一次进度回调（不设置默认为 8192）
+//     .stepRate(0.01)    // 设置每接收 1% 执行一次进度回调（不设置以 StepBytes 为准）
         .
 
 setOnProcess((Process process)->{           // 下载进度回调
@@ -855,8 +855,8 @@ addBodyPara("age",20)
 addFilePara("avatar","bus-http/avatar.jpg")
         .
 
-stepBytes(1024)   // 设置每发送 1024 个字节执行一次进度回调（不设置默认为 8192）  
-//     .stepRate(0.01)    // 设置每发送 1% 执行一次进度回调（不设置以 StepBytes 为准）  
+stepBytes(1024)   // 设置每发送 1024 个字节执行一次进度回调（不设置默认为 8192）
+//     .stepRate(0.01)    // 设置每发送 1% 执行一次进度回调（不设置以 StepBytes 为准）
         .
 
 setOnProcess((Process process)->{           // 上传进度回调

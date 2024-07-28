@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map;
 
 import org.miaixz.bus.core.bean.copier.CopyOptions;
@@ -163,15 +163,15 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
     /**
      * 根据给定的键值对数组创建Dict对象，传入参数必须为key,value,data,value...
      *
-     * <p>奇数参数必须为key，key最后会转换为String类型。</p>
-     * <p>偶数参数必须为value，可以为任意类型。</p>
+     * <p>
+     * 奇数参数必须为key，key最后会转换为String类型。
+     * </p>
+     * <p>
+     * 偶数参数必须为value，可以为任意类型。
+     * </p>
      *
      * <pre>
-     * Dictionary dict = Dictionary.of(
-     * 	"RED", "#FF0000",
-     * 	"GREEN", "#00FF00",
-     * 	"BLUE", "#0000FF"
-     * );
+     * Dictionary dict = Dictionary.of("RED", "#FF0000", "GREEN", "#00FF00", "BLUE", "#0000FF");
      * </pre>
      *
      * @param keysAndValues 键值对列表，必须奇数参数为key，偶数参数为value
@@ -238,8 +238,7 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
     }
 
     /**
-     * 将值对象转换为Dict
-     * 类名会被当作表名，小写第一个字母
+     * 将值对象转换为Dict 类名会被当作表名，小写第一个字母
      *
      * @param <T>  Bean类型
      * @param bean 值对象
@@ -252,8 +251,7 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
     }
 
     /**
-     * 将值对象转换为Dict
-     * 类名会被当作表名，小写第一个字母
+     * 将值对象转换为Dict 类名会被当作表名，小写第一个字母
      *
      * @param <T>               Bean类型
      * @param bean              值对象
@@ -268,8 +266,7 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
     }
 
     /**
-     * 与给定实体对比并去除相同的部分
-     * 此方法用于在更新操作时避免所有字段被更新，跳过不需要更新的字段 version from 2.0.0
+     * 与给定实体对比并去除相同的部分 此方法用于在更新操作时避免所有字段被更新，跳过不需要更新的字段 version from 2.0.0
      *
      * @param <T>          字典对象类型
      * @param dict         字典对象
@@ -423,11 +420,11 @@ public class Dictionary extends CustomKeyMap<String, Object> implements TypeGett
     }
 
     /**
-     * 通过lambda批量设置值
-     * 实际使用时，可以使用getXXX的方法引用来完成键值对的赋值：
+     * 通过lambda批量设置值 实际使用时，可以使用getXXX的方法引用来完成键值对的赋值：
+     * 
      * <pre>
-     *     User user = GenericBuilder.of(User::new).with(User::setUsername, "name").build();
-     *     Dictionary.create().setFields(user::getNickname, user::getUsername);
+     * User user = GenericBuilder.of(User::new).with(User::setUsername, "name").build();
+     * Dictionary.create().setFields(user::getNickname, user::getUsername);
      * </pre>
      *
      * @param fields lambda,不能为空

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 import java.awt.image.*;
@@ -48,58 +48,47 @@ public abstract class LookupTable {
     public abstract int length();
 
     public void lookup(Raster srcRaster, Raster destRaster) {
-        ComponentSampleModel sm =
-                (ComponentSampleModel) srcRaster.getSampleModel();
-        ComponentSampleModel destsm =
-                (ComponentSampleModel) destRaster.getSampleModel();
+        ComponentSampleModel sm = (ComponentSampleModel) srcRaster.getSampleModel();
+        ComponentSampleModel destsm = (ComponentSampleModel) destRaster.getSampleModel();
         DataBuffer src = srcRaster.getDataBuffer();
         DataBuffer dest = destRaster.getDataBuffer();
         switch (src.getDataType()) {
+        case DataBuffer.TYPE_BYTE:
+            switch (dest.getDataType()) {
             case DataBuffer.TYPE_BYTE:
-                switch (dest.getDataType()) {
-                    case DataBuffer.TYPE_BYTE:
-                        lookup(sm, ((DataBufferByte) src).getData(),
-                                destsm, ((DataBufferByte) dest).getData());
-                        return;
-                    case DataBuffer.TYPE_USHORT:
-                        lookup(sm, ((DataBufferByte) src).getData(),
-                                destsm, ((DataBufferUShort) dest).getData());
-                        return;
-                }
-                break;
+                lookup(sm, ((DataBufferByte) src).getData(), destsm, ((DataBufferByte) dest).getData());
+                return;
             case DataBuffer.TYPE_USHORT:
-                switch (dest.getDataType()) {
-                    case DataBuffer.TYPE_BYTE:
-                        lookup(sm, ((DataBufferUShort) src).getData(),
-                                destsm, ((DataBufferByte) dest).getData());
-                        return;
-                    case DataBuffer.TYPE_USHORT:
-                        lookup(sm, ((DataBufferUShort) src).getData(),
-                                destsm, ((DataBufferUShort) dest).getData());
-                        return;
-                }
-                break;
-            case DataBuffer.TYPE_SHORT:
-                switch (dest.getDataType()) {
-                    case DataBuffer.TYPE_BYTE:
-                        lookup(sm, ((DataBufferShort) src).getData(),
-                                destsm, ((DataBufferByte) dest).getData());
-                        return;
-                    case DataBuffer.TYPE_USHORT:
-                        lookup(sm, ((DataBufferShort) src).getData(),
-                                destsm, ((DataBufferUShort) dest).getData());
-                        return;
-                }
-                break;
+                lookup(sm, ((DataBufferByte) src).getData(), destsm, ((DataBufferUShort) dest).getData());
+                return;
+            }
+            break;
+        case DataBuffer.TYPE_USHORT:
+            switch (dest.getDataType()) {
+            case DataBuffer.TYPE_BYTE:
+                lookup(sm, ((DataBufferUShort) src).getData(), destsm, ((DataBufferByte) dest).getData());
+                return;
+            case DataBuffer.TYPE_USHORT:
+                lookup(sm, ((DataBufferUShort) src).getData(), destsm, ((DataBufferUShort) dest).getData());
+                return;
+            }
+            break;
+        case DataBuffer.TYPE_SHORT:
+            switch (dest.getDataType()) {
+            case DataBuffer.TYPE_BYTE:
+                lookup(sm, ((DataBufferShort) src).getData(), destsm, ((DataBufferByte) dest).getData());
+                return;
+            case DataBuffer.TYPE_USHORT:
+                lookup(sm, ((DataBufferShort) src).getData(), destsm, ((DataBufferUShort) dest).getData());
+                return;
+            }
+            break;
         }
         throw new UnsupportedOperationException(
-                "Lookup " + src.getClass()
-                        + " -> " + dest.getClass()
-                        + " not supported");
+                "Lookup " + src.getClass() + " -> " + dest.getClass() + " not supported");
     }
 
-    private void lookup(ComponentSampleModel sm, byte[] src,
-                        ComponentSampleModel destsm, byte[] dest) {
+    private void lookup(ComponentSampleModel sm, byte[] src, ComponentSampleModel destsm, byte[] dest) {
         int w = sm.getWidth();
         int h = sm.getHeight();
         int stride = sm.getScanlineStride();
@@ -108,8 +97,7 @@ public abstract class LookupTable {
             lookup(src, y * stride, dest, y * destStride, w);
     }
 
-    private void lookup(ComponentSampleModel sm, short[] src,
-                        ComponentSampleModel destsm, byte[] dest) {
+    private void lookup(ComponentSampleModel sm, short[] src, ComponentSampleModel destsm, byte[] dest) {
         int w = sm.getWidth();
         int h = sm.getHeight();
         int stride = sm.getScanlineStride();
@@ -118,8 +106,7 @@ public abstract class LookupTable {
             lookup(src, y * stride, dest, y * destStride, w);
     }
 
-    private void lookup(ComponentSampleModel sm, byte[] src,
-                        ComponentSampleModel destsm, short[] dest) {
+    private void lookup(ComponentSampleModel sm, byte[] src, ComponentSampleModel destsm, short[] dest) {
         int w = sm.getWidth();
         int h = sm.getHeight();
         int stride = sm.getScanlineStride();
@@ -128,8 +115,7 @@ public abstract class LookupTable {
             lookup(src, y * stride, dest, y * destStride, w);
     }
 
-    private void lookup(ComponentSampleModel sm, short[] src,
-                        ComponentSampleModel destsm, short[] dest) {
+    private void lookup(ComponentSampleModel sm, short[] src, ComponentSampleModel destsm, short[] dest) {
         int w = sm.getWidth();
         int h = sm.getHeight();
         int stride = sm.getScanlineStride();
@@ -138,17 +124,13 @@ public abstract class LookupTable {
             lookup(src, y * stride, dest, y * destStride, w);
     }
 
-    public abstract void lookup(byte[] src, int srcPost,
-                                byte[] dest, int destPos, int length);
+    public abstract void lookup(byte[] src, int srcPost, byte[] dest, int destPos, int length);
 
-    public abstract void lookup(short[] src, int srcPost,
-                                byte[] dest, int destPos, int length);
+    public abstract void lookup(short[] src, int srcPost, byte[] dest, int destPos, int length);
 
-    public abstract void lookup(byte[] src, int srcPost,
-                                short[] dest, int destPos, int length);
+    public abstract void lookup(byte[] src, int srcPost, short[] dest, int destPos, int length);
 
-    public abstract void lookup(short[] src, int srcPost,
-                                short[] dest, int destPos, int length);
+    public abstract void lookup(short[] src, int srcPost, short[] dest, int destPos, int length);
 
     public abstract LookupTable adjustOutBits(int outBits);
 

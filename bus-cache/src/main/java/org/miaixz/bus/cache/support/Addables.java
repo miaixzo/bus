@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cache.support;
 
 import org.miaixz.bus.core.xyz.CollKit;
@@ -57,9 +57,10 @@ public class Addables {
                 collection.addAll(initCollection);
             }
             return collection;
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-                 InvocationTargetException e) {
-            throw new RuntimeException("could not invoke collection: " + type.getName() + "'s no param (default) constructor!", e);
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException
+                | InvocationTargetException e) {
+            throw new RuntimeException(
+                    "could not invoke collection: " + type.getName() + "'s no param (default) constructor!", e);
         }
     }
 
@@ -70,9 +71,10 @@ public class Addables {
                 map.putAll(initMap);
             }
             return map;
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-                 InvocationTargetException e) {
-            throw new RuntimeException("could not invoke map: " + type.getName() + "'s no param (default) constructor!", e);
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException
+                | InvocationTargetException e) {
+            throw new RuntimeException("could not invoke map: " + type.getName() + "'s no param (default) constructor!",
+                    e);
         }
     }
 
@@ -118,9 +120,10 @@ public class Addables {
         public Addable init(Class<Collection> type, int initSize) {
             try {
                 this.instance = type.getConstructor().newInstance();
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                     NoSuchMethodException e) {
-                throw new RuntimeException("could not invoke collection: " + type.getName() + "'s no param (default) constructor!", e);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException
+                    | NoSuchMethodException e) {
+                throw new RuntimeException(
+                        "could not invoke collection: " + type.getName() + "'s no param (default) constructor!", e);
             }
 
             return this;
@@ -146,9 +149,10 @@ public class Addables {
         public Addable init(Class<Map> type, int initSize) {
             try {
                 this.instance = type.getConstructor().newInstance();
-            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-                     InvocationTargetException e) {
-                throw new RuntimeException("could not invoke Map: " + type.getName() + "'s no param (default) constructor!", e);
+            } catch (InstantiationException | IllegalAccessException | NoSuchMethodException
+                    | InvocationTargetException e) {
+                throw new RuntimeException(
+                        "could not invoke Map: " + type.getName() + "'s no param (default) constructor!", e);
             }
 
             return this;
@@ -160,7 +164,8 @@ public class Addables {
                 return this;
             }
 
-            list.stream().map(object -> (Map.Entry) object).forEach(entry -> instance.put(entry.getKey(), entry.getValue()));
+            list.stream().map(object -> (Map.Entry) object)
+                    .forEach(entry -> instance.put(entry.getKey(), entry.getValue()));
 
             return this;
         }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image;
 
 import lombok.Getter;
@@ -142,12 +142,12 @@ public class Node {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Node node = (Node) o;
-        return aet.equals(node.aet)
-                && Objects.equals(hostname, node.hostname)
-                && Objects.equals(port, node.port);
+        return aet.equals(node.aet) && Objects.equals(hostname, node.hostname) && Objects.equals(port, node.port);
     }
 
     @Override

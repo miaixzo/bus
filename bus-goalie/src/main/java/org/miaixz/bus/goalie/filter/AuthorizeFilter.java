@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.goalie.filter;
 
 import org.miaixz.bus.core.basic.entity.OAuth2;
@@ -89,16 +89,16 @@ public class AuthorizeFilter implements WebFilter {
         if (null == assets) {
             return Mono.error(new BusinessException(ErrorCode.EM_100500));
         }
-        //校验方法
+        // 校验方法
         checkMethod(exchange.getRequest(), assets);
-        //校验参数
+        // 校验参数
         checkTokenIfNecessary(context, assets, params);
-        //校验 appid
+        // 校验 appid
         checkAppId(assets, params);
-        //填充Ip
+        // 填充Ip
         fillXParam(exchange, params);
 
-        //清理 method 和 version
+        // 清理 method 和 version
         cleanParam(params);
         context.setAssets(assets);
 

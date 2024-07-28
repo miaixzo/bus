@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.cache;
 
 import org.miaixz.bus.core.io.sink.BufferSink;
@@ -48,8 +48,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 使用文件系统上有限空间的缓存。每个缓存条目都有一个字符串键和固定数量的值
- * 每个键必须匹配regex [a-z0-9_-]{1,64}。值是字节序列，可以作为流或文件访问
+ * 使用文件系统上有限空间的缓存。每个缓存条目都有一个字符串键和固定数量的值 每个键必须匹配regex [a-z0-9_-]{1,64}。值是字节序列，可以作为流或文件访问
  * 每个值必须在{@code 0}和{@code Integer之间。MAX_VALUE}字节的长度
  *
  * @author Kimi Liu
@@ -99,13 +98,11 @@ public class DiskLruCache implements Closeable, Flushable {
      */
     private long size = 0;
     /**
-     * 为了区分旧快照和当前快照，每次提交编辑时都会给每个条目一个序列号。
-     * 如果快照的序列号不等于其条目的序列号，则该快照将失效
+     * 为了区分旧快照和当前快照，每次提交编辑时都会给每个条目一个序列号。 如果快照的序列号不等于其条目的序列号，则该快照将失效
      */
     private long nextSequenceNumber = 0;
 
-    DiskLruCache(DiskFile diskFile, File directory, int appVersion, int valueCount, long maxSize,
-                 Executor executor) {
+    DiskLruCache(DiskFile diskFile, File directory, int appVersion, int valueCount, long maxSize, Executor executor) {
         this.diskFile = diskFile;
         this.directory = directory;
         this.appVersion = appVersion;
@@ -127,8 +124,7 @@ public class DiskLruCache implements Closeable, Flushable {
      * @param maxSize    此缓存应用于存储的最大字节数
      * @return the disk cache
      */
-    public static DiskLruCache create(DiskFile diskFile, File directory, int appVersion,
-                                      int valueCount, long maxSize) {
+    public static DiskLruCache create(DiskFile diskFile, File directory, int appVersion, int valueCount, long maxSize) {
         if (maxSize <= 0) {
             throw new IllegalArgumentException("maxSize <= 0");
         }
@@ -136,8 +132,8 @@ public class DiskLruCache implements Closeable, Flushable {
             throw new IllegalArgumentException("valueCount <= 0");
         }
 
-        Executor executor = new ThreadPoolExecutor(0, 1, 60L, TimeUnit.SECONDS,
-                new LinkedBlockingQueue<>(), Builder.threadFactory("Httpd DiskLruCache", true));
+        Executor executor = new ThreadPoolExecutor(0, 1, 60L, TimeUnit.SECONDS, new LinkedBlockingQueue<>(),
+                Builder.threadFactory("Httpd DiskLruCache", true));
 
         return new DiskLruCache(diskFile, directory, appVersion, valueCount, maxSize, executor);
     }
@@ -166,8 +162,9 @@ public class DiskLruCache implements Closeable, Flushable {
                 initialized = true;
                 return;
             } catch (IOException journalIsCorrupt) {
-                Logger.warn("DiskLruCache " + directory + " is corrupt: "
-                        + journalIsCorrupt.getMessage() + ", removing", journalIsCorrupt);
+                Logger.warn(
+                        "DiskLruCache " + directory + " is corrupt: " + journalIsCorrupt.getMessage() + ", removing",
+                        journalIsCorrupt);
             }
 
             // The cache is corrupted, attempt to delete the contents of the directory. This can throw and
@@ -191,13 +188,11 @@ public class DiskLruCache implements Closeable, Flushable {
             String appVersionString = source.readUtf8LineStrict();
             String valueCountString = source.readUtf8LineStrict();
             String blank = source.readUtf8LineStrict();
-            if (!MAGIC.equals(magic)
-                    || !VERSION_1.equals(version)
+            if (!MAGIC.equals(magic) || !VERSION_1.equals(version)
                     || !Integer.toString(appVersion).equals(appVersionString)
-                    || !Integer.toString(valueCount).equals(valueCountString)
-                    || !Normal.EMPTY.equals(blank)) {
-                throw new IOException("unexpected journal header: [" + magic + ", " + version + ", "
-                        + valueCountString + ", " + blank + "]");
+                    || !Integer.toString(valueCount).equals(valueCountString) || !Normal.EMPTY.equals(blank)) {
+                throw new IOException("unexpected journal header: [" + magic + ", " + version + ", " + valueCountString
+                        + ", " + blank + "]");
             }
 
             int lineCount = 0;
@@ -278,7 +273,7 @@ public class DiskLruCache implements Closeable, Flushable {
      */
     private void processJournal() throws IOException {
         diskFile.delete(journalFileTmp);
-        for (Iterator<Entry> i = lruEntries.values().iterator(); i.hasNext(); ) {
+        for (Iterator<Entry> i = lruEntries.values().iterator(); i.hasNext();) {
             Entry entry = i.next();
             if (entry.currentEditor == null) {
                 for (int t = 0; t < valueCount; t++) {
@@ -338,8 +333,7 @@ public class DiskLruCache implements Closeable, Flushable {
     }
 
     /**
-     * 返回名为{@code key}的条目的快照，如果条目不存在，则返回null，
-     * 否则当前无法读取。如果返回一个值，它将被移动到LRU队列的头部
+     * 返回名为{@code key}的条目的快照，如果条目不存在，则返回null， 否则当前无法读取。如果返回一个值，它将被移动到LRU队列的头部
      *
      * @param key 缓存key
      * @return the 快照信息
@@ -430,8 +424,8 @@ public class DiskLruCache implements Closeable, Flushable {
     }
 
     /**
-     * Changes the maximum number of bytes the cache can store and queues a job to trim the existing
-     * store, if necessary.
+     * Changes the maximum number of bytes the cache can store and queues a job to trim the existing store, if
+     * necessary.
      */
     public synchronized void setMaxSize(long maxSize) {
         this.maxSize = maxSize;
@@ -441,8 +435,8 @@ public class DiskLruCache implements Closeable, Flushable {
     }
 
     /**
-     * Returns the number of bytes currently being used to store the values in this cache. This may be
-     * greater than the max size if a background deletion is pending.
+     * Returns the number of bytes currently being used to store the values in this cache. This may be greater than the
+     * max size if a background deletion is pending.
      */
     public synchronized long size() throws IOException {
         initialize();
@@ -510,18 +504,16 @@ public class DiskLruCache implements Closeable, Flushable {
     }
 
     /**
-     * We only rebuild the journal when it will halve the size of the journal and eliminate at least
-     * 2000 ops.
+     * We only rebuild the journal when it will halve the size of the journal and eliminate at least 2000 ops.
      */
     boolean journalRebuildRequired() {
         final int redundantOpCompactThreshold = 2000;
-        return redundantOpCount >= redundantOpCompactThreshold
-                && redundantOpCount >= lruEntries.size();
+        return redundantOpCount >= redundantOpCompactThreshold && redundantOpCount >= lruEntries.size();
     }
 
     /**
-     * Drops the entry for {@code key} if it exists and can be removed. If the entry for {@code key}
-     * is currently being edited, that edit will complete normally but its value will not be stored.
+     * Drops the entry for {@code key} if it exists and can be removed. If the entry for {@code key} is currently being
+     * edited, that edit will complete normally but its value will not be stored.
      *
      * @return true if an entry was removed.
      */
@@ -531,9 +523,11 @@ public class DiskLruCache implements Closeable, Flushable {
         checkNotClosed();
         validateKey(key);
         Entry entry = lruEntries.get(key);
-        if (entry == null) return false;
+        if (entry == null)
+            return false;
         boolean removed = removeEntry(entry);
-        if (removed && size <= maxSize) mostRecentTrimFailed = false;
+        if (removed && size <= maxSize)
+            mostRecentTrimFailed = false;
         return removed;
     }
 
@@ -577,7 +571,8 @@ public class DiskLruCache implements Closeable, Flushable {
      */
     @Override
     public synchronized void flush() throws IOException {
-        if (!initialized) return;
+        if (!initialized)
+            return;
 
         checkNotClosed();
         trimToSize();
@@ -614,8 +609,8 @@ public class DiskLruCache implements Closeable, Flushable {
     }
 
     /**
-     * Closes the cache and deletes all of its stored values. This will delete all files in the cache
-     * directory including files that weren't created by the cache.
+     * Closes the cache and deletes all of its stored values. This will delete all files in the cache directory
+     * including files that weren't created by the cache.
      */
     public void delete() throws IOException {
         close();
@@ -623,8 +618,8 @@ public class DiskLruCache implements Closeable, Flushable {
     }
 
     /**
-     * Deletes all stored values from the cache. In-flight edits will complete normally but their
-     * values will not be stored.
+     * Deletes all stored values from the cache. In-flight edits will complete normally but their values will not be
+     * stored.
      */
     public synchronized void evictAll() throws IOException {
         initialize();
@@ -638,15 +633,13 @@ public class DiskLruCache implements Closeable, Flushable {
     private void validateKey(String key) {
         Matcher matcher = LEGAL_KEY_PATTERN.matcher(key);
         if (!matcher.matches()) {
-            throw new IllegalArgumentException(
-                    "keys must match regex [a-z0-9_-]{1,120}: \"" + key + "\"");
+            throw new IllegalArgumentException("keys must match regex [a-z0-9_-]{1,120}: \"" + key + "\"");
         }
     }
 
     /**
      * 返回缓存当前项的迭代器。这个迭代器不会抛出{@code ConcurrentModificationException}，
-     * 调用者必须{@link Snapshot#close}每个由{@link Iterator#next}返回的快照
-     * 如果做不到这一点，就会泄漏打开的文件,返回的迭代器支持 {@link Iterator#remove}.
+     * 调用者必须{@link Snapshot#close}每个由{@link Iterator#next}返回的快照 如果做不到这一点，就会泄漏打开的文件,返回的迭代器支持 {@link Iterator#remove}.
      *
      * @return 返回迭代器
      * @throws IOException 异常
@@ -671,17 +664,21 @@ public class DiskLruCache implements Closeable, Flushable {
 
             @Override
             public boolean hasNext() {
-                if (nextSnapshot != null) return true;
+                if (nextSnapshot != null)
+                    return true;
 
                 synchronized (DiskLruCache.this) {
                     // 如果缓存关闭，则截断迭代器
-                    if (closed) return false;
+                    if (closed)
+                        return false;
 
                     while (delegate.hasNext()) {
                         Entry entry = delegate.next();
-                        if (!entry.readable) continue; // Entry during edit.
+                        if (!entry.readable)
+                            continue; // Entry during edit.
                         Snapshot snapshot = entry.snapshot();
-                        if (snapshot == null) continue; // Evicted since we copied the entries.
+                        if (snapshot == null)
+                            continue; // Evicted since we copied the entries.
                         nextSnapshot = snapshot;
                         return true;
                     }
@@ -692,7 +689,8 @@ public class DiskLruCache implements Closeable, Flushable {
 
             @Override
             public Snapshot next() {
-                if (!hasNext()) throw new NoSuchElementException();
+                if (!hasNext())
+                    throw new NoSuchElementException();
                 removeSnapshot = nextSnapshot;
                 nextSnapshot = null;
                 return removeSnapshot;
@@ -700,7 +698,8 @@ public class DiskLruCache implements Closeable, Flushable {
 
             @Override
             public void remove() {
-                if (removeSnapshot == null) throw new IllegalStateException("remove() before next()");
+                if (removeSnapshot == null)
+                    throw new IllegalStateException("remove() before next()");
                 try {
                     DiskLruCache.this.remove(removeSnapshot.key);
                 } catch (IOException ignored) {
@@ -713,19 +712,19 @@ public class DiskLruCache implements Closeable, Flushable {
     }
 
     /**
-     * Access to read and write files on a hierarchical data store. Most callers should use the {@link
-     * #SYSTEM} implementation, which uses the host machine's local file system. Alternate
-     * implementations may be used to inject faults (for testing) or to transform stored data (to add
-     * encryption, for example).
+     * Access to read and write files on a hierarchical data store. Most callers should use the {@link #SYSTEM}
+     * implementation, which uses the host machine's local file system. Alternate implementations may be used to inject
+     * faults (for testing) or to transform stored data (to add encryption, for example).
      *
-     * <p>All operations on a file system are racy. For example, guarding a call to {@link #source} with
-     * {@link #exists} does not guarantee that {@link FileNotFoundException} will not be thrown. The
-     * file may be moved between the two calls!
+     * <p>
+     * All operations on a file system are racy. For example, guarding a call to {@link #source} with {@link #exists}
+     * does not guarantee that {@link FileNotFoundException} will not be thrown. The file may be moved between the two
+     * calls!
      *
-     * <p>This interface is less ambitious than {@link java.nio.file.FileSystem} introduced in Java 7.
-     * It lacks important features like file watching, metadata, permissions, and disk space
-     * information. In exchange for these limitations, this interface is easier to implement and works
-     * on all versions of Java and Android.
+     * <p>
+     * This interface is less ambitious than {@link java.nio.file.FileSystem} introduced in Java 7. It lacks important
+     * features like file watching, metadata, permissions, and disk space information. In exchange for these
+     * limitations, this interface is easier to implement and works on all versions of Java and Android.
      */
     public static interface DiskFile {
 
@@ -809,14 +808,12 @@ public class DiskLruCache implements Closeable, Flushable {
         Source source(File file) throws FileNotFoundException;
 
         /**
-         * Writes to {@code file}, discarding any data already present. Creates parent directories if
-         * necessary.
+         * Writes to {@code file}, discarding any data already present. Creates parent directories if necessary.
          */
         Sink sink(File file) throws FileNotFoundException;
 
         /**
-         * Writes to {@code file}, appending if data is already present. Creates parent directories if
-         * necessary.
+         * Writes to {@code file}, appending if data is already present. Creates parent directories if necessary.
          */
         Sink appendingSink(File file) throws FileNotFoundException;
 
@@ -841,8 +838,8 @@ public class DiskLruCache implements Closeable, Flushable {
         void rename(File from, File to) throws IOException;
 
         /**
-         * Recursively delete the contents of {@code directory}. Throws an IOException if any file could
-         * not be deleted, or if {@code dir} is not a readable directory.
+         * Recursively delete the contents of {@code directory}. Throws an IOException if any file could not be deleted,
+         * or if {@code dir} is not a readable directory.
          */
         void deleteContents(File directory) throws IOException;
 
@@ -870,8 +867,8 @@ public class DiskLruCache implements Closeable, Flushable {
         }
 
         /**
-         * Returns an editor for this snapshot's entry, or null if either the entry has changed since
-         * this snapshot was created or if another edit is in progress.
+         * Returns an editor for this snapshot's entry, or null if either the entry has changed since this snapshot was
+         * created or if another edit is in progress.
          */
         public Editor edit() throws IOException {
             return DiskLruCache.this.edit(key, sequenceNumber);
@@ -913,10 +910,10 @@ public class DiskLruCache implements Closeable, Flushable {
         }
 
         /**
-         * Prevents this editor from completing normally. This is necessary either when the edit causes
-         * an I/O error, or if the target entry is evicted while this editor is active. In either case
-         * we delete the editor's created files and prevent new files from being created. Note that once
-         * an editor has been detached it is possible for another editor to edit the entry.
+         * Prevents this editor from completing normally. This is necessary either when the edit causes an I/O error, or
+         * if the target entry is evicted while this editor is active. In either case we delete the editor's created
+         * files and prevent new files from being created. Note that once an editor has been detached it is possible for
+         * another editor to edit the entry.
          */
         void detach() {
             if (entry.currentEditor == this) {
@@ -932,8 +929,7 @@ public class DiskLruCache implements Closeable, Flushable {
         }
 
         /**
-         * Returns an unbuffered input stream to read the last committed value, or null if no value has
-         * been committed.
+         * Returns an unbuffered input stream to read the last committed value, or null if no value has been committed.
          */
         public Source newSource(int index) {
             synchronized (DiskLruCache.this) {
@@ -952,9 +948,9 @@ public class DiskLruCache implements Closeable, Flushable {
         }
 
         /**
-         * Returns a new unbuffered output stream to write the value at {@code index}. If the underlying
-         * output stream encounters errors when writing to the filesystem, this edit will be aborted
-         * when {@link #commit} is called. The returned output stream does not throw IOExceptions.
+         * Returns a new unbuffered output stream to write the value at {@code index}. If the underlying output stream
+         * encounters errors when writing to the filesystem, this edit will be aborted when {@link #commit} is called.
+         * The returned output stream does not throw IOExceptions.
          */
         public Sink newSink(int index) {
             synchronized (DiskLruCache.this) {
@@ -986,8 +982,8 @@ public class DiskLruCache implements Closeable, Flushable {
         }
 
         /**
-         * Commits this edit so it is visible to readers.  This releases the edit lock so another edit
-         * may be started on the same key.
+         * Commits this edit so it is visible to readers. This releases the edit lock so another edit may be started on
+         * the same key.
          */
         public void commit() throws IOException {
             synchronized (DiskLruCache.this) {
@@ -1105,12 +1101,12 @@ public class DiskLruCache implements Closeable, Flushable {
         }
 
         /**
-         * Returns a snapshot of this entry. This opens all streams eagerly to guarantee that we see a
-         * single published snapshot. If we opened streams lazily then the streams could come from
-         * different edits.
+         * Returns a snapshot of this entry. This opens all streams eagerly to guarantee that we see a single published
+         * snapshot. If we opened streams lazily then the streams could come from different edits.
          */
         Snapshot snapshot() {
-            if (!Thread.holdsLock(DiskLruCache.this)) throw new AssertionError();
+            if (!Thread.holdsLock(DiskLruCache.this))
+                throw new AssertionError();
 
             Source[] sources = new Source[valueCount];
             long[] lengths = this.lengths.clone();
@@ -1161,6 +1157,5 @@ public class DiskLruCache implements Closeable, Flushable {
             }
         }
     };
-
 
 }

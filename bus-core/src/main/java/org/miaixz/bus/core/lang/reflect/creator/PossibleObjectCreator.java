@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.reflect.creator;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -36,17 +36,17 @@ import java.lang.reflect.Constructor;
 import java.util.*;
 
 /**
- * 尝试方式对象实例化器
- * 通过判断类型或调用可能的构造，构建对象，支持：
+ * 尝试方式对象实例化器 通过判断类型或调用可能的构造，构建对象，支持：
  * <ul>
- *     <li>原始类型</li>
- *     <li>接口或抽象类型</li>
- *     <li>枚举</li>
- *     <li>数组</li>
- *     <li>使用默认参数的构造方法</li>
+ * <li>原始类型</li>
+ * <li>接口或抽象类型</li>
+ * <li>枚举</li>
+ * <li>数组</li>
+ * <li>使用默认参数的构造方法</li>
  * </ul>
  * <p>
  * 对于接口或抽象类型，构造其默认实现：
+ * 
  * <pre>
  *     Map       - HashMap
  *     Collction - ArrayList

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cron;
 
 import org.miaixz.bus.cron.crontab.CronCrontab;
@@ -36,8 +36,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 作业执行管理器
- * 负责管理作业的启动、停止等
+ * 作业执行管理器 负责管理作业的启动、停止等
  *
  * <p>
  * 此类用于管理正在运行的作业情况，作业启动后加入任务列表，任务结束移除

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.nlp.provider.word;
 
 import org.miaixz.bus.extra.nlp.NLPResult;
@@ -34,8 +34,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Word分词结果实现
- * 项目地址：https://github.com/ysc/word
+ * Word分词结果实现 项目地址：https://github.com/ysc/word
  *
  * @author Kimi Liu
  * @since Java 17+

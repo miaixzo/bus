@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.exception;
 
 /**
@@ -95,7 +95,8 @@ public class StatefulException extends UncheckedException {
      * @param enableSuppression  是否启用抑制
      * @param writableStackTrace 堆栈跟踪是否应该是可写的
      */
-    public StatefulException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
+    public StatefulException(final String message, final Throwable cause, final boolean enableSuppression,
+            final boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 

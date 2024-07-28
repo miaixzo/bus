@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.logger.metric.apache.commons;
 
 import org.apache.commons.logging.Log;
@@ -156,25 +156,26 @@ public class CommonsLoggingProvider extends AbstractProvider {
     }
 
     @Override
-    public void log(final String fqcn, final Level level, final Throwable t, final String format, final Object... args) {
+    public void log(final String fqcn, final Level level, final Throwable t, final String format,
+            final Object... args) {
         switch (level) {
-            case TRACE:
-                trace(t, format, args);
-                break;
-            case DEBUG:
-                debug(t, format, args);
-                break;
-            case INFO:
-                info(t, format, args);
-                break;
-            case WARN:
-                warn(t, format, args);
-                break;
-            case ERROR:
-                error(t, format, args);
-                break;
-            default:
-                throw new Error(StringKit.format("Can not identify level: {}", level));
+        case TRACE:
+            trace(t, format, args);
+            break;
+        case DEBUG:
+            debug(t, format, args);
+            break;
+        case INFO:
+            info(t, format, args);
+            break;
+        case WARN:
+            warn(t, format, args);
+            break;
+        case ERROR:
+            error(t, format, args);
+            break;
+        default:
+            throw new Error(StringKit.format("Can not identify level: {}", level));
         }
     }
 

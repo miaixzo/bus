@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.driver.wmi;
 
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
@@ -64,7 +64,7 @@ public final class MSFTStorage {
      *
      * @param h An instantiated {@link WmiQueryHandler}. User should have already initialized COM.
      * @return Links between physical disks and storage pools. All raw disks will be part of the primordial pool in
-     * addition to the storage space they are a member of.
+     *         addition to the storage space they are a member of.
      */
     public static WmiResult<StoragePoolToPhysicalDiskProperty> queryStoragePoolPhysicalDisks(WmiQueryHandler h) {
         WmiQuery<StoragePoolToPhysicalDiskProperty> storagePoolToPhysicalDiskQuery = new WmiQuery<>(STORAGE_NAMESPACE,

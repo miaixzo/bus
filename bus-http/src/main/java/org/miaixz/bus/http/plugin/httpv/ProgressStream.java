@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.plugin.httpv;
 
 import org.miaixz.bus.http.Callback;
@@ -48,7 +48,7 @@ public class ProgressStream extends InputStream {
     private boolean doneCalled = false;
 
     public ProgressStream(InputStream input, Callback<Progress> onProcess, long totalBytes, long stepBytes,
-                          long doneBytes, Executor callbackExecutor) {
+            long doneBytes, Executor callbackExecutor) {
         this.input = input;
         this.onProcess = onProcess;
         this.stepBytes = stepBytes;
@@ -56,7 +56,6 @@ public class ProgressStream extends InputStream {
         this.progress = new Progress(totalBytes, doneBytes);
         this.step = doneBytes / stepBytes;
     }
-
 
     @Override
     public int read() throws IOException {

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.mac.driver.net;
 
 import com.sun.jna.Memory;
@@ -67,7 +67,7 @@ public final class NetStat {
         // https://opensource.apple.com/source/network_cmds/network_cmds-457/netstat.tproj/if.c
         Map<Integer, IFdata> data = new HashMap<>();
         // Get buffer of all interface information
-        int[] mib = {CTL_NET, PF_ROUTE, 0, 0, NET_RT_IFLIST2, 0};
+        int[] mib = { CTL_NET, PF_ROUTE, 0, 0, NET_RT_IFLIST2, 0 };
         try (CloseableSizeTByReference len = new CloseableSizeTByReference()) {
             if (0 != SystemB.INSTANCE.sysctl(mib, 6, null, len, null, size_t.ZERO)) {
                 Logger.error("Didn't get buffer length for IFLIST2");
@@ -132,8 +132,8 @@ public final class NetStat {
         private final long timeStamp;
 
         IFdata(int ifType, // NOSONAR squid:S00107
-               long oPackets, long iPackets, long oBytes, long iBytes, long oErrors, long iErrors, long collisions,
-               long iDrops, long speed, long timeStamp) {
+                long oPackets, long iPackets, long oBytes, long iBytes, long oErrors, long iErrors, long collisions,
+                long iDrops, long speed, long timeStamp) {
             this.ifType = ifType;
             this.oPackets = oPackets & 0xffffffffL;
             this.iPackets = iPackets & 0xffffffffL;

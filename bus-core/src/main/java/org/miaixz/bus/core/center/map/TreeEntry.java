@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map;
 
 import org.miaixz.bus.core.xyz.CollKit;
@@ -34,9 +34,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 /**
- * 允许拥有一个父节点与多个子节点的{@link Map.Entry}实现，
- * 表示一个以key作为唯一标识，并且可以挂载一个对应值的树节点，
- * 提供一些基于该节点对其所在树结构进行访问的方法
+ * 允许拥有一个父节点与多个子节点的{@link Map.Entry}实现， 表示一个以key作为唯一标识，并且可以挂载一个对应值的树节点， 提供一些基于该节点对其所在树结构进行访问的方法
  *
  * @param <V> 节点的key类型
  * @param <K> 节点的value类型

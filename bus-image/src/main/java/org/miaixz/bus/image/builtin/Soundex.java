@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.builtin;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -36,10 +36,10 @@ import org.miaixz.bus.core.lang.Normal;
 public class Soundex implements FuzzyString {
 
     protected static final String MAP_6 =
-            // A BCD  E FG  H   I JKLMN  O PQRST  U V  W X  Y Z
+            // A BCD E FG H I JKLMN O PQRST U V W X Y Z
             "\000123\00012\001\00022455\00012623\0001\0012\0002";
     protected static final String MAP_9 =
-            // A BCD  E FG  H   I JKLMN  O PQRST  U V  W X  Y Z
+            // A BCD E FG H I JKLMN O PQRST U V W X Y Z
             "\000136\00024\001\00043788\00015936\0002\0015\0005";
 
     private final boolean encodeFirst;
@@ -79,13 +79,13 @@ public class Soundex implements FuzzyString {
         for (; i < in.length && j < codeLength; i++) {
             curout = map(in[i]);
             switch (curout) {
-                case '\0':
-                    prevout = curout;
-                case '\1':
-                    break;
-                default:
-                    if (curout != prevout)
-                        out[j++] = prevout = curout;
+            case '\0':
+                prevout = curout;
+            case '\1':
+                break;
+            default:
+                if (curout != prevout)
+                    out[j++] = prevout = curout;
             }
         }
         while (j < padLength)

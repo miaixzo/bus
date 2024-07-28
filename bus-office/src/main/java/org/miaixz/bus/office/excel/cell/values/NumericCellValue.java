@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.excel.cell.values;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -37,8 +37,7 @@ import org.miaixz.bus.office.excel.cell.CellValue;
 import java.time.LocalDateTime;
 
 /**
- * 数字类型单元格值
- * 单元格值可能为Long、Double、Date
+ * 数字类型单元格值 单元格值可能为Long、Double、Date
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.goalie.annotation;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -33,13 +33,12 @@ import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import java.lang.annotation.*;
 
 /**
- * 注解用于生成 {@link RequestMappingInfo} 时候直接拼接路径
- * 规则，自动放置于路径开始部分；不做method做版本，避免难以维护
+ * 注解用于生成 {@link RequestMappingInfo} 时候直接拼接路径 规则，自动放置于路径开始部分；不做method版本，避免难以维护
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Target({ElementType.METHOD, ElementType.TYPE})
+@Target({ ElementType.METHOD, ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited

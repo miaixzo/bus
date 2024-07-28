@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 import org.miaixz.bus.core.xyz.StringKit;
@@ -80,8 +80,7 @@ public class PresentationLutObject implements PresentationStateLut {
         this.modalityLUT = desc == null ? new ModalityLutModule(dcmPR) : desc.getModalityLUT();
         this.voiLUT = buildVoiLut(dcmPR);
         this.overlays = OverlayData.getPrOverlayData(dcmPR, -1);
-        this.shutterOverlays =
-                desc == null ? OverlayData.getOverlayData(dcmPR, 0xffff) : desc.getOverlayData();
+        this.shutterOverlays = desc == null ? OverlayData.getOverlayData(dcmPR, 0xffff) : desc.getOverlayData();
         // Implement graphics
         // http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_A.33.2.3.html
         // Implement mask module
@@ -89,14 +88,12 @@ public class PresentationLutObject implements PresentationStateLut {
 
         Attributes dcmLut = dcmPR.getNestedDataset(Tag.PresentationLUTSequence);
         if (dcmLut != null) {
-      /*
-       @see <a
-      *     href="http://dicom.nema.org/medical/Dicom/current/output/chtml/part03/sect_C.11.6.html">C.11.6
-      *     Softcopy Presentation LUT Module</a>
-      *     <p>Presentation LUT Module is always implicitly specified to apply over the full range
-      *     of output of the preceding transformation, and it never selects a subset or superset of
-      *     the that range (unlike the VOI LUT).
-      */
+            /*
+             * @see <a href="http://dicom.nema.org/medical/Dicom/current/output/chtml/part03/sect_C.11.6.html">C.11.6
+             * Softcopy Presentation LUT Module</a> <p>Presentation LUT Module is always implicitly specified to apply
+             * over the full range of output of the preceding transformation, and it never selects a subset or superset
+             * of the that range (unlike the VOI LUT).
+             */
             this.prLut = RGBImageVoiLut.createLut(dcmLut);
             this.prLutExplanation = Optional.ofNullable(dcmPR.getString(Tag.LUTExplanation));
             this.prLUTShapeMode = Optional.of("IDENTITY");
@@ -125,8 +122,7 @@ public class PresentationLutObject implements PresentationStateLut {
     }
 
     public LocalDateTime getPresentationCreationDateTime() {
-        return Builder.dateTime(
-                dcmPR, Tag.PresentationCreationDate, Tag.PresentationCreationTime);
+        return Builder.dateTime(dcmPR, Tag.PresentationCreationDate, Tag.PresentationCreationTime);
     }
 
     @Override
@@ -188,28 +184,22 @@ public class PresentationLutObject implements PresentationStateLut {
         return Builder.getShutterColor(dcmPR);
     }
 
-    public boolean isImageFrameApplicable(
-            String seriesInstanceUID, String sopInstanceUID, int frame) {
-        return isImageFrameApplicable(
-                Tag.ReferencedFrameNumber, seriesInstanceUID, sopInstanceUID, frame);
+    public boolean isImageFrameApplicable(String seriesInstanceUID, String sopInstanceUID, int frame) {
+        return isImageFrameApplicable(Tag.ReferencedFrameNumber, seriesInstanceUID, sopInstanceUID, frame);
     }
 
-    public boolean isSegmentationSegmentApplicable(
-            String seriesInstanceUID, String sopInstanceUID, int segment) {
-        return isImageFrameApplicable(
-                Tag.ReferencedSegmentNumber, seriesInstanceUID, sopInstanceUID, segment);
+    public boolean isSegmentationSegmentApplicable(String seriesInstanceUID, String sopInstanceUID, int segment) {
+        return isImageFrameApplicable(Tag.ReferencedSegmentNumber, seriesInstanceUID, sopInstanceUID, segment);
     }
 
-    private boolean isImageFrameApplicable(
-            int childTag, String seriesInstanceUID, String sopInstanceUID, int frame) {
+    private boolean isImageFrameApplicable(int childTag, String seriesInstanceUID, String sopInstanceUID, int frame) {
         if (StringKit.hasText(seriesInstanceUID)) {
             for (Attributes refSeriesSeq : getReferencedSeriesSequence()) {
                 if (seriesInstanceUID.equals(refSeriesSeq.getString(Tag.SeriesInstanceUID))) {
-                    List<Attributes> refImgSeq =
-                            Builder.getSequence(
-                                    Objects.requireNonNull(refSeriesSeq), Tag.ReferencedImageSequence);
-                    return Builder.isImageFrameApplicableToReferencedImageSequence(
-                            refImgSeq, childTag, sopInstanceUID, frame, true);
+                    List<Attributes> refImgSeq = Builder.getSequence(Objects.requireNonNull(refSeriesSeq),
+                            Tag.ReferencedImageSequence);
+                    return Builder.isImageFrameApplicableToReferencedImageSequence(refImgSeq, childTag, sopInstanceUID,
+                            frame, true);
                 }
             }
         }

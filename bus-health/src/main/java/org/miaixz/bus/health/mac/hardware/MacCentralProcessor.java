@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.mac.hardware;
 
 import com.sun.jna.Native;
@@ -148,15 +148,15 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
                 type = ARM_CPUTYPE;
                 int mSeries = Parsing.getFirstIntValue(cpuName);
                 switch (mSeries) {
-                    case 2:
-                        family = M2_CPUFAMILY;
-                        break;
-                    case 3:
-                        family = M3_CPUFAMILY;
-                        break;
-                    default:
-                        // Some M1 did not brand as such
-                        family = M1_CPUFAMILY;
+                case 2:
+                    family = M2_CPUFAMILY;
+                    break;
+                case 3:
+                    family = M3_CPUFAMILY;
+                    break;
+                default:
+                    // Some M1 did not brand as such
+                    family = M1_CPUFAMILY;
                 }
             } else {
                 type = SysctlKit.sysctl("hw.cputype", 0);
@@ -186,8 +186,8 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         long cpuFreq = isArmCpu ? performanceCoreFrequency : SysctlKit.sysctl("hw.cpufrequency", 0L);
         boolean cpu64bit = SysctlKit.sysctl("hw.cpu64bit_capable", 0) != 0;
 
-        return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit,
-                cpuFreq);
+        return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping,
+                processorID, cpu64bit, cpuFreq);
     }
 
     @Override
@@ -227,19 +227,23 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         for (int i = 0; i < perflevels; i++) {
             int size = SysctlKit.sysctl("hw.perflevel" + i + ".l1icachesize", 0, false);
             if (size > 0) {
-                caches.add(new CentralProcessor.ProcessorCache(1, l1associativity, linesize, size, CentralProcessor.ProcessorCache.Type.INSTRUCTION));
+                caches.add(new CentralProcessor.ProcessorCache(1, l1associativity, linesize, size,
+                        CentralProcessor.ProcessorCache.Type.INSTRUCTION));
             }
             size = SysctlKit.sysctl("hw.perflevel" + i + ".l1dcachesize", 0, false);
             if (size > 0) {
-                caches.add(new CentralProcessor.ProcessorCache(1, l1associativity, linesize, size, CentralProcessor.ProcessorCache.Type.DATA));
+                caches.add(new CentralProcessor.ProcessorCache(1, l1associativity, linesize, size,
+                        CentralProcessor.ProcessorCache.Type.DATA));
             }
             size = SysctlKit.sysctl("hw.perflevel" + i + ".l2cachesize", 0, false);
             if (size > 0) {
-                caches.add(new CentralProcessor.ProcessorCache(2, l2associativity, linesize, size, CentralProcessor.ProcessorCache.Type.UNIFIED));
+                caches.add(new CentralProcessor.ProcessorCache(2, l2associativity, linesize, size,
+                        CentralProcessor.ProcessorCache.Type.UNIFIED));
             }
             size = SysctlKit.sysctl("hw.perflevel" + i + ".l3cachesize", 0, false);
             if (size > 0) {
-                caches.add(new CentralProcessor.ProcessorCache(3, 0, linesize, size, CentralProcessor.ProcessorCache.Type.UNIFIED));
+                caches.add(new CentralProcessor.ProcessorCache(3, 0, linesize, size,
+                        CentralProcessor.ProcessorCache.Type.UNIFIED));
             }
         }
         return caches;
@@ -259,7 +263,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
         long[] ticks = new long[CentralProcessor.TickType.values().length];
         int machPort = SystemB.INSTANCE.mach_host_self();
         try (Struct.CloseableHostCpuLoadInfo cpuLoadInfo = new Struct.CloseableHostCpuLoadInfo();
-             ByRef.CloseableIntByReference size = new ByRef.CloseableIntByReference(cpuLoadInfo.size())) {
+                ByRef.CloseableIntByReference size = new ByRef.CloseableIntByReference(cpuLoadInfo.size())) {
             if (0 != SystemB.INSTANCE.host_statistics(machPort, SystemB.HOST_CPU_LOAD_INFO, cpuLoadInfo, size)) {
                 Logger.error("Failed to get System CPU ticks. Error code: {} ", Native.getLastError());
                 return ticks;
@@ -296,7 +300,7 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
             return getLogicalProcessors().stream().map(CentralProcessor.LogicalProcessor::getPhysicalProcessorNumber)
                     .map(p -> physFreqMap.getOrDefault(p, performanceCoreFrequency)).mapToLong(f -> f).toArray();
         }
-        return new long[]{getProcessorIdentifier().getVendorFreq()};
+        return new long[] { getProcessorIdentifier().getVendorFreq() };
     }
 
     @Override
@@ -329,8 +333,8 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
 
         int machPort = SystemB.INSTANCE.mach_host_self();
         try (ByRef.CloseableIntByReference procCount = new ByRef.CloseableIntByReference();
-             ByRef.CloseablePointerByReference procCpuLoadInfo = new ByRef.CloseablePointerByReference();
-             ByRef.CloseableIntByReference procInfoCount = new ByRef.CloseableIntByReference()) {
+                ByRef.CloseablePointerByReference procCpuLoadInfo = new ByRef.CloseablePointerByReference();
+                ByRef.CloseableIntByReference procInfoCount = new ByRef.CloseableIntByReference()) {
             if (0 != SystemB.INSTANCE.host_processor_info(machPort, SystemB.PROCESSOR_CPU_LOAD_INFO, procCount,
                     procCpuLoadInfo, procInfoCount)) {
                 Logger.error("Failed to update CPU Load. Error code: {}", Native.getLastError());
@@ -356,7 +360,8 @@ final class MacCentralProcessor extends AbstractCentralProcessor {
     // Called when initiating instance variables which occurs after constructor has
     // populated physical processors
     private boolean isArmCpu() {
-        return getPhysicalProcessors().stream().map(CentralProcessor.PhysicalProcessor::getIdString).anyMatch(id -> id.contains("arm"));
+        return getPhysicalProcessors().stream().map(CentralProcessor.PhysicalProcessor::getIdString)
+                .anyMatch(id -> id.contains("arm"));
     }
 
     private void calculateNominalFrequencies() {

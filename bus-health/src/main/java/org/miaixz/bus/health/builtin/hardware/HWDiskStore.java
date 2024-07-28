@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.hardware;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -35,10 +35,9 @@ import java.util.List;
  * A storage mechanism where data are recorded by various electronic, magnetic, optical, or mechanical changes to a
  * surface layer of one or more rotating disks or or flash storage such as a removable or solid state drive. In
  * constrast to a File System, defining the way an Operating system uses the storage, the Disk Store represents the
- * hardware which a FileSystem uses for its File Stores.
- * Thread safe for the designed use of retrieving the most recent data. Users should be aware that the
- * {@link #updateAttributes()} method may update attributes, including the time stamp, and should externally synchronize
- * such usage to ensure consistent calculations.
+ * hardware which a FileSystem uses for its File Stores. Thread safe for the designed use of retrieving the most recent
+ * data. Users should be aware that the {@link #updateAttributes()} method may update attributes, including the time
+ * stamp, and should externally synchronize such usage to ensure consistent calculations.
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pay.magic;
 
 import lombok.AllArgsConstructor;
@@ -53,8 +53,7 @@ import java.util.Map;
 public class Material {
 
     /**
-     * 申请商户号的appid或商户号绑定的appid
-     * 企业号corpid即为此appid
+     * 申请商户号的appid或商户号绑定的appid 企业号corpid即为此appid
      */
     private String appid;
 
@@ -100,10 +99,7 @@ public class Material {
     public Object getFieldValueByName(String field, Object object) {
         try {
             String firstLetter = field.substring(0, 1).toUpperCase();
-            String getter = new StringBuffer().append("get")
-                    .append(firstLetter)
-                    .append(field.substring(1))
-                    .toString();
+            String getter = new StringBuffer().append("get").append(firstLetter).append(field.substring(1)).toString();
             Method method = object.getClass().getMethod(getter);
             return method.invoke(object);
         } catch (Exception e) {

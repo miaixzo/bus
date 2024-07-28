@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 import org.miaixz.bus.image.galaxy.data.Implementation;
@@ -41,23 +41,14 @@ import java.util.Locale;
  */
 public class ImageReaderSpi extends javax.imageio.spi.ImageReaderSpi {
 
-    private static final String[] dicomFormatNames = {"dicom", "DICOM"};
-    private static final String[] dicomExt = {"dcm", "dic", "dicm", "dicom"};
-    private static final String[] dicomMimeType = {"application/dicom"};
-    private static final Class<?>[] dicomInputTypes = {
-            ImageFileInputStream.class, BytesWithImageDescriptor.class
-    };
+    private static final String[] dicomFormatNames = { "dicom", "DICOM" };
+    private static final String[] dicomExt = { "dcm", "dic", "dicm", "dicom" };
+    private static final String[] dicomMimeType = { "application/dicom" };
+    private static final Class<?>[] dicomInputTypes = { ImageFileInputStream.class, BytesWithImageDescriptor.class };
 
     public ImageReaderSpi() {
-        super(
-                "image",
-                Implementation.getVersionName(),
-                dicomFormatNames,
-                dicomExt,
-                dicomMimeType,
-                ImageReader.class.getName(),
-                dicomInputTypes,
-                null, // writerSpiNames
+        super("image", Implementation.getVersionName(), dicomFormatNames, dicomExt, dicomMimeType,
+                ImageReader.class.getName(), dicomInputTypes, null, // writerSpiNames
                 false, // supportsStandardStreamMetadataFormat
                 null, // nativeStreamMetadataFormatName
                 null, // nativeStreamMetadataFormatClassName
@@ -81,12 +72,8 @@ public class ImageReaderSpi extends javax.imageio.spi.ImageReaderSpi {
         iis.mark();
         try {
             int tag = iis.read() | (iis.read() << 8) | (iis.read() << 16) | (iis.read() << 24);
-            return ((tag >= 0x00080000 && tag <= 0x00080016)
-                    || (iis.skipBytes(124) == 124
-                    && iis.read() == 'D'
-                    && iis.read() == 'I'
-                    && iis.read() == 'C'
-                    && iis.read() == 'M'));
+            return ((tag >= 0x00080000 && tag <= 0x00080016) || (iis.skipBytes(124) == 124 && iis.read() == 'D'
+                    && iis.read() == 'I' && iis.read() == 'C' && iis.read() == 'M'));
         } finally {
             iis.reset();
         }

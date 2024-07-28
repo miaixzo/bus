@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org justauth.cn and other contributors.        ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.oschina;
 
 import com.alibaba.fastjson.JSONObject;
@@ -60,12 +60,9 @@ public class OschinaProvider extends AbstractProvider {
         String response = doPostAuthorizationCode(callback.getCode());
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         this.checkResponse(accessTokenObject);
-        return AccToken.builder()
-                .accessToken(accessTokenObject.getString("access_token"))
-                .refreshToken(accessTokenObject.getString("refresh_token"))
-                .uid(accessTokenObject.getString("uid"))
-                .expireIn(accessTokenObject.getIntValue("expires_in"))
-                .build();
+        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
+                .refreshToken(accessTokenObject.getString("refresh_token")).uid(accessTokenObject.getString("uid"))
+                .expireIn(accessTokenObject.getIntValue("expires_in")).build();
     }
 
     @Override
@@ -73,19 +70,10 @@ public class OschinaProvider extends AbstractProvider {
         String response = doGetUserInfo(accToken);
         JSONObject object = JSONObject.parseObject(response);
         this.checkResponse(object);
-        return Material.builder()
-                .rawJson(object)
-                .uuid(object.getString("id"))
-                .username(object.getString("name"))
-                .nickname(object.getString("name"))
-                .avatar(object.getString("avatar"))
-                .blog(object.getString("url"))
-                .location(object.getString("location"))
-                .gender(Gender.of(object.getString("gender")))
-                .email(object.getString("email"))
-                .token(accToken)
-                .source(complex.toString())
-                .build();
+        return Material.builder().rawJson(object).uuid(object.getString("id")).username(object.getString("name"))
+                .nickname(object.getString("name")).avatar(object.getString("avatar")).blog(object.getString("url"))
+                .location(object.getString("location")).gender(Gender.of(object.getString("gender")))
+                .email(object.getString("email")).token(accToken).source(complex.toString()).build();
     }
 
     /**
@@ -96,14 +84,10 @@ public class OschinaProvider extends AbstractProvider {
      */
     @Override
     protected String accessTokenUrl(String code) {
-        return Builder.fromUrl(complex.accessToken())
-                .queryParam("code", code)
-                .queryParam("client_id", context.getAppKey())
-                .queryParam("client_secret", context.getAppSecret())
-                .queryParam("grant_type", "authorization_code")
-                .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("dataType", "json")
-                .build();
+        return Builder.fromUrl(complex.accessToken()).queryParam("code", code)
+                .queryParam("client_id", context.getAppKey()).queryParam("client_secret", context.getAppSecret())
+                .queryParam("grant_type", "authorization_code").queryParam("redirect_uri", context.getRedirectUri())
+                .queryParam("dataType", "json").build();
     }
 
     /**
@@ -114,10 +98,8 @@ public class OschinaProvider extends AbstractProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(complex.userInfo())
-                .queryParam("access_token", accToken.getAccessToken())
-                .queryParam("dataType", "json")
-                .build();
+        return Builder.fromUrl(complex.userInfo()).queryParam("access_token", accToken.getAccessToken())
+                .queryParam("dataType", "json").build();
     }
 
     /**

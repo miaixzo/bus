@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.stream;
 
 import org.miaixz.bus.core.lang.Charset;
@@ -72,7 +72,8 @@ public class WriterOutputStream extends OutputStream {
      * @param bufferSize       缓冲区大小，用于控制字符数据的临时存储量
      * @param writeImmediately 是否立即写入，如果为 true，则不使用内部缓冲区，每个字节立即被解码并写入
      */
-    public WriterOutputStream(final Writer writer, final java.nio.charset.Charset charset, final int bufferSize, final boolean writeImmediately) {
+    public WriterOutputStream(final Writer writer, final java.nio.charset.Charset charset, final int bufferSize,
+            final boolean writeImmediately) {
         this(writer, Charset.newDecoder(charset, CodingErrorAction.REPLACE), bufferSize, writeImmediately);
     }
 
@@ -94,7 +95,8 @@ public class WriterOutputStream extends OutputStream {
      * @param bufferSize       缓冲区大小，用于控制字符数据的临时存储量
      * @param writeImmediately 是否立即写入，如果为 true，则不使用内部缓冲区，每个字节立即被解码并写入
      */
-    public WriterOutputStream(final Writer writer, final CharsetDecoder decoder, final int bufferSize, final boolean writeImmediately) {
+    public WriterOutputStream(final Writer writer, final CharsetDecoder decoder, final int bufferSize,
+            final boolean writeImmediately) {
         this.writer = writer;
         this.decoder = decoder;
         this.writeImmediately = writeImmediately;
@@ -111,7 +113,8 @@ public class WriterOutputStream extends OutputStream {
             len -= c;
             off += c;
         }
-        if (writeImmediately) flushOutput();
+        if (writeImmediately)
+            flushOutput();
     }
 
     @Override
@@ -121,7 +124,7 @@ public class WriterOutputStream extends OutputStream {
 
     @Override
     public void write(final int b) throws IOException {
-        write(new byte[]{(byte) b}, 0, 1);
+        write(new byte[] { (byte) b }, 0, 1);
     }
 
     @Override
@@ -142,7 +145,8 @@ public class WriterOutputStream extends OutputStream {
         CoderResult coderResult;
         while (true) {
             coderResult = decoder.decode(decoderIn, decoderOut, endOfInput);
-            if (!coderResult.isOverflow()) break;
+            if (!coderResult.isOverflow())
+                break;
             flushOutput();
         }
         if (!coderResult.isUnderflow()) {

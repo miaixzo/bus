@@ -24,14 +24,13 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date.format.parser;
 
 import java.util.function.Predicate;
 
 /**
- * 通过判断字符串的匹配，解析为日期
- * 通过实现{@link #test(Object)}方法判断字符串是否符合此解析器的规则，如果符合，则调用{@link #parse(CharSequence)}完成解析。
+ * 通过判断字符串的匹配，解析为日期 通过实现{@link #test(Object)}方法判断字符串是否符合此解析器的规则，如果符合，则调用{@link #parse(CharSequence)}完成解析。
  *
  * @author Kimi Liu
  * @since Java 17+

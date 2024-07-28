@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.service;
 
 import org.miaixz.bus.image.Dimse;
@@ -46,8 +46,8 @@ public class BasicCFindSCP extends AbstractImageService {
     }
 
     @Override
-    public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse,
-                          Attributes rq, Attributes keys) throws IOException {
+    public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes rq, Attributes keys)
+            throws IOException {
         if (dimse != Dimse.C_FIND_RQ)
             throw new ImageServiceException(Status.UnrecognizedOperation);
 

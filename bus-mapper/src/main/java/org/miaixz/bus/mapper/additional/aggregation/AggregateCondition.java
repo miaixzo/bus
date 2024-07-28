@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.additional.aggregation;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -101,8 +101,7 @@ public class AggregateCondition implements Serializable {
      * @param aggregateType     聚合函数
      * @param groupByProperties 为保证返回结果key与传入值相同 方法不会去除每一项前后空格
      */
-    public AggregateCondition(String aggregateProperty, AggregateType aggregateType,
-                              String[] groupByProperties) {
+    public AggregateCondition(String aggregateProperty, AggregateType aggregateType, String[] groupByProperties) {
         this.groupByProperties = new ArrayList<>();
         // 需要放在propertyMap初始化完成后执行
         aggregateType(aggregateType);
@@ -141,8 +140,7 @@ public class AggregateCondition implements Serializable {
      * @return the object
      */
     public AggregateCondition aggregateBy(String aggregateProperty) {
-        Assert.notEmpty(aggregateProperty,
-                "aggregateProperty must have length; it must not be null or empty");
+        Assert.notEmpty(aggregateProperty, "aggregateProperty must have length; it must not be null or empty");
         this.aggregateProperty = aggregateProperty;
         return this;
     }
@@ -159,8 +157,7 @@ public class AggregateCondition implements Serializable {
      * @return the object
      */
     public AggregateCondition aggregateType(AggregateType aggregateType) {
-        Assert.notNull(aggregateType,
-                "aggregateType is required; it must not be null");
+        Assert.notNull(aggregateType, "aggregateType is required; it must not be null");
         this.aggregateType = aggregateType;
         return this;
     }

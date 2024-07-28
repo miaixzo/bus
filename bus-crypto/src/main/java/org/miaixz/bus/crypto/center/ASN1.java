@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.center;
 
 import org.bouncycastle.asn1.*;
@@ -38,8 +38,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * ASN.1 – Abstract Syntax Notation dot one，抽象记法1 工具类。
- * ASN.1描述了一种对数据进行表示、编码、传输和解码的数据格式。它的编码格式包括DER、BER、DL等
+ * ASN.1 – Abstract Syntax Notation dot one，抽象记法1 工具类。 ASN.1描述了一种对数据进行表示、编码、传输和解码的数据格式。它的编码格式包括DER、BER、DL等
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -79,17 +78,17 @@ public class ASN1 {
     public static void encodeTo(final String asn1Encoding, final OutputStream out, final ASN1Encodable... elements) {
         final ASN1Sequence sequence;
         switch (asn1Encoding) {
-            case ASN1Encoding.DER:
-                sequence = new DERSequence(elements);
-                break;
-            case ASN1Encoding.BER:
-                sequence = new BERSequence(elements);
-                break;
-            case ASN1Encoding.DL:
-                sequence = new DLSequence(elements);
-                break;
-            default:
-                throw new CryptoException("Unsupported ASN1 encoding: {}", asn1Encoding);
+        case ASN1Encoding.DER:
+            sequence = new DERSequence(elements);
+            break;
+        case ASN1Encoding.BER:
+            sequence = new BERSequence(elements);
+            break;
+        case ASN1Encoding.DL:
+            sequence = new DLSequence(elements);
+            break;
+        default:
+            throw new CryptoException("Unsupported ASN1 encoding: {}", asn1Encoding);
         }
         try {
             sequence.encodeTo(out);

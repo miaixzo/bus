@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.excel.sax.handler;
 
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -58,15 +58,16 @@ public interface RowHandler {
      * @param value         单元格的值
      * @param xssfCellStyle 单元格样式
      */
-    default void handleCell(final int sheetIndex, final long rowIndex, final int cellIndex, final Object value, final CellStyle xssfCellStyle) {
-        //pass
+    default void handleCell(final int sheetIndex, final long rowIndex, final int cellIndex, final Object value,
+            final CellStyle xssfCellStyle) {
+        // pass
     }
 
     /**
      * 处理一个sheet页完成的操作
      */
     default void doAfterAllAnalysed() {
-        //pass
+        // pass
     }
 
 }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.nlp.provider.jcseg;
 
 import org.lionsoul.jcseg.ISegment;
@@ -36,8 +36,7 @@ import org.miaixz.bus.extra.nlp.NLPWord;
 import java.io.IOException;
 
 /**
- * Jcseg分词结果包装
- * 项目地址：https://gitee.com/lionsoul/jcseg
+ * Jcseg分词结果包装 项目地址：https://gitee.com/lionsoul/jcseg
  *
  * @author Kimi Liu
  * @since Java 17+

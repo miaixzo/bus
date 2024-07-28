@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.screw.dialect;
 
 import lombok.Getter;
@@ -50,8 +50,7 @@ public enum DatabaseType implements Serializable {
     /**
      * CacheDB
      */
-    CACHEDB("cachedb", "Cache 数据库",
-            CacheDbDataBaseQuery.class),
+    CACHEDB("cachedb", "Cache 数据库", CacheDbDataBaseQuery.class),
     /**
      * DB2
      */
@@ -63,36 +62,28 @@ public enum DatabaseType implements Serializable {
     /**
      * MARIA DB
      */
-    MARIADB("mariadb", "MariaDB数据库",
-            MariaDbDataBaseQuery.class),
+    MARIADB("mariadb", "MariaDB数据库", MariaDbDataBaseQuery.class),
     /**
      * MYSQL
      */
-    MYSQL("mysql", "MySql数据库",
-            MySqlDataBaseQuery.class),
+    MYSQL("mysql", "MySql数据库", MySqlDataBaseQuery.class),
     /**
      * ORACLE
      */
-    ORACLE("oracle", "Oracle数据库",
-            OracleDataBaseQuery.class),
+    ORACLE("oracle", "Oracle数据库", OracleDataBaseQuery.class),
     /**
      * POSTGRE
      */
-    POSTGRE_SQL("PostgreSql", "Postgre数据库",
-            PostgreSqlDataBaseQuery.class),
+    POSTGRE_SQL("PostgreSql", "Postgre数据库", PostgreSqlDataBaseQuery.class),
     /**
      * SQL SERVER 2005
      */
-    SQL_SERVER2005("sqlServer2005",
-            "SQLServer2005数据库",
-            SqlServerDataBaseQuery.class),
+    SQL_SERVER2005("sqlServer2005", "SQLServer2005数据库", SqlServerDataBaseQuery.class),
 
     /**
      * SQLSERVER
      */
-    SQL_SERVER("sqlserver", "SQLServer数据库",
-            SqlServerDataBaseQuery.class),
-
+    SQL_SERVER("sqlserver", "SQLServer数据库", SqlServerDataBaseQuery.class),
 
     /**
      * UNKONWN DB

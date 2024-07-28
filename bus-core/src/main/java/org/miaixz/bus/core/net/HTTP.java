@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.net;
 
 /**
@@ -103,7 +103,6 @@ public class HTTP {
      * HTTP Method PROPFIND
      */
     public static final String PROPFIND = "PROPFIND";
-
 
     /**
      * HTTP Status-Code 100: Continue.
@@ -262,8 +261,7 @@ public class HTTP {
      */
     public static final int HTTP_VERSION = 505;
     /**
-     * From the HTTP/2 specs, the default initial window size for all streams is 64 KiB. (Chrome 25
-     * uses 10 MiB).
+     * From the HTTP/2 specs, the default initial window size for all streams is 64 KiB. (Chrome 25 uses 10 MiB).
      */
     public static final int DEFAULT_INITIAL_WINDOW_SIZE = 65535;
     /**
@@ -290,7 +288,6 @@ public class HTTP {
      * Window size in bytes.
      */
     public static final int INITIAL_WINDOW_SIZE = 7;
-
 
     /**
      * The header Host
@@ -533,7 +530,6 @@ public class HTTP {
      */
     public static final String SOAPACTION = "SOAPAction";
 
-
     /**
      * The use method
      */
@@ -579,25 +575,18 @@ public class HTTP {
      * @return the boolean
      */
     public static boolean invalidatesCache(String method) {
-        return POST.equals(method)
-                || PUT.equals(method)
-                || PATCH.equals(method)
-                || DELETE.equals(method)
+        return POST.equals(method) || PUT.equals(method) || PATCH.equals(method) || DELETE.equals(method)
                 || MOVE.equals(method);
     }
 
     /**
-     * WebDAV
-     * CalDAV/CardDAV(在WebDAV版本中定义)
+     * WebDAV CalDAV/CardDAV(在WebDAV版本中定义)
      *
      * @param method 请求方式
      * @return the boolean
      */
     public static boolean requiresRequestBody(String method) {
-        return POST.equals(method)
-                || PUT.equals(method)
-                || PATCH.equals(method)
-                || PROPPATCH.equals(method)
+        return POST.equals(method) || PUT.equals(method) || PATCH.equals(method) || PROPPATCH.equals(method)
                 || REPORT.equals(method);
     }
 

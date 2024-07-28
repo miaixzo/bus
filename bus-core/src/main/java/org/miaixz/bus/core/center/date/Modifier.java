@@ -24,15 +24,14 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date;
 
 import org.miaixz.bus.core.center.date.culture.en.Modify;
 import org.miaixz.bus.core.xyz.ArrayKit;
 
 /**
- * 日期修改器
- * 用于实现自定义某个日期字段的调整，包括：
+ * 日期修改器 用于实现自定义某个日期字段的调整，包括：
  *
  * <pre>
  * 1. 获取指定字段的起始时间
@@ -48,8 +47,7 @@ public class Modifier {
     /**
      * 忽略的计算的字段
      */
-    private static final int[] IGNORE_FIELDS = new int[]{
-            java.util.Calendar.HOUR_OF_DAY, // 与HOUR同名
+    private static final int[] IGNORE_FIELDS = new int[] { java.util.Calendar.HOUR_OF_DAY, // 与HOUR同名
             java.util.Calendar.AM_PM, // 此字段单独处理，不参与计算起始和结束
             java.util.Calendar.DAY_OF_WEEK_IN_MONTH, // 不参与计算
             java.util.Calendar.DAY_OF_YEAR, // DAY_OF_MONTH体现
@@ -65,17 +63,16 @@ public class Modifier {
      * @param modify    修改类型，包括舍去、四舍五入、进一等
      * @return 修改后的{@link Calendar}
      */
-    public static java.util.Calendar modify(final java.util.Calendar calendar, final int dateField, final Modify modify) {
+    public static java.util.Calendar modify(final java.util.Calendar calendar, final int dateField,
+            final Modify modify) {
         return modify(calendar, dateField, modify, false);
     }
 
     /**
-     * 修改日期，取起始值或者结束值
-     * 可选是否归零毫秒
+     * 修改日期，取起始值或者结束值 可选是否归零毫秒
      *
      * <p>
-     * 在{@link Modify#TRUNCATE}模式下，毫秒始终要归零,
-     * 但是在{@link Modify#CEILING}和{@link Modify#ROUND}模式下，
+     * 在{@link Modify#TRUNCATE}模式下，毫秒始终要归零, 但是在{@link Modify#CEILING}和{@link Modify#ROUND}模式下，
      * 有时候由于毫秒部分必须为0（如MySQL数据库中），因此在此加上选项。
      * </p>
      *
@@ -85,24 +82,25 @@ public class Modifier {
      * @param truncateMillisecond 是否归零毫秒
      * @return 修改后的{@link Calendar}
      */
-    public static java.util.Calendar modify(final java.util.Calendar calendar, final int dateField, final Modify modify, final boolean truncateMillisecond) {
+    public static java.util.Calendar modify(final java.util.Calendar calendar, final int dateField, final Modify modify,
+            final boolean truncateMillisecond) {
         // AM_PM上下午特殊处理
         if (java.util.Calendar.AM_PM == dateField) {
             final boolean isAM = Calendar.isAM(calendar);
             switch (modify) {
-                case TRUNCATE:
-                    calendar.set(java.util.Calendar.HOUR_OF_DAY, isAM ? 0 : 12);
-                    break;
-                case CEILING:
-                    calendar.set(java.util.Calendar.HOUR_OF_DAY, isAM ? 11 : 23);
-                    break;
-                case ROUND:
-                    final int min = isAM ? 0 : 12;
-                    final int max = isAM ? 11 : 23;
-                    final int href = (max - min) / 2 + 1;
-                    final int value = calendar.get(java.util.Calendar.HOUR_OF_DAY);
-                    calendar.set(java.util.Calendar.HOUR_OF_DAY, (value < href) ? min : max);
-                    break;
+            case TRUNCATE:
+                calendar.set(java.util.Calendar.HOUR_OF_DAY, isAM ? 0 : 12);
+                break;
+            case CEILING:
+                calendar.set(java.util.Calendar.HOUR_OF_DAY, isAM ? 11 : 23);
+                break;
+            case ROUND:
+                final int min = isAM ? 0 : 12;
+                final int max = isAM ? 11 : 23;
+                final int href = (max - min) / 2 + 1;
+                final int value = calendar.get(java.util.Calendar.HOUR_OF_DAY);
+                calendar.set(java.util.Calendar.HOUR_OF_DAY, (value < href) ? min : max);
+                break;
             }
             // 处理下一级别字段
             return modify(calendar, dateField + 1, modify);
@@ -152,25 +150,25 @@ public class Modifier {
         }
 
         switch (modify) {
-            case TRUNCATE:
-                calendar.set(field, Calendar.getBeginValue(calendar, field));
-                break;
-            case CEILING:
-                calendar.set(field, Calendar.getEndValue(calendar, field));
-                break;
-            case ROUND:
-                final int min = Calendar.getBeginValue(calendar, field);
-                final int max = Calendar.getEndValue(calendar, field);
-                final int href;
-                if (java.util.Calendar.DAY_OF_WEEK == field) {
-                    // 星期特殊处理，假设周一是第一天，中间的为周四
-                    href = (min + 3) % 7;
-                } else {
-                    href = (max - min) / 2 + 1;
-                }
-                final int value = calendar.get(field);
-                calendar.set(field, (value < href) ? min : max);
-                break;
+        case TRUNCATE:
+            calendar.set(field, Calendar.getBeginValue(calendar, field));
+            break;
+        case CEILING:
+            calendar.set(field, Calendar.getEndValue(calendar, field));
+            break;
+        case ROUND:
+            final int min = Calendar.getBeginValue(calendar, field);
+            final int max = Calendar.getEndValue(calendar, field);
+            final int href;
+            if (java.util.Calendar.DAY_OF_WEEK == field) {
+                // 星期特殊处理，假设周一是第一天，中间的为周四
+                href = (min + 3) % 7;
+            } else {
+                href = (max - min) / 2 + 1;
+            }
+            final int value = calendar.get(field);
+            calendar.set(field, (value < href) ? min : max);
+            break;
         }
     }
 

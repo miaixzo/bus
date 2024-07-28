@@ -24,14 +24,13 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text;
 
 import java.util.Iterator;
 
 /**
- * Unicode字符遍历器
- * 参考：http://stackoverflow.com/a/21791059/6030888
+ * Unicode字符遍历器 参考：http://stackoverflow.com/a/21791059/6030888
  *
  * @author Kimi Liu
  * @since Java 17+

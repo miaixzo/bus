@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.net.tls;
 
 import org.miaixz.bus.core.net.Protocol;
@@ -34,8 +34,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 在协商安全插槽时可以提供的TLS版本
- * 查看{@link javax.net.ssl.SSLSocket # setEnabledProtocols}
+ * 在协商安全插槽时可以提供的TLS版本 查看{@link javax.net.ssl.SSLSocket # setEnabledProtocols}
  *
  * @author Kimi Liu
  * @since Java 17+

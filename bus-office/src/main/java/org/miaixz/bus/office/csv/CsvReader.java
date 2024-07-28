@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.csv;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
@@ -123,8 +123,7 @@ public class CsvReader extends CsvBaseReader implements Iterable<CsvRow>, Closea
     }
 
     /**
-     * 读取CSV文件，此方法只能调用一次
-     * 调用此方法的前提是构造中传入文件路径或Reader
+     * 读取CSV文件，此方法只能调用一次 调用此方法的前提是构造中传入文件路径或Reader
      *
      * @return {@link CsvData}，包含数据列表和行信息
      * @throws InternalException IO异常
@@ -134,8 +133,7 @@ public class CsvReader extends CsvBaseReader implements Iterable<CsvRow>, Closea
     }
 
     /**
-     * 读取CSV数据，此方法只能调用一次
-     * 调用此方法的前提是构造中传入文件路径或Reader
+     * 读取CSV数据，此方法只能调用一次 调用此方法的前提是构造中传入文件路径或Reader
      *
      * @param rowHandler 行处理器，用于一行一行的处理数据
      * @throws InternalException IO异常
@@ -150,9 +148,7 @@ public class CsvReader extends CsvBaseReader implements Iterable<CsvRow>, Closea
      * @return {@link Stream}
      */
     public Stream<CsvRow> stream() {
-        return StreamSupport
-                .stream(spliterator(), false)
-                .onClose(this::close);
+        return StreamSupport.stream(spliterator(), false).onClose(this::close);
     }
 
     @Override

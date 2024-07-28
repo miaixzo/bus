@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.Version;
@@ -44,8 +44,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * 从应用程序代码连接到网络代码。首先，它从用户请求构建网络请求。
- * 然后它继续调用网络。最后，它从网络响应构建用户响应
+ * 从应用程序代码连接到网络代码。首先，它从用户请求构建网络请求。 然后它继续调用网络。最后，它从网络响应构建用户响应
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -91,8 +90,7 @@ public class BridgeInterceptor implements Interceptor {
         // If we add an "Accept-Encoding: gzip" header field we're responsible for also decompressing
         // the transfer stream.
         boolean transparentGzip = false;
-        if (null == request.header(HTTP.ACCEPT_ENCODING)
-                && null == request.header("Range")) {
+        if (null == request.header(HTTP.ACCEPT_ENCODING) && null == request.header("Range")) {
             transparentGzip = true;
             requestBuilder.header(HTTP.ACCEPT_ENCODING, "gzip");
         }
@@ -110,17 +108,13 @@ public class BridgeInterceptor implements Interceptor {
 
         Headers.receiveHeaders(cookieJar, request.url(), networkResponse.headers());
 
-        Response.Builder responseBuilder = networkResponse.newBuilder()
-                .request(request);
+        Response.Builder responseBuilder = networkResponse.newBuilder().request(request);
 
-        if (transparentGzip
-                && "gzip".equalsIgnoreCase(networkResponse.header(HTTP.CONTENT_ENCODING))
+        if (transparentGzip && "gzip".equalsIgnoreCase(networkResponse.header(HTTP.CONTENT_ENCODING))
                 && Headers.hasBody(networkResponse)) {
             GzipSource responseBody = new GzipSource(networkResponse.body().source());
-            Headers strippedHeaders = networkResponse.headers().newBuilder()
-                    .removeAll(HTTP.CONTENT_ENCODING)
-                    .removeAll(HTTP.CONTENT_LENGTH)
-                    .build();
+            Headers strippedHeaders = networkResponse.headers().newBuilder().removeAll(HTTP.CONTENT_ENCODING)
+                    .removeAll(HTTP.CONTENT_LENGTH).build();
             responseBuilder.headers(strippedHeaders);
             String mediaType = networkResponse.header(HTTP.CONTENT_TYPE);
             responseBuilder.body(new RealResponseBody(mediaType, -1L, IoKit.buffer(responseBody)));

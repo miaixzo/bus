@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.safety.algorithm;
 
 /**
@@ -38,7 +38,8 @@ public final class AsymmetricSecureKey extends SecureKey implements AsymmetricKe
     private final byte[] publicKey;
     private final byte[] privateKey;
 
-    public AsymmetricSecureKey(String algorithm, int keysize, int ivsize, String password, byte[] publicKey, byte[] privateKey) {
+    public AsymmetricSecureKey(String algorithm, int keysize, int ivsize, String password, byte[] publicKey,
+            byte[] privateKey) {
         super(algorithm, keysize, ivsize, password);
         this.publicKey = publicKey;
         this.privateKey = privateKey;

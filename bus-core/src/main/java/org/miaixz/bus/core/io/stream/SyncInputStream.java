@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.stream;
 
 import org.miaixz.bus.core.io.StreamProgress;
@@ -51,8 +51,7 @@ public class SyncInputStream extends FilterInputStream {
     private volatile boolean asyncFlag = true;
 
     /**
-     * 构造
-     * 如果isAsync为{@code true}，则直接持有原有流，{@code false}，则将流中内容，按照给定length读到{@link ByteArrayInputStream}中备用
+     * 构造 如果isAsync为{@code true}，则直接持有原有流，{@code false}，则将流中内容，按照给定length读到{@link ByteArrayInputStream}中备用
      *
      * @param in               数据流
      * @param length           限定长度，-1表示未知长度
@@ -60,7 +59,8 @@ public class SyncInputStream extends FilterInputStream {
      * @param isIgnoreEOFError 是否忽略EOF错误，在Http协议中，对于Transfer-Encoding: Chunked在正常情况下末尾会写入一个Length为0的的chunk标识完整结束
      *                         如果服务端未遵循这个规范或响应没有正常结束，会报EOF异常，此选项用于是否忽略这个异常。
      */
-    public SyncInputStream(final InputStream in, final long length, final boolean isAsync, final boolean isIgnoreEOFError) {
+    public SyncInputStream(final InputStream in, final long length, final boolean isAsync,
+            final boolean isIgnoreEOFError) {
         super(in);
         this.length = length;
         this.isIgnoreEOFError = isIgnoreEOFError;
@@ -72,8 +72,8 @@ public class SyncInputStream extends FilterInputStream {
     /**
      * 是否为EOF异常，包括
      * <ul>
-     *     <li>FileNotFoundException：服务端无返回内容</li>
-     *     <li>EOFException：EOF异常</li>
+     * <li>FileNotFoundException：服务端无返回内容</li>
+     * <li>EOFException：EOF异常</li>
      * </ul>
      *
      * @param e 异常

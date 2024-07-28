@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.GEMS_FUNCTOOL_01;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,30 +46,31 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.Scale:
-            case PrivateTag.BValue:
-                return VR.FL;
-            case PrivateTag.GroupName:
-            case PrivateTag.FunctionName:
-            case PrivateTag.Version:
-                return VR.LO;
-            case PrivateTag.Parameters:
-                return VR.LT;
-            case PrivateTag.WizardState:
-                return VR.OB;
-            case PrivateTag.Bias:
-            case PrivateTag.ParameterCount:
-            case PrivateTag.ColorRampIndex:
-            case PrivateTag.WindowWidth:
-            case PrivateTag.WindowLevel:
-            case PrivateTag.WizardStateDataSize:
-            case PrivateTag._0051_xx0E_:
-                return VR.SL;
+
+        case PrivateTag.Scale:
+        case PrivateTag.BValue:
+            return VR.FL;
+        case PrivateTag.GroupName:
+        case PrivateTag.FunctionName:
+        case PrivateTag.Version:
+            return VR.LO;
+        case PrivateTag.Parameters:
+            return VR.LT;
+        case PrivateTag.WizardState:
+            return VR.OB;
+        case PrivateTag.Bias:
+        case PrivateTag.ParameterCount:
+        case PrivateTag.ColorRampIndex:
+        case PrivateTag.WindowWidth:
+        case PrivateTag.WindowLevel:
+        case PrivateTag.WizardStateDataSize:
+        case PrivateTag._0051_xx0E_:
+            return VR.SL;
         }
         return VR.UN;
     }

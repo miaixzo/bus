@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.software;
 
 import com.sun.jna.platform.win32.WinDef.HWND;
@@ -50,7 +50,7 @@ public class OSDesktopWindow {
     private final boolean visible;
 
     public OSDesktopWindow(long windowId, String title, String command, Rectangle locAndSize, long owningProcessId,
-                           int order, boolean visible) {
+            int order, boolean visible) {
         super();
         this.windowId = windowId;
         this.title = title;
@@ -131,7 +131,7 @@ public class OSDesktopWindow {
      * transparent.
      *
      * @return {@code true} if the window is visible to users or if visibility can not be determined, {@code false}
-     * otherwise.
+     *         otherwise.
      */
     public boolean isVisible() {
         return visible;

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.timout;
 
 import java.io.IOException;
@@ -32,11 +32,7 @@ import java.io.InterruptedIOException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 在放弃一项任务之前要花多少时间的策略 当一个任务
- * 超时时,它处于未指定的状态,应该被放弃
- * 例如,如果从源读取超时,则应关闭该源并
- * 稍后应重试读取 如果向接收器写入超时,也是一样
- * 适用规则:关闭洗涤槽,稍后重试
+ * 在放弃一项任务之前要花多少时间的策略 当一个任务 超时时,它处于未指定的状态,应该被放弃 例如,如果从源读取超时,则应关闭该源并 稍后应重试读取 如果向接收器写入超时,也是一样 适用规则:关闭洗涤槽,稍后重试
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,8 +40,7 @@ import java.util.concurrent.TimeUnit;
 public class Timeout {
 
     /**
-     * 既不跟踪也不检测超时的空超时。在不需要超时
-     * 的情况下使用它，例如在操作不会阻塞的实现中
+     * 既不跟踪也不检测超时的空超时。在不需要超时 的情况下使用它，例如在操作不会阻塞的实现中
      */
     public static final Timeout NONE = new Timeout() {
         @Override
@@ -64,8 +59,7 @@ public class Timeout {
     };
 
     /**
-     * 如果定义了 {@code deadlineNanoTime}，则为 True。
-     * 对于 {@link System#nanoTime}，没有与 null 或 0 等价的值
+     * 如果定义了 {@code deadlineNanoTime}，则为 True。 对于 {@link System#nanoTime}，没有与 null 或 0 等价的值
      */
     private boolean hasDeadline;
     /**
@@ -85,16 +79,17 @@ public class Timeout {
     }
 
     /**
-     * 最多等待 {@code timeout} 时间，然后中止操作。
-     * 使用每个操作超时意味着只要向前推进，任何操作序列都不会失败。
+     * 最多等待 {@code timeout} 时间，然后中止操作。 使用每个操作超时意味着只要向前推进，任何操作序列都不会失败。
      *
      * @param timeout 超时时间
      * @param unit    时间单位
      * @return {@link Timeout}
      */
     public Timeout timeout(long timeout, TimeUnit unit) {
-        if (timeout < 0) throw new IllegalArgumentException("timeout < 0: " + timeout);
-        if (unit == null) throw new IllegalArgumentException("unit == null");
+        if (timeout < 0)
+            throw new IllegalArgumentException("timeout < 0: " + timeout);
+        if (unit == null)
+            throw new IllegalArgumentException("unit == null");
         this.timeoutNanos = unit.toNanos(timeout);
         return this;
     }
@@ -119,13 +114,13 @@ public class Timeout {
      * @throws IllegalStateException 如果没有设定截止时间
      */
     public long deadlineNanoTime() {
-        if (!hasDeadline) throw new IllegalStateException("No deadline");
+        if (!hasDeadline)
+            throw new IllegalStateException("No deadline");
         return deadlineNanoTime;
     }
 
     /**
-     * 设置达到截止期限的 {@linkplain System#nanoTime()}
-     * 所有操作必须在此时间之前完成。使用截止期限来设置一系列操作所花费时间的最大限度。
+     * 设置达到截止期限的 {@linkplain System#nanoTime()} 所有操作必须在此时间之前完成。使用截止期限来设置一系列操作所花费时间的最大限度。
      */
     public Timeout deadlineNanoTime(long deadlineNanoTime) {
         this.hasDeadline = true;
@@ -141,8 +136,10 @@ public class Timeout {
      * @return {@link Timeout}
      */
     public final Timeout deadline(long duration, TimeUnit unit) {
-        if (duration <= 0) throw new IllegalArgumentException("duration <= 0: " + duration);
-        if (unit == null) throw new IllegalArgumentException("unit == null");
+        if (duration <= 0)
+            throw new IllegalArgumentException("duration <= 0: " + duration);
+        if (unit == null)
+            throw new IllegalArgumentException("unit == null");
         return deadlineNanoTime(System.nanoTime() + unit.toNanos(duration));
     }
 
@@ -163,8 +160,7 @@ public class Timeout {
     }
 
     /**
-     * 如果已达到截止时间或当前线程已中断，则抛出 {@link InterruptedIOException}。
-     * 此方法不检测超时；应实施超时以异步中止正在进行的操作
+     * 如果已达到截止时间或当前线程已中断，则抛出 {@link InterruptedIOException}。 此方法不检测超时；应实施超时以异步中止正在进行的操作
      */
     public void throwIfReached() throws IOException {
         if (Thread.interrupted()) {
@@ -179,9 +175,8 @@ public class Timeout {
     }
 
     /**
-     * 等待 {@code monitor} 直到收到通知。
-     * 如果线程中断或在 {@code monitor} 收到通知之前超时，则抛出 {@link InterruptedIOException}。
-     * 调用者必须在 {@code monitor} 上同步。
+     * 等待 {@code monitor} 直到收到通知。 如果线程中断或在 {@code monitor} 收到通知之前超时，则抛出 {@link InterruptedIOException}。 调用者必须在
+     * {@code monitor} 上同步。
      *
      * @param monitor 监视器
      * @throws InterruptedIOException 异常

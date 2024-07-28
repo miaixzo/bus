@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.cache;
 
 import org.miaixz.bus.http.Request;
@@ -33,8 +33,7 @@ import org.miaixz.bus.http.Response;
 import java.io.IOException;
 
 /**
- * Http's 的内部缓存接口
- * 应用程序不应该实现这个:而是使用{@link Cache}
+ * Http's 的内部缓存接口 应用程序不应该实现这个:而是使用{@link Cache}
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -54,8 +53,7 @@ public interface InternalCache {
     void remove(Request request) throws IOException;
 
     /**
-     * 通过使用来自{@code network}的报头更新存储的缓存响应来处理条件请求
-     * 如果存储的响应在返回{@code cached}后发生了变化，这将不起任何作用
+     * 通过使用来自{@code network}的报头更新存储的缓存响应来处理条件请求 如果存储的响应在返回{@code cached}后发生了变化，这将不起任何作用
      *
      * @param cached  缓存请求
      * @param network 网络请求

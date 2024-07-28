@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org mybatis.io and other contributors.         ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -35,8 +35,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 对Page结果进行包装
- * 新增分页的多项属性
+ * 对Page结果进行包装 新增分页的多项属性
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -57,9 +56,7 @@ public class Paginating<T> extends Serialize<T> {
      */
     private int size;
     /**
-     * 由于startRow和endRow不常用，这里说个具体的用法
-     * 可以在页面中"显示startRow到endRow 共size条数据"
-     * 当前页面第一个元素在数据库中的行号
+     * 由于startRow和endRow不常用，这里说个具体的用法 可以在页面中"显示startRow到endRow 共size条数据" 当前页面第一个元素在数据库中的行号
      */
     private long startRow;
     /**
@@ -140,13 +137,13 @@ public class Paginating<T> extends Serialize<T> {
 
             this.pages = page.getPages();
             this.size = page.size();
-            //由于结果是>startRow的，所以实际的需要+1
+            // 由于结果是>startRow的，所以实际的需要+1
             if (this.size == 0) {
                 this.startRow = 0;
                 this.endRow = 0;
             } else {
                 this.startRow = page.getStartRow() + 1;
-                //计算实际的endRow（最后一页的时候特殊）
+                // 计算实际的endRow（最后一页的时候特殊）
                 this.endRow = this.startRow - 1 + this.size;
             }
         } else if (list instanceof Collection) {
@@ -166,7 +163,6 @@ public class Paginating<T> extends Serialize<T> {
     public static <T> Paginating<T> of(List<? extends T> list) {
         return new Paginating<T>(list);
     }
-
 
     /**
      * 手动指定总记录数获取分页信息

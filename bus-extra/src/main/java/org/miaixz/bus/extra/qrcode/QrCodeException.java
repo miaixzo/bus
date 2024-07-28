@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.qrcode;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -85,7 +85,8 @@ public class QrCodeException extends InternalException {
      * @param enableSuppression  是否启用抑制
      * @param writableStackTrace 堆栈跟踪是否应该是可写的
      */
-    public QrCodeException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
+    public QrCodeException(final String message, final Throwable cause, final boolean enableSuppression,
+            final boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 

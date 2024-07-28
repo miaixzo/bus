@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.extend;
 
 import jakarta.json.stream.JsonParser;
@@ -81,27 +81,28 @@ public class JsonImageReaderConfiguration extends JsonConfigurationExtension {
             String[] imageReadParam = {};
             while (reader.next() == JsonParser.Event.KEY_NAME) {
                 switch (reader.getString()) {
-                    case "dicomTransferSyntax":
-                        tsuid = reader.stringValue();
-                        break;
-                    case "dcmIIOFormatName":
-                        formatName = reader.stringValue();
-                        break;
-                    case "dcmJavaClassName":
-                        className = reader.stringValue();
-                        break;
-                    case "dcmPatchJPEGLS":
-                        patchJPEGLS = reader.stringValue();
-                        break;
-                    case "dcmImageReadParam":
-                        imageReadParam = reader.stringArray();
-                        break;
-                    default:
-                        reader.skipUnknownProperty();
+                case "dicomTransferSyntax":
+                    tsuid = reader.stringValue();
+                    break;
+                case "dcmIIOFormatName":
+                    formatName = reader.stringValue();
+                    break;
+                case "dcmJavaClassName":
+                    className = reader.stringValue();
+                    break;
+                case "dcmPatchJPEGLS":
+                    patchJPEGLS = reader.stringValue();
+                    break;
+                case "dcmImageReadParam":
+                    imageReadParam = reader.stringArray();
+                    break;
+                default:
+                    reader.skipUnknownProperty();
                 }
             }
             reader.expect(JsonParser.Event.END_OBJECT);
-            factory.put(tsuid, new ImageReaderFactory.ImageReaderParam(formatName, className, patchJPEGLS, imageReadParam));
+            factory.put(tsuid,
+                    new ImageReaderFactory.ImageReaderParam(formatName, className, patchJPEGLS, imageReadParam));
         }
         device.addDeviceExtension(new ImageReaderExtension(factory));
         return true;

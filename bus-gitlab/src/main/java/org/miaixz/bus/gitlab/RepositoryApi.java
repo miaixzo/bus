@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab;
 
 import jakarta.ws.rs.core.*;
@@ -42,8 +42,10 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
- * <p>This class provides an entry point to all the GitLab API repository calls.
- * For more information on the repository APIs see:</p>
+ * <p>
+ * This class provides an entry point to all the GitLab API repository calls. For more information on the repository
+ * APIs see:
+ * </p>
  *
  * <a href="https://docs.gitlab.com/ce/api/repositories.html">Repositories API</a>
  * <a href="https://docs.gitlab.com/ce/api/branches.html">Branches API</a>
@@ -57,7 +59,9 @@ public class RepositoryApi extends AbstractApi {
     /**
      * Get a list of repository branches from a project, sorted by name alphabetically.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/branches</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/branches</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @return the list of repository branches for the specified project
@@ -70,9 +74,9 @@ public class RepositoryApi extends AbstractApi {
     /**
      * Get the filename from the "Content-Disposition" header of a JAX-RS response.
      *
-     * @param response the JAX-RS Response instance  to get the "Content-Disposition" header filename from
-     * @return the filename from the "Content-Disposition" header of a JAX-RS response, or null
-     * if the "Content-Disposition" header is not present in the response
+     * @param response the JAX-RS Response instance to get the "Content-Disposition" header filename from
+     * @return the filename from the "Content-Disposition" header of a JAX-RS response, or null if the
+     *         "Content-Disposition" header is not present in the response
      */
     public static String getFilenameFromContentDisposition(Response response) {
 
@@ -86,11 +90,13 @@ public class RepositoryApi extends AbstractApi {
     /**
      * Get a list of repository branches from a project, sorted by name alphabetically.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/branches</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/branches</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param page the page to get
-     * @param perPage the number of Branch instances per page
+     * @param page            the page to get
+     * @param perPage         the number of Branch instances per page
      * @return the list of repository branches for the specified project
      * @throws GitLabApiException if any exception occurs
      */
@@ -104,7 +110,9 @@ public class RepositoryApi extends AbstractApi {
     /**
      * Get a Stream of repository branches from a project, sorted by name alphabetically.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/branches</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/branches</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @return a Stream of repository branches for the specified project
@@ -117,10 +125,12 @@ public class RepositoryApi extends AbstractApi {
     /**
      * Get a Pager of repository branches from a project, sorted by name alphabetically.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/branches</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/branches</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param itemsPerPage the number of Project instances that will be fetched per page
+     * @param itemsPerPage    the number of Project instances that will be fetched per page
      * @return the list of repository branches for the specified project ID
      *
      * @throws GitLabApiException if any exception occurs
@@ -132,26 +142,30 @@ public class RepositoryApi extends AbstractApi {
     /**
      * Get a single project repository branch.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/branches/:branch</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/branches/:branch</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param branchName the name of the branch to get
+     * @param branchName      the name of the branch to get
      * @return the branch info for the specified project ID/branch name pair
      * @throws GitLabApiException if any exception occurs
      */
     public Branch getBranch(Object projectIdOrPath, String branchName) throws GitLabApiException {
-        Response response = get(Response.Status.OK, null, "projects",
-                getProjectIdOrPath(projectIdOrPath), "repository", "branches", urlEncode(branchName));
+        Response response = get(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "repository",
+                "branches", urlEncode(branchName));
         return (response.readEntity(Branch.class));
     }
 
     /**
      * Get a List of repository branches from a project, sorted by name alphabetically, filter by the search term.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/branches?search=:search</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/branches?search=:search</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param search the branch name search term
+     * @param search          the branch name search term
      * @return the List of repository branches for the specified project ID and search term
      * @throws GitLabApiException if any exception occurs
      */
@@ -162,18 +176,21 @@ public class RepositoryApi extends AbstractApi {
     /**
      * Get a Pager of repository branches from a project, sorted by name alphabetically, filter by the search term.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/branches?search=:search</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/branches?search=:search</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param search the branch name search term
-     * @param itemsPerPage the number of Project instances that will be fetched per page
+     * @param search          the branch name search term
+     * @param itemsPerPage    the number of Project instances that will be fetched per page
      * @return the list of repository branches for the specified project ID and search term
      *
      * @throws GitLabApiException if any exception occurs
      */
-    public Pager<Branch> getBranches(Object projectIdOrPath, String search, int itemsPerPage) throws GitLabApiException {
-        MultivaluedMap<String, String> queryParams = (search == null ? null :
-                new GitLabApiForm().withParam("search", urlEncode(search)).asMap());
+    public Pager<Branch> getBranches(Object projectIdOrPath, String search, int itemsPerPage)
+            throws GitLabApiException {
+        MultivaluedMap<String, String> queryParams = (search == null ? null
+                : new GitLabApiForm().withParam("search", urlEncode(search)).asMap());
 
         return (new Pager<Branch>(this, Branch.class, itemsPerPage, queryParams, "projects",
                 getProjectIdOrPath(projectIdOrPath), "repository", "branches"));
@@ -182,10 +199,12 @@ public class RepositoryApi extends AbstractApi {
     /**
      * Get a Stream of repository branches from a project, sorted by name alphabetically, filter by the search term.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/branches?search=:search</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/branches?search=:search</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param search the branch name search term
+     * @param search          the branch name search term
      * @return the Stream of repository branches for the specified project ID and search term
      *
      * @throws GitLabApiException if any exception occurs
@@ -197,10 +216,12 @@ public class RepositoryApi extends AbstractApi {
     /**
      * Get an Optional instance with the value for the specific repository branch.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/branches/:branch</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/branches/:branch</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param branchName the name of the branch to get
+     * @param branchName      the name of the branch to get
      * @return an Optional instance with the info for the specified project ID/branch name pair as the value
      * @throws GitLabApiException if any exception occurs
      */
@@ -215,11 +236,13 @@ public class RepositoryApi extends AbstractApi {
     /**
      * Creates a branch for the project. Support as of version 6.8.x
      *
-     * <pre><code>GitLab Endpoint: POST /projects/:id/repository/branches</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: POST /projects/:id/repository/branches</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param branchName the name of the branch to create
-     * @param ref Source to create the branch from, can be an existing branch, tag or commit SHA
+     * @param branchName      the name of the branch to create
+     * @param ref             Source to create the branch from, can be an existing branch, tag or commit SHA
      * @return the branch info for the created branch
      * @throws GitLabApiException if any exception occurs
      */
@@ -236,39 +259,46 @@ public class RepositoryApi extends AbstractApi {
     /**
      * Delete a single project repository branch.
      *
-     * <pre><code>GitLab Endpoint: DELETE /projects/:id/repository/branches/:branch</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: DELETE /projects/:id/repository/branches/:branch</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param branchName the name of the branch to delete
+     * @param branchName      the name of the branch to delete
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteBranch(Object projectIdOrPath, String branchName) throws GitLabApiException {
-        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
-        delete(expectedStatus, null, "projects",
-                getProjectIdOrPath(projectIdOrPath), "repository", "branches", urlEncode(branchName));
+        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK
+                : Response.Status.NO_CONTENT);
+        delete(expectedStatus, null, "projects", getProjectIdOrPath(projectIdOrPath), "repository", "branches",
+                urlEncode(branchName));
     }
 
     /**
-     * Protects a single project repository branch. This is an idempotent function,
-     * protecting an already protected repository branch will not produce an error.
+     * Protects a single project repository branch. This is an idempotent function, protecting an already protected
+     * repository branch will not produce an error.
      *
-     * <pre><code>GitLab Endpoint: PUT /projects/:id/repository/branches/:branch/protect</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: PUT /projects/:id/repository/branches/:branch/protect</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param branchName the name of the branch to protect
+     * @param branchName      the name of the branch to protect
      * @return the branch info for the protected branch
      * @throws GitLabApiException if any exception occurs
      */
     public Branch protectBranch(Object projectIdOrPath, String branchName) throws GitLabApiException {
-        Response response = put(Response.Status.OK, null, "projects",
-                getProjectIdOrPath(projectIdOrPath), "repository", "branches", urlEncode(branchName), "protect");
+        Response response = put(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "repository",
+                "branches", urlEncode(branchName), "protect");
         return (response.readEntity(Branch.class));
     }
 
     /**
      * Get a list of repository files and directories in a project.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/tree</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/tree</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @return a tree with the root directories and files of a project
@@ -279,26 +309,30 @@ public class RepositoryApi extends AbstractApi {
     }
 
     /**
-     * Unprotects a single project repository branch. This is an idempotent function, unprotecting an
-     * already unprotected repository branch will not produce an error.
+     * Unprotects a single project repository branch. This is an idempotent function, unprotecting an already
+     * unprotected repository branch will not produce an error.
      *
-     * <pre><code>GitLab Endpoint: PUT /projects/:id/repository/branches/:branch/unprotect</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: PUT /projects/:id/repository/branches/:branch/unprotect</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param branchName the name of the branch to un-protect
+     * @param branchName      the name of the branch to un-protect
      * @return the branch info for the unprotected branch
      * @throws GitLabApiException if any exception occurs
      */
     public Branch unprotectBranch(Object projectIdOrPath, String branchName) throws GitLabApiException {
-        Response response = put(Response.Status.OK, null, "projects",
-                getProjectIdOrPath(projectIdOrPath), "repository", "branches", urlEncode(branchName), "unprotect");
+        Response response = put(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "repository",
+                "branches", urlEncode(branchName), "unprotect");
         return (response.readEntity(Branch.class));
     }
 
     /**
      * Get a Stream of repository files and directories in a project.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/tree</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/tree</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @return a Stream containing a tree with the root directories and files of a project
@@ -311,10 +345,12 @@ public class RepositoryApi extends AbstractApi {
     /**
      * Get a Pager of repository files and directories in a project.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/tree</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/tree</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param itemsPerPage the number of Project instances that will be fetched per page
+     * @param itemsPerPage    the number of Project instances that will be fetched per page
      * @return a Pager containing a tree with the root directories and files of a project
      * @throws GitLabApiException if any exception occurs
      */
@@ -325,15 +361,16 @@ public class RepositoryApi extends AbstractApi {
     /**
      * Get a list of repository files and directories in a project.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/tree</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/tree</code>
+     * </pre>
      *
-     * id (required) - The ID of a project
-     * path (optional) - The path inside repository. Used to get content of subdirectories
-     * ref_name (optional) - The name of a repository branch or tag or if not given the default branch
+     * id (required) - The ID of a project path (optional) - The path inside repository. Used to get content of
+     * subdirectories ref_name (optional) - The name of a repository branch or tag or if not given the default branch
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param filePath the path inside repository, used to get content of subdirectories
-     * @param refName the name of a repository branch or tag or if not given the default branch
+     * @param filePath        the path inside repository, used to get content of subdirectories
+     * @param refName         the name of a repository branch or tag or if not given the default branch
      * @return a tree with the directories and files of a project
      * @throws GitLabApiException if any exception occurs
      */
@@ -344,86 +381,93 @@ public class RepositoryApi extends AbstractApi {
     /**
      * Get a Pager of repository files and directories in a project.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/tree</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/tree</code>
+     * </pre>
      *
-     * id (required) - The ID of a project
-     * path (optional) - The path inside repository. Used to get content of subdirectories
-     * ref_name (optional) - The name of a repository branch or tag or if not given the default branch
+     * id (required) - The ID of a project path (optional) - The path inside repository. Used to get content of
+     * subdirectories ref_name (optional) - The name of a repository branch or tag or if not given the default branch
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param filePath the path inside repository, used to get content of subdirectories
-     * @param refName the name of a repository branch or tag or if not given the default branch
-     * @param itemsPerPage the number of Project instances that will be fetched per page
+     * @param filePath        the path inside repository, used to get content of subdirectories
+     * @param refName         the name of a repository branch or tag or if not given the default branch
+     * @param itemsPerPage    the number of Project instances that will be fetched per page
      * @return a Pager containing a tree with the directories and files of a project
      * @throws GitLabApiException if any exception occurs
      */
-    public Pager<TreeItem> getTree(Object projectIdOrPath, String filePath, String refName, int itemsPerPage) throws GitLabApiException {
+    public Pager<TreeItem> getTree(Object projectIdOrPath, String filePath, String refName, int itemsPerPage)
+            throws GitLabApiException {
         return (getTree(projectIdOrPath, filePath, refName, false, itemsPerPage));
     }
 
     /**
      * Get a Stream of repository files and directories in a project.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/tree</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/tree</code>
+     * </pre>
      *
-     * id (required) - The ID of a project
-     * path (optional) - The path inside repository. Used to get content of subdirectories
-     * ref_name (optional) - The name of a repository branch or tag or if not given the default branch
+     * id (required) - The ID of a project path (optional) - The path inside repository. Used to get content of
+     * subdirectories ref_name (optional) - The name of a repository branch or tag or if not given the default branch
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param filePath the path inside repository, used to get content of subdirectories
-     * @param refName the name of a repository branch or tag or if not given the default branch
+     * @param filePath        the path inside repository, used to get content of subdirectories
+     * @param refName         the name of a repository branch or tag or if not given the default branch
      * @return a Stream containing a tree with the directories and files of a project
      * @throws GitLabApiException if any exception occurs
      */
-    public Stream<TreeItem> getTreeStream(Object projectIdOrPath, String filePath, String refName) throws GitLabApiException {
+    public Stream<TreeItem> getTreeStream(Object projectIdOrPath, String filePath, String refName)
+            throws GitLabApiException {
         return (getTreeStream(projectIdOrPath, filePath, refName, false));
     }
 
     /**
      * Get a list of repository files and directories in a project.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/tree</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/tree</code>
+     * </pre>
      *
-     * id (required) - The ID of a project
-     * path (optional) - The path inside repository. Used to get contend of subdirectories
-     * ref_name (optional) - The name of a repository branch or tag or if not given the default branch
+     * id (required) - The ID of a project path (optional) - The path inside repository. Used to get contend of
+     * subdirectories ref_name (optional) - The name of a repository branch or tag or if not given the default branch
      * recursive (optional) - Boolean value used to get a recursive tree (false by default)
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param filePath the path inside repository, used to get content of subdirectories
-     * @param refName the name of a repository branch or tag or if not given the default branch
-     * @param recursive flag to get a recursive tree or not
+     * @param filePath        the path inside repository, used to get content of subdirectories
+     * @param refName         the name of a repository branch or tag or if not given the default branch
+     * @param recursive       flag to get a recursive tree or not
      * @return a tree with the directories and files of a project
      * @throws GitLabApiException if any exception occurs
      */
-    public List<TreeItem> getTree(Object projectIdOrPath, String filePath, String refName, Boolean recursive) throws GitLabApiException {
+    public List<TreeItem> getTree(Object projectIdOrPath, String filePath, String refName, Boolean recursive)
+            throws GitLabApiException {
         return (getTree(projectIdOrPath, filePath, refName, recursive, getDefaultPerPage()).all());
     }
 
     /**
      * Get a Pager of repository files and directories in a project.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/tree</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/tree</code>
+     * </pre>
      *
-     * id (required) - The ID of a project
-     * path (optional) - The path inside repository. Used to get contend of subdirectories
-     * ref_name (optional) - The name of a repository branch or tag or if not given the default branch
+     * id (required) - The ID of a project path (optional) - The path inside repository. Used to get contend of
+     * subdirectories ref_name (optional) - The name of a repository branch or tag or if not given the default branch
      * recursive (optional) - Boolean value used to get a recursive tree (false by default)
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param filePath the path inside repository, used to get content of subdirectories
-     * @param refName the name of a repository branch or tag or if not given the default branch
-     * @param recursive flag to get a recursive tree or not
-     * @param itemsPerPage the number of Project instances that will be fetched per page
+     * @param filePath        the path inside repository, used to get content of subdirectories
+     * @param refName         the name of a repository branch or tag or if not given the default branch
+     * @param recursive       flag to get a recursive tree or not
+     * @param itemsPerPage    the number of Project instances that will be fetched per page
      * @return a tree with the directories and files of a project
      * @throws GitLabApiException if any exception occurs
      */
-    public Pager<TreeItem> getTree(Object projectIdOrPath, String filePath, String refName, Boolean recursive, int itemsPerPage) throws GitLabApiException {
-        Form formData = new GitLabApiForm()
-                .withParam("id", getProjectIdOrPath(projectIdOrPath), true)
-                .withParam("path", filePath, false)
-                .withParam(isApiVersion(ApiVersion.V3) ? "ref_name" : "ref", (refName != null ? urlEncode(refName) : null), false)
+    public Pager<TreeItem> getTree(Object projectIdOrPath, String filePath, String refName, Boolean recursive,
+            int itemsPerPage) throws GitLabApiException {
+        Form formData = new GitLabApiForm().withParam("id", getProjectIdOrPath(projectIdOrPath), true)
+                .withParam("path", filePath, false).withParam(isApiVersion(ApiVersion.V3) ? "ref_name" : "ref",
+                        (refName != null ? urlEncode(refName) : null), false)
                 .withParam("recursive", recursive, false);
         return (new Pager<TreeItem>(this, TreeItem.class, itemsPerPage, formData.asMap(), "projects",
                 getProjectIdOrPath(projectIdOrPath), "repository", "tree"));
@@ -432,69 +476,79 @@ public class RepositoryApi extends AbstractApi {
     /**
      * Get a Stream of repository files and directories in a project.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/tree</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/tree</code>
+     * </pre>
      *
-     * id (required) - The ID of a project
-     * path (optional) - The path inside repository. Used to get contend of subdirectories
-     * ref_name (optional) - The name of a repository branch or tag or if not given the default branch
+     * id (required) - The ID of a project path (optional) - The path inside repository. Used to get contend of
+     * subdirectories ref_name (optional) - The name of a repository branch or tag or if not given the default branch
      * recursive (optional) - Boolean value used to get a recursive tree (false by default)
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param filePath the path inside repository, used to get content of subdirectories
-     * @param refName the name of a repository branch or tag or if not given the default branch
-     * @param recursive flag to get a recursive tree or not
+     * @param filePath        the path inside repository, used to get content of subdirectories
+     * @param refName         the name of a repository branch or tag or if not given the default branch
+     * @param recursive       flag to get a recursive tree or not
      * @return a Stream containing a tree with the directories and files of a project
      * @throws GitLabApiException if any exception occurs
      */
-    public Stream<TreeItem> getTreeStream(Object projectIdOrPath, String filePath, String refName, Boolean recursive) throws GitLabApiException {
+    public Stream<TreeItem> getTreeStream(Object projectIdOrPath, String filePath, String refName, Boolean recursive)
+            throws GitLabApiException {
         return (getTree(projectIdOrPath, filePath, refName, recursive, getDefaultPerPage()).stream());
     }
 
     /**
      * Get the raw file contents for a blob by blob SHA.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/raw_blobs/:sha</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/raw_blobs/:sha</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param sha the SHA of the file to get the contents for
+     * @param sha             the SHA of the file to get the contents for
      * @return the raw file contents for the blob on an InputStream
      * @throws GitLabApiException if any exception occurs
      */
     public InputStream getRawBlobContent(Object projectIdOrPath, String sha) throws GitLabApiException {
-        Response response = getWithAccepts(Response.Status.OK, null, MediaType.MEDIA_TYPE_WILDCARD,
-                "projects", getProjectIdOrPath(projectIdOrPath), "repository", "blobs", sha, "raw");
+        Response response = getWithAccepts(Response.Status.OK, null, MediaType.MEDIA_TYPE_WILDCARD, "projects",
+                getProjectIdOrPath(projectIdOrPath), "repository", "blobs", sha, "raw");
         return (response.readEntity(InputStream.class));
     }
 
     /**
      * Get an archive of the complete repository by SHA (optional) and Path (optional).
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/archive</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/archive</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param params params for getting file archive of the repository
+     * @param params          params for getting file archive of the repository
      * @return an input stream that can be used to save as a file or to read the content of the archive
      * @throws GitLabApiException if any exception occurs
      */
-    public InputStream getRepositoryArchive(Object projectIdOrPath, RepositoryArchiveParams params) throws GitLabApiException {
+    public InputStream getRepositoryArchive(Object projectIdOrPath, RepositoryArchiveParams params)
+            throws GitLabApiException {
         GitLabApiForm formData = params.getForm();
-        Response response = getWithAccepts(Response.Status.OK, formData.asMap(), MediaType.WILDCARD,
-                "projects", getProjectIdOrPath(projectIdOrPath), "repository", "archive");
+        Response response = getWithAccepts(Response.Status.OK, formData.asMap(), MediaType.WILDCARD, "projects",
+                getProjectIdOrPath(projectIdOrPath), "repository", "archive");
         return (response.readEntity(InputStream.class));
     }
 
     /**
      * Get an archive of the complete repository by SHA (optional) and Path (optional).
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/archive</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/archive</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param params params for getting file archive of the repository
-     * @param format The archive format, defaults to "tar.gz" if null
+     * @param params          params for getting file archive of the repository
+     * @param format          The archive format, defaults to "tar.gz" if null
      * @return an input stream that can be used to save as a file or to read the content of the archive
      * @throws GitLabApiException if format is not a valid archive format or any exception occurs
      */
-    public InputStream getRepositoryArchive(Object projectIdOrPath, RepositoryArchiveParams params, String format) throws GitLabApiException {
+    public InputStream getRepositoryArchive(Object projectIdOrPath, RepositoryArchiveParams params, String format)
+            throws GitLabApiException {
         ArchiveFormat archiveFormat = ArchiveFormat.forValue(format);
         return (getRepositoryArchive(projectIdOrPath, params, archiveFormat));
     }
@@ -502,50 +556,58 @@ public class RepositoryApi extends AbstractApi {
     /**
      * Get an archive of the complete repository by SHA (optional) and Path (optional).
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/archive</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/archive</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param params params for getting file archive of the repository
-     * @param format The archive format, defaults to TAR_GZ if null
+     * @param params          params for getting file archive of the repository
+     * @param format          The archive format, defaults to TAR_GZ if null
      * @return an input stream that can be used to save as a file or to read the content of the archive
      * @throws GitLabApiException if any exception occurs
      */
-    public InputStream getRepositoryArchive(Object projectIdOrPath, RepositoryArchiveParams params, ArchiveFormat format) throws GitLabApiException {
+    public InputStream getRepositoryArchive(Object projectIdOrPath, RepositoryArchiveParams params,
+            ArchiveFormat format) throws GitLabApiException {
 
         if (format == null) {
             format = ArchiveFormat.TAR_GZ;
         }
 
         /*
-         * Gitlab-ce has a bug when you try to download file archives with format by using "&format=zip(or tar... etc.)",
-         * there is a solution to request .../archive.:format instead of .../archive?format=:format.
+         * Gitlab-ce has a bug when you try to download file archives with format by using
+         * "&format=zip(or tar... etc.)", there is a solution to request .../archive.:format instead of
+         * .../archive?format=:format.
          *
-         * Issue:  https://gitlab.com/gitlab-org/gitlab-ce/issues/45992
-         *         https://gitlab.com/gitlab-com/support-forum/issues/3067
+         * Issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/45992
+         * https://gitlab.com/gitlab-com/support-forum/issues/3067
          */
         Form formData = params.getForm();
-        Response response = getWithAccepts(Response.Status.OK, formData.asMap(), MediaType.WILDCARD,
-                "projects", getProjectIdOrPath(projectIdOrPath), "repository", "archive" + "." + format);
+        Response response = getWithAccepts(Response.Status.OK, formData.asMap(), MediaType.WILDCARD, "projects",
+                getProjectIdOrPath(projectIdOrPath), "repository", "archive" + "." + format);
         return (response.readEntity(InputStream.class));
     }
 
     /**
-     * Get an archive of the complete repository by SHA (optional) and Path (optional) and saves to the specified directory.
-     * If the archive already exists in the directory it will be overwritten.
+     * Get an archive of the complete repository by SHA (optional) and Path (optional) and saves to the specified
+     * directory. If the archive already exists in the directory it will be overwritten.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/archive</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/archive</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param params params for getting file archive of the repository
-     * @param directory the File instance of the directory to save the archive to, if null will use "java.io.tmpdir"
+     * @param params          params for getting file archive of the repository
+     * @param directory       the File instance of the directory to save the archive to, if null will use
+     *                        "java.io.tmpdir"
      * @return a File instance pointing to the downloaded instance
      * @throws GitLabApiException if any exception occurs
      */
-    public File getRepositoryArchive(Object projectIdOrPath, RepositoryArchiveParams params, File directory) throws GitLabApiException {
+    public File getRepositoryArchive(Object projectIdOrPath, RepositoryArchiveParams params, File directory)
+            throws GitLabApiException {
 
         Form formData = params.getForm();
-        Response response = getWithAccepts(Response.Status.OK, formData.asMap(), MediaType.WILDCARD,
-                "projects", getProjectIdOrPath(projectIdOrPath), "repository", "archive");
+        Response response = getWithAccepts(Response.Status.OK, formData.asMap(), MediaType.WILDCARD, "projects",
+                getProjectIdOrPath(projectIdOrPath), "repository", "archive");
 
         try {
 
@@ -565,52 +627,61 @@ public class RepositoryApi extends AbstractApi {
     }
 
     /**
-     * Get an archive of the complete repository by SHA (optional) and Path (optional) and saves to the specified directory.
-     * If the archive already exists in the directory it will be overwritten.
+     * Get an archive of the complete repository by SHA (optional) and Path (optional) and saves to the specified
+     * directory. If the archive already exists in the directory it will be overwritten.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/archive</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/archive</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param params params for getting file archive of the repository
-     * @param directory the File instance of the directory to save the archive to, if null will use "java.io.tmpdir"
-     * @param format The archive format, defaults to "tar.gz" if null
+     * @param params          params for getting file archive of the repository
+     * @param directory       the File instance of the directory to save the archive to, if null will use
+     *                        "java.io.tmpdir"
+     * @param format          The archive format, defaults to "tar.gz" if null
      * @return a File instance pointing to the downloaded instance
      * @throws GitLabApiException if format is not a valid archive format or any exception occurs
      */
-    public File getRepositoryArchive(Object projectIdOrPath, RepositoryArchiveParams params, File directory, String format) throws GitLabApiException {
+    public File getRepositoryArchive(Object projectIdOrPath, RepositoryArchiveParams params, File directory,
+            String format) throws GitLabApiException {
         ArchiveFormat archiveFormat = ArchiveFormat.forValue(format);
         return (getRepositoryArchive(projectIdOrPath, params, directory, archiveFormat));
     }
 
     /**
-     * Get an archive of the complete repository by SHA (optional) and Path (optional) and saves to the specified directory.
-     * If the archive already exists in the directory it will be overwritten.
+     * Get an archive of the complete repository by SHA (optional) and Path (optional) and saves to the specified
+     * directory. If the archive already exists in the directory it will be overwritten.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/archive</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/archive</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param params params for getting file archive of the repository
-     * @param directory the File instance of the directory to save the archive to, if null will use "java.io.tmpdir"
-     * @param format The archive format, defaults to TAR_GZ if null
+     * @param params          params for getting file archive of the repository
+     * @param directory       the File instance of the directory to save the archive to, if null will use
+     *                        "java.io.tmpdir"
+     * @param format          The archive format, defaults to TAR_GZ if null
      * @return a File instance pointing to the downloaded instance
      * @throws GitLabApiException if any exception occurs
      */
-    public File getRepositoryArchive(Object projectIdOrPath, RepositoryArchiveParams params, File directory, ArchiveFormat format) throws GitLabApiException {
+    public File getRepositoryArchive(Object projectIdOrPath, RepositoryArchiveParams params, File directory,
+            ArchiveFormat format) throws GitLabApiException {
 
         if (format == null) {
             format = ArchiveFormat.TAR_GZ;
         }
 
         /*
-         * Gitlab-ce has a bug when you try to download file archives with format by using "&format=zip(or tar... etc.)",
-         * there is a solution to request .../archive.:format instead of .../archive?format=:format.
+         * Gitlab-ce has a bug when you try to download file archives with format by using
+         * "&format=zip(or tar... etc.)", there is a solution to request .../archive.:format instead of
+         * .../archive?format=:format.
          *
-         * Issue:  https://gitlab.com/gitlab-org/gitlab-ce/issues/45992
-         *         https://gitlab.com/gitlab-com/support-forum/issues/3067
+         * Issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/45992
+         * https://gitlab.com/gitlab-com/support-forum/issues/3067
          */
         Form formData = params.getForm();
-        Response response = getWithAccepts(Response.Status.OK, formData.asMap(), MediaType.WILDCARD,
-                "projects", getProjectIdOrPath(projectIdOrPath), "repository", "archive" + "." + format.toString());
+        Response response = getWithAccepts(Response.Status.OK, formData.asMap(), MediaType.WILDCARD, "projects",
+                getProjectIdOrPath(projectIdOrPath), "repository", "archive" + "." + format.toString());
 
         try {
 
@@ -630,34 +701,33 @@ public class RepositoryApi extends AbstractApi {
     }
 
     /**
-     * Compare branches, tags or commits. This can be accessed without authentication
-     * if the repository is publicly accessible.
+     * Compare branches, tags or commits. This can be accessed without authentication if the repository is publicly
+     * accessible.
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param from the commit SHA or branch name
-     * @param to the commit SHA or branch name
-     * @param straight specifies the comparison method, true for direct comparison between from and to (from..to),
-     *          false to compare using merge base (from…to)’.
+     * @param from            the commit SHA or branch name
+     * @param to              the commit SHA or branch name
+     * @param straight        specifies the comparison method, true for direct comparison between from and to
+     *                        (from..to), false to compare using merge base (from…to)’.
      * @return a CompareResults containing the results of the comparison
      * @throws GitLabApiException if any exception occurs
      */
-    public CompareResults compare(Object projectIdOrPath, String from, String to, boolean straight) throws GitLabApiException {
-        Form formData = new GitLabApiForm()
-                .withParam("from", from, true)
-                .withParam("to", to, true)
+    public CompareResults compare(Object projectIdOrPath, String from, String to, boolean straight)
+            throws GitLabApiException {
+        Form formData = new GitLabApiForm().withParam("from", from, true).withParam("to", to, true)
                 .withParam("straight", straight);
-        Response response = get(Response.Status.OK, formData.asMap(), "projects",
-                getProjectIdOrPath(projectIdOrPath), "repository", "compare");
+        Response response = get(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
+                "repository", "compare");
         return (response.readEntity(CompareResults.class));
     }
 
     /**
-     * Compare branches, tags or commits. This can be accessed without authentication
-     * if the repository is publicly accessible.
+     * Compare branches, tags or commits. This can be accessed without authentication if the repository is publicly
+     * accessible.
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param from the commit SHA or branch name
-     * @param to the commit SHA or branch name
+     * @param from            the commit SHA or branch name
+     * @param to              the commit SHA or branch name
      * @return a CompareResults containing the results of the comparison
      * @throws GitLabApiException if any exception occurs
      */
@@ -668,7 +738,9 @@ public class RepositoryApi extends AbstractApi {
     /**
      * Get a list of contributors from a project.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/contributors</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/contributors</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @return a List containing the contributors for the specified project ID
@@ -681,17 +753,19 @@ public class RepositoryApi extends AbstractApi {
     /**
      * Get a list of contributors from a project and in the specified page range.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/contributors</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/contributors</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param page the page to get
-     * @param perPage the number of projects per page
+     * @param page            the page to get
+     * @param perPage         the number of projects per page
      * @return a List containing the contributors for the specified project ID
      * @throws GitLabApiException if any exception occurs
      */
     public List<Contributor> getContributors(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
-        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage),
-                "projects", getProjectIdOrPath(projectIdOrPath), "repository", "contributors");
+        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
+                getProjectIdOrPath(projectIdOrPath), "repository", "contributors");
         return (response.readEntity(new GenericType<List<Contributor>>() {
         }));
     }
@@ -699,17 +773,21 @@ public class RepositoryApi extends AbstractApi {
     /**
      * Get a list of contributors from a project and in the specified page range, sorted by specified param.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/contributors</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/contributors</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param page the page to get
-     * @param perPage the number of projects per page
-     * @param orderBy (optional param) returns contributors ordered by NAME, EMAIL, or COMMITS. Default is COMMITS
-     * @param sortOrder (optional param) returns contributors sorted in ASC or DESC order. Default is ASC
+     * @param page            the page to get
+     * @param perPage         the number of projects per page
+     * @param orderBy         (optional param) returns contributors ordered by NAME, EMAIL, or COMMITS. Default is
+     *                        COMMITS
+     * @param sortOrder       (optional param) returns contributors sorted in ASC or DESC order. Default is ASC
      * @return a List containing the contributors for the specified project ID
      * @throws GitLabApiException if any exception occurs
      */
-    public List<Contributor> getContributors(Object projectIdOrPath, int page, int perPage, ContributorOrderBy orderBy, SortOrder sortOrder) throws GitLabApiException {
+    public List<Contributor> getContributors(Object projectIdOrPath, int page, int perPage, ContributorOrderBy orderBy,
+            SortOrder sortOrder) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam(PAGE_PARAM, page).withParam(PER_PAGE_PARAM, perPage);
         if (sortOrder != null) {
             formData.withParam("sort", sortOrder, false);
@@ -719,8 +797,8 @@ public class RepositoryApi extends AbstractApi {
             formData.withParam("order_by", orderBy, false);
         }
 
-        Response response = get(Response.Status.OK, formData.asMap(),
-                "projects", getProjectIdOrPath(projectIdOrPath), "repository", "contributors");
+        Response response = get(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
+                "repository", "contributors");
         return (response.readEntity(new GenericType<List<Contributor>>() {
         }));
     }
@@ -728,10 +806,12 @@ public class RepositoryApi extends AbstractApi {
     /**
      * Get a Pager of contributors from a project.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/contributors</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/contributors</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param itemsPerPage the number of Project instances that will be fetched per page
+     * @param itemsPerPage    the number of Project instances that will be fetched per page
      * @return a Pager containing the contributors for the specified project ID
      * @throws GitLabApiException if any exception occurs
      */
@@ -743,7 +823,9 @@ public class RepositoryApi extends AbstractApi {
     /**
      * Get a list of contributors from a project.
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/contributors</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/contributors</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @return a List containing the contributors for the specified project ID
@@ -756,10 +838,12 @@ public class RepositoryApi extends AbstractApi {
     /**
      * Get the common ancestor for 2 or more refs (commit SHAs, branch names or tags).
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/merge_base</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/merge_base</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param refs a List of 2 or more refs (commit SHAs, branch names or tags)
+     * @param refs            a List of 2 or more refs (commit SHAs, branch names or tags)
      * @return the Commit instance containing the common ancestor
      * @throws GitLabApiException if any exception occurs
      */
@@ -781,13 +865,15 @@ public class RepositoryApi extends AbstractApi {
     }
 
     /**
-     * Get an Optional instance with the value of the common ancestor
-     * for 2 or more refs (commit SHAs, branch names or tags).
+     * Get an Optional instance with the value of the common ancestor for 2 or more refs (commit SHAs, branch names or
+     * tags).
      *
-     * <pre><code>GitLab Endpoint: GET /projects/:id/repository/merge_base</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/merge_base</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @param refs a List of 2 or more refs (commit SHAs, branch names or tags)
+     * @param refs            a List of 2 or more refs (commit SHAs, branch names or tags)
      * @return an Optional instance with the Commit instance containing the common ancestor as the value
      * @throws GitLabApiException if any exception occurs
      */
@@ -800,23 +886,29 @@ public class RepositoryApi extends AbstractApi {
     }
 
     /**
-     * <p>Delete all branches that are merged into the project’s default branch.</p>
+     * <p>
+     * Delete all branches that are merged into the project’s default branch.
+     * </p>
      * NOTE: Protected branches will not be deleted as part of this operation.
      *
-     * <pre><code>GitLab Endpoint: /projects/:id/repository/merged_branches</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: /projects/:id/repository/merged_branches</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteMergedBranches(Object projectIdOrPath) throws GitLabApiException {
-        delete(Response.Status.NO_CONTENT, null, "projects",
-                getProjectIdOrPath(projectIdOrPath), "repository", "merged_branches");
+        delete(Response.Status.NO_CONTENT, null, "projects", getProjectIdOrPath(projectIdOrPath), "repository",
+                "merged_branches");
     }
 
     /**
      * Generate changelog data based on commits in a repository.
      *
-     * <pre><code>GitLab Endpoint: POST /projects/:id/repository/changelog</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: POST /projects/:id/repository/changelog</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param version         the version to generate the changelog for
@@ -829,15 +921,17 @@ public class RepositoryApi extends AbstractApi {
     /**
      * Generate changelog data based on commits in a repository.
      *
-     * <pre><code>GitLab Endpoint: POST /projects/:id/repository/changelog</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: POST /projects/:id/repository/changelog</code>
+     * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param payload         the payload to generate the changelog for
      * @throws GitLabApiException if any exception occurs
      */
     public void generateChangelog(Object projectIdOrPath, ChangelogPayload payload) throws GitLabApiException {
-        post(Response.Status.OK, payload.getFormData(), "projects",
-                getProjectIdOrPath(projectIdOrPath), "repository", "changelog");
+        post(Response.Status.OK, payload.getFormData(), "projects", getProjectIdOrPath(projectIdOrPath), "repository",
+                "changelog");
     }
 
 }

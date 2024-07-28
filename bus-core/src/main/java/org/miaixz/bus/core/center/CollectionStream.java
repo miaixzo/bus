@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center;
 
 import org.miaixz.bus.core.lang.Optional;
@@ -45,8 +45,7 @@ import java.util.stream.Collectors;
 public class CollectionStream extends CollectionValidator {
 
     /**
-     * 将collection转化为类型不变的map
-     * <B>{@code Collection<V>  ---->  Map<K,V>}</B>
+     * 将collection转化为类型不变的map <B>{@code Collection<V>  ---->  Map<K,V>}</B>
      *
      * @param collection 需要转化的集合
      * @param key        V类型转化为K类型的lambda方法
@@ -59,8 +58,7 @@ public class CollectionStream extends CollectionValidator {
     }
 
     /**
-     * 将collection转化为类型不变的map
-     * <B>{@code Collection<V>  ---->  Map<K,V>}</B>
+     * 将collection转化为类型不变的map <B>{@code Collection<V>  ---->  Map<K,V>}</B>
      *
      * @param collection 需要转化的集合
      * @param key        V类型转化为K类型的lambda方法
@@ -69,7 +67,8 @@ public class CollectionStream extends CollectionValidator {
      * @param <K>        map中的key类型
      * @return 转化后的map
      */
-    public static <V, K> Map<K, V> toIdentityMap(final Collection<V> collection, final Function<V, K> key, final boolean isParallel) {
+    public static <V, K> Map<K, V> toIdentityMap(final Collection<V> collection, final Function<V, K> key,
+            final boolean isParallel) {
         if (CollKit.isEmpty(collection)) {
             return MapKit.zero();
         }
@@ -77,8 +76,7 @@ public class CollectionStream extends CollectionValidator {
     }
 
     /**
-     * 将Collection转化为map(value类型与collection的泛型不同)
-     * <B>{@code Collection<E> -----> Map<K,V>  }</B>
+     * 将Collection转化为map(value类型与collection的泛型不同) <B>{@code Collection<E> -----> Map<K,V>  }</B>
      *
      * @param collection 需要转化的集合
      * @param key        E类型转化为K类型的lambda方法
@@ -88,7 +86,8 @@ public class CollectionStream extends CollectionValidator {
      * @param <V>        map中的value类型
      * @return 转化后的map
      */
-    public static <E, K, V> Map<K, V> toMap(final Collection<E> collection, final Function<E, K> key, final Function<E, V> value) {
+    public static <E, K, V> Map<K, V> toMap(final Collection<E> collection, final Function<E, K> key,
+            final Function<E, V> value) {
         return toMap(collection, key, value, false);
     }
 
@@ -102,18 +101,17 @@ public class CollectionStream extends CollectionValidator {
      * @param <V>        map中的value类型
      * @return 转化后的map
      */
-    public static <E, K, V> Map<K, V> toMap(final Collection<E> collection, final Function<E, K> key, final Function<E, V> value, final boolean isParallel) {
+    public static <E, K, V> Map<K, V> toMap(final Collection<E> collection, final Function<E, K> key,
+            final Function<E, V> value, final boolean isParallel) {
         if (CollKit.isEmpty(collection)) {
             return MapKit.zero();
         }
-        return StreamKit.of(collection, isParallel)
-                .collect(HashMap::new, (m, v) -> m.put(key.apply(v), value.apply(v)), HashMap::putAll);
+        return StreamKit.of(collection, isParallel).collect(HashMap::new, (m, v) -> m.put(key.apply(v), value.apply(v)),
+                HashMap::putAll);
     }
 
-
     /**
-     * 将collection按照规则(比如有相同的班级id)分组成map
-     * <B>{@code Collection<E> -------> Map<K,List<E>> } </B>
+     * 将collection按照规则(比如有相同的班级id)分组成map <B>{@code Collection<E> -------> Map<K,List<E>> } </B>
      *
      * @param collection 需要分组的集合
      * @param key        分组的规则
@@ -126,8 +124,7 @@ public class CollectionStream extends CollectionValidator {
     }
 
     /**
-     * 将collection按照规则(比如有相同的班级id)分组成map
-     * <B>{@code Collection<E> -------> Map<K,List<E>> } </B>
+     * 将collection按照规则(比如有相同的班级id)分组成map <B>{@code Collection<E> -------> Map<K,List<E>> } </B>
      *
      * @param collection 需要分组的集合
      * @param key        键分组的规则
@@ -136,7 +133,8 @@ public class CollectionStream extends CollectionValidator {
      * @param <K>        map中的key类型
      * @return 分组后的map
      */
-    public static <E, K> Map<K, List<E>> groupByKey(final Collection<E> collection, final Function<E, K> key, final boolean isParallel) {
+    public static <E, K> Map<K, List<E>> groupByKey(final Collection<E> collection, final Function<E, K> key,
+            final boolean isParallel) {
         if (CollKit.isEmpty(collection)) {
             return MapKit.zero();
         }
@@ -144,8 +142,7 @@ public class CollectionStream extends CollectionValidator {
     }
 
     /**
-     * 将collection按照两个规则(比如有相同的年级id,班级id)分组成双层map
-     * <B>{@code Collection<E>  --->  Map<T,Map<U,List<E>>> } </B>
+     * 将collection按照两个规则(比如有相同的年级id,班级id)分组成双层map <B>{@code Collection<E>  --->  Map<T,Map<U,List<E>>> } </B>
      *
      * @param collection 需要分组的集合
      * @param key1       第一个分组的规则
@@ -155,14 +152,13 @@ public class CollectionStream extends CollectionValidator {
      * @param <U>        第二个map中的key类型
      * @return 分组后的map
      */
-    public static <E, K, U> Map<K, Map<U, List<E>>> groupBy2Key(final Collection<E> collection, final Function<E, K> key1, final Function<E, U> key2) {
+    public static <E, K, U> Map<K, Map<U, List<E>>> groupBy2Key(final Collection<E> collection,
+            final Function<E, K> key1, final Function<E, U> key2) {
         return groupBy2Key(collection, key1, key2, false);
     }
 
-
     /**
-     * 将collection按照两个规则(比如有相同的年级id,班级id)分组成双层map
-     * <B>{@code Collection<E>  --->  Map<T,Map<U,List<E>>> } </B>
+     * 将collection按照两个规则(比如有相同的年级id,班级id)分组成双层map <B>{@code Collection<E>  --->  Map<T,Map<U,List<E>>> } </B>
      *
      * @param collection 需要分组的集合
      * @param key1       第一个分组的规则
@@ -173,8 +169,8 @@ public class CollectionStream extends CollectionValidator {
      * @param <U>        第二个map中的key类型
      * @return 分组后的map
      */
-    public static <E, K, U> Map<K, Map<U, List<E>>> groupBy2Key(final Collection<E> collection, final Function<E, K> key1,
-                                                                final Function<E, U> key2, final boolean isParallel) {
+    public static <E, K, U> Map<K, Map<U, List<E>>> groupBy2Key(final Collection<E> collection,
+            final Function<E, K> key1, final Function<E, U> key2, final boolean isParallel) {
         if (CollKit.isEmpty(collection)) {
             return MapKit.zero();
         }
@@ -182,8 +178,7 @@ public class CollectionStream extends CollectionValidator {
     }
 
     /**
-     * 将collection按照两个规则(比如有相同的年级id,班级id)分组成双层map
-     * <B>{@code Collection<E>  --->  Map<T,Map<U,E>> } </B>
+     * 将collection按照两个规则(比如有相同的年级id,班级id)分组成双层map <B>{@code Collection<E>  --->  Map<T,Map<U,E>> } </B>
      *
      * @param collection 需要分组的集合
      * @param key1       第一个分组的规则
@@ -193,13 +188,13 @@ public class CollectionStream extends CollectionValidator {
      * @param <E>        collection中的泛型
      * @return 分组后的map
      */
-    public static <E, T, U> Map<T, Map<U, E>> group2Map(final Collection<E> collection, final Function<E, T> key1, final Function<E, U> key2) {
+    public static <E, T, U> Map<T, Map<U, E>> group2Map(final Collection<E> collection, final Function<E, T> key1,
+            final Function<E, U> key2) {
         return group2Map(collection, key1, key2, false);
     }
 
     /**
-     * 将collection按照两个规则(比如有相同的年级id,班级id)分组成双层map
-     * <B>{@code Collection<E>  --->  Map<T,Map<U,E>> } </B>
+     * 将collection按照两个规则(比如有相同的年级id,班级id)分组成双层map <B>{@code Collection<E>  --->  Map<T,Map<U,E>> } </B>
      *
      * @param collection 需要分组的集合
      * @param key1       第一个分组的规则
@@ -210,8 +205,8 @@ public class CollectionStream extends CollectionValidator {
      * @param <E>        collection中的泛型
      * @return 分组后的map
      */
-    public static <E, T, U> Map<T, Map<U, E>> group2Map(final Collection<E> collection,
-                                                        final Function<E, T> key1, final Function<E, U> key2, final boolean isParallel) {
+    public static <E, T, U> Map<T, Map<U, E>> group2Map(final Collection<E> collection, final Function<E, T> key1,
+            final Function<E, U> key2, final boolean isParallel) {
         if (CollKit.isEmpty(collection) || key1 == null || key2 == null) {
             return MapKit.zero();
         }
@@ -219,8 +214,7 @@ public class CollectionStream extends CollectionValidator {
     }
 
     /**
-     * 将collection按照规则(比如有相同的班级id)分组成map，map中的key为班级id，value为班级名
-     * <B>{@code Collection<E> -------> Map<K,List<V>> } </B>
+     * 将collection按照规则(比如有相同的班级id)分组成map，map中的key为班级id，value为班级名 <B>{@code Collection<E> -------> Map<K,List<V>> } </B>
      *
      * @param collection 需要分组的集合
      * @param key        键分组的规则
@@ -231,13 +225,12 @@ public class CollectionStream extends CollectionValidator {
      * @return 分组后的map
      */
     public static <E, K, V> Map<K, List<V>> groupKeyValue(final Collection<E> collection, final Function<E, K> key,
-                                                          final Function<E, V> value) {
+            final Function<E, V> value) {
         return groupKeyValue(collection, key, value, false);
     }
 
     /**
-     * 将collection按照规则(比如有相同的班级id)分组成map，map中的key为班级id，value为班级名
-     * <B>{@code Collection<E> -------> Map<K,List<V>> } </B>
+     * 将collection按照规则(比如有相同的班级id)分组成map，map中的key为班级id，value为班级名 <B>{@code Collection<E> -------> Map<K,List<V>> } </B>
      *
      * @param collection 需要分组的集合
      * @param key        键分组的规则
@@ -249,11 +242,13 @@ public class CollectionStream extends CollectionValidator {
      * @return 分组后的map
      */
     public static <E, K, V> Map<K, List<V>> groupKeyValue(final Collection<E> collection, final Function<E, K> key,
-                                                          final Function<E, V> value, final boolean isParallel) {
+            final Function<E, V> value, final boolean isParallel) {
         if (CollKit.isEmpty(collection)) {
             return MapKit.zero();
         }
-        return groupBy(collection, key, Collectors.mapping(v -> Optional.ofNullable(v).map(value).orElse(null), Collectors.toList()), isParallel);
+        return groupBy(collection, key,
+                Collectors.mapping(v -> Optional.ofNullable(v).map(value).orElse(null), Collectors.toList()),
+                isParallel);
     }
 
     /**
@@ -267,7 +262,8 @@ public class CollectionStream extends CollectionValidator {
      * @param <D>        后续操作的返回值
      * @return 分组后的map
      */
-    public static <E, K, D> Map<K, D> groupBy(final Collection<E> collection, final Function<E, K> key, final Collector<E, ?, D> downstream) {
+    public static <E, K, D> Map<K, D> groupBy(final Collection<E> collection, final Function<E, K> key,
+            final Collector<E, ?, D> downstream) {
         if (CollKit.isEmpty(collection)) {
             return MapKit.zero();
         }
@@ -287,7 +283,8 @@ public class CollectionStream extends CollectionValidator {
      * @return 分组后的map
      * @see Collectors#groupingBy(Function, Collector)
      */
-    public static <E, K, D> Map<K, D> groupBy(final Collection<E> collection, final Function<E, K> key, final Collector<E, ?, D> downstream, final boolean isParallel) {
+    public static <E, K, D> Map<K, D> groupBy(final Collection<E> collection, final Function<E, K> key,
+            final Collector<E, ?, D> downstream, final boolean isParallel) {
         if (CollKit.isEmpty(collection)) {
             return MapKit.zero();
         }
@@ -295,8 +292,7 @@ public class CollectionStream extends CollectionValidator {
     }
 
     /**
-     * 将collection转化为List集合，但是两者的泛型不同
-     * <B>{@code Collection<E>  ------>  List<T> } </B>
+     * 将collection转化为List集合，但是两者的泛型不同 <B>{@code Collection<E>  ------>  List<T> } </B>
      *
      * @param collection 需要转化的集合
      * @param function   collection中的泛型转化为list泛型的lambda表达式
@@ -309,8 +305,7 @@ public class CollectionStream extends CollectionValidator {
     }
 
     /**
-     * 将collection转化为List集合，但是两者的泛型不同
-     * <B>{@code Collection<E>  ------>  List<T> } </B>
+     * 将collection转化为List集合，但是两者的泛型不同 <B>{@code Collection<E>  ------>  List<T> } </B>
      *
      * @param collection 需要转化的集合
      * @param function   collection中的泛型转化为list泛型的lambda表达式
@@ -319,19 +314,16 @@ public class CollectionStream extends CollectionValidator {
      * @param <T>        List中的泛型
      * @return 转化后的list
      */
-    public static <E, T> List<T> toList(final Collection<E> collection, final Function<E, T> function, final boolean isParallel) {
+    public static <E, T> List<T> toList(final Collection<E> collection, final Function<E, T> function,
+            final boolean isParallel) {
         if (CollKit.isEmpty(collection)) {
             return ListKit.zero();
         }
-        return StreamKit.of(collection, isParallel)
-                .map(function)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+        return StreamKit.of(collection, isParallel).map(function).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     /**
-     * 将collection转化为Set集合，但是两者的泛型不同
-     * <B>{@code Collection<E>  ------>  Set<T> } </B>
+     * 将collection转化为Set集合，但是两者的泛型不同 <B>{@code Collection<E>  ------>  Set<T> } </B>
      *
      * @param collection 需要转化的集合
      * @param function   collection中的泛型转化为set泛型的lambda表达式
@@ -344,8 +336,7 @@ public class CollectionStream extends CollectionValidator {
     }
 
     /**
-     * 将collection转化为Set集合，但是两者的泛型不同
-     * <B>{@code Collection<E>  ------>  Set<T> } </B>
+     * 将collection转化为Set集合，但是两者的泛型不同 <B>{@code Collection<E>  ------>  Set<T> } </B>
      *
      * @param collection 需要转化的集合
      * @param function   collection中的泛型转化为set泛型的lambda表达式
@@ -354,23 +345,20 @@ public class CollectionStream extends CollectionValidator {
      * @param <T>        Set中的泛型
      * @return 转化后的Set
      */
-    public static <E, T> Set<T> toSet(final Collection<E> collection, final Function<E, T> function, final boolean isParallel) {
+    public static <E, T> Set<T> toSet(final Collection<E> collection, final Function<E, T> function,
+            final boolean isParallel) {
         if (CollKit.isEmpty(collection)) {
             return SetKit.zero();
         }
-        return StreamKit.of(collection, isParallel)
-                .map(function)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toSet());
+        return StreamKit.of(collection, isParallel).map(function).filter(Objects::nonNull).collect(Collectors.toSet());
     }
-
 
     /**
      * 合并两个相同key类型的map
      *
      * @param map1  第一个需要合并的 map
      * @param map2  第二个需要合并的 map
-     * @param merge 合并的lambda，将key  value1 value2合并成最终的类型,注意value可能为空的情况
+     * @param merge 合并的lambda，将key value1 value2合并成最终的类型,注意value可能为空的情况
      * @param <K>   map中的key类型
      * @param <X>   第一个 map的value类型
      * @param <Y>   第二个 map的value类型

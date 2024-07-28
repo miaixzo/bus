@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org 6tail and other contributors.              ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -38,10 +38,8 @@ import org.miaixz.bus.core.center.date.culture.lunar.LunarMonth;
  */
 public class FetusMonth extends Samsara {
 
-    public static final String[] NAMES = {
-            "占房床", "占户窗", "占门堂", "占厨灶", "占房床", "占床仓",
-            "占碓磨", "占厕户", "占门房", "占房床", "占灶炉", "占房床"
-    };
+    public static final String[] NAMES = { "占房床", "占户窗", "占门堂", "占厨灶", "占房床", "占床仓", "占碓磨", "占厕户", "占门房", "占房床", "占灶炉",
+            "占房床" };
 
     public FetusMonth(int index) {
         super(NAMES, index);

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cache.metric;
 
 import jakarta.annotation.PreDestroy;
@@ -76,7 +76,8 @@ public class RedisClusterCache implements CacheX {
         return array;
     }
 
-    static Map<String, Object> toObjectMap(Collection<String> keys, List<byte[]> bytesValues, BaseSerializer serializer) {
+    static Map<String, Object> toObjectMap(Collection<String> keys, List<byte[]> bytesValues,
+            BaseSerializer serializer) {
         int index = 0;
         Map<String, Object> result = new HashMap<>(keys.size());
         for (String key : keys) {

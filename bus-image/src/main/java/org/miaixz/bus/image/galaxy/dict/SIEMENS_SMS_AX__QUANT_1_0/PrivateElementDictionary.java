@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_SMS_AX__QUANT_1_0;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,24 +46,25 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.HorizontalCalibrationPixelSize:
-            case PrivateTag.VerticalCalibrationPixelSize:
-            case PrivateTag.CalibrationObjectSize:
-                return VR.DS;
-            case PrivateTag.FrameNumber:
-            case PrivateTag.CalibrationFactorMultiplicity:
-            case PrivateTag.CalibrationTableObjectDistance:
-                return VR.IS;
-            case PrivateTag.CalibrationObject:
-            case PrivateTag.CalibrationMethod:
-                return VR.LO;
-            case PrivateTag.Filename:
-                return VR.ST;
+
+        case PrivateTag.HorizontalCalibrationPixelSize:
+        case PrivateTag.VerticalCalibrationPixelSize:
+        case PrivateTag.CalibrationObjectSize:
+            return VR.DS;
+        case PrivateTag.FrameNumber:
+        case PrivateTag.CalibrationFactorMultiplicity:
+        case PrivateTag.CalibrationTableObjectDistance:
+            return VR.IS;
+        case PrivateTag.CalibrationObject:
+        case PrivateTag.CalibrationMethod:
+            return VR.LO;
+        case PrivateTag.Filename:
+            return VR.ST;
         }
         return VR.UN;
     }

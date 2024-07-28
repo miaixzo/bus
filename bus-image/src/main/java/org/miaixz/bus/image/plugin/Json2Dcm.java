@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import jakarta.json.Json;
@@ -62,13 +62,11 @@ public class Json2Dcm {
     private Attributes fmi;
     private Attributes dataset;
 
-    private static JSONReader parseJSON(String fname, Attributes attrs)
-            throws IOException {
+    private static JSONReader parseJSON(String fname, Attributes attrs) throws IOException {
 
         InputStream in = fname.equals("-") ? System.in : new FileInputStream(fname);
         try {
-            JSONReader reader = new JSONReader(
-                    Json.createParser(new InputStreamReader(in, StandardCharsets.UTF_8)));
+            JSONReader reader = new JSONReader(Json.createParser(new InputStreamReader(in, StandardCharsets.UTF_8)));
             reader.readDataset(attrs);
             return reader;
         } finally {
@@ -124,20 +122,12 @@ public class Json2Dcm {
     public void writeTo(OutputStream out) throws IOException {
         if (nofmi)
             fmi = null;
-        else if (fmi == null
-                ? withfmi
-                : tsuid != null && !tsuid.equals(
-                fmi.getString(Tag.TransferSyntaxUID, null))) {
+        else if (fmi == null ? withfmi : tsuid != null && !tsuid.equals(fmi.getString(Tag.TransferSyntaxUID, null))) {
             fmi = dataset.createFileMetaInformation(tsuid);
         }
 
-        ImageOutputStream dos = new ImageOutputStream(
-                new BufferedOutputStream(out),
-                fmi != null
-                        ? UID.ExplicitVRLittleEndian.uid
-                        : tsuid != null
-                        ? tsuid
-                        : UID.ImplicitVRLittleEndian.uid);
+        ImageOutputStream dos = new ImageOutputStream(new BufferedOutputStream(out),
+                fmi != null ? UID.ExplicitVRLittleEndian.uid : tsuid != null ? tsuid : UID.ImplicitVRLittleEndian.uid);
         dos.setEncodingOptions(encOpts);
         dos.writeDataset(fmi, dataset);
         dos.finish();

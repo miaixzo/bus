@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.AMI_ImageContext_01;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,22 +46,23 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.WindowInvert:
-            case PrivateTag.PixelAspectRatioSwap:
-            case PrivateTag.EnableAveraging:
-            case PrivateTag.Quality:
-            case PrivateTag.ViewportAnnotationLevel:
-            case PrivateTag.ShowImageAnnotation:
-            case PrivateTag.ShowImageOverlay:
-                return VR.CS;
-            case PrivateTag.WindowCenter:
-            case PrivateTag.WindowWidth:
-                return VR.IS;
+
+        case PrivateTag.WindowInvert:
+        case PrivateTag.PixelAspectRatioSwap:
+        case PrivateTag.EnableAveraging:
+        case PrivateTag.Quality:
+        case PrivateTag.ViewportAnnotationLevel:
+        case PrivateTag.ShowImageAnnotation:
+        case PrivateTag.ShowImageOverlay:
+            return VR.CS;
+        case PrivateTag.WindowCenter:
+        case PrivateTag.WindowWidth:
+            return VR.IS;
         }
         return VR.UN;
     }

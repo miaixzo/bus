@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.software;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -42,8 +42,8 @@ import java.util.stream.Collectors;
 
 /**
  * An operating system (OS) is the software on a computer that manages the way different programs use its hardware, and
- * regulates the ways that a user controls the computer.
- * Considered thread safe, but see remarks for the {@link #getSessions()} method.
+ * regulates the ways that a user controls the computer. Considered thread safe, but see remarks for the
+ * {@link #getSessions()} method.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -89,9 +89,9 @@ public interface OperatingSystem {
     /**
      * Gets currently running processes. No order is guaranteed.
      *
-     * @return A list of {@link OSProcess} objects for the specified number (or all) of currently
-     * running processes, sorted as specified. The list may contain null elements or processes with a state of
-     * {@link OSProcess.State#INVALID} if a process terminates during iteration.
+     * @return A list of {@link OSProcess} objects for the specified number (or all) of currently running processes,
+     *         sorted as specified. The list may contain null elements or processes with a state of
+     *         {@link OSProcess.State#INVALID} if a process terminates during iteration.
      */
     default List<OSProcess> getProcesses() {
         return getProcesses(null, null, 0);
@@ -105,11 +105,10 @@ public interface OperatingSystem {
      * @param sort   An optional {@link Comparator} specifying the sorting order. Some common comparators are available
      *               in {@link ProcessSorting}. May be {@code null} for no sorting.
      * @param limit  Max number of results to return, or 0 to return all results
-     * @return A list of {@link OSProcess} objects, optionally filtered, sorted, and limited to the
-     * specified number.
-     * <p>
-     * The list may contain processes with a state of {@link OSProcess.State#INVALID} if a process terminates
-     * during iteration.
+     * @return A list of {@link OSProcess} objects, optionally filtered, sorted, and limited to the specified number.
+     *         <p>
+     *         The list may contain processes with a state of {@link OSProcess.State#INVALID} if a process terminates
+     *         during iteration.
      */
     List<OSProcess> getProcesses(Predicate<OSProcess> filter, Comparator<OSProcess> sort, int limit);
 
@@ -117,8 +116,7 @@ public interface OperatingSystem {
      * Gets information on a currently running process
      *
      * @param pid A process ID
-     * @return An {@link OSProcess} object for the specified process id if it is running; null
-     * otherwise
+     * @return An {@link OSProcess} object for the specified process id if it is running; null otherwise
      */
     OSProcess getProcess(int pid);
 
@@ -132,14 +130,14 @@ public interface OperatingSystem {
      * @param sort      An optional {@link Comparator} specifying the sorting order. Some common comparators are
      *                  available in {@link ProcessSorting}. May be {@code null} for no sorting.
      * @param limit     Max number of results to return, or 0 to return all results
-     * @return A list of {@link OSProcess} objects representing the currently running child processes
-     * of the provided PID, optionally filtered, sorted, and limited to the specified number.
-     * <p>
-     * The list may contain processes with a state of {@link OSProcess.State#INVALID} if a process terminates
-     * during iteration.
+     * @return A list of {@link OSProcess} objects representing the currently running child processes of the provided
+     *         PID, optionally filtered, sorted, and limited to the specified number.
+     *         <p>
+     *         The list may contain processes with a state of {@link OSProcess.State#INVALID} if a process terminates
+     *         during iteration.
      */
     List<OSProcess> getChildProcesses(int parentPid, Predicate<OSProcess> filter, Comparator<OSProcess> sort,
-                                      int limit);
+            int limit);
 
     /**
      * Gets information on a {@link Collection} of currently running processes. This has potentially improved
@@ -163,14 +161,14 @@ public interface OperatingSystem {
      * @param sort      An optional {@link Comparator} specifying the sorting order. Some common comparators are
      *                  available in {@link ProcessSorting}. May be {@code null} for no sorting.
      * @param limit     Max number of results to return, or 0 to return all results
-     * @return A list of {@link OSProcess} objects representing the currently running descendant
-     * processes of the provided PID, optionally filtered, sorted, and limited to the specified number.
-     * <p>
-     * The list may contain processes with a state of {@link OSProcess.State#INVALID} if a process terminates
-     * during iteration.
+     * @return A list of {@link OSProcess} objects representing the currently running descendant processes of the
+     *         provided PID, optionally filtered, sorted, and limited to the specified number.
+     *         <p>
+     *         The list may contain processes with a state of {@link OSProcess.State#INVALID} if a process terminates
+     *         during iteration.
      */
     List<OSProcess> getDescendantProcesses(int parentPid, Predicate<OSProcess> filter, Comparator<OSProcess> sort,
-                                           int limit);
+            int limit);
 
     /**
      * Instantiates a {@link NetworkParams} object.
@@ -187,9 +185,9 @@ public interface OperatingSystem {
      * without introducing any additional conflicts. Users should note, however, that other operating system code may
      * access the same native code.
      * <p>
-     * The {@link Who#queryWho()} method produces similar output parsing the output of the
-     * Posix-standard {@code who} command, and may internally employ reentrant code on some platforms. Users may opt to
-     * use this command-line variant by default using the {@code bus.health.unix.whoCommand} configuration property.
+     * The {@link Who#queryWho()} method produces similar output parsing the output of the Posix-standard {@code who}
+     * command, and may internally employ reentrant code on some platforms. Users may opt to use this command-line
+     * variant by default using the {@code bus.health.unix.whoCommand} configuration property.
      *
      * @return A list of {@link OSSession} objects representing logged-in users
      */

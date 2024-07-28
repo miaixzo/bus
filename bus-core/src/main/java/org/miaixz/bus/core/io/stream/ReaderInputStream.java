@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.stream;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -41,8 +41,7 @@ import java.nio.charset.CoderResult;
 import java.nio.charset.CodingErrorAction;
 
 /**
- * {@link Reader}作为{@link InputStream}使用的实现。
- * 参考：Apache Commons IO
+ * {@link Reader}作为{@link InputStream}使用的实现。 参考：Apache Commons IO
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -152,10 +151,7 @@ public class ReaderInputStream extends InputStream {
     }
 
     /**
-     * 填充缓冲区。
-     * 此方法用于从输入源读取数据，并将其编码后存储到输出缓冲区中。
-     * 它处理输入数据，直到达到输入的末尾或者编码过程中遇到需要停止的条件。
-     * 在这个过程中，它会更新编码器的状态以及输入输出缓冲区的状态。
+     * 填充缓冲区。 此方法用于从输入源读取数据，并将其编码后存储到输出缓冲区中。 它处理输入数据，直到达到输入的末尾或者编码过程中遇到需要停止的条件。 在这个过程中，它会更新编码器的状态以及输入输出缓冲区的状态。
      *
      * @throws IOException 如果在读取输入数据时发生IO异常。
      */
@@ -185,4 +181,3 @@ public class ReaderInputStream extends InputStream {
     }
 
 }
-

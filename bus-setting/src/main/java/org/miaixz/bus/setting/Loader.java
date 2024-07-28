@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.setting;
 
 import org.miaixz.bus.core.io.LineReader;
@@ -197,8 +197,7 @@ public class Loader {
     }
 
     /**
-     * 设置变量的正则
-     * 正则只能有一个group表示变量本身，剩余为字符 例如 \$\{(name)\}表示${name}变量名为name的一个变量表示
+     * 设置变量的正则 正则只能有一个group表示变量本身，剩余为字符 例如 \$\{(name)\}表示${name}变量名为name的一个变量表示
      *
      * @param regex 正则
      */
@@ -216,8 +215,7 @@ public class Loader {
     }
 
     /**
-     * 持久化当前设置，会覆盖掉之前的设置
-     * 持久化会不会保留之前的分组
+     * 持久化当前设置，会覆盖掉之前的设置 持久化会不会保留之前的分组
      *
      * @param absolutePath 设置文件的绝对路径
      */
@@ -226,8 +224,7 @@ public class Loader {
     }
 
     /**
-     * 持久化当前设置，会覆盖掉之前的设置
-     * 持久化会不会保留之前的分组
+     * 持久化当前设置，会覆盖掉之前的设置 持久化会不会保留之前的分组
      *
      * @param file 设置文件
      */
@@ -250,7 +247,8 @@ public class Loader {
      */
     synchronized private void store(final PrintWriter writer) {
         for (final Entry<String, LinkedHashMap<String, String>> groupEntry : this.groupedMap.entrySet()) {
-            writer.println(StringKit.format("{}{}{}", Symbol.C_BRACKET_LEFT, groupEntry.getKey(), Symbol.C_BRACKET_RIGHT));
+            writer.println(
+                    StringKit.format("{}{}{}", Symbol.C_BRACKET_LEFT, groupEntry.getKey(), Symbol.C_BRACKET_RIGHT));
             for (final Entry<String, String> entry : groupEntry.getValue().entrySet()) {
                 writer.println(StringKit.format("{} {} {}", entry.getKey(), this.assignFlag, entry.getValue()));
             }
@@ -300,11 +298,8 @@ public class Loader {
      * @return {@link Format}
      */
     protected Format getFormatter() {
-        return formatterFactory.apply(
-                commentElementFormatterSupplier.get(),
-                sectionElementFormatterSupplier.get(),
-                propertyElementFormatterSupplier.get()
-        );
+        return formatterFactory.apply(commentElementFormatterSupplier.get(), sectionElementFormatterSupplier.get(),
+                propertyElementFormatterSupplier.get());
     }
 
     /**
@@ -430,7 +425,8 @@ public class Loader {
         return commentElementFormatterSupplier;
     }
 
-    public void setCommentElementFormatterSupplier(Supplier<ElementFormatter<IniComment>> commentElementFormatterSupplier) {
+    public void setCommentElementFormatterSupplier(
+            Supplier<ElementFormatter<IniComment>> commentElementFormatterSupplier) {
         this.commentElementFormatterSupplier = commentElementFormatterSupplier;
     }
 
@@ -438,7 +434,8 @@ public class Loader {
         return sectionElementFormatterSupplier;
     }
 
-    public void setSectionElementFormatterSupplier(Supplier<ElementFormatter<IniSection>> sectionElementFormatterSupplier) {
+    public void setSectionElementFormatterSupplier(
+            Supplier<ElementFormatter<IniSection>> sectionElementFormatterSupplier) {
         this.sectionElementFormatterSupplier = sectionElementFormatterSupplier;
     }
 
@@ -446,7 +443,8 @@ public class Loader {
         return propertyElementFormatterSupplier;
     }
 
-    public void setPropertyElementFormatterSupplier(Supplier<ElementFormatter<IniProperty>> propertyElementFormatterSupplier) {
+    public void setPropertyElementFormatterSupplier(
+            Supplier<ElementFormatter<IniProperty>> propertyElementFormatterSupplier) {
         this.propertyElementFormatterSupplier = propertyElementFormatterSupplier;
     }
 

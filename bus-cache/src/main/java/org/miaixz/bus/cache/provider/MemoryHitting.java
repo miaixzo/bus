@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cache.provider;
 
 import org.miaixz.bus.cache.Hitting;
@@ -47,18 +47,12 @@ public class MemoryHitting implements Hitting {
 
     @Override
     public void hitIncr(String pattern, int count) {
-        hitMap.computeIfAbsent(
-                pattern,
-                (k) -> new AtomicLong()
-        ).addAndGet(count);
+        hitMap.computeIfAbsent(pattern, (k) -> new AtomicLong()).addAndGet(count);
     }
 
     @Override
     public void reqIncr(String pattern, int count) {
-        requireMap.computeIfAbsent(
-                pattern,
-                (k) -> new AtomicLong()
-        ).addAndGet(count);
+        requireMap.computeIfAbsent(pattern, (k) -> new AtomicLong()).addAndGet(count);
     }
 
     @Override

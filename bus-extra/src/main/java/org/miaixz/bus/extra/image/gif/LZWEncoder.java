@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.image.gif;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -44,9 +44,9 @@ class LZWEncoder {
     int maxbits = BITS; // user settable max # bits/code
     int maxcode; // maximum code, given n_bits
 
-    // GIFCOMPR.C       - GIF Image compression routines
+    // GIFCOMPR.C - GIF Image compression routines
     //
-    // Lempel-Ziv compression based on 'compress'.  GIF modifications by
+    // Lempel-Ziv compression based on 'compress'. GIF modifications by
     // David Rowley (mgardi@watdcsu.waterloo.edu)
 
     // General DEFINEs
@@ -57,12 +57,12 @@ class LZWEncoder {
     //
     // Based on: compress.c - File compression ala IEEE Computer, June 1984.
     //
-    // By Authors:  Spencer W. Thomas      (decvax!harpo!utah-cs!utah-gr!thomas)
-    //              Jim McKie              (decvax!mcvax!jim)
-    //              Steve Davies           (decvax!vax135!petsd!peora!srd)
-    //              Ken Turkowski          (decvax!decwrl!turtlevax!ken)
-    //              James A. Woods         (decvax!ihnp4!ames!jaw)
-    //              Joe Orost              (decvax!vax135!petsd!joe)
+    // By Authors: Spencer W. Thomas (decvax!harpo!utah-cs!utah-gr!thomas)
+    // Jim McKie (decvax!mcvax!jim)
+    // Steve Davies (decvax!vax135!petsd!peora!srd)
+    // Ken Turkowski (decvax!decwrl!turtlevax!ken)
+    // James A. Woods (decvax!ihnp4!ames!jaw)
+    // Joe Orost (decvax!vax135!petsd!joe)
     int[] codetab = new int[HSIZE];
     int hsize = HSIZE; // for dynamic table sizing
     int free_ent = 0; // first unused entry
@@ -75,36 +75,19 @@ class LZWEncoder {
     int cur_accum = 0;
     int cur_bits = 0;
 
-    // Algorithm:  use open addressing double hashing (no chaining) on the
-    // prefix code / next character combination.  We do a variant of Knuth's
+    // Algorithm: use open addressing double hashing (no chaining) on the
+    // prefix code / next character combination. We do a variant of Knuth's
     // algorithm D (vol. 3, sec. 6.4) along with G. Knott's relatively-prime
-    // secondary probe.  Here, the modular division first probe is gives way
-    // to a faster exclusive-or manipulation.  Also do block compression with
+    // secondary probe. Here, the modular division first probe is gives way
+    // to a faster exclusive-or manipulation. Also do block compression with
     // an adaptive reset, whereby the code table is cleared when the compression
-    // ratio decreases, but after the table fills.  The variable-length output
+    // ratio decreases, but after the table fills. The variable-length output
     // codes are re-sized at this point, and a special CLEAR code is generated
-    // for the decompressor.  Late addition:  construct the table according to
-    // file size for noticeable speed improvement on small files.  Please direct
+    // for the decompressor. Late addition: construct the table according to
+    // file size for noticeable speed improvement on small files. Please direct
     // questions about this implementation to ames!jaw.
-    int masks[] =
-            {
-                    0x0000,
-                    0x0001,
-                    0x0003,
-                    0x0007,
-                    0x000F,
-                    0x001F,
-                    0x003F,
-                    0x007F,
-                    0x00FF,
-                    0x01FF,
-                    0x03FF,
-                    0x07FF,
-                    0x0FFF,
-                    0x1FFF,
-                    0x3FFF,
-                    0x7FFF,
-                    0xFFFF};
+    int masks[] = { 0x0000, 0x0001, 0x0003, 0x0007, 0x000F, 0x001F, 0x003F, 0x007F, 0x00FF, 0x01FF, 0x03FF, 0x07FF,
+            0x0FFF, 0x1FFF, 0x3FFF, 0x7FFF, 0xFFFF };
     // Number of characters so far in this 'packet'
     int a_count;
     // Define the storage for the packet accumulator
@@ -114,23 +97,23 @@ class LZWEncoder {
     //
     // Output the given code.
     // Inputs:
-    //      code:   A n_bits-bit integer.  If == -1, then EOF.  This assumes
-    //              that n_bits =< wordsize - 1.
+    // code: A n_bits-bit integer. If == -1, then EOF. This assumes
+    // that n_bits =< wordsize - 1.
     // Outputs:
-    //      Outputs code to the file.
+    // Outputs code to the file.
     // Assumptions:
-    //      Chars are 8 bits long.
+    // Chars are 8 bits long.
     // Algorithm:
-    //      Maintain a BITS character long buffer (so that 8 codes will
-    // fit in it exactly).  Use the VAX insv instruction to insert each
-    // code in turn.  When the buffer fills up empty it and start over.
+    // Maintain a BITS character long buffer (so that 8 codes will
+    // fit in it exactly). Use the VAX insv instruction to insert each
+    // code in turn. When the buffer fills up empty it and start over.
     private int imgW, imgH;
     private byte[] pixAry;
     private int initCodeSize;
     private int remaining;
     private int curPixel;
 
-    //----------------------------------------------------------------------------
+    // ----------------------------------------------------------------------------
     LZWEncoder(int width, int height, byte[] pixels, int color_depth) {
         imgW = width;
         imgH = height;
@@ -172,7 +155,7 @@ class LZWEncoder {
         int hsize_reg;
         int hshift;
 
-        // Set up the globals:  g_init_bits - initial number of bits
+        // Set up the globals: g_init_bits - initial number of bits
         g_init_bits = init_bits;
 
         // Set up the necessary values
@@ -198,8 +181,7 @@ class LZWEncoder {
 
         output(ClearCode, outs);
 
-        outer_loop:
-        while ((c = nextPixel()) != Normal.__1) {
+        outer_loop: while ((c = nextPixel()) != Normal.__1) {
             fcode = (c << maxbits) + ent;
             i = (c << hshift) ^ ent; // xor hashing
 
@@ -234,7 +216,7 @@ class LZWEncoder {
         output(EOFCode, outs);
     }
 
-    //----------------------------------------------------------------------------
+    // ----------------------------------------------------------------------------
     void encode(OutputStream os) throws IOException {
         os.write(initCodeSize); // write "initial code size" byte
 
@@ -259,9 +241,9 @@ class LZWEncoder {
         return (1 << n_bits) - 1;
     }
 
-    //----------------------------------------------------------------------------
+    // ----------------------------------------------------------------------------
     // Return the next pixel from the image
-    //----------------------------------------------------------------------------
+    // ----------------------------------------------------------------------------
     private int nextPixel() {
         if (remaining == 0)
             return Normal.__1;

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.compress;
 
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
@@ -49,8 +49,7 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 
 /**
- * 压缩工具类
- * 基于commons-compress的压缩解压封装
+ * 压缩工具类 基于commons-compress的压缩解压封装
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -60,15 +59,15 @@ public class CompressBuilder {
     /**
      * 获取压缩输出流，用于压缩指定内容，支持的格式例如：
      * <ul>
-     *     <li>{@value CompressorStreamFactory#GZIP}</li>
-     *     <li>{@value CompressorStreamFactory#BZIP2}</li>
-     *     <li>{@value CompressorStreamFactory#XZ}</li>
-     *     <li>{@value CompressorStreamFactory#PACK200}</li>
-     *     <li>{@value CompressorStreamFactory#SNAPPY_FRAMED}</li>
-     *     <li>{@value CompressorStreamFactory#LZ4_BLOCK}</li>
-     *     <li>{@value CompressorStreamFactory#LZ4_FRAMED}</li>
-     *     <li>{@value CompressorStreamFactory#ZSTANDARD}</li>
-     *     <li>{@value CompressorStreamFactory#DEFLATE}</li>
+     * <li>{@value CompressorStreamFactory#GZIP}</li>
+     * <li>{@value CompressorStreamFactory#BZIP2}</li>
+     * <li>{@value CompressorStreamFactory#XZ}</li>
+     * <li>{@value CompressorStreamFactory#PACK200}</li>
+     * <li>{@value CompressorStreamFactory#SNAPPY_FRAMED}</li>
+     * <li>{@value CompressorStreamFactory#LZ4_BLOCK}</li>
+     * <li>{@value CompressorStreamFactory#LZ4_FRAMED}</li>
+     * <li>{@value CompressorStreamFactory#ZSTANDARD}</li>
+     * <li>{@value CompressorStreamFactory#DEFLATE}</li>
      * </ul>
      *
      * @param compressorName 压缩名称，见：{@link CompressorStreamFactory}
@@ -86,15 +85,15 @@ public class CompressBuilder {
     /**
      * 获取压缩输入流，用于解压缩指定内容，支持的格式例如：
      * <ul>
-     *     <li>{@value CompressorStreamFactory#GZIP}</li>
-     *     <li>{@value CompressorStreamFactory#BZIP2}</li>
-     *     <li>{@value CompressorStreamFactory#XZ}</li>
-     *     <li>{@value CompressorStreamFactory#PACK200}</li>
-     *     <li>{@value CompressorStreamFactory#SNAPPY_FRAMED}</li>
-     *     <li>{@value CompressorStreamFactory#LZ4_BLOCK}</li>
-     *     <li>{@value CompressorStreamFactory#LZ4_FRAMED}</li>
-     *     <li>{@value CompressorStreamFactory#ZSTANDARD}</li>
-     *     <li>{@value CompressorStreamFactory#DEFLATE}</li>
+     * <li>{@value CompressorStreamFactory#GZIP}</li>
+     * <li>{@value CompressorStreamFactory#BZIP2}</li>
+     * <li>{@value CompressorStreamFactory#XZ}</li>
+     * <li>{@value CompressorStreamFactory#PACK200}</li>
+     * <li>{@value CompressorStreamFactory#SNAPPY_FRAMED}</li>
+     * <li>{@value CompressorStreamFactory#LZ4_BLOCK}</li>
+     * <li>{@value CompressorStreamFactory#LZ4_FRAMED}</li>
+     * <li>{@value CompressorStreamFactory#ZSTANDARD}</li>
+     * <li>{@value CompressorStreamFactory#DEFLATE}</li>
      * </ul>
      *
      * @param compressorName 压缩名称，见：{@link CompressorStreamFactory}，null表示自动检测
@@ -116,12 +115,12 @@ public class CompressBuilder {
     /**
      * 创建归档器，支持：
      * <ul>
-     *     <li>{@link ArchiveStreamFactory#AR}</li>
-     *     <li>{@link ArchiveStreamFactory#CPIO}</li>
-     *     <li>{@link ArchiveStreamFactory#JAR}</li>
-     *     <li>{@link ArchiveStreamFactory#TAR}</li>
-     *     <li>{@link ArchiveStreamFactory#ZIP}</li>
-     *     <li>{@link ArchiveStreamFactory#SEVEN_Z}</li>
+     * <li>{@link ArchiveStreamFactory#AR}</li>
+     * <li>{@link ArchiveStreamFactory#CPIO}</li>
+     * <li>{@link ArchiveStreamFactory#JAR}</li>
+     * <li>{@link ArchiveStreamFactory#TAR}</li>
+     * <li>{@link ArchiveStreamFactory#ZIP}</li>
+     * <li>{@link ArchiveStreamFactory#SEVEN_Z}</li>
      * </ul>
      *
      * @param charset      编码
@@ -139,12 +138,12 @@ public class CompressBuilder {
     /**
      * 创建归档器，支持：
      * <ul>
-     *     <li>{@link ArchiveStreamFactory#AR}</li>
-     *     <li>{@link ArchiveStreamFactory#CPIO}</li>
-     *     <li>{@link ArchiveStreamFactory#JAR}</li>
-     *     <li>{@link ArchiveStreamFactory#TAR}</li>
-     *     <li>{@link ArchiveStreamFactory#ZIP}</li>
-     *     <li>{@link ArchiveStreamFactory#SEVEN_Z}</li>
+     * <li>{@link ArchiveStreamFactory#AR}</li>
+     * <li>{@link ArchiveStreamFactory#CPIO}</li>
+     * <li>{@link ArchiveStreamFactory#JAR}</li>
+     * <li>{@link ArchiveStreamFactory#TAR}</li>
+     * <li>{@link ArchiveStreamFactory#ZIP}</li>
+     * <li>{@link ArchiveStreamFactory#SEVEN_Z}</li>
      * </ul>
      *
      * @param charset      编码
@@ -162,12 +161,12 @@ public class CompressBuilder {
     /**
      * 创建归档解包器，支持：
      * <ul>
-     *     <li>{@link ArchiveStreamFactory#AR}</li>
-     *     <li>{@link ArchiveStreamFactory#CPIO}</li>
-     *     <li>{@link ArchiveStreamFactory#JAR}</li>
-     *     <li>{@link ArchiveStreamFactory#TAR}</li>
-     *     <li>{@link ArchiveStreamFactory#ZIP}</li>
-     *     <li>{@link ArchiveStreamFactory#SEVEN_Z}</li>
+     * <li>{@link ArchiveStreamFactory#AR}</li>
+     * <li>{@link ArchiveStreamFactory#CPIO}</li>
+     * <li>{@link ArchiveStreamFactory#JAR}</li>
+     * <li>{@link ArchiveStreamFactory#TAR}</li>
+     * <li>{@link ArchiveStreamFactory#ZIP}</li>
+     * <li>{@link ArchiveStreamFactory#SEVEN_Z}</li>
      * </ul>
      *
      * @param charset 编码，7z格式此参数无效
@@ -181,12 +180,12 @@ public class CompressBuilder {
     /**
      * 创建归档解包器，支持：
      * <ul>
-     *     <li>{@link ArchiveStreamFactory#AR}</li>
-     *     <li>{@link ArchiveStreamFactory#CPIO}</li>
-     *     <li>{@link ArchiveStreamFactory#JAR}</li>
-     *     <li>{@link ArchiveStreamFactory#TAR}</li>
-     *     <li>{@link ArchiveStreamFactory#ZIP}</li>
-     *     <li>{@link ArchiveStreamFactory#SEVEN_Z}</li>
+     * <li>{@link ArchiveStreamFactory#AR}</li>
+     * <li>{@link ArchiveStreamFactory#CPIO}</li>
+     * <li>{@link ArchiveStreamFactory#JAR}</li>
+     * <li>{@link ArchiveStreamFactory#TAR}</li>
+     * <li>{@link ArchiveStreamFactory#ZIP}</li>
+     * <li>{@link ArchiveStreamFactory#SEVEN_Z}</li>
      * </ul>
      *
      * @param charset      编码，7z格式此参数无效
@@ -212,12 +211,12 @@ public class CompressBuilder {
     /**
      * 创建归档解包器，支持：
      * <ul>
-     *     <li>{@link ArchiveStreamFactory#AR}</li>
-     *     <li>{@link ArchiveStreamFactory#CPIO}</li>
-     *     <li>{@link ArchiveStreamFactory#JAR}</li>
-     *     <li>{@link ArchiveStreamFactory#TAR}</li>
-     *     <li>{@link ArchiveStreamFactory#ZIP}</li>
-     *     <li>{@link ArchiveStreamFactory#SEVEN_Z}</li>
+     * <li>{@link ArchiveStreamFactory#AR}</li>
+     * <li>{@link ArchiveStreamFactory#CPIO}</li>
+     * <li>{@link ArchiveStreamFactory#JAR}</li>
+     * <li>{@link ArchiveStreamFactory#TAR}</li>
+     * <li>{@link ArchiveStreamFactory#ZIP}</li>
+     * <li>{@link ArchiveStreamFactory#SEVEN_Z}</li>
      * </ul>
      *
      * @param charset 编码，7z格式此参数无效
@@ -231,12 +230,12 @@ public class CompressBuilder {
     /**
      * 创建归档解包器，支持：
      * <ul>
-     *     <li>{@link ArchiveStreamFactory#AR}</li>
-     *     <li>{@link ArchiveStreamFactory#CPIO}</li>
-     *     <li>{@link ArchiveStreamFactory#JAR}</li>
-     *     <li>{@link ArchiveStreamFactory#TAR}</li>
-     *     <li>{@link ArchiveStreamFactory#ZIP}</li>
-     *     <li>{@link ArchiveStreamFactory#SEVEN_Z}</li>
+     * <li>{@link ArchiveStreamFactory#AR}</li>
+     * <li>{@link ArchiveStreamFactory#CPIO}</li>
+     * <li>{@link ArchiveStreamFactory#JAR}</li>
+     * <li>{@link ArchiveStreamFactory#TAR}</li>
+     * <li>{@link ArchiveStreamFactory#ZIP}</li>
+     * <li>{@link ArchiveStreamFactory#SEVEN_Z}</li>
      * </ul>
      *
      * @param charset      编码，7z格式此参数无效

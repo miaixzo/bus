@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office;
 
 import org.apache.poi.hssf.usermodel.*;
@@ -50,8 +50,7 @@ import java.io.InputStream;
 import java.util.List;
 
 /**
- * 为office提供辅助功能
- * Excel中日期判断、读取、处理等补充工具类
+ * 为office提供辅助功能 Excel中日期判断、读取、处理等补充工具类
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -66,7 +65,7 @@ public class Builder {
     /**
      * 某些特殊的自定义日期格式
      */
-    private static final int[] CUSTOM_FORMATS = new int[]{28, 30, 31, 32, 33, 55, 56, 57, 58};
+    private static final int[] CUSTOM_FORMATS = new int[] { 28, 30, 31, 32, 33, 55, 56, 57, 58 };
 
     /**
      * 是否日期格式
@@ -113,9 +112,8 @@ public class Builder {
         }
 
         // 自定义格式判断
-        if (StringKit.isNotEmpty(formatString) &&
-                StringKit.containsAny(formatString, "周", "星期", "aa")) {
-            // aa  -> 周一
+        if (StringKit.isNotEmpty(formatString) && StringKit.containsAny(formatString, "周", "星期", "aa")) {
+            // aa -> 周一
             // aaa -> 星期一
             return true;
         }
@@ -124,9 +122,7 @@ public class Builder {
     }
 
     /**
-     * 是否为XLS格式的Excel文件（HSSF）
-     * XLS文件主要用于Excel 97~2003创建
-     * 此方法会自动调用{@link InputStream#reset()}方法
+     * 是否为XLS格式的Excel文件（HSSF） XLS文件主要用于Excel 97~2003创建 此方法会自动调用{@link InputStream#reset()}方法
      *
      * @param in excel输入流
      * @return 是否为XLS格式的Excel文件（HSSF）
@@ -136,9 +132,7 @@ public class Builder {
     }
 
     /**
-     * 是否为XLSX格式的Excel文件（XSSF）
-     * XLSX文件主要用于Excel 2007+创建
-     * 此方法会自动调用{@link InputStream#reset()}方法
+     * 是否为XLSX格式的Excel文件（XSSF） XLSX文件主要用于Excel 2007+创建 此方法会自动调用{@link InputStream#reset()}方法
      *
      * @param in excel输入流
      * @return 是否为XLSX格式的Excel文件（XSSF）
@@ -148,8 +142,7 @@ public class Builder {
     }
 
     /**
-     * 是否为XLSX格式的Excel文件（XSSF）
-     * XLSX文件主要用于Excel 2007+创建
+     * 是否为XLSX格式的Excel文件（XSSF） XLSX文件主要用于Excel 2007+创建
      *
      * @param file excel文件
      * @return 是否为XLSX格式的Excel文件（XSSF）
@@ -163,12 +156,9 @@ public class Builder {
     }
 
     /**
-     * {@link java.io.PushbackInputStream}
-     * PushbackInputStream的markSupported()为false，并不支持mark和reset
-     * 如果强转成PushbackInputStream在调用FileMagic.valueOf(inputStream)时会报错
-     * {@link FileMagic}
-     * 报错内容：getFileMagic() only operates on streams which support mark(int)
-     * 此处修改成 final InputStream in = FileMagic.prepareToCheckMagic(in)
+     * {@link java.io.PushbackInputStream} PushbackInputStream的markSupported()为false，并不支持mark和reset
+     * 如果强转成PushbackInputStream在调用FileMagic.valueOf(inputStream)时会报错 {@link FileMagic} 报错内容：getFileMagic() only operates
+     * on streams which support mark(int) 此处修改成 final InputStream in = FileMagic.prepareToCheckMagic(in)
      *
      * @param in {@link InputStream}
      */
@@ -202,7 +192,8 @@ public class Builder {
         } else if (workbook instanceof XSSFWorkbook) {
             return getPicMapXlsx((XSSFWorkbook) workbook, sheetIndex);
         } else {
-            throw new IllegalArgumentException(StringKit.format("Workbook type [{}] is not supported!", workbook.getClass()));
+            throw new IllegalArgumentException(
+                    StringKit.format("Workbook type [{}] is not supported!", workbook.getClass()));
         }
     }
 
@@ -224,7 +215,8 @@ public class Builder {
                 if (shape instanceof HSSFPicture) {
                     pictureIndex = ((HSSFPicture) shape).getPictureIndex() - 1;
                     anchor = (HSSFClientAnchor) shape.getAnchor();
-                    picMap.putValue(StringKit.format("{}_{}", anchor.getRow1(), anchor.getCol1()), pictures.get(pictureIndex));
+                    picMap.putValue(StringKit.format("{}_{}", anchor.getRow1(), anchor.getCol1()),
+                            pictures.get(pictureIndex));
                 }
             }
         }
@@ -252,7 +244,8 @@ public class Builder {
                     if (shape instanceof XSSFPicture) {
                         pic = (XSSFPicture) shape;
                         ctMarker = pic.getPreferredSize().getFrom();
-                        sheetIndexPicMap.putValue(StringKit.format("{}_{}", ctMarker.getRow(), ctMarker.getCol()), pic.getPictureData());
+                        sheetIndexPicMap.putValue(StringKit.format("{}_{}", ctMarker.getRow(), ctMarker.getCol()),
+                                pic.getPictureData());
                     }
                     // 其他类似于图表等忽略
                 }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.Philips_MR_Imaging_DD_003;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,38 +46,39 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.RunningAttributes:
-                return VR.CS;
-            case PrivateTag.SpectrumPixelData:
-                return VR.OW;
-            case PrivateTag.NumberOfImagePerSeriesRef:
-                return VR.SL;
-            case PrivateTag.NoDateOfLastCalibration:
-            case PrivateTag.NoTimeOfLastCalibration:
-            case PrivateTag.NrOfSoftwareVersion:
-            case PrivateTag.NrOfPatientOtherNames:
-            case PrivateTag.NrOfReqRecipeOfResults:
-            case PrivateTag.NrOfSeriesOperatorsName:
-            case PrivateTag.NrOfSeriesPerfPhysiName:
-            case PrivateTag.NrOfStudyAdmittingDiagnosticDescr:
-            case PrivateTag.NrOfStudyPatientContrastAllergies:
-            case PrivateTag.NrOfStudyPatientMedicalAlerts:
-            case PrivateTag.NrOfStudyPhysiciansOfRecord:
-            case PrivateTag.NrOfStudyPhysiReadingStudy:
-            case PrivateTag.NrSCSoftwareVersions:
-            case PrivateTag.NrRunningAttributes:
-                return VR.SS;
-            case PrivateTag.DefaultImageUID:
-                return VR.UI;
-            case PrivateTag.NumberOfSOPCommon:
-            case PrivateTag.NoOfFilmConsumption:
-            case PrivateTag.NumberOfCodes:
-                return VR.UL;
+
+        case PrivateTag.RunningAttributes:
+            return VR.CS;
+        case PrivateTag.SpectrumPixelData:
+            return VR.OW;
+        case PrivateTag.NumberOfImagePerSeriesRef:
+            return VR.SL;
+        case PrivateTag.NoDateOfLastCalibration:
+        case PrivateTag.NoTimeOfLastCalibration:
+        case PrivateTag.NrOfSoftwareVersion:
+        case PrivateTag.NrOfPatientOtherNames:
+        case PrivateTag.NrOfReqRecipeOfResults:
+        case PrivateTag.NrOfSeriesOperatorsName:
+        case PrivateTag.NrOfSeriesPerfPhysiName:
+        case PrivateTag.NrOfStudyAdmittingDiagnosticDescr:
+        case PrivateTag.NrOfStudyPatientContrastAllergies:
+        case PrivateTag.NrOfStudyPatientMedicalAlerts:
+        case PrivateTag.NrOfStudyPhysiciansOfRecord:
+        case PrivateTag.NrOfStudyPhysiReadingStudy:
+        case PrivateTag.NrSCSoftwareVersions:
+        case PrivateTag.NrRunningAttributes:
+            return VR.SS;
+        case PrivateTag.DefaultImageUID:
+            return VR.UI;
+        case PrivateTag.NumberOfSOPCommon:
+        case PrivateTag.NoOfFilmConsumption:
+        case PrivateTag.NumberOfCodes:
+            return VR.UL;
         }
         return VR.UN;
     }

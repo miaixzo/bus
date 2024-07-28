@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import org.miaixz.bus.gitlab.GitLabApiForm;
@@ -34,9 +34,8 @@ import java.io.File;
 import java.io.Serializable;
 
 /**
- * This class is utilized by the {@link TopicsApi#createTopic(TopicParams)}
- * and {@link TopicsApi#updateTopic(Integer, TopicParams)} methods to set
- * the parameters for the call to the GitLab API.
+ * This class is utilized by the {@link TopicsApi#createTopic(TopicParams)} and
+ * {@link TopicsApi#updateTopic(Integer, TopicParams)} methods to set the parameters for the call to the GitLab API.
  *
  * Avatar Upload has its own Upload in {@link TopicsApi#updateTopicAvatar(Integer, File)}
  */
@@ -71,9 +70,7 @@ public class TopicParams implements Serializable {
      */
     public GitLabApiForm getForm(boolean isCreate) {
 
-        GitLabApiForm form = new GitLabApiForm()
-                .withParam("name", name, isCreate)
-                .withParam("title", title, isCreate)
+        GitLabApiForm form = new GitLabApiForm().withParam("name", name, isCreate).withParam("title", title, isCreate)
                 .withParam("description", description);
 
         return (form);

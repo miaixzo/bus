@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.file;
 
 import org.miaixz.bus.core.center.regex.Pattern;
@@ -52,7 +52,7 @@ public class FileName {
     /**
      * 特殊后缀
      */
-    private static final CharSequence[] SPECIAL_SUFFIX = {"tar.bz2", "tar.Z", "tar.gz", "tar.xz"};
+    private static final CharSequence[] SPECIAL_SUFFIX = { "tar.bz2", "tar.Z", "tar.gz", "tar.xz" };
 
     /**
      * 返回文件名
@@ -66,6 +66,7 @@ public class FileName {
 
     /**
      * 返回文件名
+     * 
      * <pre>
      * "d:/test/aaa" 返回 "aaa"
      * "/test/aaa.jpg" 返回 "aaa.jpg"
@@ -269,7 +270,8 @@ public class FileName {
      * @return 清理后的文件名
      */
     public static String cleanInvalid(final String fileName) {
-        return StringKit.isBlank(fileName) ? fileName : PatternKit.delAll(Pattern.FILE_NAME_INVALID_PATTERN_WIN, fileName);
+        return StringKit.isBlank(fileName) ? fileName
+                : PatternKit.delAll(Pattern.FILE_NAME_INVALID_PATTERN_WIN, fileName);
     }
 
     /**
@@ -294,8 +296,7 @@ public class FileName {
     }
 
     /**
-     * 修复路径
-     * 如果原路径尾部有分隔符，则保留为标准分隔符（/），否则不保留
+     * 修复路径 如果原路径尾部有分隔符，则保留为标准分隔符（/），否则不保留
      * <ol>
      * <li>1. 统一用 /</li>
      * <li>2. 多个 / 转换为一个 /</li>
@@ -304,6 +305,7 @@ public class FileName {
      * <li>5. SMB路径保留，如\\127.0.0.0\a\b.zip</li>
      * </ol>
      * 示例：
+     * 
      * <pre>
      * "/foo//" = "/foo/"
      * "/foo/./" = "/foo/"
@@ -330,7 +332,7 @@ public class FileName {
             return null;
         }
 
-        //兼容Windows下的共享目录路径（原始路径如果以\\开头，则保留这种路径）
+        // 兼容Windows下的共享目录路径（原始路径如果以\\开头，则保留这种路径）
         if (path.startsWith("\\\\")) {
             return path;
         }
@@ -373,7 +375,8 @@ public class FileName {
             pathToUse = pathToUse.substring(1);
         }
 
-        return prefix + CollKit.join(resolePathElements(StringKit.split(pathToUse, Symbol.SLASH), prefix), Symbol.SLASH);
+        return prefix
+                + CollKit.join(resolePathElements(StringKit.split(pathToUse, Symbol.SLASH), prefix), Symbol.SLASH);
     }
 
     /**

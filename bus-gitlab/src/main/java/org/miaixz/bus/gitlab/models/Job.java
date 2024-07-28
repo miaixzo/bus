@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import org.miaixz.bus.gitlab.support.JacksonJson;
@@ -95,13 +95,11 @@ public class Job implements Serializable {
     }
 
     /**
-     * When someone deletes job using
-     * <a href="https://docs.gitlab.com/ee/api/jobs.html#erase-a-job">job erase api</a>, you can
-     * detect it using this field. Normally erasing job does mean only that job artifacts and
-     * a job logs gets removed. Job metadata (started_at, duration, ....) stays in place.
+     * When someone deletes job using <a href="https://docs.gitlab.com/ee/api/jobs.html#erase-a-job">job erase api</a>,
+     * you can detect it using this field. Normally erasing job does mean only that job artifacts and a job logs gets
+     * removed. Job metadata (started_at, duration, ....) stays in place.
      *
-     * You can use this attribute to filter out such jobs, that have erased at non-null if you need
-     * to.
+     * You can use this attribute to filter out such jobs, that have erased at non-null if you need to.
      */
     public Date getErasedAt() {
         return erasedAt;
@@ -266,6 +264,7 @@ public class Job implements Serializable {
     public Project getProject() {
         return project;
     }
+
     public void setProject(Project project) {
         this.project = project;
     }
@@ -364,6 +363,7 @@ public class Job implements Serializable {
         this.allowFailure = allowFailure;
         return this;
     }
+
     public Job withDuration(Float duration) {
         this.duration = duration;
         return this;

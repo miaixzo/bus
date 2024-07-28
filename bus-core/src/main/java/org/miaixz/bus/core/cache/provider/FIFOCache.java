@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.cache.provider;
 
 import java.util.Iterator;
@@ -34,9 +34,7 @@ import java.util.LinkedHashMap;
  * FIFO(first in first out) 先进先出缓存.
  *
  * <p>
- * 元素不停的加入缓存直到缓存满为止，当缓存满时，清理过期缓存对象，清理后依旧满则删除先入的缓存（链表首部对象）
- * 优点：简单快速
- * 缺点：不灵活，不能保证最常用的对象总是被保留
+ * 元素不停的加入缓存直到缓存满为止，当缓存满时，清理过期缓存对象，清理后依旧满则删除先入的缓存（链表首部对象） 优点：简单快速 缺点：不灵活，不能保证最常用的对象总是被保留
  * </p>
  *
  * @param <K> 键类型
@@ -70,8 +68,7 @@ public class FIFOCache<K, V> extends StampedCache<K, V> {
     }
 
     /**
-     * 先进先出的清理策略
-     * 先遍历缓存清理过期的缓存对象，如果清理后还是满的，则删除第一个缓存对象
+     * 先进先出的清理策略 先遍历缓存清理过期的缓存对象，如果清理后还是满的，则删除第一个缓存对象
      */
     @Override
     protected int pruneCache() {

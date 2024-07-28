@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.sensitive;
 
 import com.alibaba.fastjson.JSON;
@@ -60,10 +60,7 @@ public class Provider<T> {
     private String[] value;
 
     /**
-     * 深度复制
-     * 1. 为了避免深拷贝要求用户实现 clone 和 序列化的相关接口
-     * 2. 为了避免使用 dozer 这种比较重的工具
-     * 3. 自己实现暂时工作量比较大
+     * 深度复制 1. 为了避免深拷贝要求用户实现 clone 和 序列化的相关接口 2. 为了避免使用 dozer 这种比较重的工具 3. 自己实现暂时工作量比较大
      * <p>
      * 暂时使用 fastJson 作为实现深度拷贝的方式
      *
@@ -109,10 +106,7 @@ public class Provider<T> {
     }
 
     /**
-     * 对象进行脱敏操作
-     * 原始对象不变,返回脱敏后的新对象
-     * 1. 为什么这么设计？
-     * 不能因为脱敏,就导致代码中的对象被改变 否则代码逻辑会出现问题
+     * 对象进行脱敏操作 原始对象不变,返回脱敏后的新对象 1. 为什么这么设计？ 不能因为脱敏,就导致代码中的对象被改变 否则代码逻辑会出现问题
      *
      * @param object     原始对象
      * @param annotation 注解信息
@@ -146,8 +140,7 @@ public class Provider<T> {
     }
 
     /**
-     * 返回脱敏后的 json
-     * 1. 避免 desCopy 造成的对象新建的性能浪费
+     * 返回脱敏后的 json 1. 避免 desCopy 造成的对象新建的性能浪费
      *
      * @param object     对象
      * @param annotation 注解
@@ -175,9 +168,7 @@ public class Provider<T> {
      * @param copyObject 拷贝的新对象
      * @param clazz      class 类型
      */
-    private void handleClassField(final Context context,
-                                  final Object copyObject,
-                                  final Class clazz) {
+    private void handleClassField(final Context context, final Object copyObject, final Class clazz) {
         // 每一个实体对应的字段,只对当前 clazz 生效
         List<Field> fieldList = ListKit.of(FieldKit.getFields(clazz));
         context.setAllFieldList(fieldList);
@@ -208,13 +199,13 @@ public class Provider<T> {
                             Object firstArrayEntry = arrays[0];
                             final Class entryFieldClass = firstArrayEntry.getClass();
 
-                            //1. 如果需要特殊处理,则循环特殊处理
+                            // 1. 如果需要特殊处理,则循环特殊处理
                             if (needHandleEntryType(entryFieldClass)) {
                                 for (Object arrayEntry : arrays) {
                                     handleClassField(context, arrayEntry, entryFieldClass);
                                 }
                             } else {
-                                //2, 基础值,直接循环设置即可
+                                // 2, 基础值,直接循环设置即可
                                 final int arrayLength = arrays.length;
                                 Object newArray = Array.newInstance(entryFieldClass, arrayLength);
                                 for (int i = 0; i < arrayLength; i++) {
@@ -232,13 +223,13 @@ public class Provider<T> {
                             Object firstCollectionEntry = entryCollection.iterator().next();
                             Class collectionEntryClass = firstCollectionEntry.getClass();
 
-                            //1. 如果需要特殊处理,则循环特殊处理
+                            // 1. 如果需要特殊处理,则循环特殊处理
                             if (needHandleEntryType(collectionEntryClass)) {
                                 for (Object collectionEntry : entryCollection) {
                                     handleClassField(context, collectionEntry, collectionEntryClass);
                                 }
                             } else {
-                                //2, 基础值,直接循环设置即可
+                                // 2, 基础值,直接循环设置即可
                                 List<Object> newResultList = new ArrayList<>(entryCollection.size());
                                 for (Object entry : entryCollection) {
                                     Object result = handleSensitiveEntry(context, entry, field);
@@ -267,22 +258,16 @@ public class Provider<T> {
     /**
      * 处理需脱敏的单个对象
      * <p>
-     * 1. 为了简化操作,所有的自定义注解使用多个,不生效
-     * 2. 生效顺序如下：
-     * (1)Sensitive
-     * (2)系统内置自定义注解
-     * (3)用户自定义注解
+     * 1. 为了简化操作,所有的自定义注解使用多个,不生效 2. 生效顺序如下： (1)Sensitive (2)系统内置自定义注解 (3)用户自定义注解
      *
      * @param context 上下文
      * @param entry   明细
      * @param field   字段信息
      * @return 处理后的信息
      */
-    private Object handleSensitiveEntry(final Context context,
-                                        final Object entry,
-                                        final Field field) {
+    private Object handleSensitiveEntry(final Context context, final Object entry, final Field field) {
         try {
-            //处理 @Field
+            // 处理 @Field
             Shield sensitive = field.getAnnotation(Shield.class);
             if (ObjectKit.isNotNull(sensitive)) {
                 Class<? extends ConditionProvider> conditionClass = sensitive.condition();
@@ -299,8 +284,7 @@ public class Provider<T> {
             Annotation[] annotations = field.getAnnotations();
             if (ArrayKit.isNotEmpty(annotations)) {
                 ConditionProvider condition = getCondition(annotations);
-                if (ObjectKit.isNull(condition)
-                        || condition.valid(context)) {
+                if (ObjectKit.isNull(condition) || condition.valid(context)) {
                     StrategyProvider strategy = getStrategy(annotations);
                     if (ObjectKit.isNotNull(strategy)) {
                         return strategy.build(entry, context);
@@ -322,11 +306,9 @@ public class Provider<T> {
      * @param copyObject 复制的对象
      * @param field      当前字段
      */
-    private void handleSensitive(final Context context,
-                                 final Object copyObject,
-                                 final Field field) {
+    private void handleSensitive(final Context context, final Object copyObject, final Field field) {
         try {
-            //处理 @Field
+            // 处理 @Field
             Shield sensitive = field.getAnnotation(Shield.class);
             if (null != sensitive) {
                 Class<? extends ConditionProvider> conditionClass = sensitive.condition();
@@ -345,8 +327,7 @@ public class Provider<T> {
             Annotation[] annotations = field.getAnnotations();
             if (ArrayKit.isNotEmpty(annotations)) {
                 ConditionProvider condition = getCondition(annotations);
-                if (ObjectKit.isNull(condition)
-                        || condition.valid(context)) {
+                if (ObjectKit.isNull(condition) || condition.valid(context)) {
                     StrategyProvider strategy = getStrategy(annotations);
                     if (ObjectKit.isNotNull(strategy)) {
                         final Object originalFieldVal = field.get(copyObject);
@@ -355,8 +336,8 @@ public class Provider<T> {
                     }
                 }
             }
-        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
-                 InvocationTargetException e) {
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException
+                | InvocationTargetException e) {
             throw new InternalException(e);
         }
     }
@@ -406,13 +387,11 @@ public class Provider<T> {
      * @return 是否
      */
     private boolean needHandleEntryType(final Class fieldTypeClass) {
-        if (TypeKit.isBase(fieldTypeClass)
-                || TypeKit.isMap(fieldTypeClass)) {
+        if (TypeKit.isBase(fieldTypeClass) || TypeKit.isMap(fieldTypeClass)) {
             return false;
         }
 
-        if (TypeKit.isJavaBean(fieldTypeClass)
-                || TypeKit.isArray(fieldTypeClass)
+        if (TypeKit.isJavaBean(fieldTypeClass) || TypeKit.isArray(fieldTypeClass)
                 || TypeKit.isCollection(fieldTypeClass)) {
             return true;
         }

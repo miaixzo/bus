@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.file.visitor;
 
 import org.miaixz.bus.core.io.file.PathResolve;
@@ -34,8 +34,7 @@ import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 
 /**
- * 文件拷贝的FileVisitor实现，用于递归遍历拷贝目录，此类非线程安全
- * 此类在遍历源目录并复制过程中会自动创建目标目录中不存在的上级目录。
+ * 文件拷贝的FileVisitor实现，用于递归遍历拷贝目录，此类非线程安全 此类在遍历源目录并复制过程中会自动创建目标目录中不存在的上级目录。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -89,8 +88,7 @@ public class CopyVisitor extends SimpleFileVisitor<Path> {
     }
 
     @Override
-    public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs)
-            throws IOException {
+    public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs) throws IOException {
         initTargetDir();
         // 如果目标存在，无论目录还是文件都抛出FileAlreadyExistsException异常，此处不做特别处理
         Files.copy(file, resolveTarget(file), copyOptions);
@@ -98,12 +96,10 @@ public class CopyVisitor extends SimpleFileVisitor<Path> {
     }
 
     /**
-     * 根据源文件或目录路径，拼接生成目标的文件或目录路径
-     * 原理是首先截取源路径，得到相对路径，再和目标路径拼接
+     * 根据源文件或目录路径，拼接生成目标的文件或目录路径 原理是首先截取源路径，得到相对路径，再和目标路径拼接
      *
      * <p>
-     * 如：源路径是 /opt/test/，需要拷贝的文件是 /opt/test/a/a.txt，得到相对路径 a/a.txt
-     * 目标路径是/home/，则得到最终目标路径是 /home/a/a.txt
+     * 如：源路径是 /opt/test/，需要拷贝的文件是 /opt/test/a/a.txt，得到相对路径 a/a.txt 目标路径是/home/，则得到最终目标路径是 /home/a/a.txt
      * </p>
      *
      * @param file 需要拷贝的文件或目录Path

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.data.id;
 
 import org.miaixz.bus.core.instance.Instances;
@@ -85,8 +85,7 @@ public class ID {
     }
 
     /**
-     * 创建MongoDB ID生成策略实现
-     * ObjectId由以下几部分组成：
+     * 创建MongoDB ID生成策略实现 ObjectId由以下几部分组成：
      *
      * <pre>
      * 1. Time 时间戳。
@@ -95,7 +94,8 @@ public class ID {
      * 4. INC 自增计数器。确保同一秒内产生objectId的唯一性。
      * </pre>
      * <p>
-     * 参考：<a href="http://blog.csdn.net/qxc1281/article/details/54021882">http://blog.csdn.net/qxc1281/article/details/54021882</a>
+     * 参考：<a href=
+     * "http://blog.csdn.net/qxc1281/article/details/54021882">http://blog.csdn.net/qxc1281/article/details/54021882</a>
      *
      * @return ObjectId
      */
@@ -104,17 +104,16 @@ public class ID {
     }
 
     /**
-     * 获取单例的Twitter的Snowflake 算法生成器对象
-     * 分布式系统中，有一些需要使用全局唯一ID的场景，有些时候我们希望能使用一种简单一些的ID，并且希望ID能够按照时间有序生成。
+     * 获取单例的Twitter的Snowflake 算法生成器对象 分布式系统中，有一些需要使用全局唯一ID的场景，有些时候我们希望能使用一种简单一些的ID，并且希望ID能够按照时间有序生成。
      *
      * <p>
      * snowflake的结构如下(每部分用-分开):
+     * 
      * <pre>
      * 0 - 0000000000 0000000000 0000000000 0000000000 0 - 00000 - 00000 - 000000000000
      * </pre>
      * <p>
-     * 第一位为未使用，接下来的41位为毫秒级时间(41位的长度可以使用69年)
-     * 然后是5位datacenterId和5位workerId(10位的长度最多支持部署1024个节点）
+     * 第一位为未使用，接下来的41位为毫秒级时间(41位的长度可以使用69年) 然后是5位datacenterId和5位workerId(10位的长度最多支持部署1024个节点）
      * 最后12位是毫秒内的计数（12位的计数顺序号支持每个节点每毫秒产生4096个ID序号）
      * </p>
      * <p>
@@ -130,16 +129,15 @@ public class ID {
     }
 
     /**
-     * 获取单例的Twitter的Snowflake 算法生成器对象
-     * 分布式系统中，有一些需要使用全局唯一ID的场景，有些时候我们希望能使用一种简单一些的ID，并且希望ID能够按照时间有序生成。
+     * 获取单例的Twitter的Snowflake 算法生成器对象 分布式系统中，有一些需要使用全局唯一ID的场景，有些时候我们希望能使用一种简单一些的ID，并且希望ID能够按照时间有序生成。
      * snowflake的结构如下(每部分用-分开):
+     * 
      * <pre>
      * 0 - 0000000000 0000000000 0000000000 0000000000 0 - 00000 - 00000 - 000000000000
      * </pre>
      *
      * <p>
-     * 第一位为未使用，接下来的41位为毫秒级时间(41位的长度可以使用69年)
-     * 然后是5位datacenterId和5位workerId(10位的长度最多支持部署1024个节点）
+     * 第一位为未使用，接下来的41位为毫秒级时间(41位的长度可以使用69年) 然后是5位datacenterId和5位workerId(10位的长度最多支持部署1024个节点）
      * 最后12位是毫秒内的计数（12位的计数顺序号支持每个节点每毫秒产生4096个ID序号）
      * </p>
      *
@@ -155,16 +153,15 @@ public class ID {
     }
 
     /**
-     * 获取单例的Twitter的Snowflake 算法生成器对象
-     * 分布式系统中，有一些需要使用全局唯一ID的场景，有些时候我们希望能使用一种简单一些的ID，并且希望ID能够按照时间有序生成。
+     * 获取单例的Twitter的Snowflake 算法生成器对象 分布式系统中，有一些需要使用全局唯一ID的场景，有些时候我们希望能使用一种简单一些的ID，并且希望ID能够按照时间有序生成。
      * snowflake的结构如下(每部分用-分开):
+     * 
      * <pre>
      * 0 - 0000000000 0000000000 0000000000 0000000000 0 - 00000 - 00000 - 000000000000
      * </pre>
      *
      * <p>
-     * 第一位为未使用，接下来的41位为毫秒级时间(41位的长度可以使用69年)
-     * 然后是5位datacenterId和5位workerId(10位的长度最多支持部署1024个节点）
+     * 第一位为未使用，接下来的41位为毫秒级时间(41位的长度可以使用69年) 然后是5位datacenterId和5位workerId(10位的长度最多支持部署1024个节点）
      * 最后12位是毫秒内的计数（12位的计数顺序号支持每个节点每毫秒产生4096个ID序号）
      * </p>
      *
@@ -179,8 +176,7 @@ public class ID {
     }
 
     /**
-     * 获取数据中心ID
-     * 数据中心ID依赖于本地网卡MAC地址。
+     * 获取数据中心ID 数据中心ID依赖于本地网卡MAC地址。
      * <p>
      * 此算法来自于mybatis-plus#Sequence
      * </p>
@@ -201,8 +197,7 @@ public class ID {
             // ignore
         }
         if (null != mac) {
-            id = ((0x000000FF & (long) mac[mac.length - 2])
-                    | (0x0000FF00 & (((long) mac[mac.length - 1]) << 8))) >> 6;
+            id = ((0x000000FF & (long) mac[mac.length - 2]) | (0x0000FF00 & (((long) mac[mac.length - 1]) << 8))) >> 6;
             id = id % (maxDatacenterId + 1);
         }
 
@@ -210,8 +205,7 @@ public class ID {
     }
 
     /**
-     * 获取机器ID，使用进程ID配合数据中心ID生成
-     * 机器依赖于本进程ID或进程名的Hash值。
+     * 获取机器ID，使用进程ID配合数据中心ID生成 机器依赖于本进程ID或进程名的Hash值。
      *
      * <p>
      * 此算法来自于mybatis-plus#Sequence
@@ -227,7 +221,7 @@ public class ID {
         try {
             mpid.append(Pid.INSTANCE.get());
         } catch (final InternalException igonre) {
-            //ignore
+            // ignore
         }
         // MAC + PID 的 hashcode 获取16个低位
         return (mpid.toString().hashCode() & 0xffff) % (maxWorkerId + 1);
@@ -253,8 +247,7 @@ public class ID {
     }
 
     /**
-     * 简单获取Snowflake 的 nextId
-     * 终端ID 数据中心ID 默认为PID和MAC地址生成
+     * 简单获取Snowflake 的 nextId 终端ID 数据中心ID 默认为PID和MAC地址生成
      *
      * @return the long
      */
@@ -263,8 +256,7 @@ public class ID {
     }
 
     /**
-     * 简单获取Snowflake 的 nextId
-     * 终端ID 数据中心ID 默认为PID和MAC地址生成
+     * 简单获取Snowflake 的 nextId 终端ID 数据中心ID 默认为PID和MAC地址生成
      *
      * @return the string
      */

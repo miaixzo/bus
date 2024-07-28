@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 import org.miaixz.bus.core.xyz.StringKit;
@@ -59,8 +59,7 @@ public class ImageOutputData {
     private final ImageDescriptor desc;
     private final String tsuid;
 
-    public ImageOutputData(
-            List<SupplierEx<PlanarImage, IOException>> images, ImageDescriptor desc, String tsuid)
+    public ImageOutputData(List<SupplierEx<PlanarImage, IOException>> images, ImageDescriptor desc, String tsuid)
             throws IOException {
         if (Objects.requireNonNull(images).isEmpty()) {
             throw new IllegalStateException("No image found!");
@@ -68,9 +67,7 @@ public class ImageOutputData {
         this.images = new ArrayList<>(images);
         this.desc = Objects.requireNonNull(desc);
         int type = CvType.depth(getFirstImage().get().type());
-        this.tsuid =
-                ImageOutputData.adaptSuitableSyntax(
-                        desc.getBitsStored(), type, Objects.requireNonNull(tsuid));
+        this.tsuid = ImageOutputData.adaptSuitableSyntax(desc.getBitsStored(), type, Objects.requireNonNull(tsuid));
         if (!isSupportedSyntax(this.tsuid)) {
             throw new IllegalStateException(this.tsuid + " is not supported as encoding syntax!");
         }
@@ -106,72 +103,70 @@ public class ImageOutputData {
 
     public static String adaptSuitableSyntax(int bitStored, int type, String dstTsuid) {
         switch (UID.from(dstTsuid)) {
-            case UID.ImplicitVRLittleEndian:
-            case UID.ExplicitVRLittleEndian:
-                return UID.ExplicitVRLittleEndian.uid;
-            case UID.JPEGBaseline8Bit:
-                return type <= CvType.CV_8S
-                        ? dstTsuid
-                        : type <= CvType.CV_16S ? UID.JPEGLosslessSV1.uid : UID.ExplicitVRLittleEndian.uid;
-            case UID.JPEGExtended12Bit:
-            case UID.JPEGSpectralSelectionNonHierarchical68:
-            case UID.JPEGFullProgressionNonHierarchical1012:
-                return type <= CvType.CV_16U && bitStored <= 12
-                        ? dstTsuid
-                        : type <= CvType.CV_16S ? UID.JPEGLosslessSV1.uid : UID.ExplicitVRLittleEndian.uid;
-            case UID.JPEGLossless:
-            case UID.JPEGLosslessSV1:
-            case UID.JPEGLSLossless:
-            case UID.JPEGLSNearLossless:
-            case UID.JPEG2000Lossless:
-            case UID.JPEG2000:
-                return type <= CvType.CV_16S ? dstTsuid : UID.ExplicitVRLittleEndian.uid;
-            default:
-                return dstTsuid;
+        case UID.ImplicitVRLittleEndian:
+        case UID.ExplicitVRLittleEndian:
+            return UID.ExplicitVRLittleEndian.uid;
+        case UID.JPEGBaseline8Bit:
+            return type <= CvType.CV_8S ? dstTsuid
+                    : type <= CvType.CV_16S ? UID.JPEGLosslessSV1.uid : UID.ExplicitVRLittleEndian.uid;
+        case UID.JPEGExtended12Bit:
+        case UID.JPEGSpectralSelectionNonHierarchical68:
+        case UID.JPEGFullProgressionNonHierarchical1012:
+            return type <= CvType.CV_16U && bitStored <= 12 ? dstTsuid
+                    : type <= CvType.CV_16S ? UID.JPEGLosslessSV1.uid : UID.ExplicitVRLittleEndian.uid;
+        case UID.JPEGLossless:
+        case UID.JPEGLosslessSV1:
+        case UID.JPEGLSLossless:
+        case UID.JPEGLSNearLossless:
+        case UID.JPEG2000Lossless:
+        case UID.JPEG2000:
+            return type <= CvType.CV_16S ? dstTsuid : UID.ExplicitVRLittleEndian.uid;
+        default:
+            return dstTsuid;
         }
     }
 
     public static boolean isAdaptableSyntax(String uid) {
         switch (UID.from(uid)) {
-            case UID.JPEGBaseline8Bit:
-            case UID.JPEGExtended12Bit:
-            case UID.JPEGSpectralSelectionNonHierarchical68:
-            case UID.JPEGFullProgressionNonHierarchical1012:
-                return true;
-            default:
-                return false;
+        case UID.JPEGBaseline8Bit:
+        case UID.JPEGExtended12Bit:
+        case UID.JPEGSpectralSelectionNonHierarchical68:
+        case UID.JPEGFullProgressionNonHierarchical1012:
+            return true;
+        default:
+            return false;
         }
     }
 
     public static boolean isNativeSyntax(String uid) {
         switch (UID.from(uid)) {
-            case UID.ImplicitVRLittleEndian:
-            case UID.ExplicitVRLittleEndian:
-                return true;
-            default:
-                return false;
+        case UID.ImplicitVRLittleEndian:
+        case UID.ExplicitVRLittleEndian:
+            return true;
+        default:
+            return false;
         }
     }
 
     public static boolean isSupportedSyntax(String uid) {
         switch (UID.from(uid)) {
-            case UID.ImplicitVRLittleEndian:
-            case UID.ExplicitVRLittleEndian:
-            case UID.JPEGBaseline8Bit:
-            case UID.JPEGExtended12Bit:
-            case UID.JPEGSpectralSelectionNonHierarchical68:
-            case UID.JPEGFullProgressionNonHierarchical1012:
-            case UID.JPEGLossless:
-            case UID.JPEGLosslessSV1:
-            case UID.JPEGLSLossless:
-            case UID.JPEGLSNearLossless:
-            case UID.JPEG2000Lossless:
-            case UID.JPEG2000:
-                // case UID.JPEG2000Part2MultiComponentLosslessOnly:
-                // case UID.JPEG2000Part2MultiComponent:
-                return true;
-            default:
-                return false;
+        case UID.ImplicitVRLittleEndian:
+        case UID.ExplicitVRLittleEndian:
+        case UID.JPEGBaseline8Bit:
+        case UID.JPEGExtended12Bit:
+        case UID.JPEGSpectralSelectionNonHierarchical68:
+        case UID.JPEGFullProgressionNonHierarchical1012:
+        case UID.JPEGLossless:
+        case UID.JPEGLosslessSV1:
+        case UID.JPEGLSLossless:
+        case UID.JPEGLSNearLossless:
+        case UID.JPEG2000Lossless:
+        case UID.JPEG2000:
+            // case UID.JPEG2000Part2MultiComponentLosslessOnly:
+            // case UID.JPEG2000Part2MultiComponent:
+            return true;
+        default:
+            return false;
         }
     }
 
@@ -187,8 +182,7 @@ public class ImageOutputData {
         return tsuid;
     }
 
-    public void writeCompressedImageData(ImageOutputStream dos, Attributes dataSet, int[] params)
-            throws IOException {
+    public void writeCompressedImageData(ImageOutputStream dos, Attributes dataSet, int[] params) throws IOException {
         Mat buf = null;
         MatOfInt dicomParams = null;
         try {
@@ -196,8 +190,7 @@ public class ImageOutputData {
             for (int i = 0; i < images.size(); i++) {
                 PlanarImage image = images.get(i).get();
                 boolean releaseSrc = image.isReleasedAfterProcessing();
-                PlanarImage writeImg =
-                        Builder.isJpeg2000(tsuid) ? image : RGBImageVoiLut.bgr2rgb(image);
+                PlanarImage writeImg = Builder.isJpeg2000(tsuid) ? image : RGBImageVoiLut.bgr2rgb(image);
                 if (releaseSrc && !writeImg.equals(image)) {
                     image.release();
                 }
@@ -241,22 +234,19 @@ public class ImageOutputData {
                 || (compressType == Imgcodecs.DICOM_CP_J2K && jpeg2000CompRatio > 0)
                 || (compressType == Imgcodecs.DICOM_CP_JPLS && jpeglsNLE > 0)) {
             dataSet.setString(Tag.LossyImageCompression, VR.CS, "01");
-            String method =
-                    compressType == Imgcodecs.DICOM_CP_J2K
-                            ? "ISO_15444_1"
-                            : compressType == Imgcodecs.DICOM_CP_JPLS ? "ISO_14495_1" : "ISO_10918_1";
+            String method = compressType == Imgcodecs.DICOM_CP_J2K ? "ISO_15444_1"
+                    : compressType == Imgcodecs.DICOM_CP_JPLS ? "ISO_14495_1" : "ISO_10918_1";
             double[] old = dataSet.getDoubles(Tag.LossyImageCompressionRatio);
             double[] destArray;
             String[] methods;
             if (old == null) {
-                destArray = new double[]{ratio};
-                methods = new String[]{method};
+                destArray = new double[] { ratio };
+                methods = new String[] { method };
             } else {
                 destArray = Arrays.copyOf(old, old.length + 1);
                 destArray[destArray.length - 1] = ratio;
-                String[] oldM =
-                        Builder.getStringArrayFromDicomElement(
-                                dataSet, Tag.LossyImageCompressionMethod, new String[0]);
+                String[] oldM = Builder.getStringArrayFromDicomElement(dataSet, Tag.LossyImageCompressionMethod,
+                        new String[0]);
                 methods = Arrays.copyOf(oldM, old.length + 1);
                 methods[methods.length - 1] = method;
                 for (int i = 0; i < methods.length; i++) {
@@ -337,8 +327,8 @@ public class ImageOutputData {
         }
     }
 
-    public int[] adaptTagsToCompressedImage(
-            Attributes data, PlanarImage img, ImageDescriptor desc, JpegWriteParam param) {
+    public int[] adaptTagsToCompressedImage(Attributes data, PlanarImage img, ImageDescriptor desc,
+            JpegWriteParam param) {
         int cvType = img.type();
         int elemSize = (int) img.elemSize1();
         int channels = CvType.channels(cvType);
@@ -361,8 +351,7 @@ public class ImageOutputData {
         } else if (ts == TransferSyntaxType.JPEG_LS) {
             compressType = Imgcodecs.DICOM_CP_JPLS;
             if (signed) {
-                Logger.warn(
-                        "Force compression to JPEG-LS lossless as lossy is not adapted to signed data.");
+                Logger.warn("Force compression to JPEG-LS lossless as lossy is not adapted to signed data.");
                 jpeglsNLE = 0;
                 // Extend to bit allocated to avoid exception as negative values are treated as large
                 // positive values
@@ -374,8 +363,7 @@ public class ImageOutputData {
                 bitCompressedForEncoder = bitCompressed = 8;
             } else if (bitCompressed <= 12) {
                 if (signed && param.getPrediction() > 1) {
-                    Logger.warn(
-                            "Force JPEGLosslessNonHierarchical14 compression to 16-bit with signed data.");
+                    Logger.warn("Force JPEGLosslessNonHierarchical14 compression to 16-bit with signed data.");
                     bitCompressed = 12;
                     bitCompressedForEncoder = 16;
                 } else {
@@ -403,14 +391,12 @@ public class ImageOutputData {
         params[Imgcodecs.DICOM_PARAM_COLOR_MODEL] = epi; // Photometric interpretation
         params[Imgcodecs.DICOM_PARAM_JPEG_MODE] = param.getJpegMode(); // JPEG Codec mode
         params[Imgcodecs.DICOM_PARAM_JPEGLS_LOSSY_ERROR] = jpeglsNLE; // Lossy error for jpeg-ls
-        params[Imgcodecs.DICOM_PARAM_J2K_COMPRESSION_FACTOR] =
-                param.getCompressionRatioFactor(); // JPEG2000 factor of compression ratio
-        params[Imgcodecs.DICOM_PARAM_JPEG_QUALITY] =
-                param.getCompressionQuality(); // JPEG lossy quality
-        params[Imgcodecs.DICOM_PARAM_JPEG_PREDICTION] =
-                param.getPrediction(); // JPEG lossless prediction
-        params[Imgcodecs.DICOM_PARAM_JPEG_PT_TRANSFORM] =
-                param.getPointTransform(); // JPEG lossless transformation point
+        params[Imgcodecs.DICOM_PARAM_J2K_COMPRESSION_FACTOR] = param.getCompressionRatioFactor(); // JPEG2000 factor of
+                                                                                                  // compression ratio
+        params[Imgcodecs.DICOM_PARAM_JPEG_QUALITY] = param.getCompressionQuality(); // JPEG lossy quality
+        params[Imgcodecs.DICOM_PARAM_JPEG_PREDICTION] = param.getPrediction(); // JPEG lossless prediction
+        params[Imgcodecs.DICOM_PARAM_JPEG_PT_TRANSFORM] = param.getPointTransform(); // JPEG lossless transformation
+                                                                                     // point
 
         data.setInt(Tag.Columns, VR.US, img.width());
         data.setInt(Tag.Rows, VR.US, img.height());

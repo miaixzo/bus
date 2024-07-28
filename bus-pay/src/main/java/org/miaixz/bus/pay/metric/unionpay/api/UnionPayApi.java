@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pay.metric.unionpay.api;
 
 import org.miaixz.bus.pay.Matcher;
@@ -101,7 +101,6 @@ public enum UnionPayApi implements Matcher {
      * 下载某内部机构/外包服务机构下所有商户的对账单
      */
     BILL_AGENT("pay.bill.agent", "下载某内部机构/外包服务机构下所有商户的对账单");
-
 
     /**
      * 接口方法

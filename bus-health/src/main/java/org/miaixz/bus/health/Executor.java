@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health;
 
 import com.sun.jna.Platform;
@@ -55,9 +55,9 @@ public final class Executor {
 
     private static String[] getDefaultEnv() {
         if (Platform.isWindows()) {
-            return new String[]{"LANGUAGE=C"};
+            return new String[] { "LANGUAGE=C" };
         } else {
-            return new String[]{"LC_ALL=C"};
+            return new String[] { "LC_ALL=C" };
         }
     }
 

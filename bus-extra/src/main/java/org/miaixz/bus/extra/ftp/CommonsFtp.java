@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.ftp;
 
 import org.apache.commons.net.ftp.FTPClient;
@@ -50,12 +50,10 @@ import java.util.List;
 import java.util.function.Predicate;
 
 /**
- * Apache Commons FTP客户端封装
- * 此客户端基于Apache-Commons-Net
- * 常见搭建ftp的工具有：
+ * Apache Commons FTP客户端封装 此客户端基于Apache-Commons-Net 常见搭建ftp的工具有：
  * <ul>
- *     <li>filezila server ;根目录一般都是空</li>
- *     <li>linux vsftpd ; 使用的 系统用户的目录，这里往往都是不是根目录，如：/home/bus/ftp</li>
+ * <li>filezila server ;根目录一般都是空</li>
+ * <li>linux vsftpd ; 使用的 系统用户的目录，这里往往都是不是根目录，如：/home/bus/ftp</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -150,7 +148,8 @@ public class CommonsFtp extends AbstractFtp {
      * @param systemKey          服务器标识 例如：org.apache.commons.net.ftp.FTPClientConfig.SYST_NT
      * @return CommonsFtp
      */
-    public static CommonsFtp of(final Connector connector, final Charset charset, final String serverLanguageCode, final String systemKey) {
+    public static CommonsFtp of(final Connector connector, final Charset charset, final String serverLanguageCode,
+            final String systemKey) {
         return of(connector, charset, serverLanguageCode, systemKey, null);
     }
 
@@ -164,7 +163,8 @@ public class CommonsFtp extends AbstractFtp {
      * @param mode               模式
      * @return CommonsFtp
      */
-    public static CommonsFtp of(final Connector connector, final Charset charset, final String serverLanguageCode, final String systemKey, final EnumMap.FtpMode mode) {
+    public static CommonsFtp of(final Connector connector, final Charset charset, final String serverLanguageCode,
+            final String systemKey, final EnumMap.FtpMode mode) {
         return new CommonsFtp(new FtpConfig(connector, charset, serverLanguageCode, systemKey), mode);
     }
 
@@ -221,11 +221,12 @@ public class CommonsFtp extends AbstractFtp {
             } catch (final IOException e) {
                 // ignore
             }
-            throw new InternalException("Login failed for user [{}], reply code is: [{}]", connector.getUser(), replyCode);
+            throw new InternalException("Login failed for user [{}], reply code is: [{}]", connector.getUser(),
+                    replyCode);
         }
         this.client = client;
         if (mode != null) {
-            //noinspection resource
+            // noinspection resource
             setMode(mode);
         }
         return this;
@@ -240,12 +241,12 @@ public class CommonsFtp extends AbstractFtp {
     public CommonsFtp setMode(final EnumMap.FtpMode mode) {
         this.mode = mode;
         switch (mode) {
-            case Active:
-                this.client.enterLocalActiveMode();
-                break;
-            case Passive:
-                this.client.enterLocalPassiveMode();
-                break;
+        case Active:
+            this.client.enterLocalActiveMode();
+            break;
+        case Passive:
+            this.client.enterLocalPassiveMode();
+            break;
         }
         return this;
     }
@@ -330,8 +331,7 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 遍历某个目录下所有文件和目录，不会递归遍历
-     * 此方法自动过滤"."和".."两种目录
+     * 遍历某个目录下所有文件和目录，不会递归遍历 此方法自动过滤"."和".."两种目录
      *
      * @param path      目录
      * @param predicate 过滤器，null表示不过滤，默认去掉"."和".."两种目录
@@ -342,8 +342,7 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 遍历某个目录下所有文件和目录，不会递归遍历
-     * 此方法自动过滤"."和".."两种目录
+     * 遍历某个目录下所有文件和目录，不会递归遍历 此方法自动过滤"."和".."两种目录
      *
      * @param path      目录
      * @param predicate 过滤器，null表示不过滤，默认去掉"."和".."两种目录
@@ -527,7 +526,8 @@ public class CommonsFtp extends AbstractFtp {
      * @return 是否上传成功
      * @throws InternalException IO异常
      */
-    public boolean uploadFile(final String remotePath, final String fileName, final File file) throws InternalException {
+    public boolean uploadFile(final String remotePath, final String fileName, final File file)
+            throws InternalException {
         try (final InputStream in = FileKit.getInputStream(file)) {
             return uploadFile(remotePath, fileName, in);
         } catch (final IOException e) {
@@ -550,7 +550,8 @@ public class CommonsFtp extends AbstractFtp {
      * @return 是否上传成功
      * @throws InternalException IO异常
      */
-    public boolean uploadFile(final String remotePath, final String fileName, final InputStream fileStream) throws InternalException {
+    public boolean uploadFile(final String remotePath, final String fileName, final InputStream fileStream)
+            throws InternalException {
         try {
             client.setFileType(FTPClient.BINARY_FILE_TYPE);
         } catch (final IOException e) {
@@ -581,9 +582,7 @@ public class CommonsFtp extends AbstractFtp {
     }
 
     /**
-     * 递归上传文件（支持目录）
-     * 上传时，如果uploadFile为目录，只复制目录下所有目录和文件到目标路径下，并不会复制目录本身
-     * 上传时，自动创建父级目录
+     * 递归上传文件（支持目录） 上传时，如果uploadFile为目录，只复制目录下所有目录和文件到目标路径下，并不会复制目录本身 上传时，自动创建父级目录
      *
      * @param remotePath 目录路径
      * @param uploadFile 上传文件或目录
@@ -600,7 +599,7 @@ public class CommonsFtp extends AbstractFtp {
         }
 
         final List<File> dirs = new ArrayList<>(files.length);
-        //第一次只处理文件，防止目录在前面导致先处理子目录，而引发文件所在目录不正确
+        // 第一次只处理文件，防止目录在前面导致先处理子目录，而引发文件所在目录不正确
         for (final File f : files) {
             if (f.isDirectory()) {
                 dirs.add(f);
@@ -608,7 +607,7 @@ public class CommonsFtp extends AbstractFtp {
                 this.uploadFile(remotePath, f);
             }
         }
-        //第二次只处理目录
+        // 第二次只处理目录
         for (final File f : dirs) {
             final String dir = FileKit.normalize(remotePath + "/" + f.getName());
             upload(dir, f);
@@ -646,8 +645,7 @@ public class CommonsFtp extends AbstractFtp {
 
             if (!ftpFile.isDirectory()) {
                 // 本地不存在文件或者ftp上文件有修改则下载
-                if (!FileKit.exists(destFile)
-                        || (ftpFile.getTimestamp().getTimeInMillis() > destFile.lastModified())) {
+                if (!FileKit.exists(destFile) || (ftpFile.getTimestamp().getTimeInMillis() > destFile.lastModified())) {
                     download(srcFile, destFile);
                 }
             } else {
@@ -700,7 +698,8 @@ public class CommonsFtp extends AbstractFtp {
      * @param fileNameCharset 文件名编码，通过此编码转换文件名编码为ISO8859-1
      * @throws InternalException IO异常
      */
-    public void download(final String path, String fileName, final OutputStream out, final Charset fileNameCharset) throws InternalException {
+    public void download(final String path, String fileName, final OutputStream out, final Charset fileNameCharset)
+            throws InternalException {
         String pwd = null;
         if (this.backToPwd) {
             pwd = pwd();

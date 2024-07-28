@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.reflect.field;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -34,8 +34,7 @@ import java.lang.reflect.Field;
 import java.util.function.Predicate;
 
 /**
- * 字段反射类
- * 此类持有类中字段的缓存，如果字段在类中修改，则需要手动调用clearCaches方法清除缓存。
+ * 字段反射类 此类持有类中字段的缓存，如果字段在类中修改，则需要手动调用clearCaches方法清除缓存。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -119,8 +118,7 @@ public class FieldReflect {
     }
 
     /**
-     * 获得一个类中所有字段列表，直接反射获取，无缓存
-     * 如果子类与父类中存在同名字段，则这两个字段同时存在，子类字段在前，父类字段在后。
+     * 获得一个类中所有字段列表，直接反射获取，无缓存 如果子类与父类中存在同名字段，则这两个字段同时存在，子类字段在前，父类字段在后。
      *
      * @param withSuperClassFields 是否包括父类的字段列表
      * @return 字段列表

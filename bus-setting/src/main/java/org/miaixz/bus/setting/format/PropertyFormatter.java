@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.setting.format;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -68,8 +68,7 @@ public class PropertyFormatter extends AbstractFormatter<IniProperty> {
     }
 
     /**
-     * 此方法不会检查值，因此您应该首先{@link #check(String)}
-     * 但是，不检查并不一定会报告错误，但可能会导致违规
+     * 此方法不会检查值，因此您应该首先{@link #check(String)} 但是，不检查并不一定会报告错误，但可能会导致违规
      *
      * @param value a String value
      * @param line  line number
@@ -79,7 +78,7 @@ public class PropertyFormatter extends AbstractFormatter<IniProperty> {
     public IniProperty format(String value, int line) {
         String[] split = value.split(String.valueOf(Symbol.C_EQUAL), 2);
         if (split.length == 1) {
-            split = new String[]{split[0], null};
+            split = new String[] { split[0], null };
         }
         final String propKey = split[0];
         final String propValue = split[1];

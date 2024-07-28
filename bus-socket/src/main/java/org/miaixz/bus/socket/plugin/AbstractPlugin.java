@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket.plugin;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -42,11 +42,8 @@ import java.nio.channels.AsynchronousSocketChannel;
  */
 public abstract class AbstractPlugin<T> implements Plugin<T> {
 
-    private final static char[] DIGITS = {
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b',
-            'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n',
-            'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
-    };
+    private final static char[] DIGITS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e',
+            'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
 
     /**
      * 将字节转换成16进制显示
@@ -76,21 +73,21 @@ public abstract class AbstractPlugin<T> implements Plugin<T> {
         for (int i = 0; i < bytes.length; i++) {
             column = i % 16;
             switch (column) {
-                case 0:
-                    startIndex = i;
-                    buffer.append(fixHexString(Integer.toHexString(i), 8)).append(": ");
-                    buffer.append(toHex(bytes[i]));
-                    buffer.append(' ');
-                    break;
-                case 15:
-                    buffer.append(toHex(bytes[i]));
-                    buffer.append(" ; ");
-                    buffer.append(filterString(bytes, startIndex, column + 1));
-                    buffer.append("\r\n");
-                    break;
-                default:
-                    buffer.append(toHex(bytes[i]));
-                    buffer.append(' ');
+            case 0:
+                startIndex = i;
+                buffer.append(fixHexString(Integer.toHexString(i), 8)).append(": ");
+                buffer.append(toHex(bytes[i]));
+                buffer.append(' ');
+                break;
+            case 15:
+                buffer.append(toHex(bytes[i]));
+                buffer.append(" ; ");
+                buffer.append(filterString(bytes, startIndex, column + 1));
+                buffer.append("\r\n");
+                break;
+            default:
+                buffer.append(toHex(bytes[i]));
+                buffer.append(' ');
             }
         }
         if (column != 15) {

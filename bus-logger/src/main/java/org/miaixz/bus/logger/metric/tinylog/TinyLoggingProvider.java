@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.logger.metric.tinylog;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -56,10 +56,8 @@ public class TinyLoggingProvider extends AbstractProvider {
     /**
      * 文本消息格式化程序
      */
-    private static final MessageFormatter formatter = new AdvancedMessageFormatter(
-            Configuration.getLocale(),
-            Configuration.isEscapingEnabled()
-    );
+    private static final MessageFormatter formatter = new AdvancedMessageFormatter(Configuration.getLocale(),
+            Configuration.isEscapingEnabled());
     /**
      * 日志级别
      */
@@ -154,7 +152,8 @@ public class TinyLoggingProvider extends AbstractProvider {
     }
 
     @Override
-    public void log(final String fqcn, final org.miaixz.bus.logger.Level level, final Throwable t, final String format, final Object... args) {
+    public void log(final String fqcn, final org.miaixz.bus.logger.Level level, final Throwable t, final String format,
+            final Object... args) {
         logIfEnabled(fqcn, toTinyLevel(level), t, format, args);
     }
 
@@ -172,7 +171,8 @@ public class TinyLoggingProvider extends AbstractProvider {
      * @param format 日志消息模板
      * @param args   日志消息参数
      */
-    private void logIfEnabled(final String fqcn, final Level level, Throwable t, final String format, final Object... args) {
+    private void logIfEnabled(final String fqcn, final Level level, Throwable t, final String format,
+            final Object... args) {
         if (null == t) {
             t = getLastArgumentIfThrowable(args);
         }
@@ -188,26 +188,26 @@ public class TinyLoggingProvider extends AbstractProvider {
     private Level toTinyLevel(final org.miaixz.bus.logger.Level level) {
         final Level tinyLevel;
         switch (level) {
-            case TRACE:
-                tinyLevel = Level.TRACE;
-                break;
-            case DEBUG:
-                tinyLevel = Level.DEBUG;
-                break;
-            case INFO:
-                tinyLevel = Level.INFO;
-                break;
-            case WARN:
-                tinyLevel = Level.WARN;
-                break;
-            case ERROR:
-                tinyLevel = Level.ERROR;
-                break;
-            case OFF:
-                tinyLevel = Level.OFF;
-                break;
-            default:
-                throw new Error(StringKit.format("Can not identify level: {}", level));
+        case TRACE:
+            tinyLevel = Level.TRACE;
+            break;
+        case DEBUG:
+            tinyLevel = Level.DEBUG;
+            break;
+        case INFO:
+            tinyLevel = Level.INFO;
+            break;
+        case WARN:
+            tinyLevel = Level.WARN;
+            break;
+        case ERROR:
+            tinyLevel = Level.ERROR;
+            break;
+        case OFF:
+            tinyLevel = Level.OFF;
+            break;
+        default:
+            throw new Error(StringKit.format("Can not identify level: {}", level));
         }
         return tinyLevel;
     }

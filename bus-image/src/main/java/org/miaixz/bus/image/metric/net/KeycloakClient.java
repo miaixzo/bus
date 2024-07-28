@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.net;
 
 import org.miaixz.bus.image.Device;
@@ -60,8 +60,7 @@ public class KeycloakClient {
     public void setDevice(Device device) {
         if (device != null) {
             if (this.device != null)
-                throw new IllegalStateException("already owned by " +
-                        this.device.getDeviceName());
+                throw new IllegalStateException("already owned by " + this.device.getDeviceName());
         }
         this.device = device;
     }
@@ -166,15 +165,10 @@ public class KeycloakClient {
 
     @Override
     public String toString() {
-        return "KeycloakClient[keycloakClientID=" + keycloakClientID
-                + ",keycloakServerURL=" + keycloakServerURL
-                + ",keycloakRealm=" + keycloakRealm
-                + ",keycloakGrantType=" + keycloakGrantType
-                + ",keycloakClientSecret=" + keycloakClientSecret
-                + ",userID=" + userID
-                + ",password=" + password
-                + ",tlsAllowAnyHostname=" + tlsAllowAnyHostname
-                + ",tlsDisableTrustManager=" + tlsDisableTrustManager
+        return "KeycloakClient[keycloakClientID=" + keycloakClientID + ",keycloakServerURL=" + keycloakServerURL
+                + ",keycloakRealm=" + keycloakRealm + ",keycloakGrantType=" + keycloakGrantType
+                + ",keycloakClientSecret=" + keycloakClientSecret + ",userID=" + userID + ",password=" + password
+                + ",tlsAllowAnyHostname=" + tlsAllowAnyHostname + ",tlsDisableTrustManager=" + tlsDisableTrustManager
                 + ']';
     }
 

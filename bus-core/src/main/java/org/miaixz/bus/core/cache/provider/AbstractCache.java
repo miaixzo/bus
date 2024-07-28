@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.cache.provider;
 
 import org.miaixz.bus.core.cache.Cache;
@@ -43,8 +43,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 
 /**
- * 超时和限制大小的缓存的默认实现
- * 继承此抽象缓存需要：
+ * 超时和限制大小的缓存的默认实现 继承此抽象缓存需要：
  * <ul>
  * <li>创建一个新的Map</li>
  * <li>实现 {@code prune} 策略</li>
@@ -189,8 +188,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * 清理实现
-     * 子类实现此方法时无需加锁
+     * 清理实现 子类实现此方法时无需加锁
      *
      * @return 清理数
      */
@@ -202,8 +200,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * @return 默认缓存失效时长。
-     * 每个对象可以单独设置失效时长
+     * @return 默认缓存失效时长。 每个对象可以单独设置失效时长
      */
     @Override
     public long timeout() {
@@ -261,8 +258,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
     }
 
     /**
-     * 对象移除回调。默认无动作
-     * 子类可重写此方法用于监听移除事件，如果重写，listener将无效
+     * 对象移除回调。默认无动作 子类可重写此方法用于监听移除事件，如果重写，listener将无效
      *
      * @param key          键
      * @param cachedObject 被缓存的对象

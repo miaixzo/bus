@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.nlp;
 
 import org.miaixz.bus.core.center.iterator.ComputeIterator;
@@ -32,8 +32,7 @@ import org.miaixz.bus.core.center.iterator.ComputeIterator;
 import java.util.Iterator;
 
 /**
- * 对于未实现{@link Iterator}接口的普通结果类，装饰为{@link NLPResult}
- * 普通的结果类只需实现{@link #nextWord()} 即可
+ * 对于未实现{@link Iterator}接口的普通结果类，装饰为{@link NLPResult} 普通的结果类只需实现{@link #nextWord()} 即可
  *
  * @author Kimi Liu
  * @since Java 17+

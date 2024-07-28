@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab;
 
 import java.util.Collections;
@@ -34,49 +34,49 @@ import java.util.function.Consumer;
 
 class PagerSpliterator<T> implements Spliterator<T> {
 
-	private Pager<T> pager;
+    private Pager<T> pager;
 
-	private Iterator<T> elements;
+    private Iterator<T> elements;
 
-	PagerSpliterator(Pager<T> pager) {
-		this.pager = pager;
-		if (pager.hasNext()) {
-			elements = this.pager.next().iterator();
-		} else {
-			elements = Collections.emptyIterator();
-		}
-	}
+    PagerSpliterator(Pager<T> pager) {
+        this.pager = pager;
+        if (pager.hasNext()) {
+            elements = this.pager.next().iterator();
+        } else {
+            elements = Collections.emptyIterator();
+        }
+    }
 
-	@Override
-	public boolean tryAdvance(Consumer<? super T> action) {
-		if (action == null) {
-			throw new NullPointerException("Action is null");
-		}
-		if (elements.hasNext()) {
-			action.accept(elements.next());
-			return true;
-		} else if (pager.hasNext()) {
-			elements = pager.next().iterator();
-			if (elements.hasNext()) {
-				action.accept(elements.next());
-				return true;
-			}
-		}
-		return false;
-	}
+    @Override
+    public boolean tryAdvance(Consumer<? super T> action) {
+        if (action == null) {
+            throw new NullPointerException("Action is null");
+        }
+        if (elements.hasNext()) {
+            action.accept(elements.next());
+            return true;
+        } else if (pager.hasNext()) {
+            elements = pager.next().iterator();
+            if (elements.hasNext()) {
+                action.accept(elements.next());
+                return true;
+            }
+        }
+        return false;
+    }
 
-	@Override
-	public Spliterator<T> trySplit() {
-		return null;
-	}
+    @Override
+    public Spliterator<T> trySplit() {
+        return null;
+    }
 
-	@Override
-	public long estimateSize() {
-		return pager.getTotalItems();
-	}
+    @Override
+    public long estimateSize() {
+        return pager.getTotalItems();
+    }
 
-	@Override
-	public int characteristics() {
-		return SIZED | NONNULL;
-	}
+    @Override
+    public int characteristics() {
+        return SIZED | NONNULL;
+    }
 }

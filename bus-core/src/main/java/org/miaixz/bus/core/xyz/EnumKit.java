@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.function.FunctionX;
@@ -108,8 +108,7 @@ public class EnumKit {
     }
 
     /**
-     * 字符串转枚举，调用{@link Enum#valueOf(Class, String)}
-     * 如果无枚举值，返回默认值
+     * 字符串转枚举，调用{@link Enum#valueOf(Class, String)} 如果无枚举值，返回默认值
      *
      * @param <E>          枚举类型泛型
      * @param enumClass    枚举类
@@ -219,8 +218,7 @@ public class EnumKit {
     }
 
     /**
-     * 获得枚举类中所有的字段名
-     * 除用户自定义的字段名，也包括“name”字段，例如：
+     * 获得枚举类中所有的字段名 除用户自定义的字段名，也包括“name”字段，例如：
      *
      * <pre>
      *   EnumKit.getFieldNames(Ansi4BitColor.class) == ["name", "index"]
@@ -260,8 +258,7 @@ public class EnumKit {
         if (null == enumClass || null == predicate) {
             return null;
         }
-        return Arrays.stream(enumClass.getEnumConstants())
-                .filter(predicate).findFirst().orElse(null);
+        return Arrays.stream(enumClass.getEnumConstants()).filter(predicate).findFirst().orElse(null);
     }
 
     /**
@@ -279,9 +276,7 @@ public class EnumKit {
         }
         final Class<E> implClass = LambdaKit.getRealClass(condition);
         return Arrays.stream(implClass.getEnumConstants())
-                .filter(constant -> ObjectKit.equals(condition.apply(constant), value))
-                .findAny()
-                .orElse(null);
+                .filter(constant -> ObjectKit.equals(condition.apply(constant), value)).findAny().orElse(null);
     }
 
     /**
@@ -309,8 +304,8 @@ public class EnumKit {
      * @param <C>       条件字段类型
      * @return 对应枚举中另一字段值 ，获取不到时为 {@code null}
      */
-    public static <E extends Enum<E>, F, C> F getFieldBy(final FunctionX<E, F> field,
-                                                         final Function<E, C> condition, final C value) {
+    public static <E extends Enum<E>, F, C> F getFieldBy(final FunctionX<E, F> field, final Function<E, C> condition,
+            final C value) {
         if (null == field || null == condition) {
             return null;
         }
@@ -322,13 +317,11 @@ public class EnumKit {
                 // 过滤
                 .filter(constant -> ObjectKit.equals(condition.apply(constant), value))
                 // 获取第一个并转换为结果
-                .findFirst().map(field)
-                .orElse(null);
+                .findFirst().map(field).orElse(null);
     }
 
     /**
-     * 获取枚举字符串值和枚举对象的Map对应，使用LinkedHashMap保证有序
-     * 结果中键为枚举名，值为枚举对象
+     * 获取枚举字符串值和枚举对象的Map对应，使用LinkedHashMap保证有序 结果中键为枚举名，值为枚举对象
      *
      * @param <E>       枚举类型
      * @param enumClass 枚举类
@@ -346,8 +339,7 @@ public class EnumKit {
     }
 
     /**
-     * 获得枚举名对应指定字段值的Map
-     * 键为枚举名，值为字段值
+     * 获得枚举名对应指定字段值的Map 键为枚举名，值为字段值
      *
      * @param clazz     枚举类
      * @param fieldName 字段名，最终调用getXXX方法

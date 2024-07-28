@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.nlp.provider.ikanalyzer;
 
 import org.miaixz.bus.core.xyz.StringKit;
@@ -35,9 +35,7 @@ import org.wltea.analyzer.cfg.DefaultConfig;
 import org.wltea.analyzer.core.IKSegmenter;
 
 /**
- * IKAnalyzer分词引擎实现
- * 项目地址：https://github.com/yozhao/IKAnalyzer
- * {@link IKSegmenter} 非线程全，因此每次单独创建对象
+ * IKAnalyzer分词引擎实现 项目地址：https://github.com/yozhao/IKAnalyzer {@link IKSegmenter} 非线程全，因此每次单独创建对象
  *
  * @author Kimi Liu
  * @since Java 17+

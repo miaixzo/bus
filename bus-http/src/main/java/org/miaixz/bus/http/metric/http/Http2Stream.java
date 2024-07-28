@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
@@ -76,13 +76,11 @@ public class Http2Stream {
      */
     long unacknowledgedBytesRead = 0;
     /**
-     * 在接收窗口更新之前可以写入流的字节数。即使这是正的，写操作也会阻塞，
-     * 直到{@code connection.bytesLeftInWriteWindow}中有可用字节为止
+     * 在接收窗口更新之前可以写入流的字节数。即使这是正的，写操作也会阻塞， 直到{@code connection.bytesLeftInWriteWindow}中有可用字节为止
      */
     long bytesLeftInWriteWindow;
     /**
-     * 这条小溪非正常关闭的原因。如果有多个原因导致异常关闭这个流(例如两个对等点几乎同时关闭它)，
-     * 那么这就是这个对等点知道的第一个原因.
+     * 这条小溪非正常关闭的原因。如果有多个原因导致异常关闭这个流(例如两个对等点几乎同时关闭它)， 那么这就是这个对等点知道的第一个原因.
      */
     Http2ErrorCode errorCode = null;
     IOException errorException;
@@ -91,14 +89,13 @@ public class Http2Stream {
      */
     private boolean hasResponseHeaders;
 
-    Http2Stream(int id, Http2Connection connection, boolean outFinished, boolean inFinished,
-                Headers headers) {
-        if (null == connection) throw new NullPointerException("connection == null");
+    Http2Stream(int id, Http2Connection connection, boolean outFinished, boolean inFinished, Headers headers) {
+        if (null == connection)
+            throw new NullPointerException("connection == null");
 
         this.id = id;
         this.connection = connection;
-        this.bytesLeftInWriteWindow =
-                connection.peerSettings.getInitialWindowSize();
+        this.bytesLeftInWriteWindow = connection.peerSettings.getInitialWindowSize();
         this.source = new FramingSource(connection.settings.getInitialWindowSize());
         this.sink = new FramingSink();
         this.source.finished = inFinished;
@@ -121,19 +118,17 @@ public class Http2Stream {
     /**
      * Returns true if this stream is open. A stream is open until either:
      * <ul>
-     *     <li>A {@code SYN_RESET} frame abnormally terminates the stream.
-     *     <li>Both input and output streams have transmitted all data and headers.
+     * <li>A {@code SYN_RESET} frame abnormally terminates the stream.
+     * <li>Both input and output streams have transmitted all data and headers.
      * </ul>
-     * Note that the input stream may continue to yield data even after a stream reports itself as
-     * not open. This is because input data is buffered.
+     * Note that the input stream may continue to yield data even after a stream reports itself as not open. This is
+     * because input data is buffered.
      */
     public synchronized boolean isOpen() {
         if (errorCode != null) {
             return false;
         }
-        if ((source.finished || source.closed)
-                && (sink.finished || sink.closed)
-                && hasResponseHeaders) {
+        if ((source.finished || source.closed) && (sink.finished || sink.closed) && hasResponseHeaders) {
             return false;
         }
         return true;
@@ -152,9 +147,8 @@ public class Http2Stream {
     }
 
     /**
-     * Removes and returns the stream's received response headers, blocking if necessary until headers
-     * have been received. If the returned list contains multiple blocks of headers the blocks will be
-     * delimited by 'null'.
+     * Removes and returns the stream's received response headers, blocking if necessary until headers have been
+     * received. If the returned list contains multiple blocks of headers the blocks will be delimited by 'null'.
      */
     public synchronized Headers takeHeaders() throws IOException {
         readTimeout.enter();
@@ -172,8 +166,7 @@ public class Http2Stream {
     }
 
     /**
-     * Returns the trailers. It is only safe to call this once the source stream has been completely
-     * exhausted.
+     * Returns the trailers. It is only safe to call this once the source stream has been completely exhausted.
      */
     public synchronized Headers trailers() throws IOException {
         if (errorCode != null) {
@@ -186,8 +179,7 @@ public class Http2Stream {
     }
 
     /**
-     * Returns the reason why this stream was closed, or null if it closed normally or has not yet
-     * been closed.
+     * Returns the reason why this stream was closed, or null if it closed normally or has not yet been closed.
      */
     public synchronized Http2ErrorCode getErrorCode() {
         return errorCode;
@@ -196,10 +188,10 @@ public class Http2Stream {
     /**
      * Sends a reply to an incoming stream.
      *
-     * @param outFinished  true to eagerly finish the output stream to send data to the remote peer.
-     *                     Corresponds to {@code FLAG_FIN}.
-     * @param flushHeaders true to force flush the response headers. This should be true unless the
-     *                     response body exists and will be written immediately.
+     * @param outFinished  true to eagerly finish the output stream to send data to the remote peer. Corresponds to
+     *                     {@code FLAG_FIN}.
+     * @param flushHeaders true to force flush the response headers. This should be true unless the response body exists
+     *                     and will be written immediately.
      */
     public void writeHeaders(List<Http2Header> responseHeaders, boolean outFinished, boolean flushHeaders)
             throws IOException {
@@ -231,8 +223,10 @@ public class Http2Stream {
 
     public void enqueueTrailers(Headers trailers) {
         synchronized (this) {
-            if (sink.finished) throw new IllegalStateException("already finished");
-            if (trailers.size() == 0) throw new IllegalArgumentException("trailers.size() == 0");
+            if (sink.finished)
+                throw new IllegalStateException("already finished");
+            if (trailers.size() == 0)
+                throw new IllegalArgumentException("trailers.size() == 0");
             this.sink.trailers = trailers;
         }
     }
@@ -255,8 +249,8 @@ public class Http2Stream {
     /**
      * Returns a sink that can be used to write data to the peer.
      *
-     * @throws IllegalStateException if this stream was initiated by the peer and a {@link
-     *                               #writeHeaders} has not yet been sent.
+     * @throws IllegalStateException if this stream was initiated by the peer and a {@link #writeHeaders} has not yet
+     *                               been sent.
      */
     public Sink getSink() {
         synchronized (this) {
@@ -268,11 +262,9 @@ public class Http2Stream {
     }
 
     /**
-     * Abnormally terminate this stream. This blocks until the {@code RST_STREAM} frame has been
-     * transmitted.
+     * Abnormally terminate this stream. This blocks until the {@code RST_STREAM} frame has been transmitted.
      */
-    public void close(Http2ErrorCode rstStatusCode, IOException errorException)
-            throws IOException {
+    public void close(Http2ErrorCode rstStatusCode, IOException errorException) throws IOException {
         if (!closeInternal(rstStatusCode, errorException)) {
             return; // Already closed.
         }
@@ -280,8 +272,7 @@ public class Http2Stream {
     }
 
     /**
-     * Abnormally terminate this stream. This enqueues a {@code RST_STREAM} frame and returns
-     * immediately.
+     * Abnormally terminate this stream. This enqueues a {@code RST_STREAM} frame and returns immediately.
      */
     public void closeLater(Http2ErrorCode errorCode) {
         if (!closeInternal(errorCode, null)) {
@@ -371,7 +362,8 @@ public class Http2Stream {
      */
     void addBytesToWriteWindow(long delta) {
         bytesLeftInWriteWindow += delta;
-        if (delta > 0) Http2Stream.this.notifyAll();
+        if (delta > 0)
+            Http2Stream.this.notifyAll();
     }
 
     void checkOutNotClosed() throws IOException {
@@ -385,8 +377,8 @@ public class Http2Stream {
     }
 
     /**
-     * Like {@link #wait}, but throws an {@code InterruptedIOException} when interrupted instead of
-     * the more awkward {@link InterruptedException}.
+     * Like {@link #wait}, but throws an {@code InterruptedIOException} when interrupted instead of the more awkward
+     * {@link InterruptedException}.
      */
     void waitForIo() throws InterruptedIOException {
         try {
@@ -398,9 +390,8 @@ public class Http2Stream {
     }
 
     /**
-     * A source that reads the incoming data frames of a stream. Although this class uses
-     * synchronization to safely receive incoming data frames, it is not intended for use by multiple
-     * readers.
+     * A source that reads the incoming data frames of a stream. Although this class uses synchronization to safely
+     * receive incoming data frames, it is not intended for use by multiple readers.
      */
     private class FramingSource implements Source {
         /**
@@ -422,13 +413,13 @@ public class Http2Stream {
          */
         boolean closed;
         /**
-         * True if either side has cleanly shut down this stream. We will receive no more bytes beyond
-         * those already in the buffer.
+         * True if either side has cleanly shut down this stream. We will receive no more bytes beyond those already in
+         * the buffer.
          */
         boolean finished;
         /**
-         * Received trailers. Null unless the server has provided trailers. Undefined until the stream
-         * is exhausted. Guarded by Http2Stream.this.
+         * Received trailers. Null unless the server has provided trailers. Undefined until the stream is exhausted.
+         * Guarded by Http2Stream.this.
          */
         private Headers trailers;
 
@@ -438,7 +429,8 @@ public class Http2Stream {
 
         @Override
         public long read(Buffer sink, long byteCount) throws IOException {
-            if (byteCount < 0) throw new IllegalArgumentException("byteCount < 0: " + byteCount);
+            if (byteCount < 0)
+                throw new IllegalArgumentException("byteCount < 0: " + byteCount);
 
             while (true) {
                 long readBytesDelivered = -1;
@@ -451,8 +443,7 @@ public class Http2Stream {
                     try {
                         if (errorCode != null) {
                             // Prepare to deliver an error.
-                            errorExceptionToDeliver = errorException != null
-                                    ? errorException
+                            errorExceptionToDeliver = errorException != null ? errorException
                                     : new StreamException(errorCode);
                         }
 
@@ -465,8 +456,7 @@ public class Http2Stream {
                             unacknowledgedBytesRead += readBytesDelivered;
 
                             if (errorExceptionToDeliver == null
-                                    && unacknowledgedBytesRead
-                                    >= connection.settings.getInitialWindowSize() / 2) {
+                                    && unacknowledgedBytesRead >= connection.settings.getInitialWindowSize() / 2) {
                                 // Flow control: notify the peer that we're ready for more data! Only send a
                                 // WINDOW_UPDATE if the stream isn't in error.
                                 connection.writeWindowUpdateLater(id, unacknowledgedBytesRead);
@@ -508,8 +498,8 @@ public class Http2Stream {
         }
 
         /**
-         * Accept bytes on the connection's reader thread. This function avoids holding locks while it
-         * performs blocking reads for the incoming bytes.
+         * Accept bytes on the connection's reader thread. This function avoids holding locks while it performs blocking
+         * reads for the incoming bytes.
          */
         void receive(BufferSource in, long byteCount) throws IOException {
             assert (!Thread.holdsLock(Http2Stream.this));
@@ -537,7 +527,8 @@ public class Http2Stream {
 
                 // Fill the receive buffer without holding any locks.
                 long read = in.read(receiveBuffer, byteCount);
-                if (read == -1) throw new EOFException();
+                if (read == -1)
+                    throw new EOFException();
                 byteCount -= read;
 
                 // Move the received data to the read buffer to the reader can read it. If this source has
@@ -591,8 +582,8 @@ public class Http2Stream {
         private static final long EMIT_BUFFER_SIZE = 16384;
 
         /**
-         * Buffer of outgoing data. This batches writes of small writes into this sink as larges frames
-         * written to the outgoing connection. Batching saves the (small) framing overhead.
+         * Buffer of outgoing data. This batches writes of small writes into this sink as larges frames written to the
+         * outgoing connection. Batching saves the (small) framing overhead.
          */
         private final Buffer sendBuffer = new Buffer();
         boolean closed;
@@ -615,8 +606,8 @@ public class Http2Stream {
         }
 
         /**
-         * Emit a single data frame to the connection. The frame's size be limited by this stream's
-         * write window. This method will block until the write window is nonempty.
+         * Emit a single data frame to the connection. The frame's size be limited by this stream's write window. This
+         * method will block until the write window is nonempty.
          */
         private void emitFrame(boolean outFinishedOnLastFrame) throws IOException {
             long toWrite;
@@ -665,7 +656,8 @@ public class Http2Stream {
         public void close() throws IOException {
             assert (!Thread.holdsLock(Http2Stream.this));
             synchronized (Http2Stream.this) {
-                if (closed) return;
+                if (closed)
+                    return;
             }
             if (!sink.finished) {
                 // We have 0 or more frames of data, and 0 or more frames of trailers. We need to send at
@@ -695,8 +687,7 @@ public class Http2Stream {
     }
 
     /**
-     * 如果超时到达，Okio超时监视器将调用{@link #timedOut}。
-     * 在这种情况下，我们关闭(异步)流，它将通知正在等待的线程.
+     * 如果超时到达，Okio超时监视器将调用{@link #timedOut}。 在这种情况下，我们关闭(异步)流，它将通知正在等待的线程.
      */
     class StreamTimeout extends AsyncTimeout {
         @Override
@@ -715,7 +706,8 @@ public class Http2Stream {
         }
 
         public void exitAndThrowIfTimedOut() throws IOException {
-            if (exit()) throw newTimeoutException(null);
+            if (exit())
+                throw newTimeoutException(null);
         }
     }
 

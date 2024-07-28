@@ -24,10 +24,9 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 /**
- * Lucene-analysis分词抽象封装
- * 项目地址：https://github.com/apache/lucene-solr/tree/master/lucene/analysis
+ * Lucene-analysis分词抽象封装 项目地址：https://github.com/apache/lucene-solr/tree/master/lucene/analysis
  *
  * @author Kimi Liu
  * @since Java 17+

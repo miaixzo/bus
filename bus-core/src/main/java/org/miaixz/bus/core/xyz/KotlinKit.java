@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.bean.copier.ValueProvider;
@@ -46,8 +46,8 @@ import java.util.Map;
  */
 public class KotlinKit {
 
-    private static final Class<? extends Annotation> META_DATA_CLASS =
-            (Class<? extends Annotation>) Optional.ofTry(() -> Class.forName("kotlin.Metadata")).get();
+    private static final Class<? extends Annotation> META_DATA_CLASS = (Class<? extends Annotation>) Optional
+            .ofTry(() -> Class.forName("kotlin.Metadata")).get();
 
     /**
      * 是否提供或处于Kotlin环境中
@@ -55,8 +55,7 @@ public class KotlinKit {
     public static final boolean IS_KOTLIN_ENABLE = null != META_DATA_CLASS;
 
     /**
-     * 检查给定的类是否为Kotlin类
-     * Kotlin类带有@kotlin.Metadata注解
+     * 检查给定的类是否为Kotlin类 Kotlin类带有@kotlin.Metadata注解
      *
      * @param clazz 类
      * @return 是否Kotlin类

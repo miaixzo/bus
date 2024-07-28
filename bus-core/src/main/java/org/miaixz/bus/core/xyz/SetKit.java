@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.set.SetFromMap;
@@ -40,8 +40,7 @@ import java.util.*;
 public class SetKit {
 
     /**
-     * 新建一个List
-     * 如果提供的初始化数组为空，新建默认初始长度的List
+     * 新建一个List 如果提供的初始化数组为空，新建默认初始长度的List
      *
      * @param <T>      集合元素类型
      * @param isLinked 是否为链表
@@ -87,8 +86,7 @@ public class SetKit {
     }
 
     /**
-     * 新建一个HashSet
-     * 提供的参数为null时返回空{@link HashSet}
+     * 新建一个HashSet 提供的参数为null时返回空{@link HashSet}
      *
      * @param <T>      集合元素类型
      * @param isLinked 是否新建LinkedList
@@ -156,8 +154,7 @@ public class SetKit {
     }
 
     /**
-     * 数组转为一个不可变List
-     * 类似于Java9中的List.of
+     * 数组转为一个不可变List 类似于Java9中的List.of
      *
      * @param ts  对象
      * @param <T> 对象类型

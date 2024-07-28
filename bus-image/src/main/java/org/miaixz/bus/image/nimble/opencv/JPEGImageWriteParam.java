@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv;
 
 import javax.imageio.ImageWriteParam;
@@ -36,8 +36,7 @@ import java.util.Locale;
  */
 public class JPEGImageWriteParam extends ImageWriteParam {
 
-    private static final String[] COMPRESSION_TYPES = {
-            "BASELINE", // JPEG Baseline: Imgcodecs.JPEG_baseline (0)
+    private static final String[] COMPRESSION_TYPES = { "BASELINE", // JPEG Baseline: Imgcodecs.JPEG_baseline (0)
             "EXTENDED", // JPEG Extended sequential: Imgcodecs.JPEG_sequential (1)
             "SPECTRAL", // JPEG Spectral Selection: Imgcodecs.JPEG_spectralSelection (2) (Retired from DICOM)
             "PROGRESSIVE", // JPEG Full Progression: Imgcodecs.JPEG_progressive (3) (Retired from DICOM)
@@ -67,14 +66,14 @@ public class JPEGImageWriteParam extends ImageWriteParam {
 
     public int getMode() {
         switch (compressionType.charAt(0)) {
-            case 'B':
-                return 0;
-            case 'E':
-                return 1;
-            case 'S':
-                return 2;
-            case 'P':
-                return 3;
+        case 'B':
+            return 0;
+        case 'E':
+            return 1;
+        case 'S':
+            return 2;
+        case 'P':
+            return 3;
         }
         return 4;
     }

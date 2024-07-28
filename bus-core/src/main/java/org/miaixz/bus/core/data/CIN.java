@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.data;
 
 import org.miaixz.bus.core.center.date.DateTime;
@@ -42,12 +42,12 @@ import java.util.Map;
 /**
  * 公民身份号码（Citizen Identification Number），参考GB11643-1999标准。
  * <ul>
- *     <li>1-2位：  2位省份代码。</li>
- *     <li>3-4位：  2位城市代码。</li>
- *     <li>5-6位：  2位区县代码。</li>
- *     <li>7-14位： 8位数字出生日期码。</li>
- *     <li>15-17位：3位数字顺序码。第17位奇数表示男性，偶数表示女性</li>
- *     <li>18位：   1位数字校验码。校检码可以是0~9的数字，有时也用X表示</li>
+ * <li>1-2位： 2位省份代码。</li>
+ * <li>3-4位： 2位城市代码。</li>
+ * <li>5-6位： 2位区县代码。</li>
+ * <li>7-14位： 8位数字出生日期码。</li>
+ * <li>15-17位：3位数字顺序码。第17位奇数表示男性，偶数表示女性</li>
+ * <li>18位： 1位数字校验码。校检码可以是0~9的数字，有时也用X表示</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -67,7 +67,7 @@ public class CIN {
     /**
      * 每位加权因子
      */
-    private static final int[] POWER = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2};
+    private static final int[] POWER = { 7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2 };
     /**
      * 省市代码表
      */
@@ -108,7 +108,7 @@ public class CIN {
         CITY_CODES.put("71", "台湾");
         CITY_CODES.put("81", "香港");
         CITY_CODES.put("82", "澳门");
-        //台湾身份证号码以83开头，但是行政区划为71
+        // 台湾身份证号码以83开头，但是行政区划为71
         CITY_CODES.put("83", "台湾");
         CITY_CODES.put("91", "国外");
     }
@@ -122,8 +122,7 @@ public class CIN {
      */
     public CIN(String code) {
         final int length = code.length();
-        Assert.isTrue(length == CHINA_ID_MIN_LENGTH || length == CHINA_ID_MAX_LENGTH,
-                "CIN length must be 15 or 18!");
+        Assert.isTrue(length == CHINA_ID_MIN_LENGTH || length == CHINA_ID_MAX_LENGTH, "CIN length must be 15 or 18!");
         if (length == CHINA_ID_MIN_LENGTH) {
             // 15位身份证号码转换为18位
             code = convert15To18(code);
@@ -143,8 +142,7 @@ public class CIN {
     }
 
     /**
-     * 将15位身份证号码转换为18位
-     * 15位身份证号码遵循GB 11643-1989标准。
+     * 将15位身份证号码转换为18位 15位身份证号码遵循GB 11643-1989标准。
      *
      * @param idCard 15位身份编码
      * @return 18位身份编码
@@ -195,11 +193,11 @@ public class CIN {
     /**
      * 判断18位身份证的合法性，第十八位数字(校验码)的计算方法为：
      * <ol>
-     *   <li>将前面的身份证号码17位数分别乘以不同的系数。从第一位到第十七位的系数分别为：7 9 10 5 8 4 2 1 6 3 7 9 10 5 8 4 2</li>
-     *   <li>将这17位数字和系数相乘的结果相加</li>
-     *   <li>用加出来和除以11，看余数是多少</li>
-     *   <li>余数只可能有0 1 2 3 4 5 6 7 8 9 10这11个数字。其分别对应的最后一位身份证的号码为1 0 X 9 8 7 6 5 4 3 2</li>
-     *   <li>通过上面得知如果余数是2，就会在身份证的第18位数字上出现罗马数字的Ⅹ。如果余数是10，身份证的最后一位号码就是2</li>
+     * <li>将前面的身份证号码17位数分别乘以不同的系数。从第一位到第十七位的系数分别为：7 9 10 5 8 4 2 1 6 3 7 9 10 5 8 4 2</li>
+     * <li>将这17位数字和系数相乘的结果相加</li>
+     * <li>用加出来和除以11，看余数是多少</li>
+     * <li>余数只可能有0 1 2 3 4 5 6 7 8 9 10这11个数字。其分别对应的最后一位身份证的号码为1 0 X 9 8 7 6 5 4 3 2</li>
+     * <li>通过上面得知如果余数是2，就会在身份证的第18位数字上出现罗马数字的Ⅹ。如果余数是10，身份证的最后一位号码就是2</li>
      * </ol>
      *
      * @param idCard     待验证的身份证
@@ -217,7 +215,7 @@ public class CIN {
             return false;
         }
 
-        //校验生日
+        // 校验生日
         if (!Validator.isBirthday(idCard.substring(6, 14))) {
             return false;
         }
@@ -252,30 +250,30 @@ public class CIN {
      */
     private static char getVerifyCode18(final int iSum) {
         switch (iSum % 11) {
-            case 10:
-                return '2';
-            case 9:
-                return '3';
-            case 8:
-                return '4';
-            case 7:
-                return '5';
-            case 6:
-                return '6';
-            case 5:
-                return '7';
-            case 4:
-                return '8';
-            case 3:
-                return '9';
-            case 2:
-                return Symbol.C_X;
-            case 1:
-                return '0';
-            case 0:
-                return '1';
-            default:
-                return Symbol.C_SPACE;
+        case 10:
+            return '2';
+        case 9:
+            return '3';
+        case 8:
+            return '4';
+        case 7:
+            return '5';
+        case 6:
+            return '6';
+        case 5:
+            return '7';
+        case 4:
+            return '8';
+        case 3:
+            return '9';
+        case 2:
+            return Symbol.C_X;
+        case 1:
+            return '0';
+        case 0:
+            return '1';
+        default:
+            return Symbol.C_SPACE;
         }
     }
 
@@ -318,8 +316,7 @@ public class CIN {
     }
 
     /**
-     * 根据身份编号获取地市级编码
-     * 获取编码为4位
+     * 根据身份编号获取地市级编码 获取编码为4位
      *
      * @return 地市级编码
      */
@@ -328,8 +325,7 @@ public class CIN {
     }
 
     /**
-     * 根据身份编号获取区县级编码
-     * 获取编码为6位
+     * 根据身份编号获取区县级编码 获取编码为6位
      *
      * @return 地市级编码
      */
@@ -366,11 +362,10 @@ public class CIN {
     }
 
     /**
-     * 根据身份编号获取指定日期当时的年龄年龄（周岁）
-     * 按照《最高人民法院关于审理未成年人刑事案件具体应用法律若干问题的解释》第二条规定刑法第十七条规定的“周岁”，按照公历的年、月、日计算，从周岁生日的第二天起算。
+     * 根据身份编号获取指定日期当时的年龄年龄（周岁） 按照《最高人民法院关于审理未成年人刑事案件具体应用法律若干问题的解释》第二条规定刑法第十七条规定的“周岁”，按照公历的年、月、日计算，从周岁生日的第二天起算。
      * <ul>
-     *     <li>2022-03-01出生，则相对2023-03-01，周岁为0，相对于2023-03-02才是1岁。</li>
-     *     <li>1999-02-28出生，则相对2000-02-29，周岁为1</li>
+     * <li>2022-03-01出生，则相对2023-03-01，周岁为0，相对于2023-03-02才是1岁。</li>
+     * <li>1999-02-28出生，则相对2000-02-29，周岁为1</li>
      * </ul>
      *
      * @param dateToCompare 以此日期为界，计算年龄。

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.hardware;
 
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -62,7 +62,7 @@ public interface LogicalVolumeGroup {
      * associated with these keys represent the physical volumes mapped to each logical volume (if known).
      *
      * @return A map with the logical volume names as the key, and a set of associated physical volume names as the
-     * value.
+     *         value.
      */
     Map<String, Set<String>> getLogicalVolumes();
 }

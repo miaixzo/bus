@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.BioPri3D;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,37 +46,38 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag._0011_xx39_:
-            case PrivateTag._0011_xxE5_:
-                return VR.CS;
-            case PrivateTag._0011_xx24_:
-            case PrivateTag._0063_xx0C_:
-                return VR.DS;
-            case PrivateTag._0011_xx30_:
-                return VR.LO;
-            case PrivateTag._0011_xxD0_:
-                return VR.OB;
-            case PrivateTag._0011_xx32_:
-                return VR.SL;
-            case PrivateTag._0063_xx35_:
-                return VR.SQ;
-            case PrivateTag._0011_xx20_:
-            case PrivateTag._0011_xx31_:
-            case PrivateTag._0011_xx3A_:
-            case PrivateTag._0011_xxE0_:
-            case PrivateTag._0011_xxE1_:
-            case PrivateTag._0011_xxE2_:
-            case PrivateTag._0063_xx21_:
-                return VR.UL;
-            case PrivateTag._0011_xxE3_:
-            case PrivateTag._0011_xxE4_:
-            case PrivateTag._0063_xx20_:
-                return VR.US;
+
+        case PrivateTag._0011_xx39_:
+        case PrivateTag._0011_xxE5_:
+            return VR.CS;
+        case PrivateTag._0011_xx24_:
+        case PrivateTag._0063_xx0C_:
+            return VR.DS;
+        case PrivateTag._0011_xx30_:
+            return VR.LO;
+        case PrivateTag._0011_xxD0_:
+            return VR.OB;
+        case PrivateTag._0011_xx32_:
+            return VR.SL;
+        case PrivateTag._0063_xx35_:
+            return VR.SQ;
+        case PrivateTag._0011_xx20_:
+        case PrivateTag._0011_xx31_:
+        case PrivateTag._0011_xx3A_:
+        case PrivateTag._0011_xxE0_:
+        case PrivateTag._0011_xxE1_:
+        case PrivateTag._0011_xxE2_:
+        case PrivateTag._0063_xx21_:
+            return VR.UL;
+        case PrivateTag._0011_xxE3_:
+        case PrivateTag._0011_xxE4_:
+        case PrivateTag._0063_xx20_:
+            return VR.US;
         }
         return VR.UN;
     }

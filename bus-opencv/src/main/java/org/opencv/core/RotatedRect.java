@@ -1,3 +1,30 @@
+/*
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+ ~                                                                               ~
+ ~ The MIT License (MIT)                                                         ~
+ ~                                                                               ~
+ ~ Copyright (c) 2015-2024 miaixz.org opencv.org and other contributors.         ~
+ ~                                                                               ~
+ ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
+ ~ of this software and associated documentation files (the "Software"), to deal ~
+ ~ in the Software without restriction, including without limitation the rights  ~
+ ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
+ ~ copies of the Software, and to permit persons to whom the Software is         ~
+ ~ furnished to do so, subject to the following conditions:                      ~
+ ~                                                                               ~
+ ~ The above copyright notice and this permission notice shall be included in    ~
+ ~ all copies or substantial portions of the Software.                           ~
+ ~                                                                               ~
+ ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
+ ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
+ ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
+ ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
+ ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
+ ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
+ ~ THE SOFTWARE.                                                                 ~
+ ~                                                                               ~
+ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+*/
 package org.opencv.core;
 
 //javadoc:RotatedRect_
@@ -40,31 +67,21 @@ public class RotatedRect {
         }
     }
 
-    public void points(Point pt[])
-    {
+    public void points(Point pt[]) {
         double _angle = angle * Math.PI / 180.0;
         double b = (double) Math.cos(_angle) * 0.5f;
         double a = (double) Math.sin(_angle) * 0.5f;
 
-        pt[0] = new Point(
-                center.x - a * size.height - b * size.width,
-                center.y + b * size.height - a * size.width);
+        pt[0] = new Point(center.x - a * size.height - b * size.width, center.y + b * size.height - a * size.width);
 
-        pt[1] = new Point(
-                center.x + a * size.height - b * size.width,
-                center.y - b * size.height - a * size.width);
+        pt[1] = new Point(center.x + a * size.height - b * size.width, center.y - b * size.height - a * size.width);
 
-        pt[2] = new Point(
-                2 * center.x - pt[0].x,
-                2 * center.y - pt[0].y);
+        pt[2] = new Point(2 * center.x - pt[0].x, 2 * center.y - pt[0].y);
 
-        pt[3] = new Point(
-                2 * center.x - pt[1].x,
-                2 * center.y - pt[1].y);
+        pt[3] = new Point(2 * center.x - pt[1].x, 2 * center.y - pt[1].y);
     }
 
-    public Rect boundingRect()
-    {
+    public Rect boundingRect() {
         Point pt[] = new Point[4];
         points(pt);
         Rect r = new Rect((int) Math.floor(Math.min(Math.min(Math.min(pt[0].x, pt[1].x), pt[2].x), pt[3].x)),
@@ -100,8 +117,10 @@ public class RotatedRect {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (!(obj instanceof RotatedRect)) return false;
+        if (this == obj)
+            return true;
+        if (!(obj instanceof RotatedRect))
+            return false;
         RotatedRect it = (RotatedRect) obj;
         return center.equals(it.center) && size.equals(it.size) && angle == it.angle;
     }

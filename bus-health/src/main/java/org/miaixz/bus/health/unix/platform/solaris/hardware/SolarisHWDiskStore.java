@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.solaris.hardware;
 
 import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
@@ -86,8 +86,7 @@ public final class SolarisHWDiskStore extends AbstractHWDiskStore {
 
         // Create map of model, vendor, product, serial, size
         // We'll use Model if available, otherwise Vendor+Product
-        Map<String, Tuple> deviceStringMap = Iostat
-                .queryDeviceStrings(deviceMap.keySet());
+        Map<String, Tuple> deviceStringMap = Iostat.queryDeviceStrings(deviceMap.keySet());
 
         List<HWDiskStore> storeList = new ArrayList<>();
         for (Entry<String, Tuple> entry : deviceStringMap.entrySet()) {
@@ -101,7 +100,7 @@ public final class SolarisHWDiskStore extends AbstractHWDiskStore {
     }
 
     private static SolarisHWDiskStore createStore(String diskName, String model, String vendor, String product,
-                                                  String serial, long size, String mount, int major) {
+            String serial, long size, String mount, int major) {
         SolarisHWDiskStore store = new SolarisHWDiskStore(diskName,
                 model.isEmpty() ? (vendor + Symbol.SPACE + product).trim() : model, serial, size);
         store.partitionList = Collections.unmodifiableList(Prtvtoc.queryPartitions(mount, major).stream()

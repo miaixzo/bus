@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.xyz.StringKit;
@@ -68,7 +68,8 @@ public class ReferenceConverter extends AbstractConverter {
             return new SoftReference(targetValue);
         }
 
-        throw new UnsupportedOperationException(StringKit.format("Unsupport Reference type: {}", targetClass.getName()));
+        throw new UnsupportedOperationException(
+                StringKit.format("Unsupport Reference type: {}", targetClass.getName()));
     }
 
 }

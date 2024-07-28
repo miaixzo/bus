@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.support;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -62,7 +62,8 @@ public class JacksonJsonEnumHelper<E extends Enum<E>> {
         this(enumType, firstLetterCapitalized, camelCased, false);
     }
 
-    public JacksonJsonEnumHelper(Class<E> enumType, boolean firstLetterCapitalized, boolean camelCased, boolean preserveUnderscores) {
+    public JacksonJsonEnumHelper(Class<E> enumType, boolean firstLetterCapitalized, boolean camelCased,
+            boolean preserveUnderscores) {
 
         valuesMap = new HashMap<>();
         namesMap = new HashMap<>();
@@ -100,7 +101,7 @@ public class JacksonJsonEnumHelper<E extends Enum<E>> {
     /**
      * Add an enum that has a specialized name that does not fit the standard naming conventions.
      *
-     * @param e the enum to add
+     * @param e    the enum to add
      * @param name the name for the enum
      */
     public void addEnum(E e, String name) {

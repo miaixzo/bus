@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.bean.path.node;
 
 import org.miaixz.bus.core.bean.DynaBean;
@@ -34,8 +34,8 @@ import org.miaixz.bus.core.xyz.MathKit;
 /**
  * 处理名称节点或序号节点，如：
  * <ul>
- *     <li>name</li>
- *     <li>1</li>
+ * <li>name</li>
+ * <li>1</li>
  * </ul>
  *
  * @author Kimi Liu

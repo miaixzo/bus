@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.bean.copier;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -69,7 +69,8 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
         final Copier<T> copier;
         if (source instanceof Map) {
             if (target instanceof Map) {
-                copier = (Copier<T>) new MapToMapCopier((Map<?, ?>) source, (Map<?, ?>) target, targetType, copyOptions);
+                copier = (Copier<T>) new MapToMapCopier((Map<?, ?>) source, (Map<?, ?>) target, targetType,
+                        copyOptions);
             } else {
                 copier = new MapToBeanCopier<>((Map<?, ?>) source, target, targetType, copyOptions);
             }
@@ -108,7 +109,8 @@ public class BeanCopier<T> implements Copier<T>, Serializable {
      * @param copyOptions 拷贝属性选项
      * @return BeanCopier
      */
-    public static <T> BeanCopier<T> of(final Object source, final T target, final Type destType, final CopyOptions copyOptions) {
+    public static <T> BeanCopier<T> of(final Object source, final T target, final Type destType,
+            final CopyOptions copyOptions) {
         return new BeanCopier<>(source, target, destType, copyOptions);
     }
 

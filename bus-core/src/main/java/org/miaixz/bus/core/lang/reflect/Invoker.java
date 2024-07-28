@@ -24,13 +24,11 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.reflect;
 
 /**
- * Invoker接口定义了调用目标对象的方法的规范。
- * 它允许动态地调用方法，增强了代码的灵活性和扩展性。
- * 参考：org.apache.ibatis.reflection.invoker.Invoker
+ * Invoker接口定义了调用目标对象的方法的规范。 它允许动态地调用方法，增强了代码的灵活性和扩展性。 参考：org.apache.ibatis.reflection.invoker.Invoker
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -55,4 +53,3 @@ public interface Invoker {
     Class<?> getType();
 
 }
-

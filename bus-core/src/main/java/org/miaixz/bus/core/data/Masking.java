@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.data;
 
 import org.miaixz.bus.core.lang.EnumMap;
@@ -34,21 +34,23 @@ import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 数据脱敏（Data Masking）工具类，对某些敏感信息（比如，身份证号、手机号、卡号、姓名、地址、邮箱等 ）屏蔽敏感数据。
- * <p>支持以下类型信息的脱敏自动处理：</p>
+ * <p>
+ * 支持以下类型信息的脱敏自动处理：
+ * </p>
  *
  * <ul>
- *     <li>用户ID</li>
- *     <li>中文名</li>
- *     <li>身份证</li>
- *     <li>座机号</li>
- *     <li>手机号</li>
- *     <li>地址</li>
- *     <li>电子邮件</li>
- *     <li>密码</li>
- *     <li>车牌</li>
- *     <li>银行卡号</li>
- *     <li>IPv4</li>
- *     <li>IPv6</li>
+ * <li>用户ID</li>
+ * <li>中文名</li>
+ * <li>身份证</li>
+ * <li>座机号</li>
+ * <li>手机号</li>
+ * <li>地址</li>
+ * <li>电子邮件</li>
+ * <li>密码</li>
+ * <li>车牌</li>
+ * <li>银行卡号</li>
+ * <li>IPv4</li>
+ * <li>IPv6</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -58,6 +60,7 @@ public class Masking {
 
     /**
      * 脱敏，使用默认的脱敏策略
+     * 
      * <pre>
      * Masking.masking("100", Masking.DesensitizedType.USER_ID)) =  "0"
      * Masking.masking("王二小", Masking.DesensitizedType.CHINESE_NAME)) = "王**"
@@ -82,52 +85,52 @@ public class Masking {
         }
         String newText = String.valueOf(text);
         switch (masking) {
-            case USER_ID:
-                newText = String.valueOf(userId());
-                break;
-            case CHINESE_NAME:
-                newText = chineseName(String.valueOf(text));
-                break;
-            case ID_CARD:
-                newText = idCardNum(String.valueOf(text), 1, 2);
-                break;
-            case FIXED_PHONE:
-                newText = fixedPhone(String.valueOf(text));
-                break;
-            case MOBILE_PHONE:
-                newText = mobilePhone(String.valueOf(text));
-                break;
-            case ADDRESS:
-                newText = address(String.valueOf(text), 8);
-                break;
-            case EMAIL:
-                newText = email(String.valueOf(text));
-                break;
-            case PASSWORD:
-                newText = password(String.valueOf(text));
-                break;
-            case CAR_LICENSE:
-                newText = carLicense(String.valueOf(text));
-                break;
-            case BANK_CARD:
-                newText = bankCard(String.valueOf(text));
-                break;
-            case IPV4:
-                newText = ipv4(String.valueOf(text));
-                break;
-            case IPV6:
-                newText = ipv6(String.valueOf(text));
-                break;
-            case FIRST_MASK:
-                newText = firstMask(String.valueOf(text));
-                break;
-            case CLEAR_TO_EMPTY:
-                newText = clear();
-                break;
-            case CLEAR_TO_NULL:
-                newText = clearToNull();
-                break;
-            default:
+        case USER_ID:
+            newText = String.valueOf(userId());
+            break;
+        case CHINESE_NAME:
+            newText = chineseName(String.valueOf(text));
+            break;
+        case ID_CARD:
+            newText = idCardNum(String.valueOf(text), 1, 2);
+            break;
+        case FIXED_PHONE:
+            newText = fixedPhone(String.valueOf(text));
+            break;
+        case MOBILE_PHONE:
+            newText = mobilePhone(String.valueOf(text));
+            break;
+        case ADDRESS:
+            newText = address(String.valueOf(text), 8);
+            break;
+        case EMAIL:
+            newText = email(String.valueOf(text));
+            break;
+        case PASSWORD:
+            newText = password(String.valueOf(text));
+            break;
+        case CAR_LICENSE:
+            newText = carLicense(String.valueOf(text));
+            break;
+        case BANK_CARD:
+            newText = bankCard(String.valueOf(text));
+            break;
+        case IPV4:
+            newText = ipv4(String.valueOf(text));
+            break;
+        case IPV6:
+            newText = ipv6(String.valueOf(text));
+            break;
+        case FIRST_MASK:
+            newText = firstMask(String.valueOf(text));
+            break;
+        case CLEAR_TO_EMPTY:
+            newText = clear();
+            break;
+        case CLEAR_TO_NULL:
+            newText = clearToNull();
+            break;
+        default:
         }
         return newText;
     }
@@ -160,8 +163,7 @@ public class Masking {
     }
 
     /**
-     * 定义了一个first_mask的规则，只显示第一个字符。
-     * 脱敏前：123456789；脱敏后：1********。
+     * 定义了一个first_mask的规则，只显示第一个字符。 脱敏前：123456789；脱敏后：1********。
      *
      * @param text 字符串
      * @return 脱敏后的字符串
@@ -192,15 +194,15 @@ public class Masking {
      * @return 脱敏后的身份证
      */
     public static String idCardNum(final String idCardNum, final int front, final int end) {
-        //身份证不能为空
+        // 身份证不能为空
         if (StringKit.isBlank(idCardNum)) {
             return Normal.EMPTY;
         }
-        //需要截取的长度不能大于身份证号长度
+        // 需要截取的长度不能大于身份证号长度
         if ((front + end) > idCardNum.length()) {
             return Normal.EMPTY;
         }
-        //需要截取的不能小于0
+        // 需要截取的不能小于0
         if (front < 0 || end < 0) {
             return Normal.EMPTY;
         }
@@ -279,12 +281,8 @@ public class Masking {
     }
 
     /**
-     * 【中国车牌】车牌中间用*代替
-     * eg1：null       - ""
-     * eg1：""         - ""
-     * eg3：苏A60000   - 苏A6***0
-     * eg4：陕A12345D  - 陕A1****D
-     * eg5：京A123     - 京A123     如果是错误的车牌，不处理
+     * 【中国车牌】车牌中间用*代替 eg1：null - "" eg1："" - "" eg3：苏A60000 - 苏A6***0 eg4：陕A12345D - 陕A1****D eg5：京A123 - 京A123
+     * 如果是错误的车牌，不处理
      *
      * @param carLicense 完整的车牌号
      * @return 脱敏后的车牌
@@ -304,8 +302,7 @@ public class Masking {
     }
 
     /**
-     * 银行卡号脱敏
-     * eg: 1101 **** **** **** 3256
+     * 银行卡号脱敏 eg: 1101 **** **** **** 3256
      *
      * @param bankCardNo 银行卡号
      * @return 脱敏之后的银行卡号

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.provider;
 
 import org.apache.ibatis.mapping.MappedStatement;
@@ -52,7 +52,7 @@ public class SqlServerProvider extends MapperTemplate {
      */
     public String insert(MappedStatement ms) {
         final Class<?> entityClass = getEntityClass(ms);
-        //开始拼sql
+        // 开始拼sql
         StringBuilder sql = new StringBuilder();
         sql.append(SqlBuilder.insertIntoTable(entityClass, tableName(entityClass)));
         sql.append(SqlBuilder.insertColumns(entityClass, true, false, false));

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.notify.metric.dingtalk;
 
 import lombok.AllArgsConstructor;
@@ -56,7 +56,7 @@ public class DingTalkMaterial extends Material {
      */
     private String userIdList;
     /**
-     * 接收者的部门id列表，最大列表长度：20,  接收者是部门id下(包括子部门下)的所有用户
+     * 接收者的部门id列表，最大列表长度：20, 接收者是部门id下(包括子部门下)的所有用户
      */
     private String deptIdList;
     /**

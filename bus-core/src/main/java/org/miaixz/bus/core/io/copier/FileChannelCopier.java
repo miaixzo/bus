@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.copier;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -146,7 +146,7 @@ public class FileChannelCopier extends IoCopier<FileChannel, FileChannel> {
             // 限制拷贝总数
             totalBytes = count;
         }
-        for (long pos = 0, remaining = totalBytes; remaining > 0; ) { // 确保文件内容不会缺失
+        for (long pos = 0, remaining = totalBytes; remaining > 0;) { // 确保文件内容不会缺失
             final long writeBytes = inChannel.transferTo(pos, remaining, outChannel); // 实际传输的字节数
             pos += writeBytes;
             remaining -= writeBytes;

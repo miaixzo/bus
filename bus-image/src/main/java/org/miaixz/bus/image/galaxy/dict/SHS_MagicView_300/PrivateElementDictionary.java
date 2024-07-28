@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SHS_MagicView_300;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,14 +46,15 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag._0029_xx02_:
-            case PrivateTag._0029_xx03_:
-                return VR.FD;
+
+        case PrivateTag._0029_xx02_:
+        case PrivateTag._0029_xx03_:
+            return VR.FD;
         }
         return VR.UN;
     }

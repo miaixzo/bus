@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.thread.threadlocal;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -35,8 +35,7 @@ import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * 存储所有 {@link SpecificThread} 的 {@link ThreadLocal} 变量的内部数据结构。
- * 请注意，此类仅供内部使用。除非知道自己在做什么，否则请使用 {@link SpecificThread}
+ * 存储所有 {@link SpecificThread} 的 {@link ThreadLocal} 变量的内部数据结构。 请注意，此类仅供内部使用。除非知道自己在做什么，否则请使用 {@link SpecificThread}
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -61,17 +60,13 @@ public final class ThreadLocalMap {
      */
     public static final int VARIABLES_TO_REMOVE_INDEX = nextVariableIndex();
     /**
-     * 索引变量 {@link FastThreadLocal}
-     * index就是FastThreadLocal的唯一索引index
-     * value是相对应的FastThreadLocal所要存储的值
+     * 索引变量 {@link FastThreadLocal} index就是FastThreadLocal的唯一索引index value是相对应的FastThreadLocal所要存储的值
      */
     private Object[] indexedVariables;
     /**
-     * BitSet简要原理：
-     * BitSet默认底层数据结构是一个long[]数组，开始时长度为1，即只有long[0],而一个long有64bit。
+     * BitSet简要原理： BitSet默认底层数据结构是一个long[]数组，开始时长度为1，即只有long[0],而一个long有64bit。
      * 当BitSet.set(1)的时候，表示将long[0]的第二位设置为true，即0000 0000 ... 0010（64bit）,则long[0]==2
-     * 当BitSet.get(1)的时候，第二位为1，则表示true；如果是0，则表示false
-     * 当BitSet.set(64)的时候，表示设置第65位，此时long[0]已经不够用了，扩容处long[1]来，进行存储
+     * 当BitSet.get(1)的时候，第二位为1，则表示true；如果是0，则表示false 当BitSet.set(64)的时候，表示设置第65位，此时long[0]已经不够用了，扩容处long[1]来，进行存储
      * <p>
      * 存储类似 {index:boolean} 键值对，用于防止一个FastThreadLocal多次启动清理线程
      * 将index位置的bit设为true，表示该InternalThreadLocalMap中对该FastThreadLocal已经启动了清理线程
@@ -79,8 +74,7 @@ public final class ThreadLocalMap {
     private BitSet cleanerFlags;
 
     /**
-     * 构造
-     * 创建indexedVariables数组，并将每一个元素初始化为UNSET
+     * 构造 创建indexedVariables数组，并将每一个元素初始化为UNSET
      */
     private ThreadLocalMap() {
         indexedVariables = newIndexedVariableTable();

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.excel.style;
 
 import org.apache.poi.ss.usermodel.BorderStyle;
@@ -61,15 +61,9 @@ public class CellBorderStyle implements Serializable {
      * @return 单元格边框样式对象
      */
     public static CellBorderStyle of(final BorderStyle borderStyle, final IndexedColors colorIndex) {
-        return new CellBorderStyle()
-                .setTopStyle(borderStyle)
-                .setTopColor(colorIndex.getIndex())
-                .setRightStyle(borderStyle)
-                .setRightColor(colorIndex.getIndex())
-                .setBottomStyle(borderStyle)
-                .setBottomColor(colorIndex.getIndex())
-                .setLeftStyle(borderStyle)
-                .setLeftColor(colorIndex.getIndex());
+        return new CellBorderStyle().setTopStyle(borderStyle).setTopColor(colorIndex.getIndex())
+                .setRightStyle(borderStyle).setRightColor(colorIndex.getIndex()).setBottomStyle(borderStyle)
+                .setBottomColor(colorIndex.getIndex()).setLeftStyle(borderStyle).setLeftColor(colorIndex.getIndex());
     }
 
     /**

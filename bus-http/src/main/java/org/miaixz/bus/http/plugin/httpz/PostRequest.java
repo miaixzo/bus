@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.plugin.httpz;
 
 import org.miaixz.bus.core.lang.MediaType;
@@ -50,13 +50,13 @@ import java.util.Map;
 public class PostRequest extends HttpRequest {
 
     public PostRequest(String url, Object tag, Map<String, String> params, Map<String, String> headers,
-                       List<MultipartFile> list, String body, MultipartBody multipartBody, String id) {
+            List<MultipartFile> list, String body, MultipartBody multipartBody, String id) {
         super(url, tag, params, headers, list, body, multipartBody, id);
     }
 
     public PostRequest(String url, Object tag, Map<String, String> params, Map<String, String> encoded,
-                       Map<String, String> headers, List<MultipartFile> list, String body, MultipartBody multipartBody,
-                       String id) {
+            Map<String, String> headers, List<MultipartFile> list, String body, MultipartBody multipartBody,
+            String id) {
         super(url, tag, params, encoded, headers, list, body, multipartBody, id);
     }
 
@@ -74,7 +74,8 @@ public class PostRequest extends HttpRequest {
                 } else if (null != file.in) {
                     fileBody = createRequestBody(MediaType.APPLICATION_OCTET_STREAM_TYPE, file.in);
                 } else {
-                    fileBody = RequestBody.create(MediaType.valueOf(ObjectKit.defaultIfNull(FileKit.getMimeType(file.name), MediaType.APPLICATION_OCTET_STREAM)),
+                    fileBody = RequestBody.create(MediaType.valueOf(ObjectKit
+                            .defaultIfNull(FileKit.getMimeType(file.name), MediaType.APPLICATION_OCTET_STREAM)),
                             file.content);
                 }
                 builder.addFormDataPart(file.part, file.name, fileBody);
@@ -114,7 +115,8 @@ public class PostRequest extends HttpRequest {
 
     private void addParam(MultipartBody.Builder builder) {
         if (null != params && !params.isEmpty()) {
-            params.forEach((k, v) -> builder.addPart(Headers.of(HTTP.CONTENT_DISPOSITION, "form-data; name=\"" + k + Symbol.DOUBLE_QUOTES),
+            params.forEach((k, v) -> builder.addPart(
+                    Headers.of(HTTP.CONTENT_DISPOSITION, "form-data; name=\"" + k + Symbol.DOUBLE_QUOTES),
                     RequestBody.create(null, v)));
         }
     }

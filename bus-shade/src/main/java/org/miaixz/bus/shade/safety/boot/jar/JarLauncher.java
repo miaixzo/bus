@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.safety.boot.jar;
 
 import org.miaixz.bus.shade.safety.Builder;
@@ -65,7 +65,8 @@ public class JarLauncher {
         ClassLoader classLoader = this.getClass().getClassLoader();
         if (classLoader instanceof URLClassLoader) {
             URLClassLoader urlClassLoader = (URLClassLoader) classLoader;
-            jarClassLoader = new JarClassLoader(urlClassLoader.getURLs(), classLoader.getParent(), launcher.decryptorProvider, launcher.encryptorProvider, launcher.key);
+            jarClassLoader = new JarClassLoader(urlClassLoader.getURLs(), classLoader.getParent(),
+                    launcher.decryptorProvider, launcher.encryptorProvider, launcher.key);
         } else {
             ProtectionDomain domain = this.getClass().getProtectionDomain();
             CodeSource source = domain.getCodeSource();
@@ -76,7 +77,8 @@ public class JarLauncher {
             }
             File jar = new File(path);
             URL url = jar.toURI().toURL();
-            jarClassLoader = new JarClassLoader(new URL[]{url}, classLoader.getParent(), launcher.decryptorProvider, launcher.encryptorProvider, launcher.key);
+            jarClassLoader = new JarClassLoader(new URL[] { url }, classLoader.getParent(), launcher.decryptorProvider,
+                    launcher.encryptorProvider, launcher.key);
         }
 
         Thread.currentThread().setContextClassLoader(jarClassLoader);
@@ -87,7 +89,7 @@ public class JarLauncher {
             String jarMainClass = attributes.getValue("Jar-Main-Class");
             Class<?> mainClass = jarClassLoader.loadClass(jarMainClass);
             Method mainMethod = mainClass.getMethod("main", String[].class);
-            mainMethod.invoke(null, new Object[]{launcher.args});
+            mainMethod.invoke(null, new Object[] { launcher.args });
         }
     }
 

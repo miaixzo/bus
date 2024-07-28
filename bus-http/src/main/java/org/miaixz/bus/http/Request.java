@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -88,8 +88,7 @@ public class Request {
     }
 
     /**
-     * 返回带有{@code Object.class}作为键，如果没有附加任何标记，则为null
-     * 如果没有附加标记，这个方法就不会返回null。相反，它返回的要么是这个请求，
+     * 返回带有{@code Object.class}作为键，如果没有附加任何标记，则为null 如果没有附加标记，这个方法就不会返回null。相反，它返回的要么是这个请求，
      * 要么是使用{@link #newBuilder()}派生该请求的请求
      *
      * @return the object
@@ -117,13 +116,7 @@ public class Request {
 
     @Override
     public String toString() {
-        return "Request{method="
-                + method
-                + ", url="
-                + url
-                + ", tags="
-                + tags
-                + Symbol.C_BRACE_RIGHT;
+        return "Request{method=" + method + ", url=" + url + ", tags=" + tags + Symbol.C_BRACE_RIGHT;
     }
 
     public static class Builder {
@@ -146,14 +139,13 @@ public class Request {
             this.url = request.url;
             this.method = request.method;
             this.body = request.body;
-            this.tags = request.tags.isEmpty()
-                    ? Collections.emptyMap()
-                    : new LinkedHashMap<>(request.tags);
+            this.tags = request.tags.isEmpty() ? Collections.emptyMap() : new LinkedHashMap<>(request.tags);
             this.headers = request.headers.newBuilder();
         }
 
         public Builder url(UnoUrl url) {
-            if (url == null) throw new NullPointerException("url == null");
+            if (url == null)
+                throw new NullPointerException("url == null");
             this.url = url;
             return this;
         }
@@ -161,11 +153,12 @@ public class Request {
         /**
          * Sets the URL target of this request.
          *
-         * @throws IllegalArgumentException if {@code url} is not a valid HTTP or HTTPS URL. Avoid this
-         *                                  exception by calling {@link UnoUrl#parse}; it returns null for invalid URLs.
+         * @throws IllegalArgumentException if {@code url} is not a valid HTTP or HTTPS URL. Avoid this exception by
+         *                                  calling {@link UnoUrl#parse}; it returns null for invalid URLs.
          */
         public Builder url(String url) {
-            if (url == null) throw new NullPointerException("url == null");
+            if (url == null)
+                throw new NullPointerException("url == null");
 
             // Silently replace web socket URLs with HTTP URLs.
             if (url.regionMatches(true, 0, "ws:", 0, 3)) {
@@ -184,13 +177,14 @@ public class Request {
          *                                  https}.
          */
         public Builder url(URL url) {
-            if (url == null) throw new NullPointerException("url == null");
+            if (url == null)
+                throw new NullPointerException("url == null");
             return url(UnoUrl.get(url.toString()));
         }
 
         /**
-         * Sets the header named {@code name} to {@code value}. If this request already has any headers
-         * with that name, they are all replaced.
+         * Sets the header named {@code name} to {@code value}. If this request already has any headers with that name,
+         * they are all replaced.
          */
         public Builder header(String name, String value) {
             headers.set(name, value);
@@ -198,11 +192,11 @@ public class Request {
         }
 
         /**
-         * Adds a header with {@code name} and {@code value}. Prefer this method for multiply-valued
-         * headers like "Cookie".
+         * Adds a header with {@code name} and {@code value}. Prefer this method for multiply-valued headers like
+         * "Cookie".
          * <p>
-         * Note that for some headers including {@code Content-Length} and {@code Content-Encoding},
-         * Http may replace {@code value} with a header derived from the request body.
+         * Note that for some headers including {@code Content-Length} and {@code Content-Encoding}, Http may replace
+         * {@code value} with a header derived from the request body.
          */
         public Builder addHeader(String name, String value) {
             headers.add(name, value);
@@ -226,13 +220,13 @@ public class Request {
         }
 
         /**
-         * Sets this request's {@code Cache-Control} header, replacing any cache control headers already
-         * present. If {@code cacheControl} doesn't define any directives, this clears this request's
-         * cache-control headers.
+         * Sets this request's {@code Cache-Control} header, replacing any cache control headers already present. If
+         * {@code cacheControl} doesn't define any directives, this clears this request's cache-control headers.
          */
         public Builder cacheControl(CacheControl cacheControl) {
             String value = cacheControl.toString();
-            if (value.isEmpty()) return removeHeader(HTTP.CACHE_CONTROL);
+            if (value.isEmpty())
+                return removeHeader(HTTP.CACHE_CONTROL);
             return header(HTTP.CACHE_CONTROL, value);
         }
 
@@ -265,8 +259,10 @@ public class Request {
         }
 
         public Builder method(String method, RequestBody body) {
-            if (null == method) throw new NullPointerException("method == null");
-            if (method.length() == 0) throw new IllegalArgumentException("method.length() == 0");
+            if (null == method)
+                throw new NullPointerException("method == null");
+            if (method.length() == 0)
+                throw new IllegalArgumentException("method.length() == 0");
             if (body != null && !HTTP.permitsRequestBody(method)) {
                 throw new IllegalArgumentException("method " + method + " must not have a request body.");
             }
@@ -286,20 +282,22 @@ public class Request {
         }
 
         /**
-         * Attaches {@code tag} to the request using {@code type} as a key. Tags can be read from a
-         * request using {@link Request#tag}. Use null to remove any existing tag assigned for {@code
+         * Attaches {@code tag} to the request using {@code type} as a key. Tags can be read from a request using
+         * {@link Request#tag}. Use null to remove any existing tag assigned for {@code
          * type}.
          * <p>
-         * Use this API to attach timing, debugging, or other application data to a request so that
-         * you may read it in interceptors, event listeners, or callbacks.
+         * Use this API to attach timing, debugging, or other application data to a request so that you may read it in
+         * interceptors, event listeners, or callbacks.
          */
         public <T> Builder tag(Class<? super T> type, T tag) {
-            if (null == type) throw new NullPointerException("type == null");
+            if (null == type)
+                throw new NullPointerException("type == null");
 
             if (null == tag) {
                 tags.remove(type);
             } else {
-                if (tags.isEmpty()) tags = new LinkedHashMap<>();
+                if (tags.isEmpty())
+                    tags = new LinkedHashMap<>();
                 tags.put(type, type.cast(tag));
             }
 
@@ -307,7 +305,8 @@ public class Request {
         }
 
         public Request build() {
-            if (null == url) throw new IllegalStateException("url == null");
+            if (null == url)
+                throw new IllegalStateException("url == null");
             return new Request(this);
         }
     }

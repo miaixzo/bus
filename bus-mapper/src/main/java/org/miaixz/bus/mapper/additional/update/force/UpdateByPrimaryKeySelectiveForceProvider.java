@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.additional.update.force;
 
 import org.apache.ibatis.mapping.MappedStatement;
@@ -53,7 +53,6 @@ public class UpdateByPrimaryKeySelectiveForceProvider extends MapperTemplate {
     public UpdateByPrimaryKeySelectiveForceProvider(Class<?> mapperClass, MapperBuilder mapperBuilder) {
         super(mapperClass, mapperBuilder);
     }
-
 
     public String updateByPrimaryKeySelectiveForce(MappedStatement ms) {
         Class entityClass = getEntityClass(ms);
@@ -85,7 +84,8 @@ public class UpdateByPrimaryKeySelectiveForceProvider extends MapperTemplate {
         for (EntityColumn column : columnSet) {
             if (column.getEntityField().isAnnotationPresent(Version.class)) {
                 if (versionColumn != null) {
-                    throw new VersionException(entityClass.getName() + " 中包含多个带有 @Version 注解的字段，一个类中只能存在一个带有 @Version 注解的字段!");
+                    throw new VersionException(
+                            entityClass.getName() + " 中包含多个带有 @Version 注解的字段，一个类中只能存在一个带有 @Version 注解的字段!");
                 }
                 versionColumn = column;
             }
@@ -93,8 +93,7 @@ public class UpdateByPrimaryKeySelectiveForceProvider extends MapperTemplate {
                 if (column == versionColumn) {
                     Version version = versionColumn.getEntityField().getAnnotation(Version.class);
                     String versionClass = version.nextVersion().getName();
-                    sql.append(column.getColumn())
-                            .append(" = ${@org.miaixz.bus.mapper.Version@nextVersion(")
+                    sql.append(column.getColumn()).append(" = ${@org.miaixz.bus.mapper.Version@nextVersion(")
                             .append(Symbol.AT).append(versionClass).append("@class, ");
                     // 虽然从函数调用上来看entityName必为"record"，但还是判断一下
                     if (StringKit.isNotEmpty(entityName)) {
@@ -102,7 +101,8 @@ public class UpdateByPrimaryKeySelectiveForceProvider extends MapperTemplate {
                     }
                     sql.append(column.getProperty()).append(")},");
                 } else if (notNull) {
-                    sql.append(this.getIfNotNull(entityName, column, column.getColumnEqualsHolder(entityName) + Symbol.COMMA, notEmpty));
+                    sql.append(this.getIfNotNull(entityName, column,
+                            column.getColumnEqualsHolder(entityName) + Symbol.COMMA, notEmpty));
                 } else {
                     sql.append(column.getColumnEqualsHolder(entityName)).append(Symbol.COMMA);
                 }
@@ -142,9 +142,10 @@ public class UpdateByPrimaryKeySelectiveForceProvider extends MapperTemplate {
         sql.append(contents);
         sql.append("</when>");
 
-        //指定的字段会被强制更新
+        // 指定的字段会被强制更新
         sql.append("<when test=\"");
-        sql.append(FORCE_UPDATE_PROPERTIES).append(" != null and ").append(FORCE_UPDATE_PROPERTIES).append(".contains('");
+        sql.append(FORCE_UPDATE_PROPERTIES).append(" != null and ").append(FORCE_UPDATE_PROPERTIES)
+                .append(".contains('");
         sql.append(column.getProperty());
         sql.append("')\">");
         sql.append(contents);

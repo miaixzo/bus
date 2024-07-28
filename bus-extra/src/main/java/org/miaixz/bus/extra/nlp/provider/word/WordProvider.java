@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.nlp.provider.word;
 
 import org.apdplat.word.segmentation.Segmentation;
@@ -35,9 +35,7 @@ import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;
 
 /**
- * Word分词引擎实现
- * 项目地址：https://github.com/ysc/word
- * {@link Segmentation} 线程安全
+ * Word分词引擎实现 项目地址：https://github.com/ysc/word {@link Segmentation} 线程安全
  *
  * @author Kimi Liu
  * @since Java 17+

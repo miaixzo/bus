@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.agfa_adc_compact;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,27 +46,28 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.ImageQuality:
-                return VR.CS;
-            case PrivateTag.IDStationName:
-            case PrivateTag.OperationCode:
-                return VR.SH;
-            case PrivateTag.DataStreamFromCassette:
-            case PrivateTag.SetOfDestinationIds:
-            case PrivateTag.SetOfProcessingCodes:
-                return VR.ST;
-            case PrivateTag.NumberOfSeriesInStudy:
-            case PrivateTag.SessionNumber:
-            case PrivateTag.NumberOfImagesInSeries:
-            case PrivateTag.BreakCondition:
-            case PrivateTag.WaitOrHoldFlag:
-            case PrivateTag.ScanResFlag:
-                return VR.US;
+
+        case PrivateTag.ImageQuality:
+            return VR.CS;
+        case PrivateTag.IDStationName:
+        case PrivateTag.OperationCode:
+            return VR.SH;
+        case PrivateTag.DataStreamFromCassette:
+        case PrivateTag.SetOfDestinationIds:
+        case PrivateTag.SetOfProcessingCodes:
+            return VR.ST;
+        case PrivateTag.NumberOfSeriesInStudy:
+        case PrivateTag.SessionNumber:
+        case PrivateTag.NumberOfImagesInSeries:
+        case PrivateTag.BreakCondition:
+        case PrivateTag.WaitOrHoldFlag:
+        case PrivateTag.ScanResFlag:
+            return VR.US;
         }
         return VR.UN;
     }

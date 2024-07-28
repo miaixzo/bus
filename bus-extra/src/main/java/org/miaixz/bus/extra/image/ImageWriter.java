@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.image;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -99,7 +99,8 @@ public class ImageWriter implements Flushable {
      * @param quality       质量，范围0~1
      * @return {@link ImageWriteParam} or {@code null}
      */
-    private static ImageWriteParam buildParam(final RenderedImage renderedImage, final javax.imageio.ImageWriter writer, final float quality) {
+    private static ImageWriteParam buildParam(final RenderedImage renderedImage, final javax.imageio.ImageWriter writer,
+            final float quality) {
         // 设置质量
         ImageWriteParam imgWriteParams = null;
         if (quality > 0 && quality < 1) {
@@ -108,7 +109,8 @@ public class ImageWriter implements Flushable {
                 imgWriteParams.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
                 imgWriteParams.setCompressionQuality(quality);
                 final ColorModel colorModel = renderedImage.getColorModel();// ColorModel.getRGBdefault();
-                imgWriteParams.setDestinationType(new ImageTypeSpecifier(colorModel, colorModel.createCompatibleSampleModel(16, 16)));
+                imgWriteParams.setDestinationType(
+                        new ImageTypeSpecifier(colorModel, colorModel.createCompatibleSampleModel(16, 16)));
             }
         }
         return imgWriteParams;
@@ -126,8 +128,7 @@ public class ImageWriter implements Flushable {
     }
 
     /**
-     * 写出图像：GIF=JPG、GIF=PNG、PNG=JPG、PNG=GIF(X)、BMP=PNG
-     * 此方法并不关闭流
+     * 写出图像：GIF=JPG、GIF=PNG、PNG=JPG、PNG=GIF(X)、BMP=PNG 此方法并不关闭流
      *
      * @param out 写出到的目标流
      * @throws InternalException IO异常

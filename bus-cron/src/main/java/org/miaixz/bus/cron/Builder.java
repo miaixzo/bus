@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cron;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -36,9 +36,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * 定时任务工具类
- * 此工具持有一个全局{@link Scheduler}，所有定时任务在同一个调度器中执行
- * {@link #setMatchSecond(boolean)} 方法用于定义是否使用秒匹配模式，如果为true，则定时任务表达式中的第一位为秒，否则为分，默认是分
+ * 定时任务工具类 此工具持有一个全局{@link Scheduler}，所有定时任务在同一个调度器中执行 {@link #setMatchSecond(boolean)}
+ * 方法用于定义是否使用秒匹配模式，如果为true，则定时任务表达式中的第一位为秒，否则为分，默认是分
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -81,8 +80,7 @@ public class Builder {
     }
 
     /**
-     * 设置是否支持秒匹配
-     * 此方法用于定义是否使用秒匹配模式，如果为true，则定时任务表达式中的第一位为秒，否则为分，默认是分
+     * 设置是否支持秒匹配 此方法用于定义是否使用秒匹配模式，如果为true，则定时任务表达式中的第一位为秒，否则为分，默认是分
      *
      * @param isMatchSecond {@code true}支持，{@code false}不支持
      */
@@ -199,27 +197,26 @@ public class Builder {
     }
 
     /**
-     * 重新启动定时任务
-     * 此方法会清除动态加载的任务，重新启动后，守护线程与否与之前保持一致
+     * 重新启动定时任务 此方法会清除动态加载的任务，重新启动后，守护线程与否与之前保持一致
      */
     public static void restart() {
         lock.lock();
         try {
             if (null != crontabSetting) {
-                //重新读取配置文件
+                // 重新读取配置文件
                 crontabSetting.load();
             }
             if (scheduler.isStarted()) {
-                //关闭并清除已有任务
+                // 关闭并清除已有任务
                 stop();
             }
         } finally {
             lock.unlock();
         }
 
-        //重新加载任务
+        // 重新加载任务
         schedule(crontabSetting);
-        //重新启动
+        // 重新启动
         scheduler.start();
     }
 

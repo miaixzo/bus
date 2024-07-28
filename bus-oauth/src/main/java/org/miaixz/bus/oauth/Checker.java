@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
@@ -50,8 +50,7 @@ public class Checker {
      * @return true or false
      */
     public static boolean isSupportedAuth(Context context, Complex complex) {
-        boolean isSupported = StringKit.isNotEmpty(context.getAppKey())
-                && StringKit.isNotEmpty(context.getAppSecret());
+        boolean isSupported = StringKit.isNotEmpty(context.getAppKey()) && StringKit.isNotEmpty(context.getAppSecret());
         if (isSupported && Registry.STACK_OVERFLOW == complex) {
             isSupported = StringKit.isNotEmpty(context.getUnionId());
         }
@@ -105,8 +104,7 @@ public class Checker {
     }
 
     /**
-     * 校验回调传回的code
-     * {@code v1.10.0}版本中改为传入{@code complex}和{@code callback}，对于不同平台使用不同参数接受code的情况统一做处理
+     * 校验回调传回的code {@code v1.10.0}版本中改为传入{@code complex}和{@code callback}，对于不同平台使用不同参数接受code的情况统一做处理
      *
      * @param complex  当前授权平台
      * @param callback 从第三方授权回调回来时传入的参数集合
@@ -126,14 +124,11 @@ public class Checker {
     }
 
     /**
-     * 校验回调传回的{@code state}，为空或者不存在
-     * {@code state}不存在的情况只有两种：
-     * 1. {@code state}已使用，被正常清除
-     * 2. {@code state}为前端伪造，本身就不存在
+     * 校验回调传回的{@code state}，为空或者不存在 {@code state}不存在的情况只有两种： 1. {@code state}已使用，被正常清除 2. {@code state}为前端伪造，本身就不存在
      *
-     * @param state          {@code state}一定不为空
-     * @param complex        {@code complex}当前授权平台
-     * @param cache {@code cache} state缓存实现
+     * @param state   {@code state}一定不为空
+     * @param complex {@code complex}当前授权平台
+     * @param cache   {@code cache} state缓存实现
      */
     public static void checkState(String state, Complex complex, ExtendCache cache) {
         // 推特平台不支持回调 code 和 state

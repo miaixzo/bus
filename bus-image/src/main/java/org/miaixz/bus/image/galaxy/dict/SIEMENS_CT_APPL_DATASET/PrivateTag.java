@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_CT_APPL_DATASET;
 
 /**
@@ -176,10 +176,10 @@ public class PrivateTag {
     /** (0029,xx40) VR=ST VM=1 Volume Slice Distance */
     public static final int VolumeSliceDistance = 0x00290040;
 
-    /** (0029,xx41) VR=DS VM=1 First Slice Z Coordinate  */
+    /** (0029,xx41) VR=DS VM=1 First Slice Z Coordinate */
     public static final int FirstSliceZCoordinate = 0x00290041;
 
-    /** (0029,xx42) VR=DS VM=1 Last Slice Z Coordinate  */
+    /** (0029,xx42) VR=DS VM=1 Last Slice Z Coordinate */
     public static final int LastSliceZCoordinate = 0x00290042;
 
     /** (0029,xx43) VR=DS VM=1 Content DateTime */

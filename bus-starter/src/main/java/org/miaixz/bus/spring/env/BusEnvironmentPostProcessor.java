@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.spring.env;
 
 import org.miaixz.bus.core.Version;
@@ -39,8 +39,7 @@ import java.util.Properties;
 
 /**
  *
- * 实现{@link EnvironmentPostProcessor}来设置一些属性
- * 比如版本，将被添加为一个名为cconfigurationproperties的属性源。
+ * 实现{@link EnvironmentPostProcessor}来设置一些属性 比如版本，将被添加为一个名为cconfigurationproperties的属性源。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,8 +47,7 @@ import java.util.Properties;
 public class BusEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
 
     @Override
-    public void postProcessEnvironment(ConfigurableEnvironment environment,
-                                       SpringApplication application) {
+    public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
         // 系统时区
         System.setProperty("user.timezone", "Asia/Shanghai");
         if (environment.getPropertySources().get(GeniusBuilder.BUS_PROPERTY_SOURCE) != null) {
@@ -61,8 +59,8 @@ public class BusEnvironmentPostProcessor implements EnvironmentPostProcessor, Or
         properties.setProperty(GeniusBuilder.VERSION, Version._VERSION);
 
         // 默认配置
-        PropertiesPropertySource propertySource = new PropertiesPropertySource(
-                GeniusBuilder.BUS_PROPERTY_SOURCE, properties);
+        PropertiesPropertySource propertySource = new PropertiesPropertySource(GeniusBuilder.BUS_PROPERTY_SOURCE,
+                properties);
         environment.getPropertySources().addLast(propertySource);
 
         environment.setRequiredProperties(GeniusBuilder.APP_NAME);

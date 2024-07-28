@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket.plugin;
 
 import org.miaixz.bus.logger.Logger;
@@ -60,7 +60,8 @@ public class BufferPageMonitorPlugin<T> extends AbstractPlugin<T> {
         init();
     }
 
-    private static void dumpBufferPool(BufferPagePool writeBufferPool) throws NoSuchFieldException, IllegalAccessException {
+    private static void dumpBufferPool(BufferPagePool writeBufferPool)
+            throws NoSuchFieldException, IllegalAccessException {
         Field field = BufferPagePool.class.getDeclaredField("bufferPages");
         field.setAccessible(true);
         BufferPage[] pages = (BufferPage[]) field.get(writeBufferPool);

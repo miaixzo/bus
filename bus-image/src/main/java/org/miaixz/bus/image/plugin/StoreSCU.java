@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -100,8 +100,7 @@ public class StoreSCU implements AutoCloseable {
     public StoreSCU(ApplicationEntity ae, ImageProgress progress, List<Editors> dicomEditors) {
         this.remote = new Connection();
         this.ae = ae;
-        rq.addPresentationContext(
-                new PresentationContext(1, UID.Verification.uid, UID.ImplicitVRLittleEndian.uid));
+        rq.addPresentationContext(new PresentationContext(1, UID.Verification.uid, UID.ImplicitVRLittleEndian.uid));
         this.state = new Status(progress);
         this.dicomEditors = dicomEditors;
     }
@@ -161,25 +160,20 @@ public class StoreSCU implements AutoCloseable {
     public void scanFiles(List<String> fnames, boolean printout) throws IOException {
         tmpFile = File.createTempFile(tmpPrefix, tmpSuffix, tmpDir);
         tmpFile.deleteOnExit();
-        try (BufferedWriter fileInfos =
-                     new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmpFile)))) {
-            DicomFiles.scan(
-                    fnames,
-                    printout,
-                    (f, fmi, dsPos, ds) -> {
-                        if (!addFile(fileInfos, f, dsPos, fmi, ds)) {
-                            return false;
-                        }
+        try (BufferedWriter fileInfos = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmpFile)))) {
+            DicomFiles.scan(fnames, printout, (f, fmi, dsPos, ds) -> {
+                if (!addFile(fileInfos, f, dsPos, fmi, ds)) {
+                    return false;
+                }
 
-                        filesScanned++;
-                        return true;
-                    });
+                filesScanned++;
+                return true;
+            });
         }
     }
 
     public void sendFiles() throws IOException {
-        BufferedReader fileInfos =
-                new BufferedReader(new InputStreamReader(new FileInputStream(tmpFile)));
+        BufferedReader fileInfos = new BufferedReader(new InputStreamReader(new FileInputStream(tmpFile)));
         try {
             String line;
             while (as.isReadyForDataTransfer() && (line = fileInfos.readLine()) != null) {
@@ -211,8 +205,7 @@ public class StoreSCU implements AutoCloseable {
         }
     }
 
-    public boolean addFile(
-            BufferedWriter fileInfos, File f, long endFmi, Attributes fmi, Attributes ds)
+    public boolean addFile(BufferedWriter fileInfos, File f, long endFmi, Attributes fmi, Attributes ds)
             throws IOException {
         String cuid = fmi.getString(Tag.MediaStorageSOPClassUID);
         String iuid = fmi.getString(Tag.MediaStorageSOPInstanceUID);
@@ -241,18 +234,15 @@ public class StoreSCU implements AutoCloseable {
                 rq.addCommonExtendedNegotiation(relSOPClasses.getCommonExtended(cuid));
             }
             if (!ts.equals(UID.ExplicitVRLittleEndian.uid)) {
-                rq.addPresentationContext(
-                        new PresentationContext(
-                                rq.getNumberOfPresentationContexts() * 2 + 1, cuid, UID.ExplicitVRLittleEndian.uid));
+                rq.addPresentationContext(new PresentationContext(rq.getNumberOfPresentationContexts() * 2 + 1, cuid,
+                        UID.ExplicitVRLittleEndian.uid));
             }
             if (!ts.equals(UID.ImplicitVRLittleEndian.uid)) {
-                rq.addPresentationContext(
-                        new PresentationContext(
-                                rq.getNumberOfPresentationContexts() * 2 + 1, cuid, UID.ImplicitVRLittleEndian.uid));
+                rq.addPresentationContext(new PresentationContext(rq.getNumberOfPresentationContexts() * 2 + 1, cuid,
+                        UID.ImplicitVRLittleEndian.uid));
             }
         }
-        rq.addPresentationContext(
-                new PresentationContext(rq.getNumberOfPresentationContexts() * 2 + 1, cuid, ts));
+        rq.addPresentationContext(new PresentationContext(rq.getNumberOfPresentationContexts() * 2 + 1, cuid, ts));
         return true;
     }
 
@@ -264,13 +254,10 @@ public class StoreSCU implements AutoCloseable {
 
     public void send(final File f, long fmiEndPos, String cuid, String iuid, String tsuid)
             throws IOException, InterruptedException, ParserConfigurationException, SAXException {
-        ImageAdapter.AdaptTransferSyntax syntax =
-                new ImageAdapter.AdaptTransferSyntax(tsuid, StreamSCU.selectTransferSyntax(as, cuid, tsuid));
-        boolean noChange =
-                uidSuffix == null
-                        && attrs.isEmpty()
-                        && syntax.getRequested().equals(tsuid)
-                        && dicomEditors == null;
+        ImageAdapter.AdaptTransferSyntax syntax = new ImageAdapter.AdaptTransferSyntax(tsuid,
+                StreamSCU.selectTransferSyntax(as, cuid, tsuid));
+        boolean noChange = uidSuffix == null && attrs.isEmpty() && syntax.getRequested().equals(tsuid)
+                && dicomEditors == null;
         DataWriter dataWriter = null;
         InputStream in = null;
         Attributes data = null;
@@ -290,11 +277,8 @@ public class StoreSCU implements AutoCloseable {
             }
 
             if (!noChange) {
-                EditorContext context =
-                        new EditorContext(
-                                syntax.getOriginal(),
-                                Node.buildLocalDicomNode(as),
-                                Node.buildRemoteDicomNode(as));
+                EditorContext context = new EditorContext(syntax.getOriginal(), Node.buildLocalDicomNode(as),
+                        Node.buildRemoteDicomNode(as));
                 if (dicomEditors != null && !dicomEditors.isEmpty()) {
                     final Attributes attributes = data;
                     dicomEditors.forEach(e -> e.apply(attributes, context));
@@ -308,12 +292,7 @@ public class StoreSCU implements AutoCloseable {
                 BytesWithImageDescriptor desc = ImageAdapter.imageTranscode(data, syntax, context);
                 dataWriter = ImageAdapter.buildDataWriter(data, syntax, context.getEditable(), desc);
             }
-            as.cstore(
-                    cuid,
-                    iuid,
-                    priority,
-                    dataWriter,
-                    syntax.getSuitable(),
+            as.cstore(cuid, iuid, priority, dataWriter, syntax.getSuitable(),
                     rspHandlerFactory.createDimseRSPHandler(f));
         } finally {
             IoKit.close(in);
@@ -330,11 +309,7 @@ public class StoreSCU implements AutoCloseable {
         }
     }
 
-    public void open()
-            throws IOException,
-            InterruptedException,
-            InternalException,
-            GeneralSecurityException {
+    public void open() throws IOException, InterruptedException, InternalException, GeneralSecurityException {
         as = ae.connect(remote, rq);
     }
 
@@ -344,28 +319,24 @@ public class StoreSCU implements AutoCloseable {
         ProgressStatus ps;
 
         switch (status) {
-            case Status.Success:
-                totalSize += f.length();
-                ps = ProgressStatus.COMPLETED;
-                break;
-            case Status.CoercionOfDataElements:
-            case Status.ElementsDiscarded:
-            case Status.DataSetDoesNotMatchSOPClassWarning:
-                totalSize += f.length();
-                ps = ProgressStatus.WARNING;
-                Logger.error(
-                        MessageFormat.format(
-                                "WARNING: Received C-STORE-RSP with Status {0}H for {1}",
-                                Tag.shortToHexString(status), f));
-                Logger.error(cmd.toString());
-                break;
-            default:
-                ps = ProgressStatus.FAILED;
-                Logger.error(
-                        MessageFormat.format(
-                                "ERROR: Received C-STORE-RSP with Status {0}H for {1}",
-                                Tag.shortToHexString(status), f));
-                Logger.error(cmd.toString());
+        case Status.Success:
+            totalSize += f.length();
+            ps = ProgressStatus.COMPLETED;
+            break;
+        case Status.CoercionOfDataElements:
+        case Status.ElementsDiscarded:
+        case Status.DataSetDoesNotMatchSOPClassWarning:
+            totalSize += f.length();
+            ps = ProgressStatus.WARNING;
+            Logger.error(MessageFormat.format("WARNING: Received C-STORE-RSP with Status {0}H for {1}",
+                    Tag.shortToHexString(status), f));
+            Logger.error(cmd.toString());
+            break;
+        default:
+            ps = ProgressStatus.FAILED;
+            Logger.error(MessageFormat.format("ERROR: Received C-STORE-RSP with Status {0}H for {1}",
+                    Tag.shortToHexString(status), f));
+            Logger.error(cmd.toString());
         }
         Builder.notifyProgession(state.getProgress(), cmd, ps, filesScanned);
     }

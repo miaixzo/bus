@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.storage.metric;
 
 import com.qiniu.common.QiniuException;
@@ -90,57 +90,36 @@ public class QiniuYunOssProvider extends AbstractProvider {
             String encodedFileName = URLEncoder.encode(fileKey, Charset.DEFAULT_UTF_8);
             String format = String.format("%s/%s", path, encodedFileName);
             // FileKit.newFile(format);
-            return Message.builder()
-                    .errcode(ErrorCode.SUCCESS.getCode())
-                    .errmsg(ErrorCode.SUCCESS.getDesc())
-                    .build();
+            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
         } catch (UnsupportedEncodingException e) {
             Logger.error("file download failed", e.getMessage());
         }
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
     public Message download(String bucket, String fileName) {
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
     public Message download(String bucket, String fileName, File file) {
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
     public Message download(String fileName, File file) {
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
     public Message rename(String oldName, String newName) {
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
     public Message rename(String bucket, String oldName, String newName) {
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
@@ -154,26 +133,17 @@ public class QiniuYunOssProvider extends AbstractProvider {
             String upToken = auth.uploadToken(bucket);
             Response response = uploadManager.put(content, fileName, upToken, null, null);
             if (!response.isOK()) {
-                return Message.builder()
-                        .errcode(ErrorCode.FAILURE.getCode())
-                        .errmsg(ErrorCode.FAILURE.getDesc())
+                return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc())
                         .build();
             }
-            return Message.builder()
-                    .errcode(ErrorCode.SUCCESS.getCode())
-                    .errmsg(ErrorCode.SUCCESS.getDesc())
-                    .data(Material.builder()
-                            .name(fileName)
-                            .size(StringKit.toString(response.body().length))
+            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
+                    .data(Material.builder().name(fileName).size(StringKit.toString(response.body().length))
                             .path(response.url()))
                     .build();
         } catch (QiniuException e) {
             Logger.error("file upload failed", e.getMessage());
         }
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
@@ -182,26 +152,17 @@ public class QiniuYunOssProvider extends AbstractProvider {
             String upToken = auth.uploadToken(bucket, fileName);
             Response response = uploadManager.put(content, fileName, upToken);
             if (!response.isOK()) {
-                return Message.builder()
-                        .errcode(ErrorCode.FAILURE.getCode())
-                        .errmsg(ErrorCode.FAILURE.getDesc())
+                return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc())
                         .build();
             }
-            return Message.builder()
-                    .errcode(ErrorCode.SUCCESS.getCode())
-                    .errmsg(ErrorCode.SUCCESS.getDesc())
-                    .data(Material.builder()
-                            .size(StringKit.toString(response.body().length))
-                            .name(fileName)
+            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
+                    .data(Material.builder().size(StringKit.toString(response.body().length)).name(fileName)
                             .path(response.url()))
                     .build();
         } catch (QiniuException e) {
             Logger.error("file upload failed", e.getMessage());
         }
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
@@ -211,34 +172,22 @@ public class QiniuYunOssProvider extends AbstractProvider {
                 fileKey = fileKey.replace(this.context.getPrefix(), Normal.EMPTY);
             }
             bucketManager.delete(this.context.getBucket(), fileKey);
-            return Message.builder()
-                    .errcode(ErrorCode.SUCCESS.getCode())
-                    .errmsg(ErrorCode.SUCCESS.getDesc())
-                    .build();
+            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
         } catch (QiniuException e) {
             Logger.error("file remove failed", e.getMessage());
         }
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
     public Message remove(String bucket, String fileName) {
         try {
             bucketManager.delete(bucket, fileName);
-            return Message.builder()
-                    .errcode(ErrorCode.SUCCESS.getCode())
-                    .errmsg(ErrorCode.SUCCESS.getDesc())
-                    .build();
+            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
         } catch (QiniuException e) {
             Logger.error("file remove failed", e.getMessage());
         }
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc())
-                .build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override

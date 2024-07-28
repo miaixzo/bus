@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -39,10 +39,10 @@ import java.util.Map;
 /**
  * {@link Map.Entry} 转换器，支持以下类型转为Entry
  * <ul>
- *     <li>{@link Map}</li>
- *     <li>{@link Map.Entry}</li>
- *     <li>带分隔符的字符串，支持分隔符{@code :}、{@code =}、{@code ,}</li>
- *     <li>Bean，包含{@code getKey}和{@code getValue}方法</li>
+ * <li>{@link Map}</li>
+ * <li>{@link Map.Entry}</li>
+ * <li>带分隔符的字符串，支持分隔符{@code :}、{@code =}、{@code ,}</li>
+ * <li>Bean，包含{@code getKey}和{@code getValue}方法</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -62,10 +62,9 @@ public class EntryConverter implements Converter {
      * @return map or null
      */
     private static Map<CharSequence, CharSequence> strToMap(final CharSequence text) {
-        // data:value  data=value  data,value
+        // data:value data=value data,value
         final int index = StringKit.indexOf(text,
-                c -> c == Symbol.C_COLON || c == Symbol.C_EQUAL || c == Symbol.C_COMMA,
-                0, text.length());
+                c -> c == Symbol.C_COLON || c == Symbol.C_EQUAL || c == Symbol.C_COMMA, 0, text.length());
 
         if (index > -1) {
             return MapKit.of(text.subSequence(0, index), text.subSequence(index + 1, text.length()));
@@ -82,7 +81,8 @@ public class EntryConverter implements Converter {
      * @param map        被转换的map
      * @return Entry
      */
-    private static Map.Entry<?, ?> mapToEntry(final Type targetType, final Type keyType, final Type valueType, final Map map) {
+    private static Map.Entry<?, ?> mapToEntry(final Type targetType, final Type keyType, final Type valueType,
+            final Map map) {
 
         Object key = null;
         Object value = null;
@@ -98,8 +98,7 @@ public class EntryConverter implements Converter {
         final CompositeConverter convert = CompositeConverter.getInstance();
         return (Map.Entry<?, ?>) ReflectKit.newInstance(TypeKit.getClass(targetType),
                 TypeKit.isUnknown(keyType) ? key : convert.convert(keyType, key),
-                TypeKit.isUnknown(valueType) ? value : convert.convert(valueType, value)
-        );
+                TypeKit.isUnknown(valueType) ? value : convert.convert(valueType, value));
     }
 
     @Override

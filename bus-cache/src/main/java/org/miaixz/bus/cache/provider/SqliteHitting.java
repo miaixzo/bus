@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cache.provider;
 
 import org.springframework.jdbc.core.JdbcOperations;
@@ -58,12 +58,10 @@ public class SqliteHitting extends AbstractHitting {
             dataSource.setUrl((String) context.get("url"));
 
             JdbcTemplate template = new JdbcTemplate(dataSource);
-            template.execute("CREATE TABLE IF NOT EXISTS hi_cache_rate(" +
-                    "id BIGINT     IDENTITY PRIMARY KEY," +
-                    "pattern       VARCHAR(64) NOT NULL UNIQUE," +
-                    "hit_count     BIGINT      NOT NULL     DEFAULT 0," +
-                    "require_count BIGINT      NOT NULL     DEFAULT 0," +
-                    "version       BIGINT      NOT NULL     DEFAULT 0)");
+            template.execute("CREATE TABLE IF NOT EXISTS hi_cache_rate(" + "id BIGINT     IDENTITY PRIMARY KEY,"
+                    + "pattern       VARCHAR(64) NOT NULL UNIQUE," + "hit_count     BIGINT      NOT NULL     DEFAULT 0,"
+                    + "require_count BIGINT      NOT NULL     DEFAULT 0,"
+                    + "version       BIGINT      NOT NULL     DEFAULT 0)");
 
             return template;
         };

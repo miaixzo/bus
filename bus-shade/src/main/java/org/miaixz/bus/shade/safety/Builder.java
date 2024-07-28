@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.safety;
 
 import org.miaixz.bus.core.lang.Keys;
@@ -59,7 +59,8 @@ public abstract class Builder {
     public static final String WEB_INF_CLASSES = "WEB-INF/classes/";
     public static final String WEB_INF_LIB = "WEB-INF/lib/";
     public static final String META_INF_MANIFEST = Normal.META_INF + "/MANIFEST.MF";
-    public static final String XJAR_SRC_DIR = Builder.class.getPackage().getName().replace(Symbol.C_DOT, Symbol.C_SLASH) + Symbol.SLASH;
+    public static final String XJAR_SRC_DIR = Builder.class.getPackage().getName().replace(Symbol.C_DOT, Symbol.C_SLASH)
+            + Symbol.SLASH;
     public static final String XJAR_INF_DIR = Normal.META_INF + Symbol.SLASH;
     public static final String XJAR_INF_IDX = "FOREST.MF";
     public static final String XJAR_ALGORITHM = "--xjar.algorithm=";
@@ -105,13 +106,13 @@ public abstract class Builder {
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         while (b != -1) {
             switch (b) {
-                case Symbol.C_CR:
-                    break;
-                case Symbol.C_LF:
-                    return bos.toByteArray();
-                default:
-                    bos.write(b);
-                    break;
+            case Symbol.C_CR:
+                break;
+            case Symbol.C_LF:
+                return bos.toByteArray();
+            default:
+                bos.write(b);
+                break;
             }
             b = in.read();
         }
@@ -155,11 +156,13 @@ public abstract class Builder {
      * @throws IOException 当quietly == false, 时捕获到的I/O异常将会往外抛
      */
     public static void close(Closeable closeable, boolean quietly) throws IOException {
-        if (null == closeable) return;
+        if (null == closeable)
+            return;
         try {
             closeable.close();
         } catch (IOException e) {
-            if (!quietly) throw e;
+            if (!quietly)
+                throw e;
         }
     }
 

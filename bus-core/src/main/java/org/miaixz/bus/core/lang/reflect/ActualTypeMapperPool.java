@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.reflect;
 
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
@@ -84,8 +84,7 @@ public class ActualTypeMapperPool {
     }
 
     /**
-     * 获取指定泛型变量对应的真实类型
-     * 由于子类中泛型参数实现和父类（接口）中泛型定义位置是一一对应的，因此可以通过对应关系找到泛型实现类型
+     * 获取指定泛型变量对应的真实类型 由于子类中泛型参数实现和父类（接口）中泛型定义位置是一一对应的，因此可以通过对应关系找到泛型实现类型
      *
      * @param type          真实类型所在类，此类中记录了泛型参数对应的实际类型
      * @param typeVariables 泛型变量，需要的实际类型对应的泛型参数

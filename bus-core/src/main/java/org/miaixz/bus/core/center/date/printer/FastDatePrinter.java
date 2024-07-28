@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date.printer;
 
 import org.miaixz.bus.core.center.date.format.parser.FastDateParser;
@@ -39,8 +39,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * {@link java.text.SimpleDateFormat} 的线程安全版本，用于将 {@link Date} 格式化输出
- * Thanks to Apache Commons Lang 3.5
+ * {@link java.text.SimpleDateFormat} 的线程安全版本，用于将 {@link Date} 格式化输出 Thanks to Apache Commons Lang 3.5
  *
  * @author Kimi Liu
  * @see FastDateParser
@@ -51,7 +50,8 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     private static final long serialVersionUID = -1L;
 
     private static final int MAX_DIGITS = 10;
-    private static final ConcurrentMap<TimeZoneDisplayKey, String> C_TIME_ZONE_DISPLAY_CACHE = new SafeConcurrentHashMap<>(7);
+    private static final ConcurrentMap<TimeZoneDisplayKey, String> C_TIME_ZONE_DISPLAY_CACHE = new SafeConcurrentHashMap<>(
+            7);
 
     /**
      * 规则列表.
@@ -113,25 +113,25 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
             }
 
             switch (nDigits) {
-                case 4:
-                    buffer.append((char) (value / 1000 + '0'));
-                    value %= 1000;
-                case 3:
-                    if (value >= 100) {
-                        buffer.append((char) (value / 100 + '0'));
-                        value %= 100;
-                    } else {
-                        buffer.append('0');
-                    }
-                case 2:
-                    if (value >= 10) {
-                        buffer.append((char) (value / 10 + '0'));
-                        value %= 10;
-                    } else {
-                        buffer.append('0');
-                    }
-                case 1:
-                    buffer.append((char) (value + '0'));
+            case 4:
+                buffer.append((char) (value / 1000 + '0'));
+                value %= 1000;
+            case 3:
+                if (value >= 100) {
+                    buffer.append((char) (value / 100 + '0'));
+                    value %= 100;
+                } else {
+                    buffer.append('0');
+                }
+            case 2:
+                if (value >= 10) {
+                    buffer.append((char) (value / 10 + '0'));
+                    value %= 10;
+                } else {
+                    buffer.append('0');
+                }
+            case 1:
+                buffer.append((char) (value + '0'));
             }
         } else {
             // more memory allocation path works for any digits
@@ -188,7 +188,7 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
         rules = rulesList.toArray(new Rule[0]);
 
         int len = 0;
-        for (int i = rules.length; --i >= 0; ) {
+        for (int i = rules.length; --i >= 0;) {
             len += rules[i].estimateLength();
         }
 
@@ -229,105 +229,105 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
             final char c = token.charAt(0);
 
             switch (c) {
-                case 'G': // era designator (text)
-                    rule = new TextField(Calendar.ERA, ERAs);
-                    break;
-                case 'y': // year (number)
-                case 'Y': // week year
-                    if (tokenLen == 2) {
-                        rule = TwoDigitYearField.INSTANCE;
-                    } else {
-                        rule = selectNumberRule(Calendar.YEAR, Math.max(tokenLen, 4));
-                    }
-                    if (c == 'Y') {
-                        rule = new WeekYear((NumberRule) rule);
-                    }
-                    break;
-                case 'M': // month in year (text and number)
-                    if (tokenLen >= 4) {
-                        rule = new TextField(Calendar.MONTH, months);
-                    } else if (tokenLen == 3) {
-                        rule = new TextField(Calendar.MONTH, shortMonths);
-                    } else if (tokenLen == 2) {
-                        rule = TwoDigitMonthField.INSTANCE;
-                    } else {
-                        rule = UnpaddedMonthField.INSTANCE;
-                    }
-                    break;
-                case 'd': // day in month (number)
-                    rule = selectNumberRule(Calendar.DAY_OF_MONTH, tokenLen);
-                    break;
-                case 'h': // hour in am/pm (number, 1..12)
-                    rule = new TwelveHourField(selectNumberRule(Calendar.HOUR, tokenLen));
-                    break;
-                case 'H': // hour in day (number, 0..23)
-                    rule = selectNumberRule(Calendar.HOUR_OF_DAY, tokenLen);
-                    break;
-                case 'm': // minute in hour (number)
-                    rule = selectNumberRule(Calendar.MINUTE, tokenLen);
-                    break;
-                case 's': // second in minute (number)
-                    rule = selectNumberRule(Calendar.SECOND, tokenLen);
-                    break;
-                case 'S': // millisecond (number)
-                    rule = selectNumberRule(Calendar.MILLISECOND, tokenLen);
-                    break;
-                case 'E': // day in week (text)
-                    rule = new TextField(Calendar.DAY_OF_WEEK, tokenLen < 4 ? shortWeekdays : weekdays);
-                    break;
-                case 'u': // day in week (number)
-                    rule = new DayInWeekField(selectNumberRule(Calendar.DAY_OF_WEEK, tokenLen));
-                    break;
-                case 'D': // day in year (number)
-                    rule = selectNumberRule(Calendar.DAY_OF_YEAR, tokenLen);
-                    break;
-                case 'F': // day of week in month (number)
-                    rule = selectNumberRule(Calendar.DAY_OF_WEEK_IN_MONTH, tokenLen);
-                    break;
-                case 'w': // week in year (number)
-                    rule = selectNumberRule(Calendar.WEEK_OF_YEAR, tokenLen);
-                    break;
-                case 'W': // week in month (number)
-                    rule = selectNumberRule(Calendar.WEEK_OF_MONTH, tokenLen);
-                    break;
-                case 'a': // am/pm marker (text)
-                    rule = new TextField(Calendar.AM_PM, AmPmStrings);
-                    break;
-                case 'k': // hour in day (1..24)
-                    rule = new TwentyFourHourField(selectNumberRule(Calendar.HOUR_OF_DAY, tokenLen));
-                    break;
-                case 'K': // hour in am/pm (0..11)
-                    rule = selectNumberRule(Calendar.HOUR, tokenLen);
-                    break;
-                case 'X': // ISO 8601
-                    rule = Iso8601_Rule.getRule(tokenLen);
-                    break;
-                case 'z': // time zone (text)
-                    if (tokenLen >= 4) {
-                        rule = new TimeZoneNameRule(timeZone, locale, TimeZone.LONG);
-                    } else {
-                        rule = new TimeZoneNameRule(timeZone, locale, TimeZone.SHORT);
-                    }
-                    break;
-                case 'Z': // time zone (value)
-                    if (tokenLen == 1) {
-                        rule = TimeZoneNumberRule.INSTANCE_NO_COLON;
-                    } else if (tokenLen == 2) {
-                        rule = Iso8601_Rule.ISO8601_HOURS_COLON_MINUTES;
-                    } else {
-                        rule = TimeZoneNumberRule.INSTANCE_COLON;
-                    }
-                    break;
-                case '\'': // literal text
-                    final String sub = token.substring(1);
-                    if (sub.length() == 1) {
-                        rule = new CharacterLiteral(sub.charAt(0));
-                    } else {
-                        rule = new StringLiteral(sub);
-                    }
-                    break;
-                default:
-                    throw new IllegalArgumentException("Illegal pattern component: " + token);
+            case 'G': // era designator (text)
+                rule = new TextField(Calendar.ERA, ERAs);
+                break;
+            case 'y': // year (number)
+            case 'Y': // week year
+                if (tokenLen == 2) {
+                    rule = TwoDigitYearField.INSTANCE;
+                } else {
+                    rule = selectNumberRule(Calendar.YEAR, Math.max(tokenLen, 4));
+                }
+                if (c == 'Y') {
+                    rule = new WeekYear((NumberRule) rule);
+                }
+                break;
+            case 'M': // month in year (text and number)
+                if (tokenLen >= 4) {
+                    rule = new TextField(Calendar.MONTH, months);
+                } else if (tokenLen == 3) {
+                    rule = new TextField(Calendar.MONTH, shortMonths);
+                } else if (tokenLen == 2) {
+                    rule = TwoDigitMonthField.INSTANCE;
+                } else {
+                    rule = UnpaddedMonthField.INSTANCE;
+                }
+                break;
+            case 'd': // day in month (number)
+                rule = selectNumberRule(Calendar.DAY_OF_MONTH, tokenLen);
+                break;
+            case 'h': // hour in am/pm (number, 1..12)
+                rule = new TwelveHourField(selectNumberRule(Calendar.HOUR, tokenLen));
+                break;
+            case 'H': // hour in day (number, 0..23)
+                rule = selectNumberRule(Calendar.HOUR_OF_DAY, tokenLen);
+                break;
+            case 'm': // minute in hour (number)
+                rule = selectNumberRule(Calendar.MINUTE, tokenLen);
+                break;
+            case 's': // second in minute (number)
+                rule = selectNumberRule(Calendar.SECOND, tokenLen);
+                break;
+            case 'S': // millisecond (number)
+                rule = selectNumberRule(Calendar.MILLISECOND, tokenLen);
+                break;
+            case 'E': // day in week (text)
+                rule = new TextField(Calendar.DAY_OF_WEEK, tokenLen < 4 ? shortWeekdays : weekdays);
+                break;
+            case 'u': // day in week (number)
+                rule = new DayInWeekField(selectNumberRule(Calendar.DAY_OF_WEEK, tokenLen));
+                break;
+            case 'D': // day in year (number)
+                rule = selectNumberRule(Calendar.DAY_OF_YEAR, tokenLen);
+                break;
+            case 'F': // day of week in month (number)
+                rule = selectNumberRule(Calendar.DAY_OF_WEEK_IN_MONTH, tokenLen);
+                break;
+            case 'w': // week in year (number)
+                rule = selectNumberRule(Calendar.WEEK_OF_YEAR, tokenLen);
+                break;
+            case 'W': // week in month (number)
+                rule = selectNumberRule(Calendar.WEEK_OF_MONTH, tokenLen);
+                break;
+            case 'a': // am/pm marker (text)
+                rule = new TextField(Calendar.AM_PM, AmPmStrings);
+                break;
+            case 'k': // hour in day (1..24)
+                rule = new TwentyFourHourField(selectNumberRule(Calendar.HOUR_OF_DAY, tokenLen));
+                break;
+            case 'K': // hour in am/pm (0..11)
+                rule = selectNumberRule(Calendar.HOUR, tokenLen);
+                break;
+            case 'X': // ISO 8601
+                rule = Iso8601_Rule.getRule(tokenLen);
+                break;
+            case 'z': // time zone (text)
+                if (tokenLen >= 4) {
+                    rule = new TimeZoneNameRule(timeZone, locale, TimeZone.LONG);
+                } else {
+                    rule = new TimeZoneNameRule(timeZone, locale, TimeZone.SHORT);
+                }
+                break;
+            case 'Z': // time zone (value)
+                if (tokenLen == 1) {
+                    rule = TimeZoneNumberRule.INSTANCE_NO_COLON;
+                } else if (tokenLen == 2) {
+                    rule = Iso8601_Rule.ISO8601_HOURS_COLON_MINUTES;
+                } else {
+                    rule = TimeZoneNumberRule.INSTANCE_COLON;
+                }
+                break;
+            case '\'': // literal text
+                final String sub = token.substring(1);
+                if (sub.length() == 1) {
+                    rule = new CharacterLiteral(sub.charAt(0));
+                } else {
+                    rule = new StringLiteral(sub);
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Illegal pattern component: " + token);
             }
 
             rules.add(rule);
@@ -403,12 +403,12 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
      */
     protected NumberRule selectNumberRule(final int field, final int padding) {
         switch (padding) {
-            case 1:
-                return new UnpaddedNumberField(field);
-            case 2:
-                return new TwoDigitNumberField(field);
-            default:
-                return new PaddedNumberField(field, padding);
+        case 1:
+            return new UnpaddedNumberField(field);
+        case 2:
+            return new TwoDigitNumberField(field);
+        default:
+            return new PaddedNumberField(field, padding);
         }
     }
 
@@ -505,8 +505,7 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * 估算生成的日期字符串长度
-     * 实际生成的字符串长度小于或等于此值
+     * 估算生成的日期字符串长度 实际生成的字符串长度小于或等于此值
      *
      * @return 日期字符串长度
      */
@@ -634,7 +633,7 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
         @Override
         public int estimateLength() {
             int max = 0;
-            for (int i = mValues.length; --i >= 0; ) {
+            for (int i = mValues.length; --i >= 0;) {
                 final int len = mValues[i].length();
                 if (len > max) {
                     max = len;
@@ -1090,18 +1089,19 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
          * Factory method for Iso8601_Rules.
          *
          * @param tokenLen a token indicating the length of the TimeZone String to be formatted.
-         * @return a Iso8601_Rule that can format TimeZone String of length {@code tokenLen}. If no such rule exists, an IllegalArgumentException will be thrown.
+         * @return a Iso8601_Rule that can format TimeZone String of length {@code tokenLen}. If no such rule exists, an
+         *         IllegalArgumentException will be thrown.
          */
         static Iso8601_Rule getRule(final int tokenLen) {
             switch (tokenLen) {
-                case 1:
-                    return Iso8601_Rule.ISO8601_HOURS;
-                case 2:
-                    return Iso8601_Rule.ISO8601_HOURS_MINUTES;
-                case 3:
-                    return Iso8601_Rule.ISO8601_HOURS_COLON_MINUTES;
-                default:
-                    throw new IllegalArgumentException("invalid number of X");
+            case 1:
+                return Iso8601_Rule.ISO8601_HOURS;
+            case 2:
+                return Iso8601_Rule.ISO8601_HOURS_MINUTES;
+            case 3:
+                return Iso8601_Rule.ISO8601_HOURS_COLON_MINUTES;
+            default:
+                throw new IllegalArgumentException("invalid number of X");
             }
         }
 

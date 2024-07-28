@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.file;
 
 import org.miaixz.bus.core.center.date.culture.en.Units;
@@ -128,7 +128,8 @@ public class FileTailer implements Serializable {
      * @param initReadLine 启动时预读取的行数，1表示一行
      * @param period       检查间隔
      */
-    public FileTailer(final File file, final java.nio.charset.Charset charset, final ConsumerX<String> lineHandler, final int initReadLine, final long period) {
+    public FileTailer(final File file, final java.nio.charset.Charset charset, final ConsumerX<String> lineHandler,
+            final int initReadLine, final long period) {
         checkFile(file);
         this.filePath = file.getAbsolutePath();
         this.charset = charset;
@@ -184,10 +185,7 @@ public class FileTailer implements Serializable {
 
         final LineWatcher lineWatcher = new LineWatcher(this.randomAccessFile, this.charset, this.lineHandler);
         final ScheduledFuture<?> scheduledFuture = this.executorService.scheduleAtFixedRate(//
-                lineWatcher,
-                0,
-                this.period, TimeUnit.MILLISECONDS
-        );
+                lineWatcher, 0, this.period, TimeUnit.MILLISECONDS);
 
         // 监听删除
         if (stopOnRemove) {

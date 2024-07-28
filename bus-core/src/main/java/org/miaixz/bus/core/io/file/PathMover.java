@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.file;
 
 import org.miaixz.bus.core.io.file.visitor.MoveVisitor;
@@ -62,7 +62,7 @@ public class PathMover {
         }
         this.src = src;
         this.target = Assert.notNull(target, "Target path must be not null !");
-        this.options = ObjectKit.defaultIfNull(options, new CopyOption[]{});
+        this.options = ObjectKit.defaultIfNull(options, new CopyOption[] {});
     }
 
     /**
@@ -74,7 +74,8 @@ public class PathMover {
      * @return {@code PathMover}
      */
     public static PathMover of(final Path src, final Path target, final boolean isOverride) {
-        return of(src, target, isOverride ? new CopyOption[]{StandardCopyOption.REPLACE_EXISTING} : new CopyOption[]{});
+        return of(src, target,
+                isOverride ? new CopyOption[] { StandardCopyOption.REPLACE_EXISTING } : new CopyOption[] {});
     }
 
     /**
@@ -108,14 +109,14 @@ public class PathMover {
     /**
      * 移动文件或目录到目标中，例如：
      * <ul>
-     *     <li>如果src和target为同一文件或目录，直接返回target。</li>
-     *     <li>如果src为文件，target为目录，则移动到目标目录下，存在同名文件则按照是否覆盖参数执行。</li>
-     *     <li>如果src为文件，target为文件，则按照是否覆盖参数执行。</li>
-     *     <li>如果src为文件，target为不存在的路径，则重命名源文件到目标指定的文件，如move("/a/b", "/c/d"), d不存在，则b变成d。</li>
-     *     <li>如果src为目录，target为文件，抛出{@link IllegalArgumentException}</li>
-     *     <li>如果src为目录，target为目录，则将源目录及其内容移动到目标路径目录中，如move("/a/b", "/c/d")，结果为"/c/d/b"</li>
-     *     <li>如果src为目录，target为其子目录，抛出{@link IllegalArgumentException}</li>
-     *     <li>如果src为目录，target为不存在的路径，则重命名src到target，如move("/a/b", "/c/d")，结果为"/c/d/"，相当于b重命名为d</li>
+     * <li>如果src和target为同一文件或目录，直接返回target。</li>
+     * <li>如果src为文件，target为目录，则移动到目标目录下，存在同名文件则按照是否覆盖参数执行。</li>
+     * <li>如果src为文件，target为文件，则按照是否覆盖参数执行。</li>
+     * <li>如果src为文件，target为不存在的路径，则重命名源文件到目标指定的文件，如move("/a/b", "/c/d"), d不存在，则b变成d。</li>
+     * <li>如果src为目录，target为文件，抛出{@link IllegalArgumentException}</li>
+     * <li>如果src为目录，target为目录，则将源目录及其内容移动到目标路径目录中，如move("/a/b", "/c/d")，结果为"/c/d/b"</li>
+     * <li>如果src为目录，target为其子目录，抛出{@link IllegalArgumentException}</li>
+     * <li>如果src为目录，target为不存在的路径，则重命名src到target，如move("/a/b", "/c/d")，结果为"/c/d/"，相当于b重命名为d</li>
      * </ul>
      *
      * @return 目标文件Path
@@ -127,7 +128,7 @@ public class PathMover {
         final CopyOption[] options = this.options;
 
         if (PathResolve.isSub(src, target)) {
-            if(PathResolve.equals(src, target)){
+            if (PathResolve.equals(src, target)) {
                 // 当用户传入目标路径与源路径一致时，直接返回，否则会导致删除风险。
                 return target;
             }
@@ -162,12 +163,12 @@ public class PathMover {
     /**
      * 移动文件或目录内容到目标中，例如：
      * <ul>
-     *     <li>如果src为文件，target为目录，则移动到目标目录下，存在同名文件则按照是否覆盖参数执行。</li>
-     *     <li>如果src为文件，target为文件，则按照是否覆盖参数执行。</li>
-     *     <li>如果src为文件，target为不存在的路径，则重命名源文件到目标指定的文件，如moveContent("/a/b", "/c/d"), d不存在，则b变成d。</li>
-     *     <li>如果src为目录，target为文件，抛出{@link IllegalArgumentException}</li>
-     *     <li>如果src为目录，target为目录，则将源目录下的内容移动到目标路径目录中，源目录不删除。</li>
-     *     <li>如果src为目录，target为不存在的路径，则创建目标路径为目录，将源目录下的内容移动到目标路径目录中，源目录不删除。</li>
+     * <li>如果src为文件，target为目录，则移动到目标目录下，存在同名文件则按照是否覆盖参数执行。</li>
+     * <li>如果src为文件，target为文件，则按照是否覆盖参数执行。</li>
+     * <li>如果src为文件，target为不存在的路径，则重命名源文件到目标指定的文件，如moveContent("/a/b", "/c/d"), d不存在，则b变成d。</li>
+     * <li>如果src为目录，target为文件，抛出{@link IllegalArgumentException}</li>
+     * <li>如果src为目录，target为目录，则将源目录下的内容移动到目标路径目录中，源目录不删除。</li>
+     * <li>如果src为目录，target为不存在的路径，则创建目标路径为目录，将源目录下的内容移动到目标路径目录中，源目录不删除。</li>
      * </ul>
      *
      * @return 目标文件Path

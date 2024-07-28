@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text.placeholder;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -57,38 +57,38 @@ public abstract class StringTemplate {
 
     /**
      * 全局默认策略，一旦修改，对所有模板对象都生效
-     * <p>该值 是每个模板对象创建时的 策略初始值，因此，修改全局默认策略，不影响已经创建的模板对象</p>
+     * <p>
+     * 该值 是每个模板对象创建时的 策略初始值，因此，修改全局默认策略，不影响已经创建的模板对象
+     * </p>
      */
-    protected static int globalFeatures = Feature.of(
-            StringTemplate.Feature.FORMAT_MISSING_KEY_PRINT_WHOLE_PLACEHOLDER,
-            StringTemplate.Feature.FORMAT_NULL_VALUE_TO_STR,
-            StringTemplate.Feature.MATCH_KEEP_DEFAULT_VALUE,
-            StringTemplate.Feature.MATCH_EMPTY_VALUE_TO_NULL,
-            StringTemplate.Feature.MATCH_NULL_STR_TO_NULL);
+    protected static int globalFeatures = Feature.of(StringTemplate.Feature.FORMAT_MISSING_KEY_PRINT_WHOLE_PLACEHOLDER,
+            StringTemplate.Feature.FORMAT_NULL_VALUE_TO_STR, StringTemplate.Feature.MATCH_KEEP_DEFAULT_VALUE,
+            StringTemplate.Feature.MATCH_EMPTY_VALUE_TO_NULL, StringTemplate.Feature.MATCH_NULL_STR_TO_NULL);
 
     /**
      * 全局默认值处理器，一旦修改，对所有模板对象都生效
-     * <p>根据 占位符变量 返回 默认值</p>
+     * <p>
+     * 根据 占位符变量 返回 默认值
+     * </p>
      */
     protected static UnaryOperator<String> globalDefaultValueHandler;
     /**
      * 转义符，默认为: {@link Symbol#C_BACKSLASH}
      *
      * <p>
-     * 转义符如果标记在 占位符的开始或者结束 之前，则该占位符无效，属于普通字符串的一部分
-     * 例如，转义符为 {@literal '/'}，占位符为 "{}"：
-     * 当字符串模板为 {@literal "I am /{}"} 时，该模板中没有任何需要替换的占位符，格式化结果为 {@literal "I am {}"}
+     * 转义符如果标记在 占位符的开始或者结束 之前，则该占位符无效，属于普通字符串的一部分 例如，转义符为 {@literal '/'}，占位符为 "{}"： 当字符串模板为 {@literal "I am /{}"}
+     * 时，该模板中没有任何需要替换的占位符，格式化结果为 {@literal "I am {}"}
      * </p>
      *
      * <p>
-     * 如果要打印转义符，使用双转义符即可，例如，转义符为 {@literal '/'}，占位符为 "{}"：
-     * 当字符串模板为 {@literal "I am //{}"} ，格式化参数为 {@literal "student"}, 格式化结果为 {@literal "I am /student"}
+     * 如果要打印转义符，使用双转义符即可，例如，转义符为 {@literal '/'}，占位符为 "{}"： 当字符串模板为 {@literal "I am //{}"} ，格式化参数为 {@literal "student"},
+     * 格式化结果为 {@literal "I am /student"}
      * </p>
      */
     protected final char escape;
     /**
-     * 占位符 没有找到 对应的填充值时 使用的默认值，如果没有，则使用 {@link #defaultValueHandler} 提供默认值,
-     * 如果也没有，使用 {@link #globalDefaultValueHandler}，还是没有，则抛出异常
+     * 占位符 没有找到 对应的填充值时 使用的默认值，如果没有，则使用 {@link #defaultValueHandler} 提供默认值, 如果也没有，使用
+     * {@link #globalDefaultValueHandler}，还是没有，则抛出异常
      */
     protected final String defaultValue;
     /**
@@ -126,7 +126,7 @@ public abstract class StringTemplate {
      * @param features            策略值
      */
     protected StringTemplate(final String template, final char escape, final String defaultValue,
-                             final UnaryOperator<String> defaultValueHandler, final int features) {
+            final UnaryOperator<String> defaultValueHandler, final int features) {
         Assert.notNull(template, "String template cannot be null");
         this.template = template;
         this.escape = escape;
@@ -137,7 +137,9 @@ public abstract class StringTemplate {
 
     /**
      * 创建 单占位符模板对象的 Builder
-     * <p>例如，"{}", "?", "$$$"</p>
+     * <p>
+     * 例如，"{}", "?", "$$$"
+     * </p>
      *
      * @param template 字符串模板
      * @return 单占位符 模板对象的 Builder
@@ -148,7 +150,9 @@ public abstract class StringTemplate {
 
     /**
      * 创建 有前缀和后缀的占位符模板对象的 Builder
-     * <p>例如，"{0}", "{name}", "#{name}"</p>
+     * <p>
+     * 例如，"{0}", "{name}", "#{name}"
+     * </p>
      *
      * @param template 字符串模板
      * @return 有前缀和后缀的占位符模板对象的 Builder
@@ -159,7 +163,9 @@ public abstract class StringTemplate {
 
     /**
      * 设置 全局默认策略，一旦修改，对所有模板对象都生效
-     * <p>该值 是每个模板对象创建时的 策略初始值，因此，修改全局默认策略，不影响已经创建的模板对象</p>
+     * <p>
+     * 该值 是每个模板对象创建时的 策略初始值，因此，修改全局默认策略，不影响已经创建的模板对象
+     * </p>
      *
      * @param globalFeatures 全局默认策略
      */
@@ -224,7 +230,8 @@ public abstract class StringTemplate {
             } else {
                 // 有两个紧密相连的占位符，无法正确地拆分变量值
                 if (hasPlaceholder) {
-                    throw new InternalException("There are two closely related placeholders that cannot be split properly!");
+                    throw new InternalException(
+                            "There are two closely related placeholders that cannot be split properly!");
                 }
                 hasPlaceholder = true;
             }
@@ -235,35 +242,38 @@ public abstract class StringTemplate {
 
     /**
      * 获取 所有占位变量名称列表
-     * <p>例如，{@literal "{}"->"{}"、"{name}"->"name"}</p>
+     * <p>
+     * 例如，{@literal "{}"->"{}"、"{name}"->"name"}
+     * </p>
      *
      * @return 所有占位变量名称列表
      */
     public List<String> getPlaceholderVariableNames() {
-        return this.placeholderSegments.stream()
-                .map(AbstractSegment::getPlaceholder)
-                .collect(Collectors.toList());
+        return this.placeholderSegments.stream().map(AbstractSegment::getPlaceholder).collect(Collectors.toList());
     }
 
     /**
      * 获取 所有占位符的完整文本列表
-     * <p>例如，{@literal "{}"->"{}"、"{name}"->"{name}"}</p>
+     * <p>
+     * 例如，{@literal "{}"->"{}"、"{name}"->"{name}"}
+     * </p>
      *
      * @return 所有占位符的完整文本列表
      */
     public List<String> getPlaceholderTexts() {
-        return this.placeholderSegments.stream()
-                .map(AbstractSegment::getText)
-                .collect(Collectors.toList());
+        return this.placeholderSegments.stream().map(AbstractSegment::getText).collect(Collectors.toList());
     }
 
     /**
      * 根据 原始数据 生成 格式化字符串
-     * <p>依次遍历模板中的 占位符，根据 占位符 返回 需要序列化的值</p>
-     * <p>不对 占位符 和 参数值 做任何处理，由用户抉择</p>
+     * <p>
+     * 依次遍历模板中的 占位符，根据 占位符 返回 需要序列化的值
+     * </p>
+     * <p>
+     * 不对 占位符 和 参数值 做任何处理，由用户抉择
+     * </p>
      *
-     * @param valueSupplier 根据 占位符 返回 需要序列化的值的字符串形式，例如：
-     *                      {@code data -> map.get(data)}
+     * @param valueSupplier 根据 占位符 返回 需要序列化的值的字符串形式，例如： {@code data -> map.get(data)}
      * @return 模板格式化之后的结果
      */
     public String formatRawByKey(final Function<String, String> valueSupplier) {
@@ -272,11 +282,14 @@ public abstract class StringTemplate {
 
     /**
      * 根据 原始数据 生成 格式化字符串
-     * <p>依次遍历模板中的 占位符，根据 占位符 返回 需要序列化的值</p>
-     * <p>不对 占位符 和 参数值 做任何处理，由用户抉择</p>
+     * <p>
+     * 依次遍历模板中的 占位符，根据 占位符 返回 需要序列化的值
+     * </p>
+     * <p>
+     * 不对 占位符 和 参数值 做任何处理，由用户抉择
+     * </p>
      *
-     * @param valueSupplier 根据 占位符 返回 需要序列化的值的字符串形式，例如：
-     *                      {@code segment -> map.get(segment.getPlaceholder())}
+     * @param valueSupplier 根据 占位符 返回 需要序列化的值的字符串形式，例如： {@code segment -> map.get(segment.getPlaceholder())}
      * @return 模板格式化之后的结果
      */
     public String formatRawBySegment(final Function<AbstractSegment, String> valueSupplier) {
@@ -334,10 +347,11 @@ public abstract class StringTemplate {
 
     /**
      * 根据 策略 和 默认值 处理需要序列化的值, 生成 格式化字符串
-     * <p>依次遍历模板中的 占位符，根据 占位符 返回 需要序列化的值</p>
+     * <p>
+     * 依次遍历模板中的 占位符，根据 占位符 返回 需要序列化的值
+     * </p>
      *
-     * @param valueSupplier 根据 占位符 返回 需要序列化的值，如果返回值不是 {@link String}，则使用 {@link StringKit#toString(Object)}
-     *                      方法转为字符串
+     * @param valueSupplier 根据 占位符 返回 需要序列化的值，如果返回值不是 {@link String}，则使用 {@link StringKit#toString(Object)} 方法转为字符串
      * @return 模板格式化之后的结果
      */
     protected String formatBySegment(final Function<AbstractSegment, ?> valueSupplier) {
@@ -359,7 +373,9 @@ public abstract class StringTemplate {
 
     /**
      * 根据 策略 返回 格式化参数中 找不到 占位符 时的默认值
-     * <p>例如，map中没有 占位符变量 这个key；基于下标的参数中，找不到 占位符下标 对应的 列表元素</p>
+     * <p>
+     * 例如，map中没有 占位符变量 这个key；基于下标的参数中，找不到 占位符下标 对应的 列表元素
+     * </p>
      *
      * @param segment 占位符
      * @return 参数中找不到占位符时的默认值
@@ -379,8 +395,8 @@ public abstract class StringTemplate {
         } else if (StringTemplate.Feature.FORMAT_MISSING_KEY_THROWS.contains(features)) {
             throw new InternalException("There is no value associated with data: '" + segment.getPlaceholder() + "'");
         }
-        throw new InternalException("There is no value associated with data: '" + segment.getPlaceholder() +
-                "'. You should define some Feature for missing data when building.");
+        throw new InternalException("There is no value associated with data: '" + segment.getPlaceholder()
+                + "'. You should define some Feature for missing data when building.");
     }
 
     /**
@@ -400,12 +416,15 @@ public abstract class StringTemplate {
         } else if (StringTemplate.Feature.FORMAT_NULL_VALUE_TO_DEFAULT_VALUE.contains(features)) {
             return getDefaultValue(segment);
         }
-        throw new InternalException("There is a NULL value cannot resolve. You should define a Feature for null value when building or filter null value.");
+        throw new InternalException(
+                "There is a NULL value cannot resolve. You should define a Feature for null value when building or filter null value.");
     }
 
     /**
      * 原始数据的解析方法
-     * <p>不对 占位符 和 解析得到的值 做任何处理，由用户抉择</p>
+     * <p>
+     * 不对 占位符 和 解析得到的值 做任何处理，由用户抉择
+     * </p>
      *
      * @param text             待解析的字符串
      * @param keyValueConsumer 消费 占位符变量名称 和 占位符对应的解析得到的字符串值，例如：{@code (data, value) -> map.put(data, value)}
@@ -419,7 +438,9 @@ public abstract class StringTemplate {
 
     /**
      * 原始数据的解析方法
-     * <p>不对 占位符 和 解析得到的值 做任何处理，由用户抉择</p>
+     * <p>
+     * 不对 占位符 和 解析得到的值 做任何处理，由用户抉择
+     * </p>
      *
      * @param text             待解析的字符串
      * @param keyValueConsumer 消费 占位符 和 占位符对应的解析得到的字符串值，例如：{@code (data, value) -> map.put(data, value)}
@@ -453,7 +474,8 @@ public abstract class StringTemplate {
             } else {
                 // 有两个紧密相连的占位符，无法正确地拆分变量值
                 if (placeholderSegment != null) {
-                    throw new InternalException("There are two closely related placeholders that cannot be split properly!");
+                    throw new InternalException(
+                            "There are two closely related placeholders that cannot be split properly!");
                 }
                 placeholderSegment = (AbstractSegment) segment;
             }
@@ -503,16 +525,15 @@ public abstract class StringTemplate {
      * @param hasDefaultValue      是否有默认值
      * @param defaultValueSupplier 默认值提供者，根据 占位符 返回 默认值
      */
-    protected void matchesByKey(final String text, final BiConsumer<String, String> keyValueConsumer, final boolean hasDefaultValue,
-                                final Function<AbstractSegment, String> defaultValueSupplier) {
+    protected void matchesByKey(final String text, final BiConsumer<String, String> keyValueConsumer,
+            final boolean hasDefaultValue, final Function<AbstractSegment, String> defaultValueSupplier) {
         if (text == null || keyValueConsumer == null || CollKit.isEmpty(placeholderSegments)) {
             return;
         }
-        matchesRawBySegment(text, (segment, value) -> matchByKey(
-                keyValueConsumer, segment.getPlaceholder(), value, hasDefaultValue,
-                // 默认值
-                () -> hasDefaultValue ? StringKit.toString(defaultValueSupplier.apply(segment)) : null
-        ));
+        matchesRawBySegment(text,
+                (segment, value) -> matchByKey(keyValueConsumer, segment.getPlaceholder(), value, hasDefaultValue,
+                        // 默认值
+                        () -> hasDefaultValue ? StringKit.toString(defaultValueSupplier.apply(segment)) : null));
     }
 
     /**
@@ -525,7 +546,7 @@ public abstract class StringTemplate {
      * @param defaultValueSupplier 默认值提供者
      */
     private void matchByKey(final BiConsumer<String, String> keyValueConsumer, final String key, final String value,
-                            final boolean hasDefaultValue, final Supplier<String> defaultValueSupplier) {
+            final boolean hasDefaultValue, final Supplier<String> defaultValueSupplier) {
         final int features = getFeatures();
 
         // 存在默认值
@@ -586,7 +607,9 @@ public abstract class StringTemplate {
 
     /**
      * 根据 占位符 返回默认值
-     * <p>根据定义的默认值、默认值提供者、全局默认值提供者，返回默认值</p>
+     * <p>
+     * 根据定义的默认值、默认值提供者、全局默认值提供者，返回默认值
+     * </p>
      *
      * @param segment 占位符
      * @return 默认值
@@ -599,13 +622,15 @@ public abstract class StringTemplate {
         } else if (globalDefaultValueHandler != null) {
             return StringKit.toString(globalDefaultValueHandler.apply(segment.getPlaceholder()));
         }
-        throw new InternalException("There is no default value for data: '" + segment.getPlaceholder() +
-                "'. You should define a 'defaultValue' or 'defaultValueHandler' or 'globalDefaultValueHandler' when building.");
+        throw new InternalException("There is no default value for data: '" + segment.getPlaceholder()
+                + "'. You should define a 'defaultValue' or 'defaultValueHandler' or 'globalDefaultValueHandler' when building.");
     }
 
     /**
      * 一些公共的初始化代码
-     * <p>由于此时子类还没构造完成，所以只能由子类构造方法调用</p>
+     * <p>
+     * 由于此时子类还没构造完成，所以只能由子类构造方法调用
+     * </p>
      */
     protected void afterInit() {
         // 释放空闲的列表元素
@@ -643,7 +668,8 @@ public abstract class StringTemplate {
      * @param list                 已保存的segment列表
      * @param newText              新的固定文本
      */
-    protected void addLiteralSegment(final boolean isLastLiteralSegment, final List<StringSegment> list, final String newText) {
+    protected void addLiteralSegment(final boolean isLastLiteralSegment, final List<StringSegment> list,
+            final String newText) {
         if (newText.isEmpty()) {
             return;
         }
@@ -685,13 +711,16 @@ public abstract class StringTemplate {
 
     /**
      * 格式化 和 解析 策略
-     * <p>同组内的策略是互斥的，一但设置为组内的某个新策略，就会清除之前的同组策略，仅保留新策略</p>
+     * <p>
+     * 同组内的策略是互斥的，一但设置为组内的某个新策略，就会清除之前的同组策略，仅保留新策略
+     * </p>
      */
     public enum Feature {
         /**
-         * 格式化时，如果 占位符 没有 对应的值，则打印完整占位符
-         * 对于 变量占位符，例如"${name}"，原样打印"${name}"
-         * <p>默认策略</p>
+         * 格式化时，如果 占位符 没有 对应的值，则打印完整占位符 对于 变量占位符，例如"${name}"，原样打印"${name}"
+         * <p>
+         * 默认策略
+         * </p>
          */
         FORMAT_MISSING_KEY_PRINT_WHOLE_PLACEHOLDER(0, 0, 6),
         /**
@@ -704,13 +733,13 @@ public abstract class StringTemplate {
         FORMAT_MISSING_KEY_PRINT_NULL(2, 0, 6),
         /**
          * 格式化时，如果 占位符 没有 对应的值，则打印 空字符串
-         * <p>该策略意味着 模板存在默认值，且为 空字符串</p>
+         * <p>
+         * 该策略意味着 模板存在默认值，且为 空字符串
+         * </p>
          */
         FORMAT_MISSING_KEY_PRINT_EMPTY(3, 0, 6),
         /**
-         * 格式化时，如果 占位符 没有 对应的值：
-         * 对于 单个占位符，例如"?"，打印完整占位符"?";
-         * 对于 变量占位符，则只打印占位变量，例如"${name}"，只打印"name";
+         * 格式化时，如果 占位符 没有 对应的值： 对于 单个占位符，例如"?"，打印完整占位符"?"; 对于 变量占位符，则只打印占位变量，例如"${name}"，只打印"name";
          */
         FORMAT_MISSING_KEY_PRINT_VARIABLE_NAME(4, 0, 6),
         /**
@@ -719,7 +748,9 @@ public abstract class StringTemplate {
         FORMAT_MISSING_KEY_THROWS(5, 0, 6),
         /**
          * 格式化时，如果 占位符 对应的值为 {@code null}，则打印 {@code "null"} 字符串
-         * <p>默认策略</p>
+         * <p>
+         * 默认策略
+         * </p>
          */
         FORMAT_NULL_VALUE_TO_STR(6, 6, 4),
         /**
@@ -727,8 +758,7 @@ public abstract class StringTemplate {
          */
         FORMAT_NULL_VALUE_TO_EMPTY(7, 6, 4),
         /**
-         * 格式化时，如果 占位符 对应的值为 {@code null}，则原样打印占位符
-         * 对于 变量占位符，输出完整占位符，例如"${name}"，打印"${name}"
+         * 格式化时，如果 占位符 对应的值为 {@code null}，则原样打印占位符 对于 变量占位符，输出完整占位符，例如"${name}"，打印"${name}"
          */
         FORMAT_NULL_VALUE_TO_WHOLE_PLACEHOLDER(8, 6, 4),
         /**
@@ -737,23 +767,33 @@ public abstract class StringTemplate {
         FORMAT_NULL_VALUE_TO_DEFAULT_VALUE(9, 6, 4),
         /**
          * 解析时，结果中 包含 默认值，原样返回
-         * <p>默认策略</p>
+         * <p>
+         * 默认策略
+         * </p>
          */
         MATCH_KEEP_DEFAULT_VALUE(16, 16, 3),
         /**
          * 解析时，结果中 不包含 默认值，只要等于默认值，都忽略
-         * <p>即，返回的结果 map 中 不会包含 这个key</p>
-         * <p>在 基于下标的解析方法中 不生效，基于下标的解析结果只区分是否为 {@code null}，元素数量是固定的</p>
+         * <p>
+         * 即，返回的结果 map 中 不会包含 这个key
+         * </p>
+         * <p>
+         * 在 基于下标的解析方法中 不生效，基于下标的解析结果只区分是否为 {@code null}，元素数量是固定的
+         * </p>
          */
         MATCH_IGNORE_DEFAULT_VALUE(17, 16, 3),
         /**
          * 解析时，在 结果中 将 默认值 转为 {@code null}
-         * <p>返回的结果 map 中 包含 这个key</p>
+         * <p>
+         * 返回的结果 map 中 包含 这个key
+         * </p>
          */
         MATCH_DEFAULT_VALUE_TO_NULL(18, 16, 3),
         /**
          * 解析时，占位符 对应的值为 空字符串，将 这个空字符串 转为 {@code null}
-         * <p>默认策略</p>
+         * <p>
+         * 默认策略
+         * </p>
          */
         MATCH_EMPTY_VALUE_TO_NULL(19, 19, 4),
         /**
@@ -762,8 +802,12 @@ public abstract class StringTemplate {
         MATCH_EMPTY_VALUE_TO_DEFAULT_VALUE(20, 19, 4),
         /**
          * 解析时，占位符 对应的值为 空字符串，结果中 不包含 这个空字符串
-         * <p>即，返回的结果 map 中 不会包含 这个key</p>
-         * <p>在 基于下标的解析方法中 不生效，基于下标的解析结果只区分是否为 {@code null}，元素数量是固定的</p>
+         * <p>
+         * 即，返回的结果 map 中 不会包含 这个key
+         * </p>
+         * <p>
+         * 在 基于下标的解析方法中 不生效，基于下标的解析结果只区分是否为 {@code null}，元素数量是固定的
+         * </p>
          */
         MATCH_IGNORE_EMPTY_VALUE(21, 19, 4),
         /**
@@ -772,7 +816,9 @@ public abstract class StringTemplate {
         MATCH_KEEP_VALUE_EMPTY(22, 19, 4),
         /**
          * 解析时，占位符 对应的值为 {@code "null"} 字符串，在 结果中 转为 {@code null}
-         * <p>默认策略</p>
+         * <p>
+         * 默认策略
+         * </p>
          */
         MATCH_NULL_STR_TO_NULL(23, 23, 3),
         /**
@@ -781,8 +827,12 @@ public abstract class StringTemplate {
         MATCH_KEEP_NULL_STR(24, 23, 3),
         /**
          * 解析时，占位符 对应的值为 {@code "null"} 字符串，结果中 不包含 这个值
-         * <p>即，返回的结果 map 中 不会包含 这个key</p>
-         * <p>在 基于下标的解析方法中 不生效，基于下标的解析结果只区分是否为 {@code null}，元素数量是固定的</p>
+         * <p>
+         * 即，返回的结果 map 中 不会包含 这个key
+         * </p>
+         * <p>
+         * 在 基于下标的解析方法中 不生效，基于下标的解析结果只区分是否为 {@code null}，元素数量是固定的
+         * </p>
          */
         MATCH_IGNORE_NULL_STR(25, 23, 3);
 
@@ -925,7 +975,9 @@ public abstract class StringTemplate {
 
         /**
          * 向 策略值 中 添加策略
-         * <p>同组内的策略是互斥的，一但设置为组内的某个新策略，就会清除之前的同组策略，仅保留新策略</p>
+         * <p>
+         * 同组内的策略是互斥的，一但设置为组内的某个新策略，就会清除之前的同组策略，仅保留新策略
+         * </p>
          *
          * @param appendFeatures 需要新增的策略
          * @return builder子对象
@@ -941,7 +993,9 @@ public abstract class StringTemplate {
 
         /**
          * 从 策略值 中 删除策略
-         * <p>删除的策略 可以 不存在</p>
+         * <p>
+         * 删除的策略 可以 不存在
+         * </p>
          *
          * @param removeFeatures 需要删除的策略
          * @return builder子对象
@@ -957,7 +1011,9 @@ public abstract class StringTemplate {
 
         /**
          * 设置 默认值
-         * <p>不可能为 {@code null}，可以为 {@code "null"}</p>
+         * <p>
+         * 不可能为 {@code null}，可以为 {@code "null"}
+         * </p>
          *
          * @param defaultValue 默认值
          * @return builder子对象

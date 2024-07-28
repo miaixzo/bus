@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,12 +24,12 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.hooks.web;
 
 /**
- * This interface defines an event listener for the event fired when
- * a WebHook notification has been received from a GitLab server.
+ * This interface defines an event listener for the event fired when a WebHook notification has been received from a
+ * GitLab server.
  */
 public interface WebHookListener extends java.util.EventListener {
 
@@ -105,7 +105,6 @@ public interface WebHookListener extends java.util.EventListener {
     default void onWikiPageEvent(WikiPageEvent wikiEvent) {
     }
 
-
     /**
      * This method is called when a WebHook deployment event has been received.
      *
@@ -113,7 +112,6 @@ public interface WebHookListener extends java.util.EventListener {
      */
     default void onDeploymentEvent(DeploymentEvent deploymentEvent) {
     }
-
 
     /**
      * This method is called when a WebHook release event has been received.

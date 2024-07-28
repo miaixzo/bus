@@ -24,10 +24,9 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 /**
- * HanLP分词引擎实现
- * 项目地址：https://github.com/hankcs/HanLP
+ * HanLP分词引擎实现 项目地址：https://github.com/hankcs/HanLP
  *
  * @author Kimi Liu
  * @since Java 17+

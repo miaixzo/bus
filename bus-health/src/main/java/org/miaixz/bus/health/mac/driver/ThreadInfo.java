@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.mac.driver;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -94,25 +94,25 @@ public final class ThreadInfo {
             // so: uptime = user+system / cpu/100
             this.upTime = (long) ((uTime + sTime) / (cpu / 100d + 0.0005));
             switch (state) {
-                case 'I':
-                case 'S':
-                    this.state = OSProcess.State.SLEEPING;
-                    break;
-                case 'U':
-                    this.state = OSProcess.State.WAITING;
-                    break;
-                case 'R':
-                    this.state = OSProcess.State.RUNNING;
-                    break;
-                case 'Z':
-                    this.state = OSProcess.State.ZOMBIE;
-                    break;
-                case 'T':
-                    this.state = OSProcess.State.STOPPED;
-                    break;
-                default:
-                    this.state = OSProcess.State.OTHER;
-                    break;
+            case 'I':
+            case 'S':
+                this.state = OSProcess.State.SLEEPING;
+                break;
+            case 'U':
+                this.state = OSProcess.State.WAITING;
+                break;
+            case 'R':
+                this.state = OSProcess.State.RUNNING;
+                break;
+            case 'Z':
+                this.state = OSProcess.State.ZOMBIE;
+                break;
+            case 'T':
+                this.state = OSProcess.State.STOPPED;
+                break;
+            default:
+                this.state = OSProcess.State.OTHER;
+                break;
             }
             this.priority = pri;
         }

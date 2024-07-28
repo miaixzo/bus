@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.media;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -34,42 +34,10 @@ import org.miaixz.bus.core.lang.Symbol;
  * @since Java 17+
  */
 public enum RecordType {
-    PATIENT,
-    STUDY,
-    SERIES,
-    IMAGE,
-    OVERLAY,
-    VOI_LUT,
-    CURVE,
-    STORED_PRINT,
-    RT_DOSE,
-    RT_STRUCTURE_SET,
-    RT_PLAN,
-    RT_TREAT_RECORD,
-    PRESENTATION,
-    WAVEFORM,
-    SR_DOCUMENT,
-    KEY_OBJECT_DOC,
-    SPECTROSCOPY,
-    RAW_DATA,
-    REGISTRATION,
-    FIDUCIAL,
-    HANGING_PROTOCOL,
-    ENCAP_DOC,
-    HL7_STRUC_DOC,
-    VALUE_MAP,
-    STEREOMETRIC,
-    PALETTE,
-    IMPLANT,
-    IMPLANT_ASSY,
-    IMPLANT_GROUP,
-    PLAN,
-    MEASUREMENT,
-    SURFACE,
-    SURFACE_SCAN,
-    TRACT,
-    ASSESSMENT,
-    PRIVATE;
+    PATIENT, STUDY, SERIES, IMAGE, OVERLAY, VOI_LUT, CURVE, STORED_PRINT, RT_DOSE, RT_STRUCTURE_SET, RT_PLAN,
+    RT_TREAT_RECORD, PRESENTATION, WAVEFORM, SR_DOCUMENT, KEY_OBJECT_DOC, SPECTROSCOPY, RAW_DATA, REGISTRATION,
+    FIDUCIAL, HANGING_PROTOCOL, ENCAP_DOC, HL7_STRUC_DOC, VALUE_MAP, STEREOMETRIC, PALETTE, IMPLANT, IMPLANT_ASSY,
+    IMPLANT_GROUP, PLAN, MEASUREMENT, SURFACE, SURFACE_SCAN, TRACT, ASSESSMENT, PRIVATE;
 
     public static RecordType forCode(String code) {
         try {

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.software;
 
 import org.miaixz.bus.core.lang.Fields;
@@ -47,7 +47,8 @@ import java.util.Locale;
 @Immutable
 public class OSSession {
 
-    private static final DateTimeFormatter LOGIN_FORMAT = DateTimeFormatter.ofPattern(Fields.NORM_DATETIME_MINUTE, Locale.ROOT);
+    private static final DateTimeFormatter LOGIN_FORMAT = DateTimeFormatter.ofPattern(Fields.NORM_DATETIME_MINUTE,
+            Locale.ROOT);
 
     private final String userName;
     private final String terminalDevice;
@@ -92,7 +93,7 @@ public class OSSession {
      * Gets the remote host from which the user logged in
      *
      * @return the host as either an IPv4 or IPv6 representation. If the host is unspecified, may also be an empty
-     * string, depending on the platform.
+     *         string, depending on the platform.
      */
     public String getHost() {
         return host;

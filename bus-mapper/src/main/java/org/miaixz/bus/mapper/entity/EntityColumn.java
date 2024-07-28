@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.entity;
 
 import org.apache.ibatis.type.JdbcType;
@@ -173,20 +173,31 @@ public class EntityColumn {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         EntityColumn that = (EntityColumn) o;
 
-        if (id != that.id) return false;
-        if (identity != that.identity) return false;
-        if (table != null ? !table.equals(that.table) : that.table != null) return false;
-        if (property != null ? !property.equals(that.property) : that.property != null) return false;
-        if (column != null ? !column.equals(that.column) : that.column != null) return false;
-        if (javaType != null ? !javaType.equals(that.javaType) : that.javaType != null) return false;
-        if (jdbcType != that.jdbcType) return false;
-        if (typeHandler != null ? !typeHandler.equals(that.typeHandler) : that.typeHandler != null) return false;
-        if (generator != null ? !generator.equals(that.generator) : that.generator != null) return false;
+        if (id != that.id)
+            return false;
+        if (identity != that.identity)
+            return false;
+        if (table != null ? !table.equals(that.table) : that.table != null)
+            return false;
+        if (property != null ? !property.equals(that.property) : that.property != null)
+            return false;
+        if (column != null ? !column.equals(that.column) : that.column != null)
+            return false;
+        if (javaType != null ? !javaType.equals(that.javaType) : that.javaType != null)
+            return false;
+        if (jdbcType != that.jdbcType)
+            return false;
+        if (typeHandler != null ? !typeHandler.equals(that.typeHandler) : that.typeHandler != null)
+            return false;
+        if (generator != null ? !generator.equals(that.generator) : that.generator != null)
+            return false;
         return !(orderBy != null ? !orderBy.equals(that.orderBy) : that.orderBy != null);
 
     }
@@ -370,23 +381,11 @@ public class EntityColumn {
 
     @Override
     public String toString() {
-        return "EntityColumn{" +
-                "table=" + table.getName() +
-                ", property='" + property + '\'' +
-                ", column='" + column + '\'' +
-                ", javaType=" + javaType +
-                ", jdbcType=" + jdbcType +
-                ", typeHandler=" + typeHandler +
-                ", id=" + id +
-                ", identity=" + identity +
-                ", blob=" + blob +
-                ", generator='" + generator + '\'' +
-                ", orderBy='" + orderBy + '\'' +
-                ", orderPriority='" + orderPriority + '\'' +
-                ", insertable=" + insertable +
-                ", updatable=" + updatable +
-                ", order=" + order +
-                '}';
+        return "EntityColumn{" + "table=" + table.getName() + ", property='" + property + '\'' + ", column='" + column
+                + '\'' + ", javaType=" + javaType + ", jdbcType=" + jdbcType + ", typeHandler=" + typeHandler + ", id="
+                + id + ", identity=" + identity + ", blob=" + blob + ", generator='" + generator + '\'' + ", orderBy='"
+                + orderBy + '\'' + ", orderPriority='" + orderPriority + '\'' + ", insertable=" + insertable
+                + ", updatable=" + updatable + ", order=" + order + '}';
     }
 
 }

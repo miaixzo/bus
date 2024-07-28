@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.software;
 
 import com.sun.jna.Native;
@@ -67,8 +67,7 @@ import java.util.stream.Collectors;
 @ThreadSafe
 public class WindowsOperatingSystem extends AbstractOperatingSystem {
 
-    private static final boolean USE_PROCSTATE_SUSPENDED = Config
-            .get(Config._WINDOWS_PROCSTATE_SUSPENDED, false);
+    private static final boolean USE_PROCSTATE_SUSPENDED = Config.get(Config._WINDOWS_PROCSTATE_SUSPENDED, false);
 
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
     /*
@@ -90,18 +89,18 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     /*
      * Cache full process stats queries. Second query will only populate if first one returns null.
      */
-    private final Supplier<Map<Integer, ProcessPerformanceData.PerfCounterBlock>> processMapFromRegistry = Memoizer.memoize(
-            WindowsOperatingSystem::queryProcessMapFromRegistry, Memoizer.defaultExpiration());
-    private final Supplier<Map<Integer, ProcessPerformanceData.PerfCounterBlock>> processMapFromPerfCounters = Memoizer.memoize(
-            WindowsOperatingSystem::queryProcessMapFromPerfCounters, Memoizer.defaultExpiration());
+    private final Supplier<Map<Integer, ProcessPerformanceData.PerfCounterBlock>> processMapFromRegistry = Memoizer
+            .memoize(WindowsOperatingSystem::queryProcessMapFromRegistry, Memoizer.defaultExpiration());
+    private final Supplier<Map<Integer, ProcessPerformanceData.PerfCounterBlock>> processMapFromPerfCounters = Memoizer
+            .memoize(WindowsOperatingSystem::queryProcessMapFromPerfCounters, Memoizer.defaultExpiration());
     /*
      * Cache full thread stats queries. Second query will only populate if first one returns null. Only used if
      * USE_PROCSTATE_SUSPENDED is set true.
      */
-    private final Supplier<Map<Integer, ThreadPerformanceData.PerfCounterBlock>> threadMapFromRegistry = Memoizer.memoize(
-            WindowsOperatingSystem::queryThreadMapFromRegistry, Memoizer.defaultExpiration());
-    private final Supplier<Map<Integer, ThreadPerformanceData.PerfCounterBlock>> threadMapFromPerfCounters = Memoizer.memoize(
-            WindowsOperatingSystem::queryThreadMapFromPerfCounters, Memoizer.defaultExpiration());
+    private final Supplier<Map<Integer, ThreadPerformanceData.PerfCounterBlock>> threadMapFromRegistry = Memoizer
+            .memoize(WindowsOperatingSystem::queryThreadMapFromRegistry, Memoizer.defaultExpiration());
+    private final Supplier<Map<Integer, ThreadPerformanceData.PerfCounterBlock>> threadMapFromPerfCounters = Memoizer
+            .memoize(WindowsOperatingSystem::queryThreadMapFromPerfCounters, Memoizer.defaultExpiration());
 
     private static Map<Integer, Integer> getParentPidsFromSnapshot() {
         Map<Integer, Integer> parentPidMap = new HashMap<>();
@@ -489,7 +488,8 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         String sp;
         int suiteMask = 0;
         String buildNumber = Normal.EMPTY;
-        WbemcliUtil.WmiResult<Win32OperatingSystem.OSVersionProperty> versionInfo = Win32OperatingSystem.queryOsVersion();
+        WbemcliUtil.WmiResult<Win32OperatingSystem.OSVersionProperty> versionInfo = Win32OperatingSystem
+                .queryOsVersion();
         if (versionInfo.getResultCount() > 0) {
             sp = WmiKit.getString(versionInfo, Win32OperatingSystem.OSVersionProperty.CSDVERSION, 0);
             if (!sp.isEmpty() && !Normal.UNKNOWN.equals(sp)) {
@@ -529,15 +529,15 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
             for (Winsvc.ENUM_SERVICE_STATUS_PROCESS service : services) {
                 OSService.State state;
                 switch (service.ServiceStatusProcess.dwCurrentState) {
-                    case 1:
-                        state = OSService.State.STOPPED;
-                        break;
-                    case 4:
-                        state = OSService.State.RUNNING;
-                        break;
-                    default:
-                        state = OSService.State.OTHER;
-                        break;
+                case 1:
+                    state = OSService.State.STOPPED;
+                    break;
+                case 4:
+                    state = OSService.State.RUNNING;
+                    break;
+                default:
+                    state = OSService.State.OTHER;
+                    break;
                 }
                 svcArray.add(new OSService(service.lpDisplayName, service.ServiceStatusProcess.dwProcessId, state));
             }

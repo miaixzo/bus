@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.math;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -50,7 +50,7 @@ public class Calculator {
     /**
      * 运用运算符ASCII码-40做索引的运算符优先级
      */
-    private final int[] operatPriority = new int[]{0, 3, 2, 1, -1, 1, 0, 2};
+    private final int[] operatPriority = new int[] { 0, 3, 2, 1, -1, 1, 0, 2 };
 
     /**
      * 计算表达式的值
@@ -78,7 +78,8 @@ public class Calculator {
                     arr[i] = Symbol.C_TILDE;
                 } else {
                     final char c = arr[i - 1];
-                    if (c == Symbol.C_PLUS || c == Symbol.C_MINUS || c == Symbol.C_STAR || c == '/' || c == Symbol.C_PARENTHESE_LEFT || c == 'E' || c == 'e') {
+                    if (c == Symbol.C_PLUS || c == Symbol.C_MINUS || c == Symbol.C_STAR || c == '/'
+                            || c == Symbol.C_PARENTHESE_LEFT || c == 'E' || c == 'e') {
                         arr[i] = Symbol.C_TILDE;
                     }
                 }
@@ -151,7 +152,8 @@ public class Calculator {
                     }
                     opStack.pop();
                 } else {
-                    while (currentOp != Symbol.C_PARENTHESE_LEFT && peekOp != Symbol.C_COMMA && compare(currentOp, peekOp)) {
+                    while (currentOp != Symbol.C_PARENTHESE_LEFT && peekOp != Symbol.C_COMMA
+                            && compare(currentOp, peekOp)) {
                         postfixStack.push(String.valueOf(opStack.pop()));
                         peekOp = opStack.peek();
                     }
@@ -179,7 +181,8 @@ public class Calculator {
      * @return 是否为算术符号
      */
     private boolean isOperator(final char c) {
-        return c == Symbol.C_PLUS || c == Symbol.C_MINUS || c == Symbol.C_STAR || c == '/' || c == Symbol.C_PARENTHESE_LEFT || c == ')' || c == Symbol.C_PERCENT;
+        return c == Symbol.C_PLUS || c == Symbol.C_MINUS || c == Symbol.C_STAR || c == '/'
+                || c == Symbol.C_PARENTHESE_LEFT || c == ')' || c == Symbol.C_PERCENT;
     }
 
     /**
@@ -214,23 +217,23 @@ public class Calculator {
     private BigDecimal calculate(final String firstValue, final String secondValue, final char currentOp) {
         final BigDecimal result;
         switch (currentOp) {
-            case Symbol.C_PLUS:
-                result = MathKit.add(firstValue, secondValue);
-                break;
-            case Symbol.C_MINUS:
-                result = MathKit.sub(firstValue, secondValue);
-                break;
-            case Symbol.C_STAR:
-                result = MathKit.mul(firstValue, secondValue);
-                break;
-            case '/':
-                result = MathKit.div(firstValue, secondValue);
-                break;
-            case Symbol.C_PERCENT:
-                result = MathKit.toBigDecimal(firstValue).remainder(MathKit.toBigDecimal(secondValue));
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + currentOp);
+        case Symbol.C_PLUS:
+            result = MathKit.add(firstValue, secondValue);
+            break;
+        case Symbol.C_MINUS:
+            result = MathKit.sub(firstValue, secondValue);
+            break;
+        case Symbol.C_STAR:
+            result = MathKit.mul(firstValue, secondValue);
+            break;
+        case '/':
+            result = MathKit.div(firstValue, secondValue);
+            break;
+        case Symbol.C_PERCENT:
+            result = MathKit.toBigDecimal(firstValue).remainder(MathKit.toBigDecimal(secondValue));
+            break;
+        default:
+            throw new IllegalStateException("Unexpected value: " + currentOp);
         }
         return result;
     }

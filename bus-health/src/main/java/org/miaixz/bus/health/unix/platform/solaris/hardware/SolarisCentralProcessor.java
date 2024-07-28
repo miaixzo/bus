@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.solaris.hardware;
 
 import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
@@ -75,8 +75,8 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
         long cpuFreq = results[5] == null ? 0L : (long) results[5];
 
         String processorID = getProcessorID(cpuStepping, cpuModel, cpuFamily);
-        return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit,
-                cpuFreq);
+        return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping,
+                processorID, cpu64bit, cpuFreq);
     }
 
     private static List<CentralProcessor.LogicalProcessor> initProcessorCounts2(Map<Integer, Integer> numaNodeMap) {
@@ -87,8 +87,8 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
             int procId = logProcs.size();
             long chipId = result[0] == null ? 0L : (long) result[0];
             long coreId = result[1] == null ? 0L : (long) result[1];
-            CentralProcessor.LogicalProcessor logProc = new CentralProcessor.LogicalProcessor(procId, (int) coreId, (int) chipId,
-                    numaNodeMap.getOrDefault(procId, 0));
+            CentralProcessor.LogicalProcessor logProc = new CentralProcessor.LogicalProcessor(procId, (int) coreId,
+                    (int) chipId, numaNodeMap.getOrDefault(procId, 0));
             logProcs.add(logProc);
         }
         if (logProcs.isEmpty()) {
@@ -234,8 +234,8 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
         }
         String processorID = getProcessorID(cpuStepping, cpuModel, cpuFamily);
 
-        return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit,
-                cpuFreq);
+        return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping,
+                processorID, cpu64bit, cpuFreq);
     }
 
     @Override
@@ -270,8 +270,9 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
                         int procId = logProcs.size(); // 0-indexed
                         String chipId = KstatKit.dataLookupString(ksp, "chip_id");
                         String coreId = KstatKit.dataLookupString(ksp, "core_id");
-                        CentralProcessor.LogicalProcessor logProc = new CentralProcessor.LogicalProcessor(procId, Parsing.parseIntOrDefault(coreId, 0),
-                                Parsing.parseIntOrDefault(chipId, 0), numaNodeMap.getOrDefault(procId, 0));
+                        CentralProcessor.LogicalProcessor logProc = new CentralProcessor.LogicalProcessor(procId,
+                                Parsing.parseIntOrDefault(coreId, 0), Parsing.parseIntOrDefault(chipId, 0),
+                                numaNodeMap.getOrDefault(procId, 0));
                         logProcs.add(logProc);
                     }
                 }
@@ -375,9 +376,12 @@ final class SolarisCentralProcessor extends AbstractCentralProcessor {
                     break;
                 }
                 if (kc.read(ksp)) {
-                    ticks[cpu][CentralProcessor.TickType.IDLE.getIndex()] = KstatKit.dataLookupLong(ksp, "cpu_ticks_idle");
-                    ticks[cpu][CentralProcessor.TickType.SYSTEM.getIndex()] = KstatKit.dataLookupLong(ksp, "cpu_ticks_kernel");
-                    ticks[cpu][CentralProcessor.TickType.USER.getIndex()] = KstatKit.dataLookupLong(ksp, "cpu_ticks_user");
+                    ticks[cpu][CentralProcessor.TickType.IDLE.getIndex()] = KstatKit.dataLookupLong(ksp,
+                            "cpu_ticks_idle");
+                    ticks[cpu][CentralProcessor.TickType.SYSTEM.getIndex()] = KstatKit.dataLookupLong(ksp,
+                            "cpu_ticks_kernel");
+                    ticks[cpu][CentralProcessor.TickType.USER.getIndex()] = KstatKit.dataLookupLong(ksp,
+                            "cpu_ticks_user");
                 }
             }
         }

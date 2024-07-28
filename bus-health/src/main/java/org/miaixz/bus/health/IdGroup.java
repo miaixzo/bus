@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health;
 
 import com.sun.jna.Platform;
@@ -39,8 +39,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 /**
- * Utility class to temporarily cache the userID and group maps in *nix, for
- * parsing process ownership. Cache expires after one minute.
+ * Utility class to temporarily cache the userID and group maps in *nix, for parsing process ownership. Cache expires
+ * after one minute.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -55,12 +55,10 @@ public final class IdGroup {
     private static final Supplier<Map<String, String>> GROUPS_ID_MAP = Memoizer.memoize(IdGroup::getGroupMap,
             TimeUnit.MINUTES.toNanos(5));
 
-    private static final boolean ELEVATED = 0 == Parsing.parseIntOrDefault(Executor.getFirstAnswer("id -u"),
-            -1);
+    private static final boolean ELEVATED = 0 == Parsing.parseIntOrDefault(Executor.getFirstAnswer("id -u"), -1);
 
     /**
-     * Determine whether the current process has elevated permissions such as sudo /
-     * Administrator
+     * Determine whether the current process has elevated permissions such as sudo / Administrator
      *
      * @return True if this process has elevated permissions
      */
@@ -72,8 +70,7 @@ public final class IdGroup {
      * Gets a user from their ID
      *
      * @param userId a user ID
-     * @return a pair containing that user id as the first element and the user name
-     * as the second
+     * @return a pair containing that user id as the first element and the user name as the second
      */
     public static String getUser(String userId) {
         // If value is in cached /etc/passwd return, else do getent passwd uid

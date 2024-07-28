@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.bean.copier;
 
 import org.miaixz.bus.core.bean.desc.BeanDesc;
@@ -46,11 +46,8 @@ import java.util.function.BiPredicate;
 import java.util.function.UnaryOperator;
 
 /**
- * 属性拷贝选项
- * 包括：
- * 1、限制的类或接口，必须为目标对象的实现接口或父类，用于限制拷贝的属性，例如一个类我只想复制其父类的一些属性，就可以将editable设置为父类
- * 2、是否忽略空值，当源对象的值为null时，true: 忽略而不注入此值，false: 注入null
- * 3、忽略的属性列表，设置一个属性列表，不拷贝这些属性值
+ * 属性拷贝选项 包括： 1、限制的类或接口，必须为目标对象的实现接口或父类，用于限制拷贝的属性，例如一个类我只想复制其父类的一些属性，就可以将editable设置为父类 2、是否忽略空值，当源对象的值为null时，true:
+ * 忽略而不注入此值，false: 注入null 3、忽略的属性列表，设置一个属性列表，不拷贝这些属性值
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -60,8 +57,7 @@ public class CopyOptions implements Serializable {
     private static final long serialVersionUID = -1L;
 
     /**
-     * 限制的类或接口，必须为目标对象的实现接口或父类，用于限制拷贝的属性，例如一个类我只想复制其父类的一些属性，就可以将editable设置为父类
-     * 如果目标对象是Map，源对象是Bean，则作用于源对象上
+     * 限制的类或接口，必须为目标对象的实现接口或父类，用于限制拷贝的属性，例如一个类我只想复制其父类的一些属性，就可以将editable设置为父类 如果目标对象是Map，源对象是Bean，则作用于源对象上
      */
     protected Class<?> editable;
     /**
@@ -89,11 +85,10 @@ public class CopyOptions implements Serializable {
      */
     protected boolean override = true;
     /**
-     * 是否自动转换为驼峰方式
-     * 此设置用于解决Bean和Map转换中的匹配问题而设置，并不是一个强制参数。
+     * 是否自动转换为驼峰方式 此设置用于解决Bean和Map转换中的匹配问题而设置，并不是一个强制参数。
      * <ol>
-     *     <li>当map转bean时，如果map中是下划线等非驼峰模式，自动匹配对应的驼峰字段，避免出现字段不拷贝问题。</li>
-     *     <li>当bean转bean时，由于字段命名不规范，使用了非驼峰方式，增加兼容性。</li>
+     * <li>当map转bean时，如果map中是下划线等非驼峰模式，自动匹配对应的驼峰字段，避免出现字段不拷贝问题。</li>
+     * <li>当bean转bean时，由于字段命名不规范，使用了非驼峰方式，增加兼容性。</li>
      * </ol>
      * <p>
      * 但是bean转Map和map转map时，没有使用这个参数，是因为没有匹配的必要，转map不存在无法匹配到的问题，因此此参数无效。
@@ -102,11 +97,9 @@ public class CopyOptions implements Serializable {
     /**
      * 自定义类型转换器，默认使用全局万能转换器转换
      */
-    protected Converter converter = (type, value) ->
-            Convert.convertWithCheck(type, value, null, ignoreError);
+    protected Converter converter = (type, value) -> Convert.convertWithCheck(type, value, null, ignoreError);
     /**
-     * 属性过滤器，断言通过的属性才会被复制
-     * 断言参数中Field为源对象的字段对象,如果源对象为Map，使用目标对象，Object为源对象的对应值
+     * 属性过滤器，断言通过的属性才会被复制 断言参数中Field为源对象的字段对象,如果源对象为Map，使用目标对象，Object为源对象的对应值
      */
     private BiPredicate<Field, Object> propertiesFilter;
 
@@ -115,6 +108,7 @@ public class CopyOptions implements Serializable {
      * 默认规则下普通Bean使用严格的Bean解析，需要同时解析Bean中的字段和方法，然后匹配，自定义后可以只解析getter和setter方法
      */
     protected Class<BeanDesc> beanDescClass;
+
     /**
      * 构造拷贝选项
      */
@@ -153,7 +147,8 @@ public class CopyOptions implements Serializable {
      * @param ignoreProperties 忽略的属性列表，设置一个属性列表，不拷贝这些属性值
      * @return 拷贝选项
      */
-    public static CopyOptions of(final Class<?> editable, final boolean ignoreNullValue, final String... ignoreProperties) {
+    public static CopyOptions of(final Class<?> editable, final boolean ignoreNullValue,
+            final String... ignoreProperties) {
         return new CopyOptions(editable, ignoreNullValue, ignoreProperties);
     }
 
@@ -189,8 +184,7 @@ public class CopyOptions implements Serializable {
     }
 
     /**
-     * 属性过滤器，断言通过的属性才会被复制
-     * {@link BiPredicate#test(Object, Object)}返回{@code true}则属性通过，{@code false}不通过，抛弃之
+     * 属性过滤器，断言通过的属性才会被复制 {@link BiPredicate#test(Object, Object)}返回{@code true}则属性通过，{@code false}不通过，抛弃之
      *
      * @param propertiesFilter 属性过滤器
      * @return CopyOptions
@@ -269,8 +263,7 @@ public class CopyOptions implements Serializable {
     }
 
     /**
-     * 设置拷贝属性的字段映射，用于不同的属性之前拷贝做对应表用
-     * 需要注意的是，当使用ValueProvider作为数据提供者时，这个映射是相反的，即fieldMapping中key为目标Bean的名称，而value是提供者中的key
+     * 设置拷贝属性的字段映射，用于不同的属性之前拷贝做对应表用 需要注意的是，当使用ValueProvider作为数据提供者时，这个映射是相反的，即fieldMapping中key为目标Bean的名称，而value是提供者中的key
      *
      * @param fieldMapping 拷贝属性的字段映射，用于不同的属性之前拷贝做对应表用
      * @return CopyOptions
@@ -285,9 +278,7 @@ public class CopyOptions implements Serializable {
     }
 
     /**
-     * 设置字段属性编辑器，用于自定义属性转换规则，例如驼峰转下划线等
-     * 此转换器只针对源端的字段做转换，请确认转换后与目标端字段一致
-     * 当转换后的字段名为null时忽略这个字段
+     * 设置字段属性编辑器，用于自定义属性转换规则，例如驼峰转下划线等 此转换器只针对源端的字段做转换，请确认转换后与目标端字段一致 当转换后的字段名为null时忽略这个字段
      * 需要注意的是，当使用ValueProvider作为数据提供者时，这个映射是相反的，即参数中key为目标Bean的名称，而返回值是提供者中的key，并且对值的修改无效
      *
      * @param editor 字段属性编辑器，用于自定义属性转换规则，例如驼峰转下划线等
@@ -301,14 +292,13 @@ public class CopyOptions implements Serializable {
     /**
      * 编辑字段值
      *
-     * @param key  字段名
+     * @param key   字段名
      * @param value 字段值
      * @return 编辑后的字段值
      */
     protected MutableEntry<Object, Object> editField(final Object key, final Object value) {
         final MutableEntry<Object, Object> entry = new MutableEntry<>(key, value);
-        return (null != this.fieldEditor) ?
-                this.fieldEditor.apply(entry) : entry;
+        return (null != this.fieldEditor) ? this.fieldEditor.apply(entry) : entry;
     }
 
     /**
@@ -334,12 +324,10 @@ public class CopyOptions implements Serializable {
     }
 
     /**
-     * 设置是否自动转换为驼峰方式
-     * 一般用于map转bean和bean转bean出现非驼峰格式时，在尝试转换失败的情况下，是否二次检查转为驼峰匹配。
-     * 此设置用于解决Bean和Map转换中的匹配问题而设置，并不是一个强制参数。
+     * 设置是否自动转换为驼峰方式 一般用于map转bean和bean转bean出现非驼峰格式时，在尝试转换失败的情况下，是否二次检查转为驼峰匹配。 此设置用于解决Bean和Map转换中的匹配问题而设置，并不是一个强制参数。
      * <ol>
-     *     <li>当map转bean时，如果map中是下划线等非驼峰模式，自动匹配对应的驼峰字段，避免出现字段不拷贝问题。</li>
-     *     <li>当bean转bean时，由于字段命名不规范，使用了非驼峰方式，增加兼容性。</li>
+     * <li>当map转bean时，如果map中是下划线等非驼峰模式，自动匹配对应的驼峰字段，避免出现字段不拷贝问题。</li>
+     * <li>当bean转bean时，由于字段命名不规范，使用了非驼峰方式，增加兼容性。</li>
      * </ol>
      * <p>
      * 但是bean转Map和map转map时，没有使用这个参数，是因为没有匹配的必要，转map不存在无法匹配到的问题，因此此参数无效。
@@ -364,16 +352,14 @@ public class CopyOptions implements Serializable {
     }
 
     /**
-     * 使用自定义转换器转换字段值
-     * 如果自定义转换器为{@code null}，则返回原值。
+     * 使用自定义转换器转换字段值 如果自定义转换器为{@code null}，则返回原值。
      *
      * @param targetType 目标类型
      * @param fieldValue 字段值
      * @return 编辑后的字段值
      */
     protected Object convertField(final Type targetType, final Object fieldValue) {
-        return (null != this.converter) ?
-                this.converter.convert(targetType, fieldValue) : fieldValue;
+        return (null != this.converter) ? this.converter.convert(targetType, fieldValue) : fieldValue;
     }
 
     /**
@@ -388,8 +374,7 @@ public class CopyOptions implements Serializable {
     }
 
     /**
-     * 查找Map对应Bean的名称
-     * 尝试原名称、转驼峰名称、isXxx去掉is的名称
+     * 查找Map对应Bean的名称 尝试原名称、转驼峰名称、isXxx去掉is的名称
      *
      * @param targetPropDescMap 目标bean的属性描述Map
      * @param sKeyStr           键或字段名

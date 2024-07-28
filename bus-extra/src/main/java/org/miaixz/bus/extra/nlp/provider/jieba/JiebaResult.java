@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.nlp.provider.jieba;
 
 import com.huaban.analysis.jieba.SegToken;
@@ -35,8 +35,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Jieba分词结果实现
- * 项目地址：https://github.com/huaban/jieba-analysis
+ * Jieba分词结果实现 项目地址：https://github.com/huaban/jieba-analysis
  *
  * @author Kimi Liu
  * @since Java 17+

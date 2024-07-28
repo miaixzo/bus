@@ -24,14 +24,13 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.setting.format;
 
 import org.miaixz.bus.setting.metric.ini.IniElement;
 
 /**
- * 将字符串值的格式设置为{@link IniElement}
- * 除了CommentElementFormatter之外，所有元素格式化程序都还需要注释元素格式化程序
+ * 将字符串值的格式设置为{@link IniElement} 除了CommentElementFormatter之外，所有元素格式化程序都还需要注释元素格式化程序
  *
  * @author Kimi Liu
  * @since Java 17+

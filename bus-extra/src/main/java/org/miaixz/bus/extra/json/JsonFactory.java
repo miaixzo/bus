@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.json;
 
 import org.miaixz.bus.core.instance.Instances;
@@ -34,8 +34,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 
 /**
- * 用于根据用户引入的json库
- * 自动创建对应的json解析器
+ * 用于根据用户引入的json库 自动创建对应的json解析器
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,8 +51,7 @@ public class JsonFactory {
     }
 
     /**
-     * 根据用户引入的拼音引擎jar，自动创建对应的拼音引擎对象
-     * 推荐创建的引擎单例使用，此方法每次调用会返回新的引擎
+     * 根据用户引入的拼音引擎jar，自动创建对应的拼音引擎对象 推荐创建的引擎单例使用，此方法每次调用会返回新的引擎
      *
      * @return {@link JsonProvider}
      */
@@ -62,7 +60,8 @@ public class JsonFactory {
         if (null == engine) {
             throw new InternalException("No json jar found ! Please add one of it to your project !");
         }
-        Logger.debug("Use [{}] provider as default.", StringKit.removeSuffix(engine.getClass().getSimpleName(), "Provider"));
+        Logger.debug("Use [{}] provider as default.",
+                StringKit.removeSuffix(engine.getClass().getSimpleName(), "Provider"));
         return engine;
     }
 

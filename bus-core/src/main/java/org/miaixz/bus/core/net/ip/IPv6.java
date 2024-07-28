@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.net.ip;
 
 import org.miaixz.bus.core.instance.Instances;
@@ -74,29 +74,25 @@ public class IPv6 {
      */
     public static String bigIntegerToIPv6(final BigInteger bigInteger) {
         try {
-            return InetAddress.getByAddress(
-                    bigInteger.toByteArray()).toString().substring(1);
+            return InetAddress.getByAddress(bigInteger.toByteArray()).toString().substring(1);
         } catch (final UnknownHostException ignore) {
             return null;
         }
     }
 
     /**
-     * 获得本机的IPv6地址列表
-     * 返回的IP列表有序，按照系统设备顺序
+     * 获得本机的IPv6地址列表 返回的IP列表有序，按照系统设备顺序
      *
      * @return IP地址列表 {@link LinkedHashSet}
      */
     public static LinkedHashSet<String> localIps() {
-        final LinkedHashSet<InetAddress> localAddressList = NetKit.localAddressList(
-                t -> t instanceof Inet6Address);
+        final LinkedHashSet<InetAddress> localAddressList = NetKit.localAddressList(t -> t instanceof Inet6Address);
 
         return NetKit.toIpList(localAddressList);
     }
 
     /**
-     * 获取主机名称，一次获取会缓存名称
-     * 注意此方法会触发反向DNS解析，导致阻塞，阻塞时间取决于网络！
+     * 获取主机名称，一次获取会缓存名称 注意此方法会触发反向DNS解析，导致阻塞，阻塞时间取决于网络！
      *
      * @return 主机名称
      */
@@ -133,9 +129,9 @@ public class IPv6 {
      * 获取本机网卡IPv6地址，规则如下：
      *
      * <ul>
-     *     <li>必须非回路（loopback）地址、非局域网地址（siteLocal）、IPv6地址</li>
-     *     <li>多网卡则返回第一个满足条件的地址</li>
-     *     <li>如果无满足要求的地址，调用 {@link InetAddress#getLocalHost()} 获取地址</li>
+     * <li>必须非回路（loopback）地址、非局域网地址（siteLocal）、IPv6地址</li>
+     * <li>多网卡则返回第一个满足条件的地址</li>
+     * <li>如果无满足要求的地址，调用 {@link InetAddress#getLocalHost()} 获取地址</li>
      * </ul>
      *
      * <p>
@@ -152,9 +148,9 @@ public class IPv6 {
      * 获取本机网卡IPv6地址，不使用缓存，规则如下：
      *
      * <ul>
-     *     <li>必须非回路（loopback）地址、非局域网地址（siteLocal）、IPv6地址</li>
-     *     <li>多网卡则返回第一个满足条件的地址</li>
-     *     <li>如果无满足要求的地址，调用 {@link InetAddress#getLocalHost()} 获取地址</li>
+     * <li>必须非回路（loopback）地址、非局域网地址（siteLocal）、IPv6地址</li>
+     * <li>多网卡则返回第一个满足条件的地址</li>
+     * <li>如果无满足要求的地址，调用 {@link InetAddress#getLocalHost()} 获取地址</li>
      * </ul>
      *
      * <p>
@@ -165,15 +161,14 @@ public class IPv6 {
      */
     public static InetAddress getLocalhostDirectly() {
         final LinkedHashSet<InetAddress> localAddressList = NetKit.localAddressList(address ->
-                // 需为IPV6地址
-                address instanceof Inet6Address
-                        // 非loopback地址，::1
-                        && !address.isLoopbackAddress()
-                        // 非地区本地地址，fec0::/10
-                        && !address.isSiteLocalAddress()
-                        // 非链路本地地址，fe80::/10
-                        && !address.isLinkLocalAddress()
-        );
+        // 需为IPV6地址
+        address instanceof Inet6Address
+                // 非loopback地址，::1
+                && !address.isLoopbackAddress()
+                // 非地区本地地址，fec0::/10
+                && !address.isSiteLocalAddress()
+                // 非链路本地地址，fe80::/10
+                && !address.isLinkLocalAddress());
 
         if (CollKit.isNotEmpty(localAddressList)) {
             // 如果存在多网卡，返回首个地址
@@ -194,11 +189,13 @@ public class IPv6 {
 
     /**
      * 规范IPv6地址，转换scope名称为scope data，如：
+     * 
      * <pre>
      *     fe80:0:0:0:894:aeec:f37d:23e1%en0
      *                   |
      *     fe80:0:0:0:894:aeec:f37d:23e1%5
      * </pre>
+     * 
      * 地址后的“%5” 叫做 scope data.
      *
      * @param address IPv6地址

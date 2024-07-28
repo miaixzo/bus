@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric.http;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -39,8 +39,7 @@ import java.io.IOException;
 import java.util.List;
 
 /**
- * Reads HTTP/2运输框架
- * 此实现假设我们没有向对等端发送增加的{@link Http2Settings#getMaxFrameSize frame size设置}。
+ * Reads HTTP/2运输框架 此实现假设我们没有向对等端发送增加的{@link Http2Settings#getMaxFrameSize frame size设置}。
  * 因此，我们希望所有帧的最大长度为{@link Http2#INITIAL_MAX_FRAME_SIZE}。
  *
  * @author Kimi Liu
@@ -64,14 +63,12 @@ public class Http2Reader implements Closeable {
     }
 
     static int readMedium(BufferSource source) throws IOException {
-        return (source.readByte() & 0xff) << 16
-                | (source.readByte() & 0xff) << 8
-                | (source.readByte() & 0xff);
+        return (source.readByte() & 0xff) << 16 | (source.readByte() & 0xff) << 8 | (source.readByte() & 0xff);
     }
 
-    static int lengthWithoutPadding(int length, byte flags, short padding)
-            throws IOException {
-        if ((flags & Http2.FLAG_PADDED) != 0) length--; // Account for reading the padding length.
+    static int lengthWithoutPadding(int length, byte flags, short padding) throws IOException {
+        if ((flags & Http2.FLAG_PADDED) != 0)
+            length--; // Account for reading the padding length.
         if (padding > length) {
             throw Http2.ioException("PROTOCOL_ERROR padding %s > remaining length %s", padding, length);
         }
@@ -102,16 +99,16 @@ public class Http2Reader implements Closeable {
             return false;
         }
 
-        //  0                   1                   2                   3
-        //  0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+        // 0 1 2 3
+        // 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
         // +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
-        // |                 Length (24)                   |
+        // | Length (24) |
         // +---------------+---------------+---------------+
-        // |   Type (8)    |   Flags (8)   |
+        // | Type (8) | Flags (8) |
         // +-+-+-----------+---------------+-------------------------------+
-        // |R|                 Stream Identifier (31)                      |
+        // |R| Stream Identifier (31) |
         // +=+=============================================================+
-        // |                   Frame Payload (0...)                      ...
+        // | Frame Payload (0...) ...
         // +---------------------------------------------------------------+
         int length = readMedium(source);
         if (length < 0 || length > Http2.INITIAL_MAX_FRAME_SIZE) {
@@ -128,51 +125,51 @@ public class Http2Reader implements Closeable {
         }
 
         switch (type) {
-            case Http2.TYPE_DATA:
-                readData(handler, length, flags, streamId);
-                break;
+        case Http2.TYPE_DATA:
+            readData(handler, length, flags, streamId);
+            break;
 
-            case Http2.TYPE_HEADERS:
-                readHeaders(handler, length, flags, streamId);
-                break;
+        case Http2.TYPE_HEADERS:
+            readHeaders(handler, length, flags, streamId);
+            break;
 
-            case Http2.TYPE_PRIORITY:
-                readPriority(handler, length, flags, streamId);
-                break;
+        case Http2.TYPE_PRIORITY:
+            readPriority(handler, length, flags, streamId);
+            break;
 
-            case Http2.TYPE_RST_STREAM:
-                readRstStream(handler, length, flags, streamId);
-                break;
+        case Http2.TYPE_RST_STREAM:
+            readRstStream(handler, length, flags, streamId);
+            break;
 
-            case Http2.TYPE_SETTINGS:
-                readSettings(handler, length, flags, streamId);
-                break;
+        case Http2.TYPE_SETTINGS:
+            readSettings(handler, length, flags, streamId);
+            break;
 
-            case Http2.TYPE_PUSH_PROMISE:
-                readPushPromise(handler, length, flags, streamId);
-                break;
+        case Http2.TYPE_PUSH_PROMISE:
+            readPushPromise(handler, length, flags, streamId);
+            break;
 
-            case Http2.TYPE_PING:
-                readPing(handler, length, flags, streamId);
-                break;
+        case Http2.TYPE_PING:
+            readPing(handler, length, flags, streamId);
+            break;
 
-            case Http2.TYPE_GOAWAY:
-                readGoAway(handler, length, flags, streamId);
-                break;
+        case Http2.TYPE_GOAWAY:
+            readGoAway(handler, length, flags, streamId);
+            break;
 
-            case Http2.TYPE_WINDOW_UPDATE:
-                readWindowUpdate(handler, length, flags, streamId);
-                break;
+        case Http2.TYPE_WINDOW_UPDATE:
+            readWindowUpdate(handler, length, flags, streamId);
+            break;
 
-            default:
-                source.skip(length);
+        default:
+            source.skip(length);
         }
         return true;
     }
 
-    private void readHeaders(Handler handler, int length, byte flags, int streamId)
-            throws IOException {
-        if (streamId == 0) throw Http2.ioException("PROTOCOL_ERROR: TYPE_HEADERS streamId == 0");
+    private void readHeaders(Handler handler, int length, byte flags, int streamId) throws IOException {
+        if (streamId == 0)
+            throw Http2.ioException("PROTOCOL_ERROR: TYPE_HEADERS streamId == 0");
 
         boolean endStream = (flags & Http2.FLAG_END_STREAM) != 0;
 
@@ -190,8 +187,7 @@ public class Http2Reader implements Closeable {
         handler.headers(endStream, streamId, -1, headerBlock);
     }
 
-    private List<Http2Header> readHeaderBlock(int length, short padding, byte flags, int streamId)
-            throws IOException {
+    private List<Http2Header> readHeaderBlock(int length, short padding, byte flags, int streamId) throws IOException {
         continuation.length = continuation.left = length;
         continuation.padding = padding;
         continuation.flags = flags;
@@ -201,9 +197,9 @@ public class Http2Reader implements Closeable {
         return hpackReader.getAndResetHeaderList();
     }
 
-    private void readData(Handler handler, int length, byte flags, int streamId)
-            throws IOException {
-        if (streamId == 0) throw Http2.ioException("PROTOCOL_ERROR: TYPE_DATA streamId == 0");
+    private void readData(Handler handler, int length, byte flags, int streamId) throws IOException {
+        if (streamId == 0)
+            throw Http2.ioException("PROTOCOL_ERROR: TYPE_DATA streamId == 0");
 
         boolean inFinished = (flags & Http2.FLAG_END_STREAM) != 0;
         boolean gzipped = (flags & Http2.FLAG_COMPRESSED) != 0;
@@ -218,10 +214,11 @@ public class Http2Reader implements Closeable {
         source.skip(padding);
     }
 
-    private void readPriority(Handler handler, int length, byte flags, int streamId)
-            throws IOException {
-        if (length != 5) throw Http2.ioException("TYPE_PRIORITY length: %d != 5", length);
-        if (streamId == 0) throw Http2.ioException("TYPE_PRIORITY streamId == 0");
+    private void readPriority(Handler handler, int length, byte flags, int streamId) throws IOException {
+        if (length != 5)
+            throw Http2.ioException("TYPE_PRIORITY length: %d != 5", length);
+        if (streamId == 0)
+            throw Http2.ioException("TYPE_PRIORITY streamId == 0");
         readPriority(handler, streamId);
     }
 
@@ -233,10 +230,11 @@ public class Http2Reader implements Closeable {
         handler.priority(streamId, streamDependency, weight, exclusive);
     }
 
-    private void readRstStream(Handler handler, int length, byte flags, int streamId)
-            throws IOException {
-        if (length != 4) throw Http2.ioException("TYPE_RST_STREAM length: %d != 4", length);
-        if (streamId == 0) throw Http2.ioException("TYPE_RST_STREAM streamId == 0");
+    private void readRstStream(Handler handler, int length, byte flags, int streamId) throws IOException {
+        if (length != 4)
+            throw Http2.ioException("TYPE_RST_STREAM length: %d != 4", length);
+        if (streamId == 0)
+            throw Http2.ioException("TYPE_RST_STREAM streamId == 0");
         int errorCodeInt = source.readInt();
         Http2ErrorCode errorCode = Http2ErrorCode.fromHttp2(errorCodeInt);
         if (null == errorCode) {
@@ -245,55 +243,56 @@ public class Http2Reader implements Closeable {
         handler.rstStream(streamId, errorCode);
     }
 
-    private void readSettings(Handler handler, int length, byte flags, int streamId)
-            throws IOException {
-        if (streamId != 0) throw Http2.ioException("TYPE_SETTINGS streamId != 0");
+    private void readSettings(Handler handler, int length, byte flags, int streamId) throws IOException {
+        if (streamId != 0)
+            throw Http2.ioException("TYPE_SETTINGS streamId != 0");
         if ((flags & Http2.FLAG_ACK) != 0) {
-            if (length != 0) throw Http2.ioException("FRAME_SIZE_ERROR ack frame should be empty!");
+            if (length != 0)
+                throw Http2.ioException("FRAME_SIZE_ERROR ack frame should be empty!");
             handler.ackSettings();
             return;
         }
 
-        if (length % 6 != 0) throw Http2.ioException("TYPE_SETTINGS length %% 6 != 0: %s", length);
+        if (length % 6 != 0)
+            throw Http2.ioException("TYPE_SETTINGS length %% 6 != 0: %s", length);
         Http2Settings settings = new Http2Settings();
         for (int i = 0; i < length; i += 6) {
             int id = source.readShort() & 0xFFFF;
             int value = source.readInt();
 
             switch (id) {
-                case 1: // SETTINGS_HEADER_TABLE_SIZE
-                    break;
-                case 2: // SETTINGS_ENABLE_PUSH
-                    if (value != 0 && value != 1) {
-                        throw Http2.ioException("PROTOCOL_ERROR SETTINGS_ENABLE_PUSH != 0 or 1");
-                    }
-                    break;
-                case 3: // SETTINGS_MAX_CONCURRENT_STREAMS
-                    id = 4; // Renumbered in draft 10.
-                    break;
-                case 4: // SETTINGS_INITIAL_WINDOW_SIZE
-                    id = 7; // Renumbered in draft 10.
-                    if (value < 0) {
-                        throw Http2.ioException("PROTOCOL_ERROR SETTINGS_INITIAL_WINDOW_SIZE > 2^31 - 1");
-                    }
-                    break;
-                case 5: // SETTINGS_MAX_FRAME_SIZE
-                    if (value < Http2.INITIAL_MAX_FRAME_SIZE || value > 16777215) {
-                        throw Http2.ioException("PROTOCOL_ERROR SETTINGS_MAX_FRAME_SIZE: %s", value);
-                    }
-                    break;
-                case 6: // SETTINGS_MAX_HEADER_LIST_SIZE
-                    break; // Advisory only, so ignored.
-                default:
-                    break; // Must ignore setting with unknown id.
+            case 1: // SETTINGS_HEADER_TABLE_SIZE
+                break;
+            case 2: // SETTINGS_ENABLE_PUSH
+                if (value != 0 && value != 1) {
+                    throw Http2.ioException("PROTOCOL_ERROR SETTINGS_ENABLE_PUSH != 0 or 1");
+                }
+                break;
+            case 3: // SETTINGS_MAX_CONCURRENT_STREAMS
+                id = 4; // Renumbered in draft 10.
+                break;
+            case 4: // SETTINGS_INITIAL_WINDOW_SIZE
+                id = 7; // Renumbered in draft 10.
+                if (value < 0) {
+                    throw Http2.ioException("PROTOCOL_ERROR SETTINGS_INITIAL_WINDOW_SIZE > 2^31 - 1");
+                }
+                break;
+            case 5: // SETTINGS_MAX_FRAME_SIZE
+                if (value < Http2.INITIAL_MAX_FRAME_SIZE || value > 16777215) {
+                    throw Http2.ioException("PROTOCOL_ERROR SETTINGS_MAX_FRAME_SIZE: %s", value);
+                }
+                break;
+            case 6: // SETTINGS_MAX_HEADER_LIST_SIZE
+                break; // Advisory only, so ignored.
+            default:
+                break; // Must ignore setting with unknown id.
             }
             settings.set(id, value);
         }
         handler.settings(false, settings);
     }
 
-    private void readPushPromise(Handler handler, int length, byte flags, int streamId)
-            throws IOException {
+    private void readPushPromise(Handler handler, int length, byte flags, int streamId) throws IOException {
         if (streamId == 0) {
             throw Http2.ioException("PROTOCOL_ERROR: TYPE_PUSH_PROMISE streamId == 0");
         }
@@ -305,20 +304,22 @@ public class Http2Reader implements Closeable {
         handler.pushPromise(streamId, promisedStreamId, headerBlock);
     }
 
-    private void readPing(Handler handler, int length, byte flags, int streamId)
-            throws IOException {
-        if (length != 8) throw Http2.ioException("TYPE_PING length != 8: %s", length);
-        if (streamId != 0) throw Http2.ioException("TYPE_PING streamId != 0");
+    private void readPing(Handler handler, int length, byte flags, int streamId) throws IOException {
+        if (length != 8)
+            throw Http2.ioException("TYPE_PING length != 8: %s", length);
+        if (streamId != 0)
+            throw Http2.ioException("TYPE_PING streamId != 0");
         int payload1 = source.readInt();
         int payload2 = source.readInt();
         boolean ack = (flags & Http2.FLAG_ACK) != 0;
         handler.ping(ack, payload1, payload2);
     }
 
-    private void readGoAway(Handler handler, int length, byte flags, int streamId)
-            throws IOException {
-        if (length < 8) throw Http2.ioException("TYPE_GOAWAY length < 8: %s", length);
-        if (streamId != 0) throw Http2.ioException("TYPE_GOAWAY streamId != 0");
+    private void readGoAway(Handler handler, int length, byte flags, int streamId) throws IOException {
+        if (length < 8)
+            throw Http2.ioException("TYPE_GOAWAY length < 8: %s", length);
+        if (streamId != 0)
+            throw Http2.ioException("TYPE_GOAWAY streamId != 0");
         int lastStreamId = source.readInt();
         int errorCodeInt = source.readInt();
         int opaqueDataLength = length - 8;
@@ -333,11 +334,12 @@ public class Http2Reader implements Closeable {
         handler.goAway(lastStreamId, errorCode, debugData);
     }
 
-    private void readWindowUpdate(Handler handler, int length, byte flags, int streamId)
-            throws IOException {
-        if (length != 4) throw Http2.ioException("TYPE_WINDOW_UPDATE length !=4: %s", length);
+    private void readWindowUpdate(Handler handler, int length, byte flags, int streamId) throws IOException {
+        if (length != 4)
+            throw Http2.ioException("TYPE_WINDOW_UPDATE length !=4: %s", length);
         long increment = (source.readInt() & 0x7fffffffL);
-        if (increment == 0) throw Http2.ioException("windowSizeIncrement was 0", increment);
+        if (increment == 0)
+            throw Http2.ioException("windowSizeIncrement was 0", increment);
         handler.windowUpdate(streamId, increment);
     }
 
@@ -347,8 +349,7 @@ public class Http2Reader implements Closeable {
     }
 
     interface Handler {
-        void data(boolean inFinished, int streamId, BufferSource source, int length)
-                throws IOException;
+        void data(boolean inFinished, int streamId, BufferSource source, int length) throws IOException;
 
         /**
          * 创建或更新传入的标头，必要时创建相应的流。触发这个的帧是header和PUSH_PROMISE.
@@ -358,8 +359,7 @@ public class Http2Reader implements Closeable {
          * @param associatedStreamId 触发发送方创建此流的流.
          * @param headerBlock        header信息
          */
-        void headers(boolean inFinished, int streamId, int associatedStreamId,
-                     List<Http2Header> headerBlock);
+        void headers(boolean inFinished, int streamId, int associatedStreamId, List<Http2Header> headerBlock);
 
         void rstStream(int streamId, Http2ErrorCode errorCode);
 
@@ -371,8 +371,7 @@ public class Http2Reader implements Closeable {
         void ackSettings();
 
         /**
-         * 从对等端读取连接级ping,{@code ack}表示这是一个回复,{@code payload1}
-         * 和{@code payload2}中的数据是不透明的二进制，并且没有关于内容的规则
+         * 从对等端读取连接级ping,{@code ack}表示这是一个回复,{@code payload1} 和{@code payload2}中的数据是不透明的二进制，并且没有关于内容的规则
          *
          * @param ack      the ack
          * @param payload1 the payload1
@@ -384,16 +383,14 @@ public class Http2Reader implements Closeable {
          * 同伴告诉我们停止创建流。在新连接上使用{@code ID > lastGoodStreamId}重播流是安全的。
          * 带有{@code ID <= lastGoodStreamId}的正在运行的流只能在新连接上重播，如果它们是幂等的
          *
-         * @param lastGoodStreamId 发送此消息之前处理的最后一个流ID。
-         *                         如果{@code lastGoodStreamId}为零，则该对等点不处理任何帧.
+         * @param lastGoodStreamId 发送此消息之前处理的最后一个流ID。 如果{@code lastGoodStreamId}为零，则该对等点不处理任何帧.
          * @param errorCode        关闭连接的原因.
          * @param debugData        只适用于HTTP/2;要发送的不透明调试数据
          */
         void goAway(int lastGoodStreamId, Http2ErrorCode errorCode, ByteString debugData);
 
         /**
-         * 通知可以在{@code streamId}上发送额外的{@code windowSizeIncrement}字节
-         * 或者在{@code streamId}为零的情况下发送连接.
+         * 通知可以在{@code streamId}上发送额外的{@code windowSizeIncrement}字节 或者在{@code streamId}为零的情况下发送连接.
          *
          * @param streamId            拥有这请求头的流
          * @param windowSizeIncrement 字节
@@ -411,8 +408,7 @@ public class Http2Reader implements Closeable {
         void priority(int streamId, int streamDependency, int weight, boolean exclusive);
 
         /**
-         * HTTP / 2只。接收推送承诺头块
-         * 一个推送承诺包含所有与服务器发起的请求相关的报头，以及一个{@code promise streamid}
+         * HTTP / 2只。接收推送承诺头块 一个推送承诺包含所有与服务器发起的请求相关的报头，以及一个{@code promise streamid}
          * 它将被发送到响应帧。推送承诺帧作为响应的一部分发送到{@code streamId}.
          *
          * @param streamId         客户端发起的流ID。必须是奇数.
@@ -420,23 +416,19 @@ public class Http2Reader implements Closeable {
          * @param requestHeaders   最低限度包括{@code:method}、{@code:scheme}、{@code:authority}和(@code:path}.
          * @throws IOException 异常信息
          */
-        void pushPromise(int streamId, int promisedStreamId, List<Http2Header> requestHeaders)
-                throws IOException;
+        void pushPromise(int streamId, int promisedStreamId, List<Http2Header> requestHeaders) throws IOException;
 
         /**
          * HTTP/2 only. 表示用于连接或客户端发起的流的资源可从不同的网络位置或协议配置获得.
          *
-         * @param streamId 当客户端发起的流ID(奇数)时，此备用服务的起源就是流的起源。当为0时，
-         *                 原点在{@code origin}参数中指定.
-         * @param origin   当出现时，源通常表示为scheme、主机和端口的组合。
-         *                 当为空时，原点是{@code streamId}.
+         * @param streamId 当客户端发起的流ID(奇数)时，此备用服务的起源就是流的起源。当为0时， 原点在{@code origin}参数中指定.
+         * @param origin   当出现时，源通常表示为scheme、主机和端口的组合。 当为空时，原点是{@code streamId}.
          * @param protocol ALPN协议，如{@code h2}.
          * @param host     IP地址或主机名。
          * @param port     与服务相关联的IP端口
          * @param maxAge   这个选项被认为是新鲜的时间(以秒为单位).
          */
-        void alternateService(int streamId, String origin, ByteString protocol, String host, int port,
-                              long maxAge);
+        void alternateService(int streamId, String origin, ByteString protocol, String host, int port, long maxAge);
     }
 
     /**
@@ -461,12 +453,14 @@ public class Http2Reader implements Closeable {
             while (left == 0) {
                 source.skip(padding);
                 padding = 0;
-                if ((flags & Http2.FLAG_END_HEADERS) != 0) return -1;
+                if ((flags & Http2.FLAG_END_HEADERS) != 0)
+                    return -1;
                 readContinuationHeader();
             }
 
             long read = source.read(sink, Math.min(byteCount, left));
-            if (read == -1) return -1;
+            if (read == -1)
+                return -1;
             left -= read;
             return read;
         }
@@ -491,8 +485,10 @@ public class Http2Reader implements Closeable {
                 Logger.warn(Http2.frameLog(true, streamId, length, type, flags));
             }
             streamId = (source.readInt() & 0x7fffffff);
-            if (type != Http2.TYPE_CONTINUATION) throw Http2.ioException("%s != TYPE_CONTINUATION", type);
-            if (streamId != previousStreamId) throw Http2.ioException("TYPE_CONTINUATION streamId changed");
+            if (type != Http2.TYPE_CONTINUATION)
+                throw Http2.ioException("%s != TYPE_CONTINUATION", type);
+            if (streamId != previousStreamId)
+                throw Http2.ioException("TYPE_CONTINUATION streamId changed");
         }
 
     }

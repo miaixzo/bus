@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.data;
 
 import org.miaixz.bus.image.Tag;
@@ -49,8 +49,7 @@ public class Code implements Serializable {
     private String codingSchemeVersion;
     private String codeMeaning;
 
-    public Code(String codeValue, String codingSchemeDesignator,
-                String codingSchemeVersion, String codeMeaning) {
+    public Code(String codeValue, String codingSchemeDesignator, String codingSchemeVersion, String codeMeaning) {
         if (codeValue == null)
             throw new NullPointerException("Missing Code Value");
         if (isURN(codeValue)) {
@@ -70,10 +69,7 @@ public class Code implements Serializable {
 
     public Code(String s) {
         int len = s.length();
-        if (len < 9
-                || s.charAt(0) != '('
-                || s.charAt(len - 2) != '"'
-                || s.charAt(len - 1) != ')')
+        if (len < 9 || s.charAt(0) != '(' || s.charAt(len - 2) != '"' || s.charAt(len - 1) != ')')
             throw new IllegalArgumentException(s);
 
         int endVal = s.indexOf(',');
@@ -96,19 +92,15 @@ public class Code implements Serializable {
     }
 
     public Code(Attributes item) {
-        this(codeValueOf(item),
-                item.getString(Tag.CodingSchemeDesignator, null),
-                item.getString(Tag.CodingSchemeVersion, null),
-                item.getString(Tag.CodeMeaning, NO_CODE_MEANING));
+        this(codeValueOf(item), item.getString(Tag.CodingSchemeDesignator, null),
+                item.getString(Tag.CodingSchemeVersion, null), item.getString(Tag.CodeMeaning, NO_CODE_MEANING));
     }
 
     protected Code() {
     } // needed for JPA
 
     private static String nullifyDCM01(String codingSchemeDesignator, String codingSchemeVersion) {
-        return "01".equals(codingSchemeVersion) && "DCM".equals(codingSchemeDesignator)
-                ? null
-                : codingSchemeVersion;
+        return "01".equals(codingSchemeVersion) && "DCM".equals(codingSchemeDesignator) ? null : codingSchemeVersion;
     }
 
     private static String trimsubstring(String s, int start, int end, boolean empty) {
@@ -125,7 +117,7 @@ public class Code implements Serializable {
         String codeValue;
         return (codeValue = item.getString(Tag.CodeValue)) != null ? codeValue
                 : (codeValue = item.getString(Tag.LongCodeValue)) != null ? codeValue
-                : item.getString(Tag.URNCodeValue);
+                        : item.getString(Tag.URNCodeValue);
     }
 
     private static boolean isURN(String codeValue) {
@@ -166,8 +158,7 @@ public class Code implements Serializable {
             return true;
         if (!(o instanceof Code other))
             return false;
-        return equalsIgnoreMeaning(other)
-                && Objects.equals(codeMeaning, other.getCodeMeaning());
+        return equalsIgnoreMeaning(other) && Objects.equals(codeMeaning, other.getCodeMeaning());
     }
 
     public boolean equalsIgnoreMeaning(Code other) {

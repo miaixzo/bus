@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.secure;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -33,8 +33,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import javax.security.auth.x500.X500Principal;
 
 /**
- * 专有名称(DN)解析器。该解析器只支持从DN中提取字符串值。
- * 它不支持十六进制字符串样式的值.
+ * 专有名称(DN)解析器。该解析器只支持从DN中提取字符串值。 它不支持十六进制字符串样式的值.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -95,8 +94,7 @@ public class DistinguishedNameParser {
 
         }
 
-        if ((end - beg > 4) && (chars[beg + 3] == Symbol.C_DOT)
-                && (chars[beg] == 'O' || chars[beg] == 'o')
+        if ((end - beg > 4) && (chars[beg + 3] == Symbol.C_DOT) && (chars[beg] == 'O' || chars[beg] == 'o')
                 && (chars[beg + 1] == 'I' || chars[beg + 1] == 'i')
                 && (chars[beg + 2] == 'D' || chars[beg + 2] == 'd')) {
             beg += 4;
@@ -185,31 +183,31 @@ public class DistinguishedNameParser {
             }
 
             switch (chars[pos]) {
-                case Symbol.C_PLUS:
-                case Symbol.C_COMMA:
-                case Symbol.C_SEMICOLON:
-                    return new String(chars, beg, end - beg);
-                case Symbol.C_BACKSLASH:
-                    chars[end++] = getEscaped();
-                    pos++;
-                    break;
-                case Symbol.C_SPACE:
-                    cur = end;
+            case Symbol.C_PLUS:
+            case Symbol.C_COMMA:
+            case Symbol.C_SEMICOLON:
+                return new String(chars, beg, end - beg);
+            case Symbol.C_BACKSLASH:
+                chars[end++] = getEscaped();
+                pos++;
+                break;
+            case Symbol.C_SPACE:
+                cur = end;
 
-                    pos++;
+                pos++;
+                chars[end++] = Symbol.C_SPACE;
+
+                for (; pos < length && chars[pos] == Symbol.C_SPACE; pos++) {
                     chars[end++] = Symbol.C_SPACE;
-
-                    for (; pos < length && chars[pos] == Symbol.C_SPACE; pos++) {
-                        chars[end++] = Symbol.C_SPACE;
-                    }
-                    if (pos == length || chars[pos] == Symbol.C_COMMA || chars[pos] == Symbol.C_PLUS
-                            || chars[pos] == Symbol.C_SEMICOLON) {
-                        return new String(chars, beg, cur - beg);
-                    }
-                    break;
-                default:
-                    chars[end++] = chars[pos];
-                    pos++;
+                }
+                if (pos == length || chars[pos] == Symbol.C_COMMA || chars[pos] == Symbol.C_PLUS
+                        || chars[pos] == Symbol.C_SEMICOLON) {
+                    return new String(chars, beg, cur - beg);
+                }
+                break;
+            default:
+                chars[end++] = chars[pos];
+                pos++;
             }
         }
     }
@@ -222,28 +220,28 @@ public class DistinguishedNameParser {
         }
 
         switch (chars[pos]) {
-            case Symbol.C_DOUBLE_QUOTES:
-            case Symbol.C_BACKSLASH:
-            case Symbol.C_COMMA:
-            case Symbol.C_EQUAL:
-            case Symbol.C_PLUS:
-            case Symbol.C_LT:
-            case Symbol.C_GT:
-            case Symbol.C_SHAPE:
-            case Symbol.C_SEMICOLON:
-            case Symbol.C_SPACE:
-            case Symbol.C_STAR:
-            case Symbol.C_PERCENT:
-            case Symbol.C_UNDERLINE:
-                return chars[pos];
-            default:
-                return getUTF8();
+        case Symbol.C_DOUBLE_QUOTES:
+        case Symbol.C_BACKSLASH:
+        case Symbol.C_COMMA:
+        case Symbol.C_EQUAL:
+        case Symbol.C_PLUS:
+        case Symbol.C_LT:
+        case Symbol.C_GT:
+        case Symbol.C_SHAPE:
+        case Symbol.C_SEMICOLON:
+        case Symbol.C_SPACE:
+        case Symbol.C_STAR:
+        case Symbol.C_PERCENT:
+        case Symbol.C_UNDERLINE:
+            return chars[pos];
+        default:
+            return getUTF8();
         }
     }
 
     private char getUTF8() {
         int res = getByte(pos);
-        pos++; //FIXME tmp
+        pos++; // FIXME tmp
 
         if (res < Normal._128) {
             return (char) res;
@@ -270,7 +268,7 @@ public class DistinguishedNameParser {
                 pos++;
 
                 b = getByte(pos);
-                pos++; //FIXME tmp
+                pos++; // FIXME tmp
                 if ((b & 0xC0) != 0x80) {
                     return 0x3F;
                 }
@@ -287,8 +285,8 @@ public class DistinguishedNameParser {
     // The char pair is composed of DN char in
     // specified 'position' and the next char
     // According to BNF syntax:
-    // hexchar    = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
-    //                    / "a" / "b" / "c" / "d" / "e" / "f"
+    // hexchar = DIGIT / "A" / "B" / "C" / "D" / "E" / "F"
+    // / "a" / "b" / "c" / "d" / "e" / "f"
     private int getByte(int position) {
         if (position + 1 >= length) {
             throw new IllegalStateException("Malformed DN: " + dn);
@@ -322,8 +320,7 @@ public class DistinguishedNameParser {
     }
 
     /**
-     * Parses the DN and returns the most significant attribute value for an attribute type, or null
-     * if none found.
+     * Parses the DN and returns the most significant attribute value for an attribute type, or null if none found.
      *
      * @param attributeType attribute type to look for (e.g. "ca")
      */
@@ -347,18 +344,18 @@ public class DistinguishedNameParser {
             }
 
             switch (chars[pos]) {
-                case Symbol.C_DOUBLE_QUOTES:
-                    attValue = quotedAV();
-                    break;
-                case Symbol.C_SHAPE:
-                    attValue = hexAV();
-                    break;
-                case Symbol.C_PLUS:
-                case Symbol.C_COMMA:
-                case Symbol.C_SEMICOLON:
-                    break;
-                default:
-                    attValue = escapedAV();
+            case Symbol.C_DOUBLE_QUOTES:
+                attValue = quotedAV();
+                break;
+            case Symbol.C_SHAPE:
+                attValue = hexAV();
+                break;
+            case Symbol.C_PLUS:
+            case Symbol.C_COMMA:
+            case Symbol.C_SEMICOLON:
+                break;
+            default:
+                attValue = escapedAV();
             }
 
             // Values are ordered from most specific to least specific

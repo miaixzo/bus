@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.hardware.common;
 
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -73,15 +73,8 @@ public abstract class AbstractSoundCard implements SoundCard {
 
     @Override
     public String toString() {
-        String builder = "SoundCard@" +
-                Integer.toHexString(hashCode()) +
-                " [name=" +
-                this.name +
-                ", kernelVersion=" +
-                this.kernelVersion +
-                ", codec=" +
-                this.codec +
-                ']';
+        String builder = "SoundCard@" + Integer.toHexString(hashCode()) + " [name=" + this.name + ", kernelVersion="
+                + this.kernelVersion + ", codec=" + this.codec + ']';
         return builder;
     }
 

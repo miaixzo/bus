@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.http___www_gemedicalsystems_com_it_solutions_bamwallthickness_1_0;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,23 +46,24 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.BAMWallThicknessSessionCompletionFlag:
-                return VR.CS;
-            case PrivateTag.BAMWallThicknessSessionDateTime:
-                return VR.DT;
-            case PrivateTag.BAMWallThicknessFileContent:
-                return VR.OB;
-            case PrivateTag.BAMWallThicknessSessionCreator:
-                return VR.PN;
-            case PrivateTag.BAMWallThicknessFileSequence:
-                return VR.SQ;
-            case PrivateTag.BAMWallThicknessFileName:
-                return VR.ST;
+
+        case PrivateTag.BAMWallThicknessSessionCompletionFlag:
+            return VR.CS;
+        case PrivateTag.BAMWallThicknessSessionDateTime:
+            return VR.DT;
+        case PrivateTag.BAMWallThicknessFileContent:
+            return VR.OB;
+        case PrivateTag.BAMWallThicknessSessionCreator:
+            return VR.PN;
+        case PrivateTag.BAMWallThicknessFileSequence:
+            return VR.SQ;
+        case PrivateTag.BAMWallThicknessFileName:
+            return VR.ST;
         }
         return VR.UN;
     }

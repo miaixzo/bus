@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.CARDIO_D_R__1_0;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,33 +46,34 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.ImageBlankingShape:
-                return VR.CS;
-            case PrivateTag.EdgeEnhancementGain:
-                return VR.FL;
-            case PrivateTag.ImageBlankingLeftVerticalEdge:
-            case PrivateTag.ImageBlankingRightVerticalEdge:
-            case PrivateTag.ImageBlankingUpperHorizontalEdge:
-            case PrivateTag.ImageBlankingLowerHorizontalEdge:
-            case PrivateTag.CenterOfCircularImageBlanking:
-            case PrivateTag.RadiusOfCircularImageBlanking:
-            case PrivateTag.ImageSequenceNumber:
-                return VR.IS;
-            case PrivateTag.AlternateImageSequence:
-            case PrivateTag.EdgeEnhancementSequence:
-                return VR.SQ;
-            case PrivateTag.FileLocation:
-            case PrivateTag.FileSize:
-            case PrivateTag.MaximumImageFrameSize:
-                return VR.UL;
-            case PrivateTag.ConvolutionKernelSize:
-            case PrivateTag.ConvolutionKernelCoefficients:
-                return VR.US;
+
+        case PrivateTag.ImageBlankingShape:
+            return VR.CS;
+        case PrivateTag.EdgeEnhancementGain:
+            return VR.FL;
+        case PrivateTag.ImageBlankingLeftVerticalEdge:
+        case PrivateTag.ImageBlankingRightVerticalEdge:
+        case PrivateTag.ImageBlankingUpperHorizontalEdge:
+        case PrivateTag.ImageBlankingLowerHorizontalEdge:
+        case PrivateTag.CenterOfCircularImageBlanking:
+        case PrivateTag.RadiusOfCircularImageBlanking:
+        case PrivateTag.ImageSequenceNumber:
+            return VR.IS;
+        case PrivateTag.AlternateImageSequence:
+        case PrivateTag.EdgeEnhancementSequence:
+            return VR.SQ;
+        case PrivateTag.FileLocation:
+        case PrivateTag.FileSize:
+        case PrivateTag.MaximumImageFrameSize:
+            return VR.UL;
+        case PrivateTag.ConvolutionKernelSize:
+        case PrivateTag.ConvolutionKernelCoefficients:
+            return VR.US;
         }
         return VR.UN;
     }

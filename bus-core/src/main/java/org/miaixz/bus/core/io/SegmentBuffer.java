@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
@@ -57,7 +57,7 @@ public class SegmentBuffer extends AbstractList<ByteString> implements RandomAcc
     public static SegmentBuffer of(ByteString... byteStrings) {
         if (byteStrings.length == 0) {
             // 没有选择，我们必须总是返回-1，创建一个空集合
-            return new SegmentBuffer(new ByteString[0], new int[]{0, -1});
+            return new SegmentBuffer(new ByteString[0], new int[] { 0, -1 });
         }
 
         // 对在递归构建时需要的字节字符串排序。将排序后的索引映射到调用者的索引
@@ -78,9 +78,10 @@ public class SegmentBuffer extends AbstractList<ByteString> implements RandomAcc
         // 如果调用者提供["abc"， "abcde"]，我们将永远不会返回"abcde"，因为我们一遇到"abc"就返回
         for (int a = 0; a < list.size(); a++) {
             ByteString prefix = list.get(a);
-            for (int b = a + 1; b < list.size(); ) {
+            for (int b = a + 1; b < list.size();) {
                 ByteString byteString = list.get(b);
-                if (!byteString.startsWith(prefix)) break;
+                if (!byteString.startsWith(prefix))
+                    break;
                 if (byteString.size() == prefix.size()) {
                     throw new IllegalArgumentException("duplicate option: " + byteString);
                 }
@@ -108,19 +109,11 @@ public class SegmentBuffer extends AbstractList<ByteString> implements RandomAcc
     }
 
     /**
-     * 构建一个被编码为int数组的trie，trie中的节点有两种类型:SELECT和SCAN
-     * SELECT 节点编码为:
-     * - selectChoiceCount:可供选择的字节数(一个正整数)
-     * - prefixIndex:当前位置的结果索引，如果当前位置本身不是结果，则为-1
-     * - 已排序的selectChoiceCount字节列表，用于匹配输入字符串
-     * - 下一个节点的selectChoiceCount结果索引(>= 0)或偏移量(< 0)的异构列表。
-     * 此列表中的元素对应于前一个列表中的元素。偏移量为负，在使用前必须乘以-1。
-     * SCAN 节点编码为:
-     * - scanByteCount:按顺序匹配的字节数。此计数为负数，在使用之前必须乘以-1。
-     * - prefixIndex:当前位置的结果索引，如果当前位置本身不是结果，则为-1
-     * - 要匹配的scanByteCount字节的列表
-     * - nextStep:下一个节点的结果索引(>= 0)或偏移量(< 0)。偏移量为负，在使用前必须乘以-1。
-     * 当从选项列表中进行选择时，此结构用于改进局部性和性能
+     * 构建一个被编码为int数组的trie，trie中的节点有两种类型:SELECT和SCAN SELECT 节点编码为: - selectChoiceCount:可供选择的字节数(一个正整数) -
+     * prefixIndex:当前位置的结果索引，如果当前位置本身不是结果，则为-1 - 已排序的selectChoiceCount字节列表，用于匹配输入字符串 - 下一个节点的selectChoiceCount结果索引(>=
+     * 0)或偏移量(< 0)的异构列表。 此列表中的元素对应于前一个列表中的元素。偏移量为负，在使用前必须乘以-1。 SCAN 节点编码为: - scanByteCount:按顺序匹配的字节数。此计数为负数，在使用之前必须乘以-1。
+     * - prefixIndex:当前位置的结果索引，如果当前位置本身不是结果，则为-1 - 要匹配的scanByteCount字节的列表 - nextStep:下一个节点的结果索引(>= 0)或偏移量(<
+     * 0)。偏移量为负，在使用前必须乘以-1。 当从选项列表中进行选择时，此结构用于改进局部性和性能
      *
      * @param nodeOffset       节点偏移量
      * @param node             节点信息
@@ -130,17 +123,13 @@ public class SegmentBuffer extends AbstractList<ByteString> implements RandomAcc
      * @param toIndex          查找索引
      * @param indexes          索引信息
      */
-    private static void buildTrieRecursive(
-            long nodeOffset,
-            Buffer node,
-            int byteStringOffset,
-            List<ByteString> byteStrings,
-            int fromIndex,
-            int toIndex,
-            List<Integer> indexes) {
-        if (fromIndex >= toIndex) throw new AssertionError();
+    private static void buildTrieRecursive(long nodeOffset, Buffer node, int byteStringOffset,
+            List<ByteString> byteStrings, int fromIndex, int toIndex, List<Integer> indexes) {
+        if (fromIndex >= toIndex)
+            throw new AssertionError();
         for (int i = fromIndex; i < toIndex; i++) {
-            if (byteStrings.get(i).size() < byteStringOffset) throw new AssertionError();
+            if (byteStrings.get(i).size() < byteStringOffset)
+                throw new AssertionError();
         }
 
         ByteString from = byteStrings.get(fromIndex);
@@ -158,8 +147,7 @@ public class SegmentBuffer extends AbstractList<ByteString> implements RandomAcc
             // 如果有多个字节可供选择，则对SELECT节点进行编码
             int selectChoiceCount = 1;
             for (int i = fromIndex + 1; i < toIndex; i++) {
-                if (byteStrings.get(i - 1).getByte(byteStringOffset)
-                        != byteStrings.get(i).getByte(byteStringOffset)) {
+                if (byteStrings.get(i - 1).getByte(byteStringOffset) != byteStrings.get(i).getByte(byteStringOffset)) {
                     selectChoiceCount++;
                 }
             }
@@ -188,21 +176,14 @@ public class SegmentBuffer extends AbstractList<ByteString> implements RandomAcc
                     }
                 }
 
-                if (rangeStart + 1 == rangeEnd
-                        && byteStringOffset + 1 == byteStrings.get(rangeStart).size()) {
+                if (rangeStart + 1 == rangeEnd && byteStringOffset + 1 == byteStrings.get(rangeStart).size()) {
                     // 结果是一个单一的指数
                     node.writeInt(indexes.get(rangeStart));
                 } else {
                     // 结果是另一个节点
                     node.writeInt((int) (-1 * (childNodesOffset + intCount(childNodes))));
-                    buildTrieRecursive(
-                            childNodesOffset,
-                            childNodes,
-                            byteStringOffset + 1,
-                            byteStrings,
-                            rangeStart,
-                            rangeEnd,
-                            indexes);
+                    buildTrieRecursive(childNodesOffset, childNodes, byteStringOffset + 1, byteStrings, rangeStart,
+                            rangeEnd, indexes);
                 }
 
                 rangeStart = rangeEnd;
@@ -240,14 +221,8 @@ public class SegmentBuffer extends AbstractList<ByteString> implements RandomAcc
                 // 结果是另一个节点
                 Buffer childNodes = new Buffer();
                 node.writeInt((int) (-1 * (childNodesOffset + intCount(childNodes))));
-                buildTrieRecursive(
-                        childNodesOffset,
-                        childNodes,
-                        byteStringOffset + scanByteCount,
-                        byteStrings,
-                        fromIndex,
-                        toIndex,
-                        indexes);
+                buildTrieRecursive(childNodesOffset, childNodes, byteStringOffset + scanByteCount, byteStrings,
+                        fromIndex, toIndex, indexes);
                 node.write(childNodes, childNodes.size());
             }
         }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.bean.desc;
 
 import org.miaixz.bus.core.convert.Convert;
@@ -64,8 +64,7 @@ public class PropDesc {
     protected Method setter;
 
     /**
-     * 构造
-     * Getter和Setter方法设置为默认可访问
+     * 构造 Getter和Setter方法设置为默认可访问
      *
      * @param field  字段
      * @param getter get方法
@@ -77,8 +76,7 @@ public class PropDesc {
     }
 
     /**
-     * 构造
-     * Getter和Setter方法设置为默认可访问
+     * 构造 Getter和Setter方法设置为默认可访问
      *
      * @param fieldName 字段名
      * @param getter    get方法
@@ -118,8 +116,7 @@ public class PropDesc {
     }
 
     /**
-     * 获得字段类型
-     * 先获取字段的类型，如果字段不存在，则获取Getter方法的返回类型，否则获取Setter的第一个参数类型
+     * 获得字段类型 先获取字段的类型，如果字段不存在，则获取Getter方法的返回类型，否则获取Setter的第一个参数类型
      *
      * @return 字段类型
      */
@@ -131,8 +128,7 @@ public class PropDesc {
     }
 
     /**
-     * 获得字段类型
-     * 先获取字段的类型，如果字段不存在，则获取Getter方法的返回类型，否则获取Setter的第一个参数类型
+     * 获得字段类型 先获取字段的类型，如果字段不存在，则获取Getter方法的返回类型，否则获取Setter的第一个参数类型
      *
      * @return 字段类型
      */
@@ -183,9 +179,8 @@ public class PropDesc {
     }
 
     /**
-     * 获取属性值
-     * 首先调用字段对应的Getter方法获取值，如果Getter方法不存在，则判断字段如果为public，则直接获取字段值
-     * 此方法不检查任何注解，使用前需调用 {@link #isReadable(boolean)} 检查是否可读
+     * 获取属性值 首先调用字段对应的Getter方法获取值，如果Getter方法不存在，则判断字段如果为public，则直接获取字段值 此方法不检查任何注解，使用前需调用 {@link #isReadable(boolean)}
+     * 检查是否可读
      *
      * @param bean Bean对象
      * @return 字段值
@@ -206,8 +201,7 @@ public class PropDesc {
     }
 
     /**
-     * 获取属性值，自动转换属性值类型
-     * 首先调用字段对应的Getter方法获取值，如果Getter方法不存在，则判断字段如果为public，则直接获取字段值
+     * 获取属性值，自动转换属性值类型 首先调用字段对应的Getter方法获取值，如果Getter方法不存在，则判断字段如果为public，则直接获取字段值
      *
      * @param bean        Bean对象
      * @param targetType  返回属性值需要转换的类型，null表示不转换
@@ -255,9 +249,8 @@ public class PropDesc {
     }
 
     /**
-     * 设置Bean的字段值
-     * 首先调用字段对应的Setter方法，如果Setter方法不存在，则判断字段如果为public，则直接赋值字段值
-     * 此方法不检查任何注解，使用前需调用 {@link #isWritable(boolean)} 检查是否可写
+     * 设置Bean的字段值 首先调用字段对应的Setter方法，如果Setter方法不存在，则判断字段如果为public，则直接赋值字段值 此方法不检查任何注解，使用前需调用 {@link #isWritable(boolean)}
+     * 检查是否可写
      *
      * @param bean  Bean对象
      * @param value 值，必须与字段值类型匹配
@@ -281,7 +274,8 @@ public class PropDesc {
      * @param ignoreError 是否忽略错误，包括转换错误和注入错误
      * @return this
      */
-    public PropDesc setValue(final Object bean, final Object value, final boolean ignoreNull, final boolean ignoreError) {
+    public PropDesc setValue(final Object bean, final Object value, final boolean ignoreNull,
+            final boolean ignoreError) {
         return setValue(bean, value, ignoreNull, ignoreError, true);
     }
 
@@ -295,7 +289,8 @@ public class PropDesc {
      * @param override    是否覆盖目标值，如果不覆盖，会先读取bean的值，{@code null}则写，否则忽略。如果覆盖，则不判断直接写
      * @return this
      */
-    public PropDesc setValue(final Object bean, Object value, final boolean ignoreNull, final boolean ignoreError, final boolean override) {
+    public PropDesc setValue(final Object bean, Object value, final boolean ignoreNull, final boolean ignoreError,
+            final boolean override) {
         if (null == value && ignoreNull) {
             return this;
         }
@@ -330,12 +325,8 @@ public class PropDesc {
 
     @Override
     public String toString() {
-        return "PropDesc{" +
-                "field=" + field +
-                ", fieldName=" + fieldName +
-                ", getter=" + getter +
-                ", setter=" + setter +
-                '}';
+        return "PropDesc{" + "field=" + field + ", fieldName=" + fieldName + ", getter=" + getter + ", setter=" + setter
+                + '}';
     }
 
     /**
@@ -376,6 +367,7 @@ public class PropDesc {
 
     /**
      * 检查字段是否被忽略写，通过{@link Ignore} 注解完成，规则为：
+     * 
      * <pre>
      *     1. 在字段上有{@link Ignore} 注解
      *     2. 在setXXX方法上有{@link Ignore} 注解
@@ -384,12 +376,12 @@ public class PropDesc {
      * @return 是否忽略写
      */
     private boolean isIgnoreSet() {
-        return AnnoKit.hasAnnotation(this.field, Ignore.class)
-                || AnnoKit.hasAnnotation(this.setter, Ignore.class);
+        return AnnoKit.hasAnnotation(this.field, Ignore.class) || AnnoKit.hasAnnotation(this.setter, Ignore.class);
     }
 
     /**
      * 检查字段是否被忽略读，通过{@link Ignore} 注解完成，规则为：
+     * 
      * <pre>
      *     1. 在字段上有{@link Ignore} 注解
      *     2. 在getXXX方法上有{@link Ignore} 注解
@@ -398,8 +390,7 @@ public class PropDesc {
      * @return 是否忽略读
      */
     private boolean isIgnoreGet() {
-        return AnnoKit.hasAnnotation(this.field, Ignore.class)
-                || AnnoKit.hasAnnotation(this.getter, Ignore.class);
+        return AnnoKit.hasAnnotation(this.field, Ignore.class) || AnnoKit.hasAnnotation(this.getter, Ignore.class);
     }
 
     /**

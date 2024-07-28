@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.hl7.net;
 
 import org.miaixz.bus.image.metric.hl7.MLLPConnection;
@@ -45,8 +45,7 @@ public class HL7Connection implements Closeable {
     public HL7Connection(HL7Application hl7Application, MLLPConnection mllpConnection) {
         this.hl7Application = hl7Application;
         this.mllpConnection = mllpConnection;
-        this.monitor = hl7Application.getDevice()
-                .getDeviceExtensionNotNull(HL7DeviceExtension.class)
+        this.monitor = hl7Application.getDevice().getDeviceExtensionNotNull(HL7DeviceExtension.class)
                 .getHL7ConnectionMonitor();
     }
 

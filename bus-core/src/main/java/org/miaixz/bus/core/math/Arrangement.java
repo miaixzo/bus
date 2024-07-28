@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.math;
 
 import org.miaixz.bus.core.xyz.ArrayKit;
@@ -36,8 +36,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 排列A(n, m)
- * 排列组合相关类 参考：<a href="http://cgs1999.iteye.com/blog/2327664">http://cgs1999.iteye.com/blog/2327664</a>
+ * 排列A(n, m) 排列组合相关类 参考：<a href="http://cgs1999.iteye.com/blog/2327664">http://cgs1999.iteye.com/blog/2327664</a>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -130,15 +129,15 @@ public class Arrangement implements Serializable {
     }
 
     /**
-     * 排列选择
-     * 排列方式为先从数据数组中取出一个元素，再把剩余的元素作为新的基数，依次列推，直到选择到足够的元素
+     * 排列选择 排列方式为先从数据数组中取出一个元素，再把剩余的元素作为新的基数，依次列推，直到选择到足够的元素
      *
      * @param datas       选择的基数
      * @param resultList  前面（resultIndex-1）个的排列结果
      * @param resultIndex 选择索引，从0开始
      * @param result      最终结果
      */
-    private void select(final String[] datas, final String[] resultList, final int resultIndex, final List<String[]> result) {
+    private void select(final String[] datas, final String[] resultList, final int resultIndex,
+            final List<String[]> result) {
         if (resultIndex >= resultList.length) { // 全部选择完时，输出排列结果
             if (!result.contains(resultList)) {
                 result.add(Arrays.copyOf(resultList, resultList.length));

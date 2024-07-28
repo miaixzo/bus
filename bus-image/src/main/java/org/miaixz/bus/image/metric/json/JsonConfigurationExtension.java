@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.json;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -60,8 +60,8 @@ public class JsonConfigurationExtension {
         return false;
     }
 
-    public boolean loadApplicationEntityExtension(Device device, ApplicationEntity ae, JSONReader reader, ConfigurationDelegate config)
-            throws InternalException {
+    public boolean loadApplicationEntityExtension(Device device, ApplicationEntity ae, JSONReader reader,
+            ConfigurationDelegate config) throws InternalException {
         return false;
     }
 

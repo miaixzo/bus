@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_SP_DXMG_WH_AWS_1;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,35 +46,36 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag._0051_xx10_:
-            case PrivateTag._0051_xx20_:
-            case PrivateTag._0051_xx32_:
-            case PrivateTag._0051_xx37_:
-            case PrivateTag.PrimaryPositionerScanArc:
-            case PrivateTag.SecondaryPositionerScanArc:
-            case PrivateTag.PrimaryPositionerScanStartAngle:
-            case PrivateTag.SecondaryPositionerScanStartAngle:
-            case PrivateTag.PrimaryPositionerIncrement:
-            case PrivateTag.SecondaryPositionerIncrement:
-                return VR.DS;
-            case PrivateTag._0051_xx21_:
-            case PrivateTag.ProjectionViewDisplayString:
-                return VR.LO;
-            case PrivateTag.ReasonForTheRequestedProcedure:
-                return VR.SH;
-            case PrivateTag.DerivationDescription:
-                return VR.ST;
-            case PrivateTag._0051_xx50_:
-                return VR.UI;
-            case PrivateTag.AECCoordinates:
-                return VR.UL;
-            case PrivateTag.AECCoordinatesSize:
-                return VR.US;
+
+        case PrivateTag._0051_xx10_:
+        case PrivateTag._0051_xx20_:
+        case PrivateTag._0051_xx32_:
+        case PrivateTag._0051_xx37_:
+        case PrivateTag.PrimaryPositionerScanArc:
+        case PrivateTag.SecondaryPositionerScanArc:
+        case PrivateTag.PrimaryPositionerScanStartAngle:
+        case PrivateTag.SecondaryPositionerScanStartAngle:
+        case PrivateTag.PrimaryPositionerIncrement:
+        case PrivateTag.SecondaryPositionerIncrement:
+            return VR.DS;
+        case PrivateTag._0051_xx21_:
+        case PrivateTag.ProjectionViewDisplayString:
+            return VR.LO;
+        case PrivateTag.ReasonForTheRequestedProcedure:
+            return VR.SH;
+        case PrivateTag.DerivationDescription:
+            return VR.ST;
+        case PrivateTag._0051_xx50_:
+            return VR.UI;
+        case PrivateTag.AECCoordinates:
+            return VR.UL;
+        case PrivateTag.AECCoordinatesSize:
+            return VR.US;
         }
         return VR.UN;
     }

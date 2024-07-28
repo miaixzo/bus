@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.plugin.httpv;
 
 import org.miaixz.bus.core.lang.MediaType;
@@ -113,8 +113,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * 标签匹配
-     * 判断任务标签与指定的标签是否匹配（包含指定的标签）
+     * 标签匹配 判断任务标签与指定的标签是否匹配（包含指定的标签）
      *
      * @param tag 标签
      * @return 是否匹配
@@ -145,8 +144,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * 设置在发生异常时不向上抛出，设置后：
-     * 异步请求可以在异常回调内捕获异常，同步请求在返回结果中找到该异常
+     * 设置在发生异常时不向上抛出，设置后： 异步请求可以在异常回调内捕获异常，同步请求在返回结果中找到该异常
      *
      * @return this 实例
      */
@@ -177,8 +175,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
     /**
      * @param tag 标签
-     * @return this 实例
-     * 为请求任务添加标签
+     * @return this 实例 为请求任务添加标签
      */
     public C tag(String tag) {
         if (null != tag) {
@@ -194,8 +191,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
     /**
      * @param charset 编码格式
-     * @return CoverHttp 实例
-     * 设置该请求的编码格式
+     * @return CoverHttp 实例 设置该请求的编码格式
      */
     public C charset(Charset charset) {
         if (null != charset) {
@@ -206,8 +202,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
     /**
      * @param type 请求类型
-     * @return CoverHttp  实例
-     * 设置请求体的类型，如：form、json、xml、protobuf 等
+     * @return CoverHttp 实例 设置请求体的类型，如：form、json、xml、protobuf 等
      */
     public C bodyType(String type) {
         if (null != type) {
@@ -271,8 +266,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * 设置Range头信息
-     * 表示接收报文体时跳过的字节数，用于断点续传
+     * 设置Range头信息 表示接收报文体时跳过的字节数，用于断点续传
      *
      * @param rangeStart 表示从 rangeStart 个字节处开始接收，通常是已经下载的字节数，即上次的断点）
      * @return this 实例
@@ -282,8 +276,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * 设置Range头信息
-     * 设置接收报文体时接收的范围，用于分块下载
+     * 设置Range头信息 设置接收报文体时接收的范围，用于分块下载
      *
      * @param rangeStart 表示从 rangeStart 个字节处开始接收
      * @param rangeEnd   表示接收到 rangeEnd 个字节处
@@ -307,8 +300,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * 设置进度回调的步进字节，默认 8K（8192）
-     * 表示每接收 stepBytes 个字节，执行一次进度回调
+     * 设置进度回调的步进字节，默认 8K（8192） 表示每接收 stepBytes 个字节，执行一次进度回调
      *
      * @param stepBytes 步进字节
      * @return this 实例
@@ -319,8 +311,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     }
 
     /**
-     * 设置进度回调的步进比例
-     * 表示每接收 stepRate 比例，执行一次进度回调
+     * 设置进度回调的步进比例 表示每接收 stepRate 比例，执行一次进度回调
      *
      * @param stepRate 步进比例
      * @return this 实例
@@ -543,8 +534,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
     protected Request prepareRequest(String method) {
         boolean bodyCanUsed = HTTP.permitsRequestBody(method);
         assertNotConflict(!bodyCanUsed);
-        Request.Builder builder = new Request.Builder()
-                .url(buildUrlPath());
+        Request.Builder builder = new Request.Builder().url(buildUrlPath());
         buildHeaders(builder);
         if (bodyCanUsed) {
             RequestBody reqBody = buildRequestBody();
@@ -556,9 +546,8 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
                 if (stepBytes <= 0) {
                     stepBytes = Progress.DEFAULT_STEP_BYTES;
                 }
-                reqBody = new ProgressBody(reqBody, onProcess,
-                        httpv.executor().getExecutor(processOnIO),
-                        contentLength, stepBytes);
+                reqBody = new ProgressBody(reqBody, onProcess, httpv.executor().getExecutor(processOnIO), contentLength,
+                        stepBytes);
             }
             builder.method(method, reqBody);
         } else {
@@ -605,7 +594,8 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
 
     private RequestBody buildRequestBody() {
         if (null != files) {
-            MultipartBody.Builder builder = new MultipartBody.Builder().setType(MediaType.APPLICATION_FORM_URLENCODED_TYPE);
+            MultipartBody.Builder builder = new MultipartBody.Builder()
+                    .setType(MediaType.APPLICATION_FORM_URLENCODED_TYPE);
             if (null != bodyParams) {
                 for (String name : bodyParams.keySet()) {
                     byte[] value = bodyParams.get(name).getBytes(charset);
@@ -649,8 +639,8 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
             byte[] body = object instanceof byte[] ? (byte[]) object : ((String) object).getBytes(charset);
             return RequestBody.create(MediaType.valueOf(mediaType + "; charset=" + charset.name()), body);
         }
-        CoverTasks.Executor.Data<byte[]> data = httpv.executor()
-                .doMsgConvert(bodyType, (Convertor c) -> c.serialize(object, dateFormat, charset));
+        CoverTasks.Executor.Data<byte[]> data = httpv.executor().doMsgConvert(bodyType,
+                (Convertor c) -> c.serialize(object, dateFormat, charset));
         return RequestBody.create(MediaType.valueOf(data.mediaType + "; charset=" + charset.name()), data.data);
     }
 
@@ -665,12 +655,14 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
                 if (url.contains(target)) {
                     url = url.replace(target, pathParams.get(name));
                 } else {
-                    throw new InternalException("pathParameter [ " + name + " ] Does not exist in url [ " + urlPath + " ]");
+                    throw new InternalException(
+                            "pathParameter [ " + name + " ] Does not exist in url [ " + urlPath + " ]");
                 }
             }
         }
         if (url.matches(PATH_PARAM_REGEX)) {
-            throw new InternalException("There is no setting for pathParameter in url, you must first call addPathParam to set it!");
+            throw new InternalException(
+                    "There is no setting for pathParameter in url, you must first call addPathParam to set it!");
         }
         if (null != urlParams) {
             url = buildUrl(url.trim());
@@ -713,10 +705,12 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
         }
         if (ObjectKit.isNotEmpty(requestBody)) {
             if (MapKit.isNotEmpty(bodyParams)) {
-                throw new InternalException("The methods addBodyPara and setBodyPara cannot be called at the same time!");
+                throw new InternalException(
+                        "The methods addBodyPara and setBodyPara cannot be called at the same time!");
             }
             if (MapKit.isNotEmpty(files)) {
-                throw new InternalException("The methods addFilePara and setBodyPara cannot be called at the same time!");
+                throw new InternalException(
+                        "The methods addFilePara and setBodyPara cannot be called at the same time!");
             }
         }
     }
@@ -727,8 +721,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
      */
     protected boolean timeoutAwait(CountDownLatch latch) {
         try {
-            return latch.await(httpv.preprocTimeoutMillis(),
-                    TimeUnit.MILLISECONDS);
+            return latch.await(httpv.preprocTimeoutMillis(), TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             throw new InternalException("TimeOut " + CoverResult.State.TIMEOUT);
         }
@@ -879,13 +872,11 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
             }
             IOException e = result.getError();
             CoverResult.State state = result.getState();
-            if (null != e && state != CoverResult.State.CANCELED
-                    && !nothrow) {
+            if (null != e && state != CoverResult.State.CANCELED && !nothrow) {
                 throw new InternalException("Abnormal execution", e);
             }
             return result;
         }
-
 
         static class SyncHttpCall implements Cancelable {
 
@@ -1055,8 +1046,7 @@ public abstract class CoverHttp<C extends CoverHttp<?>> implements Cancelable {
                     onCallback(httpCall, result, () -> {
                         CoverTasks.Executor executor = httpv.executor();
                         executor.executeOnComplete(Async.this, onComplete, state, cOnIO);
-                        if (!executor.executeOnException(Async.this, onException, error, eOnIO)
-                                && !nothrow) {
+                        if (!executor.executeOnException(Async.this, onException, error, eOnIO) && !nothrow) {
                             throw new InternalException(error.getMessage(), error);
                         }
                     });

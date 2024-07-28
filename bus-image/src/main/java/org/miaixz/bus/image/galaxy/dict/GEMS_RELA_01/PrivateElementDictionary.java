@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.GEMS_RELA_01;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,58 +46,59 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.TableStartLocation:
-            case PrivateTag.RotationFromSourceXRot:
-            case PrivateTag.RotationFromSourceYRot:
-            case PrivateTag.RotationFromSourceZRot:
-            case PrivateTag.TaggingFlipAngle:
-            case PrivateTag.TaggingOrientation:
-            case PrivateTag.TagSpacing:
-            case PrivateTag.RTIATimer:
-            case PrivateTag.Fps:
-            case PrivateTag.AutoWindowLevelAlpha:
-            case PrivateTag.AutoWindowLevelBeta:
-            case PrivateTag.AutoWindowLevelWindow:
-            case PrivateTag.AutoWindowLevelLevel:
-                return VR.DS;
-            case PrivateTag.BiopsyTLocation:
-            case PrivateTag.BiopsyRefLocation:
-                return VR.FL;
-            case PrivateTag.AnatomicalReferenceForScout:
-                return VR.LO;
-            case PrivateTag._0021_xx70_:
-            case PrivateTag._0021_xx71_:
-                return VR.LT;
-            case PrivateTag.GenesisVersionNow:
-            case PrivateTag.ImagePosition:
-            case PrivateTag.ImageOrientation:
-                return VR.SH;
-            case PrivateTag.Num3DSlabs:
-            case PrivateTag.LocsPer3DSlab:
-            case PrivateTag.Overlaps:
-            case PrivateTag.ImageFiltering:
-            case PrivateTag.DiffusionDirection:
-                return VR.SL;
-            case PrivateTag.SeriesFromWhichPrescribed:
-            case PrivateTag._0021_xx16_:
-            case PrivateTag.ImageFromWhichPrescribed:
-            case PrivateTag.ScreenFormat:
-            case PrivateTag.LocationsInAcquisition:
-            case PrivateTag.GraphicallyPrescribed:
-            case PrivateTag.TubeFocalSpotPosition:
-            case PrivateTag.BiopsyPosition:
-                return VR.SS;
-            case PrivateTag.SeriesRecordChecksum:
-            case PrivateTag.AcqReconRecordChecksum:
-                return VR.UL;
-            case PrivateTag._0021_xx15_:
-            case PrivateTag._0021_xx4E_:
-                return VR.US;
+
+        case PrivateTag.TableStartLocation:
+        case PrivateTag.RotationFromSourceXRot:
+        case PrivateTag.RotationFromSourceYRot:
+        case PrivateTag.RotationFromSourceZRot:
+        case PrivateTag.TaggingFlipAngle:
+        case PrivateTag.TaggingOrientation:
+        case PrivateTag.TagSpacing:
+        case PrivateTag.RTIATimer:
+        case PrivateTag.Fps:
+        case PrivateTag.AutoWindowLevelAlpha:
+        case PrivateTag.AutoWindowLevelBeta:
+        case PrivateTag.AutoWindowLevelWindow:
+        case PrivateTag.AutoWindowLevelLevel:
+            return VR.DS;
+        case PrivateTag.BiopsyTLocation:
+        case PrivateTag.BiopsyRefLocation:
+            return VR.FL;
+        case PrivateTag.AnatomicalReferenceForScout:
+            return VR.LO;
+        case PrivateTag._0021_xx70_:
+        case PrivateTag._0021_xx71_:
+            return VR.LT;
+        case PrivateTag.GenesisVersionNow:
+        case PrivateTag.ImagePosition:
+        case PrivateTag.ImageOrientation:
+            return VR.SH;
+        case PrivateTag.Num3DSlabs:
+        case PrivateTag.LocsPer3DSlab:
+        case PrivateTag.Overlaps:
+        case PrivateTag.ImageFiltering:
+        case PrivateTag.DiffusionDirection:
+            return VR.SL;
+        case PrivateTag.SeriesFromWhichPrescribed:
+        case PrivateTag._0021_xx16_:
+        case PrivateTag.ImageFromWhichPrescribed:
+        case PrivateTag.ScreenFormat:
+        case PrivateTag.LocationsInAcquisition:
+        case PrivateTag.GraphicallyPrescribed:
+        case PrivateTag.TubeFocalSpotPosition:
+        case PrivateTag.BiopsyPosition:
+            return VR.SS;
+        case PrivateTag.SeriesRecordChecksum:
+        case PrivateTag.AcqReconRecordChecksum:
+            return VR.UL;
+        case PrivateTag._0021_xx15_:
+        case PrivateTag._0021_xx4E_:
+            return VR.US;
         }
         return VR.UN;
     }

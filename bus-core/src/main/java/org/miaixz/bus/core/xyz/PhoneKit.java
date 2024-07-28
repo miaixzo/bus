@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.regex.Pattern;
@@ -34,9 +34,9 @@ import org.miaixz.bus.core.lang.Validator;
 /**
  * 电话号码工具类，包括：
  * <ul>
- *     <li>手机号码</li>
- *     <li>400、800号码</li>
- *     <li>座机号码</li>
+ * <li>手机号码</li>
+ * <li>400、800号码</li>
+ * <li>座机号码</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -115,7 +115,7 @@ public class PhoneKit {
     }
 
     /**
-     * 隐藏手机号前7位  替换字符为"*"
+     * 隐藏手机号前7位 替换字符为"*"
      *
      * @param phone 手机号码
      * @return 替换后的字符串
@@ -125,7 +125,7 @@ public class PhoneKit {
     }
 
     /**
-     * 隐藏手机号中间4位  替换字符为"*"
+     * 隐藏手机号中间4位 替换字符为"*"
      *
      * @param phone 手机号码
      * @return 替换后的字符串
@@ -135,7 +135,7 @@ public class PhoneKit {
     }
 
     /**
-     * 隐藏手机号最后4位  替换字符为"*"
+     * 隐藏手机号最后4位 替换字符为"*"
      *
      * @param phone 手机号码
      * @return 替换后的字符串

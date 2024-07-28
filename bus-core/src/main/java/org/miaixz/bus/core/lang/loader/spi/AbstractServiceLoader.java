@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.loader.spi;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -66,8 +66,8 @@ public abstract class AbstractServiceLoader<S> implements ServiceLoader<S> {
      * @param classLoader  自定义类加载器, {@code null}表示使用默认当前的类加载器
      * @param charset      编码，默认UTF-8
      */
-    public AbstractServiceLoader(final String pathPrefix, final Class<S> serviceClass,
-                                 final ClassLoader classLoader, final Charset charset) {
+    public AbstractServiceLoader(final String pathPrefix, final Class<S> serviceClass, final ClassLoader classLoader,
+            final Charset charset) {
         this.pathPrefix = StringKit.addSuffixIfNot(pathPrefix, Symbol.SLASH);
         this.serviceClass = serviceClass;
         this.classLoader = classLoader;

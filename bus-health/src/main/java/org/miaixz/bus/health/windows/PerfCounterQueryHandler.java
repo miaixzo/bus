@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows;
 
 import org.miaixz.bus.core.lang.annotation.NotThreadSafe;
@@ -38,9 +38,8 @@ import java.util.Locale;
 import java.util.Map;
 
 /**
- * Utility to handle Performance Counter Queries
- * This class is not thread safe. Each query handler instance should only be used in a single thread, preferably in a
- * try-with-resources block.
+ * Utility to handle Performance Counter Queries This class is not thread safe. Each query handler instance should only
+ * be used in a single thread, preferably in a try-with-resources block.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -125,7 +124,7 @@ public final class PerfCounterQueryHandler implements AutoCloseable {
      * Update all counters on this query.
      *
      * @return The timestamp for the update of all the counters, in milliseconds since the epoch, or 0 if the update
-     * failed
+     *         failed
      */
     public long updateQuery() {
         if (this.queryHandle == null) {

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.driver.wmi;
 
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
@@ -82,12 +82,12 @@ public final class Win32ProcessCached {
      *                  the time this process was previously queried, the prior entry will be deemed invalid and the
      *                  cache refreshed.
      * @return The command line of the specified process. If the command line is cached from a previous call and the
-     * start time is prior to the time it was cached, this method will quickly return the cached value.
-     * Otherwise, will refresh the cache with all running processes prior to returning, which may incur some
-     * latency.
-     * <p>
-     * May return a command line from the cache even after a process has terminated. Otherwise will return the
-     * empty string.
+     *         start time is prior to the time it was cached, this method will quickly return the cached value.
+     *         Otherwise, will refresh the cache with all running processes prior to returning, which may incur some
+     *         latency.
+     *         <p>
+     *         May return a command line from the cache even after a process has terminated. Otherwise will return the
+     *         empty string.
      */
     public String getCommandLine(int processId, long startTime) {
         // We could use synchronized method but this is more clear

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pay;
 
 import org.bouncycastle.asn1.gm.GMObjectIdentifiers;
@@ -141,8 +141,8 @@ public class Builder {
      */
     public static String sm2SignWithSm3(PrivateKey privateKey, String content) throws Exception {
         // 生成SM2sign with sm3 签名验签算法实例
-        Signature signature = Signature.getInstance(GMObjectIdentifiers.sm2sign_with_sm3.toString()
-                , new BouncyCastleProvider());
+        Signature signature = Signature.getInstance(GMObjectIdentifiers.sm2sign_with_sm3.toString(),
+                new BouncyCastleProvider());
         // 使用私钥签名,初始化签名实例
         signature.initSign(privateKey);
         // 签名原文
@@ -177,7 +177,8 @@ public class Builder {
      * @return 解密后的明文
      * @throws Exception 异常信息
      */
-    public static String sm4DecryptToString(String key3, String cipherText, String nonce, String associatedData) throws Exception {
+    public static String sm4DecryptToString(String key3, String cipherText, String nonce, String associatedData)
+            throws Exception {
         Cipher cipher = Cipher.getInstance("SM4/GCM/NoPadding", new BouncyCastleProvider());
         byte[] keyByte = Builder.sm3Hash(key3);
         SecretKeySpec key = new SecretKeySpec(keyByte, "SM4");
@@ -202,8 +203,8 @@ public class Builder {
      * @throws Exception 异常信息
      */
     public static boolean sm4Verify(PublicKey publicKey, String data, String originalSignature) throws Exception {
-        Signature signature = Signature.getInstance(GMObjectIdentifiers.sm2sign_with_sm3.toString()
-                , new BouncyCastleProvider());
+        Signature signature = Signature.getInstance(GMObjectIdentifiers.sm2sign_with_sm3.toString(),
+                new BouncyCastleProvider());
         signature.initVerify(publicKey);
         // 写入待验签的签名原文到算法中
         signature.update(data.getBytes(StandardCharsets.UTF_8));
@@ -218,7 +219,8 @@ public class Builder {
      * @return 解密后的数据
      */
     public static String decryptData(String base64Data, String key) {
-        return org.miaixz.bus.crypto.Builder.aes(org.miaixz.bus.crypto.Builder.md5(key).toLowerCase().getBytes()).decryptString(base64Data);
+        return org.miaixz.bus.crypto.Builder.aes(org.miaixz.bus.crypto.Builder.md5(key).toLowerCase().getBytes())
+                .decryptString(base64Data);
     }
 
     /**
@@ -229,7 +231,8 @@ public class Builder {
      * @return 加密后的数据
      */
     public static String encryptData(String data, String key) {
-        return org.miaixz.bus.crypto.Builder.aes(org.miaixz.bus.crypto.Builder.md5(key).toLowerCase().getBytes()).encryptBase64(data.getBytes());
+        return org.miaixz.bus.crypto.Builder.aes(org.miaixz.bus.crypto.Builder.md5(key).toLowerCase().getBytes())
+                .encryptBase64(data.getBytes());
     }
 
     /**
@@ -277,7 +280,8 @@ public class Builder {
                 }
             } else {
                 if (quotes) {
-                    content.append(key).append("=").append('"').append(encode ? urlEncode(value) : value).append('"').append(connStr);
+                    content.append(key).append("=").append('"').append(encode ? urlEncode(value) : value).append('"')
+                            .append(connStr);
                 } else {
                     content.append(key).append("=").append(encode ? urlEncode(value) : value).append(connStr);
                 }
@@ -285,7 +289,6 @@ public class Builder {
         }
         return content.toString();
     }
-
 
     /**
      * URL 编码
@@ -457,7 +460,8 @@ public class Builder {
      * @param authType  认证类型
      * @return 请求头 Authorization
      */
-    public static String getAuthorization(String mchId, String serialNo, String nonceStr, String timestamp, String signature, String authType) {
+    public static String getAuthorization(String mchId, String serialNo, String nonceStr, String timestamp,
+            String signature, String authType) {
         Map<String, String> params = new HashMap<>(5);
         params.put("mchid", mchId);
         params.put("serial_no", serialNo);
@@ -504,9 +508,7 @@ public class Builder {
      * @return 商户私钥
      */
     public static String getPrivateKeyByContent(String originalKey) {
-        return originalKey
-                .replace("-----BEGIN PRIVATE KEY-----", "")
-                .replace("-----END PRIVATE KEY-----", "")
+        return originalKey.replace("-----BEGIN PRIVATE KEY-----", "").replace("-----END PRIVATE KEY-----", "")
                 .replaceAll("\\s+", "");
     }
 
@@ -517,9 +519,7 @@ public class Builder {
      * @return 商户公钥
      */
     public static String getPublicKeyByContent(String originalKey) {
-        return originalKey
-                .replace("-----BEGIN PUBLIC KEY-----", "")
-                .replace("-----END PUBLIC KEY-----", "")
+        return originalKey.replace("-----BEGIN PUBLIC KEY-----", "").replace("-----END PUBLIC KEY-----", "")
                 .replaceAll("\\s+", "");
     }
 
@@ -568,20 +568,16 @@ public class Builder {
      * 获取证书详细信息
      *
      * @param certificate {@link X509Certificate} 证书
-     * @return {@link Certificate}  获取证书详细信息
+     * @return {@link Certificate} 获取证书详细信息
      */
     public static Certificate getCertificateInfo(X509Certificate certificate) {
         if (null == certificate) {
             return null;
         }
 
-        return Certificate.builder()
-                .self(certificate)
-                .issuer(certificate.getIssuerDN())
-                .subject(certificate.getSubjectDN())
-                .version(String.valueOf(certificate.getVersion()))
-                .notBefore(certificate.getNotBefore())
-                .notAfter(certificate.getNotAfter())
+        return Certificate.builder().self(certificate).issuer(certificate.getIssuerDN())
+                .subject(certificate.getSubjectDN()).version(String.valueOf(certificate.getVersion()))
+                .notBefore(certificate.getNotBefore()).notAfter(certificate.getNotAfter())
                 .serial(certificate.getSerialNumber().toString(16)).build();
     }
 
@@ -589,7 +585,7 @@ public class Builder {
      * 获取证书详细信息
      *
      * @param path 证书路径，支持相对路径以及绝得路径
-     * @return {@link Certificate}  获取证书详细信息
+     * @return {@link Certificate} 获取证书详细信息
      */
     public static Certificate getCertificateInfo(String path) {
         return getCertificateInfo(getCertificate(path));

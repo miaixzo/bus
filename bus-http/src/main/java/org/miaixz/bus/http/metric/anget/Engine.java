@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric.anget;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -50,17 +50,10 @@ public class Engine extends UserAgent {
     /**
      * 支持的引擎类型
      */
-    public static final List<Engine> ENGINES = ListKit.view(
-            new Engine("Trident", "trident"),
-            new Engine("Webkit", "webkit"),
-            new Engine("Chrome", "chrome"),
-            new Engine("Opera", "opera"),
-            new Engine("Presto", "presto"),
-            new Engine("Gecko", "gecko"),
-            new Engine("KHTML", "khtml"),
-            new Engine("Konqueror", "konqueror"),
-            new Engine("MIDP", "MIDP")
-    );
+    public static final List<Engine> ENGINES = ListKit.view(new Engine("Trident", "trident"),
+            new Engine("Webkit", "webkit"), new Engine("Chrome", "chrome"), new Engine("Opera", "opera"),
+            new Engine("Presto", "presto"), new Engine("Gecko", "gecko"), new Engine("KHTML", "khtml"),
+            new Engine("Konqueror", "konqueror"), new Engine("MIDP", "MIDP"));
 
     /**
      * 匹配正则
@@ -70,7 +63,7 @@ public class Engine extends UserAgent {
     /**
      * 构造
      *
-     * @param name  引擎名称
+     * @param name 引擎名称
      * @param rule 关键字或表达式
      */
     public Engine(String name, String rule) {

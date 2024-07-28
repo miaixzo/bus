@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org 6tail and other contributors.              ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -37,9 +37,7 @@ import org.miaixz.bus.core.center.date.culture.Samsara;
  */
 public class Duty extends Samsara {
 
-    public static final String[] NAMES = {
-            "建", "除", "满", "平", "定", "执", "破", "危", "成", "收", "开", "闭"
-    };
+    public static final String[] NAMES = { "建", "除", "满", "平", "定", "执", "破", "危", "成", "收", "开", "闭" };
 
     public Duty(int index) {
         super(NAMES, index);

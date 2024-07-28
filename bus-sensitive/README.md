@@ -93,20 +93,20 @@ public class Entity {
     标记在字段上，必须是字符串。
     声明此字段在入库或者修改时，会脱敏存储。
     Builder.Type是脱敏类型，详见脱敏类型章节。
-    
+
     一般考虑如下场景。
     用户的手机号需要在数据库存储为加密的密文，为了查询方便，可能数据库也会有一个脱敏的手机号字段。
     那就可以这样定义两个字段：
-    
+
     //在数据库加密存储的
     @Field(encrypt = true)
     private String phone;
     //在数据库脱敏存储的
     @Field(Builder.Type.MOBILE)
     private String phoneSensitive;
-    
+
     而业务代码赋值时，可以赋值两次：
-    
+
     ......
     user.setPhone("18233586969");
     user.setPhoneSensitive("18233586969");
@@ -117,14 +117,14 @@ public class Entity {
 #### @JSON
 
     标记在json字符串上，声明此json串在入库前会将json中指定的字段脱敏。
-    
+
     例如：
     @JSON({
         @Field(key = "idCard",type = Builder.Type.CITIZENID),
         @Field(key = "name",type = Builder.Type.NAME)
        })
     private String jsonStr;
-    
+
     如果jsonStr原文为
     {
       "age":18,
@@ -138,7 +138,7 @@ public class Entity {
       "idCard":"130***********6474",
       "name":"吴**",
       "city":"北京"
-    
+
     }
     使用场景：
     有时候数据库会存储一些第三方返回的json串，可能会包含敏感信息。
@@ -152,10 +152,10 @@ public class Entity {
      例如，dto里有如下字段：
      @EncryptField
      private String name
-     
+
      @SensitiveBinded(bindField = "name",value = SensitiveType.NAME)
      private String userNameOnlyDTO;
-     
+
      则当查询出结果时，userNameOnlyDTO会赋值为username解密后再脱敏的值。
      相当于数据库的一个字段的值以不同的形式映射到了对象的两个字段上。
 

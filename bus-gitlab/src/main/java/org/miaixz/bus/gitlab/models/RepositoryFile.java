@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -129,8 +129,8 @@ public class RepositoryFile implements Serializable {
     }
 
     /**
-     * Returns the content as a String, base64 decoding it if necessary.
-     * For binary files it is recommended to use getDecodedContentAsBytes()
+     * Returns the content as a String, base64 decoding it if necessary. For binary files it is recommended to use
+     * getDecodedContentAsBytes()
      *
      * @return the content as a String, base64 decoding it if necessary
      */
@@ -149,8 +149,8 @@ public class RepositoryFile implements Serializable {
     }
 
     /**
-     * Returns the content as a byte array, decoding from base64 if necessary.
-     * For String content it is recommended to use getDecodedContent().
+     * Returns the content as a byte array, decoding from base64 if necessary. For String content it is recommended to
+     * use getDecodedContent().
      *
      * @return the content as a byte array, decoding from base64 if necessary
      */
@@ -169,8 +169,8 @@ public class RepositoryFile implements Serializable {
     }
 
     /**
-     * Encodes the provided String using Base64 and sets it as the content. The encoding
-     * property of this instance will be set to base64.
+     * Encodes the provided String using Base64 and sets it as the content. The encoding property of this instance will
+     * be set to base64.
      *
      * @param content the String content to encode and set as the base64 encoded String content
      */
@@ -180,8 +180,8 @@ public class RepositoryFile implements Serializable {
     }
 
     /**
-     * Encodes the provided byte array using Base64 and sets it as the content. The encoding
-     * property of this instance will be set to base64.
+     * Encodes the provided byte array using Base64 and sets it as the content. The encoding property of this instance
+     * will be set to base64.
      *
      * @param byteContent the byte[] content to encode and set as the base64 encoded String content
      */

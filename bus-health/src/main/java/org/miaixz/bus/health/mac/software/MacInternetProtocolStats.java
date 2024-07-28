@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.mac.software;
 
 import com.sun.jna.Memory;
@@ -53,13 +53,18 @@ import java.util.function.Supplier;
 public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
 
     private final boolean isElevated;
-    private final Supplier<Pair<Long, Long>> establishedv4v6 = Memoizer.memoize(NetStat::queryTcpnetstat, Memoizer.defaultExpiration());
-    private final Supplier<CLibrary.BsdTcpstat> tcpstat = Memoizer.memoize(MacInternetProtocolStats::queryTcpstat, Memoizer.defaultExpiration());
-    private final Supplier<CLibrary.BsdUdpstat> udpstat = Memoizer.memoize(MacInternetProtocolStats::queryUdpstat, Memoizer.defaultExpiration());
+    private final Supplier<Pair<Long, Long>> establishedv4v6 = Memoizer.memoize(NetStat::queryTcpnetstat,
+            Memoizer.defaultExpiration());
+    private final Supplier<CLibrary.BsdTcpstat> tcpstat = Memoizer.memoize(MacInternetProtocolStats::queryTcpstat,
+            Memoizer.defaultExpiration());
+    private final Supplier<CLibrary.BsdUdpstat> udpstat = Memoizer.memoize(MacInternetProtocolStats::queryUdpstat,
+            Memoizer.defaultExpiration());
     // With elevated permissions use tcpstat only
     // Backup estimate get ipstat and subtract off udp
-    private final Supplier<CLibrary.BsdIpstat> ipstat = Memoizer.memoize(MacInternetProtocolStats::queryIpstat, Memoizer.defaultExpiration());
-    private final Supplier<CLibrary.BsdIp6stat> ip6stat = Memoizer.memoize(MacInternetProtocolStats::queryIp6stat, Memoizer.defaultExpiration());
+    private final Supplier<CLibrary.BsdIpstat> ipstat = Memoizer.memoize(MacInternetProtocolStats::queryIpstat,
+            Memoizer.defaultExpiration());
+    private final Supplier<CLibrary.BsdIp6stat> ip6stat = Memoizer.memoize(MacInternetProtocolStats::queryIp6stat,
+            Memoizer.defaultExpiration());
 
     public MacInternetProtocolStats(boolean elevated) {
         this.isElevated = elevated;
@@ -107,8 +112,8 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
                 }
                 int lport = Parsing.bigEndian16ToLittleEndian(ini.insi_lport);
                 int fport = Parsing.bigEndian16ToLittleEndian(ini.insi_fport);
-                return new InternetProtocolStats.IPConnection(type, laddr, lport, faddr, fport, state, si.psi.soi_qlen, si.psi.soi_incqlen,
-                        pid);
+                return new InternetProtocolStats.IPConnection(type, laddr, lport, faddr, fport, state, si.psi.soi_qlen,
+                        si.psi.soi_incqlen, pid);
             }
         }
         return null;
@@ -116,30 +121,30 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
 
     private static InternetProtocolStats.TcpState stateLookup(int state) {
         switch (state) {
-            case 0:
-                return InternetProtocolStats.TcpState.CLOSED;
-            case 1:
-                return InternetProtocolStats.TcpState.LISTEN;
-            case 2:
-                return InternetProtocolStats.TcpState.SYN_SENT;
-            case 3:
-                return InternetProtocolStats.TcpState.SYN_RECV;
-            case 4:
-                return InternetProtocolStats.TcpState.ESTABLISHED;
-            case 5:
-                return InternetProtocolStats.TcpState.CLOSE_WAIT;
-            case 6:
-                return InternetProtocolStats.TcpState.FIN_WAIT_1;
-            case 7:
-                return InternetProtocolStats.TcpState.CLOSING;
-            case 8:
-                return InternetProtocolStats.TcpState.LAST_ACK;
-            case 9:
-                return InternetProtocolStats.TcpState.FIN_WAIT_2;
-            case 10:
-                return InternetProtocolStats.TcpState.TIME_WAIT;
-            default:
-                return InternetProtocolStats.TcpState.UNKNOWN;
+        case 0:
+            return InternetProtocolStats.TcpState.CLOSED;
+        case 1:
+            return InternetProtocolStats.TcpState.LISTEN;
+        case 2:
+            return InternetProtocolStats.TcpState.SYN_SENT;
+        case 3:
+            return InternetProtocolStats.TcpState.SYN_RECV;
+        case 4:
+            return InternetProtocolStats.TcpState.ESTABLISHED;
+        case 5:
+            return InternetProtocolStats.TcpState.CLOSE_WAIT;
+        case 6:
+            return InternetProtocolStats.TcpState.FIN_WAIT_1;
+        case 7:
+            return InternetProtocolStats.TcpState.CLOSING;
+        case 8:
+            return InternetProtocolStats.TcpState.LAST_ACK;
+        case 9:
+            return InternetProtocolStats.TcpState.FIN_WAIT_2;
+        case 10:
+            return InternetProtocolStats.TcpState.TIME_WAIT;
+        default:
+            return InternetProtocolStats.TcpState.UNKNOWN;
         }
     }
 
@@ -229,19 +234,19 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
     public InternetProtocolStats.TcpStats getTCPv4Stats() {
         CLibrary.BsdTcpstat tcp = tcpstat.get();
         if (this.isElevated) {
-            return new InternetProtocolStats.TcpStats(establishedv4v6.get().getLeft(), Parsing.unsignedIntToLong(tcp.tcps_connattempt),
-                    Parsing.unsignedIntToLong(tcp.tcps_accepts), Parsing.unsignedIntToLong(tcp.tcps_conndrops),
-                    Parsing.unsignedIntToLong(tcp.tcps_drops), Parsing.unsignedIntToLong(tcp.tcps_sndpack),
-                    Parsing.unsignedIntToLong(tcp.tcps_rcvpack), Parsing.unsignedIntToLong(tcp.tcps_sndrexmitpack),
-                    Parsing.unsignedIntToLong(
+            return new InternetProtocolStats.TcpStats(establishedv4v6.get().getLeft(),
+                    Parsing.unsignedIntToLong(tcp.tcps_connattempt), Parsing.unsignedIntToLong(tcp.tcps_accepts),
+                    Parsing.unsignedIntToLong(tcp.tcps_conndrops), Parsing.unsignedIntToLong(tcp.tcps_drops),
+                    Parsing.unsignedIntToLong(tcp.tcps_sndpack), Parsing.unsignedIntToLong(tcp.tcps_rcvpack),
+                    Parsing.unsignedIntToLong(tcp.tcps_sndrexmitpack), Parsing.unsignedIntToLong(
                             tcp.tcps_rcvbadsum + tcp.tcps_rcvbadoff + tcp.tcps_rcvmemdrop + tcp.tcps_rcvshort),
                     0L);
         }
         CLibrary.BsdIpstat ip = ipstat.get();
         CLibrary.BsdUdpstat udp = udpstat.get();
-        return new InternetProtocolStats.TcpStats(establishedv4v6.get().getLeft(), Parsing.unsignedIntToLong(tcp.tcps_connattempt),
-                Parsing.unsignedIntToLong(tcp.tcps_accepts), Parsing.unsignedIntToLong(tcp.tcps_conndrops),
-                Parsing.unsignedIntToLong(tcp.tcps_drops),
+        return new InternetProtocolStats.TcpStats(establishedv4v6.get().getLeft(),
+                Parsing.unsignedIntToLong(tcp.tcps_connattempt), Parsing.unsignedIntToLong(tcp.tcps_accepts),
+                Parsing.unsignedIntToLong(tcp.tcps_conndrops), Parsing.unsignedIntToLong(tcp.tcps_drops),
                 Math.max(0L, Parsing.unsignedIntToLong(ip.ips_delivered - udp.udps_opackets)),
                 Math.max(0L, Parsing.unsignedIntToLong(ip.ips_total - udp.udps_ipackets)),
                 Parsing.unsignedIntToLong(tcp.tcps_sndrexmitpack),
@@ -284,8 +289,8 @@ public class MacInternetProtocolStats extends AbstractInternetProtocolStats {
     public List<InternetProtocolStats.IPConnection> getConnections() {
         List<InternetProtocolStats.IPConnection> conns = new ArrayList<>();
         int[] pids = new int[1024];
-        int numberOfProcesses = SystemB.INSTANCE.proc_listpids(SystemB.PROC_ALL_PIDS, 0, pids, pids.length * SystemB.INT_SIZE)
-                / SystemB.INT_SIZE;
+        int numberOfProcesses = SystemB.INSTANCE.proc_listpids(SystemB.PROC_ALL_PIDS, 0, pids,
+                pids.length * SystemB.INT_SIZE) / SystemB.INT_SIZE;
         for (int i = 0; i < numberOfProcesses; i++) {
             // Handle off-by-one bug in proc_listpids where the size returned
             // is: SystemB.INT_SIZE * (pids + 1)

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -36,8 +36,7 @@ import org.miaixz.bus.core.text.escape.XmlUnescape;
 import java.util.function.Predicate;
 
 /**
- * 转义和反转义工具类Escape / Unescape
- * escape采用ISO Latin字符集对指定的字符串进行编码。
+ * 转义和反转义工具类Escape / Unescape escape采用ISO Latin字符集对指定的字符串进行编码。
  * 所有的空格符、标点符号、特殊字符以及其他非ASCII字符都将被转化成%xx格式的字符编码(xx等于该字符在字符集表里面的编码的16进制数字)。
  *
  * @author Kimi Liu
@@ -49,15 +48,12 @@ public class EscapeKit {
      * 不转义的符号编码
      */
     private static final String NOT_ESCAPE_CHARS = "*@-_+./";
-    private static final Predicate<Character> JS_ESCAPE_FILTER = c -> !(
-            Character.isDigit(c)
-                    || Character.isLowerCase(c)
-                    || Character.isUpperCase(c)
-                    || StringKit.contains(NOT_ESCAPE_CHARS, c)
-    );
+    private static final Predicate<Character> JS_ESCAPE_FILTER = c -> !(Character.isDigit(c) || Character.isLowerCase(c)
+            || Character.isUpperCase(c) || StringKit.contains(NOT_ESCAPE_CHARS, c));
 
     /**
      * 转义XML中的特殊字符
+     * 
      * <pre>
      * 	 &amp; (ampersand) 替换为 &amp;amp;
      * 	 &lt; (less than) 替换为 &amp;lt;
@@ -108,8 +104,7 @@ public class EscapeKit {
     }
 
     /**
-     * Escape编码（Unicode）（等同于JS的escape()方法）
-     * 该方法不会对 ASCII 字母和数字进行编码，也不会对下面这些 ASCII 标点符号进行编码： * @ - _ + . /
+     * Escape编码（Unicode）（等同于JS的escape()方法） 该方法不会对 ASCII 字母和数字进行编码，也不会对下面这些 ASCII 标点符号进行编码： * @ - _ + . /
      * 其他所有的字符都会被转义序列替换。
      *
      * @param content 被转义的内容
@@ -120,8 +115,7 @@ public class EscapeKit {
     }
 
     /**
-     * Escape编码（Unicode）
-     * 该方法不会对 ASCII 字母和数字进行编码。其他所有的字符都会被转义序列替换。
+     * Escape编码（Unicode） 该方法不会对 ASCII 字母和数字进行编码。其他所有的字符都会被转义序列替换。
      *
      * @param content 被转义的内容
      * @return 编码后的字符串
@@ -131,8 +125,7 @@ public class EscapeKit {
     }
 
     /**
-     * Escape编码（Unicode）
-     * 该方法不会对 ASCII 字母和数字进行编码。其他所有的字符都会被转义序列替换。
+     * Escape编码（Unicode） 该方法不会对 ASCII 字母和数字进行编码。其他所有的字符都会被转义序列替换。
      *
      * @param content 被转义的内容
      * @param filter  编码过滤器，对于过滤器中accept为false的字符不做编码

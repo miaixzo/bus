@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.codec;
 
 import javax.imageio.stream.MemoryCacheImageOutputStream;
@@ -38,8 +38,7 @@ import java.util.Arrays;
  * @author Kimi Liu
  * @since Java 17+
  */
-final class CacheImageOutputStream extends MemoryCacheImageOutputStream
-        implements BytesWithImageImageDescriptor {
+final class CacheImageOutputStream extends MemoryCacheImageOutputStream implements BytesWithImageImageDescriptor {
 
     private final ExtFilterOutputStream stream;
     private final ImageDescriptor imageDescriptor;

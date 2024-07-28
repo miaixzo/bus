@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.freebsd.hardware;
 
 import com.sun.jna.Memory;
@@ -124,17 +124,17 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
                     // NumberFormatException
                     long parsedVal = Parsing.hexStringToLong(firstVal, 0);
                     switch (groupLevel) {
-                        case 1:
-                            group1 = parsedVal;
-                            break;
-                        case 2:
-                            group2.add(parsedVal);
-                            break;
-                        case 3:
-                            group3.add(parsedVal);
-                            break;
-                        default:
-                            break;
+                    case 1:
+                        group1 = parsedVal;
+                        break;
+                    case 2:
+                        group2.add(parsedVal);
+                        break;
+                    case 3:
+                        group3.add(parsedVal);
+                        break;
+                    default:
+                        break;
                     }
                 }
             }
@@ -142,7 +142,8 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         return matchBitmasks(group1, group2, group3);
     }
 
-    private static List<CentralProcessor.LogicalProcessor> matchBitmasks(long group1, List<Long> group2, List<Long> group3) {
+    private static List<CentralProcessor.LogicalProcessor> matchBitmasks(long group1, List<Long> group2,
+            List<Long> group3) {
         List<CentralProcessor.LogicalProcessor> logProcs = new ArrayList<>();
         // Lowest and Highest set bits, indexing from 0
         int lowBit = Long.numberOfTrailingZeros(group1);
@@ -151,8 +152,8 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         for (int i = lowBit; i <= hiBit; i++) {
             if ((group1 & (1L << i)) > 0) {
                 int numaNode = 0;
-                CentralProcessor.LogicalProcessor logProc = new CentralProcessor.LogicalProcessor(i, getMatchingBitmask(group3, i),
-                        getMatchingBitmask(group2, i), numaNode);
+                CentralProcessor.LogicalProcessor logProc = new CentralProcessor.LogicalProcessor(i,
+                        getMatchingBitmask(group3, i), getMatchingBitmask(group2, i), numaNode);
                 logProcs.add(logProc);
             }
         }
@@ -236,8 +237,8 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         cpu64bit = Executor.getFirstAnswer("uname -m").trim().contains("64");
         processorID = getProcessorIDfromDmiDecode(processorIdBits);
 
-        return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit,
-                cpuFreq);
+        return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping,
+                processorID, cpu64bit, cpuFreq);
     }
 
     @Override
@@ -278,7 +279,8 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
                 }
             }
         }
-        List<CentralProcessor.PhysicalProcessor> physProcs = dmesg.isEmpty() ? null : createProcListFromDmesg(logProcs, dmesg);
+        List<CentralProcessor.PhysicalProcessor> physProcs = dmesg.isEmpty() ? null
+                : createProcListFromDmesg(logProcs, dmesg);
         List<CentralProcessor.ProcessorCache> caches = getCacheInfoFromLscpu();
         return new Tuple(logProcs, physProcs, caches, featureFlags);
     }
@@ -288,16 +290,20 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         for (String checkLine : Executor.runNative("lscpu")) {
             if (checkLine.contains("L1d cache:")) {
                 caches.add(new CentralProcessor.ProcessorCache(1, 0, 0,
-                        Parsing.parseDecimalMemorySizeToBinary(checkLine.split(Symbol.COLON)[1].trim()), CentralProcessor.ProcessorCache.Type.DATA));
+                        Parsing.parseDecimalMemorySizeToBinary(checkLine.split(Symbol.COLON)[1].trim()),
+                        CentralProcessor.ProcessorCache.Type.DATA));
             } else if (checkLine.contains("L1i cache:")) {
                 caches.add(new CentralProcessor.ProcessorCache(1, 0, 0,
-                        Parsing.parseDecimalMemorySizeToBinary(checkLine.split(Symbol.COLON)[1].trim()), CentralProcessor.ProcessorCache.Type.INSTRUCTION));
+                        Parsing.parseDecimalMemorySizeToBinary(checkLine.split(Symbol.COLON)[1].trim()),
+                        CentralProcessor.ProcessorCache.Type.INSTRUCTION));
             } else if (checkLine.contains("L2 cache:")) {
                 caches.add(new CentralProcessor.ProcessorCache(2, 0, 0,
-                        Parsing.parseDecimalMemorySizeToBinary(checkLine.split(Symbol.COLON)[1].trim()), CentralProcessor.ProcessorCache.Type.UNIFIED));
+                        Parsing.parseDecimalMemorySizeToBinary(checkLine.split(Symbol.COLON)[1].trim()),
+                        CentralProcessor.ProcessorCache.Type.UNIFIED));
             } else if (checkLine.contains("L3 cache:")) {
                 caches.add(new CentralProcessor.ProcessorCache(3, 0, 0,
-                        Parsing.parseDecimalMemorySizeToBinary(checkLine.split(Symbol.COLON)[1].trim()), CentralProcessor.ProcessorCache.Type.UNIFIED));
+                        Parsing.parseDecimalMemorySizeToBinary(checkLine.split(Symbol.COLON)[1].trim()),
+                        CentralProcessor.ProcessorCache.Type.UNIFIED));
             }
         }
         return orderedProcCaches(caches);
@@ -372,7 +378,7 @@ final class FreeBsdCentralProcessor extends AbstractCentralProcessor {
         // Allocate memory for array of CPTime
         long arraySize = CPTIME_SIZE * getLogicalProcessorCount();
         try (Memory p = new Memory(arraySize);
-             ByRef.CloseableSizeTByReference oldlenp = new ByRef.CloseableSizeTByReference(arraySize)) {
+                ByRef.CloseableSizeTByReference oldlenp = new ByRef.CloseableSizeTByReference(arraySize)) {
             String name = "kern.cp_times";
             // Fetch
             if (0 != FreeBsdLibc.INSTANCE.sysctlbyname(name, p, oldlenp, null, size_t.ZERO)) {

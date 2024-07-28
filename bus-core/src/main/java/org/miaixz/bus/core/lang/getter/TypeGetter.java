@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.getter;
 
 import org.miaixz.bus.core.convert.CompositeConverter;
@@ -42,30 +42,29 @@ import java.time.LocalTime;
 import java.util.Date;
 
 /**
- * 基本类型的getter接口
- * 提供一个统一的接口定义返回不同类型的值（基本类型），定义类型包括：
+ * 基本类型的getter接口 提供一个统一的接口定义返回不同类型的值（基本类型），定义类型包括：
  * <ul>
- *     <li>Object</li>
- *     <li>String</li>
- *     <li>Integer</li>
- *     <li>Short</li>
- *     <li>Boolean</li>
- *     <li>Long</li>
- *     <li>Character</li>
- *     <li>Float</li>
- *     <li>Double</li>
- *     <li>Byte</li>
- *     <li>BigDecimal</li>
- *     <li>BigInteger</li>
- *     <li>Enum</li>
- *     <li>Number</li>
- *     <li>Date</li>
- *     <li>java.sql.Time</li>
- *     <li>java.sql.Timestamp</li>
- *     <li>java.sql.Timestamp</li>
- *     <li>LocalDateTime</li>
- *     <li>LocalDate</li>
- *     <li>LocalTime</li>
+ * <li>Object</li>
+ * <li>String</li>
+ * <li>Integer</li>
+ * <li>Short</li>
+ * <li>Boolean</li>
+ * <li>Long</li>
+ * <li>Character</li>
+ * <li>Float</li>
+ * <li>Double</li>
+ * <li>Byte</li>
+ * <li>BigDecimal</li>
+ * <li>BigInteger</li>
+ * <li>Enum</li>
+ * <li>Number</li>
+ * <li>Date</li>
+ * <li>java.sql.Time</li>
+ * <li>java.sql.Timestamp</li>
+ * <li>java.sql.Timestamp</li>
+ * <li>LocalDateTime</li>
+ * <li>LocalDate</li>
+ * <li>LocalTime</li>
  * </ul>
  * 通过实现此接口，最简单方式为通过实现{@link #getObject(Object, Object)}方法，完成所有类型的值获取，获取默认采用
  * {@link Convert}方式自动转换。如果有自定义实现，重写对应getXXX方法即可。
@@ -135,8 +134,7 @@ public interface TypeGetter<K> {
     }
 
     /**
-     * 获取字符串型属性值
-     * 若获得的值为不可见字符，使用默认值
+     * 获取字符串型属性值 若获得的值为不可见字符，使用默认值
      *
      * @param key          属性名
      * @param defaultValue 默认值
@@ -157,8 +155,7 @@ public interface TypeGetter<K> {
     }
 
     /**
-     * 获取int型属性值
-     * 若获得的值为不可见字符，使用默认值
+     * 获取int型属性值 若获得的值为不可见字符，使用默认值
      *
      * @param key          属性名
      * @param defaultValue 默认值
@@ -179,8 +176,7 @@ public interface TypeGetter<K> {
     }
 
     /**
-     * 获取short型属性值
-     * 若获得的值为不可见字符，使用默认值
+     * 获取short型属性值 若获得的值为不可见字符，使用默认值
      *
      * @param key          属性名
      * @param defaultValue 默认值
@@ -201,8 +197,7 @@ public interface TypeGetter<K> {
     }
 
     /**
-     * 获取boolean型属性值
-     * 若获得的值为不可见字符，使用默认值
+     * 获取boolean型属性值 若获得的值为不可见字符，使用默认值
      *
      * @param key          属性名
      * @param defaultValue 默认值
@@ -223,8 +218,7 @@ public interface TypeGetter<K> {
     }
 
     /**
-     * 获取Long型属性值
-     * 若获得的值为不可见字符，使用默认值
+     * 获取Long型属性值 若获得的值为不可见字符，使用默认值
      *
      * @param key          属性名
      * @param defaultValue 默认值
@@ -245,8 +239,7 @@ public interface TypeGetter<K> {
     }
 
     /**
-     * 获取char型属性值
-     * 若获得的值为不可见字符，使用默认值
+     * 获取char型属性值 若获得的值为不可见字符，使用默认值
      *
      * @param key          属性名
      * @param defaultValue 默认值
@@ -267,8 +260,7 @@ public interface TypeGetter<K> {
     }
 
     /**
-     * 获取float型属性值
-     * 若获得的值为不可见字符，使用默认值
+     * 获取float型属性值 若获得的值为不可见字符，使用默认值
      *
      * @param key          属性名
      * @param defaultValue 默认值
@@ -289,8 +281,7 @@ public interface TypeGetter<K> {
     }
 
     /**
-     * 获取double型属性值
-     * 若获得的值为不可见字符，使用默认值
+     * 获取double型属性值 若获得的值为不可见字符，使用默认值
      *
      * @param key          属性名
      * @param defaultValue 默认值
@@ -353,8 +344,7 @@ public interface TypeGetter<K> {
     }
 
     /**
-     * 获取BigDecimal型属性值
-     * 若获得的值为不可见字符，使用默认值
+     * 获取BigDecimal型属性值 若获得的值为不可见字符，使用默认值
      *
      * @param key          属性名
      * @param defaultValue 默认值
@@ -375,8 +365,7 @@ public interface TypeGetter<K> {
     }
 
     /**
-     * 获取BigInteger型属性值
-     * 若获得的值为不可见字符，使用默认值
+     * 获取BigInteger型属性值 若获得的值为不可见字符，使用默认值
      *
      * @param key          属性名
      * @param defaultValue 默认值

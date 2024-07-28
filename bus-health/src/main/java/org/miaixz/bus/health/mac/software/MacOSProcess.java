@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.mac.software;
 
 import com.sun.jna.Memory;
@@ -67,8 +67,7 @@ public class MacOSProcess extends AbstractOSProcess {
 
     private static final int ARGMAX = SysctlKit.sysctl("kern.argmax", 0);
     private static final long TICKS_PER_MS;
-    private static final boolean LOG_MAC_SYSCTL_WARNING = Config.get(Config._MAC_SYSCTL_LOGWARNING,
-            false);
+    private static final boolean LOG_MAC_SYSCTL_WARNING = Config.get(Config._MAC_SYSCTL_LOGWARNING, false);
     private static final int MAC_RLIMIT_NOFILE = 8;
     // 64-bit flag
     private static final int P_LP64 = 0x4;
@@ -110,7 +109,8 @@ public class MacOSProcess extends AbstractOSProcess {
     }
 
     private final MacOperatingSystem os;
-    private final Supplier<Pair<List<String>, Map<String, String>>> argsEnviron = Memoizer.memoize(this::queryArgsAndEnvironment);
+    private final Supplier<Pair<List<String>, Map<String, String>>> argsEnviron = Memoizer
+            .memoize(this::queryArgsAndEnvironment);
     private final Supplier<String> commandLine = Memoizer.memoize(this::queryCommandLine);
     private int majorVersion;
     private int minorVersion;
@@ -420,27 +420,27 @@ public class MacOSProcess extends AbstractOSProcess {
             }
 
             switch (taskAllInfo.pbsd.pbi_status) {
-                case SSLEEP:
-                    this.state = State.SLEEPING;
-                    break;
-                case SWAIT:
-                    this.state = State.WAITING;
-                    break;
-                case SRUN:
-                    this.state = State.RUNNING;
-                    break;
-                case SIDL:
-                    this.state = State.NEW;
-                    break;
-                case SZOMB:
-                    this.state = State.ZOMBIE;
-                    break;
-                case SSTOP:
-                    this.state = State.STOPPED;
-                    break;
-                default:
-                    this.state = State.OTHER;
-                    break;
+            case SSLEEP:
+                this.state = State.SLEEPING;
+                break;
+            case SWAIT:
+                this.state = State.WAITING;
+                break;
+            case SRUN:
+                this.state = State.RUNNING;
+                break;
+            case SIDL:
+                this.state = State.NEW;
+                break;
+            case SZOMB:
+                this.state = State.ZOMBIE;
+                break;
+            case SSTOP:
+                this.state = State.STOPPED;
+                break;
+            default:
+                this.state = State.OTHER;
+                break;
             }
             this.parentProcessID = taskAllInfo.pbsd.pbi_ppid;
             this.userID = Integer.toString(taskAllInfo.pbsd.pbi_uid);

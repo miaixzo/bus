@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.codec.jpeg;
 
 import org.miaixz.bus.core.xyz.ByteKit;
@@ -93,16 +93,12 @@ public class SOFSegment {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("SOF").append(getMarker() - 0xC0)
-                .append("[Lf=").append(getHeaderLength())
-                .append(", P=").append(getPrecision())
-                .append(", Y=").append(getY())
-                .append(", X=").append(getX())
-                .append(", Nf=").append(numComponents);
+        sb.append("SOF").append(getMarker() - 0xC0).append("[Lf=").append(getHeaderLength()).append(", P=")
+                .append(getPrecision()).append(", Y=").append(getY()).append(", X=").append(getX()).append(", Nf=")
+                .append(numComponents);
         for (int i = 0; i < numComponents; i++) {
-            sb.append(", C").append(i + 1).append('=').append(getComponentID(i))
-                    .append(", H").append(i + 1).append('=').append(getXSubsampling(i))
-                    .append(", V").append(i + 1).append('=').append(getYSubsampling(i))
+            sb.append(", C").append(i + 1).append('=').append(getComponentID(i)).append(", H").append(i + 1).append('=')
+                    .append(getXSubsampling(i)).append(", V").append(i + 1).append('=').append(getYSubsampling(i))
                     .append(", Tq").append(i + 1).append('=').append(getQTableSelector(i));
         }
         sb.append(']');

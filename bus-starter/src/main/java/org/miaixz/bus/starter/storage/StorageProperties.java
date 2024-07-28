@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.storage;
 
 import lombok.Getter;
@@ -39,9 +39,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import java.util.Map;
 
 /**
- * 存储配置信息
- * 1. 默认读取配置文件信息
- * 2. 通过set形式设置(动态/DB等)
+ * 存储配置信息 1. 默认读取配置文件信息 2. 通过set形式设置(动态/DB等)
  *
  * @author Kimi Liu
  * @since Java 17+

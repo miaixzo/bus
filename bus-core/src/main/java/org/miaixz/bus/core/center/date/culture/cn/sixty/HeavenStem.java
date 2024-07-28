@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org 6tail and other contributors.              ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -43,9 +43,7 @@ import org.miaixz.bus.core.center.date.culture.cn.star.ten.TenStar;
  */
 public class HeavenStem extends Samsara {
 
-    public static final String[] NAMES = {
-            "甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸"
-    };
+    public static final String[] NAMES = { "甲", "乙", "丙", "丁", "戊", "己", "庚", "辛", "壬", "癸" };
 
     public HeavenStem(int index) {
         super(NAMES, index);
@@ -116,7 +114,7 @@ public class HeavenStem extends Samsara {
      * @return 方位
      */
     public Direction getDirection() {
-        return Direction.fromIndex(new int[]{2, 8, 4, 6, 0}[index / 2]);
+        return Direction.fromIndex(new int[] { 2, 8, 4, 6, 0 }[index / 2]);
     }
 
     /**
@@ -125,7 +123,7 @@ public class HeavenStem extends Samsara {
      * @return 方位
      */
     public Direction getJoyDirection() {
-        return Direction.fromIndex(new int[]{7, 5, 1, 8, 3}[index % 5]);
+        return Direction.fromIndex(new int[] { 7, 5, 1, 8, 3 }[index % 5]);
     }
 
     /**
@@ -134,7 +132,7 @@ public class HeavenStem extends Samsara {
      * @return 方位
      */
     public Direction getYangDirection() {
-        return Direction.fromIndex(new int[]{1, 1, 6, 5, 7, 0, 8, 7, 2, 3}[index]);
+        return Direction.fromIndex(new int[] { 1, 1, 6, 5, 7, 0, 8, 7, 2, 3 }[index]);
     }
 
     /**
@@ -143,7 +141,7 @@ public class HeavenStem extends Samsara {
      * @return 方位
      */
     public Direction getYinDirection() {
-        return Direction.fromIndex(new int[]{7, 0, 5, 6, 1, 1, 7, 8, 3, 2}[index]);
+        return Direction.fromIndex(new int[] { 7, 0, 5, 6, 1, 1, 7, 8, 3, 2 }[index]);
     }
 
     /**
@@ -152,7 +150,7 @@ public class HeavenStem extends Samsara {
      * @return 方位
      */
     public Direction getWealthDirection() {
-        return Direction.fromIndex(new int[]{7, 1, 0, 2, 8}[index / 2]);
+        return Direction.fromIndex(new int[] { 7, 1, 0, 2, 8 }[index / 2]);
     }
 
     /**
@@ -161,7 +159,7 @@ public class HeavenStem extends Samsara {
      * @return 方位
      */
     public Direction getMascotDirection() {
-        return Direction.fromIndex(new int[]{3, 3, 2, 2, 0, 8, 1, 1, 5, 6}[index]);
+        return Direction.fromIndex(new int[] { 3, 3, 2, 2, 0, 8, 1, 1, 5, 6 }[index]);
     }
 
     /**
@@ -181,7 +179,8 @@ public class HeavenStem extends Samsara {
      */
     public Terrain getTerrain(EarthBranch earthBranch) {
         int earthBranchIndex = earthBranch.getIndex();
-        return Terrain.fromIndex(new int[]{1, 6, 10, 9, 10, 9, 7, 0, 4, 3}[index] + (Opposite.YANG == getOpposite() ? earthBranchIndex : -earthBranchIndex));
+        return Terrain.fromIndex(new int[] { 1, 6, 10, 9, 10, 9, 7, 0, 4, 3 }[index]
+                + (Opposite.YANG == getOpposite() ? earthBranchIndex : -earthBranchIndex));
     }
 
 }

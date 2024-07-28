@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 import org.miaixz.bus.image.Builder;
@@ -91,10 +91,7 @@ public class ImageReadParam extends javax.imageio.ImageReadParam {
     }
 
     @Override
-    public void setSourceSubsampling(
-            int sourceXSubsampling,
-            int sourceYSubsampling,
-            int subsamplingXOffset,
+    public void setSourceSubsampling(int sourceXSubsampling, int sourceYSubsampling, int subsamplingXOffset,
             int subsamplingYOffset) {
         throw new UnsupportedOperationException(NOT_COMPATIBLE);
     }

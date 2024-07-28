@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv;
 
 import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
@@ -42,7 +42,8 @@ public class SegmentedImageStream {
     private final long[] segmentLengths;
     private final ImageDescriptor imageDescriptor;
 
-    public SegmentedImageStream(File file, long[] segmentPositions, int[] segmentLengths, ImageDescriptor imageDescriptor) {
+    public SegmentedImageStream(File file, long[] segmentPositions, int[] segmentLengths,
+            ImageDescriptor imageDescriptor) {
         this.file = file;
         this.segmentPositions = segmentPositions;
         this.segmentLengths = segmentLengths == null ? null : getDoubleArray(segmentLengths);

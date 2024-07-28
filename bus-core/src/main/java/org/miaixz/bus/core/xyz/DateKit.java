@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.date.Calendar;
@@ -86,8 +86,7 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * 是否为相同时间
-     * 此方法比较两个日期的时间戳是否相同
+     * 是否为相同时间 此方法比较两个日期的时间戳是否相同
      *
      * @param date1 日期1
      * @param date2 日期2
@@ -141,8 +140,7 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * 当前日期是否在日期指定范围内
-     * 起始日期和结束日期可以互换
+     * 当前日期是否在日期指定范围内 起始日期和结束日期可以互换
      *
      * @param date      被检查的日期
      * @param beginDate 起始日期（包含）
@@ -154,10 +152,8 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * 当前日期是否在日期指定范围内
-     * 起始日期和结束日期可以互换
-     * 通过includeBegin, includeEnd参数控制日期范围区间是否为开区间，例如：传入参数：includeBegin=true, includeEnd=false，
-     * 则本方法会判断 date ∈ (beginDate, endDate] 是否成立
+     * 当前日期是否在日期指定范围内 起始日期和结束日期可以互换 通过includeBegin, includeEnd参数控制日期范围区间是否为开区间，例如：传入参数：includeBegin=true,
+     * includeEnd=false， 则本方法会判断 date ∈ (beginDate, endDate] 是否成立
      *
      * @param date         被检查的日期
      * @param beginDate    起始日期
@@ -166,8 +162,8 @@ public class DateKit extends Calendar {
      * @param includeEnd   时间范围是否包含结束日期
      * @return 是否在范围内
      */
-    public static boolean isIn(final Date date, final Date beginDate, final Date endDate,
-                               final boolean includeBegin, final boolean includeEnd) {
+    public static boolean isIn(final Date date, final Date beginDate, final Date endDate, final boolean includeBegin,
+            final boolean includeEnd) {
         return new DateTime().isIn(date, beginDate, endDate, includeBegin, includeEnd);
     }
 
@@ -199,8 +195,7 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * {@link Date}类型时间转为{@link DateTime}
-     * 如果date本身为DateTime对象，则返回强转后的对象，否则新建一个DateTime对象
+     * {@link Date}类型时间转为{@link DateTime} 如果date本身为DateTime对象，则返回强转后的对象，否则新建一个DateTime对象
      *
      * @param date {@link Date}，如果传入{@code null}，返回{@code null}
      * @return 时间对象
@@ -256,8 +251,7 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * Long类型时间转为{@link DateTime}
-     * 只支持毫秒级别时间戳，如果需要秒级别时间戳，请自行×1000L
+     * Long类型时间转为{@link DateTime} 只支持毫秒级别时间戳，如果需要秒级别时间戳，请自行×1000L
      *
      * @param date Long类型Date（Unix时间戳）
      * @return 时间对象
@@ -267,8 +261,7 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * {@link java.util.Calendar}类型时间转为{@link DateTime}
-     * 始终根据已有{@link java.util.Calendar} 产生新的{@link DateTime}对象
+     * {@link java.util.Calendar}类型时间转为{@link DateTime} 始终根据已有{@link java.util.Calendar} 产生新的{@link DateTime}对象
      *
      * @param calendar {@link java.util.Calendar}，如果传入{@code null}，返回{@code null}
      * @return 时间对象
@@ -281,10 +274,10 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * {@link TemporalAccessor}类型时间转为{@link DateTime}
-     * 始终根据已有{@link TemporalAccessor} 产生新的{@link DateTime}对象
+     * {@link TemporalAccessor}类型时间转为{@link DateTime} 始终根据已有{@link TemporalAccessor} 产生新的{@link DateTime}对象
      *
-     * @param temporalAccessor {@link TemporalAccessor},常用子类： {@link LocalDateTime}、 LocalDate，如果传入{@code null}，返回{@code null}
+     * @param temporalAccessor {@link TemporalAccessor},常用子类： {@link LocalDateTime}、
+     *                         LocalDate，如果传入{@code null}，返回{@code null}
      * @return 时间对象
      */
     public static DateTime date(final TemporalAccessor temporalAccessor) {
@@ -381,10 +374,7 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * 获得指定日期是所在年份的第几周
-     * 此方法返回值与一周的第一天有关，比如：
-     * 2016年1月3日为周日，如果一周的第一天为周日，那这天是第二周（返回2）
-     * 如果一周的第一天为周一，那这天是第一周（返回1）
+     * 获得指定日期是所在年份的第几周 此方法返回值与一周的第一天有关，比如： 2016年1月3日为周日，如果一周的第一天为周日，那这天是第二周（返回2） 如果一周的第一天为周一，那这天是第一周（返回1）
      * 跨年的那个星期得到的结果总是1
      *
      * @param date 日期
@@ -468,8 +458,7 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * 获得指定日期的分钟数部分
-     * 例如：10:04:15.250 = 4
+     * 获得指定日期的分钟数部分 例如：10:04:15.250 = 4
      *
      * @param date 日期
      * @return 分钟数
@@ -584,8 +573,7 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * 获得指定日期年份和季节
-     * 格式：[20131]表示2013年第一季度
+     * 获得指定日期年份和季节 格式：[20131]表示2013年第一季度
      *
      * @param date 日期
      * @return Quarter ，类似于 20132
@@ -663,8 +651,7 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * 格式化日期时间
-     * 格式 yyyy-MM-dd HH:mm:ss
+     * 格式化日期时间 格式 yyyy-MM-dd HH:mm:ss
      *
      * @param date 被格式化的日期
      * @return 格式化后的日期
@@ -677,8 +664,7 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * 格式化日期部分（不包括时间）
-     * 格式 yyyy-MM-dd
+     * 格式化日期部分（不包括时间） 格式 yyyy-MM-dd
      *
      * @param date 被格式化的日期
      * @return 格式化后的字符串
@@ -691,8 +677,7 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * 格式化时间
-     * 格式 HH:mm:ss
+     * 格式化时间 格式 HH:mm:ss
      *
      * @param date 被格式化的日期
      * @return 格式化后的字符串
@@ -705,8 +690,7 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * 格式化为Http的标准日期格式
-     * 标准日期格式遵循RFC 1123规范，格式类似于：Fri, 31 Dec 1999 23:59:59 GMT
+     * 格式化为Http的标准日期格式 标准日期格式遵循RFC 1123规范，格式类似于：Fri, 31 Dec 1999 23:59:59 GMT
      *
      * @param date 被格式化的日期
      * @return HTTP标准形式日期字符串
@@ -772,8 +756,7 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * 修改日期为某个时间字段结束时间
-     * 可选是否归零毫秒。
+     * 修改日期为某个时间字段结束时间 可选是否归零毫秒。
      *
      * <p>
      * 有时候由于毫秒部分必须为0（如MySQL数据库中），因此在此加上选项。
@@ -1169,8 +1152,12 @@ public class DateKit extends Calendar {
      * <pre>
      * 有时候我们计算相差天数的时候需要忽略时分秒。
      * 比如：2016-02-01 23:59:59和2016-02-02 00:00:00相差一秒
-     * 如果isReset为{@code false}相差天数为0。
-     * 如果isReset为{@code true}相差天数将被计算为1
+     * 如果isReset为{@code
+     * false
+     * }相差天数为0。
+     * 如果isReset为{@code
+     * true
+     * }相差天数将被计算为1
      * </pre>
      *
      * @param beginDate 起始日期
@@ -1203,8 +1190,7 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * 计算两个日期相差月数
-     * 在非重置情况下，如果起始日期的天大于结束日期的天，月数要少算1（不足1个月）
+     * 计算两个日期相差月数 在非重置情况下，如果起始日期的天大于结束日期的天，月数要少算1（不足1个月）
      *
      * @param beginDate 起始日期
      * @param endDate   结束日期
@@ -1216,8 +1202,7 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * 计算两个日期相差年数
-     * 在非重置情况下，如果起始日期的月大于结束日期的月，年数要少算1（不足1年）
+     * 计算两个日期相差年数 在非重置情况下，如果起始日期的月大于结束日期的月，年数要少算1（不足1年）
      *
      * @param beginDate 起始日期
      * @param endDate   结束日期
@@ -1362,11 +1347,10 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * 生日转为年龄，计算法定年龄（周岁）
-     * 按照《最高人民法院关于审理未成年人刑事案件具体应用法律若干问题的解释》第二条规定刑法第十七条规定的“周岁”，按照公历的年、月、日计算，从周岁生日的第二天起算。
+     * 生日转为年龄，计算法定年龄（周岁） 按照《最高人民法院关于审理未成年人刑事案件具体应用法律若干问题的解释》第二条规定刑法第十七条规定的“周岁”，按照公历的年、月、日计算，从周岁生日的第二天起算。
      * <ul>
-     *     <li>2022-03-01出生，则相对2023-03-01，周岁为0，相对于2023-03-02才是1岁。</li>
-     *     <li>1999-02-28出生，则相对2000-02-29，周岁为1</li>
+     * <li>2022-03-01出生，则相对2023-03-01，周岁为0，相对于2023-03-02才是1岁。</li>
+     * <li>1999-02-28出生，则相对2000-02-29，周岁为1</li>
      * </ul>
      *
      * @param birthDay 生日
@@ -1380,8 +1364,8 @@ public class DateKit extends Calendar {
      * 计算相对于dateToCompare的年龄，常用于计算指定生日在某年的年龄
      * 按照《最高人民法院关于审理未成年人刑事案件具体应用法律若干问题的解释》第二条规定刑法第十七条规定的“周岁”，按照公历的年、月、日计算，从周岁生日的第二天起算。
      * <ul>
-     *     <li>2022-03-01出生，则相对2023-03-01，周岁为0，相对于2023-03-02才是1岁。</li>
-     *     <li>1999-02-28出生，则相对2000-02-29，周岁为1</li>
+     * <li>2022-03-01出生，则相对2023-03-01，周岁为0，相对于2023-03-02才是1岁。</li>
+     * <li>1999-02-28出生，则相对2000-02-29，周岁为1</li>
      * </ul>
      *
      * @param birthday      生日
@@ -1396,8 +1380,7 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * HH:mm:ss 时间格式字符串转为秒数
-     * 参考：<a href="https://github.com/iceroot">https://github.com/iceroot</a>
+     * HH:mm:ss 时间格式字符串转为秒数 参考：<a href="https://github.com/iceroot">https://github.com/iceroot</a>
      *
      * @param timeStr 字符串时分秒(HH:mm:ss)格式
      * @return 时分秒转换后的秒数
@@ -1418,8 +1401,7 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * 秒数转为时间格式(HH:mm:ss)
-     * 参考：<a href="https://github.com/iceroot">https://github.com/iceroot</a>
+     * 秒数转为时间格式(HH:mm:ss) 参考：<a href="https://github.com/iceroot">https://github.com/iceroot</a>
      *
      * @param seconds 需要转换的秒数
      * @return 转换后的字符串
@@ -1499,7 +1481,8 @@ public class DateKit extends Calendar {
      * @param <T>   Date经过函数处理结果类型
      * @return 结果列表
      */
-    public static <T> List<T> rangeFunc(final Date start, final Date end, final Various unit, final Function<Date, T> func) {
+    public static <T> List<T> rangeFunc(final Date start, final Date end, final Various unit,
+            final Function<Date, T> func) {
         if (start == null || end == null || start.after(end)) {
             return Collections.emptyList();
         }
@@ -1518,7 +1501,8 @@ public class DateKit extends Calendar {
      * @param unit     步进单位
      * @param consumer 每次遍历要执行的 consumer
      */
-    public static void rangeConsume(final Date start, final Date end, final Various unit, final Consumer<Date> consumer) {
+    public static void rangeConsume(final Date start, final Date end, final Various unit,
+            final Consumer<Date> consumer) {
         if (start == null || end == null || start.after(end)) {
             return;
         }
@@ -1719,30 +1703,29 @@ public class DateKit extends Calendar {
      */
     public static String getShortName(final TimeUnit unit) {
         switch (unit) {
-            case NANOSECONDS:
-                return "ns";
-            case MICROSECONDS:
-                return "μs";
-            case MILLISECONDS:
-                return "ms";
-            case SECONDS:
-                return "s";
-            case MINUTES:
-                return "min";
-            case HOURS:
-                return "h";
-            default:
-                return unit.name().toLowerCase();
+        case NANOSECONDS:
+            return "ns";
+        case MICROSECONDS:
+            return "μs";
+        case MILLISECONDS:
+            return "ms";
+        case SECONDS:
+            return "s";
+        case MINUTES:
+            return "min";
+        case HOURS:
+            return "h";
+        default:
+            return unit.name().toLowerCase();
         }
     }
 
     /**
-     * 检查两个时间段是否有时间重叠
-     * 重叠指两个时间段是否有交集，注意此方法时间段重合时如：
+     * 检查两个时间段是否有时间重叠 重叠指两个时间段是否有交集，注意此方法时间段重合时如：
      * <ul>
-     *     <li>此方法未纠正开始时间小于结束时间</li>
-     *     <li>当realStartTime和realEndTime或startTime和endTime相等时,退化为判断区间是否包含点</li>
-     *     <li>当realStartTime和realEndTime和startTime和endTime相等时,退化为判断点与点是否相等</li>
+     * <li>此方法未纠正开始时间小于结束时间</li>
+     * <li>当realStartTime和realEndTime或startTime和endTime相等时,退化为判断区间是否包含点</li>
+     * <li>当realStartTime和realEndTime和startTime和endTime相等时,退化为判断点与点是否相等</li>
      * </ul>
      * See <a href="https://www.ics.uci.edu/~alspaugh/cls/shr/allen.html">准确的区间关系参考:艾伦区间代数</a>
      *
@@ -1752,8 +1735,8 @@ public class DateKit extends Calendar {
      * @param endTime       第二个时间段的结束时间
      * @return true 表示时间有重合或包含或相等
      */
-    public static boolean isOverlap(final Date realStartTime, final Date realEndTime,
-                                    final Date startTime, final Date endTime) {
+    public static boolean isOverlap(final Date realStartTime, final Date realEndTime, final Date startTime,
+            final Date endTime) {
         // x>b||a>y 无交集
         // 则有交集的逻辑为 !(x>b||a>y)
         // 根据德摩根公式，可化简为 x<=b && a<=y 即 realStartTime<=endTime && startTime<=realEndTime
@@ -1781,8 +1764,7 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * 当前日期是否在日期指定范围内
-     * 起始日期和结束日期可以互换
+     * 当前日期是否在日期指定范围内 起始日期和结束日期可以互换
      *
      * @param beginDate 起始日期（包含）
      * @param endDate   结束日期（包含）
@@ -1793,8 +1775,7 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * {@code java.sql.*}日期时间相关封装
-     * 考虑到JDK9+模块化后，java.sql并非默认引入模块，因此将相关内容单独封装为工具，避免类找不到问题。
+     * {@code java.sql.*}日期时间相关封装 考虑到JDK9+模块化后，java.sql并非默认引入模块，因此将相关内容单独封装为工具，避免类找不到问题。
      */
     public static class SQL {
 
@@ -1810,8 +1791,7 @@ public class DateKit extends Calendar {
         }
 
         /**
-         * /**
-         * 转为{@link java.sql.Date}
+         * /** 转为{@link java.sql.Date}
          *
          * @param date 日期时间，非空
          * @return {@link java.sql.Date}
@@ -1822,8 +1802,7 @@ public class DateKit extends Calendar {
         }
 
         /**
-         * /**
-         * 转为{@link java.sql.Time}
+         * /** 转为{@link java.sql.Time}
          *
          * @param date 日期时间，非空
          * @return {@link java.sql.Time}
@@ -1836,11 +1815,11 @@ public class DateKit extends Calendar {
         /**
          * 时间戳转为子类型，支持：
          * <ul>
-         *     <li>{@link Date}</li>
-         *     <li>{@link DateTime}</li>
-         *     <li>{@link java.sql.Date}</li>
-         *     <li>{@link java.sql.Time}</li>
-         *     <li>{@link Timestamp}</li>
+         * <li>{@link Date}</li>
+         * <li>{@link DateTime}</li>
+         * <li>{@link java.sql.Date}</li>
+         * <li>{@link java.sql.Time}</li>
+         * <li>{@link Timestamp}</li>
          * </ul>
          *
          * @param <T>         日期类型
@@ -1860,7 +1839,8 @@ public class DateKit extends Calendar {
                 return (T) new Timestamp(mills);
             }
 
-            throw new UnsupportedOperationException(StringKit.format("Unsupported target Date type: {}", targetClass.getName()));
+            throw new UnsupportedOperationException(
+                    StringKit.format("Unsupported target Date type: {}", targetClass.getName()));
         }
     }
 

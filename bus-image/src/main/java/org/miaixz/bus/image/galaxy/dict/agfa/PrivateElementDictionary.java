@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.agfa;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,39 +46,40 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.Status:
-                return VR.CS;
-            case PrivateTag._0009_xx10_:
-            case PrivateTag._0009_xx11_:
-            case PrivateTag._0009_xx13_:
-            case PrivateTag._0009_xx14_:
-            case PrivateTag._0009_xx15_:
-            case PrivateTag.IdentificationData:
-            case PrivateTag.SensitometryName:
-            case PrivateTag.DoseMonitoring:
-            case PrivateTag.OtherInfo:
-            case PrivateTag.ClippedExposureDeviation:
-            case PrivateTag.LogarithmicPLTFullScale:
-                return VR.LO;
-            case PrivateTag.SessionNumber:
-            case PrivateTag.IDStationName:
-                return VR.SH;
-            case PrivateTag.CassetteDataStream:
-            case PrivateTag.ImageProcessingParameters:
-            case PrivateTag.WindowLevelList:
-            case PrivateTag.GeometricalTransformations:
-            case PrivateTag.RoamOrigin:
-                return VR.ST;
-            case PrivateTag.TotalNumberSeries:
-            case PrivateTag.NumberOfImagesInStudyToBeTransmitted:
-            case PrivateTag.TotalNumberImages:
-            case PrivateTag.ZoomFactor:
-                return VR.US;
+
+        case PrivateTag.Status:
+            return VR.CS;
+        case PrivateTag._0009_xx10_:
+        case PrivateTag._0009_xx11_:
+        case PrivateTag._0009_xx13_:
+        case PrivateTag._0009_xx14_:
+        case PrivateTag._0009_xx15_:
+        case PrivateTag.IdentificationData:
+        case PrivateTag.SensitometryName:
+        case PrivateTag.DoseMonitoring:
+        case PrivateTag.OtherInfo:
+        case PrivateTag.ClippedExposureDeviation:
+        case PrivateTag.LogarithmicPLTFullScale:
+            return VR.LO;
+        case PrivateTag.SessionNumber:
+        case PrivateTag.IDStationName:
+            return VR.SH;
+        case PrivateTag.CassetteDataStream:
+        case PrivateTag.ImageProcessingParameters:
+        case PrivateTag.WindowLevelList:
+        case PrivateTag.GeometricalTransformations:
+        case PrivateTag.RoamOrigin:
+            return VR.ST;
+        case PrivateTag.TotalNumberSeries:
+        case PrivateTag.NumberOfImagesInStudyToBeTransmitted:
+        case PrivateTag.TotalNumberImages:
+        case PrivateTag.ZoomFactor:
+            return VR.US;
         }
         return VR.UN;
     }

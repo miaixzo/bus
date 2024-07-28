@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.setting.metric.toml;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -48,9 +48,9 @@ import java.util.Map;
  * <p>
  * 日期格式支持：
  * <ul>
- *     <li>2015-03-20                转为：{@link LocalDate}</li>
- *     <li>2015-03-20T19:04:35       转为：{@link LocalDateTime}</li>
- *     <li>2015-03-20T19:04:35+01:00 转为：{@link ZonedDateTime}</li>
+ * <li>2015-03-20 转为：{@link LocalDate}</li>
+ * <li>2015-03-20T19:04:35 转为：{@link LocalDateTime}</li>
+ * <li>2015-03-20T19:04:35+01:00 转为：{@link ZonedDateTime}</li>
  * </ul>
  * <p>
  * 此类支持更加宽松的key，除了{@code A-Za-z0-9_- }，其他key使用"包装。
@@ -68,9 +68,8 @@ public class TomlWriter {
     private int lineBreaks = 0, indentationLevel = -1;// -1 to prevent indenting the first level
 
     /**
-     * Creates a new TomlWriter with the defaults parameters. The system line separator is used (ie '\n' on
-     * Linux and OSX, "\r\n" on Windows). This is exactly the same as
-     * {@code TomlWriter(writer, 1, false, System.lineSeparator()}.
+     * Creates a new TomlWriter with the defaults parameters. The system line separator is used (ie '\n' on Linux and
+     * OSX, "\r\n" on Windows). This is exactly the same as {@code TomlWriter(writer, 1, false, System.lineSeparator()}.
      *
      * @param writer where to write the data
      */
@@ -79,8 +78,8 @@ public class TomlWriter {
     }
 
     /**
-     * Creates a new TomlWriter with the specified parameters. The system line separator is used (ie '\n' on
-     * Linux and OSX, "\r\n" on Windows). This is exactly the same as
+     * Creates a new TomlWriter with the specified parameters. The system line separator is used (ie '\n' on Linux and
+     * OSX, "\r\n" on Windows). This is exactly the same as
      * {@code TomlWriter(writer, indentSize, indentWithSpaces, System.lineSeparator())}.
      *
      * @param writer           where to write the data
@@ -99,7 +98,8 @@ public class TomlWriter {
      * @param indentWithSpaces true to indent with spaces, false to indent with tabs
      * @param lineSeparator    the String to write to break lines
      */
-    public TomlWriter(final Writer writer, final int indentSize, final boolean indentWithSpaces, final String lineSeparator) {
+    public TomlWriter(final Writer writer, final int indentSize, final boolean indentWithSpaces,
+            final String lineSeparator) {
         this.writer = writer;
         this.indentSize = indentSize;
         this.indentCharacter = indentWithSpaces ? Symbol.C_SPACE : Symbol.C_TAB;
@@ -107,39 +107,36 @@ public class TomlWriter {
     }
 
     private static boolean isValidCharOfKey(final char c) {
-        return (c >= 'a' && c <= 'z') ||
-                (c >= 'A' && c <= 'Z') ||
-                (c >= '0' && c <= '9') ||
-                c == Symbol.C_MINUS ||
-                c == Symbol.C_UNDERLINE;
+        return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == Symbol.C_MINUS
+                || c == Symbol.C_UNDERLINE;
     }
 
     static void addEscaped(final char c, final StringBuilder sb) {
         switch (c) {
-            case '\b':
-                sb.append("\\b");
-                break;
-            case '\t':
-                sb.append("\\t");
-                break;
-            case '\n':
-                sb.append("\\n");
-                break;
-            case '\\':
-                sb.append("\\\\");
-                break;
-            case '\r':
-                sb.append("\\r");
-                break;
-            case '\f':
-                sb.append("\\f");
-                break;
-            case '"':
-                sb.append("\\\"");
-                break;
-            default:
-                sb.append(c);
-                break;
+        case '\b':
+            sb.append("\\b");
+            break;
+        case '\t':
+            sb.append("\\t");
+            break;
+        case '\n':
+            sb.append("\\n");
+            break;
+        case '\\':
+            sb.append("\\\\");
+            break;
+        case '\r':
+            sb.append("\\r");
+            break;
+        case '\f':
+            sb.append("\\f");
+            break;
+        case '"':
+            sb.append("\\\"");
+            break;
+        default:
+            sb.append(c);
+            break;
         }
     }
 
@@ -191,11 +188,11 @@ public class TomlWriter {
      * Writes the content of a table.
      *
      * @param table        the table to write
-     * @param simpleValues true to write only the simple values (and the printer arrays), false to write only
-     *                     the tables
+     * @param simpleValues true to write only the simple values (and the printer arrays), false to write only the tables
      *                     (and the arrays of tables).
      */
-    private void writeTableContent(final Map<String, Object> table, final boolean simpleValues) throws InternalException {
+    private void writeTableContent(final Map<String, Object> table, final boolean simpleValues)
+            throws InternalException {
         for (final Map.Entry<String, Object> entry : table.entrySet()) {
             final String name = entry.getKey();
             final Object value = entry.getValue();

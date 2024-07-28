@@ -24,15 +24,14 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.copier;
 
 import org.miaixz.bus.core.io.StreamProgress;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * IO拷贝抽象，可自定义包括缓存、进度条等信息
- * 此对象非线程安全
+ * IO拷贝抽象，可自定义包括缓存、进度条等信息 此对象非线程安全
  *
  * @param <S> 拷贝源类型，如InputStream、Reader等
  * @param <T> 拷贝目标类型，如OutputStream、Writer等

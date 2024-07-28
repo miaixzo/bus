@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cron.listener;
 
 import org.miaixz.bus.cron.Executor;
@@ -103,8 +103,7 @@ public class TaskListenerManager implements Serializable {
     }
 
     /**
-     * 通知所有监听任务启动器结束并失败
-     * 无监听将打印堆栈到命令行
+     * 通知所有监听任务启动器结束并失败 无监听将打印堆栈到命令行
      *
      * @param executor  {@link Executor}
      * @param exception 失败原因

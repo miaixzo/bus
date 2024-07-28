@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.hardware;
 
 import com.sun.jna.platform.win32.Advapi32Util;
@@ -92,7 +92,8 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
     // This tick query is memoized to enforce a minimum elapsed time for determining
     // the capacity base multiplier
     private final Supplier<Pair<List<String>, Map<ProcessorUtilityTickCountProperty, List<Long>>>> processorUtilityCounters = USE_CPU_UTILITY
-            ? Memoizer.memoize(WindowsCentralProcessor::queryProcessorUtilityCounters, TimeUnit.MILLISECONDS.toNanos(300L))
+            ? Memoizer.memoize(WindowsCentralProcessor::queryProcessorUtilityCounters,
+                    TimeUnit.MILLISECONDS.toNanos(300L))
             : null;
     // populated by initProcessorCounts called by the parent constructor
     private Map<String, Integer> numaNodeProcToLogicalProcMap;
@@ -179,10 +180,10 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
             processorID = WmiKit.getString(processorId, ProcessorIdProperty.PROCESSORID, 0);
         } else {
             processorID = createProcessorID(cpuStepping, cpuModel, cpuFamily,
-                    cpu64bit ? new String[]{"ia64"} : new String[0]);
+                    cpu64bit ? new String[] { "ia64" } : new String[0]);
         }
-        return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit,
-                cpuVendorFreq);
+        return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping,
+                processorID, cpu64bit, cpuVendorFreq);
     }
 
     @Override
@@ -212,8 +213,8 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
             lpi = LogicalProcessorInformation.getLogicalProcessorInformation();
         }
         List<String> featureFlags = Arrays.stream(Kernel32.ProcessorFeature.values())
-                .filter(f -> Kernel32.INSTANCE.IsProcessorFeaturePresent(f.value())).map(Kernel32.ProcessorFeature::name)
-                .collect(Collectors.toList());
+                .filter(f -> Kernel32.INSTANCE.IsProcessorFeaturePresent(f.value()))
+                .map(Kernel32.ProcessorFeature::name).collect(Collectors.toList());
         return new Tuple(lpi.getLeft(), lpi.getMiddle(), lpi.getRight(), featureFlags);
     }
 
@@ -276,7 +277,8 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
      */
     private long[] queryNTPower(int fieldIndex) {
         PowrProf.ProcessorPowerInformation ppi = new PowrProf.ProcessorPowerInformation();
-        PowrProf.ProcessorPowerInformation[] ppiArray = (PowrProf.ProcessorPowerInformation[]) ppi.toArray(getLogicalProcessorCount());
+        PowrProf.ProcessorPowerInformation[] ppiArray = (PowrProf.ProcessorPowerInformation[]) ppi
+                .toArray(getLogicalProcessorCount());
         long[] freqs = new long[getLogicalProcessorCount()];
         if (0 != PowrProf.INSTANCE.CallNtPowerInformation(POWER_INFORMATION_LEVEL.ProcessorInformation, null, 0,
                 ppiArray[0].getPointer(), ppi.size() * ppiArray.length)) {
@@ -404,9 +406,9 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
         if (instances.isEmpty() || systemList == null || userList == null || irqList == null || softIrqList == null
                 || idleList == null
                 || (USE_CPU_UTILITY && (baseList == null || systemUtility == null || processorUtility == null
-                || processorUtilityBase == null || initSystemList == null || initUserList == null
-                || initBase == null || initSystemUtility == null || initProcessorUtility == null
-                || initProcessorUtilityBase == null))) {
+                        || processorUtilityBase == null || initSystemList == null || initUserList == null
+                        || initBase == null || initSystemUtility == null || initProcessorUtility == null
+                        || initProcessorUtilityBase == null))) {
             return ticks;
         }
         for (String instance : instances) {
@@ -467,8 +469,9 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
             }
 
             // Decrement IRQ from system to avoid double counting in the total array
-            ticks[cpu][CentralProcessor.TickType.SYSTEM.getIndex()] -= ticks[cpu][CentralProcessor.TickType.IRQ.getIndex()]
-                    + ticks[cpu][CentralProcessor.TickType.SOFTIRQ.getIndex()];
+            ticks[cpu][CentralProcessor.TickType.SYSTEM
+                    .getIndex()] -= ticks[cpu][CentralProcessor.TickType.IRQ.getIndex()]
+                            + ticks[cpu][CentralProcessor.TickType.SOFTIRQ.getIndex()];
 
             // Raw value is cumulative 100NS-ticks
             // Divide by 10_000 to get milliseconds

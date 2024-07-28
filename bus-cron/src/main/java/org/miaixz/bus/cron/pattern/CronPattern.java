@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cron.pattern;
 
 import org.miaixz.bus.core.center.date.Calendar;
@@ -39,14 +39,15 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 /**
- * 定时任务表达式
- * 表达式类似于Linux的crontab表达式，表达式使用空格分成5个部分，按顺序依次为：
+ * 定时任务表达式 表达式类似于Linux的crontab表达式，表达式使用空格分成5个部分，按顺序依次为：
  * <ol>
  * <li><strong>分</strong> ：范围：0~59</li>
  * <li><strong>时</strong> ：范围：0~23</li>
  * <li><strong>日</strong> ：范围：1~31，<strong>"L"</strong> 表示月的最后一天</li>
- * <li><strong>月</strong> ：范围：1~12，同时支持不区分大小写的别名："jan","feb", "mar", "apr", "may","jun", "jul", "aug", "sep","oct", "nov", "dec"</li>
- * <li><strong>周</strong> ：范围：0 (Sunday)~6(Saturday)，7也可以表示周日，同时支持不区分大小写的别名："sun","mon", "tue", "wed", "thu","fri", "sat"，<strong>"L"</strong> 表示周六</li>
+ * <li><strong>月</strong> ：范围：1~12，同时支持不区分大小写的别名："jan","feb", "mar", "apr", "may","jun", "jul", "aug", "sep","oct",
+ * "nov", "dec"</li>
+ * <li><strong>周</strong> ：范围：0 (Sunday)~6(Saturday)，7也可以表示周日，同时支持不区分大小写的别名："sun","mon", "tue", "wed", "thu","fri",
+ * "sat"，<strong>"L"</strong> 表示周六</li>
  * </ol>
  * <p>
  * 为了兼容Quartz表达式，同时支持6位和7位表达式，其中：
@@ -56,11 +57,12 @@ import java.util.*;
  * 当为7位时，最后一位表示<strong>年</strong> ，范围1970~2099，但是第7位不做解析，也不做匹配
  * </pre>
  * <p>
- * 当定时任务运行到的时间匹配这些表达式后，任务被启动。
- * 注意：
+ * 当定时任务运行到的时间匹配这些表达式后，任务被启动。 注意：
  *
  * <pre>
- * 当isMatchSecond为{@code true}时才会匹配秒部分
+ * 当isMatchSecond为{@code
+ * true
+ * }时才会匹配秒部分
  * 默认都是关闭的
  * </pre>
  * <p>
@@ -178,7 +180,8 @@ public class CronPattern {
      * @param count   列举数量
      * @return 日期列表
      */
-    public static List<Date> matchedDates(final CronPattern pattern, final long start, final long end, final int count) {
+    public static List<Date> matchedDates(final CronPattern pattern, final long start, final long end,
+            final int count) {
         Assert.isTrue(start < end, "Start date is later than end !");
 
         final List<Date> result = new ArrayList<>(count);
@@ -196,8 +199,7 @@ public class CronPattern {
     }
 
     /**
-     * 获取处理后的字段列表
-     * 月份从1开始，周从0开始
+     * 获取处理后的字段列表 月份从1开始，周从0开始
      *
      * @param dateTime      {@link java.util.Calendar}
      * @param isMatchSecond 是否匹配秒，{@link false}则秒返回-1
@@ -211,12 +213,11 @@ public class CronPattern {
         final int month = dateTime.getMonthValue();// 月份从1开始
         final int dayOfWeek = Week.of(dateTime.getDayOfWeek()).getCode() - 1; // 星期从0开始，0和7都表示周日
         final int year = dateTime.getYear();
-        return new int[]{second, minute, hour, dayOfMonth, month, dayOfWeek, year};
+        return new int[] { second, minute, hour, dayOfMonth, month, dayOfWeek, year };
     }
 
     /**
-     * 获取处理后的字段列表
-     * 月份从1开始，周从0开始
+     * 获取处理后的字段列表 月份从1开始，周从0开始
      *
      * @param calendar      {@link java.util.Calendar}
      * @param isMatchSecond 是否匹配秒，{@link false}则秒返回-1
@@ -230,7 +231,7 @@ public class CronPattern {
         final int monthBase1 = calendar.get(java.util.Calendar.MONTH) + 1;// 月份从1开始
         final int dayOfWeekBase0 = calendar.get(java.util.Calendar.DAY_OF_WEEK) - 1; // 星期从0开始，0和7都表示周日
         final int year = calendar.get(java.util.Calendar.YEAR);
-        return new int[]{second, minute, hour, dayOfMonth, monthBase1, dayOfWeekBase0, year};
+        return new int[] { second, minute, hour, dayOfMonth, monthBase1, dayOfWeekBase0, year };
     }
 
     /**

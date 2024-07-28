@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.mitra_presentation_1_0;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,24 +46,25 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.Rotation:
-            case PrivateTag.SmoothRotation:
-            case PrivateTag._0029_xx10_:
-            case PrivateTag._0029_xx11_:
-            case PrivateTag._0029_xx12_:
-            case PrivateTag._0029_xx13_:
-                return VR.CS;
-            case PrivateTag.Invert:
-            case PrivateTag.HasTabstop:
-                return VR.IS;
-            case PrivateTag.WindowWidth:
-            case PrivateTag.WindowCentre:
-                return VR.LO;
+
+        case PrivateTag.Rotation:
+        case PrivateTag.SmoothRotation:
+        case PrivateTag._0029_xx10_:
+        case PrivateTag._0029_xx11_:
+        case PrivateTag._0029_xx12_:
+        case PrivateTag._0029_xx13_:
+            return VR.CS;
+        case PrivateTag.Invert:
+        case PrivateTag.HasTabstop:
+            return VR.IS;
+        case PrivateTag.WindowWidth:
+        case PrivateTag.WindowCentre:
+            return VR.LO;
         }
         return VR.UN;
     }

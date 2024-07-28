@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.builtin.asymmetric;
 
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -71,8 +71,7 @@ public class Asymmetric<T extends Asymmetric<T>> implements Serializable {
     /**
      * 构造
      * <p>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param algorithm  算法
      * @param privateKey 私钥
@@ -83,9 +82,7 @@ public class Asymmetric<T extends Asymmetric<T>> implements Serializable {
     }
 
     /**
-     * 初始化
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密（签名）或者解密（校验）
+     * 初始化 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密（签名）或者解密（校验）
      *
      * @param algorithm  算法
      * @param privateKey 私钥
@@ -205,16 +202,16 @@ public class Asymmetric<T extends Asymmetric<T>> implements Serializable {
      */
     protected Key getKeyByType(final KeyType type) {
         switch (type) {
-            case PrivateKey:
-                if (null == this.privateKey) {
-                    throw new NullPointerException("Private data must not null when use it !");
-                }
-                return this.privateKey;
-            case PublicKey:
-                if (null == this.publicKey) {
-                    throw new NullPointerException("Public data must not null when use it !");
-                }
-                return this.publicKey;
+        case PrivateKey:
+            if (null == this.privateKey) {
+                throw new NullPointerException("Private data must not null when use it !");
+            }
+            return this.privateKey;
+        case PublicKey:
+            if (null == this.publicKey) {
+                throw new NullPointerException("Public data must not null when use it !");
+            }
+            return this.publicKey;
         }
         throw new CryptoException("Unsupported data type: " + type);
     }

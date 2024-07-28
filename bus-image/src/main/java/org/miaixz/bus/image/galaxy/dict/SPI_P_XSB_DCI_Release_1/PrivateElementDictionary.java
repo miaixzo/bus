@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SPI_P_XSB_DCI_Release_1;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,19 +46,20 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.RTDDataCompressionFactor:
-                return VR.DS;
-            case PrivateTag.VideoBeamBoost:
-                return VR.LT;
-            case PrivateTag.ChannelGeneratingVideoSync:
-            case PrivateTag.VideoGain:
-            case PrivateTag.VideoOffset:
-                return VR.US;
+
+        case PrivateTag.RTDDataCompressionFactor:
+            return VR.DS;
+        case PrivateTag.VideoBeamBoost:
+            return VR.LT;
+        case PrivateTag.ChannelGeneratingVideoSync:
+        case PrivateTag.VideoGain:
+        case PrivateTag.VideoOffset:
+            return VR.US;
         }
         return VR.UN;
     }

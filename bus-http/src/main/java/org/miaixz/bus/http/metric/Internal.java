@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric;
 
 import org.miaixz.bus.http.*;
@@ -36,8 +36,8 @@ import org.miaixz.bus.http.accord.RealConnectionPool;
 import javax.net.ssl.SSLSocket;
 
 /**
- * Escalate internal APIs in {@code http} so they can be used from Http's implementation
- * packages. The only implementation of this interface is in {@link Httpd}.
+ * Escalate internal APIs in {@code http} so they can be used from Http's implementation packages. The only
+ * implementation of this interface is in {@link Httpd}.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -56,13 +56,11 @@ public abstract class Internal {
 
     public abstract int code(Response.Builder responseBuilder);
 
-    public abstract void apply(ConnectionSuite tlsConfiguration, SSLSocket sslSocket,
-                               boolean isFallback);
+    public abstract void apply(ConnectionSuite tlsConfiguration, SSLSocket sslSocket, boolean isFallback);
 
     public abstract NewCall newWebSocketCall(Httpd client, Request request);
 
-    public abstract void initExchange(
-            Response.Builder responseBuilder, Exchange exchange);
+    public abstract void initExchange(Response.Builder responseBuilder, Exchange exchange);
 
     public abstract Exchange exchange(Response response);
 

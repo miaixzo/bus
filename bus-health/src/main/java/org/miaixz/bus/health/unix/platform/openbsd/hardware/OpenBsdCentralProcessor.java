@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.openbsd.hardware;
 
 import com.sun.jna.Memory;
@@ -57,7 +57,8 @@ import java.util.regex.Matcher;
 @ThreadSafe
 public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
 
-    private static final java.util.regex.Pattern DMESG_CPU = java.util.regex.Pattern.compile("cpu(\\d+): smt (\\d+), core (\\d+), package (\\d+)");
+    private static final java.util.regex.Pattern DMESG_CPU = java.util.regex.Pattern
+            .compile("cpu(\\d+): smt (\\d+), core (\\d+), package (\\d+)");
     private final Supplier<Pair<Long, Long>> vmStats = Memoizer.memoize(OpenBsdCentralProcessor::queryVmStats,
             Memoizer.defaultExpiration());
 
@@ -133,8 +134,8 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
                 || Executor.getFirstAnswer("uname -m").trim().contains("64");
         String processorID = String.format(Locale.ROOT, "%08x%08x", cpufeature, cpuid);
 
-        return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit,
-                cpuFreq);
+        return new CentralProcessor.ProcessorIdentifier(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping,
+                processorID, cpu64bit, cpuFreq);
     }
 
     @Override
@@ -190,7 +191,8 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
         }
         List<CentralProcessor.LogicalProcessor> logProcs = new ArrayList<>(logicalProcessorCount);
         for (int i = 0; i < logicalProcessorCount; i++) {
-            logProcs.add(new CentralProcessor.LogicalProcessor(i, coreMap.getOrDefault(i, 0), packageMap.getOrDefault(i, 0)));
+            logProcs.add(new CentralProcessor.LogicalProcessor(i, coreMap.getOrDefault(i, 0),
+                    packageMap.getOrDefault(i, 0)));
         }
         Map<Integer, String> cpuMap = new HashMap<>();
         // cpu0 at mainbus0 mpidr 0: ARM Cortex-A7 r0p5
@@ -252,7 +254,8 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
                 }
             }
         }
-        List<CentralProcessor.PhysicalProcessor> physProcs = cpuMap.isEmpty() ? null : createProcListFromDmesg(logProcs, cpuMap);
+        List<CentralProcessor.PhysicalProcessor> physProcs = cpuMap.isEmpty() ? null
+                : createProcListFromDmesg(logProcs, cpuMap);
         return new Tuple(logProcs, physProcs, orderedProcCaches(caches), new ArrayList<>(featureFlags));
     }
 
@@ -260,16 +263,18 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
         String[] split = Pattern.SPACES_PATTERN.split(cacheStr);
         if (split.length > 3) {
             switch (split[split.length - 1]) {
-                case "I-cache":
-                    return new CentralProcessor.ProcessorCache(1, Parsing.getFirstIntValue(split[2]), Parsing.getFirstIntValue(split[1]),
-                            Parsing.parseDecimalMemorySizeToBinary(split[0]), CentralProcessor.ProcessorCache.Type.INSTRUCTION);
-                case "D-cache":
-                    return new CentralProcessor.ProcessorCache(1, Parsing.getFirstIntValue(split[2]), Parsing.getFirstIntValue(split[1]),
-                            Parsing.parseDecimalMemorySizeToBinary(split[0]), CentralProcessor.ProcessorCache.Type.DATA);
-                default:
-                    return new CentralProcessor.ProcessorCache(Parsing.getFirstIntValue(split[3]), Parsing.getFirstIntValue(split[2]),
-                            Parsing.getFirstIntValue(split[1]), Parsing.parseDecimalMemorySizeToBinary(split[0]),
-                            CentralProcessor.ProcessorCache.Type.UNIFIED);
+            case "I-cache":
+                return new CentralProcessor.ProcessorCache(1, Parsing.getFirstIntValue(split[2]),
+                        Parsing.getFirstIntValue(split[1]), Parsing.parseDecimalMemorySizeToBinary(split[0]),
+                        CentralProcessor.ProcessorCache.Type.INSTRUCTION);
+            case "D-cache":
+                return new CentralProcessor.ProcessorCache(1, Parsing.getFirstIntValue(split[2]),
+                        Parsing.getFirstIntValue(split[1]), Parsing.parseDecimalMemorySizeToBinary(split[0]),
+                        CentralProcessor.ProcessorCache.Type.DATA);
+            default:
+                return new CentralProcessor.ProcessorCache(Parsing.getFirstIntValue(split[3]),
+                        Parsing.getFirstIntValue(split[2]), Parsing.getFirstIntValue(split[1]),
+                        Parsing.parseDecimalMemorySizeToBinary(split[0]), CentralProcessor.ProcessorCache.Type.UNIFIED);
             }
         }
         return null;
@@ -343,7 +348,7 @@ public class OpenBsdCentralProcessor extends AbstractCentralProcessor {
      *
      * @param nelem Number of elements to return.
      * @return an array of the system load averages for 1, 5, and 15 minutes with the size of the array specified by
-     * nelem; or negative values if not available.
+     *         nelem; or negative values if not available.
      */
     @Override
     public double[] getSystemLoadAverage(int nelem) {

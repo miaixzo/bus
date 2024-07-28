@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv.lut;
 
 import org.miaixz.bus.image.Builder;
@@ -54,13 +54,12 @@ public class ModalityLutModule {
     /**
      * Modality LUT Module
      *
-     * <p>Note: Either a Modality LUT Sequence containing a single Item or Rescale Slope and Intercept
-     * values shall be present but not both. This implementation only applies a warning in such a
-     * case.
+     * <p>
+     * Note: Either a Modality LUT Sequence containing a single Item or Rescale Slope and Intercept values shall be
+     * present but not both. This implementation only applies a warning in such a case.
      *
-     * @see <a
-     * href="http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.11.html">C.11.1
-     * Modality LUT Module</a>
+     * @see <a href="http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.11.html">C.11.1 Modality LUT
+     *      Module</a>
      */
     public ModalityLutModule(Attributes dcm) {
         this.rescaleSlope = OptionalDouble.empty();
@@ -76,17 +75,14 @@ public class ModalityLutModule {
         String modality = RGBImageVoiLut.getModality(dcm);
         if (dcm.containsValue(Tag.RescaleIntercept) && dcm.containsValue(Tag.RescaleSlope)) {
             if ("MR".equals(modality)
-                    //          || "PT".equals(modality)
-                    || "XA".equals(modality)
-                    || "XRF".equals(modality)) {
+                    // || "PT".equals(modality)
+                    || "XA".equals(modality) || "XRF".equals(modality)) {
                 // IHE BIR: Windowing and Rendering 4.16.4.2.2.5.4
                 Logger.trace("Do not apply RescaleSlope and RescaleIntercept to {}", modality);
             } else {
-                this.rescaleSlope =
-                        OptionalDouble.of(Builder.getDoubleFromDicomElement(dcm, Tag.RescaleSlope, null));
-                this.rescaleIntercept =
-                        OptionalDouble.of(
-                                Builder.getDoubleFromDicomElement(dcm, Tag.RescaleIntercept, null));
+                this.rescaleSlope = OptionalDouble.of(Builder.getDoubleFromDicomElement(dcm, Tag.RescaleSlope, null));
+                this.rescaleIntercept = OptionalDouble
+                        .of(Builder.getDoubleFromDicomElement(dcm, Tag.RescaleIntercept, null));
                 this.rescaleType = Optional.ofNullable(dcm.getString(Tag.RescaleType));
             }
         }
@@ -97,9 +93,7 @@ public class ModalityLutModule {
 
     private void initModalityLUTSequence(Attributes dcm, String modality) {
         Attributes dcmLut = dcm.getNestedDataset(Tag.ModalityLUTSequence);
-        if (dcmLut != null
-                && dcmLut.containsValue(Tag.ModalityLUTType)
-                && dcmLut.containsValue(Tag.LUTDescriptor)
+        if (dcmLut != null && dcmLut.containsValue(Tag.ModalityLUTType) && dcmLut.containsValue(Tag.LUTDescriptor)
                 && dcmLut.containsValue(Tag.LUTData)) {
             applyMLUT(dcm, modality, dcmLut);
         }
@@ -132,8 +126,7 @@ public class ModalityLutModule {
         if (Logger.isTraceEnabled()) {
             if (lut.isPresent()) {
                 if (rescaleIntercept.isPresent()) {
-                    Logger.trace(
-                            "Modality LUT Sequence shall NOT be present if Rescale Intercept is present");
+                    Logger.trace("Modality LUT Sequence shall NOT be present if Rescale Intercept is present");
                 }
                 if (lutType.isEmpty()) {
                     Logger.trace("Modality Type is required if Modality LUT Sequence is present.");

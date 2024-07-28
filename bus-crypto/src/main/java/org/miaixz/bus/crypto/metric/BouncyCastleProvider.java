@@ -24,12 +24,11 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.metric;
 
 /**
- * Provider对象生产工厂类
- * 通过SPI方式加载可用的{@link BouncyCastleProvider}，并创建对应的{@link java.security.Provider}
+ * Provider对象生产工厂类 通过SPI方式加载可用的{@link BouncyCastleProvider}，并创建对应的{@link java.security.Provider}
  * spi定义在：META-INF/services/org.miaixz.bus.crypto.Provider
  *
  * @author Kimi Liu

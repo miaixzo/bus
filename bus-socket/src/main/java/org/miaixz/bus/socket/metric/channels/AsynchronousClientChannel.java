@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket.metric.channels;
 
 import org.miaixz.bus.socket.metric.handler.FutureCompletionHandler;
@@ -47,7 +47,8 @@ final class AsynchronousClientChannel extends AsynchronousServerChannel {
      */
     private final AsynchronousChannelGroup group;
 
-    public AsynchronousClientChannel(AsynchronousChannelGroup group, SocketChannel channel, boolean lowMemory) throws IOException {
+    public AsynchronousClientChannel(AsynchronousChannelGroup group, SocketChannel channel, boolean lowMemory)
+            throws IOException {
         super(group, channel, lowMemory);
         this.group = group;
     }
@@ -73,11 +74,12 @@ final class AsynchronousClientChannel extends AsynchronousServerChannel {
         return connectFuture;
     }
 
-
-    public <A> void doConnect(SocketAddress remote, A attachment, CompletionHandler<Void, ? super A> completionHandler) {
+    public <A> void doConnect(SocketAddress remote, A attachment,
+            CompletionHandler<Void, ? super A> completionHandler) {
         try {
             // 此前通过Future调用,且触发了cancel
-            if (completionHandler instanceof FutureCompletionHandler && ((FutureCompletionHandler) completionHandler).isDone()) {
+            if (completionHandler instanceof FutureCompletionHandler
+                    && ((FutureCompletionHandler) completionHandler).isDone()) {
                 return;
             }
             boolean connected = channel.isConnectionPending();
@@ -91,7 +93,8 @@ final class AsynchronousClientChannel extends AsynchronousServerChannel {
             } else {
                 group.commonWorker.addRegister(selector -> {
                     try {
-                        channel.register(selector, SelectionKey.OP_CONNECT, (Runnable) () -> doConnect(remote, attachment, completionHandler));
+                        channel.register(selector, SelectionKey.OP_CONNECT,
+                                (Runnable) () -> doConnect(remote, attachment, completionHandler));
                     } catch (ClosedChannelException e) {
                         completionHandler.failed(e, attachment);
                     }

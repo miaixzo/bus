@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pay.metric;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -140,10 +140,7 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
         if (null == scopes || scopes.length == 0) {
             return null;
         }
-        return Arrays.stream(scopes)
-                .filter((PayScope::isDefault))
-                .map(PayScope::getScope)
-                .collect(Collectors.toList());
+        return Arrays.stream(scopes).filter((PayScope::isDefault)).map(PayScope::getScope).collect(Collectors.toList());
     }
 
     /**
@@ -179,13 +176,7 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
      */
     public static String post(String url, String data) {
         try {
-            return Httpz.post()
-                    .url(url)
-                    .body(data)
-                    .build()
-                    .execute()
-                    .body()
-                    .string();
+            return Httpz.post().url(url).body(data).build().execute().body().string();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -197,16 +188,13 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
      * @param url       请求url
      * @param data      请求参数
      * @param headerMap 请求头
-     * @return {@link Message}  请求返回的结果
+     * @return {@link Message} 请求返回的结果
      */
     public static Message post(String url, String data, Map<String, String> headerMap) {
         try {
             Response response = postTo(url, headerMap, data);
-            return Message.builder()
-                    .body(response.body().string())
-                    .status(response.code())
-                    .headers(response.headers().toMultimap())
-                    .build();
+            return Message.builder().body(response.body().string()).status(response.code())
+                    .headers(response.headers().toMultimap()).build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -223,11 +211,8 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     public static Message get(String url, Map<String, String> formMap, Map<String, String> headerMap) {
         try {
             Response response = getTo(url, formMap, headerMap);
-            return Message.builder()
-                    .body(response.body().string())
-                    .status(response.code())
-                    .headers(response.headers().toMultimap())
-                    .build();
+            return Message.builder().body(response.body().string()).status(response.code())
+                    .headers(response.headers().toMultimap()).build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -239,16 +224,13 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
      * @param url       请求url
      * @param formMap   请求参数
      * @param headerMap 请求头
-     * @return {@link Message}  请求返回的结果
+     * @return {@link Message} 请求返回的结果
      */
     public static Message post(String url, Map<String, String> formMap, Map<String, String> headerMap) {
         try {
             Response response = postTo(url, headerMap, formMap);
-            return Message.builder()
-                    .body(response.body().string())
-                    .status(response.code())
-                    .headers(response.headers().toMultimap())
-                    .build();
+            return Message.builder().body(response.body().string()).status(response.code())
+                    .headers(response.headers().toMultimap()).build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -261,16 +243,13 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
      * @param formMap   请求参数
      * @param headerMap 请求头
      * @param file      文件
-     * @return {@link Message}  请求返回的结果
+     * @return {@link Message} 请求返回的结果
      */
     public static Message post(String url, Map<String, String> formMap, Map<String, String> headerMap, File file) {
         try {
             Response response = postTo(url, headerMap, formMap);
-            return Message.builder()
-                    .body(response.body().string())
-                    .status(response.code())
-                    .headers(response.headers().toMultimap())
-                    .build();
+            return Message.builder().body(response.body().string()).status(response.code())
+                    .headers(response.headers().toMultimap()).build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -291,11 +270,10 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
             if (StringKit.isEmpty(protocol)) {
                 protocol = Protocol.TLSv1.name;
             }
-            Httpd httpd = new Httpd().newBuilder().sslSocketFactory(getSslSocketFactory(certPath, null, certPass, protocol)).build();
-            final Request request = new Request.Builder()
-                    .url(url)
-                    .post(RequestBody.create(MediaType.APPLICATION_FORM_URLENCODED_TYPE, data))
-                    .build();
+            Httpd httpd = new Httpd().newBuilder()
+                    .sslSocketFactory(getSslSocketFactory(certPath, null, certPass, protocol)).build();
+            final Request request = new Request.Builder().url(url)
+                    .post(RequestBody.create(MediaType.APPLICATION_FORM_URLENCODED_TYPE, data)).build();
             NewCall call = httpd.newCall(request);
             return call.execute().body().string();
         } catch (Exception e) {
@@ -318,11 +296,10 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
             if (StringKit.isEmpty(Protocol.TLSv1.name)) {
                 protocol = Protocol.TLSv1.name;
             }
-            Httpd httpd = new Httpd().newBuilder().sslSocketFactory(getSslSocketFactory(null, certFile, certPass, protocol)).build();
-            final Request request = new Request.Builder()
-                    .url(url)
-                    .post(RequestBody.create(MediaType.APPLICATION_FORM_URLENCODED_TYPE, data))
-                    .build();
+            Httpd httpd = new Httpd().newBuilder()
+                    .sslSocketFactory(getSslSocketFactory(null, certFile, certPass, protocol)).build();
+            final Request request = new Request.Builder().url(url)
+                    .post(RequestBody.create(MediaType.APPLICATION_FORM_URLENCODED_TYPE, data)).build();
             NewCall call = httpd.newCall(request);
             return call.execute().body().string();
         } catch (Exception e) {
@@ -336,16 +313,13 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
      * @param url       请求url
      * @param data      请求参数
      * @param headerMap 请求头
-     * @return {@link Message}  请求返回的结果
+     * @return {@link Message} 请求返回的结果
      */
     public static Message put(String url, String data, Map<String, String> headerMap) {
         try {
             Response response = putTo(url, headerMap, data);
-            return Message.builder()
-                    .body(response.body().string())
-                    .status(response.code())
-                    .headers(response.headers().toMultimap())
-                    .build();
+            return Message.builder().body(response.body().string()).status(response.code())
+                    .headers(response.headers().toMultimap()).build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -360,18 +334,17 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
      * @param certPass 证书密码
      * @param filePath 上传文件路径
      * @param protocol 协议
-     * @return {@link String}  请求返回的结果
+     * @return {@link String} 请求返回的结果
      */
-    public static String upload(String url, String data, String certPath, String certPass, String filePath, String protocol) {
+    public static String upload(String url, String data, String certPath, String certPass, String filePath,
+            String protocol) {
 
         SSLSocketFactory sslSocketFactory = getSslSocketFactory(certPath, null, certPass, protocol);
 
         try {
-            return Httpz.post().url(url)
-                    .addFile(null, null, FileKit.newFile(filePath))
-                    .addHeader("Content-Type", "multipart/form-data;boundary=\"boundary\"")
-                    .build()
-                    .execute().body().string();
+            return Httpz.post().url(url).addFile(null, null, FileKit.newFile(filePath))
+                    .addHeader("Content-Type", "multipart/form-data;boundary=\"boundary\"").build().execute().body()
+                    .string();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -385,7 +358,7 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
      * @param certPath 证书路径
      * @param certPass 证书密码
      * @param filePath 上传文件路径
-     * @return {@link String}  请求返回的结果
+     * @return {@link String} 请求返回的结果
      */
     public static String upload(String url, String data, String certPath, String certPass, String filePath) {
         return upload(url, data, certPath, certPass, filePath, Protocol.TLSv1.name);
@@ -401,11 +374,7 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
      */
     private static Response getTo(String url, Map<String, String> formMap, Map<String, String> headerMap) {
         try {
-            return Httpz.get().url(url)
-                    .addHeader(headerMap)
-                    .addParam(formMap)
-                    .build()
-                    .execute();
+            return Httpz.get().url(url).addHeader(headerMap).addParam(formMap).build().execute();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -421,11 +390,7 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
      */
     private static Response postTo(String url, Map<String, String> headerMap, String data) {
         try {
-            return Httpz.post().url(url)
-                    .addHeader(headerMap)
-                    .body(data)
-                    .build()
-                    .execute();
+            return Httpz.post().url(url).addHeader(headerMap).body(data).build().execute();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -441,11 +406,7 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
      */
     private static Response postTo(String url, Map<String, String> headerMap, Map<String, String> formMap) {
         try {
-            return Httpz.post().url(url)
-                    .addHeader(headerMap)
-                    .addParam(formMap)
-                    .build()
-                    .execute();
+            return Httpz.post().url(url).addHeader(headerMap).addParam(formMap).build().execute();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -461,11 +422,7 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
      */
     private static Response putTo(String url, Map<String, String> headerMap, String data) {
         try {
-            return Httpz.put().url(url)
-                    .addHeader(headerMap)
-                    .body(data)
-                    .build()
-                    .execute();
+            return Httpz.put().url(url).addHeader(headerMap).body(data).build().execute();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -476,7 +433,7 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
         try {
             StringBuilder result = new StringBuilder();
             br = request.getReader();
-            for (String line; (line = br.readLine()) != null; ) {
+            for (String line; (line = br.readLine()) != null;) {
                 if (result.length() > 0) {
                     result.append("\n");
                 }
@@ -530,7 +487,8 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
     }
 
     @SneakyThrows
-    private static SSLSocketFactory getSslSocketFactory(String certPath, InputStream certFile, String certPass, String protocol) {
+    private static SSLSocketFactory getSslSocketFactory(String certPath, InputStream certFile, String certPass,
+            String protocol) {
         SSLContextBuilder sslContextBuilder = SSLContextBuilder.of();
         sslContextBuilder.setProtocol(protocol);
         sslContextBuilder.setKeyManagers(getKeyManager(certPass, certPath, certFile));
@@ -608,16 +566,13 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
      * @param url       请求url
      * @param formMap   请求参数
      * @param headerMap 请求头
-     * @return {@link Message}  请求返回的结果
+     * @return {@link Message} 请求返回的结果
      */
     public Message put(String url, Map<String, Object> formMap, Map<String, String> headerMap) {
         try {
             Response response = putTo(url, headerMap, formMap);
-            return Message.builder()
-                    .body(response.body().string())
-                    .status(response.code())
-                    .headers(response.headers().toMultimap())
-                    .build();
+            return Message.builder().body(response.body().string()).status(response.code())
+                    .headers(response.headers().toMultimap()).build();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -633,15 +588,10 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
      */
     private Response putTo(String url, Map<String, String> headerMap, Map<String, Object> formMap) {
         try {
-            return Httpz.put().url(url)
-                    .addHeader(headerMap)
-                    .addParam(formMap)
-                    .build()
-                    .execute();
+            return Httpz.put().url(url).addHeader(headerMap).addParam(formMap).build().execute();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
 }
-

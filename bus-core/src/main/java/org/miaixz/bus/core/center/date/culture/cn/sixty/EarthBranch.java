@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org 6tail and other contributors.              ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -51,23 +51,12 @@ import java.util.Map;
 public class EarthBranch extends Samsara {
 
     /**
-     * 古今十二时辰与时间对照
-     * 子时（23时至01时）：夜半时分，也是一天的开始。
-     * 丑时（01时至03时）：鸡鸣时分，意味着新的一天开始。
-     * 寅时（03时至05时）：平旦，夜与日的交替之际，太阳即将初升。
-     * 卯时（05时至07时）：日出时分，太阳刚刚露脸，冉冉初升。
-     * 辰时（07时至09时）：食时，古人吃早饭的时间。
-     * 巳时（09时至11时）：隅中，临近中午的时候。
-     * 午时（11时至13时）：日中，太阳最猛烈的时候。
-     * 未时（13时至15时）：日昳，太阳偏西为日跌。
-     * 申时（15时至17时）：哺时，也被称为日铺、夕食等。
-     * 酉时（17时至19时）：日入时分，太阳落山，天地昏黄，万物朦胧。
-     * 戌时（19时至21时）：黄昏时分，太阳已经落山，天色逐渐暗淡。
-     * 亥时（21时至23时）：人定时分，夜色已深，人们已经停止活动，安歇睡眠了。
+     * 古今十二时辰与时间对照 子时（23时至01时）：夜半时分，也是一天的开始。 丑时（01时至03时）：鸡鸣时分，意味着新的一天开始。 寅时（03时至05时）：平旦，夜与日的交替之际，太阳即将初升。
+     * 卯时（05时至07时）：日出时分，太阳刚刚露脸，冉冉初升。 辰时（07时至09时）：食时，古人吃早饭的时间。 巳时（09时至11时）：隅中，临近中午的时候。 午时（11时至13时）：日中，太阳最猛烈的时候。
+     * 未时（13时至15时）：日昳，太阳偏西为日跌。 申时（15时至17时）：哺时，也被称为日铺、夕食等。 酉时（17时至19时）：日入时分，太阳落山，天地昏黄，万物朦胧。
+     * 戌时（19时至21时）：黄昏时分，太阳已经落山，天色逐渐暗淡。 亥时（21时至23时）：人定时分，夜色已深，人们已经停止活动，安歇睡眠了。
      */
-    public static final String[] NAMES = {
-            "子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥"
-    };
+    public static final String[] NAMES = { "子", "丑", "寅", "卯", "辰", "巳", "午", "未", "申", "酉", "戌", "亥" };
 
     /**
      * 时辰对应的小时范围
@@ -82,7 +71,7 @@ public class EarthBranch extends Samsara {
         int hour = 23;
         for (final String c : NAMES) {
             // 初始化时辰对应的小时范围
-            TIME_MAP.put(c, new Integer[]{hour % 24, (hour + 2) % 24});
+            TIME_MAP.put(c, new Integer[] { hour % 24, (hour + 2) % 24 });
 
             // 初始化小时到时辰的映射
             HOUR_MAP.put(hour % 24, c + "时");
@@ -127,7 +116,6 @@ public class EarthBranch extends Samsara {
         final Integer startHour = hours[0];
         final Integer endHour = hours[1];
 
-
         final LocalDateTime start = LocalDateTime.now().withHour(startHour).withMinute(0).withSecond(0).withNano(0);
         final LocalDateTime end = (startHour > endHour) ? start.plusDays(1).withHour(endHour) : start.withHour(endHour);
 
@@ -157,7 +145,7 @@ public class EarthBranch extends Samsara {
      * @return 五行
      */
     public Element getElement() {
-        return Element.fromIndex(new int[]{4, 2, 0, 0, 2, 1, 1, 2, 3, 3, 2, 4}[index]);
+        return Element.fromIndex(new int[] { 4, 2, 0, 0, 2, 1, 1, 2, 3, 3, 2, 4 }[index]);
     }
 
     /**
@@ -166,7 +154,7 @@ public class EarthBranch extends Samsara {
      * @return 天干
      */
     public HeavenStem getHideHeavenStemMain() {
-        return HeavenStem.fromIndex(new int[]{9, 5, 0, 1, 4, 2, 3, 5, 6, 7, 4, 8}[index]);
+        return HeavenStem.fromIndex(new int[] { 9, 5, 0, 1, 4, 2, 3, 5, 6, 7, 4, 8 }[index]);
     }
 
     /**
@@ -175,7 +163,7 @@ public class EarthBranch extends Samsara {
      * @return 天干
      */
     public HeavenStem getHideHeavenStemMiddle() {
-        int n = new int[]{-1, 9, 2, -1, 1, 6, 5, 3, 8, -1, 7, 0}[index];
+        int n = new int[] { -1, 9, 2, -1, 1, 6, 5, 3, 8, -1, 7, 0 }[index];
         return n == -1 ? null : HeavenStem.fromIndex(n);
     }
 
@@ -185,7 +173,7 @@ public class EarthBranch extends Samsara {
      * @return 天干
      */
     public HeavenStem getHideHeavenStemResidual() {
-        int n = new int[]{-1, 7, 4, -1, 9, 4, -1, 1, 4, -1, 3, -1}[index];
+        int n = new int[] { -1, 7, 4, -1, 9, 4, -1, 1, 4, -1, 3, -1 }[index];
         return n == -1 ? null : HeavenStem.fromIndex(n);
     }
 
@@ -204,7 +192,7 @@ public class EarthBranch extends Samsara {
      * @return 方位
      */
     public Direction getDirection() {
-        return Direction.fromIndex(new int[]{0, 4, 2, 2, 4, 8, 8, 4, 6, 6, 4, 0}[index]);
+        return Direction.fromIndex(new int[] { 0, 4, 2, 2, 4, 8, 8, 4, 6, 6, 4, 0 }[index]);
     }
 
     /**
@@ -222,7 +210,7 @@ public class EarthBranch extends Samsara {
      * @return 方位
      */
     public Direction getOminous() {
-        return Direction.fromIndex(new int[]{8, 2, 0, 6}[index % 4]);
+        return Direction.fromIndex(new int[] { 8, 2, 0, 6 }[index % 4]);
     }
 
     /**

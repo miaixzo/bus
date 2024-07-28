@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org mybatis.io and other contributors.         ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager;
 
 import org.apache.ibatis.cache.CacheKey;
@@ -96,7 +96,7 @@ public class PageContext extends PageMethod implements Dialect, BoundSqlHandler.
         String countId = UUID.randomUUID().toString();
         return asyncCountService.submit(() -> {
             try {
-                //设置 ThreadLocal
+                // 设置 ThreadLocal
                 autoDialect.setDialectThreadLocal(dialectThreadLocal);
                 setLocalPage(localPage);
                 return task.call();
@@ -113,7 +113,8 @@ public class PageContext extends PageMethod implements Dialect, BoundSqlHandler.
     }
 
     @Override
-    public String getCountSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds, CacheKey countKey) {
+    public String getCountSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds,
+            CacheKey countKey) {
         return autoDialect.getDelegate().getCountSql(ms, boundSql, parameterObject, rowBounds, countKey);
     }
 
@@ -123,7 +124,8 @@ public class PageContext extends PageMethod implements Dialect, BoundSqlHandler.
     }
 
     @Override
-    public Object processParameterObject(MappedStatement ms, Object parameterObject, BoundSql boundSql, CacheKey pageKey) {
+    public Object processParameterObject(MappedStatement ms, Object parameterObject, BoundSql boundSql,
+            CacheKey pageKey) {
         return autoDialect.getDelegate().processParameterObject(ms, parameterObject, boundSql, pageKey);
     }
 
@@ -133,7 +135,8 @@ public class PageContext extends PageMethod implements Dialect, BoundSqlHandler.
     }
 
     @Override
-    public String getPageSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds, CacheKey pageKey) {
+    public String getPageSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds,
+            CacheKey pageKey) {
         return autoDialect.getDelegate().getPageSql(ms, boundSql, parameterObject, rowBounds, pageKey);
     }
 
@@ -198,12 +201,11 @@ public class PageContext extends PageMethod implements Dialect, BoundSqlHandler.
         // 异步 asyncCountService 并发度设置，这里默认为应用可用的处理器核心数 * 2，更合理的值应该综合考虑数据库服务器的处理能力
         int asyncCountParallelism = Integer.parseInt(properties.getProperty("asyncCountParallelism",
                 Normal.EMPTY + (Runtime.getRuntime().availableProcessors() * 2)));
-        asyncCountService = new ForkJoinPool(asyncCountParallelism,
-                pool -> {
-                    final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
-                    worker.setName("pager-async-count-" + worker.getPoolIndex());
-                    return worker;
-                }, null, true);
+        asyncCountService = new ForkJoinPool(asyncCountParallelism, pool -> {
+            final ForkJoinWorkerThread worker = ForkJoinPool.defaultForkJoinWorkerThreadFactory.newThread(pool);
+            worker.setName("pager-async-count-" + worker.getPoolIndex());
+            return worker;
+        }, null, true);
     }
 
 }

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab;
 
 import jakarta.ws.rs.core.GenericType;
@@ -47,7 +47,9 @@ public class SystemHooksApi extends AbstractApi {
     /**
      * Get a list of all system hooks. This method requires admin access.
      *
-     * <pre><code>GitLab Endpoint: GET /hooks</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /hooks</code>
+     * </pre>
      *
      * @return a list of SystemHookEvent
      * @throws GitLabApiException if any exception occurs
@@ -57,12 +59,13 @@ public class SystemHooksApi extends AbstractApi {
     }
 
     /**
-     * Get a list of all system hooks using the specified page and per page settings.
-     * This method requires admin access.
+     * Get a list of all system hooks using the specified page and per page settings. This method requires admin access.
      *
-     * <pre><code>GitLab Endpoint: GET /hooks</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /hooks</code>
+     * </pre>
      *
-     * @param page the page to get
+     * @param page    the page to get
      * @param perPage the number of deploy keys per page
      * @return the list of SystemHookEvent in the specified range
      * @throws GitLabApiException if any exception occurs
@@ -76,7 +79,9 @@ public class SystemHooksApi extends AbstractApi {
     /**
      * Get a Pager of all system hooks. This method requires admin access.
      *
-     * <pre><code>GitLab Endpoint: GET /hooks</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /hooks</code>
+     * </pre>
      *
      * @param itemsPerPage the number of SystemHookEvent instances that will be fetched per page
      * @return a Pager of SystemHookEvent
@@ -89,7 +94,9 @@ public class SystemHooksApi extends AbstractApi {
     /**
      * Get a Stream of all system hooks. This method requires admin access.
      *
-     * <pre><code>GitLab Endpoint: GET /hooks</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /hooks</code>
+     * </pre>
      *
      * @return a Stream of SystemHookEvent
      * @throws GitLabApiException if any exception occurs
@@ -101,21 +108,22 @@ public class SystemHooksApi extends AbstractApi {
     /**
      * Add a new system hook. This method requires admin access.
      *
-     *  <pre><code>GitLab Endpoint: POST /hooks</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: POST /hooks</code>
+     * </pre>
      *
-     * @param url the hook URL, required
-     * @param token secret token to validate received payloads, optional
-     * @param pushEvents when true, the hook will fire on push events, optional
-     * @param tagPushEvents when true, the hook will fire on new tags being pushed, optional
+     * @param url                   the hook URL, required
+     * @param token                 secret token to validate received payloads, optional
+     * @param pushEvents            when true, the hook will fire on push events, optional
+     * @param tagPushEvents         when true, the hook will fire on new tags being pushed, optional
      * @param enableSslVerification do SSL verification when triggering the hook, optional
      * @return an SystemHookEvent instance with info on the added system hook
      * @throws GitLabApiException if any exception occurs
      */
-    public SystemHook addSystemHook(String url, String token, Boolean pushEvents,
-                                    Boolean tagPushEvents, Boolean enableSslVerification) throws GitLabApiException {
+    public SystemHook addSystemHook(String url, String token, Boolean pushEvents, Boolean tagPushEvents,
+            Boolean enableSslVerification) throws GitLabApiException {
 
-        SystemHook systemHook = new SystemHook().withPushEvents(pushEvents)
-                .withTagPushEvents(tagPushEvents)
+        SystemHook systemHook = new SystemHook().withPushEvents(pushEvents).withTagPushEvents(tagPushEvents)
                 .withEnableSslVerification(enableSslVerification);
 
         return addSystemHook(url, token, systemHook);
@@ -124,10 +132,12 @@ public class SystemHooksApi extends AbstractApi {
     /**
      * Add a new system hook. This method requires admin access.
      *
-     *  <pre><code>GitLab Endpoint: POST /hooks</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: POST /hooks</code>
+     * </pre>
      *
-     * @param url the hook URL, required
-     * @param token secret token to validate received payloads, optional
+     * @param url        the hook URL, required
+     * @param token      secret token to validate received payloads, optional
      * @param systemHook the systemHook to create
      * @return an SystemHookEvent instance with info on the added system hook
      * @throws GitLabApiException if any exception occurs
@@ -138,9 +148,7 @@ public class SystemHooksApi extends AbstractApi {
             throw new RuntimeException("url cannot be null");
         }
 
-        GitLabApiForm formData = new GitLabApiForm()
-                .withParam("url", url, true)
-                .withParam("token", token)
+        GitLabApiForm formData = new GitLabApiForm().withParam("url", url, true).withParam("token", token)
                 .withParam("push_events", systemHook.getPushEvents())
                 .withParam("tag_push_events", systemHook.getTagPushEvents())
                 .withParam("merge_requests_events", systemHook.getMergeRequestsEvents())
@@ -153,7 +161,9 @@ public class SystemHooksApi extends AbstractApi {
     /**
      * Deletes a system hook. This method requires admin access.
      *
-     *  <pre><code>GitLab Endpoint: DELETE /hooks/:hook_id</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: DELETE /hooks/:hook_id</code>
+     * </pre>
      *
      * @param hook the SystemHook instance to delete
      * @throws GitLabApiException if any exception occurs
@@ -170,7 +180,9 @@ public class SystemHooksApi extends AbstractApi {
     /**
      * Deletes a system hook. This method requires admin access.
      *
-     * <pre><code>GitLab Endpoint: DELETE /hooks/:hook_id</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: DELETE /hooks/:hook_id</code>
+     * </pre>
      *
      * @param hookId the ID of the system hook to delete
      * @throws GitLabApiException if any exception occurs
@@ -181,14 +193,17 @@ public class SystemHooksApi extends AbstractApi {
             throw new RuntimeException("hookId cannot be null");
         }
 
-        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK : Response.Status.NO_CONTENT);
+        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK
+                : Response.Status.NO_CONTENT);
         delete(expectedStatus, null, "hooks", hookId);
     }
 
     /**
      * Test a system hook. This method requires admin access.
      *
-     * <pre><code>GitLab Endpoint: GET /hooks/:hook_id</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /hooks/:hook_id</code>
+     * </pre>
      *
      * @param hook the SystemHookEvent instance to test
      * @throws GitLabApiException if any exception occurs
@@ -205,7 +220,9 @@ public class SystemHooksApi extends AbstractApi {
     /**
      * Test a system hook. This method requires admin access.
      *
-     * <pre><code>GitLab Endpoint: GET /hooks/:hook_id</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /hooks/:hook_id</code>
+     * </pre>
      *
      * @param hookId the ID of the system hook to test
      * @throws GitLabApiException if any exception occurs

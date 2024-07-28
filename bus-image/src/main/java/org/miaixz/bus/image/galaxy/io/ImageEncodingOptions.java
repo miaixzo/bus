@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.io;
 
 /**
@@ -33,8 +33,7 @@ package org.miaixz.bus.image.galaxy.io;
  */
 public class ImageEncodingOptions {
 
-    public static final ImageEncodingOptions DEFAULT =
-            new ImageEncodingOptions(false, true, false, true, false);
+    public static final ImageEncodingOptions DEFAULT = new ImageEncodingOptions(false, true, false, true, false);
 
     public final boolean groupLength;
     public final boolean undefSequenceLength;
@@ -42,15 +41,12 @@ public class ImageEncodingOptions {
     public final boolean undefItemLength;
     public final boolean undefEmptyItemLength;
 
-    public ImageEncodingOptions(boolean groupLength, boolean undefSeqLength,
-                                boolean undefEmptySeqLength, boolean undefItemLength,
-                                boolean undefEmptyItemLength) {
+    public ImageEncodingOptions(boolean groupLength, boolean undefSeqLength, boolean undefEmptySeqLength,
+            boolean undefItemLength, boolean undefEmptyItemLength) {
         if (undefEmptySeqLength && !undefSeqLength)
-            throw new IllegalArgumentException(
-                    "undefEmptySeqLength && !undefSeqLength");
+            throw new IllegalArgumentException("undefEmptySeqLength && !undefSeqLength");
         if (undefEmptyItemLength && !undefItemLength)
-            throw new IllegalArgumentException(
-                    "undefEmptyItemLength && !undefItemLength");
+            throw new IllegalArgumentException("undefEmptyItemLength && !undefItemLength");
         this.groupLength = groupLength;
         this.undefSequenceLength = undefSeqLength;
         this.undefEmptySequenceLength = undefEmptySeqLength;

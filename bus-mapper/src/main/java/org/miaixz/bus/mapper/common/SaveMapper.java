@@ -24,15 +24,14 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.common;
 
 import org.apache.ibatis.annotations.InsertProvider;
 import org.miaixz.bus.mapper.provider.SaveProvider;
 
 /**
- * 通用Mapper接口,保存
- * 判断主键是否存在, 如果存在且不为空执行update语句,如果主键不存在或为空, 执行insert语句
+ * 通用Mapper接口,保存 判断主键是否存在, 如果存在且不为空执行update语句,如果主键不存在或为空, 执行insert语句
  *
  * @param <T> 泛型
  * @author Kimi Liu

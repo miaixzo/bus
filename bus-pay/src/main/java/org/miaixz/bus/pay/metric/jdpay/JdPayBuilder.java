@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pay.metric.jdpay;
 
 import lombok.SneakyThrows;
@@ -68,8 +68,7 @@ public class JdPayBuilder {
     private static String SIGN = "sign";
 
     /**
-     * 在线支付接口
-     * 除了merchant（商户号）、version（版本号）、sign(签名)以外，其余字段全部采用3DES进行加密
+     * 在线支付接口 除了merchant（商户号）、version（版本号）、sign(签名)以外，其余字段全部采用3DES进行加密
      *
      * @return 转化后的 Map
      */
@@ -123,8 +122,7 @@ public class JdPayBuilder {
     }
 
     public static String addXmlHead(String xml) {
-        if (xml != null && !"".equals(xml) &&
-                !xml.trim().startsWith("<?xml")) {
+        if (xml != null && !"".equals(xml) && !xml.trim().startsWith("<?xml")) {
             xml = XML_HEAD + xml;
         }
         return xml;
@@ -250,14 +248,14 @@ public class JdPayBuilder {
      * @return 签名后的数据
      */
     public static String encrypt(String rsaPrivateKey, String strDesKey, String genSignStr) {
-        if (StringKit.isNotEmpty(rsaPrivateKey)
-                && StringKit.isNotEmpty(strDesKey)
+        if (StringKit.isNotEmpty(rsaPrivateKey) && StringKit.isNotEmpty(strDesKey)
                 && StringKit.isNotEmpty(genSignStr)) {
             try {
                 genSignStr = fomatXml(addXmlHeadAndElJdPay(genSignStr));
                 genSignStr = delXmlElm(genSignStr, SIGN);
                 String sign = encryptMerchant(genSignStr, rsaPrivateKey);
-                String data = genSignStr.substring(0, genSignStr.length() - XML_JDPAY_END.length()) + XML_SIGN_START + sign + XML_SIGN_END + XML_JDPAY_END;
+                String data = genSignStr.substring(0, genSignStr.length() - XML_JDPAY_END.length()) + XML_SIGN_START
+                        + sign + XML_SIGN_END + XML_JDPAY_END;
                 return Base64.encode(Builder.des(Base64.decode(strDesKey)).encryptHex(data));
             } catch (Exception e) {
                 throw new SignatureException("signature failed");

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric.anget;
 
 import lombok.Getter;
@@ -192,7 +192,8 @@ public class UserAgent {
         final UserAgent other = (UserAgent) object;
         if (null == name) {
             return null == other.name;
-        } else return name.equals(other.name);
+        } else
+            return name.equals(other.name);
     }
 
     @Override

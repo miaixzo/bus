@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text.placeholder;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -124,7 +124,7 @@ public class StringMatcher {
             } else {
                 to = text.indexOf(part, from);
                 if (to < 0) {
-                    //普通字符串未匹配到，说明整个模式不能匹配，返回空
+                    // 普通字符串未匹配到，说明整个模式不能匹配，返回空
                     return MapKit.empty();
                 }
                 if (null != key && to > from) {

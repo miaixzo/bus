@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.sensitive.metric;
 
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -33,8 +33,7 @@ import org.miaixz.bus.sensitive.Context;
 import org.miaixz.bus.sensitive.magic.annotation.Shield;
 
 /**
- * 手机号脱敏处理类
- * 18233583070 脱敏后: 182****3030
+ * 手机号脱敏处理类 18233583070 脱敏后: 182****3030
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,11 +47,9 @@ public class MobileProvider extends AbstractProvider {
         }
         final Shield shield = context.getShield();
         String value = object.toString();
-        return StringKit.left(value, 3).concat(
-                StringKit.removePrefix(
-                        StringKit.padPre(StringKit.right(value, 4),
-                                StringKit.length(value),
-                                shield.shadow()),
+        return StringKit.left(value, 3)
+                .concat(StringKit.removePrefix(
+                        StringKit.padPre(StringKit.right(value, 4), StringKit.length(value), shield.shadow()),
                         StringKit.fill(3, shield.shadow())));
     }
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map;
 
 import org.miaixz.bus.core.lang.Optional;
@@ -53,8 +53,8 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
     /**
      * 添加一个节点，效果等同于 {@code putNode(data, node.getValue())}
      * <ul>
-     *     <li>若key对应节点不存在，则以传入的键值创建一个新的节点；</li>
-     *     <li>若key对应节点存在，则将该节点的值替换为{@code node}指定的值；</li>
+     * <li>若key对应节点不存在，则以传入的键值创建一个新的节点；</li>
+     * <li>若key对应节点存在，则将该节点的值替换为{@code node}指定的值；</li>
      * </ul>
      *
      * @param key  节点的key值
@@ -96,8 +96,8 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
      * @param parentKeyGenerator 从值中获取父节点key的方法
      * @param ignoreNullNode     是否获取到的key为null的子节点/父节点
      */
-    default <C extends Collection<V>> void putAllNode(
-            final C values, final Function<V, K> keyGenerator, final Function<V, K> parentKeyGenerator, final boolean ignoreNullNode) {
+    default <C extends Collection<V>> void putAllNode(final C values, final Function<V, K> keyGenerator,
+            final Function<V, K> parentKeyGenerator, final boolean ignoreNullNode) {
         if (CollKit.isEmpty(values)) {
             return;
         }
@@ -133,8 +133,8 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
     /**
      * 添加一个节点
      * <ul>
-     *     <li>若key对应节点不存在，则以传入的键值创建一个新的节点；</li>
-     *     <li>若key对应节点存在，则将该节点的值替换为{@code node}指定的值；</li>
+     * <li>若key对应节点不存在，则以传入的键值创建一个新的节点；</li>
+     * <li>若key对应节点存在，则将该节点的值替换为{@code node}指定的值；</li>
      * </ul>
      *
      * @param key   节点的key
@@ -146,14 +146,15 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
     /**
      * 同时添加父子节点：
      * <ul>
-     *     <li>若{@code parentKey}或{@code childKey}对应的节点不存在，则会根据键值创建一个对应的节点；</li>
-     *     <li>若{@code parentKey}或{@code childKey}对应的节点存在，则会更新对应节点的值；</li>
+     * <li>若{@code parentKey}或{@code childKey}对应的节点不存在，则会根据键值创建一个对应的节点；</li>
+     * <li>若{@code parentKey}或{@code childKey}对应的节点存在，则会更新对应节点的值；</li>
      * </ul>
      * 该操作等同于：
+     * 
      * <pre>{@code
-     *     putNode(parentKey, parentValue);
-     *     putNode(childKey, childValue);
-     *     linkNodes(parentKey, childKey);
+     * putNode(parentKey, parentValue);
+     * putNode(childKey, childValue);
+     * linkNodes(parentKey, childKey);
      * }</pre>
      *
      * @param parentKey   父节点的key
@@ -170,8 +171,8 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
     /**
      * 添加子节点，并为子节点指定父节点：
      * <ul>
-     *     <li>若{@code parentKey}或{@code childKey}对应的节点不存在，则会根据键值创建一个对应的节点；</li>
-     *     <li>若{@code parentKey}或{@code childKey}对应的节点存在，则会更新对应节点的值；</li>
+     * <li>若{@code parentKey}或{@code childKey}对应的节点不存在，则会根据键值创建一个对应的节点；</li>
+     * <li>若{@code parentKey}或{@code childKey}对应的节点存在，则会更新对应节点的值；</li>
      * </ul>
      *
      * @param parentKey  父节点的key
@@ -208,8 +209,7 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
     void unlinkNode(K parentKey, K childKey);
 
     /**
-     * 获取指定节点所在树结构的全部树节点
-     * 比如：存在 a -&gt; b -&gt; c 的关系，则输入 a/b/c 都将返回 a, b, c
+     * 获取指定节点所在树结构的全部树节点 比如：存在 a -&gt; b -&gt; c 的关系，则输入 a/b/c 都将返回 a, b, c
      *
      * @param key 指定节点的key
      * @return 节点
@@ -225,29 +225,23 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
     }
 
     /**
-     * 获取以指定节点作为叶子节点的树结构，然后获取该树结构的根节点
-     * 比如：存在 a -&gt; b -&gt; c 的关系，则输入 a/b/c 都将返回 a
+     * 获取以指定节点作为叶子节点的树结构，然后获取该树结构的根节点 比如：存在 a -&gt; b -&gt; c 的关系，则输入 a/b/c 都将返回 a
      *
      * @param key 指定节点的key
      * @return 节点
      */
     default TreeEntry<K, V> getRootNode(final K key) {
-        return Optional.ofNullable(get(key))
-                .map(TreeEntry::getRoot)
-                .orElse(null);
+        return Optional.ofNullable(get(key)).map(TreeEntry::getRoot).orElse(null);
     }
 
     /**
-     * 获取指定节点的直接父节点
-     * 比如：若存在 a -&gt; b -&gt; c 的关系，此时输入 a 将返回 null，输入 b 将返回 a，输入 c 将返回 b
+     * 获取指定节点的直接父节点 比如：若存在 a -&gt; b -&gt; c 的关系，此时输入 a 将返回 null，输入 b 将返回 a，输入 c 将返回 b
      *
      * @param key 指定节点的key
      * @return 节点
      */
     default TreeEntry<K, V> getDeclaredParentNode(final K key) {
-        return Optional.ofNullable(get(key))
-                .map(TreeEntry::getDeclaredParent)
-                .orElse(null);
+        return Optional.ofNullable(get(key)).map(TreeEntry::getDeclaredParent).orElse(null);
     }
 
     /**
@@ -258,9 +252,7 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
      * @return 节点
      */
     default TreeEntry<K, V> getParentNode(final K key, final K parentKey) {
-        return Optional.ofNullable(get(key))
-                .map(t -> t.getParent(parentKey))
-                .orElse(null);
+        return Optional.ofNullable(get(key)).map(t -> t.getParent(parentKey)).orElse(null);
     }
 
     /**
@@ -271,9 +263,7 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
      * @return 是否
      */
     default boolean containsParentNode(final K key, final K parentKey) {
-        return Optional.ofNullable(get(key))
-                .map(m -> m.containsParent(parentKey))
-                .orElse(false);
+        return Optional.ofNullable(get(key)).map(m -> m.containsParent(parentKey)).orElse(false);
     }
 
     /**
@@ -283,9 +273,7 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
      * @return 节点值，若节点不存在，或节点值为null都将返回null
      */
     default V getNodeValue(final K key) {
-        return Optional.ofNullable(get(key))
-                .map(TreeEntry::getValue)
-                .get();
+        return Optional.ofNullable(get(key)).map(TreeEntry::getValue).get();
     }
 
     /**
@@ -296,36 +284,28 @@ public interface ForestMap<K, V> extends Map<K, TreeEntry<K, V>> {
      * @return 是否
      */
     default boolean containsChildNode(final K parentKey, final K childKey) {
-        return Optional.ofNullable(get(parentKey))
-                .map(m -> m.containsChild(childKey))
-                .orElse(false);
+        return Optional.ofNullable(get(parentKey)).map(m -> m.containsChild(childKey)).orElse(false);
     }
 
     /**
-     * 获取指定父节点直接关联的子节点
-     * 比如：若存在 a -&gt; b -&gt; c 的关系，此时输入 b 将返回 c，输入 a 将返回 b
+     * 获取指定父节点直接关联的子节点 比如：若存在 a -&gt; b -&gt; c 的关系，此时输入 b 将返回 c，输入 a 将返回 b
      *
      * @param key data
      * @return 节点
      */
     default Collection<TreeEntry<K, V>> getDeclaredChildNodes(final K key) {
-        return Optional.ofNullable(get(key))
-                .map(TreeEntry::getDeclaredChildren)
-                .map(Map::values)
+        return Optional.ofNullable(get(key)).map(TreeEntry::getDeclaredChildren).map(Map::values)
                 .orElseGet(Collections::emptyList);
     }
 
     /**
-     * 获取指定父节点的全部子节点
-     * 比如：若存在 a -&gt; b -&gt; c 的关系，此时输入 b 将返回 c，输入 a 将返回 b，c
+     * 获取指定父节点的全部子节点 比如：若存在 a -&gt; b -&gt; c 的关系，此时输入 b 将返回 c，输入 a 将返回 b，c
      *
      * @param key data
      * @return 该节点的全部子节点
      */
     default Collection<TreeEntry<K, V>> getChildNodes(final K key) {
-        return Optional.ofNullable(get(key))
-                .map(TreeEntry::getChildren)
-                .map(Map::values)
+        return Optional.ofNullable(get(key)).map(TreeEntry::getChildren).map(Map::values)
                 .orElseGet(Collections::emptyList);
     }
 

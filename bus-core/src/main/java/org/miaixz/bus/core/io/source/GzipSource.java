@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.source;
 
 import org.miaixz.bus.core.io.SectionBuffer;
@@ -78,7 +78,8 @@ public class GzipSource implements Source {
     private int section = SECTION_HEADER;
 
     public GzipSource(Source source) {
-        if (source == null) throw new IllegalArgumentException("source == null");
+        if (source == null)
+            throw new IllegalArgumentException("source == null");
         this.inflater = new Inflater(true);
         this.source = IoKit.buffer(source);
         this.inflaterSource = new InflaterSource(this.source, inflater);
@@ -86,8 +87,10 @@ public class GzipSource implements Source {
 
     @Override
     public long read(Buffer sink, long byteCount) throws IOException {
-        if (byteCount < 0) throw new IllegalArgumentException("byteCount < 0: " + byteCount);
-        if (byteCount == 0) return 0;
+        if (byteCount < 0)
+            throw new IllegalArgumentException("byteCount < 0: " + byteCount);
+        if (byteCount == 0)
+            return 0;
 
         // 如果还没有使用标题，必须在做其他事情之前使用它。
         if (section == SECTION_HEADER) {
@@ -126,12 +129,13 @@ public class GzipSource implements Source {
         // 读取 10 字节的标头。首先查看标志字节，以便知道是否需要对整个标头进行 CRC 校验。
         // 然后读取神奇的 ID1 ID2 序列。可以跳过前 10 个字节中的所有其他内容。
         // +---+---+---+---+---+---+---+---+---+---+
-        // |ID1|ID2|CM |FLG|     MTIME     |XFL|OS | (more-->)
+        // |ID1|ID2|CM |FLG| MTIME |XFL|OS | (more-->)
         // +---+---+---+---+---+---+---+---+---+---+
         source.require(10);
         byte flags = source.getBuffer().getByte(3);
         boolean fhcrc = ((flags >> FHCRC) & 1) == 1;
-        if (fhcrc) updateCrc(source.getBuffer(), 0, 10);
+        if (fhcrc)
+            updateCrc(source.getBuffer(), 0, 10);
 
         short id1id2 = source.readShort();
         checkEqual("ID1ID2", (short) 0x1f8b, id1id2);
@@ -139,24 +143,30 @@ public class GzipSource implements Source {
 
         if (((flags >> FEXTRA) & 1) == 1) {
             source.require(2);
-            if (fhcrc) updateCrc(source.getBuffer(), 0, 2);
+            if (fhcrc)
+                updateCrc(source.getBuffer(), 0, 2);
             int xlen = source.getBuffer().readShortLe();
             source.require(xlen);
-            if (fhcrc) updateCrc(source.getBuffer(), 0, xlen);
+            if (fhcrc)
+                updateCrc(source.getBuffer(), 0, xlen);
             source.skip(xlen);
         }
 
         if (((flags >> FNAME) & 1) == 1) {
             long index = source.indexOf((byte) 0);
-            if (index == -1) throw new EOFException();
-            if (fhcrc) updateCrc(source.getBuffer(), 0, index + 1);
+            if (index == -1)
+                throw new EOFException();
+            if (fhcrc)
+                updateCrc(source.getBuffer(), 0, index + 1);
             source.skip(index + 1);
         }
 
         if (((flags >> FCOMMENT) & 1) == 1) {
             long index = source.indexOf((byte) 0);
-            if (index == -1) throw new EOFException();
-            if (fhcrc) updateCrc(source.getBuffer(), 0, index + 1);
+            if (index == -1)
+                throw new EOFException();
+            if (fhcrc)
+                updateCrc(source.getBuffer(), 0, index + 1);
             source.skip(index + 1);
         }
 

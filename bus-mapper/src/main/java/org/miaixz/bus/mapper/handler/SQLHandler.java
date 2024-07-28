@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2024 miaixz.org mybatis.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.handler;
 
 /**
@@ -43,9 +43,7 @@ public interface SQLHandler {
     }
 
     /**
-     * 拦截处理程序的执行
-     * 使用这种方法,每个拦截器可以对一个执行进行后处理,
-     * 按执行链的相反顺序应用
+     * 拦截处理程序的执行 使用这种方法,每个拦截器可以对一个执行进行后处理, 按执行链的相反顺序应用
      */
     default void postHandle() {
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -39,9 +39,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 秒表封装
- * 此工具用于存储一组任务的耗时时间，并一次性打印对比。
- * 比如：我们可以记录多段代码耗时时间，然后一次性打印（StopWatch提供了一个prettyString()函数用于按照指定格式打印出耗时）
+ * 秒表封装 此工具用于存储一组任务的耗时时间，并一次性打印对比。 比如：我们可以记录多段代码耗时时间，然后一次性打印（StopWatch提供了一个prettyString()函数用于按照指定格式打印出耗时）
  *
  * <p>
  * 此工具来自：https://github.com/spring-projects/spring-framework/blob/master/spring-core/src/main/java/org/springframework/util/StopWatch.java
@@ -351,6 +349,7 @@ public class StopWatch {
 
     /**
      * 获取任务信息，类似于：
+     * 
      * <pre>
      *     StopWatch '[data]': running time = [total] ns
      * </pre>
@@ -363,6 +362,7 @@ public class StopWatch {
 
     /**
      * 获取任务信息，类似于：
+     * 
      * <pre>
      *     StopWatch '[data]': running time = [total] [unit]
      * </pre>
@@ -374,8 +374,8 @@ public class StopWatch {
         if (null == unit) {
             unit = TimeUnit.NANOSECONDS;
         }
-        return StringKit.format("StopWatch '{}': running time = {} {}",
-                this.id, getTotal(unit), DateKit.getShortName(unit));
+        return StringKit.format("StopWatch '{}': running time = {} {}", this.id, getTotal(unit),
+                DateKit.getShortName(unit));
     }
 
     /**
@@ -404,7 +404,8 @@ public class StopWatch {
             sb.append("No task info kept");
         } else {
             sb.append("---------------------------------------------").append(FileKit.getLineSeparator());
-            sb.append(DateKit.getShortName(unit)).append("          %     Task name").append(FileKit.getLineSeparator());
+            sb.append(DateKit.getShortName(unit)).append("          %     Task name")
+                    .append(FileKit.getLineSeparator());
             sb.append("---------------------------------------------").append(FileKit.getLineSeparator());
 
             final NumberFormat nf = NumberFormat.getNumberInstance();

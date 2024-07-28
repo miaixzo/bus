@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.spring;
 
 import org.miaixz.bus.core.Provider;
@@ -77,7 +77,7 @@ public class ProviderManager {
     }
 
     /**
-     * 返回所有的  Provider
+     * 返回所有的 Provider
      *
      * @param providerClass 给定的Class
      * @return 所有的 Provider

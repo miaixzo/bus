@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.net.url;
 
 import org.miaixz.bus.core.codec.PercentCodec;
@@ -40,8 +40,7 @@ import org.miaixz.bus.core.lang.Symbol;
 public class RFC3986 {
 
     /**
-     * 通用URI组件分隔符
-     * gen-delims = ":" / "/" / "?" / "#" / "[" / "]" / "@"
+     * 通用URI组件分隔符 gen-delims = ":" / "/" / "?" / "#" / "[" / "]" / "@"
      */
     public static final PercentCodec GEN_DELIMS = PercentCodec.Builder.of(":/?#[]@").build();
 
@@ -51,15 +50,14 @@ public class RFC3986 {
     public static final PercentCodec SUB_DELIMS = PercentCodec.Builder.of("!$&'()*+,;=").build();
 
     /**
-     * reserved = gen-delims / sub-delims
-     * see：<a href="https://www.ietf.org/rfc/rfc3986.html#section-2.2">https://www.ietf.org/rfc/rfc3986.html#section-2.2</a>
+     * reserved = gen-delims / sub-delims see：<a href=
+     * "https://www.ietf.org/rfc/rfc3986.html#section-2.2">https://www.ietf.org/rfc/rfc3986.html#section-2.2</a>
      */
     public static final PercentCodec RESERVED = PercentCodec.Builder.of(GEN_DELIMS).or(SUB_DELIMS).build();
 
     /**
-     * 非保留字符，即URI中不作为分隔符使用的字符
-     * unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"
-     * see: <a href="https://www.ietf.org/rfc/rfc3986.html#section-2.3">https://www.ietf.org/rfc/rfc3986.html#section-2.3</a>
+     * 非保留字符，即URI中不作为分隔符使用的字符 unreserved = ALPHA / DIGIT / "-" / "." / "_" / "~" see:
+     * <a href="https://www.ietf.org/rfc/rfc3986.html#section-2.3">https://www.ietf.org/rfc/rfc3986.html#section-2.3</a>
      */
     public static final PercentCodec UNRESERVED = PercentCodec.Builder.of(unreservedChars()).build();
 
@@ -69,14 +67,15 @@ public class RFC3986 {
     public static final PercentCodec PCHAR = PercentCodec.Builder.of(UNRESERVED).or(SUB_DELIMS).addSafes(":@").build();
 
     /**
-     * segment  = pchar
-     * see: <a href="https://www.ietf.org/rfc/rfc3986.html#section-3.3">https://www.ietf.org/rfc/rfc3986.html#section-3.3</a>
+     * segment = pchar see:
+     * <a href="https://www.ietf.org/rfc/rfc3986.html#section-3.3">https://www.ietf.org/rfc/rfc3986.html#section-3.3</a>
      */
     public static final PercentCodec SEGMENT = PCHAR;
     /**
-     * segment-nz-nc  = SEGMENT ; non-zero-length segment without any colon ":"
+     * segment-nz-nc = SEGMENT ; non-zero-length segment without any colon ":"
      */
-    public static final PercentCodec SEGMENT_NZ_NC = PercentCodec.Builder.of(SEGMENT).removeSafe(Symbol.C_COLON).build();
+    public static final PercentCodec SEGMENT_NZ_NC = PercentCodec.Builder.of(SEGMENT).removeSafe(Symbol.C_COLON)
+            .build();
 
     /**
      * path = segment / "/"
@@ -89,20 +88,20 @@ public class RFC3986 {
     public static final PercentCodec QUERY = PercentCodec.Builder.of(PCHAR).addSafes("/?").build();
 
     /**
-     * fragment     = pchar / "/" / "?"
+     * fragment = pchar / "/" / "?"
      */
     public static final PercentCodec FRAGMENT = QUERY;
 
     /**
-     * query中的value
-     * value不能包含"{@code &}"，可以包含 "="
+     * query中的value value不能包含"{@code &}"，可以包含 "="
      */
-    public static final PercentCodec QUERY_PARAM_VALUE = PercentCodec.Builder.of(QUERY).removeSafe(Symbol.C_AND).build();
+    public static final PercentCodec QUERY_PARAM_VALUE = PercentCodec.Builder.of(QUERY).removeSafe(Symbol.C_AND)
+            .build();
     /**
-     * query中的key
-     * key不能包含"{@code &}" 和 "="
+     * query中的key key不能包含"{@code &}" 和 "="
      */
-    public static final PercentCodec QUERY_PARAM_NAME = PercentCodec.Builder.of(QUERY_PARAM_VALUE).removeSafe(Symbol.C_EQUAL).build();
+    public static final PercentCodec QUERY_PARAM_NAME = PercentCodec.Builder.of(QUERY_PARAM_VALUE)
+            .removeSafe(Symbol.C_EQUAL).build();
     /**
      * query中的value编码器，严格模式，value中不能包含任何分隔符。
      */
@@ -113,7 +112,7 @@ public class RFC3986 {
     public static final PercentCodec QUERY_PARAM_NAME_STRICT = UNRESERVED;
 
     /**
-     * unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"
+     * unreserved = ALPHA / DIGIT / "-" / "." / "_" / "~"
      *
      * @return unreserved字符
      */

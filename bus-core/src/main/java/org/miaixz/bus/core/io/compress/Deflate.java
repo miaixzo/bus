@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.compress;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -40,8 +40,7 @@ import java.util.zip.Inflater;
 import java.util.zip.InflaterOutputStream;
 
 /**
- * Deflate算法
- * Deflate是同时使用了LZ77算法与哈夫曼编码（Huffman Coding）的一个无损数据压缩算法。
+ * Deflate算法 Deflate是同时使用了LZ77算法与哈夫曼编码（Huffman Coding）的一个无损数据压缩算法。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -93,8 +92,8 @@ public class Deflate implements Closeable {
      * @return this
      */
     public Deflate deflater(final int level) {
-        target = (target instanceof DeflaterOutputStream) ?
-                (DeflaterOutputStream) target : new DeflaterOutputStream(target, new Deflater(level, nowrap));
+        target = (target instanceof DeflaterOutputStream) ? (DeflaterOutputStream) target
+                : new DeflaterOutputStream(target, new Deflater(level, nowrap));
         IoKit.copy(source, target);
         try {
             ((DeflaterOutputStream) target).finish();
@@ -110,8 +109,8 @@ public class Deflate implements Closeable {
      * @return this
      */
     public Deflate inflater() {
-        target = (target instanceof InflaterOutputStream) ?
-                (InflaterOutputStream) target : new InflaterOutputStream(target, new Inflater(nowrap));
+        target = (target instanceof InflaterOutputStream) ? (InflaterOutputStream) target
+                : new InflaterOutputStream(target, new Inflater(nowrap));
         IoKit.copy(source, target);
         try {
             ((InflaterOutputStream) target).finish();

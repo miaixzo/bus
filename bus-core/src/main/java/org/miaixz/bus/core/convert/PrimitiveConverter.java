@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.lang.exception.ConvertException;
@@ -34,17 +34,16 @@ import org.miaixz.bus.core.xyz.StringKit;
 import java.util.function.Function;
 
 /**
- * 原始类型转换器
- * 支持类型为：
+ * 原始类型转换器 支持类型为：
  * <ul>
- * 		<li>{@code byte}</li>
- * 		<li>{@code short}</li>
- * 		 <li>{@code int}</li>
- * 		 <li>{@code long}</li>
- * 		<li>{@code float}</li>
- * 		<li>{@code double}</li>
- * 		<li>{@code char}</li>
- * 		<li>{@code boolean}</li>
+ * <li>{@code byte}</li>
+ * <li>{@code short}</li>
+ * <li>{@code int}</li>
+ * <li>{@code long}</li>
+ * <li>{@code float}</li>
+ * <li>{@code double}</li>
+ * <li>{@code char}</li>
+ * <li>{@code boolean}</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -75,7 +74,8 @@ public class PrimitiveConverter extends AbstractConverter {
      * @param toStringFunc   当无法直接转换时，转为字符串后再转换的函数
      * @return 转换结果
      */
-    protected static Object convert(final Object value, final Class<?> primitiveClass, final Function<Object, String> toStringFunc) {
+    protected static Object convert(final Object value, final Class<?> primitiveClass,
+            final Function<Object, String> toStringFunc) {
         if (byte.class == primitiveClass) {
             return ObjectKit.defaultIfNull(NumberConverter.convert(value, Byte.class, toStringFunc), 0);
         } else if (short.class == primitiveClass) {

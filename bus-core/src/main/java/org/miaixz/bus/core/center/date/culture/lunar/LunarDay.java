@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org 6tail and other contributors.              ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -51,11 +51,8 @@ import java.util.List;
  */
 public class LunarDay extends Loops {
 
-    public static final String[] NAMES = {
-            "初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十",
-            "十一", "十二", "十三", "十四", "十五", "十六", "十七", "十八", "十九", "二十",
-            "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十"
-    };
+    public static final String[] NAMES = { "初一", "初二", "初三", "初四", "初五", "初六", "初七", "初八", "初九", "初十", "十一", "十二", "十三",
+            "十四", "十五", "十六", "十七", "十八", "十九", "二十", "廿一", "廿二", "廿三", "廿四", "廿五", "廿六", "廿七", "廿八", "廿九", "三十" };
 
     /**
      * 农历月
@@ -244,7 +241,8 @@ public class LunarDay extends Loops {
         int year = solarDay.getYear();
         SolarTerms term = solarDay.getTerm();
         int index = term.getIndex() - 3;
-        if (index < 0 && term.getJulianDay().getSolarDay().isAfter(SolarTerms.fromIndex(year, 3).getJulianDay().getSolarDay())) {
+        if (index < 0 && term.getJulianDay().getSolarDay()
+                .isAfter(SolarTerms.fromIndex(year, 3).getJulianDay().getSolarDay())) {
             index += 24;
         }
         return LunarMonth.fromYm(year, 1).getSixtyCycle().next((int) Math.floor(index * 1D / 2));
@@ -266,7 +264,8 @@ public class LunarDay extends Loops {
      * @return 建除十二值神
      */
     public Duty getDuty() {
-        return Duty.fromIndex(getSixtyCycle().getEarthBranch().getIndex() - getMonthSixtyCycle().getEarthBranch().getIndex());
+        return Duty.fromIndex(
+                getSixtyCycle().getEarthBranch().getIndex() - getMonthSixtyCycle().getEarthBranch().getIndex());
     }
 
     /**
@@ -275,7 +274,8 @@ public class LunarDay extends Loops {
      * @return 黄道黑道十二神
      */
     public TwelveStar getTwelveStar() {
-        return TwelveStar.fromIndex(getSixtyCycle().getEarthBranch().getIndex() + (8 - getMonthSixtyCycle().getEarthBranch().getIndex() % 6) * 2);
+        return TwelveStar.fromIndex(getSixtyCycle().getEarthBranch().getIndex()
+                + (8 - getMonthSixtyCycle().getEarthBranch().getIndex() % 6) * 2);
     }
 
     /**
@@ -317,7 +317,8 @@ public class LunarDay extends Loops {
      */
     public Direction getJupiterDirection() {
         int index = getSixtyCycle().getIndex();
-        return index % 12 < 6 ? Direction.fromIndex(new int[]{2, 8, 4, 6, 0}[index / 12]) : month.getLunarYear().getJupiterDirection();
+        return index % 12 < 6 ? Direction.fromIndex(new int[] { 2, 8, 4, 6, 0 }[index / 12])
+                : month.getLunarYear().getJupiterDirection();
     }
 
     /**
@@ -362,7 +363,8 @@ public class LunarDay extends Loops {
      * @return 二十八宿
      */
     public TwentyEightStar getTwentyEightStar() {
-        return TwentyEightStar.fromIndex(new int[]{10, 18, 26, 6, 14, 22, 2}[getSolarDay().getWeek().getIndex()]).next(-7 * getSixtyCycle().getEarthBranch().getIndex());
+        return TwentyEightStar.fromIndex(new int[] { 10, 18, 26, 6, 14, 22, 2 }[getSolarDay().getWeek().getIndex()])
+                .next(-7 * getSixtyCycle().getEarthBranch().getIndex());
     }
 
     /**

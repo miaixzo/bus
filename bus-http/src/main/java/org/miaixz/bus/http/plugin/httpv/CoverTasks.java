@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.plugin.httpv;
 
 import org.miaixz.bus.core.lang.MediaType;
@@ -71,9 +71,10 @@ public class CoverTasks {
         private Listener<CoverResult.State> completeListener;
         private Convertor[] convertors;
 
-        public Executor(java.util.concurrent.Executor ioExecutor, java.util.concurrent.Executor mainExecutor, Downloads.Listener downloadListener,
-                        Listener<CoverResult> responseListener, Listener<IOException> exceptionListener,
-                        Listener<CoverResult.State> completeListener, Convertor[] convertors) {
+        public Executor(java.util.concurrent.Executor ioExecutor, java.util.concurrent.Executor mainExecutor,
+                Downloads.Listener downloadListener, Listener<CoverResult> responseListener,
+                Listener<IOException> exceptionListener, Listener<CoverResult.State> completeListener,
+                Convertor[] convertors) {
             this.ioExecutor = ioExecutor;
             this.mainExecutor = mainExecutor;
             this.downloadListener = downloadListener;
@@ -106,7 +107,8 @@ public class CoverTasks {
             executor.execute(command);
         }
 
-        public void executeOnResponse(CoverHttp<?> task, Callback<CoverResult> onResponse, CoverResult result, boolean onIo) {
+        public void executeOnResponse(CoverHttp<?> task, Callback<CoverResult> onResponse, CoverResult result,
+                boolean onIo) {
             if (null != responseListener) {
                 if (responseListener.listen(task, result) && null != onResponse) {
                     execute(() -> onResponse.on(result), onIo);
@@ -116,7 +118,8 @@ public class CoverTasks {
             }
         }
 
-        public boolean executeOnException(CoverHttp<?> task, Callback<IOException> onException, IOException error, boolean onIo) {
+        public boolean executeOnException(CoverHttp<?> task, Callback<IOException> onException, IOException error,
+                boolean onIo) {
             if (null != exceptionListener) {
                 if (exceptionListener.listen(task, error) && null != onException) {
                     execute(() -> onException.on(error), onIo);
@@ -129,7 +132,8 @@ public class CoverTasks {
             return true;
         }
 
-        public void executeOnComplete(CoverHttp<?> task, Callback<CoverResult.State> onComplete, CoverResult.State state, boolean onIo) {
+        public void executeOnComplete(CoverHttp<?> task, Callback<CoverResult.State> onComplete,
+                CoverResult.State state, boolean onIo) {
             if (null != completeListener) {
                 if (completeListener.listen(task, state) && null != onComplete) {
                     execute(() -> onComplete.on(state), onIo);

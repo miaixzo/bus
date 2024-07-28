@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -94,15 +94,16 @@ public final class Worker implements Runnable {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        //启动worker线程组
-        executorService = new ThreadPoolExecutor(threadNum, threadNum, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<>(), new ThreadFactory() {
-            int i = 0;
+        // 启动worker线程组
+        executorService = new ThreadPoolExecutor(threadNum, threadNum, 0L, TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>(), new ThreadFactory() {
+                    int i = 0;
 
-            @Override
-            public Thread newThread(Runnable r) {
-                return new Thread(r, "smart-socket:udp-" + Worker.this.hashCode() + "-" + (++i));
-            }
-        });
+                    @Override
+                    public Thread newThread(Runnable r) {
+                        return new Thread(r, "smart-socket:udp-" + Worker.this.hashCode() + "-" + (++i));
+                    }
+                });
         for (int i = 0; i < threadNum; i++) {
             executorService.execute(this);
         }
@@ -187,7 +188,7 @@ public final class Worker implements Runnable {
             standbyBuffer = readBufferPage.allocate(context.getReadBufferSize());
             buffer.flip();
             Runnable runnable = () -> {
-                //解码
+                // 解码
                 UdpSession session = new UdpSession(channel, remote, writeBufferPool.allocateBufferPage());
                 try {
                     Monitor monitor = context.getMonitor();
@@ -199,7 +200,8 @@ public final class Worker implements Runnable {
                         Object request = context.getProtocol().decode(buffer, session);
                         // 理论上每个UDP包都是一个完整的消息
                         if (request == null) {
-                            context.getProcessor().stateEvent(session, Status.DECODE_EXCEPTION, new InternalException("decode result is null, buffer size: " + buffer.remaining()));
+                            context.getProcessor().stateEvent(session, Status.DECODE_EXCEPTION,
+                                    new InternalException("decode result is null, buffer size: " + buffer.remaining()));
                             break;
                         } else {
                             context.getProcessor().process(session, request);

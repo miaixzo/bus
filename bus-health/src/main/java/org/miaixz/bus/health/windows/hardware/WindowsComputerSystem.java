@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.hardware;
 
 import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
@@ -55,10 +55,10 @@ import java.util.function.Supplier;
 @Immutable
 final class WindowsComputerSystem extends AbstractComputerSystem {
 
-    private final Supplier<Pair<String, String>> manufacturerModel = Memoizer.memoize(
-            WindowsComputerSystem::queryManufacturerModel);
-    private final Supplier<Pair<String, String>> serialNumberUUID = Memoizer.memoize(
-            WindowsComputerSystem::querySystemSerialNumberUUID);
+    private final Supplier<Pair<String, String>> manufacturerModel = Memoizer
+            .memoize(WindowsComputerSystem::queryManufacturerModel);
+    private final Supplier<Pair<String, String>> serialNumberUUID = Memoizer
+            .memoize(WindowsComputerSystem::querySystemSerialNumberUUID);
 
     private static Pair<String, String> queryManufacturerModel() {
         String manufacturer = null;
@@ -78,8 +78,8 @@ final class WindowsComputerSystem extends AbstractComputerSystem {
         WmiResult<ComputerSystemProductProperty> win32ComputerSystemProduct = Win32ComputerSystemProduct
                 .queryIdentifyingNumberUUID();
         if (win32ComputerSystemProduct.getResultCount() > 0) {
-            serialNumber = WmiKit.getString(win32ComputerSystemProduct,
-                    ComputerSystemProductProperty.IDENTIFYINGNUMBER, 0);
+            serialNumber = WmiKit.getString(win32ComputerSystemProduct, ComputerSystemProductProperty.IDENTIFYINGNUMBER,
+                    0);
             uuid = WmiKit.getString(win32ComputerSystemProduct, ComputerSystemProductProperty.UUID, 0);
         }
         if (StringKit.isBlank(serialNumber)) {

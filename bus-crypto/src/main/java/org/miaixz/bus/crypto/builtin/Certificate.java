@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.builtin;
 
 import lombok.AllArgsConstructor;
@@ -165,27 +165,22 @@ public class Certificate implements Serializable {
         PrivateKey privateKey = keyPair.getPrivate();
         // 主体密钥标识符
         SubjectKeyIdentifier subjectKeyIdentifier = new SubjectKeyIdentifier(publicKey.getEncoded());
-        KeyUsage usage = new KeyUsage(KeyUsage.keyCertSign
-                | KeyUsage.digitalSignature | KeyUsage.keyEncipherment
+        KeyUsage usage = new KeyUsage(KeyUsage.keyCertSign | KeyUsage.digitalSignature | KeyUsage.keyEncipherment
                 | KeyUsage.dataEncipherment | KeyUsage.cRLSign);
         ASN1EncodableVector purposes = new ASN1EncodableVector();
         purposes.add(KeyPurposeId.id_kp_serverAuth);
         purposes.add(KeyPurposeId.id_kp_clientAuth);
         purposes.add(KeyPurposeId.anyExtendedKeyUsage);
 
-        X509v3CertificateBuilder certBuilder = new JcaX509v3CertificateBuilder(
-                issuer.build(),
-                BigInteger.valueOf(Long.parseLong(serial)),
-                this.notBefore,
-                this.notAfter,
-                subject.build(),
-                publicKey);
+        X509v3CertificateBuilder certBuilder = new JcaX509v3CertificateBuilder(issuer.build(),
+                BigInteger.valueOf(Long.parseLong(serial)), this.notBefore, this.notAfter, subject.build(), publicKey);
         try {
             certBuilder.addExtension(Extension.basicConstraints, true, new BasicConstraints(true));
             certBuilder.addExtension(Extension.subjectKeyIdentifier, false, subjectKeyIdentifier);
             certBuilder.addExtension(Extension.keyUsage, false, usage);
             certBuilder.addExtension(Extension.extendedKeyUsage, false, new DERSequence(purposes));
-            return new JcaX509CertificateConverter().getCertificate(certBuilder.build(new JcaContentSignerBuilder("SHA256WithRSAEncryption").build(privateKey)));
+            return new JcaX509CertificateConverter().getCertificate(
+                    certBuilder.build(new JcaContentSignerBuilder("SHA256WithRSAEncryption").build(privateKey)));
         } catch (CertIOException | OperatorCreationException | CertificateException e) {
             throw new InternalException(e);
         }

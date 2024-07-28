@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -40,12 +40,10 @@ import org.miaixz.bus.core.xyz.StringKit;
 public class NamingCase {
 
     /**
-     * 将驼峰式命名的字符串转换为下划线方式，又称SnakeCase、underScoreCase。
-     * 如果转换前的驼峰式命名的字符串为空，则返回空字符串。
-     * 规则为：
+     * 将驼峰式命名的字符串转换为下划线方式，又称SnakeCase、underScoreCase。 如果转换前的驼峰式命名的字符串为空，则返回空字符串。 规则为：
      * <ul>
-     *     <li>单字之间以下划线隔开</li>
-     *     <li>每个单字的首字母亦用小写字母</li>
+     * <li>单字之间以下划线隔开</li>
+     * <li>每个单字的首字母亦用小写字母</li>
      * </ul>
      * 例如：
      *
@@ -63,12 +61,10 @@ public class NamingCase {
     }
 
     /**
-     * 将驼峰式命名的字符串转换为短横连接方式。
-     * 如果转换前的驼峰式命名的字符串为空，则返回空字符串。
-     * 规则为：
+     * 将驼峰式命名的字符串转换为短横连接方式。 如果转换前的驼峰式命名的字符串为空，则返回空字符串。 规则为：
      * <ul>
-     *     <li>单字之间横线线隔开</li>
-     *     <li>每个单字的首字母亦用小写字母</li>
+     * <li>单字之间横线线隔开</li>
+     * <li>每个单字的首字母亦用小写字母</li>
      * </ul>
      * 例如：
      *
@@ -110,20 +106,20 @@ public class NamingCase {
                     if (symbol == preChar) {
                         // 前一个为分隔符
                         if (null == nextChar || Character.isLowerCase(nextChar)) {
-                            //普通首字母大写，如_Abb -> _abb
+                            // 普通首字母大写，如_Abb -> _abb
                             c = Character.toLowerCase(c);
                         }
-                        //后一个为大写，按照专有名词对待，如_AB -> _AB
+                        // 后一个为大写，按照专有名词对待，如_AB -> _AB
                     } else if (Character.isLowerCase(preChar)) {
                         // 前一个为小写
                         sb.append(symbol);
                         if (null == nextChar || Character.isLowerCase(nextChar) || CharKit.isNumber(nextChar)) {
-                            //普通首字母大写，如aBcc -> a_bcc
+                            // 普通首字母大写，如aBcc -> a_bcc
                             c = Character.toLowerCase(c);
                         }
                         // 后一个为大写，按照专有名词对待，如aBC -> a_BC
                     } else {
-                        //前一个为大写
+                        // 前一个为大写
                         if (null != nextChar && Character.isLowerCase(nextChar)) {
                             // 普通首字母大写，如ABcc -> A_bcc
                             sb.append(symbol);
@@ -146,15 +142,13 @@ public class NamingCase {
     }
 
     /**
-     * 将下划线方式命名的字符串转换为帕斯卡式。
-     * 规则为：
+     * 将下划线方式命名的字符串转换为帕斯卡式。 规则为：
      * <ul>
-     *     <li>单字之间不以空格或任何连接符断开</li>
-     *     <li>第一个单字首字母采用大写字母</li>
-     *     <li>后续单字的首字母亦用大写字母</li>
+     * <li>单字之间不以空格或任何连接符断开</li>
+     * <li>第一个单字首字母采用大写字母</li>
+     * <li>后续单字的首字母亦用大写字母</li>
      * </ul>
-     * 如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。
-     * 例如：hello_world = HelloWorld
+     * 如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。 例如：hello_world = HelloWorld
      *
      * @param name 转换前的下划线大写方式命名的字符串
      * @return 转换后的驼峰式命名的字符串
@@ -164,12 +158,11 @@ public class NamingCase {
     }
 
     /**
-     * 将下划线方式命名的字符串转换为驼峰式。如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。
-     * 规则为：
+     * 将下划线方式命名的字符串转换为驼峰式。如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。 规则为：
      * <ul>
-     *     <li>单字之间不以空格或任何连接符断开</li>
-     *     <li>第一个单字首字母采用小写字母</li>
-     *     <li>后续单字的首字母亦用大写字母</li>
+     * <li>单字之间不以空格或任何连接符断开</li>
+     * <li>第一个单字首字母采用小写字母</li>
+     * <li>后续单字的首字母亦用大写字母</li>
      * </ul>
      * 例如：hello_world = helloWorld
      *
@@ -192,11 +185,10 @@ public class NamingCase {
     }
 
     /**
-     * 将连接符方式命名的字符串转换为驼峰式。如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。
-     * 当otherCharToLower为{@code true}时，分为以下情况：
+     * 将连接符方式命名的字符串转换为驼峰式。如果转换前的下划线大写方式命名的字符串为空，则返回空字符串。 当otherCharToLower为{@code true}时，分为以下情况：
      * <ul>
-     *     <li>如果给定字符串全部为大写，转换为小写，如NAME转为name。</li>
-     *     <li>如果给定字符串大小写混合，认定为字符串已经是驼峰模式，只小写首字母，如TableName转换为tableName。</li>
+     * <li>如果给定字符串全部为大写，转换为小写，如NAME转为name。</li>
+     * <li>如果给定字符串大小写混合，认定为字符串已经是驼峰模式，只小写首字母，如TableName转换为tableName。</li>
      * </ul>
      *
      * @param name             转换前的自定义方式命名的字符串

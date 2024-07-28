@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.hl7.json;
 
 import jakarta.json.stream.JsonParser;
@@ -115,52 +115,52 @@ public class JsonHL7Configuration extends JsonConfigurationExtension {
     }
 
     private void loadFrom(HL7Application hl7App, JSONReader reader, Device device, List<Connection> conns,
-                          ConfigurationDelegate config) throws InternalException {
+            ConfigurationDelegate config) throws InternalException {
         while (reader.next() == JsonParser.Event.KEY_NAME) {
             switch (reader.getString()) {
-                case "hl7ApplicationName":
-                    hl7App.setApplicationName(reader.stringValue());
-                    break;
-                case "dicomInstalled":
-                    hl7App.setInstalled(reader.booleanValue());
-                    break;
-                case "dicomNetworkConnectionReference":
-                    for (String connRef : reader.stringArray())
-                        hl7App.addConnection(conns.get(JSONReader.toConnectionIndex(connRef)));
-                    break;
-                case "hl7AcceptedSendingApplication":
-                    hl7App.setAcceptedSendingApplications(reader.stringArray());
-                    break;
-                case "hl7OtherApplicationName":
-                    hl7App.setOtherApplicationNames(reader.stringArray());
-                    break;
-                case "hl7AcceptedMessageType":
-                    hl7App.setAcceptedMessageTypes(reader.stringArray());
-                    break;
-                case "hl7DefaultCharacterSet":
-                    hl7App.setHL7DefaultCharacterSet(reader.stringValue());
-                    break;
-                case "hl7SendingCharacterSet":
-                    hl7App.setHL7SendingCharacterSet(reader.stringValue());
-                    break;
-                case "hl7OptionalMSHField":
-                    hl7App.setOptionalMSHFields(reader.intArray());
-                    break;
-                case "dicomDescription":
-                    hl7App.setDescription(reader.stringValue());
-                    break;
-                case "dicomApplicationCluster":
-                    hl7App.setApplicationClusters(reader.stringArray());
-                    break;
-                default:
-                    if (!loadHL7ApplicationExtension(device, hl7App, reader, config))
-                        reader.skipUnknownProperty();
+            case "hl7ApplicationName":
+                hl7App.setApplicationName(reader.stringValue());
+                break;
+            case "dicomInstalled":
+                hl7App.setInstalled(reader.booleanValue());
+                break;
+            case "dicomNetworkConnectionReference":
+                for (String connRef : reader.stringArray())
+                    hl7App.addConnection(conns.get(JSONReader.toConnectionIndex(connRef)));
+                break;
+            case "hl7AcceptedSendingApplication":
+                hl7App.setAcceptedSendingApplications(reader.stringArray());
+                break;
+            case "hl7OtherApplicationName":
+                hl7App.setOtherApplicationNames(reader.stringArray());
+                break;
+            case "hl7AcceptedMessageType":
+                hl7App.setAcceptedMessageTypes(reader.stringArray());
+                break;
+            case "hl7DefaultCharacterSet":
+                hl7App.setHL7DefaultCharacterSet(reader.stringValue());
+                break;
+            case "hl7SendingCharacterSet":
+                hl7App.setHL7SendingCharacterSet(reader.stringValue());
+                break;
+            case "hl7OptionalMSHField":
+                hl7App.setOptionalMSHFields(reader.intArray());
+                break;
+            case "dicomDescription":
+                hl7App.setDescription(reader.stringValue());
+                break;
+            case "dicomApplicationCluster":
+                hl7App.setApplicationClusters(reader.stringArray());
+                break;
+            default:
+                if (!loadHL7ApplicationExtension(device, hl7App, reader, config))
+                    reader.skipUnknownProperty();
             }
         }
     }
 
     private boolean loadHL7ApplicationExtension(Device device, HL7Application hl7App, JSONReader reader,
-                                                ConfigurationDelegate config) throws InternalException {
+            ConfigurationDelegate config) throws InternalException {
         for (JsonHL7ConfigurationExtension ext : extensions)
             if (ext.loadHL7ApplicationExtension(device, hl7App, reader, config))
                 return true;

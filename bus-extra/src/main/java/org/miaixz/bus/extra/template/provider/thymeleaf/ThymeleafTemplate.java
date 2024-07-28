@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.template.provider.thymeleaf;
 
 import org.miaixz.bus.core.convert.Convert;
@@ -63,7 +63,8 @@ public class ThymeleafTemplate implements Template, Serializable {
      * @param template 模板路径或模板内容
      * @param charset  编码
      */
-    public ThymeleafTemplate(final TemplateEngine engine, final String template, final java.nio.charset.Charset charset) {
+    public ThymeleafTemplate(final TemplateEngine engine, final String template,
+            final java.nio.charset.Charset charset) {
         this.engine = engine;
         this.template = template;
         this.charset = ObjectKit.defaultIfNull(charset, Charset.UTF_8);
@@ -77,7 +78,8 @@ public class ThymeleafTemplate implements Template, Serializable {
      * @param charset  编码
      * @return {@code ThymeleafTemplate}
      */
-    public static ThymeleafTemplate wrap(final TemplateEngine engine, final String template, final java.nio.charset.Charset charset) {
+    public static ThymeleafTemplate wrap(final TemplateEngine engine, final String template,
+            final java.nio.charset.Charset charset) {
         return (null == engine) ? null : new ThymeleafTemplate(engine, template, charset);
     }
 

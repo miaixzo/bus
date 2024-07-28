@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.additional.dialect.oracle;
 
 import org.apache.ibatis.annotations.InsertProvider;
@@ -34,9 +34,7 @@ import org.miaixz.bus.mapper.annotation.RegisterMapper;
 import java.util.List;
 
 /**
- * Oracle批量插入
- * 支持@{@link KeySql#genId()}，不支持@{@link KeySql#sql()}
- * 因INSERT ALL语法不支持序列，可手工获取序列并设置至Entity或绑定触发器
+ * Oracle批量插入 支持@{@link KeySql#genId()}，不支持@{@link KeySql#sql()} 因INSERT ALL语法不支持序列，可手工获取序列并设置至Entity或绑定触发器
  *
  * @param <T> 泛型
  * @author Kimi Liu

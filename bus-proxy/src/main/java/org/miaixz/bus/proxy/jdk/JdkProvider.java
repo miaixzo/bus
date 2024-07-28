@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.proxy.jdk;
 
 import org.miaixz.bus.proxy.Aspect;
@@ -41,9 +41,7 @@ public class JdkProvider implements Provider {
 
     @Override
     public <T> T proxy(final T target, final Aspect aspect) {
-        return Builder.newProxyInstance(
-                target.getClass().getClassLoader(),
-                new JdkInterceptor(target, aspect),
+        return Builder.newProxyInstance(target.getClass().getClassLoader(), new JdkInterceptor(target, aspect),
                 target.getClass().getInterfaces());
     }
 

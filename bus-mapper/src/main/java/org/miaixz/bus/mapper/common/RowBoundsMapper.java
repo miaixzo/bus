@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.common;
 
 import org.miaixz.bus.mapper.annotation.RegisterMapper;
@@ -39,8 +39,6 @@ import org.miaixz.bus.mapper.common.rowbounds.SelectRowBoundsMapper;
  * @since Java 17+
  */
 @RegisterMapper
-public interface RowBoundsMapper<T> extends
-        SelectByConditionRowBoundsMapper<T>,
-        SelectRowBoundsMapper<T> {
+public interface RowBoundsMapper<T> extends SelectByConditionRowBoundsMapper<T>, SelectRowBoundsMapper<T> {
 
 }

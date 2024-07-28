@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MR_MRS_05;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,33 +46,34 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.SeriesProtocolInstance:
-            case PrivateTag.SpectroResultType:
-            case PrivateTag.SpectroResultExtendType:
-            case PrivateTag.PostProcProtocol:
-            case PrivateTag.RescanLevel:
-            case PrivateTag.SyncData:
-            case PrivateTag.PostProcDetailedProtocol:
-            case PrivateTag.SpectroResultExtendTypeDetailed:
-                return VR.CS;
-            case PrivateTag.TransmitterReferenceAmplitude:
-            case PrivateTag.CSIGridshiftVector:
-            case PrivateTag.MixingTime:
-                return VR.FD;
-            case PrivateTag.VoxelNumber:
-                return VR.IS;
-            case PrivateTag.SpectroAlgoResult:
-            case PrivateTag.SpectroDisplayParams:
-                return VR.OF;
-            case PrivateTag.APRSequence:
-                return VR.SQ;
-            case PrivateTag.HammingFilterWidth:
-                return VR.US;
+
+        case PrivateTag.SeriesProtocolInstance:
+        case PrivateTag.SpectroResultType:
+        case PrivateTag.SpectroResultExtendType:
+        case PrivateTag.PostProcProtocol:
+        case PrivateTag.RescanLevel:
+        case PrivateTag.SyncData:
+        case PrivateTag.PostProcDetailedProtocol:
+        case PrivateTag.SpectroResultExtendTypeDetailed:
+            return VR.CS;
+        case PrivateTag.TransmitterReferenceAmplitude:
+        case PrivateTag.CSIGridshiftVector:
+        case PrivateTag.MixingTime:
+            return VR.FD;
+        case PrivateTag.VoxelNumber:
+            return VR.IS;
+        case PrivateTag.SpectroAlgoResult:
+        case PrivateTag.SpectroDisplayParams:
+            return VR.OF;
+        case PrivateTag.APRSequence:
+            return VR.SQ;
+        case PrivateTag.HammingFilterWidth:
+            return VR.US;
         }
         return VR.UN;
     }

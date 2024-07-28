@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,14 +24,14 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.support;
 
 import java.util.Arrays;
 
 /**
- * This class implements a CharSequence that can be cleared of it's contained characters.
- * This class is utilized to pass around secrets (passwords) instead of a String instance.
+ * This class implements a CharSequence that can be cleared of it's contained characters. This class is utilized to pass
+ * around secrets (passwords) instead of a String instance.
  */
 public class SecretString implements CharSequence, AutoCloseable {
 
@@ -76,8 +76,8 @@ public class SecretString implements CharSequence, AutoCloseable {
     }
 
     /**
-     * Clear the contents of this SecretString instance by setting each character to 0.
-     * This is automatically done in the finalize() method.
+     * Clear the contents of this SecretString instance by setting each character to 0. This is automatically done in
+     * the finalize() method.
      */
     public void clear() {
         Arrays.fill(chars, '\0');

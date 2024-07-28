@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.solaris.driver.disk;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -50,7 +50,7 @@ public final class Lshal {
      * Query lshal to get device major
      *
      * @return A map with disk names as the key and block device major as the value if lshal is installed; empty map
-     * otherwise
+     *         otherwise
      */
     public static Map<String, Integer> queryDiskToMajorMap() {
         Map<String, Integer> majorMap = new HashMap<>();

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.net.ip;
 
 import org.miaixz.bus.core.center.regex.Pattern;
@@ -46,16 +46,15 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 /**
- * IPV4地址工具类
- * 名词解释：
+ * IPV4地址工具类 名词解释：
  * <ul>
- *     <li>ip字符串：点分十进制，形如：xxx.xxx.xxx.xxx</li>
- *     <li>ip的Long类型：有效位32位，每8位可以转为一个十进制数，例如：0xC0A802FA， 转为点分十进制是：192.168.2.250</li>
- *     <li>掩码地址：点分十进制，例如：255.255.255.0</li>
- *     <li>掩码位：int类型，例如 24, 它代表的掩码地址为：255.255.255.0；掩码位和掩码地址的相互转换，请使用 {@link MaskBit}</li>
- *     <li>CIDR：无类域间路由，形如：xxx.xxx.xxx.xxx/掩码位，192.168.1.101/24</li>
- *     <li>全量地址：区间内所有ip地址，包含区间两端</li>
- *     <li>可用地址：区间内所有ip地址，但是不包含区间两端</li>
+ * <li>ip字符串：点分十进制，形如：xxx.xxx.xxx.xxx</li>
+ * <li>ip的Long类型：有效位32位，每8位可以转为一个十进制数，例如：0xC0A802FA， 转为点分十进制是：192.168.2.250</li>
+ * <li>掩码地址：点分十进制，例如：255.255.255.0</li>
+ * <li>掩码位：int类型，例如 24, 它代表的掩码地址为：255.255.255.0；掩码位和掩码地址的相互转换，请使用 {@link MaskBit}</li>
+ * <li>CIDR：无类域间路由，形如：xxx.xxx.xxx.xxx/掩码位，192.168.1.101/24</li>
+ * <li>全量地址：区间内所有ip地址，包含区间两端</li>
+ * <li>可用地址：区间内所有ip地址，但是不包含区间两端</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -403,8 +402,7 @@ public class IPv4 {
     long IPV4_C_NUM_MAX = IPv4.ipv4ToLong(IPV4_C_STR_MAX);
 
     /**
-     * 获取主机名称，一次获取会缓存名称
-     * 注意此方法会触发反向DNS解析，导致阻塞，阻塞时间取决于网络！
+     * 获取主机名称，一次获取会缓存名称 注意此方法会触发反向DNS解析，导致阻塞，阻塞时间取决于网络！
      *
      * @return 主机名称
      */
@@ -441,9 +439,9 @@ public class IPv4 {
      * 获取本机网卡IPv4地址，规则如下：
      *
      * <ul>
-     *     <li>必须非回路（loopback）地址、非局域网地址（siteLocal）、IPv4地址</li>
-     *     <li>多网卡则返回第一个满足条件的地址</li>
-     *     <li>如果无满足要求的地址，调用 {@link InetAddress#getLocalHost()} 获取地址</li>
+     * <li>必须非回路（loopback）地址、非局域网地址（siteLocal）、IPv4地址</li>
+     * <li>多网卡则返回第一个满足条件的地址</li>
+     * <li>如果无满足要求的地址，调用 {@link InetAddress#getLocalHost()} 获取地址</li>
      * </ul>
      *
      * <p>
@@ -460,9 +458,9 @@ public class IPv4 {
      * 获取本机网卡IPv4地址，不使用缓存，规则如下：
      *
      * <ul>
-     *     <li>必须非回路（loopback）地址、非局域网地址（siteLocal）、IPv4地址</li>
-     *     <li>多网卡则返回第一个满足条件的地址</li>
-     *     <li>如果无满足要求的地址，调用 {@link InetAddress#getLocalHost()} 获取地址</li>
+     * <li>必须非回路（loopback）地址、非局域网地址（siteLocal）、IPv4地址</li>
+     * <li>多网卡则返回第一个满足条件的地址</li>
+     * <li>如果无满足要求的地址，调用 {@link InetAddress#getLocalHost()} 获取地址</li>
      * </ul>
      *
      * <p>
@@ -479,32 +477,32 @@ public class IPv4 {
      * 获取本机网卡IPv4地址，不使用缓存，规则如下：
      *
      * <ul>
-     *     <li>必须非回路（loopback）地址、IPv4地址</li>
-     *     <li>多网卡则返回第一个满足条件的地址</li>
-     *     <li>如果无满足要求的地址，调用 {@link InetAddress#getLocalHost()} 获取地址</li>
+     * <li>必须非回路（loopback）地址、IPv4地址</li>
+     * <li>多网卡则返回第一个满足条件的地址</li>
+     * <li>如果无满足要求的地址，调用 {@link InetAddress#getLocalHost()} 获取地址</li>
      * </ul>
      *
      * <p>
      * 此方法不会抛出异常，获取失败将返回{@code null}
      * </p>
      *
-     * @param includeSiteLocal 是否包含局域网地址，如10.0.0.0 ~ 10.255.255.255、172.16.0.0 ~ 172.31.255.255、192.168.0.0 ~ 192.168.255.255
+     * @param includeSiteLocal 是否包含局域网地址，如10.0.0.0 ~ 10.255.255.255、172.16.0.0 ~ 172.31.255.255、192.168.0.0 ~
+     *                         192.168.255.255
      * @return 本机网卡IP地址，获取失败返回{@code null}
      */
     public static InetAddress getLocalhostDirectly(final boolean includeSiteLocal) {
         final LinkedHashSet<InetAddress> localAddressList = NetKit.localAddressList(address ->
-                // 需为IPV4地址
-                address instanceof Inet4Address
-                        // 非loopback地址，指127.*.*.*的地址
-                        && !address.isLoopbackAddress()
-                        // 非地区本地地址，指：
-                        // 10.0.0.0 ~ 10.255.255.255
-                        // 172.16.0.0 ~ 172.31.255.255
-                        // 192.168.0.0 ~ 192.168.255.255
-                        && (includeSiteLocal || !address.isSiteLocalAddress())
-                        // 非链路本地地址：169.254.0.0/16
-                        && !address.isLinkLocalAddress()
-        );
+        // 需为IPV4地址
+        address instanceof Inet4Address
+                // 非loopback地址，指127.*.*.*的地址
+                && !address.isLoopbackAddress()
+                // 非地区本地地址，指：
+                // 10.0.0.0 ~ 10.255.255.255
+                // 172.16.0.0 ~ 172.31.255.255
+                // 192.168.0.0 ~ 192.168.255.255
+                && (includeSiteLocal || !address.isSiteLocalAddress())
+                // 非链路本地地址：169.254.0.0/16
+                && !address.isLinkLocalAddress());
 
         if (CollKit.isNotEmpty(localAddressList)) {
             // 如果存在多网卡，返回首个地址
@@ -524,9 +522,7 @@ public class IPv4 {
     }
 
     /**
-     * 构建InetSocketAddress
-     * 当host中包含端口时（用“：”隔开），使用host中的端口，否则使用默认端口
-     * 给定host为空时使用本地host（127.0.0.1）
+     * 构建InetSocketAddress 当host中包含端口时（用“：”隔开），使用host中的端口，否则使用默认端口 给定host为空时使用本地host（127.0.0.1）
      *
      * @param host        Host
      * @param defaultPort 默认端口
@@ -638,10 +634,8 @@ public class IPv4 {
         final StringBuilder sb = StringKit.builder(15);
         for (long ip = ipFrom, end = ipTo + 1; ip < end; ip++) {
             sb.setLength(0);
-            ips.add(sb.append((int) (ip >> 24) & 0xFF).append(Symbol.C_DOT)
-                    .append((int) (ip >> 16) & 0xFF).append(Symbol.C_DOT)
-                    .append((int) (ip >> 8) & 0xFF).append(Symbol.C_DOT)
-                    .append((int) ip & 0xFF)
+            ips.add(sb.append((int) (ip >> 24) & 0xFF).append(Symbol.C_DOT).append((int) (ip >> 16) & 0xFF)
+                    .append(Symbol.C_DOT).append((int) (ip >> 8) & 0xFF).append(Symbol.C_DOT).append((int) ip & 0xFF)
                     .toString());
         }
         return ips;
@@ -654,17 +648,16 @@ public class IPv4 {
      * @return 点分十进制ip地址
      */
     public static String longToIpv4(final long ip) {
-        return StringKit.builder(15)
-                .append((int) (ip >> 24) & 0xFF).append(Symbol.C_DOT)
-                .append((int) (ip >> 16) & 0xFF).append(Symbol.C_DOT)
-                .append((int) (ip >> 8) & 0xFF).append(Symbol.C_DOT)
-                .append((int) ip & 0xFF)
-                .toString();
+        return StringKit.builder(15).append((int) (ip >> 24) & 0xFF).append(Symbol.C_DOT)
+                .append((int) (ip >> 16) & 0xFF).append(Symbol.C_DOT).append((int) (ip >> 8) & 0xFF)
+                .append(Symbol.C_DOT).append((int) ip & 0xFF).toString();
     }
 
     /**
      * 将 ip字符串 转换为 long值
-     * <p>方法别名：inet_aton</p>
+     * <p>
+     * 方法别名：inet_aton
+     * </p>
      *
      * @param strIp ip地址，点分十进制，xxx.xxx.xxx.xxx
      * @return ip的long值
@@ -677,7 +670,9 @@ public class IPv4 {
 
     /**
      * 根据 ip 和 掩码位 获取 子网的起始IP（字符串型）
-     * <p>方法别名：inet_ntoa</p>
+     * <p>
+     * 方法别名：inet_ntoa
+     * </p>
      *
      * @param ip      给定的IP，点分十进制，如：xxx.xxx.xxx.xxx
      * @param maskBit 给定的掩码位，如：30
@@ -742,9 +737,9 @@ public class IPv4 {
      * @return 子网内地址总数
      */
     public static int countByMaskBit(final int maskBit, final boolean isAll) {
-        Assert.isTrue(maskBit > IPV4_MASK_BIT_VALID_MIN && maskBit <= IPV4_MASK_BIT_MAX,
-                "Not support mask bit: {}", maskBit);
-        //如果掩码位等于32，则可用地址为0
+        Assert.isTrue(maskBit > IPV4_MASK_BIT_VALID_MIN && maskBit <= IPV4_MASK_BIT_MAX, "Not support mask bit: {}",
+                maskBit);
+        // 如果掩码位等于32，则可用地址为0
         if (maskBit == IPV4_MASK_BIT_MAX && !isAll) {
             return 0;
         }
@@ -776,12 +771,10 @@ public class IPv4 {
         final long fromIpLong = ipv4ToLong(fromIp);
         Assert.isTrue(fromIpLong <= toIpLong, "Start IP must be less than or equal to end IP!");
 
-        return StringKit.builder(15)
-                .append(255 - getPartOfIp(toIpLong, 1) + getPartOfIp(fromIpLong, 1)).append(Symbol.C_DOT)
-                .append(255 - getPartOfIp(toIpLong, 2) + getPartOfIp(fromIpLong, 2)).append(Symbol.C_DOT)
-                .append(255 - getPartOfIp(toIpLong, 3) + getPartOfIp(fromIpLong, 3)).append(Symbol.C_DOT)
-                .append(255 - getPartOfIp(toIpLong, 4) + getPartOfIp(fromIpLong, 4))
-                .toString();
+        return StringKit.builder(15).append(255 - getPartOfIp(toIpLong, 1) + getPartOfIp(fromIpLong, 1))
+                .append(Symbol.C_DOT).append(255 - getPartOfIp(toIpLong, 2) + getPartOfIp(fromIpLong, 2))
+                .append(Symbol.C_DOT).append(255 - getPartOfIp(toIpLong, 3) + getPartOfIp(fromIpLong, 3))
+                .append(Symbol.C_DOT).append(255 - getPartOfIp(toIpLong, 4) + getPartOfIp(fromIpLong, 4)).toString();
     }
 
     /**
@@ -834,13 +827,14 @@ public class IPv4 {
     }
 
     /**
-     * 判定是否为内网IPv4
-     * 私有IP：
+     * 判定是否为内网IPv4 私有IP：
+     * 
      * <pre>
      * A类 10.0.0.0-10.255.255.255
      * B类 172.16.0.0-172.31.255.255
      * C类 192.168.0.0-192.168.255.255
      * </pre>
+     * 
      * 当然，还有127这个网段是环回地址
      *
      * @param ipAddress IP地址，点分十进制
@@ -860,13 +854,12 @@ public class IPv4 {
     public static boolean isInnerIP(final long ipNum) {
         return isBetween(ipNum, IPV4_A_PRIVATE_NUM_MIN, IPV4_A_PRIVATE_NUM_MAX)
                 || isBetween(ipNum, IPV4_B_PRIVATE_NUM_MIN, IPV4_B_PRIVATE_NUM_MAX)
-                || isBetween(ipNum, IPV4_C_PRIVATE_NUM_MIN, IPV4_C_PRIVATE_NUM_MAX)
-                || LOCAL_IP_NUM == ipNum;
+                || isBetween(ipNum, IPV4_C_PRIVATE_NUM_MIN, IPV4_C_PRIVATE_NUM_MAX) || LOCAL_IP_NUM == ipNum;
     }
 
     /**
-     * 是否为公网地址
-     * 公网IP：
+     * 是否为公网地址 公网IP：
+     * 
      * <pre>
      * A类 1.0.0.0-9.255.255.255，11.0.0.0-126.255.255.255
      * B类 128.0.0.0-172.15.255.255，172.32.0.0-191.255.255.255
@@ -898,7 +891,8 @@ public class IPv4 {
 
     /**
      * 获取ip(Long类型)指定部分的十进制值，即，{@literal X.X.X.X }形式中每个部分的值
-     * <p>例如，ip为{@literal 0xC0A802FA}：
+     * <p>
+     * 例如，ip为{@literal 0xC0A802FA}：
      * <ul>
      * <li>第1部分的值为：{@literal 0xC0}，十进制值为：192</li>
      * <li>第2部分的值为：{@literal 0xA8}，十进制值为：168</li>
@@ -912,16 +906,16 @@ public class IPv4 {
      */
     public static int getPartOfIp(final long ip, final int position) {
         switch (position) {
-            case 1:
-                return (int) (ip >> 24) & 0xFF;
-            case 2:
-                return (int) (ip >> 16) & 0xFF;
-            case 3:
-                return (int) (ip >> 8) & 0xFF;
-            case 4:
-                return (int) ip & 0xFF;
-            default:
-                throw new IllegalArgumentException("Illegal position of ip Long: " + position);
+        case 1:
+            return (int) (ip >> 24) & 0xFF;
+        case 2:
+            return (int) (ip >> 16) & 0xFF;
+        case 3:
+            return (int) (ip >> 8) & 0xFF;
+        case 4:
+            return (int) ip & 0xFF;
+        default:
+            throw new IllegalArgumentException("Illegal position of ip Long: " + position);
         }
     }
 

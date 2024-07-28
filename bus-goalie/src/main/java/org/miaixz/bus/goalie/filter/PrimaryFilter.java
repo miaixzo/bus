@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.goalie.filter;
 
 import org.miaixz.bus.core.basic.normal.ErrorCode;
@@ -74,8 +74,8 @@ public class PrimaryFilter implements WebFilter {
             MultiValueMap<String, String> params = request.getQueryParams();
             context.setRequestMap(params.toSingleValueMap());
             doParams(mutate);
-            return chain.filter(mutate)
-                    .then(Mono.fromRunnable(() -> Logger.info("traceId:{},exec time :{} ms", mutate.getLogPrefix(), System.currentTimeMillis() - context.getStartTime())));
+            return chain.filter(mutate).then(Mono.fromRunnable(() -> Logger.info("traceId:{},exec time :{} ms",
+                    mutate.getLogPrefix(), System.currentTimeMillis() - context.getStartTime())));
         } else {
             // 文件上传处理
             if (MediaType.MULTIPART_FORM_DATA.isCompatibleWith(mutate.getRequest().getHeaders().getContentType())) {
@@ -95,16 +95,16 @@ public class PrimaryFilter implements WebFilter {
                     context.setRequestMap(formMap);
                     context.setFilePartMap(fileMap);
                     doParams(mutate);
-                    return chain.filter(mutate)
-                            .doOnTerminate(() -> Logger.info("traceId:{},exec time :{}ms", mutate.getLogPrefix(), System.currentTimeMillis() - context.getStartTime()));
+                    return chain.filter(mutate).doOnTerminate(() -> Logger.info("traceId:{},exec time :{}ms",
+                            mutate.getLogPrefix(), System.currentTimeMillis() - context.getStartTime()));
                 });
 
             } else {
                 return mutate.getFormData().flatMap(params -> {
                     context.setRequestMap(params.toSingleValueMap());
                     doParams(mutate);
-                    return chain.filter(mutate)
-                            .doOnTerminate(() -> Logger.info("traceId:{},exec time :{}ms", mutate.getLogPrefix(), System.currentTimeMillis() - context.getStartTime()));
+                    return chain.filter(mutate).doOnTerminate(() -> Logger.info("traceId:{},exec time :{}ms",
+                            mutate.getLogPrefix(), System.currentTimeMillis() - context.getStartTime()));
                 });
             }
 
@@ -141,7 +141,8 @@ public class PrimaryFilter implements WebFilter {
         if (StringKit.isNotBlank(params.get(Config.SIGN))) {
             context.setNeedDecrypt(true);
         }
-        Logger.info("traceId:{},method:{},req =>{}", exchange.getLogPrefix(), params.get(Config.METHOD), JsonKit.toJsonString(context.getRequestMap()));
+        Logger.info("traceId:{},method:{},req =>{}", exchange.getLogPrefix(), params.get(Config.METHOD),
+                JsonKit.toJsonString(context.getRequestMap()));
     }
 
     /**

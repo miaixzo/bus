@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.screw;
 
 import lombok.Builder;
@@ -94,9 +94,8 @@ public class Config implements Serializable {
      * @param produceConfig {@link ProcessConfig} 生成配置
      * @param engineConfig  {@link EngineConfig} 生成配置
      */
-    private Config(String organization, String organizationUrl, String title, String version,
-                   String description, DataSource dataSource, ProcessConfig produceConfig,
-                   EngineConfig engineConfig) {
+    private Config(String organization, String organizationUrl, String title, String version, String description,
+            DataSource dataSource, ProcessConfig produceConfig, EngineConfig engineConfig) {
         Assert.notNull(dataSource, "DataSource can not be empty!");
         Assert.notNull(engineConfig, "EngineConfig can not be empty!");
         this.title = title;

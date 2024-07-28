@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager.parser;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -45,85 +45,64 @@ public interface CountSqlParser {
     /**
      * 聚合函数，以下列函数开头的都认为是聚合函数
      */
-    Set<String> AGGREGATE_FUNCTIONS = new HashSet<>(Arrays.asList(
-            ("APPROX_COUNT_DISTINCT," +
-                    "ARRAY_AGG," +
-                    "AVG," +
-                    "BIT_," +
-                    //"BIT_AND," +
-                    //"BIT_OR," +
-                    //"BIT_XOR," +
+    Set<String> AGGREGATE_FUNCTIONS = new HashSet<>(
+            Arrays.asList(("APPROX_COUNT_DISTINCT," + "ARRAY_AGG," + "AVG," + "BIT_," +
+            // "BIT_AND," +
+            // "BIT_OR," +
+            // "BIT_XOR," +
                     "BOOL_," +
-                    //"BOOL_AND," +
-                    //"BOOL_OR," +
-                    "CHECKSUM_AGG," +
-                    "COLLECT," +
-                    "CORR," +
-                    //"CORR_," +
-                    //"CORRELATION," +
+                    // "BOOL_AND," +
+                    // "BOOL_OR," +
+                    "CHECKSUM_AGG," + "COLLECT," + "CORR," +
+                    // "CORR_," +
+                    // "CORRELATION," +
                     "COUNT," +
-                    //"COUNT_BIG," +
+                    // "COUNT_BIG," +
                     "COVAR," +
-                    //"COVAR_POP," +
-                    //"COVAR_SAMP," +
-                    //"COVARIANCE," +
-                    //"COVARIANCE_SAMP," +
-                    "CUME_DIST," +
-                    "DENSE_RANK," +
-                    "EVERY," +
-                    "FIRST," +
-                    "GROUP," +
-                    //"GROUP_CONCAT," +
-                    //"GROUP_ID," +
-                    //"GROUPING," +
-                    //"GROUPING," +
-                    //"GROUPING_ID," +
+                    // "COVAR_POP," +
+                    // "COVAR_SAMP," +
+                    // "COVARIANCE," +
+                    // "COVARIANCE_SAMP," +
+                    "CUME_DIST," + "DENSE_RANK," + "EVERY," + "FIRST," + "GROUP," +
+                    // "GROUP_CONCAT," +
+                    // "GROUP_ID," +
+                    // "GROUPING," +
+                    // "GROUPING," +
+                    // "GROUPING_ID," +
                     "JSON_," +
-                    //"JSON_AGG," +
-                    //"JSON_ARRAYAGG," +
-                    //"JSON_OBJECT_AGG," +
-                    //"JSON_OBJECTAGG," +
-                    //"JSONB_AGG," +
-                    //"JSONB_OBJECT_AGG," +
-                    "LAST," +
-                    "LISTAGG," +
-                    "MAX," +
-                    "MEDIAN," +
-                    "MIN," +
-                    "PERCENT_," +
-                    //"PERCENT_RANK," +
-                    //"PERCENTILE_CONT," +
-                    //"PERCENTILE_DISC," +
-                    "RANK," +
-                    "REGR_," +
-                    "SELECTIVITY," +
-                    "STATS_," +
-                    //"STATS_BINOMIAL_TEST," +
-                    //"STATS_CROSSTAB," +
-                    //"STATS_F_TEST," +
-                    //"STATS_KS_TEST," +
-                    //"STATS_MODE," +
-                    //"STATS_MW_TEST," +
-                    //"STATS_ONE_WAY_ANOVA," +
-                    //"STATS_T_TEST_*," +
-                    //"STATS_WSR_TEST," +
+                    // "JSON_AGG," +
+                    // "JSON_ARRAYAGG," +
+                    // "JSON_OBJECT_AGG," +
+                    // "JSON_OBJECTAGG," +
+                    // "JSONB_AGG," +
+                    // "JSONB_OBJECT_AGG," +
+                    "LAST," + "LISTAGG," + "MAX," + "MEDIAN," + "MIN," + "PERCENT_," +
+                    // "PERCENT_RANK," +
+                    // "PERCENTILE_CONT," +
+                    // "PERCENTILE_DISC," +
+                    "RANK," + "REGR_," + "SELECTIVITY," + "STATS_," +
+                    // "STATS_BINOMIAL_TEST," +
+                    // "STATS_CROSSTAB," +
+                    // "STATS_F_TEST," +
+                    // "STATS_KS_TEST," +
+                    // "STATS_MODE," +
+                    // "STATS_MW_TEST," +
+                    // "STATS_ONE_WAY_ANOVA," +
+                    // "STATS_T_TEST_*," +
+                    // "STATS_WSR_TEST," +
                     "STD," +
-                    //"STDDEV," +
-                    //"STDDEV_POP," +
-                    //"STDDEV_SAMP," +
-                    //"STDDEV_SAMP," +
-                    //"STDEV," +
-                    //"STDEVP," +
-                    "STRING_AGG," +
-                    "SUM," +
-                    "SYS_OP_ZONE_ID," +
-                    "SYS_XMLAGG," +
-                    "VAR," +
-                    //"VAR_POP," +
-                    //"VAR_SAMP," +
-                    //"VARIANCE," +
-                    //"VARIANCE_SAMP," +
-                    //"VARP," +
+                    // "STDDEV," +
+                    // "STDDEV_POP," +
+                    // "STDDEV_SAMP," +
+                    // "STDDEV_SAMP," +
+                    // "STDEV," +
+                    // "STDEVP," +
+                    "STRING_AGG," + "SUM," + "SYS_OP_ZONE_ID," + "SYS_XMLAGG," + "VAR," +
+                    // "VAR_POP," +
+                    // "VAR_SAMP," +
+                    // "VARIANCE," +
+                    // "VARIANCE_SAMP," +
+                    // "VARP," +
                     "XMLAGG").split(Symbol.COMMA)));
 
     /**
@@ -149,7 +128,6 @@ public interface CountSqlParser {
     default String getSmartCountSql(String sql) {
         return getSmartCountSql(sql, Symbol.ZERO);
     }
-
 
     /**
      * 获取智能的countSql

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang;
 
 import org.miaixz.bus.core.convert.Convert;
@@ -37,8 +37,7 @@ import java.util.List;
 import java.util.Scanner;
 
 /**
- * 命令行（控制台）工具方法类
- * 此类主要针对{@link System#out} 和 {@link System#err} 做封装。
+ * 命令行（控制台）工具方法类 此类主要针对{@link System#out} 和 {@link System#err} 做封装。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -53,8 +52,7 @@ public class Console {
     }
 
     /**
-     * 同 System.out.println()方法，打印控制台日志
-     * 如果传入打印对象为{@link Throwable}对象，那么同时打印堆栈
+     * 同 System.out.println()方法，打印控制台日志 如果传入打印对象为{@link Throwable}对象，那么同时打印堆栈
      *
      * @param obj 要打印的对象
      */
@@ -68,8 +66,7 @@ public class Console {
     }
 
     /**
-     * 同 System.out.println()方法，打印控制台日志
-     * 如果传入打印对象为{@link Throwable}对象，那么同时打印堆栈
+     * 同 System.out.println()方法，打印控制台日志 如果传入打印对象为{@link Throwable}对象，那么同时打印堆栈
      *
      * @param obj1      第一个要打印的对象
      * @param otherObjs 其它要打印的对象
@@ -83,8 +80,7 @@ public class Console {
     }
 
     /**
-     * 同 System.out.println()方法，打印控制台日志
-     * 当传入template无"{}"时，被认为非模板，直接打印多个参数以空格分隔
+     * 同 System.out.println()方法，打印控制台日志 当传入template无"{}"时，被认为非模板，直接打印多个参数以空格分隔
      *
      * @param template 文本模板，被替换的部分用 {} 表示
      * @param values   值
@@ -141,8 +137,7 @@ public class Console {
     }
 
     /**
-     * 同 System.out.println()方法，打印控制台日志
-     * 如果传入打印对象为{@link Throwable}对象，那么同时打印堆栈
+     * 同 System.out.println()方法，打印控制台日志 如果传入打印对象为{@link Throwable}对象，那么同时打印堆栈
      *
      * @param obj1      第一个要打印的对象
      * @param otherObjs 其它要打印的对象
@@ -223,8 +218,7 @@ public class Console {
     }
 
     /**
-     * 同 System.out.println()方法，打印控制台日志
-     * 如果传入打印对象为{@link Throwable}对象，那么同时打印堆栈
+     * 同 System.out.println()方法，打印控制台日志 如果传入打印对象为{@link Throwable}对象，那么同时打印堆栈
      *
      * @param obj1      第一个要打印的对象
      * @param otherObjs 其它要打印的对象
@@ -361,8 +355,7 @@ public class Console {
         }
 
         /**
-         * 设置是否使用全角模式
-         * 当包含中文字符时，输出的表格可能无法对齐，因此当设置为全角模式时，全部字符转为全角。
+         * 设置是否使用全角模式 当包含中文字符时，输出的表格可能无法对齐，因此当设置为全角模式时，全部字符转为全角。
          *
          * @param isSBCMode 是否全角模式
          * @return this

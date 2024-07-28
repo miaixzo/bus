@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.data;
 
 import org.miaixz.bus.core.xyz.IoKit;
@@ -37,6 +37,7 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+
 /**
  * @author Kimi Liu
  * @since Java 17+
@@ -121,10 +122,7 @@ public class BulkData implements Value, Serializable {
 
     @Override
     public String toString() {
-        return "BulkData[uuid=" + uuid
-                + ", uri=" + uri
-                + ", bigEndian=" + bigEndian
-                + "]";
+        return "BulkData[uuid=" + uuid + ", uri=" + uri + ", bigEndian=" + bigEndian + "]";
     }
 
     public File getFile() {
@@ -177,7 +175,7 @@ public class BulkData implements Value, Serializable {
             throw new UnsupportedOperationException();
 
         if (intLength == 0)
-            return new byte[]{};
+            return new byte[] {};
 
         InputStream in = openStream();
         try {
@@ -215,8 +213,7 @@ public class BulkData implements Value, Serializable {
         oos.writeBoolean(bigEndian);
     }
 
-    private void readObject(ObjectInputStream ois)
-            throws IOException, ClassNotFoundException {
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
         ois.defaultReadObject();
         uuid = Builder.maskEmpty(ois.readUTF(), null);
         setURI(Builder.maskEmpty(ois.readUTF(), null));
@@ -241,7 +238,8 @@ public class BulkData implements Value, Serializable {
             return false;
         if (uuid == null) {
             return other.uuid == null;
-        } else return uuid.equals(other.uuid);
+        } else
+            return uuid.equals(other.uuid);
     }
 
     @Override
@@ -258,7 +256,8 @@ public class BulkData implements Value, Serializable {
      * Returns the index after the segment ends
      */
     public long getSegmentEnd() {
-        if (length == -1) return -1;
+        if (length == -1)
+            return -1;
         return offset() + (length & 0xFFFFFFFFL);
     }
 

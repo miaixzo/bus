@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.sensitive;
 
 import jakarta.annotation.Resource;
@@ -49,8 +49,7 @@ import java.lang.reflect.Type;
 import java.util.stream.Collectors;
 
 /**
- * 请求请求处理类(目前仅仅对requestbody有效)
- * 对加了@P的方法的数据进行解密密操作
+ * 请求请求处理类(目前仅仅对requestbody有效) 对加了@P的方法的数据进行解密密操作
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -65,15 +64,13 @@ public class RequestBodyAdvice extends BaseAdvice
      * 首次调用,以确定是否应用此拦截.
      *
      * @param parameter     方法参数
-     * @param type          目标类型,不一定与方法相同
-     *                      参数类型,例如 {@code HttpEntity<String>}.
+     * @param type          目标类型,不一定与方法相同 参数类型,例如 {@code HttpEntity<String>}.
      * @param converterType 转换器类型
      * @return true/false 是否应该调用此拦截
      */
     @Override
-    public boolean supports(MethodParameter parameter,
-                            Type type,
-                            Class<? extends HttpMessageConverter<?>> converterType) {
+    public boolean supports(MethodParameter parameter, Type type,
+            Class<? extends HttpMessageConverter<?>> converterType) {
         Annotation[] annotations = parameter.getDeclaringClass().getAnnotations();
         if (ArrayKit.isNotEmpty(annotations)) {
             for (Annotation annotation : annotations) {
@@ -90,16 +87,13 @@ public class RequestBodyAdvice extends BaseAdvice
      *
      * @param inputMessage  HTTP输入消息
      * @param parameter     方法参数
-     * @param type          目标类型,不一定与方法相同
-     *                      参数类型,例如 {@code HttpEntity<String>}.
+     * @param type          目标类型,不一定与方法相同 参数类型,例如 {@code HttpEntity<String>}.
      * @param converterType 转换器类型
      * @return 输入请求或新实例, 永远不会 {@code null}
      */
     @Override
-    public HttpInputMessage beforeBodyRead(HttpInputMessage inputMessage,
-                                           MethodParameter parameter,
-                                           Type type,
-                                           Class<? extends HttpMessageConverter<?>> converterType) {
+    public HttpInputMessage beforeBodyRead(HttpInputMessage inputMessage, MethodParameter parameter, Type type,
+            Class<? extends HttpMessageConverter<?>> converterType) {
         if (ObjectKit.isNotEmpty(this.properties) && !this.properties.isDebug()) {
             try {
                 final Sensitive sensitive = parameter.getMethod().getAnnotation(Sensitive.class);
@@ -110,10 +104,8 @@ public class RequestBodyAdvice extends BaseAdvice
                 // 数据解密
                 if (Builder.ALL.equals(sensitive.value()) || Builder.SAFE.equals(sensitive.value())
                         && (Builder.ALL.equals(sensitive.stage()) || Builder.IN.equals(sensitive.stage()))) {
-                    inputMessage = new InputMessage(inputMessage,
-                            this.properties.getDecrypt().getKey(),
-                            this.properties.getDecrypt().getType(),
-                            Charset.DEFAULT_UTF_8);
+                    inputMessage = new InputMessage(inputMessage, this.properties.getDecrypt().getKey(),
+                            this.properties.getDecrypt().getType(), Charset.DEFAULT_UTF_8);
                 }
             } catch (Exception e) {
                 Logger.error("Internal processing failure:" + e.getMessage());
@@ -128,16 +120,13 @@ public class RequestBodyAdvice extends BaseAdvice
      * @param body          在调用第一个通知之前将其设置为转换器对象
      * @param inputMessage  HTTP输入消息
      * @param parameter     方法参数
-     * @param type          目标类型,不一定与方法相同
-     *                      参数类型,例如 {@code HttpEntity<String>}.
+     * @param type          目标类型,不一定与方法相同 参数类型,例如 {@code HttpEntity<String>}.
      * @param converterType 转换器类型
      * @return 相同的主体或新实例
      */
     @Override
-    public Object afterBodyRead(Object body, HttpInputMessage inputMessage,
-                                MethodParameter parameter,
-                                Type type,
-                                Class<? extends HttpMessageConverter<?>> converterType) {
+    public Object afterBodyRead(Object body, HttpInputMessage inputMessage, MethodParameter parameter, Type type,
+            Class<? extends HttpMessageConverter<?>> converterType) {
         return body;
     }
 
@@ -147,16 +136,13 @@ public class RequestBodyAdvice extends BaseAdvice
      * @param body          通常在调用第一个通知之前将其设置为{@code null}
      * @param inputMessage  HTTP输入消息
      * @param parameter     方法参数
-     * @param type          目标类型,不一定与方法相同
-     *                      参数类型,例如 {@code HttpEntity<String>}.
+     * @param type          目标类型,不一定与方法相同 参数类型,例如 {@code HttpEntity<String>}.
      * @param converterType 转换器类型
      * @return 要使用的值或{@code null},该值可能会引发{@code HttpMessageNotReadableException}.
      */
     @Override
-    public Object handleEmptyBody(Object body, HttpInputMessage inputMessage,
-                                  MethodParameter parameter,
-                                  Type type,
-                                  Class<? extends HttpMessageConverter<?>> converterType) {
+    public Object handleEmptyBody(Object body, HttpInputMessage inputMessage, MethodParameter parameter, Type type,
+            Class<? extends HttpMessageConverter<?>> converterType) {
         return body;
     }
 
@@ -165,18 +151,14 @@ public class RequestBodyAdvice extends BaseAdvice
         private HttpHeaders headers;
         private InputStream body;
 
-        public InputMessage(HttpInputMessage inputMessage,
-                            String key,
-                            String type,
-                            String charset) throws Exception {
+        public InputMessage(HttpInputMessage inputMessage, String key, String type, String charset) throws Exception {
             if (StringKit.isEmpty(key)) {
                 throw new NullPointerException("Please check the request.crypto.decrypt");
             }
 
             this.headers = inputMessage.getHeaders();
 
-            String content = IoKit.toUtf8Reader(inputMessage.getBody())
-                    .lines()
+            String content = IoKit.toUtf8Reader(inputMessage.getBody()).lines()
                     .collect(Collectors.joining(System.lineSeparator()));
 
             String decryptBody;
@@ -208,6 +190,5 @@ public class RequestBodyAdvice extends BaseAdvice
             return headers;
         }
     }
-
 
 }

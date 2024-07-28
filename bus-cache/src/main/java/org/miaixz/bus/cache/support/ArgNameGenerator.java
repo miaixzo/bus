@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cache.support;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -44,28 +44,11 @@ public class ArgNameGenerator {
 
     private static final String X_ARGS_PREFIX = "args";
     private static final ConcurrentMap<Method, String[]> methodParameterNames = new ConcurrentHashMap<>();
-    private static String[] X_ARGS = {
-            X_ARGS_PREFIX + 0,
-            X_ARGS_PREFIX + 1,
-            X_ARGS_PREFIX + 2,
-            X_ARGS_PREFIX + 3,
-            X_ARGS_PREFIX + 4,
-            X_ARGS_PREFIX + 5,
-            X_ARGS_PREFIX + 6,
-            X_ARGS_PREFIX + 7,
-            X_ARGS_PREFIX + 8,
-            X_ARGS_PREFIX + 9,
-            X_ARGS_PREFIX + 10,
-            X_ARGS_PREFIX + 11,
-            X_ARGS_PREFIX + 12,
-            X_ARGS_PREFIX + 13,
-            X_ARGS_PREFIX + 14,
-            X_ARGS_PREFIX + 15,
-            X_ARGS_PREFIX + Normal._16,
-            X_ARGS_PREFIX + 17,
-            X_ARGS_PREFIX + 18,
-            X_ARGS_PREFIX + 19
-    };
+    private static String[] X_ARGS = { X_ARGS_PREFIX + 0, X_ARGS_PREFIX + 1, X_ARGS_PREFIX + 2, X_ARGS_PREFIX + 3,
+            X_ARGS_PREFIX + 4, X_ARGS_PREFIX + 5, X_ARGS_PREFIX + 6, X_ARGS_PREFIX + 7, X_ARGS_PREFIX + 8,
+            X_ARGS_PREFIX + 9, X_ARGS_PREFIX + 10, X_ARGS_PREFIX + 11, X_ARGS_PREFIX + 12, X_ARGS_PREFIX + 13,
+            X_ARGS_PREFIX + 14, X_ARGS_PREFIX + 15, X_ARGS_PREFIX + Normal._16, X_ARGS_PREFIX + 17, X_ARGS_PREFIX + 18,
+            X_ARGS_PREFIX + 19 };
     private static boolean isFirst = true;
 
     public static String[] getArgNames(Method method) {

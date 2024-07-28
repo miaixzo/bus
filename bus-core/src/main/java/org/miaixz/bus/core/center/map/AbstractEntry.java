@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -33,8 +33,7 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import java.util.Map;
 
 /**
- * 抽象的{@link Map.Entry}实现，来自Guava
- * 实现了默认的{@link #equals(Object)}、{@link #hashCode()}、{@link #toString()}方法。
+ * 抽象的{@link Map.Entry}实现，来自Guava 实现了默认的{@link #equals(Object)}、{@link #hashCode()}、{@link #toString()}方法。
  * 默认{@link #setValue(Object)}抛出异常。
  *
  * @param <K> 键类型
@@ -53,8 +52,7 @@ public abstract class AbstractEntry<K, V> implements Map.Entry<K, V> {
     public boolean equals(final Object object) {
         if (object instanceof Map.Entry) {
             final Map.Entry<?, ?> that = (Map.Entry<?, ?>) object;
-            return ObjectKit.equals(this.getKey(), that.getKey())
-                    && ObjectKit.equals(this.getValue(), that.getValue());
+            return ObjectKit.equals(this.getKey(), that.getKey()) && ObjectKit.equals(this.getValue(), that.getValue());
         }
         return false;
     }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.pdu;
 
 import org.miaixz.bus.core.center.map.IntHashMap;
@@ -84,8 +84,7 @@ public abstract class AAssociateRQAC {
 
     public final void setReservedBytes(byte[] reservedBytes) {
         if (reservedBytes.length != 32)
-            throw new IllegalArgumentException("reservedBytes.length: "
-                    + reservedBytes.length);
+            throw new IllegalArgumentException("reservedBytes.length: " + reservedBytes.length);
         System.arraycopy(reservedBytes, 0, this.reservedBytes, 0, 32);
     }
 
@@ -198,9 +197,7 @@ public abstract class AAssociateRQAC {
     public void addPresentationContext(PresentationContext pc) {
         int pcid = pc.getPCID();
         if (pcidMap.containsKey(pcid))
-            throw new IllegalStateException(
-                    "Already contains Presentation Context with pid: "
-                            + pcid);
+            throw new IllegalStateException("Already contains Presentation Context with pid: " + pcid);
         pcidMap.put(pcid, pc);
         pcs.add(pc);
     }
@@ -253,13 +250,11 @@ public abstract class AAssociateRQAC {
         return commonExtNegMap.get(cuid);
     }
 
-    public CommonExtended addCommonExtendedNegotiation(
-            CommonExtended extNeg) {
+    public CommonExtended addCommonExtendedNegotiation(CommonExtended extNeg) {
         return commonExtNegMap.put(extNeg.getSOPClassUID(), extNeg);
     }
 
-    public CommonExtended removeCommonExtendedNegotiationFor(
-            String cuid) {
+    public CommonExtended removeCommonExtendedNegotiationFor(String cuid) {
         return commonExtNegMap.remove(cuid);
     }
 
@@ -297,24 +292,14 @@ public abstract class AAssociateRQAC {
     }
 
     protected StringBuilder promptTo(String header, StringBuilder sb) {
-        sb.append(header)
-                .append(Builder.LINE_SEPARATOR)
-                .append("  calledAET: ").append(calledAET)
-                .append(Builder.LINE_SEPARATOR)
-                .append("  callingAET: ").append(callingAET)
-                .append(Builder.LINE_SEPARATOR)
-                .append("  applicationContext: ");
-        UID.promptTo(applicationContext, sb)
-                .append(Builder.LINE_SEPARATOR)
-                .append("  implClassUID: ").append(implClassUID)
-                .append(Builder.LINE_SEPARATOR)
-                .append("  implVersionName: ").append(implVersionName)
-                .append(Builder.LINE_SEPARATOR)
-                .append("  maxPDULength: ").append(maxPDULength)
-                .append(Builder.LINE_SEPARATOR)
-                .append("  maxOpsInvoked/maxOpsPerformed: ")
-                .append(maxOpsInvoked).append("/").append(maxOpsPerformed)
-                .append(Builder.LINE_SEPARATOR);
+        sb.append(header).append(Builder.LINE_SEPARATOR).append("  calledAET: ").append(calledAET)
+                .append(Builder.LINE_SEPARATOR).append("  callingAET: ").append(callingAET)
+                .append(Builder.LINE_SEPARATOR).append("  applicationContext: ");
+        UID.promptTo(applicationContext, sb).append(Builder.LINE_SEPARATOR).append("  implClassUID: ")
+                .append(implClassUID).append(Builder.LINE_SEPARATOR).append("  implVersionName: ")
+                .append(implVersionName).append(Builder.LINE_SEPARATOR).append("  maxPDULength: ").append(maxPDULength)
+                .append(Builder.LINE_SEPARATOR).append("  maxOpsInvoked/maxOpsPerformed: ").append(maxOpsInvoked)
+                .append("/").append(maxOpsPerformed).append(Builder.LINE_SEPARATOR);
         if (identityRQ != null)
             identityRQ.promptTo(sb).append(Builder.LINE_SEPARATOR);
         if (identityAC != null)

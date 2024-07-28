@@ -24,9 +24,8 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text;
-
 
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.lang.Normal;
@@ -38,10 +37,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Ant风格的路径匹配器。
- * 来自Spring-core和Ant
+ * Ant风格的路径匹配器。 来自Spring-core和Ant
  *
- * <p>匹配URL的规则如下：
+ * <p>
+ * 匹配URL的规则如下：
  * <ul>
  * <li>{@code ?} 匹配单个字符</li>
  * <li>{@code *} 匹配0个或多个字符</li>
@@ -49,17 +48,21 @@ import java.util.regex.Pattern;
  * <li>{@code {bus:[a-z]+}} 匹配以"bus"命名的正则 {@code [a-z]+}</li>
  * </ul>
  *
- * <p>示例: </p>
+ * <p>
+ * 示例:
+ * </p>
  * <ul>
  * <li>{@code com/t?st.jsp} &mdash; 匹配 {@code com/test.jsp} 或 {@code com/tast.jsp} 或 {@code com/txst.jsp}</li>
  * <li>{@code com/*.jsp} &mdash; 匹配{@code com}目录下全部 {@code .jsp}文件</li>
  * <li>{@code com/&#42;&#42;/test.jsp} &mdash; 匹配{@code com}目录下全部 {@code test.jsp}文件</li>
  * <li>{@code org/bus/&#42;&#42;/*.jsp} &mdash; 匹配{@code org/bus}路径下全部{@code .jsp} 文件</li>
- * <li>{@code org/&#42;&#42;/servlet/bla.jsp} &mdash; 匹配{@code org/bus/servlet/bla.jsp} 或{@code org/bus/testing/servlet/bla.jsp} 或 {@code org/servlet/bla.jsp}</li>
+ * <li>{@code org/&#42;&#42;/servlet/bla.jsp} &mdash; 匹配{@code org/bus/servlet/bla.jsp}
+ * 或{@code org/bus/testing/servlet/bla.jsp} 或 {@code org/servlet/bla.jsp}</li>
  * <li>{@code com/{filename:\\w+}.jsp} 匹配 {@code com/test.jsp} 并将 {@code test} 关联到 {@code filename} 变量</li>
  * </ul>
  *
- * <p><strong>注意:</strong> 表达式和路径必须都为绝对路径或都为相对路径。
+ * <p>
+ * <strong>注意:</strong> 表达式和路径必须都为绝对路径或都为相对路径。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -75,7 +78,7 @@ public class AntPathMatcher {
 
     private static final Pattern VARIABLE_PATTERN = Pattern.compile("\\{[^/]+?}");
 
-    private static final char[] WILDCARD_CHARS = {Symbol.C_STAR, Symbol.C_QUESTION_MARK, '{'};
+    private static final char[] WILDCARD_CHARS = { Symbol.C_STAR, Symbol.C_QUESTION_MARK, '{' };
     private final Map<String, String[]> tokenizedPatternCache = new SafeConcurrentHashMap<>(256);
     private final Map<String, AntPathStringMatcher> stringMatcherCache = new SafeConcurrentHashMap<>(256);
     private String pathSeparator;
@@ -83,7 +86,6 @@ public class AntPathMatcher {
     private boolean caseSensitive = true;
     private boolean trimTokens = false;
     private volatile Boolean cachePatterns;
-
 
     /**
      * 使用 {@link #DEFAULT_PATH_SEPARATOR} 作为分隔符构造
@@ -103,7 +105,6 @@ public class AntPathMatcher {
         }
         setPathSeparator(pathSeparator);
     }
-
 
     /**
      * 设置路径分隔符
@@ -143,14 +144,13 @@ public class AntPathMatcher {
     }
 
     /**
-     * Specify whether to cache parsed pattern metadata for patterns passed
-     * into this matcher's {@link #match} method. A value of {@code true}
-     * activates an unlimited pattern cache; a value of {@code false} turns
-     * the pattern cache off completely.
-     * <p>Default is for the cache to be on, but with the variant to automatically
-     * turn it off when encountering too many patterns to cache at runtime
-     * (the threshold is 65536), assuming that arbitrary permutations of patterns
-     * are coming in, with little chance for encountering a recurring pattern.
+     * Specify whether to cache parsed pattern metadata for patterns passed into this matcher's {@link #match} method. A
+     * value of {@code true} activates an unlimited pattern cache; a value of {@code false} turns the pattern cache off
+     * completely.
+     * <p>
+     * Default is for the cache to be on, but with the variant to automatically turn it off when encountering too many
+     * patterns to cache at runtime (the threshold is 65536), assuming that arbitrary permutations of patterns are
+     * coming in, with little chance for encountering a recurring pattern.
      *
      * @param cachePatterns 是否缓存表达式
      * @return this
@@ -222,7 +222,8 @@ public class AntPathMatcher {
      * @param uriTemplateVariables 变量映射
      * @return {@code true} 表示提供的 {@code path} 匹配, {@code false} 表示不匹配
      */
-    protected boolean doMatch(final String pattern, final String path, final boolean fullMatch, final Map<String, String> uriTemplateVariables) {
+    protected boolean doMatch(final String pattern, final String path, final boolean fullMatch,
+            final Map<String, String> uriTemplateVariables) {
         if (path == null || path.startsWith(this.pathSeparator) != pattern.startsWith(this.pathSeparator)) {
             return false;
         }
@@ -259,8 +260,7 @@ public class AntPathMatcher {
             if (!fullMatch) {
                 return true;
             }
-            if (pattIdxStart == pattIdxEnd
-                    && pattDirs[pattIdxStart].equals(Symbol.STAR)
+            if (pattIdxStart == pattIdxEnd && pattDirs[pattIdxStart].equals(Symbol.STAR)
                     && path.endsWith(this.pathSeparator)) {
                 return true;
             }
@@ -319,8 +319,7 @@ public class AntPathMatcher {
             final int strLength = (pathIdxEnd - pathIdxStart + 1);
             int foundIdx = -1;
 
-            strLoop:
-            for (int i = 0; i <= strLength - patLength; i++) {
+            strLoop: for (int i = 0; i <= strLength - patLength; i++) {
                 for (int j = 0; j < patLength; j++) {
                     final String subPat = pattDirs[pattIdxStart + j + 1];
                     final String subStr = pathDirs[pathIdxStart + i + j];
@@ -402,8 +401,9 @@ public class AntPathMatcher {
 
     /**
      * Tokenize the given path pattern into parts, based on this matcher's settings.
-     * <p>Performs caching based on {@link #setCachePatterns}, delegating to
-     * {@link #tokenizePath(String)} for the actual tokenization algorithm.
+     * <p>
+     * Performs caching based on {@link #setCachePatterns}, delegating to {@link #tokenizePath(String)} for the actual
+     * tokenization algorithm.
      *
      * @param pattern the pattern to tokenize
      * @return the tokenized pattern parts
@@ -440,8 +440,7 @@ public class AntPathMatcher {
      * @return the tokenized path parts
      */
     protected String[] tokenizePath(final String path) {
-        return CharsBacker.split(path, this.pathSeparator, this.trimTokens, true)
-                .toArray(new String[0]);
+        return CharsBacker.split(path, this.pathSeparator, this.trimTokens, true).toArray(new String[0]);
     }
 
     /**
@@ -451,19 +450,22 @@ public class AntPathMatcher {
      * @param text    the String which must be matched against the pattern (never {@code null})
      * @return {@code true} if the string matches against the pattern, or {@code false} otherwise
      */
-    private boolean notMatchStrings(final String pattern, final String text, final Map<String, String> uriTemplateVariables) {
+    private boolean notMatchStrings(final String pattern, final String text,
+            final Map<String, String> uriTemplateVariables) {
         return !getStringMatcher(pattern).matchStrings(text, uriTemplateVariables);
     }
 
     /**
      * Build or retrieve an {@link AntPathStringMatcher} for the given pattern.
-     * <p>The default implementation checks this AntPathMatcher's internal cache
-     * (see {@link #setCachePatterns}), creating a new AntPathStringMatcher instance
-     * if no cached copier is found.
-     * <p>When encountering too many patterns to cache at runtime (the threshold is 65536),
-     * it turns the default cache off, assuming that arbitrary permutations of patterns
-     * are coming in, with little chance for encountering a recurring pattern.
-     * <p>This method may be overridden to implement a custom cache strategy.
+     * <p>
+     * The default implementation checks this AntPathMatcher's internal cache (see {@link #setCachePatterns}), creating
+     * a new AntPathStringMatcher instance if no cached copier is found.
+     * <p>
+     * When encountering too many patterns to cache at runtime (the threshold is 65536), it turns the default cache off,
+     * assuming that arbitrary permutations of patterns are coming in, with little chance for encountering a recurring
+     * pattern.
+     * <p>
+     * This method may be overridden to implement a custom cache strategy.
      *
      * @param pattern the pattern to match against (never {@code null})
      * @return a corresponding AntPathStringMatcher (never {@code null})
@@ -489,7 +491,10 @@ public class AntPathMatcher {
     }
 
     /**
-     * Given a pattern and a full path, determine the pattern-mapped part. <p>For example: <ul>
+     * Given a pattern and a full path, determine the pattern-mapped part.
+     * <p>
+     * For example:
+     * <ul>
      * <li>'{@code /docs/cvs/commit.html}' and '{@code /docs/cvs/commit.html} &rarr; ''</li>
      * <li>'{@code /docs/*}' and '{@code /docs/cvs/commit} &rarr; '{@code cvs/commit}'</li>
      * <li>'{@code /docs/cvs/*.html}' and '{@code /docs/cvs/commit.html} &rarr; '{@code commit.html}'</li>
@@ -497,9 +502,11 @@ public class AntPathMatcher {
      * <li>'{@code /docs/**\/*.html}' and '{@code /docs/cvs/commit.html} &rarr; '{@code cvs/commit.html}'</li>
      * <li>'{@code /*.html}' and '{@code /docs/cvs/commit.html} &rarr; '{@code docs/cvs/commit.html}'</li>
      * <li>'{@code *.html}' and '{@code /docs/cvs/commit.html} &rarr; '{@code /docs/cvs/commit.html}'</li>
-     * <li>'{@code *}' and '{@code /docs/cvs/commit.html} &rarr; '{@code /docs/cvs/commit.html}'</li> </ul>
-     * <p>Assumes that {@link #match} returns {@code true} for '{@code pattern}' and '{@code path}', but
-     * does <strong>not</strong> enforce this.
+     * <li>'{@code *}' and '{@code /docs/cvs/commit.html} &rarr; '{@code /docs/cvs/commit.html}'</li>
+     * </ul>
+     * <p>
+     * Assumes that {@link #match} returns {@code true} for '{@code pattern}' and '{@code path}', but does
+     * <strong>not</strong> enforce this.
      *
      * @param pattern 表达式
      * @param path    路径
@@ -544,11 +551,9 @@ public class AntPathMatcher {
     }
 
     /**
-     * Combine two patterns into a new pattern.
-     * This implementation simply concatenates the two patterns, unless
-     * the first pattern contains a file extension match (e.g., {@code *.html}).
-     * In that case, the second pattern will be merged into the first. Otherwise,
-     * an {@code IllegalArgumentException} will be thrown.
+     * Combine two patterns into a new pattern. This implementation simply concatenates the two patterns, unless the
+     * first pattern contains a file extension match (e.g., {@code *.html}). In that case, the second pattern will be
+     * merged into the first. Otherwise, an {@code IllegalArgumentException} will be thrown.
      *
      * @param pattern1 the first pattern
      * @param pattern2 the second pattern
@@ -618,19 +623,19 @@ public class AntPathMatcher {
     }
 
     /**
-     * Given a full path, returns a {@link Comparator} suitable for sorting patterns in order of
-     * explicitness.
-     * <p>This {@code Comparator} will {@linkplain List#sort(Comparator) sort}
-     * a list so that more specific patterns (without URI templates or wild cards) come before
-     * generic patterns. So given a list with the following patterns, the returned compare
-     * will sort this list so that the order will be as indicated.
+     * Given a full path, returns a {@link Comparator} suitable for sorting patterns in order of explicitness.
+     * <p>
+     * This {@code Comparator} will {@linkplain List#sort(Comparator) sort} a list so that more specific patterns
+     * (without URI templates or wild cards) come before generic patterns. So given a list with the following patterns,
+     * the returned compare will sort this list so that the order will be as indicated.
      * <ol>
      * <li>{@code /hotels/new}</li>
      * <li>{@code /hotels/{hotel}}</li>
      * <li>{@code /hotels/*}</li>
      * </ol>
-     * <p>The full path given as parameter is used to test for exact matches. So when the given path
-     * is {@code /hotels/2}, the pattern {@code /hotels/2} will be sorted before {@code /hotels/1}.
+     * <p>
+     * The full path given as parameter is used to test for exact matches. So when the given path is {@code /hotels/2},
+     * the pattern {@code /hotels/2} will be sorted before {@code /hotels/1}.
      *
      * @param path the full path to use for comparison
      * @return a compare capable of sorting patterns in order of explicitness
@@ -639,11 +644,11 @@ public class AntPathMatcher {
         return new AntPatternComparator(path);
     }
 
-
     /**
      * Tests whether a string matches against a pattern via a {@link Pattern}.
-     * <p>The pattern may contain special characters: '*' means zero or more characters; '?' means one and
-     * only one character; '{' and '}' indicate a URI template pattern. For example {@code /users/{user}}.
+     * <p>
+     * The pattern may contain special characters: '*' means zero or more characters; '?' means one and only one
+     * character; '{' and '}' indicate a URI template pattern. For example {@code /users/{user}}.
      */
     protected static class AntPathStringMatcher {
 
@@ -703,8 +708,8 @@ public class AntPathMatcher {
             } else {
                 this.exactMatch = false;
                 patternBuilder.append(quote(pattern, end, pattern.length()));
-                this.pattern = (this.caseSensitive ? Pattern.compile(patternBuilder.toString()) :
-                        Pattern.compile(patternBuilder.toString(), Pattern.CASE_INSENSITIVE));
+                this.pattern = (this.caseSensitive ? Pattern.compile(patternBuilder.toString())
+                        : Pattern.compile(patternBuilder.toString(), Pattern.CASE_INSENSITIVE));
             }
         }
 
@@ -730,16 +735,16 @@ public class AntPathMatcher {
                 if (matcher.matches()) {
                     if (uriTemplateVariables != null) {
                         if (this.variableNames.size() != matcher.groupCount()) {
-                            throw new IllegalArgumentException("The number of capturing groups in the pattern segment " +
-                                    this.pattern + " does not match the number of URI template variables it defines, " +
-                                    "which can occur if capturing groups are used in a URI template regex. " +
-                                    "Use non-capturing groups instead.");
+                            throw new IllegalArgumentException("The number of capturing groups in the pattern segment "
+                                    + this.pattern + " does not match the number of URI template variables it defines, "
+                                    + "which can occur if capturing groups are used in a URI template regex. "
+                                    + "Use non-capturing groups instead.");
                         }
                         for (int i = 1; i <= matcher.groupCount(); i++) {
                             final String name = this.variableNames.get(i - 1);
                             if (name.startsWith(Symbol.STAR)) {
-                                throw new IllegalArgumentException("Capturing patterns (" + name + ") are not " +
-                                        "supported by the AntPathMatcher. Use the PathPatternParser instead.");
+                                throw new IllegalArgumentException("Capturing patterns (" + name + ") are not "
+                                        + "supported by the AntPathMatcher. Use the PathPatternParser instead.");
                             }
                             final String value = matcher.group(i);
                             uriTemplateVariables.put(name, value);
@@ -753,11 +758,10 @@ public class AntPathMatcher {
 
     }
 
-
     /**
-     * The default {@link Comparator} implementation returned by
-     * {@link #getPatternComparator(String)}.
-     * <p>In order, the most "generic" pattern is determined by the following:
+     * The default {@link Comparator} implementation returned by {@link #getPatternComparator(String)}.
+     * <p>
+     * In order, the most "generic" pattern is determined by the following:
      * <ul>
      * <li>if it's null or a capture all pattern (i.e. it is equal to "/**")</li>
      * <li>if the other pattern is an actual match</li>
@@ -776,13 +780,13 @@ public class AntPathMatcher {
         }
 
         /**
-         * Compare two patterns to determine which should match first, i.e. which
-         * is the most specific regarding the current path.
+         * Compare two patterns to determine which should match first, i.e. which is the most specific regarding the
+         * current path.
          *
          * @param pattern1 表达式1
          * @param pattern2 表达式2
-         * @return a negative integer, zero, or a positive integer as pattern1 is
-         * more specific, equally specific, or less specific than pattern2.
+         * @return a negative integer, zero, or a positive integer as pattern1 is more specific, equally specific, or
+         *         less specific than pattern2.
          */
         @Override
         public int compare(final String pattern1, final String pattern2) {
@@ -838,10 +842,9 @@ public class AntPathMatcher {
             return 0;
         }
 
-
         /**
-         * Value class that holds information about the pattern, e.g. number of
-         * occurrences of "*", "**", and "{" pattern elements.
+         * Value class that holds information about the pattern, e.g. number of occurrences of "*", "**", and "{"
+         * pattern elements.
          */
         private static class PatternInfo {
 
@@ -920,14 +923,14 @@ public class AntPathMatcher {
              */
             public int getLength() {
                 if (this.length == null) {
-                    this.length = (this.pattern != null ?
-                            VARIABLE_PATTERN.matcher(this.pattern).replaceAll(Symbol.SHAPE).length() : 0);
+                    this.length = (this.pattern != null
+                            ? VARIABLE_PATTERN.matcher(this.pattern).replaceAll(Symbol.SHAPE).length()
+                            : 0);
                 }
                 return this.length;
             }
         }
     }
-
 
     /**
      * A simple cache for patterns that depend on the configured path separator.

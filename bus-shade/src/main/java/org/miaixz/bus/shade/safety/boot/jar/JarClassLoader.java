@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.safety.boot.jar;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -55,7 +55,8 @@ public class JarClassLoader extends URLClassLoader {
 
     private final JarURLHandler jarURLHandler;
 
-    public JarClassLoader(URL[] urls, ClassLoader parent, DecryptorProvider decryptorProvider, EncryptorProvider encryptorProvider, Key key) throws Exception {
+    public JarClassLoader(URL[] urls, ClassLoader parent, DecryptorProvider decryptorProvider,
+            EncryptorProvider encryptorProvider, Key key) throws Exception {
         super(urls, parent);
         this.jarURLHandler = new JarURLHandler(decryptorProvider, encryptorProvider, key, this);
     }

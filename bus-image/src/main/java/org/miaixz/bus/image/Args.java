@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image;
 
 import lombok.Builder;
@@ -58,24 +58,13 @@ import java.util.List;
 @AllArgsConstructor
 public class Args {
 
-    public static final String[] IVR_LE_FIRST = {
-            UID.ImplicitVRLittleEndian.uid,
-            UID.ExplicitVRLittleEndian.uid,
-            UID.ExplicitVRBigEndian.uid
-    };
-    public static final String[] EVR_LE_FIRST = {
-            UID.ExplicitVRLittleEndian.uid,
-            UID.ExplicitVRBigEndian.uid,
-            UID.ImplicitVRLittleEndian.uid
-    };
-    public static final String[] EVR_BE_FIRST = {
-            UID.ExplicitVRBigEndian.uid,
-            UID.ExplicitVRLittleEndian.uid,
-            UID.ImplicitVRLittleEndian.uid
-    };
-    public static final String[] IVR_LE_ONLY = {
-            UID.ImplicitVRLittleEndian.uid
-    };
+    public static final String[] IVR_LE_FIRST = { UID.ImplicitVRLittleEndian.uid, UID.ExplicitVRLittleEndian.uid,
+            UID.ExplicitVRBigEndian.uid };
+    public static final String[] EVR_LE_FIRST = { UID.ExplicitVRLittleEndian.uid, UID.ExplicitVRBigEndian.uid,
+            UID.ImplicitVRLittleEndian.uid };
+    public static final String[] EVR_BE_FIRST = { UID.ExplicitVRBigEndian.uid, UID.ExplicitVRLittleEndian.uid,
+            UID.ImplicitVRLittleEndian.uid };
+    public static final String[] IVR_LE_ONLY = { UID.ImplicitVRLittleEndian.uid };
 
     /**
      * 绑定调用AET
@@ -118,34 +107,28 @@ public class Args {
      */
     private boolean negociation;
     /**
-     * SOP类和传输语法可以通过其UID或名称指定
-     * sop-classes.properties
+     * SOP类和传输语法可以通过其UID或名称指定 sop-classes.properties
      */
     private URL sopClasses;
     /**
-     * 根据DICOM Part 4, B.3.1.4定义相关的通用SOP类
-     * sop-classes-uid.properties
+     * 根据DICOM Part 4, B.3.1.4定义相关的通用SOP类 sop-classes-uid.properties
      */
     private URL sopClassesUID;
     /**
-     * 扩展Sop类和传输语法的存储传输能力
-     * sop-classes-tcs.properties
+     * 扩展Sop类和传输语法的存储传输能力 sop-classes-tcs.properties
      */
     private URL sopClassesTCS;
-
 
     public Args(boolean bindCallingAet) {
         this(null, bindCallingAet, null, null);
     }
 
     /**
-     * @param editors             修改DICOM属性的编辑器
-     * @param negociation   扩展SOP类
-     * @param sopClasses SOP类扩展的配置文件
+     * @param editors     修改DICOM属性的编辑器
+     * @param negociation 扩展SOP类
+     * @param sopClasses  SOP类扩展的配置文件
      */
-    public Args(List<Editors> editors,
-                boolean negociation,
-                URL sopClasses) {
+    public Args(List<Editors> editors, boolean negociation, URL sopClasses) {
         this.editors = editors;
         this.negociation = negociation;
         this.sopClasses = sopClasses;
@@ -153,15 +136,11 @@ public class Args {
 
     /**
      * @param option                  可选的高级参数(代理、身份验证、连接和TLS)
-     * @param bindCallingAet          当为true时，它将设置侦听器DICOM节点的AET。只有匹配称为AETitle的请求将被接受。
-     *                                如果为假，所有被调用的AETs将被接受
-     * @param sopClassesTCS  获取包含传输功能(sopclass、role、transferSyntaxes)的文件的URL
+     * @param bindCallingAet          当为true时，它将设置侦听器DICOM节点的AET。只有匹配称为AETitle的请求将被接受。 如果为假，所有被调用的AETs将被接受
+     * @param sopClassesTCS           获取包含传输功能(sopclass、role、transferSyntaxes)的文件的URL
      * @param acceptedCallingAETitles 可接受的呼叫aetitle的列表。空将接受所有aetitle
      */
-    public Args(Option option,
-                boolean bindCallingAet,
-                URL sopClassesTCS,
-                String... acceptedCallingAETitles) {
+    public Args(Option option, boolean bindCallingAet, URL sopClassesTCS, String... acceptedCallingAETitles) {
         this.bindCallingAet = bindCallingAet;
         this.sopClassesTCS = sopClassesTCS;
         this.acceptedCallingAETitles = null == acceptedCallingAETitles ? new String[0] : acceptedCallingAETitles;
@@ -195,9 +174,7 @@ public class Args {
         }
     }
 
-    public void configureBind(AAssociateRQ aAssociateRQ,
-                              Connection remote,
-                              Node calledNode) {
+    public void configureBind(AAssociateRQ aAssociateRQ, Connection remote, Node calledNode) {
         aAssociateRQ.setCalledAET(calledNode.getAet());
         if (null != identityRQ) {
             aAssociateRQ.setIdentityRQ(identityRQ);
@@ -272,8 +249,10 @@ public class Args {
 
             Device device = conn.getDevice();
             try {
-                device.setKeyManager(TrustAnyTrustManager.createKeyManager(option.getKeystoreType(), option.getKeystoreURL(), option.getKeystorePass(), option.getKeyPass()));
-                device.setTrustManager(TrustAnyTrustManager.createTrustManager(option.getTruststoreType(), option.getTruststoreURL(), option.getTruststorePass()));
+                device.setKeyManager(TrustAnyTrustManager.createKeyManager(option.getKeystoreType(),
+                        option.getKeystoreURL(), option.getKeystorePass(), option.getKeyPass()));
+                device.setTrustManager(TrustAnyTrustManager.createTrustManager(option.getTruststoreType(),
+                        option.getTruststoreURL(), option.getTruststorePass()));
                 if (remote != null) {
                     remote.setTlsProtocols(conn.getTlsProtocols());
                     remote.setTlsCipherSuites(conn.getTlsCipherSuites());

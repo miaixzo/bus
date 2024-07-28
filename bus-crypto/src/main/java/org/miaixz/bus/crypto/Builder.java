@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto;
 
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -74,10 +74,7 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * 安全相关工具类
- * 加密分为三种：
- * 1、对称加密（symmetric），例如：AES、DES等
- * 2、非对称加密（asymmetric），例如：RSA、DSA等
+ * 安全相关工具类 加密分为三种： 1、对称加密（symmetric），例如：AES、DES等 2、非对称加密（asymmetric），例如：RSA、DSA等
  * 3、摘要加密（digest），例如：MD5、SHA-1、SHA-256、HMAC等
  *
  * @author Kimi Liu
@@ -116,8 +113,8 @@ public class Builder {
     }
 
     /**
-     * AES加密，生成随机KEY。注意解密时必须使用相同 {@link AES}对象或者使用相同KEY
-     * 例：
+     * AES加密，生成随机KEY。注意解密时必须使用相同 {@link AES}对象或者使用相同KEY 例：
+     * 
      * <pre>
      * AES加密：aes().encrypt(data)
      * AES解密：aes().decrypt(data)
@@ -130,8 +127,8 @@ public class Builder {
     }
 
     /**
-     * AES加密
-     * 例：
+     * AES加密 例：
+     * 
      * <pre>
      * AES加密：aes(data).encrypt(data)
      * AES解密：aes(data).decrypt(data)
@@ -145,8 +142,8 @@ public class Builder {
     }
 
     /**
-     * DES加密，生成随机KEY。注意解密时必须使用相同 {@link DES}对象或者使用相同KEY
-     * 例：
+     * DES加密，生成随机KEY。注意解密时必须使用相同 {@link DES}对象或者使用相同KEY 例：
+     * 
      * <pre>
      * DES加密：des().encrypt(data)
      * DES解密：des().decrypt(data)
@@ -159,8 +156,8 @@ public class Builder {
     }
 
     /**
-     * DES加密
-     * 例：
+     * DES加密 例：
+     * 
      * <pre>
      * DES加密：des(data).encrypt(data)
      * DES解密：des(data).decrypt(data)
@@ -174,10 +171,9 @@ public class Builder {
     }
 
     /**
-     * 三重数据加密算法,缩写为TDEA（又名3DES、TripleDES），生成随机KEY。
-     * 注意解密时必须使用相同 {@link TDEA}对象或者使用相同KEY
-     * Java中默认实现为：DESede/ECB/PKCS5Padding
-     * 例：
+     * 三重数据加密算法,缩写为TDEA（又名3DES、TripleDES），生成随机KEY。 注意解密时必须使用相同 {@link TDEA}对象或者使用相同KEY
+     * Java中默认实现为：DESede/ECB/PKCS5Padding 例：
+     * 
      * <pre>
      * DESede加密：tdea().encrypt(data)
      * DESede解密：tdea().decrypt(data)
@@ -190,10 +186,9 @@ public class Builder {
     }
 
     /**
-     * 三重数据加密算法,缩写为TDEA（又名3DES、TripleDES），生成随机KEY。
-     * 注意解密时必须使用相同 {@link TDEA}对象或者使用相同KEY
-     * Java中默认实现为：DESede/ECB/PKCS5Padding
-     * 例：
+     * 三重数据加密算法,缩写为TDEA（又名3DES、TripleDES），生成随机KEY。 注意解密时必须使用相同 {@link TDEA}对象或者使用相同KEY
+     * Java中默认实现为：DESede/ECB/PKCS5Padding 例：
+     * 
      * <pre>
      * DESede加密：tdea(data).encrypt(data)
      * DESede解密：tdea(data).decrypt(data)
@@ -207,8 +202,8 @@ public class Builder {
     }
 
     /**
-     * MD5加密
-     * 例：
+     * MD5加密 例：
+     * 
      * <pre>
      * MD5加密：md5().digest(data)
      * MD5加密并转为16进制字符串：md5().digestHex(data)
@@ -251,10 +246,7 @@ public class Builder {
     }
 
     /**
-     * SHA1加密
-     * 例：
-     * SHA1加密：sha1().digest(data)
-     * SHA1加密并转为16进制字符串：sha1().digestHex(data)
+     * SHA1加密 例： SHA1加密：sha1().digest(data) SHA1加密并转为16进制字符串：sha1().digestHex(data)
      *
      * @return {@link Digester}
      */
@@ -293,10 +285,7 @@ public class Builder {
     }
 
     /**
-     * SHA256加密
-     * 例：
-     * SHA256加密：sha256().digest(data)
-     * SHA256加密并转为16进制字符串：sha256().digestHex(data)
+     * SHA256加密 例： SHA256加密：sha256().digest(data) SHA256加密并转为16进制字符串：sha256().digestHex(data)
      *
      * @return {@link Digester}
      */
@@ -368,10 +357,7 @@ public class Builder {
     }
 
     /**
-     * HmacMD5加密器
-     * 例：
-     * HmacMD5加密：hmacMd5(data).digest(data)
-     * HmacMD5加密并转为16进制字符串：hmacMd5(data).digestHex(data)
+     * HmacMD5加密器 例： HmacMD5加密：hmacMd5(data).digest(data) HmacMD5加密并转为16进制字符串：hmacMd5(data).digestHex(data)
      *
      * @param key 加密密钥，如果为{@code null}生成随机密钥
      * @return {@link HMac}
@@ -381,10 +367,7 @@ public class Builder {
     }
 
     /**
-     * HmacMD5加密器
-     * 例：
-     * HmacMD5加密：hmacMd5(data).digest(data)
-     * HmacMD5加密并转为16进制字符串：hmacMd5(data).digestHex(data)
+     * HmacMD5加密器 例： HmacMD5加密：hmacMd5(data).digest(data) HmacMD5加密并转为16进制字符串：hmacMd5(data).digestHex(data)
      *
      * @param key 加密密钥，如果为{@code null}生成随机密钥
      * @return {@link HMac}
@@ -394,10 +377,7 @@ public class Builder {
     }
 
     /**
-     * HmacMD5加密器，生成随机KEY
-     * 例：
-     * HmacMD5加密：hmacMd5().digest(data)
-     * HmacMD5加密并转为16进制字符串：hmacMd5().digestHex(data)
+     * HmacMD5加密器，生成随机KEY 例： HmacMD5加密：hmacMd5().digest(data) HmacMD5加密并转为16进制字符串：hmacMd5().digestHex(data)
      *
      * @return {@link HMac}
      */
@@ -406,10 +386,7 @@ public class Builder {
     }
 
     /**
-     * HmacSHA1加密器
-     * 例：
-     * HmacSHA1加密：hmacSha1(data).digest(data)
-     * HmacSHA1加密并转为16进制字符串：hmacSha1(data).digestHex(data)
+     * HmacSHA1加密器 例： HmacSHA1加密：hmacSha1(data).digest(data) HmacSHA1加密并转为16进制字符串：hmacSha1(data).digestHex(data)
      *
      * @param key 加密密钥，如果为{@code null}生成随机密钥
      * @return {@link HMac}
@@ -419,10 +396,7 @@ public class Builder {
     }
 
     /**
-     * HmacSHA1加密器
-     * 例：
-     * HmacSHA1加密：hmacSha1(data).digest(data)
-     * HmacSHA1加密并转为16进制字符串：hmacSha1(data).digestHex(data)
+     * HmacSHA1加密器 例： HmacSHA1加密：hmacSha1(data).digest(data) HmacSHA1加密并转为16进制字符串：hmacSha1(data).digestHex(data)
      *
      * @param key 加密密钥，如果为{@code null}生成随机密钥
      * @return {@link HMac}
@@ -432,10 +406,7 @@ public class Builder {
     }
 
     /**
-     * HmacSHA1加密器，生成随机KEY
-     * 例：
-     * HmacSHA1加密：hmacSha1().digest(data)
-     * HmacSHA1加密并转为16进制字符串：hmacSha1().digestHex(data)
+     * HmacSHA1加密器，生成随机KEY 例： HmacSHA1加密：hmacSha1().digest(data) HmacSHA1加密并转为16进制字符串：hmacSha1().digestHex(data)
      *
      * @return {@link HMac}
      */
@@ -444,9 +415,7 @@ public class Builder {
     }
 
     /**
-     * HmacSHA256加密器
-     * 例：
-     * HmacSHA256加密：hmacSha256(data).digest(data)
+     * HmacSHA256加密器 例： HmacSHA256加密：hmacSha256(data).digest(data)
      * HmacSHA256加密并转为16进制字符串：hmacSha256(data).digestHex(data)
      *
      * @param key 加密密钥，如果为{@code null}生成随机密钥
@@ -457,9 +426,7 @@ public class Builder {
     }
 
     /**
-     * HmacSHA256加密器
-     * 例：
-     * HmacSHA256加密：hmacSha256(data).digest(data)
+     * HmacSHA256加密器 例： HmacSHA256加密：hmacSha256(data).digest(data)
      * HmacSHA256加密并转为16进制字符串：hmacSha256(data).digestHex(data)
      *
      * @param key 加密密钥，如果为{@code null}生成随机密钥
@@ -470,9 +437,7 @@ public class Builder {
     }
 
     /**
-     * HmacSHA256加密器，生成随机KEY
-     * 例：
-     * HmacSHA256加密：hmacSha256().digest(data)
+     * HmacSHA256加密器，生成随机KEY 例： HmacSHA256加密：hmacSha256().digest(data)
      * HmacSHA256加密并转为16进制字符串：hmacSha256().digestHex(data)
      *
      * @return {@link HMac}
@@ -482,8 +447,7 @@ public class Builder {
     }
 
     /**
-     * 创建RSA算法对象
-     * 生成新的私钥公钥对
+     * 创建RSA算法对象 生成新的私钥公钥对
      *
      * @return {@link RSA}
      */
@@ -492,9 +456,7 @@ public class Builder {
     }
 
     /**
-     * 创建RSA算法对象
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 创建RSA算法对象 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKeyBase64 私钥Base64
      * @param publicKeyBase64  公钥Base64
@@ -505,9 +467,7 @@ public class Builder {
     }
 
     /**
-     * 创建RSA算法对象
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 创建RSA算法对象 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey 私钥
      * @param publicKey  公钥
@@ -556,8 +516,7 @@ public class Builder {
     }
 
     /**
-     * 创建{@link Cipher}
-     * 当provider为{@code null}时，使用{@link Holder}查找提供方，找不到使用JDK默认提供方。
+     * 创建{@link Cipher} 当provider为{@code null}时，使用{@link Holder}查找提供方，找不到使用JDK默认提供方。
      *
      * @param algorithm 算法
      * @return {@link Cipher}
@@ -576,8 +535,7 @@ public class Builder {
     }
 
     /**
-     * 创建{@link MessageDigest}
-     * 当provider为{@code null}时，使用{@link Holder}查找提供方，找不到使用JDK默认提供方。
+     * 创建{@link MessageDigest} 当provider为{@code null}时，使用{@link Holder}查找提供方，找不到使用JDK默认提供方。
      *
      * @param algorithm 算法
      * @param provider  算法提供方，{@code null}表示使用{@link Holder}找到的提供方。
@@ -590,8 +548,8 @@ public class Builder {
 
         final MessageDigest messageDigest;
         try {
-            messageDigest = (null == provider) ? MessageDigest.getInstance(algorithm) :
-                    MessageDigest.getInstance(algorithm, provider);
+            messageDigest = (null == provider) ? MessageDigest.getInstance(algorithm)
+                    : MessageDigest.getInstance(algorithm, provider);
         } catch (final NoSuchAlgorithmException e) {
             throw new CryptoException(e);
         }
@@ -624,7 +582,8 @@ public class Builder {
 
         final javax.crypto.Mac mac;
         try {
-            mac = (null == provider) ? javax.crypto.Mac.getInstance(algorithm) : javax.crypto.Mac.getInstance(algorithm, provider);
+            mac = (null == provider) ? javax.crypto.Mac.getInstance(algorithm)
+                    : javax.crypto.Mac.getInstance(algorithm, provider);
         } catch (final NoSuchAlgorithmException e) {
             throw new CryptoException(e);
         }
@@ -696,8 +655,7 @@ public class Builder {
     }
 
     /**
-     * 创建SM2算法对象
-     * 生成新的私钥公钥对
+     * 创建SM2算法对象 生成新的私钥公钥对
      *
      * @return {@link SM2}
      */
@@ -706,9 +664,7 @@ public class Builder {
     }
 
     /**
-     * 创建SM2算法对象
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 创建SM2算法对象 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey 私钥Hex或Base64表示
      * @param publicKey  公钥Hex或Base64表示
@@ -719,9 +675,7 @@ public class Builder {
     }
 
     /**
-     * 创建SM2算法对象
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 创建SM2算法对象 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey 私钥，必须使用PKCS#8规范
      * @param publicKey  公钥，必须使用X509规范
@@ -732,9 +686,7 @@ public class Builder {
     }
 
     /**
-     * 创建SM2算法对象
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 创建SM2算法对象 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKey 私钥
      * @param publicKey  公钥
@@ -745,9 +697,7 @@ public class Builder {
     }
 
     /**
-     * 创建SM2算法对象
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 创建SM2算法对象 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
      * @param privateKeyParams 私钥参数
      * @param publicKeyParams  公钥参数
@@ -758,10 +708,7 @@ public class Builder {
     }
 
     /**
-     * SM3加密
-     * 例：
-     * SM3加密：sm3().digest(data)
-     * SM3加密并转为16进制字符串：sm3().digestHex(data)
+     * SM3加密 例： SM3加密：sm3().digest(data) SM3加密并转为16进制字符串：sm3().digestHex(data)
      *
      * @return {@link SM3}
      */
@@ -810,8 +757,7 @@ public class Builder {
     }
 
     /**
-     * SM4加密，生成随机KEY。注意解密时必须使用相同 {@link Crypto}对象或者使用相同KEY
-     * 例：
+     * SM4加密，生成随机KEY。注意解密时必须使用相同 {@link Crypto}对象或者使用相同KEY 例：
      *
      * <pre>
      * SM4加密：sm4().encrypt(data)
@@ -825,8 +771,7 @@ public class Builder {
     }
 
     /**
-     * SM4加密
-     * 例：
+     * SM4加密 例：
      *
      * <pre>
      * SM4加密：sm4(data).encrypt(data)
@@ -981,7 +926,8 @@ public class Builder {
 
         final Signature signature;
         try {
-            signature = (null == provider) ? Signature.getInstance(algorithm) : Signature.getInstance(algorithm, provider);
+            signature = (null == provider) ? Signature.getInstance(algorithm)
+                    : Signature.getInstance(algorithm, provider);
         } catch (final NoSuchAlgorithmException e) {
             throw new CryptoException(e);
         }
@@ -990,8 +936,7 @@ public class Builder {
     }
 
     /**
-     * 创建签名算法对象
-     * 生成新的私钥公钥对
+     * 创建签名算法对象 生成新的私钥公钥对
      *
      * @param algorithm 签名算法
      * @return {@link Sign}
@@ -1001,9 +946,7 @@ public class Builder {
     }
 
     /**
-     * 创建签名算法对象
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     * 创建签名算法对象 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
      * @param algorithm        签名算法
      * @param privateKeyBase64 私钥Base64
@@ -1015,9 +958,7 @@ public class Builder {
     }
 
     /**
-     * 创建Sign算法对象
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥
-     * 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     * 创建Sign算法对象 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
      * @param algorithm  算法枚举
      * @param privateKey 私钥
@@ -1029,9 +970,7 @@ public class Builder {
     }
 
     /**
-     * 对参数做签名
-     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串
-     * 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
+     * 对参数做签名 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
      *
      * @param crypto      对称加密算法
      * @param params      参数
@@ -1043,8 +982,7 @@ public class Builder {
     }
 
     /**
-     * 对参数做签名
-     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串
+     * 对参数做签名 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串
      *
      * @param crypto            对称加密算法
      * @param params            参数
@@ -1055,14 +993,12 @@ public class Builder {
      * @return 签名
      */
     public static String signParams(final Crypto crypto, final Map<?, ?> params, final String separator,
-                                    final String keyValueSeparator, final boolean isIgnoreNull, final String... otherParams) {
+            final String keyValueSeparator, final boolean isIgnoreNull, final String... otherParams) {
         return crypto.encryptHex(MapKit.sortJoin(params, separator, keyValueSeparator, isIgnoreNull, otherParams));
     }
 
     /**
-     * 对参数做md5签名
-     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串
-     * 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
+     * 对参数做md5签名 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
      *
      * @param params      参数
      * @param otherParams 其它附加参数字符串（例如密钥）
@@ -1073,9 +1009,7 @@ public class Builder {
     }
 
     /**
-     * 对参数做Sha1签名
-     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串
-     * 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
+     * 对参数做Sha1签名 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
      *
      * @param params      参数
      * @param otherParams 其它附加参数字符串（例如密钥）
@@ -1086,9 +1020,7 @@ public class Builder {
     }
 
     /**
-     * 对参数做Sha256签名
-     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串
-     * 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
+     * 对参数做Sha256签名 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
      *
      * @param params      参数
      * @param otherParams 其它附加参数字符串（例如密钥）
@@ -1099,22 +1031,20 @@ public class Builder {
     }
 
     /**
-     * 对参数做签名
-     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串
-     * 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
+     * 对参数做签名 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串 拼接后的字符串键值对之间无符号，键值对之间无符号，忽略null值
      *
      * @param digestAlgorithm 摘要算法
      * @param params          参数
      * @param otherParams     其它附加参数字符串（例如密钥）
      * @return 签名
      */
-    public static String signParams(final Algorithm digestAlgorithm, final Map<?, ?> params, final String... otherParams) {
+    public static String signParams(final Algorithm digestAlgorithm, final Map<?, ?> params,
+            final String... otherParams) {
         return signParams(digestAlgorithm, params, Normal.EMPTY, Normal.EMPTY, true, otherParams);
     }
 
     /**
-     * 对参数做签名
-     * 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串
+     * 对参数做签名 参数签名为对Map参数按照key的顺序排序后拼接为字符串，然后根据提供的签名算法生成签名字符串
      *
      * @param digestAlgorithm   摘要算法
      * @param params            参数
@@ -1125,8 +1055,9 @@ public class Builder {
      * @return 签名
      */
     public static String signParams(final Algorithm digestAlgorithm, final Map<?, ?> params, final String separator,
-                                    final String keyValueSeparator, final boolean isIgnoreNull, final String... otherParams) {
-        return new Digester(digestAlgorithm).digestHex(MapKit.sortJoin(params, separator, keyValueSeparator, isIgnoreNull, otherParams));
+            final String keyValueSeparator, final boolean isIgnoreNull, final String... otherParams) {
+        return new Digester(digestAlgorithm)
+                .digestHex(MapKit.sortJoin(params, separator, keyValueSeparator, isIgnoreNull, otherParams));
     }
 
     /**
@@ -1545,10 +1476,7 @@ public class Builder {
      * @return {@link ECDomainParameters}
      */
     public static ECDomainParameters toDomainParams(final ECParameterSpec parameterSpec) {
-        return new ECDomainParameters(
-                parameterSpec.getCurve(),
-                parameterSpec.getG(),
-                parameterSpec.getN(),
+        return new ECDomainParameters(parameterSpec.getCurve(), parameterSpec.getG(), parameterSpec.getN(),
                 parameterSpec.getH());
     }
 
@@ -1569,12 +1497,8 @@ public class Builder {
      * @return {@link ECDomainParameters}
      */
     public static ECDomainParameters toDomainParams(final X9ECParameters x9ECParameters) {
-        return new ECDomainParameters(
-                x9ECParameters.getCurve(),
-                x9ECParameters.getG(),
-                x9ECParameters.getN(),
-                x9ECParameters.getH()
-        );
+        return new ECDomainParameters(x9ECParameters.getCurve(), x9ECParameters.getG(), x9ECParameters.getN(),
+                x9ECParameters.getH());
     }
 
     /**
@@ -1599,8 +1523,7 @@ public class Builder {
      * @return PKCS#1格式公钥
      */
     public static byte[] toPkcs1(final PublicKey publicKey) {
-        final SubjectPublicKeyInfo spkInfo = SubjectPublicKeyInfo
-                .getInstance(publicKey.getEncoded());
+        final SubjectPublicKeyInfo spkInfo = SubjectPublicKeyInfo.getInstance(publicKey.getEncoded());
         try {
             return spkInfo.parsePublicKey().getEncoded();
         } catch (final IOException e) {
@@ -1618,30 +1541,30 @@ public class Builder {
      */
     public static BufferedBlockCipher wrap(BlockCipher cipher, final Algorithm.Mode mode, final Padding padding) {
         switch (mode) {
-            case CBC:
-                cipher = CBCBlockCipher.newInstance(cipher);
-                break;
-            case CFB:
-                cipher = CFBBlockCipher.newInstance(cipher, cipher.getBlockSize() * 8);
-                break;
-            case CTR:
-                cipher = SICBlockCipher.newInstance(cipher);
-                break;
-            case OFB:
-                cipher = new OFBBlockCipher(cipher, cipher.getBlockSize() * 8);
-            case CTS:
-                return new CTSBlockCipher(cipher);
+        case CBC:
+            cipher = CBCBlockCipher.newInstance(cipher);
+            break;
+        case CFB:
+            cipher = CFBBlockCipher.newInstance(cipher, cipher.getBlockSize() * 8);
+            break;
+        case CTR:
+            cipher = SICBlockCipher.newInstance(cipher);
+            break;
+        case OFB:
+            cipher = new OFBBlockCipher(cipher, cipher.getBlockSize() * 8);
+        case CTS:
+            return new CTSBlockCipher(cipher);
         }
 
         switch (padding) {
-            case NoPadding:
-                return new DefaultBufferedBlockCipher(cipher);
-            case PKCS5Padding:
-                return new PaddedBufferedBlockCipher(cipher);
-            case ZeroPadding:
-                return new PaddedBufferedBlockCipher(cipher, new ZeroBytePadding());
-            case ISO10126Padding:
-                return new PaddedBufferedBlockCipher(cipher, new ISO10126d2Padding());
+        case NoPadding:
+            return new DefaultBufferedBlockCipher(cipher);
+        case PKCS5Padding:
+            return new PaddedBufferedBlockCipher(cipher);
+        case ZeroPadding:
+            return new PaddedBufferedBlockCipher(cipher, new ZeroBytePadding());
+        case ISO10126Padding:
+            return new PaddedBufferedBlockCipher(cipher, new ISO10126d2Padding());
         }
 
         return null;
@@ -1650,9 +1573,9 @@ public class Builder {
     /**
      * 根据算法创建{@link KeySpec}
      * <ul>
-     *     <li>DESede: {@link DESedeKeySpec}</li>
-     *     <li>DES   : {@link DESedeKeySpec}</li>
-     *     <li>其它  : {@link SecretKeySpec}</li>
+     * <li>DESede: {@link DESedeKeySpec}</li>
+     * <li>DES : {@link DESedeKeySpec}</li>
+     * <li>其它 : {@link SecretKeySpec}</li>
      * </ul>
      *
      * @param algorithm 算法
@@ -1681,8 +1604,7 @@ public class Builder {
     }
 
     /**
-     * 创建{@link PBEKeySpec}
-     * PBE算法没有密钥的概念，密钥在其它对称加密算法中是经过算法计算得出来的，PBE算法则是使用口令替代了密钥。
+     * 创建{@link PBEKeySpec} PBE算法没有密钥的概念，密钥在其它对称加密算法中是经过算法计算得出来的，PBE算法则是使用口令替代了密钥。
      *
      * @param password 口令
      * @return {@link PBEKeySpec}
@@ -1709,8 +1631,7 @@ public class Builder {
      * 数据加密
      *
      * @param algorithm 加密算法
-     * @param key       密钥, 字符串使用,分割
-     *                  格式: 私钥,公钥,类型
+     * @param key       密钥, 字符串使用,分割 格式: 私钥,公钥,类型
      * @param content   需要加密的内容
      * @return 加密结果
      */
@@ -1723,8 +1644,7 @@ public class Builder {
      * 数据加密
      *
      * @param algorithm 解密算法
-     * @param key       密钥, 字符串使用,分割
-     *                  格式: 私钥,公钥,类型
+     * @param key       密钥, 字符串使用,分割 格式: 私钥,公钥,类型
      * @param content   需要加密的内容
      * @param charset   字符集
      * @return 加密结果
@@ -1737,8 +1657,7 @@ public class Builder {
      * 数据加密
      *
      * @param algorithm   加密算法
-     * @param key         密钥, 字符串使用,分割
-     *                    格式: 私钥,公钥,类型
+     * @param key         密钥, 字符串使用,分割 格式: 私钥,公钥,类型
      * @param inputStream 需要加密的内容
      * @return 加密结果
      */
@@ -1751,8 +1670,7 @@ public class Builder {
      * 数据解密
      *
      * @param algorithm 加密算法
-     * @param key       密钥, 字符串使用,分割
-     *                  格式: 私钥,公钥,类型
+     * @param key       密钥, 字符串使用,分割 格式: 私钥,公钥,类型
      * @param content   需要解密的内容
      * @return 解密结果
      */
@@ -1764,8 +1682,7 @@ public class Builder {
      * 数据解密
      *
      * @param algorithm 解密算法
-     * @param key       密钥, 字符串使用,分割
-     *                  格式: 私钥,公钥,类型
+     * @param key       密钥, 字符串使用,分割 格式: 私钥,公钥,类型
      * @param content   需要解密的内容
      * @param charset   字符集
      * @return 解密结果
@@ -1778,8 +1695,7 @@ public class Builder {
      * 数据解密
      *
      * @param algorithm   解密算法
-     * @param key         密钥, 字符串使用,分割
-     *                    格式: 私钥,公钥,类型
+     * @param key         密钥, 字符串使用,分割 格式: 私钥,公钥,类型
      * @param inputStream 需要解密的内容
      * @return 解密结果
      */

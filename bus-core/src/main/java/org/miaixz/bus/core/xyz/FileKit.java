@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
@@ -77,8 +77,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 列出指定路径下的目录和文件
-     * 给定的绝对路径不能是压缩包中的路径
+     * 列出指定路径下的目录和文件 给定的绝对路径不能是压缩包中的路径
      *
      * @param path 目录绝对路径或者相对路径
      * @return 文件列表（包含目录）
@@ -96,8 +95,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 文件是否为空
-     * 目录：里面没有文件时为空 文件：文件大小为0时为空
+     * 文件是否为空 目录：里面没有文件时为空 文件：文件大小为0时为空
      *
      * @param file 文件
      * @return 是否为空，当提供非目录时，返回false
@@ -118,8 +116,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 文件是不为空
-     * 目录：里面有文件或目录 文件：文件大小大于0时
+     * 文件是不为空 目录：里面有文件或目录 文件：文件大小大于0时
      *
      * @param file 目录
      * @return 是否为空，当提供非目录时，返回false
@@ -139,8 +136,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 递归遍历目录以及子目录中的所有文件
-     * 如果提供file为文件，直接返回过滤结果
+     * 递归遍历目录以及子目录中的所有文件 如果提供file为文件，直接返回过滤结果
      *
      * @param path       当前遍历文件或目录的路径
      * @param fileFilter 文件过滤规则对象，选择要保留的文件，只对文件有效，不过滤目录
@@ -151,8 +147,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 递归遍历目录以及子目录中的所有文件
-     * 如果提供file为文件，直接返回过滤结果
+     * 递归遍历目录以及子目录中的所有文件 如果提供file为文件，直接返回过滤结果
      *
      * @param file       当前遍历文件或目录
      * @param fileFilter 文件过滤规则对象，选择要保留的文件，只对文件有效，不过滤目录
@@ -163,8 +158,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 递归遍历目录以及子目录中的所有文件
-     * 如果提供file为文件，直接返回过滤结果
+     * 递归遍历目录以及子目录中的所有文件 如果提供file为文件，直接返回过滤结果
      *
      * @param file       当前遍历文件或目录
      * @param maxDepth   遍历最大深度，-1表示遍历到没有目录为止
@@ -176,9 +170,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 递归遍历目录以及子目录中的所有文件
-     * 如果用户传入相对路径，则是相对classpath的路径
-     * 如："test/aaa"表示"${classpath}/test/aaa"
+     * 递归遍历目录以及子目录中的所有文件 如果用户传入相对路径，则是相对classpath的路径 如："test/aaa"表示"${classpath}/test/aaa"
      *
      * @param path 相对ClassPath的目录或者绝对路径目录
      * @return 文件列表
@@ -200,8 +192,8 @@ public class FileKit extends PathResolve {
     /**
      * 递归遍历目录并处理目录下的文件，可以处理目录或文件：
      * <ul>
-     *     <li>目录和非目录均调用{@link Predicate}处理</li>
-     *     <li>目录如果{@link Predicate#test(Object)}为{@code true}则递归调用此方法处理。</li>
+     * <li>目录和非目录均调用{@link Predicate}处理</li>
+     * <li>目录如果{@link Predicate#test(Object)}为{@code true}则递归调用此方法处理。</li>
      * </ul>
      * 此方法与{@link #loopFiles(File, FileFilter)}不同的是，处理目录判断，可减少无效目录的遍历。
      *
@@ -220,10 +212,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 获得指定目录下所有文件
-     * 不会扫描子目录
-     * 如果用户传入相对路径，则是相对classpath的路径
-     * 如："test/aaa"表示"${classpath}/test/aaa"
+     * 获得指定目录下所有文件 不会扫描子目录 如果用户传入相对路径，则是相对classpath的路径 如："test/aaa"表示"${classpath}/test/aaa"
      *
      * @param path 相对ClassPath的目录或者绝对路径目录
      * @return 文件路径列表（如果是jar中的文件，则给定类似.jar!/xxx/xxx的路径）
@@ -286,8 +275,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 创建File对象
-     * 此方法会检查slip漏洞，漏洞说明见http://blog.nsfocus.net/zip-slip-2/
+     * 创建File对象 此方法会检查slip漏洞，漏洞说明见http://blog.nsfocus.net/zip-slip-2/
      *
      * @param parent 父目录
      * @param path   文件路径
@@ -298,9 +286,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 创建File对象
-     * 根据的路径构建文件，在Win下直接构建，在Linux下拆分路径单独构建
-     * 此方法会检查slip漏洞，漏洞说明见http://blog.nsfocus.net/zip-slip-2/
+     * 创建File对象 根据的路径构建文件，在Win下直接构建，在Linux下拆分路径单独构建 此方法会检查slip漏洞，漏洞说明见http://blog.nsfocus.net/zip-slip-2/
      *
      * @param parent 父文件对象
      * @param path   文件路径
@@ -314,8 +300,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 通过多层目录参数创建文件
-     * 此方法会检查slip漏洞，漏洞说明见http://blog.nsfocus.net/zip-slip-2/
+     * 通过多层目录参数创建文件 此方法会检查slip漏洞，漏洞说明见http://blog.nsfocus.net/zip-slip-2/
      *
      * @param directory 父目录
      * @param names     元素名（多层目录名），由外到内依次传入
@@ -337,8 +322,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 通过多层目录创建文件
-     * 元素名（多层目录名）
+     * 通过多层目录创建文件 元素名（多层目录名）
      *
      * @param names 多层文件的文件名，由外到内依次传入
      * @return the file 文件
@@ -472,10 +456,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 计算目录或文件的总大小
-     * 当给定对象为文件时，直接调用 {@link File#length()}
-     * 当给定对象为目录时，遍历目录下的所有文件和目录，递归计算其大小，求和返回
-     * 此方法不包括目录本身的占用空间大小。
+     * 计算目录或文件的总大小 当给定对象为文件时，直接调用 {@link File#length()} 当给定对象为目录时，遍历目录下的所有文件和目录，递归计算其大小，求和返回 此方法不包括目录本身的占用空间大小。
      *
      * @param file 目录或文件,null或者文件不存在返回0
      * @return 总大小，bytes长度
@@ -485,9 +466,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 计算目录或文件的总大小
-     * 当给定对象为文件时，直接调用 {@link File#length()}
-     * 当给定对象为目录时，遍历目录下的所有文件和目录，递归计算其大小，求和返回
+     * 计算目录或文件的总大小 当给定对象为文件时，直接调用 {@link File#length()} 当给定对象为目录时，遍历目录下的所有文件和目录，递归计算其大小，求和返回
      *
      * @param file           目录或文件,null或者文件不存在返回0
      * @param includeDirSize 是否包括每层目录本身的大小
@@ -514,8 +493,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 计算文件的总行数
-     * 读取文件采用系统默认编码，一般乱码不会造成行数错误。
+     * 计算文件的总行数 读取文件采用系统默认编码，一般乱码不会造成行数错误。
      *
      * @param file 文件
      * @return 该文件总行数
@@ -525,8 +503,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 计算文件的总行数
-     * 参考：https://stackoverflow.com/questions/453018/number-of-lines-in-a-file-in-java
+     * 计算文件的总行数 参考：https://stackoverflow.com/questions/453018/number-of-lines-in-a-file-in-java
      *
      * @param file       文件
      * @param bufferSize 缓存大小，小于1则使用默认的1024
@@ -572,8 +549,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 创建文件及其父目录，如果这个文件存在，直接返回这个文件
-     * 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
+     * 创建文件及其父目录，如果这个文件存在，直接返回这个文件 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
      *
      * @param path 相对ClassPath的目录或者绝对路径目录，使用POSIX风格
      * @return 文件，若路径为null，返回null
@@ -587,8 +563,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 创建文件及其父目录，如果这个文件存在，直接返回这个文件
-     * 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
+     * 创建文件及其父目录，如果这个文件存在，直接返回这个文件 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
      *
      * @param file 文件对象
      * @return 文件，若路径为null，返回null
@@ -601,7 +576,7 @@ public class FileKit extends PathResolve {
         if (!file.exists()) {
             mkParentDirs(file);
             try {
-                //noinspection ResultOfMethodCallIgnored
+                // noinspection ResultOfMethodCallIgnored
                 file.createNewFile();
             } catch (final Exception e) {
                 throw new InternalException(e);
@@ -611,8 +586,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 创建文件及其父目录，如果这个文件存在，直接返回这个文件
-     * 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
+     * 创建文件及其父目录，如果这个文件存在，直接返回这个文件 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
      *
      * @param parent 父文件对象
      * @param path   文件路径
@@ -624,8 +598,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 创建文件及其父目录，如果这个文件存在，直接返回这个文件
-     * 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
+     * 创建文件及其父目录，如果这个文件存在，直接返回这个文件 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
      *
      * @param parent 父文件对象
      * @param path   文件路径
@@ -663,9 +636,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 删除文件或者文件夹
-     * 路径如果为相对路径，会转换为ClassPath路径！ 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹
-     * 某个文件删除失败会终止删除操作
+     * 删除文件或者文件夹 路径如果为相对路径，会转换为ClassPath路径！ 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹 某个文件删除失败会终止删除操作
      *
      * @param fullFileOrDirPath 文件或者目录的路径
      * @throws InternalException IO异常
@@ -675,9 +646,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 删除文件或者文件夹
-     * 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹
-     * 某个文件删除失败会终止删除操作
+     * 删除文件或者文件夹 注意：删除文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹 某个文件删除失败会终止删除操作
      *
      * @param file 文件对象
      * @throws InternalException IO异常
@@ -689,9 +658,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 清空文件夹
-     * 注意：清空文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹
-     * 某个文件删除失败会终止删除操作
+     * 清空文件夹 注意：清空文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹 某个文件删除失败会终止删除操作
      *
      * @param dirPath 文件夹路径
      * @throws InternalException IO异常
@@ -701,9 +668,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 清空文件夹
-     * 注意：清空文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹
-     * 某个文件删除失败会终止删除操作
+     * 清空文件夹 注意：清空文件夹时不会判断文件夹是否为空，如果不空则递归删除子文件或文件夹 某个文件删除失败会终止删除操作
      *
      * @param directory 文件夹
      * @throws InternalException IO异常
@@ -714,9 +679,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 清理空文件夹
-     * 此方法用于递归删除空的文件夹，不删除文件
-     * 如果传入的文件夹本身就是空的，删除这个文件夹
+     * 清理空文件夹 此方法用于递归删除空的文件夹，不删除文件 如果传入的文件夹本身就是空的，删除这个文件夹
      *
      * @param directory 文件夹
      * @return the true/false
@@ -745,8 +708,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 创建文件夹，如果存在直接返回此文件夹
-     * 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
+     * 创建文件夹，如果存在直接返回此文件夹 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
      *
      * @param dirPath 文件夹路径，使用POSIX格式，无论哪个平台
      * @return 创建的目录
@@ -760,8 +722,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 创建文件夹，会递归自动创建其不存在的父文件夹，如果存在直接返回此文件夹
-     * 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
+     * 创建文件夹，会递归自动创建其不存在的父文件夹，如果存在直接返回此文件夹 此方法不对File对象类型做判断，如果File不存在，无法判断其类型
      *
      * @param dir 目录
      * @return 创建的目录
@@ -801,7 +762,7 @@ public class FileKit extends PathResolve {
         }
         for (int i = 1; i <= tryCount; i++) { // 高并发场景下，可以看到 i 处于 1 ~ 3 之间
             // 如果文件已存在，也会返回 false，所以该值不能作为是否能创建的依据，因此不对其进行处理
-            //noinspection ResultOfMethodCallIgnored
+            // noinspection ResultOfMethodCallIgnored
             dir.mkdirs();
             if (dir.exists()) {
                 return true;
@@ -812,8 +773,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 创建临时文件
-     * 创建后的文件名为 prefix[Random].tmp
+     * 创建临时文件 创建后的文件名为 prefix[Random].tmp
      *
      * @param dir 临时文件创建的所在目录
      * @return 临时文件
@@ -824,11 +784,9 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 在默认临时文件目录下创建临时文件，创建后的文件名为 prefix[Random].tmp。
-     * 默认临时文件目录由系统属性 {@code java.io.tmpdir} 指定。
-     * 在 UNIX 系统上，此属性的默认值通常是 {@code "tmp"} 或 {@code "vartmp"}；
-     * 在 Microsoft Windows 系统上，它通常是 {@code "C:\\WINNT\\TEMP"}。
-     * 调用 Java 虚拟机时，可以为该系统属性赋予不同的值，但不保证对该属性的编程更改对该方法使用的临时目录有任何影响。
+     * 在默认临时文件目录下创建临时文件，创建后的文件名为 prefix[Random].tmp。 默认临时文件目录由系统属性 {@code java.io.tmpdir} 指定。 在 UNIX 系统上，此属性的默认值通常是
+     * {@code "tmp"} 或 {@code "vartmp"}； 在 Microsoft Windows 系统上，它通常是 {@code "C:\\WINNT\\TEMP"}。 调用 Java
+     * 虚拟机时，可以为该系统属性赋予不同的值，但不保证对该属性的编程更改对该方法使用的临时目录有任何影响。
      *
      * @return 临时文件
      * @throws InternalException IO异常
@@ -838,11 +796,9 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 在默认临时文件目录下创建临时文件，创建后的文件名为 prefix[Random].suffix。
-     * 默认临时文件目录由系统属性 {@code java.io.tmpdir} 指定。
-     * 在 UNIX 系统上，此属性的默认值通常是 {@code "tmp"} 或 {@code "vartmp"}；
-     * 在 Microsoft Windows 系统上，它通常是 {@code "C:\\WINNT\\TEMP"}。
-     * 调用 Java 虚拟机时，可以为该系统属性赋予不同的值，但不保证对该属性的编程更改对该方法使用的临时目录有任何影响。
+     * 在默认临时文件目录下创建临时文件，创建后的文件名为 prefix[Random].suffix。 默认临时文件目录由系统属性 {@code java.io.tmpdir} 指定。 在 UNIX 系统上，此属性的默认值通常是
+     * {@code "tmp"} 或 {@code "vartmp"}； 在 Microsoft Windows 系统上，它通常是 {@code "C:\\WINNT\\TEMP"}。 调用 Java
+     * 虚拟机时，可以为该系统属性赋予不同的值，但不保证对该属性的编程更改对该方法使用的临时目录有任何影响。
      *
      * @param suffix    后缀，如果null则使用默认.tmp
      * @param isReCreat 是否重新创建文件（删掉原来的，创建新的）
@@ -854,11 +810,9 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 在默认临时文件目录下创建临时文件，创建后的文件名为 prefix[Random].suffix。
-     * 默认临时文件目录由系统属性 {@code java.io.tmpdir} 指定。
-     * 在 UNIX 系统上，此属性的默认值通常是 {@code "tmp"} 或 {@code "vartmp"}；
-     * 在 Microsoft Windows 系统上，它通常是 {@code "C:\\WINNT\\TEMP"}。
-     * 调用 Java 虚拟机时，可以为该系统属性赋予不同的值，但不保证对该属性的编程更改对该方法使用的临时目录有任何影响。
+     * 在默认临时文件目录下创建临时文件，创建后的文件名为 prefix[Random].suffix。 默认临时文件目录由系统属性 {@code java.io.tmpdir} 指定。 在 UNIX 系统上，此属性的默认值通常是
+     * {@code "tmp"} 或 {@code "vartmp"}； 在 Microsoft Windows 系统上，它通常是 {@code "C:\\WINNT\\TEMP"}。 调用 Java
+     * 虚拟机时，可以为该系统属性赋予不同的值，但不保证对该属性的编程更改对该方法使用的临时目录有任何影响。
      *
      * @param prefix    前缀，至少3个字符
      * @param suffix    后缀，如果null则使用默认.tmp
@@ -866,13 +820,13 @@ public class FileKit extends PathResolve {
      * @return 临时文件
      * @throws InternalException IO异常
      */
-    public static File createTempFile(final String prefix, final String suffix, final boolean isReCreat) throws InternalException {
+    public static File createTempFile(final String prefix, final String suffix, final boolean isReCreat)
+            throws InternalException {
         return createTempFile(prefix, suffix, null, isReCreat);
     }
 
     /**
-     * 创建临时文件
-     * 创建后的文件名为 prefix[Random].tmp
+     * 创建临时文件 创建后的文件名为 prefix[Random].tmp
      *
      * @param dir       临时文件创建的所在目录
      * @param isReCreat 是否重新创建文件（删掉原来的，创建新的）
@@ -893,13 +847,15 @@ public class FileKit extends PathResolve {
      * @return 临时文件
      * @throws InternalException IO异常
      */
-    public static File createTempFile(final String prefix, final String suffix, final File dir, final boolean isReCreat) throws InternalException {
+    public static File createTempFile(final String prefix, final String suffix, final File dir, final boolean isReCreat)
+            throws InternalException {
         try {
-            final File file = PathResolve.createTempFile(prefix, suffix, null == dir ? null : dir.toPath()).toFile().getCanonicalFile();
+            final File file = PathResolve.createTempFile(prefix, suffix, null == dir ? null : dir.toPath()).toFile()
+                    .getCanonicalFile();
             if (isReCreat) {
-                //noinspection ResultOfMethodCallIgnored
+                // noinspection ResultOfMethodCallIgnored
                 file.delete();
-                //noinspection ResultOfMethodCallIgnored
+                // noinspection ResultOfMethodCallIgnored
                 file.createNewFile();
             }
             return file;
@@ -911,8 +867,8 @@ public class FileKit extends PathResolve {
     /**
      * 拷贝资源到目标文件
      * <ul>
-     *     <li>如果src为{@link FileResource}，调用文件拷贝。</li>
-     *     <li>其它，调用JDK7+的 {@link Files#copy(InputStream, Path, CopyOption...)}。</li>
+     * <li>如果src为{@link FileResource}，调用文件拷贝。</li>
+     * <li>其它，调用JDK7+的 {@link Files#copy(InputStream, Path, CopyOption...)}。</li>
      * </ul>
      *
      * @param src        源文件
@@ -924,11 +880,8 @@ public class FileKit extends PathResolve {
     public static File copy(final Resource src, final File target, final boolean isOverride) throws InternalException {
         Assert.notNull(src, "Src file must be not null!");
         Assert.notNull(target, "target file must be not null!");
-        return copy(
-                src,
-                target.toPath(),
-                isOverride ? new CopyOption[]{StandardCopyOption.REPLACE_EXISTING} : new CopyOption[]{})
-                .toFile();
+        return copy(src, target.toPath(),
+                isOverride ? new CopyOption[] { StandardCopyOption.REPLACE_EXISTING } : new CopyOption[] {}).toFile();
     }
 
     /**
@@ -940,7 +893,8 @@ public class FileKit extends PathResolve {
      * @return 目标文件
      * @throws InternalException IO异常
      */
-    public static File copy(final InputStream src, final File target, final StandardCopyOption... options) throws InternalException {
+    public static File copy(final InputStream src, final File target, final StandardCopyOption... options)
+            throws InternalException {
         // check
         Assert.notNull(src, "Source File is null !");
         Assert.notNull(target, "Target File or directory is null !");
@@ -963,8 +917,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 复制文件或目录
-     * 如果目标文件为目录，则将源文件以相同文件名拷贝到目标目录
+     * 复制文件或目录 如果目标文件为目录，则将源文件以相同文件名拷贝到目标目录
      *
      * @param srcPath    源文件或目录
      * @param targetPath 目标文件或目录，目标不存在会自动创建（目录、文件都创建）
@@ -972,13 +925,13 @@ public class FileKit extends PathResolve {
      * @return 目标目录或文件
      * @throws InternalException IO异常
      */
-    public static File copy(final String srcPath, final String targetPath, final boolean isOverride) throws InternalException {
+    public static File copy(final String srcPath, final String targetPath, final boolean isOverride)
+            throws InternalException {
         return copy(file(srcPath), file(targetPath), isOverride);
     }
 
     /**
-     * 复制文件或目录
-     * 情况如下：
+     * 复制文件或目录 情况如下：
      *
      * <pre>
      * 1、src和dest都为目录，则将src目录及其目录下所有文件目录拷贝到dest下
@@ -995,16 +948,12 @@ public class FileKit extends PathResolve {
     public static File copy(final File src, final File target, final boolean isOverride) throws InternalException {
         Assert.notNull(src, "Src file must be not null!");
         Assert.notNull(target, "target file must be not null!");
-        return copy(
-                src.toPath(),
-                target.toPath(),
-                isOverride ? new CopyOption[]{StandardCopyOption.REPLACE_EXISTING} : new CopyOption[]{})
-                .toFile();
+        return copy(src.toPath(), target.toPath(),
+                isOverride ? new CopyOption[] { StandardCopyOption.REPLACE_EXISTING } : new CopyOption[] {}).toFile();
     }
 
     /**
-     * 复制文件或目录
-     * 情况如下：
+     * 复制文件或目录 情况如下：
      *
      * <pre>
      * 1、src和dest都为目录，则将src下所有文件目录拷贝到dest下
@@ -1018,25 +967,23 @@ public class FileKit extends PathResolve {
      * @return 目标目录或文件
      * @throws InternalException IO异常
      */
-    public static File copyContent(final File src, final File target, final boolean isOverride) throws InternalException {
+    public static File copyContent(final File src, final File target, final boolean isOverride)
+            throws InternalException {
         Assert.notNull(src, "Src file must be not null!");
         Assert.notNull(target, "target file must be not null!");
-        return copyContent(
-                src.toPath(),
-                target.toPath(),
-                isOverride ? new CopyOption[]{StandardCopyOption.REPLACE_EXISTING} : new CopyOption[]{})
-                .toFile();
+        return copyContent(src.toPath(), target.toPath(),
+                isOverride ? new CopyOption[] { StandardCopyOption.REPLACE_EXISTING } : new CopyOption[] {}).toFile();
     }
 
     /**
      * 移动文件或目录到目标中，例如：
      * <ul>
-     *     <li>如果src为文件，target为目录，则移动到目标目录下，存在同名文件则按照是否覆盖参数执行。</li>
-     *     <li>如果src为文件，target为文件，则按照是否覆盖参数执行。</li>
-     *     <li>如果src为文件，target为不存在的路径，则重命名源文件到目标指定的文件，如moveContent("/a/b", "/c/d"), d不存在，则b变成d。</li>
-     *     <li>如果src为目录，target为文件，抛出{@link IllegalArgumentException}</li>
-     *     <li>如果src为目录，target为目录，则将源目录及其内容移动到目标路径目录中，如move("/a/b", "/c/d")，结果为"/c/d/b"</li>
-     *     <li>如果src为目录，target为不存在的路径，则创建目标路径为目录，将源目录及其内容移动到目标路径目录中，如move("/a/b", "/c/d")，结果为"/c/d/b"</li>
+     * <li>如果src为文件，target为目录，则移动到目标目录下，存在同名文件则按照是否覆盖参数执行。</li>
+     * <li>如果src为文件，target为文件，则按照是否覆盖参数执行。</li>
+     * <li>如果src为文件，target为不存在的路径，则重命名源文件到目标指定的文件，如moveContent("/a/b", "/c/d"), d不存在，则b变成d。</li>
+     * <li>如果src为目录，target为文件，抛出{@link IllegalArgumentException}</li>
+     * <li>如果src为目录，target为目录，则将源目录及其内容移动到目标路径目录中，如move("/a/b", "/c/d")，结果为"/c/d/b"</li>
+     * <li>如果src为目录，target为不存在的路径，则创建目标路径为目录，将源目录及其内容移动到目标路径目录中，如move("/a/b", "/c/d")，结果为"/c/d/b"</li>
      * </ul>
      *
      * @param src        源文件或目录路径
@@ -1069,13 +1016,12 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 修改文件或目录的文件名，不变更路径，只是简单修改文件名
-     * 重命名有两种模式：
-     * 1、isRetainExt为true时，保留原扩展名：
+     * 修改文件或目录的文件名，不变更路径，只是简单修改文件名 重命名有两种模式： 1、isRetainExt为true时，保留原扩展名：
      *
      * <pre>
      * FileKit.rename(file, "aaa", true) xx/xx.png = xx/aaa.png
      * </pre>
+     * 
      * 2、isRetainExt为false时，不保留原扩展名，需要在newName中
      *
      * <pre>
@@ -1117,8 +1063,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 获取绝对路径
-     * 此方法不会判定给定路径是否有效（文件或目录存在）
+     * 获取绝对路径 此方法不会判定给定路径是否有效（文件或目录存在）
      *
      * @param path      相对路径
      * @param baseClass 相对路径所相对的类
@@ -1156,9 +1101,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 获取绝对路径，相对于ClassPath的目录
-     * 如果给定就是绝对路径，则返回原路径，原路径把所有\替换为/
-     * 兼容Spring风格的路径表示，例如：classpath:config/example.setting也会被识别后转换
+     * 获取绝对路径，相对于ClassPath的目录 如果给定就是绝对路径，则返回原路径，原路径把所有\替换为/ 兼容Spring风格的路径表示，例如：classpath:config/example.setting也会被识别后转换
      *
      * @param path 相对路径
      * @return 绝对路径
@@ -1186,13 +1129,11 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 给定路径已经是绝对路径
-     * 此方法并没有针对路径做标准化，建议先执行{@link FileName#normalize(String)}方法标准化路径后判断
-     * 绝对路径判断条件是：
+     * 给定路径已经是绝对路径 此方法并没有针对路径做标准化，建议先执行{@link FileName#normalize(String)}方法标准化路径后判断 绝对路径判断条件是：
      * <ul>
-     *     <li>以/开头的路径</li>
-     *     <li>满足类似于 c:/xxxxx，其中祖母随意，不区分大小写</li>
-     *     <li>满足类似于 d:\xxxxx，其中祖母随意，不区分大小写</li>
+     * <li>以/开头的路径</li>
+     * <li>满足类似于 c:/xxxxx，其中祖母随意，不区分大小写</li>
+     * <li>满足类似于 d:\xxxxx，其中祖母随意，不区分大小写</li>
      * </ul>
      *
      * @param path 需要检查的Path
@@ -1248,12 +1189,11 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 检查两个文件是否是同一个文件
-     * 所谓文件相同，是指File对象是否指向同一个文件或文件夹，规则为：
+     * 检查两个文件是否是同一个文件 所谓文件相同，是指File对象是否指向同一个文件或文件夹，规则为：
      * <ul>
-     *     <li>当两个文件都为{@code null}时，返回{@code true}</li>
-     *     <li>当两个文件都存在时，检查是否为同一个文件</li>
-     *     <li>当两个文件都不存在时，检查路径是否一致</li>
+     * <li>当两个文件都为{@code null}时，返回{@code true}</li>
+     * <li>当两个文件都存在时，检查是否为同一个文件</li>
+     * <li>当两个文件都不存在时，检查路径是否一致</li>
      * </ul>
      *
      * @param file1 文件1，可以为{@code null}
@@ -1283,9 +1223,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 比较两个文件内容是否相同
-     * 首先比较长度，长度一致再比较内容
-     * 此方法来自Apache Commons io
+     * 比较两个文件内容是否相同 首先比较长度，长度一致再比较内容 此方法来自Apache Commons io
      *
      * @param file1 文件1
      * @param file2 文件2
@@ -1332,9 +1270,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 比较两个文件内容是否相同
-     * 首先比较长度，长度一致再比较内容，比较内容采用按行读取，每行比较
-     * 此方法来自Apache Commons io
+     * 比较两个文件内容是否相同 首先比较长度，长度一致再比较内容，比较内容采用按行读取，每行比较 此方法来自Apache Commons io
      *
      * @param file1   文件1
      * @param file2   文件2
@@ -1342,7 +1278,8 @@ public class FileKit extends PathResolve {
      * @return 是否相同
      * @throws InternalException IO异常
      */
-    public static boolean contentEqualsIgnoreEOL(final File file1, final File file2, final java.nio.charset.Charset charset) throws InternalException {
+    public static boolean contentEqualsIgnoreEOL(final File file1, final File file2,
+            final java.nio.charset.Charset charset) throws InternalException {
         final boolean file1Exists = file1.exists();
         if (file1Exists != file2.exists()) {
             return false;
@@ -1376,8 +1313,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 文件路径是否相同
-     * 取两个文件的绝对路径比较，在Windows下忽略大小写，在Linux下不忽略。
+     * 文件路径是否相同 取两个文件的绝对路径比较，在Windows下忽略大小写，在Linux下不忽略。
      *
      * @param file1 文件1
      * @param file2 文件2
@@ -1431,8 +1367,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 判断文件是否被改动
-     * 如果文件对象为 null 或者文件不存在，被视为改动
+     * 判断文件是否被改动 如果文件对象为 null 或者文件不存在，被视为改动
      *
      * @param file           文件对象
      * @param lastModifyTime 上次的改动时间
@@ -1446,8 +1381,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 修复路径
-     * 如果原路径尾部有分隔符，则保留为标准分隔符（/），否则不保留
+     * 修复路径 如果原路径尾部有分隔符，则保留为标准分隔符（/），否则不保留
      * <ol>
      * <li>1. 统一用 /</li>
      * <li>2. 多个 / 转换为一个 /</li>
@@ -1455,6 +1389,7 @@ public class FileKit extends PathResolve {
      * <li>4. .. 和 . 转换为绝对路径，当..多于已有路径时，直接返回根路径</li>
      * <li>5. SMB路径保留，如\\127.0.0.0\a\b.zip</li>
      * </ol>
+     * 
      * <pre>
      * "/foo//" = "/foo/"
      * "/foo/./" = "/foo/"
@@ -1482,6 +1417,7 @@ public class FileKit extends PathResolve {
 
     /**
      * 获得相对子路径
+     * 
      * <pre>
      * dirPath: d:/aaa/bbb    filePath: d:/aaa/bbb/ccc         =    ccc
      * dirPath: d:/Aaa/bbb    filePath: d:/aaa/bbb/ccc.txt     =    ccc.txt
@@ -1501,6 +1437,7 @@ public class FileKit extends PathResolve {
 
     /**
      * 获得相对子路径，忽略大小写
+     * 
      * <pre>
      * dirPath: d:/aaa/bbb    filePath: d:/aaa/bbb/ccc        =    ccc
      * dirPath: d:/Aaa/bbb    filePath: d:/aaa/bbb/ccc.txt    =    ccc.txt
@@ -1524,8 +1461,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 判断文件路径是否有指定后缀，忽略大小写
-     * 常用语判断扩展名
+     * 判断文件路径是否有指定后缀，忽略大小写 常用语判断扩展名
      *
      * @param file   文件或目录
      * @param suffix 后缀
@@ -1631,7 +1567,8 @@ public class FileKit extends PathResolve {
      * @return BufferedReader对象
      * @throws InternalException IO异常
      */
-    public static BufferedReader getReader(final File file, final java.nio.charset.Charset charset) throws InternalException {
+    public static BufferedReader getReader(final File file, final java.nio.charset.Charset charset)
+            throws InternalException {
         return IoKit.toReader(getInputStream(file), charset);
     }
 
@@ -1643,13 +1580,13 @@ public class FileKit extends PathResolve {
      * @return BufferedReader对象
      * @throws InternalException IO异常
      */
-    public static BufferedReader getReader(final String path, final java.nio.charset.Charset charset) throws InternalException {
+    public static BufferedReader getReader(final String path, final java.nio.charset.Charset charset)
+            throws InternalException {
         return getReader(file(path), charset);
     }
 
     /**
-     * 读取文件所有数据
-     * 文件的长度不能超过Integer.MAX_VALUE
+     * 读取文件所有数据 文件的长度不能超过Integer.MAX_VALUE
      *
      * @param file 文件
      * @return 字节码
@@ -1663,8 +1600,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 读取文件所有数据
-     * 文件的长度不能超过Integer.MAX_VALUE
+     * 读取文件所有数据 文件的长度不能超过Integer.MAX_VALUE
      *
      * @param filePath 文件路径
      * @return 字节码
@@ -1716,7 +1652,8 @@ public class FileKit extends PathResolve {
      * @return 内容
      * @throws InternalException IO异常
      */
-    public static String readString(final String path, final java.nio.charset.Charset charset) throws InternalException {
+    public static String readString(final String path, final java.nio.charset.Charset charset)
+            throws InternalException {
         return readString(file(path), charset);
     }
 
@@ -1751,7 +1688,8 @@ public class FileKit extends PathResolve {
      * @return 文件中的每行内容的集合
      * @throws InternalException IO异常
      */
-    public static <T extends Collection<String>> T readUtf8Lines(final String path, final T collection) throws InternalException {
+    public static <T extends Collection<String>> T readUtf8Lines(final String path, final T collection)
+            throws InternalException {
         return readLines(path, Charset.UTF_8, collection);
     }
 
@@ -1765,7 +1703,8 @@ public class FileKit extends PathResolve {
      * @return 文件中的每行内容的集合
      * @throws InternalException IO异常
      */
-    public static <T extends Collection<String>> T readLines(final String path, final java.nio.charset.Charset charset, final T collection) throws InternalException {
+    public static <T extends Collection<String>> T readLines(final String path, final java.nio.charset.Charset charset,
+            final T collection) throws InternalException {
         return readLines(file(path), charset, collection);
     }
 
@@ -1778,7 +1717,8 @@ public class FileKit extends PathResolve {
      * @return 文件中的每行内容的集合
      * @throws InternalException IO异常
      */
-    public static <T extends Collection<String>> T readUtf8Lines(final File file, final T collection) throws InternalException {
+    public static <T extends Collection<String>> T readUtf8Lines(final File file, final T collection)
+            throws InternalException {
         return readLines(file, Charset.UTF_8, collection);
     }
 
@@ -1792,7 +1732,8 @@ public class FileKit extends PathResolve {
      * @return 文件中的每行内容的集合
      * @throws InternalException IO异常
      */
-    public static <T extends Collection<String>> T readLines(final File file, final java.nio.charset.Charset charset, final T collection) throws InternalException {
+    public static <T extends Collection<String>> T readLines(final File file, final java.nio.charset.Charset charset,
+            final T collection) throws InternalException {
         return FileReader.of(file, charset).readLines(collection);
     }
 
@@ -1805,7 +1746,8 @@ public class FileKit extends PathResolve {
      * @return 文件中的每行内容的集合
      * @throws InternalException IO异常
      */
-    public static <T extends Collection<String>> T readUtf8Lines(final URL url, final T collection) throws InternalException {
+    public static <T extends Collection<String>> T readUtf8Lines(final URL url, final T collection)
+            throws InternalException {
         return readLines(url, Charset.UTF_8, collection);
     }
 
@@ -1819,7 +1761,8 @@ public class FileKit extends PathResolve {
      * @return 文件中的每行内容的集合
      * @throws InternalException IO异常
      */
-    public static <T extends Collection<String>> T readLines(final URL url, final java.nio.charset.Charset charset, final T collection) throws InternalException {
+    public static <T extends Collection<String>> T readLines(final URL url, final java.nio.charset.Charset charset,
+            final T collection) throws InternalException {
         InputStream in = null;
         try {
             in = url.openStream();
@@ -1850,7 +1793,8 @@ public class FileKit extends PathResolve {
      * @return 文件中的每行内容的集合List
      * @throws InternalException IO异常
      */
-    public static List<String> readLines(final URL url, final java.nio.charset.Charset charset) throws InternalException {
+    public static List<String> readLines(final URL url, final java.nio.charset.Charset charset)
+            throws InternalException {
         return readLines(url, charset, new ArrayList<>());
     }
 
@@ -1873,7 +1817,8 @@ public class FileKit extends PathResolve {
      * @return 文件中的每行内容的集合List
      * @throws InternalException IO异常
      */
-    public static List<String> readLines(final String path, final java.nio.charset.Charset charset) throws InternalException {
+    public static List<String> readLines(final String path, final java.nio.charset.Charset charset)
+            throws InternalException {
         return readLines(path, charset, new ArrayList<>());
     }
 
@@ -1896,7 +1841,8 @@ public class FileKit extends PathResolve {
      * @return 文件中的每行内容的集合List
      * @throws InternalException IO异常
      */
-    public static List<String> readLines(final File file, final java.nio.charset.Charset charset) throws InternalException {
+    public static List<String> readLines(final File file, final java.nio.charset.Charset charset)
+            throws InternalException {
         return readLines(file, charset, new ArrayList<>());
     }
 
@@ -1919,7 +1865,8 @@ public class FileKit extends PathResolve {
      * @param lineHandler {@link ConsumerX}行处理器
      * @throws InternalException IO异常
      */
-    public static void readLines(final File file, final java.nio.charset.Charset charset, final ConsumerX<String> lineHandler) throws InternalException {
+    public static void readLines(final File file, final java.nio.charset.Charset charset,
+            final ConsumerX<String> lineHandler) throws InternalException {
         FileReader.of(file, charset).readLines(lineHandler);
     }
 
@@ -1931,7 +1878,8 @@ public class FileKit extends PathResolve {
      * @param lineHandler {@link ConsumerX}行处理器
      * @throws InternalException IO异常
      */
-    public static void readLines(final RandomAccessFile file, final java.nio.charset.Charset charset, final ConsumerX<String> lineHandler) {
+    public static void readLines(final RandomAccessFile file, final java.nio.charset.Charset charset,
+            final ConsumerX<String> lineHandler) {
         String line;
         try {
             while ((line = file.readLine()) != null) {
@@ -1950,7 +1898,8 @@ public class FileKit extends PathResolve {
      * @param lineHandler {@link ConsumerX}行处理器
      * @throws InternalException IO异常
      */
-    public static void readLine(final RandomAccessFile file, final java.nio.charset.Charset charset, final ConsumerX<String> lineHandler) {
+    public static void readLine(final RandomAccessFile file, final java.nio.charset.Charset charset,
+            final ConsumerX<String> lineHandler) {
         final String line = readLine(file, charset);
         if (null != line) {
             lineHandler.accept(line);
@@ -1988,7 +1937,8 @@ public class FileKit extends PathResolve {
      * @return 从文件中load出的数据
      * @throws InternalException IO异常
      */
-    public static <T> T readUtf8(final String path, final FunctionX<BufferedReader, T> readerHandler) throws InternalException {
+    public static <T> T readUtf8(final String path, final FunctionX<BufferedReader, T> readerHandler)
+            throws InternalException {
         return read(path, Charset.UTF_8, readerHandler);
     }
 
@@ -2002,7 +1952,8 @@ public class FileKit extends PathResolve {
      * @return 从文件中load出的数据
      * @throws InternalException IO异常
      */
-    public static <T> T read(final String path, final java.nio.charset.Charset charset, final FunctionX<BufferedReader, T> readerHandler) throws InternalException {
+    public static <T> T read(final String path, final java.nio.charset.Charset charset,
+            final FunctionX<BufferedReader, T> readerHandler) throws InternalException {
         return read(file(path), charset, readerHandler);
     }
 
@@ -2015,7 +1966,8 @@ public class FileKit extends PathResolve {
      * @return 从文件中load出的数据
      * @throws InternalException IO异常
      */
-    public static <T> T readUtf8(final File file, final FunctionX<BufferedReader, T> readerHandler) throws InternalException {
+    public static <T> T readUtf8(final File file, final FunctionX<BufferedReader, T> readerHandler)
+            throws InternalException {
         return read(file, Charset.UTF_8, readerHandler);
     }
 
@@ -2029,7 +1981,8 @@ public class FileKit extends PathResolve {
      * @return 从文件中load出的数据
      * @throws InternalException IO异常
      */
-    public static <T> T read(final File file, final java.nio.charset.Charset charset, final FunctionX<BufferedReader, T> readerHandler) throws InternalException {
+    public static <T> T read(final File file, final java.nio.charset.Charset charset,
+            final FunctionX<BufferedReader, T> readerHandler) throws InternalException {
         return FileReader.of(file, charset).read(readerHandler);
     }
 
@@ -2070,7 +2023,8 @@ public class FileKit extends PathResolve {
      * @return BufferedReader对象
      * @throws InternalException IO异常
      */
-    public static BufferedWriter getWriter(final String path, final java.nio.charset.Charset charset, final boolean isAppend) throws InternalException {
+    public static BufferedWriter getWriter(final String path, final java.nio.charset.Charset charset,
+            final boolean isAppend) throws InternalException {
         return getWriter(touch(path), charset, isAppend);
     }
 
@@ -2083,7 +2037,8 @@ public class FileKit extends PathResolve {
      * @return BufferedReader对象
      * @throws InternalException IO异常
      */
-    public static BufferedWriter getWriter(final File file, final java.nio.charset.Charset charset, final boolean isAppend) throws InternalException {
+    public static BufferedWriter getWriter(final File file, final java.nio.charset.Charset charset,
+            final boolean isAppend) throws InternalException {
         return FileWriter.of(file, charset).getWriter(isAppend);
     }
 
@@ -2096,7 +2051,8 @@ public class FileKit extends PathResolve {
      * @return 打印对象
      * @throws InternalException IO异常
      */
-    public static PrintWriter getPrintWriter(final String path, final java.nio.charset.Charset charset, final boolean isAppend) throws InternalException {
+    public static PrintWriter getPrintWriter(final String path, final java.nio.charset.Charset charset,
+            final boolean isAppend) throws InternalException {
         return new PrintWriter(getWriter(path, charset, isAppend));
     }
 
@@ -2109,7 +2065,8 @@ public class FileKit extends PathResolve {
      * @return 打印对象
      * @throws InternalException IO异常
      */
-    public static PrintWriter getPrintWriter(final File file, final java.nio.charset.Charset charset, final boolean isAppend) throws InternalException {
+    public static PrintWriter getPrintWriter(final File file, final java.nio.charset.Charset charset,
+            final boolean isAppend) throws InternalException {
         return new PrintWriter(getWriter(file, charset, isAppend));
     }
 
@@ -2161,7 +2118,8 @@ public class FileKit extends PathResolve {
      * @return 写入的文件
      * @throws InternalException IO异常
      */
-    public static File writeString(final String content, final String path, final java.nio.charset.Charset charset) throws InternalException {
+    public static File writeString(final String content, final String path, final java.nio.charset.Charset charset)
+            throws InternalException {
         return writeString(content, touch(path), charset);
     }
 
@@ -2174,7 +2132,8 @@ public class FileKit extends PathResolve {
      * @return 被写入的文件
      * @throws InternalException IO异常
      */
-    public static File writeString(final String content, final File file, final java.nio.charset.Charset charset) throws InternalException {
+    public static File writeString(final String content, final File file, final java.nio.charset.Charset charset)
+            throws InternalException {
         return FileWriter.of(file, charset).write(content);
     }
 
@@ -2199,7 +2158,8 @@ public class FileKit extends PathResolve {
      * @return 写入的文件
      * @throws InternalException IO异常
      */
-    public static File appendString(final String content, final String path, final java.nio.charset.Charset charset) throws InternalException {
+    public static File appendString(final String content, final String path, final java.nio.charset.Charset charset)
+            throws InternalException {
         return appendString(content, touch(path), charset);
     }
 
@@ -2224,7 +2184,8 @@ public class FileKit extends PathResolve {
      * @return 写入的文件
      * @throws InternalException IO异常
      */
-    public static File appendString(final String content, final File file, final java.nio.charset.Charset charset) throws InternalException {
+    public static File appendString(final String content, final File file, final java.nio.charset.Charset charset)
+            throws InternalException {
         return FileWriter.of(file, charset).append(content);
     }
 
@@ -2264,7 +2225,8 @@ public class FileKit extends PathResolve {
      * @return 目标文件
      * @throws InternalException IO异常
      */
-    public static <T> File writeLines(final Collection<T> list, final String path, final java.nio.charset.Charset charset) throws InternalException {
+    public static <T> File writeLines(final Collection<T> list, final String path,
+            final java.nio.charset.Charset charset) throws InternalException {
         return writeLines(list, path, charset, false);
     }
 
@@ -2278,7 +2240,8 @@ public class FileKit extends PathResolve {
      * @return 目标文件
      * @throws InternalException IO异常
      */
-    public static <T> File writeLines(final Collection<T> list, final File file, final java.nio.charset.Charset charset) throws InternalException {
+    public static <T> File writeLines(final Collection<T> list, final File file, final java.nio.charset.Charset charset)
+            throws InternalException {
         return writeLines(list, file, charset, false);
     }
 
@@ -2318,16 +2281,17 @@ public class FileKit extends PathResolve {
      * @return 目标文件
      * @throws InternalException IO异常
      */
-    public static <T> File appendLines(final Collection<T> list, final String path, final java.nio.charset.Charset charset) throws InternalException {
+    public static <T> File appendLines(final Collection<T> list, final String path,
+            final java.nio.charset.Charset charset) throws InternalException {
         return writeLines(list, path, charset, true);
     }
 
     /**
      * 将列表写入文件，追加模式，策略为：
      * <ul>
-     *     <li>当文件为空，从开头追加，尾部不加空行</li>
-     *     <li>当有内容，换行追加，尾部不加空行</li>
-     *     <li>当有内容，并末尾有空行，依旧换行追加</li>
+     * <li>当文件为空，从开头追加，尾部不加空行</li>
+     * <li>当有内容，换行追加，尾部不加空行</li>
+     * <li>当有内容，并末尾有空行，依旧换行追加</li>
      * </ul>
      *
      * @param <T>     集合元素类型
@@ -2337,7 +2301,8 @@ public class FileKit extends PathResolve {
      * @return 目标文件
      * @throws InternalException IO异常
      */
-    public static <T> File appendLines(final Collection<T> list, final File file, final java.nio.charset.Charset charset) throws InternalException {
+    public static <T> File appendLines(final Collection<T> list, final File file,
+            final java.nio.charset.Charset charset) throws InternalException {
         return writeLines(list, file, charset, true);
     }
 
@@ -2352,7 +2317,8 @@ public class FileKit extends PathResolve {
      * @return 目标文件
      * @throws InternalException IO异常
      */
-    public static <T> File writeLines(final Collection<T> list, final String path, final java.nio.charset.Charset charset, final boolean isAppend) throws InternalException {
+    public static <T> File writeLines(final Collection<T> list, final String path,
+            final java.nio.charset.Charset charset, final boolean isAppend) throws InternalException {
         return writeLines(list, file(path), charset, isAppend);
     }
 
@@ -2367,7 +2333,8 @@ public class FileKit extends PathResolve {
      * @return 目标文件
      * @throws InternalException IO异常
      */
-    public static <T> File writeLines(final Collection<T> list, final File file, final java.nio.charset.Charset charset, final boolean isAppend) throws InternalException {
+    public static <T> File writeLines(final Collection<T> list, final File file, final java.nio.charset.Charset charset,
+            final boolean isAppend) throws InternalException {
         return FileWriter.of(file, charset).writeLines(list, isAppend);
     }
 
@@ -2381,7 +2348,8 @@ public class FileKit extends PathResolve {
      * @return 目标文件
      * @throws InternalException IO异常
      */
-    public static File writeUtf8Map(final Map<?, ?> map, final File file, final String kvSeparator, final boolean isAppend) throws InternalException {
+    public static File writeUtf8Map(final Map<?, ?> map, final File file, final String kvSeparator,
+            final boolean isAppend) throws InternalException {
         return FileWriter.of(file, Charset.UTF_8).writeMap(map, kvSeparator, isAppend);
     }
 
@@ -2396,13 +2364,13 @@ public class FileKit extends PathResolve {
      * @return 目标文件
      * @throws InternalException IO异常
      */
-    public static File writeMap(final Map<?, ?> map, final File file, final java.nio.charset.Charset charset, final String kvSeparator, final boolean isAppend) throws InternalException {
+    public static File writeMap(final Map<?, ?> map, final File file, final java.nio.charset.Charset charset,
+            final String kvSeparator, final boolean isAppend) throws InternalException {
         return FileWriter.of(file, charset).writeMap(map, kvSeparator, isAppend);
     }
 
     /**
-     * 写数据到文件中
-     * 文件路径如果是相对路径，则相对ClassPath
+     * 写数据到文件中 文件路径如果是相对路径，则相对ClassPath
      *
      * @param data 数据
      * @param path 相对ClassPath的目录或者绝对路径目录
@@ -2429,19 +2397,19 @@ public class FileKit extends PathResolve {
      * 写入数据到文件
      *
      * @param data     数据
-     * @param target     目标文件
+     * @param target   目标文件
      * @param off      数据开始位置
      * @param len      数据长度
      * @param isAppend 是否追加模式
      * @return 目标文件
      */
-    public static File writeBytes(final byte[] data, final File target, final int off, final int len, final boolean isAppend) {
+    public static File writeBytes(final byte[] data, final File target, final int off, final int len,
+            final boolean isAppend) {
         return FileWriter.of(target).write(data, off, len, isAppend);
     }
 
     /**
-     * 将流的内容写入文件
-     * 此方法会自动关闭输入流
+     * 将流的内容写入文件 此方法会自动关闭输入流
      *
      * @param target 目标文件
      * @param in     输入流
@@ -2454,7 +2422,7 @@ public class FileKit extends PathResolve {
     /**
      * 将流的内容写入文件
      *
-     * @param target      目标文件
+     * @param target    目标文件
      * @param in        输入流
      * @param isCloseIn 是否关闭输入流
      * @return 目标文件
@@ -2486,8 +2454,8 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 可读的文件大小
-     * 参考 <a href="http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc">http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc</a>
+     * 可读的文件大小 参考 <a href=
+     * "http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc">http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc</a>
      *
      * @param size Long类型大小
      * @return 大小
@@ -2498,8 +2466,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 转换文件编码
-     * 此方法用于转换文件编码，读取的文件实际编码必须与指定的srcCharset编码一致，否则导致乱码
+     * 转换文件编码 此方法用于转换文件编码，读取的文件实际编码必须与指定的srcCharset编码一致，否则导致乱码
      *
      * @param file        文件
      * @param srcCharset  原文件的编码，必须与文件内容的编码保持一致
@@ -2507,27 +2474,27 @@ public class FileKit extends PathResolve {
      * @return 被转换编码的文件
      * @see Charset#convert(File, java.nio.charset.Charset, java.nio.charset.Charset)
      */
-    public static File convertCharset(final File file, final java.nio.charset.Charset srcCharset, final java.nio.charset.Charset destCharset) {
+    public static File convertCharset(final File file, final java.nio.charset.Charset srcCharset,
+            final java.nio.charset.Charset destCharset) {
         return Charset.convert(file, srcCharset, destCharset);
     }
 
     /**
-     * 转换换行符
-     * 将给定文件的换行符转换为指定换行符
+     * 转换换行符 将给定文件的换行符转换为指定换行符
      *
      * @param file          文件
      * @param charset       编码
      * @param lineSeparator 换行符枚举{@link LineSeparator}
      * @return 被修改的文件
      */
-    public static File convertLineSeparator(final File file, final java.nio.charset.Charset charset, final LineSeparator lineSeparator) {
+    public static File convertLineSeparator(final File file, final java.nio.charset.Charset charset,
+            final LineSeparator lineSeparator) {
         final List<String> lines = readLines(file, charset);
         return FileWriter.of(file, charset).writeLines(lines, lineSeparator, false);
     }
 
     /**
-     * 获取Web项目下的web root路径
-     * 原理是首先获取ClassPath路径，由于在web项目中ClassPath位于 WEB-INF/classes/下，故向上获取两级目录即可。
+     * 获取Web项目下的web root路径 原理是首先获取ClassPath路径，由于在web项目中ClassPath位于 WEB-INF/classes/下，故向上获取两级目录即可。
      *
      * @return web root路径
      */
@@ -2609,8 +2576,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 检查父完整路径是否为自路径的前半部分，如果不是说明不是子路径，可能存在slip注入。
-     * 见http://blog.nsfocus.net/zip-slip-2/
+     * 检查父完整路径是否为自路径的前半部分，如果不是说明不是子路径，可能存在slip注入。 见http://blog.nsfocus.net/zip-slip-2/
      *
      * @param parentFile 父文件或目录
      * @param file       子文件或目录
@@ -2620,8 +2586,8 @@ public class FileKit extends PathResolve {
     public static File checkSlip(final File parentFile, final File file) throws IllegalArgumentException {
         if (null != parentFile && null != file) {
             if (!isSub(parentFile, file)) {
-                throw new IllegalArgumentException(StringKit.format(
-                        "New file [{}] is outside of the parent dir: [{}]", file, parentFile));
+                throw new IllegalArgumentException(
+                        StringKit.format("New file [{}] is outside of the parent dir: [{}]", file, parentFile));
             }
         }
         return file;
@@ -2722,8 +2688,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 文件内容跟随器，实现类似Linux下"tail -f"命令功能
-     * 此方法会阻塞当前线程
+     * 文件内容跟随器，实现类似Linux下"tail -f"命令功能 此方法会阻塞当前线程
      *
      * @param file    文件
      * @param handler 行处理器
@@ -2733,8 +2698,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 文件内容跟随器，实现类似Linux下"tail -f"命令功能
-     * 此方法会阻塞当前线程
+     * 文件内容跟随器，实现类似Linux下"tail -f"命令功能 此方法会阻塞当前线程
      *
      * @param file    文件
      * @param charset 编码
@@ -2745,8 +2709,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 文件内容跟随器，实现类似Linux下"tail -f"命令功能
-     * 此方法会阻塞当前线程
+     * 文件内容跟随器，实现类似Linux下"tail -f"命令功能 此方法会阻塞当前线程
      *
      * @param file    文件
      * @param charset 编码
@@ -2763,9 +2726,7 @@ public class FileKit extends PathResolve {
      */
     public static java.nio.file.FileSystem of(final String path) {
         try {
-            return FileSystems.newFileSystem(
-                    Paths.get(path).toUri(),
-                    MapKit.of("create", "true"));
+            return FileSystems.newFileSystem(Paths.get(path).toUri(), MapKit.of("create", "true"));
         } catch (final IOException e) {
             throw new InternalException(e);
         }
@@ -2797,8 +2758,7 @@ public class FileKit extends PathResolve {
         env.put("encoding", charset.name());
 
         try {
-            return FileSystems.newFileSystem(
-                    URI.create("jar:" + Paths.get(path).toUri()), env);
+            return FileSystems.newFileSystem(URI.create("jar:" + Paths.get(path).toUri()), env);
         } catch (final IOException e) {
             throw new InternalException(e);
         }
@@ -2830,12 +2790,12 @@ public class FileKit extends PathResolve {
             // 在Linux下多层目录创建存在问题，/会被当成文件名的一部分，此处做处理
             // 使用/拆分路径（zip中无\），级联创建父目录
             final List<String> pathParts = CharsBacker.split(fileName, Symbol.SLASH, false, true);
-            final int lastPartIndex = pathParts.size() - 1;//目录个数
+            final int lastPartIndex = pathParts.size() - 1;// 目录个数
             for (int i = 0; i < lastPartIndex; i++) {
-                //由于路径拆分，slip不检查，在最后一步检查
+                // 由于路径拆分，slip不检查，在最后一步检查
                 outFile = new File(outFile, pathParts.get(i));
             }
-            //noinspection ResultOfMethodCallIgnored
+            // noinspection ResultOfMethodCallIgnored
             outFile.mkdirs();
             // 最后一个部分如果非空，作为文件名
             fileName = pathParts.get(lastPartIndex);

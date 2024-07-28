@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import org.miaixz.bus.gitlab.Constants;
@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *  This class is used to filter Groups when getting lists of groups.
+ * This class is used to filter Groups when getting lists of groups.
  */
 public class GroupFilter implements Serializable {
     private static final long serialVersionUID = -1L;
@@ -65,8 +65,8 @@ public class GroupFilter implements Serializable {
     }
 
     /**
-     * Show all the groups you have access to (defaults to false for authenticated users, true for admin).
-     * Attributes owned and min_access_level have precedence
+     * Show all the groups you have access to (defaults to false for authenticated users, true for admin). Attributes
+     * owned and min_access_level have precedence
      *
      * @param allAvailable if true show all available groups
      * @return the reference to this GroupFilter instance
@@ -88,7 +88,8 @@ public class GroupFilter implements Serializable {
     }
 
     /**
-     * Return groups ordered by id, name, path, created_at, updated_at, or last_activity_at fields. Default is created_at.
+     * Return groups ordered by id, name, path, created_at, updated_at, or last_activity_at fields. Default is
+     * created_at.
      *
      * @param orderBy specifies what field to order by
      * @return the reference to this GroupFilter instance
@@ -121,7 +122,7 @@ public class GroupFilter implements Serializable {
     }
 
     /**
-     *  Include custom attributes in response (admins only).
+     * Include custom attributes in response (admins only).
      *
      * @param withCustomAttributes if true, include custom attributes in the response
      * @return the reference to this GroupFilter instance
@@ -132,9 +133,9 @@ public class GroupFilter implements Serializable {
     }
 
     /**
-     *  Results must have custom attribute (admins only). Can be chained to combine multiple attribute checks.
+     * Results must have custom attribute (admins only). Can be chained to combine multiple attribute checks.
      *
-     * @param key the assets returned must have the specified custom attribute key
+     * @param key   the assets returned must have the specified custom attribute key
      * @param value the assets returned must have the specified value for the custom attribute key
      * @return the reference to this GroupFilter instance
      */
@@ -183,17 +184,13 @@ public class GroupFilter implements Serializable {
      */
     public GitLabApiForm getQueryParams() {
         GitLabApiForm form = new GitLabApiForm().withParam("skip_groups", skipGroups)
-                .withParam("all_available", allAvailable)
-                .withParam("search", search)
-                .withParam("order_by", orderBy)
-                .withParam("sort", sort)
-                .withParam("statistics", statistics)
-                .withParam("with_custom_attributes", withCustomAttributes)
-                .withParam("owned", owned)
-                .withParam("min_access_level", accessLevel)
-                .withParam("top_level_only", topLevelOnly);
+                .withParam("all_available", allAvailable).withParam("search", search).withParam("order_by", orderBy)
+                .withParam("sort", sort).withParam("statistics", statistics)
+                .withParam("with_custom_attributes", withCustomAttributes).withParam("owned", owned)
+                .withParam("min_access_level", accessLevel).withParam("top_level_only", topLevelOnly);
         for (CustomAttribute customAttribute : customAttributesFilter) {
-            form.withParam(String.format("custom_attributes[%s]", customAttribute.getKey()), customAttribute.getValue());
+            form.withParam(String.format("custom_attributes[%s]", customAttribute.getKey()),
+                    customAttribute.getValue());
         }
         return form;
     }

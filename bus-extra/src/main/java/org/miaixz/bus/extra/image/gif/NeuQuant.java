@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.image.gif;
 
 public class NeuQuant {
@@ -41,20 +41,15 @@ public class NeuQuant {
     protected static final int minpicturebytes = (3 * prime4);
     /* minimum size for input image */
 
-	/* Program Skeleton
-	   ----------------
-	   [select samplefac in range 1..30]
-	   [read image from input file]
-	   pic = (unsigned char*) malloc(3*width*height);
-	   initnet(pic,3*width*height,samplefac);
-	   learn();
-	   unbiasnet();
-	   [write output image header, using writecolourmap(f)]
-	   inxbuild();
-	   write output image using inxsearch(b,g,r)      */
+    /*
+     * Program Skeleton ---------------- [select samplefac in range 1..30] [read image from input file] pic = (unsigned
+     * char*) malloc(3*width*height); initnet(pic,3*width*height,samplefac); learn(); unbiasnet(); [write output image
+     * header, using writecolourmap(f)] inxbuild(); write output image using inxsearch(b,g,r)
+     */
 
-	/* Network Definitions
-	   ------------------- */
+    /*
+     * Network Definitions -------------------
+     */
 
     protected static final int maxnetpos = netsize - 1;
     protected static final int netbiasshift = 4; /* bias for colour values */
@@ -84,14 +79,15 @@ public class NeuQuant {
     protected static final int alpharadbias = 1 << alpharadbshift;
     protected int alphadec; /* biased by 10 bits */
 
-    /* Types and Global Variables
-    -------------------------- */
+    /*
+     * Types and Global Variables --------------------------
+     */
     protected byte[] thepicture; /* the input image itself */
     protected int lengthcount; /* lengthcount = H*W*3 */
 
     protected int samplefac; /* sampling factor 1..30 */
 
-    //   typedef int pixel[4];                /* BGRc */
+    // typedef int pixel[4]; /* BGRc */
     protected int[][] network; /* the network itself - [netsize][4] */
 
     protected int[] netindex = new int[256];
@@ -103,8 +99,10 @@ public class NeuQuant {
     protected int[] radpower = new int[initrad];
     /* radpower for precomputation */
 
-    /* Initialise network in range (0,0,0) to (255,255,255) and set parameters
-       ----------------------------------------------------------------------- */
+    /*
+     * Initialise network in range (0,0,0) to (255,255,255) and set parameters
+     * -----------------------------------------------------------------------
+     */
     public NeuQuant(byte[] thepic, int len, int sample) {
 
         int i;
@@ -139,8 +137,10 @@ public class NeuQuant {
         return map;
     }
 
-    /* Insertion sort of network and building of netindex[0..255] (to do after unbias)
-       ------------------------------------------------------------------------------- */
+    /*
+     * Insertion sort of network and building of netindex[0..255] (to do after unbias)
+     * -------------------------------------------------------------------------------
+     */
     public void inxbuild() {
 
         int i, j, smallpos, smallval;
@@ -192,8 +192,9 @@ public class NeuQuant {
             netindex[j] = maxnetpos; /* really 256 */
     }
 
-    /* Main Learning Loop
-       ------------------ */
+    /*
+     * Main Learning Loop ------------------
+     */
     public void learn() {
 
         int i, j, b, g, r;
@@ -216,10 +217,9 @@ public class NeuQuant {
         if (rad <= 1)
             rad = 0;
         for (i = 0; i < rad; i++)
-            radpower[i] =
-                    alpha * (((rad * rad - i * i) * radbias) / (rad * rad));
+            radpower[i] = alpha * (((rad * rad - i * i) * radbias) / (rad * rad));
 
-        //fprintf(stderr,"beginning 1D learning: initial radius=%d\n", rad);
+        // fprintf(stderr,"beginning 1D learning: initial radius=%d\n", rad);
 
         if (lengthcount < minpicturebytes)
             step = 3;
@@ -261,15 +261,16 @@ public class NeuQuant {
                 if (rad <= 1)
                     rad = 0;
                 for (j = 0; j < rad; j++)
-                    radpower[j] =
-                            alpha * (((rad * rad - j * j) * radbias) / (rad * rad));
+                    radpower[j] = alpha * (((rad * rad - j * j) * radbias) / (rad * rad));
             }
         }
-        //fprintf(stderr,"finished 1D learning: final alpha=%f !\n",((float)alpha)/initalpha);
+        // fprintf(stderr,"finished 1D learning: final alpha=%f !\n",((float)alpha)/initalpha);
     }
 
-    /* Search for BGR values 0..255 (after net is unbiased) and return colour index
-       ---------------------------------------------------------------------------- */
+    /*
+     * Search for BGR values 0..255 (after net is unbiased) and return colour index
+     * ----------------------------------------------------------------------------
+     */
     public int map(int b, int g, int r) {
 
         int i, j, dist, a, bestd;
@@ -343,8 +344,10 @@ public class NeuQuant {
         return colorMap();
     }
 
-    /* Unbias network to give byte values 0..255 and record position i to prepare for sort
-       ----------------------------------------------------------------------------------- */
+    /*
+     * Unbias network to give byte values 0..255 and record position i to prepare for sort
+     * -----------------------------------------------------------------------------------
+     */
     public void unbiasnet() {
 
         int i, j;
@@ -357,8 +360,10 @@ public class NeuQuant {
         }
     }
 
-    /* Move adjacent neurons by precomputed alpha*(1-((i-j)^2/[r]^2)) in radpower[|i-j|]
-       --------------------------------------------------------------------------------- */
+    /*
+     * Move adjacent neurons by precomputed alpha*(1-((i-j)^2/[r]^2)) in radpower[|i-j|]
+     * ---------------------------------------------------------------------------------
+     */
     protected void alterneigh(int rad, int i, int b, int g, int r) {
 
         int j, k, lo, hi, a, m;
@@ -397,8 +402,9 @@ public class NeuQuant {
         }
     }
 
-    /* Move neuron i towards biased (b,g,r) by factor alpha
-       ---------------------------------------------------- */
+    /*
+     * Move neuron i towards biased (b,g,r) by factor alpha ----------------------------------------------------
+     */
     protected void altersingle(int alpha, int i, int b, int g, int r) {
 
         /* alter hit neuron */
@@ -408,8 +414,9 @@ public class NeuQuant {
         n[2] -= (alpha * (n[2] - r)) / initalpha;
     }
 
-    /* Search for biased BGR values
-       ---------------------------- */
+    /*
+     * Search for biased BGR values ----------------------------
+     */
     protected int contest(int b, int g, int r) {
 
         /* finds closest neuron (min dist) and updates freq */

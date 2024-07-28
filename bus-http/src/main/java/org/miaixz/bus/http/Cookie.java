@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -35,22 +35,18 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Cookie's相关工具支持
- * 这个类不支持cookies上的附加属性，比如Chromium的Priority=HIGH extension
+ * Cookie's相关工具支持 这个类不支持cookies上的附加属性，比如Chromium的Priority=HIGH extension
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Cookie {
 
-    private static final Pattern YEAR_PATTERN
-            = Pattern.compile("(\\d{2,4})[^\\d]*");
-    private static final Pattern MONTH_PATTERN
-            = Pattern.compile("(?i)(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec).*");
-    private static final Pattern DAY_OF_MONTH_PATTERN
-            = Pattern.compile("(\\d{1,2})[^\\d]*");
-    private static final Pattern TIME_PATTERN
-            = Pattern.compile("(\\d{1,2}):(\\d{1,2}):(\\d{1,2})[^\\d]*");
+    private static final Pattern YEAR_PATTERN = Pattern.compile("(\\d{2,4})[^\\d]*");
+    private static final Pattern MONTH_PATTERN = Pattern
+            .compile("(?i)(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec).*");
+    private static final Pattern DAY_OF_MONTH_PATTERN = Pattern.compile("(\\d{1,2})[^\\d]*");
+    private static final Pattern TIME_PATTERN = Pattern.compile("(\\d{1,2}):(\\d{1,2}):(\\d{1,2})[^\\d]*");
 
     /**
      * 带有此cookie名称的非空字符串
@@ -61,8 +57,8 @@ public class Cookie {
      */
     private final String value;
     /**
-     * 以与{@link System#currentTimeMillis()}相同的格式返回此cookie过期的时间。
-     * 这是9999年12月31日，如果cookie是{@linkplain #persistent() not persistent}，那么它将在当前会话结束时终止
+     * 以与{@link System#currentTimeMillis()}相同的格式返回此cookie过期的时间。 这是9999年12月31日，如果cookie是{@linkplain #persistent() not
+     * persistent}，那么它将在当前会话结束时终止
      */
     private final long expiresAt;
     /**
@@ -87,13 +83,12 @@ public class Cookie {
      */
     private final boolean persistent;
     /**
-     * 如果此cookie的域应解释为单个主机名，则返回true;如果应解释为模式，则返回false。
-     * 如果它的{@code Set-Cookie}头包含{@code domain}属性，则此标志为false
+     * 如果此cookie的域应解释为单个主机名，则返回true;如果应解释为模式，则返回false。 如果它的{@code Set-Cookie}头包含{@code domain}属性，则此标志为false
      */
     private final boolean hostOnly;
 
-    private Cookie(String name, String value, long expiresAt, String domain, String path,
-                   boolean secure, boolean httpOnly, boolean hostOnly, boolean persistent) {
+    private Cookie(String name, String value, long expiresAt, String domain, String path, boolean secure,
+            boolean httpOnly, boolean hostOnly, boolean persistent) {
         this.name = name;
         this.value = value;
         this.expiresAt = expiresAt;
@@ -106,9 +101,12 @@ public class Cookie {
     }
 
     Cookie(Builder builder) {
-        if (null == builder.name) throw new NullPointerException("builder.name == null");
-        if (null == builder.value) throw new NullPointerException("builder.value == null");
-        if (null == builder.domain) throw new NullPointerException("builder.domain == null");
+        if (null == builder.name)
+            throw new NullPointerException("builder.name == null");
+        if (null == builder.value)
+            throw new NullPointerException("builder.value == null");
+        if (null == builder.domain)
+            throw new NullPointerException("builder.domain == null");
 
         this.name = builder.name;
         this.value = builder.value;
@@ -126,8 +124,7 @@ public class Cookie {
             return true;
         }
 
-        if (urlHost.endsWith(domain)
-                && urlHost.charAt(urlHost.length() - domain.length() - 1) == Symbol.C_DOT
+        if (urlHost.endsWith(domain) && urlHost.charAt(urlHost.length() - domain.length() - 1) == Symbol.C_DOT
                 && !org.miaixz.bus.http.Builder.verifyAsIpAddress(urlHost)) {
             return true;
         }
@@ -143,8 +140,10 @@ public class Cookie {
         }
 
         if (urlPath.startsWith(path)) {
-            if (path.endsWith(Symbol.SLASH)) return true;
-            if (urlPath.charAt(path.length()) == Symbol.C_SLASH) return true;
+            if (path.endsWith(Symbol.SLASH))
+                return true;
+            if (urlPath.charAt(path.length()) == Symbol.C_SLASH)
+                return true;
         }
 
         return false;
@@ -160,13 +159,16 @@ public class Cookie {
         int cookiePairEnd = org.miaixz.bus.http.Builder.delimiterOffset(setCookie, pos, limit, Symbol.C_SEMICOLON);
 
         int pairEqualsSign = org.miaixz.bus.http.Builder.delimiterOffset(setCookie, pos, cookiePairEnd, Symbol.C_EQUAL);
-        if (pairEqualsSign == cookiePairEnd) return null;
+        if (pairEqualsSign == cookiePairEnd)
+            return null;
 
         String cookieName = org.miaixz.bus.http.Builder.trimSubstring(setCookie, pos, pairEqualsSign);
-        if (cookieName.isEmpty() || org.miaixz.bus.http.Builder.indexOfControlOrNonAscii(cookieName) != -1) return null;
+        if (cookieName.isEmpty() || org.miaixz.bus.http.Builder.indexOfControlOrNonAscii(cookieName) != -1)
+            return null;
 
         String cookieValue = org.miaixz.bus.http.Builder.trimSubstring(setCookie, pairEqualsSign + 1, cookiePairEnd);
-        if (org.miaixz.bus.http.Builder.indexOfControlOrNonAscii(cookieValue) != -1) return null;
+        if (org.miaixz.bus.http.Builder.indexOfControlOrNonAscii(cookieValue) != -1)
+            return null;
 
         long expiresAt = org.miaixz.bus.http.Builder.MAX_DATE;
         long deltaSeconds = -1L;
@@ -179,9 +181,11 @@ public class Cookie {
 
         pos = cookiePairEnd + 1;
         while (pos < limit) {
-            int attributePairEnd = org.miaixz.bus.http.Builder.delimiterOffset(setCookie, pos, limit, Symbol.C_SEMICOLON);
+            int attributePairEnd = org.miaixz.bus.http.Builder.delimiterOffset(setCookie, pos, limit,
+                    Symbol.C_SEMICOLON);
 
-            int attributeEqualsSign = org.miaixz.bus.http.Builder.delimiterOffset(setCookie, pos, attributePairEnd, Symbol.C_EQUAL);
+            int attributeEqualsSign = org.miaixz.bus.http.Builder.delimiterOffset(setCookie, pos, attributePairEnd,
+                    Symbol.C_EQUAL);
             String attributeName = org.miaixz.bus.http.Builder.trimSubstring(setCookie, pos, attributeEqualsSign);
             String attributeValue = attributeEqualsSign < attributePairEnd
                     ? org.miaixz.bus.http.Builder.trimSubstring(setCookie, attributeEqualsSign + 1, attributePairEnd)
@@ -223,9 +227,7 @@ public class Cookie {
         if (deltaSeconds == Long.MIN_VALUE) {
             expiresAt = Long.MIN_VALUE;
         } else if (deltaSeconds != -1L) {
-            long deltaMilliseconds = deltaSeconds <= (Long.MAX_VALUE / 1000)
-                    ? deltaSeconds * 1000
-                    : Long.MAX_VALUE;
+            long deltaMilliseconds = deltaSeconds <= (Long.MAX_VALUE / 1000) ? deltaSeconds * 1000 : Long.MAX_VALUE;
             expiresAt = currentTimeMillis + deltaMilliseconds;
             if (expiresAt < currentTimeMillis || expiresAt > org.miaixz.bus.http.Builder.MAX_DATE) {
                 expiresAt = org.miaixz.bus.http.Builder.MAX_DATE;
@@ -251,8 +253,7 @@ public class Cookie {
             path = lastSlash != 0 ? encodedPath.substring(0, lastSlash) : Symbol.SLASH;
         }
 
-        return new Cookie(cookieName, cookieValue, expiresAt, domain, path, secureOnly, httpOnly,
-                hostOnly, persistent);
+        return new Cookie(cookieName, cookieValue, expiresAt, domain, path, secureOnly, httpOnly, hostOnly, persistent);
     }
 
     /**
@@ -290,16 +291,24 @@ public class Cookie {
         }
 
         // 将两位数的年份转换为四位数的年份。99变成1999,15变成2015.
-        if (year >= 70 && year <= 99) year += 1900;
-        if (year >= 0 && year <= 69) year += 2000;
+        if (year >= 70 && year <= 99)
+            year += 1900;
+        if (year >= 0 && year <= 69)
+            year += 2000;
 
         // 如果任何部分被省略或超出范围，则返回-1。这个日期是不可能的。注意，该语法不支持闰秒.
-        if (year < 1601) throw new IllegalArgumentException();
-        if (month == -1) throw new IllegalArgumentException();
-        if (dayOfMonth < 1 || dayOfMonth > 31) throw new IllegalArgumentException();
-        if (hour < 0 || hour > 23) throw new IllegalArgumentException();
-        if (minute < 0 || minute > 59) throw new IllegalArgumentException();
-        if (second < 0 || second > 59) throw new IllegalArgumentException();
+        if (year < 1601)
+            throw new IllegalArgumentException();
+        if (month == -1)
+            throw new IllegalArgumentException();
+        if (dayOfMonth < 1 || dayOfMonth > 31)
+            throw new IllegalArgumentException();
+        if (hour < 0 || hour > 23)
+            throw new IllegalArgumentException();
+        if (minute < 0 || minute > 59)
+            throw new IllegalArgumentException();
+        if (second < 0 || second > 59)
+            throw new IllegalArgumentException();
 
         Calendar calendar = new GregorianCalendar(org.miaixz.bus.http.Builder.UTC);
         calendar.setLenient(false);
@@ -314,26 +323,24 @@ public class Cookie {
     }
 
     /**
-     * Returns the index of the next date character in {@code input}, or if {@code invert} the index
-     * of the next non-date character in {@code input}.
+     * Returns the index of the next date character in {@code input}, or if {@code invert} the index of the next
+     * non-date character in {@code input}.
      */
     private static int dateCharacterOffset(String input, int pos, int limit, boolean invert) {
         for (int i = pos; i < limit; i++) {
             int c = input.charAt(i);
             boolean dateCharacter = (c < Symbol.C_SPACE && c != Symbol.C_HT) || (c >= '\u007f')
-                    || (c >= Symbol.C_ZERO && c <= Symbol.C_NINE)
-                    || (c >= 'a' && c <= 'z')
-                    || (c >= 'A' && c <= 'Z')
+                    || (c >= Symbol.C_ZERO && c <= Symbol.C_NINE) || (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
                     || (c == Symbol.C_COLON);
-            if (dateCharacter == !invert) return i;
+            if (dateCharacter == !invert)
+                return i;
         }
         return limit;
     }
 
     /**
-     * Returns the positive value if {@code attributeValue} is positive, or {@link Long#MIN_VALUE} if
-     * it is either 0 or negative. If the value is positive but out of range, this returns {@link
-     * Long#MAX_VALUE}.
+     * Returns the positive value if {@code attributeValue} is positive, or {@link Long#MIN_VALUE} if it is either 0 or
+     * negative. If the value is positive but out of range, this returns {@link Long#MAX_VALUE}.
      *
      * @throws NumberFormatException if {@code s} is not an integer of any precision.
      */
@@ -351,8 +358,8 @@ public class Cookie {
     }
 
     /**
-     * Returns a domain string like {@code example.com} for an input domain like {@code EXAMPLE.COM}
-     * or {@code .example.com}.
+     * Returns a domain string like {@code example.com} for an input domain like {@code EXAMPLE.COM} or
+     * {@code .example.com}.
      */
     private static String parseDomain(String s) {
         if (s.endsWith(Symbol.DOT)) {
@@ -377,14 +384,14 @@ public class Cookie {
 
         for (int i = 0, size = cookieStrings.size(); i < size; i++) {
             Cookie cookie = Cookie.parse(url, cookieStrings.get(i));
-            if (null == cookie) continue;
-            if (null == cookies) cookies = new ArrayList<>();
+            if (null == cookie)
+                continue;
+            if (null == cookies)
+                cookies = new ArrayList<>();
             cookies.add(cookie);
         }
 
-        return null != cookies
-                ? Collections.unmodifiableList(cookies)
-                : Collections.emptyList();
+        return null != cookies ? Collections.unmodifiableList(cookies) : Collections.emptyList();
     }
 
     public String name() {
@@ -424,18 +431,19 @@ public class Cookie {
     }
 
     /**
-     * Returns true if this cookie should be included on a request to {@code url}. In addition to this
-     * check callers should also confirm that this cookie has not expired.
+     * Returns true if this cookie should be included on a request to {@code url}. In addition to this check callers
+     * should also confirm that this cookie has not expired.
      */
     public boolean matches(UnoUrl url) {
-        boolean domainMatch = hostOnly
-                ? url.host().equals(domain)
-                : domainMatch(url.host(), domain);
-        if (!domainMatch) return false;
+        boolean domainMatch = hostOnly ? url.host().equals(domain) : domainMatch(url.host(), domain);
+        if (!domainMatch)
+            return false;
 
-        if (!pathMatch(url, path)) return false;
+        if (!pathMatch(url, path))
+            return false;
 
-        if (secure && !url.isHttps()) return false;
+        if (secure && !url.isHttps())
+            return false;
 
         return true;
     }
@@ -446,9 +454,9 @@ public class Cookie {
     }
 
     /**
-     * @param forObsoleteRfc2965 true to include a leading {@code .} on the domain pattern. This is
-     *                           necessary for {@code example.com} to match {@code www.example.com} under RFC 2965. This
-     *                           extra dot is ignored by more recent specifications.
+     * @param forObsoleteRfc2965 true to include a leading {@code .} on the domain pattern. This is necessary for
+     *                           {@code example.com} to match {@code www.example.com} under RFC 2965. This extra dot is
+     *                           ignored by more recent specifications.
      */
     String toString(boolean forObsoleteRfc2965) {
         StringBuilder result = new StringBuilder();
@@ -487,17 +495,12 @@ public class Cookie {
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof Cookie)) return false;
+        if (!(other instanceof Cookie))
+            return false;
         Cookie that = (Cookie) other;
-        return that.name.equals(name)
-                && that.value.equals(value)
-                && that.domain.equals(domain)
-                && that.path.equals(path)
-                && that.expiresAt == expiresAt
-                && that.secure == secure
-                && that.httpOnly == httpOnly
-                && that.persistent == persistent
-                && that.hostOnly == hostOnly;
+        return that.name.equals(name) && that.value.equals(value) && that.domain.equals(domain)
+                && that.path.equals(path) && that.expiresAt == expiresAt && that.secure == secure
+                && that.httpOnly == httpOnly && that.persistent == persistent && that.hostOnly == hostOnly;
     }
 
     @Override
@@ -516,9 +519,8 @@ public class Cookie {
     }
 
     /**
-     * 构建一个饼干。在调用{@link #build}之前，必须设置
-     * {@linkplain #name() name}、{@linkplain #value() value}
-     * 和{@linkplain #domain() domain}.
+     * 构建一个饼干。在调用{@link #build}之前，必须设置 {@linkplain #name() name}、{@linkplain #value() value} 和{@linkplain #domain()
+     * domain}.
      */
     public static class Builder {
 
@@ -536,45 +538,50 @@ public class Cookie {
         boolean hostOnly;
 
         public Builder name(String name) {
-            if (null == name) throw new NullPointerException("name == null");
-            if (!name.trim().equals(name)) throw new IllegalArgumentException("name is not trimmed");
+            if (null == name)
+                throw new NullPointerException("name == null");
+            if (!name.trim().equals(name))
+                throw new IllegalArgumentException("name is not trimmed");
             this.name = name;
             return this;
         }
 
         public Builder value(String value) {
-            if (null == value) throw new NullPointerException("value == null");
-            if (!value.trim().equals(value)) throw new IllegalArgumentException("value is not trimmed");
+            if (null == value)
+                throw new NullPointerException("value == null");
+            if (!value.trim().equals(value))
+                throw new IllegalArgumentException("value is not trimmed");
             this.value = value;
             return this;
         }
 
         public Builder expiresAt(long expiresAt) {
-            if (expiresAt <= 0) expiresAt = Long.MIN_VALUE;
-            if (expiresAt > org.miaixz.bus.http.Builder.MAX_DATE) expiresAt = org.miaixz.bus.http.Builder.MAX_DATE;
+            if (expiresAt <= 0)
+                expiresAt = Long.MIN_VALUE;
+            if (expiresAt > org.miaixz.bus.http.Builder.MAX_DATE)
+                expiresAt = org.miaixz.bus.http.Builder.MAX_DATE;
             this.expiresAt = expiresAt;
             this.persistent = true;
             return this;
         }
 
         /**
-         * Set the domain pattern for this cookie. The cookie will match {@code domain} and all of its
-         * subdomains.
+         * Set the domain pattern for this cookie. The cookie will match {@code domain} and all of its subdomains.
          */
         public Builder domain(String domain) {
             return domain(domain, false);
         }
 
         /**
-         * Set the host-only domain for this cookie. The cookie will match {@code domain} but none of
-         * its subdomains.
+         * Set the host-only domain for this cookie. The cookie will match {@code domain} but none of its subdomains.
          */
         public Builder hostOnlyDomain(String domain) {
             return domain(domain, true);
         }
 
         private Builder domain(String domain, boolean hostOnly) {
-            if (null == domain) throw new NullPointerException("domain == null");
+            if (null == domain)
+                throw new NullPointerException("domain == null");
             String canonicalDomain = org.miaixz.bus.http.Builder.canonicalizeHost(domain);
             if (null == canonicalDomain) {
                 throw new IllegalArgumentException("unexpected domain: " + domain);
@@ -585,7 +592,8 @@ public class Cookie {
         }
 
         public Builder path(String path) {
-            if (!path.startsWith(Symbol.SLASH)) throw new IllegalArgumentException("path must start with /");
+            if (!path.startsWith(Symbol.SLASH))
+                throw new IllegalArgumentException("path must start with /");
             this.path = path;
             return this;
         }

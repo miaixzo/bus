@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.tuple;
 
 import org.miaixz.bus.core.lang.exception.CloneException;
@@ -114,12 +114,8 @@ public class Pair<L, R> implements Serializable, Cloneable {
 
     @Override
     public String toString() {
-        return "Pair{" +
-                "left=" + left +
-                ", right=" + right +
-                '}';
+        return "Pair{" + "left=" + left + ", right=" + right + '}';
     }
-
 
     @Override
     public Pair<L, R> clone() {

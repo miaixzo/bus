@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.hl7.net;
 
 import org.miaixz.bus.image.metric.Connection;
@@ -101,8 +101,7 @@ public class HL7ApplicationInfo implements Serializable {
 
     @Override
     public String toString() {
-        return "HL7ApplicationInfo[hl7ApplicationName=" + hl7ApplicationName
-                + "]";
+        return "HL7ApplicationInfo[hl7ApplicationName=" + hl7ApplicationName + "]";
     }
 
 }

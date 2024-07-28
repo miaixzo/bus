@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pay.metric.jdpay.api;
 
 import org.miaixz.bus.pay.Matcher;
@@ -81,7 +81,6 @@ public enum JdPayApi implements Matcher {
      * 用户关系解绑接口
      */
     CANCEL_USER_RELATION_URL("https://paygate.jd.com/service/cancelUserRelation", "用户关系解绑接口");
-
 
     /**
      * 接口方法

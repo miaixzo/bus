@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.excel.sax.handler;
 
 import org.miaixz.bus.core.convert.Convert;
@@ -35,8 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Map形式的行处理器
- * 将一行数据转换为Map，key为指定行，value为当前行对应位置的值
+ * Map形式的行处理器 将一行数据转换为Map，key为指定行，value为当前行对应位置的值
  *
  * @author Kimi Liu
  * @since Java 17+

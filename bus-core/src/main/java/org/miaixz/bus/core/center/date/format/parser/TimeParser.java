@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.date.format.parser;
 
 import org.miaixz.bus.core.center.date.DateTime;
@@ -40,6 +40,7 @@ import java.io.Serializable;
 
 /**
  * 时间日期字符串，日期默认为当天，支持格式类似于；
+ * 
  * <pre>
  *   HH:mm:ss
  *   HH:mm

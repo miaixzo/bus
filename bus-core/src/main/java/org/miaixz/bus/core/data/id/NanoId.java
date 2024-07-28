@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.data.id;
 
 import org.miaixz.bus.core.xyz.RandomKit;
@@ -36,9 +36,9 @@ import java.util.Random;
  * NanoId，一个小型、安全、对 URL友好的唯一字符串 ID 生成器，特点：
  *
  * <ul>
- *     <li>安全：它使用加密、强大的随机 API，并保证符号的正确分配</li>
- *     <li>体积小：只有 258 bytes 大小（压缩后）、无依赖</li>
- *     <li>紧凑：它使用比 UUID (A-Za-z0-9_~)更多的符号</li>
+ * <li>安全：它使用加密、强大的随机 API，并保证符号的正确分配</li>
+ * <li>体积小：只有 258 bytes 大小（压缩后）、无依赖</li>
+ * <li>紧凑：它使用比 UUID (A-Za-z0-9_~)更多的符号</li>
  * </ul>
  *
  * <p>
@@ -61,7 +61,8 @@ public class NanoId {
     /**
      * 默认随机字母表，使用URL安全的Base64字符
      */
-    private static final char[] DEFAULT_ALPHABET = "_-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ".toCharArray();
+    private static final char[] DEFAULT_ALPHABET = "_-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            .toCharArray();
 
     /**
      * 生成伪随机的NanoId字符串，长度为默认的{@link #DEFAULT_SIZE}，使用密码安全的伪随机生成器

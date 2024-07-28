@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.driver;
 
 import com.sun.jna.Memory;
@@ -60,26 +60,26 @@ public final class DeviceTree {
      *
      * @param guidDevInterface The GUID of a device interface class for which the tree should be collected.
      * @return A {@link Tuple} of maps indexed by node ID, where the key set represents node IDs for all devices
-     * matching the specified device interface GUID. The first element is a set containing devices with no
-     * parents, match the device interface requested.. The second element maps each node ID to its parents, if
-     * any. This map's key set excludes the no-parent devices returned in the first element. The third element
-     * maps a node ID to a name or description. The fourth element maps a node id to a device ID. The fifth
-     * element maps a node ID to a manufacturer.
+     *         matching the specified device interface GUID. The first element is a set containing devices with no
+     *         parents, match the device interface requested.. The second element maps each node ID to its parents, if
+     *         any. This map's key set excludes the no-parent devices returned in the first element. The third element
+     *         maps a node ID to a name or description. The fourth element maps a node id to a device ID. The fifth
+     *         element maps a node ID to a manufacturer.
      */
-    public static Tuple queryDeviceTree(
-            GUID guidDevInterface) {
+    public static Tuple queryDeviceTree(GUID guidDevInterface) {
         Map<Integer, Integer> parentMap = new HashMap<>();
         Map<Integer, String> nameMap = new HashMap<>();
         Map<Integer, String> deviceIdMap = new HashMap<>();
         Map<Integer, String> mfgMap = new HashMap<>();
         // Get device IDs for the top level devices
-        HANDLE hDevInfo = SA.SetupDiGetClassDevs(guidDevInterface, null, null, SetupApi.DIGCF_DEVICEINTERFACE | SetupApi.DIGCF_PRESENT);
+        HANDLE hDevInfo = SA.SetupDiGetClassDevs(guidDevInterface, null, null,
+                SetupApi.DIGCF_DEVICEINTERFACE | SetupApi.DIGCF_PRESENT);
         if (!WinBase.INVALID_HANDLE_VALUE.equals(hDevInfo)) {
             try (Memory buf = new Memory(MAX_PATH);
-                 ByRef.CloseableIntByReference size = new ByRef.CloseableIntByReference(MAX_PATH);
-                 ByRef.CloseableIntByReference child = new ByRef.CloseableIntByReference();
-                 ByRef.CloseableIntByReference sibling = new ByRef.CloseableIntByReference();
-                 Struct.CloseableSpDevinfoData devInfoData = new Struct.CloseableSpDevinfoData()) {
+                    ByRef.CloseableIntByReference size = new ByRef.CloseableIntByReference(MAX_PATH);
+                    ByRef.CloseableIntByReference child = new ByRef.CloseableIntByReference();
+                    ByRef.CloseableIntByReference sibling = new ByRef.CloseableIntByReference();
+                    Struct.CloseableSpDevinfoData devInfoData = new Struct.CloseableSpDevinfoData()) {
                 devInfoData.cbSize = devInfoData.size();
                 // Enumerate Device Info using BFS queue
                 Queue<Integer> deviceTree = new ArrayDeque<>();

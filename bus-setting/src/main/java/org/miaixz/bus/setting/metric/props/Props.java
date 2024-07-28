@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.setting.metric.props;
 
 import org.miaixz.bus.core.center.function.FunctionX;
@@ -78,8 +78,7 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
 
     private WatchMonitor watchMonitor;
     /**
-     * properties文件编码
-     * 此属性不能被序列化，故忽略序列化
+     * properties文件编码 此属性不能被序列化，故忽略序列化
      */
     private transient java.nio.charset.Charset charset = Charset.ISO_8859_1;
 
@@ -202,8 +201,7 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     }
 
     /**
-     * 获取当前环境下的配置文件
-     * name可以为不包括扩展名的文件名（默认.properties），也可以是文件名全称
+     * 获取当前环境下的配置文件 name可以为不包括扩展名的文件名（默认.properties），也可以是文件名全称
      *
      * @param name 文件名，如果没有扩展名，默认为.properties
      * @return 当前环境下配置文件
@@ -227,9 +225,7 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     public static void parse(Map<String, Object> result, String content) {
         String[] lines = content.split("\n");
         for (String line : lines) {
-            if (StringKit.isBlank(line)
-                    || line.startsWith(Symbol.SHAPE)
-                    || line.indexOf(Symbol.EQUAL) < 0) {
+            if (StringKit.isBlank(line) || line.startsWith(Symbol.SHAPE) || line.indexOf(Symbol.EQUAL) < 0) {
                 continue;
             }
             // 考虑 value包含=的情况
@@ -242,8 +238,7 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     }
 
     /**
-     * 获取给定路径找到的第一个配置文件
-     * * name可以为不包括扩展名的文件名（默认.properties为结尾），也可以是文件名全称
+     * 获取给定路径找到的第一个配置文件 * name可以为不包括扩展名的文件名（默认.properties为结尾），也可以是文件名全称
      *
      * @param names 文件名，如果没有扩展名，默认为.properties
      * @return 当前环境下配置文件
@@ -253,7 +248,7 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
             try {
                 return get(name);
             } catch (final InternalException e) {
-                //ignore
+                // ignore
             }
         }
         return null;
@@ -358,12 +353,15 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
 
     /**
      * 获取一个新的子属性，子属性键值对拥有公共前缀，以.分隔。
+     * 
      * <pre>
      *     a.b
      *     a.c
      *     b.a
      * </pre>
+     * 
      * 则调用getSubProps("a");得到
+     * 
      * <pre>
      *     a.b
      *     a.c
@@ -399,8 +397,7 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     }
 
     /**
-     * 将配置文件转换为Bean，支持嵌套Bean
-     * 支持的表达式：
+     * 将配置文件转换为Bean，支持嵌套Bean 支持的表达式：
      *
      * <pre>
      * persion
@@ -419,8 +416,7 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     }
 
     /**
-     * 将配置文件转换为Bean，支持嵌套Bean
-     * 支持的表达式：
+     * 将配置文件转换为Bean，支持嵌套Bean 支持的表达式：
      *
      * <pre>
      * persion
@@ -441,8 +437,7 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     }
 
     /**
-     * 将配置文件转换为Bean，支持嵌套Bean
-     * 支持的表达式：
+     * 将配置文件转换为Bean，支持嵌套Bean 支持的表达式：
      *
      * <pre>
      * persion
@@ -461,8 +456,7 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     }
 
     /**
-     * 将配置文件转换为Bean，支持嵌套Bean
-     * 支持的表达式：
+     * 将配置文件转换为Bean，支持嵌套Bean 支持的表达式：
      *
      * <pre>
      * persion
@@ -509,11 +503,11 @@ public final class Props extends java.util.Properties implements TypeGetter<Char
     }
 
     /**
-     * 通过lambda批量设置值
-     * 实际使用时，可以使用getXXX的方法引用来完成键值对的赋值：
+     * 通过lambda批量设置值 实际使用时，可以使用getXXX的方法引用来完成键值对的赋值：
+     * 
      * <pre>
-     *     User user = GenericBuilder.of(User::new).with(User::setUsername, "bus").build();
-     *     Setting.of().setFields(user::getNickname, user::getUsername);
+     * User user = GenericBuilder.of(User::new).with(User::setUsername, "bus").build();
+     * Setting.of().setFields(user::getNickname, user::getUsername);
      * </pre>
      *
      * @param fields lambda,不能为空

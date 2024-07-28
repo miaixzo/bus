@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager.builtin;
 
 import org.miaixz.bus.core.lang.exception.PageException;
@@ -104,7 +104,7 @@ public abstract class PageObject {
             try {
                 paramsObject = MetaObject.forObject(getParameterMap.invoke(params));
             } catch (Exception e) {
-                //忽略
+                // 忽略
             }
         } else {
             paramsObject = MetaObject.forObject(params);
@@ -165,7 +165,8 @@ public abstract class PageObject {
      * @param required     是否必须
      * @return 结果
      */
-    protected static Object getParamValue(org.apache.ibatis.reflection.MetaObject paramsObject, String paramName, boolean required) {
+    protected static Object getParamValue(org.apache.ibatis.reflection.MetaObject paramsObject, String paramName,
+            boolean required) {
         Object value = null;
         if (paramsObject.hasGetter(PARAMS.get(paramName))) {
             value = paramsObject.getValue(PARAMS.get(paramName));

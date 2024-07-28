@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SPI_P_Release_1_3;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,25 +46,26 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.ImageEnhancementEnableStatus:
-            case PrivateTag.ImageEnhancementSelectStatus:
-                return VR.CS;
-            case PrivateTag.EnhancementGain:
-                return VR.DS;
-            case PrivateTag.ImageEnhancementID:
-            case PrivateTag.ImageEnhancement:
-            case PrivateTag.ConvolutionID:
-            case PrivateTag.ConvolutionType:
-            case PrivateTag.ConvolutionKernelSizeID:
-                return VR.LT;
-            case PrivateTag.ConvolutionKernelSize:
-            case PrivateTag.ConvolutionKernel:
-                return VR.US;
+
+        case PrivateTag.ImageEnhancementEnableStatus:
+        case PrivateTag.ImageEnhancementSelectStatus:
+            return VR.CS;
+        case PrivateTag.EnhancementGain:
+            return VR.DS;
+        case PrivateTag.ImageEnhancementID:
+        case PrivateTag.ImageEnhancement:
+        case PrivateTag.ConvolutionID:
+        case PrivateTag.ConvolutionType:
+        case PrivateTag.ConvolutionKernelSizeID:
+            return VR.LT;
+        case PrivateTag.ConvolutionKernelSize:
+        case PrivateTag.ConvolutionKernel:
+            return VR.US;
         }
         return VR.UN;
     }

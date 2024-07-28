@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.thread;
 
 import java.util.concurrent.*;
@@ -38,10 +38,7 @@ import java.util.concurrent.*;
 public class ThreadExecutorBuilder {
 
     /**
-     * 创建一个线程数固定（corePoolSize==maximumPoolSize）的线程池
-     * 核心线程会一直存在，不被回收
-     * 如果一个核心线程由于异常跪了，会新创建一个线程
-     * 无界队列LinkedBlockingQueue
+     * 创建一个线程数固定（corePoolSize==maximumPoolSize）的线程池 核心线程会一直存在，不被回收 如果一个核心线程由于异常跪了，会新创建一个线程 无界队列LinkedBlockingQueue
      *
      * @param corePoolSize 要保留在池中的线程数，即使它们是空闲的
      * @param prefix       线程名前缀
@@ -52,12 +49,8 @@ public class ThreadExecutorBuilder {
     }
 
     /**
-     * corePoolSize==0
-     * maximumPoolSize==Integer.MAX_VALUE
-     * 队列：SynchronousQueue
-     * 创建一个线程池：当池中的线程都处于忙碌状态时，会立即新建一个线程来处理新来的任务
-     * 这种池将会在执行许多耗时短的异步任务的时候提高程序的性能
-     * 60秒钟内没有使用的线程将会被中止，并且从线程池中移除，因此几乎不必担心耗费资源
+     * corePoolSize==0 maximumPoolSize==Integer.MAX_VALUE 队列：SynchronousQueue 创建一个线程池：当池中的线程都处于忙碌状态时，会立即新建一个线程来处理新来的任务
+     * 这种池将会在执行许多耗时短的异步任务的时候提高程序的性能 60秒钟内没有使用的线程将会被中止，并且从线程池中移除，因此几乎不必担心耗费资源
      *
      * @param prefix 线程名前缀
      */
@@ -78,13 +71,9 @@ public class ThreadExecutorBuilder {
      * @param handler         由于达到线程边界和队列容量而阻塞执行时使用的处理程序
      * @return {@link Executor}
      */
-    public static Executor newLimitedFastThread(final int corePoolSize,
-                                                final int maximumPoolSize,
-                                                final long keepAliveTime,
-                                                final TimeUnit unit,
-                                                final BlockingQueue<Runnable> workQueue,
-                                                final String prefix,
-                                                final RejectedExecutionHandler handler) {
+    public static Executor newLimitedFastThread(final int corePoolSize, final int maximumPoolSize,
+            final long keepAliveTime, final TimeUnit unit, final BlockingQueue<Runnable> workQueue, final String prefix,
+            final RejectedExecutionHandler handler) {
         return new ThreadPoolExecutor(corePoolSize, maximumPoolSize, keepAliveTime, unit, workQueue,
                 new NamedThreadFactory(prefix), handler);
     }

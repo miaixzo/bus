@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.tree.MapTree;
@@ -69,8 +69,7 @@ public class TreeKit {
     }
 
     /**
-     * 构建单root节点树
-     * 它会生成一个以指定ID为ID的空的节点，然后逐级增加子节点。
+     * 构建单root节点树 它会生成一个以指定ID为ID的空的节点，然后逐级增加子节点。
      *
      * @param <E>      ID类型
      * @param list     源数据集合
@@ -94,8 +93,7 @@ public class TreeKit {
     }
 
     /**
-     * 构建单root节点树
-     * 它会生成一个以指定ID为ID的空的节点，然后逐级增加子节点。
+     * 构建单root节点树 它会生成一个以指定ID为ID的空的节点，然后逐级增加子节点。
      *
      * @param <T>        转换的实体 为数据源里的对象类型
      * @param <E>        ID类型
@@ -104,7 +102,8 @@ public class TreeKit {
      * @param nodeParser 转换器
      * @return {@link MapTree}
      */
-    public static <T, E> MapTree<E> buildSingle(final List<T> list, final E parentId, final NodeParser<T, E> nodeParser) {
+    public static <T, E> MapTree<E> buildSingle(final List<T> list, final E parentId,
+            final NodeParser<T, E> nodeParser) {
         return buildSingle(list, parentId, NodeConfig.DEFAULT_CONFIG, nodeParser);
     }
 
@@ -118,7 +117,8 @@ public class TreeKit {
      * @param nodeParser 转换器
      * @return List
      */
-    public static <T, E> List<MapTree<E>> build(final List<T> list, final E parentId, final NodeParser<T, E> nodeParser) {
+    public static <T, E> List<MapTree<E>> build(final List<T> list, final E parentId,
+            final NodeParser<T, E> nodeParser) {
         return build(list, parentId, NodeConfig.DEFAULT_CONFIG, nodeParser);
     }
 
@@ -133,13 +133,13 @@ public class TreeKit {
      * @param nodeParser 转换器
      * @return List
      */
-    public static <T, E> List<MapTree<E>> build(final List<T> list, final E rootId, final NodeConfig nodeConfig, final NodeParser<T, E> nodeParser) {
+    public static <T, E> List<MapTree<E>> build(final List<T> list, final E rootId, final NodeConfig nodeConfig,
+            final NodeParser<T, E> nodeParser) {
         return buildSingle(list, rootId, nodeConfig, nodeParser).getChildren();
     }
 
     /**
-     * 构建单root节点树
-     * 它会生成一个以指定ID为ID的空的节点，然后逐级增加子节点。
+     * 构建单root节点树 它会生成一个以指定ID为ID的空的节点，然后逐级增加子节点。
      *
      * @param <T>        转换的实体 为数据源里的对象类型
      * @param <E>        ID类型
@@ -149,9 +149,9 @@ public class TreeKit {
      * @param nodeParser 转换器
      * @return {@link MapTree}
      */
-    public static <T, E> MapTree<E> buildSingle(final List<T> list, final E rootId, final NodeConfig nodeConfig, final NodeParser<T, E> nodeParser) {
-        return TreeBuilder.of(rootId, nodeConfig)
-                .append(list, nodeParser).build();
+    public static <T, E> MapTree<E> buildSingle(final List<T> list, final E rootId, final NodeConfig nodeConfig,
+            final NodeParser<T, E> nodeParser) {
+        return TreeBuilder.of(rootId, nodeConfig).append(list, nodeParser).build();
     }
 
     /**
@@ -167,8 +167,7 @@ public class TreeKit {
     }
 
     /**
-     * 单点树构建，按照权重排序
-     * 它会生成一个以指定ID为ID的空的节点，然后逐级增加子节点。
+     * 单点树构建，按照权重排序 它会生成一个以指定ID为ID的空的节点，然后逐级增加子节点。
      *
      * @param <E>    ID类型
      * @param map    源数据Map
@@ -179,17 +178,14 @@ public class TreeKit {
         final MapTree<E> tree = CollKit.getFirstNoneNull(map.values());
         if (null != tree) {
             final NodeConfig config = tree.getConfig();
-            return TreeBuilder.of(rootId, config)
-                    .append(map)
-                    .build();
+            return TreeBuilder.of(rootId, config).append(map).build();
         }
 
         return createEmptyNode(rootId);
     }
 
     /**
-     * 获取ID对应的节点，如果有多个ID相同的节点，只返回第一个。
-     * 此方法只查找此节点及子节点，采用递归深度优先遍历。
+     * 获取ID对应的节点，如果有多个ID相同的节点，只返回第一个。 此方法只查找此节点及子节点，采用递归深度优先遍历。
      *
      * @param <T>  ID类型
      * @param node 节点
@@ -220,9 +216,7 @@ public class TreeKit {
     }
 
     /**
-     * 获取所有父节点名称列表
-     * 比如有个人在研发1部，他上面有研发部，接着上面有技术中心
-     * 返回结果就是：[研发一部, 研发中心, 技术中心]
+     * 获取所有父节点名称列表 比如有个人在研发1部，他上面有研发部，接着上面有技术中心 返回结果就是：[研发一部, 研发中心, 技术中心]
      *
      * @param <T>                节点ID类型
      * @param node               节点
@@ -234,9 +228,7 @@ public class TreeKit {
     }
 
     /**
-     * 获取所有父节点ID列表
-     * 比如有个人在研发1部，他上面有研发部，接着上面有技术中心
-     * 返回结果就是：[研发部, 技术中心]
+     * 获取所有父节点ID列表 比如有个人在研发1部，他上面有研发部，接着上面有技术中心 返回结果就是：[研发部, 技术中心]
      *
      * @param <T>                节点ID类型
      * @param node               节点
@@ -257,7 +249,8 @@ public class TreeKit {
      * @param fieldFunc          获取父节点名称的函数
      * @return 所有父节点字段值列表，node为null返回空List
      */
-    public static <T, E> List<E> getParents(final MapTree<T> node, final boolean includeCurrentNode, final Function<MapTree<T>, E> fieldFunc) {
+    public static <T, E> List<E> getParents(final MapTree<T> node, final boolean includeCurrentNode,
+            final Function<MapTree<T>, E> fieldFunc) {
         final List<E> result = new ArrayList<>();
         if (null == node) {
             return result;
@@ -281,8 +274,7 @@ public class TreeKit {
     }
 
     /**
-     * 获取所有父节点ID列表
-     * 创建空Tree的节点
+     * 获取所有父节点ID列表 创建空Tree的节点
      *
      * @param id  节点ID
      * @param <E> 节点ID类型

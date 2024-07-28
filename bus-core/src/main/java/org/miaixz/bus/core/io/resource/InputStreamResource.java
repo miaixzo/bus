@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.resource;
 
 import org.miaixz.bus.core.io.stream.ReaderInputStream;
@@ -38,8 +38,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 
 /**
- * 基于{@link InputStream}的资源获取器
- * 注意：此对象中getUrl方法始终返回null
+ * 基于{@link InputStream}的资源获取器 注意：此对象中getUrl方法始终返回null
  *
  * @author Kimi Liu
  * @since Java 17+

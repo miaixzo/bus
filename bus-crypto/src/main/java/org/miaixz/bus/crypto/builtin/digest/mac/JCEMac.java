@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.builtin.digest.mac;
 
 import org.miaixz.bus.core.lang.exception.CryptoException;
@@ -38,8 +38,7 @@ import java.security.Key;
 import java.security.spec.AlgorithmParameterSpec;
 
 /**
- * JDK提供的的MAC算法实现引擎，使用{@link javax.crypto.Mac} 实现摘要
- * 当引入BouncyCastle库时自动使用其作为Provider
+ * JDK提供的的MAC算法实现引擎，使用{@link javax.crypto.Mac} 实现摘要 当引入BouncyCastle库时自动使用其作为Provider
  *
  * @author Kimi Liu
  * @since Java 17+

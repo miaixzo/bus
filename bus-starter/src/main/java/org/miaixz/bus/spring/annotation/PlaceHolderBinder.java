@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.spring.annotation;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -76,7 +76,8 @@ public interface PlaceHolderBinder {
                 Constructor<?> resolverConstructor = resolverClass.getDeclaredConstructor(PropertyResolver.class);
                 Method getSubPropertiesMethod = resolverClass.getDeclaredMethod("getSubProperties", String.class);
                 Object resolver = resolverConstructor.newInstance(environment);
-                Map<String, Object> properties = (Map<String, Object>) getSubPropertiesMethod.invoke(resolver, Normal.EMPTY);
+                Map<String, Object> properties = (Map<String, Object>) getSubPropertiesMethod.invoke(resolver,
+                        Normal.EMPTY);
                 // 创建结果类
                 T target = targetClass.getConstructor().newInstance();
                 // 反射使用 org.springframework.boot.bind.RelaxedDataBinder

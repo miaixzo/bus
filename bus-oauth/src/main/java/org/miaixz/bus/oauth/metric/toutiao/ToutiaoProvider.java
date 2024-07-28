@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org justauth.cn and other contributors.        ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.toutiao;
 
 import com.alibaba.fastjson.JSONObject;
@@ -63,10 +63,8 @@ public class ToutiaoProvider extends AbstractProvider {
 
         this.checkResponse(accessTokenObject);
 
-        return AccToken.builder()
-                .accessToken(accessTokenObject.getString("access_token"))
-                .expireIn(accessTokenObject.getIntValue("expires_in"))
-                .openId(accessTokenObject.getString("open_id"))
+        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
+                .expireIn(accessTokenObject.getIntValue("expires_in")).openId(accessTokenObject.getString("open_id"))
                 .build();
     }
 
@@ -83,17 +81,11 @@ public class ToutiaoProvider extends AbstractProvider {
         boolean isAnonymousUser = user.getIntValue("uid_type") == 14;
         String anonymousUserName = "匿名用户";
 
-        return Material.builder()
-                .rawJson(user)
-                .uuid(user.getString("uid"))
+        return Material.builder().rawJson(user).uuid(user.getString("uid"))
                 .username(isAnonymousUser ? anonymousUserName : user.getString("screen_name"))
                 .nickname(isAnonymousUser ? anonymousUserName : user.getString("screen_name"))
-                .avatar(user.getString("avatar_url"))
-                .remark(user.getString("description"))
-                .gender(Gender.of(user.getString("gender")))
-                .token(accToken)
-                .source(complex.toString())
-                .build();
+                .avatar(user.getString("avatar_url")).remark(user.getString("description"))
+                .gender(Gender.of(user.getString("gender"))).token(accToken).source(complex.toString()).build();
     }
 
     /**
@@ -104,14 +96,9 @@ public class ToutiaoProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.authorize())
-                .queryParam("response_type", "code")
-                .queryParam("client_key", context.getAppKey())
-                .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("auth_only", 1)
-                .queryParam("display", 0)
-                .queryParam("state", getRealState(state))
-                .build();
+        return Builder.fromUrl(complex.authorize()).queryParam("response_type", "code")
+                .queryParam("client_key", context.getAppKey()).queryParam("redirect_uri", context.getRedirectUri())
+                .queryParam("auth_only", 1).queryParam("display", 0).queryParam("state", getRealState(state)).build();
     }
 
     /**
@@ -122,12 +109,9 @@ public class ToutiaoProvider extends AbstractProvider {
      */
     @Override
     protected String accessTokenUrl(String code) {
-        return Builder.fromUrl(complex.accessToken())
-                .queryParam("code", code)
-                .queryParam("client_key", context.getAppKey())
-                .queryParam("client_secret", context.getAppSecret())
-                .queryParam("grant_type", "authorization_code")
-                .build();
+        return Builder.fromUrl(complex.accessToken()).queryParam("code", code)
+                .queryParam("client_key", context.getAppKey()).queryParam("client_secret", context.getAppSecret())
+                .queryParam("grant_type", "authorization_code").build();
     }
 
     /**
@@ -138,10 +122,8 @@ public class ToutiaoProvider extends AbstractProvider {
      */
     @Override
     protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(complex.userInfo())
-                .queryParam("client_key", context.getAppKey())
-                .queryParam("access_token", accToken.getAccessToken())
-                .build();
+        return Builder.fromUrl(complex.userInfo()).queryParam("client_key", context.getAppKey())
+                .queryParam("access_token", accToken.getAccessToken()).build();
     }
 
     /**

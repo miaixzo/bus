@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map.multi;
 
 import org.miaixz.bus.core.Builder;
@@ -37,8 +37,7 @@ import org.miaixz.bus.core.xyz.MapKit;
 import java.util.*;
 
 /**
- * 将行的键作为主键的{@link Table}实现
- * 此结构为: 行=(列=值)
+ * 将行的键作为主键的{@link Table}实现 此结构为: 行=(列=值)
  *
  * @param <R> 行类型
  * @param <C> 列类型
@@ -178,8 +177,7 @@ public class RowKeyTable<R, C, V> extends AbstractTable<R, C, V> {
 
         @Override
         public Iterator<Map.Entry<C, Map<R, V>>> iterator() {
-            return new TransIterator<>(columnKeySet.iterator(),
-                    c -> MapKit.entry(c, getColumn(c)));
+            return new TransIterator<>(columnKeySet.iterator(), c -> MapKit.entry(c, getColumn(c)));
         }
 
         @Override

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.software.common;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -43,7 +43,8 @@ import java.util.function.Supplier;
 @ThreadSafe
 public abstract class AbstractOSThread implements OSThread {
 
-    private final Supplier<Double> cumulativeCpuLoad = Memoizer.memoize(this::queryCumulativeCpuLoad, Memoizer.defaultExpiration());
+    private final Supplier<Double> cumulativeCpuLoad = Memoizer.memoize(this::queryCumulativeCpuLoad,
+            Memoizer.defaultExpiration());
 
     private final int owningProcessId;
 

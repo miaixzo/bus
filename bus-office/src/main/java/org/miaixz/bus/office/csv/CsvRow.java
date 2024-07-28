@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.csv;
 
 import org.miaixz.bus.core.bean.copier.CopyOptions;
@@ -53,8 +53,8 @@ public final class CsvRow extends ListWrapper<String> {
      * 构造
      *
      * @param originalLineNumber 对应文件中的第几行
-     * @param headerMap 标题Map
-     * @param fields 数据列表
+     * @param headerMap          标题Map
+     * @param fields             数据列表
      */
     public CsvRow(final long originalLineNumber, final Map<String, Integer> headerMap, final List<String> fields) {
         super(Assert.notNull(fields, "fields must be not null!"));
@@ -116,7 +116,7 @@ public final class CsvRow extends ListWrapper<String> {
     /**
      * 一行数据转换为Bean对象，忽略转换错误
      *
-     * @param <T> Bean类型
+     * @param <T>   Bean类型
      * @param clazz bean类
      * @return the object
      */
@@ -144,7 +144,7 @@ public final class CsvRow extends ListWrapper<String> {
         sb.append("fields=");
         if (headerMap != null) {
             sb.append('{');
-            for (final Iterator<Map.Entry<String, String>> it = getFieldMap().entrySet().iterator(); it.hasNext(); ) {
+            for (final Iterator<Map.Entry<String, String>> it = getFieldMap().entrySet().iterator(); it.hasNext();) {
 
                 final Map.Entry<String, String> entry = it.next();
                 sb.append(entry.getKey());

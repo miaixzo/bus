@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MR_DATAMAPPING_ATTRIBUTES;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,31 +46,32 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.DataRoleType:
-                return VR.CS;
-            case PrivateTag._0011_xx0B_:
-                return VR.DS;
-            case PrivateTag._0011_xx05_:
-                return VR.FD;
-            case PrivateTag.RescanName:
-            case PrivateTag._0011_xx09_:
-            case PrivateTag._0011_xx0A_:
-                return VR.SL;
-            case PrivateTag.ReprocessingInfo:
-            case PrivateTag.DataRoleName:
-            case PrivateTag.CardiacTypeName:
-            case PrivateTag.CardiacTypeNameL2:
-            case PrivateTag.MiscIndicator:
-            case PrivateTag.SplitBaggingName:
-            case PrivateTag.SplitSubBaggingName:
-            case PrivateTag.StageSubBaggingName:
-            case PrivateTag.IsInternalDataRole:
-                return VR.ST;
+
+        case PrivateTag.DataRoleType:
+            return VR.CS;
+        case PrivateTag._0011_xx0B_:
+            return VR.DS;
+        case PrivateTag._0011_xx05_:
+            return VR.FD;
+        case PrivateTag.RescanName:
+        case PrivateTag._0011_xx09_:
+        case PrivateTag._0011_xx0A_:
+            return VR.SL;
+        case PrivateTag.ReprocessingInfo:
+        case PrivateTag.DataRoleName:
+        case PrivateTag.CardiacTypeName:
+        case PrivateTag.CardiacTypeNameL2:
+        case PrivateTag.MiscIndicator:
+        case PrivateTag.SplitBaggingName:
+        case PrivateTag.SplitSubBaggingName:
+        case PrivateTag.StageSubBaggingName:
+        case PrivateTag.IsInternalDataRole:
+            return VR.ST;
         }
         return VR.UN;
     }

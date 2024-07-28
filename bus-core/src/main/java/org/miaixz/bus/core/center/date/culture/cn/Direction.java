@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org 6tail and other contributors.              ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -40,9 +40,7 @@ public class Direction extends Samsara {
     /**
      * 依据后天八卦排序（0坎北, 1坤西南, 2震东, 3巽东南, 4中, 5乾西北, 6兑西, 7艮东北, 8离南）
      */
-    public static final String[] NAMES = {
-            "北", "西南", "东", "东南", "中", "西北", "西", "东北", "南"
-    };
+    public static final String[] NAMES = { "北", "西南", "东", "东南", "中", "西北", "西", "东北", "南" };
 
     public Direction(int index) {
         super(NAMES, index);

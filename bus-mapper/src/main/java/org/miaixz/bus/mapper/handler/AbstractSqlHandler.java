@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2024 miaixz.org mybatis.io and other contributors.         ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.handler;
 
 import org.apache.ibatis.mapping.MappedStatement;
@@ -50,8 +50,7 @@ public abstract class AbstractSqlHandler implements SQLHandler {
     public static final String MAPPEDSTATEMENT = "mappedStatement";
 
     /**
-     * SQL 解析缓存
-     * key 可能是 mappedStatement 的 ID,也可能是 class 的 name
+     * SQL 解析缓存 key 可能是 mappedStatement 的 ID,也可能是 class 的 name
      */
     private static final Map<String, Boolean> SQL_PARSER_CACHE = new ConcurrentHashMap<>();
 

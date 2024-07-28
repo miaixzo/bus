@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cron.pattern.parser;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -66,6 +66,7 @@ public class PatternParser {
 
     /**
      * 解析复合任务表达式，格式为：
+     * 
      * <pre>
      *     cronA | cronB | ...
      * </pre>
@@ -124,8 +125,7 @@ public class PatternParser {
                 // 周
                 DAY_OF_WEEK_VALUE_PARSER.parse(parts[4 + offset]),
                 // 年
-                yearMatcher
-        );
+                yearMatcher);
     }
 
 }

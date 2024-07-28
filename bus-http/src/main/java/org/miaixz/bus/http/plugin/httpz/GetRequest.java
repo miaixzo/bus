@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.plugin.httpz;
 
 import org.miaixz.bus.http.Request;
@@ -40,19 +40,12 @@ import java.util.Map;
  */
 public class GetRequest extends HttpRequest {
 
-    public GetRequest(String url, Object tag,
-                      Map<String, String> params,
-                      Map<String, String> headers,
-                      String id) {
+    public GetRequest(String url, Object tag, Map<String, String> params, Map<String, String> headers, String id) {
         super(url, tag, params, headers, null, null, null, id);
     }
 
-    public GetRequest(String url,
-                      Object tag,
-                      Map<String, String> params,
-                      Map<String, String> encoded,
-                      Map<String, String> headers,
-                      String id) {
+    public GetRequest(String url, Object tag, Map<String, String> params, Map<String, String> encoded,
+            Map<String, String> headers, String id) {
         super(url, tag, params, encoded, headers, null, null, null, id);
     }
 

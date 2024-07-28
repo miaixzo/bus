@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -36,7 +36,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 /**
- *  This class is used to filter Pipelines when getting lists of them.
+ * This class is used to filter Pipelines when getting lists of them.
  */
 public class PipelineFilter implements Serializable {
     private static final long serialVersionUID = -1L;
@@ -47,7 +47,8 @@ public class PipelineFilter implements Serializable {
     private Constants.PipelineScope scope;
 
     /**
-     * {@link Constants.PipelineScope} The status of pipelines, one of: running, pending, success, failed, canceled, skipped, created
+     * {@link Constants.PipelineScope} The status of pipelines, one of: running, pending, success, failed, canceled,
+     * skipped, created
      */
     private PipelineStatus status;
 
@@ -83,7 +84,6 @@ public class PipelineFilter implements Serializable {
      * {@link Constants.SortOrder} Return issues sorted in asc or desc order. Default is desc.
      */
     private Constants.SortOrder sort;
-
 
     public void setScope(Constants.PipelineScope scope) {
         this.scope = scope;
@@ -186,18 +186,10 @@ public class PipelineFilter implements Serializable {
 
     @JsonIgnore
     public GitLabApiForm getQueryParams() {
-        return (new GitLabApiForm()
-                .withParam("scope", scope)
-                .withParam("status", status)
-                .withParam("ref", ref)
-                .withParam("sha", sha)
-                .withParam("yaml_errors", yamlErrors)
-                .withParam("name", name)
-                .withParam("username", username)
-                .withParam("updated_after", updatedAfter)
-                .withParam("updated_before", updatedBefore)
-                .withParam("order_by", orderBy)
-                .withParam("sort", sort));
+        return (new GitLabApiForm().withParam("scope", scope).withParam("status", status).withParam("ref", ref)
+                .withParam("sha", sha).withParam("yaml_errors", yamlErrors).withParam("name", name)
+                .withParam("username", username).withParam("updated_after", updatedAfter)
+                .withParam("updated_before", updatedBefore).withParam("order_by", orderBy).withParam("sort", sort));
     }
 
     @Override

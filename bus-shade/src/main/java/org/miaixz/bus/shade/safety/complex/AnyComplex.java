@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.safety.complex;
 
 import org.miaixz.bus.shade.safety.Complex;
@@ -32,8 +32,7 @@ import org.miaixz.bus.shade.safety.Complex;
 import java.util.Collection;
 
 /**
- * ANY逻辑混合规则,即任意一个规则满足时就满足,
- * 当没有规则的时候,就是不满足
+ * ANY逻辑混合规则,即任意一个规则满足时就满足, 当没有规则的时候,就是不满足
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.data;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -47,7 +47,7 @@ import java.util.StringTokenizer;
  */
 public class SpecificCharacterSet {
 
-    public static final SpecificCharacterSet ASCII = new SpecificCharacterSet(new Codec[]{Codec.ISO_646});
+    public static final SpecificCharacterSet ASCII = new SpecificCharacterSet(new Codec[] { Codec.ISO_646 });
     private static final ThreadLocal<SoftReference<Encoder>> cachedEncoder1 = new ThreadLocal<>();
     private static final ThreadLocal<SoftReference<Encoder>> cachedEncoder2 = new ThreadLocal<>();
     private static SpecificCharacterSet DEFAULT = ASCII;
@@ -75,17 +75,16 @@ public class SpecificCharacterSet {
      * <p>
      * For example, {@code SpecificCharacterSet.setCharsetNameMapping("ISO_IR 100", "ISO-8859-15")} associates
      * ISO-8859-15 (Latin-9), {@code SpecificCharacterSet.setCharsetNameMapping("ISO_IR 100", "windows-1252")}
-     * Windows-1252 (CP-1252), with DICOM Specific Character Set (0008,0005) code value {@code ISO_IR 100} -
-     * replacing the default mapping to ISO-8859-1 (Latin-1) - were both (ISO-8859-15 and Windows-1252)
-     * containing characters Š/š and Ž/ž not included in Latin-1, but used in Estonian and Finnish for
-     * transcribing foreign names.
+     * Windows-1252 (CP-1252), with DICOM Specific Character Set (0008,0005) code value {@code ISO_IR 100} - replacing
+     * the default mapping to ISO-8859-1 (Latin-1) - were both (ISO-8859-15 and Windows-1252) containing characters Š/š
+     * and Ž/ž not included in Latin-1, but used in Estonian and Finnish for transcribing foreign names.
      *
      * @param code        value of DICOM Specific Character Set (0008,0005)
      * @param charsetName The name of the mapped charset
      * @throws IllegalCharsetNameException If the given code or charset name is illegal
      * @throws IllegalArgumentException    If the given {@code charsetName} is null
-     * @throws UnsupportedCharsetException If no support for the named charset is available
-     *                                     in this instance of the Java virtual machine
+     * @throws UnsupportedCharsetException If no support for the named charset is available in this instance of the Java
+     *                                     virtual machine
      */
     public static void setCharsetNameMapping(String code, String charsetName) {
         Codec.forCode(code, false).setCharsetName(checkCharsetName(charsetName));
@@ -93,8 +92,8 @@ public class SpecificCharacterSet {
 
     /**
      * Reset mapping of DICOM Specific Character Set (0008,0005) values to named charsets as specified by
-     * <a href="http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.12.html#table_C.12-2">
-     * DICOM PS 3.3 Table C.12-2</a>.
+     * <a href="http://dicom.nema.org/medical/dicom/current/output/chtml/part03/sect_C.12.html#table_C.12-2"> DICOM PS
+     * 3.3 Table C.12-2</a>.
      */
     public static void resetCharsetNameMappings() {
         Codec.resetCharsetNames();
@@ -129,8 +128,7 @@ public class SpecificCharacterSet {
             infos[i] = Codec.forCode(codes[i], true, defCodec);
         }
 
-        return iso2022 ? new ISO2022(infos, codes)
-                : new SpecificCharacterSet(infos, codes);
+        return iso2022 ? new ISO2022(infos, codes) : new SpecificCharacterSet(infos, codes);
     }
 
     /**
@@ -143,42 +141,42 @@ public class SpecificCharacterSet {
     public static boolean trimISO2022(String[] codes) {
         if (codes != null && codes.length == 1 && codes[0].startsWith("ISO 2022")) {
             switch (codes[0]) {
-                case "ISO 2022 IR 6":
-                    codes[0] = Normal.EMPTY;
-                    return true;
-                case "ISO 2022 IR 100":
-                    codes[0] = "ISO_IR 100";
-                    return true;
-                case "ISO 2022 IR 101":
-                    codes[0] = "ISO_IR 101";
-                    return true;
-                case "ISO 2022 IR 109":
-                    codes[0] = "ISO_IR 109";
-                    return true;
-                case "ISO 2022 IR 110":
-                    codes[0] = "ISO_IR 110";
-                    return true;
-                case "ISO 2022 IR 144":
-                    codes[0] = "ISO_IR 144";
-                    return true;
-                case "ISO 2022 IR 127":
-                    codes[0] = "ISO_IR 127";
-                    return true;
-                case "ISO 2022 IR 126":
-                    codes[0] = "ISO_IR 126";
-                    return true;
-                case "ISO 2022 IR 138":
-                    codes[0] = "ISO_IR 138";
-                    return true;
-                case "ISO 2022 IR 148":
-                    codes[0] = "ISO_IR 148";
-                    return true;
-                case "ISO 2022 IR 13":
-                    codes[0] = "ISO_IR 13";
-                    return true;
-                case "ISO 2022 IR 166":
-                    codes[0] = "ISO_IR 166";
-                    return true;
+            case "ISO 2022 IR 6":
+                codes[0] = Normal.EMPTY;
+                return true;
+            case "ISO 2022 IR 100":
+                codes[0] = "ISO_IR 100";
+                return true;
+            case "ISO 2022 IR 101":
+                codes[0] = "ISO_IR 101";
+                return true;
+            case "ISO 2022 IR 109":
+                codes[0] = "ISO_IR 109";
+                return true;
+            case "ISO 2022 IR 110":
+                codes[0] = "ISO_IR 110";
+                return true;
+            case "ISO 2022 IR 144":
+                codes[0] = "ISO_IR 144";
+                return true;
+            case "ISO 2022 IR 127":
+                codes[0] = "ISO_IR 127";
+                return true;
+            case "ISO 2022 IR 126":
+                codes[0] = "ISO_IR 126";
+                return true;
+            case "ISO 2022 IR 138":
+                codes[0] = "ISO_IR 138";
+                return true;
+            case "ISO 2022 IR 148":
+                codes[0] = "ISO_IR 148";
+                return true;
+            case "ISO 2022 IR 13":
+                codes[0] = "ISO_IR 13";
+                return true;
+            case "ISO 2022 IR 166":
+                codes[0] = "ISO_IR 166";
+                return true;
             }
         }
         return false;
@@ -190,29 +188,30 @@ public class SpecificCharacterSet {
             String code = codes[i];
             if (code != null && !code.isEmpty() && !code.startsWith("ISO 2022")) {
                 switch (code) {
-                    case "ISO_IR 100":
-                    case "ISO_IR 101":
-                    case "ISO_IR 109":
-                    case "ISO_IR 110":
-                    case "ISO_IR 144":
-                    case "ISO_IR 127":
-                    case "ISO_IR 126":
-                    case "ISO_IR 138":
-                    case "ISO_IR 148":
-                    case "ISO_IR 13":
-                    case "ISO_IR 166":
-                        if (results == codes) results = codes.clone();
-                        results[i] = "ISO 2022 " + code.substring(4);
-                        continue;
+                case "ISO_IR 100":
+                case "ISO_IR 101":
+                case "ISO_IR 109":
+                case "ISO_IR 110":
+                case "ISO_IR 144":
+                case "ISO_IR 127":
+                case "ISO_IR 126":
+                case "ISO_IR 138":
+                case "ISO_IR 148":
+                case "ISO_IR 13":
+                case "ISO_IR 166":
+                    if (results == codes)
+                        results = codes.clone();
+                    results[i] = "ISO 2022 " + code.substring(4);
+                    continue;
                 }
-                Logger.info("Invalid Specific Character Set: [{}] - treat as [{}]",
-                        Builder.concat(codes, '\\'), Builder.maskNull(codes[0], ""));
-                return new String[]{codes[0]};
+                Logger.info("Invalid Specific Character Set: [{}] - treat as [{}]", Builder.concat(codes, '\\'),
+                        Builder.maskNull(codes[0], ""));
+                return new String[] { codes[0] };
             }
         }
         if (codes != results) {
-            Logger.info("Invalid Specific Character Set: [{}] - treat as [{}]",
-                    Builder.concat(codes, '\\'), Builder.concat(results, '\\'));
+            Logger.info("Invalid Specific Character Set: [{}] - treat as [{}]", Builder.concat(codes, '\\'),
+                    Builder.concat(results, '\\'));
         }
         return ensureFirstContainsASCII(results);
     }
@@ -220,29 +219,28 @@ public class SpecificCharacterSet {
     private static String[] ensureFirstContainsASCII(String[] codes) {
         for (int i = 0; i < codes.length; i++) {
             if (Codec.forCode(codes[i]).containsASCII()) {
-                if (i == 0) return codes;
+                if (i == 0)
+                    return codes;
                 String[] clone = codes.clone();
                 clone[0] = codes[i];
                 clone[i] = codes[0];
-                Logger.info("Invalid Specific Character Set: [{}] - treat as [{}]",
-                        Builder.concat(codes, '\\'), Builder.concat(clone, '\\'));
+                Logger.info("Invalid Specific Character Set: [{}] - treat as [{}]", Builder.concat(codes, '\\'),
+                        Builder.concat(clone, '\\'));
                 return clone;
             }
         }
         String[] withASCII = new String[1 + codes.length];
         withASCII[0] = "";
         System.arraycopy(codes, 0, withASCII, 1, codes.length);
-        Logger.info("Invalid Specific Character Set: [{}] - treat as [{}]",
-                Builder.concat(codes, '\\'), Builder.concat(withASCII, '\\'));
+        Logger.info("Invalid Specific Character Set: [{}] - treat as [{}]", Builder.concat(codes, '\\'),
+                Builder.concat(withASCII, '\\'));
         return withASCII;
     }
 
-    private static Encoder encoder(ThreadLocal<SoftReference<Encoder>> tl,
-                                   Codec codec) {
+    private static Encoder encoder(ThreadLocal<SoftReference<Encoder>> tl, Codec codec) {
         SoftReference<Encoder> sr;
         Encoder enc;
-        if ((sr = tl.get()) == null || (enc = sr.get()) == null
-                || enc.codec != codec)
+        if ((sr = tl.get()) == null || (enc = sr.get()) == null || enc.codec != codec)
             tl.set(new SoftReference<>(enc = new Encoder(codec)));
         return enc;
     }
@@ -297,28 +295,17 @@ public class SpecificCharacterSet {
     }
 
     private enum Codec {
-        ISO_646(true, 0x2842, 0, 1),
-        ISO_8859_1(true, 0x2842, 0x2d41, 1),
-        ISO_8859_2(true, 0x2842, 0x2d42, 1),
-        ISO_8859_3(true, 0x2842, 0x2d43, 1),
-        ISO_8859_4(true, 0x2842, 0x2d44, 1),
-        ISO_8859_5(true, 0x2842, 0x2d4c, 1),
-        ISO_8859_6(true, 0x2842, 0x2d47, 1),
-        ISO_8859_7(true, 0x2842, 0x2d46, 1),
-        ISO_8859_8(true, 0x2842, 0x2d48, 1),
-        ISO_8859_9(true, 0x2842, 0x2d4d, 1),
-        JIS_X_201(true, 0x284a, 0x2949, 1) {
+        ISO_646(true, 0x2842, 0, 1), ISO_8859_1(true, 0x2842, 0x2d41, 1), ISO_8859_2(true, 0x2842, 0x2d42, 1),
+        ISO_8859_3(true, 0x2842, 0x2d43, 1), ISO_8859_4(true, 0x2842, 0x2d44, 1), ISO_8859_5(true, 0x2842, 0x2d4c, 1),
+        ISO_8859_6(true, 0x2842, 0x2d47, 1), ISO_8859_7(true, 0x2842, 0x2d46, 1), ISO_8859_8(true, 0x2842, 0x2d48, 1),
+        ISO_8859_9(true, 0x2842, 0x2d4d, 1), JIS_X_201(true, 0x284a, 0x2949, 1) {
             @Override
             public String toText(String s) {
                 return s.replace(Symbol.C_BACKSLASH, Symbol.C_CNY);
             }
         },
-        TIS_620(true, 0x2842, 0x2d54, 1),
-        JIS_X_208(false, 0x2442, 0, 1),
-        JIS_X_212(false, 0x242844, 0, 2),
-        KS_X_1001(false, 0, 0x242943, -1),
-        GB2312(false, 0, 0x242941, -1),
-        UTF_8(true, 0, 0, -1),
+        TIS_620(true, 0x2842, 0x2d54, 1), JIS_X_208(false, 0x2442, 0, 1), JIS_X_212(false, 0x242844, 0, 2),
+        KS_X_1001(false, 0, 0x242943, -1), GB2312(false, 0, 0x242941, -1), UTF_8(true, 0, 0, -1),
         GB18030(false, 0, 0, -1);
 
         private static final String[] charsetNames = resetCharsetNames(new String[18]);
@@ -370,55 +357,55 @@ public class SpecificCharacterSet {
 
         private static Codec forCode(String code, boolean lenient, Codec defCodec) {
             switch (code != null ? code : Normal.EMPTY) {
-                case Normal.EMPTY:
-                case "ISO 2022 IR 6":
-                    return defCodec;
-                case "ISO_IR 100":
-                case "ISO 2022 IR 100":
-                    return Codec.ISO_8859_1;
-                case "ISO_IR 101":
-                case "ISO 2022 IR 101":
-                    return Codec.ISO_8859_2;
-                case "ISO_IR 109":
-                case "ISO 2022 IR 109":
-                    return Codec.ISO_8859_3;
-                case "ISO_IR 110":
-                case "ISO 2022 IR 110":
-                    return Codec.ISO_8859_4;
-                case "ISO_IR 144":
-                case "ISO 2022 IR 144":
-                    return Codec.ISO_8859_5;
-                case "ISO_IR 127":
-                case "ISO 2022 IR 127":
-                    return Codec.ISO_8859_6;
-                case "ISO_IR 126":
-                case "ISO 2022 IR 126":
-                    return Codec.ISO_8859_7;
-                case "ISO_IR 138":
-                case "ISO 2022 IR 138":
-                    return Codec.ISO_8859_8;
-                case "ISO_IR 148":
-                case "ISO 2022 IR 148":
-                    return Codec.ISO_8859_9;
-                case "ISO_IR 13":
-                case "ISO 2022 IR 13":
-                    return Codec.JIS_X_201;
-                case "ISO_IR 166":
-                case "ISO 2022 IR 166":
-                    return Codec.TIS_620;
-                case "ISO 2022 IR 87":
-                    return Codec.JIS_X_208;
-                case "ISO 2022 IR 159":
-                    return Codec.JIS_X_212;
-                case "ISO 2022 IR 149":
-                    return Codec.KS_X_1001;
-                case "ISO 2022 IR 58":
-                    return Codec.GB2312;
-                case "ISO_IR 192":
-                    return Codec.UTF_8;
-                case "GB18030":
-                case "GBK":
-                    return Codec.GB18030;
+            case Normal.EMPTY:
+            case "ISO 2022 IR 6":
+                return defCodec;
+            case "ISO_IR 100":
+            case "ISO 2022 IR 100":
+                return Codec.ISO_8859_1;
+            case "ISO_IR 101":
+            case "ISO 2022 IR 101":
+                return Codec.ISO_8859_2;
+            case "ISO_IR 109":
+            case "ISO 2022 IR 109":
+                return Codec.ISO_8859_3;
+            case "ISO_IR 110":
+            case "ISO 2022 IR 110":
+                return Codec.ISO_8859_4;
+            case "ISO_IR 144":
+            case "ISO 2022 IR 144":
+                return Codec.ISO_8859_5;
+            case "ISO_IR 127":
+            case "ISO 2022 IR 127":
+                return Codec.ISO_8859_6;
+            case "ISO_IR 126":
+            case "ISO 2022 IR 126":
+                return Codec.ISO_8859_7;
+            case "ISO_IR 138":
+            case "ISO 2022 IR 138":
+                return Codec.ISO_8859_8;
+            case "ISO_IR 148":
+            case "ISO 2022 IR 148":
+                return Codec.ISO_8859_9;
+            case "ISO_IR 13":
+            case "ISO 2022 IR 13":
+                return Codec.JIS_X_201;
+            case "ISO_IR 166":
+            case "ISO 2022 IR 166":
+                return Codec.TIS_620;
+            case "ISO 2022 IR 87":
+                return Codec.JIS_X_208;
+            case "ISO 2022 IR 159":
+                return Codec.JIS_X_212;
+            case "ISO 2022 IR 149":
+                return Codec.KS_X_1001;
+            case "ISO 2022 IR 58":
+                return Codec.GB2312;
+            case "ISO_IR 192":
+                return Codec.UTF_8;
+            case "GB18030":
+            case "GBK":
+                return Codec.GB18030;
             }
             if (!lenient)
                 throw new IllegalArgumentException("No such Specific Character Set Code: " + code);
@@ -495,11 +482,8 @@ public class SpecificCharacterSet {
             bb.put((byte) seq);
         }
 
-        public boolean encode(CharBuffer cb, ByteBuffer bb, int escSeq,
-                              G0G1 useRange, CodingErrorAction errorAction) {
-            encoder.onMalformedInput(errorAction)
-                    .onUnmappableCharacter(errorAction)
-                    .reset();
+        public boolean encode(CharBuffer cb, ByteBuffer bb, int escSeq, G0G1 useRange, CodingErrorAction errorAction) {
+            encoder.onMalformedInput(errorAction).onUnmappableCharacter(errorAction).reset();
             int cbmark = cb.position();
             int bbmark = bb.position();
             try {
@@ -563,7 +547,7 @@ public class SpecificCharacterSet {
                 StringTokenizer comps = new StringTokenizer(val, delimiters, true);
                 buf = new byte[(2 + 4) * strlen];
                 bb = ByteBuffer.wrap(buf);
-                int[] cur = {0, 0};
+                int[] cur = { 0, 0 };
                 while (comps.hasMoreTokens()) {
                     String comp = comps.nextToken();
                     if (comp.length() == 1 && delimiters.indexOf(comp.charAt(0)) >= 0) { // if delimiter
@@ -635,7 +619,7 @@ public class SpecificCharacterSet {
 
         @Override
         public String decode(byte[] b) {
-            Codec[] codec = {codecs[0], codecs[0]};
+            Codec[] codec = { codecs[0], codecs[0] };
             int g = 0;
             int off = 0;
             int cur = 0;
@@ -649,71 +633,71 @@ public class SpecificCharacterSet {
                     int esc1 = cur++;
                     int esc2 = cur++;
                     switch (((b[esc1] & 255) << 8) + (b[esc2] & 255)) {
-                        case 0x2428:
-                            if (cur < b.length && b[cur++] == 0x44) {
-                                codec[0] = Codec.JIS_X_212;
-                            } else { // decode invalid ESC sequence as chars
-                                sb.append(codec[0].decode(b, esc0, cur - esc0));
-                            }
+                    case 0x2428:
+                        if (cur < b.length && b[cur++] == 0x44) {
+                            codec[0] = Codec.JIS_X_212;
+                        } else { // decode invalid ESC sequence as chars
+                            sb.append(codec[0].decode(b, esc0, cur - esc0));
+                        }
+                        break;
+                    case 0x2429:
+                        switch (cur < b.length ? b[cur++] : -1) {
+                        case 0x41:
+                            switchCodec(codec, 1, Codec.GB2312);
                             break;
-                        case 0x2429:
-                            switch (cur < b.length ? b[cur++] : -1) {
-                                case 0x41:
-                                    switchCodec(codec, 1, Codec.GB2312);
-                                    break;
-                                case 0x43:
-                                    switchCodec(codec, 1, Codec.KS_X_1001);
-                                    break;
-                                default: // decode invalid ESC sequence as chars
-                                    sb.append(codec[0].decode(b, esc0, cur - esc0));
-                            }
-                            break;
-                        case 0x2442:
-                            codec[0] = Codec.JIS_X_208;
-                            break;
-                        case 0x2842:
-                            switchCodec(codec, 0, Codec.ISO_646);
-                            break;
-                        case 0x284a:
-                            codec[0] = Codec.JIS_X_201;
-                            if (codec[1].getEscSeq1() == 0)
-                                codec[1] = codec[0];
-                            break;
-                        case 0x2949:
-                            codec[1] = Codec.JIS_X_201;
-                            break;
-                        case 0x2d41:
-                            switchCodec(codec, 1, Codec.ISO_8859_1);
-                            break;
-                        case 0x2d42:
-                            switchCodec(codec, 1, Codec.ISO_8859_2);
-                            break;
-                        case 0x2d43:
-                            switchCodec(codec, 1, Codec.ISO_8859_3);
-                            break;
-                        case 0x2d44:
-                            switchCodec(codec, 1, Codec.ISO_8859_4);
-                            break;
-                        case 0x2d46:
-                            switchCodec(codec, 1, Codec.ISO_8859_7);
-                            break;
-                        case 0x2d47:
-                            switchCodec(codec, 1, Codec.ISO_8859_6);
-                            break;
-                        case 0x2d48:
-                            switchCodec(codec, 1, Codec.ISO_8859_8);
-                            break;
-                        case 0x2d4c:
-                            switchCodec(codec, 1, Codec.ISO_8859_5);
-                            break;
-                        case 0x2d4d:
-                            switchCodec(codec, 1, Codec.ISO_8859_9);
-                            break;
-                        case 0x2d54:
-                            switchCodec(codec, 1, Codec.TIS_620);
+                        case 0x43:
+                            switchCodec(codec, 1, Codec.KS_X_1001);
                             break;
                         default: // decode invalid ESC sequence as chars
                             sb.append(codec[0].decode(b, esc0, cur - esc0));
+                        }
+                        break;
+                    case 0x2442:
+                        codec[0] = Codec.JIS_X_208;
+                        break;
+                    case 0x2842:
+                        switchCodec(codec, 0, Codec.ISO_646);
+                        break;
+                    case 0x284a:
+                        codec[0] = Codec.JIS_X_201;
+                        if (codec[1].getEscSeq1() == 0)
+                            codec[1] = codec[0];
+                        break;
+                    case 0x2949:
+                        codec[1] = Codec.JIS_X_201;
+                        break;
+                    case 0x2d41:
+                        switchCodec(codec, 1, Codec.ISO_8859_1);
+                        break;
+                    case 0x2d42:
+                        switchCodec(codec, 1, Codec.ISO_8859_2);
+                        break;
+                    case 0x2d43:
+                        switchCodec(codec, 1, Codec.ISO_8859_3);
+                        break;
+                    case 0x2d44:
+                        switchCodec(codec, 1, Codec.ISO_8859_4);
+                        break;
+                    case 0x2d46:
+                        switchCodec(codec, 1, Codec.ISO_8859_7);
+                        break;
+                    case 0x2d47:
+                        switchCodec(codec, 1, Codec.ISO_8859_6);
+                        break;
+                    case 0x2d48:
+                        switchCodec(codec, 1, Codec.ISO_8859_8);
+                        break;
+                    case 0x2d4c:
+                        switchCodec(codec, 1, Codec.ISO_8859_5);
+                        break;
+                    case 0x2d4d:
+                        switchCodec(codec, 1, Codec.ISO_8859_9);
+                        break;
+                    case 0x2d54:
+                        switchCodec(codec, 1, Codec.TIS_620);
+                        break;
+                    default: // decode invalid ESC sequence as chars
+                        sb.append(codec[0].decode(b, esc0, cur - esc0));
                     }
                     off = cur;
                 } else {

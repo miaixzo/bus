@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.service;
 
 import org.miaixz.bus.image.Dimse;
@@ -52,8 +52,8 @@ public class BasicCEchoSCP extends AbstractImageService {
     }
 
     @Override
-    public void onDimseRQ(Association as, PresentationContext pc,
-                          Dimse dimse, Attributes cmd, Attributes data) throws IOException {
+    public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes cmd, Attributes data)
+            throws IOException {
         if (dimse != Dimse.C_ECHO_RQ)
             throw new ImageServiceException(Status.UnrecognizedOperation);
 

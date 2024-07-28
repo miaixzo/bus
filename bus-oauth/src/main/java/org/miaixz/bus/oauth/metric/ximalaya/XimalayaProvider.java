@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org justauth.cn and other contributors.        ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.ximalaya;
 
 import com.alibaba.fastjson.JSONObject;
@@ -67,8 +67,7 @@ public class XimalayaProvider extends AbstractProvider {
     }
 
     /**
-     * 签名算法
-     * {@code https://open.ximalaya.com/doc/detailApi?categoryId=6&articleId=69}
+     * 签名算法 {@code https://open.ximalaya.com/doc/detailApi?categoryId=6&articleId=69}
      *
      * @param params       加密参数
      * @param clientSecret 平台应用的授权key
@@ -77,7 +76,8 @@ public class XimalayaProvider extends AbstractProvider {
     private static String sign(Map<String, String> params, String clientSecret) {
         TreeMap<String, String> map = new TreeMap<>(params);
         String baseStr = Base64.encode(Builder.parseMapToString(map, false));
-        byte[] sign = Builder.sign(clientSecret.getBytes(Charset.UTF_8), baseStr.getBytes(Charset.UTF_8), Algorithm.HMACSHA1.getValue());
+        byte[] sign = Builder.sign(clientSecret.getBytes(Charset.UTF_8), baseStr.getBytes(Charset.UTF_8),
+                Algorithm.HMACSHA1.getValue());
         MessageDigest md5;
         StringBuilder builder = null;
         try {
@@ -113,12 +113,9 @@ public class XimalayaProvider extends AbstractProvider {
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         this.checkResponse(accessTokenObject);
 
-        return AccToken.builder()
-                .accessToken(accessTokenObject.getString("access_token"))
+        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
                 .refreshToken(accessTokenObject.getString("refresh_token"))
-                .expireIn(accessTokenObject.getIntValue("expires_in"))
-                .uid(accessTokenObject.getString("uid"))
-                .build();
+                .expireIn(accessTokenObject.getIntValue("expires_in")).uid(accessTokenObject.getString("uid")).build();
     }
 
     /**
@@ -129,14 +126,10 @@ public class XimalayaProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(complex.authorize())
-                .queryParam("response_type", "code")
-                .queryParam("client_id", context.getAppKey())
-                .queryParam("redirect_uri", context.getRedirectUri())
-                .queryParam("state", getRealState(state))
-                .queryParam("client_os_type", "3")
-                .queryParam("device_id", context.getDeviceId())
-                .build();
+        return Builder.fromUrl(complex.authorize()).queryParam("response_type", "code")
+                .queryParam("client_id", context.getAppKey()).queryParam("redirect_uri", context.getRedirectUri())
+                .queryParam("state", getRealState(state)).queryParam("client_os_type", "3")
+                .queryParam("device_id", context.getDeviceId()).build();
     }
 
     /**
@@ -169,15 +162,9 @@ public class XimalayaProvider extends AbstractProvider {
         String rawUserInfo = Httpx.get(complex.userInfo(), map);
         JSONObject object = JSONObject.parseObject(rawUserInfo);
         checkResponse(object);
-        return Material.builder()
-                .uuid(object.getString("id"))
-                .nickname(object.getString("nickname"))
-                .avatar(object.getString("avatar_url"))
-                .rawJson(object)
-                .source(complex.toString())
-                .token(accToken)
-                .gender(Gender.UNKNOWN)
-                .build();
+        return Material.builder().uuid(object.getString("id")).nickname(object.getString("nickname"))
+                .avatar(object.getString("avatar_url")).rawJson(object).source(complex.toString()).token(accToken)
+                .gender(Gender.UNKNOWN).build();
     }
 
 }

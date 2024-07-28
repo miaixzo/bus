@@ -24,10 +24,10 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 /**
- * Provides a cross-platform implementation to retrieve Operating System and Hardware Information, such
- * as OS version, memory, CPU, disk, devices, sensors, etc.
+ * Provides a cross-platform implementation to retrieve Operating System and Hardware Information, such as OS version,
+ * memory, CPU, disk, devices, sensors, etc.
  *
  * @author Kimi Liu
  * @since Java 17+

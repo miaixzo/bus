@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.additional.insert;
 
 import org.apache.ibatis.mapping.MappedStatement;
@@ -59,7 +59,9 @@ public class InsertListProvider extends MapperTemplate {
         final Class<?> entityClass = getEntityClass(ms);
         // 开始拼sql
         StringBuilder sql = new StringBuilder();
-        sql.append("<bind name=\"listNotEmptyCheck\" value=\"@org.miaixz.bus.mapper.OGNL@notEmptyCollectionCheck(list, '" + ms.getId() + " 方法参数为空')\"/>");
+        sql.append(
+                "<bind name=\"listNotEmptyCheck\" value=\"@org.miaixz.bus.mapper.OGNL@notEmptyCollectionCheck(list, '"
+                        + ms.getId() + " 方法参数为空')\"/>");
         sql.append(SqlBuilder.insertIntoTable(entityClass, tableName(entityClass), "list[0]"));
         sql.append(SqlBuilder.insertColumns(entityClass, false, false, false));
         sql.append(" VALUES ");
@@ -72,7 +74,8 @@ public class InsertListProvider extends MapperTemplate {
         // 单独增加对 genId 方式的支持
         for (EntityColumn column : columnList) {
             if (column.getGenIdClass() != null) {
-                sql.append("<bind name=\"").append(column.getColumn()).append("GenIdBind\" value=\"@org.miaixz.bus.mapper.Builder@genId(");
+                sql.append("<bind name=\"").append(column.getColumn())
+                        .append("GenIdBind\" value=\"@org.miaixz.bus.mapper.Builder@genId(");
                 sql.append("record").append(", '").append(column.getProperty()).append("'");
                 sql.append(", @").append(column.getGenIdClass().getName()).append("@class");
                 sql.append(", '").append(tableName(entityClass)).append("'");

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.queue;
 
 import org.miaixz.bus.core.lang.Console;
@@ -36,11 +36,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Predicate;
 
 /**
- * 内存安全的{@link LinkedBlockingQueue}，可以解决OOM问题。
- * 原理是通过Runtime#freeMemory()获取剩余内存，当剩余内存低于指定的阈值时，不再加入。
+ * 内存安全的{@link LinkedBlockingQueue}，可以解决OOM问题。 原理是通过Runtime#freeMemory()获取剩余内存，当剩余内存低于指定的阈值时，不再加入。
  *
  * <p>
- * 此类来自于：<a href="https://github.com/apache/incubator-shenyu/blob/master/shenyu-common/src/main/java/org/apache/shenyu/common/concurrent/MemorySafeLinkedBlockingQueue.java">
+ * 此类来自于：<a href=
+ * "https://github.com/apache/incubator-shenyu/blob/master/shenyu-common/src/main/java/org/apache/shenyu/common/concurrent/MemorySafeLinkedBlockingQueue.java">
  * MemorySafeLinkedBlockingQueue</a>
  * </p>
  *
@@ -67,8 +67,7 @@ public class MemorySafeLinkedBlockingQueue<E> extends CheckedLinkedBlockingQueue
      * @param c             初始集合
      * @param maxFreeMemory 最大剩余内存大小，当实际内存小于这个值时，不再加入元素
      */
-    public MemorySafeLinkedBlockingQueue(final Collection<? extends E> c,
-                                         final long maxFreeMemory) {
+    public MemorySafeLinkedBlockingQueue(final Collection<? extends E> c, final long maxFreeMemory) {
         super(c, new MemoryChecker<>(maxFreeMemory));
     }
 

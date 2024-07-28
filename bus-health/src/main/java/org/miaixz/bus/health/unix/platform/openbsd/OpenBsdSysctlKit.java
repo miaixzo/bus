@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.openbsd;
 
 import com.sun.jna.Memory;
@@ -60,7 +60,8 @@ public final class OpenBsdSysctlKit {
      */
     public static int sysctl(int[] name, int def) {
         int intSize = OpenBsdLibc.INT_SIZE;
-        try (Memory p = new Memory(intSize); ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(intSize)) {
+        try (Memory p = new Memory(intSize);
+                ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(intSize)) {
             if (0 != OpenBsdLibc.INSTANCE.sysctl(name, name.length, p, size, null, size_t.ZERO)) {
                 Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
                 return def;
@@ -79,7 +80,7 @@ public final class OpenBsdSysctlKit {
     public static long sysctl(int[] name, long def) {
         int uint64Size = OpenBsdLibc.UINT64_SIZE;
         try (Memory p = new Memory(uint64Size);
-             ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(uint64Size)) {
+                ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(uint64Size)) {
             if (0 != OpenBsdLibc.INSTANCE.sysctl(name, name.length, p, size, null, size_t.ZERO)) {
                 Logger.warn(SYSCTL_FAIL, name, Native.getLastError());
                 return def;
@@ -136,7 +137,7 @@ public final class OpenBsdSysctlKit {
      *
      * @param name name of the sysctl
      * @return An allocated memory buffer containing the result on success, null otherwise. Its value on failure is
-     * undefined.
+     *         undefined.
      */
     public static Memory sysctl(int[] name) {
         try (ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference()) {

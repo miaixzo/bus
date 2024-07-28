@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.csv;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -48,15 +48,14 @@ public class CsvWriteConfig extends CsvConfig<CsvWriteConfig> implements Seriali
     /**
      * 换行符
      */
-    protected char[] lineDelimiter = {Symbol.C_CR, Symbol.C_LF};
+    protected char[] lineDelimiter = { Symbol.C_CR, Symbol.C_LF };
     /**
      * 是否使用安全模式，对可能存在DDE攻击的内容进行替换
      */
     protected boolean ddeSafe;
 
     /**
-     * 文件末尾是否添加换行符
-     * 按照https://datatracker.ietf.org/doc/html/rfc4180#section-2 规范，末尾换行符可有可无。
+     * 文件末尾是否添加换行符 按照https://datatracker.ietf.org/doc/html/rfc4180#section-2 规范，末尾换行符可有可无。
      */
     protected boolean endingLineBreak;
 
@@ -92,8 +91,7 @@ public class CsvWriteConfig extends CsvConfig<CsvWriteConfig> implements Seriali
     }
 
     /**
-     * 设置是否动态数据交换安全，使用文本包装符包裹可能存在DDE攻击的内容
-     * 见：https://blog.csdn.net/weixin_41924764/article/details/108665746
+     * 设置是否动态数据交换安全，使用文本包装符包裹可能存在DDE攻击的内容 见：https://blog.csdn.net/weixin_41924764/article/details/108665746
      *
      * @param ddeSafe dde安全
      * @return this
@@ -104,8 +102,7 @@ public class CsvWriteConfig extends CsvConfig<CsvWriteConfig> implements Seriali
     }
 
     /**
-     * 文件末尾是否添加换行符
-     * 按照https://datatracker.ietf.org/doc/html/rfc4180#section-2 规范，末尾换行符可有可无。
+     * 文件末尾是否添加换行符 按照https://datatracker.ietf.org/doc/html/rfc4180#section-2 规范，末尾换行符可有可无。
      *
      * @param endingLineBreak 文件末尾是否添加换行符
      * @return this

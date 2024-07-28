@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 import org.miaixz.bus.core.xyz.MapKit;
@@ -84,10 +84,8 @@ public class ImageAdapter {
             Integer paddingValue = desc.getPixelPaddingValue();
             if (paddingValue != null) {
                 Integer paddingLimit = desc.getPixelPaddingRangeLimit();
-                Integer paddingValueMin =
-                        (paddingLimit == null) ? paddingValue : Math.min(paddingValue, paddingLimit);
-                Integer paddingValueMax =
-                        (paddingLimit == null) ? paddingValue : Math.max(paddingValue, paddingLimit);
+                Integer paddingValueMin = (paddingLimit == null) ? paddingValue : Math.min(paddingValue, paddingLimit);
+                Integer paddingValueMax = (paddingLimit == null) ? paddingValue : Math.max(paddingValue, paddingLimit);
                 val = findMinMaxValues(image, paddingValueMin, paddingValueMax);
             }
         }
@@ -123,8 +121,7 @@ public class ImageAdapter {
      * @param paddingValueMin padding value to exclude from min value
      * @param paddingValueMax padding value to exclude from max value
      */
-    private MinMaxLocResult findMinMaxValues(
-            PlanarImage image, Integer paddingValueMin, Integer paddingValueMax) {
+    private MinMaxLocResult findMinMaxValues(PlanarImage image, Integer paddingValueMin, Integer paddingValueMax) {
         MinMaxLocResult val;
         if (CvType.depth(image.type()) <= CvType.CV_8S) {
             val = new MinMaxLocResult();
@@ -171,8 +168,8 @@ public class ImageAdapter {
     }
 
     /**
-     * In the case where Rescale Slope and Rescale Intercept are used for modality pixel
-     * transformation, the output ranges may be signed even if Pixel Representation is unsigned.
+     * In the case where Rescale Slope and Rescale Intercept are used for modality pixel transformation, the output
+     * ranges may be signed even if Pixel Representation is unsigned.
      *
      * @param wl WlPresentation
      * @return true if the output of the modality pixel transformation can be signed
@@ -183,16 +180,16 @@ public class ImageAdapter {
     }
 
     /**
-     * @return return the min value after modality pixel transformation and after pixel padding
-     * operation if padding exists.
+     * @return return the min value after modality pixel transformation and after pixel padding operation if padding
+     *         exists.
      */
     public double getMinValue(WlPresentation wl) {
         return minMaxValue(true, wl);
     }
 
     /**
-     * @return return the max value after modality pixel transformation and after pixel padding
-     * operation if padding exists.
+     * @return return the max value after modality pixel transformation and after pixel padding operation if padding
+     *         exists.
      */
     public double getMaxValue(WlPresentation wl) {
         return minMaxValue(false, wl);
@@ -243,7 +240,7 @@ public class ImageAdapter {
 
     /**
      * @return default as first element of preset List <br>
-     * Note : null should never be returned since auto is at least one preset
+     *         Note : null should never be returned since auto is at least one preset
      */
     public PresetWindowLevel getDefaultPreset(WlPresentation wlp) {
         List<PresetWindowLevel> presetList = getPresetList(wlp);
@@ -275,8 +272,7 @@ public class ImageAdapter {
 
     public double getDefaultWindow(WlPresentation wlp) {
         PresetWindowLevel defaultPreset = getDefaultPreset(wlp);
-        return (defaultPreset != null)
-                ? defaultPreset.getWindow()
+        return (defaultPreset != null) ? defaultPreset.getWindow()
                 : minMax == null ? 0.0 : minMax.maxVal - minMax.minVal;
     }
 
@@ -310,13 +306,11 @@ public class ImageAdapter {
     public LookupTableCV getModalityLookup(WlPresentation wlp, boolean inverseLUTAction) {
         Integer paddingValue = desc.getPixelPaddingValue();
         boolean pixelPadding = wlp == null || wlp.isPixelPadding();
-        PresentationLutObject pr =
-                wlp != null && wlp.getPresentationState() instanceof PresentationLutObject
-                        ? (PresentationLutObject) wlp.getPresentationState()
-                        : null;
+        PresentationLutObject pr = wlp != null && wlp.getPresentationState() instanceof PresentationLutObject
+                ? (PresentationLutObject) wlp.getPresentationState()
+                : null;
         LookupTableCV prModLut = (pr != null ? pr.getModalityLutModule().getLut().orElse(null) : null);
-        final LookupTableCV mLUTSeq =
-                prModLut == null ? desc.getModalityLUT().getLut().orElse(null) : prModLut;
+        final LookupTableCV mLUTSeq = prModLut == null ? desc.getModalityLUT().getLut().orElse(null) : prModLut;
         if (mLUTSeq != null) {
             if (!pixelPadding || paddingValue == null) {
                 if (minMax.minVal >= mLUTSeq.getOffset()
@@ -356,9 +350,8 @@ public class ImageAdapter {
                 } else {
                     short[] data = mLUTSeq.getShortData(0);
                     if (data != null) {
-                        modalityLookup =
-                                new LookupTableCV(
-                                        data, mLUTSeq.getOffset(0), mLUTSeq.getData() instanceof DataBufferUShort);
+                        modalityLookup = new LookupTableCV(data, mLUTSeq.getOffset(0),
+                                mLUTSeq.getData() instanceof DataBufferUShort);
                     }
                 }
             }
@@ -386,8 +379,8 @@ public class ImageAdapter {
         return p == Photometric.MONOCHROME1;
     }
 
-    public LutParameters getLutParameters(
-            boolean pixelPadding, LookupTableCV mLUTSeq, boolean inversePaddingMLUT, PresentationLutObject pr) {
+    public LutParameters getLutParameters(boolean pixelPadding, LookupTableCV mLUTSeq, boolean inversePaddingMLUT,
+            PresentationLutObject pr) {
         Integer paddingValue = desc.getPixelPaddingValue();
 
         boolean isSigned = desc.isSigned();
@@ -396,9 +389,7 @@ public class ImageAdapter {
 
         // No need to have a modality lookup table
         if (bitsStored > 16
-                || (MathKit.isEqual(slope, 1.0)
-                && MathKit.isEqualToZero(intercept)
-                && paddingValue == null)) {
+                || (MathKit.isEqual(slope, 1.0) && MathKit.isEqualToZero(intercept) && paddingValue == null)) {
             return null;
         }
 
@@ -408,8 +399,7 @@ public class ImageAdapter {
         if (mLUTSeq == null) {
             double minValue = minMax.minVal * slope + intercept;
             double maxValue = minMax.maxVal * slope + intercept;
-            bitsOutputLut =
-                    Integer.SIZE - Integer.numberOfLeadingZeros((int) Math.round(maxValue - minValue));
+            bitsOutputLut = Integer.SIZE - Integer.numberOfLeadingZeros((int) Math.round(maxValue - minValue));
             outputSigned = minValue < 0 || isSigned;
             if (outputSigned && bitsOutputLut <= 8) {
                 // Allows to handle negative values with 8-bit image
@@ -418,17 +408,8 @@ public class ImageAdapter {
         } else {
             bitsOutputLut = mLUTSeq.getDataType() == DataBuffer.TYPE_BYTE ? 8 : 16;
         }
-        return new LutParameters(
-                intercept,
-                slope,
-                pixelPadding,
-                paddingValue,
-                paddingLimit,
-                bitsStored,
-                isSigned,
-                outputSigned,
-                bitsOutputLut,
-                inversePaddingMLUT);
+        return new LutParameters(intercept, slope, pixelPadding, paddingValue, paddingLimit, bitsStored, isSigned,
+                outputSigned, bitsOutputLut, inversePaddingMLUT);
     }
 
     /**
@@ -446,8 +427,7 @@ public class ImageAdapter {
          * max bit stored value when MONOCHROME1. See C.7.5.1.1.2
          */
         if (wl.isFillOutsideLutRange()
-                || (desc.getPixelPaddingValue() != null
-                && desc.getPhotometricInterpretation().isMonochrome())) {
+                || (desc.getPixelPaddingValue() != null && desc.getPhotometricInterpretation().isMonochrome())) {
             minValue = getMinAllocatedValue(wl);
             maxValue = getMaxAllocatedValue(wl);
         } else {
@@ -455,15 +435,8 @@ public class ImageAdapter {
             maxValue = (int) wl.getLevelMax();
         }
 
-        return RGBImageVoiLut.createVoiLut(
-                wl.getLutShape(),
-                wl.getWindow(),
-                wl.getLevel(),
-                minValue,
-                maxValue,
-                8,
-                false,
-                isPhotometricInterpretationInverse(wl.getPresentationState()));
+        return RGBImageVoiLut.createVoiLut(wl.getLutShape(), wl.getWindow(), wl.getLevel(), minValue, maxValue, 8,
+                false, isPhotometricInterpretationInverse(wl.getPresentationState()));
     }
 
 }

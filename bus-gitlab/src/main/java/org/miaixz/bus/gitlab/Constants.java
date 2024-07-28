@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -132,7 +132,6 @@ public interface Constants {
         }
     }
 
-
     /**
      * Enum to use for ordering the results of getEpics().
      */
@@ -186,7 +185,8 @@ public interface Constants {
 
         NAME, CREATED_AT, VERSION, TYPE, PROJECT_PATH;
 
-        private static JacksonJsonEnumHelper<PackageOrderBy> enumHelper = new JacksonJsonEnumHelper<>(PackageOrderBy.class);
+        private static JacksonJsonEnumHelper<PackageOrderBy> enumHelper = new JacksonJsonEnumHelper<>(
+                PackageOrderBy.class);
 
         @JsonCreator
         public static PackageOrderBy forValue(String value) {
@@ -209,7 +209,8 @@ public interface Constants {
 
         DEFAULT, HIDDEN, PROCESSING;
 
-        private static JacksonJsonEnumHelper<PackageStatus> enumHelper = new JacksonJsonEnumHelper<>(PackageStatus.class);
+        private static JacksonJsonEnumHelper<PackageStatus> enumHelper = new JacksonJsonEnumHelper<>(
+                PackageStatus.class);
 
         @JsonCreator
         public static PackageStatus forValue(String value) {
@@ -231,7 +232,9 @@ public interface Constants {
     public enum ProjectOrderBy {
 
         ID, NAME, PATH, CREATED_AT, UPDATED_AT, LAST_ACTIVITY_AT;
-        private static JacksonJsonEnumHelper<ProjectOrderBy> enumHelper = new JacksonJsonEnumHelper<>(ProjectOrderBy.class);
+
+        private static JacksonJsonEnumHelper<ProjectOrderBy> enumHelper = new JacksonJsonEnumHelper<>(
+                ProjectOrderBy.class);
 
         @JsonCreator
         public static ProjectOrderBy forValue(String value) {
@@ -254,7 +257,8 @@ public interface Constants {
 
         ID, STATUS, REF, UPDATED_AT, USER_ID;
 
-        private static JacksonJsonEnumHelper<PipelineOrderBy> enumHelper = new JacksonJsonEnumHelper<>(PipelineOrderBy.class);
+        private static JacksonJsonEnumHelper<PipelineOrderBy> enumHelper = new JacksonJsonEnumHelper<>(
+                PipelineOrderBy.class);
 
         @JsonCreator
         public static PipelineOrderBy forValue(String value) {
@@ -279,7 +283,8 @@ public interface Constants {
 
         CREATED_AT, UPDATED_AT;
 
-        private static JacksonJsonEnumHelper<MergeRequestOrderBy> enumHelper = new JacksonJsonEnumHelper<>(MergeRequestOrderBy.class);
+        private static JacksonJsonEnumHelper<MergeRequestOrderBy> enumHelper = new JacksonJsonEnumHelper<>(
+                MergeRequestOrderBy.class);
 
         @JsonCreator
         public static MergeRequestOrderBy forValue(String value) {
@@ -301,6 +306,7 @@ public interface Constants {
     public enum GroupOrderBy {
 
         NAME, PATH, ID, SIMILARITY;
+
         private static JacksonJsonEnumHelper<GroupOrderBy> enumHelper = new JacksonJsonEnumHelper<>(GroupOrderBy.class);
 
         @JsonCreator
@@ -323,6 +329,7 @@ public interface Constants {
     public enum TagOrderBy {
 
         NAME, UPDATED;
+
         private static JacksonJsonEnumHelper<TagOrderBy> enumHelper = new JacksonJsonEnumHelper<>(TagOrderBy.class);
 
         @JsonCreator
@@ -347,7 +354,9 @@ public interface Constants {
     public static enum DeploymentOrderBy {
 
         ID, IID, CREATED_AT, UPDATED_AT, REF;
-        private static JacksonJsonEnumHelper<DeploymentOrderBy> enumHelper = new JacksonJsonEnumHelper<>(DeploymentOrderBy.class);
+
+        private static JacksonJsonEnumHelper<DeploymentOrderBy> enumHelper = new JacksonJsonEnumHelper<>(
+                DeploymentOrderBy.class);
 
         @JsonCreator
         public static DeploymentOrderBy forValue(String value) {
@@ -370,7 +379,8 @@ public interface Constants {
 
         NAME, EMAIL, COMMITS;
 
-        private static JacksonJsonEnumHelper<ContributorOrderBy> enumHelper = new JacksonJsonEnumHelper<>(ContributorOrderBy.class);
+        private static JacksonJsonEnumHelper<ContributorOrderBy> enumHelper = new JacksonJsonEnumHelper<>(
+                ContributorOrderBy.class);
 
         @JsonCreator
         public static ContributorOrderBy forValue(String value) {
@@ -393,7 +403,8 @@ public interface Constants {
 
         RUNNING, PENDING, FINISHED, BRANCHES, TAGS;
 
-        private static JacksonJsonEnumHelper<PipelineScope> enumHelper = new JacksonJsonEnumHelper<>(PipelineScope.class);
+        private static JacksonJsonEnumHelper<PipelineScope> enumHelper = new JacksonJsonEnumHelper<>(
+                PipelineScope.class);
 
         @JsonCreator
         public static PipelineScope forValue(String value) {
@@ -419,7 +430,9 @@ public interface Constants {
         private static JacksonJsonEnumHelper<JobScope> enumHelper = new JacksonJsonEnumHelper<>(JobScope.class);
 
         @JsonCreator
-        public static JobScope forValue(String value) { return enumHelper.forValue(value); }
+        public static JobScope forValue(String value) {
+            return enumHelper.forValue(value);
+        }
 
         @JsonValue
         public String toValue() {
@@ -440,7 +453,9 @@ public interface Constants {
         private static JacksonJsonEnumHelper<IssueScope> enumHelper = new JacksonJsonEnumHelper<>(IssueScope.class);
 
         @JsonCreator
-        public static IssueScope forValue(String value) { return enumHelper.forValue(value); }
+        public static IssueScope forValue(String value) {
+            return enumHelper.forValue(value);
+        }
 
         @JsonValue
         public String toValue() {
@@ -458,10 +473,13 @@ public interface Constants {
 
         CREATED_BY_ME, ASSIGNED_TO_ME, ALL;
 
-        private static JacksonJsonEnumHelper<MergeRequestScope> enumHelper = new JacksonJsonEnumHelper<>(MergeRequestScope.class);
+        private static JacksonJsonEnumHelper<MergeRequestScope> enumHelper = new JacksonJsonEnumHelper<>(
+                MergeRequestScope.class);
 
         @JsonCreator
-        public static MergeRequestScope forValue(String value) { return enumHelper.forValue(value); }
+        public static MergeRequestScope forValue(String value) {
+            return enumHelper.forValue(value);
+        }
 
         @JsonValue
         public String toValue() {
@@ -479,10 +497,13 @@ public interface Constants {
 
         OPENED, CLOSED, LOCKED, MERGED, ALL;
 
-        private static JacksonJsonEnumHelper<MergeRequestState> enumHelper = new JacksonJsonEnumHelper<>(MergeRequestState.class);
+        private static JacksonJsonEnumHelper<MergeRequestState> enumHelper = new JacksonJsonEnumHelper<>(
+                MergeRequestState.class);
 
         @JsonCreator
-        public static MergeRequestState forValue(String value) { return enumHelper.forValue(value); }
+        public static MergeRequestState forValue(String value) {
+            return enumHelper.forValue(value);
+        }
 
         @JsonValue
         public String toValue() {
@@ -500,10 +521,13 @@ public interface Constants {
 
         TITLE, DESCRIPTION;
 
-        private static JacksonJsonEnumHelper<MergeRequestSearchIn> enumHelper = new JacksonJsonEnumHelper<>(MergeRequestSearchIn.class);
+        private static JacksonJsonEnumHelper<MergeRequestSearchIn> enumHelper = new JacksonJsonEnumHelper<>(
+                MergeRequestSearchIn.class);
 
         @JsonCreator
-        public static MergeRequestSearchIn forValue(String value) { return enumHelper.forValue(value); }
+        public static MergeRequestSearchIn forValue(String value) {
+            return enumHelper.forValue(value);
+        }
 
         @JsonValue
         public String toValue() {
@@ -524,8 +548,9 @@ public interface Constants {
         private static JacksonJsonEnumHelper<StateEvent> enumHelper = new JacksonJsonEnumHelper<>(StateEvent.class);
 
         @JsonCreator
-        public static StateEvent forValue(String value) { return enumHelper.forValue(value); }
-
+        public static StateEvent forValue(String value) {
+            return enumHelper.forValue(value);
+        }
 
         @JsonValue
         public String toValue() {
@@ -565,7 +590,8 @@ public interface Constants {
 
         ACTIVE, CLOSED, ACTIVATE, CLOSE;
 
-        private static JacksonJsonEnumHelper<MilestoneState> enumHelper = new JacksonJsonEnumHelper<>(MilestoneState.class);
+        private static JacksonJsonEnumHelper<MilestoneState> enumHelper = new JacksonJsonEnumHelper<>(
+                MilestoneState.class);
 
         @JsonCreator
         public static MilestoneState forValue(String value) {
@@ -586,7 +612,8 @@ public interface Constants {
     /** Enum to use for specifying the event action_type. */
     public enum ActionType {
 
-        CREATED, UPDATED, OPENED, CLOSED, REOPENED, PUSHED, COMMENTED, MERGED, JOINED, LEFT, DESTROYED, EXPIRED, REMOVED, DELETED, APPROVED, ACCEPTED, IMPORTED;
+        CREATED, UPDATED, OPENED, CLOSED, REOPENED, PUSHED, COMMENTED, MERGED, JOINED, LEFT, DESTROYED, EXPIRED,
+        REMOVED, DELETED, APPROVED, ACCEPTED, IMPORTED;
 
         private static JacksonJsonEnumHelper<ActionType> enumHelper = new JacksonJsonEnumHelper<>(ActionType.class);
 
@@ -611,7 +638,8 @@ public interface Constants {
 
         ISSUE, MILESTONE, MERGE_REQUEST, NOTE, PROJECT, SNIPPET, USER;
 
-        private static JacksonJsonEnumHelper<TargetType> enumHelper = new JacksonJsonEnumHelper<>(TargetType.class, true, false, true);
+        private static JacksonJsonEnumHelper<TargetType> enumHelper = new JacksonJsonEnumHelper<>(TargetType.class,
+                true, false, true);
 
         @JsonCreator
         public static TargetType forValue(String value) {
@@ -657,7 +685,8 @@ public interface Constants {
 
         ALL, ACTIVE, INACTIVE;
 
-        private static JacksonJsonEnumHelper<ImpersonationState> enumHelper = new JacksonJsonEnumHelper<>(ImpersonationState.class);
+        private static JacksonJsonEnumHelper<ImpersonationState> enumHelper = new JacksonJsonEnumHelper<>(
+                ImpersonationState.class);
 
         @JsonCreator
         public static ImpersonationState forValue(String value) {
@@ -686,6 +715,7 @@ public interface Constants {
         ArchiveFormat() {
             this.value = name().toLowerCase().replace('_', '.');
         }
+
         static {
             for (ArchiveFormat archiveFormat : ArchiveFormat.values())
                 valuesMap.put(archiveFormat.value, archiveFormat);
@@ -702,7 +732,8 @@ public interface Constants {
                 return (archiveFormat);
             }
 
-            throw new GitLabApiException("Invalid format! Options are tar.gz, tar.bz2, tbz, tbz2, tb2, bz2, tar, and zip.");
+            throw new GitLabApiException(
+                    "Invalid format! Options are tar.gz, tar.bz2, tbz, tbz2, tb2, bz2, tar, and zip.");
         }
 
         @Override
@@ -718,7 +749,8 @@ public interface Constants {
 
         PENDING, RUNNING, SUCCESS, FAILED, CANCELED, SKIPPED;
 
-        private static JacksonJsonEnumHelper<CommitBuildState> enumHelper = new JacksonJsonEnumHelper<>(CommitBuildState.class);
+        private static JacksonJsonEnumHelper<CommitBuildState> enumHelper = new JacksonJsonEnumHelper<>(
+                CommitBuildState.class);
 
         @JsonCreator
         public static CommitBuildState forValue(String value) {
@@ -749,7 +781,7 @@ public interface Constants {
         /** Read the authenticated user's personal information */
         READ_USER,
 
-        /**  Perform API actions as any user in the system */
+        /** Perform API actions as any user in the system */
         SUDO,
 
         /** Allows read-access to the repository */
@@ -770,7 +802,8 @@ public interface Constants {
          */
         EMAIL;
 
-        private static JacksonJsonEnumHelper<ApplicationScope> enumHelper = new JacksonJsonEnumHelper<>(ApplicationScope.class);
+        private static JacksonJsonEnumHelper<ApplicationScope> enumHelper = new JacksonJsonEnumHelper<>(
+                ApplicationScope.class);
 
         @JsonCreator
         public static ApplicationScope forValue(String value) {
@@ -793,8 +826,7 @@ public interface Constants {
      */
     public enum SearchScope {
 
-        PROJECTS, ISSUES, MERGE_REQUESTS, MILESTONES, SNIPPET_TITLES, SNIPPET_BLOBS, USERS,
-        BLOBS, COMMITS, WIKI_BLOBS;
+        PROJECTS, ISSUES, MERGE_REQUESTS, MILESTONES, SNIPPET_TITLES, SNIPPET_BLOBS, USERS, BLOBS, COMMITS, WIKI_BLOBS;
 
         private static JacksonJsonEnumHelper<SearchScope> enumHelper = new JacksonJsonEnumHelper<>(SearchScope.class);
 
@@ -821,7 +853,8 @@ public interface Constants {
 
         PROJECTS, ISSUES, MERGE_REQUESTS, MILESTONES, WIKI_BLOBS, COMMITS, BLOBS, NOTES, USERS;
 
-        private static JacksonJsonEnumHelper<GroupSearchScope> enumHelper = new JacksonJsonEnumHelper<>(GroupSearchScope.class);
+        private static JacksonJsonEnumHelper<GroupSearchScope> enumHelper = new JacksonJsonEnumHelper<>(
+                GroupSearchScope.class);
 
         @JsonCreator
         public static GroupSearchScope forValue(String value) {
@@ -846,7 +879,8 @@ public interface Constants {
 
         BLOBS, COMMITS, ISSUES, MERGE_REQUESTS, MILESTONES, NOTES, WIKI_BLOBS, USERS;
 
-        private static JacksonJsonEnumHelper<ProjectSearchScope> enumHelper = new JacksonJsonEnumHelper<>(ProjectSearchScope.class);
+        private static JacksonJsonEnumHelper<ProjectSearchScope> enumHelper = new JacksonJsonEnumHelper<>(
+                ProjectSearchScope.class);
 
         @JsonCreator
         public static ProjectSearchScope forValue(String value) {
@@ -919,7 +953,8 @@ public interface Constants {
 
         ISSUE, MERGE_REQUEST;
 
-        private static JacksonJsonEnumHelper<TodoType> enumHelper = new JacksonJsonEnumHelper<>(TodoType.class, true, true);
+        private static JacksonJsonEnumHelper<TodoType> enumHelper = new JacksonJsonEnumHelper<>(TodoType.class, true,
+                true);
 
         @JsonCreator
         public static TodoType forValue(String value) {
@@ -944,7 +979,8 @@ public interface Constants {
          */
         CREATED, RUNNING, SUCCESS, FAILED, CANCELED;
 
-        private static JacksonJsonEnumHelper<DeploymentStatus> enumHelper = new JacksonJsonEnumHelper<>(DeploymentStatus.class);
+        private static JacksonJsonEnumHelper<DeploymentStatus> enumHelper = new JacksonJsonEnumHelper<>(
+                DeploymentStatus.class);
 
         @JsonCreator
         public static DeploymentStatus forValue(String value) {
@@ -968,7 +1004,8 @@ public interface Constants {
     public enum DeployTokenScope {
         READ_REPOSITORY, READ_REGISTRY;
 
-        private static JacksonJsonEnumHelper<DeployTokenScope> enumHelper = new JacksonJsonEnumHelper<>(DeployTokenScope.class);
+        private static JacksonJsonEnumHelper<DeployTokenScope> enumHelper = new JacksonJsonEnumHelper<>(
+                DeployTokenScope.class);
 
         @JsonCreator
         public static DeployTokenScope forValue(String value) {
@@ -990,7 +1027,8 @@ public interface Constants {
     public enum ProjectAccessTokenScope {
         API, READ_API, READ_REGISTRY, WRITE_REGISTRY, READ_REPOSITORY, WRITE_REPOSITORY, CREATE_RUNNER;
 
-        private static JacksonJsonEnumHelper<ProjectAccessTokenScope> enumHelper = new JacksonJsonEnumHelper<>(ProjectAccessTokenScope.class);
+        private static JacksonJsonEnumHelper<ProjectAccessTokenScope> enumHelper = new JacksonJsonEnumHelper<>(
+                ProjectAccessTokenScope.class);
 
         @JsonCreator
         public static ProjectAccessTokenScope forValue(String value) {
@@ -1038,7 +1076,8 @@ public interface Constants {
 
         FETCH, CLONE;
 
-        private static JacksonJsonEnumHelper<BuildGitStrategy> enumHelper = new JacksonJsonEnumHelper<>(BuildGitStrategy.class);
+        private static JacksonJsonEnumHelper<BuildGitStrategy> enumHelper = new JacksonJsonEnumHelper<>(
+                BuildGitStrategy.class);
 
         @JsonCreator
         public static BuildGitStrategy forValue(String value) {
@@ -1059,7 +1098,8 @@ public interface Constants {
     enum AutoDevopsDeployStrategy {
         CONTINUOUS, MANUAL, TIMED_INCREMENTAL;
 
-        private static JacksonJsonEnumHelper<AutoDevopsDeployStrategy> enumHelper = new JacksonJsonEnumHelper<>(AutoDevopsDeployStrategy.class);
+        private static JacksonJsonEnumHelper<AutoDevopsDeployStrategy> enumHelper = new JacksonJsonEnumHelper<>(
+                AutoDevopsDeployStrategy.class);
 
         @JsonCreator
         public static AutoDevopsDeployStrategy forValue(String value) {
@@ -1105,7 +1145,8 @@ public interface Constants {
     public enum ProjectCreationLevel {
         NOONE, DEVELOPER, MAINTAINER;
 
-        private static JacksonJsonEnumHelper<ProjectCreationLevel> enumHelper = new JacksonJsonEnumHelper<>(ProjectCreationLevel.class);
+        private static JacksonJsonEnumHelper<ProjectCreationLevel> enumHelper = new JacksonJsonEnumHelper<>(
+                ProjectCreationLevel.class);
 
         @JsonCreator
         public static ProjectCreationLevel forValue(String value) {
@@ -1129,7 +1170,8 @@ public interface Constants {
     public enum SubgroupCreationLevel {
         OWNER, MAINTAINER;
 
-        private static JacksonJsonEnumHelper<SubgroupCreationLevel> enumHelper = new JacksonJsonEnumHelper<>(SubgroupCreationLevel.class);
+        private static JacksonJsonEnumHelper<SubgroupCreationLevel> enumHelper = new JacksonJsonEnumHelper<>(
+                SubgroupCreationLevel.class);
 
         @JsonCreator
         public static SubgroupCreationLevel forValue(String value) {
@@ -1148,10 +1190,7 @@ public interface Constants {
     }
 
     public enum DefaultBranchProtectionLevel {
-        NOT_PROTECTED(0),
-        PARTIALLY_PROTECTED(1),
-        FULLY_PROTECTED(2),
-        PROTECTED_AGAINST_PUSHES(3),
+        NOT_PROTECTED(0), PARTIALLY_PROTECTED(1), FULLY_PROTECTED(2), PROTECTED_AGAINST_PUSHES(3),
         FULL_PROTECTION_AFTER_INITIAL_PUSH(4);
 
         @JsonValue
@@ -1167,4 +1206,3 @@ public interface Constants {
         }
     }
 }
-

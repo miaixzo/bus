@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager.builtin;
 
 import org.miaixz.bus.pager.Page;
@@ -75,7 +75,7 @@ public abstract class PageMethod {
      * @return
      */
     public static long count(Querying select) {
-        //单纯count查询时禁用异步count
+        // 单纯count查询时禁用异步count
         Page<?> page = startPage(1, -1, true).disableAsyncCount();
         select.doSelect();
         return page.getTotal();
@@ -88,7 +88,7 @@ public abstract class PageMethod {
      */
     public static <E> Page<E> startPage(Object params) {
         Page<E> page = PageObject.getPageFromObject(params, true);
-        //当已经执行过orderBy的时候
+        // 当已经执行过orderBy的时候
         Page<E> oldPage = getLocalPage();
         if (oldPage != null && oldPage.isOrderByOnly()) {
             page.setOrderBy(oldPage.getOrderBy());
@@ -140,11 +140,12 @@ public abstract class PageMethod {
      * @param reasonable   分页合理化,null时用默认配置
      * @param pageSizeZero true且pageSize=0时返回全部结果，false时分页,null时用默认配置
      */
-    public static <E> Page<E> startPage(int pageNo, int pageSize, boolean count, Boolean reasonable, Boolean pageSizeZero) {
+    public static <E> Page<E> startPage(int pageNo, int pageSize, boolean count, Boolean reasonable,
+            Boolean pageSizeZero) {
         Page<E> page = new Page<E>(pageNo, pageSize, count);
         page.setReasonable(reasonable);
         page.setPageSizeZero(pageSizeZero);
-        //当已经执行过orderBy的时候
+        // 当已经执行过orderBy的时候
         Page<E> oldPage = getLocalPage();
         if (oldPage != null && oldPage.isOrderByOnly()) {
             page.setOrderBy(oldPage.getOrderBy());
@@ -171,7 +172,7 @@ public abstract class PageMethod {
      * @param count  是否进行count查询
      */
     public static <E> Page<E> offsetPage(int offset, int limit, boolean count) {
-        Page<E> page = new Page<E>(new int[]{offset, limit}, count);
+        Page<E> page = new Page<E>(new int[] { offset, limit }, count);
         // 当已经执行过orderBy的时候
         Page<E> oldPage = getLocalPage();
         if (oldPage != null && oldPage.isOrderByOnly()) {

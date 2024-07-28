@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.sink;
 
 import org.miaixz.bus.core.io.ByteString;
@@ -66,74 +66,81 @@ public final class RealSink implements BufferSink {
     }
 
     @Override
-    public void write(Buffer source, long byteCount)
-            throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+    public void write(Buffer source, long byteCount) throws IOException {
+        if (closed)
+            throw new IllegalStateException("closed");
         buffer.write(source, byteCount);
         emitCompleteSegments();
     }
 
     @Override
     public BufferSink write(ByteString byteString) throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+        if (closed)
+            throw new IllegalStateException("closed");
         buffer.write(byteString);
         return emitCompleteSegments();
     }
 
     @Override
     public BufferSink writeUtf8(String string) throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+        if (closed)
+            throw new IllegalStateException("closed");
         buffer.writeUtf8(string);
         return emitCompleteSegments();
     }
 
     @Override
-    public BufferSink writeUtf8(String string, int beginIndex, int endIndex)
-            throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+    public BufferSink writeUtf8(String string, int beginIndex, int endIndex) throws IOException {
+        if (closed)
+            throw new IllegalStateException("closed");
         buffer.writeUtf8(string, beginIndex, endIndex);
         return emitCompleteSegments();
     }
 
     @Override
     public BufferSink writeUtf8CodePoint(int codePoint) throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+        if (closed)
+            throw new IllegalStateException("closed");
         buffer.writeUtf8CodePoint(codePoint);
         return emitCompleteSegments();
     }
 
     @Override
     public BufferSink writeString(String string, Charset charset) throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+        if (closed)
+            throw new IllegalStateException("closed");
         buffer.writeString(string, charset);
         return emitCompleteSegments();
     }
 
     @Override
-    public BufferSink writeString(String string, int beginIndex, int endIndex,
-                                  Charset charset) throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+    public BufferSink writeString(String string, int beginIndex, int endIndex, Charset charset) throws IOException {
+        if (closed)
+            throw new IllegalStateException("closed");
         buffer.writeString(string, beginIndex, endIndex, charset);
         return emitCompleteSegments();
     }
 
     @Override
     public BufferSink write(byte[] source) throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+        if (closed)
+            throw new IllegalStateException("closed");
         buffer.write(source);
         return emitCompleteSegments();
     }
 
     @Override
     public BufferSink write(byte[] source, int offset, int byteCount) throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+        if (closed)
+            throw new IllegalStateException("closed");
         buffer.write(source, offset, byteCount);
         return emitCompleteSegments();
     }
 
     @Override
     public int write(ByteBuffer source) throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+        if (closed)
+            throw new IllegalStateException("closed");
         int result = buffer.write(source);
         emitCompleteSegments();
         return result;
@@ -145,7 +152,7 @@ public final class RealSink implements BufferSink {
             throw new IllegalArgumentException("source == null");
         }
         long totalBytesRead = 0;
-        for (long readCount; (readCount = source.read(buffer, SectionBuffer.SIZE)) != -1; ) {
+        for (long readCount; (readCount = source.read(buffer, SectionBuffer.SIZE)) != -1;) {
             totalBytesRead += readCount;
             emitCompleteSegments();
         }
@@ -156,7 +163,8 @@ public final class RealSink implements BufferSink {
     public BufferSink write(Source source, long byteCount) throws IOException {
         while (byteCount > 0) {
             long read = source.read(buffer, byteCount);
-            if (read == -1) throw new EOFException();
+            if (read == -1)
+                throw new EOFException();
             byteCount -= read;
             emitCompleteSegments();
         }
@@ -165,80 +173,93 @@ public final class RealSink implements BufferSink {
 
     @Override
     public BufferSink writeByte(int b) throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+        if (closed)
+            throw new IllegalStateException("closed");
         buffer.writeByte(b);
         return emitCompleteSegments();
     }
 
     @Override
     public BufferSink writeShort(int s) throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+        if (closed)
+            throw new IllegalStateException("closed");
         buffer.writeShort(s);
         return emitCompleteSegments();
     }
 
     @Override
     public BufferSink writeShortLe(int s) throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+        if (closed)
+            throw new IllegalStateException("closed");
         buffer.writeShortLe(s);
         return emitCompleteSegments();
     }
 
     @Override
     public BufferSink writeInt(int i) throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+        if (closed)
+            throw new IllegalStateException("closed");
         buffer.writeInt(i);
         return emitCompleteSegments();
     }
 
     @Override
     public BufferSink writeIntLe(int i) throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+        if (closed)
+            throw new IllegalStateException("closed");
         buffer.writeIntLe(i);
         return emitCompleteSegments();
     }
 
     @Override
     public BufferSink writeLong(long v) throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+        if (closed)
+            throw new IllegalStateException("closed");
         buffer.writeLong(v);
         return emitCompleteSegments();
     }
 
     @Override
     public BufferSink writeLongLe(long v) throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+        if (closed)
+            throw new IllegalStateException("closed");
         buffer.writeLongLe(v);
         return emitCompleteSegments();
     }
 
     @Override
     public BufferSink writeDecimalLong(long v) throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+        if (closed)
+            throw new IllegalStateException("closed");
         buffer.writeDecimalLong(v);
         return emitCompleteSegments();
     }
 
     @Override
     public BufferSink writeHexadecimalUnsignedLong(long v) throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+        if (closed)
+            throw new IllegalStateException("closed");
         buffer.writeHexadecimalUnsignedLong(v);
         return emitCompleteSegments();
     }
 
     @Override
     public BufferSink emitCompleteSegments() throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+        if (closed)
+            throw new IllegalStateException("closed");
         long byteCount = buffer.completeSegmentByteCount();
-        if (byteCount > 0) sink.write(buffer, byteCount);
+        if (byteCount > 0)
+            sink.write(buffer, byteCount);
         return this;
     }
 
     @Override
     public BufferSink emit() throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+        if (closed)
+            throw new IllegalStateException("closed");
         long byteCount = buffer.size();
-        if (byteCount > 0) sink.write(buffer, byteCount);
+        if (byteCount > 0)
+            sink.write(buffer, byteCount);
         return this;
     }
 
@@ -247,14 +268,16 @@ public final class RealSink implements BufferSink {
         return new OutputStream() {
             @Override
             public void write(int b) throws IOException {
-                if (closed) throw new IOException("closed");
+                if (closed)
+                    throw new IOException("closed");
                 buffer.writeByte((byte) b);
                 emitCompleteSegments();
             }
 
             @Override
             public void write(byte[] data, int offset, int byteCount) throws IOException {
-                if (closed) throw new IOException("closed");
+                if (closed)
+                    throw new IOException("closed");
                 buffer.write(data, offset, byteCount);
                 emitCompleteSegments();
             }
@@ -281,7 +304,8 @@ public final class RealSink implements BufferSink {
 
     @Override
     public void flush() throws IOException {
-        if (closed) throw new IllegalStateException("closed");
+        if (closed)
+            throw new IllegalStateException("closed");
         if (buffer.size > 0) {
             sink.write(buffer, buffer.size);
         }
@@ -311,11 +335,13 @@ public final class RealSink implements BufferSink {
         try {
             sink.close();
         } catch (Throwable e) {
-            if (null == thrown) thrown = e;
+            if (null == thrown)
+                thrown = e;
         }
         closed = true;
 
-        if (null != thrown) IoKit.sneakyRethrow(thrown);
+        if (null != thrown)
+            IoKit.sneakyRethrow(thrown);
     }
 
     @Override

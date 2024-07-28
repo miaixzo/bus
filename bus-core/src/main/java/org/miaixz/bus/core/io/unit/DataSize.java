@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.unit;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -38,8 +38,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * 数据大小，可以将类似于'12MB'表示转换为bytes长度的数字
- * 此类来自于：Spring-framework
+ * 数据大小，可以将类似于'12MB'表示转换为bytes长度的数字 此类来自于：Spring-framework
  *
  * <pre>
  *     byte        1B     1
@@ -79,12 +78,10 @@ public final class DataSize implements Comparable<DataSize> {
      */
     private static final long BYTES_PER_TB = BYTES_PER_GB * 1024;
 
-
     /**
      * bytes长度
      */
     private final long bytes;
-
 
     /**
      * 构造
@@ -94,7 +91,6 @@ public final class DataSize implements Comparable<DataSize> {
     private DataSize(final long bytes) {
         this.bytes = bytes;
     }
-
 
     /**
      * 获得对应bytes的DataSize
@@ -175,8 +171,8 @@ public final class DataSize implements Comparable<DataSize> {
     }
 
     /**
-     * 获取指定数据大小文本对应的DataSize对象，如果无单位指定，默认获取{@link DataUnit#BYTES}
-     * 例如：
+     * 获取指定数据大小文本对应的DataSize对象，如果无单位指定，默认获取{@link DataUnit#BYTES} 例如：
+     * 
      * <pre>
      * "12KB" -- parses as "12 kilobytes"
      * "5MB"  -- parses as "5 megabytes"
@@ -192,8 +188,8 @@ public final class DataSize implements Comparable<DataSize> {
     }
 
     /**
-     * 获取指定数据大小文本对应的DataSize对象，如果无单位指定，默认获取{@link DataUnit#BYTES}
-     * 例如：
+     * 获取指定数据大小文本对应的DataSize对象，如果无单位指定，默认获取{@link DataUnit#BYTES} 例如：
+     * 
      * <pre>
      * "12KB" -- parses as "12 kilobytes"
      * "5MB"  -- parses as "5 megabytes"
@@ -209,15 +205,16 @@ public final class DataSize implements Comparable<DataSize> {
     }
 
     /**
-     * Obtain a DataSize from a text string such as {@code 12MB} using
-     * the specified default {@link DataUnit} if no unit is specified.
-     * The string starts with a number followed optionally by a unit matching one of the
-     * supported {@linkplain DataUnit suffixes}.
-     * Examples:
+     * Obtain a DataSize from a text string such as {@code 12MB} using the specified default {@link DataUnit} if no unit
+     * is specified. The string starts with a number followed optionally by a unit matching one of the supported
+     * {@linkplain DataUnit suffixes}. Examples:
+     * 
      * <pre>
      * "12KB" -- parses as "12 kilobytes"
      * "5MB"  -- parses as "5 megabytes"
-     * "20"   -- parses as "20 kilobytes" (where the {@code defaultUnit} is {@link DataUnit#KILOBYTES})
+     * "20"   -- parses as "20 kilobytes" (where the {@code
+     * defaultUnit
+     * } is {@link DataUnit#KILOBYTES})
      * </pre>
      *
      * @param text        the text to parse
@@ -250,8 +247,8 @@ public final class DataSize implements Comparable<DataSize> {
     }
 
     /**
-     * 可读的文件大小
-     * 参考 <a href="http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc">http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc</a>
+     * 可读的文件大小 参考 <a href=
+     * "http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc">http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc</a>
      *
      * @param size Long类型大小
      * @return 大小
@@ -261,8 +258,8 @@ public final class DataSize implements Comparable<DataSize> {
             return "0";
         }
         final int digitGroups = Math.min(Normal.CAPACITY_NAMES.length - 1, (int) (Math.log10(size) / Math.log10(1024)));
-        return new DecimalFormat("#,##0.##")
-                .format(size / Math.pow(1024, digitGroups)) + Symbol.SPACE + Normal.CAPACITY_NAMES[digitGroups];
+        return new DecimalFormat("#,##0.##").format(size / Math.pow(1024, digitGroups)) + Symbol.SPACE
+                + Normal.CAPACITY_NAMES[digitGroups];
     }
 
     /**
@@ -328,7 +325,6 @@ public final class DataSize implements Comparable<DataSize> {
     public String toString() {
         return String.format("%dB", this.bytes);
     }
-
 
     @Override
     public boolean equals(final Object other) {

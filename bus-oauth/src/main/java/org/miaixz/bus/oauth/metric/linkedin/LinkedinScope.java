@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org justauth.cn and other contributors.        ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.linkedin;
 
 import lombok.AllArgsConstructor;
@@ -52,13 +52,16 @@ public enum LinkedinScope implements AuthorizeScope {
     R_ADS("r_ads", "Retrieve your advertising accounts", false),
     R_ADS_LEADGEN_AUTOMATION("r_ads_leadgen_automation", "Access your Lead Gen Forms and retrieve leads", false),
     R_ADS_REPORTING("r_ads_reporting", "Retrieve reporting for your advertising accounts", false),
-    R_BASICPROFILE("r_basicprofile", "Use your basic profile including your name, photo, headline, and current positions", false),
-    R_ORGANIZATION_SOCIAL("r_organization_social", "Retrieve your organizations' posts, including any comments, likes and other engagement data", false),
+    R_BASICPROFILE("r_basicprofile",
+            "Use your basic profile including your name, photo, headline, and current positions", false),
+    R_ORGANIZATION_SOCIAL("r_organization_social",
+            "Retrieve your organizations' posts, including any comments, likes and other engagement data", false),
     RW_AD_CAMPAIGNS("rw_ad_campaigns", "Manage your advertising campaigns", false),
     RW_ADS("rw_ads", "Manage your advertising accounts", false),
     RW_COMPANY_ADMIN("rw_company_admin", "For V1 callsManage your organization's page and post updates", false),
     RW_DMP_SEGMENTS("rw_dmp_segments", "Create and manage your matched audiences", false),
-    RW_ORGANIZATION_ADMIN("rw_organization_admin", "Manage your organizations' pages and retrieve reporting data", false),
+    RW_ORGANIZATION_ADMIN("rw_organization_admin", "Manage your organizations' pages and retrieve reporting data",
+            false),
     RW_ORGANIZATION("rw_organization", "For V2 callsManage your organization's page and post updates", false),
     W_ORGANIZATION_SOCIAL("w_organization_social", "Post, comment and like posts on your organization's behalf", false),
     W_SHARE("w_share", "Post updates to LinkedIn as you", false);

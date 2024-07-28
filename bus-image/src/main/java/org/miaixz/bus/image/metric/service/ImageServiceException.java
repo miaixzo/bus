@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.service;
 
 import org.miaixz.bus.image.Builder;
@@ -138,8 +138,8 @@ public class ImageServiceException extends IOException {
         return this;
     }
 
-    public ImageServiceException setNumberOfCompletedFailedWarningSuboperations(
-            int completed, int failed, int warning) {
+    public ImageServiceException setNumberOfCompletedFailedWarningSuboperations(int completed, int failed,
+            int warning) {
         rsp.setInt(Tag.NumberOfCompletedSuboperations, VR.US, completed);
         rsp.setInt(Tag.NumberOfFailedSuboperations, VR.US, failed);
         rsp.setInt(Tag.NumberOfWarningSuboperations, VR.US, warning);

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text;
 
 /**
@@ -45,8 +45,7 @@ public class ASCIIStrCache {
     }
 
     /**
-     * 字符转为字符串
-     * 如果为ASCII字符，使用缓存
+     * 字符转为字符串 如果为ASCII字符，使用缓存
      *
      * @param c 字符
      * @return 字符串

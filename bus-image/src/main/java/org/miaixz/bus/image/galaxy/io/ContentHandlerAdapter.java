@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.io;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -113,54 +113,51 @@ public class ContentHandlerAdapter extends DefaultHandler {
     }
 
     @Override
-    public void startElement(String uri, String localName, String qName,
-                             org.xml.sax.Attributes atts) {
+    public void startElement(String uri, String localName, String qName, org.xml.sax.Attributes atts) {
         switch (qName) {
-            case "DicomAttribute":
-                startDicomAttribute(
-                        (int) Long.parseLong(atts.getValue("tag"), 16),
-                        atts.getValue("privateCreator"),
-                        atts.getValue("vr"));
-                break;
-            case "Item":
-                startItem(Integer.parseInt(atts.getValue("number")));
-                break;
-            case "DataFragment":
-                startDataFragment(Integer.parseInt(atts.getValue("number")));
-                break;
-            case "InlineBinary":
-                startInlineBinary();
-                break;
-            case "PersonName":
-                startPersonName(Integer.parseInt(atts.getValue("number")));
-                break;
-            case "Alphabetic":
-                startPNGroup(PersonName.Group.Alphabetic);
-                break;
-            case "Ideographic":
-                startPNGroup(PersonName.Group.Ideographic);
-                break;
-            case "Phonetic":
-                startPNGroup(PersonName.Group.Phonetic);
-                break;
-            case "Value":
-                startValue(Integer.parseInt(atts.getValue("number")));
-                startText();
-                break;
-            case "FamilyName":
-            case "GivenName":
-            case "Length":
-            case "MiddleName":
-            case "NamePrefix":
-            case "NameSuffix":
-            case "Offset":
-            case "TransferSyntax":
-            case "URI":
-                startText();
-                break;
-            case "BulkData":
-                bulkData(atts.getValue("uuid"), atts.getValue("uri"));
-                break;
+        case "DicomAttribute":
+            startDicomAttribute((int) Long.parseLong(atts.getValue("tag"), 16), atts.getValue("privateCreator"),
+                    atts.getValue("vr"));
+            break;
+        case "Item":
+            startItem(Integer.parseInt(atts.getValue("number")));
+            break;
+        case "DataFragment":
+            startDataFragment(Integer.parseInt(atts.getValue("number")));
+            break;
+        case "InlineBinary":
+            startInlineBinary();
+            break;
+        case "PersonName":
+            startPersonName(Integer.parseInt(atts.getValue("number")));
+            break;
+        case "Alphabetic":
+            startPNGroup(PersonName.Group.Alphabetic);
+            break;
+        case "Ideographic":
+            startPNGroup(PersonName.Group.Ideographic);
+            break;
+        case "Phonetic":
+            startPNGroup(PersonName.Group.Phonetic);
+            break;
+        case "Value":
+            startValue(Integer.parseInt(atts.getValue("number")));
+            startText();
+            break;
+        case "FamilyName":
+        case "GivenName":
+        case "Length":
+        case "MiddleName":
+        case "NamePrefix":
+        case "NameSuffix":
+        case "Offset":
+        case "TransferSyntax":
+        case "URI":
+            startText();
+            break;
+        case "BulkData":
+            bulkData(atts.getValue("uuid"), atts.getValue("uri"));
+            break;
         }
     }
 
@@ -181,22 +178,19 @@ public class ContentHandlerAdapter extends DefaultHandler {
         sb.setLength(0);
     }
 
-    private void startDicomAttribute(int tag, String privateCreator,
-                                     String vr) {
+    private void startDicomAttribute(int tag, String privateCreator, String vr) {
         this.tag = tag;
         this.privateCreator = privateCreator;
-        this.vr = vr != null ? VR.valueOf(vr)
-                : ElementDictionary.vrOf(tag, privateCreator);
+        this.vr = vr != null ? VR.valueOf(vr) : ElementDictionary.vrOf(tag, privateCreator);
         if (this.vr == VR.SQ)
             seqs.add(items.getLast().newSequence(privateCreator, tag, 10));
     }
 
     private void startDataFragment(int number) {
         if (dataFragments == null)
-            dataFragments = items.getLast()
-                    .newFragments(privateCreator, tag, vr, 10);
+            dataFragments = items.getLast().newFragments(privateCreator, tag, vr, 10);
         while (dataFragments.size() < number - 1)
-            dataFragments.add(new byte[]{});
+            dataFragments.add(new byte[] {});
     }
 
     private void startItem(int number) {
@@ -223,8 +217,7 @@ public class ContentHandlerAdapter extends DefaultHandler {
     }
 
     @Override
-    public void characters(char[] ch, int offset, int len)
-            throws SAXException {
+    public void characters(char[] ch, int offset, int len) throws SAXException {
         if (processCharacters)
             if (inlineBinary)
                 try {
@@ -236,7 +229,8 @@ public class ContentHandlerAdapter extends DefaultHandler {
                         len -= copy;
                         if (carryLen == 4)
                             Builder.decode(carry, 0, 4, bout);
-                        else return;
+                        else
+                            return;
                     }
                     if ((carryLen = len & 3) != 0) {
                         len -= carryLen;
@@ -251,39 +245,38 @@ public class ContentHandlerAdapter extends DefaultHandler {
     }
 
     @Override
-    public void endElement(String uri, String localName, String qName)
-            throws SAXException {
+    public void endElement(String uri, String localName, String qName) throws SAXException {
         switch (qName) {
-            case "DicomAttribute":
-                endDicomAttribute();
-                break;
-            case "Item":
-                endItem();
-                break;
-            case "DataFragment":
-                endDataFragment();
-                break;
-            case "PersonName":
-                endPersonName();
-                break;
-            case "Value":
-                endValue();
-                break;
-            case "FamilyName":
-                endPNComponent(PersonName.Component.FamilyName);
-                break;
-            case "GivenName":
-                endPNComponent(PersonName.Component.GivenName);
-                break;
-            case "MiddleName":
-                endPNComponent(PersonName.Component.MiddleName);
-                break;
-            case "NamePrefix":
-                endPNComponent(PersonName.Component.NamePrefix);
-                break;
-            case "NameSuffix":
-                endPNComponent(PersonName.Component.NameSuffix);
-                break;
+        case "DicomAttribute":
+            endDicomAttribute();
+            break;
+        case "Item":
+            endItem();
+            break;
+        case "DataFragment":
+            endDataFragment();
+            break;
+        case "PersonName":
+            endPersonName();
+            break;
+        case "Value":
+            endValue();
+            break;
+        case "FamilyName":
+            endPNComponent(PersonName.Component.FamilyName);
+            break;
+        case "GivenName":
+            endPNComponent(PersonName.Component.GivenName);
+            break;
+        case "MiddleName":
+            endPNComponent(PersonName.Component.MiddleName);
+            break;
+        case "NamePrefix":
+            endPNComponent(PersonName.Component.NamePrefix);
+            break;
+        case "NameSuffix":
+            endPNComponent(PersonName.Component.NameSuffix);
+            break;
         }
         processCharacters = false;
     }
@@ -326,12 +319,8 @@ public class ContentHandlerAdapter extends DefaultHandler {
             try {
                 attrs.setString(privateCreator, tag, vr, value);
             } catch (RuntimeException e) {
-                String message = String.format("Invalid %s(%04X,%04X) %s %s",
-                        prefix(privateCreator, items.size() - 1),
-                        Tag.groupNumber(tag),
-                        Tag.elementNumber(tag),
-                        vr,
-                        Arrays.toString(value));
+                String message = String.format("Invalid %s(%04X,%04X) %s %s", prefix(privateCreator, items.size() - 1),
+                        Tag.groupNumber(tag), Tag.elementNumber(tag), vr, Arrays.toString(value));
                 if (lenient) {
                     Logger.info("{} - ignored", message);
                 } else {

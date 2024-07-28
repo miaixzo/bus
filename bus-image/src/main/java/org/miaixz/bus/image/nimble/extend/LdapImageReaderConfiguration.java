@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.extend;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -56,8 +56,7 @@ public class LdapImageReaderConfiguration extends LdapDicomConfigurationExtensio
 
     @Override
     protected void storeChilds(ConfigurationChanges diffs, String deviceDN, Device device) throws NamingException {
-        ImageReaderExtension ext =
-                device.getDeviceExtension(ImageReaderExtension.class);
+        ImageReaderExtension ext = device.getDeviceExtension(ImageReaderExtension.class);
         if (ext != null)
             store(diffs, deviceDN, ext.getImageReaderFactory());
     }
@@ -73,13 +72,14 @@ public class LdapImageReaderConfiguration extends LdapDicomConfigurationExtensio
         for (Entry<String, ImageReaderParam> entry : factory.getEntries()) {
             String tsuid = entry.getKey();
             String dn = dnOf(tsuid, imageReadersDN);
-            ConfigurationChanges.ModifiedObject ldapObj1 =
-                    ConfigurationChanges.addModifiedObjectIfVerbose(diffs, dn, ConfigurationChanges.ChangeType.C);
+            ConfigurationChanges.ModifiedObject ldapObj1 = ConfigurationChanges.addModifiedObjectIfVerbose(diffs, dn,
+                    ConfigurationChanges.ChangeType.C);
             config.createSubcontext(dn, storeTo(ldapObj1, tsuid, entry.getValue(), new BasicAttributes(true)));
         }
     }
 
-    private Attributes storeTo(ConfigurationChanges.ModifiedObject ldapObj, String tsuid, ImageReaderParam param, Attributes attrs) {
+    private Attributes storeTo(ConfigurationChanges.ModifiedObject ldapObj, String tsuid, ImageReaderParam param,
+            Attributes attrs) {
         attrs.put("objectclass", "dcmImageReader");
         attrs.put("dicomTransferSyntax", tsuid);
         attrs.put("dcmIIOFormatName", param.formatName);
@@ -90,8 +90,7 @@ public class LdapImageReaderConfiguration extends LdapDicomConfigurationExtensio
     }
 
     @Override
-    protected void loadChilds(Device device, String deviceDN)
-            throws NamingException, InternalException {
+    protected void loadChilds(Device device, String deviceDN) throws NamingException, InternalException {
         String imageReadersDN = CN_IMAGE_READER_FACTORY + deviceDN;
         try {
             config.getAttributes(imageReadersDN);
@@ -100,21 +99,15 @@ public class LdapImageReaderConfiguration extends LdapDicomConfigurationExtensio
         }
 
         ImageReaderFactory factory = new ImageReaderFactory();
-        NamingEnumeration<SearchResult> ne =
-                config.search(imageReadersDN, "(objectclass=dcmImageReader)");
+        NamingEnumeration<SearchResult> ne = config.search(imageReadersDN, "(objectclass=dcmImageReader)");
         try {
             while (ne.hasMore()) {
                 SearchResult sr = ne.next();
                 Attributes attrs = sr.getAttributes();
-                factory.put(
-                        LdapBuilder.stringValue(attrs.get("dicomTransferSyntax"), null),
-                        new ImageReaderParam(
-                                LdapBuilder.stringValue(
-                                        attrs.get("dcmIIOFormatName"), null),
-                                LdapBuilder.stringValue(
-                                        attrs.get("dcmJavaClassName"), null),
-                                LdapBuilder.stringValue(
-                                        attrs.get("dcmPatchJPEGLS"), null),
+                factory.put(LdapBuilder.stringValue(attrs.get("dicomTransferSyntax"), null),
+                        new ImageReaderParam(LdapBuilder.stringValue(attrs.get("dcmIIOFormatName"), null),
+                                LdapBuilder.stringValue(attrs.get("dcmJavaClassName"), null),
+                                LdapBuilder.stringValue(attrs.get("dcmPatchJPEGLS"), null),
                                 LdapBuilder.stringArray(attrs.get("dcmImageReadParam"))));
             }
         } finally {
@@ -124,7 +117,8 @@ public class LdapImageReaderConfiguration extends LdapDicomConfigurationExtensio
     }
 
     @Override
-    protected void mergeChilds(ConfigurationChanges diffs, Device prev, Device device, String deviceDN) throws NamingException {
+    protected void mergeChilds(ConfigurationChanges diffs, Device prev, Device device, String deviceDN)
+            throws NamingException {
         ImageReaderExtension prevExt = prev.getDeviceExtension(ImageReaderExtension.class);
         ImageReaderExtension ext = device.getDeviceExtension(ImageReaderExtension.class);
         if (ext == null && prevExt == null)
@@ -141,8 +135,8 @@ public class LdapImageReaderConfiguration extends LdapDicomConfigurationExtensio
         }
     }
 
-    private void merge(ConfigurationChanges diffs, ImageReaderFactory prev, ImageReaderFactory factory, String imageReadersDN)
-            throws NamingException {
+    private void merge(ConfigurationChanges diffs, ImageReaderFactory prev, ImageReaderFactory factory,
+            String imageReadersDN) throws NamingException {
         for (Entry<String, ImageReaderParam> entry : prev.getEntries()) {
             String tsuid = entry.getKey();
             if (factory.get(tsuid) == null) {
@@ -156,31 +150,26 @@ public class LdapImageReaderConfiguration extends LdapDicomConfigurationExtensio
             String dn = dnOf(tsuid, imageReadersDN);
             ImageReaderParam prevParam = prev.get(tsuid);
             if (prevParam == null) {
-                ConfigurationChanges.ModifiedObject ldapObj =
-                        ConfigurationChanges.addModifiedObject(diffs, dn, ConfigurationChanges.ChangeType.C);
-                config.createSubcontext(dn,
-                        storeTo(ConfigurationChanges.nullifyIfNotVerbose(diffs, ldapObj),
-                                tsuid, entry.getValue(), new BasicAttributes(true)));
+                ConfigurationChanges.ModifiedObject ldapObj = ConfigurationChanges.addModifiedObject(diffs, dn,
+                        ConfigurationChanges.ChangeType.C);
+                config.createSubcontext(dn, storeTo(ConfigurationChanges.nullifyIfNotVerbose(diffs, ldapObj), tsuid,
+                        entry.getValue(), new BasicAttributes(true)));
             } else {
-                ConfigurationChanges.ModifiedObject ldapObj =
-                        ConfigurationChanges.addModifiedObject(diffs, dn, ConfigurationChanges.ChangeType.U);
-                config.modifyAttributes(dn,
-                        storeDiffs(ldapObj, prevParam, entry.getValue(), new ArrayList<>()));
+                ConfigurationChanges.ModifiedObject ldapObj = ConfigurationChanges.addModifiedObject(diffs, dn,
+                        ConfigurationChanges.ChangeType.U);
+                config.modifyAttributes(dn, storeDiffs(ldapObj, prevParam, entry.getValue(), new ArrayList<>()));
                 ConfigurationChanges.removeLastIfEmpty(diffs, ldapObj);
             }
         }
     }
 
     private List<ModificationItem> storeDiffs(ConfigurationChanges.ModifiedObject ldapObj, ImageReaderParam prevParam,
-                                              ImageReaderParam param, List<ModificationItem> mods) {
-        LdapBuilder.storeDiffObject(ldapObj, mods, "dcmIIOFormatName",
-                prevParam.formatName, param.formatName, null);
-        LdapBuilder.storeDiffObject(ldapObj, mods, "dcmJavaClassName",
-                prevParam.className, param.className, null);
-        LdapBuilder.storeDiffObject(ldapObj, mods, "dcmPatchJPEGLS",
-                prevParam.patchJPEGLS, param.patchJPEGLS, null);
-        LdapBuilder.storeDiff(ldapObj, mods, "dcmImageReadParam",
-                prevParam.getImageReadParams(), param.getImageReadParams());
+            ImageReaderParam param, List<ModificationItem> mods) {
+        LdapBuilder.storeDiffObject(ldapObj, mods, "dcmIIOFormatName", prevParam.formatName, param.formatName, null);
+        LdapBuilder.storeDiffObject(ldapObj, mods, "dcmJavaClassName", prevParam.className, param.className, null);
+        LdapBuilder.storeDiffObject(ldapObj, mods, "dcmPatchJPEGLS", prevParam.patchJPEGLS, param.patchJPEGLS, null);
+        LdapBuilder.storeDiff(ldapObj, mods, "dcmImageReadParam", prevParam.getImageReadParams(),
+                param.getImageReadParams());
         return mods;
     }
 

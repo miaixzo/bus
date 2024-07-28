@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.notify.metric.aliyun;
 
 import org.miaixz.bus.core.basic.entity.Message;
@@ -73,9 +73,7 @@ public class AliyunProvider<T extends Material, K extends Context> extends Abstr
      * @return 编码值
      */
     protected String specialUrlEncode(String value) {
-        return URLEncoder.encode(value, Charset.UTF_8)
-                .replace(Symbol.PLUS, "%20")
-                .replace(Symbol.STAR, "%2A")
+        return URLEncoder.encode(value, Charset.UTF_8).replace(Symbol.PLUS, "%20").replace(Symbol.STAR, "%2A")
                 .replace("%7E", Symbol.TILDE);
     }
 
@@ -93,17 +91,13 @@ public class AliyunProvider<T extends Material, K extends Context> extends Abstr
         StringBuilder sortQueryStringTmp = new StringBuilder();
         while (it.hasNext()) {
             String key = it.next();
-            sortQueryStringTmp
-                    .append(Symbol.AND)
-                    .append(specialUrlEncode(key))
-                    .append(Symbol.EQUAL)
+            sortQueryStringTmp.append(Symbol.AND).append(specialUrlEncode(key)).append(Symbol.EQUAL)
                     .append(specialUrlEncode(params.get(key)));
         }
         // 去除第一个多余的&符号
         String sortedQueryString = sortQueryStringTmp.substring(1);
-        String stringToSign = HTTP.GET + Symbol.AND +
-                specialUrlEncode(Symbol.SLASH) + Symbol.AND +
-                specialUrlEncode(sortedQueryString);
+        String stringToSign = HTTP.GET + Symbol.AND + specialUrlEncode(Symbol.SLASH) + Symbol.AND
+                + specialUrlEncode(sortedQueryString);
         return sign(stringToSign);
     }
 
@@ -116,7 +110,8 @@ public class AliyunProvider<T extends Material, K extends Context> extends Abstr
     protected String sign(String stringToSign) {
         try {
             Mac mac = Mac.getInstance(Algorithm.HMACSHA1.getValue());
-            mac.init(new SecretKeySpec((context.getAppSecret() + Symbol.AND).getBytes(Charset.UTF_8), Algorithm.HMACSHA1.getValue()));
+            mac.init(new SecretKeySpec((context.getAppSecret() + Symbol.AND).getBytes(Charset.UTF_8),
+                    Algorithm.HMACSHA1.getValue()));
             byte[] signData = mac.doFinal(stringToSign.getBytes(Charset.UTF_8));
             return Base64.getEncoder().encodeToString(signData);
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
@@ -126,9 +121,8 @@ public class AliyunProvider<T extends Material, K extends Context> extends Abstr
 
     protected Message checkResponse(String response) {
         String code = JsonKit.getValue(response, "Code");
-        return Message.builder()
-                .errcode(SUCCESS_RESULT.equals(code) ? ErrorCode.SUCCESS.getCode() : code)
-                .errmsg(code).build();
+        return Message.builder().errcode(SUCCESS_RESULT.equals(code) ? ErrorCode.SUCCESS.getCode() : code).errmsg(code)
+                .build();
     }
 
 }

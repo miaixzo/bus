@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -38,8 +38,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 /**
- * This is the exception that will be thrown if any exception occurs while communicating
- * with a GitLab API endpoint.
+ * This is the exception that will be thrown if any exception occurs while communicating with a GitLab API endpoint.
  */
 public class GitLabApiException extends Exception {
     private static final long serialVersionUID = -1L;
@@ -63,7 +62,7 @@ public class GitLabApiException extends Exception {
     /**
      * Create a GitLabApiException instance with the specified message and HTTP status code.
      *
-     * @param message the message for the exception
+     * @param message    the message for the exception
      * @param httpStatus the HTTP status code for the exception
      */
     public GitLabApiException(String message, int httpStatus) {
@@ -179,8 +178,7 @@ public class GitLabApiException extends Exception {
     }
 
     /**
-     * Returns the HTTP status reason message, returns null if the
-     * causing error was not an HTTP related exception.
+     * Returns the HTTP status reason message, returns null if the causing error was not an HTTP related exception.
      *
      * @return the HTTP status reason message
      */
@@ -189,8 +187,8 @@ public class GitLabApiException extends Exception {
     }
 
     /**
-     * Returns the HTTP status code that was the cause of the exception. returns 0 if the
-     * causing error was not an HTTP related exception
+     * Returns the HTTP status code that was the cause of the exception. returns 0 if the causing error was not an HTTP
+     * related exception
      *
      * @return the HTTP status code, returns 0 if the causing error was not an HTTP related exception
      */
@@ -199,11 +197,11 @@ public class GitLabApiException extends Exception {
     }
 
     /**
-     * Returns true if this GitLabApiException was caused by validation errors on the GitLab server,
-     * otherwise returns false.
+     * Returns true if this GitLabApiException was caused by validation errors on the GitLab server, otherwise returns
+     * false.
      *
-     * @return true if this GitLabApiException was caused by validation errors on the GitLab server,
-     * otherwise returns false
+     * @return true if this GitLabApiException was caused by validation errors on the GitLab server, otherwise returns
+     *         false
      */
     public boolean hasValidationErrors() {
         return (validationErrors != null);
@@ -214,7 +212,7 @@ public class GitLabApiException extends Exception {
      * was caused by validation errors on the GitLab server, otherwise returns null.
      *
      * @return a Map&lt;String, List&lt;String&gt;&gt; instance containing validation errors if this GitLabApiException
-     * was caused by validation errors on the GitLab server, otherwise returns null
+     *         was caused by validation errors on the GitLab server, otherwise returns null
      */
     public Map<String, List<String>> getValidationErrors() {
         return (validationErrors);

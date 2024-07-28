@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -41,13 +41,9 @@ import java.awt.image.ComponentColorModel;
 public class ColorModelFactory {
 
     public static ColorModel createMonochromeColorModel(int bits, int dataType) {
-        return new ComponentColorModel(
-                ColorSpace.getInstance(ColorSpace.CS_GRAY),
-                new int[]{bits},
-                false, // hasAlpha
+        return new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_GRAY), new int[] { bits }, false, // hasAlpha
                 false, // isAlphaPremultiplied
-                Transparency.OPAQUE,
-                dataType);
+                Transparency.OPAQUE, dataType);
     }
 
     public static ColorModel createPaletteColorModel(int bits, int dataType, ColorSpace cspace, Attributes ds) {
@@ -55,28 +51,17 @@ public class ColorModelFactory {
     }
 
     public static ColorModel createRGBColorModel(int bits, int dataType, ColorSpace cspace) {
-        return new ComponentColorModel(
-                cspace,
-                new int[]{bits, bits, bits},
-                false,
-                false,
-                Transparency.OPAQUE,
+        return new ComponentColorModel(cspace, new int[] { bits, bits, bits }, false, false, Transparency.OPAQUE,
                 dataType);
     }
 
-
     public static ColorModel createYBRFullColorModel(int bits, int dataType, ColorSpace cspace) {
-        return new ComponentColorModel(
-                cspace,
-                new int[]{bits, bits, bits},
-                false,
-                false,
-                Transparency.OPAQUE,
+        return new ComponentColorModel(cspace, new int[] { bits, bits, bits }, false, false, Transparency.OPAQUE,
                 dataType);
     }
 
     public static ColorModel createYBRColorModel(int bits, int dataType, ColorSpace cspace,
-                                                 ColorSubsampling subsampling) {
+            ColorSubsampling subsampling) {
         return new SampledColorModel(cspace, subsampling);
     }
 

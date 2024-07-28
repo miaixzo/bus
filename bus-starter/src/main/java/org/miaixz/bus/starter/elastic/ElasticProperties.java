@@ -24,22 +24,23 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.elastic;
-
-import lombok.Getter;
-import lombok.Setter;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.spring.GeniusBuilder;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import lombok.Getter;
+import lombok.Setter;
+
 /**
- * <p>@description ElasticSearch 配置属性类 </p>
+ * ElasticSearch 配置属性类
  *
  * @author <a href="mailto:congchun.zheng@gmail.com">Sixawn.ZHENG</a>
  * @since Java 17+
@@ -49,8 +50,7 @@ import java.util.List;
 @ConfigurationProperties(prefix = GeniusBuilder.ELASTIC)
 public class ElasticProperties {
     /**
-     * 集群主机地址, 多个用英文逗号,隔开
-     * 格式: ip1:port,ip2:port
+     * 集群主机地址, 多个用英文逗号,隔开 格式: ip1:port,ip2:port
      */
     private String hosts;
     /**

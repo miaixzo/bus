@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv;
 
 import org.miaixz.bus.image.nimble.Photometric;
@@ -73,13 +73,13 @@ public class NativeImageReader extends ImageReader implements Closeable {
      * pixel interleaved and the default color model is CS_GRAY or CS_sRGB and IndexColorModel with palettes.
      */
     protected static final ImageTypeSpecifier createImageType(ImageParameters params, ColorSpace colorSpace,
-                                                              byte[] redPalette, byte[] greenPalette, byte[] bluePalette, byte[] alphaPalette) throws IOException {
+            byte[] redPalette, byte[] greenPalette, byte[] bluePalette, byte[] alphaPalette) throws IOException {
         return createImageType(params,
                 createColorModel(params, colorSpace, redPalette, greenPalette, bluePalette, alphaPalette));
     }
 
     private static ColorModel createColorModel(ImageParameters params, ColorSpace colorSpace, byte[] redPalette,
-                                               byte[] greenPalette, byte[] bluePalette, byte[] alphaPalette) {
+            byte[] greenPalette, byte[] bluePalette, byte[] alphaPalette) {
         int nType = params.getDataType();
         int nBands = params.getSamplesPerPixel();
         int nBitDepth = params.getBitsPerSample();
@@ -103,14 +103,14 @@ public class NativeImageReader extends ImageReader implements Closeable {
                         }
                     }
                 }
-                colorModel =
-                        new IndexColorModel(nBitDepth, paletteLength, redPalette, greenPalette, bluePalette, alphaTmp);
+                colorModel = new IndexColorModel(nBitDepth, paletteLength, redPalette, greenPalette, bluePalette,
+                        alphaTmp);
             } else {
                 colorModel = new IndexColorModel(nBitDepth, paletteLength, redPalette, greenPalette, bluePalette);
             }
         } else if (nType == ImageParameters.TYPE_BIT) {
             // 0 -> 0x00 (black), 1 -> 0xff (white)
-            byte[] comp = new byte[]{(byte) 0x00, (byte) 0xFF};
+            byte[] comp = new byte[] { (byte) 0x00, (byte) 0xFF };
             colorModel = new IndexColorModel(1, 2, comp, comp, comp);
         } else {
             ColorSpace cs;
@@ -151,8 +151,8 @@ public class NativeImageReader extends ImageReader implements Closeable {
         for (int i = 0; i < nBands; i++) {
             bandOffsets[i] = i;
         }
-        SampleModel sampleModel =
-                new PixelInterleavedSampleModel(nType, nWidth, nHeight, nBands, nScanlineStride, bandOffsets);
+        SampleModel sampleModel = new PixelInterleavedSampleModel(nType, nWidth, nHeight, nBands, nScanlineStride,
+                bandOffsets);
 
         return new ImageTypeSpecifier(colorModel, sampleModel);
     }
@@ -331,8 +331,8 @@ public class NativeImageReader extends ImageReader implements Closeable {
         StreamSegment seg = StreamSegment.getStreamSegment(iis, param);
         ImageDescriptor desc = seg.getImageDescriptor();
 
-        int dcmFlags =
-                (canEncodeSigned && desc.isSigned()) ? Imgcodecs.DICOM_FLAG_SIGNED : Imgcodecs.DICOM_FLAG_UNSIGNED;
+        int dcmFlags = (canEncodeSigned && desc.isSigned()) ? Imgcodecs.DICOM_FLAG_SIGNED
+                : Imgcodecs.DICOM_FLAG_UNSIGNED;
         if (ybr2rgb(desc.getPhotometricInterpretation())) {
             dcmFlags |= Imgcodecs.DICOM_FLAG_YBR;
         }
@@ -369,16 +369,16 @@ public class NativeImageReader extends ImageReader implements Closeable {
             return false;
         }
         switch (pmi) {
-            case MONOCHROME1:
-            case MONOCHROME2:
-            case PALETTE_COLOR:
-            case YBR_ICT:
-            case YBR_RCT:
-                return false;
-            case RGB:
-                // Force JPEG Baseline (1.2.840.10008.1.2.4.50) to YBR_FULL_422 color model when RGB with JFIF header
-                // (error made by some constructors). RGB color model doesn't make sense for lossy jpeg with JFIF header.
-                return params.isJFIF() && params.getJpegMarker() == 0xffc0;
+        case MONOCHROME1:
+        case MONOCHROME2:
+        case PALETTE_COLOR:
+        case YBR_ICT:
+        case YBR_RCT:
+            return false;
+        case RGB:
+            // Force JPEG Baseline (1.2.840.10008.1.2.4.50) to YBR_FULL_422 color model when RGB with JFIF header
+            // (error made by some constructors). RGB color model doesn't make sense for lossy jpeg with JFIF header.
+            return params.isJFIF() && params.getJpegMarker() == 0xffc0;
         }
         return true;
     }

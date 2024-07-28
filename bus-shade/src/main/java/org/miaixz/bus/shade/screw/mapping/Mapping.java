@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.screw.mapping;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -96,8 +96,7 @@ public class Mapping {
      * @return 领域对象
      * @throws InternalException 异常
      */
-    public static <T> List<T> convertList(ResultSet resultSet,
-                                          Class<T> clazz) throws InternalException {
+    public static <T> List<T> convertList(ResultSet resultSet, Class<T> clazz) throws InternalException {
         // 存放列名和结果
         List<Map<String, Object>> values = new ArrayList<>(Normal._16);
         // 结果集合
@@ -108,7 +107,7 @@ public class Mapping {
             int columnCount = metaData.getColumnCount();
             // 迭代
             while (resultSet.next()) {
-                //map object
+                // map object
                 HashMap<String, Object> value = new HashMap<>(Normal._16);
                 // 循环所有的列，获取列名，根据列名获取值
                 for (int i = 1; i <= columnCount; i++) {
@@ -142,10 +141,8 @@ public class Mapping {
      * @throws IllegalAccessException    IllegalAccessException
      * @throws InvocationTargetException InvocationTargetException
      */
-    private static <T> T getObject(Class<T> clazz, List<FieldMethod> fieldMethods,
-                                   Map<String, Object> map) throws InstantiationException,
-            IllegalAccessException,
-            InvocationTargetException, NoSuchMethodException {
+    private static <T> T getObject(Class<T> clazz, List<FieldMethod> fieldMethods, Map<String, Object> map)
+            throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
         T rsp = clazz.getConstructor().newInstance();
         // 设置属性值
         for (FieldMethod filed : fieldMethods) {
@@ -168,11 +165,11 @@ public class Mapping {
      * @throws IntrospectionException IntrospectionException
      * @throws NoSuchFieldException   NoSuchFieldException
      */
-    private static <T> List<FieldMethod> getFieldMethods(Class<T> clazz) throws IntrospectionException,
-            NoSuchFieldException {
+    private static <T> List<FieldMethod> getFieldMethods(Class<T> clazz)
+            throws IntrospectionException, NoSuchFieldException {
         // 结果集合
         List<FieldMethod> fieldMethods = new ArrayList<>();
-        //BeanInfo
+        // BeanInfo
         BeanInfo beanInfo = Introspector.getBeanInfo(clazz);
         PropertyDescriptor[] pds = beanInfo.getPropertyDescriptors();
         // 循环处理值

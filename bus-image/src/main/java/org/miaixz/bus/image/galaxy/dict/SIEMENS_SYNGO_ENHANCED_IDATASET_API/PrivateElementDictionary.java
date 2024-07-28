@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_SYNGO_ENHANCED_IDATASET_API;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,17 +46,18 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.BusinessUnitCode:
-                return VR.CS;
-            case PrivateTag.ApplicationType:
-                return VR.LO;
-            case PrivateTag.ApplicationAttributesSequence:
-                return VR.SQ;
+
+        case PrivateTag.BusinessUnitCode:
+            return VR.CS;
+        case PrivateTag.ApplicationType:
+            return VR.LO;
+        case PrivateTag.ApplicationAttributesSequence:
+            return VR.SQ;
         }
         return VR.UN;
     }

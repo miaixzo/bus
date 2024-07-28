@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.function;
 
 import org.miaixz.bus.core.xyz.ExceptionKit;
@@ -70,18 +70,14 @@ public interface PredicateX<T> extends Predicate<T>, Serializable {
     }
 
     /**
-     * Returns a predicate that tests if two arguments are equal according
-     * to {@link Objects#equals(Object, Object)}.
+     * Returns a predicate that tests if two arguments are equal according to {@link Objects#equals(Object, Object)}.
      *
      * @param <T>       the type of arguments to the predicate
-     * @param targetRef the object reference with which to compare for equality,
-     *                  which may be {@code null}
-     * @return a predicate that tests if two arguments are equal according
-     * to {@link Objects#equals(Object, Object)}
+     * @param targetRef the object reference with which to compare for equality, which may be {@code null}
+     * @return a predicate that tests if two arguments are equal according to {@link Objects#equals(Object, Object)}
      */
     static <T> PredicateX<T> isEqual(final Object... targetRef) {
-        return (null == targetRef)
-                ? Objects::isNull
+        return (null == targetRef) ? Objects::isNull
                 : object -> Stream.of(targetRef).allMatch(target -> target.equals(object));
     }
 
@@ -89,8 +85,7 @@ public interface PredicateX<T> extends Predicate<T>, Serializable {
      * Evaluates this predicate on the given argument.
      *
      * @param t the input argument
-     * @return {@code true} if the input argument matches the predicate,
-     * otherwise {@code false}
+     * @return {@code true} if the input argument matches the predicate, otherwise {@code false}
      * @throws Exception wrapped checked exception
      */
     boolean testing(T t) throws Throwable;
@@ -99,8 +94,7 @@ public interface PredicateX<T> extends Predicate<T>, Serializable {
      * Evaluates this predicate on the given argument.
      *
      * @param t the input argument
-     * @return {@code true} if the input argument matches the predicate,
-     * otherwise {@code false}
+     * @return {@code true} if the input argument matches the predicate, otherwise {@code false}
      */
     @Override
     default boolean test(final T t) {
@@ -112,19 +106,17 @@ public interface PredicateX<T> extends Predicate<T>, Serializable {
     }
 
     /**
-     * Returns a composed predicate that represents a short-circuiting logical
-     * AND of this predicate and another.  When evaluating the composed
-     * predicate, if this predicate is {@code false}, then the {@code other}
-     * predicate is not evaluated.
+     * Returns a composed predicate that represents a short-circuiting logical AND of this predicate and another. When
+     * evaluating the composed predicate, if this predicate is {@code false}, then the {@code other} predicate is not
+     * evaluated.
      *
-     * <p>Any exception thrown during evaluation of either predicate are relayed
-     * to the caller; if evaluation of this predicate throws an exception, the
-     * {@code other} predicate will not be evaluated.
+     * <p>
+     * Any exception thrown during evaluation of either predicate are relayed to the caller; if evaluation of this
+     * predicate throws an exception, the {@code other} predicate will not be evaluated.
      *
-     * @param other a predicate that will be logically-ANDed with this
-     *              predicate
-     * @return a composed predicate that represents the short-circuiting logical
-     * AND of this predicate and the {@code other} predicate
+     * @param other a predicate that will be logically-ANDed with this predicate
+     * @return a composed predicate that represents the short-circuiting logical AND of this predicate and the
+     *         {@code other} predicate
      * @throws NullPointerException if other is null
      */
     default PredicateX<T> and(final PredicateX<? super T> other) {
@@ -133,11 +125,9 @@ public interface PredicateX<T> extends Predicate<T>, Serializable {
     }
 
     /**
-     * Returns a predicate that represents the logical negation of this
-     * predicate.
+     * Returns a predicate that represents the logical negation of this predicate.
      *
-     * @return a predicate that represents the logical negation of this
-     * predicate
+     * @return a predicate that represents the logical negation of this predicate
      */
     @Override
     default PredicateX<T> negate() {
@@ -145,19 +135,17 @@ public interface PredicateX<T> extends Predicate<T>, Serializable {
     }
 
     /**
-     * Returns a composed predicate that represents a short-circuiting logical
-     * OR of this predicate and another.  When evaluating the composed
-     * predicate, if this predicate is {@code true}, then the {@code other}
-     * predicate is not evaluated.
+     * Returns a composed predicate that represents a short-circuiting logical OR of this predicate and another. When
+     * evaluating the composed predicate, if this predicate is {@code true}, then the {@code other} predicate is not
+     * evaluated.
      *
-     * <p>Any exception thrown during evaluation of either predicate are relayed
-     * to the caller; if evaluation of this predicate throws an exception, the
-     * {@code other} predicate will not be evaluated.
+     * <p>
+     * Any exception thrown during evaluation of either predicate are relayed to the caller; if evaluation of this
+     * predicate throws an exception, the {@code other} predicate will not be evaluated.
      *
-     * @param other a predicate that will be logically-ORed with this
-     *              predicate
-     * @return a composed predicate that represents the short-circuiting logical
-     * OR of this predicate and the {@code other} predicate
+     * @param other a predicate that will be logically-ORed with this predicate
+     * @return a composed predicate that represents the short-circuiting logical OR of this predicate and the
+     *         {@code other} predicate
      * @throws NullPointerException if other is null
      */
     default PredicateX<T> or(final PredicateX<? super T> other) {

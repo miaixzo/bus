@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.pool.partition;
 
 import org.miaixz.bus.core.lang.pool.ObjectFactory;
@@ -124,8 +124,7 @@ public class PartitionObjectPool<T> implements ObjectPool<T> {
     }
 
     /**
-     * 创建阻塞队列，默认为{@link ArrayBlockingQueue}
-     * 如果需要自定义队列类型，子类重写此方法
+     * 创建阻塞队列，默认为{@link ArrayBlockingQueue} 如果需要自定义队列类型，子类重写此方法
      *
      * @param poolConfig 池配置
      * @return 队列
@@ -135,9 +134,7 @@ public class PartitionObjectPool<T> implements ObjectPool<T> {
     }
 
     /**
-     * 获取当前线程被分配的分区
-     * 默认根据线程ID（TID）取分区大小余数
-     * 如果需要自定义，子类重写此方法
+     * 获取当前线程被分配的分区 默认根据线程ID（TID）取分区大小余数 如果需要自定义，子类重写此方法
      *
      * @param poolConfig 池配置
      * @return 分配的分区

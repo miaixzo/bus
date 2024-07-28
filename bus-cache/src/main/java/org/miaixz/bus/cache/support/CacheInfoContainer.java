@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cache.support;
 
 import org.miaixz.bus.cache.magic.AnnoHolder;
@@ -106,47 +106,32 @@ public class CacheInfoContainer {
             }
         }
 
-        return builder
-                .setCacheKeyMap(cacheKeyMap)
-                .setMultiIndex(multiIndex)
-                .setId(id);
+        return builder.setCacheKeyMap(cacheKeyMap).setMultiIndex(multiIndex).setId(id);
     }
 
     private static AnnoHolder.Builder scanCached(AnnoHolder.Builder builder, Cached cached) {
-        return builder
-                .setCache(cached.value())
-                .setPrefix(cached.prefix())
-                .setExpire(cached.expire());
+        return builder.setCache(cached.value()).setPrefix(cached.prefix()).setExpire(cached.expire());
     }
 
     private static AnnoHolder.Builder scanCachedGet(AnnoHolder.Builder builder, CachedGet cachedGet) {
-        return builder
-                .setCache(cachedGet.value())
-                .setPrefix(cachedGet.prefix())
-                .setExpire(CacheExpire.NO);
+        return builder.setCache(cachedGet.value()).setPrefix(cachedGet.prefix()).setExpire(CacheExpire.NO);
     }
 
     private static AnnoHolder.Builder scanInvalid(AnnoHolder.Builder builder, Invalid invalid) {
-        return builder
-                .setCache(invalid.value())
-                .setPrefix(invalid.prefix())
-                .setExpire(CacheExpire.NO);
+        return builder.setCache(invalid.value()).setPrefix(invalid.prefix()).setExpire(CacheExpire.NO);
     }
 
     private static MethodHolder getMethodHolder(Method method, AnnoHolder annoHolder) {
         boolean isCollectionReturn = Collection.class.isAssignableFrom(method.getReturnType());
         boolean isMapReturn = Map.class.isAssignableFrom(method.getReturnType());
 
-        staticAnalyze(method.getParameterTypes(),
-                annoHolder,
-                isCollectionReturn,
-                isMapReturn);
+        staticAnalyze(method.getParameterTypes(), annoHolder, isCollectionReturn, isMapReturn);
 
         return new MethodHolder(isCollectionReturn);
     }
 
-    private static void staticAnalyze(Class<?>[] pTypes, AnnoHolder annoHolder,
-                                      boolean isCollectionReturn, boolean isMapReturn) {
+    private static void staticAnalyze(Class<?>[] pTypes, AnnoHolder annoHolder, boolean isCollectionReturn,
+            boolean isMapReturn) {
         if (isInvalidParam(pTypes, annoHolder)) {
             throw new RuntimeException("cache need at least one param key");
         } else if (isInvalidMultiCount(annoHolder.getCacheKeyMap())) {
@@ -189,10 +174,7 @@ public class CacheInfoContainer {
         Map<Integer, CacheKey> cacheKeyMap = annoHolder.getCacheKeyMap();
         String prefix = annoHolder.getPrefix();
 
-        return (null == pTypes
-                || pTypes.length == 0
-                || cacheKeyMap.isEmpty())
-                && StringKit.isEmpty(prefix);
+        return (null == pTypes || pTypes.length == 0 || cacheKeyMap.isEmpty()) && StringKit.isEmpty(prefix);
     }
 
     private static boolean isInvalidMultiCount(Map<Integer, CacheKey> keyMap) {
@@ -209,9 +191,7 @@ public class CacheInfoContainer {
         return multiCount > 1;
     }
 
-    private static boolean isInvalidIdentifier(boolean isMapReturn,
-                                               boolean isCollectionReturn,
-                                               String field) {
+    private static boolean isInvalidIdentifier(boolean isMapReturn, boolean isCollectionReturn, String field) {
         if (isMapReturn && !StringKit.isEmpty(field)) {
             Logger.warn("@CacheKey's 'field = \"{}\"' is useless.", field);
             return false;
@@ -225,8 +205,7 @@ public class CacheInfoContainer {
     }
 
     private static boolean isInvalidMulti(Class<?> paramType) {
-        return !Collection.class.isAssignableFrom(paramType)
-                && !paramType.isArray();
+        return !Collection.class.isAssignableFrom(paramType) && !paramType.isArray();
     }
 
 }

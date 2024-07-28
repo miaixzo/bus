@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric;
 
 import org.miaixz.bus.image.metric.pdu.ExtendedNegotiation;
@@ -36,15 +36,10 @@ import java.util.EnumSet;
  * @since Java 17+
  */
 public enum QueryOption {
-    RELATIONAL,
-    DATETIME,
-    FUZZY,
-    TIMEZONE;
+    RELATIONAL, DATETIME, FUZZY, TIMEZONE;
 
     public static byte[] toExtendedNegotiationInformation(EnumSet<QueryOption> opts) {
-        byte[] info = new byte[opts.contains(TIMEZONE) ? 4
-                : opts.contains(FUZZY) || opts.contains(DATETIME) ? 3
-                : 1];
+        byte[] info = new byte[opts.contains(TIMEZONE) ? 4 : opts.contains(FUZZY) || opts.contains(DATETIME) ? 3 : 1];
         for (QueryOption query : opts)
             info[query.ordinal()] = 1;
         return info;
@@ -61,8 +56,7 @@ public enum QueryOption {
         return opts;
     }
 
-    private static void toOption(ExtendedNegotiation extNeg,
-                                 QueryOption opt, EnumSet<QueryOption> opts) {
+    private static void toOption(ExtendedNegotiation extNeg, QueryOption opt, EnumSet<QueryOption> opts) {
         if (extNeg.getField(opt.ordinal(), (byte) 0) == 1)
             opts.add(opt);
     }

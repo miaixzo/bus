@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_CSA_HEADER;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,20 +46,21 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.CSAImageHeaderType:
-            case PrivateTag.CSASeriesHeaderType:
-                return VR.CS;
-            case PrivateTag.CSAImageHeaderVersion:
-            case PrivateTag.CSASeriesHeaderVersion:
-                return VR.LO;
-            case PrivateTag.CSAImageHeaderInfo:
-            case PrivateTag.CSASeriesHeaderInfo:
-                return VR.OB;
+
+        case PrivateTag.CSAImageHeaderType:
+        case PrivateTag.CSASeriesHeaderType:
+            return VR.CS;
+        case PrivateTag.CSAImageHeaderVersion:
+        case PrivateTag.CSASeriesHeaderVersion:
+            return VR.LO;
+        case PrivateTag.CSAImageHeaderInfo:
+        case PrivateTag.CSASeriesHeaderInfo:
+            return VR.OB;
         }
         return VR.UN;
     }

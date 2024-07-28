@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.openbsd.software;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -59,9 +59,8 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
 
     private static long querySystemBootTime() {
         // Boot time will be the first consecutive string of digits.
-        return Parsing.parseLongOrDefault(
-                Executor.getFirstAnswer("sysctl -n kern.boottime").split(Symbol.COMMA)[0].replaceAll("\\D", Normal.EMPTY),
-                System.currentTimeMillis() / 1000);
+        return Parsing.parseLongOrDefault(Executor.getFirstAnswer("sysctl -n kern.boottime").split(Symbol.COMMA)[0]
+                .replaceAll("\\D", Normal.EMPTY), System.currentTimeMillis() / 1000);
     }
 
     @Override
@@ -79,7 +78,8 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         String version = OpenBsdSysctlKit.sysctl(mib, Normal.EMPTY);
         mib[1] = OpenBsdLibc.KERN_VERSION;
         String versionInfo = OpenBsdSysctlKit.sysctl(mib, Normal.EMPTY);
-        String buildNumber = versionInfo.split(Symbol.COLON)[0].replace(family, Normal.EMPTY).replace(version, Normal.EMPTY).trim();
+        String buildNumber = versionInfo.split(Symbol.COLON)[0].replace(family, Normal.EMPTY)
+                .replace(version, Normal.EMPTY).trim();
 
         return Pair.of(family, new OperatingSystem.OSVersionInfo(version, null, buildNumber));
     }
@@ -150,8 +150,8 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
             Map<PsKeywords, String> psMap = Parsing.stringToEnumMap(PsKeywords.class, proc.trim(), Symbol.C_SPACE);
             // Check if last (thus all) value populated
             if (psMap.containsKey(PsKeywords.ARGS)) {
-                procs.add(new OpenBsdOSProcess(
-                        pid < 0 ? Parsing.parseIntOrDefault(psMap.get(PsKeywords.PID), 0) : pid, psMap, this));
+                procs.add(new OpenBsdOSProcess(pid < 0 ? Parsing.parseIntOrDefault(psMap.get(PsKeywords.PID), 0) : pid,
+                        psMap, this));
             }
         }
         return procs;
@@ -218,7 +218,8 @@ public class OpenBsdOperatingSystem extends AbstractOperatingSystem {
         // Get running services
         List<OSService> services = new ArrayList<>();
         Set<String> running = new HashSet<>();
-        for (OSProcess p : getChildProcesses(1, OperatingSystem.ProcessFiltering.ALL_PROCESSES, OperatingSystem.ProcessSorting.PID_ASC, 0)) {
+        for (OSProcess p : getChildProcesses(1, OperatingSystem.ProcessFiltering.ALL_PROCESSES,
+                OperatingSystem.ProcessSorting.PID_ASC, 0)) {
             OSService s = new OSService(p.getName(), p.getProcessID(), OSService.State.RUNNING);
             services.add(s);
             running.add(p.getName());

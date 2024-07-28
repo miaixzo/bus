@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.freebsd.hardware;
 
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -51,8 +51,7 @@ import java.util.function.Supplier;
 @Immutable
 final class FreeBsdComputerSystem extends AbstractComputerSystem {
 
-    private final Supplier<Tuple> manufModelSerialUuidVers = Memoizer.memoize(
-            FreeBsdComputerSystem::readDmiDecode);
+    private final Supplier<Tuple> manufModelSerialUuidVers = Memoizer.memoize(FreeBsdComputerSystem::readDmiDecode);
 
     private static Tuple readDmiDecode() {
         String manufacturer = null;

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.safety.complex;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -51,13 +51,16 @@ public abstract class AntComplex<E> extends RegexComplex<E> implements Complex<E
      */
     private static String convert(String ant) {
         String regex = ant;
-        for (String symbol : AntFilter.SYMBOLS) regex = regex.replace(symbol, Symbol.C_BACKSLASH + symbol);
+        for (String symbol : AntFilter.SYMBOLS)
+            regex = regex.replace(symbol, Symbol.C_BACKSLASH + symbol);
         regex = regex.replace(Symbol.QUESTION_MARK, ".{1}");
         regex = regex.replace(Symbol.STAR + Symbol.STAR + Symbol.SLASH, "(.{0,}?/){0,}?");
         regex = regex.replace(Symbol.STAR + Symbol.STAR, ".{0,}?");
         regex = regex.replace(Symbol.STAR, "[^/]{0,}?");
-        while (regex.startsWith(Symbol.SLASH)) regex = regex.substring(1);
-        while (regex.endsWith(Symbol.SLASH)) regex = regex.substring(0, regex.length() - 1);
+        while (regex.startsWith(Symbol.SLASH))
+            regex = regex.substring(1);
+        while (regex.endsWith(Symbol.SLASH))
+            regex = regex.substring(0, regex.length() - 1);
         return regex;
     }
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.mutable;
 
 import java.io.Serializable;
@@ -90,9 +90,9 @@ public class MutableBool implements Comparable<MutableBool>, Mutable<Boolean>, S
     /**
      * 相等需同时满足如下条件：
      * <ol>
-     * 	<li>非空</li>
-     * 	<li>类型为 MutableBool</li>
-     * 	<li>值相等</li>
+     * <li>非空</li>
+     * <li>类型为 MutableBool</li>
+     * <li>值相等</li>
      * </ol>
      *
      * @param obj 比对的对象

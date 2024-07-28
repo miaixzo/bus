@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.builtin;
 
 import org.miaixz.bus.image.galaxy.data.Code;
@@ -35,20 +35,8 @@ import org.miaixz.bus.image.galaxy.data.Code;
  */
 public class YesNo {
 
-    public static final Code Yes = new Code(
-            "373066001",
-            "SCT",
-            null,
-            "Yes");
-    public static final Code No = new Code(
-            "373067005",
-            "SCT",
-            null,
-            "No");
-    public static final Code Undetermined = new Code(
-            "373068000",
-            "SCT",
-            null,
-            "Undetermined");
+    public static final Code Yes = new Code("373066001", "SCT", null, "Yes");
+    public static final Code No = new Code("373067005", "SCT", null, "No");
+    public static final Code Undetermined = new Code("373068000", "SCT", null, "Undetermined");
 
 }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.accord;
 
 import org.miaixz.bus.core.xyz.IoKit;
@@ -41,22 +41,22 @@ import java.util.List;
  * Attempts to find the connections for a sequence of exchanges. This uses the following strategies:
  *
  * <ol>
- *   <li>If the current call already has a connection that can satisfy the request it is used.
- *       Using the same connection for an initial exchange and its follow-ups may improve locality.
+ * <li>If the current call already has a connection that can satisfy the request it is used. Using the same connection
+ * for an initial exchange and its follow-ups may improve locality.
  *
- *   <li>If there is a connection in the pool that can satisfy the request it is used. Note that
- *       it is possible for shared exchanges to make requests to different host names! See {@link
- *       RealConnection#isEligible} for details.
+ * <li>If there is a connection in the pool that can satisfy the request it is used. Note that it is possible for shared
+ * exchanges to make requests to different host names! See {@link RealConnection#isEligible} for details.
  *
- *   <li>If there's no existing connection, make a list of routes (which may require blocking DNS
- *       lookups) and attempt a new connection them. When failures occur, retries iterate the list
- *       of available routes.
+ * <li>If there's no existing connection, make a list of routes (which may require blocking DNS lookups) and attempt a
+ * new connection them. When failures occur, retries iterate the list of available routes.
  * </ol>
  *
- * <p>If the pool gains an eligible connection while DNS, TCP, or TLS work is in flight, this finder
- * will prefer pooled connections. Only pooled HTTP/2 connections are used for such de-duplication.
+ * <p>
+ * If the pool gains an eligible connection while DNS, TCP, or TLS work is in flight, this finder will prefer pooled
+ * connections. Only pooled HTTP/2 connections are used for such de-duplication.
  *
- * <p>It is possible to cancel the finding process.
+ * <p>
+ * It is possible to cancel the finding process.
  */
 final class ExchangeFinder {
     private final Transmitter transmitter;
@@ -71,19 +71,17 @@ final class ExchangeFinder {
     private boolean hasStreamFailure;
     private Route nextRouteToTry;
 
-    ExchangeFinder(Transmitter transmitter, RealConnectionPool connectionPool,
-                   Address address, NewCall call, EventListener eventListener) {
+    ExchangeFinder(Transmitter transmitter, RealConnectionPool connectionPool, Address address, NewCall call,
+            EventListener eventListener) {
         this.transmitter = transmitter;
         this.connectionPool = connectionPool;
         this.address = address;
         this.call = call;
         this.eventListener = eventListener;
-        this.routeSelector = new RouteSelector(
-                address, connectionPool.routeDatabase, call, eventListener);
+        this.routeSelector = new RouteSelector(address, connectionPool.routeDatabase, call, eventListener);
     }
 
-    public HttpCodec find(
-            Httpd client, NewChain chain, boolean doExtensiveHealthChecks) {
+    public HttpCodec find(Httpd client, NewChain chain, boolean doExtensiveHealthChecks) {
         int connectTimeout = chain.connectTimeoutMillis();
         int readTimeout = chain.readTimeoutMillis();
         int writeTimeout = chain.writeTimeoutMillis();
@@ -91,8 +89,8 @@ final class ExchangeFinder {
         boolean connectionRetryEnabled = client.retryOnConnectionFailure();
 
         try {
-            RealConnection resultConnection = findHealthyConnection(connectTimeout, readTimeout,
-                    writeTimeout, pingIntervalMillis, connectionRetryEnabled, doExtensiveHealthChecks);
+            RealConnection resultConnection = findHealthyConnection(connectTimeout, readTimeout, writeTimeout,
+                    pingIntervalMillis, connectionRetryEnabled, doExtensiveHealthChecks);
             return resultConnection.newCodec(client, chain);
         } catch (RouteException e) {
             trackFailure();
@@ -104,15 +102,15 @@ final class ExchangeFinder {
     }
 
     /**
-     * Finds a connection and returns it if it is healthy. If it is unhealthy the process is repeated
-     * until a healthy connection is found.
+     * Finds a connection and returns it if it is healthy. If it is unhealthy the process is repeated until a healthy
+     * connection is found.
      */
-    private RealConnection findHealthyConnection(int connectTimeout, int readTimeout,
-                                                 int writeTimeout, int pingIntervalMillis, boolean connectionRetryEnabled,
-                                                 boolean doExtensiveHealthChecks) throws IOException {
+    private RealConnection findHealthyConnection(int connectTimeout, int readTimeout, int writeTimeout,
+            int pingIntervalMillis, boolean connectionRetryEnabled, boolean doExtensiveHealthChecks)
+            throws IOException {
         while (true) {
-            RealConnection candidate = findConnection(connectTimeout, readTimeout, writeTimeout,
-                    pingIntervalMillis, connectionRetryEnabled);
+            RealConnection candidate = findConnection(connectTimeout, readTimeout, writeTimeout, pingIntervalMillis,
+                    connectionRetryEnabled);
 
             // If this is a brand new connection, we can skip the extensive health checks.
             synchronized (connectionPool) {
@@ -133,18 +131,19 @@ final class ExchangeFinder {
     }
 
     /**
-     * Returns a connection to host a new stream. This prefers the existing connection if it exists,
-     * then the pool, finally building a new connection.
+     * Returns a connection to host a new stream. This prefers the existing connection if it exists, then the pool,
+     * finally building a new connection.
      */
-    private RealConnection findConnection(int connectTimeout, int readTimeout, int writeTimeout,
-                                          int pingIntervalMillis, boolean connectionRetryEnabled) throws IOException {
+    private RealConnection findConnection(int connectTimeout, int readTimeout, int writeTimeout, int pingIntervalMillis,
+            boolean connectionRetryEnabled) throws IOException {
         boolean foundPooledConnection = false;
         RealConnection result = null;
         Route selectedRoute = null;
         RealConnection releasedConnection;
         Socket toClose;
         synchronized (connectionPool) {
-            if (transmitter.isCanceled()) throw new IOException("Canceled");
+            if (transmitter.isCanceled())
+                throw new IOException("Canceled");
             hasStreamFailure = false; // This is a fresh attempt.
 
             // Attempt to use an already-allocated connection. We need to be careful here because our
@@ -195,14 +194,14 @@ final class ExchangeFinder {
 
         List<Route> routes = null;
         synchronized (connectionPool) {
-            if (transmitter.isCanceled()) throw new IOException("Canceled");
+            if (transmitter.isCanceled())
+                throw new IOException("Canceled");
 
             if (newRouteSelection) {
                 // Now that we have a set of IP addresses, make another attempt at getting a connection from
                 // the pool. This could match due to connection coalescing.
                 routes = routeSelection.getAll();
-                if (connectionPool.transmitterAcquirePooledConnection(
-                        address, transmitter, routes, false)) {
+                if (connectionPool.transmitterAcquirePooledConnection(address, transmitter, routes, false)) {
                     foundPooledConnection = true;
                     result = transmitter.connection;
                 }
@@ -227,8 +226,8 @@ final class ExchangeFinder {
         }
 
         // Do TCP + TLS handshakes. This is a blocking operation.
-        result.connect(connectTimeout, readTimeout, writeTimeout, pingIntervalMillis,
-                connectionRetryEnabled, call, eventListener);
+        result.connect(connectTimeout, readTimeout, writeTimeout, pingIntervalMillis, connectionRetryEnabled, call,
+                eventListener);
         connectionPool.routeDatabase.connected(result.route());
 
         Socket socket = null;
@@ -290,19 +289,16 @@ final class ExchangeFinder {
                 nextRouteToTry = transmitter.connection.route();
                 return true;
             }
-            return (routeSelection != null && routeSelection.hasNext())
-                    || routeSelector.hasNext();
+            return (routeSelection != null && routeSelection.hasNext()) || routeSelector.hasNext();
         }
     }
 
     /**
-     * Return true if the route used for the current connection should be retried, even if the
-     * connection itself is unhealthy. The biggest gotcha here is that we shouldn't reuse routes from
-     * coalesced connections.
+     * Return true if the route used for the current connection should be retried, even if the connection itself is
+     * unhealthy. The biggest gotcha here is that we shouldn't reuse routes from coalesced connections.
      */
     private boolean retryCurrentRoute() {
-        return transmitter.connection != null
-                && transmitter.connection.routeFailureCount == 0
+        return transmitter.connection != null && transmitter.connection.routeFailureCount == 0
                 && Builder.sameConnection(transmitter.connection.route().address().url(), address.url());
     }
 }

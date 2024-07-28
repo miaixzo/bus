@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.wrapper;
 
 import jakarta.servlet.ServletOutputStream;
@@ -74,12 +74,12 @@ public class CacheResponseWrapper extends HttpServletResponseWrapper {
 
             @Override
             public void write(int b) throws IOException {
-                TeeOutputStream write = new TeeOutputStream(CacheResponseWrapper.super.getOutputStream(), byteArrayOutputStream);
+                TeeOutputStream write = new TeeOutputStream(CacheResponseWrapper.super.getOutputStream(),
+                        byteArrayOutputStream);
                 write.write(b);
             }
         };
     }
-
 
     private static class ServletPrintWriter extends PrintWriter {
 
@@ -135,32 +135,27 @@ public class CacheResponseWrapper extends HttpServletResponseWrapper {
             this.twoOut = twoOut;
         }
 
-        public void write(byte[] buf)
-                throws IOException {
+        public void write(byte[] buf) throws IOException {
             this.oneOut.write(buf);
             this.twoOut.write(buf);
         }
 
-        public void write(byte[] buf, int off, int len)
-                throws IOException {
+        public void write(byte[] buf, int off, int len) throws IOException {
             this.oneOut.write(buf, off, len);
             this.twoOut.write(buf, off, len);
         }
 
-        public void write(int b)
-                throws IOException {
+        public void write(int b) throws IOException {
             this.oneOut.write(b);
             this.twoOut.write(b);
         }
 
-        public void flush()
-                throws IOException {
+        public void flush() throws IOException {
             this.oneOut.flush();
             this.twoOut.flush();
         }
 
-        public void close()
-                throws IOException {
+        public void close() throws IOException {
             this.oneOut.close();
             this.twoOut.close();
         }

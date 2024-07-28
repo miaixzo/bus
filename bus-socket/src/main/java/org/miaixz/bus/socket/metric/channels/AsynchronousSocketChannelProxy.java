@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket.metric.channels;
 
 import java.io.IOException;
@@ -98,7 +98,8 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
     }
 
     @Override
-    public <A> void read(ByteBuffer dst, long timeout, TimeUnit unit, A attachment, CompletionHandler<Integer, ? super A> handler) {
+    public <A> void read(ByteBuffer dst, long timeout, TimeUnit unit, A attachment,
+            CompletionHandler<Integer, ? super A> handler) {
         asynchronousSocketChannel.read(dst, timeout, unit, attachment, handler);
     }
 
@@ -108,12 +109,14 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
     }
 
     @Override
-    public <A> void read(ByteBuffer[] dsts, int offset, int length, long timeout, TimeUnit unit, A attachment, CompletionHandler<Long, ? super A> handler) {
+    public <A> void read(ByteBuffer[] dsts, int offset, int length, long timeout, TimeUnit unit, A attachment,
+            CompletionHandler<Long, ? super A> handler) {
         asynchronousSocketChannel.read(dsts, offset, length, timeout, unit, attachment, handler);
     }
 
     @Override
-    public <A> void write(ByteBuffer src, long timeout, TimeUnit unit, A attachment, CompletionHandler<Integer, ? super A> handler) {
+    public <A> void write(ByteBuffer src, long timeout, TimeUnit unit, A attachment,
+            CompletionHandler<Integer, ? super A> handler) {
         asynchronousSocketChannel.write(src, timeout, unit, attachment, handler);
     }
 
@@ -123,7 +126,8 @@ public class AsynchronousSocketChannelProxy extends AsynchronousSocketChannel {
     }
 
     @Override
-    public <A> void write(ByteBuffer[] srcs, int offset, int length, long timeout, TimeUnit unit, A attachment, CompletionHandler<Long, ? super A> handler) {
+    public <A> void write(ByteBuffer[] srcs, int offset, int length, long timeout, TimeUnit unit, A attachment,
+            CompletionHandler<Long, ? super A> handler) {
         asynchronousSocketChannel.write(srcs, offset, length, timeout, unit, attachment, handler);
     }
 

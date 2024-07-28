@@ -24,15 +24,14 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text.replacer;
 
 import java.io.Serializable;
 import java.util.function.UnaryOperator;
 
 /**
- * 抽象字符串替换类
- * 通过实现replace方法实现局部替换逻辑
+ * 抽象字符串替换类 通过实现replace方法实现局部替换逻辑
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -61,12 +60,12 @@ public abstract class StringReplacer implements UnaryOperator<CharSequence>, Ser
     public CharSequence apply(final CharSequence text) {
         final int len = text.length();
         final StringBuilder builder = new StringBuilder(len);
-        int pos = 0;//当前位置
-        int consumed;//处理过的字符数
+        int pos = 0;// 当前位置
+        int consumed;// 处理过的字符数
         while (pos < len) {
             consumed = replace(text, pos, builder);
             if (0 == consumed) {
-                //0表示未处理或替换任何字符，原样输出本字符并从下一个字符继续
+                // 0表示未处理或替换任何字符，原样输出本字符并从下一个字符继续
                 builder.append(text.charAt(pos));
                 pos++;
             }

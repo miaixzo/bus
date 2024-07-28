@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -39,9 +39,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 关于何时执行异步请求的策略
- * 每个dispatcher使用一个{@link ExecutorService}在内部运行调用。
- * 如果您提供自己的执行程序，它应该能够并发地运行{@linkplain #getMaxRequests 配置的最大调用数}
+ * 关于何时执行异步请求的策略 每个dispatcher使用一个{@link ExecutorService}在内部运行调用。 如果您提供自己的执行程序，它应该能够并发地运行{@linkplain #getMaxRequests
+ * 配置的最大调用数}
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -89,8 +88,7 @@ public class Dispatcher {
     }
 
     /**
-     * 设置并发执行的最大请求数。上述请求在内存中排队，等待正在运行的调用完成
-     * 如果在调用它时有超过{@code maxRequests}的请求在运行，那么这些请求将保持运行状态
+     * 设置并发执行的最大请求数。上述请求在内存中排队，等待正在运行的调用完成 如果在调用它时有超过{@code maxRequests}的请求在运行，那么这些请求将保持运行状态
      *
      * @param maxRequests 最大请求数
      */
@@ -109,8 +107,7 @@ public class Dispatcher {
     }
 
     /**
-     * 设置每个主机并发执行的最大请求数。这将根据URL的主机名限制请求。
-     * 注意，对单个IP地址的并发请求仍然可能超过这个限制:多个主机名可能共享一个IP地址，或者通过相同的HTTP代理进行路由
+     * 设置每个主机并发执行的最大请求数。这将根据URL的主机名限制请求。 注意，对单个IP地址的并发请求仍然可能超过这个限制:多个主机名可能共享一个IP地址，或者通过相同的HTTP代理进行路由
      * 如果在调用它时有超过{@code maxRequestsPerHost}的请求在运行，那么这些请求将保持运行状态
      *
      * @param maxRequestsPerHost 最大请求数
@@ -124,7 +121,6 @@ public class Dispatcher {
         }
         promoteAndExecute();
     }
-
 
     /**
      * 设置一个回调，以便每次调度程序变为空闲时调用(当运行的调用数量返回零时)
@@ -140,7 +136,8 @@ public class Dispatcher {
             readyAsyncCalls.add(call);
             if (!call.get().forWebSocket) {
                 RealCall.AsyncCall existingCall = findExistingCallWithHost(call.host());
-                if (existingCall != null) call.reuseCallsPerHostFrom(existingCall);
+                if (existingCall != null)
+                    call.reuseCallsPerHostFrom(existingCall);
             }
         }
         promoteAndExecute();
@@ -148,18 +145,18 @@ public class Dispatcher {
 
     public RealCall.AsyncCall findExistingCallWithHost(String host) {
         for (RealCall.AsyncCall existingCall : runningAsyncCalls) {
-            if (existingCall.host().equals(host)) return existingCall;
+            if (existingCall.host().equals(host))
+                return existingCall;
         }
         for (RealCall.AsyncCall existingCall : readyAsyncCalls) {
-            if (existingCall.host().equals(host)) return existingCall;
+            if (existingCall.host().equals(host))
+                return existingCall;
         }
         return null;
     }
 
     /**
-     * 取消当前排队或执行的所有调用。包括同步执行的
-     * {@linkplain NewCall#execute()}和异步
-     * 执行的{@linkplain NewCall#enqueue}。
+     * 取消当前排队或执行的所有调用。包括同步执行的 {@linkplain NewCall#execute()}和异步 执行的{@linkplain NewCall#enqueue}。
      */
     public synchronized void cancelAll() {
         for (RealCall.AsyncCall call : readyAsyncCalls) {
@@ -176,8 +173,7 @@ public class Dispatcher {
     }
 
     /**
-     * 将符合条件的调用从{@link #readyAsyncCalls}提升到{@link #runningAsyncCalls}，
-     * 并在executor服务上运行它们。必须不与同步调用，因为执行调用可以调用到用户代码
+     * 将符合条件的调用从{@link #readyAsyncCalls}提升到{@link #runningAsyncCalls}， 并在executor服务上运行它们。必须不与同步调用，因为执行调用可以调用到用户代码
      *
      * @return 如果调度程序当前正在运行调用，则为true
      */
@@ -187,11 +183,13 @@ public class Dispatcher {
         List<RealCall.AsyncCall> executableCalls = new ArrayList<>();
         boolean isRunning;
         synchronized (this) {
-            for (Iterator<RealCall.AsyncCall> i = readyAsyncCalls.iterator(); i.hasNext(); ) {
+            for (Iterator<RealCall.AsyncCall> i = readyAsyncCalls.iterator(); i.hasNext();) {
                 RealCall.AsyncCall asyncCall = i.next();
 
-                if (runningAsyncCalls.size() >= maxRequests) break; // Max capacity.
-                if (asyncCall.callsPerHost().get() >= maxRequestsPerHost) continue; // Host max capacity.
+                if (runningAsyncCalls.size() >= maxRequests)
+                    break; // Max capacity.
+                if (asyncCall.callsPerHost().get() >= maxRequestsPerHost)
+                    continue; // Host max capacity.
 
                 i.remove();
                 asyncCall.callsPerHost().incrementAndGet();

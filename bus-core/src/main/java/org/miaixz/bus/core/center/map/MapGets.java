@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map;
 
 import org.miaixz.bus.core.convert.Convert;
@@ -326,7 +326,8 @@ public class MapGets extends MapValidator {
      * @param defaultValue 默认值
      * @return 值
      */
-    public static <T> T getQuietly(final Map<?, ?> map, final Object key, final TypeReference<T> type, final T defaultValue) {
+    public static <T> T getQuietly(final Map<?, ?> map, final Object key, final TypeReference<T> type,
+            final T defaultValue) {
         return null == map ? defaultValue : Convert.convertQuietly(type, map.get(key), defaultValue);
     }
 

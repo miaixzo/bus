@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.accord;
 
 import org.miaixz.bus.core.xyz.IoKit;
@@ -50,8 +50,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class RealConnectionPool {
     /**
-     * 后台线程用于清理过期的连接。每个连接池最多运行一个线程
-     * 线程池执行器允许池本身被垃圾收集
+     * 后台线程用于清理过期的连接。每个连接池最多运行一个线程 线程池执行器允许池本身被垃圾收集
      */
     private static final Executor executor = new ThreadPoolExecutor(0 /* corePoolSize */,
             Integer.MAX_VALUE /* maximumPoolSize */, 60L /* keepAliveTime */, TimeUnit.SECONDS,
@@ -67,7 +66,8 @@ public class RealConnectionPool {
     private final Runnable cleanupRunnable = () -> {
         while (true) {
             long waitNanos = cleanup(System.nanoTime());
-            if (waitNanos == -1) return;
+            if (waitNanos == -1)
+                return;
             if (waitNanos > 0) {
                 long waitMillis = waitNanos / 1000000L;
                 waitNanos -= (waitMillis * 1000000L);
@@ -94,7 +94,8 @@ public class RealConnectionPool {
     public synchronized int idleConnectionCount() {
         int total = 0;
         for (RealConnection connection : connections) {
-            if (connection.transmitters.isEmpty()) total++;
+            if (connection.transmitters.isEmpty())
+                total++;
         }
         return total;
     }
@@ -104,15 +105,17 @@ public class RealConnectionPool {
     }
 
     /**
-     * Attempts to acquire a recycled connection to {@code address} for {@code transmitter}. Returns
-     * true if a connection was acquired.
+     * Attempts to acquire a recycled connection to {@code address} for {@code transmitter}. Returns true if a
+     * connection was acquired.
      */
-    boolean transmitterAcquirePooledConnection(Address address, Transmitter transmitter,
-                                               List<Route> routes, boolean requireMultiplexed) {
+    boolean transmitterAcquirePooledConnection(Address address, Transmitter transmitter, List<Route> routes,
+            boolean requireMultiplexed) {
         assert (Thread.holdsLock(this));
         for (RealConnection connection : connections) {
-            if (requireMultiplexed && !connection.isMultiplexed()) continue;
-            if (!connection.isEligible(address, routes)) continue;
+            if (requireMultiplexed && !connection.isMultiplexed())
+                continue;
+            if (!connection.isEligible(address, routes))
+                continue;
             transmitter.acquireConnectionNoEvents(connection);
             return true;
         }
@@ -129,8 +132,8 @@ public class RealConnectionPool {
     }
 
     /**
-     * Notify this pool that {@code connection} has become idle. Returns true if the connection has
-     * been removed from the pool and should be closed.
+     * Notify this pool that {@code connection} has become idle. Returns true if the connection has been removed from
+     * the pool and should be closed.
      */
     boolean connectionBecameIdle(RealConnection connection) {
         assert (Thread.holdsLock(this));
@@ -146,7 +149,7 @@ public class RealConnectionPool {
     public void evictAll() {
         List<RealConnection> evictedConnections = new ArrayList<>();
         synchronized (this) {
-            for (Iterator<RealConnection> i = connections.iterator(); i.hasNext(); ) {
+            for (Iterator<RealConnection> i = connections.iterator(); i.hasNext();) {
                 RealConnection connection = i.next();
                 if (connection.transmitters.isEmpty()) {
                     connection.noNewExchanges = true;
@@ -162,10 +165,9 @@ public class RealConnectionPool {
     }
 
     /**
-     * Performs maintenance on this pool, evicting the connection that has been idle the longest if
-     * either it has exceeded the keep alive limit or the idle connections limit.
-     * Returns the duration in nanos to sleep until the next scheduled call to this method. Returns
-     * -1 if no further cleanups are required.
+     * Performs maintenance on this pool, evicting the connection that has been idle the longest if either it has
+     * exceeded the keep alive limit or the idle connections limit. Returns the duration in nanos to sleep until the
+     * next scheduled call to this method. Returns -1 if no further cleanups are required.
      */
     long cleanup(long now) {
         int inUseConnectionCount = 0;
@@ -175,7 +177,7 @@ public class RealConnectionPool {
 
         // Find either a connection to evict, or the time that the next eviction is due.
         synchronized (this) {
-            for (Iterator<RealConnection> i = connections.iterator(); i.hasNext(); ) {
+            for (Iterator<RealConnection> i = connections.iterator(); i.hasNext();) {
                 RealConnection connection = i.next();
 
                 // If the connection is in use, keep searching.
@@ -194,8 +196,7 @@ public class RealConnectionPool {
                 }
             }
 
-            if (longestIdleDurationNs >= this.keepAliveDurationNs
-                    || idleConnectionCount > this.maxIdleConnections) {
+            if (longestIdleDurationNs >= this.keepAliveDurationNs || idleConnectionCount > this.maxIdleConnections) {
                 // We've found a connection to evict. Remove it from the list, then close it below (outside
                 // of the synchronized block).
                 connections.remove(longestIdleConnection);
@@ -219,14 +220,13 @@ public class RealConnectionPool {
     }
 
     /**
-     * Prunes any leaked transmitters and then returns the number of remaining live transmitters on
-     * {@code connection}. Transmitters are leaked if the connection is tracking them but the
-     * application code has abandoned them. Leak detection is imprecise and relies on garbage
-     * collection.
+     * Prunes any leaked transmitters and then returns the number of remaining live transmitters on {@code connection}.
+     * Transmitters are leaked if the connection is tracking them but the application code has abandoned them. Leak
+     * detection is imprecise and relies on garbage collection.
      */
     private int pruneAndGetAllocationCount(RealConnection connection, long now) {
         List<Reference<Transmitter>> references = connection.transmitters;
-        for (int i = 0; i < references.size(); ) {
+        for (int i = 0; i < references.size();) {
             Reference<Transmitter> reference = references.get(i);
 
             if (reference.get() != null) {
@@ -260,8 +260,7 @@ public class RealConnectionPool {
         // Tell the proxy selector when we fail to connect on a fresh connection.
         if (failedRoute.proxy().type() != Proxy.Type.DIRECT) {
             Address address = failedRoute.address();
-            address.proxySelector().connectFailed(
-                    address.url().uri(), failedRoute.proxy().address(), failure);
+            address.proxySelector().connectFailed(address.url().uri(), failedRoute.proxy().address(), failure);
         }
 
         routeDatabase.failed(failedRoute);

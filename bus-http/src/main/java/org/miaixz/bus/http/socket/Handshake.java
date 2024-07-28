@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.socket;
 
 import org.miaixz.bus.core.net.tls.TlsVersion;
@@ -43,8 +43,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * TLS握手的记录。对于HTTPS客户机，客户机是local，远程服务器
- * 此值对象描述完成的握手。使用{@link ConnectionSuite}设置新的握手策略
+ * TLS握手的记录。对于HTTPS客户机，客户机是local，远程服务器 此值对象描述完成的握手。使用{@link ConnectionSuite}设置新的握手策略
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,8 +51,7 @@ import java.util.List;
 public class Handshake {
 
     /**
-     * 用于此连接的TLS版本。在Httpd 3.0之前没有跟踪这个值。
-     * 对于之前版本缓存的响应，它返回{@link TlsVersion#SSLv3}
+     * 用于此连接的TLS版本。在Httpd 3.0之前没有跟踪这个值。 对于之前版本缓存的响应，它返回{@link TlsVersion#SSLv3}
      */
     private final TlsVersion tlsVersion;
     /**
@@ -69,8 +67,8 @@ public class Handshake {
      */
     private final List<Certificate> localCertificates;
 
-    private Handshake(TlsVersion tlsVersion, CipherSuite cipherSuite,
-                      List<Certificate> peerCertificates, List<Certificate> localCertificates) {
+    private Handshake(TlsVersion tlsVersion, CipherSuite cipherSuite, List<Certificate> peerCertificates,
+            List<Certificate> localCertificates) {
         this.tlsVersion = tlsVersion;
         this.cipherSuite = cipherSuite;
         this.peerCertificates = peerCertificates;
@@ -91,7 +89,8 @@ public class Handshake {
         if (null == tlsVersionString) {
             throw new IllegalStateException("tlsVersion == null");
         }
-        if ("NONE".equals(tlsVersionString)) throw new IOException("tlsVersion == NONE");
+        if ("NONE".equals(tlsVersionString))
+            throw new IOException("tlsVersion == NONE");
         TlsVersion tlsVersion = TlsVersion.forJavaName(tlsVersionString);
 
         Certificate[] peerCertificates;
@@ -100,29 +99,29 @@ public class Handshake {
         } catch (SSLPeerUnverifiedException ignored) {
             peerCertificates = null;
         }
-        List<Certificate> peerCertificatesList = null != peerCertificates
-                ? Builder.immutableList(peerCertificates)
+        List<Certificate> peerCertificatesList = null != peerCertificates ? Builder.immutableList(peerCertificates)
                 : Collections.emptyList();
 
         Certificate[] localCertificates = session.getLocalCertificates();
-        List<Certificate> localCertificatesList = null != localCertificates
-                ? Builder.immutableList(localCertificates)
+        List<Certificate> localCertificatesList = null != localCertificates ? Builder.immutableList(localCertificates)
                 : Collections.emptyList();
 
         return new Handshake(tlsVersion, cipherSuite, peerCertificatesList, localCertificatesList);
     }
 
-    public static Handshake get(TlsVersion tlsVersion, CipherSuite cipherSuite,
-                                List<Certificate> peerCertificates, List<Certificate> localCertificates) {
-        if (tlsVersion == null) throw new NullPointerException("tlsVersion == null");
-        if (cipherSuite == null) throw new NullPointerException("cipherSuite == null");
+    public static Handshake get(TlsVersion tlsVersion, CipherSuite cipherSuite, List<Certificate> peerCertificates,
+            List<Certificate> localCertificates) {
+        if (tlsVersion == null)
+            throw new NullPointerException("tlsVersion == null");
+        if (cipherSuite == null)
+            throw new NullPointerException("cipherSuite == null");
         return new Handshake(tlsVersion, cipherSuite, Builder.immutableList(peerCertificates),
                 Builder.immutableList(localCertificates));
     }
 
     /**
-     * Returns the TLS version used for this connection. This value wasn't tracked prior to Http
-     * 3.0. For responses cached by preceding versions this returns {@link TlsVersion#SSLv3}.
+     * Returns the TLS version used for this connection. This value wasn't tracked prior to Http 3.0. For responses
+     * cached by preceding versions this returns {@link TlsVersion#SSLv3}.
      */
     public TlsVersion tlsVersion() {
         return tlsVersion;
@@ -146,8 +145,7 @@ public class Handshake {
      * Returns the remote peer's principle, or null if that peer is anonymous.
      */
     public Principal peerPrincipal() {
-        return !peerCertificates.isEmpty()
-                ? ((X509Certificate) peerCertificates.get(0)).getSubjectX500Principal()
+        return !peerCertificates.isEmpty() ? ((X509Certificate) peerCertificates.get(0)).getSubjectX500Principal()
                 : null;
     }
 
@@ -162,19 +160,17 @@ public class Handshake {
      * Returns the local principle, or null if this peer is anonymous.
      */
     public Principal localPrincipal() {
-        return !localCertificates.isEmpty()
-                ? ((X509Certificate) localCertificates.get(0)).getSubjectX500Principal()
+        return !localCertificates.isEmpty() ? ((X509Certificate) localCertificates.get(0)).getSubjectX500Principal()
                 : null;
     }
 
     @Override
     public boolean equals(Object other) {
-        if (!(other instanceof Handshake)) return false;
+        if (!(other instanceof Handshake))
+            return false;
         Handshake that = (Handshake) other;
-        return tlsVersion.equals(that.tlsVersion)
-                && cipherSuite.equals(that.cipherSuite)
-                && peerCertificates.equals(that.peerCertificates)
-                && localCertificates.equals(that.localCertificates);
+        return tlsVersion.equals(that.tlsVersion) && cipherSuite.equals(that.cipherSuite)
+                && peerCertificates.equals(that.peerCertificates) && localCertificates.equals(that.localCertificates);
     }
 
     @Override
@@ -189,16 +185,8 @@ public class Handshake {
 
     @Override
     public String toString() {
-        return "Handshake{"
-                + "tlsVersion="
-                + tlsVersion
-                + " cipherSuite="
-                + cipherSuite
-                + " peerCertificates="
-                + names(peerCertificates)
-                + " localCertificates="
-                + names(localCertificates)
-                + '}';
+        return "Handshake{" + "tlsVersion=" + tlsVersion + " cipherSuite=" + cipherSuite + " peerCertificates="
+                + names(peerCertificates) + " localCertificates=" + names(localCertificates) + '}';
     }
 
     private List<String> names(List<Certificate> certificates) {

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.jna;
 
 import com.sun.jna.Memory;
@@ -109,7 +109,7 @@ public interface FreeBsdLibc extends CLibrary {
     /**
      * Connection info
      */
-    @FieldOrder({"ut_type", "ut_tv", "ut_id", "ut_pid", "ut_user", "ut_line", "ut_host", "ut_spare"})
+    @FieldOrder({ "ut_type", "ut_tv", "ut_id", "ut_pid", "ut_user", "ut_line", "ut_host", "ut_spare" })
     class FreeBsdUtmpx extends Structure {
         public short ut_type; // type of entry
         public Timeval ut_tv; // time entry was made
@@ -124,7 +124,7 @@ public interface FreeBsdLibc extends CLibrary {
     /**
      * Return type for BSD sysctl kern.boottime
      */
-    @FieldOrder({"tv_sec", "tv_usec"})
+    @FieldOrder({ "tv_sec", "tv_usec" })
     class Timeval extends Structure {
         public long tv_sec; // seconds
         public long tv_usec; // microseconds
@@ -133,7 +133,7 @@ public interface FreeBsdLibc extends CLibrary {
     /**
      * CPU Ticks
      */
-    @FieldOrder({"cpu_ticks"})
+    @FieldOrder({ "cpu_ticks" })
     class CpTime extends Structure implements AutoCloseable {
         public long[] cpu_ticks = new long[CPUSTATES];
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -74,8 +74,7 @@ public class DcmDump implements ImageInputHandler {
     }
 
     @Override
-    public void readValue(ImageInputStream dis, Attributes attrs)
-            throws IOException {
+    public void readValue(ImageInputStream dis, Attributes attrs) throws IOException {
         StringBuilder line = new StringBuilder(width + 30);
         appendPrefix(dis, line);
         appendHeader(dis, line);
@@ -97,24 +96,21 @@ public class DcmDump implements ImageInputHandler {
         }
         byte[] b = probeValue(dis);
         line.append(" [");
-        if (vr.prompt(b, dis.bigEndian(),
-                attrs.getSpecificCharacterSet(),
-                width - line.length() - 1, line)) {
+        if (vr.prompt(b, dis.bigEndian(), attrs.getSpecificCharacterSet(), width - line.length() - 1, line)) {
             line.append(']');
             appendKeyword(dis, privateCreator, line);
         }
         if (tag == Tag.FileMetaInformationGroupLength)
             dis.setFileMetaInformationGroupLength(b);
-        else if (tag == Tag.TransferSyntaxUID
-                || tag == Tag.SpecificCharacterSet
-                || tag == Tag.PixelRepresentation
+        else if (tag == Tag.TransferSyntaxUID || tag == Tag.SpecificCharacterSet || tag == Tag.PixelRepresentation
                 || Tag.isPrivateCreator(tag))
             attrs.setBytes(tag, vr, b);
     }
 
     private byte[] probeValue(ImageInputStream dis) throws IOException {
         long len = dis.unsignedLength();
-        if (len == 0) return Normal.EMPTY_BYTE_ARRAY;
+        if (len == 0)
+            return Normal.EMPTY_BYTE_ARRAY;
         int read = (int) Math.min(len, (width + 7) & ~7);
         byte[] b = new byte[read];
         dis.readFully(b);
@@ -123,8 +119,7 @@ public class DcmDump implements ImageInputHandler {
     }
 
     @Override
-    public void readValue(ImageInputStream dis, Sequence seq)
-            throws IOException {
+    public void readValue(ImageInputStream dis, Sequence seq) throws IOException {
         String privateCreator = seq.getParent().getPrivateCreator(dis.tag());
         StringBuilder line = new StringBuilder(width);
         appendPrefix(dis, line);
@@ -142,8 +137,7 @@ public class DcmDump implements ImageInputHandler {
     }
 
     @Override
-    public void readValue(ImageInputStream dis, Fragments frags)
-            throws IOException {
+    public void readValue(ImageInputStream dis, Fragments frags) throws IOException {
         StringBuilder line = new StringBuilder(width + 20);
         appendPrefix(dis, line);
         appendHeader(dis, line);
@@ -183,12 +177,10 @@ public class DcmDump implements ImageInputHandler {
         }
     }
 
-    private void appendFragment(StringBuilder line, ImageInputStream dis,
-                                VR vr) throws IOException {
+    private void appendFragment(StringBuilder line, ImageInputStream dis, VR vr) throws IOException {
         byte[] b = probeValue(dis);
         line.append(" [");
-        if (vr.prompt(b, dis.bigEndian(), null,
-                width - line.length() - 1, line)) {
+        if (vr.prompt(b, dis.bigEndian(), null, width - line.length() - 1, line)) {
             line.append(']');
             appendKeyword(dis, null, line);
         }

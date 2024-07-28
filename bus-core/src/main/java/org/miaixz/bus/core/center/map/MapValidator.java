@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map;
 
 import java.util.Collections;
@@ -33,8 +33,8 @@ import java.util.Map;
 /**
  * Map检查工具类，提供字对象的blank和empty等检查
  * <ul>
- *     <li>empty定义：{@code null} or 空字对象：{@code ""}</li>
- *     <li>blank定义：{@code null} or 空字对象：{@code ""} or 空格、全角空格、制表符、换行符，等不可见字符</li>
+ * <li>empty定义：{@code null} or 空字对象：{@code ""}</li>
+ * <li>blank定义：{@code null} or 空字对象：{@code ""} or 空格、全角空格、制表符、换行符，等不可见字符</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -63,8 +63,7 @@ public class MapValidator {
     }
 
     /**
-     * 如果提供的集合为{@code null}，返回一个不可变的默认空集合，否则返回原集合
-     * 空集合使用{@link Collections#emptyMap()}
+     * 如果提供的集合为{@code null}，返回一个不可变的默认空集合，否则返回原集合 空集合使用{@link Collections#emptyMap()}
      *
      * @param <K> 键类型
      * @param <V> 值类型

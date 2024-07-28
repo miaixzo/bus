@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager.parser.defaults;
 
 import net.sf.jsqlparser.expression.Alias;
@@ -42,8 +42,7 @@ import org.miaixz.bus.pager.parser.SqlServerSqlParser;
 import java.util.*;
 
 /**
- * 将sqlserver查询语句转换为分页语句
- * 注意事项：
+ * 将sqlserver查询语句转换为分页语句 注意事项：
  * <ol>
  * <li>请先保证你的SQL可以执行</li>
  * <li>sql中最好直接包含order by，可以自动从sql提取</li>
@@ -159,7 +158,8 @@ public class DefaultSqlServerSqlParser implements SqlServerSqlParser {
         }
         // 这里的selectBody一定是PlainSelect
         if (((PlainSelect) select).getTop() != null) {
-            throw new PageException("The pagination statement already contains the top, and can no longer be used to query the pagination plugin!");
+            throw new PageException(
+                    "The pagination statement already contains the top, and can no longer be used to query the pagination plugin!");
         }
         // 获取查询列
         List<SelectItem<?>> selectItems = getSelectItems((PlainSelect) select);
@@ -252,13 +252,13 @@ public class DefaultSqlServerSqlParser implements SqlServerSqlParser {
      * @return the list
      */
     protected List<SelectItem<?>> getSelectItems(PlainSelect plainSelect) {
-        //设置selectItems
+        // 设置selectItems
         List<SelectItem<?>> selectItems = new ArrayList<>();
         for (SelectItem<?> selectItem : plainSelect.getSelectItems()) {
             if (selectItem.getExpression() instanceof AllTableColumns) {
                 selectItems.add(new SelectItem<>(new AllColumns()));
             } else if (selectItem.getAlias() != null) {
-                //直接使用别名
+                // 直接使用别名
                 Column column = new Column(selectItem.getAlias().getName());
                 SelectItem<?> expressionItem = new SelectItem<>(column);
                 selectItems.add(expressionItem);
@@ -301,8 +301,7 @@ public class DefaultSqlServerSqlParser implements SqlServerSqlParser {
         StringBuilder orderByBuilder = new StringBuilder();
         orderByBuilder.append("ROW_NUMBER() OVER (");
         if (isNotEmptyList(plainSelect.getOrderByElements())) {
-            orderByBuilder.append(PlainSelect.orderByToString(
-                    getOrderByElements(plainSelect, autoItems)).substring(1));
+            orderByBuilder.append(PlainSelect.orderByToString(getOrderByElements(plainSelect, autoItems)).substring(1));
             // 清空排序列表
             plainSelect.setOrderByElements(null);
         } else {
@@ -433,8 +432,7 @@ public class DefaultSqlServerSqlParser implements SqlServerSqlParser {
      * @param autoItems   生成的新查询要素
      * @return 新的排序列表
      */
-    protected List<OrderByElement> getOrderByElements(PlainSelect plainSelect,
-                                                      List<SelectItem<?>> autoItems) {
+    protected List<OrderByElement> getOrderByElements(PlainSelect plainSelect, List<SelectItem<?>> autoItems) {
         List<OrderByElement> orderByElements = plainSelect.getOrderByElements();
         ListIterator<OrderByElement> iterator = orderByElements.listIterator();
         OrderByElement orderByElement;
@@ -495,15 +493,14 @@ public class DefaultSqlServerSqlParser implements SqlServerSqlParser {
                 if (expression instanceof Column) { // OrderByElement 为普通列
                     Table table = ((Column) expression).getTable();
                     if (table == null) { // 表名为空
-                        if (allColumns ||
-                                (allColumnsTables.size() == 1 && plainSelect.getJoins() == null) ||
-                                aliases.contains(((Column) expression).getColumnName())) {
+                        if (allColumns || (allColumnsTables.size() == 1 && plainSelect.getJoins() == null)
+                                || aliases.contains(((Column) expression).getColumnName())) {
                             // 包含`*`查询列 或者 只有一个 `t.*`列且为单表查询 或者 其实排序列是一个别名
                             // 此时排序列其实已经包含在查询列表中了，不需做任何操作
                             continue;
                         }
 
-                    } else { //表名不为空
+                    } else { // 表名不为空
                         String tableName = table.getName();
                         if (allColumns || allColumnsTables.contains(tableName)) {
                             // 包含`*`查询列 或者 包含特定的`t.*`列

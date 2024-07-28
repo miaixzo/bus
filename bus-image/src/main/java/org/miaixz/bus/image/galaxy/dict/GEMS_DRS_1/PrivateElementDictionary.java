@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.GEMS_DRS_1;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,21 +46,22 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.Inversion:
-                return VR.CS;
-            case PrivateTag.ReferringDepartment:
-                return VR.LO;
-            case PrivateTag.LeftOrientation:
-            case PrivateTag.RightOrientation:
-                return VR.SH;
-            case PrivateTag.ScreenNumber:
-            case PrivateTag.DSA:
-                return VR.US;
+
+        case PrivateTag.Inversion:
+            return VR.CS;
+        case PrivateTag.ReferringDepartment:
+            return VR.LO;
+        case PrivateTag.LeftOrientation:
+        case PrivateTag.RightOrientation:
+            return VR.SH;
+        case PrivateTag.ScreenNumber:
+        case PrivateTag.DSA:
+            return VR.US;
         }
         return VR.UN;
     }

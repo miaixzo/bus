@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.office;
 
 import jakarta.annotation.Resource;
@@ -39,8 +39,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  * @author Kimi Liu
  * @since Java 17+
  */
-@ConditionalOnClass({LocalOfficeProvider.class, OnlineOfficeProvider.class})
-@EnableConfigurationProperties(value = {OfficeProperties.class})
+@ConditionalOnClass({ LocalOfficeProvider.class, OnlineOfficeProvider.class })
+@EnableConfigurationProperties(value = { OfficeProperties.class })
 public class OfficeConfiguration {
 
     @Resource

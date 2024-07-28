@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_ISI;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,54 +46,55 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.AttachIDDate:
-            case PrivateTag.MaxWaitingDate:
-            case PrivateTag.PatientRegistrationDate:
-            case PrivateTag.RequestedDate:
-            case PrivateTag.ReportCreationDate:
-                return VR.DA;
-            case PrivateTag.RISKey:
-                return VR.DS;
-            case PrivateTag.PatientUID:
-            case PrivateTag.PatientID:
-            case PrivateTag.CaseID:
-            case PrivateTag.RequestID:
-            case PrivateTag.ExaminationUID:
-            case PrivateTag.PatientLastName:
-            case PrivateTag.PatientFirstName:
-            case PrivateTag.PatientHospitalStatus:
-            case PrivateTag.PatientInsuranceStatus:
-            case PrivateTag.PatientBillingType:
-            case PrivateTag.PatientBillingAddress:
-            case PrivateTag.ExaminationReason:
-            case PrivateTag.RequestedLocation:
-            case PrivateTag.CurrentWard:
-            case PrivateTag.ReportID:
-            case PrivateTag.ReportStatus:
-            case PrivateTag.ReportApprovingPhysician:
-            case PrivateTag.ReportText:
-            case PrivateTag.ReportAuthor:
-            case PrivateTag.ReportingRadiologist:
-                return VR.LO;
-            case PrivateTag.AttachIDTime:
-            case PrivateTag.MaxWaitingTime:
-            case PrivateTag.PatientRegistrationTime:
-            case PrivateTag.CurrentLocationTime:
-            case PrivateTag.WorklistRequestStartTime:
-            case PrivateTag.WorklistRequestEndTime:
-            case PrivateTag.RequestedTime:
-                return VR.TM;
-            case PrivateTag.AttachIDMessageCount:
-                return VR.UL;
-            case PrivateTag.ISICommandField:
-            case PrivateTag.AttachIDApplicationCode:
-            case PrivateTag.MessageType:
-                return VR.US;
+
+        case PrivateTag.AttachIDDate:
+        case PrivateTag.MaxWaitingDate:
+        case PrivateTag.PatientRegistrationDate:
+        case PrivateTag.RequestedDate:
+        case PrivateTag.ReportCreationDate:
+            return VR.DA;
+        case PrivateTag.RISKey:
+            return VR.DS;
+        case PrivateTag.PatientUID:
+        case PrivateTag.PatientID:
+        case PrivateTag.CaseID:
+        case PrivateTag.RequestID:
+        case PrivateTag.ExaminationUID:
+        case PrivateTag.PatientLastName:
+        case PrivateTag.PatientFirstName:
+        case PrivateTag.PatientHospitalStatus:
+        case PrivateTag.PatientInsuranceStatus:
+        case PrivateTag.PatientBillingType:
+        case PrivateTag.PatientBillingAddress:
+        case PrivateTag.ExaminationReason:
+        case PrivateTag.RequestedLocation:
+        case PrivateTag.CurrentWard:
+        case PrivateTag.ReportID:
+        case PrivateTag.ReportStatus:
+        case PrivateTag.ReportApprovingPhysician:
+        case PrivateTag.ReportText:
+        case PrivateTag.ReportAuthor:
+        case PrivateTag.ReportingRadiologist:
+            return VR.LO;
+        case PrivateTag.AttachIDTime:
+        case PrivateTag.MaxWaitingTime:
+        case PrivateTag.PatientRegistrationTime:
+        case PrivateTag.CurrentLocationTime:
+        case PrivateTag.WorklistRequestStartTime:
+        case PrivateTag.WorklistRequestEndTime:
+        case PrivateTag.RequestedTime:
+            return VR.TM;
+        case PrivateTag.AttachIDMessageCount:
+            return VR.UL;
+        case PrivateTag.ISICommandField:
+        case PrivateTag.AttachIDApplicationCode:
+        case PrivateTag.MessageType:
+            return VR.US;
         }
         return VR.UN;
     }

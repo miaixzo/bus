@@ -24,12 +24,14 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text.placeholder.segment;
 
 /**
  * 基字符串模板-基于下标的占位符 SectionBuffer
- * <p>例如，"{1}"</p>
+ * <p>
+ * 例如，"{1}"
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+

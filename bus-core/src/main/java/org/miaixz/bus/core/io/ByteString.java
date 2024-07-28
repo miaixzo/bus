@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io;
 
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -74,8 +74,8 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     /**
-     * Returns a new byte string containing a copy of {@code byteCount} bytes of {@code data} starting
-     * at {@code offset}.
+     * Returns a new byte string containing a copy of {@code byteCount} bytes of {@code data} starting at
+     * {@code offset}.
      */
     public static ByteString of(byte[] data, int offset, int byteCount) {
         if (null == data) {
@@ -124,8 +124,8 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     /**
-     * Decodes the Base64-encoded bytes and returns their value as a byte string.
-     * Returns null if {@code base64} is not a Base64-encoded sequence of bytes.
+     * Decodes the Base64-encoded bytes and returns their value as a byte string. Returns null if {@code base64} is not
+     * a Base64-encoded sequence of bytes.
      */
     public static ByteString decodeBase64(String base64) {
         if (null == base64) {
@@ -156,17 +156,19 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     private static int decodeHexDigit(char c) {
-        if (c >= Symbol.C_ZERO && c <= Symbol.C_NINE) return c - Symbol.C_ZERO;
-        if (c >= 'a' && c <= 'f') return c - 'a' + 10;
-        if (c >= 'A' && c <= 'F') return c - 'A' + 10;
+        if (c >= Symbol.C_ZERO && c <= Symbol.C_NINE)
+            return c - Symbol.C_ZERO;
+        if (c >= 'a' && c <= 'f')
+            return c - 'a' + 10;
+        if (c >= 'A' && c <= 'F')
+            return c - 'A' + 10;
         throw new IllegalArgumentException("Unexpected hex digit: " + c);
     }
 
     /**
      * Reads {@code count} bytes from {@code in} and returns the result.
      *
-     * @throws EOFException if {@code in} has fewer than {@code count}
-     *                      bytes to read.
+     * @throws EOFException if {@code in} has fewer than {@code count} bytes to read.
      */
     public static ByteString read(InputStream in, int byteCount) throws IOException {
         if (null == in) {
@@ -179,7 +181,8 @@ public class ByteString implements Serializable, Comparable<ByteString> {
         byte[] result = new byte[byteCount];
         for (int offset = 0, read; offset < byteCount; offset += read) {
             read = in.read(result, offset, byteCount - offset);
-            if (read == -1) throw new EOFException();
+            if (read == -1)
+                throw new EOFException();
         }
         return new ByteString(result);
     }
@@ -190,8 +193,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
                 return i;
             }
             c = s.codePointAt(i);
-            if ((Character.isISOControl(c) && c != '\n' && c != '\r')
-                    || c == Buffer.REPLACEMENT_CHARACTER) {
+            if ((Character.isISOControl(c) && c != '\n' && c != '\r') || c == Buffer.REPLACEMENT_CHARACTER) {
                 return -1;
             }
             j++;
@@ -216,8 +218,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     /**
-     * Returns this byte string encoded as <a
-     * href="http://www.ietf.org/rfc/rfc2045.txt">Base64</a>. In violation of the
+     * Returns this byte string encoded as <a href="http://www.ietf.org/rfc/rfc2045.txt">Base64</a>. In violation of the
      * RFC, the returned string does not wrap lines at 76 columns.
      */
     public String base64() {
@@ -294,8 +295,7 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     /**
-     * Returns this byte string encoded as <a href="http://www.ietf.org/rfc/rfc4648.txt">URL-safe
-     * Base64</a>.
+     * Returns this byte string encoded as <a href="http://www.ietf.org/rfc/rfc4648.txt">URL-safe Base64</a>.
      */
     public String base64Url() {
         return Base64.encodeUrlSafe(data);
@@ -315,15 +315,15 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     /**
-     * Returns a byte string equal to this byte string, but with the bytes 'A'
-     * through 'Z' replaced with the corresponding byte in 'a' through 'z'.
-     * Returns this byte string if it contains no bytes in 'A' through 'Z'.
+     * Returns a byte string equal to this byte string, but with the bytes 'A' through 'Z' replaced with the
+     * corresponding byte in 'a' through 'z'. Returns this byte string if it contains no bytes in 'A' through 'Z'.
      */
     public ByteString toAsciiLowercase() {
         // Search for an uppercase character. If we don't find one, return this.
         for (int i = 0; i < data.length; i++) {
             byte c = data[i];
-            if (c < 'A' || c > 'Z') continue;
+            if (c < 'A' || c > 'Z')
+                continue;
 
             // If we reach this point, this string is not not lowercase. Create and
             // return a new byte string.
@@ -331,7 +331,8 @@ public class ByteString implements Serializable, Comparable<ByteString> {
             lowercase[i++] = (byte) (c - ('A' - 'a'));
             for (; i < lowercase.length; i++) {
                 c = lowercase[i];
-                if (c < 'A' || c > 'Z') continue;
+                if (c < 'A' || c > 'Z')
+                    continue;
                 lowercase[i] = (byte) (c - ('A' - 'a'));
             }
             return new ByteString(lowercase);
@@ -340,15 +341,15 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     /**
-     * Returns a byte string equal to this byte string, but with the bytes 'a'
-     * through 'z' replaced with the corresponding byte in 'A' through 'Z'.
-     * Returns this byte string if it contains no bytes in 'a' through 'z'.
+     * Returns a byte string equal to this byte string, but with the bytes 'a' through 'z' replaced with the
+     * corresponding byte in 'A' through 'Z'. Returns this byte string if it contains no bytes in 'a' through 'z'.
      */
     public ByteString toAsciiUppercase() {
         // Search for an lowercase character. If we don't find one, return this.
         for (int i = 0; i < data.length; i++) {
             byte c = data[i];
-            if (c < 'a' || c > 'z') continue;
+            if (c < 'a' || c > 'z')
+                continue;
 
             // If we reach this point, this string is not not uppercase. Create and
             // return a new byte string.
@@ -356,7 +357,8 @@ public class ByteString implements Serializable, Comparable<ByteString> {
             lowercase[i++] = (byte) (c - ('a' - 'A'));
             for (; i < lowercase.length; i++) {
                 c = lowercase[i];
-                if (c < 'a' || c > 'z') continue;
+                if (c < 'a' || c > 'z')
+                    continue;
                 lowercase[i] = (byte) (c - ('a' - 'A'));
             }
             return new ByteString(lowercase);
@@ -365,26 +367,28 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     /**
-     * Returns a byte string that is a substring of this byte string, beginning at the specified
-     * index until the end of this string. Returns this byte string if {@code beginIndex} is 0.
+     * Returns a byte string that is a substring of this byte string, beginning at the specified index until the end of
+     * this string. Returns this byte string if {@code beginIndex} is 0.
      */
     public ByteString substring(int beginIndex) {
         return substring(beginIndex, data.length);
     }
 
     /**
-     * Returns a byte string that is a substring of this byte string, beginning at the specified
-     * {@code beginIndex} and ends at the specified {@code endIndex}. Returns this byte string if
-     * {@code beginIndex} is 0 and {@code endIndex} is the length of this byte string.
+     * Returns a byte string that is a substring of this byte string, beginning at the specified {@code beginIndex} and
+     * ends at the specified {@code endIndex}. Returns this byte string if {@code beginIndex} is 0 and {@code endIndex}
+     * is the length of this byte string.
      */
     public ByteString substring(int beginIndex, int endIndex) {
-        if (beginIndex < 0) throw new IllegalArgumentException("beginIndex < 0");
+        if (beginIndex < 0)
+            throw new IllegalArgumentException("beginIndex < 0");
         if (endIndex > data.length) {
             throw new IllegalArgumentException("endIndex > length(" + data.length + Symbol.PARENTHESE_RIGHT);
         }
 
         int subLen = endIndex - beginIndex;
-        if (subLen < 0) throw new IllegalArgumentException("endIndex < beginIndex");
+        if (subLen < 0)
+            throw new IllegalArgumentException("endIndex < beginIndex");
 
         if ((beginIndex == 0) && (endIndex == data.length)) {
             return this;
@@ -434,7 +438,8 @@ public class ByteString implements Serializable, Comparable<ByteString> {
      * Writes the contents of this byte string to {@code out}.
      */
     public void write(OutputStream out) throws IOException {
-        if (out == null) throw new IllegalArgumentException("out == null");
+        if (out == null)
+            throw new IllegalArgumentException("out == null");
         out.write(data);
     }
 
@@ -446,22 +451,20 @@ public class ByteString implements Serializable, Comparable<ByteString> {
     }
 
     /**
-     * Returns true if the bytes of this in {@code [offset..offset+byteCount)} equal the bytes of
-     * {@code other} in {@code [otherOffset..otherOffset+byteCount)}. Returns false if either range is
-     * out of bounds.
+     * Returns true if the bytes of this in {@code [offset..offset+byteCount)} equal the bytes of {@code other} in
+     * {@code [otherOffset..otherOffset+byteCount)}. Returns false if either range is out of bounds.
      */
     public boolean rangeEquals(int offset, ByteString other, int otherOffset, int byteCount) {
         return other.rangeEquals(otherOffset, this.data, offset, byteCount);
     }
 
     /**
-     * Returns true if the bytes of this in {@code [offset..offset+byteCount)} equal the bytes of
-     * {@code other} in {@code [otherOffset..otherOffset+byteCount)}. Returns false if either range is
-     * out of bounds.
+     * Returns true if the bytes of this in {@code [offset..offset+byteCount)} equal the bytes of {@code other} in
+     * {@code [otherOffset..otherOffset+byteCount)}. Returns false if either range is out of bounds.
      */
     public boolean rangeEquals(int offset, byte[] other, int otherOffset, int byteCount) {
-        return offset >= 0 && offset <= data.length - byteCount
-                && otherOffset >= 0 && otherOffset <= other.length - byteCount
+        return offset >= 0 && offset <= data.length - byteCount && otherOffset >= 0
+                && otherOffset <= other.length - byteCount
                 && IoKit.arrayRangeEquals(data, offset, other, otherOffset, byteCount);
     }
 
@@ -527,9 +530,9 @@ public class ByteString implements Serializable, Comparable<ByteString> {
 
     @Override
     public boolean equals(Object o) {
-        if (o == this) return true;
-        return o instanceof ByteString
-                && ((ByteString) o).size() == data.length
+        if (o == this)
+            return true;
+        return o instanceof ByteString && ((ByteString) o).size() == data.length
                 && ((ByteString) o).rangeEquals(0, data, 0, data.length);
     }
 
@@ -546,10 +549,12 @@ public class ByteString implements Serializable, Comparable<ByteString> {
         for (int i = 0, size = Math.min(sizeA, sizeB); i < size; i++) {
             int byteA = getByte(i) & 0xff;
             int byteB = byteString.getByte(i) & 0xff;
-            if (byteA == byteB) continue;
+            if (byteA == byteB)
+                continue;
             return byteA < byteB ? -1 : 1;
         }
-        if (sizeA == sizeB) return 0;
+        if (sizeA == sizeB)
+            return 0;
         return sizeA < sizeB ? -1 : 1;
     }
 

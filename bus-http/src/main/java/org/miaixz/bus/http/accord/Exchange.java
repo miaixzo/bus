@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.accord;
 
 import org.miaixz.bus.core.io.buffer.Buffer;
@@ -49,8 +49,8 @@ import java.net.ProtocolException;
 import java.net.SocketException;
 
 /**
- * Transmits a single HTTP request and a response pair. This layers connection management and events
- * on {@link HttpCodec}, which handles the actual I/O.
+ * Transmits a single HTTP request and a response pair. This layers connection management and events on
+ * {@link HttpCodec}, which handles the actual I/O.
  */
 public final class Exchange {
     final Transmitter transmitter;
@@ -60,8 +60,8 @@ public final class Exchange {
     final HttpCodec codec;
     private boolean duplex;
 
-    public Exchange(Transmitter transmitter, NewCall call, EventListener eventListener,
-                    ExchangeFinder finder, HttpCodec codec) {
+    public Exchange(Transmitter transmitter, NewCall call, EventListener eventListener, ExchangeFinder finder,
+            HttpCodec codec) {
         this.transmitter = transmitter;
         this.call = call;
         this.eventListener = eventListener;
@@ -183,8 +183,8 @@ public final class Exchange {
     }
 
     /**
-     * Revoke this exchange's access to streams. This is necessary when a follow-up request is
-     * required but the preceding exchange hasn't completed yet.
+     * Revoke this exchange's access to streams. This is necessary when a follow-up request is required but the
+     * preceding exchange hasn't completed yet.
      */
     public void detachWithViolence() {
         codec.cancel();
@@ -196,8 +196,7 @@ public final class Exchange {
         codec.connection().trackFailure(e);
     }
 
-    IOException bodyComplete(
-            long bytesRead, boolean responseDone, boolean requestDone, IOException e) {
+    IOException bodyComplete(long bytesRead, boolean responseDone, boolean requestDone, IOException e) {
         if (e != null) {
             trackFailure(e);
         }
@@ -241,10 +240,11 @@ public final class Exchange {
 
         @Override
         public void write(Buffer source, long byteCount) throws IOException {
-            if (closed) throw new IllegalStateException("closed");
+            if (closed)
+                throw new IllegalStateException("closed");
             if (contentLength != -1L && bytesReceived + byteCount > contentLength) {
-                throw new ProtocolException("expected " + contentLength
-                        + " bytes but received " + (bytesReceived + byteCount));
+                throw new ProtocolException(
+                        "expected " + contentLength + " bytes but received " + (bytesReceived + byteCount));
             }
             try {
                 super.write(source, byteCount);
@@ -265,7 +265,8 @@ public final class Exchange {
 
         @Override
         public void close() throws IOException {
-            if (closed) return;
+            if (closed)
+                return;
             closed = true;
             if (contentLength != -1L && bytesReceived != contentLength) {
                 throw new ProtocolException("unexpected end of stream");
@@ -279,7 +280,8 @@ public final class Exchange {
         }
 
         private IOException complete(IOException e) {
-            if (completed) return e;
+            if (completed)
+                return e;
             completed = true;
             return bodyComplete(bytesReceived, false, true, e);
         }
@@ -305,7 +307,8 @@ public final class Exchange {
 
         @Override
         public long read(Buffer sink, long byteCount) throws IOException {
-            if (closed) throw new IllegalStateException("closed");
+            if (closed)
+                throw new IllegalStateException("closed");
             try {
                 long read = delegate().read(sink, byteCount);
                 if (read == -1L) {
@@ -315,8 +318,8 @@ public final class Exchange {
 
                 long newBytesReceived = bytesReceived + read;
                 if (contentLength != -1L && newBytesReceived > contentLength) {
-                    throw new ProtocolException("expected " + contentLength
-                            + " bytes but received " + newBytesReceived);
+                    throw new ProtocolException(
+                            "expected " + contentLength + " bytes but received " + newBytesReceived);
                 }
 
                 bytesReceived = newBytesReceived;
@@ -332,7 +335,8 @@ public final class Exchange {
 
         @Override
         public void close() throws IOException {
-            if (closed) return;
+            if (closed)
+                return;
             closed = true;
             try {
                 super.close();
@@ -343,7 +347,8 @@ public final class Exchange {
         }
 
         IOException complete(IOException e) {
-            if (completed) return e;
+            if (completed)
+                return e;
             completed = true;
             return bodyComplete(bytesReceived, true, false, e);
         }

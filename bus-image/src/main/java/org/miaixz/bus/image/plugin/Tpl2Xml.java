@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.w3c.dom.Document;
@@ -53,34 +53,32 @@ public class Tpl2Xml {
 
     private static final String XML_1_0 = "1.0";
     private static final String XML_1_1 = "1.1";
-    private static final String licenseBlock = "/*\n" +
-            " ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
-            " ~                                                                               ~\n" +
-            " ~ The MIT License (MIT)                                                         ~\n" +
-            " ~                                                                               ~\n" +
-            " ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~\n" +
-            " ~                                                                               ~\n" +
-            " ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~\n" +
-            " ~ of this software and associated documentation files (the \"Software\"), to deal ~\n" +
-            " ~ in the Software without restriction, including without limitation the rights  ~\n" +
-            " ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~\n" +
-            " ~ copies of the Software, and to permit persons to whom the Software is         ~\n" +
-            " ~ furnished to do so, subject to the following conditions:                      ~\n" +
-            " ~                                                                               ~\n" +
-            " ~ The above copyright notice and this permission notice shall be included in    ~\n" +
-            " ~ all copies or substantial portions of the Software.                           ~\n" +
-            " ~                                                                               ~\n" +
-            " ~ THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~\n" +
-            " ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~\n" +
-            " ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~\n" +
-            " ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~\n" +
-            " ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~\n" +
-            " ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~\n" +
-            " ~ THE SOFTWARE.                                                                 ~\n" +
-            " ~                                                                               ~\n" +
-            " ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" +
-            " */" +
-            "  ~";
+    private static final String licenseBlock = "/*\n"
+            + " ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n"
+            + " ~                                                                               ~\n"
+            + " ~ The MIT License (MIT)                                                         ~\n"
+            + " ~                                                                               ~\n"
+            + " ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~\n"
+            + " ~                                                                               ~\n"
+            + " ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~\n"
+            + " ~ of this software and associated documentation files (the \"Software\"), to deal ~\n"
+            + " ~ in the Software without restriction, including without limitation the rights  ~\n"
+            + " ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~\n"
+            + " ~ copies of the Software, and to permit persons to whom the Software is         ~\n"
+            + " ~ furnished to do so, subject to the following conditions:                      ~\n"
+            + " ~                                                                               ~\n"
+            + " ~ The above copyright notice and this permission notice shall be included in    ~\n"
+            + " ~ all copies or substantial portions of the Software.                           ~\n"
+            + " ~                                                                               ~\n"
+            + " ~ THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~\n"
+            + " ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~\n"
+            + " ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~\n"
+            + " ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~\n"
+            + " ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~\n"
+            + " ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~\n"
+            + " ~ THE SOFTWARE.                                                                 ~\n"
+            + " ~                                                                               ~\n"
+            + " ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~\n" + " */" + "  ~";
     private static final String elements = "elements";
 
     private boolean indent = false;
@@ -89,15 +87,11 @@ public class Tpl2Xml {
 
     private static Map<String, List<DictionaryElement>> privateDictsFrom(String template) throws IOException {
         Map<String, List<DictionaryElement>> privateDictionaries = new HashMap<>();
-        Files.readAllLines(Paths.get(template))
-                .stream()
-                .filter(line -> line.length() > 0)
-                .forEach(line -> {
-                    String[] fields = line.split("[)\"][\\s\t\n]+");
-                    privateDictionaries.computeIfAbsent(
-                                    fields[4].substring(7), dictionaryElement -> new ArrayList<>())
-                            .add(new DictionaryElement(fields));
-                });
+        Files.readAllLines(Paths.get(template)).stream().filter(line -> line.length() > 0).forEach(line -> {
+            String[] fields = line.split("[)\"][\\s\t\n]+");
+            privateDictionaries.computeIfAbsent(fields[4].substring(7), dictionaryElement -> new ArrayList<>())
+                    .add(new DictionaryElement(fields));
+        });
         return privateDictionaries;
     }
 
@@ -116,14 +110,11 @@ public class Tpl2Xml {
     private void convert(String template) throws Exception {
         Path dir = outputDirectory(template);
         for (Map.Entry<String, List<DictionaryElement>> entry : privateDictsFrom(template).entrySet()) {
-            Path file = Files.createFile(dir.resolve(
-                    entry.getKey().replaceAll("[:;?\\s/]", "-") + ".xml"));
+            Path file = Files.createFile(dir.resolve(entry.getKey().replaceAll("[:;?\\s/]", "-") + ".xml"));
             DocumentBuilderFactory documentFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = documentFactory.newDocumentBuilder();
             Document document = documentBuilder.newDocument();
-            document.insertBefore(
-                    document.createComment("\n" + licenseBlock + "\n"),
-                    document.getDocumentElement());
+            document.insertBefore(document.createComment("\n" + licenseBlock + "\n"), document.getDocumentElement());
             Element root = document.createElement(elements);
             document.appendChild(root);
             Set<String> keywords = new HashSet<>();
@@ -150,11 +141,9 @@ public class Tpl2Xml {
         if (keywords.add(dictElement.getKeyword()) && tags.add(dictElement.getTag()))
             return false;
 
-        System.out.println("Ignoring duplicate tag or keyword entry: [tag=" + dictElement.getTag()
-                + ", keyword=" + dictElement.getKeyword()
-                + ", vr=" + dictElement.getVr()
-                + ", vm=" + dictElement.getVm()
-                + ", value=" + dictElement.getValue() + "]");
+        System.out.println("Ignoring duplicate tag or keyword entry: [tag=" + dictElement.getTag() + ", keyword="
+                + dictElement.getKeyword() + ", vr=" + dictElement.getVr() + ", vm=" + dictElement.getVm() + ", value="
+                + dictElement.getValue() + "]");
         return true;
     }
 
@@ -185,8 +174,7 @@ public class Tpl2Xml {
         DictionaryElement(String[] fields) {
             this.vr = fields[2].substring(4);
             this.vm = fields[3].substring(4);
-            this.value = fields[6].endsWith("\"")
-                    ? fields[6].substring(6, fields[6].length() - 1)
+            this.value = fields[6].endsWith("\"") ? fields[6].substring(6, fields[6].length() - 1)
                     : fields[6].substring(6);
             setTagAndKeyword(fields[0], fields[5].substring(9));
         }
@@ -214,10 +202,10 @@ public class Tpl2Xml {
         private void setTagAndKeyword(String tag, String keyword) {
             String groupTag = tag.substring(1, 5).toUpperCase();
             String elementTag = "xx" + tag.substring(8, 10).toUpperCase();
-            this.keyword = keyword.equals("?")
-                    ? "_" + groupTag + "_" + elementTag + "_"
+            this.keyword = keyword.equals("?") ? "_" + groupTag + "_" + elementTag + "_"
                     : !Pattern.compile("^[a-zA-Z][a-zA-Z0-9]*$").matcher(keyword).matches()
-                    ? improveInvalidKeyword(keyword) : keyword;
+                            ? improveInvalidKeyword(keyword)
+                            : keyword;
             this.tag = groupTag + elementTag;
         }
 
@@ -229,26 +217,26 @@ public class Tpl2Xml {
 
         private String wordForFirstDigit(String keyword) {
             switch (keyword.charAt(0)) {
-                case '0':
-                    return "Zero";
-                case '1':
-                    return "One";
-                case '2':
-                    return "Two";
-                case '3':
-                    return "Three";
-                case '4':
-                    return "Four";
-                case '5':
-                    return "Five";
-                case '6':
-                    return "Six";
-                case '7':
-                    return "Seven";
-                case '8':
-                    return "Eight";
-                case '9':
-                    return "Nine";
+            case '0':
+                return "Zero";
+            case '1':
+                return "One";
+            case '2':
+                return "Two";
+            case '3':
+                return "Three";
+            case '4':
+                return "Four";
+            case '5':
+                return "Five";
+            case '6':
+                return "Six";
+            case '7':
+                return "Seven";
+            case '8':
+                return "Eight";
+            case '9':
+                return "Nine";
             }
             return null;
         }

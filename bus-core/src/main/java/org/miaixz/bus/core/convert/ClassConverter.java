@@ -24,14 +24,13 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.xyz.ClassKit;
 
 /**
- * 类转换器
- * 将类名转换为类，默认初始化这个类（执行static块）
+ * 类转换器 将类名转换为类，默认初始化这个类（执行static块）
  *
  * @author Kimi Liu
  * @since Java 17+

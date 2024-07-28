@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.GEMS_DL_PATNT_01;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,18 +46,19 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.PatientRepaired:
-            case PrivateTag.LockDemographics:
-                return VR.CS;
-            case PrivateTag.LastStudyNumber:
-                return VR.IS;
-            case PrivateTag.PatientInstanceUid:
-                return VR.UI;
+
+        case PrivateTag.PatientRepaired:
+        case PrivateTag.LockDemographics:
+            return VR.CS;
+        case PrivateTag.LastStudyNumber:
+            return VR.IS;
+        case PrivateTag.PatientInstanceUid:
+            return VR.UI;
         }
         return VR.UN;
     }

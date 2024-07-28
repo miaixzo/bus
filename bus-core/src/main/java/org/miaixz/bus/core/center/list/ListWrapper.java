@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.list;
 
 import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
@@ -36,8 +36,7 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 /**
- * 列表包装类
- * 提供列表包装，用于在执行列表方法前后自定义处理逻辑
+ * 列表包装类 提供列表包装，用于在执行列表方法前后自定义处理逻辑
  *
  * @param <E> 元素类型
  * @author Kimi Liu
@@ -53,7 +52,6 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
     public ListWrapper(final List<E> raw) {
         super(raw);
     }
-
 
     @Override
     public int size() {

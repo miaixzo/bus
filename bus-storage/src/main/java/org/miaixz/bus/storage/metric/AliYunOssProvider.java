@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.storage.metric;
 
 import com.aliyun.oss.OSSClient;
@@ -65,11 +65,13 @@ public class AliYunOssProvider extends AbstractProvider {
         Assert.notBlank(this.context.getSecretKey(), "[secretKey] not defined");
         Assert.notNull(this.context.isSecure(), "[secure] not defined");
 
-        this.client = new OSSClient(this.context.getEndpoint(), new DefaultCredentialProvider(this.context.getAccessKey(), this.context.getSecretKey()), null);
+        this.client = new OSSClient(this.context.getEndpoint(),
+                new DefaultCredentialProvider(this.context.getAccessKey(), this.context.getSecretKey()), null);
         if (!this.client.doesBucketExist(this.context.getBucket())) {
             this.client.createBucket(this.context.getBucket());
             CreateBucketRequest createBucketRequest = new CreateBucketRequest(this.context.getBucket());
-            createBucketRequest.setCannedACL(this.context.isSecure() ? CannedAccessControlList.Private : CannedAccessControlList.PublicRead);
+            createBucketRequest.setCannedACL(
+                    this.context.isSecure() ? CannedAccessControlList.Private : CannedAccessControlList.PublicRead);
             this.client.createBucket(createBucketRequest);
         }
     }
@@ -95,9 +97,7 @@ public class AliYunOssProvider extends AbstractProvider {
         } catch (Exception e) {
             Logger.error("file download failed", e.getMessage());
         }
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
@@ -108,26 +108,20 @@ public class AliYunOssProvider extends AbstractProvider {
     @Override
     public Message download(String bucket, String fileName, File file) {
         this.client.getObject(new GetObjectRequest(bucket, fileName), file);
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
     }
 
     @Override
     public Message list() {
         ListObjectsRequest request = new ListObjectsRequest(this.context.getBucket());
         ObjectListing objectListing = client.listObjects(request);
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .errmsg(ErrorCode.SUCCESS.getDesc())
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
                 .data(objectListing.getObjectSummaries().stream().map(item -> {
                     Map<String, Object> extend = new HashMap<>();
                     extend.put("tag", item.getETag());
                     extend.put("storageClass", item.getStorageClass());
                     extend.put("lastModified", item.getLastModified());
-                    return Material.builder()
-                            .name(item.getKey())
-                            .size(StringKit.toString(item.getSize()))
+                    return Material.builder().name(item.getKey()).size(StringKit.toString(item.getSize()))
                             .extend(extend).build();
                 }).collect(Collectors.toList())).build();
     }
@@ -148,9 +142,7 @@ public class AliYunOssProvider extends AbstractProvider {
         if (keyExists) {
             this.client.copyObject(bucket, oldName, bucket, newName);
         }
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
     }
 
     @Override
@@ -166,9 +158,7 @@ public class AliYunOssProvider extends AbstractProvider {
         } catch (IOException e) {
             Logger.error("file upload failed ", e.getMessage());
         }
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
@@ -178,24 +168,20 @@ public class AliYunOssProvider extends AbstractProvider {
             PutObjectResult objectResult = this.client.putObject(bucket, fileName, bis);
             ResponseMessage response = objectResult.getResponse();
             if (!response.isSuccessful()) {
-                return Message.builder()
-                        .errcode(ErrorCode.FAILURE.getCode())
+                return Message.builder().errcode(ErrorCode.FAILURE.getCode())
                         .errmsg(response.getErrorResponseAsString()).build();
             }
 
-            return Message.builder()
-                    .errcode(ErrorCode.SUCCESS.getCode())
-                    .errmsg(ErrorCode.SUCCESS.getDesc())
-                    .data(Material.builder().name(fileName).size(Normal.EMPTY + response.getContentLength()).path(response.getUri()))
+            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
+                    .data(Material.builder().name(fileName).size(Normal.EMPTY + response.getContentLength())
+                            .path(response.getUri()))
                     .build();
 
         } catch (Exception e) {
             this.client.putObject(bucket, fileName, bis);
             Logger.error("file upload failed ", e.getMessage());
         }
-        return Message.builder()
-                .errcode(ErrorCode.FAILURE.getCode())
-                .errmsg(ErrorCode.FAILURE.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
@@ -206,17 +192,13 @@ public class AliYunOssProvider extends AbstractProvider {
     @Override
     public Message remove(String bucket, String fileName) {
         this.client.deleteObject(bucket, fileName);
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
     }
 
     @Override
     public Message remove(String bucket, Path path) {
         remove(bucket, path.toString());
-        return Message.builder()
-                .errcode(ErrorCode.SUCCESS.getCode())
-                .errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
     }
 
 }

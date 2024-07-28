@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.stream;
 
 import org.miaixz.bus.core.xyz.FileKit;
@@ -66,15 +66,10 @@ public class ImageAdapter {
     private ImageAdapter() {
     }
 
-    public static boolean writeDicomFile(
-            Attributes data,
-            AdaptTransferSyntax syntax,
-            Editable<PlanarImage> editable,
-            BytesWithImageDescriptor desc,
-            File file) {
+    public static boolean writeDicomFile(Attributes data, AdaptTransferSyntax syntax, Editable<PlanarImage> editable,
+            BytesWithImageDescriptor desc, File file) {
         if (desc == null) {
-            if (UID.ImplicitVRLittleEndian.equals(syntax.suitable)
-                    || UID.ExplicitVRBigEndian.equals(syntax.suitable)) {
+            if (UID.ImplicitVRLittleEndian.equals(syntax.suitable) || UID.ExplicitVRBigEndian.equals(syntax.suitable)) {
                 syntax.suitable = UID.ImplicitVRLittleEndian.uid;
             }
             try (ImageOutputStream writer = new ImageOutputStream(file)) {
@@ -101,8 +96,8 @@ public class ImageAdapter {
         Attributes dataSet = new Attributes(data);
         dataSet.remove(Tag.PixelData);
         String dstTsuid = syntax.suitable;
-        try (ImageOutputStream dos =
-                     new ImageOutputStream(new BufferedOutputStream(new FileOutputStream(file)), dstTsuid)) {
+        try (ImageOutputStream dos = new ImageOutputStream(new BufferedOutputStream(new FileOutputStream(file)),
+                dstTsuid)) {
             dos.writeFileMetaInformation(dataSet.createFileMetaInformation(dstTsuid));
             writeImage(syntax, desc, imgData, dataSet, dstTsuid, dos);
         } catch (Exception e) {
@@ -116,33 +111,21 @@ public class ImageAdapter {
         return true;
     }
 
-    private static void writeImage(
-            AdaptTransferSyntax syntax,
-            BytesWithImageDescriptor desc,
-            ImageOutputData imgData,
-            Attributes dataSet,
-            String dstTsuid,
-            ImageOutputStream dos)
-            throws IOException {
+    private static void writeImage(AdaptTransferSyntax syntax, BytesWithImageDescriptor desc, ImageOutputData imgData,
+            Attributes dataSet, String dstTsuid, ImageOutputStream dos) throws IOException {
         if (ImageOutputData.isNativeSyntax(dstTsuid)) {
             imgData.writRawImageData(dos, dataSet);
         } else {
-            JpegWriteParam jpegWriteParam =
-                    JpegWriteParam.buildDicomImageWriteParam(dstTsuid);
+            JpegWriteParam jpegWriteParam = JpegWriteParam.buildDicomImageWriteParam(dstTsuid);
             if (jpegWriteParam.getCompressionQuality() > 0) {
                 int quality = syntax.getJpegQuality() <= 0 ? 85 : syntax.getJpegQuality();
                 jpegWriteParam.setCompressionQuality(quality);
             }
-            if (jpegWriteParam.getCompressionRatioFactor() > 0
-                    && syntax.getCompressionRatioFactor() > 0) {
+            if (jpegWriteParam.getCompressionRatioFactor() > 0 && syntax.getCompressionRatioFactor() > 0) {
                 jpegWriteParam.setCompressionRatioFactor(syntax.getCompressionRatioFactor());
             }
-            int[] jpegWriteParams =
-                    imgData.adaptTagsToCompressedImage(
-                            dataSet,
-                            imgData.getFirstImage().get(),
-                            desc.getImageDescriptor(),
-                            jpegWriteParam);
+            int[] jpegWriteParams = imgData.adaptTagsToCompressedImage(dataSet, imgData.getFirstImage().get(),
+                    desc.getImageDescriptor(), jpegWriteParam);
             imgData.writeCompressedImageData(dos, dataSet, jpegWriteParams);
         }
     }
@@ -150,19 +133,12 @@ public class ImageAdapter {
     public static void checkSyntax(AdaptTransferSyntax syntax, ImageOutputData imgData) {
         if (!syntax.requested.equals(imgData.getTsuid())) {
             syntax.suitable = imgData.getTsuid();
-            Logger.warn(
-                    "Transcoding into {} is not possible, used instead {}",
-                    syntax.requested,
-                    syntax.suitable);
+            Logger.warn("Transcoding into {} is not possible, used instead {}", syntax.requested, syntax.suitable);
         }
     }
 
-    public static DataWriter buildDataWriter(
-            Attributes data,
-            AdaptTransferSyntax syntax,
-            Editable<PlanarImage> editable,
-            BytesWithImageDescriptor desc)
-            throws IOException {
+    public static DataWriter buildDataWriter(Attributes data, AdaptTransferSyntax syntax,
+            Editable<PlanarImage> editable, BytesWithImageDescriptor desc) throws IOException {
         if (desc == null) {
             syntax.suitable = syntax.original;
             return (out, tsuid) -> {
@@ -197,13 +173,12 @@ public class ImageAdapter {
         return false;
     }
 
-    public static BytesWithImageDescriptor imageTranscode(
-            Attributes data, AdaptTransferSyntax syntax, EditorContext context) {
+    public static BytesWithImageDescriptor imageTranscode(Attributes data, AdaptTransferSyntax syntax,
+            EditorContext context) {
 
         VR.Holder pixeldataVR = new VR.Holder();
         Object pixdata = data.getValue(Tag.PixelData, pixeldataVR);
-        if (pixdata != null
-                && ImageReader.isSupportedSyntax(syntax.original)
+        if (pixdata != null && ImageReader.isSupportedSyntax(syntax.original)
                 && ImageOutputData.isSupportedSyntax(syntax.requested)
                 && (context.hasPixelProcessing() || isTranscodable(syntax.original, syntax.requested))) {
 
@@ -249,13 +224,8 @@ public class ImageAdapter {
 
                         boolean hasFragments = fragments != null;
                         if (!hasFragments && bulkData != null) {
-                            int frameLength =
-                                    desc.getPhotometricInterpretation()
-                                            .frameLength(
-                                                    desc.getColumns(),
-                                                    desc.getRows(),
-                                                    desc.getSamples(),
-                                                    desc.getBitsAllocated());
+                            int frameLength = desc.getPhotometricInterpretation().frameLength(desc.getColumns(),
+                                    desc.getRows(), desc.getSamples(), desc.getBitsAllocated());
                             if (mfByteBuffer[0] == null) {
                                 mfByteBuffer[0] = ByteBuffer.wrap(bulkData.toBytes(pixeldataVR.vr, bigEndian));
                             }
@@ -297,8 +267,8 @@ public class ImageAdapter {
                                             try (ByteArrayOutputStream out = new ByteArrayOutputStream(b.length())) {
                                                 byte[] bytes = b.toBytes(pixeldataVR.vr, bigEndian);
                                                 out.write(bytes, 0, bytes.length);
-                                                try (SeekableInMemoryByteChannel channel =
-                                                             new SeekableInMemoryByteChannel(out.toByteArray())) {
+                                                try (SeekableInMemoryByteChannel channel = new SeekableInMemoryByteChannel(
+                                                        out.toByteArray())) {
                                                     new JPEGParser(channel);
                                                     fragmentsPositions.add(i);
                                                 }
@@ -311,10 +281,8 @@ public class ImageAdapter {
 
                                 if (fragmentsPositions.size() == numberOfFrame) {
                                     int start = fragmentsPositions.get(frame);
-                                    int end =
-                                            (frame + 1) >= fragmentsPositions.size()
-                                                    ? nbFragments
-                                                    : fragmentsPositions.get(frame + 1);
+                                    int end = (frame + 1) >= fragmentsPositions.size() ? nbFragments
+                                            : fragmentsPositions.get(frame + 1);
 
                                     int length = 0;
                                     for (int i = 0; i < end - start; i++) {
@@ -367,12 +335,8 @@ public class ImageAdapter {
         }
     }
 
-    private static ImageOutputData geDicomOutputData(
-            ImageReader reader,
-            String outputTsuid,
-            BytesWithImageDescriptor desc,
-            Editable<PlanarImage> editable)
-            throws IOException {
+    private static ImageOutputData geDicomOutputData(ImageReader reader, String outputTsuid,
+            BytesWithImageDescriptor desc, Editable<PlanarImage> editable) throws IOException {
         reader.setInput(desc);
         var images = reader.getLazyPlanarImages(IMAGE_READ_PARAM, editable);
         return new ImageOutputData(images, desc.getImageDescriptor(), outputTsuid);

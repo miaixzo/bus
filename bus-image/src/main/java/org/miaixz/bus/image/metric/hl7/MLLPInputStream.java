@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.hl7;
 
 import java.io.*;
@@ -146,8 +146,7 @@ public class MLLPInputStream extends BufferedInputStream {
     private void eom() throws IOException {
         int b = super.read();
         if (b != EOM2)
-            throw new IOException("1CH followed by "
-                    + Integer.toHexString(b & 0xff) + "H instead by 0DH");
+            throw new IOException("1CH followed by " + Integer.toHexString(b & 0xff) + "H instead by 0DH");
         eom = true;
     }
 

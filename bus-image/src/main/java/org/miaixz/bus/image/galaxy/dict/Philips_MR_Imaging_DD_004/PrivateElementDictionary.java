@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.Philips_MR_Imaging_DD_004;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,114 +46,115 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.SpectrumPeakType:
-            case PrivateTag.SpectroSIB0Correction:
-            case PrivateTag.SpectroComplexComponent:
-            case PrivateTag.SpectroDataOrigin:
-            case PrivateTag.InPlaneTransforms:
-            case PrivateTag.PhysicalQuantityForChemicalShift:
-            case PrivateTag.PhysicalQuantitySpatial:
-            case PrivateTag.SignalDomainForChemicalShift:
-            case PrivateTag.SignalDomainSpatial:
-            case PrivateTag.SignalType:
-            case PrivateTag.SpectroAdditionalRotations:
-            case PrivateTag.SpectroEchoAcquisition:
-            case PrivateTag.SpectroFrequencyUnit:
-            case PrivateTag.SpectroHiddenLineRemoval:
-            case PrivateTag.SpectroScanType:
-            case PrivateTag.SpectroSIMode:
-            case PrivateTag.VolumeSelection:
-            case PrivateTag.SortAttributes:
-            case PrivateTag.ImageDisplayDirection:
-            case PrivateTag.InsetScanogram:
-            case PrivateTag.StackCoilFunction:
-            case PrivateTag.ProcessingHistory:
-            case PrivateTag.FlowImagesPresent:
-            case PrivateTag.MobiviewEnabled:
-            case PrivateTag.IViewBoldEnabled:
-                return VR.CS;
-            case PrivateTag.SpectrumDCLevel:
-            case PrivateTag.SpectrumNoiseLevel:
-            case PrivateTag.SpectrumBeginTime:
-            case PrivateTag.SpectrumEchoTime:
-            case PrivateTag.SpectrumInversionTime:
-            case PrivateTag.SpectrumPeakIntensity:
-            case PrivateTag.SpectrumPeakPhase:
-            case PrivateTag.SpectrumPeakPosition:
-            case PrivateTag.SpectrumPeakWidth:
-            case PrivateTag.SpectroB0EchoTopPosition:
-            case PrivateTag.SpectroEchoTopPosition:
-            case PrivateTag.PhaseEncodingEchoTopPositions:
-            case PrivateTag.ReferenceFrequency:
-            case PrivateTag.SampleOffset:
-            case PrivateTag.SamplePitch:
-            case PrivateTag.SpectroGamma:
-            case PrivateTag.SpectroHorizontalShift:
-            case PrivateTag.SpectroHorizontalWindow:
-            case PrivateTag.SpectroSICSIntervals:
-            case PrivateTag.SpectroTurboEchoSpacing:
-            case PrivateTag.SpectroVerticalShift:
-            case PrivateTag.SpectroVerticalWindow:
-            case PrivateTag.SpectroOffset:
-            case PrivateTag.SpectrumPitch:
-                return VR.FL;
-            case PrivateTag.ScanoGramSurveyNumberOfImages:
-            case PrivateTag.GeolinkID:
-            case PrivateTag.StationNumber:
-                return VR.IS;
-            case PrivateTag.SpectrumPeakLabel:
-            case PrivateTag.SpectroProcessingHistory:
-            case PrivateTag.SpectroTitleLine:
-            case PrivateTag.AnatomicRegionCodeValue:
-                return VR.LO;
-            case PrivateTag.PatientNameJobInParams:
-                return VR.PN;
-            case PrivateTag.NumberOfMFImageObjects:
-                return VR.SL;
-            case PrivateTag.SpectrumPeak:
-            case PrivateTag.SeriesSPMix:
-            case PrivateTag.ViewingProtocol:
-                return VR.SQ;
-            case PrivateTag.SpectrumExtraNumber:
-            case PrivateTag.SpectrumKxCoordinate:
-            case PrivateTag.SpectrumKyCoordinate:
-            case PrivateTag.SpectrumLocationNumber:
-            case PrivateTag.SpectrumMixNumber:
-            case PrivateTag.SpectrumXCoordinate:
-            case PrivateTag.SpectrumYCoordinate:
-            case PrivateTag.SpectrumNumber:
-            case PrivateTag.SpectrumNumberOfAverages:
-            case PrivateTag.SpectrumNumberOfSamples:
-            case PrivateTag.SpectrumScanSequenceNumber:
-            case PrivateTag.SpectrumNumberOfPeaks:
-            case PrivateTag.NumberOfSpectraAcquired:
-            case PrivateTag.SearchIntervalForPeaks:
-            case PrivateTag.SpectroDisplayRanges:
-            case PrivateTag.SpectroNumberOfDisplayRanges:
-            case PrivateTag.SpectroNumberOfEchoPulses:
-            case PrivateTag.SpectroSpectralBW:
-            case PrivateTag.NumberMixesSpectro:
-            case PrivateTag.SPMixTResolution:
-            case PrivateTag.SPMixKXResolution:
-            case PrivateTag.SPMixKYResolution:
-            case PrivateTag.SPMixFResolution:
-            case PrivateTag.SPMixXResolution:
-            case PrivateTag.SPMixYResolution:
-            case PrivateTag.SPMixNumberOfSpectraIntended:
-            case PrivateTag.SPMixNumberOfAverages:
-            case PrivateTag.NumberOfSortAttributes:
-            case PrivateTag.DisplayLayoutNumberOfColumns:
-            case PrivateTag.DisplayLayoutNumberOfRows:
-                return VR.SS;
-            case PrivateTag.ViewProcedureString:
-                return VR.ST;
-            case PrivateTag.NumberOfProcedureCodes:
-                return VR.UL;
+
+        case PrivateTag.SpectrumPeakType:
+        case PrivateTag.SpectroSIB0Correction:
+        case PrivateTag.SpectroComplexComponent:
+        case PrivateTag.SpectroDataOrigin:
+        case PrivateTag.InPlaneTransforms:
+        case PrivateTag.PhysicalQuantityForChemicalShift:
+        case PrivateTag.PhysicalQuantitySpatial:
+        case PrivateTag.SignalDomainForChemicalShift:
+        case PrivateTag.SignalDomainSpatial:
+        case PrivateTag.SignalType:
+        case PrivateTag.SpectroAdditionalRotations:
+        case PrivateTag.SpectroEchoAcquisition:
+        case PrivateTag.SpectroFrequencyUnit:
+        case PrivateTag.SpectroHiddenLineRemoval:
+        case PrivateTag.SpectroScanType:
+        case PrivateTag.SpectroSIMode:
+        case PrivateTag.VolumeSelection:
+        case PrivateTag.SortAttributes:
+        case PrivateTag.ImageDisplayDirection:
+        case PrivateTag.InsetScanogram:
+        case PrivateTag.StackCoilFunction:
+        case PrivateTag.ProcessingHistory:
+        case PrivateTag.FlowImagesPresent:
+        case PrivateTag.MobiviewEnabled:
+        case PrivateTag.IViewBoldEnabled:
+            return VR.CS;
+        case PrivateTag.SpectrumDCLevel:
+        case PrivateTag.SpectrumNoiseLevel:
+        case PrivateTag.SpectrumBeginTime:
+        case PrivateTag.SpectrumEchoTime:
+        case PrivateTag.SpectrumInversionTime:
+        case PrivateTag.SpectrumPeakIntensity:
+        case PrivateTag.SpectrumPeakPhase:
+        case PrivateTag.SpectrumPeakPosition:
+        case PrivateTag.SpectrumPeakWidth:
+        case PrivateTag.SpectroB0EchoTopPosition:
+        case PrivateTag.SpectroEchoTopPosition:
+        case PrivateTag.PhaseEncodingEchoTopPositions:
+        case PrivateTag.ReferenceFrequency:
+        case PrivateTag.SampleOffset:
+        case PrivateTag.SamplePitch:
+        case PrivateTag.SpectroGamma:
+        case PrivateTag.SpectroHorizontalShift:
+        case PrivateTag.SpectroHorizontalWindow:
+        case PrivateTag.SpectroSICSIntervals:
+        case PrivateTag.SpectroTurboEchoSpacing:
+        case PrivateTag.SpectroVerticalShift:
+        case PrivateTag.SpectroVerticalWindow:
+        case PrivateTag.SpectroOffset:
+        case PrivateTag.SpectrumPitch:
+            return VR.FL;
+        case PrivateTag.ScanoGramSurveyNumberOfImages:
+        case PrivateTag.GeolinkID:
+        case PrivateTag.StationNumber:
+            return VR.IS;
+        case PrivateTag.SpectrumPeakLabel:
+        case PrivateTag.SpectroProcessingHistory:
+        case PrivateTag.SpectroTitleLine:
+        case PrivateTag.AnatomicRegionCodeValue:
+            return VR.LO;
+        case PrivateTag.PatientNameJobInParams:
+            return VR.PN;
+        case PrivateTag.NumberOfMFImageObjects:
+            return VR.SL;
+        case PrivateTag.SpectrumPeak:
+        case PrivateTag.SeriesSPMix:
+        case PrivateTag.ViewingProtocol:
+            return VR.SQ;
+        case PrivateTag.SpectrumExtraNumber:
+        case PrivateTag.SpectrumKxCoordinate:
+        case PrivateTag.SpectrumKyCoordinate:
+        case PrivateTag.SpectrumLocationNumber:
+        case PrivateTag.SpectrumMixNumber:
+        case PrivateTag.SpectrumXCoordinate:
+        case PrivateTag.SpectrumYCoordinate:
+        case PrivateTag.SpectrumNumber:
+        case PrivateTag.SpectrumNumberOfAverages:
+        case PrivateTag.SpectrumNumberOfSamples:
+        case PrivateTag.SpectrumScanSequenceNumber:
+        case PrivateTag.SpectrumNumberOfPeaks:
+        case PrivateTag.NumberOfSpectraAcquired:
+        case PrivateTag.SearchIntervalForPeaks:
+        case PrivateTag.SpectroDisplayRanges:
+        case PrivateTag.SpectroNumberOfDisplayRanges:
+        case PrivateTag.SpectroNumberOfEchoPulses:
+        case PrivateTag.SpectroSpectralBW:
+        case PrivateTag.NumberMixesSpectro:
+        case PrivateTag.SPMixTResolution:
+        case PrivateTag.SPMixKXResolution:
+        case PrivateTag.SPMixKYResolution:
+        case PrivateTag.SPMixFResolution:
+        case PrivateTag.SPMixXResolution:
+        case PrivateTag.SPMixYResolution:
+        case PrivateTag.SPMixNumberOfSpectraIntended:
+        case PrivateTag.SPMixNumberOfAverages:
+        case PrivateTag.NumberOfSortAttributes:
+        case PrivateTag.DisplayLayoutNumberOfColumns:
+        case PrivateTag.DisplayLayoutNumberOfRows:
+            return VR.SS;
+        case PrivateTag.ViewProcedureString:
+            return VR.ST;
+        case PrivateTag.NumberOfProcedureCodes:
+            return VR.UL;
         }
         return VR.UN;
     }

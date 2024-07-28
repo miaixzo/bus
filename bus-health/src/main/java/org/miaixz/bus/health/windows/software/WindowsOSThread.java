@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.windows.software;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -135,26 +135,26 @@ public class WindowsOSThread extends AbstractOSThread {
             state = OSProcess.State.SUSPENDED;
         } else {
             switch (pcb.getThreadState()) {
-                case 0:
-                    state = OSProcess.State.NEW;
-                    break;
-                case 2:
-                case 3:
-                    state = OSProcess.State.RUNNING;
-                    break;
-                case 4:
-                    state = OSProcess.State.STOPPED;
-                    break;
-                case 5:
-                    state = OSProcess.State.SLEEPING;
-                    break;
-                case 1:
-                case 6:
-                    state = OSProcess.State.WAITING;
-                    break;
-                case 7:
-                default:
-                    state = OSProcess.State.OTHER;
+            case 0:
+                state = OSProcess.State.NEW;
+                break;
+            case 2:
+            case 3:
+                state = OSProcess.State.RUNNING;
+                break;
+            case 4:
+                state = OSProcess.State.STOPPED;
+                break;
+            case 5:
+                state = OSProcess.State.SLEEPING;
+                break;
+            case 1:
+            case 6:
+                state = OSProcess.State.WAITING;
+                break;
+            case 7:
+            default:
+                state = OSProcess.State.OTHER;
             }
         }
         startMemoryAddress = pcb.getStartAddress();

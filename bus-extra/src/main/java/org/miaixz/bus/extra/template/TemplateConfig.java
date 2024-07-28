@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.template;
 
 import org.miaixz.bus.core.lang.Charset;
@@ -177,7 +177,6 @@ public class TemplateConfig implements Serializable {
         return provider;
     }
 
-
     /**
      * 设置自定义引擎，null表示系统自动判断
      *
@@ -198,10 +197,8 @@ public class TemplateConfig implements Serializable {
             return false;
         }
         final TemplateConfig that = (TemplateConfig) o;
-        return Objects.equals(charset, that.charset) &&
-                Objects.equals(path, that.path) &&
-                resourceMode == that.resourceMode &&
-                Objects.equals(provider, that.provider);
+        return Objects.equals(charset, that.charset) && Objects.equals(path, that.path)
+                && resourceMode == that.resourceMode && Objects.equals(provider, that.provider);
     }
 
     @Override

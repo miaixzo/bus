@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.hardware;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -86,7 +86,7 @@ public interface CentralProcessor {
      * array.
      *
      * @return An array of processor frequencies for each logical processor on the system. Use the
-     * {@link #getLogicalProcessors()} to correlate these frequencies with physical packages and processors.
+     *         {@link #getLogicalProcessors()} to correlate these frequencies with physical packages and processors.
      */
     long[] getCurrentFreq();
 
@@ -129,16 +129,16 @@ public interface CentralProcessor {
      * to obtain meaningful information.
      *
      * @return On Windows, returns a list of values for which the {@code IsProcessorFeaturePresent()} function evaluates
-     * to true.
-     * <p>
-     * On macOS x86, returns relevant {@code sysctl.machdep.feature} values. On Apple Silicon, returns relevant
-     * {@code sysctl hw.optional.arm.FEAT} values.
-     * <p>
-     * On Linux, returns the {@code flags} and/or {@code features} fields from {@code /proc/cpuinfo}.
-     * <p>
-     * On OpenBSD, FreeBSD, and Solaris, returns {@code dmesg} output containing the word {@code Feature}.
-     * <p>
-     * For unimplemented operating systems, returns an empty list.
+     *         to true.
+     *         <p>
+     *         On macOS x86, returns relevant {@code sysctl.machdep.feature} values. On Apple Silicon, returns relevant
+     *         {@code sysctl hw.optional.arm.FEAT} values.
+     *         <p>
+     *         On Linux, returns the {@code flags} and/or {@code features} fields from {@code /proc/cpuinfo}.
+     *         <p>
+     *         On OpenBSD, FreeBSD, and Solaris, returns {@code dmesg} output containing the word {@code Feature}.
+     *         <p>
+     *         For unimplemented operating systems, returns an empty list.
      */
     List<String> getFeatureFlags();
 
@@ -159,9 +159,9 @@ public interface CentralProcessor {
     /**
      * Get System-wide CPU Load tick counters. Returns an array with eight elements representing milliseconds spent in
      * User (0), Nice (1), System (2), Idle (3), IOwait (4), Hardware interrupts (IRQ) (5), Software interrupts/DPC
-     * (SoftIRQ) (6), or Steal (7) states. Use {@link CentralProcessor.TickType#getIndex()} to retrieve
-     * the appropriate index. By measuring the difference between ticks across a time interval, CPU load over that
-     * interval may be calculated.
+     * (SoftIRQ) (6), or Steal (7) states. Use {@link CentralProcessor.TickType#getIndex()} to retrieve the appropriate
+     * index. By measuring the difference between ticks across a time interval, CPU load over that interval may be
+     * calculated.
      * <p>
      * On some operating systems with variable numbers of logical processors, the size of this array could change and
      * may not align with other per-processor methods.
@@ -179,7 +179,7 @@ public interface CentralProcessor {
      * other virtual hosts (steal).
      *
      * @return An array of 8 long values representing time spent in User, Nice, System, Idle, IOwait, IRQ, SoftIRQ, and
-     * Steal states.
+     *         Steal states.
      */
     long[] getSystemCpuLoadTicks();
 
@@ -195,14 +195,15 @@ public interface CentralProcessor {
      * consider only processes waiting for CPU.
      * <p>
      * Windows does not provide a load average. Users may set the configuration property
-     * {@code bus.health.windows.loadaverage} to {@code true} to start a daemon thread which will provide a similar metric.
+     * {@code bus.health.windows.loadaverage} to {@code true} to start a daemon thread which will provide a similar
+     * metric.
      * <p>
      * The load average may be unavailable on some platforms (e.g., Windows without the above configuration). If the
      * load average is not available, a negative value is returned.
      *
      * @param nelem Number of elements to return.
      * @return an array of the system load averages for 1, 5, and 15 minutes with the size of the array specified by
-     * nelem; or negative values if not available.
+     *         nelem; or negative values if not available.
      */
     double[] getSystemLoadAverage(int nelem);
 
@@ -265,8 +266,8 @@ public interface CentralProcessor {
      * Get Processor CPU Load tick counters. Returns a two dimensional array, with {@link #getLogicalProcessorCount()}
      * arrays, each containing seven elements representing milliseconds spent in User (0), Nice (1), System (2), Idle
      * (3), IOwait (4), Hardware interrupts (IRQ) (5), Software interrupts/DPC (SoftIRQ) (6), or Steal (7) states. Use
-     * {@link CentralProcessor.TickType#getIndex()} to retrieve the appropriate index. By measuring the
-     * difference between ticks across a time interval, CPU load over that interval may be calculated.
+     * {@link CentralProcessor.TickType#getIndex()} to retrieve the appropriate index. By measuring the difference
+     * between ticks across a time interval, CPU load over that interval may be calculated.
      * <p>
      * Note that while tick counters are in units of milliseconds, they may advance in larger increments along with
      * (platform dependent) clock ticks. For example, by default Windows clock ticks are 1/64 of a second (about 15 or
@@ -281,7 +282,7 @@ public interface CentralProcessor {
      * virtual hosts (steal).
      *
      * @return A 2D array of logicalProcessorCount x 7 long values representing time spent in User, Nice, System, Idle,
-     * IOwait, IRQ, SoftIRQ, and Steal states.
+     *         IOwait, IRQ, SoftIRQ, and Steal states.
      */
     long[][] getProcessorCpuLoadTicks();
 
@@ -377,7 +378,7 @@ public interface CentralProcessor {
 
         /**
          * @return The integer index of this ENUM in the processor tick arrays, which matches the output of Linux
-         * /proc/cpuinfo
+         *         /proc/cpuinfo
          */
         public int getIndex() {
             return index;
@@ -412,7 +413,7 @@ public interface CentralProcessor {
          * @param numaNode                the NUMA node number
          */
         public LogicalProcessor(int processorNumber, int physicalProcessorNumber, int physicalPackageNumber,
-                                int numaNode) {
+                int numaNode) {
             this(processorNumber, physicalProcessorNumber, physicalPackageNumber, numaNode, 0);
         }
 
@@ -424,7 +425,7 @@ public interface CentralProcessor {
          * @param processorGroup          the Processor Group number
          */
         public LogicalProcessor(int processorNumber, int physicalProcessorNumber, int physicalPackageNumber,
-                                int numaNode, int processorGroup) {
+                int numaNode, int processorGroup) {
             this.processorNumber = processorNumber;
             this.physicalProcessorNumber = physicalProcessorNumber;
             this.physicalPackageNumber = physicalPackageNumber;
@@ -506,7 +507,7 @@ public interface CentralProcessor {
         }
 
         public PhysicalProcessor(int physicalPackageNumber, int physicalProcessorNumber, int efficiency,
-                                 String idString) {
+                String idString) {
             this.physicalPackageNumber = physicalPackageNumber;
             this.physicalProcessorNumber = physicalProcessorNumber;
             this.efficiency = efficiency;
@@ -540,21 +541,21 @@ public interface CentralProcessor {
          * performance and less efficiency than a core with a lower value for the efficiency class.
          *
          * @return On Windows 10 and higher, returns the {@code EfficiencyClass} value from the
-         * {@code PROCESSOR_RELATIONSHIP} structure.
-         * <p>
-         * On macOS with Apple Silicon, emulates the same relative efficiency class values as Windows.
-         * <p>
-         * On Linux, returns the {@code cpu_capacity} value from sysfs. This is an optional cpu node property
-         * representing CPU capacity expressed in normalized DMIPS/MHz.
-         * <p>
-         * On OpenBSD, FreeBSD, and Solaris with ARM big.LITTLE processors, emulates the same relative
-         * efficiency class values as Windows.
-         * <p>
-         * For unimplemented operating systems or architectures, returns 0.
+         *         {@code PROCESSOR_RELATIONSHIP} structure.
+         *         <p>
+         *         On macOS with Apple Silicon, emulates the same relative efficiency class values as Windows.
+         *         <p>
+         *         On Linux, returns the {@code cpu_capacity} value from sysfs. This is an optional cpu node property
+         *         representing CPU capacity expressed in normalized DMIPS/MHz.
+         *         <p>
+         *         On OpenBSD, FreeBSD, and Solaris with ARM big.LITTLE processors, emulates the same relative
+         *         efficiency class values as Windows.
+         *         <p>
+         *         For unimplemented operating systems or architectures, returns 0.
          * @see <a href=
-         * "https://docs.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-processor_relationship">PROCESSOR_RELATIONSHIP</a>
+         *      "https://docs.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-processor_relationship">PROCESSOR_RELATIONSHIP</a>
          * @see <a href=
-         * "https://www.kernel.org/doc/Documentation/devicetree/bindings/arm/cpu-capacity.txt">cpu-capacity</a>
+         *      "https://www.kernel.org/doc/Documentation/devicetree/bindings/arm/cpu-capacity.txt">cpu-capacity</a>
          */
         public int getEfficiency() {
             return efficiency;
@@ -565,14 +566,14 @@ public interface CentralProcessor {
          * obtain meaningful information. As this is an experimental feature, users should not rely on the format.
          *
          * @return On Windows, returns the per-core Processor ID (CPUID).
-         * <p>
-         * On macOS, returns a compatibility string from the IO Registry identifying hybrid cores.
-         * <p>
-         * On Linux, returns the {@code MODALIAS} value for the core's driver.
-         * <p>
-         * On OpenBSD, FreeBSD, and Solaris, returns a per-core CPU identification string.
-         * <p>
-         * For unimplemented operating systems, returns an empty string.
+         *         <p>
+         *         On macOS, returns a compatibility string from the IO Registry identifying hybrid cores.
+         *         <p>
+         *         On Linux, returns the {@code MODALIAS} value for the core's driver.
+         *         <p>
+         *         On OpenBSD, FreeBSD, and Solaris, returns a per-core CPU identification string.
+         *         <p>
+         *         For unimplemented operating systems, returns an empty string.
          */
         public String getIdString() {
             return idString;
@@ -713,12 +714,12 @@ public interface CentralProcessor {
         private final Supplier<String> microArchictecture = Memoizer.memoize(this::queryMicroarchitecture);
 
         public ProcessorIdentifier(String cpuVendor, String cpuName, String cpuFamily, String cpuModel,
-                                   String cpuStepping, String processorID, boolean cpu64bit) {
+                String cpuStepping, String processorID, boolean cpu64bit) {
             this(cpuVendor, cpuName, cpuFamily, cpuModel, cpuStepping, processorID, cpu64bit, -1L);
         }
 
         public ProcessorIdentifier(String cpuVendor, String cpuName, String cpuFamily, String cpuModel,
-                                   String cpuStepping, String processorID, boolean cpu64bit, long vendorFreq) {
+                String cpuStepping, String processorID, boolean cpu64bit, long vendorFreq) {
             this.cpuVendor = cpuVendor.startsWith("0x") ? queryVendorFromImplementer(cpuVendor) : cpuVendor;
             this.cpuName = cpuName;
             this.cpuFamily = cpuFamily;

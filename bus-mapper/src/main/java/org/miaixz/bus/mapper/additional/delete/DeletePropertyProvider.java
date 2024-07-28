@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.additional.delete;
 
 import org.apache.ibatis.mapping.MappedStatement;
@@ -108,10 +108,8 @@ public class DeletePropertyProvider extends MapperTemplate {
         sql.append("\">\n");
         String entityClassName = entityClass.getName();
         // 通过实体类名获取运行时属性对应的字段
-        String ognl = new StringBuilder("${@")
-                .append(propertyHelper)
-                .append("@getColumnByProperty(@java.lang.Class@forName(\"")
-                .append(entityClassName)
+        String ognl = new StringBuilder("${@").append(propertyHelper)
+                .append("@getColumnByProperty(@java.lang.Class@forName(\"").append(entityClassName)
                 .append("\"), @org.miaixz.bus.mapper.support.Reflector@fnToFieldName(fn))}").toString();
         sql.append(ognl + " = #{value}\n");
         sql.append("</if>\n");
@@ -141,12 +139,10 @@ public class DeletePropertyProvider extends MapperTemplate {
         }
         sql.append("<where>\n");
         String entityClassName = entityClass.getName();
-        String sqlSegment =
-                "${@" + propertyHelper + "@getColumnByProperty(@java.lang.Class@forName(\"" + entityClassName + "\"),"
-                        + "@org.miaixz.bus.mapper.support.Reflector@fnToFieldName(fn))} in"
-                        + "<foreach open=\"(\" close=\")\" separator=\",\" collection=\"values\" item=\"obj\">\n"
-                        + "#{obj}\n"
-                        + "</foreach>\n";
+        String sqlSegment = "${@" + propertyHelper + "@getColumnByProperty(@java.lang.Class@forName(\""
+                + entityClassName + "\")," + "@org.miaixz.bus.mapper.support.Reflector@fnToFieldName(fn))} in"
+                + "<foreach open=\"(\" close=\")\" separator=\",\" collection=\"values\" item=\"obj\">\n" + "#{obj}\n"
+                + "</foreach>\n";
         sql.append(sqlSegment);
         // 逻辑删除的未删除查询条件
         sql.append(SqlBuilder.whereLogicDelete(entityClass, false));
@@ -176,10 +172,9 @@ public class DeletePropertyProvider extends MapperTemplate {
         }
         sql.append("<where>\n");
         String entityClassName = entityClass.getName();
-        String sqlSegment =
-                "${@" + propertyHelper + "@getColumnByProperty(@java.lang.Class@forName(\"" + entityClassName + "\"),"
-                        + "@org.miaixz.bus.mapper.support.Reflector@fnToFieldName(fn))} "
-                        + "between #{begin} and #{end}";
+        String sqlSegment = "${@" + propertyHelper + "@getColumnByProperty(@java.lang.Class@forName(\""
+                + entityClassName + "\")," + "@org.miaixz.bus.mapper.support.Reflector@fnToFieldName(fn))} "
+                + "between #{begin} and #{end}";
         sql.append(sqlSegment);
         // 逻辑删除的未删除查询条件
         sql.append(SqlBuilder.whereLogicDelete(entityClass, false));

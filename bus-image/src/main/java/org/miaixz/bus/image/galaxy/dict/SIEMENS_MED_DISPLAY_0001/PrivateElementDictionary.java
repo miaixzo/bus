@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_DISPLAY_0001;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,17 +46,18 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag._0029_xx99_:
-                return VR.CS;
-            case PrivateTag._0029_xxA0_:
-            case PrivateTag._0029_xxA1_:
-            case PrivateTag._0029_xxA2_:
-                return VR.US;
+
+        case PrivateTag._0029_xx99_:
+            return VR.CS;
+        case PrivateTag._0029_xxA0_:
+        case PrivateTag._0029_xxA1_:
+        case PrivateTag._0029_xxA2_:
+            return VR.US;
         }
         return VR.UN;
     }

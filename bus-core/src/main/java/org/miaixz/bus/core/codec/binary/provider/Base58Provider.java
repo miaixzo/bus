@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.codec.binary.provider;
 
 import org.miaixz.bus.core.codec.Decoder;
@@ -35,8 +35,7 @@ import org.miaixz.bus.core.codec.binary.encoder.Base58Encoder;
 import java.io.Serializable;
 
 /**
- * Base58编码器
- * 此编码器不包括校验码、版本等信息
+ * Base58编码器 此编码器不包括校验码、版本等信息
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -51,13 +50,12 @@ public class Base58Provider implements Encoder<byte[], String>, Decoder<CharSequ
     public static Base58Provider INSTANCE = new Base58Provider();
 
     /**
-     * 将一个数字（表示为一个字节数组，每个字节包含指定基数的一位数字）除以给定的除数。
-     * 给定的数字被修改以包含商，返回值为余数。
+     * 将一个数字（表示为一个字节数组，每个字节包含指定基数的一位数字）除以给定的除数。 给定的数字被修改以包含商，返回值为余数。
      *
      * @param number     要除的数
      * @param firstDigit 数组中第一个非零数字的索引（用于通过跳过前导零进行优化）
      * @param base       数字的位数表示基数（最多256）
-     * @param divisor   要除以的数字（最多 256）
+     * @param divisor    要除以的数字（最多 256）
      * @return 除法运算的余数
      */
     public static byte divmod(final byte[] number, final int firstDigit, final int base, final int divisor) {

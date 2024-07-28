@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.codec;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -116,8 +116,8 @@ public class ImageWriterFactory implements Serializable {
                 if (iter.hasNext())
                     writer = iter.next();
                 else {
-                    Logger.warn("No preferred Writer {} for format: {} - use {}",
-                            param.className, param.formatName, writer.getClass().getName());
+                    Logger.warn("No preferred Writer {} for format: {} - use {}", param.className, param.formatName,
+                            writer.getClass().getName());
                     break;
                 }
             }
@@ -145,8 +145,8 @@ public class ImageWriterFactory implements Serializable {
                 if (iter.hasNext())
                     spi = iter.next();
                 else {
-                    Logger.warn("No preferred Writer {} for format: {} - use {}",
-                            param.className, param.formatName, spi.getPluginClassName());
+                    Logger.warn("No preferred Writer {} for format: {} - use {}", param.className, param.formatName,
+                            spi.getPluginClassName());
                     break;
                 }
             }
@@ -191,22 +191,19 @@ public class ImageWriterFactory implements Serializable {
         public final PatchJPEGLS patchJPEGLS;
         public final Property[] imageWriteParams;
 
-        public ImageWriterParam(String formatName, String className,
-                                PatchJPEGLS patchJPEGLS, Property[] imageWriteParams) {
+        public ImageWriterParam(String formatName, String className, PatchJPEGLS patchJPEGLS,
+                Property[] imageWriteParams) {
             this.formatName = formatName;
             this.className = nullify(className);
             this.patchJPEGLS = patchJPEGLS;
             this.imageWriteParams = imageWriteParams;
         }
 
-        public ImageWriterParam(String formatName, String className,
-                                String patchJPEGLS, String[] imageWriteParams) {
-            this(formatName, className, patchJPEGLS != null
-                    && !patchJPEGLS.isEmpty() ? PatchJPEGLS
-                    .valueOf(patchJPEGLS) : null, Property
-                    .valueOf(imageWriteParams));
+        public ImageWriterParam(String formatName, String className, String patchJPEGLS, String[] imageWriteParams) {
+            this(formatName, className,
+                    patchJPEGLS != null && !patchJPEGLS.isEmpty() ? PatchJPEGLS.valueOf(patchJPEGLS) : null,
+                    Property.valueOf(imageWriteParams));
         }
-
 
         public Property[] getImageWriteParams() {
             return imageWriteParams;
@@ -214,14 +211,19 @@ public class ImageWriterFactory implements Serializable {
 
         @Override
         public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
+            if (this == o)
+                return true;
+            if (o == null || getClass() != o.getClass())
+                return false;
 
             ImageWriterParam that = (ImageWriterParam) o;
 
-            if (!formatName.equals(that.formatName)) return false;
-            if (!Objects.equals(className, that.className)) return false;
-            if (patchJPEGLS != that.patchJPEGLS) return false;
+            if (!formatName.equals(that.formatName))
+                return false;
+            if (!Objects.equals(className, that.className))
+                return false;
+            if (patchJPEGLS != that.patchJPEGLS)
+                return false;
             return Arrays.equals(imageWriteParams, that.imageWriteParams);
 
         }
@@ -237,12 +239,8 @@ public class ImageWriterFactory implements Serializable {
 
         @Override
         public String toString() {
-            return "ImageWriterParam{" +
-                    "formatName='" + formatName + '\'' +
-                    ", className='" + className + '\'' +
-                    ", patchJPEGLS=" + patchJPEGLS +
-                    ", imageWriteParams=" + Arrays.toString(imageWriteParams) +
-                    '}';
+            return "ImageWriterParam{" + "formatName='" + formatName + '\'' + ", className='" + className + '\''
+                    + ", patchJPEGLS=" + patchJPEGLS + ", imageWriteParams=" + Arrays.toString(imageWriteParams) + '}';
         }
     }
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager.parser.defaults;
 
 import net.sf.jsqlparser.expression.Alias;
@@ -78,7 +78,7 @@ public class DefaultCountSqlParser implements CountSqlParser {
         try {
             stmt = Builder.parse(sql);
         } catch (Throwable e) {
-            //无法解析的用一般方法返回count语句
+            // 无法解析的用一般方法返回count语句
             return getSimpleCountSql(sql, countColumn);
         }
         Select select = (Select) stmt;
@@ -194,7 +194,7 @@ public class DefaultCountSqlParser implements CountSqlParser {
                 if (name != null) {
                     String NAME = name.toUpperCase();
                     if (skipFunctions.contains(NAME)) {
-                        //go on
+                        // go on
                     } else if (falseFunctions.contains(NAME)) {
                         return false;
                     } else {

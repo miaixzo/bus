@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.criteria;
 
 import org.miaixz.bus.core.center.function.FunctionX;
@@ -75,8 +75,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * AND column = value
-     * 当value=null则不参与查询
+     * AND column = value 当value=null则不参与查询
      *
      * @param fn    函数
      * @param value 值
@@ -91,13 +90,13 @@ public class SqlsCriteria<T> implements SqlCriteria {
      *
      * @param fn       函数
      * @param value    值
-     * @param required false 当value=null 则不参与查询 ;
-     *                 true 当value = null 则转 is null 查询： AND column is null
+     * @param required false 当value=null 则不参与查询 ; true 当value = null 则转 is null 查询： AND column is null
      * @return the object
      */
     public SqlsCriteria<T> andEqualTo(FunctionX<T, Object> fn, Object value, boolean required) {
         if (Optional.ofNullable(value).isPresent()) {
-            this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, Symbol.EQUAL, "and"));
+            this.criteria.getCriterions()
+                    .add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, Symbol.EQUAL, "and"));
         } else {
             if (required) {
                 // null属性查询 转 is null
@@ -108,8 +107,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * AND column != value
-     * 默认 value=null 则不参与查询
+     * AND column != value 默认 value=null 则不参与查询
      *
      * @param fn    函数
      * @param value 值
@@ -124,8 +122,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
      *
      * @param fn       函数
      * @param value    值
-     * @param required false 当value=null 则不参与查询 ;
-     *                 true 当value = null 则转 is not null 查询 ： AND column is not null
+     * @param required false 当value=null 则不参与查询 ; true 当value = null 则转 is not null 查询 ： AND column is not null
      * @return
      */
     public SqlsCriteria<T> andNotEqualTo(FunctionX<T, Object> fn, Object value, boolean required) {
@@ -141,8 +138,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * AND column 大于 value
-     * 当 value = null 则当前属性不参与查询
+     * AND column 大于 value 当 value = null 则当前属性不参与查询
      *
      * @param fn    函数
      * @param value 值
@@ -156,8 +152,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * AND  column 大于等于 value
-     * 当 value = null 则当前属性不参与查询
+     * AND column 大于等于 value 当 value = null 则当前属性不参与查询
      *
      * @param fn    函数
      * @param value 值
@@ -171,8 +166,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * AND  column 小于 value
-     * 当 value = null 则当前属性不参与查询
+     * AND column 小于 value 当 value = null 则当前属性不参与查询
      *
      * @param fn    函数
      * @param value 值
@@ -186,8 +180,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * AND  column 小于等于 value
-     * 当 value = null 则当前属性不参与查询
+     * AND column 小于等于 value 当 value = null 则当前属性不参与查询
      *
      * @param fn    函数
      * @param value 值
@@ -201,8 +194,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * AND  column IN (#{item.value})
-     * 当 values = null 则当前属性不参与查询
+     * AND column IN (#{item.value}) 当 values = null 则当前属性不参与查询
      *
      * @param fn     函数
      * @param values 值
@@ -216,8 +208,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * AND  column NOT IN (#{item.value})
-     * 当 values = null 则当前属性不参与查询
+     * AND column NOT IN (#{item.value}) 当 values = null 则当前属性不参与查询
      *
      * @param fn     函数
      * @param values 值
@@ -231,8 +222,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * AND  column BETWEEN  value1 AND value2
-     * 当 value1 或 value2 为空 则当前属性不参与查询
+     * AND column BETWEEN value1 AND value2 当 value1 或 value2 为空 则当前属性不参与查询
      *
      * @param fn     函数
      * @param value1 值1
@@ -241,14 +231,14 @@ public class SqlsCriteria<T> implements SqlCriteria {
      */
     public SqlsCriteria<T> andBetween(FunctionX<T, Object> fn, Object value1, Object value2) {
         if (Optional.ofNullable(value1).isPresent() && Optional.ofNullable(value2).isPresent()) {
-            this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value1, value2, "between", "and"));
+            this.criteria.getCriterions()
+                    .add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value1, value2, "between", "and"));
         }
         return this;
     }
 
     /**
-     * AND column  NOT BETWEEN value1 AND value2
-     * 当 value1 或 value2 为空 则当前属性不参与查询
+     * AND column NOT BETWEEN value1 AND value2 当 value1 或 value2 为空 则当前属性不参与查询
      *
      * @param fn     函数
      * @param value1 值1
@@ -257,14 +247,14 @@ public class SqlsCriteria<T> implements SqlCriteria {
      */
     public SqlsCriteria<T> andNotBetween(FunctionX<T, Object> fn, Object value1, Object value2) {
         if (Optional.ofNullable(value1).isPresent() && Optional.ofNullable(value2).isPresent()) {
-            this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value1, value2, "not between", "and"));
+            this.criteria.getCriterions()
+                    .add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value1, value2, "not between", "and"));
         }
         return this;
     }
 
     /**
-     * AND column LIKE %value%
-     * 当 value = null 则当前属性不参与查询
+     * AND column LIKE %value% 当 value = null 则当前属性不参与查询
      *
      * @param fn    函数
      * @param value 值
@@ -279,8 +269,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * AND column LIKE %value
-     * 当 value = null 则当前属性不参与查询
+     * AND column LIKE %value 当 value = null 则当前属性不参与查询
      *
      * @param fn    函数
      * @param value 值
@@ -295,8 +284,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * AND column LIKE value%
-     * 当 value = null 则当前属性不参与查询
+     * AND column LIKE value% 当 value = null 则当前属性不参与查询
      *
      * @param fn    函数
      * @param value 值
@@ -311,8 +299,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * AND column NOT LIKE %value%
-     * 当 value = null 则当前属性不参与查询
+     * AND column NOT LIKE %value% 当 value = null 则当前属性不参与查询
      *
      * @param fn    函数
      * @param value 值
@@ -321,14 +308,14 @@ public class SqlsCriteria<T> implements SqlCriteria {
     public SqlsCriteria<T> andNotLike(FunctionX<T, Object> fn, String value) {
         if (Optional.ofNullable(value).isPresent()) {
             value = Symbol.PERCENT + value + Symbol.PERCENT;
-            this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "not like", "and"));
+            this.criteria.getCriterions()
+                    .add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "not like", "and"));
         }
         return this;
     }
 
     /**
-     * AND column NOT LIKE %value
-     * 当 value = null 则当前属性不参与查询
+     * AND column NOT LIKE %value 当 value = null 则当前属性不参与查询
      *
      * @param fn    函数
      * @param value 值
@@ -337,14 +324,14 @@ public class SqlsCriteria<T> implements SqlCriteria {
     public SqlsCriteria<T> andNotLikeLeft(FunctionX<T, Object> fn, String value) {
         if (Optional.ofNullable(value).isPresent()) {
             value = Symbol.PERCENT + value + Symbol.PERCENT;
-            this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "not like", "and"));
+            this.criteria.getCriterions()
+                    .add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "not like", "and"));
         }
         return this;
     }
 
     /**
-     * AND column NOT LIKE value%
-     * 当 value = null 则当前属性不参与查询
+     * AND column NOT LIKE value% 当 value = null 则当前属性不参与查询
      *
      * @param fn    函数
      * @param value 值
@@ -353,14 +340,14 @@ public class SqlsCriteria<T> implements SqlCriteria {
     public SqlsCriteria<T> andNotLikeRight(FunctionX<T, Object> fn, String value) {
         if (Optional.ofNullable(value).isPresent()) {
             value = value + Symbol.PERCENT;
-            this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "not like", "and"));
+            this.criteria.getCriterions()
+                    .add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, "not like", "and"));
         }
         return this;
     }
 
     /**
-     * OR column IS NULL
-     * 当 value = null 则当前属性不参与查询
+     * OR column IS NULL 当 value = null 则当前属性不参与查询
      *
      * @param fn 函数
      * @return the object
@@ -371,8 +358,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * OR column IS NOT NULL
-     * 当 value = null 则当前属性不参与查询
+     * OR column IS NOT NULL 当 value = null 则当前属性不参与查询
      *
      * @param fn 函数
      * @return the object
@@ -383,8 +369,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * OR column = value
-     * 当 value = null 则当前属性不参与查询
+     * OR column = value 当 value = null 则当前属性不参与查询
      *
      * @param fn    函数
      * @param value 值
@@ -395,8 +380,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * OR column = value
-     * 当request = true 且  value = null时 转 #{@link #orIsNull(FunctionX)}
+     * OR column = value 当request = true 且 value = null时 转 #{@link #orIsNull(FunctionX)}
      *
      * @param fn       函数
      * @param value    值
@@ -405,10 +389,11 @@ public class SqlsCriteria<T> implements SqlCriteria {
      */
     public SqlsCriteria<T> orEqualTo(FunctionX<T, Object> fn, Object value, boolean required) {
         if (Optional.ofNullable(value).isPresent()) {
-            this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, Symbol.EQUAL, "or"));
+            this.criteria.getCriterions()
+                    .add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value, Symbol.EQUAL, "or"));
         } else {
             if (required) {
-                //转 or null
+                // 转 or null
                 this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), "is null", "or"));
             }
         }
@@ -416,8 +401,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * OR column 不等于 value
-     * 当value = null 则当前属性不参与查询
+     * OR column 不等于 value 当value = null 则当前属性不参与查询
      *
      * @param fn    函数
      * @param value 值
@@ -428,8 +412,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * OR column 不等于 value
-     * 当request = true 且  value = null时 转 #{@link #orIsNotNull(FunctionX)}
+     * OR column 不等于 value 当request = true 且 value = null时 转 #{@link #orIsNotNull(FunctionX)}
      *
      * @param fn       函数
      * @param value    值
@@ -448,8 +431,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * OR column 大于 value
-     * 当value = null 则当前属性不参与查询
+     * OR column 大于 value 当value = null 则当前属性不参与查询
      *
      * @param fn    函数
      * @param value 值
@@ -463,8 +445,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * OR column 大于等于 value
-     * 当value = null 则当前属性不参与查询
+     * OR column 大于等于 value 当value = null 则当前属性不参与查询
      *
      * @param fn    函数
      * @param value 值
@@ -478,8 +459,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * OR column 小于 value
-     * 当value = null 则当前属性不参与查询
+     * OR column 小于 value 当value = null 则当前属性不参与查询
      *
      * @param fn    函数
      * @param value 值
@@ -493,8 +473,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * OR column 小于等于 value
-     * 当value = null 则当前属性不参与查询
+     * OR column 小于等于 value 当value = null 则当前属性不参与查询
      *
      * @param fn    函数
      * @param value 值
@@ -508,8 +487,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * OR column IN (#{item.value})
-     * 当value = null 则当前属性不参与查询
+     * OR column IN (#{item.value}) 当value = null 则当前属性不参与查询
      *
      * @param fn     函数
      * @param values 值
@@ -523,8 +501,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * OR column NOT IN (#{item.value})
-     * 当value = null 则当前属性不参与查询
+     * OR column NOT IN (#{item.value}) 当value = null 则当前属性不参与查询
      *
      * @param fn     函数
      * @param values 值
@@ -538,8 +515,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * OR column BETWEEN  value1 AND value2
-     * 当 value1 或 value2 为空 则当前属性不参与查询
+     * OR column BETWEEN value1 AND value2 当 value1 或 value2 为空 则当前属性不参与查询
      *
      * @param fn     函数
      * @param value1 值1
@@ -548,14 +524,14 @@ public class SqlsCriteria<T> implements SqlCriteria {
      */
     public SqlsCriteria<T> orBetween(FunctionX<T, Object> fn, Object value1, Object value2) {
         if (Optional.ofNullable(value1).isPresent() && Optional.ofNullable(value2).isPresent()) {
-            this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value1, value2, "between", "or"));
+            this.criteria.getCriterions()
+                    .add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value1, value2, "between", "or"));
         }
         return this;
     }
 
     /**
-     * OR column NOT BETWEEN  value1 AND value2
-     * 当 value1 或 value2 为空 则当前属性不参与查询
+     * OR column NOT BETWEEN value1 AND value2 当 value1 或 value2 为空 则当前属性不参与查询
      *
      * @param fn     函数
      * @param value1 值1
@@ -564,14 +540,14 @@ public class SqlsCriteria<T> implements SqlCriteria {
      */
     public SqlsCriteria<T> orNotBetween(FunctionX<T, Object> fn, Object value1, Object value2) {
         if (Optional.ofNullable(value1).isPresent() && Optional.ofNullable(value2).isPresent()) {
-            this.criteria.getCriterions().add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value1, value2, "not between", "or"));
+            this.criteria.getCriterions()
+                    .add(new Sqls.Criterion(Reflector.fnToFieldName(fn), value1, value2, "not between", "or"));
         }
         return this;
     }
 
     /**
-     * OR column LIKE value
-     * 当 value = null 则当前属性不参与查询
+     * OR column LIKE value 当 value = null 则当前属性不参与查询
      *
      * @param fn    函数
      * @param value 值
@@ -586,8 +562,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * OR column LIKE %value
-     * 当 value = null 则当前属性不参与查询
+     * OR column LIKE %value 当 value = null 则当前属性不参与查询
      *
      * @param fn    函数
      * @param value 值
@@ -602,8 +577,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * OR column LIKE value%
-     * 当 value = null 则当前属性不参与查询
+     * OR column LIKE value% 当 value = null 则当前属性不参与查询
      *
      * @param fn    函数
      * @param value 值
@@ -618,8 +592,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * OR column NOT LIKE value
-     * 当 value = null 则当前属性不参与查询
+     * OR column NOT LIKE value 当 value = null 则当前属性不参与查询
      *
      * @param fn    函数
      * @param value 值
@@ -634,8 +607,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * OR column NOT LIKE %value
-     * 当 value = null 则当前属性不参与查询
+     * OR column NOT LIKE %value 当 value = null 则当前属性不参与查询
      *
      * @param fn    函数
      * @param value 值
@@ -650,8 +622,7 @@ public class SqlsCriteria<T> implements SqlCriteria {
     }
 
     /**
-     * OR column NOT LIKE value%
-     * 当 value = null 则当前属性不参与查询
+     * OR column NOT LIKE value% 当 value = null 则当前属性不参与查询
      *
      * @param fn    函数
      * @param value 值

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab;
 
 import jakarta.ws.rs.core.GenericType;
@@ -49,7 +49,9 @@ public class GitLabCiYamlApi extends AbstractApi {
     /**
      * Get all GitLab CI/CD YAML templates.
      *
-     * <pre><code>GitLab Endpoint: GET /templates/gitlab_ci_ymls</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /templates/gitlab_ci_ymls</code>
+     * </pre>
      *
      * @return a list of Gitlab CI YAML Templates
      * @throws GitLabApiException if any exception occurs
@@ -63,7 +65,9 @@ public class GitLabCiYamlApi extends AbstractApi {
     /**
      * Get a single GitLab CI/CD YAML template.
      *
-     * <pre><code>GitLab Endpoint: GET /templates/gitlab_ci_ymls/:key</code></pre>
+     * <pre>
+     * <code>GitLab Endpoint: GET /templates/gitlab_ci_ymls/:key</code>
+     * </pre>
      *
      * @param key The key of the GitLab CI YAML template
      * @return an Gitlab CI YAML Template

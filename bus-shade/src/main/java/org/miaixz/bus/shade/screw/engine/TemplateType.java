@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.screw.engine;
 
 import lombok.Getter;
@@ -44,9 +44,7 @@ public enum TemplateType implements Serializable {
     /**
      * freeMarker 模板
      */
-    FREEMARKER(Normal.META_INF + "/template/",
-            FreemarkerEngine.class,
-            ".ftl");
+    FREEMARKER(Normal.META_INF + "/template/", FreemarkerEngine.class, ".ftl");
 
     /**
      * 模板目录

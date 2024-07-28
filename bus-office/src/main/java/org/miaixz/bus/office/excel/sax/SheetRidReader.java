@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.excel.sax;
 
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -45,10 +45,13 @@ import java.util.Map;
 
 /**
  * 在Sax方式读取Excel时，读取sheet标签中sheetId和rid的对应关系，类似于:
+ * 
  * <pre>
  *  sheet name="Sheet6" sheetId="4" r:id="rId6"
  * </pre>
+ * 
  * 读取结果为：
+ * 
  * <pre>
  *     {"4": "6"}
  * </pre>
@@ -176,7 +179,8 @@ public class SheetRidReader extends DefaultHandler {
     }
 
     @Override
-    public void startElement(final String uri, final String localName, final String qName, final Attributes attributes) {
+    public void startElement(final String uri, final String localName, final String qName,
+            final Attributes attributes) {
         if (TAG_NAME.equalsIgnoreCase(localName)) {
             final String ridStr = attributes.getValue(RID_ATTR);
             if (StringKit.isEmpty(ridStr)) {

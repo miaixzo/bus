@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.jdbc;
 
 import com.zaxxer.hikari.HikariDataSource;
@@ -63,9 +63,9 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-@ConditionalOnClass(value = {HikariDataSource.class})
-@EnableConfigurationProperties(value = {JdbcProperties.class})
-@AutoConfigureBefore(value = {DataSourceAutoConfiguration.class})
+@ConditionalOnClass(value = { HikariDataSource.class })
+@EnableConfigurationProperties(value = { JdbcProperties.class })
+@AutoConfigureBefore(value = { DataSourceAutoConfiguration.class })
 @Import(AspectjJdbcProxy.class)
 public class JdbcConfiguration {
 
@@ -155,13 +155,16 @@ public class JdbcConfiguration {
                 if (StringKit.isNotEmpty(this.properties.getPrivateKey())) {
                     Logger.info("The database connection is securely enabled");
                     if ("url".equals(key)) {
-                        value = Builder.decrypt(Algorithm.AES.getValue(), this.properties.getPrivateKey(), value.toString(), Charset.UTF_8);
+                        value = Builder.decrypt(Algorithm.AES.getValue(), this.properties.getPrivateKey(),
+                                value.toString(), Charset.UTF_8);
                         beanMap.put("url", value);
                     } else if ("username".equals(key)) {
-                        value = Builder.decrypt(Algorithm.AES.getValue(), this.properties.getPrivateKey(), value.toString(), Charset.UTF_8);
+                        value = Builder.decrypt(Algorithm.AES.getValue(), this.properties.getPrivateKey(),
+                                value.toString(), Charset.UTF_8);
                         beanMap.put("username", value);
                     } else if ("password".equals(key)) {
-                        value = Builder.decrypt(Algorithm.AES.getValue(), this.properties.getPrivateKey(), value.toString(), Charset.UTF_8);
+                        value = Builder.decrypt(Algorithm.AES.getValue(), this.properties.getPrivateKey(),
+                                value.toString(), Charset.UTF_8);
                         beanMap.put("password", value);
                     }
                 }
@@ -172,8 +175,7 @@ public class JdbcConfiguration {
     }
 
     /**
-     * 绑定参数:以下三个方法都是参考DataSourceBuilder的bind方法实现的，
-     * 目的是尽量保证我们自己添加的数据源构造过程与springboot保持一致
+     * 绑定参数:以下三个方法都是参考DataSourceBuilder的bind方法实现的， 目的是尽量保证我们自己添加的数据源构造过程与springboot保持一致
      *
      * @param result     数据源
      * @param properties 配置信息
@@ -185,8 +187,7 @@ public class JdbcConfiguration {
     }
 
     /**
-     * 绑定参数:以下三个方法都是参考DataSourceBuilder的bind方法实现的，
-     * 目的是尽量保证我们自己添加的数据源构造过程与springboot保持一致
+     * 绑定参数:以下三个方法都是参考DataSourceBuilder的bind方法实现的， 目的是尽量保证我们自己添加的数据源构造过程与springboot保持一致
      *
      * @param clazz      连接池信息
      * @param properties 配置信息

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.codec;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -61,19 +61,12 @@ public class Transcoder implements Closeable {
 
     public static final ColorSpace sRGB = ColorSpace.getInstance(ColorSpace.CS_sRGB);
     private static final int BUFFER_SIZE = 8192;
-    private static final int[] cmTags = {
-            Tag.RedPaletteColorLookupTableDescriptor,
-            Tag.GreenPaletteColorLookupTableDescriptor,
-            Tag.BluePaletteColorLookupTableDescriptor,
-            Tag.PaletteColorLookupTableUID,
-            Tag.RedPaletteColorLookupTableData,
-            Tag.GreenPaletteColorLookupTableData,
-            Tag.BluePaletteColorLookupTableData,
-            Tag.SegmentedRedPaletteColorLookupTableData,
-            Tag.SegmentedGreenPaletteColorLookupTableData,
-            Tag.SegmentedBluePaletteColorLookupTableData,
-            Tag.ICCProfile
-    };
+    private static final int[] cmTags = { Tag.RedPaletteColorLookupTableDescriptor,
+            Tag.GreenPaletteColorLookupTableDescriptor, Tag.BluePaletteColorLookupTableDescriptor,
+            Tag.PaletteColorLookupTableUID, Tag.RedPaletteColorLookupTableData, Tag.GreenPaletteColorLookupTableData,
+            Tag.BluePaletteColorLookupTableData, Tag.SegmentedRedPaletteColorLookupTableData,
+            Tag.SegmentedGreenPaletteColorLookupTableData, Tag.SegmentedBluePaletteColorLookupTableData,
+            Tag.ICCProfile };
     private final ImageInputStream dis;
     private final String srcTransferSyntax;
     private final TransferSyntaxType srcTransferSyntaxType;
@@ -149,7 +142,8 @@ public class Transcoder implements Closeable {
                 dos.writeHeader(Tag.Item, null, (int) (length + 1) & ~1);
                 IoKit.copy(dis, dos, length, buffer());
                 if ((length & 1) != 0) {
-                    Logger.info("Odd length of Pixel Data Fragment: {} - append NULL byte to ensure even length", length);
+                    Logger.info("Odd length of Pixel Data Fragment: {} - append NULL byte to ensure even length",
+                            length);
                     dos.write(0);
                 }
             }
@@ -205,8 +199,7 @@ public class Transcoder implements Closeable {
     }
 
     private static short[] toShortData(DataBuffer db) {
-        return db.getDataType() == DataBuffer.TYPE_SHORT
-                ? ((DataBufferShort) db).getData()
+        return db.getDataType() == DataBuffer.TYPE_SHORT ? ((DataBufferShort) db).getData()
                 : ((DataBufferUShort) db).getData();
     }
 
@@ -334,27 +327,27 @@ public class Transcoder implements Closeable {
             return srcTransferSyntax;
         }
         switch (UID.from(dstTsuid)) {
-            case UID.JPEGBaseline8Bit:
-                return bitsStored <= 8 ? dstTsuid
-                        : !imageDescriptor.isSigned() && bitsStored <= 12 ? UID.JPEGExtended12Bit.uid
-                        : bitsStored <= 16 ? UID.JPEGLosslessSV1.uid : UID.ExplicitVRLittleEndian.uid;
-            case UID.JPEGExtended12Bit:
-            case UID.JPEGSpectralSelectionNonHierarchical68:
-            case UID.JPEGFullProgressionNonHierarchical1012:
-                return !imageDescriptor.isSigned() && bitsStored <= 12 ? dstTsuid :
-                        bitsStored <= 16 ? UID.JPEGLosslessSV1.uid : UID.ExplicitVRLittleEndian.uid;
-            case UID.JPEGLossless:
-            case UID.JPEGLosslessSV1:
-            case UID.JPEGLSLossless:
-            case UID.JPEGLSNearLossless:
-            case UID.JPEG2000Lossless:
-            case UID.JPEG2000:
-            case UID.HTJ2KLossless:
-            case UID.HTJ2KLosslessRPCL:
-            case UID.HTJ2K:
-                return bitsStored <= 16 ? dstTsuid : UID.ExplicitVRLittleEndian.uid;
-            default:
-                return dstTsuid;
+        case UID.JPEGBaseline8Bit:
+            return bitsStored <= 8 ? dstTsuid
+                    : !imageDescriptor.isSigned() && bitsStored <= 12 ? UID.JPEGExtended12Bit.uid
+                            : bitsStored <= 16 ? UID.JPEGLosslessSV1.uid : UID.ExplicitVRLittleEndian.uid;
+        case UID.JPEGExtended12Bit:
+        case UID.JPEGSpectralSelectionNonHierarchical68:
+        case UID.JPEGFullProgressionNonHierarchical1012:
+            return !imageDescriptor.isSigned() && bitsStored <= 12 ? dstTsuid
+                    : bitsStored <= 16 ? UID.JPEGLosslessSV1.uid : UID.ExplicitVRLittleEndian.uid;
+        case UID.JPEGLossless:
+        case UID.JPEGLosslessSV1:
+        case UID.JPEGLSLossless:
+        case UID.JPEGLSNearLossless:
+        case UID.JPEG2000Lossless:
+        case UID.JPEG2000:
+        case UID.HTJ2KLossless:
+        case UID.HTJ2KLosslessRPCL:
+        case UID.HTJ2K:
+            return bitsStored <= 16 ? dstTsuid : UID.ExplicitVRLittleEndian.uid;
+        default:
+            return dstTsuid;
         }
     }
 
@@ -382,8 +375,7 @@ public class Transcoder implements Closeable {
     private void initDecompressor() {
         decompressorParam = ImageReaderFactory.getImageReaderParam(srcTransferSyntax);
         if (decompressorParam == null)
-            throw new UnsupportedOperationException(
-                    "Unsupported Transfer Syntax: " + srcTransferSyntax);
+            throw new UnsupportedOperationException("Unsupported Transfer Syntax: " + srcTransferSyntax);
 
         this.decompressor = ImageReaderFactory.getImageReader(decompressorParam);
         Logger.debug("Decompressor: {}", decompressor.getClass().getName());
@@ -394,8 +386,7 @@ public class Transcoder implements Closeable {
     private void initCompressor(String tsuid) {
         compressorParam = ImageWriterFactory.getImageWriterParam(tsuid);
         if (compressorParam == null)
-            throw new UnsupportedOperationException(
-                    "Unsupported Transfer Syntax: " + tsuid);
+            throw new UnsupportedOperationException("Unsupported Transfer Syntax: " + tsuid);
 
         this.compressor = ImageWriterFactory.getImageWriter(compressorParam);
         Logger.debug("Compressor: {}", compressor.getClass().getName());
@@ -405,7 +396,8 @@ public class Transcoder implements Closeable {
     }
 
     public void setCompressParams(Property... imageWriteParams) {
-        if (compressorParam == null) return;
+        if (compressorParam == null)
+            return;
         for (Property property : imageWriteParams) {
             String name = property.getName();
             if (name.equals("maxPixelValueError"))
@@ -421,11 +413,10 @@ public class Transcoder implements Closeable {
             }
         }
         if (maxPixelValueError >= 0) {
-            ImageReaderFactory.ImageReaderParam readerParam =
-                    ImageReaderFactory.getImageReaderParam(destTransferSyntax);
+            ImageReaderFactory.ImageReaderParam readerParam = ImageReaderFactory
+                    .getImageReaderParam(destTransferSyntax);
             if (readerParam == null)
-                throw new UnsupportedOperationException(
-                        "Unsupported Transfer Syntax: " + destTransferSyntax);
+                throw new UnsupportedOperationException("Unsupported Transfer Syntax: " + destTransferSyntax);
 
             this.verifier = ImageReaderFactory.getImageReader(readerParam);
             this.verifyParam = verifier.getDefaultReadParam();
@@ -550,9 +541,10 @@ public class Transcoder implements Closeable {
             nullifyUnusedBits();
             bi = palette2rgb ? BufferedImages.convertPalettetoRGB(originalBi, bi)
                     : ybr2rgb ? BufferedImages.convertYBRtoRGB(originalBi, bi)
-                    : imageDescriptor.is16BitsAllocated8BitsStored()
-                    ? BufferedImages.convertShortsToBytes(originalBi, bi) // workaround for JPEG codec issue
-                    : originalBi;
+                            : imageDescriptor.is16BitsAllocated8BitsStored()
+                                    ? BufferedImages.convertShortsToBytes(originalBi, bi) // workaround for JPEG codec
+                                                                                          // issue
+                                    : originalBi;
             compressFrame(i);
         }
         dis.skipFully(padding);
@@ -575,8 +567,8 @@ public class Transcoder implements Closeable {
                 dataset.setInt(Tag.PlanarConfiguration, VR.US, srcTransferSyntaxType.getPlanarConfiguration());
             } else {
                 if (srcTransferSyntaxType.adjustBitsStoredTo12(dataset)) {
-                    Logger.info("Adjust invalid Bits Stored: {} of {} to 12",
-                            imageDescriptor.getBitsStored(), srcTransferSyntaxType);
+                    Logger.info("Adjust invalid Bits Stored: {} of {} to 12", imageDescriptor.getBitsStored(),
+                            srcTransferSyntaxType);
                 }
             }
         }
@@ -589,18 +581,18 @@ public class Transcoder implements Closeable {
                 dataset.setInt(Tag.BitsStored, VR.US, 8);
                 dataset.setInt(Tag.HighBit, VR.US, 7);
                 pmi = Photometric.RGB;
-                Logger.warn("Converting PALETTE_COLOR model into a lossy format is not recommended, prefer a lossless format");
+                Logger.warn(
+                        "Converting PALETTE_COLOR model into a lossy format is not recommended, prefer a lossless format");
             } else if ((pmi.isSubSampled() && !srcTransferSyntaxType.isPixeldataEncapsulated())
-                    || (pmi == Photometric.YBR_FULL
-                    && (TransferSyntaxType.isYBRCompression(destTransferSyntax) ||
-                    destTransferSyntaxType == TransferSyntaxType.JPEG_LS))) {
+                    || (pmi == Photometric.YBR_FULL && (TransferSyntaxType.isYBRCompression(destTransferSyntax)
+                            || destTransferSyntaxType == TransferSyntaxType.JPEG_LS))) {
                 ybr2rgb = true;
                 pmi = Photometric.RGB;
                 Logger.debug("Conversion to an RGB color model is required before compression.");
             } else {
                 if (destTransferSyntaxType.adjustBitsStoredTo12(dataset)) {
-                    Logger.debug("Adjust Bits Stored: {} for {} to 12",
-                            imageDescriptor.getBitsStored(), destTransferSyntaxType);
+                    Logger.debug("Adjust Bits Stored: {} for {} to 12", imageDescriptor.getBitsStored(),
+                            destTransferSyntaxType);
                 }
             }
             dataset.setString(Tag.PhotometricInterpretation, VR.CS, pmiForCompression(pmi).toString());
@@ -612,10 +604,8 @@ public class Transcoder implements Closeable {
             if (lossyCompression) {
                 dataset.setString(Tag.LossyImageCompression, VR.CS, "01");
                 try {
-                    dataset.setFloat(Tag.LossyImageCompressionRatio, VR.DS,
-                            ((Number) compressParam.getClass()
-                                    .getMethod("getCompressionRatiofactor")
-                                    .invoke(compressParam)).floatValue());
+                    dataset.setFloat(Tag.LossyImageCompressionRatio, VR.DS, ((Number) compressParam.getClass()
+                            .getMethod("getCompressionRatiofactor").invoke(compressParam)).floatValue());
                 } catch (Exception ignore) {
                 }
             }
@@ -623,8 +613,8 @@ public class Transcoder implements Closeable {
     }
 
     private Photometric pmiForCompression(Photometric pmi) {
-        return pmi.isYBR() && (destTransferSyntaxType == TransferSyntaxType.JPEG_LOSSLESS ||
-                destTransferSyntaxType == TransferSyntaxType.JPEG_LS) ? Photometric.RGB : pmi;
+        return pmi.isYBR() && (destTransferSyntaxType == TransferSyntaxType.JPEG_LOSSLESS
+                || destTransferSyntaxType == TransferSyntaxType.JPEG_LS) ? Photometric.RGB : pmi;
     }
 
     private void extractEmbeddedOverlays() {
@@ -647,12 +637,12 @@ public class Transcoder implements Closeable {
         if (imageDescriptor.getBitsStored() < imageDescriptor.getBitsAllocated()) {
             DataBuffer db = originalBi.getRaster().getDataBuffer();
             switch (db.getDataType()) {
-                case DataBuffer.TYPE_USHORT:
-                    nullifyUnusedBits(((DataBufferUShort) db).getData());
-                    break;
-                case DataBuffer.TYPE_SHORT:
-                    extendSignUnusedBits(((DataBufferShort) db).getData());
-                    break;
+            case DataBuffer.TYPE_USHORT:
+                nullifyUnusedBits(((DataBufferUShort) db).getData());
+                break;
+            case DataBuffer.TYPE_SHORT:
+                extendSignUnusedBits(((DataBufferShort) db).getData());
+                break;
             }
         }
     }
@@ -688,8 +678,7 @@ public class Transcoder implements Closeable {
 
     private BufferedImage adjustColorModel(BufferedImage bi) {
         Photometric pmi = imageDescriptor.getPhotometricInterpretation();
-        if (pmi == Photometric.PALETTE_COLOR
-                && !(bi.getColorModel() instanceof PaletteColorModel)) {
+        if (pmi == Photometric.PALETTE_COLOR && !(bi.getColorModel() instanceof PaletteColorModel)) {
             ColorModel cm;
             if (originalBi != null) {
                 cm = originalBi.getColorModel();
@@ -705,9 +694,9 @@ public class Transcoder implements Closeable {
 
     private void compressFrame(int frameIndex) throws IOException {
         CacheImageOutputStream ios = new CacheImageOutputStream(compressorImageDescriptor);
-        compressor.setOutput(compressorParam.patchJPEGLS != null
-                ? new PatchJPEGLSOutputStream(ios, compressorParam.patchJPEGLS)
-                : ios);
+        compressor.setOutput(
+                compressorParam.patchJPEGLS != null ? new PatchJPEGLSOutputStream(ios, compressorParam.patchJPEGLS)
+                        : ios);
         long start = System.currentTimeMillis();
         compressor.write(null, new IIOImage(bi, null, null), compressParam);
         long end = System.currentTimeMillis();
@@ -730,15 +719,15 @@ public class Transcoder implements Closeable {
         WritableRaster raster = originalBi.getRaster();
         DataBuffer dataBuffer = raster.getDataBuffer();
         switch (dataBuffer.getDataType()) {
-            case DataBuffer.TYPE_SHORT:
-                readFully(((DataBufferShort) dataBuffer).getData());
-                break;
-            case DataBuffer.TYPE_USHORT:
-                readFully(((DataBufferUShort) dataBuffer).getData());
-                break;
-            case DataBuffer.TYPE_BYTE:
-                readFully(((DataBufferByte) dataBuffer).getBankData());
-                break;
+        case DataBuffer.TYPE_SHORT:
+            readFully(((DataBufferShort) dataBuffer).getData());
+            break;
+        case DataBuffer.TYPE_USHORT:
+            readFully(((DataBufferUShort) dataBuffer).getData());
+            break;
+        case DataBuffer.TYPE_BYTE:
+            readFully(((DataBufferByte) dataBuffer).getBankData());
+            break;
         }
     }
 
@@ -793,20 +782,20 @@ public class Transcoder implements Closeable {
         SampleModel sm = raster.getSampleModel();
         DataBuffer db = raster.getDataBuffer();
         switch (db.getDataType()) {
-            case DataBuffer.TYPE_BYTE:
-                write(sm, ((DataBufferByte) db).getBankData());
-                break;
-            case DataBuffer.TYPE_USHORT:
-                write(sm, ((DataBufferUShort) db).getData());
-                break;
-            case DataBuffer.TYPE_SHORT:
-                write(sm, ((DataBufferShort) db).getData());
-                break;
-            case DataBuffer.TYPE_INT:
-                write(sm, ((DataBufferInt) db).getData());
-                break;
-            default:
-                throw new UnsupportedOperationException("Unsupported Datatype: " + db.getDataType());
+        case DataBuffer.TYPE_BYTE:
+            write(sm, ((DataBufferByte) db).getBankData());
+            break;
+        case DataBuffer.TYPE_USHORT:
+            write(sm, ((DataBufferUShort) db).getData());
+            break;
+        case DataBuffer.TYPE_SHORT:
+            write(sm, ((DataBufferShort) db).getData());
+            break;
+        case DataBuffer.TYPE_INT:
+            write(sm, ((DataBufferInt) db).getData());
+            break;
+        default:
+            throw new UnsupportedOperationException("Unsupported Datatype: " + db.getDataType());
         }
     }
 
@@ -838,7 +827,7 @@ public class Transcoder implements Closeable {
         int stride = ((ComponentSampleModel) sm).getScanlineStride();
         byte[] b = new byte[w * 2];
         for (int y = 0; y < h; ++y) {
-            for (int i = 0, j = y * stride; i < b.length; ) {
+            for (int i = 0, j = y * stride; i < b.length;) {
                 short s = data[j++];
                 b[i++] = (byte) s;
                 b[i++] = (byte) (s >> 8);
@@ -853,7 +842,7 @@ public class Transcoder implements Closeable {
         int stride = ((SinglePixelPackedSampleModel) sm).getScanlineStride();
         byte[] b = new byte[w * 3];
         for (int y = 0; y < h; ++y) {
-            for (int i = 0, j = y * stride; i < b.length; ) {
+            for (int i = 0, j = y * stride; i < b.length;) {
                 int s = data[j++];
                 b[i++] = (byte) (s >> 16);
                 b[i++] = (byte) (s >> 8);
@@ -895,8 +884,7 @@ public class Transcoder implements Closeable {
         boolean signed = imageDescriptor.isSigned() && destTransferSyntaxType.canEncodeSigned();
         boolean banded = imageDescriptor.isBanded() || srcTransferSyntaxType == TransferSyntaxType.RLE;
         Photometric pmi = imageDescriptor.getPhotometricInterpretation();
-        int dataType = bitsAllocated > 8
-                ? (signed ? DataBuffer.TYPE_SHORT : DataBuffer.TYPE_USHORT)
+        int dataType = bitsAllocated > 8 ? (signed ? DataBuffer.TYPE_SHORT : DataBuffer.TYPE_USHORT)
                 : DataBuffer.TYPE_BYTE;
         ColorModel cm = pmi.createColorModel(bitsStored, dataType, sRGB, dataset);
         SampleModel sm = pmi.createSampleModel(dataType, cols, rows, samples, banded);
@@ -904,8 +892,7 @@ public class Transcoder implements Closeable {
         originalBi = new BufferedImage(cm, raster, false, null);
     }
 
-    private void verify(javax.imageio.stream.ImageOutputStream cache, int index)
-            throws IOException {
+    private void verify(javax.imageio.stream.ImageOutputStream cache, int index) throws IOException {
         if (verifier == null)
             return;
 
@@ -919,20 +906,19 @@ public class Transcoder implements Closeable {
         int maxDiff = maxDiff(bi.getRaster(), bi2.getRaster());
         long end = System.currentTimeMillis();
         if (Logger.isDebugEnabled())
-            Logger.debug("Verified compressed frame #{} in {} ms - max pixel value error: {}",
-                    index + 1, end - start, maxDiff);
+            Logger.debug("Verified compressed frame #{} in {} ms - max pixel value error: {}", index + 1, end - start,
+                    maxDiff);
         if (maxDiff > maxPixelValueError)
-            throw new InternalException("Decompressed pixel data differs up to " + maxDiff + " from original pixel data");
+            throw new InternalException(
+                    "Decompressed pixel data differs up to " + maxDiff + " from original pixel data");
 
         cache.seek(prevStreamPosition);
         cache.setBitOffset(prevBitOffset);
     }
 
     private int maxDiff(WritableRaster raster, WritableRaster raster2) {
-        ComponentSampleModel csm =
-                (ComponentSampleModel) raster.getSampleModel();
-        ComponentSampleModel csm2 =
-                (ComponentSampleModel) raster2.getSampleModel();
+        ComponentSampleModel csm = (ComponentSampleModel) raster.getSampleModel();
+        ComponentSampleModel csm2 = (ComponentSampleModel) raster2.getSampleModel();
         DataBuffer db = raster.getDataBuffer();
         DataBuffer db2 = raster2.getDataBuffer();
         int blockSize = avgPixelValueBlockSize;
@@ -946,11 +932,8 @@ public class Transcoder implements Closeable {
             for (int b = 0; b < csm.getNumBands(); b++)
                 for (int y = 0; y < maxY; y += blockSize) {
                     for (int x = 0; x < maxX; x += blockSize) {
-                        if (maxDiff < (diff = Math.abs(
-                                sum(csm.getSamples(
-                                        x, y, blockSize, blockSize, b, samples, db))
-                                        - sum(csm2.getSamples(
-                                        x, y, blockSize, blockSize, b, samples, db2)))))
+                        if (maxDiff < (diff = Math.abs(sum(csm.getSamples(x, y, blockSize, blockSize, b, samples, db))
+                                - sum(csm2.getSamples(x, y, blockSize, blockSize, b, samples, db2)))))
                             maxDiff = diff;
                     }
                 }
@@ -968,8 +951,7 @@ public class Transcoder implements Closeable {
         return sum;
     }
 
-    private int maxDiff(ComponentSampleModel csm, short[] data,
-                        ComponentSampleModel csm2, short[] data2) {
+    private int maxDiff(ComponentSampleModel csm, short[] data, ComponentSampleModel csm2, short[] data2) {
         int w = csm.getWidth() * csm.getPixelStride();
         int h = csm.getHeight();
         int stride = csm.getScanlineStride();
@@ -984,8 +966,7 @@ public class Transcoder implements Closeable {
         return maxDiff;
     }
 
-    private int maxDiff(ComponentSampleModel csm, byte[][] banks,
-                        ComponentSampleModel csm2, byte[][] banks2) {
+    private int maxDiff(ComponentSampleModel csm, byte[][] banks, ComponentSampleModel csm2, byte[][] banks2) {
         int w = csm.getWidth();
         int h = csm.getHeight();
         int bands = csm.getNumBands();
@@ -1004,8 +985,8 @@ public class Transcoder implements Closeable {
             int off = bandOffsets[b];
             int off2 = bandOffsets2[b];
             for (int y = 0; y < h; y++) {
-                for (int x = w, i = y * stride + off, i2 = y * stride2 + off2;
-                     x-- > 0; i += pixelStride, i2 += pixelStride2) {
+                for (int x = w, i = y * stride + off,
+                        i2 = y * stride2 + off2; x-- > 0; i += pixelStride, i2 += pixelStride2) {
                     if (maxDiff < (diff = Math.abs(bank[i] - bank2[i2])))
                         maxDiff = diff;
                 }

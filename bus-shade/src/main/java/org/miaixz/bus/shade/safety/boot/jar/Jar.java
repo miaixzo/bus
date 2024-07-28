@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.safety.boot.jar;
 
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
@@ -79,10 +79,7 @@ public class Jar {
      * @throws Exception 加密异常
      */
     public static void encrypt(File src, File dest, Key key) throws Exception {
-        try (
-                InputStream in = new FileInputStream(src);
-                OutputStream out = new FileOutputStream(dest)
-        ) {
+        try (InputStream in = new FileInputStream(src); OutputStream out = new FileOutputStream(dest)) {
             encrypt(in, out, key);
         }
     }
@@ -97,10 +94,7 @@ public class Jar {
      * @throws Exception 加密异常
      */
     public static void encrypt(File src, File dest, Key key, int mode) throws Exception {
-        try (
-                InputStream in = new FileInputStream(src);
-                OutputStream out = new FileOutputStream(dest)
-        ) {
+        try (InputStream in = new FileInputStream(src); OutputStream out = new FileOutputStream(dest)) {
             encrypt(in, out, key, mode);
         }
     }
@@ -128,7 +122,8 @@ public class Jar {
      * @throws Exception 加密异常
      */
     public static void encrypt(InputStream in, OutputStream out, Key key, int mode) throws Exception {
-        JarEncryptorProvider xJarEncryptor = new JarEncryptorProvider(new JdkEncryptorProvider(key.getAlgorithm()), Deflater.DEFLATED, mode);
+        JarEncryptorProvider xJarEncryptor = new JarEncryptorProvider(new JdkEncryptorProvider(key.getAlgorithm()),
+                Deflater.DEFLATED, mode);
         xJarEncryptor.encrypt(key, in, out);
     }
 
@@ -155,7 +150,8 @@ public class Jar {
      * @param filter 过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(String src, String dest, Key key, int mode, Complex<JarArchiveEntry> filter) throws Exception {
+    public static void encrypt(String src, String dest, Key key, int mode, Complex<JarArchiveEntry> filter)
+            throws Exception {
         encrypt(new File(src), new File(dest), key, mode, filter);
     }
 
@@ -169,10 +165,7 @@ public class Jar {
      * @throws Exception 加密异常
      */
     public static void encrypt(File src, File dest, Key key, Complex<JarArchiveEntry> filter) throws Exception {
-        try (
-                InputStream in = new FileInputStream(src);
-                OutputStream out = new FileOutputStream(dest)
-        ) {
+        try (InputStream in = new FileInputStream(src); OutputStream out = new FileOutputStream(dest)) {
             encrypt(in, out, key, filter);
         }
     }
@@ -187,11 +180,9 @@ public class Jar {
      * @param filter 过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(File src, File dest, Key key, int mode, Complex<JarArchiveEntry> filter) throws Exception {
-        try (
-                InputStream in = new FileInputStream(src);
-                OutputStream out = new FileOutputStream(dest)
-        ) {
+    public static void encrypt(File src, File dest, Key key, int mode, Complex<JarArchiveEntry> filter)
+            throws Exception {
+        try (InputStream in = new FileInputStream(src); OutputStream out = new FileOutputStream(dest)) {
             encrypt(in, out, key, mode, filter);
         }
     }
@@ -205,8 +196,10 @@ public class Jar {
      * @param filter 过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(InputStream in, OutputStream out, Key key, Complex<JarArchiveEntry> filter) throws Exception {
-        JarEncryptorProvider xJarEncryptor = new JarEncryptorProvider(new JdkEncryptorProvider(key.getAlgorithm()), filter);
+    public static void encrypt(InputStream in, OutputStream out, Key key, Complex<JarArchiveEntry> filter)
+            throws Exception {
+        JarEncryptorProvider xJarEncryptor = new JarEncryptorProvider(new JdkEncryptorProvider(key.getAlgorithm()),
+                filter);
         xJarEncryptor.encrypt(key, in, out);
     }
 
@@ -220,8 +213,10 @@ public class Jar {
      * @param filter 过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(InputStream in, OutputStream out, Key key, int mode, Complex<JarArchiveEntry> filter) throws Exception {
-        JarEncryptorProvider xJarEncryptor = new JarEncryptorProvider(new JdkEncryptorProvider(key.getAlgorithm()), Deflater.DEFLATED, mode, filter);
+    public static void encrypt(InputStream in, OutputStream out, Key key, int mode, Complex<JarArchiveEntry> filter)
+            throws Exception {
+        JarEncryptorProvider xJarEncryptor = new JarEncryptorProvider(new JdkEncryptorProvider(key.getAlgorithm()),
+                Deflater.DEFLATED, mode, filter);
         xJarEncryptor.encrypt(key, in, out);
     }
 
@@ -260,7 +255,8 @@ public class Jar {
      * @param keysize   密钥长度
      * @throws Exception 加密异常
      */
-    public static void encrypt(String src, String dest, String password, String algorithm, int keysize) throws Exception {
+    public static void encrypt(String src, String dest, String password, String algorithm, int keysize)
+            throws Exception {
         encrypt(src, dest, password, algorithm, keysize, Builder.DEFAULT_IVSIZE);
     }
 
@@ -275,7 +271,8 @@ public class Jar {
      * @param ivsize    向量长度
      * @throws Exception 加密异常
      */
-    public static void encrypt(String src, String dest, String password, String algorithm, int keysize, int ivsize) throws Exception {
+    public static void encrypt(String src, String dest, String password, String algorithm, int keysize, int ivsize)
+            throws Exception {
         encrypt(new File(src), new File(dest), password, algorithm, keysize, ivsize);
     }
 
@@ -329,11 +326,9 @@ public class Jar {
      * @param ivsize    向量长度
      * @throws Exception 加密异常
      */
-    public static void encrypt(File src, File dest, String password, String algorithm, int keysize, int ivsize) throws Exception {
-        try (
-                InputStream in = new FileInputStream(src);
-                OutputStream out = new FileOutputStream(dest)
-        ) {
+    public static void encrypt(File src, File dest, String password, String algorithm, int keysize, int ivsize)
+            throws Exception {
+        try (InputStream in = new FileInputStream(src); OutputStream out = new FileOutputStream(dest)) {
             encrypt(in, out, password, algorithm, keysize, ivsize);
         }
     }
@@ -373,7 +368,8 @@ public class Jar {
      * @param keysize   密钥长度
      * @throws Exception 加密异常
      */
-    public static void encrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize) throws Exception {
+    public static void encrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize)
+            throws Exception {
         encrypt(in, out, password, algorithm, keysize, Builder.DEFAULT_IVSIZE);
     }
 
@@ -388,7 +384,8 @@ public class Jar {
      * @param ivsize    向量长度
      * @throws Exception 加密异常
      */
-    public static void encrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, int ivsize) throws Exception {
+    public static void encrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize,
+            int ivsize) throws Exception {
         JarEncryptorProvider xJarEncryptor = new JarEncryptorProvider(new JdkEncryptorProvider(algorithm));
         Key key = Builder.key(algorithm, keysize, ivsize, password);
         xJarEncryptor.encrypt(key, in, out);
@@ -403,7 +400,8 @@ public class Jar {
      * @param filter   过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(String src, String dest, String password, Complex<JarArchiveEntry> filter) throws Exception {
+    public static void encrypt(String src, String dest, String password, Complex<JarArchiveEntry> filter)
+            throws Exception {
         encrypt(src, dest, password, Builder.ALGORITHM, filter);
     }
 
@@ -417,7 +415,8 @@ public class Jar {
      * @param filter    过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(String src, String dest, String password, String algorithm, Complex<JarArchiveEntry> filter) throws Exception {
+    public static void encrypt(String src, String dest, String password, String algorithm,
+            Complex<JarArchiveEntry> filter) throws Exception {
         encrypt(src, dest, password, algorithm, Builder.DEFAULT_KEYSIZE, filter);
     }
 
@@ -432,7 +431,8 @@ public class Jar {
      * @param filter    过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(String src, String dest, String password, String algorithm, int keysize, Complex<JarArchiveEntry> filter) throws Exception {
+    public static void encrypt(String src, String dest, String password, String algorithm, int keysize,
+            Complex<JarArchiveEntry> filter) throws Exception {
         encrypt(src, dest, password, algorithm, keysize, Builder.DEFAULT_IVSIZE, filter);
     }
 
@@ -448,7 +448,8 @@ public class Jar {
      * @param filter    过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(String src, String dest, String password, String algorithm, int keysize, int ivsize, Complex<JarArchiveEntry> filter) throws Exception {
+    public static void encrypt(String src, String dest, String password, String algorithm, int keysize, int ivsize,
+            Complex<JarArchiveEntry> filter) throws Exception {
         encrypt(new File(src), new File(dest), password, algorithm, keysize, ivsize, filter);
     }
 
@@ -475,7 +476,8 @@ public class Jar {
      * @param filter    过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(File src, File dest, String password, String algorithm, Complex<JarArchiveEntry> filter) throws Exception {
+    public static void encrypt(File src, File dest, String password, String algorithm, Complex<JarArchiveEntry> filter)
+            throws Exception {
         encrypt(src, dest, password, algorithm, Builder.DEFAULT_KEYSIZE, filter);
     }
 
@@ -490,7 +492,8 @@ public class Jar {
      * @param filter    过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(File src, File dest, String password, String algorithm, int keysize, Complex<JarArchiveEntry> filter) throws Exception {
+    public static void encrypt(File src, File dest, String password, String algorithm, int keysize,
+            Complex<JarArchiveEntry> filter) throws Exception {
         encrypt(src, dest, password, algorithm, keysize, Builder.DEFAULT_IVSIZE, filter);
     }
 
@@ -506,11 +509,9 @@ public class Jar {
      * @param filter    过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(File src, File dest, String password, String algorithm, int keysize, int ivsize, Complex<JarArchiveEntry> filter) throws Exception {
-        try (
-                InputStream in = new FileInputStream(src);
-                OutputStream out = new FileOutputStream(dest)
-        ) {
+    public static void encrypt(File src, File dest, String password, String algorithm, int keysize, int ivsize,
+            Complex<JarArchiveEntry> filter) throws Exception {
+        try (InputStream in = new FileInputStream(src); OutputStream out = new FileOutputStream(dest)) {
             encrypt(in, out, password, algorithm, keysize, ivsize, filter);
         }
     }
@@ -524,7 +525,8 @@ public class Jar {
      * @param filter   过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(InputStream in, OutputStream out, String password, Complex<JarArchiveEntry> filter) throws Exception {
+    public static void encrypt(InputStream in, OutputStream out, String password, Complex<JarArchiveEntry> filter)
+            throws Exception {
         encrypt(in, out, password, Builder.ALGORITHM, filter);
     }
 
@@ -538,7 +540,8 @@ public class Jar {
      * @param filter    过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(InputStream in, OutputStream out, String password, String algorithm, Complex<JarArchiveEntry> filter) throws Exception {
+    public static void encrypt(InputStream in, OutputStream out, String password, String algorithm,
+            Complex<JarArchiveEntry> filter) throws Exception {
         encrypt(in, out, password, algorithm, Builder.DEFAULT_KEYSIZE, filter);
     }
 
@@ -553,7 +556,8 @@ public class Jar {
      * @param filter    过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, Complex<JarArchiveEntry> filter) throws Exception {
+    public static void encrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize,
+            Complex<JarArchiveEntry> filter) throws Exception {
         encrypt(in, out, password, algorithm, keysize, Builder.DEFAULT_IVSIZE, filter);
     }
 
@@ -569,7 +573,8 @@ public class Jar {
      * @param filter    过滤器
      * @throws Exception 加密异常
      */
-    public static void encrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, int ivsize, Complex<JarArchiveEntry> filter) throws Exception {
+    public static void encrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize,
+            int ivsize, Complex<JarArchiveEntry> filter) throws Exception {
         JarEncryptorProvider xJarEncryptor = new JarEncryptorProvider(new JdkEncryptorProvider(algorithm), filter);
         Key key = Builder.key(algorithm, keysize, ivsize, password);
         xJarEncryptor.encrypt(key, in, out);
@@ -596,10 +601,7 @@ public class Jar {
      * @throws Exception 解密异常
      */
     public static void decrypt(File src, File dest, Key key) throws Exception {
-        try (
-                InputStream in = new FileInputStream(src);
-                OutputStream out = new FileOutputStream(dest)
-        ) {
+        try (InputStream in = new FileInputStream(src); OutputStream out = new FileOutputStream(dest)) {
             decrypt(in, out, key);
         }
     }
@@ -640,10 +642,7 @@ public class Jar {
      * @throws Exception 解密异常
      */
     public static void decrypt(File src, File dest, Key key, Complex<JarArchiveEntry> filter) throws Exception {
-        try (
-                InputStream in = new FileInputStream(src);
-                OutputStream out = new FileOutputStream(dest)
-        ) {
+        try (InputStream in = new FileInputStream(src); OutputStream out = new FileOutputStream(dest)) {
             decrypt(in, out, key, filter);
         }
     }
@@ -657,8 +656,10 @@ public class Jar {
      * @param filter 过滤器
      * @throws Exception 解密异常
      */
-    public static void decrypt(InputStream in, OutputStream out, Key key, Complex<JarArchiveEntry> filter) throws Exception {
-        JarDecryptorProvider xJarDecryptor = new JarDecryptorProvider(new JdkDecryptorProvider(key.getAlgorithm()), filter);
+    public static void decrypt(InputStream in, OutputStream out, Key key, Complex<JarArchiveEntry> filter)
+            throws Exception {
+        JarDecryptorProvider xJarDecryptor = new JarDecryptorProvider(new JdkDecryptorProvider(key.getAlgorithm()),
+                filter);
         xJarDecryptor.decrypt(key, in, out);
     }
 
@@ -697,7 +698,8 @@ public class Jar {
      * @param keysize   密钥长度
      * @throws Exception 解密异常
      */
-    public static void decrypt(String src, String dest, String password, String algorithm, int keysize) throws Exception {
+    public static void decrypt(String src, String dest, String password, String algorithm, int keysize)
+            throws Exception {
         decrypt(src, dest, password, algorithm, keysize, Builder.DEFAULT_IVSIZE);
     }
 
@@ -712,7 +714,8 @@ public class Jar {
      * @param ivsize    向量长度
      * @throws Exception 解密异常
      */
-    public static void decrypt(String src, String dest, String password, String algorithm, int keysize, int ivsize) throws Exception {
+    public static void decrypt(String src, String dest, String password, String algorithm, int keysize, int ivsize)
+            throws Exception {
         decrypt(new File(src), new File(dest), password, algorithm, keysize, ivsize);
     }
 
@@ -766,11 +769,9 @@ public class Jar {
      * @param ivsize    向量长度
      * @throws Exception 解密异常
      */
-    public static void decrypt(File src, File dest, String password, String algorithm, int keysize, int ivsize) throws Exception {
-        try (
-                InputStream in = new FileInputStream(src);
-                OutputStream out = new FileOutputStream(dest)
-        ) {
+    public static void decrypt(File src, File dest, String password, String algorithm, int keysize, int ivsize)
+            throws Exception {
+        try (InputStream in = new FileInputStream(src); OutputStream out = new FileOutputStream(dest)) {
             decrypt(in, out, password, algorithm, keysize, ivsize);
         }
     }
@@ -810,7 +811,8 @@ public class Jar {
      * @param keysize   密钥长度
      * @throws Exception 解密异常
      */
-    public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize) throws Exception {
+    public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize)
+            throws Exception {
         decrypt(in, out, password, algorithm, keysize, Builder.DEFAULT_IVSIZE);
     }
 
@@ -825,7 +827,8 @@ public class Jar {
      * @param ivsize    向量长度
      * @throws Exception 解密异常
      */
-    public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, int ivsize) throws Exception {
+    public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize,
+            int ivsize) throws Exception {
         JarDecryptorProvider xJarDecryptor = new JarDecryptorProvider(new JdkDecryptorProvider(algorithm));
         Key key = Builder.key(algorithm, keysize, ivsize, password);
         xJarDecryptor.decrypt(key, in, out);
@@ -840,7 +843,8 @@ public class Jar {
      * @param filter   过滤器
      * @throws Exception 解密异常
      */
-    public static void decrypt(String src, String dest, String password, Complex<JarArchiveEntry> filter) throws Exception {
+    public static void decrypt(String src, String dest, String password, Complex<JarArchiveEntry> filter)
+            throws Exception {
         decrypt(src, dest, password, Builder.ALGORITHM, filter);
     }
 
@@ -854,7 +858,8 @@ public class Jar {
      * @param filter    过滤器
      * @throws Exception 解密异常
      */
-    public static void decrypt(String src, String dest, String password, String algorithm, Complex<JarArchiveEntry> filter) throws Exception {
+    public static void decrypt(String src, String dest, String password, String algorithm,
+            Complex<JarArchiveEntry> filter) throws Exception {
         decrypt(src, dest, password, algorithm, Builder.DEFAULT_KEYSIZE, filter);
     }
 
@@ -869,7 +874,8 @@ public class Jar {
      * @param filter    过滤器
      * @throws Exception 解密异常
      */
-    public static void decrypt(String src, String dest, String password, String algorithm, int keysize, Complex<JarArchiveEntry> filter) throws Exception {
+    public static void decrypt(String src, String dest, String password, String algorithm, int keysize,
+            Complex<JarArchiveEntry> filter) throws Exception {
         decrypt(src, dest, password, algorithm, keysize, Builder.DEFAULT_IVSIZE, filter);
     }
 
@@ -885,7 +891,8 @@ public class Jar {
      * @param filter    过滤器
      * @throws Exception 解密异常
      */
-    public static void decrypt(String src, String dest, String password, String algorithm, int keysize, int ivsize, Complex<JarArchiveEntry> filter) throws Exception {
+    public static void decrypt(String src, String dest, String password, String algorithm, int keysize, int ivsize,
+            Complex<JarArchiveEntry> filter) throws Exception {
         decrypt(new File(src), new File(dest), password, algorithm, keysize, ivsize, filter);
     }
 
@@ -912,7 +919,8 @@ public class Jar {
      * @param filter    过滤器
      * @throws Exception 解密异常
      */
-    public static void decrypt(File src, File dest, String password, String algorithm, Complex<JarArchiveEntry> filter) throws Exception {
+    public static void decrypt(File src, File dest, String password, String algorithm, Complex<JarArchiveEntry> filter)
+            throws Exception {
         decrypt(src, dest, password, algorithm, Builder.DEFAULT_KEYSIZE, filter);
     }
 
@@ -927,7 +935,8 @@ public class Jar {
      * @param filter    过滤器
      * @throws Exception 解密异常
      */
-    public static void decrypt(File src, File dest, String password, String algorithm, int keysize, Complex<JarArchiveEntry> filter) throws Exception {
+    public static void decrypt(File src, File dest, String password, String algorithm, int keysize,
+            Complex<JarArchiveEntry> filter) throws Exception {
         decrypt(src, dest, password, algorithm, keysize, Builder.DEFAULT_IVSIZE, filter);
     }
 
@@ -943,11 +952,9 @@ public class Jar {
      * @param filter    过滤器
      * @throws Exception 解密异常
      */
-    public static void decrypt(File src, File dest, String password, String algorithm, int keysize, int ivsize, Complex<JarArchiveEntry> filter) throws Exception {
-        try (
-                InputStream in = new FileInputStream(src);
-                OutputStream out = new FileOutputStream(dest)
-        ) {
+    public static void decrypt(File src, File dest, String password, String algorithm, int keysize, int ivsize,
+            Complex<JarArchiveEntry> filter) throws Exception {
+        try (InputStream in = new FileInputStream(src); OutputStream out = new FileOutputStream(dest)) {
             decrypt(in, out, password, algorithm, keysize, ivsize, filter);
         }
     }
@@ -961,7 +968,8 @@ public class Jar {
      * @param filter   过滤器
      * @throws Exception 解密异常
      */
-    public static void decrypt(InputStream in, OutputStream out, String password, Complex<JarArchiveEntry> filter) throws Exception {
+    public static void decrypt(InputStream in, OutputStream out, String password, Complex<JarArchiveEntry> filter)
+            throws Exception {
         decrypt(in, out, password, Builder.ALGORITHM, filter);
     }
 
@@ -975,7 +983,8 @@ public class Jar {
      * @param filter    过滤器
      * @throws Exception 解密异常
      */
-    public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, Complex<JarArchiveEntry> filter) throws Exception {
+    public static void decrypt(InputStream in, OutputStream out, String password, String algorithm,
+            Complex<JarArchiveEntry> filter) throws Exception {
         decrypt(in, out, password, algorithm, Builder.DEFAULT_KEYSIZE, filter);
     }
 
@@ -990,7 +999,8 @@ public class Jar {
      * @param filter    过滤器
      * @throws Exception 解密异常
      */
-    public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, Complex<JarArchiveEntry> filter) throws Exception {
+    public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize,
+            Complex<JarArchiveEntry> filter) throws Exception {
         decrypt(in, out, password, algorithm, keysize, Builder.DEFAULT_IVSIZE, filter);
     }
 
@@ -1006,7 +1016,8 @@ public class Jar {
      * @param filter    过滤器
      * @throws Exception 解密异常
      */
-    public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize, int ivsize, Complex<JarArchiveEntry> filter) throws Exception {
+    public static void decrypt(InputStream in, OutputStream out, String password, String algorithm, int keysize,
+            int ivsize, Complex<JarArchiveEntry> filter) throws Exception {
         JarDecryptorProvider xJarDecryptor = new JarDecryptorProvider(new JdkDecryptorProvider(algorithm), filter);
         Key key = Builder.key(algorithm, keysize, ivsize, password);
         xJarDecryptor.decrypt(key, in, out);

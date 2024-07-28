@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.lang.exception.ConvertException;
@@ -42,8 +42,8 @@ import java.util.Objects;
 /**
  * {@link Map} 转换器，通过预定义key和value的类型，实现：
  * <ul>
- *     <li>Map 转 Map，key和value类型自动转换</li>
- *     <li>Bean 转 Map，字段和字段值类型自动转换</li>
+ * <li>Map 转 Map，key和value类型自动转换</li>
+ * <li>Bean 转 Map，字段和字段值类型自动转换</li>
  * </ul>
  *
  * @author Kimi Liu
@@ -86,9 +86,7 @@ public class MapConverter implements Converter, Serializable {
             final Class<?> valueClass = value.getClass();
             if (valueClass.equals(targetType)) {
                 final Type[] typeArguments = TypeKit.getTypeArguments(valueClass);
-                if (null != typeArguments
-                        && 2 == typeArguments.length
-                        && Objects.equals(keyType, typeArguments[0])
+                if (null != typeArguments && 2 == typeArguments.length && Objects.equals(keyType, typeArguments[0])
                         && Objects.equals(valueType, typeArguments[1])) {
                     // 对于键值对类型一致的Map对象，不再做转换，直接返回原对象
                     return (Map) value;
@@ -113,12 +111,11 @@ public class MapConverter implements Converter, Serializable {
      * @param srcMap    源Map
      * @param targetMap 目标Map
      */
-    private void convertMapToMap(final Type keyType, final Type valueType, final Map<?, ?> srcMap, final Map targetMap) {
+    private void convertMapToMap(final Type keyType, final Type valueType, final Map<?, ?> srcMap,
+            final Map targetMap) {
         final CompositeConverter convert = CompositeConverter.getInstance();
-        srcMap.forEach((key, value) -> targetMap.put(
-                TypeKit.isUnknown(keyType) ? key : convert.convert(keyType, key),
-                TypeKit.isUnknown(valueType) ? value : convert.convert(valueType, value)
-        ));
+        srcMap.forEach((key, value) -> targetMap.put(TypeKit.isUnknown(keyType) ? key : convert.convert(keyType, key),
+                TypeKit.isUnknown(valueType) ? value : convert.convert(valueType, value)));
     }
 
 }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -82,8 +82,7 @@ public class CircularByteBuffer {
     }
 
     /**
-     * Returns the given number of bytes from the buffer by storing them in
-     * the given byte array at the given offset.
+     * Returns the given number of bytes from the buffer by storing them in the given byte array at the given offset.
      * 从buffer中获取指定长度的bytes，从给定的targetBuffer的targetOffset位置写出
      *
      * @param targetBuffer 目标bytes
@@ -102,13 +101,12 @@ public class CircularByteBuffer {
             throw new IllegalArgumentException("Invalid length: " + length);
         }
         if (targetOffset + length > targetBuffer.length) {
-            throw new IllegalArgumentException("The supplied byte array contains only "
-                    + targetBuffer.length + " bytes, but offset, and length would require "
-                    + (targetOffset + length - 1));
+            throw new IllegalArgumentException("The supplied byte array contains only " + targetBuffer.length
+                    + " bytes, but offset, and length would require " + (targetOffset + length - 1));
         }
         if (currentNumberOfBytes < length) {
-            throw new IllegalStateException("Currently, there are only " + currentNumberOfBytes
-                    + "in the buffer, not " + length);
+            throw new IllegalStateException(
+                    "Currently, there are only " + currentNumberOfBytes + "in the buffer, not " + length);
         }
         int offset = targetOffset;
         for (int i = 0; i < length; i++) {
@@ -138,17 +136,15 @@ public class CircularByteBuffer {
     }
 
     /**
-     * Returns, whether the next bytes in the buffer are exactly those, given by
-     * {@code sourceBuffer}, {@code offset}, and {@code length}. No bytes are being
-     * removed from the buffer. If the result is true, then the following invocations
-     * of {@link #read()} are guaranteed to return exactly those bytes.
+     * Returns, whether the next bytes in the buffer are exactly those, given by {@code sourceBuffer}, {@code offset},
+     * and {@code length}. No bytes are being removed from the buffer. If the result is true, then the following
+     * invocations of {@link #read()} are guaranteed to return exactly those bytes.
      *
      * @param sourceBuffer the buffer to compare against
      * @param offset       start offset
      * @param length       length to compare
-     * @return True, if the next invocations of {@link #read()} will return the
-     * bytes at offsets {@code pOffset}+0, {@code pOffset}+1, ...,
-     * {@code pOffset}+{@code pLength}-1 of byte array {@code pBuffer}.
+     * @return True, if the next invocations of {@link #read()} will return the bytes at offsets {@code pOffset}+0,
+     *         {@code pOffset}+1, ..., {@code pOffset}+{@code pLength}-1 of byte array {@code pBuffer}.
      * @throws IllegalArgumentException Either of {@code pOffset}, or {@code pLength} is negative.
      * @throws NullPointerException     The byte array {@code pBuffer} is null.
      */
@@ -176,15 +172,14 @@ public class CircularByteBuffer {
     }
 
     /**
-     * Adds the given bytes to the buffer. This is the same as invoking {@link #add(byte)}
-     * for the bytes at offsets {@code offset+0}, {@code offset+1}, ...,
-     * {@code offset+length-1} of byte array {@code targetBuffer}.
+     * Adds the given bytes to the buffer. This is the same as invoking {@link #add(byte)} for the bytes at offsets
+     * {@code offset+0}, {@code offset+1}, ..., {@code offset+length-1} of byte array {@code targetBuffer}.
      *
      * @param targetBuffer the buffer to copier
      * @param offset       start offset
      * @param length       length to copier
-     * @throws IllegalStateException    The buffer doesn't have sufficient space. Use
-     *                                  {@link #getSpace()} to prevent this exception.
+     * @throws IllegalStateException    The buffer doesn't have sufficient space. Use {@link #getSpace()} to prevent
+     *                                  this exception.
      * @throws IllegalArgumentException Either of {@code pOffset}, or {@code pLength} is negative.
      * @throws NullPointerException     The byte array {@code pBuffer} is null.
      */
@@ -209,8 +204,8 @@ public class CircularByteBuffer {
     }
 
     /**
-     * Returns, whether there is currently room for a single byte in the buffer.
-     * Same as {@link #hasSpace(int) hasSpace(1)}.
+     * Returns, whether there is currently room for a single byte in the buffer. Same as {@link #hasSpace(int)
+     * hasSpace(1)}.
      *
      * @return true if there is space for a byte
      * @see #hasSpace(int)

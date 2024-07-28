@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.goalie.annotation;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -51,16 +51,8 @@ public @interface TerminalVersion {
      */
     enum Version {
 
-        NIL(Normal.EMPTY),
-        LT(Symbol.LT),
-        GT(Symbol.GT),
-        GTE(Symbol.GT + Symbol.EQUAL),
-        LE(Symbol.LE),
-        LTE(Symbol.LE + Symbol.EQUAL),
-        GE(Symbol.GE),
-        NE(Symbol.NOT + Symbol.EQUAL),
-        EQ(Symbol.EQUAL + Symbol.EQUAL);
-
+        NIL(Normal.EMPTY), LT(Symbol.LT), GT(Symbol.GT), GTE(Symbol.GT + Symbol.EQUAL), LE(Symbol.LE),
+        LTE(Symbol.LE + Symbol.EQUAL), GE(Symbol.GE), NE(Symbol.NOT + Symbol.EQUAL), EQ(Symbol.EQUAL + Symbol.EQUAL);
 
         private final String code;
 

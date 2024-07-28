@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health;
 
 import org.miaixz.bus.core.lang.annotation.NotThreadSafe;
@@ -35,10 +35,10 @@ import org.miaixz.bus.setting.metric.props.Props;
 import java.util.Properties;
 
 /**
- * The global configuration utility. See {@code src/main/resources/bus.health.properties} for default values.
- * This class is not thread safe if methods manipulating the configuration are used. These methods are intended for use
- * by a single thread at startup, before instantiation of any other classes. does not guarantee re- reading of
- * any configuration changes.
+ * The global configuration utility. See {@code src/main/resources/bus.health.properties} for default values. This class
+ * is not thread safe if methods manipulating the configuration are used. These methods are intended for use by a single
+ * thread at startup, before instantiation of any other classes. does not guarantee re- reading of any configuration
+ * changes.
  *
  * @author Kimi Liu
  * @since Java 17+

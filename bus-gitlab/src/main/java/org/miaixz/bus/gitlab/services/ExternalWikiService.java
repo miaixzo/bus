@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.services;
 
 import org.miaixz.bus.gitlab.GitLabApiForm;
@@ -40,8 +40,7 @@ public class ExternalWikiService extends NotificationService {
      */
     @Override
     public GitLabApiForm servicePropertiesForm() {
-        GitLabApiForm formData = new GitLabApiForm()
-                .withParam("external_wiki_url", getExternalWikiUrl(), true);
+        GitLabApiForm formData = new GitLabApiForm().withParam("external_wiki_url", getExternalWikiUrl(), true);
         return formData;
     }
 
@@ -52,7 +51,6 @@ public class ExternalWikiService extends NotificationService {
     public void setExternalWikiUrl(String endpoint) {
         this.setProperty(WIKIURL_KEY_PROP, endpoint);
     }
-
 
     public ExternalWikiService withExternalWikiUrl(String endpoint) {
         setExternalWikiUrl(endpoint);

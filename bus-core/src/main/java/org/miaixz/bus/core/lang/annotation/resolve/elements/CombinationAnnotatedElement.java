@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.annotation.resolve.elements;
 
 import org.miaixz.bus.core.center.map.TableMap;
@@ -42,8 +42,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 /**
- * 组合注解 对JDK的原生注解机制做一个增强，支持类似Spring的组合注解。
- * 核心实现使用了递归获取指定元素上的注解以及注解的注解，以实现复合注解的获取。
+ * 组合注解 对JDK的原生注解机制做一个增强，支持类似Spring的组合注解。 核心实现使用了递归获取指定元素上的注解以及注解的注解，以实现复合注解的获取。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -55,15 +54,8 @@ public class CombinationAnnotatedElement implements AnnotatedElement, Serializab
     /**
      * 元注解
      */
-    private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = SetKit.of(
-            Target.class,
-            Retention.class,
-            Inherited.class,
-            Documented.class,
-            SuppressWarnings.class,
-            Override.class,
-            Deprecated.class
-    );
+    private static final Set<Class<? extends Annotation>> META_ANNOTATIONS = SetKit.of(Target.class, Retention.class,
+            Inherited.class, Documented.class, SuppressWarnings.class, Override.class, Deprecated.class);
     /**
      * 过滤器
      */
@@ -104,7 +96,8 @@ public class CombinationAnnotatedElement implements AnnotatedElement, Serializab
      * @param predicate 过滤器，{@link Predicate#test(Object)}返回{@code true}保留，否则不保留
      * @return CombinationAnnotationElement
      */
-    public static CombinationAnnotatedElement of(final AnnotatedElement element, final Predicate<Annotation> predicate) {
+    public static CombinationAnnotatedElement of(final AnnotatedElement element,
+            final Predicate<Annotation> predicate) {
         return new CombinationAnnotatedElement(element, predicate);
     }
 

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.center.iterator.EnumerationIterator;
@@ -50,9 +50,7 @@ import java.util.function.Predicate;
 public class ListKit {
 
     /**
-     * 新建一个{@link ArrayList}
-     * 如果提供的初始化数组为空，新建默认初始长度的List
-     * 替换之前的：CollKit.newArrayList()
+     * 新建一个{@link ArrayList} 如果提供的初始化数组为空，新建默认初始长度的List 替换之前的：CollKit.newArrayList()
      *
      * @param <T>    集合元素类型
      * @param values 数组，可以为{@code null}
@@ -69,8 +67,7 @@ public class ListKit {
     }
 
     /**
-     * 新建一个{@link LinkedList}
-     * 如果提供的初始化数组为空，新建默认初始长度的List
+     * 新建一个{@link LinkedList} 如果提供的初始化数组为空，新建默认初始长度的List
      *
      * @param <T>    集合元素类型
      * @param values 数组，可以为{@code null}
@@ -86,8 +83,7 @@ public class ListKit {
     }
 
     /**
-     * 新建一个List
-     * 如果提供的初始化数组为空，新建默认初始长度的List
+     * 新建一个List 如果提供的初始化数组为空，新建默认初始长度的List
      *
      * @param <T>      集合元素类型
      * @param isLinked 是否为链表
@@ -98,8 +94,7 @@ public class ListKit {
     }
 
     /**
-     * 新建一个List
-     * 提供的参数为null时返回空{@link ArrayList}
+     * 新建一个List 提供的参数为null时返回空{@link ArrayList}
      *
      * @param <T>      集合元素类型
      * @param isLinked 是否新建LinkedList
@@ -118,8 +113,7 @@ public class ListKit {
     }
 
     /**
-     * 新建一个List
-     * 提供的参数为null时返回空{@link ArrayList}
+     * 新建一个List 提供的参数为null时返回空{@link ArrayList}
      *
      * @param <T>        集合元素类型
      * @param isLinked   是否新建LinkedList
@@ -131,8 +125,7 @@ public class ListKit {
     }
 
     /**
-     * 新建一个List
-     * 提供的参数为null时返回空{@link ArrayList}
+     * 新建一个List 提供的参数为null时返回空{@link ArrayList}
      *
      * @param <T>      集合元素类型
      * @param isLinked 是否新建LinkedList
@@ -150,8 +143,7 @@ public class ListKit {
     }
 
     /**
-     * 新建一个ArrayList
-     * 提供的参数为null时返回空{@link ArrayList}
+     * 新建一个ArrayList 提供的参数为null时返回空{@link ArrayList}
      *
      * @param <T>      集合元素类型
      * @param iterable {@link Iterable}
@@ -162,8 +154,7 @@ public class ListKit {
     }
 
     /**
-     * 新建一个ArrayList
-     * 提供的参数为null时返回空{@link ArrayList}
+     * 新建一个ArrayList 提供的参数为null时返回空{@link ArrayList}
      *
      * @param <T>      集合元素类型
      * @param iterator {@link Iterator}
@@ -174,8 +165,7 @@ public class ListKit {
     }
 
     /**
-     * 新建一个ArrayList
-     * 提供的参数为null时返回空{@link ArrayList}
+     * 新建一个ArrayList 提供的参数为null时返回空{@link ArrayList}
      *
      * @param <T>         集合元素类型
      * @param enumeration {@link Enumeration}
@@ -186,9 +176,7 @@ public class ListKit {
     }
 
     /**
-     * 数组转为一个不可变List
-     * 类似于Java9中的List.of
-     * 不同于Arrays.asList，此方法不允许修改数组
+     * 数组转为一个不可变List 类似于Java9中的List.of 不同于Arrays.asList，此方法不允许修改数组
      *
      * @param ts  对象
      * @param <T> 对象类型
@@ -200,8 +188,7 @@ public class ListKit {
     }
 
     /**
-     * 转为一个不可变List
-     * 类似于Java9中的List.of
+     * 转为一个不可变List 类似于Java9中的List.of
      *
      * @param ts  对象
      * @param <T> 对象类型
@@ -313,8 +300,7 @@ public class ListKit {
     }
 
     /**
-     * 反序给定List，会在原List基础上直接修改
-     * 注意此方法不支持不可编辑的列表
+     * 反序给定List，会在原List基础上直接修改 注意此方法不支持不可编辑的列表
      *
      * @param <T>  元素类型
      * @param list 被反转的List
@@ -391,7 +377,8 @@ public class ListKit {
      * @param paddingElement 填充的值
      * @return the list
      */
-    public static <T> List<T> setOrPadding(final List<T> list, final int index, final T element, final T paddingElement) {
+    public static <T> List<T> setOrPadding(final List<T> list, final int index, final T element,
+            final T paddingElement) {
         return setOrPadding(list, index, element, paddingElement, (list.size() + 1) * 10);
     }
 
@@ -406,7 +393,8 @@ public class ListKit {
      * @param indexLimit     最大索引限制
      * @return the list
      */
-    public static <T> List<T> setOrPadding(final List<T> list, final int index, final T element, final T paddingElement, final int indexLimit) {
+    public static <T> List<T> setOrPadding(final List<T> list, final int index, final T element, final T paddingElement,
+            final int indexLimit) {
         Assert.notNull(list, "List must be not null !");
         final int size = list.size();
         if (index < size) {
@@ -438,8 +426,7 @@ public class ListKit {
     }
 
     /**
-     * 截取集合的部分
-     * 此方法与{@link List#subList(int, int)} 不同在于子列表是新的副本，操作子列表不会影响原列表。
+     * 截取集合的部分 此方法与{@link List#subList(int, int)} 不同在于子列表是新的副本，操作子列表不会影响原列表。
      *
      * @param <T>           集合元素类型
      * @param list          被截取的数组
@@ -491,8 +478,7 @@ public class ListKit {
     }
 
     /**
-     * 获取匹配规则定义中匹配到元素的最后位置
-     * 此方法对于某些无序集合的位置信息，以转换为数组后的位置为准。
+     * 获取匹配规则定义中匹配到元素的最后位置 此方法对于某些无序集合的位置信息，以转换为数组后的位置为准。
      *
      * @param <T>     元素类型
      * @param list    List集合
@@ -514,12 +500,10 @@ public class ListKit {
     }
 
     /**
-     * 通过传入分区长度，将指定列表分区为不同的块，每块区域的长度相同（最后一块可能小于长度）
-     * 分区是在原List的基础上进行的，返回的分区是不可变的抽象列表，原列表元素变更，分区中元素也会变更。
+     * 通过传入分区长度，将指定列表分区为不同的块，每块区域的长度相同（最后一块可能小于长度） 分区是在原List的基础上进行的，返回的分区是不可变的抽象列表，原列表元素变更，分区中元素也会变更。
      *
      * <p>
-     * 需要特别注意的是，此方法调用{@link List#subList(int, int)}切分List，
-     * 此方法返回的是原List的视图，也就是说原List有变更，切分后的结果也会变更。
+     * 需要特别注意的是，此方法调用{@link List#subList(int, int)}切分List， 此方法返回的是原List的视图，也就是说原List有变更，切分后的结果也会变更。
      * </p>
      *
      * @param <T>  集合元素类型
@@ -532,19 +516,20 @@ public class ListKit {
             return empty();
         }
 
-        return (list instanceof RandomAccess)
-                ? new RandomAccessPartition<>(list, size)
-                : new Partition<>(list, size);
+        return (list instanceof RandomAccess) ? new RandomAccessPartition<>(list, size) : new Partition<>(list, size);
     }
 
     /**
      * 将集合平均分成多个list，返回这个集合的列表
-     * <p>例：</p>
+     * <p>
+     * 例：
+     * </p>
+     * 
      * <pre>
-     *     ListKit.avgPartition(null, 3);	// []
-     *     ListKit.avgPartition(Arrays.asList(1, 2, 3, 4), 2);	// [[1, 2], [3, 4]]
-     *     ListKit.avgPartition(Arrays.asList(1, 2, 3), 5);	// [[1], [2], [3], [], []]
-     *     ListKit.avgPartition(Arrays.asList(1, 2, 3), 2);	// [[1, 2], [3]]
+     * ListKit.avgPartition(null, 3); // []
+     * ListKit.avgPartition(Arrays.asList(1, 2, 3, 4), 2); // [[1, 2], [3, 4]]
+     * ListKit.avgPartition(Arrays.asList(1, 2, 3), 5); // [[1], [2], [3], [], []]
+     * ListKit.avgPartition(Arrays.asList(1, 2, 3), 2); // [[1, 2], [3]]
      * </pre>
      *
      * @param <T>   集合元素类型
@@ -557,15 +542,12 @@ public class ListKit {
             return empty();
         }
 
-        return (list instanceof RandomAccess)
-                ? new RandomAccessAvgPartition<>(list, limit)
+        return (list instanceof RandomAccess) ? new RandomAccessAvgPartition<>(list, limit)
                 : new AvgPartition<>(list, limit);
     }
 
     /**
-     * 将指定元素交换到指定索引位置,其他元素的索引值不变
-     * 交换会修改原List
-     * 如果集合中有多个相同元素，只交换第一个找到的元素
+     * 将指定元素交换到指定索引位置,其他元素的索引值不变 交换会修改原List 如果集合中有多个相同元素，只交换第一个找到的元素
      *
      * @param <T>         元素类型
      * @param list        列表
@@ -582,9 +564,7 @@ public class ListKit {
     }
 
     /**
-     * 将指定元素交换到指定元素位置,其他元素的索引值不变
-     * 交换会修改原List
-     * 如果集合中有多个相同元素，只交换第一个找到的元素
+     * 将指定元素交换到指定元素位置,其他元素的索引值不变 交换会修改原List 如果集合中有多个相同元素，只交换第一个找到的元素
      *
      * @param <T>           元素类型
      * @param list          列表
@@ -632,8 +612,8 @@ public class ListKit {
     }
 
     /**
-     * 通过删除或替换现有元素或者原地添加新的元素来修改列表，并以列表形式返回被修改的内容。此方法不会改变原列表。
-     * 类似js的<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/splice">splice</a>函数
+     * 通过删除或替换现有元素或者原地添加新的元素来修改列表，并以列表形式返回被修改的内容。此方法不会改变原列表。 类似js的<a href=
+     * "https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Array/splice">splice</a>函数
      *
      * @param <T>         元素类型
      * @param list        列表
@@ -716,8 +696,7 @@ public class ListKit {
         int start = (pageNo - 1) * pageSize;
         int end = start + pageSize;
 
-
-        final int[] startEnd = new int[]{start, end};
+        final int[] startEnd = new int[] { start, end };
         if (startEnd[1] > resultSize) {
             startEnd[1] = resultSize;
             if (startEnd[0] > startEnd[1]) {
@@ -730,8 +709,8 @@ public class ListKit {
     /**
      * 将元素移动到指定列表的新位置。
      * <ul>
-     *     <li>如果元素不在列表中，则将其添加到新位置。</li>
-     *     <li>如果元素已在列表中，则先移除它，然后再将其添加到新位置。</li>
+     * <li>如果元素不在列表中，则将其添加到新位置。</li>
+     * <li>如果元素已在列表中，则先移除它，然后再将其添加到新位置。</li>
      * </ul>
      *
      * @param list        原始列表，元素将在这个列表上进行操作。

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.image;
 
 import jakarta.annotation.Resource;
@@ -42,7 +42,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  */
 @Getter
 @Setter
-@EnableConfigurationProperties(value = {ImageProperties.Node.class})
+@EnableConfigurationProperties(value = { ImageProperties.Node.class })
 @ConfigurationProperties(prefix = GeniusBuilder.IMAGE)
 public class ImageProperties {
 
@@ -92,18 +92,15 @@ public class ImageProperties {
          */
         private boolean negociation;
         /**
-         * SOP类和传输语法可以通过其UID或名称指定
-         * sop-classes.properties
+         * SOP类和传输语法可以通过其UID或名称指定 sop-classes.properties
          */
         private String sopClasses;
         /**
-         * 根据DICOM Part 4, B.3.1.4定义相关的通用SOP类
-         * sop-classes-uid.properties
+         * 根据DICOM Part 4, B.3.1.4定义相关的通用SOP类 sop-classes-uid.properties
          */
         private String sopClassesUID;
         /**
-         * 扩展Sop类和传输语法的存储传输能力
-         * sop-classes-tcs.properties
+         * 扩展Sop类和传输语法的存储传输能力 sop-classes-tcs.properties
          */
         private String sopClassesTCS;
 

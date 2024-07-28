@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.template.provider.freemarker;
 
 import freemarker.cache.TemplateLoader;
@@ -33,8 +33,7 @@ import java.io.Reader;
 import java.io.StringReader;
 
 /**
- * {@link TemplateLoader} 字符串实现形式
- * 用于直接获取字符串模板
+ * {@link TemplateLoader} 字符串实现形式 用于直接获取字符串模板
  *
  * @author Kimi Liu
  * @since Java 17+

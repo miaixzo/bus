@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -125,8 +125,8 @@ public class HealthCheckInfo implements Serializable {
     }
 
     /**
-     * This desrializer can deserialize on object containing a HealthCheckItem or an
-     * array containing a single HealthCheckItem.
+     * This desrializer can deserialize on object containing a HealthCheckItem or an array containing a single
+     * HealthCheckItem.
      */
     private static class HealthCheckItemDeserializer extends JsonDeserializer<HealthCheckItem> {
 

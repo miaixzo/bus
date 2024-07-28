@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.mail;
 
 import jakarta.mail.internet.AddressException;
@@ -48,8 +48,7 @@ import java.util.List;
 public class InternalMail {
 
     /**
-     * 将多个字符串邮件地址转为{@link InternetAddress}列表
-     * 单个字符串地址可以是多个地址合并的字符串
+     * 将多个字符串邮件地址转为{@link InternetAddress}列表 单个字符串地址可以是多个地址合并的字符串
      *
      * @param addrStrs 地址数组
      * @param charset  编码（主要用于中文用户名的编码）
@@ -87,8 +86,7 @@ public class InternalMail {
     }
 
     /**
-     * 将一个地址字符串解析为多个地址
-     * 地址间使用" "、","、";"分隔
+     * 将一个地址字符串解析为多个地址 地址间使用" "、","、";"分隔
      *
      * @param address 地址字符串
      * @param charset 编码，{@code null}表示使用系统属性定义的编码或系统编码
@@ -101,7 +99,7 @@ public class InternalMail {
         } catch (final AddressException e) {
             throw new InternalException(e);
         }
-        //编码用户名
+        // 编码用户名
         if (ArrayKit.isNotEmpty(addresses)) {
             final String charsetStr = null == charset ? null : charset.name();
             for (final InternetAddress internetAddress : addresses) {
@@ -117,8 +115,7 @@ public class InternalMail {
     }
 
     /**
-     * 编码中文字符
-     * 编码失败返回原字符串
+     * 编码中文字符 编码失败返回原字符串
      *
      * @param text    被编码的文本
      * @param charset 编码

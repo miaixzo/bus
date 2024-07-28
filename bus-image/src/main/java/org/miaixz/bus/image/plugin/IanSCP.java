@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -56,18 +56,16 @@ public class IanSCP extends Device {
 
     private final ImageService ianSCP = new AbstractImageService(UID.InstanceAvailabilityNotification.uid) {
 
-                @Override
-                public void onDimseRQ(Association as, PresentationContext pc,
-                                      Dimse dimse, Attributes cmd, Attributes data)
-                        throws IOException {
-                    if (dimse != Dimse.N_CREATE_RQ)
-                        throw new ImageServiceException(Status.UnrecognizedOperation);
-                    Attributes rsp = Commands.mkNCreateRSP(cmd, status);
-                    Attributes rspAttrs = IanSCP.this.create(as, cmd, data);
-                    as.tryWriteDimseRSP(pc, rsp, rspAttrs);
-                }
-            };
-
+        @Override
+        public void onDimseRQ(Association as, PresentationContext pc, Dimse dimse, Attributes cmd, Attributes data)
+                throws IOException {
+            if (dimse != Dimse.N_CREATE_RQ)
+                throw new ImageServiceException(Status.UnrecognizedOperation);
+            Attributes rsp = Commands.mkNCreateRSP(cmd, status);
+            Attributes rspAttrs = IanSCP.this.create(as, cmd, data);
+            as.tryWriteDimseRSP(pc, rsp, rspAttrs);
+        }
+    };
 
     public IanSCP() {
         super("ianscp");
@@ -95,24 +93,19 @@ public class IanSCP extends Device {
         this.status = status;
     }
 
-    private Attributes create(Association as, Attributes rq, Attributes rqAttrs)
-            throws ImageServiceException {
+    private Attributes create(Association as, Attributes rq, Attributes rqAttrs) throws ImageServiceException {
         if (storageDir == null)
             return null;
         String cuid = rq.getString(Tag.AffectedSOPClassUID);
         String iuid = rq.getString(Tag.AffectedSOPInstanceUID);
         File file = new File(storageDir, iuid);
         if (file.exists())
-            throw new ImageServiceException(Status.DuplicateSOPinstance).
-                    setUID(Tag.AffectedSOPInstanceUID, iuid);
+            throw new ImageServiceException(Status.DuplicateSOPinstance).setUID(Tag.AffectedSOPInstanceUID, iuid);
         ImageOutputStream out = null;
         Logger.info("{}: M-WRITE {}", as, file);
         try {
             out = new ImageOutputStream(file);
-            out.writeDataset(
-                    Attributes.createFileMetaInformation(iuid, cuid,
-                            UID.ExplicitVRLittleEndian.uid),
-                    rqAttrs);
+            out.writeDataset(Attributes.createFileMetaInformation(iuid, cuid, UID.ExplicitVRLittleEndian.uid), rqAttrs);
         } catch (IOException e) {
             Logger.warn(as + ": Failed to store Instance Available Notification:", e);
             throw new ImageServiceException(Status.ProcessingFailure, e);

@@ -24,20 +24,17 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.list;
 
 import java.util.List;
 import java.util.RandomAccess;
 
 /**
- * 列表分区或分段（可随机访问列表）
- * 通过传入分区长度，将指定列表分区为不同的块，每块区域的长度相同（最后一块可能小于长度）
- * 分区是在原List的基础上进行的，返回的分区是不可变的抽象列表，原列表元素变更，分区中元素也会变更。
+ * 列表分区或分段（可随机访问列表） 通过传入分区长度，将指定列表分区为不同的块，每块区域的长度相同（最后一块可能小于长度） 分区是在原List的基础上进行的，返回的分区是不可变的抽象列表，原列表元素变更，分区中元素也会变更。
  * 参考：Guava的Lists#RandomAccessPartition
  *
- * @param <T> 元素类型
- *            , guava
+ * @param <T> 元素类型 , guava
  * @author Kimi Liu
  * @since Java 17+
  */

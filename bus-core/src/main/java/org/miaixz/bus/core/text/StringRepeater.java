@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -33,8 +33,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import java.util.Arrays;
 
 /**
- * 字符串或字符重复器
- * 用于将给定字符串或字符赋值count次，然后拼接
+ * 字符串或字符重复器 用于将给定字符串或字符赋值count次，然后拼接
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -126,8 +125,8 @@ public class StringRepeater {
     /**
      * 重复某个字符串到指定长度
      * <ul>
-     *     <li>如果指定长度非指定字符串的整数倍，截断到固定长度</li>
-     *     <li>如果指定长度小于字符串本身的长度，截断之</li>
+     * <li>如果指定长度非指定字符串的整数倍，截断到固定长度</li>
+     * <li>如果指定长度小于字符串本身的长度，截断之</li>
      * </ul>
      *
      * @param text 被重复的字符
@@ -180,8 +179,7 @@ public class StringRepeater {
         }
 
         // 初始大小 = 所有重复字符串长度 + 分界符总长度
-        final StringBuilder builder = new StringBuilder(
-                text.length() * count + delimiter.length() * (count - 1));
+        final StringBuilder builder = new StringBuilder(text.length() * count + delimiter.length() * (count - 1));
         builder.append(text);
         count--;
 

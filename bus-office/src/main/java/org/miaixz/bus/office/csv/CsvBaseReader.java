@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.office.csv;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
@@ -152,7 +152,6 @@ public class CsvBaseReader implements Serializable {
         read(parse(new StringReader(csvStr)), true, rowHandler);
     }
 
-
     /**
      * 读取CSV文件
      *
@@ -207,15 +206,15 @@ public class CsvBaseReader implements Serializable {
     }
 
     /**
-     * 从Reader中读取CSV数据，结果为Map，读取后关闭Reader。
-     * 此方法默认识别首行为标题行。
+     * 从Reader中读取CSV数据，结果为Map，读取后关闭Reader。 此方法默认识别首行为标题行。
      *
      * @param reader      Reader
      * @param closeReader 是否关闭Reader
      * @return {@link CsvData}，包含数据列表和行信息
      * @throws InternalException IO异常
      */
-    public List<Map<String, String>> readMapList(final Reader reader, final boolean closeReader) throws InternalException {
+    public List<Map<String, String>> readMapList(final Reader reader, final boolean closeReader)
+            throws InternalException {
         // 此方法必须包含标题
         this.config.setContainsHeader(true);
 
@@ -225,8 +224,7 @@ public class CsvBaseReader implements Serializable {
     }
 
     /**
-     * 从Reader中读取CSV数据并转换为Bean列表，读取后关闭Reader。
-     * 此方法默认识别首行为标题行。
+     * 从Reader中读取CSV数据并转换为Bean列表，读取后关闭Reader。 此方法默认识别首行为标题行。
      *
      * @param <T>         Bean类型
      * @param reader      Reader
@@ -244,8 +242,7 @@ public class CsvBaseReader implements Serializable {
     }
 
     /**
-     * 从字符串中读取CSV数据并转换为Bean列表，读取后关闭Reader。
-     * 此方法默认识别首行为标题行。
+     * 从字符串中读取CSV数据并转换为Bean列表，读取后关闭Reader。 此方法默认识别首行为标题行。
      *
      * @param <T>    Bean类型
      * @param csvStr csv字符串
@@ -269,7 +266,8 @@ public class CsvBaseReader implements Serializable {
      * @param rowHandler  行处理器，用于一行一行的处理数据
      * @throws InternalException IO异常
      */
-    public void read(final Reader reader, final boolean closeReader, final ConsumerX<CsvRow> rowHandler) throws InternalException {
+    public void read(final Reader reader, final boolean closeReader, final ConsumerX<CsvRow> rowHandler)
+            throws InternalException {
         read(parse(reader), closeReader, rowHandler);
     }
 
@@ -281,7 +279,8 @@ public class CsvBaseReader implements Serializable {
      * @param rowHandler  行处理器，用于一行一行的处理数据
      * @throws InternalException IO异常
      */
-    private void read(final CsvParser csvParser, final boolean closeParser, final ConsumerX<CsvRow> rowHandler) throws InternalException {
+    private void read(final CsvParser csvParser, final boolean closeParser, final ConsumerX<CsvRow> rowHandler)
+            throws InternalException {
         try {
             while (csvParser.hasNext()) {
                 rowHandler.accept(csvParser.next());

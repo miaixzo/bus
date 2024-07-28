@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.notify.metric.qiniu;
 
 import org.miaixz.bus.core.basic.entity.Message;
@@ -61,10 +61,7 @@ public class QiniuSmsProvider extends AbstractProvider<QiniuMaterial, Context> {
         String errcode = status == 200 ? ErrorCode.SUCCESS.getCode() : ErrorCode.FAILURE.getCode();
         String errmsg = status == 200 ? ErrorCode.SUCCESS.getDesc() : ErrorCode.FAILURE.getDesc();
 
-        return Message.builder()
-                .errcode(errcode)
-                .errmsg(errmsg)
-                .build();
+        return Message.builder().errcode(errcode).errmsg(errmsg).build();
     }
 
 }

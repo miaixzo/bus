@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map.reference;
 
 import org.miaixz.bus.core.lang.ref.Ref;
@@ -48,7 +48,8 @@ import java.util.function.Function;
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class ReferenceConcurrentMap<K, V> implements ConcurrentMap<K, V>, Iterable<Map.Entry<K, V>>, Serializable {
+public abstract class ReferenceConcurrentMap<K, V>
+        implements ConcurrentMap<K, V>, Iterable<Map.Entry<K, V>>, Serializable {
 
     private static final long serialVersionUID = -1L;
 
@@ -162,14 +163,14 @@ public abstract class ReferenceConcurrentMap<K, V> implements ConcurrentMap<K, V
     @Override
     public V computeIfAbsent(final K key, final Function<? super K, ? extends V> mappingFunction) {
         V result = null;
-        while(null == result){
+        while (null == result) {
             this.purgeStale();
             final Ref<V> vReference = this.raw.computeIfAbsent(wrapKey(key),
                     kReference -> wrapValue(mappingFunction.apply(unwrap(kReference))));
 
             // 如果vReference在此时被GC回收，则unwrap后为null，需要循环计算
             // 但是当用户提供的值本身为null，则直接返回之
-            if(NullRef.NULL == vReference){
+            if (NullRef.NULL == vReference) {
                 // 用户提供的值本身为null
                 return null;
             }
@@ -181,14 +182,14 @@ public abstract class ReferenceConcurrentMap<K, V> implements ConcurrentMap<K, V
     @Override
     public V computeIfPresent(final K key, final BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
         V result = null;
-        while(null == result){
+        while (null == result) {
             this.purgeStale();
-            final Ref<V> vReference = this.raw.computeIfPresent(wrapKey(key),
-                    (kReference, vReference1) -> wrapValue(remappingFunction.apply(unwrap(kReference), unwrap(vReference1))));
+            final Ref<V> vReference = this.raw.computeIfPresent(wrapKey(key), (kReference,
+                    vReference1) -> wrapValue(remappingFunction.apply(unwrap(kReference), unwrap(vReference1))));
 
             // 如果vReference在此时被GC回收，则unwrap后为null，需要循环计算
             // 但是当用户提供的值本身为null，则直接返回之
-            if(NullRef.NULL == vReference){
+            if (NullRef.NULL == vReference) {
                 // 用户提供的值本身为null
                 return null;
             }
@@ -203,7 +204,6 @@ public abstract class ReferenceConcurrentMap<K, V> implements ConcurrentMap<K, V
         return unwrap(this.raw.remove(wrapKey(key)));
     }
 
-
     @Override
     public boolean remove(final Object key, final Object value) {
         this.purgeStale();
@@ -213,8 +213,10 @@ public abstract class ReferenceConcurrentMap<K, V> implements ConcurrentMap<K, V
     @Override
     public void clear() {
         this.raw.clear();
-        while (lastKeyQueue.poll() != null) ;
-        while (lastValueQueue.poll() != null) ;
+        while (lastKeyQueue.poll() != null)
+            ;
+        while (lastValueQueue.poll() != null)
+            ;
     }
 
     @Override
@@ -331,15 +333,15 @@ public abstract class ReferenceConcurrentMap<K, V> implements ConcurrentMap<K, V
     @Override
     public V compute(final K key, final BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
         this.purgeStale();
-        return unwrap(this.raw.compute(wrapKey(key),
-                (kReference, vReference) -> wrapValue(remappingFunction.apply(unwrap(kReference), unwrap(vReference)))));
+        return unwrap(this.raw.compute(wrapKey(key), (kReference,
+                vReference) -> wrapValue(remappingFunction.apply(unwrap(kReference), unwrap(vReference)))));
     }
 
     @Override
     public V merge(final K key, final V value, final BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
         this.purgeStale();
-        return unwrap(this.raw.merge(wrapKey(key), wrapValue(value),
-                (vReference, vReference2) -> wrapValue(remappingFunction.apply(unwrap(vReference), unwrap(vReference2)))));
+        return unwrap(this.raw.merge(wrapKey(key), wrapValue(value), (vReference,
+                vReference2) -> wrapValue(remappingFunction.apply(unwrap(vReference), unwrap(vReference2)))));
     }
 
     /**

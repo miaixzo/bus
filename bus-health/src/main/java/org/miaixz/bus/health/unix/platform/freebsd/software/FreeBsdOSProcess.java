@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.freebsd.software;
 
 import com.sun.jna.Memory;
@@ -68,7 +68,8 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     private final FreeBsdOperatingSystem os;
     private final Supplier<Integer> bitness = Memoizer.memoize(this::queryBitness);
     private final Supplier<List<String>> arguments = Memoizer.memoize(this::queryArguments);
-    private final Supplier<Map<String, String>> environmentVariables = Memoizer.memoize(this::queryEnvironmentVariables);
+    private final Supplier<Map<String, String>> environmentVariables = Memoizer
+            .memoize(this::queryEnvironmentVariables);
     private String path = Normal.EMPTY;
     private String name;
     private State state = State.INVALID;
@@ -109,7 +110,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
             mib[3] = getProcessID();
             // Allocate memory for arguments
             try (Memory m = new Memory(ARGMAX);
-                 ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(ARGMAX)) {
+                    ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(ARGMAX)) {
                 // Fetch arguments
                 if (FreeBsdLibc.INSTANCE.sysctl(mib, mib.length, m, size, null, size_t.ZERO) == 0) {
                     return Collections.unmodifiableList(
@@ -159,7 +160,7 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
             mib[3] = getProcessID();
             // Allocate memory for environment variables
             try (Memory m = new Memory(ARGMAX);
-                 ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(ARGMAX)) {
+                    ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(ARGMAX)) {
                 // Fetch environment variables
                 if (FreeBsdLibc.INSTANCE.sysctl(mib, mib.length, m, size, null, size_t.ZERO) == 0) {
                     return Collections.unmodifiableMap(
@@ -339,7 +340,8 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         mib[2] = 9; // KERN_PROC_SV_NAME
         mib[3] = getProcessID();
         // Allocate memory for arguments
-        try (Memory abi = new Memory(32); ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(32)) {
+        try (Memory abi = new Memory(32);
+                ByRef.CloseableSizeTByReference size = new ByRef.CloseableSizeTByReference(32)) {
             // Fetch abi vector
             if (0 == FreeBsdLibc.INSTANCE.sysctl(mib, mib.length, abi, size, null, size_t.ZERO)) {
                 String elf = abi.getString(0);
@@ -359,7 +361,8 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         List<String> procList = Executor.runNative(psCommand);
         if (procList.size() > 1) {
             // skip header row
-            Map<FreeBsdOperatingSystem.PsKeywords, String> psMap = Parsing.stringToEnumMap(FreeBsdOperatingSystem.PsKeywords.class, procList.get(1).trim(), Symbol.C_SPACE);
+            Map<FreeBsdOperatingSystem.PsKeywords, String> psMap = Parsing
+                    .stringToEnumMap(FreeBsdOperatingSystem.PsKeywords.class, procList.get(1).trim(), Symbol.C_SPACE);
             // Check if last (thus all) value populated
             if (psMap.containsKey(FreeBsdOperatingSystem.PsKeywords.ARGS)) {
                 return updateAttributes(psMap);
@@ -387,27 +390,27 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
     private boolean updateAttributes(Map<FreeBsdOperatingSystem.PsKeywords, String> psMap) {
         long now = System.currentTimeMillis();
         switch (psMap.get(FreeBsdOperatingSystem.PsKeywords.STATE).charAt(0)) {
-            case 'R':
-                this.state = State.RUNNING;
-                break;
-            case 'I':
-            case 'S':
-                this.state = State.SLEEPING;
-                break;
-            case 'D':
-            case 'L':
-            case 'U':
-                this.state = State.WAITING;
-                break;
-            case 'Z':
-                this.state = State.ZOMBIE;
-                break;
-            case 'T':
-                this.state = State.STOPPED;
-                break;
-            default:
-                this.state = State.OTHER;
-                break;
+        case 'R':
+            this.state = State.RUNNING;
+            break;
+        case 'I':
+        case 'S':
+            this.state = State.SLEEPING;
+            break;
+        case 'D':
+        case 'L':
+        case 'U':
+            this.state = State.WAITING;
+            break;
+        case 'Z':
+            this.state = State.ZOMBIE;
+            break;
+        case 'T':
+            this.state = State.STOPPED;
+            break;
+        default:
+            this.state = State.OTHER;
+            break;
         }
         this.parentProcessID = Parsing.parseIntOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.PPID), 0);
         this.user = psMap.get(FreeBsdOperatingSystem.PsKeywords.USER);
@@ -424,13 +427,16 @@ public class FreeBsdOSProcess extends AbstractOSProcess {
         this.upTime = elapsedTime < 1L ? 1L : elapsedTime;
         this.startTime = now - this.upTime;
         this.kernelTime = Parsing.parseDHMSOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.SYSTIME), 0L);
-        this.userTime = Parsing.parseDHMSOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.TIME), 0L) - this.kernelTime;
+        this.userTime = Parsing.parseDHMSOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.TIME), 0L)
+                - this.kernelTime;
         this.path = psMap.get(FreeBsdOperatingSystem.PsKeywords.COMM);
         this.name = this.path.substring(this.path.lastIndexOf('/') + 1);
         this.minorFaults = Parsing.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.MAJFLT), 0L);
         this.majorFaults = Parsing.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.MINFLT), 0L);
-        long nonVoluntaryContextSwitches = Parsing.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.NVCSW), 0L);
-        long voluntaryContextSwitches = Parsing.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.NIVCSW), 0L);
+        long nonVoluntaryContextSwitches = Parsing
+                .parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.NVCSW), 0L);
+        long voluntaryContextSwitches = Parsing.parseLongOrDefault(psMap.get(FreeBsdOperatingSystem.PsKeywords.NIVCSW),
+                0L);
         this.contextSwitches = voluntaryContextSwitches + nonVoluntaryContextSwitches;
         this.commandLineBackup = psMap.get(FreeBsdOperatingSystem.PsKeywords.ARGS);
         return true;

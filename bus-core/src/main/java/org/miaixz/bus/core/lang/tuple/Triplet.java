@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.tuple;
 
 import java.util.Objects;
@@ -90,9 +90,8 @@ public class Triplet<L, M, R> extends Pair<L, R> {
         }
         if (o instanceof Triplet) {
             final Triplet<?, ?, ?> triplet = (Triplet<?, ?, ?>) o;
-            return Objects.equals(getLeft(), triplet.getLeft()) &&
-                    Objects.equals(getMiddle(), triplet.getMiddle()) &&
-                    Objects.equals(getRight(), triplet.getRight());
+            return Objects.equals(getLeft(), triplet.getLeft()) && Objects.equals(getMiddle(), triplet.getMiddle())
+                    && Objects.equals(getRight(), triplet.getRight());
         }
         return false;
     }

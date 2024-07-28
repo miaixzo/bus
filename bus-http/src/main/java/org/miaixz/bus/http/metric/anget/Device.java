@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.metric.anget;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -76,30 +76,16 @@ public class Device extends UserAgent {
     /**
      * 支持的移动平台类型
      */
-    public static final List<Device> MOBILE_DEVICE = ListKit.of(
-            WINDOWS_PHONE,
-            IPAD,
-            IPOD,
-            IPHONE,
-            new Device("Android", "XiaoMi|MI\\s+"),
-            ANDROID,
-            GOOGLE_TV,
-            new Device("htcFlyer", "htc_flyer"),
-            new Device("Symbian", "symbian(os)?"),
-            new Device("Blackberry", "blackberry")
-    );
+    public static final List<Device> MOBILE_DEVICE = ListKit.of(WINDOWS_PHONE, IPAD, IPOD, IPHONE,
+            new Device("Android", "XiaoMi|MI\\s+"), ANDROID, GOOGLE_TV, new Device("htcFlyer", "htc_flyer"),
+            new Device("Symbian", "symbian(os)?"), new Device("Blackberry", "blackberry"));
 
     /**
      * 支持的桌面平台类型
      */
-    public static final List<Device> DESKTOP_DEVICE = ListKit.of(
-            new Device("Windows", "windows"),
-            new Device("Mac", "(macintosh|darwin)"),
-            new Device("Linux", "linux"),
-            new Device("Wii", "wii"),
-            new Device("Playstation", "playstation"),
-            new Device("Java", "java")
-    );
+    public static final List<Device> DESKTOP_DEVICE = ListKit.of(new Device("Windows", "windows"),
+            new Device("Mac", "(macintosh|darwin)"), new Device("Linux", "linux"), new Device("Wii", "wii"),
+            new Device("Playstation", "playstation"), new Device("Java", "java"));
 
     /**
      * 支持的平台类型
@@ -109,7 +95,7 @@ public class Device extends UserAgent {
     /**
      * 构造
      *
-     * @param name  平台名称
+     * @param name 平台名称
      * @param rule 关键字或表达式
      */
     public Device(final String name, final String rule) {

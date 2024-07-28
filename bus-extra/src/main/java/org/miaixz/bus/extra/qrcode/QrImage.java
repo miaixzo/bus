@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.qrcode;
 
 import com.google.zxing.BarcodeFormat;
@@ -59,7 +59,8 @@ public class QrImage extends BufferedImage {
      * @param config {@link QrConfig}，非空
      */
     public QrImage(final BitMatrix matrix, final QrConfig config) {
-        super(matrix.getWidth(), matrix.getHeight(), null == config.backColor ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB);
+        super(matrix.getWidth(), matrix.getHeight(),
+                null == config.backColor ? BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB);
         init(matrix, config);
     }
 
@@ -104,7 +105,7 @@ public class QrImage extends BufferedImage {
             Images.from(this).pressImage(//
                     Images.from(logoImg).round(config.imgRound).getImg(), // 圆角
                     new Rectangle(imgWidth, imgHeight), // 位置
-                    1//不透明
+                    1// 不透明
             );
         }
     }

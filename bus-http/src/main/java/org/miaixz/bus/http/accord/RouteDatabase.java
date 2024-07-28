@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.accord;
 
 import org.miaixz.bus.http.Route;
@@ -33,9 +33,7 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
- * 创建到目标地址的新连接时要避免的失败路由的黑名单
- * 如果尝试连接到特定IP地址或代理服务器时出现故障，
- * 则会记住该故障并首选备用路由
+ * 创建到目标地址的新连接时要避免的失败路由的黑名单 如果尝试连接到特定IP地址或代理服务器时出现故障， 则会记住该故障并首选备用路由
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.solaris;
 
 import com.sun.jna.Native;
@@ -76,7 +76,7 @@ public final class KstatKit {
      * Lock the Kstat chain for use by this object until it's closed.
      *
      * @return A locked copy of the chain. It should be unlocked/released when you are done with it with
-     * {@link KstatChain#close()}.
+     *         {@link KstatChain#close()}.
      */
     public static synchronized KstatChain openChain() {
         CHAIN.lock();
@@ -106,21 +106,21 @@ public final class KstatKit {
         }
         KstatNamed data = new KstatNamed(p);
         switch (data.data_type) {
-            case LibKstat.KSTAT_DATA_CHAR:
-                return Native.toString(data.value.charc, Charset.UTF_8);
-            case LibKstat.KSTAT_DATA_INT32:
-                return Integer.toString(data.value.i32);
-            case LibKstat.KSTAT_DATA_UINT32:
-                return Formats.toUnsignedString(data.value.ui32);
-            case LibKstat.KSTAT_DATA_INT64:
-                return Long.toString(data.value.i64);
-            case LibKstat.KSTAT_DATA_UINT64:
-                return Formats.toUnsignedString(data.value.ui64);
-            case LibKstat.KSTAT_DATA_STRING:
-                return data.value.str.addr.getString(0);
-            default:
-                Logger.error("Unimplemented kstat data type {}", data.data_type);
-                return Normal.EMPTY;
+        case LibKstat.KSTAT_DATA_CHAR:
+            return Native.toString(data.value.charc, Charset.UTF_8);
+        case LibKstat.KSTAT_DATA_INT32:
+            return Integer.toString(data.value.i32);
+        case LibKstat.KSTAT_DATA_UINT32:
+            return Formats.toUnsignedString(data.value.ui32);
+        case LibKstat.KSTAT_DATA_INT64:
+            return Long.toString(data.value.i64);
+        case LibKstat.KSTAT_DATA_UINT64:
+            return Formats.toUnsignedString(data.value.ui64);
+        case LibKstat.KSTAT_DATA_STRING:
+            return data.value.str.addr.getString(0);
+        default:
+            Logger.error("Unimplemented kstat data type {}", data.data_type);
+            return Normal.EMPTY;
         }
     }
 
@@ -148,17 +148,17 @@ public final class KstatKit {
         }
         KstatNamed data = new KstatNamed(p);
         switch (data.data_type) {
-            case LibKstat.KSTAT_DATA_INT32:
-                return data.value.i32;
-            case LibKstat.KSTAT_DATA_UINT32:
-                return Formats.getUnsignedInt(data.value.ui32);
-            case LibKstat.KSTAT_DATA_INT64:
-                return data.value.i64;
-            case LibKstat.KSTAT_DATA_UINT64:
-                return data.value.ui64;
-            default:
-                Logger.error("Unimplemented or non-numeric kstat data type {}", data.data_type);
-                return 0L;
+        case LibKstat.KSTAT_DATA_INT32:
+            return data.value.i32;
+        case LibKstat.KSTAT_DATA_UINT32:
+            return Formats.getUnsignedInt(data.value.ui32);
+        case LibKstat.KSTAT_DATA_INT64:
+            return data.value.i64;
+        case LibKstat.KSTAT_DATA_UINT64:
+            return data.value.ui64;
+        default:
+            Logger.error("Unimplemented or non-numeric kstat data type {}", data.data_type);
+            return 0L;
         }
     }
 
@@ -196,8 +196,8 @@ public final class KstatKit {
             }
         } catch (Kstat2StatusException e) {
             // Expected to end iteration
-            Logger.debug("Failed to get stats on {}{}{} for names {}: {}", beforeStr, s, afterStr, Arrays.toString(names),
-                    e.getMessage());
+            Logger.debug("Failed to get stats on {}{}{} for names {}: {}", beforeStr, s, afterStr,
+                    Arrays.toString(names), e.getMessage());
         } finally {
             KstatKit.CHAIN.unlock();
             matchers.free();
@@ -242,9 +242,8 @@ public final class KstatKit {
 
     /**
      * A copy of the Kstat chain, encapsulating a {@code kstat_ctl_t} object. Only one thread may actively use this
-     * object at any time.
-     * The chain is created once calling {@link LibKstat#kstat_open} and then this object is instantiated using the
-     * {@link KstatKit#openChain} method. Instantiating this object updates the chain using
+     * object at any time. The chain is created once calling {@link LibKstat#kstat_open} and then this object is
+     * instantiated using the {@link KstatKit#openChain} method. Instantiating this object updates the chain using
      * {@link LibKstat#kstat_chain_update}. The control object should be closed with {@link #close}, which releases the
      * lock and allows another instance to be instantiated.
      */
@@ -273,9 +272,8 @@ public final class KstatKit {
             while (0 > LibKstat.INSTANCE.kstat_read(localCtlRef, ksp, null)) {
                 if (LibKstat.EAGAIN != Native.getLastError() || 5 <= ++retry) {
                     if (Logger.isDebugEnabled()) {
-                        Logger.debug("Failed to read kstat {}:{}:{}",
-                                Native.toString(ksp.ks_module, Charset.US_ASCII), ksp.ks_instance,
-                                Native.toString(ksp.ks_name, Charset.US_ASCII));
+                        Logger.debug("Failed to read kstat {}:{}:{}", Native.toString(ksp.ks_module, Charset.US_ASCII),
+                                ksp.ks_instance, Native.toString(ksp.ks_name, Charset.US_ASCII));
                     }
                     return false;
                 }
@@ -327,9 +325,8 @@ public final class KstatKit {
 
         /**
          * Convenience method for {@link LibKstat#kstat_chain_update}. Brings this kstat header chain in sync with that
-         * of the kernel.
-         * This function compares the kernel's current kstat chain ID(KCID), which is incremented every time the kstat
-         * chain changes, to this object's KCID.
+         * of the kernel. This function compares the kernel's current kstat chain ID(KCID), which is incremented every
+         * time the kstat chain changes, to this object's KCID.
          *
          * @return the new KCID if the kstat chain has changed, 0 if it hasn't, or -1 on failure.
          */

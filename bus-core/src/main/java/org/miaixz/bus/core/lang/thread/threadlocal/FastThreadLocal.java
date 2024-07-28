@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.thread.threadlocal;
 
 import java.util.Collections;
@@ -32,10 +32,8 @@ import java.util.IdentityHashMap;
 import java.util.Set;
 
 /**
- * {@link ThreadLocal} 的一个特殊变体
- * 当从 {@link SpecificThread} 访问时，可产生更高的访问性能。
- * {@link SpecificThread} 使用数组中的常量索引（而不是使用哈希码和哈希表）来查找变量。
- * 虽然看似非常微妙，但它比使用哈希表具有轻微的性能优势，并且在频繁访问时很有用。
+ * {@link ThreadLocal} 的一个特殊变体 当从 {@link SpecificThread} 访问时，可产生更高的访问性能。 {@link SpecificThread}
+ * 使用数组中的常量索引（而不是使用哈希码和哈希表）来查找变量。 虽然看似非常微妙，但它比使用哈希表具有轻微的性能优势，并且在频繁访问时很有用。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -67,8 +65,7 @@ public class FastThreadLocal<V> {
     }
 
     /**
-     * 删除与当前线程绑定的所有 {@link FastThreadLocal} 变量。
-     * 当处于容器环境中，并且不想将线程局部变量留在未管理的线程中时，此操作非常有用
+     * 删除与当前线程绑定的所有 {@link FastThreadLocal} 变量。 当处于容器环境中，并且不想将线程局部变量留在未管理的线程中时，此操作非常有用
      */
     public static void removeAll() {
         // 1. 获取当前线程的ThreadLocalMap，如果当前的ThreadLocalMap为null，则直接返回
@@ -78,15 +75,16 @@ public class FastThreadLocal<V> {
         }
 
         try {
-            // 2. 从indexedVariable[VARIABLES_TO_REMOVE_INDEX]获取目前ThreadLocalMap存储的有效的FastThreadLocal的值，之后遍历Set，进行remove操作
+            // 2.
+            // 从indexedVariable[VARIABLES_TO_REMOVE_INDEX]获取目前ThreadLocalMap存储的有效的FastThreadLocal的值，之后遍历Set，进行remove操作
             // 注意：这也是为什么会将有效的FastThreadLocal存储在一个Set中的原因（另外，如果没有Set<FastThreadLocal<?>>这个集合的话，我们需要直接去遍历整个indexedVariables数组，可能其中有效的并不多，影响效率）
             Object v = threadLocalMap.indexedVariable(ThreadLocalMap.VARIABLES_TO_REMOVE_INDEX);
             if (v != null && v != ThreadLocalMap.UNSET) {
                 Set<FastThreadLocal<?>> variablesToRemove = (Set<FastThreadLocal<?>>) v;
                 // 这里为什么需要将set先转换为数组？
                 // 因为set的for-remove模式会报并发修改异常，array不会
-                FastThreadLocal<?>[] variablesToRemoveArray =
-                        variablesToRemove.toArray(new FastThreadLocal[variablesToRemove.size()]);
+                FastThreadLocal<?>[] variablesToRemoveArray = variablesToRemove
+                        .toArray(new FastThreadLocal[variablesToRemove.size()]);
                 for (FastThreadLocal<?> tlv : variablesToRemoveArray) {
                     tlv.remove(threadLocalMap);
                 }
@@ -98,8 +96,7 @@ public class FastThreadLocal<V> {
     }
 
     /**
-     * 销毁保存所有从非 {@link SpecificThread} 访问的 {@link FastThreadLocal} 变量的数据结构
-     * 当处于容器环境中，并且不想将线程局部变量留在未管理的线程中时，此操作非常有用。
+     * 销毁保存所有从非 {@link SpecificThread} 访问的 {@link FastThreadLocal} 变量的数据结构 当处于容器环境中，并且不想将线程局部变量留在未管理的线程中时，此操作非常有用。
      * 当应用程序从容器中卸载时，请调用此方法。
      */
     public static void destroy() {
@@ -189,9 +186,7 @@ public class FastThreadLocal<V> {
     }
 
     /**
-     * 将指定线程本地映射的值设置为未初始化
-     * 对 get() 的继续调用将触发对 initialValue() 的调用
-     * 指定的线程本地映射必须适用于当前线程。
+     * 将指定线程本地映射的值设置为未初始化 对 get() 的继续调用将触发对 initialValue() 的调用 指定的线程本地映射必须适用于当前线程。
      */
     public final void remove(ThreadLocalMap threadLocalMap) {
         if (threadLocalMap == null) {
@@ -212,16 +207,14 @@ public class FastThreadLocal<V> {
     }
 
     /**
-     * 初始化参数
-     * 由子类重写
+     * 初始化参数 由子类重写
      */
     protected V initialValue() {
         return null;
     }
 
     /**
-     * 当此线程局部变量被{@link #remove()}删除时的回调
-     * 由子类重写
+     * 当此线程局部变量被{@link #remove()}删除时的回调 由子类重写
      */
     protected void onRemoval(V value) {
 

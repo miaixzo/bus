@@ -24,14 +24,13 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cron.listener;
 
 import org.miaixz.bus.cron.Executor;
 
 /**
- * 定时任务监听接口
- * 通过实现此接口，实现对定时任务的各个环节做监听
+ * 定时任务监听接口 通过实现此接口，实现对定时任务的各个环节做监听
  *
  * @author Kimi Liu
  * @since Java 17+

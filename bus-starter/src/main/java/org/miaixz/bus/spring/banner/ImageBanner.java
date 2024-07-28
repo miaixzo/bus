@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.spring.banner;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -75,8 +75,7 @@ public class ImageBanner {
             luminance = (RED_WEIGHT * (255.0d - red)) + (GREEN_WEIGHT * (255.0d - green))
                     + (BLUE_WEIGHT * (255.0d - blue));
         } else {
-            luminance = (RED_WEIGHT * red) + (GREEN_WEIGHT * green)
-                    + (BLUE_WEIGHT * blue);
+            luminance = (RED_WEIGHT * red) + (GREEN_WEIGHT * green) + (BLUE_WEIGHT * blue);
         }
 
         return (int) Math.ceil((luminance / 255.0d) * 100);
@@ -111,12 +110,10 @@ public class ImageBanner {
         double greenDelta = (color1.getGreen() - color2.getGreen()) * GREEN_WEIGHT;
         double blueDelta = (color1.getBlue() - color2.getBlue()) * BLUE_WEIGHT;
 
-        return Math.pow(redDelta, 2.0d) + Math.pow(greenDelta, 2.0d)
-                + Math.pow(blueDelta, 2.0d);
+        return Math.pow(redDelta, 2.0d) + Math.pow(greenDelta, 2.0d) + Math.pow(blueDelta, 2.0d);
     }
 
-    private static BufferedImage resizeImage(BufferedImage sourceImage, int maxWidth,
-                                             double aspectRatio) {
+    private static BufferedImage resizeImage(BufferedImage sourceImage, int maxWidth, double aspectRatio) {
         int width;
         double resizeRatio;
         if (sourceImage.getWidth() > maxWidth) {
@@ -127,12 +124,11 @@ public class ImageBanner {
             width = sourceImage.getWidth();
         }
 
-        int height = (int) (Math.ceil(resizeRatio * aspectRatio
-                * (double) sourceImage.getHeight()));
+        int height = (int) (Math.ceil(resizeRatio * aspectRatio * (double) sourceImage.getHeight()));
         Image image = sourceImage.getScaledInstance(width, height, Image.SCALE_DEFAULT);
 
-        BufferedImage resizedImage = new BufferedImage(image.getWidth(null),
-                image.getHeight(null), BufferedImage.TYPE_INT_RGB);
+        BufferedImage resizedImage = new BufferedImage(image.getWidth(null), image.getHeight(null),
+                BufferedImage.TYPE_INT_RGB);
 
         resizedImage.getGraphics().drawImage(image, 0, 0, null);
         return resizedImage;
@@ -173,7 +169,8 @@ public class ImageBanner {
         double deltaB = b1 - b2;
         double deltaH = Math.sqrt(Math.max(0.0, deltaA * deltaA + deltaB * deltaB - deltaC * deltaC));
 
-        return Math.sqrt(Math.max(0.0, Math.pow((L1 - L2) / (kL * sl), 2) + Math.pow(deltaC / (kc * (1 + K1 * c1)), 2) + Math.pow(deltaH / (kh * (1 + K2 * c1)), 2.0)));
+        return Math.sqrt(Math.max(0.0, Math.pow((L1 - L2) / (kL * sl), 2) + Math.pow(deltaC / (kc * (1 + K1 * c1)), 2)
+                + Math.pow(deltaH / (kh * (1 + K2 * c1)), 2.0)));
     }
 
     /**
@@ -183,8 +180,7 @@ public class ImageBanner {
      * @return the float
      */
     static float[] toLab(Color color) {
-        float[] xyz = color.getColorComponents(
-                ColorSpace.getInstance(ColorSpace.CS_CIEXYZ), null);
+        float[] xyz = color.getColorComponents(ColorSpace.getInstance(ColorSpace.CS_CIEXYZ), null);
 
         return xyzToLab(xyz);
     }
@@ -194,7 +190,7 @@ public class ImageBanner {
         double L = 116.0 * l - 16.0;
         double a = 500.0 * (f(colorvalue[0]) - l);
         double b = 200.0 * (l - f(colorvalue[2]));
-        return new float[]{(float) L, (float) a, (float) b};
+        return new float[] { (float) L, (float) a, (float) b };
     }
 
     private static double f(double t) {
@@ -234,8 +230,8 @@ public class ImageBanner {
             BufferedImage resizedImage = resizeImage(sourceImage, maxWidth, aspectRatio);
             banner = imageToBanner(resizedImage, invert, cie94);
         } catch (Exception ex) {
-            Logger.warn("WARNING ! Image banner not printable: " + this.image + " (" + ex.getClass()
-                    + ": '" + ex.getMessage() + "')");
+            Logger.warn("WARNING ! Image banner not printable: " + this.image + " (" + ex.getClass() + ": '"
+                    + ex.getMessage() + "')");
             ex.printStackTrace();
         } finally {
             if (null != headlessProperty) {

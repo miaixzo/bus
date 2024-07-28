@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.annotation;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -47,7 +47,7 @@ import java.lang.annotation.*;
 @Documented
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Import({JdbcConfiguration.class, MapperScannerRegistrar.class, MapperConfiguration.class})
+@Import({ JdbcConfiguration.class, MapperScannerRegistrar.class, MapperConfiguration.class })
 public @interface EnableMapper {
 
     /**
@@ -65,8 +65,7 @@ public @interface EnableMapper {
     String[] basePackages() default {};
 
     /**
-     * 类型安全的替代{@link #basePackages()} 用于指定要扫描的包以查找带注释的组件,每个指定类的包将被扫描
-     * 考虑在每个包中创建一个特殊的无操作标记类或接口，它除了被该属性引用之外没有其他用途。
+     * 类型安全的替代{@link #basePackages()} 用于指定要扫描的包以查找带注释的组件,每个指定类的包将被扫描 考虑在每个包中创建一个特殊的无操作标记类或接口，它除了被该属性引用之外没有其他用途。
      *
      * @return the class
      */
@@ -80,34 +79,28 @@ public @interface EnableMapper {
     Class<? extends BeanNameGenerator> nameGenerator() default BeanNameGenerator.class;
 
     /**
-     * 此属性指定扫描器将搜索的注释
-     * 扫描器将在基本包中注册所有同样具有指定注释的接口
-     * 注意，这可以与markerInterface结合使用
+     * 此属性指定扫描器将搜索的注释 扫描器将在基本包中注册所有同样具有指定注释的接口 注意，这可以与markerInterface结合使用
      *
      * @return the class
      */
     Class<? extends Annotation> annotationClass() default Annotation.class;
 
     /**
-     * 此属性指定扫描程序将搜索的父程序
-     * 扫描器将注册基包中所有同样具有指定接口类作为父类的接口
-     * 注意，这可以与annotationClass结合使用
+     * 此属性指定扫描程序将搜索的父程序 扫描器将注册基包中所有同样具有指定接口类作为父类的接口 注意，这可以与annotationClass结合使用
      *
      * @return the class
      */
     Class<?> markerInterface() default Class.class;
 
     /**
-     * 指定在spring上下文中有多个SqlSessionTemplate时使用哪个{@code SqlSessionTemplate}
-     * 通常只有当您有多个数据源时才需要这样做
+     * 指定在spring上下文中有多个SqlSessionTemplate时使用哪个{@code SqlSessionTemplate} 通常只有当您有多个数据源时才需要这样做
      *
      * @return the string
      */
     String sqlSessionTemplateRef() default Normal.EMPTY;
 
     /**
-     * 指定在spring上下文中有多个SqlSessionFactory时使用哪个{@code SqlSessionFactory}
-     * 通常只有当您有多个数据源时才需要这样做
+     * 指定在spring上下文中有多个SqlSessionFactory时使用哪个{@code SqlSessionFactory} 通常只有当您有多个数据源时才需要这样做
      *
      * @return the string
      */

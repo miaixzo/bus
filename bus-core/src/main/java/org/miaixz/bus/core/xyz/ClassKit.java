@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.bean.NullWrapper;
@@ -79,8 +79,7 @@ public class ClassKit {
     }
 
     /**
-     * 获得外围类
-     * 返回定义此类或匿名类所在的类，如果类本身是在包中定义的，返回{@code null}
+     * 获得外围类 返回定义此类或匿名类所在的类，如果类本身是在包中定义的，返回{@code null}
      *
      * @param clazz 类
      * @return 外围类
@@ -90,8 +89,7 @@ public class ClassKit {
     }
 
     /**
-     * 获取给定类的包的名称.
-     * 类似{@code java.lang.String} 字符串类
+     * 获取给定类的包的名称. 类似{@code java.lang.String} 字符串类
      *
      * @param clazz 类
      * @return 包名，如果类在默认包中定义，则为空字符串
@@ -101,8 +99,7 @@ public class ClassKit {
     }
 
     /**
-     * 获取给定类的包的名称.
-     * 类似{@code java.lang.String} 字符串类.
+     * 获取给定类的包的名称. 类似{@code java.lang.String} 字符串类.
      *
      * @param className 完整的类名
      * @return 包名，如果类在默认包中定义，则为空字符串
@@ -142,9 +139,7 @@ public class ClassKit {
     }
 
     /**
-     * 获取类名
-     * 类名并不包含“.class”这个扩展名
-     * 例如：ClassKit这个类
+     * 获取类名 类名并不包含“.class”这个扩展名 例如：ClassKit这个类
      *
      * <pre>
      * isSimple为false: "org.miaixz.bus.ClassKit"
@@ -163,8 +158,7 @@ public class ClassKit {
     }
 
     /**
-     * 获取完整类名的短格式如：
-     * text.org.miaixz.core.StringKit - o.m.c.StringKit
+     * 获取完整类名的短格式如： text.org.miaixz.core.StringKit - o.m.c.StringKit
      *
      * @param className 类名
      * @return 短格式类名
@@ -235,7 +229,8 @@ public class ClassKit {
      * @return 类集合
      * @see ClassScanner#scanPackageByAnnotation(String, Class)
      */
-    public static Set<Class<?>> scanPackageByAnnotation(final String packageName, final Class<? extends Annotation> annotationClass) {
+    public static Set<Class<?>> scanPackageByAnnotation(final String packageName,
+            final Class<? extends Annotation> annotationClass) {
         return ClassScanner.scanPackageByAnnotation(packageName, annotationClass);
     }
 
@@ -273,9 +268,8 @@ public class ClassKit {
     }
 
     /**
-     * 扫描包路径下满足class过滤器条件的所有class文件，
-     * 如果包路径为 com.abs + A.class 但是输入 abs会产生classNotFoundException
-     * 因为className 应该为 com.abs.A 现在却成为abs.A,此工具类对该异常进行忽略处理,有可能是一个不完善的地方，以后需要进行修改
+     * 扫描包路径下满足class过滤器条件的所有class文件， 如果包路径为 com.abs + A.class 但是输入 abs会产生classNotFoundException 因为className 应该为
+     * com.abs.A 现在却成为abs.A,此工具类对该异常进行忽略处理,有可能是一个不完善的地方，以后需要进行修改
      *
      * @param packageName 包路径 com | com. | com.abs | com.abs.
      * @param classFilter class过滤器，过滤掉不需要的class
@@ -339,8 +333,7 @@ public class ClassKit {
     }
 
     /**
-     * 获得ClassPath，将编码后的中文路径解码为原字符
-     * 这个ClassPath路径会文件路径被标准化处理
+     * 获得ClassPath，将编码后的中文路径解码为原字符 这个ClassPath路径会文件路径被标准化处理
      *
      * @return ClassPath
      */
@@ -434,8 +427,8 @@ public class ClassKit {
     }
 
     /**
-     * 是否为简单值类型
-     * 包括：
+     * 是否为简单值类型 包括：
+     * 
      * <pre>
      *     原始类型
      *     枚举
@@ -453,25 +446,15 @@ public class ClassKit {
      * @return 是否为简单值类型
      */
     public static boolean isSimpleValueType(final Class<?> clazz) {
-        return isBasicType(clazz)
-                || clazz.isEnum()
-                || CharSequence.class.isAssignableFrom(clazz)
-                || Number.class.isAssignableFrom(clazz)
-                || Date.class.isAssignableFrom(clazz)
-                || clazz.equals(URI.class)
-                || clazz.equals(URL.class)
-                || clazz.equals(Locale.class)
-                || clazz.equals(Class.class)
+        return isBasicType(clazz) || clazz.isEnum() || CharSequence.class.isAssignableFrom(clazz)
+                || Number.class.isAssignableFrom(clazz) || Date.class.isAssignableFrom(clazz) || clazz.equals(URI.class)
+                || clazz.equals(URL.class) || clazz.equals(Locale.class) || clazz.equals(Class.class)
                 // jdk8 date object
                 || TemporalAccessor.class.isAssignableFrom(clazz);
     }
 
     /**
-     * 检查目标类是否可以从原类转化
-     * 转化包括：
-     * 1、原类是对象，目标类型是原类型实现的接口
-     * 2、目标类型是原类型的父类
-     * 3、两者是原始类型或者包装类型（相互转换）
+     * 检查目标类是否可以从原类转化 转化包括： 1、原类是对象，目标类型是原类型实现的接口 2、目标类型是原类型的父类 3、两者是原始类型或者包装类型（相互转换）
      *
      * @param targetType 目标类型
      * @param sourceType 原类型
@@ -509,8 +492,7 @@ public class ClassKit {
     }
 
     /**
-     * 是否为标准的类
-     * 这个类必须：
+     * 是否为标准的类 这个类必须：
      *
      * <pre>
      * 1、非接口
@@ -525,14 +507,8 @@ public class ClassKit {
      * @return 是否为标准类
      */
     public static boolean isNormalClass(final Class<?> clazz) {
-        return null != clazz
-                && !clazz.isInterface()
-                && !ModifierKit.isAbstract(clazz)
-                && !clazz.isEnum()
-                && !clazz.isArray()
-                && !clazz.isAnnotation()
-                && !clazz.isSynthetic()
-                && !clazz.isPrimitive();
+        return null != clazz && !clazz.isInterface() && !ModifierKit.isAbstract(clazz) && !clazz.isEnum()
+                && !clazz.isArray() && !clazz.isAnnotation() && !clazz.isSynthetic() && !clazz.isPrimitive();
     }
 
     /**
@@ -596,12 +572,13 @@ public class ClassKit {
     }
 
     /**
-     * 获取指定类型分的默认值
-     * 默认值规则为：
+     * 获取指定类型分的默认值 默认值规则为：
      *
      * <pre>
      * 1、如果为原始类型，返回0
-     * 2、非原始类型返回{@code null}
+     * 2、非原始类型返回{@code
+     * null
+     * }
      * </pre>
      *
      * @param clazz 类
@@ -616,12 +593,13 @@ public class ClassKit {
     }
 
     /**
-     * 获取指定原始类型分的默认值
-     * 默认值规则为：
+     * 获取指定原始类型分的默认值 默认值规则为：
      *
      * <pre>
      * 1、如果为原始类型，返回0
-     * 2、非原始类型返回{@code null}
+     * 2、非原始类型返回{@code
+     * null
+     * }
      * </pre>
      *
      * @param clazz 类
@@ -679,15 +657,12 @@ public class ClassKit {
             return false;
         }
         final String objectPackageName = objectPackage.getName();
-        return objectPackageName.startsWith("java.")
-                || objectPackageName.startsWith("javax.")
+        return objectPackageName.startsWith("java.") || objectPackageName.startsWith("javax.")
                 || clazz.getClassLoader() == null;
     }
 
     /**
-     * 获取class类路径URL, 不管是否在jar包中都会返回文件夹的路径
-     * class在jar包中返回jar所在文件夹,class不在jar中返回文件夹目录
-     * jdk中的类不能使用此方法
+     * 获取class类路径URL, 不管是否在jar包中都会返回文件夹的路径 class在jar包中返回jar所在文件夹,class不在jar中返回文件夹目录 jdk中的类不能使用此方法
      *
      * @param clazz 类
      * @return URL
@@ -700,9 +675,7 @@ public class ClassKit {
     }
 
     /**
-     * 获取class类路径, 不管是否在jar包中都会返回文件夹的路径
-     * class在jar包中返回jar所在文件夹,class不在jar中返回文件夹目录
-     * jdk中的类不能使用此方法
+     * 获取class类路径, 不管是否在jar包中都会返回文件夹的路径 class在jar包中返回jar所在文件夹,class不在jar中返回文件夹目录 jdk中的类不能使用此方法
      *
      * @param clazz 类
      * @return class路径
@@ -718,8 +691,8 @@ public class ClassKit {
     /**
      * 加载指定名称的类，支持：
      * <ul>
-     *     <li>替换"/"为"."</li>
-     *     <li>自动查找内部类，如java.lang.Thread.State = java.lang.Thread$State</li>
+     * <li>替换"/"为"."</li>
+     * <li>自动查找内部类，如java.lang.Thread.State = java.lang.Thread$State</li>
      * </ul>
      *
      * @param name   类名
@@ -730,11 +703,12 @@ public class ClassKit {
     public static Class<?> forName(String name, ClassLoader loader) {
         return forName(name, false, loader);
     }
+
     /**
      * 加载指定名称的类，支持：
      * <ul>
-     *     <li>替换"/"为"."</li>
-     *     <li>自动查找内部类，如java.lang.Thread.State = java.lang.Thread$State</li>
+     * <li>替换"/"为"."</li>
+     * <li>自动查找内部类，如java.lang.Thread.State = java.lang.Thread$State</li>
      * </ul>
      *
      * @param name          类名
@@ -786,8 +760,7 @@ public class ClassKit {
     }
 
     /**
-     * 获取指定类的所有父类，结果不包括指定类本身
-     * 如果无父类，返回一个空的列表
+     * 获取指定类的所有父类，结果不包括指定类本身 如果无父类，返回一个空的列表
      *
      * @param clazz 类, 可以为{@code null}
      * @return 指定类的所有父类列表，如果无父类，返回一个空的列表
@@ -802,8 +775,7 @@ public class ClassKit {
     }
 
     /**
-     * 获取指定类及其父类所有的实现接口。
-     * 结果顺序取决于查找顺序，当前类在前，父类的接口在后。
+     * 获取指定类及其父类所有的实现接口。 结果顺序取决于查找顺序，当前类在前，父类的接口在后。
      *
      * @param cls 被查找的类
      * @return 接口列表，若提供的查找类为{@code null}，则返回空列表
@@ -827,8 +799,7 @@ public class ClassKit {
      * @param root       根类
      * @param terminator 对遍历到的每个类与接口执行的校验，若为{@code false}则立刻中断遍历
      */
-    public static void traverseTypeHierarchyWhile(
-            final Class<?> root, final Predicate<Class<?>> terminator) {
+    public static void traverseTypeHierarchyWhile(final Class<?> root, final Predicate<Class<?>> terminator) {
         traverseTypeHierarchyWhile(root, t -> true, terminator);
     }
 
@@ -839,20 +810,17 @@ public class ClassKit {
      * @param filter     过滤器，被过滤的类及其层级结构中的类与接口将被忽略
      * @param terminator 对遍历到的每个类与接口执行的校验，若为{@code false}则立刻中断遍历
      */
-    public static void traverseTypeHierarchyWhile(
-            final Class<?> root, final Predicate<Class<?>> filter, final Predicate<Class<?>> terminator) {
-        EasyStream.iterateHierarchies(root, ClassKit::getNextTypeHierarchies, filter)
-                .takeWhile(terminator)
-                .exec();
+    public static void traverseTypeHierarchyWhile(final Class<?> root, final Predicate<Class<?>> filter,
+            final Predicate<Class<?>> terminator) {
+        EasyStream.iterateHierarchies(root, ClassKit::getNextTypeHierarchies, filter).takeWhile(terminator).exec();
     }
 
     /**
-     * 按广度优先遍历包括{@code root}在内，其层级结构中的所有类和接口。
-     * 类遍历顺序如下：
+     * 按广度优先遍历包括{@code root}在内，其层级结构中的所有类和接口。 类遍历顺序如下：
      * <ul>
-     *     <li>离{@code type}距离越近，则顺序越靠前；</li>
-     *     <li>与{@code type}距离相同，则父类优先于接口；</li>
-     *     <li>与{@code type}距离相同的接口，则顺序遵循接口在{@link Class#getInterfaces()}的顺序；</li>
+     * <li>离{@code type}距离越近，则顺序越靠前；</li>
+     * <li>与{@code type}距离相同，则父类优先于接口；</li>
+     * <li>与{@code type}距离相同的接口，则顺序遵循接口在{@link Class#getInterfaces()}的顺序；</li>
      * </ul>
      *
      * @param root        根类
@@ -860,8 +828,8 @@ public class ClassKit {
      * @param consumer    对遍历到的每个类与接口执行的操作，每个类和接口都只会被访问一次
      * @param includeRoot 是否包括根类
      */
-    public static void traverseTypeHierarchy(
-            final Class<?> root, final Predicate<Class<?>> filter, final Consumer<Class<?>> consumer, final boolean includeRoot) {
+    public static void traverseTypeHierarchy(final Class<?> root, final Predicate<Class<?>> filter,
+            final Consumer<Class<?>> consumer, final boolean includeRoot) {
         Objects.requireNonNull(root);
         Objects.requireNonNull(filter);
         Objects.requireNonNull(consumer);
@@ -877,10 +845,10 @@ public class ClassKit {
     /**
      * 获取{@link ClassLoader}，获取顺序如下：
      * <ol>
-     *     <li>获取调用者的ContextClassLoader</li>
-     *     <li>获取当前线程的ContextClassLoader</li>
-     *     <li>获取ClassKit对应的ClassLoader</li>
-     *     <li>获取系统ClassLoader（{@link ClassLoader#getSystemClassLoader()}）</li>
+     * <li>获取调用者的ContextClassLoader</li>
+     * <li>获取当前线程的ContextClassLoader</li>
+     * <li>获取ClassKit对应的ClassLoader</li>
+     * <li>获取系统ClassLoader（{@link ClassLoader#getSystemClassLoader()}）</li>
      * </ol>
      *
      * @return 类加载器
@@ -958,8 +926,7 @@ public class ClassKit {
     }
 
     /**
-     * 加载类，通过传入类的字符串，返回其对应的类名，使用默认ClassLoader
-     * 扩展{@link Class#forName(String, boolean, ClassLoader)}方法，支持以下几类类名的加载：
+     * 加载类，通过传入类的字符串，返回其对应的类名，使用默认ClassLoader 扩展{@link Class#forName(String, boolean, ClassLoader)}方法，支持以下几类类名的加载：
      *
      * <pre>
      * 1、原始类型，例如：int
@@ -978,9 +945,7 @@ public class ClassKit {
     }
 
     /**
-     * 加载类，通过传入类的字符串，返回其对应的类名
-     * 此方法支持缓存，第一次被加载的类之后会读取缓存中的类
-     * 加载失败的原因可能是此类不存在或其关联引用类不存在
+     * 加载类，通过传入类的字符串，返回其对应的类名 此方法支持缓存，第一次被加载的类之后会读取缓存中的类 加载失败的原因可能是此类不存在或其关联引用类不存在
      * 扩展{@link Class#forName(String, boolean, ClassLoader)}方法，支持以下几类类名的加载：
      *
      * <pre>
@@ -996,7 +961,8 @@ public class ClassKit {
      * @return 类名对应的类
      * @throws InternalException 包装{@link ClassNotFoundException}，没有类名对应的类时抛出此异常
      */
-    public static <T> Class<T> loadClass(final String name, final boolean isInitialized, final ClassLoader classLoader) throws InternalException {
+    public static <T> Class<T> loadClass(final String name, final boolean isInitialized, final ClassLoader classLoader)
+            throws InternalException {
         return (Class<T>) ReflectKit.nameToClass(name, isInitialized, classLoader);
     }
 
@@ -1016,8 +982,7 @@ public class ClassKit {
     }
 
     /**
-     * 指定类是否被提供，使用默认ClassLoader
-     * 通过调用{@link #loadClass(String, boolean, ClassLoader)}方法尝试加载指定类名的类，如果加载失败返回false
+     * 指定类是否被提供，使用默认ClassLoader 通过调用{@link #loadClass(String, boolean, ClassLoader)}方法尝试加载指定类名的类，如果加载失败返回false
      * 加载失败的原因可能是此类不存在或其关联引用类不存在
      *
      * @param className 类名
@@ -1028,9 +993,7 @@ public class ClassKit {
     }
 
     /**
-     * 指定类是否被提供
-     * 通过调用{@link #loadClass(String, boolean, ClassLoader)}方法尝试加载指定类名的类，如果加载失败返回false
-     * 加载失败的原因可能是此类不存在或其关联引用类不存在
+     * 指定类是否被提供 通过调用{@link #loadClass(String, boolean, ClassLoader)}方法尝试加载指定类名的类，如果加载失败返回false 加载失败的原因可能是此类不存在或其关联引用类不存在
      *
      * @param className   类名
      * @param classLoader {@link ClassLoader}
@@ -1049,8 +1012,7 @@ public class ClassKit {
      * 将指定的基元类对象转换为其对应的包装器类对象
      *
      * @param cls 要转换的类可以为null
-     * @return 如果输入为{@code null},则返回{@code cls}，
-     * 否则返回{@code cls} 的包装器类
+     * @return 如果输入为{@code null},则返回{@code cls}， 否则返回{@code cls} 的包装器类
      */
     public static Class<?> primitiveToWrapper(final Class<?> cls) {
         Class<?> convertedClass = cls;
@@ -1082,7 +1044,7 @@ public class ClassKit {
                 clazz = Class.forName(name, isInitialized, classLoader);
                 break;
             } catch (final ClassNotFoundException ignore) {
-                //ignore
+                // ignore
             }
 
             // 继续向前替换.为$

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.limiter;
 
 import org.miaixz.bus.core.lang.tuple.Pair;
@@ -70,19 +70,22 @@ public class LimiterScanner implements InstantiationAwareBeanPostProcessor {
         Arrays.stream(clazz.getMethods()).forEach(method -> {
             Downgrade downgrade = searchAnnotation(method, Downgrade.class);
             if (ObjectKit.isNotNull(downgrade)) {
-                MethodManager.addMethod(Builder.resolveMethodName(method), new Pair<>(StrategyMode.FALLBACK, downgrade));
+                MethodManager.addMethod(Builder.resolveMethodName(method),
+                        new Pair<>(StrategyMode.FALLBACK, downgrade));
                 needProxy.set(true);
             }
 
             Hotspot hotspot = searchAnnotation(method, Hotspot.class);
             if (ObjectKit.isNotNull(hotspot)) {
-                MethodManager.addMethod(Builder.resolveMethodName(method), new Pair<>(StrategyMode.HOT_METHOD, hotspot));
+                MethodManager.addMethod(Builder.resolveMethodName(method),
+                        new Pair<>(StrategyMode.HOT_METHOD, hotspot));
                 needProxy.set(true);
             }
 
             Limiting limiting = searchAnnotation(method, Limiting.class);
             if (ObjectKit.isNotNull(limiting)) {
-                MethodManager.addMethod(Builder.resolveMethodName(method), new Pair<>(StrategyMode.REQUEST_LIMIT, limiting));
+                MethodManager.addMethod(Builder.resolveMethodName(method),
+                        new Pair<>(StrategyMode.REQUEST_LIMIT, limiting));
                 needProxy.set(true);
             }
 

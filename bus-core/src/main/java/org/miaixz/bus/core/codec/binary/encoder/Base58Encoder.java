@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.codec.binary.encoder;
 
 import org.miaixz.bus.core.codec.Encoder;
@@ -78,7 +78,7 @@ public class Base58Encoder implements Encoder<byte[], String> {
         data = Arrays.copyOf(data, data.length);
         final char[] encoded = new char[data.length * 2];
         int outputStart = encoded.length;
-        for (int inputStart = zeroCount; inputStart < data.length; ) {
+        for (int inputStart = zeroCount; inputStart < data.length;) {
             encoded[--outputStart] = alphabet[Base58Provider.divmod(data, inputStart, 256, 58)];
             if (data[inputStart] == 0) {
                 ++inputStart; // optimization - skip leading zeros

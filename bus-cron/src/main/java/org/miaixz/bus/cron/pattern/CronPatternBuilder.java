@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cron.pattern;
 
 import org.miaixz.bus.core.Builder;
@@ -106,10 +106,7 @@ public class CronPatternBuilder implements Builder<String> {
             }
         }
 
-        return StringJoiner.of(Symbol.SPACE)
-                .setNullMode(StringJoiner.NullMode.IGNORE)
-                .append(this.parts)
-                .toString();
+        return StringJoiner.of(Symbol.SPACE).setNullMode(StringJoiner.NullMode.IGNORE).append(this.parts).toString();
     }
 
 }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SIEMENS_MED_DISPLAY;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,28 +46,29 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.PhotometricInterpretation:
-                return VR.CS;
-            case PrivateTag.ShutterType:
-                return VR.LO;
-            case PrivateTag.RowsOfSubmatrix:
-            case PrivateTag.ColumnsOfSubmatrix:
-            case PrivateTag._0029_xx20_:
-            case PrivateTag._0029_xx21_:
-            case PrivateTag.OriginOfSubmatrix:
-            case PrivateTag._0029_xx80_:
-            case PrivateTag.RowsOfRectangularShutter:
-            case PrivateTag.ColumnsOfRectangularShutter:
-            case PrivateTag.OriginOfRectangularShutter:
-            case PrivateTag.RadiusOfCircularShutter:
-            case PrivateTag.OriginOfCircularShutter:
-            case PrivateTag.ContourOfIrregularShutter:
-                return VR.US;
+
+        case PrivateTag.PhotometricInterpretation:
+            return VR.CS;
+        case PrivateTag.ShutterType:
+            return VR.LO;
+        case PrivateTag.RowsOfSubmatrix:
+        case PrivateTag.ColumnsOfSubmatrix:
+        case PrivateTag._0029_xx20_:
+        case PrivateTag._0029_xx21_:
+        case PrivateTag.OriginOfSubmatrix:
+        case PrivateTag._0029_xx80_:
+        case PrivateTag.RowsOfRectangularShutter:
+        case PrivateTag.ColumnsOfRectangularShutter:
+        case PrivateTag.OriginOfRectangularShutter:
+        case PrivateTag.RadiusOfCircularShutter:
+        case PrivateTag.OriginOfCircularShutter:
+        case PrivateTag.ContourOfIrregularShutter:
+            return VR.US;
         }
         return VR.UN;
     }

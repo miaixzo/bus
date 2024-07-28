@@ -1,43 +1,43 @@
 <p align="center">
-	<a href="https://www.miaixz.org"><img src="LOGO.svg" width="45%"></a>
+  <a href="https://www.miaixz.org"><img src="LOGO.svg" width="45%"></a>
 </p>
 <p align="center">
-	<a href="http://www.miaixz.org">http://www.miaixz.org</a>
+  <a href="http://www.miaixz.org">http://www.miaixz.org</a>
 </p>
 <p align="center">
-    <a target="_blank" href="https://search.maven.org/search?q=org.miaixz">
-		<img src="https://img.shields.io/badge/maven--central-v8.0.6-blue.svg?label=Maven%20Central" />
-	</a>
-	<a target="_blank" href="https://travis-ci.org/839128/bus">
-		<img src="https://app.travis-ci.com/839128/bus.svg?token=TZPNK5FQiKMp9cao3SnY&branch=main">
-	</a>
-	<a target="_blank" href="https://jdk.java.net/">
-		<img src="https://img.shields.io/badge/Java-17+-green.svg">
-	</a>
-	<a target="_blank" href="https://spring.io/projects/spring-boot">
-		<img src="https://img.shields.io/badge/Spring Boot-3.0.5-brightgreen.svg">
-	</a>
-	<a target="_blank" href="https://www.mysql.com">
-		<img src="https://img.shields.io/badge/Mysql-8.x-blue.svg">
-	</a>
-	<a target="_blank" href="http://dubbo.apache.org">
-		<img src="https://img.shields.io/badge/dubbo-3.2.11-yellow.svg">
-	</a>
-	<a target="_blank" href="http://poi.apache.org">
-		<img src="https://img.shields.io/badge/poi-5.2.5-blue.svg">
-	</a>
-	<a target="_blank" href="https://opensource.org/licenses/MIT">
-		<img src="https://img.shields.io/badge/license-MIT-green.svg">
-	</a>
-</p> 
+  <a target="_blank" href="https://search.maven.org/search?q=org.miaixz">
+    <img src="https://img.shields.io/badge/maven--central-v8.0.8-blue.svg?label=Maven%20Central" />
+  </a>
+  <a target="_blank" href="https://travis-ci.org/839128/bus">
+    <img src="https://app.travis-ci.com/839128/bus.svg?token=TZPNK5FQiKMp9cao3SnY&branch=main">
+  </a>
+  <a target="_blank" href="https://jdk.java.net/">
+    <img src="https://img.shields.io/badge/Java-17+-green.svg">
+  </a>
+  <a target="_blank" href="https://spring.io/projects/spring-boot">
+    <img src="https://img.shields.io/badge/Spring Boot-3.0.5-brightgreen.svg">
+  </a>
+  <a target="_blank" href="https://www.mysql.com">
+    <img src="https://img.shields.io/badge/Mysql-8.x-blue.svg">
+  </a>
+  <a target="_blank" href="http://dubbo.apache.org">
+    <img src="https://img.shields.io/badge/dubbo-3.2.11-yellow.svg">
+  </a>
+  <a target="_blank" href="http://poi.apache.org">
+    <img src="https://img.shields.io/badge/poi-5.2.5-blue.svg">
+  </a>
+  <a target="_blank" href="https://opensource.org/licenses/MIT">
+    <img src="https://img.shields.io/badge/license-MIT-green.svg">
+  </a>
+</p>
 
 <p align="center">
-	-- QQ群①：839128 --
+  -- QQ群①：839128 --
 </p>
 
 ---
 
-## 项目说明
+### ✨ 项目说明
 
 Bus (应用/服务总线) 是一个基础框架、服务套件，它基于Java17+ 编写，参考、借鉴了大量已有框架、组件的设计，可以作为后端服务的开发基础中间件。代码简洁，架构清晰，非常适合学习使用。
 
@@ -50,11 +50,24 @@ Bus (应用/服务总线) 是一个基础框架、服务套件，它基于Java17
 
 目标期望能努力打造一套从 基础框架 - 分布式微服务架构 - 持续集成 - 自动化部署 -系统监测等，快速实现业务需求的全栈式技术解决方案。
 
-## 组件信息
+
+### ✨ 版本选择
+
+ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
+
+| 版本  | jdk    | Maven仓库                                                                                  | 主要特点                                |
+|-----|--------|------------------------------------------------------------------------------------------|-------------------------------------|
+| 3.x | jdk1.8 | [org.aoju/bus-all/3.x](https://mvnrepository.com/artifact/org.aoju/bus-all/3.6.9)        | jdk1.8编译                            |
+| 5.x | jdk1.8 | [org.aoju/bus-all/5.x ](https://mvnrepository.com/artifact/org.aoju/bus-all/5.9.9)       | jdk1.8编译,使用JavaEE,适配JDK11、17        |
+| 6.x | jdk 17 | [org.aoju/bus-all/6.x ](https://mvnrepository.com/artifact/org.aoju/bus-all/6.6.0)       | jdk 17编译,使用Jakarta EE,适配JDK11、17、21 |
+| 8.x | jdk 21 | [org.miaixz/bus-all/8.x ](https://mvnrepository.com/artifact/org.miaixz/bus-all)         | jdk 21编译,使用Jakarta EE,适配JDK11、17、21 |
+
+
+### ✨ 组件信息
 
 | 完成  | 模块            | 描述信息                                              |
 |-----|---------------|---------------------------------------------------|
-| [√] | bus-all       | 包含微服务所需的完整模块以及通用组件                                | 
+| [√] | bus-all       | 包含微服务所需的完整模块以及通用组件                                |
 | [√] | bus-base      | 基础功能及base相关,实体(Entity),服务(Service),接口(Controller) |
 | [√] | bus-bom       | 包含所有组建信息,当然可以通过配置按需加载等                            |
 | [√] | bus-cache     | 缓存服务及工具,支持redis,memcached,,hessian等               |
@@ -82,7 +95,7 @@ Bus (应用/服务总线) 是一个基础框架、服务套件，它基于Java17
 | [×] | bus-tracer    | 轻量级分布式链路跟踪监控，日志及访问流程追踪以及内部调用链追踪                   |
 | [√] | bus-validate  | 参数校验，会默认拦截所有的标记有`@Valid`的方法或类                     |
 
-## 功能概述
+### ✨ 功能概述
 
 #### 功能概述
 
@@ -91,9 +104,9 @@ Bus (应用/服务总线) 是一个基础框架、服务套件，它基于Java17
 
 2. 详细说明以及使用姿势请参考每个模块下README介绍
 
-## 安装使用
+### ✨ 安装使用
 
-### Maven
+#### Maven
 
 ```
 <dependency>
@@ -113,19 +126,19 @@ Bus (应用/服务总线) 是一个基础框架、服务套件，它基于Java17
 </dependency>
 ```
 
-### Gradle
+#### Gradle
 
 ```
 implementation 'org.miaixz:bus-all:x.x.x'
 ```
 
-### Downlad
+#### Downlad
 
 点击以下任一链接，下载`bus-*-x.x.x.jar`即可：
 
 - [Maven中央库](https://repo1.maven.org/maven2/org/miaixz)
 
-### 测试&使用
+### ✨ 测试&使用
 
 为确保项目编译效率及相关规则，本项目所有单元测试及使用请参考`abarth`项目：
 
@@ -134,7 +147,7 @@ implementation 'org.miaixz:bus-all:x.x.x'
 > 注意
 > Bus项目支持Java 17+，对Android平台部分模块没有测试，不能保证所有工具类或工具方法可用。
 
-## 分支说明
+### ✨ 分支说明
 
 源码分为两个分支，功能如下：
 
@@ -143,43 +156,43 @@ implementation 'org.miaixz:bus-all:x.x.x'
 | main | 主分支，即稳定版本使用的分支，与中央库提交的jar一致，不接收任何PR或修改 |
 | dev  | 开发分支，默认为下个版本的更新或者修复等，接受修改或PR           |
 
-## 意见建议
+### ✨ 意见建议
 
 All kinds of contributions (enhancements, new features, documentation & code improvements, issues & bugs reporting) are
 welcome.
 
 欢迎各种形式的贡献，包括但不限于优化，添加功能，文档 & 代码的改进，问题和 BUG 的报告。
 
-### Issue:
+#### Issue:
 
-- [版本情况]：jdk-openjdk_17 bus-xxx-x.x.x（请确保最新版本尝试是否还存在问题）
+- [版本情况]：jdk-openjdk_21 bus-xxx-x.x.x（请确保最新版本尝试是否还存在问题）
 - [问题描述]：（包括截图）
 - [复现代码]：
 - [堆栈信息]：
 
-### Features:
+#### Features:
 
 - [增加功能]： 内容
 - [修改描述]： 内容
 
 注意：测试涉及到的文件请脱敏
 
-## 许可证(license)
+### ✨ 许可证(license)
 
-### MIT
+#### MIT
 
 Open sourced under the MIT license.
 
 根据 MIT 许可证开源。
 
-### JetBrains
+#### JetBrains
 
 Thanks JetBrains for the OpenSource license.
 
 感谢JetBrains提供IDEA开源license
 
-##
+### 
 
 源码永远是最好的教程，善于读源码和DEBUG朋友掌握完全是轻而易举的事。源码是作者设计理念最直观的展现，这也是开源的魅力所在。"
 Talk is cheap, Show me the code."
-，开源让技术难题的探讨变得更加务实，在您看完源码后心中对它都会有一个定论。在作者看来，Bus切切实实降低了开发学习门槛，也保障了服务的高性能、高可用。如果读者朋友对源码中某些部分的设计存在疑虑，也欢迎与作者保持沟通。 
+，开源让技术难题的探讨变得更加务实，在您看完源码后心中对它都会有一个定论。在作者看来，Bus切切实实降低了开发学习门槛，也保障了服务的高性能、高可用。如果读者朋友对源码中某些部分的设计存在疑虑，也欢迎与作者保持沟通。

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.linux.driver.proc;
 
 import org.miaixz.bus.core.center.regex.Pattern;
@@ -51,7 +51,7 @@ public final class DiskStats {
      * Reads the statistics in {@code /proc/diskstats} and returns the results.
      *
      * @return A map with each disk's name as the key, and an EnumMap as the value, where the numeric values in
-     * {@link IoStat} are mapped to a {@link Long} value.
+     *         {@link IoStat} are mapped to a {@link Long} value.
      */
     public static Map<String, Map<IoStat, Long>> getDiskStats() {
         Map<String, Map<IoStat, Long>> diskStatMap = new HashMap<>();

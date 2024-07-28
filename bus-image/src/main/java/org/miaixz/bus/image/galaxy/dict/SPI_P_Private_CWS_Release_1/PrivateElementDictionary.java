@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.SPI_P_Private_CWS_Release_1;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,17 +46,18 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.WindowOfImagesType:
-                return VR.CS;
-            case PrivateTag.WindowOfImagesScope:
-                return VR.IS;
-            case PrivateTag.WindowOfImagesID:
-                return VR.LT;
+
+        case PrivateTag.WindowOfImagesType:
+            return VR.CS;
+        case PrivateTag.WindowOfImagesScope:
+            return VR.IS;
+        case PrivateTag.WindowOfImagesID:
+            return VR.LT;
         }
         return VR.UN;
     }

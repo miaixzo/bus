@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -54,8 +54,7 @@ public class Modality {
         remote.setTlsCipherSuites(conn.getTlsCipherSuites());
     }
 
-    private static void addReferencedPerformedProcedureStepSequence(String mppsiuid,
-                                                                    StoreSCU storescu) {
+    private static void addReferencedPerformedProcedureStepSequence(String mppsiuid, StoreSCU storescu) {
         Attributes attrs = storescu.getAttributes();
         Sequence seq = attrs.newSequence(Tag.ReferencedPerformedProcedureStepSequence, 1);
         Attributes item = new Attributes(2);
@@ -69,8 +68,8 @@ public class Modality {
         attrs.setNull(Tag.ReferencedPerformedProcedureStepSequence, VR.SQ);
     }
 
-    private static void sendStgCmt(StgCmtSCU stgcmtscu) throws IOException,
-            InterruptedException, InternalException, GeneralSecurityException {
+    private static void sendStgCmt(StgCmtSCU stgcmtscu)
+            throws IOException, InterruptedException, InternalException, GeneralSecurityException {
         printNextStepMessage("Will now send Storage Commitment to " + calledAET);
         try {
             stgcmtscu.open();
@@ -80,8 +79,8 @@ public class Modality {
         }
     }
 
-    private static void sendMpps(MppsSCU mppsscu, boolean sendNSet) throws IOException,
-            InterruptedException, InternalException, GeneralSecurityException {
+    private static void sendMpps(MppsSCU mppsscu, boolean sendNSet)
+            throws IOException, InterruptedException, InternalException, GeneralSecurityException {
         try {
             printNextStepMessage("Will now send MPPS N-CREATE to " + calledAET);
             mppsscu.open();
@@ -95,8 +94,8 @@ public class Modality {
         }
     }
 
-    private static void sendMppsNSet(MppsSCU mppsscu) throws IOException, InterruptedException,
-            InternalException, GeneralSecurityException {
+    private static void sendMppsNSet(MppsSCU mppsscu)
+            throws IOException, InterruptedException, InternalException, GeneralSecurityException {
         try {
             printNextStepMessage("Will now send MPPS N-SET to " + calledAET);
             mppsscu.open();
@@ -113,8 +112,8 @@ public class Modality {
         new BufferedReader(new InputStreamReader(System.in)).read();
     }
 
-    private static void sendObjects(StoreSCU storescu) throws IOException,
-            InterruptedException, InternalException, GeneralSecurityException {
+    private static void sendObjects(StoreSCU storescu)
+            throws IOException, InterruptedException, InternalException, GeneralSecurityException {
         printNextStepMessage("Will now send DICOM object(s) to " + calledAET);
         try {
             storescu.open();
@@ -124,18 +123,15 @@ public class Modality {
         }
     }
 
-    private static void scanFiles(List<String> fnames, String tmpPrefix, String tmpSuffix,
-                                  File tmpDir, final MppsSCU mppsscu, final StoreSCU storescu, final StgCmtSCU stgcmtscu)
-            throws IOException {
+    private static void scanFiles(List<String> fnames, String tmpPrefix, String tmpSuffix, File tmpDir,
+            final MppsSCU mppsscu, final StoreSCU storescu, final StgCmtSCU stgcmtscu) throws IOException {
         printNextStepMessage("Will now scan files in " + fnames);
         File tmpFile = File.createTempFile(tmpPrefix, tmpSuffix, tmpDir);
         tmpFile.deleteOnExit();
-        final BufferedWriter fileInfos = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream(tmpFile)));
+        final BufferedWriter fileInfos = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmpFile)));
         try {
             DicomFiles.scan(fnames, (f, fmi, dsPos, ds) -> mppsscu.addInstance(ds)
-                    && storescu.addFile(fileInfos, f, dsPos, fmi, ds)
-                    && stgcmtscu.addInstance(ds));
+                    && storescu.addFile(fileInfos, f, dsPos, fmi, ds) && stgcmtscu.addInstance(ds));
             storescu.setTmpFile(tmpFile);
         } finally {
             fileInfos.close();

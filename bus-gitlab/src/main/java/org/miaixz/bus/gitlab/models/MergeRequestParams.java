@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import org.miaixz.bus.gitlab.Constants;
@@ -102,8 +102,8 @@ public class MergeRequestParams implements Serializable {
     }
 
     /**
-     * The ID of the user(s) to assign the merge request to. Set to 0 or provide
-     * an empty value to unassign all assignees.
+     * The ID of the user(s) to assign the merge request to. Set to 0 or provide an empty value to unassign all
+     * assignees.
      *
      * @param assigneeIds the assigneeIds to set
      * @return the reference to this MergeRequestParams instance
@@ -114,8 +114,8 @@ public class MergeRequestParams implements Serializable {
     }
 
     /**
-     * The ID of the user(s) to assign to the review of the merge request. Set to 0 or provide
-     * an empty value to unassign all reviewers.
+     * The ID of the user(s) to assign to the review of the merge request. Set to 0 or provide an empty value to
+     * unassign all reviewers.
      *
      * @param reviewerIds the reviewerIds to set
      * @return the reference to this MergeRequestParams instance
@@ -214,8 +214,8 @@ public class MergeRequestParams implements Serializable {
     }
 
     /**
-     * Flag indicating if the merge request’s discussion is locked. If the discussion is locked only
-     * project members can add, edit or resolve comments. This is for merge request updates only.
+     * Flag indicating if the merge request’s discussion is locked. If the discussion is locked only project members can
+     * add, edit or resolve comments. This is for merge request updates only.
      *
      * @param discussionLocked the discussionLocked to set
      * @return the reference to this MergeRequestParams instance
@@ -250,32 +250,25 @@ public class MergeRequestParams implements Serializable {
     /**
      * Get the form params specified by this instance.
      *
-     * @param isCreate set to true if this is for a create merge request API call,
-     *                 set to false if this is for an update merge request
+     * @param isCreate set to true if this is for a create merge request API call, set to false if this is for an update
+     *                 merge request
      * @return a GitLabApiForm instance holding the form parameters for this MergeRequestParams instance
      */
     public GitLabApiForm getForm(boolean isCreate) {
 
-        GitLabApiForm form = new GitLabApiForm()
-                .withParam("target_branch", targetBranch, isCreate)
-                .withParam("title", title, isCreate)
-                .withParam("assignee_id", assigneeId)
-                .withParam("assignee_ids", assigneeIds)
-                .withParam("reviewer_ids", reviewerIds)
+        GitLabApiForm form = new GitLabApiForm().withParam("target_branch", targetBranch, isCreate)
+                .withParam("title", title, isCreate).withParam("assignee_id", assigneeId)
+                .withParam("assignee_ids", assigneeIds).withParam("reviewer_ids", reviewerIds)
                 .withParam("milestone_id", milestoneId)
                 .withParam("labels", (labels != null ? String.join(",", labels) : null))
-                .withParam("description", description)
-                .withParam("remove_source_branch", removeSourceBranch)
-                .withParam("squash", squash)
-                .withParam("allow_collaboration", allowCollaboration);
+                .withParam("description", description).withParam("remove_source_branch", removeSourceBranch)
+                .withParam("squash", squash).withParam("allow_collaboration", allowCollaboration);
 
         if (isCreate) {
-            form.withParam("source_branch", sourceBranch, true)
-                    .withParam("target_project_id", targetProjectId)
+            form.withParam("source_branch", sourceBranch, true).withParam("target_project_id", targetProjectId)
                     .withParam("approvals_before_merge", approvalsBeforeMerge);
         } else {
-            form.withParam("state_event", stateEvent)
-                    .withParam("discussion_locked", discussionLocked);
+            form.withParam("state_event", stateEvent).withParam("discussion_locked", discussionLocked);
         }
 
         return (form);

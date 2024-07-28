@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.DLX_ANNOT_01;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,20 +46,19 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         int tmp = tag & 0xFFE00000;
-        tag &= tmp == 0x60000000 || tmp == 0x70000000
-                   ? 0xFFE0FFFF
-                   : 0xFFFF00FF;
+        tag &= tmp == 0x60000000 || tmp == 0x70000000 ? 0xFFE0FFFF : 0xFFFF00FF;
         switch (tag) {
-        
-            case PrivateTag.Box:
-            case PrivateTag.ArrowEnd:
-                return VR.IS;
-            case PrivateTag.TextAnnotation:
-                return VR.ST;
+
+        case PrivateTag.Box:
+        case PrivateTag.ArrowEnd:
+            return VR.IS;
+        case PrivateTag.TextAnnotation:
+            return VR.ST;
         }
         return VR.UN;
     }

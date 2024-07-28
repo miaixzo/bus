@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.metric;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -54,7 +54,6 @@ public class DESProvider implements Provider {
         DES des = new DES(key.getBytes());
         return des.encrypt(content);
     }
-
 
     /**
      * 解密

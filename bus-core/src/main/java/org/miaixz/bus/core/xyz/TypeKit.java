@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.xyz;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -35,8 +35,7 @@ import java.lang.reflect.*;
 import java.util.*;
 
 /**
- * 针对 {@link Type} 的工具类封装
- * 最主要功能包括：
+ * 针对 {@link Type} 的工具类封装 最主要功能包括：
  *
  * <pre>
  * 1. 获取方法的参数和返回值类型（包括Type和Class）
@@ -51,7 +50,9 @@ public class TypeKit {
     /**
      * 常见的基础对象类型
      */
-    private static final Class[] BASE_TYPE_CLASS = new Class[]{String.class, Boolean.class, Character.class, Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Void.class, Object.class, Class.class};
+    private static final Class[] BASE_TYPE_CLASS = new Class[] { String.class, Boolean.class, Character.class,
+            Byte.class, Short.class, Integer.class, Long.class, Float.class, Double.class, Void.class, Object.class,
+            Class.class };
 
     /**
      * 是否为 map class 类型
@@ -94,9 +95,7 @@ public class TypeKit {
     }
 
     /**
-     * 是否为基本类型
-     * 1. 8大基本类型
-     * 2. 常见的值类型
+     * 是否为基本类型 1. 8大基本类型 2. 常见的值类型
      *
      * @param clazz 对象类型
      * @return 是否为基本类型
@@ -134,8 +133,7 @@ public class TypeKit {
     }
 
     /**
-     * 是否为标准的类
-     * 这个类必须：
+     * 是否为标准的类 这个类必须：
      *
      * <pre>
      * 0、不为 null
@@ -154,12 +152,13 @@ public class TypeKit {
      * @return 是否为标准类
      */
     public static boolean isJavaBean(Class<?> clazz) {
-        return null != clazz && !clazz.isInterface() && !isAbstract(clazz) && !clazz.isEnum() && !clazz.isArray() && !clazz.isAnnotation() && !clazz.isSynthetic() && !clazz.isPrimitive() && !isIterable(clazz) && !isMap(clazz);
+        return null != clazz && !clazz.isInterface() && !isAbstract(clazz) && !clazz.isEnum() && !clazz.isArray()
+                && !clazz.isAnnotation() && !clazz.isSynthetic() && !clazz.isPrimitive() && !isIterable(clazz)
+                && !isMap(clazz);
     }
 
     /**
-     * 判断一个类是JDK 自带的类型
-     * jdk 自带的类,classLoader 是为空的
+     * 判断一个类是JDK 自带的类型 jdk 自带的类,classLoader 是为空的
      *
      * @param clazz 类
      * @return 是否为 java 类
@@ -169,8 +168,7 @@ public class TypeKit {
     }
 
     /**
-     * 检查subject类型是否可以按照Java泛型规则隐式转换为目标类型.
-     * 如果这两种类型都是{@link Class}对象，
+     * 检查subject类型是否可以按照Java泛型规则隐式转换为目标类型. 如果这两种类型都是{@link Class}对象，
      * 则该方法返回{@link ClassKit#isAssignable(Class, Class)}的结果
      *
      * @param type   要分配给目标类型的主题类型
@@ -189,7 +187,8 @@ public class TypeKit {
      * @param typeVarAssigns 类型变量赋值的可选映射
      * @return 如果{@code type}可赋值给{@code toType}，则{@code true}.
      */
-    private static boolean isAssignable(final Type type, final Type toType, final Map<TypeVariable<?>, Type> typeVarAssigns) {
+    private static boolean isAssignable(final Type type, final Type toType,
+            final Map<TypeVariable<?>, Type> typeVarAssigns) {
         if (null == toType || toType instanceof Class<?>) {
             return isAssignable(type, (Class<?>) toType);
         }
@@ -260,7 +259,8 @@ public class TypeKit {
 
         // 可以为泛型数组类型分配的类只有类对象和数组类
         if (type instanceof GenericArrayType) {
-            return toClass.equals(Object.class) || toClass.isArray() && isAssignable(((GenericArrayType) type).getGenericComponentType(), toClass.getComponentType());
+            return toClass.equals(Object.class) || toClass.isArray()
+                    && isAssignable(((GenericArrayType) type).getGenericComponentType(), toClass.getComponentType());
         }
 
         if (type instanceof WildcardType) {
@@ -278,7 +278,8 @@ public class TypeKit {
      * @param typeVarAssigns      带有类型变量的映射
      * @return 如果{@code type}可分配给{@code toType}，则{@code true}
      */
-    private static boolean isAssignable(final Type type, final ParameterizedType toParameterizedType, final Map<TypeVariable<?>, Type> typeVarAssigns) {
+    private static boolean isAssignable(final Type type, final ParameterizedType toParameterizedType,
+            final Map<TypeVariable<?>, Type> typeVarAssigns) {
         if (null == type) {
             return true;
         }
@@ -298,7 +299,8 @@ public class TypeKit {
         if (fromTypeVarAssigns.isEmpty()) {
             return true;
         }
-        final Map<TypeVariable<?>, Type> toTypeVarAssigns = getTypeArguments(toParameterizedType, toClass, typeVarAssigns);
+        final Map<TypeVariable<?>, Type> toTypeVarAssigns = getTypeArguments(toParameterizedType, toClass,
+                typeVarAssigns);
 
         for (final TypeVariable<?> var : toTypeVarAssigns.keySet()) {
             final Type toTypeArg = unrollVariableAssignments(var, toTypeVarAssigns);
@@ -308,7 +310,8 @@ public class TypeKit {
                 continue;
             }
 
-            if (null != fromTypeArg && !toTypeArg.equals(fromTypeArg) && !(toTypeArg instanceof WildcardType && isAssignable(fromTypeArg, toTypeArg, typeVarAssigns))) {
+            if (null != fromTypeArg && !toTypeArg.equals(fromTypeArg)
+                    && !(toTypeArg instanceof WildcardType && isAssignable(fromTypeArg, toTypeArg, typeVarAssigns))) {
                 return false;
             }
         }
@@ -326,8 +329,7 @@ public class TypeKit {
     }
 
     /**
-     * 是否未知类型
-     * type为null或者{@link TypeVariable} 都视为未知类型
+     * 是否未知类型 type为null或者{@link TypeVariable} 都视为未知类型
      *
      * @param type Type类型
      * @return 是否未知类型
@@ -364,8 +366,7 @@ public class TypeKit {
     }
 
     /**
-     * 获取字段对应的Type类型
-     * 方法优先获取GenericType，获取不到则获取Type
+     * 获取字段对应的Type类型 方法优先获取GenericType，获取不到则获取Type
      *
      * @param field 字段
      * @return {@link Type}，可能为{@code null}
@@ -399,8 +400,7 @@ public class TypeKit {
     }
 
     /**
-     * 获取方法的第一个参数类型
-     * 优先获取方法的GenericParameterTypes，如果获取不到，则获取ParameterTypes
+     * 获取方法的第一个参数类型 优先获取方法的GenericParameterTypes，如果获取不到，则获取ParameterTypes
      *
      * @param method 方法
      * @return {@link Type}，可能为{@code null}
@@ -420,8 +420,7 @@ public class TypeKit {
     }
 
     /**
-     * 获取方法的参数类型
-     * 优先获取方法的GenericParameterTypes，如果获取不到，则获取ParameterTypes
+     * 获取方法的参数类型 优先获取方法的GenericParameterTypes，如果获取不到，则获取ParameterTypes
      *
      * @param method 方法
      * @param index  第几个参数的索引，从0开始计数
@@ -451,8 +450,7 @@ public class TypeKit {
     }
 
     /**
-     * 获取方法的参数类型列表
-     * 优先获取方法的GenericParameterTypes，如果获取不到，则获取ParameterTypes
+     * 获取方法的参数类型列表 优先获取方法的GenericParameterTypes，如果获取不到，则获取ParameterTypes
      *
      * @param method 方法
      * @return {@link Type}列表，可能为{@code null}
@@ -464,8 +462,7 @@ public class TypeKit {
     }
 
     /**
-     * 解析方法的参数类型列表
-     * 依赖jre\lib\rt.jar
+     * 解析方法的参数类型列表 依赖jre\lib\rt.jar
      *
      * @param method t方法
      * @return 参数类型类列表
@@ -477,8 +474,7 @@ public class TypeKit {
     }
 
     /**
-     * 获取方法的返回值类型
-     * 获取方法的GenericReturnType
+     * 获取方法的返回值类型 获取方法的GenericReturnType
      *
      * @param method 方法
      * @return {@link Type}，可能为{@code null}
@@ -528,10 +524,12 @@ public class TypeKit {
 
     /**
      * 获得指定类型中所有泛型参数类型，例如：
+     * 
      * <pre>
      * class A&lt;T&gt;
      * class B extends A&lt;String&gt;
      * </pre>
+     * 
      * 通过此方法，传入B.class即可得到String
      *
      * @param type 指定类型
@@ -575,7 +573,8 @@ public class TypeKit {
      * @param subtypeVarAssigns 带有类型变量的映射
      * @return 带有类型参数的{@code Map}
      */
-    public static Map<TypeVariable<?>, Type> getTypeArguments(final Type type, final Class<?> toClass, final Map<TypeVariable<?>, Type> subtypeVarAssigns) {
+    public static Map<TypeVariable<?>, Type> getTypeArguments(final Type type, final Class<?> toClass,
+            final Map<TypeVariable<?>, Type> subtypeVarAssigns) {
         if (type instanceof Class<?>) {
             return getTypeArguments((Class<?>) type, toClass, subtypeVarAssigns);
         }
@@ -583,7 +582,8 @@ public class TypeKit {
             return getTypeArguments((ParameterizedType) type, toClass, subtypeVarAssigns);
         }
         if (type instanceof GenericArrayType) {
-            return getTypeArguments(((GenericArrayType) type).getGenericComponentType(), toClass.isArray() ? toClass.getComponentType() : toClass, subtypeVarAssigns);
+            return getTypeArguments(((GenericArrayType) type).getGenericComponentType(),
+                    toClass.isArray() ? toClass.getComponentType() : toClass, subtypeVarAssigns);
         }
         if (type instanceof WildcardType) {
             for (final Type bound : getImplicitUpperBounds((WildcardType) type)) {
@@ -613,7 +613,8 @@ public class TypeKit {
      * @param subtypeVarAssigns 带有类型变量的映射
      * @return 带有类型参数的{@code Map}
      */
-    public static Map<TypeVariable<?>, Type> getTypeArguments(Class<?> cls, final Class<?> toClass, final Map<TypeVariable<?>, Type> subtypeVarAssigns) {
+    public static Map<TypeVariable<?>, Type> getTypeArguments(Class<?> cls, final Class<?> toClass,
+            final Map<TypeVariable<?>, Type> subtypeVarAssigns) {
         if (!isAssignable(cls, toClass)) {
             return null;
         }
@@ -625,7 +626,8 @@ public class TypeKit {
             cls = ClassKit.primitiveToWrapper(cls);
         }
 
-        final HashMap<TypeVariable<?>, Type> typeVarAssigns = null == subtypeVarAssigns ? new HashMap<>() : new HashMap<>(subtypeVarAssigns);
+        final HashMap<TypeVariable<?>, Type> typeVarAssigns = null == subtypeVarAssigns ? new HashMap<>()
+                : new HashMap<>(subtypeVarAssigns);
 
         if (toClass.equals(cls)) {
             return typeVarAssigns;
@@ -642,7 +644,8 @@ public class TypeKit {
      * @param subtypeVarAssigns 带有类型变量的映射
      * @return 带有类型参数的{@code Map}
      */
-    public static Map<TypeVariable<?>, Type> getTypeArguments(final ParameterizedType parameterizedType, final Class<?> toClass, final Map<TypeVariable<?>, Type> subtypeVarAssigns) {
+    public static Map<TypeVariable<?>, Type> getTypeArguments(final ParameterizedType parameterizedType,
+            final Class<?> toClass, final Map<TypeVariable<?>, Type> subtypeVarAssigns) {
         final Class<?> cls = getRawType(parameterizedType);
 
         if (!isAssignable(cls, toClass)) {
@@ -654,7 +657,8 @@ public class TypeKit {
 
         if (ownerType instanceof ParameterizedType) {
             final ParameterizedType parameterizedOwnerType = (ParameterizedType) ownerType;
-            typeVarAssigns = getTypeArguments(parameterizedOwnerType, getRawType(parameterizedOwnerType), subtypeVarAssigns);
+            typeVarAssigns = getTypeArguments(parameterizedOwnerType, getRawType(parameterizedOwnerType),
+                    subtypeVarAssigns);
         } else {
             typeVarAssigns = null == subtypeVarAssigns ? new HashMap<>() : new HashMap<>(subtypeVarAssigns);
         }
@@ -664,7 +668,8 @@ public class TypeKit {
 
         for (int i = 0; i < typeParams.length; i++) {
             final Type typeArg = typeArgs[i];
-            typeVarAssigns.put(typeParams[i], typeVarAssigns.containsKey(typeArg) ? typeVarAssigns.get(typeArg) : typeArg);
+            typeVarAssigns.put(typeParams[i],
+                    typeVarAssigns.containsKey(typeArg) ? typeVarAssigns.get(typeArg) : typeArg);
         }
 
         if (toClass.equals(cls)) {
@@ -711,13 +716,13 @@ public class TypeKit {
     }
 
     /**
-     * 将{@link Type} 转换为{@link ParameterizedType}
-     * {@link ParameterizedType}用于获取当前类或父类中泛型参数化后的类型
-     * 一般用于获取泛型参数具体的参数类型，例如：
+     * 将{@link Type} 转换为{@link ParameterizedType} {@link ParameterizedType}用于获取当前类或父类中泛型参数化后的类型 一般用于获取泛型参数具体的参数类型，例如：
+     * 
      * <pre>
      * class A&lt;T&gt;
      * class B extends A&lt;String&gt;
      * </pre>
+     * 
      * 通过此方法，传入B.class即可得到B{@link ParameterizedType}，从而获取到String
      *
      * @param type {@link Type}
@@ -728,14 +733,13 @@ public class TypeKit {
     }
 
     /**
-     * 将{@link Type} 转换为{@link ParameterizedType}
-     * {@link ParameterizedType}用于获取当前类或父类中泛型参数化后的类型
-     * 一般用于获取泛型参数具体的参数类型，例如：
+     * 将{@link Type} 转换为{@link ParameterizedType} {@link ParameterizedType}用于获取当前类或父类中泛型参数化后的类型 一般用于获取泛型参数具体的参数类型，例如：
      *
      * <pre>{@code
      *   class A<T>
      *   class B extends A<String>;
      * }</pre>
+     * 
      * 通过此方法，传入B.class即可得到B对应的{@link ParameterizedType}，从而获取到String
      *
      * @param type           {@link Type}
@@ -760,8 +764,8 @@ public class TypeKit {
     /**
      * 获取指定类所有泛型父类和泛型接口
      * <ul>
-     *     <li>指定类及其所有的泛型父类</li>
-     *     <li>指定类实现的直接泛型接口</li>
+     * <li>指定类及其所有的泛型父类</li>
+     * <li>指定类实现的直接泛型接口</li>
      * </ul>
      *
      * @param clazz 类
@@ -807,8 +811,8 @@ public class TypeKit {
     }
 
     /**
-     * 获取泛型变量和泛型实际类型的对应关系Map
-     * 例如：
+     * 获取泛型变量和泛型实际类型的对应关系Map 例如：
+     * 
      * <pre>
      *     E    java.lang.Integer
      * </pre>
@@ -835,8 +839,7 @@ public class TypeKit {
     }
 
     /**
-     * 获得泛型变量对应的泛型实际类型，如果此变量没有对应的实际类型，返回null
-     * 此方法可以处理：
+     * 获得泛型变量对应的泛型实际类型，如果此变量没有对应的实际类型，返回null 此方法可以处理：
      *
      * <pre>
      *     1. 泛型化对象，类似于Map&lt;User, Key&lt;Long&gt;&gt;
@@ -861,8 +864,7 @@ public class TypeKit {
     }
 
     /**
-     * 获得泛型变量对应的泛型实际类型，如果此变量没有对应的实际类型，返回null
-     * 此方法可以处理复杂的泛型化对象，类似于Map&lt;User, Key&lt;Long&gt;&gt;
+     * 获得泛型变量对应的泛型实际类型，如果此变量没有对应的实际类型，返回null 此方法可以处理复杂的泛型化对象，类似于Map&lt;User, Key&lt;Long&gt;&gt;
      *
      * @param type              类
      * @param parameterizedType 泛型变量，例如List&lt;T&gt;等
@@ -877,7 +879,8 @@ public class TypeKit {
             actualTypeArguments = getActualTypes(type, parameterizedType.getActualTypeArguments());
             if (ArrayKit.isNotEmpty(actualTypeArguments)) {
                 // 替换泛型变量为实际类型，例如List<T>变为List<String>
-                parameterizedType = new ParameterizedTypeImpl(actualTypeArguments, parameterizedType.getOwnerType(), parameterizedType.getRawType());
+                parameterizedType = new ParameterizedTypeImpl(actualTypeArguments, parameterizedType.getOwnerType(),
+                        parameterizedType.getRawType());
             }
         }
 
@@ -896,9 +899,7 @@ public class TypeKit {
     }
 
     /**
-     * 如果{@link TypeVariable#getBounds()}返回一个空数组,
-     * 则返回一个包含{@link Object} 唯一类型的数组.
-     * 否则返回{@link TypeVariable#getBounds()}
+     * 如果{@link TypeVariable#getBounds()}返回一个空数组, 则返回一个包含{@link Object} 唯一类型的数组. 否则返回{@link TypeVariable#getBounds()}
      * 传递给{@link #normalizeUpperBounds}的结果
      *
      * @param typeVariable 类型变量
@@ -908,14 +909,12 @@ public class TypeKit {
         Assert.notNull(typeVariable, "typeVariable is null");
         final Type[] bounds = typeVariable.getBounds();
 
-        return bounds.length == 0 ? new Type[]{Object.class} : normalizeUpperBounds(bounds);
+        return bounds.length == 0 ? new Type[] { Object.class } : normalizeUpperBounds(bounds);
     }
 
     /**
-     * 如果{@link WildcardType#getUpperBounds()}返回一个空数组，
-     * 则返回一个包含{@link Object}唯一值的数组否则，
-     * 它将返回传递给{@link #normalizeUpperBounds}的
-     * {@link WildcardType#getUpperBounds()}的结果
+     * 如果{@link WildcardType#getUpperBounds()}返回一个空数组， 则返回一个包含{@link Object}唯一值的数组否则，
+     * 它将返回传递给{@link #normalizeUpperBounds}的 {@link WildcardType#getUpperBounds()}的结果
      *
      * @param wildcardType 通配符类型
      * @return 包含通配符类型下界的非空数组.
@@ -923,14 +922,13 @@ public class TypeKit {
     public static Type[] getImplicitUpperBounds(final WildcardType wildcardType) {
         Assert.notNull(wildcardType, "wildcardType is null");
         final Type[] bounds = wildcardType.getUpperBounds();
-        return bounds.length == 0 ? new Type[]{Object.class} : normalizeUpperBounds(bounds);
+        return bounds.length == 0 ? new Type[] { Object.class } : normalizeUpperBounds(bounds);
     }
 
     /**
      * 该方法在类型变量类型和通配符类型中去除冗余的上界类型
      *
-     * @param bounds 表示{@link WildcardType}或
-     *               {@link TypeVariable}的上界的类型数组.
+     * @param bounds 表示{@link WildcardType}或 {@link TypeVariable}的上界的类型数组.
      * @return 包含来自{@code bounds}的值减去冗余类型的数组.
      */
     public static Type[] normalizeUpperBounds(final Type[] bounds) {
@@ -980,7 +978,8 @@ public class TypeKit {
      * @param typeVarAssigns 用于查找的map
      * @return 如果某个变量不在映射中，则返回{@code null}
      */
-    private static Type unrollVariableAssignments(TypeVariable<?> var, final Map<TypeVariable<?>, Type> typeVarAssigns) {
+    private static Type unrollVariableAssignments(TypeVariable<?> var,
+            final Map<TypeVariable<?>, Type> typeVarAssigns) {
         Type result;
         do {
             result = typeVarAssigns.get(var);

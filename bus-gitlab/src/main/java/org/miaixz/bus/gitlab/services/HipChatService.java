@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.services;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -47,21 +47,15 @@ public class HipChatService extends NotificationService {
      */
     @Override
     public GitLabApiForm servicePropertiesForm() {
-        GitLabApiForm formData = new GitLabApiForm()
-                .withParam("push_events", getPushEvents())
+        GitLabApiForm formData = new GitLabApiForm().withParam("push_events", getPushEvents())
                 .withParam("issues_events", getIssuesEvents())
                 .withParam("confidential_issues_events", getConfidentialIssuesEvents())
                 .withParam("merge_requests_events", getMergeRequestsEvents())
-                .withParam("tag_push_events", getTagPushEvents())
-                .withParam("note_events", getNoteEvents())
+                .withParam("tag_push_events", getTagPushEvents()).withParam("note_events", getNoteEvents())
                 .withParam("confidential_note_events", getConfidentialNoteEvents())
-                .withParam("pipeline_events", getPipelineEvents())
-                .withParam("token", getToken(), true)
-                .withParam("color", getColor())
-                .withParam("notify", getNotify())
-                .withParam("room", getRoom())
-                .withParam("api_version", getApiVersion())
-                .withParam("server", getServer())
+                .withParam("pipeline_events", getPipelineEvents()).withParam("token", getToken(), true)
+                .withParam("color", getColor()).withParam("notify", getNotify()).withParam("room", getRoom())
+                .withParam("api_version", getApiVersion()).withParam("server", getServer())
                 .withParam("notify_only_broken_pipelines", getNotifyOnlyBrokenPipelines());
         return formData;
     }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.cron.crontab;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -38,9 +38,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import java.lang.reflect.Method;
 
 /**
- * 反射执行任务
- * 通过传入类名#方法名，通过反射执行相应的方法
- * 如果是静态方法直接执行，如果是对象方法，需要类有默认的构造方法。
+ * 反射执行任务 通过传入类名#方法名，通过反射执行相应的方法 如果是静态方法直接执行，如果是对象方法，需要类有默认的构造方法。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -64,7 +62,7 @@ public class InvokeCrontab implements Crontab {
             throw new InternalException("Invalid classNameWithMethodName [{}]!", classNameWithMethodName);
         }
 
-        //类
+        // 类
         final String className = classNameWithMethodName.substring(0, splitIndex);
         if (StringKit.isBlank(className)) {
             throw new IllegalArgumentException("Class name is blank !");
@@ -75,7 +73,7 @@ public class InvokeCrontab implements Crontab {
         }
         this.obj = ReflectKit.newInstanceIfPossible(clazz);
 
-        //方法
+        // 方法
         final String methodName = classNameWithMethodName.substring(splitIndex + 1);
         if (StringKit.isBlank(methodName)) {
             throw new IllegalArgumentException("Method name is blank !");

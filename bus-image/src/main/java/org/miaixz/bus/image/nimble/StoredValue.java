@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 import org.miaixz.bus.image.Tag;
@@ -40,9 +40,7 @@ public abstract class StoredValue {
         int bitsStored = attrs.getInt(Tag.BitsStored, 0);
         if (bitsStored == 0)
             bitsStored = attrs.getInt(Tag.BitsAllocated, 8);
-        return attrs.getInt(Tag.PixelRepresentation, 0) != 0
-                ? new Signed(bitsStored)
-                : new Unsigned(bitsStored);
+        return attrs.getInt(Tag.PixelRepresentation, 0) != 0 ? new Signed(bitsStored) : new Unsigned(bitsStored);
     }
 
     public abstract int valueOf(int pixel);

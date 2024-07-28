@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.socket.accord;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -108,7 +108,8 @@ public final class UdpChannel {
         responseTasks.offer(new ResponseUnit(session, virtualBuffer));
         synchronized (this) {
             if (selectionKey == null) {
-                worker.addRegister(selector -> selectionKey.interestOps(selectionKey.interestOps() | SelectionKey.OP_WRITE));
+                worker.addRegister(
+                        selector -> selectionKey.interestOps(selectionKey.interestOps() | SelectionKey.OP_WRITE));
             } else {
                 if ((selectionKey.interestOps() & SelectionKey.OP_WRITE) == 0) {
                     selectionKey.interestOps(selectionKey.interestOps() | SelectionKey.OP_WRITE);

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.map;
 
 import org.miaixz.bus.core.xyz.CollKit;
@@ -38,9 +38,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
 /**
- * 可重复键和值的Map
- * 通过键值单独建立List方式，使键值对一一对应，实现正向和反向两种查找
- * 无论是正向还是反向，都是遍历列表查找过程，相比标准的HashMap要慢，数据越多越慢
+ * 可重复键和值的Map 通过键值单独建立List方式，使键值对一一对应，实现正向和反向两种查找 无论是正向还是反向，都是遍历列表查找过程，相比标准的HashMap要慢，数据越多越慢
  *
  * @param <K> 键类型
  * @param <V> 值类型
@@ -96,19 +94,19 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
 
     @Override
     public boolean containsKey(final Object key) {
-        //noinspection SuspiciousMethodCalls
+        // noinspection SuspiciousMethodCalls
         return keys.contains(key);
     }
 
     @Override
     public boolean containsValue(final Object value) {
-        //noinspection SuspiciousMethodCalls
+        // noinspection SuspiciousMethodCalls
         return values.contains(value);
     }
 
     @Override
     public V get(final Object key) {
-        //noinspection SuspiciousMethodCalls
+        // noinspection SuspiciousMethodCalls
         final int index = keys.indexOf(key);
         if (index > -1) {
             return values.get(index);
@@ -137,10 +135,7 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
      * @return 值列表
      */
     public List<V> getValues(final K key) {
-        return CollKit.getAny(
-                this.values,
-                CollKit.indexOfAll(this.keys, (ele) -> ObjectKit.equals(ele, key))
-        );
+        return CollKit.getAny(this.values, CollKit.indexOfAll(this.keys, (ele) -> ObjectKit.equals(ele, key)));
     }
 
     /**
@@ -150,10 +145,7 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
      * @return 值列表
      */
     public List<K> getKeys(final V value) {
-        return CollKit.getAny(
-                this.keys,
-                CollKit.indexOfAll(this.values, (ele) -> ObjectKit.equals(ele, value))
-        );
+        return CollKit.getAny(this.keys, CollKit.indexOfAll(this.values, (ele) -> ObjectKit.equals(ele, value)));
     }
 
     @Override
@@ -173,7 +165,7 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
     public V remove(final Object key) {
         V lastValue = null;
         int index;
-        //noinspection SuspiciousMethodCalls
+        // noinspection SuspiciousMethodCalls
         while ((index = keys.indexOf(key)) > -1) {
             lastValue = removeByIndex(index);
         }
@@ -258,10 +250,7 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
 
     @Override
     public String toString() {
-        return "TableMap{" +
-                "keys=" + keys +
-                ", values=" + values +
-                '}';
+        return "TableMap{" + "keys=" + keys + ", values=" + values + '}';
     }
 
     @Override
@@ -321,7 +310,6 @@ public class TableMap<K, V> implements Map<K, V>, Iterable<Map.Entry<K, V>>, Ser
         }
         return lastValue;
     }
-
 
     @Override
     public V computeIfPresent(final K key, final BiFunction<? super K, ? super V, ? extends V> remappingFunction) {

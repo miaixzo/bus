@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.stream;
 
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
@@ -61,7 +61,7 @@ public class EncapsulatedPixelDataImageInputStream extends MemoryCacheImageInput
     }
 
     public EncapsulatedPixelDataImageInputStream(ImageInputStream dis, ImageDescriptor imageDescriptor,
-                                                 TransferSyntaxType tsType) throws IOException {
+            TransferSyntaxType tsType) throws IOException {
         super(dis);
         this.dis = dis;
         this.imageDescriptor = imageDescriptor;
@@ -92,8 +92,7 @@ public class EncapsulatedPixelDataImageInputStream extends MemoryCacheImageInput
         if (endOfFrame())
             return -1;
 
-        return super.read(b, off,
-                Math.min(len, (int) ((frameEndPos < 0 ? fragmEndPos : frameEndPos) - streamPos)));
+        return super.read(b, off, Math.min(len, (int) ((frameEndPos < 0 ? fragmEndPos : frameEndPos) - streamPos)));
     }
 
     public void seekCurrentFrame() throws IOException {

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.nlp.provider.ansj;
 
 import org.ansj.domain.Term;
@@ -34,8 +34,7 @@ import org.miaixz.bus.extra.nlp.NLPWord;
 import java.util.Iterator;
 
 /**
- * Ansj分词结果实现
- * 项目地址：https://github.com/NLPchina/ansj_seg
+ * Ansj分词结果实现 项目地址：https://github.com/NLPchina/ansj_seg
  *
  * @author Kimi Liu
  * @since Java 17+

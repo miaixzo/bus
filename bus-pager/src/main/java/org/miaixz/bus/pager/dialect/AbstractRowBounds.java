@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager.dialect;
 
 import org.apache.ibatis.cache.CacheKey;
@@ -49,7 +49,8 @@ public abstract class AbstractRowBounds extends AbstractDialect {
     }
 
     @Override
-    public boolean beforeCount(MappedStatement ms, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
+    public boolean beforeCount(MappedStatement ms, Object parameterObject,
+            org.apache.ibatis.session.RowBounds rowBounds) {
         if (rowBounds instanceof RowBounds) {
             RowBounds pageRowBounds = (RowBounds) rowBounds;
             return pageRowBounds.getCount() == null || pageRowBounds.getCount();
@@ -65,17 +66,20 @@ public abstract class AbstractRowBounds extends AbstractDialect {
     }
 
     @Override
-    public Object processParameterObject(MappedStatement ms, Object parameterObject, BoundSql boundSql, CacheKey pageKey) {
+    public Object processParameterObject(MappedStatement ms, Object parameterObject, BoundSql boundSql,
+            CacheKey pageKey) {
         return parameterObject;
     }
 
     @Override
-    public boolean beforePage(MappedStatement ms, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds) {
+    public boolean beforePage(MappedStatement ms, Object parameterObject,
+            org.apache.ibatis.session.RowBounds rowBounds) {
         return true;
     }
 
     @Override
-    public String getPageSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, org.apache.ibatis.session.RowBounds rowBounds, CacheKey pageKey) {
+    public String getPageSql(MappedStatement ms, BoundSql boundSql, Object parameterObject,
+            org.apache.ibatis.session.RowBounds rowBounds, CacheKey pageKey) {
         String sql = boundSql.getSql();
         return getPageSql(sql, rowBounds, pageKey);
     }

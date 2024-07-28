@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.loader.spi;
 
 import org.miaixz.bus.core.cache.SimpleCache;
@@ -38,14 +38,14 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * 键值对服务加载器，使用{@link Properties}加载并存储服务
- * 服务文件默认位于"META-INF/bus/"下，文件名为服务接口类全名。
- * 内容类似于：
+ * 键值对服务加载器，使用{@link Properties}加载并存储服务 服务文件默认位于"META-INF/bus/"下，文件名为服务接口类全名。 内容类似于：
+ * 
  * <pre>
  *     # 我是注释
  *     service1 = service.Service1
  *     service2 = service.Service2
  * </pre>
+ * 
  * 通过调用{@link #getService(String)}方法，传入等号前的名称，即可获取对应服务。
  *
  * @param <S> 服务类型
@@ -67,8 +67,8 @@ public class MapServiceLoader<S> extends AbstractServiceLoader<S> {
      * @param classLoader  自定义类加载器, {@code null}表示使用默认当前的类加载器
      * @param charset      编码，默认UTF-8
      */
-    public MapServiceLoader(final String pathPrefix, final Class<S> serviceClass,
-                            final ClassLoader classLoader, final Charset charset) {
+    public MapServiceLoader(final String pathPrefix, final Class<S> serviceClass, final ClassLoader classLoader,
+            final Charset charset) {
         super(pathPrefix, serviceClass, classLoader, charset);
 
         this.serviceCache = new SimpleCache<>(new HashMap<>());
@@ -108,7 +108,7 @@ public class MapServiceLoader<S> extends AbstractServiceLoader<S> {
      * @return KVServiceLoader
      */
     public static <S> MapServiceLoader<S> of(final String pathPrefix, final Class<S> serviceClass,
-                                             final ClassLoader classLoader) {
+            final ClassLoader classLoader) {
         return new MapServiceLoader<>(pathPrefix, serviceClass, classLoader, null);
     }
 
@@ -120,11 +120,7 @@ public class MapServiceLoader<S> extends AbstractServiceLoader<S> {
         // 解析同名的所有service资源
         // 按照资源加载优先级，先加载和解析的资源优先使用，后加载的同名资源丢弃
         final Properties properties = new Properties();
-        ResourceKit.loadAllTo(
-                properties,
-                pathPrefix + serviceClass.getName(),
-                classLoader,
-                charset,
+        ResourceKit.loadAllTo(properties, pathPrefix + serviceClass.getName(), classLoader, charset,
                 // 非覆盖模式
                 false);
         this.serviceProperties = properties;
@@ -158,8 +154,7 @@ public class MapServiceLoader<S> extends AbstractServiceLoader<S> {
     @Override
     public Iterator<S> iterator() {
         return new Iterator<S>() {
-            private final Iterator<String> nameIter =
-                    serviceProperties.stringPropertyNames().iterator();
+            private final Iterator<String> nameIter = serviceProperties.stringPropertyNames().iterator();
 
             @Override
             public boolean hasNext() {

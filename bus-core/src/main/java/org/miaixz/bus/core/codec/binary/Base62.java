@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.codec.binary;
 
 import org.miaixz.bus.core.codec.binary.provider.Base62Provider;
@@ -252,7 +252,8 @@ public class Base62 {
      * @param out        写出到的流
      * @param isCloseOut 是否关闭输出流
      */
-    public static void decodeToStreamInverted(final CharSequence base62Str, final OutputStream out, final boolean isCloseOut) {
+    public static void decodeToStreamInverted(final CharSequence base62Str, final OutputStream out,
+            final boolean isCloseOut) {
         IoKit.write(out, isCloseOut, decodeInverted(base62Str));
     }
 

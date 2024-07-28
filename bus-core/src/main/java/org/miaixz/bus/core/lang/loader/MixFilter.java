@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.loader;
 
 import java.util.Arrays;
@@ -54,7 +54,7 @@ public abstract class MixFilter implements Filter {
      * 添加过滤器
      *
      * @param filter 过滤器
-     * @return 添加成功：true    否则：false 即代表重复添加
+     * @return 添加成功：true 否则：false 即代表重复添加
      */
     public boolean add(Filter filter) {
         return filters.add(filter);
@@ -64,15 +64,14 @@ public abstract class MixFilter implements Filter {
      * 删除过滤器
      *
      * @param filter 过滤器
-     * @return 删除成功：true    否则：false 即代表已不存在
+     * @return 删除成功：true 否则：false 即代表已不存在
      */
     public boolean remove(Filter filter) {
         return filters.remove(filter);
     }
 
     /**
-     * 支持采用链式调用的方式混合多个过滤器,其内部调用{@link MixFilter#add(Filter)}且返回this.
-     * 该方法设计成abstract其用意是强制子类将方法的返回值类型替换成自身类型
+     * 支持采用链式调用的方式混合多个过滤器,其内部调用{@link MixFilter#add(Filter)}且返回this. 该方法设计成abstract其用意是强制子类将方法的返回值类型替换成自身类型
      *
      * @param filter 过滤器
      * @return this

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv;
 
 import javax.imageio.ImageWriteParam;
@@ -36,7 +36,7 @@ import java.util.Locale;
  */
 public class J2kImageWriteParam extends ImageWriteParam {
 
-    private static final String[] COMPRESSION_TYPES = {"LOSSY", "LOSSLESS"};
+    private static final String[] COMPRESSION_TYPES = { "LOSSY", "LOSSLESS" };
 
     private int compressionRatiofactor;
 
@@ -67,9 +67,9 @@ public class J2kImageWriteParam extends ImageWriteParam {
     }
 
     /**
-     * Set the lossy compression factor
-     * Near-lossless compression ratios of 5:1 to 20:1 (e.g. compressionRatiofactor = 10)
-     * Lossy compression with acceptable degradation can have ratios of 30:1 to 100:1 (e.g. compressionRatiofactor = 50)
+     * Set the lossy compression factor Near-lossless compression ratios of 5:1 to 20:1 (e.g. compressionRatiofactor =
+     * 10) Lossy compression with acceptable degradation can have ratios of 30:1 to 100:1 (e.g. compressionRatiofactor =
+     * 50)
      *
      * @param compressionRatiofactor the compression ratio
      */

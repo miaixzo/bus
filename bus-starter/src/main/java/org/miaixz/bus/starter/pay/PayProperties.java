@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.pay;
 
 import lombok.Getter;
@@ -37,9 +37,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import java.util.Map;
 
 /**
- * 聚合支付配置
- * 1. 默认读取配置文件信息
- * 2. 通过set形式设置(动态/DB等)
+ * 聚合支付配置 1. 默认读取配置文件信息 2. 通过set形式设置(动态/DB等)
  *
  * @author Kimi Liu
  * @since Java 17+

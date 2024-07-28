@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.center.set;
 
 import org.miaixz.bus.core.center.map.MapBuilder;
@@ -35,12 +35,13 @@ import java.util.*;
 import java.util.function.Function;
 
 /**
- * 唯一键的Set
- * 通过自定义唯一键，通过{@link #uniqueGenerator}生成节点对象对应的键作为Map的key，确定唯一
- * 此Set与HashSet不同的是，HashSet依赖于{@link Object#equals(Object)}确定唯一
- * 但是很多时候我们无法对对象进行修改，此时在外部定义一个唯一规则，即可完成去重。
+ * 唯一键的Set 通过自定义唯一键，通过{@link #uniqueGenerator}生成节点对象对应的键作为Map的key，确定唯一
+ * 此Set与HashSet不同的是，HashSet依赖于{@link Object#equals(Object)}确定唯一 但是很多时候我们无法对对象进行修改，此时在外部定义一个唯一规则，即可完成去重。
+ * 
  * <pre>
- * {@code Set<UniqueTestBean> set = new UniqueKeySet<>(UniqueTestBean::getId);}
+ * {@code
+ * Set<UniqueTestBean> set = new UniqueKeySet<>(UniqueTestBean::getId);
+ * }
  * </pre>
  *
  * @param <K> 唯一键类型

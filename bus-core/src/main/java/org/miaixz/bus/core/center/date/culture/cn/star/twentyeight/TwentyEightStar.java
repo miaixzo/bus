@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org 6tail and other contributors.              ~
+ ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -42,11 +42,8 @@ import org.miaixz.bus.core.center.date.culture.cn.star.seven.SevenStar;
  */
 public class TwentyEightStar extends Samsara {
 
-    public static final String[] NAMES = {
-            "角", "亢", "氐", "房", "心", "尾", "箕", "斗", "牛", "女",
-            "虚", "危", "室", "壁", "奎", "娄", "胃", "昴", "毕", "觜",
-            "参", "井", "鬼", "柳", "星", "张", "翼", "轸"
-    };
+    public static final String[] NAMES = { "角", "亢", "氐", "房", "心", "尾", "箕", "斗", "牛", "女", "虚", "危", "室", "壁", "奎",
+            "娄", "胃", "昴", "毕", "觜", "参", "井", "鬼", "柳", "星", "张", "翼", "轸" };
 
     public TwentyEightStar(int index) {
         super(NAMES, index);
@@ -83,7 +80,8 @@ public class TwentyEightStar extends Samsara {
      * @return 九野
      */
     public Land getLand() {
-        return Land.fromIndex(new int[]{4, 4, 4, 2, 2, 2, 7, 7, 7, 0, 0, 0, 0, 5, 5, 5, 6, 6, 6, 1, 1, 1, 8, 8, 8, 3, 3, 3}[index]);
+        return Land.fromIndex(new int[] { 4, 4, 4, 2, 2, 2, 7, 7, 7, 0, 0, 0, 0, 5, 5, 5, 6, 6, 6, 1, 1, 1, 8, 8, 8, 3,
+                3, 3 }[index]);
     }
 
     /**
@@ -110,7 +108,8 @@ public class TwentyEightStar extends Samsara {
      * @return 吉凶
      */
     public Luck getLuck() {
-        return Luck.fromIndex(new int[]{0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0, 1, 0}[index]);
+        return Luck.fromIndex(new int[] { 0, 1, 1, 0, 1, 0, 0, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 1, 1, 0,
+                1, 0 }[index]);
     }
 
 }

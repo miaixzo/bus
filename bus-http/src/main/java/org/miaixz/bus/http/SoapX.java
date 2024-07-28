@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http;
 
 import jakarta.xml.soap.SOAPException;
@@ -99,7 +99,8 @@ public class SoapX {
      * @param charset 编码
      * @return SOAP XML字符串
      */
-    public static String toString(final SOAPMessage message, final boolean pretty, final java.nio.charset.Charset charset) {
+    public static String toString(final SOAPMessage message, final boolean pretty,
+            final java.nio.charset.Charset charset) {
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
             message.writeTo(out);

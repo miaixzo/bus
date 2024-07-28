@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.hl7.net;
 
 import org.miaixz.bus.image.Tag;
@@ -58,8 +58,7 @@ public class HL7SAXTransformer {
     }
 
     public static Attributes transform(byte[] data, String hl7charset, String dicomCharset, Templates templates,
-                                       SAXTransformer.SetupTransformer setup)
-            throws TransformerConfigurationException, IOException, SAXException {
+            SAXTransformer.SetupTransformer setup) throws TransformerConfigurationException, IOException, SAXException {
         Attributes attrs = new Attributes();
         if (dicomCharset != null)
             attrs.setString(Tag.SpecificCharacterSet, VR.CS, dicomCharset);
@@ -67,20 +66,19 @@ public class HL7SAXTransformer {
         th.setResult(new SAXResult(new ContentHandlerAdapter(attrs)));
         if (setup != null)
             setup.setup(th.getTransformer());
-        new HL7Parser(th).parse(new InputStreamReader(
-                new ByteArrayInputStream(data),
-                HL7Charset.toCharsetName(hl7charset)));
+        new HL7Parser(th)
+                .parse(new InputStreamReader(new ByteArrayInputStream(data), HL7Charset.toCharsetName(hl7charset)));
         return attrs;
     }
 
     public static byte[] transform(Attributes attrs, String hl7charset, Templates templates,
-                                   boolean includeNameSpaceDeclaration, boolean includeKeword,
-                                   SAXTransformer.SetupTransformer setup)
+            boolean includeNameSpaceDeclaration, boolean includeKeword, SAXTransformer.SetupTransformer setup)
             throws TransformerConfigurationException, SAXException, UnsupportedEncodingException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         TransformerHandler th = factory.newTransformerHandler(templates);
-        th.setResult(new SAXResult(new HL7ContentHandler(new OutputStreamWriter(out, HL7Charset.toCharsetName(hl7charset)))));
+        th.setResult(new SAXResult(
+                new HL7ContentHandler(new OutputStreamWriter(out, HL7Charset.toCharsetName(hl7charset)))));
         if (setup != null)
             setup.setup(th.getTransformer());
 

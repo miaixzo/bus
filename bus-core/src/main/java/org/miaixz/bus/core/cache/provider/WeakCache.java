@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.cache.provider;
 
 import org.miaixz.bus.core.cache.CacheListener;
@@ -34,9 +34,7 @@ import org.miaixz.bus.core.lang.mutable.Mutable;
 import org.miaixz.bus.core.lang.ref.Ref;
 
 /**
- * 弱引用缓存
- * 对于一个给定的键，其映射的存在并不阻止垃圾回收器对该键的丢弃，这就使该键成为可终止的，被终止，然后被回收。
- * 丢弃某个键时，其条目从映射中有效地移除。
+ * 弱引用缓存 对于一个给定的键，其映射的存在并不阻止垃圾回收器对该键的丢弃，这就使该键成为可终止的，被终止，然后被回收。 丢弃某个键时，其条目从映射中有效地移除。
  *
  * @param <K> 键
  * @param <V> 值
@@ -62,9 +60,9 @@ public class WeakCache<K, V> extends TimedCache<K, V> {
 
         final WeakConcurrentMap<Mutable<K>, CacheObject<K, V>> map = (WeakConcurrentMap<Mutable<K>, CacheObject<K, V>>) this.cacheMap;
         // WeakKey回收之后，key对应的值已经是null了，因此此处的key也为null
-        map.setPurgeListener((key, value) -> listener.onRemove(
-                Optional.ofNullable(key).map(Ref::get).map(Mutable::get).get(),
-                Optional.ofNullable(value).map(Ref::get).map(CacheObject::getValue).get()));
+        map.setPurgeListener(
+                (key, value) -> listener.onRemove(Optional.ofNullable(key).map(Ref::get).map(Mutable::get).get(),
+                        Optional.ofNullable(value).map(Ref::get).map(CacheObject::getValue).get()));
 
         return this;
     }

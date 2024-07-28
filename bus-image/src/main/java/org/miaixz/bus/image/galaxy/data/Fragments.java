@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.data;
 
 import org.miaixz.bus.image.Tag;
@@ -38,24 +38,20 @@ import java.util.Collection;
 import java.util.ListIterator;
 
 /**
- * Fragments are used for encapsulation of an encoded (=compressed) pixel data
- * stream into the Pixel Data (7FE0,0010) portion of the DICOM Data Set. They
- * are encoded as a sequence of items with Value Representation OB.
- * Each item is either a byte[], {@link BulkData} or {@link Value#NULL}.
+ * Fragments are used for encapsulation of an encoded (=compressed) pixel data stream into the Pixel Data (7FE0,0010)
+ * portion of the DICOM Data Set. They are encoded as a sequence of items with Value Representation OB. Each item is
+ * either a byte[], {@link BulkData} or {@link Value#NULL}.
  *
  * <p>
- * The first Item in the sequence of items before the encoded Pixel Data Stream
- * is a Basic Offset Table item. The value of the Basic Offset Table, however,
- * is not required to be present. The first item is then {@link Value#NULL}.
+ * The first Item in the sequence of items before the encoded Pixel Data Stream is a Basic Offset Table item. The value
+ * of the Basic Offset Table, however, is not required to be present. The first item is then {@link Value#NULL}.
  * </p>
  *
  * <p>
- * Depending on the transfer syntax, a frame may be entirely contained within a
- * single fragment, or may span multiple fragments to support buffering during
- * compression or to avoid exceeding the maximum size of a fixed length
- * fragment. A recipient can detect fragmentation of frames by comparing the
- * number of fragments (the number of Items minus one for the Basic Offset
- * Table) with the number of frames.
+ * Depending on the transfer syntax, a frame may be entirely contained within a single fragment, or may span multiple
+ * fragments to support buffering during compression or to avoid exceeding the maximum size of a fixed length fragment.
+ * A recipient can detect fragmentation of frames by comparing the number of fragments (the number of Items minus one
+ * for the Basic Offset Table) with the number of frames.
  * </p>
  *
  * @author Kimi Liu
@@ -111,10 +107,7 @@ public class Fragments extends ArrayList<Object> implements Value {
     @Override
     public void add(int index, Object frag) {
         ensureModifiable();
-        super.add(index,
-                frag == null || (frag instanceof byte[]) && ((byte[]) frag).length == 0
-                        ? Value.NULL
-                        : frag);
+        super.add(index, frag == null || (frag instanceof byte[]) && ((byte[]) frag).length == 0 ? Value.NULL : frag);
     }
 
     @Override
@@ -131,8 +124,7 @@ public class Fragments extends ArrayList<Object> implements Value {
     }
 
     @Override
-    public void writeTo(ImageOutputStream out, VR vr)
-            throws IOException {
+    public void writeTo(ImageOutputStream out, VR vr) throws IOException {
         for (Object frag : this)
             out.writeAttribute(Tag.Item, vr, frag, null);
     }

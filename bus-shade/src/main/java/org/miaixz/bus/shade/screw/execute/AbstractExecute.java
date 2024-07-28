@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.screw.execute;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -55,16 +55,16 @@ public abstract class AbstractExecute implements Execute {
      * @return {@link String} 名称
      */
     String getDocName(String database) {
-        //自定义文件名称不为空
+        // 自定义文件名称不为空
         if (StringKit.isNotBlank(config.getEngineConfig().getFileName())) {
             return config.getEngineConfig().getFileName();
         }
-        //描述
+        // 描述
         String description = config.getDescription();
         if (StringKit.isBlank(description)) {
             description = Builder.DESCRIPTION;
         }
-        //版本号
+        // 版本号
         String version = config.getVersion();
         if (StringKit.isBlank(version)) {
             return database + Symbol.UNDERLINE + description;

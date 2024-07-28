@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.extra.compress.archiver;
 
 import org.apache.commons.compress.archivers.sevenz.SevenZOutputFile;
@@ -107,7 +107,8 @@ public class SevenZArchiver implements Archiver {
     }
 
     @Override
-    public SevenZArchiver add(final File file, final String path, final Function<String, String> fileNameEditor, final Predicate<File> filter) {
+    public SevenZArchiver add(final File file, final String path, final Function<String, String> fileNameEditor,
+            final Predicate<File> filter) {
         try {
             addInternal(file, path, fileNameEditor, filter);
         } catch (final IOException e) {
@@ -131,7 +132,7 @@ public class SevenZArchiver implements Archiver {
         try {
             finish();
         } catch (final Exception ignore) {
-            //ignore
+            // ignore
         }
         if (null != out && this.channel instanceof SeekableInMemoryByteChannel) {
             try {
@@ -151,7 +152,8 @@ public class SevenZArchiver implements Archiver {
      * @param fileNameEditor 文件名编辑器
      * @param filter         文件过滤器，指定哪些文件或目录可以加入，当{@link Predicate#test(Object)}为{@code true}保留，null表示保留全部
      */
-    private void addInternal(final File file, final String path, final Function<String, String> fileNameEditor, final Predicate<File> filter) throws IOException {
+    private void addInternal(final File file, final String path, final Function<String, String> fileNameEditor,
+            final Predicate<File> filter) throws IOException {
         if (null != filter && !filter.test(file)) {
             return;
         }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.safety.algorithm;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -45,7 +45,7 @@ public class SecureRandom extends java.security.SecureRandom {
     private int _intPad;
 
     public SecureRandom(byte[] value) {
-        this(false, new byte[][]{value});
+        this(false, new byte[][] { value });
     }
 
     public SecureRandom(byte[][] values) {
@@ -53,7 +53,7 @@ public class SecureRandom extends java.security.SecureRandom {
     }
 
     public SecureRandom(boolean intPad, byte[] value) {
-        this(intPad, new byte[][]{value});
+        this(intPad, new byte[][] { value });
     }
 
     public SecureRandom(boolean intPad, byte[][] values) {
@@ -108,7 +108,6 @@ public class SecureRandom extends java.security.SecureRandom {
 
         return val;
     }
-
 
     public long nextLong() {
         long val = 0;

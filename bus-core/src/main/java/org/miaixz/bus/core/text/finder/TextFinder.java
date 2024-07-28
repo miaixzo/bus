@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.text.finder;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -66,9 +66,7 @@ public abstract class TextFinder implements Finder, Serializable {
     }
 
     /**
-     * 设置查找的结束位置
-     * 如果从前向后查找，结束位置最大为text.length()
-     * 如果从后向前，结束位置为-1
+     * 设置查找的结束位置 如果从前向后查找，结束位置最大为text.length() 如果从后向前，结束位置为-1
      *
      * @param endIndex 结束位置（不包括）
      * @return this
@@ -90,8 +88,7 @@ public abstract class TextFinder implements Finder, Serializable {
     }
 
     /**
-     * 获取有效结束位置
-     * 如果{@link #endIndex}小于0，在反向模式下是开头（-1），正向模式是结尾（text.length()）
+     * 获取有效结束位置 如果{@link #endIndex}小于0，在反向模式下是开头（-1），正向模式是结尾（text.length()）
      *
      * @return 有效结束位置
      */

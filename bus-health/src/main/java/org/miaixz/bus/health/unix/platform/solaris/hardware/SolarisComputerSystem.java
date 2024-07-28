@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.solaris.hardware;
 
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -121,7 +121,8 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
         Map<String, String> smbTypeBaseboardMap = smbTypesMap.get(SmbType.SMB_TYPE_BASEBOARD);
 
         // If we get to end and haven't assigned, use fallback
-        if (!smbTypeSystemMap.containsKey(serialNumMarker) || StringKit.isBlank(smbTypeSystemMap.get(serialNumMarker))) {
+        if (!smbTypeSystemMap.containsKey(serialNumMarker)
+                || StringKit.isBlank(smbTypeSystemMap.get(serialNumMarker))) {
             smbTypeSystemMap.put(serialNumMarker, readSerialNumber());
         }
         return new SmbiosStrings(smbTypeBIOSMap, smbTypeSystemMap, smbTypeBaseboardMap);
@@ -217,7 +218,7 @@ final class SolarisComputerSystem extends AbstractComputerSystem {
         private final String boardSerialNumber;
 
         private SmbiosStrings(Map<String, String> smbTypeBIOSStrings, Map<String, String> smbTypeSystemStrings,
-                              Map<String, String> smbTypeBaseboardStrings) {
+                Map<String, String> smbTypeBaseboardStrings) {
             final String vendorMarker = "Vendor";
             final String biosDateMarker = "Release Date";
             final String biosVersionMarker = "Version String";

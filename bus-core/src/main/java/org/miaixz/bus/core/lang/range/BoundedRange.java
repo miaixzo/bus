@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.range;
 
 import org.miaixz.bus.core.lang.Assert;
@@ -33,37 +33,70 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
- * <p>参考<em>Guava</em>的<em>Range</em>实现，用于描述作为上下界的两个{@link Bound}实例围成的一段区间。
+ * <p>
+ * 参考<em>Guava</em>的<em>Range</em>实现，用于描述作为上下界的两个{@link Bound}实例围成的一段区间。
  * 作为{@link Predicate}使用时，可检验指定值是否在区间中，即指定值是否同时满足上下界的{@link Bound#test}方法。
  *
- * <p>区间的类型，支持通过工厂方法创建下述几种类型的区间：</p>
+ * <p>
+ * 区间的类型，支持通过工厂方法创建下述几种类型的区间：
+ * </p>
  * <table>
  * <caption>区间</caption>
- * <tr><th>区间            <th>数学定义                  <th>工厂方法
- * <tr><td>{@code (a, b)}  <td>{@code {x | a < x < b}}  <td>{@link #open}
- * <tr><td>{@code [a, b]}  <td>{@code {x | a <= x <= b}}<td>{@link #close}
- * <tr><td>{@code (a, b]}  <td>{@code {x | a < x <= b}} <td>{@link #openClose}
- * <tr><td>{@code [a, b)}  <td>{@code {x | a <= x < b}} <td>{@link #closeOpen}
- * <tr><td>{@code (a, +∞)} <td>{@code {x | x > a}}      <td>{@link #greaterThan}
- * <tr><td>{@code [a, +∞)} <td>{@code {x | x >= a}}     <td>{@link #atLeast}
- * <tr><td>{@code (-∞, b)} <td>{@code {x | x < b}}      <td>{@link #lessThan}
- * <tr><td>{@code (-∞, b]} <td>{@code {x | x <= b}}     <td>{@link #atMost}
- * <tr><td>{@code (-∞, +∞)}<td>{@code {x}}              <td>{@link #all}
+ * <tr>
+ * <th>区间
+ * <th>数学定义
+ * <th>工厂方法
+ * <tr>
+ * <td>{@code (a, b)}
+ * <td>{@code {x | a < x < b}}
+ * <td>{@link #open}
+ * <tr>
+ * <td>{@code [a, b]}
+ * <td>{@code {x | a <= x <= b}}
+ * <td>{@link #close}
+ * <tr>
+ * <td>{@code (a, b]}
+ * <td>{@code {x | a < x <= b}}
+ * <td>{@link #openClose}
+ * <tr>
+ * <td>{@code [a, b)}
+ * <td>{@code {x | a <= x < b}}
+ * <td>{@link #closeOpen}
+ * <tr>
+ * <td>{@code (a, +∞)}
+ * <td>{@code {x | x > a}}
+ * <td>{@link #greaterThan}
+ * <tr>
+ * <td>{@code [a, +∞)}
+ * <td>{@code {x | x >= a}}
+ * <td>{@link #atLeast}
+ * <tr>
+ * <td>{@code (-∞, b)}
+ * <td>{@code {x | x < b}}
+ * <td>{@link #lessThan}
+ * <tr>
+ * <td>{@code (-∞, b]}
+ * <td>{@code {x | x <= b}}
+ * <td>{@link #atMost}
+ * <tr>
+ * <td>{@code (-∞, +∞)}
+ * <td>{@code {x}}
+ * <td>{@link #all}
  * </table>
  *
- * <p>空区间</p>
- * <p>根据数学定义，当区间中无任何实数时，认为该区间 代表的集合为空集，
- * 用户可通过{@link #isEmpty}确认当前实例是否为空区间。
+ * <p>
+ * 空区间
+ * </p>
+ * <p>
+ * 根据数学定义，当区间中无任何实数时，认为该区间 代表的集合为空集， 用户可通过{@link #isEmpty}确认当前实例是否为空区间。
  * 若实例上界<em>a</em>，下界为<em>b</em>，则当实例满足下述任意条件时，认为其为一个空区间：
  * <ul>
- *     <li>{@code a > b}；</li>
- *     <li>{@code [a, b)}，且{@code a == b}；</li>
- *     <li>{@code (a, b)}，且{@code a == b}；</li>
- *     <li>{@code (a, b]}，且{@code a == b}；</li>
+ * <li>{@code a > b}；</li>
+ * <li>{@code [a, b)}，且{@code a == b}；</li>
+ * <li>{@code (a, b)}，且{@code a == b}；</li>
+ * <li>{@code (a, b]}，且{@code a == b}；</li>
  * </ul>
- * 当通过工厂方法创建区间时，若区间为空，则会抛出{@link IllegalArgumentException},
- * 但是通过交并操作仍有可能创建出满足上述描述的空区间。
- * 此时若空区间参与操作可能得到意外的结果，
+ * 当通过工厂方法创建区间时，若区间为空，则会抛出{@link IllegalArgumentException}, 但是通过交并操作仍有可能创建出满足上述描述的空区间。 此时若空区间参与操作可能得到意外的结果，
  * 因此对通过非工厂方法得到的区间，在操作前有必要通过{@link #isEmpty}进行检验。
  *
  * @param <T> 边界值类型
@@ -120,11 +153,7 @@ public class BoundedRange<T extends Comparable<? super T>> implements Predicate<
     public static <T extends Comparable<? super T>> BoundedRange<T> close(final T lowerBound, final T upperBound) {
         Objects.requireNonNull(lowerBound);
         Objects.requireNonNull(upperBound);
-        return checkEmpty(
-                new BoundedRange<>(
-                        Bound.atLeast(lowerBound), Bound.atMost(upperBound)
-                )
-        );
+        return checkEmpty(new BoundedRange<>(Bound.atLeast(lowerBound), Bound.atMost(upperBound)));
     }
 
     /**
@@ -140,9 +169,7 @@ public class BoundedRange<T extends Comparable<? super T>> implements Predicate<
     public static <T extends Comparable<? super T>> BoundedRange<T> open(final T lowerBound, final T upperBound) {
         Objects.requireNonNull(lowerBound);
         Objects.requireNonNull(upperBound);
-        return checkEmpty(
-                new BoundedRange<>(Bound.greaterThan(lowerBound), Bound.lessThan(upperBound))
-        );
+        return checkEmpty(new BoundedRange<>(Bound.greaterThan(lowerBound), Bound.lessThan(upperBound)));
     }
 
     /**
@@ -158,12 +185,7 @@ public class BoundedRange<T extends Comparable<? super T>> implements Predicate<
     public static <T extends Comparable<? super T>> BoundedRange<T> closeOpen(final T lowerBound, final T upperBound) {
         Objects.requireNonNull(lowerBound);
         Objects.requireNonNull(upperBound);
-        return checkEmpty(
-                new BoundedRange<>(
-                        Bound.atLeast(lowerBound),
-                        Bound.lessThan(upperBound)
-                )
-        );
+        return checkEmpty(new BoundedRange<>(Bound.atLeast(lowerBound), Bound.lessThan(upperBound)));
     }
 
     /**
@@ -179,12 +201,7 @@ public class BoundedRange<T extends Comparable<? super T>> implements Predicate<
     public static <T extends Comparable<? super T>> BoundedRange<T> openClose(final T lowerBound, final T upperBound) {
         Objects.requireNonNull(lowerBound);
         Objects.requireNonNull(upperBound);
-        return checkEmpty(
-                new BoundedRange<>(
-                        Bound.greaterThan(lowerBound),
-                        Bound.atMost(upperBound)
-                )
-        );
+        return checkEmpty(new BoundedRange<>(Bound.greaterThan(lowerBound), Bound.atMost(upperBound)));
     }
 
     /**
@@ -299,14 +316,13 @@ public class BoundedRange<T extends Comparable<? super T>> implements Predicate<
     }
 
     /**
-     * <p>当前区间是否为空。
-     * 当由下界<em>left</em>与上界<em>right</em>构成的区间，
-     * 符合下述任意条件时，认为当前区间为空：
+     * <p>
+     * 当前区间是否为空。 当由下界<em>left</em>与上界<em>right</em>构成的区间， 符合下述任意条件时，认为当前区间为空：
      * <ul>
-     *     <li>对任何区间，有{@code left > right}；</li>
-     *     <li>对半开半闭区间{@code [left, right)}，有{@code left == right}；</li>
-     *     <li>对开区间{@code (left, right)}，有{@code left == right}；</li>
-     *     <li>对半开半闭区间{@code (left, right]}，有{@code left == right}；</li>
+     * <li>对任何区间，有{@code left > right}；</li>
+     * <li>对半开半闭区间{@code [left, right)}，有{@code left == right}；</li>
+     * <li>对开区间{@code (left, right)}，有{@code left == right}；</li>
+     * <li>对半开半闭区间{@code (left, right]}，有{@code left == right}；</li>
      * </ul>
      *
      * @return 是否
@@ -437,9 +453,7 @@ public class BoundedRange<T extends Comparable<? super T>> implements Predicate<
      */
     @Override
     public boolean test(final T value) {
-        return getLowerBound()
-                .and(getUpperBound())
-                .test(value);
+        return getLowerBound().and(getUpperBound()).test(value);
     }
 
     /**

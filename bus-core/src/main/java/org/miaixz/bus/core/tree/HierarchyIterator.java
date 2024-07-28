@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.tree;
 
 import org.miaixz.bus.core.center.stream.EasyStream;
@@ -38,14 +38,13 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * <p>用于迭代层级结构（比如树或图）的迭代器，
- * 支持{@link #depthFirst 广度优先}与{@link #breadthFirst 深度优先}两种遍历模式。
- * 迭代器仅适用于访问层级结构，因此不支持{@link Iterator#remove}方法。
- * 要构建树或者操作数，请参见{@link BeanTree}或{@link TreeKit}。
+ * <p>
+ * 用于迭代层级结构（比如树或图）的迭代器， 支持{@link #depthFirst 广度优先}与{@link #breadthFirst 深度优先}两种遍历模式。
+ * 迭代器仅适用于访问层级结构，因此不支持{@link Iterator#remove}方法。 要构建树或者操作数，请参见{@link BeanTree}或{@link TreeKit}。
  *
- * <p>该迭代器侧重于打通图或树这类数据结构与传统集合间的隔阂，
- * 从而支持通过传统可迭代集合的方式对树或图中的节点进行操作。
- * 比如：
+ * <p>
+ * 该迭代器侧重于打通图或树这类数据结构与传统集合间的隔阂， 从而支持通过传统可迭代集合的方式对树或图中的节点进行操作。 比如：
+ * 
  * <pre>{@code
  * Tree root = // 构建树结构
  * // 搜索树结构中所有级别为3的节点，并按权重排序
@@ -104,8 +103,8 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
      * @param <T>            元素类型
      * @return 迭代器
      */
-    public static <T> HierarchyIterator<T> breadthFirst(
-            final T root, final Function<T, Collection<T>> nextDiscoverer, final Predicate<T> filter) {
+    public static <T> HierarchyIterator<T> breadthFirst(final T root, final Function<T, Collection<T>> nextDiscoverer,
+            final Predicate<T> filter) {
         return new BreadthFirst<>(root, nextDiscoverer, filter);
     }
 
@@ -117,8 +116,7 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
      * @param <T>            元素类型
      * @return 迭代器
      */
-    public static <T> HierarchyIterator<T> breadthFirst(
-            final T root, final Function<T, Collection<T>> nextDiscoverer) {
+    public static <T> HierarchyIterator<T> breadthFirst(final T root, final Function<T, Collection<T>> nextDiscoverer) {
         return breadthFirst(root, nextDiscoverer, t -> true);
     }
 
@@ -131,8 +129,8 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
      * @param <T>            元素类型
      * @return 迭代器
      */
-    public static <T> HierarchyIterator<T> depthFirst(
-            final T root, final Function<T, Collection<T>> nextDiscoverer, final Predicate<T> filter) {
+    public static <T> HierarchyIterator<T> depthFirst(final T root, final Function<T, Collection<T>> nextDiscoverer,
+            final Predicate<T> filter) {
         return new DepthFirst<>(root, nextDiscoverer, filter);
     }
 
@@ -144,8 +142,7 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
      * @param <T>            元素类型
      * @return 迭代器
      */
-    public static <T> HierarchyIterator<T> depthFirst(
-            final T root, final Function<T, Collection<T>> nextDiscoverer) {
+    public static <T> HierarchyIterator<T> depthFirst(final T root, final Function<T, Collection<T>> nextDiscoverer) {
         return depthFirst(root, nextDiscoverer, t -> true);
     }
 
@@ -173,9 +170,7 @@ public abstract class HierarchyIterator<T> implements Iterator<T> {
         accessed.add(curr);
         Collection<T> nextElements = elementDiscoverer.apply(curr);
         if (Objects.nonNull(nextElements) && !nextElements.isEmpty()) {
-            nextElements = nextElements.stream()
-                    .filter(filter)
-                    .collect(Collectors.toList());
+            nextElements = nextElements.stream().filter(filter).collect(Collectors.toList());
             collectNextElementsToQueue(nextElements);
         }
         return curr;

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.annotation.resolve;
 
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
@@ -60,10 +60,8 @@ public interface RepeatableAnnotationCollector {
     }
 
     /**
-     * 当注解中有且仅有一个名为{@code value}的属性时，
-     * 若该属性类型为注解数组，且该数组对应的注解类型被{@link Repeatable}注解，
-     * 则收集器将返回该属性中包括的可重复注解。
-     * eg:
+     * 当注解中有且仅有一个名为{@code value}的属性时， 若该属性类型为注解数组，且该数组对应的注解类型被{@link Repeatable}注解， 则收集器将返回该属性中包括的可重复注解。 eg:
+     * 
      * <pre><code>
      * // 容器注解
      * {@literal @}interface Annotation {
@@ -73,6 +71,7 @@ public interface RepeatableAnnotationCollector {
      * {@literal @}Repeatable(Annotation.class)
      * {@literal @}interface Item {}
      * </code></pre>
+     * 
      * 解析任意{@code Annotation}注解对象，则可以获得{@code value}属性中的{@code Item}注解对象
      *
      * @return {@code RepeatableAnnotationCollector}实例
@@ -83,8 +82,7 @@ public interface RepeatableAnnotationCollector {
     }
 
     /**
-     * 当解析注解属性时，将根据给定的判断条件，确定该属性中是否含有可重复注解。
-     * 收集器将返回所有匹配的属性中的可重复注解。
+     * 当解析注解属性时，将根据给定的判断条件，确定该属性中是否含有可重复注解。 收集器将返回所有匹配的属性中的可重复注解。
      *
      * @param predicate 是否为容纳可重复注解的属性的判断条件
      * @return {@code RepeatableAnnotationCollector}实例
@@ -94,19 +92,16 @@ public interface RepeatableAnnotationCollector {
     }
 
     /**
-     * 当注解中存在有属性为注解数组，且该数组对应的注解类型被{@link Repeatable}注解时，
-     * 认为该属性包含可重复注解。
-     * 收集器将返回所有符合上述条件的属性中的可重复注解。
-     * eg:
+     * 当注解中存在有属性为注解数组，且该数组对应的注解类型被{@link Repeatable}注解时， 认为该属性包含可重复注解。 收集器将返回所有符合上述条件的属性中的可重复注解。 eg:
+     * 
      * <pre><code>
      * {@literal @}interface Annotation {
      * 	Item1[] items1() default {};
      * 	Item2[] items2() default {};
      * }
      * </code></pre>
-     * 解析任意{@code Annotation}注解对象，
-     * 则可以获得{@code items1}属性中的{@code Item1}注解对象，
-     * 以及{@code items2}属性中的{@code Item2}注解对象，
+     * 
+     * 解析任意{@code Annotation}注解对象， 则可以获得{@code items1}属性中的{@code Item1}注解对象， 以及{@code items2}属性中的{@code Item2}注解对象，
      *
      * @return {@code RepeatableAnnotationCollector}实例
      */
@@ -123,12 +118,8 @@ public interface RepeatableAnnotationCollector {
     }
 
     /**
-     * 若一个注解是可重复注解的容器注解，则尝试通过其属性获得获得包含的注解对象。
-     * 若包含的注解对象也是可重复注解的容器注解，则继续解析直到获得所有非容器注解为止。
-     * eg:
-     * 若存在嵌套关系{@code a -> b -> c}，
-     * 则解析注解<em>a</em>，则将得到全部<em>c</em>注解。
-     * 如果注解不包含可重复注解，则返回<em>a</em>本身。
+     * 若一个注解是可重复注解的容器注解，则尝试通过其属性获得获得包含的注解对象。 若包含的注解对象也是可重复注解的容器注解，则继续解析直到获得所有非容器注解为止。 eg: 若存在嵌套关系{@code a -> b -> c}，
+     * 则解析注解<em>a</em>，则将得到全部<em>c</em>注解。 如果注解不包含可重复注解，则返回<em>a</em>本身。
      *
      * @param annotation 容器注解
      * @return 容器注解中的可重复注解，若{@code annotation}不为容器注解，则数组中仅有其本身一个对象
@@ -136,11 +127,8 @@ public interface RepeatableAnnotationCollector {
     List<Annotation> getFinalRepeatableAnnotations(final Annotation annotation);
 
     /**
-     * 若一个注解是可重复注解的容器注解，则尝试通过其属性获得获得包含的注解对象。
-     * 若包含的注解对象也是可重复注解的容器注解，则继续解析直到获得所有非容器注解为止。
-     * eg:
-     * 若存在嵌套关系{@code a -> b -> c}，则解析注解<em>a</em>,
-     * 将获得全部<em>a</em>、<em>b</em>、<em>c</em>注解。
+     * 若一个注解是可重复注解的容器注解，则尝试通过其属性获得获得包含的注解对象。 若包含的注解对象也是可重复注解的容器注解，则继续解析直到获得所有非容器注解为止。 eg:
+     * 若存在嵌套关系{@code a -> b -> c}，则解析注解<em>a</em>, 将获得全部<em>a</em>、<em>b</em>、<em>c</em>注解。
      * 如果注解不包含可重复注解，则返回<em>a</em>本身。
      *
      * @param annotation 容器注解
@@ -149,13 +137,11 @@ public interface RepeatableAnnotationCollector {
     List<Annotation> getAllRepeatableAnnotations(final Annotation annotation);
 
     /**
-     * 若一个注解是可重复注解的容器注解，则尝试通过其属性获得获得包含的指定类型注解对象。
-     * eg:
-     * 若存在嵌套关系{@code a -> b -> c}，则：
+     * 若一个注解是可重复注解的容器注解，则尝试通过其属性获得获得包含的指定类型注解对象。 eg: 若存在嵌套关系{@code a -> b -> c}，则：
      * <ul>
-     *     <li>解析注解<em>a</em>：可获得<em>a</em>、<em>b</em>、<em>c</em>；</li>
-     *     <li>解析注解<em>b</em>：可获得<em>b</em>、<em>c</em>；</li>
-     *     <li>解析注解<em>c</em>：只可获得<em>c</em>；</li>
+     * <li>解析注解<em>a</em>：可获得<em>a</em>、<em>b</em>、<em>c</em>；</li>
+     * <li>解析注解<em>b</em>：可获得<em>b</em>、<em>c</em>；</li>
+     * <li>解析注解<em>c</em>：只可获得<em>c</em>；</li>
      * </ul>
      *
      * @param annotation     容器注解
@@ -183,8 +169,7 @@ public interface RepeatableAnnotationCollector {
          */
         @Override
         public List<Annotation> getFinalRepeatableAnnotations(final Annotation annotation) {
-            return Objects.isNull(annotation) ?
-                    Collections.emptyList() : Collections.singletonList(annotation);
+            return Objects.isNull(annotation) ? Collections.emptyList() : Collections.singletonList(annotation);
         }
 
         /**
@@ -195,8 +180,7 @@ public interface RepeatableAnnotationCollector {
          */
         @Override
         public List<Annotation> getAllRepeatableAnnotations(final Annotation annotation) {
-            return Objects.isNull(annotation) ?
-                    Collections.emptyList() : Collections.singletonList(annotation);
+            return Objects.isNull(annotation) ? Collections.emptyList() : Collections.singletonList(annotation);
         }
 
         /**
@@ -206,12 +190,14 @@ public interface RepeatableAnnotationCollector {
          * @return 空集合
          */
         @Override
-        public <T extends Annotation> List<T> getRepeatableAnnotations(final Annotation annotation, final Class<T> annotationType) {
+        public <T extends Annotation> List<T> getRepeatableAnnotations(final Annotation annotation,
+                final Class<T> annotationType) {
             if (Objects.isNull(annotation)) {
                 return Collections.emptyList();
             }
-            return Objects.equals(annotation.annotationType(), annotationType) ?
-                    Collections.singletonList(annotationType.cast(annotation)) : Collections.emptyList();
+            return Objects.equals(annotation.annotationType(), annotationType)
+                    ? Collections.singletonList(annotationType.cast(annotation))
+                    : Collections.emptyList();
         }
 
     }
@@ -222,8 +208,7 @@ public interface RepeatableAnnotationCollector {
     abstract class AbstractCollector implements RepeatableAnnotationCollector {
 
         /**
-         * 若一个注解是可重复注解的容器注解，则尝试通过其属性获得获得包含的注解对象。
-         * 若包含的注解对象也是可重复注解的容器注解，则继续解析直到获得所有非容器注解为止。
+         * 若一个注解是可重复注解的容器注解，则尝试通过其属性获得获得包含的注解对象。 若包含的注解对象也是可重复注解的容器注解，则继续解析直到获得所有非容器注解为止。
          *
          * @param annotation 容器注解
          * @return 容器注解中的可重复注解，若{@code annotation}不为容器注解，则数组中仅有其本身一个对象
@@ -234,13 +219,9 @@ public interface RepeatableAnnotationCollector {
         }
 
         /**
-         * 若一个注解是可重复注解的容器注解，则尝试通过其属性获得获得包含的注解对象。
-         * 若包含的注解对象也是可重复注解的容器注解，则继续解析直到获得所有非容器注解为止。
-         * 当{@code accumulate}为{@code true}时，返回结果为全量的注解。
-         * eg:
-         * 若存在嵌套关系{@code a -> b -> c}，则解析注解<em>a</em>,
-         * 将获得全部<em>a</em>、<em>b</em>、<em>c</em>注解。
-         * 如果注解不包含可重复注解，则返回其本身。
+         * 若一个注解是可重复注解的容器注解，则尝试通过其属性获得获得包含的注解对象。 若包含的注解对象也是可重复注解的容器注解，则继续解析直到获得所有非容器注解为止。
+         * 当{@code accumulate}为{@code true}时，返回结果为全量的注解。 eg: 若存在嵌套关系{@code a -> b -> c}，则解析注解<em>a</em>,
+         * 将获得全部<em>a</em>、<em>b</em>、<em>c</em>注解。 如果注解不包含可重复注解，则返回其本身。
          *
          * @param annotation 容器注解
          * @return 容器注解中的可重复注解，若{@code annotation}不为容器注解，则数组中仅有其本身一个对象
@@ -259,19 +240,18 @@ public interface RepeatableAnnotationCollector {
          * @return 容器注解中的可重复注解
          */
         @Override
-        public <T extends Annotation> List<T> getRepeatableAnnotations(
-                final Annotation annotation, final Class<T> annotationType) {
-            final List<Annotation> annotations = find(annotation, t -> Objects.equals(t.annotationType(), annotationType), false);
-            return annotations.stream()
-                    .map(annotationType::cast)
-                    .collect(Collectors.toList());
+        public <T extends Annotation> List<T> getRepeatableAnnotations(final Annotation annotation,
+                final Class<T> annotationType) {
+            final List<Annotation> annotations = find(annotation,
+                    t -> Objects.equals(t.annotationType(), annotationType), false);
+            return annotations.stream().map(annotationType::cast).collect(Collectors.toList());
         }
 
         /**
          * 递归遍历注解，将其平铺
          */
-        private List<Annotation> find(
-                final Annotation annotation, final java.util.function.Predicate<Annotation> condition, final boolean accumulate) {
+        private List<Annotation> find(final Annotation annotation,
+                final java.util.function.Predicate<Annotation> condition, final boolean accumulate) {
             if (Objects.isNull(annotation)) {
                 return Collections.emptyList();
             }
@@ -297,9 +277,7 @@ public interface RepeatableAnnotationCollector {
                 }
                 final Annotation[] repeatableAnnotation = repeatableMethods.stream()
                         .map(method -> getRepeatableAnnotationsFormAttribute(source, method))
-                        .filter(ArrayKit::isNotEmpty)
-                        .flatMap(Stream::of)
-                        .toArray(Annotation[]::new);
+                        .filter(ArrayKit::isNotEmpty).flatMap(Stream::of).toArray(Annotation[]::new);
                 if (ArrayKit.isNotEmpty(repeatableAnnotation)) {
                     CollKit.addAll(deque, repeatableAnnotation);
                 }
@@ -330,9 +308,7 @@ public interface RepeatableAnnotationCollector {
     }
 
     /**
-     * 标准实现，当注解中有且仅有一个名为{@code value}的属性时，
-     * 若该属性类型为注解数组，且该数组对应的注解类型被{@link Repeatable}注解，
-     * 则收集器将返回该属性中包括的可重复注解。
+     * 标准实现，当注解中有且仅有一个名为{@code value}的属性时， 若该属性类型为注解数组，且该数组对应的注解类型被{@link Repeatable}注解， 则收集器将返回该属性中包括的可重复注解。
      */
     class Standard extends AbstractCollector {
 
@@ -370,7 +346,8 @@ public interface RepeatableAnnotationCollector {
          */
         @Override
         protected List<Method> resolveRepeatableMethod(final Annotation annotation) {
-            final Object cache = repeatableMethodCache.computeIfAbsent(annotation.annotationType(), this::resolveRepeatableMethodFromType);
+            final Object cache = repeatableMethodCache.computeIfAbsent(annotation.annotationType(),
+                    this::resolveRepeatableMethodFromType);
             return (cache == NONE) ? null : Collections.singletonList((Method) cache);
         }
 
@@ -400,18 +377,15 @@ public interface RepeatableAnnotationCollector {
             // 返回值类型需为数组
             return attributeType.isArray()
                     // 且数组元素需为注解
-                    && attributeType.getComponentType()
-                    .isAnnotation()
+                    && attributeType.getComponentType().isAnnotation()
                     // 该注解类必须被@Repeatable注解，但不要求与当前属性的声明方法一致
-                    && attributeType.getComponentType()
-                    .isAnnotationPresent(Repeatable.class);
+                    && attributeType.getComponentType().isAnnotationPresent(Repeatable.class);
         }
 
     }
 
     /**
-     * 自定义判断条件的实现，当解析注解属性时，将根据给定的判断条件，
-     * 确定该属性中是否含有可重复注解，收集器将返回所有匹配的属性中的可重复注解。
+     * 自定义判断条件的实现，当解析注解属性时，将根据给定的判断条件， 确定该属性中是否含有可重复注解，收集器将返回所有匹配的属性中的可重复注解。
      */
     class Condition extends AbstractCollector {
 
@@ -438,16 +412,13 @@ public interface RepeatableAnnotationCollector {
         @Override
         protected List<Method> resolveRepeatableMethod(final Annotation annotation) {
             return Stream.of(AnnoKit.getAnnotationAttributes(annotation.annotationType()))
-                    .filter(method -> predicate.test(annotation, method))
-                    .collect(Collectors.toList());
+                    .filter(method -> predicate.test(annotation, method)).collect(Collectors.toList());
         }
 
     }
 
     /**
-     * 全量实现，当注解中存在有属性为注解数组，且该数组对应的注解类型被{@link Repeatable}注解时，
-     * 认为该属性包含可重复注解。
-     * 收集器将返回所有符合上述条件的属性中的可重复注解。
+     * 全量实现，当注解中存在有属性为注解数组，且该数组对应的注解类型被{@link Repeatable}注解时， 认为该属性包含可重复注解。 收集器将返回所有符合上述条件的属性中的可重复注解。
      */
     class Full extends AbstractCollector {
 
@@ -480,7 +451,8 @@ public interface RepeatableAnnotationCollector {
          */
         @Override
         protected List<Method> resolveRepeatableMethod(final Annotation annotation) {
-            final Object cache = repeatableMethodCache.computeIfAbsent(annotation.annotationType(), this::resolveRepeatableMethodFromType);
+            final Object cache = repeatableMethodCache.computeIfAbsent(annotation.annotationType(),
+                    this::resolveRepeatableMethodFromType);
             return (cache == NONE) ? null : (List<Method>) cache;
         }
 
@@ -489,8 +461,7 @@ public interface RepeatableAnnotationCollector {
          */
         private Object resolveRepeatableMethodFromType(final Class<? extends Annotation> annotationType) {
             final List<Method> methods = Stream.of(AnnoKit.getAnnotationAttributes(annotationType))
-                    .filter(this::isRepeatableMethod)
-                    .collect(Collectors.toList());
+                    .filter(this::isRepeatableMethod).collect(Collectors.toList());
             return methods.isEmpty() ? NONE : methods;
         }
 
@@ -505,11 +476,9 @@ public interface RepeatableAnnotationCollector {
             // 返回值类型需为数组
             return attributeType.isArray()
                     // 且数组元素需为注解
-                    && attributeType.getComponentType()
-                    .isAnnotation()
+                    && attributeType.getComponentType().isAnnotation()
                     // 该注解类必须被@Repeatable注解，但不要求与当前属性的声明方法一致
-                    && attributeType.getComponentType()
-                    .isAnnotationPresent(Repeatable.class);
+                    && attributeType.getComponentType().isAnnotationPresent(Repeatable.class);
         }
 
     }

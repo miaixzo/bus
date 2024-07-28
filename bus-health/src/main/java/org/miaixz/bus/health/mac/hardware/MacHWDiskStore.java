@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.mac.hardware;
 
 import com.sun.jna.Pointer;
@@ -70,7 +70,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
     private List<HWPartition> partitionList;
 
     private MacHWDiskStore(String name, String model, String serial, long size, DASessionRef session,
-                           Map<String, String> mountPointMap, Map<CFKey, CFStringRef> cfKeyMap) {
+            Map<String, String> mountPointMap, Map<CFKey, CFStringRef> cfKeyMap) {
         super(name, model, serial, size);
         updateDiskStats(session, mountPointMap, cfKeyMap);
     }
@@ -263,7 +263,7 @@ public final class MacHWDiskStore extends AbstractHWDiskStore {
     }
 
     private boolean updateDiskStats(DASessionRef session, Map<String, String> mountPointMap,
-                                    Map<CFKey, CFStringRef> cfKeyMap) {
+            Map<CFKey, CFStringRef> cfKeyMap) {
         // Now look up the device using the BSD Name to get its
         // statistics
         String bsdName = getName();

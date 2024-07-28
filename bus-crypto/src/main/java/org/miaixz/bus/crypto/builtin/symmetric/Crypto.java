@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.crypto.builtin.symmetric;
 
 import org.miaixz.bus.core.lang.Algorithm;
@@ -56,8 +56,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * 对称加密算法
- * 在对称加密算法中，数据发信方将明文（原始数据）和加密密钥一起经过特殊加密算法处理后，使其变成复杂的加密密文发送出去。
+ * 对称加密算法 在对称加密算法中，数据发信方将明文（原始数据）和加密密钥一起经过特殊加密算法处理后，使其变成复杂的加密密文发送出去。
  * 收信方收到密文后，若想解读原文，则需要使用加密用过的密钥及相同算法的逆算法对密文进行解密，才能使其恢复成可读明文。
  * 在对称加密算法中，使用的密钥只有一个，发收信双方都使用这个密钥对数据进行加密和解密，这就要求解密方事先必须知道加密密钥。
  *
@@ -171,7 +170,8 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
      * @param blockSize 块大小
      * @throws IOException IO异常
      */
-    private static void copyForZeroPadding(final CipherInputStream in, final OutputStream out, final int blockSize) throws IOException {
+    private static void copyForZeroPadding(final CipherInputStream in, final OutputStream out, final int blockSize)
+            throws IOException {
         int n = 1;
         if (Normal._8192 > blockSize) {
             n = Math.max(n, Normal._8192 / blockSize);
@@ -183,7 +183,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
 
         boolean isFirst = true;
         int preReadSize = 0;
-        for (int readSize; (readSize = in.read(buffer)) != Normal.__1; ) {
+        for (int readSize; (readSize = in.read(buffer)) != Normal.__1;) {
             if (isFirst) {
                 isFirst = false;
             } else {
@@ -311,8 +311,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * 更新数据，分组加密中间结果可以当作随机数
-     * 第一次更新数据前需要调用{@link #setMode(Algorithm.Type)}初始化加密或解密模式，然后每次更新数据都是累加模式
+     * 更新数据，分组加密中间结果可以当作随机数 第一次更新数据前需要调用{@link #setMode(Algorithm.Type)}初始化加密或解密模式，然后每次更新数据都是累加模式
      *
      * @param data 被加密的bytes
      * @return update之后的bytes
@@ -330,8 +329,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * 更新数据，分组加密中间结果可以当作随机数
-     * 第一次更新数据前需要调用{@link #setMode(Algorithm.Type)}初始化加密或解密模式，然后每次更新数据都是累加模式
+     * 更新数据，分组加密中间结果可以当作随机数 第一次更新数据前需要调用{@link #setMode(Algorithm.Type)}初始化加密或解密模式，然后每次更新数据都是累加模式
      *
      * @param data 被加密的bytes
      * @return update之后的hex数据
@@ -365,7 +363,8 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     @Override
-    public void encrypt(final InputStream data, final OutputStream out, final boolean isClose) throws InternalException {
+    public void encrypt(final InputStream data, final OutputStream out, final boolean isClose)
+            throws InternalException {
         CipherOutputStream cipherOutputStream = null;
         lock.lock();
         try {
@@ -418,7 +417,8 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     @Override
-    public void decrypt(final InputStream data, final OutputStream out, final boolean isClose) throws InternalException {
+    public void decrypt(final InputStream data, final OutputStream out, final boolean isClose)
+            throws InternalException {
         CipherInputStream cipherInputStream = null;
         lock.lock();
         try {
@@ -457,8 +457,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
      */
     private Crypto initParams(final String algorithm, AlgorithmParameterSpec paramsSpec) {
         if (null == paramsSpec) {
-            byte[] iv = Optional.ofNullable(cipher)
-                    .map(JceCipher::getRaw).map(Cipher::getIV).get();
+            byte[] iv = Optional.ofNullable(cipher).map(JceCipher::getRaw).map(Cipher::getIV).get();
 
             // 随机IV
             if (StringKit.startWithIgnoreCase(algorithm, "PBE")) {
@@ -469,7 +468,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
                 paramsSpec = new PBEParameterSpec(iv, 100);
             } else if (StringKit.startWithIgnoreCase(algorithm, "AES")) {
                 if (null != iv) {
-                    //AES使用Cipher默认的随机盐
+                    // AES使用Cipher默认的随机盐
                     paramsSpec = new IvParameterSpec(iv);
                 }
             }
@@ -489,8 +488,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
         if (null != salt) {
             // /提供OpenSSL格式兼容支持
             final String algorithm = getCipher().getAlgorithm();
-            final byte[][] keyAndIV = SaltParser.ofMd5(32, algorithm)
-                    .getKeyAndIV(secretKey.getEncoded(), salt);
+            final byte[][] keyAndIV = SaltParser.ofMd5(32, algorithm).getKeyAndIV(secretKey.getEncoded(), salt);
             secretKey = Keeper.generateKey(algorithm, keyAndIV[0]);
             if (ArrayKit.isNotEmpty(keyAndIV[1])) {
                 setAlgorithmParameterSpec(new IvParameterSpec(keyAndIV[1]));
@@ -498,8 +496,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
         }
 
         final JceCipher cipher = this.cipher;
-        cipher.init(mode,
-                new JceCipher.JceParameters(secretKey, this.algorithmParameterSpec, this.random));
+        cipher.init(mode, new JceCipher.JceParameters(secretKey, this.algorithmParameterSpec, this.random));
         return cipher;
     }
 
@@ -529,8 +526,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
-     * 数据按照blockSize去除填充部分，用于解密
-     * 在{@link Padding#ZeroPadding} 模式下，且数据长度不是blockSize的整数倍才有效，否则返回原数据
+     * 数据按照blockSize去除填充部分，用于解密 在{@link Padding#ZeroPadding} 模式下，且数据长度不是blockSize的整数倍才有效，否则返回原数据
      *
      * @param data      数据
      * @param blockSize 块大小，必须大于0

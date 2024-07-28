@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.pager.builtin;
 
 import org.apache.ibatis.mapping.MappedStatement;
@@ -60,7 +60,7 @@ public class PageAutoDialect {
     private static Map<String, Class<? extends AutoDialect>> autoDialectMap = new LinkedHashMap<>();
 
     static {
-        //注册别名
+        // 注册别名
         registerDialectAlias("hsqldb", Hsqldb.class);
         registerDialectAlias("h2", Hsqldb.class);
         registerDialectAlias("phoenix", Hsqldb.class);
@@ -78,42 +78,42 @@ public class PageAutoDialect {
         registerDialectAlias("db2", Db2.class);
         registerDialectAlias("as400", AS400.class);
         registerDialectAlias("informix", Informix.class);
-        //解决 informix-sqli
+        // 解决 informix-sqli
         registerDialectAlias("informix-sqli", Informix.class);
 
         registerDialectAlias("sqlserver", SqlServer.class);
         registerDialectAlias("sqlserver2012", SqlServer2012.class);
 
         registerDialectAlias("derby", SqlServer2012.class);
-        //达梦数据库
+        // 达梦数据库
         registerDialectAlias("dm", Oracle.class);
-        //阿里云PPAS数据库
+        // 阿里云PPAS数据库
         registerDialectAlias("edb", Oracle.class);
-        //神通数据库
+        // 神通数据库
         registerDialectAlias("oscar", Oscar.class);
         registerDialectAlias("clickhouse", MySql.class);
-        //瀚高数据库
+        // 瀚高数据库
         registerDialectAlias("highgo", Hsqldb.class);
-        //虚谷数据库
+        // 虚谷数据库
         registerDialectAlias("xugu", Hsqldb.class);
         registerDialectAlias("impala", Hsqldb.class);
         registerDialectAlias("firebirdsql", Firebird.class);
-        //人大金仓数据库
+        // 人大金仓数据库
         registerDialectAlias("kingbase", PostgreSql.class);
         // 人大金仓新版本kingbase8
         registerDialectAlias("kingbase8", PostgreSql.class);
-        //行云数据库
+        // 行云数据库
         registerDialectAlias("xcloud", CirroData.class);
 
-        //openGauss数据库
+        // openGauss数据库
         registerDialectAlias("opengauss", PostgreSql.class);
 
-        //注册 AutoDialect
-        //想要实现和以前版本相同的效果时，可以配置 autoDialectClass=old
+        // 注册 AutoDialect
+        // 想要实现和以前版本相同的效果时，可以配置 autoDialectClass=old
         registerAutoDialectAlias("old", Early.class);
         registerAutoDialectAlias("hikari", Hikari.class);
         registerAutoDialectAlias("druid", Druid.class);
-        //不配置时，默认使用 Defalut
+        // 不配置时，默认使用 Defalut
         registerAutoDialectAlias("default", Defalut.class);
     }
 
@@ -183,7 +183,9 @@ public class PageAutoDialect {
             if (AbstractPaging.class.isAssignableFrom(sqlDialectClass)) {
                 dialect = (AbstractPaging) sqlDialectClass.newInstance();
             } else {
-                throw new PageException("When using PageContext, the dialect must be an implementation class that implements the " + AbstractPaging.class.getCanonicalName() + " interface!");
+                throw new PageException(
+                        "When using PageContext, the dialect must be an implementation class that implements the "
+                                + AbstractPaging.class.getCanonicalName() + " interface!");
             }
         } catch (Exception e) {
             throw new PageException("error initializing basic dialectclass[" + dialectClass + "]" + e.getMessage(), e);
@@ -192,7 +194,7 @@ public class PageAutoDialect {
         return dialect;
     }
 
-    //获取当前的代理对象
+    // 获取当前的代理对象
     public AbstractPaging getDelegate() {
         if (delegate != null) {
             return delegate;
@@ -200,7 +202,7 @@ public class PageAutoDialect {
         return dialectThreadLocal.get();
     }
 
-    //移除代理对象
+    // 移除代理对象
     public void clearDelegate() {
         dialectThreadLocal.remove();
     }
@@ -258,7 +260,8 @@ public class PageAutoDialect {
             lock.lock();
             try {
                 if (!urlDialectMap.containsKey(dialectKey)) {
-                    urlDialectMap.put(dialectKey, autoDialectDelegate.extractDialect(dialectKey, ms, dataSource, properties));
+                    urlDialectMap.put(dialectKey,
+                            autoDialectDelegate.extractDialect(dialectKey, ms, dataSource, properties));
                 }
             } finally {
                 lock.unlock();
@@ -287,7 +290,8 @@ public class PageAutoDialect {
                 throw new IllegalArgumentException("Make sure that the AutoDialect implementation class ("
                         + autoDialectClassStr + ") for the autoDialectClass configuration exists!", e);
             } catch (Exception e) {
-                throw new RuntimeException(autoDialectClassStr + "Class must provide a constructor without parameters", e);
+                throw new RuntimeException(autoDialectClassStr + "Class must provide a constructor without parameters",
+                        e);
             }
         } else {
             this.autoDialectDelegate = new Defalut();
@@ -306,21 +310,22 @@ public class PageAutoDialect {
             for (int i = 0; i < alias.length; i++) {
                 String[] kv = alias[i].split(Symbol.EQUAL);
                 if (kv.length != 2) {
-                    throw new IllegalArgumentException("dialectAlias parameter misconfigured," +
-                            "Please follow alias1=xx.dialectClass; alias2=dialectClass2!");
+                    throw new IllegalArgumentException("dialectAlias parameter misconfigured,"
+                            + "Please follow alias1=xx.dialectClass; alias2=dialectClass2!");
                 }
                 for (int j = 0; j < kv.length; j++) {
                     try {
-                        //允许配置如 dm=oracle, 直接引用oracle实现
+                        // 允许配置如 dm=oracle, 直接引用oracle实现
                         if (dialectAliasMap.containsKey(kv[1])) {
                             registerDialectAlias(kv[0], dialectAliasMap.get(kv[1]));
                         } else {
                             Class<? extends Dialect> diallectClass = (Class<? extends Dialect>) Class.forName(kv[1]);
-                            //允许覆盖已有的实现
+                            // 允许覆盖已有的实现
                             registerDialectAlias(kv[0], diallectClass);
                         }
                     } catch (ClassNotFoundException e) {
-                        throw new IllegalArgumentException("Make sure the Dialect implementation class configured by dialectAlias exists!", e);
+                        throw new IllegalArgumentException(
+                                "Make sure the Dialect implementation class configured by dialectAlias exists!", e);
                     }
                 }
             }
@@ -330,28 +335,28 @@ public class PageAutoDialect {
     public void setProperties(Properties properties) {
 
         this.properties = properties;
-        //初始化自定义AutoDialect
+        // 初始化自定义AutoDialect
         initAutoDialectClass(properties);
-        //使用 sqlserver2012 作为默认分页方式，这种情况在动态数据源时方便使用
+        // 使用 sqlserver2012 作为默认分页方式，这种情况在动态数据源时方便使用
         String useSqlserver2012 = properties.getProperty("useSqlserver2012");
         if (StringKit.isNotEmpty(useSqlserver2012) && Boolean.parseBoolean(useSqlserver2012)) {
             registerDialectAlias("sqlserver", SqlServer2012.class);
             registerDialectAlias("sqlserver2008", SqlServer.class);
         }
         initDialectAlias(properties);
-        //指定的 Pager 数据库方言，和  不同
+        // 指定的 Pager 数据库方言，和 不同
         String dialect = properties.getProperty("pagerDialect");
-        //运行时获取数据源
+        // 运行时获取数据源
         String runtimeDialect = properties.getProperty("autoRuntimeDialect");
-        //1.动态多数据源
+        // 1.动态多数据源
         if (StringKit.isNotEmpty(runtimeDialect) && "TRUE".equalsIgnoreCase(runtimeDialect)) {
             this.autoDialect = false;
         }
-        //2.动态获取方言
+        // 2.动态获取方言
         else if (StringKit.isEmpty(dialect)) {
             autoDialect = true;
         }
-        //3.指定方言
+        // 3.指定方言
         else {
             autoDialect = false;
             this.delegate = instanceDialect(dialect, properties);

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy;
 
 import java.io.FilterInputStream;
@@ -79,17 +79,20 @@ public class CountingInputStream extends FilterInputStream {
     }
 
     private int incCount(int read) {
-        if (read >= 0) count++;
+        if (read >= 0)
+            count++;
         return read;
     }
 
     private int addCount(int read) {
-        if (read > 0) count += read;
+        if (read > 0)
+            count += read;
         return read;
     }
 
     private long addCount(long skip) {
-        if (skip > 0) count += skip;
+        if (skip > 0)
+            count += skip;
         return skip;
     }
 

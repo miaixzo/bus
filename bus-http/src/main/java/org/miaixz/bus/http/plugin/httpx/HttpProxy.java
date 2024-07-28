@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.plugin.httpx;
 
 import org.miaixz.bus.core.net.HTTP;
@@ -74,9 +74,8 @@ public class HttpProxy {
     public Authenticator authenticator() {
         return (route, response) -> {
             String credential = Credentials.basic(user, password);
-            return response.request().newBuilder().
-                    header(HTTP.PROXY_AUTHORIZATION, credential).
-                    header(HTTP.PROXY_CONNECTION, HTTP.KEEP_ALIVE).build();
+            return response.request().newBuilder().header(HTTP.PROXY_AUTHORIZATION, credential)
+                    .header(HTTP.PROXY_CONNECTION, HTTP.KEEP_ALIVE).build();
         };
     }
 

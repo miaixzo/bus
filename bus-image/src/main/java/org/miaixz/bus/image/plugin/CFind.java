@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.plugin;
 
 import org.miaixz.bus.core.lang.Symbol;
@@ -39,6 +39,7 @@ import org.miaixz.bus.image.metric.service.QueryRetrieveLevel;
 import org.miaixz.bus.logger.Logger;
 
 import java.text.MessageFormat;
+
 /**
  * @author Kimi Liu
  * @since Java 17+
@@ -53,11 +54,10 @@ public class CFind {
 
     public static final ImageParam StudyInstanceUID = new ImageParam(Tag.StudyInstanceUID);
     public static final ImageParam AccessionNumber = new ImageParam(Tag.AccessionNumber);
-    public static final ImageParam IssuerOfAccessionNumberSequence =
-            new ImageParam(Tag.IssuerOfAccessionNumberSequence);
+    public static final ImageParam IssuerOfAccessionNumberSequence = new ImageParam(
+            Tag.IssuerOfAccessionNumberSequence);
     public static final ImageParam StudyID = new ImageParam(Tag.StudyID);
-    public static final ImageParam ReferringPhysicianName =
-            new ImageParam(Tag.ReferringPhysicianName);
+    public static final ImageParam ReferringPhysicianName = new ImageParam(Tag.ReferringPhysicianName);
     public static final ImageParam StudyDescription = new ImageParam(Tag.StudyDescription);
     public static final ImageParam StudyDate = new ImageParam(Tag.StudyDate);
     public static final ImageParam StudyTime = new ImageParam(Tag.StudyTime);
@@ -76,8 +76,7 @@ public class CFind {
      * @param keys        用于匹配和返回键。 没有值的Args是返回键
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度信息
      */
-    public static Status process(
-            Node callingNode, Node calledNode, ImageParam... keys) {
+    public static Status process(Node callingNode, Node calledNode, ImageParam... keys) {
         return process(null, callingNode, calledNode, 0, QueryRetrieveLevel.STUDY, keys);
     }
 
@@ -88,8 +87,7 @@ public class CFind {
      * @param keys        用于匹配和返回键。 没有值的Args是返回键
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度
      */
-    public static Status process(
-            Args args, Node callingNode, Node calledNode, ImageParam... keys) {
+    public static Status process(Args args, Node callingNode, Node calledNode, ImageParam... keys) {
         return process(args, callingNode, calledNode, 0, QueryRetrieveLevel.STUDY, keys);
     }
 
@@ -102,13 +100,8 @@ public class CFind {
      * @param keys        用于匹配和返回键。 没有值的Args是返回键
      * @return Status实例，其中包含DICOM响应，DICOM状态，错误消息和进度
      */
-    public static Status process(
-            Args args,
-            Node callingNode,
-            Node calledNode,
-            int cancelAfter,
-            QueryRetrieveLevel level,
-            ImageParam... keys) {
+    public static Status process(Args args, Node callingNode, Node calledNode, int cancelAfter,
+            QueryRetrieveLevel level, ImageParam... keys) {
         if (callingNode == null || calledNode == null) {
             throw new IllegalArgumentException("callingNode or calledNode cannot be null!");
         }
@@ -126,8 +119,8 @@ public class CFind {
             options.configure(conn);
             options.configureTLS(conn, remote);
 
-            findSCU.setInformationModel(
-                    getInformationModel(options), options.getTsuidOrder(), options.getQueryOptions());
+            findSCU.setInformationModel(getInformationModel(options), options.getTsuidOrder(),
+                    options.getQueryOptions());
             if (level != null) {
                 findSCU.addLevel(level.name());
             }
@@ -151,13 +144,10 @@ public class CFind {
                 findSCU.query();
                 Builder.forceGettingAttributes(dcmState, findSCU);
                 long t3 = System.currentTimeMillis();
-                String timeMsg =
-                        MessageFormat.format(
-                                "DICOM C-Find connected in {2}ms from {0} to {1}. Query in {3}ms.",
-                                findSCU.getAAssociateRQ().getCallingAET(),
-                                findSCU.getAAssociateRQ().getCalledAET(),
-                                t2 - t1,
-                                t3 - t2);
+                String timeMsg = MessageFormat.format(
+                        "DICOM C-Find connected in {2}ms from {0} to {1}. Query in {3}ms.",
+                        findSCU.getAAssociateRQ().getCallingAET(), findSCU.getAAssociateRQ().getCalledAET(), t2 - t1,
+                        t3 - t2);
                 dcmState = Status.buildMessage(dcmState, timeMsg, null);
                 dcmState.addProcessTime(t1, t2, t3);
                 return dcmState;
@@ -177,12 +167,8 @@ public class CFind {
                 Thread.currentThread().interrupt();
             }
             Logger.error("findscu", e);
-            return Status.buildMessage(
-                    new Status(Status.UnableToProcess,
-                            "DICOM Find failed" + Symbol.COLON + Symbol.SPACE + e.getMessage(),
-                            null),
-                    null,
-                    e);
+            return Status.buildMessage(new Status(Status.UnableToProcess,
+                    "DICOM Find failed" + Symbol.COLON + Symbol.SPACE + e.getMessage(), null), null, e);
         }
     }
 

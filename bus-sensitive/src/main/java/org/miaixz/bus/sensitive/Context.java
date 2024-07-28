@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.sensitive;
 
 import lombok.Getter;
@@ -93,7 +93,6 @@ public class Context {
     public String getCurrentFieldName() {
         return this.currentField.getName();
     }
-
 
     /**
      * 获取当前字段值

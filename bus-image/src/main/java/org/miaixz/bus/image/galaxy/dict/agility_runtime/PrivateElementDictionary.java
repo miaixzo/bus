@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.agility_runtime;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,22 +46,23 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag._0029_xx11_:
-                return VR.CS;
-            case PrivateTag._0011_xx20_:
-            case PrivateTag._0011_xx21_:
-            case PrivateTag._0011_xx22_:
-                return VR.LO;
-            case PrivateTag._0029_xx12_:
-            case PrivateTag._0029_xx13_:
-            case PrivateTag._0029_xx14_:
-            case PrivateTag._0029_xx1F_:
-                return VR.US;
+
+        case PrivateTag._0029_xx11_:
+            return VR.CS;
+        case PrivateTag._0011_xx20_:
+        case PrivateTag._0011_xx21_:
+        case PrivateTag._0011_xx22_:
+            return VR.LO;
+        case PrivateTag._0029_xx12_:
+        case PrivateTag._0029_xx13_:
+        case PrivateTag._0029_xx14_:
+        case PrivateTag._0029_xx1F_:
+            return VR.US;
         }
         return VR.UN;
     }

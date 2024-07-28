@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv;
 
 import org.miaixz.bus.image.nimble.Photometric;
@@ -79,9 +79,8 @@ public class NativeJLSImageWriter extends ImageWriter {
         ImageDescriptor desc = ((BytesWithImageImageDescriptor) stream).getImageDescriptor();
         Photometric pi = desc.getPhotometricInterpretation();
 
-        if (jpegParams.isCompressionLossless() && (Photometric.YBR_FULL_422 == pi
-                || Photometric.YBR_PARTIAL_422 == pi || Photometric.YBR_PARTIAL_420 == pi
-                || Photometric.YBR_ICT == pi || Photometric.YBR_RCT == pi)) {
+        if (jpegParams.isCompressionLossless() && (Photometric.YBR_FULL_422 == pi || Photometric.YBR_PARTIAL_422 == pi
+                || Photometric.YBR_PARTIAL_420 == pi || Photometric.YBR_ICT == pi || Photometric.YBR_RCT == pi)) {
             throw new IllegalArgumentException(
                     "True lossless encoder: Photometric interpretation is not supported: " + pi);
         }
@@ -106,7 +105,8 @@ public class NativeJLSImageWriter extends ImageWriter {
                 if (signed) {
                     Logger.warn("Force compression to JPEG-LS lossless as lossy is not adapted to signed data.");
                     jpeglsNLE = 0;
-                    bitCompressed = 16; // Extend to bit allocated to avoid exception as negative values are treated as large positive values
+                    bitCompressed = 16; // Extend to bit allocated to avoid exception as negative values are treated as
+                                        // large positive values
                 }
                 // Specific case not well supported by jpeg and jpeg-ls encoder that reduce the stream to 8-bit
                 if (bitCompressed == 8 && renderedImage.getSampleModel().getTransferType() != DataBuffer.TYPE_BYTE) {

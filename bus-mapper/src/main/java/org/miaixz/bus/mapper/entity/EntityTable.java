@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.entity;
 
 import jakarta.persistence.Table;
@@ -108,7 +108,8 @@ public class EntityTable {
             if (matcher.find()) {
                 column = matcher.group(1);
             }
-            ResultMapping.Builder builder = new ResultMapping.Builder(configuration, entityColumn.getProperty(), column, entityColumn.getJavaType());
+            ResultMapping.Builder builder = new ResultMapping.Builder(configuration, entityColumn.getProperty(), column,
+                    entityColumn.getJavaType());
             if (entityColumn.getJdbcType() != null) {
                 builder.jdbcType(entityColumn.getJdbcType());
             }
@@ -126,7 +127,8 @@ public class EntityTable {
             builder.flags(flags);
             resultMappings.add(builder.build());
         }
-        ResultMap.Builder builder = new ResultMap.Builder(configuration, "BaseMapperResultMap", this.entityClass, resultMappings, true);
+        ResultMap.Builder builder = new ResultMap.Builder(configuration, "BaseMapperResultMap", this.entityClass,
+                resultMappings, true);
         this.resultMap = builder.build();
         return this.resultMap;
     }
@@ -206,9 +208,9 @@ public class EntityTable {
 
     public String[] getKeyColumns() {
         if (keyColumns != null && keyColumns.size() > 0) {
-            return keyColumns.toArray(new String[]{});
+            return keyColumns.toArray(new String[] {});
         }
-        return new String[]{};
+        return new String[] {};
     }
 
     public void setKeyColumns(String keyColumn) {
@@ -226,9 +228,9 @@ public class EntityTable {
 
     public String[] getKeyProperties() {
         if (keyProperties != null && keyProperties.size() > 0) {
-            return keyProperties.toArray(new String[]{});
+            return keyProperties.toArray(new String[] {});
         }
-        return new String[]{};
+        return new String[] {};
     }
 
     public void setKeyProperties(String keyProperty) {

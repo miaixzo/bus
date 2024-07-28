@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.software.common;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -44,7 +44,8 @@ import java.util.function.Supplier;
 @ThreadSafe
 public abstract class AbstractOSProcess implements OSProcess {
 
-    private final Supplier<Double> cumulativeCpuLoad = Memoizer.memoize(this::queryCumulativeCpuLoad, Memoizer.defaultExpiration());
+    private final Supplier<Double> cumulativeCpuLoad = Memoizer.memoize(this::queryCumulativeCpuLoad,
+            Memoizer.defaultExpiration());
 
     private final int processID;
 
@@ -78,9 +79,8 @@ public abstract class AbstractOSProcess implements OSProcess {
 
     @Override
     public String toString() {
-        String builder = "OSProcess@" + Integer.toHexString(hashCode()) +
-                "[processID=" + this.processID +
-                ", name=" + getName() + ']';
+        String builder = "OSProcess@" + Integer.toHexString(hashCode()) + "[processID=" + this.processID + ", name="
+                + getName() + ']';
         return builder;
     }
 

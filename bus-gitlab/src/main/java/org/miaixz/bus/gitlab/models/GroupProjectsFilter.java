@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org Greg Messner and other contributors.       ~
+ ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.gitlab.models;
 
 import org.miaixz.bus.gitlab.Constants;
@@ -34,7 +34,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 import java.io.Serializable;
 
 /**
- *  This class is used to filter Projects when getting lists of projects for a specified group.
+ * This class is used to filter Projects when getting lists of projects for a specified group.
  */
 public class GroupProjectsFilter implements Serializable {
     private static final long serialVersionUID = -1L;
@@ -76,7 +76,8 @@ public class GroupProjectsFilter implements Serializable {
     }
 
     /**
-     * Return projects ordered by id, name, path, created_at, updated_at, or last_activity_at fields. Default is created_at.
+     * Return projects ordered by id, name, path, created_at, updated_at, or last_activity_at fields. Default is
+     * created_at.
      *
      * @param orderBy specifies what field to order by
      * @return the reference to this ProjectFilter instance
@@ -109,8 +110,8 @@ public class GroupProjectsFilter implements Serializable {
     }
 
     /**
-     * Return only limited fields for each project. This is a no-op without
-     * authentication as then only simple fields are returned.
+     * Return only limited fields for each project. This is a no-op without authentication as then only simple fields
+     * are returned.
      *
      * @param simple if true, return only limited fields for each project
      * @return the reference to this ProjectFilter instance
@@ -143,7 +144,7 @@ public class GroupProjectsFilter implements Serializable {
     }
 
     /**
-     *  Include custom attributes in response (admins only).
+     * Include custom attributes in response (admins only).
      *
      * @param withCustomAttributes if true, include custom attributes in the repsonse
      * @return the reference to this ProjectFilter instance
@@ -203,21 +204,13 @@ public class GroupProjectsFilter implements Serializable {
      * @return a GitLabApiForm instance holding the query parameters for this ProjectFilter instance
      */
     public GitLabApiForm getQueryParams() {
-        return (new GitLabApiForm()
-                .withParam("archived", archived)
-                .withParam("visibility", visibility)
-                .withParam("order_by", orderBy)
-                .withParam("sort", sort)
-                .withParam("search", search)
-                .withParam("simple", simple)
-                .withParam("owned", owned)
-                .withParam("starred", starred)
+        return (new GitLabApiForm().withParam("archived", archived).withParam("visibility", visibility)
+                .withParam("order_by", orderBy).withParam("sort", sort).withParam("search", search)
+                .withParam("simple", simple).withParam("owned", owned).withParam("starred", starred)
                 .withParam("with_custom_attributes", withCustomAttributes)
                 .withParam("with_issues_enabled", withIssuesEnabled)
                 .withParam("with_merge_requests_enabled ", withMergeRequestsEnabled)
-                .withParam("with_shared", withShared)
-                .withParam("include_subgroups", includeSubGroups)
-        );
+                .withParam("with_shared", withShared).withParam("include_subgroups", includeSubGroups));
     }
 
     @Override

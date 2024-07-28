@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.builtin.hardware;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -42,8 +42,8 @@ import java.util.List;
 public interface HardwareAbstractionLayer {
 
     /**
-     * Instantiates a {@link ComputerSystem} object. This represents the physical hardware, including
-     * components such as BIOS/Firmware and a motherboard, logic board, etc.
+     * Instantiates a {@link ComputerSystem} object. This represents the physical hardware, including components such as
+     * BIOS/Firmware and a motherboard, logic board, etc.
      *
      * @return a {@link ComputerSystem} object.
      */
@@ -71,8 +71,8 @@ public interface HardwareAbstractionLayer {
     List<PowerSource> getPowerSources();
 
     /**
-     * Instantiates a list of {@link HWDiskStore} objects, representing physical hard disks or other
-     * similar storage devices.
+     * Instantiates a list of {@link HWDiskStore} objects, representing physical hard disks or other similar storage
+     * devices.
      *
      * @return A list of HWDiskStore objects or an empty list if none are present.
      */
@@ -109,8 +109,7 @@ public interface HardwareAbstractionLayer {
     List<NetworkIF> getNetworkIFs(boolean includeLocalInterfaces);
 
     /**
-     * Instantiates a list of {@link Display} objects, representing monitors or other video output
-     * devices.
+     * Instantiates a list of {@link Display} objects, representing monitors or other video output devices.
      *
      * @return A list of Display objects or an empty list if none are present.
      */
@@ -124,8 +123,8 @@ public interface HardwareAbstractionLayer {
     Sensors getSensors();
 
     /**
-     * Instantiates a list of {@link UsbDevice} objects, representing devices connected via a usb port
-     * (including internal devices).
+     * Instantiates a list of {@link UsbDevice} objects, representing devices connected via a usb port (including
+     * internal devices).
      * <p>
      * If the value of {@code tree} is true, the top level devices returned from this method are the USB Controllers;
      * connected hubs and devices in its device tree share that controller's bandwidth. If the value of {@code tree} is
@@ -135,7 +134,7 @@ public interface HardwareAbstractionLayer {
      *             {@link UsbDevice#getConnectedDevices()}. If {@code false} returns devices as a flat list with no
      *             connected device information.
      * @return A list of UsbDevice objects representing (optionally) the USB Controllers and devices connected to them,
-     * or an empty list if none are present
+     *         or an empty list if none are present
      */
     List<UsbDevice> getUsbDevices(boolean tree);
 

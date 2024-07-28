@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.sensitive.magic.annotation;
 
 import org.miaixz.bus.sensitive.Builder;
@@ -37,17 +37,13 @@ import java.lang.annotation.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-@Target({ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
+@Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER })
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Privacy {
 
     /**
-     * 数据处理模式
-     * 可选值
-     * 1.Builder.ALL 全部开启
-     * 2.Builder.IN  请求/写入
-     * 3.Builder.OUT 查询/输出
+     * 数据处理模式 可选值 1.Builder.ALL 全部开启 2.Builder.IN 请求/写入 3.Builder.OUT 查询/输出
      *
      * @return the string
      */

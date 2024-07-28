@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.http.accord;
 
 import org.miaixz.bus.http.metric.Internal;
@@ -42,8 +42,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * 处理连接规范回退策略:当安全套接字连接由于握手/协议问题而失败时，
- * 可能会使用不同的协议重试连接。实例是有状态的，应该创建并用于单个连接尝试
+ * 处理连接规范回退策略:当安全套接字连接由于握手/协议问题而失败时， 可能会使用不同的协议重试连接。实例是有状态的，应该创建并用于单个连接尝试
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -61,8 +60,7 @@ public class ConnectionSelector {
     }
 
     /**
-     * 根据{@link SSLSocket} 配置连接到指定的主机的信息{@link ConnectionSuite}
-     * 返回{@link ConnectionSuite}，不会返回{@code null}
+     * 根据{@link SSLSocket} 配置连接到指定的主机的信息{@link ConnectionSuite} 返回{@link ConnectionSuite}，不会返回{@code null}
      *
      * @param sslSocket ssl套接字
      * @return 套接字连接的配置
@@ -83,8 +81,7 @@ public class ConnectionSelector {
             // 这可能是第一次尝试连接，而套接字不支持任何必需的协议
             // 或者可能是重试(但此套接字支持的协议比先前的套接字所建议的少)
             throw new UnknownServiceException(
-                    "Unable to find acceptable protocols. isFallback=" + isFallback
-                            + ", modes=" + connectionSuites
+                    "Unable to find acceptable protocols. isFallback=" + isFallback + ", modes=" + connectionSuites
                             + ", supported protocols=" + Arrays.toString(sslSocket.getEnabledProtocols()));
         }
 
@@ -100,7 +97,7 @@ public class ConnectionSelector {
      *
      * @param ex 异常信息
      * @return 如果需要使用 {@link #configureSecureSocket(SSLSocket)} 或{@code false}重试连接，
-     * 则为{@code true};如果不需要重试连接，则为{@link #configureSecureSocket(SSLSocket)}或{@code false}
+     *         则为{@code true};如果不需要重试连接，则为{@link #configureSecureSocket(SSLSocket)}或{@code false}
      */
     public boolean connectionFailed(IOException ex) {
         // 未来使用此策略进行连接的任何尝试都将是一次回退尝试
@@ -138,8 +135,7 @@ public class ConnectionSelector {
     }
 
     /**
-     * 如果根据提供的{@link SSLSocket}，回退策略中的任何后面的{@link ConnectionSuite}
-     * 看起来都是可能的，则返回{@code true}。假设具有与提供的套接字相同的功能
+     * 如果根据提供的{@link SSLSocket}，回退策略中的任何后面的{@link ConnectionSuite} 看起来都是可能的，则返回{@code true}。假设具有与提供的套接字相同的功能
      */
     private boolean isFallbackPossible(SSLSocket socket) {
         for (int i = nextModeIndex; i < connectionSuites.size(); i++) {

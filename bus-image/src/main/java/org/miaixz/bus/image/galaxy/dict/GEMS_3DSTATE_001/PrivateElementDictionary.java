@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.GEMS_3DSTATE_001;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,19 +46,20 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag._0047_xxED_:
-                return VR.CS;
-            case PrivateTag._0047_xxEA_:
-            case PrivateTag._0047_xxEB_:
-                return VR.DS;
-            case PrivateTag._0047_xxE9_:
-            case PrivateTag._0047_xxEC_:
-                return VR.FL;
+
+        case PrivateTag._0047_xxED_:
+            return VR.CS;
+        case PrivateTag._0047_xxEA_:
+        case PrivateTag._0047_xxEB_:
+            return VR.DS;
+        case PrivateTag._0047_xxE9_:
+        case PrivateTag._0047_xxEC_:
+            return VR.FL;
         }
         return VR.UN;
     }

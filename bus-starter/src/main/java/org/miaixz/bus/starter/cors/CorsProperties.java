@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.starter.cors;
 
 import lombok.Getter;
@@ -52,15 +52,15 @@ public class CorsProperties {
     /**
      * 允许的域名
      */
-    private String[] allowedOrigins = new String[]{Symbol.STAR};
+    private String[] allowedOrigins = new String[] { Symbol.STAR };
     /**
      * 允许的请求头
      */
-    private String[] allowedHeaders = new String[]{Symbol.STAR};
+    private String[] allowedHeaders = new String[] { Symbol.STAR };
     /**
      * 允许的方法
      */
-    private String[] allowedMethods = new String[]{HTTP.GET, HTTP.POST, HTTP.PUT, HTTP.OPTIONS, HTTP.DELETE};
+    private String[] allowedMethods = new String[] { HTTP.GET, HTTP.POST, HTTP.PUT, HTTP.OPTIONS, HTTP.DELETE };
     /**
      * 响应头信息公开
      */

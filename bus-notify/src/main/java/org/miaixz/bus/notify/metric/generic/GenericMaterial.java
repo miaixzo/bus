@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.notify.metric.generic;
 
 import lombok.AllArgsConstructor;
@@ -166,7 +166,8 @@ public class GenericMaterial extends Material {
     public GenericMaterial defaultIfEmpty() {
         if (StringKit.isBlank(this.host)) {
             // 如果SMTP地址为空,默认使用smtp.<发件人邮箱后缀>
-            this.host = StringKit.format("smtp.{}", StringKit.subSuf(this.sender, this.sender.indexOf(Symbol.C_AT) + 1));
+            this.host = StringKit.format("smtp.{}",
+                    StringKit.subSuf(this.sender, this.sender.indexOf(Symbol.C_AT) + 1));
         }
         if (StringKit.isBlank(user)) {
             // 如果用户名为空,默认为发件人邮箱前缀
@@ -193,7 +194,7 @@ public class GenericMaterial extends Material {
      * @return {@link java.util.Properties}
      */
     public java.util.Properties getSmtpProps() {
-        //全局系统参数
+        // 全局系统参数
         System.setProperty(SPLIT_LONG_PARAMS, String.valueOf(this.splitlongparameters));
 
         final java.util.Properties p = new java.util.Properties();
@@ -211,11 +212,11 @@ public class GenericMaterial extends Material {
         p.put(MAIL_DEBUG, String.valueOf(this.debug));
 
         if (this.startttlsEnable) {
-            //STARTTLS是对纯文本通信协议的扩展 它将纯文本连接升级为加密连接(TLS或SSL), 而不是使用一个单独的加密通信端口
+            // STARTTLS是对纯文本通信协议的扩展 它将纯文本连接升级为加密连接(TLS或SSL), 而不是使用一个单独的加密通信端口
             p.put(MAIL_TLS_ENABLE, String.valueOf(this.startttlsEnable));
 
             if (null == this.sslEnable) {
-                //为了兼容旧版本,当用户没有此项配置时,按照startttlsEnable开启状态时对待
+                // 为了兼容旧版本,当用户没有此项配置时,按照startttlsEnable开启状态时对待
                 this.sslEnable = true;
             }
         }

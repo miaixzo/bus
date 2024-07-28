@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.notify.metric.ctyun;
 
 import org.miaixz.bus.core.basic.entity.Message;
@@ -77,9 +77,11 @@ public class CtyunSmsProvider extends AbstractProvider<CtyunMaterial, Context> {
         byte[] kDate = org.miaixz.bus.crypto.Builder.hmacSha256(signatureDate.getBytes()).digest(kAk);
 
         // 报文原封不动进行sha256摘要
-        String signatureStr = String.format("ctyun-eop-request-id:%s\neop-date:%s\n", uuid, signatureTime) + "\n\n" + calculateContentHash;
+        String signatureStr = String.format("ctyun-eop-request-id:%s\neop-date:%s\n", uuid, signatureTime) + "\n\n"
+                + calculateContentHash;
         // 构造签名
-        String signature = Base64.encode(org.miaixz.bus.crypto.Builder.hmacSha256(signatureStr.getBytes(StandardCharsets.UTF_8)).digest(kDate));
+        String signature = Base64.encode(
+                org.miaixz.bus.crypto.Builder.hmacSha256(signatureStr.getBytes(StandardCharsets.UTF_8)).digest(kDate));
         String signHeader = String.format("%s Headers=ctyun-eop-request-id;eop-date Signature=%s", key, signature);
         map.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         map.put("ctyun-eop-request-id", uuid);
@@ -97,13 +99,12 @@ public class CtyunSmsProvider extends AbstractProvider<CtyunMaterial, Context> {
         bodys.put("templateParam", entity.getParams());
         bodys.put("templateCode", entity.getTemplate());
 
-        String response = Httpx.post(this.getUrl(entity), bodys, signHeader(JsonKit.toJsonString(bodys), this.context.getAppKey(), this.context.getAppSecret()));
+        String response = Httpx.post(this.getUrl(entity), bodys,
+                signHeader(JsonKit.toJsonString(bodys), this.context.getAppKey(), this.context.getAppSecret()));
 
         String errcode = JsonKit.getValue(response, "errcode");
-        return Message.builder()
-                .errcode("200".equals(errcode) ? ErrorCode.SUCCESS.getCode() : errcode)
-                .errmsg(JsonKit.getValue(response, "errmsg"))
-                .build();
+        return Message.builder().errcode("200".equals(errcode) ? ErrorCode.SUCCESS.getCode() : errcode)
+                .errmsg(JsonKit.getValue(response, "errmsg")).build();
     }
 
 }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.timout;
 
 import org.miaixz.bus.core.io.SectionBuffer;
@@ -39,8 +39,7 @@ import java.io.InterruptedIOException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 此超时使用后台线程在超时发生时精确地执行操作 用它来
- * 在本地不支持超时的地方实现超时,例如对阻塞的套接字操作.
+ * 此超时使用后台线程在超时发生时精确地执行操作 用它来 在本地不支持超时的地方实现超时,例如对阻塞的套接字操作.
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -48,9 +47,7 @@ import java.util.concurrent.TimeUnit;
 public class AsyncTimeout extends Timeout {
 
     /**
-     * 每次写入的数据不得超过 64 KiB，无论大小。
-     * 否则，慢速连接即使正在（缓慢）进行，也可能会超时。
-     * 如果不这样做，在速度足够慢的连接上，写入单个 1 MiB 缓冲区可能永远不会成功。
+     * 每次写入的数据不得超过 64 KiB，无论大小。 否则，慢速连接即使正在（缓慢）进行，也可能会超时。 如果不这样做，在速度足够慢的连接上，写入单个 1 MiB 缓冲区可能永远不会成功。
      */
     private static final int TIMEOUT_WRITE_SIZE = 64 * 1024;
 
@@ -80,8 +77,7 @@ public class AsyncTimeout extends Timeout {
      */
     private long timeoutAt;
 
-    private static synchronized void scheduleTimeout(
-            AsyncTimeout node, long timeoutNanos, boolean hasDeadline) {
+    private static synchronized void scheduleTimeout(AsyncTimeout node, long timeoutNanos, boolean hasDeadline) {
         // 在第一次超时安排时启动守护线程并创建头节点
         if (head == null) {
             head = new AsyncTimeout();
@@ -135,8 +131,7 @@ public class AsyncTimeout extends Timeout {
     }
 
     /**
-     * 删除并返回列表头部的节点，必要时等待其超时。
-     * 如果启动时列表头部没有节点，则返回 {@link #head}，并且在等待 {@code IDLE_TIMEOUT_NANOS} 后仍然没有节点。
+     * 删除并返回列表头部的节点，必要时等待其超时。 如果启动时列表头部没有节点，则返回 {@link #head}，并且在等待 {@code IDLE_TIMEOUT_NANOS} 后仍然没有节点。
      * 如果在等待期间插入了新节点，则返回 null。否则，返回正在等待的已被删除的节点。
      */
     static AsyncTimeout awaitTimeout() throws InterruptedException {
@@ -147,8 +142,7 @@ public class AsyncTimeout extends Timeout {
         if (node == null) {
             long startNanos = System.nanoTime();
             AsyncTimeout.class.wait(IDLE_TIMEOUT_MILLIS);
-            return head.next == null && (System.nanoTime() - startNanos) >= IDLE_TIMEOUT_NANOS
-                    ? head  // 空闲超时已过
+            return head.next == null && (System.nanoTime() - startNanos) >= IDLE_TIMEOUT_NANOS ? head // 空闲超时已过
                     : null; // 情况已经发生了变化
         }
 
@@ -170,7 +164,8 @@ public class AsyncTimeout extends Timeout {
     }
 
     public final void enter() {
-        if (inQueue) throw new IllegalStateException("Unbalanced enter/exit");
+        if (inQueue)
+            throw new IllegalStateException("Unbalanced enter/exit");
         long timeoutNanos = timeoutNanos();
         boolean hasDeadline = hasDeadline();
         if (timeoutNanos == 0 && !hasDeadline) {
@@ -187,7 +182,8 @@ public class AsyncTimeout extends Timeout {
      * @return the true/false
      */
     public final boolean exit() {
-        if (!inQueue) return false;
+        if (!inQueue)
+            return false;
         inQueue = false;
         return cancelScheduledTimeout(this);
     }
@@ -206,8 +202,7 @@ public class AsyncTimeout extends Timeout {
     }
 
     /**
-     * 返回一个委托给 {@code sink} 的新接收器，使用它来实现超时。
-     * 如果覆盖 {@link #timedOut} 以中断 {@code sink} 的当前操作，则效果最佳。
+     * 返回一个委托给 {@code sink} 的新接收器，使用它来实现超时。 如果覆盖 {@link #timedOut} 以中断 {@code sink} 的当前操作，则效果最佳。
      */
     public final Sink sink(final Sink sink) {
         return new Sink() {
@@ -282,8 +277,7 @@ public class AsyncTimeout extends Timeout {
     }
 
     /**
-     * 返回一个委托给 {@code source} 的新源，使用它来实现超时。
-     * 如果覆盖 {@link #timedOut} 以中断 {@code sink} 的当前操作，则效果最佳。
+     * 返回一个委托给 {@code source} 的新源，使用它来实现超时。 如果覆盖 {@link #timedOut} 以中断 {@code sink} 的当前操作，则效果最佳。
      */
     public final Source source(final Source source) {
         return new Source() {
@@ -329,26 +323,27 @@ public class AsyncTimeout extends Timeout {
     }
 
     /**
-     * 如果 {@code throwOnTimeout} 为 {@code true} 且发生超时，则抛出 IOException。
-     * 请参阅 {@link #newTimeoutException(IOException)} 以了解抛出的异常类型。
+     * 如果 {@code throwOnTimeout} 为 {@code true} 且发生超时，则抛出 IOException。 请参阅 {@link #newTimeoutException(IOException)}
+     * 以了解抛出的异常类型。
      */
     final void exit(boolean throwOnTimeout) throws IOException {
         boolean timedOut = exit();
-        if (timedOut && throwOnTimeout) throw newTimeoutException(null);
+        if (timedOut && throwOnTimeout)
+            throw newTimeoutException(null);
     }
 
     /**
-     * 如果发生超时，则返回 {@code cause} 或由 {@code cause} 引起的 IOException。
-     * 有关返回的异常类型，请参阅 {@link #newTimeoutException(IOException)}。
+     * 如果发生超时，则返回 {@code cause} 或由 {@code cause} 引起的 IOException。 有关返回的异常类型，请参阅
+     * {@link #newTimeoutException(IOException)}。
      */
     final IOException exit(IOException cause) throws IOException {
-        if (!exit()) return cause;
+        if (!exit())
+            return cause;
         return newTimeoutException(cause);
     }
 
     /**
-     * 返回一个 {@link IOException} 来表示超时。默认情况下，此方法返回 {@link InterruptedIOException}。
-     * 如果 {@code cause} 非空，则将其设置为返回异常的原因。
+     * 返回一个 {@link IOException} 来表示超时。默认情况下，此方法返回 {@link InterruptedIOException}。 如果 {@code cause} 非空，则将其设置为返回异常的原因。
      */
     protected IOException newTimeoutException(IOException cause) {
         InterruptedIOException e = new InterruptedIOException("timeout");
@@ -372,7 +367,8 @@ public class AsyncTimeout extends Timeout {
                         timedOut = awaitTimeout();
 
                         // 未找到要中断的节点。请重试
-                        if (timedOut == null) continue;
+                        if (timedOut == null)
+                            continue;
 
                         // 队列完全为空。让此线程退出，并在下次调用 scheduleTimeout() 时创建另一个守护线程。
                         if (timedOut == head) {

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.freebsd.hardware;
 
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -47,7 +47,8 @@ import java.util.function.Supplier;
 @Immutable
 final class FreeBsdFirmware extends AbstractFirmware {
 
-    private final Supplier<Triplet<String, String, String>> manufVersRelease = Memoizer.memoize(FreeBsdFirmware::readDmiDecode);
+    private final Supplier<Triplet<String, String, String>> manufVersRelease = Memoizer
+            .memoize(FreeBsdFirmware::readDmiDecode);
 
     private static Triplet<String, String, String> readDmiDecode() {
         String manufacturer = null;

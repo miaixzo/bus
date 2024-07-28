@@ -24,14 +24,13 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.io.stream;
 
 import java.io.OutputStream;
 
 /**
- * 此OutputStream写出数据到<b>/dev/null</b>，即忽略所有数据
- * 来自 Apache Commons io
+ * 此OutputStream写出数据到<b>/dev/null</b>，即忽略所有数据 来自 Apache Commons io
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.core.lang.thread;
 
 import org.miaixz.bus.core.Builder;
@@ -36,8 +36,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * ThreadFactory创建器
- * 参考：Guava的ThreadFactoryBuilder
+ * ThreadFactory创建器 参考：Guava的ThreadFactoryBuilder
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -83,8 +82,7 @@ public class ThreadFactoryBuilder implements Builder<ThreadFactory> {
      * @return {@link ThreadFactory}
      */
     private static ThreadFactory build(final ThreadFactoryBuilder builder) {
-        final ThreadFactory backingThreadFactory = (null != builder.backingThreadFactory)
-                ? builder.backingThreadFactory
+        final ThreadFactory backingThreadFactory = (null != builder.backingThreadFactory) ? builder.backingThreadFactory
                 : Executors.defaultThreadFactory();
         final String namePrefix = builder.namePrefix;
         final Boolean daemon = builder.daemon;
@@ -153,10 +151,12 @@ public class ThreadFactoryBuilder implements Builder<ThreadFactory> {
      */
     public ThreadFactoryBuilder setPriority(final int priority) {
         if (priority < Thread.MIN_PRIORITY) {
-            throw new IllegalArgumentException(StringKit.format("Thread priority ({}) must be >= {}", priority, Thread.MIN_PRIORITY));
+            throw new IllegalArgumentException(
+                    StringKit.format("Thread priority ({}) must be >= {}", priority, Thread.MIN_PRIORITY));
         }
         if (priority > Thread.MAX_PRIORITY) {
-            throw new IllegalArgumentException(StringKit.format("Thread priority ({}) must be <= {}", priority, Thread.MAX_PRIORITY));
+            throw new IllegalArgumentException(
+                    StringKit.format("Thread priority ({}) must be <= {}", priority, Thread.MAX_PRIORITY));
         }
         this.priority = priority;
         return this;

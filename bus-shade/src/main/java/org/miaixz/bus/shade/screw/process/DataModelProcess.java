@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.shade.screw.process;
 
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -80,8 +80,7 @@ public class DataModelProcess extends AbstractProcess {
         long start = System.currentTimeMillis();
         // 获取数据库
         Database database = query.getDataBase();
-        Logger.debug("query the database time consuming:{}ms",
-                (System.currentTimeMillis() - start));
+        Logger.debug("query the database time consuming:{}ms", (System.currentTimeMillis() - start));
         model.setDatabase(database.getDatabase());
         start = System.currentTimeMillis();
         // 获取全部表
@@ -94,21 +93,18 @@ public class DataModelProcess extends AbstractProcess {
         // 获取主键
         start = System.currentTimeMillis();
         List<? extends PrimaryKey> primaryKeys = query.getPrimaryKeys();
-        Logger.debug("query the primary key time consuming:{}ms",
-                (System.currentTimeMillis() - start));
+        Logger.debug("query the primary key time consuming:{}ms", (System.currentTimeMillis() - start));
 
         start = System.currentTimeMillis();
         List<TableSchema> tableSchemas = new ArrayList<>();
         tablesCaching.put(database.getDatabase(), tables);
         for (Table table : tables) {
             // 处理列，表名为key，列名为值
-            columnsCaching.put(table.getTableName(),
-                    columns.stream().filter(i -> i.getTableName().equals(table.getTableName()))
-                            .collect(Collectors.toList()));
+            columnsCaching.put(table.getTableName(), columns.stream()
+                    .filter(i -> i.getTableName().equals(table.getTableName())).collect(Collectors.toList()));
             // 处理主键，表名为key，主键为值
-            primaryKeysCaching.put(table.getTableName(),
-                    primaryKeys.stream().filter(i -> i.getTableName().equals(table.getTableName()))
-                            .collect(Collectors.toList()));
+            primaryKeysCaching.put(table.getTableName(), primaryKeys.stream()
+                    .filter(i -> i.getTableName().equals(table.getTableName())).collect(Collectors.toList()));
         }
         for (Table table : tables) {
             TableSchema tableSchema = new TableSchema();
@@ -121,8 +117,8 @@ public class DataModelProcess extends AbstractProcess {
             // 处理列
             List<ColumnSchema> columnSchemas = new ArrayList<>();
             // 获取主键
-            List<String> key = primaryKeysCaching.get(table.getTableName()).stream()
-                    .map(PrimaryKey::getColumnName).collect(Collectors.toList());
+            List<String> key = primaryKeysCaching.get(table.getTableName()).stream().map(PrimaryKey::getColumnName)
+                    .collect(Collectors.toList());
             for (Column column : columnsCaching.get(table.getTableName())) {
                 packageColumn(columnSchemas, key, column);
             }
@@ -133,8 +129,7 @@ public class DataModelProcess extends AbstractProcess {
         model.setTables(filterTables(tableSchemas));
         // 优化数据
         optimizeData(model);
-        Logger.debug("encapsulation processing data time consuming:{}ms",
-                (System.currentTimeMillis() - start));
+        Logger.debug("encapsulation processing data time consuming:{}ms", (System.currentTimeMillis() - start));
         return model;
     }
 
@@ -145,8 +140,7 @@ public class DataModelProcess extends AbstractProcess {
      * @param keyList       {@link List}
      * @param column        {@link Column}
      */
-    private void packageColumn(List<ColumnSchema> columnSchemas, List<String> keyList,
-                               Column column) {
+    private void packageColumn(List<ColumnSchema> columnSchemas, List<String> keyList, Column column) {
         ColumnSchema columnSchema = new ColumnSchema();
         // 表中的列的索引（从 1 开始）
         columnSchema.setOrdinalPosition(column.getOrdinalPosition());
@@ -162,8 +156,7 @@ public class DataModelProcess extends AbstractProcess {
         // 大小
         columnSchema.setColumnSize(column.getColumnSize());
         // 小数位
-        columnSchema.setDecimalDigits(
-                ObjectKit.defaultIfNull(column.getDecimalDigits(), Builder.ZERO_DECIMAL_DIGITS));
+        columnSchema.setDecimalDigits(ObjectKit.defaultIfNull(column.getDecimalDigits(), Builder.ZERO_DECIMAL_DIGITS));
         // 可为空
         columnSchema.setNullable(Builder.ZERO.equals(column.getNullable()) ? Builder.N : Builder.Y);
         // 是否主键

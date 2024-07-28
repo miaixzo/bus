@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.health.unix.platform.freebsd.software;
 
 import com.sun.jna.Memory;
@@ -49,9 +49,12 @@ import java.util.function.Supplier;
 @ThreadSafe
 public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats {
 
-    private final Supplier<Pair<Long, Long>> establishedv4v6 = Memoizer.memoize(NetStat::queryTcpnetstat, Memoizer.defaultExpiration());
-    private final Supplier<CLibrary.BsdTcpstat> tcpstat = Memoizer.memoize(FreeBsdInternetProtocolStats::queryTcpstat, Memoizer.defaultExpiration());
-    private final Supplier<CLibrary.BsdUdpstat> udpstat = Memoizer.memoize(FreeBsdInternetProtocolStats::queryUdpstat, Memoizer.defaultExpiration());
+    private final Supplier<Pair<Long, Long>> establishedv4v6 = Memoizer.memoize(NetStat::queryTcpnetstat,
+            Memoizer.defaultExpiration());
+    private final Supplier<CLibrary.BsdTcpstat> tcpstat = Memoizer.memoize(FreeBsdInternetProtocolStats::queryTcpstat,
+            Memoizer.defaultExpiration());
+    private final Supplier<CLibrary.BsdUdpstat> udpstat = Memoizer.memoize(FreeBsdInternetProtocolStats::queryUdpstat,
+            Memoizer.defaultExpiration());
 
     private static CLibrary.BsdTcpstat queryTcpstat() {
         CLibrary.BsdTcpstat ft = new CLibrary.BsdTcpstat();
@@ -93,11 +96,11 @@ public class FreeBsdInternetProtocolStats extends AbstractInternetProtocolStats 
     @Override
     public InternetProtocolStats.TcpStats getTCPv4Stats() {
         CLibrary.BsdTcpstat tcp = tcpstat.get();
-        return new InternetProtocolStats.TcpStats(establishedv4v6.get().getLeft(), Parsing.unsignedIntToLong(tcp.tcps_connattempt),
-                Parsing.unsignedIntToLong(tcp.tcps_accepts), Parsing.unsignedIntToLong(tcp.tcps_conndrops),
-                Parsing.unsignedIntToLong(tcp.tcps_drops), Parsing.unsignedIntToLong(tcp.tcps_sndpack),
-                Parsing.unsignedIntToLong(tcp.tcps_rcvpack), Parsing.unsignedIntToLong(tcp.tcps_sndrexmitpack),
-                Parsing.unsignedIntToLong(
+        return new InternetProtocolStats.TcpStats(establishedv4v6.get().getLeft(),
+                Parsing.unsignedIntToLong(tcp.tcps_connattempt), Parsing.unsignedIntToLong(tcp.tcps_accepts),
+                Parsing.unsignedIntToLong(tcp.tcps_conndrops), Parsing.unsignedIntToLong(tcp.tcps_drops),
+                Parsing.unsignedIntToLong(tcp.tcps_sndpack), Parsing.unsignedIntToLong(tcp.tcps_rcvpack),
+                Parsing.unsignedIntToLong(tcp.tcps_sndrexmitpack), Parsing.unsignedIntToLong(
                         tcp.tcps_rcvbadsum + tcp.tcps_rcvbadoff + tcp.tcps_rcvmemdrop + tcp.tcps_rcvshort),
                 0L);
     }

@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble.opencv;
 
 import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
@@ -44,7 +44,7 @@ public class MemoryStreamSegment extends StreamSegment {
     private final ByteBuffer cache;
 
     MemoryStreamSegment(ByteBuffer b, ImageDescriptor imageDescriptor) {
-        super(new long[]{0}, new long[]{b.limit()}, imageDescriptor);
+        super(new long[] { 0 }, new long[] { b.limit() }, imageDescriptor);
         this.cache = b;
     }
 

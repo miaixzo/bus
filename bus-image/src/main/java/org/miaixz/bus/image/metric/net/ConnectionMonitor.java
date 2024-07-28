@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.metric.net;
 
 import org.miaixz.bus.image.metric.Connection;
@@ -37,11 +37,9 @@ import java.net.Socket;
  */
 public interface ConnectionMonitor {
 
-    void onConnectionEstablished(Connection conn, Connection remoteConn,
-                                 Socket s);
+    void onConnectionEstablished(Connection conn, Connection remoteConn, Socket s);
 
-    void onConnectionFailed(Connection conn, Connection remoteConn,
-                            Socket s, Throwable e);
+    void onConnectionFailed(Connection conn, Connection remoteConn, Socket s, Throwable e);
 
     void onConnectionRejectedBlacklisted(Connection conn, Socket s);
 

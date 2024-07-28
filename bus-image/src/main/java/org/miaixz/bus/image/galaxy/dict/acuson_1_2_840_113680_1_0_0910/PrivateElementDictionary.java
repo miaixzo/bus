@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.acuson_1_2_840_113680_1_0_0910;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,20 +46,21 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag._0009_xx00_:
-            case PrivateTag._0009_xx01_:
-                return VR.IS;
-            case PrivateTag.PatientRegistrationCustomField1:
-            case PrivateTag.PatientRegistrationCustomField2:
-            case PrivateTag.Indications:
-                return VR.LO;
-            case PrivateTag._0009_xx0f_:
-                return VR.LT;
+
+        case PrivateTag._0009_xx00_:
+        case PrivateTag._0009_xx01_:
+            return VR.IS;
+        case PrivateTag.PatientRegistrationCustomField1:
+        case PrivateTag.PatientRegistrationCustomField2:
+        case PrivateTag.Indications:
+            return VR.LO;
+        case PrivateTag._0009_xx0f_:
+            return VR.LT;
         }
         return VR.UN;
     }

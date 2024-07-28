@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth and other contributors.           ~
+ ~ Copyright (c) 2015-2024 miaixz.org justauth.cn and other contributors.        ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.oauth.metric.google;
 
 import com.alibaba.fastjson.JSONObject;
@@ -65,12 +65,9 @@ public class GoogleProvider extends AbstractProvider {
         String response = doPostAuthorizationCode(callback.getCode());
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         this.checkResponse(accessTokenObject);
-        return AccToken.builder()
-                .accessToken(accessTokenObject.getString("access_token"))
-                .expireIn(accessTokenObject.getIntValue("expires_in"))
-                .scope(accessTokenObject.getString("scope"))
-                .tokenType(accessTokenObject.getString("token_type"))
-                .idToken(accessTokenObject.getString("id_token"))
+        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
+                .expireIn(accessTokenObject.getIntValue("expires_in")).scope(accessTokenObject.getString("scope"))
+                .tokenType(accessTokenObject.getString("token_type")).idToken(accessTokenObject.getString("id_token"))
                 .build();
     }
 
@@ -81,18 +78,10 @@ public class GoogleProvider extends AbstractProvider {
         String userInfo = Httpx.post(userInfoUrl(accToken), null, header);
         JSONObject object = JSONObject.parseObject(userInfo);
         this.checkResponse(object);
-        return Material.builder()
-                .rawJson(object)
-                .uuid(object.getString("sub"))
-                .username(object.getString("email"))
-                .avatar(object.getString("picture"))
-                .nickname(object.getString("name"))
-                .location(object.getString("locale"))
-                .email(object.getString("email"))
-                .gender(Gender.UNKNOWN)
-                .token(accToken)
-                .source(complex.toString())
-                .build();
+        return Material.builder().rawJson(object).uuid(object.getString("sub")).username(object.getString("email"))
+                .avatar(object.getString("picture")).nickname(object.getString("name"))
+                .location(object.getString("locale")).email(object.getString("email")).gender(Gender.UNKNOWN)
+                .token(accToken).source(complex.toString()).build();
     }
 
     /**
@@ -103,11 +92,9 @@ public class GoogleProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(super.authorize(state))
-                .queryParam("access_type", "offline")
+        return Builder.fromUrl(super.authorize(state)).queryParam("access_type", "offline")
                 .queryParam("scope", this.getScopes(Symbol.SPACE, false, this.getDefaultScopes(GoogleScope.values())))
-                .queryParam("prompt", "select_account")
-                .build();
+                .queryParam("prompt", "select_account").build();
     }
 
     /**
@@ -128,7 +115,8 @@ public class GoogleProvider extends AbstractProvider {
      */
     private void checkResponse(JSONObject object) {
         if (object.containsKey("error") || object.containsKey("error_description")) {
-            throw new AuthorizedException(object.containsKey("error") + Symbol.COLON + object.getString("error_description"));
+            throw new AuthorizedException(
+                    object.containsKey("error") + Symbol.COLON + object.getString("error_description"));
         }
     }
 }

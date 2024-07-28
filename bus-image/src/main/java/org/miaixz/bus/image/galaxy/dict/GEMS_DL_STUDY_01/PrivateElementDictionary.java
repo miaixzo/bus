@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.galaxy.dict.GEMS_DL_STUDY_01;
 
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
@@ -46,42 +46,43 @@ public class PrivateElementDictionary extends ElementDictionary {
     public String keywordOf(int tag) {
         return PrivateKeyword.valueOf(tag);
     }
+
     @Override
     public VR vrOf(int tag) {
-    
+
         switch (tag & 0xFFFF00FF) {
-        
-            case PrivateTag.DefPatientOrientation:
-                return VR.CS;
-            case PrivateTag.StudyDose:
-            case PrivateTag.StudyTotalDap:
-            case PrivateTag.FluoroDoseAreaProduct:
-            case PrivateTag.CineDoseAreaProduct:
-                return VR.DS;
-            case PrivateTag._0015_xx92_:
-            case PrivateTag._0015_xx93_:
-            case PrivateTag._0015_xx94_:
-            case PrivateTag._0015_xx96_:
-            case PrivateTag._0015_xx98_:
-            case PrivateTag._0015_xx99_:
-            case PrivateTag._0015_xx9A_:
-            case PrivateTag._0015_xx9C_:
-                return VR.FL;
-            case PrivateTag.StudyFluoroTime:
-            case PrivateTag.StudyRecordTime:
-            case PrivateTag.LastXANumber:
-            case PrivateTag.LastScNumber:
-            case PrivateTag.StudyNumber:
-            case PrivateTag._0015_xx95_:
-            case PrivateTag._0015_xx97_:
-            case PrivateTag._0015_xx9B_:
-            case PrivateTag._0015_xx9D_:
-                return VR.IS;
-            case PrivateTag.DefOperatorName:
-            case PrivateTag.DefPerformingPhysicianName:
-                return VR.PN;
-            case PrivateTag.CommonSeriesInstanceUID:
-                return VR.UI;
+
+        case PrivateTag.DefPatientOrientation:
+            return VR.CS;
+        case PrivateTag.StudyDose:
+        case PrivateTag.StudyTotalDap:
+        case PrivateTag.FluoroDoseAreaProduct:
+        case PrivateTag.CineDoseAreaProduct:
+            return VR.DS;
+        case PrivateTag._0015_xx92_:
+        case PrivateTag._0015_xx93_:
+        case PrivateTag._0015_xx94_:
+        case PrivateTag._0015_xx96_:
+        case PrivateTag._0015_xx98_:
+        case PrivateTag._0015_xx99_:
+        case PrivateTag._0015_xx9A_:
+        case PrivateTag._0015_xx9C_:
+            return VR.FL;
+        case PrivateTag.StudyFluoroTime:
+        case PrivateTag.StudyRecordTime:
+        case PrivateTag.LastXANumber:
+        case PrivateTag.LastScNumber:
+        case PrivateTag.StudyNumber:
+        case PrivateTag._0015_xx95_:
+        case PrivateTag._0015_xx97_:
+        case PrivateTag._0015_xx9B_:
+        case PrivateTag._0015_xx9D_:
+            return VR.IS;
+        case PrivateTag.DefOperatorName:
+        case PrivateTag.DefPerformingPhysicianName:
+            return VR.PN;
+        case PrivateTag.CommonSeriesInstanceUID:
+            return VR.UI;
         }
         return VR.UN;
     }

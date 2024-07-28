@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.mapper.builder;
 
 import org.apache.ibatis.mapping.MappedStatement;
@@ -99,7 +99,8 @@ public abstract class MapperTemplate {
      * @return the string
      */
     public String getIDENTITY(EntityColumn column) {
-        return MessageFormat.format(mapperBuilder.getConfig().getIDENTITY(), column.getColumn(), column.getProperty(), column.getTable().getName());
+        return MessageFormat.format(mapperBuilder.getConfig().getIDENTITY(), column.getColumn(), column.getProperty(),
+                column.getTable().getName());
     }
 
     /**
@@ -169,7 +170,8 @@ public abstract class MapperTemplate {
             for (Type type : types) {
                 if (type instanceof ParameterizedType) {
                     ParameterizedType t = (ParameterizedType) type;
-                    if (t.getRawType() == this.mapperClass || this.mapperClass.isAssignableFrom((Class<?>) t.getRawType())) {
+                    if (t.getRawType() == this.mapperClass
+                            || this.mapperClass.isAssignableFrom((Class<?>) t.getRawType())) {
                         Type actualType = t.getActualTypeArguments()[0];
                         Class<?> returnType;
                         if (actualType instanceof Class) {

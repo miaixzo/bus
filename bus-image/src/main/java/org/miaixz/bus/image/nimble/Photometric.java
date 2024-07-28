@@ -24,7 +24,7 @@
  ~ THE SOFTWARE.                                                                 ~
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- */
+*/
 package org.miaixz.bus.image.nimble;
 
 import org.miaixz.bus.image.UID;
@@ -73,21 +73,21 @@ public enum Photometric {
         @Override
         public Photometric compress(String tsuid) {
             switch (UID.from(tsuid)) {
-                case UID.JPEGBaseline8Bit:
-                case UID.JPEGExtended12Bit:
-                    return YBR_FULL_422;
-                case UID.JPEGSpectralSelectionNonHierarchical68:
-                case UID.JPEGFullProgressionNonHierarchical1012:
-                    return YBR_FULL;
-                case UID.JPEG2000Lossless:
-                case UID.JPEG2000MCLossless:
-                case UID.HTJ2KLossless:
-                case UID.HTJ2KLosslessRPCL:
-                    return YBR_RCT;
-                case UID.JPEG2000:
-                case UID.JPEG2000MC:
-                case UID.HTJ2K:
-                    return YBR_ICT;
+            case UID.JPEGBaseline8Bit:
+            case UID.JPEGExtended12Bit:
+                return YBR_FULL_422;
+            case UID.JPEGSpectralSelectionNonHierarchical68:
+            case UID.JPEGFullProgressionNonHierarchical1012:
+                return YBR_FULL;
+            case UID.JPEG2000Lossless:
+            case UID.JPEG2000MCLossless:
+            case UID.HTJ2KLossless:
+            case UID.HTJ2KLosslessRPCL:
+                return YBR_RCT;
+            case UID.JPEG2000:
+            case UID.JPEG2000MC:
+            case UID.HTJ2K:
+                return YBR_ICT;
             }
             return this;
         }
@@ -111,8 +111,7 @@ public enum Photometric {
         }
 
         @Override
-        public SampleModel createSampleModel(int dataType, int w, int h,
-                                             int samples, boolean banded) {
+        public SampleModel createSampleModel(int dataType, int w, int h, int samples, boolean banded) {
             return new SampledSampleModel(w, h, ColorSubsampling.YBR_XXX_422);
         }
     },
@@ -136,8 +135,7 @@ public enum Photometric {
         }
 
         @Override
-        public SampleModel createSampleModel(int dataType, int w, int h,
-                                             int samples, boolean banded) {
+        public SampleModel createSampleModel(int dataType, int w, int h, int samples, boolean banded) {
             return new SampledSampleModel(w, h, ColorSubsampling.YBR_XXX_420);
         }
     },
@@ -154,8 +152,7 @@ public enum Photometric {
         }
 
         @Override
-        public SampleModel createSampleModel(int dataType, int w, int h,
-                                             int samples, boolean banded) {
+        public SampleModel createSampleModel(int dataType, int w, int h, int samples, boolean banded) {
             return new SampledSampleModel(w, h, ColorSubsampling.YBR_XXX_422);
         }
     },
@@ -208,13 +205,11 @@ public enum Photometric {
 
     public abstract ColorModel createColorModel(int bits, int dataType, ColorSpace cspace, Attributes ds);
 
-    public SampleModel createSampleModel(int dataType, int w, int h,
-                                         int samples, boolean banded) {
+    public SampleModel createSampleModel(int dataType, int w, int h, int samples, boolean banded) {
         int[] indicies = new int[samples];
         for (int i = 1; i < samples; i++)
             indicies[i] = i;
-        return banded && samples > 1
-                ? new BandedSampleModel(dataType, w, h, w, indicies, new int[samples])
+        return banded && samples > 1 ? new BandedSampleModel(dataType, w, h, w, indicies, new int[samples])
                 : new PixelInterleavedSampleModel(dataType, w, h, samples, w * samples, indicies);
     }
 
