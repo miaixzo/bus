@@ -27,7 +27,19 @@
 */
 package org.miaixz.bus.health.linux.software;
 
-import com.sun.jna.platform.unix.Resource;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -41,18 +53,7 @@ import org.miaixz.bus.health.linux.driver.proc.ProcessStat;
 import org.miaixz.bus.health.linux.jna.LinuxLibc;
 import org.miaixz.bus.logger.Logger;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import com.sun.jna.platform.unix.Resource;
 
 /**
  * OSProcess implementation
@@ -169,7 +170,8 @@ public class LinuxOSProcess extends AbstractOSProcess {
 
     private List<String> queryArguments() {
         return Collections.unmodifiableList(Parsing.parseByteArrayToStrings(
-                Builder.readAllBytes(String.format(Locale.ROOT, ProcPath.PID_CMDLINE, getProcessID()))));
+                Builder.readAllBytes(String.format(Locale.ROOT, ProcPath.PID_CMDLINE, getProcessID()),
+                        LOG_PROCFS_WARNING)));
     }
 
     @Override

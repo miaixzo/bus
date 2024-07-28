@@ -6,7 +6,7 @@
 </p>
 <p align="center">
   <a target="_blank" href="https://search.maven.org/search?q=org.miaixz">
-    <img src="https://img.shields.io/badge/maven--central-v8.0.6-blue.svg?label=Maven%20Central" />
+    <img src="https://img.shields.io/badge/maven--central-v8.0.8-blue.svg?label=Maven%20Central" />
   </a>
   <a target="_blank" href="https://travis-ci.org/839128/bus">
     <img src="https://app.travis-ci.com/839128/bus.svg?token=TZPNK5FQiKMp9cao3SnY&branch=main">
@@ -49,6 +49,19 @@ Bus (应用/服务总线) 是一个基础框架、服务套件，它基于Java17
 欢迎大家来 这里 踩踩,生命有限！少写重复代码！给颗星奖励下呗~
 
 目标期望能努力打造一套从 基础框架 - 分布式微服务架构 - 持续集成 - 自动化部署 -系统监测等，快速实现业务需求的全栈式技术解决方案。
+
+
+### ✨版本选择
+
+ Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
+
+| 版本  | jdk    | Maven仓库                                                                                  | 主要特点                                |
+|-----|--------|------------------------------------------------------------------------------------------|-------------------------------------|
+| 3.x | jdk1.8 | [org.aoju/bus-all/3.x](https://mvnrepository.com/artifact/org.aoju/bus-all/3.6.9)        | jdk1.8编译                            |
+| 5.x | jdk1.8 | [org.aoju/bus-all/5.x ](https://mvnrepository.com/artifact/org.aoju/bus-all/5.9.9)       | jdk1.8编译,使用JavaEE,适配JDK11、17        |
+| 6.x | jdk 17 | [org.aoju/bus-all/6.x ](https://mvnrepository.com/artifact/org.aoju/bus-all/6.6.0)       | jdk 17编译,使用Jakarta EE,适配JDK11、17、21 |
+| 8.x | jdk 21 | [org.miaixz/bus-all/8.x ](https://mvnrepository.com/artifact/org.miaixz/bus-all)         | jdk 21编译,使用Jakarta EE,适配JDK11、17、21 |
+
 
 ## 组件信息
 
@@ -152,7 +165,7 @@ welcome.
 
 ### Issue:
 
-- [版本情况]：jdk-openjdk_17 bus-xxx-x.x.x（请确保最新版本尝试是否还存在问题）
+- [版本情况]：jdk-openjdk_21 bus-xxx-x.x.x（请确保最新版本尝试是否还存在问题）
 - [问题描述]：（包括截图）
 - [复现代码]：
 - [堆栈信息]：

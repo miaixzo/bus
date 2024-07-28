@@ -102,6 +102,7 @@ public class PrivateElementDictionary extends ElementDictionary {
         case PrivateTag.SeriesMetadataStorageID:
         case PrivateTag.SeriesMetadataStoragePath:
         case PrivateTag.SeriesMetadataStorageObjectDigest:
+        case PrivateTag.SeriesAccessControlID:
         case PrivateTag.StorageID:
         case PrivateTag.StoragePath:
         case PrivateTag.StorageObjectDigest:

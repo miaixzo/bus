@@ -113,16 +113,24 @@ public class PrivateTag {
     /** (7777,xx36) VR=US VM=1 Failed Retrieves of Series */
     public static final int FailedRetrievesOfSeries = 0x77770036;
 
-    /** (7777,xx37) VR=AE VM=1 Sending Application Entity Title of Series */
+    /**
+     * (7777,xx37) VR=AE VM=1 Sending Application Entity Title of Series
+     */
     public static final int SendingApplicationEntityTitleOfSeries = 0x77770037;
 
-    /** (7777,xx38) VR=DT VM=1 Scheduled Metadata Update Date Time of Series */
+    /**
+     * (7777,xx38) VR=DT VM=1 Scheduled Metadata Update Date Time of Series
+     */
     public static final int ScheduledMetadataUpdateDateTimeOfSeries = 0x77770038;
 
-    /** (7777,xx39) VR=DT VM=1 Scheduled Instance Record Purge Date Time of Series */
+    /**
+     * (7777,xx39) VR=DT VM=1 Scheduled Instance Record Purge Date Time of Series
+     */
     public static final int ScheduledInstanceRecordPurgeDateTimeOfSeries = 0x77770039;
 
-    /** (7777,xx3A) VR=CS VM=1 Instance Record Purge State of Series */
+    /**
+     * (7777,xx3A) VR=CS VM=1 Instance Record Purge State of Series
+     */
     public static final int InstanceRecordPurgeStateOfSeries = 0x7777003A;
 
     /** (7777,xx3B) VR=LO VM=1 Series Metadata Storage ID */
@@ -134,10 +142,14 @@ public class PrivateTag {
     /** (7777,xx3D) VR=UL VM=1 Series Metadata Storage Object Size */
     public static final int SeriesMetadataStorageObjectSize = 0x7777003D;
 
-    /** (7777,xx3E) VR=LO VM=1 Series Metadata Storage Object Digest */
+    /**
+     * (7777,xx3E) VR=LO VM=1 Series Metadata Storage Object Digest
+     */
     public static final int SeriesMetadataStorageObjectDigest = 0x7777003E;
 
-    /** (7777,xx3F) VR=CS VM=1 Series Metadata Storage Object Status */
+    /**
+     * (7777,xx3F) VR=CS VM=1 Series Metadata Storage Object Status
+     */
     public static final int SeriesMetadataStorageObjectStatus = 0x7777003F;
 
     /** (7777,xx40) VR=DT VM=1 Instance Receive Date Time */
@@ -157,6 +169,9 @@ public class PrivateTag {
 
     /** (7777,xx45) VR=AE VM=1 Study External Retrieve AE Title */
     public static final int StudyExternalRetrieveAETitle = 0x77770045;
+
+    /** (7777,xx46) VR=LO VM=1 Series Access Control ID */
+    public static final int SeriesAccessControlID = 0x77770046;
 
     /** (7777,xx50) VR=LO VM=1 Storage ID */
     public static final int StorageID = 0x77770050;
@@ -182,16 +197,24 @@ public class PrivateTag {
     /** (7777,xx57) VR=IS VM=1 Storage Object Multi-Reference */
     public static final int StorageObjectMultiReference = 0x77770057;
 
-    /** (7777,xx60) VR=DT VM=1 Scheduled Storage Verification Date Time of Series */
+    /**
+     * (7777,xx60) VR=DT VM=1 Scheduled Storage Verification Date Time of Series
+     */
     public static final int ScheduledStorageVerificationDateTimeOfSeries = 0x77770060;
 
-    /** (7777,xx61) VR=US VM=1 Failures of last Storage Verification of Series */
+    /**
+     * (7777,xx61) VR=US VM=1 Failures of last Storage Verification of Series
+     */
     public static final int FailuresOfLastStorageVerificationOfSeries = 0x77770061;
 
-    /** (7777,xx62) VR=DT VM=1 Scheduled Compression Date Time of Series */
+    /**
+     * (7777,xx62) VR=DT VM=1 Scheduled Compression Date Time of Series
+     */
     public static final int ScheduledCompressionDateTimeOfSeries = 0x77770062;
 
-    /** (7777,xx63) VR=US VM=1 Failures of last Compression of Series */
+    /**
+     * (7777,xx63) VR=US VM=1 Failures of last Compression of Series
+     */
     public static final int FailuresOfLastCompressionOfSeries = 0x77770063;
 
     /** (7777,xx64) VR=CS VM=1 Series Expiration State */
@@ -206,13 +229,19 @@ public class PrivateTag {
     /** (7777,xx67) VR=US VM=1 Series Metadata Update Failures */
     public static final int SeriesMetadataUpdateFailures = 0x77770067;
 
-    /** (7777,xx68) VR=AE VM=1 Receiving Application Entity Title of Series */
+    /**
+     * (7777,xx68) VR=AE VM=1 Receiving Application Entity Title of Series
+     */
     public static final int ReceivingApplicationEntityTitleOfSeries = 0x77770068;
 
-    /** (7777,xx69) VR=UR VM=1 Sending Presentation Address of Series */
+    /**
+     * (7777,xx69) VR=UR VM=1 Sending Presentation Address of Series
+     */
     public static final int SendingPresentationAddressOfSeries = 0x77770069;
 
-    /** (7777,xx6A) VR=UR VM=1 Receiving Presentation Address of Series */
+    /**
+     * (7777,xx6A) VR=UR VM=1 Receiving Presentation Address of Series
+     */
     public static final int ReceivingPresentationAddressOfSeries = 0x7777006A;
 
     /** (7777,xx6B) VR=LO VM=1 Sending HL7 Application of Series */

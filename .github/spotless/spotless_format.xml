@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <profiles version="22">
-    <profile kind="CodeFormatterProfile" name="Miaixz Java Conventions" version="22">
+    <profile kind="CodeFormatterProfile" name="Miaixz Java Formatter" version="22">
         <!--可变参数的... Idea没有对应的配置项，强制insert-->
         <setting id="org.eclipse.jdt.core.formatter.insert_space_after_ellipsis" value="insert"/>
         <!--枚举值之间 Idea没有对应的配置项，强制insert-->

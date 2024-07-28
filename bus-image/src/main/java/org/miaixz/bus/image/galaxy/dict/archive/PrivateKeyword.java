@@ -120,6 +120,8 @@ public class PrivateKeyword {
             return "SeriesExternalRetrieveAETitle";
         case PrivateTag.StudyExternalRetrieveAETitle:
             return "StudyExternalRetrieveAETitle";
+        case PrivateTag.SeriesAccessControlID:
+            return "SeriesAccessControlID";
         case PrivateTag.StorageID:
             return "StorageID";
         case PrivateTag.StoragePath:
