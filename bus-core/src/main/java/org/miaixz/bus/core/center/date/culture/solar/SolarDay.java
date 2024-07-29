@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.core.center.date.culture.solar;
 
-import org.miaixz.bus.core.center.date.culture.Holiday;
+import org.miaixz.bus.core.center.date.Holiday;
 import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.cn.JulianDay;
 import org.miaixz.bus.core.center.date.culture.cn.Week;
@@ -411,7 +411,7 @@ public class SolarDay extends Loops {
         int days = subtract(m.getFirstJulianDay().getSolarDay());
         while (days < 0) {
             m = m.next(-1);
-            days = subtract(m.getFirstJulianDay().getSolarDay());
+            days += m.getDayCount();
         }
         return LunarDay.fromYmd(m.getYear(), m.getMonthWithLeap(), days + 1);
     }

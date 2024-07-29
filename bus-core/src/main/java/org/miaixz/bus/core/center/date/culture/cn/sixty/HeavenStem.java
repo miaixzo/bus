@@ -114,7 +114,7 @@ public class HeavenStem extends Samsara {
      * @return 方位
      */
     public Direction getDirection() {
-        return Direction.fromIndex(new int[] { 2, 8, 4, 6, 0 }[index / 2]);
+        return getElement().getDirection();
     }
 
     /**
@@ -181,6 +181,25 @@ public class HeavenStem extends Samsara {
         int earthBranchIndex = earthBranch.getIndex();
         return Terrain.fromIndex(new int[] { 1, 6, 10, 9, 10, 9, 7, 0, 4, 3 }[index]
                 + (Opposite.YANG == getOpposite() ? earthBranchIndex : -earthBranchIndex));
+    }
+
+    /**
+     * 五合（甲己合，乙庚合，丙辛合，丁壬合，戊癸合）
+     *
+     * @return 天干
+     */
+    public HeavenStem getCombine() {
+        return next(5);
+    }
+
+    /**
+     * 合化（甲己合化土，乙庚合化金，丙辛合化水，丁壬合化木，戊癸合化火）
+     *
+     * @param target 天干
+     * @return 五行，如果无法合化，返回null
+     */
+    public Element combine(HeavenStem target) {
+        return getCombine().equals(target) ? Element.fromIndex(index + 2) : null;
     }
 
 }

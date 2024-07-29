@@ -108,6 +108,15 @@ public class LunarYear extends Loops {
     }
 
     /**
+     * 月数
+     *
+     * @return 月数
+     */
+    public int getMonthCount() {
+        return getLeapMonth() > 0 ? 13 : 12;
+    }
+
+    /**
      * 天数
      *
      * @return 天数
@@ -200,11 +209,6 @@ public class LunarYear extends Loops {
             m = m.next(1);
         }
         return l;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof LunarYear && ((LunarYear) o).getYear() == year;
     }
 
 }

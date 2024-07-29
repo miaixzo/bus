@@ -25,10 +25,10 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.core.center.date.culture;
+package org.miaixz.bus.core.center.date;
 
+import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
-import org.miaixz.bus.core.center.date.culture.solar.SolarMonth;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -277,9 +277,8 @@ public class Holiday extends Loops {
     }
 
     public Holiday next(int n) {
-        SolarMonth m = day.getSolarMonth();
-        int year = m.getYear();
-        int month = m.getMonth();
+        int year = day.getYear();
+        int month = day.getMonth();
         if (n == 0) {
             return fromYmd(year, month, day.getDay());
         }
@@ -303,29 +302,37 @@ public class Holiday extends Loops {
         }
         index += n;
         int y = year;
-        boolean forward = n > 0;
-        int add = forward ? 1 : -1;
-        while (forward ? (index >= size) : (index < 0)) {
-            if (forward) {
+        if (n > 0) {
+            while (index >= size) {
                 index -= size;
+                y += 1;
+                data.clear();
+                matcher = Pattern.compile(String.format(reg, y)).matcher(DATA);
+                while (matcher.find()) {
+                    data.add(matcher.group());
+                }
+                size = data.size();
+                if (size < 1) {
+                    return null;
+                }
             }
-            y += add;
-            data.clear();
-            matcher = Pattern.compile(String.format(reg, y)).matcher(DATA);
-            while (matcher.find()) {
-                data.add(matcher.group());
-            }
-            size = data.size();
-            if (size < 1) {
-                return null;
-            }
-            if (!forward) {
+        } else {
+            while (index < 0) {
+                y -= 1;
+                data.clear();
+                matcher = Pattern.compile(String.format(reg, y)).matcher(DATA);
+                while (matcher.find()) {
+                    data.add(matcher.group());
+                }
+                size = data.size();
+                if (size < 1) {
+                    return null;
+                }
                 index += size;
             }
         }
         String d = data.get(index);
-        return new Holiday(Integer.parseInt(d.substring(0, 4)), Integer.parseInt(d.substring(4, 6)),
-                Integer.parseInt(d.substring(6, 8)), d);
+        return new Holiday(Integer.parseInt(d.substring(0, 4)), Integer.parseInt(d.substring(4, 6)), Integer.parseInt(d.substring(6, 8)), d);
     }
 
     @Override

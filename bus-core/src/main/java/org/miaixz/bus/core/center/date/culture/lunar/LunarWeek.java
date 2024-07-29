@@ -145,27 +145,23 @@ public class LunarWeek extends Loops {
         }
         int d = index + n;
         LunarMonth m = month;
-        int weeksInMonth = m.getWeekCount(startIndex);
-        boolean forward = n > 0;
-        int add = forward ? 1 : -1;
-        while (forward ? (d >= weeksInMonth) : (d < 0)) {
-            if (forward) {
-                d -= weeksInMonth;
-            }
-            if (!forward) {
+        if (n > 0) {
+            int weekCount = m.getWeekCount(startIndex);
+            while (d >= weekCount) {
+                d -= weekCount;
+                m = m.next(1);
                 if (!LunarDay.fromYmd(m.getYear(), m.getMonthWithLeap(), 1).getWeek().equals(start)) {
-                    d += add;
+                    d += 1;
                 }
+                weekCount = m.getWeekCount(startIndex);
             }
-            m = m.next(add);
-            if (forward) {
+        } else {
+            while (d < 0) {
                 if (!LunarDay.fromYmd(m.getYear(), m.getMonthWithLeap(), 1).getWeek().equals(start)) {
-                    d += add;
+                    d -= 1;
                 }
-            }
-            weeksInMonth = m.getWeekCount(startIndex);
-            if (!forward) {
-                d += weeksInMonth;
+                m = m.next(-1);
+                d += m.getWeekCount(startIndex);
             }
         }
         return fromYm(m.getYear(), m.getMonthWithLeap(), d, startIndex);
@@ -194,6 +190,11 @@ public class LunarWeek extends Loops {
             l.add(d.next(i));
         }
         return l;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return o instanceof LunarWeek && getFirstDay().equals(((LunarWeek) o).getFirstDay());
     }
 
 }
