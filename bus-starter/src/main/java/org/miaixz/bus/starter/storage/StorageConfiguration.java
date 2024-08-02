@@ -35,6 +35,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
+import jakarta.annotation.Resource;
+
 /**
  * 授权配置
  *
@@ -44,9 +46,12 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(value = { StorageProperties.class })
 public class StorageConfiguration {
 
+    @Resource
+    StorageProperties properties;
+
     @Bean
-    public StorageProviderService storageProviderFactory(StorageProperties properties, ExtendCache extendCache) {
-        return new StorageProviderService(properties, extendCache);
+    public StorageProviderService storageProviderFactory(ExtendCache extendCache) {
+        return new StorageProviderService(this.properties, extendCache);
     }
 
     @Bean

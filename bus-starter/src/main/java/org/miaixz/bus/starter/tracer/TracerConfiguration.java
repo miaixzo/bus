@@ -27,17 +27,15 @@
 */
 package org.miaixz.bus.starter.tracer;
 
-import jakarta.annotation.Resource;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+
+import jakarta.annotation.Resource;
 
 /**
  * @author Kimi Liu
  * @since Java 17+
  */
 @EnableConfigurationProperties(value = { TracerProperties.class })
-@AutoConfigureAfter(WebMvcAutoConfiguration.class)
 public class TracerConfiguration {
 
     @Resource

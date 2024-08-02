@@ -36,6 +36,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
+import jakarta.annotation.Resource;
+
 /**
  * 集合支付配置
  *
@@ -45,9 +47,12 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(value = { PayProperties.class })
 public class PayConfiguration {
 
+    @Resource
+    PayProperties properties;
+
     @Bean
-    public PayProviderService payProviderFactory(PayProperties properties, Complex complex, ExtendCache cache) {
-        return new PayProviderService(properties, complex, cache);
+    public PayProviderService payProviderFactory(Complex complex, ExtendCache cache) {
+        return new PayProviderService(this.properties, complex, cache);
     }
 
     @Bean

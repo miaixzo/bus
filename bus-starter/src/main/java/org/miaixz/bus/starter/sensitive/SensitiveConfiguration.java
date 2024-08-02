@@ -30,6 +30,8 @@ package org.miaixz.bus.starter.sensitive;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Import;
 
+import jakarta.annotation.Resource;
+
 /**
  * 脱敏配置
  *
@@ -39,5 +41,8 @@ import org.springframework.context.annotation.Import;
 @EnableConfigurationProperties(value = { SensitiveProperties.class })
 @Import({ RequestBodyAdvice.class, ResponseBodyAdvice.class })
 public class SensitiveConfiguration {
+
+    @Resource
+    SensitiveProperties properties;
 
 }

@@ -35,6 +35,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
+import jakarta.annotation.Resource;
+
 /**
  * 授权配置
  *
@@ -44,9 +46,12 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(value = { AuthProperties.class })
 public class AuthConfiguration {
 
+    @Resource
+    AuthProperties properties;
+
     @Bean
-    public AuthProviderService authProviderFactory(AuthProperties properties, ExtendCache extendCache) {
-        return new AuthProviderService(properties, extendCache);
+    public AuthProviderService authProviderFactory(ExtendCache extendCache) {
+        return new AuthProviderService(this.properties, extendCache);
     }
 
     @Bean

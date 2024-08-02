@@ -27,6 +27,14 @@
 */
 package org.miaixz.bus.starter.mapper;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.sql.DataSource;
+
 import org.apache.ibatis.io.VFS;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.Configuration;
@@ -47,17 +55,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
-import javax.sql.DataSource;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.annotation.Resource;
 
 /**
  * Mybatis的配置，提供一个{@link SqlSessionFactory}和一个{@link SqlSessionTemplate}
@@ -71,17 +73,18 @@ import java.util.List;
 @AutoConfigureBefore(name = "org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration")
 public class MapperConfiguration implements InitializingBean {
 
+    @Resource
+    MybatisProperties properties;
+
     private final Environment environment;
-    private final MybatisProperties properties;
     private final Interceptor[] interceptors;
     private final ResourceLoader resourceLoader;
     private final List<ConfigurationCustomizer> configurationCustomizers;
 
-    public MapperConfiguration(Environment environment, MybatisProperties properties,
-            ObjectProvider<Interceptor[]> interceptorsProvider, ResourceLoader resourceLoader,
+    public MapperConfiguration(Environment environment, ObjectProvider<Interceptor[]> interceptorsProvider,
+            ResourceLoader resourceLoader,
             ObjectProvider<List<ConfigurationCustomizer>> configurationCustomizersProvider) {
         this.environment = environment;
-        this.properties = properties;
         this.interceptors = interceptorsProvider.getIfAvailable();
         this.resourceLoader = resourceLoader;
         this.configurationCustomizers = configurationCustomizersProvider.getIfAvailable();
@@ -90,7 +93,8 @@ public class MapperConfiguration implements InitializingBean {
     @Override
     public void afterPropertiesSet() {
         if (this.properties.isCheckConfigLocation() && StringKit.hasText(this.properties.getConfigLocation())) {
-            Resource resource = this.resourceLoader.getResource(this.properties.getConfigLocation());
+            org.springframework.core.io.Resource resource = this.resourceLoader
+                    .getResource(this.properties.getConfigLocation());
             Assert.state(resource.exists(), "Cannot find config location: " + resource
                     + " (please add config file or check your Mybatis configuration)");
         }
@@ -172,9 +176,10 @@ public class MapperConfiguration implements InitializingBean {
 
         @Override
         protected List<String> list(URL url, String path) throws IOException {
-            Resource[] resources = resourceResolver.getResources("classpath*:" + path + "/**/*.class");
+            org.springframework.core.io.Resource[] resources = resourceResolver
+                    .getResources("classpath*:" + path + "/**/*.class");
             List<String> resourcePaths = new ArrayList<>();
-            for (Resource resource : resources) {
+            for (org.springframework.core.io.Resource resource : resources) {
                 resourcePaths.add(preserveSubpackageName(resource.getURI(), path));
             }
             return resourcePaths;
