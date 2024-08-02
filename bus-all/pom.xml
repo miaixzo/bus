@@ -203,8 +203,8 @@
                                 <include>**/*.yml</include>
                                 <include>**/*.yaml</include>
                             </includes>
-                            <trimTrailingWhitespace/>
-                            <endWithNewline/>
+                            <trimTrailingWhitespace />
+                            <endWithNewline />
                             <indent>
                                 <spaces>true</spaces>
                                 <spacesPerTab>2</spacesPerTab>
@@ -214,8 +214,8 @@
                             <includes>
                                 <include>**/*.xml</include>
                             </includes>
-                            <trimTrailingWhitespace/>
-                            <endWithNewline/>
+                            <trimTrailingWhitespace />
+                            <endWithNewline />
                             <indent>
                                 <spaces>true</spaces>
                                 <spacesPerTab>4</spacesPerTab>
@@ -229,7 +229,7 @@
                         <eclipse>
                             <file>../.github/spotless/spotless_format.xml</file>
                         </eclipse>
-                        <removeUnusedImports/>
+                        <removeUnusedImports />
                     </java>
                     <pom>
                         <sortPom>
