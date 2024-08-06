@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.pay.metric.tenpay.entity;
 
+import org.miaixz.bus.pay.magic.Material;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.pay.magic.Material;
 
 /**
  * 关闭订单

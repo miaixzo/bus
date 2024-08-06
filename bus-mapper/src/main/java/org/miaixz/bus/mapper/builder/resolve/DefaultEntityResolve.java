@@ -27,13 +27,16 @@
 */
 package org.miaixz.bus.mapper.builder.resolve;
 
-import jakarta.persistence.*;
+import java.text.MessageFormat;
+import java.util.LinkedHashSet;
+import java.util.List;
+
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.UnknownTypeHandler;
-import org.miaixz.bus.core.lang.annotation.Order;
 import org.miaixz.bus.core.lang.EnumMap;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.Order;
 import org.miaixz.bus.core.lang.exception.MapperException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
@@ -52,9 +55,7 @@ import org.miaixz.bus.mapper.support.GenSql;
 import org.miaixz.bus.mapper.support.SimpleType;
 import org.miaixz.bus.mapper.support.SqlWords;
 
-import java.text.MessageFormat;
-import java.util.LinkedHashSet;
-import java.util.List;
+import jakarta.persistence.*;
 
 /**
  * 默认解析

@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.center.map;
 
+import java.util.Map;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ObjectKit;
-
-import java.util.Map;
 
 /**
  * 抽象的{@link Map.Entry}实现，来自Guava 实现了默认的{@link #equals(Object)}、{@link #hashCode()}、{@link #toString()}方法。

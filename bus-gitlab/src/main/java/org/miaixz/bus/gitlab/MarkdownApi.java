@@ -27,9 +27,10 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.models.Markdown;
 import org.miaixz.bus.gitlab.models.MarkdownRequest;
+
+import jakarta.ws.rs.core.Response;
 
 /**
  * This class provides an entry point to all the GitLab API markdown calls.

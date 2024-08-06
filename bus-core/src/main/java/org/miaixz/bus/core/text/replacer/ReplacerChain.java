@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.text.replacer;
 
-import org.miaixz.bus.core.lang.Chain;
-
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.miaixz.bus.core.lang.Chain;
 
 /**
  * 字符串替换链，用于组合多个字符串替换逻辑

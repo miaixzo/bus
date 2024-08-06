@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.mapper.builder;
 
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.ibatis.mapping.MappedStatement;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.MapperException;
@@ -36,9 +39,6 @@ import org.miaixz.bus.mapper.entity.EntityColumn;
 import org.miaixz.bus.mapper.entity.EntityTable;
 import org.miaixz.bus.mapper.entity.Property;
 import org.miaixz.bus.mapper.support.MetaObject;
-
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 实体类工具类 - 处理实体和数据库表以及字段关键的一个类

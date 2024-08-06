@@ -27,10 +27,6 @@
 */
 package org.miaixz.bus.pager.plugin;
 
-import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.parser.CCJSqlParserUtil;
-import net.sf.jsqlparser.statement.Statement;
-import net.sf.jsqlparser.statement.Statements;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.executor.statement.CallableStatementHandler;
 import org.apache.ibatis.executor.statement.StatementHandler;
@@ -43,6 +39,11 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.RowBounds;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
+
+import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.parser.CCJSqlParserUtil;
+import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.Statements;
 
 /**
  * 防止全表更新与删除

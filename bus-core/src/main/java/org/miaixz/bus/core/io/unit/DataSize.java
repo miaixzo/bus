@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core.io.unit;
 
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 数据大小，可以将类似于'12MB'表示转换为bytes长度的数字 此类来自于：Spring-framework

@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.lang.ref;
 
-import org.miaixz.bus.core.xyz.ObjectKit;
-
 import java.lang.ref.PhantomReference;
 import java.lang.ref.ReferenceQueue;
 import java.util.Objects;
+
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
  * 虚引用对象，在GC时发现虚引用对象，会将{@link PhantomReference}插入{@link ReferenceQueue}。

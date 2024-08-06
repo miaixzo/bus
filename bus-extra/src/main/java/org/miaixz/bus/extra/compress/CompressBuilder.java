@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.extra.compress;
 
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+
 import org.apache.commons.compress.archivers.ArchiveStreamFactory;
 import org.apache.commons.compress.archivers.StreamingNotSupportedException;
 import org.apache.commons.compress.compressors.CompressorException;
@@ -42,11 +47,6 @@ import org.miaixz.bus.extra.compress.archiver.StreamArchiver;
 import org.miaixz.bus.extra.compress.extractor.Extractor;
 import org.miaixz.bus.extra.compress.extractor.SevenZExtractor;
 import org.miaixz.bus.extra.compress.extractor.StreamExtractor;
-
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
 
 /**
  * 压缩工具类 基于commons-compress的压缩解压封装
@@ -193,9 +193,18 @@ public class CompressBuilder {
      * @param file         归档文件
      * @return {@link Extractor}
      */
-    public static Extractor createExtractor(final Charset charset, final String archiverName, final File file) {
+    public static Extractor createExtractor(final Charset charset, String archiverName, final File file) {
         if (ArchiveStreamFactory.SEVEN_Z.equalsIgnoreCase(archiverName)) {
             return new SevenZExtractor(file);
+        }
+
+        if (StringKit.isBlank(archiverName)) {
+            final String name = file.getName().toLowerCase();
+            if (name.endsWith(".tgz")) {
+                archiverName = "tgz";
+            } else if (name.endsWith(".tar.gz")) {
+                archiverName = "tar.gz";
+            }
         }
         try {
             return new StreamExtractor(charset, archiverName, file);

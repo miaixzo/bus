@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.image.galaxy.io;
 
+import java.io.IOException;
+
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.Fragments;
 import org.miaixz.bus.image.galaxy.data.Sequence;
-
-import java.io.IOException;
 
 /**
  * @author Kimi Liu

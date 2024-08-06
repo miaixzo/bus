@@ -27,7 +27,10 @@
 */
 package org.miaixz.bus.health.linux.driver;
 
-import com.sun.jna.Native;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
@@ -35,9 +38,7 @@ import org.miaixz.bus.health.builtin.software.OSSession;
 import org.miaixz.bus.health.linux.jna.LinuxLibc;
 import org.miaixz.bus.health.unix.jna.CLibrary;
 
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
+import com.sun.jna.Native;
 
 /**
  * Utility to query logged in users.

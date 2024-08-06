@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.proxy;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.ClassKit;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.ClassKit;
 
 /**
  * 代理工具类

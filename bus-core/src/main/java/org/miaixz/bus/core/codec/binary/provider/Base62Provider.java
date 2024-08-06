@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.codec.binary.provider;
 
+import java.io.ByteArrayOutputStream;
+import java.io.Serializable;
+
 import org.miaixz.bus.core.codec.Decoder;
 import org.miaixz.bus.core.codec.Encoder;
 import org.miaixz.bus.core.codec.binary.decoder.Base62Decoder;
 import org.miaixz.bus.core.codec.binary.encoder.Base62Encoder;
 import org.miaixz.bus.core.xyz.ArrayKit;
-
-import java.io.ByteArrayOutputStream;
-import java.io.Serializable;
 
 /**
  * Base62编码解码实现，常用于短URL From https://github.com/seruco/base62

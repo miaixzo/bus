@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.io.compress;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.IoKit;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.IoKit;
 
 /**
  * {@link ZipInputStream} 资源包装

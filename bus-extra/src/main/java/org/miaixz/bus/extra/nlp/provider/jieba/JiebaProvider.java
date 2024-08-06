@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.extra.nlp.provider.jieba;
 
-import com.huaban.analysis.jieba.JiebaSegmenter;
-import com.huaban.analysis.jieba.JiebaSegmenter.SegMode;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;
+
+import com.huaban.analysis.jieba.JiebaSegmenter;
+import com.huaban.analysis.jieba.JiebaSegmenter.SegMode;
 
 /**
  * Jieba分词引擎实现 项目地址：https://github.com/huaban/jieba-analysis {@link JiebaSegmenter#process(String, SegMode)} 线程安全

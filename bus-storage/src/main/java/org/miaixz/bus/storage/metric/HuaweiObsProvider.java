@@ -27,10 +27,13 @@
 */
 package org.miaixz.bus.storage.metric;
 
-import com.obs.services.ObsClient;
-import com.obs.services.model.DownloadFileRequest;
-import com.obs.services.model.ListObjectsRequest;
-import com.obs.services.model.ObjectListing;
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -38,12 +41,10 @@ import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.magic.Material;
 
-import java.io.File;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
+import com.obs.services.ObsClient;
+import com.obs.services.model.DownloadFileRequest;
+import com.obs.services.model.ListObjectsRequest;
+import com.obs.services.model.ObjectListing;
 
 /**
  * 存储服务-华为云

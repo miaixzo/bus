@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serializable;
+import java.lang.reflect.Type;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.TypeKit;
-
-import java.io.Serializable;
-import java.lang.reflect.Type;
 
 /**
  * 抽象转换器，提供通用的转换逻辑，同时通过convertInternal实现对应类型的专属逻辑 转换器不会抛出转换异常，转换失败时会返回{@code null}

@@ -27,8 +27,9 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.services.*;
+
+import jakarta.ws.rs.core.Response;
 
 /**
  * Access for the services API. Currently only the gitlab-ci, HipChatService, Slack, and JIRA service are supported. See

@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.setting.magic;
 
+import java.io.Serializable;
+import java.lang.reflect.Type;
+
 import org.miaixz.bus.core.bean.copier.CopyOptions;
 import org.miaixz.bus.core.bean.copier.ValueProvider;
 import org.miaixz.bus.core.center.function.FunctionX;
@@ -37,9 +40,6 @@ import org.miaixz.bus.core.lang.getter.GroupedTypeGetter;
 import org.miaixz.bus.core.lang.getter.TypeGetter;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.*;
-
-import java.io.Serializable;
-import java.lang.reflect.Type;
 
 /**
  * Setting抽象类

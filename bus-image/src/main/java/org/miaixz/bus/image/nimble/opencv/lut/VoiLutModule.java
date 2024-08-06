@@ -27,14 +27,6 @@
 */
 package org.miaixz.bus.image.nimble.opencv.lut;
 
-import org.miaixz.bus.image.Builder;
-import org.miaixz.bus.image.Tag;
-import org.miaixz.bus.image.galaxy.data.Attributes;
-import org.miaixz.bus.image.galaxy.data.Sequence;
-import org.miaixz.bus.image.nimble.RGBImageVoiLut;
-import org.miaixz.bus.image.nimble.opencv.LookupTableCV;
-import org.miaixz.bus.logger.Logger;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -42,6 +34,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.image.Builder;
+import org.miaixz.bus.image.Tag;
+import org.miaixz.bus.image.galaxy.data.Attributes;
+import org.miaixz.bus.image.galaxy.data.Sequence;
+import org.miaixz.bus.image.nimble.RGBImageVoiLut;
+import org.miaixz.bus.image.nimble.opencv.LookupTableCV;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * @author Kimi Liu

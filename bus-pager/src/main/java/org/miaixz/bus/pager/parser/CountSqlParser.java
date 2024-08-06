@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.pager.parser;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * sql解析类,提供更智能的count查询sql

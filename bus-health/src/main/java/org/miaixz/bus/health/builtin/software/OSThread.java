@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.health.builtin.software;
 
-import org.miaixz.bus.core.lang.Normal;
-
 import java.util.function.Predicate;
+
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * Represents a Thread/Task on the operating system.

@@ -27,7 +27,6 @@
 */
 package org.miaixz.bus.oauth.metric.gitee;
 
-import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
@@ -39,6 +38,8 @@ import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
+
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * Gitee 登录

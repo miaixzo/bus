@@ -27,8 +27,9 @@
 */
 package org.miaixz.bus.pager.dialect.auto;
 
-import com.zaxxer.hikari.HikariDataSource;
 import org.miaixz.bus.pager.dialect.AbstractAutoDialect;
+
+import com.zaxxer.hikari.HikariDataSource;
 
 /**
  * Hikari

@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core.xml;
 
-import org.miaixz.bus.core.xyz.*;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.miaixz.bus.core.xyz.*;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * XML转换器，用于转换Map或Bean等

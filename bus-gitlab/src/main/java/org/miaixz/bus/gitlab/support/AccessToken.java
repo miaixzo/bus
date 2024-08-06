@@ -27,10 +27,6 @@
 */
 package org.miaixz.bus.gitlab.support;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import org.miaixz.bus.gitlab.GitLabApiException;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -44,6 +40,11 @@ import java.util.List;
 import java.util.StringJoiner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.miaixz.bus.gitlab.GitLabApiException;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * This class uses HTML scraping to create and revoke GitLab personal access tokens, the user's Feed token, and for

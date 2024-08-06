@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.crypto.builtin;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 /**
  * 加盐值魔数 用于在OpenSSL生成的密文中，提取加盐值等相关信息

@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.text;
 
+import java.util.Arrays;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.util.Arrays;
 
 /**
  * 字符串或字符重复器 用于将给定字符串或字符赋值count次，然后拼接

@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.image.nimble.reader;
 
-import org.miaixz.bus.image.galaxy.data.Attributes;
-
 import javax.imageio.ImageReadParam;
+
+import org.miaixz.bus.image.galaxy.data.Attributes;
 
 /**
  * @author Kimi Liu

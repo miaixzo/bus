@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.image.builtin.ldap;
 
-import org.miaixz.bus.logger.Logger;
+import java.io.Closeable;
+import java.util.Hashtable;
 
 import javax.naming.*;
 import javax.naming.directory.*;
-import java.io.Closeable;
-import java.util.Hashtable;
+
+import org.miaixz.bus.logger.Logger;
 
 /**
  * @author Kimi Liu

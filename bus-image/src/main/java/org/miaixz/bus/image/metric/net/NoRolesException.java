@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.image.metric.net;
 
+import java.io.IOException;
+
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.metric.TransferCapability;
-
-import java.io.IOException;
 
 /**
  * @author Kimi Liu

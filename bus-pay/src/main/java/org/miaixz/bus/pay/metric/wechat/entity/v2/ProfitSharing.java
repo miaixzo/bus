@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.pay.metric.wechat.entity.v2;
 
+import org.miaixz.bus.pay.magic.Material;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.pay.magic.Material;
 
 /**
  * 分账 支持: 请求单次分账、请求多次分账、添加分账接收方、删除分账接收方、完结分账

@@ -27,6 +27,13 @@
 */
 package org.miaixz.bus.extra.captcha;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -36,13 +43,6 @@ import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.extra.captcha.strategy.CodeStrategy;
 import org.miaixz.bus.extra.captcha.strategy.RandomStrategy;
 import org.miaixz.bus.extra.image.ImageKit;
-
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
 
 /**
  * 抽象验证码 抽象验证码实现了验证码字符串的生成、验证，验证码图片的写出 实现类通过实现{@link #createImage(String)} 方法生成图片对象

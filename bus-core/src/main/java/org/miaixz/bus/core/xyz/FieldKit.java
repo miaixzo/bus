@@ -27,18 +27,18 @@
 */
 package org.miaixz.bus.core.xyz;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Predicate;
+
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.annotation.Alias;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.reflect.field.FieldReflect;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Predicate;
 
 /**
  * 反射中{@link Field}字段工具类，包括字段获取和字段赋值。

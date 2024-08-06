@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.GitLabApiForm;
-
 import java.io.Serializable;
 import java.util.List;
+
+import org.miaixz.bus.gitlab.GitLabApiForm;
 
 /**
  * This class is used to filter Groups when getting lists of groups for a specified project.

@@ -27,10 +27,15 @@
 */
 package org.miaixz.bus.health.unix.platform.openbsd.hardware;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+import java.util.regex.Matcher;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
@@ -40,11 +45,6 @@ import org.miaixz.bus.health.builtin.hardware.HWPartition;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHWDiskStore;
 import org.miaixz.bus.health.unix.platform.openbsd.OpenBsdSysctlKit;
 import org.miaixz.bus.health.unix.platform.openbsd.driver.disk.Disklabel;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
-import java.util.regex.Matcher;
 
 /**
  * OpenBSD hard disk implementation.

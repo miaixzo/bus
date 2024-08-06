@@ -27,20 +27,19 @@
 */
 package org.miaixz.bus.gitlab.hooks.web;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
+import java.util.Date;
+
 import org.miaixz.bus.gitlab.models.Diff;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public class NoteEvent extends AbstractEvent {
-    private static final long serialVersionUID = -1L;
-
     public static final String X_GITLAB_EVENT = "Note Hook";
     public static final String OBJECT_KIND = "note";
-
+    private static final long serialVersionUID = -1L;
     private EventUser user;
     private Long projectId;
     private EventProject project;
@@ -136,6 +135,29 @@ public class NoteEvent extends AbstractEvent {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    public static enum NoteableType {
+
+        ISSUE, MERGE_REQUEST, SNIPPET, COMMIT;
+
+        private static JacksonJsonEnumHelper<NoteableType> enumHelper = new JacksonJsonEnumHelper<>(NoteableType.class,
+                true, true);
+
+        @JsonCreator
+        public static NoteableType forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
     }
 
     public static class ObjectAttributes {
@@ -283,29 +305,6 @@ public class NoteEvent extends AbstractEvent {
 
         public void setUrl(String url) {
             this.url = url;
-        }
-    }
-
-    public static enum NoteableType {
-
-        ISSUE, MERGE_REQUEST, SNIPPET, COMMIT;
-
-        private static JacksonJsonEnumHelper<NoteableType> enumHelper = new JacksonJsonEnumHelper<>(NoteableType.class,
-                true, true);
-
-        @JsonCreator
-        public static NoteableType forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
         }
     }
 }

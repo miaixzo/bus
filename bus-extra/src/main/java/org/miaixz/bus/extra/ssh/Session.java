@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.extra.ssh;
 
-import org.miaixz.bus.core.lang.Wrapper;
-import org.miaixz.bus.core.lang.exception.InternalException;
-
 import java.io.Closeable;
 import java.net.InetSocketAddress;
+
+import org.miaixz.bus.core.lang.Wrapper;
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
  * SSH Session抽象

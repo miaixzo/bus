@@ -27,13 +27,6 @@
 */
 package org.miaixz.bus.core.lang.loader;
 
-import org.miaixz.bus.core.io.resource.Resource;
-import org.miaixz.bus.core.io.resource.UrlResource;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.url.UrlEncoder;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.JarURLConnection;
@@ -41,6 +34,13 @@ import java.net.URL;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+
+import org.miaixz.bus.core.io.resource.Resource;
+import org.miaixz.bus.core.io.resource.UrlResource;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.url.UrlEncoder;
 
 /**
  * Jar包资源加载器

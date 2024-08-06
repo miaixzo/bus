@@ -46,10 +46,6 @@ public class MatOfInt extends Mat {
         // FIXME: do we need release() here?
     }
 
-    public static MatOfInt fromNativeAddr(long addr) {
-        return new MatOfInt(addr);
-    }
-
     public MatOfInt(Mat m) {
         super(m, Range.all());
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -60,6 +56,10 @@ public class MatOfInt extends Mat {
     public MatOfInt(int... a) {
         super();
         fromArray(a);
+    }
+
+    public static MatOfInt fromNativeAddr(long addr) {
+        return new MatOfInt(addr);
     }
 
     public void alloc(int elemNumber) {

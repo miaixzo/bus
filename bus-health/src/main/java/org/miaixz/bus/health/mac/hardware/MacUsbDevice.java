@@ -27,6 +27,14 @@
 */
 package org.miaixz.bus.health.mac.hardware;
 
+import java.util.*;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.Immutable;
+import org.miaixz.bus.health.builtin.hardware.UsbDevice;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractUsbDevice;
+
 import com.sun.jna.platform.mac.CoreFoundation;
 import com.sun.jna.platform.mac.CoreFoundation.CFIndex;
 import com.sun.jna.platform.mac.CoreFoundation.CFMutableDictionaryRef;
@@ -35,13 +43,6 @@ import com.sun.jna.platform.mac.CoreFoundation.CFTypeRef;
 import com.sun.jna.platform.mac.IOKit.IOIterator;
 import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.annotation.Immutable;
-import org.miaixz.bus.health.builtin.hardware.UsbDevice;
-import org.miaixz.bus.health.builtin.hardware.common.AbstractUsbDevice;
-
-import java.util.*;
 
 /**
  * Mac Usb Device

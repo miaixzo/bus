@@ -27,17 +27,6 @@
 */
 package org.miaixz.bus.image.nimble.opencv;
 
-import org.miaixz.bus.image.galaxy.data.BulkData;
-import org.miaixz.bus.image.nimble.codec.BytesWithImageImageDescriptor;
-import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
-import org.miaixz.bus.image.nimble.stream.SegmentedInputImageStream;
-import org.miaixz.bus.logger.Logger;
-
-import javax.imageio.ImageReadParam;
-import javax.imageio.stream.FileCacheImageInputStream;
-import javax.imageio.stream.FileImageInputStream;
-import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.MemoryCacheImageInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -45,6 +34,18 @@ import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.imageio.ImageReadParam;
+import javax.imageio.stream.FileCacheImageInputStream;
+import javax.imageio.stream.FileImageInputStream;
+import javax.imageio.stream.ImageInputStream;
+import javax.imageio.stream.MemoryCacheImageInputStream;
+
+import org.miaixz.bus.image.galaxy.data.BulkData;
+import org.miaixz.bus.image.nimble.codec.BytesWithImageImageDescriptor;
+import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
+import org.miaixz.bus.image.nimble.stream.SegmentedInputImageStream;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * @author Kimi Liu

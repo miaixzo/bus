@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.crypto.builtin.digest.mac;
 
+import java.security.Key;
+
 import org.bouncycastle.crypto.BlockCipher;
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.params.KeyParameter;
 import org.bouncycastle.crypto.params.ParametersWithIV;
-
-import java.security.Key;
 
 /**
  * {@link org.bouncycastle.crypto.macs.CBCBlockCipherMac}实现的MAC算法，使用CBC Block方式

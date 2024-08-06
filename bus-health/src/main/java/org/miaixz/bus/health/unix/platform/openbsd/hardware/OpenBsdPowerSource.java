@@ -27,19 +27,19 @@
 */
 package org.miaixz.bus.health.unix.platform.openbsd.hardware;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.core.center.regex.Pattern;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.health.Executor;
-import org.miaixz.bus.health.Parsing;
-import org.miaixz.bus.health.builtin.hardware.PowerSource;
-import org.miaixz.bus.health.builtin.hardware.common.AbstractPowerSource;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.health.Executor;
+import org.miaixz.bus.health.Parsing;
+import org.miaixz.bus.health.builtin.hardware.PowerSource;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractPowerSource;
 
 /**
  * A Power Source

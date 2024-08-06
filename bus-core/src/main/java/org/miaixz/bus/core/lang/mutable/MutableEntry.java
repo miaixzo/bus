@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.lang.mutable;
 
-import org.miaixz.bus.core.center.map.AbstractEntry;
-
 import java.io.Serializable;
 import java.util.Map;
+
+import org.miaixz.bus.core.center.map.AbstractEntry;
 
 /**
  * 可变键和值的{@link Map.Entry}实现，可以修改键和值

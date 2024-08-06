@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.io.resource;
 
-import org.miaixz.bus.core.lang.Assert;
-
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
+
+import org.miaixz.bus.core.lang.Assert;
 
 /**
  * HTTP资源，用于自定义表单数据，可自定义Content-Type

@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.text.dfa;
 
+import java.util.*;
+import java.util.function.Predicate;
+
 import org.miaixz.bus.core.center.stream.EasyStream;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.SetKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.util.*;
-import java.util.function.Predicate;
 
 /**
  * DFA（Deterministic Finite Automaton 确定有穷自动机） DFA单词树（以下简称单词树），常用于在某大段文字中快速查找某几个关键词是否存在。

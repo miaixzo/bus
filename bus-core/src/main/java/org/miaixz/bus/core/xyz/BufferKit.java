@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.util.Arrays;
+
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * {@link ByteBuffer} 、{@link CharBuffer}工具类 此工具来自于 t-io 项目以及其它项目的相关部分收集

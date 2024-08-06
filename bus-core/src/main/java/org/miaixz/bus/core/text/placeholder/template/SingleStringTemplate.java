@@ -27,6 +27,12 @@
 */
 package org.miaixz.bus.core.text.placeholder.template;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.UnaryOperator;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.placeholder.StringTemplate;
@@ -34,12 +40,6 @@ import org.miaixz.bus.core.text.placeholder.segment.LiteralSegment;
 import org.miaixz.bus.core.text.placeholder.segment.SingleSegment;
 import org.miaixz.bus.core.text.placeholder.segment.StringSegment;
 import org.miaixz.bus.core.xyz.ArrayKit;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.UnaryOperator;
 
 /**
  * 单占位符字符串模板

@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.core.lang.thread;
 
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.core.xyz.ThreadKit;
-
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
+
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.ThreadKit;
 
 /**
  * 重试任务类

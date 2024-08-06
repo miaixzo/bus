@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.codec.binary.decoder;
 
+import java.util.Arrays;
+
 import org.miaixz.bus.core.codec.Decoder;
 import org.miaixz.bus.core.codec.binary.encoder.Base32Encoder;
 import org.miaixz.bus.core.lang.Symbol;
-
-import java.util.Arrays;
 
 /**
  * Base32解码器

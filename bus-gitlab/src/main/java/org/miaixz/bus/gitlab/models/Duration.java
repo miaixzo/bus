@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-
 import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * This class represents a duration in time.
@@ -230,6 +230,11 @@ public class Duration implements Serializable {
         return (-1);
     }
 
+    @JsonCreator
+    public static Duration forValue(String value) {
+        return new Duration(value);
+    }
+
     /**
      * Get the number of seconds this duration represents.
      *
@@ -252,10 +257,5 @@ public class Duration implements Serializable {
     @Override
     public String toString() {
         return (durationString);
-    }
-
-    @JsonCreator
-    public static Duration forValue(String value) {
-        return new Duration(value);
     }
 }

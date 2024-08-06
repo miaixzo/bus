@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.goalie.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.springframework.core.annotation.AliasFor;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.lang.annotation.*;
 
 /**
  * @author Kimi Liu

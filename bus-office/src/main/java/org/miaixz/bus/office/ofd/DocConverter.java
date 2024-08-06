@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.office.ofd;
 
+import java.io.IOException;
+import java.nio.file.Path;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.ofdrw.converter.export.*;
 import org.ofdrw.converter.ofdconverter.ImageConverter;
 import org.ofdrw.converter.ofdconverter.PDFConverter;
 import org.ofdrw.converter.ofdconverter.TextConverter;
-
-import java.io.IOException;
-import java.nio.file.Path;
 
 /**
  * 基于{@code ofdrw-converter}文档转换，提供：

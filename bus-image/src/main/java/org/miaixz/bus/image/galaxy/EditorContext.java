@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.image.galaxy;
 
+import static org.miaixz.bus.image.nimble.Transcoder.getMaskedImage;
+
+import java.util.Objects;
+import java.util.Properties;
+
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Node;
 import org.miaixz.bus.image.metric.Editable;
 import org.miaixz.bus.image.nimble.opencv.PlanarImage;
 import org.miaixz.bus.image.nimble.opencv.op.MaskArea;
-
-import java.util.Objects;
-import java.util.Properties;
-
-import static org.miaixz.bus.image.nimble.Transcoder.getMaskedImage;
 
 /**
  * @author Kimi Liu

@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.io.resource;
 
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.xyz.ClassKit;
-import org.miaixz.bus.core.xyz.MethodKit;
-
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.net.URL;
+
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.xyz.ClassKit;
+import org.miaixz.bus.core.xyz.MethodKit;
 
 /**
  * VFS资源封装 支持VFS 3.x on JBoss AS 6+，JBoss AS 7 and WildFly 8+ 参考：org.springframework.core.io.VfsUtils

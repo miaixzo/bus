@@ -27,15 +27,16 @@
 */
 package org.miaixz.bus.image.nimble;
 
-import org.miaixz.bus.image.Builder;
-import org.miaixz.bus.image.nimble.opencv.lut.LutShape;
-
-import javax.imageio.IIOParamController;
-import javax.imageio.ImageTypeSpecifier;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Optional;
 import java.util.OptionalDouble;
+
+import javax.imageio.IIOParamController;
+import javax.imageio.ImageTypeSpecifier;
+
+import org.miaixz.bus.image.Builder;
+import org.miaixz.bus.image.nimble.opencv.lut.LutShape;
 
 /**
  * @author Kimi Liu

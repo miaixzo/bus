@@ -27,6 +27,13 @@
 */
 package org.miaixz.bus.core.text.placeholder;
 
+import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -39,13 +46,6 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 
 /**
  * 字符串模板 格式化 和 反解析 抽象父类

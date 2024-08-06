@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.core.net.url;
 
+import java.nio.charset.Charset;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.miaixz.bus.core.center.map.TableMap;
 import org.miaixz.bus.core.codec.PercentCodec;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.*;
-
-import java.nio.charset.Charset;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * URL中查询字符串部分的封装，类似于：

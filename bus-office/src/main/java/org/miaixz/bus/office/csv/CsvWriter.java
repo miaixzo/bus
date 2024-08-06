@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.office.csv;
 
+import java.io.*;
+import java.util.List;
+import java.util.Map;
+
 import org.miaixz.bus.core.center.iterator.ArrayIterator;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Assert;
@@ -34,10 +38,6 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
-
-import java.io.*;
-import java.util.List;
-import java.util.Map;
 
 /**
  * CSV数据写出器

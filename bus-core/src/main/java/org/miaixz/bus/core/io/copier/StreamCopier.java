@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.io.copier;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import org.miaixz.bus.core.io.StreamProgress;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * {@link InputStream} 向 {@link OutputStream} 拷贝

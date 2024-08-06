@@ -27,7 +27,13 @@
 */
 package org.miaixz.bus.oauth.metric.amazon;
 
-import com.alibaba.fastjson.JSONObject;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -49,12 +55,7 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * Amazon 登录

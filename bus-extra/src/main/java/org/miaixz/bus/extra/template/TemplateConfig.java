@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.extra.template;
 
-import org.miaixz.bus.core.lang.Charset;
-
 import java.io.Serializable;
 import java.util.Objects;
+
+import org.miaixz.bus.core.lang.Charset;
 
 /**
  * 模板配置

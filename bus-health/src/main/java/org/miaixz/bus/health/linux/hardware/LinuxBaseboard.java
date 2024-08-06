@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.health.linux.hardware;
 
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.tuple.Tuple;
@@ -34,8 +36,6 @@ import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractBaseboard;
 import org.miaixz.bus.health.linux.driver.Sysfs;
 import org.miaixz.bus.health.linux.driver.proc.CpuInfo;
-
-import java.util.function.Supplier;
 
 /**
  * Baseboard data obtained by sysfs

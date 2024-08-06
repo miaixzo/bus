@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.image.metric.hl7;
 
-import org.miaixz.bus.logger.Logger;
-
 import java.io.BufferedOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.Socket;
+
+import org.miaixz.bus.logger.Logger;
 
 /**
  * @author Kimi Liu

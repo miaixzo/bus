@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.extra.nlp.provider.jieba;
 
-import com.huaban.analysis.jieba.SegToken;
+import java.util.Iterator;
+import java.util.List;
+
 import org.miaixz.bus.extra.nlp.NLPResult;
 import org.miaixz.bus.extra.nlp.NLPWord;
 
-import java.util.Iterator;
-import java.util.List;
+import com.huaban.analysis.jieba.SegToken;
 
 /**
  * Jieba分词结果实现 项目地址：https://github.com/huaban/jieba-analysis

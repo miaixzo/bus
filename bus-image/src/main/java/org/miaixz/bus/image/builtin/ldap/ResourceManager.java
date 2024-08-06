@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.image.builtin.ldap;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.IoKit;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.WeakHashMap;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.IoKit;
 
 /**
  * @author Kimi Liu

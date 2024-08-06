@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.io.source;
 
+import java.io.IOException;
+
 import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.timout.Timeout;
-
-import java.io.IOException;
 
 /**
  * 一个{@link Source},它可以窥视上游的{@link BufferSource}并允许读取和 展开缓冲数据而不使用它 这是通过请求额外的数据吗 如果需要,则复制上游源文件,如果需要,则从上游源文件的内部缓冲区复制

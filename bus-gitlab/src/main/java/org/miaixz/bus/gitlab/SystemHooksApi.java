@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.Response;
+import java.util.List;
+import java.util.stream.Stream;
+
 import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
 import org.miaixz.bus.gitlab.models.SystemHook;
 
-import java.util.List;
-import java.util.stream.Stream;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 
 /**
  * This class implements the client side API for the GitLab System Hooks Keys API calls.

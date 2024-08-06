@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.image.nimble.opencv;
 
-import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
-import org.miaixz.bus.logger.Logger;
-
-import javax.imageio.stream.MemoryCacheImageInputStream;
 import java.io.ByteArrayInputStream;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
+
+import javax.imageio.stream.MemoryCacheImageInputStream;
+
+import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * @author Kimi Liu

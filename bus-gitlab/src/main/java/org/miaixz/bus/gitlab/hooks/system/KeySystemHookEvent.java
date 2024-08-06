@@ -27,16 +27,14 @@
 */
 package org.miaixz.bus.gitlab.hooks.system;
 
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.util.Date;
 
-public class KeySystemHookEvent extends AbstractSystemHookEvent {
-    private static final long serialVersionUID = -1L;
+import org.miaixz.bus.gitlab.support.JacksonJson;
 
+public class KeySystemHookEvent extends AbstractSystemHookEvent {
     public static final String KEY_CREATE_EVENT = "key_create";
     public static final String KEY_DESTROY_EVENT = "key_destroy";
-
+    private static final long serialVersionUID = -1L;
     private Date createdAt;
     private Date updatedAt;
     private String eventName;

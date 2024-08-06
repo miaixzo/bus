@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.health.unix.platform.solaris.driver.disk;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.health.Executor;
-import org.miaixz.bus.health.Parsing;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.health.Executor;
+import org.miaixz.bus.health.Parsing;
 
 /**
  * Utility to query lshal

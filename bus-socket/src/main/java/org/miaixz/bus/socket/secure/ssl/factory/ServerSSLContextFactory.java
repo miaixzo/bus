@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.socket.secure.ssl.factory;
 
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.SecureRandom;
+
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
 
 /**
  * @author Kimi Liu

@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.crypto.builtin.symmetric;
 
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.Builder;
-
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * 对称解密器接口，提供：

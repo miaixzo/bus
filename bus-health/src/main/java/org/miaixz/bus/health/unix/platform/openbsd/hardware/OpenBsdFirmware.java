@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.health.unix.platform.openbsd.hardware;
 
-import org.miaixz.bus.core.lang.annotation.Immutable;
+import java.util.List;
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractFirmware;
-
-import java.util.List;
-import java.util.function.Supplier;
 
 /**
  * OpenBSD Firmware implementation

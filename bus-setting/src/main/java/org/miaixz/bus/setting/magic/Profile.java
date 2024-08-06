@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.setting.magic;
 
+import java.io.Serializable;
+import java.nio.charset.Charset;
+import java.util.Map;
+
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.setting.Setting;
-
-import java.io.Serializable;
-import java.nio.charset.Charset;
-import java.util.Map;
 
 /**
  * Profile可以让我们定义一系列的配置信息，然后指定其激活条件。 此类中我们规范一套规则如下：

@@ -27,7 +27,8 @@
 */
 package org.miaixz.bus.starter.elastic;
 
-import jakarta.annotation.Resource;
+import java.util.List;
+
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
@@ -42,7 +43,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
-import java.util.List;
+import jakarta.annotation.Resource;
 
 /**
  * ElasticSearch 规则配置

@@ -27,14 +27,30 @@
 */
 package org.miaixz.bus.image.nimble.reader;
 
+import java.awt.color.ColorSpace;
+import java.awt.image.*;
+import java.io.*;
+import java.nio.ByteOrder;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Optional;
+import java.util.Set;
+
+import javax.imageio.ImageReadParam;
+import javax.imageio.ImageReader;
+import javax.imageio.ImageTypeSpecifier;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.spi.ImageReaderSpi;
+import javax.imageio.stream.FileImageInputStream;
+
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.data.*;
 import org.miaixz.bus.image.galaxy.io.BulkDataDescriptor;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
-import org.miaixz.bus.image.nimble.LookupTable;
 import org.miaixz.bus.image.nimble.*;
+import org.miaixz.bus.image.nimble.LookupTable;
 import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
 import org.miaixz.bus.image.nimble.codec.ImageReaderFactory;
 import org.miaixz.bus.image.nimble.codec.TransferSyntaxType;
@@ -44,21 +60,6 @@ import org.miaixz.bus.image.nimble.stream.EncapsulatedPixelDataImageInputStream;
 import org.miaixz.bus.image.nimble.stream.ImageInputStreamAdapter;
 import org.miaixz.bus.image.nimble.stream.SegmentedInputImageStream;
 import org.miaixz.bus.logger.Logger;
-
-import javax.imageio.ImageReadParam;
-import javax.imageio.ImageReader;
-import javax.imageio.ImageTypeSpecifier;
-import javax.imageio.metadata.IIOMetadata;
-import javax.imageio.spi.ImageReaderSpi;
-import javax.imageio.stream.FileImageInputStream;
-import java.awt.color.ColorSpace;
-import java.awt.image.*;
-import java.io.*;
-import java.nio.ByteOrder;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.Set;
 
 /**
  * Reads header and image data from a DICOM object. Supports compressed and uncompressed images from a DicomMetaData

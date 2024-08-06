@@ -27,10 +27,11 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.io.Serializable;
+
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class AbstractGroup<G extends AbstractGroup<G>> implements Serializable {

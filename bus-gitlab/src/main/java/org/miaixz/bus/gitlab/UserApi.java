@@ -27,18 +27,19 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.Form;
-import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.Response;
-import org.miaixz.bus.gitlab.models.*;
-import org.miaixz.bus.gitlab.support.EmailChecker;
-
 import java.io.File;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.gitlab.models.*;
+import org.miaixz.bus.gitlab.support.EmailChecker;
+
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 
 /**
  * This class provides an entry point to all the GitLab API users calls.

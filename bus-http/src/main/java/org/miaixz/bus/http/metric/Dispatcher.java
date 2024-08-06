@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.http.metric;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.http.Builder;
-import org.miaixz.bus.http.NewCall;
-import org.miaixz.bus.http.RealCall;
-
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.http.Builder;
+import org.miaixz.bus.http.NewCall;
+import org.miaixz.bus.http.RealCall;
 
 /**
  * 关于何时执行异步请求的策略 每个dispatcher使用一个{@link ExecutorService}在内部运行调用。 如果您提供自己的执行程序，它应该能够并发地运行{@linkplain #getMaxRequests

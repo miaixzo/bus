@@ -27,20 +27,21 @@
 */
 package org.miaixz.bus.health.windows.driver;
 
-import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
-import com.sun.jna.platform.win32.Kernel32Util;
-import com.sun.jna.platform.win32.VersionHelpers;
-import com.sun.jna.platform.win32.WinNT;
-import com.sun.jna.platform.win32.WinNT.*;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import java.util.*;
+
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.health.builtin.hardware.CentralProcessor;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractCentralProcessor;
 import org.miaixz.bus.health.windows.WmiKit;
 import org.miaixz.bus.health.windows.driver.wmi.Win32Processor;
 
-import java.util.*;
+import com.sun.jna.platform.win32.Kernel32Util;
+import com.sun.jna.platform.win32.VersionHelpers;
+import com.sun.jna.platform.win32.WinNT;
+import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
+import com.sun.jna.platform.win32.WinNT.*;
 
 /**
  * Utility to query Logical Processor Information

@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.health.builtin.hardware.common;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -35,9 +38,6 @@ import org.miaixz.bus.health.Formats;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.GlobalMemory;
 import org.miaixz.bus.health.builtin.hardware.PhysicalMemory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Memory info.

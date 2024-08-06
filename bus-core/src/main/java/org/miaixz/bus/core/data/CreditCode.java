@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.data;
 
+import java.util.Map;
+
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.util.Map;
 
 /**
  * 统一社会信用代码（GB32100-2015）工具类 标准见：<a href="https://www.cods.org.cn/c/2020-10-29/12575.html">GB 32100-2015</a>

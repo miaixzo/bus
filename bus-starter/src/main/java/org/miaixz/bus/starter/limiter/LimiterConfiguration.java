@@ -27,7 +27,6 @@
 */
 package org.miaixz.bus.starter.limiter;
 
-import jakarta.annotation.Resource;
 import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.limiter.Supplier;
@@ -36,6 +35,8 @@ import org.miaixz.bus.limiter.metric.MethodProvider;
 import org.miaixz.bus.limiter.metric.RequestProvider;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+
+import jakarta.annotation.Resource;
 
 /**
  * 限流/降级配置

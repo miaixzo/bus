@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.core.center.date.culture.lunar;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.cn.*;
 import org.miaixz.bus.core.center.date.culture.cn.fetus.FetusDay;
@@ -39,9 +42,6 @@ import org.miaixz.bus.core.center.date.culture.cn.star.twelve.TwelveStar;
 import org.miaixz.bus.core.center.date.culture.cn.star.twentyeight.TwentyEightStar;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 农历日
@@ -299,7 +299,8 @@ public class LunarDay extends Loops {
      */
     public Direction getJupiterDirection() {
         int index = getSixtyCycle().getIndex();
-        return index % 12 < 6 ? Element.fromIndex(index / 12).getDirection() : month.getLunarYear().getJupiterDirection();
+        return index % 12 < 6 ? Element.fromIndex(index / 12).getDirection()
+                : month.getLunarYear().getJupiterDirection();
     }
 
     /**

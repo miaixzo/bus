@@ -27,7 +27,9 @@
 */
 package org.miaixz.bus.oauth.metric.okta;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -47,8 +49,7 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * Okta 登录

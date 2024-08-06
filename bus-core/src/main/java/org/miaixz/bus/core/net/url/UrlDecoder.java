@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.core.net.url;
 
+import java.io.Serializable;
+import java.util.*;
+
 import org.miaixz.bus.core.io.stream.FastByteArrayOutputStream;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
@@ -35,9 +38,6 @@ import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.io.Serializable;
-import java.util.*;
 
 /**
  * URL解码，数据内容的类型是 application/x-www-form-urlencoded。

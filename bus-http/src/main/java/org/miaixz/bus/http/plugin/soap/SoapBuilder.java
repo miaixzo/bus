@@ -27,7 +27,17 @@
 */
 package org.miaixz.bus.http.plugin.soap;
 
-import jakarta.xml.soap.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
+
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
@@ -39,15 +49,7 @@ import org.miaixz.bus.http.Httpz;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.SoapX;
 
-import javax.xml.XMLConstants;
-import javax.xml.namespace.QName;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
+import jakarta.xml.soap.*;
 
 /**
  * SOAP 支持 此对象用于构建一个SOAP消息，并通过HTTP接口发出消息内容。 SOAP消息本质上是一个XML文本，可以通过调用{@link #getString(boolean)} 方法获取消息体

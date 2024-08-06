@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.sensitive;
 
+import java.lang.annotation.Annotation;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Predicate;
+
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.dfa.WordTree;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.extra.json.JsonKit;
-
-import java.lang.annotation.Annotation;
-import java.util.Collection;
-import java.util.List;
-import java.util.function.Predicate;
 
 /**
  * 脱敏策略工具类 1.提供常见的脱敏策略 2.主要供单独的字符串处理使用

@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.cron.pattern.parser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.CrontabException;
 import org.miaixz.bus.core.text.CharsBacker;
@@ -34,9 +37,6 @@ import org.miaixz.bus.cron.pattern.Part;
 import org.miaixz.bus.cron.pattern.matcher.AlwaysTrueMatcher;
 import org.miaixz.bus.cron.pattern.matcher.PartMatcher;
 import org.miaixz.bus.cron.pattern.matcher.PatternMatcher;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 定时任务表达式解析器，用于将表达式字符串解析为{@link PatternMatcher}的列表

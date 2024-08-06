@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.center.iterator;
 
-import org.miaixz.bus.core.lang.Assert;
-
 import java.util.Iterator;
 import java.util.function.Function;
+
+import org.miaixz.bus.core.lang.Assert;
 
 /**
  * 使用给定的转换函数，转换源{@link Iterator}为新类型的{@link Iterator}

@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.spring.env;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.spring.GeniusBuilder;
@@ -35,9 +38,6 @@ import org.springframework.boot.context.config.ConfigDataEnvironmentPostProcesso
 import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 通过 {@link EnvironmentPostProcessor} 实现日志配置检测，初始化等

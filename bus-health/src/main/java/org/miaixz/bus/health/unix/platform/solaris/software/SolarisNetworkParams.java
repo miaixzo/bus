@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.health.unix.platform.solaris.software;
 
-import com.sun.jna.Native;
-import com.sun.jna.platform.unix.LibCAPI;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.builtin.software.common.AbstractNetworkParams;
 import org.miaixz.bus.health.unix.jna.SolarisLibc;
+
+import com.sun.jna.Native;
+import com.sun.jna.platform.unix.LibCAPI;
 
 /**
  * SolarisNetworkParams class.

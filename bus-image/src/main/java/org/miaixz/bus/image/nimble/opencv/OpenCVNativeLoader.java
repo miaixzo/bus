@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.image.nimble.opencv;
 
+import java.io.IOException;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.loader.Loaders;
 import org.miaixz.bus.health.Platform;
 import org.miaixz.bus.logger.Logger;
 import org.opencv.core.Core;
-
-import java.io.IOException;
 
 /**
  * OpenCV动态库加载 1. 默认加载运行环境下的opencv动态库 2. 加载失败会重试加载jar中的opencv动态库

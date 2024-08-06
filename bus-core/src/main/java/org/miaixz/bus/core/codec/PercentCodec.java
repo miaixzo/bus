@@ -27,14 +27,6 @@
 */
 package org.miaixz.bus.core.codec;
 
-import org.miaixz.bus.core.codec.binary.provider.Base16Provider;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.core.xyz.HexKit;
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -42,6 +34,14 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.BitSet;
+
+import org.miaixz.bus.core.codec.binary.provider.Base16Provider;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.HexKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 百分号编码(Percent-encoding), 也称作URL编码(URL encoding)。 百分号编码可用于URI的编码，也可以用于"application/x-www-form-urlencoded"的MIME准备数据。

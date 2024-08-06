@@ -27,6 +27,15 @@
 */
 package org.miaixz.bus.image.galaxy.io;
 
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.zip.Inflater;
+import java.util.zip.InflaterInputStream;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ByteKit;
@@ -37,15 +46,6 @@ import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.LimitedInputStream;
 import org.miaixz.bus.image.galaxy.data.*;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.Predicate;
-import java.util.zip.Inflater;
-import java.util.zip.InflaterInputStream;
 
 /**
  * @author Kimi Liu

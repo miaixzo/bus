@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.gitlab;
 
-import org.miaixz.bus.gitlab.models.*;
-
 import java.util.List;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.gitlab.models.*;
 
 /**
  * This class provides an entry point to all the GitLab API Search API calls.

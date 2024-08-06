@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.image.galaxy.data;
 
-import org.miaixz.bus.image.IOD;
-
 import java.io.IOException;
 import java.util.HashMap;
+
+import org.miaixz.bus.image.IOD;
 
 /**
  * @author Kimi Liu

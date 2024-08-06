@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.health.linux;
 
+import java.io.File;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Config;
-
-import java.io.File;
 
 /**
  * Provides constants for paths in the {@code /proc} filesystem on Linux. If the user desires to configure a custom

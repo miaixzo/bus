@@ -27,20 +27,21 @@
 */
 package org.miaixz.bus.pager;
 
-import net.sf.jsqlparser.JSQLParserException;
-import net.sf.jsqlparser.parser.ParseException;
-import net.sf.jsqlparser.statement.Statement;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.PageException;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.pager.parser.SqlParser;
-
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.PageException;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.pager.parser.SqlParser;
+
+import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.parser.ParseException;
+import net.sf.jsqlparser.statement.Statement;
 
 /**
  * 公共方法

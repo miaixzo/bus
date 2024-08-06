@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.center;
 
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.center.array.ArrayValidator;
 import org.miaixz.bus.core.xyz.IteratorKit;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
-
-import java.util.*;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * Collection检查工具类，提供字对象的blank和empty等检查

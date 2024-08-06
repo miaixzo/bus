@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serializable;
+
 import org.miaixz.bus.gitlab.Constants.PackageOrderBy;
 import org.miaixz.bus.gitlab.Constants.PackageStatus;
 import org.miaixz.bus.gitlab.Constants.SortOrder;
 import org.miaixz.bus.gitlab.GitLabApiForm;
-
-import java.io.Serializable;
 
 /**
  * This class is used to filter Projects when getting lists of projects for a specified group.

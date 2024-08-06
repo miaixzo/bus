@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.lang.selector;
 
-import org.miaixz.bus.core.xyz.CollKit;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.miaixz.bus.core.xyz.CollKit;
 
 /**
  * 平滑加权轮询选择器 思路: 比如 A : 5 , B : 3 , C : 2 (服务器 A,B,C 对应权重分别是 5,3,2) ip: A,B,C weight: 5,3,2 (计算得到 totalWeight = 10)

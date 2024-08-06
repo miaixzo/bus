@@ -27,6 +27,14 @@
 */
 package org.miaixz.bus.core.xyz;
 
+import java.lang.reflect.Array;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.center.array.ArrayWrapper;
 import org.miaixz.bus.core.center.array.PrimitiveArray;
 import org.miaixz.bus.core.center.set.UniqueKeySet;
@@ -35,14 +43,6 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.text.StringJoiner;
-
-import java.lang.reflect.Array;
-import java.util.*;
-import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 
 /**
  * 数组工具类

@@ -27,8 +27,10 @@
 */
 package org.miaixz.bus.image.metric.json;
 
-import jakarta.json.JsonValue;
-import jakarta.json.stream.JsonGenerator;
+import java.io.IOException;
+import java.util.*;
+import java.util.function.LongFunction;
+
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Format;
 import org.miaixz.bus.image.Tag;
@@ -39,9 +41,8 @@ import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.logger.Logger;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.function.LongFunction;
+import jakarta.json.JsonValue;
+import jakarta.json.stream.JsonGenerator;
 
 /**
  * Allows conversion of DICOM files into JSON format. See

@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.data.id;
 
-import org.miaixz.bus.core.xyz.RandomKit;
-
 import java.security.SecureRandom;
 import java.util.Random;
+
+import org.miaixz.bus.core.xyz.RandomKit;
 
 /**
  * NanoId，一个小型、安全、对 URL友好的唯一字符串 ID 生成器，特点：

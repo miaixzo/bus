@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.extra.image.gif;
 
-import org.miaixz.bus.core.lang.Normal;
-
 import java.io.IOException;
 import java.io.OutputStream;
+
+import org.miaixz.bus.core.lang.Normal;
 
 //==============================================================================
 //  Adapted from Jef Poskanzer's Java port by way of J. M. G. Elliott.

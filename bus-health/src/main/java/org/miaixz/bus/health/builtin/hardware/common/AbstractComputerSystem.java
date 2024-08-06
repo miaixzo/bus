@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.health.builtin.hardware.common;
 
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.Baseboard;
 import org.miaixz.bus.health.builtin.hardware.ComputerSystem;
 import org.miaixz.bus.health.builtin.hardware.Firmware;
-
-import java.util.function.Supplier;
 
 /**
  * Computer System data.

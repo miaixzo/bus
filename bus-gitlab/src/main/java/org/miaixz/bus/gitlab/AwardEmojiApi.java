@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.Response;
+import java.util.List;
+
 import org.miaixz.bus.gitlab.models.AwardEmoji;
 
-import java.util.List;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 
 /**
  * This class implements the client side API for the GitLab Award Emoji API calls.

@@ -27,7 +27,11 @@
 */
 package org.miaixz.bus.notify.metric.dingtalk;
 
-import lombok.Setter;
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -38,10 +42,7 @@ import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
-import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
+import lombok.Setter;
 
 /**
  * 钉钉通知

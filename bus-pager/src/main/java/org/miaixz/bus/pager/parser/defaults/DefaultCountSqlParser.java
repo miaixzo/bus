@@ -27,6 +27,13 @@
 */
 package org.miaixz.bus.pager.parser.defaults;
 
+import java.util.*;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.pager.Builder;
+import org.miaixz.bus.pager.builtin.PageMethod;
+import org.miaixz.bus.pager.parser.CountSqlParser;
+
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.Function;
@@ -35,12 +42,6 @@ import net.sf.jsqlparser.parser.Token;
 import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.pager.Builder;
-import org.miaixz.bus.pager.builtin.PageMethod;
-import org.miaixz.bus.pager.parser.CountSqlParser;
-
-import java.util.*;
 
 /**
  * sql解析类，提供更智能的count查询sql

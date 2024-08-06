@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.image.metric.hl7;
 
+import java.io.IOException;
+import java.io.Writer;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
-import java.io.IOException;
-import java.io.Writer;
 
 /**
  * @author Kimi Liu

@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.core.text;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Function;
+
 import org.miaixz.bus.core.center.iterator.ComputeIterator;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.text.finder.TextFinder;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Function;
 
 /**
  * 字符串切分迭代器 此迭代器是字符串切分的懒模式实现，实例化后不完成切分，只有调用{@link #hasNext()}或遍历时才完成切分 此迭代器非线程安全

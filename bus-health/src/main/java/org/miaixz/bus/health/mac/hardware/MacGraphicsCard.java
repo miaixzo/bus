@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.health.mac.hardware;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -35,10 +39,6 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.GraphicsCard;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractGraphicsCard;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * Graphics card info obtained by system_profiler SPDisplaysDataType.

@@ -27,16 +27,6 @@
 */
 package org.miaixz.bus.health.windows.driver.registry;
 
-import com.sun.jna.Pointer;
-import com.sun.jna.platform.win32.*;
-import com.sun.jna.platform.win32.Wtsapi32.WTSINFO;
-import com.sun.jna.platform.win32.Wtsapi32.WTS_CLIENT_ADDRESS;
-import com.sun.jna.platform.win32.Wtsapi32.WTS_SESSION_INFO;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.health.Parsing;
-import org.miaixz.bus.health.builtin.jna.ByRef;
-import org.miaixz.bus.health.builtin.software.OSSession;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
@@ -45,6 +35,17 @@ import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.health.Parsing;
+import org.miaixz.bus.health.builtin.jna.ByRef;
+import org.miaixz.bus.health.builtin.software.OSSession;
+
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.win32.*;
+import com.sun.jna.platform.win32.Wtsapi32.WTSINFO;
+import com.sun.jna.platform.win32.Wtsapi32.WTS_CLIENT_ADDRESS;
+import com.sun.jna.platform.win32.Wtsapi32.WTS_SESSION_INFO;
 
 /**
  * Utility to read process data from HKEY_PERFORMANCE_DATA information with backup from Performance Counters or WMI

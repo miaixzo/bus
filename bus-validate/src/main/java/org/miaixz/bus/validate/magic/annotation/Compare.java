@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
-import org.miaixz.bus.validate.Builder;
-
 import java.lang.annotation.*;
+
+import org.miaixz.bus.validate.Builder;
 
 /**
  * 参数值比较验证注解

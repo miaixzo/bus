@@ -27,40 +27,17 @@
 */
 package org.miaixz.bus.gitlab.hooks.web;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
-
 import java.io.Serializable;
 import java.util.Date;
 
+import org.miaixz.bus.gitlab.support.JacksonJson;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public class EventLabel implements Serializable {
     private static final long serialVersionUID = -1L;
-
-    public enum LabelType {
-
-        PROJECT_LABEL;
-
-        private static JacksonJsonEnumHelper<LabelType> enumHelper = new JacksonJsonEnumHelper<>(LabelType.class, true,
-                true);
-
-        @JsonCreator
-        public static LabelType forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
-    }
-
     private Long id;
     private String title;
     private String color;
@@ -155,5 +132,28 @@ public class EventLabel implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    public enum LabelType {
+
+        PROJECT_LABEL;
+
+        private static JacksonJsonEnumHelper<LabelType> enumHelper = new JacksonJsonEnumHelper<>(LabelType.class, true,
+                true);
+
+        @JsonCreator
+        public static LabelType forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
     }
 }

@@ -27,16 +27,9 @@
 */
 package org.miaixz.bus.health.mac.hardware;
 
-import com.sun.jna.Pointer;
-import com.sun.jna.platform.mac.CoreFoundation;
-import com.sun.jna.platform.mac.CoreFoundation.*;
-import com.sun.jna.platform.mac.DiskArbitration;
-import com.sun.jna.platform.mac.DiskArbitration.DADiskRef;
-import com.sun.jna.platform.mac.DiskArbitration.DASessionRef;
-import com.sun.jna.platform.mac.IOKit;
-import com.sun.jna.platform.mac.IOKit.IOIterator;
-import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
-import com.sun.jna.platform.mac.IOKitUtil;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.HWDiskStore;
@@ -46,8 +39,16 @@ import org.miaixz.bus.health.mac.CFKit;
 import org.miaixz.bus.health.mac.driver.disk.Fsstat;
 import org.miaixz.bus.logger.Logger;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.mac.CoreFoundation;
+import com.sun.jna.platform.mac.DiskArbitration;
+import com.sun.jna.platform.mac.DiskArbitration.DADiskRef;
+import com.sun.jna.platform.mac.DiskArbitration.DASessionRef;
+import com.sun.jna.platform.mac.IOKit;
+import com.sun.jna.platform.mac.IOKit.IOIterator;
+import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
+import com.sun.jna.platform.mac.IOKitUtil;
+import com.sun.jna.platform.mac.CoreFoundation.*;
 
 /**
  * Mac hard disk implementation.

@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.pay.metric.paypal;
 
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.MediaType;
@@ -42,10 +46,6 @@ import org.miaixz.bus.pay.magic.Message;
 import org.miaixz.bus.pay.metric.AbstractProvider;
 import org.miaixz.bus.pay.metric.paypal.api.PayPalApi;
 import org.miaixz.bus.pay.metric.paypal.entity.AccessToken;
-
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * PayPal Api

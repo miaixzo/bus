@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.http.metric.anget;
 
+import java.util.List;
+import java.util.regex.Pattern;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.PatternKit;
-
-import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * 浏览器对象

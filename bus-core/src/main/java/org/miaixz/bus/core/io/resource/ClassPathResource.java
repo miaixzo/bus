@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.io.resource;
 
+import java.net.URL;
+
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
-
-import java.net.URL;
 
 /**
  * ClassPath单一资源访问类 传入路径path必须为相对路径，如果传入绝对路径，Linux路径会去掉开头的“/”，而Windows路径会直接报错。 传入的path所指向的资源必须存在，否则报错

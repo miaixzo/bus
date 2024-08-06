@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.starter.jdbc;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.List;
+
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Druid 配置项

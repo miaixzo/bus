@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.cache.provider;
 
+import java.util.Iterator;
+
 import org.miaixz.bus.core.cache.Cache;
 import org.miaixz.bus.core.center.function.SupplierX;
-
-import java.util.Iterator;
 
 /**
  * 无缓存实现，用于快速关闭缓存

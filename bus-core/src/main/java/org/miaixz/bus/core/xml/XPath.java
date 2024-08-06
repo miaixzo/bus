@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.core.xml;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.namespace.QName;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 /**
  * {@link javax.xml.xpath.XPath}相关工具类

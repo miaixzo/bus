@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.mapper;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.regex.Pattern;
+
 import org.apache.ibatis.cache.Cache;
 import org.apache.ibatis.cache.decorators.SoftCache;
 import org.apache.ibatis.cache.impl.PerpetualCache;
 import org.miaixz.bus.core.lang.exception.MapperException;
 import org.miaixz.bus.mapper.support.GenId;
 import org.miaixz.bus.mapper.support.MetaObject;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.regex.Pattern;
 
 /**
  * 通用方法

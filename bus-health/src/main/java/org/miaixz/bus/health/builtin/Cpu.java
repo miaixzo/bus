@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.health.builtin;
 
+import java.text.DecimalFormat;
+
 import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.health.builtin.hardware.CentralProcessor;
-
-import java.text.DecimalFormat;
 
 /**
  * @author Kimi Liu

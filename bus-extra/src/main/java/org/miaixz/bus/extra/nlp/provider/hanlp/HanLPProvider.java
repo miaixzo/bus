@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.extra.nlp.provider.hanlp;
 
-import com.hankcs.hanlp.HanLP;
-import com.hankcs.hanlp.seg.Segment;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;
+
+import com.hankcs.hanlp.HanLP;
+import com.hankcs.hanlp.seg.Segment;
 
 /**
  * HanLP分词引擎实现 项目地址：https://github.com/hankcs/HanLP {@link Segment#seg(String)}方法线程安全

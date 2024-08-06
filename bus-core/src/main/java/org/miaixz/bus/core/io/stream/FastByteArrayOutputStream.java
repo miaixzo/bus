@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.io.stream;
 
+import java.io.IOException;
+import java.io.OutputStream;
+
 import org.miaixz.bus.core.io.buffer.FastByteBuffer;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
-
-import java.io.IOException;
-import java.io.OutputStream;
 
 /**
  * 基于快速缓冲FastByteBuffer的OutputStream，随着数据的增长自动扩充缓冲区 可以通过{@link #toByteArray()}和 {@link #toString()}来获取数据

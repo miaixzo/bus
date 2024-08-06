@@ -27,10 +27,10 @@
 */
 package org.opencv.utils;
 
-import org.opencv.core.*;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.opencv.core.*;
 
 public class Converters {
 

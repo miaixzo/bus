@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.center.date;
 
-import org.miaixz.bus.core.center.date.culture.Loops;
-import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.miaixz.bus.core.center.date.culture.Loops;
+import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 
 /**
  * 法定假日（自2001-12-29起）

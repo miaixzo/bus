@@ -27,6 +27,16 @@
 */
 package org.miaixz.bus.image.metric;
 
+import java.io.*;
+import java.net.*;
+import java.security.GeneralSecurityException;
+import java.util.*;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLParameters;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -36,15 +46,6 @@ import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.metric.net.*;
 import org.miaixz.bus.logger.Logger;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLParameters;
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
-import java.io.*;
-import java.net.*;
-import java.security.GeneralSecurityException;
-import java.util.*;
 
 /**
  * A DICOM Part 15, Annex H compliant class, <code>NetworkConnection</code> encapsulates the properties associated with
@@ -57,8 +58,6 @@ import java.util.*;
  * @since Java 17+
  */
 public class Connection implements Serializable {
-
-    private static final long serialVersionUID = -1L;
 
     public static final int NO_TIMEOUT = 0;
     public static final int SYNCHRONOUS_MODE = 1;
@@ -73,7 +72,7 @@ public class Connection implements Serializable {
     // to fit into SunJSSE TLS Application Data Length 16408
     public static final String TLS_RSA_WITH_AES_128_CBC_SHA = "TLS_RSA_WITH_AES_128_CBC_SHA";
     public static final String[] DEFAULT_TLS_PROTOCOLS = { "TLSv1.2" };
-
+    private static final long serialVersionUID = -1L;
     private static final EnumMap<Protocol, TCPProtocolHandler> tcpHandlers = new EnumMap<>(Protocol.class);
     private static final EnumMap<Protocol, UDPProtocolHandler> udpHandlers = new EnumMap<>(Protocol.class);
 

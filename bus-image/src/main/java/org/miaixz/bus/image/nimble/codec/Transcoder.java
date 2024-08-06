@@ -27,6 +27,14 @@
 */
 package org.miaixz.bus.image.nimble.codec;
 
+import java.awt.color.ColorSpace;
+import java.awt.image.*;
+import java.io.*;
+import java.util.List;
+import java.util.Objects;
+
+import javax.imageio.*;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ByteKit;
@@ -45,13 +53,6 @@ import org.miaixz.bus.image.nimble.codec.jpeg.PatchJPEGLSInputStream;
 import org.miaixz.bus.image.nimble.codec.jpeg.PatchJPEGLSOutputStream;
 import org.miaixz.bus.image.nimble.stream.EncapsulatedPixelDataImageInputStream;
 import org.miaixz.bus.logger.Logger;
-
-import javax.imageio.*;
-import java.awt.color.ColorSpace;
-import java.awt.image.*;
-import java.io.*;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Kimi Liu

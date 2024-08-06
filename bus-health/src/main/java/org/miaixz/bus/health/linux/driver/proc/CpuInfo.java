@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.health.linux.driver.proc;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -34,10 +38,6 @@ import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.linux.ProcPath;
-
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
 
 /**
  * Utility to read CPU info from {@code /proc/cpuinfo}

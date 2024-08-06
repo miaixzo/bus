@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.http.cache;
 
+import java.util.concurrent.TimeUnit;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Headers;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * 缓存控制头，带有来自服务器或客户端的缓存指令。 这些指令设置了哪些响应可以存储，以及哪些请求可以由存储的响应来满足的策略

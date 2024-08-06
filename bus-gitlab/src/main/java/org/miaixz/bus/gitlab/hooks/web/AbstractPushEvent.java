@@ -27,31 +27,28 @@
 */
 package org.miaixz.bus.gitlab.hooks.web;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public abstract class AbstractPushEvent {
 
+    private static final String REFS_HEADS = "refs/heads/";
     private String eventName;
-
     private String after;
     private String before;
     private String ref;
     private String checkoutSha;
-
     private Long userId;
     private String userName;
     private String userUsername;
     private String userEmail;
     private String userAvatar;
-
     private Long projectId;
     private EventProject project;
     private EventRepository repository;
     private List<EventCommit> commits;
     private Integer totalCommitsCount;
-
     private String requestUrl;
     private String requestQueryString;
     private String requestSecretToken;
@@ -176,8 +173,6 @@ public abstract class AbstractPushEvent {
         this.totalCommitsCount = totalCommitsCount;
     }
 
-    private static final String REFS_HEADS = "refs/heads/";
-
     @JsonIgnore
     public String getRequestUrl() {
         return (requestUrl);
@@ -201,6 +196,10 @@ public abstract class AbstractPushEvent {
         return (requestSecretToken);
     }
 
+    public void setRequestSecretToken(String secretToken) {
+        this.requestSecretToken = secretToken;
+    }
+
     /**
      * Gets the branch name from the ref. Will return null if the ref does not start with "refs/heads/".
      *
@@ -221,9 +220,5 @@ public abstract class AbstractPushEvent {
         }
 
         return (ref.substring(REFS_HEADS.length()));
-    }
-
-    public void setRequestSecretToken(String secretToken) {
-        this.requestSecretToken = secretToken;
     }
 }

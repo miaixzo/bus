@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.extra.pinyin;
 
+import java.util.List;
+
 import org.miaixz.bus.core.Provider;
 import org.miaixz.bus.core.lang.EnumMap;
 import org.miaixz.bus.core.lang.Normal;
@@ -34,8 +36,6 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.util.List;
 
 /**
  * 拼音引擎接口，具体的拼音实现通过实现此接口，完成具体实现功能

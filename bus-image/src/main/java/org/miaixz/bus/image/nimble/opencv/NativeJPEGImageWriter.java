@@ -27,6 +27,16 @@
 */
 package org.miaixz.bus.image.nimble.opencv;
 
+import java.awt.image.DataBuffer;
+import java.awt.image.RenderedImage;
+import java.io.IOException;
+import java.nio.ByteOrder;
+
+import javax.imageio.*;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.spi.ImageWriterSpi;
+import javax.imageio.stream.ImageOutputStream;
+
 import org.miaixz.bus.image.nimble.Photometric;
 import org.miaixz.bus.image.nimble.codec.BytesWithImageImageDescriptor;
 import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
@@ -35,15 +45,6 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfInt;
 import org.opencv.imgcodecs.Imgcodecs;
-
-import javax.imageio.*;
-import javax.imageio.metadata.IIOMetadata;
-import javax.imageio.spi.ImageWriterSpi;
-import javax.imageio.stream.ImageOutputStream;
-import java.awt.image.DataBuffer;
-import java.awt.image.RenderedImage;
-import java.io.IOException;
-import java.nio.ByteOrder;
 
 /**
  * @author Kimi Liu

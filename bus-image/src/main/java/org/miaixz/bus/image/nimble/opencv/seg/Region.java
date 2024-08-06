@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.image.nimble.opencv.seg;
 
+import java.awt.geom.Point2D;
+import java.util.*;
+
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.nimble.opencv.PlanarImage;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.imgproc.Imgproc;
-
-import java.awt.geom.Point2D;
-import java.util.*;
 
 /**
  * @author Kimi Liu

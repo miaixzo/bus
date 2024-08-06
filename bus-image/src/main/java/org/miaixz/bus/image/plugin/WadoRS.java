@@ -27,16 +27,6 @@
 */
 package org.miaixz.bus.image.plugin;
 
-import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.image.Builder;
-import org.miaixz.bus.image.galaxy.media.MultipartInputStream;
-import org.miaixz.bus.image.galaxy.media.MultipartParser;
-import org.miaixz.bus.logger.Logger;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,6 +41,17 @@ import java.security.cert.X509Certificate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.image.Builder;
+import org.miaixz.bus.image.galaxy.media.MultipartInputStream;
+import org.miaixz.bus.image.galaxy.media.MultipartParser;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * @author Kimi Liu

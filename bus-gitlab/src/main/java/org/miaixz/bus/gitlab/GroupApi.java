@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.*;
-import org.miaixz.bus.gitlab.models.*;
-import org.miaixz.bus.gitlab.support.ISO8601;
-
 import java.io.File;
 import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.gitlab.models.*;
+import org.miaixz.bus.gitlab.support.ISO8601;
+
+import jakarta.ws.rs.core.*;
 
 /**
  * This class implements the client side API for the GitLab groups calls.

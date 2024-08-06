@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.health.windows;
 
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
 import org.miaixz.bus.core.lang.annotation.NotThreadSafe;
 import org.miaixz.bus.health.Formats;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.windows.PerfDataKit.PerfCounter;
 import org.miaixz.bus.logger.Logger;
-
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * Utility to handle Performance Counter Queries This class is not thread safe. Each query handler instance should only

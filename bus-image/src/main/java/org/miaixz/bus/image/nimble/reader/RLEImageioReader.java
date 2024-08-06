@@ -27,8 +27,11 @@
 */
 package org.miaixz.bus.image.nimble.reader;
 
-import org.miaixz.bus.core.xyz.ByteKit;
-import org.miaixz.bus.logger.Logger;
+import java.awt.image.*;
+import java.io.EOFException;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Iterator;
 
 import javax.imageio.ImageReadParam;
 import javax.imageio.ImageReader;
@@ -36,11 +39,9 @@ import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.spi.ImageReaderSpi;
 import javax.imageio.stream.ImageInputStream;
-import java.awt.image.*;
-import java.io.EOFException;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Iterator;
+
+import org.miaixz.bus.core.xyz.ByteKit;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * @author Kimi Liu

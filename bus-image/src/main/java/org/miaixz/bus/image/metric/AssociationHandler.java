@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.image.metric;
 
+import java.io.IOException;
+import java.util.Objects;
+
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.data.Implementation;
 import org.miaixz.bus.image.metric.net.ApplicationEntity;
 import org.miaixz.bus.image.metric.net.IdentityNegotiator;
 import org.miaixz.bus.image.metric.pdu.*;
-
-import java.io.IOException;
-import java.util.Objects;
 
 /**
  * @author Kimi Liu

@@ -27,20 +27,21 @@
 */
 package org.miaixz.bus.cache.metric;
 
-import jakarta.annotation.PreDestroy;
-import net.rubyeye.xmemcached.MemcachedClient;
-import net.rubyeye.xmemcached.XMemcachedClientBuilder;
-import net.rubyeye.xmemcached.exception.MemcachedException;
-import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.cache.magic.CacheExpire;
-import org.miaixz.bus.cache.serialize.BaseSerializer;
-import org.miaixz.bus.cache.serialize.Hessian2Serializer;
-
 import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
+
+import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.cache.magic.CacheExpire;
+import org.miaixz.bus.cache.serialize.BaseSerializer;
+import org.miaixz.bus.cache.serialize.Hessian2Serializer;
+
+import jakarta.annotation.PreDestroy;
+import net.rubyeye.xmemcached.MemcachedClient;
+import net.rubyeye.xmemcached.XMemcachedClientBuilder;
+import net.rubyeye.xmemcached.exception.MemcachedException;
 
 /**
  * Memcached 缓存支持

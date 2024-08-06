@@ -27,7 +27,9 @@
 */
 package org.miaixz.bus.core;
 
-import lombok.RequiredArgsConstructor;
+import java.lang.reflect.Field;
+import java.util.*;
+
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.io.resource.PropertySource;
 import org.miaixz.bus.core.lang.Assert;
@@ -39,8 +41,7 @@ import org.miaixz.bus.core.lang.reflect.JdkProxy;
 import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
-import java.lang.reflect.Field;
-import java.util.*;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 属性绑定器

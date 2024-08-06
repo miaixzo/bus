@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.health.unix.platform.solaris.driver.kstat;
 
-import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.unix.platform.solaris.KstatKit;
 import org.miaixz.bus.health.unix.platform.solaris.KstatKit.KstatChain;
 import org.miaixz.bus.health.unix.platform.solaris.software.SolarisOperatingSystem;
+
+import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 
 /**
  * Utility to query geom part list

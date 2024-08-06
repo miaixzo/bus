@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.extra.ssh;
 
+import java.io.IOException;
+
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.session.ClientSession;
 import org.miaixz.bus.core.lang.exception.InternalException;
-
-import java.io.IOException;
 
 /**
  * Apache MINA SSHD（https://mina.apache.org/sshd-project/）相关工具类

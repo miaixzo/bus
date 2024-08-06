@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.lang.loader;
 
-import org.miaixz.bus.core.Loader;
-
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicReference;
+
+import org.miaixz.bus.core.Loader;
 
 /**
  * 原子引用加载器 使用{@link AtomicReference} 实懒加载，过程如下

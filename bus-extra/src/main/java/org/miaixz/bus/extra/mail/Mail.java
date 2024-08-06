@@ -27,6 +27,17 @@
 */
 package org.miaixz.bus.extra.mail;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.nio.charset.Charset;
+import java.util.Date;
+
+import org.miaixz.bus.core.Builder;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.*;
+
 import jakarta.activation.DataHandler;
 import jakarta.activation.DataSource;
 import jakarta.activation.FileDataSource;
@@ -37,16 +48,6 @@ import jakarta.mail.internet.MimeMessage;
 import jakarta.mail.internet.MimeMultipart;
 import jakarta.mail.internet.MimeUtility;
 import jakarta.mail.util.ByteArrayDataSource;
-import org.miaixz.bus.core.Builder;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.*;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.nio.charset.Charset;
-import java.util.Date;
 
 /**
  * 邮件发送客户端

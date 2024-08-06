@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.text.placeholder;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.MapKit;
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.MapKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 字符串模式匹配，使用${XXXXX}作为变量，例如：

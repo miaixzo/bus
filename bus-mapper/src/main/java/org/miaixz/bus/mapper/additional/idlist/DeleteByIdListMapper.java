@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.mapper.additional.idlist;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.Param;
 import org.miaixz.bus.mapper.annotation.RegisterMapper;
-
-import java.util.List;
 
 /**
  * 通用Mapper接口,根据idList删除

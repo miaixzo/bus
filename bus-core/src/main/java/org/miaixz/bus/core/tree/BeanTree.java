@@ -27,15 +27,6 @@
 */
 package org.miaixz.bus.core.tree;
 
-import org.miaixz.bus.core.center.function.BiConsumerX;
-import org.miaixz.bus.core.center.function.ConsumerX;
-import org.miaixz.bus.core.center.function.FunctionX;
-import org.miaixz.bus.core.center.function.PredicateX;
-import org.miaixz.bus.core.center.stream.EasyStream;
-import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.xyz.CollKit;
-import org.miaixz.bus.core.xyz.ListKit;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -44,6 +35,15 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import org.miaixz.bus.core.center.function.BiConsumerX;
+import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.center.stream.EasyStream;
+import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.ListKit;
 
 /**
  * 本类是用于构建树的工具类，特点是采取lambda，以及满足指定类型的Bean进行树操作 Bean需要满足三个属性：

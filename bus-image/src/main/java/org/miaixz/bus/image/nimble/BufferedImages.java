@@ -27,20 +27,21 @@
 */
 package org.miaixz.bus.image.nimble;
 
-import org.miaixz.bus.image.Tag;
-import org.miaixz.bus.image.galaxy.data.Attributes;
-import org.miaixz.bus.image.galaxy.data.VR;
-import org.w3c.dom.Node;
-
-import javax.imageio.IIOImage;
-import javax.imageio.ImageReader;
-import javax.imageio.metadata.IIOInvalidTreeException;
 import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.image.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.imageio.IIOImage;
+import javax.imageio.ImageReader;
+import javax.imageio.metadata.IIOInvalidTreeException;
+
+import org.miaixz.bus.image.Tag;
+import org.miaixz.bus.image.galaxy.data.Attributes;
+import org.miaixz.bus.image.galaxy.data.VR;
+import org.w3c.dom.Node;
 
 /**
  * @author Kimi Liu

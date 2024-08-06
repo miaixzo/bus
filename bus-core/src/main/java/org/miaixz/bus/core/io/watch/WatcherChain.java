@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.io.watch;
 
-import org.miaixz.bus.core.lang.Chain;
-
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import org.miaixz.bus.core.lang.Chain;
 
 /**
  * 观察者链 用于加入多个观察者

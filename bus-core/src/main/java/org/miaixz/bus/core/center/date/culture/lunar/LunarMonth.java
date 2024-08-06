@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.core.center.date.culture.lunar;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.miaixz.bus.core.center.date.culture.Galaxy;
 import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.cn.Direction;
@@ -38,11 +43,6 @@ import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
 import org.miaixz.bus.core.center.date.culture.cn.star.nine.NineStar;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * 农历月
  *
@@ -51,13 +51,11 @@ import java.util.Map;
  */
 public class LunarMonth extends Loops {
 
+    public static final String[] NAMES = { "正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "腊月" };
     /**
      * 缓存
      */
     private static final Map<String, Object[]> cache = new HashMap<>();
-
-    public static final String[] NAMES = { "正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "腊月" };
-
     /**
      * 农历年
      */
@@ -172,13 +170,8 @@ public class LunarMonth extends Loops {
             m = new LunarMonth(c);
         } else {
             m = new LunarMonth(year, month);
-            cache.put(key, new Object[]{
-                    m.getYear(),
-                    m.getMonthWithLeap(),
-                    m.getDayCount(),
-                    m.getIndexInYear(),
-                    m.getFirstJulianDay().getDay()
-            });
+            cache.put(key, new Object[] { m.getYear(), m.getMonthWithLeap(), m.getDayCount(), m.getIndexInYear(),
+                    m.getFirstJulianDay().getDay() });
         }
         return m;
     }

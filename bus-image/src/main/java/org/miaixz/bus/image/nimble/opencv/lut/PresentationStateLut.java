@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.image.nimble.opencv.lut;
 
-import org.miaixz.bus.image.nimble.opencv.LookupTableCV;
-
 import java.util.Optional;
+
+import org.miaixz.bus.image.nimble.opencv.LookupTableCV;
 
 /**
  * @author Kimi Liu

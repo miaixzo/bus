@@ -27,15 +27,16 @@
 */
 package org.miaixz.bus.image.metric.hl7.ldap;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.image.builtin.ldap.LdapDicomConfiguration;
-import org.miaixz.bus.image.metric.api.ConfigurationChanges;
-import org.miaixz.bus.image.metric.hl7.net.HL7Application;
+import java.util.List;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.ModificationItem;
-import java.util.List;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.image.builtin.ldap.LdapDicomConfiguration;
+import org.miaixz.bus.image.metric.api.ConfigurationChanges;
+import org.miaixz.bus.image.metric.hl7.net.HL7Application;
 
 /**
  * @author Kimi Liu

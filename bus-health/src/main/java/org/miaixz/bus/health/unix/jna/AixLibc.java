@@ -27,10 +27,11 @@
 */
 package org.miaixz.bus.health.unix.jna;
 
-import com.sun.jna.Native;
+import java.nio.ByteBuffer;
+
 import org.miaixz.bus.health.Builder;
 
-import java.nio.ByteBuffer;
+import com.sun.jna.Native;
 
 /**
  * C library. This class should be considered non-API as it may be removed if/when its code is incorporated into the JNA

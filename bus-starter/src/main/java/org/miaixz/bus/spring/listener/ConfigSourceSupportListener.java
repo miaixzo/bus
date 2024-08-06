@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.spring.listener;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
-
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 注册一个基于{@link ConfigurableEnvironment}的配置源

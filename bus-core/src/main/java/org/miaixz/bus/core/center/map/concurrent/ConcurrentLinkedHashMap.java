@@ -27,13 +27,6 @@
 */
 package org.miaixz.bus.core.center.map.concurrent;
 
-import org.miaixz.bus.core.center.queue.DiscardingQueue;
-import org.miaixz.bus.core.center.queue.Linked;
-import org.miaixz.bus.core.center.queue.LinkedDeque;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.xyz.RuntimeKit;
-
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -46,6 +39,13 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.BiConsumer;
+
+import org.miaixz.bus.core.center.queue.DiscardingQueue;
+import org.miaixz.bus.core.center.queue.Linked;
+import org.miaixz.bus.core.center.queue.LinkedDeque;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.RuntimeKit;
 
 /**
  * A hash table supporting full concurrency of retrievals, adjustable expected concurrency for updates, and a maximum

@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.core.xyz;
 
+import java.beans.XMLEncoder;
+import java.io.*;
+import java.util.*;
+import java.util.regex.Pattern;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
@@ -42,11 +47,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.helpers.DefaultHandler;
-
-import java.beans.XMLEncoder;
-import java.io.*;
-import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * XML工具类 此工具使用w3c dom工具，不需要依赖第三方包。 工具类封装了XML文档的创建、读取、写出和部分XML操作

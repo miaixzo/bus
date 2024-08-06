@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.image.plugin;
 
-import org.miaixz.bus.image.Format;
-import org.miaixz.bus.image.galaxy.data.Attributes;
-import org.miaixz.bus.image.galaxy.io.ImageInputStream;
-import org.miaixz.bus.logger.Logger;
-
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Path;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+
+import org.miaixz.bus.image.Format;
+import org.miaixz.bus.image.galaxy.data.Attributes;
+import org.miaixz.bus.image.galaxy.io.ImageInputStream;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * @author Kimi Liu

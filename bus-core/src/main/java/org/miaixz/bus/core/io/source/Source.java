@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.io.source;
 
-import org.miaixz.bus.core.io.buffer.Buffer;
-import org.miaixz.bus.core.io.timout.Timeout;
-
 import java.io.Closeable;
 import java.io.IOException;
+
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.timout.Timeout;
 
 /**
  * 提供一个字节流 使用此接口从任何地方读取数据 它的位置:来自网络、存储或内存中的缓冲区 来源可能 分层以转换提供的数据,例如解压、解密或移除协议框架

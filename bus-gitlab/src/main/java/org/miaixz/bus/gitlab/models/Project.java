@@ -27,20 +27,21 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import org.miaixz.bus.gitlab.Constants;
 import org.miaixz.bus.gitlab.ProjectLicense;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class Project implements Serializable {
     private static final long serialVersionUID = -1L;
@@ -117,19 +118,28 @@ public class Project implements Serializable {
     private Boolean autocloseReferencedIssues;
     private Boolean emailsDisabled;
     private String suggestionCommitMessage;
-
-    public static final boolean isValid(Project project) {
-        return (project != null && project.getId() != null);
-    }
-
     private String mergeCommitTemplate;
     private String squashCommitTemplate;
     private String issueBranchTemplate;
     @JsonProperty("_links")
     private Map<String, String> links;
-
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date markedForDeletionOn;
+
+    public static final boolean isValid(Project project) {
+        return (project != null && project.getId() != null);
+    }
+
+    /**
+     * Formats a fully qualified project path based on the provided namespace and project path.
+     *
+     * @param namespace the namespace, either a user name or group name
+     * @param path      the project path
+     * @return a fully qualified project path based on the provided namespace and project path
+     */
+    public static final String getPathWithNammespace(String namespace, String path) {
+        return (namespace.trim() + "/" + path.trim());
+    }
 
     public Integer getApprovalsBeforeMerge() {
         return approvalsBeforeMerge;
@@ -517,19 +527,12 @@ public class Project implements Serializable {
         this.sharedRunnersEnabled = sharedRunnersEnabled;
     }
 
-    /**
-     * Formats a fully qualified project path based on the provided namespace and project path.
-     *
-     * @param namespace the namespace, either a user name or group name
-     * @param path      the project path
-     * @return a fully qualified project path based on the provided namespace and project path
-     */
-    public static final String getPathWithNammespace(String namespace, String path) {
-        return (namespace.trim() + "/" + path.trim());
-    }
-
     public List<SharedGroup> getSharedWithGroups() {
         return sharedWithGroups;
+    }
+
+    public void setSharedWithGroups(List<SharedGroup> sharedWithGroups) {
+        this.sharedWithGroups = sharedWithGroups;
     }
 
     public Project withSharedRunnersEnabled(boolean sharedRunnersEnabled) {
@@ -744,10 +747,6 @@ public class Project implements Serializable {
         this.customAttributes = customAttributes;
     }
 
-    public void setSharedWithGroups(List<SharedGroup> sharedWithGroups) {
-        this.sharedWithGroups = sharedWithGroups;
-    }
-
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
@@ -755,6 +754,10 @@ public class Project implements Serializable {
 
     public Constants.BuildGitStrategy getBuildGitStrategy() {
         return buildGitStrategy;
+    }
+
+    public void setBuildGitStrategy(Constants.BuildGitStrategy buildGitStrategy) {
+        this.buildGitStrategy = buildGitStrategy;
     }
 
     public String getBuildCoverageRegex() {
@@ -770,10 +773,6 @@ public class Project implements Serializable {
         return this;
     }
 
-    public void setBuildGitStrategy(Constants.BuildGitStrategy buildGitStrategy) {
-        this.buildGitStrategy = buildGitStrategy;
-    }
-
     public Project withBuildGitStrategy(Constants.BuildGitStrategy buildGitStrategy) {
         this.buildGitStrategy = buildGitStrategy;
         return this;
@@ -781,6 +780,10 @@ public class Project implements Serializable {
 
     public Constants.AutoDevopsDeployStrategy getAutoDevopsDeployStrategy() {
         return autoDevopsDeployStrategy;
+    }
+
+    public void setAutoDevopsDeployStrategy(Constants.AutoDevopsDeployStrategy autoDevopsDeployStrategy) {
+        this.autoDevopsDeployStrategy = autoDevopsDeployStrategy;
     }
 
     public String getReadmeUrl() {
@@ -852,14 +855,6 @@ public class Project implements Serializable {
         this.autoDevopsEnabled = autoDevopsEnabled;
     }
 
-    public void setAutoDevopsDeployStrategy(Constants.AutoDevopsDeployStrategy autoDevopsDeployStrategy) {
-        this.autoDevopsDeployStrategy = autoDevopsDeployStrategy;
-    }
-
-    public void setSuggestionCommitMessage(String suggestionCommitMessage) {
-        this.suggestionCommitMessage = suggestionCommitMessage;
-    }
-
     public Boolean getAutocloseReferencedIssues() {
         return autocloseReferencedIssues;
     }
@@ -885,6 +880,10 @@ public class Project implements Serializable {
         return this.suggestionCommitMessage;
     }
 
+    public void setSuggestionCommitMessage(String suggestionCommitMessage) {
+        this.suggestionCommitMessage = suggestionCommitMessage;
+    }
+
     public Project withSuggestionCommitMessage(String suggestionCommitMessage) {
         this.suggestionCommitMessage = suggestionCommitMessage;
         return this;
@@ -901,29 +900,6 @@ public class Project implements Serializable {
     public Project withSquashOption(Constants.SquashOption squashOption) {
         this.squashOption = squashOption;
         return this;
-    }
-
-    // Enum for the merge_method of the Project instance.
-    public enum MergeMethod {
-
-        MERGE, REBASE_MERGE, FF;
-
-        private static JacksonJsonEnumHelper<MergeMethod> enumHelper = new JacksonJsonEnumHelper<>(MergeMethod.class);
-
-        @JsonCreator
-        public static MergeMethod forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
     }
 
     public String getMergeCommitTemplate() {
@@ -965,5 +941,28 @@ public class Project implements Serializable {
         }
 
         return (links.get(name));
+    }
+
+    // Enum for the merge_method of the Project instance.
+    public enum MergeMethod {
+
+        MERGE, REBASE_MERGE, FF;
+
+        private static JacksonJsonEnumHelper<MergeMethod> enumHelper = new JacksonJsonEnumHelper<>(MergeMethod.class);
+
+        @JsonCreator
+        public static MergeMethod forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
     }
 }

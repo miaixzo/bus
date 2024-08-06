@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.extra.ftp;
 
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Symbol;
-
 import java.io.Closeable;
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
+
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * FTP的统一规范接口

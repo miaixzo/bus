@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.core.instance;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.lang.Assert;
@@ -36,9 +39,6 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * 单例类 提供单例对象的统一管理，当调用get方法时，如果对象池中存在此对象，返回此对象，否则创建新对象返回

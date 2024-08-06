@@ -45,6 +45,10 @@ public class Range {
         set(vals);
     }
 
+    public static Range all() {
+        return new Range(Integer.MIN_VALUE, Integer.MAX_VALUE);
+    }
+
     public void set(double[] vals) {
         if (vals != null) {
             start = vals.length > 0 ? (int) vals[0] : 0;
@@ -62,10 +66,6 @@ public class Range {
 
     public boolean empty() {
         return end <= start;
-    }
-
-    public static Range all() {
-        return new Range(Integer.MIN_VALUE, Integer.MAX_VALUE);
     }
 
     public Range intersection(Range r1) {

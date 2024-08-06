@@ -27,10 +27,11 @@
 */
 package org.miaixz.bus.extra.pinyin.provider.bopomofo4j;
 
-import com.rnkrsoft.bopomofo4j.Bopomofo4j;
-import com.rnkrsoft.bopomofo4j.ToneType;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.extra.pinyin.PinyinProvider;
+
+import com.rnkrsoft.bopomofo4j.Bopomofo4j;
+import com.rnkrsoft.bopomofo4j.ToneType;
 
 /**
  * 封装了Bopomofo4j的引擎。

@@ -27,7 +27,10 @@
 */
 package org.miaixz.bus.image.plugin;
 
-import jakarta.json.Json;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
@@ -38,9 +41,7 @@ import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
 import org.miaixz.bus.image.metric.json.JSONReader;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
+import jakarta.json.Json;
 
 /**
  * @author Kimi Liu

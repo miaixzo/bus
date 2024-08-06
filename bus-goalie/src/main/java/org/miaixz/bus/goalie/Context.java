@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.goalie;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.Optional;
+
 import org.miaixz.bus.goalie.support.JsonProvider;
 import org.miaixz.bus.goalie.support.XmlProvider;
 import org.springframework.http.MediaType;
@@ -38,9 +38,10 @@ import org.springframework.http.codec.multipart.Part;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.server.ServerWebExchange;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * 上下文传参

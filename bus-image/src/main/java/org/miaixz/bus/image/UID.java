@@ -27,11 +27,6 @@
 */
 package org.miaixz.bus.image;
 
-import org.miaixz.bus.core.xyz.ByteKit;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.image.galaxy.data.Attributes;
-import org.miaixz.bus.image.galaxy.data.UIDVisitor;
-
 import java.lang.reflect.Field;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
@@ -41,6 +36,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.regex.Pattern;
+
+import org.miaixz.bus.core.xyz.ByteKit;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.image.galaxy.data.Attributes;
+import org.miaixz.bus.image.galaxy.data.UIDVisitor;
 
 /**
  * @author Kimi Liu

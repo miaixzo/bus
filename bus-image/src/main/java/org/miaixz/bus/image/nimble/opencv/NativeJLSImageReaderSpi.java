@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.image.nimble.opencv;
 
-import org.miaixz.bus.core.Version;
+import java.io.IOException;
+import java.util.Locale;
 
 import javax.imageio.ImageReader;
 import javax.imageio.spi.ImageReaderSpi;
 import javax.imageio.stream.ImageInputStream;
-import java.io.IOException;
-import java.util.Locale;
+
+import org.miaixz.bus.core.Version;
 
 /**
  * @author Kimi Liu

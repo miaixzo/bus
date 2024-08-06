@@ -27,6 +27,12 @@
 */
 package org.miaixz.bus.health.linux.hardware;
 
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.List;
+import java.util.Locale;
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -36,12 +42,6 @@ import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractFirmware;
 import org.miaixz.bus.health.linux.driver.Dmidecode;
 import org.miaixz.bus.health.linux.driver.Sysfs;
-
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.List;
-import java.util.Locale;
-import java.util.function.Supplier;
 
 /**
  * Firmware data obtained by sysfs.

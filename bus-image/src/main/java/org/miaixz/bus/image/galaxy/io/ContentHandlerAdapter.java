@@ -27,6 +27,13 @@
 */
 package org.miaixz.bus.image.galaxy.io;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.Objects;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
@@ -35,13 +42,6 @@ import org.miaixz.bus.image.galaxy.data.*;
 import org.miaixz.bus.logger.Logger;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.Objects;
 
 /**
  * @author Kimi Liu

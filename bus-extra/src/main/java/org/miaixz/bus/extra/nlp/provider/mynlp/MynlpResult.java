@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.extra.nlp.provider.mynlp;
 
-import com.mayabot.nlp.segment.Sentence;
-import com.mayabot.nlp.segment.WordTerm;
+import java.util.Iterator;
+
 import org.miaixz.bus.extra.nlp.NLPResult;
 import org.miaixz.bus.extra.nlp.NLPWord;
 
-import java.util.Iterator;
+import com.mayabot.nlp.segment.Sentence;
+import com.mayabot.nlp.segment.WordTerm;
 
 /**
  * MYNLP 中文NLP工具包分词结果实现 项目地址：https://github.com/mayabot/mynlp/

@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.health.builtin.software.common;
 
+import java.util.Locale;
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.software.OSThread;
-
-import java.util.Locale;
-import java.util.function.Supplier;
 
 /**
  * Common methods for OSThread implementation

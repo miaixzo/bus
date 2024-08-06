@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.core.io.resource;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.ListKit;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -39,6 +36,9 @@ import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 import java.util.List;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.ListKit;
 
 /**
  * 多资源组合资源 此资源为一个利用游标自循环资源，只有调用{@link #next()} 方法才会获取下一个资源，使用完毕后调用{@link #reset()}方法重置游标

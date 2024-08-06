@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.lang.ansi;
 
-import org.miaixz.bus.core.lang.Assert;
-
 import java.awt.*;
 import java.awt.color.ColorSpace;
+
+import org.miaixz.bus.core.lang.Assert;
 
 /**
  * 表示以 LAB 形式存储的颜色

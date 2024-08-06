@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.notify.magic;
 
+import java.util.Map;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
-import java.util.Map;
 
 /**
  * 消息模版

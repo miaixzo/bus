@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.DateMatcher;
-
-import java.lang.annotation.*;
 
 /**
  * 判断是否为日期

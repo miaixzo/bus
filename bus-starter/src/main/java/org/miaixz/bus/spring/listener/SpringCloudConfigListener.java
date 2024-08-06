@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.spring.listener;
 
+import java.util.*;
+import java.util.stream.StreamSupport;
+
 import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.spring.GeniusBuilder;
@@ -40,9 +43,6 @@ import org.springframework.boot.env.EnvironmentPostProcessorApplicationListener;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.*;
-
-import java.util.*;
-import java.util.stream.StreamSupport;
 
 /**
  * 实现{@link ApplicationListener<ApplicationEnvironmentPreparedEvent>}以适应spring cloud环境 用于将日志属性注册到spring cloud引导环境。

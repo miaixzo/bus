@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.image.galaxy.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.IOD;
 import org.miaixz.bus.image.Tag;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Kimi Liu

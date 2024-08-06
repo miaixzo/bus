@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Map;
+
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class EpicIssue extends AbstractIssue {
 

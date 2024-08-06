@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.health.unix.hardware;
 
+import java.net.NetworkInterface;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
@@ -34,10 +38,6 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.NetworkIF;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractNetworkIF;
 import org.miaixz.bus.logger.Logger;
-
-import java.net.NetworkInterface;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * BsdNetworkIF applicable to FreeBSD and OpenBSD.

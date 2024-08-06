@@ -74,16 +74,15 @@ public class JdbcConfiguration {
 
     private static final ConfigurationPropertyNameAliases aliases;
 
-    @Resource
-    JdbcProperties properties;
-
-    private final Map<Object, Object> sourceMap = new HashMap<>();
-
     static {
         aliases = new ConfigurationPropertyNameAliases();
         aliases.addAliases("url", "jdbc-url");
         aliases.addAliases("username", "user");
     }
+
+    private final Map<Object, Object> sourceMap = new HashMap<>();
+    @Resource
+    JdbcProperties properties;
 
     /**
      * 初始化数据源/多数据源

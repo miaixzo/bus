@@ -27,6 +27,14 @@
 */
 package org.miaixz.bus.health.builtin.hardware.common;
 
+import java.net.InetAddress;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -36,14 +44,6 @@ import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.NetworkIF;
 import org.miaixz.bus.logger.Logger;
-
-import java.net.InetAddress;
-import java.net.InterfaceAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.*;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * Network interfaces implementation.

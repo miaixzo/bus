@@ -27,7 +27,6 @@
 */
 package org.miaixz.bus.oauth.metric.taobao;
 
-import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
@@ -43,6 +42,8 @@ import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
+
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * 淘宝 登录

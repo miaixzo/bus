@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.http.cache;
 
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Builder;
 import org.miaixz.bus.http.Headers;
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.metric.Internal;
-
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 给定一个请求和缓存的响应，这将确定是使用网络、缓存还是两者都使用 选择缓存策略可能会向请求添加条件(比如条件get的“if - modified - since”报头) 或向缓存的响应添加警告(如果缓存的数据可能过时)

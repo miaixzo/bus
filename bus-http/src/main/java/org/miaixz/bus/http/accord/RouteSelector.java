@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.http.accord;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.http.*;
-import org.miaixz.bus.http.metric.EventListener;
-
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.http.*;
+import org.miaixz.bus.http.metric.EventListener;
 
 /**
  * 选择连接到源服务器的路由。每个连接都需要选择代理 服务器、IP地址和TLS模式。连接也可以循环使用

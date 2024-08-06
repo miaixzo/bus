@@ -27,6 +27,15 @@
 */
 package org.miaixz.bus.starter.wrapper;
 
+import java.io.*;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.EscapeKit;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.extra.json.JsonKit;
+import org.miaixz.bus.logger.Logger;
+
 import jakarta.servlet.ReadListener;
 import jakarta.servlet.ServletInputStream;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,14 +44,6 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.EscapeKit;
-import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.extra.json.JsonKit;
-import org.miaixz.bus.logger.Logger;
-
-import java.io.*;
 
 /**
  * 跨站攻击/请求包装器

@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.Response;
-import org.miaixz.bus.gitlab.models.Label;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.gitlab.models.Label;
+
+import jakarta.ws.rs.core.Response;
 
 /**
  * This class provides an entry point to all the GitLab API project and group label calls.

@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.spring.annotation;
 
-import org.miaixz.bus.core.xyz.MethodKit;
-import org.springframework.core.env.Environment;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+
+import org.miaixz.bus.core.xyz.MethodKit;
+import org.springframework.core.env.Environment;
 
 /**
  * 实现了{@link InvocationHandler}在获取注释值时从环境绑定值

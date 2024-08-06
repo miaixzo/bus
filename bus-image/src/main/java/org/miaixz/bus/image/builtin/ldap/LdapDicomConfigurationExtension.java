@@ -27,16 +27,17 @@
 */
 package org.miaixz.bus.image.builtin.ldap;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.image.Device;
-import org.miaixz.bus.image.metric.api.ConfigurationChanges;
-import org.miaixz.bus.image.metric.net.ApplicationEntity;
+import java.security.cert.CertificateException;
+import java.util.List;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.ModificationItem;
-import java.security.cert.CertificateException;
-import java.util.List;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.image.Device;
+import org.miaixz.bus.image.metric.api.ConfigurationChanges;
+import org.miaixz.bus.image.metric.net.ApplicationEntity;
 
 /**
  * @author Kimi Liu

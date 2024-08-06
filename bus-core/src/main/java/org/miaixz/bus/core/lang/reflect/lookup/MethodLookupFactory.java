@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.lang.reflect.lookup;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
  * jdk11中直接调用MethodHandles.lookup()获取到的MethodHandles.Lookup只能对接口类型才会权限获取方法的方法句柄MethodHandle。 如果是普通类型Class,需要使用jdk9开始提供的

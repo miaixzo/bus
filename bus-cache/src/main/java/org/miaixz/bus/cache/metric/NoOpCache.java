@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.cache.metric;
 
-import org.miaixz.bus.cache.CacheX;
-
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
+
+import org.miaixz.bus.cache.CacheX;
 
 /**
  * 无缓存实现,用于快速关闭缓存

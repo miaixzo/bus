@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.center.date.culture.solar;
 
-import org.miaixz.bus.core.center.date.culture.Loops;
-import org.miaixz.bus.core.center.date.culture.en.Quarter;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.miaixz.bus.core.center.date.culture.Loops;
+import org.miaixz.bus.core.center.date.culture.en.Quarter;
 
 /**
  * 公历季度

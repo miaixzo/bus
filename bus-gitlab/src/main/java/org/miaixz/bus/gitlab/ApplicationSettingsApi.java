@@ -47,48 +47,6 @@ public class ApplicationSettingsApi extends AbstractApi {
     }
 
     /**
-     * Get the current application settings of the GitLab instance.
-     *
-     * <pre>
-     * <code>GitLab Endpoint: GET /api/v4/application/settings</code>
-     * </pre>
-     *
-     * @return an ApplicationSettings instance containing the current application settings of the GitLab instance.
-     * @throws GitLabApiException if any exception occurs
-     */
-    public ApplicationSettings getApplicationSettings() throws GitLabApiException {
-
-        Response response = get(Response.Status.OK, null, "application", "settings");
-        JsonNode root = response.readEntity(JsonNode.class);
-        return (parseApplicationSettings(root));
-    }
-
-    /**
-     * Update the application settings of the GitLab instance with the settings in the provided ApplicationSettings
-     * instance.
-     *
-     * <pre>
-     * <code>GitLab Endpoint: PUT /api/v4/application/settings</code>
-     * </pre>
-     *
-     * @param appSettings the ApplicationSettings instance holding the settings and values to update
-     * @return the updated application settings in an ApplicationSettings instance
-     * @throws GitLabApiException if any exception occurs
-     */
-    public ApplicationSettings updateApplicationSettings(ApplicationSettings appSettings) throws GitLabApiException {
-
-        if (appSettings == null || appSettings.getSettings().isEmpty()) {
-            throw new GitLabApiException("ApplicationSettings cannot be null or empty.");
-        }
-
-        final GitLabApiForm form = new GitLabApiForm();
-        appSettings.getSettings().forEach((s, v) -> form.withParam(s, v));
-        Response response = put(Response.Status.OK, form.asMap(), "application", "settings");
-        JsonNode root = response.readEntity(JsonNode.class);
-        return (parseApplicationSettings(root));
-    }
-
-    /**
      * Parses the returned JSON and returns an ApplicationSettings instance.
      *
      * @param root the root JsonNode
@@ -142,6 +100,48 @@ public class ApplicationSettingsApi extends AbstractApi {
         }
 
         return (appSettings);
+    }
+
+    /**
+     * Get the current application settings of the GitLab instance.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: GET /api/v4/application/settings</code>
+     * </pre>
+     *
+     * @return an ApplicationSettings instance containing the current application settings of the GitLab instance.
+     * @throws GitLabApiException if any exception occurs
+     */
+    public ApplicationSettings getApplicationSettings() throws GitLabApiException {
+
+        Response response = get(Response.Status.OK, null, "application", "settings");
+        JsonNode root = response.readEntity(JsonNode.class);
+        return (parseApplicationSettings(root));
+    }
+
+    /**
+     * Update the application settings of the GitLab instance with the settings in the provided ApplicationSettings
+     * instance.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: PUT /api/v4/application/settings</code>
+     * </pre>
+     *
+     * @param appSettings the ApplicationSettings instance holding the settings and values to update
+     * @return the updated application settings in an ApplicationSettings instance
+     * @throws GitLabApiException if any exception occurs
+     */
+    public ApplicationSettings updateApplicationSettings(ApplicationSettings appSettings) throws GitLabApiException {
+
+        if (appSettings == null || appSettings.getSettings().isEmpty()) {
+            throw new GitLabApiException("ApplicationSettings cannot be null or empty.");
+        }
+
+        final GitLabApiForm form = new GitLabApiForm();
+        appSettings.getSettings().forEach((s, v) -> form.withParam(s, v));
+        Response response = put(Response.Status.OK, form.asMap(), "application", "settings");
+        JsonNode root = response.readEntity(JsonNode.class);
+        return (parseApplicationSettings(root));
     }
 
     /**

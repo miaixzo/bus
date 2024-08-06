@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.proxy.spring;
 
+import java.lang.reflect.Constructor;
+
 import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.proxy.Aspect;
 import org.miaixz.bus.proxy.Provider;
 import org.springframework.cglib.proxy.Enhancer;
-
-import java.lang.reflect.Constructor;
 
 /**
  * 基于Spring-cglib的切面代理工厂

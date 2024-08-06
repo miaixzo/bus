@@ -27,16 +27,17 @@
 */
 package org.miaixz.bus.extra.qrcode;
 
-import com.google.zxing.*;
-import com.google.zxing.common.GlobalHistogramBinarizer;
-import com.google.zxing.common.HybridBinarizer;
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.miaixz.bus.core.codec.Decoder;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.extra.image.ImageKit;
 
-import java.awt.*;
-import java.util.HashMap;
-import java.util.Map;
+import com.google.zxing.*;
+import com.google.zxing.common.GlobalHistogramBinarizer;
+import com.google.zxing.common.HybridBinarizer;
 
 /**
  * 二维码（条形码等）解码器

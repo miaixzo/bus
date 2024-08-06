@@ -27,13 +27,6 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.center.stream.spliterators.DropWhileSpliterator;
-import org.miaixz.bus.core.center.stream.spliterators.IterateSpliterator;
-import org.miaixz.bus.core.center.stream.spliterators.TakeWhileSpliterator;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.tree.HierarchyIterator;
-
 import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +39,13 @@ import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
+import org.miaixz.bus.core.center.stream.spliterators.DropWhileSpliterator;
+import org.miaixz.bus.core.center.stream.spliterators.IterateSpliterator;
+import org.miaixz.bus.core.center.stream.spliterators.TakeWhileSpliterator;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.tree.HierarchyIterator;
 
 /**
  * {@link Stream} 工具类

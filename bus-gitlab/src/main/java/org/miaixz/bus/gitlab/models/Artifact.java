@@ -27,37 +27,16 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
+import java.io.Serializable;
+
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public class Artifact implements Serializable {
     private static final long serialVersionUID = -1L;
-
-    public enum FileType {
-        ARCHIVE, METADATA, TRACE, JUNIT;
-
-        private static JacksonJsonEnumHelper<FileType> enumHelper = new JacksonJsonEnumHelper<>(FileType.class);
-
-        @JsonCreator
-        public static FileType forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
-    }
-
     private FileType fileType;
     private Long size;
     private String filename;
@@ -98,5 +77,26 @@ public class Artifact implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    public enum FileType {
+        ARCHIVE, METADATA, TRACE, JUNIT;
+
+        private static JacksonJsonEnumHelper<FileType> enumHelper = new JacksonJsonEnumHelper<>(FileType.class);
+
+        @JsonCreator
+        public static FileType forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
     }
 }

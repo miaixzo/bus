@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.crypto.metric;
 
-import org.miaixz.bus.core.lang.Assert;
-
 import java.security.Security;
+
+import org.miaixz.bus.core.lang.Assert;
 
 /**
  * {@link org.bouncycastle.jce.provider.BouncyCastleProvider} 工厂类

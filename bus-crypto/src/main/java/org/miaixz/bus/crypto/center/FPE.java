@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.crypto.center;
 
+import java.io.Serializable;
+
 import org.bouncycastle.crypto.AlphabetMapper;
 import org.bouncycastle.jcajce.spec.FPEParameterSpec;
 import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.crypto.Padding;
-
-import java.io.Serializable;
 
 /**
  * FPE(Format Preserving Encryption)实现，支持FF1和FF3-1模式。 相关介绍见：https://anquan.baidu.com/article/193

@@ -27,16 +27,17 @@
 */
 package org.miaixz.bus.image.nimble.opencv;
 
-import org.miaixz.bus.core.lang.Normal;
+import java.awt.image.ColorModel;
+import java.awt.image.IndexColorModel;
+import java.awt.image.SampleModel;
+import java.util.Locale;
 
 import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.ImageWriter;
 import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.stream.ImageOutputStream;
-import java.awt.image.ColorModel;
-import java.awt.image.IndexColorModel;
-import java.awt.image.SampleModel;
-import java.util.Locale;
+
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * @author Kimi Liu

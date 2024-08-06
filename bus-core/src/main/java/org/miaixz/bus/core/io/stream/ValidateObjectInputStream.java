@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.io.stream;
 
-import org.miaixz.bus.core.xyz.CollKit;
-
 import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
+
+import org.miaixz.bus.core.xyz.CollKit;
 
 /**
  * 带有类验证的对象流，用于避免反序列化漏洞 详细见：https://xz.aliyun.com/t/41/

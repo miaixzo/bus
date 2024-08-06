@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.text.placeholder;
 
+import java.util.Map;
+
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
@@ -34,8 +36,6 @@ import org.miaixz.bus.core.text.placeholder.template.NamedStringTemplate;
 import org.miaixz.bus.core.text.placeholder.template.SingleStringTemplate;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.util.Map;
 
 /**
  * 字符串格式化工具

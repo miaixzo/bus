@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.spring.startup;
 
+import java.lang.management.ManagementFactory;
+import java.util.*;
+
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.spring.startup.statics.BaseStatics;
 import org.miaixz.bus.spring.startup.statics.BeanStatics;
@@ -42,9 +45,6 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.core.metrics.ApplicationStartup;
 import org.springframework.core.metrics.StartupStep;
-
-import java.lang.management.ManagementFactory;
-import java.util.*;
 
 /**
  * 收集和启动报告成本的基本组件

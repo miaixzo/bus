@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.center.date.culture.cn;
 
-import org.miaixz.bus.core.center.date.culture.Samsara;
-import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.miaixz.bus.core.center.date.culture.Samsara;
+import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
 
 /**
  * 宜忌
@@ -101,10 +101,6 @@ public class Taboo extends Samsara {
         return new Taboo(name);
     }
 
-    public Taboo next(int n) {
-        return fromIndex(nextIndex(n));
-    }
-
     /**
      * 日宜
      *
@@ -167,6 +163,10 @@ public class Taboo extends Samsara {
             l.add(Taboo.fromIndex(Integer.parseInt(data.substring(i, i + 2), 16)));
         }
         return l;
+    }
+
+    public Taboo next(int n) {
+        return fromIndex(nextIndex(n));
     }
 
 }

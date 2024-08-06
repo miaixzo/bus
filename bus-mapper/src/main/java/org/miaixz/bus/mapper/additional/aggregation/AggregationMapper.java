@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.mapper.additional.aggregation;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.miaixz.bus.mapper.annotation.RegisterMapper;
-
-import java.util.List;
 
 /**
  * 通用聚合查询接口,特殊方法

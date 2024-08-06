@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.Constants;
-import org.miaixz.bus.gitlab.GitLabApiForm;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.miaixz.bus.gitlab.Constants;
+import org.miaixz.bus.gitlab.GitLabApiForm;
+import org.miaixz.bus.gitlab.support.JacksonJson;
 
 /**
  * This class is used to filter Groups when getting lists of groups.

@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.bean.path.node;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.util.Collection;
-import java.util.List;
 
 /**
  * [start:end:step] 模式节点

@@ -27,18 +27,18 @@
 */
 package org.miaixz.bus.health.unix.platform.openbsd.hardware;
 
-import org.miaixz.bus.core.lang.annotation.Immutable;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.health.Executor;
-import org.miaixz.bus.health.builtin.hardware.GraphicsCard;
-import org.miaixz.bus.health.builtin.hardware.common.AbstractGraphicsCard;
-import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.annotation.Immutable;
+import org.miaixz.bus.health.Executor;
+import org.miaixz.bus.health.builtin.hardware.GraphicsCard;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractGraphicsCard;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;
 
 /**
  * Graphics Card info obtained from pciconf

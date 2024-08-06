@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.shade.screw.engine;
 
+import java.io.Serializable;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.shade.screw.metadata.DataSchema;
-
-import java.io.Serializable;
 
 /**
  * 文件产生接口

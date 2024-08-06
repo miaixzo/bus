@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.ReflectMatcher;
-
-import java.lang.annotation.*;
 
 /**
  * 通过反射调用被校验参数,并判断反射方法的结果

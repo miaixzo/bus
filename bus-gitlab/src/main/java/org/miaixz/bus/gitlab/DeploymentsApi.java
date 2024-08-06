@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.Response;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import org.miaixz.bus.gitlab.models.Deployment;
 import org.miaixz.bus.gitlab.models.DeploymentFilter;
 import org.miaixz.bus.gitlab.models.MergeRequest;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
+import jakarta.ws.rs.core.Response;
 
 /**
  * This class implements the client side API for the GitLab Deployments API calls. See

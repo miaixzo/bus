@@ -27,6 +27,14 @@
 */
 package org.miaixz.bus.pager.builtin;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
+
+import javax.sql.DataSource;
+
 import org.apache.ibatis.mapping.MappedStatement;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.PageException;
@@ -40,13 +48,6 @@ import org.miaixz.bus.pager.dialect.auto.Druid;
 import org.miaixz.bus.pager.dialect.auto.Early;
 import org.miaixz.bus.pager.dialect.auto.Hikari;
 import org.miaixz.bus.pager.dialect.base.*;
-
-import javax.sql.DataSource;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 基础方言信息

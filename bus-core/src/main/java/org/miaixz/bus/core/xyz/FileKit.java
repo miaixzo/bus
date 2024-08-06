@@ -27,32 +27,32 @@
 */
 package org.miaixz.bus.core.xyz;
 
+import java.io.*;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.file.*;
+import java.nio.file.FileSystem;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.jar.JarFile;
+import java.util.regex.Pattern;
+
 import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.io.BomReader;
+import org.miaixz.bus.core.io.file.*;
 import org.miaixz.bus.core.io.file.FileReader;
 import org.miaixz.bus.core.io.file.FileWriter;
-import org.miaixz.bus.core.io.file.*;
 import org.miaixz.bus.core.io.resource.FileResource;
 import org.miaixz.bus.core.io.resource.Resource;
 import org.miaixz.bus.core.io.stream.BOMInputStream;
 import org.miaixz.bus.core.io.stream.LineCounter;
 import org.miaixz.bus.core.io.unit.DataSize;
-import org.miaixz.bus.core.lang.Console;
 import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.Console;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.text.CharsBacker;
-
-import java.io.*;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.file.FileSystem;
-import java.nio.file.*;
-import java.util.*;
-import java.util.function.Predicate;
-import java.util.jar.JarFile;
-import java.util.regex.Pattern;
 
 /**
  * 文件工具类
@@ -252,7 +252,7 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 创建File对象，相当于调用new File()，不做任何处理
+     * 创建File对象，相当于调用new File()，不做任何处理 相对于项目路径，如`project:./test`且项目路径为`/workspace/bus/`，则读取`/workspace/bus/test`
      *
      * @param path 文件路径，相对路径表示相对项目路径
      * @return File
@@ -262,7 +262,16 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 创建File对象，自动识别相对或绝对路径，相对路径将自动从ClassPath下寻找
+     * 创建File对象，自动识别相对或绝对路径，规则如下：
+     * <ul>
+     * <li>如果为绝对路径，如Linux下以`/`开头，Win下以如`d:\`开头，则直接使用。</li>
+     * <li>如果以`classpath:`开头或`file:`开头，直接去掉。</li>
+     * <li>如果为相对路径，如`./xxx`或`xx/xx`则理解为相对路径，相对路径全部相对于classpath。</li>
+     * <li>如果以`project:`开头，且为相对路径，则使用JDK默认规则，相对于项目路径，如`project:./test`且项目路径为`/workspace/bus/`，则读取`/workspace/bus/test`</li>
+     * </ul>
+     * <p>
+     * ，相对路径将自动从ClassPath下寻找<br>
+     * 如果用户需要相对项目路径，则使用project:前缀
      *
      * @param path 相对ClassPath的目录或者绝对路径目录
      * @return File
@@ -271,6 +280,12 @@ public class FileKit extends PathResolve {
         if (null == path) {
             return null;
         }
+
+        // 如果用户需要相对项目路径，则使用project:前缀
+        if (path.startsWith("project:")) {
+            return new File(path);
+        }
+
         return new File(getAbsolutePath(path));
     }
 

@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.http.metric.http;
 
+import java.net.Proxy;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.UnoUrl;
-
-import java.net.Proxy;
 
 /**
  * @author Kimi Liu

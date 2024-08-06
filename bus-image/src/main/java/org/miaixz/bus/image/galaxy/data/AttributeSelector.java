@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.image.galaxy.data;
 
-import org.miaixz.bus.image.Tag;
-
 import java.io.Serializable;
 import java.util.*;
+
+import org.miaixz.bus.image.Tag;
 
 /**
  * @author Kimi Liu

@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.image.nimble.opencv;
 
-import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
-
 import java.io.File;
+
+import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
 
 /**
  * @author Kimi Liu

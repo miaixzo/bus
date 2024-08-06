@@ -27,6 +27,16 @@
 */
 package org.miaixz.bus.image.plugin;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
@@ -41,16 +51,6 @@ import org.miaixz.bus.image.nimble.codec.Compressor;
 import org.miaixz.bus.image.nimble.codec.Decompressor;
 import org.miaixz.bus.image.nimble.codec.Transcoder;
 import org.miaixz.bus.image.nimble.codec.TransferSyntaxType;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 /**
  * @author Kimi Liu

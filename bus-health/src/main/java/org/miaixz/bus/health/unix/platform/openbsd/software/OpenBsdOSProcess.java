@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.health.unix.platform.openbsd.software;
 
-import com.sun.jna.Memory;
-import com.sun.jna.Native;
-import com.sun.jna.Pointer;
-import com.sun.jna.platform.unix.LibCAPI.size_t;
-import com.sun.jna.platform.unix.Resource;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
@@ -47,10 +47,11 @@ import org.miaixz.bus.health.unix.platform.openbsd.FstatKit;
 import org.miaixz.bus.health.unix.platform.openbsd.software.OpenBsdOperatingSystem.PsKeywords;
 import org.miaixz.bus.logger.Logger;
 
-import java.util.*;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import com.sun.jna.Memory;
+import com.sun.jna.Native;
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.unix.LibCAPI.size_t;
+import com.sun.jna.platform.unix.Resource;
 
 /**
  * OSProcess implementation

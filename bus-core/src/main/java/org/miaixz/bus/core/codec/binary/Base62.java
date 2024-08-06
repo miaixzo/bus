@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.core.codec.binary;
 
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import org.miaixz.bus.core.codec.binary.provider.Base62Provider;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * Base62工具类，提供Base62的编码和解码方案

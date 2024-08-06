@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.center.date.format.parser;
 
-import org.miaixz.bus.core.center.date.DateTime;
-
 import java.util.regex.Pattern;
+
+import org.miaixz.bus.core.center.date.DateTime;
 
 /**
  * 全局正则日期解析器 通过使用预定义或自定义的正则规则，解析日期字符串

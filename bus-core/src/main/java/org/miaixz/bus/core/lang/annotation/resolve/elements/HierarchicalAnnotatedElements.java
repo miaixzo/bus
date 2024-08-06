@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.core.lang.annotation.resolve.elements;
 
-import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.xyz.*;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
@@ -37,6 +34,9 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.core.text.CharsBacker;
+import org.miaixz.bus.core.xyz.*;
 
 /**
  * <p>

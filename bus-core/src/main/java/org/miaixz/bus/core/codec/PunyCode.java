@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.codec;
 
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.util.List;
 
 /**
  * Punycode是一个根据RFC 3492标准而制定的编码系统，主要用于把域名从地方语言所采用的Unicode编码转换成为可用于DNS系统的编码 参考：<a href=

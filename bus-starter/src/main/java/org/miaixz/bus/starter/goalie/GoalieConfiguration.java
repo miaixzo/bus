@@ -27,7 +27,8 @@
 */
 package org.miaixz.bus.starter.goalie;
 
-import jakarta.annotation.Resource;
+import java.util.List;
+
 import org.miaixz.bus.goalie.Athlete;
 import org.miaixz.bus.goalie.Config;
 import org.miaixz.bus.goalie.filter.*;
@@ -56,9 +57,9 @@ import org.springframework.web.server.WebExceptionHandler;
 import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebHandler;
 import org.springframework.web.server.adapter.WebHttpHandlerBuilder;
-import reactor.netty.http.server.HttpServer;
 
-import java.util.List;
+import jakarta.annotation.Resource;
+import reactor.netty.http.server.HttpServer;
 
 /**
  * 路由自动配置

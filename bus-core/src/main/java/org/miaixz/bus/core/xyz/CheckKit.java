@@ -27,10 +27,6 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.io.stream.EmptyOutputStream;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.exception.InternalException;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +34,10 @@ import java.nio.file.Files;
 import java.util.zip.CRC32;
 import java.util.zip.CheckedInputStream;
 import java.util.zip.Checksum;
+
+import org.miaixz.bus.core.io.stream.EmptyOutputStream;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
  * 校验码工具

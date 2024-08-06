@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serializable;
+
 import org.miaixz.bus.gitlab.Constants;
 import org.miaixz.bus.gitlab.GitLabApiForm;
 import org.miaixz.bus.gitlab.support.JacksonJson;
-
-import java.io.Serializable;
 
 /**
  * This class is used to filter Projects when getting lists of projects for a specified group.

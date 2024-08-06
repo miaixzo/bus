@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.center.function;
 
-import org.miaixz.bus.core.lang.Assert;
-
 import java.io.Serializable;
 import java.util.function.Function;
+
+import org.miaixz.bus.core.lang.Assert;
 
 /**
  * 两个函数的叠加函数. 叠加 {@code f: A->B} 和 {@code g: B->C}，效果等同于：{@code h(a) == g(f(a))}

@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core.io.resource;
 
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.IoKit;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.IoKit;
 
 /**
  * 资源接口定义

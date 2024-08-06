@@ -27,17 +27,6 @@
 */
 package org.miaixz.bus.extra.image;
 
-import org.miaixz.bus.core.io.file.FileType;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.core.xyz.ColorKit;
-import org.miaixz.bus.core.xyz.StringKit;
-
-import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -48,6 +37,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+
+import org.miaixz.bus.core.io.file.FileType;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.ColorKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 图片背景识别处理、背景替换、背景设置为矢量图，根据一定规则算出图片背景色的RGB值，进行替换

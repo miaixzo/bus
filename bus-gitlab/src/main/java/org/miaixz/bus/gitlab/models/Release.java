@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Release implements Serializable {
     private static final long serialVersionUID = -1L;

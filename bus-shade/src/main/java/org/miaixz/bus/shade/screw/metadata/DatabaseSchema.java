@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.shade.screw.metadata;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.io.Serializable;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 数据库信息

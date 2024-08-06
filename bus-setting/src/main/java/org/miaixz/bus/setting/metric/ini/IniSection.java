@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.setting.metric.ini;
 
-import org.miaixz.bus.setting.magic.ProxyList;
-
 import java.util.List;
 import java.util.function.Supplier;
+
+import org.miaixz.bus.setting.magic.ProxyList;
 
 /**
  * Ini file's Section

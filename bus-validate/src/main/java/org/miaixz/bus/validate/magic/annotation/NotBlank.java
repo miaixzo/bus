@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.NotBlankMatcher;
-
-import java.lang.annotation.*;
 
 /**
  * 字符串不为空,不为null校验

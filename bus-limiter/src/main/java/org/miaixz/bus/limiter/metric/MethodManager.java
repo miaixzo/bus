@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.limiter.metric;
 
-import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.limiter.magic.StrategyMode;
-import org.miaixz.bus.logger.Logger;
-
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.limiter.magic.StrategyMode;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * 处理模式管理

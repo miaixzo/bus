@@ -27,10 +27,11 @@
 */
 package org.miaixz.bus.image.nimble.opencv.lut;
 
-import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
 import java.util.Objects;
+
+import javax.swing.*;
 
 /**
  * @author Kimi Liu

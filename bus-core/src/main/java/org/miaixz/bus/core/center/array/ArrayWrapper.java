@@ -27,6 +27,13 @@
 */
 package org.miaixz.bus.core.center.array;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
+
 import org.miaixz.bus.core.center.iterator.ArrayIterator;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Assert;
@@ -36,13 +43,6 @@ import org.miaixz.bus.core.lang.Wrapper;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
-
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
 /**
  * 数组包装，提供一系列数组方法

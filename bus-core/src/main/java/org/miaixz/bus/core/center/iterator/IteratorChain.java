@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.center.iterator;
 
+import java.util.*;
+
 import org.miaixz.bus.core.lang.Chain;
 import org.miaixz.bus.core.xyz.ArrayKit;
-
-import java.util.*;
 
 /**
  * 组合{@link Iterator}，将多个{@link Iterator}组合在一起，便于集中遍历

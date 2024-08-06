@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.center.list;
 
-import org.miaixz.bus.core.center.BoundedCollection;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import org.miaixz.bus.core.center.BoundedCollection;
 
 /**
  * 指定边界大小的List 通过指定边界，可以限制List的最大容量

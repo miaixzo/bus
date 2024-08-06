@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.image.metric.service;
 
+import java.util.EnumSet;
+
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Status;
 import org.miaixz.bus.image.Tag;
@@ -34,8 +36,6 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.ElementDictionary;
 import org.miaixz.bus.image.galaxy.data.VR;
 import org.miaixz.bus.logger.Logger;
-
-import java.util.EnumSet;
 
 /**
  * @author Kimi Liu

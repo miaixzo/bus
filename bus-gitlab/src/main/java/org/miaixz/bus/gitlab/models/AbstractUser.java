@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
 import java.util.Date;
+
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class AbstractUser<U extends AbstractUser<U>> implements Serializable {

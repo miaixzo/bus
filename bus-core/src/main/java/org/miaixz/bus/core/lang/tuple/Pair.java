@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.lang.tuple;
 
-import org.miaixz.bus.core.lang.exception.CloneException;
-
 import java.io.Serializable;
 import java.util.Objects;
+
+import org.miaixz.bus.core.lang.exception.CloneException;
 
 /**
  * 不可变二元组对象

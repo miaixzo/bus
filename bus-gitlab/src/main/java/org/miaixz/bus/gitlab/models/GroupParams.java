@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serializable;
+
 import org.miaixz.bus.gitlab.Constants;
 import org.miaixz.bus.gitlab.GitLabApiForm;
 import org.miaixz.bus.gitlab.GroupApi;
-
-import java.io.Serializable;
 
 /**
  * This class is utilized by the {@link GroupApi#createGroup(GroupParams)} and

@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.image.metric;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.metric.net.ApplicationEntity;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
 
 /**
  * DICOM Standard, Part 15, Annex H: Transfer Capability - The description of the SOP classes and syntaxes supported by

@@ -27,6 +27,14 @@
 */
 package org.miaixz.bus.http.metric.http;
 
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.net.SocketTimeoutException;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.List;
+
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.BufferSource;
@@ -35,14 +43,6 @@ import org.miaixz.bus.core.io.timout.AsyncTimeout;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.http.Builder;
 import org.miaixz.bus.http.Headers;
-
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.net.SocketTimeoutException;
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.List;
 
 /**
  * 逻辑双向流.

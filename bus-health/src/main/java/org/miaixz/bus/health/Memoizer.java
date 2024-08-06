@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.health;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
  * A memoized function stores the output corresponding to some set of specific inputs. Subsequent calls with remembered

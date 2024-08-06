@@ -27,6 +27,12 @@
 */
 package org.miaixz.bus.starter.sensitive;
 
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import org.apache.ibatis.executor.resultset.ResultSetHandler;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
@@ -43,12 +49,6 @@ import org.miaixz.bus.mapper.handler.AbstractSqlHandler;
 import org.miaixz.bus.sensitive.Builder;
 import org.miaixz.bus.sensitive.magic.annotation.Privacy;
 import org.miaixz.bus.sensitive.magic.annotation.Sensitive;
-
-import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
 /**
  * 数据解密脱敏

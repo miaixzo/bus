@@ -27,27 +27,21 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.gitlab.support.JacksonJson;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic<E> implements Serializable {
     private static final long serialVersionUID = -1L;
-
-    @SuppressWarnings("unchecked")
-    public E withDescription(String description) {
-        this.description = description;
-        return (E) (this);
-    }
-
     private Long parentIid;
     private String description;
     private EpicState state;
@@ -66,6 +60,12 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
     private String color;
     @JsonProperty("_links")
     private Map<String, String> links;
+
+    @SuppressWarnings("unchecked")
+    public E withDescription(String description) {
+        this.description = description;
+        return (E) (this);
+    }
 
     public Long getParentIid() {
         return parentIid;
@@ -171,26 +171,6 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
         this.endDate = endDate;
     }
 
-    public enum EpicState {
-        OPENED, CLOSED, ALL;
-
-        private static JacksonJsonEnumHelper<EpicState> enumHelper = new JacksonJsonEnumHelper<>(EpicState.class);
-
-        @JsonCreator
-        public static EpicState forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
-    }
-
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -258,5 +238,25 @@ public class AbstractEpic<E extends AbstractEpic<E>> extends AbstractMinimalEpic
 
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    public enum EpicState {
+        OPENED, CLOSED, ALL;
+
+        private static JacksonJsonEnumHelper<EpicState> enumHelper = new JacksonJsonEnumHelper<>(EpicState.class);
+
+        @JsonCreator
+        public static EpicState forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
     }
 }

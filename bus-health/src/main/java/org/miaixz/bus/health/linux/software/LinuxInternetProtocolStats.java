@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.health.linux.software;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -40,10 +44,6 @@ import org.miaixz.bus.health.builtin.software.common.AbstractInternetProtocolSta
 import org.miaixz.bus.health.linux.ProcPath;
 import org.miaixz.bus.health.linux.driver.proc.ProcessStat;
 import org.miaixz.bus.health.unix.driver.NetStat;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Internet Protocol Stats implementation

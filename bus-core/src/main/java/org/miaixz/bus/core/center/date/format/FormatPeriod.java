@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.center.date.format;
 
+import java.io.Serializable;
+import java.util.function.Function;
+
 import org.miaixz.bus.core.center.date.culture.en.Units;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.io.Serializable;
-import java.util.function.Function;
 
 /**
  * 时长格式化器，用于格式化输出两个日期相差的时长 根据{@link Level}不同，调用{@link #format()}方法后返回类似于：

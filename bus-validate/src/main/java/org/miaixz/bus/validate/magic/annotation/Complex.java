@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.validate.magic.Matcher;
-
-import java.lang.annotation.*;
 
 /**
  * 自定义校验注解元注解,在任意的注解定义上,增加该注解标明这是一个校验注解

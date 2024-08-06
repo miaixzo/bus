@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.spring;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.Ordered;
@@ -35,9 +38,6 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.type.classreading.CachingMetadataReaderFactory;
 import org.springframework.core.type.classreading.MetadataReader;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * Spring上下文等信息持有者 扫描包配置项及其他属性等

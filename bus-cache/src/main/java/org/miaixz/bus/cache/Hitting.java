@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.cache;
 
-import org.miaixz.bus.core.lang.Symbol;
-
 import java.util.Map;
+
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * 缓存命中策略

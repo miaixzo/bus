@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.shade.safety.boot.jar;
 
+import java.io.*;
+import java.util.zip.Deflater;
+
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.miaixz.bus.shade.safety.Builder;
 import org.miaixz.bus.shade.safety.Complex;
 import org.miaixz.bus.shade.safety.algorithm.Key;
 import org.miaixz.bus.shade.safety.provider.JdkDecryptorProvider;
 import org.miaixz.bus.shade.safety.provider.JdkEncryptorProvider;
-
-import java.io.*;
-import java.util.zip.Deflater;
 
 /**
  * 普通JAR包加解密工具类

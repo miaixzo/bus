@@ -27,6 +27,13 @@
 */
 package org.miaixz.bus.storage.metric;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -34,13 +41,6 @@ import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.Provider;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 /**
  * 预定义存储实现

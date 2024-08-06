@@ -27,6 +27,16 @@
 */
 package org.miaixz.bus.image.nimble.codec;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.URL;
+import java.util.*;
+import java.util.Map.Entry;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.spi.ImageReaderSpi;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ResourceKit;
@@ -34,15 +44,6 @@ import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.metric.Property;
 import org.miaixz.bus.image.nimble.codec.jpeg.PatchJPEGLS;
 import org.miaixz.bus.logger.Logger;
-
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.spi.ImageReaderSpi;
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.URL;
-import java.util.*;
-import java.util.Map.Entry;
 
 /**
  * @author Kimi Liu

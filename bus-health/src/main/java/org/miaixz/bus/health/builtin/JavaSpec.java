@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.health.builtin;
 
+import java.io.Serializable;
+
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Platform;
-
-import java.io.Serializable;
 
 /**
  * 代表Java Specification的信息

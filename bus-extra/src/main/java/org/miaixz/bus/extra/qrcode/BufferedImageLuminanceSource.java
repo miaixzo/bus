@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.extra.qrcode;
 
-import com.google.zxing.LuminanceSource;
-
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+
+import com.google.zxing.LuminanceSource;
 
 /**
  * {@link BufferedImage} 图片二维码源 来自：http://blog.csdn.net/yangxin_blog/article/details/50850701 此类同样在zxing-j2se包中也有提供

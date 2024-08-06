@@ -27,6 +27,14 @@
 */
 package org.miaixz.bus.core.center.date;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Locale;
+
 import org.miaixz.bus.core.center.date.format.CustomFormat;
 import org.miaixz.bus.core.center.date.format.FormatBuilder;
 import org.miaixz.bus.core.center.date.format.parser.PositionDateParser;
@@ -36,14 +44,6 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.DateException;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * 日期解析

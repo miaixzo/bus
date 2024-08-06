@@ -27,10 +27,8 @@
 */
 package org.miaixz.bus.health.linux.hardware;
 
-import com.sun.jna.platform.linux.Udev;
-import com.sun.jna.platform.linux.Udev.UdevDevice;
-import com.sun.jna.platform.linux.Udev.UdevEnumerate;
-import com.sun.jna.platform.linux.Udev.UdevListEntry;
+import java.util.*;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -39,7 +37,10 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractUsbDevice;
 import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
 import org.miaixz.bus.logger.Logger;
 
-import java.util.*;
+import com.sun.jna.platform.linux.Udev;
+import com.sun.jna.platform.linux.Udev.UdevDevice;
+import com.sun.jna.platform.linux.Udev.UdevEnumerate;
+import com.sun.jna.platform.linux.Udev.UdevListEntry;
 
 /**
  * Linux Usb Device

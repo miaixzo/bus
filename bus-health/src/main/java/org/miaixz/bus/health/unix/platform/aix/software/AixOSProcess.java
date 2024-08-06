@@ -27,13 +27,20 @@
 */
 package org.miaixz.bus.health.unix.platform.aix.software;
 
-import com.sun.jna.Native;
-import com.sun.jna.platform.unix.Resource;
-import com.sun.jna.platform.unix.aix.Perfstat.perfstat_process_t;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.IdGroup;
@@ -47,15 +54,9 @@ import org.miaixz.bus.health.unix.platform.aix.driver.PsInfo;
 import org.miaixz.bus.health.unix.platform.aix.driver.perfstat.PerfstatCpu;
 import org.miaixz.bus.logger.Logger;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import com.sun.jna.Native;
+import com.sun.jna.platform.unix.Resource;
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_process_t;
 
 /**
  * OSProcess implementation

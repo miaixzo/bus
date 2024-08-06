@@ -73,13 +73,12 @@ import jakarta.annotation.Resource;
 @AutoConfigureBefore(name = "org.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration")
 public class MapperConfiguration implements InitializingBean {
 
-    @Resource
-    MybatisProperties properties;
-
     private final Environment environment;
     private final Interceptor[] interceptors;
     private final ResourceLoader resourceLoader;
     private final List<ConfigurationCustomizer> configurationCustomizers;
+    @Resource
+    MybatisProperties properties;
 
     public MapperConfiguration(Environment environment, ObjectProvider<Interceptor[]> interceptorsProvider,
             ResourceLoader resourceLoader,

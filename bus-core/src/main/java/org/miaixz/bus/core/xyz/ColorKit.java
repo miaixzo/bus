@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.convert.Convert;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.ansi.*;
-import org.miaixz.bus.core.text.CharsBacker;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import org.miaixz.bus.core.convert.Convert;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.ansi.*;
+import org.miaixz.bus.core.text.CharsBacker;
 
 /**
  * 颜色工具类

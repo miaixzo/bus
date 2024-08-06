@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.bean.path.node;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.*;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 列表节点 [num0,num1,num2...]模式或者['key0','key1']模式

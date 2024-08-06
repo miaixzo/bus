@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.health.unix.platform.aix.driver;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Utility to query up time.

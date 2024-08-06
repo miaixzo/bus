@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.io;
 
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Wrapper;
-
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.CharBuffer;
+
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Wrapper;
 
 /**
  * {@link Reader} 包装

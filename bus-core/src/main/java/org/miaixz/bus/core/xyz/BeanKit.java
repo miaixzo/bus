@@ -27,6 +27,16 @@
 */
 package org.miaixz.bus.core.xyz;
 
+import java.beans.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.bean.BeanCache;
 import org.miaixz.bus.core.bean.DynaBean;
 import org.miaixz.bus.core.bean.copier.BeanCopier;
@@ -42,16 +52,6 @@ import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.convert.RecordConverter;
 import org.miaixz.bus.core.lang.exception.BeanException;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
-
-import java.beans.*;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 
 /**
  * Bean工具类

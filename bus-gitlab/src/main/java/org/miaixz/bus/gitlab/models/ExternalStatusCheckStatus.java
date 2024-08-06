@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
+import java.io.Serializable;
+
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public class ExternalStatusCheckStatus implements Serializable {
     private static final long serialVersionUID = -1L;
@@ -41,27 +42,6 @@ public class ExternalStatusCheckStatus implements Serializable {
     private String name;
     private String externalUrl;
     private Status status;
-
-    public enum Status {
-        PASSED, FAILED, PENDING;
-
-        private static JacksonJsonEnumHelper<Status> enumHelper = new JacksonJsonEnumHelper<>(Status.class);
-
-        @JsonCreator
-        public static Status forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
-    }
 
     public Long getId() {
         return id;
@@ -98,5 +78,26 @@ public class ExternalStatusCheckStatus implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    public enum Status {
+        PASSED, FAILED, PENDING;
+
+        private static JacksonJsonEnumHelper<Status> enumHelper = new JacksonJsonEnumHelper<>(Status.class);
+
+        @JsonCreator
+        public static Status forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
     }
 }

@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.http.accord;
 
-import org.miaixz.bus.http.Builder;
-
 import java.io.IOException;
+
+import org.miaixz.bus.http.Builder;
 
 /**
  * An exception thrown to indicate a problem connecting via a single Route. Multiple attempts may have been made with

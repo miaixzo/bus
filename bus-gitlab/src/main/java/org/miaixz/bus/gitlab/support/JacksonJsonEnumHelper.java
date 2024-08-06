@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.gitlab.support;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 public class JacksonJsonEnumHelper<E extends Enum<E>> {
 

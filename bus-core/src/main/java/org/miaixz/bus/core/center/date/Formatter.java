@@ -27,15 +27,6 @@
 */
 package org.miaixz.bus.core.center.date;
 
-import org.miaixz.bus.core.center.date.format.CustomFormat;
-import org.miaixz.bus.core.center.date.format.FormatBuilder;
-import org.miaixz.bus.core.lang.Fields;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.LambdaKit;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.core.xyz.ZoneKit;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.*;
@@ -51,6 +42,15 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 import java.util.function.Function;
+
+import org.miaixz.bus.core.center.date.format.CustomFormat;
+import org.miaixz.bus.core.center.date.format.FormatBuilder;
+import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.LambdaKit;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.ZoneKit;
 
 /**
  * 日期格式化和解析 yyyy-MM-dd HH:mm:ss yyyy-MM-dd HH:mm:ss yyyy-MM-dd HH:mm:ss.SSS yyyy-MM-dd HH:mm:ss.SSSSSS yyyy-MM-dd

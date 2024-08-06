@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.gitlab.hooks.system;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
-import java.io.Serializable;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, visible = true, property = "event_name")
 @JsonSubTypes({
@@ -61,20 +61,20 @@ public interface SystemHookEvent extends Serializable {
 
     String getEventName();
 
-    void setRequestUrl(String requestUrl);
-
     @JsonIgnore
     String getRequestUrl();
 
-    void setRequestQueryString(String requestQueryString);
+    void setRequestUrl(String requestUrl);
 
     @JsonIgnore
     String getRequestQueryString();
 
-    void setRequestSecretToken(String requestSecretToken);
+    void setRequestQueryString(String requestQueryString);
 
     @JsonIgnore
     String getRequestSecretToken();
+
+    void setRequestSecretToken(String requestSecretToken);
 }
 
 // All of the following class definitions are needed to make the above work.

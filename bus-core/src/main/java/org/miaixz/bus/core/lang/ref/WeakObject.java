@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.lang.ref;
 
-import org.miaixz.bus.core.xyz.ObjectKit;
-
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
+
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
  * 弱引用对象，在GC时发现弱引用会回收其对象

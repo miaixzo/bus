@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.bean.copier;
 
+import java.lang.reflect.Type;
+import java.util.Map;
+
 import org.miaixz.bus.core.bean.desc.PropDesc;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.TypeKit;
-
-import java.lang.reflect.Type;
-import java.util.Map;
 
 /**
  * {@link ValueProvider}属性拷贝到Bean中的拷贝器

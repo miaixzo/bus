@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.center.map.multi;
 
+import java.util.*;
+
 import org.miaixz.bus.core.center.function.SerConsumer3;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.MapKit;
-
-import java.util.*;
 
 /**
  * 表格数据结构定义 此结构类似于Guava的Table接口，使用两个键映射到一个值，类似于表格结构。

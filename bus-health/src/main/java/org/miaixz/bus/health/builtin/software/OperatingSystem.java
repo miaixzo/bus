@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.health.builtin.software;
 
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -35,10 +39,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.IdGroup;
 import org.miaixz.bus.health.unix.driver.Who;
 import org.miaixz.bus.health.unix.driver.Xwininfo;
-
-import java.util.*;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * An operating system (OS) is the software on a computer that manages the way different programs use its hardware, and

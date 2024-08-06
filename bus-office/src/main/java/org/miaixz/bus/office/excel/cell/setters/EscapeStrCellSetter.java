@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.office.excel.cell.setters;
 
+import java.util.regex.Pattern;
+
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.util.regex.Pattern;
 
 /**
  * 字符串转义Cell值设置器 使用 _x005F前缀转义_xXXXX_，避免被decode的问题 如用户传入'_x5116_'会导致乱码，使用此设置器转义为'_x005F_x5116_'

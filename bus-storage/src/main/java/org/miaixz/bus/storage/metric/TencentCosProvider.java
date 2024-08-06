@@ -27,14 +27,12 @@
 */
 package org.miaixz.bus.storage.metric;
 
-import com.qcloud.cos.COSClient;
-import com.qcloud.cos.ClientConfig;
-import com.qcloud.cos.auth.BasicCOSCredentials;
-import com.qcloud.cos.model.GetObjectRequest;
-import com.qcloud.cos.model.ObjectMetadata;
-import com.qcloud.cos.model.PutObjectRequest;
-import com.qcloud.cos.model.PutObjectResult;
-import com.qcloud.cos.region.Region;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -43,11 +41,14 @@ import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.magic.Material;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Path;
+import com.qcloud.cos.COSClient;
+import com.qcloud.cos.ClientConfig;
+import com.qcloud.cos.auth.BasicCOSCredentials;
+import com.qcloud.cos.model.GetObjectRequest;
+import com.qcloud.cos.model.ObjectMetadata;
+import com.qcloud.cos.model.PutObjectRequest;
+import com.qcloud.cos.model.PutObjectResult;
+import com.qcloud.cos.region.Region;
 
 /**
  * 存储服务-腾讯云

@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.lang.mutable;
 
-import org.miaixz.bus.core.lang.Optional;
-
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
+
+import org.miaixz.bus.core.lang.Optional;
 
 /**
  * 提供可变值类型接口

@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.image.metric.hl7.net;
 
-import org.miaixz.bus.image.metric.Connection;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.miaixz.bus.image.metric.Connection;
 
 /**
  * @author Kimi Liu

@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.extra.qrcode;
 
-import com.google.zxing.common.BitMatrix;
+import java.awt.*;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ColorKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.image.ImageKit;
 
-import java.awt.*;
+import com.google.zxing.common.BitMatrix;
 
 /**
  * 二维码的SVG表示

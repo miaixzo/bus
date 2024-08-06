@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.gitlab.hooks.system;
 
+import java.util.List;
+
 import org.miaixz.bus.gitlab.hooks.web.EventProject;
 import org.miaixz.bus.gitlab.support.JacksonJson;
-
-import java.util.List;
 
 public class RepositorySystemHookEvent extends AbstractSystemHookEvent {
 

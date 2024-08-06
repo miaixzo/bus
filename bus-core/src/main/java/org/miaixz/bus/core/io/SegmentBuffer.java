@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.io;
 
+import java.util.*;
+
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.BufferSource;
-
-import java.util.*;
 
 /**
  * 可以读取的一组索引值 {@link BufferSource#select}.

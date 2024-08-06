@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.extra.captcha;
 
+import java.io.OutputStream;
+
 import org.miaixz.bus.core.Provider;
 import org.miaixz.bus.core.lang.EnumMap;
-
-import java.io.OutputStream;
 
 /**
  * 验证码接口，提供验证码对象接口定义

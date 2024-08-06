@@ -27,6 +27,21 @@
 */
 package org.miaixz.bus.crypto;
 
+import java.io.*;
+import java.math.BigInteger;
+import java.security.*;
+import java.security.Provider;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.interfaces.RSAPrivateCrtKey;
+import java.security.spec.*;
+
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.SecretKeySpec;
+
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.sec.ECPrivateKey;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -57,20 +72,6 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
-
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.*;
-import java.math.BigInteger;
-import java.security.Provider;
-import java.security.*;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.interfaces.RSAPrivateCrtKey;
-import java.security.spec.*;
 
 /**
  * 密钥工具
@@ -726,6 +727,8 @@ public class Keeper {
             return "EC";
         }
 
+        // 对于类似于RSA/ECB/OAEPWithSHA-1AndMGF1Padding只获取主方法
+        algorithm = getMainAlgorithm(algorithm);
         final int indexOfWith = StringKit.lastIndexOfIgnoreCase(algorithm, "with");
         if (indexOfWith > 0) {
             algorithm = StringKit.subSuf(algorithm, indexOfWith + "with".length());

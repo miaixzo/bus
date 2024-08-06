@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.cache.provider;
 
+import java.util.Iterator;
+
 import org.miaixz.bus.core.center.map.FixedLinkedHashMap;
 import org.miaixz.bus.core.lang.mutable.Mutable;
-
-import java.util.Iterator;
 
 /**
  * LRU (least recently used)最近最久未使用缓存 根据使用时间来判定对象是否被持续缓存 当对象被访问时放入缓存，当缓存满了，最久未被使用的对象将被移除。

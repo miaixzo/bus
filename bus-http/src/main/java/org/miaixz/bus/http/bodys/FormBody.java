@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.http.bodys;
 
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.http.UnoUrl;
-
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Form请求体内容

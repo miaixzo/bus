@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.crypto.center;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.util.ASN1Dump;
 import org.miaixz.bus.core.io.stream.FastByteArrayOutputStream;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.lang.exception.InternalException;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * ASN.1 – Abstract Syntax Notation dot one，抽象记法1 工具类。 ASN.1描述了一种对数据进行表示、编码、传输和解码的数据格式。它的编码格式包括DER、BER、DL等

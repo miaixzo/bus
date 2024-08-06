@@ -27,18 +27,18 @@
 */
 package org.miaixz.bus.core.io.resource;
 
+import java.io.File;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.net.URI;
+import java.net.URL;
+
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.UrlKit;
-
-import java.io.File;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.net.URI;
-import java.net.URL;
 
 /**
  * URL资源访问类

@@ -27,9 +27,8 @@
 */
 package org.miaixz.bus.health.mac.hardware;
 
-import com.sun.jna.Native;
-import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
-import com.sun.jna.platform.mac.IOKitUtil;
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -40,7 +39,9 @@ import org.miaixz.bus.health.builtin.hardware.Baseboard;
 import org.miaixz.bus.health.builtin.hardware.Firmware;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractComputerSystem;
 
-import java.util.function.Supplier;
+import com.sun.jna.Native;
+import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
+import com.sun.jna.platform.mac.IOKitUtil;
 
 /**
  * Hardware data obtained from ioreg.

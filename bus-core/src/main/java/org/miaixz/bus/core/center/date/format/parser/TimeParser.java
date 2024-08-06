@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.center.date.format.parser;
 
+import java.io.Serializable;
+
 import org.miaixz.bus.core.center.date.DateTime;
 import org.miaixz.bus.core.center.date.Formatter;
 import org.miaixz.bus.core.center.regex.Pattern;
@@ -35,8 +37,6 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.io.Serializable;
 
 /**
  * 时间日期字符串，日期默认为当天，支持格式类似于；

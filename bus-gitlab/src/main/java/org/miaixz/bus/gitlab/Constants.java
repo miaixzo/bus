@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.gitlab;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public interface Constants {
 
@@ -710,15 +711,16 @@ public interface Constants {
         BZ2, TAR, TAR_BZ2, TAR_GZ, TB2, TBZ, TBZ2, ZIP;
 
         private static Map<String, ArchiveFormat> valuesMap = new HashMap<String, ArchiveFormat>(8);
-        private final String value;
-
-        ArchiveFormat() {
-            this.value = name().toLowerCase().replace('_', '.');
-        }
 
         static {
             for (ArchiveFormat archiveFormat : ArchiveFormat.values())
                 valuesMap.put(archiveFormat.value, archiveFormat);
+        }
+
+        private final String value;
+
+        ArchiveFormat() {
+            this.value = name().toLowerCase().replace('_', '.');
         }
 
         public static ArchiveFormat forValue(String value) throws GitLabApiException {

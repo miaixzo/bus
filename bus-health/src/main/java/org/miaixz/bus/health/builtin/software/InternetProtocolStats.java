@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.health.builtin.software;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.annotation.Immutable;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.Immutable;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
  * Includes key statistics of TCP and UDP protocols

@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.text;
 
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.io.Serializable;
 import java.util.function.BiPredicate;
+
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 字符串区域匹配器，用于匹配字串是头部匹配还是尾部匹配，亦或者是某个位置的匹配。 offset用于锚定开始或结束位置，正数表示从开始偏移，负数表示从后偏移

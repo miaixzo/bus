@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.mapper.additional.select;
 
+import java.util.Objects;
+
 import org.apache.ibatis.mapping.MappedStatement;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -37,8 +39,6 @@ import org.miaixz.bus.mapper.builder.MapperTemplate;
 import org.miaixz.bus.mapper.builder.SqlBuilder;
 import org.miaixz.bus.mapper.entity.EntityColumn;
 import org.miaixz.bus.mapper.entity.EntityTable;
-
-import java.util.Objects;
 
 /**
  * 根据属性查询

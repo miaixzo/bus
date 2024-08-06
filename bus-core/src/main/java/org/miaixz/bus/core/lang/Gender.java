@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.lang;
 
+import java.util.Arrays;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.util.Arrays;
 
 /**
  * 性别相关类

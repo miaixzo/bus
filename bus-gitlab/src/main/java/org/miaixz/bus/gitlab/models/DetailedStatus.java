@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
+
+import org.miaixz.bus.gitlab.support.JacksonJson;
 
 /**
  * This class is part of the Pipeline message.

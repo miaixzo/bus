@@ -27,19 +27,20 @@
 */
 package org.miaixz.bus.health.mac.driver.net;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.miaixz.bus.core.lang.annotation.Immutable;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.health.builtin.jna.ByRef.CloseableSizeTByReference;
+import org.miaixz.bus.logger.Logger;
+
 import com.sun.jna.Memory;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.mac.SystemB;
 import com.sun.jna.platform.mac.SystemB.IFmsgHdr;
 import com.sun.jna.platform.mac.SystemB.IFmsgHdr2;
 import com.sun.jna.platform.unix.LibCAPI.size_t;
-import org.miaixz.bus.core.lang.annotation.Immutable;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.health.builtin.jna.ByRef.CloseableSizeTByReference;
-import org.miaixz.bus.logger.Logger;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Utility to query NetStat.

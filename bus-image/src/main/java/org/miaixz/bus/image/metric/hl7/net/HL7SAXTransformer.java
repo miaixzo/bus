@@ -27,6 +27,15 @@
 */
 package org.miaixz.bus.image.metric.hl7.net;
 
+import java.io.*;
+
+import javax.xml.transform.Templates;
+import javax.xml.transform.TransformerConfigurationException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.VR;
@@ -37,14 +46,6 @@ import org.miaixz.bus.image.metric.hl7.HL7Charset;
 import org.miaixz.bus.image.metric.hl7.HL7ContentHandler;
 import org.miaixz.bus.image.metric.hl7.HL7Parser;
 import org.xml.sax.SAXException;
-
-import javax.xml.transform.Templates;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.sax.TransformerHandler;
-import java.io.*;
 
 /**
  * @author Kimi Liu

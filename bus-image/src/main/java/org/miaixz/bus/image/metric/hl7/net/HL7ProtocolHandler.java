@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.image.metric.hl7.net;
 
+import java.io.IOException;
+import java.net.Socket;
+import java.net.SocketException;
+
 import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.hl7.HL7Exception;
 import org.miaixz.bus.image.metric.hl7.HL7Message;
@@ -34,10 +38,6 @@ import org.miaixz.bus.image.metric.hl7.MLLPConnection;
 import org.miaixz.bus.image.metric.hl7.MLLPRelease;
 import org.miaixz.bus.image.metric.net.TCPProtocolHandler;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.IOException;
-import java.net.Socket;
-import java.net.SocketException;
 
 /**
  * @author Kimi Liu

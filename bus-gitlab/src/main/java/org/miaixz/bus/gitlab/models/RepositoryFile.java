@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serializable;
+import java.util.Base64;
+
 import org.miaixz.bus.gitlab.Constants.Encoding;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
-import java.io.Serializable;
-import java.util.Base64;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class RepositoryFile implements Serializable {
     private static final long serialVersionUID = -1L;

@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.core.xyz;
 
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.nio.ByteBuffer;
+import java.util.Map;
+
 import org.miaixz.bus.core.center.function.FunctionPool;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.text.TextSimilarity;
 import org.miaixz.bus.core.text.placeholder.StringFormatter;
-
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.nio.ByteBuffer;
-import java.util.Map;
 
 /**
  * 字符串工具类

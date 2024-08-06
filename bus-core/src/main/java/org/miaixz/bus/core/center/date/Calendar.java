@@ -27,6 +27,14 @@
 */
 package org.miaixz.bus.core.center.date;
 
+import java.text.ParsePosition;
+import java.time.*;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
+
+import javax.xml.datatype.XMLGregorianCalendar;
+
 import org.miaixz.bus.core.center.date.culture.en.Modify;
 import org.miaixz.bus.core.center.date.culture.en.Month;
 import org.miaixz.bus.core.center.date.culture.en.Various;
@@ -35,18 +43,12 @@ import org.miaixz.bus.core.center.date.format.parser.DateParser;
 import org.miaixz.bus.core.center.date.format.parser.FastDateParser;
 import org.miaixz.bus.core.center.date.format.parser.PositionDateParser;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.DateException;
 import org.miaixz.bus.core.math.ChineseNumberFormatter;
 import org.miaixz.bus.core.xyz.CompareKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import javax.xml.datatype.XMLGregorianCalendar;
-import java.text.ParsePosition;
-import java.time.*;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
 
 /**
  * 针对{@link java.util.Calendar} 对象封装工具类
@@ -210,7 +212,7 @@ public class Calendar extends Calculate {
     /**
      * 创建Calendar对象，时间为默认时区的当前时间
      *
-     * @return Calendar对象
+     * @return {@link java.util.Calendar}
      */
     public static java.util.Calendar calendar() {
         return java.util.Calendar.getInstance();
@@ -220,7 +222,7 @@ public class Calendar extends Calculate {
      * 转换为Calendar对象
      *
      * @param date 日期对象
-     * @return Calendar对象
+     * @return {@link java.util.Calendar}
      */
     public static java.util.Calendar calendar(final Date date) {
         if (date instanceof DateTime) {
@@ -234,7 +236,7 @@ public class Calendar extends Calculate {
      * 转换为Calendar对象
      *
      * @param calendar 日期对象
-     * @return Calendar对象
+     * @return {@link java.util.Calendar}
      */
     public static java.util.Calendar calendar(final XMLGregorianCalendar calendar) {
         return calendar.toGregorianCalendar();
@@ -244,7 +246,7 @@ public class Calendar extends Calculate {
      * 转换为Calendar对象，使用当前默认时区
      *
      * @param millis 时间戳
-     * @return Calendar对象
+     * @return {@link java.util.Calendar}
      */
     public static java.util.Calendar calendar(final long millis) {
         return calendar(millis, TimeZone.getDefault());
@@ -255,7 +257,7 @@ public class Calendar extends Calculate {
      *
      * @param millis   时间戳
      * @param timeZone 时区
-     * @return Calendar对象
+     * @return {@link java.util.Calendar}
      */
     public static java.util.Calendar calendar(final long millis, final TimeZone timeZone) {
         final java.util.Calendar cal = java.util.Calendar.getInstance(timeZone);
@@ -268,7 +270,7 @@ public class Calendar extends Calculate {
      *
      * @param calendar 时间
      * @param timeZone 新时区
-     * @return 指定时区的新的calendar对象
+     * @return {@link java.util.Calendar}
      */
     public static java.util.Calendar calendar(java.util.Calendar calendar, final TimeZone timeZone) {
         // 转换到统一时区，例如UTC
@@ -282,7 +284,7 @@ public class Calendar extends Calculate {
      *
      * @param calendar {@link java.util.Calendar}
      * @param various  保留到的时间字段，如定义为 {@link Various#SECOND}，表示这个字段不变，这个字段以下字段全部归0
-     * @return 原{@link Calendar}
+     * @return {@link java.util.Calendar}
      */
     public static java.util.Calendar truncate(final java.util.Calendar calendar, final Various various) {
         return Modifier.modify(calendar, various.getValue(), Modify.TRUNCATE);
@@ -293,21 +295,10 @@ public class Calendar extends Calculate {
      *
      * @param calendar {@link java.util.Calendar}
      * @param various  时间字段，即保留到哪个日期字段
-     * @return 原{@link Calendar}
+     * @return {@link java.util.Calendar}
      */
     public static java.util.Calendar round(final java.util.Calendar calendar, final Various various) {
         return Modifier.modify(calendar, various.getValue(), Modify.ROUND);
-    }
-
-    /**
-     * 修改日期为某个时间字段结束时间
-     *
-     * @param calendar {@link java.util.Calendar}
-     * @param various  保留到的时间字段，如定义为 {@link Various#SECOND}，表示这个字段不变，这个字段以下字段全部取最大值
-     * @return 原{@link Calendar}
-     */
-    public static java.util.Calendar ceiling(final java.util.Calendar calendar, final Various various) {
-        return Modifier.modify(calendar, various.getValue(), Modify.CEILING);
     }
 
     /**
@@ -317,14 +308,14 @@ public class Calendar extends Calculate {
      * 有时候由于毫秒部分必须为0（如MySQL数据库中），因此在此加上选项。
      * </p>
      *
-     * @param calendar            {@link java.util.Calendar}
-     * @param various             时间字段
-     * @param truncateMillisecond 是否毫秒归零
-     * @return 原{@link Calendar}
+     * @param calendar {@link java.util.Calendar}
+     * @param various  时间字段
+     * @param truncate 是否毫秒归零
+     * @return {@link java.util.Calendar}
      */
     public static java.util.Calendar ceiling(final java.util.Calendar calendar, final Various various,
-            final boolean truncateMillisecond) {
-        return Modifier.modify(calendar, various.getValue(), Modify.CEILING, truncateMillisecond);
+            final boolean truncate) {
+        return Modifier.modify(calendar, various.getValue(), Modify.CEILING, truncate);
     }
 
     /**
@@ -341,10 +332,11 @@ public class Calendar extends Calculate {
      * 修改秒级别的结束时间，即毫秒设置为999
      *
      * @param calendar 日期 {@link java.util.Calendar}
+     * @param truncate 是否毫秒归零
      * @return {@link java.util.Calendar}
      */
-    public static java.util.Calendar endOfSecond(final java.util.Calendar calendar) {
-        return ceiling(calendar, Various.SECOND);
+    public static java.util.Calendar endOfSecond(final java.util.Calendar calendar, final boolean truncate) {
+        return ceiling(calendar, Various.SECOND, truncate);
     }
 
     /**
@@ -361,10 +353,11 @@ public class Calendar extends Calculate {
      * 修改某小时的结束时间
      *
      * @param calendar 日期 {@link java.util.Calendar}
+     * @param truncate 是否毫秒归零
      * @return {@link java.util.Calendar}
      */
-    public static java.util.Calendar endOfHour(final java.util.Calendar calendar) {
-        return ceiling(calendar, Various.HOUR_OF_DAY);
+    public static java.util.Calendar endOfHour(final java.util.Calendar calendar, final boolean truncate) {
+        return ceiling(calendar, Various.HOUR_OF_DAY, truncate);
     }
 
     /**
@@ -381,10 +374,11 @@ public class Calendar extends Calculate {
      * 修改某分钟的结束时间
      *
      * @param calendar 日期 {@link java.util.Calendar}
+     * @param truncate 是否毫秒归零
      * @return {@link java.util.Calendar}
      */
-    public static java.util.Calendar endOfMinute(final java.util.Calendar calendar) {
-        return ceiling(calendar, Various.MINUTE);
+    public static java.util.Calendar endOfMinute(final java.util.Calendar calendar, final boolean truncate) {
+        return ceiling(calendar, Various.MINUTE, truncate);
     }
 
     /**
@@ -401,10 +395,11 @@ public class Calendar extends Calculate {
      * 修改某天的结束时间
      *
      * @param calendar 日期 {@link java.util.Calendar}
+     * @param truncate 是否毫秒归零
      * @return {@link java.util.Calendar}
      */
-    public static java.util.Calendar endOfDay(final java.util.Calendar calendar) {
-        return ceiling(calendar, Various.DAY_OF_MONTH);
+    public static java.util.Calendar endOfDay(final java.util.Calendar calendar, final boolean truncate) {
+        return ceiling(calendar, Various.DAY_OF_MONTH, truncate);
     }
 
     /**
@@ -431,26 +426,18 @@ public class Calendar extends Calculate {
     }
 
     /**
-     * 修改某周的结束时间，周日定为一周的结束
-     *
-     * @param calendar 日期 {@link java.util.Calendar}
-     * @return {@link java.util.Calendar}
-     */
-    public static java.util.Calendar endOfWeek(final java.util.Calendar calendar) {
-        return endOfWeek(calendar, true);
-    }
-
-    /**
      * 修改某周的结束时间
      *
      * @param calendar          日期 {@link java.util.Calendar}
      * @param isSundayAsLastDay 是否周日做为一周的最后一天（false表示周六做为最后一天）
+     * @param truncate          是否毫秒归零
      * @return {@link java.util.Calendar}
      */
-    public static java.util.Calendar endOfWeek(final java.util.Calendar calendar, final boolean isSundayAsLastDay) {
+    public static java.util.Calendar endOfWeek(final java.util.Calendar calendar, final boolean isSundayAsLastDay,
+            final boolean truncate) {
         calendar.setFirstDayOfWeek(isSundayAsLastDay ? java.util.Calendar.MONDAY : java.util.Calendar.SUNDAY);
         // WEEK_OF_MONTH为上限的字段（不包括），实际调整的为DAY_OF_MONTH
-        return ceiling(calendar, Various.WEEK_OF_MONTH);
+        return ceiling(calendar, Various.WEEK_OF_MONTH, truncate);
     }
 
     /**
@@ -467,10 +454,11 @@ public class Calendar extends Calculate {
      * 修改某月的结束时间
      *
      * @param calendar 日期 {@link java.util.Calendar}
+     * @param truncate 是否毫秒归零
      * @return {@link java.util.Calendar}
      */
-    public static java.util.Calendar endOfMonth(final java.util.Calendar calendar) {
-        return ceiling(calendar, Various.MONTH);
+    public static java.util.Calendar endOfMonth(final java.util.Calendar calendar, final boolean truncate) {
+        return ceiling(calendar, Various.MONTH, truncate);
     }
 
     /**
@@ -489,16 +477,17 @@ public class Calendar extends Calculate {
      * 获取某季度的结束时间
      *
      * @param calendar 日期 {@link java.util.Calendar}
+     * @param truncate 是否毫秒归零
      * @return {@link java.util.Calendar}
      */
-    public static java.util.Calendar endOfQuarter(final java.util.Calendar calendar) {
+    public static java.util.Calendar endOfQuarter(final java.util.Calendar calendar, final boolean truncate) {
         final int year = calendar.get(java.util.Calendar.YEAR);
         final int month = calendar.get(Various.MONTH.getValue()) / 3 * 3 + 2;
 
         final java.util.Calendar resultCal = java.util.Calendar.getInstance(calendar.getTimeZone());
-        resultCal.set(year, month, Month.of(month).getLastDay(Calculate.isLeapYear(year)));
+        resultCal.set(year, month, Month.of(month).getLastDay(isLeapYear(year)));
 
-        return endOfDay(resultCal);
+        return endOfDay(resultCal, truncate);
     }
 
     /**
@@ -515,10 +504,11 @@ public class Calendar extends Calculate {
      * 修改某年的结束时间
      *
      * @param calendar 日期 {@link java.util.Calendar}
+     * @param truncate 是否毫秒归零
      * @return {@link java.util.Calendar}
      */
-    public static java.util.Calendar endOfYear(final java.util.Calendar calendar) {
-        return ceiling(calendar, Various.YEAR);
+    public static java.util.Calendar endOfYear(final java.util.Calendar calendar, final boolean truncate) {
+        return ceiling(calendar, Various.YEAR, truncate);
     }
 
     /**
@@ -665,7 +655,7 @@ public class Calendar extends Calculate {
         result.append('日');
 
         // 只替换年月日，时分秒中零不需要替换
-        final String temp = result.toString().replace('零', '〇');
+        final String temp = result.toString().replace(Symbol.C_UL_ZERO, '〇');
         result.delete(0, result.length());
         result.append(temp);
 

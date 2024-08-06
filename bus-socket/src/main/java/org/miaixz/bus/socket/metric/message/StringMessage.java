@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.socket.metric.message;
 
-import org.miaixz.bus.socket.Message;
-import org.miaixz.bus.socket.Session;
-import org.miaixz.bus.socket.metric.decoder.FixedLengthFrameDecoder;
-
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.miaixz.bus.socket.Message;
+import org.miaixz.bus.socket.Session;
+import org.miaixz.bus.socket.metric.decoder.FixedLengthFrameDecoder;
 
 /**
  * 字符模式

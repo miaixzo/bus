@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core.tree;
 
-import org.miaixz.bus.core.center.stream.EasyStream;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.xyz.StreamKit;
-import org.miaixz.bus.core.xyz.TreeKit;
-
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import org.miaixz.bus.core.center.stream.EasyStream;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.xyz.StreamKit;
+import org.miaixz.bus.core.xyz.TreeKit;
 
 /**
  * <p>

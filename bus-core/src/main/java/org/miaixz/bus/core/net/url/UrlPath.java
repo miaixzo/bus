@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.core.net.url;
 
+import java.nio.charset.Charset;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -35,10 +39,6 @@ import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.nio.charset.Charset;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * URL中Path部分的封装

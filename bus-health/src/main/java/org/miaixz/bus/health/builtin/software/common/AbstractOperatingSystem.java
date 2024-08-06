@@ -27,7 +27,12 @@
 */
 package org.miaixz.bus.health.builtin.software.common;
 
-import com.sun.jna.Platform;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Config;
@@ -35,11 +40,7 @@ import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.software.OSProcess;
 import org.miaixz.bus.health.builtin.software.OperatingSystem;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import com.sun.jna.Platform;
 
 /**
  * Common methods for OperatingSystem implementations

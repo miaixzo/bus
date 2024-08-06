@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.health.windows.driver.perfmon;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.health.windows.PerfCounterQuery;
-
 import java.util.Collections;
 import java.util.Map;
+
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.health.windows.PerfCounterQuery;
 
 /**
  * Utility to query Paging File performance counter

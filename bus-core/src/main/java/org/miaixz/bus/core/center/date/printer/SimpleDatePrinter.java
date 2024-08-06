@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.center.date.printer;
 
-import org.miaixz.bus.core.lang.Symbol;
-
 import java.io.Serializable;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * 抽象日期基本信息类，包括日期格式、时区、本地化等信息

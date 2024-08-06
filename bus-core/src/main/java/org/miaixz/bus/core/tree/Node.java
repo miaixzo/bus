@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.tree;
 
-import org.miaixz.bus.core.xyz.CompareKit;
-
 import java.io.Serializable;
+
+import org.miaixz.bus.core.xyz.CompareKit;
 
 /**
  * 节点接口，提供节点相关的的方法定义

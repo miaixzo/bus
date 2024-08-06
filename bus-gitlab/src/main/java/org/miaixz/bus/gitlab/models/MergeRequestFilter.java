@@ -27,19 +27,20 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonValue;
-import org.miaixz.bus.gitlab.Constants;
-import org.miaixz.bus.gitlab.GitLabApiForm;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.miaixz.bus.gitlab.Constants;
+import org.miaixz.bus.gitlab.GitLabApiForm;
+import org.miaixz.bus.gitlab.support.JacksonJson;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * This class is used to filter merge requests when getting lists of them.
@@ -79,6 +80,10 @@ public class MergeRequestFilter implements Serializable {
         return state;
     }
 
+    public void setState(Constants.MergeRequestState state) {
+        this.state = state;
+    }
+
     public Long getProjectId() {
         return projectId;
     }
@@ -103,10 +108,6 @@ public class MergeRequestFilter implements Serializable {
     public MergeRequestFilter withIids(List<Long> iids) {
         this.iids = iids;
         return (this);
-    }
-
-    public void setState(Constants.MergeRequestState state) {
-        this.state = state;
     }
 
     public MergeRequestFilter withState(Constants.MergeRequestState state) {
@@ -142,6 +143,10 @@ public class MergeRequestFilter implements Serializable {
 
     public Constants.MergeRequestScope getScope() {
         return scope;
+    }
+
+    public void setScope(Constants.MergeRequestScope scope) {
+        this.scope = scope;
     }
 
     public String getMilestone() {
@@ -235,10 +240,6 @@ public class MergeRequestFilter implements Serializable {
         return (this);
     }
 
-    public void setScope(Constants.MergeRequestScope scope) {
-        this.scope = scope;
-    }
-
     public MergeRequestFilter withScope(Constants.MergeRequestScope scope) {
         this.scope = scope;
         return (this);
@@ -246,6 +247,10 @@ public class MergeRequestFilter implements Serializable {
 
     public Constants.MergeRequestSearchIn getIn() {
         return in;
+    }
+
+    public void setIn(Constants.MergeRequestSearchIn in) {
+        this.in = in;
     }
 
     public Long getAuthorId() {
@@ -326,36 +331,9 @@ public class MergeRequestFilter implements Serializable {
         return (this);
     }
 
-    public void setIn(Constants.MergeRequestSearchIn in) {
-        this.in = in;
-    }
-
     public MergeRequestFilter withIn(Constants.MergeRequestSearchIn in) {
         this.in = in;
         return (this);
-    }
-
-    public enum MergeRequestField {
-        LABELS, MILESTONE, AUTHOR_ID, AUTHOR_USERNAME, ASSIGNEE_ID, ASSIGNEE_USERNAME, REVIEWER_ID, REVIEWER_USERNAME,
-        MY_REACTION_EMOJI;
-
-        private static JacksonJsonEnumHelper<MergeRequestField> enumHelper = new JacksonJsonEnumHelper<>(
-                MergeRequestField.class);
-
-        @JsonCreator
-        public static MergeRequestField forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
     }
 
     public Boolean getWip() {
@@ -539,5 +517,28 @@ public class MergeRequestFilter implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    public enum MergeRequestField {
+        LABELS, MILESTONE, AUTHOR_ID, AUTHOR_USERNAME, ASSIGNEE_ID, ASSIGNEE_USERNAME, REVIEWER_ID, REVIEWER_USERNAME,
+        MY_REACTION_EMOJI;
+
+        private static JacksonJsonEnumHelper<MergeRequestField> enumHelper = new JacksonJsonEnumHelper<>(
+                MergeRequestField.class);
+
+        @JsonCreator
+        public static MergeRequestField forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
     }
 }

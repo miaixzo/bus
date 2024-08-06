@@ -27,14 +27,6 @@
 */
 package org.miaixz.bus.socket.accord;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.socket.*;
-import org.miaixz.bus.socket.buffer.BufferPage;
-import org.miaixz.bus.socket.buffer.VirtualBuffer;
-import org.miaixz.bus.socket.buffer.WriteBuffer;
-import org.miaixz.bus.socket.metric.channels.AsynchronousChannelProvider;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
@@ -43,6 +35,14 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.socket.*;
+import org.miaixz.bus.socket.buffer.BufferPage;
+import org.miaixz.bus.socket.buffer.VirtualBuffer;
+import org.miaixz.bus.socket.buffer.WriteBuffer;
+import org.miaixz.bus.socket.metric.channels.AsynchronousChannelProvider;
 
 /**
  * AIO传输层会话
@@ -196,7 +196,10 @@ public final class TcpSession extends Session {
         return readBuffer.buffer();
     }
 
-    /**
+    @Override
+    public void awaitRead() {
+        modCount++;
+    }    /**
      * 读事件回调处理
      */
     private static final CompletionHandler<Integer, TcpSession> READ_COMPLETION_HANDLER = new CompletionHandler<>() {
@@ -223,11 +226,6 @@ public final class TcpSession extends Session {
             }
         }
     };
-
-    @Override
-    public void awaitRead() {
-        modCount++;
-    }
 
     void readCompleted(int result) {
         // 释放缓冲区
@@ -489,6 +487,8 @@ public final class TcpSession extends Session {
             }
         }
     }
+
+
 
     /**
      * 写事件回调处理

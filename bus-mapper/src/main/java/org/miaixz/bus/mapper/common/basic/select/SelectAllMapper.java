@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.mapper.common.basic.select;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.SelectProvider;
 import org.miaixz.bus.mapper.annotation.RegisterMapper;
 import org.miaixz.bus.mapper.provider.BasicSelectProvider;
-
-import java.util.List;
 
 /**
  * 查询

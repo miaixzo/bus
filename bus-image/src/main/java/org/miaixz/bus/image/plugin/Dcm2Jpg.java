@@ -27,16 +27,6 @@
 */
 package org.miaixz.bus.image.plugin;
 
-import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.image.galaxy.data.Attributes;
-import org.miaixz.bus.image.galaxy.io.ImageInputStream;
-import org.miaixz.bus.image.nimble.ICCProfile;
-import org.miaixz.bus.image.nimble.reader.ImageioReadParam;
-
-import javax.imageio.*;
-import javax.imageio.stream.FileImageInputStream;
-import javax.imageio.stream.FileImageOutputStream;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -45,6 +35,17 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.StreamSupport;
+
+import javax.imageio.*;
+import javax.imageio.stream.FileImageInputStream;
+import javax.imageio.stream.FileImageOutputStream;
+
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.image.galaxy.data.Attributes;
+import org.miaixz.bus.image.galaxy.io.ImageInputStream;
+import org.miaixz.bus.image.nimble.ICCProfile;
+import org.miaixz.bus.image.nimble.reader.ImageioReadParam;
 
 /**
  * @author Kimi Liu

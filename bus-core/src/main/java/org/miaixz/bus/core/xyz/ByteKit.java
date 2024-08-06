@@ -27,11 +27,6 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.center.regex.Pattern;
-import org.miaixz.bus.core.io.buffer.FastByteBuffer;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
@@ -44,6 +39,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.DoubleAdder;
 import java.util.concurrent.atomic.LongAdder;
+
+import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.io.buffer.FastByteBuffer;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * 对数字和字节进行转换。 假设数据存储是以大端模式存储的：

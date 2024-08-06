@@ -27,20 +27,21 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.Form;
-import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.Response;
-import org.miaixz.bus.gitlab.models.AccessLevel;
-import org.miaixz.bus.gitlab.models.ProtectedTag;
-import org.miaixz.bus.gitlab.models.Release;
-import org.miaixz.bus.gitlab.models.Tag;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.gitlab.models.AccessLevel;
+import org.miaixz.bus.gitlab.models.ProtectedTag;
+import org.miaixz.bus.gitlab.models.Release;
+import org.miaixz.bus.gitlab.models.Tag;
+
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 
 /**
  * This class provides an entry point to all the GitLab Tags and Protected Tags API calls.
@@ -52,21 +53,6 @@ public class TagsApi extends AbstractApi {
 
     public TagsApi(GitLabApi gitLabApi) {
         super(gitLabApi);
-    }
-
-    /**
-     * Get a list of repository tags from a project, sorted by name in reverse alphabetical order.
-     *
-     * <pre>
-     * <code>GitLab Endpoint: GET /projects/:id/repository/tags</code>
-     * </pre>
-     *
-     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @return the list of tags for the specified project ID
-     * @throws GitLabApiException if any exception occurs
-     */
-    public List<Tag> getTags(Object projectIdOrPath) throws GitLabApiException {
-        return (getTags(projectIdOrPath, getDefaultPerPage()).all());
     }
 
     /**
@@ -82,6 +68,21 @@ public class TagsApi extends AbstractApi {
             in.useDelimiter("\\Z");
             return (in.next());
         }
+    }
+
+    /**
+     * Get a list of repository tags from a project, sorted by name in reverse alphabetical order.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/tags</code>
+     * </pre>
+     *
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @return the list of tags for the specified project ID
+     * @throws GitLabApiException if any exception occurs
+     */
+    public List<Tag> getTags(Object projectIdOrPath) throws GitLabApiException {
+        return (getTags(projectIdOrPath, getDefaultPerPage()).all());
     }
 
     /**

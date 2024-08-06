@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.core.net.ip;
 
-import org.miaixz.bus.core.instance.Instances;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.CollKit;
-import org.miaixz.bus.core.xyz.NetKit;
-
 import java.math.BigInteger;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.LinkedHashSet;
+
+import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.NetKit;
 
 /**
  * IPv6工具类

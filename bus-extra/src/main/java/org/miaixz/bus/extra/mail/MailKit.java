@@ -27,19 +27,20 @@
 */
 package org.miaixz.bus.extra.mail;
 
-import jakarta.mail.Authenticator;
-import jakarta.mail.PasswordAuthentication;
-import jakarta.mail.Session;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.xyz.*;
-
 import java.io.File;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.text.CharsBacker;
+import org.miaixz.bus.core.xyz.*;
+
+import jakarta.mail.Authenticator;
+import jakarta.mail.PasswordAuthentication;
+import jakarta.mail.Session;
 
 /**
  * 邮件工具类，基于jakarta.mail封装

@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core.io.resource;
 
-import org.miaixz.bus.core.io.stream.ReaderInputStream;
-import org.miaixz.bus.core.lang.exception.InternalException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.Serializable;
 import java.net.URL;
 import java.nio.charset.Charset;
+
+import org.miaixz.bus.core.io.stream.ReaderInputStream;
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
  * 基于{@link InputStream}的资源获取器 注意：此对象中getUrl方法始终返回null

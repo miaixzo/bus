@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core.lang.tuple;
 
-import org.miaixz.bus.core.center.iterator.ArrayIterator;
-import org.miaixz.bus.core.lang.exception.CloneException;
-import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.core.xyz.ListKit;
-
 import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
+import org.miaixz.bus.core.center.iterator.ArrayIterator;
+import org.miaixz.bus.core.lang.exception.CloneException;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.ListKit;
 
 /**
  * 不可变数组类型（元组），用于多值返回 多值可以支持每个元素值类型不同

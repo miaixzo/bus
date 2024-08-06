@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.extra.nlp.provider.jcseg;
 
+import java.io.IOException;
+import java.io.StringReader;
+
 import org.lionsoul.jcseg.ISegment;
 import org.lionsoul.jcseg.dic.ADictionary;
 import org.lionsoul.jcseg.dic.DictionaryFactory;
@@ -35,9 +38,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;
-
-import java.io.IOException;
-import java.io.StringReader;
 
 /**
  * Jcseg分词引擎实现 项目地址：https://gitee.com/lionsoul/jcseg {@link ISegment}非线程安全，每次单独创建

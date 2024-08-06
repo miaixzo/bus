@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.center.map;
 
-import org.miaixz.bus.core.xyz.MapKit;
-
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+
+import org.miaixz.bus.core.xyz.MapKit;
 
 /**
  * 双向Map 互换键值对不检查值是否有重复，如果有则后加入的元素替换先加入的元素 值的顺序在HashMap中不确定，所以谁覆盖谁也不确定，在有序的Map中按照先后顺序覆盖，保留最后的值

@@ -27,10 +27,12 @@
 */
 package org.miaixz.bus.health.unix.platform.aix.driver;
 
-import com.sun.jna.Memory;
-import com.sun.jna.NativeLong;
-import com.sun.jna.platform.unix.LibCAPI.size_t;
-import com.sun.jna.platform.unix.LibCAPI.ssize_t;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
@@ -39,11 +41,10 @@ import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.unix.jna.AixLibc;
 import org.miaixz.bus.logger.Logger;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
+import com.sun.jna.Memory;
+import com.sun.jna.NativeLong;
+import com.sun.jna.platform.unix.LibCAPI.size_t;
+import com.sun.jna.platform.unix.LibCAPI.ssize_t;
 
 /**
  * Utility to query /proc/psinfo

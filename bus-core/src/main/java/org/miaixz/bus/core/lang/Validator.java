@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.lang;
 
+import java.net.MalformedURLException;
+import java.util.Date;
+import java.util.regex.Matcher;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.data.CreditCode;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.*;
-
-import java.net.MalformedURLException;
-import java.util.Date;
-import java.util.regex.Matcher;
 
 /**
  * 字段验证器（验证器），分两种类型的验证：

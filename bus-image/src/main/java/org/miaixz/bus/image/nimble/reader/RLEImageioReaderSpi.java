@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.image.nimble.reader;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.image.galaxy.data.Implementation;
+import java.util.Locale;
 
 import javax.imageio.ImageReader;
 import javax.imageio.spi.ImageReaderSpi;
 import javax.imageio.stream.ImageInputStream;
-import java.util.Locale;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.image.galaxy.data.Implementation;
 
 /**
  * @author Kimi Liu

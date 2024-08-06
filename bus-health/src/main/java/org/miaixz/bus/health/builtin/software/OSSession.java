@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.health.builtin.software;
 
-import org.miaixz.bus.core.lang.Fields;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.annotation.Immutable;
-
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
+
+import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.Immutable;
 
 /**
  * This class encapsulates information about users who are currently logged in to an operating system.

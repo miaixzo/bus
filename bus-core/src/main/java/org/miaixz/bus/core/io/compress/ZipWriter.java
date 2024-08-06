@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.core.io.compress;
 
+import java.io.*;
+import java.nio.charset.Charset;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
 import org.miaixz.bus.core.io.resource.Resource;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
-
-import java.io.*;
-import java.nio.charset.Charset;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 /**
  * Zip生成封装
@@ -46,7 +46,14 @@ import java.util.zip.ZipOutputStream;
  */
 public class ZipWriter implements Closeable {
 
+    /**
+     * 原始输出流
+     */
     private final ZipOutputStream out;
+    /**
+     * Zip文件
+     */
+    private File zipFile;
     /**
      * 自定义缓存大小
      */
@@ -60,6 +67,7 @@ public class ZipWriter implements Closeable {
      */
     public ZipWriter(final File zipFile, final Charset charset) {
         this(getZipOutputStream(zipFile, charset));
+        this.zipFile = zipFile;
     }
 
     /**
@@ -295,6 +303,10 @@ public class ZipWriter implements Closeable {
                 }
             }
         } else {
+            // 检查加入的文件是否为压缩结果文件本身，避免死循环
+            if (FileKit.equals(file, zipFile)) {
+                return;
+            }
             // 如果是文件或其它符号，则直接压缩该文件
             putEntry(subPath, FileKit.getInputStream(file));
         }

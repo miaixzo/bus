@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.pay.metric.paypal;
 
+import java.util.concurrent.Callable;
+
 import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.pay.magic.Callback;
-
-import java.util.concurrent.Callable;
 
 /**
  * AccessToken

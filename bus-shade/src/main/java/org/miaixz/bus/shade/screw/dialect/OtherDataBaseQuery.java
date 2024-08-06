@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.shade.screw.dialect;
 
+import java.util.List;
+
+import javax.sql.DataSource;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.shade.screw.Builder;
@@ -34,9 +38,6 @@ import org.miaixz.bus.shade.screw.metadata.Column;
 import org.miaixz.bus.shade.screw.metadata.Database;
 import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
 import org.miaixz.bus.shade.screw.metadata.Table;
-
-import javax.sql.DataSource;
-import java.util.List;
 
 /**
  * 其他数据库 暂未支持系列

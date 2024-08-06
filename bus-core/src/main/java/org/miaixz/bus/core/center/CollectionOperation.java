@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.center;
 
+import java.util.*;
+
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.SetKit;
-
-import java.util.*;
 
 /**
  * 集合运算，包括：

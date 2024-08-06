@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.health.builtin.hardware;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-
 import java.util.List;
+
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
  * The GlobalMemory class tracks information about the use of a computer's physical memory (RAM) as well as any

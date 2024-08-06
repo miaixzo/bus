@@ -27,6 +27,16 @@
 */
 package org.miaixz.bus.image.galaxy.media;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.EnumSet;
+import java.util.HashMap;
+
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import org.miaixz.bus.core.xyz.ResourceKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -34,15 +44,6 @@ import org.miaixz.bus.image.galaxy.data.Sequence;
 import org.miaixz.bus.image.galaxy.data.VR;
 import org.miaixz.bus.image.galaxy.io.ContentHandlerAdapter;
 import org.xml.sax.SAXException;
-
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.HashMap;
 
 /**
  * @author Kimi Liu

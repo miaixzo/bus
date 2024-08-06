@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.gitlab.hooks.web;
 
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.util.Date;
+
+import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class BuildCommit {
 

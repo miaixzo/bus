@@ -27,7 +27,14 @@
 */
 package org.miaixz.bus.shade.screw.dialect;
 
-import lombok.Getter;
+import java.sql.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.sql.DataSource;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -35,12 +42,7 @@ import org.miaixz.bus.shade.screw.Builder;
 import org.miaixz.bus.shade.screw.metadata.Column;
 import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
 
-import javax.sql.DataSource;
-import java.sql.*;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
+import lombok.Getter;
 
 /**
  * 抽象查询

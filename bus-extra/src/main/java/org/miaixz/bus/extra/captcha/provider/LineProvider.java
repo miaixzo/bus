@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.extra.captcha.provider;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.concurrent.ThreadLocalRandom;
+
 import org.miaixz.bus.core.xyz.ColorKit;
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.extra.captcha.AbstractProvider;
 import org.miaixz.bus.extra.captcha.strategy.CodeStrategy;
 import org.miaixz.bus.extra.captcha.strategy.RandomStrategy;
 import org.miaixz.bus.extra.image.ImageKit;
-
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * 使用干扰线方式生成的图形验证码

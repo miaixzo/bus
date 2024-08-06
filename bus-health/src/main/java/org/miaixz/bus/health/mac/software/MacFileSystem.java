@@ -27,6 +27,24 @@
 */
 package org.miaixz.bus.health.mac.software;
 
+import java.io.File;
+import java.nio.file.PathMatcher;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.health.Builder;
+import org.miaixz.bus.health.Config;
+import org.miaixz.bus.health.builtin.software.OSFileStore;
+import org.miaixz.bus.health.builtin.software.common.AbstractFileSystem;
+import org.miaixz.bus.health.mac.CFKit;
+import org.miaixz.bus.health.mac.SysctlKit;
+import org.miaixz.bus.logger.Logger;
+
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.mac.CoreFoundation;
@@ -41,23 +59,6 @@ import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
 import com.sun.jna.platform.mac.IOKitUtil;
 import com.sun.jna.platform.mac.SystemB;
 import com.sun.jna.platform.mac.SystemB.Statfs;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.Config;
-import org.miaixz.bus.health.builtin.software.OSFileStore;
-import org.miaixz.bus.health.builtin.software.common.AbstractFileSystem;
-import org.miaixz.bus.health.mac.CFKit;
-import org.miaixz.bus.health.mac.SysctlKit;
-import org.miaixz.bus.logger.Logger;
-
-import java.io.File;
-import java.nio.file.PathMatcher;
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * The Mac File System contains {@link OSFileStore}s which are a storage pool, device, partition, volume, concrete file

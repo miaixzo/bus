@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core.lang.reflect;
 
-import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
-import org.miaixz.bus.core.convert.Convert;
-import org.miaixz.bus.core.xyz.TypeKit;
-
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
+import org.miaixz.bus.core.convert.Convert;
+import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
  * 泛型变量和泛型实际类型映射关系缓存

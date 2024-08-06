@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.image.metric.service;
 
+import java.io.IOException;
+
 import org.miaixz.bus.image.Dimse;
 import org.miaixz.bus.image.Status;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.metric.Association;
 import org.miaixz.bus.image.metric.pdu.PresentationContext;
-
-import java.io.IOException;
 
 /**
  * @author Kimi Liu

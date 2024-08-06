@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.lang.thread.RetryableTask;
-
 import java.time.Duration;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
+
+import org.miaixz.bus.core.lang.thread.RetryableTask;
 
 /**
  * 重试工具类 自定义功能请使用{@link RetryableTask}类

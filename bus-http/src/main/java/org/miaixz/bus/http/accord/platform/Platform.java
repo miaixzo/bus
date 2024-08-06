@@ -27,6 +27,17 @@
 */
 package org.miaixz.bus.http.accord.platform;
 
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.X509TrustManager;
+
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.http.secure.BasicCertificateChainCleaner;
@@ -34,16 +45,6 @@ import org.miaixz.bus.http.secure.BasicTrustRootIndex;
 import org.miaixz.bus.http.secure.CertificateChainCleaner;
 import org.miaixz.bus.http.secure.TrustRootIndex;
 import org.miaixz.bus.logger.Logger;
-
-import javax.net.ssl.SSLSocket;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.X509TrustManager;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 访问特定于平台的特性. 服务器名称指示(SNI) 支持Android 2.3+ 支持Android 4.0+. 支持Android 5.0+ 支持 OpenJDK 7+ 支持 OpenJDK 7 and 8 (via the

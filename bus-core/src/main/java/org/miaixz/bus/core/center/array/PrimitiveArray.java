@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core.center.array;
 
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.Random;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.RandomKit;
-
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Random;
 
 /**
  * 原始类型数组工具类

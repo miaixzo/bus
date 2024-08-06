@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.health;
 
+import java.lang.management.*;
+import java.util.List;
+import java.util.Properties;
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -48,11 +53,6 @@ import org.miaixz.bus.health.unix.platform.solaris.hardware.SolarisHardwareAbstr
 import org.miaixz.bus.health.unix.platform.solaris.software.SolarisOperatingSystem;
 import org.miaixz.bus.health.windows.hardware.WindowsHardwareAbstractionLayer;
 import org.miaixz.bus.health.windows.software.WindowsOperatingSystem;
-
-import java.lang.management.*;
-import java.util.List;
-import java.util.Properties;
-import java.util.function.Supplier;
 
 /**
  * System information. This is the main entry point. This object provides getters which instantiate the appropriate

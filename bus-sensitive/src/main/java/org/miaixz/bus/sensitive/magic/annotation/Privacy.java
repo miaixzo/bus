@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.sensitive.magic.annotation;
 
-import org.miaixz.bus.sensitive.Builder;
-
 import java.lang.annotation.*;
+
+import org.miaixz.bus.sensitive.Builder;
 
 /**
  * 隐私数据加解密

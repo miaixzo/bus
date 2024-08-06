@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.image.nimble;
 
+import java.awt.*;
+import java.util.*;
+import java.util.List;
+
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
@@ -35,10 +39,6 @@ import org.miaixz.bus.image.nimble.opencv.ImageProcessor;
 import org.miaixz.bus.image.nimble.opencv.PlanarImage;
 import org.miaixz.bus.image.nimble.stream.ImageDescriptor;
 import org.opencv.core.CvType;
-
-import java.awt.*;
-import java.util.List;
-import java.util.*;
 
 /**
  * Represents DICOM overlay data for an image.

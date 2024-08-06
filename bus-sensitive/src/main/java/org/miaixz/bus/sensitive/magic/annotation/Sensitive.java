@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.sensitive.magic.annotation;
 
-import org.miaixz.bus.sensitive.Builder;
-
 import java.lang.annotation.*;
+
+import org.miaixz.bus.sensitive.Builder;
 
 /**
  * 数据脱敏,具体如下: 1.数据库级别脱敏加密 SensitiveResultSetHandler 解密脱敏 SensitiveStatementHandler 脱敏加密 2.访问请求级别加解密 RequestBodyAdvice

@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.shade.safety.provider;
 
+import java.io.*;
+
 import org.miaixz.bus.shade.safety.Builder;
 import org.miaixz.bus.shade.safety.algorithm.Key;
-
-import java.io.*;
 
 /**
  * 无操作解密器

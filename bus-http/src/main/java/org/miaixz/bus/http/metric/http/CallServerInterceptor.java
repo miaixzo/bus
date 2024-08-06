@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.http.metric.http;
 
+import java.io.IOException;
+import java.net.ProtocolException;
+
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -36,9 +39,6 @@ import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.accord.Exchange;
 import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.NewChain;
-
-import java.io.IOException;
-import java.net.ProtocolException;
 
 /**
  * 这是链中的最后一个拦截器 它对服务器进行网络调用

@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.io.sink;
 
-import org.miaixz.bus.core.io.buffer.Buffer;
-
 import java.io.IOException;
+
+import org.miaixz.bus.core.io.buffer.Buffer;
 
 /**
  * 不会抛出IOExceptions的接收器， 即使底层接收器抛出了IOExceptions

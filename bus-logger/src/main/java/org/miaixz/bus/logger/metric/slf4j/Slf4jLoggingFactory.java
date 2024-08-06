@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.logger.metric.slf4j;
 
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.UnsupportedEncodingException;
+
 import org.miaixz.bus.logger.Provider;
 import org.miaixz.bus.logger.magic.AbstractFactory;
 import org.slf4j.LoggerFactory;
 import org.slf4j.helpers.NOPLoggerFactory;
-
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 
 /**
  * slf4j and logback

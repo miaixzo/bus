@@ -27,6 +27,12 @@
 */
 package org.miaixz.bus.image.metric.net;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.Socket;
+import java.security.GeneralSecurityException;
+import java.util.*;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -38,12 +44,6 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.metric.*;
 import org.miaixz.bus.image.metric.pdu.*;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.Socket;
-import java.security.GeneralSecurityException;
-import java.util.*;
 
 /**
  * DICOM Part 15, Annex H compliant description of a DICOM network service. A Network AE is an application entity that

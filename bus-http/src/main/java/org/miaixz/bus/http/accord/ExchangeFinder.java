@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.http.accord;
 
+import java.io.IOException;
+import java.net.Socket;
+import java.util.List;
+
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.metric.EventListener;
 import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.http.metric.http.HttpCodec;
-
-import java.io.IOException;
-import java.net.Socket;
-import java.util.List;
 
 /**
  * Attempts to find the connections for a sequence of exchanges. This uses the following strategies:

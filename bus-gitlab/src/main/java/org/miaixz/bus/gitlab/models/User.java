@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.util.Date;
 import java.util.List;
+
+import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class User extends AbstractUser<User> {
     private static final long serialVersionUID = -1L;
@@ -131,12 +131,12 @@ public class User extends AbstractUser<User> {
         this.external = external;
     }
 
-    public void setExternUid(String externUid) {
-        this.externUid = externUid;
-    }
-
     public String getExternUid() {
         return this.externUid;
+    }
+
+    public void setExternUid(String externUid) {
+        this.externUid = externUid;
     }
 
     public Integer getExtraSharedRunnersMinutesLimit() {

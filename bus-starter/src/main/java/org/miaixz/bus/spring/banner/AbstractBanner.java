@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.spring.banner;
 
+import java.io.InputStream;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.IoKit;
-
-import java.io.InputStream;
 
 /**
  * 旗标生成器

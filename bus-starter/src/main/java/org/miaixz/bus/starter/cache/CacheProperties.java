@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.starter.cache;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Map;
+
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.starter.jdbc.JdbcProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 缓存相关配置

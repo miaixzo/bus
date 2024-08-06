@@ -27,6 +27,14 @@
 */
 package org.miaixz.bus.image.metric.pdu;
 
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -43,14 +51,6 @@ import org.miaixz.bus.image.metric.net.ItemType;
 import org.miaixz.bus.image.metric.net.PDVInputStream;
 import org.miaixz.bus.image.metric.net.PDVType;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author Kimi Liu

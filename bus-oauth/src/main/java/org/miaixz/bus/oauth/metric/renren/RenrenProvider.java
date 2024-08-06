@@ -27,8 +27,8 @@
 */
 package org.miaixz.bus.oauth.metric.renren;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import java.util.Objects;
+
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
@@ -45,7 +45,8 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import java.util.Objects;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * 人人网 登录

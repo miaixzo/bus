@@ -27,21 +27,6 @@
 */
 package org.miaixz.bus.extra.image;
 
-import org.miaixz.bus.core.codec.binary.Base64;
-import org.miaixz.bus.core.io.file.FileName;
-import org.miaixz.bus.core.io.resource.Resource;
-import org.miaixz.bus.core.io.stream.FastByteArrayOutputStream;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.core.xyz.*;
-
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.ImageTypeSpecifier;
-import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.ImageOutputStream;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.font.FontRenderContext;
@@ -51,6 +36,22 @@ import java.awt.image.*;
 import java.io.*;
 import java.net.URL;
 import java.util.Iterator;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.ImageTypeSpecifier;
+import javax.imageio.stream.ImageInputStream;
+import javax.imageio.stream.ImageOutputStream;
+import javax.swing.*;
+
+import org.miaixz.bus.core.codec.binary.Base64;
+import org.miaixz.bus.core.io.file.FileName;
+import org.miaixz.bus.core.io.resource.Resource;
+import org.miaixz.bus.core.io.stream.FastByteArrayOutputStream;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.xyz.*;
 
 /**
  * 图片处理工具类： 功能：缩放图像、切割图像、旋转、图像类型转换、彩色转黑白、文字水印、图片水印等 参考：<a href=

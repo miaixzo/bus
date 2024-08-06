@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.mapper.common.condition;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.SelectProvider;
 import org.miaixz.bus.mapper.annotation.RegisterMapper;
 import org.miaixz.bus.mapper.provider.ConditionProvider;
-
-import java.util.List;
 
 /**
  * 通用Mapper接口,Condition查询

@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.image.metric.service;
 
+import java.io.IOException;
+
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Status;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.VR;
 import org.miaixz.bus.image.galaxy.data.ValidationResult;
-
-import java.io.IOException;
 
 /**
  * @author Kimi Liu

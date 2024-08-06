@@ -27,10 +27,11 @@
 */
 package org.miaixz.bus.image.galaxy.io;
 
+import java.util.HashMap;
+
 import javax.xml.transform.Templates;
 import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.stream.StreamSource;
-import java.util.HashMap;
 
 /**
  * @author Kimi Liu

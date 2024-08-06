@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.core.io.source;
 
+import java.io.EOFException;
+import java.io.IOException;
+import java.util.zip.DataFormatException;
+import java.util.zip.Inflater;
+
 import org.miaixz.bus.core.io.LifeCycle;
 import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.xyz.IoKit;
-
-import java.io.EOFException;
-import java.io.IOException;
-import java.util.zip.DataFormatException;
-import java.util.zip.Inflater;
 
 /**
  * 使用<a href="http://tools.ietf.org/html/rfc1951">DEFLATE</a> 解压缩从另一个源读取的数据的源。

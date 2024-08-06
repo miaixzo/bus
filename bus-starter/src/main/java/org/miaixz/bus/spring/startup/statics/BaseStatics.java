@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.spring.startup.statics;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 启动状态的基本模型

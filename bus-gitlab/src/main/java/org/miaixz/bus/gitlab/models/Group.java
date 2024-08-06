@@ -27,57 +27,18 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import java.util.Date;
+import java.util.List;
+
 import org.miaixz.bus.gitlab.Constants.DefaultBranchProtectionLevel;
 import org.miaixz.bus.gitlab.Constants.ProjectCreationLevel;
 import org.miaixz.bus.gitlab.Constants.SubgroupCreationLevel;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
-import java.util.Date;
-import java.util.List;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class Group extends AbstractGroup<Group> {
     private static final long serialVersionUID = -1L;
-
-    public class Statistics {
-        private Long storageSize;
-        private Long repositorySize;
-        private Long lfsObjectsSize;
-        private Long jobArtifactsSize;
-
-        public Long getStorageSize() {
-            return storageSize;
-        }
-
-        public void setStorageSize(Long storageSize) {
-            this.storageSize = storageSize;
-        }
-
-        public Long getRepositorySize() {
-            return repositorySize;
-        }
-
-        public void setRepositorySize(Long repositorySize) {
-            this.repositorySize = repositorySize;
-        }
-
-        public Long getLfsObjectsSize() {
-            return lfsObjectsSize;
-        }
-
-        public void setLfsObjectsSize(Long lfsObjectsSize) {
-            this.lfsObjectsSize = lfsObjectsSize;
-        }
-
-        public Long getJobArtifactsSize() {
-            return jobArtifactsSize;
-        }
-
-        public void setJobArtifactsSize(Long jobArtifactsSize) {
-            this.jobArtifactsSize = jobArtifactsSize;
-        }
-    }
-
     private String path;
     private String description;
     private Visibility visibility;
@@ -97,7 +58,6 @@ public class Group extends AbstractGroup<Group> {
     private ProjectCreationLevel projectCreationLevel;
     private SubgroupCreationLevel subgroupCreationLevel;
     private DefaultBranchProtectionLevel defaultBranchProtection;
-
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date markedForDeletionOn;
 
@@ -344,5 +304,44 @@ public class Group extends AbstractGroup<Group> {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    public class Statistics {
+        private Long storageSize;
+        private Long repositorySize;
+        private Long lfsObjectsSize;
+        private Long jobArtifactsSize;
+
+        public Long getStorageSize() {
+            return storageSize;
+        }
+
+        public void setStorageSize(Long storageSize) {
+            this.storageSize = storageSize;
+        }
+
+        public Long getRepositorySize() {
+            return repositorySize;
+        }
+
+        public void setRepositorySize(Long repositorySize) {
+            this.repositorySize = repositorySize;
+        }
+
+        public Long getLfsObjectsSize() {
+            return lfsObjectsSize;
+        }
+
+        public void setLfsObjectsSize(Long lfsObjectsSize) {
+            this.lfsObjectsSize = lfsObjectsSize;
+        }
+
+        public Long getJobArtifactsSize() {
+            return jobArtifactsSize;
+        }
+
+        public void setJobArtifactsSize(Long jobArtifactsSize) {
+            this.jobArtifactsSize = jobArtifactsSize;
+        }
     }
 }

@@ -27,6 +27,19 @@
 */
 package org.miaixz.bus.core.text;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.CharsetDecoder;
+import java.nio.charset.CodingErrorAction;
+import java.text.MessageFormat;
+import java.text.Normalizer;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
+import java.util.regex.Matcher;
+
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.compare.VersionCompare;
@@ -41,19 +54,6 @@ import org.miaixz.bus.core.text.replacer.CharRangeReplacer;
 import org.miaixz.bus.core.text.replacer.SearchReplacer;
 import org.miaixz.bus.core.text.replacer.StringRangeReplacer;
 import org.miaixz.bus.core.xyz.*;
-
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
-import java.nio.charset.CharsetDecoder;
-import java.nio.charset.CodingErrorAction;
-import java.text.MessageFormat;
-import java.text.Normalizer;
-import java.util.*;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
-import java.util.regex.Matcher;
 
 /**
  * {@link CharSequence} 相关类封装，包括但不限于：
@@ -2326,7 +2326,7 @@ public class CharsBacker extends CharsValidator {
         if (isEmpty(text)) {
             return toStringOrNull(text);
         }
-        if (text.charAt(0) == prefix && text.charAt(text.length() - 1) == suffix) {
+        if (isWrap(text, prefix, suffix)) {
             return sub(text, 1, text.length() - 1);
         }
         return text.toString();

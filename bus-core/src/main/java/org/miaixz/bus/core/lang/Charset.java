@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.core.lang;
 
-import org.miaixz.bus.core.io.CharsetDetector;
-import org.miaixz.bus.core.xyz.FileKit;
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.UnsupportedCharsetException;
+
+import org.miaixz.bus.core.io.CharsetDetector;
+import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 字符集工具类

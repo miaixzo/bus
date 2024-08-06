@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.image.nimble;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.*;
+
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
@@ -43,11 +48,6 @@ import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfInt;
 import org.opencv.imgcodecs.Imgcodecs;
-
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.*;
 
 /**
  * @author Kimi Liu

@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.io.resource;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
 import java.nio.charset.Charset;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 基于byte[]的资源获取器 注意：此对象中getUrl方法始终返回null

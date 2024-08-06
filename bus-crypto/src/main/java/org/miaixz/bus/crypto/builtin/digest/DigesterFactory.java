@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.crypto.builtin.digest;
 
-import org.miaixz.bus.crypto.Builder;
-import org.miaixz.bus.crypto.Holder;
-
 import java.security.MessageDigest;
 import java.security.Provider;
+
+import org.miaixz.bus.crypto.Builder;
+import org.miaixz.bus.crypto.Holder;
 
 /**
  * {@link Digester}创建简单工厂，用于生产{@link Digester}对象

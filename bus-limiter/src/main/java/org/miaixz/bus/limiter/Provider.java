@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.limiter;
 
+import java.lang.reflect.Method;
+
 import org.miaixz.bus.core.lang.EnumMap;
 import org.miaixz.bus.limiter.magic.StrategyMode;
-
-import java.lang.reflect.Method;
 
 /**
  * 执行规则

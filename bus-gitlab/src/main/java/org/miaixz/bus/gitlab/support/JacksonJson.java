@@ -27,22 +27,24 @@
 */
 package org.miaixz.bus.gitlab.support;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import org.miaixz.bus.gitlab.models.User;
+
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.type.CollectionType;
+
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.ext.ContextResolver;
-import org.miaixz.bus.gitlab.models.User;
-
-import java.io.IOException;
-import java.io.Reader;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
 /**
  * Jackson JSON Configuration and utility class.
@@ -77,20 +79,6 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
         objectMapper.registerModule(module);
     }
 
-    @Override
-    public ObjectMapper getContext(Class<?> objectType) {
-        return (objectMapper);
-    }
-
-    /**
-     * Gets the ObjectMapper contained by this instance.
-     *
-     * @return the ObjectMapper contained by this instance
-     */
-    public ObjectMapper getObjectMapper() {
-        return (objectMapper);
-    }
-
     /**
      * Gets a the supplied object output as a formatted JSON string. Null properties will result in the value of the
      * property being null. This is meant to be used for toString() implementations of GitLab4J classes.
@@ -112,6 +100,20 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      */
     public static JsonNode toJsonNode(String jsonString) throws IOException {
         return (JacksonJsonSingletonHelper.JACKSON_JSON.objectMapper.readTree(jsonString));
+    }
+
+    @Override
+    public ObjectMapper getContext(Class<?> objectType) {
+        return (objectMapper);
+    }
+
+    /**
+     * Gets the ObjectMapper contained by this instance.
+     *
+     * @return the ObjectMapper contained by this instance
+     */
+    public ObjectMapper getObjectMapper() {
+        return (objectMapper);
     }
 
     /**

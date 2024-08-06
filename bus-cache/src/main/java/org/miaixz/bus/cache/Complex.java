@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.cache;
 
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Set;
+
 import org.miaixz.bus.cache.magic.*;
 import org.miaixz.bus.cache.magic.annotation.Cached;
 import org.miaixz.bus.cache.magic.annotation.CachedGet;
@@ -40,10 +44,6 @@ import org.miaixz.bus.core.lang.annotation.Named;
 import org.miaixz.bus.core.lang.annotation.Singleton;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.proxy.invoker.ProxyChain;
-
-import java.lang.reflect.Method;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Kimi Liu

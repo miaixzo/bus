@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.image.nimble.opencv.op;
 
+import java.awt.*;
+import java.util.List;
+import java.util.Objects;
+
 import org.miaixz.bus.image.nimble.opencv.ImageCV;
 import org.miaixz.bus.image.nimble.opencv.ImageProcessor;
 import org.miaixz.bus.logger.Logger;
 import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
-
-import java.awt.*;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * @author Kimi Liu

@@ -27,38 +27,16 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
+import java.io.Serializable;
+
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public class Environment implements Serializable {
     private static final long serialVersionUID = -1L;
-
-    public enum EnvironmentState {
-        AVAILABLE, STOPPED;
-
-        private static JacksonJsonEnumHelper<EnvironmentState> enumHelper = new JacksonJsonEnumHelper<>(
-                EnvironmentState.class);
-
-        @JsonCreator
-        public static EnvironmentState forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
-    }
-
     private Long id;
     private String name;
     private String slug;
@@ -117,5 +95,27 @@ public class Environment implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    public enum EnvironmentState {
+        AVAILABLE, STOPPED;
+
+        private static JacksonJsonEnumHelper<EnvironmentState> enumHelper = new JacksonJsonEnumHelper<>(
+                EnvironmentState.class);
+
+        @JsonCreator
+        public static EnvironmentState forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
     }
 }

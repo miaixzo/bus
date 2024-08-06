@@ -27,7 +27,10 @@
 */
 package org.miaixz.bus.health.linux.hardware;
 
-import com.sun.jna.platform.linux.Udev;
+import java.io.File;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Executor;
@@ -37,9 +40,7 @@ import org.miaixz.bus.health.linux.DevPath;
 import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
 import org.miaixz.bus.logger.Logger;
 
-import java.io.File;
-import java.util.*;
-import java.util.stream.Collectors;
+import com.sun.jna.platform.linux.Udev;
 
 /**
  *

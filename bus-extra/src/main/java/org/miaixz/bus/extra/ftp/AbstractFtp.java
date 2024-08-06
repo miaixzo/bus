@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.extra.ftp;
 
+import java.io.File;
+import java.util.List;
+
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -34,9 +37,6 @@ import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.io.File;
-import java.util.List;
 
 /**
  * 抽象FTP类，用于定义通用的FTP方法

@@ -101,7 +101,7 @@ public class Element extends Samsara {
      * @return 方位
      */
     public Direction getDirection() {
-        return Direction.fromIndex(new int[]{2, 8, 4, 6, 0}[index]);
+        return Direction.fromIndex(new int[] { 2, 8, 4, 6, 0 }[index]);
     }
 
 }

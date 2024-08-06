@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.validate.metric;
 
+import java.util.Objects;
+
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.validate.Context;
 import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.Equals;
-
-import java.util.Objects;
 
 /**
  * EQUALS 校验

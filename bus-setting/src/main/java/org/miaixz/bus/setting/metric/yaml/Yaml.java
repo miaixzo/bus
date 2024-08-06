@@ -27,6 +27,12 @@
 */
 package org.miaixz.bus.setting.metric.yaml;
 
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.miaixz.bus.core.center.map.Dictionary;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
@@ -34,12 +40,6 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ResourceKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.yaml.snakeyaml.DumperOptions;
-
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.Writer;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 基于Snakeyaml的的YAML读写工具

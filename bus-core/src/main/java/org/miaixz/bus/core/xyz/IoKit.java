@@ -27,6 +27,20 @@
 */
 package org.miaixz.bus.core.xyz;
 
+import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.net.URL;
+import java.nio.CharBuffer;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.*;
+import java.nio.file.Files;
+import java.nio.file.OpenOption;
+import java.nio.file.Path;
+import java.util.Collection;
+import java.util.Objects;
+
 import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.center.iterator.LineIterator;
 import org.miaixz.bus.core.io.BomReader;
@@ -49,23 +63,9 @@ import org.miaixz.bus.core.io.stream.StreamReader;
 import org.miaixz.bus.core.io.stream.StreamWriter;
 import org.miaixz.bus.core.io.timout.AsyncTimeout;
 import org.miaixz.bus.core.io.timout.Timeout;
-import org.miaixz.bus.core.lang.Console;
 import org.miaixz.bus.core.lang.*;
+import org.miaixz.bus.core.lang.Console;
 import org.miaixz.bus.core.lang.exception.InternalException;
-
-import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.nio.CharBuffer;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.*;
-import java.nio.file.Files;
-import java.nio.file.OpenOption;
-import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Objects;
 
 /**
  * IO工具类 IO工具类只是辅助流的读写，并不负责关闭流。原因是流可能被多次读写，读写关闭后容易造成问题。

@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.image.plugin;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.builtin.DeIdentifier;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.io.ImageEncodingOptions;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * @author Kimi Liu

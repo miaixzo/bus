@@ -27,10 +27,6 @@
 */
 package org.miaixz.bus.core.xml;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.xml.sax.XMLReader;
-
 import javax.xml.XMLConstants;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -40,6 +36,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.xml.sax.XMLReader;
 
 /**
  * XXE漏洞修复相关工具类 参考：https://blog.spoock.com/2018/10/23/java-xxe/

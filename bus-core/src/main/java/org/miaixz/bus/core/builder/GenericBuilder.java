@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.builder;
 
-import org.miaixz.bus.core.Builder;
-import org.miaixz.bus.core.center.function.SerConsumer3;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import org.miaixz.bus.core.Builder;
+import org.miaixz.bus.core.center.function.SerConsumer3;
 
 /**
  * 通用Builder 参考: <a href="https://blog.csdn.net/weixin_43935907/article/details/105003719">一看就会的java8通用Builder</a>

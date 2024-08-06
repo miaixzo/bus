@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.NotNullMatcher;
-
-import java.lang.annotation.*;
 
 /**
  * 对象不能为null

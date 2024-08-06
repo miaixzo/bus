@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.health.builtin.hardware;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-
 import java.time.LocalDate;
+
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
  * The Power Source is one or more batteries with some capacity, and some state of charge/discharge

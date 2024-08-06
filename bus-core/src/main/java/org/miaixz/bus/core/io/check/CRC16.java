@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.io.check;
 
-import org.miaixz.bus.core.io.check.crc16.CRC16Checksum;
-import org.miaixz.bus.core.io.check.crc16.CRC16IBM;
-
 import java.io.Serializable;
 import java.util.zip.Checksum;
+
+import org.miaixz.bus.core.io.check.crc16.CRC16Checksum;
+import org.miaixz.bus.core.io.check.crc16.CRC16IBM;
 
 /**
  * CRC16 循环冗余校验码（Cyclic Redundancy Check）实现，默认IBM算法

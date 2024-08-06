@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.pager.dialect.base;
 
+import java.util.Map;
+
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.pager.Page;
 import org.miaixz.bus.pager.dialect.AbstractPaging;
-
-import java.util.Map;
 
 /**
  * firebirdsql数据库

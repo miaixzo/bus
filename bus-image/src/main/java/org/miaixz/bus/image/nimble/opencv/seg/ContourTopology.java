@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.image.nimble.opencv.seg;
 
+import java.awt.geom.Point2D;
+
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
-
-import java.awt.geom.Point2D;
 
 /**
  * @author Kimi Liu

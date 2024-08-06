@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.mapper.handler;
 
+import java.lang.reflect.Proxy;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.miaixz.bus.core.lang.Symbol;
-
-import java.lang.reflect.Proxy;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * SQL 拦截处理器

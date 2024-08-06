@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.health.builtin.jna;
 
+import org.miaixz.bus.health.Builder;
+
 import com.sun.jna.platform.linux.LibC.Sysinfo;
 import com.sun.jna.platform.mac.SystemB.*;
 import com.sun.jna.platform.win32.IPHlpAPI.MIB_IFROW;
@@ -38,7 +40,6 @@ import com.sun.jna.platform.win32.Psapi.PERFORMANCE_INFORMATION;
 import com.sun.jna.platform.win32.SetupApi.SP_DEVICE_INTERFACE_DATA;
 import com.sun.jna.platform.win32.SetupApi.SP_DEVINFO_DATA;
 import com.sun.jna.platform.win32.WinBase.SYSTEM_INFO;
-import org.miaixz.bus.health.Builder;
 
 /**
  * Wrapper classes for JNA clases which extend {@link com.sun.jna.Structure} intended for use in try-with-resources

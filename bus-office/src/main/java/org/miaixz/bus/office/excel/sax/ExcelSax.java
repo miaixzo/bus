@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.office.excel.sax;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.poi.hssf.eventusermodel.FormatTrackingHSSFListener;
 import org.apache.poi.hssf.record.CellValueRecordInterface;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -48,10 +53,6 @@ import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
-
-import javax.xml.parsers.ParserConfigurationException;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Sax方式读取Excel相关工具类

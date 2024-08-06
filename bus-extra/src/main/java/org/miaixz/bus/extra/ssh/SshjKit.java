@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.extra.ssh;
 
-import net.schmizz.sshj.SSHClient;
-import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
+import java.io.IOException;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 
-import java.io.IOException;
+import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 
 /**
  * 基于SSHJ（https://github.com/hierynomus/sshj）相关工具类

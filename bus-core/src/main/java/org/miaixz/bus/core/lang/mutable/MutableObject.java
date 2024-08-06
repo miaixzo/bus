@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.lang.mutable;
 
-import org.miaixz.bus.core.xyz.ObjectKit;
-
 import java.io.Serializable;
 import java.util.Objects;
+
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
  * 可变{@code Object}

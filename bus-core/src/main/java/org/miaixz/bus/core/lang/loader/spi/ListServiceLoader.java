@@ -27,14 +27,6 @@
 */
 package org.miaixz.bus.core.lang.loader.spi;
 
-import org.miaixz.bus.core.cache.SimpleCache;
-import org.miaixz.bus.core.io.resource.MultiResource;
-import org.miaixz.bus.core.io.resource.Resource;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.*;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -42,6 +34,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+
+import org.miaixz.bus.core.cache.SimpleCache;
+import org.miaixz.bus.core.io.resource.MultiResource;
+import org.miaixz.bus.core.io.resource.Resource;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.*;
 
 /**
  * 列表类型的服务加载器，用于替换JDK提供的{@link java.util.ServiceLoader} 相比JDK，增加了：

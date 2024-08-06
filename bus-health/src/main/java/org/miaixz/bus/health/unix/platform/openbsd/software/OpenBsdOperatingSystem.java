@@ -27,9 +27,13 @@
 */
 package org.miaixz.bus.health.unix.platform.openbsd.software;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import java.io.File;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
@@ -38,10 +42,6 @@ import org.miaixz.bus.health.builtin.software.common.AbstractOperatingSystem;
 import org.miaixz.bus.health.unix.jna.OpenBsdLibc;
 import org.miaixz.bus.health.unix.platform.openbsd.OpenBsdSysctlKit;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.File;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * OpenBsd is a free and open-source Unix-like operating system descended from the Berkeley Software Distribution (BSD),

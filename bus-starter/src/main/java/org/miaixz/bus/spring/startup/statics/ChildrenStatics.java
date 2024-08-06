@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.spring.startup.statics;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 统计模型持有的子模块

@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.xml;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
  * {@link javax.xml.parsers.DocumentBuilder} 工具类

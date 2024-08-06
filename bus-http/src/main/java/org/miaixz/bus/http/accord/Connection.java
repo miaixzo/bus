@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.http.accord;
 
+import java.net.Socket;
+
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.http.Route;
 import org.miaixz.bus.http.socket.Handshake;
-
-import java.net.Socket;
 
 /**
  * HTTP、HTTPS或HTTPS+HTTP/2连接的套接字和流。 可以用于多个HTTP请求/响应交换。连接可以直接到源服务器，也可以通过代理

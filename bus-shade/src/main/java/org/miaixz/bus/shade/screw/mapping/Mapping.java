@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.shade.screw.mapping;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.exception.InternalException;
-
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -40,6 +37,9 @@ import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.*;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
  * 映射器

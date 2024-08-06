@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.validate.metric;
 
+import java.math.BigDecimal;
+
 import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -34,8 +36,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.validate.Context;
 import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.Compare;
-
-import java.math.BigDecimal;
 
 /**
  * 数据长度校验

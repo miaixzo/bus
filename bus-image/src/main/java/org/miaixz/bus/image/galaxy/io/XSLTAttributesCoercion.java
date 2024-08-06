@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.image.galaxy.io;
 
+import javax.xml.transform.Templates;
+
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.AttributesCoercion;
 import org.miaixz.bus.image.galaxy.data.UpdatePolicy;
-
-import javax.xml.transform.Templates;
 
 /**
  * @author Kimi Liu

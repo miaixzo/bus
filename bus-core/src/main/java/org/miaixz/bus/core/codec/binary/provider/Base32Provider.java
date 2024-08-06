@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.codec.binary.provider;
 
+import java.io.Serializable;
+
 import org.miaixz.bus.core.codec.Decoder;
 import org.miaixz.bus.core.codec.Encoder;
 import org.miaixz.bus.core.codec.binary.decoder.Base32Decoder;
 import org.miaixz.bus.core.codec.binary.encoder.Base32Encoder;
-
-import java.io.Serializable;
 
 /**
  * Base32 - encodes and decodes RFC4648 Base32 (see <a href=

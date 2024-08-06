@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.image.metric;
 
-import org.miaixz.bus.logger.Logger;
-
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+
+import org.miaixz.bus.logger.Logger;
 
 /**
  * @author Kimi Liu

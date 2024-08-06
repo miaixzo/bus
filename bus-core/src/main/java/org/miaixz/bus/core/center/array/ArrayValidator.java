@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.core.center.array;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.function.Predicate;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Array检查工具类，提供字对象的blank和empty等检查

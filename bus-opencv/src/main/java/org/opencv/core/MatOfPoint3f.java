@@ -46,10 +46,6 @@ public class MatOfPoint3f extends Mat {
         // FIXME: do we need release() here?
     }
 
-    public static MatOfPoint3f fromNativeAddr(long addr) {
-        return new MatOfPoint3f(addr);
-    }
-
     public MatOfPoint3f(Mat m) {
         super(m, Range.all());
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -60,6 +56,10 @@ public class MatOfPoint3f extends Mat {
     public MatOfPoint3f(Point3... a) {
         super();
         fromArray(a);
+    }
+
+    public static MatOfPoint3f fromNativeAddr(long addr) {
+        return new MatOfPoint3f(addr);
     }
 
     public void alloc(int elemNumber) {

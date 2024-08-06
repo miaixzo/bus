@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.extra.captcha.provider;
 
+import java.awt.*;
+
 import org.miaixz.bus.extra.captcha.AbstractProvider;
 import org.miaixz.bus.extra.captcha.strategy.CodeStrategy;
-
-import java.awt.*;
 
 /**
  * 点选文字验证码

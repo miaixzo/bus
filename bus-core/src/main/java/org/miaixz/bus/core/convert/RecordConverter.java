@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.util.Map;
+
 import org.miaixz.bus.core.bean.copier.ValueProvider;
 import org.miaixz.bus.core.bean.copier.provider.BeanValueProvider;
 import org.miaixz.bus.core.bean.copier.provider.MapValueProvider;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.RecordKit;
-
-import java.util.Map;
 
 /**
  * Record类的转换器，支持：

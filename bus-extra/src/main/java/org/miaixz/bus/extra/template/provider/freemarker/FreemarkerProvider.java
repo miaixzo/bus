@@ -27,9 +27,8 @@
 */
 package org.miaixz.bus.extra.template.provider.freemarker;
 
-import freemarker.cache.ClassTemplateLoader;
-import freemarker.cache.FileTemplateLoader;
-import freemarker.template.Configuration;
+import java.io.IOException;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ClassKit;
@@ -38,7 +37,9 @@ import org.miaixz.bus.extra.template.Template;
 import org.miaixz.bus.extra.template.TemplateConfig;
 import org.miaixz.bus.extra.template.TemplateProvider;
 
-import java.io.IOException;
+import freemarker.cache.ClassTemplateLoader;
+import freemarker.cache.FileTemplateLoader;
+import freemarker.template.Configuration;
 
 /**
  * FreeMarker模板引擎封装 见：<a href="https://freemarker.apache.org/">https://freemarker.apache.org/</a>

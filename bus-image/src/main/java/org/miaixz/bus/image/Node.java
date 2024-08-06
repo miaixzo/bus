@@ -27,15 +27,16 @@
 */
 package org.miaixz.bus.image;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Objects;
+
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.metric.Association;
 import org.miaixz.bus.logger.Logger;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.Objects;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 服务器信息

@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.health.linux.jna;
 
+import org.miaixz.bus.health.unix.jna.CLibrary;
+
 import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Platform;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 import com.sun.jna.platform.linux.LibC;
-import org.miaixz.bus.health.unix.jna.CLibrary;
 
 /**
  * Linux C Library. This class should be considered non-API as it may be removed if/when its code is incorporated into

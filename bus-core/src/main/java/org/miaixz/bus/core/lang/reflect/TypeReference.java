@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.lang.reflect;
 
-import org.miaixz.bus.core.xyz.TypeKit;
-
 import java.lang.reflect.Type;
+
+import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
  * Type类型参考 通过构建一个类型参考子类，可以获取其泛型参数中的Type类型。例如：

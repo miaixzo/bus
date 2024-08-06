@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.health.unix.platform.solaris.hardware;
 
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Executor;
@@ -35,8 +37,6 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.VirtualMemory;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractGlobalMemory;
 import org.miaixz.bus.health.unix.platform.solaris.driver.kstat.SystemPages;
-
-import java.util.function.Supplier;
 
 /**
  * Memory obtained by kstat

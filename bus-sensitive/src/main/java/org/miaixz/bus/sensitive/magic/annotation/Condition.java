@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.sensitive.magic.annotation;
 
-import org.miaixz.bus.sensitive.metric.ConditionProvider;
-
 import java.lang.annotation.*;
+
+import org.miaixz.bus.sensitive.metric.ConditionProvider;
 
 /**
  * 用于自定义策略生效条件的注解

@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.image.metric.pdu;
 
+import java.util.*;
+
 import org.miaixz.bus.core.center.map.IntHashMap;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.data.Implementation;
 import org.miaixz.bus.image.metric.Connection;
-
-import java.util.*;
 
 /**
  * @author Kimi Liu

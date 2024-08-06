@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.sensitive.magic.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.sensitive.Builder;
@@ -34,8 +36,6 @@ import org.miaixz.bus.sensitive.magic.Condition;
 import org.miaixz.bus.sensitive.metric.ConditionProvider;
 import org.miaixz.bus.sensitive.metric.DafaultProvider;
 import org.miaixz.bus.sensitive.metric.StrategyProvider;
-
-import java.lang.annotation.*;
 
 /**
  * 标注在字段上,用以说明字段上那些类型需要脱敏 脱敏后,插件在写请求后对数据脱敏后存在数据库,对读请求不拦截 设计的考虑： 本来想过将生效条件单独抽离为一个注解,这样可以达到条件注解的复用

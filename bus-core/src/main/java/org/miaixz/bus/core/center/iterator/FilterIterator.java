@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.center.iterator;
 
-import org.miaixz.bus.core.lang.Assert;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
+
+import org.miaixz.bus.core.lang.Assert;
 
 /**
  * 包装 {@link Iterator}并根据{@link Predicate}定义，过滤元素输出 类实现来自Apache Commons Collection

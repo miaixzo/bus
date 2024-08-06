@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.shade.beans;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import java.io.Serializable;
 
 /**
  * 获取到数据库的信息

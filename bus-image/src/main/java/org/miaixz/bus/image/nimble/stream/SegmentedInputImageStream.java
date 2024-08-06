@@ -27,6 +27,14 @@
 */
 package org.miaixz.bus.image.nimble.stream;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.List;
+import java.util.Objects;
+
+import javax.imageio.stream.ImageInputStream;
+import javax.imageio.stream.ImageInputStreamImpl;
+
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.BulkData;
@@ -34,13 +42,6 @@ import org.miaixz.bus.image.galaxy.data.Fragments;
 import org.miaixz.bus.image.galaxy.data.VR;
 import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
 import org.miaixz.bus.logger.Logger;
-
-import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.ImageInputStreamImpl;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Treats a specified portion of an image input stream as it's own input stream. Can handle open-ended specified

@@ -27,10 +27,6 @@
 */
 package org.miaixz.bus.image.nimble;
 
-import org.miaixz.bus.image.Tag;
-import org.miaixz.bus.image.galaxy.data.Attributes;
-import org.miaixz.bus.image.galaxy.data.Sequence;
-
 import java.awt.color.ColorSpace;
 import java.awt.color.ICC_ColorSpace;
 import java.awt.color.ICC_Profile;
@@ -40,6 +36,10 @@ import java.awt.image.DataBuffer;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Optional;
+
+import org.miaixz.bus.image.Tag;
+import org.miaixz.bus.image.galaxy.data.Attributes;
+import org.miaixz.bus.image.galaxy.data.Sequence;
 
 /**
  * @author Kimi Liu

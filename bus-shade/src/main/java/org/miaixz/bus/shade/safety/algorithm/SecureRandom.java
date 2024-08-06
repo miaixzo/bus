@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.shade.safety.algorithm;
 
-import org.miaixz.bus.core.lang.Normal;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * 安全随机数

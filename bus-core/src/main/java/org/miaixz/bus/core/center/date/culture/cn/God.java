@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.center.date.culture.cn;
 
-import org.miaixz.bus.core.center.date.culture.Samsara;
-import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.miaixz.bus.core.center.date.culture.Samsara;
+import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
 
 /**
  * 神煞
@@ -86,20 +86,6 @@ public class God extends Samsara {
         return new God(name);
     }
 
-    public God next(int n) {
-        return fromIndex(nextIndex(n));
-    }
-
-    /**
-     * 吉凶
-     *
-     * @return 吉凶
-     */
-    public Luck getLuck() {
-        // 解除后面的为凶神
-        return Luck.fromIndex(index < 60 ? 0 : 1);
-    }
-
     /**
      * 日神煞列表(吉神宜趋，凶神宜忌)
      *
@@ -118,6 +104,20 @@ public class God extends Samsara {
             }
         }
         return l;
+    }
+
+    public God next(int n) {
+        return fromIndex(nextIndex(n));
+    }
+
+    /**
+     * 吉凶
+     *
+     * @return 吉凶
+     */
+    public Luck getLuck() {
+        // 解除后面的为凶神
+        return Luck.fromIndex(index < 60 ? 0 : 1);
     }
 
 }

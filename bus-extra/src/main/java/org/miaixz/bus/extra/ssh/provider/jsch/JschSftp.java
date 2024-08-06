@@ -27,9 +27,15 @@
 */
 package org.miaixz.bus.extra.ssh.provider.jsch;
 
-import com.jcraft.jsch.*;
-import com.jcraft.jsch.ChannelSftp.LsEntry;
-import com.jcraft.jsch.ChannelSftp.LsEntrySelector;
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+import java.util.function.Predicate;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.CollKit;
@@ -41,14 +47,9 @@ import org.miaixz.bus.extra.ftp.FtpConfig;
 import org.miaixz.bus.extra.ssh.Connector;
 import org.miaixz.bus.extra.ssh.JschKit;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Vector;
-import java.util.function.Predicate;
+import com.jcraft.jsch.*;
+import com.jcraft.jsch.ChannelSftp.LsEntry;
+import com.jcraft.jsch.ChannelSftp.LsEntrySelector;
 
 /**
  * SFTP是Secure File Transfer Protocol的缩写，安全文件传送协议。可以为传输文件提供一种安全的加密方法。 SFTP 为

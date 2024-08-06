@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.http.metric.anget;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.regex.Pattern;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
-import java.util.regex.Pattern;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * User-Agent信息对象
@@ -152,56 +153,6 @@ public class UserAgent {
     }
 
     /**
-     * 指定内容中是否包含匹配此信息的内容
-     *
-     * @param content User-Agent字符串
-     * @return 是否包含匹配此信息的内容
-     */
-    public boolean isMatch(String content) {
-        return PatternKit.contains(this.pattern, content);
-    }
-
-    /**
-     * 是否为unknown
-     *
-     * @return 是否为unknown
-     */
-    public boolean isUnknown() {
-        return Normal.UNKNOWN.equals(this.name);
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((null == name) ? 0 : name.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) {
-            return true;
-        }
-        if (null == object) {
-            return false;
-        }
-        if (getClass() != object.getClass()) {
-            return false;
-        }
-        final UserAgent other = (UserAgent) object;
-        if (null == name) {
-            return null == other.name;
-        } else
-            return name.equals(other.name);
-    }
-
-    @Override
-    public String toString() {
-        return this.name;
-    }
-
-    /**
      * 解析浏览器类型
      *
      * @param text User-Agent字符串
@@ -259,6 +210,56 @@ public class UserAgent {
             }
         }
         return Device.UNKNOWN;
+    }
+
+    /**
+     * 指定内容中是否包含匹配此信息的内容
+     *
+     * @param content User-Agent字符串
+     * @return 是否包含匹配此信息的内容
+     */
+    public boolean isMatch(String content) {
+        return PatternKit.contains(this.pattern, content);
+    }
+
+    /**
+     * 是否为unknown
+     *
+     * @return 是否为unknown
+     */
+    public boolean isUnknown() {
+        return Normal.UNKNOWN.equals(this.name);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((null == name) ? 0 : name.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (null == object) {
+            return false;
+        }
+        if (getClass() != object.getClass()) {
+            return false;
+        }
+        final UserAgent other = (UserAgent) object;
+        if (null == name) {
+            return null == other.name;
+        } else
+            return name.equals(other.name);
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
     }
 
 }

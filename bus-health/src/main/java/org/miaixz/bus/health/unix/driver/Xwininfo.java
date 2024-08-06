@@ -27,6 +27,12 @@
 */
 package org.miaixz.bus.health.unix.driver;
 
+import java.awt.*;
+import java.util.*;
+import java.util.List;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -34,12 +40,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.OSDesktopWindow;
-
-import java.awt.*;
-import java.util.List;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.regex.Matcher;
 
 /**
  * Utility to query X11 windows

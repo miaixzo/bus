@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import org.miaixz.bus.gitlab.GitLabApi;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.miaixz.bus.gitlab.GitLabApi;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public enum AccessLevel {
 
@@ -40,11 +41,6 @@ public enum AccessLevel {
     ADMIN(60);
 
     private static Map<Integer, AccessLevel> valuesMap = new HashMap<>(9);
-    public final Integer value;
-
-    AccessLevel(int value) {
-        this.value = value;
-    }
 
     static {
         for (AccessLevel accessLevel : AccessLevel.values())
@@ -52,6 +48,12 @@ public enum AccessLevel {
 
         // Make sure MAINTAINER is mapped to 40 and not MASTER (MASTER is deprecated)
         valuesMap.put(MAINTAINER.value, MAINTAINER);
+    }
+
+    public final Integer value;
+
+    AccessLevel(int value) {
+        this.value = value;
     }
 
     @JsonCreator

@@ -27,8 +27,9 @@
 */
 package org.miaixz.bus.extra.nlp.provider.mynlp;
 
-import com.mayabot.nlp.segment.WordTerm;
 import org.miaixz.bus.extra.nlp.NLPWord;
+
+import com.mayabot.nlp.segment.WordTerm;
 
 /**
  * mmseg分词中的一个单词包装

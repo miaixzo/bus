@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.http.bodys;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.io.source.Source;
@@ -34,9 +37,6 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Builder;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * 内容对象

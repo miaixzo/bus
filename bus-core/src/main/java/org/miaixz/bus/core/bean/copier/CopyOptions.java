@@ -27,6 +27,14 @@
 */
 package org.miaixz.bus.core.bean.copier;
 
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.BiPredicate;
+import java.util.function.UnaryOperator;
+
 import org.miaixz.bus.core.bean.desc.BeanDesc;
 import org.miaixz.bus.core.bean.desc.PropDesc;
 import org.miaixz.bus.core.center.function.FunctionX;
@@ -36,14 +44,6 @@ import org.miaixz.bus.core.lang.mutable.MutableEntry;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.LambdaKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.BiPredicate;
-import java.util.function.UnaryOperator;
 
 /**
  * 属性拷贝选项 包括： 1、限制的类或接口，必须为目标对象的实现接口或父类，用于限制拷贝的属性，例如一个类我只想复制其父类的一些属性，就可以将editable设置为父类 2、是否忽略空值，当源对象的值为null时，true:
@@ -99,15 +99,14 @@ public class CopyOptions implements Serializable {
      */
     protected Converter converter = (type, value) -> Convert.convertWithCheck(type, value, null, ignoreError);
     /**
-     * 属性过滤器，断言通过的属性才会被复制 断言参数中Field为源对象的字段对象,如果源对象为Map，使用目标对象，Object为源对象的对应值
-     */
-    private BiPredicate<Field, Object> propertiesFilter;
-
-    /**
      * 自定义的Bean解析类<br>
      * 默认规则下普通Bean使用严格的Bean解析，需要同时解析Bean中的字段和方法，然后匹配，自定义后可以只解析getter和setter方法
      */
     protected Class<BeanDesc> beanDescClass;
+    /**
+     * 属性过滤器，断言通过的属性才会被复制 断言参数中Field为源对象的字段对象,如果源对象为Map，使用目标对象，Object为源对象的对应值
+     */
+    private BiPredicate<Field, Object> propertiesFilter;
 
     /**
      * 构造拷贝选项

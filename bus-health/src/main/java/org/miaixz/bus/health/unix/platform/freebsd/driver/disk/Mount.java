@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.health.unix.platform.freebsd.driver.disk;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.health.Executor;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.health.Executor;
 
 /**
  * Utility to query mount

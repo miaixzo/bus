@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.pay.metric.wechat.entity.v2;
 
+import org.miaixz.bus.pay.magic.Material;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.pay.magic.Material;
 
 /**
  * 付款码支付 支持: 付款支付、支付押金（人脸支付）、支付押金（付款码支付）

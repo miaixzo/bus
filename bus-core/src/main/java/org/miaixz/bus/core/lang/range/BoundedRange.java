@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.lang.range;
 
-import org.miaixz.bus.core.lang.Assert;
-
 import java.util.Objects;
 import java.util.function.Predicate;
+
+import org.miaixz.bus.core.lang.Assert;
 
 /**
  * <p>

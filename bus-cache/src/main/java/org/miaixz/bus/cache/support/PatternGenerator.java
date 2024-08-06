@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.cache.support;
 
-import org.miaixz.bus.cache.magic.AnnoHolder;
-import org.miaixz.bus.cache.magic.annotation.CacheKey;
-
 import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import org.miaixz.bus.cache.magic.AnnoHolder;
+import org.miaixz.bus.cache.magic.annotation.CacheKey;
 
 /**
  * @author Kimi Liu

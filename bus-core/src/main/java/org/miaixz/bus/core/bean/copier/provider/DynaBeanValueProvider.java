@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.bean.copier.provider;
 
+import java.lang.reflect.Type;
+
 import org.miaixz.bus.core.bean.DynaBean;
 import org.miaixz.bus.core.bean.copier.ValueProvider;
 import org.miaixz.bus.core.convert.Convert;
-
-import java.lang.reflect.Type;
 
 /**
  * DynaBean值提供者

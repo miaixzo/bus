@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.image.galaxy.io;
 
-import org.miaixz.bus.core.xyz.StreamKit;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.spi.FileTypeDetector;
+
+import org.miaixz.bus.core.xyz.StreamKit;
 
 /**
  * @author Kimi Liu

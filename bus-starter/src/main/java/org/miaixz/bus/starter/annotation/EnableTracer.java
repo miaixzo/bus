@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.starter.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.starter.tracer.TracerConfiguration;
 import org.springframework.context.annotation.Import;
-
-import java.lang.annotation.*;
 
 /**
  * 启用链路追踪

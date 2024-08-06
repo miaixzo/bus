@@ -27,17 +27,14 @@
 */
 package org.miaixz.bus.health.windows.software;
 
-import com.sun.jna.Native;
-import com.sun.jna.platform.win32.*;
-import com.sun.jna.platform.win32.Advapi32Util.EventLogIterator;
-import com.sun.jna.platform.win32.Advapi32Util.EventLogRecord;
-import com.sun.jna.platform.win32.COM.WbemcliUtil;
-import com.sun.jna.platform.win32.WinDef.DWORD;
-import com.sun.jna.platform.win32.WinNT.HANDLE;
-import com.sun.jna.platform.win32.WinNT.LUID;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Memoizer;
@@ -52,10 +49,14 @@ import org.miaixz.bus.health.windows.driver.wmi.Win32OperatingSystem;
 import org.miaixz.bus.health.windows.driver.wmi.Win32Processor;
 import org.miaixz.bus.logger.Logger;
 
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import com.sun.jna.Native;
+import com.sun.jna.platform.win32.*;
+import com.sun.jna.platform.win32.Advapi32Util.EventLogIterator;
+import com.sun.jna.platform.win32.Advapi32Util.EventLogRecord;
+import com.sun.jna.platform.win32.WinDef.DWORD;
+import com.sun.jna.platform.win32.WinNT.HANDLE;
+import com.sun.jna.platform.win32.WinNT.LUID;
+import com.sun.jna.platform.win32.COM.WbemcliUtil;
 
 /**
  * Microsoft Windows, commonly referred to as Windows, is a group of several proprietary graphical operating system

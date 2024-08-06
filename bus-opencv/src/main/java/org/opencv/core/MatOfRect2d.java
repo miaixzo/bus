@@ -46,10 +46,6 @@ public class MatOfRect2d extends Mat {
         // FIXME: do we need release() here?
     }
 
-    public static MatOfRect2d fromNativeAddr(long addr) {
-        return new MatOfRect2d(addr);
-    }
-
     public MatOfRect2d(Mat m) {
         super(m, Range.all());
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -60,6 +56,10 @@ public class MatOfRect2d extends Mat {
     public MatOfRect2d(Rect2d... a) {
         super();
         fromArray(a);
+    }
+
+    public static MatOfRect2d fromNativeAddr(long addr) {
+        return new MatOfRect2d(addr);
     }
 
     public void alloc(int elemNumber) {

@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.health.linux.driver.proc;
 
+import java.io.File;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -35,11 +40,6 @@ import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.OSProcess;
 import org.miaixz.bus.health.linux.ProcPath;
-
-import java.io.File;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.stream.Collectors;
 
 /**
  * Utility to read process statistics from {@code /proc/[pid]/stat}

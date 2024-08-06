@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.pager;
 
+import java.io.Closeable;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.PageException;
 import org.miaixz.bus.pager.builtin.PageAutoDialect;
 import org.miaixz.bus.pager.plugin.BoundSqlHandler;
 import org.miaixz.bus.pager.plugin.PageSqlHandler;
-
-import java.io.Closeable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Mybatis - 分页对象

@@ -27,9 +27,10 @@
 */
 package org.miaixz.bus.notify.magic;
 
+import org.miaixz.bus.core.lang.Symbol;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.miaixz.bus.core.lang.Symbol;
 
 @Getter
 @AllArgsConstructor

@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.xyz;
 
+import java.awt.*;
+import java.math.BigInteger;
+
 import org.miaixz.bus.core.codec.binary.Hex;
 import org.miaixz.bus.core.codec.binary.provider.Base16Provider;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-
-import java.awt.*;
-import java.math.BigInteger;
 
 /**
  * 十六进制（简写为hex或下标16）在数学中是一种逢16进1的进位制，一般用数字0到9和字母A到F表示（其中:A~F即10~15）。 例如十进制数57，在二进制写作111001，在16进制写作39。

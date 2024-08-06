@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.shade.safety.boot;
 
+import java.io.*;
+import java.util.zip.Deflater;
+
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.miaixz.bus.shade.safety.Builder;
 import org.miaixz.bus.shade.safety.Complex;
 import org.miaixz.bus.shade.safety.algorithm.Key;
 import org.miaixz.bus.shade.safety.provider.JdkDecryptorProvider;
 import org.miaixz.bus.shade.safety.provider.JdkEncryptorProvider;
-
-import java.io.*;
-import java.util.zip.Deflater;
 
 /**
  * Spring-Boot JAR包加解密工具类,在不提供过滤器的情况下会加密BOOT-INF/下的所有资源,及包括项目本身的资源和依赖jar资源

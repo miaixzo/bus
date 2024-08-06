@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.text.dfa;
 
-import org.miaixz.bus.core.xyz.SetKit;
-
 import java.util.Set;
+
+import org.miaixz.bus.core.xyz.SetKit;
 
 /**
  * 过滤词及一些简单处理

@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.health.unix.platform.solaris.driver.disk;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.HWPartition;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Utility to query iostat

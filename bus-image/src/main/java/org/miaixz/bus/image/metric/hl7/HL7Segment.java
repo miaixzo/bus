@@ -27,10 +27,6 @@
 */
 package org.miaixz.bus.image.metric.hl7;
 
-import org.miaixz.bus.core.lang.Fields;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.text.ParsePosition;
@@ -39,6 +35,10 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * @author Kimi Liu

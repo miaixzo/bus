@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.starter.pay;
 
+import java.util.Map;
+
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.MapKit;
@@ -42,8 +44,6 @@ import org.miaixz.bus.pay.metric.paypal.PaypalProvider;
 import org.miaixz.bus.pay.metric.tenpay.TenpayProvider;
 import org.miaixz.bus.pay.metric.unionpay.UnionPayProvider;
 import org.miaixz.bus.pay.metric.wechat.WechatPayProvider;
-
-import java.util.Map;
 
 /**
  * 集合支付服务

@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.codec.hash;
 
-import org.miaixz.bus.core.xyz.HashKit;
-
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
+import org.miaixz.bus.core.xyz.HashKit;
 
 /**
  * 一致性Hash算法 算法详解：<a href=

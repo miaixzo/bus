@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.core.bean.path;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+
 import org.miaixz.bus.core.bean.path.node.NameNode;
 import org.miaixz.bus.core.bean.path.node.Node;
 import org.miaixz.bus.core.bean.path.node.NodeFactory;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 
 /**
  * Bean路径表达式，用于获取多层嵌套Bean中的字段值或Bean对象 根据给定的表达式，查找Bean中对应的属性值对象。 表达式分为两种：

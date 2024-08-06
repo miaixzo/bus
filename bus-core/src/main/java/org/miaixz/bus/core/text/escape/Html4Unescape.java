@@ -37,8 +37,6 @@ import org.miaixz.bus.core.text.replacer.LookupReplacer;
  */
 public class Html4Unescape extends XmlUnescape {
 
-    private static final long serialVersionUID = -1L;
-
     /**
      * ISO8859_1的UNESCAPE
      */
@@ -47,6 +45,7 @@ public class Html4Unescape extends XmlUnescape {
      * HTML40_EXTENDED的UNESCAPE
      */
     protected static final String[][] HTML40_EXTENDED_UNESCAPE = invert(Html4Escape.HTML40_EXTENDED_ESCAPE);
+    private static final long serialVersionUID = -1L;
 
     /**
      * 构造

@@ -27,6 +27,20 @@
 */
 package org.miaixz.bus.image.nimble;
 
+import java.awt.image.BufferedImage;
+import java.awt.image.Raster;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.SeekableByteChannel;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
+import java.util.*;
+import java.util.function.BooleanSupplier;
+
+import javax.imageio.ImageTypeSpecifier;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.spi.ImageReaderSpi;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Tag;
@@ -54,19 +68,6 @@ import org.opencv.core.MatOfInt;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.osgi.OpenCVNativeLoader;
-
-import javax.imageio.ImageTypeSpecifier;
-import javax.imageio.metadata.IIOMetadata;
-import javax.imageio.spi.ImageReaderSpi;
-import java.awt.image.BufferedImage;
-import java.awt.image.Raster;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.SeekableByteChannel;
-import java.nio.file.Files;
-import java.nio.file.StandardOpenOption;
-import java.util.*;
-import java.util.function.BooleanSupplier;
 
 /**
  * Reads image data from a DICOM object. Supports all the DICOM objects containing pixel data. Use the OpenCV native

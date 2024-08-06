@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.text.finder;
 
-import org.miaixz.bus.core.lang.Assert;
-
 import java.io.Serializable;
+
+import org.miaixz.bus.core.lang.Assert;
 
 /**
  * 文本查找抽象类

@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.mapper.criteria;
 
+import java.util.stream.Stream;
+
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.mapper.entity.Condition;
 import org.miaixz.bus.mapper.support.Reflector;
-
-import java.util.stream.Stream;
 
 /**
  * 条件

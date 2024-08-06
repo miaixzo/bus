@@ -27,11 +27,6 @@
 */
 package org.miaixz.bus.core.lang;
 
-import org.miaixz.bus.core.center.function.SupplierX;
-import org.miaixz.bus.core.center.stream.EasyStream;
-import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -40,6 +35,11 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.center.stream.EasyStream;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 复制jdk16中的Optional，以及进行了一点调整和新增，比jdk8中的Optional多了几个实用的函数

@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.health.windows.software;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.Set;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.software.OSProcess;
 import org.miaixz.bus.health.builtin.software.common.AbstractOSThread;
 import org.miaixz.bus.health.windows.driver.registry.ThreadPerformanceData;
 import org.miaixz.bus.health.windows.driver.registry.ThreadPerformanceData.PerfCounterBlock;
-
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * OSThread implementation

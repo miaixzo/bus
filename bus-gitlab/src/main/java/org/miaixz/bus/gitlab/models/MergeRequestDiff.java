@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.util.List;
+
+import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class MergeRequestDiff extends MergeRequestVersion {
     private static final long serialVersionUID = -1L;

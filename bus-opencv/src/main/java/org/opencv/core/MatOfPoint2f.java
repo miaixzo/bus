@@ -46,10 +46,6 @@ public class MatOfPoint2f extends Mat {
         // FIXME: do we need release() here?
     }
 
-    public static MatOfPoint2f fromNativeAddr(long addr) {
-        return new MatOfPoint2f(addr);
-    }
-
     public MatOfPoint2f(Mat m) {
         super(m, Range.all());
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -60,6 +56,10 @@ public class MatOfPoint2f extends Mat {
     public MatOfPoint2f(Point... a) {
         super();
         fromArray(a);
+    }
+
+    public static MatOfPoint2f fromNativeAddr(long addr) {
+        return new MatOfPoint2f(addr);
     }
 
     public void alloc(int elemNumber) {

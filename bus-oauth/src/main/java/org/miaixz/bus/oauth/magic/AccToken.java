@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.oauth.magic;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
-import java.io.Serializable;
 
 /**
  * 授权所需的token

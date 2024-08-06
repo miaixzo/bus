@@ -27,18 +27,19 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.Form;
-import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.MultivaluedMap;
-import jakarta.ws.rs.core.Response;
-import org.miaixz.bus.gitlab.models.*;
-import org.miaixz.bus.gitlab.support.ISO8601;
-
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.gitlab.models.*;
+import org.miaixz.bus.gitlab.support.ISO8601;
+
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
 
 /**
  * This class implements the client side API for the GitLab commits calls. See

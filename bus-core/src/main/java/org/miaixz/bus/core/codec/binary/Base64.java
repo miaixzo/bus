@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.core.codec.binary;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import org.miaixz.bus.core.codec.binary.decoder.Base64Decoder;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * Base64工具类，提供Base64的编码和解码方案 base64编码是用64（2的6次方）个ASCII字符来表示256（2的8次方）个ASCII字符，

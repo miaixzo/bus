@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.compare;
 
+import java.lang.reflect.Field;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.FieldKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.lang.reflect.Field;
 
 /**
  * Bean字段排序器 参阅feilong-core中的PropertyComparator

@@ -27,6 +27,15 @@
 */
 package org.miaixz.bus.setting.metric.props;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.Writer;
+import java.net.URL;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.util.Arrays;
+import java.util.Map;
+
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.function.LambdaX;
 import org.miaixz.bus.core.center.function.SupplierX;
@@ -43,15 +52,6 @@ import org.miaixz.bus.core.lang.getter.TypeGetter;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.setting.Setting;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.Writer;
-import java.net.URL;
-import java.nio.file.WatchEvent;
-import java.nio.file.WatchKey;
-import java.util.Arrays;
-import java.util.Map;
 
 /**
  * Properties文件读取封装类

@@ -27,10 +27,6 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.*;
-import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
-import org.miaixz.bus.gitlab.models.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +36,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
+import org.miaixz.bus.gitlab.models.*;
+
+import jakarta.ws.rs.core.*;
 
 /**
  * <p>
@@ -57,21 +58,6 @@ public class RepositoryApi extends AbstractApi {
     }
 
     /**
-     * Get a list of repository branches from a project, sorted by name alphabetically.
-     *
-     * <pre>
-     * <code>GitLab Endpoint: GET /projects/:id/repository/branches</code>
-     * </pre>
-     *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @return the list of repository branches for the specified project
-     * @throws GitLabApiException if any exception occurs
-     */
-    public List<Branch> getBranches(Object projectIdOrPath) throws GitLabApiException {
-        return getBranches(projectIdOrPath, null, getDefaultPerPage()).all();
-    }
-
-    /**
      * Get the filename from the "Content-Disposition" header of a JAX-RS response.
      *
      * @param response the JAX-RS Response instance to get the "Content-Disposition" header filename from
@@ -85,6 +71,21 @@ public class RepositoryApi extends AbstractApi {
             return (null);
 
         return (disposition.replaceFirst("(?i)^.*filename=\"([^\"]+)\".*$", "$1"));
+    }
+
+    /**
+     * Get a list of repository branches from a project, sorted by name alphabetically.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/branches</code>
+     * </pre>
+     *
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
+     * @return the list of repository branches for the specified project
+     * @throws GitLabApiException if any exception occurs
+     */
+    public List<Branch> getBranches(Object projectIdOrPath) throws GitLabApiException {
+        return getBranches(projectIdOrPath, null, getDefaultPerPage()).all();
     }
 
     /**

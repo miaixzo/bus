@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.image.metric.api;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.exception.NotFoundException;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.NotFoundException;
 
 /**
  * @author Kimi Liu

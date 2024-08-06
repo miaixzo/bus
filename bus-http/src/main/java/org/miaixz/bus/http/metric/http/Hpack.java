@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.http.metric.http;
 
+import java.io.IOException;
+import java.util.*;
+
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.BufferSource;
@@ -37,9 +40,6 @@ import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.io.IOException;
-import java.util.*;
 
 /**
  * 读写HPACK v10. 这个实现为动态表使用一个数组，为索引条目使用一个列表。 动态条目被添加到数组中，从最后一个位置开始向前移动。当数组填满时，它被加倍.

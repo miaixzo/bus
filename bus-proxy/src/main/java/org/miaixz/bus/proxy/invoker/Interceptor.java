@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.proxy.invoker;
 
-import org.miaixz.bus.proxy.Aspect;
-
 import java.io.Serializable;
+
+import org.miaixz.bus.proxy.Aspect;
 
 /**
  * 简单拦截器，保存了被拦截的对象和Aspect实现

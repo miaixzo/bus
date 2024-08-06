@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.math;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.MathKit;
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Stack;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.MathKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 数学表达式计算工具类

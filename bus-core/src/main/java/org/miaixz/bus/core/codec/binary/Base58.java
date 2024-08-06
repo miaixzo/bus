@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.codec.binary;
 
-import org.miaixz.bus.core.codec.binary.provider.Base58Provider;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.exception.ValidateException;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+
+import org.miaixz.bus.core.codec.binary.provider.Base58Provider;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
  * Base58工具类，提供Base58的编码和解码方案 参考：

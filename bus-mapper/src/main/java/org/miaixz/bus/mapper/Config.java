@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.mapper;
 
+import java.util.Properties;
+
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.Configuration;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.builder.MapperBuilder;
 import org.miaixz.bus.mapper.entity.Property;
-
-import java.util.Properties;
 
 /**
  * 使用提供的 Property 可以在纯 Java 或者 Spring(mybatis-spring-1.3.0+) 模式中使用

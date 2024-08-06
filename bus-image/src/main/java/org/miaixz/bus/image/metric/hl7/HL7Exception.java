@@ -35,11 +35,10 @@ import org.miaixz.bus.core.lang.Normal;
  */
 public class HL7Exception extends Exception {
 
-    private static final long serialVersionUID = -1L;
-
     public static final String AA = "AA";
     public static final String AR = "AR";
     public static final String AE = "AE";
+    private static final long serialVersionUID = -1L;
     private final String ack;
     private final HL7Segment err;
 

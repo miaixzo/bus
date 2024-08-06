@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.image.plugin;
 
+import java.io.File;
+import java.io.IOException;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.*;
@@ -42,9 +45,6 @@ import org.miaixz.bus.image.metric.service.BasicMPPSSCP;
 import org.miaixz.bus.image.metric.service.ImageServiceException;
 import org.miaixz.bus.image.metric.service.ImageServiceRegistry;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.File;
-import java.io.IOException;
 
 /**
  * @author Kimi Liu

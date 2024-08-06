@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.extra.captcha.provider;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.extra.captcha.AbstractProvider;
 import org.miaixz.bus.extra.captcha.strategy.CodeStrategy;
 import org.miaixz.bus.extra.captcha.strategy.RandomStrategy;
 import org.miaixz.bus.extra.image.ImageKit;
 import org.miaixz.bus.extra.image.gif.AnimatedGifEncoder;
-
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 
 /**
  * Gif验证码

@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.extra.nlp.provider.hanlp;
 
-import com.hankcs.hanlp.seg.common.Term;
+import java.util.Iterator;
+import java.util.List;
+
 import org.miaixz.bus.extra.nlp.NLPResult;
 import org.miaixz.bus.extra.nlp.NLPWord;
 
-import java.util.Iterator;
-import java.util.List;
+import com.hankcs.hanlp.seg.common.Term;
 
 /**
  * HanLP分词结果实现 项目地址：https://github.com/hankcs/HanLP

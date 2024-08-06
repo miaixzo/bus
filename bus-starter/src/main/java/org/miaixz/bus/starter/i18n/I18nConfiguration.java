@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.starter.i18n;
 
-import jakarta.annotation.Resource;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.ResourceBundleMessageSource;
+
+import jakarta.annotation.Resource;
 
 /**
  * 国际化配置

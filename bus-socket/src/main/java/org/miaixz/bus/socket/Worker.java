@@ -27,14 +27,6 @@
 */
 package org.miaixz.bus.socket;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.socket.accord.UdpChannel;
-import org.miaixz.bus.socket.accord.UdpSession;
-import org.miaixz.bus.socket.buffer.BufferPage;
-import org.miaixz.bus.socket.buffer.BufferPagePool;
-import org.miaixz.bus.socket.buffer.VirtualBuffer;
-
 import java.io.IOException;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
@@ -44,6 +36,14 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.socket.accord.UdpChannel;
+import org.miaixz.bus.socket.accord.UdpSession;
+import org.miaixz.bus.socket.buffer.BufferPage;
+import org.miaixz.bus.socket.buffer.BufferPagePool;
+import org.miaixz.bus.socket.buffer.VirtualBuffer;
 
 /**
  * Worker相关实现
@@ -62,6 +62,15 @@ public final class Worker implements Runnable {
      */
     private final Selector selector;
     /**
+     * 请求队列
+     */
+    private final BlockingQueue<Runnable> requestQueue = new ArrayBlockingQueue<>(256);
+    /**
+     * 待注册的事件
+     */
+    private final ConcurrentLinkedQueue<Consumer<Selector>> registers = new ConcurrentLinkedQueue<>();
+    private final ExecutorService executorService;
+    /**
      * write 内存池
      */
     private BufferPagePool writeBufferPool = null;
@@ -69,16 +78,6 @@ public final class Worker implements Runnable {
      * read 内存池
      */
     private BufferPage readBufferPage = null;
-    /**
-     * 请求队列
-     */
-    private final BlockingQueue<Runnable> requestQueue = new ArrayBlockingQueue<>(256);
-
-    /**
-     * 待注册的事件
-     */
-    private final ConcurrentLinkedQueue<Consumer<Selector>> registers = new ConcurrentLinkedQueue<>();
-    private final ExecutorService executorService;
     private VirtualBuffer standbyBuffer;
 
     public Worker(BufferPagePool writeBufferPool, int threadNum) throws IOException {

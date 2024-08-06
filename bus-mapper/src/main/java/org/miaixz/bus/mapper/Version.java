@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.mapper;
 
-import org.miaixz.bus.core.lang.exception.VersionException;
-
 import java.sql.Timestamp;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
+
+import org.miaixz.bus.core.lang.exception.VersionException;
 
 /**
  * 版本信息

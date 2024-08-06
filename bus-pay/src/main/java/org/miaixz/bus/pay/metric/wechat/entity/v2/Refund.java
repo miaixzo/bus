@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.pay.metric.wechat.entity.v2;
 
+import org.miaixz.bus.pay.magic.Material;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.pay.magic.Material;
 
 /**
  * 申请退款 支持: 普通接口申请退款、刷脸支付退款、支付押金退款

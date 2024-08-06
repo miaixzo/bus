@@ -27,15 +27,16 @@
 */
 package org.miaixz.bus.core.xml;
 
+import java.util.HashMap;
+import java.util.Iterator;
+
+import javax.xml.XMLConstants;
+import javax.xml.namespace.NamespaceContext;
+
 import org.miaixz.bus.core.center.map.BiMap;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import javax.xml.XMLConstants;
-import javax.xml.namespace.NamespaceContext;
-import java.util.HashMap;
-import java.util.Iterator;
 
 /**
  * 全局命名空间上下文 见：https://www.ibm.com/developerworks/cn/xml/x-nmspccontext/

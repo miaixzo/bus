@@ -27,37 +27,13 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
 import java.util.List;
 
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
 public class ProtectedTag implements Serializable {
     private static final long serialVersionUID = -1L;
-
-    public static class CreateAccessLevel implements Serializable {
-        private static final long serialVersionUID = -1L;
-
-        private AccessLevel access_level;
-        private String accessLevelDescription;
-
-        public AccessLevel getAccess_level() {
-            return access_level;
-        }
-
-        public void setAccess_level(AccessLevel access_level) {
-            this.access_level = access_level;
-        }
-
-        public String getAccessLevelDescription() {
-            return accessLevelDescription;
-        }
-
-        public void setAccessLevelDescription(String accessLevelDescription) {
-            this.accessLevelDescription = accessLevelDescription;
-        }
-    }
-
     private String name;
     private List<CreateAccessLevel> createAccessLevels;
 
@@ -80,5 +56,28 @@ public class ProtectedTag implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    public static class CreateAccessLevel implements Serializable {
+        private static final long serialVersionUID = -1L;
+
+        private AccessLevel access_level;
+        private String accessLevelDescription;
+
+        public AccessLevel getAccess_level() {
+            return access_level;
+        }
+
+        public void setAccess_level(AccessLevel access_level) {
+            this.access_level = access_level;
+        }
+
+        public String getAccessLevelDescription() {
+            return accessLevelDescription;
+        }
+
+        public void setAccessLevelDescription(String accessLevelDescription) {
+            this.accessLevelDescription = accessLevelDescription;
+        }
     }
 }

@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.gitlab.hooks.web;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-
-import java.io.Serializable;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, visible = true, property = "object_kind")
 @JsonSubTypes({ @JsonSubTypes.Type(value = BuildEvent.class, name = BuildEvent.OBJECT_KIND),
@@ -48,18 +48,18 @@ import java.io.Serializable;
 public interface Event extends Serializable {
     String getObjectKind();
 
-    void setRequestUrl(String url);
-
     @JsonIgnore
     String getRequestUrl();
 
-    void setRequestQueryString(String queryString);
+    void setRequestUrl(String url);
 
     @JsonIgnore
     String getRequestQueryString();
 
-    void setRequestSecretToken(String secretToken);
+    void setRequestQueryString(String queryString);
 
     @JsonIgnore
     String getRequestSecretToken();
+
+    void setRequestSecretToken(String secretToken);
 }

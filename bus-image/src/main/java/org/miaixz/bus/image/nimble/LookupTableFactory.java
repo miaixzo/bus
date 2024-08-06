@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.image.nimble;
 
+import java.awt.image.*;
+
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.VR;
-
-import java.awt.image.*;
 
 /**
  * @author Kimi Liu

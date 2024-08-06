@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.http.metric.http;
 
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.List;
+
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.Closeable;
-import java.io.IOException;
-import java.util.List;
 
 /**
  * 编写HTTP/2传输帧.

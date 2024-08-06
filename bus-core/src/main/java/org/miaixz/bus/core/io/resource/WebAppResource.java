@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.io.resource;
 
-import org.miaixz.bus.core.xyz.FileKit;
-
 import java.io.File;
+
+import org.miaixz.bus.core.xyz.FileKit;
 
 /**
  * Web root资源访问对象

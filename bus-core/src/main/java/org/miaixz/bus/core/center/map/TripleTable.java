@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.center.map;
 
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.tuple.Triplet;
-import org.miaixz.bus.core.xyz.ListKit;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.tuple.Triplet;
+import org.miaixz.bus.core.xyz.ListKit;
 
 /**
  * 三值表结构，可重复 用于提供三种值相互查找操作 查找方式为indexOf方式遍历查找，数据越多越慢。

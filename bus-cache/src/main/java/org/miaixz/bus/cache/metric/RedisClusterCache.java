@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.cache.metric;
 
-import jakarta.annotation.PreDestroy;
+import java.util.*;
+
 import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.cache.magic.CacheExpire;
 import org.miaixz.bus.cache.serialize.BaseSerializer;
 import org.miaixz.bus.cache.serialize.Hessian2Serializer;
-import redis.clients.jedis.JedisCluster;
 
-import java.util.*;
+import jakarta.annotation.PreDestroy;
+import redis.clients.jedis.JedisCluster;
 
 /**
  * Redis 集群缓存支持

@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.center.function;
 
-import org.miaixz.bus.core.xyz.ExceptionKit;
-
 import java.io.Serializable;
 import java.util.Objects;
+
+import org.miaixz.bus.core.xyz.ExceptionKit;
 
 /**
  * 3参数Consumer

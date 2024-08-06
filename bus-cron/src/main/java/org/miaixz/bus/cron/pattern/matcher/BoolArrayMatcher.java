@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.cron.pattern.matcher;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * 将表达式中的数字值列表转换为Boolean数组，匹配时匹配相应数组位

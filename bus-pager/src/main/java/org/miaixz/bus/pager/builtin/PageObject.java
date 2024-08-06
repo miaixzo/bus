@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.pager.builtin;
 
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.miaixz.bus.core.lang.exception.PageException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pager.Page;
 import org.miaixz.bus.pager.Paging;
-
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 分页参数对象工具类

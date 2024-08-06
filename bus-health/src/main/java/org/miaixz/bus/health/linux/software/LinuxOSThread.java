@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.health.linux.software;
 
+import java.util.Locale;
+import java.util.Map;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
@@ -35,9 +38,6 @@ import org.miaixz.bus.health.builtin.software.OSProcess;
 import org.miaixz.bus.health.builtin.software.common.AbstractOSThread;
 import org.miaixz.bus.health.linux.ProcPath;
 import org.miaixz.bus.health.linux.driver.proc.ProcessStat;
-
-import java.util.Locale;
-import java.util.Map;
 
 /**
  * OSThread implementation

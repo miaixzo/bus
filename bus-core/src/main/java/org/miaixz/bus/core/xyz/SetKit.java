@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.center.set.SetFromMap;
-
 import java.util.*;
+
+import org.miaixz.bus.core.center.set.SetFromMap;
 
 /**
  * 集合中的{@link java.util.Set}相关方法封装

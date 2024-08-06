@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.crypto.center;
 
+import java.security.Key;
+import java.security.spec.AlgorithmParameterSpec;
+
+import javax.crypto.spec.SecretKeySpec;
+
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.crypto.builtin.digest.mac.Mac;
 import org.miaixz.bus.crypto.builtin.digest.mac.MacFactory;
-
-import javax.crypto.spec.SecretKeySpec;
-import java.security.Key;
-import java.security.spec.AlgorithmParameterSpec;
 
 /**
  * HMAC摘要算法 HMAC，全称为“Hash Message Authentication Code”，中文名“散列消息鉴别码” 主要是利用哈希算法，以一个密钥和一个消息为输入，生成一个消息摘要作为输出。

@@ -27,16 +27,17 @@
 */
 package org.miaixz.bus.shade.beans;
 
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+
+import freemarker.template.Configuration;
+import freemarker.template.Template;
 
 public class Builder {
 

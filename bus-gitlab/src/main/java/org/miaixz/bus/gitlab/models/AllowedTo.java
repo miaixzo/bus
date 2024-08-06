@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.GitLabApiForm;
-
 import java.io.Serializable;
+
+import org.miaixz.bus.gitlab.GitLabApiForm;
 
 /**
  * This class is used by the ProtectedBranchesAPi to set up the allowed_to_push, allowed_to_merge, and

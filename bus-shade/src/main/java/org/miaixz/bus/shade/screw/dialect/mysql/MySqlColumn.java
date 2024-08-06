@@ -27,10 +27,11 @@
 */
 package org.miaixz.bus.shade.screw.dialect.mysql;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.miaixz.bus.shade.screw.mapping.MappingField;
 import org.miaixz.bus.shade.screw.metadata.Column;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 表字段信息

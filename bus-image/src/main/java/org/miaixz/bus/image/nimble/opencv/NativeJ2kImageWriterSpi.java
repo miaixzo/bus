@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.image.nimble.opencv;
 
-import org.miaixz.bus.core.Version;
+import java.util.Locale;
 
 import javax.imageio.ImageTypeSpecifier;
 import javax.imageio.ImageWriter;
 import javax.imageio.spi.ImageWriterSpi;
 import javax.imageio.stream.ImageOutputStream;
-import java.util.Locale;
+
+import org.miaixz.bus.core.Version;
 
 /**
  * @author Kimi Liu

@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.io.stream.FastByteArrayOutputStream;
-import org.miaixz.bus.core.lang.exception.InternalException;
-
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
+
+import org.miaixz.bus.core.io.stream.FastByteArrayOutputStream;
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
  * 序列化工具类 注意！此工具类依赖于JDK的序列化机制，某些版本的JDK中可能存在远程注入漏洞。

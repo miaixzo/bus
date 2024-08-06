@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.center.function;
 
-import org.miaixz.bus.core.xyz.ExceptionKit;
-
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.function.BinaryOperator;
+
+import org.miaixz.bus.core.xyz.ExceptionKit;
 
 /**
  * BinaryOperatorX

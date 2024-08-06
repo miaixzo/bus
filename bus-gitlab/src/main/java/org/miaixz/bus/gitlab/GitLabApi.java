@@ -27,8 +27,11 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
+import java.util.*;
+import java.util.function.Supplier;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import org.miaixz.bus.gitlab.models.OauthTokenResponse;
 import org.miaixz.bus.gitlab.models.User;
 import org.miaixz.bus.gitlab.models.Version;
@@ -36,10 +39,8 @@ import org.miaixz.bus.gitlab.support.MaskingLoggingFilter;
 import org.miaixz.bus.gitlab.support.Oauth2LoginStreamingOutput;
 import org.miaixz.bus.gitlab.support.SecretString;
 
-import java.util.*;
-import java.util.function.Supplier;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 /**
  * This class is provides a simplified interface to a GitLab API server, and divides the API up into a separate API
@@ -47,34 +48,19 @@ import java.util.logging.Logger;
  */
 public class GitLabApi implements AutoCloseable {
 
-    private final static Logger LOGGER = Logger.getLogger(GitLabApi.class.getName());
-
     /**
      * GitLab4J default per page. GitLab will ignore anything over 100.
      */
     public static final int DEFAULT_PER_PAGE = 96;
+    private final static Logger LOGGER = Logger.getLogger(GitLabApi.class.getName());
     // Used to keep track of GitLabApiExceptions on calls that return Optional<?>
     private static final Map<Integer, GitLabApiException> optionalExceptionMap = Collections
             .synchronizedMap(new WeakHashMap<Integer, GitLabApiException>());
-    private ApiVersion apiVersion;
-
     GitLabApiClient apiClient;
+    private ApiVersion apiVersion;
     private String gitLabServerUrl;
     private Map<String, Object> clientConfigProperties;
-
-    /**
-     * Constructs a GitLabApi instance set up to interact with the GitLab server using GitLab API version 4. This is the
-     * primary way to authenticate with the GitLab REST API.
-     *
-     * @param hostUrl             the URL of the GitLab server
-     * @param personalAccessToken the private token to use for access to the API
-     */
-    public GitLabApi(String hostUrl, String personalAccessToken) {
-        this(ApiVersion.V4, hostUrl, personalAccessToken, null);
-    }
-
     private int defaultPerPage = DEFAULT_PER_PAGE;
-
     private ApplicationsApi applicationsApi;
     private ApplicationSettingsApi applicationSettingsApi;
     private AuditEventApi auditEventApi;
@@ -127,6 +113,16 @@ public class GitLabApi implements AutoCloseable {
     private WikisApi wikisApi;
     private KeysApi keysApi;
     private MetadataApi metadataApi;
+    /**
+     * Constructs a GitLabApi instance set up to interact with the GitLab server using GitLab API version 4. This is the
+     * primary way to authenticate with the GitLab REST API.
+     *
+     * @param hostUrl             the URL of the GitLab server
+     * @param personalAccessToken the private token to use for access to the API
+     */
+    public GitLabApi(String hostUrl, String personalAccessToken) {
+        this(ApiVersion.V4, hostUrl, personalAccessToken, null);
+    }
 
     /**
      * Constructs a GitLabApi instance set up to interact with the GitLab server using GitLab API version 4.
@@ -735,29 +731,6 @@ public class GitLabApi implements AutoCloseable {
     }
 
     /**
-     * Sets up all future calls to the GitLab API to be done as another user specified by provided user ID. To revert
-     * back to normal non-sudo operation you must call unsudo(), or pass null as the sudoAsId.
-     *
-     * @param sudoAsId the ID of the user to sudo as, null will turn off sudo
-     * @throws GitLabApiException if any exception occurs
-     */
-    public void setSudoAsId(Long sudoAsId) throws GitLabApiException {
-
-        if (sudoAsId == null) {
-            apiClient.setSudoAsId(null);
-            return;
-        }
-
-        // Get the User specified by the sudoAsId, if you are not an admin or the username is not found, this will fail
-        User user = getUserApi().getUser(sudoAsId);
-        if (user == null || !user.getId().equals(sudoAsId)) {
-            throw new GitLabApiException("the specified user ID was not found");
-        }
-
-        apiClient.setSudoAsId(sudoAsId);
-    }
-
-    /**
      * Enable the logging of the requests to and the responses from the GitLab server API using the GitLab4J shared
      * Logger instance.
      *
@@ -783,7 +756,7 @@ public class GitLabApi implements AutoCloseable {
 
     /**
      * Set auth token supplier for gitlab api client.
-     * 
+     *
      * @param authTokenSupplier - supplier which provide actual auth token
      */
     public void setAuthTokenSupplier(Supplier<String> authTokenSupplier) {
@@ -1860,6 +1833,29 @@ public class GitLabApi implements AutoCloseable {
      */
     public Long getSudoAsId() {
         return (apiClient.getSudoAsId());
+    }
+
+    /**
+     * Sets up all future calls to the GitLab API to be done as another user specified by provided user ID. To revert
+     * back to normal non-sudo operation you must call unsudo(), or pass null as the sudoAsId.
+     *
+     * @param sudoAsId the ID of the user to sudo as, null will turn off sudo
+     * @throws GitLabApiException if any exception occurs
+     */
+    public void setSudoAsId(Long sudoAsId) throws GitLabApiException {
+
+        if (sudoAsId == null) {
+            apiClient.setSudoAsId(null);
+            return;
+        }
+
+        // Get the User specified by the sudoAsId, if you are not an admin or the username is not found, this will fail
+        User user = getUserApi().getUser(sudoAsId);
+        if (user == null || !user.getId().equals(sudoAsId)) {
+            throw new GitLabApiException("the specified user ID was not found");
+        }
+
+        apiClient.setSudoAsId(sudoAsId);
     }
 
     /**

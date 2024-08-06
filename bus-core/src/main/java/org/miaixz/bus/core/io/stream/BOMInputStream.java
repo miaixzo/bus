@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.io.stream;
 
-import org.miaixz.bus.core.io.ByteOrderMark;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.exception.InternalException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
+
+import org.miaixz.bus.core.io.ByteOrderMark;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
  * 读取带BOM头的流内容，{@code getCharset()}方法调用后会得到BOM头的编码，且会去除BOM头

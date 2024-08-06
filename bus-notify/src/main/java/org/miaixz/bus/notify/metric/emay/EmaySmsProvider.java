@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.notify.metric.emay;
 
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.MediaType;
@@ -41,11 +46,6 @@ import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * 亿美短信实现
  *
@@ -56,6 +56,19 @@ public class EmaySmsProvider extends AbstractProvider<EmayMaterial, Context> {
 
     public EmaySmsProvider(Context context) {
         super(context);
+    }
+
+    private static Map<String, String> getParamsMap(String appId, String secretKey, String phone, String message) {
+        Map<String, String> params = new HashMap<>();
+        // 时间戳(必填) 格式：yyyyMMddHHmmss
+        String timestamp = DateKit.format(new Date(), DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        String sign = Builder.md5(appId + secretKey + timestamp);
+        params.put("appId", appId);
+        params.put("timestamp", timestamp);
+        params.put("sign", sign);
+        params.put("mobiles", phone);
+        params.put("content", UrlEncoder.encodeAll(message, Charset.UTF_8));
+        return params;
     }
 
     @Override
@@ -70,19 +83,6 @@ public class EmaySmsProvider extends AbstractProvider<EmayMaterial, Context> {
         return Message.builder()
                 .errcode(String.valueOf(HTTP.HTTP_OK).equals(errcode) ? ErrorCode.SUCCESS.getCode() : errcode)
                 .errmsg(JsonKit.getValue(response, "errmsg")).build();
-    }
-
-    private static Map<String, String> getParamsMap(String appId, String secretKey, String phone, String message) {
-        Map<String, String> params = new HashMap<>();
-        // 时间戳(必填) 格式：yyyyMMddHHmmss
-        String timestamp = DateKit.format(new Date(), DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-        String sign = Builder.md5(appId + secretKey + timestamp);
-        params.put("appId", appId);
-        params.put("timestamp", timestamp);
-        params.put("sign", sign);
-        params.put("mobiles", phone);
-        params.put("content", UrlEncoder.encodeAll(message, Charset.UTF_8));
-        return params;
     }
 
 }

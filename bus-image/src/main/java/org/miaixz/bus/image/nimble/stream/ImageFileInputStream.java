@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.image.nimble.stream;
 
-import org.miaixz.bus.image.galaxy.io.ImageInputStream;
-import org.miaixz.bus.image.nimble.ImageMetaData;
-
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+
+import org.miaixz.bus.image.galaxy.io.ImageInputStream;
+import org.miaixz.bus.image.nimble.ImageMetaData;
 
 /**
  * @author Kimi Liu

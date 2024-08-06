@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.mapper.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
 import org.miaixz.bus.core.lang.EnumMap;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.MapperException;
@@ -34,10 +38,6 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.Registry;
 import org.miaixz.bus.mapper.builder.resolve.EntityResolve;
 import org.miaixz.bus.mapper.support.SimpleType;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
 
 /**
  * 通用Mapper属性配置

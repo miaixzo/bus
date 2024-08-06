@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.Constants;
-import org.miaixz.bus.gitlab.GitLabApiForm;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
+
+import org.miaixz.bus.gitlab.Constants;
+import org.miaixz.bus.gitlab.GitLabApiForm;
 
 /**
  * This class provides the form parameters for creating and updating merge requests.

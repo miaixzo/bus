@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.shade.safety.boot.jar;
 
-import org.miaixz.bus.shade.safety.Builder;
-import org.miaixz.bus.shade.safety.Launcher;
-
 import java.io.File;
 import java.io.InputStream;
 import java.lang.reflect.Method;
@@ -40,6 +37,9 @@ import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.util.jar.Attributes;
 import java.util.jar.Manifest;
+
+import org.miaixz.bus.shade.safety.Builder;
+import org.miaixz.bus.shade.safety.Launcher;
 
 /**
  * JAR包启动器

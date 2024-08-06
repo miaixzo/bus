@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.gitlab.hooks.web;
 
-import org.miaixz.bus.gitlab.models.Assignee;
-import org.miaixz.bus.gitlab.models.Duration;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
+import org.miaixz.bus.gitlab.models.Assignee;
+import org.miaixz.bus.gitlab.models.Duration;
+import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class EventMergeRequest {
 

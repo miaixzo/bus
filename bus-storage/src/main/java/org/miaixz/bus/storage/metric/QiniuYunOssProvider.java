@@ -27,13 +27,12 @@
 */
 package org.miaixz.bus.storage.metric;
 
-import com.qiniu.common.QiniuException;
-import com.qiniu.http.Response;
-import com.qiniu.storage.BucketManager;
-import com.qiniu.storage.Configuration;
-import com.qiniu.storage.Region;
-import com.qiniu.storage.UploadManager;
-import com.qiniu.util.Auth;
+import java.io.File;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.file.Path;
+
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
@@ -45,11 +44,13 @@ import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.magic.Material;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.file.Path;
+import com.qiniu.common.QiniuException;
+import com.qiniu.http.Response;
+import com.qiniu.storage.BucketManager;
+import com.qiniu.storage.Configuration;
+import com.qiniu.storage.Region;
+import com.qiniu.storage.UploadManager;
+import com.qiniu.util.Auth;
 
 /**
  * 存储服务-七牛

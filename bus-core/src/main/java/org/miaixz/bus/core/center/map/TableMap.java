@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core.center.map;
 
-import org.miaixz.bus.core.xyz.CollKit;
-import org.miaixz.bus.core.xyz.ListKit;
-import org.miaixz.bus.core.xyz.MapKit;
-import org.miaixz.bus.core.xyz.ObjectKit;
-
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.ListKit;
+import org.miaixz.bus.core.xyz.MapKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
  * 可重复键和值的Map 通过键值单独建立List方式，使键值对一一对应，实现正向和反向两种查找 无论是正向还是反向，都是遍历列表查找过程，相比标准的HashMap要慢，数据越多越慢

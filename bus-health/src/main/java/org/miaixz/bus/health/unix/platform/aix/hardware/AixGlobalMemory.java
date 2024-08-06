@@ -27,7 +27,10 @@
 */
 package org.miaixz.bus.health.unix.platform.aix.hardware;
 
-import com.sun.jna.platform.unix.aix.Perfstat.perfstat_memory_total_t;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Memoizer;
@@ -37,9 +40,7 @@ import org.miaixz.bus.health.builtin.hardware.VirtualMemory;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractGlobalMemory;
 import org.miaixz.bus.health.unix.platform.aix.driver.perfstat.PerfstatMemory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_memory_total_t;
 
 /**
  * Memory obtained by perfstat_memory_total_t

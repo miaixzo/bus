@@ -27,17 +27,18 @@
 */
 package org.miaixz.bus.core.io.resource;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.core.xyz.UrlKit;
-
-import javax.tools.FileObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+
+import javax.tools.FileObject;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.UrlKit;
 
 /**
  * {@link FileObject} 资源包装

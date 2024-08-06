@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.image.galaxy;
 
-import org.miaixz.bus.logger.Logger;
-
 import java.net.InetAddress;
+
+import org.miaixz.bus.logger.Logger;
 
 /**
  * @author Kimi Liu

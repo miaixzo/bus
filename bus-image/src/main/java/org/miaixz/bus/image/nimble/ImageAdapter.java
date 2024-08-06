@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.image.nimble;
 
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferUShort;
+import java.util.*;
+
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.image.nimble.opencv.ImageProcessor;
@@ -37,10 +41,6 @@ import org.miaixz.bus.image.nimble.stream.ImageDescriptor;
 import org.miaixz.bus.logger.Logger;
 import org.opencv.core.Core.MinMaxLocResult;
 import org.opencv.core.CvType;
-
-import java.awt.image.DataBuffer;
-import java.awt.image.DataBufferUShort;
-import java.util.*;
 
 /**
  * @author Kimi Liu

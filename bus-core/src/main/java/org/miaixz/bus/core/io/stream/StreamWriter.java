@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.core.io.stream;
 
-import org.miaixz.bus.core.convert.Convert;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.IoKit;
-
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+
+import org.miaixz.bus.core.convert.Convert;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.IoKit;
 
 /**
  * {@link OutputStream}写出器

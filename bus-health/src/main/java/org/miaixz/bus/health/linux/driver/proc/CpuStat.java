@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.health.linux.driver.proc;
 
+import java.util.List;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.CentralProcessor;
 import org.miaixz.bus.health.linux.ProcPath;
-
-import java.util.List;
 
 /**
  * Utility to read CPU statistics from {@code /proc/stat}

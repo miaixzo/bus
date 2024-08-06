@@ -27,14 +27,6 @@
 */
 package org.miaixz.bus.oauth.metric.alipay;
 
-import com.alibaba.fastjson.JSONObject;
-import com.alipay.api.AlipayApiException;
-import com.alipay.api.AlipayClient;
-import com.alipay.api.DefaultAlipayClient;
-import com.alipay.api.request.AlipaySystemOauthTokenRequest;
-import com.alipay.api.request.AlipayUserInfoShareRequest;
-import com.alipay.api.response.AlipaySystemOauthTokenResponse;
-import com.alipay.api.response.AlipayUserInfoShareResponse;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Charset;
@@ -51,6 +43,15 @@ import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
+
+import com.alibaba.fastjson.JSONObject;
+import com.alipay.api.AlipayApiException;
+import com.alipay.api.AlipayClient;
+import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.request.AlipaySystemOauthTokenRequest;
+import com.alipay.api.request.AlipayUserInfoShareRequest;
+import com.alipay.api.response.AlipaySystemOauthTokenResponse;
+import com.alipay.api.response.AlipayUserInfoShareResponse;
 
 /**
  * 支付宝 登录

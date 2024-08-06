@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.socket.secure.ssl.factory;
 
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLContext;
 import java.io.*;
 import java.security.KeyFactory;
 import java.security.KeyStore;
@@ -39,6 +37,9 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
+
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
 
 /**
  * @author Kimi Liu

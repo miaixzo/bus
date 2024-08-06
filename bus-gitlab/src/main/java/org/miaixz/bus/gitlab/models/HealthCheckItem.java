@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
 import java.util.Map;
+
+import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class HealthCheckItem implements Serializable {
     private static final long serialVersionUID = -1L;

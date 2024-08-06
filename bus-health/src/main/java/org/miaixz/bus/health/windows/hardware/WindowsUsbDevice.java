@@ -27,10 +27,13 @@
 */
 package org.miaixz.bus.health.windows.hardware;
 
-import com.sun.jna.platform.win32.Guid.GUID;
-import org.miaixz.bus.core.lang.annotation.Immutable;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Parsing;
@@ -38,9 +41,7 @@ import org.miaixz.bus.health.builtin.hardware.UsbDevice;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractUsbDevice;
 import org.miaixz.bus.health.windows.driver.DeviceTree;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
+import com.sun.jna.platform.win32.Guid.GUID;
 
 /**
  * Windows Usb Device

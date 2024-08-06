@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.health.unix.hardware;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.Display;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractDisplay;
 import org.miaixz.bus.health.unix.driver.Xrandr;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * A Display

@@ -134,12 +134,52 @@ public class Symbol {
     /**
      * 符号: 10
      */
-    public static final char C_TEN = '\10';
+    public static final int C_TEN = 10;
     public static final String TEN = Normal.EMPTY + C_TEN;
     public static final char C_L_TEN = '十';
     public static final String L_TEN = Normal.EMPTY + C_L_TEN;
     public static final char C_U_TEN = '拾';
     public static final String U_TEN = Normal.EMPTY + C_U_TEN;
+
+    /**
+     * 符号: 100
+     */
+    public static final int C_ONE_HUNDRED = 100;
+    public static final String ONE_HUNDRED = Normal.EMPTY + C_ONE_HUNDRED;
+    public static final char C_L_ONE_HUNDRED = '百';
+    public static final String L_ONE_HUNDRED = Normal.EMPTY + C_L_ONE_HUNDRED;
+    public static final char C_U_ONE_HUNDRED = '佰';
+    public static final String U_ONE_HUNDRED = Normal.EMPTY + C_U_ONE_HUNDRED;
+
+    /**
+     * 符号: 1000
+     */
+    public static final int C_ONE_THOUSAND = 1000;
+    public static final String ONE_THOUSAND = Normal.EMPTY + C_ONE_THOUSAND;
+    public static final char C_L_ONE_THOUSAND = '千';
+    public static final String L_ONE_THOUSAND = Normal.EMPTY + C_L_ONE_THOUSAND;
+    public static final char C_U_ONE_THOUSAND = '仟';
+    public static final String U_ONE_THOUSAND = Normal.EMPTY + C_U_ONE_THOUSAND;
+
+    /**
+     * 符号: 100,00
+     */
+    public static final char C_TEN_THOUSAND = 10000;
+    public static final String TEN_THOUSAND = Normal.EMPTY + C_TEN_THOUSAND;
+    public static final char C_L_TEN_THOUSAND = '万';
+    public static final String L_TEN_THOUSAND = Normal.EMPTY + C_L_TEN_THOUSAND;
+    public static final char C_U_TEN_THOUSAND = '萬';
+    public static final String U_TEN_THOUSAND = Normal.EMPTY + C_U_TEN_THOUSAND;
+
+    /**
+     * 符号: 1000,00000
+     */
+    public static final int C_ONE_HUNDRED_MILLION = 100000000;
+    public static final String ONE_HUNDRED_MILLION = Normal.EMPTY + C_ONE_HUNDRED_MILLION;
+    public static final char C_L_ONE_HUNDRED_MILLION = '亿';
+    public static final String L_ONE_HUNDRED_MILLION = Normal.EMPTY + C_L_ONE_HUNDRED_MILLION;
+    public static final char C_U_ONE_HUNDRED_MILLION = '億';
+    public static final String U_ONE_HUNDRED_MILLION = Normal.EMPTY + C_U_ONE_HUNDRED_MILLION;
 
     /**
      * 符号: X
@@ -243,6 +283,30 @@ public class Symbol {
      */
     public static final char C_CNY = '¥';
     public static final String CNY = Normal.EMPTY + C_CNY;
+
+    /**
+     * 符号: 元
+     */
+    public static final char C_CNY_YUAN = '元';
+    public static final String CNY_YUAN = Normal.EMPTY + C_CNY_YUAN;
+
+    /**
+     * 符号: 角
+     */
+    public static final char C_CNY_JIAO = '角';
+    public static final String CNY_JIAO = Normal.EMPTY + C_CNY_JIAO;
+
+    /**
+     * 符号: 分
+     */
+    public static final char C_CNY_FEN = '分';
+    public static final String CNY_FEN = Normal.EMPTY + C_CNY_FEN;
+
+    /**
+     * 符号: 整
+     */
+    public static final char C_CNY_ZHENG = '整';
+    public static final String CNY_ZHENG = Normal.EMPTY + C_CNY_ZHENG;
 
     /**
      * 符号: 美元

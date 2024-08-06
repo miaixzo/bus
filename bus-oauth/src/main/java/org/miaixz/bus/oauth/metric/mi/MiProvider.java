@@ -27,7 +27,8 @@
 */
 package org.miaixz.bus.oauth.metric.mi;
 
-import com.alibaba.fastjson.JSONObject;
+import java.text.MessageFormat;
+
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
@@ -45,7 +46,7 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import java.text.MessageFormat;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * 小米 登录

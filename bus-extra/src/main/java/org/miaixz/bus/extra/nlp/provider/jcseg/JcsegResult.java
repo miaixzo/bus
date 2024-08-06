@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.extra.nlp.provider.jcseg;
 
+import java.io.IOException;
+
 import org.lionsoul.jcseg.ISegment;
 import org.lionsoul.jcseg.IWord;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.extra.nlp.AbstractResult;
 import org.miaixz.bus.extra.nlp.NLPWord;
-
-import java.io.IOException;
 
 /**
  * Jcseg分词结果包装 项目地址：https://gitee.com/lionsoul/jcseg

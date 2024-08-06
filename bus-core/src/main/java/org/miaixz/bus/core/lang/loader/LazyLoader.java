@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.lang.loader;
 
-import org.miaixz.bus.core.Loader;
-
 import java.io.Serializable;
+
+import org.miaixz.bus.core.Loader;
 
 /**
  * 懒加载加载器 在load方法被调用前，对象未被加载，直到被调用后才开始加载 此加载器常用于对象比较庞大而不一定被使用的情况，用于减少启动时资源占用问题

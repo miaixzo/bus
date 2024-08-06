@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.starter.limiter;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.xyz.AnnoKit;
 import org.miaixz.bus.core.xyz.MethodKit;
@@ -43,11 +48,6 @@ import org.miaixz.bus.limiter.proxy.ByteBuddyProxy;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.config.InstantiationAwareBeanPostProcessor;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 扫描注解

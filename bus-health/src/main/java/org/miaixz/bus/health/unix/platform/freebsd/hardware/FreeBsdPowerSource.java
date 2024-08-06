@@ -27,20 +27,20 @@
 */
 package org.miaixz.bus.health.unix.platform.freebsd.hardware;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.health.Executor;
-import org.miaixz.bus.health.Parsing;
-import org.miaixz.bus.health.builtin.hardware.PowerSource;
-import org.miaixz.bus.health.builtin.hardware.common.AbstractPowerSource;
-import org.miaixz.bus.health.unix.platform.freebsd.BsdSysctlKit;
-
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.health.Executor;
+import org.miaixz.bus.health.Parsing;
+import org.miaixz.bus.health.builtin.hardware.PowerSource;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractPowerSource;
+import org.miaixz.bus.health.unix.platform.freebsd.BsdSysctlKit;
 
 /**
  * A Power Source

@@ -27,11 +27,13 @@
 */
 package org.miaixz.bus.health.windows.hardware;
 
-import com.sun.jna.platform.win32.COM.COMException;
-import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
-import com.sun.jna.platform.win32.Kernel32;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.HWDiskStore;
@@ -51,10 +53,9 @@ import org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDiskToPartition;
 import org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDiskToPartition.DiskToPartitionProperty;
 import org.miaixz.bus.logger.Logger;
 
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import com.sun.jna.platform.win32.Kernel32;
+import com.sun.jna.platform.win32.COM.COMException;
+import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
 /**
  * Windows hard disk implementation.

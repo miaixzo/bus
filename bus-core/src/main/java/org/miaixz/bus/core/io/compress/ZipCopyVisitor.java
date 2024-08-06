@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.io.compress;
 
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Zip文件拷贝的FileVisitor实现，zip中追加文件，此类非线程安全 此类在遍历源目录并复制过程中会自动创建目标目录中不存在的上级目录

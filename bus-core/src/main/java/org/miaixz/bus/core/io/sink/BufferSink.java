@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.io.sink;
 
-import org.miaixz.bus.core.io.ByteString;
-import org.miaixz.bus.core.io.buffer.Buffer;
-import org.miaixz.bus.core.io.source.Source;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.channels.WritableByteChannel;
 import java.nio.charset.Charset;
+
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.source.Source;
 
 /**
  * 一种接收器,它在内部保存缓冲区, 以便调用者可以进行小的写操作没有性能损失

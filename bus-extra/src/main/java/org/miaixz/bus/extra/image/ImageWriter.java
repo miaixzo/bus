@@ -27,15 +27,6 @@
 */
 package org.miaixz.bus.extra.image;
 
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.FileKit;
-import org.miaixz.bus.core.xyz.IoKit;
-
-import javax.imageio.IIOImage;
-import javax.imageio.ImageTypeSpecifier;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.stream.ImageOutputStream;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -44,6 +35,16 @@ import java.io.File;
 import java.io.Flushable;
 import java.io.IOException;
 import java.io.OutputStream;
+
+import javax.imageio.IIOImage;
+import javax.imageio.ImageTypeSpecifier;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.stream.ImageOutputStream;
+
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.IoKit;
 
 /**
  * 图片写出封装

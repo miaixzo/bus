@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.text.placeholder;
 
+import java.util.Objects;
+import java.util.function.UnaryOperator;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.text.CharsValidator;
-
-import java.util.Objects;
-import java.util.function.UnaryOperator;
 
 /**
  * 一个简单的占位符解析器。给定占位符的左右边界符号以及转义符， 将允许把一段字符串中的占位符解析并替换为指定内容，支持指定转义符对边界符号进行转义。

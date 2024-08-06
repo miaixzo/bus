@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.lang.loader;
 
-import org.miaixz.bus.core.lang.Assert;
-
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import org.miaixz.bus.core.lang.Assert;
 
 /**
  * 函数式懒加载加载器 传入用于生成对象的函数，在对象需要使用时调用生成对象，然后抛弃此生成对象的函数。 此加载器常用于对象比较庞大而不一定被使用的情况，用于减少启动时资源占用问题

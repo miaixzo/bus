@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.image.nimble;
 
-import org.miaixz.bus.image.galaxy.data.Attributes;
-
 import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.image.ColorModel;
 import java.awt.image.ComponentColorModel;
+
+import org.miaixz.bus.image.galaxy.data.Attributes;
 
 /**
  * @author Kimi Liu

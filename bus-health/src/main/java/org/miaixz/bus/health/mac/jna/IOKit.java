@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.health.mac.jna;
 
+import org.miaixz.bus.health.Builder;
+
 import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 import com.sun.jna.ptr.NativeLongByReference;
-import org.miaixz.bus.health.Builder;
 
 /**
  * The I/O Kit framework implements non-kernel access to I/O Kit objects (drivers and nubs) through the device-interface

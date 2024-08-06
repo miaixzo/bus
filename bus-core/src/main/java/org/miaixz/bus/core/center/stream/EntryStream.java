@@ -27,19 +27,19 @@
 */
 package org.miaixz.bus.core.center.stream;
 
-import org.miaixz.bus.core.center.ConcurrentHashSet;
-import org.miaixz.bus.core.center.map.multi.RowKeyTable;
-import org.miaixz.bus.core.center.map.multi.Table;
-import org.miaixz.bus.core.xyz.CollectorKit;
-import org.miaixz.bus.core.xyz.IteratorKit;
-import org.miaixz.bus.core.xyz.ObjectKit;
-
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
+import org.miaixz.bus.core.center.ConcurrentHashSet;
+import org.miaixz.bus.core.center.map.multi.RowKeyTable;
+import org.miaixz.bus.core.center.map.multi.Table;
+import org.miaixz.bus.core.xyz.CollectorKit;
+import org.miaixz.bus.core.xyz.IteratorKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
  * 参考StreamEx的EntryStream与vavr的Map，是针对键值对对象{@link Map.Entry}特化的单元素增强流实现。 本身可视为一个元素类型为{@link Map.Entry}的{@link Stream}，

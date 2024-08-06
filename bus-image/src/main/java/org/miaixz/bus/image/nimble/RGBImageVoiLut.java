@@ -27,6 +27,12 @@
 */
 package org.miaixz.bus.image.nimble;
 
+import java.awt.image.DataBuffer;
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.Optional;
+
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
@@ -40,12 +46,6 @@ import org.miaixz.bus.image.nimble.opencv.lut.LutShape;
 import org.miaixz.bus.logger.Logger;
 import org.opencv.core.CvType;
 import org.opencv.imgproc.Imgproc;
-
-import java.awt.image.DataBuffer;
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Optional;
 
 /**
  * @author Kimi Liu

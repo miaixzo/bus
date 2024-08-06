@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.codec;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 莫尔斯电码的编码和解码实现 参考：<a href="https://github.com/TakWolf/Java-MorseCoder">https://github.com/TakWolf/Java-MorseCoder</a>

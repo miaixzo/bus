@@ -27,10 +27,6 @@
 */
 package org.miaixz.bus.core.io.stream;
 
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
@@ -39,6 +35,10 @@ import java.nio.CharBuffer;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.CoderResult;
 import java.nio.charset.CodingErrorAction;
+
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * {@link Reader}作为{@link InputStream}使用的实现。 参考：Apache Commons IO

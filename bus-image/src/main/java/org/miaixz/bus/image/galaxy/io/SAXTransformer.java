@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.image.galaxy.io;
 
-import org.miaixz.bus.image.galaxy.data.Attributes;
-import org.xml.sax.SAXException;
-
 import javax.xml.transform.*;
 import javax.xml.transform.sax.SAXResult;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
+
+import org.miaixz.bus.image.galaxy.data.Attributes;
+import org.xml.sax.SAXException;
 
 /**
  * @author Kimi Liu

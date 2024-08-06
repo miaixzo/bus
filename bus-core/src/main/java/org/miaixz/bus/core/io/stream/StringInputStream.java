@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.io.stream;
 
+import java.io.ByteArrayInputStream;
+
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.xyz.ByteKit;
-
-import java.io.ByteArrayInputStream;
 
 /**
  * 基于字符串的InputStream

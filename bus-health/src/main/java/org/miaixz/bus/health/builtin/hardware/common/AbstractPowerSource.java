@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.health.builtin.hardware.common;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Locale;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Platform;
@@ -37,10 +41,6 @@ import org.miaixz.bus.health.unix.platform.aix.hardware.AixPowerSource;
 import org.miaixz.bus.health.unix.platform.freebsd.hardware.FreeBsdPowerSource;
 import org.miaixz.bus.health.unix.platform.solaris.hardware.SolarisPowerSource;
 import org.miaixz.bus.health.windows.hardware.WindowsPowerSource;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * A Power Source

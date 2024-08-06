@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core.lang.pool.partition;
 
+import java.io.IOException;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+
 import org.miaixz.bus.core.lang.pool.ObjectFactory;
 import org.miaixz.bus.core.lang.pool.ObjectPool;
 import org.miaixz.bus.core.lang.pool.Poolable;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
-
-import java.io.IOException;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
 
 /**
  * 分区对象池实现

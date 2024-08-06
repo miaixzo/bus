@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.IntRangeMatcher;
-
-import java.lang.annotation.*;
 
 /**
  * 判断数字在int范围内

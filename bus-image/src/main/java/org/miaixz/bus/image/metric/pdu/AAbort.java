@@ -27,17 +27,15 @@
 */
 package org.miaixz.bus.image.metric.pdu;
 
-import org.miaixz.bus.core.lang.Normal;
-
 import java.io.IOException;
+
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * @author Kimi Liu
  * @since Java 17+
  */
 public class AAbort extends IOException {
-
-    private static final long serialVersionUID = -1L;
 
     public static final int UL_SERIVE_USER = 0;
     public static final int UL_SERIVE_PROVIDER = 2;
@@ -47,7 +45,7 @@ public class AAbort extends IOException {
     public static final int UNRECOGNIZED_PDU_PARAMETER = 4;
     public static final int UNEXPECTED_PDU_PARAMETER = 5;
     public static final int INVALID_PDU_PARAMETER_VALUE = 6;
-
+    private static final long serialVersionUID = -1L;
     private static final String[] SOURCES = { "0 - service-user", "1", "2 - service-provider", };
 
     private static final String[] SERVICE_USER_REASONS = { "0", };

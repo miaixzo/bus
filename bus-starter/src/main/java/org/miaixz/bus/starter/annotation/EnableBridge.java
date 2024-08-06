@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.starter.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.starter.bridge.BridgeConfiguration;
 import org.springframework.context.annotation.Import;
-
-import java.lang.annotation.*;
 
 /**
  * 启用配置中心

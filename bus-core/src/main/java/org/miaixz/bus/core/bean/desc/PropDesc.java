@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.core.bean.desc;
 
+import java.beans.Transient;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.EnumMap;
 import org.miaixz.bus.core.lang.annotation.Ignore;
 import org.miaixz.bus.core.lang.exception.BeanException;
 import org.miaixz.bus.core.xyz.*;
-
-import java.beans.Transient;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 
 /**
  * 属性描述，包括了字段、getter、setter和相应的方法执行
@@ -187,12 +187,8 @@ public class PropDesc {
      */
     public Object getValue(final Object bean) {
         if (null != this.getter) {
-            try {
-                return LambdaKit.buildGetter(this.getter).apply(bean);
-            } catch (final Exception ignore) {
-                // 在jdk14+多模块项目中，存在权限问题，使用传统反射
-                return MethodKit.invoke(bean, this.getter);
-            }
+            // JDK15+ 修改了lambda的策略，动态生成后在metaspace不会释放，导致资源占用高
+            return MethodKit.invoke(bean, this.getter);
         } else if (ModifierKit.isPublic(this.field)) {
             return FieldKit.getFieldValue(bean, this.field);
         }

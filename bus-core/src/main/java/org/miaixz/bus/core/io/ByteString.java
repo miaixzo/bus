@@ -27,16 +27,6 @@
 */
 package org.miaixz.bus.core.io;
 
-import org.miaixz.bus.core.codec.binary.Base64;
-import org.miaixz.bus.core.io.buffer.Buffer;
-import org.miaixz.bus.core.lang.Algorithm;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.IoKit;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
@@ -44,6 +34,17 @@ import java.security.InvalidKeyException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
+import org.miaixz.bus.core.codec.binary.Base64;
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.IoKit;
 
 /**
  * 不可变的字节序列

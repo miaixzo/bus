@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.core.xyz.TypeKit;
-
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
+
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
  * {@link Reference}转换器

@@ -27,7 +27,8 @@
 */
 package org.miaixz.bus.image.nimble.extend;
 
-import jakarta.json.stream.JsonParser;
+import java.util.Map;
+
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.metric.json.ConfigurationDelegate;
 import org.miaixz.bus.image.metric.json.JSONReader;
@@ -35,7 +36,7 @@ import org.miaixz.bus.image.metric.json.JSONWriter;
 import org.miaixz.bus.image.metric.json.JsonConfigurationExtension;
 import org.miaixz.bus.image.nimble.codec.ImageWriterFactory;
 
-import java.util.Map;
+import jakarta.json.stream.JsonParser;
 
 /**
  * @author Kimi Liu

@@ -27,6 +27,15 @@
 */
 package org.miaixz.bus.image.builtin.ldap;
 
+import java.lang.reflect.Array;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+
+import javax.naming.NameNotFoundException;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.*;
+
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.Format;
 import org.miaixz.bus.image.galaxy.data.Code;
@@ -34,14 +43,6 @@ import org.miaixz.bus.image.galaxy.data.DatePrecision;
 import org.miaixz.bus.image.galaxy.data.Issuer;
 import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.api.ConfigurationChanges;
-
-import javax.naming.NameNotFoundException;
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
-import javax.naming.directory.*;
-import java.lang.reflect.Array;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
 
 /**
  * @author Kimi Liu

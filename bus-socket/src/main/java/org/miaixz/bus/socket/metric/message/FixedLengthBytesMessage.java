@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.socket.metric.message;
 
+import java.nio.ByteBuffer;
+
 import org.miaixz.bus.socket.Message;
 import org.miaixz.bus.socket.Session;
-
-import java.nio.ByteBuffer;
 
 /**
  * 固定长度字节模式

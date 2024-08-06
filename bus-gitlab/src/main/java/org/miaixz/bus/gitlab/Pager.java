@@ -27,12 +27,6 @@
 */
 package org.miaixz.bus.gitlab;
 
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.ws.rs.core.MultivaluedMap;
-import jakarta.ws.rs.core.Response;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -41,6 +35,14 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
 
 /**
  * <p>
@@ -70,18 +72,16 @@ import java.util.stream.StreamSupport;
  */
 public class Pager<T> implements Iterator<List<T>>, Constants {
 
+    private static JacksonJson jacksonJson = new JacksonJson();
+    private static ObjectMapper mapper = jacksonJson.getObjectMapper();
     private int itemsPerPage;
     private int totalPages;
     private int totalItems;
     private int currentPage;
     private int kaminariNextPage;
-
     private List<String> pageParam = new ArrayList<>(1);
     private List<T> currentItems;
     private Stream<T> pagerStream = null;
-
-    private static JacksonJson jacksonJson = new JacksonJson();
-    private static ObjectMapper mapper = jacksonJson.getObjectMapper();
     private AbstractApi api;
     private MultivaluedMap<String, String> queryParams;
     private Object[] pathArgs;

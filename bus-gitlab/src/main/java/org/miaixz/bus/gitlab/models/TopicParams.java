@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.GitLabApiForm;
-import org.miaixz.bus.gitlab.TopicsApi;
-
 import java.io.File;
 import java.io.Serializable;
+
+import org.miaixz.bus.gitlab.GitLabApiForm;
+import org.miaixz.bus.gitlab.TopicsApi;
 
 /**
  * This class is utilized by the {@link TopicsApi#createTopic(TopicParams)} and

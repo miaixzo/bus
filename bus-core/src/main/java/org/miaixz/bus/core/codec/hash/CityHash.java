@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.codec.hash;
 
+import java.util.Arrays;
+
 import org.miaixz.bus.core.codec.No128;
 import org.miaixz.bus.core.xyz.ByteKit;
-
-import java.util.Arrays;
 
 /**
  * Google发布的Hash计算算法：CityHash64 与 CityHash128。 它们分别根据字串计算 64 和 128 位的散列值。这些算法不适用于加密，但适合用在散列表等处。

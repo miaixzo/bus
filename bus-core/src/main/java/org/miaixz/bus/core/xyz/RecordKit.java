@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.bean.copier.ValueProvider;
-import org.miaixz.bus.core.lang.Keys;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.AbstractMap;
 import java.util.Map;
+
+import org.miaixz.bus.core.bean.copier.ValueProvider;
+import org.miaixz.bus.core.lang.Keys;
 
 /**
  * java.lang.Record 相关工具类封装 来自于FastJSON2

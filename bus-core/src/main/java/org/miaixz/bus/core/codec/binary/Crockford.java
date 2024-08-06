@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.codec.binary;
 
+import java.util.Objects;
+
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-
-import java.util.Objects;
 
 /**
  * Crockford`s Base32实现 来自：https://gist.github.com/markov/5206312

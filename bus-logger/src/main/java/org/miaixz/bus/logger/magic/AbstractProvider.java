@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.logger.magic;
 
+import java.io.Serializable;
+
 import org.miaixz.bus.core.xyz.ExceptionKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Level;
 import org.miaixz.bus.logger.Provider;
-
-import java.io.Serializable;
 
 /**
  * 抽象日志类 实现了一些通用的接口

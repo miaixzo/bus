@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.spring;
 
-import org.miaixz.bus.core.Provider;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.annotation.AnnotationAwareOrderComparator;
-import org.springframework.stereotype.Component;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.miaixz.bus.core.Provider;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.annotation.AnnotationAwareOrderComparator;
+import org.springframework.stereotype.Component;
 
 /**
  * Spring策略模式

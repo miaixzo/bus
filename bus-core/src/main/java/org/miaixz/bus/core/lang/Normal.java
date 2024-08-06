@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.lang;
 
-import org.miaixz.bus.core.io.file.FileType;
-
 import java.net.URL;
 import java.util.Date;
+
+import org.miaixz.bus.core.io.file.FileType;
 
 /**
  * 默认常量

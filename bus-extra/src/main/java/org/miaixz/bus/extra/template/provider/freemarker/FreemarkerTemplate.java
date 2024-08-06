@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.extra.template.provider.freemarker;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.extra.template.Template;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.Map;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.extra.template.Template;
 
 /**
  * Freemarker模板实现

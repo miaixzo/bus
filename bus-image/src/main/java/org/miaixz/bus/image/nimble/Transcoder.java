@@ -27,6 +27,14 @@
 */
 package org.miaixz.bus.image.nimble;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.image.Tag;
@@ -44,14 +52,6 @@ import org.miaixz.bus.logger.Logger;
 import org.opencv.core.CvType;
 import org.opencv.core.MatOfInt;
 import org.opencv.imgcodecs.Imgcodecs;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Kimi Liu

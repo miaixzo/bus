@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.health.builtin.hardware;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-
 import java.util.Collections;
 import java.util.List;
+
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
  * A hardware abstraction layer. Provides access to hardware items such as processors, memory, battery, and disks.

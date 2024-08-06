@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.image.metric;
 
-import org.miaixz.bus.image.galaxy.data.Attributes;
-
 import java.io.IOException;
+
+import org.miaixz.bus.image.galaxy.data.Attributes;
 
 /**
  * @author Kimi Liu

@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.extra.ssh;
 
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.extra.ssh.provider.jsch.ChannelType;
+import org.miaixz.bus.extra.ssh.provider.jsch.JschSession;
+
 import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.extra.ssh.provider.jsch.ChannelType;
-import org.miaixz.bus.extra.ssh.provider.jsch.JschSession;
 
 /**
  * Jsch工具类 Jsch是Java Secure Channel的缩写。 JSch是一个SSH2的纯Java实现。 它允许你连接到一个SSH服务器，并且可以使用端口转发，X11转发，文件传输等。

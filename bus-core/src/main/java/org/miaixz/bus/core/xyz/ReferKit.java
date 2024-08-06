@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.xyz;
 
+import java.lang.ref.*;
+
 import org.miaixz.bus.core.lang.ref.Ref;
 import org.miaixz.bus.core.lang.ref.ReferenceType;
-
-import java.lang.ref.*;
 
 /**
  * 引用工具类，主要针对{@link Reference} 工具化封装 主要封装包括：

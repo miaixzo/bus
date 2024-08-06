@@ -27,49 +27,24 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
+import java.io.Serializable;
+
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public class Position implements Serializable {
     private static final long serialVersionUID = -1L;
-
-    public static enum PositionType {
-
-        TEXT, IMAGE, FILE;
-
-        private static JacksonJsonEnumHelper<PositionType> enumHelper = new JacksonJsonEnumHelper<>(PositionType.class,
-                false, false);
-
-        @JsonCreator
-        public static PositionType forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
-    }
-
     private String baseSha;
     private String startSha;
     private String headSha;
     private String oldPath;
     private String newPath;
     private PositionType positionType;
-
     private Integer oldLine;
     private Integer newLine;
-
     private Integer width;
     private Integer height;
     private Double x;
@@ -234,5 +209,28 @@ public class Position implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    public static enum PositionType {
+
+        TEXT, IMAGE, FILE;
+
+        private static JacksonJsonEnumHelper<PositionType> enumHelper = new JacksonJsonEnumHelper<>(PositionType.class,
+                false, false);
+
+        @JsonCreator
+        public static PositionType forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
     }
 }

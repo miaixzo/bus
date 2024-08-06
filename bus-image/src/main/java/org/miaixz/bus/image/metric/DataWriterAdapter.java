@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.image.metric;
 
+import java.io.IOException;
+
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
 import org.miaixz.bus.image.metric.net.PDVOutputStream;
-
-import java.io.IOException;
 
 /**
  * @author Kimi Liu

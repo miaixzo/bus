@@ -27,10 +27,13 @@
 */
 package org.miaixz.bus.health.mac;
 
-import com.sun.jna.NativeLong;
-import com.sun.jna.platform.mac.IOKit.IOConnect;
-import com.sun.jna.platform.mac.IOKit.IOService;
-import com.sun.jna.platform.mac.IOKitUtil;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.Arrays;
+import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.ByRef.CloseableNativeLongByReference;
@@ -42,12 +45,10 @@ import org.miaixz.bus.health.mac.jna.IOKit.SMCVal;
 import org.miaixz.bus.health.mac.jna.SystemB;
 import org.miaixz.bus.logger.Logger;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.Arrays;
-import java.util.Locale;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import com.sun.jna.NativeLong;
+import com.sun.jna.platform.mac.IOKit.IOConnect;
+import com.sun.jna.platform.mac.IOKit.IOService;
+import com.sun.jna.platform.mac.IOKitUtil;
 
 /**
  * Provides access to SMC calls on macOS

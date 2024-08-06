@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.notify.metric;
 
-import lombok.AllArgsConstructor;
+import java.util.List;
+
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.notify.Context;
 import org.miaixz.bus.notify.Provider;
 import org.miaixz.bus.notify.magic.Material;
 
-import java.util.List;
+import lombok.AllArgsConstructor;
 
 /**
  * 抽象类

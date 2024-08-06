@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.image.nimble.codec;
 
-import javax.imageio.stream.MemoryCacheImageOutputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+
+import javax.imageio.stream.MemoryCacheImageOutputStream;
 
 /**
  * @author Kimi Liu

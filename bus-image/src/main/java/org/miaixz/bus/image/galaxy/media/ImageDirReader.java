@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.image.galaxy.media;
 
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+
 import org.miaixz.bus.core.center.map.IntHashMap;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Builder;
@@ -35,11 +40,6 @@ import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.VR;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 import org.miaixz.bus.image.galaxy.io.RAFInputStreamAdapter;
-
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
 
 /**
  * @author Kimi Liu

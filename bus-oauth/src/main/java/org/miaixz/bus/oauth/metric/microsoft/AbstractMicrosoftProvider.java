@@ -27,7 +27,9 @@
 */
 package org.miaixz.bus.oauth.metric.microsoft;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Charset;
@@ -46,8 +48,7 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * 微软 登录抽象类,负责处理使用微软国际和微软中国账号登录第三方网站的登录方式

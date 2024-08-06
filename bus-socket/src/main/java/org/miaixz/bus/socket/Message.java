@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.socket;
 
+import java.nio.ByteBuffer;
+
 import org.miaixz.bus.socket.accord.AioClient;
 import org.miaixz.bus.socket.accord.AioServer;
-
-import java.nio.ByteBuffer;
 
 /**
  * 消息传输采用的模式

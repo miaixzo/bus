@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.lang.EnumMap;
-import org.miaixz.bus.core.lang.exception.InternalException;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+
+import org.miaixz.bus.core.lang.EnumMap;
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
  * 类修饰符

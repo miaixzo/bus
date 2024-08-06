@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.starter.mapper;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
 import org.apache.ibatis.plugin.Interceptor;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -39,10 +43,6 @@ import org.miaixz.bus.starter.sensitive.SensitiveProperties;
 import org.miaixz.bus.starter.sensitive.SensitiveResultSetHandler;
 import org.miaixz.bus.starter.sensitive.SensitiveStatementHandler;
 import org.springframework.core.env.Environment;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
 
 /**
  * mybatis 插件启用

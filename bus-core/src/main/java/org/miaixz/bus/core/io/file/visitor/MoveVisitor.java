@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.io.file.visitor;
 
-import org.miaixz.bus.core.io.file.PathResolve;
-
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
+
+import org.miaixz.bus.core.io.file.PathResolve;
 
 /**
  * 文件移动操作的FileVisitor实现，用于递归遍历移动目录和文件，此类非线程安全 此类在遍历源目录并移动过程中会自动创建目标目录中不存在的上级目录。

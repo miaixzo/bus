@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.health.linux.hardware;
 
+import java.util.List;
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
@@ -37,9 +40,6 @@ import org.miaixz.bus.health.builtin.hardware.VirtualMemory;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractGlobalMemory;
 import org.miaixz.bus.health.linux.ProcPath;
 import org.miaixz.bus.health.linux.software.LinuxOperatingSystem;
-
-import java.util.List;
-import java.util.function.Supplier;
 
 /**
  * Memory obtained by /proc/meminfo and sysinfo.totalram

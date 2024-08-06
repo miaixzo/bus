@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.image.galaxy.io;
 
+import java.util.*;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.AttributeSelector;
 import org.miaixz.bus.image.galaxy.data.ItemPointer;
 import org.miaixz.bus.image.galaxy.data.VR;
-
-import java.util.*;
 
 /**
  * @author Kimi Liu

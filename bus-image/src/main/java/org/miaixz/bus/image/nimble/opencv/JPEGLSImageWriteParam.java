@@ -27,8 +27,9 @@
 */
 package org.miaixz.bus.image.nimble.opencv;
 
-import javax.imageio.ImageWriteParam;
 import java.util.Locale;
+
+import javax.imageio.ImageWriteParam;
 
 /**
  * @author Kimi Liu

@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.data.id;
 
+import java.lang.management.ManagementFactory;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.lang.management.ManagementFactory;
 
 /**
  * 进程ID单例封装 第一次访问时调用{@link ManagementFactory#getRuntimeMXBean()}获取PID信息，之后直接使用缓存值

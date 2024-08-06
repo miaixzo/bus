@@ -27,6 +27,13 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Date;
+
+import org.miaixz.bus.gitlab.Constants;
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -35,12 +42,6 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.miaixz.bus.gitlab.Constants;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Date;
 
 public class Todo implements Serializable {
     private static final long serialVersionUID = -1L;

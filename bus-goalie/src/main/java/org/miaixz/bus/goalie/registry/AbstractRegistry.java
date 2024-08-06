@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.goalie.registry;
 
-import org.miaixz.bus.goalie.Registry;
-import org.springframework.beans.factory.InitializingBean;
-
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.miaixz.bus.goalie.Registry;
+import org.springframework.beans.factory.InitializingBean;
 
 /**
  * 抽象注册类

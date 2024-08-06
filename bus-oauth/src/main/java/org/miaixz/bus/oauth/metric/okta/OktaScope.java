@@ -27,9 +27,10 @@
 */
 package org.miaixz.bus.oauth.metric.okta;
 
+import org.miaixz.bus.oauth.metric.AuthorizeScope;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.miaixz.bus.oauth.metric.AuthorizeScope;
 
 /**
  * Okta 授权范围

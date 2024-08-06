@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.image.nimble.opencv;
 
-import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
-import org.miaixz.bus.logger.Logger;
-
-import javax.imageio.stream.FileImageInputStream;
-import javax.imageio.stream.FileImageOutputStream;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.lang.reflect.Field;
+
+import javax.imageio.stream.FileImageInputStream;
+import javax.imageio.stream.FileImageOutputStream;
+
+import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * @author Kimi Liu

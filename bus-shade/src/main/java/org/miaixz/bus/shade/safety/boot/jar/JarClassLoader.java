@@ -27,12 +27,6 @@
 */
 package org.miaixz.bus.shade.safety.boot.jar;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.shade.safety.Builder;
-import org.miaixz.bus.shade.safety.algorithm.Key;
-import org.miaixz.bus.shade.safety.provider.DecryptorProvider;
-import org.miaixz.bus.shade.safety.provider.EncryptorProvider;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +34,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.Enumeration;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.shade.safety.Builder;
+import org.miaixz.bus.shade.safety.algorithm.Key;
+import org.miaixz.bus.shade.safety.provider.DecryptorProvider;
+import org.miaixz.bus.shade.safety.provider.EncryptorProvider;
 
 /**
  * JAR包类加载器

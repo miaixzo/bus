@@ -27,9 +27,11 @@
 */
 package org.miaixz.bus.health.linux.software;
 
-import com.sun.jna.Native;
-import com.sun.jna.platform.linux.LibC;
-import com.sun.jna.platform.linux.Udev;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.*;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -52,10 +54,9 @@ import org.miaixz.bus.health.linux.driver.proc.UpTime;
 import org.miaixz.bus.health.linux.jna.LinuxLibc;
 import org.miaixz.bus.logger.Logger;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.*;
+import com.sun.jna.Native;
+import com.sun.jna.platform.linux.LibC;
+import com.sun.jna.platform.linux.Udev;
 
 /**
  * Linux is a family of open source Unix-like operating systems based on the Linux kernel, an operating system kernel

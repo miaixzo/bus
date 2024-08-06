@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.cache.magic;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.cache.Context;
 import org.miaixz.bus.cache.Hitting;
 import org.miaixz.bus.cache.Manage;
@@ -35,9 +38,6 @@ import org.miaixz.bus.core.lang.annotation.Inject;
 import org.miaixz.bus.core.lang.annotation.Singleton;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.proxy.invoker.ProxyChain;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author Kimi Liu

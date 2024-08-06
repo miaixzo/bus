@@ -27,13 +27,6 @@
 */
 package org.miaixz.bus.shade.safety;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.shade.safety.algorithm.Key;
-import org.miaixz.bus.shade.safety.provider.DecryptorProvider;
-import org.miaixz.bus.shade.safety.provider.EncryptorProvider;
-import org.miaixz.bus.shade.safety.provider.JdkDecryptorProvider;
-import org.miaixz.bus.shade.safety.provider.JdkEncryptorProvider;
-
 import java.io.*;
 import java.net.URI;
 import java.security.CodeSource;
@@ -45,6 +38,13 @@ import java.util.Set;
 import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.shade.safety.algorithm.Key;
+import org.miaixz.bus.shade.safety.provider.DecryptorProvider;
+import org.miaixz.bus.shade.safety.provider.EncryptorProvider;
+import org.miaixz.bus.shade.safety.provider.JdkDecryptorProvider;
+import org.miaixz.bus.shade.safety.provider.JdkEncryptorProvider;
 
 /**
  * Spring-Boot 启动器

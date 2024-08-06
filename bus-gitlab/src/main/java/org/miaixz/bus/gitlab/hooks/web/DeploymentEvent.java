@@ -30,11 +30,9 @@ package org.miaixz.bus.gitlab.hooks.web;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class DeploymentEvent extends AbstractEvent {
-    private static final long serialVersionUID = -1L;
-
     public static final String X_GITLAB_EVENT = "Deployment Hook";
     public static final String OBJECT_KIND = "deployment";
-
+    private static final long serialVersionUID = -1L;
     private String status;
     private String statusChangedAt;
     private Long deployableId;

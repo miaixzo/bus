@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.center.date.format.parser;
 
+import java.io.Serializable;
+import java.util.Locale;
+
 import org.miaixz.bus.core.center.date.Calendar;
 import org.miaixz.bus.core.center.date.DateTime;
 import org.miaixz.bus.core.lang.exception.DateException;
-
-import java.io.Serializable;
-import java.util.Locale;
 
 /**
  * 通过给定的日期格式解析日期时间字符串。 传入的日期格式会逐个尝试，直到解析成功，返回{@link java.util.Calendar}对象，否则抛出{@link DateException}异常。

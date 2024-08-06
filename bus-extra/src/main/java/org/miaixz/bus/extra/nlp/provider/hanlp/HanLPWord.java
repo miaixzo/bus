@@ -27,8 +27,9 @@
 */
 package org.miaixz.bus.extra.nlp.provider.hanlp;
 
-import com.hankcs.hanlp.seg.common.Term;
 import org.miaixz.bus.extra.nlp.NLPWord;
+
+import com.hankcs.hanlp.seg.common.Term;
 
 /**
  * HanLP分词中的一个单词包装

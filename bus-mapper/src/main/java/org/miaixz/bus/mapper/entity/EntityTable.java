@@ -27,7 +27,11 @@
 */
 package org.miaixz.bus.mapper.entity;
 
-import jakarta.persistence.Table;
+import java.lang.reflect.Constructor;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.ibatis.mapping.ResultFlag;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.mapping.ResultMapping;
@@ -38,10 +42,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.MapperException;
 import org.miaixz.bus.core.xyz.StringKit;
 
-import java.lang.reflect.Constructor;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import jakarta.persistence.Table;
 
 /**
  * 数据库表

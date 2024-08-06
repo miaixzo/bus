@@ -27,6 +27,12 @@
 */
 package org.miaixz.bus.image.metric.hl7.net;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.net.Socket;
+import java.security.GeneralSecurityException;
+import java.util.*;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.metric.Compatible;
@@ -35,12 +41,6 @@ import org.miaixz.bus.image.metric.hl7.ERRSegment;
 import org.miaixz.bus.image.metric.hl7.HL7Exception;
 import org.miaixz.bus.image.metric.hl7.HL7Segment;
 import org.miaixz.bus.image.metric.hl7.MLLPConnection;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.net.Socket;
-import java.security.GeneralSecurityException;
-import java.util.*;
 
 /**
  * @author Kimi Liu

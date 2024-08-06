@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.math;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -70,9 +71,9 @@ public class ChineseNumberFormatter {
         if (amount < 1_0000_0000 && amount > -1_0000_0000) {
             res = MathKit.div(amount, 1_0000, 2) + "万";
         } else if (amount < 1_0000_0000_0000L && amount > -1_0000_0000_0000L) {
-            res = MathKit.div(amount, 1_0000_0000, 2) + "亿";
+            res = MathKit.div(amount, 1_0000_0000, 2) + Symbol.L_ONE_HUNDRED_MILLION;
         } else {
-            res = MathKit.div(amount, 1_0000_0000_0000L, 2) + "万亿";
+            res = MathKit.div(amount, 1_0000_0000_0000L, 2) + Symbol.L_TEN_THOUSAND + Symbol.L_ONE_HUNDRED_MILLION;
         }
         return res;
     }
@@ -88,7 +89,7 @@ public class ChineseNumberFormatter {
         if (c < '0' || c > '9') {
             return c;
         }
-        return numberToChinese(c - '0', isUseTraditional);
+        return numberToChinese(c - Symbol.C_ZERO, isUseTraditional);
     }
 
     /**
@@ -118,8 +119,8 @@ public class ChineseNumberFormatter {
         if (StringKit.isEmpty(chineseStr)) {
             return;
         }
-        if ('零' != chineseStr.charAt(0)) {
-            chineseStr.insert(0, '零');
+        if (Symbol.C_UL_ZERO != chineseStr.charAt(0)) {
+            chineseStr.insert(0, Symbol.C_UL_ZERO);
         }
     }
 
@@ -175,30 +176,29 @@ public class ChineseNumberFormatter {
      */
     public ChineseNumberFormatter setUnitName(final String unitName) {
         this.unitName = Assert.notNull(unitName);
-        ;
         return this;
     }
 
     /**
-     * 阿拉伯数字转换成中文.
+     * 阿拉伯数字转换成中文
      *
      * <p>
      * 主要是对发票票面金额转换的扩展
      * <p>
-     * 如：-12.32
+     * 如：-10.10
      * <p>
      * 发票票面转换为：(负数)壹拾贰圆叁角贰分
      * <p>
      * 而非：负壹拾贰元叁角贰分
      * <p>
-     * 共两点不同：1、(负数) 而非 负；2、圆 而非 元 2022/3/9
+     * 共两点不同：1、(负数) 而非 负；2、圆 而非 元
      *
      * @param amount 数字
      * @return 格式化后的字符串
      */
     public String format(double amount) {
         if (0 == amount) {
-            return "零";
+            return this.moneyMode ? "零元整" : Symbol.UL_ZERO;
         }
         Assert.checkBetween(amount, -99_9999_9999_9999.99, 99_9999_9999_9999.99,
                 "Number support only: (-99999999999999.99 ~ 99999999999999.99)！");
@@ -230,7 +230,7 @@ public class ChineseNumberFormatter {
         if (0 == jiao && 0 == fen) {
             // 无小数部分的金额结尾
             if (isMoneyMode) {
-                chineseStr.append("整");
+                chineseStr.append(Symbol.CNY_ZHENG);
             }
             return chineseStr.toString();
         }
@@ -244,12 +244,12 @@ public class ChineseNumberFormatter {
         if (0 == yuan && 0 == jiao) {
             // 元和角都为0时，只有非金额模式下补“零”
             if (!isMoneyMode) {
-                chineseStr.append("零");
+                chineseStr.append(Symbol.UL_ZERO);
             }
         } else {
             chineseStr.append(numberToChinese(jiao, this.useTraditional));
             if (isMoneyMode && 0 != jiao) {
-                chineseStr.append("角");
+                chineseStr.append(Symbol.CNY_JIAO);
             }
         }
 
@@ -257,7 +257,7 @@ public class ChineseNumberFormatter {
         if (0 != fen) {
             chineseStr.append(numberToChinese(fen, this.useTraditional));
             if (isMoneyMode) {
-                chineseStr.append("分");
+                chineseStr.append(Symbol.CNY_FEN);
             }
         }
 
@@ -272,7 +272,7 @@ public class ChineseNumberFormatter {
      */
     private String longToChinese(long amount) {
         if (0 == amount) {
-            return "零";
+            return Symbol.UL_ZERO;
         }
 
         // 对于10~20，可选口语模式，如一十一，口语模式下为十一
@@ -313,7 +313,7 @@ public class ChineseNumberFormatter {
                 addPreZero(chineseStr);
             }
             partChinese = thousandToChinese(partValue);
-            chineseStr.insert(0, partChinese + "万");
+            chineseStr.insert(0, partChinese + Symbol.L_TEN_THOUSAND);
 
             if (partValue < 1000) {
                 // 和亿位之间空0，则补零，如一亿零三百万
@@ -332,7 +332,7 @@ public class ChineseNumberFormatter {
             }
 
             partChinese = thousandToChinese(partValue);
-            chineseStr.insert(0, partChinese + "亿");
+            chineseStr.insert(0, partChinese + Symbol.L_ONE_HUNDRED_MILLION);
 
             if (partValue < 1000) {
                 // 和万亿位之间空0，则补零，如一万亿零三百亿
@@ -346,13 +346,13 @@ public class ChineseNumberFormatter {
         partValue = parts[3];
         if (partValue > 0) {
             if (parts[2] == 0) {
-                chineseStr.insert(0, "亿");
+                chineseStr.insert(0, Symbol.L_ONE_HUNDRED_MILLION);
             }
             partChinese = thousandToChinese(partValue);
-            chineseStr.insert(0, partChinese + "万");
+            chineseStr.insert(0, partChinese + Symbol.L_TEN_THOUSAND);
         }
 
-        if (StringKit.isNotEmpty(chineseStr) && '零' == chineseStr.charAt(0)) {
+        if (StringKit.isNotEmpty(chineseStr) && Symbol.C_UL_ZERO == chineseStr.charAt(0)) {
             return chineseStr.substring(1);
         }
 
@@ -379,7 +379,7 @@ public class ChineseNumberFormatter {
             if (digit == 0) { // 取到的数字为 0
                 if (!lastIsZero) {
                     // 前一个数字不是 0，则在当前汉字串前加“零”字;
-                    chineseStr.insert(0, "零");
+                    chineseStr.insert(0, Symbol.UL_ZERO);
                 }
                 lastIsZero = true;
             } else { // 取到的数字不是 0

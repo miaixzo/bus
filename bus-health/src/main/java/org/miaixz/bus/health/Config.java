@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.health;
 
-import org.miaixz.bus.core.lang.annotation.NotThreadSafe;
+import java.util.Properties;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.NotThreadSafe;
 import org.miaixz.bus.setting.metric.props.Props;
-
-import java.util.Properties;
 
 /**
  * The global configuration utility. See {@code src/main/resources/bus.health.properties} for default values. This class

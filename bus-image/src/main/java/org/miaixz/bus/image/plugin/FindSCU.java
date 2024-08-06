@@ -27,6 +27,21 @@
 */
 package org.miaixz.bus.image.plugin;
 
+import java.io.*;
+import java.security.GeneralSecurityException;
+import java.text.DecimalFormat;
+import java.util.EnumSet;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import javax.xml.XMLConstants;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Templates;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -52,20 +67,6 @@ import org.miaixz.bus.image.metric.pdu.AAssociateRQ;
 import org.miaixz.bus.image.metric.pdu.ExtendedNegotiation;
 import org.miaixz.bus.image.metric.pdu.PresentationContext;
 import org.miaixz.bus.logger.Logger;
-
-import javax.xml.XMLConstants;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Templates;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
-import java.io.*;
-import java.security.GeneralSecurityException;
-import java.text.DecimalFormat;
-import java.util.EnumSet;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * findscu应用程序为查询/检索、Modality工作列表管理、统一工作列表和过程步骤 挂起协议Query/Retrieve 支持Query/Retrieve服务类实现一个服务类用户(SCU)

@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.starter.mapper;
 
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.Properties;
+import java.util.Set;
+
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -48,11 +53,6 @@ import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.AssignableTypeFilter;
-
-import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.Properties;
-import java.util.Set;
 
 /**
  * 通过{@code basePackage}， {@code annotationClass}或{@code markerInterface}注册映射器的{@link ClassPathBeanDefinitionScanner}

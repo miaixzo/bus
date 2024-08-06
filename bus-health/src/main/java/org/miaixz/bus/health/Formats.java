@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.health;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.core.lang.Normal;
-
 import java.math.BigInteger;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
  * Formatting utility for appending units or converting between number types.

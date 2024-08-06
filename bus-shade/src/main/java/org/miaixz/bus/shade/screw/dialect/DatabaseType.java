@@ -27,7 +27,8 @@
 */
 package org.miaixz.bus.shade.screw.dialect;
 
-import lombok.Getter;
+import java.io.Serializable;
+
 import org.miaixz.bus.shade.screw.dialect.cachedb.CacheDbDataBaseQuery;
 import org.miaixz.bus.shade.screw.dialect.db2.Db2DataBaseQuery;
 import org.miaixz.bus.shade.screw.dialect.h2.H2DataBaseQuery;
@@ -37,7 +38,7 @@ import org.miaixz.bus.shade.screw.dialect.oracle.OracleDataBaseQuery;
 import org.miaixz.bus.shade.screw.dialect.postgresql.PostgreSqlDataBaseQuery;
 import org.miaixz.bus.shade.screw.dialect.sqlserver.SqlServerDataBaseQuery;
 
-import java.io.Serializable;
+import lombok.Getter;
 
 /**
  * 数据库类型

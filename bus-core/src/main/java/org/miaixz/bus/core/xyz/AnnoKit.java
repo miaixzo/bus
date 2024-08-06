@@ -27,6 +27,13 @@
 */
 package org.miaixz.bus.core.xyz;
 
+import java.lang.annotation.*;
+import java.lang.reflect.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
+
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.function.LambdaX;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
@@ -37,13 +44,6 @@ import org.miaixz.bus.core.lang.annotation.resolve.AnnotationProxy;
 import org.miaixz.bus.core.lang.annotation.resolve.elements.CombinationAnnotatedElement;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.text.CharsBacker;
-
-import java.lang.annotation.*;
-import java.lang.reflect.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 /**
  * 注解工具类 快速获取注解对象、注解值等工具封装

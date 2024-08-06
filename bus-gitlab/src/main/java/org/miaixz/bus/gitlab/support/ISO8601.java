@@ -169,27 +169,6 @@ public class ISO8601 {
         return (toString(date, true));
     }
 
-    // Set up ThreadLocal storage to save a thread local SimpleDateFormat keyed with the format string
-    private static final class SafeDateFormatter {
-
-        private static final ThreadLocal<Map<String, SimpleDateFormat>> safeFormats = ThreadLocal
-                .withInitial(() -> (new ConcurrentHashMap<>()));
-
-        private static SimpleDateFormat getDateFormat(String formatSpec) {
-
-            Map<String, SimpleDateFormat> formatMap = safeFormats.get();
-            SimpleDateFormat format = formatMap.get(formatSpec);
-            if (format == null) {
-                format = new SimpleDateFormat(formatSpec);
-                format.setLenient(true);
-                format.setTimeZone(TimeZone.getTimeZone("UTC"));
-                formatMap.put(formatSpec, format);
-            }
-
-            return (format);
-        }
-    }
-
     /**
      * Parses an ISO8601 formatted string a returns a Date instance.
      *
@@ -219,6 +198,27 @@ public class ISO8601 {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         return (cal);
+    }
+
+    // Set up ThreadLocal storage to save a thread local SimpleDateFormat keyed with the format string
+    private static final class SafeDateFormatter {
+
+        private static final ThreadLocal<Map<String, SimpleDateFormat>> safeFormats = ThreadLocal
+                .withInitial(() -> (new ConcurrentHashMap<>()));
+
+        private static SimpleDateFormat getDateFormat(String formatSpec) {
+
+            Map<String, SimpleDateFormat> formatMap = safeFormats.get();
+            SimpleDateFormat format = formatMap.get(formatSpec);
+            if (format == null) {
+                format = new SimpleDateFormat(formatSpec);
+                format.setLenient(true);
+                format.setTimeZone(TimeZone.getTimeZone("UTC"));
+                formatMap.put(formatSpec, format);
+            }
+
+            return (format);
+        }
     }
 
 }

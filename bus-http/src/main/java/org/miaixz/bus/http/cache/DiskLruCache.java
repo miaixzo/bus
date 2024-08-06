@@ -27,6 +27,15 @@
 */
 package org.miaixz.bus.http.cache;
 
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.io.sink.FaultHideSink;
 import org.miaixz.bus.core.io.sink.Sink;
@@ -37,15 +46,6 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Builder;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.Executor;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 使用文件系统上有限空间的缓存。每个缓存条目都有一个字符串键和固定数量的值 每个键必须匹配regex [a-z0-9_-]{1,64}。值是字节序列，可以作为流或文件访问

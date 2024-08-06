@@ -27,6 +27,19 @@
 */
 package org.miaixz.bus.image.plugin;
 
+import java.io.*;
+import java.net.URL;
+import java.util.Date;
+import java.util.UUID;
+
+import javax.xml.transform.Templates;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.sax.SAXResult;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamSource;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.galaxy.io.SAXTransformer;
@@ -37,18 +50,6 @@ import org.miaixz.bus.image.metric.hl7.net.HL7DeviceExtension;
 import org.miaixz.bus.image.metric.hl7.net.HL7MessageListener;
 import org.miaixz.bus.image.metric.hl7.net.UnparsedHL7Message;
 import org.miaixz.bus.logger.Logger;
-
-import javax.xml.transform.Templates;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.sax.SAXResult;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.stream.StreamSource;
-import java.io.*;
-import java.net.URL;
-import java.util.Date;
-import java.util.UUID;
 
 /**
  * @author Kimi Liu

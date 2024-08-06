@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.extra.nlp.provider.analysis;
 
+import java.io.IOException;
+
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.extra.nlp.AbstractResult;
 import org.miaixz.bus.extra.nlp.NLPWord;
-
-import java.io.IOException;
 
 /**
  * Lucene-analysis分词抽象结果封装 项目地址：https://github.com/apache/lucene-solr/tree/master/lucene/analysis

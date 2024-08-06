@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.image.nimble.opencv.seg;
 
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.image.nimble.opencv.lut.ColorLut;
-
 import java.awt.*;
 import java.text.Collator;
-import java.util.List;
 import java.util.*;
+import java.util.List;
+
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.image.nimble.opencv.lut.ColorLut;
 
 /**
  * @author Kimi Liu

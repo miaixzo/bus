@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.core.text.dfa;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.xyz.CollKit;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.core.xyz.ThreadKit;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.text.CharsBacker;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.ThreadKit;
 
 /**
  * 敏感词工具类

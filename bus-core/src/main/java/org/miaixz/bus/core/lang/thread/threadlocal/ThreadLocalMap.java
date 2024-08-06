@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.lang.thread.threadlocal;
 
-import org.miaixz.bus.core.lang.Normal;
-
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * 存储所有 {@link SpecificThread} 的 {@link ThreadLocal} 变量的内部数据结构。 请注意，此类仅供内部使用。除非知道自己在做什么，否则请使用 {@link SpecificThread}
