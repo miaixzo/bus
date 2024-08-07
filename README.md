@@ -26,7 +26,7 @@
   <a target="_blank" href="http://poi.apache.org">
     <img src="https://img.shields.io/badge/poi-5.2.5-blue.svg">
   </a>
-  <a target="_blank" href="https://opensource.org/licenses/MIT">
+  <a target="_blank" href="https://github.com/839128/bus/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-green.svg">
   </a>
 </p>
@@ -55,11 +55,11 @@ Bus (应用/服务总线) 是一个基础框架、服务套件，它基于Java17
 
  Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 
-| 版本  | jdk    | Maven仓库                                                                                  | 主要特点                                |
-|-----|--------|------------------------------------------------------------------------------------------|-------------------------------------|
-| 3.x | jdk1.8 | [org.aoju/bus-all/3.x](https://mvnrepository.com/artifact/org.aoju/bus-all/3.6.9)        | jdk1.8编译                            |
-| 5.x | jdk1.8 | [org.aoju/bus-all/5.x ](https://mvnrepository.com/artifact/org.aoju/bus-all/5.9.9)       | jdk1.8编译,使用JavaEE,适配JDK11、17        |
-| 6.x | jdk 17 | [org.aoju/bus-all/6.x ](https://mvnrepository.com/artifact/org.aoju/bus-all/6.6.0)       | jdk 17编译,使用Jakarta EE,适配JDK11、17、21 |
+| 版本  | jdk    | Maven仓库                                                                                  | 主要特点                               |
+|-----|--------|------------------------------------------------------------------------------------------|------------------------------------|
+| 3.x | jdk1.8 | [org.aoju/bus-all/3.x](https://mvnrepository.com/artifact/org.aoju/bus-all/3.6.9)        | jdk1.8编译                           |
+| 5.x | jdk1.8 | [org.aoju/bus-all/5.x ](https://mvnrepository.com/artifact/org.aoju/bus-all/5.9.9)       | jdk1.8编译,使用JavaEE,适配JDK11、17       |
+| 6.x | jdk 17 | [org.aoju/bus-all/6.x ](https://mvnrepository.com/artifact/org.aoju/bus-all/6.6.0)       | jdk 17编译,使用Jakarta EE,适配JDK11、17 |
 | 8.x | jdk 21 | [org.miaixz/bus-all/8.x ](https://mvnrepository.com/artifact/org.miaixz/bus-all)         | jdk 21编译,使用Jakarta EE,适配JDK11、17、21 |
 
 

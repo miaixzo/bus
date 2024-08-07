@@ -1557,6 +1557,7 @@ public class Mat {
             indices[0] = row;
             indices[1] = col;
         }
+
         protected AtableBase(Mat mat, int[] indices) {
             this.mat = mat;
             this.indices = indices;

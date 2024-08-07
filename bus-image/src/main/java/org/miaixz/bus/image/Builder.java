@@ -652,6 +652,7 @@ public class Builder {
         return new SupplierEx<>() {
             boolean initialized;
 
+            @Override
             public T get() throws E {
                 return delegate.get();
             }

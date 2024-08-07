@@ -86,7 +86,7 @@ public class Core {
             Param_MAT_VECTOR = 5, Param_ALGORITHM = 6, Param_FLOAT = 7, Param_UNSIGNED_INT = 8, Param_UINT64 = 9,
             Param_UCHAR = 11, Param_SCALAR = 12;
     // C++: enum ReduceTypes (cv.ReduceTypes)
-    public static final int REDUCE_SUM2 = 4;    // C++: enum DftFlags (cv.DftFlags)
+    public static final int REDUCE_SUM2 = 4; // C++: enum DftFlags (cv.DftFlags)
     public static final int DFT_INVERSE = 1, DFT_SCALE = 2, DFT_ROWS = 4, DFT_COMPLEX_OUTPUT = 16, DFT_REAL_OUTPUT = 32,
             DFT_COMPLEX_INPUT = 64, DCT_INVERSE = DFT_INVERSE, DCT_ROWS = DFT_ROWS;
     // C++: enum RotateFlags (cv.RotateFlags)
@@ -5773,7 +5773,5 @@ public class Core {
             maxLoc = new Point();
         }
     }
-
-
 
 }

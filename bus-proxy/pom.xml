@@ -43,16 +43,9 @@
     <licenses>
         <license>
             <name>The MIT License (MIT)</name>
-            <url>https://opensource.org/licenses/MIT</url>
+            <url>https://github.com/839128/bus/blob/main/LICENSE</url>
         </license>
     </licenses>
-
-    <developers>
-        <developer>
-            <name>Kimi Liu</name>
-            <url>https://github.com/839128/bus.git</url>
-        </developer>
-    </developers>
 
     <scm>
         <connection>scm:git@github.com:839128/bus.git</connection>
@@ -64,6 +57,19 @@
         <system>Github Issue</system>
         <url>https://github.com/839128/bus/issues</url>
     </issueManagement>
+
+    <developers>
+        <developer>
+            <id>839128</id>
+            <name>Kimi Liu</name>
+            <email>839536@gmail.com</email>
+            <organization>Miaixz</organization>
+            <organizationUrl>http://www.miaixz.org</organizationUrl>
+            <roles>
+                <role>maintainer</role>
+            </roles>
+        </developer>
+    </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

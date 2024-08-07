@@ -30,6 +30,7 @@ package org.miaixz.bus.image.nimble.opencv.seg;
 import java.awt.geom.Point2D;
 
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 
 /**
@@ -40,10 +41,17 @@ public class ContourTopology {
 
     private final Segment segment;
     private final int parent;
-
+    
     public ContourTopology(MatOfPoint contour, int parent) {
+        this(contour.toArray(), parent);
+    }
+
+    public ContourTopology(MatOfPoint2f contour, int parent) {
+        this(contour.toArray(), parent);
+    }
+
+    public ContourTopology(Point[] pts, int parent) {
         this.parent = parent;
-        Point[] pts = contour.toArray();
         this.segment = new Segment();
         for (Point p : pts) {
             segment.add(new Point2D.Double(p.x, p.y));

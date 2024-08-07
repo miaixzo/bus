@@ -72,6 +72,7 @@ public class StreamSCU {
     private boolean relExtNeg;
     private Association as;
     private final TimerTask closeAssociationTask = new TimerTask() {
+        @Override
         public void run() {
             close(false);
         }

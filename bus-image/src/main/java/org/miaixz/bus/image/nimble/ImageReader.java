@@ -354,6 +354,7 @@ public class ImageReader extends javax.imageio.ImageReader {
             suppliers.add(new SupplierEx<>() {
                 boolean initialized;
 
+                @Override
                 public PlanarImage get() throws IOException {
                     return delegate.get();
                 }

@@ -62,7 +62,7 @@ public class Imgproc {
             COLORMAP_TWILIGHT = 18, COLORMAP_TWILIGHT_SHIFTED = 19, COLORMAP_TURBO = 20, COLORMAP_DEEPGREEN = 21;
     // C++: enum ConnectedComponentsAlgorithmsTypes (cv.ConnectedComponentsAlgorithmsTypes)
     public static final int CCL_DEFAULT = -1, CCL_WU = 0, CCL_GRANA = 1, CCL_BOLELLI = 2, CCL_SAUF = 3, CCL_BBDT = 4,
-            CCL_SPAGHETTI = 5;    // C++: enum ColorConversionCodes (cv.ColorConversionCodes)
+            CCL_SPAGHETTI = 5; // C++: enum ColorConversionCodes (cv.ColorConversionCodes)
     public static final int COLOR_BGR2BGRA = 0, COLOR_RGB2RGBA = COLOR_BGR2BGRA, COLOR_BGRA2BGR = 1,
             COLOR_RGBA2RGB = COLOR_BGRA2BGR, COLOR_BGR2RGBA = 2, COLOR_RGB2BGRA = COLOR_BGR2RGBA, COLOR_RGBA2BGR = 3,
             COLOR_BGRA2RGB = COLOR_RGBA2BGR, COLOR_BGR2RGB = 4, COLOR_RGB2BGR = COLOR_BGR2RGB, COLOR_BGRA2RGBA = 5,
@@ -197,7 +197,8 @@ public class Imgproc {
     public static final int FILLED = -1, LINE_4 = 4, LINE_8 = 8, LINE_AA = 16;
     // C++: enum MarkerTypes (cv.MarkerTypes)
     public static final int MARKER_CROSS = 0, MARKER_TILTED_CROSS = 1, MARKER_STAR = 2, MARKER_DIAMOND = 3,
-            MARKER_SQUARE = 4, MARKER_TRIANGLE_UP = 5, MARKER_TRIANGLE_DOWN = 6;    // C++: enum InterpolationMasks (cv.InterpolationMasks)
+            MARKER_SQUARE = 4, MARKER_TRIANGLE_UP = 5, MARKER_TRIANGLE_DOWN = 6; // C++: enum InterpolationMasks
+                                                                                 // (cv.InterpolationMasks)
     public static final int INTER_BITS = 5, INTER_BITS2 = INTER_BITS * 2, INTER_TAB_SIZE = 1 << INTER_BITS,
             INTER_TAB_SIZE2 = INTER_TAB_SIZE * INTER_TAB_SIZE;
     // C++: enum MorphShapes (cv.MorphShapes)
@@ -9937,9 +9938,5 @@ public class Imgproc {
 
     private static native double[] n_getTextSize(String text, int fontFace, double fontScale, int thickness,
             int[] baseLine);
-
-
-
-
 
 }
