@@ -75,9 +75,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <lombok.version>1.18.34</lombok.version>
-        <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
-        <bouncycastle.version>1.78.1</bouncycastle.version>
-        <alipay.version>4.39.42.ALL</alipay.version>
+        <bcpkix.version>1.78.1</bcpkix.version>
+        <alipay.version>4.39.165.ALL</alipay.version>
     </properties>
 
     <dependencies>
@@ -103,15 +102,9 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>jakarta.servlet</groupId>
-            <artifactId>jakarta.servlet-api</artifactId>
-            <version>${jakarta.servlet.version}</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-jdk18on</artifactId>
-            <version>${bouncycastle.version}</version>
+            <version>${bcpkix.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -162,7 +155,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>3.8.0</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>

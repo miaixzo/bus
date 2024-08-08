@@ -33,7 +33,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 import org.miaixz.bus.core.convert.Convert;
-import org.miaixz.bus.core.lang.EnumMap;
+import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.annotation.Ignore;
 import org.miaixz.bus.core.lang.exception.BeanException;
 import org.miaixz.bus.core.xyz.*;
@@ -395,11 +395,11 @@ public class PropDesc {
      * @return 是否为Transient关键字修饰的
      */
     private boolean isTransientForGet() {
-        boolean isTransient = ModifierKit.hasModifier(this.field, EnumMap.Modifier.TRANSIENT);
+        boolean isTransient = ModifierKit.hasModifier(this.field, EnumValue.Modifier.TRANSIENT);
 
         // 检查Getter方法
         if (!isTransient && null != this.getter) {
-            isTransient = ModifierKit.hasModifier(this.getter, EnumMap.Modifier.TRANSIENT);
+            isTransient = ModifierKit.hasModifier(this.getter, EnumValue.Modifier.TRANSIENT);
 
             // 检查注解
             if (!isTransient) {
@@ -416,11 +416,11 @@ public class PropDesc {
      * @return 是否为Transient关键字修饰的
      */
     private boolean isTransientForSet() {
-        boolean isTransient = ModifierKit.hasModifier(this.field, EnumMap.Modifier.TRANSIENT);
+        boolean isTransient = ModifierKit.hasModifier(this.field, EnumValue.Modifier.TRANSIENT);
 
         // 检查Getter方法
         if (!isTransient && null != this.setter) {
-            isTransient = ModifierKit.hasModifier(this.setter, EnumMap.Modifier.TRANSIENT);
+            isTransient = ModifierKit.hasModifier(this.setter, EnumValue.Modifier.TRANSIENT);
 
             // 检查注解
             if (!isTransient) {

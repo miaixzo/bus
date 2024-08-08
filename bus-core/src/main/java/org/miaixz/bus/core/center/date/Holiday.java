@@ -332,7 +332,8 @@ public class Holiday extends Loops {
             }
         }
         String d = data.get(index);
-        return new Holiday(Integer.parseInt(d.substring(0, 4)), Integer.parseInt(d.substring(4, 6)), Integer.parseInt(d.substring(6, 8)), d);
+        return new Holiday(Integer.parseInt(d.substring(0, 4)), Integer.parseInt(d.substring(4, 6)),
+                Integer.parseInt(d.substring(6, 8)), d);
     }
 
     @Override

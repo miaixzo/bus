@@ -63,10 +63,10 @@ public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntr
     private static final Map<String, String> map = new HashMap<>();
 
     static {
-        map.put("org.springframework.boot.loader.JarLauncher", "boot.safety.shade.org.miaixz.bus.BootJarLauncher");
-        map.put("org.springframework.boot.loader.WarLauncher", "boot.safety.shade.org.miaixz.bus.BootWarLauncher");
+        map.put("org.springframework.boot.loader.JarLauncher", "org.miaixz.bus.shade.safety.boot.BootJarLauncher");
+        map.put("org.springframework.boot.loader.WarLauncher", "org.miaixz.bus.shade.safety.boot.BootWarLauncher");
         map.put("org.springframework.boot.loader.PropertiesLauncher",
-                "boot.safety.shade.org.miaixz.bus.BootPropertiesLauncher");
+                "org.miaixz.bus.shade.safety.boot.BootPropertiesLauncher");
     }
 
     private final int level;

@@ -31,7 +31,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
 
-import org.miaixz.bus.core.lang.EnumMap;
+import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
@@ -49,11 +49,11 @@ public class ModifierKit {
      * @param modifierTypes 修饰符枚举，如果为空返回{@code false}
      * @return 是否有指定修饰符，如果有返回true，否则false，如果提供参数为null返回false
      */
-    public static boolean hasModifier(final Class<?> clazz, final EnumMap.Modifier... modifierTypes) {
+    public static boolean hasModifier(final Class<?> clazz, final EnumValue.Modifier... modifierTypes) {
         if (null == clazz || ArrayKit.isEmpty(modifierTypes)) {
             return false;
         }
-        return 0 != (clazz.getModifiers() & EnumMap.Modifier.orToInt(modifierTypes));
+        return 0 != (clazz.getModifiers() & EnumValue.Modifier.orToInt(modifierTypes));
     }
 
     /**
@@ -63,11 +63,11 @@ public class ModifierKit {
      * @param modifierTypes 修饰符枚举，如果为空返回{@code false}
      * @return 是否有指定修饰符，如果有返回true，否则false，如果提供参数为null返回false
      */
-    public static boolean hasModifier(final Member member, final EnumMap.Modifier... modifierTypes) {
+    public static boolean hasModifier(final Member member, final EnumValue.Modifier... modifierTypes) {
         if (null == member || ArrayKit.isEmpty(modifierTypes)) {
             return false;
         }
-        return 0 != (member.getModifiers() & EnumMap.Modifier.orToInt(modifierTypes));
+        return 0 != (member.getModifiers() & EnumValue.Modifier.orToInt(modifierTypes));
     }
 
     /**
@@ -81,7 +81,7 @@ public class ModifierKit {
         if (ArrayKit.isEmpty(checkedModifiers)) {
             return false;
         }
-        return 0 != (modifiers & EnumMap.Modifier.orToInt(checkedModifiers));
+        return 0 != (modifiers & EnumValue.Modifier.orToInt(checkedModifiers));
     }
 
     /**
@@ -95,7 +95,7 @@ public class ModifierKit {
         if (ArrayKit.isEmpty(checkedModifiers)) {
             return false;
         }
-        final int checkedModifiersInt = EnumMap.Modifier.orToInt(checkedModifiers);
+        final int checkedModifiersInt = EnumValue.Modifier.orToInt(checkedModifiers);
         return checkedModifiersInt == (modifiers & checkedModifiersInt);
     }
 
@@ -257,7 +257,7 @@ public class ModifierKit {
      * @throws InternalException IllegalAccessException等异常包装
      */
     public static void removeFinalModify(final Field field) {
-        if (!hasModifier(field, EnumMap.Modifier.FINAL)) {
+        if (!hasModifier(field, EnumValue.Modifier.FINAL)) {
             return;
         }
 

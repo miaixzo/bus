@@ -29,7 +29,7 @@ package org.miaixz.bus.limiter;
 
 import java.lang.reflect.Method;
 
-import org.miaixz.bus.core.lang.EnumMap;
+import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.limiter.magic.StrategyMode;
 
 /**
@@ -57,7 +57,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
 
     @Override
     default Object type() {
-        return EnumMap.Povider.LIMITER;
+        return EnumValue.Povider.LIMITER;
     }
 
 }

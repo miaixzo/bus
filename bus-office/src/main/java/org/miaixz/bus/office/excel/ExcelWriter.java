@@ -46,7 +46,7 @@ import org.miaixz.bus.core.center.map.multi.RowKeyTable;
 import org.miaixz.bus.core.center.map.multi.Table;
 import org.miaixz.bus.core.compare.IndexedCompare;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.EnumMap;
+import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
@@ -493,11 +493,11 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * 设置Excel页眉或页脚
      *
      * @param text     页脚的文本
-     * @param align    对齐方式枚举 {@link EnumMap.Align}
+     * @param align    对齐方式枚举 {@link EnumValue.Align}
      * @param isFooter 是否为页脚，false表示页眉，true表示页脚
      * @return this
      */
-    public ExcelWriter setHeaderOrFooter(final String text, final EnumMap.Align align, final boolean isFooter) {
+    public ExcelWriter setHeaderOrFooter(final String text, final EnumValue.Align align, final boolean isFooter) {
         final HeaderFooter headerFooter = isFooter ? this.sheet.getFooter() : this.sheet.getHeader();
         switch (align) {
         case LEFT:

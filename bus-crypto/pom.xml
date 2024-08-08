@@ -75,7 +75,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <lombok.version>1.18.34</lombok.version>
-        <bouncycastle.version>1.78.1</bouncycastle.version>
+        <bcpkix.version>1.78.1</bcpkix.version>
     </properties>
 
     <dependencies>
@@ -93,7 +93,7 @@
         <dependency>
             <groupId>org.bouncycastle</groupId>
             <artifactId>bcpkix-jdk18on</artifactId>
-            <version>${bouncycastle.version}</version>
+            <version>${bcpkix.version}</version>
             <optional>true</optional>
         </dependency>
     </dependencies>
@@ -112,7 +112,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>3.8.0</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>

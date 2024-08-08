@@ -32,7 +32,7 @@ import java.io.InputStream;
 import java.nio.file.Path;
 
 import org.miaixz.bus.core.basic.entity.Message;
-import org.miaixz.bus.core.lang.EnumMap;
+import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.storage.magic.ErrorCode;
 
 /**
@@ -164,7 +164,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
 
     @Override
     default Object type() {
-        return EnumMap.Povider.STORAGE;
+        return EnumValue.Povider.STORAGE;
     }
 
 }

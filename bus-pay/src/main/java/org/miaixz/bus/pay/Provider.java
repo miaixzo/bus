@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.pay;
 
-import org.miaixz.bus.core.lang.EnumMap;
+import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.pay.magic.Material;
 
 /**
@@ -42,7 +42,7 @@ public interface Provider<T extends Material> extends org.miaixz.bus.core.Provid
 
     @Override
     default Object type() {
-        return EnumMap.Povider.PAY;
+        return EnumValue.Povider.PAY;
     }
 
 }

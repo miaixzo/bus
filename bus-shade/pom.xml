@@ -76,7 +76,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring.boot.version>3.3.2</spring.boot.version>
         <compress.version>1.26.2</compress.version>
-        <freemarker.version>2.3.32</freemarker.version>
+        <freemarker.version>2.3.33</freemarker.version>
         <lombok.version>1.18.34</lombok.version>
         <hikaricp.version>5.1.0</hikaricp.version>
         <mysql.version>9.0.0</mysql.version>
@@ -158,7 +158,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>3.8.0</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>

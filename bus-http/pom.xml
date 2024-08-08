@@ -76,7 +76,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <lombok.version>1.18.34</lombok.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
-        <jakarta.xml.soap.version>2.0.1</jakarta.xml.soap.version>
+        <jakarta.xml.soap.version>3.0.2</jakarta.xml.soap.version>
     </properties>
 
     <dependencies>
@@ -119,7 +119,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>3.8.0</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>

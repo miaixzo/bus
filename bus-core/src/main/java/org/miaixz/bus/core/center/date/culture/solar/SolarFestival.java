@@ -31,7 +31,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.center.date.culture.Loops;
-import org.miaixz.bus.core.lang.EnumMap;
+import org.miaixz.bus.core.lang.EnumValue;
 
 /**
  * 公历现代节日
@@ -49,7 +49,7 @@ public class SolarFestival extends Loops {
     /**
      * 类型
      */
-    protected EnumMap.Festival type;
+    protected EnumValue.Festival type;
 
     /**
      * 索引
@@ -71,7 +71,7 @@ public class SolarFestival extends Loops {
      */
     protected int startYear;
 
-    public SolarFestival(EnumMap.Festival type, SolarDay day, int startYear, String data) {
+    public SolarFestival(EnumValue.Festival type, SolarDay day, int startYear, String data) {
         this.type = type;
         this.day = day;
         this.startYear = startYear;
@@ -88,8 +88,8 @@ public class SolarFestival extends Loops {
             return null;
         }
         String data = matcher.group();
-        EnumMap.Festival type = EnumMap.Festival.fromCode(data.charAt(3) - '0');
-        if (type != EnumMap.Festival.DAY) {
+        EnumValue.Festival type = EnumValue.Festival.fromCode(data.charAt(3) - '0');
+        if (type != EnumValue.Festival.DAY) {
             return null;
         }
         int startYear = Integer.parseInt(data.substring(8), 10);
@@ -106,7 +106,7 @@ public class SolarFestival extends Loops {
         String data = matcher.group();
         int startYear = Integer.parseInt(data.substring(8), 10);
         return year < startYear ? null
-                : new SolarFestival(EnumMap.Festival.DAY, SolarDay.fromYmd(year, month, day), startYear, data);
+                : new SolarFestival(EnumValue.Festival.DAY, SolarDay.fromYmd(year, month, day), startYear, data);
     }
 
     public SolarFestival next(int n) {
@@ -127,7 +127,7 @@ public class SolarFestival extends Loops {
      *
      * @return 节日类型
      */
-    public EnumMap.Festival getType() {
+    public EnumValue.Festival getType() {
         return type;
     }
 

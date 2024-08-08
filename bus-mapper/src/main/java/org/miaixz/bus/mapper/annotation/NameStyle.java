@@ -32,7 +32,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.miaixz.bus.core.lang.EnumMap;
+import org.miaixz.bus.core.lang.EnumValue;
 
 /**
  * 名字转换样式,注解的优先级高于全局配置
@@ -44,6 +44,6 @@ import org.miaixz.bus.core.lang.EnumMap;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NameStyle {
 
-    EnumMap.Naming value() default EnumMap.Naming.NORMAL;
+    EnumValue.Naming value() default EnumValue.Naming.NORMAL;
 
 }

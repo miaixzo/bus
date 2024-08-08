@@ -30,7 +30,7 @@ package org.miaixz.bus.extra.pinyin;
 import java.util.List;
 
 import org.miaixz.bus.core.Provider;
-import org.miaixz.bus.core.lang.EnumMap;
+import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
@@ -87,7 +87,7 @@ public interface PinyinProvider extends Provider {
 
     @Override
     default Object type() {
-        return EnumMap.Povider.PINYIN;
+        return EnumValue.Povider.PINYIN;
     }
 
 }

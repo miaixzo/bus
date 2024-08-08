@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.core.data;
 
-import org.miaixz.bus.core.lang.EnumMap;
+import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -79,7 +79,7 @@ public class Masking {
      * @param masking 脱敏类型;可以脱敏：用户id、中文名、身份证号、座机号、手机号、地址、电子邮件、密码
      * @return 脱敏之后的字符串
      */
-    public static String masking(final CharSequence text, final EnumMap.Masking masking) {
+    public static String masking(final CharSequence text, final EnumValue.Masking masking) {
         if (StringKit.isBlank(text)) {
             return Normal.EMPTY;
         }

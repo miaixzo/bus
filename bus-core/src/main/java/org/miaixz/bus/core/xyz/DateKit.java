@@ -802,6 +802,7 @@ public class DateKit extends Calendar {
     public static DateTime endOfHour(final Date date, final boolean truncate) {
         return new DateTime(endOfHour(calendar(date), truncate));
     }
+
     /**
      * 获取某分钟的开始时间
      *
@@ -822,6 +823,7 @@ public class DateKit extends Calendar {
     public static DateTime endOfMinute(final Date date, final boolean truncate) {
         return new DateTime(endOfMinute(calendar(date), truncate));
     }
+
     /**
      * 获取某天的开始时间
      *
@@ -896,6 +898,7 @@ public class DateKit extends Calendar {
     public static DateTime endOfMonth(final Date date, final boolean truncate) {
         return new DateTime(endOfMonth(calendar(date), truncate));
     }
+
     /**
      * 获取某季度的开始时间
      *

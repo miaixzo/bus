@@ -33,7 +33,7 @@ import java.util.List;
 
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.UnknownTypeHandler;
-import org.miaixz.bus.core.lang.EnumMap;
+import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Order;
@@ -72,7 +72,7 @@ public class DefaultEntityResolve implements EntityResolve {
      * @param naming 样式
      * @return the string
      */
-    public static String convertByStyle(String text, EnumMap.Naming naming) {
+    public static String convertByStyle(String text, EnumValue.Naming naming) {
         switch (naming) {
         case CAMEL:
             return camelToUnderline(text);
@@ -133,7 +133,7 @@ public class DefaultEntityResolve implements EntityResolve {
 
     @Override
     public EntityTable resolveEntity(Class<?> entityClass, Property property) {
-        EnumMap.Naming naming = property.getStyle();
+        EnumValue.Naming naming = property.getStyle();
         // mode，该注解优先于全局配置
         if (entityClass.isAnnotationPresent(NameStyle.class)) {
             NameStyle nameStyle = entityClass.getAnnotation(NameStyle.class);
@@ -196,7 +196,7 @@ public class DefaultEntityResolve implements EntityResolve {
      * @param property    配置
      * @param naming      样式
      */
-    protected void processField(EntityTable entityTable, EntityField field, Property property, EnumMap.Naming naming) {
+    protected void processField(EntityTable entityTable, EntityField field, Property property, EnumValue.Naming naming) {
         // 排除字段
         if (field.isAnnotationPresent(Transient.class)) {
             return;

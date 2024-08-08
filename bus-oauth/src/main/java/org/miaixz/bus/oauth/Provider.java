@@ -28,7 +28,7 @@
 package org.miaixz.bus.oauth;
 
 import org.miaixz.bus.core.basic.entity.Message;
-import org.miaixz.bus.core.lang.EnumMap;
+import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
@@ -85,7 +85,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
 
     @Override
     default Object type() {
-        return EnumMap.Povider.OAUTH;
+        return EnumValue.Povider.OAUTH;
     }
 
 }

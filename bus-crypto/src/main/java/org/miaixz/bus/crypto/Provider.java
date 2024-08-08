@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.crypto;
 
-import org.miaixz.bus.core.lang.EnumMap;
+import org.miaixz.bus.core.lang.EnumValue;
 
 /**
  * @author Kimi Liu
@@ -55,7 +55,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
 
     @Override
     default Object type() {
-        return EnumMap.Povider.CRYPTO;
+        return EnumValue.Povider.CRYPTO;
     }
 
 }

@@ -37,7 +37,7 @@ import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 10位公民身份号码（Citizen Identification Number）用于台湾、澳门、香港
+ * 10位公民身份号码（Citizen Identification Number）用于台湾、香港、澳门
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -127,9 +127,9 @@ public class CIN10 {
     }
 
     /**
-     * 创建并验证台湾、澳门、香港身份证号码
+     * 创建并验证台湾、香港、澳门身份证号码
      *
-     * @param code 台湾、澳门、香港身份证号码
+     * @param code 台湾、香港、澳门身份证号码
      * @return CIN10
      */
     public static CIN10 of(final String code) {
