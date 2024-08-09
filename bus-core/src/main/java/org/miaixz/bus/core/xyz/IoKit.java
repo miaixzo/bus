@@ -968,7 +968,7 @@ public class IoKit {
      * @param contents   写入的内容，调用toString()方法，不包括不会自动换行
      * @throws InternalException IO异常
      */
-    public static void write(final OutputStream out, final boolean isCloseOut, final Object... contents)
+    public static void write(final OutputStream out, final boolean isCloseOut, final CharSequence... contents)
             throws InternalException {
         write(out, Charset.UTF_8, isCloseOut, contents);
     }
@@ -983,7 +983,7 @@ public class IoKit {
      * @throws InternalException IO异常
      */
     public static void write(final OutputStream out, final java.nio.charset.Charset charset, final boolean isCloseOut,
-            final Object... contents) throws InternalException {
+            final CharSequence... contents) throws InternalException {
         StreamWriter.of(out, isCloseOut).writeString(charset, contents);
     }
 
@@ -995,7 +995,7 @@ public class IoKit {
      * @param contents   写入的内容
      * @throws InternalException IO异常
      */
-    public static void writeObjects(final OutputStream out, final boolean isCloseOut, final Object... contents)
+    public static void write(final OutputStream out, final boolean isCloseOut, final Object... contents)
             throws InternalException {
         StreamWriter.of(out, isCloseOut).writeObject(contents);
     }

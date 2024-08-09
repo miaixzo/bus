@@ -28,6 +28,7 @@
 package org.miaixz.bus.cron.pattern.matcher;
 
 import java.time.Year;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.TimeZone;
 
@@ -331,6 +332,11 @@ public class PatternMatcher {
         }
         calendar.set(part.getCalendarField(), value);
         return calendar;
+    }
+
+    @Override
+    public String toString() {
+        return "PatternMatcher{" + "matchers=" + Arrays.toString(matchers) + '}';
     }
 
 }

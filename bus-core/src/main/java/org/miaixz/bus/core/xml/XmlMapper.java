@@ -32,6 +32,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.core.bean.copier.CopyOptions;
 import org.miaixz.bus.core.xyz.*;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -119,11 +120,12 @@ public class XmlMapper {
     /**
      * XML转Java Bean 如果XML根节点只有一个，且节点名和Bean的名称一致，则直接转换子节点
      *
-     * @param <T>  bean类型
-     * @param bean bean类
-     * @return beans
+     * @param <T>         bean类型
+     * @param bean        bean类
+     * @param copyOptions 拷贝选线，可选是否忽略错误等
+     * @return bean
      */
-    public <T> T toBean(final Class<T> bean) {
+    public <T> T toBean(final Class<T> bean, final CopyOptions copyOptions) {
         final Map<String, Object> map = toMap();
         if (null != map && map.size() == 1) {
             final String nodeName = CollKit.getFirst(map.keySet());
@@ -132,7 +134,7 @@ public class XmlMapper {
                 return BeanKit.toBean(CollKit.get(map.values(), 0), bean);
             }
         }
-        return BeanKit.toBean(map, bean);
+        return BeanKit.toBean(map, bean, copyOptions);
     }
 
     /**

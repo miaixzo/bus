@@ -25,7 +25,7 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.office.excel;
+package org.miaixz.bus.office.excel.writer;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,6 +50,9 @@ import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
+import org.miaixz.bus.office.excel.ExcelBase;
+import org.miaixz.bus.office.excel.RowKit;
+import org.miaixz.bus.office.excel.WorkbookKit;
 import org.miaixz.bus.office.excel.cell.CellEditor;
 import org.miaixz.bus.office.excel.cell.CellKit;
 import org.miaixz.bus.office.excel.style.DefaultStyleSet;
@@ -248,24 +251,33 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     /**
      * 设置所有列为自动宽度，不考虑合并单元格 此方法必须在指定列数据完全写出后调用才有效。 列数计算是通过第一行计算的
      *
+     * @param useMergedCells 是否适用于合并单元格
+     * @param widthRatio     列宽的倍数。如果所有内容都是英文，可以设为1，如果有中文，建议设置为 1.6-2.0之间。
      * @return this
      */
-    public ExcelWriter autoSizeColumnAll() {
+    public ExcelWriter autoSizeColumnAll(final boolean useMergedCells, final float widthRatio) {
         final int columnCount = this.getColumnCount();
         for (int i = 0; i < columnCount; i++) {
-            autoSizeColumn(i);
+            autoSizeColumn(i, useMergedCells, widthRatio);
         }
         return this;
     }
 
     /**
-     * 设置某列为自动宽度，不考虑合并单元格 此方法必须在指定列数据完全写出后调用才有效。
+     * 设置某列为自动宽度。注意有中文的情况下，需要根据需求调整宽度扩大比例。
+     * 此方法必须在指定列数据完全写出后调用才有效。
      *
-     * @param columnIndex 第几列，从0计数
+     * @param columnIndex    第几列，从0计数
+     * @param useMergedCells 是否适用于合并单元格
+     * @param widthRatio     列宽的倍数。如果所有内容都是英文，可以设为1，如果有中文，建议设置为 1.6-2.0之间。
      * @return this
      */
-    public ExcelWriter autoSizeColumn(final int columnIndex) {
-        this.sheet.autoSizeColumn(columnIndex);
+    public ExcelWriter autoSizeColumn(final int columnIndex, final boolean useMergedCells, final float widthRatio) {
+        if (widthRatio > 0) {
+            sheet.setColumnWidth(columnIndex, (int) (sheet.getColumnWidth(columnIndex) * widthRatio));
+        } else {
+            sheet.autoSizeColumn(columnIndex, useMergedCells);
+        }
         return this;
     }
 

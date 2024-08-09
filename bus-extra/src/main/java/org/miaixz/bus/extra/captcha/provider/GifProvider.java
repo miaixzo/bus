@@ -148,7 +148,7 @@ public class GifProvider extends AbstractProvider {
     }
 
     /**
-     * 设置验证码字符颜色
+     * 设置最大取色范围
      *
      * @param maxColor 颜色
      * @return this
@@ -159,7 +159,7 @@ public class GifProvider extends AbstractProvider {
     }
 
     /**
-     * 设置验证码字符颜色
+     * 设置最小取色范围
      *
      * @param minColor 颜色
      * @return this

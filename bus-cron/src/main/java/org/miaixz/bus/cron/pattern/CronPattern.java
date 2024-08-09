@@ -295,13 +295,24 @@ public class CronPattern {
             calendar = newCalendar;
         }
 
+        return nextMatch(calendar);
+    }
+
+    /**
+     * 返回匹配到的下一个时间，如果给定时间匹配，直接返回
+     *
+     * @param calendar 时间
+     * @return 匹配到的下一个时间
+     */
+    public java.util.Calendar nextMatch(final java.util.Calendar calendar) {
         java.util.Calendar next = nextMatchAfter(getFields(calendar, true), calendar.getTimeZone());
-        if (!match(next, true)) {
-            next.set(java.util.Calendar.DAY_OF_MONTH, next.get(java.util.Calendar.DAY_OF_MONTH) + 1);
-            next = Calendar.beginOfDay(next);
-            return nextMatchAfter(next);
+        if (match(next, true)) {
+            return next;
         }
-        return next;
+
+        next.set(java.util.Calendar.DAY_OF_MONTH, next.get(java.util.Calendar.DAY_OF_MONTH) + 1);
+        next = Calendar.beginOfDay(next);
+        return nextMatch(next);
     }
 
     @Override

@@ -25,7 +25,7 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.office.excel;
+package org.miaixz.bus.office.excel.writer;
 
 import java.io.File;
 import java.io.OutputStream;
@@ -35,6 +35,7 @@ import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.office.excel.WorkbookKit;
 
 /**
  * 大数据量Excel写出，只支持XLSX（Excel07版本） 通过封装{@link SXSSFWorkbook}，限制对滑动窗口中的行的访问来实现其低内存使用。
@@ -153,19 +154,19 @@ public class BigExcelWriter extends ExcelWriter {
     }
 
     @Override
-    public BigExcelWriter autoSizeColumn(final int columnIndex) {
+    public BigExcelWriter autoSizeColumn(final int columnIndex, final boolean useMergedCells, final float widthRatio) {
         final SXSSFSheet sheet = (SXSSFSheet) this.sheet;
         sheet.trackColumnForAutoSizing(columnIndex);
-        super.autoSizeColumn(columnIndex);
+        super.autoSizeColumn(columnIndex, useMergedCells, widthRatio);
         sheet.untrackColumnForAutoSizing(columnIndex);
         return this;
     }
 
     @Override
-    public BigExcelWriter autoSizeColumnAll() {
+    public BigExcelWriter autoSizeColumnAll(final boolean useMergedCells, final float widthRatio) {
         final SXSSFSheet sheet = (SXSSFSheet) this.sheet;
         sheet.trackAllColumnsForAutoSizing();
-        super.autoSizeColumnAll();
+        super.autoSizeColumnAll(useMergedCells, widthRatio);
         sheet.untrackAllColumnsForAutoSizing();
         return this;
     }

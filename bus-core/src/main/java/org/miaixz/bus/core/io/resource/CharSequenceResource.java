@@ -85,7 +85,7 @@ public class CharSequenceResource implements Resource, Serializable {
 
     @Override
     public String getName() {
-        return StringKit.toString(this.name);
+        return StringKit.toStringOrNull(this.name);
     }
 
     @Override
