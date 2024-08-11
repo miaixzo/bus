@@ -34,10 +34,7 @@ import java.nio.charset.CodingErrorAction;
 import java.text.MessageFormat;
 import java.text.Normalizer;
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
+import java.util.function.*;
 import java.util.regex.Matcher;
 
 import org.miaixz.bus.core.center.function.FunctionX;
@@ -1060,7 +1057,7 @@ public class CharsBacker extends CharsValidator {
      * @param args 被移除的字符串
      * @return 移除后的字符串
      */
-    public static String removeAny(final CharSequence text, final CharSequence... args) {
+    public static String removeAll(final CharSequence text, final CharSequence... args) {
         String result = toStringOrNull(text);
         if (isNotEmpty(text)) {
             for (final CharSequence remove : args) {
@@ -4169,6 +4166,30 @@ public class CharsBacker extends CharsValidator {
             return null;
         }
         return (isCodePoint ? text.codePoints() : text.chars()).toArray();
+    }
+
+    /**
+     * 遍历字符串的每个字符，并处理
+     *
+     * @param str      字符串
+     * @param consumer 字符处理
+     */
+    public static void forEach(final CharSequence str, final Consumer<Character> consumer) {
+        forEach(str, false, (cInt) -> consumer.accept((char) cInt));
+    }
+
+    /**
+     * 遍历字符串的每个字符，并处理
+     *
+     * @param str         字符串
+     * @param isCodePoint 是否为Unicode码点（即支持emoji等多char字符）
+     * @param consumer    字符处理
+     */
+    public static void forEach(final CharSequence str, final boolean isCodePoint, final IntConsumer consumer) {
+        if (null == str) {
+            return;
+        }
+        (isCodePoint ? str.codePoints() : str.chars()).forEach(consumer);
     }
 
 }

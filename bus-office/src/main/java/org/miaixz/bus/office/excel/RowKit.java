@@ -88,7 +88,7 @@ public class RowKit {
     public static List<Object> readRow(final Row row, final int startCellNumInclude, final int endCellNumInclude,
             final CellEditor cellEditor) {
         if (null == row) {
-            return new ArrayList<>(0);
+            return ListKit.empty();
         }
         final short rowLength = row.getLastCellNum();
         if (rowLength < 0) {

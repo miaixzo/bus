@@ -33,6 +33,8 @@ import java.util.List;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.office.excel.RowKit;
+import org.miaixz.bus.office.excel.cell.CellEditor;
 
 /**
  * 读取{@link Sheet}为List列表形式
@@ -63,15 +65,18 @@ public class ListSheetReader extends AbstractSheetReader<List<List<Object>>> {
     public List<List<Object>> read(final Sheet sheet) {
         final List<List<Object>> resultList = new ArrayList<>();
 
-        final int startRowIndex = Math.max(this.startRowIndex, sheet.getFirstRowNum());// 读取起始行（包含）
-        final int endRowIndex = Math.min(this.endRowIndex, sheet.getLastRowNum());// 读取结束行（包含）
+        final int startRowIndex = Math.max(this.cellRangeAddress.getFirstRow(), sheet.getFirstRowNum());// 读取起始行（包含）
+        final int endRowIndex = Math.min(this.cellRangeAddress.getLastRow(), sheet.getLastRowNum());// 读取结束行（包含）
+
         List<Object> rowList;
+        final CellEditor cellEditor = this.config.getCellEditor();
+        final boolean ignoreEmptyRow = this.config.isIgnoreEmptyRow();
         for (int i = startRowIndex; i <= endRowIndex; i++) {
-            rowList = readRow(sheet, i);
+            rowList = RowKit.readRow(sheet.getRow(i), cellEditor);
             if (CollKit.isNotEmpty(rowList) || !ignoreEmptyRow) {
                 if (aliasFirstLine && i == startRowIndex) {
                     // 第一行作为标题行，替换别名
-                    rowList = Convert.toList(Object.class, aliasHeader(rowList));
+                    rowList = Convert.toList(Object.class, this.config.aliasHeader(rowList));
                 }
                 resultList.add(rowList);
             }

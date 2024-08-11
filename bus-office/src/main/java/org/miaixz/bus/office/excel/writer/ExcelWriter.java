@@ -44,7 +44,6 @@ import org.miaixz.bus.core.center.map.TableMap;
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.center.map.multi.RowKeyTable;
 import org.miaixz.bus.core.center.map.multi.Table;
-import org.miaixz.bus.core.compare.IndexedCompare;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Symbol;
@@ -52,6 +51,7 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.office.excel.ExcelBase;
 import org.miaixz.bus.office.excel.RowKit;
+import org.miaixz.bus.office.excel.SheetKit;
 import org.miaixz.bus.office.excel.WorkbookKit;
 import org.miaixz.bus.office.excel.cell.CellEditor;
 import org.miaixz.bus.office.excel.cell.CellKit;
@@ -69,32 +69,22 @@ import org.miaixz.bus.office.excel.style.StyleSet;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ExcelWriter extends ExcelBase<ExcelWriter> {
+public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
 
     /**
      * 当前行
      */
     private final AtomicInteger currentRow;
-    /**
-     * 是否只保留别名对应的字段
-     */
-    private boolean onlyAlias;
-    /**
-     * 标题顺序比较器
-     */
-    private Comparator<String> aliasComparator;
+
     /**
      * 样式集，定义不同类型数据样式
      */
     private StyleSet styleSet;
+
     /**
      * 标题项对应列号缓存，每次写标题更新此缓存
      */
     private Map<String, Integer> headLocationCache;
-    /**
-     * 单元格值处理接口
-     */
-    private CellEditor cellEditor;
 
     /**
      * 构造，默认生成xlsx格式的Excel文件 此构造不传入写出的Excel文件路径，只能调用{@link #flush(OutputStream)}方法写出到流
@@ -170,7 +160,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @param sheetName sheet名，做为第一个sheet名并写出到此sheet，例如sheet1
      */
     public ExcelWriter(final Workbook workbook, final String sheetName) {
-        this(WorkbookKit.getOrCreateSheet(workbook, sheetName));
+        this(SheetKit.getOrCreateSheet(workbook, sheetName));
     }
 
     /**
@@ -180,20 +170,14 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @param sheet {@link Sheet}
      */
     public ExcelWriter(final Sheet sheet) {
-        super(sheet);
+        super(new ExcelWriteConfig(), sheet);
         this.styleSet = new DefaultStyleSet(workbook);
         this.currentRow = new AtomicInteger(0);
     }
 
-    /**
-     * 设置单元格值处理逻辑 当Excel中的值并不能满足我们的读取要求时，通过传入一个编辑接口，可以对单元格值自定义，例如对数字和日期类型值转换为字符串等
-     *
-     * @param cellEditor 单元格值处理接口
-     * @return this
-     */
-    public ExcelWriter setCellEditor(final CellEditor cellEditor) {
-        this.cellEditor = cellEditor;
-        return this;
+    @Override
+    public ExcelWriter setConfig(final ExcelWriteConfig config) {
+        return super.setConfig(config);
     }
 
     @Override
@@ -398,39 +382,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      */
     public ExcelWriter setDestFile(final File destFile) {
         this.destFile = destFile;
-        return this;
-    }
-
-    @Override
-    public ExcelWriter setHeaderAlias(final Map<String, String> headerAlias) {
-        // 新增别名时清除比较器缓存
-        this.aliasComparator = null;
-        return super.setHeaderAlias(headerAlias);
-    }
-
-    @Override
-    public ExcelWriter clearHeaderAlias() {
-        // 清空别名时清除比较器缓存
-        this.aliasComparator = null;
-        return super.clearHeaderAlias();
-    }
-
-    @Override
-    public ExcelWriter addHeaderAlias(final String name, final String alias) {
-        // 新增别名时清除比较器缓存
-        this.aliasComparator = null;
-        return super.addHeaderAlias(name, alias);
-    }
-
-    /**
-     * 设置是否只保留别名中的字段值，如果为true，则不设置alias的字段将不被输出，false表示原样输出
-     * Bean中设置@Alias时，setOnlyAlias是无效的，这个参数只和addHeaderAlias配合使用，原因是注解是Bean内部的操作，而addHeaderAlias是Writer的操作，不互通。
-     *
-     * @param isOnlyAlias 是否只保留别名中的字段值
-     * @return this
-     */
-    public ExcelWriter setOnlyAlias(final boolean isOnlyAlias) {
-        this.onlyAlias = isOnlyAlias;
         return this;
     }
 
@@ -682,7 +633,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         // 设置内容
         if (null != content) {
             final Cell cell = getOrCreateCell(cellRangeAddress.getFirstColumn(), cellRangeAddress.getFirstRow());
-            CellKit.setCellValue(cell, content, cellStyle, this.cellEditor);
+            CellKit.setCellValue(cell, content, cellStyle, this.config.getCellEditor());
         }
         return this;
     }
@@ -864,11 +815,12 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         Assert.isFalse(this.isClosed, "ExcelWriter has been closed!");
         this.headLocationCache = new SafeConcurrentHashMap<>();
         final Row row = this.sheet.createRow(this.currentRow.getAndIncrement());
+        final CellEditor cellEditor = this.config.getCellEditor();
         int i = 0;
         Cell cell;
         for (final Object value : rowData) {
             cell = row.createCell(i);
-            CellKit.setCellValue(cell, value, this.styleSet, true, this.cellEditor);
+            CellKit.setCellValue(cell, value, this.styleSet, true, cellEditor);
             this.headLocationCache.put(StringKit.toString(value), i);
             i++;
         }
@@ -890,6 +842,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         final Iterator<?> iterator = rowData.iterator();
         // 如果获取的row存在单元格，则执行复杂表头逻辑，否则直接调用writeHeadRow(Iterable<?> rowData)
         if (row.getLastCellNum() != 0) {
+            final CellEditor cellEditor = this.config.getCellEditor();
             for (int i = 0; i < this.workbook.getSpreadsheetVersion().getMaxColumns(); i++) {
                 Cell cell = row.getCell(i);
                 if (cell != null) {
@@ -897,7 +850,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
                 }
                 if (iterator.hasNext()) {
                     cell = row.createCell(i);
-                    CellKit.setCellValue(cell, iterator.next(), this.styleSet, true, this.cellEditor);
+                    CellKit.setCellValue(cell, iterator.next(), this.styleSet, true, cellEditor);
                 } else {
                     break;
                 }
@@ -924,10 +877,12 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @see #writeRow(Map, boolean)
      */
     public ExcelWriter writeRow(final Object rowBean, final boolean isWriteKeyAsHead) {
+        final ExcelWriteConfig config = this.config;
+
         final Map rowMap;
         if (rowBean instanceof Map) {
-            if (MapKit.isNotEmpty(this.headerAlias)) {
-                rowMap = MapKit.newTreeMap((Map) rowBean, getCachedAliasComparator());
+            if (MapKit.isNotEmpty(config.getHeaderAlias())) {
+                rowMap = MapKit.newTreeMap((Map) rowBean, config.getCachedAliasComparator());
             } else {
                 rowMap = (Map) rowBean;
             }
@@ -938,11 +893,11 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
             // Hyperlink当成一个值
             return writeRow(ListKit.of(rowBean), isWriteKeyAsHead);
         } else if (BeanKit.isReadableBean(rowBean.getClass())) {
-            if (MapKit.isEmpty(this.headerAlias)) {
+            if (MapKit.isEmpty(config.getHeaderAlias())) {
                 rowMap = BeanKit.beanToMap(rowBean, new LinkedHashMap<>(), false, false);
             } else {
                 // 别名存在情况下按照别名的添加顺序排序Bean数据
-                rowMap = BeanKit.beanToMap(rowBean, new TreeMap<>(getCachedAliasComparator()), false, false);
+                rowMap = BeanKit.beanToMap(rowBean, new TreeMap<>(config.getCachedAliasComparator()), false, false);
             }
         } else {
             // 其它转为字符串默认输出
@@ -980,6 +935,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         // 如果已经写出标题行，根据标题行找对应的值写入
         if (MapKit.isNotEmpty(this.headLocationCache)) {
             final Row row = RowKit.getOrCreateRow(this.sheet, this.currentRow.getAndIncrement());
+            final CellEditor cellEditor = this.config.getCellEditor();
             Integer location;
             for (final Table.Cell<?, ?, ?> cell : aliasTable) {
                 // 首先查找原名对应的列号
@@ -990,7 +946,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
                 }
                 if (null != location) {
                     CellKit.setCellValue(CellKit.getOrCreateCell(row, location), cell.getValue(), this.styleSet, false,
-                            this.cellEditor);
+                            cellEditor);
                 }
             }
         } else {
@@ -1008,7 +964,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
     public ExcelWriter writeRow(final Iterable<?> rowData) {
         Assert.isFalse(this.isClosed, "ExcelWriter has been closed!");
         RowKit.writeRow(this.sheet.createRow(this.currentRow.getAndIncrement()), rowData, this.styleSet, false,
-                this.cellEditor);
+                this.config.getCellEditor());
         return this;
     }
 
@@ -1118,8 +1074,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      * @return this
      */
     public ExcelWriter writeCellValue(final int x, final int y, final Object value, final boolean isHeader) {
-        final Cell cell = getOrCreateCell(x, y);
-        CellKit.setCellValue(cell, value, this.styleSet, isHeader, this.cellEditor);
+        CellKit.setCellValue(getOrCreateCell(x, y), value, this.styleSet, isHeader, this.config.getCellEditor());
         return this;
     }
 
@@ -1306,15 +1261,17 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
      */
     private Table<?, ?, ?> aliasTable(final Map<?, ?> rowMap) {
         final Table<Object, Object, Object> filteredTable = new RowKeyTable<>(new LinkedHashMap<>(), TableMap::new);
-        if (MapKit.isEmpty(this.headerAlias)) {
+        final Map<String, String> headerAlias = this.config.getHeaderAlias();
+        final boolean onlyAlias = this.config.onlyAlias;
+        if (MapKit.isEmpty(headerAlias)) {
             rowMap.forEach((key, value) -> filteredTable.put(key, key, value));
         } else {
             rowMap.forEach((key, value) -> {
-                final String aliasName = this.headerAlias.get(StringKit.toString(key));
+                final String aliasName = headerAlias.get(StringKit.toString(key));
                 if (null != aliasName) {
                     // 别名键值对加入
                     filteredTable.put(key, aliasName, value);
-                } else if (!this.onlyAlias) {
+                } else if (!onlyAlias) {
                     // 保留无别名设置的键值对
                     filteredTable.put(key, key, value);
                 }
@@ -1322,24 +1279,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
         }
 
         return filteredTable;
-    }
-
-    /**
-     * 获取单例的别名比较器，比较器的顺序为别名加入的顺序
-     *
-     * @return Comparator
-     */
-    private Comparator<String> getCachedAliasComparator() {
-        if (MapKit.isEmpty(this.headerAlias)) {
-            return null;
-        }
-        Comparator<String> aliasComparator = this.aliasComparator;
-        if (null == aliasComparator) {
-            final Set<String> keySet = this.headerAlias.keySet();
-            aliasComparator = new IndexedCompare<>(keySet.toArray(new String[0]));
-            this.aliasComparator = aliasComparator;
-        }
-        return aliasComparator;
     }
 
 }

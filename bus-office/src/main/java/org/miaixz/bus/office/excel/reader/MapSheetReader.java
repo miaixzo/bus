@@ -36,6 +36,7 @@ import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.IteratorKit;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.office.excel.RowKit;
 
 /**
  * 读取{@link Sheet}为Map的List列表形式
@@ -74,17 +75,23 @@ public class MapSheetReader extends AbstractSheetReader<List<Map<String, Object>
         } else if (headerRowIndex > lastRowNum) {
             throw new IndexOutOfBoundsException(StringKit
                     .format("Header row index {} is greater than last row index {}.", headerRowIndex, lastRowNum));
-        } else if (startRowIndex > lastRowNum) {
+        }
+
+        int startRowIndex = this.cellRangeAddress.getFirstRow();
+        if (startRowIndex > lastRowNum) {
             // 只有标题行的Excel，起始行是1，标题行（最后的行号是0）
             return ListKit.empty();
         }
-        final int startRowIndex = Math.max(this.startRowIndex, firstRowNum);// 读取起始行（包含）
-        final int endRowIndex = Math.min(this.endRowIndex, lastRowNum);// 读取结束行（包含）
+        // 读取起始行（包含）
+        startRowIndex = Math.max(startRowIndex, firstRowNum);
+        // 读取结束行（包含）
+        final int endRowIndex = Math.min(this.cellRangeAddress.getLastRow(), lastRowNum);
 
         // 读取header
-        final List<String> headerList = aliasHeader(readRow(sheet, headerRowIndex));
+        final List<String> headerList = this.config.aliasHeader(readRow(sheet, headerRowIndex));
 
         final List<Map<String, Object>> result = new ArrayList<>(endRowIndex - startRowIndex + 1);
+        final boolean ignoreEmptyRow = this.config.isIgnoreEmptyRow();
         List<Object> rowList;
         for (int i = startRowIndex; i <= endRowIndex; i++) {
             // 跳过标题行
@@ -96,6 +103,17 @@ public class MapSheetReader extends AbstractSheetReader<List<Map<String, Object>
             }
         }
         return result;
+    }
+
+    /**
+     * 读取某一行数据
+     *
+     * @param sheet    {@link Sheet}
+     * @param rowIndex 行号，从0开始
+     * @return 一行数据
+     */
+    private List<Object> readRow(final Sheet sheet, final int rowIndex) {
+        return RowKit.readRow(sheet.getRow(rowIndex), this.config.getCellEditor());
     }
 
 }

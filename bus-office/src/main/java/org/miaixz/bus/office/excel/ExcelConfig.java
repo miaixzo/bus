@@ -1,36 +1,17 @@
-/*
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
- ~                                                                               ~
- ~ The MIT License (MIT)                                                         ~
- ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
- ~                                                                               ~
- ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
- ~ of this software and associated documentation files (the "Software"), to deal ~
- ~ in the Software without restriction, including without limitation the rights  ~
- ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell     ~
- ~ copies of the Software, and to permit persons to whom the Software is         ~
- ~ furnished to do so, subject to the following conditions:                      ~
- ~                                                                               ~
- ~ The above copyright notice and this permission notice shall be included in    ~
- ~ all copies or substantial portions of the Software.                           ~
- ~                                                                               ~
- ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR    ~
- ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,      ~
- ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE   ~
- ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER        ~
- ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, ~
- ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN     ~
- ~ THE SOFTWARE.                                                                 ~
- ~                                                                               ~
- ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-*/
 package org.miaixz.bus.office.excel;
 
-import org.apache.poi.openxml4j.util.ZipSecureFile;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.office.excel.cell.CellEditor;
+import org.miaixz.bus.office.excel.cell.CellKit;
 
 /**
- * POI的全局设置
+ * Excel读取和写出通用配置
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -38,37 +19,127 @@ import org.apache.poi.openxml4j.util.ZipSecureFile;
 public class ExcelConfig {
 
     /**
-     * 设置解压时的最小压缩比例 为了避免`Zip Bomb`，POI中设置了最小压缩比例，这个比例为：
-     * 
-     * <pre>
-     * 压缩后的大小 / 解压后的大小
-     * </pre>
-     * 
-     * POI的默认值是0.01（即最小压缩到1%），如果文档中的文件压缩比例小于这个值，就会报错。 如果文件中确实存在高压缩比的文件，可以通过这个全局方法自定义比例，从而避免错误。
-     *
-     * @param ratio 解压后的文件大小与原始文件大小的最小比率，小于等于0表示不检查
+     * 标题行别名
      */
-    public static void setMinInflateRatio(final double ratio) {
-        ZipSecureFile.setMinInflateRatio(ratio);
+    protected Map<String, String> headerAlias;
+    /**
+     * 单元格值处理接口
+     */
+    protected CellEditor cellEditor;
+
+    /**
+     * 获得标题行的别名Map
+     *
+     * @return 别名Map
+     */
+    public Map<String, String> getHeaderAlias() {
+        return headerAlias;
     }
 
     /**
-     * 设置单个Zip文件中最大文件大小，默认为4GB，即32位zip格式的最大值。
+     * 设置标题行的别名Map
      *
-     * @param maxEntrySize 单个Zip文件中最大文件大小，必须大于0
+     * @param headerAlias 别名Map
+     * @return this
      */
-    public static void setMaxEntrySize(final long maxEntrySize) {
-        ZipSecureFile.setMaxEntrySize(maxEntrySize);
+    public ExcelConfig setHeaderAlias(final Map<String, String> headerAlias) {
+        this.headerAlias = headerAlias;
+        return this;
     }
 
     /**
-     * 设置解压前文本的最大字符数，超过抛出异常。
+     * 增加标题别名
      *
-     * @param maxTextSize 文本的最大字符数
-     * @throws IllegalArgumentException for negative maxTextSize
+     * @param header 标题
+     * @param alias  别名
+     * @return this
      */
-    public static void setMaxTextSize(final long maxTextSize) {
-        ZipSecureFile.setMaxTextSize(maxTextSize);
+    public ExcelConfig addHeaderAlias(final String header, final String alias) {
+        Map<String, String> headerAlias = this.headerAlias;
+        if (null == headerAlias) {
+            headerAlias = new LinkedHashMap<>();
+            this.headerAlias = headerAlias;
+        }
+        headerAlias.put(header, alias);
+        return this;
+    }
+
+    /**
+     * 去除标题别名
+     *
+     * @param header 标题
+     * @return this
+     */
+    public ExcelConfig removeHeaderAlias(final String header) {
+        this.headerAlias.remove(header);
+        return this;
+    }
+
+    /**
+     * 清空标题别名，key为Map中的key，value为别名
+     *
+     * @return this
+     */
+    public ExcelConfig clearHeaderAlias() {
+        return setHeaderAlias(null);
+    }
+
+    /**
+     * 转换标题别名，如果没有别名则使用原标题，当标题为空时，列号对应的字母便是header
+     *
+     * @param headerList 原标题列表
+     * @return 转换别名列表
+     */
+    public List<String> aliasHeader(final List<Object> headerList) {
+        if (CollKit.isEmpty(headerList)) {
+            return new ArrayList<>(0);
+        }
+
+        final int size = headerList.size();
+        final List<String> result = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+            result.add(aliasHeader(headerList.get(i), i));
+        }
+        return result;
+    }
+
+    /**
+     * 转换标题别名，如果没有别名则使用原标题，当标题为空时，列号对应的字母便是header
+     *
+     * @param headerObj 原标题
+     * @param index     标题所在列号，当标题为空时，列号对应的字母便是header
+     * @return 转换别名列表
+     */
+    public String aliasHeader(final Object headerObj, final int index) {
+        if (null == headerObj) {
+            return CellKit.indexToColName(index);
+        }
+
+        final String header = headerObj.toString();
+        if (null != this.headerAlias) {
+            return ObjectKit.defaultIfNull(this.headerAlias.get(header), header);
+        }
+        return header;
+    }
+
+    /**
+     * 获取单元格值处理器
+     *
+     * @return 单元格值处理器
+     */
+    public CellEditor getCellEditor() {
+        return this.cellEditor;
+    }
+
+    /**
+     * 设置单元格值处理逻辑 当Excel中的值并不能满足我们的读取要求时，通过传入一个编辑接口，可以对单元格值自定义，例如对数字和日期类型值转换为字符串等
+     *
+     * @param cellEditor 单元格值处理接口
+     * @return this
+     */
+    public ExcelConfig setCellEditor(final CellEditor cellEditor) {
+        this.cellEditor = cellEditor;
+        return this;
     }
 
 }

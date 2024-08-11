@@ -34,7 +34,6 @@ import java.util.Map;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.miaixz.bus.core.bean.copier.CopyOptions;
 import org.miaixz.bus.core.xyz.BeanKit;
-import org.miaixz.bus.office.excel.cell.CellEditor;
 
 /**
  * 读取{@link Sheet}为bean的List列表形式
@@ -78,40 +77,12 @@ public class BeanSheetReader<T> implements SheetReader<List<T>> {
     }
 
     /**
-     * 设置单元格值处理逻辑 当Excel中的值并不能满足我们的读取要求时，通过传入一个编辑接口，可以对单元格值自定义，例如对数字和日期类型值转换为字符串等
+     * 设置Excel配置
      *
-     * @param cellEditor 单元格值处理接口
+     * @param config Excel配置
      */
-    public void setCellEditor(final CellEditor cellEditor) {
-        this.mapSheetReader.setCellEditor(cellEditor);
-    }
-
-    /**
-     * 设置是否忽略空行
-     *
-     * @param ignoreEmptyRow 是否忽略空行
-     */
-    public void setIgnoreEmptyRow(final boolean ignoreEmptyRow) {
-        this.mapSheetReader.setIgnoreEmptyRow(ignoreEmptyRow);
-    }
-
-    /**
-     * 设置标题行的别名Map
-     *
-     * @param headerAlias 别名Map
-     */
-    public void setHeaderAlias(final Map<String, String> headerAlias) {
-        this.mapSheetReader.setHeaderAlias(headerAlias);
-    }
-
-    /**
-     * 增加标题别名
-     *
-     * @param header 标题
-     * @param alias  别名
-     */
-    public void addHeaderAlias(final String header, final String alias) {
-        this.mapSheetReader.addHeaderAlias(header, alias);
+    public void setExcelConfig(final ExcelReadConfig config) {
+        this.mapSheetReader.setExcelConfig(config);
     }
 
 }

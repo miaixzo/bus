@@ -73,6 +73,13 @@
                 <role>maintainer</role>
             </roles>
         </developer>
+        <developer>
+            <id>justubborn</id>
+            <name>Justubborn</name>
+            <email>wubenhui@gmail.com</email>
+            <organization>Miaixz</organization>
+            <organizationUrl>http://www.miaixz.org</organizationUrl>
+        </developer>
     </developers>
 
     <properties>

@@ -35,6 +35,8 @@ import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.office.excel.SheetKit;
 import org.miaixz.bus.office.excel.WorkbookKit;
 
 /**
@@ -46,6 +48,9 @@ import org.miaixz.bus.office.excel.WorkbookKit;
  */
 public class BigExcelWriter extends ExcelWriter {
 
+    /**
+     * 默认内存中保存的行数，默认100
+     */
     public static final int DEFAULT_WINDOW_SIZE = SXSSFWorkbook.DEFAULT_WINDOW_SIZE;
 
     /**
@@ -140,7 +145,7 @@ public class BigExcelWriter extends ExcelWriter {
      * @param sheetName sheet名，做为第一个sheet名并写出到此sheet，例如sheet1
      */
     public BigExcelWriter(final SXSSFWorkbook workbook, final String sheetName) {
-        this(WorkbookKit.getOrCreateSheet(workbook, sheetName));
+        this(SheetKit.getOrCreateSheet(workbook, sheetName));
     }
 
     /**
@@ -187,7 +192,7 @@ public class BigExcelWriter extends ExcelWriter {
         }
 
         // 清理临时文件
-        ((SXSSFWorkbook) this.workbook).dispose();
+        IoKit.close(this.workbook);
         super.closeWithoutFlush();
     }
 

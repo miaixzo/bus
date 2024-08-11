@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
@@ -315,55 +314,6 @@ public class WorkbookKit {
         } catch (final IOException e) {
             throw new InternalException(e);
         }
-    }
-
-    /**
-     * 获取或者创建sheet表 如果sheet表在Workbook中已经存在，则获取之，否则创建之
-     *
-     * @param book      工作簿{@link Workbook}
-     * @param sheetName 工作表名
-     * @return 工作表{@link Sheet}
-     */
-    public static Sheet getOrCreateSheet(final Workbook book, String sheetName) {
-        if (null == book) {
-            return null;
-        }
-        sheetName = StringKit.isBlank(sheetName) ? "sheet1" : sheetName;
-        Sheet sheet = book.getSheet(sheetName);
-        if (null == sheet) {
-            sheet = book.createSheet(sheetName);
-        }
-        return sheet;
-    }
-
-    /**
-     * 获取或者创建sheet表 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之（命名为默认） 在读取中，此方法用于切换读取的sheet，在写出时，此方法用于新建或者切换sheet
-     *
-     * @param book       工作簿{@link Workbook}
-     * @param sheetIndex 工作表序号
-     * @return 工作表{@link Sheet}
-     */
-    public static Sheet getOrCreateSheet(final Workbook book, final int sheetIndex) {
-        Sheet sheet = null;
-        try {
-            sheet = book.getSheetAt(sheetIndex);
-        } catch (final IllegalArgumentException ignore) {
-            // ignore
-        }
-        if (null == sheet) {
-            sheet = book.createSheet();
-        }
-        return sheet;
-    }
-
-    /**
-     * sheet是否为空
-     *
-     * @param sheet {@link Sheet}
-     * @return sheet是否为空
-     */
-    public static boolean isEmpty(final Sheet sheet) {
-        return null == sheet || (sheet.getLastRowNum() == 0 && sheet.getPhysicalNumberOfRows() == 0);
     }
 
     /**

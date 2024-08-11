@@ -38,7 +38,7 @@ import org.miaixz.bus.notify.magic.ErrorCode;
 import org.miaixz.bus.notify.metric.AbstractProvider;
 
 /**
- * 七牛云短信
+ * 百度云短信
  *
  * @author Kimi Liu
  * @since Java 17+

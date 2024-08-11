@@ -268,12 +268,11 @@ public class ColorKit {
      * @return 随机颜色
      */
     public static Color randomColor(final Color compareColor, final int minDistance) {
-        // 注意minDistance太大会增加循环次数，保证至少1/3的概率生成成功
-        Assert.isTrue(minDistance < maxDistance(compareColor) / 3 * 2,
-                "minDistance is too large, there are too few remaining colors!");
-
         Color color = randomColor();
-        if (null == compareColor || minDistance <= 0) {
+        if(null != compareColor && minDistance > 0){
+            // 注意minDistance太大会增加循环次数，保证至少1/3的概率生成成功
+            Assert.isTrue(minDistance < maxDistance(compareColor) / 3 * 2,
+                    "minDistance is too large, there are too few remaining colors!");
             while (computeColorDistance(compareColor, color) < minDistance) {
                 color = randomColor();
             }

@@ -30,9 +30,7 @@ package org.miaixz.bus.office.excel;
 import java.io.Closeable;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.ss.usermodel.*;
@@ -56,7 +54,12 @@ import org.miaixz.bus.office.excel.style.Styles;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
+public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> implements Closeable {
+
+    /**
+     * Excel配置，此项不为空
+     */
+    protected C config;
     /**
      * 是否被关闭
      */
@@ -73,20 +76,37 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * Excel中对应的Sheet
      */
     protected Sheet sheet;
-    /**
-     * 标题行别名
-     */
-    protected Map<String, String> headerAlias;
 
     /**
      * 构造
      *
-     * @param sheet Excel中的sheet
+     * @param config config
+     * @param sheet  Excel中的sheet
      */
-    public ExcelBase(final Sheet sheet) {
-        Assert.notNull(sheet, "No Sheet provided.");
-        this.sheet = sheet;
+    public ExcelBase(final C config, final Sheet sheet) {
+        this.config = Assert.notNull(config);
+        this.sheet = Assert.notNull(sheet, "No Sheet provided.");
         this.workbook = sheet.getWorkbook();
+    }
+
+    /**
+     * 获取Excel配置
+     *
+     * @return Excel配置
+     */
+    public C getConfig() {
+        return this.config;
+    }
+
+    /**
+     * 设置Excel配置
+     *
+     * @param config Excel配置
+     * @return this
+     */
+    public T setConfig(final C config) {
+        this.config = config;
+        return (T) this;
     }
 
     /**
@@ -160,7 +180,7 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @return this
      */
     public T setSheet(final String sheetName) {
-        return setSheet(WorkbookKit.getOrCreateSheet(this.workbook, sheetName));
+        return setSheet(SheetKit.getOrCreateSheet(this.workbook, sheetName));
     }
 
     /**
@@ -170,13 +190,13 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
      * @return this
      */
     public T setSheet(final int sheetIndex) {
-        return setSheet(WorkbookKit.getOrCreateSheet(this.workbook, sheetIndex));
+        return setSheet(SheetKit.getOrCreateSheet(this.workbook, sheetIndex));
     }
 
     /**
      * 设置自定义Sheet
      *
-     * @param sheet 自定义sheet，可以通过{@link WorkbookKit#getOrCreateSheet(Workbook, String)} 创建
+     * @param sheet 自定义sheet，可以通过{@link SheetKit#getOrCreateSheet(Workbook, String)} 创建
      * @return this
      */
     public T setSheet(final Sheet sheet) {
@@ -546,64 +566,6 @@ public class ExcelBase<T extends ExcelBase<T>> implements Closeable {
         this.sheet = null;
         this.workbook = null;
         this.isClosed = true;
-    }
-
-    /**
-     * 获得标题行的别名Map
-     *
-     * @return 别名Map
-     */
-    public Map<String, String> getHeaderAlias() {
-        return headerAlias;
-    }
-
-    /**
-     * 设置标题行的别名Map
-     *
-     * @param headerAlias 别名Map
-     * @return this
-     */
-    public T setHeaderAlias(final Map<String, String> headerAlias) {
-        this.headerAlias = headerAlias;
-        return (T) this;
-    }
-
-    /**
-     * 增加标题别名
-     *
-     * @param header 标题
-     * @param alias  别名
-     * @return this
-     */
-    public T addHeaderAlias(final String header, final String alias) {
-        Map<String, String> headerAlias = this.headerAlias;
-        if (null == headerAlias) {
-            headerAlias = new LinkedHashMap<>();
-        }
-        this.headerAlias = headerAlias;
-        this.headerAlias.put(header, alias);
-        return (T) this;
-    }
-
-    /**
-     * 去除标题别名
-     *
-     * @param header 标题
-     * @return this
-     */
-    public T removeHeaderAlias(final String header) {
-        this.headerAlias.remove(header);
-        return (T) this;
-    }
-
-    /**
-     * 清空标题别名，key为Map中的key，value为别名
-     *
-     * @return this
-     */
-    public T clearHeaderAlias() {
-        this.headerAlias = null;
-        return (T) this;
     }
 
 }

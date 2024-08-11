@@ -41,7 +41,6 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.office.excel.*;
-import org.miaixz.bus.office.excel.cell.CellEditor;
 import org.miaixz.bus.office.excel.cell.CellKit;
 import org.miaixz.bus.office.excel.writer.ExcelWriter;
 
@@ -51,16 +50,7 @@ import org.miaixz.bus.office.excel.writer.ExcelWriter;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ExcelReader extends ExcelBase<ExcelReader> {
-
-    /**
-     * 是否忽略空行
-     */
-    private boolean ignoreEmptyRow = true;
-    /**
-     * 单元格值处理接口
-     */
-    private CellEditor cellEditor;
+public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
 
     /**
      * 构造
@@ -150,7 +140,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * @param sheet Excel中的sheet
      */
     public ExcelReader(final Sheet sheet) {
-        super(sheet);
+        super(new ExcelReadConfig(), sheet);
     }
 
     /**
@@ -200,37 +190,6 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     }
 
     /**
-     * 是否忽略空行
-     *
-     * @return 是否忽略空行
-     */
-    public boolean isIgnoreEmptyRow() {
-        return ignoreEmptyRow;
-    }
-
-    /**
-     * 设置是否忽略空行
-     *
-     * @param ignoreEmptyRow 是否忽略空行
-     * @return this
-     */
-    public ExcelReader setIgnoreEmptyRow(final boolean ignoreEmptyRow) {
-        this.ignoreEmptyRow = ignoreEmptyRow;
-        return this;
-    }
-
-    /**
-     * 设置单元格值处理逻辑 当Excel中的值并不能满足我们的读取要求时，通过传入一个编辑接口，可以对单元格值自定义，例如对数字和日期类型值转换为字符串等
-     *
-     * @param cellEditor 单元格值处理接口
-     * @return this
-     */
-    public ExcelReader setCellEditor(final CellEditor cellEditor) {
-        this.cellEditor = cellEditor;
-        return this;
-    }
-
-    /**
      * 读取工作簿中指定的Sheet的所有行列数据
      *
      * @return 行的集合，一行使用List表示
@@ -270,9 +229,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      */
     public List<List<Object>> read(final int startRowIndex, final int endRowIndex, final boolean aliasFirstLine) {
         final ListSheetReader reader = new ListSheetReader(startRowIndex, endRowIndex, aliasFirstLine);
-        reader.setCellEditor(this.cellEditor);
-        reader.setIgnoreEmptyRow(this.ignoreEmptyRow);
-        reader.setHeaderAlias(headerAlias);
+        reader.setExcelConfig(this.config);
         return read(reader);
     }
 
@@ -297,9 +254,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      */
     public List<Object> readColumn(final int columnIndex, final int startRowIndex, final int endRowIndex) {
         final ColumnSheetReader reader = new ColumnSheetReader(columnIndex, startRowIndex, endRowIndex);
-        reader.setCellEditor(this.cellEditor);
-        reader.setIgnoreEmptyRow(this.ignoreEmptyRow);
-        reader.setHeaderAlias(headerAlias);
+        reader.setExcelConfig(this.config);
         return read(reader);
     }
 
@@ -322,22 +277,9 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     public void read(int startRowIndex, int endRowIndex, final BiConsumerX<Cell, Object> cellHandler) {
         checkNotClosed();
 
-        startRowIndex = Math.max(startRowIndex, this.sheet.getFirstRowNum());// 读取起始行（包含）
-        endRowIndex = Math.min(endRowIndex, this.sheet.getLastRowNum());// 读取结束行（包含）
-
-        Row row;
-        short columnSize;
-        for (int y = startRowIndex; y <= endRowIndex; y++) {
-            row = this.sheet.getRow(y);
-            if (null != row) {
-                columnSize = row.getLastCellNum();
-                Cell cell;
-                for (short x = 0; x < columnSize; x++) {
-                    cell = row.getCell(x);
-                    cellHandler.accept(cell, CellKit.getCellValue(cell));
-                }
-            }
-        }
+        final WalkSheetReader reader = new WalkSheetReader(startRowIndex, endRowIndex, cellHandler);
+        reader.setExcelConfig(this.config);
+        reader.read(sheet);
     }
 
     /**
@@ -359,9 +301,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      */
     public List<Map<String, Object>> read(final int headerRowIndex, final int startRowIndex, final int endRowIndex) {
         final MapSheetReader reader = new MapSheetReader(headerRowIndex, startRowIndex, endRowIndex);
-        reader.setCellEditor(this.cellEditor);
-        reader.setIgnoreEmptyRow(this.ignoreEmptyRow);
-        reader.setHeaderAlias(headerAlias);
+        reader.setExcelConfig(this.config);
         return read(reader);
     }
 
@@ -402,9 +342,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
     public <T> List<T> read(final int headerRowIndex, final int startRowIndex, final int endRowIndex,
             final Class<T> beanType) {
         final BeanSheetReader<T> reader = new BeanSheetReader<>(headerRowIndex, startRowIndex, endRowIndex, beanType);
-        reader.setCellEditor(this.cellEditor);
-        reader.setIgnoreEmptyRow(this.ignoreEmptyRow);
-        reader.setHeaderAlias(headerAlias);
+        reader.setExcelConfig(this.config);
         return read(reader);
     }
 
@@ -457,7 +395,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * @return 值，如果单元格无值返回null
      */
     public Object readCellValue(final int x, final int y) {
-        return CellKit.getCellValue(getCell(x, y), this.cellEditor);
+        return CellKit.getCellValue(getCell(x, y), this.config.getCellEditor());
     }
 
     /**
@@ -484,7 +422,7 @@ public class ExcelReader extends ExcelBase<ExcelReader> {
      * @return 单元格值列表
      */
     private List<Object> readRow(final Row row) {
-        return RowKit.readRow(row, this.cellEditor);
+        return RowKit.readRow(row, this.config.getCellEditor());
     }
 
     /**
