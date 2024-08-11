@@ -32,6 +32,7 @@ import java.io.Serializable;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class TaskCompletionStatus implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Integer count;

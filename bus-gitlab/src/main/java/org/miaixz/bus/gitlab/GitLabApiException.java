@@ -27,20 +27,23 @@
 */
 package org.miaixz.bus.gitlab;
 
+import java.util.*;
+import java.util.Map.Entry;
+
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
 import com.fasterxml.jackson.databind.JsonNode;
+
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.StatusType;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
-import java.util.*;
-import java.util.Map.Entry;
 
 /**
  * This is the exception that will be thrown if any exception occurs while communicating with a GitLab API endpoint.
  */
 public class GitLabApiException extends Exception {
+
     private static final long serialVersionUID = -1L;
 
     private StatusType statusInfo;
@@ -286,4 +289,5 @@ public class GitLabApiException extends Exception {
 
         return true;
     }
+
 }

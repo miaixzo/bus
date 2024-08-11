@@ -37,7 +37,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public class EventLabel implements Serializable {
+
     private static final long serialVersionUID = -1L;
+
     private Long id;
     private String title;
     private String color;
@@ -156,4 +158,5 @@ public class EventLabel implements Serializable {
             return (enumHelper.toString(this));
         }
     }
+
 }

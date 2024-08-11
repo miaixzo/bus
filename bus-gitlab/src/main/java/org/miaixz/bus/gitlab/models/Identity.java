@@ -32,6 +32,7 @@ import java.io.Serializable;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class Identity implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private String provider;
@@ -66,4 +67,5 @@ public class Identity implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

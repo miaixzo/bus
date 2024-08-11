@@ -106,4 +106,5 @@ public class ReleaseLinkParams {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

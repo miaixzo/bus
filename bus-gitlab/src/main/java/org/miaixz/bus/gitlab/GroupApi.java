@@ -32,7 +32,9 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.stream.Stream;
 
+import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
 import org.miaixz.bus.gitlab.models.*;
+import org.miaixz.bus.gitlab.models.ImpersonationToken.Scope;
 import org.miaixz.bus.gitlab.support.ISO8601;
 
 import jakarta.ws.rs.core.*;
@@ -236,7 +238,6 @@ public class GroupApi extends AbstractApi {
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
      * @return a List&lt;Group&gt; containing the group's sub-groups
      * @throws GitLabApiException if any exception occurs
-     * @since GitLab 10.3.0
      */
     public List<Group> getSubGroups(Object groupIdOrPath) throws GitLabApiException {
         return (getSubGroups(groupIdOrPath, getDefaultPerPage()).all());
@@ -253,7 +254,6 @@ public class GroupApi extends AbstractApi {
      * @param itemsPerPage  the number of Group instances that will be fetched per page
      * @return a Pager containing matching Group instances
      * @throws GitLabApiException if any exception occurs
-     * @since GitLab 10.3.0
      */
     public Pager<Group> getSubGroups(Object groupIdOrPath, int itemsPerPage) throws GitLabApiException {
         return (new Pager<Group>(this, Group.class, itemsPerPage, null, "groups", getGroupIdOrPath(groupIdOrPath),
@@ -270,7 +270,6 @@ public class GroupApi extends AbstractApi {
      * @param groupIdOrPath the group ID, path of the group, or a Group instance holding the group ID or path, required
      * @return a Stream&lt;Group&gt; containing the group's sub-groups
      * @throws GitLabApiException if any exception occurs
-     * @since GitLab 10.3.0
      */
     public Stream<Group> getSubGroupsStream(Object groupIdOrPath) throws GitLabApiException {
         return (getSubGroups(groupIdOrPath, getDefaultPerPage()).stream());
@@ -293,7 +292,6 @@ public class GroupApi extends AbstractApi {
      * @param owned         limit to groups owned by the current user
      * @return a List&lt;Group&gt; of the matching subgroups
      * @throws GitLabApiException if any exception occurs
-     * @since GitLab 10.3.0
      */
     public List<Group> getSubGroups(Object groupIdOrPath, List<Integer> skipGroups, Boolean allAvailable, String search,
             GroupOrderBy orderBy, SortOrder sortOrder, Boolean statistics, Boolean owned) throws GitLabApiException {
@@ -320,7 +318,6 @@ public class GroupApi extends AbstractApi {
      * @param perPage       the number of Group instances per page
      * @return a List&lt;Group&gt; of the matching subgroups
      * @throws GitLabApiException if any exception occurs
-     * @since GitLab 10.3.0
      */
     public List<Group> getSubGroups(Object groupIdOrPath, List<Integer> skipGroups, Boolean allAvailable, String search,
             GroupOrderBy orderBy, SortOrder sortOrder, Boolean statistics, Boolean owned, int page, int perPage)
@@ -331,7 +328,7 @@ public class GroupApi extends AbstractApi {
                 .withParam(PAGE_PARAM, page).withParam(PER_PAGE_PARAM, perPage);
         Response response = get(Response.Status.OK, formData.asMap(), "groups", getGroupIdOrPath(groupIdOrPath),
                 "subgroups");
-        return (response.readEntity(new GenericType<List<Group>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -353,7 +350,6 @@ public class GroupApi extends AbstractApi {
      * @param itemsPerPage  the number of Group instances that will be fetched per page
      * @return a Pager containing matching Group instances
      * @throws GitLabApiException if any exception occurs
-     * @since GitLab 10.3.0
      */
     public Pager<Group> getSubGroups(Object groupIdOrPath, List<Integer> skipGroups, Boolean allAvailable,
             String search, GroupOrderBy orderBy, SortOrder sortOrder, Boolean statistics, Boolean owned,
@@ -361,7 +357,7 @@ public class GroupApi extends AbstractApi {
         Form formData = new GitLabApiForm().withParam("skip_groups", skipGroups)
                 .withParam("all_available", allAvailable).withParam("search", search).withParam("order_by", orderBy)
                 .withParam("sort_order", sortOrder).withParam("statistics", statistics).withParam("owned", owned);
-        return (new Pager<Group>(this, Group.class, itemsPerPage, formData.asMap(), "groups",
+        return (new Pager<>(this, Group.class, itemsPerPage, formData.asMap(), "groups",
                 getGroupIdOrPath(groupIdOrPath), "subgroups"));
     }
 
@@ -382,7 +378,6 @@ public class GroupApi extends AbstractApi {
      * @param owned         limit to groups owned by the current user
      * @return a Stream&lt;Group&gt; of the matching subgroups
      * @throws GitLabApiException if any exception occurs
-     * @since GitLab 10.3.0
      */
     public Stream<Group> getSubGroupsStream(Object groupIdOrPath, List<Integer> skipGroups, Boolean allAvailable,
             String search, GroupOrderBy orderBy, SortOrder sortOrder, Boolean statistics, Boolean owned)
@@ -657,7 +652,7 @@ public class GroupApi extends AbstractApi {
                 .withParam("path", group.getPath(), true).withParam("description", group.getDescription())
                 .withParam("visibility", group.getVisibility()).withParam("lfs_enabled", group.getLfsEnabled())
                 .withParam("request_access_enabled", group.getRequestAccessEnabled())
-                .withParam("parent_id", isApiVersion(GitLabApi.ApiVersion.V3) ? null : group.getParentId());
+                .withParam("parent_id", isApiVersion(ApiVersion.V3) ? null : group.getParentId());
         Response response = post(Response.Status.CREATED, formData, "groups");
         return (response.readEntity(Group.class));
     }
@@ -685,7 +680,7 @@ public class GroupApi extends AbstractApi {
         Form formData = new GitLabApiForm().withParam("name", name, true).withParam("path", path, true)
                 .withParam("description", description).withParam("visibility", visibility)
                 .withParam("lfs_enabled", lfsEnabled).withParam("request_access_enabled", requestAccessEnabled)
-                .withParam("parent_id", isApiVersion(GitLabApi.ApiVersion.V3) ? null : parentId);
+                .withParam("parent_id", isApiVersion(ApiVersion.V3) ? null : parentId);
         Response response = post(Response.Status.CREATED, formData, "groups");
         return (response.readEntity(Group.class));
     }
@@ -706,7 +701,7 @@ public class GroupApi extends AbstractApi {
                 .withParam("description", group.getDescription()).withParam("visibility", group.getVisibility())
                 .withParam("lfs_enabled", group.getLfsEnabled())
                 .withParam("request_access_enabled", group.getRequestAccessEnabled())
-                .withParam("parent_id", isApiVersion(GitLabApi.ApiVersion.V3) ? null : group.getParentId());
+                .withParam("parent_id", isApiVersion(ApiVersion.V3) ? null : group.getParentId());
         Response response = put(Response.Status.OK, formData.asMap(), "groups", group.getId());
         return (response.readEntity(Group.class));
     }
@@ -735,7 +730,7 @@ public class GroupApi extends AbstractApi {
         Form formData = new GitLabApiForm().withParam("name", name).withParam("path", path)
                 .withParam("description", description).withParam("visibility", visibility)
                 .withParam("lfs_enabled", lfsEnabled).withParam("request_access_enabled", requestAccessEnabled)
-                .withParam("parent_id", isApiVersion(GitLabApi.ApiVersion.V3) ? null : parentId);
+                .withParam("parent_id", isApiVersion(ApiVersion.V3) ? null : parentId);
         Response response = put(Response.Status.OK, formData.asMap(), "groups", getGroupIdOrPath(groupIdOrPath));
         return (response.readEntity(Group.class));
     }
@@ -751,7 +746,7 @@ public class GroupApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteGroup(Object groupIdOrPath) throws GitLabApiException {
-        Response.Status expectedStatus = (isApiVersion(GitLabApi.ApiVersion.V3) ? Response.Status.OK
+        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK
                 : Response.Status.NO_CONTENT);
         delete(expectedStatus, null, "groups", getGroupIdOrPath(groupIdOrPath));
     }
@@ -1187,7 +1182,7 @@ public class GroupApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void removeMember(Object groupIdOrPath, Long userId) throws GitLabApiException {
-        Response.Status expectedStatus = (isApiVersion(GitLabApi.ApiVersion.V3) ? Response.Status.OK
+        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK
                 : Response.Status.NO_CONTENT);
         delete(expectedStatus, null, "groups", getGroupIdOrPath(groupIdOrPath), "members", userId);
     }
@@ -1220,7 +1215,7 @@ public class GroupApi extends AbstractApi {
     public List<LdapGroupLink> getLdapGroupLinks(Object groupIdOrPath) throws GitLabApiException {
         Response response = get(Response.Status.OK, null, "groups", getGroupIdOrPath(groupIdOrPath),
                 "ldap_group_links");
-        return (response.readEntity(new GenericType<List<LdapGroupLink>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -1326,7 +1321,7 @@ public class GroupApi extends AbstractApi {
     public List<SamlGroupLink> getSamlGroupLinks(Object groupIdOrPath) throws GitLabApiException {
         Response response = get(Response.Status.OK, null, "groups", getGroupIdOrPath(groupIdOrPath),
                 "saml_group_links");
-        return (response.readEntity(new GenericType<List<SamlGroupLink>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -1697,7 +1692,7 @@ public class GroupApi extends AbstractApi {
             int itemsPerPage) throws GitLabApiException {
         Form form = new GitLabApiForm().withParam("created_before", ISO8601.toString(created_after, false))
                 .withParam("created_after", ISO8601.toString(created_before, false));
-        return (new Pager<AuditEvent>(this, AuditEvent.class, itemsPerPage, form.asMap(), "groups",
+        return (new Pager<>(this, AuditEvent.class, itemsPerPage, form.asMap(), "groups",
                 getGroupIdOrPath(groupIdOrPath), "audit_events"));
     }
 
@@ -1765,8 +1760,8 @@ public class GroupApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<AccessRequest> getAccessRequests(Object groupIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<AccessRequest>(this, AccessRequest.class, itemsPerPage, null, "groups",
-                getGroupIdOrPath(groupIdOrPath), "access_requests"));
+        return (new Pager<>(this, AccessRequest.class, itemsPerPage, null, "groups", getGroupIdOrPath(groupIdOrPath),
+                "access_requests"));
     }
 
     /**
@@ -1868,7 +1863,7 @@ public class GroupApi extends AbstractApi {
         Form queryParam = new GitLabApiForm().withParam("name", badgeName);
         Response response = get(Response.Status.OK, queryParam.asMap(), "groups", getGroupIdOrPath(groupIdOrPath),
                 "badges");
-        return (response.readEntity(new GenericType<List<Badge>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -2129,8 +2124,8 @@ public class GroupApi extends AbstractApi {
      */
     public Pager<CustomAttribute> getCustomAttributes(final Object groupIdOrPath, int itemsPerPage)
             throws GitLabApiException {
-        return (new Pager<CustomAttribute>(this, CustomAttribute.class, itemsPerPage, null, "groups",
-                getGroupIdOrPath(groupIdOrPath), "custom_attributes"));
+        return (new Pager<>(this, CustomAttribute.class, itemsPerPage, null, "groups", getGroupIdOrPath(groupIdOrPath),
+                "custom_attributes"));
     }
 
     /**
@@ -2251,7 +2246,7 @@ public class GroupApi extends AbstractApi {
         MultivaluedMap<String, String> queryParams = (filter == null) ? null : filter.getQueryParams().asMap();
         Response response = get(Response.Status.OK, queryParams, "groups", getGroupIdOrPath(groupIdOrPath),
                 "iterations");
-        return (response.readEntity(new GenericType<List<Iteration>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -2268,7 +2263,7 @@ public class GroupApi extends AbstractApi {
      */
     public List<GroupAccessToken> getGroupAccessTokens(Object groupIdOrPath) throws GitLabApiException {
         Response response = get(Response.Status.OK, null, "groups", getGroupIdOrPath(groupIdOrPath), "access_tokens");
-        return (response.readEntity(new GenericType<List<GroupAccessToken>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -2307,8 +2302,8 @@ public class GroupApi extends AbstractApi {
      * @return the created GroupAccessToken instance
      * @throws GitLabApiException if any exception occurs
      */
-    public GroupAccessToken createGroupAccessToken(Object groupIdOrPath, String name, Date expiresAt,
-            ImpersonationToken.Scope[] scopes, AccessLevel accessLevel) throws GitLabApiException {
+    public GroupAccessToken createGroupAccessToken(Object groupIdOrPath, String name, Date expiresAt, Scope[] scopes,
+            AccessLevel accessLevel) throws GitLabApiException {
         if (scopes == null || scopes.length == 0) {
             throw new RuntimeException("scopes cannot be null or empty");
         }
@@ -2374,4 +2369,5 @@ public class GroupApi extends AbstractApi {
     public void revokeGroupAccessToken(Object groupIdOrPath, Long tokenId) throws GitLabApiException {
         delete(Response.Status.NO_CONTENT, null, "groups", getGroupIdOrPath(groupIdOrPath), "access_tokens", tokenId);
     }
+
 }

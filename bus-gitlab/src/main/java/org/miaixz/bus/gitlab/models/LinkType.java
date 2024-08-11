@@ -54,4 +54,5 @@ public enum LinkType {
     public String toString() {
         return (enumHelper.toString(this));
     }
+
 }

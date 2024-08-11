@@ -61,20 +61,20 @@ public interface SystemHookEvent extends Serializable {
 
     String getEventName();
 
-    @JsonIgnore
-    String getRequestUrl();
-
     void setRequestUrl(String requestUrl);
 
     @JsonIgnore
-    String getRequestQueryString();
+    String getRequestUrl();
 
     void setRequestQueryString(String requestQueryString);
 
     @JsonIgnore
-    String getRequestSecretToken();
+    String getRequestQueryString();
 
     void setRequestSecretToken(String requestSecretToken);
+
+    @JsonIgnore
+    String getRequestSecretToken();
 }
 
 // All of the following class definitions are needed to make the above work.

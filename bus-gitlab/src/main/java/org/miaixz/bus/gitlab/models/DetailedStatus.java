@@ -35,6 +35,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * This class is part of the Pipeline message.
  */
 public class DetailedStatus implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private String icon;
@@ -123,4 +124,5 @@ public class DetailedStatus implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

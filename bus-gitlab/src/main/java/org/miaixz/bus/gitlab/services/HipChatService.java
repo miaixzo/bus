@@ -192,4 +192,5 @@ public class HipChatService extends NotificationService {
         setNotifyOnlyBrokenPipelines(notifyOnlyBrokenPipelines);
         return (this);
     }
+
 }

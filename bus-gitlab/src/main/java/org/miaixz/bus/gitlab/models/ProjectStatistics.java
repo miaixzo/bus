@@ -36,6 +36,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * be called with parameter statistics=true which is only allowed for GitLab admins.
  */
 public class ProjectStatistics implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     long commitCount;
@@ -106,4 +107,5 @@ public class ProjectStatistics implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

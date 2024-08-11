@@ -31,6 +31,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class Trigger implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Long id;
@@ -96,4 +97,5 @@ public class Trigger implements Serializable {
     public void setOwner(User owner) {
         this.owner = owner;
     }
+
 }

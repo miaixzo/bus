@@ -33,7 +33,6 @@ import java.io.Serializable;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -41,6 +40,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 public class HealthCheckInfo implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     @JsonDeserialize(using = HealthCheckItemDeserializer.class)
@@ -134,8 +134,7 @@ public class HealthCheckInfo implements Serializable {
         private static final ObjectMapper mapper = new JacksonJson().getObjectMapper();
 
         @Override
-        public HealthCheckItem deserialize(JsonParser jsonParser, DeserializationContext ctx)
-                throws IOException, JsonProcessingException {
+        public HealthCheckItem deserialize(JsonParser jsonParser, DeserializationContext ctx) throws IOException {
 
             HealthCheckItem healthCheckItem = null;
             JsonNode tree = jsonParser.readValueAsTree();
@@ -149,4 +148,5 @@ public class HealthCheckInfo implements Serializable {
             return (healthCheckItem);
         }
     }
+
 }

@@ -123,4 +123,5 @@ public class AuditEventApi extends AbstractApi {
         Response response = get(Response.Status.OK, null, "audit_events", auditEventId);
         return (response.readEntity(AuditEvent.class));
     }
+
 }

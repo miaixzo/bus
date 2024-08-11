@@ -49,7 +49,7 @@ public class WebHookManager implements HookManager {
     private final JacksonJson jacksonJson = new JacksonJson();
 
     // Collection of objects listening for WebHook events.
-    private final List<WebHookListener> webhookListeners = new CopyOnWriteArrayList<WebHookListener>();
+    private final List<WebHookListener> webhookListeners = new CopyOnWriteArrayList<>();
 
     private String secretToken;
 
@@ -354,4 +354,5 @@ public class WebHookManager implements HookManager {
             listener.onReleaseEvent(releaseEvent);
         }
     }
+
 }

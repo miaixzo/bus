@@ -33,6 +33,7 @@ import java.util.Date;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class SystemHook implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Long id;
@@ -92,20 +93,20 @@ public class SystemHook implements Serializable {
         this.enableSslVerification = enableSslVerification;
     }
 
-    public Boolean getRepositoryUpdateEvents() {
-        return repositoryUpdateEvents;
-    }
-
     public void setRepositoryUpdateEvents(Boolean repositoryUpdateEvents) {
         this.repositoryUpdateEvents = repositoryUpdateEvents;
     }
 
-    public Boolean getMergeRequestsEvents() {
-        return mergeRequestsEvents;
+    public Boolean getRepositoryUpdateEvents() {
+        return repositoryUpdateEvents;
     }
 
     public void setMergeRequestsEvents(Boolean mergeRequestsEvents) {
         this.mergeRequestsEvents = mergeRequestsEvents;
+    }
+
+    public Boolean getMergeRequestsEvents() {
+        return mergeRequestsEvents;
     }
 
     public SystemHook withId(Long id) {
@@ -152,4 +153,5 @@ public class SystemHook implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

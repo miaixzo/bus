@@ -36,7 +36,9 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class ProjectFetches implements Serializable {
+
     private static final long serialVersionUID = -1L;
+
     private Fetches fetches;
 
     public Fetches getFetches() {
@@ -100,4 +102,5 @@ public class ProjectFetches implements Serializable {
             this.days = days;
         }
     }
+
 }

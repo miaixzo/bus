@@ -31,7 +31,9 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.miaixz.bus.gitlab.Constants;
+import org.miaixz.bus.gitlab.Constants.TodoAction;
+import org.miaixz.bus.gitlab.Constants.TodoState;
+import org.miaixz.bus.gitlab.Constants.TodoType;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -44,20 +46,21 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class Todo implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Long id;
     private Project project;
     private Author author;
-    private Constants.TodoAction actionName;
-    private Constants.TodoType targetType;
+    private TodoAction actionName;
+    private TodoType targetType;
 
     @JsonDeserialize(using = TargetDeserializer.class)
     private Object target;
 
     private String targetUrl;
     private String body;
-    private Constants.TodoState state;
+    private TodoState state;
     private Date createdAt;
 
     public Long getId() {
@@ -84,19 +87,19 @@ public class Todo implements Serializable {
         this.author = author;
     }
 
-    public Constants.TodoAction getActionName() {
+    public TodoAction getActionName() {
         return actionName;
     }
 
-    public void setActionName(Constants.TodoAction actionName) {
+    public void setActionName(TodoAction actionName) {
         this.actionName = actionName;
     }
 
-    public Constants.TodoType getTargetType() {
+    public TodoType getTargetType() {
         return targetType;
     }
 
-    public void setTargetType(Constants.TodoType targetType) {
+    public void setTargetType(TodoType targetType) {
         this.targetType = targetType;
     }
 
@@ -124,11 +127,11 @@ public class Todo implements Serializable {
         this.body = body;
     }
 
-    public Constants.TodoState getState() {
+    public TodoState getState() {
         return state;
     }
 
-    public void setState(Constants.TodoState state) {
+    public void setState(TodoState state) {
         this.state = state;
     }
 
@@ -142,22 +145,22 @@ public class Todo implements Serializable {
 
     @JsonIgnore
     public Issue getIssueTarget() {
-        return (targetType == Constants.TodoType.ISSUE ? (Issue) target : null);
+        return (targetType == TodoType.ISSUE ? (Issue) target : null);
     }
 
     @JsonIgnore
     public MergeRequest getMergeRequestTarget() {
-        return (targetType == Constants.TodoType.MERGE_REQUEST ? (MergeRequest) target : null);
+        return (targetType == TodoType.MERGE_REQUEST ? (MergeRequest) target : null);
     }
 
     @JsonIgnore
     public boolean isIssueTodo() {
-        return (targetType == Constants.TodoType.ISSUE);
+        return (targetType == TodoType.ISSUE);
     }
 
     @JsonIgnore
     public boolean isMergeRequestTodo() {
-        return (targetType == Constants.TodoType.MERGE_REQUEST);
+        return (targetType == TodoType.MERGE_REQUEST);
     }
 
     @Override
@@ -183,4 +186,5 @@ public class Todo implements Serializable {
             }
         }
     }
+
 }

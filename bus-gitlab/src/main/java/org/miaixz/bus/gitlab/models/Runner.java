@@ -36,6 +36,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public class Runner implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Long id;
@@ -204,4 +205,5 @@ public class Runner implements Serializable {
             return (enumHelper.toString(this));
         }
     }
+
 }

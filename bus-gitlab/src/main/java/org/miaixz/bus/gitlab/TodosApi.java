@@ -30,9 +30,9 @@ package org.miaixz.bus.gitlab;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.Todo;
-
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.Todo;
 
 /**
  * This class implements the client side API for the GitLab Todos API.
@@ -197,7 +197,7 @@ public class TodosApi extends AbstractApi {
         GitLabApiForm formData = new GitLabApiForm().withParam("action", action, false)
                 .withParam("author_id", authorId, false).withParam("project_id", projectId, false)
                 .withParam("group_id", groupId, false).withParam("state", state, false).withParam("type", type, false);
-        return (new Pager<Todo>(this, Todo.class, itemsPerPage, formData.asMap(), "todos"));
+        return (new Pager<>(this, Todo.class, itemsPerPage, formData.asMap(), "todos"));
     }
 
     /**
@@ -231,4 +231,5 @@ public class TodosApi extends AbstractApi {
         GitLabApiForm formData = new GitLabApiForm();
         post(Response.Status.NO_CONTENT, formData, "todos", "mark_as_done");
     }
+
 }

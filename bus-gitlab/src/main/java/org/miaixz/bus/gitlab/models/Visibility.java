@@ -52,4 +52,5 @@ public enum Visibility {
     public String toString() {
         return (enumHelper.toString(this));
     }
+
 }

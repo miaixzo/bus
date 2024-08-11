@@ -33,6 +33,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
+import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
 import org.miaixz.bus.gitlab.models.*;
 
 import jakarta.ws.rs.NotAuthorizedException;
@@ -236,11 +237,11 @@ public abstract class AbstractApi implements Constants {
         }
     }
 
-    protected GitLabApi.ApiVersion getApiVersion() {
+    protected ApiVersion getApiVersion() {
         return (gitLabApi.getApiVersion());
     }
 
-    protected boolean isApiVersion(GitLabApi.ApiVersion apiVersion) {
+    protected boolean isApiVersion(ApiVersion apiVersion) {
         return (gitLabApi.getApiVersion() == apiVersion);
     }
 
@@ -862,4 +863,5 @@ public abstract class AbstractApi implements Constants {
 
         return (form.asMap());
     }
+
 }

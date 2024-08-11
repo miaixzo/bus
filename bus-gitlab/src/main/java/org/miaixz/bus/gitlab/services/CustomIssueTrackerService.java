@@ -96,4 +96,5 @@ public class CustomIssueTrackerService extends NotificationService {
         setDescription(description);
         return this;
     }
+
 }

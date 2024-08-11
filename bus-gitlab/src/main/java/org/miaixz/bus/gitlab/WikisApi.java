@@ -37,6 +37,7 @@ import java.util.stream.Stream;
 import org.miaixz.bus.gitlab.models.WikiAttachment;
 import org.miaixz.bus.gitlab.models.WikiPage;
 
+import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 
 /**
@@ -93,6 +94,27 @@ public class WikisApi extends AbstractApi {
      */
     public Stream<WikiPage> getPagesStream(Object projectIdOrPath) throws GitLabApiException {
         return (getPages(projectIdOrPath, false, getDefaultPerPage()).stream());
+    }
+
+    /**
+     * Get a list of pages in project wiki for the specified page.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/wikis</code>
+     * </pre>
+     *
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
+     * @param page            the page to get
+     * @param perPage         the number of wiki-pages per page
+     * @return a list of pages in project's wiki for the specified range
+     * @throws GitLabApiException if any exception occurs
+     * @deprecated Will be removed in a future release, use {@link #getPages(Object, boolean, int)}
+     */
+    public List<WikiPage> getPages(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
+        Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
+                getProjectIdOrPath(projectIdOrPath), "wikis");
+        return response.readEntity(new GenericType<>() {
+        });
     }
 
     /**
@@ -282,7 +304,6 @@ public class WikisApi extends AbstractApi {
      */
     public WikiAttachment uploadAttachment(Object projectIdOrPath, File fileToUpload, String branch)
             throws GitLabApiException {
-
         URL url;
         try {
             url = getApiClient().getApiUrl("projects", getProjectIdOrPath(projectIdOrPath), "wikis", "attachments");
@@ -294,4 +315,5 @@ public class WikisApi extends AbstractApi {
         Response response = upload(Response.Status.CREATED, "file", fileToUpload, null, formData, url);
         return (response.readEntity(WikiAttachment.class));
     }
+
 }

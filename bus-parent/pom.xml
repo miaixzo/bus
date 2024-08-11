@@ -53,17 +53,6 @@
         </license>
     </licenses>
 
-    <scm>
-        <connection>scm:git@github.com:839128/bus.git</connection>
-        <developerConnection>scm:git@github.com:839128/bus.git</developerConnection>
-        <url>git@github.com:839128/bus.git</url>
-    </scm>
-
-    <issueManagement>
-        <system>Github Issue</system>
-        <url>https://github.com/839128/bus/issues</url>
-    </issueManagement>
-
     <developers>
         <developer>
             <id>839128</id>
@@ -83,6 +72,17 @@
             <organizationUrl>http://www.miaixz.org</organizationUrl>
         </developer>
     </developers>
+
+    <scm>
+        <connection>scm:git@github.com:839128/bus.git</connection>
+        <developerConnection>scm:git@github.com:839128/bus.git</developerConnection>
+        <url>git@github.com:839128/bus.git</url>
+    </scm>
+
+    <issueManagement>
+        <system>Github Issue</system>
+        <url>https://github.com/839128/bus/issues</url>
+    </issueManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

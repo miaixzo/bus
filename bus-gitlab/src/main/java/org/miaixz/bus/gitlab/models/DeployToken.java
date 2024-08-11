@@ -35,6 +35,7 @@ import org.miaixz.bus.gitlab.Constants;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class DeployToken implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Long id;
@@ -96,4 +97,5 @@ public class DeployToken implements Serializable {
     public String toString() {
         return JacksonJson.toJsonString(this);
     }
+
 }

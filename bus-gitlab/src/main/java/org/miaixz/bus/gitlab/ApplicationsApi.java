@@ -172,4 +172,5 @@ public class ApplicationsApi extends AbstractApi {
     public void deleteApplication(Long applicationId) throws GitLabApiException {
         delete(Response.Status.NO_CONTENT, null, "applications", applicationId);
     }
+
 }

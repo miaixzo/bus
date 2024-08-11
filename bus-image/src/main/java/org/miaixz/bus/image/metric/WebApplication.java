@@ -40,7 +40,6 @@ import org.miaixz.bus.image.metric.net.KeycloakClient;
  *
  * @author Kimi Liu
  * @since Java 17+
- * @since Apr 2018
  */
 public class WebApplication {
 

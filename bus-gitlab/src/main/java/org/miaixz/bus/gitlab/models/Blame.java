@@ -33,6 +33,7 @@ import java.util.List;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class Blame implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Commit commit;
@@ -58,4 +59,5 @@ public class Blame implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

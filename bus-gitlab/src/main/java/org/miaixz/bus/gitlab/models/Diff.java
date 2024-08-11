@@ -35,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Diff implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     @JsonInclude(JsonInclude.Include.ALWAYS)
@@ -124,4 +125,5 @@ public class Diff implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

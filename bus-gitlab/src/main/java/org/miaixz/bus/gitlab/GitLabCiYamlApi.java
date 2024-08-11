@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.gitlab;
 
+import java.util.List;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+
 import org.miaixz.bus.gitlab.models.GitLabCiTemplate;
 import org.miaixz.bus.gitlab.models.GitLabCiTemplateElement;
-
-import java.util.List;
 
 /**
  * This class provides an entry point to all the GitLab CI YAML API calls.
@@ -58,7 +58,7 @@ public class GitLabCiYamlApi extends AbstractApi {
      */
     public List<GitLabCiTemplateElement> getAllGitLabCiYamlTemplates() throws GitLabApiException {
         Response response = get(Response.Status.OK, null, "templates", "gitlab_ci_ymls");
-        return (response.readEntity(new GenericType<List<GitLabCiTemplateElement>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 

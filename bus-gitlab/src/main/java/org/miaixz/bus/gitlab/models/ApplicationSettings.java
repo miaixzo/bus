@@ -40,6 +40,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.*;
 
 public class ApplicationSettings implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Long id;
@@ -167,4 +168,5 @@ public class ApplicationSettings implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

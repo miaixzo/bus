@@ -30,17 +30,12 @@ package org.miaixz.bus.gitlab.hooks.system;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public abstract class AbstractSystemHookEvent implements SystemHookEvent {
+
     private static final long serialVersionUID = -1L;
 
     private String requestUrl;
     private String requestQueryString;
     private String requestSecretToken;
-
-    @Override
-    @JsonIgnore
-    public String getRequestUrl() {
-        return (requestUrl);
-    }
 
     @Override
     public void setRequestUrl(String requestUrl) {
@@ -49,8 +44,8 @@ public abstract class AbstractSystemHookEvent implements SystemHookEvent {
 
     @Override
     @JsonIgnore
-    public String getRequestQueryString() {
-        return (requestQueryString);
+    public String getRequestUrl() {
+        return (requestUrl);
     }
 
     @Override
@@ -60,12 +55,19 @@ public abstract class AbstractSystemHookEvent implements SystemHookEvent {
 
     @Override
     @JsonIgnore
-    public String getRequestSecretToken() {
-        return (requestSecretToken);
+    public String getRequestQueryString() {
+        return (requestQueryString);
     }
 
     @Override
     public void setRequestSecretToken(String requestSecretToken) {
         this.requestSecretToken = requestSecretToken;
     }
+
+    @Override
+    @JsonIgnore
+    public String getRequestSecretToken() {
+        return (requestSecretToken);
+    }
+
 }

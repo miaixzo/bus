@@ -50,6 +50,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * This class is used to filter issues when getting lists of them.
  */
 public class IssueFilter implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     /**
@@ -397,7 +398,7 @@ public class IssueFilter implements Serializable {
      * Add iids to the 'not' filter entry.
      *
      * @param iids the iids to add to the filter
-     *
+     * 
      * @return the reference to this IssueFilter instance
      */
     public IssueFilter withoutIids(String... iids) {
@@ -536,4 +537,5 @@ public class IssueFilter implements Serializable {
             return (enumHelper.toString(this));
         }
     }
+
 }

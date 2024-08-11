@@ -32,6 +32,7 @@ import java.io.Serializable;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class ArtifactsFile implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private String filename;
@@ -57,4 +58,5 @@ public class ArtifactsFile implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

@@ -27,8 +27,17 @@
 */
 package org.miaixz.bus.gitlab;
 
-import org.miaixz.bus.gitlab.services.*;
+import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
+import org.miaixz.bus.gitlab.services.BugzillaService;
+import org.miaixz.bus.gitlab.services.CustomIssueTrackerService;
+import org.miaixz.bus.gitlab.services.EmailOnPushService;
+import org.miaixz.bus.gitlab.services.ExternalWikiService;
+import org.miaixz.bus.gitlab.services.HipChatService;
+import org.miaixz.bus.gitlab.services.JiraService;
+import org.miaixz.bus.gitlab.services.MattermostService;
+import org.miaixz.bus.gitlab.services.SlackService;
 
+import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.Response;
 
 /**
@@ -40,6 +49,44 @@ public class ServicesApi extends AbstractApi {
 
     public ServicesApi(GitLabApi gitLabApi) {
         super(gitLabApi);
+    }
+
+    /**
+     * Activates the gitlab-ci service for a project.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: PUT /projects/:id/services/gitlab-ci</code>
+     * </pre>
+     *
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @param token           for authentication
+     * @param projectCIUrl    URL of the GitLab-CI project
+     * @throws GitLabApiException if any exception occurs
+     * @deprecated No longer supported
+     */
+    public void setGitLabCI(Object projectIdOrPath, String token, String projectCIUrl) throws GitLabApiException {
+        final Form formData = new Form();
+        formData.param("token", token);
+        formData.param("project_url", projectCIUrl);
+        put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "services",
+                "gitlab-ci");
+    }
+
+    /**
+     * Deletes the gitlab-ci service for a project.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: DELETE /projects/:id/services/gitlab-ci</code>
+     * </pre>
+     *
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @throws GitLabApiException if any exception occurs
+     * @deprecated No longer supported
+     */
+    public void deleteGitLabCI(Object projectIdOrPath) throws GitLabApiException {
+        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK
+                : Response.Status.NO_CONTENT);
+        delete(expectedStatus, null, "projects", getProjectIdOrPath(projectIdOrPath), "services", "gitlab-ci");
     }
 
     /**
@@ -92,6 +139,42 @@ public class ServicesApi extends AbstractApi {
     }
 
     /**
+     * Activates HipChatService notifications.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: PUT /projects/:id/services/hipchat</code>
+     * </pre>
+     *
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @param token           for authentication
+     * @param room            HipChatService Room
+     * @param server          HipChatService Server URL
+     * @throws GitLabApiException if any exception occurs
+     * @deprecated replaced with {@link #updateHipChatService(Object, HipChatService) updateHipChat} method
+     */
+    public void setHipChat(Object projectIdOrPath, String token, String room, String server) throws GitLabApiException {
+        GitLabApiForm formData = new GitLabApiForm().withParam("token", token).withParam("room", room)
+                .withParam("server", server);
+        put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath), "services",
+                "hipchat");
+    }
+
+    /**
+     * Deletes the HipChatService service for a project.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: DELETE /projects/:id/services/hipchat</code>
+     * </pre>
+     *
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @throws GitLabApiException if any exception occurs
+     * @deprecated replaced with {@link #deleteHipChatService(Object) updateHipChat} method
+     */
+    public void deleteHipChat(Object projectIdOrPath) throws GitLabApiException {
+        deleteHipChatService(projectIdOrPath);
+    }
+
+    /**
      * Deletes the HipChatService service for a project.
      *
      * <pre>
@@ -102,7 +185,7 @@ public class ServicesApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteHipChatService(Object projectIdOrPath) throws GitLabApiException {
-        Response.Status expectedStatus = (isApiVersion(GitLabApi.ApiVersion.V3) ? Response.Status.OK
+        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK
                 : Response.Status.NO_CONTENT);
         delete(expectedStatus, null, "projects", getProjectIdOrPath(projectIdOrPath), "services", "hipchat");
     }
@@ -175,7 +258,7 @@ public class ServicesApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteSlackService(Object projectIdOrPath) throws GitLabApiException {
-        Response.Status expectedStatus = (isApiVersion(GitLabApi.ApiVersion.V3) ? Response.Status.OK
+        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK
                 : Response.Status.NO_CONTENT);
         delete(expectedStatus, null, "projects", getProjectIdOrPath(projectIdOrPath), "services", "slack");
     }
@@ -237,7 +320,7 @@ public class ServicesApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteJiraService(Object projectIdOrPath) throws GitLabApiException {
-        Response.Status expectedStatus = (isApiVersion(GitLabApi.ApiVersion.V3) ? Response.Status.OK
+        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK
                 : Response.Status.NO_CONTENT);
         delete(expectedStatus, null, "projects", getProjectIdOrPath(projectIdOrPath), "services", "jira");
     }
@@ -295,7 +378,7 @@ public class ServicesApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteExternalWikiService(Object projectIdOrPath) throws GitLabApiException {
-        Response.Status expectedStatus = (isApiVersion(GitLabApi.ApiVersion.V3) ? Response.Status.OK
+        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK
                 : Response.Status.NO_CONTENT);
         delete(expectedStatus, null, "projects", getProjectIdOrPath(projectIdOrPath), "services", "external-wiki");
 
@@ -369,7 +452,7 @@ public class ServicesApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteMattermostService(Object projectIdOrPath) throws GitLabApiException {
-        Response.Status expectedStatus = (isApiVersion(GitLabApi.ApiVersion.V3) ? Response.Status.OK
+        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK
                 : Response.Status.NO_CONTENT);
         delete(expectedStatus, null, "projects", getProjectIdOrPath(projectIdOrPath), "services", "mattermost");
     }

@@ -36,6 +36,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public class CommitRef implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private RefType type;

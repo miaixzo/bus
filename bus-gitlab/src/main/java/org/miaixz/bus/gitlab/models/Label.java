@@ -35,6 +35,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Label implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Long id;
@@ -163,4 +164,5 @@ public class Label implements Serializable {
 
         return (form);
     }
+
 }

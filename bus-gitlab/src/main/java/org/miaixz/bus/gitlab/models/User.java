@@ -33,6 +33,7 @@ import java.util.List;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class User extends AbstractUser<User> {
+
     private static final long serialVersionUID = -1L;
 
     private String bio;
@@ -131,12 +132,12 @@ public class User extends AbstractUser<User> {
         this.external = external;
     }
 
-    public String getExternUid() {
-        return this.externUid;
-    }
-
     public void setExternUid(String externUid) {
         this.externUid = externUid;
+    }
+
+    public String getExternUid() {
+        return this.externUid;
     }
 
     public Integer getExtraSharedRunnersMinutesLimit() {
@@ -464,4 +465,5 @@ public class User extends AbstractUser<User> {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

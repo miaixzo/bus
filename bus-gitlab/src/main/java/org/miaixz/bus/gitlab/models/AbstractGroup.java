@@ -35,6 +35,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class AbstractGroup<G extends AbstractGroup<G>> implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Long id;
@@ -92,37 +93,31 @@ public abstract class AbstractGroup<G extends AbstractGroup<G>> implements Seria
         this.fullPath = fullPath;
     }
 
-    @SuppressWarnings("unchecked")
     public G withId(Long id) {
         this.id = id;
         return (G) this;
     }
 
-    @SuppressWarnings("unchecked")
     public G withName(String name) {
         this.name = name;
         return (G) this;
     }
 
-    @SuppressWarnings("unchecked")
     public G withAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
         return (G) this;
     }
 
-    @SuppressWarnings("unchecked")
     public G withWebUrl(String url) {
         this.webUrl = url;
         return (G) this;
     }
 
-    @SuppressWarnings("unchecked")
     public G withFullName(String fullName) {
         this.fullName = fullName;
         return (G) this;
     }
 
-    @SuppressWarnings("unchecked")
     public G withFullPath(String fullPath) {
         this.fullPath = fullPath;
         return (G) this;
@@ -132,4 +127,5 @@ public abstract class AbstractGroup<G extends AbstractGroup<G>> implements Seria
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

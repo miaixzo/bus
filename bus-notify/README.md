@@ -38,5 +38,3 @@
 | [ √ ] | [微信](https://mp.weixin.qq.com/)                              | 小程序/企业微信/模版消息/微信客服 |
 | [ √ ] | [钉钉](https://open.dingtalk.com/document/orgapp/api-overview) | 推送                 |
 | [ √ ] | [JPush](https://docs.jiguang.cn/jpush)                       | 推送                 |
-
-

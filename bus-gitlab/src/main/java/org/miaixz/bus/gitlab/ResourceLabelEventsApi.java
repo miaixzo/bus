@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.Response;
-import org.miaixz.bus.gitlab.models.LabelEvent;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.gitlab.models.LabelEvent;
+
+import jakarta.ws.rs.core.Response;
 
 /**
  * This class provides an entry point to all the GitLab Resource label events API
@@ -128,10 +129,9 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * @param issueIid             the IID of the issue
      * @param resourceLabelEventId the ID of a label event
      * @return an Optional instance with the specified LabelEvent as the value
-     * @throws GitLabApiException if any exception occurs
      */
     public Optional<LabelEvent> getOptionalIssueLabelEvent(Object projectIdOrPath, Long issueIid,
-            Long resourceLabelEventId) throws GitLabApiException {
+            Long resourceLabelEventId) {
 
         try {
             return (Optional.ofNullable(getIssueLabelEvent(projectIdOrPath, issueIid, resourceLabelEventId)));
@@ -171,8 +171,8 @@ public class ResourceLabelEventsApi extends AbstractApi {
      */
     public Pager<LabelEvent> getEpicLabelEvents(Object projectIdOrPath, Long epicId, int itemsPerPage)
             throws GitLabApiException {
-        return (new Pager<LabelEvent>(this, LabelEvent.class, itemsPerPage, null, "projects",
-                getProjectIdOrPath(projectIdOrPath), "epics", epicId, "resource_label_events"));
+        return (new Pager<>(this, LabelEvent.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
+                "epics", epicId, "resource_label_events"));
     }
 
     /**
@@ -222,10 +222,9 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * @param epicId               the ID of the epic
      * @param resourceLabelEventId the ID of a label event
      * @return an Optional instance with the specified LabelEvent as the value
-     * @throws GitLabApiException if any exception occurs
      */
     public Optional<LabelEvent> getOptionalEpicLabelEvent(Object projectIdOrPath, Long epicId,
-            Long resourceLabelEventId) throws GitLabApiException {
+            Long resourceLabelEventId) {
 
         try {
             return (Optional.ofNullable(getEpicLabelEvent(projectIdOrPath, epicId, resourceLabelEventId)));
@@ -266,8 +265,8 @@ public class ResourceLabelEventsApi extends AbstractApi {
      */
     public Pager<LabelEvent> getMergeRequestLabelEvents(Object projectIdOrPath, Long mergeRequestIid, int itemsPerPage)
             throws GitLabApiException {
-        return (new Pager<LabelEvent>(this, LabelEvent.class, itemsPerPage, null, "projects",
-                getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "resource_label_events"));
+        return (new Pager<>(this, LabelEvent.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
+                "merge_requests", mergeRequestIid, "resource_label_events"));
     }
 
     /**
@@ -318,10 +317,9 @@ public class ResourceLabelEventsApi extends AbstractApi {
      * @param mergeRequestIid      the IID of the merge request
      * @param resourceLabelEventId the ID of a label event
      * @return an Optional instance with the specified LabelEvent as the value
-     * @throws GitLabApiException if any exception occurs
      */
     public Optional<LabelEvent> getOptionalMergeRequestLabelEvent(Object projectIdOrPath, Long mergeRequestIid,
-            Long resourceLabelEventId) throws GitLabApiException {
+            Long resourceLabelEventId) {
 
         try {
             return (Optional
@@ -330,4 +328,5 @@ public class ResourceLabelEventsApi extends AbstractApi {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }
+
 }

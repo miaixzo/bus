@@ -44,6 +44,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public class CommitAction implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Action action;
@@ -213,4 +214,5 @@ public class CommitAction implements Serializable {
             return (enumHelper.toString(this));
         }
     }
+
 }

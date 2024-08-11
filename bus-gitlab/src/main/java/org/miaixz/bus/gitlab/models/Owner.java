@@ -28,5 +28,7 @@
 package org.miaixz.bus.gitlab.models;
 
 public class Owner extends AbstractUser<Owner> {
+
     private static final long serialVersionUID = -1L;
+
 }

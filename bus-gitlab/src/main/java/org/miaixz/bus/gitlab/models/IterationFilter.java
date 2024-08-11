@@ -40,27 +40,34 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public class IterationFilter implements Serializable {
+
     private static final long serialVersionUID = -1L;
+
     /**
      * Return opened, upcoming, current, closed, or all iterations.
      */
     private IterationFilterState state;
+
     /**
      * Return only iterations with a title matching the provided string.
      */
     private String search;
+
     /**
      * Fields in which fuzzy search should be performed with the query given in the argument search.
      */
     private IterationFilterIn in;
+
     /**
      * Include iterations from parent group and its ancestors. Defaults to true.
      */
     private Boolean includeAncestors;
+
     /**
      * Return iterations updated after the specified date. Expected in ISO 8601 format (2019-03-15T08:00:00Z).
      */
     private Date updatedAfter;
+
     /**
      * Return iterations updated before the specified date. Expected in ISO 8601 format (2019-03-15T08:00:00Z).
      */
@@ -200,4 +207,5 @@ public class IterationFilter implements Serializable {
             return (enumHelper.toString(this));
         }
     }
+
 }

@@ -33,7 +33,9 @@ import java.util.List;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class ProtectedTag implements Serializable {
+
     private static final long serialVersionUID = -1L;
+
     private String name;
     private List<CreateAccessLevel> createAccessLevels;
 
@@ -59,6 +61,7 @@ public class ProtectedTag implements Serializable {
     }
 
     public static class CreateAccessLevel implements Serializable {
+
         private static final long serialVersionUID = -1L;
 
         private AccessLevel access_level;
@@ -80,4 +83,5 @@ public class ProtectedTag implements Serializable {
             this.accessLevelDescription = accessLevelDescription;
         }
     }
+
 }

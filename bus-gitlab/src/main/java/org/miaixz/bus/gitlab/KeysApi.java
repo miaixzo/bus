@@ -27,18 +27,18 @@
 */
 package org.miaixz.bus.gitlab;
 
-import java.util.Collections;
-
 import org.miaixz.bus.gitlab.models.Key;
 
 import jakarta.ws.rs.core.MultivaluedHashMap;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
+import java.util.Collections;
 
 /**
  * See: https://docs.gitlab.com/ee/api/keys.html#get-user-by-fingerprint-of-ssh-key
  */
 public class KeysApi extends AbstractApi {
+
     public KeysApi(GitLabApi gitLabApi) {
         super(gitLabApi);
     }
@@ -54,4 +54,5 @@ public class KeysApi extends AbstractApi {
         Response response = get(Response.Status.OK, queryParams, "keys");
         return response.readEntity(Key.class);
     }
+
 }

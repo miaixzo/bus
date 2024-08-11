@@ -36,15 +36,19 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public class Position implements Serializable {
+
     private static final long serialVersionUID = -1L;
+
     private String baseSha;
     private String startSha;
     private String headSha;
     private String oldPath;
     private String newPath;
     private PositionType positionType;
+
     private Integer oldLine;
     private Integer newLine;
+
     private Integer width;
     private Integer height;
     private Double x;
@@ -233,4 +237,5 @@ public class Position implements Serializable {
             return (enumHelper.toString(this));
         }
     }
+
 }

@@ -34,6 +34,7 @@ import java.util.List;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class ReleaseParams implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private String name;
@@ -139,4 +140,5 @@ public class ReleaseParams implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

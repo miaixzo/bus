@@ -36,6 +36,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class AbstractUser<U extends AbstractUser<U>> implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private String avatarUrl;
@@ -111,49 +112,41 @@ public abstract class AbstractUser<U extends AbstractUser<U>> implements Seriali
         this.webUrl = webUrl;
     }
 
-    @SuppressWarnings("unchecked")
     public U withAvatarUrl(String avatarUrl) {
         this.avatarUrl = avatarUrl;
         return (U) this;
     }
 
-    @SuppressWarnings("unchecked")
     public U withCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
         return (U) this;
     }
 
-    @SuppressWarnings("unchecked")
     public U withEmail(String email) {
         this.email = email;
         return (U) this;
     }
 
-    @SuppressWarnings("unchecked")
     public U withId(Long id) {
         this.id = id;
         return (U) this;
     }
 
-    @SuppressWarnings("unchecked")
     public U withName(String name) {
         this.name = name;
         return (U) this;
     }
 
-    @SuppressWarnings("unchecked")
     public U withState(String state) {
         this.state = state;
         return (U) this;
     }
 
-    @SuppressWarnings("unchecked")
     public U withUsername(String username) {
         this.username = username;
         return (U) this;
     }
 
-    @SuppressWarnings("unchecked")
     public U withWebUrl(String webUrl) {
         this.webUrl = webUrl;
         return (U) this;
@@ -163,4 +156,5 @@ public abstract class AbstractUser<U extends AbstractUser<U>> implements Seriali
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

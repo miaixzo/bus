@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.gitlab;
 
-import org.miaixz.bus.gitlab.models.IssueEvent;
-
 import java.util.List;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.gitlab.models.IssueEvent;
 
 /**
  * This class provides an entry point to all the GitLab Resource state events API
@@ -74,8 +74,8 @@ public class ResourceStateEventsApi extends AbstractApi {
      */
     public Pager<IssueEvent> getIssueStateEvents(Object projectIdOrPath, Long issueIid, int itemsPerPage)
             throws GitLabApiException {
-        return (new Pager<IssueEvent>(this, IssueEvent.class, itemsPerPage, null, "projects",
-                getProjectIdOrPath(projectIdOrPath), "issues", issueIid, "resource_state_events"));
+        return (new Pager<>(this, IssueEvent.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
+                "issues", issueIid, "resource_state_events"));
     }
 
     /**
@@ -94,4 +94,5 @@ public class ResourceStateEventsApi extends AbstractApi {
             throws GitLabApiException {
         return (getIssueStateEvents(projectIdOrPath, issueIid, getDefaultPerPage()).stream());
     }
+
 }

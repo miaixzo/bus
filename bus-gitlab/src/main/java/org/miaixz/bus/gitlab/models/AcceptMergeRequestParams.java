@@ -32,6 +32,7 @@ import java.io.Serializable;
 import org.miaixz.bus.gitlab.GitLabApiForm;
 
 public class AcceptMergeRequestParams implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private String mergeCommitMessage;
@@ -118,4 +119,5 @@ public class AcceptMergeRequestParams implements Serializable {
                 .withParam("should_remove_source_branch", shouldRemoveSourceBranch).withParam("squash", squash)
                 .withParam("squash_commit_message", squashCommitMessage);
     }
+
 }

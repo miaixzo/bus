@@ -32,11 +32,19 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.*;
-
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.ChildEpic;
+import org.miaixz.bus.gitlab.models.CreatedChildEpic;
+import org.miaixz.bus.gitlab.models.Epic;
+import org.miaixz.bus.gitlab.models.EpicFilter;
+import org.miaixz.bus.gitlab.models.EpicIssue;
+import org.miaixz.bus.gitlab.models.EpicIssueLink;
+import org.miaixz.bus.gitlab.models.LinkType;
+import org.miaixz.bus.gitlab.models.RelatedEpic;
+import org.miaixz.bus.gitlab.models.RelatedEpicLink;
 
 /**
  * This class implements the client side API for the GitLab Epics and Epic Issues API calls.

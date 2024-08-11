@@ -1102,4 +1102,5 @@ public enum Setting {
                 value.getClass().getSimpleName(), shouldBe.toString());
         throw new GitLabApiException(errorMsg);
     }
+
 }

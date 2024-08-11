@@ -47,17 +47,6 @@
         </license>
     </licenses>
 
-    <scm>
-        <connection>scm:git@github.com:839128/bus.git</connection>
-        <developerConnection>scm:git@github.com:839128/bus.git</developerConnection>
-        <url>git@github.com:839128/bus.git</url>
-    </scm>
-
-    <issueManagement>
-        <system>Github Issue</system>
-        <url>https://github.com/839128/bus/issues</url>
-    </issueManagement>
-
     <developers>
         <developer>
             <id>839128</id>
@@ -78,6 +67,17 @@
         </developer>
     </developers>
 
+    <scm>
+        <connection>scm:git@github.com:839128/bus.git</connection>
+        <developerConnection>scm:git@github.com:839128/bus.git</developerConnection>
+        <url>git@github.com:839128/bus.git</url>
+    </scm>
+
+    <issueManagement>
+        <system>Github Issue</system>
+        <url>https://github.com/839128/bus/issues</url>
+    </issueManagement>
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -87,6 +87,12 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.miaixz</groupId>
+            <artifactId>bus-logger</artifactId>
+            <version>${project.version}</version>
+            <optional>true</optional>
+        </dependency>
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>

@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import java.io.Serializable;
-
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.io.Serializable;
+
 public class IssuesStatistics implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Statistics statistics;
@@ -102,4 +103,5 @@ public class IssuesStatistics implements Serializable {
             this.opened = opened;
         }
     }
+
 }

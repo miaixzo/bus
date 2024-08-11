@@ -52,4 +52,5 @@ public enum HealthCheckStatus {
     public String toString() {
         return enumHelper.toString(this);
     }
+
 }

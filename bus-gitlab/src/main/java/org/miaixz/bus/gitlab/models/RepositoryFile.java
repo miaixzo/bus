@@ -36,6 +36,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class RepositoryFile implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private String fileName; // file name only, Ex. class.rb
@@ -202,4 +203,5 @@ public class RepositoryFile implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

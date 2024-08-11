@@ -96,4 +96,5 @@ public class BugzillaService extends NotificationService {
         setDescription(description);
         return this;
     }
+
 }

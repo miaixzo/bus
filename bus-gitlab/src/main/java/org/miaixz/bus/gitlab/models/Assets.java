@@ -37,7 +37,9 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * This class is part of the Release class model.
  */
 public class Assets implements Serializable {
+
     private static final long serialVersionUID = -1L;
+
     private Integer count;
     private List<Source> sources;
     private List<Link> links;
@@ -109,6 +111,7 @@ public class Assets implements Serializable {
     }
 
     public static class Link implements Serializable {
+
         private static final long serialVersionUID = -1L;
 
         private Long id;
@@ -153,4 +156,5 @@ public class Assets implements Serializable {
             return (JacksonJson.toJsonString(this));
         }
     }
+
 }

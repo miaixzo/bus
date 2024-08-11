@@ -32,11 +32,17 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.*;
-
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.Bridge;
+import org.miaixz.bus.gitlab.models.Pipeline;
+import org.miaixz.bus.gitlab.models.PipelineFilter;
+import org.miaixz.bus.gitlab.models.PipelineSchedule;
+import org.miaixz.bus.gitlab.models.PipelineStatus;
+import org.miaixz.bus.gitlab.models.Trigger;
+import org.miaixz.bus.gitlab.models.Variable;
 
 /**
  * <p>
@@ -85,7 +91,7 @@ public class PipelineApi extends AbstractApi implements Constants {
     public List<Pipeline> getPipelines(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
                 getProjectIdOrPath(projectIdOrPath), "pipelines");
-        return (response.readEntity(new GenericType<List<Pipeline>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -102,8 +108,8 @@ public class PipelineApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs during execution
      */
     public Pager<Pipeline> getPipelines(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<Pipeline>(this, Pipeline.class, itemsPerPage, null, "projects",
-                getProjectIdOrPath(projectIdOrPath), "pipelines"));
+        return (new Pager<>(this, Pipeline.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
+                "pipelines"));
     }
 
     /**
@@ -153,7 +159,7 @@ public class PipelineApi extends AbstractApi implements Constants {
     public Pager<Pipeline> getPipelines(Object projectIdOrPath, PipelineFilter filter, int itemsPerPage)
             throws GitLabApiException {
         GitLabApiForm formData = (filter != null ? filter.getQueryParams() : new GitLabApiForm());
-        return (new Pager<Pipeline>(this, Pipeline.class, itemsPerPage, formData.asMap(), "projects",
+        return (new Pager<>(this, Pipeline.class, itemsPerPage, formData.asMap(), "projects",
                 getProjectIdOrPath(projectIdOrPath), "pipelines"));
     }
 
@@ -232,7 +238,7 @@ public class PipelineApi extends AbstractApi implements Constants {
 
         Response response = get(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
                 "pipelines");
-        return (response.readEntity(new GenericType<List<Pipeline>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -291,7 +297,7 @@ public class PipelineApi extends AbstractApi implements Constants {
                 .withParam("name", name).withParam("username", username).withParam("order_by", orderBy)
                 .withParam("sort", sort);
 
-        return (new Pager<Pipeline>(this, Pipeline.class, itemsPerPage, formData.asMap(), "projects",
+        return (new Pager<>(this, Pipeline.class, itemsPerPage, formData.asMap(), "projects",
                 getProjectIdOrPath(projectIdOrPath), "pipelines"));
     }
 
@@ -377,9 +383,7 @@ public class PipelineApi extends AbstractApi implements Constants {
         // The create pipeline REST API expects the variable data in an unusual format, this
         // class is used to create the JSON for the POST data.
         class CreatePipelineForm {
-            @SuppressWarnings("unused")
             public String ref;
-            @SuppressWarnings("unused")
             public List<Variable> variables;
 
             CreatePipelineForm(String ref, List<Variable> variables) {
@@ -482,7 +486,7 @@ public class PipelineApi extends AbstractApi implements Constants {
             throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
                 getProjectIdOrPath(projectIdOrPath), "pipeline_schedules");
-        return (response.readEntity(new GenericType<List<PipelineSchedule>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -501,7 +505,7 @@ public class PipelineApi extends AbstractApi implements Constants {
      */
     public Pager<PipelineSchedule> getPipelineSchedules(Object projectIdOrPath, int itemsPerPage)
             throws GitLabApiException {
-        return (new Pager<PipelineSchedule>(this, PipelineSchedule.class, itemsPerPage, null, "projects",
+        return (new Pager<>(this, PipelineSchedule.class, itemsPerPage, null, "projects",
                 getProjectIdOrPath(projectIdOrPath), "pipeline_schedules"));
     }
 
@@ -646,7 +650,6 @@ public class PipelineApi extends AbstractApi implements Constants {
      */
     public PipelineSchedule takeOwnershipPipelineSchedule(Object projectIdOrPath, Long pipelineScheduleId)
             throws GitLabApiException {
-
         Response response = post(Response.Status.OK, "", "projects", getProjectIdOrPath(projectIdOrPath),
                 "pipeline_schedules", pipelineScheduleId, "take_ownership");
         return (response.readEntity(PipelineSchedule.class));
@@ -687,7 +690,6 @@ public class PipelineApi extends AbstractApi implements Constants {
      */
     public Variable createPipelineScheduleVariable(Object projectIdOrPath, Long pipelineScheduleId, String key,
             String value) throws GitLabApiException {
-
         GitLabApiForm formData = new GitLabApiForm().withParam("key", key, true).withParam("value", value, true);
         Response response = post(Response.Status.CREATED, formData, "projects", getProjectIdOrPath(projectIdOrPath),
                 "pipeline_schedules", pipelineScheduleId, "variables");
@@ -711,7 +713,6 @@ public class PipelineApi extends AbstractApi implements Constants {
      */
     public Variable updatePipelineScheduleVariable(Object projectIdOrPath, Long pipelineScheduleId, String key,
             String value) throws GitLabApiException {
-
         GitLabApiForm formData = new GitLabApiForm().withParam("value", value, true);
         Response response = this.putWithFormData(Response.Status.CREATED, formData, "projects",
                 getProjectIdOrPath(projectIdOrPath), "pipeline_schedules", pipelineScheduleId, "variables", key);
@@ -772,7 +773,7 @@ public class PipelineApi extends AbstractApi implements Constants {
     public List<Trigger> getPipelineTriggers(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
                 getProjectIdOrPath(projectIdOrPath), "triggers");
-        return (response.readEntity(new GenericType<List<Trigger>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -790,8 +791,8 @@ public class PipelineApi extends AbstractApi implements Constants {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Trigger> getPipelineTriggers(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<Trigger>(this, Trigger.class, itemsPerPage, null, "projects",
-                getProjectIdOrPath(projectIdOrPath), "triggers"));
+        return (new Pager<>(this, Trigger.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
+                "triggers"));
     }
 
     /**
@@ -944,7 +945,6 @@ public class PipelineApi extends AbstractApi implements Constants {
      */
     public Pipeline triggerPipeline(Object projectIdOrPath, Trigger trigger, String ref, List<Variable> variables)
             throws GitLabApiException {
-
         if (trigger == null) {
             throw new GitLabApiException("trigger cannot be null");
         }
@@ -1009,8 +1009,8 @@ public class PipelineApi extends AbstractApi implements Constants {
      */
     public Pager<Variable> getPipelineVariables(Object projectIdOrPath, Long pipelineId, int itemsPerPage)
             throws GitLabApiException {
-        return (new Pager<Variable>(this, Variable.class, itemsPerPage, null, "projects",
-                getProjectIdOrPath(projectIdOrPath), "pipelines", pipelineId, "variables"));
+        return (new Pager<>(this, Variable.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
+                "pipelines", pipelineId, "variables"));
     }
 
     /**

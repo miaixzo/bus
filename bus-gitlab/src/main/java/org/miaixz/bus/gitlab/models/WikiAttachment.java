@@ -32,7 +32,9 @@ import java.io.Serializable;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class WikiAttachment implements Serializable {
+
     private static final long serialVersionUID = -1L;
+
     private String fileName;
     private String filePath;
     private String branch;
@@ -76,6 +78,7 @@ public class WikiAttachment implements Serializable {
     }
 
     public static class Link implements Serializable {
+
         private static final long serialVersionUID = -1L;
 
         private String url;
@@ -102,4 +105,5 @@ public class WikiAttachment implements Serializable {
             return (JacksonJson.toJsonString(this));
         }
     }
+
 }

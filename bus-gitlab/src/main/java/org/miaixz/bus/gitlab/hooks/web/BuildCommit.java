@@ -128,4 +128,5 @@ public class BuildCommit {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

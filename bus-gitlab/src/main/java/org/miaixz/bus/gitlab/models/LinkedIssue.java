@@ -74,4 +74,5 @@ public class LinkedIssue extends AbstractIssue {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

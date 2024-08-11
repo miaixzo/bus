@@ -297,4 +297,5 @@ public class MattermostService extends NotificationService {
         setWikiPageChannel(wikiPageChannel);
         return (this);
     }
+
 }

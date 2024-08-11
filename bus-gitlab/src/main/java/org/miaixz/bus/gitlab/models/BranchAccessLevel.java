@@ -32,6 +32,7 @@ import java.io.Serializable;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class BranchAccessLevel implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Long id;
@@ -84,4 +85,5 @@ public class BranchAccessLevel implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

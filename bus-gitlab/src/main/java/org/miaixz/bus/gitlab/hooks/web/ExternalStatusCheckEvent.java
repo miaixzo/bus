@@ -30,10 +30,12 @@ package org.miaixz.bus.gitlab.hooks.web;
 import java.io.Serializable;
 import java.util.List;
 
+import org.miaixz.bus.gitlab.hooks.web.MergeRequestEvent.ObjectAttributes;
 import org.miaixz.bus.gitlab.models.Assignee;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class ExternalStatusCheckEvent implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private String objectKind;
@@ -41,7 +43,7 @@ public class ExternalStatusCheckEvent implements Serializable {
     private EventUser user;
     private EventProject project;
     private EventRepository repository;
-    private MergeRequestEvent.ObjectAttributes objectAttributes;
+    private ObjectAttributes objectAttributes;
     private List<EventLabel> labels;
     private MergeRequestChanges changes;
     private List<Assignee> assignees;
@@ -87,11 +89,11 @@ public class ExternalStatusCheckEvent implements Serializable {
         this.repository = repository;
     }
 
-    public MergeRequestEvent.ObjectAttributes getObjectAttributes() {
+    public ObjectAttributes getObjectAttributes() {
         return this.objectAttributes;
     }
 
-    public void setObjectAttributes(MergeRequestEvent.ObjectAttributes objectAttributes) {
+    public void setObjectAttributes(ObjectAttributes objectAttributes) {
         this.objectAttributes = objectAttributes;
     }
 
@@ -131,4 +133,5 @@ public class ExternalStatusCheckEvent implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

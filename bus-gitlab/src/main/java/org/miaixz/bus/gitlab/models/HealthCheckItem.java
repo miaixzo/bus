@@ -33,6 +33,7 @@ import java.util.Map;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class HealthCheckItem implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private HealthCheckStatus status;
@@ -67,4 +68,5 @@ public class HealthCheckItem implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

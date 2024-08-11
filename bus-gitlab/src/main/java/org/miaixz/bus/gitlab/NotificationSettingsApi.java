@@ -28,6 +28,7 @@
 package org.miaixz.bus.gitlab;
 
 import jakarta.ws.rs.core.Response;
+
 import org.miaixz.bus.gitlab.models.NotificationSettings;
 import org.miaixz.bus.gitlab.models.NotificationSettings.Events;
 
@@ -190,4 +191,5 @@ public class NotificationSettingsApi extends AbstractApi {
         Response response = put(Response.Status.OK, formData.asMap(), "projects", projectId, "notification_settings");
         return (response.readEntity(NotificationSettings.class));
     }
+
 }

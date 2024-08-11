@@ -199,7 +199,9 @@ public final class TcpSession extends Session {
     @Override
     public void awaitRead() {
         modCount++;
-    }    /**
+    }
+
+    /**
      * 读事件回调处理
      */
     private static final CompletionHandler<Integer, TcpSession> READ_COMPLETION_HANDLER = new CompletionHandler<>() {
@@ -487,8 +489,6 @@ public final class TcpSession extends Session {
             }
         }
     }
-
-
 
     /**
      * 写事件回调处理

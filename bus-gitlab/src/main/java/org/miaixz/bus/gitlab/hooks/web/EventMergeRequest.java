@@ -549,4 +549,5 @@ public class EventMergeRequest {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

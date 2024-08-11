@@ -38,7 +38,9 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class Group extends AbstractGroup<Group> {
+
     private static final long serialVersionUID = -1L;
+
     private String path;
     private String description;
     private Visibility visibility;
@@ -58,6 +60,7 @@ public class Group extends AbstractGroup<Group> {
     private ProjectCreationLevel projectCreationLevel;
     private SubgroupCreationLevel subgroupCreationLevel;
     private DefaultBranchProtectionLevel defaultBranchProtection;
+
     @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
     private Date markedForDeletionOn;
 
@@ -344,4 +347,5 @@ public class Group extends AbstractGroup<Group> {
             this.jobArtifactsSize = jobArtifactsSize;
         }
     }
+
 }

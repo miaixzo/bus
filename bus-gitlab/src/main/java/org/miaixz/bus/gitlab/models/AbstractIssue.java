@@ -42,7 +42,9 @@ import com.fasterxml.jackson.databind.node.TextNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 
 public abstract class AbstractIssue implements Serializable {
+
     private static final long serialVersionUID = -1L;
+
     private Assignee assignee;
     private List<Assignee> assignees;
     private Author author;
@@ -53,12 +55,14 @@ public abstract class AbstractIssue implements Serializable {
     private User closedBy;
     private String description;
     private Date dueDate;
+
     @JsonProperty("id")
     private ValueNode actualId;
     @JsonIgnore
     private String externalId;
     @JsonIgnore
     private Long id;
+
     private Long iid;
     private List<String> labels;
     private Milestone milestone;
@@ -70,6 +74,7 @@ public abstract class AbstractIssue implements Serializable {
     private Integer weight;
     private Boolean discussionLocked;
     private TimeStats timeStats;
+
     private Integer upvotes;
     private Integer downvotes;
     private Integer mergeRequestsCount;
@@ -345,6 +350,7 @@ public abstract class AbstractIssue implements Serializable {
     }
 
     public static class TaskCompletionStatus implements Serializable {
+
         private static final long serialVersionUID = -1L;
 
         private Integer count;
@@ -371,4 +377,5 @@ public abstract class AbstractIssue implements Serializable {
             return (JacksonJson.toJsonString(this));
         }
     }
+
 }

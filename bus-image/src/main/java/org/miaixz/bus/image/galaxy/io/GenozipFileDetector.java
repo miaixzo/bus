@@ -38,7 +38,6 @@ import org.miaixz.bus.core.xyz.StreamKit;
 /**
  * @author Kimi Liu
  * @since Java 17+
- * @since Apr 2022
  */
 public class GenozipFileDetector extends FileTypeDetector {
 

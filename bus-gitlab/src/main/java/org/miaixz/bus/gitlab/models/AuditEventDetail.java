@@ -32,6 +32,7 @@ import java.io.Serializable;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class AuditEventDetail implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private String change;
@@ -138,4 +139,5 @@ public class AuditEventDetail implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

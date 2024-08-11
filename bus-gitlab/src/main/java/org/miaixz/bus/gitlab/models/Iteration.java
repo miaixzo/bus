@@ -36,7 +36,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public class Iteration implements Serializable {
+
     private static final long serialVersionUID = -1L;
+
     private Long id;
     private Long iid;
     private Long sequence;
@@ -180,4 +182,5 @@ public class Iteration implements Serializable {
             return name();
         }
     }
+
 }

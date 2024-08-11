@@ -27,10 +27,9 @@
 */
 package org.miaixz.bus.gitlab;
 
-import org.miaixz.bus.gitlab.models.Metadata;
-
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
+import org.miaixz.bus.gitlab.models.Metadata;
 
 /**
  * This class implements the client side API for the Gitlab metadata call.

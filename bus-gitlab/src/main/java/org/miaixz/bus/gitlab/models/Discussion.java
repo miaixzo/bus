@@ -33,6 +33,7 @@ import java.util.List;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class Discussion implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private String id;
@@ -43,20 +44,20 @@ public class Discussion implements Serializable {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public Boolean getIndividualNote() {
         return individualNote;
     }
 
-    public void setIndividualNote(Boolean individualNote) {
-        this.individualNote = individualNote;
-    }
-
     public List<Note> getNotes() {
         return notes;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setIndividualNote(Boolean individualNote) {
+        this.individualNote = individualNote;
     }
 
     public void setNotes(List<Note> notes) {
@@ -67,4 +68,5 @@ public class Discussion implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

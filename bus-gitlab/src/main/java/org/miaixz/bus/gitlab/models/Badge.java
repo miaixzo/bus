@@ -36,7 +36,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public class Badge implements Serializable {
+
     private static final long serialVersionUID = -1L;
+
     private Long id;
     private String name;
     private String linkUrl;
@@ -126,4 +128,5 @@ public class Badge implements Serializable {
             return (enumHelper.toString(this));
         }
     }
+
 }

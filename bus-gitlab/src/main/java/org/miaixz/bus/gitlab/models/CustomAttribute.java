@@ -30,6 +30,7 @@ package org.miaixz.bus.gitlab.models;
 import java.io.Serializable;
 
 public class CustomAttribute implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private String key;
@@ -60,4 +61,5 @@ public class CustomAttribute implements Serializable {
         this.value = value;
         return this;
     }
+
 }

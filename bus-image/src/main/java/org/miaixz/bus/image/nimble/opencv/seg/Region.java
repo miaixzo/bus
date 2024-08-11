@@ -74,22 +74,15 @@ public class Region {
         List<MatOfPoint> contours = new ArrayList<>();
         Mat hierarchy = new Mat();
         if (offset == null) {
-            Imgproc.findContours(
-                    binary.toMat(), contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+            Imgproc.findContours(binary.toMat(), contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
         } else {
-            Imgproc.findContours(
-                    binary.toMat(),
-                    contours,
-                    hierarchy,
-                    Imgproc.RETR_TREE,
-                    Imgproc.CHAIN_APPROX_SIMPLE,
+            Imgproc.findContours(binary.toMat(), contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE,
                     offset);
         }
         return buildSegmentList(contours, hierarchy);
     }
 
-    public static List<Segment> buildSegmentListFromFloat(
-            List<MatOfPoint2f> contours, Mat hierarchy) {
+    public static List<Segment> buildSegmentListFromFloat(List<MatOfPoint2f> contours, Mat hierarchy) {
         return buildSegmentListFromPoint(contours, hierarchy);
     }
 
@@ -97,8 +90,7 @@ public class Region {
         return buildSegmentListFromPoint(contours, hierarchy);
     }
 
-    protected static List<Segment> buildSegmentListFromPoint(
-            List<? extends Mat> contours, Mat hierarchy) {
+    protected static List<Segment> buildSegmentListFromPoint(List<? extends Mat> contours, Mat hierarchy) {
         if (contours == null || hierarchy == null) {
             return Collections.emptyList();
         }

@@ -35,6 +35,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class SharedGroup implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Long groupId;
@@ -88,4 +89,5 @@ public class SharedGroup implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

@@ -34,6 +34,7 @@ import java.util.List;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class CommitPayload implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private String branch;

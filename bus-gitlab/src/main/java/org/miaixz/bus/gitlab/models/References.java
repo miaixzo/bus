@@ -34,6 +34,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class References implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     @JsonProperty("short")
@@ -69,4 +70,5 @@ public class References implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

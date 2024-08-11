@@ -33,6 +33,7 @@ import java.util.Date;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class ProjectHook implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Boolean buildEvents;
@@ -58,6 +59,8 @@ public class ProjectHook implements Serializable {
 
     private Boolean deploymentEvents;
     private Boolean releasesEvents;
+
+    private String description;
 
     public Boolean getBuildEvents() {
         return buildEvents;
@@ -203,6 +206,14 @@ public class ProjectHook implements Serializable {
         this.releasesEvents = releasesEvents;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public Boolean getConfidentialIssuesEvents() {
         return confidentialIssuesEvents;
     }
@@ -301,4 +312,5 @@ public class ProjectHook implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

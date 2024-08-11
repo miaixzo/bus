@@ -33,6 +33,7 @@ import java.util.List;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class ApprovalRule implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Long id;
@@ -139,4 +140,5 @@ public class ApprovalRule implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

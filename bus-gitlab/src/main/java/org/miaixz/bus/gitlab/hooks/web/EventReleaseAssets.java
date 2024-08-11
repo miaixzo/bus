@@ -65,4 +65,5 @@ public class EventReleaseAssets {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

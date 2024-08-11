@@ -32,8 +32,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.miaixz.bus.gitlab.Constants;
+import org.miaixz.bus.gitlab.Constants.AutoDevopsDeployStrategy;
+import org.miaixz.bus.gitlab.Constants.BuildGitStrategy;
+import org.miaixz.bus.gitlab.Constants.SquashOption;
 import org.miaixz.bus.gitlab.ProjectLicense;
+import org.miaixz.bus.gitlab.models.ImportStatus.Status;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
@@ -44,10 +47,10 @@ import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public class Project implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private List<SharedGroup> sharedWithGroups;
-
     private Integer approvalsBeforeMerge;
     private Boolean archived;
     private String avatarUrl;
@@ -83,7 +86,7 @@ public class Project implements Serializable {
     private Boolean requestAccessEnabled;
     private String runnersToken;
     private Boolean sharedRunnersEnabled;
-    private Constants.BuildGitStrategy buildGitStrategy;
+    private BuildGitStrategy buildGitStrategy;
     private Boolean snippetsEnabled;
     private String sshUrlToRepo;
     private Integer starCount;
@@ -105,41 +108,34 @@ public class Project implements Serializable {
     private ProjectLicense license;
     private List<CustomAttribute> customAttributes;
     private String buildCoverageRegex;
-    private Constants.AutoDevopsDeployStrategy autoDevopsDeployStrategy;
+    private Status importStatus;
     private String readmeUrl;
     private Boolean canCreateMergeRequestIn;
-    private ImportStatus.Status importStatus;
+    private AutoDevopsDeployStrategy autoDevopsDeployStrategy;
     private Integer ciDefaultGitDepth;
     private Boolean ciForwardDeploymentEnabled;
     private String ciConfigPath;
     private Boolean removeSourceBranchAfterMerge;
     private Boolean autoDevopsEnabled;
-    private Constants.SquashOption squashOption;
+    private SquashOption squashOption;
     private Boolean autocloseReferencedIssues;
     private Boolean emailsDisabled;
     private String suggestionCommitMessage;
+    private String mergeRequestsTemplate;
     private String mergeCommitTemplate;
     private String squashCommitTemplate;
     private String issueBranchTemplate;
-    @JsonProperty("_links")
-    private Map<String, String> links;
-    @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
-    private Date markedForDeletionOn;
+    private String issuesTemplate;
 
     public static final boolean isValid(Project project) {
         return (project != null && project.getId() != null);
     }
 
-    /**
-     * Formats a fully qualified project path based on the provided namespace and project path.
-     *
-     * @param namespace the namespace, either a user name or group name
-     * @param path      the project path
-     * @return a fully qualified project path based on the provided namespace and project path
-     */
-    public static final String getPathWithNammespace(String namespace, String path) {
-        return (namespace.trim() + "/" + path.trim());
-    }
+    @JsonProperty("_links")
+    private Map<String, String> links;
+
+    @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
+    private Date markedForDeletionOn;
 
     public Integer getApprovalsBeforeMerge() {
         return approvalsBeforeMerge;
@@ -569,6 +565,33 @@ public class Project implements Serializable {
         this.starCount = starCount;
     }
 
+    /**
+     * Formats a fully qualified project path based on the provided namespace and project path.
+     *
+     * @param namespace the namespace, either a user name or group name
+     * @param path      the project path
+     * @return a fully qualified project path based on the provided namespace and project path
+     */
+    public static final String getPathWithNammespace(String namespace, String path) {
+        return (namespace.trim() + "/" + path.trim());
+    }
+
+    /**
+     * Tags will be removed in API v5
+     */
+    @Deprecated
+    public List<String> getTagList() {
+        return tagList;
+    }
+
+    /**
+     * Tags will be removed in API v5
+     */
+    @Deprecated
+    public void setTagList(List<String> tagList) {
+        this.tagList = tagList;
+    }
+
     public List<String> getTopics() {
         return topics;
     }
@@ -747,17 +770,22 @@ public class Project implements Serializable {
         this.customAttributes = customAttributes;
     }
 
+    /**
+     * Tags will be removed in API v5
+     */
+    @Deprecated
+    public Project withTagList(List<String> tagList) {
+        this.tagList = tagList;
+        return (this);
+    }
+
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
 
-    public Constants.BuildGitStrategy getBuildGitStrategy() {
+    public BuildGitStrategy getBuildGitStrategy() {
         return buildGitStrategy;
-    }
-
-    public void setBuildGitStrategy(Constants.BuildGitStrategy buildGitStrategy) {
-        this.buildGitStrategy = buildGitStrategy;
     }
 
     public String getBuildCoverageRegex() {
@@ -773,17 +801,17 @@ public class Project implements Serializable {
         return this;
     }
 
-    public Project withBuildGitStrategy(Constants.BuildGitStrategy buildGitStrategy) {
+    public void setBuildGitStrategy(BuildGitStrategy buildGitStrategy) {
+        this.buildGitStrategy = buildGitStrategy;
+    }
+
+    public Project withBuildGitStrategy(BuildGitStrategy buildGitStrategy) {
         this.buildGitStrategy = buildGitStrategy;
         return this;
     }
 
-    public Constants.AutoDevopsDeployStrategy getAutoDevopsDeployStrategy() {
-        return autoDevopsDeployStrategy;
-    }
-
-    public void setAutoDevopsDeployStrategy(Constants.AutoDevopsDeployStrategy autoDevopsDeployStrategy) {
-        this.autoDevopsDeployStrategy = autoDevopsDeployStrategy;
+    public Status getImportStatus() {
+        return importStatus;
     }
 
     public String getReadmeUrl() {
@@ -802,12 +830,12 @@ public class Project implements Serializable {
         this.canCreateMergeRequestIn = canCreateMergeRequestIn;
     }
 
-    public ImportStatus.Status getImportStatus() {
-        return importStatus;
+    public void setImportStatus(Status importStatus) {
+        this.importStatus = importStatus;
     }
 
-    public void setImportStatus(ImportStatus.Status importStatus) {
-        this.importStatus = importStatus;
+    public AutoDevopsDeployStrategy getAutoDevopsDeployStrategy() {
+        return autoDevopsDeployStrategy;
     }
 
     public Integer getCiDefaultGitDepth() {
@@ -855,6 +883,14 @@ public class Project implements Serializable {
         this.autoDevopsEnabled = autoDevopsEnabled;
     }
 
+    public void setAutoDevopsDeployStrategy(AutoDevopsDeployStrategy autoDevopsDeployStrategy) {
+        this.autoDevopsDeployStrategy = autoDevopsDeployStrategy;
+    }
+
+    public void setSuggestionCommitMessage(String suggestionCommitMessage) {
+        this.suggestionCommitMessage = suggestionCommitMessage;
+    }
+
     public Boolean getAutocloseReferencedIssues() {
         return autocloseReferencedIssues;
     }
@@ -880,26 +916,26 @@ public class Project implements Serializable {
         return this.suggestionCommitMessage;
     }
 
-    public void setSuggestionCommitMessage(String suggestionCommitMessage) {
-        this.suggestionCommitMessage = suggestionCommitMessage;
-    }
-
     public Project withSuggestionCommitMessage(String suggestionCommitMessage) {
         this.suggestionCommitMessage = suggestionCommitMessage;
         return this;
     }
 
-    public Constants.SquashOption getSquashOption() {
+    public SquashOption getSquashOption() {
         return squashOption;
     }
 
-    public void setSquashOption(Constants.SquashOption squashOption) {
+    public void setSquashOption(SquashOption squashOption) {
         this.squashOption = squashOption;
     }
 
-    public Project withSquashOption(Constants.SquashOption squashOption) {
+    public Project withSquashOption(SquashOption squashOption) {
         this.squashOption = squashOption;
         return this;
+    }
+
+    public String getMergeRequestsTemplate() {
+        return mergeRequestsTemplate;
     }
 
     public String getMergeCommitTemplate() {
@@ -924,6 +960,18 @@ public class Project implements Serializable {
 
     public void setIssueBranchTemplate(String issueBranchTemplate) {
         this.issueBranchTemplate = issueBranchTemplate;
+    }
+
+    public void setMergeRequestsTemplate(String mergeRequestsTemplate) {
+        this.mergeRequestsTemplate = mergeRequestsTemplate;
+    }
+
+    public String getIssuesTemplate() {
+        return issuesTemplate;
+    }
+
+    public void setIssuesTemplate(String issuesTemplate) {
+        this.issuesTemplate = issuesTemplate;
     }
 
     public Map<String, String> getLinks() {
@@ -965,4 +1013,5 @@ public class Project implements Serializable {
             return (enumHelper.toString(this));
         }
     }
+
 }

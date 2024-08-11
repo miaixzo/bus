@@ -58,22 +58,6 @@ public class RepositoryApi extends AbstractApi {
     }
 
     /**
-     * Get the filename from the "Content-Disposition" header of a JAX-RS response.
-     *
-     * @param response the JAX-RS Response instance to get the "Content-Disposition" header filename from
-     * @return the filename from the "Content-Disposition" header of a JAX-RS response, or null if the
-     *         "Content-Disposition" header is not present in the response
-     */
-    public static String getFilenameFromContentDisposition(Response response) {
-
-        String disposition = response.getHeaderString("Content-Disposition");
-        if (disposition == null || disposition.trim().length() == 0)
-            return (null);
-
-        return (disposition.replaceFirst("(?i)^.*filename=\"([^\"]+)\".*$", "$1"));
-    }
-
-    /**
      * Get a list of repository branches from a project, sorted by name alphabetically.
      *
      * <pre>
@@ -104,23 +88,8 @@ public class RepositoryApi extends AbstractApi {
     public List<Branch> getBranches(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
                 getProjectIdOrPath(projectIdOrPath), "repository", "branches");
-        return (response.readEntity(new GenericType<List<Branch>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
-    }
-
-    /**
-     * Get a Stream of repository branches from a project, sorted by name alphabetically.
-     *
-     * <pre>
-     * <code>GitLab Endpoint: GET /projects/:id/repository/branches</code>
-     * </pre>
-     *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @return a Stream of repository branches for the specified project
-     * @throws GitLabApiException if any exception occurs
-     */
-    public Stream<Branch> getBranchesStream(Object projectIdOrPath) throws GitLabApiException {
-        return getBranches(projectIdOrPath, null, getDefaultPerPage()).stream();
     }
 
     /**
@@ -138,6 +107,21 @@ public class RepositoryApi extends AbstractApi {
      */
     public Pager<Branch> getBranches(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
         return getBranches(projectIdOrPath, null, itemsPerPage);
+    }
+
+    /**
+     * Get a Stream of repository branches from a project, sorted by name alphabetically.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/branches</code>
+     * </pre>
+     *
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
+     * @return a Stream of repository branches for the specified project
+     * @throws GitLabApiException if any exception occurs
+     */
+    public Stream<Branch> getBranchesStream(Object projectIdOrPath) throws GitLabApiException {
+        return getBranches(projectIdOrPath, null, getDefaultPerPage()).stream();
     }
 
     /**
@@ -295,21 +279,6 @@ public class RepositoryApi extends AbstractApi {
     }
 
     /**
-     * Get a list of repository files and directories in a project.
-     *
-     * <pre>
-     * <code>GitLab Endpoint: GET /projects/:id/repository/tree</code>
-     * </pre>
-     *
-     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @return a tree with the root directories and files of a project
-     * @throws GitLabApiException if any exception occurs
-     */
-    public List<TreeItem> getTree(Object projectIdOrPath) throws GitLabApiException {
-        return (getTree(projectIdOrPath, "/", "master"));
-    }
-
-    /**
      * Unprotects a single project repository branch. This is an idempotent function, unprotecting an already
      * unprotected repository branch will not produce an error.
      *
@@ -329,18 +298,18 @@ public class RepositoryApi extends AbstractApi {
     }
 
     /**
-     * Get a Stream of repository files and directories in a project.
+     * Get a list of repository files and directories in a project.
      *
      * <pre>
      * <code>GitLab Endpoint: GET /projects/:id/repository/tree</code>
      * </pre>
      *
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
-     * @return a Stream containing a tree with the root directories and files of a project
+     * @return a tree with the root directories and files of a project
      * @throws GitLabApiException if any exception occurs
      */
-    public Stream<TreeItem> getTreeStream(Object projectIdOrPath) throws GitLabApiException {
-        return (getTreeStream(projectIdOrPath, "/", "master"));
+    public List<TreeItem> getTree(Object projectIdOrPath) throws GitLabApiException {
+        return (getTree(projectIdOrPath, "/", "master"));
     }
 
     /**
@@ -357,6 +326,21 @@ public class RepositoryApi extends AbstractApi {
      */
     public Pager<TreeItem> getTree(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
         return (getTree(projectIdOrPath, "/", "master", false, itemsPerPage));
+    }
+
+    /**
+     * Get a Stream of repository files and directories in a project.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/tree</code>
+     * </pre>
+     *
+     * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
+     * @return a Stream containing a tree with the root directories and files of a project
+     * @throws GitLabApiException if any exception occurs
+     */
+    public Stream<TreeItem> getTreeStream(Object projectIdOrPath) throws GitLabApiException {
+        return (getTreeStream(projectIdOrPath, "/", "master"));
     }
 
     /**
@@ -470,7 +454,7 @@ public class RepositoryApi extends AbstractApi {
                 .withParam("path", filePath, false).withParam(isApiVersion(ApiVersion.V3) ? "ref_name" : "ref",
                         (refName != null ? urlEncode(refName) : null), false)
                 .withParam("recursive", recursive, false);
-        return (new Pager<TreeItem>(this, TreeItem.class, itemsPerPage, formData.asMap(), "projects",
+        return (new Pager<>(this, TreeItem.class, itemsPerPage, formData.asMap(), "projects",
                 getProjectIdOrPath(projectIdOrPath), "repository", "tree"));
     }
 
@@ -767,7 +751,7 @@ public class RepositoryApi extends AbstractApi {
     public List<Contributor> getContributors(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
                 getProjectIdOrPath(projectIdOrPath), "repository", "contributors");
-        return (response.readEntity(new GenericType<List<Contributor>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -800,7 +784,7 @@ public class RepositoryApi extends AbstractApi {
 
         Response response = get(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
                 "repository", "contributors");
-        return (response.readEntity(new GenericType<List<Contributor>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -817,8 +801,8 @@ public class RepositoryApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Contributor> getContributors(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return new Pager<Contributor>(this, Contributor.class, itemsPerPage, null, "projects",
-                getProjectIdOrPath(projectIdOrPath), "repository", "contributors");
+        return new Pager<>(this, Contributor.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
+                "repository", "contributors");
     }
 
     /**
@@ -933,6 +917,22 @@ public class RepositoryApi extends AbstractApi {
     public void generateChangelog(Object projectIdOrPath, ChangelogPayload payload) throws GitLabApiException {
         post(Response.Status.OK, payload.getFormData(), "projects", getProjectIdOrPath(projectIdOrPath), "repository",
                 "changelog");
+    }
+
+    /**
+     * Get the filename from the "Content-Disposition" header of a JAX-RS response.
+     *
+     * @param response the JAX-RS Response instance to get the "Content-Disposition" header filename from
+     * @return the filename from the "Content-Disposition" header of a JAX-RS response, or null if the
+     *         "Content-Disposition" header is not present in the response
+     */
+    public static String getFilenameFromContentDisposition(Response response) {
+
+        String disposition = response.getHeaderString("Content-Disposition");
+        if (disposition == null || disposition.trim().length() == 0)
+            return (null);
+
+        return (disposition.replaceFirst("(?i)^.*filename=\"([^\"]+)\".*$", "$1"));
     }
 
 }

@@ -36,6 +36,7 @@ import org.miaixz.bus.gitlab.GitLabApiForm;
  * allowed_to_unprotect values.
  */
 public class AllowedTo implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private AccessLevel accessLevel;
@@ -72,4 +73,5 @@ public class AllowedTo implements Serializable {
         return (form.withParam(allowedToName + "[][access_level]", accessLevel)
                 .withParam(allowedToName + "[][user_id]", userId).withParam(allowedToName + "[][group_id]", groupId));
     }
+
 }

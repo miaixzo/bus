@@ -30,20 +30,20 @@ package org.miaixz.bus.gitlab;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.Package;
-import org.miaixz.bus.gitlab.models.PackageFile;
-import org.miaixz.bus.gitlab.models.PackageFilter;
-
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.Package;
+import org.miaixz.bus.gitlab.models.PackageFile;
+import org.miaixz.bus.gitlab.models.PackageFilter;
 
 /**
  * <p>
  * This class implements the client side API for the GitLab Packages API. See
  * <a href="https://docs.gitlab.com/ee/api/packages.html">Packages API at GitLab</a> for more information.
  * </p>
- *
+ * 
  * NOTE: This API is not available in the Community edition of GitLab.
  */
 public class PackagesApi extends AbstractApi {
@@ -85,7 +85,7 @@ public class PackagesApi extends AbstractApi {
     public List<Package> getPackages(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
                 getProjectIdOrPath(projectIdOrPath), "packages");
-        return response.readEntity(new GenericType<List<Package>>() {
+        return response.readEntity(new GenericType<>() {
         });
     }
 
@@ -212,7 +212,7 @@ public class PackagesApi extends AbstractApi {
             throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
                 getProjectIdOrPath(projectIdOrPath), "packages", packageId, "package_files");
-        return response.readEntity(new GenericType<List<PackageFile>>() {
+        return response.readEntity(new GenericType<>() {
         });
     }
 
@@ -231,7 +231,7 @@ public class PackagesApi extends AbstractApi {
      */
     public Pager<PackageFile> getPackageFiles(Object projectIdOrPath, Long packageId, int itemsPerPage)
             throws GitLabApiException {
-        return (new Pager<PackageFile>(this, PackageFile.class, itemsPerPage, null, "projects",
+        return (new Pager<>(this, PackageFile.class, itemsPerPage, null, "projects",
                 getProjectIdOrPath(projectIdOrPath), "packages", packageId, "package_files"));
     }
 
@@ -271,4 +271,5 @@ public class PackagesApi extends AbstractApi {
         delete(Response.Status.NO_CONTENT, null, "projects", getProjectIdOrPath(projectIdOrPath), "packages",
                 packageId);
     }
+
 }

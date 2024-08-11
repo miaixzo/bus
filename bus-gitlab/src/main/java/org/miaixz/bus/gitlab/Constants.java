@@ -37,49 +37,31 @@ import com.fasterxml.jackson.annotation.JsonValue;
 
 public interface Constants {
 
-    /**
-     * The total number of items HTTP header key.
-     */
+    /** The total number of items HTTP header key. */
     public static final String TOTAL_HEADER = "X-Total";
 
-    /**
-     * The total number of pages HTTP header key.
-     */
+    /** The total number of pages HTTP header key. */
     public static final String TOTAL_PAGES_HEADER = "X-Total-Pages";
 
-    /**
-     * The number of items per page HTTP header key.
-     */
+    /** The number of items per page HTTP header key. */
     public static final String PER_PAGE = "X-Per-Page";
 
-    /**
-     * The index of the current page (starting at 1) HTTP header key.
-     */
+    /** The index of the current page (starting at 1) HTTP header key. */
     public static final String PAGE_HEADER = "X-Page";
 
-    /**
-     * The index of the next page HTTP header key.
-     */
+    /** The index of the next page HTTP header key. */
     public static final String NEXT_PAGE_HEADER = "X-Next-Page";
 
-    /**
-     * The index of the previous page HTTP header key.
-     */
+    /** The index of the previous page HTTP header key. */
     public static final String PREV_PAGE_HEADER = "X-Prev-Page";
 
-    /**
-     * Items per page param HTTP header key.
-     */
+    /** Items per page param HTTP header key. */
     public static final String PER_PAGE_PARAM = "per_page";
 
-    /**
-     * Page param HTTP header key.
-     */
+    /** Page param HTTP header key. */
     public static final String PAGE_PARAM = "page";
 
-    /**
-     * Used to specify the type of authentication token.
-     */
+    /** Used to specify the type of authentication token. */
     public enum TokenType {
         ACCESS, OAUTH2_ACCESS, PRIVATE;
     }
@@ -705,22 +687,23 @@ public interface Constants {
         }
     }
 
-    /** Enum to specify the format of a downloaded archive. */
+    /**
+     * Enum to specify the format of a downloaded archive.
+     */
     public enum ArchiveFormat {
 
         BZ2, TAR, TAR_BZ2, TAR_GZ, TB2, TBZ, TBZ2, ZIP;
-
-        private static Map<String, ArchiveFormat> valuesMap = new HashMap<String, ArchiveFormat>(8);
-
-        static {
-            for (ArchiveFormat archiveFormat : ArchiveFormat.values())
-                valuesMap.put(archiveFormat.value, archiveFormat);
-        }
 
         private final String value;
 
         ArchiveFormat() {
             this.value = name().toLowerCase().replace('_', '.');
+        }
+
+        private static Map<String, ArchiveFormat> valuesMap = new HashMap<String, ArchiveFormat>(8);
+        static {
+            for (ArchiveFormat archiveFormat : ArchiveFormat.values())
+                valuesMap.put(archiveFormat.value, archiveFormat);
         }
 
         public static ArchiveFormat forValue(String value) throws GitLabApiException {
@@ -1207,4 +1190,5 @@ public interface Constants {
             return Integer.toString(value);
         }
     }
+
 }

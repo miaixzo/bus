@@ -138,4 +138,5 @@ public class EventSnippet {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

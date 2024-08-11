@@ -36,8 +36,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 /**
- * Excel兼容的ZIP64 OutputStream实现
- * 来自并见： https://github.com/rzymek/opczip
+ * Excel兼容的ZIP64 OutputStream实现 来自并见： https://github.com/rzymek/opczip
  *
  * @author Kimi Liu
  * @since Java 17+

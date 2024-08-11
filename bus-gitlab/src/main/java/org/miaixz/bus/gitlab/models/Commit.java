@@ -34,6 +34,7 @@ import java.util.List;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class Commit implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Author author;
@@ -306,4 +307,5 @@ public class Commit implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

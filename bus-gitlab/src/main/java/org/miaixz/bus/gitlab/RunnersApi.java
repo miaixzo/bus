@@ -30,15 +30,15 @@ package org.miaixz.bus.gitlab;
 import java.util.List;
 import java.util.stream.Stream;
 
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
+
 import org.miaixz.bus.gitlab.models.Job;
 import org.miaixz.bus.gitlab.models.JobStatus;
 import org.miaixz.bus.gitlab.models.Runner;
 import org.miaixz.bus.gitlab.models.Runner.RunnerStatus;
 import org.miaixz.bus.gitlab.models.Runner.RunnerType;
 import org.miaixz.bus.gitlab.models.RunnerDetail;
-
-import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.Response;
 
 /**
  * This class provides an entry point to all the GitLab API repository files calls.
@@ -143,7 +143,7 @@ public class RunnersApi extends AbstractApi {
         GitLabApiForm formData = new GitLabApiForm(page, perPage).withParam("type", type, false).withParam("status",
                 status, false);
         Response response = get(Response.Status.OK, formData.asMap(), "runners");
-        return (response.readEntity(new GenericType<List<Runner>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -281,7 +281,7 @@ public class RunnersApi extends AbstractApi {
         GitLabApiForm formData = new GitLabApiForm(page, perPage).withParam("type", type, false).withParam("status",
                 status, false);
         Response response = get(Response.Status.OK, formData.asMap(), "runners", "all");
-        return (response.readEntity(new GenericType<List<Runner>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -625,4 +625,5 @@ public class RunnersApi extends AbstractApi {
         GitLabApiForm formData = new GitLabApiForm().withParam("token", token, true);
         delete(Response.Status.NO_CONTENT, formData.asMap(), "runners");
     }
+
 }

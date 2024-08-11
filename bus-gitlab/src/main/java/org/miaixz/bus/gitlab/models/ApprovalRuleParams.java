@@ -33,6 +33,7 @@ import java.util.List;
 import org.miaixz.bus.gitlab.GitLabApiForm;
 
 public class ApprovalRuleParams implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Integer approvalsRequired;
@@ -145,4 +146,5 @@ public class ApprovalRuleParams implements Serializable {
                 .withParam("report_type", reportType).withParam("rule_type", ruleType).withParam("user_ids", userIds)
                 .withParam("usernames", usernames);
     }
+
 }

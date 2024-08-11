@@ -48,12 +48,13 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public class SystemHookManager implements HookManager {
 
-    public static final String SYSTEM_HOOK_EVENT = "System Hook";
     private final static Logger LOGGER = Logger.getLogger(SystemHookManager.class.getName());
+
+    public static final String SYSTEM_HOOK_EVENT = "System Hook";
     private final JacksonJson jacksonJson = new JacksonJson();
 
     // Collection of objects listening for System Hook events.
-    private final List<SystemHookListener> systemHookListeners = new CopyOnWriteArrayList<SystemHookListener>();
+    private final List<SystemHookListener> systemHookListeners = new CopyOnWriteArrayList<>();
 
     private String secretToken;
 
@@ -207,7 +208,7 @@ public class SystemHookManager implements HookManager {
 
     /**
      * Verifies the provided Event and fires it off to the registered listeners.
-     *
+     * 
      * @param event the Event instance to handle
      * @throws GitLabApiException if the event is not supported
      */
@@ -243,7 +244,7 @@ public class SystemHookManager implements HookManager {
 
     /**
      * Fire the event to the registered listeners.
-     *
+     * 
      * @param event the SystemHookEvent instance to fire to the registered event listeners
      * @throws GitLabApiException if the event is not supported
      */
@@ -335,4 +336,5 @@ public class SystemHookManager implements HookManager {
             listener.onMergeRequestEvent(event);
         }
     }
+
 }

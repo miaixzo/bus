@@ -30,6 +30,7 @@ package org.miaixz.bus.gitlab.models;
 import java.io.Serializable;
 
 public class Application implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Long id;
@@ -68,4 +69,5 @@ public class Application implements Serializable {
     public void setCallbackUrl(String callbackUrl) {
         this.callbackUrl = callbackUrl;
     }
+
 }

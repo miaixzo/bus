@@ -27,14 +27,16 @@
 */
 package org.miaixz.bus.gitlab;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import jakarta.ws.rs.core.Response;
+import java.text.ParseException;
+import java.util.Iterator;
+
 import org.miaixz.bus.gitlab.models.ApplicationSettings;
 import org.miaixz.bus.gitlab.models.Setting;
 import org.miaixz.bus.gitlab.support.ISO8601;
 
-import java.text.ParseException;
-import java.util.Iterator;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import jakarta.ws.rs.core.Response;
 
 /**
  * This class implements the client side API for the GitLab Application Settings API. See
@@ -44,62 +46,6 @@ public class ApplicationSettingsApi extends AbstractApi {
 
     public ApplicationSettingsApi(GitLabApi gitLabApi) {
         super(gitLabApi);
-    }
-
-    /**
-     * Parses the returned JSON and returns an ApplicationSettings instance.
-     *
-     * @param root the root JsonNode
-     * @return the populated ApplicationSettings instance
-     * @throws GitLabApiException if any error occurs
-     */
-    public static final ApplicationSettings parseApplicationSettings(JsonNode root) throws GitLabApiException {
-
-        ApplicationSettings appSettings = new ApplicationSettings();
-
-        Iterator<String> fieldNames = root.fieldNames();
-        while (fieldNames.hasNext()) {
-
-            String fieldName = fieldNames.next();
-            switch (fieldName) {
-            case "id":
-                appSettings.setId(root.path(fieldName).asLong());
-                break;
-
-            case "created_at":
-                try {
-                    String value = root.path(fieldName).asText();
-                    appSettings.setCreatedAt(ISO8601.toDate(value));
-                } catch (ParseException pe) {
-                    throw new GitLabApiException(pe);
-                }
-                break;
-
-            case "updated_at":
-                try {
-                    String value = root.path(fieldName).asText();
-                    appSettings.setUpdatedAt(ISO8601.toDate(value));
-                } catch (ParseException pe) {
-                    throw new GitLabApiException(pe);
-                }
-                break;
-
-            default:
-
-                Setting setting = Setting.forValue(fieldName);
-                if (setting != null) {
-                    appSettings.addSetting(setting, root.path(fieldName));
-                } else {
-                    GitLabApi.getLogger().warning(String.format("Unknown setting: %s, type: %s", fieldName,
-                            root.path(fieldName).getClass().getSimpleName()));
-                    appSettings.addSetting(fieldName, root.path(fieldName));
-                }
-
-                break;
-            }
-        }
-
-        return (appSettings);
     }
 
     /**
@@ -188,4 +134,61 @@ public class ApplicationSettingsApi extends AbstractApi {
         JsonNode root = response.readEntity(JsonNode.class);
         return (parseApplicationSettings(root));
     }
+
+    /**
+     * Parses the returned JSON and returns an ApplicationSettings instance.
+     *
+     * @param root the root JsonNode
+     * @return the populated ApplicationSettings instance
+     * @throws GitLabApiException if any error occurs
+     */
+    public static final ApplicationSettings parseApplicationSettings(JsonNode root) throws GitLabApiException {
+
+        ApplicationSettings appSettings = new ApplicationSettings();
+
+        Iterator<String> fieldNames = root.fieldNames();
+        while (fieldNames.hasNext()) {
+
+            String fieldName = fieldNames.next();
+            switch (fieldName) {
+            case "id":
+                appSettings.setId(root.path(fieldName).asLong());
+                break;
+
+            case "created_at":
+                try {
+                    String value = root.path(fieldName).asText();
+                    appSettings.setCreatedAt(ISO8601.toDate(value));
+                } catch (ParseException pe) {
+                    throw new GitLabApiException(pe);
+                }
+                break;
+
+            case "updated_at":
+                try {
+                    String value = root.path(fieldName).asText();
+                    appSettings.setUpdatedAt(ISO8601.toDate(value));
+                } catch (ParseException pe) {
+                    throw new GitLabApiException(pe);
+                }
+                break;
+
+            default:
+
+                Setting setting = Setting.forValue(fieldName);
+                if (setting != null) {
+                    appSettings.addSetting(setting, root.path(fieldName));
+                } else {
+                    GitLabApi.getLogger().warning(String.format("Unknown setting: %s, type: %s", fieldName,
+                            root.path(fieldName).getClass().getSimpleName()));
+                    appSettings.addSetting(fieldName, root.path(fieldName));
+                }
+
+                break;
+            }
+        }
+
+        return (appSettings);
+    }
+
 }

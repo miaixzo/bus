@@ -30,10 +30,11 @@ package org.miaixz.bus.gitlab.models;
 import java.io.Serializable;
 import java.util.Date;
 
-import org.miaixz.bus.gitlab.Constants;
+import org.miaixz.bus.gitlab.Constants.TargetType;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class Event implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Long id;
@@ -46,7 +47,7 @@ public class Event implements Serializable {
     private Long targetId;
     private Long targetIid;
     private String targetTitle;
-    private Constants.TargetType targetType;
+    private TargetType targetType;
     private String title;
     private Date createdAt;
 
@@ -133,11 +134,11 @@ public class Event implements Serializable {
         this.targetTitle = targetTitle;
     }
 
-    public Constants.TargetType getTargetType() {
+    public TargetType getTargetType() {
         return targetType;
     }
 
-    public void setTargetType(Constants.TargetType targetType) {
+    public void setTargetType(TargetType targetType) {
         this.targetType = targetType;
     }
 
@@ -218,7 +219,7 @@ public class Event implements Serializable {
         return this;
     }
 
-    public Event withTargetType(Constants.TargetType targetType) {
+    public Event withTargetType(TargetType targetType) {
         this.targetType = targetType;
         return this;
     }
@@ -237,4 +238,5 @@ public class Event implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

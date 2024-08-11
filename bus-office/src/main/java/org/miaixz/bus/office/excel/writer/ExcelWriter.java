@@ -248,8 +248,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
     }
 
     /**
-     * 设置某列为自动宽度。注意有中文的情况下，需要根据需求调整宽度扩大比例。
-     * 此方法必须在指定列数据完全写出后调用才有效。
+     * 设置某列为自动宽度。注意有中文的情况下，需要根据需求调整宽度扩大比例。 此方法必须在指定列数据完全写出后调用才有效。
      *
      * @param columnIndex    第几列，从0计数
      * @param useMergedCells 是否适用于合并单元格

@@ -32,6 +32,7 @@ import java.io.Serializable;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class Branch implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Commit commit;
@@ -43,10 +44,6 @@ public class Branch implements Serializable {
     private Boolean isDefault;
     private Boolean canPush;
     private String webUrl;
-
-    public static final boolean isValid(Branch branch) {
-        return (branch != null && branch.getName() != null);
-    }
 
     public Commit getCommit() {
         return commit;
@@ -120,6 +117,10 @@ public class Branch implements Serializable {
         this.webUrl = webUrl;
     }
 
+    public static final boolean isValid(Branch branch) {
+        return (branch != null && branch.getName() != null);
+    }
+
     public Branch withCommit(Commit commit) {
         this.commit = commit;
         return this;
@@ -154,4 +155,5 @@ public class Branch implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

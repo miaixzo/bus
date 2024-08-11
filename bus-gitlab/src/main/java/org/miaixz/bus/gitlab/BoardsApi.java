@@ -31,11 +31,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.miaixz.bus.gitlab.models.Board;
-import org.miaixz.bus.gitlab.models.BoardList;
-
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.Board;
+import org.miaixz.bus.gitlab.models.BoardList;
 
 /**
  * This class implements the client side API for the GitLab Issue Boards API calls.
@@ -400,4 +400,5 @@ public class BoardsApi extends AbstractApi {
         delete(Response.Status.NO_CONTENT, null, "projects", getProjectIdOrPath(projectIdOrPath), "boards", boardId,
                 "lists", listId);
     }
+
 }

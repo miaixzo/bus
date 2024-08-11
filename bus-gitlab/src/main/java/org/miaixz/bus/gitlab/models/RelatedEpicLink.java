@@ -33,6 +33,7 @@ import java.util.Date;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class RelatedEpicLink implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Long id;
@@ -93,4 +94,5 @@ public class RelatedEpicLink implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

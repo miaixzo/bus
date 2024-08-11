@@ -79,4 +79,5 @@ public class EpicIssue extends AbstractIssue {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

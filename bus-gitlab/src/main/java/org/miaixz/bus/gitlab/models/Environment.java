@@ -36,11 +36,19 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public class Environment implements Serializable {
+
     private static final long serialVersionUID = -1L;
+    private String tier;
+
     private Long id;
     private String name;
     private String slug;
     private String externalUrl;
+
+    public String getTier() {
+        return tier;
+    }
+
     private EnvironmentState state;
     private Deployment lastDeployment;
 
@@ -74,6 +82,10 @@ public class Environment implements Serializable {
 
     public void setExternalUrl(String externalUrl) {
         this.externalUrl = externalUrl;
+    }
+
+    public void setTier(String tier) {
+        this.tier = tier;
     }
 
     public EnvironmentState getState() {
@@ -118,4 +130,5 @@ public class Environment implements Serializable {
             return (enumHelper.toString(this));
         }
     }
+
 }

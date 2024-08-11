@@ -39,7 +39,7 @@ public class HttpRequest {
 
     /**
      * Build a String containing a very short multi-line dump of an HTTP request.
-     *
+     * 
      * @param fromMethod the method that this method was called from
      * @param request    the HTTP request build the request dump from
      * @return a String containing a very short multi-line dump of the HTTP request
@@ -50,7 +50,7 @@ public class HttpRequest {
 
     /**
      * Build a String containing a short multi-line dump of an HTTP request.
-     *
+     * 
      * @param fromMethod     the method that this method was called from
      * @param request        the HTTP request build the request dump from
      * @param includeHeaders if true will include the HTTP headers in the dump
@@ -85,7 +85,7 @@ public class HttpRequest {
 
     /**
      * Build a String containing a multi-line dump of an HTTP request.
-     *
+     * 
      * @param fromMethod      the method that this method was called from
      * @param request         the HTTP request build the request dump from
      * @param includePostData if true will include the POST data in the dump
@@ -142,7 +142,7 @@ public class HttpRequest {
 
     /**
      * Reads the POST data from a request into a String and returns it.
-     *
+     * 
      * @param request the HTTP request containing the POST data
      * @return the POST data as a String instance
      * @throws IOException if any error occurs while reading the POST data
@@ -156,7 +156,7 @@ public class HttpRequest {
 
     /**
      * Reads the content of a Reader instance and returns it as a String.
-     *
+     * 
      * @param reader the Reader instance to read the data from
      * @return the content of a Reader instance as a String
      * @throws IOException if any error occurs while reading the POST data
@@ -175,7 +175,7 @@ public class HttpRequest {
 
     /**
      * Masks the PRIVATE-TOKEN header value with "********".
-     *
+     * 
      * @param s a String containing HTTP request info, usually logging info
      * @return a String with the PRIVATE-TOKEN header value masked with asterisks
      */
@@ -187,4 +187,5 @@ public class HttpRequest {
 
         return (s.replaceAll("PRIVATE\\-TOKEN\\: [\\S]*", "PRIVATE-TOKEN: ********"));
     }
+
 }

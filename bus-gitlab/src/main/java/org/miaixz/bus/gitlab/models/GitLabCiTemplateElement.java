@@ -32,6 +32,7 @@ import java.io.Serializable;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class GitLabCiTemplateElement implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private String key;
@@ -57,4 +58,5 @@ public class GitLabCiTemplateElement implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

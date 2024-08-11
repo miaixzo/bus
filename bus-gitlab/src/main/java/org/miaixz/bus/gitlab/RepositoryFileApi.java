@@ -27,14 +27,6 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.Form;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
-import org.miaixz.bus.gitlab.models.Blame;
-import org.miaixz.bus.gitlab.models.RepositoryFile;
-import org.miaixz.bus.gitlab.models.RepositoryFileResponse;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,6 +35,15 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
+import org.miaixz.bus.gitlab.models.Blame;
+import org.miaixz.bus.gitlab.models.RepositoryFile;
+import org.miaixz.bus.gitlab.models.RepositoryFileResponse;
+
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 /**
  * This class provides an entry point to all the GitLab API repository files calls. See
@@ -68,7 +69,6 @@ public class RepositoryFileApi extends AbstractApi {
      * @param filePath        (required) - Full path to the file. Ex. lib/class.rb
      * @param ref             (required) - The name of branch, tag or commit
      * @return an Optional instance with the specified RepositoryFile as a value
-     * @since GitLab-11.1.0
      */
     public Optional<RepositoryFile> getOptionalFileInfo(Object projectIdOrPath, String filePath, String ref) {
         try {
@@ -91,7 +91,6 @@ public class RepositoryFileApi extends AbstractApi {
      * @param ref             (required) - The name of branch, tag or commit
      * @return a RepositoryFile instance with the file info
      * @throws GitLabApiException if any exception occurs
-     * @since GitLab-11.1.0
      */
     public RepositoryFile getFileInfo(Object projectIdOrPath, String filePath, String ref) throws GitLabApiException {
 
@@ -322,11 +321,8 @@ public class RepositoryFileApi extends AbstractApi {
      */
     public File getRawFile(Object projectIdOrPath, String commitOrBranchName, String filepath, File directory)
             throws GitLabApiException {
-
         InputStream in = getRawFile(projectIdOrPath, commitOrBranchName, filepath);
-
         try {
-
             if (directory == null) {
                 directory = new File(System.getProperty("java.io.tmpdir"));
             }
@@ -336,7 +332,6 @@ public class RepositoryFileApi extends AbstractApi {
 
             Files.copy(in, file.toPath(), StandardCopyOption.REPLACE_EXISTING);
             return (file);
-
         } catch (IOException ioe) {
             throw new GitLabApiException(ioe);
         } finally {
@@ -369,7 +364,6 @@ public class RepositoryFileApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public InputStream getRawFile(Object projectIdOrPath, String ref, String filepath) throws GitLabApiException {
-
         Form formData = new GitLabApiForm().withParam("ref", (ref != null ? ref : null), true);
         if (isApiVersion(ApiVersion.V3)) {
             Response response = getWithAccepts(Response.Status.OK, formData.asMap(), MediaType.MEDIA_TYPE_WILDCARD,
@@ -449,7 +443,7 @@ public class RepositoryFileApi extends AbstractApi {
     public Pager<Blame> getBlame(Object projectIdOrPath, String filePath, String ref, int itemsPerPage)
             throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("ref", ref, true);
-        return (new Pager<Blame>(this, Blame.class, itemsPerPage, formData.asMap(), "projects",
+        return (new Pager<>(this, Blame.class, itemsPerPage, formData.asMap(), "projects",
                 getProjectIdOrPath(projectIdOrPath), "repository", "files", urlEncode(filePath), "blame"));
     }
 
@@ -470,4 +464,5 @@ public class RepositoryFileApi extends AbstractApi {
     public Stream<Blame> getBlameStream(Object projectIdOrPath, String filePath, String ref) throws GitLabApiException {
         return (getBlame(projectIdOrPath, filePath, ref, getDefaultPerPage()).stream());
     }
+
 }

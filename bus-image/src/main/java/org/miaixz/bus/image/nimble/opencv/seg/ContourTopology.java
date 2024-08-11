@@ -41,7 +41,7 @@ public class ContourTopology {
 
     private final Segment segment;
     private final int parent;
-    
+
     public ContourTopology(MatOfPoint contour, int parent) {
         this(contour.toArray(), parent);
     }

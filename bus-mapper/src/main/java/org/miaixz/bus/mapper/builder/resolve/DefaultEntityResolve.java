@@ -196,7 +196,8 @@ public class DefaultEntityResolve implements EntityResolve {
      * @param property    配置
      * @param naming      样式
      */
-    protected void processField(EntityTable entityTable, EntityField field, Property property, EnumValue.Naming naming) {
+    protected void processField(EntityTable entityTable, EntityField field, Property property,
+            EnumValue.Naming naming) {
         // 排除字段
         if (field.isAnnotationPresent(Transient.class)) {
             return;

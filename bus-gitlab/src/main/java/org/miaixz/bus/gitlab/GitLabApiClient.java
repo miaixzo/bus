@@ -27,18 +27,6 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.client.*;
-import jakarta.ws.rs.core.*;
-import org.glassfish.jersey.client.ClientConfig;
-import org.glassfish.jersey.client.ClientProperties;
-import org.glassfish.jersey.client.JerseyClientBuilder;
-import org.glassfish.jersey.media.multipart.*;
-import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
-import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.MaskingLoggingFilter;
-
-import javax.net.ssl.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,13 +34,42 @@ import java.net.Socket;
 import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.security.SecureRandom;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509ExtendedTrustManager;
+import jakarta.ws.rs.client.Client;
+import jakarta.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.Entity;
+import jakarta.ws.rs.client.Invocation;
+import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.StreamingOutput;
+import org.miaixz.bus.gitlab.Constants.TokenType;
+import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
+import org.miaixz.bus.gitlab.support.JacksonJson;
+import org.miaixz.bus.gitlab.support.MaskingLoggingFilter;
+import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.ClientProperties;
+import org.glassfish.jersey.client.JerseyClientBuilder;
+import org.glassfish.jersey.media.multipart.BodyPart;
+import org.glassfish.jersey.media.multipart.Boundary;
+import org.glassfish.jersey.media.multipart.FormDataBodyPart;
+import org.glassfish.jersey.media.multipart.FormDataMultiPart;
+import org.glassfish.jersey.media.multipart.MultiPart;
+import org.glassfish.jersey.media.multipart.MultiPartFeature;
+import org.glassfish.jersey.media.multipart.file.FileDataBodyPart;
+import org.glassfish.jersey.media.multipart.file.StreamDataBodyPart;
 
 /**
  * This class utilizes the Jersey client package to communicate with a GitLab API endpoint.
@@ -68,7 +85,7 @@ public class GitLabApiClient implements AutoCloseable {
     private Client apiClient;
     private String baseUrl;
     private String hostUrl;
-    private Constants.TokenType tokenType = Constants.TokenType.PRIVATE;
+    private TokenType tokenType = TokenType.PRIVATE;
     private Supplier<String> authToken;
     private String secretToken;
     private boolean ignoreCertificateErrors;
@@ -86,8 +103,8 @@ public class GitLabApiClient implements AutoCloseable {
      * @param hostUrl      the URL to the GitLab API server
      * @param privateToken the private token to authenticate with
      */
-    public GitLabApiClient(GitLabApi.ApiVersion apiVersion, String hostUrl, String privateToken) {
-        this(apiVersion, hostUrl, Constants.TokenType.PRIVATE, privateToken, null);
+    public GitLabApiClient(ApiVersion apiVersion, String hostUrl, String privateToken) {
+        this(apiVersion, hostUrl, TokenType.PRIVATE, privateToken, null);
     }
 
     /**
@@ -99,8 +116,7 @@ public class GitLabApiClient implements AutoCloseable {
      * @param tokenType  the type of auth the token is for, PRIVATE or ACCESS
      * @param authToken  the token to authenticate with
      */
-    public GitLabApiClient(GitLabApi.ApiVersion apiVersion, String hostUrl, Constants.TokenType tokenType,
-            String authToken) {
+    public GitLabApiClient(ApiVersion apiVersion, String hostUrl, TokenType tokenType, String authToken) {
         this(apiVersion, hostUrl, tokenType, authToken, null);
     }
 
@@ -112,7 +128,7 @@ public class GitLabApiClient implements AutoCloseable {
      * @param privateToken the private token to authenticate with
      */
     public GitLabApiClient(String hostUrl, String privateToken) {
-        this(GitLabApi.ApiVersion.V4, hostUrl, Constants.TokenType.PRIVATE, privateToken, null);
+        this(ApiVersion.V4, hostUrl, TokenType.PRIVATE, privateToken, null);
     }
 
     /**
@@ -123,8 +139,8 @@ public class GitLabApiClient implements AutoCloseable {
      * @param tokenType the type of auth the token is for, PRIVATE or ACCESS
      * @param authToken the token to authenticate with
      */
-    public GitLabApiClient(String hostUrl, Constants.TokenType tokenType, String authToken) {
-        this(GitLabApi.ApiVersion.V4, hostUrl, tokenType, authToken, null);
+    public GitLabApiClient(String hostUrl, TokenType tokenType, String authToken) {
+        this(ApiVersion.V4, hostUrl, tokenType, authToken, null);
     }
 
     /**
@@ -136,8 +152,8 @@ public class GitLabApiClient implements AutoCloseable {
      * @param privateToken the private token to authenticate with
      * @param secretToken  use this token to validate received payloads
      */
-    public GitLabApiClient(GitLabApi.ApiVersion apiVersion, String hostUrl, String privateToken, String secretToken) {
-        this(apiVersion, hostUrl, Constants.TokenType.PRIVATE, privateToken, secretToken, null);
+    public GitLabApiClient(ApiVersion apiVersion, String hostUrl, String privateToken, String secretToken) {
+        this(apiVersion, hostUrl, TokenType.PRIVATE, privateToken, secretToken, null);
     }
 
     /**
@@ -150,8 +166,8 @@ public class GitLabApiClient implements AutoCloseable {
      * @param authToken   the token to authenticate with
      * @param secretToken use this token to validate received payloads
      */
-    public GitLabApiClient(GitLabApi.ApiVersion apiVersion, String hostUrl, Constants.TokenType tokenType,
-            String authToken, String secretToken) {
+    public GitLabApiClient(ApiVersion apiVersion, String hostUrl, TokenType tokenType, String authToken,
+            String secretToken) {
         this(apiVersion, hostUrl, tokenType, authToken, secretToken, null);
     }
 
@@ -164,7 +180,7 @@ public class GitLabApiClient implements AutoCloseable {
      * @param secretToken  use this token to validate received payloads
      */
     public GitLabApiClient(String hostUrl, String privateToken, String secretToken) {
-        this(GitLabApi.ApiVersion.V4, hostUrl, Constants.TokenType.PRIVATE, privateToken, secretToken, null);
+        this(ApiVersion.V4, hostUrl, TokenType.PRIVATE, privateToken, secretToken, null);
     }
 
     /**
@@ -176,8 +192,8 @@ public class GitLabApiClient implements AutoCloseable {
      * @param authToken   the token to authenticate with
      * @param secretToken use this token to validate received payloads
      */
-    public GitLabApiClient(String hostUrl, Constants.TokenType tokenType, String authToken, String secretToken) {
-        this(GitLabApi.ApiVersion.V4, hostUrl, tokenType, authToken, secretToken, null);
+    public GitLabApiClient(String hostUrl, TokenType tokenType, String authToken, String secretToken) {
+        this(ApiVersion.V4, hostUrl, tokenType, authToken, secretToken, null);
     }
 
     /**
@@ -191,8 +207,7 @@ public class GitLabApiClient implements AutoCloseable {
      */
     public GitLabApiClient(String hostUrl, String privateToken, String secretToken,
             Map<String, Object> clientConfigProperties) {
-        this(GitLabApi.ApiVersion.V4, hostUrl, Constants.TokenType.PRIVATE, privateToken, secretToken,
-                clientConfigProperties);
+        this(ApiVersion.V4, hostUrl, TokenType.PRIVATE, privateToken, secretToken, clientConfigProperties);
     }
 
     /**
@@ -205,9 +220,9 @@ public class GitLabApiClient implements AutoCloseable {
      * @param secretToken            use this token to validate received payloads
      * @param clientConfigProperties the properties given to Jersey's clientconfig
      */
-    public GitLabApiClient(GitLabApi.ApiVersion apiVersion, String hostUrl, String privateToken, String secretToken,
+    public GitLabApiClient(ApiVersion apiVersion, String hostUrl, String privateToken, String secretToken,
             Map<String, Object> clientConfigProperties) {
-        this(apiVersion, hostUrl, Constants.TokenType.PRIVATE, privateToken, secretToken, clientConfigProperties);
+        this(apiVersion, hostUrl, TokenType.PRIVATE, privateToken, secretToken, clientConfigProperties);
     }
 
     /**
@@ -221,8 +236,8 @@ public class GitLabApiClient implements AutoCloseable {
      * @param secretToken            use this token to validate received payloads
      * @param clientConfigProperties the properties given to Jersey's clientconfig
      */
-    public GitLabApiClient(GitLabApi.ApiVersion apiVersion, String hostUrl, Constants.TokenType tokenType,
-            String authToken, String secretToken, Map<String, Object> clientConfigProperties) {
+    public GitLabApiClient(ApiVersion apiVersion, String hostUrl, TokenType tokenType, String authToken,
+            String secretToken, Map<String, Object> clientConfigProperties) {
 
         // Remove the trailing "/" from the hostUrl if present
         this.hostUrl = (hostUrl.endsWith("/") ? hostUrl.replaceAll("/$", "") : hostUrl);
@@ -241,7 +256,6 @@ public class GitLabApiClient implements AutoCloseable {
 
         clientConfig = new ClientConfig();
         if (clientConfigProperties != null) {
-
             for (Map.Entry<String, Object> propertyEntry : clientConfigProperties.entrySet()) {
                 clientConfig.property(propertyEntry.getKey(), propertyEntry.getValue());
             }
@@ -323,7 +337,7 @@ public class GitLabApiClient implements AutoCloseable {
      *
      * @return the TokenType this client is using
      */
-    Constants.TokenType getTokenType() {
+    TokenType getTokenType() {
         return (tokenType);
     }
 
@@ -851,10 +865,8 @@ public class GitLabApiClient implements AutoCloseable {
             }
         }
 
-        String authHeader = (tokenType == Constants.TokenType.OAUTH2_ACCESS ? AUTHORIZATION_HEADER
-                : PRIVATE_TOKEN_HEADER);
-        String authValue = (tokenType == Constants.TokenType.OAUTH2_ACCESS ? "Bearer " + authToken.get()
-                : authToken.get());
+        String authHeader = (tokenType == TokenType.OAUTH2_ACCESS ? AUTHORIZATION_HEADER : PRIVATE_TOKEN_HEADER);
+        String authValue = (tokenType == TokenType.OAUTH2_ACCESS ? "Bearer " + authToken.get() : authToken.get());
         Invocation.Builder builder = target.request();
         if (accept == null || accept.trim().length() == 0) {
             builder = builder.header(authHeader, authValue);
@@ -941,41 +953,32 @@ public class GitLabApiClient implements AutoCloseable {
             }
 
             @Override
-            public void checkServerTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+            public void checkServerTrusted(X509Certificate[] chain, String authType) {
             }
 
             @Override
-            public void checkClientTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+            public void checkClientTrusted(X509Certificate[] chain, String authType) {
             }
 
             @Override
-            public void checkClientTrusted(X509Certificate[] chain, String authType, Socket socket)
-                    throws CertificateException {
+            public void checkClientTrusted(X509Certificate[] chain, String authType, Socket socket) {
             }
 
             @Override
-            public void checkClientTrusted(X509Certificate[] chain, String authType, SSLEngine engine)
-                    throws CertificateException {
+            public void checkClientTrusted(X509Certificate[] chain, String authType, SSLEngine engine) {
             }
 
             @Override
-            public void checkServerTrusted(X509Certificate[] chain, String authType, Socket socket)
-                    throws CertificateException {
+            public void checkServerTrusted(X509Certificate[] chain, String authType, Socket socket) {
             }
 
             @Override
-            public void checkServerTrusted(X509Certificate[] chain, String authType, SSLEngine engine)
-                    throws CertificateException {
+            public void checkServerTrusted(X509Certificate[] chain, String authType, SSLEngine engine) {
             }
         } };
 
         // Ignore differences between given hostname and certificate hostname
-        HostnameVerifier hostnameVerifier = new HostnameVerifier() {
-            @Override
-            public boolean verify(String hostname, SSLSession session) {
-                return true;
-            }
-        };
+        HostnameVerifier hostnameVerifier = (hostname, session) -> true;
 
         try {
             SSLContext sslContext = SSLContext.getInstance("TLS");
@@ -999,4 +1002,5 @@ public class GitLabApiClient implements AutoCloseable {
     public void setAuthTokenSupplier(Supplier<String> authTokenSupplier) {
         this.authToken = authTokenSupplier;
     }
+
 }

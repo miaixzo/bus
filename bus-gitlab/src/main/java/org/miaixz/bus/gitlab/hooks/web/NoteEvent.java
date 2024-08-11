@@ -37,9 +37,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public class NoteEvent extends AbstractEvent {
+
+    private static final long serialVersionUID = -1L;
+
     public static final String X_GITLAB_EVENT = "Note Hook";
     public static final String OBJECT_KIND = "note";
-    private static final long serialVersionUID = -1L;
+
     private EventUser user;
     private Long projectId;
     private EventProject project;
@@ -307,4 +310,5 @@ public class NoteEvent extends AbstractEvent {
             this.url = url;
         }
     }
+
 }

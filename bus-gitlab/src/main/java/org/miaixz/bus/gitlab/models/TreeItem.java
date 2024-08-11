@@ -32,7 +32,9 @@ import java.io.Serializable;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class TreeItem implements Serializable {
+
     private static final long serialVersionUID = -1L;
+
     private String id;
     private String mode;
     private String name;
@@ -91,4 +93,5 @@ public class TreeItem implements Serializable {
             return (name().toLowerCase());
         }
     }
+
 }

@@ -37,6 +37,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public class RunnerDetail extends Runner {
+
     private static final long serialVersionUID = -1L;
 
     private String architecture;
@@ -196,4 +197,5 @@ public class RunnerDetail extends Runner {
             return (enumHelper.toString(this));
         }
     }
+
 }

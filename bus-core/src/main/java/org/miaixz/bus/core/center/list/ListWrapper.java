@@ -98,7 +98,6 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
         return raw.remove(o);
     }
 
-    @SuppressWarnings("SlowListContainsAll")
     @Override
     public boolean containsAll(final Collection<?> c) {
         return raw.containsAll(c);

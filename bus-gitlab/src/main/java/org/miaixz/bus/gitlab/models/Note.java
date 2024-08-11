@@ -37,7 +37,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public class Note implements Serializable {
+
     private static final long serialVersionUID = -1L;
+
     private String attachment;
     private Author author;
     private String body;
@@ -47,8 +49,10 @@ public class Note implements Serializable {
     private String fileName;
     private Long id;
     private Long noteableId;
+
     // Use String for noteableType until the constant is fixed in the GitLab API
     private String noteableType;
+
     private Long noteableIid;
     private Boolean system;
     private String title;
@@ -60,12 +64,8 @@ public class Note implements Serializable {
     private Date resolvedAt;
     private Boolean internal;
     private Type type;
-    private Position position;
 
-    @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
-    }
+    private Position position;
 
     public String getAttachment() {
         return attachment;
@@ -243,9 +243,12 @@ public class Note implements Serializable {
         this.internal = internal;
     }
 
-    /**
-     * Enum to use for ordering the results.
-     */
+    @Override
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
+    }
+
+    /** Enum to use for ordering the results. */
     public static enum OrderBy {
 
         CREATED_AT, UPDATED_AT;
@@ -315,4 +318,5 @@ public class Note implements Serializable {
             return (enumHelper.toString(this));
         }
     }
+
 }

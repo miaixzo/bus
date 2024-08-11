@@ -30,6 +30,7 @@ package org.miaixz.bus.gitlab.hooks.web;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class EventReleaseLink {
+
     private Long id;
     private Boolean external;
     private String linkType;
@@ -80,4 +81,5 @@ public class EventReleaseLink {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

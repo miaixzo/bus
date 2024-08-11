@@ -116,4 +116,5 @@ public class EmailOnPushService extends NotificationService {
         setBranchesToBeNotified(branchesToBeNotified);
         return this;
     }
+
 }

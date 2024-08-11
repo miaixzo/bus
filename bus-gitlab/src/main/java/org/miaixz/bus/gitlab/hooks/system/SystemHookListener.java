@@ -112,4 +112,5 @@ public interface SystemHookListener extends java.util.EventListener {
      */
     default void onMergeRequestEvent(MergeRequestSystemHookEvent event) {
     }
+
 }

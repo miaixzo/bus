@@ -46,20 +46,22 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         @JsonSubTypes.Type(value = DeploymentEvent.class, name = DeploymentEvent.OBJECT_KIND),
         @JsonSubTypes.Type(value = ReleaseEvent.class, name = ReleaseEvent.OBJECT_KIND) })
 public interface Event extends Serializable {
-    String getObjectKind();
 
-    @JsonIgnore
-    String getRequestUrl();
+    String getObjectKind();
 
     void setRequestUrl(String url);
 
     @JsonIgnore
-    String getRequestQueryString();
+    String getRequestUrl();
 
     void setRequestQueryString(String queryString);
 
     @JsonIgnore
-    String getRequestSecretToken();
+    String getRequestQueryString();
 
     void setRequestSecretToken(String secretToken);
+
+    @JsonIgnore
+    String getRequestSecretToken();
+
 }

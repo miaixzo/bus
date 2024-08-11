@@ -185,4 +185,5 @@ public class JiraService extends NotificationService {
             }
         }
     }
+
 }

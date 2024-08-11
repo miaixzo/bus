@@ -46,6 +46,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
  * This class is used to filter Groups when getting lists of epics.
  */
 public class EpicFilter implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Long authorId;
@@ -311,4 +312,5 @@ public class EpicFilter implements Serializable {
             return (enumHelper.toString(this));
         }
     }
+
 }

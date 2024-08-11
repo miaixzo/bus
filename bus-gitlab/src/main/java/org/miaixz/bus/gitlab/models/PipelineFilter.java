@@ -31,6 +31,9 @@ import java.io.Serializable;
 import java.util.Date;
 
 import org.miaixz.bus.gitlab.Constants;
+import org.miaixz.bus.gitlab.Constants.PipelineOrderBy;
+import org.miaixz.bus.gitlab.Constants.PipelineScope;
+import org.miaixz.bus.gitlab.Constants.SortOrder;
 import org.miaixz.bus.gitlab.GitLabApiForm;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
@@ -40,12 +43,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * This class is used to filter Pipelines when getting lists of them.
  */
 public class PipelineFilter implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
-    /**
-     * {@link Constants.PipelineScope} The scope of pipelines, one of: running, pending, finished, branches, tags
-     */
-    private Constants.PipelineScope scope;
+    /** {@link Constants.PipelineScope} The scope of pipelines, one of: running, pending, finished, branches, tags */
+    private PipelineScope scope;
 
     /**
      * {@link Constants.PipelineScope} The status of pipelines, one of: running, pending, success, failed, canceled,
@@ -53,9 +55,7 @@ public class PipelineFilter implements Serializable {
      */
     private PipelineStatus status;
 
-    /**
-     * The ref of pipelines.
-     */
+    /** The ref of pipelines. */
     private String ref;
 
     /** The SHA of pipelines. */
@@ -79,14 +79,14 @@ public class PipelineFilter implements Serializable {
     /**
      * {@link Constants.PipelineOrderBy} Order pipelines by id, status, ref, updated_at or user_id (default: id).
      */
-    private Constants.PipelineOrderBy orderBy;
+    private PipelineOrderBy orderBy;
 
     /**
      * {@link Constants.SortOrder} Return issues sorted in asc or desc order. Default is desc.
      */
-    private Constants.SortOrder sort;
+    private SortOrder sort;
 
-    public void setScope(Constants.PipelineScope scope) {
+    public void setScope(PipelineScope scope) {
         this.scope = scope;
     }
 
@@ -122,15 +122,15 @@ public class PipelineFilter implements Serializable {
         this.updatedBefore = updatedBefore;
     }
 
-    public void setOrderBy(Constants.PipelineOrderBy orderBy) {
+    public void setOrderBy(PipelineOrderBy orderBy) {
         this.orderBy = orderBy;
     }
 
-    public void setSort(Constants.SortOrder sort) {
+    public void setSort(SortOrder sort) {
         this.sort = sort;
     }
 
-    public PipelineFilter withScope(Constants.PipelineScope scope) {
+    public PipelineFilter withScope(PipelineScope scope) {
         this.scope = scope;
         return this;
     }
@@ -175,12 +175,12 @@ public class PipelineFilter implements Serializable {
         return this;
     }
 
-    public PipelineFilter withOrderBy(Constants.PipelineOrderBy orderBy) {
+    public PipelineFilter withOrderBy(PipelineOrderBy orderBy) {
         this.orderBy = orderBy;
         return this;
     }
 
-    public PipelineFilter withSort(Constants.SortOrder sort) {
+    public PipelineFilter withSort(SortOrder sort) {
         this.sort = sort;
         return this;
     }
@@ -197,4 +197,5 @@ public class PipelineFilter implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

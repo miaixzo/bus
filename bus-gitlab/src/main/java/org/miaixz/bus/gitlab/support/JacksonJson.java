@@ -80,18 +80,6 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
     }
 
     /**
-     * Gets a the supplied object output as a formatted JSON string. Null properties will result in the value of the
-     * property being null. This is meant to be used for toString() implementations of GitLab4J classes.
-     *
-     * @param <T>    the generics type for the provided object
-     * @param object the object to output as a JSON string
-     * @return a String containing the JSON for the specified object
-     */
-    public static <T> String toJsonString(final T object) {
-        return (JacksonJsonSingletonHelper.JACKSON_JSON.marshal(object));
-    }
-
-    /**
      * Parse the provided String into a JsonNode instance.
      *
      * @param jsonString a String containing JSON to parse
@@ -102,18 +90,16 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
         return (JacksonJsonSingletonHelper.JACKSON_JSON.objectMapper.readTree(jsonString));
     }
 
-    @Override
-    public ObjectMapper getContext(Class<?> objectType) {
-        return (objectMapper);
-    }
-
     /**
-     * Gets the ObjectMapper contained by this instance.
+     * Gets a the supplied object output as a formatted JSON string. Null properties will result in the value of the
+     * property being null. This is meant to be used for toString() implementations of GitLab4J classes.
      *
-     * @return the ObjectMapper contained by this instance
+     * @param <T>    the generics type for the provided object
+     * @param object the object to output as a JSON string
+     * @return a String containing the JSON for the specified object
      */
-    public ObjectMapper getObjectMapper() {
-        return (objectMapper);
+    public static <T> String toJsonString(final T object) {
+        return (JacksonJsonSingletonHelper.JACKSON_JSON.marshal(object));
     }
 
     /**
@@ -264,37 +250,13 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
     public <T> Map<String, T> unmarshalMap(Class<T> returnType, String jsonData)
             throws JsonParseException, JsonMappingException, IOException {
         ObjectMapper objectMapper = getContext(null);
-        return (objectMapper.readValue(jsonData, new TypeReference<Map<String, T>>() {
+        return (objectMapper.readValue(jsonData, new TypeReference<>() {
         }));
     }
 
-    /**
-     * Marshals the supplied object out as a formatted JSON string.
-     *
-     * @param <T>    the generics type for the provided object
-     * @param object the object to output as a JSON string
-     * @return a String containing the JSON for the specified object
-     */
-    public <T> String marshal(final T object) {
-
-        if (object == null) {
-            throw new IllegalArgumentException("object parameter is null");
-        }
-
-        ObjectWriter writer = objectMapper.writer().withDefaultPrettyPrinter();
-        String results = null;
-        try {
-            results = writer.writeValueAsString(object);
-        } catch (JsonGenerationException e) {
-            System.err.println("JsonGenerationException, message=" + e.getMessage());
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-            System.err.println("JsonMappingException, message=" + e.getMessage());
-        } catch (IOException e) {
-            System.err.println("IOException, message=" + e.getMessage());
-        }
-
-        return (results);
+    @Override
+    public ObjectMapper getContext(Class<?> objectType) {
+        return (objectMapper);
     }
 
     /**
@@ -345,7 +307,6 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
      */
     private static class JacksonJsonSingletonHelper {
         private static final JacksonJson JACKSON_JSON = new JacksonJson();
-
         static {
             JACKSON_JSON.objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE);
             JACKSON_JSON.objectMapper.setSerializationInclusion(Include.ALWAYS);
@@ -372,6 +333,44 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
     }
 
     /**
+     * Gets the ObjectMapper contained by this instance.
+     *
+     * @return the ObjectMapper contained by this instance
+     */
+    public ObjectMapper getObjectMapper() {
+        return (objectMapper);
+    }
+
+    /**
+     * Marshals the supplied object out as a formatted JSON string.
+     *
+     * @param <T>    the generics type for the provided object
+     * @param object the object to output as a JSON string
+     * @return a String containing the JSON for the specified object
+     */
+    public <T> String marshal(final T object) {
+
+        if (object == null) {
+            throw new IllegalArgumentException("object parameter is null");
+        }
+
+        ObjectWriter writer = objectMapper.writer().withDefaultPrettyPrinter();
+        String results = null;
+        try {
+            results = writer.writeValueAsString(object);
+        } catch (JsonGenerationException e) {
+            System.err.println("JsonGenerationException, message=" + e.getMessage());
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+            System.err.println("JsonMappingException, message=" + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("IOException, message=" + e.getMessage());
+        }
+
+        return (results);
+    }
+
+    /**
      * Deserializer for the odd User instances in the "approved_by" array in the merge_request JSON.
      */
     public static class UserListDeserializer extends JsonDeserializer<List<User>> {
@@ -395,4 +394,5 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
             return (users);
         }
     }
+
 }

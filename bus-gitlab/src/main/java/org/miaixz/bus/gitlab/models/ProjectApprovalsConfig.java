@@ -34,6 +34,7 @@ import org.miaixz.bus.gitlab.GitLabApiForm;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class ProjectApprovalsConfig implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Integer approvalsBeforeMerge;
@@ -152,4 +153,5 @@ public class ProjectApprovalsConfig implements Serializable {
                 .withParam("merge_requests_disable_committers_approval", mergeRequestsDisableCommittersApproval)
                 .withParam("require_password_to_approve", requirePasswordToApprove);
     }
+
 }

@@ -29,7 +29,8 @@ package org.miaixz.bus.gitlab.models;
 
 import java.io.Serializable;
 
-import org.miaixz.bus.gitlab.Constants;
+import org.miaixz.bus.gitlab.Constants.ProjectOrderBy;
+import org.miaixz.bus.gitlab.Constants.SortOrder;
 import org.miaixz.bus.gitlab.GitLabApiForm;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
@@ -37,12 +38,13 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
  * This class is used to filter Projects when getting lists of projects for a specified group.
  */
 public class GroupProjectsFilter implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Boolean archived;
     private Visibility visibility;
-    private Constants.ProjectOrderBy orderBy;
-    private Constants.SortOrder sort;
+    private ProjectOrderBy orderBy;
+    private SortOrder sort;
     private String search;
     private Boolean simple;
     private Boolean owned;
@@ -82,7 +84,7 @@ public class GroupProjectsFilter implements Serializable {
      * @param orderBy specifies what field to order by
      * @return the reference to this ProjectFilter instance
      */
-    public GroupProjectsFilter withOrderBy(Constants.ProjectOrderBy orderBy) {
+    public GroupProjectsFilter withOrderBy(ProjectOrderBy orderBy) {
         this.orderBy = orderBy;
         return (this);
     }
@@ -93,7 +95,7 @@ public class GroupProjectsFilter implements Serializable {
      * @param sort sort direction, ASC or DESC
      * @return the reference to this ProjectFilter instance
      */
-    public GroupProjectsFilter withSortOder(Constants.SortOrder sort) {
+    public GroupProjectsFilter withSortOder(SortOrder sort) {
         this.sort = sort;
         return (this);
     }
@@ -217,4 +219,5 @@ public class GroupProjectsFilter implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

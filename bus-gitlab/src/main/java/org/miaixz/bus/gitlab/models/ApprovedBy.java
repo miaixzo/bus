@@ -38,6 +38,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  * instance.
  */
 public class ApprovedBy implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private User user;
@@ -82,4 +83,5 @@ public class ApprovedBy implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

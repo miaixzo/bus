@@ -36,6 +36,7 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 public class NotificationSettings implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Level level;
@@ -97,6 +98,7 @@ public class NotificationSettings implements Serializable {
     }
 
     public static class Events implements Serializable {
+
         private static final long serialVersionUID = -1L;
 
         private Boolean newNote;
@@ -213,4 +215,5 @@ public class NotificationSettings implements Serializable {
             return (JacksonJson.toJsonString(this));
         }
     }
+
 }

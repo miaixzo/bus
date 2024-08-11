@@ -38,6 +38,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class Release implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private String name;
@@ -181,4 +182,5 @@ public class Release implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }
