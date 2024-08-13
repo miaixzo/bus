@@ -27,12 +27,6 @@
 */
 package org.miaixz.bus.image.galaxy.data;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.image.Builder;
-import org.miaixz.bus.image.galaxy.SafeBuffer;
-import org.miaixz.bus.logger.Logger;
-
 import java.io.UnsupportedEncodingException;
 import java.lang.ref.SoftReference;
 import java.nio.ByteBuffer;
@@ -40,6 +34,12 @@ import java.nio.CharBuffer;
 import java.nio.charset.*;
 import java.util.Arrays;
 import java.util.StringTokenizer;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.image.Builder;
+import org.miaixz.bus.image.galaxy.SafeBuffer;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * @author Kimi Liu

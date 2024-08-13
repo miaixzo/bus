@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.extra.captcha.provider;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+
 import org.miaixz.bus.core.xyz.ColorKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.RandomKit;
@@ -34,9 +37,6 @@ import org.miaixz.bus.extra.captcha.AbstractProvider;
 import org.miaixz.bus.extra.captcha.strategy.CodeStrategy;
 import org.miaixz.bus.extra.captcha.strategy.RandomStrategy;
 import org.miaixz.bus.extra.image.ImageKit;
-
-import java.awt.*;
-import java.awt.image.BufferedImage;
 
 /**
  * 扭曲干扰验证码

@@ -27,14 +27,16 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.miaixz.bus.gitlab.Constants.Encoding;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
 import java.util.Base64;
 
+import org.miaixz.bus.gitlab.Constants.Encoding;
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class RepositoryFile implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private String fileName; // file name only, Ex. class.rb
@@ -201,4 +203,5 @@ public class RepositoryFile implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

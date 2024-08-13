@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.shade.screw.process;
 
-import org.miaixz.bus.shade.screw.metadata.DataSchema;
-
 import java.io.Serializable;
+
+import org.miaixz.bus.shade.screw.metadata.DataSchema;
 
 /**
  * 构建

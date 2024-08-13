@@ -27,15 +27,17 @@
 */
 package org.miaixz.bus.shade.screw.dialect;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.miaixz.bus.core.lang.exception.InternalException;
-
-import javax.sql.DataSource;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
+
+import javax.sql.DataSource;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 数据库查询工厂

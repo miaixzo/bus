@@ -27,7 +27,9 @@
 */
 package org.miaixz.bus.starter.bridge;
 
-import jakarta.annotation.Resource;
+import java.io.IOException;
+import java.util.*;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
@@ -39,8 +41,7 @@ import org.springframework.boot.env.PropertySourceLoader;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.PropertySource;
 
-import java.io.IOException;
-import java.util.*;
+import jakarta.annotation.Resource;
 
 /**
  * 客户端-配置中心

@@ -27,45 +27,17 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
 import java.util.Date;
 
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public class Iteration implements Serializable {
+
     private static final long serialVersionUID = -1L;
-
-    public enum IterationState {
-        UPCOMMING(1), CURRENT(2), CLOSED(3);
-
-        private int value;
-
-        IterationState(int value) {
-            this.value = value;
-        }
-
-        @JsonCreator
-        public static IterationState fromIntValue(int value) {
-            for (IterationState it : values()) {
-                if (it.value == value) {
-                    return it;
-                }
-            }
-            throw new IllegalArgumentException("No enum found for value: " + value);
-        }
-
-        @JsonValue
-        public int toIntValue() {
-            return this.value;
-        }
-
-        @Override
-        public String toString() {
-            return name();
-        }
-    }
 
     private Long id;
     private Long iid;
@@ -180,4 +152,35 @@ public class Iteration implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
+    public enum IterationState {
+        UPCOMMING(1), CURRENT(2), CLOSED(3);
+
+        private int value;
+
+        IterationState(int value) {
+            this.value = value;
+        }
+
+        @JsonCreator
+        public static IterationState fromIntValue(int value) {
+            for (IterationState it : values()) {
+                if (it.value == value) {
+                    return it;
+                }
+            }
+            throw new IllegalArgumentException("No enum found for value: " + value);
+        }
+
+        @JsonValue
+        public int toIntValue() {
+            return this.value;
+        }
+
+        @Override
+        public String toString() {
+            return name();
+        }
+    }
+
 }

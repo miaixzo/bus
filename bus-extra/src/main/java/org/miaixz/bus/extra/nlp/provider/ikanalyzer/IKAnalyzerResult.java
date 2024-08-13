@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.extra.nlp.provider.ikanalyzer;
 
+import java.io.IOException;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.extra.nlp.AbstractResult;
 import org.miaixz.bus.extra.nlp.NLPWord;
 import org.wltea.analyzer.core.IKSegmenter;
 import org.wltea.analyzer.core.Lexeme;
-
-import java.io.IOException;
 
 /**
  * IKAnalyzer分词结果实现 项目地址：https://github.com/yozhao/IKAnalyzer

@@ -27,15 +27,16 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.Form;
-import jakarta.ws.rs.core.Response;
-import org.miaixz.bus.gitlab.models.AccessLevel;
-import org.miaixz.bus.gitlab.models.AllowedTo;
-import org.miaixz.bus.gitlab.models.ProtectedBranch;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.AccessLevel;
+import org.miaixz.bus.gitlab.models.AllowedTo;
+import org.miaixz.bus.gitlab.models.ProtectedBranch;
 
 /**
  * This class provides an entry point to all the Protected Branches API calls.
@@ -77,7 +78,7 @@ public class ProtectedBranchesApi extends AbstractApi {
      */
     public Pager<ProtectedBranch> getProtectedBranches(Object projectIdOrPath, int itemsPerPage)
             throws GitLabApiException {
-        return (new Pager<ProtectedBranch>(this, ProtectedBranch.class, itemsPerPage, null, "projects",
+        return (new Pager<>(this, ProtectedBranch.class, itemsPerPage, null, "projects",
                 getProjectIdOrPath(projectIdOrPath), "protected_branches"));
     }
 
@@ -373,4 +374,5 @@ public class ProtectedBranchesApi extends AbstractApi {
                 this.getProjectIdOrPath(projectIdOrPath), "protected_branches", urlEncode(branchName));
         return (response.readEntity(ProtectedBranch.class));
     }
+
 }

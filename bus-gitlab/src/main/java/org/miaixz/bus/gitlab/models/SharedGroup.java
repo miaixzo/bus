@@ -27,13 +27,15 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
 import java.util.Date;
 
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 public class SharedGroup implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Long groupId;
@@ -87,4 +89,5 @@ public class SharedGroup implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

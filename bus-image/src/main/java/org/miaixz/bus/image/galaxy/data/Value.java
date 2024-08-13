@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.image.galaxy.data;
 
+import java.io.IOException;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.galaxy.io.ImageEncodingOptions;
 import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
-
-import java.io.IOException;
 
 /**
  * @author Kimi Liu

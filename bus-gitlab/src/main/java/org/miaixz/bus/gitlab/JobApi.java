@@ -27,15 +27,6 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.Form;
-import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
-import org.miaixz.bus.gitlab.models.ArtifactsFile;
-import org.miaixz.bus.gitlab.models.Job;
-import org.miaixz.bus.gitlab.models.JobAttributes;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,6 +35,14 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+import org.miaixz.bus.gitlab.models.ArtifactsFile;
+import org.miaixz.bus.gitlab.models.Job;
+import org.miaixz.bus.gitlab.models.JobAttributes;
 
 /**
  * This class provides an entry point to all the GitLab API job calls.
@@ -86,7 +85,7 @@ public class JobApi extends AbstractApi implements Constants {
     public List<Job> getJobs(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
                 getProjectIdOrPath(projectIdOrPath), "jobs");
-        return (response.readEntity(new GenericType<List<Job>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -158,7 +157,7 @@ public class JobApi extends AbstractApi implements Constants {
      */
     public Pager<Job> getJobs(Object projectIdOrPath, JobScope scope, int itemsPerPage) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("scope", scope);
-        return (new Pager<Job>(this, Job.class, itemsPerPage, formData.asMap(), "projects",
+        return (new Pager<>(this, Job.class, itemsPerPage, formData.asMap(), "projects",
                 getProjectIdOrPath(projectIdOrPath), "jobs"));
     }
 
@@ -258,7 +257,7 @@ public class JobApi extends AbstractApi implements Constants {
                 .withParam("include_retried", includeRetried).withParam(PER_PAGE_PARAM, getDefaultPerPage());
         Response response = get(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
                 "pipelines", pipelineId, "jobs");
-        return (response.readEntity(new GenericType<List<Job>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -765,4 +764,5 @@ public class JobApi extends AbstractApi implements Constants {
     public void deleteArtifacts(Object projectIdOrPath, Long jobId) throws GitLabApiException {
         delete(Status.NO_CONTENT, null, "projects", getProjectIdOrPath(projectIdOrPath), "jobs", jobId, "artifacts");
     }
+
 }

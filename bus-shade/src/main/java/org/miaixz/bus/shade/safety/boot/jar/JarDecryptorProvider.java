@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.shade.safety.boot.jar;
 
+import java.io.*;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
+import java.util.zip.Deflater;
+
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
 import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
@@ -37,11 +42,6 @@ import org.miaixz.bus.shade.safety.provider.DecryptorProvider;
 import org.miaixz.bus.shade.safety.provider.EntryDecryptorProvider;
 import org.miaixz.bus.shade.safety.streams.AlwaysInputStream;
 import org.miaixz.bus.shade.safety.streams.AlwaysOutputStream;
-
-import java.io.*;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
-import java.util.zip.Deflater;
 
 /**
  * 普通JAR包解密器

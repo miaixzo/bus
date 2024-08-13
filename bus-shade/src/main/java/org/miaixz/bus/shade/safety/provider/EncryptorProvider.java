@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.shade.safety.provider;
 
-import org.miaixz.bus.shade.safety.algorithm.Key;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import org.miaixz.bus.shade.safety.algorithm.Key;
 
 /**
  * 加密器

@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.bean.copier.provider;
 
+import java.lang.reflect.Type;
+
 import org.miaixz.bus.core.bean.copier.ValueProvider;
 import org.miaixz.bus.core.bean.desc.BeanDesc;
 import org.miaixz.bus.core.bean.desc.PropDesc;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.xyz.BeanKit;
-
-import java.lang.reflect.Type;
 
 /**
  * Bean值提供器

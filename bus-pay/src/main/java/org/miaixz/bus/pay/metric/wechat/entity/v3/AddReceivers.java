@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.pay.metric.wechat.entity.v3;
 
+import org.miaixz.bus.pay.magic.Material;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.pay.magic.Material;
 
 /**
  * V3 添加分账接收方

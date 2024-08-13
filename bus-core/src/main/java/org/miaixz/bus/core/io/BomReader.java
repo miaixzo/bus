@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.io;
 
-import org.miaixz.bus.core.io.stream.BOMInputStream;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.exception.InternalException;
-
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+
+import org.miaixz.bus.core.io.stream.BOMInputStream;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
  * 读取带BOM头的流内容的Reader，如果非bom的流或无法识别的编码，则默认UTF-8 BOM定义：http://www.unicode.org/unicode/faq/utf_bom.html

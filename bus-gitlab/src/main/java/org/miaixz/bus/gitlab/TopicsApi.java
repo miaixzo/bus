@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.Response;
 import org.miaixz.bus.gitlab.models.Topic;
 import org.miaixz.bus.gitlab.models.TopicParams;
 
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
@@ -77,7 +77,7 @@ public class TopicsApi extends AbstractApi {
      */
     public List<Topic> getTopics(int page, int perPage) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "topics");
-        return (response.readEntity(new GenericType<List<Topic>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -93,7 +93,7 @@ public class TopicsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Topic> getTopics(int itemsPerPage) throws GitLabApiException {
-        return (new Pager<Topic>(this, Topic.class, itemsPerPage, null, "topics"));
+        return (new Pager<>(this, Topic.class, itemsPerPage, null, "topics"));
     }
 
     /**
@@ -246,4 +246,5 @@ public class TopicsApi extends AbstractApi {
                 .withParam("target_topic_id", targetTopicId), "topics/merge");
         return (response.readEntity(Topic.class));
     }
+
 }

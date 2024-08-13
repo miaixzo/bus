@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.crypto.builtin.digest.mac;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.exception.CryptoException;
-
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.CryptoException;
 
 /**
  * MAC（Message Authentication Code）算法引擎

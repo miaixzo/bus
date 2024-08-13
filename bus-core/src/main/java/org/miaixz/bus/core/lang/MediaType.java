@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.core.lang;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.miaixz.bus.core.xyz.MapKit;
-
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.miaixz.bus.core.xyz.MapKit;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * HTTP 媒体类型

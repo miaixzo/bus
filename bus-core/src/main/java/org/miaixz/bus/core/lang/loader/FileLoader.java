@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.core.lang.loader;
 
-import org.miaixz.bus.core.io.resource.Resource;
-import org.miaixz.bus.core.io.resource.UrlResource;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.net.url.UrlDecoder;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Enumeration;
 import java.util.LinkedList;
 import java.util.Queue;
+
+import org.miaixz.bus.core.io.resource.Resource;
+import org.miaixz.bus.core.io.resource.UrlResource;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.net.url.UrlDecoder;
 
 /**
  * 文件资源加载器

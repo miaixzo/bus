@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.image.nimble;
 
-import org.miaixz.bus.image.Tag;
-import org.miaixz.bus.image.galaxy.data.Attributes;
-import org.miaixz.bus.logger.Logger;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.miaixz.bus.image.Tag;
+import org.miaixz.bus.image.galaxy.data.Attributes;
+import org.miaixz.bus.logger.Logger;
 
 /**
  * Represents a pixel embedded overlay in DICOM attributes which is defined by the group offset and the bit position.

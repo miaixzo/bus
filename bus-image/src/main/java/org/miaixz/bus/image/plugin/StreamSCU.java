@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.image.plugin;
 
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.miaixz.bus.image.*;
 import org.miaixz.bus.image.galaxy.ImageProgress;
 import org.miaixz.bus.image.galaxy.ProgressStatus;
@@ -41,11 +46,6 @@ import org.miaixz.bus.image.metric.pdu.AAssociateRQ;
 import org.miaixz.bus.image.metric.pdu.PresentationContext;
 import org.miaixz.bus.image.nimble.ImageOutputData;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author Kimi Liu
@@ -72,6 +72,7 @@ public class StreamSCU {
     private boolean relExtNeg;
     private Association as;
     private final TimerTask closeAssociationTask = new TimerTask() {
+        @Override
         public void run() {
             close(false);
         }

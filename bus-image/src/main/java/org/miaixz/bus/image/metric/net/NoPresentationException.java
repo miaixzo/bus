@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.image.metric.net;
 
-import org.miaixz.bus.image.UID;
-
 import java.io.IOException;
+
+import org.miaixz.bus.image.UID;
 
 /**
  * @author Kimi Liu

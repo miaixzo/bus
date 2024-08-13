@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.image.galaxy.data;
 
-import org.miaixz.bus.image.Tag;
-import org.miaixz.bus.image.galaxy.io.ImageEncodingOptions;
-import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.ListIterator;
+
+import org.miaixz.bus.image.Tag;
+import org.miaixz.bus.image.galaxy.io.ImageEncodingOptions;
+import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
 
 /**
  * Fragments are used for encapsulation of an encoded (=compressed) pixel data stream into the Pixel Data (7FE0,0010)

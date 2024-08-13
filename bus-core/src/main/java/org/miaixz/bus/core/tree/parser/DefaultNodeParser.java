@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.tree.parser;
 
+import java.util.Map;
+
 import org.miaixz.bus.core.tree.MapTree;
 import org.miaixz.bus.core.tree.TreeNode;
 import org.miaixz.bus.core.xyz.MapKit;
-
-import java.util.Map;
 
 /**
  * 默认的简单转换器

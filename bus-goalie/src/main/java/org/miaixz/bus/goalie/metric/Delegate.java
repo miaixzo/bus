@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.goalie.metric;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.basic.entity.OAuth2;
 import org.miaixz.bus.core.basic.normal.Consts;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 认证及委托处理

@@ -27,12 +27,17 @@
 */
 package org.miaixz.bus.health.unix.platform.solaris.software;
 
-import com.sun.jna.platform.unix.solaris.Kstat2;
-import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Executor;
@@ -46,12 +51,8 @@ import org.miaixz.bus.health.unix.platform.solaris.KstatKit;
 import org.miaixz.bus.health.unix.platform.solaris.KstatKit.KstatChain;
 import org.miaixz.bus.health.unix.platform.solaris.driver.Who;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import com.sun.jna.platform.unix.solaris.Kstat2;
+import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 
 /**
  * Solaris is a non-free Unix operating system originally developed by Sun Microsystems. It superseded the company's

@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.io.buffer;
 
-import org.miaixz.bus.core.io.ByteString;
-import org.miaixz.bus.core.io.SectionBuffer;
-import org.miaixz.bus.core.xyz.IoKit;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.io.SectionBuffer;
+import org.miaixz.bus.core.xyz.IoKit;
 
 /**
  * 由字节数组段组成的不可变字节字符串 该类的存在是为了实现 缓冲区的有效快照 它被实现为一个段数组,加上一个目录 两个半部分,描述段如何组成这个字节字符串

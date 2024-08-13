@@ -27,11 +27,6 @@
 */
 package org.miaixz.bus.setting.metric.toml;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.io.IOException;
 import java.io.Writer;
 import java.time.LocalDate;
@@ -42,6 +37,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * TOML生成器

@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.lang.reflect;
 
-import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * {@link ParameterizedType} 接口实现，用于重新定义泛型类型

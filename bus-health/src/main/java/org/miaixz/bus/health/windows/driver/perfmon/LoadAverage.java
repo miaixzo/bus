@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.health.windows.driver.perfmon;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.core.lang.tuple.Pair;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.tuple.Pair;
 
 /**
  * Utility to calculate a load average equivalent metric on Windows. Starts a daemon thread to collect the necessary

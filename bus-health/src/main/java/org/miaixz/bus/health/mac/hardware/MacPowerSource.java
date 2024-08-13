@@ -27,21 +27,22 @@
 */
 package org.miaixz.bus.health.mac.hardware;
 
-import com.sun.jna.Pointer;
-import com.sun.jna.platform.mac.CoreFoundation;
-import com.sun.jna.platform.mac.CoreFoundation.*;
-import com.sun.jna.platform.mac.IOKit;
-import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
-import com.sun.jna.platform.mac.IOKitUtil;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.PowerSource;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractPowerSource;
 import org.miaixz.bus.health.mac.CFKit;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.mac.CoreFoundation;
+import com.sun.jna.platform.mac.IOKit;
+import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
+import com.sun.jna.platform.mac.IOKitUtil;
+import com.sun.jna.platform.mac.CoreFoundation.*;
 
 /**
  * A Power Source

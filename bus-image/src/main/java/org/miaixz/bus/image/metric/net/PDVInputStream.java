@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.image.metric.net;
 
-import org.miaixz.bus.image.galaxy.data.Attributes;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
+import org.miaixz.bus.image.galaxy.data.Attributes;
 
 /**
  * @author Kimi Liu

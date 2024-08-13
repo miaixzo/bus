@@ -27,6 +27,18 @@
 */
 package org.miaixz.bus.image.nimble.opencv.lut;
 
+import java.awt.image.DataBuffer;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.lang.reflect.Array;
+import java.util.*;
+
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamConstants;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.nimble.ImageAdapter;
@@ -34,17 +46,6 @@ import org.miaixz.bus.image.nimble.PresentationLutObject;
 import org.miaixz.bus.image.nimble.opencv.LookupTableCV;
 import org.miaixz.bus.image.nimble.stream.ImageDescriptor;
 import org.miaixz.bus.logger.Logger;
-
-import javax.xml.stream.XMLInputFactory;
-import javax.xml.stream.XMLStreamConstants;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamReader;
-import java.awt.image.DataBuffer;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.lang.reflect.Array;
-import java.util.*;
 
 /**
  * @author Kimi Liu

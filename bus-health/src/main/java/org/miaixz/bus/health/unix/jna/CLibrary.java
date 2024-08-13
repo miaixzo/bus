@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.health.unix.jna;
 
+import org.miaixz.bus.health.Builder;
+
 import com.sun.jna.Library;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
@@ -34,7 +36,6 @@ import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 import com.sun.jna.platform.unix.LibCAPI;
 import com.sun.jna.ptr.PointerByReference;
-import org.miaixz.bus.health.Builder;
 
 /**
  * C library with code common to all *nix-based operating systems. This class should be considered non-API as it may be

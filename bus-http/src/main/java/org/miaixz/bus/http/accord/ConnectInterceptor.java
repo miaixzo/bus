@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.http.accord;
 
+import java.io.IOException;
+
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.Httpd;
 import org.miaixz.bus.http.Request;
@@ -34,8 +36,6 @@ import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.http.metric.http.RealInterceptorChain;
-
-import java.io.IOException;
 
 /**
  * 打开到目标服务器的连接并继续到下一个拦截器.

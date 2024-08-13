@@ -27,16 +27,10 @@
 */
 package org.miaixz.bus.health.mac.software;
 
-import com.sun.jna.Memory;
-import com.sun.jna.Native;
-import com.sun.jna.platform.mac.IOKit.IOIterator;
-import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
-import com.sun.jna.platform.mac.IOKitUtil;
-import com.sun.jna.platform.mac.SystemB;
-import com.sun.jna.platform.mac.SystemB.Group;
-import com.sun.jna.platform.mac.SystemB.Passwd;
-import com.sun.jna.platform.unix.LibCAPI.size_t;
-import com.sun.jna.platform.unix.Resource;
+import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -52,9 +46,16 @@ import org.miaixz.bus.health.mac.SysctlKit;
 import org.miaixz.bus.health.mac.driver.ThreadInfo;
 import org.miaixz.bus.logger.Logger;
 
-import java.util.*;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import com.sun.jna.Memory;
+import com.sun.jna.Native;
+import com.sun.jna.platform.mac.IOKit.IOIterator;
+import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
+import com.sun.jna.platform.mac.IOKitUtil;
+import com.sun.jna.platform.mac.SystemB;
+import com.sun.jna.platform.mac.SystemB.Group;
+import com.sun.jna.platform.mac.SystemB.Passwd;
+import com.sun.jna.platform.unix.LibCAPI.size_t;
+import com.sun.jna.platform.unix.Resource;
 
 /**
  * OSProcess implementation

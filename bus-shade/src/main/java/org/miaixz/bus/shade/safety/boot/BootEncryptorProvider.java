@@ -27,6 +27,17 @@
 */
 package org.miaixz.bus.shade.safety.boot;
 
+import java.io.*;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.jar.Attributes;
+import java.util.jar.Manifest;
+import java.util.zip.CRC32;
+import java.util.zip.CheckedOutputStream;
+import java.util.zip.Deflater;
+
 import org.apache.commons.compress.archivers.jar.JarArchiveEntry;
 import org.apache.commons.compress.archivers.jar.JarArchiveInputStream;
 import org.apache.commons.compress.archivers.jar.JarArchiveOutputStream;
@@ -41,17 +52,6 @@ import org.miaixz.bus.shade.safety.provider.EntryEncryptorProvider;
 import org.miaixz.bus.shade.safety.streams.AlwaysInputStream;
 import org.miaixz.bus.shade.safety.streams.AlwaysOutputStream;
 
-import java.io.*;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
-import java.util.zip.CRC32;
-import java.util.zip.CheckedOutputStream;
-import java.util.zip.Deflater;
-
 /**
  * Spring-Boot JAR包加密器
  *
@@ -63,10 +63,10 @@ public class BootEncryptorProvider extends EntryEncryptorProvider<JarArchiveEntr
     private static final Map<String, String> map = new HashMap<>();
 
     static {
-        map.put("org.springframework.boot.loader.JarLauncher", "boot.safety.shade.org.miaixz.bus.BootJarLauncher");
-        map.put("org.springframework.boot.loader.WarLauncher", "boot.safety.shade.org.miaixz.bus.BootWarLauncher");
+        map.put("org.springframework.boot.loader.JarLauncher", "org.miaixz.bus.shade.safety.boot.BootJarLauncher");
+        map.put("org.springframework.boot.loader.WarLauncher", "org.miaixz.bus.shade.safety.boot.BootWarLauncher");
         map.put("org.springframework.boot.loader.PropertiesLauncher",
-                "boot.safety.shade.org.miaixz.bus.BootPropertiesLauncher");
+                "org.miaixz.bus.shade.safety.boot.BootPropertiesLauncher");
     }
 
     private final int level;

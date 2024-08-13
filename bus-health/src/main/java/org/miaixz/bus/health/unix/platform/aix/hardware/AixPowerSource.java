@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.health.unix.platform.aix.hardware;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.health.builtin.hardware.PowerSource;
-import org.miaixz.bus.health.builtin.hardware.common.AbstractPowerSource;
-
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
+
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.health.builtin.hardware.PowerSource;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractPowerSource;
 
 /**
  * A Power Source

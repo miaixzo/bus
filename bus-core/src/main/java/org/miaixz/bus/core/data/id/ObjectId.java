@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.data.id;
 
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * MongoDB ID生成策略实现 ObjectId由以下几部分组成：

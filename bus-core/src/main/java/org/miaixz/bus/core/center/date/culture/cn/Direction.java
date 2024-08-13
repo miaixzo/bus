@@ -71,4 +71,13 @@ public class Direction extends Samsara {
         return Land.fromIndex(index);
     }
 
+    /**
+     * 五行
+     *
+     * @return 五行
+     */
+    public Element getElement() {
+        return Element.fromIndex(new int[] { 4, 2, 0, 0, 2, 3, 3, 2, 1 }[index]);
+    }
+
 }

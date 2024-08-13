@@ -27,6 +27,18 @@
 */
 package org.miaixz.bus.shade.safety;
 
+import java.io.*;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.jar.Attributes;
+
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -36,17 +48,6 @@ import org.miaixz.bus.shade.safety.algorithm.SymmetricSecureKey;
 import org.miaixz.bus.shade.safety.complex.AllComplex;
 import org.miaixz.bus.shade.safety.complex.AnyComplex;
 import org.miaixz.bus.shade.safety.complex.NotComplex;
-
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import java.io.*;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.jar.Attributes;
 
 /**
  * Jar 工具类,包含I/O,密钥,过滤器的工具方法

@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.mapper.criteria;
 
+import java.util.Map;
+
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.mapper.entity.Condition.Criteria;
 import org.miaixz.bus.mapper.entity.EntityColumn;
 import org.miaixz.bus.mapper.support.Reflector;
-
-import java.util.Map;
 
 /**
  * 条件语句函数

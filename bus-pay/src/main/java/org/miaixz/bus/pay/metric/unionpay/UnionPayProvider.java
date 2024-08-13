@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.pay.metric.unionpay;
 
+import java.util.Map;
+
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.xyz.XmlKit;
 import org.miaixz.bus.pay.Complex;
@@ -35,8 +37,6 @@ import org.miaixz.bus.pay.Registry;
 import org.miaixz.bus.pay.magic.Material;
 import org.miaixz.bus.pay.metric.AbstractProvider;
 import org.miaixz.bus.pay.metric.unionpay.api.UnionPayApi;
-
-import java.util.Map;
 
 /**
  * 云闪付接口

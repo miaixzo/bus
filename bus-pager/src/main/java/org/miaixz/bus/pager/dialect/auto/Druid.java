@@ -27,8 +27,9 @@
 */
 package org.miaixz.bus.pager.dialect.auto;
 
-import com.alibaba.druid.pool.DruidDataSource;
 import org.miaixz.bus.pager.dialect.AbstractAutoDialect;
+
+import com.alibaba.druid.pool.DruidDataSource;
 
 /**
  * Druid

@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.image.plugin;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.image.metric.hl7.HL7ContentHandler;
+import java.io.File;
+import java.io.OutputStreamWriter;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.File;
-import java.io.OutputStreamWriter;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.image.metric.hl7.HL7ContentHandler;
 
 /**
  * @author Kimi Liu

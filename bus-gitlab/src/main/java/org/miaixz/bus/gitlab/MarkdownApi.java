@@ -27,9 +27,11 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.Response;
+import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
 import org.miaixz.bus.gitlab.models.Markdown;
 import org.miaixz.bus.gitlab.models.MarkdownRequest;
+
+import jakarta.ws.rs.core.Response;
 
 /**
  * This class provides an entry point to all the GitLab API markdown calls.
@@ -50,11 +52,9 @@ public class MarkdownApi extends AbstractApi {
      * @param text text to be transformed
      * @return a Markdown instance with transformed info
      * @throws GitLabApiException if any exception occurs
-     * @since GitLab 11.0
      */
     public Markdown getMarkdown(String text) throws GitLabApiException {
-
-        if (!isApiVersion(GitLabApi.ApiVersion.V4)) {
+        if (!isApiVersion(ApiVersion.V4)) {
             throw new GitLabApiException("Api version must be v4");
         }
 
@@ -71,15 +71,14 @@ public class MarkdownApi extends AbstractApi {
      * @param markdownRequest a request of markdown transformation
      * @return a Markdown instance with transformed info
      * @throws GitLabApiException if any exception occurs
-     * @since GitLab 11.0
      */
     public Markdown getMarkdown(MarkdownRequest markdownRequest) throws GitLabApiException {
-
-        if (!isApiVersion(GitLabApi.ApiVersion.V4)) {
+        if (!isApiVersion(ApiVersion.V4)) {
             throw new GitLabApiException("Api version must be v4");
         }
 
         Response response = post(Response.Status.OK, markdownRequest, "markdown");
         return (response.readEntity(Markdown.class));
     }
+
 }

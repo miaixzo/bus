@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.cron.pattern.parser;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.center.date.culture.en.Month;
 import org.miaixz.bus.core.center.date.culture.en.Week;
 import org.miaixz.bus.core.lang.Symbol;
@@ -36,9 +39,6 @@ import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.cron.pattern.Part;
 import org.miaixz.bus.cron.pattern.matcher.*;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 定时任务表达式各个部分的解析器，根据{@link Part}指定不同部分，解析为{@link PartMatcher} 每个部分支持：

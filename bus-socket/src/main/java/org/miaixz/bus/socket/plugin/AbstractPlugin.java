@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.socket.plugin;
 
+import java.nio.channels.AsynchronousSocketChannel;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.socket.Plugin;
 import org.miaixz.bus.socket.Session;
 import org.miaixz.bus.socket.Status;
-
-import java.nio.channels.AsynchronousSocketChannel;
 
 /**
  * 抽象插件

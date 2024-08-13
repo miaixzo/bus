@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.compare.IndexedCompare;
-import org.miaixz.bus.core.compare.PinyinCompare;
-
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.function.Function;
+
+import org.miaixz.bus.core.compare.IndexedCompare;
+import org.miaixz.bus.core.compare.PinyinCompare;
 
 /**
  * 比较工具类

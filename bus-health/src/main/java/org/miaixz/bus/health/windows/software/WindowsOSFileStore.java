@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.health.windows.software;
 
+import java.util.List;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.software.OSFileStore;
 import org.miaixz.bus.health.builtin.software.common.AbstractOSFileStore;
-
-import java.util.List;
 
 /**
  * OSFileStore implementation

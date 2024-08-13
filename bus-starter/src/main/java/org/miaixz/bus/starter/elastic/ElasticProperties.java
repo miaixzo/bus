@@ -49,6 +49,7 @@ import lombok.Setter;
 @Setter
 @ConfigurationProperties(prefix = GeniusBuilder.ELASTIC)
 public class ElasticProperties {
+
     /**
      * 集群主机地址, 多个用英文逗号,隔开 格式: ip1:port,ip2:port
      */

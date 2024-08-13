@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.http.cache;
 
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.io.sink.Sink;
@@ -46,9 +49,6 @@ import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.Internal;
 import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.http.metric.http.HttpCodec;
-
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 服务来自缓存的请求并将响应写入缓存。

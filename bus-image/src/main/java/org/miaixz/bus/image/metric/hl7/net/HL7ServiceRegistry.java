@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.image.metric.hl7.net;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.image.metric.Connection;
-import org.miaixz.bus.image.metric.hl7.HL7Exception;
-
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.image.metric.Connection;
+import org.miaixz.bus.image.metric.hl7.HL7Exception;
 
 /**
  * @author Kimi Liu

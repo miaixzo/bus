@@ -35,6 +35,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
+import jakarta.annotation.Resource;
+
 /**
  * Zookeeper配置
  *
@@ -44,14 +46,17 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(ZookeeperProperties.class)
 public class ZookeeperConfiguration {
 
+    @Resource
+    ZookeeperProperties properties;
+
     @Bean(initMethod = "start", destroyMethod = "close")
     @ConditionalOnMissingBean(CuratorFramework.class)
-    public CuratorFramework zkClient(ZookeeperProperties properties) {
-        RetryPolicy retryPolicy = new ExponentialBackoffRetry(properties.getBaseSleepTimeMs(),
-                properties.getMaxRetries());
-        return CuratorFrameworkFactory.builder().connectString(properties.getConnectString())
-                .namespace(properties.getNamespace()).sessionTimeoutMs(properties.getSessionTimeoutMs())
-                .connectionTimeoutMs(properties.getConnectionTimeoutMs()).retryPolicy(retryPolicy).build();
+    public CuratorFramework zkClient() {
+        RetryPolicy retryPolicy = new ExponentialBackoffRetry(this.properties.getBaseSleepTimeMs(),
+                this.properties.getMaxRetries());
+        return CuratorFrameworkFactory.builder().connectString(this.properties.getConnectString())
+                .namespace(this.properties.getNamespace()).sessionTimeoutMs(this.properties.getSessionTimeoutMs())
+                .connectionTimeoutMs(this.properties.getConnectionTimeoutMs()).retryPolicy(retryPolicy).build();
     }
 
 }

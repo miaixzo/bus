@@ -27,10 +27,9 @@
 */
 package org.miaixz.bus.health.unix.platform.aix.hardware;
 
-import com.sun.jna.Native;
-import com.sun.jna.platform.unix.aix.Perfstat.perfstat_cpu_t;
-import com.sun.jna.platform.unix.aix.Perfstat.perfstat_cpu_total_t;
-import com.sun.jna.platform.unix.aix.Perfstat.perfstat_partition_config_t;
+import java.util.*;
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
@@ -45,8 +44,10 @@ import org.miaixz.bus.health.unix.platform.aix.driver.Lssrad;
 import org.miaixz.bus.health.unix.platform.aix.driver.perfstat.PerfstatConfig;
 import org.miaixz.bus.health.unix.platform.aix.driver.perfstat.PerfstatCpu;
 
-import java.util.*;
-import java.util.function.Supplier;
+import com.sun.jna.Native;
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_cpu_t;
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_cpu_total_t;
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_partition_config_t;
 
 /**
  * A CPU

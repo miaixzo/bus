@@ -27,19 +27,20 @@
 */
 package org.miaixz.bus.base.entity;
 
+import java.util.List;
+import java.util.Objects;
+
+import org.miaixz.bus.core.basic.entity.Tracer;
+import org.miaixz.bus.core.basic.normal.Consts;
+import org.miaixz.bus.core.data.id.ID;
+import org.miaixz.bus.core.xyz.*;
+
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.core.basic.entity.Tracer;
-import org.miaixz.bus.core.basic.normal.Consts;
-import org.miaixz.bus.core.data.id.ID;
-import org.miaixz.bus.core.xyz.*;
-
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Entity 基本信息

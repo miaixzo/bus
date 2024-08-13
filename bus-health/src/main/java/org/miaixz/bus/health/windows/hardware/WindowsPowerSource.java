@@ -27,14 +27,13 @@
 */
 package org.miaixz.bus.health.windows.hardware;
 
-import com.sun.jna.Memory;
-import com.sun.jna.Native;
-import com.sun.jna.Platform;
-import com.sun.jna.platform.win32.*;
-import com.sun.jna.win32.W32APITypeMapper;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.PowerSource;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractPowerSource;
 import org.miaixz.bus.health.builtin.jna.ByRef;
@@ -42,9 +41,11 @@ import org.miaixz.bus.health.builtin.jna.Struct;
 import org.miaixz.bus.health.windows.jna.Kernel32;
 import org.miaixz.bus.health.windows.jna.PowrProf;
 
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
+import com.sun.jna.Memory;
+import com.sun.jna.Native;
+import com.sun.jna.Platform;
+import com.sun.jna.platform.win32.*;
+import com.sun.jna.win32.W32APITypeMapper;
 
 /**
  * A Power Source

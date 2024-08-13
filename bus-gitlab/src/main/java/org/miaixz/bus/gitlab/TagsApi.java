@@ -27,20 +27,22 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.Form;
-import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.Response;
-import org.miaixz.bus.gitlab.models.AccessLevel;
-import org.miaixz.bus.gitlab.models.ProtectedTag;
-import org.miaixz.bus.gitlab.models.Release;
-import org.miaixz.bus.gitlab.models.Tag;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
+import org.miaixz.bus.gitlab.models.AccessLevel;
+import org.miaixz.bus.gitlab.models.ProtectedTag;
+import org.miaixz.bus.gitlab.models.Release;
+import org.miaixz.bus.gitlab.models.Tag;
+
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 
 /**
  * This class provides an entry point to all the GitLab Tags and Protected Tags API calls.
@@ -52,21 +54,6 @@ public class TagsApi extends AbstractApi {
 
     public TagsApi(GitLabApi gitLabApi) {
         super(gitLabApi);
-    }
-
-    /**
-     * Get a list of repository tags from a project, sorted by name in reverse alphabetical order.
-     *
-     * <pre>
-     * <code>GitLab Endpoint: GET /projects/:id/repository/tags</code>
-     * </pre>
-     *
-     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @return the list of tags for the specified project ID
-     * @throws GitLabApiException if any exception occurs
-     */
-    public List<Tag> getTags(Object projectIdOrPath) throws GitLabApiException {
-        return (getTags(projectIdOrPath, getDefaultPerPage()).all());
     }
 
     /**
@@ -82,6 +69,21 @@ public class TagsApi extends AbstractApi {
             in.useDelimiter("\\Z");
             return (in.next());
         }
+    }
+
+    /**
+     * Get a list of repository tags from a project, sorted by name in reverse alphabetical order.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/tags</code>
+     * </pre>
+     *
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @return the list of tags for the specified project ID
+     * @throws GitLabApiException if any exception occurs
+     */
+    public List<Tag> getTags(Object projectIdOrPath) throws GitLabApiException {
+        return (getTags(projectIdOrPath, getDefaultPerPage()).all());
     }
 
     /**
@@ -101,8 +103,25 @@ public class TagsApi extends AbstractApi {
     public List<Tag> getTags(Object projectIdOrPath, int page, int perPage) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
                 getProjectIdOrPath(projectIdOrPath), "repository", "tags");
-        return (response.readEntity(new GenericType<List<Tag>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
+    }
+
+    /**
+     * Get a list of repository tags from a project, sorted by name in reverse alphabetical order.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: GET /projects/:id/repository/tags</code>
+     * </pre>
+     *
+     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
+     * @param itemsPerPage    the number of Project instances that will be fetched per page
+     * @return the Pager of tags for the specified project ID
+     * @throws GitLabApiException if any exception occurs
+     */
+    public Pager<Tag> getTags(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
+        return (new Pager<>(this, Tag.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
+                "repository", "tags"));
     }
 
     /**
@@ -128,29 +147,11 @@ public class TagsApi extends AbstractApi {
      * </pre>
      *
      * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
-     * @param itemsPerPage    the number of Project instances that will be fetched per page
-     * @return the Pager of tags for the specified project ID
-     * @throws GitLabApiException if any exception occurs
-     */
-    public Pager<Tag> getTags(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<Tag>(this, Tag.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
-                "repository", "tags"));
-    }
-
-    /**
-     * Get a list of repository tags from a project, sorted by name in reverse alphabetical order.
-     *
-     * <pre>
-     * <code>GitLab Endpoint: GET /projects/:id/repository/tags</code>
-     * </pre>
-     *
-     * @param projectIdOrPath id, path of the project, or a Project instance holding the project ID or path
      * @param orderBy         return tags ordered by name or updated fields. Default is updated
      * @param sortOrder       return tags sorted in asc or desc order. Default is desc
      * @param search          return list of tags matching the search criteria
      * @return the list of tags for the specified project ID
      * @throws GitLabApiException if any exception occurs
-     * @since GitLab 11.8
      */
     public List<Tag> getTags(Object projectIdOrPath, TagOrderBy orderBy, SortOrder sortOrder, String search)
             throws GitLabApiException {
@@ -173,7 +174,6 @@ public class TagsApi extends AbstractApi {
      * @param perPage         the number of Tag instances per page
      * @return the list of tags for the specified project ID
      * @throws GitLabApiException if any exception occurs
-     * @since GitLab 11.8
      */
     public List<Tag> getTags(Object projectIdOrPath, TagOrderBy orderBy, SortOrder sortOrder, String search, int page,
             int perPage) throws GitLabApiException {
@@ -181,7 +181,7 @@ public class TagsApi extends AbstractApi {
                 .withParam("search", search).withParam(PAGE_PARAM, page).withParam(PER_PAGE_PARAM, perPage);
         Response response = get(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
                 "repository", "tags");
-        return (response.readEntity(new GenericType<List<Tag>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -199,13 +199,12 @@ public class TagsApi extends AbstractApi {
      * @param itemsPerPage    the number of Project instances that will be fetched per page
      * @return the Pager of tags for the specified project ID
      * @throws GitLabApiException if any exception occurs
-     * @since GitLab 11.8
      */
     public Pager<Tag> getTags(Object projectIdOrPath, TagOrderBy orderBy, SortOrder sortOrder, String search,
             int itemsPerPage) throws GitLabApiException {
         Form formData = new GitLabApiForm().withParam("order_by", orderBy).withParam("sort", sortOrder)
                 .withParam("search", search);
-        return (new Pager<Tag>(this, Tag.class, itemsPerPage, formData.asMap(), "projects",
+        return (new Pager<>(this, Tag.class, itemsPerPage, formData.asMap(), "projects",
                 getProjectIdOrPath(projectIdOrPath), "repository", "tags"));
     }
 
@@ -222,7 +221,6 @@ public class TagsApi extends AbstractApi {
      * @param search          return list of tags matching the search criteria
      * @return a Stream of tags for the specified project ID
      * @throws GitLabApiException if any exception occurs
-     * @since GitLab 11.8
      */
     public Stream<Tag> getTagsStream(Object projectIdOrPath, TagOrderBy orderBy, SortOrder sortOrder, String search)
             throws GitLabApiException {
@@ -355,7 +353,7 @@ public class TagsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteTag(Object projectIdOrPath, String tagName) throws GitLabApiException {
-        Response.Status expectedStatus = (isApiVersion(GitLabApi.ApiVersion.V3) ? Response.Status.OK
+        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK
                 : Response.Status.NO_CONTENT);
         delete(expectedStatus, null, "projects", getProjectIdOrPath(projectIdOrPath), "repository", "tags",
                 urlEncode(tagName));
@@ -435,7 +433,7 @@ public class TagsApi extends AbstractApi {
             throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
                 getProjectIdOrPath(projectIdOrPath), "protected_tags");
-        return (response.readEntity(new GenericType<List<ProtectedTag>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -547,4 +545,5 @@ public class TagsApi extends AbstractApi {
         delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "protected_tags",
                 urlEncode(name));
     }
+
 }

@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
 
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
 public class AbstractMinimalEpic<E extends AbstractMinimalEpic<E>> implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Long id;
@@ -81,7 +82,6 @@ public class AbstractMinimalEpic<E extends AbstractMinimalEpic<E>> implements Se
         this.title = title;
     }
 
-    @SuppressWarnings("unchecked")
     public E withTitle(String title) {
         this.title = title;
         return (E) (this);
@@ -98,4 +98,5 @@ public class AbstractMinimalEpic<E extends AbstractMinimalEpic<E>> implements Se
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

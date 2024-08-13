@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.core.io.timout;
 
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.util.concurrent.TimeUnit;
+
 import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
-
-import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 此超时使用后台线程在超时发生时精确地执行操作 用它来 在本地不支持超时的地方实现超时,例如对阻塞的套接字操作.

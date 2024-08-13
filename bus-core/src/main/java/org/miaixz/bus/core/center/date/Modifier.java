@@ -76,14 +76,14 @@ public class Modifier {
      * 有时候由于毫秒部分必须为0（如MySQL数据库中），因此在此加上选项。
      * </p>
      *
-     * @param calendar            {@link java.util.Calendar}
-     * @param dateField           日期字段，即保留到哪个日期字段
-     * @param modify              修改类型，包括舍去、四舍五入、进一等
-     * @param truncateMillisecond 是否归零毫秒
+     * @param calendar  {@link java.util.Calendar}
+     * @param dateField 日期字段，即保留到哪个日期字段
+     * @param modify    修改类型，包括舍去、四舍五入、进一等
+     * @param truncate  是否归零毫秒
      * @return 修改后的{@link Calendar}
      */
     public static java.util.Calendar modify(final java.util.Calendar calendar, final int dateField, final Modify modify,
-            final boolean truncateMillisecond) {
+            final boolean truncate) {
         // AM_PM上下午特殊处理
         if (java.util.Calendar.AM_PM == dateField) {
             final boolean isAM = Calendar.isAM(calendar);
@@ -103,10 +103,10 @@ public class Modifier {
                 break;
             }
             // 处理下一级别字段
-            return modify(calendar, dateField + 1, modify);
+            return modify(calendar, dateField + 1, modify, truncate);
         }
 
-        final int endField = truncateMillisecond ? java.util.Calendar.SECOND : java.util.Calendar.MILLISECOND;
+        final int endField = truncate ? java.util.Calendar.SECOND : java.util.Calendar.MILLISECOND;
         // 循环处理各级字段，精确到毫秒字段
         for (int i = dateField + 1; i <= endField; i++) {
             if (ArrayKit.contains(IGNORE_FIELDS, i)) {
@@ -129,7 +129,7 @@ public class Modifier {
             modifyField(calendar, i, modify);
         }
 
-        if (truncateMillisecond) {
+        if (truncate) {
             calendar.set(java.util.Calendar.MILLISECOND, 0);
         }
 

@@ -27,17 +27,18 @@
 */
 package org.miaixz.bus.health.windows.hardware;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.Immutable;
+import org.miaixz.bus.health.builtin.hardware.SoundCard;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractSoundCard;
+
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.Win32Exception;
 import com.sun.jna.platform.win32.WinError;
 import com.sun.jna.platform.win32.WinReg;
-import org.miaixz.bus.core.lang.annotation.Immutable;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.health.builtin.hardware.SoundCard;
-import org.miaixz.bus.health.builtin.hardware.common.AbstractSoundCard;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Sound Card data obtained from registry

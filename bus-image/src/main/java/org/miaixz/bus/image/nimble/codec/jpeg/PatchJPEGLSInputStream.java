@@ -27,17 +27,18 @@
 */
 package org.miaixz.bus.image.nimble.codec.jpeg;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+
+import javax.imageio.stream.ImageInputStream;
+import javax.imageio.stream.ImageInputStreamImpl;
+
 import org.miaixz.bus.image.nimble.codec.BytesWithImageImageDescriptor;
 import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
 import org.miaixz.bus.image.nimble.stream.EncapsulatedPixelDataImageInputStream;
 import org.miaixz.bus.image.nimble.stream.SegmentedInputImageStream;
 import org.miaixz.bus.logger.Logger;
-
-import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.ImageInputStreamImpl;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 /**
  * @author Kimi Liu

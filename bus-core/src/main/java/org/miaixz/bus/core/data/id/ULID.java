@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.core.data.id;
 
+import java.io.Serializable;
+import java.nio.ByteOrder;
+import java.util.Objects;
+import java.util.Random;
+
 import org.miaixz.bus.core.codec.No128;
 import org.miaixz.bus.core.codec.binary.Crockford;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.RandomKit;
-
-import java.io.Serializable;
-import java.nio.ByteOrder;
-import java.util.Objects;
-import java.util.Random;
 
 /**
  * ULID（Universally Unique Lexicographically Sortable Identifier）通用唯一词典分类标识符，特性：

@@ -27,11 +27,8 @@
 */
 package org.miaixz.bus.image.nimble.extend;
 
-import org.miaixz.bus.image.builtin.ldap.LdapBuilder;
-import org.miaixz.bus.image.builtin.ldap.LdapDicomConfiguration;
-import org.miaixz.bus.image.metric.api.ConfigurationChanges;
-import org.miaixz.bus.image.nimble.codec.CompressionRule;
-import org.miaixz.bus.image.nimble.codec.CompressionRules;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -39,8 +36,12 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchResult;
-import java.util.ArrayList;
-import java.util.List;
+
+import org.miaixz.bus.image.builtin.ldap.LdapBuilder;
+import org.miaixz.bus.image.builtin.ldap.LdapDicomConfiguration;
+import org.miaixz.bus.image.metric.api.ConfigurationChanges;
+import org.miaixz.bus.image.nimble.codec.CompressionRule;
+import org.miaixz.bus.image.nimble.codec.CompressionRules;
 
 /**
  * @author Kimi Liu

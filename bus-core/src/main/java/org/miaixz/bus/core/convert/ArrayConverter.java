@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.codec.binary.Base64;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.*;
-
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+
+import org.miaixz.bus.core.codec.binary.Base64;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.*;
 
 /**
  * 数组转换器，包括原始类型数组

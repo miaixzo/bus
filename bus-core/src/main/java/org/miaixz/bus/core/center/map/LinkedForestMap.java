@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.core.center.map;
 
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Wrapper;
-import org.miaixz.bus.core.xyz.*;
-
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Wrapper;
+import org.miaixz.bus.core.xyz.*;
 
 /**
  * {@link ForestMap}的基本实现。

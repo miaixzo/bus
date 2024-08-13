@@ -30,7 +30,6 @@ package org.miaixz.bus.image.metric.hl7;
 /**
  * @author Kimi Liu
  * @since Java 17+
- * @since Feb 2020
  */
 public enum MLLPRelease {
     MLLP1, MLLP2

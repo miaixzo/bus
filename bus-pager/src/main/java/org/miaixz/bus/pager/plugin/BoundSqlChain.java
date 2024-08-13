@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.pager.plugin;
 
+import java.util.List;
+
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
-
-import java.util.List;
 
 /**
  * @author Kimi Liu

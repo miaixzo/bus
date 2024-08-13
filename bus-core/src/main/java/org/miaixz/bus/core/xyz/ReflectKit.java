@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.core.xyz;
 
+import java.lang.reflect.*;
+import java.net.URL;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
+
 import org.miaixz.bus.core.center.map.TripleTable;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.lang.Assert;
@@ -35,11 +40,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.reflect.creator.DefaultObjectCreator;
 import org.miaixz.bus.core.lang.reflect.creator.PossibleObjectCreator;
 import org.miaixz.bus.core.text.StringTrimer;
-
-import java.lang.reflect.*;
-import java.net.URL;
-import java.security.CodeSource;
-import java.security.ProtectionDomain;
 
 /**
  * 反射相关工具类

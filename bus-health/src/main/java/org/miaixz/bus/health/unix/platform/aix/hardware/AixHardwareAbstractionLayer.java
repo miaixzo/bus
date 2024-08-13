@@ -27,7 +27,9 @@
 */
 package org.miaixz.bus.health.unix.platform.aix.hardware;
 
-import com.sun.jna.platform.unix.aix.Perfstat.perfstat_disk_t;
+import java.util.List;
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.*;
@@ -36,8 +38,7 @@ import org.miaixz.bus.health.unix.hardware.UnixDisplay;
 import org.miaixz.bus.health.unix.platform.aix.driver.Lscfg;
 import org.miaixz.bus.health.unix.platform.aix.driver.perfstat.PerfstatDisk;
 
-import java.util.List;
-import java.util.function.Supplier;
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_disk_t;
 
 /**
  * AIXHardwareAbstractionLayer class.

@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.image.metric.hl7.net;
 
+import java.net.Socket;
+
 import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.hl7.HL7Exception;
-
-import java.net.Socket;
 
 /**
  * @author Kimi Liu

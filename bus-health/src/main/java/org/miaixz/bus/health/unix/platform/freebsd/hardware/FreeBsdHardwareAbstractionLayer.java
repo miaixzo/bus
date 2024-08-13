@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.health.unix.platform.freebsd.hardware;
 
+import java.util.List;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.*;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;
 import org.miaixz.bus.health.unix.hardware.BsdNetworkIF;
 import org.miaixz.bus.health.unix.hardware.UnixDisplay;
-
-import java.util.List;
 
 /**
  * FreeBsdHardwareAbstractionLayer class.

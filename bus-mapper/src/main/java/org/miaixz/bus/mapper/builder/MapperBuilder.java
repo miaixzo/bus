@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.mapper.builder;
 
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
 import org.apache.ibatis.annotations.SelectProvider;
@@ -49,10 +53,6 @@ import org.miaixz.bus.mapper.entity.Property;
 import org.miaixz.bus.mapper.provider.EmptyProvider;
 import org.miaixz.bus.mapper.support.MetaObject;
 import org.miaixz.bus.mapper.support.Reflector;
-
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 处理主要逻辑，最关键的一个类

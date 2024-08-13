@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.health.builtin;
 
+import java.io.Serializable;
+
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.health.Builder;
-
-import java.io.Serializable;
 
 /**
  * 运行时信息，包括内存总大小、已用大小、可用大小等

@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core.data.id;
 
-import org.miaixz.bus.core.codec.No128;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.RandomKit;
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Random;
+
+import org.miaixz.bus.core.codec.No128;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.RandomKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 提供通用唯一识别码（universally unique identifier）（UUID）实现，UUID表示一个128位的值。 此类拷贝自java.util.UUID，用于生成不带-的UUID字符串

@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.mapper.additional.select;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.mapper.annotation.RegisterMapper;
-
-import java.util.List;
 
 /**
  * 根据属性查询接口

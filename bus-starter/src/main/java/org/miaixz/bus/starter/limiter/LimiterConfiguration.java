@@ -36,6 +36,8 @@ import org.miaixz.bus.limiter.metric.RequestProvider;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
+import jakarta.annotation.Resource;
+
 /**
  * 限流/降级配置
  *
@@ -45,15 +47,18 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(value = { LimiterProperties.class })
 public class LimiterConfiguration {
 
+    @Resource
+    LimiterProperties properties;
+
     @Bean
-    public LimiterService limiterService(LimiterProperties properties) {
-        return new LimiterService(properties);
+    public LimiterService limiterService() {
+        return new LimiterService(this.properties);
     }
 
     @Bean
-    public RequestProvider requestProvider(LimiterProperties properties) {
+    public RequestProvider requestProvider() {
         RequestProvider strategy = new RequestProvider();
-        String implClassName = properties.getSupplier();
+        String implClassName = this.properties.getSupplier();
         // 是否指定用户标识提供者
         if (StringKit.isNotEmpty(implClassName)) {
             Supplier instance = ReflectKit.newInstance(implClassName);

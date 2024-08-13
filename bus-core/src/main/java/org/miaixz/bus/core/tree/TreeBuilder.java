@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.core.tree;
 
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.miaixz.bus.core.Builder;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.tree.parser.NodeParser;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
-
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 树构建器

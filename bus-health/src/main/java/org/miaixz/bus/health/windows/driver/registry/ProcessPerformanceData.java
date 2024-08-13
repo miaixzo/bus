@@ -27,7 +27,11 @@
 */
 package org.miaixz.bus.health.windows.driver.registry;
 
-import com.sun.jna.platform.win32.WinBase;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
@@ -36,10 +40,7 @@ import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation;
 import org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation.ProcessPerformanceProperty;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.sun.jna.platform.win32.WinBase;
 
 /**
  * Utility to read process data from HKEY_PERFORMANCE_DATA information with backup from Performance Counters or WMI

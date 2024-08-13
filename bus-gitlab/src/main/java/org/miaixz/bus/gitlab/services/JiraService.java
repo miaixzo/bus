@@ -27,10 +27,11 @@
 */
 package org.miaixz.bus.gitlab.services;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Map;
+
 import org.miaixz.bus.gitlab.GitLabApiForm;
 
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class JiraService extends NotificationService {
 
@@ -184,4 +185,5 @@ public class JiraService extends NotificationService {
             }
         }
     }
+
 }

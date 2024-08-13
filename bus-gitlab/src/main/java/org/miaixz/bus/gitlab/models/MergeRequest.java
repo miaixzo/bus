@@ -27,15 +27,17 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 public class MergeRequest implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Boolean allowCollaboration;
@@ -302,6 +304,10 @@ public class MergeRequest implements Serializable {
         this.squashCommitSha = squashCommitSha;
     }
 
+    public static final boolean isValid(MergeRequest mergeRequest) {
+        return (mergeRequest != null && mergeRequest.getId() != null);
+    }
+
     public String getDetailedMergeStatus() {
         return detailedMergeStatus;
     }
@@ -518,10 +524,6 @@ public class MergeRequest implements Serializable {
         this.workInProgress = workInProgress;
     }
 
-    public static final boolean isValid(MergeRequest mergeRequest) {
-        return (mergeRequest != null && mergeRequest.getId() != null);
-    }
-
     /**
      * Get the number of approvals required for the merge request.
      *
@@ -595,7 +597,7 @@ public class MergeRequest implements Serializable {
 
     /**
      * Set the list of users that have approved the merge request.
-     * <p>
+     *
      * NOTE: This property will only be used when listing, approiving, or unapproving a merge request.
      *
      * @param approvedBy the list of users that have approved the merge request
@@ -616,4 +618,5 @@ public class MergeRequest implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

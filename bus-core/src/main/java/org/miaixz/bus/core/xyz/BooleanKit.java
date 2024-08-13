@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.lang.Normal;
-
 import java.util.Set;
+
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * Boolean类型相关工具类

@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.cache.file;
 
+import java.io.File;
+import java.io.Serializable;
+
 import org.miaixz.bus.core.cache.Cache;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
-
-import java.io.File;
-import java.io.Serializable;
 
 /**
  * 文件缓存，以解决频繁读取文件引起的性能问题

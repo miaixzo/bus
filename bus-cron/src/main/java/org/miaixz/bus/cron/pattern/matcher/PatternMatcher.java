@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.cron.pattern.matcher;
 
-import org.miaixz.bus.core.xyz.DateKit;
-import org.miaixz.bus.cron.pattern.Part;
-
 import java.time.Year;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.TimeZone;
+
+import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.cron.pattern.Part;
 
 /**
  * 单一表达式的匹配器，匹配器由7个{@link PartMatcher}组成，分别是：
@@ -331,6 +332,11 @@ public class PatternMatcher {
         }
         calendar.set(part.getCalendarField(), value);
         return calendar;
+    }
+
+    @Override
+    public String toString() {
+        return "PatternMatcher{" + "matchers=" + Arrays.toString(matchers) + '}';
     }
 
 }

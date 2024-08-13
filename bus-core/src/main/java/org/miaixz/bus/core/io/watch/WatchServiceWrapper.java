@@ -27,18 +27,18 @@
 */
 package org.miaixz.bus.core.io.watch;
 
-import org.miaixz.bus.core.io.file.PathResolve;
-import org.miaixz.bus.core.lang.Wrapper;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.core.xyz.IoKit;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.file.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
+
+import org.miaixz.bus.core.io.file.PathResolve;
+import org.miaixz.bus.core.lang.Wrapper;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.IoKit;
 
 /**
  * {@link WatchEvent} 包装类，提供可选的监听事件和监听选项，实现方法包括：

@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.setting.metric.ini;
 
-import org.miaixz.bus.core.lang.Keys;
-import org.miaixz.bus.core.lang.Symbol;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import org.miaixz.bus.core.lang.Keys;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Ini file's Section

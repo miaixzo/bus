@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.core.center.map;
 
+import java.lang.reflect.Type;
+import java.util.*;
+
 import org.miaixz.bus.core.bean.copier.CopyOptions;
 import org.miaixz.bus.core.bean.path.BeanPath;
 import org.miaixz.bus.core.center.function.FunctionX;
@@ -41,9 +44,6 @@ import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.LambdaKit;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.SetKit;
-
-import java.lang.reflect.Type;
-import java.util.*;
 
 /**
  * 字典对象，扩充了LinkedHashMap中的方法

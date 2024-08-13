@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.image.nimble;
 
+import java.awt.*;
+
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.nimble.codec.TransferSyntaxType;
-
-import java.awt.*;
 
 /**
  * @author Kimi Liu

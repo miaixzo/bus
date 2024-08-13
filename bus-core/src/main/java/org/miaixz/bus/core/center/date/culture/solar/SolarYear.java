@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.center.date.culture.solar;
 
-import org.miaixz.bus.core.center.date.culture.Loops;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.miaixz.bus.core.center.date.culture.Loops;
 
 /**
  * 公历年
@@ -110,8 +110,8 @@ public class SolarYear extends Loops {
      */
     public List<SolarMonth> getMonths() {
         List<SolarMonth> l = new ArrayList<>(12);
-        for (int i = 0; i < 12; i++) {
-            l.add(SolarMonth.fromYm(year, i + 1));
+        for (int i = 1; i < 13; i++) {
+            l.add(SolarMonth.fromYm(year, i));
         }
         return l;
     }

@@ -27,9 +27,10 @@
 */
 package org.miaixz.bus.image.plugin;
 
-import org.miaixz.bus.image.galaxy.io.BasicBulkDataDescriptor;
-import org.miaixz.bus.image.galaxy.io.ImageInputStream;
-import org.miaixz.bus.image.galaxy.io.SAXWriter;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
@@ -39,10 +40,10 @@ import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
+
+import org.miaixz.bus.image.galaxy.io.BasicBulkDataDescriptor;
+import org.miaixz.bus.image.galaxy.io.ImageInputStream;
+import org.miaixz.bus.image.galaxy.io.SAXWriter;
 
 /**
  * DCM-XML转换

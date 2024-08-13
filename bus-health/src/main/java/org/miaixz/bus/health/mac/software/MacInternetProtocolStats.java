@@ -27,7 +27,10 @@
 */
 package org.miaixz.bus.health.mac.software;
 
-import com.sun.jna.Memory;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Memoizer;
@@ -39,9 +42,7 @@ import org.miaixz.bus.health.mac.jna.SystemB;
 import org.miaixz.bus.health.unix.driver.NetStat;
 import org.miaixz.bus.health.unix.jna.CLibrary;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
+import com.sun.jna.Memory;
 
 /**
  * Internet Protocol Stats implementation

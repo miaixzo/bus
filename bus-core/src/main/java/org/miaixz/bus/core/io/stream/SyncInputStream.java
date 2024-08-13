@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.io.stream;
 
+import java.io.*;
+
 import org.miaixz.bus.core.io.StreamProgress;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.io.*;
 
 /**
  * 同步流，可将包装的流同步为ByteArrayInputStream，以便持有内容并关闭原流

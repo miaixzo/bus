@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.Form;
-import jakarta.ws.rs.core.Response;
-import org.miaixz.bus.gitlab.models.AuditEvent;
-import org.miaixz.bus.gitlab.support.ISO8601;
-
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.gitlab.models.AuditEvent;
+import org.miaixz.bus.gitlab.support.ISO8601;
+
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.Response;
 
 /**
  * This class implements the client side API for the GitLab Instance Audit Event API. See
@@ -122,4 +123,5 @@ public class AuditEventApi extends AbstractApi {
         Response response = get(Response.Status.OK, null, "audit_events", auditEventId);
         return (response.readEntity(AuditEvent.class));
     }
+
 }

@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.spring.autoproxy;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 扩展{@link BeanNameAutoProxyCreator}以支持排除指定的bean名称。

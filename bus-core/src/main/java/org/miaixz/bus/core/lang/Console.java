@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.lang;
 
-import org.miaixz.bus.core.convert.Convert;
-import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
+
+import org.miaixz.bus.core.convert.Convert;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 命令行（控制台）工具方法类 此类主要针对{@link System#out} 和 {@link System#err} 做封装。

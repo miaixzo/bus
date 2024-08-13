@@ -27,20 +27,19 @@
 */
 package org.miaixz.bus.image.metric;
 
+import java.util.*;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.metric.net.KeycloakClient;
 
-import java.util.*;
-
 /**
  * Description of a Web Application provided by {@link Device}.
  *
  * @author Kimi Liu
  * @since Java 17+
- * @since Apr 2018
  */
 public class WebApplication {
 

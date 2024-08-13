@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.Response;
-import org.miaixz.bus.gitlab.models.Event;
-
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
+
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.Event;
 
 /**
  * This class implements the client side API for the GitLab events calls.
@@ -437,4 +438,5 @@ public class EventsApi extends AbstractApi {
         return (getProjectEvents(projectIdOrPath, action, targetType, before, after, sortOrder, getDefaultPerPage())
                 .stream());
     }
+
 }

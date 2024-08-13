@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.codec.binary.provider;
 
+import java.io.Serializable;
+
 import org.miaixz.bus.core.codec.Decoder;
 import org.miaixz.bus.core.codec.Encoder;
 import org.miaixz.bus.core.codec.binary.decoder.Base58Decoder;
 import org.miaixz.bus.core.codec.binary.encoder.Base58Encoder;
-
-import java.io.Serializable;
 
 /**
  * Base58编码器 此编码器不包括校验码、版本等信息

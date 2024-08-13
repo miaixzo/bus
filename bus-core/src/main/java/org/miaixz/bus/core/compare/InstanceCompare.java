@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.compare;
 
-import org.miaixz.bus.core.lang.Assert;
-
 import java.util.Comparator;
+
+import org.miaixz.bus.core.lang.Assert;
 
 /**
  * 按照指定类型顺序排序，对象顺序取决于对象对应的类在数组中的位置

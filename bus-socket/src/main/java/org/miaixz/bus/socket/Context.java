@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.socket;
 
-import org.miaixz.bus.core.lang.Normal;
-
 import java.net.SocketOption;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * 服务端/客户端上下文信息 T:解码后生成的对象类型

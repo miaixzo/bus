@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.pager.cache;
 
+import java.util.Properties;
+
 import org.apache.ibatis.cache.decorators.FifoCache;
 import org.apache.ibatis.cache.impl.PerpetualCache;
 import org.apache.ibatis.mapping.CacheBuilder;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.util.Properties;
 
 /**
  * Simple MyBatis Cache

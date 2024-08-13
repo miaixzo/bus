@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.Response;
-import org.miaixz.bus.gitlab.models.LicenseTemplate;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.LicenseTemplate;
 
 /**
  * This class provides an entry point to all the GitLab API licenses calls.
@@ -130,8 +131,7 @@ public class LicenseTemplatesApi extends AbstractApi {
      */
     public Pager<LicenseTemplate> getLicenseTemplates(Boolean popular, int itemsPerPage) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("popular", popular);
-        return (new Pager<LicenseTemplate>(this, LicenseTemplate.class, itemsPerPage, formData.asMap(), "templates",
-                "licenses"));
+        return (new Pager<>(this, LicenseTemplate.class, itemsPerPage, formData.asMap(), "templates", "licenses"));
     }
 
     /**
@@ -167,4 +167,5 @@ public class LicenseTemplatesApi extends AbstractApi {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }
+
 }

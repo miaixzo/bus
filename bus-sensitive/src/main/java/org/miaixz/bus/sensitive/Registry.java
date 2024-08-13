@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.sensitive;
 
+import java.lang.annotation.Annotation;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.sensitive.magic.annotation.Strategy;
 import org.miaixz.bus.sensitive.metric.*;
-
-import java.lang.annotation.Annotation;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 系统中内置的策略映射 注解和实现之间映射

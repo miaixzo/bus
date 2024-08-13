@@ -27,10 +27,11 @@
 */
 package org.miaixz.bus.starter.i18n;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 国际化资源配置属性

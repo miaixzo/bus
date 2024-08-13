@@ -27,8 +27,9 @@
 */
 package org.miaixz.bus.image.builtin.ldap;
 
-import javax.naming.Context;
 import java.util.Hashtable;
+
+import javax.naming.Context;
 
 /**
  * @author Kimi Liu

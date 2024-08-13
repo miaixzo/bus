@@ -27,12 +27,6 @@
 */
 package org.miaixz.bus.shade.safety.boot;
 
-import org.miaixz.bus.shade.safety.Builder;
-import org.miaixz.bus.shade.safety.algorithm.Key;
-import org.miaixz.bus.shade.safety.provider.DecryptorProvider;
-import org.miaixz.bus.shade.safety.provider.EncryptorProvider;
-import org.springframework.boot.loader.net.protocol.jar.Handler;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -43,6 +37,12 @@ import java.net.URLConnection;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import org.miaixz.bus.shade.safety.Builder;
+import org.miaixz.bus.shade.safety.algorithm.Key;
+import org.miaixz.bus.shade.safety.provider.DecryptorProvider;
+import org.miaixz.bus.shade.safety.provider.EncryptorProvider;
+import org.springframework.boot.loader.net.protocol.jar.Handler;
 
 /**
  * 加密的URL处理器

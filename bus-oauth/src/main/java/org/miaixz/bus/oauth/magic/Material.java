@@ -27,15 +27,17 @@
 */
 package org.miaixz.bus.oauth.magic;
 
+import java.io.Serializable;
+
+import org.miaixz.bus.core.lang.Gender;
+
 import com.alibaba.fastjson.JSONObject;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.core.lang.Gender;
-
-import java.io.Serializable;
 
 /**
  * 授权成功后的用户信息，根据授权平台的不同，获取的数据完整性也不同

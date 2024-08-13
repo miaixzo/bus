@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.image.metric.net;
 
+import java.io.Serializable;
+
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.metric.Connection;
-
-import java.io.Serializable;
 
 /**
  * @author Kimi Liu

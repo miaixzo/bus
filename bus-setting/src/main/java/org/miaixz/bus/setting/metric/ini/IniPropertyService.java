@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.setting.metric.ini;
 
-import org.miaixz.bus.core.lang.Symbol;
-
 import java.util.function.Function;
+
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Ini file's parameters, like {@code property1=value1 }

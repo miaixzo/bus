@@ -27,6 +27,15 @@
 */
 package org.miaixz.bus.pager.plugin;
 
+import java.util.List;
+
+import org.apache.ibatis.reflection.MetaObject;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.mapper.handler.AbstractSqlHandler;
+
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.statement.Statement;
@@ -37,14 +46,6 @@ import net.sf.jsqlparser.statement.select.Select;
 import net.sf.jsqlparser.statement.select.SetOperationList;
 import net.sf.jsqlparser.statement.select.WithItem;
 import net.sf.jsqlparser.statement.update.Update;
-import org.apache.ibatis.reflection.MetaObject;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.mapper.handler.AbstractSqlHandler;
-
-import java.util.List;
 
 /**
  * 抽象 SQL 解析类

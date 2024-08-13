@@ -27,19 +27,20 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.GitLabApiForm;
-import org.miaixz.bus.gitlab.TopicsApi;
-
 import java.io.File;
 import java.io.Serializable;
+
+import org.miaixz.bus.gitlab.GitLabApiForm;
+import org.miaixz.bus.gitlab.TopicsApi;
 
 /**
  * This class is utilized by the {@link TopicsApi#createTopic(TopicParams)} and
  * {@link TopicsApi#updateTopic(Integer, TopicParams)} methods to set the parameters for the call to the GitLab API.
  *
- * Avatar Upload has its own Upload in {@link TopicsApi#updateTopicAvatar(Integer, File)}
+ * Avatar Upload has its own Upload in {@link TopicsApi#updateTopicAvatar(Integer,File)}
  */
 public class TopicParams implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private String name;
@@ -75,4 +76,5 @@ public class TopicParams implements Serializable {
 
         return (form);
     }
+
 }

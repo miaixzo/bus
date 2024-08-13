@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.logger.metric.console;
 
+import java.util.function.Function;
+
 import org.miaixz.bus.core.lang.ansi.Ansi4BitColor;
 import org.miaixz.bus.core.lang.ansi.AnsiEncoder;
 import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Level;
-
-import java.util.function.Function;
 
 /**
  * 利用 System.out.println 打印彩色日志

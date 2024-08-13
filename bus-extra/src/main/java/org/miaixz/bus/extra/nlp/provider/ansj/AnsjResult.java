@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.extra.nlp.provider.ansj;
 
+import java.util.Iterator;
+
 import org.ansj.domain.Term;
 import org.miaixz.bus.extra.nlp.NLPResult;
 import org.miaixz.bus.extra.nlp.NLPWord;
-
-import java.util.Iterator;
 
 /**
  * Ansj分词结果实现 项目地址：https://github.com/NLPchina/ansj_seg

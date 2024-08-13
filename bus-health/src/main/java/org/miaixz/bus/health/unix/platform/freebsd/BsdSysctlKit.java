@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.health.unix.platform.freebsd;
 
-import com.sun.jna.Memory;
-import com.sun.jna.Native;
-import com.sun.jna.Structure;
-import com.sun.jna.platform.unix.LibCAPI.size_t;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.unix.jna.FreeBsdLibc;
 import org.miaixz.bus.logger.Logger;
+
+import com.sun.jna.Memory;
+import com.sun.jna.Native;
+import com.sun.jna.Structure;
+import com.sun.jna.platform.unix.LibCAPI.size_t;
 
 /**
  * Provides access to sysctl calls on FreeBSD

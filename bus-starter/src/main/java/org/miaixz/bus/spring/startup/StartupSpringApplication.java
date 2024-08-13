@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.spring.startup;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.spring.startup.statics.BaseStatics;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.GenericTypeResolver;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 扩展{@link SpringApplication}来计算{@link ApplicationContextInitializer}初始化所需的时间。

@@ -27,7 +27,10 @@
 */
 package org.miaixz.bus.goalie.handler;
 
-import jakarta.servlet.http.HttpServletRequest;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ArrayKit;
@@ -35,9 +38,7 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.goalie.annotation.TerminalVersion;
 import org.springframework.web.servlet.mvc.condition.AbstractRequestCondition;
 
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * @author Kimi Liu

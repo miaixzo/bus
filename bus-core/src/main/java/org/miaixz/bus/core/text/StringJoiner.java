@@ -27,6 +27,12 @@
 */
 package org.miaixz.bus.core.text;
 
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.function.Function;
+
 import org.miaixz.bus.core.center.iterator.ArrayIterator;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Normal;
@@ -34,12 +40,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.IteratorKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.function.Function;
 
 /**
  * 字符串连接器（拼接器），通过给定的字符串和多个元素，拼接为一个字符串 相较于{@link java.util.StringJoiner}提供更加灵活的配置，包括：

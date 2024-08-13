@@ -27,17 +27,18 @@
 */
 package org.miaixz.bus.gitlab.hooks.web;
 
-import jakarta.servlet.http.HttpServletRequest;
-import org.miaixz.bus.gitlab.GitLabApiException;
-import org.miaixz.bus.gitlab.HookManager;
-import org.miaixz.bus.gitlab.support.HttpRequest;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.miaixz.bus.gitlab.GitLabApiException;
+import org.miaixz.bus.gitlab.HookManager;
+import org.miaixz.bus.gitlab.support.HttpRequest;
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * This class provides a handler for processing GitLab WebHook callouts.
@@ -48,7 +49,7 @@ public class WebHookManager implements HookManager {
     private final JacksonJson jacksonJson = new JacksonJson();
 
     // Collection of objects listening for WebHook events.
-    private final List<WebHookListener> webhookListeners = new CopyOnWriteArrayList<WebHookListener>();
+    private final List<WebHookListener> webhookListeners = new CopyOnWriteArrayList<>();
 
     private String secretToken;
 
@@ -353,4 +354,5 @@ public class WebHookManager implements HookManager {
             listener.onReleaseEvent(releaseEvent);
         }
     }
+
 }

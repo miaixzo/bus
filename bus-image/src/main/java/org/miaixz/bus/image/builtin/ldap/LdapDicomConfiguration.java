@@ -27,6 +27,16 @@
 */
 package org.miaixz.bus.image.builtin.ldap;
 
+import java.io.ByteArrayInputStream;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
+import java.util.*;
+
+import javax.naming.*;
+import javax.naming.directory.*;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.AlreadyExistsException;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -44,15 +54,6 @@ import org.miaixz.bus.image.metric.net.ApplicationEntity;
 import org.miaixz.bus.image.metric.net.ApplicationEntityInfo;
 import org.miaixz.bus.image.metric.net.KeycloakClient;
 import org.miaixz.bus.logger.Logger;
-
-import javax.naming.*;
-import javax.naming.directory.*;
-import java.io.ByteArrayInputStream;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
-import java.util.*;
 
 /**
  * @author Kimi Liu

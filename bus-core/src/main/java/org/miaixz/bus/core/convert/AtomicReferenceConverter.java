@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.xyz.TypeKit;
-
 import java.lang.reflect.Type;
 import java.util.concurrent.atomic.AtomicReference;
+
+import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
  * {@link AtomicReference}转换器

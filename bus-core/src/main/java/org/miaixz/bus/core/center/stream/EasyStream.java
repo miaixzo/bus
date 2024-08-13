@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.core.center.stream;
 
-import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.xyz.*;
-
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
@@ -37,6 +34,9 @@ import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
+import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.xyz.*;
 
 /**
  * 单元素的扩展流实现。基于原生Stream进行了封装和增强。 作者经对比了vavr、eclipse-collection、stream-ex以及其他语言的api，结合日常使用习惯，进行封装和拓展

@@ -27,19 +27,17 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
+import java.io.Serializable;
+
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public class IssueEvent implements Serializable {
-    private static final long serialVersionUID = -1L;
 
-    public Long getId() {
-        return id;
-    }
+    private static final long serialVersionUID = -1L;
 
     private Long id;
     private User user;
@@ -48,30 +46,8 @@ public class IssueEvent implements Serializable {
     private Long resourceId;
     private String state;
 
-    /**
-     * Enum to use for specifying the state events resource type.
-     */
-    public enum ResourceType {
-
-        ISSUE;
-
-        private static JacksonJsonEnumHelper<ResourceType> enumHelper = new JacksonJsonEnumHelper<>(ResourceType.class,
-                true, true);
-
-        @JsonCreator
-        public static ResourceType forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
+    public Long getId() {
+        return id;
     }
 
     public void setId(Long id) {
@@ -122,4 +98,31 @@ public class IssueEvent implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
+    /**
+     * Enum to use for specifying the state events resource type.
+     */
+    public enum ResourceType {
+
+        ISSUE;
+
+        private static JacksonJsonEnumHelper<ResourceType> enumHelper = new JacksonJsonEnumHelper<>(ResourceType.class,
+                true, true);
+
+        @JsonCreator
+        public static ResourceType forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
+
 }

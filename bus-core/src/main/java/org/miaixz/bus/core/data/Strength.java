@@ -63,16 +63,19 @@ public class Strength {
         final int len = passwd.length();
         int level = 0;
 
-        // increase points
+        // 数字
         if (countLetter(passwd, CHAR_TYPE.NUM) > 0) {
             level++;
         }
+        // 小写字母
         if (countLetter(passwd, CHAR_TYPE.SMALL_LETTER) > 0) {
             level++;
         }
+        // 大写字母
         if (len > 4 && countLetter(passwd, CHAR_TYPE.CAPITAL_LETTER) > 0) {
             level++;
         }
+        // 特殊字符
         if (len > 6 && countLetter(passwd, CHAR_TYPE.OTHER_CHAR) > 0) {
             level++;
         }

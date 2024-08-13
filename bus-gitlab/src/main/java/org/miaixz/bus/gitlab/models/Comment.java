@@ -27,18 +27,19 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.Constants;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
 import java.util.Date;
 
+import org.miaixz.bus.gitlab.Constants.LineType;
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
 public class Comment implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Author author;
     private Date createdAt;
-    private Constants.LineType lineType;
+    private LineType lineType;
     private String path;
     private Integer line;
     private String note;
@@ -59,11 +60,11 @@ public class Comment implements Serializable {
         this.createdAt = createdAt;
     }
 
-    public Constants.LineType getLineType() {
+    public LineType getLineType() {
         return lineType;
     }
 
-    public void setLineType(Constants.LineType lineType) {
+    public void setLineType(LineType lineType) {
         this.lineType = lineType;
     }
 
@@ -95,4 +96,5 @@ public class Comment implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

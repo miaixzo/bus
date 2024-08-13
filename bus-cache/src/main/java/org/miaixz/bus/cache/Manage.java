@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.cache;
 
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.miaixz.bus.cache.magic.CacheKeys;
 import org.miaixz.bus.cache.magic.CachePair;
 import org.miaixz.bus.core.lang.annotation.Inject;
@@ -34,9 +37,6 @@ import org.miaixz.bus.core.lang.annotation.Singleton;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
-
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Kimi Liu

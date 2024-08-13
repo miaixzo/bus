@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.codec.binary.decoder;
 
+import java.io.Serializable;
+
 import org.miaixz.bus.core.codec.Decoder;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.mutable.MutableInt;
 import org.miaixz.bus.core.xyz.ArrayKit;
-
-import java.io.Serializable;
 
 /**
  * Base64解码实现 此解码保留的原因是，JDK提供的解码需要指定是否为URL安全的或是否换行，此解码无需区分

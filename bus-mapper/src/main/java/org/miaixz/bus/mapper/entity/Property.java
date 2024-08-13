@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.mapper.entity;
 
-import org.miaixz.bus.core.lang.EnumMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+
+import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.MapperException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.Registry;
 import org.miaixz.bus.mapper.builder.resolve.EntityResolve;
 import org.miaixz.bus.mapper.support.SimpleType;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
 
 /**
  * 通用Mapper属性配置
@@ -76,7 +76,7 @@ public class Property {
     /**
      * 字段转换风格，默认驼峰转下划线
      */
-    private EnumMap.Naming naming;
+    private EnumValue.Naming naming;
     /**
      * 处理关键字，默认空，mysql可以设置为 `{0}`, sqlserver 为 [{0}]，{0} 代表的列名
      */
@@ -188,11 +188,11 @@ public class Property {
         this.seqFormat = seqFormat;
     }
 
-    public EnumMap.Naming getStyle() {
-        return this.naming == null ? EnumMap.Naming.CAMEL : this.naming;
+    public EnumValue.Naming getStyle() {
+        return this.naming == null ? EnumValue.Naming.CAMEL : this.naming;
     }
 
-    public void setStyle(EnumMap.Naming naming) {
+    public void setStyle(EnumValue.Naming naming) {
         this.naming = naming;
     }
 
@@ -330,7 +330,7 @@ public class Property {
     public void setProperties(Properties properties) {
         if (properties == null) {
             // 默认驼峰
-            this.naming = EnumMap.Naming.CAMEL;
+            this.naming = EnumValue.Naming.CAMEL;
             return;
         }
         String IDENTITY = properties.getProperty("IDENTITY");
@@ -385,13 +385,13 @@ public class Property {
         String styleStr = properties.getProperty("mode");
         if (StringKit.isNotEmpty(styleStr)) {
             try {
-                this.naming = EnumMap.Naming.valueOf(styleStr);
+                this.naming = EnumValue.Naming.valueOf(styleStr);
             } catch (IllegalArgumentException e) {
                 throw new MapperException(styleStr + "不是合法的Style值!");
             }
         } else {
             // 默认驼峰
-            this.naming = EnumMap.Naming.CAMEL;
+            this.naming = EnumValue.Naming.CAMEL;
         }
         // 处理关键字
         String wrapKeyword = properties.getProperty("wrapKeyword");

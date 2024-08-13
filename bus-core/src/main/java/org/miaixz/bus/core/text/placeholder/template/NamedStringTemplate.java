@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.core.text.placeholder.template;
 
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.function.*;
+
 import org.miaixz.bus.core.bean.desc.BeanDesc;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
@@ -34,10 +38,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.text.placeholder.StringTemplate;
 import org.miaixz.bus.core.text.placeholder.segment.*;
 import org.miaixz.bus.core.xyz.*;
-
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.function.*;
 
 /**
  * 有前后缀的字符串模板

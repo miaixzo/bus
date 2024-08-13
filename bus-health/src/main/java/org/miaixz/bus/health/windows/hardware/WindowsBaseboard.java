@@ -27,9 +27,10 @@
 */
 package org.miaixz.bus.health.windows.hardware;
 
-import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
-import org.miaixz.bus.core.lang.annotation.Immutable;
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Memoizer;
@@ -38,7 +39,7 @@ import org.miaixz.bus.health.windows.WmiKit;
 import org.miaixz.bus.health.windows.driver.wmi.Win32BaseBoard;
 import org.miaixz.bus.health.windows.driver.wmi.Win32BaseBoard.BaseBoardProperty;
 
-import java.util.function.Supplier;
+import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
 /**
  * Baseboard data obtained from WMI

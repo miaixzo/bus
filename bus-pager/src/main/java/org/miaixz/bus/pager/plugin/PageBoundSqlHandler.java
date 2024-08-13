@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.pager.plugin;
 
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.pager.Builder;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.pager.Builder;
 
 /**
  * @author Kimi Liu

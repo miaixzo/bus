@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.pay.metric.wechat.entity.v3;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-
-import java.util.List;
 
 /**
  * V3 微信申请退款

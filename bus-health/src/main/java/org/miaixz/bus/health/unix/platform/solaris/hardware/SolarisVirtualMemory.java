@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.health.unix.platform.solaris.hardware;
 
+import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Executor;
@@ -34,10 +38,6 @@ import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractVirtualMemory;
 import org.miaixz.bus.health.unix.platform.solaris.driver.kstat.SystemPages;
-
-import java.util.function.Supplier;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Memory obtained by kstat and swap

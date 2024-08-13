@@ -27,8 +27,9 @@
 */
 package org.miaixz.bus.extra.nlp.provider.jieba;
 
-import com.huaban.analysis.jieba.SegToken;
 import org.miaixz.bus.extra.nlp.NLPWord;
+
+import com.huaban.analysis.jieba.SegToken;
 
 /**
  * Jieba分词中的一个单词包装

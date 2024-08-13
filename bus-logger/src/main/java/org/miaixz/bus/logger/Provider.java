@@ -28,8 +28,8 @@
 package org.miaixz.bus.logger;
 
 import org.miaixz.bus.core.xyz.CallerKit;
-import org.miaixz.bus.logger.magic.level.Error;
 import org.miaixz.bus.logger.magic.level.*;
+import org.miaixz.bus.logger.magic.level.Error;
 
 /**
  * 日志统一接口

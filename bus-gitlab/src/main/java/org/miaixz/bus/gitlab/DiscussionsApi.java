@@ -27,16 +27,17 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.Response;
-import org.miaixz.bus.gitlab.models.Discussion;
-import org.miaixz.bus.gitlab.models.Note;
-import org.miaixz.bus.gitlab.models.Position;
-
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.Discussion;
+import org.miaixz.bus.gitlab.models.Note;
+import org.miaixz.bus.gitlab.models.Position;
 
 /**
  * This class implements the client side API for the GitLab Discussions API. See

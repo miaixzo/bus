@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.goalie.support;
 
+import java.util.Map;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.XmlKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.goalie.Provider;
-
-import java.util.Map;
 
 /**
  * Xml序列化

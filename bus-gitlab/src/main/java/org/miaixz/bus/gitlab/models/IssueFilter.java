@@ -27,9 +27,12 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonValue;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.miaixz.bus.gitlab.Constants;
 import org.miaixz.bus.gitlab.Constants.IssueOrderBy;
 import org.miaixz.bus.gitlab.Constants.IssueScope;
@@ -39,16 +42,15 @@ import org.miaixz.bus.gitlab.GitLabApiForm;
 import org.miaixz.bus.gitlab.support.ISO8601;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * This class is used to filter issues when getting lists of them.
  */
 public class IssueFilter implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     /**
@@ -137,28 +139,6 @@ public class IssueFilter implements Serializable {
      * Return issues without these parameters
      */
     private Map<IssueField, Object> not;
-
-    public enum IssueField {
-        ASSIGNEE_ID, ASSIGNEE_USERNAME, AUTHOR_ID, AUTHOR_USERNAME, IIDS, ITERATION_ID, ITERATION_TITLE, LABELS,
-        MILESTONE, MILESTONE_ID;
-
-        private static JacksonJsonEnumHelper<IssueField> enumHelper = new JacksonJsonEnumHelper<>(IssueField.class);
-
-        @JsonCreator
-        public static IssueField forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
-    }
 
     /*- properties -*/
     public List<String> getIids() {
@@ -535,4 +515,27 @@ public class IssueFilter implements Serializable {
         }
         return result;
     }
+
+    public enum IssueField {
+        ASSIGNEE_ID, ASSIGNEE_USERNAME, AUTHOR_ID, AUTHOR_USERNAME, IIDS, ITERATION_ID, ITERATION_TITLE, LABELS,
+        MILESTONE, MILESTONE_ID;
+
+        private static JacksonJsonEnumHelper<IssueField> enumHelper = new JacksonJsonEnumHelper<>(IssueField.class);
+
+        @JsonCreator
+        public static IssueField forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
+
 }

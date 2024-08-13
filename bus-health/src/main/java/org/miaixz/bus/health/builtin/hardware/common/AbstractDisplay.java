@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.health.builtin.hardware.common;
 
+import java.util.Arrays;
+
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.builtin.hardware.Display;
-
-import java.util.Arrays;
 
 /**
  * A Display

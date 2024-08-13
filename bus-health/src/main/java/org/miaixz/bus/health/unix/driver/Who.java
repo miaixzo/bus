@@ -27,13 +27,6 @@
 */
 package org.miaixz.bus.health.unix.driver;
 
-import com.sun.jna.Platform;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.health.Executor;
-import org.miaixz.bus.health.builtin.software.OSSession;
-
 import java.time.LocalDateTime;
 import java.time.Year;
 import java.time.ZoneId;
@@ -47,6 +40,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.health.Executor;
+import org.miaixz.bus.health.builtin.software.OSSession;
+
+import com.sun.jna.Platform;
 
 /**
  * Utility to query logged in users.

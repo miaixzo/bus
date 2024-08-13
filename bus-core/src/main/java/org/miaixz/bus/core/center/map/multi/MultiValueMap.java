@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.center.map.multi;
 
-import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.core.xyz.CollKit;
-
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collectors;
+
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.CollKit;
 
 /**
  * 一个键对应多个值的集合{@link Map}实现，提供针对键对应的值集合中的元素而非值集合本身的一些快捷操作， 本身可作为一个值为{@link Collection}类型的{@link Map}使用。

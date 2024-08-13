@@ -25,16 +25,19 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.office.excel;
+package org.miaixz.bus.office.excel.writer;
+
+import java.io.File;
+import java.io.OutputStream;
 
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
-
-import java.io.File;
-import java.io.OutputStream;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.office.excel.SheetKit;
+import org.miaixz.bus.office.excel.WorkbookKit;
 
 /**
  * 大数据量Excel写出，只支持XLSX（Excel07版本） 通过封装{@link SXSSFWorkbook}，限制对滑动窗口中的行的访问来实现其低内存使用。
@@ -45,6 +48,9 @@ import java.io.OutputStream;
  */
 public class BigExcelWriter extends ExcelWriter {
 
+    /**
+     * 默认内存中保存的行数，默认100
+     */
     public static final int DEFAULT_WINDOW_SIZE = SXSSFWorkbook.DEFAULT_WINDOW_SIZE;
 
     /**
@@ -139,7 +145,7 @@ public class BigExcelWriter extends ExcelWriter {
      * @param sheetName sheet名，做为第一个sheet名并写出到此sheet，例如sheet1
      */
     public BigExcelWriter(final SXSSFWorkbook workbook, final String sheetName) {
-        this(WorkbookKit.getOrCreateSheet(workbook, sheetName));
+        this(SheetKit.getOrCreateSheet(workbook, sheetName));
     }
 
     /**
@@ -153,19 +159,19 @@ public class BigExcelWriter extends ExcelWriter {
     }
 
     @Override
-    public BigExcelWriter autoSizeColumn(final int columnIndex) {
+    public BigExcelWriter autoSizeColumn(final int columnIndex, final boolean useMergedCells, final float widthRatio) {
         final SXSSFSheet sheet = (SXSSFSheet) this.sheet;
         sheet.trackColumnForAutoSizing(columnIndex);
-        super.autoSizeColumn(columnIndex);
+        super.autoSizeColumn(columnIndex, useMergedCells, widthRatio);
         sheet.untrackColumnForAutoSizing(columnIndex);
         return this;
     }
 
     @Override
-    public BigExcelWriter autoSizeColumnAll() {
+    public BigExcelWriter autoSizeColumnAll(final boolean useMergedCells, final float widthRatio) {
         final SXSSFSheet sheet = (SXSSFSheet) this.sheet;
         sheet.trackAllColumnsForAutoSizing();
-        super.autoSizeColumnAll();
+        super.autoSizeColumnAll(useMergedCells, widthRatio);
         sheet.untrackAllColumnsForAutoSizing();
         return this;
     }
@@ -186,7 +192,7 @@ public class BigExcelWriter extends ExcelWriter {
         }
 
         // 清理临时文件
-        ((SXSSFWorkbook) this.workbook).dispose();
+        IoKit.close(this.workbook);
         super.closeWithoutFlush();
     }
 

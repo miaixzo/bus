@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.codec.binary;
 
+import java.io.Serializable;
+
 import org.miaixz.bus.core.codec.Decoder;
 import org.miaixz.bus.core.codec.Encoder;
-
-import java.io.Serializable;
 
 /**
  * ZeroMQ Z85实现， 定义见：<a href="https://rfc.zeromq.org/spec:32/Z85/">ZeroMQ Z85</a>

@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.starter.oauth;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -78,9 +81,6 @@ import org.miaixz.bus.oauth.metric.wechat.mp.WeChatMpProvider;
 import org.miaixz.bus.oauth.metric.wechat.open.WeChatOpenProvider;
 import org.miaixz.bus.oauth.metric.weibo.WeiboProvider;
 import org.miaixz.bus.oauth.metric.ximalaya.XimalayaProvider;
-
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 授权服务提供

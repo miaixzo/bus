@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.oauth;
 
+import java.util.Arrays;
+import java.util.function.Function;
+
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
-
-import java.util.Arrays;
-import java.util.function.Function;
 
 /**
  * 快捷的构建 Authorize

@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.crypto.builtin;
 
+import java.security.MessageDigest;
+import java.util.Arrays;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.center.MD5;
-
-import java.security.MessageDigest;
-import java.util.Arrays;
 
 /**
  * OpenSSL中加盐解析器 参考：

@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.extra.nlp;
 
-import org.miaixz.bus.core.center.iterator.ComputeIterator;
-
 import java.util.Iterator;
+
+import org.miaixz.bus.core.center.iterator.ComputeIterator;
 
 /**
  * 对于未实现{@link Iterator}接口的普通结果类，装饰为{@link NLPResult} 普通的结果类只需实现{@link #nextWord()} 即可

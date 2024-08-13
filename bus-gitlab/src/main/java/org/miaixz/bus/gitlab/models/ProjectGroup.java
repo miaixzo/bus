@@ -28,5 +28,7 @@
 package org.miaixz.bus.gitlab.models;
 
 public class ProjectGroup extends AbstractGroup<ProjectGroup> {
+
     private static final long serialVersionUID = -1L;
+
 }

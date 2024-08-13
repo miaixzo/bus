@@ -27,19 +27,20 @@
 */
 package org.miaixz.bus.cache.metric;
 
-import jakarta.annotation.PreDestroy;
-import org.miaixz.bus.cache.CacheX;
-import org.miaixz.bus.cache.magic.CacheExpire;
-import org.miaixz.bus.cache.serialize.BaseSerializer;
-import org.miaixz.bus.cache.serialize.Hessian2Serializer;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
-import redis.clients.jedis.Pipeline;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.miaixz.bus.cache.CacheX;
+import org.miaixz.bus.cache.magic.CacheExpire;
+import org.miaixz.bus.cache.serialize.BaseSerializer;
+import org.miaixz.bus.cache.serialize.Hessian2Serializer;
+
+import jakarta.annotation.PreDestroy;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.Pipeline;
 
 /**
  * Redis 单机缓存支持

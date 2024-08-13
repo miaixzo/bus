@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.logger.metric.jdk;
 
+import java.io.InputStream;
+import java.util.logging.LogManager;
+
 import org.miaixz.bus.core.lang.Console;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ResourceKit;
 import org.miaixz.bus.logger.Provider;
 import org.miaixz.bus.logger.magic.AbstractFactory;
-
-import java.io.InputStream;
-import java.util.logging.LogManager;
 
 /**
  * java.util.logging

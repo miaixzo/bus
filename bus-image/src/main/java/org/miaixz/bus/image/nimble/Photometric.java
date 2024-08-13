@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.image.nimble;
 
-import org.miaixz.bus.image.UID;
-import org.miaixz.bus.image.galaxy.data.Attributes;
-
 import java.awt.color.ColorSpace;
 import java.awt.image.BandedSampleModel;
 import java.awt.image.ColorModel;
 import java.awt.image.PixelInterleavedSampleModel;
 import java.awt.image.SampleModel;
+
+import org.miaixz.bus.image.UID;
+import org.miaixz.bus.image.galaxy.data.Attributes;
 
 /**
  * @author Kimi Liu

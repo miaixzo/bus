@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.text;
 
-import org.miaixz.bus.core.center.iterator.ArrayIterator;
-import org.miaixz.bus.core.xyz.ArrayKit;
-
 import java.util.Arrays;
 import java.util.Iterator;
+
+import org.miaixz.bus.core.center.iterator.ArrayIterator;
+import org.miaixz.bus.core.xyz.ArrayKit;
 
 /**
  * char[]包装，提供zero-copy的数组操作

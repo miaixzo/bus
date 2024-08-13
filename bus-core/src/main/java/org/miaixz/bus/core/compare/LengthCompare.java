@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.compare;
 
-import org.miaixz.bus.core.xyz.CompareKit;
-
 import java.util.Comparator;
+
+import org.miaixz.bus.core.xyz.CompareKit;
 
 /**
  * 字符串长度比较器，短在前

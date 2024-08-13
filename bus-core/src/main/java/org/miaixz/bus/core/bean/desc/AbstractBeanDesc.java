@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.bean.desc;
 
-import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
-import org.miaixz.bus.core.lang.Assert;
-
 import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
+import org.miaixz.bus.core.lang.Assert;
 
 /**
  * Bean描述抽象类

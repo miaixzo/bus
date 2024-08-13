@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.pager.dialect;
 
+import java.util.*;
+
 import org.apache.ibatis.builder.annotation.ProviderSqlSource;
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
@@ -38,8 +40,6 @@ import org.miaixz.bus.pager.PageContext;
 import org.miaixz.bus.pager.RowBounds;
 import org.miaixz.bus.pager.builtin.CountExecutor;
 import org.miaixz.bus.pager.builtin.MetaObject;
-
-import java.util.*;
 
 /**
  * 针对 PageContext 的实现

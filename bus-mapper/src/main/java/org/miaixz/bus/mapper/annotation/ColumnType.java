@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.mapper.annotation;
 
-import org.apache.ibatis.type.JdbcType;
-import org.apache.ibatis.type.UnknownTypeHandler;
-import org.miaixz.bus.core.lang.Normal;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import org.apache.ibatis.type.JdbcType;
+import org.apache.ibatis.type.UnknownTypeHandler;
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * 针对列的复杂属性配置

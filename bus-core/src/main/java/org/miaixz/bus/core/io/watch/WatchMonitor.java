@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.core.io.watch;
 
+import java.io.Closeable;
+import java.io.Serializable;
+import java.nio.file.Path;
+import java.nio.file.WatchEvent;
+
 import org.miaixz.bus.core.io.file.PathResolve;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.io.Closeable;
-import java.io.Serializable;
-import java.nio.file.Path;
-import java.nio.file.WatchEvent;
 
 /**
  * 路径监听器 监听器可监听目录或文件 如果监听的Path不存在，则递归创建空目录然后监听此空目录 递归监听目录时，并不会监听新创建的目录

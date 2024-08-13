@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.office.word;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
@@ -37,9 +40,6 @@ import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.IteratorKit;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.MapKit;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 /**
  * Word中表格相关工具

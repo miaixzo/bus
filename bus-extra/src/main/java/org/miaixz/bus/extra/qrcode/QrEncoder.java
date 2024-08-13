@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.extra.qrcode;
 
-import com.google.zxing.MultiFormatWriter;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
 import org.miaixz.bus.core.codec.Encoder;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
+
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
 
 /**
  * 二维码（条形码等）编码器，用于将文本内容转换为二维码

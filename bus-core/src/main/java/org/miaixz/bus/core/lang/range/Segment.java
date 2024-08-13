@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.lang.range;
 
+import java.lang.reflect.Type;
+
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.MathKit;
-
-import java.lang.reflect.Type;
 
 /**
  * 片段表示，用于表示文本、集合等数据结构的一个区间。

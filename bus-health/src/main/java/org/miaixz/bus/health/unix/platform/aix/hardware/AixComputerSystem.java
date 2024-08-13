@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.health.unix.platform.aix.hardware;
 
+import java.util.List;
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -37,9 +40,6 @@ import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.Baseboard;
 import org.miaixz.bus.health.builtin.hardware.Firmware;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractComputerSystem;
-
-import java.util.List;
-import java.util.function.Supplier;
 
 /**
  * Hardware data obtained from lsattr

@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.lang.range;
 
+import java.util.Objects;
+
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.xyz.CompareKit;
-
-import java.util.Objects;
 
 /**
  * 边界区间的操作工具，如子区间、合并区间等

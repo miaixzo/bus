@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.starter.pay;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Map;
+
 import org.miaixz.bus.pay.Context;
 import org.miaixz.bus.pay.Registry;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 聚合支付配置 1. 默认读取配置文件信息 2. 通过set形式设置(动态/DB等)

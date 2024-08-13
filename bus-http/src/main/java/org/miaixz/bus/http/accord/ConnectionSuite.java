@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.http.accord;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.tls.TlsVersion;
-import org.miaixz.bus.http.secure.CipherSuite;
-
-import javax.net.ssl.SSLSocket;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
+import javax.net.ssl.SSLSocket;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.tls.TlsVersion;
+import org.miaixz.bus.http.secure.CipherSuite;
 
 /**
  * 指定HTTP传输通过的套接字连接的配置。对于{@code https:} url，这包括在协商安全连接时要使用 的TLS版本和密码套件,只有在SSL套接字中也启用了连接规范中配置的TLS版本时，才会使用它们。例如，

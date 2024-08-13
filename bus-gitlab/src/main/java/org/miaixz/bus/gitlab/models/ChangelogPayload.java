@@ -27,15 +27,17 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serializable;
+import java.util.Date;
+
 import org.miaixz.bus.gitlab.GitLabApiForm;
 import org.miaixz.bus.gitlab.support.ISO8601;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
-import java.io.Serializable;
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class ChangelogPayload implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private String version;
@@ -126,4 +128,5 @@ public class ChangelogPayload implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

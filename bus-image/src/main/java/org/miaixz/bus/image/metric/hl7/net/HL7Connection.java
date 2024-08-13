@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.image.metric.hl7.net;
 
-import org.miaixz.bus.image.metric.hl7.MLLPConnection;
-
 import java.io.Closeable;
 import java.io.IOException;
+
+import org.miaixz.bus.image.metric.hl7.MLLPConnection;
 
 /**
  * @author Kimi Liu

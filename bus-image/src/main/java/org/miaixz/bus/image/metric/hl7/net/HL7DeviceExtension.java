@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.image.metric.hl7.net;
 
+import java.net.Socket;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+
 import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.hl7.ERRSegment;
 import org.miaixz.bus.image.metric.hl7.HL7Exception;
 import org.miaixz.bus.image.metric.net.DeviceExtension;
-
-import java.net.Socket;
-import java.util.Collection;
-import java.util.LinkedHashMap;
 
 /**
  * @author Kimi Liu

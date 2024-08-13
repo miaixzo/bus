@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.FalseMatcher;
-
-import java.lang.annotation.*;
 
 /**
  * boolean校验, 当校验值为false时通过校验

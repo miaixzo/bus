@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.image.metric.hl7.net;
 
-import org.miaixz.bus.image.metric.hl7.HL7Segment;
-
 import java.io.Serializable;
 import java.text.ParsePosition;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.miaixz.bus.image.metric.hl7.HL7Segment;
 
 /**
  * @author Kimi Liu

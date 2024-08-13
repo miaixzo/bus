@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.image.metric.net;
 
+import java.io.IOException;
+
 import org.miaixz.bus.image.metric.Association;
 import org.miaixz.bus.image.metric.pdu.AAbort;
 import org.miaixz.bus.image.metric.pdu.AAssociateAC;
 import org.miaixz.bus.image.metric.pdu.AAssociateRJ;
 import org.miaixz.bus.image.metric.pdu.AAssociateRQ;
-
-import java.io.IOException;
 
 /**
  * @author Kimi Liu

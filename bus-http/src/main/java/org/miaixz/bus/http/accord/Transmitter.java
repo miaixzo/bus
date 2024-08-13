@@ -27,6 +27,16 @@
 */
 package org.miaixz.bus.http.accord;
 
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
+import java.net.Socket;
+import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSocketFactory;
+
 import org.miaixz.bus.core.io.timout.AsyncTimeout;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -37,15 +47,6 @@ import org.miaixz.bus.http.metric.Internal;
 import org.miaixz.bus.http.metric.NewChain;
 import org.miaixz.bus.http.metric.http.HttpCodec;
 import org.miaixz.bus.http.secure.CertificatePinner;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSocketFactory;
-import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
-import java.net.Socket;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 在Http的应用程序层和网络层之间建立桥梁 该类公开:连接、请求、响应和流

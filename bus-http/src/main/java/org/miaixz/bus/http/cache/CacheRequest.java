@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.http.cache;
 
-import org.miaixz.bus.core.io.sink.Sink;
-
 import java.io.IOException;
+
+import org.miaixz.bus.core.io.sink.Sink;
 
 /**
  * 缓存请求信息

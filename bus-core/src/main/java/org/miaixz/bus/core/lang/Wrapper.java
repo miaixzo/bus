@@ -47,7 +47,7 @@ public interface Wrapper<T> extends Provider {
 
     @Override
     default Object type() {
-        return EnumMap.Povider.TEMPLATE;
+        return EnumValue.Povider.TEMPLATE;
     }
 
 }

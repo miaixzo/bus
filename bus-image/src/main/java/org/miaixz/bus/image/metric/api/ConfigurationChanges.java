@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.image.metric.api;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * @author Kimi Liu

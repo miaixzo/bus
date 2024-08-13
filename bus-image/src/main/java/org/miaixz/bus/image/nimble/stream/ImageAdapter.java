@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.image.nimble.stream;
 
+import java.io.*;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
+
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.Builder;
@@ -45,10 +49,6 @@ import org.miaixz.bus.image.nimble.codec.TransferSyntaxType;
 import org.miaixz.bus.image.nimble.codec.jpeg.JPEGParser;
 import org.miaixz.bus.image.nimble.opencv.PlanarImage;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.*;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
 
 /**
  * @author Kimi Liu

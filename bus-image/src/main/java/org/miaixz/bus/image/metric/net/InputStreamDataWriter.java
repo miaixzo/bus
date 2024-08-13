@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.image.metric.net;
 
-import org.miaixz.bus.image.metric.DataWriter;
-
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.miaixz.bus.image.metric.DataWriter;
 
 /**
  * @author Kimi Liu

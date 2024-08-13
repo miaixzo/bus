@@ -27,8 +27,8 @@
 */
 package org.miaixz.bus.health.mac.hardware;
 
-import com.sun.jna.Native;
-import com.sun.jna.platform.mac.SystemB;
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.Memoizer;
@@ -39,7 +39,8 @@ import org.miaixz.bus.health.builtin.jna.Struct;
 import org.miaixz.bus.health.mac.SysctlKit;
 import org.miaixz.bus.logger.Logger;
 
-import java.util.function.Supplier;
+import com.sun.jna.Native;
+import com.sun.jna.platform.mac.SystemB;
 
 /**
  * Memory obtained by host_statistics (vm_stat) and sysctl.

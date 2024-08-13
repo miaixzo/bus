@@ -27,22 +27,22 @@
 */
 package org.miaixz.bus.image.nimble.opencv;
 
-import org.miaixz.bus.core.xyz.FileKit;
-import org.miaixz.bus.logger.Logger;
-import org.opencv.core.*;
-import org.opencv.core.Point;
-import org.opencv.core.Core.MinMaxLocResult;
-import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
-
 import java.awt.*;
 import java.awt.geom.FlatteningPathIterator;
 import java.awt.geom.PathIterator;
 import java.awt.image.BufferedImage;
 import java.awt.image.RenderedImage;
 import java.io.File;
-import java.util.List;
 import java.util.*;
+import java.util.List;
+
+import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.logger.Logger;
+import org.opencv.core.*;
+import org.opencv.core.Core.MinMaxLocResult;
+import org.opencv.core.Point;
+import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 
 /**
  * @author Kimi Liu

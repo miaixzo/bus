@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.data;
 
+import java.time.Year;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.PatternKit;
-
-import java.time.Year;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * VIN是Vehicle Identification Number的缩写，即车辆识别号码。VIN码是全球通行的车辆唯一标识符，由17位数字和字母组成。

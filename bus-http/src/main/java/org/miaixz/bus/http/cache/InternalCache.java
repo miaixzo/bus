@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.http.cache;
 
+import java.io.IOException;
+
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;
-
-import java.io.IOException;
 
 /**
  * Http's 的内部缓存接口 应用程序不应该实现这个:而是使用{@link Cache}

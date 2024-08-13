@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.starter.office;
 
-import jakarta.annotation.Resource;
 import org.miaixz.bus.office.builtin.LocalOfficeProvider;
 import org.miaixz.bus.office.builtin.OnlineOfficeProvider;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+
+import jakarta.annotation.Resource;
 
 /**
  * 文档在线预览配置

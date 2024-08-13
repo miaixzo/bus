@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.cron.pattern;
 
+import java.time.LocalDateTime;
+import java.util.*;
+
 import org.miaixz.bus.core.center.date.Calendar;
 import org.miaixz.bus.core.center.date.culture.en.Week;
 import org.miaixz.bus.core.lang.Assert;
@@ -34,9 +37,6 @@ import org.miaixz.bus.core.xyz.CompareKit;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.cron.pattern.matcher.PatternMatcher;
 import org.miaixz.bus.cron.pattern.parser.PatternParser;
-
-import java.time.LocalDateTime;
-import java.util.*;
 
 /**
  * 定时任务表达式 表达式类似于Linux的crontab表达式，表达式使用空格分成5个部分，按顺序依次为：
@@ -142,7 +142,7 @@ public class CronPattern {
      * @return 日期列表
      */
     public static List<Date> matchedDates(final String patternStr, final Date start, final int count) {
-        return matchedDates(patternStr, start, DateKit.endOfYear(start), count);
+        return matchedDates(patternStr, start, DateKit.endOfYear(start, false), count);
     }
 
     /**
@@ -295,13 +295,24 @@ public class CronPattern {
             calendar = newCalendar;
         }
 
+        return nextMatch(calendar);
+    }
+
+    /**
+     * 返回匹配到的下一个时间，如果给定时间匹配，直接返回
+     *
+     * @param calendar 时间
+     * @return 匹配到的下一个时间
+     */
+    public java.util.Calendar nextMatch(final java.util.Calendar calendar) {
         java.util.Calendar next = nextMatchAfter(getFields(calendar, true), calendar.getTimeZone());
-        if (!match(next, true)) {
-            next.set(java.util.Calendar.DAY_OF_MONTH, next.get(java.util.Calendar.DAY_OF_MONTH) + 1);
-            next = Calendar.beginOfDay(next);
-            return nextMatchAfter(next);
+        if (match(next, true)) {
+            return next;
         }
-        return next;
+
+        next.set(java.util.Calendar.DAY_OF_MONTH, next.get(java.util.Calendar.DAY_OF_MONTH) + 1);
+        next = Calendar.beginOfDay(next);
+        return nextMatch(next);
     }
 
     @Override

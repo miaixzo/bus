@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.Response;
-import org.miaixz.bus.gitlab.models.Snippet;
-import org.miaixz.bus.gitlab.models.Visibility;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.gitlab.models.Snippet;
+import org.miaixz.bus.gitlab.models.Visibility;
+
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 
 /**
  * This class provides an entry point to all the GitLab Snippets API project calls.
@@ -59,7 +60,7 @@ public class SnippetsApi extends AbstractApi {
     public List<Snippet> getSnippets(boolean downloadContent) throws GitLabApiException {
 
         Response response = get(Response.Status.OK, getDefaultPerPageParam(), "snippets");
-        List<Snippet> snippets = (response.readEntity(new GenericType<List<Snippet>>() {
+        List<Snippet> snippets = (response.readEntity(new GenericType<>() {
         }));
 
         if (downloadContent) {
@@ -97,7 +98,7 @@ public class SnippetsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Snippet> getSnippets(int itemsPerPage) throws GitLabApiException {
-        return (new Pager<Snippet>(this, Snippet.class, itemsPerPage, null, "snippets"));
+        return (new Pager<>(this, Snippet.class, itemsPerPage, null, "snippets"));
     }
 
     /**
@@ -245,11 +246,11 @@ public class SnippetsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteSnippet(Long snippetId) throws GitLabApiException {
-
         if (snippetId == null) {
             throw new RuntimeException("snippetId can't be null");
         }
 
         delete(Response.Status.NO_CONTENT, null, "snippets", snippetId);
     }
+
 }

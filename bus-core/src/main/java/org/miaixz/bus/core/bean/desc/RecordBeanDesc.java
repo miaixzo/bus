@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.bean.desc;
 
-import org.miaixz.bus.core.xyz.FieldKit;
-import org.miaixz.bus.core.xyz.MethodKit;
-import org.miaixz.bus.core.xyz.ModifierKit;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
+
+import org.miaixz.bus.core.xyz.FieldKit;
+import org.miaixz.bus.core.xyz.MethodKit;
+import org.miaixz.bus.core.xyz.ModifierKit;
 
 /**
  * Bean描述 包括Record自定义字段及对应方法，getter方法与字段名同名，不支持setter

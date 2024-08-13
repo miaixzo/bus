@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.sensitive.magic.annotation;
 
-import org.miaixz.bus.core.lang.Normal;
-
 import java.lang.annotation.*;
+
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * 对json内的key_value进行脱敏/过滤

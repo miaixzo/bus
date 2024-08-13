@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.office.word;
 
+import java.awt.*;
+import java.io.*;
+
 import org.apache.poi.common.usermodel.PictureType;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.util.Units;
@@ -40,9 +43,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
-
-import java.awt.*;
-import java.io.*;
 
 /**
  * Word docx生成器

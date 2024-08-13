@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.NotInMatcher;
-
-import java.lang.annotation.*;
 
 /**
  * 校验字符串不存在数组中

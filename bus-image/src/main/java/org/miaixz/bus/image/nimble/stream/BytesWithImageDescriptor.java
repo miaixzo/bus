@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.image.nimble.stream;
 
-import org.miaixz.bus.image.galaxy.data.Attributes;
-import org.miaixz.bus.image.galaxy.data.VR;
-
 import java.io.IOException;
 import java.nio.ByteBuffer;
+
+import org.miaixz.bus.image.galaxy.data.Attributes;
+import org.miaixz.bus.image.galaxy.data.VR;
 
 /**
  *

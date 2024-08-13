@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.office.excel.style;
 
-import org.apache.poi.hssf.util.HSSFColor;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.ss.util.CellReference;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
 import java.util.Date;
+
+import org.apache.poi.hssf.util.HSSFColor;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellReference;
 
 /**
  * 默认样式集合，定义了标题、数字、日期等默认样式

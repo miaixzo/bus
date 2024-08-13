@@ -27,36 +27,21 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.gitlab.support.JacksonJson;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public class Variable implements Serializable {
+
     private static final long serialVersionUID = -1L;
-
-    /**
-     * Create a List of Variable from the provided Map.
-     *
-     * @param variables the Map to convert to a List of Variable
-     * @return the List of Variable containing the keys and values from the Map, or null if the Map is null
-     */
-    public static final List<Variable> convertMapToList(Map<String, String> variables) {
-
-        if (variables == null) {
-            return null;
-        }
-
-        List<Variable> varList = new ArrayList<>(variables.size());
-        variables.forEach((k, v) -> varList.add(new Variable(k, v)));
-        return varList;
-    }
 
     private String key;
     private String value;
@@ -129,6 +114,23 @@ public class Variable implements Serializable {
     }
 
     /**
+     * Create a List of Variable from the provided Map.
+     *
+     * @param variables the Map to convert to a List of Variable
+     * @return the List of Variable containing the keys and values from the Map, or null if the Map is null
+     */
+    public static final List<Variable> convertMapToList(Map<String, String> variables) {
+
+        if (variables == null) {
+            return null;
+        }
+
+        List<Variable> varList = new ArrayList<>(variables.size());
+        variables.forEach((k, v) -> varList.add(new Variable(k, v)));
+        return varList;
+    }
+
+    /**
      * Enum for the various Commit build status values.
      */
     public enum Type {
@@ -152,4 +154,5 @@ public class Variable implements Serializable {
             return (enumHelper.toString(this));
         }
     }
+
 }

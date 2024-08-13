@@ -27,10 +27,12 @@
 */
 package org.miaixz.bus.image.metric.json;
 
-import jakarta.json.stream.JsonLocation;
-import jakarta.json.stream.JsonParser;
-import jakarta.json.stream.JsonParser.Event;
-import jakarta.json.stream.JsonParsingException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.*;
+import java.util.function.ToLongFunction;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Format;
@@ -39,11 +41,10 @@ import org.miaixz.bus.image.galaxy.data.*;
 import org.miaixz.bus.image.galaxy.data.PersonName.Group;
 import org.miaixz.bus.logger.Logger;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.lang.reflect.Array;
-import java.util.*;
-import java.util.function.ToLongFunction;
+import jakarta.json.stream.JsonLocation;
+import jakarta.json.stream.JsonParser;
+import jakarta.json.stream.JsonParser.Event;
+import jakarta.json.stream.JsonParsingException;
 
 /**
  * @author Kimi Liu

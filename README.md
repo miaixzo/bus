@@ -26,7 +26,7 @@
   <a target="_blank" href="http://poi.apache.org">
     <img src="https://img.shields.io/badge/poi-5.2.5-blue.svg">
   </a>
-  <a target="_blank" href="https://opensource.org/licenses/MIT">
+  <a target="_blank" href="https://github.com/839128/bus/blob/main/LICENSE">
     <img src="https://img.shields.io/badge/license-MIT-green.svg">
   </a>
 </p>
@@ -55,11 +55,11 @@ Bus (应用/服务总线) 是一个基础框架、服务套件，它基于Java17
 
  Bus主要版本 3.x、5.x、6.x、8.x，具体如下：
 
-| 版本  | jdk    | Maven仓库                                                                                  | 主要特点                                |
-|-----|--------|------------------------------------------------------------------------------------------|-------------------------------------|
-| 3.x | jdk1.8 | [org.aoju/bus-all/3.x](https://mvnrepository.com/artifact/org.aoju/bus-all/3.6.9)        | jdk1.8编译                            |
-| 5.x | jdk1.8 | [org.aoju/bus-all/5.x ](https://mvnrepository.com/artifact/org.aoju/bus-all/5.9.9)       | jdk1.8编译,使用JavaEE,适配JDK11、17        |
-| 6.x | jdk 17 | [org.aoju/bus-all/6.x ](https://mvnrepository.com/artifact/org.aoju/bus-all/6.6.0)       | jdk 17编译,使用Jakarta EE,适配JDK11、17、21 |
+| 版本  | jdk    | Maven仓库                                                                                  | 主要特点                               |
+|-----|--------|------------------------------------------------------------------------------------------|------------------------------------|
+| 3.x | jdk1.8 | [org.aoju/bus-all/3.x](https://mvnrepository.com/artifact/org.aoju/bus-all/3.6.9)        | jdk1.8编译                           |
+| 5.x | jdk1.8 | [org.aoju/bus-all/5.x ](https://mvnrepository.com/artifact/org.aoju/bus-all/5.9.9)       | jdk1.8编译,使用JavaEE,适配JDK11、17       |
+| 6.x | jdk 17 | [org.aoju/bus-all/6.x ](https://mvnrepository.com/artifact/org.aoju/bus-all/6.6.0)       | jdk 17编译,使用Jakarta EE,适配JDK11、17 |
 | 8.x | jdk 21 | [org.miaixz/bus-all/8.x ](https://mvnrepository.com/artifact/org.miaixz/bus-all)         | jdk 21编译,使用Jakarta EE,适配JDK11、17、21 |
 
 
@@ -191,8 +191,13 @@ Thanks JetBrains for the OpenSource license.
 
 感谢JetBrains提供IDEA开源license
 
-### 
+### ✨ 寄语
 
 源码永远是最好的教程，善于读源码和DEBUG朋友掌握完全是轻而易举的事。源码是作者设计理念最直观的展现，这也是开源的魅力所在。"
 Talk is cheap, Show me the code."
 ，开源让技术难题的探讨变得更加务实，在您看完源码后心中对它都会有一个定论。在作者看来，Bus切切实实降低了开发学习门槛，也保障了服务的高性能、高可用。如果读者朋友对源码中某些部分的设计存在疑虑，也欢迎与作者保持沟通。
+
+
+### ✨ 状态
+
+![alt](https://repobeats.axiom.co/api/embed/e6aec865b2638153d492db3db4ab8f09b39725cd.svg "repobeats analytics image")

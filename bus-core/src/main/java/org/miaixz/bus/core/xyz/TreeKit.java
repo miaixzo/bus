@@ -27,18 +27,18 @@
 */
 package org.miaixz.bus.core.xyz;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+
 import org.miaixz.bus.core.tree.MapTree;
 import org.miaixz.bus.core.tree.NodeConfig;
 import org.miaixz.bus.core.tree.TreeBuilder;
 import org.miaixz.bus.core.tree.TreeNode;
 import org.miaixz.bus.core.tree.parser.DefaultNodeParser;
 import org.miaixz.bus.core.tree.parser.NodeParser;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Function;
 
 /**
  * 树工具类

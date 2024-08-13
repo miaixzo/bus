@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.starter.goalie;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.miaixz.bus.goalie.Config;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 路由配置

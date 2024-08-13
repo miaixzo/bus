@@ -27,15 +27,17 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
-
 import java.util.Date;
 import java.util.List;
 
+import org.miaixz.bus.gitlab.support.JacksonJson;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public class RunnerDetail extends Runner {
+
     private static final long serialVersionUID = -1L;
 
     private String architecture;
@@ -47,32 +49,6 @@ public class RunnerDetail extends Runner {
     private List<String> tagList;
     private String version;
     private RunnerAccessLevel accessLevel;
-
-    /**
-     * Enum to use for RunnerDetail accessLevel property.
-     */
-    public enum RunnerAccessLevel {
-
-        NOT_PROTECTED, REF_PROTECTED;
-
-        private static JacksonJsonEnumHelper<RunnerAccessLevel> enumHelper = new JacksonJsonEnumHelper<>(
-                RunnerAccessLevel.class);
-
-        @JsonCreator
-        public static RunnerAccessLevel forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
-    }
 
     public String getArchitecture() {
         return architecture;
@@ -195,4 +171,31 @@ public class RunnerDetail extends Runner {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
+    /**
+     * Enum to use for RunnerDetail accessLevel property.
+     */
+    public enum RunnerAccessLevel {
+
+        NOT_PROTECTED, REF_PROTECTED;
+
+        private static JacksonJsonEnumHelper<RunnerAccessLevel> enumHelper = new JacksonJsonEnumHelper<>(
+                RunnerAccessLevel.class);
+
+        @JsonCreator
+        public static RunnerAccessLevel forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
+
 }

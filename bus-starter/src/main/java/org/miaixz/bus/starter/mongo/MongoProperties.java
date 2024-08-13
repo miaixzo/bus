@@ -27,17 +27,19 @@
 */
 package org.miaixz.bus.starter.mongo;
 
-import com.mongodb.connection.ClusterConnectionMode;
-import com.mongodb.connection.ClusterType;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.MINUTES;
+
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.MINUTES;
+import com.mongodb.connection.ClusterConnectionMode;
+import com.mongodb.connection.ClusterType;
+
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Mongo配置信息 {@link com.mongodb.MongoClientSettings}

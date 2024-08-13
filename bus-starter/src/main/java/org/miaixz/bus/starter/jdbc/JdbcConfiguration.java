@@ -27,8 +27,12 @@
 */
 package org.miaixz.bus.starter.jdbc;
 
-import com.zaxxer.hikari.HikariDataSource;
-import jakarta.annotation.Resource;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.sql.DataSource;
+
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -52,10 +56,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
-import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.zaxxer.hikari.HikariDataSource;
+
+import jakarta.annotation.Resource;
 
 /**
  * 数据源配置
@@ -78,7 +81,6 @@ public class JdbcConfiguration {
     }
 
     private final Map<Object, Object> sourceMap = new HashMap<>();
-
     @Resource
     JdbcProperties properties;
 

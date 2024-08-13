@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.image.metric.hl7;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.AttributesImpl;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.EnumSet;
 import java.util.StringTokenizer;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.xml.sax.ContentHandler;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.AttributesImpl;
 
 /**
  * @author Kimi Liu

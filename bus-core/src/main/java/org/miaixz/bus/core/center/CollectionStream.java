@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.center;
 
-import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.xyz.*;
-
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.xyz.*;
 
 /**
  * 集合的stream操作封装

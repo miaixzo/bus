@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.io.sink;
 
-import org.miaixz.bus.core.io.buffer.Buffer;
-import org.miaixz.bus.core.io.timout.Timeout;
-
 import java.io.Closeable;
 import java.io.Flushable;
 import java.io.IOException;
+
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.timout.Timeout;
 
 /**
  * 接收一个字节流 使用这个接口可以在任何地方编写数据 需要:到网络、存储器或内存中的缓冲区 水槽可以分层 转换接收到的数据,如压缩、加密、节流或添加协议框架

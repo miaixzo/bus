@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.mapper.annotation;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.mapper.ORDER;
 import org.miaixz.bus.mapper.Registry;
 import org.miaixz.bus.mapper.support.GenId;
 import org.miaixz.bus.mapper.support.GenSql;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
 /**
  * 主键策略，用于替换 JPA 中的复杂用法

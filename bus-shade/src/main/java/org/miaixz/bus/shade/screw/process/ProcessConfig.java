@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.shade.screw.process;
 
+import java.io.Serializable;
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.io.Serializable;
-import java.util.List;
 
 /**
  * 数据处理

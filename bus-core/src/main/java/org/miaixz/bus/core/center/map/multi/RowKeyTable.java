@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.center.map.multi;
 
+import java.util.*;
+
 import org.miaixz.bus.core.Builder;
 import org.miaixz.bus.core.center.iterator.ComputeIterator;
 import org.miaixz.bus.core.center.iterator.TransIterator;
 import org.miaixz.bus.core.center.map.AbstractEntry;
 import org.miaixz.bus.core.xyz.IteratorKit;
 import org.miaixz.bus.core.xyz.MapKit;
-
-import java.util.*;
 
 /**
  * 将行的键作为主键的{@link Table}实现 此结构为: 行=(列=值)

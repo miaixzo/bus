@@ -27,6 +27,12 @@
 */
 package org.miaixz.bus.core.io.source;
 
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.io.SegmentBuffer;
@@ -36,12 +42,6 @@ import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
-
-import java.io.EOFException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 
 /**
  * 原始缓冲流

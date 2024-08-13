@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core.io.source;
 
-import org.miaixz.bus.core.io.ByteString;
-import org.miaixz.bus.core.io.SegmentBuffer;
-import org.miaixz.bus.core.io.buffer.Buffer;
-import org.miaixz.bus.core.io.sink.Sink;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
+
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.io.SegmentBuffer;
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.sink.Sink;
 
 /**
  * 内部保存一个缓冲区,以便调用者可以在没有性能的情况下进行少量读取 它还允许客户端提前读取,在消费之前进行必要的缓冲输入

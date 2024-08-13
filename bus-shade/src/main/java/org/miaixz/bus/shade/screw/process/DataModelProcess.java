@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.shade.screw.process;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.shade.screw.Builder;
@@ -34,10 +38,6 @@ import org.miaixz.bus.shade.screw.Config;
 import org.miaixz.bus.shade.screw.dialect.DatabaseQuery;
 import org.miaixz.bus.shade.screw.dialect.DatabaseQueryFactory;
 import org.miaixz.bus.shade.screw.metadata.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 数据模型处理

@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.io.resource;
 
-import org.miaixz.bus.core.Binder;
-
 import java.util.Properties;
+
+import org.miaixz.bus.core.Binder;
 
 /**
  * 配置文件源

@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.center.map.multi;
 
+import java.io.Serializable;
+import java.util.*;
+
 import org.miaixz.bus.core.center.iterator.TransIterator;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IteratorKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
-
-import java.io.Serializable;
-import java.util.*;
 
 /**
  * 抽象{@link Table}接口实现 默认实现了：

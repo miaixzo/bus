@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.extra.captcha.provider;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.extra.captcha.AbstractProvider;
-import org.miaixz.bus.extra.captcha.strategy.CodeStrategy;
-
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.extra.captcha.AbstractProvider;
+import org.miaixz.bus.extra.captcha.strategy.CodeStrategy;
 
 /**
  * 滑动验证码

@@ -27,16 +27,17 @@
 */
 package org.miaixz.bus.core.basic.entity;
 
+import java.io.Serializable;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.FieldKit;
+
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.xyz.FieldKit;
-
-import java.io.Serializable;
 
 /**
  * Entity 实体

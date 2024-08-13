@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.center.list;
 
-import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
-
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
 
 /**
  * 列表包装类 提供列表包装，用于在执行列表方法前后自定义处理逻辑
@@ -98,7 +98,6 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
         return raw.remove(o);
     }
 
-    @SuppressWarnings("SlowListContainsAll")
     @Override
     public boolean containsAll(final Collection<?> c) {
         return raw.containsAll(c);

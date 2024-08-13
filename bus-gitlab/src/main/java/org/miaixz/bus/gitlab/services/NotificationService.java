@@ -27,18 +27,21 @@
 */
 package org.miaixz.bus.gitlab.services;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.miaixz.bus.gitlab.GitLabApiForm;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class NotificationService implements Serializable {
-    public static final String WEBHOOK_PROP = "webhook";
+import org.miaixz.bus.gitlab.GitLabApiForm;
+import org.miaixz.bus.gitlab.support.JacksonJson;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+public abstract class NotificationService implements Serializable {
+
+    private static final long serialVersionUID = -1L;
+
+    public static final String WEBHOOK_PROP = "webhook";
     public static final String NOTIFY_ONLY_BROKEN_PIPELINES_PROP = "notify_only_broken_pipelines";
     public static final String NOTIFY_ONLY_DEFAULT_BRANCH_PROP = "notify_only_default_branch";
     public static final String BRANCHES_TO_BE_NOTIFIED_PROP = "branches_to_be_notified";
@@ -51,7 +54,6 @@ public abstract class NotificationService implements Serializable {
     public static final String TAG_PUSH_CHANNEL_PROP = "tag_push_channel";
     public static final String PIPELINE_CHANNEL_PROP = "pipeline_channel";
     public static final String WIKI_PAGE_CHANNEL_PROP = "wiki_page_channel";
-    private static final long serialVersionUID = -1L;
     public static final String USERNAME_PROP = "username";
     public static final String DESCRIPTION_PROP = "description";
     public static final String TITLE_PROP = "title";
@@ -292,7 +294,6 @@ public abstract class NotificationService implements Serializable {
     }
 
     @JsonIgnore
-    @SuppressWarnings("unchecked")
     protected <T> T getProperty(String prop, T defaultValue) {
 
         Object value = (properties != null ? properties.get(prop) : null);

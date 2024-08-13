@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.util.Date;
 
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
 public class RelatedEpic extends AbstractEpic<RelatedEpic> {
+
     private static final long serialVersionUID = -1L;
 
     private Boolean startDateIsFixed;
@@ -101,4 +102,5 @@ public class RelatedEpic extends AbstractEpic<RelatedEpic> {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

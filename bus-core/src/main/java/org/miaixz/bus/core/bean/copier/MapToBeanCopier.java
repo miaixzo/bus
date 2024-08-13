@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core.bean.copier;
 
+import java.lang.reflect.Type;
+import java.util.Map;
+
 import org.miaixz.bus.core.bean.desc.PropDesc;
 import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
 import org.miaixz.bus.core.center.map.MapWrapper;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
 import org.miaixz.bus.core.xyz.TypeKit;
-
-import java.lang.reflect.Type;
-import java.util.Map;
 
 /**
  * Map属性拷贝到Bean中的拷贝器

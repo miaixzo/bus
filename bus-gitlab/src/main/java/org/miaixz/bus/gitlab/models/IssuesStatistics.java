@@ -27,12 +27,14 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.miaixz.bus.gitlab.support.JacksonJson;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
 
 public class IssuesStatistics implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Statistics statistics;
@@ -48,6 +50,11 @@ public class IssuesStatistics implements Serializable {
     @JsonIgnore
     public Counts getCounts() {
         return (statistics != null ? statistics.counts : null);
+    }
+
+    @Override
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
     }
 
     public static class Statistics implements Serializable {
@@ -97,8 +104,4 @@ public class IssuesStatistics implements Serializable {
         }
     }
 
-    @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
-    }
 }

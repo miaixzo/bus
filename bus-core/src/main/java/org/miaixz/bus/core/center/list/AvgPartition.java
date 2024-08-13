@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.center.list;
 
-import org.miaixz.bus.core.lang.Assert;
-
 import java.util.List;
+
+import org.miaixz.bus.core.lang.Assert;
 
 /**
  * 列表分区或分段 通过传入分区个数，将指定列表分区为不同的块，每块区域的长度均匀分布（个数差不超过1）

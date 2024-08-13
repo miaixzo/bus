@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.extra.json;
 
-import org.miaixz.bus.core.Provider;
-import org.miaixz.bus.core.lang.EnumMap;
-
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Map;
+
+import org.miaixz.bus.core.Provider;
+import org.miaixz.bus.core.lang.EnumValue;
 
 /**
  * JSON服务提供者
@@ -148,7 +148,7 @@ public interface JsonProvider extends Provider {
 
     @Override
     default Object type() {
-        return EnumMap.Povider.JSON;
+        return EnumValue.Povider.JSON;
     }
 
 }

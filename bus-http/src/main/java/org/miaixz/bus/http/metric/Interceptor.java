@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.http.metric;
 
-import org.miaixz.bus.http.Response;
-
 import java.io.IOException;
+
+import org.miaixz.bus.http.Response;
 
 /**
  * 观察、修改和潜在的短路请求，并返回相应的响应 通常，拦截器在请求或响应上添加、删除或转换标头

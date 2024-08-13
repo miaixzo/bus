@@ -28,7 +28,7 @@
 package org.miaixz.bus.validate.magic;
 
 import org.miaixz.bus.core.Provider;
-import org.miaixz.bus.core.lang.EnumMap;
+import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.validate.Context;
 
 /**
@@ -75,7 +75,7 @@ public interface Matcher<T, K> extends Provider {
 
     @Override
     default Object type() {
-        return EnumMap.Povider.VALIDATE;
+        return EnumValue.Povider.VALIDATE;
     }
 
 }

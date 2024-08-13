@@ -27,49 +27,23 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+
+import org.miaixz.bus.gitlab.Constants.IssueState;
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.node.IntNode;
 import com.fasterxml.jackson.databind.node.LongNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
-import org.miaixz.bus.gitlab.Constants.IssueState;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 
 public abstract class AbstractIssue implements Serializable {
+
     private static final long serialVersionUID = -1L;
-
-    public static class TaskCompletionStatus implements Serializable {
-        private static final long serialVersionUID = -1L;
-
-        private Integer count;
-        private Integer completedCount;
-
-        public Integer getCount() {
-            return count;
-        }
-
-        public void setCount(Integer count) {
-            this.count = count;
-        }
-
-        public Integer getCompletedCount() {
-            return completedCount;
-        }
-
-        public void setCompletedCount(Integer completedCount) {
-            this.completedCount = completedCount;
-        }
-
-        @Override
-        public String toString() {
-            return (JacksonJson.toJsonString(this));
-        }
-    }
 
     private Assignee assignee;
     private List<Assignee> assignees;
@@ -374,4 +348,34 @@ public abstract class AbstractIssue implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
+    public static class TaskCompletionStatus implements Serializable {
+
+        private static final long serialVersionUID = -1L;
+
+        private Integer count;
+        private Integer completedCount;
+
+        public Integer getCount() {
+            return count;
+        }
+
+        public void setCount(Integer count) {
+            this.count = count;
+        }
+
+        public Integer getCompletedCount() {
+            return completedCount;
+        }
+
+        public void setCompletedCount(Integer completedCount) {
+            this.completedCount = completedCount;
+        }
+
+        @Override
+        public String toString() {
+            return (JacksonJson.toJsonString(this));
+        }
+    }
+
 }

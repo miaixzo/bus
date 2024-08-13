@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * POI中对Excel读写的封装，入口为ExcelUtil
+ * POI中对Excel读写的封装，入口为ExcelKit
  *
  * @author Kimi Liu
  * @since Java 17+

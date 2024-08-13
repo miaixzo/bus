@@ -27,13 +27,9 @@
 */
 package org.miaixz.bus.image.nimble.extend;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.image.Device;
-import org.miaixz.bus.image.builtin.ldap.LdapBuilder;
-import org.miaixz.bus.image.builtin.ldap.LdapDicomConfigurationExtension;
-import org.miaixz.bus.image.metric.api.ConfigurationChanges;
-import org.miaixz.bus.image.nimble.codec.ImageWriterFactory;
-import org.miaixz.bus.image.nimble.codec.ImageWriterFactory.ImageWriterParam;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
 
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
@@ -42,9 +38,14 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchResult;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.image.Device;
+import org.miaixz.bus.image.builtin.ldap.LdapBuilder;
+import org.miaixz.bus.image.builtin.ldap.LdapDicomConfigurationExtension;
+import org.miaixz.bus.image.metric.api.ConfigurationChanges;
+import org.miaixz.bus.image.nimble.codec.ImageWriterFactory;
+import org.miaixz.bus.image.nimble.codec.ImageWriterFactory.ImageWriterParam;
 
 /**
  * @author Kimi Liu

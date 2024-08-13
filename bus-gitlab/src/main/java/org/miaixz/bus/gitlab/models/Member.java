@@ -32,6 +32,7 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 import java.util.Date;
 
 public class Member extends AbstractUser<Member> {
+
     private static final long serialVersionUID = -1L;
 
     private AccessLevel accessLevel;
@@ -81,4 +82,5 @@ public class Member extends AbstractUser<Member> {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

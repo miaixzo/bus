@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.core.bean.desc;
 
-import org.miaixz.bus.core.convert.Convert;
-import org.miaixz.bus.core.lang.EnumMap;
-import org.miaixz.bus.core.lang.annotation.Ignore;
-import org.miaixz.bus.core.lang.exception.BeanException;
-import org.miaixz.bus.core.xyz.*;
-
 import java.beans.Transient;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+
+import org.miaixz.bus.core.convert.Convert;
+import org.miaixz.bus.core.lang.EnumValue;
+import org.miaixz.bus.core.lang.annotation.Ignore;
+import org.miaixz.bus.core.lang.exception.BeanException;
+import org.miaixz.bus.core.xyz.*;
 
 /**
  * 属性描述，包括了字段、getter、setter和相应的方法执行
@@ -187,12 +187,8 @@ public class PropDesc {
      */
     public Object getValue(final Object bean) {
         if (null != this.getter) {
-            try {
-                return LambdaKit.buildGetter(this.getter).apply(bean);
-            } catch (final Exception ignore) {
-                // 在jdk14+多模块项目中，存在权限问题，使用传统反射
-                return MethodKit.invoke(bean, this.getter);
-            }
+            // JDK15+ 修改了lambda的策略，动态生成后在metaspace不会释放，导致资源占用高
+            return MethodKit.invoke(bean, this.getter);
         } else if (ModifierKit.isPublic(this.field)) {
             return FieldKit.getFieldValue(bean, this.field);
         }
@@ -399,11 +395,11 @@ public class PropDesc {
      * @return 是否为Transient关键字修饰的
      */
     private boolean isTransientForGet() {
-        boolean isTransient = ModifierKit.hasModifier(this.field, EnumMap.Modifier.TRANSIENT);
+        boolean isTransient = ModifierKit.hasModifier(this.field, EnumValue.Modifier.TRANSIENT);
 
         // 检查Getter方法
         if (!isTransient && null != this.getter) {
-            isTransient = ModifierKit.hasModifier(this.getter, EnumMap.Modifier.TRANSIENT);
+            isTransient = ModifierKit.hasModifier(this.getter, EnumValue.Modifier.TRANSIENT);
 
             // 检查注解
             if (!isTransient) {
@@ -420,11 +416,11 @@ public class PropDesc {
      * @return 是否为Transient关键字修饰的
      */
     private boolean isTransientForSet() {
-        boolean isTransient = ModifierKit.hasModifier(this.field, EnumMap.Modifier.TRANSIENT);
+        boolean isTransient = ModifierKit.hasModifier(this.field, EnumValue.Modifier.TRANSIENT);
 
         // 检查Getter方法
         if (!isTransient && null != this.setter) {
-            isTransient = ModifierKit.hasModifier(this.setter, EnumMap.Modifier.TRANSIENT);
+            isTransient = ModifierKit.hasModifier(this.setter, EnumValue.Modifier.TRANSIENT);
 
             // 检查注解
             if (!isTransient) {

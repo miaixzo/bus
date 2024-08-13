@@ -30,6 +30,7 @@ package org.miaixz.bus.gitlab.hooks.web;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class EventReleaseSource {
+
     private String format;
     private String url;
 
@@ -53,4 +54,5 @@ public class EventReleaseSource {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

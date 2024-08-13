@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.codec.hash;
 
+import java.nio.ByteOrder;
+
 import org.miaixz.bus.core.codec.No128;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.xyz.ByteKit;
-
-import java.nio.ByteOrder;
 
 /**
  * Murmur3 32bit、64bit、128bit 哈希算法实现 此算法来自于：<a href=

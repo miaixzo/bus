@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.lang.thread;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-
 import java.io.Closeable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
  * 线程同步结束器 在完成一组正在其他线程中执行的操作之前，它允许一个或多个线程一直等待。

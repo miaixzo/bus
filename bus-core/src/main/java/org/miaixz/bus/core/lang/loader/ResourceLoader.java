@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.lang.loader;
 
-import org.miaixz.bus.core.io.resource.Resource;
-
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.NoSuchElementException;
+
+import org.miaixz.bus.core.io.resource.Resource;
 
 /**
  * 资源加载器

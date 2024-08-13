@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.lang.reflect.Type;
+import java.util.Map;
+
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.reflect.TypeReference;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.TypeKit;
-
-import java.lang.reflect.Type;
-import java.util.Map;
 
 /**
  * {@link Triplet} 转换器，支持以下类型转为Triple：

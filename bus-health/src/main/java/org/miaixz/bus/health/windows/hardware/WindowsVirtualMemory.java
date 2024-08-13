@@ -27,8 +27,9 @@
 */
 package org.miaixz.bus.health.windows.hardware;
 
-import com.sun.jna.platform.win32.Kernel32;
-import com.sun.jna.platform.win32.Psapi;
+import java.util.Map;
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
@@ -41,8 +42,8 @@ import org.miaixz.bus.health.windows.driver.perfmon.PagingFile;
 import org.miaixz.bus.health.windows.driver.perfmon.PagingFile.PagingPercentProperty;
 import org.miaixz.bus.logger.Logger;
 
-import java.util.Map;
-import java.util.function.Supplier;
+import com.sun.jna.platform.win32.Kernel32;
+import com.sun.jna.platform.win32.Psapi;
 
 /**
  * Memory obtained from WMI

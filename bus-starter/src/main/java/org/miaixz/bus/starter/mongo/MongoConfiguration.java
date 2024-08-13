@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.starter.mongo;
 
-import jakarta.annotation.Resource;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+
 import org.springframework.boot.autoconfigure.mongo.MongoClientSettingsBuilderCustomizer;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.Order;
 
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
+import jakarta.annotation.Resource;
 
 /**
  * Mongo配置
@@ -46,11 +47,7 @@ import java.util.concurrent.TimeUnit;
 public class MongoConfiguration {
 
     @Resource
-    private MongoProperties properties;
-
-    public MongoConfiguration(MongoProperties properties) {
-        this.properties = Optional.ofNullable(properties).orElse(new MongoProperties());
-    }
+    MongoProperties properties;
 
     /**
      * The {@link MongoProperties.Socket} builder

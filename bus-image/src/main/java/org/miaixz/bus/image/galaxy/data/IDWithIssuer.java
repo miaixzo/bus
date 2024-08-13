@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.image.galaxy.data;
 
+import java.util.*;
+
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
-
-import java.util.*;
 
 /**
  * @author Kimi Liu

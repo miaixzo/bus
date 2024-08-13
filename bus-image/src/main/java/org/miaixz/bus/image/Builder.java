@@ -27,21 +27,6 @@
 */
 package org.miaixz.bus.image;
 
-import org.miaixz.bus.core.lang.Keys;
-import org.miaixz.bus.core.lang.MediaType;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.xyz.ColorKit;
-import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.image.galaxy.ImageProgress;
-import org.miaixz.bus.image.galaxy.ProgressStatus;
-import org.miaixz.bus.image.galaxy.SupplierEx;
-import org.miaixz.bus.image.galaxy.data.*;
-import org.miaixz.bus.image.galaxy.io.ImageInputStream;
-import org.miaixz.bus.image.nimble.CIELab;
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.setting.metric.props.Props;
-
 import java.awt.*;
 import java.awt.geom.Area;
 import java.awt.geom.Ellipse2D;
@@ -58,14 +43,29 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAccessor;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.core.lang.Keys;
+import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.ColorKit;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.image.galaxy.ImageProgress;
+import org.miaixz.bus.image.galaxy.ProgressStatus;
+import org.miaixz.bus.image.galaxy.SupplierEx;
+import org.miaixz.bus.image.galaxy.data.*;
+import org.miaixz.bus.image.galaxy.io.ImageInputStream;
+import org.miaixz.bus.image.nimble.CIELab;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.setting.metric.props.Props;
 
 /**
  * @author Kimi Liu
@@ -652,6 +652,7 @@ public class Builder {
         return new SupplierEx<>() {
             boolean initialized;
 
+            @Override
             public T get() throws E {
                 return delegate.get();
             }
@@ -1222,6 +1223,11 @@ public class Builder {
         return new MediaType("application", "dicom", Collections.singletonMap("transfer-syntax", tsuid));
     }
 
+    public static Props loadRelSoap(URL url) {
+        String name = "sop-classes-uid.properties";
+        return null;
+    }
+
     public void validate(File file, IOD iod) {
         if (iod == null)
             throw new IllegalStateException("IOD net initialized");
@@ -1242,11 +1248,6 @@ public class Builder {
         } finally {
             IoKit.close(dis);
         }
-    }
-
-    public static Props loadRelSoap(URL url) {
-        String name = "sop-classes-uid.properties";
-        return null;
     }
 
 }

@@ -27,11 +27,6 @@
 */
 package org.miaixz.bus.core.center.map.multi;
 
-import org.miaixz.bus.core.center.map.MapWrapper;
-import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.xyz.CollKit;
-import org.miaixz.bus.core.xyz.ObjectKit;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +34,11 @@ import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import org.miaixz.bus.core.center.map.MapWrapper;
+import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
  * {@link MultiValueMap}的基本实现

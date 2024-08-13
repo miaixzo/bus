@@ -27,6 +27,12 @@
 */
 package org.miaixz.bus.limiter.proxy;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.miaixz.bus.core.xyz.MethodKit;
 import org.miaixz.bus.limiter.Builder;
 import org.miaixz.bus.limiter.Registry;
@@ -36,12 +42,6 @@ import org.miaixz.bus.limiter.magic.annotation.Downgrade;
 import org.miaixz.bus.limiter.magic.annotation.Hotspot;
 import org.miaixz.bus.limiter.magic.annotation.Limiting;
 import org.miaixz.bus.limiter.metric.MethodManager;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 规则拦截处理

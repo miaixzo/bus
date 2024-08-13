@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.lang.loader;
 
-import org.miaixz.bus.core.io.resource.Resource;
-
 import java.io.IOException;
 import java.util.Enumeration;
+
+import org.miaixz.bus.core.io.resource.Resource;
 
 /**
  * 资源加载器,充分采用惰性加载的逻辑, 让资源的加载延后到{@link Enumeration#hasMoreElements()} 调用时,避免无用的提前全部预加载

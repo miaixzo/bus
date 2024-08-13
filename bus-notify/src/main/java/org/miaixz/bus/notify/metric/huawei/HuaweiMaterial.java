@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.notify.metric.huawei;
 
+import org.miaixz.bus.notify.Context;
+import org.miaixz.bus.notify.magic.Material;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Material;
 
 /**
  * 华为云短信

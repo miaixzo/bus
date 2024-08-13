@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.starter.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.starter.cache.CacheConfiguration;
 import org.springframework.context.annotation.Import;
-
-import java.lang.annotation.*;
 
 /**
  * 启用缓存支持

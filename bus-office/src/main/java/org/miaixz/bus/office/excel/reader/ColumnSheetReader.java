@@ -27,11 +27,13 @@
 */
 package org.miaixz.bus.office.excel.reader;
 
-import org.apache.poi.ss.usermodel.Sheet;
-import org.miaixz.bus.office.excel.cell.CellKit;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.miaixz.bus.office.excel.cell.CellEditor;
+import org.miaixz.bus.office.excel.cell.CellKit;
 
 /**
  * 读取单独一列
@@ -41,8 +43,6 @@ import java.util.List;
  */
 public class ColumnSheetReader extends AbstractSheetReader<List<Object>> {
 
-    private final int columnIndex;
-
     /**
      * 构造
      *
@@ -51,17 +51,19 @@ public class ColumnSheetReader extends AbstractSheetReader<List<Object>> {
      * @param endRowIndex   结束行（包含，从0开始计数）
      */
     public ColumnSheetReader(final int columnIndex, final int startRowIndex, final int endRowIndex) {
-        super(startRowIndex, endRowIndex);
-        this.columnIndex = columnIndex;
+        super(new CellRangeAddress(startRowIndex, endRowIndex, columnIndex, columnIndex));
     }
 
     @Override
     public List<Object> read(final Sheet sheet) {
         final List<Object> resultList = new ArrayList<>();
 
-        final int startRowIndex = Math.max(this.startRowIndex, sheet.getFirstRowNum());// 读取起始行（包含）
-        final int endRowIndex = Math.min(this.endRowIndex, sheet.getLastRowNum());// 读取结束行（包含）
+        final int startRowIndex = Math.max(this.cellRangeAddress.getFirstRow(), sheet.getFirstRowNum());// 读取起始行（包含）
+        final int endRowIndex = Math.min(this.cellRangeAddress.getLastRow(), sheet.getLastRowNum());// 读取结束行（包含）
+        final int columnIndex = this.cellRangeAddress.getFirstColumn();
 
+        final CellEditor cellEditor = this.config.getCellEditor();
+        final boolean ignoreEmptyRow = this.config.isIgnoreEmptyRow();
         Object value;
         for (int i = startRowIndex; i <= endRowIndex; i++) {
             value = CellKit.getCellValue(CellKit.getCell(sheet.getRow(i), columnIndex), cellEditor);

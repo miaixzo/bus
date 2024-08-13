@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.core.center.date.culture.lunar;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.miaixz.bus.core.center.date.culture.Galaxy;
 import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.cn.Direction;
@@ -38,9 +43,6 @@ import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
 import org.miaixz.bus.core.center.date.culture.cn.star.nine.NineStar;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * 农历月
  *
@@ -50,7 +52,10 @@ import java.util.List;
 public class LunarMonth extends Loops {
 
     public static final String[] NAMES = { "正月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "腊月" };
-
+    /**
+     * 缓存
+     */
+    private static final Map<String, Object[]> cache = new HashMap<>();
     /**
      * 农历年
      */
@@ -81,6 +86,27 @@ public class LunarMonth extends Loops {
      */
     protected JulianDay firstJulianDay;
 
+    /**
+     * 从缓存初始化
+     *
+     * @param cache 缓存[农历年(int)，农历月(int,闰月为负)，天数(int)，位于当年的索引(int)，初一的儒略日(double)]
+     */
+    protected LunarMonth(Object[] cache) {
+        int m = (int) cache[1];
+        this.year = LunarYear.fromYear((int) cache[0]);
+        this.month = Math.abs(m);
+        this.leap = m < 0;
+        this.dayCount = (int) cache[2];
+        this.indexInYear = (int) cache[3];
+        this.firstJulianDay = JulianDay.fromJulianDay((double) cache[4]);
+    }
+
+    /**
+     * 从农历年月初始化
+     *
+     * @param year  农历年
+     * @param month 农历月，闰月为负
+     */
     public LunarMonth(int year, int month) {
         LunarYear currentYear = LunarYear.fromYear(year);
         int currentLeapMonth = currentYear.getLeapMonth();
@@ -137,7 +163,17 @@ public class LunarMonth extends Loops {
      * @return 农历月
      */
     public static LunarMonth fromYm(int year, int month) {
-        return new LunarMonth(year, month);
+        LunarMonth m;
+        String key = String.format("%d%d", year, month);
+        Object[] c = cache.get(key);
+        if (null != c) {
+            m = new LunarMonth(c);
+        } else {
+            m = new LunarMonth(year, month);
+            cache.put(key, new Object[] { m.getYear(), m.getMonthWithLeap(), m.getDayCount(), m.getIndexInYear(),
+                    m.getFirstJulianDay().getDay() });
+        }
+        return m;
     }
 
     /**
@@ -252,18 +288,19 @@ public class LunarMonth extends Loops {
         int m = indexInYear + 1 + n;
         LunarYear y = year;
         int leapMonth = y.getLeapMonth();
-        int monthSize = 12 + (leapMonth > 0 ? 1 : 0);
-        boolean forward = n > 0;
-        int add = forward ? 1 : -1;
-        while (forward ? (m > monthSize) : (m <= 0)) {
-            if (forward) {
-                m -= monthSize;
+        if (n > 0) {
+            int monthCount = leapMonth > 0 ? 13 : 12;
+            while (m > monthCount) {
+                m -= monthCount;
+                y = y.next(1);
+                leapMonth = y.getLeapMonth();
+                monthCount = leapMonth > 0 ? 13 : 12;
             }
-            y = y.next(add);
-            leapMonth = y.getLeapMonth();
-            monthSize = 12 + (leapMonth > 0 ? 1 : 0);
-            if (!forward) {
-                m += monthSize;
+        } else {
+            while (m <= 0) {
+                y = y.next(-1);
+                leapMonth = y.getLeapMonth();
+                m += leapMonth > 0 ? 13 : 12;
             }
         }
         boolean leap = false;
@@ -288,8 +325,8 @@ public class LunarMonth extends Loops {
         int y = getYear();
         int m = getMonthWithLeap();
         List<LunarDay> l = new ArrayList<>(size);
-        for (int i = 0; i < size; i++) {
-            l.add(LunarDay.fromYmd(y, m, i + 1));
+        for (int i = 1; i <= size; i++) {
+            l.add(LunarDay.fromYmd(y, m, i));
         }
         return l;
     }
@@ -350,15 +387,6 @@ public class LunarMonth extends Loops {
      */
     public FetusMonth getFetus() {
         return FetusMonth.fromLunarMonth(this);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof LunarMonth)) {
-            return false;
-        }
-        LunarMonth target = (LunarMonth) o;
-        return getYear() == target.getYear() && getMonthWithLeap() == target.getMonthWithLeap();
     }
 
 }

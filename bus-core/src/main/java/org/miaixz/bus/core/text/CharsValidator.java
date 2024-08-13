@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.text;
 
+import java.util.function.Predicate;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.CollKit;
-
-import java.util.function.Predicate;
 
 /**
  * 字符串检查工具类，提供字符串的blank和empty等检查

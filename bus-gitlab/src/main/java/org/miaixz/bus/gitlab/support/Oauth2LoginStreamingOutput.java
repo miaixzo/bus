@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.gitlab.support;
 
-import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.StreamingOutput;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+
+import jakarta.ws.rs.WebApplicationException;
+import jakarta.ws.rs.core.StreamingOutput;
 
 /**
  * This StreamingOutput implementation is utilized to send a OAuth2 token request in a secure manner. The password is
@@ -98,4 +98,5 @@ public class Oauth2LoginStreamingOutput implements StreamingOutput, AutoCloseabl
         clearPassword();
         super.finalize();
     }
+
 }

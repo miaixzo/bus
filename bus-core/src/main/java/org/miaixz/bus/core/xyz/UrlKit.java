@@ -27,16 +27,6 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.convert.Convert;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.net.url.RFC3986;
-import org.miaixz.bus.core.net.url.UrlEncoder;
-import org.miaixz.bus.core.net.url.UrlQuery;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -46,6 +36,16 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.miaixz.bus.core.convert.Convert;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.net.url.RFC3986;
+import org.miaixz.bus.core.net.url.UrlEncoder;
+import org.miaixz.bus.core.net.url.UrlQuery;
 
 /**
  * URL（Uniform Resource Locator）统一资源定位符相关工具类

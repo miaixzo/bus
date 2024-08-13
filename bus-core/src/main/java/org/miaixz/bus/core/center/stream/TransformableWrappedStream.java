@@ -27,12 +27,6 @@
 */
 package org.miaixz.bus.core.center.stream;
 
-import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
-import org.miaixz.bus.core.lang.Console;
-import org.miaixz.bus.core.lang.mutable.MutableInt;
-import org.miaixz.bus.core.lang.mutable.MutableObject;
-import org.miaixz.bus.core.xyz.*;
-
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -40,6 +34,12 @@ import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
+
+import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
+import org.miaixz.bus.core.lang.Console;
+import org.miaixz.bus.core.lang.mutable.MutableInt;
+import org.miaixz.bus.core.lang.mutable.MutableObject;
+import org.miaixz.bus.core.xyz.*;
 
 /**
  * {@link WrappedStream}的扩展，用于为实现类提供更多中间操作方法的增强接口， 该接口提供的方法，返回值类型都为{@link Stream}。

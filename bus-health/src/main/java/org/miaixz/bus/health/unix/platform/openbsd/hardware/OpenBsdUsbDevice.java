@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.health.unix.platform.openbsd.hardware;
 
-import org.miaixz.bus.core.lang.annotation.Immutable;
+import java.util.*;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.builtin.hardware.UsbDevice;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractUsbDevice;
-
-import java.util.*;
 
 /**
  * OpenBsd Usb Device

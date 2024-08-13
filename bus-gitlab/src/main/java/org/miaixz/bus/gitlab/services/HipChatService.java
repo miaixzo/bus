@@ -27,8 +27,9 @@
 */
 package org.miaixz.bus.gitlab.services;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.miaixz.bus.gitlab.GitLabApiForm;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class HipChatService extends NotificationService {
 
@@ -191,4 +192,5 @@ public class HipChatService extends NotificationService {
         setNotifyOnlyBrokenPipelines(notifyOnlyBrokenPipelines);
         return (this);
     }
+
 }

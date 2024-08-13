@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.starter.bridge;
 
-import io.vertx.core.Vertx;
-import jakarta.annotation.Resource;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+
+import io.vertx.core.Vertx;
+import jakarta.annotation.Resource;
 
 /**
  * 配置中心

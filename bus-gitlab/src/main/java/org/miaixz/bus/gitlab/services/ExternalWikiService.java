@@ -56,4 +56,5 @@ public class ExternalWikiService extends NotificationService {
         setExternalWikiUrl(endpoint);
         return this;
     }
+
 }

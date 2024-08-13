@@ -27,10 +27,6 @@
 */
 package org.miaixz.bus.shade.safety.boot.jar;
 
-import org.miaixz.bus.shade.safety.algorithm.Key;
-import org.miaixz.bus.shade.safety.provider.DecryptorProvider;
-import org.miaixz.bus.shade.safety.provider.EncryptorProvider;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -44,6 +40,10 @@ import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+
+import org.miaixz.bus.shade.safety.algorithm.Key;
+import org.miaixz.bus.shade.safety.provider.DecryptorProvider;
+import org.miaixz.bus.shade.safety.provider.EncryptorProvider;
 
 /**
  * 加密的URL连接

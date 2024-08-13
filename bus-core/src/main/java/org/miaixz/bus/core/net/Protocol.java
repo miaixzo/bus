@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.net;
 
+import java.io.IOException;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.io.IOException;
 
 /**
  * 协议vs计划 它的名字是:{@link java.net.URL#getProtocol()} 返回{@linkplain java.net.URI#getScheme() scheme} (http, https, etc.)，
@@ -41,6 +41,14 @@ import java.io.IOException;
  */
 public enum Protocol {
 
+    /**
+     * 表示使用共享内存的命名管道连接类型. 这种类型的进程间连接比套接字连接稍微快一些， 并且只有在两个进程位于同一台机器上时才能工作. 默认情况下,不能在Java上工作，不支持命名管道.
+     */
+    PIPE("pipe"),
+    /**
+     * 表示使用可靠的TCP/IP套接字连接的连接类型.
+     */
+    SOCKET("socket"),
     /**
      * TCP协议
      */

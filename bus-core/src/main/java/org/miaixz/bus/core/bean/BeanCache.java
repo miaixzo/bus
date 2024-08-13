@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.bean;
 
+import java.beans.PropertyDescriptor;
+import java.util.Map;
+
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.center.map.reference.ReferenceConcurrentMap;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
-
-import java.beans.PropertyDescriptor;
-import java.util.Map;
 
 /**
  * Bean属性缓存 缓存用于防止多次反射造成的性能问题

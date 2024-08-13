@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.health.builtin.software.common;
 
+import java.util.List;
+
 import org.miaixz.bus.health.builtin.software.InternetProtocolStats;
 import org.miaixz.bus.health.unix.driver.NetStat;
-
-import java.util.List;
 
 /**
  * Common implementations for IP Stats

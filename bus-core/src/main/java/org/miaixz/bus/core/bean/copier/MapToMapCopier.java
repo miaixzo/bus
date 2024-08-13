@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.bean.copier;
 
-import org.miaixz.bus.core.lang.mutable.MutableEntry;
-import org.miaixz.bus.core.xyz.TypeKit;
-
 import java.lang.reflect.Type;
 import java.util.Map;
+
+import org.miaixz.bus.core.lang.mutable.MutableEntry;
+import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
  * Map属性拷贝到Map中的拷贝器

@@ -27,15 +27,16 @@
 */
 package org.miaixz.bus.image.nimble.stream;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+
+import javax.imageio.stream.MemoryCacheImageInputStream;
+
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 import org.miaixz.bus.image.nimble.codec.BytesWithImageImageDescriptor;
 import org.miaixz.bus.image.nimble.codec.ImageDescriptor;
 import org.miaixz.bus.image.nimble.codec.TransferSyntaxType;
-
-import javax.imageio.stream.MemoryCacheImageInputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 /**
  * @author Kimi Liu

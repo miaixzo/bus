@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.pay.metric.paypal.entity;
 
+import java.io.Serializable;
+import java.util.Map;
+
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.pay.magic.Callback;
-
-import java.io.Serializable;
-import java.util.Map;
 
 /**
  * AccessToken

@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.center.date.builder;
 
-import org.miaixz.bus.core.center.date.DateTime;
-import org.miaixz.bus.core.lang.exception.DateException;
-import org.miaixz.bus.core.xyz.ZoneKit;
-
 import java.time.*;
 import java.util.Calendar;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
+
+import org.miaixz.bus.core.center.date.DateTime;
+import org.miaixz.bus.core.lang.exception.DateException;
+import org.miaixz.bus.core.xyz.ZoneKit;
 
 /**
  * DateBuilder类用于构建和操作日期 该类提供了多个方法来设置年、月、日等日期字段，以及获取构建的日期对象 它是不可变的，因此每个设置方法都会返回一个新的DateBuilder实例
@@ -108,19 +108,19 @@ public final class DateBuilder {
     private boolean pm;
 
     /**
+     * 构造
+     */
+    public DateBuilder() {
+        reset();
+    }
+
+    /**
      * 创建并返回一个DateBuilder实例。
      *
      * @return this
      */
     public static DateBuilder of() {
         return new DateBuilder();
-    }
-
-    /**
-     * 构造
-     */
-    public DateBuilder() {
-        reset();
     }
 
     /**

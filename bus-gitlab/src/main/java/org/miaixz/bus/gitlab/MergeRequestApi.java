@@ -27,15 +27,30 @@
 */
 package org.miaixz.bus.gitlab;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
-import org.miaixz.bus.gitlab.models.*;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
+import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
+import org.miaixz.bus.gitlab.models.AcceptMergeRequestParams;
+import org.miaixz.bus.gitlab.models.ApprovalRule;
+import org.miaixz.bus.gitlab.models.ApprovalRuleParams;
+import org.miaixz.bus.gitlab.models.ApprovalState;
+import org.miaixz.bus.gitlab.models.Commit;
+import org.miaixz.bus.gitlab.models.Diff;
+import org.miaixz.bus.gitlab.models.Issue;
+import org.miaixz.bus.gitlab.models.MergeRequest;
+import org.miaixz.bus.gitlab.models.MergeRequestDiff;
+import org.miaixz.bus.gitlab.models.MergeRequestFilter;
+import org.miaixz.bus.gitlab.models.MergeRequestParams;
+import org.miaixz.bus.gitlab.models.MergeRequestVersion;
+import org.miaixz.bus.gitlab.models.Participant;
+import org.miaixz.bus.gitlab.models.Pipeline;
 
 /**
  * This class implements the client side API for the GitLab merge request calls.
@@ -95,7 +110,7 @@ public class MergeRequestApi extends AbstractApi {
             response = get(Response.Status.OK, queryParams, "merge_requests");
         }
 
-        return (response.readEntity(new GenericType<List<MergeRequest>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -121,13 +136,13 @@ public class MergeRequestApi extends AbstractApi {
                 throw new RuntimeException("project ID cannot be null or 0");
             }
 
-            return (new Pager<MergeRequest>(this, MergeRequest.class, itemsPerPage, queryParams, "projects",
-                    filter.getProjectId(), "merge_requests"));
+            return (new Pager<>(this, MergeRequest.class, itemsPerPage, queryParams, "projects", filter.getProjectId(),
+                    "merge_requests"));
         } else if (filter != null && filter.getGroupId() != null && filter.getGroupId().intValue() > 0) {
-            return (new Pager<MergeRequest>(this, MergeRequest.class, itemsPerPage, queryParams, "groups",
-                    filter.getGroupId(), "merge_requests"));
+            return (new Pager<>(this, MergeRequest.class, itemsPerPage, queryParams, "groups", filter.getGroupId(),
+                    "merge_requests"));
         } else {
-            return (new Pager<MergeRequest>(this, MergeRequest.class, itemsPerPage, queryParams, "merge_requests"));
+            return (new Pager<>(this, MergeRequest.class, itemsPerPage, queryParams, "merge_requests"));
         }
     }
 
@@ -178,7 +193,7 @@ public class MergeRequestApi extends AbstractApi {
             throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
                 getProjectIdOrPath(projectIdOrPath), "merge_requests");
-        return (response.readEntity(new GenericType<List<MergeRequest>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -195,7 +210,7 @@ public class MergeRequestApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<MergeRequest> getMergeRequests(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<MergeRequest>(this, MergeRequest.class, itemsPerPage, null, "projects",
+        return (new Pager<>(this, MergeRequest.class, itemsPerPage, null, "projects",
                 getProjectIdOrPath(projectIdOrPath), "merge_requests"));
     }
 
@@ -253,7 +268,7 @@ public class MergeRequestApi extends AbstractApi {
                 .withParam(PER_PAGE_PARAM, perPage);
         Response response = get(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
                 "merge_requests");
-        return (response.readEntity(new GenericType<List<MergeRequest>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -274,7 +289,7 @@ public class MergeRequestApi extends AbstractApi {
     public Pager<MergeRequest> getMergeRequests(Object projectIdOrPath, MergeRequestState state, int itemsPerPage)
             throws GitLabApiException {
         Form formData = new GitLabApiForm().withParam("state", state);
-        return (new Pager<MergeRequest>(this, MergeRequest.class, itemsPerPage, formData.asMap(), "projects",
+        return (new Pager<>(this, MergeRequest.class, itemsPerPage, formData.asMap(), "projects",
                 getProjectIdOrPath(projectIdOrPath), "merge_requests"));
     }
 
@@ -436,7 +451,7 @@ public class MergeRequestApi extends AbstractApi {
                 .withParam(PER_PAGE_PARAM, perPage);
         Response response = get(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
                 "merge_requests", mergeRequestIid, "commits");
-        return (response.readEntity(new GenericType<List<Commit>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -459,8 +474,8 @@ public class MergeRequestApi extends AbstractApi {
      */
     public Pager<Commit> getCommits(Object projectIdOrPath, Long mergeRequestIid, int itemsPerPage)
             throws GitLabApiException {
-        return (new Pager<Commit>(this, Commit.class, itemsPerPage, null, "projects",
-                getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "commits"));
+        return (new Pager<>(this, Commit.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
+                "merge_requests", mergeRequestIid, "commits"));
     }
 
     /**
@@ -515,7 +530,7 @@ public class MergeRequestApi extends AbstractApi {
      */
     public Pager<MergeRequestVersion> getDiffVersions(Object projectIdOrPath, Long mergeRequestIid, int itemsPerPage)
             throws GitLabApiException {
-        return (new Pager<MergeRequestVersion>(this, MergeRequestVersion.class, itemsPerPage, null, "projects",
+        return (new Pager<>(this, MergeRequestVersion.class, itemsPerPage, null, "projects",
                 getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "versions"));
     }
 
@@ -639,7 +654,6 @@ public class MergeRequestApi extends AbstractApi {
      * @param params          a MergeRequestParams instance holding the info to create the merge request
      * @return the created MergeRequest instance
      * @throws GitLabApiException if any exception occurs
-     * @since GitLab Starter 8.17, GitLab CE 11.0.
      */
     public MergeRequest createMergeRequest(Object projectIdOrPath, MergeRequestParams params)
             throws GitLabApiException {
@@ -670,7 +684,6 @@ public class MergeRequestApi extends AbstractApi {
      * @param squash             Squash commits into a single commit when merging, optional
      * @return the created MergeRequest instance
      * @throws GitLabApiException if any exception occurs
-     * @since GitLab Starter 8.17, GitLab CE 11.0.
      */
     public MergeRequest createMergeRequest(Object projectIdOrPath, String sourceBranch, String targetBranch,
             String title, String description, Long assigneeId, Long targetProjectId, String[] labels, Long milestoneId,
@@ -826,12 +839,11 @@ public class MergeRequestApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteMergeRequest(Object projectIdOrPath, Long mergeRequestIid) throws GitLabApiException {
-
         if (mergeRequestIid == null) {
             throw new RuntimeException("mergeRequestIid cannot be null");
         }
 
-        Response.Status expectedStatus = (isApiVersion(GitLabApi.ApiVersion.V3) ? Response.Status.OK
+        Response.Status expectedStatus = (isApiVersion(ApiVersion.V3) ? Response.Status.OK
                 : Response.Status.NO_CONTENT);
         delete(expectedStatus, null, "projects", getProjectIdOrPath(projectIdOrPath), "merge_requests",
                 mergeRequestIid);
@@ -954,8 +966,8 @@ public class MergeRequestApi extends AbstractApi {
 
         Form formData = new GitLabApiForm().withParam("merge_commit_message", mergeCommitMessage)
                 .withParam("should_remove_source_branch", shouldRemoveSourceBranch)
-                .withParam((isApiVersion(GitLabApi.ApiVersion.V3) ? "merge_when_build_succeeds"
-                        : "merge_when_pipeline_succeeds"), mergeWhenPipelineSucceeds)
+                .withParam((isApiVersion(ApiVersion.V3) ? "merge_when_build_succeeds" : "merge_when_pipeline_succeeds"),
+                        mergeWhenPipelineSucceeds)
                 .withParam("sha", sha);
 
         Response response = put(Response.Status.OK, formData.asMap(), "projects", getProjectIdOrPath(projectIdOrPath),
@@ -1313,7 +1325,7 @@ public class MergeRequestApi extends AbstractApi {
             throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
                 getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "participants");
-        return (response.readEntity(new GenericType<List<Participant>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -1332,8 +1344,8 @@ public class MergeRequestApi extends AbstractApi {
      */
     public Pager<Participant> getParticipants(Object projectIdOrPath, Long mergeRequestIid, int itemsPerPage)
             throws GitLabApiException {
-        return new Pager<Participant>(this, Participant.class, itemsPerPage, null, "projects",
-                getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "participants");
+        return new Pager<>(this, Participant.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
+                "merge_requests", mergeRequestIid, "participants");
     }
 
     /**
@@ -1387,7 +1399,7 @@ public class MergeRequestApi extends AbstractApi {
             throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "projects",
                 getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "closes_issues");
-        return (response.readEntity(new GenericType<List<Issue>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -1406,7 +1418,7 @@ public class MergeRequestApi extends AbstractApi {
      */
     public Pager<Issue> getClosesIssues(Object projectIdOrPath, Long mergeRequestIid, int itemsPerPage)
             throws GitLabApiException {
-        return new Pager<Issue>(this, Issue.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
+        return new Pager<>(this, Issue.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
                 "merge_requests", mergeRequestIid, "closes_issues");
     }
 
@@ -1511,8 +1523,8 @@ public class MergeRequestApi extends AbstractApi {
      */
     public Pager<Pipeline> getMergeRequestPipelines(Object projectIdOrPath, Long mergeRequestIid, int itemsPerPage)
             throws GitLabApiException {
-        return (new Pager<Pipeline>(this, Pipeline.class, itemsPerPage, null, "projects",
-                getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "pipelines"));
+        return (new Pager<>(this, Pipeline.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
+                "merge_requests", mergeRequestIid, "pipelines"));
     }
 
     /**
@@ -1555,4 +1567,5 @@ public class MergeRequestApi extends AbstractApi {
                 "merge_requests", mergeRequestIid, "pipelines");
         return (response.readEntity(Pipeline.class));
     }
+
 }

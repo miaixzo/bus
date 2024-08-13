@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.health.windows.driver.perfmon;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.windows.PerfCounterQuery;
 import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Utility to query PhysicalDisk performance counter

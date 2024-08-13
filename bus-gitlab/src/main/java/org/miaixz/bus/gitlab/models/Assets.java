@@ -27,17 +27,60 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.Constants.ArchiveFormat;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
 import java.util.List;
+
+import org.miaixz.bus.gitlab.Constants.ArchiveFormat;
+import org.miaixz.bus.gitlab.support.JacksonJson;
 
 /**
  * This class is part of the Release class model.
  */
 public class Assets implements Serializable {
+
     private static final long serialVersionUID = -1L;
+
+    private Integer count;
+    private List<Source> sources;
+    private List<Link> links;
+    private String evidenceFilePath;
+
+    public Integer getCount() {
+        return count;
+    }
+
+    public void setCount(Integer count) {
+        this.count = count;
+    }
+
+    public List<Source> getSources() {
+        return sources;
+    }
+
+    public void setSources(List<Source> sources) {
+        this.sources = sources;
+    }
+
+    public List<Link> getLinks() {
+        return links;
+    }
+
+    public void setLinks(List<Link> links) {
+        this.links = links;
+    }
+
+    public String getEvidenceFilePath() {
+        return evidenceFilePath;
+    }
+
+    public void setEvidenceFilePath(String evidenceFilePath) {
+        this.evidenceFilePath = evidenceFilePath;
+    }
+
+    @Override
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
+    }
 
     public static class Source implements Serializable {
         private static final long serialVersionUID = -1L;
@@ -68,6 +111,7 @@ public class Assets implements Serializable {
     }
 
     public static class Link implements Serializable {
+
         private static final long serialVersionUID = -1L;
 
         private Long id;
@@ -113,45 +157,4 @@ public class Assets implements Serializable {
         }
     }
 
-    private Integer count;
-    private List<Source> sources;
-    private List<Link> links;
-    private String evidenceFilePath;
-
-    public Integer getCount() {
-        return count;
-    }
-
-    public void setCount(Integer count) {
-        this.count = count;
-    }
-
-    public List<Source> getSources() {
-        return sources;
-    }
-
-    public void setSources(List<Source> sources) {
-        this.sources = sources;
-    }
-
-    public List<Link> getLinks() {
-        return links;
-    }
-
-    public void setLinks(List<Link> links) {
-        this.links = links;
-    }
-
-    public String getEvidenceFilePath() {
-        return evidenceFilePath;
-    }
-
-    public void setEvidenceFilePath(String evidenceFilePath) {
-        this.evidenceFilePath = evidenceFilePath;
-    }
-
-    @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
-    }
 }

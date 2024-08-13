@@ -27,16 +27,17 @@
 */
 package org.miaixz.bus.cache.provider;
 
-import jakarta.annotation.PreDestroy;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
+
 import org.miaixz.bus.core.xyz.StringKit;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
+import jakarta.annotation.PreDestroy;
 
 /**
  * @author Kimi Liu

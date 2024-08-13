@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.mapper.additional.update.force;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.UpdateProvider;
 import org.miaixz.bus.mapper.annotation.RegisterMapper;
-
-import java.util.List;
 
 /**
  * 通用Mapper接口, 非空字段强制更新

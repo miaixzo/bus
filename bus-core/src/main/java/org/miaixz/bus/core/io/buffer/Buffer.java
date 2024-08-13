@@ -27,6 +27,18 @@
 */
 package org.miaixz.bus.core.io.buffer;
 
+import java.io.*;
+import java.nio.channels.ByteChannel;
+import java.security.InvalidKeyException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.LifeCycle;
 import org.miaixz.bus.core.io.SectionBuffer;
@@ -43,17 +55,6 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.IoKit;
-
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-import java.io.*;
-import java.nio.channels.ByteChannel;
-import java.security.InvalidKeyException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * 内存中字节的集合.

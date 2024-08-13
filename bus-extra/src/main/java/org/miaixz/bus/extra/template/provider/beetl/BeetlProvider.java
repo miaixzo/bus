@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.extra.template.provider.beetl;
 
+import java.io.IOException;
+
 import org.beetl.core.Configuration;
 import org.beetl.core.GroupTemplate;
 import org.beetl.core.ResourceLoader;
@@ -36,8 +38,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.extra.template.Template;
 import org.miaixz.bus.extra.template.TemplateConfig;
 import org.miaixz.bus.extra.template.TemplateProvider;
-
-import java.io.IOException;
 
 /**
  * Beetl模板引擎封装

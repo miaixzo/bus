@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.center.map.multi;
 
-import org.miaixz.bus.core.xyz.CollKit;
-
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Predicate;
+
+import org.miaixz.bus.core.xyz.CollKit;
 
 /**
  * 支持处理无向图结构的{@link Map}，本质上是基于{@link SetValueMap}实现的邻接表

@@ -27,12 +27,6 @@
 */
 package org.miaixz.bus.setting.metric.ini;
 
-import org.miaixz.bus.core.lang.Keys;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.setting.Builder;
-import org.miaixz.bus.setting.metric.props.Props;
-
 import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -41,6 +35,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.StringJoiner;
+
+import org.miaixz.bus.core.lang.Keys;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.setting.Builder;
+import org.miaixz.bus.setting.metric.props.Props;
 
 /**
  * Ini数据,扩展{@code ArrayList <IniElement>} 如果要向此ini添加空行，只需添加null 如果您想创建Ini，则可以{@link Builder}

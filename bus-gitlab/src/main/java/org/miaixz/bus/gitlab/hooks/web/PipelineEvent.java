@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.gitlab.hooks.web;
 
+import java.util.Date;
+import java.util.List;
+
 import org.miaixz.bus.gitlab.models.Job;
 import org.miaixz.bus.gitlab.models.Variable;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
-import java.util.Date;
-import java.util.List;
-
 public class PipelineEvent extends AbstractEvent {
+
     private static final long serialVersionUID = -1L;
 
     public static final String X_GITLAB_EVENT = "Pipeline Hook";
@@ -93,6 +94,11 @@ public class PipelineEvent extends AbstractEvent {
 
     public void setJobs(List<Job> jobs) {
         this.jobs = jobs;
+    }
+
+    @Override
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
     }
 
     public static class ObjectAttributes {
@@ -216,8 +222,4 @@ public class PipelineEvent extends AbstractEvent {
         }
     }
 
-    @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
-    }
 }

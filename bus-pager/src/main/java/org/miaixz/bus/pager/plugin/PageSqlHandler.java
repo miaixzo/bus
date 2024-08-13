@@ -27,6 +27,12 @@
 */
 package org.miaixz.bus.pager.plugin;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
+import java.util.concurrent.Future;
+
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.executor.CachingExecutor;
 import org.apache.ibatis.executor.Executor;
@@ -52,12 +58,6 @@ import org.miaixz.bus.pager.builtin.CountMsId;
 import org.miaixz.bus.pager.builtin.PageMethod;
 import org.miaixz.bus.pager.cache.Cache;
 import org.miaixz.bus.pager.cache.CacheFactory;
-
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-import java.util.concurrent.Future;
 
 /**
  * 通用分页拦截器

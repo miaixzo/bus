@@ -27,17 +27,18 @@
 */
 package org.miaixz.bus.core.net.tls;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.core.xyz.StringKit;
-
-import javax.net.ssl.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+
+import javax.net.ssl.*;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 信任所有信任管理器，默认信任所有客户端和服务端证书 注意此类慎用，信任全部可能会有中间人攻击风险
@@ -138,37 +139,6 @@ public class TrustAnyTrustManager extends X509ExtendedTrustManager {
         return tmf.getTrustManagers();
     }
 
-    @Override
-    public X509Certificate[] getAcceptedIssuers() {
-        return EMPTY_X509_CERTIFICATE_ARRAY;
-    }
-
-    @Override
-    public void checkClientTrusted(final X509Certificate[] chain, final String authType) {
-    }
-
-    @Override
-    public void checkServerTrusted(final X509Certificate[] chain, final String authType) {
-    }
-
-    @Override
-    public void checkClientTrusted(final X509Certificate[] x509Certificates, final String s, final Socket socket) {
-    }
-
-    @Override
-    public void checkServerTrusted(final X509Certificate[] x509Certificates, final String s, final Socket socket) {
-    }
-
-    @Override
-    public void checkClientTrusted(final X509Certificate[] x509Certificates, final String s,
-            final SSLEngine sslEngine) {
-    }
-
-    @Override
-    public void checkServerTrusted(final X509Certificate[] x509Certificates, final String s,
-            final SSLEngine sslEngine) {
-    }
-
     public static KeyStore createKeyStore(X509Certificate... certs) throws KeyStoreException {
         KeyStore ks = KeyStore.getInstance("PKCS12");
         try {
@@ -254,6 +224,37 @@ public class TrustAnyTrustManager extends X509ExtendedTrustManager {
     public static TrustManager createTrustManager(String type, String url, String password)
             throws KeyStoreException, NoSuchAlgorithmException, CertificateException, IOException {
         return createTrustManager(loadKeyStore(type, url, password));
+    }
+
+    @Override
+    public X509Certificate[] getAcceptedIssuers() {
+        return EMPTY_X509_CERTIFICATE_ARRAY;
+    }
+
+    @Override
+    public void checkClientTrusted(final X509Certificate[] chain, final String authType) {
+    }
+
+    @Override
+    public void checkServerTrusted(final X509Certificate[] chain, final String authType) {
+    }
+
+    @Override
+    public void checkClientTrusted(final X509Certificate[] x509Certificates, final String s, final Socket socket) {
+    }
+
+    @Override
+    public void checkServerTrusted(final X509Certificate[] x509Certificates, final String s, final Socket socket) {
+    }
+
+    @Override
+    public void checkClientTrusted(final X509Certificate[] x509Certificates, final String s,
+            final SSLEngine sslEngine) {
+    }
+
+    @Override
+    public void checkServerTrusted(final X509Certificate[] x509Certificates, final String s,
+            final SSLEngine sslEngine) {
     }
 
 }

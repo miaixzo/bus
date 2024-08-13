@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-
 import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * This class represents a duration in time.
@@ -42,7 +42,6 @@ public class Duration implements Serializable {
     private static final long serialVersionUID = -1L;
 
     private static final String[] TIME_UNITS = { "mo", "w", "d", "h", "m", "s" };
-
     private static final int[] TIME_UNIT_MULTIPLIERS = { 60 * 60 * 8 * 5 * 4, // 4 weeks = 1 month
             60 * 60 * 8 * 5, // 5 days = 1 week
             60 * 60 * 8, // 8 hours = 1 day
@@ -61,7 +60,7 @@ public class Duration implements Serializable {
      */
     public Duration(String durationString) {
         seconds = parse(durationString);
-        this.durationString = (seconds == 0 ? "0m" : toString(seconds));
+        this.durationString = (seconds == 0 ? "0m" : toString(seconds, true));
     }
 
     /**
@@ -71,17 +70,21 @@ public class Duration implements Serializable {
      */
     public Duration(int seconds) {
         this.seconds = seconds;
-        durationString = (seconds == 0 ? "0m" : toString(seconds));
+        durationString = (seconds == 0 ? "0m" : toString(seconds, true));
+    }
+
+    @JsonCreator
+    public static Duration forValue(String value) {
+        return new Duration(value);
     }
 
     /**
-     * Create a human readable duration string from seconds.
+     * Get the number of seconds this duration represents.
      *
-     * @param durationSeconds the total number of seconds in the duration
-     * @return a human readable string representing the duration
+     * @return the number of seconds this duration represents
      */
-    public static final String toString(int durationSeconds) {
-        return toString(durationSeconds, true);
+    public int getSeconds() {
+        return (seconds);
     }
 
     /**
@@ -173,6 +176,15 @@ public class Duration implements Serializable {
     }
 
     /**
+     * Set the number of seconds this duration represents.
+     *
+     * @param seconds the number of seconds this duration represents
+     */
+    public void setSeconds(int seconds) {
+        this.seconds = seconds;
+    }
+
+    /**
      * Parses a human readable duration string and calculates the number of seconds it represents.
      *
      * @param durationString the human readable duration
@@ -220,7 +232,7 @@ public class Duration implements Serializable {
         return (seconds);
     }
 
-    private static final int getUnitIndex(String unit) {
+    private static int getUnitIndex(String unit) {
 
         for (int i = 0; i < TIME_UNITS.length; i++) {
             if (unit.equals(TIME_UNITS[i]))
@@ -230,32 +242,10 @@ public class Duration implements Serializable {
         return (-1);
     }
 
-    /**
-     * Get the number of seconds this duration represents.
-     *
-     * @return the number of seconds this duration represents
-     */
-    public int getSeconds() {
-        return (seconds);
-    }
-
-    /**
-     * Set the number of seconds this duration represents.
-     *
-     * @param seconds the number of seconds this duration represents
-     */
-    public void setSeconds(int seconds) {
-        this.seconds = seconds;
-    }
-
     @JsonValue
     @Override
     public String toString() {
         return (durationString);
     }
 
-    @JsonCreator
-    public static Duration forValue(String value) {
-        return new Duration(value);
-    }
 }

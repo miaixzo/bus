@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.goalie.metric;
 
+import org.miaixz.bus.goalie.Assets;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.miaixz.bus.goalie.Assets;
 
 /**
  * token参数

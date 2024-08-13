@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.io.watch;
 
+import java.nio.file.*;
+import java.util.Set;
+
 import org.miaixz.bus.core.center.ConcurrentHashSet;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.ThreadKit;
-
-import java.nio.file.*;
-import java.util.Set;
 
 /**
  * 延迟观察者 使用此观察者通过定义一定的延迟时间，解决{@link WatchService}多个modify的问题 在监听目录或文件时，如果这个文件有修改操作，会多次触发modify方法。

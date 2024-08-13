@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.center.map.reference;
 
+import java.lang.ref.ReferenceQueue;
+import java.util.concurrent.ConcurrentMap;
+
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.lang.ref.Ref;
 import org.miaixz.bus.core.lang.ref.SoftObject;
-
-import java.lang.ref.ReferenceQueue;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * 线程安全的SoftMap实现 键和值都为Soft引用，即，在GC报告内存不足时会被GC回收

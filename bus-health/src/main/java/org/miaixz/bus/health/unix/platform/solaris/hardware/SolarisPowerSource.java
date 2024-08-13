@@ -27,17 +27,18 @@
 */
 package org.miaixz.bus.health.unix.platform.solaris.hardware;
 
-import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.PowerSource;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractPowerSource;
 import org.miaixz.bus.health.unix.platform.solaris.KstatKit;
 import org.miaixz.bus.health.unix.platform.solaris.KstatKit.KstatChain;
 
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
+import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 
 /**
  * A Power Source

@@ -27,40 +27,13 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
 
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
 public class WikiAttachment implements Serializable {
+
     private static final long serialVersionUID = -1L;
-
-    public static class Link implements Serializable {
-        private static final long serialVersionUID = -1L;
-
-        private String url;
-        private String markdown;
-
-        public String getUrl() {
-            return url;
-        }
-
-        public void setUrl(String url) {
-            this.url = url;
-        }
-
-        public String getMarkdown() {
-            return markdown;
-        }
-
-        public void setMarkdown(String markdown) {
-            this.markdown = markdown;
-        }
-
-        @Override
-        public String toString() {
-            return (JacksonJson.toJsonString(this));
-        }
-    }
 
     private String fileName;
     private String filePath;
@@ -103,4 +76,34 @@ public class WikiAttachment implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
+    public static class Link implements Serializable {
+
+        private static final long serialVersionUID = -1L;
+
+        private String url;
+        private String markdown;
+
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public String getMarkdown() {
+            return markdown;
+        }
+
+        public void setMarkdown(String markdown) {
+            this.markdown = markdown;
+        }
+
+        @Override
+        public String toString() {
+            return (JacksonJson.toJsonString(this));
+        }
+    }
+
 }

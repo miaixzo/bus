@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.extra.nlp.provider.mmseg;
 
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.nlp.NLPProvider;
+import org.miaixz.bus.extra.nlp.NLPResult;
+
 import com.chenlb.mmseg4j.ComplexSeg;
 import com.chenlb.mmseg4j.Dictionary;
 import com.chenlb.mmseg4j.MMSeg;
 import com.chenlb.mmseg4j.Seg;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.extra.nlp.NLPProvider;
-import org.miaixz.bus.extra.nlp.NLPResult;
 
 /**
  * mmseg4j分词引擎实现 项目地址：https://github.com/chenlb/mmseg4j-core {@link MMSeg}非线程安全，故单独创建之

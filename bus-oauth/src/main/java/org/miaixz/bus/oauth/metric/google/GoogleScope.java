@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.oauth.metric.google;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import org.miaixz.bus.oauth.metric.AuthorizeScope;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.miaixz.bus.oauth.metric.AuthorizeScope;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * Google 授权范围

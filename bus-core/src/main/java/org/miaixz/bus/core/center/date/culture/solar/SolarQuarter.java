@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.center.date.culture.solar;
 
-import org.miaixz.bus.core.center.date.culture.Loops;
-import org.miaixz.bus.core.center.date.culture.en.Quarter;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.miaixz.bus.core.center.date.culture.Loops;
+import org.miaixz.bus.core.center.date.culture.en.Quarter;
 
 /**
  * 公历季度
@@ -127,8 +127,8 @@ public class SolarQuarter extends Loops {
     public List<SolarMonth> getMonths() {
         List<SolarMonth> l = new ArrayList<>(3);
         int y = getYear();
-        for (int i = 0; i < 3; i++) {
-            l.add(SolarMonth.fromYm(y, index * 3 + i + 1));
+        for (int i = 1; i < 4; i++) {
+            l.add(SolarMonth.fromYm(y, index * 3 + i));
         }
         return l;
     }

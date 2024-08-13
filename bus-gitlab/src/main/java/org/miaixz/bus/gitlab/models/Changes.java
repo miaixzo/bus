@@ -27,13 +27,15 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
 
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Changes implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     @JsonInclude(JsonInclude.Include.ALWAYS)
@@ -123,4 +125,5 @@ public class Changes implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

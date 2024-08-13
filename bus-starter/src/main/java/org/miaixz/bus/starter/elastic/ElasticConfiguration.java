@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.starter.elastic;
 
-import jakarta.annotation.Resource;
+import java.util.List;
+
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
 import org.elasticsearch.client.RestClientBuilder;
-import org.elasticsearch.client.RestHighLevelClient;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -42,7 +42,11 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
-import java.util.List;
+import co.elastic.clients.elasticsearch.ElasticsearchClient;
+import co.elastic.clients.json.jackson.JacksonJsonpMapper;
+import co.elastic.clients.transport.ElasticsearchTransport;
+import co.elastic.clients.transport.rest_client.RestClientTransport;
+import jakarta.annotation.Resource;
 
 /**
  * ElasticSearch 规则配置
@@ -54,20 +58,42 @@ import java.util.List;
 public class ElasticConfiguration {
 
     @Resource
-    private ElasticProperties elasticProperties;
+    private ElasticProperties properties;
 
     @Bean
     @ConditionalOnClass
     public RestClientBuilder restClientBuilder() {
-        if (CollKit.isEmpty(this.elasticProperties.getHostList())) {
+        if (CollKit.isEmpty(this.properties.getHostList())) {
             Logger.error("[ElasticConfiguration.restClientBuilder] 初始化 RestClient 失败: 未配置集群主机信息");
             throw new InternalException("初始化 RestClient 失败: 未配置 ElasticSearch 集群主机信息");
         }
 
-        HttpHost[] hosts = this.elasticProperties.getHostList().stream().map(this::buildHttpHost)
-                .toArray(HttpHost[]::new);
+        RestClientBuilder restClientBuilder = RestClient
+                .builder(this.properties.getHostList().stream().map(this::buildHttpHost).toArray(HttpHost[]::new));
 
-        return RestClient.builder(hosts);
+        // 连接延时配置
+        restClientBuilder.setRequestConfigCallback(requestConfigBuilder -> {
+            requestConfigBuilder.setConnectTimeout(this.properties.getConnectTimeout());
+            requestConfigBuilder.setSocketTimeout(this.properties.getSocketTimeout());
+            requestConfigBuilder.setConnectionRequestTimeout(this.properties.getConnectionRequestTimeout());
+            return requestConfigBuilder;
+        });
+
+        // 连接数配置
+        restClientBuilder.setHttpClientConfigCallback(httpClientBuilder -> {
+            httpClientBuilder.setMaxConnTotal(this.properties.getMaxConnectTotal());
+            httpClientBuilder.setMaxConnPerRoute(this.properties.getMaxConnectPerRoute());
+            return httpClientBuilder;
+        });
+
+        return restClientBuilder;
+    }
+
+    @Bean
+    public ElasticsearchClient elasticsearchClient(RestClientBuilder restClientBuilder) {
+        ElasticsearchTransport transport = new RestClientTransport(restClientBuilder.build(), new JacksonJsonpMapper());
+        ElasticsearchClient client = new ElasticsearchClient(transport);
+        return client;
     }
 
     private HttpHost buildHttpHost(String host) {
@@ -76,21 +102,7 @@ public class ElasticConfiguration {
         }
         List<String> hostPort = StringKit.split(host, Symbol.COLON);
         return new HttpHost(hostPort.get(Consts.INTEGER_ZERO), Integer.parseInt(hostPort.get(Consts.INTEGER_ONE)),
-                this.elasticProperties.getSchema());
-    }
-
-    @Bean(name = "highLevelClient")
-    public RestHighLevelClient highLevelClient(RestClientBuilder restClientBuilder) {
-        // 异步 HttpClient 连接超时配置
-        restClientBuilder.setRequestConfigCallback(requestConfigBuilder -> requestConfigBuilder
-                .setConnectTimeout(this.elasticProperties.getConnectTimeout())
-                .setSocketTimeout(this.elasticProperties.getSocketTimeout())
-                .setConnectionRequestTimeout(this.elasticProperties.getConnectionRequestTimeout()));
-        // 异步 HttpClient 连接数配置
-        restClientBuilder.setHttpClientConfigCallback(httpAsyncClientBuilder -> httpAsyncClientBuilder
-                .setMaxConnTotal(this.elasticProperties.getMaxConnectTotal())
-                .setMaxConnPerRoute(this.elasticProperties.getMaxConnectPerRoute()));
-        return new RestHighLevelClient(restClientBuilder);
+                this.properties.getSchema());
     }
 
 }

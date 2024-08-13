@@ -27,18 +27,21 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.Form;
-import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.MultivaluedMap;
-import jakarta.ws.rs.core.Response;
-import org.miaixz.bus.gitlab.models.*;
-import org.miaixz.bus.gitlab.support.ISO8601;
-
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.gitlab.models.*;
+import org.miaixz.bus.gitlab.models.CommitAction.Action;
+import org.miaixz.bus.gitlab.models.CommitRef.RefType;
+import org.miaixz.bus.gitlab.support.ISO8601;
+
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
 
 /**
  * This class implements the client side API for the GitLab commits calls. See
@@ -357,10 +360,9 @@ public class CommitsApi extends AbstractApi {
      * @param sha             a commit hash or name of a branch or tag
      * @return a List of all references (from branches or tags) a commit is pushed to
      * @throws GitLabApiException GitLabApiException if any exception occurs during execution
-     * @since Gitlab 10.6
      */
     public List<CommitRef> getCommitRefs(Object projectIdOrPath, String sha) throws GitLabApiException {
-        return (getCommitRefs(projectIdOrPath, sha, CommitRef.RefType.ALL, getDefaultPerPage()).all());
+        return (getCommitRefs(projectIdOrPath, sha, RefType.ALL, getDefaultPerPage()).all());
     }
 
     /**
@@ -375,11 +377,10 @@ public class CommitsApi extends AbstractApi {
      * @param itemsPerPage    the number of Commit instances that will be fetched per page
      * @return a Pager of references (from branches or tags) a commit is pushed to
      * @throws GitLabApiException GitLabApiException if any exception occurs during execution
-     * @since Gitlab 10.6
      */
     public Pager<CommitRef> getCommitRefs(Object projectIdOrPath, String sha, int itemsPerPage)
             throws GitLabApiException {
-        return (getCommitRefs(projectIdOrPath, sha, CommitRef.RefType.ALL, itemsPerPage));
+        return (getCommitRefs(projectIdOrPath, sha, RefType.ALL, itemsPerPage));
     }
 
     /**
@@ -393,10 +394,9 @@ public class CommitsApi extends AbstractApi {
      * @param sha             a commit hash or name of a branch or tag
      * @return a Stream of all references (from branches or tags) a commit is pushed to
      * @throws GitLabApiException GitLabApiException if any exception occurs during execution
-     * @since Gitlab 10.6
      */
     public Stream<CommitRef> getCommitRefsStream(Object projectIdOrPath, String sha) throws GitLabApiException {
-        return (getCommitRefs(projectIdOrPath, sha, CommitRef.RefType.ALL, getDefaultPerPage()).stream());
+        return (getCommitRefs(projectIdOrPath, sha, RefType.ALL, getDefaultPerPage()).stream());
     }
 
     /**
@@ -411,9 +411,8 @@ public class CommitsApi extends AbstractApi {
      * @param refType         the scope of commits. Possible values branch, tag, all. Default is all.
      * @return a List of all references (from branches or tags) a commit is pushed to
      * @throws GitLabApiException GitLabApiException if any exception occurs during execution
-     * @since Gitlab 10.6
      */
-    public List<CommitRef> getCommitRefs(Object projectIdOrPath, String sha, CommitRef.RefType refType)
+    public List<CommitRef> getCommitRefs(Object projectIdOrPath, String sha, RefType refType)
             throws GitLabApiException {
         return (getCommitRefs(projectIdOrPath, sha, refType, getDefaultPerPage()).all());
     }
@@ -431,7 +430,6 @@ public class CommitsApi extends AbstractApi {
      * @param itemsPerPage    the number of Commit instances that will be fetched per page
      * @return a Pager of references (from branches or tags) a commit is pushed to
      * @throws GitLabApiException GitLabApiException if any exception occurs during execution
-     * @since Gitlab 10.6
      */
     public Pager<CommitRef> getCommitRefs(Object projectIdOrPath, String sha, CommitRef.RefType refType,
             int itemsPerPage) throws GitLabApiException {
@@ -452,9 +450,8 @@ public class CommitsApi extends AbstractApi {
      * @param refType         the scope of commits. Possible values branch, tag, all. Default is all.
      * @return a Stream of all references (from branches or tags) a commit is pushed to
      * @throws GitLabApiException GitLabApiException if any exception occurs during execution
-     * @since Gitlab 10.6
      */
-    public Stream<CommitRef> getCommitRefsStream(Object projectIdOrPath, String sha, CommitRef.RefType refType)
+    public Stream<CommitRef> getCommitRefsStream(Object projectIdOrPath, String sha, RefType refType)
             throws GitLabApiException {
         return (getCommitRefs(projectIdOrPath, sha, refType, getDefaultPerPage()).stream());
     }
@@ -507,7 +504,7 @@ public class CommitsApi extends AbstractApi {
                 : getPageQueryParams(page, perPage));
         Response response = get(Response.Status.OK, queryParams, "projects", this.getProjectIdOrPath(projectIdOrPath),
                 "repository", "commits", sha, "statuses");
-        return (response.readEntity(new GenericType<List<CommitStatus>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -699,8 +696,8 @@ public class CommitsApi extends AbstractApi {
      * @throws GitLabApiException GitLabApiException if any exception occurs during execution
      */
     public Pager<Comment> getComments(Object projectIdOrPath, String sha, int itemsPerPage) throws GitLabApiException {
-        return new Pager<Comment>(this, Comment.class, itemsPerPage, null, "projects",
-                getProjectIdOrPath(projectIdOrPath), "repository", "commits", sha, "comments");
+        return new Pager<>(this, Comment.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
+                "repository", "commits", sha, "comments");
     }
 
     /**
@@ -840,8 +837,8 @@ public class CommitsApi extends AbstractApi {
         for (CommitAction action : actions) {
 
             // File content is required for create and update
-            CommitAction.Action actionType = action.getAction();
-            if (actionType == CommitAction.Action.CREATE || actionType == CommitAction.Action.UPDATE) {
+            Action actionType = action.getAction();
+            if (actionType == Action.CREATE || actionType == Action.UPDATE) {
                 String content = action.getContent();
                 if (content == null) {
                     throw new GitLabApiException("Content cannot be null for create or update actions.");
@@ -865,7 +862,6 @@ public class CommitsApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /projects/:id/repository/commits/:sha/revert</code>
      * </pre>
      *
-     * @since GitLab 11.5
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param sha             the commit SHA to revert
      * @param branch          the target branch to revert the commit on
@@ -886,7 +882,6 @@ public class CommitsApi extends AbstractApi {
      * <code>GitLab Endpoint: POST /projects/:id/repository/commits/:sha/cherry_pick</code>
      * </pre>
      *
-     * @since GitLab 8.15
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param sha             the commit SHA to cherry pick
      * @param branch          the target branch to cherry pick the commit on
@@ -931,7 +926,7 @@ public class CommitsApi extends AbstractApi {
      */
     public Pager<MergeRequest> getMergeRequests(Object projectIdOrPath, String sha, int itemsPerPage)
             throws GitLabApiException {
-        return (new Pager<MergeRequest>(this, MergeRequest.class, itemsPerPage, null, "projects",
+        return (new Pager<>(this, MergeRequest.class, itemsPerPage, null, "projects",
                 getProjectIdOrPath(projectIdOrPath), "repository", "commits", urlEncode(sha), "merge_requests"));
     }
 
@@ -987,4 +982,5 @@ public class CommitsApi extends AbstractApi {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }
+
 }

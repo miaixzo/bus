@@ -27,7 +27,6 @@
 */
 package org.miaixz.bus.oauth.metric.wechat.ee;
 
-import com.alibaba.fastjson.JSONObject;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.MediaType;
@@ -42,6 +41,8 @@ import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
+
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * 企业微信 第三方二维码登录

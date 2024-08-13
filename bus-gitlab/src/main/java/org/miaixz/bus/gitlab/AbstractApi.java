@@ -27,18 +27,20 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.NotAuthorizedException;
-import jakarta.ws.rs.core.Form;
-import jakarta.ws.rs.core.MultivaluedMap;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.StreamingOutput;
-import org.miaixz.bus.gitlab.models.*;
-
 import java.io.File;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+
+import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
+import org.miaixz.bus.gitlab.models.*;
+
+import jakarta.ws.rs.NotAuthorizedException;
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.MultivaluedMap;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.StreamingOutput;
 
 /**
  * This class is the base class for all the sub API classes. It provides implementations of delete(), get(), post() and
@@ -235,11 +237,11 @@ public abstract class AbstractApi implements Constants {
         }
     }
 
-    protected GitLabApi.ApiVersion getApiVersion() {
+    protected ApiVersion getApiVersion() {
         return (gitLabApi.getApiVersion());
     }
 
-    protected boolean isApiVersion(GitLabApi.ApiVersion apiVersion) {
+    protected boolean isApiVersion(ApiVersion apiVersion) {
         return (gitLabApi.getApiVersion() == apiVersion);
     }
 
@@ -861,4 +863,5 @@ public abstract class AbstractApi implements Constants {
 
         return (form.asMap());
     }
+
 }

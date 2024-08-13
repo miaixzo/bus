@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.mapper.additional.idlist;
 
+import java.util.List;
+import java.util.Set;
+
 import org.apache.ibatis.mapping.MappedStatement;
 import org.miaixz.bus.core.lang.exception.MapperException;
 import org.miaixz.bus.mapper.builder.EntityBuilder;
@@ -34,9 +37,6 @@ import org.miaixz.bus.mapper.builder.MapperBuilder;
 import org.miaixz.bus.mapper.builder.MapperTemplate;
 import org.miaixz.bus.mapper.builder.SqlBuilder;
 import org.miaixz.bus.mapper.entity.EntityColumn;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * 通过 ids 字符串的各种操作 ids 如 "1,2,3"

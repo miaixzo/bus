@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.pager.dialect;
 
+import java.util.List;
+import java.util.Properties;
+
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.miaixz.bus.pager.RowBounds;
-
-import java.util.List;
-import java.util.Properties;
 
 /**
  * 基于 RowBounds 的分页

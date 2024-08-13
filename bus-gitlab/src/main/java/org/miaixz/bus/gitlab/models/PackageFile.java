@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
 import java.util.Date;
 
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
 public class PackageFile implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Long id;
@@ -42,6 +43,7 @@ public class PackageFile implements Serializable {
     private Long size;
     private String fileMd5;
     private String fileSha1;
+    private String fileSha256;
 
     public Long getId() {
         return id;
@@ -99,8 +101,17 @@ public class PackageFile implements Serializable {
         this.fileSha1 = fileSha1;
     }
 
+    public String getFileSha256() {
+        return fileSha256;
+    }
+
+    public void setFileSha256(String fileSha256) {
+        this.fileSha256 = fileSha256;
+    }
+
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

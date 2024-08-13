@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.health.builtin.hardware;
 
-import org.miaixz.bus.core.lang.annotation.Immutable;
-
 import java.util.List;
+
+import org.miaixz.bus.core.lang.annotation.Immutable;
 
 /**
  * A USB device is a device connected via a USB port, possibly internally/permanently. Hubs may contain ports to which

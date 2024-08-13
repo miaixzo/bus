@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.image.nimble.codec.mp4;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.SeekableByteChannel;
+import java.util.Date;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
@@ -34,11 +39,6 @@ import org.miaixz.bus.image.galaxy.SafeBuffer;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.VR;
 import org.miaixz.bus.image.nimble.codec.XPEGParser;
-
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.SeekableByteChannel;
-import java.util.Date;
 
 public class MP4Parser implements XPEGParser {
 

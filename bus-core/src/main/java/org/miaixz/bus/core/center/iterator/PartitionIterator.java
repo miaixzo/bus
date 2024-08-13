@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.center.iterator;
 
-import org.miaixz.bus.core.lang.Assert;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+
+import org.miaixz.bus.core.lang.Assert;
 
 /**
  * 分批迭代工具，可以分批处理数据

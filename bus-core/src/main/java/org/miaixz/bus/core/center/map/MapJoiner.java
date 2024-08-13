@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.center.map;
 
-import org.miaixz.bus.core.text.StringJoiner;
-import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.util.Iterator;
 import java.util.Map;
 import java.util.function.Predicate;
+
+import org.miaixz.bus.core.text.StringJoiner;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Map拼接器，可以拼接包括Map、Entry列表等。

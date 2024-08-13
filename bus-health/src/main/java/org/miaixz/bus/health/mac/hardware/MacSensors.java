@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.health.mac.hardware;
 
-import com.sun.jna.platform.mac.IOKit.IOConnect;
+import java.util.Locale;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractSensors;
 import org.miaixz.bus.health.mac.SmcKit;
 
-import java.util.Locale;
+import com.sun.jna.platform.mac.IOKit.IOConnect;
 
 /**
  * Sensors from SMC

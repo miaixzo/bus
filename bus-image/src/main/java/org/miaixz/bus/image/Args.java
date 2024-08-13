@@ -27,8 +27,13 @@
 */
 package org.miaixz.bus.image;
 
-import lombok.Builder;
-import lombok.*;
+import java.io.IOException;
+import java.net.URL;
+import java.security.GeneralSecurityException;
+import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.List;
+
 import org.miaixz.bus.core.net.tls.TrustAnyTrustManager;
 import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.QueryOption;
@@ -38,12 +43,8 @@ import org.miaixz.bus.image.metric.pdu.AAssociateRQ;
 import org.miaixz.bus.image.metric.pdu.IdentityAC;
 import org.miaixz.bus.image.metric.pdu.IdentityRQ;
 
-import java.io.IOException;
-import java.net.URL;
-import java.security.GeneralSecurityException;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.List;
+import lombok.*;
+import lombok.Builder;
 
 /**
  * 请求参数信息

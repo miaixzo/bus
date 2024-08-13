@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.shade.safety.archive;
 
-import org.miaixz.bus.shade.safety.Complex;
-import org.miaixz.bus.shade.safety.complex.RegexComplex;
-
 import java.io.File;
 import java.util.regex.Pattern;
+
+import org.miaixz.bus.shade.safety.Complex;
+import org.miaixz.bus.shade.safety.complex.RegexComplex;
 
 /**
  * 文件记录正则表达式规则

@@ -27,12 +27,14 @@
 */
 package org.miaixz.bus.health.unix.platform.openbsd.hardware;
 
-import com.sun.jna.Memory;
-import com.sun.jna.Native;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import java.util.*;
+import java.util.function.Supplier;
+import java.util.regex.Matcher;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.core.lang.tuple.Tuple;
@@ -44,9 +46,8 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractCentralProcessor;
 import org.miaixz.bus.health.unix.jna.OpenBsdLibc;
 import org.miaixz.bus.health.unix.platform.openbsd.OpenBsdSysctlKit;
 
-import java.util.*;
-import java.util.function.Supplier;
-import java.util.regex.Matcher;
+import com.sun.jna.Memory;
+import com.sun.jna.Native;
 
 /**
  * OpenBSD Central Processor implementation

@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.health.windows.hardware;
 
+import java.util.List;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.*;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;
-
-import java.util.List;
 
 /**
  * WindowsHardwareAbstractionLayer class.

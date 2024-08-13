@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.http.metric.http;
 
+import java.io.IOException;
+import java.net.ProtocolException;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.http.Response;
-
-import java.io.IOException;
-import java.net.ProtocolException;
 
 /**
  * HTTP响应“HTTP/ 1.1200 OK”这样的在线状态.

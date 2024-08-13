@@ -27,15 +27,16 @@
 */
 package org.miaixz.bus.gitlab.hooks.web;
 
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.util.Date;
+
+import org.miaixz.bus.gitlab.support.JacksonJson;
 
 /**
  * The documentation at: <a href="https://docs.gitlab.com/ee/user/project/integrations/webhook_events.html#job-events">
  * Job Events</a> is incorrect, this class represents the actual content of the Job Hook event.
  */
 public class BuildEvent extends AbstractEvent {
+
     private static final long serialVersionUID = -1L;
 
     public static final String JOB_HOOK_X_GITLAB_EVENT = "Job Hook";
@@ -238,4 +239,5 @@ public class BuildEvent extends AbstractEvent {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

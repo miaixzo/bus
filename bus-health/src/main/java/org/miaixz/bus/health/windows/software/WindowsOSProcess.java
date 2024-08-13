@@ -27,14 +27,13 @@
 */
 package org.miaixz.bus.health.windows.software;
 
-import com.sun.jna.Memory;
-import com.sun.jna.Pointer;
-import com.sun.jna.platform.win32.*;
-import com.sun.jna.platform.win32.Advapi32Util.Account;
-import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
-import com.sun.jna.platform.win32.WinNT.HANDLE;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import java.io.File;
+import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.health.Config;
@@ -54,10 +53,12 @@ import org.miaixz.bus.health.windows.driver.wmi.Win32Process.CommandLineProperty
 import org.miaixz.bus.health.windows.driver.wmi.Win32ProcessCached;
 import org.miaixz.bus.logger.Logger;
 
-import java.io.File;
-import java.util.*;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import com.sun.jna.Memory;
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.win32.*;
+import com.sun.jna.platform.win32.Advapi32Util.Account;
+import com.sun.jna.platform.win32.WinNT.HANDLE;
+import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
 /**
  * OSProcess implementation

@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.health.builtin.hardware;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-
 import java.util.List;
+
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 
 /**
  * A storage mechanism where data are recorded by various electronic, magnetic, optical, or mechanical changes to a

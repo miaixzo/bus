@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.center.function;
 
-import org.miaixz.bus.core.xyz.ExceptionKit;
-
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.core.xyz.ExceptionKit;
 
 /**
  * 可序列化的Consumer

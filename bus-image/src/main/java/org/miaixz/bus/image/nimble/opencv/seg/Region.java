@@ -27,14 +27,16 @@
 */
 package org.miaixz.bus.image.nimble.opencv.seg;
 
+import java.awt.geom.Point2D;
+import java.util.*;
+
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.nimble.opencv.PlanarImage;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfPoint2f;
+import org.opencv.core.Point;
 import org.opencv.imgproc.Imgproc;
-
-import java.awt.geom.Point2D;
-import java.util.*;
 
 /**
  * @author Kimi Liu
@@ -62,16 +64,33 @@ public class Region {
     }
 
     public static List<Segment> buildSegmentList(PlanarImage binary) {
+        return buildSegmentList(binary, null);
+    }
+
+    public static List<Segment> buildSegmentList(PlanarImage binary, Point offset) {
         if (binary == null) {
             return Collections.emptyList();
         }
         List<MatOfPoint> contours = new ArrayList<>();
         Mat hierarchy = new Mat();
-        Imgproc.findContours(binary.toMat(), contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+        if (offset == null) {
+            Imgproc.findContours(binary.toMat(), contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+        } else {
+            Imgproc.findContours(binary.toMat(), contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE,
+                    offset);
+        }
         return buildSegmentList(contours, hierarchy);
     }
 
+    public static List<Segment> buildSegmentListFromFloat(List<MatOfPoint2f> contours, Mat hierarchy) {
+        return buildSegmentListFromPoint(contours, hierarchy);
+    }
+
     public static List<Segment> buildSegmentList(List<MatOfPoint> contours, Mat hierarchy) {
+        return buildSegmentListFromPoint(contours, hierarchy);
+    }
+
+    protected static List<Segment> buildSegmentListFromPoint(List<? extends Mat> contours, Mat hierarchy) {
         if (contours == null || hierarchy == null) {
             return Collections.emptyList();
         }
@@ -79,8 +98,13 @@ public class Region {
         int[] hierarchyData = new int[4];
         for (int i = 0; i < contours.size(); i++) {
             hierarchy.get(0, i, hierarchyData);
-            ContourTopology contourTopology = new ContourTopology(contours.get(i), hierarchyData[3]);
-            contourMap.put(i, contourTopology);
+            if (contours.get(i) instanceof MatOfPoint pt) {
+                ContourTopology contourTopology = new ContourTopology(pt, hierarchyData[3]);
+                contourMap.put(i, contourTopology);
+            } else if (contours.get(i) instanceof MatOfPoint2f pt2f) {
+                ContourTopology contourTopology = new ContourTopology(pt2f, hierarchyData[3]);
+                contourMap.put(i, contourTopology);
+            }
         }
 
         List<Segment> segmentList = new ArrayList<>();
@@ -130,13 +154,10 @@ public class Region {
     private static double polygonArea(Segment segment) {
         double area = 0.0;
         int n = segment.size();
-        int j = n - 1;
-
         for (int i = 0; i < n; i++) {
-            Point2D pt = segment.get(i);
-            Point2D ptNext = segment.get(j);
-            area += (ptNext.getX() + pt.getX() + 0.5) * (ptNext.getY() - pt.getY() + 0.5);
-            j = i;
+            Point2D pt1 = segment.get(i);
+            Point2D pt2 = segment.get((i + 1) % n);
+            area += pt1.getX() * pt2.getY() - pt2.getX() * pt1.getY();
         }
         return Math.abs(area) / 2.0;
     }

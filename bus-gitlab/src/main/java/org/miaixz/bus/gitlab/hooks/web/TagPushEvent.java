@@ -30,6 +30,7 @@ package org.miaixz.bus.gitlab.hooks.web;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class TagPushEvent extends AbstractPushEvent implements Event {
+
     private static final long serialVersionUID = -1L;
 
     public static final String X_GITLAB_EVENT = "Tag Push Hook";
@@ -49,4 +50,5 @@ public class TagPushEvent extends AbstractPushEvent implements Event {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

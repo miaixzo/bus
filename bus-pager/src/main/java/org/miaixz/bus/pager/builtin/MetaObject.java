@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.pager.builtin;
 
-import org.miaixz.bus.core.lang.exception.PageException;
-
 import java.lang.reflect.Method;
+
+import org.miaixz.bus.core.lang.exception.PageException;
 
 /**
  * @author Kimi Liu

@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.shade.safety.complex;
 
-import org.miaixz.bus.shade.safety.Complex;
-
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import org.miaixz.bus.shade.safety.Complex;
 
 /**
  * 混合过滤器

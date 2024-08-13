@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.setting.magic;
 
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.*;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
+
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.*;
 
 /**
  * 分组化的Set集合类 在配置文件中可以用中括号分隔不同的分组，每个分组会放在独立的Set中，用group区别 无分组的集合和`[]`分组集合会合并成员，重名的分组也会合并成员 分组配置文件如下：

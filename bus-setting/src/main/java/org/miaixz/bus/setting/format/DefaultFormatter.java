@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.setting.format;
 
+import java.util.Objects;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.setting.Format;
 import org.miaixz.bus.setting.metric.ini.IniComment;
 import org.miaixz.bus.setting.metric.ini.IniElement;
 import org.miaixz.bus.setting.metric.ini.IniProperty;
 import org.miaixz.bus.setting.metric.ini.IniSection;
-
-import java.util.Objects;
 
 /**
  * 默认的ini行格式器 需要三种格式器之一 {@link IniComment }, {@link IniSection }, {@link IniProperty }

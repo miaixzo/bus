@@ -27,18 +27,6 @@
 */
 package org.miaixz.bus.extra.ftp;
 
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPClientConfig;
-import org.apache.commons.net.ftp.FTPFile;
-import org.apache.commons.net.ftp.FTPReply;
-import org.miaixz.bus.core.io.file.FileName;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.EnumMap;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.*;
-import org.miaixz.bus.extra.ssh.Connector;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,6 +36,18 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPClientConfig;
+import org.apache.commons.net.ftp.FTPFile;
+import org.apache.commons.net.ftp.FTPReply;
+import org.miaixz.bus.core.io.file.FileName;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.EnumValue;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.*;
+import org.miaixz.bus.extra.ssh.Connector;
 
 /**
  * Apache Commons FTP客户端封装 此客户端基于Apache-Commons-Net 常见搭建ftp的工具有：
@@ -66,7 +66,7 @@ public class CommonsFtp extends AbstractFtp {
      */
     public static final int DEFAULT_PORT = 21;
     private FTPClient client;
-    private EnumMap.FtpMode mode;
+    private EnumValue.FtpMode mode;
     /**
      * 执行完操作是否返回当前目录
      */
@@ -78,7 +78,7 @@ public class CommonsFtp extends AbstractFtp {
      * @param config FTP配置
      * @param mode   模式
      */
-    public CommonsFtp(final FtpConfig config, final EnumMap.FtpMode mode) {
+    public CommonsFtp(final FtpConfig config, final EnumValue.FtpMode mode) {
         super(config);
         this.mode = mode;
         this.init();
@@ -164,7 +164,7 @@ public class CommonsFtp extends AbstractFtp {
      * @return CommonsFtp
      */
     public static CommonsFtp of(final Connector connector, final Charset charset, final String serverLanguageCode,
-            final String systemKey, final EnumMap.FtpMode mode) {
+            final String systemKey, final EnumValue.FtpMode mode) {
         return new CommonsFtp(new FtpConfig(connector, charset, serverLanguageCode, systemKey), mode);
     }
 
@@ -184,7 +184,7 @@ public class CommonsFtp extends AbstractFtp {
      * @param mode   模式
      * @return this
      */
-    public CommonsFtp init(final FtpConfig config, final EnumMap.FtpMode mode) {
+    public CommonsFtp init(final FtpConfig config, final EnumValue.FtpMode mode) {
         final FTPClient client = new FTPClient();
         client.setRemoteVerificationEnabled(false);
 
@@ -238,7 +238,7 @@ public class CommonsFtp extends AbstractFtp {
      * @param mode 模式枚举
      * @return this
      */
-    public CommonsFtp setMode(final EnumMap.FtpMode mode) {
+    public CommonsFtp setMode(final EnumValue.FtpMode mode) {
         this.mode = mode;
         switch (mode) {
         case Active:

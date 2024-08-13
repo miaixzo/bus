@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.pager.builtin;
 
+import java.util.Properties;
+
 import org.miaixz.bus.pager.Page;
 import org.miaixz.bus.pager.Querying;
-
-import java.util.Properties;
 
 /**
  * 基础分页方法

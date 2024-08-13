@@ -27,8 +27,8 @@
 */
 package org.miaixz.bus.starter.storage;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.Map;
+
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.miaixz.bus.starter.cache.CacheProperties;
 import org.miaixz.bus.storage.Context;
@@ -36,7 +36,8 @@ import org.miaixz.bus.storage.Registry;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
-import java.util.Map;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 存储配置信息 1. 默认读取配置文件信息 2. 通过set形式设置(动态/DB等)

@@ -27,21 +27,6 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.center.date.Calendar;
-import org.miaixz.bus.core.center.date.Formatter;
-import org.miaixz.bus.core.center.date.*;
-import org.miaixz.bus.core.center.date.culture.cn.Zodiac;
-import org.miaixz.bus.core.center.date.culture.en.*;
-import org.miaixz.bus.core.center.date.format.CustomFormat;
-import org.miaixz.bus.core.center.date.format.FormatBuilder;
-import org.miaixz.bus.core.center.date.format.FormatPeriod;
-import org.miaixz.bus.core.center.date.printer.FormatPrinter;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Fields;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.text.CharsBacker;
-
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -55,6 +40,22 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import org.miaixz.bus.core.center.date.*;
+import org.miaixz.bus.core.center.date.Calendar;
+import org.miaixz.bus.core.center.date.Formatter;
+import org.miaixz.bus.core.center.date.culture.cn.Zodiac;
+import org.miaixz.bus.core.center.date.culture.en.*;
+import org.miaixz.bus.core.center.date.format.CustomFormat;
+import org.miaixz.bus.core.center.date.format.FormatBuilder;
+import org.miaixz.bus.core.center.date.format.FormatPeriod;
+import org.miaixz.bus.core.center.date.printer.FormatPrinter;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.text.CharsBacker;
 
 /**
  * 日期时间工具类
@@ -745,30 +746,19 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * 修改日期为某个时间字段结束时间
-     *
-     * @param date    {@link Date}
-     * @param various 保留到的时间字段，如定义为 {@link Various#SECOND}，表示这个字段不变，这个字段以下字段全部取最大值
-     * @return {@link DateTime}
-     */
-    public static DateTime ceiling(final Date date, final Various various) {
-        return new DateTime(ceiling(calendar(date), various));
-    }
-
-    /**
      * 修改日期为某个时间字段结束时间 可选是否归零毫秒。
      *
      * <p>
      * 有时候由于毫秒部分必须为0（如MySQL数据库中），因此在此加上选项。
      * </p>
      *
-     * @param date                {@link Date}
-     * @param various             时间字段
-     * @param truncateMillisecond 是否毫秒归零
+     * @param date     {@link Date}
+     * @param various  时间字段
+     * @param truncate 是否毫秒归零
      * @return {@link DateTime}
      */
-    public static DateTime ceiling(final Date date, final Various various, final boolean truncateMillisecond) {
-        return new DateTime(ceiling(calendar(date), various, truncateMillisecond));
+    public static DateTime ceiling(final Date date, final Various various, final boolean truncate) {
+        return new DateTime(ceiling(calendar(date), various, truncate));
     }
 
     /**
@@ -784,11 +774,12 @@ public class DateKit extends Calendar {
     /**
      * 获取秒级别的结束时间，即毫秒设置为999
      *
-     * @param date 日期
+     * @param date     日期
+     * @param truncate 是否毫秒归零
      * @return {@link DateTime}
      */
-    public static DateTime endOfSecond(final Date date) {
-        return new DateTime(endOfSecond(calendar(date)));
+    public static DateTime endOfSecond(final Date date, final boolean truncate) {
+        return new DateTime(endOfSecond(calendar(date), truncate));
     }
 
     /**
@@ -803,12 +794,13 @@ public class DateKit extends Calendar {
 
     /**
      * 获取某小时的结束时间
-     *
-     * @param date 日期
+     * 
+     * @param date     日期
+     * @param truncate 是否毫秒归零
      * @return {@link DateTime}
      */
-    public static DateTime endOfHour(final Date date) {
-        return new DateTime(endOfHour(calendar(date)));
+    public static DateTime endOfHour(final Date date, final boolean truncate) {
+        return new DateTime(endOfHour(calendar(date), truncate));
     }
 
     /**
@@ -824,11 +816,12 @@ public class DateKit extends Calendar {
     /**
      * 获取某分钟的结束时间
      *
-     * @param date 日期
+     * @param date     日期
+     * @param truncate 是否毫秒归零
      * @return {@link DateTime}
      */
-    public static DateTime endOfMinute(final Date date) {
-        return new DateTime(endOfMinute(calendar(date)));
+    public static DateTime endOfMinute(final Date date, final boolean truncate) {
+        return new DateTime(endOfMinute(calendar(date), truncate));
     }
 
     /**
@@ -843,12 +836,13 @@ public class DateKit extends Calendar {
 
     /**
      * 获取某天的结束时间
-     *
-     * @param date 日期
+     * 
+     * @param date     日期
+     * @param truncate 是否毫秒归零
      * @return {@link DateTime}
      */
-    public static DateTime endOfDay(final Date date) {
-        return new DateTime(endOfDay(calendar(date)));
+    public static DateTime endOfDay(final Date date, final boolean truncate) {
+        return new DateTime(endOfDay(calendar(date), truncate));
     }
 
     /**
@@ -873,24 +867,15 @@ public class DateKit extends Calendar {
     }
 
     /**
-     * 获取某周的结束时间，周日定为一周的结束
-     *
-     * @param date 日期
-     * @return {@link DateTime}
-     */
-    public static DateTime endOfWeek(final Date date) {
-        return new DateTime(endOfWeek(calendar(date)));
-    }
-
-    /**
      * 获取某周的结束时间
      *
      * @param date              日期
      * @param isSundayAsLastDay 是否周日做为一周的最后一天（false表示周六做为最后一天）
+     * @param truncate          是否毫秒归零
      * @return {@link DateTime}
      */
-    public static DateTime endOfWeek(final Date date, final boolean isSundayAsLastDay) {
-        return new DateTime(endOfWeek(calendar(date), isSundayAsLastDay));
+    public static DateTime endOfWeek(final Date date, final boolean isSundayAsLastDay, final boolean truncate) {
+        return new DateTime(endOfWeek(calendar(date), isSundayAsLastDay, truncate));
     }
 
     /**
@@ -906,11 +891,12 @@ public class DateKit extends Calendar {
     /**
      * 获取某月的结束时间
      *
-     * @param date 日期
+     * @param date     日期
+     * @param truncate 是否毫秒归零
      * @return {@link DateTime}
      */
-    public static DateTime endOfMonth(final Date date) {
-        return new DateTime(endOfMonth(calendar(date)));
+    public static DateTime endOfMonth(final Date date, final boolean truncate) {
+        return new DateTime(endOfMonth(calendar(date), truncate));
     }
 
     /**
@@ -926,11 +912,12 @@ public class DateKit extends Calendar {
     /**
      * 获取某季度的结束时间
      *
-     * @param date 日期
+     * @param date     日期
+     * @param truncate 是否毫秒归零
      * @return {@link DateTime}
      */
-    public static DateTime endOfQuarter(final Date date) {
-        return new DateTime(endOfQuarter(calendar(date)));
+    public static DateTime endOfQuarter(final Date date, final boolean truncate) {
+        return new DateTime(endOfQuarter(calendar(date), truncate));
     }
 
     /**
@@ -946,11 +933,12 @@ public class DateKit extends Calendar {
     /**
      * 获取某年的结束时间
      *
-     * @param date 日期
+     * @param date     日期
+     * @param truncate 是否毫秒归零
      * @return {@link DateTime}
      */
-    public static DateTime endOfYear(final Date date) {
-        return new DateTime(endOfYear(calendar(date)));
+    public static DateTime endOfYear(final Date date, final boolean truncate) {
+        return new DateTime(endOfYear(calendar(date), truncate));
     }
 
     /**

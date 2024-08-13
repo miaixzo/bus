@@ -28,7 +28,7 @@
 package org.miaixz.bus.sensitive.metric;
 
 import org.miaixz.bus.core.Provider;
-import org.miaixz.bus.core.lang.EnumMap;
+import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.sensitive.Context;
 
 /**
@@ -50,7 +50,7 @@ public interface StrategyProvider extends Provider {
 
     @Override
     default Object type() {
-        return EnumMap.Povider.SENSITIVE;
+        return EnumValue.Povider.SENSITIVE;
     }
 
 }

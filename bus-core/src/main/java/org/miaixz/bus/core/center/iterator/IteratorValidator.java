@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.core.center.iterator;
 
-import org.miaixz.bus.core.center.CollectionValidator;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.xyz.MathKit;
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
+
+import org.miaixz.bus.core.center.CollectionValidator;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.xyz.MathKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Iterator检查工具类，提供字对象的blank和empty等检查

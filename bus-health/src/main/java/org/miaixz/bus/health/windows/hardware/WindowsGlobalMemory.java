@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.health.windows.hardware;
 
-import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
-import com.sun.jna.platform.win32.Kernel32;
-import com.sun.jna.platform.win32.Psapi;
-import com.sun.jna.platform.win32.VersionHelpers;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.health.Memoizer;
@@ -42,9 +42,10 @@ import org.miaixz.bus.health.windows.WmiKit;
 import org.miaixz.bus.health.windows.driver.wmi.Win32PhysicalMemory;
 import org.miaixz.bus.logger.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
+import com.sun.jna.platform.win32.Kernel32;
+import com.sun.jna.platform.win32.Psapi;
+import com.sun.jna.platform.win32.VersionHelpers;
+import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
 /**
  * Memory obtained by Performance Info.

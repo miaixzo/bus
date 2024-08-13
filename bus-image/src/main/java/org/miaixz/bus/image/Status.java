@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.image;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.image.galaxy.ImageParam;
-import org.miaixz.bus.image.galaxy.ImageProgress;
-import org.miaixz.bus.image.galaxy.data.Attributes;
-
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.image.galaxy.ImageParam;
+import org.miaixz.bus.image.galaxy.ImageProgress;
+import org.miaixz.bus.image.galaxy.data.Attributes;
 
 /**
  * @author Kimi Liu

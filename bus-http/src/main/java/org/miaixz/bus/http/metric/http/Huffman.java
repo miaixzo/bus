@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.http.metric.http;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.lang.Normal;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 /**
  * 这个类最初是由以下类组成的<a href="https://github.com/twitter/hpack">Twitter Hpack</a>.

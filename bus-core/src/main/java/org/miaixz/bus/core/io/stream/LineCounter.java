@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.io.stream;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.InternalException;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
  * 行数计数器

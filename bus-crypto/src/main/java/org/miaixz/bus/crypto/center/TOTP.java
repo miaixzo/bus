@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.crypto.center;
 
-import org.miaixz.bus.core.lang.Algorithm;
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.time.Duration;
 import java.time.Instant;
+
+import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * time-based one-time passwords (TOTP) 基于时间戳算法的一次性密码生成器

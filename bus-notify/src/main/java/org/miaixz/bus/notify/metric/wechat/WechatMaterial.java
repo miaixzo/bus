@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.notify.metric.wechat;
 
+import org.miaixz.bus.notify.magic.Material;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.notify.magic.Material;
 
 /**
  * 微信

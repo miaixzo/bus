@@ -27,10 +27,17 @@
 */
 package org.miaixz.bus.health.unix.platform.freebsd.software;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import java.io.File;
+import java.nio.file.PathMatcher;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Executor;
@@ -39,13 +46,6 @@ import org.miaixz.bus.health.builtin.software.OSFileStore;
 import org.miaixz.bus.health.builtin.software.common.AbstractFileSystem;
 import org.miaixz.bus.health.linux.software.LinuxOSFileStore;
 import org.miaixz.bus.health.unix.platform.freebsd.BsdSysctlKit;
-
-import java.io.File;
-import java.nio.file.PathMatcher;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * The FreeBSD File System contains {@link OSFileStore}s which are a storage pool, device, partition, volume, concrete

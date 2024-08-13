@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.LengthMatcher;
-
-import java.lang.annotation.*;
 
 /**
  * 字符串、数组、集合的长度校验

@@ -30,6 +30,8 @@ package org.miaixz.bus.starter.notify;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
+import jakarta.annotation.Resource;
+
 /**
  * 消息通知配置
  *
@@ -39,9 +41,12 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(value = { NotifyProperties.class })
 public class NotifyConfiguration {
 
+    @Resource
+    NotifyProperties properties;
+
     @Bean
-    public NotifyProviderService notifyProviderFactory(NotifyProperties properties) {
-        return new NotifyProviderService(properties);
+    public NotifyProviderService notifyProviderFactory() {
+        return new NotifyProviderService(this.properties);
     }
 
 }

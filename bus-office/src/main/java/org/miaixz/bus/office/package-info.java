@@ -28,6 +28,17 @@
 /**
  * Office办公相关封装实现
  *
+ * <ul>
+ * <li>HSSF － 提供读写Microsoft Excel XLS 格式文件的功能</li>
+ * <li>XSSF － 提供读写Microsoft Excel OOXML XLSX 格式文件的功能</li>
+ * <li>HWPF － 提供读写Microsoft Word DOC 格式文件的功能</li>
+ * <li>XWPF － 提供读写Microsoft Word DOCX 格式文件的功能</li>
+ * <li>HSLF － 提供读写Microsoft PowerPoint格式文件的功能</li>
+ * <li>HDGF － 提供读Microsoft Visio格式文件的功能</li>
+ * <li>HPBF － 提供读Microsoft Publisher格式文件的功能</li>
+ * <li>HSMF － 提供读Microsoft Outlook格式文件的功能</li>
+ * </ul>
+ *
  * @author Kimi Liu
  * @since Java 17+
  */

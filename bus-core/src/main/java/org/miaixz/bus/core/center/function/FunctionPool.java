@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.center.function;
 
-import org.miaixz.bus.core.lang.Keys;
-import org.miaixz.bus.core.xyz.ReflectKit;
-
 import java.lang.reflect.Constructor;
 import java.util.function.BiFunction;
+
+import org.miaixz.bus.core.lang.Keys;
+import org.miaixz.bus.core.xyz.ReflectKit;
 
 /**
  * 常用Lambda函数封装 提供常用对象方法的Lambda包装，减少Lambda初始化时间。

@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.text.finder;
 
+import java.util.regex.Matcher;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
-
-import java.util.regex.Matcher;
 
 /**
  * 正则查找器 通过传入正则表达式，查找指定字符串中匹配正则的开始和结束位置

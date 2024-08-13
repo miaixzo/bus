@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.office.csv;
 
-import org.miaixz.bus.core.lang.Symbol;
-
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * CSV基础配置项，此配置项可用于读取和写出CSV，定义了包括字段分隔符、文本包装符等符号

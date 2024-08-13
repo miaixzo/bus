@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.spring.env;
 
+import java.util.Properties;
+
 import org.miaixz.bus.core.Version;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.SpringApplication;
@@ -34,8 +36,6 @@ import org.springframework.boot.env.EnvironmentPostProcessor;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertiesPropertySource;
-
-import java.util.Properties;
 
 /**
  *

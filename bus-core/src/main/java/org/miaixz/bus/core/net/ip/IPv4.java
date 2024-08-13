@@ -27,15 +27,6 @@
 */
 package org.miaixz.bus.core.net.ip;
 
-import org.miaixz.bus.core.center.regex.Pattern;
-import org.miaixz.bus.core.instance.Instances;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.MaskBit;
-import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.xyz.*;
-
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -44,6 +35,15 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.regex.Matcher;
+
+import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.instance.Instances;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.MaskBit;
+import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.text.CharsBacker;
+import org.miaixz.bus.core.xyz.*;
 
 /**
  * IPV4地址工具类 名词解释：

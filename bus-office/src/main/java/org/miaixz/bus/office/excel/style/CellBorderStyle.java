@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.office.excel.style;
 
+import java.io.Serializable;
+
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.miaixz.bus.core.xyz.ObjectKit;
-
-import java.io.Serializable;
 
 /**
  * 单元格边框样式和颜色封装，边框按照“上右下左”的顺序定义，与CSS一致

@@ -27,15 +27,16 @@
 */
 package org.miaixz.bus.pager.parser.defaults;
 
-import net.sf.jsqlparser.statement.Statement;
-import net.sf.jsqlparser.statement.select.*;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.PageException;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.pager.Builder;
 import org.miaixz.bus.pager.parser.OrderBySqlParser;
 
-import java.util.List;
+import net.sf.jsqlparser.statement.Statement;
+import net.sf.jsqlparser.statement.select.*;
 
 /**
  * 处理 Order by

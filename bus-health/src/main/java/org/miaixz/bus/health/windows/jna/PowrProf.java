@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.health.windows.jna;
 
+import org.miaixz.bus.health.Builder;
+
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
-import org.miaixz.bus.health.Builder;
 
 /**
  * Power profile stats. This class should be considered non-API as it may be removed if/when its code is incorporated

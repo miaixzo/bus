@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.health.linux.driver.proc;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.linux.ProcPath;
-
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.health.Builder;
+import org.miaixz.bus.health.linux.ProcPath;
 
 /**
  * Utility to read auxiliary vector from {@code /proc/self/auxv}

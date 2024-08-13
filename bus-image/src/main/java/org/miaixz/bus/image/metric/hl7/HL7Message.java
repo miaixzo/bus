@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.image.metric.hl7;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-
 import java.io.UnsupportedEncodingException;
 import java.text.ParsePosition;
 import java.util.ArrayList;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * @author Kimi Liu

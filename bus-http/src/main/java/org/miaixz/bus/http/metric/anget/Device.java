@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.http.metric.anget;
 
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ListKit;
-
-import java.util.List;
 
 /**
  * 设备信息
@@ -79,18 +79,16 @@ public class Device extends UserAgent {
     public static final List<Device> MOBILE_DEVICE = ListKit.of(WINDOWS_PHONE, IPAD, IPOD, IPHONE,
             new Device("Android", "XiaoMi|MI\\s+"), ANDROID, GOOGLE_TV, new Device("htcFlyer", "htc_flyer"),
             new Device("Symbian", "symbian(os)?"), new Device("Blackberry", "blackberry"));
-
+    /**
+     * 支持的平台类型
+     */
+    public static final List<Device> ALL_DEVICE = (List<Device>) CollKit.union(MOBILE_DEVICE, DESKTOP_DEVICE);
     /**
      * 支持的桌面平台类型
      */
     public static final List<Device> DESKTOP_DEVICE = ListKit.of(new Device("Windows", "windows"),
             new Device("Mac", "(macintosh|darwin)"), new Device("Linux", "linux"), new Device("Wii", "wii"),
             new Device("Playstation", "playstation"), new Device("Java", "java"));
-
-    /**
-     * 支持的平台类型
-     */
-    public static final List<Device> ALL_DEVICE = (List<Device>) CollKit.union(MOBILE_DEVICE, DESKTOP_DEVICE);
 
     /**
      * 构造

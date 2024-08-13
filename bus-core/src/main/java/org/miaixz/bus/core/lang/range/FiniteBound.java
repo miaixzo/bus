@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.lang.range;
 
+import java.util.Objects;
+
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.ObjectKit;
-
-import java.util.Objects;
 
 /**
  * 由一个有限值构成的边界

@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.core.xyz;
 
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.regex.MatchResult;
+import java.util.regex.Matcher;
+
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.center.regex.RegexValidator;
@@ -38,11 +43,6 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.Validator;
 import org.miaixz.bus.core.lang.mutable.Mutable;
 import org.miaixz.bus.core.lang.mutable.MutableObject;
-
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.regex.MatchResult;
-import java.util.regex.Matcher;
 
 /**
  * 正则相关工具类 常用正则请见 {@link Validator}

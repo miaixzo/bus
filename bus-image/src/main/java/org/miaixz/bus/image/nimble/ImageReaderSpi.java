@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.image.nimble;
 
+import java.io.IOException;
+import java.util.Locale;
+
+import javax.imageio.stream.ImageInputStream;
+
 import org.miaixz.bus.image.galaxy.data.Implementation;
 import org.miaixz.bus.image.nimble.stream.BytesWithImageDescriptor;
 import org.miaixz.bus.image.nimble.stream.ImageFileInputStream;
-
-import javax.imageio.stream.ImageInputStream;
-import java.io.IOException;
-import java.util.Locale;
 
 /**
  * @author Kimi Liu

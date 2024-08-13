@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.lang.selector;
 
-import org.miaixz.bus.core.xyz.RandomKit;
-
 import java.util.ArrayList;
+
+import org.miaixz.bus.core.xyz.RandomKit;
 
 /**
  * 随机选择器

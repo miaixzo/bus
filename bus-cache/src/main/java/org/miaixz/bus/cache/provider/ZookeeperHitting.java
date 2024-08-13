@@ -27,7 +27,12 @@
 */
 package org.miaixz.bus.cache.provider;
 
-import jakarta.annotation.PreDestroy;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicLong;
+
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.atomic.AtomicValue;
@@ -39,11 +44,7 @@ import org.miaixz.bus.cache.magic.CachePair;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.logger.Logger;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicLong;
+import jakarta.annotation.PreDestroy;
 
 /**
  * @author Kimi Liu

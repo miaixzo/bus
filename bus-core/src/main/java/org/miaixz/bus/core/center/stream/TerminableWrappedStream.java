@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.core.center.stream;
 
-import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.lang.mutable.MutableInt;
-import org.miaixz.bus.core.lang.mutable.MutableObject;
-import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.core.xyz.CollectorKit;
-
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.mutable.MutableInt;
+import org.miaixz.bus.core.lang.mutable.MutableObject;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.CollectorKit;
 
 /**
  * {@link WrappedStream}的扩展，用于为实现类提供更多终端操作方法的增强接口， 该接口提供的方法，返回值类型都不为{@link Stream}。

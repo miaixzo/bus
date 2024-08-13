@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core;
 
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.CharKit;
-import org.miaixz.bus.core.xyz.CompareKit;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.CharKit;
+import org.miaixz.bus.core.xyz.CompareKit;
 
 /**
  * 字符串版本表示，用于解析版本号的不同部分并比较大小。 来自：java.lang.module.ModuleDescriptor.Version

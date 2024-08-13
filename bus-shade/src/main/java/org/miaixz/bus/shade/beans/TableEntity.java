@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.shade.beans;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.miaixz.bus.core.lang.Symbol;
-
 import java.io.Serializable;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.miaixz.bus.core.lang.Symbol;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 自动生成需要的基本信息

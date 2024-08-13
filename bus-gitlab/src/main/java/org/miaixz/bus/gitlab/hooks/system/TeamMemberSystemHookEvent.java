@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.gitlab.hooks.system;
 
+import java.util.Date;
+
 import org.miaixz.bus.gitlab.models.Visibility;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
-import java.util.Date;
-
 public class TeamMemberSystemHookEvent extends AbstractSystemHookEvent {
+
     private static final long serialVersionUID = -1L;
 
     public static final String NEW_TEAM_MEMBER_EVENT = "user_add_to_team";
@@ -161,4 +162,5 @@ public class TeamMemberSystemHookEvent extends AbstractSystemHookEvent {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

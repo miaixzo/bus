@@ -27,15 +27,16 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
+
+import org.miaixz.bus.gitlab.support.JacksonJson;
 
 /**
  * This class contains the sizing information from the project. To get this information, ProjectApi.getProject() has to
  * be called with parameter statistics=true which is only allowed for GitLab admins.
  */
 public class ProjectStatistics implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     long commitCount;
@@ -106,4 +107,5 @@ public class ProjectStatistics implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

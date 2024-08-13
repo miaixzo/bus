@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.image.plugin;
 
+import java.text.MessageFormat;
+
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.*;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.net.ApplicationEntity;
 import org.miaixz.bus.logger.Logger;
-
-import java.text.MessageFormat;
 
 /**
  * @author Kimi Liu

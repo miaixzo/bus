@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.office.csv;
 
-import org.miaixz.bus.core.xyz.ListKit;
-
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
+
+import org.miaixz.bus.core.xyz.ListKit;
 
 /**
  * CSV数据，包括头部信息和行数据，参考：FastCSV

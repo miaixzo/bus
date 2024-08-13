@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.core.xyz;
 
+import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Predicate;
+
 import org.miaixz.bus.core.center.iterator.EnumerationIterator;
 import org.miaixz.bus.core.center.list.AvgPartition;
 import org.miaixz.bus.core.center.list.Partition;
@@ -36,10 +40,6 @@ import org.miaixz.bus.core.compare.PinyinCompare;
 import org.miaixz.bus.core.compare.PropertyCompare;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Validator;
-
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Predicate;
 
 /**
  * List相关工具类

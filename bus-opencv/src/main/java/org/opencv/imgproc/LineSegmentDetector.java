@@ -57,6 +57,40 @@ public class LineSegmentDetector extends Algorithm {
     // = Mat())
     //
 
+    // C++: void cv::LineSegmentDetector::detect(Mat image, Mat& lines, Mat& width = Mat(), Mat& prec = Mat(), Mat& nfa
+    // = Mat())
+    private static native void detect_0(long nativeObj, long image_nativeObj, long lines_nativeObj,
+            long width_nativeObj, long prec_nativeObj, long nfa_nativeObj);
+
+    private static native void detect_1(long nativeObj, long image_nativeObj, long lines_nativeObj,
+            long width_nativeObj, long prec_nativeObj);
+
+    private static native void detect_2(long nativeObj, long image_nativeObj, long lines_nativeObj,
+            long width_nativeObj);
+
+    private static native void detect_3(long nativeObj, long image_nativeObj, long lines_nativeObj);
+
+    //
+    // C++: void cv::LineSegmentDetector::drawSegments(Mat& image, Mat lines)
+    //
+
+    // C++: void cv::LineSegmentDetector::drawSegments(Mat& image, Mat lines)
+    private static native void drawSegments_0(long nativeObj, long image_nativeObj, long lines_nativeObj);
+
+    //
+    // C++: int cv::LineSegmentDetector::compareSegments(Size size, Mat lines1, Mat lines2, Mat& image = Mat())
+    //
+
+    // C++: int cv::LineSegmentDetector::compareSegments(Size size, Mat lines1, Mat lines2, Mat& image = Mat())
+    private static native int compareSegments_0(long nativeObj, double size_width, double size_height,
+            long lines1_nativeObj, long lines2_nativeObj, long image_nativeObj);
+
+    private static native int compareSegments_1(long nativeObj, double size_width, double size_height,
+            long lines1_nativeObj, long lines2_nativeObj);
+
+    // native support for deleting native object
+    private static native void delete(long nativeObj);
+
     /**
      * Finds lines in the input image.
      *
@@ -158,13 +192,9 @@ public class LineSegmentDetector extends Algorithm {
         detect_3(nativeObj, image.nativeObj, lines.nativeObj);
     }
 
-    //
-    // C++: void cv::LineSegmentDetector::drawSegments(Mat& image, Mat lines)
-    //
-
     /**
      * Draws the line segments on a given image.
-     * 
+     *
      * @param image The image, where the lines will be drawn. Should be bigger or equal to the image, where the lines
      *              were found.
      * @param lines A vector of the lines that needed to be drawn.
@@ -172,10 +202,6 @@ public class LineSegmentDetector extends Algorithm {
     public void drawSegments(Mat image, Mat lines) {
         drawSegments_0(nativeObj, image.nativeObj, lines.nativeObj);
     }
-
-    //
-    // C++: int cv::LineSegmentDetector::compareSegments(Size size, Mat lines1, Mat lines2, Mat& image = Mat())
-    //
 
     /**
      * Draws two groups of lines in blue and red, counting the non overlapping (mismatching) pixels.
@@ -204,31 +230,5 @@ public class LineSegmentDetector extends Algorithm {
     public int compareSegments(Size size, Mat lines1, Mat lines2) {
         return compareSegments_1(nativeObj, size.width, size.height, lines1.nativeObj, lines2.nativeObj);
     }
-
-    // C++: void cv::LineSegmentDetector::detect(Mat image, Mat& lines, Mat& width = Mat(), Mat& prec = Mat(), Mat& nfa
-    // = Mat())
-    private static native void detect_0(long nativeObj, long image_nativeObj, long lines_nativeObj,
-            long width_nativeObj, long prec_nativeObj, long nfa_nativeObj);
-
-    private static native void detect_1(long nativeObj, long image_nativeObj, long lines_nativeObj,
-            long width_nativeObj, long prec_nativeObj);
-
-    private static native void detect_2(long nativeObj, long image_nativeObj, long lines_nativeObj,
-            long width_nativeObj);
-
-    private static native void detect_3(long nativeObj, long image_nativeObj, long lines_nativeObj);
-
-    // C++: void cv::LineSegmentDetector::drawSegments(Mat& image, Mat lines)
-    private static native void drawSegments_0(long nativeObj, long image_nativeObj, long lines_nativeObj);
-
-    // C++: int cv::LineSegmentDetector::compareSegments(Size size, Mat lines1, Mat lines2, Mat& image = Mat())
-    private static native int compareSegments_0(long nativeObj, double size_width, double size_height,
-            long lines1_nativeObj, long lines2_nativeObj, long image_nativeObj);
-
-    private static native int compareSegments_1(long nativeObj, double size_width, double size_height,
-            long lines1_nativeObj, long lines2_nativeObj);
-
-    // native support for deleting native object
-    private static native void delete(long nativeObj);
 
 }

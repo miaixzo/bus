@@ -27,17 +27,20 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.Constants;
+import java.io.Serializable;
+
+import org.miaixz.bus.gitlab.Constants.DefaultBranchProtectionLevel;
+import org.miaixz.bus.gitlab.Constants.ProjectCreationLevel;
+import org.miaixz.bus.gitlab.Constants.SubgroupCreationLevel;
 import org.miaixz.bus.gitlab.GitLabApiForm;
 import org.miaixz.bus.gitlab.GroupApi;
-
-import java.io.Serializable;
 
 /**
  * This class is utilized by the {@link GroupApi#createGroup(GroupParams)} and
  * {@link GroupApi#updateGroup(Object, GroupParams)} methods to set the parameters for the call to the GitLab API.
  */
 public class GroupParams implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private String name;
@@ -47,16 +50,16 @@ public class GroupParams implements Serializable {
     private Boolean shareWithGroupLock;
     private Boolean requireTwoFactorAuthentication;
     private Integer twoFactorGracePeriod;
-    private Constants.ProjectCreationLevel projectCreationLevel;
+    private ProjectCreationLevel projectCreationLevel;
     private Boolean autoDevopsEnabled;
-    private Constants.SubgroupCreationLevel subgroupCreationLevel;
+    private SubgroupCreationLevel subgroupCreationLevel;
     private Boolean emailsDisabled;
     private Boolean lfsEnabled;
     private Boolean requestAccessEnabled;
     private Long parentId;
     private Integer sharedRunnersMinutesLimit;
     private Integer extraSharedRunnersMinutesLimit;
-    private Constants.DefaultBranchProtectionLevel defaultBranchProtection;
+    private DefaultBranchProtectionLevel defaultBranchProtection;
     private Boolean preventSharingGroupsOutsideHierarchy;
     private Boolean preventForkingOutsideGroup;
     private Boolean membershipLock;
@@ -130,7 +133,7 @@ public class GroupParams implements Serializable {
         return (this);
     }
 
-    public GroupParams withProjectCreationLevel(Constants.ProjectCreationLevel projectCreationLevel) {
+    public GroupParams withProjectCreationLevel(ProjectCreationLevel projectCreationLevel) {
         this.projectCreationLevel = projectCreationLevel;
         return (this);
     }
@@ -140,7 +143,7 @@ public class GroupParams implements Serializable {
         return (this);
     }
 
-    public GroupParams withSubgroupCreationLevel(Constants.SubgroupCreationLevel subgroupCreationLevel) {
+    public GroupParams withSubgroupCreationLevel(SubgroupCreationLevel subgroupCreationLevel) {
         this.subgroupCreationLevel = subgroupCreationLevel;
         return (this);
     }
@@ -170,7 +173,7 @@ public class GroupParams implements Serializable {
         return (this);
     }
 
-    public GroupParams withDefaultBranchProtection(Constants.DefaultBranchProtectionLevel defaultBranchProtection) {
+    public GroupParams withDefaultBranchProtection(DefaultBranchProtectionLevel defaultBranchProtection) {
         this.defaultBranchProtection = defaultBranchProtection;
         return (this);
     }
@@ -219,4 +222,5 @@ public class GroupParams implements Serializable {
 
         return (form);
     }
+
 }

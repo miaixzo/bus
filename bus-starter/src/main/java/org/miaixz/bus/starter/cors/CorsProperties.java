@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.starter.cors;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Core 跨域相关配置

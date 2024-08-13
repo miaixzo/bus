@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core.io.sink;
 
+import java.io.IOException;
+import java.util.zip.Deflater;
+
 import org.miaixz.bus.core.io.LifeCycle;
 import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
-
-import java.io.IOException;
-import java.util.zip.Deflater;
 
 /**
  * 这种流体的强冲刷可能导致压缩降低 每一个 调用{@link #flush}立即压缩所有当前缓存的数据

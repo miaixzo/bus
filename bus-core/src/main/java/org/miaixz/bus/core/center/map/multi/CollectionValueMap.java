@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.center.map.multi;
 
-import org.miaixz.bus.core.center.function.SupplierX;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
+
+import org.miaixz.bus.core.center.function.SupplierX;
 
 /**
  * {@link MultiValueMap}的通用实现，可视为值为{@link Collection}集合的{@link Map}集合。

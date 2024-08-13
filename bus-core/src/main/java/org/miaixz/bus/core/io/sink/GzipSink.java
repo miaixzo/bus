@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.io.sink;
 
+import java.io.IOException;
+import java.util.zip.CRC32;
+import java.util.zip.Deflater;
+
 import org.miaixz.bus.core.io.SectionBuffer;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.xyz.IoKit;
-
-import java.io.IOException;
-import java.util.zip.CRC32;
-import java.util.zip.Deflater;
 
 /**
  * 这相当于使用{@link Deflater}同步刷新选项 该类不提供任何部分刷新机制 为获得最佳性能, 只在应用程序行为需要时调用{@link #flush}

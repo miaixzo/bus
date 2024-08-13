@@ -27,16 +27,17 @@
 */
 package org.miaixz.bus.http.accord.platform;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.net.Protocol;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.List;
 
 import javax.net.ssl.SSLParameters;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.X509TrustManager;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.List;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.net.Protocol;
 
 /**
  * OpenJDK 9+

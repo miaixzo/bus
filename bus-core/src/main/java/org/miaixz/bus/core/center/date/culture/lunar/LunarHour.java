@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.center.date.culture.lunar;
 
+import java.util.List;
+
 import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.cn.Taboo;
 import org.miaixz.bus.core.center.date.culture.cn.birth.EightChar;
@@ -38,8 +40,6 @@ import org.miaixz.bus.core.center.date.culture.cn.star.twelve.TwelveStar;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
-
-import java.util.List;
 
 /**
  * 时辰
@@ -363,16 +363,6 @@ public class LunarHour extends Loops {
      */
     public List<Taboo> getAvoids() {
         return Taboo.getHourAvoids(getDaySixtyCycle(), getSixtyCycle());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof LunarHour)) {
-            return false;
-        }
-        LunarHour target = (LunarHour) o;
-        return day.equals(target.getLunarDay()) && hour == target.getHour() && minute == target.getMinute()
-                && second == target.getSecond();
     }
 
 }

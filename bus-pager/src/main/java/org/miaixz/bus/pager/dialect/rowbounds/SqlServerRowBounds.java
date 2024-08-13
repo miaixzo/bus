@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.pager.dialect.rowbounds;
 
+import java.util.Properties;
+
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -39,8 +41,6 @@ import org.miaixz.bus.pager.dialect.replace.RegexWithNolock;
 import org.miaixz.bus.pager.dialect.replace.SimpleWithNolock;
 import org.miaixz.bus.pager.parser.SqlServerSqlParser;
 import org.miaixz.bus.pager.parser.defaults.DefaultSqlServerSqlParser;
-
-import java.util.Properties;
 
 /**
  * sqlserver 基于 RowBounds 的分页

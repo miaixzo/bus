@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.starter.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.starter.i18n.I18nConfiguration;
 import org.miaixz.bus.starter.i18n.I18nMessage;
 import org.springframework.context.annotation.Import;
-
-import java.lang.annotation.*;
 
 /**
  * 启用国际化支持

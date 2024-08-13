@@ -169,9 +169,8 @@ public class LinuxOSProcess extends AbstractOSProcess {
     }
 
     private List<String> queryArguments() {
-        return Collections.unmodifiableList(Parsing.parseByteArrayToStrings(
-                Builder.readAllBytes(String.format(Locale.ROOT, ProcPath.PID_CMDLINE, getProcessID()),
-                        LOG_PROCFS_WARNING)));
+        return Collections.unmodifiableList(Parsing.parseByteArrayToStrings(Builder
+                .readAllBytes(String.format(Locale.ROOT, ProcPath.PID_CMDLINE, getProcessID()), LOG_PROCFS_WARNING)));
     }
 
     @Override

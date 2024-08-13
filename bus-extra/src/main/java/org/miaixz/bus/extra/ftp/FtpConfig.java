@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.extra.ftp;
 
-import org.miaixz.bus.extra.ssh.Connector;
-
 import java.io.Serializable;
 import java.nio.charset.Charset;
+
+import org.miaixz.bus.extra.ssh.Connector;
 
 /**
  * FTP配置项，提供FTP各种参数信息

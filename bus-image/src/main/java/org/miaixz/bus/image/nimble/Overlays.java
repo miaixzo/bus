@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.image.nimble;
 
+import java.awt.color.ColorSpace;
+import java.awt.image.*;
+import java.util.Arrays;
+import java.util.function.Function;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.data.Sequence;
 import org.miaixz.bus.logger.Logger;
-
-import java.awt.color.ColorSpace;
-import java.awt.image.*;
-import java.util.Arrays;
-import java.util.function.Function;
 
 /**
  * @author Kimi Liu

@@ -30,6 +30,7 @@ package org.miaixz.bus.gitlab.hooks.system;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public abstract class AbstractSystemHookEvent implements SystemHookEvent {
+
     private static final long serialVersionUID = -1L;
 
     private String requestUrl;
@@ -68,4 +69,5 @@ public abstract class AbstractSystemHookEvent implements SystemHookEvent {
     public String getRequestSecretToken() {
         return (requestSecretToken);
     }
+
 }

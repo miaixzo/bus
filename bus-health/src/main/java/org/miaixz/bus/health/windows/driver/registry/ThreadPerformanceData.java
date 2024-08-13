@@ -27,7 +27,8 @@
 */
 package org.miaixz.bus.health.windows.driver.registry;
 
-import com.sun.jna.platform.win32.WinBase.FILETIME;
+import java.util.*;
+
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
@@ -37,7 +38,7 @@ import org.miaixz.bus.health.windows.driver.perfmon.PerfmonDisabled;
 import org.miaixz.bus.health.windows.driver.perfmon.ThreadInformation;
 import org.miaixz.bus.health.windows.driver.perfmon.ThreadInformation.ThreadPerformanceProperty;
 
-import java.util.*;
+import com.sun.jna.platform.win32.WinBase.FILETIME;
 
 /**
  * Utility to read thread data from HKEY_PERFORMANCE_DATA information with backup from Performance Counters or WMI

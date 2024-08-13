@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.Response;
-import org.miaixz.bus.gitlab.models.Release;
-import org.miaixz.bus.gitlab.models.ReleaseParams;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.Release;
+import org.miaixz.bus.gitlab.models.ReleaseParams;
 
 /**
  * This class provides an entry point to all the GitLab Releases API calls.
@@ -188,4 +189,5 @@ public class ReleasesApi extends AbstractApi {
         delete(Response.Status.OK, null, "projects", getProjectIdOrPath(projectIdOrPath), "releases",
                 urlEncode(tagName));
     }
+
 }

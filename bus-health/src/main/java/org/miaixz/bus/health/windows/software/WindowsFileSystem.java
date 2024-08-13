@@ -27,14 +27,12 @@
 */
 package org.miaixz.bus.health.windows.software;
 
-import com.sun.jna.Native;
-import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
-import com.sun.jna.platform.win32.Kernel32;
-import com.sun.jna.platform.win32.WinBase;
-import com.sun.jna.platform.win32.WinNT;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.ByRef;
 import org.miaixz.bus.health.builtin.software.OSFileStore;
@@ -45,8 +43,11 @@ import org.miaixz.bus.health.windows.driver.perfmon.ProcessInformation.HandleCou
 import org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDisk;
 import org.miaixz.bus.health.windows.driver.wmi.Win32LogicalDisk.LogicalDiskProperty;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import com.sun.jna.Native;
+import com.sun.jna.platform.win32.Kernel32;
+import com.sun.jna.platform.win32.WinBase;
+import com.sun.jna.platform.win32.WinNT;
+import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
 /**
  * The Windows File System contains {@link OSFileStore}s which are a storage pool, device, partition, volume, concrete

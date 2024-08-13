@@ -27,14 +27,6 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import org.miaixz.bus.gitlab.Constants;
-import org.miaixz.bus.gitlab.Constants.Encoding;
-import org.miaixz.bus.gitlab.GitLabApiException;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -42,7 +34,17 @@ import java.io.Serializable;
 import java.nio.file.Files;
 import java.util.Base64;
 
+import org.miaixz.bus.gitlab.Constants;
+import org.miaixz.bus.gitlab.Constants.Encoding;
+import org.miaixz.bus.gitlab.GitLabApiException;
+import org.miaixz.bus.gitlab.support.JacksonJson;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public class CommitAction implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Action action;
@@ -212,4 +214,5 @@ public class CommitAction implements Serializable {
             return (enumHelper.toString(this));
         }
     }
+
 }

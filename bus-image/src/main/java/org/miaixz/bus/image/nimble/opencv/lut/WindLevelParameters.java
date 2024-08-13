@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.image.nimble.opencv.lut;
 
+import java.util.Objects;
+
 import org.miaixz.bus.image.nimble.ImageAdapter;
 import org.miaixz.bus.image.nimble.ImageReadParam;
 import org.miaixz.bus.image.nimble.PresentationLutObject;
-
-import java.util.Objects;
 
 /**
  * @author Kimi Liu

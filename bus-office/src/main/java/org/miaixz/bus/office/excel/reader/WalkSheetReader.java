@@ -25,23 +25,61 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.office;
+package org.miaixz.bus.office.excel.reader;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.miaixz.bus.core.center.function.BiConsumerX;
+import org.miaixz.bus.office.excel.cell.CellEditor;
+import org.miaixz.bus.office.excel.cell.CellKit;
 
 /**
- * 表示可用于与正在运行的office实例通信的协议.
+ * 读取Excel的Sheet，使用Consumer方式处理单元格
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public enum Protocol {
+public class WalkSheetReader extends AbstractSheetReader<Void> {
+
+    private final BiConsumerX<Cell, Object> cellHandler;
 
     /**
-     * 表示使用共享内存的命名管道连接类型. 这种类型的进程间连接比套接字连接稍微快一些， 并且只有在两个进程位于同一台机器上时才能工作. 默认情况下,不能在Java上工作，不支持命名管道.
+     * 构造
+     *
+     * @param startRowIndex 起始行（包含，从0开始计数）
+     * @param endRowIndex   结束行（包含，从0开始计数）
+     * @param cellHandler   单元格处理器，用于处理读到的单元格及其数据
      */
-    PIPE,
-    /**
-     * 表示使用可靠的TCP/IP套接字连接的连接类型.
-     */
-    SOCKET
+    public WalkSheetReader(final int startRowIndex, final int endRowIndex,
+            final BiConsumerX<Cell, Object> cellHandler) {
+        super(startRowIndex, endRowIndex);
+        this.cellHandler = cellHandler;
+    }
+
+    @Override
+    public Void read(final Sheet sheet) {
+        final int startRowIndex = Math.max(this.cellRangeAddress.getFirstRow(), sheet.getFirstRowNum());// 读取起始行（包含）
+        final int endRowIndex = Math.min(this.cellRangeAddress.getLastRow(), sheet.getLastRowNum());// 读取结束行（包含）
+        final CellEditor cellEditor = this.config.getCellEditor();
+
+        Row row;
+        for (int y = startRowIndex; y <= endRowIndex; y++) {
+            row = sheet.getRow(y);
+            if (null != row) {
+                final short startColumnIndex = (short) Math.max(this.cellRangeAddress.getFirstColumn(),
+                        row.getFirstCellNum());
+                final short endColumnIndex = (short) Math.min(this.cellRangeAddress.getLastColumn(),
+                        row.getLastCellNum());
+                Cell cell;
+                for (short x = startColumnIndex; x < endColumnIndex; x++) {
+                    cell = CellKit.getCell(row, x);
+                    cellHandler.accept(cell, CellKit.getCellValue(cell, cellEditor));
+                }
+            }
+        }
+
+        return null;
+    }
 
 }

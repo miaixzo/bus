@@ -27,7 +27,11 @@
 */
 package org.miaixz.bus.oauth.metric.ximalaya;
 
-import com.alibaba.fastjson.JSONObject;
+import java.security.MessageDigest;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
+
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
@@ -45,10 +49,7 @@ import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import java.security.MessageDigest;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import com.alibaba.fastjson.JSONObject;
 
 /**
  * 喜马拉雅 登录

@@ -27,19 +27,20 @@
 */
 package org.miaixz.bus.image.plugin;
 
-import jakarta.json.Json;
-import jakarta.json.JsonValue;
-import jakarta.json.stream.JsonGenerator;
-import org.miaixz.bus.image.galaxy.data.VR;
-import org.miaixz.bus.image.galaxy.io.BasicBulkDataDescriptor;
-import org.miaixz.bus.image.galaxy.io.ImageInputStream;
-import org.miaixz.bus.image.metric.json.JSONWriter;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.miaixz.bus.image.galaxy.data.VR;
+import org.miaixz.bus.image.galaxy.io.BasicBulkDataDescriptor;
+import org.miaixz.bus.image.galaxy.io.ImageInputStream;
+import org.miaixz.bus.image.metric.json.JSONWriter;
+
+import jakarta.json.Json;
+import jakarta.json.JsonValue;
+import jakarta.json.stream.JsonGenerator;
 
 /**
  * @author Kimi Liu

@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.bean.desc;
 
-import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.xyz.*;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Map;
+
+import org.miaixz.bus.core.text.CharsBacker;
+import org.miaixz.bus.core.xyz.*;
 
 /**
  * 严格的Bean信息描述做为BeanInfo替代方案，此对象持有JavaBean中的setters和getters等相关信息描述， 在获取Bean属性的时候，要求字段必须存在并严格匹配。查找Getter和Setter方法时会：

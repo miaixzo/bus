@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.image.nimble;
 
+import java.awt.image.DataBuffer;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.image.nimble.opencv.ImageCV;
 import org.miaixz.bus.image.nimble.opencv.ImageProcessor;
@@ -36,11 +41,6 @@ import org.miaixz.bus.image.nimble.opencv.lut.PresentationStateLut;
 import org.miaixz.bus.image.nimble.opencv.lut.WindLevelParameters;
 import org.miaixz.bus.image.nimble.stream.ImageDescriptor;
 import org.opencv.core.CvType;
-
-import java.awt.image.DataBuffer;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 /**
  * @author Kimi Liu

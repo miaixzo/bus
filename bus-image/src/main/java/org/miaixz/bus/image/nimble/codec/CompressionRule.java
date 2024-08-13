@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.image.nimble.codec;
 
+import java.io.Serializable;
+import java.util.EnumSet;
+
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.metric.Property;
 import org.miaixz.bus.image.nimble.Photometric;
-
-import java.io.Serializable;
-import java.util.EnumSet;
 
 /**
  * @author Kimi Liu

@@ -57,12 +57,11 @@ import java.util.concurrent.*;
  */
 public class FileTailer implements Serializable {
 
-    private static final long serialVersionUID = -1L;
-
     /**
      * 控制台打印的处理类
      */
     public static final ConsumerX<String> CONSOLE_HANDLER = new ConsoleLineHandler();
+    private static final long serialVersionUID = -1L;
     /**
      * 编码
      */

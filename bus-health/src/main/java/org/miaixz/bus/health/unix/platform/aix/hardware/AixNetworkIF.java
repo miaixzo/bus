@@ -27,8 +27,11 @@
 */
 package org.miaixz.bus.health.unix.platform.aix.hardware;
 
-import com.sun.jna.Native;
-import com.sun.jna.platform.unix.aix.Perfstat.perfstat_netinterface_t;
+import java.net.NetworkInterface;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.NetworkIF;
@@ -36,10 +39,8 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractNetworkIF;
 import org.miaixz.bus.health.unix.platform.aix.driver.perfstat.PerfstatNetInterface;
 import org.miaixz.bus.logger.Logger;
 
-import java.net.NetworkInterface;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
+import com.sun.jna.Native;
+import com.sun.jna.platform.unix.aix.Perfstat.perfstat_netinterface_t;
 
 /**
  * AIXNetworks class.

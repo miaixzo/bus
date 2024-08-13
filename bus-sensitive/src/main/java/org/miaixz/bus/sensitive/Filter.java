@@ -27,7 +27,13 @@
 */
 package org.miaixz.bus.sensitive;
 
-import com.alibaba.fastjson.serializer.BeanContext;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.sensitive.magic.annotation.Condition;
@@ -36,12 +42,7 @@ import org.miaixz.bus.sensitive.magic.annotation.Shield;
 import org.miaixz.bus.sensitive.metric.ConditionProvider;
 import org.miaixz.bus.sensitive.metric.StrategyProvider;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
-import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import com.alibaba.fastjson.serializer.BeanContext;
 
 /**
  * 默认的上下文过滤器 {@link Entry} 放在对象时,则不用特殊处理 只需要处理 集合、数组集合 注意： 和 {@link Builder#on(Object)} 的区别 因为 FastJSON

@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.text.finder;
 
-import org.miaixz.bus.core.lang.Assert;
-
 import java.util.function.Predicate;
+
+import org.miaixz.bus.core.lang.Assert;
 
 /**
  * 字符匹配查找器 查找满足指定{@link Predicate} 匹配的字符所在位置，此类长用于查找某一类字符，如数字等

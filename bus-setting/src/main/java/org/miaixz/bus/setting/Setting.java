@@ -27,6 +27,13 @@
 */
 package org.miaixz.bus.setting;
 
+import java.io.File;
+import java.net.URL;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.util.*;
+import java.util.function.Consumer;
+
 import org.miaixz.bus.core.center.function.SupplierX;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.io.resource.Resource;
@@ -40,13 +47,6 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.setting.magic.AbstractSetting;
 import org.miaixz.bus.setting.magic.GroupedMap;
 import org.miaixz.bus.setting.metric.props.Props;
-
-import java.io.File;
-import java.net.URL;
-import java.nio.file.WatchEvent;
-import java.nio.file.WatchKey;
-import java.util.*;
-import java.util.function.Consumer;
 
 /**
  * 设置工具类。 用于支持设置（配置）文件 用于替换Properties类，提供功能更加强大的配置文件，同时对Properties文件向下兼容

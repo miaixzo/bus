@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.center.iterator.*;
-import org.miaixz.bus.core.convert.Convert;
-import org.miaixz.bus.core.text.StringJoiner;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
+
+import org.miaixz.bus.core.center.iterator.*;
+import org.miaixz.bus.core.convert.Convert;
+import org.miaixz.bus.core.text.StringJoiner;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 /**
  * {@link Iterable} 和 {@link Iterator} 相关工具类

@@ -31,6 +31,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 
+import jakarta.annotation.Resource;
+
 /**
  * Socket配置
  *
@@ -40,10 +42,13 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(value = { SocketProperties.class })
 public class SocketConfiguration {
 
+    @Resource
+    SocketProperties properties;
+
     @Bean(initMethod = "start", destroyMethod = "stop")
     @ConditionalOnMissingBean
-    public SocketQuickService initialization(SocketProperties properties) {
-        return new SocketQuickService(properties);
+    public SocketQuickService initialization() {
+        return new SocketQuickService(this.properties);
     }
 
 }

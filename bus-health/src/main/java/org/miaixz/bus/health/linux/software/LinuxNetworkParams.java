@@ -27,9 +27,10 @@
 */
 package org.miaixz.bus.health.linux.software;
 
-import com.sun.jna.Native;
-import com.sun.jna.platform.linux.LibC;
-import com.sun.jna.platform.unix.LibCAPI;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.List;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -41,9 +42,9 @@ import org.miaixz.bus.health.linux.jna.LinuxLibc;
 import org.miaixz.bus.health.unix.jna.CLibrary;
 import org.miaixz.bus.logger.Logger;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.List;
+import com.sun.jna.Native;
+import com.sun.jna.platform.linux.LibC;
+import com.sun.jna.platform.unix.LibCAPI;
 
 /**
  * LinuxNetworkParams class.

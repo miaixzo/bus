@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.image.nimble;
 
-import org.miaixz.bus.image.Builder;
-import org.miaixz.bus.image.nimble.opencv.op.MaskArea;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
+
+import org.miaixz.bus.image.Builder;
+import org.miaixz.bus.image.nimble.opencv.op.MaskArea;
 
 /**
  * @author Kimi Liu

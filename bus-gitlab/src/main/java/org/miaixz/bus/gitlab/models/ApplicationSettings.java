@@ -27,18 +27,20 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.*;
-import org.miaixz.bus.gitlab.GitLabApiException;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.miaixz.bus.gitlab.GitLabApiException;
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.*;
+
 public class ApplicationSettings implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Long id;
@@ -166,4 +168,5 @@ public class ApplicationSettings implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

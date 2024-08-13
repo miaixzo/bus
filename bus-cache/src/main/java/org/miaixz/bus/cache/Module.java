@@ -27,19 +27,20 @@
 */
 package org.miaixz.bus.cache;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Injector;
-import com.google.inject.multibindings.MapBinder;
-import com.google.inject.name.Names;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.miaixz.bus.cache.magic.AbstractReader;
 import org.miaixz.bus.cache.magic.MultiCacheReader;
 import org.miaixz.bus.cache.magic.SingleCacheReader;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.CollKit;
 
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
+import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Injector;
+import com.google.inject.multibindings.MapBinder;
+import com.google.inject.name.Names;
 
 /**
  * @author Kimi Liu

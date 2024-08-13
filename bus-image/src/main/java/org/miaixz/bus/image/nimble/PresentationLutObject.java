@@ -27,6 +27,15 @@
 */
 package org.miaixz.bus.image.nimble;
 
+import java.awt.*;
+import java.awt.geom.Area;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
@@ -37,15 +46,6 @@ import org.miaixz.bus.image.nimble.opencv.lut.ModalityLutModule;
 import org.miaixz.bus.image.nimble.opencv.lut.PresentationStateLut;
 import org.miaixz.bus.image.nimble.opencv.lut.VoiLutModule;
 import org.miaixz.bus.image.nimble.stream.ImageDescriptor;
-
-import java.awt.*;
-import java.awt.geom.Area;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 /**
  * @author Kimi Liu

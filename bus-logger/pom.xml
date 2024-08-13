@@ -43,14 +43,27 @@
     <licenses>
         <license>
             <name>The MIT License (MIT)</name>
-            <url>https://opensource.org/licenses/MIT</url>
+            <url>https://github.com/839128/bus/blob/main/LICENSE</url>
         </license>
     </licenses>
 
     <developers>
         <developer>
+            <id>839128</id>
             <name>Kimi Liu</name>
-            <url>https://github.com/839128/bus.git</url>
+            <email>839536@gmail.com</email>
+            <organization>Miaixz</organization>
+            <organizationUrl>http://www.miaixz.org</organizationUrl>
+            <roles>
+                <role>maintainer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>justubborn</id>
+            <name>Justubborn</name>
+            <email>wubenhui@gmail.com</email>
+            <organization>Miaixz</organization>
+            <organizationUrl>http://www.miaixz.org</organizationUrl>
         </developer>
     </developers>
 
@@ -68,11 +81,11 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <commons.logging.version>1.3.2</commons.logging.version>
+        <commons.logging.version>1.3.3</commons.logging.version>
         <jboss.version>3.6.0.Final</jboss.version>
         <logback.version>1.5.6</logback.version>
         <log4j.version>2.23.1</log4j.version>
-        <slf4j.version>2.0.13</slf4j.version>
+        <slf4j.version>2.0.14</slf4j.version>
         <tinylog.version>2.7.0</tinylog.version>
     </properties>
 
@@ -139,7 +152,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>3.8.0</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>

@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.io;
 
-import org.miaixz.bus.core.lang.Normal;
-
 import java.util.Objects;
+
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * 循环缓冲区

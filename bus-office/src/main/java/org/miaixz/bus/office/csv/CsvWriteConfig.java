@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.office.csv;
 
-import org.miaixz.bus.core.lang.Symbol;
-
 import java.io.Serializable;
+
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * CSV写出配置项

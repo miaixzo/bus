@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.core.io.resource;
 
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.FileKit;
-import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.core.xyz.UrlKit;
-
 import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
 import java.nio.file.Path;
+
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.UrlKit;
 
 /**
  * 文件资源访问对象，支持{@link Path} 和 {@link File} 访问

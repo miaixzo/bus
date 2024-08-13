@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.compare;
 
+import java.io.Serializable;
+
 import org.miaixz.bus.core.Version;
 import org.miaixz.bus.core.xyz.CompareKit;
-
-import java.io.Serializable;
 
 /**
  * 版本比较器 比较两个版本的大小 排序时版本从小到大排序，即比较时小版本在前，大版本在后 支持如：1.3.20.8，6.82.20160101，8.5a/8.5c等版本形式

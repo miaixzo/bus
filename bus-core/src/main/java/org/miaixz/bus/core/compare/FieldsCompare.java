@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.compare;
 
+import java.lang.reflect.Field;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.FieldKit;
-
-import java.lang.reflect.Field;
 
 /**
  * Bean字段排序器

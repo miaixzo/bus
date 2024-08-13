@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.http.bodys;
 
+import java.io.*;
+
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.BufferSource;
@@ -37,8 +39,6 @@ import org.miaixz.bus.http.Builder;
 import org.miaixz.bus.http.Callback;
 import org.miaixz.bus.http.NewCall;
 import org.miaixz.bus.http.Response;
-
-import java.io.*;
 
 /**
  * 从源服务器到客户机应用程序的一次性流，包含响应主体的原始字节。 到web服务器的活动连接支持每个响应主体。 这对客户机应用程序施加了义务和限制，每个响应主体由一个有限的资源(如socket(实时网络响应)或一个打开的

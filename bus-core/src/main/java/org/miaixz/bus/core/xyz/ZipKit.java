@@ -27,6 +27,20 @@
 */
 package org.miaixz.bus.core.xyz;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.*;
+import java.nio.file.FileSystem;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.function.Consumer;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+
 import org.miaixz.bus.core.center.iterator.EnumerationIterator;
 import org.miaixz.bus.core.io.compress.*;
 import org.miaixz.bus.core.io.file.FileName;
@@ -39,20 +53,6 @@ import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.FileSystem;
-import java.nio.file.*;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
 
 /**
  * 压缩工具类
@@ -67,78 +67,6 @@ public class ZipKit {
      * 默认编码，使用平台相关编码
      */
     private static final java.nio.charset.Charset DEFAULT_CHARSET = Charset.defaultCharset();
-
-    /**
-     * 将Zip文件转换为{@link ZipFile}
-     *
-     * @param file    zip文件
-     * @param charset 解析zip文件的编码，null表示{@link Charset#UTF_8}
-     * @return {@link ZipFile}
-     */
-    public static ZipFile toZipFile(final File file, final java.nio.charset.Charset charset) {
-        try {
-            return new ZipFile(file, ObjectKit.defaultIfNull(charset, Charset.UTF_8));
-        } catch (final IOException e) {
-            throw new InternalException(e);
-        }
-    }
-
-    /**
-     * 获取指定{@link ZipEntry}的流，用于读取这个entry的内容
-     *
-     * @param zipFile  {@link ZipFile}
-     * @param zipEntry {@link ZipEntry}
-     * @return 流
-     */
-    public static InputStream getStream(final ZipFile zipFile, final ZipEntry zipEntry) {
-        try {
-            return new LimitedInputStream(zipFile.getInputStream(zipEntry), zipEntry.getSize());
-        } catch (final IOException e) {
-            throw new InternalException(e);
-        }
-    }
-
-    /**
-     * 获得 {@link ZipOutputStream}
-     *
-     * @param out     压缩文件流
-     * @param charset 编码
-     * @return {@link ZipOutputStream}
-     */
-    public static ZipOutputStream getZipOutputStream(final OutputStream out, final java.nio.charset.Charset charset) {
-        if (out instanceof ZipOutputStream) {
-            return (ZipOutputStream) out;
-        }
-        return new ZipOutputStream(out, charset);
-    }
-
-    /**
-     * 在zip文件中添加新文件或目录 新文件添加在zip根目录，文件夹包括其本身和内容 如果待添加文件夹是系统根路径（如/或c:/），则只复制文件夹下的内容
-     *
-     * @param zipPath        zip文件的Path
-     * @param appendFilePath 待添加文件Path(可以是文件夹)
-     * @param options        拷贝选项，可选是否覆盖等
-     * @throws InternalException IO异常
-     */
-    public static void append(final Path zipPath, final Path appendFilePath, final CopyOption... options)
-            throws InternalException {
-        try (final FileSystem zipFileSystem = FileKit.createZip(zipPath.toString())) {
-            if (Files.isDirectory(appendFilePath)) {
-                Path source = appendFilePath.getParent();
-                if (null == source) {
-                    // 如果用户提供的是根路径，则不复制目录，直接复制目录下的内容
-                    source = appendFilePath;
-                }
-                Files.walkFileTree(appendFilePath, new ZipCopyVisitor(source, zipFileSystem, options));
-            } else {
-                Files.copy(appendFilePath, zipFileSystem.getPath(PathResolve.getName(appendFilePath)), options);
-            }
-        } catch (final FileAlreadyExistsException ignored) {
-            // 不覆盖情况下，文件已存在, 跳过
-        } catch (final IOException e) {
-            throw new InternalException(e);
-        }
-    }
 
     /**
      * 打包到当前目录，使用默认编码UTF-8
@@ -569,45 +497,6 @@ public class ZipKit {
     }
 
     /**
-     * 获取压缩包中的指定文件流
-     *
-     * @param zipFile 压缩文件
-     * @param charset 编码
-     * @param path    需要提取文件的文件名或路径
-     * @return 压缩文件流，如果未找到返回{@code null}
-     */
-    public static InputStream get(final File zipFile, final java.nio.charset.Charset charset, final String path) {
-        return get(toZipFile(zipFile, charset), path);
-    }
-
-    /**
-     * 获取压缩包中的指定文件流
-     *
-     * @param zipFile 压缩文件
-     * @param path    需要提取文件的文件名或路径
-     * @return 压缩文件流，如果未找到返回{@code null}
-     */
-    public static InputStream get(final ZipFile zipFile, final String path) {
-        final ZipEntry entry = zipFile.getEntry(path);
-        if (null != entry) {
-            return getStream(zipFile, entry);
-        }
-        return null;
-    }
-
-    /**
-     * 读取并处理Zip文件中的每一个{@link ZipEntry}
-     *
-     * @param zipFile  Zip文件
-     * @param consumer {@link ZipEntry}处理器
-     */
-    public static void read(final ZipFile zipFile, final Consumer<ZipEntry> consumer) {
-        try (final ZipReader reader = new ZipReader(zipFile)) {
-            reader.read(consumer);
-        }
-    }
-
-    /**
      * 解压 ZIP条目不使用高速缓冲。
      *
      * @param in      zip文件流，使用完毕自动关闭
@@ -637,18 +526,6 @@ public class ZipKit {
             reader.readTo(outFile);
         }
         return outFile;
-    }
-
-    /**
-     * 读取并处理Zip流中的每一个{@link ZipEntry}
-     *
-     * @param zipStream zip文件流，包含编码信息
-     * @param consumer  {@link ZipEntry}处理器
-     */
-    public static void read(final ZipInputStream zipStream, final Consumer<ZipEntry> consumer) {
-        try (final ZipReader reader = new ZipReader(zipStream)) {
-            reader.read(consumer);
-        }
     }
 
     /**
@@ -920,6 +797,129 @@ public class ZipKit {
         final ByteArrayOutputStream out = new ByteArrayOutputStream(length);
         Deflate.of(in, out, false).inflater();
         return out.toByteArray();
+    }
+
+    /**
+     * 获取压缩包中的指定文件流
+     *
+     * @param zipFile 压缩文件
+     * @param charset 编码
+     * @param path    需要提取文件的文件名或路径
+     * @return 压缩文件流，如果未找到返回{@code null}
+     */
+    public static InputStream get(final File zipFile, final java.nio.charset.Charset charset, final String path) {
+        return get(toZipFile(zipFile, charset), path);
+    }
+
+    /**
+     * 获取压缩包中的指定文件流
+     *
+     * @param zipFile 压缩文件
+     * @param path    需要提取文件的文件名或路径
+     * @return 压缩文件流，如果未找到返回{@code null}
+     */
+    public static InputStream get(final ZipFile zipFile, final String path) {
+        final ZipEntry entry = zipFile.getEntry(path);
+        if (null != entry) {
+            return getStream(zipFile, entry);
+        }
+        return null;
+    }
+
+    /**
+     * 读取并处理Zip文件中的每一个{@link ZipEntry}
+     *
+     * @param zipFile  Zip文件
+     * @param consumer {@link ZipEntry}处理器
+     */
+    public static void read(final ZipFile zipFile, final Consumer<ZipEntry> consumer) {
+        try (final ZipReader reader = new ZipReader(zipFile)) {
+            reader.read(consumer);
+        }
+    }
+
+    /**
+     * 读取并处理Zip流中的每一个{@link ZipEntry}
+     *
+     * @param zipStream zip文件流，包含编码信息
+     * @param consumer  {@link ZipEntry}处理器
+     */
+    public static void read(final ZipInputStream zipStream, final Consumer<ZipEntry> consumer) {
+        try (final ZipReader reader = new ZipReader(zipStream)) {
+            reader.read(consumer);
+        }
+    }
+
+    /**
+     * 在zip文件中添加新文件或目录 新文件添加在zip根目录，文件夹包括其本身和内容 如果待添加文件夹是系统根路径（如/或c:/），则只复制文件夹下的内容
+     *
+     * @param zipPath        zip文件的Path
+     * @param appendFilePath 待添加文件Path(可以是文件夹)
+     * @param options        拷贝选项，可选是否覆盖等
+     * @throws InternalException IO异常
+     */
+    public static void append(final Path zipPath, final Path appendFilePath, final CopyOption... options)
+            throws InternalException {
+        try (final FileSystem zipFileSystem = FileKit.createZip(zipPath.toString())) {
+            if (Files.isDirectory(appendFilePath)) {
+                Path source = appendFilePath.getParent();
+                if (null == source) {
+                    // 如果用户提供的是根路径，则不复制目录，直接复制目录下的内容
+                    source = appendFilePath;
+                }
+                Files.walkFileTree(appendFilePath, new ZipCopyVisitor(source, zipFileSystem, options));
+            } else {
+                Files.copy(appendFilePath, zipFileSystem.getPath(PathResolve.getName(appendFilePath)), options);
+            }
+        } catch (final FileAlreadyExistsException ignored) {
+            // 不覆盖情况下，文件已存在, 跳过
+        } catch (final IOException e) {
+            throw new InternalException(e);
+        }
+    }
+
+    /**
+     * 将Zip文件转换为{@link ZipFile}
+     *
+     * @param file    zip文件
+     * @param charset 解析zip文件的编码，null表示{@link Charset#UTF_8}
+     * @return {@link ZipFile}
+     */
+    public static ZipFile toZipFile(final File file, final java.nio.charset.Charset charset) {
+        try {
+            return new ZipFile(file, ObjectKit.defaultIfNull(charset, Charset.UTF_8));
+        } catch (final IOException e) {
+            throw new InternalException(e);
+        }
+    }
+
+    /**
+     * 获取指定{@link ZipEntry}的流，用于读取这个entry的内容
+     *
+     * @param zipFile  {@link ZipFile}
+     * @param zipEntry {@link ZipEntry}
+     * @return 流
+     */
+    public static InputStream getStream(final ZipFile zipFile, final ZipEntry zipEntry) {
+        try {
+            return new LimitedInputStream(zipFile.getInputStream(zipEntry), zipEntry.getSize());
+        } catch (final IOException e) {
+            throw new InternalException(e);
+        }
+    }
+
+    /**
+     * 获得 {@link ZipOutputStream}
+     *
+     * @param out     压缩文件流
+     * @param charset 编码
+     * @return {@link ZipOutputStream}
+     */
+    public static ZipOutputStream getZipOutputStream(final OutputStream out, final java.nio.charset.Charset charset) {
+        if (out instanceof ZipOutputStream) {
+            return (ZipOutputStream) out;
+        }
+        return new ZipOutputStream(out, charset);
     }
 
     /**

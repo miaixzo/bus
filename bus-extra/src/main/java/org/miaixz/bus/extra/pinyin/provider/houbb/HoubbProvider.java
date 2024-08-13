@@ -27,9 +27,10 @@
 */
 package org.miaixz.bus.extra.pinyin.provider.houbb;
 
+import org.miaixz.bus.extra.pinyin.PinyinProvider;
+
 import com.github.houbb.pinyin.constant.enums.PinyinStyleEnum;
 import com.github.houbb.pinyin.util.PinyinHelper;
-import org.miaixz.bus.extra.pinyin.PinyinProvider;
 
 /**
  * 封装了 houbb Pinyin 的引擎。

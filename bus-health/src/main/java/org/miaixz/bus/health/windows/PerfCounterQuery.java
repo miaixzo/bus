@@ -27,18 +27,19 @@
 */
 package org.miaixz.bus.health.windows;
 
-import com.sun.jna.platform.win32.COM.Wbemcli;
-import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
-import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.logger.Logger;
+
 import com.sun.jna.platform.win32.PdhUtil;
 import com.sun.jna.platform.win32.PdhUtil.PdhException;
 import com.sun.jna.platform.win32.VersionHelpers;
 import com.sun.jna.platform.win32.Win32Exception;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.logger.Logger;
-
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import com.sun.jna.platform.win32.COM.Wbemcli;
+import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiQuery;
+import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
 /**
  * Enables queries of Performance Counters using wild cards to filter instances

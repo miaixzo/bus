@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.image.galaxy.data;
 
-import org.miaixz.bus.image.galaxy.io.ImageEncodingOptions;
-import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.ListIterator;
+
+import org.miaixz.bus.image.galaxy.io.ImageEncodingOptions;
+import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
 
 /**
  * @author Kimi Liu

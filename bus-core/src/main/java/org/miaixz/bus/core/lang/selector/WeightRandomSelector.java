@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.lang.selector;
 
-import org.miaixz.bus.core.xyz.CollKit;
-
 import java.io.Serializable;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
+import org.miaixz.bus.core.xyz.CollKit;
 
 /**
  * 权重随机选择算法实现

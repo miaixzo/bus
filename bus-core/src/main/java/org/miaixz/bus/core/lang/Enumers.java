@@ -43,7 +43,7 @@ public interface Enumers<E extends Enumers<E>> extends Serializable {
      *
      * @return 编码
      */
-    int intVal();
+    int code();
 
     /**
      * 枚举名称
@@ -82,7 +82,7 @@ public interface Enumers<E extends Enumers<E>> extends Serializable {
         }
         final E[] vs = items();
         for (final E enumItem : vs) {
-            if (enumItem.intVal() == intVal) {
+            if (enumItem.code() == intVal) {
                 return enumItem;
             }
         }

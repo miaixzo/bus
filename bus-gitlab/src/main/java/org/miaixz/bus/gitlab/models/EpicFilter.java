@@ -27,8 +27,11 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.miaixz.bus.gitlab.Constants.EpicOrderBy;
 import org.miaixz.bus.gitlab.Constants.SortOrder;
 import org.miaixz.bus.gitlab.GitLabApiForm;
@@ -36,15 +39,14 @@ import org.miaixz.bus.gitlab.models.AbstractEpic.EpicState;
 import org.miaixz.bus.gitlab.support.ISO8601;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * This class is used to filter Groups when getting lists of epics.
  */
 public class EpicFilter implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Long authorId;
@@ -137,28 +139,6 @@ public class EpicFilter implements Serializable {
     public EpicFilter withSearch(String search) {
         this.search = search;
         return (this);
-    }
-
-    public enum EpicField {
-
-        AUTHOR_ID, AUTHOR_USERNAME, LABELS;
-
-        private static JacksonJsonEnumHelper<EpicField> enumHelper = new JacksonJsonEnumHelper<>(EpicField.class);
-
-        @JsonCreator
-        public static EpicField forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
     }
 
     /**
@@ -310,4 +290,27 @@ public class EpicFilter implements Serializable {
         }
         return result;
     }
+
+    public enum EpicField {
+
+        AUTHOR_ID, AUTHOR_USERNAME, LABELS;
+
+        private static JacksonJsonEnumHelper<EpicField> enumHelper = new JacksonJsonEnumHelper<>(EpicField.class);
+
+        @JsonCreator
+        public static EpicField forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
+
 }

@@ -27,17 +27,18 @@
 */
 package org.miaixz.bus.pager.dialect.auto;
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Properties;
+
+import javax.sql.DataSource;
+
 import org.apache.ibatis.mapping.MappedStatement;
 import org.miaixz.bus.core.lang.exception.PageException;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pager.AutoDialect;
 import org.miaixz.bus.pager.builtin.PageAutoDialect;
 import org.miaixz.bus.pager.dialect.AbstractPaging;
-
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Properties;
 
 /**
  * 早期版本默认实现，获取连接再获取 url，这种方式通用性强，但是性能低，处理不好关闭连接时容易出问题

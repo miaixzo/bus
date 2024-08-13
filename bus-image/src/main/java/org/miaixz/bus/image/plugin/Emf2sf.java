@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.image.plugin;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.DecimalFormat;
+
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.builtin.MultiframeExtractor;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
 import org.miaixz.bus.image.galaxy.io.ImageOutputStream;
-
-import java.io.File;
-import java.io.IOException;
-import java.text.DecimalFormat;
 
 /**
  * @author Kimi Liu

@@ -27,42 +27,28 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
+import java.io.Serializable;
+
 import org.miaixz.bus.gitlab.support.JacksonJson;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 public class Environment implements Serializable {
+
     private static final long serialVersionUID = -1L;
-
-    public enum EnvironmentState {
-        AVAILABLE, STOPPED;
-
-        private static JacksonJsonEnumHelper<EnvironmentState> enumHelper = new JacksonJsonEnumHelper<>(
-                EnvironmentState.class);
-
-        @JsonCreator
-        public static EnvironmentState forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
-    }
+    private String tier;
 
     private Long id;
     private String name;
     private String slug;
     private String externalUrl;
+
+    public String getTier() {
+        return tier;
+    }
+
     private EnvironmentState state;
     private Deployment lastDeployment;
 
@@ -98,6 +84,10 @@ public class Environment implements Serializable {
         this.externalUrl = externalUrl;
     }
 
+    public void setTier(String tier) {
+        this.tier = tier;
+    }
+
     public EnvironmentState getState() {
         return state;
     }
@@ -118,4 +108,27 @@ public class Environment implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
+    public enum EnvironmentState {
+        AVAILABLE, STOPPED;
+
+        private static JacksonJsonEnumHelper<EnvironmentState> enumHelper = new JacksonJsonEnumHelper<>(
+                EnvironmentState.class);
+
+        @JsonCreator
+        public static EnvironmentState forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
+
 }

@@ -27,13 +27,10 @@
 */
 package org.miaixz.bus.health.unix.platform.solaris.driver;
 
-import com.sun.jna.Memory;
-import com.sun.jna.NativeLong;
-import com.sun.jna.Pointer;
-import com.sun.jna.platform.unix.LibCAPI.size_t;
-import com.sun.jna.platform.unix.LibCAPI.ssize_t;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import java.util.*;
+
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.Builder;
@@ -42,7 +39,11 @@ import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.unix.jna.SolarisLibc;
 import org.miaixz.bus.logger.Logger;
 
-import java.util.*;
+import com.sun.jna.Memory;
+import com.sun.jna.NativeLong;
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.unix.LibCAPI.size_t;
+import com.sun.jna.platform.unix.LibCAPI.ssize_t;
 
 /**
  * Utility to query /proc/psinfo

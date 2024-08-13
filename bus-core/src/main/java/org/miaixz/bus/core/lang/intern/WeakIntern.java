@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.lang.intern;
 
-import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
-
 import java.lang.ref.WeakReference;
+
+import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 
 /**
  * 使用WeakHashMap(线程安全)存储对象的规范化对象，注意此对象需单例使用！

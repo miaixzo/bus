@@ -27,17 +27,18 @@
 */
 package org.miaixz.bus.extra.mail;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
+
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.setting.Setting;
-
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
 
 /**
  * 邮件账户对象
@@ -57,6 +58,8 @@ public class MailAccount implements Serializable {
     private static final String SMTP_HOST = "mail.smtp.host";
     private static final String SMTP_PORT = "mail.smtp.port";
     private static final String SMTP_AUTH = "mail.smtp.auth";
+    // 认证机制，多个机制使用空格或逗号隔开，如：XOAUTH2
+    private static final String SMTP_AUTH_MECHANISMS = "mail.smtp.auth.mechanisms";
     private static final String SMTP_TIMEOUT = "mail.smtp.timeout";
     private static final String SMTP_CONNECTION_TIMEOUT = "mail.smtp.connectiontimeout";
     private static final String SMTP_WRITE_TIMEOUT = "mail.smtp.writetimeout";
@@ -67,8 +70,7 @@ public class MailAccount implements Serializable {
     private static final String SOCKET_FACTORY = "mail.smtp.socketFactory.class";
     private static final String SOCKET_FACTORY_FALLBACK = "mail.smtp.socketFactory.fallback";
     private static final String SOCKET_FACTORY_PORT = "smtp.socketFactory.port";
-    // System Properties
-    private static final String SPLIT_LONG_PARAMS = "mail.mime.splitlongparameters";
+
     // 其他
     private static final String MAIL_DEBUG = "mail.debug";
     /**
@@ -87,6 +89,10 @@ public class MailAccount implements Serializable {
      * 是否需要用户名密码验证
      */
     private Boolean auth;
+    /**
+     * 认证机制，多个机制使用空格或逗号隔开，如：XOAUTH2
+     */
+    private String authMechanisms;
     /**
      * 用户名
      */
@@ -107,10 +113,6 @@ public class MailAccount implements Serializable {
      * 编码用于编码邮件正文和发送人、收件人等中文
      */
     private java.nio.charset.Charset charset = Charset.UTF_8;
-    /**
-     * 对于超长参数是否切分为多份，默认为false（国内邮箱附件不支持切分的附件名）
-     */
-    private boolean splitlongparameters = false;
     /**
      * 对于文件名是否使用{@link #charset}编码，默认为 {@code true}
      */
@@ -174,6 +176,13 @@ public class MailAccount implements Serializable {
      */
     public MailAccount(final Setting setting) {
         setting.toBean(this);
+
+        // 对于用户希望直接在配置文件中设置mail.xxx参数的情况，在此加入
+        setting.forEach((key, value) -> {
+            if (StringKit.startWith(key, "mail.")) {
+                this.setCustomProperty(key, value);
+            }
+        });
     }
 
     /**
@@ -233,6 +242,26 @@ public class MailAccount implements Serializable {
      */
     public MailAccount setAuth(final boolean isAuth) {
         this.auth = isAuth;
+        return this;
+    }
+
+    /**
+     * 获取认证机制，多个机制使用空格或逗号隔开，如：XOAUTH2
+     *
+     * @return 认证机制
+     */
+    public String getAuthMechanisms() {
+        return this.authMechanisms;
+    }
+
+    /**
+     * 设置认证机制，多个机制使用空格或逗号隔开，如：XOAUTH2
+     *
+     * @param authMechanisms 认证机制
+     * @return this
+     */
+    public MailAccount setAuthMechanisms(final String authMechanisms) {
+        this.authMechanisms = authMechanisms;
         return this;
     }
 
@@ -343,28 +372,6 @@ public class MailAccount implements Serializable {
     public MailAccount setCharset(final java.nio.charset.Charset charset) {
         this.charset = charset;
         return this;
-    }
-
-    /**
-     * 对于超长参数是否切分为多份，默认为false（国内邮箱附件不支持切分的附件名）
-     *
-     * @return 对于超长参数是否切分为多份
-     */
-    public boolean isSplitlongparameters() {
-        return splitlongparameters;
-    }
-
-    /**
-     * 设置对于超长参数是否切分为多份，默认为false（国内邮箱附件不支持切分的附件名） 注意此项为全局设置，此项会调用
-     * 
-     * <pre>
-     * System.setProperty("mail.mime.splitlongparameters", true)
-     * </pre>
-     *
-     * @param splitlongparameters 对于超长参数是否切分为多份
-     */
-    public void setSplitlongparameters(final boolean splitlongparameters) {
-        this.splitlongparameters = splitlongparameters;
     }
 
     /**
@@ -570,20 +577,22 @@ public class MailAccount implements Serializable {
      * @return {@link Properties}
      */
     public Properties getSmtpProps() {
-        // 全局系统参数
-        System.setProperty(SPLIT_LONG_PARAMS, String.valueOf(this.splitlongparameters));
-
         final Properties p = new Properties();
         p.put(MAIL_PROTOCOL, "smtp");
         p.put(SMTP_HOST, this.host);
         p.put(SMTP_PORT, String.valueOf(this.port));
         p.put(SMTP_AUTH, String.valueOf(this.auth));
+        // 增加Oath2认证方式支持
+        if (StringKit.isNotBlank(this.authMechanisms)) {
+            p.put(SMTP_AUTH_MECHANISMS, this.authMechanisms);
+        }
         if (this.timeout > 0) {
             p.put(SMTP_TIMEOUT, String.valueOf(this.timeout));
         }
         if (this.connectionTimeout > 0) {
             p.put(SMTP_CONNECTION_TIMEOUT, String.valueOf(this.connectionTimeout));
         }
+
         if (this.writeTimeout > 0) {
             p.put(SMTP_WRITE_TIMEOUT, String.valueOf(this.writeTimeout));
         }
@@ -624,6 +633,8 @@ public class MailAccount implements Serializable {
      * @return this
      */
     public MailAccount defaultIfEmpty() {
+        Assert.notBlank(this.from, "'from' must not blank!");
+
         // 去掉发件人的姓名部分
         final String fromAddress = InternalMail.parseFirstAddress(this.from, this.charset).getAddress();
 

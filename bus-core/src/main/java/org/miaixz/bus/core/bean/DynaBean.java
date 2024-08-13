@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.core.bean;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+
 import org.miaixz.bus.core.bean.desc.PropDesc;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.BeanException;
 import org.miaixz.bus.core.lang.exception.CloneException;
 import org.miaixz.bus.core.xyz.*;
-
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 动态Bean，通过反射对Bean的相关方法做操作 支持Map和普通Bean和Collection
@@ -48,15 +48,14 @@ import java.util.Map;
 public class DynaBean implements Cloneable, Serializable {
 
     private static final long serialVersionUID = -1L;
-
-    /**
-     * bean对象
-     */
-    private Object bean;
     /**
      * bean类
      */
     private final Class<?> beanClass;
+    /**
+     * bean对象
+     */
+    private Object bean;
 
     /**
      * 构造

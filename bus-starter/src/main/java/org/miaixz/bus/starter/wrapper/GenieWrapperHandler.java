@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.starter.wrapper;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.miaixz.bus.core.lang.ansi.Ansi4BitColor;
 import org.miaixz.bus.core.lang.ansi.AnsiEncoder;
 import org.miaixz.bus.core.net.HTTP;
@@ -39,6 +37,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplicat
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * 允许定制处理程序执行链的工作流,可以注册任何数量的现有或自定义拦截器 对于某些处理程序组,添加常见的预处理行为不需要修改每个处理程序实现

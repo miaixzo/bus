@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.health.unix.platform.aix.hardware;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.health.builtin.hardware.common.AbstractSensors;
-
 import java.util.List;
 import java.util.function.Supplier;
+
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.health.builtin.hardware.common.AbstractSensors;
 
 /**
  * Sensors not available except counting fans from lscfg

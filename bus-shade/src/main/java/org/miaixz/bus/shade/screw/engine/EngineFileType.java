@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.shade.screw.engine;
 
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import java.io.Serializable;
 
 /**
  * 文件类型

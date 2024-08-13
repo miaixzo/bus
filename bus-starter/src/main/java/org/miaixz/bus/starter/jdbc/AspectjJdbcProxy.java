@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.starter.jdbc;
 
+import java.lang.reflect.Method;
+
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -35,8 +37,6 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.logger.Logger;
 import org.springframework.core.annotation.Order;
-
-import java.lang.reflect.Method;
 
 /**
  * AOP切面切点

@@ -27,7 +27,8 @@
 */
 package org.miaixz.bus.health.unix.platform.openbsd.hardware;
 
-import com.sun.jna.Memory;
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Memoizer;
@@ -37,7 +38,7 @@ import org.miaixz.bus.health.builtin.hardware.common.AbstractGlobalMemory;
 import org.miaixz.bus.health.unix.jna.OpenBsdLibc;
 import org.miaixz.bus.health.unix.platform.openbsd.OpenBsdSysctlKit;
 
-import java.util.function.Supplier;
+import com.sun.jna.Memory;
 
 /**
  * Memory obtained by sysctl vm.stats

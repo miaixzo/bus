@@ -27,19 +27,19 @@
 */
 package org.miaixz.bus.health.builtin.software.common;
 
-import org.miaixz.bus.core.center.regex.Pattern;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.builtin.software.NetworkParams;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+
+import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.health.Builder;
+import org.miaixz.bus.health.builtin.software.NetworkParams;
 
 /**
  * Common NetworkParams implementation.

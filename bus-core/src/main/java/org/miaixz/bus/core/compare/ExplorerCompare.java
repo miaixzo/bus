@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.compare;
 
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * Windows 资源管理器风格字符串比较器 此比较器模拟了 Windows 资源管理器的文件名排序方式，可得到与其相同的排序结果。

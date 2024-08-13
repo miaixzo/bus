@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.io.source;
 
+import java.io.IOException;
+
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.lang.Symbol;
-
-import java.io.IOException;
 
 /**
  * 将调用转发给另一个调用的{@link Source}

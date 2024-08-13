@@ -27,6 +27,13 @@
 */
 package org.miaixz.bus.setting;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.io.LineReader;
 import org.miaixz.bus.core.io.resource.Resource;
 import org.miaixz.bus.core.lang.*;
@@ -39,13 +46,6 @@ import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.setting.format.*;
 import org.miaixz.bus.setting.magic.GroupedMap;
 import org.miaixz.bus.setting.metric.ini.*;
-
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.function.Supplier;
 
 /**
  * Setting文件加载器

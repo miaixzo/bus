@@ -49,4 +49,5 @@ public class IssueChanges extends EventChanges {
     public void setConfidential(ChangeContainer<Boolean> confidential) {
         this.confidential = confidential;
     }
+
 }

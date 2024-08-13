@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.image;
 
-import lombok.Builder;
-import lombok.*;
+import java.util.List;
+
 import org.miaixz.bus.image.metric.Connection;
 
-import java.util.List;
+import lombok.*;
+import lombok.Builder;
 
 /**
  * 请求可选项

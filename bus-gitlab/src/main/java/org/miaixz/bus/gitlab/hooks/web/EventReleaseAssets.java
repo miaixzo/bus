@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.gitlab.hooks.web;
 
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.util.List;
+
+import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class EventReleaseAssets {
 
@@ -65,4 +65,5 @@ public class EventReleaseAssets {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

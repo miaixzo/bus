@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.center.date.format.parser;
 
-import org.miaixz.bus.core.lang.exception.DateException;
-import org.miaixz.bus.core.xyz.ListKit;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+
+import org.miaixz.bus.core.lang.exception.DateException;
+import org.miaixz.bus.core.xyz.ListKit;
 
 /**
  * 基于注册的日期解析器，通过遍历列表，找到合适的解析器，然后解析为日期 默认的，可以调用{@link #INSTANCE}使用全局的解析器，亦或者通过构造自定义独立的注册解析器
@@ -42,11 +42,11 @@ import java.util.List;
  */
 public class RegisterDateParser implements DateParser, Serializable {
 
-    private static final long serialVersionUID = -1L;
     /**
      * 单例
      */
     public static final RegisterDateParser INSTANCE = new RegisterDateParser();
+    private static final long serialVersionUID = -1L;
     private final List<PredicateDateParser> list;
 
     /**

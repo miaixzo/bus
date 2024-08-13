@@ -27,17 +27,18 @@
 */
 package org.miaixz.bus.pager.dialect.auto;
 
-import org.apache.ibatis.mapping.MappedStatement;
-import org.miaixz.bus.pager.AutoDialect;
-import org.miaixz.bus.pager.dialect.AbstractAutoDialect;
-import org.miaixz.bus.pager.dialect.AbstractPaging;
-
-import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.sql.DataSource;
+
+import org.apache.ibatis.mapping.MappedStatement;
+import org.miaixz.bus.pager.AutoDialect;
+import org.miaixz.bus.pager.dialect.AbstractAutoDialect;
+import org.miaixz.bus.pager.dialect.AbstractPaging;
 
 /**
  * 遍历所有实现，找到匹配的实现

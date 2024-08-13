@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.gitlab.hooks.system;
 
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.util.Date;
 
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
 public class UserSystemHookEvent extends AbstractSystemHookEvent {
+
     private static final long serialVersionUID = -1L;
 
     public static final String USER_CREATE_EVENT = "user_create";
@@ -126,4 +127,5 @@ public class UserSystemHookEvent extends AbstractSystemHookEvent {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

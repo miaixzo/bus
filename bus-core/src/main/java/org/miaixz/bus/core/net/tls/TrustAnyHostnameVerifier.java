@@ -27,16 +27,17 @@
 */
 package org.miaixz.bus.core.net.tls;
 
-import org.miaixz.bus.core.center.regex.Pattern;
-import org.miaixz.bus.core.lang.Symbol;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLSession;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.util.*;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLSession;
+
+import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * https 域名校验，信任所有域名 注意此类慎用，信任全部可能会有中间人攻击风险

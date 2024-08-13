@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.metric.EachMatcher;
-
-import java.lang.annotation.*;
 
 /**
  * 对数组、集合、Map元素进行校验, 注意,Map对象,只校验内部的值列表

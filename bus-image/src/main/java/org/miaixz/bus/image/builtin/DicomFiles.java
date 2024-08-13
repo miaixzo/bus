@@ -27,18 +27,19 @@
 */
 package org.miaixz.bus.image.builtin;
 
+import java.io.File;
+import java.util.List;
+
+import javax.xml.XMLConstants;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.UID;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.galaxy.io.ContentHandlerAdapter;
 import org.miaixz.bus.image.galaxy.io.ImageInputStream;
-
-import javax.xml.XMLConstants;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import java.io.File;
-import java.util.List;
 
 /**
  * @author Kimi Liu

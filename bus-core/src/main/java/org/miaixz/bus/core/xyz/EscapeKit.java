@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.xyz;
 
+import java.util.function.Predicate;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.escape.Html4Escape;
 import org.miaixz.bus.core.text.escape.Html4Unescape;
 import org.miaixz.bus.core.text.escape.XmlEscape;
 import org.miaixz.bus.core.text.escape.XmlUnescape;
-
-import java.util.function.Predicate;
 
 /**
  * 转义和反转义工具类Escape / Unescape escape采用ISO Latin字符集对指定的字符串进行编码。

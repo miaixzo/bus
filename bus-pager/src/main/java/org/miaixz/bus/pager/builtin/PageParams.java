@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.pager.builtin;
 
+import java.util.Properties;
+
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pager.Page;
 import org.miaixz.bus.pager.PageContext;
 import org.miaixz.bus.pager.Paging;
 import org.miaixz.bus.pager.RowBounds;
-
-import java.util.Properties;
 
 /**
  * Page 参数信息

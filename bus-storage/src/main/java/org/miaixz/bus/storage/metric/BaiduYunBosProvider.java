@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.storage.metric;
 
-import com.baidubce.auth.DefaultBceCredentials;
-import com.baidubce.services.bos.BosClient;
-import com.baidubce.services.bos.BosClientConfiguration;
-import com.baidubce.services.bos.model.GetObjectRequest;
-import com.baidubce.services.bos.model.ListObjectsRequest;
-import com.baidubce.services.bos.model.ListObjectsResponse;
+import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -40,12 +41,12 @@ import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.magic.Material;
 
-import java.io.File;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
+import com.baidubce.auth.DefaultBceCredentials;
+import com.baidubce.services.bos.BosClient;
+import com.baidubce.services.bos.BosClientConfiguration;
+import com.baidubce.services.bos.model.GetObjectRequest;
+import com.baidubce.services.bos.model.ListObjectsRequest;
+import com.baidubce.services.bos.model.ListObjectsResponse;
 
 /**
  * 存储服务-百度云

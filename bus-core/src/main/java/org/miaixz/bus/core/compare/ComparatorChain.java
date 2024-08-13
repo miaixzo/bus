@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.compare;
 
-import org.miaixz.bus.core.lang.Chain;
-
 import java.io.Serializable;
 import java.util.*;
+
+import org.miaixz.bus.core.lang.Chain;
 
 /**
  * 比较器链。此链包装了多个比较器，最终比较结果按照比较器顺序综合多个比较器结果 按照比较器链的顺序分别比较，如果比较出相等则转向下一个比较器，否则直接返回 此类copy from Apache-commons-collections

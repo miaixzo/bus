@@ -27,15 +27,16 @@
 */
 package org.miaixz.bus.extra.pinyin.provider.pinyin4j;
 
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.extra.pinyin.PinyinProvider;
+
 import net.sourceforge.pinyin4j.PinyinHelper;
 import net.sourceforge.pinyin4j.format.HanyuPinyinCaseType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinOutputFormat;
 import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.extra.pinyin.PinyinProvider;
 
 /**
  * 封装了Pinyin4j的引擎。

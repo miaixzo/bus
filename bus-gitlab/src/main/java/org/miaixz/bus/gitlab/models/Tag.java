@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
 
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
 public class Tag implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Commit commit;
@@ -75,4 +76,5 @@ public class Tag implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

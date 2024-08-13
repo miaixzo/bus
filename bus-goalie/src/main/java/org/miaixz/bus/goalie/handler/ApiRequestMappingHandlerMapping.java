@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.goalie.handler;
 
+import java.lang.reflect.Method;
+
 import org.miaixz.bus.core.xyz.AnnoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.goalie.annotation.ApiVersion;
@@ -34,8 +36,6 @@ import org.miaixz.bus.goalie.annotation.ClientVersion;
 import org.springframework.web.servlet.mvc.condition.RequestCondition;
 import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
-
-import java.lang.reflect.Method;
 
 /**
  * @author Kimi Liu

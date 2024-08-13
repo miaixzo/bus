@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.lang.reflect.Type;
+import java.util.Map;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.reflect.TypeReference;
@@ -35,9 +38,6 @@ import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.TypeKit;
-
-import java.lang.reflect.Type;
-import java.util.Map;
 
 /**
  * {@link Pair} 转换器，支持以下类型转为Pair

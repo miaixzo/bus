@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.center;
 
+import java.util.Collection;
+
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.center.set.SetFromMap;
-
-import java.util.Collection;
 
 /**
  * 通过{@link SafeConcurrentHashMap}实现的线程安全HashSet

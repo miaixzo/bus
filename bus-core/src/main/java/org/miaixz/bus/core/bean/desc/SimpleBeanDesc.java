@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.bean.desc;
 
+import java.beans.Introspector;
+import java.lang.reflect.Method;
+import java.util.Map;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.BooleanKit;
 import org.miaixz.bus.core.xyz.MethodKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.beans.Introspector;
-import java.lang.reflect.Method;
-import java.util.Map;
 
 /**
  * 简单的Bean描述，只查找getter和setter方法，规则如下：

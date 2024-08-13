@@ -27,15 +27,32 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 public class ProjectFetches implements Serializable {
+
     private static final long serialVersionUID = -1L;
+
+    private Fetches fetches;
+
+    public Fetches getFetches() {
+        return fetches;
+    }
+
+    public void setFetches(Fetches fetches) {
+        this.fetches = fetches;
+    }
+
+    @Override
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
+    }
 
     public static class DateCount implements Serializable {
 
@@ -86,18 +103,4 @@ public class ProjectFetches implements Serializable {
         }
     }
 
-    private Fetches fetches;
-
-    public Fetches getFetches() {
-        return fetches;
-    }
-
-    public void setFetches(Fetches fetches) {
-        this.fetches = fetches;
-    }
-
-    @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
-    }
 }

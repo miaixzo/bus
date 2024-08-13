@@ -30,6 +30,7 @@ package org.miaixz.bus.gitlab.hooks.web;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class WikiPageEvent extends AbstractEvent {
+
     private static final long serialVersionUID = -1L;
 
     public static final String X_GITLAB_EVENT = "Wiki Page Hook";
@@ -79,6 +80,11 @@ public class WikiPageEvent extends AbstractEvent {
 
     public void setObjectAttributes(ObjectAttributes objectAttributes) {
         this.objectAttributes = objectAttributes;
+    }
+
+    @Override
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
     }
 
     public static class Wiki {
@@ -197,8 +203,4 @@ public class WikiPageEvent extends AbstractEvent {
         }
     }
 
-    @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
-    }
 }

@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.logger;
 
+import java.net.URL;
+
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.xyz.ReflectKit;
 import org.miaixz.bus.core.xyz.ResourceKit;
@@ -36,8 +38,6 @@ import org.miaixz.bus.logger.metric.apache.log4j.Log4jLoggingFactory;
 import org.miaixz.bus.logger.metric.console.NormalLoggingFactory;
 import org.miaixz.bus.logger.metric.jdk.JdkLoggingFactory;
 import org.miaixz.bus.logger.metric.slf4j.Slf4jLoggingFactory;
-
-import java.net.URL;
 
 /**
  * 日志引擎简单工厂（静态工厂）类

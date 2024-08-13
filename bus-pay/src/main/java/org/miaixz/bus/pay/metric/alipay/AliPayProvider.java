@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.pay.metric.alipay;
 
-import com.alipay.api.*;
-import com.alipay.api.domain.*;
-import com.alipay.api.request.*;
-import com.alipay.api.response.*;
-import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.Date;
+import java.util.Map;
+
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Assert;
@@ -46,13 +47,10 @@ import org.miaixz.bus.pay.magic.Material;
 import org.miaixz.bus.pay.metric.AbstractProvider;
 import org.miaixz.bus.pay.metric.alipay.api.AliPayApi;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.Date;
-import java.util.Map;
+import com.alipay.api.*;
+import com.alipay.api.domain.*;
+import com.alipay.api.request.*;
+import com.alipay.api.response.*;
 
 /**
  * 支付宝支付相关接口
@@ -141,81 +139,54 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
     /**
      * WAP支付
      *
-     * @param response  {@link HttpServletResponse}
      * @param model     {@link AlipayTradeWapPayModel}
      * @param returnUrl 同步通知URL
      * @param notifyUrl 异步通知URL
      * @throws AlipayApiException 支付宝 Api 异常
-     * @throws IOException        IO 异常
      */
-    public void wapPay(HttpServletResponse response, AlipayTradeWapPayModel model, String returnUrl, String notifyUrl)
-            throws AlipayApiException, IOException {
-        String form = wapPayStr(model, returnUrl, notifyUrl);
-        response.setContentType("text/html;charset=" + Charset.DEFAULT_UTF_8);
-        PrintWriter out = response.getWriter();
-        out.write(form);
-        out.flush();
-        out.close();
+    public String wapPay(AlipayTradeWapPayModel model, String returnUrl, String notifyUrl) throws AlipayApiException {
+        return wapPayStr(model, returnUrl, notifyUrl);
     }
 
     /**
      * WAP支付
-     *
-     * @param response     {@link HttpServletResponse}
+     * 
      * @param model        {@link AlipayTradeWapPayModel}
      * @param returnUrl    异步通知URL
      * @param notifyUrl    同步通知URL
      * @param appAuthToken 应用授权token
      * @throws AlipayApiException 支付宝 Api 异常
-     * @throws IOException        IO 异常
      */
-    public void wapPay(HttpServletResponse response, AlipayTradeWapPayModel model, String returnUrl, String notifyUrl,
-            String appAuthToken) throws AlipayApiException, IOException {
-        String form = wapPayStr(model, returnUrl, notifyUrl, appAuthToken);
-        response.setContentType("text/html;charset=" + Charset.DEFAULT_UTF_8);
-        PrintWriter out = response.getWriter();
-        out.write(form);
-        out.flush();
-        out.close();
+    public String wapPay(AlipayTradeWapPayModel model, String returnUrl, String notifyUrl, String appAuthToken)
+            throws AlipayApiException {
+        return wapPayStr(model, returnUrl, notifyUrl, appAuthToken);
     }
 
     /**
      * WAP支付 为了解决 Filter 中使用 OutputStream getOutputStream() 和 PrintWriter getWriter() 冲突异常问题
      *
-     * @param response     {@link HttpServletResponse}
      * @param model        {@link AlipayTradeWapPayModel}
      * @param returnUrl    异步通知URL
      * @param notifyUrl    同步通知URL
      * @param appAuthToken 应用授权token
      * @throws AlipayApiException 支付宝 Api 异常
-     * @throws IOException        IO 异常
      */
-    public void wapPayByOutputStream(HttpServletResponse response, AlipayTradeWapPayModel model, String returnUrl,
-            String notifyUrl, String appAuthToken) throws AlipayApiException, IOException {
-        String form = wapPayStr(model, returnUrl, notifyUrl, appAuthToken);
-        response.setContentType("text/html;charset=" + Charset.DEFAULT_UTF_8);
-        OutputStream out = response.getOutputStream();
-        out.write(form.getBytes(Charset.DEFAULT_UTF_8));
-        response.getOutputStream().flush();
+    public String wapPayByOutputStream(AlipayTradeWapPayModel model, String returnUrl, String notifyUrl,
+            String appAuthToken) throws AlipayApiException {
+        return wapPayStr(model, returnUrl, notifyUrl, appAuthToken);
     }
 
     /**
      * WAP支付 为了解决 Filter 中使用 OutputStream getOutputStream() 和 PrintWriter getWriter() 冲突异常问题
-     *
-     * @param response  {@link HttpServletResponse}
+     * 
      * @param model     {@link AlipayTradeWapPayModel}
      * @param returnUrl 异步通知URL
      * @param notifyUrl 同步通知URL
      * @throws AlipayApiException 支付宝 Api 异常
-     * @throws IOException        IO 异常
      */
-    public void wapPayByOutputStream(HttpServletResponse response, AlipayTradeWapPayModel model, String returnUrl,
-            String notifyUrl) throws AlipayApiException, IOException {
-        String form = wapPayStr(model, returnUrl, notifyUrl);
-        response.setContentType("text/html;charset=" + Charset.DEFAULT_UTF_8);
-        OutputStream out = response.getOutputStream();
-        out.write(form.getBytes(Charset.DEFAULT_UTF_8));
-        response.getOutputStream().flush();
+    public String wapPayByOutputStream(AlipayTradeWapPayModel model, String returnUrl, String notifyUrl)
+            throws AlipayApiException {
+        return wapPayStr(model, returnUrl, notifyUrl);
     }
 
     /**
@@ -1009,107 +980,82 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
 
     /**
      * 电脑网站支付(PC支付)
-     *
-     * @param response  {@link HttpServletResponse}
+     * 
      * @param model     {@link AlipayTradePagePayModel}
      * @param notifyUrl 异步通知URL
      * @param returnUrl 同步通知URL
      * @throws AlipayApiException 支付宝 Api 异常
-     * @throws IOException        IO 异常
      */
-    public void tradePage(HttpServletResponse response, AlipayTradePagePayModel model, String notifyUrl,
-            String returnUrl) throws AlipayApiException, IOException {
+    public String tradePage(AlipayTradePagePayModel model, String notifyUrl, String returnUrl)
+            throws AlipayApiException {
         AlipayTradePagePayRequest request = new AlipayTradePagePayRequest();
         request.setBizModel(model);
         request.setNotifyUrl(notifyUrl);
         request.setReturnUrl(returnUrl);
-        String form = pageExecute(request).getBody();
-        response.setContentType("text/html;charset=" + Charset.DEFAULT_UTF_8);
-        PrintWriter out = response.getWriter();
-        out.write(form);
-        out.flush();
-        out.close();
+        return pageExecute(request).getBody();
     }
 
     /**
      * 电脑网站支付(PC支付)
      *
-     * @param response  {@link HttpServletResponse}
+     * 
      * @param method    GET/POST GET 返回url,POST 返回 FORM <a href=
      *                  "https://opensupport.alipay.com/support/helpcenter/192/201602488772?ant_source=antsupport">参考文章</a>
      * @param model     {@link AlipayTradePagePayModel}
      * @param notifyUrl 异步通知URL
      * @param returnUrl 同步通知URL
      * @throws AlipayApiException 支付宝 Api 异常
-     * @throws IOException        IO 异常
      */
-    public void tradePage(HttpServletResponse response, String method, AlipayTradePagePayModel model, String notifyUrl,
-            String returnUrl) throws AlipayApiException, IOException {
+    public String tradePage(String method, AlipayTradePagePayModel model, String notifyUrl, String returnUrl)
+            throws AlipayApiException {
         AlipayTradePagePayRequest request = new AlipayTradePagePayRequest();
         request.setBizModel(model);
         request.setNotifyUrl(notifyUrl);
         request.setReturnUrl(returnUrl);
-        String form = pageExecute(request, method).getBody();
-        response.setContentType("text/html;charset=" + Charset.DEFAULT_UTF_8);
-        PrintWriter out = response.getWriter();
-        out.write(form);
-        out.flush();
-        out.close();
+        return pageExecute(request, method).getBody();
     }
 
     /**
      * 电脑网站支付(PC支付)
      *
-     * @param response     {@link HttpServletResponse}
+     * 
      * @param model        {@link AlipayTradePagePayModel}
      * @param notifyUrl    异步通知URL
      * @param returnUrl    同步通知URL
      * @param appAuthToken 应用授权token
      * @throws AlipayApiException 支付宝 Api 异常
-     * @throws IOException        IO 异常
      */
-    public void tradePage(HttpServletResponse response, AlipayTradePagePayModel model, String notifyUrl,
-            String returnUrl, String appAuthToken) throws AlipayApiException, IOException {
+    public String tradePage(AlipayTradePagePayModel model, String notifyUrl, String returnUrl, String appAuthToken)
+            throws AlipayApiException {
         AlipayTradePagePayRequest request = new AlipayTradePagePayRequest();
         request.setBizModel(model);
         request.setNotifyUrl(notifyUrl);
         request.setReturnUrl(returnUrl);
         request.putOtherTextParam("app_auth_token", appAuthToken);
-        String form = pageExecute(request).getBody();
-        response.setContentType("text/html;charset=" + Charset.DEFAULT_UTF_8);
-        PrintWriter out = response.getWriter();
-        out.write(form);
-        out.flush();
-        out.close();
+        return pageExecute(request).getBody();
     }
 
     /**
      * 电脑网站支付(PC支付)
      *
-     * @param response  {@link HttpServletResponse}
      * @param model     {@link AlipayTradePagePayModel}
      * @param notifyUrl 异步通知URL
      * @param returnUrl 同步通知URL
      * @throws AlipayApiException 支付宝 Api 异常
      * @throws IOException        IO 异常
      */
-    public void tradePageByOutputStream(HttpServletResponse response, AlipayTradePagePayModel model, String notifyUrl,
-            String returnUrl) throws AlipayApiException, IOException {
+    public String tradePageByOutputStream(AlipayTradePagePayModel model, String notifyUrl, String returnUrl)
+            throws AlipayApiException, IOException {
         AlipayTradePagePayRequest request = new AlipayTradePagePayRequest();
         request.setBizModel(model);
         request.setNotifyUrl(notifyUrl);
         request.setReturnUrl(returnUrl);
-        String form = pageExecute(request).getBody();
-        response.setContentType("text/html;charset=" + Charset.DEFAULT_UTF_8);
-        OutputStream out = response.getOutputStream();
-        out.write(form.getBytes(Charset.DEFAULT_UTF_8));
-        response.getOutputStream().flush();
+        return pageExecute(request).getBody();
     }
 
     /**
      * 电脑网站支付(PC支付)
      *
-     * @param response     {@link HttpServletResponse}
      * @param model        {@link AlipayTradePagePayModel}
      * @param notifyUrl    异步通知URL
      * @param returnUrl    同步通知URL
@@ -1117,18 +1063,14 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
      * @throws AlipayApiException 支付宝 Api 异常
      * @throws IOException        IO 异常
      */
-    public void tradePageByOutputStream(HttpServletResponse response, AlipayTradePagePayModel model, String notifyUrl,
-            String returnUrl, String appAuthToken) throws AlipayApiException, IOException {
+    public String tradePageByOutputStream(AlipayTradePagePayModel model, String notifyUrl, String returnUrl,
+            String appAuthToken) throws AlipayApiException, IOException {
         AlipayTradePagePayRequest request = new AlipayTradePagePayRequest();
         request.setBizModel(model);
         request.setNotifyUrl(notifyUrl);
         request.setReturnUrl(returnUrl);
         request.putOtherTextParam("app_auth_token", appAuthToken);
-        String form = pageExecute(request).getBody();
-        response.setContentType("text/html;charset=" + Charset.DEFAULT_UTF_8);
-        OutputStream out = response.getOutputStream();
-        out.write(form.getBytes(Charset.DEFAULT_UTF_8));
-        response.getOutputStream().flush();
+        return pageExecute(request).getBody();
     }
 
     /**
@@ -1637,13 +1579,11 @@ public class AliPayProvider extends AbstractProvider<Material, Context> {
         return doExecute(certModel, request);
     }
 
-    public void batchTrans(Map<String, String> params, String privateKey, String signType, HttpServletResponse response)
-            throws IOException {
+    public Map<String, String> batchTrans(Map<String, String> params, String privateKey, String signType) {
         params.put("service", "batch_trans_notify");
         params.put("_input_charset", "UTF-8");
         params.put("pay_date", DateKit.format(new Date(), "YYYYMMDD"));
-        Map<String, String> param = AliPayBuilder.buildRequestPara(params, privateKey, signType);
-        response.sendRedirect(Registry.ALIPAY.service().concat(AliPayBuilder.createLinkString(param)));
+        return AliPayBuilder.buildRequestPara(params, privateKey, signType);
     }
 
     /**

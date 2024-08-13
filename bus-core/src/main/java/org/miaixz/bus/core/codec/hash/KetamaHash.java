@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.codec.hash;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
  * Ketama算法，用于在一致性Hash中快速定位服务器位置

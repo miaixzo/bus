@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.xyz;
 
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.ASCIIStrCache;
-
-import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 
 /**
  * 字符工具类 部分工具来自于Apache Commons系列

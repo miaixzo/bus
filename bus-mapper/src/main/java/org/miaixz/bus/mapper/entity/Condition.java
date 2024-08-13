@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.mapper.entity;
 
+import java.util.*;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.MapperException;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -34,8 +36,6 @@ import org.miaixz.bus.mapper.builder.EntityBuilder;
 import org.miaixz.bus.mapper.criteria.SqlCriteria;
 import org.miaixz.bus.mapper.criteria.Sqls;
 import org.miaixz.bus.mapper.support.MetaObject;
-
-import java.util.*;
 
 /**
  * 通用的Condition查询对象

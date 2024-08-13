@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.core.center.date.culture.lunar;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.cn.Direction;
 import org.miaixz.bus.core.center.date.culture.cn.Twenty;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
 import org.miaixz.bus.core.center.date.culture.cn.star.nine.NineStar;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 农历年
@@ -105,6 +105,15 @@ public class LunarYear extends Loops {
      */
     public int getYear() {
         return year;
+    }
+
+    /**
+     * 月数
+     *
+     * @return 月数
+     */
+    public int getMonthCount() {
+        return getLeapMonth() > 0 ? 13 : 12;
     }
 
     /**
@@ -200,11 +209,6 @@ public class LunarYear extends Loops {
             m = m.next(1);
         }
         return l;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        return o instanceof LunarYear && ((LunarYear) o).getYear() == year;
     }
 
 }

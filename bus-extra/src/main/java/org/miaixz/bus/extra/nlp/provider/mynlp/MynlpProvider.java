@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.extra.nlp.provider.mynlp;
 
-import com.mayabot.nlp.Mynlp;
-import com.mayabot.nlp.segment.Lexer;
-import com.mayabot.nlp.segment.Sentence;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.nlp.NLPProvider;
 import org.miaixz.bus.extra.nlp.NLPResult;
+
+import com.mayabot.nlp.Mynlp;
+import com.mayabot.nlp.segment.Lexer;
+import com.mayabot.nlp.segment.Sentence;
 
 /**
  * MYNLP 中文NLP工具包分词实现 项目地址：https://github.com/mayabot/mynlp/ {@link Lexer} 线程安全

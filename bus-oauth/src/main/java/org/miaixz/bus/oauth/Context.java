@@ -27,15 +27,16 @@
 */
 package org.miaixz.bus.oauth;
 
+import java.util.List;
+
+import org.miaixz.bus.oauth.magic.Callback;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.oauth.magic.Callback;
-import org.miaixz.bus.oauth.metric.AbstractProvider;
-
-import java.util.List;
 
 /**
  * 上下文配置类

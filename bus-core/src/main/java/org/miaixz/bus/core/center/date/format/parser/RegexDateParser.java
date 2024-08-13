@@ -27,6 +27,14 @@
 */
 package org.miaixz.bus.core.center.date.format.parser;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.miaixz.bus.core.center.date.builder.DateBuilder;
 import org.miaixz.bus.core.center.date.culture.en.Month;
 import org.miaixz.bus.core.center.date.culture.en.Week;
@@ -38,14 +46,6 @@ import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 使用正则列表方式的日期解析器 通过定义若干的日期正则，遍历匹配到给定正则后，按照正则方式解析为日期
@@ -60,6 +60,17 @@ public class RegexDateParser implements DateParser, Serializable {
     private static final int[] NSS = { 100000000, 10000000, 1000000, 100000, 10000, 1000, 100, 10, 1 };
     private static final Pattern ZONE_OFFSET_PATTERN = Pattern.compile("[-+]\\d{1,2}:?(?:\\d{2})?");
     private static final WordTree ZONE_TREE = WordTree.of(TimeZone.getAvailableIDs());
+    private final List<Pattern> patterns;
+    private boolean preferMonthFirst;
+
+    /**
+     * 构造
+     *
+     * @param patterns 正则列表
+     */
+    public RegexDateParser(final List<Pattern> patterns) {
+        this.patterns = patterns;
+    }
 
     /**
      * 根据给定的正则列表
@@ -83,157 +94,6 @@ public class RegexDateParser implements DateParser, Serializable {
      */
     public static RegexDateParser of(final Pattern... patterns) {
         return new RegexDateParser(ListKit.of(patterns));
-    }
-
-    private final List<Pattern> patterns;
-    private boolean preferMonthFirst;
-
-    /**
-     * 构造
-     *
-     * @param patterns 正则列表
-     */
-    public RegexDateParser(final List<Pattern> patterns) {
-        this.patterns = patterns;
-    }
-
-    /**
-     * 当用户传入的月和日无法判定默认位置时，设置默认的日期格式为dd/mm还是mm/dd
-     *
-     * @param preferMonthFirst {@code true}默认为mm/dd，否则dd/mm
-     */
-    public void setPreferMonthFirst(final boolean preferMonthFirst) {
-        this.preferMonthFirst = preferMonthFirst;
-    }
-
-    /**
-     * 新增自定义日期正则
-     *
-     * @param regex 日期正则
-     * @return this
-     */
-    public RegexDateParser addRegex(final String regex) {
-        // 日期正则忽略大小写
-        return addPattern(Pattern.compile(regex, Pattern.CASE_INSENSITIVE));
-    }
-
-    /**
-     * 新增自定义日期正则
-     *
-     * @param pattern 日期正则
-     * @return this
-     */
-    public RegexDateParser addPattern(final Pattern pattern) {
-        this.patterns.add(pattern);
-        return this;
-    }
-
-    @Override
-    public Date parse(final CharSequence source) throws DateException {
-        Assert.notBlank(source, "Date source must be not blank!");
-        return parseToBuilder(source).toDate();
-    }
-
-    /**
-     * 解析日期
-     *
-     * @param source 日期字符串
-     * @return DateBuilder
-     * @throws DateException 日期解析异常
-     */
-    private DateBuilder parseToBuilder(final CharSequence source) throws DateException {
-        final DateBuilder dateBuilder = DateBuilder.of();
-        Matcher matcher;
-        for (final Pattern pattern : this.patterns) {
-            matcher = pattern.matcher(source);
-            if (matcher.matches()) {
-                parse(matcher, dateBuilder);
-                return dateBuilder;
-            }
-        }
-
-        throw new DateException("No valid pattern for date string: [{}]", source);
-    }
-
-    /**
-     * 解析日期
-     *
-     * @param matcher 正则匹配器
-     * @throws DateException 日期解析异常
-     */
-    private void parse(final Matcher matcher, final DateBuilder dateBuilder) throws DateException {
-
-        // 纯数字格式
-        final String number = PatternKit.group(matcher, "number");
-        if (StringKit.isNotEmpty(number)) {
-            parseNumberDate(number, dateBuilder);
-            return;
-        }
-
-        // 毫秒时间戳
-        final String millisecond = PatternKit.group(matcher, "millisecond");
-        if (StringKit.isNotEmpty(millisecond)) {
-            dateBuilder.setMillisecond(parseLong(millisecond));
-            return;
-        }
-
-        // year
-        Optional.ofNullable(PatternKit.group(matcher, "year"))
-                .ifPresent((year) -> dateBuilder.setYear(parseYear(year)));
-        // dayOrMonth, dd/mm or mm/dd
-        Optional.ofNullable(PatternKit.group(matcher, "dayOrMonth"))
-                .ifPresent((dayOrMonth) -> parseDayOrMonth(dayOrMonth, dateBuilder, preferMonthFirst));
-        // month
-        Optional.ofNullable(PatternKit.group(matcher, "month"))
-                .ifPresent((month) -> dateBuilder.setMonth(parseMonth(month)));
-        // week
-        Optional.ofNullable(PatternKit.group(matcher, "week"))
-                .ifPresent((week) -> dateBuilder.setWeek(parseWeek(week)));
-        // day
-        Optional.ofNullable(PatternKit.group(matcher, "day"))
-                .ifPresent((day) -> dateBuilder.setDay(parseNumberLimit(day, 1, 31)));
-        // hour
-        Optional.ofNullable(PatternKit.group(matcher, "hour"))
-                .ifPresent((hour) -> dateBuilder.setHour(parseNumberLimit(hour, 0, 23)));
-        // minute
-        Optional.ofNullable(PatternKit.group(matcher, "minute"))
-                .ifPresent((minute) -> dateBuilder.setMinute(parseNumberLimit(minute, 0, 59)));
-        // second
-        Optional.ofNullable(PatternKit.group(matcher, "second"))
-                .ifPresent((second) -> dateBuilder.setSecond(parseNumberLimit(second, 0, 59)));
-        // nanoseconds
-        Optional.ofNullable(PatternKit.group(matcher, "nanosecond"))
-                .ifPresent((ns) -> dateBuilder.setNanosecond(parseNano(ns)));
-        // am or pm
-        Optional.ofNullable(PatternKit.group(matcher, "m")).ifPresent((m) -> {
-            if (CharKit.equals('p', m.charAt(0), true)) {
-                dateBuilder.setPm(true);
-            } else {
-                dateBuilder.setAm(true);
-            }
-        });
-
-        // zero zone offset
-        Optional.ofNullable(PatternKit.group(matcher, "zero")).ifPresent((zero) -> {
-            dateBuilder.setFlag(true);
-            dateBuilder.setZoneOffset(0);
-        });
-
-        // zone（包括可时区名称、时区偏移等信息，综合解析）
-        Optional.ofNullable(PatternKit.group(matcher, "zone")).ifPresent((zoneOffset) -> {
-            parseZone(zoneOffset, dateBuilder);
-        });
-
-        // zone offset
-        Optional.ofNullable(PatternKit.group(matcher, "zoneOffset")).ifPresent((zoneOffset) -> {
-            dateBuilder.setFlag(true);
-            dateBuilder.setZoneOffset(parseZoneOffset(zoneOffset));
-        });
-
-        // unix时间戳，可能有NS
-        Optional.ofNullable(PatternKit.group(matcher, "unixsecond")).ifPresent((unixsecond) -> {
-            dateBuilder.setUnixsecond(parseLong(unixsecond));
-        });
     }
 
     /**
@@ -439,6 +299,145 @@ public class RegexDateParser implements DateParser, Serializable {
             minute = parseInt(zoneOffset, from, from + 2);
         }
         return (hour * 60 + minute) * (neg ? -1 : 1);
+    }
+
+    /**
+     * 当用户传入的月和日无法判定默认位置时，设置默认的日期格式为dd/mm还是mm/dd
+     *
+     * @param preferMonthFirst {@code true}默认为mm/dd，否则dd/mm
+     */
+    public void setPreferMonthFirst(final boolean preferMonthFirst) {
+        this.preferMonthFirst = preferMonthFirst;
+    }
+
+    /**
+     * 新增自定义日期正则
+     *
+     * @param regex 日期正则
+     * @return this
+     */
+    public RegexDateParser addRegex(final String regex) {
+        // 日期正则忽略大小写
+        return addPattern(Pattern.compile(regex, Pattern.CASE_INSENSITIVE));
+    }
+
+    /**
+     * 新增自定义日期正则
+     *
+     * @param pattern 日期正则
+     * @return this
+     */
+    public RegexDateParser addPattern(final Pattern pattern) {
+        this.patterns.add(pattern);
+        return this;
+    }
+
+    @Override
+    public Date parse(final CharSequence source) throws DateException {
+        Assert.notBlank(source, "Date source must be not blank!");
+        return parseToBuilder(source).toDate();
+    }
+
+    /**
+     * 解析日期
+     *
+     * @param source 日期字符串
+     * @return DateBuilder
+     * @throws DateException 日期解析异常
+     */
+    private DateBuilder parseToBuilder(final CharSequence source) throws DateException {
+        final DateBuilder dateBuilder = DateBuilder.of();
+        Matcher matcher;
+        for (final Pattern pattern : this.patterns) {
+            matcher = pattern.matcher(source);
+            if (matcher.matches()) {
+                parse(matcher, dateBuilder);
+                return dateBuilder;
+            }
+        }
+
+        throw new DateException("No valid pattern for date string: [{}]", source);
+    }
+
+    /**
+     * 解析日期
+     *
+     * @param matcher 正则匹配器
+     * @throws DateException 日期解析异常
+     */
+    private void parse(final Matcher matcher, final DateBuilder dateBuilder) throws DateException {
+
+        // 纯数字格式
+        final String number = PatternKit.group(matcher, "number");
+        if (StringKit.isNotEmpty(number)) {
+            parseNumberDate(number, dateBuilder);
+            return;
+        }
+
+        // 毫秒时间戳
+        final String millisecond = PatternKit.group(matcher, "millisecond");
+        if (StringKit.isNotEmpty(millisecond)) {
+            dateBuilder.setMillisecond(parseLong(millisecond));
+            return;
+        }
+
+        // year
+        Optional.ofNullable(PatternKit.group(matcher, "year"))
+                .ifPresent((year) -> dateBuilder.setYear(parseYear(year)));
+        // dayOrMonth, dd/mm or mm/dd
+        Optional.ofNullable(PatternKit.group(matcher, "dayOrMonth"))
+                .ifPresent((dayOrMonth) -> parseDayOrMonth(dayOrMonth, dateBuilder, preferMonthFirst));
+        // month
+        Optional.ofNullable(PatternKit.group(matcher, "month"))
+                .ifPresent((month) -> dateBuilder.setMonth(parseMonth(month)));
+        // week
+        Optional.ofNullable(PatternKit.group(matcher, "week"))
+                .ifPresent((week) -> dateBuilder.setWeek(parseWeek(week)));
+        // day
+        Optional.ofNullable(PatternKit.group(matcher, "day"))
+                .ifPresent((day) -> dateBuilder.setDay(parseNumberLimit(day, 1, 31)));
+        // hour
+        Optional.ofNullable(PatternKit.group(matcher, "hour"))
+                .ifPresent((hour) -> dateBuilder.setHour(parseNumberLimit(hour, 0, 23)));
+        // minute
+        Optional.ofNullable(PatternKit.group(matcher, "minute"))
+                .ifPresent((minute) -> dateBuilder.setMinute(parseNumberLimit(minute, 0, 59)));
+        // second
+        Optional.ofNullable(PatternKit.group(matcher, "second"))
+                .ifPresent((second) -> dateBuilder.setSecond(parseNumberLimit(second, 0, 59)));
+        // nanoseconds
+        Optional.ofNullable(PatternKit.group(matcher, "nanosecond"))
+                .ifPresent((ns) -> dateBuilder.setNanosecond(parseNano(ns)));
+        // am or pm
+        Optional.ofNullable(PatternKit.group(matcher, "m")).ifPresent((m) -> {
+            if (CharKit.equals('p', m.charAt(0), true)) {
+                dateBuilder.setPm(true);
+            } else {
+                dateBuilder.setAm(true);
+            }
+        });
+
+        // zero zone offset
+        Optional.ofNullable(PatternKit.group(matcher, "zero")).ifPresent((zero) -> {
+            dateBuilder.setFlag(true);
+            dateBuilder.setZoneOffset(0);
+        });
+
+        // zone（包括可时区名称、时区偏移等信息，综合解析）
+        Optional.ofNullable(PatternKit.group(matcher, "zone")).ifPresent((zoneOffset) -> {
+            parseZone(zoneOffset, dateBuilder);
+        });
+
+        // zone offset
+        Optional.ofNullable(PatternKit.group(matcher, "zoneOffset")).ifPresent((zoneOffset) -> {
+            dateBuilder.setFlag(true);
+            dateBuilder.setZoneOffset(parseZoneOffset(zoneOffset));
+        });
+
+        // unix时间戳，可能有NS
+        Optional.ofNullable(PatternKit.group(matcher, "unixsecond")).ifPresent((unixsecond) -> {
+            dateBuilder.setUnixsecond(parseLong(unixsecond));
+        });
     }
 
 }

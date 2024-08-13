@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.http.accord;
 
-import org.miaixz.bus.http.Address;
-
 import java.util.concurrent.TimeUnit;
+
+import org.miaixz.bus.http.Address;
 
 /**
  * 管理HTTP和HTTP/2连接的重用，以减少网络延迟。 共享相同的 {@link Address}的HTTP请求可能共享一个{@link Connection} 该类实现了哪些连接保持开放以供将来使用的策略

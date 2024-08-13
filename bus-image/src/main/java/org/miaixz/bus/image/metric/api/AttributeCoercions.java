@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.image.metric.api;
 
-import org.miaixz.bus.image.Dimse;
-import org.miaixz.bus.image.metric.TransferCapability;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import org.miaixz.bus.image.Dimse;
+import org.miaixz.bus.image.metric.TransferCapability;
 
 /**
  * @author Kimi Liu

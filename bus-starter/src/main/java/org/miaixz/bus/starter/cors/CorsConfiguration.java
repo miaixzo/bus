@@ -27,7 +27,8 @@
 */
 package org.miaixz.bus.starter.cors;
 
-import jakarta.annotation.Resource;
+import java.util.Arrays;
+
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -36,7 +37,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
-import java.util.Arrays;
+import jakarta.annotation.Resource;
 
 /**
  * Cors 跨域支持

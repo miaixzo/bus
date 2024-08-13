@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.core.io.stream;
 
-import org.miaixz.bus.core.convert.Convert;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.IoKit;
-
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+
+import org.miaixz.bus.core.convert.Convert;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.IoKit;
 
 /**
  * {@link OutputStream}写出器
@@ -122,11 +122,11 @@ public class StreamWriter {
      * @param contents 写入的内容，调用toString()方法，不包括不会自动换行
      * @throws InternalException IO异常
      */
-    public void writeString(final Charset charset, final Object... contents) throws InternalException {
+    public void writeString(final Charset charset, final CharSequence... contents) throws InternalException {
         OutputStreamWriter osw = null;
         try {
             osw = IoKit.toWriter(out, charset);
-            for (final Object content : contents) {
+            for (final CharSequence content : contents) {
                 if (content != null) {
                     osw.write(Convert.toString(content, Normal.EMPTY));
                 }

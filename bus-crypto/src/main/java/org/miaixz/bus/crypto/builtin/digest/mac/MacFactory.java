@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.crypto.builtin.digest.mac;
 
-import org.miaixz.bus.core.lang.Algorithm;
-import org.miaixz.bus.crypto.Builder;
-
 import java.security.Key;
 import java.security.spec.AlgorithmParameterSpec;
+
+import org.miaixz.bus.core.lang.Algorithm;
+import org.miaixz.bus.crypto.Builder;
 
 /**
  * {@link Mac} 简单工厂类

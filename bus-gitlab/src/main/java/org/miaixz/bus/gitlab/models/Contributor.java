@@ -32,6 +32,7 @@ package org.miaixz.bus.gitlab.models;
  * <a href="https://docs.gitlab.com/ee/api/repositories.html#contributors">Contributors at GitLab</a>.
  */
 public class Contributor extends AbstractUser<Contributor> {
+
     private static final long serialVersionUID = -1L;
 
     private Integer commits;
@@ -61,4 +62,5 @@ public class Contributor extends AbstractUser<Contributor> {
     public void setDeletions(Integer deletions) {
         this.deletions = deletions;
     }
+
 }

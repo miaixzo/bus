@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.Response;
-import org.miaixz.bus.gitlab.models.Label;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.gitlab.models.Label;
+
+import jakarta.ws.rs.core.Response;
 
 /**
  * This class provides an entry point to all the GitLab API project and group label calls.
@@ -66,7 +67,7 @@ public class LabelsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Label> getProjectLabels(Object projectIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<Label>(this, Label.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
+        return (new Pager<>(this, Label.class, itemsPerPage, null, "projects", getProjectIdOrPath(projectIdOrPath),
                 "labels"));
     }
 
@@ -101,10 +102,8 @@ public class LabelsApi extends AbstractApi {
      * @param projectIdOrPath the project in the form of an Long(ID), String(path), or Project instance
      * @param labelIdOrName   the label in the form of an Long(ID), String(name), or Label instance
      * @return a Optional instance with a Label instance as its value
-     * @throws GitLabApiException if any exception occurs
      */
-    public Optional<Label> getOptionalProjectLabel(Object projectIdOrPath, Object labelIdOrName)
-            throws GitLabApiException {
+    public Optional<Label> getOptionalProjectLabel(Object projectIdOrPath, Object labelIdOrName) {
         try {
             return (Optional.ofNullable(getProjectLabel(projectIdOrPath, labelIdOrName)));
         } catch (GitLabApiException glae) {
@@ -236,7 +235,7 @@ public class LabelsApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Label> getGroupLabels(Object groupIdOrPath, int itemsPerPage) throws GitLabApiException {
-        return (new Pager<Label>(this, Label.class, itemsPerPage, null, "groups", getGroupIdOrPath(groupIdOrPath),
+        return (new Pager<>(this, Label.class, itemsPerPage, null, "groups", getGroupIdOrPath(groupIdOrPath),
                 "labels"));
     }
 

@@ -27,13 +27,8 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonValue;
-import org.miaixz.bus.gitlab.Constants;
-import org.miaixz.bus.gitlab.GitLabApiForm;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+import static org.miaixz.bus.gitlab.Constants.MergeRequestScope.ALL;
+import static org.miaixz.bus.gitlab.Constants.MergeRequestScope.ASSIGNED_TO_ME;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -41,18 +36,29 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.miaixz.bus.gitlab.Constants;
+import org.miaixz.bus.gitlab.GitLabApiForm;
+import org.miaixz.bus.gitlab.Constants.*;
+import org.miaixz.bus.gitlab.support.JacksonJson;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 /**
  * This class is used to filter merge requests when getting lists of them.
  */
 public class MergeRequestFilter implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Long projectId;
     private Long groupId;
     private List<Long> iids;
-    private Constants.MergeRequestState state;
-    private Constants.MergeRequestOrderBy orderBy;
-    private Constants.SortOrder sort;
+    private MergeRequestState state;
+    private MergeRequestOrderBy orderBy;
+    private SortOrder sort;
     private String milestone;
     private Boolean simpleView;
     private List<String> labels;
@@ -60,7 +66,7 @@ public class MergeRequestFilter implements Serializable {
     private Date createdBefore;
     private Date updatedAfter;
     private Date updatedBefore;
-    private Constants.MergeRequestScope scope;
+    private MergeRequestScope scope;
 
     /**
      * Filter MR by created by the given user id. Combine with scope=all or scope=assigned_to_me
@@ -71,11 +77,11 @@ public class MergeRequestFilter implements Serializable {
     private String sourceBranch;
     private String targetBranch;
     private String search;
-    private Constants.MergeRequestSearchIn in;
+    private MergeRequestSearchIn in;
     private Boolean wip;
     private Map<MergeRequestField, Object> not;
 
-    public Constants.MergeRequestState getState() {
+    public MergeRequestState getState() {
         return state;
     }
 
@@ -105,42 +111,42 @@ public class MergeRequestFilter implements Serializable {
         return (this);
     }
 
-    public void setState(Constants.MergeRequestState state) {
+    public void setState(MergeRequestState state) {
         this.state = state;
     }
 
-    public MergeRequestFilter withState(Constants.MergeRequestState state) {
+    public MergeRequestFilter withState(MergeRequestState state) {
         this.state = state;
         return (this);
     }
 
-    public Constants.MergeRequestOrderBy getOrderBy() {
+    public MergeRequestOrderBy getOrderBy() {
         return orderBy;
     }
 
-    public void setOrderBy(Constants.MergeRequestOrderBy orderBy) {
+    public void setOrderBy(MergeRequestOrderBy orderBy) {
         this.orderBy = orderBy;
     }
 
-    public MergeRequestFilter withOrderBy(Constants.MergeRequestOrderBy orderBy) {
+    public MergeRequestFilter withOrderBy(MergeRequestOrderBy orderBy) {
         this.orderBy = orderBy;
         return (this);
     }
 
-    public Constants.SortOrder getSort() {
+    public SortOrder getSort() {
         return sort;
     }
 
-    public void setSort(Constants.SortOrder sort) {
+    public void setSort(SortOrder sort) {
         this.sort = sort;
     }
 
-    public MergeRequestFilter withSort(Constants.SortOrder sort) {
+    public MergeRequestFilter withSort(SortOrder sort) {
         this.sort = sort;
         return (this);
     }
 
-    public Constants.MergeRequestScope getScope() {
+    public MergeRequestScope getScope() {
         return scope;
     }
 
@@ -235,16 +241,16 @@ public class MergeRequestFilter implements Serializable {
         return (this);
     }
 
-    public void setScope(Constants.MergeRequestScope scope) {
+    public void setScope(MergeRequestScope scope) {
         this.scope = scope;
     }
 
-    public MergeRequestFilter withScope(Constants.MergeRequestScope scope) {
+    public MergeRequestFilter withScope(MergeRequestScope scope) {
         this.scope = scope;
         return (this);
     }
 
-    public Constants.MergeRequestSearchIn getIn() {
+    public MergeRequestSearchIn getIn() {
         return in;
     }
 
@@ -326,36 +332,32 @@ public class MergeRequestFilter implements Serializable {
         return (this);
     }
 
-    public void setIn(Constants.MergeRequestSearchIn in) {
+    public void setIn(MergeRequestSearchIn in) {
         this.in = in;
     }
 
-    public MergeRequestFilter withIn(Constants.MergeRequestSearchIn in) {
+    public MergeRequestFilter withIn(MergeRequestSearchIn in) {
         this.in = in;
         return (this);
     }
 
-    public enum MergeRequestField {
-        LABELS, MILESTONE, AUTHOR_ID, AUTHOR_USERNAME, ASSIGNEE_ID, ASSIGNEE_USERNAME, REVIEWER_ID, REVIEWER_USERNAME,
-        MY_REACTION_EMOJI;
+    @JsonIgnore
+    public GitLabApiForm getQueryParams() {
+        GitLabApiForm params = new GitLabApiForm().withParam("iids", iids).withParam("state", state)
+                .withParam("order_by", orderBy).withParam("sort", sort).withParam("milestone", milestone)
+                .withParam("view", (simpleView != null && simpleView ? "simple" : null))
+                .withParam("labels", (labels != null ? String.join(",", labels) : null))
+                .withParam("created_after", createdAfter).withParam("created_before", createdBefore)
+                .withParam("updated_after", updatedAfter).withParam("updated_before", updatedBefore)
+                .withParam("scope", scope).withParam("assignee_id", assigneeId)
+                .withParam("my_reaction_emoji", myReactionEmoji).withParam("source_branch", sourceBranch)
+                .withParam("target_branch", targetBranch).withParam("search", search).withParam("in", in)
+                .withParam("wip", (wip == null ? null : wip ? "yes" : "no")).withParam("not", toStringMap(not), false);
 
-        private static JacksonJsonEnumHelper<MergeRequestField> enumHelper = new JacksonJsonEnumHelper<>(
-                MergeRequestField.class);
-
-        @JsonCreator
-        public static MergeRequestField forValue(String value) {
-            return enumHelper.forValue(value);
+        if (authorId != null && (scope == ALL || scope == ASSIGNED_TO_ME)) {
+            params.withParam("author_id", authorId);
         }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
+        return params;
     }
 
     public Boolean getWip() {
@@ -505,24 +507,27 @@ public class MergeRequestFilter implements Serializable {
         return (getQueryParams().withParam(Constants.PAGE_PARAM, page).withParam(Constants.PER_PAGE_PARAM, perPage));
     }
 
-    @JsonIgnore
-    public GitLabApiForm getQueryParams() {
-        GitLabApiForm params = new GitLabApiForm().withParam("iids", iids).withParam("state", state)
-                .withParam("order_by", orderBy).withParam("sort", sort).withParam("milestone", milestone)
-                .withParam("view", (simpleView != null && simpleView ? "simple" : null))
-                .withParam("labels", (labels != null ? String.join(",", labels) : null))
-                .withParam("created_after", createdAfter).withParam("created_before", createdBefore)
-                .withParam("updated_after", updatedAfter).withParam("updated_before", updatedBefore)
-                .withParam("scope", scope).withParam("assignee_id", assigneeId)
-                .withParam("my_reaction_emoji", myReactionEmoji).withParam("source_branch", sourceBranch)
-                .withParam("target_branch", targetBranch).withParam("search", search).withParam("in", in)
-                .withParam("wip", (wip == null ? null : wip ? "yes" : "no")).withParam("not", toStringMap(not), false);
+    public enum MergeRequestField {
+        LABELS, MILESTONE, AUTHOR_ID, AUTHOR_USERNAME, ASSIGNEE_ID, ASSIGNEE_USERNAME, REVIEWER_ID, REVIEWER_USERNAME,
+        MY_REACTION_EMOJI;
 
-        if (authorId != null
-                && (scope == Constants.MergeRequestScope.ALL || scope == Constants.MergeRequestScope.ASSIGNED_TO_ME)) {
-            params.withParam("author_id", authorId);
+        private static JacksonJsonEnumHelper<MergeRequestField> enumHelper = new JacksonJsonEnumHelper<>(
+                MergeRequestField.class);
+
+        @JsonCreator
+        public static MergeRequestField forValue(String value) {
+            return enumHelper.forValue(value);
         }
-        return params;
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
     }
 
     private Map<String, Object> toStringMap(Map<MergeRequestField, Object> map) {
@@ -540,4 +545,5 @@ public class MergeRequestFilter implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

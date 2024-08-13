@@ -27,12 +27,11 @@
 */
 package org.miaixz.bus.starter.sensitive;
 
-import jakarta.annotation.Resource;
-import lombok.Getter;
-import lombok.Setter;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author Kimi Liu
@@ -40,14 +39,18 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  */
 @Getter
 @Setter
-@EnableConfigurationProperties(value = { SensitiveProperties.Encrypt.class, SensitiveProperties.Decrypt.class })
 @ConfigurationProperties(prefix = GeniusBuilder.SENSITIVE)
 public class SensitiveProperties {
 
-    @Resource
-    private Encrypt encrypt;
-    @Resource
-    private Decrypt decrypt;
+    /**
+     * 加密信息
+     *
+     */
+    private Encrypt encrypt = new Encrypt();
+    /**
+     * 解密信息
+     */
+    private Decrypt decrypt = new Decrypt();
 
     /**
      * 是否调试模式
@@ -59,7 +62,6 @@ public class SensitiveProperties {
      */
     @Getter
     @Setter
-    @ConfigurationProperties(prefix = GeniusBuilder.SENSITIVE + ".encrypt")
     public class Encrypt {
         private String key;
         private String type;
@@ -70,7 +72,6 @@ public class SensitiveProperties {
      */
     @Getter
     @Setter
-    @ConfigurationProperties(prefix = GeniusBuilder.SENSITIVE + ".decrypt")
     public class Decrypt {
         private String key;
         private String type;

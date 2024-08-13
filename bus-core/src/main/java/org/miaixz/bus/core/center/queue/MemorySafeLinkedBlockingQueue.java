@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.center.queue;
 
-import org.miaixz.bus.core.lang.Console;
-import org.miaixz.bus.core.lang.thread.SimpleScheduler;
-import org.miaixz.bus.core.xyz.RuntimeKit;
-
 import java.util.Collection;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Predicate;
+
+import org.miaixz.bus.core.lang.Console;
+import org.miaixz.bus.core.lang.thread.SimpleScheduler;
+import org.miaixz.bus.core.xyz.RuntimeKit;
 
 /**
  * 内存安全的{@link LinkedBlockingQueue}，可以解决OOM问题。 原理是通过Runtime#freeMemory()获取剩余内存，当剩余内存低于指定的阈值时，不再加入。

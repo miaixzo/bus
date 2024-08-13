@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.shade.safety.complex;
 
-import org.miaixz.bus.shade.safety.Complex;
-
 import java.util.regex.Pattern;
+
+import org.miaixz.bus.shade.safety.Complex;
 
 /**
  * 正则表达式规则

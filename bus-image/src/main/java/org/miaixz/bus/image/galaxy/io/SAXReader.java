@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.image.galaxy.io;
 
-import org.miaixz.bus.image.galaxy.data.Attributes;
-import org.xml.sax.SAXException;
+import java.io.IOException;
+import java.io.InputStream;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.IOException;
-import java.io.InputStream;
+
+import org.miaixz.bus.image.galaxy.data.Attributes;
+import org.xml.sax.SAXException;
 
 /**
  * @author Kimi Liu

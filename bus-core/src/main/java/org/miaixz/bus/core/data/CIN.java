@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.core.data;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.miaixz.bus.core.center.date.DateTime;
 import org.miaixz.bus.core.center.date.Formatter;
 import org.miaixz.bus.core.center.regex.Pattern;
@@ -34,10 +38,6 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.Validator;
 import org.miaixz.bus.core.xyz.*;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 公民身份号码（Citizen Identification Number），参考GB11643-1999标准。

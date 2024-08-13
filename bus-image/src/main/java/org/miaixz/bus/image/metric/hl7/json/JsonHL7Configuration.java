@@ -27,7 +27,9 @@
 */
 package org.miaixz.bus.image.metric.hl7.json;
 
-import jakarta.json.stream.JsonParser;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.image.Device;
 import org.miaixz.bus.image.metric.Connection;
@@ -38,8 +40,7 @@ import org.miaixz.bus.image.metric.json.JSONReader;
 import org.miaixz.bus.image.metric.json.JSONWriter;
 import org.miaixz.bus.image.metric.json.JsonConfigurationExtension;
 
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.json.stream.JsonParser;
 
 /**
  * @author Kimi Liu

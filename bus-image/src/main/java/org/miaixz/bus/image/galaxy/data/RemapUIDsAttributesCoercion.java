@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.image.galaxy.data;
 
+import java.util.Map;
+
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.UID;
-
-import java.util.Map;
 
 /**
  * @author Kimi Liu

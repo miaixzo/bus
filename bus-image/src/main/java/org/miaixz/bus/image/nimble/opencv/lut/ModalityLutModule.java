@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.image.nimble.opencv.lut;
 
+import java.util.Objects;
+import java.util.Optional;
+import java.util.OptionalDouble;
+
 import org.miaixz.bus.image.Builder;
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.miaixz.bus.image.nimble.RGBImageVoiLut;
 import org.miaixz.bus.image.nimble.opencv.LookupTableCV;
 import org.miaixz.bus.logger.Logger;
-
-import java.util.Objects;
-import java.util.Optional;
-import java.util.OptionalDouble;
 
 /**
  * @author Kimi Liu

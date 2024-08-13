@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.pager;
 
-import org.miaixz.bus.core.lang.Normal;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * 对Page结果进行包装 新增分页的多项属性

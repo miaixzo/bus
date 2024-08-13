@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.image.nimble.reader;
 
+import javax.imageio.metadata.IIOMetadata;
+
 import org.miaixz.bus.image.Tag;
 import org.miaixz.bus.image.galaxy.data.Attributes;
 import org.w3c.dom.Node;
-
-import javax.imageio.metadata.IIOMetadata;
 
 /**
  * @author Kimi Liu

@@ -27,19 +27,20 @@
 */
 package org.miaixz.bus.health.windows.driver;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.tuple.Tuple;
+import org.miaixz.bus.health.builtin.jna.ByRef;
+import org.miaixz.bus.health.builtin.jna.Struct;
+
 import com.sun.jna.Memory;
 import com.sun.jna.platform.win32.*;
 import com.sun.jna.platform.win32.Guid.GUID;
 import com.sun.jna.platform.win32.WinNT.HANDLE;
 import com.sun.jna.ptr.IntByReference;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.tuple.Tuple;
-import org.miaixz.bus.health.builtin.jna.ByRef;
-import org.miaixz.bus.health.builtin.jna.Struct;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Utility to query device interfaces via Config Manager Device Tree functions

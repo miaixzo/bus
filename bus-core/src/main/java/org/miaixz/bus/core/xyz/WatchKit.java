@@ -27,18 +27,18 @@
 */
 package org.miaixz.bus.core.xyz;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
+import java.nio.file.*;
+
 import org.miaixz.bus.core.io.file.PathResolve;
 import org.miaixz.bus.core.io.watch.WatchKind;
 import org.miaixz.bus.core.io.watch.WatchMonitor;
 import org.miaixz.bus.core.io.watch.Watcher;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.nio.file.*;
 
 /**
  * 监听工具类 主要负责文件监听器的快捷创建

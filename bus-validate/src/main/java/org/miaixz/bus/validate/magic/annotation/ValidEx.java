@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
-import org.miaixz.bus.core.lang.exception.ValidateException;
-
 import java.lang.annotation.*;
+
+import org.miaixz.bus.core.lang.exception.ValidateException;
 
 /**
  * 校验异常注解,校验失败时将ValidateException替换为指定的异常并抛出.

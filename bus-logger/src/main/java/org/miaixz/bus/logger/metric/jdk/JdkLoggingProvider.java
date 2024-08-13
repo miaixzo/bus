@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.logger.metric.jdk;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.logger.magic.AbstractProvider;
-
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.magic.AbstractProvider;
 
 /**
  * java.util.logging
@@ -75,6 +75,33 @@ public class JdkLoggingProvider extends AbstractProvider {
      */
     public JdkLoggingProvider(final String name) {
         this(Logger.getLogger(name));
+    }
+
+    /**
+     * 传入调用日志类的信息
+     *
+     * @param fqcn   调用者全限定类名
+     * @param record 要更新的记录
+     */
+    private static void fill(final String fqcn, final LogRecord record) {
+        final StackTraceElement[] steArray = Thread.currentThread().getStackTrace();
+
+        int found = -1;
+        String className;
+        for (int i = steArray.length - 2; i > -1; i--) {
+            // 此处初始值为length-2，表示从倒数第二个堆栈开始检查，如果是倒数第一个，那调用者就获取不到
+            className = steArray[i].getClassName();
+            if (fqcn.equals(className)) {
+                found = i;
+                break;
+            }
+        }
+
+        if (found > -1) {
+            final StackTraceElement ste = steArray[found + 1];
+            record.setSourceClassName(ste.getClassName());
+            record.setSourceMethodName(ste.getMethodName());
+        }
     }
 
     @Override
@@ -175,33 +202,6 @@ public class JdkLoggingProvider extends AbstractProvider {
             record.setThrown(throwable);
             fill(fqcn, record);
             logger.log(record);
-        }
-    }
-
-    /**
-     * 传入调用日志类的信息
-     *
-     * @param fqcn   调用者全限定类名
-     * @param record 要更新的记录
-     */
-    private static void fill(final String fqcn, final LogRecord record) {
-        final StackTraceElement[] steArray = Thread.currentThread().getStackTrace();
-
-        int found = -1;
-        String className;
-        for (int i = steArray.length - 2; i > -1; i--) {
-            // 此处初始值为length-2，表示从倒数第二个堆栈开始检查，如果是倒数第一个，那调用者就获取不到
-            className = steArray[i].getClassName();
-            if (fqcn.equals(className)) {
-                found = i;
-                break;
-            }
-        }
-
-        if (found > -1) {
-            final StackTraceElement ste = steArray[found + 1];
-            record.setSourceClassName(ste.getClassName());
-            record.setSourceMethodName(ste.getMethodName());
         }
     }
 

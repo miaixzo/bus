@@ -27,9 +27,10 @@
 */
 package org.miaixz.bus.oauth.metric.wechat.ee;
 
+import org.miaixz.bus.oauth.metric.AuthorizeScope;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.miaixz.bus.oauth.metric.AuthorizeScope;
 
 /**
  * 企业微信 授权范围

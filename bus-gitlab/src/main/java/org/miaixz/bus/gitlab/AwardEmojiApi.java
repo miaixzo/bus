@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.gitlab;
 
+import java.util.List;
+
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
-import org.miaixz.bus.gitlab.models.AwardEmoji;
 
-import java.util.List;
+import org.miaixz.bus.gitlab.models.AwardEmoji;
 
 /**
  * This class implements the client side API for the GitLab Award Emoji API calls.
  *
  * @see <a href="https://docs.gitlab.com/ce/api/award_emoji.html">GitLab Award Emoji API Documentaion</a>
- * @since v4.8.31
  */
 public class AwardEmojiApi extends AbstractApi {
 
@@ -60,7 +60,7 @@ public class AwardEmojiApi extends AbstractApi {
     public List<AwardEmoji> getIssueAwardEmojis(Object projectIdOrPath, Long issueIid) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(1, getDefaultPerPage()), "projects",
                 getProjectIdOrPath(projectIdOrPath), "issues", issueIid, "award_emoji");
-        return response.readEntity(new GenericType<List<AwardEmoji>>() {
+        return response.readEntity(new GenericType<>() {
         });
     }
 
@@ -80,7 +80,7 @@ public class AwardEmojiApi extends AbstractApi {
             throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(1, getDefaultPerPage()), "projects",
                 getProjectIdOrPath(projectIdOrPath), "merge_requests", mergeRequestIid, "award_emoji");
-        return response.readEntity(new GenericType<List<AwardEmoji>>() {
+        return response.readEntity(new GenericType<>() {
         });
     }
 
@@ -99,7 +99,7 @@ public class AwardEmojiApi extends AbstractApi {
     public List<AwardEmoji> getSnippetAwardEmojis(Object projectIdOrPath, Long snippetId) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(1, getDefaultPerPage()), "projects",
                 getProjectIdOrPath(projectIdOrPath), "snippets", snippetId, "award_emoji");
-        return response.readEntity(new GenericType<List<AwardEmoji>>() {
+        return response.readEntity(new GenericType<>() {
         });
     }
 
@@ -120,7 +120,7 @@ public class AwardEmojiApi extends AbstractApi {
             throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(1, getDefaultPerPage()), "projects",
                 getProjectIdOrPath(projectIdOrPath), "issues", issueIid, "notes", noteId, "award_emoji");
-        return response.readEntity(new GenericType<List<AwardEmoji>>() {
+        return response.readEntity(new GenericType<>() {
         });
     }
 
@@ -462,4 +462,5 @@ public class AwardEmojiApi extends AbstractApi {
         delete(Response.Status.NO_CONTENT, null, "projects", getProjectIdOrPath(projectIdOrPath), "merge_requests",
                 mergeRequestIid, "notes", noteId, "award_emoji", awardId);
     }
+
 }

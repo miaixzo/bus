@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.extra.image;
 
-import org.miaixz.bus.core.Builder;
-import org.miaixz.bus.core.lang.Assert;
-
 import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.miaixz.bus.core.Builder;
+import org.miaixz.bus.core.lang.Assert;
 
 /**
  * 定义和管理键和关联值的集合构建器，提供配置包括：

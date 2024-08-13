@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.metric.RegexMatcher;
-
-import java.lang.annotation.*;
 
 /**
  * 正则表达式校验

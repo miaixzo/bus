@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.mapper;
 
+import java.lang.reflect.Method;
+import java.util.*;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.MapperException;
@@ -37,9 +40,6 @@ import org.miaixz.bus.mapper.builder.SqlBuilder;
 import org.miaixz.bus.mapper.entity.Condition;
 import org.miaixz.bus.mapper.entity.EntityColumn;
 import org.miaixz.bus.mapper.entity.TableNames;
-
-import java.lang.reflect.Method;
-import java.util.*;
 
 /**
  * OGNL静态方法

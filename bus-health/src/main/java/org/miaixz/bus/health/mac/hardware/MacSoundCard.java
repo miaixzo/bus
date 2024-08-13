@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.health.mac.hardware;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.health.Builder;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.SoundCard;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractHardwareAbstractionLayer;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractSoundCard;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Sound card data obtained via AppleHDA kext

@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.extra.captcha.provider;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.extra.captcha.AbstractProvider;
 import org.miaixz.bus.extra.captcha.strategy.CodeStrategy;
 import org.miaixz.bus.extra.captcha.strategy.RandomStrategy;
 import org.miaixz.bus.extra.image.ImageKit;
 import org.miaixz.bus.extra.image.gif.AnimatedGifEncoder;
-
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 
 /**
  * Gif验证码
@@ -148,7 +148,7 @@ public class GifProvider extends AbstractProvider {
     }
 
     /**
-     * 设置验证码字符颜色
+     * 设置最大取色范围
      *
      * @param maxColor 颜色
      * @return this
@@ -159,7 +159,7 @@ public class GifProvider extends AbstractProvider {
     }
 
     /**
-     * 设置验证码字符颜色
+     * 设置最小取色范围
      *
      * @param minColor 颜色
      * @return this

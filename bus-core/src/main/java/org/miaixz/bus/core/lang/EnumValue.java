@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.lang;
 
+import java.awt.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.awt.*;
 
 /**
  * 枚举元素通用接口，在自定义枚举上实现此接口可以用于数据转换 数据库保存时建议保存 intVal()而非ordinal()防备需求变更
@@ -39,7 +39,7 @@ import java.awt.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface EnumMap<E extends EnumMap<E>> extends Enumers {
+public interface EnumValue<E extends EnumValue<E>> extends Enumers {
 
     /**
      * 对齐方式枚举
@@ -111,7 +111,7 @@ public interface EnumMap<E extends EnumMap<E>> extends Enumers {
          */
         AREA_AVERAGING(Image.SCALE_AREA_AVERAGING);
 
-        private final int value;
+        private final int code;
 
     }
 
@@ -192,7 +192,7 @@ public interface EnumMap<E extends EnumMap<E>> extends Enumers {
         /**
          * 修饰符枚举对应的int修饰符值
          */
-        private final int value;
+        private final int code;
 
         /**
          * 多个修饰符做“或”操作，表示存在任意一个修饰符
@@ -201,9 +201,9 @@ public interface EnumMap<E extends EnumMap<E>> extends Enumers {
          * @return “或”之后的修饰符
          */
         public static int orToInt(final Modifier... modifierTypes) {
-            int modifier = modifierTypes[0].getValue();
+            int modifier = modifierTypes[0].getCode();
             for (int i = 1; i < modifierTypes.length; i++) {
-                modifier |= modifierTypes[i].getValue();
+                modifier |= modifierTypes[i].getCode();
             }
             return modifier;
         }
@@ -361,7 +361,7 @@ public interface EnumMap<E extends EnumMap<E>> extends Enumers {
         /**
          * 名称
          */
-        private final String desc;
+        private final String name;
 
     }
 

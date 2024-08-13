@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.health.unix.platform.openbsd.hardware;
 
-import org.miaixz.bus.core.lang.annotation.Immutable;
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.Baseboard;
 import org.miaixz.bus.health.builtin.hardware.Firmware;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractComputerSystem;
 import org.miaixz.bus.health.unix.hardware.UnixBaseboard;
 import org.miaixz.bus.health.unix.platform.openbsd.OpenBsdSysctlKit;
-
-import java.util.function.Supplier;
 
 /**
  * OpenBSD ComputerSystem implementation

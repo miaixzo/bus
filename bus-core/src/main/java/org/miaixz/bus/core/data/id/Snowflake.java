@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.data.id;
 
+import java.io.Serializable;
+import java.util.Date;
+
 import org.miaixz.bus.core.center.date.NonClock;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.xyz.RandomKit;
-
-import java.io.Serializable;
-import java.util.Date;
 
 /**
  * Twitter的Snowflake 算法 分布式系统中，有一些需要使用全局唯一ID的场景，有些时候我们希望能使用一种简单一些的ID，并且希望ID能够按照时间有序生成。 snowflake的结构如下(每部分用-分开):
@@ -53,13 +53,11 @@ import java.util.Date;
  */
 public class Snowflake implements Serializable {
 
-    private static final long serialVersionUID = -1L;
-
     /**
      * 默认的起始时间，为Thu, 04 Nov 2010 01:42:54 GMT
      */
     public static final long DEFAULT_TWEPOCH = 1288834974657L;
-
+    private static final long serialVersionUID = -1L;
     private static final long WORKER_ID_BITS = 5L;
     /**
      * 最大支持机器节点数0~31，一共32个

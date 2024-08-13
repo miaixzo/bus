@@ -27,9 +27,10 @@
 */
 package org.miaixz.bus.oauth.metric.mi;
 
+import org.miaixz.bus.oauth.metric.AuthorizeScope;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.miaixz.bus.oauth.metric.AuthorizeScope;
 
 /**
  * 小米 授权范围

@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.spring.banner;
 
+import java.io.PrintStream;
+
 import org.miaixz.bus.core.Version;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.spring.GeniusBuilder;
@@ -35,8 +37,6 @@ import org.springframework.boot.SpringBootVersion;
 import org.springframework.boot.ansi.AnsiColor;
 import org.springframework.boot.ansi.AnsiOutput;
 import org.springframework.core.env.Environment;
-
-import java.io.PrintStream;
 
 /**
  * 旗标生成器

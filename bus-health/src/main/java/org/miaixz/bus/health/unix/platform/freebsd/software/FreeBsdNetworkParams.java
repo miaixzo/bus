@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.health.unix.platform.freebsd.software;
 
-import com.sun.jna.Native;
-import com.sun.jna.platform.unix.LibCAPI;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Executor;
@@ -37,6 +35,9 @@ import org.miaixz.bus.health.builtin.software.common.AbstractNetworkParams;
 import org.miaixz.bus.health.unix.jna.CLibrary;
 import org.miaixz.bus.health.unix.jna.FreeBsdLibc;
 import org.miaixz.bus.logger.Logger;
+
+import com.sun.jna.Native;
+import com.sun.jna.platform.unix.LibCAPI;
 
 /**
  * FreeBsdNetworkParams class.

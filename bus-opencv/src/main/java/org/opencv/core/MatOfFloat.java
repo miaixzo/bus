@@ -46,10 +46,6 @@ public class MatOfFloat extends Mat {
         // FIXME: do we need release() here?
     }
 
-    public static MatOfFloat fromNativeAddr(long addr) {
-        return new MatOfFloat(addr);
-    }
-
     public MatOfFloat(Mat m) {
         super(m, Range.all());
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -60,6 +56,10 @@ public class MatOfFloat extends Mat {
     public MatOfFloat(float... a) {
         super();
         fromArray(a);
+    }
+
+    public static MatOfFloat fromNativeAddr(long addr) {
+        return new MatOfFloat(addr);
     }
 
     public void alloc(int elemNumber) {

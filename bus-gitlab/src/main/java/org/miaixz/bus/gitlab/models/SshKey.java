@@ -27,13 +27,15 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
 import java.util.Date;
 
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public class SshKey implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Long id;
@@ -97,4 +99,5 @@ public class SshKey implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

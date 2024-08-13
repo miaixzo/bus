@@ -27,19 +27,19 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.center.function.LambdaFactory;
-import org.miaixz.bus.core.center.function.LambdaX;
-import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.lang.exception.InternalException;
-
 import java.io.Serializable;
 import java.lang.invoke.SerializedLambda;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.function.*;
+
+import org.miaixz.bus.core.center.function.LambdaFactory;
+import org.miaixz.bus.core.center.function.LambdaX;
+import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
  * Lambda相关工具类

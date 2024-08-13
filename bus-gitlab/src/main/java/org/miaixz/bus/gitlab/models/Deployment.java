@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.Constants;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
 import java.util.Date;
 
+import org.miaixz.bus.gitlab.Constants.DeploymentStatus;
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
 public class Deployment implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Long id;
@@ -42,7 +43,7 @@ public class Deployment implements Serializable {
     private String sha;
     private Date createdAt;
     private Date updatedAt;
-    private Constants.DeploymentStatus status;
+    private DeploymentStatus status;
     private User user;
     private Environment environment;
     private Deployable deployable;
@@ -95,11 +96,11 @@ public class Deployment implements Serializable {
         this.updatedAt = updatedAt;
     }
 
-    public Constants.DeploymentStatus getStatus() {
+    public DeploymentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(Constants.DeploymentStatus status) {
+    public void setStatus(DeploymentStatus status) {
         this.status = status;
     }
 
@@ -131,4 +132,5 @@ public class Deployment implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

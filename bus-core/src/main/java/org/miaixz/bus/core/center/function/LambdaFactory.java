@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.core.center.function;
 
+import java.lang.invoke.*;
+import java.lang.reflect.Executable;
+import java.lang.reflect.Method;
+import java.util.Map;
+
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
 import org.miaixz.bus.core.xyz.*;
-
-import java.lang.invoke.*;
-import java.lang.reflect.Executable;
-import java.lang.reflect.Method;
-import java.util.Map;
 
 /**
  * 以类似反射的方式动态创建Lambda，在性能上有一定优势，同时避免每次调用Lambda时创建匿名内部类

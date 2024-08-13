@@ -27,7 +27,10 @@
 */
 package org.miaixz.bus.health.unix.platform.solaris.hardware;
 
-import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
+import java.net.NetworkInterface;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.NetworkIF;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractNetworkIF;
@@ -36,9 +39,7 @@ import org.miaixz.bus.health.unix.platform.solaris.KstatKit.KstatChain;
 import org.miaixz.bus.health.unix.platform.solaris.software.SolarisOperatingSystem;
 import org.miaixz.bus.logger.Logger;
 
-import java.net.NetworkInterface;
-import java.util.ArrayList;
-import java.util.List;
+import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
 
 /**
  * SolarisNetworks class.

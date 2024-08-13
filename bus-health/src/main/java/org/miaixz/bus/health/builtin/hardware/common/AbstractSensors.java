@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.health.builtin.hardware.common;
 
+import java.util.Arrays;
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.hardware.Sensors;
-
-import java.util.Arrays;
-import java.util.function.Supplier;
 
 /**
  * Sensors from WMI or Open Hardware Monitor

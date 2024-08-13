@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Jsch封装，包括端口映射、SFTP封装等，入口为JschUtil
+ * Jsch封装，包括端口映射、SFTP封装等，入口为JschKit
  *
  * @author Kimi Liu
  * @since Java 17+

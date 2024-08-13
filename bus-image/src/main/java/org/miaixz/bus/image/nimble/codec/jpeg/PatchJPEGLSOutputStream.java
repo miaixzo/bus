@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.image.nimble.codec.jpeg;
 
-import org.miaixz.bus.logger.Logger;
+import java.io.IOException;
 
 import javax.imageio.stream.ImageOutputStream;
 import javax.imageio.stream.ImageOutputStreamImpl;
-import java.io.IOException;
+
+import org.miaixz.bus.logger.Logger;
 
 public class PatchJPEGLSOutputStream extends ImageOutputStreamImpl {
 

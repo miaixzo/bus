@@ -27,10 +27,6 @@
 */
 package org.miaixz.bus.core.center.map;
 
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Wrapper;
-import org.miaixz.bus.core.xyz.ObjectKit;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -40,6 +36,10 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Wrapper;
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
  * Map包装类，通过包装一个已有Map实现特定功能。例如自定义Key的规则或Value规则

@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.gitlab.hooks.web;
 
+import java.util.List;
+
 import org.miaixz.bus.gitlab.models.Assignee;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
-import java.util.List;
-
 public class IssueEvent extends AbstractEvent {
+
     private static final long serialVersionUID = -1L;
 
     public static final String X_GITLAB_EVENT = "Issue Hook";
@@ -127,4 +128,5 @@ public class IssueEvent extends AbstractEvent {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

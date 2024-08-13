@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.image.metric.net;
 
-import org.miaixz.bus.image.metric.Association;
-import org.miaixz.bus.image.metric.Connection;
-
 import java.io.IOException;
 import java.net.Socket;
+
+import org.miaixz.bus.image.metric.Association;
+import org.miaixz.bus.image.metric.Connection;
 
 /**
  * @author Kimi Liu

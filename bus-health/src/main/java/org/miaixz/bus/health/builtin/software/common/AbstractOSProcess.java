@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.health.builtin.software.common;
 
+import java.util.function.Supplier;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.builtin.software.OSProcess;
-
-import java.util.function.Supplier;
 
 /**
  * A process is an instance of a computer program that is being executed. It contains the program code and its current

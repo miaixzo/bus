@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.core.center.date.culture.lunar;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.cn.*;
 import org.miaixz.bus.core.center.date.culture.cn.fetus.FetusDay;
@@ -39,9 +42,6 @@ import org.miaixz.bus.core.center.date.culture.cn.star.twelve.TwelveStar;
 import org.miaixz.bus.core.center.date.culture.cn.star.twentyeight.TwentyEightStar;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 农历日
@@ -137,25 +137,7 @@ public class LunarDay extends Loops {
     }
 
     public LunarDay next(int n) {
-        if (n == 0) {
-            return fromYmd(getYear(), getMonth(), day);
-        }
-        int d = day + n;
-        LunarMonth m = month;
-        int daysInMonth = m.getDayCount();
-        boolean forward = n > 0;
-        int add = forward ? 1 : -1;
-        while (forward ? (d > daysInMonth) : (d <= 0)) {
-            if (forward) {
-                d -= daysInMonth;
-            }
-            m = m.next(add);
-            daysInMonth = m.getDayCount();
-            if (!forward) {
-                d += daysInMonth;
-            }
-        }
-        return fromYmd(m.getYear(), m.getMonthWithLeap(), d);
+        return 0 != n ? getSolarDay().next(n).getLunarDay() : fromYmd(getYear(), getMonth(), day);
     }
 
     /**
@@ -317,7 +299,7 @@ public class LunarDay extends Loops {
      */
     public Direction getJupiterDirection() {
         int index = getSixtyCycle().getIndex();
-        return index % 12 < 6 ? Direction.fromIndex(new int[] { 2, 8, 4, 6, 0 }[index / 12])
+        return index % 12 < 6 ? Element.fromIndex(index / 12).getDirection()
                 : month.getLunarYear().getJupiterDirection();
     }
 
@@ -417,15 +399,6 @@ public class LunarDay extends Loops {
      */
     public List<Taboo> getAvoids() {
         return Taboo.getDayAvoids(getMonthSixtyCycle(), getSixtyCycle());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (!(o instanceof LunarDay)) {
-            return false;
-        }
-        LunarDay target = (LunarDay) o;
-        return getMonth() == target.getMonth() && day == target.getDay();
     }
 
 }

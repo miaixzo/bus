@@ -27,11 +27,13 @@
 */
 package org.miaixz.bus.health.unix.platform.solaris.hardware;
 
-import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
-import com.sun.jna.platform.unix.solaris.LibKstat.KstatIO;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Tuple;
 import org.miaixz.bus.health.builtin.hardware.HWDiskStore;
 import org.miaixz.bus.health.builtin.hardware.HWPartition;
@@ -43,9 +45,8 @@ import org.miaixz.bus.health.unix.platform.solaris.driver.disk.Lshal;
 import org.miaixz.bus.health.unix.platform.solaris.driver.disk.Prtvtoc;
 import org.miaixz.bus.health.unix.platform.solaris.software.SolarisOperatingSystem;
 
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
+import com.sun.jna.platform.unix.solaris.LibKstat.Kstat;
+import com.sun.jna.platform.unix.solaris.LibKstat.KstatIO;
 
 /**
  * Solaris hard disk implementation.

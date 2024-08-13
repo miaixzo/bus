@@ -27,14 +27,16 @@
 */
 package org.miaixz.bus.gitlab;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import jakarta.ws.rs.core.Response;
+import java.text.ParseException;
+import java.util.Iterator;
+
 import org.miaixz.bus.gitlab.models.ApplicationSettings;
 import org.miaixz.bus.gitlab.models.Setting;
 import org.miaixz.bus.gitlab.support.ISO8601;
 
-import java.text.ParseException;
-import java.util.Iterator;
+import com.fasterxml.jackson.databind.JsonNode;
+
+import jakarta.ws.rs.core.Response;
 
 /**
  * This class implements the client side API for the GitLab Application Settings API. See
@@ -83,6 +85,51 @@ public class ApplicationSettingsApi extends AbstractApi {
 
         final GitLabApiForm form = new GitLabApiForm();
         appSettings.getSettings().forEach((s, v) -> form.withParam(s, v));
+        Response response = put(Response.Status.OK, form.asMap(), "application", "settings");
+        JsonNode root = response.readEntity(JsonNode.class);
+        return (parseApplicationSettings(root));
+    }
+
+    /**
+     * Update a single application setting of the GitLab instance with the provided settings and value.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: PUT /api/v4/application/settings</code>
+     * </pre>
+     *
+     * @param setting the ApplicationSetting to update
+     * @param value   the new value for the application setting
+     * @return the updated application settings in an ApplicationSettings instance
+     * @throws GitLabApiException if any exception occurs
+     */
+    public ApplicationSettings updateApplicationSetting(Setting setting, Object value) throws GitLabApiException {
+
+        if (setting == null) {
+            throw new GitLabApiException("setting cannot be null.");
+        }
+
+        return (updateApplicationSetting(setting.toString(), value));
+    }
+
+    /**
+     * Update a single application setting of the GitLab instance with the provided settings and value.
+     *
+     * <pre>
+     * <code>GitLab Endpoint: PUT /api/v4/application/settings</code>
+     * </pre>
+     *
+     * @param setting the ApplicationSetting to update
+     * @param value   the new value for the application setting
+     * @return the updated application settings in an ApplicationSettings instance
+     * @throws GitLabApiException if any exception occurs
+     */
+    public ApplicationSettings updateApplicationSetting(String setting, Object value) throws GitLabApiException {
+
+        if (setting == null || setting.trim().isEmpty()) {
+            throw new GitLabApiException("setting cannot be null or empty.");
+        }
+
+        GitLabApiForm form = new GitLabApiForm().withParam(setting, value);
         Response response = put(Response.Status.OK, form.asMap(), "application", "settings");
         JsonNode root = response.readEntity(JsonNode.class);
         return (parseApplicationSettings(root));
@@ -144,48 +191,4 @@ public class ApplicationSettingsApi extends AbstractApi {
         return (appSettings);
     }
 
-    /**
-     * Update a single application setting of the GitLab instance with the provided settings and value.
-     *
-     * <pre>
-     * <code>GitLab Endpoint: PUT /api/v4/application/settings</code>
-     * </pre>
-     *
-     * @param setting the ApplicationSetting to update
-     * @param value   the new value for the application setting
-     * @return the updated application settings in an ApplicationSettings instance
-     * @throws GitLabApiException if any exception occurs
-     */
-    public ApplicationSettings updateApplicationSetting(Setting setting, Object value) throws GitLabApiException {
-
-        if (setting == null) {
-            throw new GitLabApiException("setting cannot be null.");
-        }
-
-        return (updateApplicationSetting(setting.toString(), value));
-    }
-
-    /**
-     * Update a single application setting of the GitLab instance with the provided settings and value.
-     *
-     * <pre>
-     * <code>GitLab Endpoint: PUT /api/v4/application/settings</code>
-     * </pre>
-     *
-     * @param setting the ApplicationSetting to update
-     * @param value   the new value for the application setting
-     * @return the updated application settings in an ApplicationSettings instance
-     * @throws GitLabApiException if any exception occurs
-     */
-    public ApplicationSettings updateApplicationSetting(String setting, Object value) throws GitLabApiException {
-
-        if (setting == null || setting.trim().isEmpty()) {
-            throw new GitLabApiException("setting cannot be null or empty.");
-        }
-
-        GitLabApiForm form = new GitLabApiForm().withParam(setting, value);
-        Response response = put(Response.Status.OK, form.asMap(), "application", "settings");
-        JsonNode root = response.readEntity(JsonNode.class);
-        return (parseApplicationSettings(root));
-    }
 }

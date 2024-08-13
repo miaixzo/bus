@@ -27,15 +27,6 @@
 */
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
-import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.lang.exception.ConvertException;
-import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.core.lang.tuple.Triplet;
-import org.miaixz.bus.core.lang.tuple.Tuple;
-import org.miaixz.bus.core.xyz.TypeKit;
-
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.Serializable;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
@@ -51,6 +42,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.concurrent.atomic.AtomicLongArray;
 import java.util.concurrent.atomic.AtomicReference;
+
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
+import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.lang.exception.ConvertException;
+import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.lang.tuple.Triplet;
+import org.miaixz.bus.core.lang.tuple.Tuple;
+import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
  * 基于类型注册的转换器，转换器默认提供一些固定的类型转换，用户可调用{@link #putCustom(Type, Converter)} 注册自定义转换规则

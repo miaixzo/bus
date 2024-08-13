@@ -27,9 +27,7 @@
 */
 package org.miaixz.bus.image;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.image.galaxy.data.Attributes;
-import org.miaixz.bus.image.galaxy.data.DatePrecision;
+import static java.time.temporal.ChronoField.*;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -50,7 +48,9 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.UnaryOperator;
 
-import static java.time.temporal.ChronoField.*;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.image.galaxy.data.Attributes;
+import org.miaixz.bus.image.galaxy.data.DatePrecision;
 
 /**
  * @author Kimi Liu

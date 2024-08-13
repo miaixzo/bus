@@ -27,6 +27,17 @@
 */
 package org.miaixz.bus.image.metric.hl7.ldap;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.naming.NameAlreadyBoundException;
+import javax.naming.NameNotFoundException;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.*;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.AlreadyExistsException;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -39,16 +50,6 @@ import org.miaixz.bus.image.metric.hl7.api.HL7Configuration;
 import org.miaixz.bus.image.metric.hl7.net.HL7Application;
 import org.miaixz.bus.image.metric.hl7.net.HL7ApplicationInfo;
 import org.miaixz.bus.image.metric.hl7.net.HL7DeviceExtension;
-
-import javax.naming.NameAlreadyBoundException;
-import javax.naming.NameNotFoundException;
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
-import javax.naming.directory.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Kimi Liu

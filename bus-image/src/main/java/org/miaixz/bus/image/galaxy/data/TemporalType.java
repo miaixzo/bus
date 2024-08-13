@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.image.galaxy.data;
 
-import org.miaixz.bus.image.Format;
-
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
+
+import org.miaixz.bus.image.Format;
 
 /**
  * @author Kimi Liu

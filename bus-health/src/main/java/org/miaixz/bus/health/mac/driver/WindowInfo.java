@@ -27,8 +27,10 @@
 */
 package org.miaixz.bus.health.mac.driver;
 
-import com.sun.jna.Pointer;
-import com.sun.jna.platform.mac.CoreFoundation.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Formats;
@@ -36,9 +38,8 @@ import org.miaixz.bus.health.builtin.software.OSDesktopWindow;
 import org.miaixz.bus.health.mac.CFKit;
 import org.miaixz.bus.health.mac.jna.CoreGraphics;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.mac.CoreFoundation.*;
 
 /**
  * Utility to query desktop windows

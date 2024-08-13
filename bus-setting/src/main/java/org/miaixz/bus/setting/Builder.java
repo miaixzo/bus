@@ -27,6 +27,12 @@
 */
 package org.miaixz.bus.setting;
 
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.Writer;
+import java.util.Map;
+import java.util.Properties;
+
 import org.miaixz.bus.core.center.map.Dictionary;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ResourceKit;
@@ -35,12 +41,6 @@ import org.miaixz.bus.setting.metric.props.Props;
 import org.miaixz.bus.setting.metric.setting.Setting;
 import org.miaixz.bus.setting.metric.yaml.Yaml;
 import org.yaml.snakeyaml.DumperOptions;
-
-import java.io.InputStream;
-import java.io.Reader;
-import java.io.Writer;
-import java.util.Map;
-import java.util.Properties;
 
 /**
  * 构建器创建{@link IniSetting}示例 非线程安全

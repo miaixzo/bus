@@ -27,6 +27,12 @@
 */
 package org.miaixz.bus.core.lang.annotation.resolve.elements;
 
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Inherited;
+import java.lang.reflect.AnnotatedElement;
+import java.util.*;
+import java.util.function.BiFunction;
+
 import org.miaixz.bus.core.center.stream.EasyStream;
 import org.miaixz.bus.core.lang.annotation.resolve.AnnotatedElements;
 import org.miaixz.bus.core.lang.annotation.resolve.AnnotationMapping;
@@ -35,12 +41,6 @@ import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.AnnoKit;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
-
-import java.lang.annotation.Annotation;
-import java.lang.annotation.Inherited;
-import java.lang.reflect.AnnotatedElement;
-import java.util.*;
-import java.util.function.BiFunction;
 
 /**
  * <p>

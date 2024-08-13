@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.center.iterator;
 
+import java.io.*;
+import java.nio.charset.Charset;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
-
-import java.io.*;
-import java.nio.charset.Charset;
 
 /**
  * 将Reader包装为一个按照行读取的Iterator 此对象遍历结束后，应关闭之，推荐使用方式:

@@ -27,10 +27,10 @@
 */
 package org.opencv.imgcodecs;
 
+import java.util.List;
+
 import org.opencv.core.*;
 import org.opencv.utils.Converters;
-
-import java.util.List;
 
 // C++: class Imgcodecs
 

@@ -27,19 +27,21 @@
 */
 package org.miaixz.bus.gitlab.hooks.system;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import jakarta.servlet.http.HttpServletRequest;
-import org.miaixz.bus.gitlab.GitLabApiException;
-import org.miaixz.bus.gitlab.HookManager;
-import org.miaixz.bus.gitlab.support.HttpRequest;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.miaixz.bus.gitlab.GitLabApiException;
+import org.miaixz.bus.gitlab.HookManager;
+import org.miaixz.bus.gitlab.support.HttpRequest;
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * This class provides a handler for processing GitLab System Hook callouts.
@@ -47,11 +49,12 @@ import java.util.logging.Logger;
 public class SystemHookManager implements HookManager {
 
     private final static Logger LOGGER = Logger.getLogger(SystemHookManager.class.getName());
+
     public static final String SYSTEM_HOOK_EVENT = "System Hook";
     private final JacksonJson jacksonJson = new JacksonJson();
 
     // Collection of objects listening for System Hook events.
-    private final List<SystemHookListener> systemHookListeners = new CopyOnWriteArrayList<SystemHookListener>();
+    private final List<SystemHookListener> systemHookListeners = new CopyOnWriteArrayList<>();
 
     private String secretToken;
 
@@ -205,7 +208,7 @@ public class SystemHookManager implements HookManager {
 
     /**
      * Verifies the provided Event and fires it off to the registered listeners.
-     *
+     * 
      * @param event the Event instance to handle
      * @throws GitLabApiException if the event is not supported
      */
@@ -241,7 +244,7 @@ public class SystemHookManager implements HookManager {
 
     /**
      * Fire the event to the registered listeners.
-     *
+     * 
      * @param event the SystemHookEvent instance to fire to the registered event listeners
      * @throws GitLabApiException if the event is not supported
      */
@@ -333,4 +336,5 @@ public class SystemHookManager implements HookManager {
             listener.onMergeRequestEvent(event);
         }
     }
+
 }

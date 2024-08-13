@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.io.resource;
 
+import java.io.*;
+import java.net.URL;
+
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.io.*;
-import java.net.URL;
 
 /**
  * {@link CharSequence}资源，字符串做为资源
@@ -85,7 +85,7 @@ public class CharSequenceResource implements Resource, Serializable {
 
     @Override
     public String getName() {
-        return StringKit.toString(this.name);
+        return StringKit.toStringOrNull(this.name);
     }
 
     @Override

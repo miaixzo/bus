@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.image.galaxy.data;
 
-import org.miaixz.bus.image.Tag;
-
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Objects;
+
+import org.miaixz.bus.image.Tag;
 
 /**
  * @author Kimi Liu

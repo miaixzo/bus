@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.starter.mapper;
 
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.spring.GeniusBuilder;
@@ -41,11 +46,6 @@ import org.springframework.core.annotation.AnnotationAttributes;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.type.AnnotationMetadata;
-
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * 扫描注册

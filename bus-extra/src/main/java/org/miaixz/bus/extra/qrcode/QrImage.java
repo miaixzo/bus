@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.extra.qrcode;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.common.BitMatrix;
-import org.miaixz.bus.extra.image.Images;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
+
+import org.miaixz.bus.extra.image.Images;
+
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.common.BitMatrix;
 
 /**
  * 二维码图片封装

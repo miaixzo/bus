@@ -27,13 +27,6 @@
 */
 package org.miaixz.bus.core.cache.provider;
 
-import org.miaixz.bus.core.cache.Cache;
-import org.miaixz.bus.core.cache.CacheListener;
-import org.miaixz.bus.core.center.function.SupplierX;
-import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
-import org.miaixz.bus.core.lang.mutable.Mutable;
-import org.miaixz.bus.core.lang.mutable.MutableObject;
-
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +34,13 @@ import java.util.concurrent.atomic.LongAdder;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
+
+import org.miaixz.bus.core.cache.Cache;
+import org.miaixz.bus.core.cache.CacheListener;
+import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
+import org.miaixz.bus.core.lang.mutable.Mutable;
+import org.miaixz.bus.core.lang.mutable.MutableObject;
 
 /**
  * 超时和限制大小的缓存的默认实现 继承此抽象缓存需要：
@@ -156,12 +156,13 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
             keyLock.lock();
             try {
                 // 双重检查锁，防止在竞争锁的过程中已经有其它线程写入
-                final CacheObject<K, V> co = getWithoutLock(key);
-                if (null == co || co.isExpired()) {
+                // 由于这个方法内的加锁是get独立锁，不和put锁互斥，而put和pruneCache会修改cacheMap，导致在pruneCache过程中get会有并发问题
+                // 因此此处需要使用带全局锁的get获取值
+                v = get(key, isUpdateLastAccess);
+                if (null == v) {
+                    // supplier的创建是一个耗时过程，此处创建与全局锁无关，而与key锁相关，这样就保证每个key只创建一个value，且互斥
                     v = supplier.get();
                     put(key, v, timeout);
-                } else {
-                    v = co.get(isUpdateLastAccess);
                 }
             } finally {
                 keyLock.unlock();

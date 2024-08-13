@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.pager.cache;
 
-import com.google.common.cache.CacheBuilder;
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
+
+import org.miaixz.bus.core.xyz.StringKit;
+
+import com.google.common.cache.CacheBuilder;
 
 /**
  * Simple Guava Cache

@@ -27,6 +27,16 @@
 */
 package org.miaixz.bus.http.cache;
 
+import java.io.Closeable;
+import java.io.File;
+import java.io.Flushable;
+import java.io.IOException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.util.*;
+
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.AssignSink;
@@ -50,16 +60,6 @@ import org.miaixz.bus.http.bodys.ResponseBody;
 import org.miaixz.bus.http.metric.http.StatusLine;
 import org.miaixz.bus.http.secure.CipherSuite;
 import org.miaixz.bus.http.socket.Handshake;
-
-import java.io.Closeable;
-import java.io.File;
-import java.io.Flushable;
-import java.io.IOException;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateEncodingException;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.util.*;
 
 /**
  * 缓存HTTP和HTTPS对文件系统的响应，以便可以重用它们，从而节省时间和带宽.

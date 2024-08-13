@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.net.url;
 
+import java.net.*;
+
 import org.miaixz.bus.core.Builder;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
@@ -35,8 +37,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.UrlKit;
-
-import java.net.*;
 
 /**
  * URL 生成器，格式形如：

@@ -27,11 +27,6 @@
 */
 package org.miaixz.bus.image.nimble.opencv;
 
-import org.opencv.core.Core;
-import org.opencv.core.CvType;
-import org.opencv.core.Mat;
-import org.opencv.imgproc.Imgproc;
-
 import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
@@ -39,6 +34,11 @@ import java.awt.image.*;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
+
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.imgproc.Imgproc;
 
 /**
  * @author Kimi Liu

@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.center.map.reference;
 
+import java.lang.ref.ReferenceQueue;
+import java.util.concurrent.ConcurrentMap;
+
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 import org.miaixz.bus.core.lang.ref.Ref;
 import org.miaixz.bus.core.lang.ref.StrongObject;
 import org.miaixz.bus.core.lang.ref.WeakObject;
-
-import java.lang.ref.ReferenceQueue;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * 线程安全的WeakMap实现 键为Weak引用，即，在GC时发现弱引用会回收其对象

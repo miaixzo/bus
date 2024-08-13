@@ -46,10 +46,6 @@ public class MatOfKeyPoint extends Mat {
         // FIXME: do we need release() here?
     }
 
-    public static MatOfKeyPoint fromNativeAddr(long addr) {
-        return new MatOfKeyPoint(addr);
-    }
-
     public MatOfKeyPoint(Mat m) {
         super(m, Range.all());
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -60,6 +56,10 @@ public class MatOfKeyPoint extends Mat {
     public MatOfKeyPoint(KeyPoint... a) {
         super();
         fromArray(a);
+    }
+
+    public static MatOfKeyPoint fromNativeAddr(long addr) {
+        return new MatOfKeyPoint(addr);
     }
 
     public void alloc(int elemNumber) {

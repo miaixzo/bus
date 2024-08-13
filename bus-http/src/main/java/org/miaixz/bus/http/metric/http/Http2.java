@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.http.metric.http;
 
+import java.io.IOException;
+
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-
-import java.io.IOException;
 
 /**
  * @author Kimi Liu

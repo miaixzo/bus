@@ -27,17 +27,6 @@
 */
 package org.miaixz.bus.core.lang.reflect;
 
-import org.miaixz.bus.core.center.iterator.EnumerationIterator;
-import org.miaixz.bus.core.io.file.FileType;
-import org.miaixz.bus.core.io.resource.JarResource;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Keys;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.net.url.UrlDecoder;
-import org.miaixz.bus.core.xyz.*;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.Serializable;
@@ -49,6 +38,17 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+
+import org.miaixz.bus.core.center.iterator.EnumerationIterator;
+import org.miaixz.bus.core.io.file.FileType;
+import org.miaixz.bus.core.io.resource.JarResource;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Keys;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.net.url.UrlDecoder;
+import org.miaixz.bus.core.xyz.*;
 
 /**
  * 类扫描器

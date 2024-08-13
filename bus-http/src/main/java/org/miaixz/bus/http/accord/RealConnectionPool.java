@@ -27,12 +27,6 @@
 */
 package org.miaixz.bus.http.accord;
 
-import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.http.Address;
-import org.miaixz.bus.http.Builder;
-import org.miaixz.bus.http.Route;
-import org.miaixz.bus.http.accord.platform.Platform;
-
 import java.io.IOException;
 import java.lang.ref.Reference;
 import java.net.Proxy;
@@ -41,6 +35,12 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.http.Address;
+import org.miaixz.bus.http.Builder;
+import org.miaixz.bus.http.Route;
+import org.miaixz.bus.http.accord.platform.Platform;
 
 /**
  * 真实连接池

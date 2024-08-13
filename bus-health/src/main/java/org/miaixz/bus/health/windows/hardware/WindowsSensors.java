@@ -27,8 +27,9 @@
 */
 package org.miaixz.bus.health.windows.hardware;
 
-import com.sun.jna.platform.win32.COM.COMException;
-import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
+import java.util.Locale;
+import java.util.Objects;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractSensors;
 import org.miaixz.bus.health.windows.WmiKit;
@@ -36,8 +37,8 @@ import org.miaixz.bus.health.windows.WmiQueryHandler;
 import org.miaixz.bus.health.windows.driver.wmi.*;
 import org.miaixz.bus.logger.Logger;
 
-import java.util.Locale;
-import java.util.Objects;
+import com.sun.jna.platform.win32.COM.COMException;
+import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
 /**
  * Sensors from WMI or Open Hardware Monitor

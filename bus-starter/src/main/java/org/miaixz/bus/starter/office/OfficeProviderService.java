@@ -27,10 +27,11 @@
 */
 package org.miaixz.bus.starter.office;
 
-import lombok.RequiredArgsConstructor;
 import org.miaixz.bus.office.Provider;
 import org.miaixz.bus.office.Registry;
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * 文档在线预览服务提供

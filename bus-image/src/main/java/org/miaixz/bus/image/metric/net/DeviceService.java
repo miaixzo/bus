@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.image.metric.net;
 
-import org.miaixz.bus.image.Device;
-
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+
+import org.miaixz.bus.image.Device;
 
 /**
  * @author Kimi Liu

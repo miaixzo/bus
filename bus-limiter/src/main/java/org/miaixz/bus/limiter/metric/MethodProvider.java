@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.limiter.metric;
 
+import java.lang.reflect.Method;
+
 import org.miaixz.bus.core.cache.provider.TimedCache;
 import org.miaixz.bus.core.xyz.CacheKit;
 import org.miaixz.bus.core.xyz.MethodKit;
@@ -36,8 +38,6 @@ import org.miaixz.bus.limiter.Builder;
 import org.miaixz.bus.limiter.Holder;
 import org.miaixz.bus.limiter.Provider;
 import org.miaixz.bus.limiter.magic.StrategyMode;
-
-import java.lang.reflect.Method;
 
 /**
  * HOT_METHOD 模式处理

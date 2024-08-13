@@ -27,11 +27,13 @@
 */
 package org.miaixz.bus.gitlab.hooks.web;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public abstract class AbstractPushEvent {
+
+    private static final String REFS_HEADS = "refs/heads/";
 
     private String eventName;
 
@@ -176,8 +178,6 @@ public abstract class AbstractPushEvent {
         this.totalCommitsCount = totalCommitsCount;
     }
 
-    private static final String REFS_HEADS = "refs/heads/";
-
     @JsonIgnore
     public String getRequestUrl() {
         return (requestUrl);
@@ -226,4 +226,5 @@ public abstract class AbstractPushEvent {
     public void setRequestSecretToken(String secretToken) {
         this.requestSecretToken = secretToken;
     }
+
 }

@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.core.center.date.culture.cn.birth;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.center.date.culture.Tradition;
 import org.miaixz.bus.core.center.date.culture.cn.Duty;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.EarthBranch;
@@ -35,9 +38,6 @@ import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 八字

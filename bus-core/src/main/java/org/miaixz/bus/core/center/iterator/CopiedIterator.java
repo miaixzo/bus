@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.center.iterator;
 
-import org.miaixz.bus.core.xyz.ListKit;
-import org.miaixz.bus.core.xyz.ObjectKit;
-
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import org.miaixz.bus.core.xyz.ListKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
  * 复制 {@link Iterator} 为了解决并发情况下{@link Iterator}遍历导致的问题（当Iterator被修改会抛出ConcurrentModificationException）

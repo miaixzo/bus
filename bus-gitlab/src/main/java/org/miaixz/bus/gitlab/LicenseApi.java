@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.Response;
-import org.miaixz.bus.gitlab.models.License;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import jakarta.ws.rs.core.Response;
+
+import org.miaixz.bus.gitlab.models.License;
 
 /**
  * This class provides an entry point to all the GitLab API license calls.
@@ -117,7 +118,7 @@ public class LicenseApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<License> getAllLicenses(int itemsPerPage) throws GitLabApiException {
-        return (new Pager<License>(this, License.class, itemsPerPage, null, "licenses"));
+        return (new Pager<>(this, License.class, itemsPerPage, null, "licenses"));
     }
 
     /**
@@ -152,4 +153,5 @@ public class LicenseApi extends AbstractApi {
         Response response = delete(Response.Status.OK, null, "license", licenseId);
         return (response.readEntity(License.class));
     }
+
 }

@@ -27,20 +27,21 @@
 */
 package org.miaixz.bus.health.windows.hardware;
 
-import com.sun.jna.Native;
-import com.sun.jna.platform.win32.IPHlpAPI;
-import com.sun.jna.platform.win32.VersionHelpers;
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import java.net.NetworkInterface;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.NetworkIF;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractNetworkIF;
 import org.miaixz.bus.health.builtin.jna.Struct;
 import org.miaixz.bus.logger.Logger;
 
-import java.net.NetworkInterface;
-import java.util.ArrayList;
-import java.util.List;
+import com.sun.jna.Native;
+import com.sun.jna.platform.win32.IPHlpAPI;
+import com.sun.jna.platform.win32.VersionHelpers;
 
 /**
  * WindowsNetworks class.

@@ -27,10 +27,6 @@
 */
 package org.miaixz.bus.mapper.builder;
 
-import jakarta.persistence.Entity;
-import org.miaixz.bus.core.lang.exception.MapperException;
-import org.miaixz.bus.mapper.entity.EntityField;
-
 import java.beans.BeanInfo;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
@@ -38,6 +34,11 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
+
+import org.miaixz.bus.core.lang.exception.MapperException;
+import org.miaixz.bus.mapper.entity.EntityField;
+
+import jakarta.persistence.Entity;
 
 /**
  * 类字段工具类

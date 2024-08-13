@@ -27,7 +27,10 @@
 */
 package org.miaixz.bus.health.mac.software;
 
-import com.sun.jna.platform.mac.SystemB;
+import java.io.File;
+import java.util.*;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -44,9 +47,7 @@ import org.miaixz.bus.health.mac.driver.Who;
 import org.miaixz.bus.health.mac.driver.WindowInfo;
 import org.miaixz.bus.logger.Logger;
 
-import java.io.File;
-import java.util.*;
-import java.util.stream.Collectors;
+import com.sun.jna.platform.mac.SystemB;
 
 /**
  * macOS, previously Mac OS X and later OS X) is a series of proprietary graphical operating systems developed and

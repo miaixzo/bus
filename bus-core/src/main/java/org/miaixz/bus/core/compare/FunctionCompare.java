@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.compare;
 
+import java.util.function.Function;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.CompareKit;
-
-import java.util.function.Function;
 
 /**
  * 指定函数排序器

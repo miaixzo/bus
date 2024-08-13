@@ -27,12 +27,6 @@
 */
 package org.miaixz.bus.http.accord;
 
-import org.miaixz.bus.http.metric.Internal;
-
-import javax.net.ssl.SSLException;
-import javax.net.ssl.SSLHandshakeException;
-import javax.net.ssl.SSLPeerUnverifiedException;
-import javax.net.ssl.SSLSocket;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.ProtocolException;
@@ -40,6 +34,13 @@ import java.net.UnknownServiceException;
 import java.security.cert.CertificateException;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLHandshakeException;
+import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.SSLSocket;
+
+import org.miaixz.bus.http.metric.Internal;
 
 /**
  * 处理连接规范回退策略:当安全套接字连接由于握手/协议问题而失败时， 可能会使用不同的协议重试连接。实例是有状态的，应该创建并用于单个连接尝试

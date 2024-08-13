@@ -27,9 +27,10 @@
 */
 package org.miaixz.bus.image.nimble.stream;
 
-import javax.imageio.stream.ImageOutputStreamImpl;
 import java.io.IOException;
 import java.io.OutputStream;
+
+import javax.imageio.stream.ImageOutputStreamImpl;
 
 /**
  * @author Kimi Liu

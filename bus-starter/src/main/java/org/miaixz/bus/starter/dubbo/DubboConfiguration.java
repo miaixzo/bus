@@ -29,6 +29,8 @@ package org.miaixz.bus.starter.dubbo;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
+import jakarta.annotation.Resource;
+
 /**
  * Dubbo自动配置
  *
@@ -37,5 +39,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  */
 @EnableConfigurationProperties(value = { DubboProperties.class })
 public class DubboConfiguration {
+
+    @Resource
+    DubboProperties properties;
 
 }

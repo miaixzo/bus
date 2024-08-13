@@ -27,10 +27,11 @@
 */
 package org.miaixz.bus.health.builtin.software;
 
-import com.sun.jna.platform.win32.WinDef.HWND;
+import java.awt.*;
+
 import org.miaixz.bus.core.lang.annotation.Immutable;
 
-import java.awt.*;
+import com.sun.jna.platform.win32.WinDef.HWND;
 
 /**
  * This class encapsulates information about a window on the operating system's GUI desktop

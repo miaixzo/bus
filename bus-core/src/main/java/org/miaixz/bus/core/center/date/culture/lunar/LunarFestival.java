@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.center.date.culture.lunar;
 
-import org.miaixz.bus.core.center.date.culture.Loops;
-import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
-import org.miaixz.bus.core.lang.EnumMap;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.miaixz.bus.core.center.date.culture.Loops;
+import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
+import org.miaixz.bus.core.lang.EnumValue;
 
 /**
  * 农历传统节日（依据国家标准《农历的编算和颁行》GB/T 33661-2017）
@@ -50,7 +50,7 @@ public class LunarFestival extends Loops {
     /**
      * 类型
      */
-    protected EnumMap.Festival type;
+    protected EnumValue.Festival type;
 
     /**
      * 索引
@@ -72,7 +72,7 @@ public class LunarFestival extends Loops {
      */
     protected String name;
 
-    public LunarFestival(EnumMap.Festival type, LunarDay day, SolarTerms solarTerms, String data) {
+    public LunarFestival(EnumValue.Festival type, LunarDay day, SolarTerms solarTerms, String data) {
         this.type = type;
         this.day = day;
         this.solarTerms = solarTerms;
@@ -89,7 +89,7 @@ public class LunarFestival extends Loops {
             return null;
         }
         String data = matcher.group();
-        EnumMap.Festival type = EnumMap.Festival.fromCode(data.charAt(3) - '0');
+        EnumValue.Festival type = EnumValue.Festival.fromCode(data.charAt(3) - '0');
         switch (type) {
         case DAY:
             return new LunarFestival(type, LunarDay.fromYmd(year, Integer.parseInt(data.substring(4, 6), 10),
@@ -107,7 +107,7 @@ public class LunarFestival extends Loops {
     public static LunarFestival fromYmd(int year, int month, int day) {
         Matcher matcher = Pattern.compile(String.format("@\\d{2}0%02d%02d", month, day)).matcher(DATA);
         if (matcher.find()) {
-            return new LunarFestival(EnumMap.Festival.DAY, LunarDay.fromYmd(year, month, day), null, matcher.group());
+            return new LunarFestival(EnumValue.Festival.DAY, LunarDay.fromYmd(year, month, day), null, matcher.group());
         }
         matcher = Pattern.compile("@\\d{2}1\\d{2}").matcher(DATA);
         while (matcher.find()) {
@@ -115,7 +115,7 @@ public class LunarFestival extends Loops {
             SolarTerms solarTerms = SolarTerms.fromIndex(year, Integer.parseInt(data.substring(4), 10));
             LunarDay lunarDay = solarTerms.getJulianDay().getSolarDay().getLunarDay();
             if (lunarDay.getYear() == year && lunarDay.getMonth() == month && lunarDay.getDay() == day) {
-                return new LunarFestival(EnumMap.Festival.TERM, lunarDay, solarTerms, data);
+                return new LunarFestival(EnumValue.Festival.TERM, lunarDay, solarTerms, data);
             }
         }
         matcher = Pattern.compile("@\\d{2}2").matcher(DATA);
@@ -125,7 +125,7 @@ public class LunarFestival extends Loops {
         LunarDay lunarDay = LunarDay.fromYmd(year, month, day);
         LunarDay nextDay = lunarDay.next(1);
         return nextDay.getMonth() == 1 && nextDay.getDay() == 1
-                ? new LunarFestival(EnumMap.Festival.EVE, lunarDay, null, matcher.group())
+                ? new LunarFestival(EnumValue.Festival.EVE, lunarDay, null, matcher.group())
                 : null;
     }
 
@@ -147,7 +147,7 @@ public class LunarFestival extends Loops {
      *
      * @return 节日类型
      */
-    public EnumMap.Festival getType() {
+    public EnumValue.Festival getType() {
         return type;
     }
 

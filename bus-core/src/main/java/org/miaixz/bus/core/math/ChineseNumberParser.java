@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core.math;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 
 /**
  * 中文数字或金额解析类

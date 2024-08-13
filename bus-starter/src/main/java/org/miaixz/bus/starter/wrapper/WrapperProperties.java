@@ -27,16 +27,17 @@
 */
 package org.miaixz.bus.starter.wrapper;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
-
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.miaixz.bus.spring.GeniusBuilder;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 配置信息

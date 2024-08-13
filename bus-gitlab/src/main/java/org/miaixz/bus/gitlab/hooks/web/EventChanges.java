@@ -27,15 +27,16 @@
 */
 package org.miaixz.bus.gitlab.hooks.web;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import org.miaixz.bus.gitlab.models.Assignee;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.miaixz.bus.gitlab.models.Assignee;
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 
 public abstract class EventChanges {
 
@@ -140,7 +141,6 @@ public abstract class EventChanges {
         this.totalTimeSpent = totalTimeSpent;
     }
 
-    @SuppressWarnings("unchecked")
     public <T> ChangeContainer<T> get(String property) {
 
         if (otherProperties.containsKey(property)) {

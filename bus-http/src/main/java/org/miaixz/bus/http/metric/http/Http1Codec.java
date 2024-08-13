@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.http.metric.http;
 
+import java.io.EOFException;
+import java.io.IOException;
+import java.net.ProtocolException;
+import java.util.concurrent.TimeUnit;
+
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.io.sink.Sink;
@@ -40,11 +45,6 @@ import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.accord.RealConnection;
 import org.miaixz.bus.http.metric.Internal;
-
-import java.io.EOFException;
-import java.io.IOException;
-import java.net.ProtocolException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 可以用来发送HTTP/1.1消息的套接字连接。这个类严格执行以下生命周期: 没有请求主体的交换器可以跳过创建和关闭请求主体。没有响应体的交换器可以 调用{@link #newFixedLengthSource(long)

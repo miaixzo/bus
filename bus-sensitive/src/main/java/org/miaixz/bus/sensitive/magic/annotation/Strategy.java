@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.sensitive.magic.annotation;
 
-import org.miaixz.bus.sensitive.metric.StrategyProvider;
-
 import java.lang.annotation.*;
+
+import org.miaixz.bus.sensitive.metric.StrategyProvider;
 
 /**
  * 脱敏策略注解

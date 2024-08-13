@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.health.unix.driver;
 
-import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.core.xyz.ByteKit;
-import org.miaixz.bus.health.Executor;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.xyz.ByteKit;
+import org.miaixz.bus.health.Executor;
 
 /**
  * Utility to query xrandr

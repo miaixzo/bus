@@ -27,12 +27,14 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
 
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Metadata implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private String version;
@@ -112,6 +114,7 @@ public class Metadata implements Serializable {
         public String toString() {
             return (JacksonJson.toJsonString(this));
         }
+
     }
 
 }

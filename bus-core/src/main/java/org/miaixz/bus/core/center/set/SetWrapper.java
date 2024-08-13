@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.core.center.set;
 
-import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
-
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
@@ -36,6 +34,8 @@ import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
 
 /**
  * Set包装类 提供列表包装，用于在执行列表方法前后自定义处理逻辑

@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.lang.loader;
 
-import org.miaixz.bus.core.io.resource.Resource;
-import org.miaixz.bus.core.lang.Symbol;
-
 import java.io.IOException;
 import java.util.Enumeration;
+
+import org.miaixz.bus.core.io.resource.Resource;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * ANT风格路径资源加载器

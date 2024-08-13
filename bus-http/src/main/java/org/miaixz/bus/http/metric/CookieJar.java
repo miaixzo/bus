@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.http.metric;
 
-import org.miaixz.bus.http.Cookie;
-import org.miaixz.bus.http.UnoUrl;
-
 import java.util.Collections;
 import java.util.List;
+
+import org.miaixz.bus.http.Cookie;
+import org.miaixz.bus.http.UnoUrl;
 
 /**
  * 为HTTP cookie提供策略和持久性 作为策略，此接口的实现负责选择接受和拒绝哪些cookie。一个合理的策略是拒绝所有cookie， 尽管这可能会干扰需要cookie的基于会话的身份验证方案

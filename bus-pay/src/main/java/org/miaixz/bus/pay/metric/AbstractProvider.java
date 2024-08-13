@@ -27,8 +27,22 @@
 */
 package org.miaixz.bus.pay.metric;
 
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.SneakyThrows;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.KeyStore;
+import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLSocketFactory;
+
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.MediaType;
@@ -52,22 +66,7 @@ import org.miaixz.bus.pay.magic.ErrorCode;
 import org.miaixz.bus.pay.magic.Material;
 import org.miaixz.bus.pay.magic.Message;
 
-import javax.net.ssl.KeyManager;
-import javax.net.ssl.KeyManagerFactory;
-import javax.net.ssl.SSLSocketFactory;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.security.KeyStore;
-import java.security.SecureRandom;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import lombok.SneakyThrows;
 
 /**
  * 相关请求提供者
@@ -426,51 +425,6 @@ public abstract class AbstractProvider<T extends Material, K extends Context> im
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static String readData(HttpServletRequest request) {
-        BufferedReader br = null;
-        try {
-            StringBuilder result = new StringBuilder();
-            br = request.getReader();
-            for (String line; (line = br.readLine()) != null;) {
-                if (result.length() > 0) {
-                    result.append("\n");
-                }
-                result.append(line);
-            }
-            return result.toString();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    /**
-     * 将同步通知的参数转化为Map
-     *
-     * @param request {@link HttpServletRequest}
-     * @return 转化后的 Map
-     */
-    public static Map<String, String> toMap(HttpServletRequest request) {
-        Map<String, String> params = new HashMap<>();
-        Map<String, String[]> requestParams = request.getParameterMap();
-        for (String name : requestParams.keySet()) {
-            String[] values = requestParams.get(name);
-            String valueStr = "";
-            for (int i = 0; i < values.length; i++) {
-                valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
-            }
-            params.put(name, valueStr);
-        }
-        return params;
     }
 
     @SneakyThrows

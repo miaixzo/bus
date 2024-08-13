@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.core.io.stream;
 
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Writer;
@@ -38,6 +35,9 @@ import java.nio.CharBuffer;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CoderResult;
 import java.nio.charset.CodingErrorAction;
+
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * 通过一个 Writer和一个CharsetDecoder实现将字节数据输出为字符数据。可以通过不同的构造函数配置缓冲区大小和是否立即写入。

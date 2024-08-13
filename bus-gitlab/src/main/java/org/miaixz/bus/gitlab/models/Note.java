@@ -27,72 +27,18 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
-
 import java.io.Serializable;
 import java.util.Date;
 
+import org.miaixz.bus.gitlab.support.JacksonJson;
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 public class Note implements Serializable {
+
     private static final long serialVersionUID = -1L;
-
-    @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
-    }
-
-    /**
-     * Enum to use for ordering the results.
-     */
-    public static enum OrderBy {
-
-        CREATED_AT, UPDATED_AT;
-
-        private static JacksonJsonEnumHelper<OrderBy> enumHelper = new JacksonJsonEnumHelper<>(OrderBy.class);
-
-        @JsonCreator
-        public static OrderBy forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
-    }
-
-    // This is not used because the GitLab example JSON is using a funny string for the MERGE_REQUEST notable_type
-    // ("Merge request").
-    // Once they fix the bug, the notableType field can be changed from String to NotableType.
-    public static enum NoteableType {
-
-        COMMIT, EPIC, ISSUE, MERGE_REQUEST, SNIPPET;
-
-        private static JacksonJsonEnumHelper<NoteableType> enumHelper = new JacksonJsonEnumHelper<>(NoteableType.class,
-                true, true);
-
-        @JsonCreator
-        public static NoteableType forValue(String value) {
-            return enumHelper.forValue(value);
-        }
-
-        @JsonValue
-        public String toValue() {
-            return (enumHelper.toString(this));
-        }
-
-        @Override
-        public String toString() {
-            return (enumHelper.toString(this));
-        }
-    }
 
     private String attachment;
     private Author author;
@@ -297,6 +243,60 @@ public class Note implements Serializable {
         this.internal = internal;
     }
 
+    @Override
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
+    }
+
+    /** Enum to use for ordering the results. */
+    public static enum OrderBy {
+
+        CREATED_AT, UPDATED_AT;
+
+        private static JacksonJsonEnumHelper<OrderBy> enumHelper = new JacksonJsonEnumHelper<>(OrderBy.class);
+
+        @JsonCreator
+        public static OrderBy forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
+
+    // This is not used because the GitLab example JSON is using a funny string for the MERGE_REQUEST notable_type
+    // ("Merge request").
+    // Once they fix the bug, the notableType field can be changed from String to NotableType.
+    public static enum NoteableType {
+
+        COMMIT, EPIC, ISSUE, MERGE_REQUEST, SNIPPET;
+
+        private static JacksonJsonEnumHelper<NoteableType> enumHelper = new JacksonJsonEnumHelper<>(NoteableType.class,
+                true, true);
+
+        @JsonCreator
+        public static NoteableType forValue(String value) {
+            return enumHelper.forValue(value);
+        }
+
+        @JsonValue
+        public String toValue() {
+            return (enumHelper.toString(this));
+        }
+
+        @Override
+        public String toString() {
+            return (enumHelper.toString(this));
+        }
+    }
+
     public static enum Type {
 
         DISCUSSION_NOTE, DIFF_NOTE;
@@ -318,4 +318,5 @@ public class Note implements Serializable {
             return (enumHelper.toString(this));
         }
     }
+
 }

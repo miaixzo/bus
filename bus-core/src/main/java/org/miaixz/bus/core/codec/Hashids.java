@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.core.codec;
 
-import org.miaixz.bus.core.lang.Symbol;
-
 import java.math.BigInteger;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -36,6 +34,8 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
+
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * <a href="http://hashids.org/">Hashids</a> 协议实现，以实现：

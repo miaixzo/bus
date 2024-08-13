@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.center.set;
 
-import org.miaixz.bus.core.center.map.MapBuilder;
-import org.miaixz.bus.core.xyz.ObjectKit;
-
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.Function;
+
+import org.miaixz.bus.core.center.map.MapBuilder;
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
  * 唯一键的Set 通过自定义唯一键，通过{@link #uniqueGenerator}生成节点对象对应的键作为Map的key，确定唯一

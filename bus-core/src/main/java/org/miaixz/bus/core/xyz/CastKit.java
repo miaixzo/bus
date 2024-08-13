@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.lang.Assert;
-
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.miaixz.bus.core.lang.Assert;
 
 /**
  * 转换工具类，提供集合、Map等向上向下转换工具

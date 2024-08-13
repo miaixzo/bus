@@ -27,18 +27,18 @@
 */
 package org.miaixz.bus.http.metric.suffix;
 
-import org.miaixz.bus.core.io.source.BufferSource;
-import org.miaixz.bus.core.io.source.GzipSource;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.IoKit;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.net.IDN;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.miaixz.bus.core.io.source.BufferSource;
+import org.miaixz.bus.core.io.source.GzipSource;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.IoKit;
 
 /**
  * A database of public suffixes provided by <a href="https://publicsuffix.org/">publicsuffix.org</a>.

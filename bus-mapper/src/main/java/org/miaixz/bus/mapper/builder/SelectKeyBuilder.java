@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.mapper.builder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.ibatis.executor.keygen.Jdbc3KeyGenerator;
 import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.executor.keygen.NoKeyGenerator;
@@ -37,9 +40,6 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.mapper.ORDER;
 import org.miaixz.bus.mapper.entity.EntityColumn;
 import org.miaixz.bus.mapper.support.MetaObject;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 查询信息

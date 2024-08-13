@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.validate.magic.annotation;
 
+import java.lang.annotation.*;
+
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.metric.MultiMatcher;
-
-import java.lang.annotation.*;
 
 /**
  * 多重校验器, 可以配置多个校验器

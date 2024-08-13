@@ -27,16 +27,18 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serializable;
+
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
-import java.io.Serializable;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * This class is used by various models to represent the approved_by property, which can contain a User or Group
  * instance.
  */
 public class ApprovedBy implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private User user;
@@ -81,4 +83,5 @@ public class ApprovedBy implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

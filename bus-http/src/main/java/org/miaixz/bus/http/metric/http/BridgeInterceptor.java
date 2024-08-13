@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.http.metric.http;
 
+import java.io.IOException;
+import java.util.List;
+
 import org.miaixz.bus.core.Version;
 import org.miaixz.bus.core.io.source.GzipSource;
 import org.miaixz.bus.core.lang.MediaType;
@@ -39,9 +42,6 @@ import org.miaixz.bus.http.bodys.RequestBody;
 import org.miaixz.bus.http.metric.CookieJar;
 import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.NewChain;
-
-import java.io.IOException;
-import java.util.List;
 
 /**
  * 从应用程序代码连接到网络代码。首先，它从用户请求构建网络请求。 然后它继续调用网络。最后，它从网络响应构建用户响应

@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.codec.hash.metro;
 
-import org.miaixz.bus.core.codec.hash.Hash64;
-
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+
+import org.miaixz.bus.core.codec.hash.Hash64;
 
 /**
  * Apache 发布的MetroHash算法的64位实现，是一组用于非加密用例的最先进的哈希函数。 除了卓越的性能外，他们还以算法生成而著称。

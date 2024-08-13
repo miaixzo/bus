@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.image.metric.net;
 
-import org.miaixz.bus.image.metric.Connection;
-
 import java.net.DatagramPacket;
+
+import org.miaixz.bus.image.metric.Connection;
 
 /**
  * @author Kimi Liu

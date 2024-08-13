@@ -27,17 +27,18 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.convert.Convert;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.ansi.*;
-import org.miaixz.bus.core.text.CharsBacker;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+
+import org.miaixz.bus.core.convert.Convert;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.ansi.*;
+import org.miaixz.bus.core.text.CharsBacker;
 
 /**
  * 颜色工具类
@@ -73,8 +74,8 @@ public class ColorKit {
      * @return rgb(red, green, blue)
      */
     public static String toCssRgb(final Color color) {
-        return StringKit.builder().append("rgb(").append(color.getRed()).append(Symbol.COMMA).append(color.getGreen())
-                .append(Symbol.COMMA).append(color.getBlue()).append(Symbol.PARENTHESE_RIGHT).toString();
+        return StringKit.builder().append("rgb(").append(color.getRed()).append(",").append(color.getGreen())
+                .append(",").append(color.getBlue()).append(")").toString();
     }
 
     /**
@@ -84,9 +85,8 @@ public class ColorKit {
      * @return rgba(red, green, blue, alpha)
      */
     public static String toCssRgba(final Color color) {
-        return StringKit.builder().append("rgba(").append(color.getRed()).append(Symbol.COMMA).append(color.getGreen())
-                .append(Symbol.COMMA).append(color.getBlue()).append(Symbol.COMMA).append(color.getAlpha() / 255D)
-                .append(Symbol.PARENTHESE_RIGHT).toString();
+        return StringKit.builder().append("rgba(").append(color.getRed()).append(",").append(color.getGreen())
+                .append(",").append(color.getBlue()).append(",").append(color.getAlpha() / 255D).append(")").toString();
     }
 
     /**
@@ -261,6 +261,42 @@ public class ColorKit {
     }
 
     /**
+     * 生成随机颜色，与指定颜色有一定的区分度
+     *
+     * @param compareColor 比较颜色，{@code null}表示无区分要求
+     * @param minDistance  最小色差，按三维坐标计算的距离值。小于等于0表示无区分要求
+     * @return 随机颜色
+     */
+    public static Color randomColor(final Color compareColor, final int minDistance) {
+        Color color = randomColor();
+        if (null != compareColor && minDistance > 0) {
+            // 注意minDistance太大会增加循环次数，保证至少1/3的概率生成成功
+            Assert.isTrue(minDistance < maxDistance(compareColor) / 3 * 2,
+                    "minDistance is too large, there are too few remaining colors!");
+            while (computeColorDistance(compareColor, color) < minDistance) {
+                color = randomColor();
+            }
+        }
+        return color;
+    }
+
+    /**
+     * 计算两个颜色之间的色差，按三维坐标距离计算
+     *
+     * @param color1 颜色1
+     * @param color2 颜色2
+     * @return 色差，按三维坐标距离值
+     */
+    public static int computeColorDistance(final Color color1, final Color color2) {
+        if (null == color1 || null == color2) {
+            return 0;
+        }
+        return (int) Math.sqrt(
+                Math.pow(color1.getRed() - color2.getRed(), 2) + Math.pow(color1.getGreen() - color2.getGreen(), 2)
+                        + Math.pow(color1.getBlue() - color2.getBlue(), 2));
+    }
+
+    /**
      * AWT的{@link Color}颜色转换为ANSI颜色，由于取最接近颜色，故可能有色差
      *
      * @param rgb          RGB颜色
@@ -340,6 +376,19 @@ public class ColorKit {
         gHex = gHex.length() == 1 ? "0" + gHex : gHex;
         bHex = bHex.length() == 1 ? "0" + bHex : bHex;
         return Symbol.SHAPE + rHex + gHex + bHex;
+    }
+
+    /**
+     * 计算给定点与其他点之间的最大可能距离。
+     *
+     * @param color 指定颜色
+     * @return 其余颜色与color的最大距离
+     */
+    public static int maxDistance(final Color color) {
+        final int maxX = RGB_COLOR_BOUND - 2 * color.getRed();
+        final int maxY = RGB_COLOR_BOUND - 2 * color.getGreen();
+        final int maxZ = RGB_COLOR_BOUND - 2 * color.getBlue();
+        return (int) Math.sqrt(maxX * maxX + maxY * maxY + maxZ * maxZ);
     }
 
     /**

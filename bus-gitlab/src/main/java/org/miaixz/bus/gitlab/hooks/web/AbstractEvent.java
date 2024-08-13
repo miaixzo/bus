@@ -30,6 +30,7 @@ package org.miaixz.bus.gitlab.hooks.web;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public abstract class AbstractEvent implements Event {
+
     private static final long serialVersionUID = -1L;
 
     private String requestUrl;
@@ -68,4 +69,5 @@ public abstract class AbstractEvent implements Event {
     public String getRequestSecretToken() {
         return (secretToken);
     }
+
 }

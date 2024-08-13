@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.core.io.copier;
 
-import org.miaixz.bus.core.io.StreamProgress;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.exception.InternalException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
+
+import org.miaixz.bus.core.io.StreamProgress;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
  * {@link ReadableByteChannel} 向 {@link WritableByteChannel} 拷贝

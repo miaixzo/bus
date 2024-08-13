@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.gitlab.hooks.web;
 
+import java.util.Date;
+
 import org.miaixz.bus.gitlab.models.AccessLevel;
 import org.miaixz.bus.gitlab.support.JacksonJson;
-
-import java.util.Date;
 
 public class EventSnippet {
 
@@ -138,4 +138,5 @@ public class EventSnippet {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

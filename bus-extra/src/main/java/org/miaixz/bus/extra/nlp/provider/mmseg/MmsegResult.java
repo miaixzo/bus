@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.extra.nlp.provider.mmseg;
 
-import com.chenlb.mmseg4j.MMSeg;
+import java.io.IOException;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.extra.nlp.AbstractResult;
 import org.miaixz.bus.extra.nlp.NLPWord;
 
-import java.io.IOException;
+import com.chenlb.mmseg4j.MMSeg;
 
 /**
  * mmseg4j分词结果实现 项目地址：https://github.com/chenlb/mmseg4j-core

@@ -28,7 +28,7 @@
 package org.miaixz.bus.notify;
 
 import org.miaixz.bus.core.basic.entity.Message;
-import org.miaixz.bus.core.lang.EnumMap;
+import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.notify.magic.Material;
 
@@ -84,7 +84,7 @@ public interface Provider<T extends Material> extends org.miaixz.bus.core.Provid
 
     @Override
     default Object type() {
-        return EnumMap.Povider.NOTIFY;
+        return EnumValue.Povider.NOTIFY;
     }
 
 }

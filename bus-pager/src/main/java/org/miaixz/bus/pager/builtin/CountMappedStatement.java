@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.pager.builtin;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.mapping.ResultMapping;
 import org.miaixz.bus.core.lang.Symbol;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 创建新的MappedStatement,主要是Count返回值int

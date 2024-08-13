@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.Response;
+import java.util.List;
+import java.util.stream.Stream;
+
 import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
 import org.miaixz.bus.gitlab.models.SystemHook;
 
-import java.util.List;
-import java.util.stream.Stream;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 
 /**
  * This class implements the client side API for the GitLab System Hooks Keys API calls.
@@ -72,7 +73,7 @@ public class SystemHooksApi extends AbstractApi {
      */
     public List<SystemHook> getSystemHooks(int page, int perPage) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "hooks");
-        return (response.readEntity(new GenericType<List<SystemHook>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -88,7 +89,7 @@ public class SystemHooksApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<SystemHook> getSystemHooks(int itemsPerPage) throws GitLabApiException {
-        return (new Pager<SystemHook>(this, SystemHook.class, itemsPerPage, null, "hooks"));
+        return (new Pager<>(this, SystemHook.class, itemsPerPage, null, "hooks"));
     }
 
     /**
@@ -122,7 +123,6 @@ public class SystemHooksApi extends AbstractApi {
      */
     public SystemHook addSystemHook(String url, String token, Boolean pushEvents, Boolean tagPushEvents,
             Boolean enableSslVerification) throws GitLabApiException {
-
         SystemHook systemHook = new SystemHook().withPushEvents(pushEvents).withTagPushEvents(tagPushEvents)
                 .withEnableSslVerification(enableSslVerification);
 
@@ -143,7 +143,6 @@ public class SystemHooksApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public SystemHook addSystemHook(String url, String token, SystemHook systemHook) throws GitLabApiException {
-
         if (url == null) {
             throw new RuntimeException("url cannot be null");
         }
@@ -169,7 +168,6 @@ public class SystemHooksApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteSystemHook(SystemHook hook) throws GitLabApiException {
-
         if (hook == null) {
             throw new RuntimeException("hook cannot be null");
         }
@@ -188,7 +186,6 @@ public class SystemHooksApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void deleteSystemHook(Long hookId) throws GitLabApiException {
-
         if (hookId == null) {
             throw new RuntimeException("hookId cannot be null");
         }
@@ -209,7 +206,6 @@ public class SystemHooksApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void testSystemHook(SystemHook hook) throws GitLabApiException {
-
         if (hook == null) {
             throw new RuntimeException("hook cannot be null");
         }
@@ -228,11 +224,10 @@ public class SystemHooksApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public void testSystemHook(Long hookId) throws GitLabApiException {
-
         if (hookId == null) {
             throw new RuntimeException("hookId cannot be null");
         }
-
         get(Response.Status.OK, null, "hooks", hookId);
     }
+
 }

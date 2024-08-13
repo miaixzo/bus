@@ -27,9 +27,10 @@
 */
 package org.miaixz.bus.gitlab.models;
 
+import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
-import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
 
 public enum MembershipSourceType {
 
@@ -57,4 +58,5 @@ public enum MembershipSourceType {
     public String toString() {
         return (enumHelper.toString(this));
     }
+
 }

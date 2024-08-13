@@ -46,10 +46,6 @@ public class MatOfDMatch extends Mat {
         // FIXME: do we need release() here?
     }
 
-    public static MatOfDMatch fromNativeAddr(long addr) {
-        return new MatOfDMatch(addr);
-    }
-
     public MatOfDMatch(Mat m) {
         super(m, Range.all());
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -60,6 +56,10 @@ public class MatOfDMatch extends Mat {
     public MatOfDMatch(DMatch... ap) {
         super();
         fromArray(ap);
+    }
+
+    public static MatOfDMatch fromNativeAddr(long addr) {
+        return new MatOfDMatch(addr);
     }
 
     public void alloc(int elemNumber) {

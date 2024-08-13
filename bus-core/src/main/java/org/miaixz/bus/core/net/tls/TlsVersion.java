@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.net.tls;
 
-import org.miaixz.bus.core.net.Protocol;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.miaixz.bus.core.net.Protocol;
 
 /**
  * 在协商安全插槽时可以提供的TLS版本 查看{@link javax.net.ssl.SSLSocket # setEnabledProtocols}

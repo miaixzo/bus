@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.Constants;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+import org.miaixz.bus.gitlab.Constants;
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
 public class ProjectAccessToken implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Long userId;
@@ -141,4 +142,5 @@ public class ProjectAccessToken implements Serializable {
     public String toString() {
         return JacksonJson.toJsonString(this);
     }
+
 }

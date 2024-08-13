@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.cache.magic.annotation;
 
-import org.miaixz.bus.core.lang.Normal;
-
 import java.lang.annotation.*;
+
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * @author Kimi Liu

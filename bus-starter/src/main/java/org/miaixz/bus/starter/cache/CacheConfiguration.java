@@ -27,7 +27,6 @@
 */
 package org.miaixz.bus.starter.cache;
 
-import jakarta.annotation.Resource;
 import org.miaixz.bus.cache.Context;
 import org.miaixz.bus.cache.provider.*;
 import org.miaixz.bus.core.xyz.BeanKit;
@@ -35,6 +34,8 @@ import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
+
+import jakarta.annotation.Resource;
 
 /**
  * 缓存配置

@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.codec.binary.encoder;
 
+import java.util.Arrays;
+
 import org.miaixz.bus.core.codec.Encoder;
 import org.miaixz.bus.core.codec.binary.provider.Base58Provider;
 import org.miaixz.bus.core.lang.Normal;
-
-import java.util.Arrays;
 
 /**
  * Base58编码器

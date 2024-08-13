@@ -27,6 +27,14 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
@@ -37,14 +45,6 @@ import org.miaixz.bus.core.math.ChineseNumberFormatter;
 import org.miaixz.bus.core.math.ChineseNumberParser;
 import org.miaixz.bus.core.math.EnglishNumberFormatter;
 import org.miaixz.bus.core.xyz.*;
-
-import java.lang.reflect.Type;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 类型转换器
@@ -971,9 +971,9 @@ public class Convert {
      * @param n 数字
      * @return 中文大写数字
      */
-    public static String digitToChinese(final Number n) {
+    public static String digitToChinese(Number n) {
         if (null == n) {
-            return "零";
+            n = 0;
         }
         return ChineseNumberFormatter.of().setUseTraditional(true).setMoneyMode(true).format(n.doubleValue());
     }

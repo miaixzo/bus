@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.exception.InternalException;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -38,6 +35,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
  * Jar包中manifest.mf文件获取和解析工具类

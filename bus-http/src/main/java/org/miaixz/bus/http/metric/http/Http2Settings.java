@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.http.metric.http;
 
-import org.miaixz.bus.core.net.HTTP;
-
 import java.util.Arrays;
+
+import org.miaixz.bus.core.net.HTTP;
 
 /**
  * 设置描述发送对等点的特征，接收对等点使用这些特征 设置的作用域是{@link Http2Connection connection}

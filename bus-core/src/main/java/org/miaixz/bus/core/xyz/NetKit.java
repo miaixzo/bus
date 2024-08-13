@@ -27,6 +27,18 @@
 */
 package org.miaixz.bus.core.xyz;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.*;
+import java.nio.ByteBuffer;
+import java.nio.channels.SocketChannel;
+import java.util.*;
+import java.util.function.Predicate;
+
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+
 import org.miaixz.bus.core.center.iterator.EnumerationIterator;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Keys;
@@ -36,17 +48,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.net.NonAuthenticator;
 import org.miaixz.bus.core.net.ip.IPv4;
 import org.miaixz.bus.core.text.CharsBacker;
-
-import javax.naming.NamingException;
-import javax.naming.directory.Attribute;
-import javax.naming.directory.Attributes;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.*;
-import java.nio.ByteBuffer;
-import java.nio.channels.SocketChannel;
-import java.util.*;
-import java.util.function.Predicate;
 
 /**
  * 网络相关工具

@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.notify.metric.zhutong;
 
+import org.miaixz.bus.notify.Context;
+import org.miaixz.bus.notify.magic.Material;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
-import org.miaixz.bus.notify.Context;
-import org.miaixz.bus.notify.magic.Material;
 
 /**
  * 助通短信

@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.Constants;
+import org.miaixz.bus.gitlab.Constants.ActionType;
 import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class PushData {
 
     private Integer commitCount;
-    private Constants.ActionType action;
+    private ActionType action;
     private String refType;
     private String commitFrom;
     private String commitTo;
@@ -48,11 +48,11 @@ public class PushData {
         this.commitCount = commit_count;
     }
 
-    public Constants.ActionType getAction() {
+    public ActionType getAction() {
         return action;
     }
 
-    public void setAction(Constants.ActionType action) {
+    public void setAction(ActionType action) {
         this.action = action;
     }
 
@@ -100,4 +100,5 @@ public class PushData {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

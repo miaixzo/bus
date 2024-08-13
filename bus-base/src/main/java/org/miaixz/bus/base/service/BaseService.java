@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.base.service;
 
+import java.util.List;
+
 import org.miaixz.bus.core.basic.entity.Result;
 import org.miaixz.bus.core.basic.service.Service;
-
-import java.util.List;
 
 /**
  * BaseService 接口

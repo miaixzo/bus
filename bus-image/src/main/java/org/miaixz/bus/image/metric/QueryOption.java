@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.image.metric;
 
-import org.miaixz.bus.image.metric.pdu.ExtendedNegotiation;
-
 import java.util.EnumSet;
+
+import org.miaixz.bus.image.metric.pdu.ExtendedNegotiation;
 
 /**
  * @author Kimi Liu

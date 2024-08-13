@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.center.function.FunctionX;
-import org.miaixz.bus.core.lang.Assert;
-
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
+
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.lang.Assert;
 
 /**
  * 枚举工具类

@@ -27,7 +27,10 @@
 */
 package org.miaixz.bus.health.builtin.hardware.common;
 
-import com.sun.jna.Platform;
+import java.util.*;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Tuple;
@@ -37,9 +40,7 @@ import org.miaixz.bus.health.builtin.hardware.CentralProcessor;
 import org.miaixz.bus.health.linux.driver.proc.Auxv;
 import org.miaixz.bus.logger.Logger;
 
-import java.util.*;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import com.sun.jna.Platform;
 
 /**
  * A CPU.

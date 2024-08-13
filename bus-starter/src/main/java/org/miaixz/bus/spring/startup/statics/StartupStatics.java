@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.spring.startup.statics;
 
-import lombok.Getter;
-import lombok.Setter;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 启动消耗统计组件

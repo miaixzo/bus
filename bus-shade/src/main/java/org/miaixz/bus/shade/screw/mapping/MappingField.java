@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.shade.screw.mapping;
 
-import org.miaixz.bus.core.lang.Normal;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * 数据结构属性注解

@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.pager.dialect;
 
+import java.util.Properties;
+
 import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -37,8 +39,6 @@ import org.miaixz.bus.pager.parser.CountSqlParser;
 import org.miaixz.bus.pager.parser.OrderBySqlParser;
 import org.miaixz.bus.pager.parser.defaults.DefaultCountSqlParser;
 import org.miaixz.bus.pager.parser.defaults.DefaultOrderBySqlParser;
-
-import java.util.Properties;
 
 /**
  * 基于 CountSqlParser 的智能 Count 查询

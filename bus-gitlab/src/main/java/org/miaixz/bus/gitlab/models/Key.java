@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
 import java.util.Date;
 
+import org.miaixz.bus.gitlab.support.JacksonJson;
+
 public class Key implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private Date createdAt;
@@ -85,4 +86,5 @@ public class Key implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }

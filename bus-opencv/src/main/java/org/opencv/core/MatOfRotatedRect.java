@@ -46,10 +46,6 @@ public class MatOfRotatedRect extends Mat {
         // FIXME: do we need release() here?
     }
 
-    public static MatOfRotatedRect fromNativeAddr(long addr) {
-        return new MatOfRotatedRect(addr);
-    }
-
     public MatOfRotatedRect(Mat m) {
         super(m, Range.all());
         if (!empty() && checkVector(_channels, _depth) < 0)
@@ -60,6 +56,10 @@ public class MatOfRotatedRect extends Mat {
     public MatOfRotatedRect(RotatedRect... a) {
         super();
         fromArray(a);
+    }
+
+    public static MatOfRotatedRect fromNativeAddr(long addr) {
+        return new MatOfRotatedRect(addr);
     }
 
     public void alloc(int elemNumber) {

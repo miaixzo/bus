@@ -27,10 +27,6 @@
 */
 package org.miaixz.bus.core.center.object;
 
-import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.text.CharsValidator;
-import org.miaixz.bus.core.xyz.*;
-
 import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Iterator;
@@ -38,6 +34,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
+
+import org.miaixz.bus.core.text.CharsBacker;
+import org.miaixz.bus.core.text.CharsValidator;
+import org.miaixz.bus.core.xyz.*;
 
 /**
  * 对象检查工具类，提供字对象的blank和empty等检查

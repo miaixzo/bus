@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.gitlab;
 
-import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.Response;
-import org.miaixz.bus.gitlab.models.Namespace;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.gitlab.models.Namespace;
+
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 
 /**
  * This class implements the client side API for the GitLab namespace calls.
@@ -74,7 +75,7 @@ public class NamespaceApi extends AbstractApi {
      */
     public List<Namespace> getNamespaces(int page, int perPage) throws GitLabApiException {
         Response response = get(Response.Status.OK, getPageQueryParams(page, perPage), "namespaces");
-        return (response.readEntity(new GenericType<List<Namespace>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -91,7 +92,7 @@ public class NamespaceApi extends AbstractApi {
      * @throws GitLabApiException if any exception occurs
      */
     public Pager<Namespace> getNamespaces(int itemsPerPage) throws GitLabApiException {
-        return (new Pager<Namespace>(this, Namespace.class, itemsPerPage, null, "namespaces"));
+        return (new Pager<>(this, Namespace.class, itemsPerPage, null, "namespaces"));
     }
 
     /**
@@ -141,7 +142,7 @@ public class NamespaceApi extends AbstractApi {
         GitLabApiForm formData = new GitLabApiForm().withParam("search", query, true).withParam(PAGE_PARAM, page)
                 .withParam(PER_PAGE_PARAM, perPage);
         Response response = get(Response.Status.OK, formData.asMap(), "namespaces");
-        return (response.readEntity(new GenericType<List<Namespace>>() {
+        return (response.readEntity(new GenericType<>() {
         }));
     }
 
@@ -159,7 +160,7 @@ public class NamespaceApi extends AbstractApi {
      */
     public Pager<Namespace> findNamespaces(String query, int itemsPerPage) throws GitLabApiException {
         GitLabApiForm formData = new GitLabApiForm().withParam("search", query, true);
-        return (new Pager<Namespace>(this, Namespace.class, itemsPerPage, formData.asMap(), "namespaces"));
+        return (new Pager<>(this, Namespace.class, itemsPerPage, formData.asMap(), "namespaces"));
     }
 
     /**
@@ -213,4 +214,5 @@ public class NamespaceApi extends AbstractApi {
             return (GitLabApi.createOptionalFromException(glae));
         }
     }
+
 }

@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.health.mac.jna;
 
+import org.miaixz.bus.health.Builder;
+
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Structure;
 import com.sun.jna.Structure.FieldOrder;
 import com.sun.jna.platform.mac.CoreFoundation.CFArrayRef;
 import com.sun.jna.platform.mac.CoreFoundation.CFDictionaryRef;
-import org.miaixz.bus.health.Builder;
 
 /**
  * The Core Graphics framework is based on the Quartz advanced drawing engine. It provides low-level, lightweight 2D

@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.image.builtin;
 
-import org.miaixz.bus.image.Tag;
-import org.miaixz.bus.image.UID;
-import org.miaixz.bus.image.galaxy.data.*;
-
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.UUID;
+
+import org.miaixz.bus.image.Tag;
+import org.miaixz.bus.image.UID;
+import org.miaixz.bus.image.galaxy.data.*;
 
 /**
  * @author Kimi Liu

@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.goalie;
 
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.http.HttpMethod;
-
 import java.util.List;
 import java.util.Objects;
+
+import org.springframework.http.HttpMethod;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * api definition

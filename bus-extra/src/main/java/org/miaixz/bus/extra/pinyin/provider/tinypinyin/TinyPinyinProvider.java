@@ -27,9 +27,10 @@
 */
 package org.miaixz.bus.extra.pinyin.provider.tinypinyin;
 
-import com.github.promeg.pinyinhelper.Pinyin;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.pinyin.PinyinProvider;
+
+import com.github.promeg.pinyinhelper.Pinyin;
 
 /**
  * 封装了TinyPinyin的引擎。

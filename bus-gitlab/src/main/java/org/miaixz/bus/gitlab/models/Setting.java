@@ -27,10 +27,11 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
 import org.miaixz.bus.gitlab.GitLabApiException;
 import org.miaixz.bus.gitlab.support.JacksonJsonEnumHelper;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
  * This enum provides constants and value validation for the available GitLab application settings. See
@@ -1101,4 +1102,5 @@ public enum Setting {
                 value.getClass().getSimpleName(), shouldBe.toString());
         throw new GitLabApiException(errorMsg);
     }
+
 }

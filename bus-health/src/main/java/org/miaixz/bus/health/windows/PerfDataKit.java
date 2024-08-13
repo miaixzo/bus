@@ -27,14 +27,8 @@
 */
 package org.miaixz.bus.health.windows;
 
-import com.sun.jna.platform.win32.BaseTSD.DWORD_PTR;
-import com.sun.jna.platform.win32.Pdh;
-import com.sun.jna.platform.win32.PdhMsg;
-import com.sun.jna.platform.win32.VersionHelpers;
-import com.sun.jna.platform.win32.WinDef.DWORD;
-import com.sun.jna.platform.win32.WinDef.DWORDByReference;
-import com.sun.jna.platform.win32.WinError;
-import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
+import java.util.Locale;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
@@ -45,7 +39,14 @@ import org.miaixz.bus.health.builtin.jna.ByRef.CloseableLONGLONGByReference;
 import org.miaixz.bus.health.builtin.jna.Struct.CloseablePdhRawCounter;
 import org.miaixz.bus.logger.Logger;
 
-import java.util.Locale;
+import com.sun.jna.platform.win32.BaseTSD.DWORD_PTR;
+import com.sun.jna.platform.win32.Pdh;
+import com.sun.jna.platform.win32.PdhMsg;
+import com.sun.jna.platform.win32.VersionHelpers;
+import com.sun.jna.platform.win32.WinDef.DWORD;
+import com.sun.jna.platform.win32.WinDef.DWORDByReference;
+import com.sun.jna.platform.win32.WinError;
+import com.sun.jna.platform.win32.WinNT.HANDLEByReference;
 
 /**
  * Helper class to centralize the boilerplate portions of PDH counter setup and allow applications to easily add, query,

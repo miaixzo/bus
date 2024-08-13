@@ -27,12 +27,11 @@
 */
 package org.miaixz.bus.starter.image;
 
-import jakarta.annotation.Resource;
-import lombok.Getter;
-import lombok.Setter;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 影像解析配置
@@ -42,12 +41,10 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
  */
 @Getter
 @Setter
-@EnableConfigurationProperties(value = { ImageProperties.Node.class })
 @ConfigurationProperties(prefix = GeniusBuilder.IMAGE)
 public class ImageProperties {
 
-    @Resource
-    private Node node;
+    private Node node = new Node();
 
     /**
      * 是否启用opencv
@@ -71,7 +68,6 @@ public class ImageProperties {
      */
     @Getter
     @Setter
-    @ConfigurationProperties(prefix = GeniusBuilder.IMAGE + ".node")
     public class Node {
 
         /**

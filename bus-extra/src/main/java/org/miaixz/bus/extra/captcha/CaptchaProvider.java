@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.extra.captcha;
 
-import org.miaixz.bus.core.Provider;
-import org.miaixz.bus.core.lang.EnumMap;
-
 import java.io.OutputStream;
+
+import org.miaixz.bus.core.Provider;
+import org.miaixz.bus.core.lang.EnumValue;
 
 /**
  * 验证码接口，提供验证码对象接口定义
@@ -69,7 +69,7 @@ public interface CaptchaProvider extends Provider {
 
     @Override
     default Object type() {
-        return EnumMap.Povider.CAPTCHA;
+        return EnumValue.Povider.CAPTCHA;
     }
 
 }

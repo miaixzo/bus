@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.gitlab.hooks.web;
 
-import org.miaixz.bus.gitlab.models.Reviewer;
-
 import java.util.List;
+
+import org.miaixz.bus.gitlab.models.Reviewer;
 
 public class MergeRequestChanges extends EventChanges {
 

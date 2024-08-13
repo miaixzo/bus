@@ -27,25 +27,27 @@
 */
 package org.miaixz.bus.gitlab.models;
 
-import org.miaixz.bus.gitlab.Constants;
-import org.miaixz.bus.gitlab.GitLabApiForm;
-import org.miaixz.bus.gitlab.support.JacksonJson;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.miaixz.bus.gitlab.Constants.GroupOrderBy;
+import org.miaixz.bus.gitlab.Constants.SortOrder;
+import org.miaixz.bus.gitlab.GitLabApiForm;
+import org.miaixz.bus.gitlab.support.JacksonJson;
 
 /**
  * This class is used to filter Groups when getting lists of groups.
  */
 public class GroupFilter implements Serializable {
+
     private static final long serialVersionUID = -1L;
 
     private List<Integer> skipGroups;
     private Boolean allAvailable;
     private String search;
-    private Constants.GroupOrderBy orderBy;
-    private Constants.SortOrder sort;
+    private GroupOrderBy orderBy;
+    private SortOrder sort;
     private Boolean statistics;
     private Boolean withCustomAttributes;
     private Boolean owned;
@@ -94,7 +96,7 @@ public class GroupFilter implements Serializable {
      * @param orderBy specifies what field to order by
      * @return the reference to this GroupFilter instance
      */
-    public GroupFilter withOrderBy(Constants.GroupOrderBy orderBy) {
+    public GroupFilter withOrderBy(GroupOrderBy orderBy) {
         this.orderBy = orderBy;
         return (this);
     }
@@ -105,7 +107,7 @@ public class GroupFilter implements Serializable {
      * @param sort sort direction, ASC or DESC
      * @return the reference to this GroupFilter instance
      */
-    public GroupFilter withSortOder(Constants.SortOrder sort) {
+    public GroupFilter withSortOder(SortOrder sort) {
         this.sort = sort;
         return (this);
     }
@@ -199,4 +201,5 @@ public class GroupFilter implements Serializable {
     public String toString() {
         return (JacksonJson.toJsonString(this));
     }
+
 }
