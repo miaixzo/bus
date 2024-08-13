@@ -191,8 +191,13 @@ Thanks JetBrains for the OpenSource license.
 
 感谢JetBrains提供IDEA开源license
 
-### 
+### ✨ 寄语
 
 源码永远是最好的教程，善于读源码和DEBUG朋友掌握完全是轻而易举的事。源码是作者设计理念最直观的展现，这也是开源的魅力所在。"
 Talk is cheap, Show me the code."
 ，开源让技术难题的探讨变得更加务实，在您看完源码后心中对它都会有一个定论。在作者看来，Bus切切实实降低了开发学习门槛，也保障了服务的高性能、高可用。如果读者朋友对源码中某些部分的设计存在疑虑，也欢迎与作者保持沟通。
+
+
+### ✨ 状态
+
+![alt](https://repobeats.axiom.co/api/embed/e6aec865b2638153d492db3db4ab8f09b39725cd.svg "repobeats analytics image")
