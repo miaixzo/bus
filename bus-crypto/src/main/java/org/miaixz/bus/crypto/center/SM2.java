@@ -30,6 +30,7 @@ package org.miaixz.bus.crypto.center;
 import java.math.BigInteger;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.SecureRandom;
 
 import org.bouncycastle.crypto.CipherParameters;
 import org.bouncycastle.crypto.Digest;
@@ -101,6 +102,10 @@ public class SM2 extends AbstractCrypto<SM2> {
      * C1C2C3
      */
     private SM2Engine.Mode mode = SM2Engine.Mode.C1C3C2;
+    /**
+     * 自定义随机数
+     */
+    private SecureRandom random;
 
     /**
      * 构造，生成新的私钥公钥对
@@ -174,7 +179,7 @@ public class SM2 extends AbstractCrypto<SM2> {
      * @param publicKey  公钥，可以为null
      */
     public SM2(final ECPrivateKeyParameters privateKey, final ECPublicKeyParameters publicKey) {
-        super(Algorithm.SM2.getValue(), null, null);
+        super(Algorithm.SM2.getValue(), null);
         this.privateKeyParams = privateKey;
         this.publicKeyParams = publicKey;
         this.init();
@@ -237,7 +242,7 @@ public class SM2 extends AbstractCrypto<SM2> {
         if (KeyType.PublicKey != keyType) {
             throw new IllegalArgumentException("Encrypt is only support by public data");
         }
-        return encrypt(data, new ParametersWithRandom(getCipherParameters(keyType)));
+        return encrypt(data, new ParametersWithRandom(getCipherParameters(keyType), this.random));
     }
 
     /**
@@ -357,7 +362,7 @@ public class SM2 extends AbstractCrypto<SM2> {
         lock.lock();
         final SM2Signer signer = getSigner();
         try {
-            CipherParameters param = new ParametersWithRandom(getCipherParameters(KeyType.PrivateKey));
+            CipherParameters param = new ParametersWithRandom(getCipherParameters(KeyType.PrivateKey), this.random);
             if (id != null) {
                 param = new ParametersWithID(param, id);
             }
@@ -447,6 +452,17 @@ public class SM2 extends AbstractCrypto<SM2> {
      */
     public SM2 setPrivateKeyParams(final ECPrivateKeyParameters privateKeyParams) {
         this.privateKeyParams = privateKeyParams;
+        return this;
+    }
+
+    /**
+     * 设置随机数生成器，可自定义随机数种子
+     *
+     * @param random 随机数生成器，可自定义随机数种子
+     * @return this
+     */
+    public SM2 setRandom(final SecureRandom random) {
+        this.random = random;
         return this;
     }
 

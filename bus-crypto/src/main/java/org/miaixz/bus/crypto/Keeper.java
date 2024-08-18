@@ -648,16 +648,12 @@ public class Keeper {
      */
     public static KeyFactory getKeyFactory(final String algorithm) {
         final java.security.Provider provider = Holder.getProvider();
-
-        final KeyFactory keyFactory;
         try {
-            keyFactory = (null == provider) //
-                    ? KeyFactory.getInstance(getMainAlgorithm(algorithm)) //
+            return (null == provider) ? KeyFactory.getInstance(getMainAlgorithm(algorithm))
                     : KeyFactory.getInstance(getMainAlgorithm(algorithm), provider);
         } catch (final NoSuchAlgorithmException e) {
             throw new CryptoException(e);
         }
-        return keyFactory;
     }
 
     /**

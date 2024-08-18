@@ -330,6 +330,32 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
     }
 
     /**
+     * 完成多部分加密或解密操作，具体取决于此密码的初始化方式。
+     *
+     * @return 带有结果的新缓冲区
+     */
+    public byte[] doFinal() {
+        final Cipher cipher = this.cipher.getRaw();
+        lock.lock();
+        try {
+            return cipher.doFinal();
+        } catch (final Exception e) {
+            throw new CryptoException(e);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * 完成多部分加密或解密操作，具体取决于此密码的初始化方式。
+     *
+     * @return 带有结果的新缓冲区
+     */
+    public String doFinalHex() {
+        return HexKit.encodeString(doFinal());
+    }
+
+    /**
      * 更新数据，分组加密中间结果可以当作随机数 第一次更新数据前需要调用{@link #setMode(Algorithm.Type)}初始化加密或解密模式，然后每次更新数据都是累加模式
      *
      * @param data 被加密的bytes

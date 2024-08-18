@@ -45,7 +45,7 @@ import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.office.excel.cell.CellKit;
-import org.miaixz.bus.office.excel.style.Styles;
+import org.miaixz.bus.office.excel.style.StyleKit;
 
 /**
  * Excel基础类，用于抽象ExcelWriter和ExcelReader中共用部分的对象和方法
@@ -342,7 +342,7 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
      */
     public CellStyle getOrCreateCellStyle(final int x, final int y) {
         final CellStyle cellStyle = getOrCreateCell(x, y).getCellStyle();
-        return Styles.isNullOrDefaultStyle(this.workbook, cellStyle) ? createCellStyle(x, y) : cellStyle;
+        return StyleKit.isNullOrDefaultStyle(this.workbook, cellStyle) ? createCellStyle(x, y) : cellStyle;
     }
 
     /**
@@ -377,7 +377,7 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
      * @see Workbook#createCellStyle()
      */
     public CellStyle createCellStyle() {
-        return Styles.createCellStyle(this.workbook);
+        return StyleKit.createCellStyle(this.workbook);
     }
 
     /**
@@ -388,7 +388,7 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
      */
     public CellStyle getOrCreateRowStyle(final int y) {
         final CellStyle rowStyle = getOrCreateRow(y).getRowStyle();
-        return Styles.isNullOrDefaultStyle(this.workbook, rowStyle) ? createRowStyle(y) : rowStyle;
+        return StyleKit.isNullOrDefaultStyle(this.workbook, rowStyle) ? createRowStyle(y) : rowStyle;
     }
 
     /**
@@ -411,7 +411,7 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
      */
     public CellStyle getOrCreateColumnStyle(final int x) {
         final CellStyle columnStyle = this.sheet.getColumnStyle(x);
-        return Styles.isNullOrDefaultStyle(this.workbook, columnStyle) ? createColumnStyle(x) : columnStyle;
+        return StyleKit.isNullOrDefaultStyle(this.workbook, columnStyle) ? createColumnStyle(x) : columnStyle;
     }
 
     /**

@@ -229,8 +229,8 @@ public class CellBorderStyle implements Serializable {
     /**
      * 将边框样式和颜色设置到CellStyle中
      *
-     * @param cellStyle CellStyle
-     * @return the CellStyle
+     * @param cellStyle {@link CellStyle}
+     * @return {@link CellStyle}
      */
     public CellStyle setTo(final CellStyle cellStyle) {
         ObjectKit.accept(this.topStyle, cellStyle::setBorderTop);

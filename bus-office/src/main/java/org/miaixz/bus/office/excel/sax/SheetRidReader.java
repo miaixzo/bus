@@ -49,9 +49,9 @@ import org.xml.sax.helpers.DefaultHandler;
  * <pre>
  *  sheet name="Sheet6" sheetId="4" r:id="rId6"
  * </pre>
- * 
+ *
  * 读取结果为：
- * 
+ *
  * <pre>
  *     {"4": "6"}
  * </pre>
@@ -88,7 +88,7 @@ public class SheetRidReader extends DefaultHandler {
         InputStream workbookData = null;
         try {
             workbookData = xssfReader.getWorkbookData();
-            ExcelSax.readFrom(workbookData, this);
+            ExcelSaxKit.readFrom(workbookData, this);
         } catch (final InvalidFormatException | IOException e) {
             throw new InternalException(e);
         } finally {

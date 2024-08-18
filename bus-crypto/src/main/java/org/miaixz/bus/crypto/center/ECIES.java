@@ -27,8 +27,7 @@
 */
 package org.miaixz.bus.crypto.center;
 
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.KeyPair;
 
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.crypto.builtin.asymmetric.Crypto;
@@ -36,7 +35,6 @@ import org.miaixz.bus.crypto.builtin.asymmetric.Crypto;
 /**
  * ECIES（集成加密方案，elliptic curve integrate encrypt scheme）
  * 详细介绍见：https://blog.csdn.net/baidu_26954729/article/details/90437344 此算法必须引入Bouncy Castle库
- * <p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -55,10 +53,10 @@ public class ECIES extends Crypto {
     /**
      * 构造，生成新的私钥公钥对
      *
-     * @param eciesAlgorithm 自定义ECIES算法，例如ECIESwithDESede/NONE/PKCS7Padding
+     * @param algorithm 自定义ECIES算法，例如ECIESwithDESede/NONE/PKCS7Padding
      */
-    public ECIES(final String eciesAlgorithm) {
-        super(eciesAlgorithm);
+    public ECIES(final String algorithm) {
+        super(algorithm);
     }
 
     /**
@@ -84,16 +82,6 @@ public class ECIES extends Crypto {
     /**
      * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
-     * @param privateKey 私钥
-     * @param publicKey  公钥
-     */
-    public ECIES(final PrivateKey privateKey, final PublicKey publicKey) {
-        super(Algorithm.ECIES.getValue(), privateKey, publicKey);
-    }
-
-    /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
-     *
      * @param algorithm  自定义ECIES算法，例如ECIESwithDESede/NONE/PKCS7Padding
      * @param privateKey 私钥Hex或Base64表示
      * @param publicKey  公钥Hex或Base64表示
@@ -104,13 +92,21 @@ public class ECIES extends Crypto {
 
     /**
      * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
-     *
-     * @param algorithm  自定义ECIES算法，例如ECIESwithDESede/NONE/PKCS7Padding
-     * @param privateKey 私钥
-     * @param publicKey  公钥
+     * 
+     * @param keyPair 密钥对，{@code null}表示随机生成
      */
-    public ECIES(final String algorithm, final PrivateKey privateKey, final PublicKey publicKey) {
-        super(algorithm, privateKey, publicKey);
+    public ECIES(final KeyPair keyPair) {
+        super(Algorithm.ECIES.getValue(), keyPair);
+    }
+
+    /**
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     *
+     * @param algorithm 自定义ECIES算法，例如ECIESwithDESede/NONE/PKCS7Padding
+     * @param keyPair   密钥对，{@code null}表示随机生成
+     */
+    public ECIES(final String algorithm, final KeyPair keyPair) {
+        super(algorithm, keyPair);
     }
 
 }

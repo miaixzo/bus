@@ -34,6 +34,7 @@ import org.miaixz.bus.oauth.metric.AbstractProvider;
 import org.miaixz.bus.oauth.metric.alipay.AlipayProvider;
 import org.miaixz.bus.oauth.metric.aliyun.AliyunProvider;
 import org.miaixz.bus.oauth.metric.amazon.AmazonProvider;
+import org.miaixz.bus.oauth.metric.apple.AppleProvider;
 import org.miaixz.bus.oauth.metric.baidu.BaiduProvider;
 import org.miaixz.bus.oauth.metric.coding.CodingProvider;
 import org.miaixz.bus.oauth.metric.dingtalk.DingTalkAccountProvider;
@@ -187,6 +188,34 @@ public enum Registry implements Complex {
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return AmazonProvider.class;
+        }
+    },
+    /**
+     * 苹果
+     */
+    APPLE {
+        @Override
+        public String authorize() {
+            return "https://appleid.apple.com/auth/authorize";
+        }
+
+        /**
+         * @see <a href=
+         *      "https://developer.apple.com/documentation/sign_in_with_apple/generate_and_validate_tokens">generate_and_validate_tokens</a>
+         */
+        @Override
+        public String accessToken() {
+            return "https://appleid.apple.com/auth/token";
+        }
+
+        @Override
+        public String userInfo() {
+            return "";
+        }
+
+        @Override
+        public Class<? extends AbstractProvider> getTargetClass() {
+            return AppleProvider.class;
         }
     },
     /**

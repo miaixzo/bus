@@ -320,7 +320,7 @@ public class WorkbookKit {
      * 将普通工作簿转换为SXSSFWorkbook
      *
      * @param book 工作簿
-     * @return SXSSFWorkbook
+     * @return {@link SXSSFWorkbook}
      */
     private static SXSSFWorkbook toSXSSFBook(final Workbook book) {
         if (book instanceof SXSSFWorkbook) {

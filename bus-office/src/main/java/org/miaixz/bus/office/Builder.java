@@ -30,24 +30,14 @@ package org.miaixz.bus.office;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
-import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.ooxml.POIXMLDocumentPart;
 import org.apache.poi.poifs.filesystem.FileMagic;
 import org.apache.poi.ss.formula.ConditionalFormattingEvaluator;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.ExcelNumberFormat;
-import org.apache.poi.ss.usermodel.PictureData;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.*;
-import org.miaixz.bus.core.center.map.multi.ListValueMap;
-import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.openxmlformats.schemas.drawingml.x2006.spreadsheetDrawing.CTMarker;
 
 /**
  * 为office提供辅助功能 Excel中日期判断、读取、处理等补充工具类
@@ -170,88 +160,7 @@ public class Builder {
         } catch (final IOException e) {
             throw new InternalException(e);
         }
-
         return magic;
-    }
-
-    /**
-     * 获取工作簿指定sheet中图片列表
-     *
-     * @param workbook   工作簿{@link Workbook}
-     * @param sheetIndex sheet的索引
-     * @return 图片映射，键格式：行_列，值：{@link PictureData}
-     */
-    public static ListValueMap<String, PictureData> getPicMap(final Workbook workbook, int sheetIndex) {
-        Assert.notNull(workbook, "Workbook must be not null !");
-        if (sheetIndex < 0) {
-            sheetIndex = 0;
-        }
-
-        if (workbook instanceof HSSFWorkbook) {
-            return getPicMapXls((HSSFWorkbook) workbook, sheetIndex);
-        } else if (workbook instanceof XSSFWorkbook) {
-            return getPicMapXlsx((XSSFWorkbook) workbook, sheetIndex);
-        } else {
-            throw new IllegalArgumentException(
-                    StringKit.format("Workbook type [{}] is not supported!", workbook.getClass()));
-        }
-    }
-
-    /**
-     * 获取XLS工作簿指定sheet中图片列表
-     *
-     * @param workbook   工作簿{@link Workbook}
-     * @param sheetIndex sheet的索引
-     * @return 图片映射，键格式：行_列，值：{@link PictureData}
-     */
-    private static ListValueMap<String, PictureData> getPicMapXls(final HSSFWorkbook workbook, final int sheetIndex) {
-        final ListValueMap<String, PictureData> picMap = new ListValueMap<>();
-        final List<HSSFPictureData> pictures = workbook.getAllPictures();
-        if (CollKit.isNotEmpty(pictures)) {
-            final HSSFSheet sheet = workbook.getSheetAt(sheetIndex);
-            HSSFClientAnchor anchor;
-            int pictureIndex;
-            for (final HSSFShape shape : sheet.getDrawingPatriarch().getChildren()) {
-                if (shape instanceof HSSFPicture) {
-                    pictureIndex = ((HSSFPicture) shape).getPictureIndex() - 1;
-                    anchor = (HSSFClientAnchor) shape.getAnchor();
-                    picMap.putValue(StringKit.format("{}_{}", anchor.getRow1(), anchor.getCol1()),
-                            pictures.get(pictureIndex));
-                }
-            }
-        }
-        return picMap;
-    }
-
-    /**
-     * 获取XLSX工作簿指定sheet中图片列表
-     *
-     * @param workbook   工作簿{@link Workbook}
-     * @param sheetIndex sheet的索引
-     * @return 图片映射，键格式：行_列，值：{@link PictureData}
-     */
-    private static ListValueMap<String, PictureData> getPicMapXlsx(final XSSFWorkbook workbook, final int sheetIndex) {
-        final ListValueMap<String, PictureData> sheetIndexPicMap = new ListValueMap<>();
-        final XSSFSheet sheet = workbook.getSheetAt(sheetIndex);
-        XSSFDrawing drawing;
-        for (final POIXMLDocumentPart dr : sheet.getRelations()) {
-            if (dr instanceof XSSFDrawing) {
-                drawing = (XSSFDrawing) dr;
-                final List<XSSFShape> shapes = drawing.getShapes();
-                XSSFPicture pic;
-                CTMarker ctMarker;
-                for (final XSSFShape shape : shapes) {
-                    if (shape instanceof XSSFPicture) {
-                        pic = (XSSFPicture) shape;
-                        ctMarker = pic.getPreferredSize().getFrom();
-                        sheetIndexPicMap.putValue(StringKit.format("{}_{}", ctMarker.getRow(), ctMarker.getCol()),
-                                pic.getPictureData());
-                    }
-                    // 其他类似于图表等忽略
-                }
-            }
-        }
-        return sheetIndexPicMap;
     }
 
 }

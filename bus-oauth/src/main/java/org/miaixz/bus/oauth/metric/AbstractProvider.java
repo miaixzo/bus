@@ -72,7 +72,7 @@ public abstract class AbstractProvider implements Provider {
             throw new AuthorizedException(ErrorCode.PARAMETER_INCOMPLETE.getCode());
         }
         // 校验配置合法性
-        Checker.checkConfig(this.context, this.complex);
+        checkConfig(this.context);
     }
 
     /**
@@ -302,6 +302,10 @@ public abstract class AbstractProvider implements Provider {
         }
         String scope = String.join(separator, scopes);
         return encode ? UrlEncoder.encodeAll(scope) : scope;
+    }
+
+    protected void checkConfig(Context context) {
+        Checker.checkConfig(context, this.complex);
     }
 
 }

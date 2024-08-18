@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2024 miaixz.org justauth.cn and other contributors.        ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -25,45 +25,10 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.office.excel.cell.setters;
-
-import java.util.regex.Pattern;
-
-import org.miaixz.bus.core.xyz.PatternKit;
-import org.miaixz.bus.core.xyz.StringKit;
-
 /**
- * 字符串转义Cell值设置器 使用 _x005F前缀转义_xXXXX_，避免被decode的问题 如用户传入'_x5116_'会导致乱码，使用此设置器转义为'_x005F_x5116_'
+ * 苹果
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class EscapeStrCellSetter extends CharSequenceCellSetter {
-
-    private static final Pattern utfPtrn = Pattern.compile("_x[0-9A-Fa-f]{4}_");
-
-    /**
-     * 构造
-     *
-     * @param value 值
-     */
-    public EscapeStrCellSetter(final CharSequence value) {
-        super(escape(StringKit.toStringOrNull(value)));
-    }
-
-    /**
-     * 使用 _x005F前缀转义_xXXXX_，避免被decode的问题
-     *
-     * @param value 被转义的字符串
-     * @return 转义后的字符串
-     */
-    private static String escape(final String value) {
-        if (value == null || !value.contains("_x")) {
-            return value;
-        }
-
-        // 使用 _x005F前缀转义_xXXXX_，避免被decode的问题
-        return PatternKit.replaceAll(value, utfPtrn, "_x005F$0");
-    }
-
-}
+package org.miaixz.bus.oauth.metric.apple;

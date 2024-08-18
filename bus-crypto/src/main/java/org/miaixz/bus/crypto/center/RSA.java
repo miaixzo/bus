@@ -28,6 +28,7 @@
 package org.miaixz.bus.crypto.center;
 
 import java.math.BigInteger;
+import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
@@ -56,24 +57,39 @@ public class RSA extends Crypto {
     private static final long serialVersionUID = -1L;
 
     /**
-     * 默认的RSA算法
-     */
-    private static final Algorithm ALGORITHM_RSA = Algorithm.RSA_ECB_PKCS1;
-
-    /**
      * 构造，生成新的私钥公钥对
      */
     public RSA() {
-        super(ALGORITHM_RSA);
+        super(Algorithm.RSA_ECB_PKCS1);
     }
 
     /**
      * 构造，生成新的私钥公钥对
      *
-     * @param rsaAlgorithm 自定义RSA算法，例如RSA/ECB/PKCS1Padding
+     * @param algorithm 自定义RSA算法，例如RSA/ECB/PKCS1Padding
      */
-    public RSA(final String rsaAlgorithm) {
-        super(rsaAlgorithm);
+    public RSA(final String algorithm) {
+        super(algorithm);
+    }
+
+    /**
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     *
+     * @param algorithm 自定义RSA算法，例如RSA/ECB/PKCS1Padding
+     * @param keyPair   密钥对，{@code null}表示随机生成
+     */
+    public RSA(final String algorithm, final KeyPair keyPair) {
+        super(algorithm, keyPair);
+    }
+
+    /**
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     *
+     * @param algorithm 自定义RSA算法，例如RSA/ECB/PKCS1Padding
+     * @param keyPair   密钥对，{@code null}表示随机生成
+     */
+    public RSA(final Algorithm algorithm, final KeyPair keyPair) {
+        super(algorithm.getValue(), keyPair);
     }
 
     /**
@@ -83,18 +99,18 @@ public class RSA extends Crypto {
      * @param publicKey  公钥Hex或Base64表示
      */
     public RSA(final String privateKey, final String publicKey) {
-        super(ALGORITHM_RSA, privateKey, publicKey);
+        super(Algorithm.RSA_ECB_PKCS1, privateKey, publicKey);
     }
 
     /**
      * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
-     * @param rsaAlgorithm 自定义RSA算法，例如RSA/ECB/PKCS1Padding
-     * @param privateKey   私钥Hex或Base64表示
-     * @param publicKey    公钥Hex或Base64表示
+     * @param algorithm  自定义RSA算法，例如RSA/ECB/PKCS1Padding
+     * @param privateKey 私钥Hex或Base64表示
+     * @param publicKey  公钥Hex或Base64表示
      */
-    public RSA(final String rsaAlgorithm, final String privateKey, final String publicKey) {
-        super(rsaAlgorithm, privateKey, publicKey);
+    public RSA(final String algorithm, final String privateKey, final String publicKey) {
+        super(algorithm, privateKey, publicKey);
     }
 
     /**
@@ -104,7 +120,7 @@ public class RSA extends Crypto {
      * @param publicKey  公钥
      */
     public RSA(final byte[] privateKey, final byte[] publicKey) {
-        super(ALGORITHM_RSA, privateKey, publicKey);
+        super(Algorithm.RSA_ECB_PKCS1, privateKey, publicKey);
     }
 
     /**
@@ -125,18 +141,7 @@ public class RSA extends Crypto {
      * @param publicKey  公钥
      */
     public RSA(final PrivateKey privateKey, final PublicKey publicKey) {
-        super(ALGORITHM_RSA, privateKey, publicKey);
-    }
-
-    /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
-     *
-     * @param rsaAlgorithm 自定义RSA算法，例如RSA/ECB/PKCS1Padding
-     * @param privateKey   私钥
-     * @param publicKey    公钥
-     */
-    public RSA(final String rsaAlgorithm, final PrivateKey privateKey, final PublicKey publicKey) {
-        super(rsaAlgorithm, privateKey, publicKey);
+        super(Algorithm.RSA_ECB_PKCS1, privateKey, publicKey);
     }
 
     /**
@@ -147,7 +152,8 @@ public class RSA extends Crypto {
      * @return {@link PrivateKey}
      */
     public static PrivateKey generatePrivateKey(final BigInteger modulus, final BigInteger privateExponent) {
-        return Keeper.generatePrivateKey(ALGORITHM_RSA.getValue(), new RSAPrivateKeySpec(modulus, privateExponent));
+        return Keeper.generatePrivateKey(Algorithm.RSA_ECB_PKCS1.getValue(),
+                new RSAPrivateKeySpec(modulus, privateExponent));
     }
 
     /**
@@ -158,7 +164,8 @@ public class RSA extends Crypto {
      * @return {@link PublicKey}
      */
     public static PublicKey generatePublicKey(final BigInteger modulus, final BigInteger publicExponent) {
-        return Keeper.generatePublicKey(ALGORITHM_RSA.getValue(), new RSAPublicKeySpec(modulus, publicExponent));
+        return Keeper.generatePublicKey(Algorithm.RSA_ECB_PKCS1.getValue(),
+                new RSAPublicKeySpec(modulus, publicExponent));
     }
 
     @Override

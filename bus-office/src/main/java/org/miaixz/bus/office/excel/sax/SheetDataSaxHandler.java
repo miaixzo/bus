@@ -55,79 +55,45 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class SheetDataSaxHandler extends DefaultHandler {
 
+    // 上一次的内容
+    private final StringBuilder lastContent = new StringBuilder();
     // 配置项：是否对齐数据，即在行尾补充null cell
     private final boolean padCellAtEndOfRow;
-    /**
-     * 上一次的内容
-     */
-    private final StringBuilder lastContent = new StringBuilder();
-    /**
-     * 上一次的内容
-     */
+    // 上一次的内容
     private final StringBuilder lastFormula = new StringBuilder();
     /**
      * 行处理器
      */
     protected RowHandler rowHandler;
-    /**
-     * 单元格的格式表，对应style.xml
-     */
+    // 单元格的格式表，对应style.xml
     protected StylesTable stylesTable;
-    /**
-     * excel 2007 的共享字符串表,对应sharedString.xml
-     */
+    // excel 2007 的共享字符串表,对应sharedString.xml
     protected SharedStrings sharedStrings;
-    /**
-     * sheet的索引，从0开始
-     */
+    // sheet的索引，从0开始
     protected int sheetIndex;
-    /**
-     * 当前非空行
-     */
+    // 当前非空行
     protected int index;
-    /**
-     * 当前列
-     */
+    // 当前列
     private int curCell;
-    /**
-     * 单元数据类型
-     */
+    // 单元数据类型
     private CellDataType cellDataType;
-    /**
-     * 当前行号，从0开始
-     */
+    // 当前行号，从0开始
     private long rowNumber;
-    /**
-     * 当前列坐标， 如A1，B5
-     */
+    // 当前列坐标， 如A1，B5
     private String curCoordinate;
-    /**
-     * 当前节点名称
-     */
+    // 当前节点名称
     private ElementName curElementName;
-    /**
-     * 前一个列的坐标
-     */
+    // 前一个列的坐标
     private String preCoordinate;
-    /**
-     * 行的最大列坐标
-     */
+    // 行的最大列坐标
     private String maxCellCoordinate;
-    /**
-     * 单元格样式
-     */
+    // 单元格样式
     private XSSFCellStyle xssfCellStyle;
-    /**
-     * 单元格存储的格式化字符串，nmtFmt的formatCode属性的值
-     */
+    // 单元格存储的格式化字符串，nmtFmt的formatCode属性的值
     private String numFmtString;
-    /**
-     * 是否处于sheetData标签内，sax只解析此标签内的内容，其它标签忽略
-     */
+    // 是否处于sheetData标签内，sax只解析此标签内的内容，其它标签忽略
     private boolean isInSheetData;
-    /**
-     * 存储每行的列元素
-     */
+    // 存储每行的列元素
     private List<Object> rowCellList = new ArrayList<>();
 
     /**
@@ -311,10 +277,10 @@ public class SheetDataSaxHandler extends DefaultHandler {
                 this.cellDataType = CellDataType.NUMBER;
             }
             value = new FormulaCellValue(StringKit.trim(lastFormula),
-                    ExcelSax.getDataValue(this.cellDataType, contentStr, this.sharedStrings, this.numFmtString));
+                    ExcelSaxKit.getDataValue(this.cellDataType, contentStr, this.sharedStrings, this.numFmtString));
         } else {
             // 默认的cellDataType是NULL而非NUMBER
-            value = ExcelSax.getDataValue(this.cellDataType, contentStr, this.sharedStrings, this.numFmtString);
+            value = ExcelSaxKit.getDataValue(this.cellDataType, contentStr, this.sharedStrings, this.numFmtString);
         }
         addCellValue(curCell++, value);
     }
@@ -339,7 +305,7 @@ public class SheetDataSaxHandler extends DefaultHandler {
      */
     private void padCell(final String preCoordinate, final String curCoordinate, final boolean isEnd) {
         if (!curCoordinate.equals(preCoordinate)) {
-            int len = ExcelSax.countNullCell(preCoordinate, curCoordinate);
+            int len = ExcelSaxKit.countNullCell(preCoordinate, curCoordinate);
             if (isEnd) {
                 len++;
             }
@@ -371,7 +337,7 @@ public class SheetDataSaxHandler extends DefaultHandler {
 
                 // 日期格式的单元格可能没有t元素
                 if ((CellDataType.NUMBER == this.cellDataType || CellDataType.NULL == this.cellDataType)
-                        && ExcelSax.isDateFormat(numFmtIndex, numFmtString)) {
+                        && ExcelSaxKit.isDateFormat(numFmtIndex, numFmtString)) {
                     cellDataType = CellDataType.DATE;
                 }
             }

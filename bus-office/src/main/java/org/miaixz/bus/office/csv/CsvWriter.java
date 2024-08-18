@@ -175,22 +175,6 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
     }
 
     /**
-     * 给定字符是否为DDE攻击不安全的字符，包括：
-     * <ul>
-     * <li>{@code @ }</li>
-     * <li>{@code + }</li>
-     * <li>{@code - }</li>
-     * <li>{@code = }</li>
-     * </ul>
-     *
-     * @param c 被检查的字符
-     * @return 是否不安全的字符
-     */
-    private static boolean isDDEUnsafeChar(final char c) {
-        return c == Symbol.C_AT || c == Symbol.C_PLUS || c == Symbol.C_MINUS || c == Symbol.C_EQUAL;
-    }
-
-    /**
      * 设置是否始终使用文本分隔符，文本包装符，默认false，按需添加
      *
      * @param alwaysDelimitText 是否始终使用文本分隔符，文本包装符，默认false，按需添加
@@ -503,6 +487,22 @@ public final class CsvWriter implements Closeable, Flushable, Serializable {
         if (needsTextDelimiter) {
             writer.write(textDelimiter);
         }
+    }
+
+    /**
+     * 给定字符是否为DDE攻击不安全的字符，包括：
+     * <ul>
+     * <li>{@code @ }</li>
+     * <li>{@code + }</li>
+     * <li>{@code - }</li>
+     * <li>{@code = }</li>
+     * </ul>
+     *
+     * @param c 被检查的字符
+     * @return 是否不安全的字符
+     */
+    private static boolean isDDEUnsafeChar(final char c) {
+        return c == Symbol.C_AT || c == Symbol.C_PLUS || c == Symbol.C_MINUS || c == Symbol.C_EQUAL;
     }
 
 }

@@ -39,7 +39,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Styles {
+public class StyleKit {
 
     /**
      * 克隆新的{@link CellStyle}
@@ -184,6 +184,18 @@ public class Styles {
     }
 
     /**
+     * 创建数据格式并获取格式
+     *
+     * @param workbook {@link Workbook}
+     * @param format   数据格式
+     * @return 数据格式
+     */
+    public static Short getFormat(final Workbook workbook, final String format) {
+        final DataFormat dataFormat = workbook.createDataFormat();
+        return dataFormat.getFormat(format);
+    }
+
+    /**
      * 创建单元格样式
      *
      * @param workbook {@link Workbook} 工作簿
@@ -238,18 +250,6 @@ public class Styles {
      */
     public static boolean isNullOrDefaultStyle(final Workbook workbook, final CellStyle style) {
         return (null == style) || style.equals(workbook.getCellStyleAt(0));
-    }
-
-    /**
-     * 创建数据格式并获取格式
-     *
-     * @param workbook {@link Workbook}
-     * @param format   数据格式
-     * @return 数据格式
-     */
-    public static Short getFormat(final Workbook workbook, final String format) {
-        final DataFormat dataFormat = workbook.createDataFormat();
-        return dataFormat.getFormat(format);
     }
 
 }

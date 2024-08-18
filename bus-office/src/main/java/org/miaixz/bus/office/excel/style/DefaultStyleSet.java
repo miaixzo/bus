@@ -79,21 +79,21 @@ public class DefaultStyleSet implements StyleSet, Serializable {
      */
     public DefaultStyleSet(final Workbook workbook) {
         this.workbook = workbook;
-        this.headCellStyle = Styles.createHeadCellStyle(workbook);
-        this.cellStyle = Styles.createDefaultCellStyle(workbook);
+        this.headCellStyle = StyleKit.createHeadCellStyle(workbook);
+        this.cellStyle = StyleKit.createDefaultCellStyle(workbook);
 
         // 默认数字格式
-        cellStyleForNumber = Styles.cloneCellStyle(workbook, this.cellStyle);
+        cellStyleForNumber = StyleKit.cloneCellStyle(workbook, this.cellStyle);
         // 0表示：General
         cellStyleForNumber.setDataFormat((short) 0);
 
         // 默认日期格式
-        this.cellStyleForDate = Styles.cloneCellStyle(workbook, this.cellStyle);
+        this.cellStyleForDate = StyleKit.cloneCellStyle(workbook, this.cellStyle);
         // 22表示：m/d/yy h:mm
         this.cellStyleForDate.setDataFormat((short) 22);
 
         // 默认链接样式
-        this.cellStyleForHyperlink = Styles.cloneCellStyle(workbook, this.cellStyle);
+        this.cellStyleForHyperlink = StyleKit.cloneCellStyle(workbook, this.cellStyle);
         final Font font = workbook.createFont();
         font.setUnderline((byte) 1);
         font.setColor(HSSFColor.HSSFColorPredefined.BLUE.getIndex());
@@ -184,11 +184,11 @@ public class DefaultStyleSet implements StyleSet, Serializable {
      * @return this
      */
     public DefaultStyleSet setBorder(final BorderStyle borderSize, final IndexedColors colorIndex) {
-        Styles.setBorder(this.headCellStyle, borderSize, colorIndex);
-        Styles.setBorder(this.cellStyle, borderSize, colorIndex);
-        Styles.setBorder(this.cellStyleForNumber, borderSize, colorIndex);
-        Styles.setBorder(this.cellStyleForDate, borderSize, colorIndex);
-        Styles.setBorder(this.cellStyleForHyperlink, borderSize, colorIndex);
+        StyleKit.setBorder(this.headCellStyle, borderSize, colorIndex);
+        StyleKit.setBorder(this.cellStyle, borderSize, colorIndex);
+        StyleKit.setBorder(this.cellStyleForNumber, borderSize, colorIndex);
+        StyleKit.setBorder(this.cellStyleForDate, borderSize, colorIndex);
+        StyleKit.setBorder(this.cellStyleForHyperlink, borderSize, colorIndex);
         return this;
     }
 
@@ -200,11 +200,11 @@ public class DefaultStyleSet implements StyleSet, Serializable {
      * @return this
      */
     public DefaultStyleSet setAlign(final HorizontalAlignment halign, final VerticalAlignment valign) {
-        Styles.setAlign(this.headCellStyle, halign, valign);
-        Styles.setAlign(this.cellStyle, halign, valign);
-        Styles.setAlign(this.cellStyleForNumber, halign, valign);
-        Styles.setAlign(this.cellStyleForDate, halign, valign);
-        Styles.setAlign(this.cellStyleForHyperlink, halign, valign);
+        StyleKit.setAlign(this.headCellStyle, halign, valign);
+        StyleKit.setAlign(this.cellStyle, halign, valign);
+        StyleKit.setAlign(this.cellStyleForNumber, halign, valign);
+        StyleKit.setAlign(this.cellStyleForDate, halign, valign);
+        StyleKit.setAlign(this.cellStyleForHyperlink, halign, valign);
         return this;
     }
 
@@ -217,12 +217,12 @@ public class DefaultStyleSet implements StyleSet, Serializable {
      */
     public DefaultStyleSet setBackgroundColor(final IndexedColors backgroundColor, final boolean withHeadCell) {
         if (withHeadCell) {
-            Styles.setColor(this.headCellStyle, backgroundColor, FillPatternType.SOLID_FOREGROUND);
+            StyleKit.setColor(this.headCellStyle, backgroundColor, FillPatternType.SOLID_FOREGROUND);
         }
-        Styles.setColor(this.cellStyle, backgroundColor, FillPatternType.SOLID_FOREGROUND);
-        Styles.setColor(this.cellStyleForNumber, backgroundColor, FillPatternType.SOLID_FOREGROUND);
-        Styles.setColor(this.cellStyleForDate, backgroundColor, FillPatternType.SOLID_FOREGROUND);
-        Styles.setColor(this.cellStyleForHyperlink, backgroundColor, FillPatternType.SOLID_FOREGROUND);
+        StyleKit.setColor(this.cellStyle, backgroundColor, FillPatternType.SOLID_FOREGROUND);
+        StyleKit.setColor(this.cellStyleForNumber, backgroundColor, FillPatternType.SOLID_FOREGROUND);
+        StyleKit.setColor(this.cellStyleForDate, backgroundColor, FillPatternType.SOLID_FOREGROUND);
+        StyleKit.setColor(this.cellStyleForHyperlink, backgroundColor, FillPatternType.SOLID_FOREGROUND);
         return this;
     }
 
@@ -237,14 +237,14 @@ public class DefaultStyleSet implements StyleSet, Serializable {
      */
     public DefaultStyleSet setFont(final short color, final short fontSize, final String fontName,
             final boolean ignoreHead) {
-        final Font font = Styles.createFont(this.workbook, color, fontSize, fontName);
+        final Font font = StyleKit.createFont(this.workbook, color, fontSize, fontName);
         return setFont(font, ignoreHead);
     }
 
     /**
      * 设置全局字体
      *
-     * @param font       字体，可以通过{@link Styles#createFont(Workbook, short, short, String)}创建
+     * @param font       字体，可以通过{@link StyleKit#createFont(Workbook, short, short, String)}创建
      * @param ignoreHead 是否跳过头部样式
      * @return this
      */
@@ -271,4 +271,5 @@ public class DefaultStyleSet implements StyleSet, Serializable {
         this.cellStyleForHyperlink.setWrapText(true);
         return this;
     }
+
 }

@@ -31,11 +31,13 @@ import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
+import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
@@ -78,16 +80,14 @@ public class FacebookProvider extends AbstractProvider {
                 .gender(Gender.of(object.getString("gender"))).token(accToken).source(complex.toString()).build();
     }
 
-    private String getUserPicture(JSONObject object) {
-        String picture = null;
-        if (object.containsKey("picture")) {
-            JSONObject pictureObj = object.getJSONObject("picture");
-            pictureObj = pictureObj.getJSONObject("data");
-            if (null != pictureObj) {
-                picture = pictureObj.getString("url");
-            }
+    @Override
+    protected void checkConfig(Context context) {
+        super.checkConfig(context);
+        // facebook的回调地址必须为https的链接
+        if (Registry.FACEBOOK == this.complex && !Protocol.isHttps(this.context.getRedirectUri())) {
+            // Facebook's redirect uri must use the HTTPS protocol
+            throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getCode(), this.complex);
         }
-        return picture;
     }
 
     /**
@@ -103,17 +103,6 @@ public class FacebookProvider extends AbstractProvider {
     }
 
     /**
-     * 检查响应内容是否正确
-     *
-     * @param object 请求响应内容
-     */
-    private void checkResponse(JSONObject object) {
-        if (object.containsKey("error")) {
-            throw new AuthorizedException(object.getJSONObject("error").getString("message"));
-        }
-    }
-
-    /**
      * 返回带{@code state}参数的授权url，授权回调时会带上这个{@code state}
      *
      * @param state state 验证授权流程的参数，可以防止csrf
@@ -124,6 +113,29 @@ public class FacebookProvider extends AbstractProvider {
         return Builder.fromUrl(super.authorize(state))
                 .queryParam("scope", this.getScopes(Symbol.COMMA, false, this.getDefaultScopes(FacebookScope.values())))
                 .build();
+    }
+
+    /**
+     * 检查响应内容是否正确
+     *
+     * @param object 请求响应内容
+     */
+    private void checkResponse(JSONObject object) {
+        if (object.containsKey("error")) {
+            throw new AuthorizedException(object.getJSONObject("error").getString("message"));
+        }
+    }
+
+    private String getUserPicture(JSONObject object) {
+        String picture = null;
+        if (object.containsKey("picture")) {
+            JSONObject pictureObj = object.getJSONObject("picture");
+            pictureObj = pictureObj.getJSONObject("data");
+            if (null != pictureObj) {
+                picture = pictureObj.getString("url");
+            }
+        }
+        return picture;
     }
 
 }

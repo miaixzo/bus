@@ -32,13 +32,16 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.office.excel.cell.CellSetter;
 
 /**
- * {@link Number} 值单元格设置器
+ * {@code null} 值单元格设置器
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class NullCellSetter implements CellSetter {
 
+    /**
+     * 默认单例
+     */
     public static final NullCellSetter INSTANCE = new NullCellSetter();
 
     @Override

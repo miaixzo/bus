@@ -62,8 +62,8 @@ public class Context {
     private String appSecret;
 
     /**
-     * 1. 支付宝 publicKey 1. 企业微信，授权方的网页应用agentId 2. OktaScope 授权服务器的 ID， 默认为 default 3. MicrosoftScope Entra ID（原微软
-     * AAD）中的租户 ID 4. 喜马拉雅客户端包名，如果 {@link Context#type} 为1或2时必填。1-对Android客户端是包名，2-对IOS客户端是Bundle ID
+     * 1. 支付宝 publicKey 2. 企业微信，授权方的网页应用agentId 3. OktaScope 授权服务器的 ID， 默认为 default 4. MicrosoftScope Entra
+     * ID（原微软AAD）中的租户 ID 5. 喜马拉雅客户端包名，如果 {@link Context#type} 为1或2时必填。1-对Android客户端是包名，2-对IOS客户端是Bundle ID
      */
     private String unionId;
 
@@ -122,5 +122,20 @@ public class Context {
      * {@link Checker#checkConfig(Context, Complex)} 将不会校验 {@code redirectUri} 的合法性。
      */
     private boolean ignoreRedirectUri;
+
+    /**
+     * 苹果开发者账号中的密钥标识符
+     * 
+     * @see <a href=
+     *      "https://developer.apple.com/help/account/configure-app-capabilities/create-a-sign-in-with-apple-private-key/">create-a-sign-in-with-apple-private-key</a>
+     */
+    private String kid;
+
+    /**
+     * 苹果开发者账号中的团队ID
+     * 
+     * @see <a href="https://developer.apple.com/help/glossary/team-id/">team id</a>
+     */
+    private String teamId;
 
 }

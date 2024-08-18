@@ -68,7 +68,7 @@ public class SerializeKit {
             return null;
         }
         final FastByteArrayOutputStream byteOut = new FastByteArrayOutputStream();
-        IoKit.writeObjects(byteOut, false, obj);
+        IoKit.write(byteOut, false, obj);
         return byteOut.toByteArray();
     }
 

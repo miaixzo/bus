@@ -53,11 +53,12 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  */
 public class CsvBaseReader implements Serializable {
 
+    private static final long serialVersionUID = -1L;
+
     /**
      * 默认编码
      */
     protected static final java.nio.charset.Charset DEFAULT_CHARSET = Charset.UTF_8;
-    private static final long serialVersionUID = -1L;
     private final CsvReadConfig config;
 
     /**

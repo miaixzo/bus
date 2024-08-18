@@ -60,7 +60,7 @@ import org.xml.sax.XMLReader;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ExcelSax {
+public class ExcelSaxKit {
 
     /**
      * 创建 {@link ExcelSaxReader}

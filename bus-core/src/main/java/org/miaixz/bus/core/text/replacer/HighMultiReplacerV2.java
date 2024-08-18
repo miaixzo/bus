@@ -86,7 +86,7 @@ public class HighMultiReplacerV2 extends StringReplacer {
                 final char ch = text.charAt(i);
                 final Integer index = charIndexMap.get(ch);
                 // 下一个字符在候选转换字符串中都不存在 ch字符一定不会被替换
-                if (index < 0) {
+                if(index == null || index < 0){
                     // 临时缓存空间中的数据写入到输出的 StringBuilder
                     if (temp.length() > 0) {
                         stringBuilder.append(temp);

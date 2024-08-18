@@ -38,6 +38,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.CryptoException;
+import org.miaixz.bus.core.lang.thread.lock.NoLock;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.crypto.Keeper;
 
 /**
@@ -52,10 +54,6 @@ public class Asymmetric<T extends Asymmetric<T>> implements Serializable {
     private static final long serialVersionUID = -1L;
 
     /**
-     * 锁
-     */
-    protected final Lock lock = new ReentrantLock();
-    /**
      * 算法
      */
     protected String algorithm;
@@ -67,31 +65,34 @@ public class Asymmetric<T extends Asymmetric<T>> implements Serializable {
      * 私钥
      */
     protected PrivateKey privateKey;
+    /**
+     * 锁
+     */
+    protected Lock lock = new ReentrantLock();
 
     /**
      * 构造
-     * <p>
      * 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
-     * @param algorithm  算法
-     * @param privateKey 私钥
-     * @param publicKey  公钥
+     * @param algorithm 算法
+     * @param keyPair   密钥对，包括私钥和公钥
      */
-    public Asymmetric(final String algorithm, final PrivateKey privateKey, final PublicKey publicKey) {
-        init(algorithm, privateKey, publicKey);
+    public Asymmetric(final String algorithm, final KeyPair keyPair) {
+        init(algorithm, keyPair);
     }
 
     /**
      * 初始化 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密（签名）或者解密（校验）
      *
-     * @param algorithm  算法
-     * @param privateKey 私钥
-     * @param publicKey  公钥
+     * @param algorithm 算法
+     * @param keyPair   密钥对，包括私钥和公钥
      * @return this
      */
-    protected T init(final String algorithm, final PrivateKey privateKey, final PublicKey publicKey) {
+    protected T init(final String algorithm, final KeyPair keyPair) {
         this.algorithm = algorithm;
 
+        final PrivateKey privateKey = ObjectKit.apply(keyPair, KeyPair::getPrivate);
+        final PublicKey publicKey = ObjectKit.apply(keyPair, KeyPair::getPublic);
         if (null == privateKey && null == publicKey) {
             initKeys();
         } else {
@@ -106,7 +107,7 @@ public class Asymmetric<T extends Asymmetric<T>> implements Serializable {
     }
 
     /**
-     * 生成公钥和私钥
+     * 生成随机公钥和私钥
      *
      * @return this
      */
@@ -114,6 +115,17 @@ public class Asymmetric<T extends Asymmetric<T>> implements Serializable {
         final KeyPair keyPair = Keeper.generateKeyPair(this.algorithm);
         this.publicKey = keyPair.getPublic();
         this.privateKey = keyPair.getPrivate();
+        return (T) this;
+    }
+
+    /**
+     * 自定义锁，无需锁使用{@link NoLock}
+     *
+     * @param lock 自定义锁
+     * @return this
+     */
+    public T setLock(final Lock lock) {
+        this.lock = lock;
         return (T) this;
     }
 

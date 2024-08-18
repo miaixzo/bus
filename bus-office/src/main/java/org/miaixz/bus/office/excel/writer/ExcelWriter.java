@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.office.excel.writer;
 
+import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -37,25 +38,19 @@ import org.apache.poi.common.usermodel.Hyperlink;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.ss.util.CellReference;
-import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFDataValidation;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.miaixz.bus.core.center.map.TableMap;
 import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
-import org.miaixz.bus.core.center.map.multi.RowKeyTable;
 import org.miaixz.bus.core.center.map.multi.Table;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.EnumValue;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.*;
-import org.miaixz.bus.office.excel.ExcelBase;
-import org.miaixz.bus.office.excel.RowKit;
-import org.miaixz.bus.office.excel.SheetKit;
-import org.miaixz.bus.office.excel.WorkbookKit;
+import org.miaixz.bus.office.excel.*;
 import org.miaixz.bus.office.excel.cell.CellEditor;
 import org.miaixz.bus.office.excel.cell.CellKit;
 import org.miaixz.bus.office.excel.style.DefaultStyleSet;
+import org.miaixz.bus.office.excel.style.LineStyle;
+import org.miaixz.bus.office.excel.style.ShapeConfig;
 import org.miaixz.bus.office.excel.style.StyleSet;
 
 /**
@@ -72,7 +67,7 @@ import org.miaixz.bus.office.excel.style.StyleSet;
 public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
 
     /**
-     * 当前行
+     * 当前行，用于标记初始可写数据的行和部分写完后当前的行
      */
     private final AtomicInteger currentRow;
 
@@ -85,6 +80,11 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      * 标题项对应列号缓存，每次写标题更新此缓存
      */
     private Map<String, Integer> headLocationCache;
+
+    /**
+     * 模板上下文，存储模板中变量及其位置信息
+     */
+    private TemplateContext templateContext;
 
     /**
      * 构造，默认生成xlsx格式的Excel文件 此构造不传入写出的Excel文件路径，只能调用{@link #flush(OutputStream)}方法写出到流
@@ -149,7 +149,14 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      */
     public ExcelWriter(final File destFile, final String sheetName) {
         this(WorkbookKit.createBookForWriter(destFile), sheetName);
-        this.destFile = destFile;
+
+        if (!FileKit.exists(destFile)) {
+            this.destFile = destFile;
+        } else {
+            // 如果是已经存在的文件，则作为模板加载，此时不能写出到模板文件
+            // 初始化模板
+            this.templateContext = new TemplateContext(this.sheet);
+        }
     }
 
     /**
@@ -180,34 +187,43 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
         return super.setConfig(config);
     }
 
+    /**
+     * 增加下拉列表
+     *
+     * @param sheet      {@link Sheet}
+     * @param regions    {@link CellRangeAddressList} 指定下拉列表所占的单元格范围
+     * @param selectList 下拉列表内容
+     */
+    public static void addSelect(final Sheet sheet, final CellRangeAddressList regions, final String... selectList) {
+        final DataValidationHelper validationHelper = sheet.getDataValidationHelper();
+        final DataValidationConstraint constraint = validationHelper.createExplicitListConstraint(selectList);
+
+        // 设置下拉框数据
+        final DataValidation dataValidation = validationHelper.createValidation(constraint, regions);
+
+        // 处理Excel兼容性问题
+        if (dataValidation instanceof XSSFDataValidation) {
+            dataValidation.setSuppressDropDownArrow(true);
+            dataValidation.setShowErrorBox(true);
+        } else {
+            dataValidation.setSuppressDropDownArrow(false);
+        }
+
+        sheet.addValidationData(dataValidation);
+    }
+
     @Override
     public ExcelWriter setSheet(final int sheetIndex) {
+        super.setSheet(sheetIndex);
         // 切换到新sheet需要重置开始行
-        reset();
-        return super.setSheet(sheetIndex);
+        return reset();
     }
 
     @Override
     public ExcelWriter setSheet(final String sheetName) {
+        super.setSheet(sheetName);
         // 切换到新sheet需要重置开始行
-        reset();
-        return super.setSheet(sheetName);
-    }
-
-    /**
-     * 重置Writer，包括：
-     *
-     * <pre>
-     * 1. 当前行游标归零
-     * 2. 清空别名比较器
-     * 3. 清除标题缓存
-     * </pre>
-     *
-     * @return this
-     */
-    public ExcelWriter reset() {
-        resetRow();
-        return this;
+        return reset();
     }
 
     /**
@@ -265,18 +281,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
     }
 
     /**
-     * 设置某列为自动宽度 此方法必须在指定列数据完全写出后调用才有效。
-     *
-     * @param columnIndex    第几列，从0计数
-     * @param useMergedCells 是否适用于合并单元格
-     * @return this
-     */
-    public ExcelWriter autoSizeColumn(final int columnIndex, final boolean useMergedCells) {
-        this.sheet.autoSizeColumn(columnIndex, useMergedCells);
-        return this;
-    }
-
-    /**
      * 禁用默认样式
      *
      * @return this
@@ -284,6 +288,21 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      */
     public ExcelWriter disableDefaultStyle() {
         return setStyleSet(null);
+    }
+
+    /**
+     * 重置Writer，包括：
+     *
+     * <pre>
+     * 1. 当前行游标归零
+     * 2. 清除标题缓存
+     * </pre>
+     *
+     * @return this
+     */
+    public ExcelWriter reset() {
+        this.headLocationCache.clear();
+        return resetRow();
     }
 
     /**
@@ -488,19 +507,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      */
     public ExcelWriter addIgnoredErrors(final org.apache.poi.ss.util.CellRangeAddress cellRangeAddress,
             final IgnoredErrorType... ignoredErrorTypes) throws UnsupportedOperationException {
-        final Sheet sheet = this.sheet;
-        if (sheet instanceof XSSFSheet) {
-            ((XSSFSheet) sheet).addIgnoredErrors(cellRangeAddress, ignoredErrorTypes);
-            return this;
-        } else if (sheet instanceof SXSSFSheet) {
-            // SXSSFSheet并未提供忽略错误方法，获得其内部_sh字段设置
-            final XSSFSheet xssfSheet = (XSSFSheet) FieldKit.getFieldValue(sheet, "_sh");
-            if (null != xssfSheet) {
-                xssfSheet.addIgnoredErrors(cellRangeAddress, ignoredErrorTypes);
-            }
-        }
-
-        throw new UnsupportedOperationException("Only XSSFSheet supports addIgnoredErrors");
+        SheetKit.addIgnoredErrors(this.sheet, cellRangeAddress, ignoredErrorTypes);
+        return this;
     }
 
     /**
@@ -523,21 +531,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      * @return this
      */
     public ExcelWriter addSelect(final CellRangeAddressList regions, final String... selectList) {
-        final DataValidationHelper validationHelper = this.sheet.getDataValidationHelper();
-        final DataValidationConstraint constraint = validationHelper.createExplicitListConstraint(selectList);
-
-        // 设置下拉框数据
-        final DataValidation dataValidation = validationHelper.createValidation(constraint, regions);
-
-        // 处理Excel兼容性问题
-        if (dataValidation instanceof XSSFDataValidation) {
-            dataValidation.setSuppressDropDownArrow(true);
-            dataValidation.setShowErrorBox(true);
-        } else {
-            dataValidation.setSuppressDropDownArrow(false);
-        }
-
-        return addValidationData(dataValidation);
+        addSelect(this.sheet, regions, selectList);
+        return this;
     }
 
     /**
@@ -730,77 +725,80 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      * @return this
      */
     public ExcelWriter writeImg(final File imgFile, final int col1, final int row1, final int col2, final int row2) {
-        return this.writeImg(imgFile, 0, 0, 0, 0, col1, row1, col2, row2);
+        return writeImg(imgFile, new SimpleClientAnchor(col1, row1, col2, row2));
     }
 
     /**
      * 写出数据，本方法只是将数据写入Workbook中的Sheet，并不写出到文件 添加图片到当前sheet中 / 默认图片类型png
      *
-     * @param imgFile 图片文件
-     * @param dx1     起始单元格中的x坐标
-     * @param dy1     起始单元格中的y坐标
-     * @param dx2     结束单元格中的x坐标
-     * @param dy2     结束单元格中的y坐标
-     * @param col1    指定起始的列，下标从0开始
-     * @param row1    指定起始的行，下标从0开始
-     * @param col2    指定结束的列，下标从0开始
-     * @param row2    指定结束的行，下标从0开始
+     * @param imgFile      图片文件
+     * @param clientAnchor 图片的位置和大小信息
      * @return this
      */
-    public ExcelWriter writeImg(final File imgFile, final int dx1, final int dy1, final int dx2, final int dy2,
-            final int col1, final int row1, final int col2, final int row2) {
-        return this.writeImg(imgFile, Workbook.PICTURE_TYPE_PNG, dx1, dy1, dx2, dy2, col1, row1, col2, row2);
+    public ExcelWriter writeImg(final File imgFile, final SimpleClientAnchor clientAnchor) {
+        return writeImg(imgFile, ExcelImgType.getType(imgFile), clientAnchor);
     }
 
     /**
      * 写出数据，本方法只是将数据写入Workbook中的Sheet，并不写出到文件 添加图片到当前sheet中
      *
-     * @param imgFile 图片文件
-     * @param imgType 图片类型，对应poi中Workbook类中的图片类型2-7变量
-     * @param dx1     起始单元格中的x坐标
-     * @param dy1     起始单元格中的y坐标
-     * @param dx2     结束单元格中的x坐标
-     * @param dy2     结束单元格中的y坐标
-     * @param col1    指定起始的列，下标从0开始
-     * @param row1    指定起始的行，下标从0开始
-     * @param col2    指定结束的列，下标从0开始
-     * @param row2    指定结束的行，下标从0开始
+     * @param imgFile      图片文件
+     * @param imgType      图片类型，对应poi中Workbook类中的图片类型2-7变量
+     * @param clientAnchor 图片的位置和大小信息
      * @return this
      */
-    public ExcelWriter writeImg(final File imgFile, final int imgType, final int dx1, final int dy1, final int dx2,
-            final int dy2, final int col1, final int row1, final int col2, final int row2) {
-        return writeImg(FileKit.readBytes(imgFile), imgType, dx1, dy1, dx2, dy2, col1, row1, col2, row2);
+    public ExcelWriter writeImg(final File imgFile, final ExcelImgType imgType, final SimpleClientAnchor clientAnchor) {
+        return writeImg(FileKit.readBytes(imgFile), imgType, clientAnchor);
     }
 
     /**
      * 写出数据，本方法只是将数据写入Workbook中的Sheet，并不写出到文件 添加图片到当前sheet中
      *
-     * @param pictureData 数据bytes
-     * @param imgType     图片类型，对应poi中Workbook类中的图片类型2-7变量
-     * @param dx1         起始单元格中的x坐标
-     * @param dy1         起始单元格中的y坐标
-     * @param dx2         结束单元格中的x坐标
-     * @param dy2         结束单元格中的y坐标
-     * @param col1        指定起始的列，下标从0开始
-     * @param row1        指定起始的行，下标从0开始
-     * @param col2        指定结束的列，下标从0开始
-     * @param row2        指定结束的行，下标从0开始
+     * @param pictureData  数据bytes
+     * @param imgType      图片类型，对应poi中Workbook类中的图片类型2-7变量
+     * @param clientAnchor 图片的位置和大小信息
      * @return this
      */
-    public ExcelWriter writeImg(final byte[] pictureData, final int imgType, final int dx1, final int dy1,
-            final int dx2, final int dy2, final int col1, final int row1, final int col2, final int row2) {
-        final Drawing<?> patriarch = this.sheet.createDrawingPatriarch();
-        final ClientAnchor anchor = this.workbook.getCreationHelper().createClientAnchor();
-        anchor.setDx1(dx1);
-        anchor.setDy1(dy1);
-        anchor.setDx2(dx2);
-        anchor.setDy2(dy2);
-        anchor.setCol1(col1);
-        anchor.setRow1(row1);
-        anchor.setCol2(col2);
-        anchor.setRow2(row2);
+    public ExcelWriter writeImg(final byte[] pictureData, final ExcelImgType imgType,
+            final SimpleClientAnchor clientAnchor) {
+        ExcelDrawing.drawingImg(this.sheet, pictureData, imgType, clientAnchor);
+        return this;
+    }
 
-        patriarch.createPicture(anchor, this.workbook.addPicture(pictureData, imgType));
+    /**
+     * 绘制线条
+     *
+     * @param clientAnchor 绘制区域信息
+     * @return this
+     */
+    public ExcelWriter writeLineShape(final SimpleClientAnchor clientAnchor) {
+        return writeSimpleShape(clientAnchor, ShapeConfig.of());
+    }
+
+    /**
+     * 绘制线条
+     *
+     * @param clientAnchor 绘制区域信息
+     * @param lineStyle    线条样式
+     * @param lineWidth    线条粗细
+     * @param lineColor    线条颜色
+     * @return this
+     */
+    public ExcelWriter writeLineShape(final SimpleClientAnchor clientAnchor, final LineStyle lineStyle,
+            final int lineWidth, final Color lineColor) {
+        return writeSimpleShape(clientAnchor,
+                ShapeConfig.of().setLineStyle(lineStyle).setLineWidth(lineWidth).setLineColor(lineColor));
+    }
+
+    /**
+     * 绘制简单形状
+     *
+     * @param clientAnchor 绘制区域信息
+     * @param shapeConfig  形状配置，包括形状类型、线条样式、线条宽度、线条颜色、填充颜色等
+     * @return this
+     */
+    public ExcelWriter writeSimpleShape(final SimpleClientAnchor clientAnchor, final ShapeConfig shapeConfig) {
+        ExcelDrawing.drawingSimpleShape(this.sheet, clientAnchor, shapeConfig);
         return this;
     }
 
@@ -919,7 +917,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
             return passCurrentRow();
         }
 
-        final Table<?, ?, ?> aliasTable = aliasTable(rowMap);
+        final Table<?, ?, ?> aliasTable = this.config.aliasTable(rowMap);
         if (isWriteKeyAsHead) {
             // 写出标题行，并记录标题别名和列号的关系
             writeHeadRow(aliasTable.columnKeys());
@@ -964,6 +962,10 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
         Assert.isFalse(this.isClosed, "ExcelWriter has been closed!");
         RowKit.writeRow(this.sheet.createRow(this.currentRow.getAndIncrement()), rowData, this.styleSet, false,
                 this.config.getCellEditor());
+        return this;
+    }
+
+    public ExcelWriter fillRow(final Map<?, ?> rowMap) {
         return this;
     }
 
@@ -1073,7 +1075,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      * @return this
      */
     public ExcelWriter writeCellValue(final int x, final int y, final Object value, final boolean isHeader) {
-        CellKit.setCellValue(getOrCreateCell(x, y), value, this.styleSet, isHeader, this.config.getCellEditor());
+        final Cell cell = getOrCreateCell(x, y);
+        CellKit.setCellValue(cell, value, this.styleSet, isHeader, this.config.getCellEditor());
         return this;
     }
 
@@ -1160,10 +1163,10 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      */
     public ExcelWriter setColumnStyleIfHasData(final int x, final int y, final CellStyle style) {
         if (x < 0) {
-            throw new IllegalArgumentException("Invalid column number (" + x + Symbol.PARENTHESE_RIGHT);
+            throw new IllegalArgumentException("Invalid column number (" + x + ")");
         }
         if (y < 0) {
-            throw new IllegalArgumentException("Invalid row number (" + y + Symbol.PARENTHESE_RIGHT);
+            throw new IllegalArgumentException("Invalid row number (" + y + ")");
         }
         final int rowCount = this.getRowCount();
         for (int i = y; i < rowCount; i++) {
@@ -1250,34 +1253,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
 
         // 清空对象
         this.styleSet = null;
-    }
-
-    /**
-     * 为指定的key列表添加标题别名，如果没有定义key的别名，在onlyAlias为false时使用原key key为别名，value为字段值
-     *
-     * @param rowMap 一行数据
-     * @return 别名列表
-     */
-    private Table<?, ?, ?> aliasTable(final Map<?, ?> rowMap) {
-        final Table<Object, Object, Object> filteredTable = new RowKeyTable<>(new LinkedHashMap<>(), TableMap::new);
-        final Map<String, String> headerAlias = this.config.getHeaderAlias();
-        final boolean onlyAlias = this.config.onlyAlias;
-        if (MapKit.isEmpty(headerAlias)) {
-            rowMap.forEach((key, value) -> filteredTable.put(key, key, value));
-        } else {
-            rowMap.forEach((key, value) -> {
-                final String aliasName = headerAlias.get(StringKit.toString(key));
-                if (null != aliasName) {
-                    // 别名键值对加入
-                    filteredTable.put(key, aliasName, value);
-                } else if (!onlyAlias) {
-                    // 保留无别名设置的键值对
-                    filteredTable.put(key, key, value);
-                }
-            });
-        }
-
-        return filteredTable;
     }
 
 }

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.office.excel.cell.setters;
 
+import java.io.File;
 import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
 import java.util.Date;
@@ -68,6 +69,11 @@ public class CellSetterFactory {
             return new NumberCellSetter((Number) value);
         } else if (value instanceof Hyperlink) {
             return new HyperlinkCellSetter((Hyperlink) value);
+        } else if (value instanceof byte[]) {
+            // 二进制理解为图片
+            return new ImgCellSetter((byte[]) value);
+        } else if (value instanceof File) {
+            return new ImgCellSetter((File) value);
         } else {
             return new CharSequenceCellSetter(value.toString());
         }

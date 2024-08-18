@@ -63,14 +63,6 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      */
     private final boolean isOutputFormulaValues = true;
     /**
-     * Sheet边界记录，此Record中可以获得Sheet名
-     */
-    private final List<BoundSheetRecord> boundSheetRecords = new ArrayList<>();
-    /**
-     * 行处理器
-     */
-    private final RowHandler rowHandler;
-    /**
      * 用于解析公式
      */
     private SheetRecordCollectingListener workbookBuildingListener;
@@ -82,12 +74,21 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      * 静态字符串表
      */
     private SSTRecord sstRecord;
+
     private FormatTrackingHSSFListener formatListener;
+
+    /**
+     * Sheet边界记录，此Record中可以获得Sheet名
+     */
+    private final List<BoundSheetRecord> boundSheetRecords = new ArrayList<>();
+
     private boolean isOutputNextStringRecord;
+
     /**
      * 存储行记录的容器
      */
     private List<Object> rowCellList = new ArrayList<>();
+
     /**
      * 自定义需要处理的sheet编号，如果-1表示处理所有sheet
      */
@@ -96,10 +97,16 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      * sheet名称，主要用于使用sheet名读取的情况
      */
     private String sheetName;
+
     /**
      * 当前rid索引
      */
     private int curRid = -1;
+
+    /**
+     * 行处理器
+     */
+    private final RowHandler rowHandler;
 
     /**
      * 构造
@@ -305,7 +312,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
                     // This is stored in the next record
                     isOutputNextStringRecord = true;
                 } else {
-                    value = ExcelSax.getNumberOrDateValue(formulaRec, formulaRec.getValue(), this.formatListener);
+                    value = ExcelSaxKit.getNumberOrDateValue(formulaRec, formulaRec.getValue(), this.formatListener);
                 }
             } else {
                 value = HSSFFormulaParser.toFormulaString(stubWorkbook, formulaRec.getParsedExpression());
@@ -335,7 +342,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
             break;
         case NumberRecord.sid: // 数字类型
             final NumberRecord numrec = (NumberRecord) record;
-            value = ExcelSax.getNumberOrDateValue(numrec, numrec.getValue(), this.formatListener);
+            value = ExcelSaxKit.getNumberOrDateValue(numrec, numrec.getValue(), this.formatListener);
             // 向容器加入列值
             addToRowCellList(numrec, value);
             break;

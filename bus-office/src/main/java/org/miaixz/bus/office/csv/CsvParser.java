@@ -59,10 +59,6 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
 
     private final Buffer buf;
     /**
-     * 当前读取字段
-     */
-    private final StringBuilder currentField = new StringBuilder(512);
-    /**
      * 前一个特殊分界字符
      */
     private int preChar = -1;
@@ -94,6 +90,11 @@ public final class CsvParser extends ComputeIterator<CsvRow> implements Closeabl
      * 是否读取结束
      */
     private boolean finished;
+
+    /**
+     * 当前读取字段
+     */
+    private final StringBuilder currentField = new StringBuilder(512);
 
     /**
      * CSV解析器
