@@ -42,7 +42,7 @@ import java.util.Map;
 
 /**
  * Kotlin Bean转换器，支持：
- * 
+ *
  * <pre>
  * Map = Bean
  * Bean = Bean
@@ -63,7 +63,7 @@ public class KBeanConverter implements MatcherConverter, Serializable {
 
     @Override
     public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
-        return KClassUtil.isKotlinClass(rawType);
+        return KotlinKit.isKotlinClass(rawType);
     }
 
     @Override

@@ -27,6 +27,21 @@
 */
 package org.miaixz.bus.extra.image;
 
+import org.miaixz.bus.core.codec.binary.Base64;
+import org.miaixz.bus.core.io.file.FileName;
+import org.miaixz.bus.core.io.resource.Resource;
+import org.miaixz.bus.core.io.stream.FastByteArrayOutputStream;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.xyz.*;
+
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.ImageTypeSpecifier;
+import javax.imageio.stream.ImageInputStream;
+import javax.imageio.stream.ImageOutputStream;
+import javax.swing.*;
 import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.font.FontRenderContext;
@@ -36,22 +51,6 @@ import java.awt.image.*;
 import java.io.*;
 import java.net.URL;
 import java.util.Iterator;
-
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.ImageTypeSpecifier;
-import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.ImageOutputStream;
-import javax.swing.*;
-
-import org.miaixz.bus.core.codec.binary.Base64;
-import org.miaixz.bus.core.io.file.FileName;
-import org.miaixz.bus.core.io.resource.Resource;
-import org.miaixz.bus.core.io.stream.FastByteArrayOutputStream;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.core.xyz.*;
 
 /**
  * 图片处理工具类： 功能：缩放图像、切割图像、旋转、图像类型转换、彩色转黑白、文字水印、图片水印等 参考：<a href=
@@ -794,14 +793,14 @@ public class ImageKit {
      * 给图片添加文字水印
      *
      * @param imageFile  源图像文件
-     * @param targetFile 目标图像文件
+     * @param destFile 目标图像文件
      * @param pressText  水印文字
      */
-    public static void pressText(final File imageFile, final File targetFile, final ImageText pressText) {
+    public static void pressText(final File imageFile, final File destFile, final ImageText pressText) {
         BufferedImage image = null;
         try {
             image = read(imageFile);
-            pressText(image, targetFile, pressText);
+            pressText(image, destFile, pressText);
         } finally {
             flush(image);
         }
@@ -829,13 +828,13 @@ public class ImageKit {
      * 给图片添加文字水印 此方法并不关闭流
      *
      * @param srcImage   源图像，使用结束后需手动调用{@link #flush(Image)}释放资源
-     * @param targetFile 目标流
+     * @param destFile 目标流
      * @param pressText  水印文字信息
      * @throws InternalException IO异常
      */
-    public static void pressText(final Image srcImage, final File targetFile, final ImageText pressText)
+    public static void pressText(final Image srcImage, final File destFile, final ImageText pressText)
             throws InternalException {
-        write(pressText(srcImage, pressText), targetFile);
+        write(pressText(srcImage, pressText), destFile);
     }
 
     /**
@@ -1015,19 +1014,19 @@ public class ImageKit {
      * 给图片添加全屏图片水印
      *
      * @param imageFile      源图像文件
-     * @param targetFile     目标图像文件
+     * @param destFile     目标图像文件
      * @param pressImageFile 水印图像文件
      * @param lineHeight     行高
      * @param degree         水印图像旋转角度，（单位：弧度），以圆点（0,0）为圆心，正代表顺时针，负代表逆时针
      * @param alpha          透明度：alpha 必须是范围 [0.0, 1.0] 之内（包含边界值）的一个浮点数字
      * @throws InternalException IO异常
      */
-    public static void pressImageFull(final File imageFile, final File targetFile, final File pressImageFile,
+    public static void pressImageFull(final File imageFile, final File destFile, final File pressImageFile,
             final int lineHeight, final int degree, final float alpha) throws InternalException {
         BufferedImage image = null;
         try {
             image = read(imageFile);
-            write(pressImageFull(image, read(pressImageFile), lineHeight, degree, alpha), targetFile);
+            write(pressImageFull(image, read(pressImageFile), lineHeight, degree, alpha), destFile);
         } finally {
             flush(image);
         }
@@ -1602,11 +1601,11 @@ public class ImageKit {
      * 写出图像为目标文件扩展名对应的格式
      *
      * @param image      {@link Image}，使用结束后需手动调用{@link #flush(Image)}释放资源
-     * @param targetFile 目标文件
+     * @param destFile 目标文件
      * @throws InternalException IO异常
      */
-    public static void write(final Image image, final File targetFile) throws InternalException {
-        ImageWriter.of(image, FileName.extName(targetFile)).write(targetFile);
+    public static void write(final Image image, final File destFile) throws InternalException {
+        ImageWriter.of(image, FileName.extName(destFile)).write(destFile);
     }
 
     /**

@@ -966,11 +966,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
         return this;
     }
 
-    public ExcelWriter fillRow(final Map<?, ?> rowMap) {
-        rowMap.forEach((key, value) -> this.templateContext.fillAndPointToNext(StringKit.toStringOrNull(key), rowMap));
-        return this;
-    }
-
     /**
      * 从第1列开始按列写入数据(index 从0开始) 本方法只是将数据写入Workbook中的Sheet，并不写出到文件
      * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动+1
@@ -1182,7 +1177,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      * 方法预定义，或者通过构造定义
      *
      * @return this
-     * @throws InternalException IO异常
+     * @throws InternalException 异常
      */
     public ExcelWriter flush() throws InternalException {
         return flush(false);
@@ -1194,27 +1189,27 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      *
      * @param override 是否覆盖已有文件
      * @return this
-     * @throws RevisedException IO异常
+     * @throws InternalException 异常
      */
-    public ExcelWriter flush(final boolean override) throws RevisedException {
-        Assert.notNull(this.destFile, "[targetFile] is null, and you must call setTargetFile(File) first.");
+    public ExcelWriter flush(final boolean override) throws InternalException {
+        Assert.notNull(this.destFile, "[destFile] is null, and you must call setDestFile(File) first.");
         return flush(this.destFile, override);
     }
 
     /**
      * 将Excel Workbook刷出到文件 如果用户未自定义输出的文件，将抛出{@link NullPointerException}
      *
-     * @param targetFile 写出到的文件
-     * @param override   是否覆盖已有文件
+     * @param destFile 写出到的文件
+     * @param override 是否覆盖已有文件
      * @return this
-     * @throws InternalException IO异常
+     * @throws InternalException 异常
      */
-    public ExcelWriter flush(final File targetFile, final boolean override) throws RevisedException {
-        Assert.notNull(targetFile, "targetFile is null!");
-        if (FileKit.exists(targetFile) && !override) {
-            throw new RevisedException("File to write exist: " + targetFile);
+    public ExcelWriter flush(final File destFile, final boolean override) throws InternalException {
+        Assert.notNull(destFile, "destFile is null!");
+        if (FileKit.exists(destFile) && !override) {
+            throw new InternalException("File to write exist: " + destFile);
         }
-        return flush(FileKit.getOutputStream(targetFile), true);
+        return flush(FileKit.getOutputStream(destFile), true);
     }
 
     /**
@@ -1234,15 +1229,15 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      * @param out        输出流
      * @param isCloseOut 是否关闭输出流
      * @return this
-     * @throws RevisedException IO异常
+     * @throws InternalException 异常
      */
-    public ExcelWriter flush(final OutputStream out, final boolean isCloseOut) throws RevisedException {
+    public ExcelWriter flush(final OutputStream out, final boolean isCloseOut) throws InternalException {
         Assert.isFalse(this.isClosed, "ExcelWriter has been closed!");
         try {
             this.workbook.write(out);
             out.flush();
         } catch (final IOException e) {
-            throw new RevisedException(e);
+            throw new InternalException(e);
         } finally {
             if (isCloseOut) {
                 IoKit.closeQuietly(out);

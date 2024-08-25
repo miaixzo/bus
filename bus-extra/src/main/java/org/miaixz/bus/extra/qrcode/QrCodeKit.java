@@ -27,14 +27,11 @@
 */
 package org.miaixz.bus.extra.qrcode;
 
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Map;
-
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.DecodeHintType;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.common.GlobalHistogramBinarizer;
+import com.google.zxing.common.HybridBinarizer;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.xyz.FileKit;
@@ -43,11 +40,13 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.extra.image.ImageKit;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.DecodeHintType;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.common.GlobalHistogramBinarizer;
-import com.google.zxing.common.HybridBinarizer;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Map;
 
 /**
  * 基于Zxing的二维码工具类，支持：
@@ -133,11 +132,11 @@ public class QrCodeKit {
      * @param content    文本内容
      * @param width      宽度（单位：类型为一般图片或SVG时，单位是像素，类型为 Ascii Art 字符画时，单位是字符▄或▀的大小）
      * @param height     高度（单位：类型为一般图片或SVG时，单位是像素，类型为 Ascii Art 字符画时，单位是字符▄或▀的大小）
-     * @param targetFile 目标文件，扩展名决定输出格式
+     * @param destFile 目标文件，扩展名决定输出格式
      * @return 目标文件
      */
-    public static File generate(final String content, final int width, final int height, final File targetFile) {
-        return generate(content, QrConfig.of(width, height), targetFile);
+    public static File generate(final String content, final int width, final int height, final File destFile) {
+        return generate(content, QrConfig.of(width, height), destFile);
     }
 
     /**
@@ -145,29 +144,29 @@ public class QrCodeKit {
      *
      * @param content    文本内容
      * @param config     二维码配置，包括宽度、高度、边距、颜色等
-     * @param targetFile 目标文件，扩展名决定输出格式
+     * @param destFile 目标文件，扩展名决定输出格式
      * @return 目标文件
      */
-    public static File generate(final String content, final QrConfig config, final File targetFile) {
-        final String extName = FileName.extName(targetFile);
+    public static File generate(final String content, final QrConfig config, final File destFile) {
+        final String extName = FileName.extName(destFile);
         switch (extName) {
         case QR_TYPE_SVG:
-            FileKit.writeUtf8String(generateAsSvg(content, config), targetFile);
+            FileKit.writeUtf8String(generateAsSvg(content, config), destFile);
             break;
         case QR_TYPE_TXT:
-            FileKit.writeUtf8String(generateAsAsciiArt(content, config), targetFile);
+            FileKit.writeUtf8String(generateAsAsciiArt(content, config), destFile);
             break;
         default:
             BufferedImage image = null;
             try {
                 image = generate(content, config);
-                ImageKit.write(image, targetFile);
+                ImageKit.write(image, destFile);
             } finally {
                 ImageKit.flush(image);
             }
         }
 
-        return targetFile;
+        return destFile;
     }
 
     /**

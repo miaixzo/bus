@@ -38,12 +38,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 对象池分区 一个分区实际为一个小的对象池，持有一个阻塞队列。 初始化时创建{@link PoolConfig#getMinSize()}个对象作为初始池对象.
+ * 对象池分区 一个分区实际为一个小的对象池，持有一个阻塞队列。 初始化时创建{@link PoolConfig#getMinSize()}个对象作为初始池对象。
  *
- * <p>
- * 当借出对象时，从队列头部取出并验证，验证通过后使用，验证不通过直接调用{@link #free(Poolable)} 销毁并重新获取， 当池中对象都被借出（空了），创建新的对象并入队列，直到队列满为止，当满时等待归还，超时则报错。
- * 当归还对象时，验证对象，不可用销毁之，可用入队列。 一个分区队列的实际
- * </p>
+ * 当借出对象时，从队列头部取出并验证，验证通过后使用，验证不通过直接调用{@link #free(Object)} 销毁并重新获取， 当池中对象都被借出（空了），创建新的对象并入队列，直到队列满为止，当满时等待归还，超时则报错。
  *
  * @param <T> 对象类型
  * @author Kimi Liu

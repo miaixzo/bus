@@ -27,20 +27,19 @@
 */
 package org.miaixz.bus.crypto.cipher;
 
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.SecureRandom;
-import java.security.spec.AlgorithmParameterSpec;
-
-import javax.crypto.ShortBufferException;
-
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.Cipher;
+
+import javax.crypto.ShortBufferException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.SecureRandom;
+import java.security.spec.AlgorithmParameterSpec;
 
 /**
  * 提供{@link javax.crypto.Cipher}的方法包装
@@ -95,12 +94,11 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
     }
 
     /**
-     * 继续多部分加密或解密操作（取决于此密码的初始化方式），处理另一个数据部分。
-     * 第一inputLen字节在input缓冲区中，从inputOffset以下，被处理，并且结果被存储在output缓冲器。
+     * 继续多部分加密或解密操作（取决于此密码的初始化方式），处理另一个数据部分。 第一inputLen字节在input缓冲区中，从inputOffset以下，被处理，并且结果被存储在output缓冲器。
      *
-     * @param in 输入缓冲区
+     * @param in    输入缓冲区
      * @param inOff 输入开始的 input中的偏移量
-     * @param len 输入长度
+     * @param len   输入长度
      * @return 带有结果的新缓冲区，如果底层密码是块密码且输入数据太短而不能产生新块，则返回null。
      */
     public byte[] process(final byte[] in, final int inOff, final int len) {
@@ -108,13 +106,12 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
     }
 
     /**
-     * 继续多部分加密或解密操作（取决于此密码的初始化方式），处理另一个数据部分。
-     * 第一inputLen字节在input缓冲区中，从inputOffset以下，被处理，并且结果被存储在output缓冲器。
+     * 继续多部分加密或解密操作（取决于此密码的初始化方式），处理另一个数据部分。 第一inputLen字节在input缓冲区中，从inputOffset以下，被处理，并且结果被存储在output缓冲器。
      *
-     * @param in 输入缓冲区
+     * @param in    输入缓冲区
      * @param inOff 输入开始的 input中的偏移量
-     * @param len 输入长度
-     * @param out 结果的缓冲区
+     * @param len   输入长度
+     * @param out   结果的缓冲区
      * @return 存储在 output的字节数
      */
     public int process(final byte[] in, final int inOff, final int len, final byte[] out) {
@@ -186,7 +183,6 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
             throw new CryptoException(e);
         }
     }
-
 
     /**
      * JCE的{@link AlgorithmParameterSpec} 参数包装

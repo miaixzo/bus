@@ -142,7 +142,7 @@ public class CompositeConverter extends RegisterConverter {
         }
 
         // 标准转换器
-        final Converter converter = getConverter(type, isCustomFirst);
+        final Converter converter = getConverter(type, value, isCustomFirst);
         if (null != converter) {
             return converter.convert(type, value, defaultValue);
         }
