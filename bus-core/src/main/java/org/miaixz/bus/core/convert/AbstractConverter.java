@@ -27,14 +27,13 @@
 */
 package org.miaixz.bus.core.convert;
 
-import java.io.Serializable;
-import java.lang.reflect.Type;
-
-import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.TypeKit;
+
+import java.io.Serializable;
+import java.lang.reflect.Type;
 
 /**
  * 抽象转换器，提供通用的转换逻辑，同时通过convertInternal实现对应类型的专属逻辑 转换器不会抛出转换异常，转换失败时会返回{@code null}
@@ -70,7 +69,7 @@ public abstract class AbstractConverter implements Converter, Serializable {
         // 尝试强转
         if (targetClass.isInstance(value)) {
             // 除Map外，已经是目标类型，不需要转换（Map类型涉及参数类型，需要单独转换）
-            return Assert.notNull(targetClass).cast(value);
+            return value;
         }
         return convertInternal(targetClass, value);
     }

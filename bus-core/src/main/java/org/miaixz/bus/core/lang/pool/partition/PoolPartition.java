@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core.lang.pool.partition;
 
-import java.io.IOException;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
-
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.pool.ObjectFactory;
 import org.miaixz.bus.core.lang.pool.ObjectPool;
 import org.miaixz.bus.core.lang.pool.PoolConfig;
 import org.miaixz.bus.core.lang.pool.Poolable;
+
+import java.io.IOException;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 对象池分区 一个分区实际为一个小的对象池，持有一个阻塞队列。 初始化时创建{@link PoolConfig#getMinSize()}个对象作为初始池对象.
@@ -74,35 +74,32 @@ public class PoolPartition<T> implements ObjectPool<T> {
         this.queue = queue;
         this.objectFactory = objectFactory;
 
-        final int minSize = config.getMinSize();
-        for (int i = 0; i < minSize; i++) {
-            queue.add(createPoolable());
-        }
-        total = minSize;
+        // 初始化，按照配置最小大小创建对象
+        doIncrease(config.getMinSize());
     }
 
     @Override
-    public Poolable<T> borrowObject() {
+    public T borrowObject() {
         // 非阻塞获取
         Poolable<T> poolable = this.queue.poll();
         if (null != poolable) {
+            final T object = poolable.getRaw();
             // 检查对象是否可用
-            if (this.objectFactory.validate(poolable.getRaw())) {
+            if (this.objectFactory.validate(object)) {
                 // 检查是否超过最长空闲时间
                 final long maxIdle = this.config.getMaxIdle();
-                if (maxIdle <= 0 || (System.currentTimeMillis() - poolable.getLastBorrow()) <= maxIdle) {
-                    poolable.setLastBorrow(System.currentTimeMillis());
-                    return poolable;
+                if (maxIdle <= 0 || poolable.getIdle() <= maxIdle) {
+                    return poolable.getRaw();
                 }
             }
 
-            // 对象不可用，销毁之
-            free(poolable);
+            // 对象不可用或超过最长空闲期，销毁之
+            free(object);
             // 继续借，而不扩容
             return borrowObject();
         }
 
-        // 扩容
+        // 池中无对象，扩容
         if (increase(1) <= 0) {
             // 池分区已满，只能等待是否有返还的对象
             poolable = waitingPoll();
@@ -120,21 +117,21 @@ public class PoolPartition<T> implements ObjectPool<T> {
     /**
      * 归还对象
      *
-     * @param poolable 归还的对象
+     * @param object 归还的对象
      * @return this
      */
     @Override
-    public PoolPartition<T> returnObject(final Poolable<T> poolable) {
+    public PoolPartition<T> returnObject(final T object) {
         // 检查对象可用性
-        if (this.objectFactory.validate(poolable.getRaw())) {
+        if (this.objectFactory.validate(object)) {
             try {
-                this.queue.put(poolable);
+                this.queue.put(wrapPoolable(object));
             } catch (final InterruptedException e) {
                 throw new InternalException(e);
             }
         } else {
             // 对象不可用
-            free(poolable);
+            free(object);
         }
 
         return this;
@@ -146,20 +143,8 @@ public class PoolPartition<T> implements ObjectPool<T> {
      * @param increaseSize 扩容大小
      * @return 实际扩容大小，0表示已经达到最大，未成功扩容
      */
-    public synchronized int increase(int increaseSize) {
-        if (increaseSize + total > config.getMaxSize()) {
-            increaseSize = config.getMaxSize() - total;
-        }
-
-        try {
-            for (int i = 0; i < increaseSize; i++) {
-                queue.put(createPoolable());
-            }
-            total += increaseSize;
-        } catch (final InterruptedException e) {
-            throw new InternalException(e);
-        }
-        return increaseSize;
+    public synchronized int increase(final int increaseSize) {
+        return doIncrease(increaseSize);
     }
 
     /**
@@ -168,8 +153,9 @@ public class PoolPartition<T> implements ObjectPool<T> {
      * @param obj 被销毁的对象
      * @return this
      */
-    public synchronized PoolPartition<T> free(final Poolable<T> obj) {
-        objectFactory.destroy(obj.getRaw());
+    @Override
+    public synchronized PoolPartition<T> free(final T obj) {
+        objectFactory.destroy(obj);
         total--;
         return this;
     }
@@ -190,10 +176,11 @@ public class PoolPartition<T> implements ObjectPool<T> {
     }
 
     @Override
-    public void close() throws IOException {
-        this.queue.forEach(this::free);
+    synchronized public void close() throws IOException {
+        this.queue.forEach((poolable) -> objectFactory.destroy(poolable.getRaw()));
         this.queue.clear();
         this.queue = null;
+        this.total = 0;
     }
 
     /**
@@ -203,10 +190,37 @@ public class PoolPartition<T> implements ObjectPool<T> {
      */
     protected Poolable<T> createPoolable() {
         final T t = objectFactory.create();
+        return null == t ? null : wrapPoolable(t);
+    }
+
+    private Poolable<T> wrapPoolable(final T t) {
         if (t instanceof Poolable) {
             return (Poolable<T>) t;
         }
-        return new PartitionPoolable<>(objectFactory.create(), this);
+        return new PartitionPoolable<>(t, this);
+    }
+
+    /**
+     * 非线程安全的扩容并填充对象池队列 如果传入的扩容大小大于可用大小（即扩容大小加现有大小大于最大大小，则实际扩容到最大）
+     *
+     * @param increaseSize 扩容大小
+     * @return 实际扩容大小，0表示已经达到最大，未成功扩容
+     */
+    private int doIncrease(int increaseSize) {
+        final int maxSize = config.getMaxSize();
+        if (increaseSize + total > maxSize) {
+            increaseSize = maxSize - total;
+        }
+
+        try {
+            for (int i = 0; i < increaseSize; i++) {
+                queue.put(createPoolable());
+            }
+            total += increaseSize;
+        } catch (final InterruptedException e) {
+            throw new InternalException(e);
+        }
+        return increaseSize;
     }
 
     /**

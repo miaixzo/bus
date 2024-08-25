@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.office.excel.writer;
 
-import java.io.File;
-import java.io.OutputStream;
-
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
-import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.RevisedException;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.office.excel.SheetKit;
 import org.miaixz.bus.office.excel.WorkbookKit;
+
+import java.io.File;
+import java.io.OutputStream;
 
 /**
  * 大数据量Excel写出，只支持XLSX（Excel07版本） 通过封装{@link SXSSFWorkbook}，限制对滑动窗口中的行的访问来实现其低内存使用。
@@ -177,7 +177,7 @@ public class BigExcelWriter extends ExcelWriter {
     }
 
     @Override
-    public ExcelWriter flush(final OutputStream out, final boolean isCloseOut) throws InternalException {
+    public ExcelWriter flush(final OutputStream out, final boolean isCloseOut) throws RevisedException {
         if (!isFlushed) {
             isFlushed = true;
             return super.flush(out, isCloseOut);

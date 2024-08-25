@@ -33,8 +33,9 @@ import java.io.Serializable;
 /**
  * 对象池接口，提供：
  * <ul>
- * <li>{@link #borrowObject()} 对象借出。</li>
- * <li>{@link #returnObject(Poolable)}对象归还。</li>
+ * <li>{@link #borrowObject()} 对象借出</li>
+ * <li>{@link #returnObject(Object)} 对象归还</li>
+ * <li>{@link #free(Object)} 对象销毁</li>
  * </ul>
  * 对于对象池中对象维护，通过{@link PoolConfig#getMaxIdle()}控制，规则如下：
  * <ul>
@@ -60,7 +61,7 @@ public interface ObjectPool<T> extends Closeable, Serializable {
      *
      * @return 对象
      */
-    Poolable<T> borrowObject();
+    T borrowObject();
 
     /**
      * 归还对象，流程如下：
@@ -70,10 +71,18 @@ public interface ObjectPool<T> extends Closeable, Serializable {
      * <li>可用则入池</li>
      * </ol>
      *
-     * @param obj 对象
+     * @param object 对象
      * @return this
      */
-    ObjectPool<T> returnObject(final Poolable<T> obj);
+    ObjectPool<T> returnObject(final T object);
+
+    /**
+     * 释放对象，即在使用中发现对象损坏或不可用，则直接销毁之
+     *
+     * @param object 对象
+     * @return this
+     */
+    ObjectPool<T> free(final T object);
 
     /**
      * 获取持有对象总数（包括空闲对象 + 正在使用对象数）

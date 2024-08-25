@@ -27,16 +27,15 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import java.util.*;
-import java.util.function.*;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
-
 import org.miaixz.bus.core.center.stream.EasyStream;
 import org.miaixz.bus.core.center.stream.EntryStream;
 import org.miaixz.bus.core.center.stream.SimpleCollector;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Optional;
+
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * 可变的汇聚操作{@link Collector} 相关工具封装
@@ -116,7 +115,7 @@ public class CollectorKit {
         final Supplier<A> downstreamSupplier = downstream.supplier();
         final BiConsumer<A, ? super T> downstreamAccumulator = downstream.accumulator();
         final BiConsumer<Map<K, A>, T> accumulator = (m, t) -> {
-            final K key = Optional.ofNullable(t).map(classifier).orElse(null);
+            final K key = java.util.Optional.ofNullable(t).map(classifier).orElse(null);
             final A container = m.computeIfAbsent(key, k -> downstreamSupplier.get());
             if (ArrayKit.isArray(container) || Objects.nonNull(t)) {
                 // 如果是数组类型，不需要判空，场景——分组后需要使用：java.util.unwrap.Collectors.counting 求null元素个数
@@ -282,7 +281,8 @@ public class CollectorKit {
             final Function<? super T, ? extends K> keyMapper, final Function<? super T, ? extends U> valueMapper,
             final BinaryOperator<U> mergeFunction, final Supplier<M> mapSupplier) {
         final BiConsumer<M, T> accumulator = (map, element) -> map.put(
-                Optional.ofNullable(element).map(keyMapper).get(), Optional.ofNullable(element).map(valueMapper).get());
+                java.util.Optional.ofNullable(element).map(keyMapper).get(),
+                java.util.Optional.ofNullable(element).map(valueMapper).get());
         return new SimpleCollector<>(mapSupplier, accumulator, mapMerger(mergeFunction), CH_ID);
     }
 
@@ -445,7 +445,7 @@ public class CollectorKit {
             final Collector<? super T, A, R> downstream) {
         final BiConsumer<A, ? super T> downstreamAccumulator = downstream.accumulator();
         return new SimpleCollector<>(downstream.supplier(),
-                (r, t) -> Optional.of(t).filter(predicate).ifPresent(e -> downstreamAccumulator.accept(r, e)),
+                (r, t) -> java.util.Optional.of(t).filter(predicate).ifPresent(e -> downstreamAccumulator.accept(r, e)),
                 downstream.combiner(), downstream.finisher(), downstream.characteristics());
     }
 

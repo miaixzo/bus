@@ -27,24 +27,23 @@
 */
 package org.miaixz.bus.core.net.tls;
 
-import java.security.*;
-import java.util.Arrays;
-
-import javax.net.ssl.*;
-
 import org.miaixz.bus.core.Builder;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
+import javax.net.ssl.*;
+import java.security.*;
+import java.util.Arrays;
+
 /**
  * {@link SSLContext}构建器，可以自定义：
  * <ul>
  * <li>协议（protocol），默认TLS</li>
- *     <li>{@link KeyManager}，默认空</li>
- *     <li>{@link TrustManager}，默认{@code null}</li>
- *     <li>{@link SecureRandom}，默认{@code null}</li>
+ * <li>{@link KeyManager}，默认空</li>
+ * <li>{@link TrustManager}，默认{@code null}</li>
+ * <li>{@link SecureRandom}，默认{@code null}</li>
  * </ul>
  * 构建后可获得{@link SSLContext}，通过调用{@link SSLContext#getSocketFactory()}获取{@link javax.net.ssl.SSLSocketFactory}
  *

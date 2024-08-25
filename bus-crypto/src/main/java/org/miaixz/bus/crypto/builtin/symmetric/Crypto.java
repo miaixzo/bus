@@ -27,22 +27,6 @@
 */
 package org.miaixz.bus.crypto.builtin.symmetric;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.security.SecureRandom;
-import java.security.spec.AlgorithmParameterSpec;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-
-import javax.crypto.Cipher;
-import javax.crypto.CipherInputStream;
-import javax.crypto.CipherOutputStream;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.PBEParameterSpec;
-
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
@@ -55,6 +39,21 @@ import org.miaixz.bus.crypto.Padding;
 import org.miaixz.bus.crypto.builtin.SaltMagic;
 import org.miaixz.bus.crypto.builtin.SaltParser;
 import org.miaixz.bus.crypto.cipher.JceCipher;
+
+import javax.crypto.Cipher;
+import javax.crypto.CipherInputStream;
+import javax.crypto.CipherOutputStream;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.PBEParameterSpec;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Serializable;
+import java.security.SecureRandom;
+import java.security.spec.AlgorithmParameterSpec;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * 对称加密算法 在对称加密算法中，数据发信方将明文（原始数据）和加密密钥一起经过特殊加密算法处理后，使其变成复杂的加密密文发送出去。
@@ -484,7 +483,7 @@ public class Crypto implements Encryptor, Decryptor, Serializable {
      */
     private Crypto initParams(final String algorithm, AlgorithmParameterSpec paramsSpec) {
         if (null == paramsSpec) {
-            byte[] iv = Optional.ofNullable(cipher).map(JceCipher::getRaw).map(Cipher::getIV).get();
+            byte[] iv = Optional.ofNullable(cipher).map(JceCipher::getRaw).map(Cipher::getIV).getOrNull();
 
             // 随机IV
             if (StringKit.startWithIgnoreCase(algorithm, "PBE")) {

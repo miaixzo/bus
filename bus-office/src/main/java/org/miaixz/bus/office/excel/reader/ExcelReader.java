@@ -27,11 +27,6 @@
 */
 package org.miaixz.bus.office.excel.reader;
 
-import java.io.File;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -43,6 +38,11 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.office.excel.*;
 import org.miaixz.bus.office.excel.cell.CellKit;
 import org.miaixz.bus.office.excel.writer.ExcelWriter;
+
+import java.io.File;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Excel读取器 读取Excel工作簿
@@ -247,7 +247,7 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
      *
      * @return Map的列表
      */
-    public List<Map<String, Object>> readAll() {
+    public List<Map<Object, Object>> readAll() {
         return read(0, 1, Integer.MAX_VALUE);
     }
 
@@ -259,7 +259,7 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
      * @param endRowIndex    读取结束行（包含，从0开始计数）
      * @return Map的列表
      */
-    public List<Map<String, Object>> read(final int headerRowIndex, final int startRowIndex, final int endRowIndex) {
+    public List<Map<Object, Object>> read(final int headerRowIndex, final int startRowIndex, final int endRowIndex) {
         final MapSheetReader reader = new MapSheetReader(headerRowIndex, startRowIndex, endRowIndex);
         reader.setExcelConfig(this.config);
         return read(reader);

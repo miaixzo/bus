@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.core.lang.pool.partition;
 
-import org.miaixz.bus.core.lang.pool.Poolable;
+import org.miaixz.bus.core.lang.pool.SimplePoolable;
 
 /**
  * 分区可池化对象，此对象会同时持有原始对象和所在的分区
@@ -36,11 +36,9 @@ import org.miaixz.bus.core.lang.pool.Poolable;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PartitionPoolable<T> implements Poolable<T> {
+public class PartitionPoolable<T> extends SimplePoolable<T> {
 
-    private final T raw;
     private final PoolPartition<T> partition;
-    private long lastBorrow;
 
     /**
      * 构造
@@ -49,31 +47,22 @@ public class PartitionPoolable<T> implements Poolable<T> {
      * @param partition 对象所在分区
      */
     public PartitionPoolable(final T raw, final PoolPartition<T> partition) {
-        this.raw = raw;
+        super(raw);
         this.partition = partition;
-        this.lastBorrow = System.currentTimeMillis();
-    }
-
-    @Override
-    public T getRaw() {
-        return this.raw;
     }
 
     /**
      * 归还对象
      */
     public void returnObject() {
-        this.partition.returnObject(this);
+        this.partition.returnObject(this.getRaw());
     }
 
-    @Override
-    public long getLastBorrow() {
-        return lastBorrow;
-    }
-
-    @Override
-    public void setLastBorrow(final long lastBorrow) {
-        this.lastBorrow = lastBorrow;
+    /**
+     * 释放对象
+     */
+    public void free() {
+        this.partition.free(this.getRaw());
     }
 
 }

@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.center.map.multi;
 
-import java.util.*;
-
 import org.miaixz.bus.core.center.function.SerConsumer3;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.MapKit;
+
+import java.util.*;
 
 /**
  * 表格数据结构定义 此结构类似于Guava的Table接口，使用两个键映射到一个值，类似于表格结构。
@@ -63,7 +63,7 @@ public interface Table<R, C, V> extends Iterable<Table.Cell<R, C, V>> {
      * @return 行是否存在
      */
     default boolean containsRow(final R rowKey) {
-        return Optional.ofNullable(rowMap()).map((map) -> map.containsKey(rowKey)).get();
+        return Optional.ofNullable(rowMap()).map((map) -> map.containsKey(rowKey)).getOrNull();
     }
 
     /**
@@ -73,7 +73,7 @@ public interface Table<R, C, V> extends Iterable<Table.Cell<R, C, V>> {
      * @return 行映射，返回的键为列键，值为表格的值
      */
     default Map<C, V> getRow(final R rowKey) {
-        return Optional.ofNullable(rowMap()).map((map) -> map.get(rowKey)).get();
+        return Optional.ofNullable(rowMap()).map((map) -> map.get(rowKey)).getOrNull();
     }
 
     /**
@@ -82,7 +82,7 @@ public interface Table<R, C, V> extends Iterable<Table.Cell<R, C, V>> {
      * @return 行键
      */
     default Set<R> rowKeySet() {
-        return Optional.ofNullable(rowMap()).map(Map::keySet).get();
+        return Optional.ofNullable(rowMap()).map(Map::keySet).getOrNull();
     }
 
     /**
@@ -99,7 +99,7 @@ public interface Table<R, C, V> extends Iterable<Table.Cell<R, C, V>> {
      * @return 列是否存在
      */
     default boolean containsColumn(final C columnKey) {
-        return Optional.ofNullable(columnMap()).map((map) -> map.containsKey(columnKey)).get();
+        return Optional.ofNullable(columnMap()).map((map) -> map.containsKey(columnKey)).getOrNull();
     }
 
     /**
@@ -109,7 +109,7 @@ public interface Table<R, C, V> extends Iterable<Table.Cell<R, C, V>> {
      * @return 列映射，返回的键为行键，值为表格的值
      */
     default Map<R, V> getColumn(final C columnKey) {
-        return Optional.ofNullable(columnMap()).map((map) -> map.get(columnKey)).get();
+        return Optional.ofNullable(columnMap()).map((map) -> map.get(columnKey)).getOrNull();
     }
 
     /**
@@ -118,7 +118,7 @@ public interface Table<R, C, V> extends Iterable<Table.Cell<R, C, V>> {
      * @return 列set
      */
     default Set<C> columnKeySet() {
-        return Optional.ofNullable(columnMap()).map(Map::keySet).get();
+        return Optional.ofNullable(columnMap()).map(Map::keySet).getOrNull();
     }
 
     /**
@@ -153,7 +153,7 @@ public interface Table<R, C, V> extends Iterable<Table.Cell<R, C, V>> {
      * @return 值
      */
     default boolean containsValue(final V value) {
-        final Collection<Map<C, V>> rows = Optional.ofNullable(rowMap()).map(Map::values).get();
+        final Collection<Map<C, V>> rows = Optional.ofNullable(rowMap()).map(Map::values).getOrNull();
         if (null != rows) {
             for (final Map<C, V> row : rows) {
                 if (row.containsValue(value)) {
@@ -172,7 +172,7 @@ public interface Table<R, C, V> extends Iterable<Table.Cell<R, C, V>> {
      * @return 值，如果值不存在，返回{@code null}
      */
     default V get(final R rowKey, final C columnKey) {
-        return Optional.ofNullable(getRow(rowKey)).map((map) -> map.get(columnKey)).get();
+        return Optional.ofNullable(getRow(rowKey)).map((map) -> map.get(columnKey)).getOrNull();
     }
 
     /**

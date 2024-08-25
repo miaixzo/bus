@@ -25,76 +25,39 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.core.center;
+package org.miaixz.bus.core.convert;
 
-import java.util.Collection;
+import org.miaixz.bus.core.xyz.TypeKit;
 
-import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
-import org.miaixz.bus.core.center.set.SetFromMap;
+import java.lang.reflect.Type;
 
 /**
- * 通过{@link SafeConcurrentHashMap}实现的线程安全HashSet
+ * 带有匹配的转换器 判断目标对象是否满足条件，满足则转换，否则跳过 实现此接口同样可以不判断断言而直接转换
  *
- * @param <E> 元素类型
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ConcurrentHashSet<E> extends SetFromMap<E> {
-
-    private static final long serialVersionUID = -1L;
+public interface MatcherConverter extends Converter {
 
     /**
-     * 构造 触发因子为默认的0.75
-     */
-    public ConcurrentHashSet() {
-        super(new SafeConcurrentHashMap<>());
-    }
-
-    /**
-     * 构造 触发因子为默认的0.75
+     * 判断需要转换的对象是否匹配当前转换器，满足则转换，否则跳过
      *
-     * @param initialCapacity 初始大小
+     * @param targetType 转换的目标类型，不能为{@code null}
+     * @param rawType    目标原始类型，当targetType为Class时，和此参数一致，不能为{@code null}
+     * @param value      需要转换的值
+     * @return 是否匹配
      */
-    public ConcurrentHashSet(final int initialCapacity) {
-        super(new SafeConcurrentHashMap<>(initialCapacity));
-    }
+    boolean match(Type targetType, Class<?> rawType, Object value);
 
     /**
-     * 构造
+     * 判断需要转换的对象是否匹配当前转换器，满足则转换，否则跳过
      *
-     * @param initialCapacity 初始大小
-     * @param loadFactor      加载因子。此参数决定数据增长时触发的百分比
+     * @param targetType 转换的目标类型
+     * @param value      需要转换的值
+     * @return 是否匹配
      */
-    public ConcurrentHashSet(final int initialCapacity, final float loadFactor) {
-        super(new SafeConcurrentHashMap<>(initialCapacity, loadFactor));
-    }
-
-    /**
-     * 构造
-     *
-     * @param initialCapacity  初始大小
-     * @param loadFactor       触发因子。此参数决定数据增长时触发的百分比
-     * @param concurrencyLevel 线程并发度
-     */
-    public ConcurrentHashSet(final int initialCapacity, final float loadFactor, final int concurrencyLevel) {
-        super(new SafeConcurrentHashMap<>(initialCapacity, loadFactor, concurrencyLevel));
-    }
-
-    /**
-     * 从已有集合中构造
-     *
-     * @param iter {@link Iterable}
-     */
-    public ConcurrentHashSet(final Iterable<E> iter) {
-        super(iter instanceof Collection ? new SafeConcurrentHashMap<>(((Collection<E>) iter).size())
-                : new SafeConcurrentHashMap<>());
-        if (iter instanceof Collection) {
-            this.addAll((Collection<E>) iter);
-        } else {
-            for (final E e : iter) {
-                this.add(e);
-            }
-        }
+    default boolean match(final Type targetType, final Object value) {
+        return match(targetType, TypeKit.getClass(targetType), value);
     }
 
 }

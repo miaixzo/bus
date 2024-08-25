@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.http.metric.anget;
 
-import java.util.List;
-import java.util.regex.Pattern;
-
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.PatternKit;
+
+import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * 浏览器对象
@@ -100,7 +100,7 @@ public class Browser extends UserAgent {
             new Browser("Yammer Mobile", "Yammer[\\s]+([\\d\\w\\.\\-]+)", "Yammer[\\s]+([\\d\\w\\.\\-]+)"),
             new Browser("Apache HTTP Client", "Apache\\\\-HttpClient", "Apache\\-HttpClient\\/([\\d\\w\\.\\-]+)"),
             new Browser("BlackBerry", "BlackBerry", "BlackBerry[\\d]+\\/([\\d\\w\\.\\-]+)"),
-            // issue#I847JY 百度浏览器
+            // 百度浏览器
             new Browser("Baidu", "Baidu", "baiduboxapp\\/([\\d\\w\\.\\-]+)"));
 
     /**

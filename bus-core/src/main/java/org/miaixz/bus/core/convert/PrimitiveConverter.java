@@ -27,11 +27,10 @@
 */
 package org.miaixz.bus.core.convert;
 
-import java.util.function.Function;
-
 import org.miaixz.bus.core.lang.exception.ConvertException;
-import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.core.xyz.StringKit;
+
+import java.io.Serializable;
+import java.lang.reflect.Type;
 
 /**
  * 原始类型转换器 支持类型为：
@@ -49,7 +48,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PrimitiveConverter extends AbstractConverter {
+public class PrimitiveConverter extends AbstractConverter implements MatcherConverter, Serializable {
 
     /**
      * 单例对象
@@ -57,54 +56,39 @@ public class PrimitiveConverter extends AbstractConverter {
     public static final PrimitiveConverter INSTANCE = new PrimitiveConverter();
     private static final long serialVersionUID = -1L;
 
-    /**
-     * 构造
-     *
-     * @throws IllegalArgumentException 传入的转换类型非原始类型时抛出
-     */
-    public PrimitiveConverter() {
-
+    @Override
+    public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
+        return rawType.isPrimitive();
     }
 
-    /**
-     * 将指定值转换为原始类型的值
-     *
-     * @param value          值
-     * @param primitiveClass 原始类型
-     * @param toStringFunc   当无法直接转换时，转为字符串后再转换的函数
-     * @return 转换结果
-     */
-    protected static Object convert(final Object value, final Class<?> primitiveClass,
-            final Function<Object, String> toStringFunc) {
+    @Override
+    protected Object convertInternal(final Class<?> primitiveClass, final Object value) {
+        final Object result;
         if (byte.class == primitiveClass) {
-            return ObjectKit.defaultIfNull(NumberConverter.convert(value, Byte.class, toStringFunc), 0);
+            result = NumberConverter.INSTANCE.convert(Byte.class, value);
         } else if (short.class == primitiveClass) {
-            return ObjectKit.defaultIfNull(NumberConverter.convert(value, Short.class, toStringFunc), 0);
+            result = NumberConverter.INSTANCE.convert(Short.class, value);
         } else if (int.class == primitiveClass) {
-            return ObjectKit.defaultIfNull(NumberConverter.convert(value, Integer.class, toStringFunc), 0);
+            result = NumberConverter.INSTANCE.convert(Integer.class, value);
         } else if (long.class == primitiveClass) {
-            return ObjectKit.defaultIfNull(NumberConverter.convert(value, Long.class, toStringFunc), 0);
+            result = NumberConverter.INSTANCE.convert(Long.class, value);
         } else if (float.class == primitiveClass) {
-            return ObjectKit.defaultIfNull(NumberConverter.convert(value, Float.class, toStringFunc), 0);
+            result = NumberConverter.INSTANCE.convert(Float.class, value);
         } else if (double.class == primitiveClass) {
-            return ObjectKit.defaultIfNull(NumberConverter.convert(value, Double.class, toStringFunc), 0);
+            result = NumberConverter.INSTANCE.convert(Double.class, value);
         } else if (char.class == primitiveClass) {
-            return Convert.convert(Character.class, value);
+            result = CharacterConverter.INSTANCE.convert(Character.class, value);
         } else if (boolean.class == primitiveClass) {
-            return Convert.convert(Boolean.class, value);
+            result = BooleanConverter.INSTANCE.convert(Boolean.class, value);
+        } else {
+            throw new ConvertException("Unsupported target type: {}", primitiveClass);
         }
 
-        throw new ConvertException("Unsupported target type: {}", primitiveClass);
-    }
+        if (null == result) {
+            throw new ConvertException("Can not convert {} to {}", value, primitiveClass);
+        }
 
-    @Override
-    protected Object convertInternal(final Class<?> targetClass, final Object value) {
-        return PrimitiveConverter.convert(value, targetClass, this::convertToString);
-    }
-
-    @Override
-    protected String convertToString(final Object value) {
-        return StringKit.trim(super.convertToString(value));
+        return result;
     }
 
 }

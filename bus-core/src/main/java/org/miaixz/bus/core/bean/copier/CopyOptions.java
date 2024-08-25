@@ -27,14 +27,6 @@
 */
 package org.miaixz.bus.core.bean.copier;
 
-import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.BiPredicate;
-import java.util.function.UnaryOperator;
-
 import org.miaixz.bus.core.bean.desc.BeanDesc;
 import org.miaixz.bus.core.bean.desc.PropDesc;
 import org.miaixz.bus.core.center.function.FunctionX;
@@ -44,6 +36,14 @@ import org.miaixz.bus.core.lang.mutable.MutableEntry;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.LambdaKit;
 import org.miaixz.bus.core.xyz.StringKit;
+
+import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.lang.reflect.Type;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.BiPredicate;
+import java.util.function.UnaryOperator;
 
 /**
  * 属性拷贝选项 包括： 1、限制的类或接口，必须为目标对象的实现接口或父类，用于限制拷贝的属性，例如一个类我只想复制其父类的一些属性，就可以将editable设置为父类 2、是否忽略空值，当源对象的值为null时，true:
@@ -171,15 +171,6 @@ public class CopyOptions implements Serializable {
     public CopyOptions setIgnoreNullValue(final boolean ignoreNullVall) {
         this.ignoreNullValue = ignoreNullVall;
         return this;
-    }
-
-    /**
-     * 设置忽略空值，当源对象的值为null时，忽略而不注入此值
-     *
-     * @return CopyOptions
-     */
-    public CopyOptions ignoreNullValue() {
-        return setIgnoreNullValue(true);
     }
 
     /**

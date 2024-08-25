@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.office.excel.reader;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.poi.ss.usermodel.Sheet;
 import org.miaixz.bus.core.bean.copier.CopyOptions;
 import org.miaixz.bus.core.xyz.BeanKit;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 读取{@link Sheet}为bean的List列表形式
@@ -63,14 +63,14 @@ public class BeanSheetReader<T> implements SheetReader<List<T>> {
 
     @Override
     public List<T> read(final Sheet sheet) {
-        final List<Map<String, Object>> mapList = mapSheetReader.read(sheet);
+        final List<Map<Object, Object>> mapList = mapSheetReader.read(sheet);
         if (Map.class.isAssignableFrom(this.beanClass)) {
             return (List<T>) mapList;
         }
 
         final List<T> beanList = new ArrayList<>(mapList.size());
         final CopyOptions copyOptions = CopyOptions.of().setIgnoreError(true);
-        for (final Map<String, Object> map : mapList) {
+        for (final Map<Object, Object> map : mapList) {
             beanList.add(BeanKit.toBean(map, this.beanClass, copyOptions));
         }
         return beanList;

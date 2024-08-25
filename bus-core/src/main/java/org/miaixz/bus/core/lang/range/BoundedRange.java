@@ -27,10 +27,11 @@
 */
 package org.miaixz.bus.core.lang.range;
 
+import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.lang.Assert;
+
 import java.util.Objects;
 import java.util.function.Predicate;
-
-import org.miaixz.bus.core.lang.Assert;
 
 /**
  * <p>
@@ -104,7 +105,9 @@ import org.miaixz.bus.core.lang.Assert;
  * @see Bound
  * @since Java 17+
  */
-public class BoundedRange<T extends Comparable<? super T>> implements Predicate<T> {
+public class BoundedRange<T extends Comparable<? super T>> implements PredicateX<T> {
+
+    private static final long serialVersionUID = -1L;
 
     /**
      * 双向无界的区间
@@ -452,7 +455,7 @@ public class BoundedRange<T extends Comparable<? super T>> implements Predicate<
      * @return 是否
      */
     @Override
-    public boolean test(final T value) {
+    public boolean testing(final T value) {
         return getLowerBound().and(getUpperBound()).test(value);
     }
 

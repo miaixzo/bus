@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.core.convert;
 
-import java.io.Serializable;
-import java.lang.reflect.Type;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.reflect.TypeReference;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.TypeKit;
+
+import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * {@link Map} 转换器，通过预定义key和value的类型，实现：
@@ -49,7 +49,7 @@ import org.miaixz.bus.core.xyz.TypeKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MapConverter implements Converter, Serializable {
+public class MapConverter implements MatcherConverter, Serializable {
 
     private static final long serialVersionUID = -1L;
 
@@ -57,6 +57,11 @@ public class MapConverter implements Converter, Serializable {
      * 单例
      */
     public static MapConverter INSTANCE = new MapConverter();
+
+    @Override
+    public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
+        return Map.class.isAssignableFrom(rawType);
+    }
 
     @Override
     public Object convert(Type targetType, final Object value) throws ConvertException {

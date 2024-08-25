@@ -27,15 +27,6 @@
 */
 package org.miaixz.bus.core.tree;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
-
 import org.miaixz.bus.core.center.function.BiConsumerX;
 import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.center.function.FunctionX;
@@ -44,6 +35,15 @@ import org.miaixz.bus.core.center.stream.EasyStream;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ListKit;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * 本类是用于构建树的工具类，特点是采取lambda，以及满足指定类型的Bean进行树操作 Bean需要满足三个属性：
@@ -216,7 +216,8 @@ public class BeanTree<T, R extends Comparable<R>> {
         final Predicate<T> recursive = PredicateX.multiOr(condition::test,
                 e -> Optional.ofEmptyAble(childrenGetter.apply(e))
                         .map(children -> EasyStream.of(children).filter(recursiveRef.get()).toList())
-                        .peek(children -> childrenSetter.accept(e, children)).filter(s -> !s.isEmpty()).isPresent());
+                        .ifPresent(children -> childrenSetter.accept(e, children)).filter(s -> !s.isEmpty())
+                        .isPresent());
         recursiveRef.set(recursive);
         return EasyStream.of(tree).filter(recursive).toList();
     }
@@ -232,7 +233,7 @@ public class BeanTree<T, R extends Comparable<R>> {
         Objects.requireNonNull(action, "action must be not null");
         final AtomicReference<Consumer<T>> recursiveRef = new AtomicReference<>();
         final Consumer<T> recursive = ConsumerX.multi(action::accept, e -> Optional.ofEmptyAble(childrenGetter.apply(e))
-                .peek(children -> EasyStream.of(children).forEach(recursiveRef.get())));
+                .ifPresent(children -> EasyStream.of(children).forEach(recursiveRef.get())));
         recursiveRef.set(recursive);
         EasyStream.of(tree).forEach(recursive);
         return tree;

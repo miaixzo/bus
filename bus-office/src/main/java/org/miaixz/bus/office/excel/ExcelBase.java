@@ -27,11 +27,6 @@
 */
 package org.miaixz.bus.office.excel;
 
-import java.io.Closeable;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellReference;
@@ -46,6 +41,11 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.office.excel.cell.CellKit;
 import org.miaixz.bus.office.excel.style.StyleKit;
+
+import java.io.Closeable;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Excel基础类，用于抽象ExcelWriter和ExcelReader中共用部分的对象和方法
@@ -305,11 +305,7 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
      * @return {@link Cell}
      */
     public Cell getCell(final int x, final int y, final boolean isCreateIfNotExist) {
-        final Row row = isCreateIfNotExist ? RowKit.getOrCreateRow(this.sheet, y) : this.sheet.getRow(y);
-        if (null != row) {
-            return isCreateIfNotExist ? CellKit.getOrCreateCell(row, x) : row.getCell(x);
-        }
-        return null;
+        return CellKit.getCell(this.sheet, x, y, isCreateIfNotExist);
     }
 
     /**

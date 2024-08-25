@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.core.center;
 
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.xyz.*;
+
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
-
-import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.xyz.*;
 
 /**
  * 集合的stream操作封装
@@ -53,7 +54,7 @@ public class CollectionStream extends CollectionValidator {
      * @param <K>        map中的key类型
      * @return 转化后的map
      */
-    public static <V, K> Map<K, V> toIdentityMap(final Collection<V> collection, final Function<V, K> key) {
+    public static <V, K> Map<K, V> toIdentityMap(final Collection<V> collection, final FunctionX<V, K> key) {
         return toIdentityMap(collection, key, false);
     }
 
@@ -67,12 +68,12 @@ public class CollectionStream extends CollectionValidator {
      * @param <K>        map中的key类型
      * @return 转化后的map
      */
-    public static <V, K> Map<K, V> toIdentityMap(final Collection<V> collection, final Function<V, K> key,
+    public static <V, K> Map<K, V> toIdentityMap(final Collection<V> collection, final FunctionX<V, K> key,
             final boolean isParallel) {
         if (CollKit.isEmpty(collection)) {
             return MapKit.zero();
         }
-        return toMap(collection, (v) -> Optional.ofNullable(v).map(key).get(), Function.identity(), isParallel);
+        return toMap(collection, (v) -> Optional.ofNullable(v).map(key).getOrNull(), Function.identity(), isParallel);
     }
 
     /**
@@ -224,8 +225,8 @@ public class CollectionStream extends CollectionValidator {
      * @param <V>        List中的value类型
      * @return 分组后的map
      */
-    public static <E, K, V> Map<K, List<V>> groupKeyValue(final Collection<E> collection, final Function<E, K> key,
-            final Function<E, V> value) {
+    public static <E, K, V> Map<K, List<V>> groupKeyValue(final Collection<E> collection, final FunctionX<E, K> key,
+                                                          final FunctionX<E, V> value) {
         return groupKeyValue(collection, key, value, false);
     }
 
@@ -241,8 +242,8 @@ public class CollectionStream extends CollectionValidator {
      * @param <V>        List中的value类型
      * @return 分组后的map
      */
-    public static <E, K, V> Map<K, List<V>> groupKeyValue(final Collection<E> collection, final Function<E, K> key,
-            final Function<E, V> value, final boolean isParallel) {
+    public static <E, K, V> Map<K, List<V>> groupKeyValue(final Collection<E> collection, final FunctionX<E, K> key,
+                                                          final FunctionX<E, V> value, final boolean isParallel) {
         if (CollKit.isEmpty(collection)) {
             return MapKit.zero();
         }

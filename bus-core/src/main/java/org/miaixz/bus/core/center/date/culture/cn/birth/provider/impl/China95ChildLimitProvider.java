@@ -57,9 +57,10 @@ public class China95ChildLimitProvider implements ChildLimitProvider {
 
         int d = birthday.getDay() + day;
         int dc = sm.getDayCount();
-        if (d > dc) {
+        while (d > dc) {
             d -= dc;
             sm = sm.next(1);
+            dc = sm.getDayCount();
         }
 
         return new ChildLimitInfo(birthTime, SolarTime.fromYmdHms(sm.getYear(), sm.getMonth(), d, birthTime.getHour(),

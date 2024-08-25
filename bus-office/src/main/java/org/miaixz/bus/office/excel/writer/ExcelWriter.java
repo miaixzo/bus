@@ -27,13 +27,6 @@
 */
 package org.miaixz.bus.office.excel.writer;
 
-import java.awt.Color;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-
 import org.apache.poi.common.usermodel.Hyperlink;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddressList;
@@ -44,6 +37,7 @@ import org.miaixz.bus.core.center.map.multi.Table;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.RevisedException;
 import org.miaixz.bus.core.xyz.*;
 import org.miaixz.bus.office.excel.*;
 import org.miaixz.bus.office.excel.cell.CellEditor;
@@ -52,6 +46,13 @@ import org.miaixz.bus.office.excel.style.DefaultStyleSet;
 import org.miaixz.bus.office.excel.style.LineStyle;
 import org.miaixz.bus.office.excel.style.ShapeConfig;
 import org.miaixz.bus.office.excel.style.StyleSet;
+
+import java.awt.Color;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Excel 写入器 此工具用于通过POI将数据写出到Excel，此对象可完成以下两个功能
@@ -95,7 +96,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
     }
 
     /**
-     * 构造 此构造不传入写出的Excel文件路径，只能调用{@link #flush(OutputStream)}方法写出到流 若写出到文件，需要调用{@link #flush(File)} 写出到文件
+     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(OutputStream)}方法写出到流 若写出到文件，需要调用{@link #flush(File, boolean)} 写出到文件
      *
      * @param isXlsx 是否为xlsx格式
      */
@@ -106,14 +107,14 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
     /**
      * 构造，默认写出到第一个sheet，第一个sheet名为sheet1
      *
-     * @param destFilePath 目标文件路径，可以不存在
+     * @param dest 目标文件路径，可以不存在
      */
-    public ExcelWriter(final String destFilePath) {
-        this(destFilePath, null);
+    public ExcelWriter(final String dest) {
+        this(dest, null);
     }
 
     /**
-     * 构造 此构造不传入写出的Excel文件路径，只能调用{@link #flush(OutputStream)}方法写出到流 若写出到文件，需要调用{@link #flush(File)} 写出到文件
+     * 此构造不传入写出的Excel文件路径，只能调用{@link #flush(OutputStream)}方法写出到流 若写出到文件，需要调用{@link #flush(File, boolean)} 写出到文件
      *
      * @param isXlsx    是否为xlsx格式
      * @param sheetName sheet名，第一个sheet名并写出到此sheet，例如sheet1
@@ -966,6 +967,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
     }
 
     public ExcelWriter fillRow(final Map<?, ?> rowMap) {
+        rowMap.forEach((key, value) -> this.templateContext.fillAndPointToNext(StringKit.toStringOrNull(key), rowMap));
         return this;
     }
 
@@ -1183,20 +1185,36 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      * @throws InternalException IO异常
      */
     public ExcelWriter flush() throws InternalException {
-        return flush(this.destFile);
+        return flush(false);
+    }
+
+    /**
+     * 将Excel Workbook刷出到预定义的文件 如果用户未自定义输出的文件，将抛出{@link NullPointerException} 预定义文件可以通过{@link #setDestFile(File)}
+     * 方法预定义，或者通过构造定义
+     *
+     * @param override 是否覆盖已有文件
+     * @return this
+     * @throws RevisedException IO异常
+     */
+    public ExcelWriter flush(final boolean override) throws RevisedException {
+        Assert.notNull(this.destFile, "[targetFile] is null, and you must call setTargetFile(File) first.");
+        return flush(this.destFile, override);
     }
 
     /**
      * 将Excel Workbook刷出到文件 如果用户未自定义输出的文件，将抛出{@link NullPointerException}
      *
-     * @param destFile 写出到的文件
+     * @param targetFile 写出到的文件
+     * @param override   是否覆盖已有文件
      * @return this
      * @throws InternalException IO异常
      */
-    public ExcelWriter flush(final File destFile) throws InternalException {
-        Assert.notNull(destFile,
-                "[destFile] is null, and you must call setDestFile(File) first or call flush(OutputStream).");
-        return flush(FileKit.getOutputStream(destFile), true);
+    public ExcelWriter flush(final File targetFile, final boolean override) throws RevisedException {
+        Assert.notNull(targetFile, "targetFile is null!");
+        if (FileKit.exists(targetFile) && !override) {
+            throw new RevisedException("File to write exist: " + targetFile);
+        }
+        return flush(FileKit.getOutputStream(targetFile), true);
     }
 
     /**
@@ -1206,7 +1224,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      * @return this
      * @throws InternalException IO异常
      */
-    public ExcelWriter flush(final OutputStream out) throws InternalException {
+    public ExcelWriter flush(final OutputStream out) throws RevisedException {
         return flush(out, false);
     }
 
@@ -1216,15 +1234,15 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      * @param out        输出流
      * @param isCloseOut 是否关闭输出流
      * @return this
-     * @throws InternalException IO异常
+     * @throws RevisedException IO异常
      */
-    public ExcelWriter flush(final OutputStream out, final boolean isCloseOut) throws InternalException {
+    public ExcelWriter flush(final OutputStream out, final boolean isCloseOut) throws RevisedException {
         Assert.isFalse(this.isClosed, "ExcelWriter has been closed!");
         try {
             this.workbook.write(out);
             out.flush();
         } catch (final IOException e) {
-            throw new InternalException(e);
+            throw new RevisedException(e);
         } finally {
             if (isCloseOut) {
                 IoKit.closeQuietly(out);

@@ -27,24 +27,21 @@
 */
 package org.miaixz.bus.core.convert;
 
-import java.lang.reflect.Type;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
-
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.reflect.TypeReference;
-import org.miaixz.bus.core.xyz.*;
+import org.miaixz.bus.core.xyz.BeanKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.TypeKit;
+
+import java.lang.reflect.Type;
 
 /**
- * 复合转换器，融合了所有支持类型和自定义类型的转换规则
- * <p>
- * 将各种类型Convert对象放入符合转换器，通过convert方法查找目标类型对应的转换器，将被转换对象转换之。
- * </p>
- * <p>
- * 在此类中，存放着默认转换器和自定义转换器，默认转换器是预定义的一些转换器，自定义转换器存放用户自定的转换器。
- * </p>
+ * 复合转换器，融合了所有支持类型和自定义类型的转换规则 在此类中，存放着默认转换器和自定义转换器，默认转换器是预定义的一些转换器，自定义转换器存放用户自定的转换器。 转换过程类似于转换链，过程如下：
+ *
+ * <pre>{@code
+ *     处理null、Optional --> 自定义匹配转换器 --> 自定义类型转换器 --> 预注册的标准转换器 --> Map、集合、Enum等特殊转换器 --> Bean转换器
+ * }</pre>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -123,7 +120,7 @@ public class CompositeConverter extends RegisterConverter {
 
         // Optional处理
         if (value instanceof Optional) {
-            value = ((Optional<T>) value).get();
+            value = ((Optional<T>) value).getOrNull();
             if (ObjectKit.isNull(value)) {
                 return defaultValue;
             }
@@ -150,119 +147,29 @@ public class CompositeConverter extends RegisterConverter {
             return converter.convert(type, value, defaultValue);
         }
 
-        Class<T> rowType = (Class<T>) TypeKit.getClass(type);
-        if (null == rowType) {
+        Class<T> rawType = (Class<T>) TypeKit.getClass(type);
+        if (null == rawType) {
             if (null != defaultValue) {
-                rowType = (Class<T>) defaultValue.getClass();
+                rawType = (Class<T>) defaultValue.getClass();
             } else {
                 throw new ConvertException("Can not get class from type: {}", type);
             }
         }
 
         // 特殊类型转换，包括Collection、Map、强转、Array等
-        final T result = convertSpecial(type, rowType, value, defaultValue);
+        final T result = (T) SpecialConverter.getInstance().convert(type, rawType, value);
         if (null != result) {
             return result;
         }
 
         // 尝试转Bean
-        if (BeanKit.isWritableBean(rowType)) {
+        if (BeanKit.isWritableBean(rawType)) {
             return (T) BeanConverter.INSTANCE.convert(type, value);
         }
 
         // 无法转换
         throw new ConvertException("Can not convert from {}: [{}] to [{}]", value.getClass().getName(), value,
                 type.getTypeName());
-    }
-
-    /**
-     * 特殊类型转换 包括：
-     *
-     * <pre>
-     * Collection
-     * Map
-     * 强转（无需转换）
-     * 数组
-     * </pre>
-     *
-     * @param <T>          转换的目标类型（转换器转换到的类型）
-     * @param type         类型
-     * @param value        值
-     * @param defaultValue 默认值
-     * @return 转换后的值
-     */
-    private <T> T convertSpecial(final Type type, final Class<T> rowType, final Object value, final T defaultValue) {
-        if (null == rowType) {
-            return null;
-        }
-
-        // 日期、java.sql中的日期以及自定义日期统一处理
-        if (Date.class.isAssignableFrom(rowType)) {
-            return DateConverter.INSTANCE.convert(type, value, defaultValue);
-        }
-
-        // 集合转换（含有泛型参数，不可以默认强转）
-        if (Collection.class.isAssignableFrom(rowType)) {
-            return (T) CollectionConverter.INSTANCE.convert(type, value, (Collection<?>) defaultValue);
-        }
-
-        // Map类型（含有泛型参数，不可以默认强转）
-        if (Map.class.isAssignableFrom(rowType)) {
-            return (T) MapConverter.INSTANCE.convert(type, value, (Map<?, ?>) defaultValue);
-        }
-
-        // Entry类（含有泛型参数，不可以默认强转）
-        if (Map.Entry.class.isAssignableFrom(rowType)) {
-            return (T) EntryConverter.INSTANCE.convert(type, value);
-        }
-
-        // 默认强转
-        if (rowType.isInstance(value)) {
-            return (T) value;
-        }
-
-        // 原始类型转换
-        if (rowType.isPrimitive()) {
-            return PrimitiveConverter.INSTANCE.convert(type, value, defaultValue);
-        }
-
-        // 数字类型转换
-        if (Number.class.isAssignableFrom(rowType)) {
-            return NumberConverter.INSTANCE.convert(type, value, defaultValue);
-        }
-
-        // 枚举转换
-        if (rowType.isEnum()) {
-            return EnumConverter.INSTANCE.convert(type, value, defaultValue);
-        }
-
-        // 数组转换
-        if (rowType.isArray()) {
-            return ArrayConverter.INSTANCE.convert(type, value, defaultValue);
-        }
-
-        // Record
-        if (RecordKit.isRecord(rowType)) {
-            return (T) RecordConverter.INSTANCE.convert(type, value);
-        }
-
-        // Kotlin Bean
-        if (KotlinKit.isKotlinClass(rowType)) {
-            return (T) KotlinBeanConverter.INSTANCE.convert(type, value);
-        }
-
-        // Class
-        if ("java.lang.Class".equals(rowType.getName())) {
-            return (T) ClassConverter.INSTANCE.convert(type, value);
-        }
-
-        // 空值转空对象，则直接实例化
-        if (ObjectKit.isEmpty(value)) {
-            return ReflectKit.newInstanceIfPossible(rowType);
-        }
-
-        // 表示非需要特殊转换的对象
-        return null;
     }
 
     /**

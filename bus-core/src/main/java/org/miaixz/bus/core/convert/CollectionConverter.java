@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.core.convert;
 
-import java.lang.reflect.Type;
-import java.util.Collection;
-
 import org.miaixz.bus.core.lang.reflect.TypeReference;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.TypeKit;
+
+import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.util.Collection;
 
 /**
  * 各种集合类转换器
@@ -40,12 +41,19 @@ import org.miaixz.bus.core.xyz.TypeKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CollectionConverter implements Converter {
+public class CollectionConverter implements MatcherConverter, Serializable {
+
+    private static final long serialVersionUID = -1L;
 
     /**
      * 单例实体
      */
     public static CollectionConverter INSTANCE = new CollectionConverter();
+
+    @Override
+    public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
+        return Collection.class.isAssignableFrom(rawType);
+    }
 
     @Override
     public Collection<?> convert(Type targetType, final Object value) {

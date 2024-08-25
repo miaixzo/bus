@@ -27,10 +27,6 @@
 */
 package org.miaixz.bus.office.excel.reader;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.poi.ss.usermodel.Sheet;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.IteratorKit;
@@ -38,13 +34,17 @@ import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.office.excel.RowKit;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 /**
  * 读取{@link Sheet}为Map的List列表形式
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MapSheetReader extends AbstractSheetReader<List<Map<String, Object>>> {
+public class MapSheetReader extends AbstractSheetReader<List<Map<Object, Object>>> {
 
     private final int headerRowIndex;
 
@@ -61,7 +61,7 @@ public class MapSheetReader extends AbstractSheetReader<List<Map<String, Object>
     }
 
     @Override
-    public List<Map<String, Object>> read(final Sheet sheet) {
+    public List<Map<Object, Object>> read(final Sheet sheet) {
         // 边界判断
         final int firstRowNum = sheet.getFirstRowNum();
         final int lastRowNum = sheet.getLastRowNum();
@@ -88,9 +88,9 @@ public class MapSheetReader extends AbstractSheetReader<List<Map<String, Object>
         final int endRowIndex = Math.min(this.cellRangeAddress.getLastRow(), lastRowNum);
 
         // 读取header
-        final List<String> headerList = this.config.aliasHeader(readRow(sheet, headerRowIndex));
+        final List<Object> headerList = this.config.aliasHeader(readRow(sheet, headerRowIndex));
 
-        final List<Map<String, Object>> result = new ArrayList<>(endRowIndex - startRowIndex + 1);
+        final List<Map<Object, Object>> result = new ArrayList<>(endRowIndex - startRowIndex + 1);
         final boolean ignoreEmptyRow = this.config.isIgnoreEmptyRow();
         List<Object> rowList;
         for (int i = startRowIndex; i <= endRowIndex; i++) {

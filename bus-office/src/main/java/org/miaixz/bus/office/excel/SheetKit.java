@@ -36,7 +36,6 @@ import org.apache.poi.ss.util.cellwalk.CellWalk;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.miaixz.bus.core.xyz.FieldKit;
-import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * {@link Sheet} 相关工具类
@@ -50,17 +49,26 @@ public class SheetKit {
      * 获取或者创建sheet表 如果sheet表在Workbook中已经存在，则获取之，否则创建之
      *
      * @param book      工作簿{@link Workbook}
-     * @param sheetName 工作表名
+     * @param sheetName 工作表名，{@code null}表示默认
      * @return 工作表 {@link Sheet}
      */
-    public static Sheet getOrCreateSheet(final Workbook book, String sheetName) {
+    public static Sheet getOrCreateSheet(final Workbook book, final String sheetName) {
         if (null == book) {
             return null;
         }
-        sheetName = StringKit.isBlank(sheetName) ? "sheet1" : sheetName;
-        Sheet sheet = book.getSheet(sheetName);
-        if (null == sheet) {
-            sheet = book.createSheet(sheetName);
+
+        Sheet sheet;
+        if (null == sheetName) {
+            sheet = book.getSheetAt(0);
+            if (null == sheet) {
+                // 工作簿中无sheet，创建默认
+                sheet = book.createSheet();
+            }
+        } else {
+            sheet = book.getSheet(sheetName);
+            if (null == sheet) {
+                sheet = book.createSheet(sheetName);
+            }
         }
         return sheet;
     }

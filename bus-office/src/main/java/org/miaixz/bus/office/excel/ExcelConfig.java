@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.office.excel;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.office.excel.cell.CellEditor;
 import org.miaixz.bus.office.excel.cell.CellKit;
+
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Excel读取和写出通用配置
@@ -117,13 +117,13 @@ public class ExcelConfig {
      * @param headerList 原标题列表
      * @return 转换别名列表
      */
-    public List<String> aliasHeader(final List<Object> headerList) {
+    public List<Object> aliasHeader(final List<Object> headerList) {
         if (CollKit.isEmpty(headerList)) {
             return new ArrayList<>(0);
         }
 
         final int size = headerList.size();
-        final List<String> result = new ArrayList<>(size);
+        final List<Object> result = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
             result.add(aliasHeader(headerList.get(i), i));
         }
@@ -137,16 +137,15 @@ public class ExcelConfig {
      * @param index     标题所在列号，当标题为空时，列号对应的字母便是header
      * @return 转换别名列表
      */
-    public String aliasHeader(final Object headerObj, final int index) {
+    public Object aliasHeader(final Object headerObj, final int index) {
         if (null == headerObj) {
             return CellKit.indexToColName(index);
         }
 
-        final String header = headerObj.toString();
         if (null != this.headerAlias) {
-            return ObjectKit.defaultIfNull(this.headerAlias.get(header), header);
+            return ObjectKit.defaultIfNull(this.headerAlias.get(headerObj.toString()), headerObj);
         }
-        return header;
+        return headerObj;
     }
 
     /**

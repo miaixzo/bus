@@ -28,6 +28,7 @@
 package org.miaixz.bus.office.excel.cell.values;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.miaixz.bus.office.excel.cell.CellSetter;
 import org.miaixz.bus.office.excel.cell.CellValue;
 
@@ -52,6 +53,7 @@ public class FormulaCellValue implements CellValue<String>, CellSetter {
      * 结果，使用ExcelWriter时可以不用
      */
     private final Object result;
+    private final CellType resultType;
 
     /**
      * 构造
@@ -69,8 +71,29 @@ public class FormulaCellValue implements CellValue<String>, CellSetter {
      * @param result  结果
      */
     public FormulaCellValue(final String formula, final Object result) {
+        this(formula, result, null);
+    }
+
+    /**
+     * 构造
+     *
+     * @param formula    公式
+     * @param result     结果
+     * @param resultType 结果类型
+     */
+    public FormulaCellValue(final String formula, final Object result, final CellType resultType) {
         this.formula = formula;
         this.result = result;
+        this.resultType = resultType;
+    }
+
+    /**
+     * 获取结果类型
+     *
+     * @return 结果类型，{@code null}表示未明确
+     */
+    public CellType getResultType() {
+        return this.resultType;
     }
 
     @Override

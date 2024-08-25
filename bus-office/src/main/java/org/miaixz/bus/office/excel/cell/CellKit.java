@@ -34,6 +34,7 @@ import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.ss.util.SheetUtil;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.office.excel.RowKit;
 import org.miaixz.bus.office.excel.cell.editors.TrimEditor;
 import org.miaixz.bus.office.excel.cell.setters.CellSetterFactory;
 import org.miaixz.bus.office.excel.cell.values.CompositeCellValue;
@@ -181,6 +182,23 @@ public class CellKit {
         }
 
         CellSetterFactory.createCellSetter(value).setValue(cell);
+    }
+
+    /**
+     * 获取指定坐标单元格，如果isCreateIfNotExist为false，则在单元格不存在时返回{@code null}
+     *
+     * @param sheet              {@link Sheet}
+     * @param x                  X坐标，从0计数，即列号
+     * @param y                  Y坐标，从0计数，即行号
+     * @param isCreateIfNotExist 单元格不存在时是否创建
+     * @return {@link Cell}
+     */
+    public static Cell getCell(final Sheet sheet, final int x, final int y, final boolean isCreateIfNotExist) {
+        final Row row = isCreateIfNotExist ? RowKit.getOrCreateRow(sheet, y) : sheet.getRow(y);
+        if (null != row) {
+            return isCreateIfNotExist ? getOrCreateCell(row, x) : row.getCell(x);
+        }
+        return null;
     }
 
     /**
@@ -416,6 +434,17 @@ public class CellKit {
             RegionUtil.setRightBorderColor(cellStyle.getRightBorderColor(), cellRangeAddress, sheet);
             RegionUtil.setLeftBorderColor(cellStyle.getLeftBorderColor(), cellRangeAddress, sheet);
             RegionUtil.setBottomBorderColor(cellStyle.getBottomBorderColor(), cellRangeAddress, sheet);
+        }
+    }
+
+    /**
+     * 移除指定单元格
+     *
+     * @param cell 单元格
+     */
+    public static void remove(final Cell cell) {
+        if (null != cell) {
+            cell.getRow().removeCell(cell);
         }
     }
 

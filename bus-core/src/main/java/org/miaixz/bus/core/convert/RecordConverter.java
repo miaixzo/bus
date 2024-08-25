@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.core.convert;
 
-import java.util.Map;
-
 import org.miaixz.bus.core.bean.copier.ValueProvider;
 import org.miaixz.bus.core.bean.copier.provider.BeanValueProvider;
 import org.miaixz.bus.core.bean.copier.provider.MapValueProvider;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.RecordKit;
+
+import java.lang.reflect.Type;
+import java.util.Map;
 
 /**
  * Record类的转换器，支持：
@@ -48,7 +49,7 @@ import org.miaixz.bus.core.xyz.RecordKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class RecordConverter extends AbstractConverter {
+public class RecordConverter extends AbstractConverter implements MatcherConverter {
 
     private static final long serialVersionUID = -1L;
 
@@ -56,6 +57,11 @@ public class RecordConverter extends AbstractConverter {
      * 单例对象
      */
     public static RecordConverter INSTANCE = new RecordConverter();
+
+    @Override
+    public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
+        return RecordKit.isRecord(rawType);
+    }
 
     @Override
     protected Object convertInternal(final Class<?> targetClass, final Object value) {

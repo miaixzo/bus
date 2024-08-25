@@ -27,11 +27,6 @@
 */
 package org.miaixz.bus.office.excel.writer;
 
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
-
 import org.miaixz.bus.core.center.map.TableMap;
 import org.miaixz.bus.core.center.map.multi.RowKeyTable;
 import org.miaixz.bus.core.center.map.multi.Table;
@@ -39,6 +34,11 @@ import org.miaixz.bus.core.compare.IndexedCompare;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.office.excel.ExcelConfig;
+
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Excel写出配置
@@ -52,6 +52,10 @@ public class ExcelWriteConfig extends ExcelConfig {
      * 是否只保留别名对应的字段
      */
     protected boolean onlyAlias;
+    /**
+     * 是否强制插入行 如果为{@code true}，则写入行以下的已存在行下移，{@code false}则利用填充已有行，不存在再创建行
+     */
+    protected boolean insertRow = true;
     /**
      * 标题顺序比较器
      */
@@ -88,9 +92,20 @@ public class ExcelWriteConfig extends ExcelConfig {
     }
 
     /**
+     * 设置是否插入行，如果为true，则写入行以下的已存在行下移，false则利用填充已有行，不存在时创建行
+     *
+     * @param insertRow 是否插入行
+     * @return this
+     */
+    public ExcelWriteConfig setInsertRow(final boolean insertRow) {
+        this.insertRow = insertRow;
+        return this;
+    }
+
+    /**
      * 获取单例的别名比较器，比较器的顺序为别名加入的顺序
      *
-     * @return Comparator
+     * @return {@link Comparator}
      */
     public Comparator<String> getCachedAliasComparator() {
         final Map<String, String> headerAlias = this.headerAlias;

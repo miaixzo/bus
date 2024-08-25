@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.core.convert;
 
+import org.miaixz.bus.core.lang.exception.ConvertException;
+import org.miaixz.bus.core.xyz.*;
+
+import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.temporal.TemporalAccessor;
@@ -37,9 +41,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.DoubleAdder;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.function.Function;
-
-import org.miaixz.bus.core.lang.exception.ConvertException;
-import org.miaixz.bus.core.xyz.*;
 
 /**
  * 数字转换器 支持类型为：
@@ -59,13 +60,42 @@ import org.miaixz.bus.core.xyz.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class NumberConverter extends AbstractConverter {
+public class NumberConverter extends AbstractConverter implements MatcherConverter {
+
+    private static final long serialVersionUID = -1L;
 
     /**
      * 单例
      */
     public static final NumberConverter INSTANCE = new NumberConverter();
-    private static final long serialVersionUID = -1L;
+
+    @Override
+    public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
+        return Number.class.isAssignableFrom(rawType);
+    }
+
+    @Override
+    protected Number convertInternal(final Class<?> targetClass, final Object value) {
+        return convert(value, (Class<? extends Number>) targetClass, this::convertToString);
+    }
+
+    @Override
+    protected String convertToString(final Object value) {
+        final String result = StringKit.trim(super.convertToString(value));
+        if (StringKit.isEmpty(result)) {
+            throw new ConvertException("Can not convert empty value to Number!");
+        }
+
+        if (result.length() > 1) {
+            // 非单个字符才判断末尾的标识符
+            final char c = Character.toUpperCase(result.charAt(result.length() - 1));
+            if (c == 'D' || c == 'L' || c == 'F') {
+                // 类型标识形式（例如123.6D）
+                return StringKit.subPre(result, -1);
+            }
+        }
+        return result;
+    }
 
     /**
      * 转换对象为数字，支持的对象包括：
@@ -236,29 +266,6 @@ public class NumberConverter extends AbstractConverter {
         }
 
         return MathKit.toBigInteger(toStrFunc.apply(value));
-    }
-
-    @Override
-    protected Number convertInternal(final Class<?> targetClass, final Object value) {
-        return convert(value, (Class<? extends Number>) targetClass, this::convertToString);
-    }
-
-    @Override
-    protected String convertToString(final Object value) {
-        final String result = StringKit.trim(super.convertToString(value));
-        if (StringKit.isEmpty(result)) {
-            throw new ConvertException("Can not convert empty value to Number!");
-        }
-
-        if (result.length() > 1) {
-            // 非单个字符才判断末尾的标识符
-            final char c = Character.toUpperCase(result.charAt(result.length() - 1));
-            if (c == 'D' || c == 'L' || c == 'F') {
-                // 类型标识形式（例如123.6D）
-                return StringKit.subPre(result, -1);
-            }
-        }
-        return result;
     }
 
 }

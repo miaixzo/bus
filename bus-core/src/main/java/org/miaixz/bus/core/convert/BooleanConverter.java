@@ -48,6 +48,11 @@ public class BooleanConverter extends AbstractConverter {
 
     private static final long serialVersionUID = -1L;
 
+    /**
+     * 单例
+     */
+    public static final BooleanConverter INSTANCE = new BooleanConverter();
+
     @Override
     protected Boolean convertInternal(final Class<?> targetClass, final Object value) {
         if (value instanceof Number) {
