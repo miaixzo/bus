@@ -129,9 +129,9 @@ public class QrCodeKit {
     /**
      * 生成二维码到文件，二维码图片格式取决于文件的扩展名
      *
-     * @param content    文本内容
-     * @param width      宽度（单位：类型为一般图片或SVG时，单位是像素，类型为 Ascii Art 字符画时，单位是字符▄或▀的大小）
-     * @param height     高度（单位：类型为一般图片或SVG时，单位是像素，类型为 Ascii Art 字符画时，单位是字符▄或▀的大小）
+     * @param content  文本内容
+     * @param width    宽度（单位：类型为一般图片或SVG时，单位是像素，类型为 Ascii Art 字符画时，单位是字符▄或▀的大小）
+     * @param height   高度（单位：类型为一般图片或SVG时，单位是像素，类型为 Ascii Art 字符画时，单位是字符▄或▀的大小）
      * @param destFile 目标文件，扩展名决定输出格式
      * @return 目标文件
      */
@@ -142,8 +142,8 @@ public class QrCodeKit {
     /**
      * 生成二维码到文件，二维码图片格式取决于文件的扩展名
      *
-     * @param content    文本内容
-     * @param config     二维码配置，包括宽度、高度、边距、颜色等
+     * @param content  文本内容
+     * @param config   二维码配置，包括宽度、高度、边距、颜色等
      * @param destFile 目标文件，扩展名决定输出格式
      * @return 目标文件
      */

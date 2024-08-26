@@ -792,9 +792,9 @@ public class ImageKit {
     /**
      * 给图片添加文字水印
      *
-     * @param imageFile  源图像文件
-     * @param destFile 目标图像文件
-     * @param pressText  水印文字
+     * @param imageFile 源图像文件
+     * @param destFile  目标图像文件
+     * @param pressText 水印文字
      */
     public static void pressText(final File imageFile, final File destFile, final ImageText pressText) {
         BufferedImage image = null;
@@ -827,9 +827,9 @@ public class ImageKit {
     /**
      * 给图片添加文字水印 此方法并不关闭流
      *
-     * @param srcImage   源图像，使用结束后需手动调用{@link #flush(Image)}释放资源
-     * @param destFile 目标流
-     * @param pressText  水印文字信息
+     * @param srcImage  源图像，使用结束后需手动调用{@link #flush(Image)}释放资源
+     * @param destFile  目标流
+     * @param pressText 水印文字信息
      * @throws InternalException IO异常
      */
     public static void pressText(final Image srcImage, final File destFile, final ImageText pressText)
@@ -1014,7 +1014,7 @@ public class ImageKit {
      * 给图片添加全屏图片水印
      *
      * @param imageFile      源图像文件
-     * @param destFile     目标图像文件
+     * @param destFile       目标图像文件
      * @param pressImageFile 水印图像文件
      * @param lineHeight     行高
      * @param degree         水印图像旋转角度，（单位：弧度），以圆点（0,0）为圆心，正代表顺时针，负代表逆时针
@@ -1600,7 +1600,7 @@ public class ImageKit {
     /**
      * 写出图像为目标文件扩展名对应的格式
      *
-     * @param image      {@link Image}，使用结束后需手动调用{@link #flush(Image)}释放资源
+     * @param image    {@link Image}，使用结束后需手动调用{@link #flush(Image)}释放资源
      * @param destFile 目标文件
      * @throws InternalException IO异常
      */
