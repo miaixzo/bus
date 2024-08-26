@@ -27,14 +27,7 @@
 */
 package org.miaixz.bus.starter.mapper;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.sql.DataSource;
-
+import jakarta.annotation.Resource;
 import org.apache.ibatis.io.VFS;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.Configuration;
@@ -59,7 +52,12 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
-import jakarta.annotation.Resource;
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Mybatis的配置，提供一个{@link SqlSessionFactory}和一个{@link SqlSessionTemplate}
@@ -104,7 +102,9 @@ public class MapperConfiguration implements InitializingBean {
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
         SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
         factory.setDataSource(dataSource);
-        factory.setVfs(SpringBootVFS.class);
+        if (properties.getConfiguration() == null || properties.getConfiguration().getVfsImpl() == null) {
+            factory.setVfs(SpringBootVFS.class);
+        }
         if (StringKit.hasText(this.properties.getConfigLocation())) {
             factory.setConfigLocation(this.resourceLoader.getResource(this.properties.getConfigLocation()));
         }

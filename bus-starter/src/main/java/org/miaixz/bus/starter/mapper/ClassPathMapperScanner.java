@@ -27,11 +27,6 @@
 */
 package org.miaixz.bus.starter.mapper;
 
-import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.Properties;
-import java.util.Set;
-
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -53,6 +48,11 @@ import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.AssignableTypeFilter;
+
+import java.lang.annotation.Annotation;
+import java.util.Arrays;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * 通过{@code basePackage}， {@code annotationClass}或{@code markerInterface}注册映射器的{@link ClassPathBeanDefinitionScanner}
@@ -122,7 +122,7 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
                 return true;
             }
             return metadataReader.getAnnotationMetadata()
-                    .hasAnnotation("annotation.mapper.org.miaixz.bus.RegisterMapper");
+                    .hasAnnotation("org.miaixz.bus.mapper.annotation.RegisterMapper");
         });
     }
 
@@ -296,7 +296,7 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
             if (index < 0) {
                 throw new InternalException("通过 @EnableMapper 注解的 properties 参数配置出错:" + property + " !\n"
                         + "请保证配置项按 properties 文件格式要求进行配置，例如：\n" + "properties = {\n"
-                        + "\t\"mappers=mapper.org.miaixz.bus.Mapper\",\n" + "\t\"notEmpty=true\"\n" + "}");
+                        + "\t\"mappers=org.miaixz.bus.mapper.Mapper\",\n" + "\t\"notEmpty=true\"\n" + "}");
             }
             props.put(property.substring(0, index).trim(), property.substring(index + 1).trim());
         }

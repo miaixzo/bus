@@ -114,5 +114,8 @@ public class UnifiedOrder {
      * 场景信息
      */
     private SceneInfo scene_info;
-
+    /**
+     * 电子发票入口开放标识
+     */
+    private boolean support_fapiao;
 }

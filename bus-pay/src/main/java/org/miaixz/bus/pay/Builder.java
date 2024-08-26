@@ -27,26 +27,6 @@
 */
 package org.miaixz.bus.pay;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.security.*;
-import java.security.cert.*;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
-import java.util.*;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.GCMParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-
 import org.bouncycastle.asn1.gm.GMObjectIdentifiers;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.miaixz.bus.core.center.date.DateTime;
@@ -62,6 +42,25 @@ import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.crypto.builtin.Certificate;
 import org.miaixz.bus.pay.metric.wechat.AuthType;
 import org.miaixz.bus.pay.metric.wechat.WechatPayBuilder;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.security.*;
+import java.security.cert.*;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.*;
 
 /**
  * 支付相关支持
@@ -272,6 +271,10 @@ public class Builder {
         for (int i = 0; i < keys.size(); i++) {
             String key = keys.get(i);
             String value = params.get(key);
+            // 参数的值为空不参与签名
+            if (StringKit.isBlank(value)) {
+                continue;
+            }
             // 拼接时，不包括最后一个&字符
             if (i == keys.size() - 1) {
                 if (quotes) {
@@ -462,7 +465,7 @@ public class Builder {
      * @return 请求头 Authorization
      */
     public static String getAuthorization(String mchId, String serialNo, String nonceStr, String timestamp,
-            String signature, String authType) {
+                                          String signature, String authType) {
         Map<String, String> params = new HashMap<>(5);
         params.put("mchid", mchId);
         params.put("serial_no", serialNo);

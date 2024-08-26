@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-mapper</artifactId>
-    <version>8.0.8</version>
+    <version>8.0.9</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -55,7 +55,8 @@
             <organization>Miaixz</organization>
             <organizationUrl>http://www.miaixz.org</organizationUrl>
             <roles>
-                <role>maintainer</role>
+                <role>Owner</role>
+                <role>Committer</role>
             </roles>
         </developer>
         <developer>
@@ -64,6 +65,9 @@
             <email>wubenhui@gmail.com</email>
             <organization>Miaixz</organization>
             <organizationUrl>http://www.miaixz.org</organizationUrl>
+            <roles>
+                <role>Committer</role>
+            </roles>
         </developer>
     </developers>
 
@@ -83,7 +87,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <lombok.version>1.18.34</lombok.version>
         <mybatis.version>3.5.16</mybatis.version>
-        <mybatis.spring.version>3.0.3</mybatis.spring.version>
+        <mybatis.spring.version>3.0.4</mybatis.spring.version>
         <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
     </properties>
 
