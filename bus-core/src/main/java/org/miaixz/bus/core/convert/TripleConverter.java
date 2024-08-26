@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.convert;
 
-import java.lang.reflect.Type;
-import java.util.Map;
-
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.reflect.TypeReference;
 import org.miaixz.bus.core.lang.tuple.Triplet;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.TypeKit;
+
+import java.lang.reflect.Type;
+import java.util.Map;
 
 /**
  * {@link Triplet} 转换器，支持以下类型转为Triple：
@@ -98,8 +98,11 @@ public class TripleConverter implements Converter {
     public Triplet<?, ?, ?> convert(final Type leftType, final Type middleType, final Type rightType,
             final Object value) throws ConvertException {
         Map map = null;
-        if (BeanKit.isReadableBean(value.getClass())) {
-            map = BeanKit.beanToMap(value);
+        if (value instanceof Map) {
+            map = (Map) value;
+        } else if (BeanKit.isReadableBean(value.getClass())) {
+            // 一次性只读场景，包装为Map效率更高
+            map = BeanKit.toBeanMap(value);
         }
 
         if (null != map) {

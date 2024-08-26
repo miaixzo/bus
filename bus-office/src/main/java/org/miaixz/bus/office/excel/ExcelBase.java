@@ -33,12 +33,8 @@ import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.office.excel.cell.CellKit;
 import org.miaixz.bus.office.excel.style.StyleKit;
 
@@ -529,31 +525,6 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     }
 
     /**
-     * 获取Content-Disposition头对应的值，可以通过调用以下方法快速设置下载Excel的头信息：
-     *
-     * <pre>
-     * response.setHeader("Content-Disposition", excelWriter.getDisposition("test.xlsx", Charset.UTF_8));
-     * </pre>
-     *
-     * @param fileName 文件名，如果文件名没有扩展名，会自动按照生成Excel类型补齐扩展名，如果提供空，使用随机UUID
-     * @param charset  编码，null则使用默认UTF-8编码
-     * @return Content-Disposition值
-     */
-    public String getDisposition(String fileName, java.nio.charset.Charset charset) {
-        if (null == charset) {
-            charset = Charset.UTF_8;
-        }
-
-        if (StringKit.isBlank(fileName)) {
-            // 未提供文件名使用随机UUID作为文件名
-            fileName = ID.objectId();
-        }
-
-        fileName = StringKit.addSuffixIfNot(UrlEncoder.encodeAll(fileName, charset), isXlsx() ? ".xlsx" : ".xls");
-        return StringKit.format("attachment; filename=\"{}\"", fileName);
-    }
-
-    /**
      * 关闭工作簿 如果用户设定了目标文件，先写出目标文件后给关闭工作簿
      */
     @Override
@@ -562,6 +533,13 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
         this.sheet = null;
         this.workbook = null;
         this.isClosed = true;
+    }
+
+    /**
+     * 校验Excel是否已经关闭
+     */
+    protected void checkClosed() {
+        Assert.isFalse(this.isClosed, "Excel has been closed!");
     }
 
 }

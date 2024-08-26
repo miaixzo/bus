@@ -314,7 +314,7 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
      * @return 数据读取结果
      */
     public <T> T read(final SheetReader<T> sheetReader) {
-        checkNotClosed();
+        checkClosed();
         return Assert.notNull(sheetReader).read(this.sheet);
     }
 
@@ -386,13 +386,6 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
     }
 
     /**
-     * 检查是否未关闭状态
-     */
-    private void checkNotClosed() {
-        Assert.isFalse(this.isClosed, "ExcelReader has been closed!");
-    }
-
-    /**
      * 获取Sheet，如果不存在则关闭{@link Workbook}并抛出异常，解决当sheet不存在时，文件依旧被占用问题
      *
      * @param workbook   {@link Workbook}，非空
@@ -425,7 +418,7 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
      * @param cellHandler   单元格处理器，用于处理读到的单元格及其数据
      */
     public void read(final int startRowIndex, final int endRowIndex, final BiConsumerX<Cell, Object> cellHandler) {
-        checkNotClosed();
+        checkClosed();
 
         final WalkSheetReader reader = new WalkSheetReader(startRowIndex, endRowIndex, cellHandler);
         reader.setExcelConfig(this.config);

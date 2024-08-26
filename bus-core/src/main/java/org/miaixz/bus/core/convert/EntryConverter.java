@@ -87,6 +87,35 @@ public class EntryConverter implements MatcherConverter, Serializable {
     }
 
     /**
+     * Map转Entry
+     *
+     * @param targetType 目标的Map类型
+     * @param keyType    键类型
+     * @param valueType  值类型
+     * @param map        被转换的map
+     * @return Entry
+     */
+    private static Map.Entry<?, ?> mapToEntry(final Type targetType, final Type keyType, final Type valueType,
+                                              final Map map) {
+        final Object key;
+        final Object value;
+        if (1 == map.size()) {
+            final Map.Entry entry = (Map.Entry) map.entrySet().iterator().next();
+            key = entry.getKey();
+            value = entry.getValue();
+        } else {
+            // 忽略Map中其它属性
+            key = map.get("key");
+            value = map.get("value");
+        }
+
+        final CompositeConverter convert = CompositeConverter.getInstance();
+        return (Map.Entry<?, ?>) ReflectKit.newInstance(TypeKit.getClass(targetType),
+                TypeKit.isUnknown(keyType) ? key : convert.convert(keyType, key),
+                TypeKit.isUnknown(valueType) ? value : convert.convert(valueType, value));
+    }
+
+    /**
      * 转换对象为指定键值类型的指定类型Map
      *
      * @param targetType 目标的Map类型
@@ -111,7 +140,7 @@ public class EntryConverter implements MatcherConverter, Serializable {
             final CharSequence text = (CharSequence) value;
             map = strToMap(text);
         } else if (BeanKit.isWritableBean(value.getClass())) {
-            map = BeanKit.beanToMap(value);
+            map = BeanKit.toBeanMap(value);
         }
 
         if (null != map) {
@@ -119,35 +148,6 @@ public class EntryConverter implements MatcherConverter, Serializable {
         }
 
         throw new ConvertException("Unsupported to map from [{}] of type: {}", value, value.getClass().getName());
-    }
-
-    /**
-     * Map转Entry
-     *
-     * @param targetType 目标的Map类型
-     * @param keyType    键类型
-     * @param valueType  值类型
-     * @param map        被转换的map
-     * @return Entry
-     */
-    private static Map.Entry<?, ?> mapToEntry(final Type targetType, final Type keyType, final Type valueType,
-                                              final Map map) {
-
-        Object key = null;
-        Object value = null;
-        if (1 == map.size()) {
-            final Map.Entry entry = (Map.Entry) map.entrySet().iterator().next();
-            key = entry.getKey();
-            value = entry.getValue();
-        } else if (2 == map.size()) {
-            key = map.get("id");
-            value = map.get("value");
-        }
-
-        final CompositeConverter convert = CompositeConverter.getInstance();
-        return (Map.Entry<?, ?>) ReflectKit.newInstance(TypeKit.getClass(targetType),
-                TypeKit.isUnknown(keyType) ? key : convert.convert(keyType, key),
-                TypeKit.isUnknown(valueType) ? value : convert.convert(valueType, value));
     }
 
     @Override

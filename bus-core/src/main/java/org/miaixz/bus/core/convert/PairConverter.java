@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.core.convert;
 
-import java.lang.reflect.Type;
-import java.util.Map;
-
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.reflect.TypeReference;
@@ -38,6 +35,9 @@ import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.TypeKit;
+
+import java.lang.reflect.Type;
+import java.util.Map;
 
 /**
  * {@link Pair} 转换器，支持以下类型转为Pair
@@ -57,6 +57,17 @@ public class PairConverter implements Converter {
      * 单例
      */
     public static final PairConverter INSTANCE = new PairConverter();
+
+    @Override
+    public Object convert(Type targetType, final Object value) throws ConvertException {
+        if (targetType instanceof TypeReference) {
+            targetType = ((TypeReference<?>) targetType).getType();
+        }
+        final Type leftType = TypeKit.getTypeArgument(targetType, 0);
+        final Type rightType = TypeKit.getTypeArgument(targetType, 1);
+
+        return convert(leftType, rightType, value);
+    }
 
     /**
      * 字符串转单个键值对的Map，支持分隔符{@code :}、{@code =}、{@code ,}
@@ -85,13 +96,14 @@ public class PairConverter implements Converter {
      */
     private static Pair<?, ?> mapToPair(final Type keyType, final Type valueType, final Map map) {
 
-        Object left = null;
-        Object right = null;
+        final Object left;
+        final Object right;
         if (1 == map.size()) {
             final Map.Entry entry = (Map.Entry) map.entrySet().iterator().next();
             left = entry.getKey();
             right = entry.getValue();
-        } else if (2 == map.size()) {
+        } else {
+            // 忽略Map中其它属性
             left = map.get("left");
             right = map.get("right");
         }
@@ -99,17 +111,6 @@ public class PairConverter implements Converter {
         final CompositeConverter convert = CompositeConverter.getInstance();
         return Pair.of(TypeKit.isUnknown(keyType) ? left : convert.convert(keyType, left),
                 TypeKit.isUnknown(valueType) ? right : convert.convert(valueType, right));
-    }
-
-    @Override
-    public Object convert(Type targetType, final Object value) throws ConvertException {
-        if (targetType instanceof TypeReference) {
-            targetType = ((TypeReference<?>) targetType).getType();
-        }
-        final Type leftType = TypeKit.getTypeArgument(targetType, 0);
-        final Type rightType = TypeKit.getTypeArgument(targetType, 1);
-
-        return convert(leftType, rightType, value);
     }
 
     /**
@@ -134,7 +135,7 @@ public class PairConverter implements Converter {
         } else if (value instanceof CharSequence) {
             map = strToMap((CharSequence) value);
         } else if (BeanKit.isReadableBean(value.getClass())) {
-            map = BeanKit.beanToMap(value);
+            map = BeanKit.toBeanMap(value);
         }
 
         if (null != map) {

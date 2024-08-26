@@ -27,16 +27,6 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import java.beans.*;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
-
 import org.miaixz.bus.core.bean.BeanCache;
 import org.miaixz.bus.core.bean.DynaBean;
 import org.miaixz.bus.core.bean.copier.BeanCopier;
@@ -46,12 +36,23 @@ import org.miaixz.bus.core.bean.desc.BeanDesc;
 import org.miaixz.bus.core.bean.desc.BeanDescFactory;
 import org.miaixz.bus.core.bean.desc.PropDesc;
 import org.miaixz.bus.core.bean.path.BeanPath;
+import org.miaixz.bus.core.center.map.BeanMap;
 import org.miaixz.bus.core.center.map.CaseInsensitiveMap;
 import org.miaixz.bus.core.center.map.Dictionary;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.convert.RecordConverter;
 import org.miaixz.bus.core.lang.exception.BeanException;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
+
+import java.beans.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 
 /**
  * Bean工具类
@@ -330,6 +331,16 @@ public class BeanKit {
             return bean;
         }
         return copyProperties(map, bean, copyOptions);
+    }
+
+    /**
+     * 将Bean包装为Map形式
+     *
+     * @param bean Bean
+     * @return {@link BeanMap}
+     */
+    public static Map<String, Object> toBeanMap(final Object bean) {
+        return BeanMap.of(bean);
     }
 
     /**

@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.bean.path.node;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.*;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 列表节点 [num0,num1,num2...]模式或者['key0','key1']模式
@@ -69,7 +69,8 @@ public class ListNode implements Node {
                 // 只支持String为key的Map
                 return MapKit.getAny((Map<String, ?>) bean, unWrappedNames);
             } else {
-                final Map<String, Object> map = BeanKit.beanToMap(bean);
+                // 一次性使用，包装Bean避免无用转换
+                final Map<String, Object> map = BeanKit.toBeanMap(bean);
                 return MapKit.getAny(map, unWrappedNames);
             }
         }

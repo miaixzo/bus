@@ -2279,6 +2279,16 @@ public class ImageKit {
     }
 
     /**
+     * 获得系统中支持的所有字体
+     *
+     * @return 字体数组
+     */
+    public static Font[] getAllFonts() {
+        final GraphicsEnvironment e = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        return e.getAllFonts();
+    }
+
+    /**
      * 创建默认字体
      *
      * @return 默认字体
