@@ -25,54 +25,104 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.http.plugin.httpv;
+package org.miaixz.bus.core.lang.exception;
 
 /**
- * 进度（上传或下载）
+ * 类型: 超时异常
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Progress {
+public class TimeoutException extends UncheckedException {
 
-    public static final int DEFAULT_STEP_BYTES = 8192;
+    private static final long serialVersionUID = 1L;
 
-    // 总字节数
-    private long totalBytes;
-    // 已经完成字节数
-    private long doneBytes;
-
-    public Progress(long totalBytes, long doneBytes) {
-        this.totalBytes = totalBytes;
-        this.doneBytes = doneBytes;
+    /**
+     * 构造
+     */
+    public TimeoutException() {
+        super();
     }
 
-    public double getRate() {
-        return (double) doneBytes / totalBytes;
+    /**
+     * 构造
+     *
+     * @param e 异常
+     */
+    public TimeoutException(final Throwable e) {
+        super(e);
     }
 
-    public long getTotalBytes() {
-        return totalBytes;
+    /**
+     * 构造
+     *
+     * @param message 消息
+     */
+    public TimeoutException(final String message) {
+        super(message);
     }
 
-    public long getDoneBytes() {
-        return doneBytes;
+    /**
+     * 构造
+     *
+     * @param format 消息模板
+     * @param args   参数
+     */
+    public TimeoutException(final String format, final Object... args) {
+        super(format, args);
     }
 
-    public boolean isDone() {
-        return doneBytes >= totalBytes;
+    /**
+     * 构造
+     *
+     * @param errcode 错误码
+     * @param errmsg  消息
+     */
+    public TimeoutException(final String errcode, final String errmsg) {
+        super(errcode, errmsg);
     }
 
-    public void addDoneBytes(long delt) {
-        doneBytes += delt;
+    /**
+     * 构造
+     *
+     * @param errcode   错误码
+     * @param throwable 异常
+     */
+    public TimeoutException(final String errcode, final Throwable throwable) {
+        super(errcode, throwable);
     }
 
-    public void increaseDoneBytes() {
-        doneBytes++;
+    /**
+     * 构造
+     *
+     * @param cause  被包装的子异常
+     * @param format 消息模板
+     * @param args   参数
+     */
+    public TimeoutException(final Throwable cause, final String format, final Object... args) {
+        super(cause, format, args);
     }
 
-    public boolean notDoneOrReached(long bytes) {
-        return doneBytes < bytes && doneBytes < totalBytes;
+    /**
+     * @param errcode   错误码
+     * @param errmsg    消息
+     * @param throwable 异常
+     */
+    public TimeoutException(final String errcode, final String errmsg, final Throwable throwable) {
+        super(errcode, errmsg, throwable);
+    }
+
+    /**
+     * 构造
+     *
+     * @param message            消息
+     * @param cause              被包装的子异常
+     * @param enableSuppression  是否启用抑制
+     * @param writableStackTrace 堆栈跟踪是否应该是可写的
+     */
+    public TimeoutException(final String message, final Throwable cause, final boolean enableSuppression,
+                            final boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
     }
 
 }

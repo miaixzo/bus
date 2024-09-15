@@ -27,6 +27,14 @@
 */
 package org.miaixz.bus.socket.accord;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.socket.Context;
+import org.miaixz.bus.socket.Session;
+import org.miaixz.bus.socket.Worker;
+import org.miaixz.bus.socket.buffer.BufferPage;
+import org.miaixz.bus.socket.buffer.VirtualBuffer;
+
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
@@ -36,21 +44,13 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.socket.Context;
-import org.miaixz.bus.socket.Session;
-import org.miaixz.bus.socket.Worker;
-import org.miaixz.bus.socket.buffer.BufferPage;
-import org.miaixz.bus.socket.buffer.VirtualBuffer;
-
 /**
  * 封装UDP底层真实渠道对象,并提供通信及会话管理
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class UdpChannel {
+public class UdpChannel {
 
     /**
      * 服务上下文
