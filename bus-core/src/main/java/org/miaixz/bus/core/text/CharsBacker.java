@@ -1279,9 +1279,9 @@ public class CharsBacker extends CharsValidator {
     /**
      * 去除两边的指定字符串 两边字符如果存在，则去除，不存在不做处理
      *
-     * @param text   被处理的字符串
-     * @param prefix 前缀
-     * @param suffix 后缀
+     * @param text   被处理的字符串，{@code null}忽略
+     * @param prefix 前缀，{@code null}忽略
+     * @param suffix 后缀，{@code null}忽略
      * @return 处理后的字符串
      */
     public static String strip(final CharSequence text, final CharSequence prefix, final CharSequence suffix) {
@@ -1305,8 +1305,8 @@ public class CharsBacker extends CharsValidator {
      * </pre>
      *
      * @param text       被处理的字符串
-     * @param prefix     前缀
-     * @param suffix     后缀
+     * @param prefix     前缀，{@code null}忽略
+     * @param suffix     后缀，{@code null}忽略
      * @param ignoreCase 是否忽略大小写
      * @return 处理后的字符串
      */
@@ -4190,6 +4190,41 @@ public class CharsBacker extends CharsValidator {
             return;
         }
         (isCodePoint ? str.codePoints() : str.chars()).forEach(consumer);
+    }
+
+    /**
+     * 格式化文本，使用 {varName} 占位 map = {a: "aValue", b: "bValue"} format("{a} and {b}", map) ---=》 aValue and bValue
+     *
+     * @param template 文本模板，被替换的部分用 {key} 表示
+     * @param map      参数值对
+     * @return 格式化后的文本
+     */
+    public static String formatByMap(final CharSequence template, final Map<?, ?> map) {
+        return formatByMap(template, map, true);
+    }
+
+    /**
+     * 格式化文本，使用 {varName} 占位 map = {a: "aValue", b: "bValue"} format("{a} and {b}", map) --- aValue and bValue
+     *
+     * @param template   文本模板，被替换的部分用 {key} 表示
+     * @param map        参数值对
+     * @param ignoreNull 是否忽略 {@code null} 值，忽略则 {@code null} 值对应的变量不被替换，否则替换为""
+     * @return 格式化后的文本
+     */
+    public static String formatByMap(final CharSequence template, final Map<?, ?> map, final boolean ignoreNull) {
+        return StringFormatter.formatByBean(template, map, ignoreNull);
+    }
+
+    /**
+     * 格式化文本，使用 {varName} 占位 bean = User:{a: "aValue", b: "bValue"} format("{a} and {b}", bean) --- aValue and bValue
+     *
+     * @param template   文本模板，被替换的部分用 {key} 表示
+     * @param bean       参数Bean
+     * @param ignoreNull 是否忽略 {@code null} 值，忽略则 {@code null} 值对应的变量不被替换，否则替换为""
+     * @return 格式化后的文本
+     */
+    public static String formatByBean(final CharSequence template, final Object bean, final boolean ignoreNull) {
+        return StringFormatter.formatByBean(template, bean, ignoreNull);
     }
 
 }

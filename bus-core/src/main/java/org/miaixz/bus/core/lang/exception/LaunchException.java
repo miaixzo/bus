@@ -121,7 +121,7 @@ public class LaunchException extends UncheckedException {
      * @param writableStackTrace 堆栈跟踪是否应该是可写的
      */
     public LaunchException(final String message, final Throwable cause, final boolean enableSuppression,
-                           final boolean writableStackTrace) {
+            final boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 

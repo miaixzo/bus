@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serializable;
+import java.lang.reflect.Type;
+
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.reflect.TypeReference;
 import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.TypeKit;
-
-import java.lang.reflect.Type;
 
 /**
  * 复合转换器，融合了所有支持类型和自定义类型的转换规则 在此类中，存放着默认转换器和自定义转换器，默认转换器是预定义的一些转换器，自定义转换器存放用户自定的转换器。 转换过程类似于转换链，过程如下：
@@ -46,24 +47,50 @@ import java.lang.reflect.Type;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CompositeConverter extends RegisterConverter {
+public class CompositeConverter implements Converter, Serializable {
 
     private static final long serialVersionUID = -1L;
+
+    private RegisterConverter registerConverter;
+    private SpecialConverter specialConverter;
 
     /**
      * 构造
      */
-    public CompositeConverter() {
-        super();
+    private CompositeConverter() {
+
     }
 
     /**
-     * 获得单例的 ConverterRegistry
+     * 获得单例的 CompositeConverter
      *
-     * @return ConverterRegistry
+     * @return CompositeConverter
      */
     public static CompositeConverter getInstance() {
         return SingletonHolder.INSTANCE;
+    }
+
+    /**
+     * 登记自定义转换器，符合{@link MatcherConverter#match(Type, Class, Object)}则使用其转换器 注意：如果单例使用，此方法会影响全局
+     *
+     * @param converter 转换器
+     * @return this
+     */
+    public CompositeConverter register(final MatcherConverter converter) {
+        registerConverter.register(converter);
+        return this;
+    }
+
+    /**
+     * 登记自定义转换器，登记的目标类型必须一致 注意：如果单例使用，此方法会影响全局
+     *
+     * @param type      转换的目标类型
+     * @param converter 转换器
+     * @return this
+     */
+    public CompositeConverter register(final Type type, final Converter converter) {
+        registerConverter.register(type, converter);
+        return this;
     }
 
     /**
@@ -80,7 +107,7 @@ public class CompositeConverter extends RegisterConverter {
     }
 
     /**
-     * 转换值为指定类型 自定义转换器优先
+     * 转换值为指定类型,自定义转换器优先
      *
      * @param <T>          转换的目标类型（转换器转换到的类型）
      * @param type         类型
@@ -118,15 +145,14 @@ public class CompositeConverter extends RegisterConverter {
             type = defaultValue.getClass();
         }
 
-        // Optional处理
-        if (value instanceof Optional) {
+        if (value instanceof Optional<?>) {
             value = ((Optional<T>) value).getOrNull();
             if (ObjectKit.isNull(value)) {
                 return defaultValue;
             }
         }
         if (value instanceof java.util.Optional) {
-            value = ((java.util.Optional<T>) value).orElse(null);
+            value = ((Optional<T>) value).orElse(null);
             if (ObjectKit.isNull(value)) {
                 return defaultValue;
             }
@@ -142,7 +168,7 @@ public class CompositeConverter extends RegisterConverter {
         }
 
         // 标准转换器
-        final Converter converter = getConverter(type, value, isCustomFirst);
+        final Converter converter = registerConverter.getConverter(type, value, isCustomFirst);
         if (null != converter) {
             return converter.convert(type, value, defaultValue);
         }
@@ -157,7 +183,7 @@ public class CompositeConverter extends RegisterConverter {
         }
 
         // 特殊类型转换，包括Collection、Map、强转、Array等
-        final T result = (T) SpecialConverter.getInstance().convert(type, rawType, value);
+        final T result = (T) specialConverter.convert(type, rawType, value);
         if (null != result) {
             return result;
         }
@@ -179,7 +205,12 @@ public class CompositeConverter extends RegisterConverter {
         /**
          * 静态初始化器，由JVM来保证线程安全
          */
-        private static final CompositeConverter INSTANCE = new CompositeConverter();
+        private static final CompositeConverter INSTANCE;
+        static {
+            INSTANCE = new CompositeConverter();
+            INSTANCE.registerConverter = new RegisterConverter(INSTANCE);
+            INSTANCE.specialConverter = new SpecialConverter(INSTANCE);
+        }
     }
 
 }

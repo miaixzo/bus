@@ -27,6 +27,16 @@
 */
 package org.miaixz.bus.core.xyz;
 
+import java.beans.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.bean.BeanCache;
 import org.miaixz.bus.core.bean.DynaBean;
 import org.miaixz.bus.core.bean.copier.BeanCopier;
@@ -43,16 +53,6 @@ import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.convert.RecordConverter;
 import org.miaixz.bus.core.lang.exception.BeanException;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
-
-import java.beans.*;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
 
 /**
  * Bean工具类
@@ -240,6 +240,14 @@ public class BeanKit {
     public static <T> T getProperty(final Object bean, final String expression) {
         if (null == bean || StringKit.isBlank(expression)) {
             return null;
+        }
+
+        // 先尝试直接获取属性
+        if (bean instanceof Map) {
+            final Map<?, ?> map = (Map<?, ?>) bean;
+            if (map.containsKey(expression)) {
+                return (T) map.get(expression);
+            }
         }
         return (T) BeanPath.of(expression).getValue(bean);
     }

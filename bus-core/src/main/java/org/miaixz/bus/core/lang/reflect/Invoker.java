@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.lang.reflect;
 
+import java.lang.reflect.Type;
+
 /**
  * Invoker接口定义了调用目标对象的方法的规范。 它允许动态地调用方法，增强了代码的灵活性和扩展性。 参考：org.apache.ibatis.reflection.invoker.Invoker
  *
@@ -40,16 +42,30 @@ public interface Invoker {
      *
      * @param target 目标对象，调用的方法属于该对象。
      * @param args   方法调用的参数数组。
-     * @param <T>    返回类型
      * @return 方法的返回值，方法的返回类型可以是任意类型。
+     * @param <T> 返回类型
      */
     <T> T invoke(Object target, Object... args);
 
     /**
-     * 获取调用方法的返回类型或参数类型。
+     * 获取调用方法的名称。
+     *
+     * @return 调用方法的名称，作为字符串返回。
+     */
+    String getName();
+
+    /**
+     * 获取调用方法的返回类型或参数类型或字段类型。
      *
      * @return 调用方法的返回类型，作为Class对象返回。
      */
-    Class<?> getType();
+    Type getType();
+
+    /**
+     * 获取调用方法的返回类型或参数类型或字段类型。
+     *
+     * @return 调用方法的返回类型，作为Class对象返回。
+     */
+    Class<?> getTypeClass();
 
 }

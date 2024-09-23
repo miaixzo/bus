@@ -222,12 +222,11 @@ public class Assert {
     }
 
     /**
-     * 断言对象是否不为{@code null} ，如果为{@code null} 抛出{@link IllegalArgumentException} 异常 Assert that an object is not
-     * {@code null} .
+     * 断言对象是否不为{@code null} ，如果为{@code null} 抛出{@link IllegalArgumentException}
      * 
-     * <pre class="code">
+     * <pre>{@code
      * Assert.notNull(clazz, "The class must not be null");
-     * </pre>
+     * }</pre>
      *
      * @param <T>              被检查对象泛型类型
      * @param object           被检查对象
@@ -238,15 +237,18 @@ public class Assert {
      */
     public static <T> T notNull(final T object, final String errorMsgTemplate, final Object... params)
             throws IllegalArgumentException {
-        return notNull(object, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+        if (null == object) {
+            throw new IllegalArgumentException(StringKit.format(errorMsgTemplate, params));
+        }
+        return object;
     }
 
     /**
      * 断言对象是否不为{@code null} ，如果为{@code null} 抛出{@link IllegalArgumentException} 异常
      * 
-     * <pre class="code">
+     * <pre>{@code
      * Assert.notNull(clazz);
-     * </pre>
+     * }</pre>
      *
      * @param <T>    被检查对象类型
      * @param object 被检查对象
@@ -254,7 +256,202 @@ public class Assert {
      * @throws IllegalArgumentException if the object is {@code null}
      */
     public static <T> T notNull(final T object) throws IllegalArgumentException {
-        return notNull(object, "[Assertion failed] - this argument is required; it must not be null");
+        if (null == object) {
+            throw new IllegalArgumentException("[Assertion failed] - this argument is required; it must not be null");
+        }
+        return object;
+    }
+
+    /**
+     * 断言给定数组是否包含元素，数组必须不为 {@code null} 且至少包含一个元素 并使用指定的函数获取错误信息返回
+     * 
+     * <pre class="code">
+     * Assert.notEmpty(array, () -&gt; {
+     *     // to query relation message
+     *     return new IllegalArgumentException("relation message to return");
+     * });
+     * </pre>
+     *
+     * @param <T>           数组元素类型
+     * @param <X>           异常类型
+     * @param array         被检查的数组
+     * @param errorSupplier 错误抛出异常附带的消息生产接口
+     * @return 被检查的数组
+     * @throws X if the object array is {@code null} or has no elements
+     * @see ArrayKit#isNotEmpty(Object[])
+     */
+    public static <T, X extends Throwable> T[] notEmpty(final T[] array, final Supplier<X> errorSupplier) throws X {
+        if (ArrayKit.isEmpty(array)) {
+            throw errorSupplier.get();
+        }
+        return array;
+    }
+
+    /**
+     * 断言给定数组是否包含元素，数组必须不为 {@code null} 且至少包含一个元素
+     * 
+     * <pre class="code">
+     * Assert.notEmpty(array, "The array must have elements");
+     * </pre>
+     *
+     * @param <T>              数组元素类型
+     * @param array            被检查的数组
+     * @param errorMsgTemplate 异常时的消息模板
+     * @param params           参数列表
+     * @return 被检查的数组
+     * @throws IllegalArgumentException if the object array is {@code null} or has no elements
+     */
+    public static <T> T[] notEmpty(final T[] array, final String errorMsgTemplate, final Object... params)
+            throws IllegalArgumentException {
+        return notEmpty(array, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+    }
+
+    /**
+     * 断言给定数组是否包含元素，数组必须不为 {@code null} 且至少包含一个元素
+     * 
+     * <pre class="code">
+     * Assert.notEmpty(array, "The array must have elements");
+     * </pre>
+     *
+     * @param <T>   数组元素类型
+     * @param array 被检查的数组
+     * @return 被检查的数组
+     * @throws IllegalArgumentException if the object array is {@code null} or has no elements
+     */
+    public static <T> T[] notEmpty(final T[] array) throws IllegalArgumentException {
+        return notEmpty(array, "[Assertion failed] - this array must not be empty: it must contain at least 1 element");
+    }
+
+    /**
+     * 断言给定集合非空 并使用指定的函数获取错误信息返回
+     * 
+     * <pre class="code">
+     * Assert.notEmpty(collection, () -&gt; {
+     *     // to query relation message
+     *     return new IllegalArgumentException("relation message to return");
+     * });
+     * </pre>
+     *
+     * @param <E>           集合元素类型
+     * @param <T>           集合类型
+     * @param <X>           异常类型
+     * @param collection    被检查的集合
+     * @param errorSupplier 错误抛出异常附带的消息生产接口
+     * @return 非空集合
+     * @throws X if the collection is {@code null} or has no elements
+     * @see CollKit#isNotEmpty(Iterable)
+     */
+    public static <E, T extends Iterable<E>, X extends Throwable> T notEmpty(final T collection,
+            final Supplier<X> errorSupplier) throws X {
+        if (CollKit.isEmpty(collection)) {
+            throw errorSupplier.get();
+        }
+        return collection;
+    }
+
+    /**
+     * 断言给定集合非空
+     * 
+     * <pre class="code">
+     * Assert.notEmpty(collection, "Collection must have elements");
+     * </pre>
+     *
+     * @param <E>              集合元素类型
+     * @param <T>              集合类型
+     * @param collection       被检查的集合
+     * @param errorMsgTemplate 异常时的消息模板
+     * @param params           参数列表
+     * @return 非空集合
+     * @throws IllegalArgumentException if the collection is {@code null} or has no elements
+     */
+    public static <E, T extends Iterable<E>> T notEmpty(final T collection, final String errorMsgTemplate,
+            final Object... params) throws IllegalArgumentException {
+        return notEmpty(collection, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+    }
+
+    /**
+     * 断言给定集合非空
+     * 
+     * <pre class="code">
+     * Assert.notEmpty(collection);
+     * </pre>
+     *
+     * @param <E>        集合元素类型
+     * @param <T>        集合类型
+     * @param collection 被检查的集合
+     * @return 被检查集合
+     * @throws IllegalArgumentException if the collection is {@code null} or has no elements
+     */
+    public static <E, T extends Iterable<E>> T notEmpty(final T collection) throws IllegalArgumentException {
+        return notEmpty(collection,
+                "[Assertion failed] - this collection must not be empty: it must contain at least 1 element");
+    }
+
+    /**
+     * 断言给定Map非空 并使用指定的函数获取错误信息返回
+     * 
+     * <pre class="code">
+     * Assert.notEmpty(map, () -&gt; {
+     *     // to query relation message
+     *     return new IllegalArgumentException("relation message to return");
+     * });
+     * </pre>
+     *
+     * @param <K>           Key类型
+     * @param <V>           Value类型
+     * @param <T>           Map类型
+     * @param <X>           异常类型
+     * @param map           被检查的Map
+     * @param errorSupplier 错误抛出异常附带的消息生产接口
+     * @return 被检查的Map
+     * @throws X if the map is {@code null} or has no entries
+     * @see MapKit#isNotEmpty(Map)
+     */
+    public static <K, V, T extends Map<K, V>, X extends Throwable> T notEmpty(final T map,
+            final Supplier<X> errorSupplier) throws X {
+        if (MapKit.isEmpty(map)) {
+            throw errorSupplier.get();
+        }
+        return map;
+    }
+
+    /**
+     * 断言给定Map非空
+     * 
+     * <pre class="code">
+     * Assert.notEmpty(map, "Map must have entries");
+     * </pre>
+     *
+     * @param <K>              Key类型
+     * @param <V>              Value类型
+     * @param <T>              Map类型
+     * @param map              被检查的Map
+     * @param errorMsgTemplate 异常时的消息模板
+     * @param params           参数列表
+     * @return 被检查的Map
+     * @throws IllegalArgumentException if the map is {@code null} or has no entries
+     */
+    public static <K, V, T extends Map<K, V>> T notEmpty(final T map, final String errorMsgTemplate,
+            final Object... params) throws IllegalArgumentException {
+        return notEmpty(map, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
+    }
+
+    /**
+     * 断言给定Map非空
+     * 
+     * <pre class="code">
+     * Assert.notEmpty(map, "Map must have entries");
+     * </pre>
+     *
+     * @param <K> Key类型
+     * @param <V> Value类型
+     * @param <T> Map类型
+     * @param map 被检查的Map
+     * @return 被检查的Map
+     * @throws IllegalArgumentException if the map is {@code null} or has no entries
+     */
+    public static <K, V, T extends Map<K, V>> T notEmpty(final T map) throws IllegalArgumentException {
+        return notEmpty(map, "[Assertion failed] - this map must not be empty; it must contain at least one entry");
     }
 
     /**
@@ -451,66 +648,6 @@ public class Assert {
     }
 
     /**
-     * 断言给定数组是否包含元素，数组必须不为 {@code null} 且至少包含一个元素 并使用指定的函数获取错误信息返回
-     * 
-     * <pre class="code">
-     * Assert.notEmpty(array, () -&gt; {
-     *     // to query relation message
-     *     return new IllegalArgumentException("relation message to return");
-     * });
-     * </pre>
-     *
-     * @param <T>           数组元素类型
-     * @param <X>           异常类型
-     * @param array         被检查的数组
-     * @param errorSupplier 错误抛出异常附带的消息生产接口
-     * @return 被检查的数组
-     * @throws X if the object array is {@code null} or has no elements
-     * @see ArrayKit#isNotEmpty(Object[])
-     */
-    public static <T, X extends Throwable> T[] notEmpty(final T[] array, final Supplier<X> errorSupplier) throws X {
-        if (ArrayKit.isEmpty(array)) {
-            throw errorSupplier.get();
-        }
-        return array;
-    }
-
-    /**
-     * 断言给定数组是否包含元素，数组必须不为 {@code null} 且至少包含一个元素
-     * 
-     * <pre class="code">
-     * Assert.notEmpty(array, "The array must have elements");
-     * </pre>
-     *
-     * @param <T>              数组元素类型
-     * @param array            被检查的数组
-     * @param errorMsgTemplate 异常时的消息模板
-     * @param params           参数列表
-     * @return 被检查的数组
-     * @throws IllegalArgumentException if the object array is {@code null} or has no elements
-     */
-    public static <T> T[] notEmpty(final T[] array, final String errorMsgTemplate, final Object... params)
-            throws IllegalArgumentException {
-        return notEmpty(array, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
-    }
-
-    /**
-     * 断言给定数组是否包含元素，数组必须不为 {@code null} 且至少包含一个元素
-     * 
-     * <pre class="code">
-     * Assert.notEmpty(array, "The array must have elements");
-     * </pre>
-     *
-     * @param <T>   数组元素类型
-     * @param array 被检查的数组
-     * @return 被检查的数组
-     * @throws IllegalArgumentException if the object array is {@code null} or has no elements
-     */
-    public static <T> T[] notEmpty(final T[] array) throws IllegalArgumentException {
-        return notEmpty(array, "[Assertion failed] - this array must not be empty: it must contain at least 1 element");
-    }
-
-    /**
      * 断言给定数组是否不包含{@code null}元素，如果数组为空或 {@code null}将被认为不包含 并使用指定的函数获取错误信息返回
      * 
      * <pre class="code">
@@ -569,138 +706,6 @@ public class Assert {
      */
     public static <T> T[] noNullElements(final T[] array) throws IllegalArgumentException {
         return noNullElements(array, "[Assertion failed] - this array must not contain any null elements");
-    }
-
-    /**
-     * 断言给定集合非空 并使用指定的函数获取错误信息返回
-     * 
-     * <pre class="code">
-     * Assert.notEmpty(collection, () -&gt; {
-     *     // to query relation message
-     *     return new IllegalArgumentException("relation message to return");
-     * });
-     * </pre>
-     *
-     * @param <E>           集合元素类型
-     * @param <T>           集合类型
-     * @param <X>           异常类型
-     * @param collection    被检查的集合
-     * @param errorSupplier 错误抛出异常附带的消息生产接口
-     * @return 非空集合
-     * @throws X if the collection is {@code null} or has no elements
-     * @see CollKit#isNotEmpty(Iterable)
-     */
-    public static <E, T extends Iterable<E>, X extends Throwable> T notEmpty(final T collection,
-            final Supplier<X> errorSupplier) throws X {
-        if (CollKit.isEmpty(collection)) {
-            throw errorSupplier.get();
-        }
-        return collection;
-    }
-
-    /**
-     * 断言给定集合非空
-     * 
-     * <pre class="code">
-     * Assert.notEmpty(collection, "Collection must have elements");
-     * </pre>
-     *
-     * @param <E>              集合元素类型
-     * @param <T>              集合类型
-     * @param collection       被检查的集合
-     * @param errorMsgTemplate 异常时的消息模板
-     * @param params           参数列表
-     * @return 非空集合
-     * @throws IllegalArgumentException if the collection is {@code null} or has no elements
-     */
-    public static <E, T extends Iterable<E>> T notEmpty(final T collection, final String errorMsgTemplate,
-            final Object... params) throws IllegalArgumentException {
-        return notEmpty(collection, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
-    }
-
-    /**
-     * 断言给定集合非空
-     * 
-     * <pre class="code">
-     * Assert.notEmpty(collection);
-     * </pre>
-     *
-     * @param <E>        集合元素类型
-     * @param <T>        集合类型
-     * @param collection 被检查的集合
-     * @return 被检查集合
-     * @throws IllegalArgumentException if the collection is {@code null} or has no elements
-     */
-    public static <E, T extends Iterable<E>> T notEmpty(final T collection) throws IllegalArgumentException {
-        return notEmpty(collection,
-                "[Assertion failed] - this collection must not be empty: it must contain at least 1 element");
-    }
-
-    /**
-     * 断言给定Map非空 并使用指定的函数获取错误信息返回
-     * 
-     * <pre class="code">
-     * Assert.notEmpty(map, () -&gt; {
-     *     // to query relation message
-     *     return new IllegalArgumentException("relation message to return");
-     * });
-     * </pre>
-     *
-     * @param <K>           Key类型
-     * @param <V>           Value类型
-     * @param <T>           Map类型
-     * @param <X>           异常类型
-     * @param map           被检查的Map
-     * @param errorSupplier 错误抛出异常附带的消息生产接口
-     * @return 被检查的Map
-     * @throws X if the map is {@code null} or has no entries
-     * @see MapKit#isNotEmpty(Map)
-     */
-    public static <K, V, T extends Map<K, V>, X extends Throwable> T notEmpty(final T map,
-            final Supplier<X> errorSupplier) throws X {
-        if (MapKit.isEmpty(map)) {
-            throw errorSupplier.get();
-        }
-        return map;
-    }
-
-    /**
-     * 断言给定Map非空
-     * 
-     * <pre class="code">
-     * Assert.notEmpty(map, "Map must have entries");
-     * </pre>
-     *
-     * @param <K>              Key类型
-     * @param <V>              Value类型
-     * @param <T>              Map类型
-     * @param map              被检查的Map
-     * @param errorMsgTemplate 异常时的消息模板
-     * @param params           参数列表
-     * @return 被检查的Map
-     * @throws IllegalArgumentException if the map is {@code null} or has no entries
-     */
-    public static <K, V, T extends Map<K, V>> T notEmpty(final T map, final String errorMsgTemplate,
-            final Object... params) throws IllegalArgumentException {
-        return notEmpty(map, () -> new IllegalArgumentException(StringKit.format(errorMsgTemplate, params)));
-    }
-
-    /**
-     * 断言给定Map非空
-     * 
-     * <pre class="code">
-     * Assert.notEmpty(map, "Map must have entries");
-     * </pre>
-     *
-     * @param <K> Key类型
-     * @param <V> Value类型
-     * @param <T> Map类型
-     * @param map 被检查的Map
-     * @return 被检查的Map
-     * @throws IllegalArgumentException if the map is {@code null} or has no entries
-     */
-    public static <K, V, T extends Map<K, V>> T notEmpty(final T map) throws IllegalArgumentException {
-        return notEmpty(map, "[Assertion failed] - this map must not be empty; it must contain at least one entry");
     }
 
     /**
@@ -786,7 +791,7 @@ public class Assert {
      * 检查boolean表达式，当检查结果为false时抛出 {@code IllegalStateException}。 并使用指定的函数获取错误信息返回
      * 
      * <pre class="code">
-     * Assert.state(data == null, () -&gt; {
+     * Assert.state(id == null, () -&gt; {
      *     // to query relation message
      *     return "relation message to return ";
      * });
@@ -807,7 +812,7 @@ public class Assert {
      * 检查boolean表达式，当检查结果为false时抛出 {@code IllegalStateException}。
      * 
      * <pre class="code">
-     * Assert.state(data == null, "The data property must not already be initialized");
+     * Assert.state(id == null, "The id property must not already be initialized");
      * </pre>
      *
      * @param expression       boolean 表达式
@@ -826,7 +831,7 @@ public class Assert {
      * 检查boolean表达式，当检查结果为false时抛出 {@code IllegalStateException}。
      * 
      * <pre class="code">
-     * Assert.state(data == null);
+     * Assert.state(id == null);
      * </pre>
      *
      * @param expression boolean 表达式
@@ -1156,42 +1161,6 @@ public class Assert {
             throw new IllegalArgumentException("negative size: " + size);
         } else { // index >= size
             return StringKit.format("{} ({}) must be less than size ({})", StringKit.format(desc, params), index, size);
-        }
-    }
-
-    /**
-     * 断言给定的字符串包含有效的文本内容;也就是说，它不能是{@code null}，并且必须包含至少一个非空白字符。
-     * 
-     * <pre class="code">
-     * Assert.hasText(name, "'name' must not be empty");
-     * </pre>
-     *
-     * @param text    要检查的字符串
-     * @param message 断言失败时要使用的异常消息
-     * @throws IllegalArgumentException 如果文本不包含有效的文本内容
-     * @see StringKit#hasText
-     */
-    public static void hasText(String text, String message) {
-        if (!StringKit.hasText(text)) {
-            throw new IllegalArgumentException(message);
-        }
-    }
-
-    /**
-     * 断言给定的字符串包含有效的文本内容;也就是说，它不能是{@code null}，并且必须包含至少一个非空白字符。
-     * 
-     * <pre class="code">
-     * Assert.hasText(account.getName(), () -&gt; "Name for account '" + account.getId() + "' must not be empty");
-     * </pre>
-     *
-     * @param text            要检查的字符串
-     * @param messageSupplier 断言失败时要使用的异常消息的提供者
-     * @throws IllegalArgumentException 如果文本不包含有效的文本内容
-     * @see StringKit#hasText
-     */
-    public static void hasText(String text, Supplier<String> messageSupplier) {
-        if (!StringKit.hasText(text)) {
-            throw new IllegalArgumentException((messageSupplier != null ? messageSupplier.get() : null));
         }
     }
 

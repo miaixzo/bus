@@ -30,6 +30,7 @@ package org.miaixz.bus.pager.plugin;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Future;
 
@@ -167,6 +168,12 @@ public class PageSqlHandler extends SqlParserHandler implements Interceptor {
         // 异步不能复用 BoundSql，因为分页使用时会添加分页参数，这里需要复制一个新的
         BoundSql countBoundSql = new BoundSql(configuration, boundSql.getSql(),
                 new ArrayList<>(boundSql.getParameterMappings()), parameter);
+        Map<String, Object> additionalParameter = CountExecutor.getAdditionalParameter(boundSql);
+        if (additionalParameter != null) {
+            for (String key : additionalParameter.keySet()) {
+                countBoundSql.setAdditionalParameter(key, additionalParameter.get(key));
+            }
+        }
         // 异步想要起作用需要新的数据库连接，需要独立的事务，创建新的Executor，因此异步查询只适合在独立查询中使用，如果混合增删改操作，不能开启异步
         Environment environment = configuration.getEnvironment();
         TransactionFactory transactionFactory = null;

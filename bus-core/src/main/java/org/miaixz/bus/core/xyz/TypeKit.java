@@ -360,6 +360,8 @@ public class TypeKit {
                 if (upperBounds.length == 1) {
                     return getClass(upperBounds[0]);
                 }
+            } else if (type instanceof GenericArrayType) {
+                return Array.newInstance(getClass(((GenericArrayType) type).getGenericComponentType()), 0).getClass();
             }
         }
         return null;

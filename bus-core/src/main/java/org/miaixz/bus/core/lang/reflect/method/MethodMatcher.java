@@ -119,7 +119,7 @@ public class MethodMatcher {
      * @return 方法匹配器
      */
     public static Predicate<Method> forModifiers(final int... modifiers) {
-        return method -> ModifierKit.hasAllModifier(method.getModifiers(), modifiers);
+        return method -> ModifierKit.hasAll(method.getModifiers(), modifiers);
     }
 
     /**

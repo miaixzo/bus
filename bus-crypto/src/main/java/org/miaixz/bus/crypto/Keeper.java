@@ -36,6 +36,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.spec.*;
+import java.util.Objects;
 
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
@@ -51,7 +52,6 @@ import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
 import org.bouncycastle.crypto.params.ECDomainParameters;
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
-import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey;
 import org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPublicKey;
 import org.bouncycastle.jcajce.provider.asymmetric.util.EC5Util;
 import org.bouncycastle.jcajce.provider.asymmetric.util.ECUtil;
@@ -905,7 +905,7 @@ public class Keeper {
                     return generatePrivateKey("EC", object.getContent());
                 } catch (final Exception e) {
                     // 尝试PKCS#1
-                    return generatePrivateKey("EC", createOpenSSHPrivateKeySpec(object.getContent()));
+                    return generatePrivateKey("EC", getOpenSSHPrivateKeySpec(object.getContent()));
                 }
             }
             if (type.endsWith("PRIVATE KEY")) {
@@ -919,7 +919,7 @@ public class Keeper {
                     return generatePublicKey("EC", object.getContent());
                 } catch (final Exception ignore) {
                     // 尝试PKCS#1
-                    return generatePublicKey("EC", createOpenSSHPublicKeySpec(object.getContent()));
+                    return generatePublicKey("EC", getOpenSSHPublicKeySpec(object.getContent()));
                 }
             } else if (type.endsWith("PUBLIC KEY")) {
                 return generateRSAPublicKey(object.getContent());
@@ -1037,13 +1037,39 @@ public class Keeper {
     }
 
     /**
+     * 根据私钥获取EC公钥
+     *
+     * @param privateKey EC私钥
+     * @param spec       密钥规范
+     * @return EC公钥
+     */
+    public static PublicKey getECPublicKey(final org.bouncycastle.jce.interfaces.ECPrivateKey privateKey,
+            final org.bouncycastle.jce.spec.ECParameterSpec spec) {
+        final org.bouncycastle.jce.spec.ECPublicKeySpec keySpec = new org.bouncycastle.jce.spec.ECPublicKeySpec(
+                getQFromD(privateKey.getD(), spec), spec);
+        return generatePublicKey("EC", keySpec);
+    }
+
+    /**
+     * 根据私钥D值获取公钥的点坐标(Q值)
+     *
+     * @param d    私钥d值
+     * @param spec 密钥规范
+     * @return 公钥的点坐标
+     */
+    public static org.bouncycastle.math.ec.ECPoint getQFromD(final BigInteger d,
+            final org.bouncycastle.jce.spec.ECParameterSpec spec) {
+        return spec.getG().multiply(d).normalize();
+    }
+
+    /**
      * 只获取私钥里的d，32位字节
      *
-     * @param privateKey {@link PublicKey}，必须为org.bouncycastle.jcajce.provider.asymmetric.ec.BCECPrivateKey
+     * @param privateKey {@link PublicKey}，必须为org.bouncycastle.jce.interfaces.ECPrivateKey
      * @return 压缩得到的X
      */
     public static byte[] encodeECPrivateKey(final PrivateKey privateKey) {
-        return ((BCECPrivateKey) privateKey).getD().toByteArray();
+        return ((org.bouncycastle.jce.interfaces.ECPrivateKey) privateKey).getD().toByteArray();
     }
 
     /**
@@ -1300,7 +1326,8 @@ public class Keeper {
         if (null == d) {
             return null;
         }
-        return toPrivateParams(BigIntegers.fromUnsignedByteArray(Builder.decode(d)), domainParameters);
+        return toPrivateParams(BigIntegers.fromUnsignedByteArray(Objects.requireNonNull(Builder.decode(d))),
+                domainParameters);
     }
 
     /**
@@ -1367,62 +1394,45 @@ public class Keeper {
     }
 
     /**
-     * 创建{@link OpenSSHPrivateKeySpec}
-     *
-     * @param key 私钥，需为PKCS#1格式
-     * @return {@link OpenSSHPrivateKeySpec}
-     */
-    public static KeySpec createOpenSSHPrivateKeySpec(final byte[] key) {
-        return new OpenSSHPrivateKeySpec(key);
-    }
-
-    /**
-     * 创建{@link OpenSSHPublicKeySpec}
-     *
-     * @param key 公钥，需为PKCS#1格式
-     * @return {@link OpenSSHPublicKeySpec}
-     */
-    public static KeySpec createOpenSSHPublicKeySpec(final byte[] key) {
-        return new OpenSSHPublicKeySpec(key);
-    }
-
-    /**
-     * 尝试解析转换各种类型私钥为{@link ECPrivateKeyParameters}，支持包括：
+     * 生成SM2私钥，支持包括：
      *
      * <ul>
      * <li>D值</li>
      * <li>PKCS#8</li>
      * <li>PKCS#1</li>
+     * <li>OpenSSH格式</li>
      * </ul>
      *
      * @param privateKeyBytes 私钥
      * @return {@link ECPrivateKeyParameters}
      */
-    public static ECPrivateKeyParameters decodePrivateKeyParams(final byte[] privateKeyBytes) {
+    public static PrivateKey generateSm2PrivateKey(final byte[] privateKeyBytes) {
         if (null == privateKeyBytes) {
             return null;
         }
+        final String algorithm = "SM2";
+        KeySpec keySpec;
+        // 尝试D值
         try {
-            // 尝试D值
-            return toSm2PrivateParams(privateKeyBytes);
+            keySpec = getPrivateKeySpec(privateKeyBytes, Builder.SM2_EC_SPEC);
+            return generatePrivateKey(algorithm, keySpec);
         } catch (final Exception ignore) {
-            // ignore
         }
 
-        PrivateKey privateKey;
         // 尝试PKCS#8
         try {
-            privateKey = generatePrivateKey("sm2", privateKeyBytes);
+            keySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
+            return generatePrivateKey(algorithm, keySpec);
         } catch (final Exception ignore) {
-            // 尝试PKCS#1
-            privateKey = generatePrivateKey("sm2", createOpenSSHPrivateKeySpec(privateKeyBytes));
         }
 
-        return toPrivateParams(privateKey);
+        // 尝试PKCS#1或OpenSSH格式
+        keySpec = getOpenSSHPrivateKeySpec(privateKeyBytes);
+        return generatePrivateKey(algorithm, keySpec);
     }
 
     /**
-     * 尝试解析转换各种类型公钥为{@link ECPublicKeyParameters}，支持包括：
+     * 生成SM2公钥，支持包括：
      *
      * <ul>
      * <li>Q值</li>
@@ -1433,27 +1443,44 @@ public class Keeper {
      * @param publicKeyBytes 公钥
      * @return {@link ECPublicKeyParameters}
      */
-    public static ECPublicKeyParameters decodePublicKeyParams(final byte[] publicKeyBytes) {
+    public static PublicKey generateSm2PublicKey(final byte[] publicKeyBytes) {
         if (null == publicKeyBytes) {
             return null;
         }
+        final String algorithm = "SM2";
+        KeySpec keySpec;
+        // 尝试Q值
         try {
-            // 尝试Q值
-            return toSm2PublicParams(publicKeyBytes);
+            keySpec = getPublicKeySpec(publicKeyBytes, Builder.SM2_EC_SPEC);
+            return generatePublicKey(algorithm, keySpec);
         } catch (final Exception ignore) {
             // ignore
         }
 
-        PublicKey publicKey;
         // 尝试X.509
         try {
-            publicKey = generatePublicKey("sm2", publicKeyBytes);
+            keySpec = new X509EncodedKeySpec(publicKeyBytes);
+            return generatePublicKey(algorithm, keySpec);
         } catch (final Exception ignore) {
-            // 尝试PKCS#1
-            publicKey = generatePublicKey("sm2", createOpenSSHPublicKeySpec(publicKeyBytes));
         }
 
-        return toPublicParams(publicKey);
+        // 尝试PKCS#1
+        keySpec = getOpenSSHPublicKeySpec(publicKeyBytes);
+        return generatePublicKey(algorithm, keySpec);
+    }
+
+    /**
+     * 尝试解析转换各种类型公钥为{@link ECPublicKeyParameters}，支持包括：
+     *
+     * @param x 坐标X
+     * @param y 坐标y
+     * @return {@link ECPublicKeyParameters}
+     */
+    public static PublicKey generateSm2PublicKey(final byte[] x, final byte[] y) {
+        if (null == x || null == y) {
+            return null;
+        }
+        return generatePublicKey("sm2", getPublicKeySpec(x, y, Builder.SM2_EC_SPEC));
     }
 
     /**
@@ -1544,6 +1571,102 @@ public class Keeper {
             throw new CryptoException(e);
         }
         return factory;
+    }
+
+    /**
+     * 获取私钥规范
+     *
+     * @param d             私钥D值
+     * @param parameterSpec {@link org.bouncycastle.jce.spec.ECParameterSpec}
+     * @return ECPrivateKeySpec
+     */
+    public static org.bouncycastle.jce.spec.ECPrivateKeySpec getPrivateKeySpec(final byte[] d,
+            final org.bouncycastle.jce.spec.ECParameterSpec parameterSpec) {
+        return getPrivateKeySpec(BigIntegers.fromUnsignedByteArray(d), parameterSpec);
+    }
+
+    /**
+     * 获取私钥规范
+     *
+     * @param d             私钥D值
+     * @param parameterSpec {@link org.bouncycastle.jce.spec.ECParameterSpec}
+     * @return ECPrivateKeySpec
+     */
+    public static org.bouncycastle.jce.spec.ECPrivateKeySpec getPrivateKeySpec(final BigInteger d,
+            final org.bouncycastle.jce.spec.ECParameterSpec parameterSpec) {
+        return new org.bouncycastle.jce.spec.ECPrivateKeySpec(d, parameterSpec);
+    }
+
+    /**
+     * 获取公钥规范
+     *
+     * @param q             公钥Q值
+     * @param parameterSpec {@link org.bouncycastle.jce.spec.ECParameterSpec}
+     * @return ECPublicKeySpec
+     */
+    public static org.bouncycastle.jce.spec.ECPublicKeySpec getPublicKeySpec(final byte[] q,
+            final org.bouncycastle.jce.spec.ECParameterSpec parameterSpec) {
+        return getPublicKeySpec(parameterSpec.getCurve().decodePoint(q), parameterSpec);
+    }
+
+    /**
+     * 获取公钥规范
+     *
+     * @param x             公钥x坐标
+     * @param y             公钥y坐标
+     * @param parameterSpec {@link org.bouncycastle.jce.spec.ECParameterSpec}
+     * @return ECPublicKeySpec
+     */
+    public static org.bouncycastle.jce.spec.ECPublicKeySpec getPublicKeySpec(final byte[] x, final byte[] y,
+            final org.bouncycastle.jce.spec.ECParameterSpec parameterSpec) {
+        return getPublicKeySpec(BigIntegers.fromUnsignedByteArray(x), BigIntegers.fromUnsignedByteArray(y),
+                parameterSpec);
+    }
+
+    /**
+     * 获取公钥规范
+     *
+     * @param x             公钥x坐标
+     * @param y             公钥y坐标
+     * @param parameterSpec {@link org.bouncycastle.jce.spec.ECParameterSpec}
+     * @return ECPublicKeySpec
+     */
+    public static org.bouncycastle.jce.spec.ECPublicKeySpec getPublicKeySpec(final BigInteger x, final BigInteger y,
+            final org.bouncycastle.jce.spec.ECParameterSpec parameterSpec) {
+        return getPublicKeySpec(parameterSpec.getCurve().createPoint(x, y), parameterSpec);
+    }
+
+    /**
+     * 获取公钥规范
+     *
+     * @param ecPoint       公钥坐标
+     * @param parameterSpec {@link org.bouncycastle.jce.spec.ECParameterSpec}
+     * @return ECPublicKeySpec
+     */
+    public static org.bouncycastle.jce.spec.ECPublicKeySpec getPublicKeySpec(
+            final org.bouncycastle.math.ec.ECPoint ecPoint,
+            final org.bouncycastle.jce.spec.ECParameterSpec parameterSpec) {
+        return new org.bouncycastle.jce.spec.ECPublicKeySpec(ecPoint, parameterSpec);
+    }
+
+    /**
+     * 创建{@link OpenSSHPrivateKeySpec}
+     *
+     * @param key 私钥，需为PKCS#1格式或OpenSSH格式
+     * @return {@link OpenSSHPrivateKeySpec}
+     */
+    public static OpenSSHPrivateKeySpec getOpenSSHPrivateKeySpec(final byte[] key) {
+        return new OpenSSHPrivateKeySpec(key);
+    }
+
+    /**
+     * 创建{@link OpenSSHPublicKeySpec}
+     *
+     * @param key 公钥，需为PKCS#1格式
+     * @return {@link OpenSSHPublicKeySpec}
+     */
+    public static OpenSSHPublicKeySpec getOpenSSHPublicKeySpec(final byte[] key) {
+        return new OpenSSHPublicKeySpec(key);
     }
 
 }

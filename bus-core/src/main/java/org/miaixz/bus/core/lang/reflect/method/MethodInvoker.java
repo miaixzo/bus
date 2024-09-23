@@ -30,6 +30,7 @@ package org.miaixz.bus.core.lang.reflect.method;
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -45,8 +46,10 @@ import org.miaixz.bus.core.xyz.*;
 public class MethodInvoker implements Invoker {
 
     private final Method method;
-    private final Class<?>[] paramTypes;
-    private final Class<?> type;
+    private final Type[] paramTypes;
+    private final Class<?>[] paramTypeClasses;
+    private final Type type;
+    private final Class<?> typeClass;
     private boolean checkArgs;
 
     /**
@@ -55,14 +58,17 @@ public class MethodInvoker implements Invoker {
      * @param method 方法
      */
     public MethodInvoker(final Method method) {
-        this.method = method;
+        this.method = ReflectKit.setAccessible(Assert.notNull(method));
 
-        this.paramTypes = method.getParameterTypes();
+        this.paramTypes = TypeKit.getParamTypes(method);
+        this.paramTypeClasses = method.getParameterTypes();
         if (paramTypes.length == 1) {
             // setter方法读取参数类型
             type = paramTypes[0];
+            typeClass = paramTypeClasses[0];
         } else {
             type = method.getReturnType();
+            typeClass = method.getReturnType();
         }
     }
 
@@ -77,28 +83,6 @@ public class MethodInvoker implements Invoker {
     }
 
     /**
-     * 执行方法句柄，{@link MethodHandle#invokeWithArguments(Object...)}包装
-     * 非static方法需先调用{@link MethodHandle#bindTo(Object)}绑定执行对象。
-     *
-     * <p>
-     * 需要注意的是，此处没有使用{@link MethodHandle#invoke(Object...)}，因为其参数第一个必须为对象或类。
-     * {@link MethodHandle#invokeWithArguments(Object...)}只需传参数即可。
-     * </p>
-     *
-     * @param methodHandle {@link java.lang.invoke.MethodHandle}
-     * @param args         方法参数值，支持子类转换和自动拆装箱
-     * @param <T>          返回值类型
-     * @return 方法返回值
-     */
-    public static <T> T invokeHandle(final MethodHandle methodHandle, final Object... args) {
-        try {
-            return (T) methodHandle.invokeWithArguments(args);
-        } catch (final Throwable e) {
-            throw ExceptionKit.wrapRuntime(e);
-        }
-    }
-
-    /**
      * 执行接口或对象中的方法
      *
      * <pre class="code">
@@ -107,7 +91,7 @@ public class MethodInvoker implements Invoker {
      *         return "Quack";
      *     }
      * }
-     * 
+     *
      * Duck duck = (Duck) Proxy.newProxyInstance(ClassKit.getClassLoader(), new Class[] { Duck.class },
      *         MethodInvoker::invoke);
      * </pre>
@@ -133,7 +117,7 @@ public class MethodInvoker implements Invoker {
      *         return "Quack";
      *     }
      * }
-     * 
+     *
      * Duck duck = (Duck) Proxy.newProxyInstance(MethodInvoker.getClassLoader(), new Class[] { Duck.class },
      *         MethodInvoker::invoke);
      * </pre>
@@ -162,8 +146,41 @@ public class MethodInvoker implements Invoker {
     }
 
     /**
+     * 获取方法
+     *
+     * @return 方法
+     */
+    public Method getMethod() {
+        return this.method;
+    }
+
+    /**
+     * 获取方法参数类型
+     *
+     * @return 方法参数类型
+     */
+    public Type[] getParamTypes() {
+        return this.paramTypes;
+    }
+
+    @Override
+    public String getName() {
+        return this.method.getName();
+    }
+
+    @Override
+    public Type getType() {
+        return this.type;
+    }
+
+    @Override
+    public Class<?> getTypeClass() {
+        return this.typeClass;
+    }
+
+    /**
      * 设置是否检查参数
-     * 
+     *
      * <pre>
      * 1. 参数个数是否与方法参数个数一致
      * 2. 如果某个参数为null但是方法这个位置的参数为原始类型，则赋予原始类型默认值
@@ -191,6 +208,7 @@ public class MethodInvoker implements Invoker {
         // 根据方法定义的参数类型，将用户传入的参数规整和转换
         final Object[] actualArgs = MethodKit.actualArgs(method, args);
         try {
+            // 修改了lambda的策略，动态生成后在metaspace不会释放，导致资源占用高
             return invokeExact(target, method, actualArgs);
         } catch (final Exception e) {
             // 传统反射方式执行方法
@@ -199,6 +217,28 @@ public class MethodInvoker implements Invoker {
             } catch (final IllegalAccessException | InvocationTargetException ex) {
                 throw new InternalException(ex);
             }
+        }
+    }
+
+    /**
+     * 执行方法句柄，{@link MethodHandle#invokeWithArguments(Object...)}包装
+     * 非static方法需先调用{@link MethodHandle#bindTo(Object)}绑定执行对象。
+     *
+     * <p>
+     * 需要注意的是，此处没有使用{@link MethodHandle#invoke(Object...)}，因为其参数第一个必须为对象或类。
+     * {@link MethodHandle#invokeWithArguments(Object...)}只需传参数即可。
+     * </p>
+     *
+     * @param methodHandle {@link java.lang.invoke.MethodHandle}
+     * @param args         方法参数值，支持子类转换和自动拆装箱
+     * @param <T>          返回值类型
+     * @return 方法返回值
+     */
+    public static <T> T invokeHandle(final MethodHandle methodHandle, final Object... args) {
+        try {
+            return (T) methodHandle.invokeWithArguments(args);
+        } catch (final Throwable e) {
+            throw ExceptionKit.wrapRuntime(e);
         }
     }
 
@@ -214,11 +254,6 @@ public class MethodInvoker implements Invoker {
         return invoke(null, args);
     }
 
-    @Override
-    public Class<?> getType() {
-        return this.type;
-    }
-
     /**
      * 检查传入参数的有效性。
      *
@@ -226,13 +261,14 @@ public class MethodInvoker implements Invoker {
      * @throws IllegalArgumentException 如果参数数组为空或长度为0，则抛出此异常。
      */
     private void checkArgs(final Object[] args) {
-        final Class<?>[] paramTypes = this.paramTypes;
+        final Class<?>[] paramTypeClasses = this.paramTypeClasses;
         if (null != args) {
-            Assert.isTrue(args.length == paramTypes.length,
-                    "Params length [{}] is not fit for param length [{}] of method !", args.length, paramTypes.length);
+            Assert.isTrue(args.length == paramTypeClasses.length,
+                    "Params length [{}] is not fit for param length [{}] of method !", args.length,
+                    paramTypeClasses.length);
             Class<?> type;
             for (int i = 0; i < args.length; i++) {
-                type = paramTypes[i];
+                type = paramTypeClasses[i];
                 if (type.isPrimitive() && null == args[i]) {
                     // 参数是原始类型，而传入参数为null时赋予默认值
                     args[i] = ClassKit.getDefaultValue(type);

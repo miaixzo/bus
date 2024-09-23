@@ -152,7 +152,7 @@ public class ClassScanner implements Serializable {
     /**
      * 扫描指定包路径下所有包含指定注解的类，包括其他加载的jar或者类
      *
-     * @param packageName     包路径
+     * @param packageName     包路径，{@code null}表示扫描全部
      * @param annotationClass 注解类
      * @return 类集合
      */
@@ -164,7 +164,7 @@ public class ClassScanner implements Serializable {
     /**
      * 扫描指定包路径下所有包含指定注解的类 如果classpath下已经有类，不再扫描其他加载的jar或者类
      *
-     * @param packageName     包路径
+     * @param packageName     包路径，{@code null}表示扫描全部
      * @param annotationClass 注解类
      * @return 类集合
      */
@@ -176,7 +176,7 @@ public class ClassScanner implements Serializable {
     /**
      * 扫描指定包路径下所有指定类或接口的子类或实现类，不包括指定父类本身，包括其他加载的jar或者类
      *
-     * @param packageName 包路径
+     * @param packageName 包路径，{@code null}表示扫描全部
      * @param superClass  父类或接口（不包括）
      * @return 类集合
      */
@@ -187,7 +187,7 @@ public class ClassScanner implements Serializable {
     /**
      * 扫描指定包路径下所有指定类或接口的子类或实现类，不包括指定父类本身 如果classpath下已经有类，不再扫描其他加载的jar或者类
      *
-     * @param packageName 包路径
+     * @param packageName 包路径，{@code null}表示扫描全部
      * @param superClass  父类或接口（不包括）
      * @return 类集合
      */

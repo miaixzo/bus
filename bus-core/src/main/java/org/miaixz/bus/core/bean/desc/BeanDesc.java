@@ -28,9 +28,10 @@
 package org.miaixz.bus.core.bean.desc;
 
 import java.io.Serializable;
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
+
+import org.miaixz.bus.core.lang.reflect.Invoker;
 
 /**
  * Bean信息描述做为BeanInfo替代方案，此对象持有JavaBean中的setters和getters等相关信息描述 查找Getter和Setter方法时会：
@@ -80,7 +81,7 @@ public interface BeanDesc extends Serializable {
      * @param fieldName 字段名
      * @return Getter方法
      */
-    default Method getGetter(final String fieldName) {
+    default Invoker getGetter(final String fieldName) {
         final PropDesc desc = getProp(fieldName);
         return null == desc ? null : desc.getGetter();
     }
@@ -91,7 +92,7 @@ public interface BeanDesc extends Serializable {
      * @param fieldName 字段名
      * @return Setter方法
      */
-    default Method getSetter(final String fieldName) {
+    default Invoker getSetter(final String fieldName) {
         final PropDesc desc = getProp(fieldName);
         return null == desc ? null : desc.getSetter();
     }

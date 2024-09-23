@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.util.Map;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.reflect.TypeReference;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.xyz.*;
-
-import java.io.Serializable;
-import java.lang.reflect.Type;
-import java.util.Map;
 
 /**
  * {@link Map.Entry} 转换器，支持以下类型转为Entry
@@ -53,10 +53,16 @@ public class EntryConverter implements MatcherConverter, Serializable {
 
     private static final long serialVersionUID = -1L;
 
+    private final Converter convert;
+
     /**
-     * 单例
+     * 构造
+     *
+     * @param converter 转换器，用于将Entry中key和value转换为指定类型的对象
      */
-    public static final EntryConverter INSTANCE = new EntryConverter();
+    public EntryConverter(final Converter converter) {
+        this.convert = converter;
+    }
 
     /**
      * 字符串转单个键值对的Map，支持分隔符{@code :}、{@code =}、{@code ,}
@@ -95,8 +101,7 @@ public class EntryConverter implements MatcherConverter, Serializable {
      * @param map        被转换的map
      * @return Entry
      */
-    private static Map.Entry<?, ?> mapToEntry(final Type targetType, final Type keyType, final Type valueType,
-                                              final Map map) {
+    private Map.Entry<?, ?> mapToEntry(final Type targetType, final Type keyType, final Type valueType, final Map map) {
         final Object key;
         final Object value;
         if (1 == map.size()) {
@@ -109,7 +114,6 @@ public class EntryConverter implements MatcherConverter, Serializable {
             value = map.get("value");
         }
 
-        final CompositeConverter convert = CompositeConverter.getInstance();
         return (Map.Entry<?, ?>) ReflectKit.newInstance(TypeKit.getClass(targetType),
                 TypeKit.isUnknown(keyType) ? key : convert.convert(keyType, key),
                 TypeKit.isUnknown(valueType) ? value : convert.convert(valueType, value));

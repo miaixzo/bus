@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core.center;
 
-import org.miaixz.bus.core.center.function.FunctionX;
-import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.xyz.*;
-
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.lang.Optional;
+import org.miaixz.bus.core.xyz.*;
 
 /**
  * 集合的stream操作封装
@@ -226,7 +226,7 @@ public class CollectionStream extends CollectionValidator {
      * @return 分组后的map
      */
     public static <E, K, V> Map<K, List<V>> groupKeyValue(final Collection<E> collection, final FunctionX<E, K> key,
-                                                          final FunctionX<E, V> value) {
+            final FunctionX<E, V> value) {
         return groupKeyValue(collection, key, value, false);
     }
 
@@ -243,7 +243,7 @@ public class CollectionStream extends CollectionValidator {
      * @return 分组后的map
      */
     public static <E, K, V> Map<K, List<V>> groupKeyValue(final Collection<E> collection, final FunctionX<E, K> key,
-                                                          final FunctionX<E, V> value, final boolean isParallel) {
+            final FunctionX<E, V> value, final boolean isParallel) {
         if (CollKit.isEmpty(collection)) {
             return MapKit.zero();
         }

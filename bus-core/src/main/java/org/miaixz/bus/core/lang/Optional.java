@@ -27,14 +27,6 @@
 */
 package org.miaixz.bus.core.lang;
 
-import org.miaixz.bus.core.center.function.ConsumerX;
-import org.miaixz.bus.core.center.function.FunctionX;
-import org.miaixz.bus.core.center.function.PredicateX;
-import org.miaixz.bus.core.center.function.SupplierX;
-import org.miaixz.bus.core.center.stream.EasyStream;
-import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.util.Collection;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -42,6 +34,14 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.center.function.FunctionX;
+import org.miaixz.bus.core.center.function.PredicateX;
+import org.miaixz.bus.core.center.function.SupplierX;
+import org.miaixz.bus.core.center.stream.EasyStream;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 复制jdk16中的Optional，以及进行了一点调整和新增，比jdk8中的Optional多了几个实用的函数
@@ -162,6 +162,19 @@ public class Optional<T> {
      * @return 包裹里的元素，有可能为{@code null}
      */
     public T getOrNull() {
+        return this.value;
+    }
+
+    /**
+     * 返回包裹里的元素，取不到则抛出异常
+     *
+     * @return 包裹里的元素
+     * @throws NoSuchElementException 如果元素为空，则抛出此异常
+     */
+    public T getOrThrow() throws NoSuchElementException {
+        if (this.value == null) {
+            throw new NoSuchElementException("No value present");
+        }
         return this.value;
     }
 

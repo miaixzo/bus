@@ -25,22 +25,59 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.office.excel.cell;
+package org.miaixz.bus.http.plugin.httpv;
 
 /**
- * 抽象的单元格值接口，用于判断不同类型的单元格值 通过自定义的此接口，对于复杂的单元格值类型，可以自定义读取值的类型，如数字、公式等。
+ * 进度（上传或下载）
  *
- * @param <T> 值得类型
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface CellValue<T> {
+public class Progress {
+
+    public static final int DEFAULT_STEP_BYTES = 8192;
 
     /**
-     * 获取单元格值
-     *
-     * @return 值
+     * 总字节数
      */
-    T getValue();
+    private long totalBytes;
+
+    /**
+     * 已经完成字节数
+     */
+    private long doneBytes;
+
+    public Progress(long totalBytes, long doneBytes) {
+        this.totalBytes = totalBytes;
+        this.doneBytes = doneBytes;
+    }
+
+    public double getRate() {
+        return (double) doneBytes / totalBytes;
+    }
+
+    public long getTotalBytes() {
+        return totalBytes;
+    }
+
+    public long getDoneBytes() {
+        return doneBytes;
+    }
+
+    public boolean isDone() {
+        return doneBytes >= totalBytes;
+    }
+
+    public void addDoneBytes(long delt) {
+        doneBytes += delt;
+    }
+
+    public void increaseDoneBytes() {
+        doneBytes++;
+    }
+
+    public boolean notDoneOrReached(long bytes) {
+        return doneBytes < bytes && doneBytes < totalBytes;
+    }
 
 }

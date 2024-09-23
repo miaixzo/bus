@@ -254,12 +254,38 @@ public final class DataSize implements Comparable<DataSize> {
      * @return 大小
      */
     public static String format(final long size) {
+        return format(size, false);
+    }
+
+    /**
+     * 可读的文件大小 参考 <a href=
+     * "http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc">http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc</a>
+     *
+     * @param size          Long类型大小
+     * @param useSimpleName 是否使用简写，例如：1KB 简写成 1K
+     * @return 大小
+     */
+    public static String format(final long size, final boolean useSimpleName) {
+        return format(size, 2, useSimpleName ? Normal.CAPACITY_SIMPLE_NAMES : Normal.CAPACITY_NAMES, Symbol.SPACE);
+    }
+
+    /**
+     * 可读的文件大小 参考 <a href=
+     * "http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc">http://stackoverflow.com/questions/3263892/format-file-size-as-mb-gb-etc</a>
+     *
+     * @param size      Long类型大小
+     * @param scale     小数点位数，四舍五入
+     * @param unitNames 单位数组
+     * @param delimiter 数字和单位的分隔符
+     * @return 大小
+     */
+    public static String format(final long size, final int scale, final String[] unitNames, final String delimiter) {
         if (size <= 0) {
             return "0";
         }
-        final int digitGroups = Math.min(Normal.CAPACITY_NAMES.length - 1, (int) (Math.log10(size) / Math.log10(1024)));
-        return new DecimalFormat("#,##0.##").format(size / Math.pow(1024, digitGroups)) + Symbol.SPACE
-                + Normal.CAPACITY_NAMES[digitGroups];
+        final int digitGroups = Math.min(unitNames.length - 1, (int) (Math.log10(size) / Math.log10(1024)));
+        return new DecimalFormat("#,##0." + StringKit.repeat('#', scale)).format(size / Math.pow(1024, digitGroups))
+                + delimiter + unitNames[digitGroups];
     }
 
     /**

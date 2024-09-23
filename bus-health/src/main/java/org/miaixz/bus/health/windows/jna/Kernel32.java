@@ -43,17 +43,6 @@ public interface Kernel32 extends com.sun.jna.platform.win32.Kernel32 {
      */
     Kernel32 INSTANCE = Native.load("Kernel32", Kernel32.class);
 
-    /**
-     * Determines whether the specified processor feature is supported by the current computer.
-     *
-     * @param ProcessorFeature The processor feature to be tested. This parameter can be one of the values in
-     *                         {@link ProcessorFeature}.
-     * @return If the feature is supported, the return value is true. If the feature is not supported, the return value
-     *         is false. If the HAL does not support detection of the feature, whether or not the hardware supports the
-     *         feature, the return value is also false.
-     */
-    boolean IsProcessorFeaturePresent(int ProcessorFeature);
-
     enum ProcessorFeature {
         PF_FLOATING_POINT_PRECISION_ERRATA(0), PF_FLOATING_POINT_EMULATED(1), PF_COMPARE_EXCHANGE_DOUBLE(2),
         PF_MMX_INSTRUCTIONS_AVAILABLE(3), PF_PPC_MOVEMEM_64BIT_OK(4), PF_ALPHA_BYTE_INSTRUCTIONS(5),

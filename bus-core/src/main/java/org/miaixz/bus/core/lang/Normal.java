@@ -637,6 +637,11 @@ public class Normal {
     public static final String[] CAPACITY_NAMES = new String[] { "B", "KB", "MB", "GB", "TB", "PB", "EB" };
 
     /**
+     * /** 单位名称列表（简写）
+     */
+    public static final String[] CAPACITY_SIMPLE_NAMES = new String[] { "B", "K", "M", "G", "T", "P", "E" };
+
+    /**
      * 七色
      */
     public static final String[] COLOR = { "白", "黒", "碧", "绿", "黄", "白", "赤", "白", "紫" };

@@ -40,6 +40,7 @@ import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.reflect.method.MethodInvoker;
 
 /**
  * Lambda相关工具类
@@ -179,7 +180,8 @@ public class LambdaKit {
      * @return Obj::getXxx
      */
     public static <T, R> Function<T, R> buildGetter(final Class<T> clazz, final String fieldName) {
-        return LambdaFactory.build(Function.class, BeanKit.getBeanDesc(clazz).getGetter(fieldName));
+        final MethodInvoker getter = (MethodInvoker) BeanKit.getBeanDesc(clazz).getGetter(fieldName);
+        return buildGetter(getter.getMethod());
     }
 
     /**
@@ -211,7 +213,8 @@ public class LambdaKit {
      * @return Obj::setXxx
      */
     public static <T, P> BiConsumer<T, P> buildSetter(final Class<T> clazz, final String fieldName) {
-        return LambdaFactory.build(BiConsumer.class, BeanKit.getBeanDesc(clazz).getSetter(fieldName));
+        final MethodInvoker setter = (MethodInvoker) BeanKit.getBeanDesc(clazz).getSetter(fieldName);
+        return buildSetter(setter.getMethod());
     }
 
     /**

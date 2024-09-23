@@ -32,9 +32,10 @@ import java.util.Map;
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
-import org.miaixz.bus.core.text.placeholder.template.NamedStringTemplate;
-import org.miaixz.bus.core.text.placeholder.template.SingleStringTemplate;
+import org.miaixz.bus.core.text.placeholder.template.NamedPlaceholderString;
+import org.miaixz.bus.core.text.placeholder.template.SinglePlaceholderString;
 import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -74,35 +75,38 @@ public class StringFormatter {
         if (StringKit.isBlank(strPattern) || StringKit.isBlank(placeHolder) || ArrayKit.isEmpty(argArray)) {
             return strPattern;
         }
-        return ((SingleStringTemplate) CACHE.computeIfAbsent(MutableEntry.of(strPattern, placeHolder),
+        return ((SinglePlaceholderString) CACHE.computeIfAbsent(MutableEntry.of(strPattern, placeHolder),
                 k -> StringTemplate.of(strPattern).placeholder(placeHolder).build())).format(argArray);
     }
 
     /**
-     * 格式化文本，使用 {varName} 占位 map = {a: "aValue", b: "bValue"} format("{a} and {b}", map) = aValue and bValue
+     * 格式化文本，使用 {varName} 占位 bean = User:{a: "aValue", b: "bValue"} format("{a} and {b}", bean) --- aValue and bValue
      *
-     * @param template   文本模板，被替换的部分用 {data} 表示
-     * @param map        参数值对
+     * @param template   文本模板，被替换的部分用 {key} 表示
+     * @param bean       参数Bean
      * @param ignoreNull 是否忽略 {@code null} 值，忽略则 {@code null} 值对应的变量不被替换，否则替换为""
      * @return 格式化后的文本
      */
-    public static String format(final CharSequence template, final Map<?, ?> map, final boolean ignoreNull) {
+    public static String formatByBean(final CharSequence template, final Object bean, final boolean ignoreNull) {
         if (null == template) {
             return null;
         }
-        if (null == map || map.isEmpty()) {
-            return template.toString();
-        }
 
-        return ((NamedStringTemplate) CACHE.computeIfAbsent(MutableEntry.of(template, ignoreNull), k -> {
-            final NamedStringTemplate.Builder builder = StringTemplate.ofNamed(template.toString());
+        if (bean instanceof Map) {
+            if (MapKit.isEmpty((Map<?, ?>) bean)) {
+                return template.toString();
+            }
+        }
+        // Bean的空检查需要反射，性能很差，此处不检查
+        return ((NamedPlaceholderString) CACHE.computeIfAbsent(MutableEntry.of(template, ignoreNull), k -> {
+            final NamedPlaceholderString.Builder builder = StringTemplate.ofNamed(template.toString());
             if (ignoreNull) {
                 builder.addFeatures(StringTemplate.Feature.FORMAT_NULL_VALUE_TO_WHOLE_PLACEHOLDER);
             } else {
                 builder.addFeatures(StringTemplate.Feature.FORMAT_NULL_VALUE_TO_EMPTY);
             }
             return builder.build();
-        })).format(map);
+        })).format(bean);
     }
 
     /**

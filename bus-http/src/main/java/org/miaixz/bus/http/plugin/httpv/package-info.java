@@ -25,26 +25,10 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.office.excel.reader;
-
-import org.apache.poi.ss.usermodel.Sheet;
-
 /**
- * Excel {@link Sheet}读取接口，通过实现此接口，将{@link Sheet}中的数据读取为不同类型。
+ * Httpv 实现
  *
- * @param <T> 读取的数据类型
  * @author Kimi Liu
  * @since Java 17+
  */
-@FunctionalInterface
-public interface SheetReader<T> {
-
-    /**
-     * 读取数据
-     *
-     * @param sheet {@link Sheet}
-     * @return 读取结果
-     */
-    T read(Sheet sheet);
-
-}
+package org.miaixz.bus.http.plugin.httpv;

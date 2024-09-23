@@ -97,7 +97,7 @@ public interface Decryptor {
      *
      * @param data    数据，Hex（16进制）或Base64字符串
      * @param keyType 密钥类型
-     * @return 解密后的密文
+     * @return 解密后的密文，UTF-8编码
      */
     default String decryptString(final String data, final KeyType keyType) {
         return decryptString(data, keyType, Charset.UTF_8);

@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.lang.reflect.Type;
 import java.time.ZoneId;
 import java.util.TimeZone;
 
@@ -38,9 +39,19 @@ import org.miaixz.bus.core.xyz.ZoneKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class TimeZoneConverter extends AbstractConverter {
+public class TimeZoneConverter extends AbstractConverter implements MatcherConverter {
 
     private static final long serialVersionUID = -1L;
+
+    /**
+     * 单例
+     */
+    public static final TimeZoneConverter INSTANCE = new TimeZoneConverter();
+
+    @Override
+    public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
+        return TimeZone.class.isAssignableFrom(rawType);
+    }
 
     @Override
     protected TimeZone convertInternal(final Class<?> targetClass, final Object value) {

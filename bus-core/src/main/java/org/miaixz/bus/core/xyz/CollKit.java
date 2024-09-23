@@ -55,6 +55,7 @@ import org.miaixz.bus.core.compare.PinyinCompare;
 import org.miaixz.bus.core.compare.PropertyCompare;
 import org.miaixz.bus.core.convert.CompositeConverter;
 import org.miaixz.bus.core.convert.Convert;
+import org.miaixz.bus.core.convert.Converter;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
@@ -1303,6 +1304,21 @@ public class CollKit extends CollectionStream {
      * @return 被加入集合
      */
     public static <T> Collection<T> addAll(final Collection<T> collection, final Object value, Type elementType) {
+        return addAll(collection, value, elementType, null);
+    }
+
+    /**
+     * 将指定对象全部加入到集合中 提供的对象如果为集合类型，会自动转换为目标元素类型 如果为String，支持类似于[1,2,3,4] 或者 1,2,3,4 这种格式
+     *
+     * @param <T>         元素类型
+     * @param collection  被加入的集合
+     * @param value       对象，可能为Iterator、Iterable、Enumeration、Array，或者与集合元素类型一致
+     * @param elementType 元素类型，为空时，使用Object类型来接纳所有类型
+     * @param converter   自定义元素类型转换器，{@code null}表示使用默认转换器
+     * @return 被加入集合
+     */
+    public static <T> Collection<T> addAll(final Collection<T> collection, final Object value, Type elementType,
+            final Converter converter) {
         if (null == collection || null == value) {
             return collection;
         }
@@ -1319,12 +1335,12 @@ public class CollKit extends CollectionStream {
             iter = CharsBacker.splitTrim(arrayStr, Symbol.COMMA).iterator();
         } else if (value instanceof Map && BeanKit.isWritableBean(TypeKit.getClass(elementType))) {
             // 如果值为Map，而目标为一个Bean，则Map应整体转换为Bean，而非拆分成Entry转换
-            iter = new ArrayIterator<>(new Object[] { value });
+            iter = new ArrayIterator(new Object[] { value });
         } else {
             iter = IteratorKit.getIter(value);
         }
 
-        final CompositeConverter convert = CompositeConverter.getInstance();
+        final Converter convert = ObjectKit.defaultIfNull(converter, CompositeConverter::getInstance);
         while (iter.hasNext()) {
             collection.add((T) convert.convert(elementType, iter.next()));
         }

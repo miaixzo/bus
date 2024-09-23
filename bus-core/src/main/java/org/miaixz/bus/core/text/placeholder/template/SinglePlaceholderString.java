@@ -50,7 +50,7 @@ import org.miaixz.bus.core.xyz.ArrayKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class SingleStringTemplate extends StringTemplate {
+public class SinglePlaceholderString extends StringTemplate {
 
     /**
      * 默认的占位符
@@ -61,7 +61,7 @@ public class SingleStringTemplate extends StringTemplate {
      */
     protected String placeholder;
 
-    protected SingleStringTemplate(final String template, final int features, final String placeholder,
+    protected SinglePlaceholderString(final String template, final int features, final String placeholder,
             final char escape, final String defaultValue, final UnaryOperator<String> defaultValueHandler) {
         super(template, escape, defaultValue, defaultValueHandler, features);
 
@@ -204,14 +204,14 @@ public class SingleStringTemplate extends StringTemplate {
     /**
      * 构造器
      */
-    public static class Builder extends AbstractBuilder<Builder, SingleStringTemplate> {
+    public static class Builder extends AbstractBuilder<Builder, SinglePlaceholderString> {
         /**
          * 单占位符
          * <p>
          * 例如："?"、"{}"
          * </p>
          * <p>
-         * 默认为 {@link SingleStringTemplate#DEFAULT_PLACEHOLDER}
+         * 默认为 {@link SinglePlaceholderString#DEFAULT_PLACEHOLDER}
          * </p>
          */
         protected String placeholder;
@@ -232,11 +232,11 @@ public class SingleStringTemplate extends StringTemplate {
         }
 
         @Override
-        protected SingleStringTemplate buildInstance() {
+        protected SinglePlaceholderString buildInstance() {
             if (this.placeholder == null) {
                 this.placeholder = DEFAULT_PLACEHOLDER;
             }
-            return new SingleStringTemplate(this.template, this.features, this.placeholder, this.escape,
+            return new SinglePlaceholderString(this.template, this.features, this.placeholder, this.escape,
                     this.defaultValue, this.defaultValueHandler);
         }
 

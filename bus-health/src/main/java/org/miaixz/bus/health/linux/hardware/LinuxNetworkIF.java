@@ -251,9 +251,9 @@ public final class LinuxNetworkIF extends AbstractNetworkIF {
         this.inErrors = Builder.getUnsignedLongFromFile(name + "/statistics/rx_errors");
         this.collisions = Builder.getUnsignedLongFromFile(name + "/statistics/collisions");
         this.inDrops = Builder.getUnsignedLongFromFile(name + "/statistics/rx_dropped");
-        long speedMiB = Builder.getUnsignedLongFromFile(name + "/speed");
+        long speedMbps = Builder.getUnsignedLongFromFile(name + "/speed");
         // speed may be -1 from file.
-        this.speed = speedMiB < 0 ? 0 : speedMiB << 20;
+        this.speed = speedMbps < 0 ? 0 : speedMbps * 1000000L;
         this.ifAlias = Builder.getStringFromFile(name + "/ifalias");
         this.ifOperStatus = parseIfOperStatus(Builder.getStringFromFile(name + "/operstate"));
 

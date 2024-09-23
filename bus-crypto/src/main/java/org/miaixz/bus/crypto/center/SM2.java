@@ -27,7 +27,10 @@
 */
 package org.miaixz.bus.crypto.center;
 
+import java.io.InputStream;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
+import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.SecureRandom;
@@ -50,6 +53,7 @@ import org.bouncycastle.util.encoders.Hex;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.CryptoException;
+import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.HexKit;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.Keeper;
@@ -106,9 +110,13 @@ public class SM2 extends AbstractCrypto<SM2> {
      * 自定义随机数
      */
     private SecureRandom random;
+    /**
+     * 是否去除压缩04压缩标识
+     */
+    private boolean removeCompressedFlag;
 
     /**
-     * 构造，生成新的私钥公钥对
+     * 构造，生成新的随机私钥公钥对
      */
     public SM2() {
         this(null, (byte[]) null);
@@ -131,23 +139,7 @@ public class SM2 extends AbstractCrypto<SM2> {
      * @param publicKey  公钥，可以使用X509、Q值或PKCS#1规范
      */
     public SM2(final byte[] privateKey, final byte[] publicKey) {
-        this(Keeper.decodePrivateKeyParams(privateKey), Keeper.decodePublicKeyParams(publicKey));
-    }
-
-    /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
-     *
-     * @param privateKey 私钥
-     * @param publicKey  公钥
-     */
-    public SM2(final PrivateKey privateKey, final PublicKey publicKey) {
-        this(Keeper.toPrivateParams(privateKey), Keeper.toPublicParams(publicKey));
-        if (null != privateKey) {
-            this.privateKey = privateKey;
-        }
-        if (null != publicKey) {
-            this.publicKey = publicKey;
-        }
+        this(Keeper.generateSm2PrivateKey(privateKey), Keeper.generateSm2PublicKey(publicKey));
     }
 
     /**
@@ -158,7 +150,7 @@ public class SM2 extends AbstractCrypto<SM2> {
      * @param privateKeyY 公钥Y16进制
      */
     public SM2(final String privateKey, final String privateKeyX, final String privateKeyY) {
-        this(Keeper.toSm2PrivateParams(privateKey), Keeper.toSm2PublicParams(privateKeyX, privateKeyY));
+        this(Builder.decode(privateKey), Builder.decode(privateKeyX), Builder.decode(privateKeyY));
     }
 
     /**
@@ -169,7 +161,20 @@ public class SM2 extends AbstractCrypto<SM2> {
      * @param publicKeyY 公钥Y
      */
     public SM2(final byte[] privateKey, final byte[] publicKeyX, final byte[] publicKeyY) {
-        this(Keeper.toSm2PrivateParams(privateKey), Keeper.toSm2PublicParams(publicKeyX, publicKeyY));
+        this(Keeper.generateSm2PrivateKey(privateKey), Keeper.generateSm2PublicKey(publicKeyX, publicKeyY));
+    }
+
+    /**
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     *
+     * @param privateKey 私钥
+     * @param publicKey  公钥
+     */
+    public SM2(final PrivateKey privateKey, final PublicKey publicKey) {
+        super(Algorithm.SM2.getValue(), new KeyPair(publicKey, privateKey));
+        this.privateKeyParams = Keeper.toPrivateParams(this.privateKey);
+        this.publicKeyParams = Keeper.toPublicParams(this.publicKey);
+        this.init();
     }
 
     /**
@@ -204,6 +209,86 @@ public class SM2 extends AbstractCrypto<SM2> {
         // 阻断父类中自动生成密钥对的操作，此操作由本类中进行。
         // 由于用户可能传入Params而非key，因此此时key必定为null，故此不再生成
         return this;
+    }
+
+    /**
+     * 去除04压缩标识 gmssl等库生成的密文不包含04前缀，此处兼容
+     *
+     * @param data 密文数据
+     * @return 处理后的数据
+     */
+    private static byte[] removeCompressedFlag(final byte[] data) {
+        if (data[0] != 0x04) {
+            return data;
+        }
+        final byte[] result = new byte[data.length - 1];
+        System.arraycopy(data, 1, result, 0, result.length);
+        return result;
+    }
+
+    /**
+     * 追加压缩标识 检查数据，gmssl等库生成的密文不包含04前缀（非压缩数据标识），此处检查并补充 参考：https://blog.csdn.net/softt/article/details/139978608
+     * 根据公钥压缩形态不同，密文分为两种压缩形式： C1( 03 + X ) + C3（32个字节）+ C2 C1( 02 + X ) + C3（32个字节）+ C2 非压缩公钥正常形态为04 + X +
+     * Y，由于各个算法库差异，04有时候会省略 非压缩密文正常形态为04 + C1 + C3 + C2
+     *
+     * @param data 待解密数据
+     * @return 增加压缩标识后的数据
+     */
+    private static byte[] prependCompressedFlag(byte[] data) {
+        if (data[0] != 0x04 && data[0] != 0x02 && data[0] != 0x03) {
+            // 默认非压缩形态
+            data = ArrayKit.insert(data, 0, 0x04);
+        }
+        return data;
+    }
+
+    /**
+     * 使用公钥加密，SM2非对称加密的结果由C1,C3,C2三部分组成，其中：
+     *
+     * <pre>
+     * C1 生成随机数的计算出的椭圆曲线点
+     * C3 SM3的摘要值
+     * C2 密文数据
+     * </pre>
+     *
+     * @param data 被加密的字符串，UTF8编码
+     * @return 加密后的Base64
+     * @throws CryptoException 包括InvalidKeyException和InvalidCipherTextException的包装异常
+     */
+    public String encryptBase64(final String data) {
+        return encryptBase64(data, KeyType.PublicKey);
+    }
+
+    /**
+     * 使用公钥加密，SM2非对称加密的结果由C1,C3,C2三部分组成，其中：
+     *
+     * <pre>
+     * C1 生成随机数的计算出的椭圆曲线点
+     * C3 SM3的摘要值
+     * C2 密文数据
+     * </pre>
+     *
+     * @param in 被加密的数据流
+     * @return 加密后的Base64
+     */
+    public String encryptBase64(final InputStream in) {
+        return encryptBase64(in, KeyType.PublicKey);
+    }
+
+    /**
+     * 使用公钥加密，SM2非对称加密的结果由C1,C3,C2三部分组成，其中：
+     *
+     * <pre>
+     * C1 生成随机数的计算出的椭圆曲线点
+     * C3 SM3的摘要值
+     * C2 密文数据
+     * </pre>
+     *
+     * @param data 被加密的bytes
+     * @return 加密后的Base64
+     */
+    public String encryptBase64(final byte[] data) {
+        return encryptBase64(data, KeyType.PublicKey);
     }
 
     /**
@@ -246,6 +331,39 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
+     * 使用公钥加密，SM2非对称加密的结果由C1,C3,C2三部分组成，其中：
+     *
+     * <pre>
+     * C1 生成随机数的计算出的椭圆曲线点
+     * C3 SM3的摘要值
+     * C2 密文数据
+     * </pre>
+     *
+     * @param data 被加密的字符串，UTF8编码
+     * @return 加密后的bytes
+     * @throws CryptoException 包括InvalidKeyException和InvalidCipherTextException的包装异常
+     */
+    public byte[] encrypt(final String data) {
+        return encrypt(data, KeyType.PublicKey);
+    }
+
+    /**
+     * 使用公钥加密，SM2非对称加密的结果由C1,C3,C2三部分组成，其中：
+     *
+     * <pre>
+     * C1 生成随机数的计算出的椭圆曲线点
+     * C3 SM3的摘要值
+     * C2 密文数据
+     * </pre>
+     *
+     * @param in 被加密的数据流
+     * @return 加密后的bytes
+     */
+    public byte[] encrypt(final InputStream in) {
+        return encrypt(in, KeyType.PublicKey);
+    }
+
+    /**
      * 加密，SM2非对称加密的结果由C1,C2,C3三部分组成，其中：
      *
      * <pre>
@@ -264,12 +382,35 @@ public class SM2 extends AbstractCrypto<SM2> {
         final SM2Engine engine = getEngine();
         try {
             engine.init(true, pubKeyParameters);
-            return engine.processBlock(data, 0, data.length);
+            final byte[] result = engine.processBlock(data, 0, data.length);
+            return this.removeCompressedFlag ? removeCompressedFlag(result) : result;
         } catch (final InvalidCipherTextException e) {
             throw new CryptoException(e);
         } finally {
             lock.unlock();
         }
+    }
+
+    /**
+     * 使用私钥解密
+     *
+     * @param data SM2密文数据，Hex（16进制）或Base64字符串
+     * @return 解密后的字符串，UTF-8 编码
+     */
+    public String decryptString(final String data) {
+        return decryptString(data, KeyType.PrivateKey);
+    }
+
+    /**
+     * 使用私钥解密
+     *
+     * @param data    SM2密文数据，Hex（16进制）或Base64字符串
+     * @param charset 编码
+     * @return 解密后的bytes
+     * @throws CryptoException 包括InvalidKeyException和InvalidCipherTextException的包装异常
+     */
+    public String decryptString(final String data, final Charset charset) {
+        return decryptString(data, KeyType.PrivateKey, charset);
     }
 
     /**
@@ -300,24 +441,13 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 解密
+     * 使用私钥解密
      *
-     * @param data                 SM2密文，实际包含三部分：ECC公钥、真正的密文、公钥和原文的SM3-HASH值
-     * @param privateKeyParameters 私钥参数
-     * @return 加密后的bytes
-     * @throws CryptoException 包括InvalidKeyException和InvalidCipherTextException的包装异常
+     * @param in 密文数据流
+     * @return 解密后的bytes
      */
-    public byte[] decrypt(final byte[] data, final CipherParameters privateKeyParameters) throws CryptoException {
-        lock.lock();
-        final SM2Engine engine = getEngine();
-        try {
-            engine.init(false, privateKeyParameters);
-            return engine.processBlock(data, 0, data.length);
-        } catch (final InvalidCipherTextException e) {
-            throw new CryptoException(e);
-        } finally {
-            lock.unlock();
-        }
+    public byte[] decrypt(final InputStream in) {
+        return super.decrypt(in, KeyType.PrivateKey);
     }
 
     /**
@@ -488,6 +618,16 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
+     * 使用私钥解密
+     *
+     * @param data SM2密文，实际包含三部分：ECC公钥、真正的密文、公钥和原文的SM3-HASH值
+     * @return 解密后的bytes
+     */
+    public byte[] decrypt(final String data) {
+        return super.decrypt(data, KeyType.PrivateKey);
+    }
+
+    /**
      * 设置DSA signatures的编码为PlainDSAEncoding
      *
      * @return this
@@ -615,6 +755,41 @@ public class SM2 extends AbstractCrypto<SM2> {
         }
         this.digest.reset();
         return this.signer;
+    }
+
+    /**
+     * 解密
+     *
+     * @param data                 SM2密文，实际包含三部分：ECC公钥、真正的密文、公钥和原文的SM3-HASH值
+     * @param privateKeyParameters 私钥参数
+     * @return 加密后的bytes
+     * @throws CryptoException 包括InvalidKeyException和InvalidCipherTextException的包装异常
+     */
+    public byte[] decrypt(byte[] data, final CipherParameters privateKeyParameters) throws CryptoException {
+        Assert.isTrue(data.length > 1, "Invalid SM2 cipher text, must be at least 1 byte long");
+        data = prependCompressedFlag(data);
+
+        lock.lock();
+        final SM2Engine engine = getEngine();
+        try {
+            engine.init(false, privateKeyParameters);
+            return engine.processBlock(data, 0, data.length);
+        } catch (final InvalidCipherTextException e) {
+            throw new CryptoException(e);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * 设置是否移除压缩标记，默认为false 移除后的密文兼容gmssl等库
+     *
+     * @param removeCompressedFlag 是否移除压缩标记
+     * @return this
+     */
+    public SM2 setRemoveCompressedFlag(final boolean removeCompressedFlag) {
+        this.removeCompressedFlag = removeCompressedFlag;
+        return this;
     }
 
 }

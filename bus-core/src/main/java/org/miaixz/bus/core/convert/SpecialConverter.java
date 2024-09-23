@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.lang.exception.ConvertException;
-import org.miaixz.bus.core.xyz.StreamKit;
-import org.miaixz.bus.core.xyz.TypeKit;
-
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.LinkedHashSet;
 import java.util.Set;
+
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.exception.ConvertException;
+import org.miaixz.bus.core.xyz.StreamKit;
+import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
  * 特殊类型转换器，如果不符合特殊类型，则返回{@code null}继续其它转换规则 对于特殊对象（如集合、Map、Enum、数组）等的转换器，实现转换 注意：此类中的转换器查找是通过遍历方式
@@ -42,9 +43,10 @@ import java.util.Set;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class SpecialConverter implements Converter, Serializable {
+public class SpecialConverter extends ConverterWithRoot implements Serializable {
 
     private static final long serialVersionUID = -1L;
+
     /**
      * 类型转换器集合 此集合初始化后不再加入新值，因此单例使用线程安全
      */
@@ -52,16 +54,41 @@ public class SpecialConverter implements Converter, Serializable {
 
     /**
      * 构造
+     *
+     * @param rootConverter 父转换器
      */
-    private SpecialConverter() {
+    public SpecialConverter(final Converter rootConverter) {
+        super(rootConverter);
+        this.converterSet = initDefault(Assert.notNull(rootConverter));
+    }
+
+    /**
+     * 从指定集合中查找满足条件的转换器
+     *
+     * @param type 类型
+     * @return 转换器
+     */
+    private static Converter getConverterFromSet(final Set<? extends MatcherConverter> converterSet, final Type type,
+            final Class<?> rawType, final Object value) {
+        return StreamKit.of(converterSet).filter((predicate) -> predicate.match(type, rawType, value)).findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * 初始化默认转换器
+     *
+     * @param rootConverter 根转换器，用于递归子对象转换
+     * @return 转换器集合
+     */
+    private static Set<MatcherConverter> initDefault(final Converter rootConverter) {
         final Set<MatcherConverter> converterSet = new LinkedHashSet<>(64);
 
         // 集合转换（含有泛型参数，不可以默认强转）
         converterSet.add(CollectionConverter.INSTANCE);
         // Map类型（含有泛型参数，不可以默认强转）
-        converterSet.add(MapConverter.INSTANCE);
-        // Entry类（含有泛型参数，不可以默认强转）
-        converterSet.add(EntryConverter.INSTANCE);
+        converterSet.add(new MapConverter(rootConverter));
+        // issue#I6SZYB Entry类（含有泛型参数，不可以默认强转）
+        converterSet.add(new EntryConverter(rootConverter));
         // 默认强转
         converterSet.add(CastConverter.INSTANCE);
         // 日期、java.sql中的日期以及自定义日期统一处理
@@ -78,33 +105,16 @@ public class SpecialConverter implements Converter, Serializable {
         converterSet.add(RecordConverter.INSTANCE);
         // Kotlin Bean
         converterSet.add(KBeanConverter.INSTANCE);
-        // Class
+        // issue#I7FQ29 Class
         converterSet.add(ClassConverter.INSTANCE);
-        // 空值转空Bean
+        // // 空值转空Bean
         converterSet.add(EmptyBeanConverter.INSTANCE);
 
-        this.converterSet = converterSet;
-    }
+        // 日期相关
+        converterSet.add(TimeZoneConverter.INSTANCE);
+        converterSet.add(ZoneIdConverter.INSTANCE);
 
-    /**
-     * 获得单例
-     *
-     * @return this
-     */
-    public static SpecialConverter getInstance() {
-        return SingletonHolder.INSTANCE;
-    }
-
-    /**
-     * 从指定集合中查找满足条件的转换器
-     *
-     * @param type 类型
-     * @return 转换器
-     */
-    private static Converter getConverterFromSet(final Set<? extends MatcherConverter> converterSet, final Type type,
-                                                 final Class<?> rawType, final Object value) {
-        return StreamKit.of(converterSet).filter((predicate) -> predicate.match(type, rawType, value)).findFirst()
-                .orElse(null);
+        return converterSet;
     }
 
     @Override
@@ -136,16 +146,6 @@ public class SpecialConverter implements Converter, Serializable {
      */
     public Converter getConverter(final Type type, final Class<?> rawType, final Object value) {
         return getConverterFromSet(this.converterSet, type, rawType, value);
-    }
-
-    /**
-     * 类级的内部类，也就是静态的成员式内部类，该内部类的实例与外部类的实例 没有绑定关系，而且只有被调用到才会装载，从而实现了延迟加载
-     */
-    private static class SingletonHolder {
-        /**
-         * 静态初始化器，由JVM来保证线程安全
-         */
-        private static final SpecialConverter INSTANCE = new SpecialConverter();
     }
 
 }

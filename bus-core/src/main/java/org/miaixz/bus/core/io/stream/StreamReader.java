@@ -27,11 +27,10 @@
 */
 package org.miaixz.bus.core.io.stream;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.function.Predicate;
 
-import org.miaixz.bus.core.io.StreamProgress;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -113,27 +112,37 @@ public class StreamReader {
      */
     public FastByteArrayOutputStream read(final int limit) throws InternalException {
         final InputStream in = this.in;
-        final FastByteArrayOutputStream out;
-        if (in instanceof FileInputStream) {
-            // 文件流的长度是可预见的，此时直接读取效率更高
-            try {
-                int length = in.available();
-                if (limit > 0 && limit < length) {
-                    length = limit;
-                }
-                out = new FastByteArrayOutputStream(length);
-            } catch (final IOException e) {
-                throw new InternalException(e);
-            }
-        } else {
-            out = new FastByteArrayOutputStream();
-        }
+        final FastByteArrayOutputStream out = FastByteArrayOutputStream.of(in, limit);
         try {
-            IoKit.copy(in, out, Normal._8192, limit, (StreamProgress) null);
+            IoKit.copyNio(in, out, Normal._8192, limit, null);
         } finally {
             if (closeAfterRead) {
-                IoKit.close(in);
+                IoKit.closeQuietly(in);
             }
+        }
+        return out;
+    }
+
+    /**
+     * 从流中读取内容，直到遇到给定token满足{@link Predicate#test(Object)}
+     *
+     * @param predicate 读取结束条件, {@link Predicate#test(Object)}返回true表示结束
+     * @return 输出流
+     * @throws InternalException IO异常
+     */
+    public FastByteArrayOutputStream readTo(final Predicate<Integer> predicate) throws InternalException {
+        final InputStream in = this.in;
+        final FastByteArrayOutputStream out = FastByteArrayOutputStream.of(in, -1);
+        int read;
+        try {
+            while ((read = in.read()) > 0) {
+                if (null != predicate && predicate.test(read)) {
+                    break;
+                }
+                out.write(read);
+            }
+        } catch (final IOException e) {
+            throw new InternalException(e);
         }
         return out;
     }

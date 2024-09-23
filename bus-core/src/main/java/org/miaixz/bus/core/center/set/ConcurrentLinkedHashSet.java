@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.center.set;
 
+import java.util.Collection;
+
 import org.miaixz.bus.core.center.map.concurrent.ConcurrentLinkedHashMap;
 import org.miaixz.bus.core.lang.Normal;
-
-import java.util.Collection;
 
 /**
  * 通过{@link ConcurrentLinkedHashMap}实现的线程安全HashSet
@@ -79,7 +79,7 @@ public class ConcurrentLinkedHashSet<E> extends SetFromMap<E> {
     public ConcurrentLinkedHashSet(final Iterable<E> iter) {
         super(iter instanceof Collection
                 ? new ConcurrentLinkedHashMap.Builder<E, Boolean>().initialCapacity(((Collection<E>) iter).size())
-                .build()
+                        .build()
                 : new ConcurrentLinkedHashMap.Builder<E, Boolean>().build());
         if (iter instanceof Collection) {
             this.addAll((Collection<E>) iter);

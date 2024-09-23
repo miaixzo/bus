@@ -27,8 +27,21 @@
 */
 package org.miaixz.bus.crypto;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.math.BigInteger;
+import java.security.*;
+import java.security.spec.KeySpec;
+import java.util.Map;
+import java.util.Objects;
+
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.*;
+
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
-import org.bouncycastle.asn1.gm.GMNamedCurves;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.asn1.x9.X9ECParameters;
@@ -46,6 +59,7 @@ import org.bouncycastle.crypto.params.ECPrivateKeyParameters;
 import org.bouncycastle.crypto.params.ECPublicKeyParameters;
 import org.bouncycastle.crypto.signers.StandardDSAEncoding;
 import org.bouncycastle.jcajce.provider.asymmetric.util.ECUtil;
+import org.bouncycastle.jce.ECNamedCurveTable;
 import org.bouncycastle.jce.spec.ECParameterSpec;
 import org.bouncycastle.util.Arrays;
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -59,19 +73,6 @@ import org.miaixz.bus.crypto.builtin.digest.mac.BCHMac;
 import org.miaixz.bus.crypto.builtin.digest.mac.Mac;
 import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
 import org.miaixz.bus.crypto.center.*;
-
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.*;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.security.*;
-import java.security.spec.KeySpec;
-import java.util.Map;
-import java.util.Objects;
 
 /**
  * 安全相关工具类 加密分为三种： 1、对称加密（symmetric），例如：AES、DES等 2、非对称加密（asymmetric），例如：RSA、DSA等
@@ -87,9 +88,13 @@ public class Builder {
      */
     public static final String SM2_CURVE_NAME = "sm2p256v1";
     /**
+     * SM2椭圆曲线参数类
+     */
+    public static final ECParameterSpec SM2_EC_SPEC = ECNamedCurveTable.getParameterSpec(SM2_CURVE_NAME);
+    /**
      * SM2推荐曲线参数（来自https://github.com/ZZMarquis/gmhelper）
      */
-    public static final ECDomainParameters SM2_DOMAIN_PARAMS = toDomainParams(GMNamedCurves.getByName(SM2_CURVE_NAME));
+    public static final ECDomainParameters SM2_DOMAIN_PARAMS = toDomainParams(SM2_EC_SPEC);
     /**
      * SM2国密算法公钥参数的Oid标识
      */

@@ -873,22 +873,35 @@ public class ArrayValidator {
      * @param <T>          数组元素类型
      * @return 子数组的开始位置，即子数字第一个元素在数组中的位置
      */
-    public static <T> int indexOfSub(final T[] array, final int beginInclude, final T[] subArray) {
-        if (isEmpty(array) || isEmpty(subArray) || subArray.length > array.length) {
+    public static <T> int indexOfSub(final T[] array, int beginInclude, final T[] subArray) {
+        if (isEmpty(array) || isEmpty(subArray)) {
             return Normal.__1;
         }
-        final int firstIndex = indexOf(array, subArray[0], beginInclude);
-        if (firstIndex < 0 || firstIndex + subArray.length > array.length) {
+        if (beginInclude < 0) {
+            beginInclude += array.length;
+        }
+        if (beginInclude < 0 || beginInclude > array.length - 1) {
+            return Normal.__1;
+        }
+        if (array.length - beginInclude < subArray.length) {
+            // 剩余长度不足
             return Normal.__1;
         }
 
-        for (int i = 0; i < subArray.length; i++) {
-            if (!ObjectKit.equals(array[i + firstIndex], subArray[i])) {
-                return indexOfSub(array, firstIndex + 1, subArray);
+        for (int i = beginInclude; i <= array.length - subArray.length; i++) {
+            boolean found = true;
+            for (int j = 0; j < subArray.length; j++) {
+                if (ObjectKit.notEquals(array[i + j], subArray[j])) {
+                    found = false;
+                    break;
+                }
+            }
+            if (found) {
+                return i;
             }
         }
 
-        return firstIndex;
+        return Normal.__1;
     }
 
     /**

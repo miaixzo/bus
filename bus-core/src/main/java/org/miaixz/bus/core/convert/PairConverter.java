@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serializable;
+import java.lang.reflect.Type;
+import java.util.Map;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.ConvertException;
 import org.miaixz.bus.core.lang.reflect.TypeReference;
@@ -35,9 +39,6 @@ import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.TypeKit;
-
-import java.lang.reflect.Type;
-import java.util.Map;
 
 /**
  * {@link Pair} 转换器，支持以下类型转为Pair
@@ -51,12 +52,18 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class PairConverter implements Converter {
+public class PairConverter extends ConverterWithRoot implements Serializable {
+
+    private static final long serialVersionUID = -1L;
 
     /**
-     * 单例
+     * 构造
+     *
+     * @param rootConverter 根转换器，用于转换Pair中的值
      */
-    public static final PairConverter INSTANCE = new PairConverter();
+    public PairConverter(final Converter rootConverter) {
+        super(rootConverter);
+    }
 
     @Override
     public Object convert(Type targetType, final Object value) throws ConvertException {
@@ -94,8 +101,7 @@ public class PairConverter implements Converter {
      * @param map       被转换的map
      * @return Pair
      */
-    private static Pair<?, ?> mapToPair(final Type keyType, final Type valueType, final Map map) {
-
+    private Pair<?, ?> mapToPair(final Type keyType, final Type valueType, final Map map) {
         final Object left;
         final Object right;
         if (1 == map.size()) {
@@ -108,9 +114,8 @@ public class PairConverter implements Converter {
             right = map.get("right");
         }
 
-        final CompositeConverter convert = CompositeConverter.getInstance();
-        return Pair.of(TypeKit.isUnknown(keyType) ? left : convert.convert(keyType, left),
-                TypeKit.isUnknown(valueType) ? right : convert.convert(valueType, right));
+        return Pair.of(TypeKit.isUnknown(keyType) ? left : converter.convert(keyType, left),
+                TypeKit.isUnknown(valueType) ? right : converter.convert(valueType, right));
     }
 
     /**

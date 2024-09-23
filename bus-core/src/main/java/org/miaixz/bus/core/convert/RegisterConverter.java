@@ -27,17 +27,6 @@
 */
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
-import org.miaixz.bus.core.center.set.ConcurrentHashSet;
-import org.miaixz.bus.core.lang.Optional;
-import org.miaixz.bus.core.lang.exception.ConvertException;
-import org.miaixz.bus.core.lang.tuple.Pair;
-import org.miaixz.bus.core.lang.tuple.Triplet;
-import org.miaixz.bus.core.lang.tuple.Tuple;
-import org.miaixz.bus.core.xyz.StreamKit;
-import org.miaixz.bus.core.xyz.TypeKit;
-
-import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.Serializable;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
@@ -54,6 +43,17 @@ import java.util.concurrent.atomic.AtomicIntegerArray;
 import java.util.concurrent.atomic.AtomicLongArray;
 import java.util.concurrent.atomic.AtomicReference;
 
+import javax.xml.datatype.XMLGregorianCalendar;
+
+import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
+import org.miaixz.bus.core.center.set.ConcurrentHashSet;
+import org.miaixz.bus.core.lang.exception.ConvertException;
+import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.lang.tuple.Triplet;
+import org.miaixz.bus.core.lang.tuple.Tuple;
+import org.miaixz.bus.core.xyz.StreamKit;
+import org.miaixz.bus.core.xyz.TypeKit;
+
 /**
  * 基于类型注册的转换器，提供两种注册方式，按照优先级依次为：
  * <ol>
@@ -65,7 +65,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class RegisterConverter implements Converter, Serializable {
+public class RegisterConverter extends ConverterWithRoot implements Serializable {
 
     private static final long serialVersionUID = -1L;
 
@@ -74,86 +74,22 @@ public class RegisterConverter implements Converter, Serializable {
      */
     private volatile Set<MatcherConverter> converterSet;
     /**
-     * 用户自定义精确类型转换器<br>
-     * 主要存储类型明确（无子类）的转换器
-     */
-    private volatile Map<Type, Converter> customConverterMap;
-    /**
      * 默认类型转换器
      */
-    private Map<Class<?>, Converter> defaultConverterMap;
+    private final Map<Class<?>, Converter> defaultConverterMap;
+    /**
+     * 用户自定义精确类型转换器 主要存储类型明确（无子类）的转换器
+     */
+    private volatile Map<Type, Converter> customConverterMap;
 
     /**
      * 构造
-     */
-    public RegisterConverter() {
-        final Map<Class<?>, Converter> map = new SafeConcurrentHashMap<>(64);
-
-        // 包装类转换器
-        map.put(Character.class, new CharacterConverter());
-        map.put(Boolean.class, new BooleanConverter());
-        map.put(AtomicBoolean.class, new AtomicBooleanConverter());
-        map.put(CharSequence.class, new StringConverter());
-        map.put(String.class, new StringConverter());
-
-        // URI and URL
-        map.put(URI.class, new URIConverter());
-        map.put(URL.class, new URLConverter());
-
-        // 日期时间
-        map.put(Calendar.class, new CalendarConverter());
-        map.put(XMLGregorianCalendar.class, new XMLGregorianCalendarConverter());
-
-        // 日期时间
-        map.put(TemporalAccessor.class, TemporalAccessorConverter.INSTANCE);
-        map.put(Instant.class, TemporalAccessorConverter.INSTANCE);
-        map.put(LocalDateTime.class, TemporalAccessorConverter.INSTANCE);
-        map.put(LocalDate.class, TemporalAccessorConverter.INSTANCE);
-        map.put(LocalTime.class, TemporalAccessorConverter.INSTANCE);
-        map.put(ZonedDateTime.class, TemporalAccessorConverter.INSTANCE);
-        map.put(OffsetDateTime.class, TemporalAccessorConverter.INSTANCE);
-        map.put(OffsetTime.class, TemporalAccessorConverter.INSTANCE);
-        map.put(DayOfWeek.class, TemporalAccessorConverter.INSTANCE);
-        map.put(Month.class, TemporalAccessorConverter.INSTANCE);
-        map.put(MonthDay.class, TemporalAccessorConverter.INSTANCE);
-
-        map.put(Period.class, new PeriodConverter());
-        map.put(Duration.class, new DurationConverter());
-
-        // Reference
-        map.put(WeakReference.class, ReferenceConverter.INSTANCE);
-        map.put(SoftReference.class, ReferenceConverter.INSTANCE);
-        map.put(AtomicReference.class, new AtomicReferenceConverter());
-
-        // AtomicXXXArray
-        map.put(AtomicIntegerArray.class, new AtomicIntegerArrayConverter());
-        map.put(AtomicLongArray.class, new AtomicLongArrayConverter());
-
-        // 其它类型
-        map.put(TimeZone.class, new TimeZoneConverter());
-        map.put(ZoneId.class, new ZoneIdConverter());
-        map.put(Locale.class, new LocaleConverter());
-        map.put(Charset.class, new CharsetConverter());
-        map.put(Path.class, new PathConverter());
-        map.put(Currency.class, new CurrencyConverter());
-        map.put(UUID.class, new UUIDConverter());
-        map.put(StackTraceElement.class, new StackTraceElementConverter());
-        map.put(java.util.Optional.class, new OptionalConverter());
-        map.put(Optional.class, new OptConverter());
-        map.put(Pair.class, PairConverter.INSTANCE);
-        map.put(Triplet.class, TripleConverter.INSTANCE);
-        map.put(Tuple.class, TupleConverter.INSTANCE);
-
-        this.defaultConverterMap = map;
-    }
-
-    /**
-     * 获得单例
      *
-     * @return this
+     * @param rootConverter 根转换器，用于子转换器转换
      */
-    public static RegisterConverter getInstance() {
-        return RegisterConverter.SingletonHolder.INSTANCE;
+    public RegisterConverter(final Converter rootConverter) {
+        super(rootConverter);
+        this.defaultConverterMap = initDefault(rootConverter);
     }
 
     @Override
@@ -269,13 +205,69 @@ public class RegisterConverter implements Converter, Serializable {
     }
 
     /**
-     * 类级的内部类，也就是静态的成员式内部类，该内部类的实例与外部类的实例 没有绑定关系，而且只有被调用到才会装载，从而实现了延迟加载
+     * 初始化默认转换器
+     *
+     * @return 默认转换器
      */
-    private static class SingletonHolder {
-        /**
-         * 静态初始化器，由JVM来保证线程安全
-         */
-        private static final RegisterConverter INSTANCE = new RegisterConverter();
+    private static Map<Class<?>, Converter> initDefault(final Converter rootConverter) {
+        final Map<Class<?>, Converter> converterMap = new SafeConcurrentHashMap<>(64);
+
+        // 包装类转换器
+        converterMap.put(Character.class, CharacterConverter.INSTANCE);
+        converterMap.put(Boolean.class, BooleanConverter.INSTANCE);
+        converterMap.put(AtomicBoolean.class, AtomicBooleanConverter.INSTANCE);// since 3.0.8
+        final StringConverter stringConverter = new StringConverter();
+        converterMap.put(CharSequence.class, stringConverter);
+        converterMap.put(String.class, stringConverter);
+
+        // URI and URL
+        converterMap.put(URI.class, new URIConverter());
+        converterMap.put(URL.class, new URLConverter());
+
+        // 日期时间
+        converterMap.put(Calendar.class, new CalendarConverter());
+        converterMap.put(XMLGregorianCalendar.class, new XMLGregorianCalendarConverter());
+
+        // 日期时间 JDK8+(since 5.0.0)
+        converterMap.put(TemporalAccessor.class, TemporalAccessorConverter.INSTANCE);
+        converterMap.put(Instant.class, TemporalAccessorConverter.INSTANCE);
+        converterMap.put(LocalDateTime.class, TemporalAccessorConverter.INSTANCE);
+        converterMap.put(LocalDate.class, TemporalAccessorConverter.INSTANCE);
+        converterMap.put(LocalTime.class, TemporalAccessorConverter.INSTANCE);
+        converterMap.put(ZonedDateTime.class, TemporalAccessorConverter.INSTANCE);
+        converterMap.put(OffsetDateTime.class, TemporalAccessorConverter.INSTANCE);
+        converterMap.put(OffsetTime.class, TemporalAccessorConverter.INSTANCE);
+        converterMap.put(DayOfWeek.class, TemporalAccessorConverter.INSTANCE);
+        converterMap.put(Month.class, TemporalAccessorConverter.INSTANCE);
+        converterMap.put(MonthDay.class, TemporalAccessorConverter.INSTANCE);
+
+        converterMap.put(Period.class, new PeriodConverter());
+        converterMap.put(Duration.class, new DurationConverter());
+
+        // Reference
+        final ReferenceConverter referenceConverter = new ReferenceConverter(rootConverter);
+        converterMap.put(WeakReference.class, referenceConverter);
+        converterMap.put(SoftReference.class, referenceConverter);
+        converterMap.put(AtomicReference.class, new AtomicReferenceConverter(rootConverter));
+
+        // AtomicXXXArray
+        converterMap.put(AtomicIntegerArray.class, new AtomicIntegerArrayConverter());
+        converterMap.put(AtomicLongArray.class, new AtomicLongArrayConverter());
+
+        // 其它类型
+        converterMap.put(Locale.class, new LocaleConverter());
+        converterMap.put(Charset.class, new CharsetConverter());
+        converterMap.put(Path.class, new PathConverter());
+        converterMap.put(Currency.class, new CurrencyConverter());
+        converterMap.put(UUID.class, new UUIDConverter());
+        converterMap.put(StackTraceElement.class, new StackTraceElementConverter());
+        converterMap.put(Optional.class, new OptionalConverter());
+        converterMap.put(org.miaixz.bus.core.lang.Optional.class, new OptConverter());
+        converterMap.put(Pair.class, new PairConverter(rootConverter));
+        converterMap.put(Triplet.class, new TripletConverter(rootConverter));
+        converterMap.put(Tuple.class, TupleConverter.INSTANCE);
+
+        return converterMap;
     }
 
 }

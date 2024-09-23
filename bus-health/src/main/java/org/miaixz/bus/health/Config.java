@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.health;
 
+import java.util.Properties;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.NotThreadSafe;
 import org.miaixz.bus.setting.metric.props.Props;
-
-import java.util.Properties;
 
 /**
  * The global configuration utility. See {@code src/main/resources/bus.health.properties} for default values. This class
@@ -136,6 +136,7 @@ public final class Config {
     public static final String _WINDOWS_PERFDISK_DIABLED = "bus.health.windows.perfdisk.disabled";
     public static final String _WINDOWS_PERFOS_DIABLED = "bus.health.windows.perfos.disabled";
     public static final String _WINDOWS_PERFPROC_DIABLED = "bus.health.windows.perfproc.disabled";
+    public static final String _WINDOWS_PERF_DISABLE_ALL_ON_FAILURE = "bus.health.windows.perf.disable.all.on.failure";
 
     /**
      * default values

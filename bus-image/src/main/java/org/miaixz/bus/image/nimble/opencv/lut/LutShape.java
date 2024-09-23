@@ -116,8 +116,8 @@ public final class LutShape {
     }
 
     /**
-     * LINEAR and SIGMOID descriptors are defined as DICOM standard LUT function <br>
-     * Other LUT functions have their own custom implementation
+     * LINEAR and SIGMOID descriptors are defined as DICOM standard LUT function Other LUT functions have their own
+     * custom implementation
      */
     public enum eFunction {
         LINEAR("Linear"), SIGMOID("Sigmoid"), SIGMOID_NORM("Sigmoid Normalize"), LOG("Logarithmic"),
