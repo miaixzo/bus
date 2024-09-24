@@ -6,7 +6,7 @@
 </p>
 <p align="center">
   <a target="_blank" href="https://search.maven.org/search?q=org.miaixz">
-    <img src="https://img.shields.io/badge/maven--central-v8.0.9-blue.svg?label=Maven%20Central" />
+    <img src="https://img.shields.io/badge/maven--central-v8.1.0-blue.svg?label=Maven%20Central" />
   </a>
   <a target="_blank" href="https://travis-ci.org/839128/bus">
     <img src="https://app.travis-ci.com/839128/bus.svg?token=TZPNK5FQiKMp9cao3SnY&branch=main">
