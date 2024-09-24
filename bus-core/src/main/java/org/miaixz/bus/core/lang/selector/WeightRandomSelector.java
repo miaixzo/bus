@@ -116,12 +116,12 @@ public class WeightRandomSelector<T> implements Selector<T>, Serializable {
     /**
      * 增加对象
      *
-     * @param obj    对象
+     * @param object 对象
      * @param weight 权重
      * @return this
      */
-    public WeightRandomSelector<T> add(final T obj, final int weight) {
-        return add(new WeightObject<>(obj, weight));
+    public WeightRandomSelector<T> add(final T object, final int weight) {
+        return add(new WeightObject<>(object, weight));
     }
 
     /**

@@ -190,13 +190,13 @@ public class MutableLong extends Number implements Comparable<MutableLong>, Muta
      * <li>值相等</li>
      * </ol>
      *
-     * @param obj 比对的对象
+     * @param object 比对的对象
      * @return 相同返回<code>true</code>，否则 {@code false}
      */
     @Override
-    public boolean equals(final Object obj) {
-        if (obj instanceof MutableLong) {
-            return value == ((MutableLong) obj).longValue();
+    public boolean equals(final Object object) {
+        if (object instanceof MutableLong) {
+            return value == ((MutableLong) object).longValue();
         }
         return false;
     }

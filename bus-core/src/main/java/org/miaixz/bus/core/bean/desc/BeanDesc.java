@@ -28,9 +28,10 @@
 package org.miaixz.bus.core.bean.desc;
 
 import java.io.Serializable;
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Map;
+
+import org.miaixz.bus.core.lang.reflect.Invoker;
 
 /**
  * Bean信息描述做为BeanInfo替代方案，此对象持有JavaBean中的setters和getters等相关信息描述 查找Getter和Setter方法时会：
@@ -54,6 +55,54 @@ public interface BeanDesc extends Serializable {
      * @return 字段名-字段属性Map
      */
     Map<String, PropDesc> getPropMap(final boolean ignoreCase);
+
+    /**
+     * 获取Bean属性数量
+     *
+     * @return 字段数量
+     */
+    default int size() {
+        return getPropMap(false).size();
+    }
+
+    /**
+     * 是否为空
+     *
+     * @return 是否为空
+     */
+    default boolean isEmpty() {
+        return size() == 0;
+    }
+
+    /**
+     * 是否有可读字段，即有getter方法或public字段
+     *
+     * @param checkTransient 是否检查transient字段，true表示检查，false表示不检查
+     * @return 是否有可读字段
+     */
+    default boolean isReadable(final boolean checkTransient) {
+        for (final Map.Entry<String, PropDesc> entry : getPropMap(false).entrySet()) {
+            if (entry.getValue().isReadable(checkTransient)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 是否有可写字段，即有setter方法或public字段
+     *
+     * @param checkTransient 是否检查transient字段，true表示检查，false表示不检查
+     * @return 是否有可写字段
+     */
+    default boolean isWritable(final boolean checkTransient) {
+        for (final Map.Entry<String, PropDesc> entry : getPropMap(false).entrySet()) {
+            if (entry.getValue().isWritable(checkTransient)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * 获取字段属性列表
@@ -80,7 +129,7 @@ public interface BeanDesc extends Serializable {
      * @param fieldName 字段名
      * @return Getter方法
      */
-    default Method getGetter(final String fieldName) {
+    default Invoker getGetter(final String fieldName) {
         final PropDesc desc = getProp(fieldName);
         return null == desc ? null : desc.getGetter();
     }
@@ -91,7 +140,7 @@ public interface BeanDesc extends Serializable {
      * @param fieldName 字段名
      * @return Setter方法
      */
-    default Method getSetter(final String fieldName) {
+    default Invoker getSetter(final String fieldName) {
         final PropDesc desc = getProp(fieldName);
         return null == desc ? null : desc.getSetter();
     }

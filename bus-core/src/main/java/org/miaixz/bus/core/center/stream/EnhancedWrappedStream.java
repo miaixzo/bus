@@ -79,12 +79,12 @@ public abstract class EnhancedWrappedStream<T, S extends EnhancedWrappedStream<T
     /**
      * 比较被包装的实例是否相等
      *
-     * @param obj 对象
+     * @param object 对象
      * @return 是否相等
      */
     @Override
-    public boolean equals(final Object obj) {
-        return obj instanceof Stream && stream.equals(obj);
+    public boolean equals(final Object object) {
+        return object instanceof Stream && stream.equals(object);
     }
 
     /**

@@ -103,11 +103,11 @@ public final class LutShape {
      * different explanation property
      */
     @Override
-    public boolean equals(Object obj) {
-        if (obj instanceof LutShape shape) {
+    public boolean equals(Object object) {
+        if (object instanceof LutShape shape) {
             return (function != null) ? function.equals(shape.function) : lookup.equals(shape.lookup);
         }
-        return super.equals(obj);
+        return super.equals(object);
     }
 
     @Override
@@ -116,8 +116,8 @@ public final class LutShape {
     }
 
     /**
-     * LINEAR and SIGMOID descriptors are defined as DICOM standard LUT function <br>
-     * Other LUT functions have their own custom implementation
+     * LINEAR and SIGMOID descriptors are defined as DICOM standard LUT function Other LUT functions have their own
+     * custom implementation
      */
     public enum eFunction {
         LINEAR("Linear"), SIGMOID("Sigmoid"), SIGMOID_NORM("Sigmoid Normalize"), LOG("Logarithmic"),

@@ -186,8 +186,7 @@ public class AES extends Crypto {
      * @param iv      加盐
      */
     public AES(final String mode, final String padding, final byte[] key, final byte[] iv) {
-        this(mode, padding, //
-                Keeper.generateKey(Algorithm.AES.getValue(), key), //
+        this(mode, padding, Keeper.generateKey(Algorithm.AES.getValue(), key),
                 ArrayKit.isEmpty(iv) ? null : new IvParameterSpec(iv));
     }
 

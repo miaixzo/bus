@@ -55,6 +55,7 @@ import org.miaixz.bus.core.compare.PinyinCompare;
 import org.miaixz.bus.core.compare.PropertyCompare;
 import org.miaixz.bus.core.convert.CompositeConverter;
 import org.miaixz.bus.core.convert.Convert;
+import org.miaixz.bus.core.convert.Converter;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
@@ -538,18 +539,6 @@ public class CollKit extends CollectionStream {
      * @return 集合类型对应的实例
      */
     public static <T> Collection<T> create(final Class<?> collectionType) {
-        return create(collectionType, null);
-    }
-
-    /**
-     * 创建新的集合对象，返回具体的泛型集合
-     *
-     * @param <T>            集合元素类型，rawtype 如 ArrayList.class, EnumMap.class ...
-     * @param collectionType 集合类型
-     * @param elementType    集合元素类，只用于EnumSet创建，如果创建EnumSet，则此参数必须非空
-     * @return 集合类型对应的实例
-     */
-    public static <T> Collection<T> create(final Class<?> collectionType, final Class<T> elementType) {
         final Collection<T> list;
         if (collectionType.isAssignableFrom(AbstractCollection.class)) {
             // 抽象集合默认使用ArrayList
@@ -569,8 +558,6 @@ public class CollKit extends CollectionStream {
                 }
                 return CompareKit.compare(o1.toString(), o2.toString());
             });
-        } else if (collectionType.isAssignableFrom(EnumSet.class)) {
-            list = (Collection<T>) EnumSet.noneOf((Class<Enum>) Assert.notNull(elementType));
         }
 
         // List
@@ -594,6 +581,21 @@ public class CollKit extends CollectionStream {
             }
         }
         return list;
+    }
+
+    /**
+     * 创建新的集合对象，返回具体的泛型集合
+     *
+     * @param <T>            集合元素类型，rawtype 如 ArrayList.class, EnumMap.class ...
+     * @param collectionType 集合类型
+     * @param elementType    集合元素类，只用于EnumSet创建，如果创建EnumSet，则此参数必须非空
+     * @return 集合类型对应的实例
+     */
+    public static <T> Collection<T> create(final Class<?> collectionType, final Class<T> elementType) {
+        if (EnumSet.class.isAssignableFrom(collectionType)) {
+            return (Collection<T>) EnumSet.noneOf((Class<Enum>) Assert.notNull(elementType));
+        }
+        return create(collectionType);
     }
 
     /**
@@ -1303,6 +1305,21 @@ public class CollKit extends CollectionStream {
      * @return 被加入集合
      */
     public static <T> Collection<T> addAll(final Collection<T> collection, final Object value, Type elementType) {
+        return addAll(collection, value, elementType, null);
+    }
+
+    /**
+     * 将指定对象全部加入到集合中 提供的对象如果为集合类型，会自动转换为目标元素类型 如果为String，支持类似于[1,2,3,4] 或者 1,2,3,4 这种格式
+     *
+     * @param <T>         元素类型
+     * @param collection  被加入的集合
+     * @param value       对象，可能为Iterator、Iterable、Enumeration、Array，或者与集合元素类型一致
+     * @param elementType 元素类型，为空时，使用Object类型来接纳所有类型
+     * @param converter   自定义元素类型转换器，{@code null}表示使用默认转换器
+     * @return 被加入集合
+     */
+    public static <T> Collection<T> addAll(final Collection<T> collection, final Object value, Type elementType,
+            final Converter converter) {
         if (null == collection || null == value) {
             return collection;
         }
@@ -1319,12 +1336,12 @@ public class CollKit extends CollectionStream {
             iter = CharsBacker.splitTrim(arrayStr, Symbol.COMMA).iterator();
         } else if (value instanceof Map && BeanKit.isWritableBean(TypeKit.getClass(elementType))) {
             // 如果值为Map，而目标为一个Bean，则Map应整体转换为Bean，而非拆分成Entry转换
-            iter = new ArrayIterator<>(new Object[] { value });
+            iter = new ArrayIterator(new Object[] { value });
         } else {
             iter = IteratorKit.getIter(value);
         }
 
-        final CompositeConverter convert = CompositeConverter.getInstance();
+        final Converter convert = ObjectKit.defaultIfNull(converter, CompositeConverter::getInstance);
         while (iter.hasNext()) {
             collection.add((T) convert.convert(elementType, iter.next()));
         }
@@ -1626,7 +1643,7 @@ public class CollKit extends CollectionStream {
      * @param iterable {@link Iterable}
      * @param consumer {@link BiConsumerX} 遍历的每条数据处理器
      */
-    public static <T> void forEach(final Iterable<T> iterable, final BiConsumerX<T, Integer> consumer) {
+    public static <T> void forEach(final Iterable<T> iterable, final BiConsumerX<Integer, T> consumer) {
         if (iterable == null) {
             return;
         }
@@ -1640,13 +1657,13 @@ public class CollKit extends CollectionStream {
      * @param iterator {@link Iterator}
      * @param consumer {@link BiConsumerX} 遍历的每条数据处理器
      */
-    public static <T> void forEach(final Iterator<T> iterator, final BiConsumerX<T, Integer> consumer) {
+    public static <T> void forEach(final Iterator<T> iterator, final BiConsumerX<Integer, T> consumer) {
         if (iterator == null) {
             return;
         }
         int index = 0;
         while (iterator.hasNext()) {
-            consumer.accept(iterator.next(), index);
+            consumer.accept(index, iterator.next());
             index++;
         }
     }
@@ -1658,13 +1675,13 @@ public class CollKit extends CollectionStream {
      * @param enumeration {@link Enumeration}
      * @param consumer    {@link BiConsumerX} 遍历的每条数据处理器
      */
-    public static <T> void forEach(final Enumeration<T> enumeration, final BiConsumerX<T, Integer> consumer) {
+    public static <T> void forEach(final Enumeration<T> enumeration, final BiConsumerX<Integer, T> consumer) {
         if (enumeration == null) {
             return;
         }
         int index = 0;
         while (enumeration.hasMoreElements()) {
-            consumer.accept(enumeration.nextElement(), index);
+            consumer.accept(index, enumeration.nextElement());
             index++;
         }
     }
@@ -1677,13 +1694,13 @@ public class CollKit extends CollectionStream {
      * @param map        {@link Map}
      * @param kvConsumer {@link SerConsumer3} 遍历的每条数据处理器
      */
-    public static <K, V> void forEach(final Map<K, V> map, final SerConsumer3<K, V, Integer> kvConsumer) {
+    public static <K, V> void forEach(final Map<K, V> map, final SerConsumer3<Integer, K, V> kvConsumer) {
         if (map == null) {
             return;
         }
         int index = 0;
         for (final Entry<K, V> entry : map.entrySet()) {
-            kvConsumer.accept(entry.getKey(), entry.getValue(), index);
+            kvConsumer.accept(index, entry.getKey(), entry.getValue());
             index++;
         }
     }

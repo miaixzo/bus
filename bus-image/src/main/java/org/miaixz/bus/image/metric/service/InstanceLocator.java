@@ -44,7 +44,7 @@ public class InstanceLocator implements Serializable {
     public final String iuid;
     public final String tsuid;
     public final String uri;
-    private Object obj;
+    private Object object;
 
     public InstanceLocator(String cuid, String iuid, String tsuid, String uri) {
         this.cuid = cuid;
@@ -54,11 +54,11 @@ public class InstanceLocator implements Serializable {
     }
 
     public final Object getObject() {
-        return obj;
+        return object;
     }
 
-    public final InstanceLocator setObject(Object obj) {
-        this.obj = obj;
+    public final InstanceLocator setObject(Object object) {
+        this.object = object;
         return this;
     }
 

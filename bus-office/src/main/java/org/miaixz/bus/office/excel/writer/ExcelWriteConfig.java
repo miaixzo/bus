@@ -28,11 +28,16 @@
 package org.miaixz.bus.office.excel.writer;
 
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.miaixz.bus.core.center.map.TableMap;
+import org.miaixz.bus.core.center.map.multi.RowKeyTable;
+import org.miaixz.bus.core.center.map.multi.Table;
 import org.miaixz.bus.core.compare.IndexedCompare;
 import org.miaixz.bus.core.xyz.MapKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.office.excel.ExcelConfig;
 
 /**
@@ -47,6 +52,10 @@ public class ExcelWriteConfig extends ExcelConfig {
      * 是否只保留别名对应的字段
      */
     protected boolean onlyAlias;
+    /**
+     * 是否强制插入行 如果为{@code true}，则写入行以下的已存在行下移，{@code false}则利用填充已有行，不存在再创建行
+     */
+    protected boolean insertRow = true;
     /**
      * 标题顺序比较器
      */
@@ -83,9 +92,20 @@ public class ExcelWriteConfig extends ExcelConfig {
     }
 
     /**
+     * 设置是否插入行，如果为true，则写入行以下的已存在行下移，false则利用填充已有行，不存在时创建行
+     *
+     * @param insertRow 是否插入行
+     * @return this
+     */
+    public ExcelWriteConfig setInsertRow(final boolean insertRow) {
+        this.insertRow = insertRow;
+        return this;
+    }
+
+    /**
      * 获取单例的别名比较器，比较器的顺序为别名加入的顺序
      *
-     * @return Comparator
+     * @return {@link Comparator}
      */
     public Comparator<String> getCachedAliasComparator() {
         final Map<String, String> headerAlias = this.headerAlias;
@@ -99,6 +119,32 @@ public class ExcelWriteConfig extends ExcelConfig {
             this.aliasComparator = aliasComparator;
         }
         return aliasComparator;
+    }
+
+    /**
+     * 为指定的key列表添加标题别名，如果没有定义key的别名，在onlyAlias为false时使用原key key为别名，value为字段值
+     *
+     * @param rowMap 一行数据
+     * @return 别名列表
+     */
+    public Table<?, ?, ?> aliasTable(final Map<?, ?> rowMap) {
+        final Table<Object, Object, Object> filteredTable = new RowKeyTable<>(new LinkedHashMap<>(), TableMap::new);
+        if (MapKit.isEmpty(headerAlias)) {
+            rowMap.forEach((key, value) -> filteredTable.put(key, key, value));
+        } else {
+            rowMap.forEach((key, value) -> {
+                final String aliasName = headerAlias.get(StringKit.toString(key));
+                if (null != aliasName) {
+                    // 别名键值对加入
+                    filteredTable.put(key, aliasName, value);
+                } else if (!onlyAlias) {
+                    // 保留无别名设置的键值对
+                    filteredTable.put(key, key, value);
+                }
+            });
+        }
+
+        return filteredTable;
     }
 
 }

@@ -239,8 +239,8 @@ public class ImageAdapter {
     }
 
     /**
-     * @return default as first element of preset List <br>
-     *         Note : null should never be returned since auto is at least one preset
+     * @return default as first element of preset List Note : null should never be returned since auto is at least one
+     *         preset
      */
     public PresetWindowLevel getDefaultPreset(WlPresentation wlp) {
         List<PresetWindowLevel> presetList = getPresetList(wlp);

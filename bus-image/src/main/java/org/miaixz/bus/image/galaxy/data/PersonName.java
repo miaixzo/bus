@@ -230,11 +230,11 @@ public class PersonName {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (obj == this)
+    public boolean equals(Object object) {
+        if (object == this)
             return true;
 
-        if (!(obj instanceof PersonName other))
+        if (!(object instanceof PersonName other))
             return false;
 
         return Arrays.equals(fields, other.fields);

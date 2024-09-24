@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.lang.reflect.Type;
 import java.time.temporal.TemporalAccessor;
 import java.util.Calendar;
 import java.util.Date;
@@ -43,7 +44,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class DateConverter extends AbstractConverter {
+public class DateConverter extends AbstractConverter implements MatcherConverter {
 
     private static final long serialVersionUID = -1L;
 
@@ -66,7 +67,7 @@ public class DateConverter extends AbstractConverter {
     /**
      * 构造
      *
-     * @param format 日期格式
+     * @param format 日期格式，{@code null}表示无格式定义
      */
     public DateConverter(final String format) {
         this.format = format;
@@ -91,6 +92,11 @@ public class DateConverter extends AbstractConverter {
     }
 
     @Override
+    public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
+        return Date.class.isAssignableFrom(rawType);
+    }
+
+    @Override
     protected java.util.Date convertInternal(final Class<?> targetClass, final Object value) {
         if (value == null || (value instanceof CharSequence && StringKit.isBlank(value.toString()))) {
             return null;
@@ -112,7 +118,7 @@ public class DateConverter extends AbstractConverter {
             }
         }
 
-        throw new ConvertException("Can not convert {}:[{}] to {}", value.getClass().getName(), value,
+        throw new ConvertException("Can not support {}:[{}] to {}", value.getClass().getName(), value,
                 targetClass.getName());
     }
 

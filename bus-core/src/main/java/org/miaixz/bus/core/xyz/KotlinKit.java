@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import java.lang.annotation.Annotation;
-import java.util.List;
-import java.util.Map;
-
 import org.miaixz.bus.core.bean.copier.ValueProvider;
 import org.miaixz.bus.core.bean.copier.provider.MapValueProvider;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.lang.reflect.kotlin.KCallable;
 import org.miaixz.bus.core.lang.reflect.kotlin.KClassImpl;
 import org.miaixz.bus.core.lang.reflect.kotlin.KParameter;
+
+import java.lang.annotation.Annotation;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Kotlin反射包装相关工具类
@@ -47,7 +47,7 @@ import org.miaixz.bus.core.lang.reflect.kotlin.KParameter;
 public class KotlinKit {
 
     private static final Class<? extends Annotation> META_DATA_CLASS = (Class<? extends Annotation>) Optional
-            .ofTry(() -> Class.forName("kotlin.Metadata")).get();
+            .ofTry(() -> Class.forName("kotlin.Metadata")).getOrNull();
 
     /**
      * 是否提供或处于Kotlin环境中

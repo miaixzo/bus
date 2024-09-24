@@ -28,7 +28,6 @@
 package org.miaixz.bus.image.metric.hl7.api;
 
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.lang.exception.NotFoundException;
 import org.miaixz.bus.image.metric.api.ConfigurationCache;
 import org.miaixz.bus.image.metric.hl7.net.HL7Application;
 
@@ -44,15 +43,15 @@ public class HL7ApplicationCache extends ConfigurationCache<HL7Configuration, HL
     }
 
     @Override
-    protected HL7Application find(HL7Configuration conf, String name) throws InternalException {
-        return conf.findHL7Application(name);
+    protected HL7Application find(HL7Configuration conf, String key) throws InternalException {
+        return conf.findHL7Application(key);
     }
 
-    public HL7Application findHL7Application(String name) throws InternalException {
-        HL7Application ae = get(name);
-        if (ae == null)
-            throw new NotFoundException("Unknown HL7 Application: " + name);
-        return ae;
+    public HL7Application findHL7Application(String hl7AppFacility) throws InternalException {
+        HL7Application hl7App = get(hl7AppFacility);
+        if (hl7App == null)
+            throw new InternalException("Unknown HL7 Application: " + hl7AppFacility);
+        return hl7App;
     }
 
 }

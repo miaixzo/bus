@@ -31,8 +31,8 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.miaixz.bus.core.center.function.BiConsumerX;
-import org.miaixz.bus.office.excel.cell.CellEditor;
-import org.miaixz.bus.office.excel.cell.CellKit;
+import org.miaixz.bus.office.excel.cell.editors.CellEditor;
+import org.miaixz.bus.office.excel.xyz.CellKit;
 
 /**
  * 读取Excel的Sheet，使用Consumer方式处理单元格

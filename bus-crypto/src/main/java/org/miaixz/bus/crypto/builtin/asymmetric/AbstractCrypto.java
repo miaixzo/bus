@@ -27,8 +27,7 @@
 */
 package org.miaixz.bus.crypto.builtin.asymmetric;
 
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import java.security.KeyPair;
 
 /**
  * 抽象的非对称加密对象，包装了加密和解密为Hex和Base64的封装
@@ -43,16 +42,13 @@ public abstract class AbstractCrypto<T extends AbstractCrypto<T>> extends Asymme
     private static final long serialVersionUID = -1L;
 
     /**
-     * 构造
-     * <p>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密或者解密
      *
-     * @param algorithm  算法
-     * @param privateKey 私钥
-     * @param publicKey  公钥
+     * @param algorithm 算法
+     * @param keyPair   密钥对，如果为{@code null}则生成随机的私钥和公钥
      */
-    public AbstractCrypto(final String algorithm, final PrivateKey privateKey, final PublicKey publicKey) {
-        super(algorithm, privateKey, publicKey);
+    public AbstractCrypto(final String algorithm, final KeyPair keyPair) {
+        super(algorithm, keyPair);
     }
 
 }

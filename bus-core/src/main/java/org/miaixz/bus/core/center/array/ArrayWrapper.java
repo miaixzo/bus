@@ -203,7 +203,7 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
      * @return 数组中指定元素所在位置，未找到返回{@link Normal#__1}
      */
     public int indexOf(final Object value) {
-        return matchIndex((obj) -> ObjectKit.equals(value, obj));
+        return matchIndex((object) -> ObjectKit.equals(value, object));
     }
 
     /**
@@ -224,7 +224,7 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
      * @return 数组中指定元素所在位置，未找到返回{@link Normal#__1}
      */
     public int indexOf(final Object value, final int offset) {
-        return matchIndex(offset, (obj) -> ObjectKit.equals(value, obj));
+        return matchIndex(offset, (object) -> ObjectKit.equals(value, object));
     }
 
     /**
@@ -254,7 +254,7 @@ public class ArrayWrapper<A, E> implements Wrapper<A>, Iterable<E> {
      * @return 数组中指定元素最后的所在位置，未找到返回{@link Normal#__1}
      */
     public int lastIndexOf(final Object value) {
-        return matchLastIndex((obj) -> ObjectKit.equals(value, obj));
+        return matchLastIndex((object) -> ObjectKit.equals(value, object));
     }
 
     /**

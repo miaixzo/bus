@@ -45,7 +45,7 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class InvokeCrontab implements Crontab {
 
-    private final Object obj;
+    private final Object object;
     private final Method method;
 
     /**
@@ -71,7 +71,7 @@ public class InvokeCrontab implements Crontab {
         if (null == clazz) {
             throw new IllegalArgumentException("Load class with name of [" + className + "] fail !");
         }
-        this.obj = ReflectKit.newInstanceIfPossible(clazz);
+        this.object = ReflectKit.newInstanceIfPossible(clazz);
 
         // 方法
         final String methodName = classNameWithMethodName.substring(splitIndex + 1);
@@ -87,7 +87,7 @@ public class InvokeCrontab implements Crontab {
     @Override
     public void execute() {
         try {
-            MethodKit.invoke(this.obj, this.method);
+            MethodKit.invoke(this.object, this.method);
         } catch (final InternalException e) {
             throw new CrontabException(e.getCause());
         }

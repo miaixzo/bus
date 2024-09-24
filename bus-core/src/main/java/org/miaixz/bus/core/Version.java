@@ -48,7 +48,7 @@ public class Version implements Comparable<Version>, Serializable {
     /**
      * 版本信息
      */
-    public static final String _VERSION = "8.0.8";
+    public static final String _VERSION = "8.1.0";
 
     private static final long serialVersionUID = -1L;
     private final String version;
@@ -304,7 +304,7 @@ public class Version implements Comparable<Version>, Serializable {
                 }
                 return c;
             }
-            // Types differ, so convert number to string form
+            // Types differ, so support number to string form
             final int c = o1.toString().compareTo(o2.toString());
             if (c == 0) {
                 continue;

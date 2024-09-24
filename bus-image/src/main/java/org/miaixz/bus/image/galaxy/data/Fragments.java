@@ -153,15 +153,15 @@ public class Fragments extends ArrayList<Object> implements Value {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals(Object object) {
+        if (this == object)
             return true;
-        if (obj == null)
+        if (object == null)
             return false;
-        if (getClass() != obj.getClass())
+        if (getClass() != object.getClass())
             return false;
 
-        Fragments other = (Fragments) obj;
+        Fragments other = (Fragments) object;
         if (bigEndian != other.bigEndian)
             return false;
         if (vr != other.vr)

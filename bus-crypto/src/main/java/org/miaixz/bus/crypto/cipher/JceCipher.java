@@ -27,20 +27,19 @@
 */
 package org.miaixz.bus.crypto.cipher;
 
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.SecureRandom;
-import java.security.spec.AlgorithmParameterSpec;
-
-import javax.crypto.ShortBufferException;
-
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
 import org.miaixz.bus.crypto.Builder;
 import org.miaixz.bus.crypto.Cipher;
+
+import javax.crypto.ShortBufferException;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.SecureRandom;
+import java.security.spec.AlgorithmParameterSpec;
 
 /**
  * 提供{@link javax.crypto.Cipher}的方法包装
@@ -69,7 +68,7 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
     }
 
     @Override
-    public String getAlgorithmName() {
+    public String getAlgorithm() {
         return this.raw.getAlgorithm();
     }
 
@@ -92,6 +91,44 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
         } catch (final InvalidAlgorithmParameterException | InvalidKeyException e) {
             throw new CryptoException(e);
         }
+    }
+
+    /**
+     * 继续多部分加密或解密操作（取决于此密码的初始化方式），处理另一个数据部分。 第一inputLen字节在input缓冲区中，从inputOffset以下，被处理，并且结果被存储在output缓冲器。
+     *
+     * @param in    输入缓冲区
+     * @param inOff 输入开始的 input中的偏移量
+     * @param len   输入长度
+     * @return 带有结果的新缓冲区，如果底层密码是块密码且输入数据太短而不能产生新块，则返回null。
+     */
+    public byte[] process(final byte[] in, final int inOff, final int len) {
+        return this.raw.update(in, inOff, len);
+    }
+
+    /**
+     * 继续多部分加密或解密操作（取决于此密码的初始化方式），处理另一个数据部分。 第一inputLen字节在input缓冲区中，从inputOffset以下，被处理，并且结果被存储在output缓冲器。
+     *
+     * @param in    输入缓冲区
+     * @param inOff 输入开始的 input中的偏移量
+     * @param len   输入长度
+     * @param out   结果的缓冲区
+     * @return 存储在 output的字节数
+     */
+    public int process(final byte[] in, final int inOff, final int len, final byte[] out) {
+        try {
+            return this.raw.update(in, inOff, len, out);
+        } catch (final ShortBufferException e) {
+            throw new CryptoException(e);
+        }
+    }
+
+    /**
+     * 返回新缓冲区中的初始化向量（IV） 这在创建随机IV的情况下，或在基于密码的加密或解密的上下文中是有用的，其中IV是从用户提供的密码导出的。
+     *
+     * @return 新缓冲区中的初始化向量，如果基础算法不使用IV，或者尚未设置IV，则为null。
+     */
+    public byte[] getIV() {
+        return this.raw.getIV();
     }
 
     /**
@@ -139,9 +176,9 @@ public class JceCipher extends SimpleWrapper<javax.crypto.Cipher> implements Cip
     }
 
     @Override
-    public byte[] processFinal(final byte[] data) {
+    public byte[] processFinal(final byte[] data, final int inOffset, final int inputLen) {
         try {
-            return this.raw.doFinal(data);
+            return this.raw.doFinal(data, inOffset, inputLen);
         } catch (final Exception e) {
             throw new CryptoException(e);
         }

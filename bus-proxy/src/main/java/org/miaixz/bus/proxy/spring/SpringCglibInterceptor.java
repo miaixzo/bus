@@ -56,7 +56,7 @@ public class SpringCglibInterceptor extends Interceptor implements MethodInterce
     }
 
     @Override
-    public Object intercept(final Object obj, final Method method, final Object[] args, final MethodProxy proxy)
+    public Object intercept(final Object object, final Method method, final Object[] args, final MethodProxy proxy)
             throws Throwable {
         final Object target = this.target;
         Object result = null;

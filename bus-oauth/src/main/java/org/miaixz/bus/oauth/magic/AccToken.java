@@ -88,4 +88,9 @@ public class AccToken implements Serializable {
     private String screenName;
     private Boolean oauthCallbackConfirmed;
 
+    /**
+     * Apple附带属性
+     */
+    private String username;
+
 }

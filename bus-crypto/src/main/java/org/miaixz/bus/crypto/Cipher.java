@@ -27,12 +27,17 @@
 */
 package org.miaixz.bus.crypto;
 
-import org.miaixz.bus.core.lang.Algorithm;
-
 import java.util.Arrays;
+
+import org.miaixz.bus.core.lang.Algorithm;
 
 /**
  * 密码接口，提供统一的API，用于兼容和统一JCE和BouncyCastle等库的操作
+ * <ul>
+ * <li>process和doFinal组合使用，用于分块加密或解密。 例如处理块的大小为8，实际需要加密的报文长度为23，那么需要分三块进行加密，前面2块长度为8的报文需要调用process进行部分加密，
+ * 部分加密的结果可以从process的返回值获取到， 最后的7长度(其实一般会填充到长度为块长度8)的报文则调用doFinal进行加密，结束整个部分加密的操作。</li>
+ * <li>processFinal默认处理并输出小于块的数据，或一次性数据。</li>
+ * </ul>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -44,7 +49,7 @@ public interface Cipher {
      *
      * @return 算法名称
      */
-    String getAlgorithmName();
+    String getAlgorithm();
 
     /**
      * 获取块大小，当为Stream方式加密时返回0
@@ -62,7 +67,7 @@ public interface Cipher {
     void init(Algorithm.Type mode, Parameters parameters);
 
     /**
-     * 根据输入长度，获取输出长度，输出长度与算法相关 输出长度只针对本次输入关联，即len长度的数据对应输出长度加doFinal的长度
+     * 返回输出缓冲区为了保存下一个update或doFinal操作的结果所需的长度（以字节为单位） 下一个update或doFinal调用的实际输出长度可能小于此方法返回的长度。 一般为块大小对应的输出大小
      *
      * @param len 输入长度
      * @return 输出长度，-1表示非块加密
@@ -70,7 +75,7 @@ public interface Cipher {
     int getOutputSize(int len);
 
     /**
-     * 执行运算，可以是加密运算或解密运算
+     * 执行运算，可以是加密运算或解密运算 此方法主要处理一块数据，一块数据处理完毕后，应调用{@link #doFinal(byte[], int)}处理padding等剩余数据。
      *
      * @param in     输入数据
      * @param inOff  输入数据开始位置
@@ -93,20 +98,31 @@ public interface Cipher {
     int doFinal(byte[] out, int outOff);
 
     /**
-     * 处理数据，并返回最终结果
+     * 处理数据，并返回最终结果 此方法用于完整处理一块数据并返回。
      *
      * @param in 输入数据
      * @return 结果数据
      */
     default byte[] processFinal(final byte[] in) {
-        final byte[] buf = new byte[getOutputSize(in.length)];
-        int len = process(in, 0, in.length, buf, 0);
-        len += doFinal(buf, len);
+        return processFinal(in, 0, in.length);
+    }
 
-        if (len == buf.length) {
-            return buf;
-        }
-        return Arrays.copyOfRange(buf, 0, len);
+    /**
+     * 处理数据，并返回最终结果 此方法用于完整处理一块数据并返回。
+     *
+     * @param in       输入数据
+     * @param inOffset 输入开始的 input中的偏移量
+     * @param inputLen 输入长度
+     * @return 结果数据
+     * @see #process(byte[], int, int, byte[], int)
+     * @see #doFinal(byte[], int)
+     */
+    default byte[] processFinal(final byte[] in, final int inOffset, final int inputLen) {
+        final byte[] buf = new byte[getOutputSize(in.length)];
+        int len = process(in, inOffset, inputLen, buf, 0);
+        // 处理剩余数据，如Padding数据等
+        len += doFinal(buf, len);
+        return (len == buf.length) ? buf : Arrays.copyOfRange(buf, 0, len);
     }
 
     /**

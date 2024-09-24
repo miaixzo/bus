@@ -29,7 +29,6 @@ package org.miaixz.bus.office.excel.cell.setters;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.RichTextString;
-import org.miaixz.bus.office.excel.cell.CellSetter;
 
 /**
  * {@link RichTextString} 值单元格设置器

@@ -40,6 +40,7 @@ import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.center.iterator.LineIterator;
@@ -665,6 +666,28 @@ public class IoKit {
     }
 
     /**
+     * 从流中读取内容，直到遇到给定token
+     *
+     * @param in    输入流
+     * @param token 停止的字符
+     * @return 输出流
+     */
+    public static FastByteArrayOutputStream readToToken(final InputStream in, final int token) {
+        return readTo(in, (c) -> c == token);
+    }
+
+    /**
+     * 从流中读取内容，直到遇到给定token满足{@link Predicate#test(Object)}
+     *
+     * @param in        输入流
+     * @param predicate 读取结束条件, {@link Predicate#test(Object)}返回true表示结束
+     * @return 输出流
+     */
+    public static FastByteArrayOutputStream readTo(final InputStream in, final Predicate<Integer> predicate) {
+        return StreamReader.of(in, false).readTo(predicate);
+    }
+
+    /**
      * String 转为UTF-8编码的字节流流
      *
      * @param content 内容
@@ -1185,11 +1208,11 @@ public class IoKit {
     /**
      * 尝试关闭指定对象 判断对象如果实现了{@link AutoCloseable}，则调用之
      *
-     * @param obj 可关闭对象
+     * @param object 可关闭对象
      */
-    public static void close(final Object obj) {
-        if (obj instanceof AutoCloseable) {
-            closeQuietly((AutoCloseable) obj);
+    public static void close(final Object object) {
+        if (object instanceof AutoCloseable) {
+            closeQuietly((AutoCloseable) object);
         }
     }
 
@@ -1839,6 +1862,23 @@ public class IoKit {
         if (name.indexOf(Symbol.C_COLON) < 2)
             return new FileInputStream(name);
         return new URL(name).openStream();
+    }
+
+    /**
+     * 获取流长度，对于文件流，会调用{@link FileInputStream#available()}方法，对于其他流，返回-1 对于网络流，available可能为分段大小，所以返回-1
+     *
+     * @param in 流
+     * @return 长度，-1表示未知长度
+     */
+    public static int length(final InputStream in) {
+        if (in instanceof FileInputStream) {
+            try {
+                return in.available();
+            } catch (final IOException e) {
+                throw new InternalException(e);
+            }
+        }
+        return -1;
     }
 
 }

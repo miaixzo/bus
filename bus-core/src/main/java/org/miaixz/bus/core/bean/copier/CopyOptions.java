@@ -99,8 +99,7 @@ public class CopyOptions implements Serializable {
      */
     protected Converter converter = (type, value) -> Convert.convertWithCheck(type, value, null, ignoreError);
     /**
-     * 自定义的Bean解析类<br>
-     * 默认规则下普通Bean使用严格的Bean解析，需要同时解析Bean中的字段和方法，然后匹配，自定义后可以只解析getter和setter方法
+     * 自定义的Bean解析类 默认规则下普通Bean使用严格的Bean解析，需要同时解析Bean中的字段和方法，然后匹配，自定义后可以只解析getter和setter方法
      */
     protected Class<BeanDesc> beanDescClass;
     /**
@@ -171,15 +170,6 @@ public class CopyOptions implements Serializable {
     public CopyOptions setIgnoreNullValue(final boolean ignoreNullVall) {
         this.ignoreNullValue = ignoreNullVall;
         return this;
-    }
-
-    /**
-     * 设置忽略空值，当源对象的值为null时，忽略而不注入此值
-     *
-     * @return CopyOptions
-     */
-    public CopyOptions ignoreNullValue() {
-        return setIgnoreNullValue(true);
     }
 
     /**

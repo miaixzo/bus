@@ -86,21 +86,6 @@ public class Checker {
         if (!Protocol.isHttp(redirectUri) && !Protocol.isHttps(redirectUri)) {
             throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getCode(), complex);
         }
-        // facebook的回调地址必须为https的链接
-        if (Registry.FACEBOOK == complex && !Protocol.isHttps(redirectUri)) {
-            // FacebookScope's redirect uri must use the HTTPS protocol
-            throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getCode(), complex);
-        }
-        // 微软的回调地址必须为https的链接或者localhost,不允许使用http
-        if (Registry.MICROSOFT == complex && !Protocol.isHttpsOrLocalHost(redirectUri)) {
-            // MicrosoftScope's redirect uri must use the HTTPS or localhost
-            throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getCode(), complex);
-        }
-        // 微软中国的回调地址必须为https的链接或者localhost,不允许使用http
-        if (Registry.MICROSOFT_CN == complex && !Protocol.isHttpsOrLocalHost(redirectUri)) {
-            // MicrosoftScope's redirect uri must use the HTTPS or localhost
-            throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getCode(), complex);
-        }
     }
 
     /**

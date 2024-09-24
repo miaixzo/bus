@@ -128,9 +128,10 @@ public class DynaBean implements Cloneable, Serializable {
         } else {
             final PropDesc prop = BeanKit.getBeanDesc(beanClass).getProp(fieldName);
             if (null == prop) {
-                throw new BeanException("No public field or get method for {}", fieldName);
+                // 节点字段不存在，类似于Map无key，返回null而非报错
+                return null;
             }
-            return (T) prop.getValue(bean);
+            return (T) prop.getValue(bean, false);
         }
     }
 
@@ -232,17 +233,17 @@ public class DynaBean implements Cloneable, Serializable {
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
+    public boolean equals(final Object object) {
+        if (this == object) {
             return true;
         }
-        if (obj == null) {
+        if (object == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (getClass() != object.getClass()) {
             return false;
         }
-        final DynaBean other = (DynaBean) obj;
+        final DynaBean other = (DynaBean) object;
         if (bean == null) {
             return other.bean == null;
         } else

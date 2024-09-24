@@ -34,7 +34,6 @@ import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 
 import org.apache.poi.ss.usermodel.Cell;
-import org.miaixz.bus.office.excel.cell.CellSetter;
 
 /**
  * {@link TemporalAccessor} 值单元格设置器

@@ -74,9 +74,10 @@ public class DefaultChildLimitProvider implements ChildLimitProvider {
         SolarMonth sm = SolarMonth.fromYm(birthday.getYear() + year, birthday.getMonth()).next(month);
 
         int dc = sm.getDayCount();
-        if (d > dc) {
+        while (d > dc) {
             d -= dc;
             sm = sm.next(1);
+            dc = sm.getDayCount();
         }
 
         return new ChildLimitInfo(birthTime,

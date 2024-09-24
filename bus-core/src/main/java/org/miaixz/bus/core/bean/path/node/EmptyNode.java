@@ -40,14 +40,4 @@ public class EmptyNode implements Node {
      */
     public static EmptyNode INSTANCE = new EmptyNode();
 
-    @Override
-    public Object getValue(final Object bean) {
-        return null;
-    }
-
-    @Override
-    public Object setValue(final Object bean, final Object value) {
-        return bean;
-    }
-
 }

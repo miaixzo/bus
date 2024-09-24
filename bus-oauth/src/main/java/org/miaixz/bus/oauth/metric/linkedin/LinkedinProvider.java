@@ -167,8 +167,8 @@ public class LinkedinProvider extends AbstractProvider {
 
         this.checkResponse(emailObj);
 
-        Object obj = JSONPath.eval(emailObj, "$['elements'][0]['handle~']['emailAddress']");
-        return null == obj ? null : (String) obj;
+        Object object = JSONPath.eval(emailObj, "$['elements'][0]['handle~']['emailAddress']");
+        return null == object ? null : (String) object;
     }
 
     private String getUserName(JSONObject userInfoObject, String nameKey) {

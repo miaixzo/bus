@@ -27,11 +27,9 @@
 */
 package org.miaixz.bus.core.text.placeholder.template;
 
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.*;
 
-import org.miaixz.bus.core.bean.desc.BeanDesc;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -48,7 +46,7 @@ import org.miaixz.bus.core.xyz.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class NamedStringTemplate extends StringTemplate {
+public class NamedPlaceholderString extends StringTemplate {
 
     /**
      * 默认前缀
@@ -71,8 +69,9 @@ public class NamedStringTemplate extends StringTemplate {
      */
     protected int indexedSegmentMaxIdx = 0;
 
-    protected NamedStringTemplate(final String template, final int features, final String prefix, final String suffix,
-            final char escape, final String defaultValue, final UnaryOperator<String> defaultValueHandler) {
+    protected NamedPlaceholderString(final String template, final int features, final String prefix,
+            final String suffix, final char escape, final String defaultValue,
+            final UnaryOperator<String> defaultValueHandler) {
         super(template, escape, defaultValue, defaultValueHandler, features);
 
         Assert.notEmpty(prefix);
@@ -349,15 +348,6 @@ public class NamedStringTemplate extends StringTemplate {
         }
         if (beanOrMap instanceof Map) {
             return format((Map<String, ?>) beanOrMap);
-        } else if (BeanKit.isReadableBean(beanOrMap.getClass())) {
-            final BeanDesc beanDesc = BeanKit.getBeanDesc(beanOrMap.getClass());
-            return format(fieldName -> {
-                final Method getterMethod = beanDesc.getGetter(fieldName);
-                if (getterMethod == null) {
-                    return null;
-                }
-                return LambdaKit.buildGetter(getterMethod).apply(beanOrMap);
-            });
         }
         return format(fieldName -> BeanKit.getProperty(beanOrMap, fieldName));
     }
@@ -369,7 +359,7 @@ public class NamedStringTemplate extends StringTemplate {
      * @return 格式化字符串
      */
     public String format(final Map<String, ?> map) {
-        if (map == null) {
+        if (null == map) {
             return getTemplate();
         }
         return format(map::get, map::containsKey);
@@ -541,31 +531,31 @@ public class NamedStringTemplate extends StringTemplate {
      */
     public <T> T matches(final String text, final Supplier<T> beanOrMapSupplier) {
         Assert.notNull(beanOrMapSupplier, "beanOrMapSupplier cannot be null");
-        final T obj = beanOrMapSupplier.get();
-        if (text == null || obj == null || placeholderSegments.isEmpty() || !isMatches(text)) {
-            return obj;
+        final T object = beanOrMapSupplier.get();
+        if (text == null || object == null || placeholderSegments.isEmpty() || !isMatches(text)) {
+            return object;
         }
 
-        if (obj instanceof Map) {
-            final Map<String, String> map = (Map<String, String>) obj;
+        if (object instanceof Map) {
+            final Map<String, String> map = (Map<String, String>) object;
             matchesByKey(text, map::put);
-        } else if (BeanKit.isWritableBean(obj.getClass())) {
-            matchesByKey(text, (key, value) -> BeanKit.setProperty(obj, key, value));
+        } else if (BeanKit.isWritableBean(object.getClass())) {
+            matchesByKey(text, (key, value) -> BeanKit.setProperty(object, key, value));
         }
-        return obj;
+        return object;
     }
 
     /**
      * 构造器
      */
-    public static class Builder extends AbstractBuilder<Builder, NamedStringTemplate> {
+    public static class Builder extends AbstractBuilder<Builder, NamedPlaceholderString> {
 
         /**
-         * 占位符前缀，默认为 {@link NamedStringTemplate#DEFAULT_PREFIX} 不能为空字符串
+         * 占位符前缀，默认为 {@link NamedPlaceholderString#DEFAULT_PREFIX} 不能为空字符串
          */
         protected String prefix;
         /**
-         * 占位符后缀，默认为 {@link NamedStringTemplate#DEFAULT_SUFFIX} 不能为空字符串
+         * 占位符后缀，默认为 {@link NamedPlaceholderString#DEFAULT_SUFFIX} 不能为空字符串
          */
         protected String suffix;
 
@@ -601,14 +591,14 @@ public class NamedStringTemplate extends StringTemplate {
         }
 
         @Override
-        protected NamedStringTemplate buildInstance() {
+        protected NamedPlaceholderString buildInstance() {
             if (this.prefix == null) {
                 this.prefix = DEFAULT_PREFIX;
             }
             if (this.suffix == null) {
                 this.suffix = DEFAULT_SUFFIX;
             }
-            return new NamedStringTemplate(this.template, this.features, this.prefix, this.suffix, this.escape,
+            return new NamedPlaceholderString(this.template, this.features, this.prefix, this.suffix, this.escape,
                     this.defaultValue, this.defaultValueHandler);
         }
 

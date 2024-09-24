@@ -85,7 +85,7 @@ public class LFUCache<K, V> extends StampedCache<K, V> {
             co = values.next();
             if (co.isExpired() == true) {
                 values.remove();
-                onRemove(co.key, co.obj);
+                onRemove(co.key, co.object);
                 count++;
                 continue;
             }
@@ -106,7 +106,7 @@ public class LFUCache<K, V> extends StampedCache<K, V> {
                 co1 = values.next();
                 if (co1.accessCount.addAndGet(-minAccessCount) <= 0) {
                     values.remove();
-                    onRemove(co1.key, co1.obj);
+                    onRemove(co1.key, co1.object);
                     count++;
                 }
             }

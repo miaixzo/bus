@@ -41,22 +41,22 @@ public class SmoothWeightObject<T> extends WeightObject<T> {
     /**
      * 构造
      *
-     * @param obj    对象
+     * @param object 对象
      * @param weight 权重
      */
-    public SmoothWeightObject(final T obj, final int weight) {
-        this(obj, weight, 0);
+    public SmoothWeightObject(final T object, final int weight) {
+        this(object, weight, 0);
     }
 
     /**
      * 构造
      *
-     * @param obj           对象
+     * @param object        对象
      * @param weight        权重
      * @param currentWeight 当前权重
      */
-    public SmoothWeightObject(final T obj, final int weight, final int currentWeight) {
-        super(obj, weight);
+    public SmoothWeightObject(final T object, final int weight, final int currentWeight) {
+        super(object, weight);
         this.currentWeight = currentWeight;
     }
 

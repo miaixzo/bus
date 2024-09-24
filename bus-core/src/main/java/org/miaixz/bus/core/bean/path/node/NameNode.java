@@ -27,8 +27,6 @@
 */
 package org.miaixz.bus.core.bean.path.node;
 
-import org.miaixz.bus.core.bean.DynaBean;
-import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.MathKit;
 
 /**
@@ -55,25 +53,21 @@ public class NameNode implements Node {
     }
 
     /**
+     * 获取节点名
+     *
+     * @return 节点名
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
      * 是否为数字节点
      *
      * @return 是否为数字节点
      */
     public boolean isNumber() {
         return MathKit.isInteger(name);
-    }
-
-    @Override
-    public Object getValue(final Object bean) {
-        if (Symbol.DOLLAR.equals(name)) {
-            return bean;
-        }
-        return DynaBean.of(bean).get(this.name);
-    }
-
-    @Override
-    public Object setValue(final Object bean, final Object value) {
-        return DynaBean.of(bean).set(this.name, value).getBean();
     }
 
     @Override

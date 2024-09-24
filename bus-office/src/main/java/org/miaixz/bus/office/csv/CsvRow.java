@@ -42,12 +42,11 @@ import org.miaixz.bus.core.xyz.BeanKit;
  */
 public final class CsvRow extends ListWrapper<String> {
 
+    final Map<String, Integer> headerMap;
     /**
      * 原始行号
      */
     private final long originalLineNumber;
-
-    final Map<String, Integer> headerMap;
 
     /**
      * 构造

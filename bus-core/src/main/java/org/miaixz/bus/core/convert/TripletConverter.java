@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.convert;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.Map;
 
@@ -45,12 +46,18 @@ import org.miaixz.bus.core.xyz.TypeKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class TripleConverter implements Converter {
+public class TripletConverter extends ConverterWithRoot implements Serializable {
+
+    private static final long serialVersionUID = -1L;
 
     /**
-     * 单例
+     * 构造
+     *
+     * @param rootConverter 根转换器，用于转换无法被识别的对象
      */
-    public static final TripleConverter INSTANCE = new TripleConverter();
+    public TripletConverter(final Converter rootConverter) {
+        super(rootConverter);
+    }
 
     /**
      * Map转Entry
@@ -60,17 +67,16 @@ public class TripleConverter implements Converter {
      * @param map       被转换的map
      * @return Entry
      */
-    private static Triplet<?, ?, ?> mapToTriple(final Type leftType, final Type middleType, final Type rightType,
+    private Triplet<?, ?, ?> mapToTriple(final Type leftType, final Type middleType, final Type rightType,
             final Map map) {
 
         final Object left = map.get("left");
         final Object middle = map.get("middle");
         final Object right = map.get("right");
 
-        final CompositeConverter convert = CompositeConverter.getInstance();
-        return Triplet.of(TypeKit.isUnknown(leftType) ? left : convert.convert(leftType, left),
-                TypeKit.isUnknown(middleType) ? middle : convert.convert(middleType, middle),
-                TypeKit.isUnknown(rightType) ? right : convert.convert(rightType, right));
+        return Triplet.of(TypeKit.isUnknown(leftType) ? left : converter.convert(leftType, left),
+                TypeKit.isUnknown(middleType) ? middle : converter.convert(middleType, middle),
+                TypeKit.isUnknown(rightType) ? right : converter.convert(rightType, right));
     }
 
     @Override
@@ -98,8 +104,11 @@ public class TripleConverter implements Converter {
     public Triplet<?, ?, ?> convert(final Type leftType, final Type middleType, final Type rightType,
             final Object value) throws ConvertException {
         Map map = null;
-        if (BeanKit.isReadableBean(value.getClass())) {
-            map = BeanKit.beanToMap(value);
+        if (value instanceof Map) {
+            map = (Map) value;
+        } else if (BeanKit.isReadableBean(value.getClass())) {
+            // 一次性只读场景，包装为Map效率更高
+            map = BeanKit.toBeanMap(value);
         }
 
         if (null != map) {

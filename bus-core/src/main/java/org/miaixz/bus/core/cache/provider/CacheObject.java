@@ -52,7 +52,7 @@ public class CacheObject<K, V> implements Serializable {
     /**
      * 值对象
      */
-    protected final V obj;
+    protected final V object;
     /**
      * 对象存活时长，0表示永久存活
      */
@@ -69,13 +69,13 @@ public class CacheObject<K, V> implements Serializable {
     /**
      * 构造
      *
-     * @param key 键
-     * @param obj 值
-     * @param ttl 超时时长
+     * @param key    键
+     * @param object 值
+     * @param ttl    超时时长
      */
-    protected CacheObject(final K key, final V obj, final long ttl) {
+    protected CacheObject(final K key, final V object, final long ttl) {
         this.key = key;
-        this.obj = obj;
+        this.object = object;
         this.ttl = ttl;
         this.lastAccess = System.currentTimeMillis();
     }
@@ -95,7 +95,7 @@ public class CacheObject<K, V> implements Serializable {
      * @return 值
      */
     public V getValue() {
-        return this.obj;
+        return this.object;
     }
 
     /**
@@ -130,7 +130,7 @@ public class CacheObject<K, V> implements Serializable {
 
     @Override
     public String toString() {
-        return "CacheObject [data=" + key + ", obj=" + obj + ", lastAccess=" + lastAccess + ", accessCount="
+        return "CacheObject [data=" + key + ", object=" + object + ", lastAccess=" + lastAccess + ", accessCount="
                 + accessCount + ", ttl=" + ttl + "]";
     }
 
@@ -158,7 +158,7 @@ public class CacheObject<K, V> implements Serializable {
             lastAccess = System.currentTimeMillis();
         }
         accessCount.getAndIncrement();
-        return this.obj;
+        return this.object;
     }
 
 }

@@ -27,73 +27,35 @@
 */
 package org.miaixz.bus.core.convert;
 
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.ReflectKit;
+
 import java.io.Serializable;
 import java.lang.reflect.Type;
-import java.util.Map;
-
-import org.miaixz.bus.core.bean.copier.ValueProvider;
-import org.miaixz.bus.core.bean.copier.provider.BeanValueProvider;
-import org.miaixz.bus.core.bean.copier.provider.MapValueProvider;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.exception.ConvertException;
-import org.miaixz.bus.core.xyz.BeanKit;
-import org.miaixz.bus.core.xyz.KotlinKit;
-import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
- * Kotlin Bean转换器，支持：
- * 
- * <pre>
- * Map = Bean
- * Bean = Bean
- * ValueProvider = Bean
- * </pre>
+ * 空值或空对象转换器，转换结果为目标类型对象的实例化对象
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class KotlinBeanConverter implements Converter, Serializable {
-
-    private static final long serialVersionUID = -1L;
+public class EmptyBeanConverter extends AbstractConverter implements MatcherConverter, Serializable {
 
     /**
-     * 单例对象
+     * 单例
      */
-    public static KotlinBeanConverter INSTANCE = new KotlinBeanConverter();
+    public static final EmptyBeanConverter INSTANCE = new EmptyBeanConverter();
+    private static final long serialVersionUID = -1L;
 
     @Override
-    public Object convert(final Type targetType, final Object value) throws ConvertException {
-        Assert.notNull(targetType);
-        if (null == value) {
-            return null;
-        }
-
-        // value本身实现了Converter接口，直接调用
-        if (value instanceof Converter) {
-            return ((Converter) value).convert(targetType, value);
-        }
-
-        final Class<?> targetClass = TypeKit.getClass(targetType);
-        Assert.notNull(targetClass, "Target type is not a class!");
-
-        return convertInternal(targetType, targetClass, value);
+    public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
+        return ObjectKit.isEmpty(value);
     }
 
-    private Object convertInternal(final Type targetType, final Class<?> targetClass, final Object value) {
-        ValueProvider<String> valueProvider = null;
-        if (value instanceof ValueProvider) {
-            valueProvider = (ValueProvider<String>) value;
-        } else if (value instanceof Map) {
-            valueProvider = new MapValueProvider((Map<String, ?>) value);
-        } else if (BeanKit.isWritableBean(value.getClass())) {
-            valueProvider = new BeanValueProvider(value);
-        }
-
-        if (null != valueProvider) {
-            return KotlinKit.newInstance(targetClass, valueProvider);
-        }
-
-        throw new ConvertException("Unsupported source type: [{}] to [{}]", value.getClass(), targetType);
+    @Override
+    protected Object convertInternal(final Class<?> targetClass, final Object value) {
+        // 空值转空对象，则直接实例化
+        return ReflectKit.newInstanceIfPossible(targetClass);
     }
 
 }

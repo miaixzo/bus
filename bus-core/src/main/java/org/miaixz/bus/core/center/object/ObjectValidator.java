@@ -54,21 +54,21 @@ public class ObjectValidator {
     /**
      * 检查对象是否为{@code null}
      *
-     * @param obj 对象
+     * @param object 对象
      * @return 是否为null
      */
-    public static boolean isNull(final Object obj) {
-        return null == obj;
+    public static boolean isNull(final Object object) {
+        return null == object;
     }
 
     /**
      * 检查对象是否不为{@code null}
      *
-     * @param obj 对象
+     * @param object 对象
      * @return 是否不为null
      */
-    public static boolean isNotNull(final Object obj) {
-        return null != obj;
+    public static boolean isNotNull(final Object object) {
+        return null != object;
     }
 
     /**
@@ -83,7 +83,7 @@ public class ObjectValidator {
      * {@link IteratorKit#isEmpty(Iterable)}；</li>
      * </ul>
      *
-     * @param obj 被判断的对象
+     * @param object 被判断的对象
      * @return 是否为空，如果类型不支持，返回false
      * @see StringKit#isEmpty(CharSequence)
      * @see MapKit#isEmpty(Map)
@@ -91,23 +91,23 @@ public class ObjectValidator {
      * @see IteratorKit#isEmpty(Iterator)
      * @see ArrayKit#isEmpty(Object)
      */
-    public static boolean isEmpty(final Object obj) {
-        if (null == obj) {
+    public static boolean isEmpty(final Object object) {
+        if (null == object) {
             return true;
         }
 
-        if (obj instanceof CharSequence) {
-            return StringKit.isEmpty((CharSequence) obj);
-        } else if (obj instanceof Collection) {
-            return CollKit.isEmpty((Collection) obj);
-        } else if (obj instanceof Map) {
-            return MapKit.isEmpty((Map) obj);
-        } else if (obj instanceof Iterable) {
-            return IteratorKit.isEmpty((Iterable) obj);
-        } else if (obj instanceof Iterator) {
-            return IteratorKit.isEmpty((Iterator) obj);
-        } else if (ArrayKit.isArray(obj)) {
-            return ArrayKit.isEmpty(obj);
+        if (object instanceof CharSequence) {
+            return StringKit.isEmpty((CharSequence) object);
+        } else if (object instanceof Collection) {
+            return CollKit.isEmpty((Collection) object);
+        } else if (object instanceof Map) {
+            return MapKit.isEmpty((Map) object);
+        } else if (object instanceof Iterable) {
+            return IteratorKit.isEmpty((Iterable) object);
+        } else if (object instanceof Iterator) {
+            return IteratorKit.isEmpty((Iterator) object);
+        } else if (ArrayKit.isArray(object)) {
+            return ArrayKit.isEmpty(object);
         }
 
         return false;
@@ -116,12 +116,12 @@ public class ObjectValidator {
     /**
      * 判断指定对象是否为非空
      *
-     * @param obj 被判断的对象
+     * @param object 被判断的对象
      * @return 是否不为空，如果类型不支持，返回true
      * @see #isEmpty(Object)
      */
-    public static boolean isNotEmpty(final Object obj) {
-        return !isEmpty(obj);
+    public static boolean isNotEmpty(final Object object) {
+        return !isEmpty(object);
     }
 
     /**
@@ -139,15 +139,15 @@ public class ObjectValidator {
      * </ul>
      * 注意：该方法与 {@link #isEmptyIfString(Object)} 的区别是： 该方法会校验空白字符，且性能相对于 {@link #isEmptyIfString(Object)} 略慢。
      *
-     * @param obj 对象
+     * @param object 对象
      * @return 如果为字符串是否为空串
      * @see StringKit#isBlank(CharSequence)
      */
-    public static boolean isBlankIfString(final Object obj) {
-        if (null == obj) {
+    public static boolean isBlankIfString(final Object object) {
+        if (null == object) {
             return true;
-        } else if (obj instanceof CharSequence) {
-            return CharsValidator.isBlank((CharSequence) obj);
+        } else if (object instanceof CharSequence) {
+            return CharsValidator.isBlank((CharSequence) object);
         }
         return false;
     }
@@ -169,14 +169,14 @@ public class ObjectValidator {
      * 注意：该方法与 {@link #isBlankIfString(Object)} 的区别是：该方法不校验空白字符。
      * </p>
      *
-     * @param obj 对象
+     * @param object 对象
      * @return 如果为字符串是否为空串
      */
-    public static boolean isEmptyIfString(final Object obj) {
-        if (null == obj) {
+    public static boolean isEmptyIfString(final Object object) {
+        if (null == object) {
             return true;
-        } else if (obj instanceof CharSequence) {
-            return 0 == ((CharSequence) obj).length();
+        } else if (object instanceof CharSequence) {
+            return 0 == ((CharSequence) object).length();
         }
         return false;
     }
@@ -304,13 +304,13 @@ public class ObjectValidator {
      * <li>若对象类型为{@link Float}，则检查{@link Float#isInfinite()}或{@link Float#isNaN()}；</li>
      * </ul>
      *
-     * @param obj 被检查对象
+     * @param object 被检查对象
      * @return 检查结果，非数字类型和{@code null}将返回{@code true}
      * @see MathKit#isValidNumber(Number)
      */
-    public static boolean isValidIfNumber(final Object obj) {
-        if (obj instanceof Number) {
-            return MathKit.isValidNumber((Number) obj);
+    public static boolean isValidIfNumber(final Object object) {
+        if (object instanceof Number) {
+            return MathKit.isValidNumber((Number) object);
         }
         return true;
     }

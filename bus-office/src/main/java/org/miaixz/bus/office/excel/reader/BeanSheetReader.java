@@ -63,14 +63,14 @@ public class BeanSheetReader<T> implements SheetReader<List<T>> {
 
     @Override
     public List<T> read(final Sheet sheet) {
-        final List<Map<String, Object>> mapList = mapSheetReader.read(sheet);
+        final List<Map<Object, Object>> mapList = mapSheetReader.read(sheet);
         if (Map.class.isAssignableFrom(this.beanClass)) {
             return (List<T>) mapList;
         }
 
         final List<T> beanList = new ArrayList<>(mapList.size());
         final CopyOptions copyOptions = CopyOptions.of().setIgnoreError(true);
-        for (final Map<String, Object> map : mapList) {
+        for (final Map<Object, Object> map : mapList) {
             beanList.add(BeanKit.toBean(map, this.beanClass, copyOptions));
         }
         return beanList;

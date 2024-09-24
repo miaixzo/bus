@@ -28,8 +28,11 @@
 package org.miaixz.bus.oauth.metric.microsoft;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
+import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
+import org.miaixz.bus.oauth.magic.ErrorCode;
 
 /**
  * 微软 登录
@@ -45,6 +48,16 @@ public class MicrosoftProvider extends AbstractMicrosoftProvider {
 
     public MicrosoftProvider(Context context, ExtendCache cache) {
         super(context, Registry.MICROSOFT, cache);
+    }
+
+    @Override
+    protected void checkConfig(Context context) {
+        super.checkConfig(context);
+        // 微软的回调地址必须为https的链接或者localhost,不允许使用http
+        if (Registry.MICROSOFT == this.complex && !Protocol.isHttpsOrLocalHost(context.getRedirectUri())) {
+            // Microsoft's redirect uri must use the HTTPS or localhost
+            throw new AuthorizedException(ErrorCode.ILLEGAL_REDIRECT_URI.getCode(), this.complex);
+        }
     }
 
 }

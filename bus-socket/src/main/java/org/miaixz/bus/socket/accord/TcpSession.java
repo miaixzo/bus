@@ -27,6 +27,14 @@
 */
 package org.miaixz.bus.socket.accord;
 
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.socket.*;
+import org.miaixz.bus.socket.buffer.BufferPage;
+import org.miaixz.bus.socket.buffer.VirtualBuffer;
+import org.miaixz.bus.socket.buffer.WriteBuffer;
+import org.miaixz.bus.socket.metric.channels.AsynchronousChannelProvider;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
@@ -35,14 +43,6 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
-
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.socket.*;
-import org.miaixz.bus.socket.buffer.BufferPage;
-import org.miaixz.bus.socket.buffer.VirtualBuffer;
-import org.miaixz.bus.socket.buffer.WriteBuffer;
-import org.miaixz.bus.socket.metric.channels.AsynchronousChannelProvider;
 
 /**
  * AIO传输层会话
@@ -67,7 +67,7 @@ import org.miaixz.bus.socket.metric.channels.AsynchronousChannelProvider;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class TcpSession extends Session {
+public class TcpSession extends Session {
 
     /**
      * 底层通信channel对象

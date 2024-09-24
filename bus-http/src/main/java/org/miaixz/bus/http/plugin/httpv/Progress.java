@@ -37,9 +37,14 @@ public class Progress {
 
     public static final int DEFAULT_STEP_BYTES = 8192;
 
-    // 总字节数
+    /**
+     * 总字节数
+     */
     private long totalBytes;
-    // 已经完成字节数
+
+    /**
+     * 已经完成字节数
+     */
     private long doneBytes;
 
     public Progress(long totalBytes, long doneBytes) {

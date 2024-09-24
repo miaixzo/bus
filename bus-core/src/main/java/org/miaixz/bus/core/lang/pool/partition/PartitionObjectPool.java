@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core.lang.pool.partition;
 
-import java.io.IOException;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
-
 import org.miaixz.bus.core.lang.pool.ObjectFactory;
 import org.miaixz.bus.core.lang.pool.ObjectPool;
 import org.miaixz.bus.core.lang.pool.Poolable;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ThreadKit;
+
+import java.io.IOException;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 /**
  * 分区对象池实现
@@ -105,15 +105,22 @@ public class PartitionObjectPool<T> implements ObjectPool<T> {
     }
 
     @Override
-    public Poolable<T> borrowObject() {
+    public T borrowObject() {
         checkClosed();
         return this.partitions[getPartitionIndex(this.config)].borrowObject();
     }
 
     @Override
-    public PartitionObjectPool<T> returnObject(final Poolable<T> obj) {
+    public PartitionObjectPool<T> returnObject(final T object) {
         checkClosed();
-        this.partitions[getPartitionIndex(this.config)].returnObject(obj);
+        this.partitions[getPartitionIndex(this.config)].returnObject(object);
+        return this;
+    }
+
+    @Override
+    public ObjectPool<T> free(final T object) {
+        checkClosed();
+        this.partitions[getPartitionIndex(this.config)].free(object);
         return this;
     }
 

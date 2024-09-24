@@ -48,12 +48,12 @@ public class PhantomObject<T> extends PhantomReference<T> implements Ref<T> {
     /**
      * 构造
      *
-     * @param obj   原始对象
-     * @param queue {@link ReferenceQueue}
+     * @param object 原始对象
+     * @param queue  {@link ReferenceQueue}
      */
-    public PhantomObject(final T obj, final ReferenceQueue<? super T> queue) {
-        super(obj, queue);
-        hashCode = Objects.hashCode(obj);
+    public PhantomObject(final T object, final ReferenceQueue<? super T> queue) {
+        super(object, queue);
+        hashCode = Objects.hashCode(object);
     }
 
     @Override

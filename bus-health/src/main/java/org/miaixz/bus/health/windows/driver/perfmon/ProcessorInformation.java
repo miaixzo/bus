@@ -27,16 +27,15 @@
 */
 package org.miaixz.bus.health.windows.driver.perfmon;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
+import com.sun.jna.platform.win32.VersionHelpers;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.windows.PerfCounterQuery;
 import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
 
-import com.sun.jna.platform.win32.VersionHelpers;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Utility to query Processor performance counter
@@ -68,6 +67,16 @@ public final class ProcessorInformation {
                 : PerfCounterWildcardQuery.queryInstancesAndValues(ProcessorTickCountProperty.class,
                         PerfmonConsts.PROCESSOR,
                         PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_OS_PROCESSOR_WHERE_NAME_NOT_TOTAL);
+    }
+
+    /**
+     * Returns system performance counters.
+     *
+     * @return Performance Counters for the total of all processors.
+     */
+    public static Map<SystemTickCountProperty, Long> querySystemCounters() {
+        return PerfCounterQuery.queryValues(SystemTickCountProperty.class, PerfmonConsts.PROCESSOR,
+                PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_OS_PROCESSOR_WHERE_NAME_TOTAL);
     }
 
     /**
@@ -206,6 +215,32 @@ public final class ProcessorInformation {
 
         ProcessorUtilityTickCountProperty(String counter) {
             this.counter = counter;
+        }
+
+        @Override
+        public String getCounter() {
+            return counter;
+        }
+    }
+
+    /**
+     * System performance counters
+     */
+    public enum SystemTickCountProperty implements PerfCounterQuery.PdhCounterProperty {
+        PERCENTDPCTIME(PerfCounterQuery.TOTAL_INSTANCE, "% DPC Time"), //
+        PERCENTINTERRUPTTIME(PerfCounterQuery.TOTAL_INSTANCE, "% Interrupt Time");
+
+        private final String instance;
+        private final String counter;
+
+        SystemTickCountProperty(String instance, String counter) {
+            this.instance = instance;
+            this.counter = counter;
+        }
+
+        @Override
+        public String getInstance() {
+            return instance;
         }
 
         @Override

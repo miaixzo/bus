@@ -28,11 +28,14 @@
 package org.miaixz.bus.core.io.stream;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.miaixz.bus.core.io.buffer.FastByteBuffer;
 import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
@@ -50,7 +53,7 @@ public class FastByteArrayOutputStream extends OutputStream {
      * 构造
      */
     public FastByteArrayOutputStream() {
-        this(1024);
+        this(Normal._1024);
     }
 
     /**
@@ -60,6 +63,24 @@ public class FastByteArrayOutputStream extends OutputStream {
      */
     public FastByteArrayOutputStream(final int size) {
         buffer = new FastByteBuffer(size);
+    }
+
+    /**
+     * 根据输入流的总长度创建一个{@code FastByteArrayOutputStream}对象 如果输入流的长度不确定，且
+     *
+     * @param in    输入流
+     * @param limit 限制大小
+     * @return {@code FastByteArrayOutputStream}
+     */
+    public static FastByteArrayOutputStream of(final InputStream in, final int limit) {
+        int length = IoKit.length(in);
+        if (length < 0 || length > limit) {
+            length = limit;
+        }
+        if (length < 0) {
+            length = Normal._1024;
+        }
+        return new FastByteArrayOutputStream(length);
     }
 
     @Override
@@ -130,12 +151,33 @@ public class FastByteArrayOutputStream extends OutputStream {
     }
 
     /**
+     * 转为Byte数组
+     *
+     * @param start 起始位置（包含）
+     * @param len   长度
+     * @return Byte数组
+     */
+    public byte[] toByteArray(final int start, final int len) {
+        return buffer.toArray(start, len);
+    }
+
+    /**
      * 转为Byte数组，如果缓冲区中的数据长度固定，则直接返回原始数组 注意此方法共享数组，不能修改数组内容！
      *
      * @return Byte数组
      */
     public byte[] toByteArrayZeroCopyIfPossible() {
         return buffer.toArrayZeroCopyIfPossible();
+    }
+
+    /**
+     * 获取指定位置的字节
+     * 
+     * @param index 位置
+     * @return 字节
+     */
+    public byte get(final int index) {
+        return buffer.get(index);
     }
 
     @Override

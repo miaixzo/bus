@@ -221,14 +221,14 @@ public class BulkData implements Value, Serializable {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
+    public boolean equals(Object object) {
+        if (this == object)
             return true;
-        if (obj == null)
+        if (object == null)
             return false;
-        if (getClass() != obj.getClass())
+        if (getClass() != object.getClass())
             return false;
-        BulkData other = (BulkData) obj;
+        BulkData other = (BulkData) object;
         if (bigEndian != other.bigEndian)
             return false;
         if (uri == null) {

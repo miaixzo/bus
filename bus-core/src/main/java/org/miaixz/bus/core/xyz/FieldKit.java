@@ -34,10 +34,12 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
-import org.miaixz.bus.core.convert.Convert;
+import org.miaixz.bus.core.convert.CompositeConverter;
+import org.miaixz.bus.core.convert.Converter;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.annotation.Alias;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.reflect.field.FieldInvoker;
 import org.miaixz.bus.core.lang.reflect.field.FieldReflect;
 
 /**
@@ -121,7 +123,7 @@ public class FieldKit {
      * @param name      字段名称
      * @return 字段对象，如果未找到返回{@code null}
      */
-    public static Field getDeclearField(final Class<?> beanClass, final String name) {
+    public static Field getDeclaredField(final Class<?> beanClass, final String name) {
         final Field[] fields = getDeclaredFields(beanClass, (field -> StringKit.equals(name, field.getName())));
         return ArrayKit.isEmpty(fields) ? null : fields[0];
     }
@@ -208,16 +210,17 @@ public class FieldKit {
     /**
      * 获取字段值
      *
-     * @param obj       对象，如果static字段，此处为类
+     * @param object    对象，如果static字段，此处为类
      * @param fieldName 字段名
      * @return 字段值
      * @throws InternalException 包装IllegalAccessException异常
      */
-    public static Object getFieldValue(final Object obj, final String fieldName) throws InternalException {
-        if (null == obj || StringKit.isBlank(fieldName)) {
+    public static Object getFieldValue(final Object object, final String fieldName) throws InternalException {
+        if (null == object || StringKit.isBlank(fieldName)) {
             return null;
         }
-        return getFieldValue(obj, getField(obj instanceof Class ? (Class<?>) obj : obj.getClass(), fieldName));
+        return getFieldValue(object,
+                getField(object instanceof Class ? (Class<?>) object : object.getClass(), fieldName));
     }
 
     /**
@@ -234,24 +237,24 @@ public class FieldKit {
     /**
      * 获取字段值
      *
-     * @param obj   对象，static字段则此字段为null
-     * @param field 字段
+     * @param object 对象，static字段则此字段为null
+     * @param field  字段
      * @return 字段值
      * @throws InternalException 包装IllegalAccessException异常
      */
-    public static Object getFieldValue(Object obj, final Field field) throws InternalException {
+    public static Object getFieldValue(Object object, final Field field) throws InternalException {
         if (null == field) {
             return null;
         }
-        if (obj instanceof Class) {
+        if (object instanceof Class) {
             // 静态字段获取时对象为null
-            obj = null;
+            object = null;
         }
 
         ReflectKit.setAccessible(field);
         final Object result;
         try {
-            result = field.get(obj);
+            result = field.get(object);
         } catch (final IllegalAccessException e) {
             throw new InternalException(e, "IllegalAccess for {}.{}", field.getDeclaringClass(), field.getName());
         }
@@ -261,25 +264,25 @@ public class FieldKit {
     /**
      * 获取所有字段的值
      *
-     * @param obj bean对象，如果是static字段，此处为类class
+     * @param object bean对象，如果是static字段，此处为类class
      * @return 字段值数组
      */
-    public static Object[] getFieldsValue(final Object obj) {
-        return getFieldsValue(obj, null);
+    public static Object[] getFieldsValue(final Object object) {
+        return getFieldsValue(object, null);
     }
 
     /**
      * 获取所有字段的值
      *
-     * @param obj    bean对象，如果是static字段，此处为类class
+     * @param object bean对象，如果是static字段，此处为类class
      * @param filter 字段过滤器，{@code null}返回原集合
      * @return 字段值数组
      */
-    public static Object[] getFieldsValue(final Object obj, final Predicate<Field> filter) {
-        if (null != obj) {
-            final Field[] fields = getFields(obj instanceof Class ? (Class<?>) obj : obj.getClass(), filter);
+    public static Object[] getFieldsValue(final Object object, final Predicate<Field> filter) {
+        if (null != object) {
+            final Field[] fields = getFields(object instanceof Class ? (Class<?>) object : object.getClass(), filter);
             if (null != fields) {
-                return ArrayKit.mapToArray(fields, field -> getFieldValue(obj, field), Object[]::new);
+                return ArrayKit.mapToArray(fields, field -> getFieldValue(object, field), Object[]::new);
             }
         }
         return null;
@@ -288,18 +291,18 @@ public class FieldKit {
     /**
      * 获取所有字段及对应值
      *
-     * @param obj bean对象，如果是static字段，此处为类class
+     * @param object bean对象，如果是static字段，此处为类class
      * @return 字段值数组
      */
-    public static Object getFieldsAndValue(final Object obj) {
-        if (null != obj) {
-            final Field[] fields = getFields(obj instanceof Class ? (Class<?>) obj : obj.getClass());
+    public static Object getFieldsAndValue(final Object object) {
+        if (null != object) {
+            final Field[] fields = getFields(object instanceof Class ? (Class<?>) object : object.getClass());
             if (null != fields) {
                 Map<String, Object> map = new HashMap<>();
                 for (Field field : fields) {
-                    Object object = getFieldValue(obj, field);
-                    if (ObjectKit.isNotEmpty(object) && !isSerialVersionUID(field)) {
-                        map.put(field.getName(), getFieldValue(obj, field));
+                    Object obj = getFieldValue(object, field);
+                    if (ObjectKit.isNotEmpty(obj) && !isSerialVersionUID(field)) {
+                        map.put(field.getName(), getFieldValue(object, field));
                     }
                 }
                 return map;
@@ -311,19 +314,19 @@ public class FieldKit {
     /**
      * 获取所有字段及对应值
      *
-     * @param obj    bean对象，如果是static字段，此处为类class
+     * @param object bean对象，如果是static字段，此处为类class
      * @param filter 字段过滤器，{@code null}返回原集合
      * @return 字段值数组
      */
-    public static Object getFieldsAndValue(final Object obj, final Predicate<Field> filter) {
-        if (null != obj) {
-            final Field[] fields = getFields(obj instanceof Class ? (Class<?>) obj : obj.getClass(), filter);
+    public static Object getFieldsAndValue(final Object object, final Predicate<Field> filter) {
+        if (null != object) {
+            final Field[] fields = getFields(object instanceof Class ? (Class<?>) object : object.getClass(), filter);
             if (null != fields) {
                 Map<String, Object> map = new HashMap<>();
                 for (Field field : fields) {
-                    Object object = getFieldValue(obj, field);
-                    if (ObjectKit.isNotEmpty(object) && !isSerialVersionUID(field)) {
-                        map.put(field.getName(), getFieldValue(obj, field));
+                    Object obj = getFieldValue(object, field);
+                    if (ObjectKit.isNotEmpty(obj) && !isSerialVersionUID(field)) {
+                        map.put(field.getName(), getFieldValue(object, field));
                     }
                 }
                 return map;
@@ -335,19 +338,19 @@ public class FieldKit {
     /**
      * 设置字段值
      *
-     * @param obj       对象,static字段则此处传Class
+     * @param object    对象,static字段则此处传Class
      * @param fieldName 字段名
      * @param value     值，值类型必须与字段类型匹配，不会自动转换对象类型
      * @throws InternalException 包装IllegalAccessException异常
      */
-    public static void setFieldValue(final Object obj, final String fieldName, final Object value)
+    public static void setFieldValue(final Object object, final String fieldName, final Object value)
             throws InternalException {
-        Assert.notNull(obj, "Object must be not null !");
+        Assert.notNull(object, "Object must be not null !");
         Assert.notBlank(fieldName);
 
-        final Field field = getField((obj instanceof Class) ? (Class<?>) obj : obj.getClass(), fieldName);
-        Assert.notNull(field, "Field [{}] is not exist in [{}]", fieldName, obj.getClass().getName());
-        setFieldValue(obj, field, value);
+        final Field field = getField((object instanceof Class) ? (Class<?>) object : object.getClass(), fieldName);
+        Assert.notNull(field, "Field [{}] is not exist in [{}]", fieldName, object.getClass().getName());
+        setFieldValue(object, field, value);
     }
 
     /**
@@ -364,49 +367,29 @@ public class FieldKit {
     /**
      * 设置字段值，如果值类型必须与字段类型匹配，会自动转换对象类型
      *
-     * @param obj   对象，如果是static字段，此参数为null
-     * @param field 字段
-     * @param value 值，类型不匹配会自动转换对象类型
+     * @param object 对象，如果是static字段，此参数为null
+     * @param field  字段
+     * @param value  值，类型不匹配会自动转换对象类型
      * @throws InternalException 包装IllegalAccessException异常
      */
-    public static void setFieldValue(final Object obj, final Field field, Object value) throws InternalException {
-        Assert.notNull(field, "Field in [{}] not exist !", obj);
-
-        // 值类型检查和转换
-        final Class<?> fieldType = field.getType();
-        if (null != value) {
-            if (!fieldType.isAssignableFrom(value.getClass())) {
-                // 对于类型不同的字段，尝试转换，转换失败则使用原对象类型
-                final Object targetValue = Convert.convert(fieldType, value);
-                if (null != targetValue) {
-                    value = targetValue;
-                }
-            }
-        } else {
-            // 获取null对应默认值，防止原始类型造成空指针问题
-            value = ClassKit.getDefaultValue(fieldType);
-        }
-
-        setFieldValueExact(obj, field, value);
+    public static void setFieldValue(final Object object, final Field field, Object value) throws InternalException {
+        setFieldValue(object, field, value, CompositeConverter.getInstance());
     }
 
     /**
-     * 设置字段值，传入的字段值必须和字段类型一致，否则抛出异常
+     * 设置字段值，如果值类型必须与字段类型匹配，会自动转换对象类型
      *
-     * @param obj   对象，如果是static字段，此参数为null
-     * @param field 字段
-     * @param value 值，值类型必须与字段类型匹配
+     * @param object    对象，如果是static字段，此参数为null
+     * @param field     字段
+     * @param value     值，类型不匹配会自动转换对象类型
+     * @param converter 转换器，用于转换给定value为字段类型，{@code null}表示不转换
      * @throws InternalException 包装IllegalAccessException异常
      */
-    public static void setFieldValueExact(final Object obj, final Field field, final Object value)
-            throws InternalException {
-        ReflectKit.setAccessible(field);
-        try {
-            field.set(obj instanceof Class ? null : obj, value);
-        } catch (final IllegalAccessException e) {
-            throw new InternalException(e, "IllegalAccess for [{}.{}]", null == obj ? field.getDeclaringClass() : obj,
-                    field.getName());
-        }
+    public static void setFieldValue(final Object object, final Field field, final Object value,
+            final Converter converter) throws InternalException {
+        Assert.notNull(field, "Field in [{}] not exist !", object);
+
+        FieldInvoker.of(field).setConverter(converter).invokeSet(object, value);
     }
 
     /**

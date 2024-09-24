@@ -166,7 +166,7 @@ public class HuaweiProvider extends AbstractProvider {
     /**
      * 获取用户的实际性别。华为系统中，用户的性别：1表示女，0表示男
      *
-     * @param object obj
+     * @param object 对象
      * @return Authorize
      */
     private Gender getRealGender(JSONObject object) {

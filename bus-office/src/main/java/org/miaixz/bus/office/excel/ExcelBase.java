@@ -38,14 +38,13 @@ import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.miaixz.bus.core.data.id.ID;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.office.excel.cell.CellKit;
-import org.miaixz.bus.office.excel.style.Styles;
+import org.miaixz.bus.office.Builder;
+import org.miaixz.bus.office.excel.xyz.CellKit;
+import org.miaixz.bus.office.excel.xyz.RowKit;
+import org.miaixz.bus.office.excel.xyz.SheetKit;
+import org.miaixz.bus.office.excel.xyz.StyleKit;
 
 /**
  * Excel基础类，用于抽象ExcelWriter和ExcelReader中共用部分的对象和方法
@@ -67,7 +66,7 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     /**
      * 目标文件，如果用户读取为流或自行创建的Workbook或Sheet,此参数为{@code null}
      */
-    protected File destFile;
+    protected File targetFile;
     /**
      * 工作簿
      */
@@ -116,15 +115,6 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
      */
     public Workbook getWorkbook() {
         return this.workbook;
-    }
-
-    /**
-     * 创建字体
-     *
-     * @return 字体
-     */
-    public Font createFont() {
-        return getWorkbook().createFont();
     }
 
     /**
@@ -305,11 +295,7 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
      * @return {@link Cell}
      */
     public Cell getCell(final int x, final int y, final boolean isCreateIfNotExist) {
-        final Row row = isCreateIfNotExist ? RowKit.getOrCreateRow(this.sheet, y) : this.sheet.getRow(y);
-        if (null != row) {
-            return isCreateIfNotExist ? CellKit.getOrCreateCell(row, x) : row.getCell(x);
-        }
-        return null;
+        return CellKit.getCell(this.sheet, x, y, isCreateIfNotExist);
     }
 
     /**
@@ -320,6 +306,32 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
      */
     public Row getOrCreateRow(final int y) {
         return RowKit.getOrCreateRow(this.sheet, y);
+    }
+
+    /**
+     * 获取总行数，计算方法为：
+     *
+     * <pre>
+     * 最后一行序号 + 1
+     * </pre>
+     *
+     * @return 行数
+     */
+    public int getRowCount() {
+        return this.sheet.getLastRowNum() + 1;
+    }
+
+    /**
+     * 获取有记录的行数，计算方法为：
+     *
+     * <pre>
+     * 最后一行序号 - 第一行序号 + 1
+     * </pre>
+     *
+     * @return 行数
+     */
+    public int getPhysicalRowCount() {
+        return this.sheet.getPhysicalNumberOfRows();
     }
 
     /**
@@ -342,7 +354,7 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
      */
     public CellStyle getOrCreateCellStyle(final int x, final int y) {
         final CellStyle cellStyle = getOrCreateCell(x, y).getCellStyle();
-        return Styles.isNullOrDefaultStyle(this.workbook, cellStyle) ? createCellStyle(x, y) : cellStyle;
+        return StyleKit.isNullOrDefaultStyle(this.workbook, cellStyle) ? createCellStyle(x, y) : cellStyle;
     }
 
     /**
@@ -377,7 +389,7 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
      * @see Workbook#createCellStyle()
      */
     public CellStyle createCellStyle() {
-        return Styles.createCellStyle(this.workbook);
+        return StyleKit.createCellStyle(this.workbook);
     }
 
     /**
@@ -388,7 +400,7 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
      */
     public CellStyle getOrCreateRowStyle(final int y) {
         final CellStyle rowStyle = getOrCreateRow(y).getRowStyle();
-        return Styles.isNullOrDefaultStyle(this.workbook, rowStyle) ? createRowStyle(y) : rowStyle;
+        return StyleKit.isNullOrDefaultStyle(this.workbook, rowStyle) ? createRowStyle(y) : rowStyle;
     }
 
     /**
@@ -411,7 +423,7 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
      */
     public CellStyle getOrCreateColumnStyle(final int x) {
         final CellStyle columnStyle = this.sheet.getColumnStyle(x);
-        return Styles.isNullOrDefaultStyle(this.workbook, columnStyle) ? createColumnStyle(x) : columnStyle;
+        return StyleKit.isNullOrDefaultStyle(this.workbook, columnStyle) ? createColumnStyle(x) : columnStyle;
     }
 
     /**
@@ -424,6 +436,15 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
         final CellStyle columnStyle = this.workbook.createCellStyle();
         this.sheet.setDefaultColumnStyle(x, columnStyle);
         return columnStyle;
+    }
+
+    /**
+     * 创建字体
+     *
+     * @return 字体
+     */
+    public Font createFont() {
+        return getWorkbook().createFont();
     }
 
     /**
@@ -450,32 +471,6 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
         hyperlink.setAddress(address);
         hyperlink.setLabel(label);
         return hyperlink;
-    }
-
-    /**
-     * 获取总行数，计算方法为：
-     *
-     * <pre>
-     * 最后一行序号 + 1
-     * </pre>
-     *
-     * @return 行数
-     */
-    public int getRowCount() {
-        return this.sheet.getLastRowNum() + 1;
-    }
-
-    /**
-     * 获取有记录的行数，计算方法为：
-     *
-     * <pre>
-     * 最后一行序号 - 第一行序号 + 1
-     * </pre>
-     *
-     * @return 行数
-     */
-    public int getPhysicalRowCount() {
-        return this.sheet.getPhysicalNumberOfRows();
     }
 
     /**
@@ -529,32 +524,7 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
      * @return Content-Type值
      */
     public String getContentType() {
-        return isXlsx() ? ExcelKit.XLSX_CONTENT_TYPE : ExcelKit.XLS_CONTENT_TYPE;
-    }
-
-    /**
-     * 获取Content-Disposition头对应的值，可以通过调用以下方法快速设置下载Excel的头信息：
-     *
-     * <pre>
-     * response.setHeader("Content-Disposition", excelWriter.getDisposition("test.xlsx", Charset.UTF_8));
-     * </pre>
-     *
-     * @param fileName 文件名，如果文件名没有扩展名，会自动按照生成Excel类型补齐扩展名，如果提供空，使用随机UUID
-     * @param charset  编码，null则使用默认UTF-8编码
-     * @return Content-Disposition值
-     */
-    public String getDisposition(String fileName, java.nio.charset.Charset charset) {
-        if (null == charset) {
-            charset = Charset.UTF_8;
-        }
-
-        if (StringKit.isBlank(fileName)) {
-            // 未提供文件名使用随机UUID作为文件名
-            fileName = ID.objectId();
-        }
-
-        fileName = StringKit.addSuffixIfNot(UrlEncoder.encodeAll(fileName, charset), isXlsx() ? ".xlsx" : ".xls");
-        return StringKit.format("attachment; filename=\"{}\"", fileName);
+        return isXlsx() ? Builder.XLSX_CONTENT_TYPE : Builder.XLS_CONTENT_TYPE;
     }
 
     /**
@@ -566,6 +536,13 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
         this.sheet = null;
         this.workbook = null;
         this.isClosed = true;
+    }
+
+    /**
+     * 校验Excel是否已经关闭
+     */
+    protected void checkClosed() {
+        Assert.isFalse(this.isClosed, "Excel has been closed!");
     }
 
 }

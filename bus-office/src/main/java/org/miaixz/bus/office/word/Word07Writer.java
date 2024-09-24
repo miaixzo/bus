@@ -37,7 +37,6 @@ import org.apache.poi.xwpf.usermodel.ParagraphAlignment;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
 import org.apache.poi.xwpf.usermodel.XWPFRun;
-import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ArrayKit;
@@ -56,7 +55,7 @@ public class Word07Writer implements Closeable {
     /**
      * 目标文件
      */
-    protected File destFile;
+    protected File targetFile;
     /**
      * 是否被关闭
      */
@@ -72,10 +71,10 @@ public class Word07Writer implements Closeable {
     /**
      * 构造
      *
-     * @param destFile 写出的文件
+     * @param targetFile 写出的文件
      */
-    public Word07Writer(final File destFile) {
-        this(DocxKit.create(destFile), destFile);
+    public Word07Writer(final File targetFile) {
+        this(DocxKit.create(targetFile), targetFile);
     }
 
     /**
@@ -90,34 +89,12 @@ public class Word07Writer implements Closeable {
     /**
      * 构造
      *
-     * @param doc      {@link XWPFDocument}
-     * @param destFile 写出的文件
+     * @param doc        {@link XWPFDocument}
+     * @param targetFile 写出的文件
      */
-    public Word07Writer(final XWPFDocument doc, final File destFile) {
+    public Word07Writer(final XWPFDocument doc, final File targetFile) {
         this.doc = doc;
-        this.destFile = destFile;
-    }
-
-    /**
-     * 获取图片类型枚举
-     *
-     * @param fileName 文件名称
-     * @return 图片类型枚举
-     */
-    public static PictureType getType(final String fileName) {
-        String extName = FileName.extName(fileName).toUpperCase();
-        if ("JPG".equals(extName)) {
-            extName = "JPEG";
-        }
-
-        PictureType picType;
-        try {
-            picType = PictureType.valueOf(extName);
-        } catch (final IllegalArgumentException e) {
-            // 默认值
-            picType = PictureType.JPEG;
-        }
-        return picType;
+        this.targetFile = targetFile;
     }
 
     /**
@@ -132,11 +109,11 @@ public class Word07Writer implements Closeable {
     /**
      * 设置写出的目标文件
      *
-     * @param destFile 目标文件
+     * @param targetFile 目标文件
      * @return this
      */
-    public Word07Writer setDestFile(final File destFile) {
-        this.destFile = destFile;
+    public Word07Writer setTargetFile(final File targetFile) {
+        this.targetFile = targetFile;
         return this;
     }
 
@@ -202,7 +179,7 @@ public class Word07Writer implements Closeable {
      */
     public Word07Writer addPicture(final File picFile, final int width, final int height) {
         final String fileName = picFile.getName();
-        return addPicture(FileKit.getInputStream(picFile), getType(fileName), fileName, width, height);
+        return addPicture(FileKit.getInputStream(picFile), DocxKit.getType(fileName), fileName, width, height);
     }
 
     /**
@@ -238,9 +215,7 @@ public class Word07Writer implements Closeable {
         final XWPFRun run = paragraph.createRun();
         try {
             run.addPicture(in, picType, fileName, Units.toEMU(width), Units.toEMU(height));
-        } catch (final InvalidFormatException e) {
-            throw new InternalException(e);
-        } catch (final IOException e) {
+        } catch (final InvalidFormatException | IOException e) {
             throw new InternalException(e);
         } finally {
             IoKit.closeQuietly(in);
@@ -265,26 +240,24 @@ public class Word07Writer implements Closeable {
                 run = paragraph.createRun();
                 final String name = picFile.getName();
                 try (final BufferedInputStream in = FileKit.getInputStream(picFile)) {
-                    run.addPicture(in, getType(name), name, Units.toEMU(width), Units.toEMU(height));
+                    run.addPicture(in, DocxKit.getType(name), name, Units.toEMU(width), Units.toEMU(height));
                 }
             }
-        } catch (final InvalidFormatException e) {
-            throw new InternalException(e);
-        } catch (final IOException e) {
+        } catch (final InvalidFormatException | IOException e) {
             throw new InternalException(e);
         }
         return this;
     }
 
     /**
-     * 将Excel Workbook刷出到预定义的文件 如果用户未自定义输出的文件，将抛出{@link NullPointerException} 预定义文件可以通过{@link #setDestFile(File)}
+     * 将Excel Workbook刷出到预定义的文件 如果用户未自定义输出的文件，将抛出{@link NullPointerException} 预定义文件可以通过{@link #setTargetFile(File)}
      * 方法预定义，或者通过构造定义
      *
      * @return this
      * @throws InternalException IO异常
      */
     public Word07Writer flush() throws InternalException {
-        return flush(this.destFile);
+        return flush(this.targetFile);
     }
 
     /**
@@ -339,7 +312,7 @@ public class Word07Writer implements Closeable {
      */
     @Override
     public void close() {
-        if (null != this.destFile) {
+        if (null != this.targetFile) {
             flush();
         }
         closeWithoutFlush();

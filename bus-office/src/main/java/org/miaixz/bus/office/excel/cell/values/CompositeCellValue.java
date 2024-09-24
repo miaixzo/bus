@@ -30,10 +30,9 @@ package org.miaixz.bus.office.excel.cell.values;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.office.excel.cell.CellEditor;
-import org.miaixz.bus.office.excel.cell.CellKit;
-import org.miaixz.bus.office.excel.cell.CellValue;
 import org.miaixz.bus.office.excel.cell.NullCell;
+import org.miaixz.bus.office.excel.cell.editors.CellEditor;
+import org.miaixz.bus.office.excel.xyz.CellKit;
 
 /**
  * 复合单元格值，用于根据单元格类型读取不同的值
@@ -89,7 +88,7 @@ public class CompositeCellValue implements CellValue<Object> {
         }
 
         // 尝试获取合并单元格，如果是合并单元格，则重新获取单元格类型
-        final Cell mergedCell = CellKit.getMergedRegionCell(cell);
+        final Cell mergedCell = CellKit.getFirstCellOfMerged(cell);
         if (mergedCell != cell) {
             cell = mergedCell;
             cellType = cell.getCellType();

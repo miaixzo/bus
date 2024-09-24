@@ -295,13 +295,13 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     /**
      * 与给定元素组成的流合并，成为新的流
      *
-     * @param obj 元素
+     * @param object 元素
      * @return 流
      */
-    default S push(final T... obj) {
+    default S push(final T... object) {
         Stream<T> result = unwrap();
-        if (ArrayKit.isNotEmpty(obj)) {
-            result = Stream.concat(unwrap(), Stream.of(obj));
+        if (ArrayKit.isNotEmpty(object)) {
+            result = Stream.concat(unwrap(), Stream.of(object));
         }
         return wrap(result);
     }
@@ -309,13 +309,13 @@ public interface TransformableWrappedStream<T, S extends TransformableWrappedStr
     /**
      * 给定元素组成的流与当前流合并，成为新的流
      *
-     * @param obj 元素
+     * @param object 元素
      * @return 流
      */
-    default S unshift(final T... obj) {
+    default S unshift(final T... object) {
         Stream<T> result = unwrap();
-        if (ArrayKit.isNotEmpty(obj)) {
-            result = Stream.concat(Stream.of(obj), unwrap());
+        if (ArrayKit.isNotEmpty(object)) {
+            result = Stream.concat(Stream.of(object), unwrap());
         }
         return wrap(result);
     }

@@ -27,13 +27,10 @@
 */
 package org.miaixz.bus.core.bean.path.node;
 
-import java.util.Collection;
 import java.util.List;
 
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -64,20 +61,31 @@ public class RangeNode implements Node {
         this.step = step;
     }
 
-    @Override
-    public Object getValue(final Object bean) {
-        if (bean instanceof Collection) {
-            return CollKit.sub((Collection<?>) bean, this.start, this.end, this.step);
-        } else if (ArrayKit.isArray(bean)) {
-            return ArrayKit.sub(bean, this.start, this.end, this.step);
-        }
-
-        throw new UnsupportedOperationException("Can not get range value for: " + bean.getClass());
+    /**
+     * 获取起始值
+     *
+     * @return 起始值
+     */
+    public int getStart() {
+        return start;
     }
 
-    @Override
-    public Object setValue(final Object bean, final Object value) {
-        throw new UnsupportedOperationException("Can not set value with step name.");
+    /**
+     * 获取结束值
+     *
+     * @return 结束值
+     */
+    public int getEnd() {
+        return end;
+    }
+
+    /**
+     * 获取步进值
+     *
+     * @return 步进值
+     */
+    public int getStep() {
+        return step;
     }
 
     @Override

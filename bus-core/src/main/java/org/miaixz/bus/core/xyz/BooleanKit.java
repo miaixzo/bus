@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.xyz;
 
+import java.lang.reflect.Type;
 import java.util.Set;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -549,11 +550,11 @@ public class BooleanKit {
     /**
      * 给定类是否为Boolean或者boolean
      *
-     * @param clazz 类
+     * @param type 类
      * @return 是否为Boolean或者boolean
      */
-    public static boolean isBoolean(final Class<?> clazz) {
-        return (clazz == Boolean.class || clazz == boolean.class);
+    public static boolean isBoolean(final Type type) {
+        return (type == Boolean.class || type == boolean.class);
     }
 
 }

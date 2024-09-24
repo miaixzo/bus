@@ -87,7 +87,7 @@ public class TimedCache<K, V> extends StampedCache<K, V> {
             co = values.next();
             if (co.isExpired()) {
                 values.remove();
-                onRemove(co.key, co.obj);
+                onRemove(co.key, co.object);
                 count++;
             }
         }

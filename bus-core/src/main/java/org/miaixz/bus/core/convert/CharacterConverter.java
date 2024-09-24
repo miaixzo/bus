@@ -40,6 +40,11 @@ public class CharacterConverter extends AbstractConverter {
 
     private static final long serialVersionUID = -1L;
 
+    /**
+     * 单例
+     */
+    public static final CharacterConverter INSTANCE = new CharacterConverter();
+
     @Override
     protected Character convertInternal(final Class<?> targetClass, final Object value) {
         if (value instanceof Boolean) {

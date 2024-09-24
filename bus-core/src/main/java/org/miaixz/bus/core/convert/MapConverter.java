@@ -49,14 +49,28 @@ import org.miaixz.bus.core.xyz.TypeKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MapConverter implements Converter, Serializable {
+public class MapConverter extends ConverterWithRoot implements MatcherConverter, Serializable {
 
     private static final long serialVersionUID = -1L;
 
     /**
      * 单例
      */
-    public static MapConverter INSTANCE = new MapConverter();
+    public static final MapConverter INSTANCE = new MapConverter(CompositeConverter.getInstance());
+
+    /**
+     * 构造
+     *
+     * @param rootConverter 根转换器，用于转换Map中键值对中的值，非{@code null}
+     */
+    public MapConverter(final Converter rootConverter) {
+        super(rootConverter);
+    }
+
+    @Override
+    public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
+        return Map.class.isAssignableFrom(rawType);
+    }
 
     @Override
     public Object convert(Type targetType, final Object value) throws ConvertException {
@@ -113,9 +127,8 @@ public class MapConverter implements Converter, Serializable {
      */
     private void convertMapToMap(final Type keyType, final Type valueType, final Map<?, ?> srcMap,
             final Map targetMap) {
-        final CompositeConverter convert = CompositeConverter.getInstance();
-        srcMap.forEach((key, value) -> targetMap.put(TypeKit.isUnknown(keyType) ? key : convert.convert(keyType, key),
-                TypeKit.isUnknown(valueType) ? value : convert.convert(valueType, value)));
+        srcMap.forEach((key, value) -> targetMap.put(TypeKit.isUnknown(keyType) ? key : converter.convert(keyType, key),
+                TypeKit.isUnknown(valueType) ? value : converter.convert(valueType, value)));
     }
 
 }

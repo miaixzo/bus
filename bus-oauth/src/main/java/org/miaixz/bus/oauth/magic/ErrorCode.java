@@ -49,7 +49,9 @@ public enum ErrorCode {
     ILLEGAL_REDIRECT_URI("5006", "Illegal redirect uri"), ILLEGAL_REQUEST("5007", "Illegal provider"),
     ILLEGAL_CODE("5008", "Illegal code"), ILLEGAL_STATUS("5009", "Illegal state"),
     REQUIRED_REFRESH_TOKEN("5010", "The refresh token is required; it must not be null"),
-    ILLEGAL_TOKEN("5011", "Invalid token");
+    ILLEGAL_TOKEN("5011", "Invalid token"), ILLEGAL_KID("5012", "Invalid key identifier(kid)"),
+    ILLEGAL_TEAM_ID("5013", "Invalid team id"), ILLEGAL_CLIENT_ID("5014", "Invalid client id"),
+    ILLEGAL_CLIENT_SECRET("5015", "Invalid client secret");
 
     private final String code;
     private final String desc;

@@ -27,14 +27,8 @@
 */
 package org.miaixz.bus.core.io.resource;
 
-import java.io.*;
-import java.net.URL;
-
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ByteKit;
-import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * {@link CharSequence}资源，字符串做为资源
@@ -42,13 +36,14 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CharSequenceResource implements Resource, Serializable {
+public class CharSequenceResource extends BytesResource {
 
     private static final long serialVersionUID = -1L;
 
-    private final CharSequence data;
-    private final CharSequence name;
-    private final java.nio.charset.Charset charset;
+    /**
+     * 由于{@link java.nio.charset.Charset} 无法序列化，此处使用编码名称
+     */
+    private final String charsetName;
 
     /**
      * 构造，使用UTF8编码
@@ -76,46 +71,36 @@ public class CharSequenceResource implements Resource, Serializable {
      * @param name    资源名称
      * @param charset 编码
      */
-    public CharSequenceResource(final CharSequence data, final CharSequence name,
-            final java.nio.charset.Charset charset) {
-        this.data = data;
-        this.name = name;
-        this.charset = charset;
+    public CharSequenceResource(final CharSequence data, final String name, final java.nio.charset.Charset charset) {
+        super(ByteKit.toBytes(data, charset), name);
+        this.charsetName = charset.name();
     }
 
-    @Override
-    public String getName() {
-        return StringKit.toStringOrNull(this.name);
+    /**
+     * 读取为字符串
+     *
+     * @return 字符串
+     */
+    public String readString() {
+        return readString(getCharset());
     }
 
-    @Override
-    public URL getUrl() {
-        return null;
+    /**
+     * 获取编码名
+     *
+     * @return 编码名
+     */
+    public String getCharsetName() {
+        return this.charsetName;
     }
 
-    @Override
-    public long size() {
-        return data.length();
-    }
-
-    @Override
-    public InputStream getStream() {
-        return new ByteArrayInputStream(readBytes());
-    }
-
-    @Override
-    public BufferedReader getReader(final java.nio.charset.Charset charset) {
-        return IoKit.toBuffered(new StringReader(this.data.toString()));
-    }
-
-    @Override
-    public String readString(final java.nio.charset.Charset charset) throws InternalException {
-        return this.data.toString();
-    }
-
-    @Override
-    public byte[] readBytes() throws InternalException {
-        return ByteKit.toBytes(this.data, this.charset);
+    /**
+     * 获取编码
+     *
+     * @return 编码
+     */
+    public java.nio.charset.Charset getCharset() {
+        return Charset.charset(this.charsetName);
     }
 
 }

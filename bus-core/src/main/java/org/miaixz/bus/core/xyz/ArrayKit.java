@@ -539,24 +539,24 @@ public class ArrayKit extends PrimitiveArray {
     /**
      * 克隆数组，如果非数组返回{@code null}
      *
-     * @param <T> 数组元素类型
-     * @param obj 数组对象
+     * @param <T>    数组元素类型
+     * @param object 数组对象
      * @return 克隆后的数组对象
      */
-    public static <T> T clone(final T obj) {
-        if (null == obj) {
+    public static <T> T clone(final T object) {
+        if (null == object) {
             return null;
         }
-        if (isArray(obj)) {
+        if (isArray(object)) {
             final Object result;
-            final Class<?> componentType = obj.getClass().getComponentType();
+            final Class<?> componentType = object.getClass().getComponentType();
             // 原始类型
             if (componentType.isPrimitive()) {
-                final int length = Array.getLength(obj);
+                final int length = Array.getLength(object);
                 result = Array.newInstance(componentType, length);
-                copy(obj, result, length);
+                copy(object, result, length);
             } else {
-                result = ((Object[]) obj).clone();
+                result = ((Object[]) object).clone();
             }
             return (T) result;
         }
@@ -749,42 +749,42 @@ public class ArrayKit extends PrimitiveArray {
     /**
      * 包装数组对象
      *
-     * @param obj 对象，可以是对象数组或者基本类型数组
+     * @param object 对象，可以是对象数组或者基本类型数组
      * @return 包装类型数组或对象数组
      * @throws InternalException 对象为非数组
      */
-    public static Object[] wrap(final Object obj) {
-        if (null == obj) {
+    public static Object[] wrap(final Object object) {
+        if (null == object) {
             return null;
         }
-        if (isArray(obj)) {
+        if (isArray(object)) {
             try {
-                final String className = obj.getClass().getComponentType().getName();
+                final String className = object.getClass().getComponentType().getName();
                 switch (className) {
                 case "long":
-                    return wrap((long[]) obj);
+                    return wrap((long[]) object);
                 case "int":
-                    return wrap((int[]) obj);
+                    return wrap((int[]) object);
                 case "short":
-                    return wrap((short[]) obj);
+                    return wrap((short[]) object);
                 case "char":
-                    return wrap((char[]) obj);
+                    return wrap((char[]) object);
                 case "byte":
-                    return wrap((byte[]) obj);
+                    return wrap((byte[]) object);
                 case "boolean":
-                    return wrap((boolean[]) obj);
+                    return wrap((boolean[]) object);
                 case "float":
-                    return wrap((float[]) obj);
+                    return wrap((float[]) object);
                 case "double":
-                    return wrap((double[]) obj);
+                    return wrap((double[]) object);
                 default:
-                    return (Object[]) obj;
+                    return (Object[]) object;
                 }
             } catch (final Exception e) {
                 throw ExceptionKit.wrapRuntime(e);
             }
         }
-        throw new InternalException(StringKit.format("[{}] is not Array!", obj.getClass()));
+        throw new InternalException(StringKit.format("[{}] is not Array!", object.getClass()));
     }
 
     /**

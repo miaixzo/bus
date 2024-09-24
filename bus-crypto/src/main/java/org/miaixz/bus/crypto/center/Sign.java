@@ -29,7 +29,9 @@ package org.miaixz.bus.crypto.center;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.security.*;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.KeyPair;
+import java.security.Signature;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.security.spec.AlgorithmParameterSpec;
@@ -84,6 +86,26 @@ public class Sign extends Asymmetric<Sign> {
     /**
      * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
+     * @param algorithm 算法，见{@link Algorithm}
+     * @param keyPair   密钥对，{@code null}表示随机生成
+     */
+    public Sign(final String algorithm, final KeyPair keyPair) {
+        super(algorithm, keyPair);
+    }
+
+    /**
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     *
+     * @param algorithm {@link Algorithm}
+     * @param keyPair   密钥对，{@code null}表示随机生成
+     */
+    public Sign(final Algorithm algorithm, final KeyPair keyPair) {
+        this(algorithm.getValue(), keyPair);
+    }
+
+    /**
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     *
      * @param algorithm  {@link Algorithm}
      * @param privateKey 私钥Hex或Base64表示
      * @param publicKey  公钥Hex或Base64表示
@@ -106,27 +128,6 @@ public class Sign extends Asymmetric<Sign> {
     /**
      * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
-     * @param algorithm {@link Algorithm}
-     * @param keyPair   密钥对（包括公钥和私钥）
-     */
-    public Sign(final Algorithm algorithm, final KeyPair keyPair) {
-        this(algorithm.getValue(), keyPair);
-    }
-
-    /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
-     *
-     * @param algorithm  {@link Algorithm}
-     * @param privateKey 私钥
-     * @param publicKey  公钥
-     */
-    public Sign(final Algorithm algorithm, final PrivateKey privateKey, final PublicKey publicKey) {
-        this(algorithm.getValue(), privateKey, publicKey);
-    }
-
-    /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
-     *
      * @param algorithm  非对称加密算法
      * @param privateKey 私钥Base64
      * @param publicKey  公钥Base64
@@ -143,45 +144,21 @@ public class Sign extends Asymmetric<Sign> {
      * @param publicKey  公钥
      */
     public Sign(final String algorithm, final byte[] privateKey, final byte[] publicKey) {
-        this(algorithm, Keeper.generatePrivateKey(algorithm, privateKey),
-                Keeper.generatePublicKey(algorithm, publicKey));
-    }
-
-    /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
-     *
-     * @param algorithm 算法，见{@link Algorithm}
-     * @param keyPair   密钥对（包括公钥和私钥）
-     */
-    public Sign(final String algorithm, final KeyPair keyPair) {
-        this(algorithm, keyPair.getPrivate(), keyPair.getPublic());
-    }
-
-    /**
-     * 构造
-     * <p>
-     * 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
-     *
-     * @param algorithm  算法
-     * @param privateKey 私钥
-     * @param publicKey  公钥
-     */
-    public Sign(final String algorithm, final PrivateKey privateKey, final PublicKey publicKey) {
-        super(algorithm, privateKey, publicKey);
+        this(algorithm, new KeyPair(Keeper.generatePublicKey(algorithm, publicKey),
+                Keeper.generatePrivateKey(algorithm, privateKey)));
     }
 
     /**
      * 初始化
      *
-     * @param algorithm  算法
-     * @param privateKey 私钥
-     * @param publicKey  公钥
+     * @param algorithm 算法
+     * @param keyPair   密钥对，{@code null}表示随机生成
      * @return this
      */
     @Override
-    public Sign init(final String algorithm, final PrivateKey privateKey, final PublicKey publicKey) {
+    public Sign init(final String algorithm, final KeyPair keyPair) {
         signature = Builder.createSignature(algorithm);
-        super.init(algorithm, privateKey, publicKey);
+        super.init(algorithm, keyPair);
         return this;
     }
 

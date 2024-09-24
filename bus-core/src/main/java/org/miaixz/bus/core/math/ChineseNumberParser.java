@@ -88,8 +88,9 @@ public class ChineseNumberParser {
         final int dotIndex = chinese.indexOf('点');
 
         // 整数部分
+        final char[] charArray = chinese.toCharArray();
         BigDecimal result = MathKit
-                .toBigDecimal(parseLongFromChineseNumber(chinese, dotIndex > 0 ? dotIndex : chinese.length()));
+                .toBigDecimal(parseLongFromChineseNumber(charArray, 0, dotIndex > 0 ? dotIndex : charArray.length));
 
         // 小数部分
         if (dotIndex > 0) {
@@ -116,62 +117,51 @@ public class ChineseNumberParser {
             return null;
         }
 
-        int yi = chineseMoneyAmount.indexOf("元");
-        if (yi == -1) {
-            yi = chineseMoneyAmount.indexOf("圆");
+        final char[] charArray = chineseMoneyAmount.toCharArray();
+        int yEnd = ArrayKit.indexOf(charArray, '元');
+        if (yEnd < 0) {
+            yEnd = ArrayKit.indexOf(charArray, '圆');
         }
-        final int ji = chineseMoneyAmount.indexOf("角");
-        final int fi = chineseMoneyAmount.indexOf("分");
 
         // 先找到单位为元的数字
-        String yStr = null;
-        if (yi > 0) {
-            yStr = chineseMoneyAmount.substring(0, yi);
+        long y = 0;
+        if (yEnd > 0) {
+            y = parseLongFromChineseNumber(charArray, 0, yEnd);
         }
 
         // 再找到单位为角的数字
-        String jStr = null;
-        if (ji > 0) {
-            if (yi >= 0) {
+        long j = 0;
+        final int jEnd = ArrayKit.indexOf(charArray, '角');
+        if (jEnd > 0) {
+            if (yEnd >= 0) {
                 // 前面有元,角肯定要在元后面
-                if (ji > yi) {
-                    jStr = chineseMoneyAmount.substring(yi + 1, ji);
+                if (jEnd > yEnd) {
+                    j = parseLongFromChineseNumber(charArray, yEnd + 1, jEnd);
                 }
             } else {
                 // 没有元，只有角
-                jStr = chineseMoneyAmount.substring(0, ji);
+                j = parseLongFromChineseNumber(charArray, 0, jEnd);
             }
         }
 
         // 再找到单位为分的数字
-        String fStr = null;
-        if (fi > 0) {
-            if (ji >= 0) {
+        long f = 0;
+        final int fEnd = ArrayKit.indexOf(charArray, '分');
+        if (fEnd > 0) {
+            if (jEnd >= 0) {
                 // 有角，分肯定在角后面
-                if (fi > ji) {
-                    fStr = chineseMoneyAmount.substring(ji + 1, fi);
+                if (fEnd > jEnd) {
+                    f = parseLongFromChineseNumber(charArray, jEnd + 1, fEnd);
                 }
-            } else if (yi > 0) {
-                // 没有角，有元，那就坐元后面找
-                if (fi > yi) {
-                    fStr = chineseMoneyAmount.substring(yi + 1, fi);
+            } else if (yEnd > 0) {
+                // 没有角，有元，从元后面找
+                if (fEnd > yEnd) {
+                    f = parseLongFromChineseNumber(charArray, yEnd + 1, fEnd);
                 }
             } else {
                 // 没有元、角，只有分
-                fStr = chineseMoneyAmount.substring(0, fi);
+                f = parseLongFromChineseNumber(charArray, 0, fEnd);
             }
-        }
-
-        // 元、角、分
-        long y = 0, j = 0, f = 0;
-        if (StringKit.isNotBlank(yStr)) {
-            y = parseLongFromChineseNumber(yStr, yStr.length());
-        }
-        if (StringKit.isNotBlank(jStr)) {
-            j = parseLongFromChineseNumber(jStr, jStr.length());
-        }
-        if (StringKit.isNotBlank(fStr)) {
-            f = parseLongFromChineseNumber(fStr, fStr.length());
         }
 
         BigDecimal amount = new BigDecimal(y);
@@ -191,7 +181,7 @@ public class ChineseNumberParser {
      * @param toIndex 结束位置（不包括），如果提供的是整数，这个为length()，小数则是“点”的位置
      * @return 数字
      */
-    public static long parseLongFromChineseNumber(final String chinese, final int toIndex) {
+    public static long parseLongFromChineseNumber(final char[] chinese, final int beginIndex, final int toIndex) {
         long result = 0;
 
         // 节总和
@@ -199,8 +189,8 @@ public class ChineseNumberParser {
         long number = 0;
         ChineseUnit unit = null;
         char c;
-        for (int i = 0; i < toIndex; i++) {
-            c = chinese.charAt(i);
+        for (int i = beginIndex; i < toIndex; i++) {
+            c = chinese[i];
             final int num = chineseToNumber(c);
             if (num >= 0) {
                 if (num == 0) {
@@ -212,7 +202,7 @@ public class ChineseNumberParser {
                 } else if (number > 0) {
                     // 多个数字同时出现，报错
                     throw new IllegalArgumentException(
-                            StringKit.format("Bad number '{}{}' at: {}", chinese.charAt(i - 1), c, i));
+                            StringKit.format("Bad number '{}{}' at: {}", chinese[i - 1], c, i));
                 }
                 // 普通数字
                 number = num;
@@ -233,7 +223,7 @@ public class ChineseNumberParser {
                     // 非节单位，和单位前的单数字组合为值
                     long unitNumber = number;
                     if (0 == number && 0 == i) {
-                        // 对于单位开头的数组，默认赋予1
+                        // issue#1726，对于单位开头的数组，默认赋予1
                         // 十二 -> 一十二
                         // 百二 -> 一百二
                         unitNumber = 1;

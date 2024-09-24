@@ -59,4 +59,9 @@ public class Payer {
      */
     private String sub_openid;
 
+    /**
+     *
+     */
+    private String auth_code;
+
 }

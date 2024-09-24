@@ -32,16 +32,13 @@ import org.miaixz.bus.core.text.replacer.LookupReplacer;
 import org.miaixz.bus.core.text.replacer.ReplacerChain;
 
 /**
- * XML特殊字符转义
- * 见：<a href="https://stackoverflow.com/questions/1091945/what-characters-do-i-need-to-escape-in-xml-documents">
- * https://stackoverflow.com/questions/1091945/what-characters-do-i-need-to-escape-in-xml-documents</a>
+ * XML特殊字符转义 见：https://stackoverflow.com/questions/1091945/what-characters-do-i-need-to-escape-in-xml-documents
  *
  * <pre>
  * 	 &amp; (ampersand) 替换为 &amp;amp;
  * 	 &lt; (less than) 替换为 &amp;lt;
  * 	 &gt; (greater than) 替换为 &amp;gt;
  * 	 &quot; (double quote) 替换为 &amp;quot;
- * 	 ' (single quote / apostrophe) 替换为 &amp;apos;
  * </pre>
  *
  * @author Kimi Liu

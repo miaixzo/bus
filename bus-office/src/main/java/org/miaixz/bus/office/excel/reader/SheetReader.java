@@ -33,8 +33,6 @@ import org.apache.poi.ss.usermodel.Sheet;
  * Excel {@link Sheet}读取接口，通过实现此接口，将{@link Sheet}中的数据读取为不同类型。
  *
  * @param <T> 读取的数据类型
- * @author Kimi Liu
- * @since Java 17+
  */
 @FunctionalInterface
 public interface SheetReader<T> {

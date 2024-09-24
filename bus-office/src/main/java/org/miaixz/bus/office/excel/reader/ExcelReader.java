@@ -40,9 +40,13 @@ import org.miaixz.bus.core.center.function.BiConsumerX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.office.excel.*;
-import org.miaixz.bus.office.excel.cell.CellKit;
+import org.miaixz.bus.office.excel.ExcelBase;
+import org.miaixz.bus.office.excel.ExcelExtractor;
 import org.miaixz.bus.office.excel.writer.ExcelWriter;
+import org.miaixz.bus.office.excel.xyz.CellKit;
+import org.miaixz.bus.office.excel.xyz.ExcelKit;
+import org.miaixz.bus.office.excel.xyz.RowKit;
+import org.miaixz.bus.office.excel.xyz.WorkbookKit;
 
 /**
  * Excel读取器 读取Excel工作簿
@@ -80,7 +84,7 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
      */
     public ExcelReader(final File bookFile, final int sheetIndex) {
         this(WorkbookKit.createBook(bookFile, true), sheetIndex);
-        this.destFile = bookFile;
+        this.targetFile = bookFile;
     }
 
     /**
@@ -91,7 +95,7 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
      */
     public ExcelReader(final File bookFile, final String sheetName) {
         this(WorkbookKit.createBook(bookFile, true), sheetName);
-        this.destFile = bookFile;
+        this.targetFile = bookFile;
     }
 
     /**
@@ -144,7 +148,7 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
     }
 
     /**
-     * 获取Sheet，如果不存在则关闭{@link Workbook}并抛出异常，解决当sheet不存在时，文件依旧被占用问题
+     * 获取Sheet，如果不存在则关闭{@link Workbook}并抛出异常，解决当sheet不存在时，文件依旧被占用问题 见：Issue#I8ZIQC
      *
      * @param workbook {@link Workbook}，非空
      * @param name     sheet名称，不存在抛出异常
@@ -165,7 +169,7 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
     }
 
     /**
-     * 获取Sheet，如果不存在则关闭{@link Workbook}并抛出异常，解决当sheet不存在时，文件依旧被占用问题
+     * 获取Sheet，如果不存在则关闭{@link Workbook}并抛出异常，解决当sheet不存在时，文件依旧被占用问题 见：Issue#I8ZIQC
      *
      * @param workbook   {@link Workbook}，非空
      * @param sheetIndex sheet index
@@ -274,8 +278,8 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
      * @param endRowIndex   结束行（包含，从0开始计数）
      * @param cellHandler   单元格处理器，用于处理读到的单元格及其数据
      */
-    public void read(int startRowIndex, int endRowIndex, final BiConsumerX<Cell, Object> cellHandler) {
-        checkNotClosed();
+    public void read(final int startRowIndex, final int endRowIndex, final BiConsumerX<Cell, Object> cellHandler) {
+        checkClosed();
 
         final WalkSheetReader reader = new WalkSheetReader(startRowIndex, endRowIndex, cellHandler);
         reader.setExcelConfig(this.config);
@@ -287,7 +291,7 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
      *
      * @return Map的列表
      */
-    public List<Map<String, Object>> readAll() {
+    public List<Map<Object, Object>> readAll() {
         return read(0, 1, Integer.MAX_VALUE);
     }
 
@@ -299,7 +303,7 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
      * @param endRowIndex    读取结束行（包含，从0开始计数）
      * @return Map的列表
      */
-    public List<Map<String, Object>> read(final int headerRowIndex, final int startRowIndex, final int endRowIndex) {
+    public List<Map<Object, Object>> read(final int headerRowIndex, final int startRowIndex, final int endRowIndex) {
         final MapSheetReader reader = new MapSheetReader(headerRowIndex, startRowIndex, endRowIndex);
         reader.setExcelConfig(this.config);
         return read(reader);
@@ -354,7 +358,7 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
      * @return 数据读取结果
      */
     public <T> T read(final SheetReader<T> sheetReader) {
-        checkNotClosed();
+        checkClosed();
         return Assert.notNull(sheetReader).read(this.sheet);
     }
 
@@ -408,11 +412,11 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
      * @return {@link ExcelWriter}
      */
     public ExcelWriter getWriter() {
-        if (null == this.destFile) {
+        if (null == this.targetFile) {
             // 非读取文件形式，直接获取sheet操作。
             return new ExcelWriter(this.sheet);
         }
-        return ExcelKit.getWriter(this.destFile, this.sheet.getSheetName());
+        return ExcelKit.getWriter(this.targetFile, this.sheet.getSheetName());
     }
 
     /**
@@ -423,13 +427,6 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
      */
     private List<Object> readRow(final Row row) {
         return RowKit.readRow(row, this.config.getCellEditor());
-    }
-
-    /**
-     * 检查是否未关闭状态
-     */
-    private void checkNotClosed() {
-        Assert.isFalse(this.isClosed, "ExcelReader has been closed!");
     }
 
 }

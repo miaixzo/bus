@@ -27,21 +27,21 @@
 */
 package org.miaixz.bus.socket.accord;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.SocketAddress;
-import java.nio.ByteBuffer;
-
 import org.miaixz.bus.socket.Session;
 import org.miaixz.bus.socket.Status;
 import org.miaixz.bus.socket.buffer.BufferPage;
 import org.miaixz.bus.socket.buffer.WriteBuffer;
 
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
+import java.nio.ByteBuffer;
+
 /**
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class UdpSession extends Session {
+public class UdpSession extends Session {
 
     private final UdpChannel udpChannel;
 

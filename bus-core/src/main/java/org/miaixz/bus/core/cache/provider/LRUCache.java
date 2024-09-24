@@ -93,7 +93,7 @@ public class LRUCache<K, V> extends ReentrantCache<K, V> {
             co = values.next();
             if (co.isExpired()) {
                 values.remove();
-                onRemove(co.key, co.obj);
+                onRemove(co.key, co.object);
                 count++;
             }
         }

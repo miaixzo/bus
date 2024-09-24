@@ -27,11 +27,10 @@
 */
 package org.miaixz.bus.health.windows.hardware;
 
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-
+import com.sun.jna.Native;
+import com.sun.jna.platform.win32.*;
+import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
+import com.sun.jna.platform.win32.PowrProf.POWER_INFORMATION_LEVEL;
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -61,12 +60,10 @@ import org.miaixz.bus.health.windows.jna.Kernel32;
 import org.miaixz.bus.health.windows.jna.PowrProf;
 import org.miaixz.bus.logger.Logger;
 
-import com.sun.jna.platform.win32.Advapi32Util;
-import com.sun.jna.platform.win32.PowrProf.POWER_INFORMATION_LEVEL;
-import com.sun.jna.platform.win32.VersionHelpers;
-import com.sun.jna.platform.win32.Win32Exception;
-import com.sun.jna.platform.win32.WinReg;
-import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * A CPU, representing all of a system's processors. It may contain multiple individual Physical and Logical processors.
@@ -77,11 +74,14 @@ import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 @ThreadSafe
 final class WindowsCentralProcessor extends AbstractCentralProcessor {
 
+    // Whether to use Processor counters rather than sum up Processor Information counters
+    private static final boolean USE_LEGACY_SYSTEM_COUNTERS = Config.get(Config._WINDOWS_LEGACY_SYSTEM_COUNTERS, false);
+
     // Whether to match task manager using Processor Utility ticks
     private static final boolean USE_CPU_UTILITY = VersionHelpers.IsWindows8OrGreater()
             && Config.get(Config._WINDOWS_CPU_UTILITY, false);
 
-    // Whether to start a daemon thread ot calculate load average
+    // Whether to start a daemon thread to calculate load average
     private static final boolean USE_LOAD_AVERAGE = Config.get(Config._WINDOWS_LOADAVERAGE, false);
 
     static {
@@ -221,13 +221,42 @@ final class WindowsCentralProcessor extends AbstractCentralProcessor {
 
     @Override
     public long[] querySystemCpuLoadTicks() {
+        long[] ticks = new long[TickType.values().length];
+        if (USE_LEGACY_SYSTEM_COUNTERS) {
+            WinBase.FILETIME lpIdleTime = new WinBase.FILETIME();
+            WinBase.FILETIME lpKernelTime = new WinBase.FILETIME();
+            WinBase.FILETIME lpUserTime = new WinBase.FILETIME();
+            if (!Kernel32.INSTANCE.GetSystemTimes(lpIdleTime, lpKernelTime, lpUserTime)) {
+                Logger.error("Failed to update system idle/kernel/user times. Error code: {}", Native.getLastError());
+                return ticks;
+            }
+            // IOwait:
+            // Windows does not measure IOWait.
+
+            // IRQ and ticks:
+            // Percent time raw value is cumulative 100NS-ticks
+            // Divide by 10_000 to get milliseconds
+            Map<ProcessorInformation.SystemTickCountProperty, Long> valueMap = ProcessorInformation
+                    .querySystemCounters();
+            ticks[TickType.IRQ.getIndex()] = valueMap
+                    .getOrDefault(ProcessorInformation.SystemTickCountProperty.PERCENTINTERRUPTTIME, 0L) / 10_000L;
+            ticks[TickType.SOFTIRQ.getIndex()] = valueMap
+                    .getOrDefault(ProcessorInformation.SystemTickCountProperty.PERCENTDPCTIME, 0L) / 10_000L;
+
+            ticks[TickType.IDLE.getIndex()] = lpIdleTime.toDWordLong().longValue() / 10_000L;
+            ticks[TickType.SYSTEM.getIndex()] = lpKernelTime.toDWordLong().longValue() / 10_000L
+                    - ticks[TickType.IDLE.getIndex()];
+            ticks[TickType.USER.getIndex()] = lpUserTime.toDWordLong().longValue() / 10_000L;
+            // Additional decrement to avoid double counting in the total array
+            ticks[TickType.SYSTEM.getIndex()] -= ticks[TickType.IRQ.getIndex()] + ticks[TickType.SOFTIRQ.getIndex()];
+            return ticks;
+        }
         // To get load in processor group scenario, we need perfmon counters, but the
         // _Total instance is an average rather than total (scaled) number of ticks
         // which matches GetSystemTimes() results. We can just query the per-processor
         // ticks and add them up. Calling the get() method gains the benefit of
         // synchronizing this output with the memoized result of per-processor ticks as
         // well.
-        long[] ticks = new long[CentralProcessor.TickType.values().length];
         // Sum processor ticks
         long[][] procTicks = getProcessorCpuLoadTicks();
         for (int i = 0; i < ticks.length; i++) {

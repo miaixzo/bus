@@ -25,76 +25,65 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.core.center;
+package org.miaixz.bus.office.excel.cell.setters;
 
-import java.util.Collection;
+import java.io.File;
 
-import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
-import org.miaixz.bus.core.center.set.SetFromMap;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.miaixz.bus.core.xyz.FileKit;
+import org.miaixz.bus.office.excel.ExcelImgType;
+import org.miaixz.bus.office.excel.SimpleClientAnchor;
+import org.miaixz.bus.office.excel.writer.ExcelDrawing;
 
 /**
- * 通过{@link SafeConcurrentHashMap}实现的线程安全HashSet
+ * 图片单元格值设置器
  *
- * @param <E> 元素类型
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ConcurrentHashSet<E> extends SetFromMap<E> {
+public class ImgCellSetter implements CellSetter {
 
-    private static final long serialVersionUID = -1L;
-
-    /**
-     * 构造 触发因子为默认的0.75
-     */
-    public ConcurrentHashSet() {
-        super(new SafeConcurrentHashMap<>());
-    }
+    private final byte[] pictureData;
+    private final ExcelImgType imgType;
 
     /**
-     * 构造 触发因子为默认的0.75
+     * 构造，默认PNG图片
      *
-     * @param initialCapacity 初始大小
+     * @param pictureData 图片数据
      */
-    public ConcurrentHashSet(final int initialCapacity) {
-        super(new SafeConcurrentHashMap<>(initialCapacity));
+    public ImgCellSetter(final byte[] pictureData) {
+        this(pictureData, ExcelImgType.PNG);
     }
 
     /**
      * 构造
      *
-     * @param initialCapacity 初始大小
-     * @param loadFactor      加载因子。此参数决定数据增长时触发的百分比
+     * @param picturefile 图片数据
      */
-    public ConcurrentHashSet(final int initialCapacity, final float loadFactor) {
-        super(new SafeConcurrentHashMap<>(initialCapacity, loadFactor));
+    public ImgCellSetter(final File picturefile) {
+        this(FileKit.readBytes(picturefile), ExcelImgType.getType(picturefile));
     }
 
     /**
      * 构造
      *
-     * @param initialCapacity  初始大小
-     * @param loadFactor       触发因子。此参数决定数据增长时触发的百分比
-     * @param concurrencyLevel 线程并发度
+     * @param pictureData 图片数据
+     * @param imgType     图片类型
      */
-    public ConcurrentHashSet(final int initialCapacity, final float loadFactor, final int concurrencyLevel) {
-        super(new SafeConcurrentHashMap<>(initialCapacity, loadFactor, concurrencyLevel));
+    public ImgCellSetter(final byte[] pictureData, final ExcelImgType imgType) {
+        this.pictureData = pictureData;
+        this.imgType = imgType;
     }
 
-    /**
-     * 从已有集合中构造
-     *
-     * @param iter {@link Iterable}
-     */
-    public ConcurrentHashSet(final Iterable<E> iter) {
-        super(iter instanceof Collection ? new SafeConcurrentHashMap<>(((Collection<E>) iter).size())
-                : new SafeConcurrentHashMap<>());
-        if (iter instanceof Collection) {
-            this.addAll((Collection<E>) iter);
-        } else {
-            for (final E e : iter) {
-                this.add(e);
-            }
-        }
+    @Override
+    public void setValue(final Cell cell) {
+        final Sheet sheet = cell.getSheet();
+        final int columnIndex = cell.getColumnIndex();
+        final int rowIndex = cell.getRowIndex();
+
+        ExcelDrawing.drawingImg(sheet, this.pictureData, this.imgType,
+                new SimpleClientAnchor(columnIndex, rowIndex, columnIndex + 1, rowIndex + 1));
     }
 
 }

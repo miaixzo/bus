@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.core.convert;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
+import org.miaixz.bus.core.center.date.Calendar;
+import org.miaixz.bus.core.center.date.Resolver;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -48,6 +49,22 @@ public class CalendarConverter extends AbstractConverter {
      * 日期格式化
      */
     private String format;
+
+    /**
+     * 构造
+     */
+    public CalendarConverter() {
+        this(null);
+    }
+
+    /**
+     * 构造
+     *
+     * @param format 日期格式，{@code null}表示无格式定义
+     */
+    public CalendarConverter(final String format) {
+        this.format = format;
+    }
 
     /**
      * 获取日期格式
@@ -68,26 +85,25 @@ public class CalendarConverter extends AbstractConverter {
     }
 
     @Override
-    protected Calendar convertInternal(final Class<?> targetClass, final Object value) {
+    protected java.util.Calendar convertInternal(final Class<?> targetClass, final Object value) {
         // Handle Date
         if (value instanceof Date) {
-            return org.miaixz.bus.core.center.date.Calendar.calendar((Date) value);
+            return Calendar.calendar((Date) value);
         }
 
         // Handle Long
         if (value instanceof Long) {
             // 此处使用自动拆装箱
-            return org.miaixz.bus.core.center.date.Calendar.calendar((Long) value);
+            return Calendar.calendar((Long) value);
         }
 
         if (value instanceof XMLGregorianCalendar) {
-            return org.miaixz.bus.core.center.date.Calendar.calendar((XMLGregorianCalendar) value);
+            return Calendar.calendar((XMLGregorianCalendar) value);
         }
 
         final String valueStr = convertToString(value);
-        return org.miaixz.bus.core.center.date.Calendar
-                .calendar(StringKit.isBlank(format) ? org.miaixz.bus.core.center.date.Calendar.parse(valueStr)
-                        : org.miaixz.bus.core.center.date.Calendar.parse(valueStr, format));
+        return Calendar
+                .calendar(StringKit.isBlank(format) ? Resolver.parse(valueStr) : Resolver.parse(valueStr, format));
     }
 
 }

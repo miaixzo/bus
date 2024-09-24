@@ -27,6 +27,19 @@
 */
 package org.miaixz.bus.extra.image;
 
+import org.miaixz.bus.core.io.file.FileName;
+import org.miaixz.bus.core.io.resource.Resource;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.ansi.Ansi4BitColor;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.core.xyz.MathKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.StringKit;
+
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageInputStream;
+import javax.imageio.stream.ImageOutputStream;
 import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.geom.AffineTransform;
@@ -38,20 +51,6 @@ import java.awt.image.ImageFilter;
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Path;
-
-import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.ImageOutputStream;
-
-import org.miaixz.bus.core.io.file.FileName;
-import org.miaixz.bus.core.io.resource.Resource;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.ansi.Ansi4BitColor;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.core.xyz.MathKit;
-import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 图像编辑器
@@ -814,24 +813,23 @@ public class Images implements Flushable, Serializable {
     /**
      * 写出图像为目标文件扩展名对应的格式
      *
-     * @param targetFile 目标文件
+     * @param destFile 目标文件
      * @return this
      * @throws InternalException IO异常
      */
-    public Images write(final File targetFile) throws InternalException {
-        final String formatName = FileName.extName(targetFile);
+    public Images write(final File destFile) throws InternalException {
+        final String formatName = FileName.extName(destFile);
         if (StringKit.isNotBlank(formatName)) {
             this.targetImageType = formatName;
         }
 
-        if (targetFile.exists()) {
-            // noinspection ResultOfMethodCallIgnored
-            targetFile.delete();
+        if (destFile.exists()) {
+            destFile.delete();
         }
 
         ImageOutputStream out = null;
         try {
-            out = ImageKit.getImageOutputStream(targetFile);
+            out = ImageKit.getImageOutputStream(destFile);
             write(out);
         } finally {
             IoKit.closeQuietly(out);

@@ -63,10 +63,10 @@ public class SampledSampleModel extends SampleModel {
     }
 
     @Override
-    public Object getDataElements(int x, int y, Object obj, DataBuffer data) {
+    public Object getDataElements(int x, int y, Object object, DataBuffer data) {
         byte[] ret;
-        if ((obj instanceof byte[]) && ((byte[]) obj).length == 3)
-            ret = (byte[]) obj;
+        if ((object instanceof byte[]) && ((byte[]) object).length == 3)
+            ret = (byte[]) object;
         else
             ret = new byte[3];
         DataBufferByte dbb = (DataBufferByte) data;
@@ -100,7 +100,7 @@ public class SampledSampleModel extends SampleModel {
     }
 
     @Override
-    public void setDataElements(int x, int y, Object obj, DataBuffer data) {
+    public void setDataElements(int x, int y, Object object, DataBuffer data) {
         throw new UnsupportedOperationException();
     }
 

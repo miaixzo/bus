@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core.io.buffer;
 
+import org.miaixz.bus.core.lang.Assert;
+
 /**
  * 代码移植自<a href="https://github.com/biezhi/blade">blade</a> 快速缓冲，将数据存放在缓冲集中，取代以往的单一数组
  *
@@ -259,22 +261,48 @@ public class FastByteBuffer {
      * @return 快速缓冲中的数据
      */
     public byte[] toArray() {
+        return toArray(0, this.size);
+    }
+
+    /**
+     * 返回快速缓冲中的数据
+     *
+     * @param start 逻辑起始位置
+     * @param len   逻辑字节长
+     * @return 快速缓冲中的数据
+     */
+    public byte[] toArray(int start, int len) {
+        Assert.isTrue(start >= 0, "Start must be greater than zero!");
+        Assert.isTrue(len >= 0, "Length must be greater than zero!");
+
+        if (start >= this.size || len == 0) {
+            return new byte[0];
+        }
+        if (len > (this.size - start)) {
+            len = this.size - start;
+        }
+        int remaining = len;
         int pos = 0;
-        final byte[] array = new byte[size];
+        final byte[] result = new byte[len];
 
-        if (currentBufferIndex == -1) {
-            return array;
+        int i = 0;
+        while (start >= buffers[i].length) {
+            start -= buffers[i].length;
+            i++;
         }
 
-        for (int i = 0; i < currentBufferIndex; i++) {
-            final int len = buffers[i].length;
-            System.arraycopy(buffers[i], 0, array, pos, len);
-            pos += len;
+        while (i < buffersCount) {
+            final int bufLen = Math.min(buffers[i].length - start, remaining);
+            System.arraycopy(buffers[i], start, result, pos, bufLen);
+            pos += bufLen;
+            remaining -= bufLen;
+            if (remaining == 0) {
+                break;
+            }
+            start = 0;
+            i++;
         }
-
-        System.arraycopy(buffers[currentBufferIndex], 0, array, pos, offset);
-
-        return array;
+        return result;
     }
 
     /**
@@ -291,43 +319,6 @@ public class FastByteBuffer {
         }
 
         return toArray();
-    }
-
-    /**
-     * 返回快速缓冲中的数据
-     *
-     * @param start 逻辑起始位置
-     * @param len   逻辑字节长
-     * @return 快速缓冲中的数据
-     */
-    public byte[] toArray(int start, final int len) {
-        int remaining = len;
-        int pos = 0;
-        final byte[] array = new byte[len];
-
-        if (len == 0) {
-            return array;
-        }
-
-        int i = 0;
-        while (start >= buffers[i].length) {
-            start -= buffers[i].length;
-            i++;
-        }
-
-        while (i < buffersCount) {
-            final byte[] buf = buffers[i];
-            final int c = Math.min(buf.length - start, remaining);
-            System.arraycopy(buf, start, array, pos, c);
-            pos += c;
-            remaining -= c;
-            if (remaining == 0) {
-                break;
-            }
-            start = 0;
-            i++;
-        }
-        return array;
     }
 
     /**

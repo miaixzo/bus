@@ -30,9 +30,11 @@ package org.miaixz.bus.office.word;
 import java.io.File;
 import java.io.IOException;
 
+import org.apache.poi.common.usermodel.PictureType;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
 
@@ -53,11 +55,31 @@ public class DocxKit {
     public static XWPFDocument create(final File file) {
         try {
             return FileKit.exists(file) ? new XWPFDocument(OPCPackage.open(file)) : new XWPFDocument();
-        } catch (final InvalidFormatException e) {
-            throw new InternalException(e);
-        } catch (final IOException e) {
+        } catch (final InvalidFormatException | IOException e) {
             throw new InternalException(e);
         }
+    }
+
+    /**
+     * 获取图片类型枚举
+     *
+     * @param fileName 文件名称
+     * @return 图片类型枚举
+     */
+    public static PictureType getType(final String fileName) {
+        String extName = FileName.extName(fileName).toUpperCase();
+        if ("JPG".equals(extName)) {
+            extName = "JPEG";
+        }
+
+        PictureType picType;
+        try {
+            picType = PictureType.valueOf(extName);
+        } catch (final IllegalArgumentException e) {
+            // 默认值
+            picType = PictureType.JPEG;
+        }
+        return picType;
     }
 
     /**

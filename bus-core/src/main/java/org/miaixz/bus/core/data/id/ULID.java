@@ -324,11 +324,11 @@ public class ULID implements Comparable<ULID>, Serializable {
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if ((Objects.isNull(obj)) || (obj.getClass() != ULID.class)) {
+    public boolean equals(final Object object) {
+        if ((Objects.isNull(object)) || (object.getClass() != ULID.class)) {
             return false;
         }
-        final ULID id = (ULID) obj;
+        final ULID id = (ULID) object;
         return this.idValue.equals(id.idValue);
     }
 

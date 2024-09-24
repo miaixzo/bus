@@ -191,8 +191,8 @@ public class SoapBuilder {
             } else if (value instanceof Map) {
                 // 多个字节点
                 Entry entry;
-                for (final Object obj : ((Map) value).entrySet()) {
-                    entry = (Entry) obj;
+                for (final Object object : ((Map) value).entrySet()) {
+                    entry = (Entry) object;
                     setParam(childEle, StringKit.toStringOrNull(entry.getKey()), entry.getValue(), prefix);
                 }
             } else {

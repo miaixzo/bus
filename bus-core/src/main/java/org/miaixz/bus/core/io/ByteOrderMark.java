@@ -162,11 +162,11 @@ public class ByteOrderMark implements Predicate<byte[]>, Comparable<ByteOrderMar
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (!(obj instanceof ByteOrderMark)) {
+    public boolean equals(final Object object) {
+        if (!(object instanceof ByteOrderMark)) {
             return false;
         }
-        final ByteOrderMark bom = (ByteOrderMark) obj;
+        final ByteOrderMark bom = (ByteOrderMark) object;
         return Arrays.equals(this.bytes, bom.bytes);
     }
 

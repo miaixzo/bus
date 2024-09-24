@@ -83,7 +83,7 @@ public class FIFOCache<K, V> extends StampedCache<K, V> {
                 final CacheObject<K, V> co = values.next();
                 if (co.isExpired()) {
                     values.remove();
-                    onRemove(co.key, co.obj);
+                    onRemove(co.key, co.object);
                     count++;
                     continue;
                 }
@@ -98,7 +98,7 @@ public class FIFOCache<K, V> extends StampedCache<K, V> {
         // 清理结束后依旧是满的，则删除第一个被缓存的对象
         if (isFull() && null != first) {
             removeWithoutLock(first.key);
-            onRemove(first.key, first.obj);
+            onRemove(first.key, first.object);
             count++;
         }
         return count;

@@ -28,27 +28,96 @@
 package org.miaixz.bus.office.excel.cell;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.miaixz.bus.office.excel.xyz.CellKit;
 
 /**
- * 单元格编辑器接口 在读取Excel值时，有时我们需要针对所有单元格统一处理结果值（如null转默认值）的情况，实现接口并调用 reader.setCellEditor()设置编辑器 此接口可完成以下功能：
- * <ul>
- * <li>对单元格进行编辑，如修改样式等。</li>
- * <li>对单元格的值进行编辑，如根据单元格修改不同值，然后返回</li>
- * </ul>
+ * 合并单元格封装
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@FunctionalInterface
-public interface CellEditor {
+public class MergedCell {
+
+    private final Cell first;
+    private final CellRangeAddress range;
 
     /**
-     * 编辑，根据单元格信息处理结果值，返回处理后的结果
+     * 构造
      *
-     * @param cell  单元格对象，可以获取单元格行、列样式等信息
-     * @param value 单元格值
-     * @return 编辑后的值
+     * @param first 第一个单元格，即左上角的单元格
+     * @param range 合并单元格范围
      */
-    Object edit(Cell cell, Object value);
+    public MergedCell(final Cell first, final CellRangeAddress range) {
+        this.first = first;
+        this.range = range;
+    }
+
+    /**
+     * 创建MergedCell
+     *
+     * @param cell        第一个单元格，即左上角的单元格
+     * @param rowCount    占用行数
+     * @param columnCount 占用列数
+     * @return MergedCell
+     */
+    public static MergedCell of(final Cell cell, final int rowCount, final int columnCount) {
+        final int rowIndex = cell.getRowIndex();
+        final int columnIndex = cell.getColumnIndex();
+        return of(cell,
+                new CellRangeAddress(rowIndex, rowIndex + rowCount - 1, columnIndex, columnIndex + columnCount - 1));
+    }
+
+    /**
+     * 创建MergedCell
+     *
+     * @param cell  第一个单元格，即左上角的单元格
+     * @param range 合并单元格范围
+     * @return MergedCell
+     */
+    public static MergedCell of(final Cell cell, final CellRangeAddress range) {
+        return new MergedCell(cell, range);
+    }
+
+    /**
+     * 获取第一个单元格，即左上角的单元格
+     *
+     * @return Cell
+     */
+    public Cell getFirst() {
+        return this.first;
+    }
+
+    /**
+     * 获取合并单元格范围
+     *
+     * @return CellRangeAddress
+     */
+    public CellRangeAddress getRange() {
+        return this.range;
+    }
+
+    /**
+     * 设置单元格样式
+     *
+     * @param cellStyle 单元格样式
+     * @return this
+     */
+    public MergedCell setCellStyle(final CellStyle cellStyle) {
+        this.first.setCellStyle(cellStyle);
+        return this;
+    }
+
+    /**
+     * 设置单元格值
+     *
+     * @param value 值
+     * @return this
+     */
+    public MergedCell setValue(final Object value) {
+        CellKit.setCellValue(this.first, value);
+        return this;
+    }
 
 }

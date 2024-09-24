@@ -29,13 +29,15 @@ package org.miaixz.bus.core.convert;
 
 import org.miaixz.bus.core.xyz.ClassKit;
 
+import java.lang.reflect.Type;
+
 /**
  * 类转换器 将类名转换为类，默认初始化这个类（执行static块）
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ClassConverter extends AbstractConverter {
+public class ClassConverter extends AbstractConverter implements MatcherConverter {
 
     private static final long serialVersionUID = -1L;
 
@@ -60,6 +62,11 @@ public class ClassConverter extends AbstractConverter {
      */
     public ClassConverter(final boolean isInitialized) {
         this.isInitialized = isInitialized;
+    }
+
+    @Override
+    public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
+        return "java.lang.Class".equals(rawType.getName());
     }
 
     @Override

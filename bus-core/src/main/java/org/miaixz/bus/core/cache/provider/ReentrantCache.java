@@ -101,7 +101,7 @@ public abstract class ReentrantCache<K, V> extends AbstractCache<K, V> {
             lock.unlock();
         }
         if (null != co) {
-            onRemove(co.key, co.obj);
+            onRemove(co.key, co.object);
         }
     }
 

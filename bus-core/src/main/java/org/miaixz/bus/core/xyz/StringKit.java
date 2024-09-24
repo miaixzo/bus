@@ -30,14 +30,12 @@ package org.miaixz.bus.core.xyz;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.nio.ByteBuffer;
-import java.util.Map;
 
 import org.miaixz.bus.core.center.function.FunctionPool;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.text.TextSimilarity;
-import org.miaixz.bus.core.text.placeholder.StringFormatter;
 
 /**
  * 字符串工具类
@@ -75,11 +73,11 @@ public class StringKit extends CharsBacker {
      * 2、对象数组会调用Arrays.toString方法
      * </pre>
      *
-     * @param obj 对象
+     * @param object 对象
      * @return 字符串
      */
-    public static String toString(final Object obj) {
-        return toString(obj, Charset.UTF_8);
+    public static String toString(final Object object) {
+        return toString(object, Charset.UTF_8);
     }
 
     /**
@@ -91,30 +89,30 @@ public class StringKit extends CharsBacker {
      * 	 3、对象数组会调用Arrays.toString方法
      * </pre>
      *
-     * @param obj     对象
+     * @param object  对象
      * @param charset 字符集
      * @return 字符串
      */
-    public static String toString(final Object obj, final java.nio.charset.Charset charset) {
-        if (null == obj) {
+    public static String toString(final Object object, final java.nio.charset.Charset charset) {
+        if (null == object) {
             return null;
         }
 
-        if (obj instanceof String) {
-            return (String) obj;
-        } else if (obj instanceof char[]) {
-            return new String((char[]) obj);
-        } else if (obj instanceof byte[]) {
-            return toString((byte[]) obj, charset);
-        } else if (obj instanceof Byte[]) {
-            return toString((Byte[]) obj, charset);
-        } else if (obj instanceof ByteBuffer) {
-            return toString((ByteBuffer) obj, charset);
-        } else if (ArrayKit.isArray(obj)) {
-            return ArrayKit.toString(obj);
+        if (object instanceof String) {
+            return (String) object;
+        } else if (object instanceof char[]) {
+            return new String((char[]) object);
+        } else if (object instanceof byte[]) {
+            return toString((byte[]) object, charset);
+        } else if (object instanceof Byte[]) {
+            return toString((Byte[]) object, charset);
+        } else if (object instanceof ByteBuffer) {
+            return toString((ByteBuffer) object, charset);
+        } else if (ArrayKit.isArray(object)) {
+            return ArrayKit.toString(object);
         }
 
-        return obj.toString();
+        return object.toString();
     }
 
     /**
@@ -333,29 +331,6 @@ public class StringKit extends CharsBacker {
      */
     public static String similar(final String str1, final String str2, final int scale) {
         return TextSimilarity.similar(str1, str2, scale);
-    }
-
-    /**
-     * 格式化文本，使用 {varName} 占位 map = {a: "aValue", b: "bValue"} format("{a} and {b}", map) = aValue and bValue
-     *
-     * @param template 文本模板，被替换的部分用 {data} 表示
-     * @param map      参数值对
-     * @return 格式化后的文本
-     */
-    public static String format(final CharSequence template, final Map<?, ?> map) {
-        return format(template, map, true);
-    }
-
-    /**
-     * 格式化文本，使用 {varName} 占位 map = {a: "aValue", b: "bValue"} format("{a} and {b}", map) = aValue and bValue
-     *
-     * @param template   文本模板，被替换的部分用 {data} 表示
-     * @param map        参数值对
-     * @param ignoreNull 是否忽略 {@code null} 值，忽略则 {@code null} 值对应的变量不被替换，否则替换为""
-     * @return 格式化后的文本
-     */
-    public static String format(final CharSequence template, final Map<?, ?> map, final boolean ignoreNull) {
-        return StringFormatter.format(template, map, ignoreNull);
     }
 
     /**

@@ -49,6 +49,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.office.excel.sax.handler.RowHandler;
+import org.miaixz.bus.office.excel.xyz.ExcelSaxKit;
 
 /**
  * Excel2003格式的事件-用户模型方式读取器，统一将此归类为Sax读取 参考：http://www.cnblogs.com/wshsdlau/p/5643862.html
@@ -305,7 +306,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
                     // This is stored in the next record
                     isOutputNextStringRecord = true;
                 } else {
-                    value = ExcelSax.getNumberOrDateValue(formulaRec, formulaRec.getValue(), this.formatListener);
+                    value = ExcelSaxKit.getNumberOrDateValue(formulaRec, formulaRec.getValue(), this.formatListener);
                 }
             } else {
                 value = HSSFFormulaParser.toFormulaString(stubWorkbook, formulaRec.getParsedExpression());
@@ -335,7 +336,7 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
             break;
         case NumberRecord.sid: // 数字类型
             final NumberRecord numrec = (NumberRecord) record;
-            value = ExcelSax.getNumberOrDateValue(numrec, numrec.getValue(), this.formatListener);
+            value = ExcelSaxKit.getNumberOrDateValue(numrec, numrec.getValue(), this.formatListener);
             // 向容器加入列值
             addToRowCellList(numrec, value);
             break;

@@ -270,8 +270,7 @@ public class FileKit extends PathResolve {
      * <li>如果以`project:`开头，且为相对路径，则使用JDK默认规则，相对于项目路径，如`project:./test`且项目路径为`/workspace/bus/`，则读取`/workspace/bus/test`</li>
      * </ul>
      * <p>
-     * ，相对路径将自动从ClassPath下寻找<br>
-     * 如果用户需要相对项目路径，则使用project:前缀
+     * ，相对路径将自动从ClassPath下寻找 如果用户需要相对项目路径，则使用project:前缀
      *
      * @param path 相对ClassPath的目录或者绝对路径目录
      * @return File

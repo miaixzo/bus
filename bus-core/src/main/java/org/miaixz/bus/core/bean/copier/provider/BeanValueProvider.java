@@ -73,7 +73,7 @@ public class BeanValueProvider implements ValueProvider<String> {
     public Object value(final String key, final Type valueType) {
         final PropDesc prop = beanDesc.getProp(key);
         if (null != prop) {
-            return Convert.convert(valueType, prop.getValue(bean));
+            return Convert.convert(valueType, prop.getValue(bean, false));
         }
         return null;
     }

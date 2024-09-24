@@ -27,80 +27,99 @@
 */
 package org.miaixz.bus.office.excel;
 
-import org.apache.poi.ss.usermodel.Sheet;
+import java.io.File;
+
 import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.ss.util.cellwalk.CellHandler;
-import org.apache.poi.ss.util.cellwalk.CellWalk;
+import org.miaixz.bus.core.io.file.FileType;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * {@link Sheet} 相关工具类
+ * Excel支持的图片类型枚举
+ *
+ * 
+ * @see Workbook#PICTURE_TYPE_EMF
+ * @see Workbook#PICTURE_TYPE_WMF
+ * @see Workbook#PICTURE_TYPE_PICT
+ * @see Workbook#PICTURE_TYPE_JPEG
+ * @see Workbook#PICTURE_TYPE_PNG
+ * @see Workbook#PICTURE_TYPE_DIB
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class SheetKit {
+public enum ExcelImgType {
+    /**
+     * Extended windows meta file
+     */
+    EMF(Workbook.PICTURE_TYPE_EMF),
 
     /**
-     * 获取或者创建sheet表 如果sheet表在Workbook中已经存在，则获取之，否则创建之
-     *
-     * @param book      工作簿{@link Workbook}
-     * @param sheetName 工作表名
-     * @return 工作表 {@link Sheet}
+     * Windows Meta File
      */
-    public static Sheet getOrCreateSheet(final Workbook book, String sheetName) {
-        if (null == book) {
-            return null;
-        }
-        sheetName = StringKit.isBlank(sheetName) ? "sheet1" : sheetName;
-        Sheet sheet = book.getSheet(sheetName);
-        if (null == sheet) {
-            sheet = book.createSheet(sheetName);
-        }
-        return sheet;
+    WMF(Workbook.PICTURE_TYPE_WMF),
+
+    /**
+     * Mac PICT format
+     */
+    PICT(Workbook.PICTURE_TYPE_PICT),
+
+    /**
+     * JPEG format
+     */
+    JPEG(Workbook.PICTURE_TYPE_JPEG),
+
+    /**
+     * PNG format
+     */
+    PNG(Workbook.PICTURE_TYPE_PNG),
+
+    /**
+     * Device independent bitmap
+     */
+    DIB(Workbook.PICTURE_TYPE_DIB);
+
+    private final int value;
+
+    /**
+     * 构造
+     *
+     * @param value 类型编码
+     */
+    ExcelImgType(final int value) {
+        this.value = value;
     }
 
     /**
-     * 获取或者创建sheet表 自定义需要读取或写出的Sheet，如果给定的sheet不存在，创建之（命名为默认） 在读取中，此方法用于切换读取的sheet，在写出时，此方法用于新建或者切换sheet
+     * 获取图片类型
      *
-     * @param book       工作簿{@link Workbook}
-     * @param sheetIndex 工作表序号
-     * @return 工作表 {@link Sheet}
+     * @param imgFile 图片文件
+     * @return 图片类型，默认PNG
      */
-    public static Sheet getOrCreateSheet(final Workbook book, final int sheetIndex) {
-        Sheet sheet = null;
-        try {
-            sheet = book.getSheetAt(sheetIndex);
-        } catch (final IllegalArgumentException ignore) {
-            // ignore
+    public static ExcelImgType getType(final File imgFile) {
+        final String type = FileType.getType(imgFile);
+        if (StringKit.equalsAnyIgnoreCase(type, "jpg", "jpeg")) {
+            return JPEG;
+        } else if (StringKit.equalsAnyIgnoreCase(type, "emf")) {
+            return EMF;
+        } else if (StringKit.equalsAnyIgnoreCase(type, "wmf")) {
+            return WMF;
+        } else if (StringKit.equalsAnyIgnoreCase(type, "pict")) {
+            return PICT;
+        } else if (StringKit.equalsAnyIgnoreCase(type, "dib")) {
+            return DIB;
         }
-        if (null == sheet) {
-            sheet = book.createSheet();
-        }
-        return sheet;
+
+        // 默认格式
+        return PNG;
     }
 
     /**
-     * sheet是否为空
+     * 获取类型编码
      *
-     * @param sheet {@link Sheet}
-     * @return sheet是否为空
+     * @return 编码
      */
-    public static boolean isEmpty(final Sheet sheet) {
-        return null == sheet || (sheet.getLastRowNum() == 0 && sheet.getPhysicalNumberOfRows() == 0);
-    }
-
-    /**
-     * 遍历Sheet中的指定区域单元格
-     *
-     * @param sheet       {@link Sheet}
-     * @param range       区域
-     * @param cellHandler 单元格处理器
-     */
-    public static void walk(final Sheet sheet, final CellRangeAddress range, final CellHandler cellHandler) {
-        final CellWalk cellWalk = new CellWalk(sheet, range);
-        cellWalk.traverse(cellHandler);
+    public int getValue() {
+        return this.value;
     }
 
 }

@@ -226,13 +226,13 @@ public class MutableInt extends Number implements Comparable<MutableInt>, Mutabl
      * <li>值相等</li>
      * </ol>
      *
-     * @param obj 比对的对象
+     * @param object 比对的对象
      * @return 相同返回<code>true</code>，否则 {@code false}
      */
     @Override
-    public boolean equals(final Object obj) {
-        if (obj instanceof MutableInt) {
-            return value == ((MutableInt) obj).intValue();
+    public boolean equals(final Object object) {
+        if (object instanceof MutableInt) {
+            return value == ((MutableInt) object).intValue();
         }
         return false;
     }

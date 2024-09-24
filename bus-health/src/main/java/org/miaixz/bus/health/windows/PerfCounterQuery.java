@@ -87,7 +87,7 @@ public final class PerfCounterQuery {
                 return valueMap;
             }
             // If we are here, query failed
-            Logger.warn("Disabling further attempts to query {}.", perfObject);
+            Logger.info("Disabling further attempts to query {}.", perfObject);
             FAILED_QUERY_CACHE.add(perfObject);
         }
         return queryValuesFromWMI(propertyEnum, perfWmiClass);
@@ -193,7 +193,7 @@ public final class PerfCounterQuery {
                     String.format(Locale.ROOT, "0x%x", e.getHR().intValue()),
                     "See https://support.microsoft.com/en-us/help/300956/how-to-manually-rebuild-performance-counter-library-values");
         } catch (PdhException e) {
-            Logger.warn("Unable to localize {} performance counter.  Error {}.", perfObject,
+            Logger.debug("Unable to localize {} performance counter.  Error {}.", perfObject,
                     String.format(Locale.ROOT, "0x%x", e.getErrorCode()));
         }
         if (localized.isEmpty()) {

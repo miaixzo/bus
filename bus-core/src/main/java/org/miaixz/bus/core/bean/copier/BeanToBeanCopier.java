@@ -32,7 +32,9 @@ import java.util.Map;
 
 import org.miaixz.bus.core.bean.desc.PropDesc;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.exception.BeanException;
 import org.miaixz.bus.core.lang.mutable.MutableEntry;
+import org.miaixz.bus.core.xyz.MapKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.core.xyz.TypeKit;
 
@@ -66,6 +68,7 @@ public class BeanToBeanCopier<S, T> extends AbstractCopier<S, T> {
 
     @Override
     public T copy() {
+        final CopyOptions copyOptions = this.copyOptions;
         Class<?> actualEditable = target.getClass();
         if (null != copyOptions.editable) {
             // 检查限制类是否为target的父类或接口
@@ -75,9 +78,21 @@ public class BeanToBeanCopier<S, T> extends AbstractCopier<S, T> {
             actualEditable = copyOptions.editable;
         }
         final Map<String, PropDesc> targetPropDescMap = getBeanDesc(actualEditable).getPropMap(copyOptions.ignoreCase);
+        if (MapKit.isEmpty(targetPropDescMap)) {
+            if (copyOptions.ignoreError) {
+                return target;
+            }
+            throw new BeanException("No properties for target: {}", actualEditable);
+        }
 
         final Map<String, PropDesc> sourcePropDescMap = getBeanDesc(source.getClass())
                 .getPropMap(copyOptions.ignoreCase);
+        if (MapKit.isEmpty(sourcePropDescMap)) {
+            if (copyOptions.ignoreError) {
+                return target;
+            }
+            throw new BeanException("No properties for source: {}", source.getClass());
+        }
         sourcePropDescMap.forEach((sFieldName, sDesc) -> {
             if (null == sFieldName || !sDesc.isReadable(copyOptions.transientSupport)) {
                 // 字段空或不可读，跳过
@@ -85,8 +100,8 @@ public class BeanToBeanCopier<S, T> extends AbstractCopier<S, T> {
             }
 
             // 检查源对象属性是否过滤属性
-            Object sValue = sDesc.getValue(this.source);
-            if (!copyOptions.testPropertyFilter(sDesc.getField(), sValue)) {
+            Object sValue = sDesc.getValue(this.source, copyOptions.ignoreError);
+            if (!this.copyOptions.testPropertyFilter(sDesc.getField(), sValue)) {
                 return;
             }
 
@@ -104,16 +119,15 @@ public class BeanToBeanCopier<S, T> extends AbstractCopier<S, T> {
 
             // 检查目标字段可写性
             // 目标字段检查放在键值对编辑之后，因为键可能被编辑修改
-            final PropDesc tDesc = this.copyOptions.findPropDesc(targetPropDescMap, sFieldName);
-            if (null == tDesc || !tDesc.isWritable(this.copyOptions.transientSupport)) {
+            final PropDesc tDesc = copyOptions.findPropDesc(targetPropDescMap, sFieldName);
+            if (null == tDesc || !tDesc.isWritable(copyOptions.transientSupport)) {
                 // 字段不可写，跳过之
                 return;
             }
 
             // 获取目标字段真实类型并转换源值
             final Type fieldType = TypeKit.getActualType(this.targetType, tDesc.getFieldType());
-            // sValue = Convert.convertWithCheck(fieldType, sValue, null, this.copyOptions.ignoreError);
-            sValue = this.copyOptions.convertField(fieldType, sValue);
+            sValue = copyOptions.convertField(fieldType, sValue);
 
             // 目标赋值
             tDesc.setValue(this.target, sValue, copyOptions.ignoreNullValue, copyOptions.ignoreError,
