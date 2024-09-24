@@ -58,7 +58,7 @@ public abstract class SwitchableApplicationContextInitializer extends AbstractAp
     @Override
     protected boolean isEnable(ConfigurableApplicationContext context) {
         String switchKey = switchKey();
-        Assert.hasText(switchKey, "switch key must has text.");
+        Assert.notNull(switchKey, "switch key must has text.");
         String realKey = CONFIG_KEY_PREFIX + switchKey + ".enabled";
         String switchText = context.getEnvironment().getProperty(realKey);
         if (StringKit.hasText(switchText)) {
