@@ -213,11 +213,11 @@ public class ArrayValidator {
     /**
      * 对象是否为数组对象
      *
-     * @param obj 对象
+     * @param object 对象
      * @return 是否为数组对象，如果为{@code null} 返回false
      */
-    public static boolean isArray(final Object obj) {
-        return null != obj && obj.getClass().isArray();
+    public static boolean isArray(final Object object) {
+        return null != object && object.getClass().isArray();
     }
 
     /**
@@ -820,8 +820,8 @@ public class ArrayValidator {
      * @return 是否都为空
      */
     public static <T> boolean isAllEmpty(final T[] args) {
-        for (final T obj : args) {
-            if (!ObjectKit.isEmpty(obj)) {
+        for (final T object : args) {
+            if (!ObjectKit.isEmpty(object)) {
                 return false;
             }
         }
@@ -1243,39 +1243,39 @@ public class ArrayValidator {
     /**
      * 数组或集合转String
      *
-     * @param obj 集合或数组对象
+     * @param object 集合或数组对象
      * @return 数组字符串，与集合转字符串格式相同
      */
-    public static String toString(final Object obj) {
-        if (Objects.isNull(obj)) {
+    public static String toString(final Object object) {
+        if (Objects.isNull(object)) {
             return null;
         }
-        if (obj instanceof long[]) {
-            return Arrays.toString((long[]) obj);
-        } else if (obj instanceof int[]) {
-            return Arrays.toString((int[]) obj);
-        } else if (obj instanceof short[]) {
-            return Arrays.toString((short[]) obj);
-        } else if (obj instanceof char[]) {
-            return Arrays.toString((char[]) obj);
-        } else if (obj instanceof byte[]) {
-            return Arrays.toString((byte[]) obj);
-        } else if (obj instanceof boolean[]) {
-            return Arrays.toString((boolean[]) obj);
-        } else if (obj instanceof float[]) {
-            return Arrays.toString((float[]) obj);
-        } else if (obj instanceof double[]) {
-            return Arrays.toString((double[]) obj);
-        } else if (ArrayKit.isArray(obj)) {
+        if (object instanceof long[]) {
+            return Arrays.toString((long[]) object);
+        } else if (object instanceof int[]) {
+            return Arrays.toString((int[]) object);
+        } else if (object instanceof short[]) {
+            return Arrays.toString((short[]) object);
+        } else if (object instanceof char[]) {
+            return Arrays.toString((char[]) object);
+        } else if (object instanceof byte[]) {
+            return Arrays.toString((byte[]) object);
+        } else if (object instanceof boolean[]) {
+            return Arrays.toString((boolean[]) object);
+        } else if (object instanceof float[]) {
+            return Arrays.toString((float[]) object);
+        } else if (object instanceof double[]) {
+            return Arrays.toString((double[]) object);
+        } else if (ArrayKit.isArray(object)) {
             // 对象数组
             try {
-                return Arrays.deepToString((Object[]) obj);
+                return Arrays.deepToString((Object[]) object);
             } catch (final Exception ignore) {
                 // ignore
             }
         }
 
-        return obj.toString();
+        return object.toString();
     }
 
     /**

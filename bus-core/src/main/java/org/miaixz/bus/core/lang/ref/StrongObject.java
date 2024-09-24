@@ -40,25 +40,25 @@ import org.miaixz.bus.core.xyz.ObjectKit;
  */
 public class StrongObject<T> implements Ref<T> {
 
-    private final T obj;
+    private final T object;
 
     /**
      * 构造
      *
-     * @param obj 原始对象
+     * @param object 原始对象
      */
-    public StrongObject(final T obj) {
-        this.obj = obj;
+    public StrongObject(final T object) {
+        this.object = object;
     }
 
     @Override
     public T get() {
-        return this.obj;
+        return this.object;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(obj);
+        return Objects.hashCode(this.object);
     }
 
     @Override

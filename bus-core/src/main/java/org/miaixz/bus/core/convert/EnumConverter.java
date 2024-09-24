@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
-import org.miaixz.bus.core.lang.Enumers;
-import org.miaixz.bus.core.lang.exception.ConvertException;
-import org.miaixz.bus.core.xyz.*;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
+import org.miaixz.bus.core.lang.Enumers;
+import org.miaixz.bus.core.lang.exception.ConvertException;
+import org.miaixz.bus.core.xyz.*;
 
 /**
  * 无泛型检查的枚举转换器
@@ -71,7 +71,7 @@ public class EnumConverter extends AbstractConverter implements MatcherConverter
             return enumValue;
         }
 
-        throw new ConvertException("Can not convert {} to {}", value, targetClass);
+        throw new ConvertException("Can not support {} to {}", value, targetClass);
     }
 
     /**

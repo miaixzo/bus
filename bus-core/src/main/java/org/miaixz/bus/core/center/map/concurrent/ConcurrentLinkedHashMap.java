@@ -1319,13 +1319,13 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         @Override
-        public boolean contains(final Object obj) {
-            return containsKey(obj);
+        public boolean contains(final Object object) {
+            return containsKey(object);
         }
 
         @Override
-        public boolean remove(final Object obj) {
-            return (map.remove(obj) != null);
+        public boolean remove(final Object object) {
+            return (map.remove(object) != null);
         }
 
         @Override
@@ -1439,11 +1439,11 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         @Override
-        public boolean contains(final Object obj) {
-            if (!(obj instanceof Entry)) {
+        public boolean contains(final Object object) {
+            if (!(object instanceof Entry)) {
                 return false;
             }
-            final Entry<K, Node<K, V>> entry = (Entry<K, Node<K, V>>) obj;
+            final Entry<K, Node<K, V>> entry = (Entry<K, Node<K, V>>) object;
             final Node<K, V> node = map.data.get(entry.getKey());
             return (node != null) && (node.getValue().equals(entry.getValue()));
         }
@@ -1454,11 +1454,11 @@ public final class ConcurrentLinkedHashMap<K, V> extends AbstractMap<K, V>
         }
 
         @Override
-        public boolean remove(final Object obj) {
-            if (!(obj instanceof Entry<?, ?>)) {
+        public boolean remove(final Object object) {
+            if (!(object instanceof Entry<?, ?>)) {
                 return false;
             }
-            final Entry<K, V> entry = (Entry<K, V>) obj;
+            final Entry<K, V> entry = (Entry<K, V>) object;
             return map.remove(entry.getKey(), entry.getValue());
         }
     }

@@ -101,7 +101,7 @@ public abstract class StampedCache<K, V> extends AbstractCache<K, V> {
             lock.unlockWrite(stamp);
         }
         if (null != co) {
-            onRemove(co.key, co.obj);
+            onRemove(co.key, co.object);
         }
     }
 
@@ -186,7 +186,7 @@ public abstract class StampedCache<K, V> extends AbstractCache<K, V> {
             lock.unlockWrite(stamp);
         }
         if (null != co) {
-            onRemove(co.key, co.obj);
+            onRemove(co.key, co.object);
         }
         return null;
     }

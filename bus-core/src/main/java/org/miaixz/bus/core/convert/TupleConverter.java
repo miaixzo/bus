@@ -47,8 +47,7 @@ public class TupleConverter implements Converter {
 
     @Override
     public Object convert(final Type targetType, final Object value) throws ConvertException {
-        final Object[] convert = (Object[]) ArrayConverter.INSTANCE.convert(Object[].class, value);
-        return Tuple.of(convert);
+        return Tuple.of(ArrayConverter.INSTANCE.convert(Object[].class, value));
     }
 
 }

@@ -512,21 +512,21 @@ public class Optional<T> {
      * <li>它们包裹住的元素之间相互 {@code equals()}
      * </ul>
      *
-     * @param obj 一个要用来判断是否相等的参数
+     * @param object 一个要用来判断是否相等的参数
      * @return 如果传入的参数也是一个 {@code Optional}并且它们包裹住的元素都为空 或者它们包裹住的元素之间相互 {@code equals()} 就返回{@code true} 否则返回
      *         {@code false}
      */
     @Override
-    public boolean equals(final Object obj) {
-        if (this == obj) {
+    public boolean equals(final Object object) {
+        if (this == object) {
             return true;
         }
 
-        if (!(obj instanceof Optional)) {
+        if (!(object instanceof Optional)) {
             return false;
         }
 
-        final Optional<?> other = (Optional<?>) obj;
+        final Optional<?> other = (Optional<?>) object;
         return Objects.equals(value, other.value);
     }
 

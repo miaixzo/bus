@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.lang.exception.ConvertException;
-
 import java.io.Serializable;
 import java.lang.reflect.Type;
+
+import org.miaixz.bus.core.lang.exception.ConvertException;
 
 /**
  * 原始类型转换器 支持类型为：
@@ -85,7 +85,7 @@ public class PrimitiveConverter extends AbstractConverter implements MatcherConv
         }
 
         if (null == result) {
-            throw new ConvertException("Can not convert {} to {}", value, primitiveClass);
+            throw new ConvertException("Can not support {} to {}", value, primitiveClass);
         }
 
         return result;

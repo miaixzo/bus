@@ -1208,11 +1208,11 @@ public class IoKit {
     /**
      * 尝试关闭指定对象 判断对象如果实现了{@link AutoCloseable}，则调用之
      *
-     * @param obj 可关闭对象
+     * @param object 可关闭对象
      */
-    public static void close(final Object obj) {
-        if (obj instanceof AutoCloseable) {
-            closeQuietly((AutoCloseable) obj);
+    public static void close(final Object object) {
+        if (object instanceof AutoCloseable) {
+            closeQuietly((AutoCloseable) object);
         }
     }
 

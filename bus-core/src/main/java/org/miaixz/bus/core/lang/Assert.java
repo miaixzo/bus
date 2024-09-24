@@ -715,15 +715,15 @@ public class Assert {
      * Assert.instanceOf(Foo.class, foo);
      * </pre>
      *
-     * @param <T>  被检查对象泛型类型
-     * @param type 被检查对象匹配的类型
-     * @param obj  被检查对象
+     * @param <T>    被检查对象泛型类型
+     * @param type   被检查对象匹配的类型
+     * @param object 被检查对象
      * @return 被检查的对象
      * @throws IllegalArgumentException if the object is not an instance of clazz
      * @see Class#isInstance(Object)
      */
-    public static <T> T isInstanceOf(final Class<?> type, final T obj) {
-        return isInstanceOf(type, obj, "Object [{}] is not instanceof [{}]", obj, type);
+    public static <T> T isInstanceOf(final Class<?> type, final T object) {
+        return isInstanceOf(type, object, "Object [{}] is not instanceof [{}]", object, type);
     }
 
     /**
@@ -735,20 +735,20 @@ public class Assert {
      *
      * @param <T>              被检查对象泛型类型
      * @param type             被检查对象匹配的类型
-     * @param obj              被检查对象
+     * @param object           被检查对象
      * @param errorMsgTemplate 异常时的消息模板
      * @param params           参数列表
      * @return 被检查对象
      * @throws IllegalArgumentException if the object is not an instance of clazz
      * @see Class#isInstance(Object)
      */
-    public static <T> T isInstanceOf(final Class<?> type, final T obj, final String errorMsgTemplate,
+    public static <T> T isInstanceOf(final Class<?> type, final T object, final String errorMsgTemplate,
             final Object... params) throws IllegalArgumentException {
         notNull(type, "Type to check against must not be null");
-        if (!type.isInstance(obj)) {
+        if (!type.isInstance(object)) {
             throw new IllegalArgumentException(StringKit.format(errorMsgTemplate, params));
         }
-        return obj;
+        return object;
     }
 
     /**

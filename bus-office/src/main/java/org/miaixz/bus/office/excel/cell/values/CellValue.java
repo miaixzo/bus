@@ -25,45 +25,21 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.office.excel.cell.setters;
-
-import java.util.regex.Pattern;
-
-import org.miaixz.bus.core.xyz.PatternKit;
-import org.miaixz.bus.core.xyz.StringKit;
+package org.miaixz.bus.office.excel.cell.values;
 
 /**
- * 字符串转义Cell值设置器 使用 _x005F前缀转义_xXXXX_，避免被decode的问题 如用户传入'_x5116_'会导致乱码，使用此设置器转义为'_x005F_x5116_'
+ * 抽象的单元格值接口，用于判断不同类型的单元格值 通过自定义的此接口，对于复杂的单元格值类型，可以自定义读取值的类型，如数字、公式等。
  *
+ * @param <T> 值得类型
  * @author Kimi Liu
  * @since Java 17+
  */
-public class EscapeStringCellSetter extends CharSequenceCellSetter {
-
-    private static final Pattern utfPtrn = Pattern.compile("_x[0-9A-Fa-f]{4}_");
+public interface CellValue<T> {
 
     /**
-     * 构造
+     * 获取单元格值
      *
-     * @param value 值
+     * @return 值
      */
-    public EscapeStringCellSetter(final CharSequence value) {
-        super(escape(StringKit.toStringOrNull(value)));
-    }
-
-    /**
-     * 使用 _x005F前缀转义_xXXXX_，避免被decode的问题
-     *
-     * @param value 被转义的字符串
-     * @return 转义后的字符串
-     */
-    private static String escape(final String value) {
-        if (value == null || !value.contains("_x")) {
-            return value;
-        }
-
-        // 使用 _x005F前缀转义_xXXXX_，避免被decode的问题
-        return PatternKit.replaceAll(value, utfPtrn, "_x005F$0");
-    }
-
+    T getValue();
 }

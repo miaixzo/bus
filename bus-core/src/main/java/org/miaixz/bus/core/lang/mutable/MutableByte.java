@@ -194,13 +194,13 @@ public class MutableByte extends Number implements Comparable<MutableByte>, Muta
      * <li>值相等</li>
      * </ol>
      *
-     * @param obj 比对的对象
+     * @param object 比对的对象
      * @return 相同返回<code>true</code>，否则 {@code false}
      */
     @Override
-    public boolean equals(final Object obj) {
-        if (obj instanceof MutableByte) {
-            return value == ((MutableByte) obj).byteValue();
+    public boolean equals(final Object object) {
+        if (object instanceof MutableByte) {
+            return value == ((MutableByte) object).byteValue();
         }
         return false;
     }

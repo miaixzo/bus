@@ -25,7 +25,7 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.office.excel;
+package org.miaixz.bus.office.excel.xyz;
 
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -38,7 +38,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.miaixz.bus.core.xyz.FieldKit;
 
 /**
- * {@link Sheet} 相关工具类
+ * {@link Sheet}相关工具类
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -122,7 +122,7 @@ public class SheetKit {
     }
 
     /**
-     * 设置忽略错误，即Excel中的绿色警告小标，只支持XSSFSheet和SXSSFSheet<br>
+     * 设置忽略错误，即Excel中的绿色警告小标，只支持XSSFSheet和SXSSFSheet
      * 见：https://stackoverflow.com/questions/23488221/how-to-remove-warning-in-excel-using-apache-poi-in-java
      *
      * @param sheet             {@link Sheet}
@@ -143,6 +143,23 @@ public class SheetKit {
         } else {
             throw new UnsupportedOperationException("Only XSSFSheet supports addIgnoredErrors");
         }
+    }
+
+    /**
+     * 获取指定坐标点对应的合并单元格范围
+     *
+     * @param sheet {@link Sheet}
+     * @param x     x坐标，即列号
+     * @param y     行号
+     * @return CellRangeAddress or null
+     */
+    public static CellRangeAddress getMergedRegion(final Sheet sheet, final int x, final int y) {
+        for (final CellRangeAddress ca : sheet.getMergedRegions()) {
+            if (ca.isInRange(y, x)) {
+                return ca;
+            }
+        }
+        return null;
     }
 
 }

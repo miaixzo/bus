@@ -739,8 +739,8 @@ public class Format extends java.text.Format {
     }
 
     @Override
-    public StringBuffer format(Object obj, StringBuffer result, FieldPosition pos) {
-        return format.format(toArgs((Attributes) obj), result, pos);
+    public StringBuffer format(Object object, StringBuffer result, FieldPosition pos) {
+        return format.format(toArgs((Attributes) object), result, pos);
     }
 
     private Object[] toArgs(Attributes attrs) {

@@ -47,12 +47,12 @@ public class WeakObject<T> extends WeakReference<T> implements Ref<T> {
     /**
      * 构造
      *
-     * @param obj   原始对象
-     * @param queue {@link ReferenceQueue}
+     * @param object 原始对象
+     * @param queue  {@link ReferenceQueue}
      */
-    public WeakObject(final T obj, final ReferenceQueue<? super T> queue) {
-        super(obj, queue);
-        hashCode = Objects.hashCode(obj);
+    public WeakObject(final T object, final ReferenceQueue<? super T> queue) {
+        super(object, queue);
+        hashCode = Objects.hashCode(object);
     }
 
     @Override
@@ -61,11 +61,11 @@ public class WeakObject<T> extends WeakReference<T> implements Ref<T> {
     }
 
     @Override
-    public boolean equals(final Object other) {
-        if (other == this) {
+    public boolean equals(final Object object) {
+        if (object == this) {
             return true;
-        } else if (other instanceof WeakObject) {
-            return ObjectKit.equals(((WeakObject<?>) other).get(), get());
+        } else if (object instanceof WeakObject) {
+            return ObjectKit.equals(((WeakObject<?>) object).get(), get());
         }
         return false;
     }

@@ -27,11 +27,7 @@
 */
 package org.miaixz.bus.core.bean.path.node;
 
-import org.miaixz.bus.core.bean.DynaBean;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.MathKit;
-import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 处理名称节点或序号节点，如：
@@ -57,33 +53,21 @@ public class NameNode implements Node {
     }
 
     /**
+     * 获取节点名
+     *
+     * @return 节点名
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
      * 是否为数字节点
      *
      * @return 是否为数字节点
      */
     public boolean isNumber() {
         return MathKit.isInteger(name);
-    }
-
-    @Override
-    public Object getValue(final Object bean) {
-        if (null == bean) {
-            return null;
-        }
-        if (Symbol.DOLLAR.equals(name)) {
-            return bean;
-        }
-        Object value = DynaBean.of(bean).get(this.name);
-        if (null == value && StringKit.lowerFirst(ClassKit.getClassName(bean, true)).equals(this.name)) {
-            // 如果bean类名与属性名相同，则返回bean本身
-            value = bean;
-        }
-        return value;
-    }
-
-    @Override
-    public Object setValue(final Object bean, final Object value) {
-        return DynaBean.of(bean).set(this.name, value).getBean();
     }
 
     @Override

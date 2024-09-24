@@ -29,8 +29,7 @@ package org.miaixz.bus.office.excel.cell.values;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
-import org.miaixz.bus.office.excel.cell.CellSetter;
-import org.miaixz.bus.office.excel.cell.CellValue;
+import org.miaixz.bus.office.excel.cell.setters.CellSetter;
 
 /**
  * 公式类型的值

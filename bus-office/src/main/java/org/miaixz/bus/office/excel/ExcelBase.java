@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.office.excel;
 
+import java.io.Closeable;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellReference;
@@ -35,13 +40,11 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.office.excel.cell.CellKit;
-import org.miaixz.bus.office.excel.style.StyleKit;
-
-import java.io.Closeable;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import org.miaixz.bus.office.Builder;
+import org.miaixz.bus.office.excel.xyz.CellKit;
+import org.miaixz.bus.office.excel.xyz.RowKit;
+import org.miaixz.bus.office.excel.xyz.SheetKit;
+import org.miaixz.bus.office.excel.xyz.StyleKit;
 
 /**
  * Excel基础类，用于抽象ExcelWriter和ExcelReader中共用部分的对象和方法
@@ -63,7 +66,7 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     /**
      * 目标文件，如果用户读取为流或自行创建的Workbook或Sheet,此参数为{@code null}
      */
-    protected File destFile;
+    protected File targetFile;
     /**
      * 工作簿
      */
@@ -112,15 +115,6 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
      */
     public Workbook getWorkbook() {
         return this.workbook;
-    }
-
-    /**
-     * 创建字体
-     *
-     * @return 字体
-     */
-    public Font createFont() {
-        return getWorkbook().createFont();
     }
 
     /**
@@ -315,6 +309,32 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     }
 
     /**
+     * 获取总行数，计算方法为：
+     *
+     * <pre>
+     * 最后一行序号 + 1
+     * </pre>
+     *
+     * @return 行数
+     */
+    public int getRowCount() {
+        return this.sheet.getLastRowNum() + 1;
+    }
+
+    /**
+     * 获取有记录的行数，计算方法为：
+     *
+     * <pre>
+     * 最后一行序号 - 第一行序号 + 1
+     * </pre>
+     *
+     * @return 行数
+     */
+    public int getPhysicalRowCount() {
+        return this.sheet.getPhysicalNumberOfRows();
+    }
+
+    /**
      * 为指定单元格获取或者创建样式，返回样式后可以设置样式内容
      *
      * @param locationRef 单元格地址标识符，例如A11，B5
@@ -419,6 +439,15 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
     }
 
     /**
+     * 创建字体
+     *
+     * @return 字体
+     */
+    public Font createFont() {
+        return getWorkbook().createFont();
+    }
+
+    /**
      * 创建 {@link Hyperlink}，默认内容（标签为链接地址本身）
      *
      * @param type    链接类型
@@ -442,32 +471,6 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
         hyperlink.setAddress(address);
         hyperlink.setLabel(label);
         return hyperlink;
-    }
-
-    /**
-     * 获取总行数，计算方法为：
-     *
-     * <pre>
-     * 最后一行序号 + 1
-     * </pre>
-     *
-     * @return 行数
-     */
-    public int getRowCount() {
-        return this.sheet.getLastRowNum() + 1;
-    }
-
-    /**
-     * 获取有记录的行数，计算方法为：
-     *
-     * <pre>
-     * 最后一行序号 - 第一行序号 + 1
-     * </pre>
-     *
-     * @return 行数
-     */
-    public int getPhysicalRowCount() {
-        return this.sheet.getPhysicalNumberOfRows();
     }
 
     /**
@@ -521,7 +524,7 @@ public class ExcelBase<T extends ExcelBase<T, C>, C extends ExcelConfig> impleme
      * @return Content-Type值
      */
     public String getContentType() {
-        return isXlsx() ? ExcelKit.XLSX_CONTENT_TYPE : ExcelKit.XLS_CONTENT_TYPE;
+        return isXlsx() ? Builder.XLSX_CONTENT_TYPE : Builder.XLS_CONTENT_TYPE;
     }
 
     /**

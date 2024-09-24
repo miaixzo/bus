@@ -415,18 +415,19 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     /**
      * Formats a {@code Date}, {@code Calendar} or {@code Long} (milliseconds) object.
      *
-     * @param obj the object to format
+     * @param object the object to format
      * @return The formatted value.
      */
-    public String format(final Object obj) {
-        if (obj instanceof Date) {
-            return format((Date) obj);
-        } else if (obj instanceof Calendar) {
-            return format((Calendar) obj);
-        } else if (obj instanceof Long) {
-            return format(((Long) obj).longValue());
+    public String format(final Object object) {
+        if (object instanceof Date) {
+            return format((Date) object);
+        } else if (object instanceof Calendar) {
+            return format((Calendar) object);
+        } else if (object instanceof Long) {
+            return format(((Long) object).longValue());
         } else {
-            throw new IllegalArgumentException("Unknown class: " + (obj == null ? "<null>" : obj.getClass().getName()));
+            throw new IllegalArgumentException(
+                    "Unknown class: " + (object == null ? "<null>" : object.getClass().getName()));
         }
     }
 
@@ -1173,12 +1174,12 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
         }
 
         @Override
-        public boolean equals(final Object obj) {
-            if (this == obj) {
+        public boolean equals(final Object object) {
+            if (this == object) {
                 return true;
             }
-            if (obj instanceof TimeZoneDisplayKey) {
-                final TimeZoneDisplayKey other = (TimeZoneDisplayKey) obj;
+            if (object instanceof TimeZoneDisplayKey) {
+                final TimeZoneDisplayKey other = (TimeZoneDisplayKey) object;
                 return mTimeZone.equals(other.mTimeZone) && mStyle == other.mStyle && mLocale.equals(other.mLocale);
             }
             return false;

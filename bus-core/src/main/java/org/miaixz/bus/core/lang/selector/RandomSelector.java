@@ -56,8 +56,8 @@ public class RandomSelector<T> extends ArrayList<T> implements Selector<T> {
      */
     public RandomSelector(final Iterable<T> objList) {
         this();
-        for (final T obj : objList) {
-            add(obj);
+        for (final T object : objList) {
+            add(object);
         }
     }
 

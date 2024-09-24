@@ -27,14 +27,6 @@
 */
 package org.miaixz.bus.core.center.date.format;
 
-import org.miaixz.bus.core.center.date.format.parser.FastDateParser;
-import org.miaixz.bus.core.center.date.format.parser.PositionDateParser;
-import org.miaixz.bus.core.center.date.printer.FastDatePrinter;
-import org.miaixz.bus.core.center.date.printer.FormatPrinter;
-import org.miaixz.bus.core.lang.Fields;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.DateException;
-
 import java.text.DateFormat;
 import java.text.FieldPosition;
 import java.text.Format;
@@ -45,6 +37,14 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+
+import org.miaixz.bus.core.center.date.format.parser.FastDateParser;
+import org.miaixz.bus.core.center.date.format.parser.PositionDateParser;
+import org.miaixz.bus.core.center.date.printer.FastDatePrinter;
+import org.miaixz.bus.core.center.date.printer.FormatPrinter;
+import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.DateException;
 
 /**
  * FastFormat 是一个线程安全的 {@link java.text.SimpleDateFormat} 实现。
@@ -321,8 +321,8 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
     }
 
     @Override
-    public StringBuffer format(final Object obj, final StringBuffer toAppendTo, final FieldPosition pos) {
-        return toAppendTo.append(printer.format(obj));
+    public StringBuffer format(final Object object, final StringBuffer toAppendTo, final FieldPosition pos) {
+        return toAppendTo.append(printer.format(object));
     }
 
     @Override
@@ -416,11 +416,11 @@ public class FormatBuilder extends Format implements PositionDateParser, FormatP
     }
 
     @Override
-    public boolean equals(final Object obj) {
-        if (obj instanceof FormatBuilder == false) {
+    public boolean equals(final Object object) {
+        if (object instanceof FormatBuilder == false) {
             return false;
         }
-        final FormatBuilder other = (FormatBuilder) obj;
+        final FormatBuilder other = (FormatBuilder) object;
         // no need to check parser, as it has same invariants as printer
         return printer.equals(other.printer);
     }

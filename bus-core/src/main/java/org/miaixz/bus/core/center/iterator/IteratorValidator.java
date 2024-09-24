@@ -193,10 +193,10 @@ public class IteratorValidator {
         final Map<?, Integer> countMap2 = countMap(iter.iterator());
 
         // 遍历第一个Iterable中的每个元素
-        for (final Object obj : subIter) {
+        for (final Object object : subIter) {
             // 比较第一个Iterable中元素的出现次数和第二个Iterable中元素的出现次数
             // 如果第一个Iterable中元素的出现次数大于第二个Iterable中元素的出现次数，则不是子集合关系
-            if (MathKit.nullToZero(countMap1.get(obj)) > MathKit.nullToZero(countMap2.get(obj))) {
+            if (MathKit.nullToZero(countMap1.get(object)) > MathKit.nullToZero(countMap2.get(object))) {
                 return false;
             }
         }
@@ -254,9 +254,9 @@ public class IteratorValidator {
                 return false;
             }
 
-            for (final Object obj : iterable1) {
+            for (final Object object : iterable1) {
                 // 比较第一个Iterable中元素的出现次数和第二个Iterable中元素的出现次数
-                if (MathKit.nullToZero(countMap1.get(obj)) != MathKit.nullToZero(countMap2.get(obj))) {
+                if (MathKit.nullToZero(countMap1.get(object)) != MathKit.nullToZero(countMap2.get(object))) {
                     return false;
                 }
             }

@@ -44,31 +44,31 @@ public class SerializeKit {
     /**
      * 序列化后拷贝流的方式克隆 对象必须实现Serializable接口
      *
-     * @param <T> 对象类型
-     * @param obj 被克隆对象
+     * @param <T>    对象类型
+     * @param object 被克隆对象
      * @return 克隆后的对象
      * @throws InternalException IO异常和ClassNotFoundException封装
      */
-    public static <T> T clone(final T obj) {
-        if (!(obj instanceof Serializable)) {
+    public static <T> T clone(final T object) {
+        if (!(object instanceof Serializable)) {
             return null;
         }
-        return deserialize(serialize(obj));
+        return deserialize(serialize(object));
     }
 
     /**
      * 序列化 对象必须实现Serializable接口
      *
-     * @param <T> 对象类型
-     * @param obj 要被序列化的对象
+     * @param <T>    对象类型
+     * @param object 要被序列化的对象
      * @return 序列化后的字节码
      */
-    public static <T> byte[] serialize(final T obj) {
-        if (!(obj instanceof Serializable)) {
+    public static <T> byte[] serialize(final T object) {
+        if (!(object instanceof Serializable)) {
             return null;
         }
         final FastByteArrayOutputStream byteOut = new FastByteArrayOutputStream();
-        IoKit.write(byteOut, false, obj);
+        IoKit.write(byteOut, false, object);
         return byteOut.toByteArray();
     }
 

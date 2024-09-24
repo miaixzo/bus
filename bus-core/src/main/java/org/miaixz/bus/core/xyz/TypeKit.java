@@ -33,6 +33,7 @@ import java.util.*;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.reflect.ActualTypeMapperPool;
 import org.miaixz.bus.core.lang.reflect.ParameterizedTypeImpl;
+import org.miaixz.bus.core.lang.reflect.TypeReference;
 
 /**
  * 针对 {@link Type} 的工具类封装 最主要功能包括：
@@ -345,26 +346,31 @@ public class TypeKit {
      * @return 原始类，如果无法获取原始类，返回{@code null}
      */
     public static Class<?> getClass(final Type type) {
-        if (null != type) {
-            if (type instanceof Class) {
-                return (Class<?>) type;
-            } else if (type instanceof ParameterizedType) {
-                return (Class<?>) ((ParameterizedType) type).getRawType();
-            } else if (type instanceof TypeVariable) {
-                final Type[] bounds = ((TypeVariable<?>) type).getBounds();
-                if (bounds.length == 1) {
-                    return getClass(bounds[0]);
-                }
-            } else if (type instanceof WildcardType) {
-                final Type[] upperBounds = ((WildcardType) type).getUpperBounds();
-                if (upperBounds.length == 1) {
-                    return getClass(upperBounds[0]);
-                }
-            } else if (type instanceof GenericArrayType) {
-                return Array.newInstance(getClass(((GenericArrayType) type).getGenericComponentType()), 0).getClass();
-            }
+        if (null == type) {
+            return null;
         }
-        return null;
+
+        if (type instanceof Class) {
+            return (Class<?>) type;
+        } else if (type instanceof ParameterizedType) {
+            return (Class<?>) ((ParameterizedType) type).getRawType();
+        } else if (type instanceof TypeVariable) {
+            final Type[] bounds = ((TypeVariable<?>) type).getBounds();
+            if (bounds.length == 1) {
+                return getClass(bounds[0]);
+            }
+        } else if (type instanceof WildcardType) {
+            final Type[] upperBounds = ((WildcardType) type).getUpperBounds();
+            if (upperBounds.length == 1) {
+                return getClass(upperBounds[0]);
+            }
+        } else if (type instanceof GenericArrayType) {
+            return Array.newInstance(getClass(((GenericArrayType) type).getGenericComponentType()), 0).getClass();
+        } else if (type instanceof TypeReference) {
+            return getClass(((TypeReference<?>) type).getType());
+        }
+
+        throw new IllegalArgumentException("Unsupported Type: " + type.getClass().getName());
     }
 
     /**
@@ -748,7 +754,11 @@ public class TypeKit {
      * @param interfaceIndex 实现的第几个接口
      * @return {@link ParameterizedType}
      */
-    public static ParameterizedType toParameterizedType(final Type type, final int interfaceIndex) {
+    public static ParameterizedType toParameterizedType(Type type, final int interfaceIndex) {
+        if (type instanceof TypeReference) {
+            type = ((TypeReference<?>) type).getType();
+        }
+
         if (type instanceof ParameterizedType) {
             return (ParameterizedType) type;
         }
@@ -858,11 +868,22 @@ public class TypeKit {
         }
 
         if (typeVariable instanceof TypeVariable) {
-            return ActualTypeMapperPool.getActualType(type, (TypeVariable<?>) typeVariable);
+            return getActualType(type, (TypeVariable<?>) typeVariable);
         }
 
         // 没有需要替换的泛型变量，原样输出
         return typeVariable;
+    }
+
+    /**
+     * 获得泛型变量对应的泛型实际类型，如果此变量没有对应的实际类型，返回typeVariable
+     *
+     * @param type         类
+     * @param typeVariable 泛型变量
+     * @return 实际类型，可能为Class等
+     */
+    public static Type getActualType(final Type type, final TypeVariable<?> typeVariable) {
+        return ObjectKit.defaultIfNull(ActualTypeMapperPool.getActualType(type, typeVariable), typeVariable);
     }
 
     /**

@@ -55,9 +55,7 @@ public class SimpleClientAnchor implements ClientAnchor {
     private AnchorType anchorType = AnchorType.MOVE_AND_RESIZE;
 
     /**
-     * 构造<br>
-     * 通过定义左上角和右下角的单元格，创建一个ClientAnchor对象<br>
-     * 默认偏移为0，默认type为： {@link AnchorType#MOVE_AND_RESIZE}.
+     * 构造 通过定义左上角和右下角的单元格，创建一个ClientAnchor对象 默认偏移为0，默认type为： {@link AnchorType#MOVE_AND_RESIZE}.
      *
      * @param col1 指定起始的列，下标从0开始
      * @param row1 指定起始的行，下标从0开始
@@ -69,9 +67,7 @@ public class SimpleClientAnchor implements ClientAnchor {
     }
 
     /**
-     * 构造<br>
-     * 通过定义左上角和右下角的单元格，以及单元格中的偏移量，创建一个ClientAnchor对象<br>
-     * 默认type为： {@link AnchorType#MOVE_AND_RESIZE}.
+     * 构造 通过定义左上角和右下角的单元格，以及单元格中的偏移量，创建一个ClientAnchor对象 默认type为： {@link AnchorType#MOVE_AND_RESIZE}.
      *
      * @param dx1  起始单元格中的x偏移像素
      * @param dy1  起始单元格中的y偏移像素

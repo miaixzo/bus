@@ -25,7 +25,7 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.office.excel;
+package org.miaixz.bus.office.excel.xyz;
 
 import java.io.File;
 import java.io.InputStream;
@@ -36,7 +36,6 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.office.Builder;
 import org.miaixz.bus.office.excel.reader.ExcelReader;
-import org.miaixz.bus.office.excel.sax.ExcelSaxKit;
 import org.miaixz.bus.office.excel.sax.ExcelSaxReader;
 import org.miaixz.bus.office.excel.sax.handler.RowHandler;
 import org.miaixz.bus.office.excel.writer.BigExcelWriter;
@@ -49,16 +48,6 @@ import org.miaixz.bus.office.excel.writer.ExcelWriter;
  * @since Java 17+
  */
 public class ExcelKit {
-
-    /**
-     * xls的ContentType
-     */
-    public static final String XLS_CONTENT_TYPE = "application/vnd.ms-excel";
-
-    /**
-     * xlsx的ContentType
-     */
-    public static final String XLSX_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
     /**
      * 通过Sax方式读取Excel，同时支持03和07格式
@@ -254,7 +243,7 @@ public class ExcelKit {
 
     /**
      * 获得{@link ExcelWriter}，默认写出到第一个sheet 不传入写出的Excel文件路径，只能调用ExcelWriter#flush(OutputStream)方法写出到流
-     * 若写出到文件，还需调用{@link ExcelWriter#setDestFile(File)}方法自定义写出的文件，然后调用{@link ExcelWriter#flush()}方法写出到文件
+     * 若写出到文件，还需调用{@link ExcelWriter#setTargetFile(File)}方法自定义写出的文件，然后调用{@link ExcelWriter#flush()}方法写出到文件
      *
      * @return {@link ExcelWriter}
      */
@@ -268,7 +257,7 @@ public class ExcelKit {
 
     /**
      * 获得{@link ExcelWriter}，默认写出到第一个sheet 不传入写出的Excel文件路径，只能调用ExcelWriter#flush(OutputStream)方法写出到流
-     * 若写出到文件，还需调用{@link ExcelWriter#setDestFile(File)}方法自定义写出的文件，然后调用{@link ExcelWriter#flush()}方法写出到文件
+     * 若写出到文件，还需调用{@link ExcelWriter#setTargetFile(File)}方法自定义写出的文件，然后调用{@link ExcelWriter#flush()}方法写出到文件
      *
      * @param isXlsx 是否为xlsx格式
      * @return {@link ExcelWriter}
@@ -284,12 +273,12 @@ public class ExcelKit {
     /**
      * 获得{@link ExcelWriter}，默认写出到第一个sheet
      *
-     * @param destFilePath 目标文件路径
+     * @param templateFilePath 模板文件路径
      * @return {@link ExcelWriter}
      */
-    public static ExcelWriter getWriter(final String destFilePath) {
+    public static ExcelWriter getWriter(final String templateFilePath) {
         try {
-            return new ExcelWriter(destFilePath);
+            return new ExcelWriter(templateFilePath);
         } catch (final NoClassDefFoundError e) {
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
@@ -312,12 +301,12 @@ public class ExcelKit {
     /**
      * 获得{@link ExcelWriter}，默认写出到第一个sheet，名字为sheet1
      *
-     * @param destFile 目标文件
+     * @param templateFile 目标文件
      * @return {@link ExcelWriter}
      */
-    public static ExcelWriter getWriter(final File destFile) {
+    public static ExcelWriter getWriter(final File templateFile) {
         try {
-            return new ExcelWriter(destFile);
+            return new ExcelWriter(templateFile);
         } catch (final NoClassDefFoundError e) {
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
@@ -326,13 +315,13 @@ public class ExcelKit {
     /**
      * 获得{@link ExcelWriter}
      *
-     * @param destFilePath 目标文件路径
-     * @param sheetName    sheet表名
+     * @param templateFilePath 目标文件路径
+     * @param sheetName        sheet表名
      * @return {@link ExcelWriter}
      */
-    public static ExcelWriter getWriter(final String destFilePath, final String sheetName) {
+    public static ExcelWriter getWriter(final String templateFilePath, final String sheetName) {
         try {
-            return new ExcelWriter(destFilePath, sheetName);
+            return new ExcelWriter(templateFilePath, sheetName);
         } catch (final NoClassDefFoundError e) {
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
@@ -341,13 +330,13 @@ public class ExcelKit {
     /**
      * 获得{@link ExcelWriter}
      *
-     * @param destFile  目标文件
-     * @param sheetName sheet表名
+     * @param templateFilePath 目标文件
+     * @param sheetName        sheet表名
      * @return {@link ExcelWriter}
      */
-    public static ExcelWriter getWriter(final File destFile, final String sheetName) {
+    public static ExcelWriter getWriter(final File templateFilePath, final String sheetName) {
         try {
-            return new ExcelWriter(destFile, sheetName);
+            return new ExcelWriter(templateFilePath, sheetName);
         } catch (final NoClassDefFoundError e) {
             throw new DependencyException(ObjectKit.defaultIfNull(e.getCause(), e), Builder.NO_POI_ERROR_MSG);
         }
@@ -355,7 +344,7 @@ public class ExcelKit {
 
     /**
      * 获得{@link BigExcelWriter}，默认写出到第一个sheet 不传入写出的Excel文件路径，只能调用ExcelWriter#flush(OutputStream)方法写出到流
-     * 若写出到文件，还需调用{@link BigExcelWriter#setDestFile(File)}方法自定义写出的文件，然后调用{@link BigExcelWriter#flush()}方法写出到文件
+     * 若写出到文件，还需调用{@link BigExcelWriter#setTargetFile(File)}方法自定义写出的文件，然后调用{@link BigExcelWriter#flush()}方法写出到文件
      *
      * @return {@link BigExcelWriter}
      */
@@ -369,7 +358,7 @@ public class ExcelKit {
 
     /**
      * 获得{@link BigExcelWriter}，默认写出到第一个sheet 不传入写出的Excel文件路径，只能调用ExcelWriter#flush(OutputStream)方法写出到流
-     * 若写出到文件，还需调用{@link BigExcelWriter#setDestFile(File)}方法自定义写出的文件，然后调用{@link BigExcelWriter#flush()}方法写出到文件
+     * 若写出到文件，还需调用{@link BigExcelWriter#setTargetFile(File)}方法自定义写出的文件，然后调用{@link BigExcelWriter#flush()}方法写出到文件
      *
      * @param rowAccessWindowSize 在内存中的行数
      * @return {@link BigExcelWriter}

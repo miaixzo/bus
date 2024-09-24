@@ -490,7 +490,7 @@ public class Convert {
      */
     public static <E extends Enum<E>> E toEnum(final Class<E> clazz, final Object value, final E defaultValue) {
         try {
-            return (E) EnumConverter.INSTANCE.convert(clazz, value);
+            return EnumConverter.INSTANCE.convert(clazz, value);
         } catch (final Exception ignore) {
             return defaultValue;
         }

@@ -590,41 +590,41 @@ public class IteratorKit extends IteratorValidator {
      * <li>object - 单对象的{@link ArrayIterator}</li>
      * </ul>
      *
-     * @param obj 可以获取{@link Iterator}的对象
+     * @param object 可以获取{@link Iterator}的对象
      * @return {@link Iterator}，如果提供对象为{@code null}，返回{@code null}
      */
-    public static Iterator<?> getIter(final Object obj) {
-        if (obj == null) {
+    public static Iterator<?> getIter(final Object object) {
+        if (object == null) {
             return null;
-        } else if (obj instanceof Iterator) {
-            return (Iterator<?>) obj;
-        } else if (obj instanceof Iterable) {
-            return ((Iterable<?>) obj).iterator();
-        } else if (ArrayKit.isArray(obj)) {
-            return new ArrayIterator<>(obj);
-        } else if (obj instanceof Enumeration) {
-            return new EnumerationIterator<>((Enumeration<?>) obj);
-        } else if (obj instanceof Map) {
-            return ((Map<?, ?>) obj).entrySet().iterator();
-        } else if (obj instanceof NodeList) {
-            return new NodeListIterator((NodeList) obj);
-        } else if (obj instanceof Node) {
+        } else if (object instanceof Iterator) {
+            return (Iterator<?>) object;
+        } else if (object instanceof Iterable) {
+            return ((Iterable<?>) object).iterator();
+        } else if (ArrayKit.isArray(object)) {
+            return new ArrayIterator<>(object);
+        } else if (object instanceof Enumeration) {
+            return new EnumerationIterator<>((Enumeration<?>) object);
+        } else if (object instanceof Map) {
+            return ((Map<?, ?>) object).entrySet().iterator();
+        } else if (object instanceof NodeList) {
+            return new NodeListIterator((NodeList) object);
+        } else if (object instanceof Node) {
             // 遍历子节点
-            return new NodeListIterator(((Node) obj).getChildNodes());
-        } else if (obj instanceof Dictionary) {
-            return new EnumerationIterator<>(((Dictionary<?, ?>) obj).elements());
+            return new NodeListIterator(((Node) object).getChildNodes());
+        } else if (object instanceof Dictionary) {
+            return new EnumerationIterator<>(((Dictionary<?, ?>) object).elements());
         }
 
         // 反射获取
         try {
-            final Object iterator = MethodKit.invoke(obj, "iterator");
+            final Object iterator = MethodKit.invoke(object, "iterator");
             if (iterator instanceof Iterator) {
                 return (Iterator<?>) iterator;
             }
         } catch (final RuntimeException ignore) {
             // ignore
         }
-        return new ArrayIterator<>(new Object[] { obj });
+        return new ArrayIterator<>(new Object[] { object });
     }
 
 }

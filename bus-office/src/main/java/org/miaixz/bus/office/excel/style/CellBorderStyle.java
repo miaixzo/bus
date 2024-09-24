@@ -54,6 +54,19 @@ public class CellBorderStyle implements Serializable {
     private Short leftColor;
 
     /**
+     * 根据CellStyle创建单元格边框样式对象。
+     *
+     * @param cellStyle 单元格样式
+     * @return CellBorderStyle
+     */
+    public static CellBorderStyle of(final CellStyle cellStyle) {
+        return new CellBorderStyle().setTopStyle(cellStyle.getBorderTop()).setTopColor(cellStyle.getTopBorderColor())
+                .setRightStyle(cellStyle.getBorderRight()).setRightColor(cellStyle.getRightBorderColor())
+                .setBottomStyle(cellStyle.getBorderBottom()).setBottomColor(cellStyle.getBottomBorderColor())
+                .setLeftStyle(cellStyle.getBorderLeft()).setLeftColor(cellStyle.getLeftBorderColor());
+    }
+
+    /**
      * 创建单元格边框样式对象，四边框样式保持一致。
      *
      * @param borderStyle 边框样式

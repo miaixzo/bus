@@ -73,11 +73,11 @@ public class StringKit extends CharsBacker {
      * 2、对象数组会调用Arrays.toString方法
      * </pre>
      *
-     * @param obj 对象
+     * @param object 对象
      * @return 字符串
      */
-    public static String toString(final Object obj) {
-        return toString(obj, Charset.UTF_8);
+    public static String toString(final Object object) {
+        return toString(object, Charset.UTF_8);
     }
 
     /**
@@ -89,30 +89,30 @@ public class StringKit extends CharsBacker {
      * 	 3、对象数组会调用Arrays.toString方法
      * </pre>
      *
-     * @param obj     对象
+     * @param object  对象
      * @param charset 字符集
      * @return 字符串
      */
-    public static String toString(final Object obj, final java.nio.charset.Charset charset) {
-        if (null == obj) {
+    public static String toString(final Object object, final java.nio.charset.Charset charset) {
+        if (null == object) {
             return null;
         }
 
-        if (obj instanceof String) {
-            return (String) obj;
-        } else if (obj instanceof char[]) {
-            return new String((char[]) obj);
-        } else if (obj instanceof byte[]) {
-            return toString((byte[]) obj, charset);
-        } else if (obj instanceof Byte[]) {
-            return toString((Byte[]) obj, charset);
-        } else if (obj instanceof ByteBuffer) {
-            return toString((ByteBuffer) obj, charset);
-        } else if (ArrayKit.isArray(obj)) {
-            return ArrayKit.toString(obj);
+        if (object instanceof String) {
+            return (String) object;
+        } else if (object instanceof char[]) {
+            return new String((char[]) object);
+        } else if (object instanceof byte[]) {
+            return toString((byte[]) object, charset);
+        } else if (object instanceof Byte[]) {
+            return toString((Byte[]) object, charset);
+        } else if (object instanceof ByteBuffer) {
+            return toString((ByteBuffer) object, charset);
+        } else if (ArrayKit.isArray(object)) {
+            return ArrayKit.toString(object);
         }
 
-        return obj.toString();
+        return object.toString();
     }
 
     /**

@@ -92,12 +92,12 @@ public class SmoothWeightSelector<T> implements Selector<T> {
     /**
      * 增加对象
      *
-     * @param obj    对象
+     * @param object 对象
      * @param weight 权重
      * @return this
      */
-    public SmoothWeightSelector<T> add(final T obj, final int weight) {
-        return add(new SmoothWeightObject<>(obj, weight));
+    public SmoothWeightSelector<T> add(final T object, final int weight) {
+        return add(new SmoothWeightObject<>(object, weight));
     }
 
     /**
@@ -130,12 +130,12 @@ public class SmoothWeightSelector<T> implements Selector<T> {
         int totalWeight = 0;
         SmoothWeightObject<T> selected = null;
 
-        for (final SmoothWeightObject<T> obj : objList) {
-            totalWeight += obj.getWeight();
-            final int currentWeight = obj.getCurrentWeight() + obj.getWeight();
-            obj.setCurrentWeight(currentWeight);
+        for (final SmoothWeightObject<T> object : objList) {
+            totalWeight += object.getWeight();
+            final int currentWeight = object.getCurrentWeight() + object.getWeight();
+            object.setCurrentWeight(currentWeight);
             if (null == selected || currentWeight > selected.getCurrentWeight()) {
-                selected = obj;
+                selected = object;
             }
         }
 

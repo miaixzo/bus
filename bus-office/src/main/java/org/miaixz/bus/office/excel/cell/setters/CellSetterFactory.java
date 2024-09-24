@@ -34,7 +34,6 @@ import java.util.Date;
 
 import org.apache.poi.ss.usermodel.Hyperlink;
 import org.apache.poi.ss.usermodel.RichTextString;
-import org.miaixz.bus.office.excel.cell.CellSetter;
 
 /**
  * {@link CellSetter} 简单静态工厂类，用于根据值类型创建对应的{@link CellSetter}

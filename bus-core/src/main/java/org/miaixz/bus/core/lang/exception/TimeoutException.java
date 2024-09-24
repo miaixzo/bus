@@ -35,7 +35,7 @@ package org.miaixz.bus.core.lang.exception;
  */
 public class TimeoutException extends UncheckedException {
 
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -1L;
 
     /**
      * 构造

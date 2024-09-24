@@ -49,6 +49,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.office.excel.sax.handler.RowHandler;
+import org.miaixz.bus.office.excel.xyz.ExcelSaxKit;
 
 /**
  * Excel2003格式的事件-用户模型方式读取器，统一将此归类为Sax读取 参考：http://www.cnblogs.com/wshsdlau/p/5643862.html
@@ -63,6 +64,14 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      */
     private final boolean isOutputFormulaValues = true;
     /**
+     * Sheet边界记录，此Record中可以获得Sheet名
+     */
+    private final List<BoundSheetRecord> boundSheetRecords = new ArrayList<>();
+    /**
+     * 行处理器
+     */
+    private final RowHandler rowHandler;
+    /**
      * 用于解析公式
      */
     private SheetRecordCollectingListener workbookBuildingListener;
@@ -74,21 +83,12 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      * 静态字符串表
      */
     private SSTRecord sstRecord;
-
     private FormatTrackingHSSFListener formatListener;
-
-    /**
-     * Sheet边界记录，此Record中可以获得Sheet名
-     */
-    private final List<BoundSheetRecord> boundSheetRecords = new ArrayList<>();
-
     private boolean isOutputNextStringRecord;
-
     /**
      * 存储行记录的容器
      */
     private List<Object> rowCellList = new ArrayList<>();
-
     /**
      * 自定义需要处理的sheet编号，如果-1表示处理所有sheet
      */
@@ -97,16 +97,10 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
      * sheet名称，主要用于使用sheet名读取的情况
      */
     private String sheetName;
-
     /**
      * 当前rid索引
      */
     private int curRid = -1;
-
-    /**
-     * 行处理器
-     */
-    private final RowHandler rowHandler;
 
     /**
      * 构造

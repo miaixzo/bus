@@ -42,13 +42,13 @@ import org.miaixz.bus.core.xyz.ReflectKit;
  * 字段调用器 通过反射读取或赋值字段 读取字段值：
  * 
  * <pre>{@code
- * FieldInvoker.of(Field).invoke(obj);
+ * FieldInvoker.of(Field).invoke(object);
  * }</pre>
  * <p>
  * 赋值字段值：
  * 
  * <pre>{@code
- * FieldInvoker.of(Field).invoke(obj, value);
+ * FieldInvoker.of(Field).invoke(object, value);
  * }</pre>
  * 
  * @author Kimi Liu
@@ -58,6 +58,7 @@ public class FieldInvoker implements Invoker {
 
     private final Field field;
     private Converter converter;
+
     /**
      * 构造
      *
@@ -128,23 +129,23 @@ public class FieldInvoker implements Invoker {
     /**
      * 获取字段值
      *
-     * @param obj 对象，static字段则此字段为null
+     * @param object 对象，static字段则此字段为null
      * @return 字段值
      * @throws InternalException 包装IllegalAccessException异常
      */
-    public Object invokeGet(Object obj) throws InternalException {
+    public Object invokeGet(Object object) throws InternalException {
         if (null == field) {
             return null;
         }
-        if (obj instanceof Class) {
+        if (object instanceof Class) {
             // 静态字段获取时对象为null
-            obj = null;
+            object = null;
         }
 
         ReflectKit.setAccessible(field);
         final Object result;
         try {
-            result = field.get(obj);
+            result = field.get(object);
         } catch (final IllegalAccessException e) {
             throw new InternalException(e, "IllegalAccess for {}.{}", field.getDeclaringClass(), field.getName());
         }
@@ -154,17 +155,17 @@ public class FieldInvoker implements Invoker {
     /**
      * 设置字段值，传入的字段值必须和字段类型一致，否则抛出异常
      *
-     * @param obj   对象，如果是static字段，此参数为null
-     * @param value 值，值类型必须与字段类型匹配
+     * @param object 对象，如果是static字段，此参数为null
+     * @param value  值，值类型必须与字段类型匹配
      * @throws InternalException 包装IllegalAccessException异常
      */
-    public void invokeSet(final Object obj, final Object value) throws InternalException {
+    public void invokeSet(final Object object, final Object value) throws InternalException {
         ReflectKit.setAccessible(field);
         try {
-            field.set(obj instanceof Class ? null : obj, convertValue(value));
+            field.set(object instanceof Class ? null : object, convertValue(value));
         } catch (final IllegalAccessException e) {
-            throw new InternalException(e, "IllegalAccess for [{}.{}]", null == obj ? field.getDeclaringClass() : obj,
-                    field.getName());
+            throw new InternalException(e, "IllegalAccess for [{}.{}]",
+                    null == object ? field.getDeclaringClass() : object, field.getName());
         }
     }
 

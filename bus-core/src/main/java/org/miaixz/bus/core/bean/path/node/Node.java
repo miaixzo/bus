@@ -35,21 +35,4 @@ package org.miaixz.bus.core.bean.path.node;
  */
 public interface Node {
 
-    /**
-     * 获取Bean对应节点的值
-     *
-     * @param bean bean对象
-     * @return 节点值
-     */
-    Object getValue(Object bean);
-
-    /**
-     * 设置节点值
-     *
-     * @param bean  bean对象
-     * @param value 节点值
-     * @return bean对象。如果在原Bean对象基础上设置值，返回原Bean，否则返回新的Bean
-     */
-    Object setValue(Object bean, Object value);
-
 }

@@ -29,7 +29,6 @@ package org.miaixz.bus.office.excel.cell.editors;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.office.excel.cell.CellEditor;
 
 /**
  * 去除String类型的单元格值两边的空格

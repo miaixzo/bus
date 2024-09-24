@@ -539,18 +539,6 @@ public class CollKit extends CollectionStream {
      * @return 集合类型对应的实例
      */
     public static <T> Collection<T> create(final Class<?> collectionType) {
-        return create(collectionType, null);
-    }
-
-    /**
-     * 创建新的集合对象，返回具体的泛型集合
-     *
-     * @param <T>            集合元素类型，rawtype 如 ArrayList.class, EnumMap.class ...
-     * @param collectionType 集合类型
-     * @param elementType    集合元素类，只用于EnumSet创建，如果创建EnumSet，则此参数必须非空
-     * @return 集合类型对应的实例
-     */
-    public static <T> Collection<T> create(final Class<?> collectionType, final Class<T> elementType) {
         final Collection<T> list;
         if (collectionType.isAssignableFrom(AbstractCollection.class)) {
             // 抽象集合默认使用ArrayList
@@ -570,8 +558,6 @@ public class CollKit extends CollectionStream {
                 }
                 return CompareKit.compare(o1.toString(), o2.toString());
             });
-        } else if (collectionType.isAssignableFrom(EnumSet.class)) {
-            list = (Collection<T>) EnumSet.noneOf((Class<Enum>) Assert.notNull(elementType));
         }
 
         // List
@@ -595,6 +581,21 @@ public class CollKit extends CollectionStream {
             }
         }
         return list;
+    }
+
+    /**
+     * 创建新的集合对象，返回具体的泛型集合
+     *
+     * @param <T>            集合元素类型，rawtype 如 ArrayList.class, EnumMap.class ...
+     * @param collectionType 集合类型
+     * @param elementType    集合元素类，只用于EnumSet创建，如果创建EnumSet，则此参数必须非空
+     * @return 集合类型对应的实例
+     */
+    public static <T> Collection<T> create(final Class<?> collectionType, final Class<T> elementType) {
+        if (EnumSet.class.isAssignableFrom(collectionType)) {
+            return (Collection<T>) EnumSet.noneOf((Class<Enum>) Assert.notNull(elementType));
+        }
+        return create(collectionType);
     }
 
     /**
@@ -1642,7 +1643,7 @@ public class CollKit extends CollectionStream {
      * @param iterable {@link Iterable}
      * @param consumer {@link BiConsumerX} 遍历的每条数据处理器
      */
-    public static <T> void forEach(final Iterable<T> iterable, final BiConsumerX<T, Integer> consumer) {
+    public static <T> void forEach(final Iterable<T> iterable, final BiConsumerX<Integer, T> consumer) {
         if (iterable == null) {
             return;
         }
@@ -1656,13 +1657,13 @@ public class CollKit extends CollectionStream {
      * @param iterator {@link Iterator}
      * @param consumer {@link BiConsumerX} 遍历的每条数据处理器
      */
-    public static <T> void forEach(final Iterator<T> iterator, final BiConsumerX<T, Integer> consumer) {
+    public static <T> void forEach(final Iterator<T> iterator, final BiConsumerX<Integer, T> consumer) {
         if (iterator == null) {
             return;
         }
         int index = 0;
         while (iterator.hasNext()) {
-            consumer.accept(iterator.next(), index);
+            consumer.accept(index, iterator.next());
             index++;
         }
     }
@@ -1674,13 +1675,13 @@ public class CollKit extends CollectionStream {
      * @param enumeration {@link Enumeration}
      * @param consumer    {@link BiConsumerX} 遍历的每条数据处理器
      */
-    public static <T> void forEach(final Enumeration<T> enumeration, final BiConsumerX<T, Integer> consumer) {
+    public static <T> void forEach(final Enumeration<T> enumeration, final BiConsumerX<Integer, T> consumer) {
         if (enumeration == null) {
             return;
         }
         int index = 0;
         while (enumeration.hasMoreElements()) {
-            consumer.accept(enumeration.nextElement(), index);
+            consumer.accept(index, enumeration.nextElement());
             index++;
         }
     }
@@ -1693,13 +1694,13 @@ public class CollKit extends CollectionStream {
      * @param map        {@link Map}
      * @param kvConsumer {@link SerConsumer3} 遍历的每条数据处理器
      */
-    public static <K, V> void forEach(final Map<K, V> map, final SerConsumer3<K, V, Integer> kvConsumer) {
+    public static <K, V> void forEach(final Map<K, V> map, final SerConsumer3<Integer, K, V> kvConsumer) {
         if (map == null) {
             return;
         }
         int index = 0;
         for (final Entry<K, V> entry : map.entrySet()) {
-            kvConsumer.accept(entry.getKey(), entry.getValue(), index);
+            kvConsumer.accept(index, entry.getKey(), entry.getValue());
             index++;
         }
     }

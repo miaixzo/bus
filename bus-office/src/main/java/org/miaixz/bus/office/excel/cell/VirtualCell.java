@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.office.excel.cell;
 
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
+
 import org.apache.poi.ss.SpreadsheetVersion;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.miaixz.bus.office.excel.cell.values.FormulaCellValue;
-
-import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.Date;
+import org.miaixz.bus.office.excel.xyz.CellKit;
 
 /**
  * 虚拟单元格，表示一个单元格的位置、值和样式，但是并非实际创建的单元格 注意：虚拟单元格设置值和样式均不会在实际工作簿中生效
@@ -71,6 +72,21 @@ public class VirtualCell extends CellBase {
     /**
      * 构造
      *
+     * @param cell  参照单元格
+     * @param x     新的列号，从0开始
+     * @param y     新的行号，从0开始
+     * @param value 新值
+     */
+    public VirtualCell(final Cell cell, final int x, final int y, final Object value) {
+        this(cell.getRow(), x, y);
+        this.style = cell.getCellStyle();
+        this.comment = cell.getCellComment();
+        CellKit.setCellValue(this, value);
+    }
+
+    /**
+     * 构造
+     *
      * @param row 行
      * @param y   行号，从0开始
      * @param x   列号，从0开始
@@ -100,31 +116,37 @@ public class VirtualCell extends CellBase {
 
     @Override
     protected void setCellValueImpl(final double value) {
+        this.cellType = CellType.NUMERIC;
         this.value = value;
     }
 
     @Override
     protected void setCellValueImpl(final Date value) {
+        this.cellType = CellType.NUMERIC;
         this.value = value;
     }
 
     @Override
     protected void setCellValueImpl(final LocalDateTime value) {
+        this.cellType = CellType.NUMERIC;
         this.value = value;
     }
 
     @Override
     protected void setCellValueImpl(final Calendar value) {
+        this.cellType = CellType.NUMERIC;
         this.value = value;
     }
 
     @Override
     protected void setCellValueImpl(final String value) {
+        this.cellType = CellType.STRING;
         this.value = value;
     }
 
     @Override
     protected void setCellValueImpl(final RichTextString value) {
+        this.cellType = CellType.STRING;
         this.value = value;
     }
 
@@ -201,11 +223,13 @@ public class VirtualCell extends CellBase {
 
     @Override
     public void setCellValue(final boolean value) {
+        this.cellType = CellType.BOOLEAN;
         this.value = value;
     }
 
     @Override
     public void setCellErrorValue(final byte value) {
+        this.cellType = CellType.ERROR;
         this.value = value;
     }
 

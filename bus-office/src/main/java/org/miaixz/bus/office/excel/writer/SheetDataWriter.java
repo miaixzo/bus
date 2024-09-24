@@ -27,25 +27,26 @@
 */
 package org.miaixz.bus.office.excel.writer;
 
-import org.apache.poi.common.usermodel.Hyperlink;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
-import org.miaixz.bus.core.center.map.multi.Table;
-import org.miaixz.bus.core.xyz.BeanKit;
-import org.miaixz.bus.core.xyz.ListKit;
-import org.miaixz.bus.core.xyz.MapKit;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.office.excel.RowKit;
-import org.miaixz.bus.office.excel.cell.CellEditor;
-import org.miaixz.bus.office.excel.cell.CellKit;
-import org.miaixz.bus.office.excel.style.StyleSet;
-
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import org.apache.poi.common.usermodel.Hyperlink;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellReference;
+import org.miaixz.bus.core.center.map.multi.Table;
+import org.miaixz.bus.core.xyz.*;
+import org.miaixz.bus.office.excel.RowGroup;
+import org.miaixz.bus.office.excel.cell.editors.CellEditor;
+import org.miaixz.bus.office.excel.style.StyleSet;
+import org.miaixz.bus.office.excel.xyz.CellKit;
+import org.miaixz.bus.office.excel.xyz.RowKit;
 
 /**
  * Sheet数据写出器 此对象只封装将数据写出到Sheet中，并不刷新到文件
@@ -71,7 +72,7 @@ public class SheetDataWriter {
     /**
      * 标题项对应列号缓存，每次写标题更新此缓存 此缓存用于用户多次write时，寻找标题位置
      */
-    private Map<String, Integer> headLocationCache;
+    private Map<String, Integer> headerLocationCache;
 
     /**
      * 构造
@@ -95,6 +96,71 @@ public class SheetDataWriter {
      */
     public SheetDataWriter setStyleSet(final StyleSet styleSet) {
         this.styleSet = styleSet;
+        return this;
+    }
+
+    /**
+     * 设置标题位置映射缓存
+     *
+     * @param headerLocationCache 标题位置映射缓存，key为表明名，value为列号
+     * @return this
+     */
+    public SheetDataWriter setHeaderLocationCache(final Map<String, Integer> headerLocationCache) {
+        this.headerLocationCache = headerLocationCache;
+        return this;
+    }
+
+    /**
+     * 写出分组标题行
+     *
+     * @param x        开始的列，下标从0开始
+     * @param y        开始的行，下标从0开始
+     * @param rowCount 当前分组行所占行数，此数值为标题占用行数+子分组占用的最大行数，不确定传1
+     * @param rowGroup 分组行
+     * @return this
+     */
+    public SheetDataWriter writeHeader(int x, int y, int rowCount, final RowGroup rowGroup) {
+
+        // 写主标题
+        final String name = rowGroup.getName();
+        final List<RowGroup> children = rowGroup.getChildren();
+        if (null != name) {
+            if (CollKit.isNotEmpty(children)) {
+                // 有子节点，标题行只占用除子节点占用的行数
+                rowCount = Math.max(1, rowCount - rowGroup.childrenMaxRowCount());
+                // nameRowCount = 1;
+            }
+
+            // 如果无子节点，则标题行占用所有行
+            final CellRangeAddress cellRangeAddresses = CellKit.of(y, y + rowCount - 1, x,
+                    x + rowGroup.maxColumnCount() - 1);
+            CellStyle style = rowGroup.getStyle();
+            if (null == style && null != this.styleSet) {
+                style = styleSet.getStyleFor(
+                        new CellReference(cellRangeAddresses.getFirstRow(), cellRangeAddresses.getFirstColumn()), name,
+                        true);
+            }
+            CellKit.mergingCells(this.sheet, cellRangeAddresses, style);
+            final Cell cell = CellKit.getOrCreateCell(this.sheet, cellRangeAddresses.getFirstColumn(),
+                    cellRangeAddresses.getFirstRow());
+            if (null != cell) {
+                CellKit.setCellValue(cell, name, style, this.config.getCellEditor());
+            }
+
+            // 子分组写到下N行
+            y += rowCount;
+        }
+
+        // 写分组
+        final int childrenMaxRowCount = rowGroup.childrenMaxRowCount();
+        if (childrenMaxRowCount > 0) {
+            for (final RowGroup child : children) {
+                // 子分组行高填充为当前分组最大值
+                writeHeader(x, y, childrenMaxRowCount, child);
+                x += child.maxColumnCount();
+            }
+        }
+
         return this;
     }
 
@@ -124,6 +190,7 @@ public class SheetDataWriter {
                 rowMap = (Map) rowBean;
             }
         } else if (rowBean instanceof Iterable) {
+            // issue#2398@Github
             // MapWrapper由于实现了Iterable接口，应该优先按照Map处理
             return writeRow((Iterable<?>) rowBean);
         } else if (rowBean instanceof Hyperlink) {
@@ -160,17 +227,17 @@ public class SheetDataWriter {
         final Table<?, ?, ?> aliasTable = this.config.aliasTable(rowMap);
         if (isWriteKeyAsHead) {
             // 写出标题行，并记录标题别名和列号的关系
-            writeHeadRow(aliasTable.columnKeys());
+            writeHeaderRow(aliasTable.columnKeys());
             // 记录原数据key和别名对应列号
             int i = 0;
             for (final Object key : aliasTable.rowKeySet()) {
-                this.headLocationCache.putIfAbsent(StringKit.toString(key), i);
+                this.headerLocationCache.putIfAbsent(StringKit.toString(key), i);
                 i++;
             }
         }
 
         // 如果已经写出标题行，根据标题行找对应的值写入
-        if (MapKit.isNotEmpty(this.headLocationCache)) {
+        if (MapKit.isNotEmpty(this.headerLocationCache)) {
             final Row row = RowKit.getOrCreateRow(this.sheet, this.currentRow.getAndIncrement());
             final CellEditor cellEditor = this.config.getCellEditor();
             Integer columnIndex;
@@ -188,28 +255,28 @@ public class SheetDataWriter {
     }
 
     /**
-     * 写出一行标题数据 本方法只是将数据写入Workbook中的Sheet，并不写出到文件 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动+1
+     * 写出一行标题数据，标题数据不替换别名 本方法只是将数据写入Workbook中的Sheet，并不写出到文件
+     * 写出的起始行为当前行号，可使用{@link #getCurrentRow()}方法调用，根据写出的的行数，当前行号自动+1
      *
      * @param rowData 一行的数据
      * @return this
      */
-    public SheetDataWriter writeHeadRow(final Iterable<?> rowData) {
-        this.headLocationCache = new SafeConcurrentHashMap<>();
-
+    public SheetDataWriter writeHeaderRow(final Iterable<?> rowData) {
         final int rowNum = this.currentRow.getAndIncrement();
         final Row row = this.config.insertRow ? this.sheet.createRow(rowNum)
                 : RowKit.getOrCreateRow(this.sheet, rowNum);
 
+        final Map<String, Integer> headerLocationCache = new LinkedHashMap<>();
         final CellEditor cellEditor = this.config.getCellEditor();
         int i = 0;
         Cell cell;
         for (final Object value : rowData) {
             cell = CellKit.getOrCreateCell(row, i);
             CellKit.setCellValue(cell, value, this.styleSet, true, cellEditor);
-            this.headLocationCache.put(StringKit.toString(value), i);
+            headerLocationCache.put(StringKit.toString(value), i);
             i++;
         }
-        return this;
+        return setHeaderLocationCache(headerLocationCache);
     }
 
     /**
@@ -283,10 +350,10 @@ public class SheetDataWriter {
      */
     private Integer getColumnIndex(final Table.Cell<?, ?, ?> cell) {
         // 首先查找原名对应的列号
-        Integer location = this.headLocationCache.get(StringKit.toString(cell.getRowKey()));
+        Integer location = this.headerLocationCache.get(StringKit.toString(cell.getRowKey()));
         if (null == location) {
             // 未找到，则查找别名对应的列号
-            location = this.headLocationCache.get(StringKit.toString(cell.getColumnKey()));
+            location = this.headerLocationCache.get(StringKit.toString(cell.getColumnKey()));
         }
         return location;
     }

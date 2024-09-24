@@ -52,6 +52,19 @@ public interface Converter {
     Object convert(Type targetType, Object value) throws ConvertException;
 
     /**
+     * 转换为指定类型 如果类型无法确定，将读取默认值的类型做为目标类型
+     *
+     * @param <T>        目标类型
+     * @param targetType 目标类型
+     * @param value      原始值，如果对象实现了此接口，则value为this
+     * @return 转换后的值
+     * @throws ConvertException 转换无法正常完成或转换异常时抛出此异常
+     */
+    default <T> T convert(final Class<T> targetType, final Object value) throws ConvertException {
+        return (T) convert((Type) targetType, value);
+    }
+
+    /**
      * 转换值为指定类型，可选是否不抛异常转换 当转换失败时返回默认值
      *
      * @param <T>          目标类型

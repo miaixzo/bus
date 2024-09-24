@@ -34,7 +34,6 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.office.excel.ExcelImgType;
 import org.miaixz.bus.office.excel.SimpleClientAnchor;
-import org.miaixz.bus.office.excel.cell.CellSetter;
 import org.miaixz.bus.office.excel.writer.ExcelDrawing;
 
 /**

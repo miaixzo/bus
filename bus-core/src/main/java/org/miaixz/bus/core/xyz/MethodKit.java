@@ -113,18 +113,18 @@ public class MethodKit {
      * 此方法为精准获取方法名，即方法名和参数数量和类型必须一致，否则返回{@code null}。
      * </p>
      *
-     * @param obj        被查找的对象，如果为{@code null}返回{@code null}
+     * @param object     被查找的对象，如果为{@code null}返回{@code null}
      * @param methodName 方法名，如果为空字符串返回{@code null}
      * @param args       参数
      * @return 方法
      * @throws SecurityException 无访问权限抛出异常
      */
-    public static Method getMethodOfObject(final Object obj, final String methodName, final Object... args)
+    public static Method getMethodOfObject(final Object object, final String methodName, final Object... args)
             throws SecurityException {
-        if (null == obj || StringKit.isBlank(methodName)) {
+        if (null == object || StringKit.isBlank(methodName)) {
             return null;
         }
-        return getMethod(obj.getClass(), methodName, ClassKit.getClasses(args));
+        return getMethod(object.getClass(), methodName, ClassKit.getClasses(args));
     }
 
     /**
@@ -574,15 +574,15 @@ public class MethodKit {
      * </pre>
      *
      * @param <T>    返回对象类型
-     * @param obj    对象，如果执行静态方法，此值为{@code null}
+     * @param object 对象，如果执行静态方法，此值为{@code null}
      * @param method 方法（对象方法或static方法都可）
      * @param args   参数对象
      * @return 结果
      * @throws InternalException 一些列异常的包装
      */
-    public static <T> T invokeWithCheck(final Object obj, final Method method, final Object... args)
+    public static <T> T invokeWithCheck(final Object object, final Method method, final Object... args)
             throws InternalException {
-        return MethodInvoker.of(method).setCheckArgs(true).invoke(obj, args);
+        return MethodInvoker.of(method).setCheckArgs(true).invoke(object, args);
     }
 
     /**
@@ -598,38 +598,39 @@ public class MethodKit {
      * </pre>
      *
      * @param <T>    返回对象类型
-     * @param obj    对象，如果执行静态方法，此值为{@code null}
+     * @param object 对象，如果执行静态方法，此值为{@code null}
      * @param method 方法（对象方法或static方法都可）
      * @param args   参数对象
      * @return 结果
      * @throws InternalException 一些列异常的包装
      * @see MethodInvoker#invoke(Object, Method, Object...)
      */
-    public static <T> T invoke(final Object obj, final Method method, final Object... args) throws InternalException {
-        return MethodInvoker.of(method).invoke(obj, args);
+    public static <T> T invoke(final Object object, final Method method, final Object... args)
+            throws InternalException {
+        return MethodInvoker.of(method).invoke(object, args);
     }
 
     /**
      * 执行对象中指定方法 如果需要传递的参数为null,请使用NullWrapperBean来传递,不然会丢失类型信息
      *
      * @param <T>        返回对象类型
-     * @param obj        方法所在对象
+     * @param object     方法所在对象
      * @param methodName 方法名
      * @param args       参数列表
      * @return 执行结果
      * @throws InternalException IllegalAccessException包装
      * @see NullWrapper
      */
-    public static <T> T invoke(final Object obj, final String methodName, final Object... args)
+    public static <T> T invoke(final Object object, final String methodName, final Object... args)
             throws InternalException {
-        Assert.notNull(obj, "Object to get method must be not null!");
+        Assert.notNull(object, "Object to get method must be not null!");
         Assert.notBlank(methodName, "Method name must be not blank!");
 
-        final Method method = getMethodOfObject(obj, methodName, args);
+        final Method method = getMethodOfObject(object, methodName, args);
         if (null == method) {
-            throw new InternalException("No such method: [{}] from [{}]", methodName, obj.getClass());
+            throw new InternalException("No such method: [{}] from [{}]", methodName, object.getClass());
         }
-        return invoke(obj, method, args);
+        return invoke(object, method, args);
     }
 
     /**

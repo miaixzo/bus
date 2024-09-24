@@ -97,15 +97,16 @@ public class MethodInvoker implements Invoker {
      * </pre>
      *
      * @param <T>    返回结果类型
-     * @param obj    接口的子对象或代理对象
+     * @param object 接口的子对象或代理对象
      * @param method 方法
      * @param args   参数，自动根据{@link Method}定义类型转换
      * @return 结果
      * @throws InternalException 执行异常包装
      */
-    public static <T> T invoke(final Object obj, final Method method, final Object... args) throws InternalException {
+    public static <T> T invoke(final Object object, final Method method, final Object... args)
+            throws InternalException {
         Assert.notNull(method, "Method must be not null!");
-        return invokeExact(obj, method, MethodKit.actualArgs(method, args));
+        return invokeExact(object, method, MethodKit.actualArgs(method, args));
     }
 
     /**
@@ -123,13 +124,13 @@ public class MethodInvoker implements Invoker {
      * </pre>
      *
      * @param <T>    返回结果类型
-     * @param obj    接口的子对象或代理对象
+     * @param object 接口的子对象或代理对象
      * @param method 方法
      * @param args   参数
      * @return 结果
      * @throws InternalException 执行异常包装
      */
-    public static <T> T invokeExact(final Object obj, final Method method, final Object... args)
+    public static <T> T invokeExact(final Object object, final Method method, final Object... args)
             throws InternalException {
         Assert.notNull(method, "Method must be not null!");
         java.lang.invoke.MethodHandle handle;
@@ -139,8 +140,8 @@ public class MethodInvoker implements Invoker {
             throw ExceptionKit.wrapRuntime(e);
         }
 
-        if (null != obj) {
-            handle = handle.bindTo(obj);
+        if (null != object) {
+            handle = handle.bindTo(object);
         }
         return invokeHandle(handle, args);
     }

@@ -203,4 +203,21 @@ public class ListWrapper<E> extends SimpleWrapper<List<E>> implements List<E> {
         return raw.parallelStream();
     }
 
+    @Override
+    public int hashCode() {
+        return this.raw.hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        final ListWrapper<?> that = (ListWrapper<?>) object;
+        return Objects.equals(raw, that.raw);
+    }
+
 }

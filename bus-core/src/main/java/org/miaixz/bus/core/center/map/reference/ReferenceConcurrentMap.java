@@ -75,12 +75,12 @@ public abstract class ReferenceConcurrentMap<K, V>
     /**
      * 去包装对象
      *
-     * @param <T> 对象类型
-     * @param obj 对象
+     * @param <T>    对象类型
+     * @param object 对象
      * @return 值
      */
-    private static <T> T unwrap(final Ref<T> obj) {
-        return ReferKit.get(obj);
+    private static <T> T unwrap(final Ref<T> object) {
+        return ReferKit.get(object);
     }
 
     /**

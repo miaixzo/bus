@@ -56,37 +56,38 @@ public class ObjectKit extends ObjectValidator {
      * <li>{@link Enumeration}：返回可迭代的元素数量；</li>
      * </ul>
      *
-     * @param obj 被计算长度的对象
+     * @param object 被计算长度的对象
      * @return 长度
      */
-    public static int length(final Object obj) {
-        if (obj == null) {
+    public static int length(final Object object) {
+        if (object == null) {
             return 0;
         }
-        if (obj instanceof CharSequence) {
-            return ((CharSequence) obj).length();
+        if (object instanceof CharSequence) {
+            return ((CharSequence) object).length();
         }
-        if (obj instanceof Collection) {
-            return ((Collection<?>) obj).size();
+        if (object instanceof Collection) {
+            return ((Collection<?>) object).size();
         }
-        if (obj instanceof Map) {
-            return ((Map<?, ?>) obj).size();
+        if (object instanceof Map) {
+            return ((Map<?, ?>) object).size();
         }
 
         int count = 0;
-        if (obj instanceof Iterator || obj instanceof Iterable) {
-            final Iterator<?> iter = (obj instanceof Iterator) ? (Iterator<?>) obj : ((Iterable<?>) obj).iterator();
+        if (object instanceof Iterator || object instanceof Iterable) {
+            final Iterator<?> iter = (object instanceof Iterator) ? (Iterator<?>) object
+                    : ((Iterable<?>) object).iterator();
             while (iter.hasNext()) {
                 count++;
                 iter.next();
             }
             return count;
         }
-        if (obj.getClass().isArray()) {
-            return Array.getLength(obj);
+        if (object.getClass().isArray()) {
+            return Array.getLength(object);
         }
-        if (obj instanceof Enumeration) {
-            final Enumeration<?> enumeration = (Enumeration<?>) obj;
+        if (object instanceof Enumeration) {
+            final Enumeration<?> enumeration = (Enumeration<?>) object;
             while (enumeration.hasMoreElements()) {
                 count++;
                 enumeration.nextElement();
@@ -97,7 +98,7 @@ public class ObjectKit extends ObjectValidator {
     }
 
     /**
-     * 检查{@code obj}中是否包含{@code element}，若{@code obj}为{@code null}，则直接返回{@code false}。 支持类型包括：
+     * 检查{@code object}中是否包含{@code element}，若{@code object}为{@code null}，则直接返回{@code false}。 支持类型包括：
      * <ul>
      * <li>{@code null}：默认返回{@code false}；</li>
      * <li>{@link String}：等同{@link String#contains(CharSequence)}；</li>
@@ -106,29 +107,30 @@ public class ObjectKit extends ObjectValidator {
      * <li>{@link Iterator}、{@link Iterable}、{@link Enumeration}或数组： 等同于遍历后对其元素调用{@link #equals(Object, Object)}方法；</li>
      * </ul>
      *
-     * @param obj     对象
+     * @param object  对象
      * @param element 元素
      * @return 是否包含
      */
-    public static boolean contains(final Object obj, final Object element) {
-        if (obj == null) {
+    public static boolean contains(final Object object, final Object element) {
+        if (object == null) {
             return false;
         }
-        if (obj instanceof String) {
+        if (object instanceof String) {
             if (element == null) {
                 return false;
             }
-            return ((String) obj).contains(element.toString());
+            return ((String) object).contains(element.toString());
         }
-        if (obj instanceof Collection) {
-            return ((Collection<?>) obj).contains(element);
+        if (object instanceof Collection) {
+            return ((Collection<?>) object).contains(element);
         }
-        if (obj instanceof Map) {
-            return ((Map<?, ?>) obj).containsValue(element);
+        if (object instanceof Map) {
+            return ((Map<?, ?>) object).containsValue(element);
         }
 
-        if (obj instanceof Iterator || obj instanceof Iterable) {
-            final Iterator<?> iter = obj instanceof Iterator ? (Iterator<?>) obj : ((Iterable<?>) obj).iterator();
+        if (object instanceof Iterator || object instanceof Iterable) {
+            final Iterator<?> iter = object instanceof Iterator ? (Iterator<?>) object
+                    : ((Iterable<?>) object).iterator();
             while (iter.hasNext()) {
                 final Object o = iter.next();
                 if (equals(o, element)) {
@@ -137,8 +139,8 @@ public class ObjectKit extends ObjectValidator {
             }
             return false;
         }
-        if (obj instanceof Enumeration) {
-            final Enumeration<?> enumeration = (Enumeration<?>) obj;
+        if (object instanceof Enumeration) {
+            final Enumeration<?> enumeration = (Enumeration<?>) object;
             while (enumeration.hasMoreElements()) {
                 final Object o = enumeration.nextElement();
                 if (equals(o, element)) {
@@ -147,10 +149,10 @@ public class ObjectKit extends ObjectValidator {
             }
             return false;
         }
-        if (ArrayKit.isArray(obj)) {
-            final int len = Array.getLength(obj);
+        if (ArrayKit.isArray(object)) {
+            final int len = Array.getLength(object);
             for (int i = 0; i < len; i++) {
-                final Object o = Array.get(obj, i);
+                final Object o = Array.get(object, i);
                 if (equals(o, element)) {
                     return true;
                 }
@@ -194,87 +196,87 @@ public class ObjectKit extends ObjectValidator {
      * <li>不符合上述任意情况则返回{@code null}；</li>
      * </ol>
      *
-     * @param <T> 对象类型
-     * @param obj 被克隆对象
+     * @param <T>    对象类型
+     * @param object 被克隆对象
      * @return 克隆后的对象
      * @see ArrayKit#clone(Object)
      * @see Object#clone()
      * @see #cloneByStream(Object)
      */
-    public static <T> T clone(final T obj) {
-        final T result = ArrayKit.clone(obj);
+    public static <T> T clone(final T object) {
+        final T result = ArrayKit.clone(object);
         if (null != result) {
             // 数组
             return result;
         }
 
-        if (obj instanceof Cloneable) {
+        if (object instanceof Cloneable) {
             try {
-                return MethodKit.invoke(obj, "clone");
+                return MethodKit.invoke(object, "clone");
             } catch (final InternalException e) {
                 if (e.getCause() instanceof IllegalAccessException) {
                     // JDK9+下可能无权限
-                    return cloneByStream(obj);
+                    return cloneByStream(object);
                 } else {
                     throw e;
                 }
             }
         }
 
-        return cloneByStream(obj);
+        return cloneByStream(object);
     }
 
     /**
      * 返回克隆后的对象，如果克隆失败，返回原对象
      *
-     * @param <T> 对象类型
-     * @param obj 对象
+     * @param <T>    对象类型
+     * @param object 对象
      * @return 克隆对象或原对象
      * @see #clone(Object)
      */
-    public static <T> T cloneIfPossible(final T obj) {
+    public static <T> T cloneIfPossible(final T object) {
         T clone = null;
         try {
-            clone = clone(obj);
+            clone = clone(object);
         } catch (final Exception e) {
             // pass
         }
-        return clone == null ? obj : clone;
+        return clone == null ? object : clone;
     }
 
     /**
      * 序列化后拷贝流的方式克隆 若对象未实现{@link Serializable}接口，则返回{@code null}
      *
-     * @param <T> 对象类型
-     * @param obj 被克隆对象
+     * @param <T>    对象类型
+     * @param object 被克隆对象
      * @return 克隆后的对象
      * @throws InternalException IO异常和ClassNotFoundException封装
      * @see SerializeKit#clone(Object)
      */
-    public static <T> T cloneByStream(final T obj) {
-        return SerializeKit.clone(obj);
+    public static <T> T cloneByStream(final T object) {
+        return SerializeKit.clone(object);
     }
 
     /**
      * 获得给定类的第一个泛型参数
      *
-     * @param obj 被检查的实体对象
+     * @param object 被检查的实体对象
      * @return {@link Class}
      */
-    public static Class<?> getTypeArgument(final Object obj) {
-        return getTypeArgument(obj, 0);
+    public static Class<?> getTypeArgument(final Object object) {
+        return getTypeArgument(object, 0);
     }
 
     /**
      * 获得给定类指定下标的泛型参数
      *
-     * @param obj   被检查的实体对象
-     * @param index 泛型类型的索引号，即第几个泛型类型
+     * @param object 被检查的实体对象
+     * @param index  泛型类型的索引号，即第几个泛型类型
      * @return {@link Class}
      * @see ClassKit#getTypeArgument(Class, int)
      */
-    public static Class<?> getTypeArgument(final Object obj, final int index) {
-        return ClassKit.getTypeArgument(obj.getClass(), index);
+    public static Class<?> getTypeArgument(final Object object, final int index) {
+        return ClassKit.getTypeArgument(object.getClass(), index);
     }
 
     /**

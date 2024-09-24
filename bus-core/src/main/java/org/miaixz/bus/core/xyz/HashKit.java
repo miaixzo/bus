@@ -466,11 +466,11 @@ public class HashKit {
     /**
      * 根据对象的内存地址生成相应的Hash值
      *
-     * @param obj 对象
+     * @param object 对象
      * @return hash值
      */
-    public static int identityHashCode(final Object obj) {
-        return System.identityHashCode(obj);
+    public static int identityHashCode(final Object object) {
+        return System.identityHashCode(object);
     }
 
     /**

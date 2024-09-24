@@ -531,18 +531,18 @@ public class NamedPlaceholderString extends StringTemplate {
      */
     public <T> T matches(final String text, final Supplier<T> beanOrMapSupplier) {
         Assert.notNull(beanOrMapSupplier, "beanOrMapSupplier cannot be null");
-        final T obj = beanOrMapSupplier.get();
-        if (text == null || obj == null || placeholderSegments.isEmpty() || !isMatches(text)) {
-            return obj;
+        final T object = beanOrMapSupplier.get();
+        if (text == null || object == null || placeholderSegments.isEmpty() || !isMatches(text)) {
+            return object;
         }
 
-        if (obj instanceof Map) {
-            final Map<String, String> map = (Map<String, String>) obj;
+        if (object instanceof Map) {
+            final Map<String, String> map = (Map<String, String>) object;
             matchesByKey(text, map::put);
-        } else if (BeanKit.isWritableBean(obj.getClass())) {
-            matchesByKey(text, (key, value) -> BeanKit.setProperty(obj, key, value));
+        } else if (BeanKit.isWritableBean(object.getClass())) {
+            matchesByKey(text, (key, value) -> BeanKit.setProperty(object, key, value));
         }
-        return obj;
+        return object;
     }
 
     /**

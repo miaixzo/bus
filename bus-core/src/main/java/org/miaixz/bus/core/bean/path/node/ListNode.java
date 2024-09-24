@@ -27,14 +27,10 @@
 */
 package org.miaixz.bus.core.bean.path.node;
 
-import org.miaixz.bus.core.convert.Convert;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.xyz.*;
-
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 列表节点 [num0,num1,num2...]模式或者['key0','key1']模式
@@ -55,50 +51,32 @@ public class ListNode implements Node {
         this.names = CharsBacker.splitTrim(expression, Symbol.COMMA);
     }
 
-    @Override
-    public Object getValue(final Object bean) {
-        final List<String> names = this.names;
-
-        if (bean instanceof Collection) {
-            return CollKit.getAny((Collection<?>) bean, Convert.convert(int[].class, names));
-        } else if (ArrayKit.isArray(bean)) {
-            return ArrayKit.getAny(bean, Convert.convert(int[].class, names));
-        } else {
-            final String[] unWrappedNames = getUnWrappedNames(names);
-            if (bean instanceof Map) {
-                // 只支持String为key的Map
-                return MapKit.getAny((Map<String, ?>) bean, unWrappedNames);
-            } else {
-                // 一次性使用，包装Bean避免无用转换
-                final Map<String, Object> map = BeanKit.toBeanMap(bean);
-                return MapKit.getAny(map, unWrappedNames);
-            }
-        }
-    }
-
-    @Override
-    public Object setValue(final Object bean, final Object value) {
-        throw new UnsupportedOperationException("Can not set value to multi names.");
-    }
-
-    @Override
-    public String toString() {
-        return this.names.toString();
+    /**
+     * 获取列表中的name，不去除单引号
+     *
+     * @return name列表
+     */
+    public String[] getNames() {
+        return this.names.toArray(new String[0]);
     }
 
     /**
      * 将列表中的name，去除单引号
      *
-     * @param names name列表
      * @return 处理后的name列表
      */
-    private String[] getUnWrappedNames(final List<String> names) {
+    public String[] getUnWrappedNames() {
         final String[] unWrappedNames = new String[names.size()];
         for (int i = 0; i < unWrappedNames.length; i++) {
-            unWrappedNames[i] = StringKit.unWrap(names.get(i), Symbol.C_SINGLE_QUOTE);
+            unWrappedNames[i] = CharsBacker.unWrap(names.get(i), Symbol.C_SINGLE_QUOTE);
         }
 
         return unWrappedNames;
+    }
+
+    @Override
+    public String toString() {
+        return this.names.toString();
     }
 
 }

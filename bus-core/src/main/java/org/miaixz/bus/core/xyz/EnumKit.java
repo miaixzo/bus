@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.xyz;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -46,21 +47,21 @@ public class EnumKit {
     /**
      * 指定类是否为Enum类
      *
-     * @param clazz 类
+     * @param type 类
      * @return 是否为Enum类
      */
-    public static boolean isEnum(final Class<?> clazz) {
-        return Assert.notNull(clazz).isEnum();
+    public static boolean isEnum(final Type type) {
+        return Assert.notNull(TypeKit.getClass(type)).isEnum();
     }
 
     /**
      * 指定类是否为Enum类
      *
-     * @param obj 类
+     * @param object 类
      * @return 是否为Enum类
      */
-    public static boolean isEnum(final Object obj) {
-        return Assert.notNull(obj).getClass().isEnum();
+    public static boolean isEnum(final Object object) {
+        return Assert.notNull(object).getClass().isEnum();
     }
 
     /**

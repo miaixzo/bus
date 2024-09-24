@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core.lang.pool.partition;
 
+import java.io.IOException;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.pool.ObjectFactory;
 import org.miaixz.bus.core.lang.pool.ObjectPool;
 import org.miaixz.bus.core.lang.pool.PoolConfig;
 import org.miaixz.bus.core.lang.pool.Poolable;
-
-import java.io.IOException;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 对象池分区 一个分区实际为一个小的对象池，持有一个阻塞队列。 初始化时创建{@link PoolConfig#getMinSize()}个对象作为初始池对象。
@@ -147,12 +147,12 @@ public class PoolPartition<T> implements ObjectPool<T> {
     /**
      * 销毁对象，注意此方法操作的对象必须在队列外
      *
-     * @param obj 被销毁的对象
+     * @param object 被销毁的对象
      * @return this
      */
     @Override
-    public synchronized PoolPartition<T> free(final T obj) {
-        objectFactory.destroy(obj);
+    public synchronized PoolPartition<T> free(final T object) {
+        objectFactory.destroy(object);
         total--;
         return this;
     }

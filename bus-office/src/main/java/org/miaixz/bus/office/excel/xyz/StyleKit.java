@@ -25,13 +25,16 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.office.excel.style;
+package org.miaixz.bus.office.excel.xyz;
 
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.office.excel.style.CellBorderStyle;
 
 /**
  * Excel样式工具类
@@ -40,6 +43,63 @@ import org.miaixz.bus.core.xyz.StringKit;
  * @since Java 17+
  */
 public class StyleKit {
+
+    /**
+     * 创建单元格样式
+     *
+     * @param workbook {@link Workbook} 工作簿
+     * @return {@link CellStyle}
+     * @see Workbook#createCellStyle()
+     */
+    public static CellStyle createCellStyle(final Workbook workbook) {
+        if (null == workbook) {
+            return null;
+        }
+        return workbook.createCellStyle();
+    }
+
+    /**
+     * 创建默认普通单元格样式
+     *
+     * <pre>
+     * 1. 文字上下左右居中
+     * 2. 细边框，黑色
+     * </pre>
+     *
+     * @param workbook {@link Workbook} 工作簿
+     * @return {@link CellStyle}
+     */
+    public static CellStyle createDefaultCellStyle(final Workbook workbook) {
+        final CellStyle cellStyle = createCellStyle(workbook);
+        setAlign(cellStyle, HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
+        setBorder(cellStyle, BorderStyle.THIN, IndexedColors.BLACK);
+        return cellStyle;
+    }
+
+    /**
+     * 创建默认头部样式
+     *
+     * @param workbook {@link Workbook} 工作簿
+     * @return {@link CellStyle}
+     */
+    public static CellStyle createHeadCellStyle(final Workbook workbook) {
+        final CellStyle cellStyle = createCellStyle(workbook);
+        setAlign(cellStyle, HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
+        setBorder(cellStyle, BorderStyle.THIN, IndexedColors.BLACK);
+        setColor(cellStyle, IndexedColors.GREY_25_PERCENT, FillPatternType.SOLID_FOREGROUND);
+        return cellStyle;
+    }
+
+    /**
+     * 给定样式是否为null（无样式）或默认样式，默认样式为{@code workbook.getCellStyleAt(0)}
+     *
+     * @param workbook 工作簿
+     * @param style    被检查的样式
+     * @return 是否为null（无样式）或默认样式
+     */
+    public static boolean isNullOrDefaultStyle(final Workbook workbook, final CellStyle style) {
+        return (null == style) || style.equals(workbook.getCellStyleAt(0));
+    }
 
     /**
      * 克隆新的{@link CellStyle}
@@ -102,6 +162,43 @@ public class StyleKit {
      */
     public static CellStyle setBorder(final CellStyle cellStyle, final CellBorderStyle cellBorderStyle) {
         return cellBorderStyle.setTo(cellStyle);
+    }
+
+    /**
+     * 根据{@link CellStyle}设置指定范围边框样式
+     *
+     * @param sheet            {@link Sheet}
+     * @param cellRangeAddress 边框样式范围
+     * @param cellBorderStyle  边框风格，包括边框样式、颜色
+     */
+    public static void setBorderStyle(final Sheet sheet, final CellRangeAddress cellRangeAddress,
+            final CellBorderStyle cellBorderStyle) {
+        if (null != cellBorderStyle) {
+            RegionUtil.setBorderTop(cellBorderStyle.getTopStyle(), cellRangeAddress, sheet);
+            RegionUtil.setBorderRight(cellBorderStyle.getRightStyle(), cellRangeAddress, sheet);
+            RegionUtil.setBorderBottom(cellBorderStyle.getBottomStyle(), cellRangeAddress, sheet);
+            RegionUtil.setBorderLeft(cellBorderStyle.getLeftStyle(), cellRangeAddress, sheet);
+
+            RegionUtil.setTopBorderColor(cellBorderStyle.getTopColor(), cellRangeAddress, sheet);
+            RegionUtil.setRightBorderColor(cellBorderStyle.getRightColor(), cellRangeAddress, sheet);
+            RegionUtil.setLeftBorderColor(cellBorderStyle.getLeftColor(), cellRangeAddress, sheet);
+            RegionUtil.setBottomBorderColor(cellBorderStyle.getBottomColor(), cellRangeAddress, sheet);
+        }
+    }
+
+    /**
+     * 根据{@link CellStyle}设置指定范围边框样式
+     *
+     * @param sheet            {@link Sheet}
+     * @param cellRangeAddress {@link CellRangeAddress}
+     * @param cellStyle        {@link CellStyle}
+     */
+    public static void setBorderStyle(final Sheet sheet, final CellRangeAddress cellRangeAddress,
+            final CellStyle cellStyle) {
+        if (null != cellStyle) {
+            final CellBorderStyle cellBorderStyle = CellBorderStyle.of(cellStyle);
+            setBorderStyle(sheet, cellRangeAddress, cellBorderStyle);
+        }
     }
 
     /**
@@ -193,63 +290,6 @@ public class StyleKit {
     public static Short getFormat(final Workbook workbook, final String format) {
         final DataFormat dataFormat = workbook.createDataFormat();
         return dataFormat.getFormat(format);
-    }
-
-    /**
-     * 创建单元格样式
-     *
-     * @param workbook {@link Workbook} 工作簿
-     * @return {@link CellStyle}
-     * @see Workbook#createCellStyle()
-     */
-    public static CellStyle createCellStyle(final Workbook workbook) {
-        if (null == workbook) {
-            return null;
-        }
-        return workbook.createCellStyle();
-    }
-
-    /**
-     * 创建默认普通单元格样式
-     *
-     * <pre>
-     * 1. 文字上下左右居中
-     * 2. 细边框，黑色
-     * </pre>
-     *
-     * @param workbook {@link Workbook} 工作簿
-     * @return {@link CellStyle}
-     */
-    public static CellStyle createDefaultCellStyle(final Workbook workbook) {
-        final CellStyle cellStyle = createCellStyle(workbook);
-        setAlign(cellStyle, HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
-        setBorder(cellStyle, BorderStyle.THIN, IndexedColors.BLACK);
-        return cellStyle;
-    }
-
-    /**
-     * 创建默认头部样式
-     *
-     * @param workbook {@link Workbook} 工作簿
-     * @return {@link CellStyle}
-     */
-    public static CellStyle createHeadCellStyle(final Workbook workbook) {
-        final CellStyle cellStyle = createCellStyle(workbook);
-        setAlign(cellStyle, HorizontalAlignment.CENTER, VerticalAlignment.CENTER);
-        setBorder(cellStyle, BorderStyle.THIN, IndexedColors.BLACK);
-        setColor(cellStyle, IndexedColors.GREY_25_PERCENT, FillPatternType.SOLID_FOREGROUND);
-        return cellStyle;
-    }
-
-    /**
-     * 给定样式是否为null（无样式）或默认样式，默认样式为{@code workbook.getCellStyleAt(0)}
-     *
-     * @param workbook 工作簿
-     * @param style    被检查的样式
-     * @return 是否为null（无样式）或默认样式
-     */
-    public static boolean isNullOrDefaultStyle(final Workbook workbook, final CellStyle style) {
-        return (null == style) || style.equals(workbook.getCellStyleAt(0));
     }
 
 }

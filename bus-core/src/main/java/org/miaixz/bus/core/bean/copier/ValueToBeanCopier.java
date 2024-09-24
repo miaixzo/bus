@@ -76,19 +76,19 @@ public class ValueToBeanCopier<T> extends AbstractCopier<ValueProvider<String>, 
         }
         final Map<String, PropDesc> targetPropDescMap = getBeanDesc(actualEditable).getPropMap(copyOptions.ignoreCase);
 
-        targetPropDescMap.forEach((tFieldName, tDesc) -> {
+        targetPropDescMap.forEach((tFieldName, propDesc) -> {
             if (null == tFieldName) {
                 return;
             }
 
             // 检查目标字段可写性
-            if (null == tDesc || !tDesc.isWritable(this.copyOptions.transientSupport)) {
+            if (null == propDesc || !propDesc.isWritable(this.copyOptions.transientSupport)) {
                 // 字段不可写，跳过之
                 return;
             }
 
             // 获取目标字段真实类型
-            final Type fieldType = TypeKit.getActualType(this.targetType, tDesc.getFieldType());
+            final Type fieldType = TypeKit.getActualType(this.targetType, propDesc.getFieldType());
             // 编辑键值对
             final MutableEntry<Object, Object> entry = copyOptions.editField(tFieldName, null);
             if (null == entry) {
@@ -106,12 +106,12 @@ public class ValueToBeanCopier<T> extends AbstractCopier<ValueProvider<String>, 
             final Object sValue = source.value(tFieldName, fieldType);
 
             // 检查目标对象属性是否过滤属性
-            if (!copyOptions.testPropertyFilter(tDesc.getField(), sValue)) {
+            if (!copyOptions.testPropertyFilter(propDesc.getField(), sValue)) {
                 return;
             }
 
             // 目标赋值
-            tDesc.setValue(this.target, sValue, copyOptions.ignoreNullValue, copyOptions.ignoreError,
+            propDesc.setValue(this.target, sValue, copyOptions.ignoreNullValue, copyOptions.ignoreError,
                     copyOptions.override);
         });
         return this.target;

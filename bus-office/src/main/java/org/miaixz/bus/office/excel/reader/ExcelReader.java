@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.office.excel.reader;
 
+import java.io.File;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -35,14 +40,13 @@ import org.miaixz.bus.core.center.function.BiConsumerX;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.office.excel.*;
-import org.miaixz.bus.office.excel.cell.CellKit;
+import org.miaixz.bus.office.excel.ExcelBase;
+import org.miaixz.bus.office.excel.ExcelExtractor;
 import org.miaixz.bus.office.excel.writer.ExcelWriter;
-
-import java.io.File;
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
+import org.miaixz.bus.office.excel.xyz.CellKit;
+import org.miaixz.bus.office.excel.xyz.ExcelKit;
+import org.miaixz.bus.office.excel.xyz.RowKit;
+import org.miaixz.bus.office.excel.xyz.WorkbookKit;
 
 /**
  * Excel读取器 读取Excel工作簿
@@ -80,7 +84,7 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
      */
     public ExcelReader(final File bookFile, final int sheetIndex) {
         this(WorkbookKit.createBook(bookFile, true), sheetIndex);
-        this.destFile = bookFile;
+        this.targetFile = bookFile;
     }
 
     /**
@@ -91,7 +95,7 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
      */
     public ExcelReader(final File bookFile, final String sheetName) {
         this(WorkbookKit.createBook(bookFile, true), sheetName);
-        this.destFile = bookFile;
+        this.targetFile = bookFile;
     }
 
     /**
@@ -141,6 +145,52 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
      */
     public ExcelReader(final Sheet sheet) {
         super(new ExcelReadConfig(), sheet);
+    }
+
+    /**
+     * 获取Sheet，如果不存在则关闭{@link Workbook}并抛出异常，解决当sheet不存在时，文件依旧被占用问题 见：Issue#I8ZIQC
+     *
+     * @param workbook {@link Workbook}，非空
+     * @param name     sheet名称，不存在抛出异常
+     * @return {@link Sheet}
+     * @throws IllegalArgumentException workbook为空或sheet不能存在
+     */
+    private static Sheet getSheetOrCloseWorkbook(final Workbook workbook, String name) throws IllegalArgumentException {
+        Assert.notNull(workbook);
+        if (null == name) {
+            name = "sheet1";
+        }
+        final Sheet sheet = workbook.getSheet(name);
+        if (null == sheet) {
+            IoKit.closeQuietly(workbook);
+            throw new IllegalArgumentException("Sheet [" + name + "] not exist!");
+        }
+        return sheet;
+    }
+
+    /**
+     * 获取Sheet，如果不存在则关闭{@link Workbook}并抛出异常，解决当sheet不存在时，文件依旧被占用问题 见：Issue#I8ZIQC
+     *
+     * @param workbook   {@link Workbook}，非空
+     * @param sheetIndex sheet index
+     * @return {@link Sheet}
+     * @throws IllegalArgumentException workbook为空或sheet不能存在
+     */
+    private static Sheet getSheetOrCloseWorkbook(final Workbook workbook, final int sheetIndex)
+            throws IllegalArgumentException {
+        Assert.notNull(workbook);
+        final Sheet sheet;
+        try {
+            sheet = workbook.getSheetAt(sheetIndex);
+        } catch (final IllegalArgumentException e) {
+            IoKit.closeQuietly(workbook);
+            throw e;
+        }
+        if (null == sheet) {
+            IoKit.closeQuietly(workbook);
+            throw new IllegalArgumentException("Sheet at [" + sheetIndex + "] not exist!");
+        }
+        return sheet;
     }
 
     /**
@@ -222,24 +272,18 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
     }
 
     /**
-     * 获取Sheet，如果不存在则关闭{@link Workbook}并抛出异常，解决当sheet不存在时，文件依旧被占用问题
+     * 读取工作簿中指定的Sheet，此方法为类流处理方式，当读到指定单元格时，会调用CellEditor接口 用户通过实现此接口，可以更加灵活地处理每个单元格的数据。
      *
-     * @param workbook {@link Workbook}，非空
-     * @param name     sheet名称，不存在抛出异常
-     * @return {@link Sheet}
-     * @throws IllegalArgumentException workbook为空或sheet不能存在
+     * @param startRowIndex 起始行（包含，从0开始计数）
+     * @param endRowIndex   结束行（包含，从0开始计数）
+     * @param cellHandler   单元格处理器，用于处理读到的单元格及其数据
      */
-    private static Sheet getSheetOrCloseWorkbook(final Workbook workbook, String name) throws IllegalArgumentException {
-        Assert.notNull(workbook);
-        if (null == name) {
-            name = "sheet1";
-        }
-        final Sheet sheet = workbook.getSheet(name);
-        if (null == sheet) {
-            IoKit.closeQuietly(workbook);
-            throw new IllegalArgumentException("Sheet [" + name + "] not exist!");
-        }
-        return sheet;
+    public void read(final int startRowIndex, final int endRowIndex, final BiConsumerX<Cell, Object> cellHandler) {
+        checkClosed();
+
+        final WalkSheetReader reader = new WalkSheetReader(startRowIndex, endRowIndex, cellHandler);
+        reader.setExcelConfig(this.config);
+        reader.read(sheet);
     }
 
     /**
@@ -368,11 +412,11 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
      * @return {@link ExcelWriter}
      */
     public ExcelWriter getWriter() {
-        if (null == this.destFile) {
+        if (null == this.targetFile) {
             // 非读取文件形式，直接获取sheet操作。
             return new ExcelWriter(this.sheet);
         }
-        return ExcelKit.getWriter(this.destFile, this.sheet.getSheetName());
+        return ExcelKit.getWriter(this.targetFile, this.sheet.getSheetName());
     }
 
     /**
@@ -383,46 +427,6 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
      */
     private List<Object> readRow(final Row row) {
         return RowKit.readRow(row, this.config.getCellEditor());
-    }
-
-    /**
-     * 获取Sheet，如果不存在则关闭{@link Workbook}并抛出异常，解决当sheet不存在时，文件依旧被占用问题
-     *
-     * @param workbook   {@link Workbook}，非空
-     * @param sheetIndex sheet index
-     * @return {@link Sheet}
-     * @throws IllegalArgumentException workbook为空或sheet不能存在
-     */
-    private static Sheet getSheetOrCloseWorkbook(final Workbook workbook, final int sheetIndex)
-            throws IllegalArgumentException {
-        Assert.notNull(workbook);
-        final Sheet sheet;
-        try {
-            sheet = workbook.getSheetAt(sheetIndex);
-        } catch (final IllegalArgumentException e) {
-            IoKit.closeQuietly(workbook);
-            throw e;
-        }
-        if (null == sheet) {
-            IoKit.closeQuietly(workbook);
-            throw new IllegalArgumentException("Sheet at [" + sheetIndex + "] not exist!");
-        }
-        return sheet;
-    }
-
-    /**
-     * 读取工作簿中指定的Sheet，此方法为类流处理方式，当读到指定单元格时，会调用CellEditor接口 用户通过实现此接口，可以更加灵活地处理每个单元格的数据。
-     *
-     * @param startRowIndex 起始行（包含，从0开始计数）
-     * @param endRowIndex   结束行（包含，从0开始计数）
-     * @param cellHandler   单元格处理器，用于处理读到的单元格及其数据
-     */
-    public void read(final int startRowIndex, final int endRowIndex, final BiConsumerX<Cell, Object> cellHandler) {
-        checkClosed();
-
-        final WalkSheetReader reader = new WalkSheetReader(startRowIndex, endRowIndex, cellHandler);
-        reader.setExcelConfig(this.config);
-        reader.read(sheet);
     }
 
 }

@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.office.excel.writer;
 
+import java.io.File;
+import java.io.OutputStream;
+
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.streaming.SXSSFSheet;
 import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.office.excel.SheetKit;
-import org.miaixz.bus.office.excel.WorkbookKit;
-
-import java.io.File;
-import java.io.OutputStream;
+import org.miaixz.bus.office.excel.xyz.SheetKit;
+import org.miaixz.bus.office.excel.xyz.WorkbookKit;
 
 /**
  * 大数据量Excel写出，只支持XLSX（Excel07版本） 通过封装{@link SXSSFWorkbook}，限制对滑动窗口中的行的访问来实现其低内存使用。
@@ -60,7 +60,7 @@ public class BigExcelWriter extends ExcelWriter {
 
     /**
      * 构造，默认生成xlsx格式的Excel文件 此构造不传入写出的Excel文件路径，只能调用{@link #flush(java.io.OutputStream)}方法写出到流
-     * 若写出到文件，还需调用{@link #setDestFile(File)}方法自定义写出的文件，然后调用{@link #flush()}方法写出到文件
+     * 若写出到文件，还需调用{@link #setTargetFile(File)}方法自定义写出的文件，然后调用{@link #flush()}方法写出到文件
      */
     public BigExcelWriter() {
         this(DEFAULT_WINDOW_SIZE);
@@ -137,12 +137,12 @@ public class BigExcelWriter extends ExcelWriter {
      */
     public BigExcelWriter(final File destFile, final String sheetName) {
         this(destFile.exists() ? WorkbookKit.createSXSSFBook(destFile) : WorkbookKit.createSXSSFBook(), sheetName);
-        this.destFile = destFile;
+        this.targetFile = destFile;
     }
 
     /**
      * 构造 此构造不传入写出的Excel文件路径，只能调用{@link #flush(java.io.OutputStream)}方法写出到流
-     * 若写出到文件，还需调用{@link #setDestFile(File)}方法自定义写出的文件，然后调用{@link #flush()}方法写出到文件
+     * 若写出到文件，还需调用{@link #setTargetFile(File)}方法自定义写出的文件，然后调用{@link #flush()}方法写出到文件
      *
      * @param workbook  {@link SXSSFWorkbook}
      * @param sheetName sheet名，做为第一个sheet名并写出到此sheet，例如sheet1
@@ -153,7 +153,7 @@ public class BigExcelWriter extends ExcelWriter {
 
     /**
      * 构造 此构造不传入写出的Excel文件路径，只能调用{@link #flush(java.io.OutputStream)}方法写出到流
-     * 若写出到文件，还需调用{@link #setDestFile(File)}方法自定义写出的文件，然后调用{@link #flush()}方法写出到文件
+     * 若写出到文件，还需调用{@link #setTargetFile(File)}方法自定义写出的文件，然后调用{@link #flush()}方法写出到文件
      *
      * @param sheet {@link Sheet}
      */
@@ -190,7 +190,7 @@ public class BigExcelWriter extends ExcelWriter {
 
     @Override
     public void close() {
-        if (null != this.destFile && !isFlushed) {
+        if (null != this.targetFile && !isFlushed) {
             flush();
         }
 

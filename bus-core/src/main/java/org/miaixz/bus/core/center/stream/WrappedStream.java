@@ -580,11 +580,11 @@ public interface WrappedStream<T, S extends WrappedStream<T, S>> extends Stream<
     /**
      * 比较实例是否相等
      *
-     * @param obj 对象
+     * @param object 对象
      * @return 是否相等
      */
     @Override
-    boolean equals(final Object obj);
+    boolean equals(final Object object);
 
     /**
      * 将当前实例转为字符串
