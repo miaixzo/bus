@@ -25,12 +25,9 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.core.center.date.culture.cn.birth.provider.impl;
+package org.miaixz.bus.core.center.date.culture.cn.eightchar.provider.impl;
 
-import org.miaixz.bus.core.center.date.culture.cn.birth.ChildLimitInfo;
-import org.miaixz.bus.core.center.date.culture.cn.birth.provider.ChildLimitProvider;
-import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
-import org.miaixz.bus.core.center.date.culture.solar.SolarMonth;
+import org.miaixz.bus.core.center.date.culture.cn.eightchar.ChildLimitInfo;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 
@@ -40,7 +37,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class China95ChildLimitProvider implements ChildLimitProvider {
+public class China95ChildLimitProvider extends AbstractChildLimitProvider {
 
     @Override
     public ChildLimitInfo getInfo(SolarTime birthTime, SolarTerms term) {
@@ -52,19 +49,7 @@ public class China95ChildLimitProvider implements ChildLimitProvider {
         minutes %= 360;
         int day = minutes / 12;
 
-        SolarDay birthday = birthTime.getSolarDay();
-        SolarMonth sm = SolarMonth.fromYm(birthday.getYear() + year, birthday.getMonth()).next(month);
-
-        int d = birthday.getDay() + day;
-        int dc = sm.getDayCount();
-        while (d > dc) {
-            d -= dc;
-            sm = sm.next(1);
-            dc = sm.getDayCount();
-        }
-
-        return new ChildLimitInfo(birthTime, SolarTime.fromYmdHms(sm.getYear(), sm.getMonth(), d, birthTime.getHour(),
-                birthTime.getMinute(), birthTime.getSecond()), year, month, day, 0, 0);
+        return next(birthTime, year, month, day, 0, 0, 0);
     }
 
 }

@@ -25,80 +25,26 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.core.center.date.culture.cn.birth;
+package org.miaixz.bus.core.center.date.culture.cn.eightchar.provider;
 
-import org.miaixz.bus.core.center.date.culture.Loops;
-import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
-import org.miaixz.bus.core.center.date.culture.lunar.LunarYear;
+import org.miaixz.bus.core.center.date.culture.cn.eightchar.ChildLimitInfo;
+import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
+import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 
 /**
- * 小运
+ * 童限计算接口
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Fortune extends Loops {
+public interface ChildLimitProvider {
 
     /**
-     * 童限
-     */
-    protected ChildLimit childLimit;
-
-    /**
-     * 序号
-     */
-    protected int index;
-
-    public Fortune(ChildLimit childLimit, int index) {
-        this.childLimit = childLimit;
-        this.index = index;
-    }
-
-    /**
-     * 通过童限初始化
+     * 童限信息
      *
-     * @param childLimit 童限
-     * @param index      序号
-     * @return 小运
+     * @param birthTime 出生公历时刻
+     * @param term      节令
+     * @return 童限信息
      */
-    public static Fortune fromChildLimit(ChildLimit childLimit, int index) {
-        return new Fortune(childLimit, index);
-    }
-
-    /**
-     * 年龄
-     *
-     * @return 年龄
-     */
-    public int getAge() {
-        return childLimit.getYearCount() + 1 + index;
-    }
-
-    /**
-     * 农历年
-     *
-     * @return 农历年
-     */
-    public LunarYear getLunarYear() {
-        return childLimit.getEndTime().getLunarHour().getLunarDay().getLunarMonth().getLunarYear().next(index);
-    }
-
-    /**
-     * 干支
-     *
-     * @return 干支
-     */
-    public SixtyCycle getSixtyCycle() {
-        int n = getAge();
-        return childLimit.getEightChar().getHour().next(childLimit.isForward() ? n : -n);
-    }
-
-    public String getName() {
-        return getSixtyCycle().getName();
-    }
-
-    public Fortune next(int n) {
-        return fromChildLimit(childLimit, index + n);
-    }
-
+    ChildLimitInfo getInfo(SolarTime birthTime, SolarTerms term);
 }

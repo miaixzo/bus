@@ -31,7 +31,9 @@ import java.util.List;
 
 import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.cn.Taboo;
-import org.miaixz.bus.core.center.date.culture.cn.birth.EightChar;
+import org.miaixz.bus.core.center.date.culture.cn.eightchar.EightChar;
+import org.miaixz.bus.core.center.date.culture.cn.eightchar.provider.EightCharProvider;
+import org.miaixz.bus.core.center.date.culture.cn.eightchar.provider.impl.DefaultEightCharProvider;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.EarthBranch;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.HeavenStem;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
@@ -68,6 +70,11 @@ public class LunarHour extends Loops {
      * 秒
      */
     protected int second;
+
+    /**
+     * 八字计算接口
+     */
+    public static EightCharProvider provider = new DefaultEightCharProvider();
 
     /**
      * 初始化
@@ -124,7 +131,7 @@ public class LunarHour extends Loops {
      * @return 年
      */
     public int getYear() {
-        return day.getLunarMonth().getYear();
+        return day.getYear();
     }
 
     /**
@@ -133,7 +140,7 @@ public class LunarHour extends Loops {
      * @return 月
      */
     public int getMonth() {
-        return day.getLunarMonth().getMonthWithLeap();
+        return day.getMonth();
     }
 
     /**
@@ -191,6 +198,9 @@ public class LunarHour extends Loops {
     }
 
     public LunarHour next(int n) {
+        if (n == 0) {
+            return fromYmdHms(getYear(), getMonth(), getDay(), hour, minute, second);
+        }
         int h = hour + n * 2;
         int diff = h < 0 ? -1 : 1;
         int hour = Math.abs(h);
@@ -344,7 +354,7 @@ public class LunarHour extends Loops {
      * @return 八字
      */
     public EightChar getEightChar() {
-        return new EightChar(getYearSixtyCycle(), getMonthSixtyCycle(), getDaySixtyCycle(), getSixtyCycle());
+        return provider.getEightChar(this);
     }
 
     /**

@@ -47,6 +47,8 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * @author Kimi Liu
      * @since Java 17+
      */
+    @Getter
+    @AllArgsConstructor
     enum Align {
         /**
          * 左对齐
@@ -65,6 +67,8 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     /**
      * 渐变方向
      */
+    @Getter
+    @AllArgsConstructor
     enum Gradient {
         /**
          * 上到下
@@ -118,6 +122,8 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     /**
      * 图片缩略模式
      */
+    @Getter
+    @AllArgsConstructor
     enum Zoom {
         /**
          * 原始比例，不缩放
@@ -227,6 +233,8 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
     /**
      * 脱敏类型
      */
+    @Getter
+    @AllArgsConstructor
     enum Masking {
         /**
          * 用户id
@@ -296,6 +304,8 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
      * @author Kimi Liu
      * @since Java 17+
      */
+    @Getter
+    @AllArgsConstructor
     enum FtpMode {
 
         /**

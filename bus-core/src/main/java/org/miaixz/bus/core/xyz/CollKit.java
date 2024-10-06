@@ -187,8 +187,8 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 两个集合的差集 针对一个集合中存在多个相同元素的情况，计算两个集合中此元素的个数，保留两个集合中此元素个数差的个数 例如：
-     *
+     * 两个集合的对称差集 (A-B)∪(B-A) 针对一个集合中存在多个相同元素的情况，计算两个集合中此元素的个数，保留两个集合中此元素个数差的个数 例如：
+     * 
      * <pre>
      *     disjunction([a, b, c, c, c], [a, b, c, c]) - [c]
      *     disjunction([a, b], [])                    - [a, b]

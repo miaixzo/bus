@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-oauth</artifactId>
-    <version>8.1.0</version>
+    <version>8.1.1</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -87,7 +87,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <lombok.version>1.18.34</lombok.version>
         <bcpkix.version>1.78.1</bcpkix.version>
-        <fastjson.version>2.0.52</fastjson.version>
+        <fastjson.version>2.0.53</fastjson.version>
         <alipay.version>4.39.165.ALL</alipay.version>
     </properties>
 

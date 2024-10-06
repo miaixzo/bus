@@ -37,6 +37,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.io.file.PathResolve;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -108,7 +109,7 @@ public class CsvReader extends CsvBaseReader implements Iterable<CsvRow>, Closea
      * @param config  配置项，null表示默认配置
      */
     public CsvReader(final Path path, final Charset charset, final CsvReadConfig config) {
-        this(FileKit.getReader(path, charset), config);
+        this(PathResolve.getReader(path, charset), config);
     }
 
     /**

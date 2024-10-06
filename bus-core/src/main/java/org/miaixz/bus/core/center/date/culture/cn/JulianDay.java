@@ -95,46 +95,7 @@ public class JulianDay extends Loops {
      * @return 公历日
      */
     public SolarDay getSolarDay() {
-        int d = (int) (this.day + 0.5);
-        double f = this.day + 0.5 - d;
-
-        if (d >= 2299161) {
-            int c = (int) ((d - 1867216.25) / 36524.25);
-            d += 1 + c - (int) (c * 1D / 4);
-        }
-        d += 1524;
-        int year = (int) ((d - 122.1) / 365.25);
-        d -= (int) (365.25 * year);
-        int month = (int) (d * 1D / 30.601);
-        d -= (int) (30.601 * month);
-        int day = d;
-        if (month > 13) {
-            month -= 13;
-            year -= 4715;
-        } else {
-            month -= 1;
-            year -= 4716;
-        }
-        f *= 24;
-        int hour = (int) f;
-
-        f -= hour;
-        f *= 60;
-        int minute = (int) f;
-
-        f -= minute;
-        f *= 60;
-        int second = (int) Math.round(f);
-        if (second > 59) {
-            minute++;
-        }
-        if (minute > 59) {
-            hour++;
-        }
-        if (hour > 23) {
-            day += 1;
-        }
-        return SolarDay.fromYmd(year, month, day);
+        return getSolarTime().getSolarDay();
     }
 
     /**
@@ -183,7 +144,7 @@ public class JulianDay extends Loops {
         }
         if (hour > 23) {
             hour -= 24;
-            day += 1;
+            day++;
         }
         return SolarTime.fromYmdHms(year, month, day, hour, minute, second);
     }

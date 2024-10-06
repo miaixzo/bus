@@ -38,7 +38,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-parent</artifactId>
-    <version>8.1.0</version>
+    <version>8.1.1</version>
     <packaging>pom</packaging>
 
     <name>${project.artifactId}</name>
@@ -107,16 +107,16 @@
         <yaml.version>2.2</yaml.version>
         <aspectj.version>1.9.22.1</aspectj.version>
         <bcpkix.version>1.78.1</bcpkix.version>
-        <fastjson.version>2.0.52</fastjson.version>
+        <fastjson.version>2.0.53</fastjson.version>
         <gson.version>2.11.0</gson.version>
-        <jackson.version>2.17.2</jackson.version>
+        <jackson.version>2.18.0</jackson.version>
         <jpinyin.version>1.1.8</jpinyin.version>
         <pinyin4j.version>2.5.1</pinyin4j.version>
         <tiny.version>2.0.3.RELEASE</tiny.version>
         <bopomofo4j.version>1.0.1</bopomofo4j.version>
         <houbb.version>0.4.0</houbb.version>
         <jsch.version>0.2.17</jsch.version>
-        <sshj.version>0.38.0</sshj.version>
+        <sshj.version>0.39.0</sshj.version>
         <zxing.version>3.5.3</zxing.version>
         <net.version>3.10.0</net.version>
         <emoji.java.version>5.1.1</emoji.java.version>
@@ -133,11 +133,11 @@
         <jersey.version>3.1.1</jersey.version>
         <jna.version>5.14.0</jna.version>
         <sentinel.version>1.8.8</sentinel.version>
-        <bytebuddy.version>1.14.18</bytebuddy.version>
+        <bytebuddy.version>1.15.3</bytebuddy.version>
         <mybatis.version>3.5.16</mybatis.version>
         <mybatis.spring.version>3.0.4</mybatis.spring.version>
         <poi.version>5.3.0</poi.version>
-        <ofdrw.version>2.3.1</ofdrw.version>
+        <ofdrw.version>2.3.3</ofdrw.version>
         <jsqlparser.version>5.0</jsqlparser.version>
         <hikaricp.version>5.1.0</hikaricp.version>
         <druid.version>1.2.23</druid.version>
@@ -156,7 +156,7 @@
         <qiniu.oss.version>7.15.1</qiniu.oss.version>
         <qcloud.oss.version>5.6.225</qcloud.oss.version>
         <upyun.oss.version>4.2.3</upyun.oss.version>
-        <miaixz.bus.version>8.1.0</miaixz.bus.version>
+        <miaixz.bus.version>8.1.1</miaixz.bus.version>
         <spring.boot.version>3.3.3</spring.boot.version>
     </properties>
 

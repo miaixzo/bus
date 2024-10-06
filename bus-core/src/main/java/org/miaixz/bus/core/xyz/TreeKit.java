@@ -54,7 +54,7 @@ public class TreeKit {
      * @param list 源数据集合
      * @return {@link MapTree}
      */
-    public static MapTree<Integer> buildSingle(final List<TreeNode<Integer>> list) {
+    public static MapTree<Integer> buildSingle(final Iterable<TreeNode<Integer>> list) {
         return buildSingle(list, 0);
     }
 
@@ -64,7 +64,7 @@ public class TreeKit {
      * @param list 源数据集合
      * @return List
      */
-    public static List<MapTree<Integer>> build(final List<TreeNode<Integer>> list) {
+    public static List<MapTree<Integer>> build(final Iterable<TreeNode<Integer>> list) {
         return build(list, 0);
     }
 
@@ -76,7 +76,7 @@ public class TreeKit {
      * @param parentId 最顶层父id值 一般为 0 之类
      * @return {@link MapTree}
      */
-    public static <E> MapTree<E> buildSingle(final List<TreeNode<E>> list, final E parentId) {
+    public static <E> MapTree<E> buildSingle(final Iterable<TreeNode<E>> list, final E parentId) {
         return buildSingle(list, parentId, NodeConfig.DEFAULT_CONFIG, new DefaultNodeParser<>());
     }
 
@@ -88,12 +88,12 @@ public class TreeKit {
      * @param parentId 最顶层父id值 一般为 0 之类
      * @return List
      */
-    public static <E> List<MapTree<E>> build(final List<TreeNode<E>> list, final E parentId) {
+    public static <E> List<MapTree<E>> build(final Iterable<TreeNode<E>> list, final E parentId) {
         return build(list, parentId, NodeConfig.DEFAULT_CONFIG, new DefaultNodeParser<>());
     }
 
     /**
-     * 构建单root节点树 它会生成一个以指定ID为ID的空的节点，然后逐级增加子节点。
+     * 构建单root节点树 它会将指定Id的节点作为根节点，如果这个节点不存在，则创建一个空节点，然后逐级增加子节点。
      *
      * @param <T>        转换的实体 为数据源里的对象类型
      * @param <E>        ID类型
@@ -102,13 +102,13 @@ public class TreeKit {
      * @param nodeParser 转换器
      * @return {@link MapTree}
      */
-    public static <T, E> MapTree<E> buildSingle(final List<T> list, final E parentId,
+    public static <T, E> MapTree<E> buildSingle(final Iterable<T> list, final E parentId,
             final NodeParser<T, E> nodeParser) {
         return buildSingle(list, parentId, NodeConfig.DEFAULT_CONFIG, nodeParser);
     }
 
     /**
-     * 树构建
+     * 树构建 你所有节点的ID都不应该重复，那你要构建一个列表形式的树结构，指定的这个rootId应该是首层节点的parentId，而非某个节点的id
      *
      * @param <T>        转换的实体 为数据源里的对象类型
      * @param <E>        ID类型
@@ -117,25 +117,25 @@ public class TreeKit {
      * @param nodeParser 转换器
      * @return List
      */
-    public static <T, E> List<MapTree<E>> build(final List<T> list, final E parentId,
+    public static <T, E> List<MapTree<E>> build(final Iterable<T> list, final E parentId,
             final NodeParser<T, E> nodeParser) {
         return build(list, parentId, NodeConfig.DEFAULT_CONFIG, nodeParser);
     }
 
     /**
-     * 树构建
+     * 树构建 你所有节点的ID都不应该重复，那你要构建一个列表形式的树结构，指定的这个rootId应该是首层节点的parentId，而非某个节点的id
      *
      * @param <T>        转换的实体 为数据源里的对象类型
      * @param <E>        ID类型
      * @param list       源数据集合
      * @param rootId     最顶层父id值 一般为 0 之类
-     * @param nodeConfig 配置
+     * @param NodeConfig 配置
      * @param nodeParser 转换器
      * @return List
      */
-    public static <T, E> List<MapTree<E>> build(final List<T> list, final E rootId, final NodeConfig nodeConfig,
+    public static <T, E> List<MapTree<E>> build(final Iterable<T> list, final E rootId, final NodeConfig NodeConfig,
             final NodeParser<T, E> nodeParser) {
-        return buildSingle(list, rootId, nodeConfig, nodeParser).getChildren();
+        return buildSingle(list, rootId, NodeConfig, nodeParser).getChildren();
     }
 
     /**
@@ -145,13 +145,13 @@ public class TreeKit {
      * @param <E>        ID类型
      * @param list       源数据集合
      * @param rootId     最顶层父id值 一般为 0 之类
-     * @param nodeConfig 配置
+     * @param NodeConfig 配置
      * @param nodeParser 转换器
      * @return {@link MapTree}
      */
-    public static <T, E> MapTree<E> buildSingle(final List<T> list, final E rootId, final NodeConfig nodeConfig,
+    public static <T, E> MapTree<E> buildSingle(final Iterable<T> list, final E rootId, final NodeConfig NodeConfig,
             final NodeParser<T, E> nodeParser) {
-        return TreeBuilder.of(rootId, nodeConfig).append(list, nodeParser).build();
+        return TreeBuilder.of(rootId, NodeConfig).append(list, nodeParser).build();
     }
 
     /**

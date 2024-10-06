@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-limiter</artifactId>
-    <version>8.1.0</version>
+    <version>8.1.1</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -87,7 +87,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <lombok.version>1.18.34</lombok.version>
         <sentinel.version>1.8.8</sentinel.version>
-        <bytebuddy.version>1.14.18</bytebuddy.version>
+        <bytebuddy.version>1.15.3</bytebuddy.version>
     </properties>
 
     <dependencies>
