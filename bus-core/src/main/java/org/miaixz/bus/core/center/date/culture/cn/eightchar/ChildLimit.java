@@ -25,11 +25,11 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.core.center.date.culture.cn.birth;
+package org.miaixz.bus.core.center.date.culture.cn.eightchar;
 
 import org.miaixz.bus.core.center.date.culture.cn.Opposite;
-import org.miaixz.bus.core.center.date.culture.cn.birth.provider.ChildLimitProvider;
-import org.miaixz.bus.core.center.date.culture.cn.birth.provider.impl.DefaultChildLimitProvider;
+import org.miaixz.bus.core.center.date.culture.cn.eightchar.provider.ChildLimitProvider;
+import org.miaixz.bus.core.center.date.culture.cn.eightchar.provider.impl.DefaultChildLimitProvider;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 import org.miaixz.bus.core.lang.Gender;

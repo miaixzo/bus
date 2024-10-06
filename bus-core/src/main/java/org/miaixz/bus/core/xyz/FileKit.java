@@ -2003,18 +2003,12 @@ public class FileKit extends PathResolve {
     /**
      * 获得一个输出流对象
      *
-     * @param file 文件
+     * @param file    文件
+     * @param options 选项，如追加模式传{@link java.nio.file.StandardOpenOption#APPEND}
      * @return 输出流对象
-     * @throws InternalException IO异常
      */
-    public static BufferedOutputStream getOutputStream(final File file) throws InternalException {
-        final OutputStream out;
-        try {
-            out = Files.newOutputStream(touch(file).toPath());
-        } catch (final IOException e) {
-            throw new InternalException(e);
-        }
-        return IoKit.toBuffered(out);
+    public static BufferedOutputStream getOutputStream(final File file, final OpenOption... options) {
+        return PathResolve.getOutputStream(touch(file).toPath(), options);
     }
 
     /**
@@ -2024,7 +2018,7 @@ public class FileKit extends PathResolve {
      * @return 输出流对象
      * @throws InternalException IO异常
      */
-    public static BufferedOutputStream getOutputStream(final String path) throws InternalException {
+    public static BufferedOutputStream getOutputStream(final String path) {
         return getOutputStream(touch(path));
     }
 

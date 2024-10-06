@@ -99,7 +99,7 @@ public class FastByteArrayOutputStream extends OutputStream {
      * @return 长度
      */
     public int size() {
-        return buffer.size();
+        return buffer.length();
     }
 
     /**

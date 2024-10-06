@@ -223,7 +223,7 @@ public class ChineseNumberParser {
                     // 非节单位，和单位前的单数字组合为值
                     long unitNumber = number;
                     if (0 == number && 0 == i) {
-                        // issue#1726，对于单位开头的数组，默认赋予1
+                        // 对于单位开头的数组，默认赋予1
                         // 十二 -> 一十二
                         // 百二 -> 一百二
                         unitNumber = 1;

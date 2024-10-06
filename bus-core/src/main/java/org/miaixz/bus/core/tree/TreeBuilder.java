@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.tree;
 
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,9 +50,19 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
 
     private static final long serialVersionUID = -1L;
 
-    private final MapTree<E> root;
     private final Map<E, MapTree<E>> idTreeMap;
     private boolean isBuild;
+    private MapTree<E> root;
+
+    /**
+     * 构造
+     *
+     * @param root 根节点
+     */
+    public TreeBuilder(final MapTree<E> root) {
+        this.root = root;
+        this.idTreeMap = new LinkedHashMap<>();
+    }
 
     /**
      * 构造
@@ -60,9 +71,7 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
      * @param config 配置
      */
     public TreeBuilder(final E rootId, final NodeConfig config) {
-        root = new MapTree<>(config);
-        root.setId(rootId);
-        this.idTreeMap = new LinkedHashMap<>();
+        this(new MapTree<E>(config).setId(rootId));
     }
 
     /**
@@ -166,10 +175,29 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
      */
     public TreeBuilder<E> append(final Iterable<MapTree<E>> trees) {
         checkBuilt();
-
-        for (final MapTree<E> tree : trees) {
-            this.idTreeMap.put(tree.getId(), tree);
+        if (null != trees) {
+            append(trees.iterator());
         }
+        return this;
+    }
+
+    /**
+     * 增加节点列表，增加的节点是不带子节点的
+     *
+     * @param iterator 节点列表
+     * @return this
+     */
+    public TreeBuilder<E> append(final Iterator<MapTree<E>> iterator) {
+        checkBuilt();
+
+        MapTree<E> tree;
+        while (iterator.hasNext()) {
+            tree = iterator.next();
+            if (null != tree) {
+                this.idTreeMap.put(tree.getId(), tree);
+            }
+        }
+
         return this;
     }
 
@@ -181,18 +209,31 @@ public class TreeBuilder<E> implements Builder<MapTree<E>> {
      * @param nodeParser 节点转换器，用于定义一个Bean如何转换为Tree节点
      * @return this
      */
-    public <T> TreeBuilder<E> append(final List<T> list, final NodeParser<T, E> nodeParser) {
+    public <T> TreeBuilder<E> append(final Iterable<T> list, final NodeParser<T, E> nodeParser) {
         checkBuilt();
 
         final NodeConfig config = this.root.getConfig();
-        final Map<E, MapTree<E>> map = new LinkedHashMap<>(list.size(), 1);
-        MapTree<E> node;
-        for (final T t : list) {
-            node = new MapTree<>(config);
-            nodeParser.parse(t, node);
-            map.put(node.getId(), node);
-        }
-        return append(map);
+        final Iterator<T> iterator = list.iterator();
+        return append(new Iterator<>() {
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+
+            @Override
+            public MapTree<E> next() {
+                final MapTree<E> node = new MapTree<>(config);
+                nodeParser.parse(iterator.next(), node);
+
+                if (ObjectKit.equals(node.getId(), root.getId())) {
+                    // 如果指定根节点存在，直接复用
+                    TreeBuilder.this.root = node;
+                    return null;
+                }
+
+                return node;
+            }
+        });
     }
 
     /**

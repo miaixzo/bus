@@ -35,7 +35,7 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 import java.io.*;
-import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -336,18 +336,15 @@ public class FileWriter extends FileWrapper {
     /**
      * 将流的内容写入文件
      *
-     * @param in        输入流，不关闭
-     * @param isCloseIn 是否关闭输入流
-     * @return dest
-     * @throws InternalException IO异常
+     * @param in      输入流，不关闭
+     * @param options 选项，如追加模式传{@link java.nio.file.StandardOpenOption#APPEND}
+     * @return file
      */
-    public File writeFromStream(final InputStream in, final boolean isCloseIn) throws InternalException {
+    public File writeFromStream(final InputStream in, final boolean isCloseIn, final OpenOption... options) {
         OutputStream out = null;
         try {
-            out = Files.newOutputStream(FileKit.touch(file).toPath());
+            out = FileKit.getOutputStream(file, options);
             IoKit.copy(in, out);
-        } catch (final IOException e) {
-            throw new InternalException(e);
         } finally {
             IoKit.closeQuietly(out);
             if (isCloseIn) {
@@ -360,15 +357,11 @@ public class FileWriter extends FileWrapper {
     /**
      * 获得一个输出流对象
      *
+     * @param options 选项，如追加模式传{@link java.nio.file.StandardOpenOption#APPEND}
      * @return 输出流对象
-     * @throws InternalException IO异常
      */
-    public BufferedOutputStream getOutputStream() throws InternalException {
-        try {
-            return new BufferedOutputStream(Files.newOutputStream(FileKit.touch(file).toPath()));
-        } catch (final IOException e) {
-            throw new InternalException(e);
-        }
+    public BufferedOutputStream getOutputStream(final OpenOption... options) {
+        return FileKit.getOutputStream(file, options);
     }
 
     /**

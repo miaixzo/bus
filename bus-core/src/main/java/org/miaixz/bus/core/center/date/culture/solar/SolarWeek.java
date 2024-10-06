@@ -157,12 +157,10 @@ public class SolarWeek extends Loops {
 
     public SolarWeek next(int n) {
         int startIndex = start.getIndex();
-        if (n == 0) {
-            return fromYm(getYear(), getMonth(), index, startIndex);
-        }
-        int d = index + n;
+        int d = index;
         SolarMonth m = month;
         if (n > 0) {
+            d += n;
             int weekCount = m.getWeekCount(startIndex);
             while (d >= weekCount) {
                 d -= weekCount;
@@ -172,7 +170,8 @@ public class SolarWeek extends Loops {
                 }
                 weekCount = m.getWeekCount(startIndex);
             }
-        } else {
+        } else if (n < 0) {
+            d += n;
             while (d < 0) {
                 if (!SolarDay.fromYmd(m.getYear(), m.getMonth(), 1).getWeek().equals(start)) {
                     d -= 1;

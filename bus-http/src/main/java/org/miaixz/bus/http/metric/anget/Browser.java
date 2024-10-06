@@ -81,7 +81,6 @@ public class Browser extends UserAgent {
             // 联想浏览器
             new Browser("Lenovo", "SLBrowser", "SLBrowser/([\\d\\w\\.\\-]+)"),
             new Browser("MSEdge", "Edge|Edg", "(?:edge|Edg|EdgA)\\/([\\d\\w\\.\\-]+)"),
-            // issues I7OTCU
             new Browser("Chrome", "chrome|(iphone.*crios.*safari)", "(?:Chrome|CriOS)\\/([\\d\\w\\.\\-]+)"),
             // new Browser("Chrome", "chrome", Other_Version),
             new Browser("Firefox", "firefox", OTHER_VERSION), new Browser("IEMobile", "iemobile", OTHER_VERSION),

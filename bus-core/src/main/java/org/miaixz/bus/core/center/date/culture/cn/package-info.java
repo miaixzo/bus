@@ -26,7 +26,7 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 中国传统文化/日历相关
+ * 中国传统文化/日历相关 部分内容来自 https://github.com/6tail/lunar-java
  *
  * @author Kimi Liu
  * @since Java 17+

@@ -55,7 +55,7 @@ public final class SysPath {
     public static final String MODEL = SYS + "firmware/devicetree/base/model";
     public static final String POWER_SUPPLY = SYS + "class/power_supply";
     public static final String HWMON = SYS + "class/hwmon/";
-    public static final String THERMAL = SYS + "class/thermal/thermal_zone";
+    public static final String THERMAL = SYS + "class/thermal/";
 
     private static String querySysConfig() {
         String sysPath = Config.get(Config._UTIL_SYS_PATH, "/sys");

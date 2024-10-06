@@ -106,15 +106,16 @@ public class SolarQuarter extends Loops {
     }
 
     public SolarQuarter next(int n) {
-        if (n == 0) {
-            return fromIndex(getYear(), index);
-        }
-        int i = index + n;
-        int y = getYear() + i / 4;
-        i %= 4;
-        if (i < 0) {
-            i += 4;
-            y -= 1;
+        int i = index;
+        int y = getYear();
+        if (n != 0) {
+            i += n;
+            y += i / 4;
+            i %= 4;
+            if (i < 0) {
+                i += 4;
+                y -= 1;
+            }
         }
         return fromIndex(y, i);
     }

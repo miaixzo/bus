@@ -25,107 +25,90 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.core.center.date.culture.cn.birth;
+package org.miaixz.bus.core.center.date.culture.cn.eightchar;
 
-import org.miaixz.bus.core.center.date.culture.Loops;
-import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
-import org.miaixz.bus.core.center.date.culture.lunar.LunarYear;
+import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 
 /**
- * 大运（10年1大运）
+ * 童限信息
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class DecadeFortune extends Loops {
+public class ChildLimitInfo {
 
     /**
-     * 童限
+     * 开始(即出生)的公历时刻
      */
-    protected ChildLimit childLimit;
+    protected SolarTime startTime;
 
     /**
-     * 序号
+     * 结束(即开始起运)的公历时刻
      */
-    protected int index;
-
-    public DecadeFortune(ChildLimit childLimit, int index) {
-        this.childLimit = childLimit;
-        this.index = index;
-    }
+    protected SolarTime endTime;
 
     /**
-     * 通过童限初始化
-     *
-     * @param childLimit 童限
-     * @param index      序号
-     * @return 大运
+     * 年数
      */
-    public static DecadeFortune fromChildLimit(ChildLimit childLimit, int index) {
-        return new DecadeFortune(childLimit, index);
-    }
+    protected int yearCount;
 
     /**
-     * 开始年龄
-     *
-     * @return 开始年龄
+     * 月数
      */
-    public int getStartAge() {
-        return childLimit.getYearCount() + 1 + index * 10;
-    }
+    protected int monthCount;
 
     /**
-     * 结束年龄
-     *
-     * @return 结束年龄
+     * 日数
      */
-    public int getEndAge() {
-        return getStartAge() + 9;
-    }
+    protected int dayCount;
 
     /**
-     * 开始农历年
-     *
-     * @return 农历年
+     * 小时数
      */
-    public LunarYear getStartLunarYear() {
-        return childLimit.getEndTime().getLunarHour().getLunarDay().getLunarMonth().getLunarYear().next(index * 10);
-    }
+    protected int hourCount;
 
     /**
-     * 结束农历年
-     *
-     * @return 农历年
+     * 分钟数
      */
-    public LunarYear getEndLunarYear() {
-        return getStartLunarYear().next(9);
+    protected int minuteCount;
+
+    public ChildLimitInfo(SolarTime startTime, SolarTime endTime, int yearCount, int monthCount, int dayCount,
+            int hourCount, int minuteCount) {
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.yearCount = yearCount;
+        this.monthCount = monthCount;
+        this.dayCount = dayCount;
+        this.hourCount = hourCount;
+        this.minuteCount = minuteCount;
     }
 
-    /**
-     * 干支
-     *
-     * @return 干支
-     */
-    public SixtyCycle getSixtyCycle() {
-        int n = index + 1;
-        return childLimit.getEightChar().getMonth().next(childLimit.isForward() ? n : -n);
+    public SolarTime getStartTime() {
+        return startTime;
     }
 
-    public String getName() {
-        return getSixtyCycle().getName();
+    public SolarTime getEndTime() {
+        return endTime;
     }
 
-    public DecadeFortune next(int n) {
-        return fromChildLimit(childLimit, index + n);
+    public int getYearCount() {
+        return yearCount;
     }
 
-    /**
-     * 开始小运
-     *
-     * @return 小运
-     */
-    public Fortune getStartFortune() {
-        return Fortune.fromChildLimit(childLimit, index * 10);
+    public int getMonthCount() {
+        return monthCount;
+    }
+
+    public int getDayCount() {
+        return dayCount;
+    }
+
+    public int getHourCount() {
+        return hourCount;
+    }
+
+    public int getMinuteCount() {
+        return minuteCount;
     }
 
 }

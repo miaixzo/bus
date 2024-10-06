@@ -32,6 +32,7 @@ import org.miaixz.bus.core.io.resource.Resource;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.NotFoundException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -527,16 +528,18 @@ public class PathResolve {
     /**
      * 获得输出流
      *
-     * @param path Path
+     * @param path    Path
+     * @param options 选项，如追加模式传{@link java.nio.file.StandardOpenOption#APPEND}
      * @return 输入流
-     * @throws InternalException 文件未找到
+     * @throws NotFoundException 文件未找到
      */
-    public static BufferedOutputStream getOutputStream(final Path path) throws InternalException {
+    public static BufferedOutputStream getOutputStream(final Path path, final OpenOption... options)
+            throws NotFoundException {
         final OutputStream in;
         try {
-            in = Files.newOutputStream(path);
+            in = Files.newOutputStream(path, options);
         } catch (final IOException e) {
-            throw new InternalException(e);
+            throw new NotFoundException(e);
         }
         return IoKit.toBuffered(in);
     }

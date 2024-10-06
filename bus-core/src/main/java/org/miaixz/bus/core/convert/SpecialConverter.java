@@ -87,7 +87,7 @@ public class SpecialConverter extends ConverterWithRoot implements Serializable 
         converterSet.add(CollectionConverter.INSTANCE);
         // Map类型（含有泛型参数，不可以默认强转）
         converterSet.add(new MapConverter(rootConverter));
-        // issue#I6SZYB Entry类（含有泛型参数，不可以默认强转）
+        // Entry类（含有泛型参数，不可以默认强转）
         converterSet.add(new EntryConverter(rootConverter));
         // 默认强转
         converterSet.add(CastConverter.INSTANCE);
@@ -105,7 +105,7 @@ public class SpecialConverter extends ConverterWithRoot implements Serializable 
         converterSet.add(RecordConverter.INSTANCE);
         // Kotlin Bean
         converterSet.add(KBeanConverter.INSTANCE);
-        // issue#I7FQ29 Class
+        // Class
         converterSet.add(ClassConverter.INSTANCE);
         // // 空值转空Bean
         converterSet.add(EmptyBeanConverter.INSTANCE);

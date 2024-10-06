@@ -38,6 +38,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.io.file.PathResolve;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -185,7 +186,7 @@ public class CsvBaseReader implements Serializable {
      */
     public CsvData read(final Path path, final java.nio.charset.Charset charset) throws InternalException {
         Assert.notNull(path, "path must not be null");
-        return read(FileKit.getReader(path, charset), true);
+        return read(PathResolve.getReader(path, charset), true);
     }
 
     /**

@@ -111,7 +111,7 @@ public class FetusDay extends Tradition {
     /**
      * 内外
      *
-     * @return 侧
+     * @return 内外
      */
     public int getSide() {
         return side;

@@ -32,6 +32,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.miaixz.bus.core.center.function.FunctionX;
 import org.miaixz.bus.core.lang.Optional;
@@ -387,6 +388,25 @@ public class CollectionStream extends CollectionValidator {
             }
         }
         return map;
+    }
+
+    /**
+     * 笛卡尔积 参考：https://www.baeldung-cn.com/java-cartesian-product-sets
+     *
+     * @param sets  集合列表
+     * @param index 索引
+     * @return 笛卡尔积
+     */
+    public static Stream<List<Object>> cartesianProduct(final List<List<Object>> sets, final int index) {
+        if (index == sets.size()) {
+            return Stream.of(ListKit.zero());
+        }
+        final List<Object> currentSet = sets.get(index);
+        return currentSet.stream().flatMap(element -> cartesianProduct(sets, index + 1).map(list -> {
+            final List<Object> newList = new ArrayList<>(list);
+            newList.add(0, element);
+            return newList;
+        }));
     }
 
 }

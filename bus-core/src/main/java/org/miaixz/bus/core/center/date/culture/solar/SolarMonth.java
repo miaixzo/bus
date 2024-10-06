@@ -158,15 +158,16 @@ public class SolarMonth extends Loops {
     }
 
     public SolarMonth next(int n) {
-        if (n == 0) {
-            return fromYm(getYear(), month);
-        }
-        int m = month + n;
-        int y = getYear() + m / 12;
-        m %= 12;
-        if (m < 1) {
-            m += 12;
-            y--;
+        int m = month;
+        int y = getYear();
+        if (n != 0) {
+            m += n;
+            y += m / 12;
+            m %= 12;
+            if (m < 1) {
+                m += 12;
+                y--;
+            }
         }
         return fromYm(y, m);
     }

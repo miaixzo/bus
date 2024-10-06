@@ -86,7 +86,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <poi.version>5.3.0</poi.version>
-        <ofdrw.version>2.3.1</ofdrw.version>
+        <ofdrw.version>2.3.3</ofdrw.version>
     </properties>
 
     <dependencies>

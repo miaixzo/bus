@@ -130,7 +130,7 @@ public class LineInputStream extends FilterInputStream implements Iterable<byte[
                 } else if (Symbol.C_LF == c) {
                     // 非转义状态下，表示行的结束
                     // 如果换行符是`\r\n`，删除末尾的`\r`
-                    final int lastIndex = out.size() - 1;
+                    final int lastIndex = out.length() - 1;
                     if (lastIndex >= 0 && Symbol.C_CR == out.get(lastIndex)) {
                         return out.toArray(0, lastIndex);
                     }
