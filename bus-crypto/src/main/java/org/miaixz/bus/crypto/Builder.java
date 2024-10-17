@@ -517,7 +517,12 @@ public class Builder {
 
         // 某些特殊字符串会无法区分Hex还是Base64，此处使用系统属性强制关闭Hex解析
         final boolean decodeHex = Keys.getBoolean(CRYPTO_DECODE_HEX, true);
-        return (decodeHex && Validator.isHex(key)) ? Hex.decode(key) : Base64.decode(key);
+        if (decodeHex && Validator.isHex(key)) {
+            return Hex.decode(key);
+        } else if (Base64.isTypeBase64(key)) {
+            return Base64.decode(key);
+        }
+        throw new IllegalArgumentException("Value is not hex or base64!");
     }
 
     /**

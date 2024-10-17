@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.core;
 
+import java.util.function.Consumer;
+
 /**
  * 对象加载抽象接口 通过实现此接口自定义实现对象的加载方式，例如懒加载机制、多线程加载等
  *
@@ -43,5 +45,25 @@ public interface Loader<T> {
      * @return 加载完毕的对象
      */
     T get();
+
+    /**
+     * 是否已经初始化完毕
+     *
+     * @return 是否已经初始化完毕
+     */
+    default boolean isInitialized() {
+        return true;
+    }
+
+    /**
+     * 如果已经初始化，就执行传入函数
+     *
+     * @param consumer 待执行函数，为{@code null}表示不执行任何操作
+     */
+    default void ifInitialized(final Consumer<T> consumer) {
+        if (null != consumer && this.isInitialized()) {
+            consumer.accept(get());
+        }
+    }
 
 }

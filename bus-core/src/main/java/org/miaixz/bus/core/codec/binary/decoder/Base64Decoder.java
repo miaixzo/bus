@@ -36,7 +36,7 @@ import org.miaixz.bus.core.lang.mutable.MutableInt;
 import org.miaixz.bus.core.xyz.ArrayKit;
 
 /**
- * Base64解码实现 此解码保留的原因是，JDK提供的解码需要指定是否为URL安全的或是否换行，此解码无需区分
+ * Base64解码实现 此解码保留的原因是，JDK提供的解码需要指定是否为URL安全的或是否换行，此解码无需区分此解码对非Base64字符忽略
  *
  * @author Kimi Liu
  * @since Java 17+

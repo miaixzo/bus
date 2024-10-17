@@ -64,7 +64,7 @@ public class BOMInputStream extends InputStream {
     private static final int BOM_SIZE = 4;
     private final PushbackInputStream in;
     private final String defaultCharset;
-    private boolean isInited = false;
+    private boolean initialized = false;
     private String charset;
 
     /**
@@ -93,7 +93,7 @@ public class BOMInputStream extends InputStream {
      * @return 默认编码
      */
     public String getDefaultCharset() {
-        return defaultCharset;
+        return this.defaultCharset;
     }
 
     /**
@@ -102,25 +102,25 @@ public class BOMInputStream extends InputStream {
      * @return 编码
      */
     public String getCharset() {
-        if (!isInited) {
+        if (!this.initialized) {
             try {
                 init();
             } catch (final IOException ex) {
                 throw new InternalException(ex);
             }
         }
-        return charset;
+        return this.charset;
     }
 
     @Override
     public void close() throws IOException {
-        isInited = true;
+        this.initialized = true;
         in.close();
     }
 
     @Override
     public int read() throws IOException {
-        isInited = true;
+        this.initialized = true;
         return in.read();
     }
 
@@ -131,7 +131,7 @@ public class BOMInputStream extends InputStream {
      * @throws IOException 读取引起的异常
      */
     protected void init() throws IOException {
-        if (isInited) {
+        if (this.initialized) {
             return;
         }
 
@@ -142,14 +142,14 @@ public class BOMInputStream extends InputStream {
 
         for (final ByteOrderMark byteOrderMark : ByteOrderMark.ALL) {
             if (byteOrderMark.test(bom)) {
-                charset = byteOrderMark.getCharsetName();
+                this.charset = byteOrderMark.getCharsetName();
                 unread = n - byteOrderMark.length();
                 break;
             }
         }
         if (0 == unread) {
             // Unicode BOM mark not found, unread all bytes
-            charset = defaultCharset;
+            this.charset = this.defaultCharset;
             unread = n;
         }
 
@@ -157,7 +157,7 @@ public class BOMInputStream extends InputStream {
             in.unread(bom, (n - unread), unread);
         }
 
-        isInited = true;
+        this.initialized = true;
     }
 
 }

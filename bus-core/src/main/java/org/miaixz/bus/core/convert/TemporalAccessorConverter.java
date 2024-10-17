@@ -38,7 +38,7 @@ import java.util.Objects;
 
 import org.miaixz.bus.core.center.date.DateTime;
 import org.miaixz.bus.core.center.date.Resolver;
-import org.miaixz.bus.core.center.date.format.CustomFormat;
+import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -200,7 +200,7 @@ public class TemporalAccessorConverter extends AbstractConverter {
         }
 
         final Instant instant;
-        if (CustomFormat.FORMAT_SECONDS.equals(this.format)) {
+        if (Fields.FORMAT_SECONDS.equals(this.format)) {
             // Unix时间戳
             instant = Instant.ofEpochSecond(time);
         } else {
