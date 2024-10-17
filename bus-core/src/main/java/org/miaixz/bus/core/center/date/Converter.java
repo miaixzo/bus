@@ -36,6 +36,7 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalField;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -269,6 +270,23 @@ public class Converter extends Formatter {
      */
     public static LocalDateTime ofUTC(final long epochMilli) {
         return ofUTC(Instant.ofEpochMilli(epochMilli));
+    }
+
+    /**
+     * {@link Date}转{@link LocalDateTime}，使用默认时区 如果为{@link DateTime}且提供了时区信息，则按照给定的时区转换为默认时区
+     *
+     * @param date Date对象
+     * @return {@link LocalDateTime}
+     */
+    public static LocalDateTime of(final Date date) {
+        if (null == date) {
+            return null;
+        }
+
+        if (date instanceof DateTime) {
+            return of(date.toInstant(), ((DateTime) date).getZoneId());
+        }
+        return of(date.toInstant());
     }
 
     /**

@@ -43,8 +43,8 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.function.Function;
 
-import org.miaixz.bus.core.center.date.format.CustomFormat;
 import org.miaixz.bus.core.center.date.format.FormatBuilder;
+import org.miaixz.bus.core.center.date.format.FormatManager;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -393,8 +393,9 @@ public class Formatter {
         }
 
         // 检查自定义格式
-        if (CustomFormat.isCustomFormat(format)) {
-            return CustomFormat.format(time, format);
+        final FormatManager formatManager = FormatManager.getInstance();
+        if (formatManager.isCustomFormat(format)) {
+            return formatManager.format(time, format);
         }
 
         final DateTimeFormatter formatter = StringKit.isBlank(format) ? null : DateTimeFormatter.ofPattern(format);

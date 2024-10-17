@@ -38,7 +38,7 @@ import javax.xml.datatype.XMLGregorianCalendar;
 import org.miaixz.bus.core.center.date.culture.en.Modify;
 import org.miaixz.bus.core.center.date.culture.en.Month;
 import org.miaixz.bus.core.center.date.culture.en.Various;
-import org.miaixz.bus.core.center.date.format.CustomFormat;
+import org.miaixz.bus.core.center.date.format.FormatManager;
 import org.miaixz.bus.core.center.date.format.parser.DateParser;
 import org.miaixz.bus.core.center.date.format.parser.FastDateParser;
 import org.miaixz.bus.core.center.date.format.parser.PositionDateParser;
@@ -733,9 +733,10 @@ public class Calendar extends Calculate {
         final java.util.Calendar calendar = java.util.Calendar.getInstance(tz, lcl);
         calendar.setLenient(lenient);
 
+        final FormatManager formatManager = FormatManager.getInstance();
         for (final String parsePattern : parsePatterns) {
-            if (CustomFormat.isCustomFormat(parsePattern)) {
-                final Date parse = CustomFormat.parse(text, parsePattern);
+            if (formatManager.isCustomParse(parsePattern)) {
+                final Date parse = formatManager.parse(text, parsePattern);
                 if (null == parse) {
                     continue;
                 }

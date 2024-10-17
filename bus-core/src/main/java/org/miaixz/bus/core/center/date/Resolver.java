@@ -35,14 +35,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Locale;
 
-import org.miaixz.bus.core.center.date.format.CustomFormat;
 import org.miaixz.bus.core.center.date.format.FormatBuilder;
+import org.miaixz.bus.core.center.date.format.FormatManager;
 import org.miaixz.bus.core.center.date.format.parser.PositionDateParser;
 import org.miaixz.bus.core.center.date.format.parser.RegisterDateParser;
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.DateException;
 import org.miaixz.bus.core.text.CharsBacker;
+import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -151,11 +152,12 @@ public class Resolver extends Converter {
      * @return 日期对象
      */
     public static DateTime parse(final CharSequence date, final String format, final Locale locale) {
-        if (CustomFormat.isCustomFormat(format)) {
+        final FormatManager formatManager = FormatManager.getInstance();
+        if (formatManager.isCustomFormat(format)) {
             // 自定义格式化器忽略Locale
-            return new DateTime(CustomFormat.parse(date, format));
+            return new DateTime(formatManager.parse(date, format));
         }
-        return new DateTime(date, newSimpleFormat(format, locale, null));
+        return new DateTime(date, DateKit.newSimpleFormat(format, locale, null));
     }
 
     /**
@@ -183,8 +185,9 @@ public class Resolver extends Converter {
             return null;
         }
 
-        if (CustomFormat.isCustomFormat(format)) {
-            return of(CustomFormat.parse(date, format).toInstant());
+        final FormatManager formatManager = FormatManager.getInstance();
+        if (formatManager.isCustomFormat(format)) {
+            return of(formatManager.parse(date, format));
         }
 
         DateTimeFormatter formatter = null;
