@@ -73,7 +73,7 @@ public class MybatisPluginBuilder {
             }
 
             SensitiveProperties sensitiveProperties = PlaceHolderBinder.bind(environment, SensitiveProperties.class,
-                    GeniusBuilder.MYBATIS);
+                    GeniusBuilder.SENSITIVE);
             if (ObjectKit.isNotEmpty(sensitiveProperties)) {
                 Properties p = new Properties();
                 p.setProperty("debug", String.valueOf(sensitiveProperties.isDebug()));
