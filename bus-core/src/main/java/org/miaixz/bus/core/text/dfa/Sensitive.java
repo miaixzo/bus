@@ -45,7 +45,7 @@ import org.miaixz.bus.core.xyz.ThreadKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public final class Sensitive {
+public class Sensitive {
 
     /**
      * 默认关键词分隔符
@@ -56,7 +56,7 @@ public final class Sensitive {
     /**
      * @return 是否已经被初始化
      */
-    public static boolean isInited() {
+    public static boolean isInitialized() {
         return !sensitiveTree.isEmpty();
     }
 

@@ -88,7 +88,7 @@ public class SyncInputStream extends FilterInputStream {
     }
 
     /**
-     * 同步数据到内存
+     * 同步数据到内存，同步后关闭原流
      *
      * @return this
      */
@@ -113,7 +113,7 @@ public class SyncInputStream extends FilterInputStream {
     }
 
     /**
-     * 将流的内容拷贝到输出流
+     * 将流的内容拷贝到输出流，拷贝结束后关闭输入流
      *
      * @param out            输出流
      * @param streamProgress 进度条

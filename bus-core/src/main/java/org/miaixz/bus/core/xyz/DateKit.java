@@ -48,8 +48,8 @@ import org.miaixz.bus.core.center.date.Calendar;
 import org.miaixz.bus.core.center.date.Formatter;
 import org.miaixz.bus.core.center.date.culture.cn.Zodiac;
 import org.miaixz.bus.core.center.date.culture.en.*;
-import org.miaixz.bus.core.center.date.format.CustomFormat;
 import org.miaixz.bus.core.center.date.format.FormatBuilder;
+import org.miaixz.bus.core.center.date.format.FormatManager;
 import org.miaixz.bus.core.center.date.format.FormatPeriod;
 import org.miaixz.bus.core.center.date.printer.FormatPrinter;
 import org.miaixz.bus.core.lang.Assert;
@@ -596,8 +596,9 @@ public class DateKit extends Calendar {
         }
 
         // 检查自定义格式
-        if (CustomFormat.isCustomFormat(format)) {
-            return CustomFormat.format(date, format);
+        final FormatManager formatManager = FormatManager.getInstance();
+        if (formatManager.isCustomFormat(format)) {
+            return formatManager.format(date, format);
         }
 
         TimeZone timeZone = null;

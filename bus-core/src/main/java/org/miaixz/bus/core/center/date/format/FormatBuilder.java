@@ -27,7 +27,6 @@
 */
 package org.miaixz.bus.core.center.date.format;
 
-import java.text.DateFormat;
 import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
@@ -58,23 +57,6 @@ import org.miaixz.bus.core.lang.exception.DateException;
  * @since Java 17+
  */
 public class FormatBuilder extends Format implements PositionDateParser, FormatPrinter {
-
-    /**
-     * FULL locale dependent date or time style.
-     */
-    public static final int FULL = DateFormat.FULL;
-    /**
-     * LONG locale dependent date or time style.
-     */
-    public static final int LONG = DateFormat.LONG;
-    /**
-     * MEDIUM locale dependent date or time style.
-     */
-    public static final int MEDIUM = DateFormat.MEDIUM;
-    /**
-     * SHORT locale dependent date or time style.
-     */
-    public static final int SHORT = DateFormat.SHORT;
 
     private static final long serialVersionUID = -1L;
 

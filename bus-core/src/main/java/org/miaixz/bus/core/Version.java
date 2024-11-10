@@ -48,7 +48,7 @@ public class Version implements Comparable<Version>, Serializable {
     /**
      * 版本信息
      */
-    public static final String _VERSION = "8.1.1";
+    public static final String _VERSION = "8.1.2";
 
     private static final long serialVersionUID = -1L;
     private final String version;

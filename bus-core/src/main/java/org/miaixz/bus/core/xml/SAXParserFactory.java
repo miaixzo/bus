@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.core.xml;
 
+import org.miaixz.bus.core.Loader;
+import org.miaixz.bus.core.lang.loader.LazyFunLoader;
+
 /**
  * {@link javax.xml.parsers.SAXParserFactory} 工具
  *
@@ -38,7 +41,8 @@ public class SAXParserFactory {
     /**
      * Sax读取器工厂缓存
      */
-    private static volatile javax.xml.parsers.SAXParserFactory factory;
+    private static final Loader<javax.xml.parsers.SAXParserFactory> factory = LazyFunLoader
+            .of(() -> createFactory(false, true));
 
     /**
      * 获取全局{@link javax.xml.parsers.SAXParserFactory}
@@ -50,15 +54,7 @@ public class SAXParserFactory {
      * @return {@link javax.xml.parsers.SAXParserFactory}
      */
     public static javax.xml.parsers.SAXParserFactory getFactory() {
-        if (null == factory) {
-            synchronized (SAXParserFactory.class) {
-                if (null == factory) {
-                    factory = createFactory(false, true);
-                }
-            }
-        }
-
-        return factory;
+        return factory.get();
     }
 
     /**

@@ -55,9 +55,7 @@ public interface FormatPrinter extends DatePrinter {
     String format(Date date);
 
     /**
-     * Formats a {@code Calendar} object.
-     * <p>
-     * 格式化 {@link Calendar}
+     * Formats a {@code Calendar} object. 格式化 {@link Calendar}
      *
      * @param calendar {@link Calendar}
      * @return 格式化后的字符串

@@ -27,8 +27,12 @@
 */
 package org.miaixz.bus.core.math;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -89,7 +93,7 @@ public class ChineseNumberFormatter {
         if (c < '0' || c > '9') {
             return c;
         }
-        return numberToChinese(c - Symbol.C_ZERO, isUseTraditional);
+        return singleNumberToChinese(c - Symbol.C_ZERO, isUseTraditional);
     }
 
     /**
@@ -108,7 +112,7 @@ public class ChineseNumberFormatter {
      * @param isUseTraditional 是否使用繁体
      * @return 汉字
      */
-    private static char numberToChinese(final int number, final boolean isUseTraditional) {
+    private static char singleNumberToChinese(final int number, final boolean isUseTraditional) {
         if (0 == number) {
             return DIGITS[0];
         }
@@ -180,6 +184,31 @@ public class ChineseNumberFormatter {
     }
 
     /**
+     * 阿拉伯数字转换成中文. 使用于整数、小数的转换. 支持多位小数
+     *
+     * @param amount 数字
+     * @return 中文
+     */
+    public String format(final BigDecimal amount) {
+        final long longValue = amount.longValue();
+
+        String formatAmount;
+        if (amount.scale() <= 0) {
+            formatAmount = format(longValue);
+        } else {
+            final List<String> numberList = CharsBacker.split(amount.toPlainString(), Symbol.DOT);
+            // 小数部分逐个数字转换为汉字
+            final StringBuilder decimalPartStr = new StringBuilder();
+            for (final char decimalChar : numberList.get(1).toCharArray()) {
+                decimalPartStr.append(formatChar(decimalChar, this.useTraditional));
+            }
+            formatAmount = format(longValue) + "点" + decimalPartStr;
+        }
+
+        return formatAmount;
+    }
+
+    /**
      * 阿拉伯数字转换成中文
      *
      * <p>
@@ -247,7 +276,7 @@ public class ChineseNumberFormatter {
                 chineseStr.append(Symbol.UL_ZERO);
             }
         } else {
-            chineseStr.append(numberToChinese(jiao, this.useTraditional));
+            chineseStr.append(singleNumberToChinese(jiao, this.useTraditional));
             if (isMoneyMode && 0 != jiao) {
                 chineseStr.append(Symbol.CNY_JIAO);
             }
@@ -255,7 +284,7 @@ public class ChineseNumberFormatter {
 
         // 分
         if (0 != fen) {
-            chineseStr.append(numberToChinese(fen, this.useTraditional));
+            chineseStr.append(singleNumberToChinese(fen, this.useTraditional));
             if (isMoneyMode) {
                 chineseStr.append(Symbol.CNY_FEN);
             }
@@ -384,7 +413,7 @@ public class ChineseNumberFormatter {
                 lastIsZero = true;
             } else { // 取到的数字不是 0
                 final boolean isUseTraditional = this.useTraditional;
-                chineseStr.insert(0, numberToChinese(digit, isUseTraditional)
+                chineseStr.insert(0, singleNumberToChinese(digit, isUseTraditional)
                         + ChineseNumberParser.getUnitName(i, isUseTraditional));
                 lastIsZero = false;
             }

@@ -38,8 +38,8 @@ import java.util.TimeZone;
 
 import org.miaixz.bus.core.center.date.culture.en.*;
 import org.miaixz.bus.core.center.date.culture.en.Month;
-import org.miaixz.bus.core.center.date.format.CustomFormat;
 import org.miaixz.bus.core.center.date.format.FormatBuilder;
+import org.miaixz.bus.core.center.date.format.FormatManager;
 import org.miaixz.bus.core.center.date.format.FormatPeriod;
 import org.miaixz.bus.core.center.date.format.parser.DateParser;
 import org.miaixz.bus.core.center.date.format.parser.PositionDateParser;
@@ -227,7 +227,7 @@ public class DateTime extends Date {
      * @see Fields
      */
     public DateTime(final CharSequence date, final String format) {
-        this(CustomFormat.isCustomFormat(format) ? CustomFormat.parse(date, format)
+        this(FormatManager.getInstance().isCustomFormat(format) ? FormatManager.getInstance().parse(date, format)
                 : parse(date, DateKit.newSimpleFormat(format)));
     }
 

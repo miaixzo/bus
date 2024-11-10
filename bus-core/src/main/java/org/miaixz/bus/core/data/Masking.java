@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.data;
 
+import org.miaixz.bus.core.data.masking.MaskingManager;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -79,60 +80,8 @@ public class Masking {
      * @param masking 脱敏类型;可以脱敏：用户id、中文名、身份证号、座机号、手机号、地址、电子邮件、密码
      * @return 脱敏之后的字符串
      */
-    public static String masking(final CharSequence text, final EnumValue.Masking masking) {
-        if (StringKit.isBlank(text)) {
-            return Normal.EMPTY;
-        }
-        String newText = String.valueOf(text);
-        switch (masking) {
-        case USER_ID:
-            newText = String.valueOf(userId());
-            break;
-        case CHINESE_NAME:
-            newText = chineseName(String.valueOf(text));
-            break;
-        case ID_CARD:
-            newText = idCardNum(String.valueOf(text), 1, 2);
-            break;
-        case FIXED_PHONE:
-            newText = fixedPhone(String.valueOf(text));
-            break;
-        case MOBILE_PHONE:
-            newText = mobilePhone(String.valueOf(text));
-            break;
-        case ADDRESS:
-            newText = address(String.valueOf(text), 8);
-            break;
-        case EMAIL:
-            newText = email(String.valueOf(text));
-            break;
-        case PASSWORD:
-            newText = password(String.valueOf(text));
-            break;
-        case CAR_LICENSE:
-            newText = carLicense(String.valueOf(text));
-            break;
-        case BANK_CARD:
-            newText = bankCard(String.valueOf(text));
-            break;
-        case IPV4:
-            newText = ipv4(String.valueOf(text));
-            break;
-        case IPV6:
-            newText = ipv6(String.valueOf(text));
-            break;
-        case FIRST_MASK:
-            newText = firstMask(String.valueOf(text));
-            break;
-        case CLEAR_TO_EMPTY:
-            newText = clear();
-            break;
-        case CLEAR_TO_NULL:
-            newText = clearToNull();
-            break;
-        default:
-        }
-        return newText;
+    public static String masking(final EnumValue.Masking masking, final CharSequence text) {
+        return MaskingManager.getInstance().masking(masking.name(), text);
     }
 
     /**
@@ -168,11 +117,8 @@ public class Masking {
      * @param text 字符串
      * @return 脱敏后的字符串
      */
-    public static String firstMask(final String text) {
-        if (StringKit.isBlank(text)) {
-            return Normal.EMPTY;
-        }
-        return StringKit.hide(text, 1, text.length());
+    public static String firstMask(final CharSequence text) {
+        return MaskingManager.EMPTY.firstMask(text);
     }
 
     /**
@@ -181,7 +127,7 @@ public class Masking {
      * @param fullName 姓名
      * @return 脱敏后的姓名
      */
-    public static String chineseName(final String fullName) {
+    public static String chineseName(final CharSequence fullName) {
         return firstMask(fullName);
     }
 
@@ -193,20 +139,8 @@ public class Masking {
      * @param end       保留：后面的end位数；从1开始
      * @return 脱敏后的身份证
      */
-    public static String idCardNum(final String idCardNum, final int front, final int end) {
-        // 身份证不能为空
-        if (StringKit.isBlank(idCardNum)) {
-            return Normal.EMPTY;
-        }
-        // 需要截取的长度不能大于身份证号长度
-        if ((front + end) > idCardNum.length()) {
-            return Normal.EMPTY;
-        }
-        // 需要截取的不能小于0
-        if (front < 0 || end < 0) {
-            return Normal.EMPTY;
-        }
-        return StringKit.hide(idCardNum, front, idCardNum.length() - end);
+    public static String idCardNum(final CharSequence idCardNum, final int front, final int end) {
+        return MaskingManager.EMPTY.idCardNum(idCardNum, front, end);
     }
 
     /**
@@ -215,11 +149,8 @@ public class Masking {
      * @param num 固定电话
      * @return 脱敏后的固定电话；
      */
-    public static String fixedPhone(final String num) {
-        if (StringKit.isBlank(num)) {
-            return Normal.EMPTY;
-        }
-        return StringKit.hide(num, 4, num.length() - 2);
+    public static String fixedPhone(final CharSequence num) {
+        return MaskingManager.EMPTY.fixedPhone(num);
     }
 
     /**
@@ -228,11 +159,8 @@ public class Masking {
      * @param num 移动电话；
      * @return 脱敏后的移动电话；
      */
-    public static String mobilePhone(final String num) {
-        if (StringKit.isBlank(num)) {
-            return Normal.EMPTY;
-        }
-        return StringKit.hide(num, 3, num.length() - 4);
+    public static String mobilePhone(final CharSequence num) {
+        return MaskingManager.EMPTY.mobilePhone(num);
     }
 
     /**
@@ -242,12 +170,8 @@ public class Masking {
      * @param sensitiveSize 敏感信息长度
      * @return 脱敏后的家庭地址
      */
-    public static String address(final String address, final int sensitiveSize) {
-        if (StringKit.isBlank(address)) {
-            return Normal.EMPTY;
-        }
-        final int length = address.length();
-        return StringKit.hide(address, length - sensitiveSize, length);
+    public static String address(final CharSequence address, final int sensitiveSize) {
+        return MaskingManager.EMPTY.address(address, sensitiveSize);
     }
 
     /**
@@ -256,15 +180,8 @@ public class Masking {
      * @param email 邮箱
      * @return 脱敏后的邮箱
      */
-    public static String email(final String email) {
-        if (StringKit.isBlank(email)) {
-            return Normal.EMPTY;
-        }
-        final int index = StringKit.indexOf(email, Symbol.C_AT);
-        if (index <= 1) {
-            return email;
-        }
-        return StringKit.hide(email, 1, index);
+    public static String email(final CharSequence email) {
+        return MaskingManager.EMPTY.email(email);
     }
 
     /**
@@ -273,11 +190,12 @@ public class Masking {
      * @param password 密码
      * @return 脱敏后的密码
      */
-    public static String password(final String password) {
+    public static String password(final CharSequence password) {
         if (StringKit.isBlank(password)) {
             return Normal.EMPTY;
         }
-        return StringKit.repeat(Symbol.C_STAR, password.length());
+        // 密码位数不能被猜测，因此固定10位
+        return StringKit.repeat(Symbol.C_STAR, 10);
     }
 
     /**
@@ -287,18 +205,8 @@ public class Masking {
      * @param carLicense 完整的车牌号
      * @return 脱敏后的车牌
      */
-    public static String carLicense(String carLicense) {
-        if (StringKit.isBlank(carLicense)) {
-            return Normal.EMPTY;
-        }
-        // 普通车牌
-        if (carLicense.length() == 7) {
-            carLicense = StringKit.hide(carLicense, 3, 6);
-        } else if (carLicense.length() == 8) {
-            // 新能源车牌
-            carLicense = StringKit.hide(carLicense, 3, 7);
-        }
-        return carLicense;
+    public static String carLicense(final CharSequence carLicense) {
+        return MaskingManager.EMPTY.carLicense(carLicense);
     }
 
     /**
@@ -307,29 +215,8 @@ public class Masking {
      * @param bankCardNo 银行卡号
      * @return 脱敏之后的银行卡号
      */
-    public static String bankCard(String bankCardNo) {
-        if (StringKit.isBlank(bankCardNo)) {
-            return bankCardNo;
-        }
-        bankCardNo = StringKit.cleanBlank(bankCardNo);
-        if (bankCardNo.length() < 9) {
-            return bankCardNo;
-        }
-
-        final int length = bankCardNo.length();
-        final int endLength = length % 4 == 0 ? 4 : length % 4;
-        final int midLength = length - 4 - endLength;
-        final StringBuilder buf = new StringBuilder();
-
-        buf.append(bankCardNo, 0, 4);
-        for (int i = 0; i < midLength; ++i) {
-            if (i % 4 == 0) {
-                buf.append(Symbol.C_SPACE);
-            }
-            buf.append(Symbol.C_STAR);
-        }
-        buf.append(Symbol.C_SPACE).append(bankCardNo, length - endLength, length);
-        return buf.toString();
+    public static String bankCard(final CharSequence bankCardNo) {
+        return MaskingManager.EMPTY.bankCard(bankCardNo);
     }
 
     /**
@@ -338,8 +225,8 @@ public class Masking {
      * @param ipv4 IPv4地址
      * @return 脱敏后的地址
      */
-    public static String ipv4(final String ipv4) {
-        return StringKit.subBefore(ipv4, '.', false) + ".*.*.*";
+    public static String ipv4(final CharSequence ipv4) {
+        return MaskingManager.EMPTY.ipv4(ipv4);
     }
 
     /**
@@ -348,8 +235,8 @@ public class Masking {
      * @param ipv6 IPv6地址
      * @return 脱敏后的地址
      */
-    public static String ipv6(final String ipv6) {
-        return StringKit.subBefore(ipv6, Symbol.C_COLON, false) + ":*:*:*:*:*:*:*";
+    public static String ipv6(final CharSequence ipv6) {
+        return MaskingManager.EMPTY.ipv6(ipv6);
     }
 
 }

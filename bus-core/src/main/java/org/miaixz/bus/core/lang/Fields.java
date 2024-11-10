@@ -206,4 +206,13 @@ public class Fields {
      */
     public static final String ISO8601_MS_WITH_UTC = "yyyy-MM-dd HH:mm:ss 'UTC'";
 
+    /**
+     * 格式：秒时间戳（Unix时间戳）
+     */
+    public static final String FORMAT_SECONDS = "#sss";
+    /**
+     * 格式：毫秒时间戳
+     */
+    public static final String FORMAT_MILLISECONDS = "#SSS";
+
 }
