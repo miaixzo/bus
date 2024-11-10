@@ -32,6 +32,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.miaixz.bus.core.center.date.format.DatePattern;
 import org.miaixz.bus.core.center.date.format.parser.FastDateParser;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * {@link java.text.SimpleDateFormat} 的线程安全版本，用于将 {@link Date} 格式化输出 Thanks to Apache Commons Lang 3.5
@@ -64,14 +65,12 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * <p>
      * Formats a {@code Date}, {@code Calendar} or {@code Long} (milliseconds) object.
-     * </p>
      *
      * @param obj the object to format
      * @return The formatted value.
      */
-    String format(final Object obj) {
+    public String format(final Object obj) {
         if (obj instanceof Date) {
             return format((Date) obj);
         } else if (obj instanceof Calendar) {
@@ -90,12 +89,12 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
 
     @Override
     public String format(final long millis) {
-        return format(millis, StrUtil.builder(datePattern.getEstimateLength())).toString();
+        return format(millis, StringKit.builder(datePattern.getEstimateLength())).toString();
     }
 
     @Override
     public String format(final Calendar calendar) {
-        return format(calendar, StrUtil.builder(datePattern.getEstimateLength())).toString();
+        return format(calendar, StringKit.builder(datePattern.getEstimateLength())).toString();
     }
 
     @Override
@@ -137,8 +136,7 @@ public class FastDatePrinter extends SimpleDatePrinter implements FormatPrinter 
     }
 
     /**
-     * 估算生成的日期字符串长度<br>
-     * 实际生成的字符串长度小于或等于此值
+     * 估算生成的日期字符串长度 实际生成的字符串长度小于或等于此值
      *
      * @return 日期字符串长度
      */
