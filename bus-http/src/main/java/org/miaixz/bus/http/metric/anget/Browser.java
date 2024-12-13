@@ -59,7 +59,7 @@ public class Browser extends UserAgent {
             // 企业微信 企业微信使用微信浏览器内核,会包含 MicroMessenger 所以要放在前面
             new Browser("wxwork", "wxwork", "wxwork\\/([\\d\\w\\.\\-]+)"),
             // 微信电脑端
-            new Browser("WindowsWechat", "WindowsWechat", "MicroMessenger" + Other_Version),
+            new Browser("WindowsWechat", "WindowsWechat", "MicroMessenger" + OTHER_VERSION),
             // 微信
             new Browser("MicroMessenger", "MicroMessenger", OTHER_VERSION),
             // 微信小程序
