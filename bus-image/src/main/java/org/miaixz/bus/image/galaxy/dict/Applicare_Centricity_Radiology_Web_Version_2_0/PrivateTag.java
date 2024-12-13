@@ -38,7 +38,9 @@ public class PrivateTag {
     /** (4111,xx01) VR=CS VM=1 Secondary Spine Label */
     public static final int SecondarySpineLabel = 0x41110001;
 
-    /** (4111,xx02) VR=IS VM=1 Additional tags for Presentation State */
+    /**
+     * (4111,xx02) VR=IS VM=1 Additional tags for Presentation State
+     */
     public static final int AdditionalTagsForPresentationState = 0x41110002;
 
 }

@@ -188,10 +188,14 @@ public class PrivateTag {
     /** (0033,xx23) VR=SS VM=1-n Gantry L/R Correction Data */
     public static final int GantryLRCorrectionData = 0x00330023;
 
-    /** (0033,xx24) VR=FL VM=1 BackProjection Correction angle head 1 */
+    /**
+     * (0033,xx24) VR=FL VM=1 BackProjection Correction angle head 1
+     */
     public static final int BackProjectionCorrectionAngleHead1 = 0x00330024;
 
-    /** (0033,xx25) VR=FL VM=1 BackProjection Correction angle head 2 */
+    /**
+     * (0033,xx25) VR=FL VM=1 BackProjection Correction angle head 2
+     */
     public static final int BackProjectionCorrectionAngleHead2 = 0x00330025;
 
     /** (0033,xx28) VR=SL VM=1 MHR calibrations */
@@ -215,7 +219,9 @@ public class PrivateTag {
     /** (0033,xx34) VR=FL VM=1 Wholebody bed step */
     public static final int WholebodyBedStep = 0x00330034;
 
-    /** (0033,xx35) VR=FL VM=1 Weight Factor Table For Coincidence Acquisitions */
+    /**
+     * (0033,xx35) VR=FL VM=1 Weight Factor Table For Coincidence Acquisitions
+     */
     public static final int WeightFactorTableForCoincidenceAcquisitions = 0x00330035;
 
     /** (0033,xx36) VR=FL VM=1 Coincidence weight factor table */
@@ -233,16 +239,22 @@ public class PrivateTag {
     /** (0035,xx01) VR=LO VM=1 Energy Window Type */
     public static final int EnergyWindowType = 0x00350001;
 
-    /** (0035,xx02) VR=SS VM=1 Start and End Row Illuminated By Wind Position */
+    /**
+     * (0035,xx02) VR=SS VM=1 Start and End Row Illuminated By Wind Position
+     */
     public static final int StartandEndRowIlluminatedByWindPosition = 0x00350002;
 
     /** (0035,xx03) VR=LO VM=1 Blank Scan Image For Profile */
     public static final int BlankScanImageForProfile = 0x00350003;
 
-    /** (0035,xx04) VR=SS VM=1 Repeat Number of the Original Dynamic SPECT */
+    /**
+     * (0035,xx04) VR=SS VM=1 Repeat Number of the Original Dynamic SPECT
+     */
     public static final int RepeatNumberOfTheOriginalDynamicSPECT = 0x00350004;
 
-    /** (0035,xx05) VR=SS VM=1 Phase Number of the Original Dynamic SPECT */
+    /**
+     * (0035,xx05) VR=SS VM=1 Phase Number of the Original Dynamic SPECT
+     */
     public static final int PhaseNumberOfTheOriginalDynamicSPECT = 0x00350005;
 
     /** (0035,xx06) VR=LO VM=1 Siemens Profile 2 Image Subtype */
@@ -260,22 +272,32 @@ public class PrivateTag {
     /** (0041,xx02) VR=SL VM=1 Whole Body Tomo Number of Positions */
     public static final int WholeBodyTomoNumberOfPositions = 0x00410002;
 
-    /** (0041,xx03) VR=FL VM=1 Horizontal Table Position of CT scan */
+    /**
+     * (0041,xx03) VR=FL VM=1 Horizontal Table Position of CT scan
+     */
     public static final int HorizontalTablePositionOfCTScan = 0x00410003;
 
     /** (0041,xx04) VR=FL VM=1 Effective Energy fo CT Scan */
     public static final int EffectiveEnergyOfCTScan = 0x00410004;
 
-    /** (0041,xx05) VR=FD VM=1-n Long Linear Drive Information for Detector 1 */
+    /**
+     * (0041,xx05) VR=FD VM=1-n Long Linear Drive Information for Detector 1
+     */
     public static final int LongLinearDriveInformationForDetector1 = 0x00410005;
 
-    /** (0041,xx06) VR=FD VM=1-n Long Linear Drive Information for Detector 2 */
+    /**
+     * (0041,xx06) VR=FD VM=1-n Long Linear Drive Information for Detector 2
+     */
     public static final int LongLinearDriveInformationForDetector2 = 0x00410006;
 
-    /** (0041,xx07) VR=FD VM=1-n Trunnion Information for Detector 1 */
+    /**
+     * (0041,xx07) VR=FD VM=1-n Trunnion Information for Detector 1
+     */
     public static final int TrunnionInformationForDetector1 = 0x00410007;
 
-    /** (0041,xx08) VR=FD VM=1-n Trunnion Information for Detector 2 */
+    /**
+     * (0041,xx08) VR=FD VM=1-n Trunnion Information for Detector 2
+     */
     public static final int TrunnionInformationForDetector2 = 0x00410008;
 
     /** (0041,xx09) VR=FL VM=1 Broad Beam Factor */
@@ -305,10 +327,14 @@ public class PrivateTag {
     /** (0043,xx02) VR=FD VM=1-16 Transformation Matrix */
     public static final int TransformationMatrix = 0x00430002;
 
-    /** (0043,xx03) VR=FL VM=1-n View Dependent Y Shift MHR For Detector 1 */
+    /**
+     * (0043,xx03) VR=FL VM=1-n View Dependent Y Shift MHR For Detector 1
+     */
     public static final int ViewDependentYShiftMHRForDetector1 = 0x00430003;
 
-    /** (0043,xx04) VR=FL VM=1-n View Dependent Y Shift MHR For Detector 2 */
+    /**
+     * (0043,xx04) VR=FL VM=1-n View Dependent Y Shift MHR For Detector 2
+     */
     public static final int ViewDependentYShiftMHRForDetector2 = 0x00430004;
 
     /** (0045,xx01) VR=LO VM=1-n Planar Processing String */
@@ -419,7 +445,9 @@ public class PrivateTag {
     /** (0057,xx08) VR=FL VM=1 Frame Reference Time */
     public static final int FrameReferenceTime = 0x00570008;
 
-    /** (0057,xx09) VR=SL VM=1 Number of Radiopharmaceutical Information Sequence */
+    /**
+     * (0057,xx09) VR=SL VM=1 Number of Radiopharmaceutical Information Sequence
+     */
     public static final int NumberofRadiopharmaceuticalInformationSequence = 0x00570009;
 
     /** (0057,xx0A) VR=FL VM=1 Decay Factor */
@@ -536,10 +564,14 @@ public class PrivateTag {
     /** (0061,xx30) VR=LO VM=1-n Scatter Estimation Method Mode */
     public static final int ScatterEstimationMethodMode = 0x00610030;
 
-    /** (0061,xx31) VR=FL VM=1-n Scatter Estimation Lower Window Weights */
+    /**
+     * (0061,xx31) VR=FL VM=1-n Scatter Estimation Lower Window Weights
+     */
     public static final int ScatterEstimationLowerWindowWeights = 0x00610031;
 
-    /** (0061,xx32) VR=FL VM=1-n Scatter Estimation Upper Window Weights */
+    /**
+     * (0061,xx32) VR=FL VM=1-n Scatter Estimation Upper Window Weights
+     */
     public static final int ScatterEstimationUpperWindowWeights = 0x00610032;
 
     /** (0061,xx33) VR=LO VM=1-n Scatter Estimation Window Mode */

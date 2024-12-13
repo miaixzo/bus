@@ -27,10 +27,11 @@
 */
 package org.miaixz.bus.health.windows.hardware;
 
-import com.sun.jna.Native;
-import com.sun.jna.platform.win32.*;
-import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
-import com.sun.jna.platform.win32.PowrProf.POWER_INFORMATION_LEVEL;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -60,10 +61,10 @@ import org.miaixz.bus.health.windows.jna.Kernel32;
 import org.miaixz.bus.health.windows.jna.PowrProf;
 import org.miaixz.bus.logger.Logger;
 
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import com.sun.jna.Native;
+import com.sun.jna.platform.win32.*;
+import com.sun.jna.platform.win32.PowrProf.POWER_INFORMATION_LEVEL;
+import com.sun.jna.platform.win32.COM.WbemcliUtil.WmiResult;
 
 /**
  * A CPU, representing all of a system's processors. It may contain multiple individual Physical and Logical processors.

@@ -27,15 +27,16 @@
 */
 package org.miaixz.bus.health.windows.driver.perfmon;
 
-import com.sun.jna.platform.win32.VersionHelpers;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.health.windows.PerfCounterQuery;
 import org.miaixz.bus.health.windows.PerfCounterWildcardQuery;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import com.sun.jna.platform.win32.VersionHelpers;
 
 /**
  * Utility to query Processor performance counter

@@ -191,27 +191,6 @@ public class SM2 extends AbstractCrypto<SM2> {
     }
 
     /**
-     * 初始化 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密（签名）或者解密（校验）
-     *
-     * @return this
-     */
-    public SM2 init() {
-        if (null == this.privateKeyParams && null == this.publicKeyParams) {
-            super.initKeys();
-            this.privateKeyParams = Keeper.toPrivateParams(this.privateKey);
-            this.publicKeyParams = Keeper.toPublicParams(this.publicKey);
-        }
-        return this;
-    }
-
-    @Override
-    public SM2 initKeys() {
-        // 阻断父类中自动生成密钥对的操作，此操作由本类中进行。
-        // 由于用户可能传入Params而非key，因此此时key必定为null，故此不再生成
-        return this;
-    }
-
-    /**
      * 去除04压缩标识 gmssl等库生成的密文不包含04前缀，此处兼容
      *
      * @param data 密文数据
@@ -240,6 +219,27 @@ public class SM2 extends AbstractCrypto<SM2> {
             data = ArrayKit.insert(data, 0, 0x04);
         }
         return data;
+    }
+
+    /**
+     * 初始化 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做加密（签名）或者解密（校验）
+     *
+     * @return this
+     */
+    public SM2 init() {
+        if (null == this.privateKeyParams && null == this.publicKeyParams) {
+            super.initKeys();
+            this.privateKeyParams = Keeper.toPrivateParams(this.privateKey);
+            this.publicKeyParams = Keeper.toPublicParams(this.publicKey);
+        }
+        return this;
+    }
+
+    @Override
+    public SM2 initKeys() {
+        // 阻断父类中自动生成密钥对的操作，此操作由本类中进行。
+        // 由于用户可能传入Params而非key，因此此时key必定为null，故此不再生成
+        return this;
     }
 
     /**
@@ -453,11 +453,43 @@ public class SM2 extends AbstractCrypto<SM2> {
     /**
      * 用私钥对信息生成数字签名
      *
-     * @param dataHex 被签名的数据数据
+     * @param dataHex 被签名的数据数据（Hex格式）
      * @return 签名
      */
-    public String signHex(final String dataHex) {
-        return signHex(dataHex, null);
+    public String signHexFromHex(final String dataHex) {
+        return signHexFromHex(dataHex, null);
+    }
+
+    /**
+     * 用私钥对信息生成数字签名
+     *
+     * @param dataHex 被签名的数据数据（Hex格式）
+     * @param idHex   可以为null，若为null，则默认withId为字节数组:"1234567812345678".getBytes()
+     * @return 签名
+     */
+    public String signHexFromHex(final String dataHex, final String idHex) {
+        return HexKit.encodeString(sign(HexKit.decode(dataHex), HexKit.decode(idHex)));
+    }
+
+    /**
+     * 用私钥对信息生成数字签名
+     *
+     * @param data 被签名的数据数据
+     * @return 签名
+     */
+    public String signHex(final byte[] data) {
+        return signHex(data, null);
+    }
+
+    /**
+     * 用私钥对信息生成数字签名
+     *
+     * @param data 被签名的数据数据
+     * @param id   可以为null，若为null，则默认withId为字节数组:"1234567812345678".getBytes()
+     * @return 签名
+     */
+    public String signHex(final byte[] data, final byte[] id) {
+        return HexKit.encodeString(sign(data, id));
     }
 
     /**
@@ -468,17 +500,6 @@ public class SM2 extends AbstractCrypto<SM2> {
      */
     public byte[] sign(final byte[] data) {
         return sign(data, null);
-    }
-
-    /**
-     * 用私钥对信息生成数字签名
-     *
-     * @param dataHex 被签名的数据数据
-     * @param idHex   可以为null，若为null，则默认withId为字节数组:"1234567812345678".getBytes()
-     * @return 签名
-     */
-    public String signHex(final String dataHex, final String idHex) {
-        return HexKit.encodeString(sign(HexKit.decode(dataHex), HexKit.decode(idHex)));
     }
 
     /**

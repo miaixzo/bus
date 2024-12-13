@@ -27,13 +27,6 @@
 */
 package org.miaixz.bus.core.lang.annotation.resolve;
 
-import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
-import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.xyz.AnnoKit;
-import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.core.xyz.CollKit;
-import org.miaixz.bus.core.xyz.MethodKit;
-
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Repeatable;
 import java.lang.reflect.Method;
@@ -41,6 +34,13 @@ import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
+import org.miaixz.bus.core.text.CharsBacker;
+import org.miaixz.bus.core.xyz.AnnoKit;
+import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.MethodKit;
 
 /**
  * 可重复注解收集器，用于从一个注解获得被它包含的可重复注解

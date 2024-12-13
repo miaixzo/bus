@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.pager;
 
-import org.apache.ibatis.mapping.MappedStatement;
-import org.miaixz.bus.pager.dialect.AbstractPaging;
+import java.util.Properties;
 
 import javax.sql.DataSource;
-import java.util.Properties;
+
+import org.apache.ibatis.mapping.MappedStatement;
+import org.miaixz.bus.pager.dialect.AbstractPaging;
 
 /**
  * 自动获取方言

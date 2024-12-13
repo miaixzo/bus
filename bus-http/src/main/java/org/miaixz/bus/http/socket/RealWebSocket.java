@@ -27,19 +27,6 @@
 */
 package org.miaixz.bus.http.socket;
 
-import org.miaixz.bus.core.io.ByteString;
-import org.miaixz.bus.core.io.sink.BufferSink;
-import org.miaixz.bus.core.io.source.BufferSource;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.http.*;
-import org.miaixz.bus.http.accord.Exchange;
-import org.miaixz.bus.http.metric.EventListener;
-import org.miaixz.bus.http.metric.Internal;
-
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.ProtocolException;
@@ -52,6 +39,19 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.io.sink.BufferSink;
+import org.miaixz.bus.core.io.source.BufferSource;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.http.*;
+import org.miaixz.bus.http.accord.Exchange;
+import org.miaixz.bus.http.metric.EventListener;
+import org.miaixz.bus.http.metric.Internal;
 
 /**
  * @author Kimi Liu

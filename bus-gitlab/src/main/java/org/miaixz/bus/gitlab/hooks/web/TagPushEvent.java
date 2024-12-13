@@ -31,10 +31,9 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class TagPushEvent extends AbstractPushEvent implements Event {
 
-    private static final long serialVersionUID = -1L;
-
     public static final String X_GITLAB_EVENT = "Tag Push Hook";
     public static final String OBJECT_KIND = "tag_push";
+    private static final long serialVersionUID = -1L;
 
     @Override
     public String getObjectKind() {

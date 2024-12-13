@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.lang.annotation;
 
-import org.miaixz.bus.core.lang.annotation.resolve.AnnotatedElements;
-
 import java.lang.annotation.*;
+
+import org.miaixz.bus.core.lang.annotation.resolve.AnnotatedElements;
 
 /**
  * 别名注解，使用此注解的字段、方法、参数等会有一个别名，用于Bean拷贝、Bean转Map等。 当在注解中使用时，可为令多个属性互相关联，当对其中任意属性赋值时， 会将属性值一并同步到所有关联的属性中。

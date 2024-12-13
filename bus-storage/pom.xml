@@ -85,7 +85,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <lombok.version>1.18.34</lombok.version>
+        <lombok.version>1.18.36</lombok.version>
         <aliyun.oss.version>3.18.1</aliyun.oss.version>
         <baidu.bos.version>0.10.331</baidu.bos.version>
         <huawei.oss.version>3.24.3</huawei.oss.version>
@@ -94,7 +94,7 @@
         <qiniu.oss.version>7.15.1</qiniu.oss.version>
         <qcloud.oss.version>5.6.225</qcloud.oss.version>
         <upyun.oss.version>4.2.3</upyun.oss.version>
-        <jackson.version>2.18.0</jackson.version>
+        <jackson.version>2.18.1</jackson.version>
         <okhttp.version>4.12.0</okhttp.version>
     </properties>
 
@@ -486,7 +486,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.8.0</version>
+                <version>3.11.2</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -513,7 +513,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-                <version>3.2.4</version>
+                <version>3.2.7</version>
                 <executions>
                     <execution>
                         <id>sonatype-nexus-staging</id>
@@ -527,7 +527,7 @@
             <plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.5.0</version>
+                <version>0.6.0</version>
                 <extensions>true</extensions>
                 <configuration>
                     <publishingServerId>central</publishingServerId>
@@ -537,7 +537,7 @@
             <plugin>
                 <groupId>org.owasp</groupId>
                 <artifactId>dependency-check-maven</artifactId>
-                <version>10.0.3</version>
+                <version>11.1.1</version>
                 <configuration>
                     <autoUpdate>true</autoUpdate>
                     <nvdMaxRetryCount>25</nvdMaxRetryCount>

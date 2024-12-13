@@ -32,17 +32,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.miaixz.bus.gitlab.models.*;
+
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
-
-import org.miaixz.bus.gitlab.models.Bridge;
-import org.miaixz.bus.gitlab.models.Pipeline;
-import org.miaixz.bus.gitlab.models.PipelineFilter;
-import org.miaixz.bus.gitlab.models.PipelineSchedule;
-import org.miaixz.bus.gitlab.models.PipelineStatus;
-import org.miaixz.bus.gitlab.models.Trigger;
-import org.miaixz.bus.gitlab.models.Variable;
 
 /**
  * <p>

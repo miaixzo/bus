@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.image.galaxy.data;
 
+import java.time.temporal.Temporal;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -69,6 +70,8 @@ interface ValueType {
     double toDouble(Object val, boolean bigEndian, int valueIndex, double defVal);
 
     double[] toDoubles(Object val, boolean bigEndian);
+
+    Temporal toTemporal(Object val, int valueIndex, DatePrecision precision);
 
     Date toDate(Object val, TimeZone tz, int valueIndex, boolean ceil, Date defVal, DatePrecision precision);
 

@@ -236,7 +236,9 @@ public class PrivateTag {
     /** (0019,xx8F) VR=LO VM=1 Calibration Software Version */
     public static final int CalibrationSoftwareVersion = 0x0019008F;
 
-    /** (0019,xx90) VR=LO VM=1 Extended Calibration Software Version */
+    /**
+     * (0019,xx90) VR=LO VM=1 Extended Calibration Software Version
+     */
     public static final int ExtendedCalibrationSoftwareVersion = 0x00190090;
 
     /** (0019,xx91) VR=IS VM=1 Calibration Return Code */
@@ -356,7 +358,9 @@ public class PrivateTag {
     /** (0019,xxBD) VR=CS VM=1-n Table Rotation Status Vector */
     public static final int TableRotationStatusVector = 0x001900BD;
 
-    /** (0019,xxBE) VR=FL VM=1-n Source to Image Distance per Frame Vector */
+    /**
+     * (0019,xxBE) VR=FL VM=1-n Source to Image Distance per Frame Vector
+     */
     public static final int SourceToImageDistancePerFrameVector = 0x001900BE;
 
     /** (0019,xxC2) VR=DS VM=1-n ? */
@@ -371,13 +375,19 @@ public class PrivateTag {
     /** (0019,xxC7) VR=CS VM=1 Patient Position per Image */
     public static final int PatientPositionPerImage = 0x001900C7;
 
-    /** (0019,xxD7) VR=FL VM=1-n Table X Position to Iso‐center Increment */
+    /**
+     * (0019,xxD7) VR=FL VM=1-n Table X Position to Iso‐center Increment
+     */
     public static final int TableXPositionToIsocenterIncrement = 0x001900D7;
 
-    /** (0019,xxD8) VR=FL VM=1-n Table Y Position to Iso‐center Increment */
+    /**
+     * (0019,xxD8) VR=FL VM=1-n Table Y Position to Iso‐center Increment
+     */
     public static final int TableYPositionToIsocenterIncrement = 0x001900D8;
 
-    /** (0019,xxD9) VR=FL VM=1-n Table Z Position to Iso‐center Increment */
+    /**
+     * (0019,xxD9) VR=FL VM=1-n Table Z Position to Iso‐center Increment
+     */
     public static final int TableZPositionToIsocenterIncrement = 0x001900D9;
 
     /** (0019,xxDA) VR=FL VM=1-n Table Head Tilt Angle Increment */
@@ -395,7 +405,9 @@ public class PrivateTag {
     /** (0019,xxE0) VR=FL VM=1 ? */
     public static final int _0019_xxE0_ = 0x001900E0;
 
-    /** (0019,xxE9) VR=FL VM=1-n Source to Detector Distance per Frame Vector */
+    /**
+     * (0019,xxE9) VR=FL VM=1-n Source to Detector Distance per Frame Vector
+     */
     public static final int SourceToDetectorDistancePerFrameVector = 0x001900E9;
 
     /** (0019,xxEA) VR=FL VM=1 Table Rotation Angle */

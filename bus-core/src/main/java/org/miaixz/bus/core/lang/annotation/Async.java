@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.lang.annotation;
 
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 将类或方法标记为异步

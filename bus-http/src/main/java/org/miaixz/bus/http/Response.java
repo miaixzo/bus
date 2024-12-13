@@ -27,6 +27,11 @@
 */
 package org.miaixz.bus.http;
 
+import java.io.Closeable;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.List;
+
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.lang.Symbol;
@@ -37,11 +42,6 @@ import org.miaixz.bus.http.bodys.ResponseBody;
 import org.miaixz.bus.http.cache.CacheControl;
 import org.miaixz.bus.http.secure.Challenge;
 import org.miaixz.bus.http.socket.Handshake;
-
-import java.io.Closeable;
-import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * HTTP响应。该类的实例不是不可变的: 响应体是一次性的值，可能只使用一次，然后关闭。所有其他属性都是不可变的.

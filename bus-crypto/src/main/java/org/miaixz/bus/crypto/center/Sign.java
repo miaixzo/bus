@@ -39,10 +39,8 @@ import java.util.Set;
 
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
-import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.CryptoException;
-import org.miaixz.bus.core.xyz.ByteKit;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.HexKit;
 import org.miaixz.bus.crypto.Builder;
@@ -106,28 +104,6 @@ public class Sign extends Asymmetric<Sign> {
     /**
      * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
      *
-     * @param algorithm  {@link Algorithm}
-     * @param privateKey 私钥Hex或Base64表示
-     * @param publicKey  公钥Hex或Base64表示
-     */
-    public Sign(final Algorithm algorithm, final String privateKey, final String publicKey) {
-        this(algorithm.getValue(), Builder.decode(privateKey), Builder.decode(publicKey));
-    }
-
-    /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
-     *
-     * @param algorithm  {@link Algorithm}
-     * @param privateKey 私钥
-     * @param publicKey  公钥
-     */
-    public Sign(final Algorithm algorithm, final byte[] privateKey, final byte[] publicKey) {
-        this(algorithm.getValue(), privateKey, publicKey);
-    }
-
-    /**
-     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
-     *
      * @param algorithm  非对称加密算法
      * @param privateKey 私钥Base64
      * @param publicKey  公钥Base64
@@ -146,6 +122,28 @@ public class Sign extends Asymmetric<Sign> {
     public Sign(final String algorithm, final byte[] privateKey, final byte[] publicKey) {
         this(algorithm, new KeyPair(Keeper.generatePublicKey(algorithm, publicKey),
                 Keeper.generatePrivateKey(algorithm, privateKey)));
+    }
+
+    /**
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     *
+     * @param algorithm  {@link Algorithm}
+     * @param privateKey 私钥Hex或Base64表示
+     * @param publicKey  公钥Hex或Base64表示
+     */
+    public Sign(final Algorithm algorithm, final String privateKey, final String publicKey) {
+        this(algorithm.getValue(), Builder.decode(privateKey), Builder.decode(publicKey));
+    }
+
+    /**
+     * 构造 私钥和公钥同时为空时生成一对新的私钥和公钥 私钥和公钥可以单独传入一个，如此则只能使用此钥匙来做签名或验证
+     *
+     * @param algorithm  {@link Algorithm}
+     * @param privateKey 私钥
+     * @param publicKey  公钥
+     */
+    public Sign(final Algorithm algorithm, final byte[] privateKey, final byte[] publicKey) {
+        this(algorithm.getValue(), privateKey, publicKey);
     }
 
     /**
@@ -178,58 +176,6 @@ public class Sign extends Asymmetric<Sign> {
     }
 
     /**
-     * 生成文件签名
-     *
-     * @param data    被签名数据
-     * @param charset 编码
-     * @return 签名
-     */
-    public byte[] sign(final String data, final java.nio.charset.Charset charset) {
-        return sign(ByteKit.toBytes(data, charset));
-    }
-
-    /**
-     * 生成文件签名
-     *
-     * @param data 被签名数据
-     * @return 签名
-     */
-    public byte[] sign(final String data) {
-        return sign(data, Charset.UTF_8);
-    }
-
-    /**
-     * 生成文件签名，并转为16进制字符串
-     *
-     * @param data    被签名数据
-     * @param charset 编码
-     * @return 签名
-     */
-    public String signHex(final String data, final java.nio.charset.Charset charset) {
-        return HexKit.encodeString(sign(data, charset));
-    }
-
-    /**
-     * 生成文件签名
-     *
-     * @param data 被签名数据
-     * @return 签名
-     */
-    public String signHex(final String data) {
-        return signHex(data, Charset.UTF_8);
-    }
-
-    /**
-     * 用私钥对信息生成数字签名
-     *
-     * @param data 加密数据
-     * @return 签名
-     */
-    public byte[] sign(final byte[] data) {
-        return sign(new ByteArrayInputStream(data), -1);
-    }
-
-    /**
      * 生成签名，并转为16进制字符串
      *
      * @param data 被签名数据
@@ -246,17 +192,7 @@ public class Sign extends Asymmetric<Sign> {
      * @return 签名
      */
     public String signHex(final InputStream data) {
-        return HexKit.encodeString(sign(data));
-    }
-
-    /**
-     * 生成签名，使用默认缓存大小，见 {@link Normal#_8192}
-     *
-     * @param data {@link InputStream} 数据流
-     * @return 签名bytes
-     */
-    public byte[] sign(final InputStream data) {
-        return sign(data, Normal._8192);
+        return signHex(data, -1);
     }
 
     /**
@@ -266,8 +202,28 @@ public class Sign extends Asymmetric<Sign> {
      * @param bufferLength 缓存长度，不足1使用 {@link Normal#_8192} 做为默认值
      * @return 签名
      */
-    public String digestHex(final InputStream data, final int bufferLength) {
+    public String signHex(final InputStream data, final int bufferLength) {
         return HexKit.encodeString(sign(data, bufferLength));
+    }
+
+    /**
+     * 用私钥对信息生成数字签名
+     *
+     * @param data 加密数据
+     * @return 签名
+     */
+    public byte[] sign(final byte[] data) {
+        return sign(new ByteArrayInputStream(data), -1);
+    }
+
+    /**
+     * 生成签名，使用默认缓存大小，见 {@link Normal#_8192}
+     *
+     * @param data {@link InputStream} 数据流
+     * @return 签名bytes
+     */
+    public byte[] sign(final InputStream data) {
+        return sign(data, -1);
     }
 
     /**
@@ -356,7 +312,7 @@ public class Sign extends Asymmetric<Sign> {
         // we should check whether it has a Key Usage
         // extension marked as critical.
         if (certificate instanceof X509Certificate) {
-            // Check whether the cert has a data usage extension
+            // Check whether the cert has a key usage extension
             // marked as a critical extension.
             // The OID for KeyUsage extension is 2.5.29.15.
             final X509Certificate cert = (X509Certificate) certificate;
@@ -366,7 +322,7 @@ public class Sign extends Asymmetric<Sign> {
                 final boolean[] keyUsageInfo = cert.getKeyUsage();
                 // keyUsageInfo[0] is for digitalSignature.
                 if ((keyUsageInfo != null) && (keyUsageInfo[0] == false)) {
-                    throw new CryptoException("Wrong data usage");
+                    throw new CryptoException("Wrong key usage");
                 }
             }
         }

@@ -74,16 +74,24 @@ public class PrivateTag {
     /** (0021,xx12) VR=DS VM=1 EPI Time Rate of Change of Magnitude */
     public static final int EPITimeRateOfChangeOfMagnitude = 0x00210012;
 
-    /** (0021,xx13) VR=DS VM=1 EPI Time Rate of Change of X Component */
+    /**
+     * (0021,xx13) VR=DS VM=1 EPI Time Rate of Change of X Component
+     */
     public static final int EPITimeRateOfChangeOfXComponent = 0x00210013;
 
-    /** (0021,xx14) VR=DS VM=1 EPI Time Rate of Change of Y Component */
+    /**
+     * (0021,xx14) VR=DS VM=1 EPI Time Rate of Change of Y Component
+     */
     public static final int EPITimeRateOfChangeOfYComponent = 0x00210014;
 
-    /** (0021,xx15) VR=DS VM=1 EPI Time Rate of Change of Z Component */
+    /**
+     * (0021,xx15) VR=DS VM=1 EPI Time Rate of Change of Z Component
+     */
     public static final int EPITimeRateOfChangeOfZComponent = 0x00210015;
 
-    /** (0021,xx16) VR=DS VM=1 EPI Time Rate of Change Legal Limit 1 */
+    /**
+     * (0021,xx16) VR=DS VM=1 EPI Time Rate of Change Legal Limit 1
+     */
     public static final int EPITimeRateOfChangeLegalLimit1 = 0x00210016;
 
     /** (0021,xx17) VR=IS VM=1 EPI Operation Mode Flag */

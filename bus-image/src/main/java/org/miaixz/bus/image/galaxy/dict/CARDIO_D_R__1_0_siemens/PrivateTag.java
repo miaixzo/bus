@@ -47,10 +47,14 @@ public class PrivateTag {
     /** (0029,xx03) VR=FL VM=1 Edge Enhancement Gain */
     public static final int EdgeEnhancementGain = 0x00290003;
 
-    /** (0029,xxAC) VR=FL VM=1 Displayed Area Bottom Right Hand Corner Fractional */
+    /**
+     * (0029,xxAC) VR=FL VM=1 Displayed Area Bottom Right Hand Corner Fractional
+     */
     public static final int DisplayedAreaBottomRightHandCornerFractional = 0x002900AC;
 
-    /** (0029,xxAD) VR=FL VM=1 Displayed Area Top Left Hand Corner Fractional */
+    /**
+     * (0029,xxAD) VR=FL VM=1 Displayed Area Top Left Hand Corner Fractional
+     */
     public static final int DisplayedAreaTopLeftHandCornerFractional = 0x002900AD;
 
 }

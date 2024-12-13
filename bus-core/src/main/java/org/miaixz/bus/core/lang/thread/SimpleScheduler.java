@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.lang.thread;
 
-import org.miaixz.bus.core.xyz.RuntimeKit;
-import org.miaixz.bus.core.xyz.ThreadKit;
-
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
+
+import org.miaixz.bus.core.xyz.RuntimeKit;
+import org.miaixz.bus.core.xyz.ThreadKit;
 
 /**
  * 简单单线程任务调度器 通过自定义Job定时执行任务，通过{@link #getResult()} 可以获取调取时的执行结果

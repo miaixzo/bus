@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.http.plugin.httpz;
 
+import java.util.Map;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.http.Httpd;
-
-import java.util.Map;
 
 /**
  * GET参数构造器

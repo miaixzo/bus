@@ -42,6 +42,15 @@ import org.miaixz.bus.core.xyz.ObjectKit;
 public interface Converter {
 
     /**
+     * 返回原值的转换器，不做转换
+     *
+     * @return this
+     */
+    static Converter identity() {
+        return (targetType, value) -> value;
+    }
+
+    /**
      * 转换为指定类型 如果类型无法确定，将读取默认值的类型做为目标类型
      *
      * @param targetType 目标Type，非泛型类使用
@@ -75,15 +84,6 @@ public interface Converter {
      */
     default <T> T convert(final Type targetType, final Object value, final T defaultValue) {
         return (T) ObjectKit.defaultIfNull(convert(targetType, value), defaultValue);
-    }
-
-    /**
-     * 返回原值的转换器，不做转换
-     *
-     * @return this
-     */
-    static Converter identity() {
-        return (targetType, value) -> value;
     }
 
 }

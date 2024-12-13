@@ -148,7 +148,7 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
     }
 
     /**
-     * 获取Sheet，如果不存在则关闭{@link Workbook}并抛出异常，解决当sheet不存在时，文件依旧被占用问题 见：Issue#I8ZIQC
+     * 获取Sheet，如果不存在则关闭{@link Workbook}并抛出异常，解决当sheet不存在时，文件依旧被占用问题
      *
      * @param workbook {@link Workbook}，非空
      * @param name     sheet名称，不存在抛出异常
@@ -169,7 +169,7 @@ public class ExcelReader extends ExcelBase<ExcelReader, ExcelReadConfig> {
     }
 
     /**
-     * 获取Sheet，如果不存在则关闭{@link Workbook}并抛出异常，解决当sheet不存在时，文件依旧被占用问题 见：Issue#I8ZIQC
+     * 获取Sheet，如果不存在则关闭{@link Workbook}并抛出异常，解决当sheet不存在时，文件依旧被占用问题
      *
      * @param workbook   {@link Workbook}，非空
      * @param sheetIndex sheet index

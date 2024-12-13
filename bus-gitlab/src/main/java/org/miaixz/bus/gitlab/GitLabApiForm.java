@@ -32,12 +32,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import jakarta.ws.rs.core.Form;
-import jakarta.ws.rs.core.MultivaluedHashMap;
-
 import org.miaixz.bus.gitlab.models.AccessLevel;
 import org.miaixz.bus.gitlab.models.Variable;
 import org.miaixz.bus.gitlab.support.ISO8601;
+
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.MultivaluedHashMap;
 
 /**
  * This class extends the standard JAX-RS Form class to make it fluent.

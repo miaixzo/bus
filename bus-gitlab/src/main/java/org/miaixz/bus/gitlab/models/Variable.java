@@ -60,6 +60,23 @@ public class Variable implements Serializable {
         this.value = value;
     }
 
+    /**
+     * Create a List of Variable from the provided Map.
+     *
+     * @param variables the Map to convert to a List of Variable
+     * @return the List of Variable containing the keys and values from the Map, or null if the Map is null
+     */
+    public static final List<Variable> convertMapToList(Map<String, String> variables) {
+
+        if (variables == null) {
+            return null;
+        }
+
+        List<Variable> varList = new ArrayList<>(variables.size());
+        variables.forEach((k, v) -> varList.add(new Variable(k, v)));
+        return varList;
+    }
+
     public String getKey() {
         return key;
     }
@@ -111,23 +128,6 @@ public class Variable implements Serializable {
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
-    }
-
-    /**
-     * Create a List of Variable from the provided Map.
-     *
-     * @param variables the Map to convert to a List of Variable
-     * @return the List of Variable containing the keys and values from the Map, or null if the Map is null
-     */
-    public static final List<Variable> convertMapToList(Map<String, String> variables) {
-
-        if (variables == null) {
-            return null;
-        }
-
-        List<Variable> varList = new ArrayList<>(variables.size());
-        variables.forEach((k, v) -> varList.add(new Variable(k, v)));
-        return varList;
     }
 
     /**

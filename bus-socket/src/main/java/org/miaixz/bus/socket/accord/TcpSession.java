@@ -27,14 +27,6 @@
 */
 package org.miaixz.bus.socket.accord;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.IoKit;
-import org.miaixz.bus.socket.*;
-import org.miaixz.bus.socket.buffer.BufferPage;
-import org.miaixz.bus.socket.buffer.VirtualBuffer;
-import org.miaixz.bus.socket.buffer.WriteBuffer;
-import org.miaixz.bus.socket.metric.channels.AsynchronousChannelProvider;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
@@ -43,6 +35,14 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.IoKit;
+import org.miaixz.bus.socket.*;
+import org.miaixz.bus.socket.buffer.BufferPage;
+import org.miaixz.bus.socket.buffer.VirtualBuffer;
+import org.miaixz.bus.socket.buffer.WriteBuffer;
+import org.miaixz.bus.socket.metric.channels.AsynchronousChannelProvider;
 
 /**
  * AIO传输层会话
@@ -201,6 +201,29 @@ public class TcpSession extends Session {
         modCount++;
     }
 
+    void readCompleted(int result) {
+        // 释放缓冲区
+        if (result == AsynchronousChannelProvider.READ_MONITOR_SIGNAL) {
+            this.readBuffer.clean();
+            this.readBuffer = null;
+            return;
+        }
+        if (result == AsynchronousChannelProvider.READABLE_SIGNAL) {
+            doRead();
+            return;
+        }
+        // 接收到的消息进行预处理
+        Monitor monitor = context.getMonitor();
+        if (monitor != null) {
+            monitor.afterRead(this, result);
+        }
+        this.eof = result == -1;
+        if (SESSION_STATUS_CLOSED != status) {
+            this.readBuffer.buffer().flip();
+            signalRead();
+        }
+    }
+
     /**
      * 读事件回调处理
      */
@@ -228,29 +251,6 @@ public class TcpSession extends Session {
             }
         }
     };
-
-    void readCompleted(int result) {
-        // 释放缓冲区
-        if (result == AsynchronousChannelProvider.READ_MONITOR_SIGNAL) {
-            this.readBuffer.clean();
-            this.readBuffer = null;
-            return;
-        }
-        if (result == AsynchronousChannelProvider.READABLE_SIGNAL) {
-            doRead();
-            return;
-        }
-        // 接收到的消息进行预处理
-        Monitor monitor = context.getMonitor();
-        if (monitor != null) {
-            monitor.afterRead(this, result);
-        }
-        this.eof = result == -1;
-        if (SESSION_STATUS_CLOSED != status) {
-            this.readBuffer.buffer().flip();
-            signalRead();
-        }
-    }
 
     /**
      * 触发通道的读回调操作

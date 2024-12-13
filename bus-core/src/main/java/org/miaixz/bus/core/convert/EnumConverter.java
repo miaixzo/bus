@@ -46,33 +46,12 @@ import org.miaixz.bus.core.xyz.*;
  */
 public class EnumConverter extends AbstractConverter implements MatcherConverter {
 
-    private static final long serialVersionUID = -1L;
-
     /**
      * 单例
      */
     public static final EnumConverter INSTANCE = new EnumConverter();
+    private static final long serialVersionUID = -1L;
     private static final WeakConcurrentMap<Class<?>, Map<Class<?>, Method>> VALUE_OF_METHOD_CACHE = new WeakConcurrentMap<>();
-
-    @Override
-    public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
-        return rawType.isEnum();
-    }
-
-    @Override
-    protected Object convertInternal(final Class<?> targetClass, final Object value) {
-        Enum enumValue = tryConvertEnum(value, targetClass);
-        if (null == enumValue && !(value instanceof String)) {
-            // 最后尝试先将value转String，再valueOf转换
-            enumValue = Enum.valueOf((Class) targetClass, convertToString(value));
-        }
-
-        if (null != enumValue) {
-            return enumValue;
-        }
-
-        throw new ConvertException("Can not support {} to {}", value, targetClass);
-    }
 
     /**
      * 尝试转换，转换规则为：
@@ -153,6 +132,26 @@ public class EnumConverter extends AbstractConverter implements MatcherConverter
                         .filter(m -> m.getReturnType() == enumClass).filter(m -> m.getParameterCount() == 1)
                         .filter(m -> !"valueOf".equals(m.getName()))
                         .collect(Collectors.toMap(m -> m.getParameterTypes()[0], m -> m, (k1, k2) -> k1)));
+    }
+
+    @Override
+    public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
+        return rawType.isEnum();
+    }
+
+    @Override
+    protected Object convertInternal(final Class<?> targetClass, final Object value) {
+        Enum enumValue = tryConvertEnum(value, targetClass);
+        if (null == enumValue && !(value instanceof String)) {
+            // 最后尝试先将value转String，再valueOf转换
+            enumValue = Enum.valueOf((Class) targetClass, convertToString(value));
+        }
+
+        if (null != enumValue) {
+            return enumValue;
+        }
+
+        throw new ConvertException("Can not support {} to {}", value, targetClass);
     }
 
 }

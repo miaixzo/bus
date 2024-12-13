@@ -34,20 +34,14 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
+import org.miaixz.bus.gitlab.models.*;
+import org.miaixz.bus.gitlab.models.ImpersonationToken.Scope;
+import org.miaixz.bus.gitlab.support.EmailChecker;
+
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
-
-import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
-import org.miaixz.bus.gitlab.models.CustomAttribute;
-import org.miaixz.bus.gitlab.models.Email;
-import org.miaixz.bus.gitlab.models.GpgKey;
-import org.miaixz.bus.gitlab.models.ImpersonationToken;
-import org.miaixz.bus.gitlab.models.ImpersonationToken.Scope;
-import org.miaixz.bus.gitlab.models.Membership;
-import org.miaixz.bus.gitlab.models.SshKey;
-import org.miaixz.bus.gitlab.models.User;
-import org.miaixz.bus.gitlab.support.EmailChecker;
 
 /**
  * This class provides an entry point to all the GitLab API users calls.

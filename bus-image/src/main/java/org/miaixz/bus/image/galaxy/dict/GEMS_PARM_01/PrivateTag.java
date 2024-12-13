@@ -65,7 +65,9 @@ public class PrivateTag {
     /** (0043,xx0A) VR=SS VM=1 Type Of Receiver Used */
     public static final int TypeOfReceiverUsed = 0x0043000A;
 
-    /** (0043,xx0B) VR=DS VM=1 dB/dt Peak Rate Of Change Of Gradient Field */
+    /**
+     * (0043,xx0B) VR=DS VM=1 dB/dt Peak Rate Of Change Of Gradient Field
+     */
     public static final int PeakRateOfChangeOfGradientField = 0x0043000B;
 
     /** (0043,xx0C) VR=DS VM=1 dB/dt Limits In Units Of Percent */
@@ -74,7 +76,9 @@ public class PrivateTag {
     /** (0043,xx0D) VR=DS VM=1 PSD Estimated Limit */
     public static final int PSDEstimatedLimit = 0x0043000D;
 
-    /** (0043,xx0E) VR=DS VM=1 PSD Estimated Limit In Tesla Per Second */
+    /**
+     * (0043,xx0E) VR=DS VM=1 PSD Estimated Limit In Tesla Per Second
+     */
     public static final int PSDEstimatedLimitInTeslaPerSecond = 0x0043000E;
 
     /** (0043,xx0F) VR=DS VM=1 SAR Avg Head */
@@ -359,13 +363,19 @@ public class PrivateTag {
     /** (0043,xx86) VR=OB VM=1 Debug Data (Binary Format) */
     public static final int DebugDataBinaryFormat = 0x00430086;
 
-    /** (0043,xx88) VR=UI VM=1 PURE Acquisition Calibration Series UID */
+    /**
+     * (0043,xx88) VR=UI VM=1 PURE Acquisition Calibration Series UID
+     */
     public static final int PUREAcquisitionCalibrationSeriesUID = 0x00430088;
 
-    /** (0043,xx89) VR=LO VM=3 Governing Body, dB/dt, and SAR definition */
+    /**
+     * (0043,xx89) VR=LO VM=3 Governing Body, dB/dt, and SAR definition
+     */
     public static final int GoverningBodyDBdtSARDefinition = 0x00430089;
 
-    /** (0043,xx8A) VR=CS VM=1 Private In-Plane Phase Encoding Direction */
+    /**
+     * (0043,xx8A) VR=CS VM=1 Private In-Plane Phase Encoding Direction
+     */
     public static final int PrivateInPlanePhaseEncodingDirection = 0x0043008A;
 
     /** (0043,xx8B) VR=OB VM=1 FMRI Binary Data Block */
@@ -407,7 +417,9 @@ public class PrivateTag {
     /** (0043,xx97) VR=LO VM=8 Image Filtering Parameters */
     public static final int ImageFilteringParameters = 0x00430097;
 
-    /** (0043,xx98) VR=UI VM=1 ASSET Acquisition Calibration Series UID */
+    /**
+     * (0043,xx98) VR=UI VM=1 ASSET Acquisition Calibration Series UID
+     */
     public static final int ASSETAcquisitionCalibrationSeriesUID = 0x00430098;
 
     /** (0043,xx99) VR=LO VM=1-n Extended Options */

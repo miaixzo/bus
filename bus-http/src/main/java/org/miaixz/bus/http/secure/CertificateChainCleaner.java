@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.http.secure;
 
-import org.miaixz.bus.http.accord.platform.Platform;
-
-import javax.net.ssl.SSLPeerUnverifiedException;
-import javax.net.ssl.X509TrustManager;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.List;
+
+import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.X509TrustManager;
+
+import org.miaixz.bus.http.accord.platform.Platform;
 
 /**
  * 从Java在TLS api中构建的原始数组中计算有效的证书链。 清理链返回一个证书列表， 其中第一个元素是{@code chain[0]}， 每个证书由后面的证书签名，最后一个证书是受信任的CA证书

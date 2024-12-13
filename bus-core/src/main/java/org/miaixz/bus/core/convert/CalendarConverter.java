@@ -101,9 +101,8 @@ public class CalendarConverter extends AbstractConverter {
             return Calendar.calendar((XMLGregorianCalendar) value);
         }
 
-        final String valueStr = convertToString(value);
-        return Calendar
-                .calendar(StringKit.isBlank(format) ? Resolver.parse(valueStr) : Resolver.parse(valueStr, format));
+        final String values = convertToString(value);
+        return Calendar.calendar(StringKit.isBlank(format) ? Resolver.parse(values) : Resolver.parse(values, format));
     }
 
 }

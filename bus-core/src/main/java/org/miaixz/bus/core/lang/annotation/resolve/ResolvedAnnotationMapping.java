@@ -27,19 +27,19 @@
 */
 package org.miaixz.bus.core.lang.annotation.resolve;
 
-import org.miaixz.bus.core.center.map.multi.Graph;
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.annotation.Alias;
-import org.miaixz.bus.core.lang.annotation.resolve.elements.MetaAnnotatedElement;
-import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.xyz.*;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.IntConsumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.core.center.map.multi.Graph;
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.annotation.Alias;
+import org.miaixz.bus.core.lang.annotation.resolve.elements.MetaAnnotatedElement;
+import org.miaixz.bus.core.text.CharsBacker;
+import org.miaixz.bus.core.xyz.*;
 
 /**
  * 注解映射，用于包装并增强一个普通注解对象， 包装后的可以通过{@code getResolvedXXX}获得注解对象或属性值， 可以支持属性别名与属性覆写的属性解析机制

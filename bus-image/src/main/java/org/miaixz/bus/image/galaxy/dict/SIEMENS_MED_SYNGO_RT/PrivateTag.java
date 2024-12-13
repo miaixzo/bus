@@ -59,13 +59,17 @@ public class PrivateTag {
     /** (300B,xx17) VR=UT VM=1 RT Private Data */
     public static final int RTPrivateData = 0x300B0017;
 
-    /** (300B,xx18) VR=SQ VM=1 Referenced Siemens Non Image Sequence */
+    /**
+     * (300B,xx18) VR=SQ VM=1 Referenced Siemens Non Image Sequence
+     */
     public static final int ReferencedSiemensNonImageSequence = 0x300B0018;
 
     /** (300B,xx19) VR=CS VM=1 Verification Method */
     public static final int VerificationMethod = 0x300B0019;
 
-    /** (300B,xx20) VR=SQ VM=1 Alternative Treatment Machine Name Sequence */
+    /**
+     * (300B,xx20) VR=SQ VM=1 Alternative Treatment Machine Name Sequence
+     */
     public static final int AlternativeTreatmentMachineNameSequence = 0x300B0020;
 
     /** (300B,xx24) VR=DS VM=1 Imager Angular Angle */
@@ -86,7 +90,9 @@ public class PrivateTag {
     /** (300B,xx29) VR=CS VM=1 Imager Angular Rotation Direction */
     public static final int ImagerAngularRotationDirection = 0x300B0029;
 
-    /** (300B,xx2A) VR=CS VM=1 Imager Isocentric Rotation Direction */
+    /**
+     * (300B,xx2A) VR=CS VM=1 Imager Isocentric Rotation Direction
+     */
     public static final int ImagerIsocentricRotationDirection = 0x300B002A;
 
     /** (300B,xx2B) VR=DS VM=1 Requested Scanning Spot Size */
@@ -140,7 +146,9 @@ public class PrivateTag {
     /** (300B,xx83) VR=DS VM=1 Target ROI Distal Expansion Margin */
     public static final int TargetROIDistalExpansionMargin = 0x300B0083;
 
-    /** (300B,xx84) VR=DS VM=1 Target ROI Proximal Expansion Margin */
+    /**
+     * (300B,xx84) VR=DS VM=1 Target ROI Proximal Expansion Margin
+     */
     public static final int TargetROIProximalExpansionMargin = 0x300B0084;
 
     /** (300B,xx85) VR=DS VM=2 Scan Grid Lateral Distance */
@@ -218,25 +226,35 @@ public class PrivateTag {
     /** (300B,xxB2) VR=UT VM=1 Treatment Events */
     public static final int TreatmentEvents = 0x300B00B2;
 
-    /** (300B,xxC0) VR=SQ VM=1 Dose Optimization Constraint Sequence */
+    /**
+     * (300B,xxC0) VR=SQ VM=1 Dose Optimization Constraint Sequence
+     */
     public static final int DoseOptimizationConstraintSequence = 0x300B00C0;
 
     /** (300B,xxC8) VR=DS VM=1 Target Maximum Dose Constraint */
     public static final int TargetMaximumDoseConstraint = 0x300B00C8;
 
-    /** (300B,xxC9) VR=DS VM=1 Target Maximum Dose Constraint Weight */
+    /**
+     * (300B,xxC9) VR=DS VM=1 Target Maximum Dose Constraint Weight
+     */
     public static final int TargetMaximumDoseConstraintWeight = 0x300B00C9;
 
     /** (300B,xxCA) VR=DS VM=1 Target Minimum Dose Constraint */
     public static final int TargetMinimumDoseConstraint = 0x300B00CA;
 
-    /** (300B,xxCB) VR=DS VM=1 Target Minimum Dose Constraint Weight */
+    /**
+     * (300B,xxCB) VR=DS VM=1 Target Minimum Dose Constraint Weight
+     */
     public static final int TargetMinimumDoseConstraintWeight = 0x300B00CB;
 
-    /** (300B,xxCC) VR=DS VM=1 Organ At Risk Maximum Dose Constraint */
+    /**
+     * (300B,xxCC) VR=DS VM=1 Organ At Risk Maximum Dose Constraint
+     */
     public static final int OrganAtRiskMaximumDoseConstraint = 0x300B00CC;
 
-    /** (300B,xxCD) VR=DS VM=1 Organ At Risk Maximum Dose Constraint Weight */
+    /**
+     * (300B,xxCD) VR=DS VM=1 Organ At Risk Maximum Dose Constraint Weight
+     */
     public static final int OrganAtRiskMaximumDoseConstraintWeight = 0x300B00CD;
 
     /** (300B,xxCE) VR=SQ VM=1 DVH Constraint Sequence */
@@ -260,7 +278,9 @@ public class PrivateTag {
     /** (300B,xxD5) VR=CS VM=1 Optimized Dose Type */
     public static final int OptimizedDoseType = 0x300B00D5;
 
-    /** (300B,xxD6) VR=UT VM=1 Dose Calculation and Optimization Parameters */
+    /**
+     * (300B,xxD6) VR=UT VM=1 Dose Calculation and Optimization Parameters
+     */
     public static final int DoseCalculationandOptimizationParameters = 0x300B00D6;
 
     /** (300B,xxD7) VR=DS VM=1 Applied Renormalization Factor */
@@ -269,10 +289,14 @@ public class PrivateTag {
     /** (300B,xxD8) VR=CS VM=1 Dose Constraint Status */
     public static final int DoseConstraintStatus = 0x300B00D8;
 
-    /** (300B,xxD9) VR=DS VM=1 Organ At Risk Minimum Dose Constraint */
+    /**
+     * (300B,xxD9) VR=DS VM=1 Organ At Risk Minimum Dose Constraint
+     */
     public static final int OrganAtRiskMinimumDoseConstraint = 0x300B00D9;
 
-    /** (300B,xxDA) VR=DS VM=1 Organ At Risk Minimum Dose Constraint Weight */
+    /**
+     * (300B,xxDA) VR=DS VM=1 Organ At Risk Minimum Dose Constraint Weight
+     */
     public static final int OrganAtRiskMinimumDoseConstraintWeight = 0x300B00DA;
 
     /** (300B,xxE0) VR=SQ VM=1 Base Data Group Sequence */
@@ -311,7 +335,9 @@ public class PrivateTag {
     /** (300B,xxEC) VR=CS VM=1 Prefinalized Status */
     public static final int PrefinalizedStatus = 0x300B00EC;
 
-    /** (300B,xxED) VR=OB VM=1 Dosimetric Checksum Encryption Code */
+    /**
+     * (300B,xxED) VR=OB VM=1 Dosimetric Checksum Encryption Code
+     */
     public static final int DosimetricChecksumEncryptionCode = 0x300B00ED;
 
     /** (300B,xxEE) VR=SQ VM=1 Referenced Report Sequence */

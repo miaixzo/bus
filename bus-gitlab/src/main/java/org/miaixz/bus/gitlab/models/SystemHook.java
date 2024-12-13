@@ -93,20 +93,20 @@ public class SystemHook implements Serializable {
         this.enableSslVerification = enableSslVerification;
     }
 
-    public void setRepositoryUpdateEvents(Boolean repositoryUpdateEvents) {
-        this.repositoryUpdateEvents = repositoryUpdateEvents;
-    }
-
     public Boolean getRepositoryUpdateEvents() {
         return repositoryUpdateEvents;
     }
 
-    public void setMergeRequestsEvents(Boolean mergeRequestsEvents) {
-        this.mergeRequestsEvents = mergeRequestsEvents;
+    public void setRepositoryUpdateEvents(Boolean repositoryUpdateEvents) {
+        this.repositoryUpdateEvents = repositoryUpdateEvents;
     }
 
     public Boolean getMergeRequestsEvents() {
         return mergeRequestsEvents;
+    }
+
+    public void setMergeRequestsEvents(Boolean mergeRequestsEvents) {
+        this.mergeRequestsEvents = mergeRequestsEvents;
     }
 
     public SystemHook withId(Long id) {

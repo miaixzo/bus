@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.http.socket;
 
+import java.io.IOException;
+import java.util.Random;
+
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.BufferSink;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.timout.Timeout;
-
-import java.io.IOException;
-import java.util.Random;
 
 /**
  * RFC 6455兼容的WebSocket帧写入器 这个类不是线程安全的

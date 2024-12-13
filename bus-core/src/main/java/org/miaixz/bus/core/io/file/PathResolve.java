@@ -27,6 +27,14 @@
 */
 package org.miaixz.bus.core.io.file;
 
+import java.io.*;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+
 import org.miaixz.bus.core.io.resource.FileResource;
 import org.miaixz.bus.core.io.resource.Resource;
 import org.miaixz.bus.core.lang.Assert;
@@ -36,14 +44,6 @@ import org.miaixz.bus.core.lang.exception.NotFoundException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
-
-import java.io.*;
-import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
 
 /**
  * NIO中Path对象操作封装

@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core.xyz;
 
-import org.miaixz.bus.core.center.stream.EasyStream;
-import org.miaixz.bus.core.center.stream.EntryStream;
-import org.miaixz.bus.core.center.stream.SimpleCollector;
-import org.miaixz.bus.core.lang.Normal;
-
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+
+import org.miaixz.bus.core.center.stream.EasyStream;
+import org.miaixz.bus.core.center.stream.EntryStream;
+import org.miaixz.bus.core.center.stream.SimpleCollector;
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * 可变的汇聚操作{@link Collector} 相关工具封装

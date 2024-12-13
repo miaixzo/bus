@@ -59,7 +59,9 @@ public class PrivateTag {
     /** (0019,xx07) VR=US VM=1 Enabled Shutters */
     public static final int EnabledShutters = 0x00190007;
 
-    /** (0019,xx08) VR=US VM=1 Native Edge Enhancement Percent Gain */
+    /**
+     * (0019,xx08) VR=US VM=1 Native Edge Enhancement Percent Gain
+     */
     public static final int NativeEdgeEnhancementPercentGain = 0x00190008;
 
     /** (0019,xx09) VR=SS VM=1 Native Edge Enhancement LUT Index */
@@ -68,13 +70,19 @@ public class PrivateTag {
     /** (0019,xx0A) VR=SS VM=1 Native Edge Enhancement Kernel Size */
     public static final int NativeEdgeEnhancementKernelSize = 0x0019000A;
 
-    /** (0019,xx0B) VR=US VM=1 Subtracted Edge Enhancement Percent Gain */
+    /**
+     * (0019,xx0B) VR=US VM=1 Subtracted Edge Enhancement Percent Gain
+     */
     public static final int SubtractedEdgeEnhancementPercentGain = 0x0019000B;
 
-    /** (0019,xx0C) VR=SS VM=1 Subtracted Edge Enhancement LUT Index */
+    /**
+     * (0019,xx0C) VR=SS VM=1 Subtracted Edge Enhancement LUT Index
+     */
     public static final int SubtractedEdgeEnhancementLUTIndex = 0x0019000C;
 
-    /** (0019,xx0D) VR=SS VM=1 Subtracted Edge Enhancement Kernel Size */
+    /**
+     * (0019,xx0D) VR=SS VM=1 Subtracted Edge Enhancement Kernel Size
+     */
     public static final int SubtractedEdgeEnhancementKernelSize = 0x0019000D;
 
     /** (0019,xx0E) VR=US VM=1 Fade Percent */
@@ -98,10 +106,14 @@ public class PrivateTag {
     /** (0019,xx14) VR=SS VM=1 Pan Y */
     public static final int PanY = 0x00190014;
 
-    /** (0019,xx15) VR=SS VM=1 Native Edge Enhancement Adv Percent Gain */
+    /**
+     * (0019,xx15) VR=SS VM=1 Native Edge Enhancement Adv Percent Gain
+     */
     public static final int NativeEdgeEnhancementAdvPercentGain = 0x00190015;
 
-    /** (0019,xx16) VR=SS VM=1 Subtracted Edge Enhancement Adv Percent Gain */
+    /**
+     * (0019,xx16) VR=SS VM=1 Subtracted Edge Enhancement Adv Percent Gain
+     */
     public static final int SubtractedEdgeEnhancementAdvPercentGain = 0x00190016;
 
     /** (0019,xx17) VR=US VM=1 Invert Flag */
@@ -128,7 +140,9 @@ public class PrivateTag {
     /** (0019,xx41) VR=SL VM=2 Dispayed Area Top Left Hand Corner */
     public static final int DispayedAreaTopLeftHandCorner = 0x00190041;
 
-    /** (0019,xx42) VR=SL VM=2 Dispayed Area Bottom Right Hand Corner */
+    /**
+     * (0019,xx42) VR=SL VM=2 Dispayed Area Bottom Right Hand Corner
+     */
     public static final int DispayedAreaBottomRightHandCorner = 0x00190042;
 
 }

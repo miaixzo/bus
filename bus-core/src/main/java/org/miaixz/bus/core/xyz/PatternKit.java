@@ -749,6 +749,44 @@ public class PatternKit extends RegexValidator {
     }
 
     /**
+     * 找到指定模式匹配到所有字符串的位置
+     *
+     * @param regex   正则
+     * @param content 字符串
+     * @return 位置集合，{@code null}表示未找到
+     */
+    public static List<MatchResult> allIndexOf(String regex, CharSequence content) {
+        if (null == regex || null == content) {
+            return null;
+        }
+
+        final java.util.regex.Pattern pattern = Pattern.get(regex, java.util.regex.Pattern.DOTALL);
+        return allIndexOf(pattern, content);
+    }
+
+    /**
+     * 找到指定模式匹配到所有字符串的位置
+     *
+     * @param pattern 模式
+     * @param content 字符串
+     * @return 位置集合，{@code null}表示未找到
+     */
+    public static List<MatchResult> allIndexOf(java.util.regex.Pattern pattern, CharSequence content) {
+        List<MatchResult> results = null;
+        if (null != pattern && null != content) {
+            final Matcher matcher = pattern.matcher(content);
+            while (matcher.find()) {
+                if (results == null) {
+                    results = new ArrayList<>();
+                }
+                results.add(matcher.toMatchResult());
+            }
+        }
+
+        return results;
+    }
+
+    /**
      * 从字符串中获得第一个整数
      *
      * @param stringWithNumber 带数字的字符串

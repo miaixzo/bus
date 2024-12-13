@@ -28,14 +28,7 @@
 package org.miaixz.bus.gitlab;
 
 import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
-import org.miaixz.bus.gitlab.services.BugzillaService;
-import org.miaixz.bus.gitlab.services.CustomIssueTrackerService;
-import org.miaixz.bus.gitlab.services.EmailOnPushService;
-import org.miaixz.bus.gitlab.services.ExternalWikiService;
-import org.miaixz.bus.gitlab.services.HipChatService;
-import org.miaixz.bus.gitlab.services.JiraService;
-import org.miaixz.bus.gitlab.services.MattermostService;
-import org.miaixz.bus.gitlab.services.SlackService;
+import org.miaixz.bus.gitlab.services.*;
 
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.Response;

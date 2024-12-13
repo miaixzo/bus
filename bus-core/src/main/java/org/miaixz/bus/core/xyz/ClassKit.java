@@ -689,6 +689,21 @@ public class ClassKit {
     }
 
     /**
+     * 判断指定类名的类是否存在
+     *
+     * @param className 全类名
+     * @param loader    {@link ClassLoader}
+     * @return 类名的类是否存在
+     */
+    public static boolean isForName(final String className, final ClassLoader loader) {
+        try {
+            return null != forName(className, false, loader);
+        } catch (final Exception e) {
+            return false;
+        }
+    }
+
+    /**
      * 加载指定名称的类，支持：
      * <ul>
      * <li>替换"/"为"."</li>

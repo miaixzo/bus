@@ -131,16 +131,24 @@ public class PrivateTag {
     /** (0045,xx21) VR=DS VM=1 Mean Of Log Region Gray Levels */
     public static final int MeanOfLogRegionGrayLevels = 0x00450021;
 
-    /** (0045,xx22) VR=DS VM=1 Standard Deviation Of Raw Gray Levels */
+    /**
+     * (0045,xx22) VR=DS VM=1 Standard Deviation Of Raw Gray Levels
+     */
     public static final int StandardDeviationOfRawGrayLevels = 0x00450022;
 
-    /** (0045,xx23) VR=DS VM=1 Standard Deviation Of Corrected Gray Levels */
+    /**
+     * (0045,xx23) VR=DS VM=1 Standard Deviation Of Corrected Gray Levels
+     */
     public static final int StandardDeviationOfCorrectedGrayLevels = 0x00450023;
 
-    /** (0045,xx24) VR=DS VM=1 Standard Deviation Of Region Gray Levels */
+    /**
+     * (0045,xx24) VR=DS VM=1 Standard Deviation Of Region Gray Levels
+     */
     public static final int StandardDeviationOfRegionGrayLevels = 0x00450024;
 
-    /** (0045,xx25) VR=DS VM=1 Standard Deviation Of Log Region Gray Levels */
+    /**
+     * (0045,xx25) VR=DS VM=1 Standard Deviation Of Log Region Gray Levels
+     */
     public static final int StandardDeviationOfLogRegionGrayLevels = 0x00450025;
 
     /** (0045,xx26) VR=OB VM=1 MAO Buffer */
@@ -161,34 +169,54 @@ public class PrivateTag {
     /** (0045,xx2B) VR=IS VM=1 Crosshair Cursor Y Coordinates */
     public static final int CrosshairCursorYCoordinates = 0x0045002B;
 
-    /** (0045,xx2C) VR=DS VM=1 Reference Landmark A X 3D Coordinates */
+    /**
+     * (0045,xx2C) VR=DS VM=1 Reference Landmark A X 3D Coordinates
+     */
     public static final int ReferenceLandmarkAX3DCoordinates = 0x0045002C;
 
-    /** (0045,xx2D) VR=DS VM=1 Reference Landmark A Y 3D Coordinates */
+    /**
+     * (0045,xx2D) VR=DS VM=1 Reference Landmark A Y 3D Coordinates
+     */
     public static final int ReferenceLandmarkAY3DCoordinates = 0x0045002D;
 
-    /** (0045,xx2E) VR=DS VM=1 Reference Landmark A Z 3D Coordinates */
+    /**
+     * (0045,xx2E) VR=DS VM=1 Reference Landmark A Z 3D Coordinates
+     */
     public static final int ReferenceLandmarkAZ3DCoordinates = 0x0045002E;
 
-    /** (0045,xx2F) VR=IS VM=1 Reference Landmark A X Image Coordinates */
+    /**
+     * (0045,xx2F) VR=IS VM=1 Reference Landmark A X Image Coordinates
+     */
     public static final int ReferenceLandmarkAXImageCoordinates = 0x0045002F;
 
-    /** (0045,xx30) VR=IS VM=1 Reference Landmark A Y Image Coordinates */
+    /**
+     * (0045,xx30) VR=IS VM=1 Reference Landmark A Y Image Coordinates
+     */
     public static final int ReferenceLandmarkAYImageCoordinates = 0x00450030;
 
-    /** (0045,xx31) VR=DS VM=1 Reference Landmark B X 3D Coordinates */
+    /**
+     * (0045,xx31) VR=DS VM=1 Reference Landmark B X 3D Coordinates
+     */
     public static final int ReferenceLandmarkBX3DCoordinates = 0x00450031;
 
-    /** (0045,xx32) VR=DS VM=1 Reference Landmark B Y 3D Coordinates */
+    /**
+     * (0045,xx32) VR=DS VM=1 Reference Landmark B Y 3D Coordinates
+     */
     public static final int ReferenceLandmarkBY3DCoordinates = 0x00450032;
 
-    /** (0045,xx33) VR=DS VM=1 Reference Landmark B Z 3D Coordinates */
+    /**
+     * (0045,xx33) VR=DS VM=1 Reference Landmark B Z 3D Coordinates
+     */
     public static final int ReferenceLandmarkBZ3DCoordinates = 0x00450033;
 
-    /** (0045,xx34) VR=IS VM=1 Reference Landmark B X Image Coordinates */
+    /**
+     * (0045,xx34) VR=IS VM=1 Reference Landmark B X Image Coordinates
+     */
     public static final int ReferenceLandmarkBXImageCoordinates = 0x00450034;
 
-    /** (0045,xx35) VR=IS VM=1 Reference Landmark B Y Image Coordinates */
+    /**
+     * (0045,xx35) VR=IS VM=1 Reference Landmark B Y Image Coordinates
+     */
     public static final int ReferenceLandmarkBYImageCoordinates = 0x00450035;
 
     /** (0045,xx36) VR=DS VM=1 X-Ray Source X Location */
@@ -272,7 +300,9 @@ public class PrivateTag {
     /** (0045,xx65) VR=IS VM=1 Detector Entrance Dose */
     public static final int DetectorEntranceDose = 0x00450065;
 
-    /** (0045,xx66) VR=IS VM=1 Asymmetrical Collimation Information */
+    /**
+     * (0045,xx66) VR=IS VM=1 Asymmetrical Collimation Information
+     */
     public static final int AsymmetricalCollimationInformation = 0x00450066;
 
     /** (0045,xx71) VR=OB VM=1 STX Buffer */
@@ -290,19 +320,27 @@ public class PrivateTag {
     /** (0045,xxA1) VR=DS VM=2-n Organ Dose for Source Images */
     public static final int OrganDoseForSourceImages = 0x004500A1;
 
-    /** (0045,xxA2) VR=DS VM=2-n Entrance dose in mGy for Source Images */
+    /**
+     * (0045,xxA2) VR=DS VM=2-n Entrance dose in mGy for Source Images
+     */
     public static final int EntranceDoseInmGyForSourceImages = 0x004500A2;
 
-    /** (0045,xxA4) VR=DS VM=1 Organ Dose in dGy for Complete DBT Sequence */
+    /**
+     * (0045,xxA4) VR=DS VM=1 Organ Dose in dGy for Complete DBT Sequence
+     */
     public static final int OrganDoseIndGyForCompleteDBTSequence = 0x004500A4;
 
-    /** (0045,xxA6) VR=UI VM=1 SOP Instance UID for Lossy Compression */
+    /**
+     * (0045,xxA6) VR=UI VM=1 SOP Instance UID for Lossy Compression
+     */
     public static final int SOPInstanceUIDForLossyCompression = 0x004500A6;
 
     /** (0045,xxA7) VR=LT VM=1 Reconstruction Parameters */
     public static final int ReconstructionParameters = 0x004500A7;
 
-    /** (0045,xxA8) VR=DS VM=1 Entrance Dose in dGy for Complete DBT Sequence */
+    /**
+     * (0045,xxA8) VR=DS VM=1 Entrance Dose in dGy for Complete DBT Sequence
+     */
     public static final int EntranceDoseIndGyForCompleteDBTSequence = 0x004500A8;
 
     /** (0045,xxA9) VR=DS VM=1 Replacement Image */

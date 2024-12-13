@@ -65,17 +65,6 @@ public class PairConverter extends ConverterWithRoot implements Serializable {
         super(rootConverter);
     }
 
-    @Override
-    public Object convert(Type targetType, final Object value) throws ConvertException {
-        if (targetType instanceof TypeReference) {
-            targetType = ((TypeReference<?>) targetType).getType();
-        }
-        final Type leftType = TypeKit.getTypeArgument(targetType, 0);
-        final Type rightType = TypeKit.getTypeArgument(targetType, 1);
-
-        return convert(leftType, rightType, value);
-    }
-
     /**
      * 字符串转单个键值对的Map，支持分隔符{@code :}、{@code =}、{@code ,}
      *
@@ -91,6 +80,17 @@ public class PairConverter extends ConverterWithRoot implements Serializable {
             return MapKit.of(text.subSequence(0, index), text.subSequence(index + 1, text.length()));
         }
         return null;
+    }
+
+    @Override
+    public Object convert(Type targetType, final Object value) throws ConvertException {
+        if (targetType instanceof TypeReference) {
+            targetType = ((TypeReference<?>) targetType).getType();
+        }
+        final Type leftType = TypeKit.getTypeArgument(targetType, 0);
+        final Type rightType = TypeKit.getTypeArgument(targetType, 1);
+
+        return convert(leftType, rightType, value);
     }
 
     /**

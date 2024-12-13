@@ -61,10 +61,8 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class TemporalAccessorConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = -1L;
-
     public static final TemporalAccessorConverter INSTANCE = new TemporalAccessorConverter();
-
+    private static final long serialVersionUID = -1L;
     /**
      * 日期格式化
      */
@@ -145,7 +143,7 @@ public class TemporalAccessorConverter extends AbstractConverter {
         }
 
         final Instant instant;
-        ZoneId zoneId = null;
+        final ZoneId zoneId;
         if (null != this.format) {
             final DateTimeFormatter formatter = Resolver.ofPattern(this.format);
             final TemporalAccessor temporalAccessor = parseWithFormat(targetClass, value, formatter);

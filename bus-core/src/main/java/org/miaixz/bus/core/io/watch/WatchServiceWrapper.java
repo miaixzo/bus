@@ -35,8 +35,8 @@ import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
 import org.miaixz.bus.core.io.file.PathResolve;
-import org.miaixz.bus.core.lang.Wrapper;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.wrapper.SimpleWrapper;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.IoKit;
 
@@ -50,13 +50,10 @@ import org.miaixz.bus.core.xyz.IoKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class WatchServiceWrapper implements WatchService, Wrapper<WatchService>, Serializable {
+public class WatchServiceWrapper extends SimpleWrapper<WatchService> implements WatchService, Serializable {
 
     private static final long serialVersionUID = -1L;
-    /**
-     * 监听服务
-     */
-    private final WatchService watchService;
+
     /**
      * 监听事件列表，如新建、修改、删除等
      */
@@ -77,12 +74,7 @@ public class WatchServiceWrapper implements WatchService, Wrapper<WatchService>,
      */
     public WatchServiceWrapper(final WatchEvent.Kind<?>... events) {
         // 初始化监听
-        try {
-            watchService = FileSystems.getDefault().newWatchService();
-        } catch (final IOException e) {
-            throw new InternalException(e);
-        }
-
+        super(newWatchService());
         this.events = events;
     }
 
@@ -96,9 +88,17 @@ public class WatchServiceWrapper implements WatchService, Wrapper<WatchService>,
         return new WatchServiceWrapper(events);
     }
 
-    @Override
-    public WatchService getRaw() {
-        return this.watchService;
+    /**
+     * 创建一个新的{@link WatchService}实例，用于监听指定目录
+     *
+     * @return {@link WatchService}
+     */
+    private static WatchService newWatchService() {
+        try {
+            return FileSystems.getDefault().newWatchService();
+        } catch (final IOException e) {
+            throw new InternalException(e);
+        }
     }
 
     /**
@@ -114,23 +114,23 @@ public class WatchServiceWrapper implements WatchService, Wrapper<WatchService>,
     public void close() {
         if (!this.isClosed) {
             this.isClosed = true;
-            IoKit.closeQuietly(this.watchService);
+            IoKit.closeQuietly(this.raw);
         }
     }
 
     @Override
     public WatchKey poll() {
-        return this.watchService.poll();
+        return this.raw.poll();
     }
 
     @Override
     public WatchKey poll(final long timeout, final TimeUnit unit) throws InterruptedException {
-        return this.watchService.poll(timeout, unit);
+        return this.raw.poll(timeout, unit);
     }
 
     @Override
     public WatchKey take() throws InterruptedException {
-        return this.watchService.take();
+        return this.raw.take();
     }
 
     /**
@@ -187,9 +187,9 @@ public class WatchServiceWrapper implements WatchService, Wrapper<WatchService>,
         WatchKey watchKey = null;
         try {
             if (ArrayKit.isEmpty(this.modifiers)) {
-                watchKey = watchable.register(this.watchService, kinds);
+                watchKey = watchable.register(this.raw, kinds);
             } else {
-                watchKey = watchable.register(this.watchService, kinds, this.modifiers);
+                watchKey = watchable.register(this.raw, kinds, this.modifiers);
             }
         } catch (final IOException e) {
             if (!(e instanceof AccessDeniedException)) {
@@ -269,7 +269,7 @@ public class WatchServiceWrapper implements WatchService, Wrapper<WatchService>,
     public void watch(final BiConsumer<WatchEvent<?>, WatchKey> action, final Predicate<WatchEvent<?>> watchFilter) {
         final WatchKey wk;
         try {
-            wk = watchService.take();
+            wk = raw.take();
         } catch (final InterruptedException | ClosedWatchServiceException e) {
             // 用户中断
             close();

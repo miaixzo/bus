@@ -239,7 +239,9 @@ public class PrivateTag {
     /** (0019,xx62) VR=SL VM=1 Increment Between Views */
     public static final int IncrementBetweenViews = 0x00190062;
 
-    /** (0019,xx6A) VR=SS VM=1 Dependant On Number Of Views Processed */
+    /**
+     * (0019,xx6A) VR=SS VM=1 Dependant On Number Of Views Processed
+     */
     public static final int DependantOnNumberOfViewsProcessed = 0x0019006A;
 
     /** (0019,xx6B) VR=SS VM=1 Field Of View In Detector Cells */
@@ -449,7 +451,9 @@ public class PrivateTag {
     /** (0019,xxC0) VR=SS VM=1 Saturation Planes */
     public static final int SaturationPlanes = 0x001900C0;
 
-    /** (0019,xxC1) VR=SS VM=1 Surface Coil Intensity Correction Flag */
+    /**
+     * (0019,xxC1) VR=SS VM=1 Surface Coil Intensity Correction Flag
+     */
     public static final int SurfaceCoilIntensityCorrectionFlag = 0x001900C1;
 
     /** (0019,xxC2) VR=SS VM=1 SAT Location R */
@@ -518,7 +522,9 @@ public class PrivateTag {
     /** (0019,xxD8) VR=SS VM=1 Variable Echo Flag */
     public static final int VariableEchoFlag = 0x001900D8;
 
-    /** (0019,xxD9) VR=DS VM=1 Concatenated Sat or DTI Diffusion Direction */
+    /**
+     * (0019,xxD9) VR=DS VM=1 Concatenated Sat or DTI Diffusion Direction
+     */
     public static final int ConcatenatedSatOrDTIDiffusionDirection = 0x001900D9;
 
     /** (0019,xxDA) VR=SS VM=1 Reference Channel Used */

@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.mapper.additional.aggregation;
 
+import java.text.MessageFormat;
+import java.util.Map;
+
 import org.apache.ibatis.mapping.MappedStatement;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
@@ -39,9 +42,6 @@ import org.miaixz.bus.mapper.builder.SqlBuilder;
 import org.miaixz.bus.mapper.entity.EntityColumn;
 import org.miaixz.bus.mapper.entity.EntityTable;
 import org.miaixz.bus.mapper.support.SqlWords;
-
-import java.text.MessageFormat;
-import java.util.Map;
 
 /**
  * 聚合实现类

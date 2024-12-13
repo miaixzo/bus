@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.http.secure;
 
-import javax.net.ssl.SSLPeerUnverifiedException;
 import java.security.GeneralSecurityException;
 import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
 import java.util.*;
+
+import javax.net.ssl.SSLPeerUnverifiedException;
 
 /**
  * 使用一组可信根证书来构建可信链的证书链清理器。 这个类复制了在TLS握手期间执行的clean chain构建。我们更喜欢它们 存在的其他机制，比如{@code AndroidCertificateChainCleaner}

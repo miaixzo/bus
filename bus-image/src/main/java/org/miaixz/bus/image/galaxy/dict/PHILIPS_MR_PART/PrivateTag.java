@@ -260,7 +260,9 @@ public class PrivateTag {
     /** (0019,xx94) VR=LO VM=1 Magnetization Transfer Contrast */
     public static final int MagnetizationTransferContrast = 0x00190094;
 
-    /** (0019,xx95) VR=LO VM=1 Spectral Presaturation With Inversion Recovery */
+    /**
+     * (0019,xx95) VR=LO VM=1 Spectral Presaturation With Inversion Recovery
+     */
     public static final int SpectralPresaturationWithInversionRecovery = 0x00190095;
 
     /** (0019,xx96) VR=IS VM=1 ? */

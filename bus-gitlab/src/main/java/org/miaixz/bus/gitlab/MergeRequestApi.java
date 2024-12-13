@@ -31,26 +31,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
+import org.miaixz.bus.gitlab.models.*;
+
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MultivaluedMap;
 import jakarta.ws.rs.core.Response;
-
-import org.miaixz.bus.gitlab.GitLabApi.ApiVersion;
-import org.miaixz.bus.gitlab.models.AcceptMergeRequestParams;
-import org.miaixz.bus.gitlab.models.ApprovalRule;
-import org.miaixz.bus.gitlab.models.ApprovalRuleParams;
-import org.miaixz.bus.gitlab.models.ApprovalState;
-import org.miaixz.bus.gitlab.models.Commit;
-import org.miaixz.bus.gitlab.models.Diff;
-import org.miaixz.bus.gitlab.models.Issue;
-import org.miaixz.bus.gitlab.models.MergeRequest;
-import org.miaixz.bus.gitlab.models.MergeRequestDiff;
-import org.miaixz.bus.gitlab.models.MergeRequestFilter;
-import org.miaixz.bus.gitlab.models.MergeRequestParams;
-import org.miaixz.bus.gitlab.models.MergeRequestVersion;
-import org.miaixz.bus.gitlab.models.Participant;
-import org.miaixz.bus.gitlab.models.Pipeline;
 
 /**
  * This class implements the client side API for the GitLab merge request calls.

@@ -119,22 +119,32 @@ public class PrivateTag {
     /** (0019,xx85) VR=CS VM=1 Filter Type for Phase Correction */
     public static final int FilterTypeForPhaseCorrection = 0x00190085;
 
-    /** (0019,xx86) VR=DS VM=1-n Filter Parameter for Phase Correction */
+    /**
+     * (0019,xx86) VR=DS VM=1-n Filter Parameter for Phase Correction
+     */
     public static final int FilterParameterForPhaseCorrection = 0x00190086;
 
-    /** (0019,xx87) VR=CS VM=1 Normalization Filter Type for Image Data */
+    /**
+     * (0019,xx87) VR=CS VM=1 Normalization Filter Type for Image Data
+     */
     public static final int NormalizationFilterTypeForImageData = 0x00190087;
 
-    /** (0019,xx88) VR=DS VM=1-n Normalization Filter Parameter for Image Data */
+    /**
+     * (0019,xx88) VR=DS VM=1-n Normalization Filter Parameter for Image Data
+     */
     public static final int NormalizationFilterParameterForImageData = 0x00190088;
 
     /** (0019,xx90) VR=IS VM=1 Number of Saturation Regions */
     public static final int NumberOfSaturationRegions = 0x00190090;
 
-    /** (0019,xx91) VR=DS VM=6 Saturation Phase Encoding Vector Sagittal Component */
+    /**
+     * (0019,xx91) VR=DS VM=6 Saturation Phase Encoding Vector Sagittal Component
+     */
     public static final int SaturationPhaseEncodingVectorSagittalComponent = 0x00190091;
 
-    /** (0019,xx92) VR=DS VM=6 Saturation Readout Vector Sagittal Component */
+    /**
+     * (0019,xx92) VR=DS VM=6 Saturation Readout Vector Sagittal Component
+     */
     public static final int SaturationReadoutVectorSagittalComponent = 0x00190092;
 
     /** (0019,xx93) VR=IS VM=1 EPI Stimulation Monitor Mode */
@@ -164,10 +174,14 @@ public class PrivateTag {
     /** (0021,xx21) VR=IS VM=1 Phase Correction Columns Sequence */
     public static final int PhaseCorrectionColumnsSequence = 0x00210021;
 
-    /** (0021,xx22) VR=IS VM=1 Phase Correction Rows Reconstruction */
+    /**
+     * (0021,xx22) VR=IS VM=1 Phase Correction Rows Reconstruction
+     */
     public static final int PhaseCorrectionRowsReconstruction = 0x00210022;
 
-    /** (0021,xx24) VR=IS VM=1 Phase Correction Columns Reconstruction */
+    /**
+     * (0021,xx24) VR=IS VM=1 Phase Correction Columns Reconstruction
+     */
     public static final int PhaseCorrectionColumnsReconstruction = 0x00210024;
 
     /** (0021,xx30) VR=IS VM=1 Number of 3D Raw Partitions Nominal */
@@ -260,10 +274,14 @@ public class PrivateTag {
     /** (0021,xx80) VR=IS VM=1 Cardiac Code */
     public static final int CardiacCode = 0x00210080;
 
-    /** (0021,xx91) VR=DS VM=6 Saturation Phase Encoding Vector Transverse Component */
+    /**
+     * (0021,xx91) VR=DS VM=6 Saturation Phase Encoding Vector Transverse Component
+     */
     public static final int SaturationPhaseEncodingVectorTransverseComponent = 0x00210091;
 
-    /** (0021,xx92) VR=DS VM=6 Saturation Readout Vector Transverse Component */
+    /**
+     * (0021,xx92) VR=DS VM=6 Saturation Readout Vector Transverse Component
+     */
     public static final int SaturationReadoutVectorTransverseComponent = 0x00210092;
 
     /** (0021,xx93) VR=DS VM=1 EPI Change Value of Magnitude */

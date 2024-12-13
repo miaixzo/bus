@@ -51,12 +51,11 @@ import org.miaixz.bus.core.xyz.TypeKit;
  */
 public class MapConverter extends ConverterWithRoot implements MatcherConverter, Serializable {
 
-    private static final long serialVersionUID = -1L;
-
     /**
      * 单例
      */
     public static final MapConverter INSTANCE = new MapConverter(CompositeConverter.getInstance());
+    private static final long serialVersionUID = -1L;
 
     /**
      * 构造

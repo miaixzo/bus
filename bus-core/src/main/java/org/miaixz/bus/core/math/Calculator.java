@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.Stack;
 
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -83,6 +84,9 @@ public class Calculator {
                         arr[i] = Symbol.C_TILDE;
                     }
                 }
+            } else if (CharKit.equals(arr[i], Character.toLowerCase(Symbol.C_X), true)) {
+                // x转换为*
+                arr[i] = Symbol.C_STAR;
             }
         }
         if (arr[0] == Symbol.C_TILDE && (arr.length > 1 && arr[1] == Symbol.C_PARENTHESE_LEFT)) {

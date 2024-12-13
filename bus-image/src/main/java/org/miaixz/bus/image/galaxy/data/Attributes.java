@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.time.*;
+import java.time.temporal.Temporal;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -1310,6 +1312,124 @@ public class Attributes implements Serializable {
         }
     }
 
+    /**
+     * Gets the most accurate temporal type for the given tag.
+     * <p>
+     * An instance of {@link ZonedDateTime} will be returned for:
+     * <ul>
+     * <li>A tag with {@link VR#DT} which has a timezone offset defined within its value.</li>
+     * <li>A tag with {@link VR#DT} without a timezone offset within its value, but a {@link Tag#TimezoneOffsetFromUTC}
+     * is defined within this or any parent Attributes, or a default TimeZone (see
+     * {@link #setDefaultTimeZone(TimeZone)}) has been set for this or any parent.</li>
+     * <li>A tag with {@link VR#DA} or {@link VR#TM}, in case the corresponding {@link VR#TM} or {@link VR#DA} tag value
+     * is also available (e.g. given {@link Tag#StudyDate}, also {@link Tag#StudyTime} is available), and
+     * {@link Tag#TimezoneOffsetFromUTC} or a default TimeZone is available.</li>
+     * </ul>
+     *
+     * If no timezone information is available, then an instance of {@link LocalDateTime} will be returned for
+     * {@link VR#DT} tags, and for {@link VR#DA} or {@link VR#TM} tags if the corresponding {@link VR#TM} or
+     * {@link VR#DA} tag value is also available.
+     *
+     * If the corresponding {@link VR#TM} or {@link VR#DA} tag value is not available then an instance of
+     * {@link LocalDate} (for VR#DA tags) or {@link LocalTime} (for VR#TM tags) will be returned.
+     *
+     * In case the value for the given tag itself is not set (or empty), then <code>null</code> (or the supplied
+     * <code>defVal</code> for other variants of this method) will be returned.
+     *
+     * @param tag tag number
+     * @return an instance of {@link ZonedDateTime}, {@link LocalDateTime}, {@link LocalDate} or {@link LocalTime}, or
+     *         null
+     */
+    public Temporal getTemporal(int tag) {
+        return getTemporal(null, tag, null, 0, null, new DatePrecision());
+    }
+
+    /**
+     * See {@link #getTemporal(int)}.
+     *
+     * @param privateCreator private creator
+     * @param tag            tag number
+     * @param vr             VR
+     * @param valueIndex     value index
+     * @param defVal         default value, if the tag value is not set or empty
+     * @param precision      used as a return value: contains information about the contained date/time precision and
+     *                       whether the tag value itself contained timezone information (only for {@link VR#DT} tags).
+     * @return an instance of {@link ZonedDateTime}, {@link LocalDateTime}, {@link LocalDate} or {@link LocalTime}, or
+     *         defVal
+     */
+    public Temporal getTemporal(String privateCreator, int tag, VR vr, int valueIndex, Temporal defVal,
+            DatePrecision precision) {
+        int index = indexOf(privateCreator, tag);
+        if (index < 0)
+            return defVal;
+
+        Object value = values[index];
+        if (value == Value.NULL)
+            return defVal;
+
+        vr = updateVR(index, vr);
+
+        if (!vr.isTemporalType()) {
+            LOG.info("Attempt to access {} {} as date/time", TagUtils.toString(tag), vr);
+            return defVal;
+        }
+
+        value = decodeStringValue(index);
+        if (value == Value.NULL) {
+            return defVal;
+        }
+
+        Temporal t;
+        try {
+            t = vr.toTemporal(value, valueIndex, precision);
+        } catch (IllegalArgumentException e) {
+            LOG.info("Invalid value of {} {}", TagUtils.toString(tag), vr);
+            return defVal;
+        }
+
+        if (t == null) {
+            return defVal;
+        } else if (t instanceof OffsetDateTime) {
+            return ((OffsetDateTime) t).toZonedDateTime();
+        } else if (t instanceof LocalDateTime) {
+            ZoneId zoneId = getZoneId();
+            if (zoneId != null) {
+                return ((LocalDateTime) t).atZone(zoneId);
+            }
+        }
+
+        return t;
+    }
+
+    private LocalTime getLocalTime(String privateCreator, int tag, VR vr, int valueIndex, DatePrecision precision) {
+        int index = indexOf(privateCreator, tag);
+        if (index < 0)
+            return null;
+
+        Object value = values[index];
+        if (value == Value.NULL)
+            return null;
+
+        vr = updateVR(index, vr);
+
+        if (vr != VR.TM) {
+            Logger.info("Attempt to access {} {} as local time", Tag.toString(tag), vr);
+            return null;
+        }
+
+        value = decodeStringValue(index);
+        if (value == Value.NULL) {
+            return null;
+        }
+
+        try {
+            return (LocalTime) vr.toTemporal(value, valueIndex, precision);
+        } catch (IllegalArgumentException e) {
+            Logger.info("Invalid value of {} {}", Tag.toString(tag), vr);
+            return null;
+        }
+    }
+
     public Date getDate(int tag) {
         return getDate(null, tag, null, 0, null, new DatePrecision());
     }
@@ -1412,11 +1532,11 @@ public class Attributes implements Serializable {
             Logger.info("Attempt to access {} {} as date", Tag.toString(tag), vr);
             return defVal;
         }
-        try {
-            value = decodeStringValue(index);
-            if (value == Value.NULL)
-                return defVal;
+        value = decodeStringValue(index);
+        if (value == Value.NULL)
+            return defVal;
 
+        try {
             return vr.toDate(value, getTimeZone(), valueIndex, false, defVal, precision);
         } catch (IllegalArgumentException e) {
             Logger.info("Invalid value of {} {}", Tag.toString(tag), vr);
@@ -1505,11 +1625,11 @@ public class Attributes implements Serializable {
             Logger.info("Attempt to access {} {} as date", Tag.toString(tag), vr);
             return Normal.EMPTY_DATE_OBJECT_ARRAY;
         }
-        try {
-            value = decodeStringValue(index);
-            if (value == Value.NULL)
-                return Normal.EMPTY_DATE_OBJECT_ARRAY;
+        value = decodeStringValue(index);
+        if (value == Value.NULL)
+            return Normal.EMPTY_DATE_OBJECT_ARRAY;
 
+        try {
             return vr.toDates(value, getTimeZone(), false, precisions);
         } catch (IllegalArgumentException e) {
             Logger.info("Invalid value of {} {}", Tag.toString(tag), vr);
@@ -1721,6 +1841,39 @@ public class Attributes implements Serializable {
             tz = getDefaultTimeZone();
 
         return tz;
+    }
+
+    public ZoneId getDefaultZoneId() {
+        if (defaultTimeZone != null)
+            return defaultTimeZone.toZoneId();
+
+        if (parent != null)
+            return parent.getDefaultZoneId();
+
+        return null;
+    }
+
+    public ZoneId getZoneId() {
+        if (tz != null)
+            return tz.toZoneId();
+
+        if (containsTimezoneOffsetFromUTC) {
+            String s = getString(Tag.TimezoneOffsetFromUTC);
+            if (s == null) {
+                return null;
+            }
+            try {
+                tz = Format.timeZone(s);
+            } catch (IllegalArgumentException e) {
+                Logger.info(e.getMessage());
+                return null;
+            }
+            return tz.toZoneId();
+        } else if (parent != null) {
+            return parent.getZoneId();
+        } else {
+            return getDefaultZoneId();
+        }
     }
 
     /**

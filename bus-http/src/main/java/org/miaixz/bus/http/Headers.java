@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.http;
 
+import java.io.EOFException;
+import java.time.Instant;
+import java.util.*;
+
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.http.metric.CookieJar;
 import org.miaixz.bus.http.secure.Challenge;
-
-import java.io.EOFException;
-import java.time.Instant;
-import java.util.*;
 
 /**
  * 单个HTTP消息的头字段。值是未解释的字符串; 使用{@code Request}和{@code Response}解释头信息 该类维护HTTP消息中的头字段的顺序 这个类从值中删除空白。它从不返回带开头或结尾空白的值

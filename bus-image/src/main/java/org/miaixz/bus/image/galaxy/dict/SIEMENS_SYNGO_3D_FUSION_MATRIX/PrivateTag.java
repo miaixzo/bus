@@ -41,7 +41,9 @@ public class PrivateTag {
     /** (0029,xx09) VR=UI VM=1 Model Series Instance UID */
     public static final int ModelSeriesInstanceUID = 0x00290009;
 
-    /** (0029,xx10) VR=UI VM=1 Matrix Referenced Series Instance UID */
+    /**
+     * (0029,xx10) VR=UI VM=1 Matrix Referenced Series Instance UID
+     */
     public static final int MatrixReferencedSeriesInstanceUID = 0x00290010;
 
 }

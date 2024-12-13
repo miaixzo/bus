@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.http;
 
+import java.io.IOException;
+
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.http.bodys.ResponseBody;
-
-import java.io.IOException;
 
 /**
  * 调用是准备执行的请求。电话可以取消。 由于此对象表示单个请求/响应对(流)，因此不能执行两次.

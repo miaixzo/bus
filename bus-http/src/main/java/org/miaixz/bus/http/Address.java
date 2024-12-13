@@ -27,20 +27,21 @@
 */
 package org.miaixz.bus.http;
 
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.util.List;
+import java.util.Objects;
+
+import javax.net.SocketFactory;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSocketFactory;
+
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.http.accord.Connection;
 import org.miaixz.bus.http.accord.ConnectionSuite;
 import org.miaixz.bus.http.secure.Authenticator;
 import org.miaixz.bus.http.secure.CertificatePinner;
-
-import javax.net.SocketFactory;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSocketFactory;
-import java.net.Proxy;
-import java.net.ProxySelector;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * 到源服务器的连接的规范。对于简单的连接，这是服务器的主机名和端口。如果显式请求了 代理(或显式请求了{@linkplain Proxy#NO_PROXY no proxy})则还包括该代理信息

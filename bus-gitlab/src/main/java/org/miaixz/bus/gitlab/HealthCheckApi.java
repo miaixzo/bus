@@ -27,11 +27,12 @@
 */
 package org.miaixz.bus.gitlab;
 
+import java.io.IOException;
+import java.net.URL;
+
 import org.miaixz.bus.gitlab.models.HealthCheckInfo;
 
 import jakarta.ws.rs.core.Response;
-import java.io.IOException;
-import java.net.URL;
 
 public class HealthCheckApi extends AbstractApi {
 

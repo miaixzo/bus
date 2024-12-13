@@ -126,16 +126,25 @@ public class Project implements Serializable {
     private String squashCommitTemplate;
     private String issueBranchTemplate;
     private String issuesTemplate;
+    @JsonProperty("_links")
+    private Map<String, String> links;
+    @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
+    private Date markedForDeletionOn;
 
     public static final boolean isValid(Project project) {
         return (project != null && project.getId() != null);
     }
 
-    @JsonProperty("_links")
-    private Map<String, String> links;
-
-    @JsonSerialize(using = JacksonJson.DateOnlySerializer.class)
-    private Date markedForDeletionOn;
+    /**
+     * Formats a fully qualified project path based on the provided namespace and project path.
+     *
+     * @param namespace the namespace, either a user name or group name
+     * @param path      the project path
+     * @return a fully qualified project path based on the provided namespace and project path
+     */
+    public static final String getPathWithNammespace(String namespace, String path) {
+        return (namespace.trim() + "/" + path.trim());
+    }
 
     public Integer getApprovalsBeforeMerge() {
         return approvalsBeforeMerge;
@@ -566,17 +575,6 @@ public class Project implements Serializable {
     }
 
     /**
-     * Formats a fully qualified project path based on the provided namespace and project path.
-     *
-     * @param namespace the namespace, either a user name or group name
-     * @param path      the project path
-     * @return a fully qualified project path based on the provided namespace and project path
-     */
-    public static final String getPathWithNammespace(String namespace, String path) {
-        return (namespace.trim() + "/" + path.trim());
-    }
-
-    /**
      * Tags will be removed in API v5
      */
     @Deprecated
@@ -788,6 +786,10 @@ public class Project implements Serializable {
         return buildGitStrategy;
     }
 
+    public void setBuildGitStrategy(BuildGitStrategy buildGitStrategy) {
+        this.buildGitStrategy = buildGitStrategy;
+    }
+
     public String getBuildCoverageRegex() {
         return buildCoverageRegex;
     }
@@ -801,10 +803,6 @@ public class Project implements Serializable {
         return this;
     }
 
-    public void setBuildGitStrategy(BuildGitStrategy buildGitStrategy) {
-        this.buildGitStrategy = buildGitStrategy;
-    }
-
     public Project withBuildGitStrategy(BuildGitStrategy buildGitStrategy) {
         this.buildGitStrategy = buildGitStrategy;
         return this;
@@ -812,6 +810,10 @@ public class Project implements Serializable {
 
     public Status getImportStatus() {
         return importStatus;
+    }
+
+    public void setImportStatus(Status importStatus) {
+        this.importStatus = importStatus;
     }
 
     public String getReadmeUrl() {
@@ -830,12 +832,12 @@ public class Project implements Serializable {
         this.canCreateMergeRequestIn = canCreateMergeRequestIn;
     }
 
-    public void setImportStatus(Status importStatus) {
-        this.importStatus = importStatus;
-    }
-
     public AutoDevopsDeployStrategy getAutoDevopsDeployStrategy() {
         return autoDevopsDeployStrategy;
+    }
+
+    public void setAutoDevopsDeployStrategy(AutoDevopsDeployStrategy autoDevopsDeployStrategy) {
+        this.autoDevopsDeployStrategy = autoDevopsDeployStrategy;
     }
 
     public Integer getCiDefaultGitDepth() {
@@ -883,14 +885,6 @@ public class Project implements Serializable {
         this.autoDevopsEnabled = autoDevopsEnabled;
     }
 
-    public void setAutoDevopsDeployStrategy(AutoDevopsDeployStrategy autoDevopsDeployStrategy) {
-        this.autoDevopsDeployStrategy = autoDevopsDeployStrategy;
-    }
-
-    public void setSuggestionCommitMessage(String suggestionCommitMessage) {
-        this.suggestionCommitMessage = suggestionCommitMessage;
-    }
-
     public Boolean getAutocloseReferencedIssues() {
         return autocloseReferencedIssues;
     }
@@ -916,6 +910,10 @@ public class Project implements Serializable {
         return this.suggestionCommitMessage;
     }
 
+    public void setSuggestionCommitMessage(String suggestionCommitMessage) {
+        this.suggestionCommitMessage = suggestionCommitMessage;
+    }
+
     public Project withSuggestionCommitMessage(String suggestionCommitMessage) {
         this.suggestionCommitMessage = suggestionCommitMessage;
         return this;
@@ -936,6 +934,10 @@ public class Project implements Serializable {
 
     public String getMergeRequestsTemplate() {
         return mergeRequestsTemplate;
+    }
+
+    public void setMergeRequestsTemplate(String mergeRequestsTemplate) {
+        this.mergeRequestsTemplate = mergeRequestsTemplate;
     }
 
     public String getMergeCommitTemplate() {
@@ -960,10 +962,6 @@ public class Project implements Serializable {
 
     public void setIssueBranchTemplate(String issueBranchTemplate) {
         this.issueBranchTemplate = issueBranchTemplate;
-    }
-
-    public void setMergeRequestsTemplate(String mergeRequestsTemplate) {
-        this.mergeRequestsTemplate = mergeRequestsTemplate;
     }
 
     public String getIssuesTemplate() {

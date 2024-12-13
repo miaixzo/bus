@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.http.plugin.httpv;
 
+import java.io.IOException;
+import java.util.concurrent.Executor;
+
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.sink.AssignSink;
 import org.miaixz.bus.core.io.sink.BufferSink;
@@ -34,9 +37,6 @@ import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Callback;
 import org.miaixz.bus.http.bodys.RequestBody;
-
-import java.io.IOException;
-import java.util.concurrent.Executor;
 
 /**
  * @author Kimi Liu

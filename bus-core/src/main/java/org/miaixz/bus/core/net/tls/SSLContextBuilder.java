@@ -27,15 +27,16 @@
 */
 package org.miaixz.bus.core.net.tls;
 
+import java.security.*;
+import java.util.Arrays;
+
+import javax.net.ssl.*;
+
 import org.miaixz.bus.core.Builder;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import javax.net.ssl.*;
-import java.security.*;
-import java.util.Arrays;
 
 /**
  * {@link SSLContext}构建器，可以自定义：

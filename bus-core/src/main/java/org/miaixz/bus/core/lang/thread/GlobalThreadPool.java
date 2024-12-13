@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.lang.thread;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
-
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+
+import org.miaixz.bus.core.lang.exception.InternalException;
 
 /**
  * 全局公共线程池 此线程池是一个无限线程池，即加入的线程不等待任何线程，直接执行

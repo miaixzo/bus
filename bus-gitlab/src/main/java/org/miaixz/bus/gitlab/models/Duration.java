@@ -79,15 +79,6 @@ public class Duration implements Serializable {
     }
 
     /**
-     * Get the number of seconds this duration represents.
-     *
-     * @return the number of seconds this duration represents
-     */
-    public int getSeconds() {
-        return (seconds);
-    }
-
-    /**
      * Create a human readable duration string from seconds.
      *
      * @param durationSeconds the total number of seconds in the duration
@@ -176,15 +167,6 @@ public class Duration implements Serializable {
     }
 
     /**
-     * Set the number of seconds this duration represents.
-     *
-     * @param seconds the number of seconds this duration represents
-     */
-    public void setSeconds(int seconds) {
-        this.seconds = seconds;
-    }
-
-    /**
      * Parses a human readable duration string and calculates the number of seconds it represents.
      *
      * @param durationString the human readable duration
@@ -240,6 +222,24 @@ public class Duration implements Serializable {
         }
 
         return (-1);
+    }
+
+    /**
+     * Get the number of seconds this duration represents.
+     *
+     * @return the number of seconds this duration represents
+     */
+    public int getSeconds() {
+        return (seconds);
+    }
+
+    /**
+     * Set the number of seconds this duration represents.
+     *
+     * @param seconds the number of seconds this duration represents
+     */
+    public void setSeconds(int seconds) {
+        this.seconds = seconds;
     }
 
     @JsonValue

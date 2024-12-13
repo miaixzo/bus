@@ -101,10 +101,14 @@ public class PrivateTag {
     /** (0019,xx90) VR=LO VM=1 Sensitivity Correction Label */
     public static final int SensitivityCorrectionLabel = 0x00190090;
 
-    /** (0019,xx91) VR=DS VM=6 Saturation Phase Encoding Vector Coronal Component */
+    /**
+     * (0019,xx91) VR=DS VM=6 Saturation Phase Encoding Vector Coronal Component
+     */
     public static final int SaturationPhaseEncodingVectorCoronalComponent = 0x00190091;
 
-    /** (0019,xx92) VR=DS VM=6 Saturation Readout Vector Coronal Component */
+    /**
+     * (0019,xx92) VR=DS VM=6 Saturation Readout Vector Coronal Component
+     */
     public static final int SaturationReadoutVectorCoronalComponent = 0x00190092;
 
     /** (0019,xxA0) VR=IS VM=1 RF Watchdog Mask */

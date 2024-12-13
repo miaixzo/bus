@@ -227,8 +227,7 @@ public class DateTime extends Date {
      * @see Fields
      */
     public DateTime(final CharSequence date, final String format) {
-        this(FormatManager.getInstance().isCustomFormat(format) ? FormatManager.getInstance().parse(date, format)
-                : parse(date, DateKit.newSimpleFormat(format)));
+        this(parse(date, format));
     }
 
     /**
@@ -260,7 +259,7 @@ public class DateTime extends Date {
      * @see Fields
      */
     public DateTime(final CharSequence date, final PositionDateParser dateParser) {
-        this(date, dateParser, Keys.getBoolean(Keys.DATE_LENIENT, true));
+        this(date, dateParser, Keys.getBoolean(Keys.DATE_LENIENT, false));
     }
 
     /**
@@ -343,6 +342,19 @@ public class DateTime extends Date {
      * 转换字符串为Date
      *
      * @param date   日期字符串
+     * @param format 格式字符串
+     * @return {@link Date}
+     */
+    private static Date parse(final CharSequence date, final String format) {
+        final FormatManager formatManager = FormatManager.getInstance();
+        return formatManager.isCustomFormat(format) ? formatManager.parse(date, format)
+                : parse(date, Formatter.newSimpleFormat(format));
+    }
+
+    /**
+     * 转换字符串为Date
+     *
+     * @param date   日期字符串
      * @param format {@link SimpleDateFormat}
      * @return {@link Date}
      */
@@ -371,14 +383,7 @@ public class DateTime extends Date {
      */
     private static java.util.Calendar parse(final CharSequence date, final PositionDateParser parser,
             final boolean lenient) {
-        Assert.notNull(parser, "Parser or DateFromat must be not null !");
-        Assert.notBlank(date, "Date String must be not blank !");
-
         final java.util.Calendar calendar = Calendar.parse(date, lenient, parser);
-        if (null == calendar) {
-            throw new DateException("Parse [{}] with format [{}] error!", date, parser.getPattern());
-        }
-
         calendar.setFirstDayOfWeek(Week.MONDAY.getCode());
         return calendar;
     }
@@ -1034,7 +1039,7 @@ public class DateTime extends Date {
      */
     public String toString(final TimeZone timeZone) {
         if (null != timeZone) {
-            return toString(DateKit.newSimpleFormat(Fields.NORM_DATETIME, null, timeZone));
+            return toString(Formatter.newSimpleFormat(Fields.NORM_DATETIME, null, timeZone));
         }
         return toString(Formatter.NORM_DATETIME_FORMAT);
     }
@@ -1046,7 +1051,7 @@ public class DateTime extends Date {
      */
     public String toDateString() {
         if (null != this.timeZone) {
-            return toString(DateKit.newSimpleFormat(Fields.NORM_DATE, null, timeZone));
+            return toString(Formatter.newSimpleFormat(Fields.NORM_DATE, null, timeZone));
         }
         return toString(Formatter.NORM_DATE_FORMAT);
     }
@@ -1058,7 +1063,7 @@ public class DateTime extends Date {
      */
     public String toTimeString() {
         if (null != this.timeZone) {
-            return toString(DateKit.newSimpleFormat(Fields.NORM_TIME, null, timeZone));
+            return toString(Formatter.newSimpleFormat(Fields.NORM_TIME, null, timeZone));
         }
         return toString(Formatter.NORM_TIME_FORMAT);
     }
@@ -1071,7 +1076,7 @@ public class DateTime extends Date {
      */
     public String toString(final String format) {
         if (null != this.timeZone) {
-            return toString(DateKit.newSimpleFormat(format, null, timeZone));
+            return toString(Formatter.newSimpleFormat(format, null, timeZone));
         }
         return toString(FormatBuilder.getInstance(format));
     }

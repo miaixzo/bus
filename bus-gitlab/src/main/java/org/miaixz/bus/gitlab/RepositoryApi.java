@@ -58,6 +58,22 @@ public class RepositoryApi extends AbstractApi {
     }
 
     /**
+     * Get the filename from the "Content-Disposition" header of a JAX-RS response.
+     *
+     * @param response the JAX-RS Response instance to get the "Content-Disposition" header filename from
+     * @return the filename from the "Content-Disposition" header of a JAX-RS response, or null if the
+     *         "Content-Disposition" header is not present in the response
+     */
+    public static String getFilenameFromContentDisposition(Response response) {
+
+        String disposition = response.getHeaderString("Content-Disposition");
+        if (disposition == null || disposition.trim().length() == 0)
+            return (null);
+
+        return (disposition.replaceFirst("(?i)^.*filename=\"([^\"]+)\".*$", "$1"));
+    }
+
+    /**
      * Get a list of repository branches from a project, sorted by name alphabetically.
      *
      * <pre>
@@ -917,22 +933,6 @@ public class RepositoryApi extends AbstractApi {
     public void generateChangelog(Object projectIdOrPath, ChangelogPayload payload) throws GitLabApiException {
         post(Response.Status.OK, payload.getFormData(), "projects", getProjectIdOrPath(projectIdOrPath), "repository",
                 "changelog");
-    }
-
-    /**
-     * Get the filename from the "Content-Disposition" header of a JAX-RS response.
-     *
-     * @param response the JAX-RS Response instance to get the "Content-Disposition" header filename from
-     * @return the filename from the "Content-Disposition" header of a JAX-RS response, or null if the
-     *         "Content-Disposition" header is not present in the response
-     */
-    public static String getFilenameFromContentDisposition(Response response) {
-
-        String disposition = response.getHeaderString("Content-Disposition");
-        if (disposition == null || disposition.trim().length() == 0)
-            return (null);
-
-        return (disposition.replaceFirst("(?i)^.*filename=\"([^\"]+)\".*$", "$1"));
     }
 
 }

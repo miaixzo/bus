@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.xyz.BooleanKit;
-
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.miaixz.bus.core.xyz.BooleanKit;
 
 /**
  * {@link AtomicBoolean}转换器
@@ -39,20 +39,19 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class AtomicBooleanConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = -1L;
-
     /**
      * 单例
      */
     public static final AtomicBooleanConverter INSTANCE = new AtomicBooleanConverter();
+    private static final long serialVersionUID = -1L;
 
     @Override
     protected AtomicBoolean convertInternal(final Class<?> targetClass, final Object value) {
         if (value instanceof Boolean) {
             return new AtomicBoolean((Boolean) value);
         }
-        final String valueStr = convertToString(value);
-        return new AtomicBoolean(BooleanKit.toBoolean(valueStr));
+        final String values = convertToString(value);
+        return new AtomicBoolean(BooleanKit.toBoolean(values));
     }
 
 }

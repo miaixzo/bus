@@ -27,6 +27,13 @@
 */
 package org.miaixz.bus.extra.compress.archiver;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.channels.SeekableByteChannel;
+import java.util.function.Function;
+import java.util.function.Predicate;
+
 import org.apache.commons.compress.archivers.sevenz.SevenZOutputFile;
 import org.apache.commons.compress.utils.SeekableInMemoryByteChannel;
 import org.miaixz.bus.core.lang.Symbol;
@@ -35,13 +42,6 @@ import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.channels.SeekableByteChannel;
-import java.util.function.Function;
-import java.util.function.Predicate;
 
 /**
  * 7zip格式的归档封装

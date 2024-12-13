@@ -155,7 +155,9 @@ public class PrivateTag {
     /** (0045,xx53) VR=FD VM=1 WideCone Corner Blending Radius */
     public static final int WideConeCornerBlendingRadius = 0x00450053;
 
-    /** (0045,xx54) VR=FD VM=1 WideCone Corner Blending Radius Offset */
+    /**
+     * (0045,xx54) VR=FD VM=1 WideCone Corner Blending Radius Offset
+     */
     public static final int WideConeCornerBlendingRadiusOffset = 0x00450054;
 
     /** (0045,xx55) VR=CS VM=1 Internal Recon Algorithm */

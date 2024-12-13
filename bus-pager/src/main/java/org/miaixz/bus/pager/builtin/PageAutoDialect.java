@@ -108,12 +108,14 @@ public class PageAutoDialect {
 
         // openGauss数据库
         registerDialectAlias("opengauss", PostgreSql.class);
+        registerDialectAlias("sundb", Oracle.class);
 
         // 注册 AutoDialect
         // 想要实现和以前版本相同的效果时，可以配置 autoDialectClass=old
         registerAutoDialectAlias("old", Early.class);
         registerAutoDialectAlias("hikari", Hikari.class);
         registerAutoDialectAlias("druid", Druid.class);
+
         // 不配置时，默认使用 Defalut
         registerAutoDialectAlias("default", Defalut.class);
     }

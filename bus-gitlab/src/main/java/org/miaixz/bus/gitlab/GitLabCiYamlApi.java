@@ -28,12 +28,13 @@
 package org.miaixz.bus.gitlab;
 
 import java.util.List;
-import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.core.Response.Status;
 
 import org.miaixz.bus.gitlab.models.GitLabCiTemplate;
 import org.miaixz.bus.gitlab.models.GitLabCiTemplateElement;
+
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 /**
  * This class provides an entry point to all the GitLab CI YAML API calls.

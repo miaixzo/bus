@@ -27,6 +27,15 @@
 */
 package org.miaixz.bus.core.io.file;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.io.Serializable;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.util.Stack;
+import java.util.concurrent.*;
+
 import org.miaixz.bus.core.center.date.culture.en.Units;
 import org.miaixz.bus.core.center.function.ConsumerX;
 import org.miaixz.bus.core.io.watch.SimpleWatcher;
@@ -39,15 +48,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.WatchKit;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.io.Serializable;
-import java.nio.file.WatchEvent;
-import java.nio.file.WatchKey;
-import java.util.Stack;
-import java.util.concurrent.*;
 
 /**
  * 文件内容跟随器，实现类似Linux下"tail -f"命令功能

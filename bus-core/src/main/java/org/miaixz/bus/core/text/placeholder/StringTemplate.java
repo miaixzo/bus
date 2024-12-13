@@ -294,19 +294,19 @@ public abstract class StringTemplate {
      */
     public String formatRawBySegment(final Function<AbstractSegment, String> valueSupplier) {
         // 保存 参数转为字符串的结果
-        final List<String> values = new ArrayList<>(placeholderSegments.size());
+        final List<String> list = new ArrayList<>(placeholderSegments.size());
         // 先统计 固定文本 + 需要格式化的参数的字符串 的总字符数量
         int totalTextLength = this.fixedTextTotalLength;
 
-        String valueStr;
+        String values;
         for (final AbstractSegment segment : placeholderSegments) {
             // 根据 占位符 返回 需要序列化的值
-            valueStr = valueSupplier.apply(segment);
-            if (valueStr == null) {
-                valueStr = "null";
+            values = valueSupplier.apply(segment);
+            if (values == null) {
+                values = "null";
             }
-            totalTextLength += valueStr.length();
-            values.add(valueStr);
+            totalTextLength += values.length();
+            list.add(values);
         }
 
         final StringBuilder sb = new StringBuilder(totalTextLength);
@@ -318,7 +318,7 @@ public abstract class StringTemplate {
             }
             // 当前是 占位符，直接 替换为 参数值
             else {
-                sb.append(values.get(index++));
+                sb.append(list.get(index++));
             }
         }
         return sb.toString();

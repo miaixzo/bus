@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.crypto.center;
 
+import javax.crypto.spec.IvParameterSpec;
+
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.crypto.Keeper;
 import org.miaixz.bus.crypto.builtin.symmetric.Crypto;
-
-import javax.crypto.spec.IvParameterSpec;
 
 /**
  * ChaCha20算法实现 ChaCha系列流密码，作为salsa密码的改良版，具有更强的抵抗密码分析攻击的特性，“20”表示该算法有20轮的加密计算。

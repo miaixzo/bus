@@ -27,13 +27,6 @@
 */
 package org.miaixz.bus.http.socket;
 
-import org.miaixz.bus.core.net.tls.TlsVersion;
-import org.miaixz.bus.http.Builder;
-import org.miaixz.bus.http.accord.ConnectionSuite;
-import org.miaixz.bus.http.secure.CipherSuite;
-
-import javax.net.ssl.SSLPeerUnverifiedException;
-import javax.net.ssl.SSLSession;
 import java.io.IOException;
 import java.security.Principal;
 import java.security.cert.Certificate;
@@ -41,6 +34,14 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import javax.net.ssl.SSLPeerUnverifiedException;
+import javax.net.ssl.SSLSession;
+
+import org.miaixz.bus.core.net.tls.TlsVersion;
+import org.miaixz.bus.http.Builder;
+import org.miaixz.bus.http.accord.ConnectionSuite;
+import org.miaixz.bus.http.secure.CipherSuite;
 
 /**
  * TLS握手的记录。对于HTTPS客户机，客户机是local，远程服务器 此值对象描述完成的握手。使用{@link ConnectionSuite}设置新的握手策略

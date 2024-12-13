@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.http.plugin.httpv;
 
-import org.miaixz.bus.http.Callback;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.Executor;
+
+import org.miaixz.bus.http.Callback;
 
 /**
  * @author Kimi Liu

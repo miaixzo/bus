@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.http;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 
 /**
  * Cookie's相关工具支持 这个类不支持cookies上的附加属性，比如Chromium的Priority=HIGH extension

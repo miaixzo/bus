@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.lang.annotation.resolve;
 
-import org.miaixz.bus.core.lang.annotation.Alias;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+
+import org.miaixz.bus.core.lang.annotation.Alias;
 
 /**
  * 用于增强注解的包装器

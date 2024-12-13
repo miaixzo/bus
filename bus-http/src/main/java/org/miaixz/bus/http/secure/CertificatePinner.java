@@ -27,15 +27,16 @@
 */
 package org.miaixz.bus.http.secure;
 
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
+import java.util.*;
+
+import javax.net.ssl.SSLPeerUnverifiedException;
+
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.http.UnoUrl;
-
-import javax.net.ssl.SSLPeerUnverifiedException;
-import java.security.cert.Certificate;
-import java.security.cert.X509Certificate;
-import java.util.*;
 
 /**
  * 限制哪些证书受信任。将证书固定起来可以防御对证书颁发机构的攻击。 它还可以防止通过应用程序用户知道或不知道的中间人证书颁发机构进行连接 固定证书限制了服务器团队更新其TLS证书的能力。通过固定证书，

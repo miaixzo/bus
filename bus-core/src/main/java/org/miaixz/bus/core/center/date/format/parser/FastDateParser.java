@@ -277,16 +277,11 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     @Override
-    public Date parse(final CharSequence source, final ParsePosition pos) {
-        // timing tests indicate getting new instance is 19% faster than cloning
-        final Calendar cal = Calendar.getInstance(timeZone, locale);
-        cal.clear();
+    public boolean parse(final CharSequence source, ParsePosition pos, final Calendar calendar) {
+        if (null == pos) {
+            pos = new ParsePosition(0);
+        }
 
-        return parse(source, pos, cal) ? cal.getTime() : null;
-    }
-
-    @Override
-    public boolean parse(final CharSequence source, final ParsePosition pos, final Calendar calendar) {
         final ListIterator<StrategyAndWidth> lt = list.listIterator();
         while (lt.hasNext()) {
             final StrategyAndWidth strategyAndWidth = lt.next();
@@ -392,6 +387,22 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
     }
 
     /**
+     * 单个日期字段的分析策略
+     */
+    interface Strategy {
+        boolean parse(FastDateParser parser, Calendar calendar, CharSequence source, ParsePosition pos, int maxWidth);
+
+        /**
+         * 是否为数字，默认{@code false}
+         *
+         * @return {@code true}表示为数字
+         */
+        default boolean isNumber() {
+            return false;
+        }
+    }
+
+    /**
      * Holds strategy and field width
      */
     private static class StrategyAndWidth {
@@ -410,22 +421,6 @@ public class FastDateParser extends SimpleDatePrinter implements PositionDatePar
             final Strategy nextStrategy = lt.next().strategy;
             lt.previous();
             return nextStrategy.isNumber() ? width : 0;
-        }
-    }
-
-    /**
-     * 单个日期字段的分析策略
-     */
-    interface Strategy {
-        boolean parse(FastDateParser parser, Calendar calendar, CharSequence source, ParsePosition pos, int maxWidth);
-
-        /**
-         * 是否为数字，默认{@code false}
-         *
-         * @return {@code true}表示为数字
-         */
-        default boolean isNumber() {
-            return false;
         }
     }
 

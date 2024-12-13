@@ -27,18 +27,6 @@
 */
 package org.miaixz.bus.http;
 
-import org.miaixz.bus.core.center.regex.Pattern;
-import org.miaixz.bus.core.io.ByteString;
-import org.miaixz.bus.core.io.SegmentBuffer;
-import org.miaixz.bus.core.io.buffer.Buffer;
-import org.miaixz.bus.core.io.source.BufferSource;
-import org.miaixz.bus.core.io.source.Source;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.http.bodys.ResponseBody;
-import org.miaixz.bus.http.metric.Internal;
-import org.miaixz.bus.http.metric.http.Http2Header;
-
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.lang.reflect.InvocationTargetException;
@@ -53,6 +41,18 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+
+import org.miaixz.bus.core.center.regex.Pattern;
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.io.SegmentBuffer;
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.io.source.BufferSource;
+import org.miaixz.bus.core.io.source.Source;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.http.bodys.ResponseBody;
+import org.miaixz.bus.http.metric.Internal;
+import org.miaixz.bus.http.metric.http.Http2Header;
 
 /**
  * 实用方法工具

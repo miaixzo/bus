@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.http.plugin.httpz;
 
-import org.miaixz.bus.core.xyz.BeanKit;
-import org.miaixz.bus.http.Httpd;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import org.miaixz.bus.core.xyz.BeanKit;
+import org.miaixz.bus.http.Httpd;
 
 /**
  * 请求参数构造器

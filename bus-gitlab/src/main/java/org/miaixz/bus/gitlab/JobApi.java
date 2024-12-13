@@ -35,14 +35,16 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.gitlab.models.ArtifactsFile;
+import org.miaixz.bus.gitlab.models.Job;
+import org.miaixz.bus.gitlab.models.JobAttributes;
+
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
-import org.miaixz.bus.gitlab.models.ArtifactsFile;
-import org.miaixz.bus.gitlab.models.Job;
-import org.miaixz.bus.gitlab.models.JobAttributes;
 
 /**
  * This class provides an entry point to all the GitLab API job calls.

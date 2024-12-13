@@ -47,7 +47,9 @@ public class PrivateTag {
     /** (2121,xx04) VR=FL VM=1 Calibration Object S Dev */
     public static final int CalibrationObjectSDev = 0x21210004;
 
-    /** (2121,xx05) VR=FL VM=1 Calibration Horizontal Pixel Spacing */
+    /**
+     * (2121,xx05) VR=FL VM=1 Calibration Horizontal Pixel Spacing
+     */
     public static final int CalibrationHorizontalPixelSpacing = 0x21210005;
 
     /** (2121,xx06) VR=FL VM=1 Calibration Vertical Pixel Spacing */

@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.http;
 
+import javax.net.ssl.X509TrustManager;
+
 import org.miaixz.bus.core.net.tls.SSLContextBuilder;
 import org.miaixz.bus.http.plugin.httpz.GetBuilder;
 import org.miaixz.bus.http.plugin.httpz.HttpBuilder;
 import org.miaixz.bus.http.plugin.httpz.PostBuilder;
 import org.miaixz.bus.http.plugin.httpz.PutBuilder;
-
-import javax.net.ssl.X509TrustManager;
 
 /**
  * 发送HTTP请求辅助类

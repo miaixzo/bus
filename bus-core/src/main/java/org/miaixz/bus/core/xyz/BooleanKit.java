@@ -110,12 +110,12 @@ public class BooleanKit {
      * 该字符串 是否在 {@link #TRUE_SET} 中，存在则为 {@code true}，否则为 {@code false}
      * </p>
      *
-     * @param valueStr 字符串，不区分大小写，前后可以有空格 {@link String#trim()}
+     * @param values 字符串，不区分大小写，前后可以有空格 {@link String#trim()}
      * @return boolean值
      */
-    public static boolean toBoolean(final String valueStr) {
-        if (StringKit.isNotBlank(valueStr)) {
-            return TRUE_SET.contains(valueStr.trim().toLowerCase());
+    public static boolean toBoolean(final String values) {
+        if (StringKit.isNotBlank(values)) {
+            return TRUE_SET.contains(values.trim().toLowerCase());
         }
         return false;
     }
@@ -124,15 +124,15 @@ public class BooleanKit {
      * 转换字符串为Boolean值 如果字符串在 {@link #TRUE_SET} 中，返回 {@link Boolean#TRUE} 如果字符串在 {@link #FALSE_SET} 中，返回
      * {@link Boolean#FALSE} 其他情况返回{@code null}
      *
-     * @param valueStr 字符串，不区分大小写，前后可以有空格 {@link String#trim()}
+     * @param values 字符串，不区分大小写，前后可以有空格 {@link String#trim()}
      * @return the boolean
      */
-    public static Boolean toBooleanObject(String valueStr) {
-        if (StringKit.isNotBlank(valueStr)) {
-            valueStr = valueStr.trim().toLowerCase();
-            if (TRUE_SET.contains(valueStr)) {
+    public static Boolean toBooleanObject(String values) {
+        if (StringKit.isNotBlank(values)) {
+            values = values.trim().toLowerCase();
+            if (TRUE_SET.contains(values)) {
                 return Boolean.TRUE;
-            } else if (FALSE_SET.contains(valueStr)) {
+            } else if (FALSE_SET.contains(values)) {
                 return Boolean.FALSE;
             }
         }

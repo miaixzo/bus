@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core.lang.annotation.resolve;
 
-import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.xyz.AnnoKit;
-import org.miaixz.bus.core.xyz.ClassKit;
-import org.miaixz.bus.core.xyz.MethodKit;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Objects;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.core.text.CharsBacker;
+import org.miaixz.bus.core.xyz.AnnoKit;
+import org.miaixz.bus.core.xyz.ClassKit;
+import org.miaixz.bus.core.xyz.MethodKit;
 
 /**
  * {@link AnnotationMapping}的基本实现，仅仅是简单包装了注解对象

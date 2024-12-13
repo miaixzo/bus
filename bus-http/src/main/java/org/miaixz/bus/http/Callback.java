@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.http;
 
-import org.miaixz.bus.http.bodys.ResponseBody;
-
 import java.io.IOException;
+
+import org.miaixz.bus.http.bodys.ResponseBody;
 
 /**
  * 异步回调信息

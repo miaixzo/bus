@@ -487,26 +487,25 @@ public class TomlReader {
             else
                 sb.append(c);
         }
-        final String valueStr = sb.toString();
+        final String values = sb.toString();
         try {
             if (maybeInteger) {
-                if (valueStr.length() < 10)
-                    return Integer.parseInt(valueStr);
-                return Long.parseLong(valueStr);
+                if (values.length() < 10)
+                    return Integer.parseInt(values);
+                return Long.parseLong(values);
             }
 
             if (maybeDouble)
-                return Double.parseDouble(valueStr);
+                return Double.parseDouble(values);
 
             if (maybeDate)
-                return Toml.DATE_FORMATTER.parseBest(valueStr, ZonedDateTime::from, LocalDateTime::from,
-                        LocalDate::from);
+                return Toml.DATE_FORMATTER.parseBest(values, ZonedDateTime::from, LocalDateTime::from, LocalDate::from);
 
         } catch (final Exception ex) {
-            throw new InternalException("Invalid value: \"" + valueStr + "\" at line " + line, ex);
+            throw new InternalException("Invalid value: \"" + values + "\" at line " + line, ex);
         }
 
-        throw new InternalException("Invalid value: \"" + valueStr + "\" at line " + line);
+        throw new InternalException("Invalid value: \"" + values + "\" at line " + line);
     }
 
     private String nextBareKey(final char... allowedEnds) {

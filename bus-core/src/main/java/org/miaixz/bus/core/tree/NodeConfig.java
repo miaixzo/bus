@@ -37,12 +37,11 @@ import java.io.Serializable;
  */
 public class NodeConfig implements Serializable {
 
-    private static final long serialVersionUID = -1L;
-
     /**
      * 默认属性配置对象
      */
     public static final NodeConfig DEFAULT_CONFIG = new NodeConfig();
+    private static final long serialVersionUID = -1L;
     /**
      * 属性名配置字段
      */

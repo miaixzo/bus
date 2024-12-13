@@ -172,8 +172,7 @@ public class Pattern {
     /**
      * UUID
      */
-    public static final java.util.regex.Pattern UUID_PATTERN = java.util.regex.Pattern.compile(Regex.UUID,
-            java.util.regex.Pattern.CASE_INSENSITIVE);
+    public static final java.util.regex.Pattern UUID_PATTERN = java.util.regex.Pattern.compile(Regex.UUID);
     /**
      * 不带横线的UUID
      */
@@ -182,8 +181,8 @@ public class Pattern {
     /**
      * MAC地址正则
      */
-    public static final java.util.regex.Pattern MAC_ADDRESS_PATTERN = java.util.regex.Pattern.compile(Regex.MAC_ADDRESS,
-            java.util.regex.Pattern.CASE_INSENSITIVE);
+    public static final java.util.regex.Pattern MAC_ADDRESS_PATTERN = java.util.regex.Pattern
+            .compile(Regex.MAC_ADDRESS);
     /**
      * 16进制字符串
      */

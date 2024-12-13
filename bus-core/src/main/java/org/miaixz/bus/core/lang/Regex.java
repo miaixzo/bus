@@ -167,15 +167,11 @@ public class Regex {
     /**
      * UUID
      */
-    public static final String UUID = "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$";
+    public static final String UUID = "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$";
     /**
      * 不带横线的UUID
      */
     public static final String UUID_SIMPLE = "^[0-9a-fA-F]{32}$";
-    /**
-     * MAC地址正则
-     */
-    public static final String MAC_ADDRESS = "((?:[a-fA-F0-9]{1,2}[:-]){5}[a-fA-F0-9]{1,2})|0x(\\d{12}).+ETHER";
     /**
      * 16进制字符串
      */
@@ -190,10 +186,9 @@ public class Regex {
     public static final String PLATE_NUMBER = "^(([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z](([0-9]{5}[ABCDEFGHJK])|([ABCDEFGHJK]([A-HJ-NP-Z0-9])[0-9]{4})))|"
             + "([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领]\\d{3}\\d{1,3}[领])|"
             + "([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z][A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳使领]))$";
-
     /**
      * 统一社会信用代码
-     * 
+     *
      * <pre>
      * 第一部分：登记管理部门代码1位 (数字或大写英文字母)
      * 第二部分：机构类别代码1位 (数字或大写英文字母)
@@ -207,7 +202,7 @@ public class Regex {
      * 车架号（车辆识别代号由世界制造厂识别代号(WMI、车辆说明部分(VDS)车辆指示部分(VIS)三部分组成，共 17 位字码。） 别名：车辆识别代号、车辆识别码、车架号、十七位码 标准号：GB 16735-2019
      * 标准官方地址：https://openstd.samr.gov.cn/bzgk/gb/newGbInfo?hcno=E2EBF667F8C032B1EDFD6DF9C1114E02 对年产量大于或等于1 000
      * 辆的完整车辆和/或非完整车辆制造厂：
-     * 
+     *
      * <pre>
      *   第一部分为世界制造厂识别代号(WMI)，3位
      *   第二部分为车辆说明部分(VDS)，     6位
@@ -215,7 +210,7 @@ public class Regex {
      * </pre>
      * <p>
      * 对年产量小于 1 000 辆的完整车辆和/或非完整车辆制造厂：
-     * 
+     *
      * <pre>
      *   第一部分为世界制造广识别代号(WMI),3位;
      *   第二部分为车辆说明部分(VDS)，6位;
@@ -229,21 +224,20 @@ public class Regex {
      * </pre>
      */
     public static final String CAR_VIN = "^[A-HJ-NPR-Z0-9]{8}[X0-9]([A-HJ-NPR-Z0-9]{3}\\d{5}|[A-HJ-NPR-Z0-9]{5}\\d{3})$";
-
     /**
      * 驾驶证 别名：驾驶证档案编号、行驶证编号 eg:430101758218 12位数字字符串 仅限：中国驾驶证档案编号
      */
     public static final String CAR_DRIVING_LICENCE = "^[0-9]{12}$";
     /**
      * 中文姓名 维吾尔族姓名里面的点是 · 输入法中文状态下，键盘左上角数字1前面的那个符号； 错误字符：{@code ．.。．.} 正确维吾尔族姓名：
-     * 
+     *
      * <pre>
      * 霍加阿卜杜拉·麦提喀斯木
      * 玛合萨提别克·哈斯木别克
      * 阿布都热依木江·艾斯卡尔
      * 阿卜杜尼亚孜·毛力尼亚孜
      * </pre>
-     * 
+     *
      * <pre>
      * ----------
      * 错误示例：孟  伟                reason: 有空格
@@ -261,5 +255,9 @@ public class Regex {
      * 汉字范围见：https://www.cnblogs.com/animalize/p/5432864.html
      */
     public static final String CHINESE_NAME = "^[\u3400-\u9FFF·]{2,60}$";
+    /**
+     * MAC地址正则
+     */
+    public static String MAC_ADDRESS = "((?:[a-fA-F0-9]{1,2}[:-]){5}[a-fA-F0-9]{1,2})|((?:[a-fA-F0-9]{1,4}[.]){2}[a-fA-F0-9]{1,4})|[a-fA-F0-9]{12}|0x(\\d{12}).+ETHER";
 
 }

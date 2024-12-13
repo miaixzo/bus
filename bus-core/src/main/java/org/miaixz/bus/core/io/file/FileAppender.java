@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core.io.file;
 
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.thread.lock.Lock;
-import org.miaixz.bus.core.xyz.ObjectKit;
-
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.thread.lock.Lock;
+import org.miaixz.bus.core.xyz.ObjectKit;
 
 /**
  * 文件追加器 持有一个文件，在内存中积累一定量的数据后统一追加到文件 此类只有在写入文件时打开文件，并在写入结束后关闭之。因此此类不需要关闭

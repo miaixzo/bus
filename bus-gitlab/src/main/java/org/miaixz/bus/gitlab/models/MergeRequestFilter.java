@@ -85,6 +85,10 @@ public class MergeRequestFilter implements Serializable {
         return state;
     }
 
+    public void setState(MergeRequestState state) {
+        this.state = state;
+    }
+
     public Long getProjectId() {
         return projectId;
     }
@@ -109,10 +113,6 @@ public class MergeRequestFilter implements Serializable {
     public MergeRequestFilter withIids(List<Long> iids) {
         this.iids = iids;
         return (this);
-    }
-
-    public void setState(MergeRequestState state) {
-        this.state = state;
     }
 
     public MergeRequestFilter withState(MergeRequestState state) {
@@ -148,6 +148,10 @@ public class MergeRequestFilter implements Serializable {
 
     public MergeRequestScope getScope() {
         return scope;
+    }
+
+    public void setScope(MergeRequestScope scope) {
+        this.scope = scope;
     }
 
     public String getMilestone() {
@@ -241,10 +245,6 @@ public class MergeRequestFilter implements Serializable {
         return (this);
     }
 
-    public void setScope(MergeRequestScope scope) {
-        this.scope = scope;
-    }
-
     public MergeRequestFilter withScope(MergeRequestScope scope) {
         this.scope = scope;
         return (this);
@@ -252,6 +252,10 @@ public class MergeRequestFilter implements Serializable {
 
     public MergeRequestSearchIn getIn() {
         return in;
+    }
+
+    public void setIn(MergeRequestSearchIn in) {
+        this.in = in;
     }
 
     public Long getAuthorId() {
@@ -330,10 +334,6 @@ public class MergeRequestFilter implements Serializable {
     public MergeRequestFilter withSearch(String search) {
         this.search = search;
         return (this);
-    }
-
-    public void setIn(MergeRequestSearchIn in) {
-        this.in = in;
     }
 
     public MergeRequestFilter withIn(MergeRequestSearchIn in) {
@@ -507,6 +507,22 @@ public class MergeRequestFilter implements Serializable {
         return (getQueryParams().withParam(Constants.PAGE_PARAM, page).withParam(Constants.PER_PAGE_PARAM, perPage));
     }
 
+    private Map<String, Object> toStringMap(Map<MergeRequestField, Object> map) {
+        if (map == null) {
+            return null;
+        }
+        Map<String, Object> result = new LinkedHashMap<>();
+        for (Map.Entry<MergeRequestField, Object> entry : map.entrySet()) {
+            result.put(entry.getKey().toString(), entry.getValue());
+        }
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return (JacksonJson.toJsonString(this));
+    }
+
     public enum MergeRequestField {
         LABELS, MILESTONE, AUTHOR_ID, AUTHOR_USERNAME, ASSIGNEE_ID, ASSIGNEE_USERNAME, REVIEWER_ID, REVIEWER_USERNAME,
         MY_REACTION_EMOJI;
@@ -528,22 +544,6 @@ public class MergeRequestFilter implements Serializable {
         public String toString() {
             return (enumHelper.toString(this));
         }
-    }
-
-    private Map<String, Object> toStringMap(Map<MergeRequestField, Object> map) {
-        if (map == null) {
-            return null;
-        }
-        Map<String, Object> result = new LinkedHashMap<>();
-        for (Map.Entry<MergeRequestField, Object> entry : map.entrySet()) {
-            result.put(entry.getKey().toString(), entry.getValue());
-        }
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return (JacksonJson.toJsonString(this));
     }
 
 }

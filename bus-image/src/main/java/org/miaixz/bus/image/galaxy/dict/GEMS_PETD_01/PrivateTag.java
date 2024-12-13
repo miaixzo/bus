@@ -950,10 +950,14 @@ public class PrivateTag {
     /** (5005,xx02) VR=UI VM=1 Curve Presentation ID */
     public static final int CurvePresentationID = 0x50050002;
 
-    /** (5005,xx05) VR=SH VM=1 Curve Presentation Compatible Version */
+    /**
+     * (5005,xx05) VR=SH VM=1 Curve Presentation Compatible Version
+     */
     public static final int CurvePresentationCompatibleVersion = 0x50050005;
 
-    /** (5005,xx06) VR=SH VM=1 Curve Presentation Software Version */
+    /**
+     * (5005,xx06) VR=SH VM=1 Curve Presentation Software Version
+     */
     public static final int CurvePresentationSoftwareVersion = 0x50050006;
 
     /** (5005,xx07) VR=LO VM=1 Curve Label */

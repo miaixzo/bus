@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.http;
 
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.http.bodys.RequestBody;
-import org.miaixz.bus.http.cache.CacheControl;
-
 import java.net.URL;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.http.bodys.RequestBody;
+import org.miaixz.bus.http.cache.CacheControl;
 
 /**
  * 一个HTTP请求。如果该类的{@link #body}为空或自身为不可变，则该类的实例是不可变的.

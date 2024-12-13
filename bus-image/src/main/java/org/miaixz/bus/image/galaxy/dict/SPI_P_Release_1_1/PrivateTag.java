@@ -77,7 +77,9 @@ public class PrivateTag {
     /** (0019,xx10) VR=UN VM=1 Physiological Data Type 2 */
     public static final int PhysiologicalDataType2 = 0x00190010;
 
-    /** (0019,xx11) VR=UN VM=1 Physiological Data Channel And Kind 2 */
+    /**
+     * (0019,xx11) VR=UN VM=1 Physiological Data Channel And Kind 2
+     */
     public static final int PhysiologicalDataChannelAndKind2 = 0x00190011;
 
     /** (0019,xx12) VR=US VM=1 Sample Bits Allocated 2 */

@@ -97,6 +97,10 @@ public class Property {
      * 是否设置 javaType
      */
     private boolean useJavaType;
+    /**
+     * 是否自动处理 Mapper 接口中其他手写指定 resultType 的返回结果类型为 resultMap
+     */
+    private boolean enableBaseResultMapFlag;
 
     public String getCatalog() {
         return catalog;
@@ -320,6 +324,14 @@ public class Property {
 
     public void setUseJavaType(boolean useJavaType) {
         this.useJavaType = useJavaType;
+    }
+
+    public boolean isEnableBaseResultMapFlag() {
+        return enableBaseResultMapFlag;
+    }
+
+    public void setEnableBaseResultMapFlag(boolean enableBaseResultMapFlag) {
+        this.enableBaseResultMapFlag = enableBaseResultMapFlag;
     }
 
     /**

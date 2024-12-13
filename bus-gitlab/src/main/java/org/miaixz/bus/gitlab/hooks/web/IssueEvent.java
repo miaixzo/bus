@@ -34,11 +34,9 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class IssueEvent extends AbstractEvent {
 
-    private static final long serialVersionUID = -1L;
-
     public static final String X_GITLAB_EVENT = "Issue Hook";
     public static final String OBJECT_KIND = "issue";
-
+    private static final long serialVersionUID = -1L;
     private EventUser user;
     private EventProject project;
     private EventRepository repository;
@@ -121,12 +119,12 @@ public class IssueEvent extends AbstractEvent {
         this.objectAttributes = objectAttributes;
     }
 
-    public static class ObjectAttributes extends EventIssue {
-    }
-
     @Override
     public String toString() {
         return (JacksonJson.toJsonString(this));
+    }
+
+    public static class ObjectAttributes extends EventIssue {
     }
 
 }

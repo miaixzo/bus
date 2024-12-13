@@ -27,17 +27,17 @@
 */
 package org.miaixz.bus.http;
 
-import org.miaixz.bus.core.io.buffer.Buffer;
-import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.Protocol;
-
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
+
+import org.miaixz.bus.core.io.buffer.Buffer;
+import org.miaixz.bus.core.lang.Charset;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.net.Protocol;
 
 /**
  * 统一资源定位器(URL)，其模式为{@code http}或{@code https}。使用这个类来组合和分解Internet地址 这个类有一个现代的API。它避免了惩罚性的检查异常:{@link #get

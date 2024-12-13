@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.notify;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.EnumValue;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.notify.magic.Material;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * 通知器,用于发送通知,如: 短信,邮件,语音,微信等

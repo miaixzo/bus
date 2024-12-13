@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.http.plugin.httpz;
 
+import java.io.IOException;
+
 import org.miaixz.bus.http.Callback;
 import org.miaixz.bus.http.NewCall;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.IOException;
 
 /**
  * 回调处理

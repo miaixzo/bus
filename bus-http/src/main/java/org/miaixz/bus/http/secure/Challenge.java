@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.http.secure;
 
-import org.miaixz.bus.core.lang.Charset;
-
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
+
+import org.miaixz.bus.core.lang.Charset;
 
 /**
  * RFC 7235兼容的认证

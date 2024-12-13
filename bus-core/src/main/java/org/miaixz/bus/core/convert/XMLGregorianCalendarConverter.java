@@ -103,8 +103,8 @@ public class XMLGregorianCalendarConverter extends AbstractConverter {
         } else if (value instanceof Long) {
             gregorianCalendar.setTimeInMillis((Long) value);
         } else {
-            final String valueStr = convertToString(value);
-            final Date date = StringKit.isBlank(format) ? DateKit.parse(valueStr) : DateKit.parse(valueStr, format);
+            final String values = convertToString(value);
+            final Date date = StringKit.isBlank(format) ? DateKit.parse(values) : DateKit.parse(values, format);
             if (null == date) {
                 throw new ConvertException("Unsupported date value: " + value);
             }

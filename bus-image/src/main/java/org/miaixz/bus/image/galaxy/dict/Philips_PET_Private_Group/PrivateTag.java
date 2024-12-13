@@ -59,7 +59,9 @@ public class PrivateTag {
     /** (7053,xx08) VR=SQ VM=1 ? */
     public static final int _7053_xx08_ = 0x70530008;
 
-    /** (7053,xx09) VR=DS VM=1 Activity Concentration Scale Factor */
+    /**
+     * (7053,xx09) VR=DS VM=1 Activity Concentration Scale Factor
+     */
     public static final int ActivityConcentrationScaleFactor = 0x70530009;
 
     /** (7053,xx0F) VR=UL VM=1 ? */

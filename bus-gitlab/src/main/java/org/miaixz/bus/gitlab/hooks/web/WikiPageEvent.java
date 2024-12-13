@@ -31,11 +31,9 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class WikiPageEvent extends AbstractEvent {
 
-    private static final long serialVersionUID = -1L;
-
     public static final String X_GITLAB_EVENT = "Wiki Page Hook";
     public static final String OBJECT_KIND = "wiki_page";
-
+    private static final long serialVersionUID = -1L;
     private EventUser user;
     private EventProject project;
     private Wiki wiki;

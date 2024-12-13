@@ -663,8 +663,9 @@ public class CommonsFtp extends AbstractFtp {
      * @param fileName 文件名
      * @param outFile  输出文件或目录，当为目录时使用服务端文件名
      * @throws InternalException IO异常
+     * @return 是否下载成功
      */
-    public void download(final String path, final String fileName, File outFile) throws InternalException {
+    public boolean download(final String path, final String fileName, File outFile) throws InternalException {
         if (outFile.isDirectory()) {
             outFile = new File(outFile, fileName);
         }
@@ -672,7 +673,7 @@ public class CommonsFtp extends AbstractFtp {
             FileKit.touch(outFile);
         }
         try (final OutputStream out = FileKit.getOutputStream(outFile)) {
-            download(path, fileName, out);
+            return download(path, fileName, out);
         } catch (final IOException e) {
             throw new InternalException(e);
         }
@@ -684,9 +685,10 @@ public class CommonsFtp extends AbstractFtp {
      * @param path     文件路径
      * @param fileName 文件名
      * @param out      输出位置
+     * @return 是否下载成功
      */
-    public void download(final String path, final String fileName, final OutputStream out) {
-        download(path, fileName, out, null);
+    public boolean download(final String path, final String fileName, final OutputStream out) {
+        return download(path, fileName, out, null);
     }
 
     /**
@@ -697,8 +699,9 @@ public class CommonsFtp extends AbstractFtp {
      * @param out             输出流，下载的文件写出到这个流中
      * @param fileNameCharset 文件名编码，通过此编码转换文件名编码为ISO8859-1
      * @throws InternalException IO异常
+     * @return 是否下载成功
      */
-    public void download(final String path, String fileName, final OutputStream out, final Charset fileNameCharset)
+    public boolean download(final String path, String fileName, final OutputStream out, final Charset fileNameCharset)
             throws InternalException {
         String pwd = null;
         if (this.backToPwd) {
@@ -714,7 +717,7 @@ public class CommonsFtp extends AbstractFtp {
         }
         try {
             client.setFileType(FTPClient.BINARY_FILE_TYPE);
-            client.retrieveFile(fileName, out);
+            return client.retrieveFile(fileName, out);
         } catch (final IOException e) {
             throw new InternalException(e);
         } finally {

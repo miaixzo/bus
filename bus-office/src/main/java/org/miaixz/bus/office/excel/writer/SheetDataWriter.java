@@ -190,7 +190,6 @@ public class SheetDataWriter {
                 rowMap = (Map) rowBean;
             }
         } else if (rowBean instanceof Iterable) {
-            // issue#2398@Github
             // MapWrapper由于实现了Iterable接口，应该优先按照Map处理
             return writeRow((Iterable<?>) rowBean);
         } else if (rowBean instanceof Hyperlink) {

@@ -227,6 +227,20 @@ public class MultiStringFinder {
         }
 
         /**
+         * 构建根节点
+         *
+         * @param allCharSize 全部字符数量
+         * @return 根Node
+         */
+        public static Node createRoot(final int allCharSize) {
+            final Node node = new Node();
+            node.nodeIndex = 0;
+            node.fail = node;
+            node.directRouter = new Node[allCharSize];
+            return node;
+        }
+
+        /**
          * 新增子节点
          *
          * @param c         字符
@@ -271,20 +285,6 @@ public class MultiStringFinder {
                 return null;
             }
             return directRouter[index];
-        }
-
-        /**
-         * 构建根节点
-         *
-         * @param allCharSize 全部字符数量
-         * @return 根Node
-         */
-        public static Node createRoot(final int allCharSize) {
-            final Node node = new Node();
-            node.nodeIndex = 0;
-            node.fail = node;
-            node.directRouter = new Node[allCharSize];
-            return node;
         }
 
         @Override

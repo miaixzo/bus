@@ -623,16 +623,24 @@ public class PrivateTag {
     /** (0035,xx01) VR=FD VM=1-n Start Angle */
     public static final int StartAngle = 0x00350001;
 
-    /** (0055,xx12) VR=SQ VM=1 eNTEGRA Energy Window Information Sequence */
+    /**
+     * (0055,xx12) VR=SQ VM=1 eNTEGRA Energy Window Information Sequence
+     */
     public static final int eNTEGRAEnergyWindowInformationSequence = 0x00550012;
 
-    /** (0055,xx13) VR=SQ VM=1 eNTEGRA Energy Window Range Sequence */
+    /**
+     * (0055,xx13) VR=SQ VM=1 eNTEGRA Energy Window Range Sequence
+     */
     public static final int eNTEGRAEnergyWindowRangeSequence = 0x00550013;
 
-    /** (0055,xx22) VR=SQ VM=1 eNTEGRA Detector Information Sequence */
+    /**
+     * (0055,xx22) VR=SQ VM=1 eNTEGRA Detector Information Sequence
+     */
     public static final int eNTEGRADetectorInformationSequence = 0x00550022;
 
-    /** (0055,xx52) VR=SQ VM=1 eNTEGRA Rotation Information Sequence */
+    /**
+     * (0055,xx52) VR=SQ VM=1 eNTEGRA Rotation Information Sequence
+     */
     public static final int eNTEGRARotationInformationSequence = 0x00550052;
 
     /** (0055,xx62) VR=SQ VM=1 eNTEGRA Gated Information Sequence */

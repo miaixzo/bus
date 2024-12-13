@@ -44,13 +44,16 @@ public class Environment implements Serializable {
     private String name;
     private String slug;
     private String externalUrl;
+    private EnvironmentState state;
+    private Deployment lastDeployment;
 
     public String getTier() {
         return tier;
     }
 
-    private EnvironmentState state;
-    private Deployment lastDeployment;
+    public void setTier(String tier) {
+        this.tier = tier;
+    }
 
     public Long getId() {
         return id;
@@ -82,10 +85,6 @@ public class Environment implements Serializable {
 
     public void setExternalUrl(String externalUrl) {
         this.externalUrl = externalUrl;
-    }
-
-    public void setTier(String tier) {
-        this.tier = tier;
     }
 
     public EnvironmentState getState() {

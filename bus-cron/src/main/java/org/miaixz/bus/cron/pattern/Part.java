@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.cron.pattern;
 
+import java.util.Calendar;
+
 import org.miaixz.bus.core.center.date.culture.en.Month;
 import org.miaixz.bus.core.center.date.culture.en.Week;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.CrontabException;
-
-import java.util.Calendar;
 
 /**
  * 表达式各个部分的枚举，用于限定在表达式中的位置和规则（如最小值和最大值） {@link #ordinal()}表示此部分在表达式中的位置，如0表示秒 表达式各个部分的枚举位置为：

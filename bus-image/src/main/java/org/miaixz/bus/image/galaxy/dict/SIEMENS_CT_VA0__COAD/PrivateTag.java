@@ -35,10 +35,14 @@ public class PrivateTag {
 
     public static final String PrivateCreator = "SIEMENS CT VA0 COAD";
 
-    /** (0019,xx10) VR=IS VM=1 Distance Source To Source Side Collimator */
+    /**
+     * (0019,xx10) VR=IS VM=1 Distance Source To Source Side Collimator
+     */
     public static final int DistanceSourceToSourceSideCollimator = 0x00190010;
 
-    /** (0019,xx11) VR=IS VM=1 Distance Source To Detector Side Collimator */
+    /**
+     * (0019,xx11) VR=IS VM=1 Distance Source To Detector Side Collimator
+     */
     public static final int DistanceSourceToDetectorSideCollimator = 0x00190011;
 
     /** (0019,xx20) VR=IS VM=1 Number of Possible Channels */

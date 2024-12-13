@@ -27,6 +27,10 @@
 */
 package org.miaixz.bus.core.io.file;
 
+import java.io.File;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Normal;
@@ -36,10 +40,6 @@ import org.miaixz.bus.core.xyz.CharKit;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.StringKit;
-
-import java.io.File;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * 文件名相关工具类

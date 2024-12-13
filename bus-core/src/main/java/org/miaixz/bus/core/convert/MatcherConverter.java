@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.xyz.TypeKit;
-
 import java.lang.reflect.Type;
+
+import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
  * 带有匹配的转换器 判断目标对象是否满足条件，满足则转换，否则跳过 实现此接口同样可以不判断断言而直接转换

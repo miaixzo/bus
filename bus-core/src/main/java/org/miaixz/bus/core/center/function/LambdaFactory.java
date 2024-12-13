@@ -57,7 +57,7 @@ public class LambdaFactory {
      * 
      * <pre>{@code
      * class Something {
-     *     private Long data;
+     *     private Long id;
      *     private String name;
      *     // ... 省略GetterSetter方法
      * }
@@ -69,19 +69,21 @@ public class LambdaFactory {
      * </pre>
      *
      * @param functionInterfaceType 接受Lambda的函数式接口类型
-     * @param methodClass           声明方法的类的类型
+     * @param declaringClass        声明方法的类的类型
      * @param methodName            方法名称
      * @param paramTypes            方法参数数组
      * @param <F>                   Function类型
      * @return 接受Lambda的函数式接口对象
      */
-    public static <F> F build(final Class<F> functionInterfaceType, final Class<?> methodClass, final String methodName,
-            final Class<?>... paramTypes) {
-        return build(functionInterfaceType, MethodKit.getMethod(methodClass, methodName, paramTypes));
+    public static <F> F build(final Class<F> functionInterfaceType, final Class<?> declaringClass,
+            final String methodName, final Class<?>... paramTypes) {
+        return build(functionInterfaceType, MethodKit.getMethod(declaringClass, methodName, paramTypes),
+                declaringClass);
     }
 
     /**
-     * 根据提供的方法或构造对象，构建对应的Lambda函数 调用函数相当于执行对应的方法或构造
+     * 根据提供的方法或构造对象，构建对应的Lambda函数<br>
+     * 调用函数相当于执行对应的方法或构造
      *
      * @param functionInterfaceType 接受Lambda的函数式接口类型
      * @param executable            方法对象，支持构造器
@@ -89,28 +91,48 @@ public class LambdaFactory {
      * @return 接受Lambda的函数式接口对象
      */
     public static <F> F build(final Class<F> functionInterfaceType, final Executable executable) {
+        return build(functionInterfaceType, executable, null);
+    }
+
+    /**
+     * 根据提供的方法或构造对象，构建对应的Lambda函数<br>
+     * 调用函数相当于执行对应的方法或构造
+     *
+     * @param <F>                   Function类型
+     * @param functionInterfaceType 接受Lambda的函数式接口类型
+     * @param executable            方法对象，支持构造器
+     * @param declaringClass        {@link Executable}声明的类，如果方法或构造定义在父类中，此处用于指定子类
+     * @return 接受Lambda的函数式接口对象
+     */
+    public static <F> F build(final Class<F> functionInterfaceType, final Executable executable,
+            final Class<?> declaringClass) {
         Assert.notNull(functionInterfaceType);
         Assert.notNull(executable);
 
         final MutableEntry<Class<?>, Executable> cacheKey = new MutableEntry<>(functionInterfaceType, executable);
-        return (F) CACHE.computeIfAbsent(cacheKey, key -> doBuildWithoutCache(functionInterfaceType, executable));
+        return (F) CACHE.computeIfAbsent(cacheKey,
+                key -> doBuildWithoutCache(functionInterfaceType, executable, declaringClass));
     }
 
     /**
-     * 根据提供的方法或构造对象，构建对应的Lambda函数，即通过Lambda函数代理方法或构造 调用函数相当于执行对应的方法或构造
+     * 根据提供的方法或构造对象，构建对应的Lambda函数，即通过Lambda函数代理方法或构造<br>
+     * 调用函数相当于执行对应的方法或构造
      *
-     * @param funcType   接受Lambda的函数式接口类型
-     * @param executable 方法对象，支持构造器
-     * @param <F>        Function类型
+     * @param <F>            Function类型
+     * @param funcType       接受Lambda的函数式接口类型
+     * @param executable     方法对象，支持构造器
+     * @param declaringClass {@link Executable}声明的类，如果方法或构造定义在父类中，此处用于指定子类
      * @return 接受Lambda的函数式接口对象
      */
-    private static <F> F doBuildWithoutCache(final Class<F> funcType, final Executable executable) {
+    @SuppressWarnings("unchecked")
+    private static <F> F doBuildWithoutCache(final Class<F> funcType, final Executable executable,
+            final Class<?> declaringClass) {
         ReflectKit.setAccessible(executable);
 
         // 获取Lambda函数
         final Method invokeMethod = LambdaKit.getInvokeMethod(funcType);
         try {
-            return (F) metaFactory(funcType, invokeMethod, executable).getTarget().invoke();
+            return (F) metaFactory(funcType, invokeMethod, executable, declaringClass).getTarget().invoke();
         } catch (final Throwable e) {
             throw new InternalException(e);
         }
@@ -119,14 +141,15 @@ public class LambdaFactory {
     /**
      * 通过Lambda函数代理方法或构造
      *
-     * @param funcType   函数类型
-     * @param funcMethod 函数执行的方法
-     * @param executable 被代理的方法或构造
+     * @param funcType       函数类型
+     * @param funcMethod     函数执行的方法
+     * @param executable     被代理的方法或构造
+     * @param declaringClass {@link Executable}声明的类，如果方法或构造定义在父类中，此处用于指定子类
      * @return {@link CallSite}
      * @throws LambdaConversionException 权限等异常
      */
-    private static CallSite metaFactory(final Class<?> funcType, final Method funcMethod, final Executable executable)
-            throws LambdaConversionException {
+    private static CallSite metaFactory(final Class<?> funcType, final Method funcMethod, final Executable executable,
+            final Class<?> declaringClass) throws LambdaConversionException {
         // 查找上下文与调用者的访问权限
         final MethodHandles.Lookup caller = LookupKit.lookup(executable.getDeclaringClass());
         // 要实现的方法的名字
@@ -142,11 +165,11 @@ public class LambdaFactory {
 
         if (ClassKit.isSerializable(funcType)) {
             return LambdaMetafactory.altMetafactory(caller, invokeName, invokedType, samMethodType, implMethodHandle,
-                    MethodKit.methodType(executable), LambdaMetafactory.FLAG_SERIALIZABLE);
+                    MethodKit.methodType(executable, declaringClass), LambdaMetafactory.FLAG_SERIALIZABLE);
         }
 
         return LambdaMetafactory.metafactory(caller, invokeName, invokedType, samMethodType, implMethodHandle,
-                MethodKit.methodType(executable));
+                MethodKit.methodType(executable, declaringClass));
     }
 
 }

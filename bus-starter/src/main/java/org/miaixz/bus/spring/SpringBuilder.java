@@ -118,6 +118,18 @@ public class SpringBuilder implements ApplicationContextAware {
     }
 
     /**
+     * 通过class获取Bean
+     *
+     * @param <T>   Bean类型
+     * @param clazz Bean类
+     * @param args  构造函数参数
+     * @return Bean对象
+     */
+    public static <T> T getBean(final Class<T> clazz, final Object... args) {
+        return getBeanFactory().getBean(clazz, args);
+    }
+
+    /**
      * 通过name,以及Clazz返回指定的Bean
      *
      * @param <T>   bean类型
@@ -127,6 +139,17 @@ public class SpringBuilder implements ApplicationContextAware {
      */
     public static <T> T getBean(String name, Class<T> clazz) {
         return getBeanFactory().getBean(name, clazz);
+    }
+
+    /**
+     * 通过name,以及Clazz返回指定的Bean
+     *
+     * @param name Bean名称
+     * @param args 创建bean需要的参数属性
+     * @return Bean对象
+     */
+    public static Object getBean(final String name, final Object... args) {
+        return getBeanFactory().getBean(name, args);
     }
 
     /**

@@ -27,6 +27,14 @@
 */
 package org.miaixz.bus.http;
 
+import java.io.IOException;
+import java.io.InterruptedIOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.miaixz.bus.core.io.timout.Timeout;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -41,14 +49,6 @@ import org.miaixz.bus.http.metric.http.CallServerInterceptor;
 import org.miaixz.bus.http.metric.http.RealInterceptorChain;
 import org.miaixz.bus.http.metric.http.RetryAndFollowUp;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 实际调用准备执行的请求

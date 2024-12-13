@@ -31,13 +31,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
-import jakarta.ws.rs.core.Form;
-import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.Response;
-
 import org.miaixz.bus.gitlab.models.Issue;
 import org.miaixz.bus.gitlab.models.MergeRequest;
 import org.miaixz.bus.gitlab.models.Milestone;
+
+import jakarta.ws.rs.core.Form;
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 
 /**
  * This class implements the client side API for the GitLab milestones calls.
