@@ -1370,7 +1370,7 @@ public class Attributes implements Serializable {
         vr = updateVR(index, vr);
 
         if (!vr.isTemporalType()) {
-            LOG.info("Attempt to access {} {} as date/time", TagUtils.toString(tag), vr);
+            Logger.info("Attempt to access {} {} as date/time", Tag.toString(tag), vr);
             return defVal;
         }
 
@@ -1383,7 +1383,7 @@ public class Attributes implements Serializable {
         try {
             t = vr.toTemporal(value, valueIndex, precision);
         } catch (IllegalArgumentException e) {
-            LOG.info("Invalid value of {} {}", TagUtils.toString(tag), vr);
+            Logger.info("Invalid value of {} {}", Tag.toString(tag), vr);
             return defVal;
         }
 
