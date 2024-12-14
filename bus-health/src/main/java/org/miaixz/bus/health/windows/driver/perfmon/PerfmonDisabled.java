@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.health.windows.driver.perfmon;
 
-import com.sun.jna.platform.win32.Advapi32Util;
-import com.sun.jna.platform.win32.WinReg;
+import java.util.Locale;
+
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.logger.Logger;
 
-import java.util.Locale;
+import com.sun.jna.platform.win32.Advapi32Util;
+import com.sun.jna.platform.win32.WinReg;
 
 /**
  * Tests whether performance counters are disabled

@@ -104,6 +104,10 @@ public class MergeRequest implements Serializable {
     @JsonDeserialize(using = JacksonJson.UserListDeserializer.class)
     private List<User> approvedBy;
 
+    public static final boolean isValid(MergeRequest mergeRequest) {
+        return (mergeRequest != null && mergeRequest.getId() != null);
+    }
+
     public Boolean getAllowCollaboration() {
         return allowCollaboration;
     }
@@ -302,10 +306,6 @@ public class MergeRequest implements Serializable {
 
     public void setSquashCommitSha(String squashCommitSha) {
         this.squashCommitSha = squashCommitSha;
-    }
-
-    public static final boolean isValid(MergeRequest mergeRequest) {
-        return (mergeRequest != null && mergeRequest.getId() != null);
     }
 
     public String getDetailedMergeStatus() {
@@ -579,6 +579,17 @@ public class MergeRequest implements Serializable {
         return approvedBy;
     }
 
+    /**
+     * Set the list of users that have approved the merge request.
+     *
+     * NOTE: This property will only be used when listing, approiving, or unapproving a merge request.
+     *
+     * @param approvedBy the list of users that have approved the merge request
+     */
+    public void setApprovedBy(List<User> approvedBy) {
+        this.approvedBy = approvedBy;
+    }
+
     public DiffRef getDiffRefs() {
         return diffRefs;
     }
@@ -593,17 +604,6 @@ public class MergeRequest implements Serializable {
 
     public void setRebaseInProgress(Boolean rebaseInProgress) {
         this.rebaseInProgress = rebaseInProgress;
-    }
-
-    /**
-     * Set the list of users that have approved the merge request.
-     *
-     * NOTE: This property will only be used when listing, approiving, or unapproving a merge request.
-     *
-     * @param approvedBy the list of users that have approved the merge request
-     */
-    public void setApprovedBy(List<User> approvedBy) {
-        this.approvedBy = approvedBy;
     }
 
     public List<Reviewer> getReviewers() {

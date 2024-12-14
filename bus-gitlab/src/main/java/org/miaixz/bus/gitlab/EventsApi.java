@@ -31,10 +31,10 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Stream;
 
+import org.miaixz.bus.gitlab.models.Event;
+
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
-
-import org.miaixz.bus.gitlab.models.Event;
 
 /**
  * This class implements the client side API for the GitLab events calls.

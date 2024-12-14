@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.http.plugin.httpz;
 
+import java.io.*;
+
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Callback;
 import org.miaixz.bus.http.NewCall;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.logger.Logger;
-
-import java.io.*;
 
 /**
  * 文件-异步回调

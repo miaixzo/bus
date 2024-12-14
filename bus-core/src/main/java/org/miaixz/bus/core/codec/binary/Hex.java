@@ -89,27 +89,6 @@ public class Hex {
     }
 
     /**
-     * 将字符串转换为十六进制字符串，结果为小写，默认编码是UTF-8
-     *
-     * @param data 被编码的字符串
-     * @return 十六进制String
-     */
-    public static String encodeString(final String data) {
-        return encodeString(data, Charset.UTF_8);
-    }
-
-    /**
-     * 将字符串转换为十六进制字符串，结果为小写
-     *
-     * @param data    需要被编码的字符串
-     * @param charset 编码
-     * @return 十六进制String
-     */
-    public static String encodeString(final String data, final java.nio.charset.Charset charset) {
-        return encodeString(ByteKit.toBytes(data, charset), true);
-    }
-
-    /**
      * 将字节数组转换为十六进制字符串
      *
      * @param data        byte[]
@@ -121,70 +100,81 @@ public class Hex {
     }
 
     /**
-     * 将十六进制字符数组转换为字符串，默认编码UTF-8
+     * 将字符串转换为十六进制字符串，结果为小写，默认编码是UTF-8
      *
-     * @param hexStr 十六进制String
-     * @return 字符串
+     * @param data 被编码的字符串
+     * @return 十六进制String
      */
-    public static String decodeString(final String hexStr) {
-        return decodeString(hexStr, Charset.UTF_8);
+    public static String encodeString(final CharSequence data) {
+        return encodeString(data, Charset.UTF_8);
     }
 
     /**
-     * 将十六进制字符数组转换为字符串
+     * 将字符串转换为十六进制字符串，结果为小写
      *
-     * @param hexStr  十六进制String
+     * @param data    需要被编码的字符串
      * @param charset 编码
-     * @return 字符串
+     * @return 十六进制String
      */
-    public static String decodeString(final String hexStr, final java.nio.charset.Charset charset) {
-        if (StringKit.isEmpty(hexStr)) {
-            return hexStr;
-        }
-        return StringKit.toString(decode(hexStr), charset);
-    }
-
-    /**
-     * 将十六进制字符数组转换为字符串
-     *
-     * @param hexData 十六进制char[]
-     * @param charset 编码
-     * @return 字符串
-     */
-    public static String decodeString(final char[] hexData, final java.nio.charset.Charset charset) {
-        return StringKit.toString(decode(hexData), charset);
-    }
-
-    /**
-     * 将十六进制字符串解码为byte[]
-     *
-     * @param hexStr 十六进制String
-     * @return byte[]
-     */
-    public static byte[] decode(final String hexStr) {
-        return decode((CharSequence) hexStr);
+    public static String encodeString(final CharSequence data, final java.nio.charset.Charset charset) {
+        return encodeString(ByteKit.toBytes(data, charset), true);
     }
 
     /**
      * 将十六进制字符数组转换为字节数组
      *
-     * @param hexData 十六进制char[]
-     * @return byte[]
-     * @throws RuntimeException 如果源十六进制字符数组是一个奇怪的长度，将抛出运行时异常
-     */
-    public static byte[] decode(final char[] hexData) {
-        return decode(String.valueOf(hexData));
-    }
-
-    /**
-     * 将十六进制字符数组转换为字节数组
-     *
-     * @param hexData 十六进制字符串
+     * @param data 十六进制字符串
      * @return byte[]
      * @throws InternalException 如果源十六进制字符数组是一个奇怪的长度，将抛出运行时异常
      */
-    public static byte[] decode(final CharSequence hexData) {
-        return Base16Provider.CODEC_LOWER.decode(hexData);
+    public static byte[] decode(final CharSequence data) {
+        return Base16Provider.CODEC_LOWER.decode(data);
+    }
+
+    /**
+     * 将十六进制字符数组转换为字节数组
+     *
+     * @param data 十六进制char[]
+     * @return byte[]
+     * @throws RuntimeException 如果源十六进制字符数组是一个奇怪的长度，将抛出运行时异常
+     */
+    public static byte[] decode(final char[] data) {
+        return decode(String.valueOf(data));
+    }
+
+    /**
+     * 将十六进制字符数组转换为字符串，默认编码UTF-8
+     *
+     * @param data 十六进制String
+     * @return 字符串
+     */
+    public static String decodeString(final CharSequence data) {
+        return decodeString(data, Charset.UTF_8);
+    }
+
+    /**
+     * 将十六进制字符数组转换为字符串
+     *
+     * @param data    十六进制String
+     * @param charset 编码
+     * @return 字符串
+     */
+    public static String decodeString(final CharSequence data, final java.nio.charset.Charset charset) {
+        if (StringKit.isEmpty(data)) {
+            return StringKit.toStringOrNull(data);
+        }
+        return StringKit.toString(decode(data), charset);
+    }
+
+    /**
+     * 将十六进制字符数组转换为字符串
+     *
+     * @param data    十六进制char[]
+     * @param charset 编码
+     * @return 字符串
+     */
+    public static String decodeString(final char[] data, final java.nio.charset.Charset charset) {
+        return StringKit.toString(decode(data), charset);
     }
 
 }

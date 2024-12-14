@@ -38,21 +38,20 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class CharacterConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = -1L;
-
     /**
      * 单例
      */
     public static final CharacterConverter INSTANCE = new CharacterConverter();
+    private static final long serialVersionUID = -1L;
 
     @Override
     protected Character convertInternal(final Class<?> targetClass, final Object value) {
         if (value instanceof Boolean) {
             return BooleanKit.toCharacter((Boolean) value);
         } else {
-            final String valueStr = convertToString(value);
-            if (StringKit.isNotBlank(valueStr)) {
-                return valueStr.charAt(0);
+            final String values = convertToString(value);
+            if (StringKit.isNotBlank(values)) {
+                return values.charAt(0);
             }
         }
         return null;

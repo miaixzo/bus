@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -153,7 +154,7 @@ public final class DataSize implements Comparable<DataSize> {
         if (null == unit) {
             unit = DataUnit.BYTES;
         }
-        return new DataSize(Math.multiplyExact(amount, unit.size().toBytes()));
+        return new DataSize(Math.multiplyExact(amount, unit.getSize().toBytes()));
     }
 
     /**
@@ -167,7 +168,7 @@ public final class DataSize implements Comparable<DataSize> {
         if (null == unit) {
             unit = DataUnit.BYTES;
         }
-        return new DataSize(amount.multiply(new BigDecimal(unit.size().toBytes())).longValue());
+        return new DataSize(amount.multiply(new BigDecimal(unit.getSize().toBytes())).longValue());
     }
 
     /**
@@ -286,6 +287,22 @@ public final class DataSize implements Comparable<DataSize> {
         final int digitGroups = Math.min(unitNames.length - 1, (int) (Math.log10(size) / Math.log10(1024)));
         return new DecimalFormat("#,##0." + StringKit.repeat('#', scale)).format(size / Math.pow(1024, digitGroups))
                 + delimiter + unitNames[digitGroups];
+    }
+
+    /**
+     * 根据单位，将文件大小转换为对应单位的大小
+     *
+     * @param size         文件大小
+     * @param fileDataUnit 单位
+     * @return 大小
+     */
+    public static String format(final Long size, final DataUnit fileDataUnit) {
+        if (size <= 0) {
+            return Symbol.ZERO;
+        }
+        final int digitGroups = ArrayKit.indexOf(Normal.CAPACITY_NAMES, fileDataUnit.getSuffix());
+        return new DecimalFormat("##0.##").format(size / Math.pow(1024, digitGroups)) + " "
+                + Normal.CAPACITY_NAMES[digitGroups];
     }
 
     /**

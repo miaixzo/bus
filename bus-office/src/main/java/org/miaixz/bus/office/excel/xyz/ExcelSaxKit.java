@@ -45,6 +45,7 @@ import org.miaixz.bus.core.lang.exception.DependencyException;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.RevisedException;
 import org.miaixz.bus.core.xyz.DateKit;
+import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.office.Builder;
@@ -289,7 +290,14 @@ public class ExcelSaxKit {
         if (StringKit.isBlank(value)) {
             return null;
         }
-        return getNumberValue(Double.parseDouble(value), numFmtString);
+        // 可能精度丢失，对含有小数的value判断并转为BigDecimal
+        final double number = Double.parseDouble(value);
+        if (StringKit.contains(value, Symbol.C_DOT) && !value.equals(Double.toString(number))) {
+            // 精度丢失
+            return MathKit.toBigDecimal(value);
+        }
+
+        return getNumberValue(number, numFmtString);
     }
 
     /**

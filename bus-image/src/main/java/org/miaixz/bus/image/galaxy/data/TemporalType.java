@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.image.galaxy.data;
 
+import java.time.temporal.Temporal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
@@ -40,6 +41,12 @@ import org.miaixz.bus.image.Format;
 enum TemporalType {
     DA {
         @Override
+        public Temporal parseTemporal(String s, DatePrecision precision) {
+            precision.lastField = Calendar.DAY_OF_MONTH;
+            return Format.parseLocalDA(s);
+        }
+
+        @Override
         public Date parse(TimeZone tz, String s, boolean ceil, DatePrecision precision) {
             precision.lastField = Calendar.DAY_OF_MONTH;
             return Format.parseDA(null, s, ceil);
@@ -51,6 +58,10 @@ enum TemporalType {
         }
     },
     DT {
+        public Temporal parseTemporal(String s, DatePrecision precision) {
+            return Format.parseTemporalDT(s, precision);
+        }
+
         @Override
         public Date parse(TimeZone tz, String s, boolean ceil, DatePrecision precision) {
             return Format.parseDT(tz, s, ceil, precision);
@@ -63,6 +74,11 @@ enum TemporalType {
     },
     TM {
         @Override
+        public Temporal parseTemporal(String s, DatePrecision precision) {
+            return Format.parseLocalTM(s, precision);
+        }
+
+        @Override
         public Date parse(TimeZone tz, String s, boolean ceil, DatePrecision precision) {
             return Format.parseTM(null, s, ceil, precision);
         }
@@ -72,6 +88,8 @@ enum TemporalType {
             return Format.formatTM(tz, date, precision);
         }
     };
+
+    public abstract Temporal parseTemporal(String s, DatePrecision precision);
 
     public abstract Date parse(TimeZone tz, String val, boolean ceil, DatePrecision precision);
 

@@ -56,13 +56,13 @@ public class PropDesc {
      */
     protected Invoker getter;
     /**
-     * 字段名
-     */
-    private String fieldName;
-    /**
      * Setter方法
      */
     protected Invoker setter;
+    /**
+     * 字段名
+     */
+    private String fieldName;
     /**
      * 字段
      */
@@ -91,15 +91,6 @@ public class PropDesc {
         this.fieldName = fieldName;
         this.getter = null == getter ? null : MethodInvoker.of(getter);
         this.setter = null == setter ? null : MethodInvoker.of(setter);
-    }
-
-    /**
-     * 获取字段名，如果存在Alias注解，读取注解的值作为名称
-     *
-     * @return 字段名
-     */
-    public String getFieldName() {
-        return this.fieldName;
     }
 
     /**
@@ -150,7 +141,16 @@ public class PropDesc {
 
             // 检查注解
             if (!isTransient) {
-                isTransient = AnnoKit.hasAnnotation(getter, Transient.class);
+                Class aClass = null;
+                try {
+                    // Android可能无这个类
+                    aClass = Class.forName("java.beans.Transient");
+                } catch (final ClassNotFoundException e) {
+                    // ignore
+                }
+                if (null != aClass) {
+                    isTransient = AnnoKit.hasAnnotation(getter, aClass);
+                }
             }
         }
 
@@ -178,6 +178,15 @@ public class PropDesc {
         }
 
         return isTransient;
+    }
+
+    /**
+     * 获取字段名，如果存在Alias注解，读取注解的值作为名称
+     *
+     * @return 字段名
+     */
+    public String getFieldName() {
+        return this.fieldName;
     }
 
     /**

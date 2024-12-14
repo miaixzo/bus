@@ -86,7 +86,9 @@ public class PrivateTag {
     /** (0019,xx91) VR=DS VM=1-n Key Values */
     public static final int KeyValues = 0x00190091;
 
-    /** (0019,xx92) VR=LO VM=1 Destination Postprocessing Function */
+    /**
+     * (0019,xx92) VR=LO VM=1 Destination Postprocessing Function
+     */
     public static final int DestinationPostprocessingFunction = 0x00190092;
 
     /** (0019,xxA0) VR=LO VM=1 Version */

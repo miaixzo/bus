@@ -27,16 +27,16 @@
 */
 package org.miaixz.bus.core.io.file;
 
-import org.miaixz.bus.core.center.function.ConsumerX;
-import org.miaixz.bus.core.io.watch.SimpleWatcher;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.FileKit;
-
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.charset.Charset;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
+
+import org.miaixz.bus.core.center.function.ConsumerX;
+import org.miaixz.bus.core.io.watch.SimpleWatcher;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.xyz.FileKit;
 
 /**
  * 行处理的Watcher实现

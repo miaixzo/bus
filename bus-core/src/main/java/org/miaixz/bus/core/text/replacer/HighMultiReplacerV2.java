@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.text.replacer;
 
-import org.miaixz.bus.core.text.finder.MultiStringFinder;
-
 import java.util.Map;
+
+import org.miaixz.bus.core.text.finder.MultiStringFinder;
 
 /**
  * 高效替换器，通过查找指定关键字，替换对应的值 基于AC自动机算法实现，需要被替换的原字符串越大，替换的键值对越多，效率提升越明显 注意: 如果需要被替换的关键字出现交叉,最先匹配中的关键字会被替换 1、"abc","ab"

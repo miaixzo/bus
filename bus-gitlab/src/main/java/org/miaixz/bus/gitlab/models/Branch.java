@@ -45,6 +45,10 @@ public class Branch implements Serializable {
     private Boolean canPush;
     private String webUrl;
 
+    public static final boolean isValid(Branch branch) {
+        return (branch != null && branch.getName() != null);
+    }
+
     public Commit getCommit() {
         return commit;
     }
@@ -115,10 +119,6 @@ public class Branch implements Serializable {
 
     public void setWebUrl(String webUrl) {
         this.webUrl = webUrl;
-    }
-
-    public static final boolean isValid(Branch branch) {
-        return (branch != null && branch.getName() != null);
     }
 
     public Branch withCommit(Commit commit) {

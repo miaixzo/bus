@@ -53,7 +53,9 @@ public class PrivateTag {
     /** (0019,xxC0) VR=SS VM=1 Bitmap Of SAT Selections */
     public static final int BitmapOfSATSelections = 0x001900C0;
 
-    /** (0019,xxC1) VR=SS VM=1 Surface Coil Intensity Correction Flag */
+    /**
+     * (0019,xxC1) VR=SS VM=1 Surface Coil Intensity Correction Flag
+     */
     public static final int SurfaceCoilIntensityCorrectionFlag = 0x001900C1;
 
     /** (0019,xxCB) VR=SS VM=1 Phase Contrast Flow Axis */

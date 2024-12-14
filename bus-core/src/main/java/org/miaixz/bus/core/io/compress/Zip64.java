@@ -55,18 +55,6 @@ class Zip64 {
     private final OutputStream out;
     private int written = 0;
 
-    static class Entry {
-        final String filename;
-        long crc;
-        long size;
-        int compressedSize;
-        int offset;
-
-        Entry(final String filename) {
-            this.filename = filename;
-        }
-    }
-
     /**
      * 构造
      *
@@ -194,6 +182,18 @@ class Zip64 {
         out.write((int) ((v >>> 48) & 0xff));
         out.write((int) ((v >>> 56) & 0xff));
         written += 8;
+    }
+
+    static class Entry {
+        final String filename;
+        long crc;
+        long size;
+        int compressedSize;
+        int offset;
+
+        Entry(final String filename) {
+            this.filename = filename;
+        }
     }
 
 }

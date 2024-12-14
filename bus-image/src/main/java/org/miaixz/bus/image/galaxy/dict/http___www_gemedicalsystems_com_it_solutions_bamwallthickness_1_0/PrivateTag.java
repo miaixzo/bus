@@ -41,7 +41,9 @@ public class PrivateTag {
     /** (3118,xx20) VR=PN VM=1 BAM WallThickness Session Creator */
     public static final int BAMWallThicknessSessionCreator = 0x31180020;
 
-    /** (3118,xx30) VR=CS VM=1 BAM WallThickness Session Completion Flag */
+    /**
+     * (3118,xx30) VR=CS VM=1 BAM WallThickness Session Completion Flag
+     */
     public static final int BAMWallThicknessSessionCompletionFlag = 0x31180030;
 
     /** (3118,xx40) VR=SQ VM=1 BAM WallThickness File Sequence */

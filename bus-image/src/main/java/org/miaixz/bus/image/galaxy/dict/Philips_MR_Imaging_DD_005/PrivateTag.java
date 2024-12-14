@@ -50,7 +50,9 @@ public class PrivateTag {
     /** (2005,xx04) VR=SS VM=1 ? */
     public static final int _2005_xx04_ = 0x20050004;
 
-    /** (2005,xx06) VR=SS VM=1 Number of PS Specific Character Sets */
+    /**
+     * (2005,xx06) VR=SS VM=1 Number of PS Specific Character Sets
+     */
     public static final int NumberOfPSSpecificCharacterSets = 0x20050006;
 
     /** (2005,xx07) VR=SS VM=1 Number of Specific Character Set */
@@ -74,7 +76,9 @@ public class PrivateTag {
     /** (2005,xx10) VR=IS VM=1 MF Conv Treat Spectro Mix Number */
     public static final int MFConvTreatSpectroMixNumber = 0x20050010;
 
-    /** (2005,xx11) VR=UI VM=1 MF Private Referenced SOP Instance UID */
+    /**
+     * (2005,xx11) VR=UI VM=1 MF Private Referenced SOP Instance UID
+     */
     public static final int MFPrivateReferencedSOPInstanceUID = 0x20050011;
 
     /** (2005,xx12) VR=IS VM=1 Diffusion B Value Number */
@@ -86,7 +90,9 @@ public class PrivateTag {
     /** (2005,xx14) VR=SL VM=1 Number of Diffusion B Values */
     public static final int NumberOfDiffusionBValues = 0x20050014;
 
-    /** (2005,xx15) VR=SL VM=1 Number of Diffusion Gradient Orientations */
+    /**
+     * (2005,xx15) VR=SL VM=1 Number of Diffusion Gradient Orientations
+     */
     public static final int NumberOfDiffusionGradientOrientations = 0x20050015;
 
     /** (2005,xx16) VR=CS VM=1 Plan Mode */
@@ -218,7 +224,9 @@ public class PrivateTag {
     /** (2005,xx40) VR=FL VM=1 Active Implantable Medical Device Head SAR Limit */
     public static final int AIMDHeadSARLimit = 0x20050040;
 
-    /** (2005,xx41) VR=FL VM=1 Active Implantable Medical Device Whole Body SAR Limit */
+    /**
+     * (2005,xx41) VR=FL VM=1 Active Implantable Medical Device Whole Body SAR Limit
+     */
     public static final int AIMDWholeBodySARLimit = 0x20050041;
 
     /** (2005,xx42) VR=FL VM=1 Active Implantable Medical Device B1 RMS Limit */
@@ -287,13 +295,17 @@ public class PrivateTag {
     /** (2005,xx57) VR=LT VM=1 Contrast/Bolus Agent Code */
     public static final int ContrastBolusAgentCode = 0x20050057;
 
-    /** (2005,xx58) VR=LT VM=1 Contrast/Bolus Administration Route Code */
+    /**
+     * (2005,xx58) VR=LT VM=1 Contrast/Bolus Administration Route Code
+     */
     public static final int ContrastBolusAdminRouteCode = 0x20050058;
 
     /** (2005,xx59) VR=DS VM=1 Contrast/Bolus Volume */
     public static final int ContrastBolusVolume = 0x20050059;
 
-    /** (2005,xx5A) VR=DS VM=1 Contrast/Bolus Ingredient Concentration */
+    /**
+     * (2005,xx5A) VR=DS VM=1 Contrast/Bolus Ingredient Concentration
+     */
     public static final int ContrastBolusIngredientConcentration = 0x2005005A;
 
     /** (2005,xx5B) VR=IS VM=1 Contrast/Bolus Dynamic Number */

@@ -74,7 +74,9 @@ public class PrivateTag {
     /** (0051,xx62) VR=DS VM=1 Primary Positioner Scan Start Angle */
     public static final int PrimaryPositionerScanStartAngle = 0x00510062;
 
-    /** (0051,xx63) VR=DS VM=1 Secondary Positioner Scan Start Angle */
+    /**
+     * (0051,xx63) VR=DS VM=1 Secondary Positioner Scan Start Angle
+     */
     public static final int SecondaryPositionerScanStartAngle = 0x00510063;
 
     /** (0051,xx64) VR=DS VM=1 Primary Positioner Increment */

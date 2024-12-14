@@ -49,19 +49,19 @@ public interface Event extends Serializable {
 
     String getObjectKind();
 
-    void setRequestUrl(String url);
-
     @JsonIgnore
     String getRequestUrl();
 
-    void setRequestQueryString(String queryString);
+    void setRequestUrl(String url);
 
     @JsonIgnore
     String getRequestQueryString();
 
-    void setRequestSecretToken(String secretToken);
+    void setRequestQueryString(String queryString);
 
     @JsonIgnore
     String getRequestSecretToken();
+
+    void setRequestSecretToken(String secretToken);
 
 }

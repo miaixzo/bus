@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.lang.annotation;
 
-import org.miaixz.bus.core.lang.Normal;
-
 import java.io.Serializable;
 import java.lang.annotation.*;
+
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * 注解命名

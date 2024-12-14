@@ -56,7 +56,9 @@ public class PrivateTag {
     /** (0029,xx06) VR=SQ VM=1 Registration Instance Sequenc */
     public static final int RegistrationInstanceSequence = 0x00290006;
 
-    /** (0029,xx07) VR=SQ VM=1 Real World Value Mapping Instance Sequenc */
+    /**
+     * (0029,xx07) VR=SQ VM=1 Real World Value Mapping Instance Sequenc
+     */
     public static final int RealWorldValueMappingInstanceSequence = 0x00290007;
 
     /** (0029,xx08) VR=SQ VM=1 Measurement Sequenc */
@@ -98,10 +100,14 @@ public class PrivateTag {
     /** (0029,xx20) VR=IS VM=1 Index Navigation Current Inde */
     public static final int IndexNavigationCurrentIndex = 0x00290020;
 
-    /** (0029,xx21) VR=IS VM=1 Index Auto Navigation Skipping Degre */
+    /**
+     * (0029,xx21) VR=IS VM=1 Index Auto Navigation Skipping Degre
+     */
     public static final int IndexAutoNavigationSkippingDegree = 0x00290021;
 
-    /** (0029,xx22) VR=DS VM=1 Volume Navigation Minimum Pixel Spacin */
+    /**
+     * (0029,xx22) VR=DS VM=1 Volume Navigation Minimum Pixel Spacin
+     */
     public static final int VolumeNavigationMinimumPixelSpacing = 0x00290022;
 
     /** (0029,xx23) VR=CS VM=1 Volume Navigation Scroll Uni */
@@ -140,7 +146,9 @@ public class PrivateTag {
     /** (0029,xx35) VR=IS VM=1 Measurement Application Numbe */
     public static final int MeasurementApplicationNumber = 0x00290035;
 
-    /** (0029,xx36) VR=ST VM=1 Measurement Application Number Prefix Tex */
+    /**
+     * (0029,xx36) VR=ST VM=1 Measurement Application Number Prefix Tex
+     */
     public static final int MeasurementApplicationNumberPrefixText = 0x00290036;
 
     /** (0029,xx37) VR=CS VM=1 Measurement Graphic Is Visible Flag */
@@ -152,19 +160,27 @@ public class PrivateTag {
     /** (0029,xx39) VR=UI VM=1 Clinical Finding UID */
     public static final int ClinicalFindingUID = 0x00290039;
 
-    /** (0029,xx3A) VR=CS VM=1 Measurement Evaluation String Value */
+    /**
+     * (0029,xx3A) VR=CS VM=1 Measurement Evaluation String Value
+     */
     public static final int MeasurementEvaluationStringValue = 0x0029003A;
 
-    /** (0029,xx3B) VR=IS VM=1 Measurement Evaluation Integer Value */
+    /**
+     * (0029,xx3B) VR=IS VM=1 Measurement Evaluation Integer Value
+     */
     public static final int MeasurementEvaluationIntegerValue = 0x0029003B;
 
-    /** (0029,xx3C) VR=FL VM=1 Measurement Evaluation Decimal Value */
+    /**
+     * (0029,xx3C) VR=FL VM=1 Measurement Evaluation Decimal Value
+     */
     public static final int MeasurementEvaluationDecimalValue = 0x0029003C;
 
     /** (0029,xx3D) VR=CS VM=1 Measurement Line Show Center Flag */
     public static final int MeasurementLineShowCenterFlag = 0x0029003D;
 
-    /** (0029,xx3E) VR=CS VM=1 Measurement Angle Show ArrowTip Flag */
+    /**
+     * (0029,xx3E) VR=CS VM=1 Measurement Angle Show ArrowTip Flag
+     */
     public static final int MeasurementAngleShowArrowTipFlag = 0x0029003E;
 
     /** (0029,xx3F) VR=SQ VM=1 Camera Home Settings Sequence */
@@ -218,7 +234,9 @@ public class PrivateTag {
     /** (0029,xx4F) VR=DS VM=3 Parallel Shift BoundingBox Maximu */
     public static final int ParallelShiftBoundingBoxMaximum = 0x0029004F;
 
-    /** (0029,xx50) VR=CS VM=1 Renderer Vertex Is Characteristic Flag */
+    /**
+     * (0029,xx50) VR=CS VM=1 Renderer Vertex Is Characteristic Flag
+     */
     public static final int RendererVertexIsCharacteristicFlag = 0x00290050;
 
     /** (0029,xx51) VR=CS VM=1 Renderer Thickness Usage Fla */
@@ -233,13 +251,19 @@ public class PrivateTag {
     /** (0029,xx54) VR=DS VM=4 Renderer DirectionalLight Colo */
     public static final int RendererDirectionalLightColor = 0x00290054;
 
-    /** (0029,xx55) VR=DS VM=3 Renderer DirectionalLight Directio */
+    /**
+     * (0029,xx55) VR=DS VM=3 Renderer DirectionalLight Directio
+     */
     public static final int RendererDirectionalLightDirection = 0x00290055;
 
-    /** (0029,xx56) VR=CS VM=1 Renderer DirectionalLight TwoSide Usage Fla */
+    /**
+     * (0029,xx56) VR=CS VM=1 Renderer DirectionalLight TwoSide Usage Fla
+     */
     public static final int RendererDirectionalLightTwoSideUsageFlag = 0x00290056;
 
-    /** (0029,xx57) VR=SQ VM=1 Renderer PWL TransferFunction Sequenc */
+    /**
+     * (0029,xx57) VR=SQ VM=1 Renderer PWL TransferFunction Sequenc
+     */
     public static final int RendererPWLTransferFunctionSequence = 0x00290057;
 
     /** (0029,xx58) VR=IS VM=0-n Renderer PWL Vertex Inde */
@@ -254,7 +278,9 @@ public class PrivateTag {
     /** (0029,xx5B) VR=CS VM=1 Renderer Do Depth Test Flag */
     public static final int RendererDoDepthTestFlag = 0x0029005B;
 
-    /** (0029,xx5C) VR=CS VM=1 Renderer Directional Light Usage Fla */
+    /**
+     * (0029,xx5C) VR=CS VM=1 Renderer Directional Light Usage Fla
+     */
     public static final int RendererDirectionalLightUsageFlag = 0x0029005C;
 
     /** (0029,xx5D) VR=SQ VM=1 Renderer Thickness Sequenc */
@@ -275,7 +301,9 @@ public class PrivateTag {
     /** (0029,xx62) VR=UI VM=0-n Segmentation Display Data UI */
     public static final int SegmentationDisplayDataUID = 0x00290062;
 
-    /** (0029,xx63) VR=SQ VM=1 Segmentation Display Parameter Sequenc */
+    /**
+     * (0029,xx63) VR=SQ VM=1 Segmentation Display Parameter Sequenc
+     */
     public static final int SegmentationDisplayParameterSequence = 0x00290063;
 
     /** (0029,xx64) VR=LO VM=1 Segmentation Display Parameter Typ */
@@ -287,10 +315,14 @@ public class PrivateTag {
     /** (0029,xx66) VR=DS VM=4 Segmentation Display Colo */
     public static final int SegmentationDisplayColor = 0x00290066;
 
-    /** (0029,xx67) VR=CS VM=1 Segmentation Display is Selected Flag */
+    /**
+     * (0029,xx67) VR=CS VM=1 Segmentation Display is Selected Flag
+     */
     public static final int SegmentationDisplayIsSelectedFlag = 0x00290067;
 
-    /** (0029,xx68) VR=OB VM=1 Segmentation Additional Information Blob */
+    /**
+     * (0029,xx68) VR=OB VM=1 Segmentation Additional Information Blob
+     */
     public static final int SegmentationAdditionalInformationBlob = 0x00290068;
 
     /** (0029,xx69) VR=ST VM=1 Hash Code Value */
@@ -305,16 +337,22 @@ public class PrivateTag {
     /** (0029,xx71) VR=UI VM=1-n Registration Referenced Frame */
     public static final int RegistrationReferencedFrames = 0x00290071;
 
-    /** (0029,xx72) VR=UI VM=1-n Registration Referenced Registrations */
+    /**
+     * (0029,xx72) VR=UI VM=1-n Registration Referenced Registrations
+     */
     public static final int RegistrationReferencedRegistrations = 0x00290072;
 
-    /** (0029,xx73) VR=LO VM=1 Registration Creation Algorithm Name */
+    /**
+     * (0029,xx73) VR=LO VM=1 Registration Creation Algorithm Name
+     */
     public static final int RegistrationCreationAlgorithmName = 0x00290073;
 
     /** (0029,xx74) VR=CS VM=1 ECG Graphic Type */
     public static final int ECGGraphicType = 0x00290074;
 
-    /** (0029,xx7A) VR=DS VM=1 Segmentation Volume Storage Data Type */
+    /**
+     * (0029,xx7A) VR=DS VM=1 Segmentation Volume Storage Data Type
+     */
     public static final int SegmentationVolumeStorageDataType = 0x0029007A;
 
     /** (0029,xx7B) VR=FL VM=16 Segmentation Volume Model Matrix */
@@ -326,10 +364,14 @@ public class PrivateTag {
     /** (0029,xx81) VR=SL VM=0-n Overlay Hidden Display Attributes */
     public static final int OverlayHiddenDisplayAttributes = 0x00290081;
 
-    /** (0029,xx82) VR=LO VM=1 Presentation State Group Identifier */
+    /**
+     * (0029,xx82) VR=LO VM=1 Presentation State Group Identifier
+     */
     public static final int PresentationStateGroupIdentifier = 0x00290082;
 
-    /** (0029,xx83) VR=US VM=1 Temporary Smallest Image Pixel Value */
+    /**
+     * (0029,xx83) VR=US VM=1 Temporary Smallest Image Pixel Value
+     */
     public static final int TemporarySmallestImagePixelValue = 0x00290083;
 
     /** (0029,xx84) VR=DS VM=3 Camera Rotation Cente */
@@ -365,10 +407,14 @@ public class PrivateTag {
     /** (0029,xx8E) VR=LO VM=1 Measurement Algorithm Type */
     public static final int MeasurementAlgorithmType = 0x0029008E;
 
-    /** (0029,xx91) VR=SQ VM=1 Measurement Evaluation DataRole Sequenc */
+    /**
+     * (0029,xx91) VR=SQ VM=1 Measurement Evaluation DataRole Sequenc
+     */
     public static final int MeasurementEvaluationDataRoleSequence = 0x00290091;
 
-    /** (0029,xx92) VR=CS VM=1 Measurement Evaluation DataRole Ite */
+    /**
+     * (0029,xx92) VR=CS VM=1 Measurement Evaluation DataRole Ite
+     */
     public static final int MeasurementEvaluationDataRoleItem = 0x00290092;
 
     /** (0029,xx93) VR=SQ VM=1 Measurement Evaluation Sequenc */
@@ -392,10 +438,14 @@ public class PrivateTag {
     /** (0029,xx99) VR=FL VM=1 Measurement Data Slice Thicknes */
     public static final int MeasurementDataSliceThickness = 0x00290099;
 
-    /** (0029,xx9A) VR=SQ VM=1 Measurement Referenced Frames Sequenc */
+    /**
+     * (0029,xx9A) VR=SQ VM=1 Measurement Referenced Frames Sequenc
+     */
     public static final int MeasurementReferencedFramesSequence = 0x0029009A;
 
-    /** (0029,xx9B) VR=DS VM=0-n Measurement Evaluation Longest Distanc */
+    /**
+     * (0029,xx9B) VR=DS VM=0-n Measurement Evaluation Longest Distanc
+     */
     public static final int MeasurementEvaluationLongestDistance = 0x0029009B;
 
     /** (0029,xx9C) VR=DS VM=0-n Measurement Evaluation Centroi */
@@ -443,10 +493,14 @@ public class PrivateTag {
     /** (0029,xxAB) VR=IS VM=1 Softcopy VOI LUT Viewing Index */
     public static final int SoftcopyVOILUTViewingIndex = 0x002900AB;
 
-    /** (0029,xxAC) VR=FD VM=2 Displayed Area Bottom Right Hand Corner Fractional */
+    /**
+     * (0029,xxAC) VR=FD VM=2 Displayed Area Bottom Right Hand Corner Fractional
+     */
     public static final int DisplayedAreaBottomRightHandCornerFractional = 0x002900AC;
 
-    /** (0029,xxAD) VR=FD VM=2 Displayed Area Top Left Hand Corner Fractional */
+    /**
+     * (0029,xxAD) VR=FD VM=2 Displayed Area Top Left Hand Corner Fractional
+     */
     public static final int DisplayedAreaTopLeftHandCornerFractional = 0x002900AD;
 
     /** (0029,xxAE) VR=FL VM=1 Measurement Alpha */
@@ -473,13 +527,19 @@ public class PrivateTag {
     /** (0029,xxB5) VR=LO VM=1 ? */
     public static final int _0029_xxB5_ = 0x002900B5;
 
-    /** (0029,xxB6) VR=CS VM=1 Measurement Link Evaluation Text Flag */
+    /**
+     * (0029,xxB6) VR=CS VM=1 Measurement Link Evaluation Text Flag
+     */
     public static final int MeasurementLinkEvaluationTextFlag = 0x002900B6;
 
-    /** (0029,xxB7) VR=DS VM=3 Measurement Evaluation Text Position Vector */
+    /**
+     * (0029,xxB7) VR=DS VM=3 Measurement Evaluation Text Position Vector
+     */
     public static final int MeasurementEvaluationTextPositionVector = 0x002900B7;
 
-    /** (0029,xxB8) VR=OB VM=1 Image Text Alpha Blending Line Value */
+    /**
+     * (0029,xxB8) VR=OB VM=1 Image Text Alpha Blending Line Value
+     */
     public static final int ImageTextAlphaBlendingLineValue = 0x002900B8;
 
     /** (0029,xxC1) VR=SQ VM=1 Task Data Sequence */
@@ -563,7 +623,9 @@ public class PrivateTag {
     /** (0029,xxF2) VR=DS VM=1 Curved Camera Point of Interest */
     public static final int CurvedCameraPointOfInterest = 0x002900F2;
 
-    /** (0029,xxF3) VR=CS VM=1 Curved Camera Point of Interest Usage Flag */
+    /**
+     * (0029,xxF3) VR=CS VM=1 Curved Camera Point of Interest Usage Flag
+     */
     public static final int CurvedCameraPointOfInterestUsageFlag = 0x002900F3;
 
     /** (0029,xxF4) VR=DS VM=1 Curved Camera Thickness */

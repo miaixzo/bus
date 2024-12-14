@@ -46,6 +46,7 @@ import java.util.function.Function;
 import org.miaixz.bus.core.center.date.format.FormatBuilder;
 import org.miaixz.bus.core.center.date.format.FormatManager;
 import org.miaixz.bus.core.lang.Fields;
+import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.LambdaKit;
@@ -469,7 +470,21 @@ public class Formatter {
      * @param timeZone {@link TimeZone}，{@code null}表示默认
      * @return {@link SimpleDateFormat}
      */
-    public static SimpleDateFormat newSimpleFormat(final String pattern, Locale locale, final TimeZone timeZone) {
+    public static SimpleDateFormat newSimpleFormat(final String pattern, final Locale locale, final TimeZone timeZone) {
+        return newSimpleFormat(pattern, locale, timeZone, Keys.getBoolean(Keys.DATE_LENIENT, false));
+    }
+
+    /**
+     * 创建{@link SimpleDateFormat}，注意此对象非线程安全！ 此对象默认为严格格式模式，即parse时如果格式不正确会报错。
+     *
+     * @param pattern  表达式
+     * @param locale   {@link Locale}，{@code null}表示默认
+     * @param timeZone {@link TimeZone}，{@code null}表示默认
+     * @param lenient  是否宽松模式
+     * @return {@link SimpleDateFormat}
+     */
+    public static SimpleDateFormat newSimpleFormat(final String pattern, Locale locale, final TimeZone timeZone,
+            final boolean lenient) {
         if (null == locale) {
             locale = Locale.getDefault(Locale.Category.FORMAT);
         }
@@ -477,7 +492,7 @@ public class Formatter {
         if (null != timeZone) {
             format.setTimeZone(timeZone);
         }
-        format.setLenient(false);
+        format.setLenient(lenient);
         return format;
     }
 

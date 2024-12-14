@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.http.plugin.httpv;
 
-import org.miaixz.bus.core.lang.MediaType;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.http.Callback;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ExecutorService;
+
+import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.http.Callback;
 
 public class CoverTasks {
     /**

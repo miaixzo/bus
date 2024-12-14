@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.center.set;
 
-import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
-
 import java.util.Collection;
+
+import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
 
 /**
  * 通过{@link SafeConcurrentHashMap}实现的线程安全HashSet

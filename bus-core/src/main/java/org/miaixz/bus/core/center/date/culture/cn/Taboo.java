@@ -145,10 +145,6 @@ public class Taboo extends Samsara {
         return getTaboos(hourTaboo, hour.getEarthBranch().getIndex(), day.getIndex(), 1);
     }
 
-    public Taboo next(int n) {
-        return fromIndex(nextIndex(n));
-    }
-
     private static List<Taboo> getTaboos(String[] data, int supIndex, int subIndex, int index) {
         List<Taboo> l = new ArrayList<>();
         String d = data[supIndex].split(";", -1)[subIndex].split(",", -1)[index];
@@ -156,6 +152,10 @@ public class Taboo extends Samsara {
             l.add(Taboo.fromIndex(Integer.parseInt(d.substring(i, i + 2), 16)));
         }
         return l;
+    }
+
+    public Taboo next(int n) {
+        return fromIndex(nextIndex(n));
     }
 
 }

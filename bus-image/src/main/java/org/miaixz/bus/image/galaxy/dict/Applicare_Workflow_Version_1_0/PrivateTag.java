@@ -41,7 +41,9 @@ public class PrivateTag {
     /** (3113,xx10) VR=SH VM=1 Scheduled Action Item Code Value */
     public static final int ScheduledActionItemCodeValue = 0x31130010;
 
-    /** (3113,xx11) VR=SH VM=1 Scheduled Action Item Coding Scheme Designator */
+    /**
+     * (3113,xx11) VR=SH VM=1 Scheduled Action Item Coding Scheme Designator
+     */
     public static final int ScheduledActionItemCodingSchemeDesignator = 0x31130011;
 
     /** (3113,xx12) VR=LO VM=1 Scheduled Action Item Code Meaning */
@@ -50,7 +52,9 @@ public class PrivateTag {
     /** (3113,xx15) VR=SH VM=1 Requested Action Item Code Value */
     public static final int RequestedActionItemCodeValue = 0x31130015;
 
-    /** (3113,xx16) VR=SH VM=1 Requested Action Item Coding Scheme Designator */
+    /**
+     * (3113,xx16) VR=SH VM=1 Requested Action Item Coding Scheme Designator
+     */
     public static final int RequestedActionItemCodingSchemeDesignator = 0x31130016;
 
     /** (3113,xx17) VR=LO VM=1 Requested Action Item Code Meaning */
@@ -59,7 +63,9 @@ public class PrivateTag {
     /** (3113,xx20) VR=SH VM=1 Performed Action Item Code Value */
     public static final int PerformedActionItemCodeValue = 0x31130020;
 
-    /** (3113,xx21) VR=SH VM=1 Performed Action Item Coding Scheme Designator */
+    /**
+     * (3113,xx21) VR=SH VM=1 Performed Action Item Coding Scheme Designator
+     */
     public static final int PerformedActionItemCodingSchemeDesignator = 0x31130021;
 
     /** (3113,xx22) VR=LO VM=1 Performed Action Item Code Meaning */
@@ -68,7 +74,9 @@ public class PrivateTag {
     /** (3113,xx25) VR=SH VM=1 Performed Procedure Code Value */
     public static final int PerformedProcedureCodeValue = 0x31130025;
 
-    /** (3113,xx26) VR=SH VM=1 Performed Procedure Coding Scheme Designator */
+    /**
+     * (3113,xx26) VR=SH VM=1 Performed Procedure Coding Scheme Designator
+     */
     public static final int PerformedProcedureCodingSchemeDesignator = 0x31130026;
 
     /** (3113,xx27) VR=LO VM=1 Performed Procedure Code Meaning */

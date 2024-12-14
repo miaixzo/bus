@@ -79,6 +79,9 @@ public class Boundary extends Range<DateTime> {
     public Boundary(final Date start, final Date end, final Various unit, final int step, final boolean isIncludeStart,
             final boolean isIncludeEnd) {
         super(DateKit.date(start), DateKit.date(end), (current, end1, index) -> {
+            if (step <= 0) {
+                return null;
+            }
             final DateTime dt = DateKit.date(start).offsetNew(unit, (index + 1) * step);
             if (dt.isAfter(end1)) {
                 return null;

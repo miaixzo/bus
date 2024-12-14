@@ -70,10 +70,22 @@ public enum DataUnit {
      */
     TERABYTES("TB", DataSize.ofTerabytes(1));
 
+    /**
+     * 单位后缀
+     */
     private final String suffix;
 
+    /**
+     * 数据大小
+     */
     private final DataSize size;
 
+    /**
+     * 构造
+     *
+     * @param suffix 单位后缀
+     * @param size   单位大小
+     */
     DataUnit(final String suffix, final DataSize size) {
         this.suffix = suffix;
         this.size = size;
@@ -96,7 +108,21 @@ public enum DataUnit {
         throw new IllegalArgumentException("Unknown data unit suffix '" + suffix + "'");
     }
 
-    DataSize size() {
+    /**
+     * 单位后缀
+     *
+     * @return 单位后缀
+     */
+    public String getSuffix() {
+        return this.suffix;
+    }
+
+    /**
+     * 单位大小
+     *
+     * @return 单位大小
+     */
+    DataSize getSize() {
         return this.size;
     }
 

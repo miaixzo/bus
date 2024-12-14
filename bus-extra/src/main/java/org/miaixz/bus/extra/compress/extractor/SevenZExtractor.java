@@ -27,6 +27,13 @@
 */
 package org.miaixz.bus.extra.compress.extractor;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.channels.SeekableByteChannel;
+import java.util.RandomAccess;
+import java.util.function.Predicate;
+
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.sevenz.SevenZArchiveEntry;
 import org.apache.commons.compress.archivers.sevenz.SevenZFile;
@@ -35,13 +42,6 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.channels.SeekableByteChannel;
-import java.util.RandomAccess;
-import java.util.function.Predicate;
 
 /**
  * 7z格式数据解压器，即将归档打包的数据释放

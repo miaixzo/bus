@@ -50,7 +50,9 @@ public class PrivateTag {
     /** (0073,xx32) VR=OW VM=1 Y Map Plane Indices */
     public static final int YMapPlaneIndices = 0x00730032;
 
-    /** (0073,xx40) VR=DS VM=1 Central Projection Detector Secondary Angle */
+    /**
+     * (0073,xx40) VR=DS VM=1 Central Projection Detector Secondary Angle
+     */
     public static final int CentralProjectionDetectorSecondaryAngle = 0x00730040;
 
     /** (0073,xx50) VR=DS VM=2 Detector Active Dimensions */

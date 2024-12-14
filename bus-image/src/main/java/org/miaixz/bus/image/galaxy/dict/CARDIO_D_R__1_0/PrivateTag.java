@@ -53,10 +53,14 @@ public class PrivateTag {
     /** (0019,xx04) VR=IS VM=1 Image Blanking Right Vertical Edge */
     public static final int ImageBlankingRightVerticalEdge = 0x00190004;
 
-    /** (0019,xx06) VR=IS VM=1 Image Blanking Upper Horizontal Edge */
+    /**
+     * (0019,xx06) VR=IS VM=1 Image Blanking Upper Horizontal Edge
+     */
     public static final int ImageBlankingUpperHorizontalEdge = 0x00190006;
 
-    /** (0019,xx08) VR=IS VM=1 Image Blanking Lower Horizontal Edge */
+    /**
+     * (0019,xx08) VR=IS VM=1 Image Blanking Lower Horizontal Edge
+     */
     public static final int ImageBlankingLowerHorizontalEdge = 0x00190008;
 
     /** (0019,xx10) VR=IS VM=1 Center of Circular Image Blanking */

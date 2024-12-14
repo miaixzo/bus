@@ -132,12 +132,12 @@ public class User extends AbstractUser<User> {
         this.external = external;
     }
 
-    public void setExternUid(String externUid) {
-        this.externUid = externUid;
-    }
-
     public String getExternUid() {
         return this.externUid;
+    }
+
+    public void setExternUid(String externUid) {
+        this.externUid = externUid;
     }
 
     public Integer getExtraSharedRunnersMinutesLimit() {

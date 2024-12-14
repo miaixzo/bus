@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.crypto.center;
 
+import java.security.SecureRandom;
+
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-
-import java.security.SecureRandom;
 
 /**
  * BCrypt加密算法实现。由它加密的文件可在所有支持的操作系统和处理器上进行转移。它的口令必须是8至56个字符，并将在内部被转化为448位的密钥。

@@ -42,7 +42,6 @@ import org.miaixz.bus.core.io.file.PathResolve;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 
@@ -74,7 +73,7 @@ public class CsvBaseReader implements Serializable {
      * @param config 配置项
      */
     public CsvBaseReader(final CsvReadConfig config) {
-        this.config = ObjectKit.defaultIfNull(config, CsvReadConfig::defaultConfig);
+        this.config = ObjectKit.defaultIfNull(config, CsvReadConfig::of);
     }
 
     /**

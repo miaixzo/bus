@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.http.plugin.httpv;
 
+import java.io.*;
+
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Callback;
-
-import java.io.*;
 
 /**
  * 文件下载

@@ -752,7 +752,9 @@ public class PrivateTag {
     /** (07A3,xx61) VR=LT VM=1 Tamar Nondicom Annotations */
     public static final int TamarNondicomAnnotations = 0x07A30061;
 
-    /** (07A3,xx62) VR=SQ VM=1 Tamar Nondicom Annotations Sequence */
+    /**
+     * (07A3,xx62) VR=SQ VM=1 Tamar Nondicom Annotations Sequence
+     */
     public static final int TamarNondicomAnnotationsSequence = 0x07A30062;
 
     /** (07A3,xx63) VR=SQ VM=1 ? */
@@ -833,7 +835,9 @@ public class PrivateTag {
     /** (07A3,xxCC) VR=LO VM=1 Tamar Grid Token Version */
     public static final int TamarGridTokenVersion = 0x07A300CC;
 
-    /** (07A3,xxD0) VR=SQ VM=1 Tamar Original Nested Elements Sequence */
+    /**
+     * (07A3,xxD0) VR=SQ VM=1 Tamar Original Nested Elements Sequence
+     */
     public static final int TamarOriginalNestedElementsSequence = 0x07A300D0;
 
     /** (07A3,xxD1) VR=US VM=1 Tamar Nested Element Number */
@@ -875,7 +879,9 @@ public class PrivateTag {
     /** (07A5,xx54) VR=DT VM=1 Tamar Reports Update Date */
     public static final int TamarReportsUpdateDate = 0x07A50054;
 
-    /** (07A5,xx56) VR=CS VM=1 Tamar Referring Physicians Study Read */
+    /**
+     * (07A5,xx56) VR=CS VM=1 Tamar Referring Physicians Study Read
+     */
     public static final int TamarReferringPhysiciansStudyRead = 0x07A50056;
 
     /** (07A5,xx59) VR=IS VM=1 ? */

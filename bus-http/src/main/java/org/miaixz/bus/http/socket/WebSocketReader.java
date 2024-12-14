@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.http.socket;
 
+import java.io.IOException;
+import java.net.ProtocolException;
+import java.util.concurrent.TimeUnit;
+
 import org.miaixz.bus.core.io.ByteString;
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.lang.Normal;
-
-import java.io.IOException;
-import java.net.ProtocolException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 兼容的WebSocket框架阅读器. 这个类不是线程安全的

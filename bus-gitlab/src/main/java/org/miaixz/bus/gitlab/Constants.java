@@ -694,16 +694,17 @@ public interface Constants {
 
         BZ2, TAR, TAR_BZ2, TAR_GZ, TB2, TBZ, TBZ2, ZIP;
 
+        private static Map<String, ArchiveFormat> valuesMap = new HashMap<String, ArchiveFormat>(8);
+
+        static {
+            for (ArchiveFormat archiveFormat : ArchiveFormat.values())
+                valuesMap.put(archiveFormat.value, archiveFormat);
+        }
+
         private final String value;
 
         ArchiveFormat() {
             this.value = name().toLowerCase().replace('_', '.');
-        }
-
-        private static Map<String, ArchiveFormat> valuesMap = new HashMap<String, ArchiveFormat>(8);
-        static {
-            for (ArchiveFormat archiveFormat : ArchiveFormat.values())
-                valuesMap.put(archiveFormat.value, archiveFormat);
         }
 
         public static ArchiveFormat forValue(String value) throws GitLabApiException {

@@ -27,10 +27,11 @@
 */
 package org.miaixz.bus.starter.socket;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * 配置信息 1. 默认读取配置文件信息 2. 可以自己从写部分类等

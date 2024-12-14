@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.health.mac.hardware;
 
+import java.util.*;
+import java.util.stream.Collectors;
+
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.builtin.hardware.LogicalVolumeGroup;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractLogicalVolumeGroup;
-
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author Kimi Liu

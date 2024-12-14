@@ -799,7 +799,7 @@ public class Convert {
      * @param text    待转换的ASCII字符串
      * @param charset 编码
      * @return 16进制字符串
-     * @see HexKit#encodeString(String, java.nio.charset.Charset)
+     * @see HexKit#encodeString(CharSequence, java.nio.charset.Charset)
      */
     public static String toHex(final String text, final java.nio.charset.Charset charset) {
         return HexKit.encodeString(text, charset);
@@ -830,24 +830,24 @@ public class Convert {
     /**
      * 十六进制转换字符串
      *
-     * @param hexStr  Byte字符串(Byte之间无分隔符 如:[616C6B])
+     * @param data    Byte字符串(Byte之间无分隔符 如:[616C6B])
      * @param charset 编码 {@link java.nio.charset.Charset}
      * @return 对应的字符串
-     * @see HexKit#decodeString(String, java.nio.charset.Charset)
+     * @see HexKit#decodeString(CharSequence, java.nio.charset.Charset)
      */
-    public static String hexToString(final String hexStr, final java.nio.charset.Charset charset) {
-        return HexKit.decodeString(hexStr, charset);
+    public static String hexToString(final CharSequence data, final java.nio.charset.Charset charset) {
+        return HexKit.decodeString(data, charset);
     }
 
     /**
      * String的字符串转换成unicode的String
      *
-     * @param strText 全角字符串
+     * @param data 全角字符串
      * @return String 每个unicode之间无分隔符
-     * @see UnicodeKit#toUnicode(String)
+     * @see UnicodeKit#toUnicode(CharSequence)
      */
-    public static String strToUnicode(final String strText) {
-        return UnicodeKit.toUnicode(strText);
+    public static String strToUnicode(final String data) {
+        return UnicodeKit.toUnicode(data);
     }
 
     /**

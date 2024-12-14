@@ -27,6 +27,13 @@
 */
 package org.miaixz.bus.core.lang.annotation.resolve;
 
+import java.lang.annotation.Annotation;
+import java.lang.annotation.Inherited;
+import java.lang.reflect.AnnotatedElement;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Stream;
+
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.lang.annotation.Alias;
 import org.miaixz.bus.core.lang.annotation.resolve.elements.HierarchicalAnnotatedElements;
@@ -35,13 +42,6 @@ import org.miaixz.bus.core.lang.annotation.resolve.elements.RepeatableMetaAnnota
 import org.miaixz.bus.core.xyz.AnnoKit;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
-
-import java.lang.annotation.Annotation;
-import java.lang.annotation.Inherited;
-import java.lang.reflect.AnnotatedElement;
-import java.util.Map;
-import java.util.Objects;
-import java.util.stream.Stream;
 
 /**
  * {@link AnnotatedElement}工具类，提供对层级结构中{@link AnnotatedElement}上注解及元注解的访问支持，

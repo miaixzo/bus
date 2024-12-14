@@ -55,7 +55,7 @@ public class HL7Snd extends Device {
     private Socket sock;
     private MLLPConnection mllp;
 
-    public HL7Snd() throws IOException {
+    public HL7Snd() {
         super("hl7snd");
         addConnection(conn);
     }

@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.center.map;
 
-import org.miaixz.bus.core.lang.Normal;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * 驼峰Key风格的LinkedHashMap 对KEY转换为驼峰，get("int_value")和get("intValue")获得的值相同，put进入的值也会被覆盖

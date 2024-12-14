@@ -47,7 +47,9 @@ public class PrivateTag {
     /** (0025,xx11) VR=SS VM=1 Number Of Acquisitions */
     public static final int NumberOfAcquisitions = 0x00250011;
 
-    /** (0025,xx14) VR=SL VM=1 Indicates Number Of Updates To Header */
+    /**
+     * (0025,xx14) VR=SL VM=1 Indicates Number Of Updates To Header
+     */
     public static final int IndicatesNumberOfUpdatesToHeader = 0x00250014;
 
     /** (0025,xx17) VR=SL VM=1 Series Complete Flag */

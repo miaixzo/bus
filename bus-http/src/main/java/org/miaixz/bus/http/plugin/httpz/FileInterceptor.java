@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.http.plugin.httpz;
 
+import java.io.IOException;
+
 import org.miaixz.bus.core.io.buffer.Buffer;
 import org.miaixz.bus.core.io.source.AssignSource;
 import org.miaixz.bus.core.io.source.BufferSource;
@@ -37,8 +39,6 @@ import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.bodys.ResponseBody;
 import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.metric.NewChain;
-
-import java.io.IOException;
 
 /**
  * 请求参数-文件处理

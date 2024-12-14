@@ -251,13 +251,19 @@ public class PrivateTag {
     /** (0029,xx80) VR=LT VM=1 Physiological Display ID */
     public static final int PhysiologicalDisplayID = 0x00290080;
 
-    /** (0029,xx81) VR=US VM=1 Preferred Physiological Channel Display */
+    /**
+     * (0029,xx81) VR=US VM=1 Preferred Physiological Channel Display
+     */
     public static final int PreferredPhysiologicalChannelDisplay = 0x00290081;
 
-    /** (0029,xx8E) VR=CS VM=1 Physiological Display Enable Status */
+    /**
+     * (0029,xx8E) VR=CS VM=1 Physiological Display Enable Status
+     */
     public static final int PhysiologicalDisplayEnableStatus = 0x0029008E;
 
-    /** (0029,xx8F) VR=CS VM=1 Physiological Display Select Status */
+    /**
+     * (0029,xx8F) VR=CS VM=1 Physiological Display Select Status
+     */
     public static final int PhysiologicalDisplaySelectStatus = 0x0029008F;
 
     /** (0029,xx90) VR=DS VM=1-n ? */

@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.mapper.additional.aggregation;
 
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * 聚合查询条件

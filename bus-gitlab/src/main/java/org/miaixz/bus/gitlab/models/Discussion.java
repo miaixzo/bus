@@ -44,20 +44,20 @@ public class Discussion implements Serializable {
         return id;
     }
 
-    public Boolean getIndividualNote() {
-        return individualNote;
-    }
-
-    public List<Note> getNotes() {
-        return notes;
-    }
-
     public void setId(String id) {
         this.id = id;
     }
 
+    public Boolean getIndividualNote() {
+        return individualNote;
+    }
+
     public void setIndividualNote(Boolean individualNote) {
         this.individualNote = individualNote;
+    }
+
+    public List<Note> getNotes() {
+        return notes;
     }
 
     public void setNotes(List<Note> notes) {

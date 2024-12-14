@@ -157,7 +157,7 @@ public class JschSftp extends AbstractFtp {
                         connector.getUser(), connector.getPassword(), connector.getTimeout())).getRaw();
             }
 
-            if (false == session.isConnected()) {
+            if (!session.isConnected()) {
                 // 首先Session需连接
                 try {
                     session.connect((int) this.ftpConfig.getConnector().getTimeout());

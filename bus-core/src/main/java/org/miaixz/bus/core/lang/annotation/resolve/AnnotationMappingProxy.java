@@ -27,11 +27,6 @@
 */
 package org.miaixz.bus.core.lang.annotation.resolve;
 
-import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.xyz.MethodKit;
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -43,6 +38,11 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.core.center.map.concurrent.SafeConcurrentHashMap;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.text.CharsBacker;
+import org.miaixz.bus.core.xyz.MethodKit;
 
 /**
  * 代理注解处理器，用于为{@link AnnotationMapping}生成代理对象，当从该代理对象上获取属性值时，

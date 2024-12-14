@@ -201,6 +201,10 @@ public abstract class AbstractPushEvent {
         return (requestSecretToken);
     }
 
+    public void setRequestSecretToken(String secretToken) {
+        this.requestSecretToken = secretToken;
+    }
+
     /**
      * Gets the branch name from the ref. Will return null if the ref does not start with "refs/heads/".
      *
@@ -221,10 +225,6 @@ public abstract class AbstractPushEvent {
         }
 
         return (ref.substring(REFS_HEADS.length()));
-    }
-
-    public void setRequestSecretToken(String secretToken) {
-        this.requestSecretToken = secretToken;
     }
 
 }

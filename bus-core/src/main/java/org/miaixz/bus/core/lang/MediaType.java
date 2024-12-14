@@ -669,6 +669,39 @@ public class MediaType {
         return map;
     }
 
+    public static boolean isSTLType(MediaType mediaType) {
+        return equalsIgnoreParameters(mediaType, MODEL_STL_TYPE)
+                || equalsIgnoreParameters(mediaType, MODEL_X_STL_BINARY_TYPE)
+                || equalsIgnoreParameters(mediaType, APPLICATION_SLA_TYPE);
+    }
+
+    public static boolean isSTLType(String type) {
+        return MODEL_STL.equalsIgnoreCase(type) || MODEL_X_STL_BINARY.equalsIgnoreCase(type)
+                || APPLICATION_SLA.equalsIgnoreCase(type);
+    }
+
+    public static boolean equalsIgnoreParameters(MediaType type1, MediaType type2) {
+        return type1.getType().equalsIgnoreCase(type2.getType())
+                && type1.getSubtype().equalsIgnoreCase(type2.getSubtype());
+    }
+
+    public static MediaType getMultiPartRelatedType(MediaType mediaType) {
+        if (!MULTIPART_RELATED_TYPE.isCompatible(mediaType))
+            return null;
+
+        String type = mediaType.getParameters().get("type");
+        if (type == null)
+            return MediaType.WILDCARD_TYPE;
+
+        MediaType partType = MediaType.valueOf(type);
+        if (mediaType.getParameters().size() > 1) {
+            Map<String, String> params = new HashMap<>(mediaType.getParameters());
+            params.remove("type");
+            partType = new MediaType(partType.getType(), partType.getSubtype(), params);
+        }
+        return partType;
+    }
+
     public boolean equals(Object object) {
         if (!(object instanceof MediaType)) {
             return false;
@@ -744,39 +777,6 @@ public class MediaType {
                 || (type.equalsIgnoreCase(mediaType.type)
                         && (subtype.equals(MEDIA_TYPE_WILDCARD) || mediaType.subtype.equals(MEDIA_TYPE_WILDCARD)))
                 || (type.equalsIgnoreCase(mediaType.type) && this.subtype.equalsIgnoreCase(mediaType.subtype)));
-    }
-
-    public static boolean isSTLType(MediaType mediaType) {
-        return equalsIgnoreParameters(mediaType, MODEL_STL_TYPE)
-                || equalsIgnoreParameters(mediaType, MODEL_X_STL_BINARY_TYPE)
-                || equalsIgnoreParameters(mediaType, APPLICATION_SLA_TYPE);
-    }
-
-    public static boolean isSTLType(String type) {
-        return MODEL_STL.equalsIgnoreCase(type) || MODEL_X_STL_BINARY.equalsIgnoreCase(type)
-                || APPLICATION_SLA.equalsIgnoreCase(type);
-    }
-
-    public static boolean equalsIgnoreParameters(MediaType type1, MediaType type2) {
-        return type1.getType().equalsIgnoreCase(type2.getType())
-                && type1.getSubtype().equalsIgnoreCase(type2.getSubtype());
-    }
-
-    public static MediaType getMultiPartRelatedType(MediaType mediaType) {
-        if (!MULTIPART_RELATED_TYPE.isCompatible(mediaType))
-            return null;
-
-        String type = mediaType.getParameters().get("type");
-        if (type == null)
-            return MediaType.WILDCARD_TYPE;
-
-        MediaType partType = MediaType.valueOf(type);
-        if (mediaType.getParameters().size() > 1) {
-            Map<String, String> params = new HashMap<>(mediaType.getParameters());
-            params.remove("type");
-            partType = new MediaType(partType.getType(), partType.getSubtype(), params);
-        }
-        return partType;
     }
 
 }

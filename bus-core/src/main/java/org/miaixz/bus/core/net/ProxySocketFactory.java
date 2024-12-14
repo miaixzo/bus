@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.core.net;
 
-import javax.net.SocketFactory;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.Socket;
+
+import javax.net.SocketFactory;
 
 /**
  * 代理Socket工厂，用于创建代理Socket

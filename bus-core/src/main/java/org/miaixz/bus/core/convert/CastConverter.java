@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.convert;
 
-import org.miaixz.bus.core.lang.exception.ConvertException;
-
 import java.io.Serializable;
 import java.lang.reflect.Type;
+
+import org.miaixz.bus.core.lang.exception.ConvertException;
 
 /**
  * 强转转换器
@@ -40,12 +40,11 @@ import java.lang.reflect.Type;
  */
 public class CastConverter implements MatcherConverter, Serializable {
 
-    private static final long serialVersionUID = -1L;
-
     /**
      * 单例
      */
     public static final CastConverter INSTANCE = new CastConverter();
+    private static final long serialVersionUID = -1L;
 
     @Override
     public boolean match(final Type targetType, final Class<?> rawType, final Object value) {

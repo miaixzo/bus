@@ -70,9 +70,9 @@ public class CellSetterFactory {
             return new HyperlinkCellSetter((Hyperlink) value);
         } else if (value instanceof byte[]) {
             // 二进制理解为图片
-            return new ImgCellSetter((byte[]) value);
+            return new PictureCellSetter((byte[]) value);
         } else if (value instanceof File) {
-            return new ImgCellSetter((File) value);
+            return new PictureCellSetter((File) value);
         } else {
             return new CharSequenceCellSetter(value.toString());
         }

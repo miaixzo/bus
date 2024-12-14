@@ -27,18 +27,6 @@
 */
 package org.miaixz.bus.http.plugin.httpv;
 
-import org.miaixz.bus.core.lang.MediaType;
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.core.xyz.MapKit;
-import org.miaixz.bus.core.xyz.ObjectKit;
-import org.miaixz.bus.http.*;
-import org.miaixz.bus.http.bodys.FormBody;
-import org.miaixz.bus.http.bodys.MultipartBody;
-import org.miaixz.bus.http.bodys.RequestBody;
-import org.miaixz.bus.http.bodys.ResponseBody;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.ConnectException;
@@ -50,6 +38,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+
+import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.xyz.MapKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.http.*;
+import org.miaixz.bus.http.bodys.FormBody;
+import org.miaixz.bus.http.bodys.MultipartBody;
+import org.miaixz.bus.http.bodys.RequestBody;
+import org.miaixz.bus.http.bodys.ResponseBody;
 
 /**
  * @author Kimi Liu

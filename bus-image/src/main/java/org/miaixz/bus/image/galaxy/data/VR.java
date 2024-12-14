@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.image.galaxy.data;
 
+import java.time.temporal.Temporal;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -318,6 +319,10 @@ public enum VR {
 
     public double[] toDoubles(Object val, boolean bigEndian) {
         return valueType.toDoubles(val, bigEndian);
+    }
+
+    public Temporal toTemporal(Object val, int valueIndex, DatePrecision precision) {
+        return valueType.toTemporal(val, valueIndex, precision);
     }
 
     public Date toDate(Object val, TimeZone tz, int valueIndex, boolean ceil, Date defVal, DatePrecision precision) {

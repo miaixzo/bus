@@ -27,6 +27,14 @@
 */
 package org.miaixz.bus.health.builtin.hardware;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Properties;
+import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
@@ -38,14 +46,6 @@ import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.software.OSProcess;
 import org.miaixz.bus.health.builtin.software.OSThread;
-
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Properties;
-import java.util.function.Supplier;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * This class represents the entire Central Processing Unit (CPU) of a computer system, which may contain one or more

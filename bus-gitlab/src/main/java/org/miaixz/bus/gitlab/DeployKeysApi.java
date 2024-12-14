@@ -31,11 +31,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import org.miaixz.bus.gitlab.models.DeployKey;
+
 import jakarta.ws.rs.core.Form;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.Response;
-
-import org.miaixz.bus.gitlab.models.DeployKey;
 
 /**
  * This class implements the client side API for the GitLab Deploy Keys API calls.

@@ -71,10 +71,14 @@ public class PrivateTag {
     /** (0047,xx63) VR=SL VM=1 Volume Skew Base */
     public static final int VolumeSkewBase = 0x00470063;
 
-    /** (0047,xx64) VR=DS VM=9 Volume Registration Transform Rotation Matrix */
+    /**
+     * (0047,xx64) VR=DS VM=9 Volume Registration Transform Rotation Matrix
+     */
     public static final int VolumeRegistrationTransformRotationMatrix = 0x00470064;
 
-    /** (0047,xx65) VR=DS VM=3 Volume Registration Transform Translation Vector */
+    /**
+     * (0047,xx65) VR=DS VM=3 Volume Registration Transform Translation Vector
+     */
     public static final int VolumeRegistrationTransformTranslationVector = 0x00470065;
 
     /** (0047,xx70) VR=DS VM=1-n KVP List */
@@ -104,7 +108,9 @@ public class PrivateTag {
     /** (0047,xx91) VR=LO VM=1 XA 3D Reconstruction Algorithm Name */
     public static final int XA3DReconstructionAlgorithmName = 0x00470091;
 
-    /** (0047,xx92) VR=CS VM=1 XA 3D Reconstruction Algorithm Version */
+    /**
+     * (0047,xx92) VR=CS VM=1 XA 3D Reconstruction Algorithm Version
+     */
     public static final int XA3DReconstructionAlgorithmVersion = 0x00470092;
 
     /** (0047,xx93) VR=DA VM=1 DLX Calibration Date */

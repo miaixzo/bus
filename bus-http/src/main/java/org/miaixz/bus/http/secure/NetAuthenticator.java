@@ -27,18 +27,18 @@
 */
 package org.miaixz.bus.http.secure;
 
-import org.miaixz.bus.core.net.HTTP;
-import org.miaixz.bus.http.Request;
-import org.miaixz.bus.http.Response;
-import org.miaixz.bus.http.Route;
-import org.miaixz.bus.http.UnoUrl;
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.PasswordAuthentication;
 import java.net.Proxy;
 import java.util.List;
+
+import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.http.Request;
+import org.miaixz.bus.http.Response;
+import org.miaixz.bus.http.Route;
+import org.miaixz.bus.http.UnoUrl;
 
 /**
  * @author Kimi Liu

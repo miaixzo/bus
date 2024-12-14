@@ -27,6 +27,17 @@
 */
 package org.miaixz.bus.http.plugin.httpz;
 
+import java.net.Proxy;
+import java.net.ProxySelector;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import javax.net.SocketFactory;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.X509TrustManager;
+
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.net.tls.SSLContextBuilder;
 import org.miaixz.bus.http.DnsX;
@@ -40,16 +51,6 @@ import org.miaixz.bus.http.metric.Dispatcher;
 import org.miaixz.bus.http.metric.Interceptor;
 import org.miaixz.bus.http.secure.Authenticator;
 import org.miaixz.bus.http.secure.CertificatePinner;
-
-import javax.net.SocketFactory;
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.X509TrustManager;
-import java.net.Proxy;
-import java.net.ProxySelector;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 请求参数构造器

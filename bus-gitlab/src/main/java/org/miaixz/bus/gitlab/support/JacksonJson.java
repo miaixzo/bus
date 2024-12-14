@@ -260,6 +260,44 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
     }
 
     /**
+     * Gets the ObjectMapper contained by this instance.
+     *
+     * @return the ObjectMapper contained by this instance
+     */
+    public ObjectMapper getObjectMapper() {
+        return (objectMapper);
+    }
+
+    /**
+     * Marshals the supplied object out as a formatted JSON string.
+     *
+     * @param <T>    the generics type for the provided object
+     * @param object the object to output as a JSON string
+     * @return a String containing the JSON for the specified object
+     */
+    public <T> String marshal(final T object) {
+
+        if (object == null) {
+            throw new IllegalArgumentException("object parameter is null");
+        }
+
+        ObjectWriter writer = objectMapper.writer().withDefaultPrettyPrinter();
+        String results = null;
+        try {
+            results = writer.writeValueAsString(object);
+        } catch (JsonGenerationException e) {
+            System.err.println("JsonGenerationException, message=" + e.getMessage());
+        } catch (JsonMappingException e) {
+            e.printStackTrace();
+            System.err.println("JsonMappingException, message=" + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("IOException, message=" + e.getMessage());
+        }
+
+        return (results);
+    }
+
+    /**
      * JsonSerializer for serializing dates s yyyy-mm-dd in UTC timezone.
      */
     public static class DateOnlySerializer extends JsonSerializer<Date> {
@@ -330,44 +368,6 @@ public class JacksonJson implements ContextResolver<ObjectMapper> {
             }
             jgen.writeEndArray();
         }
-    }
-
-    /**
-     * Gets the ObjectMapper contained by this instance.
-     *
-     * @return the ObjectMapper contained by this instance
-     */
-    public ObjectMapper getObjectMapper() {
-        return (objectMapper);
-    }
-
-    /**
-     * Marshals the supplied object out as a formatted JSON string.
-     *
-     * @param <T>    the generics type for the provided object
-     * @param object the object to output as a JSON string
-     * @return a String containing the JSON for the specified object
-     */
-    public <T> String marshal(final T object) {
-
-        if (object == null) {
-            throw new IllegalArgumentException("object parameter is null");
-        }
-
-        ObjectWriter writer = objectMapper.writer().withDefaultPrettyPrinter();
-        String results = null;
-        try {
-            results = writer.writeValueAsString(object);
-        } catch (JsonGenerationException e) {
-            System.err.println("JsonGenerationException, message=" + e.getMessage());
-        } catch (JsonMappingException e) {
-            e.printStackTrace();
-            System.err.println("JsonMappingException, message=" + e.getMessage());
-        } catch (IOException e) {
-            System.err.println("IOException, message=" + e.getMessage());
-        }
-
-        return (results);
     }
 
     /**

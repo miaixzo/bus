@@ -203,7 +203,9 @@ public class PrivateTag {
     /** (2005,xx3B) VR=CS VM=1 Time Reversed Steady State */
     public static final int TimeReversedSteadyState = 0x2005003B;
 
-    /** (2005,xx3C) VR=CS VM=1 Tilt Optimized Nonsaturated Excitation */
+    /**
+     * (2005,xx3C) VR=CS VM=1 Tilt Optimized Nonsaturated Excitation
+     */
     public static final int TiltOptimizedNonsaturatedExcitation = 0x2005003C;
 
     /** (2005,xx3D) VR=SS VM=1 Number of RR Interval Ranges */
@@ -389,7 +391,9 @@ public class PrivateTag {
     /** (2005,xx9E) VR=SQ VM=1 Series Geometry */
     public static final int SeriesGeometry = 0x2005009E;
 
-    /** (2005,xx9F) VR=CS VM=1 Spectral Selective Excitation Pulse */
+    /**
+     * (2005,xx9F) VR=CS VM=1 Spectral Selective Excitation Pulse
+     */
     public static final int SpectralSelectiveExcitationPulse = 0x2005009F;
 
     /** (2005,xxA0) VR=FL VM=1 Dynamic Scan Begin Time */

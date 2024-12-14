@@ -30,6 +30,8 @@ package org.miaixz.bus.core.text.replacer;
 import java.io.Serializable;
 import java.util.function.UnaryOperator;
 
+import org.miaixz.bus.core.xyz.StringKit;
+
 /**
  * 抽象字符串替换类 通过实现replace方法实现局部替换逻辑
  *
@@ -58,6 +60,9 @@ public abstract class StringReplacer implements UnaryOperator<CharSequence>, Ser
      */
     @Override
     public CharSequence apply(final CharSequence text) {
+        if (StringKit.isEmpty(text)) {
+            return text;
+        }
         final int len = text.length();
         final StringBuilder builder = new StringBuilder(len);
         int pos = 0;// 当前位置

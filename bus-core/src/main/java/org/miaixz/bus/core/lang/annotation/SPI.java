@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.lang.annotation;
 
-import org.miaixz.bus.core.lang.Normal;
-
 import java.lang.annotation.*;
+
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * 启用框架扩展和替换组件,服务提供发现机制, 实现方制定接口并完成对接口的实现

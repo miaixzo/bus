@@ -52,29 +52,25 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 public class LunarHour extends Loops {
 
     /**
+     * 八字计算接口
+     */
+    public static EightCharProvider provider = new DefaultEightCharProvider();
+    /**
      * 农历日
      */
     protected LunarDay day;
-
     /**
      * 时
      */
     protected int hour;
-
     /**
      * 分
      */
     protected int minute;
-
     /**
      * 秒
      */
     protected int second;
-
-    /**
-     * 八字计算接口
-     */
-    public static EightCharProvider provider = new DefaultEightCharProvider();
 
     /**
      * 初始化

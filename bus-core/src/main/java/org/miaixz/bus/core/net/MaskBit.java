@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.core.net;
 
+import java.util.HashMap;
+
 import org.miaixz.bus.core.center.map.BiMap;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.net.ip.IPv4;
-
-import java.util.HashMap;
 
 /**
  * 掩码位和掩码之间的Map对应

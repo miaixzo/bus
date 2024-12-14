@@ -36,10 +36,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.jar.JarFile;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
+import java.util.zip.*;
 
 import org.miaixz.bus.core.center.iterator.EnumerationIterator;
 import org.miaixz.bus.core.io.compress.*;
@@ -885,10 +882,24 @@ public class ZipKit {
      * @param charset 解析zip文件的编码，null表示{@link Charset#UTF_8}
      * @return {@link ZipFile}
      */
-    public static ZipFile toZipFile(final File file, final java.nio.charset.Charset charset) {
+    public static ZipFile toZipFile(final File file, java.nio.charset.Charset charset) {
+        if (null == charset) {
+            charset = Charset.UTF_8;
+        }
         try {
-            return new ZipFile(file, ObjectKit.defaultIfNull(charset, Charset.UTF_8));
+            return new ZipFile(file, charset);
         } catch (final IOException e) {
+            // 可能编码错误提示
+            if (e instanceof ZipException) {
+                if (e.getMessage().contains("invalid CEN header")) {
+                    try {
+                        // 尝试使用不同编码
+                        return new ZipFile(file, Charset.UTF_8.equals(charset) ? Charset.GBK : Charset.UTF_8);
+                    } catch (final IOException ex) {
+                        throw new InternalException(ex);
+                    }
+                }
+            }
             throw new InternalException(e);
         }
     }

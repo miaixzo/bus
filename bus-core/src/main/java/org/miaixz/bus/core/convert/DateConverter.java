@@ -46,12 +46,11 @@ import org.miaixz.bus.core.xyz.StringKit;
  */
 public class DateConverter extends AbstractConverter implements MatcherConverter {
 
-    private static final long serialVersionUID = -1L;
-
     /**
      * 单例
      */
     public static final DateConverter INSTANCE = new DateConverter();
+    private static final long serialVersionUID = -1L;
     /**
      * 日期格式化
      */
@@ -109,10 +108,10 @@ public class DateConverter extends AbstractConverter implements MatcherConverter
             return wrap(targetClass, ((Number) value).longValue());
         } else {
             // 统一按照字符串处理
-            final String valueStr = convertToString(value);
+            final String values = convertToString(value);
             final Date date = StringKit.isBlank(this.format) //
-                    ? Resolver.parse(valueStr) //
-                    : Resolver.parse(valueStr, this.format);
+                    ? Resolver.parse(values) //
+                    : Resolver.parse(values, this.format);
             if (null != date) {
                 return wrap(targetClass, date);
             }

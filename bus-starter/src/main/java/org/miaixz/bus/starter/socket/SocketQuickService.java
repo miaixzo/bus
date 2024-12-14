@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.starter.socket;
 
-import jakarta.annotation.Resource;
+import java.io.IOException;
+
 import org.miaixz.bus.socket.Handler;
 import org.miaixz.bus.socket.Message;
 import org.miaixz.bus.socket.accord.AioServer;
 
-import java.io.IOException;
+import jakarta.annotation.Resource;
 
 /**
  * @author Kimi Liu

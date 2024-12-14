@@ -131,7 +131,9 @@ public class PrivateTag {
     /** (2005,xx33) VR=FL VM=1 Phase Encoding Echo Top Positions */
     public static final int PhaseEncodingEchoTopPositions = 0x20050033;
 
-    /** (2005,xx34) VR=CS VM=1 Physical Quantity for Chemical Shift */
+    /**
+     * (2005,xx34) VR=CS VM=1 Physical Quantity for Chemical Shift
+     */
     public static final int PhysicalQuantityForChemicalShift = 0x20050034;
 
     /** (2005,xx35) VR=CS VM=1 Physical Quantity Spatial */

@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.http.secure;
 
+import javax.security.auth.x500.X500Principal;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-
-import javax.security.auth.x500.X500Principal;
 
 /**
  * 专有名称(DN)解析器。该解析器只支持从DN中提取字符串值。 它不支持十六进制字符串样式的值.

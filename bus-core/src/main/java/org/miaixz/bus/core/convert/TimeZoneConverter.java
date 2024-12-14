@@ -41,12 +41,11 @@ import org.miaixz.bus.core.xyz.ZoneKit;
  */
 public class TimeZoneConverter extends AbstractConverter implements MatcherConverter {
 
-    private static final long serialVersionUID = -1L;
-
     /**
      * 单例
      */
     public static final TimeZoneConverter INSTANCE = new TimeZoneConverter();
+    private static final long serialVersionUID = -1L;
 
     @Override
     public boolean match(final Type targetType, final Class<?> rawType, final Object value) {

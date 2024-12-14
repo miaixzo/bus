@@ -147,6 +147,28 @@ public class MethodInvoker implements Invoker {
     }
 
     /**
+     * 执行方法句柄，{@link MethodHandle#invokeWithArguments(Object...)}包装
+     * 非static方法需先调用{@link MethodHandle#bindTo(Object)}绑定执行对象。
+     *
+     * <p>
+     * 需要注意的是，此处没有使用{@link MethodHandle#invoke(Object...)}，因为其参数第一个必须为对象或类。
+     * {@link MethodHandle#invokeWithArguments(Object...)}只需传参数即可。
+     * </p>
+     *
+     * @param methodHandle {@link java.lang.invoke.MethodHandle}
+     * @param args         方法参数值，支持子类转换和自动拆装箱
+     * @param <T>          返回值类型
+     * @return 方法返回值
+     */
+    public static <T> T invokeHandle(final MethodHandle methodHandle, final Object... args) {
+        try {
+            return (T) methodHandle.invokeWithArguments(args);
+        } catch (final Throwable e) {
+            throw ExceptionKit.wrapRuntime(e);
+        }
+    }
+
+    /**
      * 获取方法
      *
      * @return 方法
@@ -218,28 +240,6 @@ public class MethodInvoker implements Invoker {
             } catch (final IllegalAccessException | InvocationTargetException ex) {
                 throw new InternalException(ex);
             }
-        }
-    }
-
-    /**
-     * 执行方法句柄，{@link MethodHandle#invokeWithArguments(Object...)}包装
-     * 非static方法需先调用{@link MethodHandle#bindTo(Object)}绑定执行对象。
-     *
-     * <p>
-     * 需要注意的是，此处没有使用{@link MethodHandle#invoke(Object...)}，因为其参数第一个必须为对象或类。
-     * {@link MethodHandle#invokeWithArguments(Object...)}只需传参数即可。
-     * </p>
-     *
-     * @param methodHandle {@link java.lang.invoke.MethodHandle}
-     * @param args         方法参数值，支持子类转换和自动拆装箱
-     * @param <T>          返回值类型
-     * @return 方法返回值
-     */
-    public static <T> T invokeHandle(final MethodHandle methodHandle, final Object... args) {
-        try {
-            return (T) methodHandle.invokeWithArguments(args);
-        } catch (final Throwable e) {
-            throw ExceptionKit.wrapRuntime(e);
         }
     }
 

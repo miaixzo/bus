@@ -63,17 +63,6 @@ public class EntryConverter extends ConverterWithRoot implements MatcherConverte
         super(converter);
     }
 
-    @Override
-    public Object convert(Type targetType, final Object value) throws ConvertException {
-        if (targetType instanceof TypeReference) {
-            targetType = ((TypeReference<?>) targetType).getType();
-        }
-        final Type keyType = TypeKit.getTypeArgument(targetType, 0);
-        final Type valueType = TypeKit.getTypeArgument(targetType, 1);
-
-        return convert(targetType, keyType, valueType, value);
-    }
-
     /**
      * 字符串转单个键值对的Map，支持分隔符{@code :}、{@code =}、{@code ,}
      *
@@ -88,6 +77,17 @@ public class EntryConverter extends ConverterWithRoot implements MatcherConverte
             return MapKit.of(text.subSequence(0, index), text.subSequence(index + 1, text.length()));
         }
         return null;
+    }
+
+    @Override
+    public Object convert(Type targetType, final Object value) throws ConvertException {
+        if (targetType instanceof TypeReference) {
+            targetType = ((TypeReference<?>) targetType).getType();
+        }
+        final Type keyType = TypeKit.getTypeArgument(targetType, 0);
+        final Type valueType = TypeKit.getTypeArgument(targetType, 1);
+
+        return convert(targetType, keyType, valueType, value);
     }
 
     /**

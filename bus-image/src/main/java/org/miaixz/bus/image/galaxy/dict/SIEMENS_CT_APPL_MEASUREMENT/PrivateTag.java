@@ -35,10 +35,14 @@ public class PrivateTag {
 
     public static final String PrivateCreator = "SIEMENS CT APPL MEASUREMENT";
 
-    /** (0029,xx00) VR=UT VM=1 Oncology Segmentation Measurement Values */
+    /**
+     * (0029,xx00) VR=UT VM=1 Oncology Segmentation Measurement Values
+     */
     public static final int OncologySegmentationMeasurementValues = 0x00290000;
 
-    /** (0029,xx01) VR=ST VM=1 Oncology Measurement Recist Standard */
+    /**
+     * (0029,xx01) VR=ST VM=1 Oncology Measurement Recist Standard
+     */
     public static final int OncologyMeasurementRecistStandard = 0x00290001;
 
     /** (0029,xx10) VR=CS VM=1 DualEnergy ROI Annotation Mode */

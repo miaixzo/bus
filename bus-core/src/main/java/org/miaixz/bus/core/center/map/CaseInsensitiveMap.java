@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.core.center.map;
 
-import org.miaixz.bus.core.lang.Normal;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
+
+import org.miaixz.bus.core.lang.Normal;
 
 /**
  * 忽略大小写的Map 对KEY忽略大小写，get("Value")和get("value")获得的值相同，put进入的值也会被覆盖

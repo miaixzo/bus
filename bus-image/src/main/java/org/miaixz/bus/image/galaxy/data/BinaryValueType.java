@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.image.galaxy.data;
 
+import java.time.temporal.Temporal;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -559,6 +560,11 @@ enum BinaryValueType implements ValueType {
         for (int i = 0, off = 0; i < ds.length; i++, off += numBytes)
             ds[i] = toDouble(b, off, bigEndian);
         return ds;
+    }
+
+    @Override
+    public Temporal toTemporal(Object val, int valueIndex, DatePrecision precision) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

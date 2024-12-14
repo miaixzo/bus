@@ -215,7 +215,9 @@ public class PrivateTag {
     /** (0021,xx51) VR=DS VM=1 3D Positioner Primary Start Angle */
     public static final int ThreeDPositionerPrimaryStartAngle = 0x00210051;
 
-    /** (0021,xx52) VR=DS VM=1 3D Positioner Secondary Start Angle */
+    /**
+     * (0021,xx52) VR=DS VM=1 3D Positioner Secondary Start Angle
+     */
     public static final int ThreeDPositionerSecondaryStartAngle = 0x00210052;
 
     /** (0021,xx53) VR=SS VM=3 Stand Position */

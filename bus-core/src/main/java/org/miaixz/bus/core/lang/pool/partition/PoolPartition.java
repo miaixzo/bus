@@ -86,7 +86,7 @@ public class PoolPartition<T> implements ObjectPool<T> {
                 // 检查是否超过最长空闲时间
                 final long maxIdle = this.config.getMaxIdle();
                 if (maxIdle <= 0 || poolable.getIdle() <= maxIdle) {
-                    return poolable.getRaw();
+                    return object;
                 }
             }
 

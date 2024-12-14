@@ -35,11 +35,9 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class MergeRequestEvent extends AbstractEvent {
 
-    private static final long serialVersionUID = -1L;
-
     public static final String X_GITLAB_EVENT = "Merge Request Hook";
     public static final String OBJECT_KIND = "merge_request";
-
+    private static final long serialVersionUID = -1L;
     private EventUser user;
     private EventProject project;
     private EventRepository repository;

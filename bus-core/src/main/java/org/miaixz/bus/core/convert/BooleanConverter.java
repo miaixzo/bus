@@ -46,12 +46,11 @@ import org.miaixz.bus.core.xyz.BooleanKit;
  */
 public class BooleanConverter extends AbstractConverter {
 
-    private static final long serialVersionUID = -1L;
-
     /**
      * 单例
      */
     public static final BooleanConverter INSTANCE = new BooleanConverter();
+    private static final long serialVersionUID = -1L;
 
     @Override
     protected Boolean convertInternal(final Class<?> targetClass, final Object value) {

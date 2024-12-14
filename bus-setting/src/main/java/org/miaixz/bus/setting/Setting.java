@@ -73,10 +73,6 @@ public class Setting extends AbstractSetting implements Map<String, String> {
     public static final String EXT_NAME = "setting";
     private static final long serialVersionUID = -1L;
     /**
-     * 附带分组的键值对存储
-     */
-    private final GroupedMap groupedMap = new GroupedMap();
-    /**
      * 本设置对象的字符集
      */
     protected java.nio.charset.Charset charset;
@@ -89,17 +85,22 @@ public class Setting extends AbstractSetting implements Map<String, String> {
      */
     protected Resource resource;
     /**
+     * 附带分组的键值对存储
+     */
+    private GroupedMap groupedMap;
+    /**
      * 当获取key对应值为{@code null}时是否打印debug日志提示用户，默认{@code false}
      */
     private boolean logIfNull;
-    private Loader settingLoader;
+
+    private Loader loader;
     private WatchMonitor watchMonitor;
 
     /**
      * 空构造
      */
     public Setting() {
-        this.charset = DEFAULT_CHARSET;
+        groupedMap = new GroupedMap();
     }
 
     /**
@@ -129,8 +130,7 @@ public class Setting extends AbstractSetting implements Map<String, String> {
      * @param isUseVariable 是否使用变量
      */
     public Setting(final String path, final java.nio.charset.Charset charset, final boolean isUseVariable) {
-        Assert.notBlank(path, "Blank setting path !");
-        this.init(ResourceKit.getResource(path), charset, isUseVariable);
+        this(ResourceKit.getResource(Assert.notBlank(path)), charset, isUseVariable);
     }
 
     /**
@@ -141,8 +141,7 @@ public class Setting extends AbstractSetting implements Map<String, String> {
      * @param isUseVariable 是否使用变量
      */
     public Setting(final File configFile, final java.nio.charset.Charset charset, final boolean isUseVariable) {
-        Assert.notNull(configFile, "Null setting file define!");
-        this.init(ResourceKit.getResource(configFile), charset, isUseVariable);
+        this(ResourceKit.getResource(Assert.notNull(configFile)), charset, isUseVariable);
     }
 
     /**
@@ -153,7 +152,22 @@ public class Setting extends AbstractSetting implements Map<String, String> {
      * @param isUseVariable 是否使用变量
      */
     public Setting(final Resource resource, final java.nio.charset.Charset charset, final boolean isUseVariable) {
-        this.init(resource, charset, isUseVariable);
+        this(resource, new Loader(charset, isUseVariable));
+    }
+
+    /**
+     * 构造
+     *
+     * @param resource Setting的Resource
+     * @param loader   自定义配置文件加载器
+     */
+    public Setting(final Resource resource, Loader loader) {
+        this.resource = resource;
+        if (null == loader) {
+            loader = new Loader(DEFAULT_CHARSET, false);
+        }
+        this.loader = loader;
+        this.groupedMap = loader.load(resource);
     }
 
     /**
@@ -166,73 +180,54 @@ public class Setting extends AbstractSetting implements Map<String, String> {
     }
 
     /**
-     * 初始化设定文件
-     *
-     * @param resource      {@link Resource}
-     * @param charset       字符集
-     * @param isUseVariable 是否使用变量
-     * @return 成功初始化与否
-     */
-    public boolean init(final Resource resource, final java.nio.charset.Charset charset, final boolean isUseVariable) {
-        Assert.notNull(resource, "Setting resource must be not null!");
-        this.resource = resource;
-        this.charset = charset;
-        this.isUseVariable = isUseVariable;
-
-        return load();
-    }
-
-    /**
      * 重新加载配置文件
      *
-     * @return 是否加载成功
+     * @return this
      */
-    synchronized public boolean load() {
-        if (null == this.settingLoader) {
-            settingLoader = new Loader(this.groupedMap, this.charset, this.isUseVariable);
-        }
-        return settingLoader.load(this.resource);
+    synchronized public Setting load() {
+        Assert.notNull(this.loader, "SettingLoader must be not null!");
+        this.groupedMap = loader.load(this.resource);
+        return this;
+    }
+
+    /**
+     * 在配置文件变更时自动加载
+     */
+    public void autoLoad() {
+        autoLoad(null);
     }
 
     /**
      * 在配置文件变更时自动加载
      *
-     * @param autoReload 是否自动加载
+     * @param callback 加载完成回调
      */
-    public void autoLoad(final boolean autoReload) {
-        autoLoad(autoReload, null);
-    }
+    public void autoLoad(final Consumer<Setting> callback) {
+        Assert.notNull(this.resource, "Setting resource must be not null !");
+        // 先关闭之前的监听
+        IoKit.closeQuietly(this.watchMonitor);
+        this.watchMonitor = WatchKit.ofModify(resource.getUrl(), new SimpleWatcher() {
+            private static final long serialVersionUID = -1L;
 
-    /**
-     * 在配置文件变更时自动加载
-     *
-     * @param callback   加载完成回调
-     * @param autoReload 是否自动加载
-     */
-    public void autoLoad(final boolean autoReload, final Consumer<Boolean> callback) {
-        if (autoReload) {
-            Assert.notNull(this.resource, "Setting resource must be not null !");
-            // 先关闭之前的监听
-            IoKit.closeQuietly(this.watchMonitor);
-            this.watchMonitor = WatchKit.ofModify(resource.getUrl(), new SimpleWatcher() {
-
-                private static final long serialVersionUID = -1L;
-
-                @Override
-                public void onModify(final WatchEvent<?> event, final WatchKey key) {
-                    final boolean success = load();
-                    // 如果有回调，加载完毕则执行回调
-                    if (callback != null) {
-                        callback.accept(success);
-                    }
+            @Override
+            public void onModify(final WatchEvent<?> event, final WatchKey key) {
+                load();
+                // 如果有回调，加载完毕则执行回调
+                if (callback != null) {
+                    callback.accept(Setting.this);
                 }
-            });
-            this.watchMonitor.start();
-            Logger.debug("Auto load for [{}] listenning...", this.resource.getUrl());
-        } else {
-            IoKit.closeQuietly(this.watchMonitor);
-            this.watchMonitor = null;
-        }
+            }
+        });
+        this.watchMonitor.start();
+        Logger.debug("Auto load for [{}] listenning...", this.resource.getUrl());
+    }
+
+    /**
+     * 停止自动加载
+     */
+    public void stopAutoLoad() {
+        IoKit.closeQuietly(this.watchMonitor);
+        this.watchMonitor = null;
     }
 
     /**
@@ -361,10 +356,8 @@ public class Setting extends AbstractSetting implements Map<String, String> {
      * @param file 设置文件
      */
     public void store(final File file) {
-        if (null == this.settingLoader) {
-            settingLoader = new Loader(this.groupedMap, this.charset, this.isUseVariable);
-        }
-        settingLoader.store(file);
+        Assert.notNull(this.loader, "SettingLoader must be not null!");
+        this.loader.store(this.groupedMap, file);
     }
 
     /**
@@ -414,21 +407,10 @@ public class Setting extends AbstractSetting implements Map<String, String> {
      * @return this
      */
     public Setting setVarRegex(final String regex) {
-        if (null == this.settingLoader) {
-            throw new NullPointerException("Loader is null !");
+        if (null == this.loader) {
+            throw new NullPointerException("SettingLoader is null !");
         }
-        this.settingLoader.setVarRegex(regex);
-        return this;
-    }
-
-    /**
-     * 自定义字符编码
-     *
-     * @param charset 字符编码
-     * @return this
-     */
-    public Setting setCharset(final java.nio.charset.Charset charset) {
-        this.charset = charset;
+        this.loader.setVarRegex(regex);
         return this;
     }
 
@@ -718,9 +700,7 @@ public class Setting extends AbstractSetting implements Map<String, String> {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((charset == null) ? 0 : charset.hashCode());
         result = prime * result + groupedMap.hashCode();
-        result = prime * result + (isUseVariable ? 1231 : 1237);
         result = prime * result + ((this.resource == null) ? 0 : this.resource.hashCode());
         return result;
     }
@@ -737,17 +717,7 @@ public class Setting extends AbstractSetting implements Map<String, String> {
             return false;
         }
         final Setting other = (Setting) obj;
-        if (charset == null) {
-            if (other.charset != null) {
-                return false;
-            }
-        } else if (!charset.equals(other.charset)) {
-            return false;
-        }
         if (!groupedMap.equals(other.groupedMap)) {
-            return false;
-        }
-        if (isUseVariable != other.isUseVariable) {
             return false;
         }
         if (this.resource == null) {

@@ -27,13 +27,6 @@
 */
 package org.miaixz.bus.cache.provider;
 
-import jakarta.annotation.PreDestroy;
-import org.miaixz.bus.cache.Hitting;
-import org.miaixz.bus.cache.magic.CachePair;
-import org.miaixz.bus.core.lang.Normal;
-import org.miaixz.bus.setting.Builder;
-import org.springframework.jdbc.core.JdbcOperations;
-
 import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.*;
@@ -43,6 +36,14 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.miaixz.bus.cache.Hitting;
+import org.miaixz.bus.cache.magic.CachePair;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.setting.Builder;
+import org.springframework.jdbc.core.JdbcOperations;
+
+import jakarta.annotation.PreDestroy;
 
 /**
  * @author Kimi Liu

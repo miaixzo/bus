@@ -27,14 +27,14 @@
 */
 package org.miaixz.bus.core.io.file;
 
+import java.io.File;
+import java.io.Serializable;
+
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Wrapper;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
-
-import java.io.File;
-import java.io.Serializable;
 
 /**
  * 文件包装器，扩展文件对象

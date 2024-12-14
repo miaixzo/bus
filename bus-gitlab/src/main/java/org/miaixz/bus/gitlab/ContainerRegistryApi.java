@@ -31,11 +31,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.Response;
-
 import org.miaixz.bus.gitlab.models.RegistryRepository;
 import org.miaixz.bus.gitlab.models.RegistryRepositoryTag;
+
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 
 /**
  * <p>

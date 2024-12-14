@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.http.plugin.httpz;
 
+import java.util.List;
+import java.util.Map;
+
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
@@ -36,9 +39,6 @@ import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.bodys.FormBody;
 import org.miaixz.bus.http.bodys.MultipartBody;
 import org.miaixz.bus.http.bodys.RequestBody;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * PUT请求处理

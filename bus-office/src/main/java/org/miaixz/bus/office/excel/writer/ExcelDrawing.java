@@ -36,8 +36,8 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFSimpleShape;
-import org.miaixz.bus.office.excel.ExcelImgType;
-import org.miaixz.bus.office.excel.SimpleClientAnchor;
+import org.miaixz.bus.office.excel.SimpleAnchor;
+import org.miaixz.bus.office.excel.shape.ExcelPictureType;
 import org.miaixz.bus.office.excel.style.ShapeConfig;
 
 /**
@@ -57,8 +57,8 @@ public class ExcelDrawing {
      * @param clientAnchor 图片的位置和大小信息
      * 
      */
-    public static void drawingImg(final Sheet sheet, final byte[] pictureData, final ExcelImgType imgType,
-            final SimpleClientAnchor clientAnchor) {
+    public static void drawingPicture(final Sheet sheet, final byte[] pictureData, final ExcelPictureType imgType,
+            final SimpleAnchor clientAnchor) {
         final Drawing<?> patriarch = sheet.createDrawingPatriarch();
         final Workbook workbook = sheet.getWorkbook();
         final ClientAnchor anchor = workbook.getCreationHelper().createClientAnchor();
@@ -74,8 +74,7 @@ public class ExcelDrawing {
      * @param clientAnchor 绘制区域信息
      * @param shapeConfig  形状配置，包括形状类型、线条样式、线条宽度、线条颜色、填充颜色等
      */
-    public static void drawingSimpleShape(final Sheet sheet, final SimpleClientAnchor clientAnchor,
-            ShapeConfig shapeConfig) {
+    public static void drawingSimpleShape(final Sheet sheet, final SimpleAnchor clientAnchor, ShapeConfig shapeConfig) {
         final Drawing<?> patriarch = sheet.createDrawingPatriarch();
         final ClientAnchor anchor = sheet.getWorkbook().getCreationHelper().createClientAnchor();
         clientAnchor.copyTo(anchor);
@@ -113,8 +112,7 @@ public class ExcelDrawing {
      * @param clientAnchor 绘制区域信息
      * @param content      内容
      */
-    public static void drawingCellComment(final Cell cell, final SimpleClientAnchor clientAnchor,
-            final String content) {
+    public static void drawingCellComment(final Cell cell, final SimpleAnchor clientAnchor, final String content) {
         final Sheet sheet = cell.getSheet();
         final Drawing<?> patriarch = sheet.createDrawingPatriarch();
         final Workbook workbook = sheet.getWorkbook();

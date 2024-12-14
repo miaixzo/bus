@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.http.secure;
 
+import java.io.IOException;
+
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.Response;
 import org.miaixz.bus.http.Route;
-
-import java.io.IOException;
 
 /**
  * 在连接到代理服务器之前执行抢占式身份验证， 或者在收到来自源web服务器或代理服务器的挑战后执行被动身份验证. 代理身份验证器可以实现抢占式身份验证、反应式身份验证或两者都实现.

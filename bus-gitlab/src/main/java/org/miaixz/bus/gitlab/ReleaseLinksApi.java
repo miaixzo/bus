@@ -27,13 +27,14 @@
 */
 package org.miaixz.bus.gitlab;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Stream;
+
 import org.miaixz.bus.gitlab.models.Link;
 import org.miaixz.bus.gitlab.models.ReleaseLinkParams;
 
 import jakarta.ws.rs.core.Response;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  * This class provides an entry point to all the GitLab ReleaseLinks API calls.

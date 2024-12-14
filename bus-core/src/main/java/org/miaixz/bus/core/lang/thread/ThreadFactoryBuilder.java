@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.lang.thread;
 
-import org.miaixz.bus.core.Builder;
-import org.miaixz.bus.core.xyz.StringKit;
-
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
+
+import org.miaixz.bus.core.Builder;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * ThreadFactory创建器 参考：Guava的ThreadFactoryBuilder

@@ -44,7 +44,9 @@ public class PrivateTag {
     /** (0029,xx14) VR=IS VM=1 Representation Level */
     public static final int RepresentationLevel = 0x00290014;
 
-    /** (0029,xx16) VR=SQ VM=1 Representation Information Sequenc */
+    /**
+     * (0029,xx16) VR=SQ VM=1 Representation Information Sequenc
+     */
     public static final int RepresentationInformationSequence = 0x00290016;
 
     /** (0029,xx18) VR=IS VM=1 Number of Representations */

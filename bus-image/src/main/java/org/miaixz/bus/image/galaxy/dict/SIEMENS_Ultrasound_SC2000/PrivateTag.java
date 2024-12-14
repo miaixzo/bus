@@ -59,7 +59,9 @@ public class PrivateTag {
     /** (0119,xx03) VR=SQ VM=1 Acoustic Data Sequence */
     public static final int AcousticDataSequence = 0x01190003;
 
-    /** (0119,xx04) VR=OB VM=1 Per Transaction Acoustic Control Informatio */
+    /**
+     * (0119,xx04) VR=OB VM=1 Per Transaction Acoustic Control Informatio
+     */
     public static final int PerTransactionAcousticControlInformation = 0x01190004;
 
     /** (0119,xx05) VR=UL VM=1 Acoustic Data Offset */
@@ -146,7 +148,9 @@ public class PrivateTag {
     /** (0149,xx01) VR=FD VM=1-n Vector of BROI Points */
     public static final int VectorOfBROIPoints = 0x01490001;
 
-    /** (0149,xx02) VR=FD VM=1-n Start/End Timestamps of Strip Stream */
+    /**
+     * (0149,xx02) VR=FD VM=1-n Start/End Timestamps of Strip Stream
+     */
     public static final int StartEndTimestampsOfStripStream = 0x01490002;
 
     /** (0149,xx03) VR=FD VM=1-n Timestamps of Visible R-waves */

@@ -27,9 +27,10 @@
 */
 package org.miaixz.bus.oauth.metric.stackoverflow;
 
+import org.miaixz.bus.oauth.metric.AuthorizeScope;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.miaixz.bus.oauth.metric.AuthorizeScope;
 
 /**
  * Stack Overflow 授权范围

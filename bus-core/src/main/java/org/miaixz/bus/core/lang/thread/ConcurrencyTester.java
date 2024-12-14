@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.core.lang.thread;
 
-import org.miaixz.bus.core.center.date.StopWatch;
-
 import java.io.Closeable;
 import java.io.IOException;
+
+import org.miaixz.bus.core.center.date.StopWatch;
 
 /**
  * 高并发测试工具类

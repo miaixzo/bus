@@ -92,7 +92,9 @@ public class PrivateTag {
     /** (0029,xx18) VR=ST VM=1 Volume PatientPosition Not Equal */
     public static final int VolumePatientPositionNotEqual = 0x00290018;
 
-    /** (0029,xx19) VR=ST VM=1 Volume LossyImageCompression Not Equal */
+    /**
+     * (0029,xx19) VR=ST VM=1 Volume LossyImageCompression Not Equal
+     */
     public static final int VolumeLossyImageCompressionNotEqual = 0x00290019;
 
     /** (0029,xx20) VR=ST VM=1 Volume ConvolutionKernel Not Equal */
@@ -104,7 +106,9 @@ public class PrivateTag {
     /** (0029,xx22) VR=ST VM=1 Volume Kvp Not Equal */
     public static final int VolumeKvpNotEqual = 0x00290022;
 
-    /** (0029,xx23) VR=ST VM=1 Volume ReconstructionDiameter Not Equal */
+    /**
+     * (0029,xx23) VR=ST VM=1 Volume ReconstructionDiameter Not Equal
+     */
     public static final int VolumeReconstructionDiameterNotEqual = 0x00290023;
 
     /** (0029,xx24) VR=ST VM=1 Volume TableHeight Not Equal */
@@ -149,7 +153,9 @@ public class PrivateTag {
     /** (0029,xx31) VR=ST VM=1 ImageType 3 */
     public static final int ImageType3 = 0x00290031;
 
-    /** (0029,xx32) VR=ST VM=1 PhotometricInterpretation not MONOCHROME2 */
+    /**
+     * (0029,xx32) VR=ST VM=1 PhotometricInterpretation not MONOCHROME2
+     */
     public static final int PhotometricInterpretationNotMONOCHROME2 = 0x00290032;
 
     /** (0029,xx33) VR=DA VM=1 First Acquisition Date */

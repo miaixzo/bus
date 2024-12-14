@@ -27,19 +27,19 @@
 */
 package org.miaixz.bus.http.plugin.httpv;
 
-import org.miaixz.bus.core.io.ByteString;
-import org.miaixz.bus.core.lang.MediaType;
-import org.miaixz.bus.http.Callback;
-import org.miaixz.bus.http.Headers;
-import org.miaixz.bus.http.Httpv;
-import org.miaixz.bus.http.Response;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.util.Collections;
 import java.util.List;
+
+import org.miaixz.bus.core.io.ByteString;
+import org.miaixz.bus.core.lang.MediaType;
+import org.miaixz.bus.http.Callback;
+import org.miaixz.bus.http.Headers;
+import org.miaixz.bus.http.Httpv;
+import org.miaixz.bus.http.Response;
 
 /**
  * 执行结果

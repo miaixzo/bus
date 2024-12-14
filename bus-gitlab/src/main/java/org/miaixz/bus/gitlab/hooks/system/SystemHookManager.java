@@ -48,9 +48,8 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public class SystemHookManager implements HookManager {
 
-    private final static Logger LOGGER = Logger.getLogger(SystemHookManager.class.getName());
-
     public static final String SYSTEM_HOOK_EVENT = "System Hook";
+    private final static Logger LOGGER = Logger.getLogger(SystemHookManager.class.getName());
     private final JacksonJson jacksonJson = new JacksonJson();
 
     // Collection of objects listening for System Hook events.

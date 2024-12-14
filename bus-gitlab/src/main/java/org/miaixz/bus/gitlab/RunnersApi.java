@@ -30,15 +30,15 @@ package org.miaixz.bus.gitlab;
 import java.util.List;
 import java.util.stream.Stream;
 
-import jakarta.ws.rs.core.GenericType;
-import jakarta.ws.rs.core.Response;
-
 import org.miaixz.bus.gitlab.models.Job;
 import org.miaixz.bus.gitlab.models.JobStatus;
 import org.miaixz.bus.gitlab.models.Runner;
 import org.miaixz.bus.gitlab.models.Runner.RunnerStatus;
 import org.miaixz.bus.gitlab.models.Runner.RunnerType;
 import org.miaixz.bus.gitlab.models.RunnerDetail;
+
+import jakarta.ws.rs.core.GenericType;
+import jakarta.ws.rs.core.Response;
 
 /**
  * This class provides an entry point to all the GitLab API repository files calls.

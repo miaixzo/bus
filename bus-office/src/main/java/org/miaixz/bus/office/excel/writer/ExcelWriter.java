@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -47,9 +48,9 @@ import org.miaixz.bus.core.xyz.BeanKit;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.office.excel.ExcelBase;
-import org.miaixz.bus.office.excel.ExcelImgType;
 import org.miaixz.bus.office.excel.RowGroup;
-import org.miaixz.bus.office.excel.SimpleClientAnchor;
+import org.miaixz.bus.office.excel.SimpleAnchor;
+import org.miaixz.bus.office.excel.shape.ExcelPictureType;
 import org.miaixz.bus.office.excel.style.DefaultStyleSet;
 import org.miaixz.bus.office.excel.style.LineStyle;
 import org.miaixz.bus.office.excel.style.ShapeConfig;
@@ -721,11 +722,20 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
         boolean isFirstRow = true;
         Map<?, ?> map;
         for (final Object object : data) {
-            if (object instanceof Map) {
-                map = new TreeMap<>(comparator);
-                map.putAll((Map) object);
+            if (isFirstRow) {
+                // 只排序首行（标题），后续数据按照首行key的位置填充，无需重新排序
+                if (object instanceof Map) {
+                    map = new TreeMap<>(comparator);
+                    map.putAll((Map) object);
+                } else {
+                    map = BeanKit.beanToMap(object, new TreeMap<>(comparator), false, false);
+                }
             } else {
-                map = BeanKit.beanToMap(object, new TreeMap<>(comparator), false, false);
+                if (object instanceof Map) {
+                    map = (Map) object;
+                } else {
+                    map = BeanKit.beanToMap(object, new HashMap<>(), false, false);
+                }
             }
             writeRow(map, isFirstRow);
             if (isFirstRow) {
@@ -771,7 +781,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      * @return this
      */
     public ExcelWriter writeImg(final File imgFile, final int col1, final int row1, final int col2, final int row2) {
-        return writeImg(imgFile, new SimpleClientAnchor(col1, row1, col2, row2));
+        return writeImg(imgFile, new SimpleAnchor(col1, row1, col2, row2));
     }
 
     /**
@@ -781,8 +791,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      * @param clientAnchor 图片的位置和大小信息
      * @return this
      */
-    public ExcelWriter writeImg(final File imgFile, final SimpleClientAnchor clientAnchor) {
-        return writeImg(imgFile, ExcelImgType.getType(imgFile), clientAnchor);
+    public ExcelWriter writeImg(final File imgFile, final SimpleAnchor clientAnchor) {
+        return writeImg(imgFile, ExcelPictureType.getType(imgFile), clientAnchor);
     }
 
     /**
@@ -793,7 +803,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      * @param clientAnchor 图片的位置和大小信息
      * @return this
      */
-    public ExcelWriter writeImg(final File imgFile, final ExcelImgType imgType, final SimpleClientAnchor clientAnchor) {
+    public ExcelWriter writeImg(final File imgFile, final ExcelPictureType imgType, final SimpleAnchor clientAnchor) {
         return writeImg(FileKit.readBytes(imgFile), imgType, clientAnchor);
     }
 
@@ -805,9 +815,9 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      * @param clientAnchor 图片的位置和大小信息
      * @return this
      */
-    public ExcelWriter writeImg(final byte[] pictureData, final ExcelImgType imgType,
-            final SimpleClientAnchor clientAnchor) {
-        ExcelDrawing.drawingImg(this.sheet, pictureData, imgType, clientAnchor);
+    public ExcelWriter writeImg(final byte[] pictureData, final ExcelPictureType imgType,
+            final SimpleAnchor clientAnchor) {
+        ExcelDrawing.drawingPicture(this.sheet, pictureData, imgType, clientAnchor);
         return this;
     }
 
@@ -817,7 +827,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      * @param clientAnchor 绘制区域信息
      * @return this
      */
-    public ExcelWriter writeLineShape(final SimpleClientAnchor clientAnchor) {
+    public ExcelWriter writeLineShape(final SimpleAnchor clientAnchor) {
         return writeSimpleShape(clientAnchor, ShapeConfig.of());
     }
 
@@ -830,8 +840,8 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      * @param lineColor    线条颜色
      * @return this
      */
-    public ExcelWriter writeLineShape(final SimpleClientAnchor clientAnchor, final LineStyle lineStyle,
-            final int lineWidth, final Color lineColor) {
+    public ExcelWriter writeLineShape(final SimpleAnchor clientAnchor, final LineStyle lineStyle, final int lineWidth,
+            final Color lineColor) {
         return writeSimpleShape(clientAnchor,
                 ShapeConfig.of().setLineStyle(lineStyle).setLineWidth(lineWidth).setLineColor(lineColor));
     }
@@ -843,7 +853,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
      * @param shapeConfig  形状配置，包括形状类型、线条样式、线条宽度、线条颜色、填充颜色等
      * @return this
      */
-    public ExcelWriter writeSimpleShape(final SimpleClientAnchor clientAnchor, final ShapeConfig shapeConfig) {
+    public ExcelWriter writeSimpleShape(final SimpleAnchor clientAnchor, final ShapeConfig shapeConfig) {
         ExcelDrawing.drawingSimpleShape(this.sheet, clientAnchor, shapeConfig);
         return this;
     }

@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.http.plugin.httpz;
 
-import org.miaixz.bus.http.*;
-
 import java.io.IOException;
+
+import org.miaixz.bus.http.*;
 
 /**
  * 请求调用者

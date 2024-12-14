@@ -53,7 +53,9 @@ public class PrivateTag {
     /** (0049,xx06) VR=FL VM=1 Std Dev Heart Rate Prior To Confirm */
     public static final int StdDevHeartRatePriorToConfirm = 0x00490006;
 
-    /** (0049,xx07) VR=US VM=1 Num Heart Rate Samples Prior To Confirm */
+    /**
+     * (0049,xx07) VR=US VM=1 Num Heart Rate Samples Prior To Confirm
+     */
     public static final int NumHeartRateSamplesPriorToConfirm = 0x00490007;
 
     /** (0049,xx08) VR=CS VM=1 Auto Heart Rate Detect Predict */

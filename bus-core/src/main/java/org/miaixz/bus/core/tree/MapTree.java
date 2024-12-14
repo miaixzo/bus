@@ -68,6 +68,26 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
     }
 
     /**
+     * 打印
+     *
+     * @param tree   树
+     * @param writer Writer
+     * @param intent 缩进量
+     */
+    private static void printTree(final MapTree<?> tree, final PrintWriter writer, final int intent) {
+        writer.println(
+                StringKit.format("{}{}[{}]", StringKit.repeat(Symbol.C_SPACE, intent), tree.getName(), tree.getId()));
+        writer.flush();
+
+        final List<? extends MapTree<?>> children = tree.getChildren();
+        if (CollKit.isNotEmpty(children)) {
+            for (final MapTree<?> child : children) {
+                printTree(child, writer, intent + 2);
+            }
+        }
+    }
+
+    /**
      * 获取节点配置
      *
      * @return 节点配置
@@ -340,26 +360,6 @@ public class MapTree<T> extends LinkedHashMap<String, Object> implements Node<T>
         final StringWriter stringWriter = new StringWriter();
         printTree(this, new PrintWriter(stringWriter), 0);
         return stringWriter.toString();
-    }
-
-    /**
-     * 打印
-     *
-     * @param tree   树
-     * @param writer Writer
-     * @param intent 缩进量
-     */
-    private static void printTree(final MapTree<?> tree, final PrintWriter writer, final int intent) {
-        writer.println(
-                StringKit.format("{}{}[{}]", StringKit.repeat(Symbol.C_SPACE, intent), tree.getName(), tree.getId()));
-        writer.flush();
-
-        final List<? extends MapTree<?>> children = tree.getChildren();
-        if (CollKit.isNotEmpty(children)) {
-            for (final MapTree<?> child : children) {
-                printTree(child, writer, intent + 2);
-            }
-        }
     }
 
     /**

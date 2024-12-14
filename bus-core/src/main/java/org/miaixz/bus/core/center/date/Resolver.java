@@ -43,7 +43,6 @@ import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.DateException;
 import org.miaixz.bus.core.text.CharsBacker;
-import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
@@ -157,7 +156,7 @@ public class Resolver extends Converter {
             // 自定义格式化器忽略Locale
             return new DateTime(formatManager.parse(date, format));
         }
-        return new DateTime(date, DateKit.newSimpleFormat(format, locale, null));
+        return new DateTime(date, Formatter.newSimpleFormat(format, locale, null));
     }
 
     /**

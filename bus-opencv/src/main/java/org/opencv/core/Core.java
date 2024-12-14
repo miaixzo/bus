@@ -87,10 +87,10 @@ public class Core {
             Param_UCHAR = 11, Param_SCALAR = 12;
     // C++: enum ReduceTypes (cv.ReduceTypes)
     public static final int REDUCE_SUM2 = 4; // C++: enum DftFlags (cv.DftFlags)
-    public static final int DFT_INVERSE = 1, DFT_SCALE = 2, DFT_ROWS = 4, DFT_COMPLEX_OUTPUT = 16, DFT_REAL_OUTPUT = 32,
-            DFT_COMPLEX_INPUT = 64, DCT_INVERSE = DFT_INVERSE, DCT_ROWS = DFT_ROWS;
     // C++: enum RotateFlags (cv.RotateFlags)
     public static final int ROTATE_90_CLOCKWISE = 0, ROTATE_180 = 1, ROTATE_90_COUNTERCLOCKWISE = 2;
+    public static final int DFT_INVERSE = 1, DFT_SCALE = 2, DFT_ROWS = 4, DFT_COMPLEX_OUTPUT = 16, DFT_REAL_OUTPUT = 32,
+            DFT_COMPLEX_INPUT = 64, DCT_INVERSE = DFT_INVERSE, DCT_ROWS = DFT_ROWS;
     // C++: enum SortFlags (cv.SortFlags)
     public static final int SORT_EVERY_ROW = 0, SORT_EVERY_COLUMN = 1, SORT_ASCENDING = 0, SORT_DESCENDING = 16;
     private static final int CV_8U = 0, CV_8S = 1, CV_16U = 2, CV_16S = 3, CV_32S = 4, CV_32F = 5, CV_64F = 6,
@@ -134,10 +134,6 @@ public class Core {
         return cubeRoot_0(val);
     }
 
-    //
-    // C++: float cv::cubeRoot(float val)
-    //
-
     /**
      * Calculates the angle of a 2D vector in degrees.
      *
@@ -153,7 +149,7 @@ public class Core {
     }
 
     //
-    // C++: float cv::fastAtan2(float y, float x)
+    // C++: float cv::cubeRoot(float val)
     //
 
     /**
@@ -166,7 +162,7 @@ public class Core {
     }
 
     //
-    // C++: bool cv::ipp::useIPP()
+    // C++: float cv::fastAtan2(float y, float x)
     //
 
     public static void setUseIPP(boolean flag) {
@@ -174,7 +170,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::ipp::setUseIPP(bool flag)
+    // C++: bool cv::ipp::useIPP()
     //
 
     public static String getIppVersion() {
@@ -182,7 +178,7 @@ public class Core {
     }
 
     //
-    // C++: String cv::ipp::getIppVersion()
+    // C++: void cv::ipp::setUseIPP(bool flag)
     //
 
     public static boolean useIPP_NotExact() {
@@ -190,7 +186,7 @@ public class Core {
     }
 
     //
-    // C++: bool cv::ipp::useIPP_NotExact()
+    // C++: String cv::ipp::getIppVersion()
     //
 
     public static void setUseIPP_NotExact(boolean flag) {
@@ -198,7 +194,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::ipp::setUseIPP_NotExact(bool flag)
+    // C++: bool cv::ipp::useIPP_NotExact()
     //
 
     /**
@@ -226,7 +222,7 @@ public class Core {
     }
 
     //
-    // C++: int cv::borderInterpolate(int p, int len, int borderType)
+    // C++: void cv::ipp::setUseIPP_NotExact(bool flag)
     //
 
     /**
@@ -279,8 +275,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::copyMakeBorder(Mat src, Mat& dst, int top, int bottom, int left, int right, int borderType, Scalar
-    // value = Scalar())
+    // C++: int cv::borderInterpolate(int p, int len, int borderType)
     //
 
     /**
@@ -329,6 +324,11 @@ public class Core {
         copyMakeBorder_1(src.nativeObj, dst.nativeObj, top, bottom, left, right, borderType);
     }
 
+    //
+    // C++: void cv::copyMakeBorder(Mat src, Mat& dst, int top, int bottom, int left, int right, int borderType, Scalar
+    // value = Scalar())
+    //
+
     /**
      * Calculates the per-element sum of two arrays or an array and a scalar.
      *
@@ -372,10 +372,6 @@ public class Core {
         add_0(src1.nativeObj, src2.nativeObj, dst.nativeObj, mask.nativeObj, dtype);
     }
 
-    //
-    // C++: void cv::add(Mat src1, Mat src2, Mat& dst, Mat mask = Mat(), int dtype = -1)
-    //
-
     /**
      * Calculates the per-element sum of two arrays or an array and a scalar.
      *
@@ -416,6 +412,10 @@ public class Core {
     public static void add(Mat src1, Mat src2, Mat dst, Mat mask) {
         add_1(src1.nativeObj, src2.nativeObj, dst.nativeObj, mask.nativeObj);
     }
+
+    //
+    // C++: void cv::add(Mat src1, Mat src2, Mat& dst, Mat mask = Mat(), int dtype = -1)
+    //
 
     /**
      * Calculates the per-element sum of two arrays or an array and a scalar.
@@ -501,10 +501,6 @@ public class Core {
         subtract_0(src1.nativeObj, src2.nativeObj, dst.nativeObj, mask.nativeObj, dtype);
     }
 
-    //
-    // C++: void cv::subtract(Mat src1, Mat src2, Mat& dst, Mat mask = Mat(), int dtype = -1)
-    //
-
     /**
      * Calculates the per-element difference between two arrays or array and a scalar.
      *
@@ -547,6 +543,10 @@ public class Core {
     public static void subtract(Mat src1, Mat src2, Mat dst, Mat mask) {
         subtract_1(src1.nativeObj, src2.nativeObj, dst.nativeObj, mask.nativeObj);
     }
+
+    //
+    // C++: void cv::subtract(Mat src1, Mat src2, Mat& dst, Mat mask = Mat(), int dtype = -1)
+    //
 
     /**
      * Calculates the per-element difference between two arrays or array and a scalar.
@@ -617,10 +617,6 @@ public class Core {
         multiply_0(src1.nativeObj, src2.nativeObj, dst.nativeObj, scale, dtype);
     }
 
-    //
-    // C++: void cv::multiply(Mat src1, Mat src2, Mat& dst, double scale = 1, int dtype = -1)
-    //
-
     /**
      * Calculates the per-element scaled product of two arrays.
      *
@@ -646,6 +642,10 @@ public class Core {
     public static void multiply(Mat src1, Mat src2, Mat dst, double scale) {
         multiply_1(src1.nativeObj, src2.nativeObj, dst.nativeObj, scale);
     }
+
+    //
+    // C++: void cv::multiply(Mat src1, Mat src2, Mat& dst, double scale = 1, int dtype = -1)
+    //
 
     /**
      * Calculates the per-element scaled product of two arrays.
@@ -703,10 +703,6 @@ public class Core {
         divide_0(src1.nativeObj, src2.nativeObj, dst.nativeObj, scale, dtype);
     }
 
-    //
-    // C++: void cv::divide(Mat src1, Mat src2, Mat& dst, double scale = 1, int dtype = -1)
-    //
-
     /**
      * Performs per-element division of two arrays or a scalar by an array.
      *
@@ -735,6 +731,10 @@ public class Core {
     public static void divide(Mat src1, Mat src2, Mat dst, double scale) {
         divide_1(src1.nativeObj, src2.nativeObj, dst.nativeObj, scale);
     }
+
+    //
+    // C++: void cv::divide(Mat src1, Mat src2, Mat& dst, double scale = 1, int dtype = -1)
+    //
 
     /**
      * Performs per-element division of two arrays or a scalar by an array.
@@ -768,13 +768,13 @@ public class Core {
         divide_3(scale, src2.nativeObj, dst.nativeObj, dtype);
     }
 
-    //
-    // C++: void cv::divide(double scale, Mat src2, Mat& dst, int dtype = -1)
-    //
-
     public static void divide(double scale, Mat src2, Mat dst) {
         divide_4(scale, src2.nativeObj, dst.nativeObj);
     }
+
+    //
+    // C++: void cv::divide(double scale, Mat src2, Mat& dst, int dtype = -1)
+    //
 
     /**
      * Calculates the sum of a scaled array and another array.
@@ -797,10 +797,6 @@ public class Core {
     public static void scaleAdd(Mat src1, double alpha, Mat src2, Mat dst) {
         scaleAdd_0(src1.nativeObj, alpha, src2.nativeObj, dst.nativeObj);
     }
-
-    //
-    // C++: void cv::scaleAdd(Mat src1, double alpha, Mat src2, Mat& dst)
-    //
 
     /**
      * Calculates the weighted sum of two arrays.
@@ -827,7 +823,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::addWeighted(Mat src1, double alpha, Mat src2, double beta, double gamma, Mat& dst, int dtype = -1)
+    // C++: void cv::scaleAdd(Mat src1, double alpha, Mat src2, Mat& dst)
     //
 
     /**
@@ -852,6 +848,10 @@ public class Core {
     public static void addWeighted(Mat src1, double alpha, Mat src2, double beta, double gamma, Mat dst) {
         addWeighted_1(src1.nativeObj, alpha, src2.nativeObj, beta, gamma, dst.nativeObj);
     }
+
+    //
+    // C++: void cv::addWeighted(Mat src1, double alpha, Mat src2, double beta, double gamma, Mat& dst, int dtype = -1)
+    //
 
     /**
      * Scales, calculates absolute values, and converts the result to 8-bit.
@@ -879,10 +879,6 @@ public class Core {
         convertScaleAbs_0(src.nativeObj, dst.nativeObj, alpha, beta);
     }
 
-    //
-    // C++: void cv::convertScaleAbs(Mat src, Mat& dst, double alpha = 1, double beta = 0)
-    //
-
     /**
      * Scales, calculates absolute values, and converts the result to 8-bit.
      *
@@ -907,6 +903,10 @@ public class Core {
     public static void convertScaleAbs(Mat src, Mat dst, double alpha) {
         convertScaleAbs_1(src.nativeObj, dst.nativeObj, alpha);
     }
+
+    //
+    // C++: void cv::convertScaleAbs(Mat src, Mat& dst, double alpha = 1, double beta = 0)
+    //
 
     /**
      * Scales, calculates absolute values, and converts the result to 8-bit.
@@ -948,10 +948,6 @@ public class Core {
         convertFp16_0(src.nativeObj, dst.nativeObj);
     }
 
-    //
-    // C++: void cv::convertFp16(Mat src, Mat& dst)
-    //
-
     /**
      * Performs a look-up table transform of an array.
      *
@@ -972,7 +968,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::LUT(Mat src, Mat lut, Mat& dst)
+    // C++: void cv::convertFp16(Mat src, Mat& dst)
     //
 
     /**
@@ -989,7 +985,7 @@ public class Core {
     }
 
     //
-    // C++: Scalar cv::sum(Mat src)
+    // C++: void cv::LUT(Mat src, Mat lut, Mat& dst)
     //
 
     /**
@@ -1005,7 +1001,7 @@ public class Core {
     }
 
     //
-    // C++: bool cv::hasNonZero(Mat src)
+    // C++: Scalar cv::sum(Mat src)
     //
 
     /**
@@ -1021,7 +1017,7 @@ public class Core {
     }
 
     //
-    // C++: int cv::countNonZero(Mat src)
+    // C++: bool cv::hasNonZero(Mat src)
     //
 
     /**
@@ -1053,7 +1049,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::findNonZero(Mat src, Mat& idx)
+    // C++: int cv::countNonZero(Mat src)
     //
 
     /**
@@ -1073,7 +1069,7 @@ public class Core {
     }
 
     //
-    // C++: Scalar cv::mean(Mat src, Mat mask = Mat())
+    // C++: void cv::findNonZero(Mat src, Mat& idx)
     //
 
     /**
@@ -1091,6 +1087,10 @@ public class Core {
     public static Scalar mean(Mat src) {
         return new Scalar(mean_1(src.nativeObj));
     }
+
+    //
+    // C++: Scalar cv::mean(Mat src, Mat mask = Mat())
+    //
 
     /**
      * Calculates a mean and standard deviation of array elements.
@@ -1115,10 +1115,6 @@ public class Core {
         meanStdDev_0(src.nativeObj, mean_mat.nativeObj, stddev_mat.nativeObj, mask.nativeObj);
     }
 
-    //
-    // C++: void cv::meanStdDev(Mat src, vector_double& mean, vector_double& stddev, Mat mask = Mat())
-    //
-
     /**
      * Calculates a mean and standard deviation of array elements.
      *
@@ -1141,6 +1137,10 @@ public class Core {
         Mat stddev_mat = stddev;
         meanStdDev_1(src.nativeObj, mean_mat.nativeObj, stddev_mat.nativeObj);
     }
+
+    //
+    // C++: void cv::meanStdDev(Mat src, vector_double& mean, vector_double& stddev, Mat mask = Mat())
+    //
 
     /**
      * Calculates the absolute norm of an array.
@@ -1177,10 +1177,6 @@ public class Core {
         return norm_0(src1.nativeObj, normType, mask.nativeObj);
     }
 
-    //
-    // C++: double cv::norm(Mat src1, int normType = NORM_L2, Mat mask = Mat())
-    //
-
     /**
      * Calculates the absolute norm of an array.
      *
@@ -1214,6 +1210,10 @@ public class Core {
     public static double norm(Mat src1, int normType) {
         return norm_1(src1.nativeObj, normType);
     }
+
+    //
+    // C++: double cv::norm(Mat src1, int normType = NORM_L2, Mat mask = Mat())
+    //
 
     /**
      * Calculates the absolute norm of an array.
@@ -1264,10 +1264,6 @@ public class Core {
         return norm_3(src1.nativeObj, src2.nativeObj, normType, mask.nativeObj);
     }
 
-    //
-    // C++: double cv::norm(Mat src1, Mat src2, int normType = NORM_L2, Mat mask = Mat())
-    //
-
     /**
      * Calculates an absolute difference norm or a relative difference norm.
      *
@@ -1282,6 +1278,10 @@ public class Core {
     public static double norm(Mat src1, Mat src2, int normType) {
         return norm_4(src1.nativeObj, src2.nativeObj, normType);
     }
+
+    //
+    // C++: double cv::norm(Mat src1, Mat src2, int normType = NORM_L2, Mat mask = Mat())
+    //
 
     /**
      * Calculates an absolute difference norm or a relative difference norm.
@@ -1319,10 +1319,6 @@ public class Core {
         return PSNR_0(src1.nativeObj, src2.nativeObj, R);
     }
 
-    //
-    // C++: double cv::PSNR(Mat src1, Mat src2, double R = 255.)
-    //
-
     /**
      * Computes the Peak Signal-to-Noise Ratio (PSNR) image quality metric.
      *
@@ -1343,6 +1339,10 @@ public class Core {
     public static double PSNR(Mat src1, Mat src2) {
         return PSNR_1(src1.nativeObj, src2.nativeObj);
     }
+
+    //
+    // C++: double cv::PSNR(Mat src1, Mat src2, double R = 255.)
+    //
 
     /**
      * naive nearest neighbor finder
@@ -1366,11 +1366,6 @@ public class Core {
                 mask.nativeObj, update, crosscheck);
     }
 
-    //
-    // C++: void cv::batchDistance(Mat src1, Mat src2, Mat& dist, int dtype, Mat& nidx, int normType = NORM_L2, int K =
-    // 0, Mat mask = Mat(), int update = 0, bool crosscheck = false)
-    //
-
     /**
      * naive nearest neighbor finder
      *
@@ -1391,6 +1386,11 @@ public class Core {
         batchDistance_1(src1.nativeObj, src2.nativeObj, dist.nativeObj, dtype, nidx.nativeObj, normType, K,
                 mask.nativeObj, update);
     }
+
+    //
+    // C++: void cv::batchDistance(Mat src1, Mat src2, Mat& dist, int dtype, Mat& nidx, int normType = NORM_L2, int K =
+    // 0, Mat mask = Mat(), int update = 0, bool crosscheck = false)
+    //
 
     /**
      * naive nearest neighbor finder
@@ -1518,11 +1518,6 @@ public class Core {
         normalize_0(src.nativeObj, dst.nativeObj, alpha, beta, norm_type, dtype, mask.nativeObj);
     }
 
-    //
-    // C++: void cv::normalize(Mat src, Mat& dst, double alpha = 1, double beta = 0, int norm_type = NORM_L2, int dtype
-    // = -1, Mat mask = Mat())
-    //
-
     /**
      * Normalizes the norm or value range of an array.
      *
@@ -1581,6 +1576,11 @@ public class Core {
     public static void normalize(Mat src, Mat dst, double alpha, double beta, int norm_type, int dtype) {
         normalize_1(src.nativeObj, dst.nativeObj, alpha, beta, norm_type, dtype);
     }
+
+    //
+    // C++: void cv::normalize(Mat src, Mat& dst, double alpha = 1, double beta = 0, int norm_type = NORM_L2, int dtype
+    // = -1, Mat mask = Mat())
+    //
 
     /**
      * Normalizes the norm or value range of an array.
@@ -1819,10 +1819,6 @@ public class Core {
         reduceArgMin_0(src.nativeObj, dst.nativeObj, axis, lastIndex);
     }
 
-    //
-    // C++: void cv::reduceArgMin(Mat src, Mat& dst, int axis, bool lastIndex = false)
-    //
-
     /**
      * Finds indices of min elements along provided axis
      *
@@ -1837,6 +1833,10 @@ public class Core {
     public static void reduceArgMin(Mat src, Mat dst, int axis) {
         reduceArgMin_1(src.nativeObj, dst.nativeObj, axis);
     }
+
+    //
+    // C++: void cv::reduceArgMin(Mat src, Mat& dst, int axis, bool lastIndex = false)
+    //
 
     /**
      * Finds indices of max elements along provided axis
@@ -1854,10 +1854,6 @@ public class Core {
         reduceArgMax_0(src.nativeObj, dst.nativeObj, axis, lastIndex);
     }
 
-    //
-    // C++: void cv::reduceArgMax(Mat src, Mat& dst, int axis, bool lastIndex = false)
-    //
-
     /**
      * Finds indices of max elements along provided axis
      *
@@ -1872,6 +1868,10 @@ public class Core {
     public static void reduceArgMax(Mat src, Mat dst, int axis) {
         reduceArgMax_1(src.nativeObj, dst.nativeObj, axis);
     }
+
+    //
+    // C++: void cv::reduceArgMax(Mat src, Mat& dst, int axis, bool lastIndex = false)
+    //
 
     /**
      * Reduces a matrix to a vector.
@@ -1900,10 +1900,6 @@ public class Core {
         reduce_0(src.nativeObj, dst.nativeObj, dim, rtype, dtype);
     }
 
-    //
-    // C++: void cv::reduce(Mat src, Mat& dst, int dim, int rtype, int dtype = -1)
-    //
-
     /**
      * Reduces a matrix to a vector.
      *
@@ -1930,6 +1926,10 @@ public class Core {
         reduce_1(src.nativeObj, dst.nativeObj, dim, rtype);
     }
 
+    //
+    // C++: void cv::reduce(Mat src, Mat& dst, int dim, int rtype, int dtype = -1)
+    //
+
     /**
      *
      * @param mv  input vector of matrices to be merged; all the matrices in mv must have the same size and the same
@@ -1941,10 +1941,6 @@ public class Core {
         Mat mv_mat = Converters.vector_Mat_to_Mat(mv);
         merge_0(mv_mat.nativeObj, dst.nativeObj);
     }
-
-    //
-    // C++: void cv::merge(vector_Mat mv, Mat& dst)
-    //
 
     /**
      *
@@ -1959,7 +1955,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::split(Mat m, vector_Mat& mv)
+    // C++: void cv::merge(vector_Mat mv, Mat& dst)
     //
 
     /**
@@ -1983,7 +1979,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::mixChannels(vector_Mat src, vector_Mat dst, vector_int fromTo)
+    // C++: void cv::split(Mat m, vector_Mat& mv)
     //
 
     /**
@@ -1998,7 +1994,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::extractChannel(Mat src, Mat& dst, int coi)
+    // C++: void cv::mixChannels(vector_Mat src, vector_Mat dst, vector_int fromTo)
     //
 
     /**
@@ -2013,7 +2009,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::insertChannel(Mat src, Mat& dst, int coi)
+    // C++: void cv::extractChannel(Mat src, Mat& dst, int coi)
     //
 
     /**
@@ -2042,7 +2038,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::flip(Mat src, Mat& dst, int flipCode)
+    // C++: void cv::insertChannel(Mat src, Mat& dst, int coi)
     //
 
     /**
@@ -2057,7 +2053,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::flipND(Mat src, Mat& dst, int axis)
+    // C++: void cv::flip(Mat src, Mat& dst, int flipCode)
     //
 
     /**
@@ -2072,7 +2068,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::broadcast(Mat src, Mat shape, Mat& dst)
+    // C++: void cv::flipND(Mat src, Mat& dst, int axis)
     //
 
     /**
@@ -2091,7 +2087,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::rotate(Mat src, Mat& dst, int rotateCode)
+    // C++: void cv::broadcast(Mat src, Mat shape, Mat& dst)
     //
 
     /**
@@ -2111,7 +2107,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::repeat(Mat src, int ny, int nx, Mat& dst)
+    // C++: void cv::rotate(Mat src, Mat& dst, int rotateCode)
     //
 
     /**
@@ -2141,7 +2137,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::hconcat(vector_Mat src, Mat& dst)
+    // C++: void cv::repeat(Mat src, int ny, int nx, Mat& dst)
     //
 
     /**
@@ -2170,7 +2166,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::vconcat(vector_Mat src, Mat& dst)
+    // C++: void cv::hconcat(vector_Mat src, Mat& dst)
     //
 
     /**
@@ -2198,7 +2194,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::bitwise_and(Mat src1, Mat src2, Mat& dst, Mat mask = Mat())
+    // C++: void cv::vconcat(vector_Mat src, Mat& dst)
     //
 
     /**
@@ -2224,6 +2220,10 @@ public class Core {
         bitwise_and_1(src1.nativeObj, src2.nativeObj, dst.nativeObj);
     }
 
+    //
+    // C++: void cv::bitwise_and(Mat src1, Mat src2, Mat& dst, Mat mask = Mat())
+    //
+
     /**
      * Calculates the per-element bit-wise disjunction of two arrays or an array and a scalar.
      *
@@ -2247,10 +2247,6 @@ public class Core {
         bitwise_or_0(src1.nativeObj, src2.nativeObj, dst.nativeObj, mask.nativeObj);
     }
 
-    //
-    // C++: void cv::bitwise_or(Mat src1, Mat src2, Mat& dst, Mat mask = Mat())
-    //
-
     /**
      * Calculates the per-element bit-wise disjunction of two arrays or an array and a scalar.
      *
@@ -2272,6 +2268,10 @@ public class Core {
     public static void bitwise_or(Mat src1, Mat src2, Mat dst) {
         bitwise_or_1(src1.nativeObj, src2.nativeObj, dst.nativeObj);
     }
+
+    //
+    // C++: void cv::bitwise_or(Mat src1, Mat src2, Mat& dst, Mat mask = Mat())
+    //
 
     /**
      * Calculates the per-element bit-wise "exclusive or" operation on two arrays or an array and a scalar.
@@ -2296,10 +2296,6 @@ public class Core {
         bitwise_xor_0(src1.nativeObj, src2.nativeObj, dst.nativeObj, mask.nativeObj);
     }
 
-    //
-    // C++: void cv::bitwise_xor(Mat src1, Mat src2, Mat& dst, Mat mask = Mat())
-    //
-
     /**
      * Calculates the per-element bit-wise "exclusive or" operation on two arrays or an array and a scalar.
      *
@@ -2322,6 +2318,10 @@ public class Core {
         bitwise_xor_1(src1.nativeObj, src2.nativeObj, dst.nativeObj);
     }
 
+    //
+    // C++: void cv::bitwise_xor(Mat src1, Mat src2, Mat& dst, Mat mask = Mat())
+    //
+
     /**
      * Inverts every bit of an array.
      *
@@ -2339,10 +2339,6 @@ public class Core {
         bitwise_not_0(src.nativeObj, dst.nativeObj, mask.nativeObj);
     }
 
-    //
-    // C++: void cv::bitwise_not(Mat src, Mat& dst, Mat mask = Mat())
-    //
-
     /**
      * Inverts every bit of an array.
      *
@@ -2358,6 +2354,10 @@ public class Core {
     public static void bitwise_not(Mat src, Mat dst) {
         bitwise_not_1(src.nativeObj, dst.nativeObj);
     }
+
+    //
+    // C++: void cv::bitwise_not(Mat src, Mat& dst, Mat mask = Mat())
+    //
 
     /**
      * Calculates the per-element absolute difference between two arrays or between an array and a scalar.
@@ -2382,10 +2382,6 @@ public class Core {
         absdiff_0(src1.nativeObj, src2.nativeObj, dst.nativeObj);
     }
 
-    //
-    // C++: void cv::absdiff(Mat src1, Mat src2, Mat& dst)
-    //
-
     /**
      * This is an overloaded member function, provided for convenience (python) Copies the matrix to another one. When
      * the operation mask is specified, if the Mat::create call shown above reallocates the matrix, the newly allocated
@@ -2402,7 +2398,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::copyTo(Mat src, Mat& dst, Mat mask)
+    // C++: void cv::absdiff(Mat src1, Mat src2, Mat& dst)
     //
 
     /**
@@ -2434,7 +2430,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::inRange(Mat src, Scalar lowerb, Scalar upperb, Mat& dst)
+    // C++: void cv::copyTo(Mat src, Mat& dst, Mat mask)
     //
 
     /**
@@ -2464,7 +2460,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::compare(Mat src1, Mat src2, Mat& dst, int cmpop)
+    // C++: void cv::inRange(Mat src, Scalar lowerb, Scalar upperb, Mat& dst)
     //
 
     /**
@@ -2482,7 +2478,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::min(Mat src1, Mat src2, Mat& dst)
+    // C++: void cv::compare(Mat src1, Mat src2, Mat& dst, int cmpop)
     //
 
     /**
@@ -2501,7 +2497,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::max(Mat src1, Mat src2, Mat& dst)
+    // C++: void cv::min(Mat src1, Mat src2, Mat& dst)
     //
 
     /**
@@ -2518,7 +2514,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::sqrt(Mat src, Mat& dst)
+    // C++: void cv::max(Mat src1, Mat src2, Mat& dst)
     //
 
     /**
@@ -2546,7 +2542,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::pow(Mat src, double power, Mat& dst)
+    // C++: void cv::sqrt(Mat src, Mat& dst)
     //
 
     /**
@@ -2568,7 +2564,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::exp(Mat src, Mat& dst)
+    // C++: void cv::pow(Mat src, double power, Mat& dst)
     //
 
     /**
@@ -2588,7 +2584,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::log(Mat src, Mat& dst)
+    // C++: void cv::exp(Mat src, Mat& dst)
     //
 
     /**
@@ -2614,7 +2610,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::polarToCart(Mat magnitude, Mat angle, Mat& x, Mat& y, bool angleInDegrees = false)
+    // C++: void cv::log(Mat src, Mat& dst)
     //
 
     /**
@@ -2638,6 +2634,10 @@ public class Core {
         polarToCart_1(magnitude.nativeObj, angle.nativeObj, x.nativeObj, y.nativeObj);
     }
 
+    //
+    // C++: void cv::polarToCart(Mat magnitude, Mat angle, Mat& x, Mat& y, bool angleInDegrees = false)
+    //
+
     /**
      * Calculates the magnitude and angle of 2D vectors.
      *
@@ -2660,10 +2660,6 @@ public class Core {
         cartToPolar_0(x.nativeObj, y.nativeObj, magnitude.nativeObj, angle.nativeObj, angleInDegrees);
     }
 
-    //
-    // C++: void cv::cartToPolar(Mat x, Mat y, Mat& magnitude, Mat& angle, bool angleInDegrees = false)
-    //
-
     /**
      * Calculates the magnitude and angle of 2D vectors.
      *
@@ -2685,6 +2681,10 @@ public class Core {
         cartToPolar_1(x.nativeObj, y.nativeObj, magnitude.nativeObj, angle.nativeObj);
     }
 
+    //
+    // C++: void cv::cartToPolar(Mat x, Mat y, Mat& magnitude, Mat& angle, bool angleInDegrees = false)
+    //
+
     /**
      * Calculates the rotation angle of 2D vectors.
      *
@@ -2704,10 +2704,6 @@ public class Core {
         phase_0(x.nativeObj, y.nativeObj, angle.nativeObj, angleInDegrees);
     }
 
-    //
-    // C++: void cv::phase(Mat x, Mat y, Mat& angle, bool angleInDegrees = false)
-    //
-
     /**
      * Calculates the rotation angle of 2D vectors.
      *
@@ -2725,6 +2721,10 @@ public class Core {
         phase_1(x.nativeObj, y.nativeObj, angle.nativeObj);
     }
 
+    //
+    // C++: void cv::phase(Mat x, Mat y, Mat& angle, bool angleInDegrees = false)
+    //
+
     /**
      * Calculates the magnitude of 2D vectors.
      *
@@ -2738,10 +2738,6 @@ public class Core {
     public static void magnitude(Mat x, Mat y, Mat magnitude) {
         magnitude_0(x.nativeObj, y.nativeObj, magnitude.nativeObj);
     }
-
-    //
-    // C++: void cv::magnitude(Mat x, Mat y, Mat& magnitude)
-    //
 
     /**
      * Checks every element of an input array for invalid values.
@@ -2766,8 +2762,7 @@ public class Core {
     }
 
     //
-    // C++: bool cv::checkRange(Mat a, bool quiet = true, _hidden_ * pos = 0, double minVal = -DBL_MAX, double maxVal =
-    // DBL_MAX)
+    // C++: void cv::magnitude(Mat x, Mat y, Mat& magnitude)
     //
 
     /**
@@ -2790,6 +2785,11 @@ public class Core {
     public static boolean checkRange(Mat a, boolean quiet, double minVal) {
         return checkRange_1(a.nativeObj, quiet, minVal);
     }
+
+    //
+    // C++: bool cv::checkRange(Mat a, bool quiet = true, _hidden_ * pos = 0, double minVal = -DBL_MAX, double maxVal =
+    // DBL_MAX)
+    //
 
     /**
      * Checks every element of an input array for invalid values.
@@ -2839,10 +2839,6 @@ public class Core {
         patchNaNs_0(a.nativeObj, val);
     }
 
-    //
-    // C++: void cv::patchNaNs(Mat& a, double val = 0)
-    //
-
     /**
      * Replaces NaNs by given number
      *
@@ -2851,6 +2847,10 @@ public class Core {
     public static void patchNaNs(Mat a) {
         patchNaNs_1(a.nativeObj);
     }
+
+    //
+    // C++: void cv::patchNaNs(Mat& a, double val = 0)
+    //
 
     /**
      * Performs generalized matrix multiplication.
@@ -2878,10 +2878,6 @@ public class Core {
         gemm_0(src1.nativeObj, src2.nativeObj, alpha, src3.nativeObj, beta, dst.nativeObj, flags);
     }
 
-    //
-    // C++: void cv::gemm(Mat src1, Mat src2, double alpha, Mat src3, double beta, Mat& dst, int flags = 0)
-    //
-
     /**
      * Performs generalized matrix multiplication.
      *
@@ -2907,6 +2903,10 @@ public class Core {
     public static void gemm(Mat src1, Mat src2, double alpha, Mat src3, double beta, Mat dst) {
         gemm_1(src1.nativeObj, src2.nativeObj, alpha, src3.nativeObj, beta, dst.nativeObj);
     }
+
+    //
+    // C++: void cv::gemm(Mat src1, Mat src2, double alpha, Mat src3, double beta, Mat& dst, int flags = 0)
+    //
 
     /**
      * Calculates the product of a matrix and its transposition.
@@ -2935,10 +2935,6 @@ public class Core {
         mulTransposed_0(src.nativeObj, dst.nativeObj, aTa, delta.nativeObj, scale, dtype);
     }
 
-    //
-    // C++: void cv::mulTransposed(Mat src, Mat& dst, bool aTa, Mat delta = Mat(), double scale = 1, int dtype = -1)
-    //
-
     /**
      * Calculates the product of a matrix and its transposition.
      *
@@ -2964,6 +2960,10 @@ public class Core {
     public static void mulTransposed(Mat src, Mat dst, boolean aTa, Mat delta, double scale) {
         mulTransposed_1(src.nativeObj, dst.nativeObj, aTa, delta.nativeObj, scale);
     }
+
+    //
+    // C++: void cv::mulTransposed(Mat src, Mat& dst, bool aTa, Mat delta = Mat(), double scale = 1, int dtype = -1)
+    //
 
     /**
      * Calculates the product of a matrix and its transposition.
@@ -3027,10 +3027,6 @@ public class Core {
         transpose_0(src.nativeObj, dst.nativeObj);
     }
 
-    //
-    // C++: void cv::transpose(Mat src, Mat& dst)
-    //
-
     /**
      * Transpose for n-dimensional matrices.
      *
@@ -3047,7 +3043,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::transposeND(Mat src, vector_int order, Mat& dst)
+    // C++: void cv::transpose(Mat src, Mat& dst)
     //
 
     /**
@@ -3073,7 +3069,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::transform(Mat src, Mat& dst, Mat m)
+    // C++: void cv::transposeND(Mat src, vector_int order, Mat& dst)
     //
 
     /**
@@ -3102,7 +3098,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::perspectiveTransform(Mat src, Mat& dst, Mat m)
+    // C++: void cv::transform(Mat src, Mat& dst, Mat m)
     //
 
     /**
@@ -3124,7 +3120,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::completeSymm(Mat& m, bool lowerToUpper = false)
+    // C++: void cv::perspectiveTransform(Mat src, Mat& dst, Mat m)
     //
 
     /**
@@ -3144,6 +3140,10 @@ public class Core {
         completeSymm_1(m.nativeObj);
     }
 
+    //
+    // C++: void cv::completeSymm(Mat& m, bool lowerToUpper = false)
+    //
+
     /**
      * Initializes a scaled identity matrix.
      *
@@ -3162,10 +3162,6 @@ public class Core {
         setIdentity_0(mtx.nativeObj, s.val[0], s.val[1], s.val[2], s.val[3]);
     }
 
-    //
-    // C++: void cv::setIdentity(Mat& mtx, Scalar s = Scalar(1))
-    //
-
     /**
      * Initializes a scaled identity matrix.
      *
@@ -3182,6 +3178,10 @@ public class Core {
     public static void setIdentity(Mat mtx) {
         setIdentity_1(mtx.nativeObj);
     }
+
+    //
+    // C++: void cv::setIdentity(Mat& mtx, Scalar s = Scalar(1))
+    //
 
     /**
      * Returns the determinant of a square floating-point matrix.
@@ -3201,10 +3201,6 @@ public class Core {
         return determinant_0(mtx.nativeObj);
     }
 
-    //
-    // C++: double cv::determinant(Mat mtx)
-    //
-
     /**
      * Returns the trace of a matrix.
      *
@@ -3219,7 +3215,7 @@ public class Core {
     }
 
     //
-    // C++: Scalar cv::trace(Mat mtx)
+    // C++: double cv::determinant(Mat mtx)
     //
 
     /**
@@ -3250,7 +3246,7 @@ public class Core {
     }
 
     //
-    // C++: double cv::invert(Mat src, Mat& dst, int flags = DECOMP_LU)
+    // C++: Scalar cv::trace(Mat mtx)
     //
 
     /**
@@ -3279,6 +3275,10 @@ public class Core {
         return invert_1(src.nativeObj, dst.nativeObj);
     }
 
+    //
+    // C++: double cv::invert(Mat src, Mat& dst, int flags = DECOMP_LU)
+    //
+
     /**
      * Solves one or more linear systems or least-squares problems.
      *
@@ -3303,10 +3303,6 @@ public class Core {
         return solve_0(src1.nativeObj, src2.nativeObj, dst.nativeObj, flags);
     }
 
-    //
-    // C++: bool cv::solve(Mat src1, Mat src2, Mat& dst, int flags = DECOMP_LU)
-    //
-
     /**
      * Solves one or more linear systems or least-squares problems.
      *
@@ -3330,6 +3326,10 @@ public class Core {
         return solve_1(src1.nativeObj, src2.nativeObj, dst.nativeObj);
     }
 
+    //
+    // C++: bool cv::solve(Mat src1, Mat src2, Mat& dst, int flags = DECOMP_LU)
+    //
+
     /**
      * Sorts each row or each column of a matrix.
      *
@@ -3344,10 +3344,6 @@ public class Core {
     public static void sort(Mat src, Mat dst, int flags) {
         sort_0(src.nativeObj, dst.nativeObj, flags);
     }
-
-    //
-    // C++: void cv::sort(Mat src, Mat& dst, int flags)
-    //
 
     /**
      * Sorts each row or each column of a matrix.
@@ -3371,7 +3367,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::sortIdx(Mat src, Mat& dst, int flags)
+    // C++: void cv::sort(Mat src, Mat& dst, int flags)
     //
 
     /**
@@ -3396,7 +3392,7 @@ public class Core {
     }
 
     //
-    // C++: int cv::solveCubic(Mat coeffs, Mat& roots)
+    // C++: void cv::sortIdx(Mat src, Mat& dst, int flags)
     //
 
     /**
@@ -3415,7 +3411,7 @@ public class Core {
     }
 
     //
-    // C++: double cv::solvePoly(Mat coeffs, Mat& roots, int maxIters = 300)
+    // C++: int cv::solveCubic(Mat coeffs, Mat& roots)
     //
 
     /**
@@ -3431,6 +3427,10 @@ public class Core {
     public static double solvePoly(Mat coeffs, Mat roots) {
         return solvePoly_1(coeffs.nativeObj, roots.nativeObj);
     }
+
+    //
+    // C++: double cv::solvePoly(Mat coeffs, Mat& roots, int maxIters = 300)
+    //
 
     /**
      * Calculates eigenvalues and eigenvectors of a symmetric matrix.
@@ -3456,10 +3456,6 @@ public class Core {
         return eigen_0(src.nativeObj, eigenvalues.nativeObj, eigenvectors.nativeObj);
     }
 
-    //
-    // C++: bool cv::eigen(Mat src, Mat& eigenvalues, Mat& eigenvectors = Mat())
-    //
-
     /**
      * Calculates eigenvalues and eigenvectors of a symmetric matrix.
      *
@@ -3482,6 +3478,10 @@ public class Core {
         return eigen_1(src.nativeObj, eigenvalues.nativeObj);
     }
 
+    //
+    // C++: bool cv::eigen(Mat src, Mat& eigenvalues, Mat& eigenvectors = Mat())
+    //
+
     /**
      * Calculates eigenvalues and eigenvectors of a non-symmetric matrix (real eigenvalues only).
      *
@@ -3500,10 +3500,6 @@ public class Core {
         eigenNonSymmetric_0(src.nativeObj, eigenvalues.nativeObj, eigenvectors.nativeObj);
     }
 
-    //
-    // C++: void cv::eigenNonSymmetric(Mat src, Mat& eigenvalues, Mat& eigenvectors)
-    //
-
     /**
      *
      * <b>Note:</b> use #COVAR_ROWS or #COVAR_COLS flag
@@ -3519,7 +3515,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::calcCovarMatrix(Mat samples, Mat& covar, Mat& mean, int flags, int ctype = CV_64F)
+    // C++: void cv::eigenNonSymmetric(Mat src, Mat& eigenvalues, Mat& eigenvectors)
     //
 
     /**
@@ -3535,6 +3531,10 @@ public class Core {
         calcCovarMatrix_1(samples.nativeObj, covar.nativeObj, mean.nativeObj, flags);
     }
 
+    //
+    // C++: void cv::calcCovarMatrix(Mat samples, Mat& covar, Mat& mean, int flags, int ctype = CV_64F)
+    //
+
     /**
      * wrap PCA::operator()
      *
@@ -3547,10 +3547,6 @@ public class Core {
         PCACompute_0(data.nativeObj, mean.nativeObj, eigenvectors.nativeObj, maxComponents);
     }
 
-    //
-    // C++: void cv::PCACompute(Mat data, Mat& mean, Mat& eigenvectors, int maxComponents = 0)
-    //
-
     /**
      * wrap PCA::operator()
      *
@@ -3561,6 +3557,10 @@ public class Core {
     public static void PCACompute(Mat data, Mat mean, Mat eigenvectors) {
         PCACompute_1(data.nativeObj, mean.nativeObj, eigenvectors.nativeObj);
     }
+
+    //
+    // C++: void cv::PCACompute(Mat data, Mat& mean, Mat& eigenvectors, int maxComponents = 0)
+    //
 
     /**
      * wrap PCA::operator() and add eigenvalues output parameter
@@ -3575,10 +3575,6 @@ public class Core {
         PCACompute2_0(data.nativeObj, mean.nativeObj, eigenvectors.nativeObj, eigenvalues.nativeObj, maxComponents);
     }
 
-    //
-    // C++: void cv::PCACompute(Mat data, Mat& mean, Mat& eigenvectors, Mat& eigenvalues, int maxComponents = 0)
-    //
-
     /**
      * wrap PCA::operator() and add eigenvalues output parameter
      *
@@ -3591,6 +3587,10 @@ public class Core {
         PCACompute2_1(data.nativeObj, mean.nativeObj, eigenvectors.nativeObj, eigenvalues.nativeObj);
     }
 
+    //
+    // C++: void cv::PCACompute(Mat data, Mat& mean, Mat& eigenvectors, Mat& eigenvalues, int maxComponents = 0)
+    //
+
     /**
      * wrap PCA::operator()
      *
@@ -3602,10 +3602,6 @@ public class Core {
     public static void PCACompute(Mat data, Mat mean, Mat eigenvectors, double retainedVariance) {
         PCACompute_2(data.nativeObj, mean.nativeObj, eigenvectors.nativeObj, retainedVariance);
     }
-
-    //
-    // C++: void cv::PCACompute(Mat data, Mat& mean, Mat& eigenvectors, double retainedVariance)
-    //
 
     /**
      * wrap PCA::operator() and add eigenvalues output parameter
@@ -3621,7 +3617,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::PCACompute(Mat data, Mat& mean, Mat& eigenvectors, Mat& eigenvalues, double retainedVariance)
+    // C++: void cv::PCACompute(Mat data, Mat& mean, Mat& eigenvectors, double retainedVariance)
     //
 
     /**
@@ -3637,7 +3633,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::PCAProject(Mat data, Mat mean, Mat eigenvectors, Mat& result)
+    // C++: void cv::PCACompute(Mat data, Mat& mean, Mat& eigenvectors, Mat& eigenvalues, double retainedVariance)
     //
 
     /**
@@ -3653,7 +3649,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::PCABackProject(Mat data, Mat mean, Mat eigenvectors, Mat& result)
+    // C++: void cv::PCAProject(Mat data, Mat mean, Mat eigenvectors, Mat& result)
     //
 
     /**
@@ -3670,7 +3666,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::SVDecomp(Mat src, Mat& w, Mat& u, Mat& vt, int flags = 0)
+    // C++: void cv::PCABackProject(Mat data, Mat mean, Mat eigenvectors, Mat& result)
     //
 
     /**
@@ -3685,6 +3681,10 @@ public class Core {
         SVDecomp_1(src.nativeObj, w.nativeObj, u.nativeObj, vt.nativeObj);
     }
 
+    //
+    // C++: void cv::SVDecomp(Mat src, Mat& w, Mat& u, Mat& vt, int flags = 0)
+    //
+
     /**
      * wrap SVD::backSubst
      *
@@ -3697,10 +3697,6 @@ public class Core {
     public static void SVBackSubst(Mat w, Mat u, Mat vt, Mat rhs, Mat dst) {
         SVBackSubst_0(w.nativeObj, u.nativeObj, vt.nativeObj, rhs.nativeObj, dst.nativeObj);
     }
-
-    //
-    // C++: void cv::SVBackSubst(Mat w, Mat u, Mat vt, Mat rhs, Mat& dst)
-    //
 
     /**
      * Calculates the Mahalanobis distance between two vectors.
@@ -3721,7 +3717,7 @@ public class Core {
     }
 
     //
-    // C++: double cv::Mahalanobis(Mat v1, Mat v2, Mat icovar)
+    // C++: void cv::SVBackSubst(Mat w, Mat u, Mat vt, Mat rhs, Mat& dst)
     //
 
     /**
@@ -3865,7 +3861,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::dft(Mat src, Mat& dst, int flags = 0, int nonzeroRows = 0)
+    // C++: double cv::Mahalanobis(Mat v1, Mat v2, Mat icovar)
     //
 
     /**
@@ -4006,6 +4002,10 @@ public class Core {
     public static void dft(Mat src, Mat dst, int flags) {
         dft_1(src.nativeObj, dst.nativeObj, flags);
     }
+
+    //
+    // C++: void cv::dft(Mat src, Mat& dst, int flags = 0, int nonzeroRows = 0)
+    //
 
     /**
      * Performs a forward or inverse Discrete Fourier transform of a 1D or 2D floating-point array.
@@ -4162,10 +4162,6 @@ public class Core {
         idft_0(src.nativeObj, dst.nativeObj, flags, nonzeroRows);
     }
 
-    //
-    // C++: void cv::idft(Mat src, Mat& dst, int flags = 0, int nonzeroRows = 0)
-    //
-
     /**
      * Calculates the inverse Discrete Fourier Transform of a 1D or 2D array.
      *
@@ -4180,6 +4176,10 @@ public class Core {
     public static void idft(Mat src, Mat dst, int flags) {
         idft_1(src.nativeObj, dst.nativeObj, flags);
     }
+
+    //
+    // C++: void cv::idft(Mat src, Mat& dst, int flags = 0, int nonzeroRows = 0)
+    //
 
     /**
      * Calculates the inverse Discrete Fourier Transform of a 1D or 2D array.
@@ -4236,10 +4236,6 @@ public class Core {
         dct_0(src.nativeObj, dst.nativeObj, flags);
     }
 
-    //
-    // C++: void cv::dct(Mat src, Mat& dst, int flags = 0)
-    //
-
     /**
      * Performs a forward or inverse discrete Cosine transform of 1D or 2D array.
      *
@@ -4280,6 +4276,10 @@ public class Core {
         dct_1(src.nativeObj, dst.nativeObj);
     }
 
+    //
+    // C++: void cv::dct(Mat src, Mat& dst, int flags = 0)
+    //
+
     /**
      * Calculates the inverse Discrete Cosine Transform of a 1D or 2D array.
      *
@@ -4293,10 +4293,6 @@ public class Core {
         idct_0(src.nativeObj, dst.nativeObj, flags);
     }
 
-    //
-    // C++: void cv::idct(Mat src, Mat& dst, int flags = 0)
-    //
-
     /**
      * Calculates the inverse Discrete Cosine Transform of a 1D or 2D array.
      *
@@ -4308,6 +4304,10 @@ public class Core {
     public static void idct(Mat src, Mat dst) {
         idct_1(src.nativeObj, dst.nativeObj);
     }
+
+    //
+    // C++: void cv::idct(Mat src, Mat& dst, int flags = 0)
+    //
 
     /**
      * Performs the per-element multiplication of two Fourier spectrums.
@@ -4333,10 +4333,6 @@ public class Core {
         mulSpectrums_0(a.nativeObj, b.nativeObj, c.nativeObj, flags, conjB);
     }
 
-    //
-    // C++: void cv::mulSpectrums(Mat a, Mat b, Mat& c, int flags, bool conjB = false)
-    //
-
     /**
      * Performs the per-element multiplication of two Fourier spectrums.
      *
@@ -4358,6 +4354,10 @@ public class Core {
     public static void mulSpectrums(Mat a, Mat b, Mat c, int flags) {
         mulSpectrums_1(a.nativeObj, b.nativeObj, c.nativeObj, flags);
     }
+
+    //
+    // C++: void cv::mulSpectrums(Mat a, Mat b, Mat& c, int flags, bool conjB = false)
+    //
 
     /**
      * Returns the optimal DFT size for a given vector size.
@@ -4385,10 +4385,6 @@ public class Core {
         return getOptimalDFTSize_0(vecsize);
     }
 
-    //
-    // C++: int cv::getOptimalDFTSize(int vecsize)
-    //
-
     /**
      * Sets state of default random number generator.
      *
@@ -4401,7 +4397,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::setRNGSeed(int seed)
+    // C++: int cv::getOptimalDFTSize(int vecsize)
     //
 
     /**
@@ -4419,7 +4415,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::randu(Mat& dst, double low, double high)
+    // C++: void cv::setRNGSeed(int seed)
     //
 
     /**
@@ -4439,7 +4435,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::randn(Mat& dst, double mean, double stddev)
+    // C++: void cv::randu(Mat& dst, double low, double high)
     //
 
     /**
@@ -4457,7 +4453,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::randShuffle(Mat& dst, double iterFactor = 1., RNG* rng = 0)
+    // C++: void cv::randn(Mat& dst, double mean, double stddev)
     //
 
     /**
@@ -4471,6 +4467,10 @@ public class Core {
     public static void randShuffle(Mat dst) {
         randShuffle_2(dst.nativeObj);
     }
+
+    //
+    // C++: void cv::randShuffle(Mat& dst, double iterFactor = 1., RNG* rng = 0)
+    //
 
     /**
      * Finds centers of clusters and groups input samples around the clusters.
@@ -4515,11 +4515,6 @@ public class Core {
                 attempts, flags, centers.nativeObj);
     }
 
-    //
-    // C++: double cv::kmeans(Mat data, int K, Mat& bestLabels, TermCriteria criteria, int attempts, int flags, Mat&
-    // centers = Mat())
-    //
-
     /**
      * Finds centers of clusters and groups input samples around the clusters.
      *
@@ -4561,6 +4556,11 @@ public class Core {
                 attempts, flags);
     }
 
+    //
+    // C++: double cv::kmeans(Mat data, int K, Mat& bestLabels, TermCriteria criteria, int attempts, int flags, Mat&
+    // centers = Mat())
+    //
+
     /**
      * Returns the number of threads used by OpenCV for parallel regions.
      *
@@ -4585,10 +4585,6 @@ public class Core {
         return getNumThreads_0();
     }
 
-    //
-    // C++: void cv::setNumThreads(int nthreads)
-    //
-
     /**
      * OpenCV will try to set the number of threads for subsequent parallel regions.
      *
@@ -4606,7 +4602,7 @@ public class Core {
      * <li>{@code GCD} - Supports only values &lt;= 0.</li>
      * <li>{@code C=} - No special defined behaviour.</li>
      * </ul>
-     * 
+     *
      * @param nthreads Number of threads used by OpenCV. SEE: getNumThreads, getThreadNum
      */
     public static void setNumThreads(int nthreads) {
@@ -4614,7 +4610,7 @@ public class Core {
     }
 
     //
-    // C++: int cv::getNumThreads()
+    // C++: void cv::setNumThreads(int nthreads)
     //
 
     /**
@@ -4640,7 +4636,7 @@ public class Core {
     }
 
     //
-    // C++: int cv::getThreadNum()
+    // C++: int cv::getNumThreads()
     //
 
     /**
@@ -4656,7 +4652,7 @@ public class Core {
     }
 
     //
-    // C++: String cv::getBuildInformation()
+    // C++: int cv::getThreadNum()
     //
 
     /**
@@ -4673,7 +4669,7 @@ public class Core {
     }
 
     //
-    // C++: String cv::getVersionString()
+    // C++: String cv::getBuildInformation()
     //
 
     /**
@@ -4686,7 +4682,7 @@ public class Core {
     }
 
     //
-    // C++: int cv::getVersionMajor()
+    // C++: String cv::getVersionString()
     //
 
     /**
@@ -4699,7 +4695,7 @@ public class Core {
     }
 
     //
-    // C++: int cv::getVersionMinor()
+    // C++: int cv::getVersionMajor()
     //
 
     /**
@@ -4712,7 +4708,7 @@ public class Core {
     }
 
     //
-    // C++: int cv::getVersionRevision()
+    // C++: int cv::getVersionMinor()
     //
 
     /**
@@ -4729,7 +4725,7 @@ public class Core {
     }
 
     //
-    // C++: int64 cv::getTickCount()
+    // C++: int cv::getVersionRevision()
     //
 
     /**
@@ -4749,7 +4745,7 @@ public class Core {
     }
 
     //
-    // C++: double cv::getTickFrequency()
+    // C++: int64 cv::getTickCount()
     //
 
     /**
@@ -4771,7 +4767,7 @@ public class Core {
     }
 
     //
-    // C++: int64 cv::getCPUTickCount()
+    // C++: double cv::getTickFrequency()
     //
 
     /**
@@ -4789,7 +4785,7 @@ public class Core {
     }
 
     //
-    // C++: bool cv::checkHardwareSupport(int feature)
+    // C++: int64 cv::getCPUTickCount()
     //
 
     /**
@@ -4805,7 +4801,7 @@ public class Core {
     }
 
     //
-    // C++: String cv::getHardwareFeatureName(int feature)
+    // C++: bool cv::checkHardwareSupport(int feature)
     //
 
     /**
@@ -4828,7 +4824,7 @@ public class Core {
     }
 
     //
-    // C++: string cv::getCPUFeaturesLine()
+    // C++: String cv::getHardwareFeatureName(int feature)
     //
 
     /**
@@ -4841,7 +4837,7 @@ public class Core {
     }
 
     //
-    // C++: int cv::getNumberOfCPUs()
+    // C++: string cv::getCPUFeaturesLine()
     //
 
     /**
@@ -4864,7 +4860,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::setUseOptimized(bool onoff)
+    // C++: int cv::getNumberOfCPUs()
     //
 
     /**
@@ -4879,7 +4875,7 @@ public class Core {
     }
 
     //
-    // C++: bool cv::useOptimized()
+    // C++: void cv::setUseOptimized(bool onoff)
     //
 
     /**
@@ -4907,7 +4903,7 @@ public class Core {
     }
 
     //
-    // C++: String cv::samples::findFile(String relative_path, bool required = true, bool silentMode = false)
+    // C++: bool cv::useOptimized()
     //
 
     /**
@@ -4932,6 +4928,10 @@ public class Core {
     public static String findFile(String relative_path, boolean required) {
         return findFile_1(relative_path, required);
     }
+
+    //
+    // C++: String cv::samples::findFile(String relative_path, bool required = true, bool silentMode = false)
+    //
 
     /**
      * Try to find requested data file
@@ -4959,13 +4959,13 @@ public class Core {
         return findFileOrKeep_0(relative_path, silentMode);
     }
 
-    //
-    // C++: String cv::samples::findFileOrKeep(String relative_path, bool silentMode = false)
-    //
-
     public static String findFileOrKeep(String relative_path) {
         return findFileOrKeep_1(relative_path);
     }
+
+    //
+    // C++: String cv::samples::findFileOrKeep(String relative_path, bool silentMode = false)
+    //
 
     /**
      * Override search data path by adding new search location
@@ -4977,10 +4977,6 @@ public class Core {
     public static void addSamplesDataSearchPath(String path) {
         addSamplesDataSearchPath_0(path);
     }
-
-    //
-    // C++: void cv::samples::addSamplesDataSearchPath(String path)
-    //
 
     /**
      * Append samples search data sub directory
@@ -4996,7 +4992,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::samples::addSamplesDataSearchSubDirectory(String subdir)
+    // C++: void cv::samples::addSamplesDataSearchPath(String path)
     //
 
     public static void setErrorVerbosity(boolean verbose) {
@@ -5004,7 +5000,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::setErrorVerbosity(bool verbose)
+    // C++: void cv::samples::addSamplesDataSearchSubDirectory(String subdir)
     //
 
     public static void add(Mat src1, Scalar src2, Mat dst, Mat mask, int dtype) {
@@ -5012,12 +5008,16 @@ public class Core {
     }
 
     //
-    // C++: void cv::add(Mat src1, Scalar src2, Mat& dst, Mat mask = Mat(), int dtype = -1)
+    // C++: void cv::setErrorVerbosity(bool verbose)
     //
 
     public static void add(Mat src1, Scalar src2, Mat dst, Mat mask) {
         add_4(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj, mask.nativeObj);
     }
+
+    //
+    // C++: void cv::add(Mat src1, Scalar src2, Mat& dst, Mat mask = Mat(), int dtype = -1)
+    //
 
     public static void add(Mat src1, Scalar src2, Mat dst) {
         add_5(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj);
@@ -5028,13 +5028,13 @@ public class Core {
                 dtype);
     }
 
-    //
-    // C++: void cv::subtract(Mat src1, Scalar src2, Mat& dst, Mat mask = Mat(), int dtype = -1)
-    //
-
     public static void subtract(Mat src1, Scalar src2, Mat dst, Mat mask) {
         subtract_4(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj, mask.nativeObj);
     }
+
+    //
+    // C++: void cv::subtract(Mat src1, Scalar src2, Mat& dst, Mat mask = Mat(), int dtype = -1)
+    //
 
     public static void subtract(Mat src1, Scalar src2, Mat dst) {
         subtract_5(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj);
@@ -5044,13 +5044,13 @@ public class Core {
         multiply_3(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj, scale, dtype);
     }
 
-    //
-    // C++: void cv::multiply(Mat src1, Scalar src2, Mat& dst, double scale = 1, int dtype = -1)
-    //
-
     public static void multiply(Mat src1, Scalar src2, Mat dst, double scale) {
         multiply_4(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj, scale);
     }
+
+    //
+    // C++: void cv::multiply(Mat src1, Scalar src2, Mat& dst, double scale = 1, int dtype = -1)
+    //
 
     public static void multiply(Mat src1, Scalar src2, Mat dst) {
         multiply_5(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj);
@@ -5060,13 +5060,13 @@ public class Core {
         divide_5(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj, scale, dtype);
     }
 
-    //
-    // C++: void cv::divide(Mat src1, Scalar src2, Mat& dst, double scale = 1, int dtype = -1)
-    //
-
     public static void divide(Mat src1, Scalar src2, Mat dst, double scale) {
         divide_6(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj, scale);
     }
+
+    //
+    // C++: void cv::divide(Mat src1, Scalar src2, Mat& dst, double scale = 1, int dtype = -1)
+    //
 
     public static void divide(Mat src1, Scalar src2, Mat dst) {
         divide_7(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj);
@@ -5076,16 +5076,12 @@ public class Core {
         absdiff_1(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj);
     }
 
-    //
-    // C++: void cv::absdiff(Mat src1, Scalar src2, Mat& dst)
-    //
-
     public static void compare(Mat src1, Scalar src2, Mat dst, int cmpop) {
         compare_1(src1.nativeObj, src2.val[0], src2.val[1], src2.val[2], src2.val[3], dst.nativeObj, cmpop);
     }
 
     //
-    // C++: void cv::compare(Mat src1, Scalar src2, Mat& dst, int cmpop)
+    // C++: void cv::absdiff(Mat src1, Scalar src2, Mat& dst)
     //
 
     public static void min(Mat src1, Scalar src2, Mat dst) {
@@ -5093,7 +5089,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::min(Mat src1, Scalar src2, Mat& dst)
+    // C++: void cv::compare(Mat src1, Scalar src2, Mat& dst, int cmpop)
     //
 
     public static void max(Mat src1, Scalar src2, Mat dst) {
@@ -5101,7 +5097,7 @@ public class Core {
     }
 
     //
-    // C++: void cv::max(Mat src1, Scalar src2, Mat& dst)
+    // C++: void cv::min(Mat src1, Scalar src2, Mat& dst)
     //
 
 //javadoc: minMaxLoc(src, mask)
@@ -5121,15 +5117,19 @@ public class Core {
         return res;
     }
 
+    //
+    // C++: void cv::max(Mat src1, Scalar src2, Mat& dst)
+    //
+
 //javadoc: minMaxLoc(src)
     public static MinMaxLocResult minMaxLoc(Mat src) {
         return minMaxLoc(src, null);
     }
 
-// C++: minMaxLoc(Mat src, double* minVal, double* maxVal=0, Point* minLoc=0, Point* maxLoc=0, InputArray mask=noArray())
-
     // C++: float cv::cubeRoot(float val)
     private static native float cubeRoot_0(float val);
+
+// C++: minMaxLoc(Mat src, double* minVal, double* maxVal=0, Point* minLoc=0, Point* maxLoc=0, InputArray mask=noArray())
 
     // C++: float cv::fastAtan2(float y, float x)
     private static native float fastAtan2_0(float y, float x);

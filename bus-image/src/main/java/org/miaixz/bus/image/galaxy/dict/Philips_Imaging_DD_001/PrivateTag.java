@@ -143,7 +143,9 @@ public class PrivateTag {
     /** (2001,xx25) VR=SH VM=1 Echo Time Display */
     public static final int EchoTimeDisplay = 0x20010025;
 
-    /** (2001,xx26) VR=CS VM=1 Presentation State Subtraction Active */
+    /**
+     * (2001,xx26) VR=CS VM=1 Presentation State Subtraction Active
+     */
     public static final int PresentationStateSubtractionActive = 0x20010026;
 
     /** (2001,xx29) VR=FL VM=1 ? */
@@ -173,16 +175,24 @@ public class PrivateTag {
     /** (2001,xx3D) VR=UL VM=1 Contour Fill Color */
     public static final int ContourFillColor = 0x2001003D;
 
-    /** (2001,xx3F) VR=CS VM=1 Displayed Area Zoom Interpolation Method */
+    /**
+     * (2001,xx3F) VR=CS VM=1 Displayed Area Zoom Interpolation Method
+     */
     public static final int DisplayedAreaZoomInterpolationMeth = 0x2001003F;
 
-    /** (2001,xx43) VR=IS VM=2 Ellipse Display Shutter Major Axis First End Point */
+    /**
+     * (2001,xx43) VR=IS VM=2 Ellipse Display Shutter Major Axis First End Point
+     */
     public static final int EllipsDisplShutMajorAxFrstEndPnt = 0x20010043;
 
-    /** (2001,xx44) VR=IS VM=2 Ellipse Display Shutter Major Axis Second End Point */
+    /**
+     * (2001,xx44) VR=IS VM=2 Ellipse Display Shutter Major Axis Second End Point
+     */
     public static final int EllipsDisplShutMajorAxScndEndPnt = 0x20010044;
 
-    /** (2001,xx45) VR=IS VM=2 Ellipse Display Shutter Other Axis First End Point */
+    /**
+     * (2001,xx45) VR=IS VM=2 Ellipse Display Shutter Other Axis First End Point
+     */
     public static final int EllipsDisplShutOtherAxFrstEndPnt = 0x20010045;
 
     /** (2001,xx46) VR=CS VM=1 Graphic Line Style */
@@ -260,7 +270,9 @@ public class PrivateTag {
     /** (2001,xx65) VR=SQ VM=1 Graphic Overlay Plane */
     public static final int GraphicOverlayPlane = 0x20010065;
 
-    /** (2001,xx67) VR=CS VM=1 Linear Presentation GL Transform Shape Sub */
+    /**
+     * (2001,xx67) VR=CS VM=1 Linear Presentation GL Transform Shape Sub
+     */
     public static final int LinearPresentationGLTrafoShapeSub = 0x20010067;
 
     /** (2001,xx68) VR=SQ VM=1 Linear Modality GL Transform */
@@ -284,7 +296,9 @@ public class PrivateTag {
     /** (2001,xx71) VR=CS VM=1 Graphic Constraint */
     public static final int GraphicConstraint = 0x20010071;
 
-    /** (2001,xx72) VR=IS VM=1 Ellipse Display Shutter Other Axis Second End Point */
+    /**
+     * (2001,xx72) VR=IS VM=1 Ellipse Display Shutter Other Axis Second End Point
+     */
     public static final int EllipsDisplShutOtherAxScndEndPnt = 0x20010072;
 
     /** (2001,xx74) VR=DS VM=1 ? */

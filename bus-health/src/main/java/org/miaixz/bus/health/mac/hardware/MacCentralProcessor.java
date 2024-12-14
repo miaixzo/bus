@@ -27,11 +27,13 @@
 */
 package org.miaixz.bus.health.mac.hardware;
 
-import com.sun.jna.Native;
-import com.sun.jna.platform.mac.IOKit.IOIterator;
-import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
-import com.sun.jna.platform.mac.IOKitUtil;
-import com.sun.jna.platform.mac.SystemB;
+import java.util.*;
+import java.util.function.Supplier;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
@@ -49,12 +51,11 @@ import org.miaixz.bus.health.builtin.jna.Struct;
 import org.miaixz.bus.health.mac.SysctlKit;
 import org.miaixz.bus.logger.Logger;
 
-import java.util.*;
-import java.util.function.Supplier;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import com.sun.jna.Native;
+import com.sun.jna.platform.mac.IOKit.IOIterator;
+import com.sun.jna.platform.mac.IOKit.IORegistryEntry;
+import com.sun.jna.platform.mac.IOKitUtil;
+import com.sun.jna.platform.mac.SystemB;
 
 /**
  * A CPU.

@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.http.plugin.httpz;
 
+import java.util.Map;
+
 import org.miaixz.bus.http.Request;
 import org.miaixz.bus.http.bodys.RequestBody;
-
-import java.util.Map;
 
 /**
  * GET请求处理

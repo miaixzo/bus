@@ -83,7 +83,9 @@ public class PrivateTag {
     /** (0029,xx51) VR=CS VM=1 Archive Management Flag Keep Online */
     public static final int ArchiveManagementFlagKeepOnline = 0x00290051;
 
-    /** (0029,xx52) VR=CS VM=1 Archive Management Flag Do Not Archive */
+    /**
+     * (0029,xx52) VR=CS VM=1 Archive Management Flag Do Not Archive
+     */
     public static final int ArchiveManagementFlagDoNotArchive = 0x00290052;
 
     /** (0029,xx53) VR=CS VM=1 Image Location Status */

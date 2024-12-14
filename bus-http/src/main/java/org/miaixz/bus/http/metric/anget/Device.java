@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.http.metric.anget;
 
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.CollKit;
 import org.miaixz.bus.core.xyz.ListKit;
-
-import java.util.List;
 
 /**
  * 设备信息

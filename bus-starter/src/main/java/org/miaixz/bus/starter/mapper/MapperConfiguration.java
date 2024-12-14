@@ -27,7 +27,14 @@
 */
 package org.miaixz.bus.starter.mapper;
 
-import jakarta.annotation.Resource;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.sql.DataSource;
+
 import org.apache.ibatis.io.VFS;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.Configuration;
@@ -52,12 +59,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
-import javax.sql.DataSource;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.annotation.Resource;
 
 /**
  * Mybatis的配置，提供一个{@link SqlSessionFactory}和一个{@link SqlSessionTemplate}

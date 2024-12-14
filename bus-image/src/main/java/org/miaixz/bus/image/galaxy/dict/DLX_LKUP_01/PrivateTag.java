@@ -35,10 +35,14 @@ public class PrivateTag {
 
     public static final String PrivateCreator = "DLX_LKUP_01";
 
-    /** (60XX,xx01) VR=US VM=3 Gray Palette Color Lookup Table Descriptor */
+    /**
+     * (60XX,xx01) VR=US VM=3 Gray Palette Color Lookup Table Descriptor
+     */
     public static final int GrayPaletteColorLookupTableDescriptor = 0x60000001;
 
-    /** (60XX,xx02) VR=US VM=1 Gray Palette Color Lookup Table Data */
+    /**
+     * (60XX,xx02) VR=US VM=1 Gray Palette Color Lookup Table Data
+     */
     public static final int GrayPaletteColorLookupTableData = 0x60000002;
 
 }

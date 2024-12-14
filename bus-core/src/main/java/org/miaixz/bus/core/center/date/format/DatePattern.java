@@ -855,7 +855,6 @@ public class DatePattern {
         public void appendTo(final Appendable buffer, final Calendar calendar) throws IOException {
             int weekYear = calendar.getWeekYear();
             if (mRule instanceof TwoDigitYearField) {
-                // issue#3641
                 weekYear %= 100;
             }
             mRule.appendTo(buffer, weekYear);

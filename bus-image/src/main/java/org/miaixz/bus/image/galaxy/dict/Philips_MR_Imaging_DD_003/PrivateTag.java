@@ -68,13 +68,19 @@ public class PrivateTag {
     /** (2005,xx50) VR=SS VM=1 Number of Series Performing Physicians Name */
     public static final int NrOfSeriesPerfPhysiName = 0x20050050;
 
-    /** (2005,xx51) VR=SS VM=1 Number of Study Admitting Diagnostic Description */
+    /**
+     * (2005,xx51) VR=SS VM=1 Number of Study Admitting Diagnostic Description
+     */
     public static final int NrOfStudyAdmittingDiagnosticDescr = 0x20050051;
 
-    /** (2005,xx52) VR=SS VM=1 Number of Study Patient Contrast Allergies */
+    /**
+     * (2005,xx52) VR=SS VM=1 Number of Study Patient Contrast Allergies
+     */
     public static final int NrOfStudyPatientContrastAllergies = 0x20050052;
 
-    /** (2005,xx53) VR=SS VM=1 Number of Study Patient Medical Alerts */
+    /**
+     * (2005,xx53) VR=SS VM=1 Number of Study Patient Medical Alerts
+     */
     public static final int NrOfStudyPatientMedicalAlerts = 0x20050053;
 
     /** (2005,xx54) VR=SS VM=1 Number of Study Physicians of Record */

@@ -38,19 +38,14 @@ public abstract class AbstractEvent implements Event {
     private String secretToken;
 
     @Override
-    public void setRequestUrl(String requestUrl) {
-        this.requestUrl = requestUrl;
-    }
-
-    @Override
     @JsonIgnore
     public String getRequestUrl() {
         return (requestUrl);
     }
 
     @Override
-    public void setRequestQueryString(String requestQueryString) {
-        this.requestQueryString = requestQueryString;
+    public void setRequestUrl(String requestUrl) {
+        this.requestUrl = requestUrl;
     }
 
     @Override
@@ -60,14 +55,19 @@ public abstract class AbstractEvent implements Event {
     }
 
     @Override
-    public void setRequestSecretToken(String secretToken) {
-        this.secretToken = secretToken;
+    public void setRequestQueryString(String requestQueryString) {
+        this.requestQueryString = requestQueryString;
     }
 
     @Override
     @JsonIgnore
     public String getRequestSecretToken() {
         return (secretToken);
+    }
+
+    @Override
+    public void setRequestSecretToken(String secretToken) {
+        this.secretToken = secretToken;
     }
 
 }

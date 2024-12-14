@@ -33,12 +33,10 @@ import org.miaixz.bus.gitlab.support.JacksonJson;
 
 public class GroupSystemHookEvent extends AbstractSystemHookEvent {
 
-    private static final long serialVersionUID = -1L;
-
     public static final String GROUP_CREATE_EVENT = "group_create";
     public static final String GROUP_DESTROY_EVENT = "group_destroy";
     public static final String GROUP_RENAME_EVENT = "group_rename";
-
+    private static final long serialVersionUID = -1L;
     private Date createdAt;
     private Date updatedAt;
     private String eventName;

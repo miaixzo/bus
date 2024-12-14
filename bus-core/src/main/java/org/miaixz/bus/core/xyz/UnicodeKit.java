@@ -104,7 +104,7 @@ public class UnicodeKit {
      * @param text 被编码的字符串
      * @return Unicode字符串
      */
-    public static String toUnicode(final String text) {
+    public static String toUnicode(final CharSequence text) {
         return toUnicode(text, true);
     }
 
@@ -115,9 +115,9 @@ public class UnicodeKit {
      * @param isSkipAscii 是否跳过ASCII字符（只跳过可见字符）
      * @return Unicode字符串
      */
-    public static String toUnicode(final String text, final boolean isSkipAscii) {
+    public static String toUnicode(final CharSequence text, final boolean isSkipAscii) {
         if (StringKit.isEmpty(text)) {
-            return text;
+            return StringKit.toStringOrNull(text);
         }
 
         final int len = text.length();

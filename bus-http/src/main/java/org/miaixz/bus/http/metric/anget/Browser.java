@@ -27,12 +27,12 @@
 */
 package org.miaixz.bus.http.metric.anget;
 
+import java.util.List;
+import java.util.regex.Pattern;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.PatternKit;
-
-import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * 浏览器对象
@@ -58,6 +58,8 @@ public class Browser extends UserAgent {
             // 部分特殊浏览器是基于安卓、Iphone等的，需要优先判断
             // 企业微信 企业微信使用微信浏览器内核,会包含 MicroMessenger 所以要放在前面
             new Browser("wxwork", "wxwork", "wxwork\\/([\\d\\w\\.\\-]+)"),
+            // 微信电脑端
+            new Browser("WindowsWechat", "WindowsWechat", "MicroMessenger" + OTHER_VERSION),
             // 微信
             new Browser("MicroMessenger", "MicroMessenger", OTHER_VERSION),
             // 微信小程序

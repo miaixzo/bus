@@ -53,7 +53,9 @@ public class PrivateTag {
     /** (0023,xx74) VR=SL VM=1 Number Of Updates To Header */
     public static final int NumberOfUpdatesToHeader = 0x00230074;
 
-    /** (0023,xx7D) VR=SS VM=1 Indicates If Study Has Complete Info */
+    /**
+     * (0023,xx7D) VR=SS VM=1 Indicates If Study Has Complete Info
+     */
     public static final int IndicatesIfStudyHasCompleteInfo = 0x0023007D;
 
     /** (0023,xx80) VR=SQ VM=1 Has MPPS Related Tags */

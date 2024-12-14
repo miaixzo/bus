@@ -86,7 +86,9 @@ public class PrivateTag {
     /** (0019,xx62) VR=SH VM=1 ID Station Name */
     public static final int IDStationName = 0x00190062;
 
-    /** (0019,xx65) VR=US VM=1 Number of Images in Study to be Transmitted */
+    /**
+     * (0019,xx65) VR=US VM=1 Number of Images in Study to be Transmitted
+     */
     public static final int NumberOfImagesInStudyToBeTransmitted = 0x00190065;
 
     /** (0019,xx70) VR=US VM=1 Total Number Images */

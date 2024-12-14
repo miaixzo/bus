@@ -62,40 +62,11 @@ import org.miaixz.bus.core.xyz.*;
  */
 public class NumberConverter extends AbstractConverter implements MatcherConverter {
 
-    private static final long serialVersionUID = -1L;
-
     /**
      * 单例
      */
     public static final NumberConverter INSTANCE = new NumberConverter();
-
-    @Override
-    public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
-        return Number.class.isAssignableFrom(rawType);
-    }
-
-    @Override
-    protected Number convertInternal(final Class<?> targetClass, final Object value) {
-        return convert(value, (Class<? extends Number>) targetClass, this::convertToString);
-    }
-
-    @Override
-    protected String convertToString(final Object value) {
-        final String result = StringKit.trim(super.convertToString(value));
-        if (StringKit.isEmpty(result)) {
-            throw new ConvertException("Can not support empty value to Number!");
-        }
-
-        if (result.length() > 1) {
-            // 非单个字符才判断末尾的标识符
-            final char c = Character.toUpperCase(result.charAt(result.length() - 1));
-            if (c == 'D' || c == 'L' || c == 'F') {
-                // 类型标识形式（例如123.6D）
-                return StringKit.subPre(result, -1);
-            }
-        }
-        return result;
-    }
+    private static final long serialVersionUID = -1L;
 
     /**
      * 转换对象为数字，支持的对象包括：
@@ -128,11 +99,11 @@ public class NumberConverter extends AbstractConverter implements MatcherConvert
             } else if (value instanceof Boolean) {
                 return BooleanKit.toByteObject((Boolean) value);
             }
-            final String valueStr = toStrFunc.apply(value);
+            final String values = toStrFunc.apply(value);
             try {
-                return Byte.valueOf(valueStr);
+                return Byte.valueOf(values);
             } catch (final NumberFormatException e) {
-                return MathKit.parseNumber(valueStr).byteValue();
+                return MathKit.parseNumber(values).byteValue();
             }
         } else if (Short.class == targetType) {
             if (value instanceof Number) {
@@ -140,11 +111,11 @@ public class NumberConverter extends AbstractConverter implements MatcherConvert
             } else if (value instanceof Boolean) {
                 return BooleanKit.toShortObject((Boolean) value);
             }
-            final String valueStr = toStrFunc.apply((value));
+            final String values = toStrFunc.apply((value));
             try {
-                return Short.valueOf(valueStr);
+                return Short.valueOf(values);
             } catch (final NumberFormatException e) {
-                return MathKit.parseNumber(valueStr).shortValue();
+                return MathKit.parseNumber(values).shortValue();
             }
         } else if (Integer.class == targetType) {
             if (value instanceof Number) {
@@ -158,8 +129,8 @@ public class NumberConverter extends AbstractConverter implements MatcherConvert
             } else if (value instanceof TemporalAccessor) {
                 return (int) DateKit.toInstant((TemporalAccessor) value).toEpochMilli();
             }
-            final String valueStr = toStrFunc.apply((value));
-            return MathKit.parseInt(valueStr);
+            final String values = toStrFunc.apply((value));
+            return MathKit.parseInt(values);
         } else if (AtomicInteger.class == targetType) {
             final Number number = convert(value, Integer.class, toStrFunc);
             if (null != number) {
@@ -177,8 +148,8 @@ public class NumberConverter extends AbstractConverter implements MatcherConvert
             } else if (value instanceof TemporalAccessor) {
                 return DateKit.toInstant((TemporalAccessor) value).toEpochMilli();
             }
-            final String valueStr = toStrFunc.apply((value));
-            return MathKit.parseLong(valueStr);
+            final String values = toStrFunc.apply((value));
+            return MathKit.parseLong(values);
         } else if (AtomicLong.class == targetType) {
             final Number number = convert(value, Long.class, toStrFunc);
             if (null != number) {
@@ -198,16 +169,16 @@ public class NumberConverter extends AbstractConverter implements MatcherConvert
             } else if (value instanceof Boolean) {
                 return BooleanKit.toFloatObject((Boolean) value);
             }
-            final String valueStr = toStrFunc.apply((value));
-            return MathKit.parseFloat(valueStr);
+            final String values = toStrFunc.apply((value));
+            return MathKit.parseFloat(values);
         } else if (Double.class == targetType) {
             if (value instanceof Number) {
                 return MathKit.toDouble((Number) value);
             } else if (value instanceof Boolean) {
                 return BooleanKit.toDoubleObject((Boolean) value);
             }
-            final String valueStr = toStrFunc.apply((value));
-            return MathKit.parseDouble(valueStr);
+            final String values = toStrFunc.apply((value));
+            return MathKit.parseDouble(values);
         } else if (DoubleAdder.class == targetType) {
             // jdk8 新增
             final Number number = convert(value, Double.class, toStrFunc);
@@ -226,8 +197,8 @@ public class NumberConverter extends AbstractConverter implements MatcherConvert
             } else if (value instanceof Boolean) {
                 return BooleanKit.toInteger((Boolean) value);
             }
-            final String valueStr = toStrFunc.apply((value));
-            return MathKit.parseNumber(valueStr);
+            final String values = toStrFunc.apply((value));
+            return MathKit.parseNumber(values);
         }
 
         throw new UnsupportedOperationException(StringKit.format("Unsupport Number type: {}", targetType.getName()));
@@ -266,6 +237,34 @@ public class NumberConverter extends AbstractConverter implements MatcherConvert
         }
 
         return MathKit.toBigInteger(toStrFunc.apply(value));
+    }
+
+    @Override
+    public boolean match(final Type targetType, final Class<?> rawType, final Object value) {
+        return Number.class.isAssignableFrom(rawType);
+    }
+
+    @Override
+    protected Number convertInternal(final Class<?> targetClass, final Object value) {
+        return convert(value, (Class<? extends Number>) targetClass, this::convertToString);
+    }
+
+    @Override
+    protected String convertToString(final Object value) {
+        final String result = StringKit.trim(super.convertToString(value));
+        if (StringKit.isEmpty(result)) {
+            throw new ConvertException("Can not support empty value to Number!");
+        }
+
+        if (result.length() > 1) {
+            // 非单个字符才判断末尾的标识符
+            final char c = Character.toUpperCase(result.charAt(result.length() - 1));
+            if (c == 'D' || c == 'L' || c == 'F') {
+                // 类型标识形式（例如123.6D）
+                return StringKit.subPre(result, -1);
+            }
+        }
+        return result;
     }
 
 }
