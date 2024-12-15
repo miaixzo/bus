@@ -85,15 +85,15 @@ public class StorageProviderService {
         if (Registry.ALIYUN.equals(type)) {
             return new AliYunOssProvider(context);
         } else if (Registry.BAIDU.equals(type)) {
-            return new BaiduYunBosProvider(context);
+            return new BaiduBosProvider(context);
         } else if (Registry.HUAWEI.equals(type)) {
             return new HuaweiObsProvider(context);
         } else if (Registry.JD.equals(type)) {
-            return new JdYunOssProvider(context);
+            return new JdOssProvider(context);
         } else if (Registry.MINIO.equals(type)) {
             return new MinioOssProvider(context);
         } else if (Registry.QINIU.equals(type)) {
-            return new QiniuYunOssProvider(context);
+            return new QiniuOssProvider(context);
         } else if (Registry.TENCENT.equals(type)) {
             return new TencentCosProvider(context);
         } else if (Registry.UPYUN.equals(type)) {

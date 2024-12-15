@@ -54,7 +54,7 @@ import com.obs.services.model.ObjectListing;
  */
 public class HuaweiObsProvider extends AbstractProvider {
 
-    private ObsClient client;
+    private volatile ObsClient client;
 
     public HuaweiObsProvider(Context context) {
         this.context = context;

@@ -59,6 +59,11 @@ public class Material {
     public String name;
 
     /**
+     * 别名
+     */
+    public String alias;
+
+    /**
      * 路径
      */
     public String path;

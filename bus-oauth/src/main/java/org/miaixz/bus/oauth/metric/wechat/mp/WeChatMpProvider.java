@@ -68,12 +68,12 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
      * @return 所有信息
      */
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         return this.getToken(accessTokenUrl(callback.getCode()));
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         String openId = accToken.getOpenId();
 
         String scope = accToken.getScope();

@@ -55,7 +55,7 @@ import com.aliyun.oss.model.*;
  */
 public class AliYunOssProvider extends AbstractProvider {
 
-    private OSSClient client;
+    private volatile OSSClient client;
 
     public AliYunOssProvider(Context context) {
         this.context = context;

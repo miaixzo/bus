@@ -64,7 +64,7 @@ public class QqProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         String response = doGetAuthorizationCode(callback.getCode());
         return getAuthToken(response);
     }
@@ -76,7 +76,7 @@ public class QqProvider extends AbstractProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         String openId = this.getOpenId(accToken);
         String response = doGetUserInfo(accToken);
         JSONObject object = JSONObject.parseObject(response);

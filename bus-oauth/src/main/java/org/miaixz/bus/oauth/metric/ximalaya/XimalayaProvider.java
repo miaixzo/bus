@@ -102,7 +102,7 @@ public class XimalayaProvider extends AbstractProvider {
      * @see AbstractProvider#authorize(String)
      */
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         Map<String, String> map = new HashMap<>(9);
         map.put("code", callback.getCode());
         map.put("client_id", context.getAppKey());

@@ -65,12 +65,12 @@ public class RenrenProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         return this.getToken(accessTokenUrl(callback.getCode()));
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         String response = doGetUserInfo(accToken);
         JSONObject userObj = JSONObject.parseObject(response).getJSONObject("response");
 

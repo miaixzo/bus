@@ -33,7 +33,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 华为 授权范围
+ * 华为 授权范围(V3)
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -42,6 +42,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum HuaweiScope implements AuthorizeScope {
 
+    /**
+     * {@code scope} 含义，以{@code description} 为准
+     */
+    OPENID("openid", "基础scope，v3必选", true),
     /**
      * {@code scope} 含义，以{@code description} 为准
      */
@@ -62,7 +66,9 @@ public enum HuaweiScope implements AuthorizeScope {
     SCOPE_DRIVE("https://www.huawei.com/auth/drive", "只允许访问由应用程序创建或打开的文件", false),
     SCOPE_DRIVE_READONLY("https://www.huawei.com/auth/drive.readonly", "只允许访问由应用程序创建或打开的文件", false),
     SCOPE_DRIVE_METADATA("https://www.huawei.com/auth/drive.metadata", "只允许访问由应用程序创建或打开的文件", false),
-    SCOPE_DRIVE_METADATA_READONLY("https://www.huawei.com/auth/drive.metadata.readonly", "只允许访问由应用程序创建或打开的文件", false);
+    SCOPE_DRIVE_METADATA_READONLY("https://www.huawei.com/auth/drive.metadata.readonly", "只允许访问由应用程序创建或打开的文件", false),
+
+    ;
 
     private final String scope;
     private final String description;

@@ -58,7 +58,7 @@ public class GitlabProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
         JSONObject object = JSONObject.parseObject(response);
 
@@ -70,7 +70,7 @@ public class GitlabProvider extends AbstractProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         String response = doGetUserInfo(accToken);
         JSONObject object = JSONObject.parseObject(response);
 

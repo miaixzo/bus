@@ -60,7 +60,7 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         String response = doGetAuthorizationCode(accessTokenUrl(null));
 
         JSONObject object = this.checkResponse(response);
@@ -70,7 +70,7 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         String response = doGetUserInfo(accToken);
         JSONObject object = this.checkResponse(response);
 

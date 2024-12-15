@@ -67,7 +67,7 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         return getToken(accessTokenUrl(callback.getCode()));
     }
 
@@ -104,7 +104,7 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", accToken.getTokenType() + Symbol.SPACE + accToken.getAccessToken());
 

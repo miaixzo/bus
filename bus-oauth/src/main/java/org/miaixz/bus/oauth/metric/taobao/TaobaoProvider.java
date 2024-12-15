@@ -62,7 +62,7 @@ public class TaobaoProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         return AccToken.builder().accessCode(callback.getCode()).build();
     }
 
@@ -82,7 +82,7 @@ public class TaobaoProvider extends AbstractProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         String response = doPostAuthorizationCode(accToken.getAccessCode());
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         if (accessTokenObject.containsKey("error")) {

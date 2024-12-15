@@ -98,7 +98,7 @@ public class FeishuProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         JSONObject requestObject = new JSONObject();
         requestObject.put("app_access_token", this.getAppAccessToken());
         requestObject.put("grant_type", "authorization_code");
@@ -108,7 +108,7 @@ public class FeishuProvider extends AbstractProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         String accessToken = accToken.getAccessToken();
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);

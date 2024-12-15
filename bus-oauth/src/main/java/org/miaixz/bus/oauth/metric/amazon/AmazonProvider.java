@@ -27,24 +27,18 @@
 */
 package org.miaixz.bus.oauth.metric.amazon;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
-import org.miaixz.bus.core.codec.binary.Base64;
-import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.url.UrlEncoder;
-import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -74,37 +68,6 @@ public class AmazonProvider extends AbstractProvider {
     }
 
     /**
-     * 适用于 OAuth 2.0 PKCE 增强协议
-     *
-     * @param codeChallengeMethod s256 / plain
-     * @param codeVerifier        客户端生产的校验码
-     * @return code challenge
-     */
-    public static String generateCodeChallenge(String codeChallengeMethod, String codeVerifier) {
-        if ("S256".equalsIgnoreCase(codeChallengeMethod)) {
-            return newStringUsAscii(Base64.encode(digest(codeVerifier), true));
-        } else {
-            return codeVerifier;
-        }
-    }
-
-    public static String newStringUsAscii(byte[] bytes) {
-        return new String(bytes, StandardCharsets.US_ASCII);
-    }
-
-    public static byte[] digest(String text) {
-        MessageDigest messageDigest;
-        try {
-            messageDigest = MessageDigest.getInstance(Algorithm.SHA256.getValue());
-            messageDigest.update(text.getBytes(StandardCharsets.UTF_8));
-            return messageDigest.digest();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    /**
      * https://developer.amazon.com/zh/docs/login-with-amazon/authorization-code-grant.html#authorization-request
      *
      * @param state state 验证授权流程的参数，可以防止csrf
@@ -112,16 +75,17 @@ public class AmazonProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
+        String realState = getRealState(state);
         Builder builder = Builder.fromUrl(complex.authorize()).queryParam("client_id", context.getAppKey())
                 .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(AmazonScope.values())))
                 .queryParam("redirect_uri", context.getRedirectUri()).queryParam("response_type", "code")
-                .queryParam("state", getRealState(state));
+                .queryParam("state", realState);
 
         if (context.isPkce()) {
-            String cacheKey = this.complex.getName().concat(":code_verifier:").concat(context.getAppKey());
-            String codeVerifier = Base64.encode(RandomKit.randomString(50));
+            String cacheKey = this.complex.getName().concat(":code_verifier:").concat(realState);
+            String codeVerifier = Builder.codeVerifier();
             String codeChallengeMethod = "S256";
-            String codeChallenge = generateCodeChallenge(codeChallengeMethod, codeVerifier);
+            String codeChallenge = Builder.codeChallenge(codeChallengeMethod, codeVerifier);
             builder.queryParam("code_challenge", codeChallenge).queryParam("code_challenge_method",
                     codeChallengeMethod);
             // 缓存 codeVerifier 十分钟
@@ -137,7 +101,7 @@ public class AmazonProvider extends AbstractProvider {
      * @return access token
      */
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         Map<String, String> form = new HashMap<>(9);
         form.put("grant_type", "authorization_code");
         form.put("code", callback.getCode());
@@ -146,7 +110,7 @@ public class AmazonProvider extends AbstractProvider {
         form.put("client_secret", context.getAppSecret());
 
         if (context.isPkce()) {
-            String cacheKey = this.complex.getName().concat(":code_verifier:").concat(context.getAppKey());
+            String cacheKey = this.complex.getName().concat(":code_verifier:").concat(callback.getState());
             String codeVerifier = String.valueOf(this.cache.get(cacheKey));
             form.put("code_verifier", codeVerifier);
         }
@@ -197,7 +161,7 @@ public class AmazonProvider extends AbstractProvider {
      * @return Property
      */
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         String accessToken = accToken.getAccessToken();
         this.checkToken(accessToken);
         Map<String, String> header = new HashMap<>();

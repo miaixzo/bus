@@ -63,7 +63,7 @@ public class MeituanProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         Map<String, String> form = new HashMap<>(7);
         form.put("app_id", context.getAppKey());
         form.put("secret", context.getAppSecret());
@@ -80,7 +80,7 @@ public class MeituanProvider extends AbstractProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         Map<String, String> form = new HashMap<>(5);
         form.put("app_id", context.getAppKey());
         form.put("secret", context.getAppSecret());

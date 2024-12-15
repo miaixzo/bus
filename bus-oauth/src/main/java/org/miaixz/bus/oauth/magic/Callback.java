@@ -29,6 +29,8 @@ package org.miaixz.bus.oauth.magic;
 
 import java.io.Serializable;
 
+import org.miaixz.bus.core.xyz.StringKit;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -93,5 +95,9 @@ public class Callback implements Serializable {
      *      response</a>
      */
     private String error;
+
+    public String getCode() {
+        return StringKit.isEmpty(code) ? auth_code : code;
+    }
 
 }

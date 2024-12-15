@@ -128,7 +128,7 @@ public class AlipayProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         AlipaySystemOauthTokenRequest request = new AlipaySystemOauthTokenRequest();
         request.setGrantType("authorization_code");
         request.setCode(callback.getAuth_code());
@@ -173,7 +173,7 @@ public class AlipayProvider extends AbstractProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         String accessToken = accToken.getAccessToken();
         AlipayUserInfoShareRequest request = new AlipayUserInfoShareRequest();
         AlipayUserInfoShareResponse response;

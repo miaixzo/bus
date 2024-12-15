@@ -66,7 +66,7 @@ public class WeiboProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         if (accessTokenObject.containsKey("error")) {
@@ -78,7 +78,7 @@ public class WeiboProvider extends AbstractProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         String accessToken = accToken.getAccessToken();
         String uid = accToken.getUid();
         String oauthParam = String.format("uid=%s&access_token=%s", uid, accessToken);

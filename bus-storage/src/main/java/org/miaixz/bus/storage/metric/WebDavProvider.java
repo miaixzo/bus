@@ -30,128 +30,114 @@ package org.miaixz.bus.storage.metric;
 import java.io.File;
 import java.io.InputStream;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.basic.entity.Message;
+import org.miaixz.bus.core.io.file.PathResolve;
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.ErrorCode;
-import org.miaixz.bus.storage.magic.Material;
 
-import com.baidubce.auth.DefaultBceCredentials;
-import com.baidubce.services.bos.BosClient;
-import com.baidubce.services.bos.BosClientConfiguration;
-import com.baidubce.services.bos.model.GetObjectRequest;
-import com.baidubce.services.bos.model.ListObjectsRequest;
-import com.baidubce.services.bos.model.ListObjectsResponse;
+import com.github.sardine.Sardine;
+import com.github.sardine.SardineFactory;
 
 /**
- * 存储服务-百度云
+ * 存储服务-Webdav
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BaiduYunBosProvider extends AbstractProvider {
+public class WebDavProvider extends AbstractProvider {
 
-    private BosClient client;
+    private volatile Sardine client;
 
-    public BaiduYunBosProvider(Context context) {
+    public WebDavProvider(Context context) {
         this.context = context;
         Assert.notBlank(this.context.getPrefix(), "[prefix] not defined");
-        Assert.notBlank(this.context.getEndpoint(), "[endpoint] not defined");
         Assert.notBlank(this.context.getBucket(), "[bucket] not defined");
         Assert.notBlank(this.context.getAccessKey(), "[accessKey] not defined");
         Assert.notBlank(this.context.getSecretKey(), "[secure] not defined");
-        Assert.notNull(this.context.isSecure(), "[secure] not defined");
 
-        BosClientConfiguration config = new BosClientConfiguration();
-        config.setCredentials(new DefaultBceCredentials(this.context.getAccessKey(), this.context.getSecretKey()));
-        config.setEndpoint(this.context.getEndpoint());
-        this.client = new BosClient(config);
+        this.client = SardineFactory.begin(this.context.getAccessKey(), this.context.getSecretKey());
     }
 
     @Override
     public Message download(String fileName) {
-        return download(this.context.getBucket(), fileName);
+        return null;
     }
 
     @Override
     public Message download(String bucket, String fileName) {
-        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
-    }
-
-    @Override
-    public Message download(String fileName, File file) {
-        return download(this.context.getBucket(), fileName, file);
+        return null;
     }
 
     @Override
     public Message download(String bucket, String fileName, File file) {
-        this.client.getObject(new GetObjectRequest(bucket, fileName), file);
-
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        return null;
     }
 
     @Override
-    public Message list() {
-        ListObjectsRequest request = new ListObjectsRequest(this.context.getBucket());
-        ListObjectsResponse objectListing = this.client.listObjects(request);
-
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
-                .data(objectListing.getContents().stream().map(item -> {
-                    Map<String, Object> extend = new HashMap<>();
-                    extend.put("tag", item.getETag());
-                    extend.put("storageClass", item.getStorageClass());
-                    extend.put("lastModified", item.getLastModified());
-                    return Material.builder().name(item.getKey()).owner(item.getOwner().getDisplayName())
-                            .size(StringKit.toString(item.getSize())).extend(extend).build();
-                }).collect(Collectors.toList())).build();
+    public Message download(String fileName, File file) {
+        return null;
     }
 
     @Override
     public Message rename(String oldName, String newName) {
-        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+        return null;
     }
 
     @Override
     public Message rename(String bucket, String oldName, String newName) {
-        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+        return null;
     }
 
     @Override
     public Message upload(String fileName, byte[] content) {
-        return upload(this.context.getBucket(), fileName, content);
+        return null;
     }
 
     @Override
     public Message upload(String bucket, String fileName, InputStream content) {
-        this.client.putObject(bucket, fileName, content);
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        return null;
     }
 
     @Override
     public Message upload(String bucket, String fileName, byte[] content) {
-        this.client.putObject(bucket, fileName, content);
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        return null;
     }
 
     @Override
     public Message remove(String fileName) {
-        return remove(this.context.getBucket(), fileName);
+        return this.remove(this.context.getBucket(), fileName);
     }
 
     @Override
     public Message remove(String bucket, String fileName) {
-        client.deleteObject(bucket, fileName);
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        try {
+            this.client.delete(getUrl(bucket + "/" + fileName));
+            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        } catch (Exception e) {
+            Logger.error("file remove failed ", e.getMessage());
+        }
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
 
     @Override
     public Message remove(String bucket, Path path) {
-        return remove(bucket, path.toString());
+        try {
+            this.client.delete(getUrl(bucket + "/" + path.toString()));
+            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        } catch (Exception e) {
+            Logger.error("file remove failed ", e.getMessage());
+        }
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+    }
+
+    /**
+     * 获取远程绝对路径
+     */
+    public String getUrl(String path) {
+        return PathResolve.of(context.getEndpoint(), path).toString();
     }
 
 }

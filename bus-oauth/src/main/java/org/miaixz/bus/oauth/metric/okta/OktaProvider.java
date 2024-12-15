@@ -68,7 +68,7 @@ public class OktaProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         String tokenUrl = accessTokenUrl(callback.getCode());
         return getAuthToken(tokenUrl);
     }
@@ -101,7 +101,7 @@ public class OktaProvider extends AbstractProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", "Bearer " + accToken.getAccessToken());
         String response = Httpx.post(userInfoUrl(accToken), null, header);

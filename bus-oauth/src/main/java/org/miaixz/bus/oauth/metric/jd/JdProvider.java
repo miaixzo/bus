@@ -94,7 +94,7 @@ public class JdProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         Map<String, String> form = new HashMap<>(7);
         form.put("app_key", context.getAppKey());
         form.put("app_secret", context.getAppSecret());
@@ -147,7 +147,7 @@ public class JdProvider extends AbstractProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         Builder urlBuilder = Builder.fromUrl(complex.userInfo()).queryParam("access_token", accToken.getAccessToken())
                 .queryParam("app_key", context.getAppKey()).queryParam("method", "jingdong.user.getUserInfoByOpenId")
                 .queryParam("360buy_param_json", "{\"openId\":\"" + accToken.getOpenId() + "\"}")

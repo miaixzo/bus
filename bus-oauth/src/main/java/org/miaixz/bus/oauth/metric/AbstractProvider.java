@@ -103,24 +103,6 @@ public abstract class AbstractProvider implements Provider {
     }
 
     /**
-     * 获取access token
-     *
-     * @param callback 授权成功后的回调参数
-     * @return token
-     * @see AbstractProvider#authorize(String)
-     */
-    protected abstract AccToken getAccessToken(Callback callback);
-
-    /**
-     * 使用token换取用户信息
-     *
-     * @param accToken token信息
-     * @return 用户信息
-     * @see AbstractProvider#getAccessToken(Callback)
-     */
-    protected abstract Material getUserInfo(AccToken accToken);
-
-    /**
      * 统一的登录入口。当通过{@link AbstractProvider#authorize(String)}授权成功后，会跳转到调用方的相关回调方法中
      * 方法的入参可以使用{@code Callback}，{@code Callback}类中封装好了OAuth2授权回调所需要的参数
      *

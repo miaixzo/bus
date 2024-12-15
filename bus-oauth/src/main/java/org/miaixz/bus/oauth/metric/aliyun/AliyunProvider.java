@@ -55,7 +55,7 @@ public class AliyunProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
         JSONObject accessTokenObject = JSONObject.parseObject(response);
         return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
@@ -65,7 +65,7 @@ public class AliyunProvider extends AbstractProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         String userInfo = doGetUserInfo(accToken);
         JSONObject object = JSONObject.parseObject(userInfo);
         return Material.builder().rawJson(object).uuid(object.getString("sub")).username(object.getString("login_name"))

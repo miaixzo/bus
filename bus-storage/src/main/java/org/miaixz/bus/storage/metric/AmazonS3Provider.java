@@ -53,17 +53,11 @@ import com.amazonaws.services.s3.model.GetObjectRequest;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectListing;
 
-/**
- * 存储服务-京东云
- *
- * @author Kimi Liu
- * @since Java 17+
- */
-public class JdYunOssProvider extends AbstractProvider {
+public class AmazonS3Provider extends AbstractProvider {
 
-    private AmazonS3 client;
+    private volatile AmazonS3 client;
 
-    public JdYunOssProvider(Context context) {
+    public AmazonS3Provider(Context context) {
         this.context = context;
         Assert.notBlank(this.context.getPrefix(), "[prefix] not defined");
         Assert.notBlank(this.context.getEndpoint(), "[endpoint] not defined");
@@ -81,7 +75,7 @@ public class JdYunOssProvider extends AbstractProvider {
                 this.context.getSecretKey());
         AWSCredentialsProvider awsCredentialsProvider = new AWSStaticCredentialsProvider(awsCredentials);
 
-        client = AmazonS3Client.builder().withEndpointConfiguration(endpointConfig).withClientConfiguration(config)
+        this.client = AmazonS3Client.builder().withEndpointConfiguration(endpointConfig).withClientConfiguration(config)
                 .withCredentials(awsCredentialsProvider).disableChunkedEncoding().withPathStyleAccessEnabled(true)
                 .build();
     }

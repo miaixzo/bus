@@ -45,6 +45,7 @@ import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.magic.Material;
 
 import com.qiniu.common.QiniuException;
+import com.qiniu.http.Client;
 import com.qiniu.http.Response;
 import com.qiniu.storage.BucketManager;
 import com.qiniu.storage.Configuration;
@@ -58,13 +59,15 @@ import com.qiniu.util.Auth;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class QiniuYunOssProvider extends AbstractProvider {
+public class QiniuOssProvider extends AbstractProvider {
 
     private UploadManager uploadManager;
     private BucketManager bucketManager;
     private Auth auth;
 
-    public QiniuYunOssProvider(Context context) {
+    private volatile Client client;
+
+    public QiniuOssProvider(Context context) {
         this.context = context;
         Assert.notBlank(this.context.getPrefix(), "[prefix] not defined");
         Assert.notBlank(this.context.getBucket(), "[bucket] not defined");

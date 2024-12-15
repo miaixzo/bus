@@ -95,7 +95,7 @@ public class ElemeProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         Map<String, String> form = new HashMap<>(7);
         form.put("client_id", context.getAppKey());
         form.put("redirect_uri", context.getRedirectUri());
@@ -135,7 +135,7 @@ public class ElemeProvider extends AbstractProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         Map<String, Object> parameters = new HashMap<>(4);
         // 获取商户账号信息的API接口名称
         String action = "eleme.user.getUser";

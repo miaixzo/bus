@@ -67,12 +67,12 @@ public class LinkedinProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         return this.getToken(accessTokenUrl(callback.getCode()));
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         String accessToken = accToken.getAccessToken();
         Map<String, String> header = new HashMap<>();
         header.put("Host", "api.linkedin.com");

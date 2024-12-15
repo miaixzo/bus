@@ -65,7 +65,7 @@ public class LineProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         Map<String, String> params = new HashMap<>();
         params.put("grant_type", "authorization_code");
         params.put("code", callback.getCode());
@@ -82,7 +82,7 @@ public class LineProvider extends AbstractProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         header.put("Authorization", "Bearer ".concat(accToken.getAccessToken()));

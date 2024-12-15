@@ -58,7 +58,7 @@ import com.qcloud.cos.region.Region;
  */
 public class TencentCosProvider extends AbstractProvider {
 
-    private COSClient client;
+    private volatile COSClient client;
 
     public TencentCosProvider(Context context) {
         this.context = context;

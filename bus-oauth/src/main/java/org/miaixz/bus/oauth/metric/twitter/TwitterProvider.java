@@ -155,7 +155,7 @@ public class TwitterProvider extends AbstractProvider {
      * @return access token
      */
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         Map<String, String> headerMap = buildOauthParams();
         headerMap.put("oauth_token", callback.getOauth_token());
         headerMap.put("oauth_verifier", callback.getOauth_verifier());
@@ -178,7 +178,7 @@ public class TwitterProvider extends AbstractProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         Map<String, String> form = buildOauthParams();
         form.put("oauth_token", accToken.getOauthToken());
 

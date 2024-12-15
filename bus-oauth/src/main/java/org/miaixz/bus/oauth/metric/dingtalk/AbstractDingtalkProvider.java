@@ -77,12 +77,12 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         return AccToken.builder().accessCode(callback.getCode()).build();
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         String code = accToken.getAccessCode();
         JSONObject param = new JSONObject();
         param.put("tmp_auth_code", code);

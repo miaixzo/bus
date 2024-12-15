@@ -62,7 +62,7 @@ public class GithubProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
         Map<String, String> res = Builder.parseStringToMap(response);
 
@@ -73,7 +73,7 @@ public class GithubProvider extends AbstractProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", "token " + accToken.getAccessToken());
         String response = Httpx.get(Builder.fromUrl(complex.userInfo()).build(), null, header);

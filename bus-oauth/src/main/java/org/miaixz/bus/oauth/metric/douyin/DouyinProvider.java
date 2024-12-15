@@ -61,16 +61,17 @@ public class DouyinProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         return this.getToken(accessTokenUrl(callback.getCode()));
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         String response = doGetUserInfo(accToken);
         JSONObject userInfoObject = JSONObject.parseObject(response);
         this.checkResponse(userInfoObject);
         JSONObject object = userInfoObject.getJSONObject("data");
+        accToken.setUnionId(object.getString("union_id"));
         return Material.builder().rawJson(object).uuid(object.getString("union_id"))
                 .username(object.getString("nickname")).nickname(object.getString("nickname"))
                 .avatar(object.getString("avatar")).remark(object.getString("description"))
@@ -112,7 +113,8 @@ public class DouyinProvider extends AbstractProvider {
         JSONObject dataObj = object.getJSONObject("data");
         return AccToken.builder().accessToken(dataObj.getString("access_token")).openId(dataObj.getString("open_id"))
                 .expireIn(dataObj.getIntValue("expires_in")).refreshToken(dataObj.getString("refresh_token"))
-                .scope(dataObj.getString("scope")).build();
+                .refreshTokenExpireIn(dataObj.getIntValue("refresh_expires_in")).scope(dataObj.getString("scope"))
+                .build();
     }
 
     /**

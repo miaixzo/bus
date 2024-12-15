@@ -59,7 +59,7 @@ import io.minio.messages.Item;
  */
 public class MinioOssProvider extends AbstractProvider {
 
-    private MinioClient client;
+    private volatile MinioClient client;
 
     public MinioOssProvider(Context context) {
         this.context = context;

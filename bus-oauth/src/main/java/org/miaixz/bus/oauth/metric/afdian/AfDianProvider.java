@@ -60,7 +60,7 @@ public class AfDianProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         Map<String, String> params = new HashMap<>();
         params.put("grant_type", "authorization_code");
         params.put("client_id", context.getAppKey());
@@ -76,7 +76,7 @@ public class AfDianProvider extends AbstractProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         return Material.builder().uuid(accToken.getUserId()).gender(Gender.UNKNOWN).token(accToken)
                 .source(complex.toString()).build();
     }

@@ -66,7 +66,7 @@ public class StackOverflowProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         String accessTokenUrl = accessTokenUrl(callback.getCode());
         Map<String, String> form = new HashMap<>();
         UrlDecoder.decodeMap(accessTokenUrl, Charset.DEFAULT_UTF_8).forEach(form::put);
@@ -83,7 +83,7 @@ public class StackOverflowProvider extends AbstractProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         String userInfoUrl = Builder.fromUrl(this.complex.userInfo())
                 .queryParam("access_token", accToken.getAccessToken()).queryParam("site", "stackoverflow")
                 .queryParam("key", this.context.getUnionId()).build();

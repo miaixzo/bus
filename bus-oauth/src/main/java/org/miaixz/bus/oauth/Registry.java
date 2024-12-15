@@ -43,6 +43,7 @@ import org.miaixz.bus.oauth.metric.douyin.DouyinProvider;
 import org.miaixz.bus.oauth.metric.eleme.ElemeProvider;
 import org.miaixz.bus.oauth.metric.facebook.FacebookProvider;
 import org.miaixz.bus.oauth.metric.feishu.FeishuProvider;
+import org.miaixz.bus.oauth.metric.figma.FigmaProvider;
 import org.miaixz.bus.oauth.metric.gitee.GiteeProvider;
 import org.miaixz.bus.oauth.metric.github.GithubProvider;
 import org.miaixz.bus.oauth.metric.gitlab.GitlabProvider;
@@ -60,6 +61,7 @@ import org.miaixz.bus.oauth.metric.okta.OktaProvider;
 import org.miaixz.bus.oauth.metric.oschina.OschinaProvider;
 import org.miaixz.bus.oauth.metric.pinterest.PinterestProvider;
 import org.miaixz.bus.oauth.metric.proginn.ProginnProvider;
+import org.miaixz.bus.oauth.metric.qq.QqMiniProvider;
 import org.miaixz.bus.oauth.metric.qq.QqProvider;
 import org.miaixz.bus.oauth.metric.renren.RenrenProvider;
 import org.miaixz.bus.oauth.metric.slack.SlackProvider;
@@ -71,6 +73,7 @@ import org.miaixz.bus.oauth.metric.twitter.TwitterProvider;
 import org.miaixz.bus.oauth.metric.wechat.ee.WeChatEeQrcodeProvider;
 import org.miaixz.bus.oauth.metric.wechat.ee.WeChatEeThirdQrcodeProvider;
 import org.miaixz.bus.oauth.metric.wechat.ee.WeChatEeWebProvider;
+import org.miaixz.bus.oauth.metric.wechat.mini.WeChatMiniProvider;
 import org.miaixz.bus.oauth.metric.wechat.mp.WeChatMpProvider;
 import org.miaixz.bus.oauth.metric.wechat.open.WeChatOpenProvider;
 import org.miaixz.bus.oauth.metric.weibo.WeiboProvider;
@@ -90,12 +93,12 @@ public enum Registry implements Complex {
     AFDIAN {
         @Override
         public String authorize() {
-            return "https://afdian.net/oauth2/authorize";
+            return "https://afdian.com/oauth2/authorize";
         }
 
         @Override
         public String accessToken() {
-            return "https://afdian.net/api/oauth2/access_token";
+            return "https://afdian.com/api/oauth2/access_token";
         }
 
         @Override
@@ -282,17 +285,17 @@ public enum Registry implements Complex {
     DINGTALK {
         @Override
         public String authorize() {
-            return "https://oapi.dingtalk.com/connect/qrconnect";
+            return "https://login.dingtalk.com/oauth2/challenge.htm";
         }
 
         @Override
         public String accessToken() {
-            throw new AuthorizedException(ErrorCode.UNSUPPORTED.getCode());
+            return "https://api.dingtalk.com/v1.0/oauth2/userAccessToken";
         }
 
         @Override
         public String userInfo() {
-            return "https://oapi.dingtalk.com/sns/getuserinfo_bycode";
+            return "https://api.dingtalk.com/v1.0/contact/users/me";
         }
 
         @Override
@@ -435,6 +438,32 @@ public enum Registry implements Complex {
             return FeishuProvider.class;
         }
     },
+    FIGMA {
+        @Override
+        public String authorize() {
+            return "https://www.figma.com/oauth";
+        }
+
+        @Override
+        public String accessToken() {
+            return "https://www.figma.com/api/oauth/token";
+        }
+
+        @Override
+        public String userInfo() {
+            return "https://api.figma.com/v1/me";
+        }
+
+        @Override
+        public String refresh() {
+            return "https://www.figma.com/api/oauth/refresh";
+        }
+
+        @Override
+        public Class<? extends AbstractProvider> getTargetClass() {
+            return FigmaProvider.class;
+        }
+    },
     /**
      * Gitee
      */
@@ -519,12 +548,12 @@ public enum Registry implements Complex {
 
         @Override
         public String accessToken() {
-            return "https://www.googleapis.com/oauth2/v4/token";
+            return "https://oauth2.googleapis.com/token";
         }
 
         @Override
         public String userInfo() {
-            return "https://www.googleapis.com/oauth2/v3/userinfo";
+            return "https://openidconnect.googleapis.com/v1/userinfo";
         }
 
         @Override
@@ -538,22 +567,22 @@ public enum Registry implements Complex {
     HUAWEI {
         @Override
         public String authorize() {
-            return "https://oauth-login.cloud.huawei.com/oauth2/v2/authorize";
+            return "https://oauth-login.cloud.huawei.com/oauth2/v3/authorize";
         }
 
         @Override
         public String accessToken() {
-            return "https://oauth-login.cloud.huawei.com/oauth2/v2/token";
+            return "https://oauth-login.cloud.huawei.com/oauth2/v3/token";
         }
 
         @Override
         public String userInfo() {
-            return "https://api.vmall.com/rest.php";
+            return "https://account.cloud.huawei.com/rest.php";
         }
 
         @Override
         public String refresh() {
-            return "https://oauth-login.cloud.huawei.com/oauth2/v2/token";
+            return "https://oauth-login.cloud.huawei.com/oauth2/v3/token";
         }
 
         @Override
@@ -935,9 +964,39 @@ public enum Registry implements Complex {
         }
     },
     /**
+     * QQ小程序授权登录
+     */
+    QQ_MINI {
+
+        @Override
+        public String authorize() {
+            // 参见 https://q.qq.com/wiki/develop/miniprogram/frame/open_ability/open_userinfo.html 文档
+            throw new UnsupportedOperationException("不支持获取授权 url，请使用小程序内置函数 qq.login() 登录获取 code");
+        }
+
+        @Override
+        public String accessToken() {
+            // 参见 https://q.qq.com/wiki/develop/miniprogram/server/open_port/port_login.html 文档
+            // 获取 openid, unionId , session_key 等字段
+            return "https://api.q.qq.com/sns/jscode2session";
+        }
+
+        @Override
+        public String userInfo() {
+            // 参见 https://q.qq.com/wiki/develop/miniprogram/API/open_port/port_userinfo.html 文档
+            throw new UnsupportedOperationException("不支持获取用户信息 url，请使用小程序内置函数 qq.getUserInfo() 获取用户信息");
+        }
+
+        @Override
+        public Class<? extends AbstractProvider> getTargetClass() {
+            return QqMiniProvider.class;
+        }
+    },
+    /**
      * 人人网
      */
     RENREN {
+
         @Override
         public String authorize() {
             return "https://graph.renren.com/oauth/authorize";
@@ -962,12 +1021,14 @@ public enum Registry implements Complex {
         public Class<? extends AbstractProvider> getTargetClass() {
             return RenrenProvider.class;
         }
+
     },
 
     /**
      * Slack
      */
     SLACK {
+
         @Override
         public String authorize() {
             return "https://slack.com/oauth/v2/authorize";
@@ -997,11 +1058,13 @@ public enum Registry implements Complex {
         public Class<? extends AbstractProvider> getTargetClass() {
             return SlackProvider.class;
         }
+
     },
     /**
      * Stack Overflow
      */
     STACK_OVERFLOW {
+
         @Override
         public String authorize() {
             return "https://stackoverflow.com/oauth";
@@ -1021,11 +1084,13 @@ public enum Registry implements Complex {
         public Class<? extends AbstractProvider> getTargetClass() {
             return StackOverflowProvider.class;
         }
+
     },
     /**
      * 淘宝
      */
     TAOBAO {
+
         @Override
         public String authorize() {
             return "https://oauth.taobao.com/authorize";
@@ -1045,11 +1110,13 @@ public enum Registry implements Complex {
         public Class<? extends AbstractProvider> getTargetClass() {
             return TaobaoProvider.class;
         }
+
     },
     /**
      * Teambition
      */
     TEAMBITION {
+
         @Override
         public String authorize() {
             return "https://account.teambition.com/oauth2/authorize";
@@ -1074,11 +1141,13 @@ public enum Registry implements Complex {
         public Class<? extends AbstractProvider> getTargetClass() {
             return TeambitionProvider.class;
         }
+
     },
     /**
      * 今日头条
      */
     TOUTIAO {
+
         @Override
         public String authorize() {
             return "https://open.snssdk.com/auth/authorize";
@@ -1098,11 +1167,13 @@ public enum Registry implements Complex {
         public Class<? extends AbstractProvider> getTargetClass() {
             return ToutiaoProvider.class;
         }
+
     },
     /**
      * Twitter
      */
     TWITTER {
+
         @Override
         public String authorize() {
             return "https://api.twitter.com/oauth/authenticate";
@@ -1122,14 +1193,16 @@ public enum Registry implements Complex {
         public Class<? extends AbstractProvider> getTargetClass() {
             return TwitterProvider.class;
         }
+
     },
     /**
      * 企业微信二维码
      */
     WECHAT_EE {
+
         @Override
         public String authorize() {
-            return "https://open.work.weixin.qq.com/wwopen/sso/qrConnect";
+            return "https://login.work.weixin.qq.com/wwlogin/sso/login";
         }
 
         @Override
@@ -1139,43 +1212,30 @@ public enum Registry implements Complex {
 
         @Override
         public String userInfo() {
-            return "https://qyapi.weixin.qq.com/cgi-bin/user/getuserinfo";
+            return "https://qyapi.weixin.qq.com/cgi-bin/auth/getuserinfo";
         }
 
         @Override
         public Class<? extends AbstractProvider> getTargetClass() {
             return WeChatEeQrcodeProvider.class;
         }
+
     },
     /**
-     * 企业微信二维码第三方
+     * 企业微信二维码
      */
-    WECHAT_EE_QRCODE_THIRD {
-        /**
-         * 授权的api
-         *
-         * @return url
-         */
+    WECHAT_EE_QRCODE {
+
         @Override
         public String authorize() {
             return "https://open.work.weixin.qq.com/wwopen/sso/3rd_qrConnect";
         }
 
-        /**
-         * 获取accessToken的api
-         *
-         * @return url
-         */
         @Override
         public String accessToken() {
             return "https://qyapi.weixin.qq.com/cgi-bin/service/get_provider_token";
         }
 
-        /**
-         * 获取用户信息的api
-         *
-         * @return url
-         */
         @Override
         public String userInfo() {
             return "https://qyapi.weixin.qq.com/cgi-bin/service/get_login_info";
@@ -1185,11 +1245,13 @@ public enum Registry implements Complex {
         public Class<? extends AbstractProvider> getTargetClass() {
             return WeChatEeThirdQrcodeProvider.class;
         }
+
     },
     /**
      * 企业微信网页
      */
     WECHAT_EE_WEB {
+
         @Override
         public String authorize() {
             return "https://open.weixin.qq.com/connect/oauth2/authorize";
@@ -1209,11 +1271,13 @@ public enum Registry implements Complex {
         public Class<? extends AbstractProvider> getTargetClass() {
             return WeChatEeWebProvider.class;
         }
+
     },
     /**
      * 微信公众平台
      */
     WECHAT_MP {
+
         @Override
         public String authorize() {
             return "https://open.weixin.qq.com/connect/oauth2/authorize";
@@ -1238,12 +1302,43 @@ public enum Registry implements Complex {
         public Class<? extends AbstractProvider> getTargetClass() {
             return WeChatMpProvider.class;
         }
-    },
 
+    },
+    /**
+     * 微信小程序授权登录
+     */
+    WECHAT_MINI {
+
+        @Override
+        public String authorize() {
+            // 参见 https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/login.html 文档
+            throw new UnsupportedOperationException("不支持获取授权 url，请使用小程序内置函数 wx.login() 登录获取 code");
+        }
+
+        @Override
+        public String accessToken() {
+            // 参见 https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html 文档
+            // 获取 openid, unionId , session_key 等字段
+            return "https://api.weixin.qq.com/sns/jscode2session";
+        }
+
+        @Override
+        public String userInfo() {
+            // 参见 https://developers.weixin.qq.com/miniprogram/dev/api/open-api/user-info/wx.getUserProfile.html 文档
+            throw new UnsupportedOperationException("不支持获取用户信息 url，请使用小程序内置函数 wx.getUserProfile() 获取用户信息");
+        }
+
+        @Override
+        public Class<? extends AbstractProvider> getTargetClass() {
+            return WeChatMiniProvider.class;
+        }
+
+    },
     /**
      * 微信开放平台
      */
     WECHAT_OPEN {
+
         @Override
         public String authorize() {
             return "https://open.weixin.qq.com/connect/qrconnect";
@@ -1268,11 +1363,13 @@ public enum Registry implements Complex {
         public Class<? extends AbstractProvider> getTargetClass() {
             return WeChatOpenProvider.class;
         }
+
     },
     /**
      * 微博
      */
     WEIBO {
+
         @Override
         public String authorize() {
             return "https://api.weibo.com/oauth2/authorize";
@@ -1297,11 +1394,13 @@ public enum Registry implements Complex {
         public Class<? extends AbstractProvider> getTargetClass() {
             return WeiboProvider.class;
         }
+
     },
     /**
      * 喜马拉雅
      */
     XIMALAYA {
+
         @Override
         public String authorize() {
             return "https://api.ximalaya.com/oauth2/js/authorize";
@@ -1321,6 +1420,7 @@ public enum Registry implements Complex {
         public Class<? extends AbstractProvider> getTargetClass() {
             return XimalayaProvider.class;
         }
+
     };
 
     /**

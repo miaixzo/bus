@@ -58,7 +58,7 @@ public class ToutiaoProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         String response = doGetAuthorizationCode(callback.getCode());
         JSONObject accessTokenObject = JSONObject.parseObject(response);
 
@@ -70,7 +70,7 @@ public class ToutiaoProvider extends AbstractProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         String userResponse = doGetUserInfo(accToken);
 
         JSONObject userProfile = JSONObject.parseObject(userResponse);

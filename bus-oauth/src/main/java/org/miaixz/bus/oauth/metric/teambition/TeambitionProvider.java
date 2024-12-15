@@ -66,7 +66,7 @@ public class TeambitionProvider extends AbstractProvider {
      * @return 所有信息
      */
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         Map<String, String> form = new HashMap<>(7);
         form.put("client_id", context.getAppKey());
         form.put("client_secret", context.getAppSecret());
@@ -83,7 +83,7 @@ public class TeambitionProvider extends AbstractProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         String accessToken = accToken.getAccessToken();
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", "OAuth2 " + accessToken);

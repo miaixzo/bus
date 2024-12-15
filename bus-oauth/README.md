@@ -28,10 +28,10 @@
 ```java
 // 创建授权request
 Provider provider = new GiteeProvider(Context.builder()
-        .clientId("clientId")
-        .clientSecret("clientSecret")
-        .redirectUri("redirectUri")
-        .build());
+                .clientId("clientId")
+                .clientSecret("clientSecret")
+                .redirectUri("redirectUri")
+                .build());
 // 生成授权页面
         provider.
 

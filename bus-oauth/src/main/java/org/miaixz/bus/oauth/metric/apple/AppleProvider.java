@@ -77,7 +77,7 @@ public class AppleProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         if (!StringKit.isEmpty(callback.getError())) {
             throw new AuthorizedException(callback.getError());
         }
@@ -101,7 +101,7 @@ public class AppleProvider extends AbstractProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken authToken) {
+    public Material getUserInfo(AccToken authToken) {
         Base64.Decoder urlDecoder = Base64.getUrlDecoder();
         String[] idToken = authToken.getIdToken().split("\\.");
         String payload = new String(urlDecoder.decode(idToken[1]));

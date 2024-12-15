@@ -62,7 +62,7 @@ public class ProginnProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         Map<String, String> params = new HashMap<>();
         params.put("code", callback.getCode());
         params.put("client_id", context.getAppKey());
@@ -79,7 +79,7 @@ public class ProginnProvider extends AbstractProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         String userInfo = doGetUserInfo(accToken);
         JSONObject object = JSONObject.parseObject(userInfo);
         this.checkResponse(object);

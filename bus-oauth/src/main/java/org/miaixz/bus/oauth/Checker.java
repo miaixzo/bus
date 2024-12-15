@@ -100,7 +100,7 @@ public class Checker {
             return;
         }
         String code = callback.getCode();
-        if (complex == Registry.HUAWEI) {
+        if (StringKit.isEmpty(code) && complex == Registry.HUAWEI) {
             code = callback.getAuthorization_code();
         }
         if (StringKit.isEmpty(code)) {

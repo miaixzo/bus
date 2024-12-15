@@ -66,7 +66,7 @@ public class MiProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         return getToken(accessTokenUrl(callback.getCode()));
     }
 
@@ -89,7 +89,7 @@ public class MiProvider extends AbstractProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         // 获取用户信息
         String userResponse = doGetUserInfo(accToken);
 

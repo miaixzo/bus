@@ -50,7 +50,7 @@ import com.upyun.UpException;
  */
 public class UpyunOssProvider extends AbstractProvider {
 
-    private UpYun client;
+    private volatile UpYun client;
 
     public UpyunOssProvider(Context context) {
         this.context = context;
