@@ -29,6 +29,7 @@ package org.miaixz.bus.core.center.date.culture.solar;
 
 import org.miaixz.bus.core.center.date.Holiday;
 import org.miaixz.bus.core.center.date.culture.Loops;
+import org.miaixz.bus.core.center.date.culture.cn.HiddenStems;
 import org.miaixz.bus.core.center.date.culture.cn.JulianDay;
 import org.miaixz.bus.core.center.date.culture.cn.Week;
 import org.miaixz.bus.core.center.date.culture.cn.climate.Climate;
@@ -39,6 +40,8 @@ import org.miaixz.bus.core.center.date.culture.cn.nine.Nine;
 import org.miaixz.bus.core.center.date.culture.cn.nine.NineDay;
 import org.miaixz.bus.core.center.date.culture.cn.plumrain.PlumRain;
 import org.miaixz.bus.core.center.date.culture.cn.plumrain.PlumRainDay;
+import org.miaixz.bus.core.center.date.culture.cn.sixty.HiddenStem;
+import org.miaixz.bus.core.center.date.culture.cn.sixty.HiddenStemDay;
 import org.miaixz.bus.core.center.date.culture.en.Constellation;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarMonth;
@@ -371,6 +374,42 @@ public class SolarDay extends Loops {
         }
         return equals(end) ? new PlumRainDay(PlumRain.fromIndex(1), 0)
                 : new PlumRainDay(PlumRain.fromIndex(0), subtract(start));
+    }
+
+    /**
+     * 人元司令分野
+     *
+     * @return 人元司令分野
+     */
+    public HiddenStemDay getHideHeavenStemDay() {
+        int[] dayCounts = { 3, 5, 7, 9, 10, 30 };
+        SolarTerms term = getTerm();
+        if (term.isQi()) {
+            term = term.next(-1);
+        }
+        int dayIndex = subtract(term.getJulianDay().getSolarDay());
+        int startIndex = (term.getIndex() - 1) * 3;
+        String data = "93705542220504xx1513904541632524533533105544806564xx7573304542018584xx95".substring(startIndex,
+                startIndex + 6);
+        int days = 0;
+        int heavenStemIndex = 0;
+        int typeIndex = 0;
+        while (typeIndex < 3) {
+            int i = typeIndex * 2;
+            String d = data.substring(i, i + 1);
+            int count = 0;
+            if (!d.equals("x")) {
+                heavenStemIndex = Integer.parseInt(d);
+                count = dayCounts[Integer.parseInt(data.substring(i + 1, i + 2))];
+                days += count;
+            }
+            if (dayIndex <= days) {
+                dayIndex -= days - count;
+                break;
+            }
+            typeIndex++;
+        }
+        return new HiddenStemDay(new HiddenStem(heavenStemIndex, HiddenStems.fromCode(typeIndex)), dayIndex);
     }
 
     /**

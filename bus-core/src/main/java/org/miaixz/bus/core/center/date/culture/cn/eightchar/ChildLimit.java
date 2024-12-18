@@ -30,6 +30,8 @@ package org.miaixz.bus.core.center.date.culture.cn.eightchar;
 import org.miaixz.bus.core.center.date.culture.cn.Opposite;
 import org.miaixz.bus.core.center.date.culture.cn.eightchar.provider.ChildLimitProvider;
 import org.miaixz.bus.core.center.date.culture.cn.eightchar.provider.impl.DefaultChildLimitProvider;
+import org.miaixz.bus.core.center.date.culture.lunar.LunarHour;
+import org.miaixz.bus.core.center.date.culture.lunar.LunarYear;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 import org.miaixz.bus.core.lang.Gender;
@@ -201,6 +203,25 @@ public class ChildLimit {
      */
     public Fortune getStartFortune() {
         return Fortune.fromChildLimit(this, 0);
+    }
+
+    /**
+     * 结束农历年
+     *
+     * @return 农历年
+     */
+    public LunarYear getEndLunarYear() {
+        SolarTime endTime = getEndTime();
+        int solarYear = endTime.getYear();
+        LunarYear y = endTime.getLunarHour().getLunarDay().getLunarMonth().getLunarYear();
+        if (y.getYear() < solarYear) {
+            // 正月初一在立春之后的，农历年往后推一年
+            if (LunarHour.fromYmdHms(solarYear, 1, 1, 0, 0, 0).getSolarTime()
+                    .isAfter(SolarTerms.fromIndex(solarYear, 3).getJulianDay().getSolarTime())) {
+                y = y.next(1);
+            }
+        }
+        return y;
     }
 
 }
