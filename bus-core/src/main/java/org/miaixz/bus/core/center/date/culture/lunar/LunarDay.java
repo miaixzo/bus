@@ -33,6 +33,7 @@ import java.util.List;
 import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.cn.*;
 import org.miaixz.bus.core.center.date.culture.cn.fetus.FetusDay;
+import org.miaixz.bus.core.center.date.culture.cn.ren.MinorRen;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.EarthBranch;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.HeavenStem;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
@@ -399,6 +400,15 @@ public class LunarDay extends Loops {
      */
     public List<Taboo> getAvoids() {
         return Taboo.getDayAvoids(getMonthSixtyCycle(), getSixtyCycle());
+    }
+
+    /**
+     * 小六壬
+     *
+     * @return 小六壬
+     */
+    public MinorRen getMinorRen() {
+        return getLunarMonth().getMinorRen().next(day - 1);
     }
 
 }

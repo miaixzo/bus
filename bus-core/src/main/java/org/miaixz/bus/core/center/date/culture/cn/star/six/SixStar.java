@@ -30,7 +30,7 @@ package org.miaixz.bus.core.center.date.culture.cn.star.six;
 import org.miaixz.bus.core.center.date.culture.Samsara;
 
 /**
- * 六曜（孔明六曜星、小六壬）
+ * 六曜（孔明六曜星）
  *
  * @author Kimi Liu
  * @since Java 17+

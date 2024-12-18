@@ -37,6 +37,7 @@ import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.cn.Direction;
 import org.miaixz.bus.core.center.date.culture.cn.JulianDay;
 import org.miaixz.bus.core.center.date.culture.cn.fetus.FetusMonth;
+import org.miaixz.bus.core.center.date.culture.cn.ren.MinorRen;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.EarthBranch;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.HeavenStem;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
@@ -387,6 +388,15 @@ public class LunarMonth extends Loops {
      */
     public FetusMonth getFetus() {
         return FetusMonth.fromLunarMonth(this);
+    }
+
+    /**
+     * 小六壬
+     *
+     * @return 小六壬
+     */
+    public MinorRen getMinorRen() {
+        return MinorRen.fromIndex((month - 1) % 6);
     }
 
 }

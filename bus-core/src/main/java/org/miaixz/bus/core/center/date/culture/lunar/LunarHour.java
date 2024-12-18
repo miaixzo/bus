@@ -34,6 +34,7 @@ import org.miaixz.bus.core.center.date.culture.cn.Taboo;
 import org.miaixz.bus.core.center.date.culture.cn.eightchar.EightChar;
 import org.miaixz.bus.core.center.date.culture.cn.eightchar.provider.EightCharProvider;
 import org.miaixz.bus.core.center.date.culture.cn.eightchar.provider.impl.DefaultEightCharProvider;
+import org.miaixz.bus.core.center.date.culture.cn.ren.MinorRen;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.EarthBranch;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.HeavenStem;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
@@ -369,6 +370,15 @@ public class LunarHour extends Loops {
      */
     public List<Taboo> getAvoids() {
         return Taboo.getHourAvoids(getDaySixtyCycle(), getSixtyCycle());
+    }
+
+    /**
+     * 小六壬
+     *
+     * @return 小六壬
+     */
+    public MinorRen getMinorRen() {
+        return getLunarDay().getMinorRen().next(getIndexInDay());
     }
 
 }
