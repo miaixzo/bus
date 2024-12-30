@@ -139,7 +139,17 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * <p>
+     * 当给定字符串为空字符串时，转换为{@code null}
+     *
+     * @param <T>  字符串类型
+     * @param text 被转换的字符串
+     * @return 转换后的字符串
+     */
+    public static <T extends CharSequence> T nullIfBlank(final T text) {
+        return isBlank(text) ? null : text;
+    }
+
+    /**
      * 如果给定字符串为{@code null}返回默认值
      * 
      * <pre>{@code

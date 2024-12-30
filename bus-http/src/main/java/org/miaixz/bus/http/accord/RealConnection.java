@@ -48,7 +48,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.RevisedException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.Protocol;
-import org.miaixz.bus.core.net.tls.TrustAnyHostnameVerifier;
+import org.miaixz.bus.core.net.tls.AnyHostnameVerifier;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.*;
 import org.miaixz.bus.http.accord.platform.Platform;
@@ -349,7 +349,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
                     throw new SSLPeerUnverifiedException("Hostname " + address.url().host() + " not verified:"
                             + "\n    certificate: " + CertificatePinner.pin(cert) + "\n    DN: "
                             + cert.getSubjectX500Principal().getName() + "\n    subjectAltNames: "
-                            + TrustAnyHostnameVerifier.allSubjectAltNames(cert));
+                            + AnyHostnameVerifier.allSubjectAltNames(cert));
                 } else {
                     throw new SSLPeerUnverifiedException(
                             "Hostname " + address.url().host() + " not verified (no certificates)");
@@ -483,7 +483,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
             return false;
 
         // 3. 此连接的服务器证书必须覆盖新主机
-        if (address.hostnameVerifier() != TrustAnyHostnameVerifier.INSTANCE)
+        if (address.hostnameVerifier() != AnyHostnameVerifier.INSTANCE)
             return false;
         if (!supportsUrl(address.url()))
             return false;
@@ -523,7 +523,7 @@ public class RealConnection extends Http2Connection.Listener implements Connecti
         // 主机不匹配,但是如果证书匹配，仍然是好的。
         if (!url.host().equals(route.address().url().host())) {
             // We have a host mismatch. But if the certificate matches, we're still good.
-            return null != handshake && TrustAnyHostnameVerifier.INSTANCE.verify(url.host(),
+            return null != handshake && AnyHostnameVerifier.INSTANCE.verify(url.host(),
                     (X509Certificate) handshake.peerCertificates().get(0));
         }
 

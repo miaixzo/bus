@@ -250,21 +250,6 @@ public class EnumKit {
     /**
      * 通过 某字段对应值 获取 枚举，获取不到时为 {@code null}
      *
-     * @param enumClass 枚举类
-     * @param predicate 条件
-     * @param <E>       枚举类型
-     * @return 对应枚举 ，获取不到时为 {@code null}
-     */
-    public static <E extends Enum<E>> E getBy(final Class<E> enumClass, final Predicate<? super E> predicate) {
-        if (null == enumClass || null == predicate) {
-            return null;
-        }
-        return Arrays.stream(enumClass.getEnumConstants()).filter(predicate).findFirst().orElse(null);
-    }
-
-    /**
-     * 通过 某字段对应值 获取 枚举，获取不到时为 {@code null}
-     *
      * @param condition 条件字段
      * @param value     条件字段值
      * @param <E>       枚举类型
@@ -272,12 +257,7 @@ public class EnumKit {
      * @return 对应枚举 ，获取不到时为 {@code null}
      */
     public static <E extends Enum<E>, C> E getBy(final FunctionX<E, C> condition, final C value) {
-        if (null == condition) {
-            return null;
-        }
-        final Class<E> implClass = LambdaKit.getRealClass(condition);
-        return Arrays.stream(implClass.getEnumConstants())
-                .filter(constant -> ObjectKit.equals(condition.apply(constant), value)).findAny().orElse(null);
+        return getBy(condition, value, null);
     }
 
     /**
@@ -291,7 +271,59 @@ public class EnumKit {
      * @return 对应枚举 ，获取不到时为 {@code null}
      */
     public static <E extends Enum<E>, C> E getBy(final FunctionX<E, C> condition, final C value, final E defaultEnum) {
-        return ObjectKit.defaultIfNull(getBy(condition, value), defaultEnum);
+        if (null == condition) {
+            return null;
+        }
+        final Class<E> implClass = LambdaKit.getRealClass(condition);
+        return getBy(implClass, condition, value, defaultEnum);
+    }
+
+    /**
+     * 通过 某字段对应值 获取 枚举，获取不到时为 {@code defaultEnum}
+     *
+     * @param enumClass   枚举类
+     * @param condition   条件字段
+     * @param value       条件字段值
+     * @param defaultEnum 条件找不到则返回结果使用这个
+     * @param <C>         值类型
+     * @param <E>         枚举类型
+     * @return 对应枚举 ，获取不到时为 {@code null}
+     */
+    public static <E extends Enum<E>, C> E getBy(final Class<E> enumClass, final FunctionX<E, C> condition,
+            final C value, final E defaultEnum) {
+        if (null == condition) {
+            return null;
+        }
+        return getBy(enumClass, constant -> ObjectKit.equals(condition.apply(constant), value), defaultEnum);
+    }
+
+    /**
+     * 通过 某字段对应值 获取 枚举，获取不到时为 {@code null}
+     *
+     * @param enumClass 枚举类
+     * @param predicate 条件
+     * @param <E>       枚举类型
+     * @return 对应枚举 ，获取不到时为 {@code null}
+     */
+    public static <E extends Enum<E>> E getBy(final Class<E> enumClass, final Predicate<? super E> predicate) {
+        return getBy(enumClass, predicate, null);
+    }
+
+    /**
+     * 通过 某字段对应值 获取 枚举，获取不到时为 {@code defaultEnum}
+     *
+     * @param enumClass   枚举类
+     * @param predicate   条件
+     * @param defaultEnum 获取不到时的默认枚举值
+     * @param <E>         枚举类型
+     * @return 对应枚举 ，获取不到时为 {@code defaultEnum}
+     */
+    public static <E extends Enum<E>> E getBy(final Class<E> enumClass, final Predicate<? super E> predicate,
+            final E defaultEnum) {
+        if (null == enumClass || null == predicate) {
+            return null;
+        }
+        return Arrays.stream(enumClass.getEnumConstants()).filter(predicate).findAny().orElse(defaultEnum);
     }
 
     /**

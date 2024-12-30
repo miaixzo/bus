@@ -34,6 +34,7 @@ import java.security.Provider;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.spec.*;
 import java.util.Objects;
@@ -66,6 +67,7 @@ import org.bouncycastle.util.io.pem.PemObjectGenerator;
 import org.bouncycastle.util.io.pem.PemReader;
 import org.bouncycastle.util.io.pem.PemWriter;
 import org.miaixz.bus.core.codec.binary.Base64;
+import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Symbol;
@@ -815,6 +817,29 @@ public class Keeper {
      */
     public static KeyStore readPKCS12KeyStore(final InputStream in, final char[] password) {
         return readKeyStore(TYPE_PKCS12, in, password);
+    }
+
+    /**
+     * 读取KeyStore文件， KeyStore文件用于数字证书的密钥对保存 证书类型根据扩展名自动判断，规则如下：
+     * 
+     * <pre>
+     *     .jks .keystore -> JKS
+     *      .p12 .pfx等其它 -> PKCS12
+     * </pre>
+     *
+     * @param keyFile  证书文件
+     * @param password 密码，null表示无密码
+     * @return {@link KeyStore}
+     */
+    public static KeyStore readKeyStore(final File keyFile, final char[] password) {
+        final String suffix = FileName.getSuffix(keyFile);
+        final String type;
+        if (StringKit.equalsIgnoreCase(suffix, "jks") || StringKit.equalsIgnoreCase(suffix, "keystore")) {
+            type = TYPE_JKS;
+        } else {
+            type = TYPE_PKCS12;
+        }
+        return readKeyStore(type, keyFile, password);
     }
 
     /**
@@ -1571,6 +1596,37 @@ public class Keeper {
             throw new CryptoException(e);
         }
         return factory;
+    }
+
+    /**
+     * 判断一个证书是否是自签名的，即证书由自己签发。
+     * 
+     * @param cert 证书
+     * @return true表示自签名的，false表示非自签名的
+     */
+    public static boolean isSelfSigned(final X509Certificate cert) {
+        return isSignedBy(cert, cert);
+    }
+
+    /**
+     * 验证一个证书是否由另一个证书签发。 来自：sun.security.tools.KeyStoreUtil
+     *
+     * @param end 需要验证的终端证书
+     * @param ca  用于验证的CA证书
+     * @return 如果终端证书由CA证书签发，则返回true，否则返回false
+     */
+    public static boolean isSignedBy(final X509Certificate end, final X509Certificate ca) {
+        // 检查CA证书的主题和终端证书的颁发者是否相同
+        if (!ca.getSubjectX500Principal().equals(end.getIssuerX500Principal())) {
+            return false;
+        }
+        try {
+            // 使用CA证书的公钥验证终端证书
+            end.verify(ca.getPublicKey());
+            return true;
+        } catch (final Exception e) {
+            return false;
+        }
     }
 
     /**

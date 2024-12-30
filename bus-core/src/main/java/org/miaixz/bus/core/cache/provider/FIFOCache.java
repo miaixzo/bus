@@ -42,7 +42,7 @@ import java.util.LinkedHashMap;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class FIFOCache<K, V> extends StampedCache<K, V> {
+public class FIFOCache<K, V> extends LockedCache<K, V> {
 
     private static final long serialVersionUID = -1L;
 

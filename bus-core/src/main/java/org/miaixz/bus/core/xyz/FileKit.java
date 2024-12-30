@@ -524,9 +524,7 @@ public class FileKit extends PathResolve {
      * @return 该文件总行数
      */
     public static int getTotalLines(final File file, int bufferSize) {
-        if (false == isFile(file)) {
-            throw new InternalException("Input must be a File");
-        }
+        Assert.isTrue(isFile(file), () -> new InternalException("Input must be a File"));
         try (final LineCounter lineCounter = new LineCounter(getInputStream(file), bufferSize)) {
             return lineCounter.getCount();
         } catch (final IOException e) {
@@ -699,7 +697,7 @@ public class FileKit extends PathResolve {
      * @return the true/false
      */
     public static boolean cleanEmpty(final File directory) {
-        if (directory == null || false == directory.exists() || false == directory.isDirectory()) {
+        if (directory == null || !directory.exists() || !directory.isDirectory()) {
             return true;
         }
 

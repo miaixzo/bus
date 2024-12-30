@@ -28,26 +28,27 @@
 package org.miaixz.bus.core.cache.provider;
 
 import java.util.Iterator;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.miaixz.bus.core.center.iterator.CopiedIterator;
 
 /**
- * 使用{@link ReentrantLock}保护的缓存，读写都使用悲观锁完成，主要避免某些Map无法使用读写锁的问题 例如使用了LinkedHashMap的缓存，由于get方法也会改变Map的结构，因此读写必须加互斥锁
+ * 使用{@link Lock}保护的缓存，读写都使用悲观锁完成，主要避免某些Map无法使用读写锁的问题, 例如使用了LinkedHashMap的缓存，由于get方法也会改变Map的结构，因此读写必须加互斥锁
  *
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class ReentrantCache<K, V> extends AbstractCache<K, V> {
+public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
 
     private static final long serialVersionUID = -1L;
 
     /**
-     * 特殊缓存，例如使用了LinkedHashMap的缓存，由于get方法也会改变Map的结构，导致无法使用读写锁
+     * 一些特殊缓存，例如使用了LinkedHashMap的缓存，由于get方法也会改变Map的结构，导致无法使用读写锁
      */
-    protected final ReentrantLock lock = new ReentrantLock();
+    protected Lock lock = new ReentrantLock();
 
     @Override
     public void put(final K key, final V object, final long timeout) {
@@ -127,7 +128,7 @@ public abstract class ReentrantCache<K, V> extends AbstractCache<K, V> {
 
     /**
      * 获得值或清除过期值
-     *
+     * 
      * @param key                键
      * @param isUpdateLastAccess 是否更新最后访问时间
      * @param isUpdateCount      是否更新计数器

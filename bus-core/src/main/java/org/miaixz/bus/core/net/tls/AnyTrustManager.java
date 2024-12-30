@@ -36,22 +36,22 @@ import java.security.cert.X509Certificate;
 
 import javax.net.ssl.*;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 /**
- * 信任所有信任管理器，默认信任所有客户端和服务端证书 注意此类慎用，信任全部可能会有中间人攻击风险
+ * {@link TrustManager } 信任管理器，默认信任所有客户端和服务端证书 注意此类慎用，信任全部可能会有中间人攻击风险
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class TrustAnyTrustManager extends X509ExtendedTrustManager {
+public class AnyTrustManager extends X509ExtendedTrustManager {
 
     /**
      * 全局单例信任管理器，默认信任所有客户端和服务端证书
      */
-    public static final TrustAnyTrustManager INSTANCE = new TrustAnyTrustManager();
+    public static final AnyTrustManager INSTANCE = new AnyTrustManager();
     /**
      * 信任所有
      */
@@ -104,7 +104,17 @@ public class TrustAnyTrustManager extends X509ExtendedTrustManager {
      * @return {@link X509TrustManager} or {@code null}
      */
     public static TrustManager[] getDefaultTrustManagers() {
-        return getTrustManagers(null, null, null);
+        return getTrustManagers(null);
+    }
+
+    /**
+     * 获取指定的{@link TrustManager} 此方法主要用于获取自签证书的{@link TrustManager}
+     *
+     * @param keyStore {@link KeyStore}
+     * @return {@link TrustManager} or {@code null}
+     */
+    public static TrustManager[] getTrustManagers(final KeyStore keyStore) {
+        return getTrustManagers(keyStore, null, null);
     }
 
     /**
@@ -115,7 +125,21 @@ public class TrustAnyTrustManager extends X509ExtendedTrustManager {
      * @param provider  算法提供者，如bc，{@code null}表示默认SunJSSE
      * @return {@link TrustManager} or {@code null}
      */
-    public static TrustManager[] getTrustManagers(final KeyStore keyStore, String algorithm, final Provider provider) {
+    public static TrustManager[] getTrustManagers(final KeyStore keyStore, final String algorithm,
+            final Provider provider) {
+        return getTrustManagerFactory(keyStore, algorithm, provider).getTrustManagers();
+    }
+
+    /**
+     * 获取指定的{@link TrustManagerFactory}
+     *
+     * @param keyStore  {@link KeyStore}
+     * @param algorithm 算法名称，如"SunX509"，{@code null}表示默认SunX509
+     * @param provider  算法提供者，如bc，{@code null}表示默认SunJSSE
+     * @return {@link TrustManager} or {@code null}
+     */
+    public static TrustManagerFactory getTrustManagerFactory(final KeyStore keyStore, String algorithm,
+            final Provider provider) {
         final TrustManagerFactory tmf;
 
         if (StringKit.isEmpty(algorithm)) {
@@ -128,15 +152,15 @@ public class TrustAnyTrustManager extends X509ExtendedTrustManager {
                 tmf = TrustManagerFactory.getInstance(algorithm, provider);
             }
         } catch (final NoSuchAlgorithmException e) {
-            throw new InternalException(e);
+            throw new CryptoException(e);
         }
         try {
             tmf.init(keyStore);
         } catch (final KeyStoreException e) {
-            throw new InternalException(e);
+            throw new CryptoException(e);
         }
 
-        return tmf.getTrustManagers();
+        return tmf;
     }
 
     public static KeyStore createKeyStore(X509Certificate... certs) throws KeyStoreException {

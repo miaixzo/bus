@@ -41,7 +41,7 @@ import org.miaixz.bus.core.lang.mutable.Mutable;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class LRUCache<K, V> extends ReentrantCache<K, V> {
+public class LRUCache<K, V> extends LockedCache<K, V> {
 
     private static final long serialVersionUID = -1L;
 

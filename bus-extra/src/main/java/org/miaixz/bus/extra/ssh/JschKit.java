@@ -99,7 +99,7 @@ public class JschKit {
     public static Channel createChannel(final Session session, final ChannelType channelType, final long timeout) {
         final Channel channel;
         try {
-            if (false == session.isConnected()) {
+            if (!session.isConnected()) {
                 session.connect((int) timeout);
             }
             channel = session.openChannel(channelType.getValue());

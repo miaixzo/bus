@@ -78,7 +78,7 @@ public class StrictBeanDesc extends AbstractBeanDesc {
             final boolean ignoreCase) {
         // 查找isXXX
         return MethodKit.getMethod(gettersOrSetters, m -> {
-            if (0 != m.getParameterCount() || false == BooleanKit.isBoolean(m.getReturnType())) {
+            if (0 != m.getParameterCount() || !BooleanKit.isBoolean(m.getReturnType())) {
                 // getter方法要求无参数且返回boolean或Boolean
                 return false;
             }
@@ -112,7 +112,7 @@ public class StrictBeanDesc extends AbstractBeanDesc {
             final boolean ignoreCase) {
         // 查找isXXX
         return MethodKit.getMethod(gettersOrSetters, m -> {
-            if (1 != m.getParameterCount() || false == BooleanKit.isBoolean(m.getParameterTypes()[0])) {
+            if (1 != m.getParameterCount() || !BooleanKit.isBoolean(m.getParameterTypes()[0])) {
                 // setter方法要求1个boolean或Boolean参数
                 return false;
             }

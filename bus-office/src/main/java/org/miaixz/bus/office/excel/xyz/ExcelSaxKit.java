@@ -44,6 +44,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.DependencyException;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.RevisedException;
+import org.miaixz.bus.core.lang.exception.TerminateException;
 import org.miaixz.bus.core.xyz.DateKit;
 import org.miaixz.bus.core.xyz.MathKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -213,6 +214,8 @@ public class ExcelSaxKit {
             throw new RevisedException(e);
         } catch (final SAXException e) {
             throw new InternalException(e);
+        } catch (final TerminateException e) {
+            // 用户抛出此异常，表示强制结束读取
         }
     }
 

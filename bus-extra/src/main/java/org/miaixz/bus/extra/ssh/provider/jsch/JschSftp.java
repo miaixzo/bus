@@ -204,7 +204,7 @@ public class JschSftp extends AbstractFtp {
      * @return 通道客户端
      */
     public ChannelSftp getClient() {
-        if (false == this.channel.isConnected()) {
+        if (!this.channel.isConnected()) {
             init();
         }
         return this.channel;

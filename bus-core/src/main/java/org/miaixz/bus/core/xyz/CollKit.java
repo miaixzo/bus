@@ -46,7 +46,7 @@ import org.miaixz.bus.core.center.CollectionOperation;
 import org.miaixz.bus.core.center.CollectionStream;
 import org.miaixz.bus.core.center.TransCollection;
 import org.miaixz.bus.core.center.function.BiConsumerX;
-import org.miaixz.bus.core.center.function.SerConsumer3;
+import org.miaixz.bus.core.center.function.Consumer3X;
 import org.miaixz.bus.core.center.iterator.ArrayIterator;
 import org.miaixz.bus.core.center.iterator.IteratorEnumeration;
 import org.miaixz.bus.core.center.set.UniqueKeySet;
@@ -1658,14 +1658,7 @@ public class CollKit extends CollectionStream {
      * @param consumer {@link BiConsumerX} 遍历的每条数据处理器
      */
     public static <T> void forEach(final Iterator<T> iterator, final BiConsumerX<Integer, T> consumer) {
-        if (iterator == null) {
-            return;
-        }
-        int index = 0;
-        while (iterator.hasNext()) {
-            consumer.accept(index, iterator.next());
-            index++;
-        }
+        IteratorKit.forEach(iterator, consumer);
     }
 
     /**
@@ -1687,22 +1680,15 @@ public class CollKit extends CollectionStream {
     }
 
     /**
-     * 循环遍历Map，使用{@link SerConsumer3} 接受遍历的每条数据，并针对每条数据做处理 和JDK8中的map.forEach不同的是，此方法支持index
+     * 循环遍历Map，使用{@link Consumer3X} 接受遍历的每条数据，并针对每条数据做处理 和JDK8中的map.forEach不同的是，此方法支持index
      *
      * @param <K>        Key类型
      * @param <V>        Value类型
      * @param map        {@link Map}
-     * @param kvConsumer {@link SerConsumer3} 遍历的每条数据处理器
+     * @param kvConsumer {@link Consumer3X} 遍历的每条数据处理器
      */
-    public static <K, V> void forEach(final Map<K, V> map, final SerConsumer3<Integer, K, V> kvConsumer) {
-        if (map == null) {
-            return;
-        }
-        int index = 0;
-        for (final Entry<K, V> entry : map.entrySet()) {
-            kvConsumer.accept(index, entry.getKey(), entry.getValue());
-            index++;
-        }
+    public static <K, V> void forEach(final Map<K, V> map, final Consumer3X<Integer, K, V> kvConsumer) {
+        MapKit.forEach(map, kvConsumer);
     }
 
     /**

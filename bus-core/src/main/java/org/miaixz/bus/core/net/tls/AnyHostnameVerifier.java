@@ -45,17 +45,17 @@ import org.miaixz.bus.core.lang.Symbol;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class TrustAnyHostnameVerifier implements HostnameVerifier {
+public class AnyHostnameVerifier implements HostnameVerifier {
 
     /**
      * 单例对象
      */
-    public static final TrustAnyHostnameVerifier INSTANCE = new TrustAnyHostnameVerifier();
+    public static final AnyHostnameVerifier INSTANCE = new AnyHostnameVerifier();
 
     private static final int ALT_DNS_NAME = 2;
     private static final int ALT_IPA_NAME = 7;
 
-    private TrustAnyHostnameVerifier() {
+    private AnyHostnameVerifier() {
     }
 
     public static List<String> allSubjectAltNames(X509Certificate certificate) {

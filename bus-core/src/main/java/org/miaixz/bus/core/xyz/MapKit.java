@@ -33,6 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.*;
 import java.util.stream.Collectors;
 
+import org.miaixz.bus.core.center.function.Consumer3X;
 import org.miaixz.bus.core.center.iterator.ArrayIterator;
 import org.miaixz.bus.core.center.map.*;
 import org.miaixz.bus.core.center.map.Dictionary;
@@ -1322,6 +1323,25 @@ public class MapKit extends MapGets {
             }
         }
         return null;
+    }
+
+    /**
+     * 循环遍历Map，使用{@link Consumer3X} 接受遍历的每条数据，并针对每条数据做处理, 和JDK8中的map.forEach不同的是，此方法支持index
+     *
+     * @param <K>        Key类型
+     * @param <V>        Value类型
+     * @param map        {@link Map}
+     * @param kvConsumer {@link Consumer3X} 遍历的每条数据处理器
+     */
+    public static <K, V> void forEach(final Map<K, V> map, final Consumer3X<Integer, K, V> kvConsumer) {
+        if (map == null) {
+            return;
+        }
+        int index = 0;
+        for (final Entry<K, V> entry : map.entrySet()) {
+            kvConsumer.accept(index, entry.getKey(), entry.getValue());
+            index++;
+        }
     }
 
 }

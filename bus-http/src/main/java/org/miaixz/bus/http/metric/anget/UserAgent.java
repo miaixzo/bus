@@ -144,7 +144,7 @@ public class UserAgent {
 
         // MacOS 下的微信不属于移动平台
         if (device.isMobile() || browser.isMobile()) {
-            if (false == os.isMacOS()) {
+            if (!os.isMacOS()) {
                 userAgent.setMobile(true);
             }
         }

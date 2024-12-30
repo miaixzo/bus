@@ -59,6 +59,7 @@ public class SSLContextBuilder implements Builder<SSLContext> {
     private KeyManager[] keyManagers;
     private TrustManager[] trustManagers;
     private SecureRandom secureRandom;
+    private Provider provider;
 
     /**
      * 创建 SSLContextBuilder
@@ -102,7 +103,7 @@ public class SSLContextBuilder implements Builder<SSLContext> {
     public static SSLContext createTrustAnySSLContext(final String protocol) throws InternalException {
         return of().setProtocol(protocol)
                 // 信任所有服务端
-                .setTrustManagers(TrustAnyTrustManager.TRUST_ANYS).build();
+                .setTrustManagers(AnyTrustManager.TRUST_ANYS).build();
     }
 
     /**
@@ -118,6 +119,32 @@ public class SSLContextBuilder implements Builder<SSLContext> {
             final TrustManager trustManager) throws InternalException {
         return createSSLContext(protocol, keyManager == null ? null : new KeyManager[] { keyManager },
                 trustManager == null ? null : new TrustManager[] { trustManager });
+    }
+
+    /**
+     * 创建和初始化{@link SSLContext}
+     *
+     * @param keyStore KeyStore
+     * @param password 密码
+     * @return {@link SSLContext}
+     * @throws InternalException 包装 GeneralSecurityException异常
+     */
+    public static SSLContext createSSLContext(final KeyStore keyStore, final char[] password) throws InternalException {
+        return createSSLContext(AnyKeyManager.getKeyManagers(keyStore, password),
+                AnyTrustManager.getTrustManagers(keyStore));
+    }
+
+    /**
+     * 创建和初始化{@link SSLContext}
+     *
+     * @param keyManagers   密钥管理器,{@code null}表示默认
+     * @param trustManagers 信任管理器, {@code null}表示默认
+     * @return {@link SSLContext}
+     * @throws InternalException 包装 GeneralSecurityException异常
+     */
+    public static SSLContext createSSLContext(final KeyManager[] keyManagers, final TrustManager[] trustManagers)
+            throws InternalException {
+        return createSSLContext(null, keyManagers, trustManagers);
     }
 
     /**
@@ -230,6 +257,17 @@ public class SSLContextBuilder implements Builder<SSLContext> {
     }
 
     /**
+     * 设置 Provider
+     *
+     * @param provider Provider，{@code null}表示使用默认或全局Provider
+     * @return this
+     */
+    public SSLContextBuilder setProvider(final Provider provider) {
+        this.provider = provider;
+        return this;
+    }
+
+    /**
      * 构建{@link SSLContext}
      *
      * @return {@link SSLContext}
@@ -247,7 +285,8 @@ public class SSLContextBuilder implements Builder<SSLContext> {
      * @throws KeyManagementException   密钥管理异常
      */
     public SSLContext buildChecked() throws NoSuchAlgorithmException, KeyManagementException {
-        final SSLContext sslContext = SSLContext.getInstance(protocol);
+        final SSLContext sslContext = null != this.provider ? SSLContext.getInstance(protocol, provider)
+                : SSLContext.getInstance(protocol);
         sslContext.init(this.keyManagers, this.trustManagers, this.secureRandom);
         return sslContext;
     }

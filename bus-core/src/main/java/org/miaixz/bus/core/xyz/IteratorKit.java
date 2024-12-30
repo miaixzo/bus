@@ -33,6 +33,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
+import org.miaixz.bus.core.center.function.BiConsumerX;
 import org.miaixz.bus.core.center.iterator.*;
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.text.StringJoiner;
@@ -530,6 +531,24 @@ public class IteratorKit extends IteratorValidator {
                     consumer.accept(element);
                 }
             }
+        }
+    }
+
+    /**
+     * 循环遍历 {@link Iterator}，使用{@link BiConsumerX} 接受遍历的每条数据，并针对每条数据做处理，支持index
+     *
+     * @param <T>      集合元素类型
+     * @param iterator {@link Iterator}
+     * @param consumer {@link BiConsumerX} 遍历的每条数据处理器
+     */
+    public static <T> void forEach(final Iterator<T> iterator, final BiConsumerX<Integer, T> consumer) {
+        if (iterator == null) {
+            return;
+        }
+        int index = 0;
+        while (iterator.hasNext()) {
+            consumer.accept(index, iterator.next());
+            index++;
         }
     }
 

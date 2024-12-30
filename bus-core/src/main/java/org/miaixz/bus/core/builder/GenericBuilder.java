@@ -34,7 +34,7 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.miaixz.bus.core.Builder;
-import org.miaixz.bus.core.center.function.SerConsumer3;
+import org.miaixz.bus.core.center.function.Consumer3X;
 
 /**
  * 通用Builder 参考: <a href="https://blog.csdn.net/weixin_43935907/article/details/105003719">一看就会的java8通用Builder</a>
@@ -151,7 +151,7 @@ public class GenericBuilder<T> implements Builder<T> {
      * @param <P2>     参数二类型
      * @return GenericBuilder对象
      */
-    public <P1, P2> GenericBuilder<T> with(final SerConsumer3<T, P1, P2> consumer, final P1 p1, final P2 p2) {
+    public <P1, P2> GenericBuilder<T> with(final Consumer3X<T, P1, P2> consumer, final P1 p1, final P2 p2) {
         modifiers.add(instant -> consumer.accept(instant, p1, p2));
         return this;
     }

@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
-import org.miaixz.bus.core.net.tls.TrustAnyTrustManager;
+import org.miaixz.bus.core.net.tls.AnyTrustManager;
 import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.QueryOption;
 import org.miaixz.bus.image.metric.net.ApplicationEntity;
@@ -250,9 +250,9 @@ public class Args {
 
             Device device = conn.getDevice();
             try {
-                device.setKeyManager(TrustAnyTrustManager.createKeyManager(option.getKeystoreType(),
+                device.setKeyManager(AnyTrustManager.createKeyManager(option.getKeystoreType(),
                         option.getKeystoreURL(), option.getKeystorePass(), option.getKeyPass()));
-                device.setTrustManager(TrustAnyTrustManager.createTrustManager(option.getTruststoreType(),
+                device.setTrustManager(AnyTrustManager.createTrustManager(option.getTruststoreType(),
                         option.getTruststoreURL(), option.getTruststorePass()));
                 if (remote != null) {
                     remote.setTlsProtocols(conn.getTlsProtocols());
