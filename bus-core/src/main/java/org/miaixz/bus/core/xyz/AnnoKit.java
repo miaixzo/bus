@@ -173,6 +173,27 @@ public class AnnoKit {
     }
 
     /**
+     * 检查是否包含指定注解 注解类传入全名，通过{@link Class#forName(String)}加载，避免不存在的注解导致的ClassNotFoundException
+     *
+     * @param annotationEle      {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
+     * @param annotationTypeName 注解类型完整类名
+     * @return 是否包含指定注解
+     */
+    public static boolean hasAnnotation(final AnnotatedElement annotationEle, final String annotationTypeName) {
+        Class aClass = null;
+        try {
+            // Android可能无这个类
+            aClass = Class.forName(annotationTypeName);
+        } catch (final ClassNotFoundException e) {
+            // ignore
+        }
+        if (null != aClass) {
+            return hasAnnotation(annotationEle, aClass);
+        }
+        return false;
+    }
+
+    /**
      * 检查是否包含指定注解
      *
      * @param annotationEle  {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission

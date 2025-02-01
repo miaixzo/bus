@@ -219,6 +219,10 @@ public class Keys {
      */
     public static final String JAVA_ENDORSED_DIRS = "java.endorsed.dirs";
     /**
+     * Transient注解的类名
+     */
+    public static final String JAVA_BEANS_TRANSIENT = "java.beans.Transient";
+    /**
      * BootstrapClassLoader加载的jar包路径
      */
     public static final String SUN_BOOT_CLASS_PATH = "sun.boot.class.path";

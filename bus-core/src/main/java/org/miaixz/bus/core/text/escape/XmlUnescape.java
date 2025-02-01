@@ -42,10 +42,6 @@ public class XmlUnescape extends ReplacerChain {
      * 基础反转义符
      */
     protected static final String[][] BASIC_UNESCAPE = invert(XmlEscape.BASIC_ESCAPE);
-    /**
-     * 特定字符反转义
-     */
-    protected static final String[][] OTHER_UNESCAPE = new String[][] { new String[] { "&apos;", "'" } };
     private static final long serialVersionUID = -1L;
 
     /**
@@ -54,7 +50,6 @@ public class XmlUnescape extends ReplacerChain {
     public XmlUnescape() {
         addChain(new LookupReplacer(BASIC_UNESCAPE));
         addChain(new NumericEntityUnescaper());
-        addChain(new LookupReplacer(OTHER_UNESCAPE));
     }
 
     /**

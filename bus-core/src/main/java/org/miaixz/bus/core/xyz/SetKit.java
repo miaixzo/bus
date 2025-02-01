@@ -201,6 +201,17 @@ public class SetKit {
     }
 
     /**
+     * 获取一个只包含一个元素的Set，不可变
+     *
+     * @param <T>     元素类型
+     * @param element 元素
+     * @return 只包含一个元素的Set
+     */
+    public static <T> Set<T> singleton(final T element) {
+        return Collections.singleton(element);
+    }
+
+    /**
      * 获取一个初始大小为0的LinkedHashSet，这个空Set可变
      *
      * @param <T> 元素类型

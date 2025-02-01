@@ -413,6 +413,37 @@ public class ClassKit {
     }
 
     /**
+     * 是否为基本类型的包装类匹配或反之，如：
+     * 
+     * <pre>
+     *     null    匹配 null
+     *     int     匹配 Integer
+     *     long    匹配 Long
+     *     short   匹配 Short
+     *     char    匹配 Character
+     *     float   匹配 Float
+     *     double  匹配 Double
+     *     boolean 匹配 Boolean
+     * </pre>
+     *
+     * @param returnType 类1
+     * @param fieldType  类2
+     * @return 是否为基本类型的包装类
+     */
+    public static boolean isBasicTypeMatch(final Class<?> returnType, final Class<?> fieldType) {
+        if (returnType == fieldType) {
+            return true;
+        }
+        if (null == returnType || null == fieldType) {
+            return false;
+        }
+        if (returnType.isPrimitive() && BasicType.wrap(returnType) == fieldType) {
+            return true;
+        }
+        return fieldType.isPrimitive() && BasicType.wrap(fieldType) == returnType;
+    }
+
+    /**
      * 是否为 简单值类型 或 简单值类型的数组
      *
      * @param clazz 属性类

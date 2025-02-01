@@ -1157,7 +1157,8 @@ public class FileKit extends PathResolve {
         }
 
         // 给定的路径已经是绝对路径了
-        return Symbol.C_SLASH == path.charAt(0) || PatternKit.isMatch(PATTERN_PATH_ABSOLUTE, path);
+        return Symbol.C_SLASH == path.charAt(0) || PatternKit.isMatch(PATTERN_PATH_ABSOLUTE, path)
+                || path.startsWith(Symbol.BACKSLASH + Symbol.BACKSLASH);
     }
 
     /**

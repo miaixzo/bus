@@ -28,6 +28,7 @@
 package org.miaixz.bus.core.text.escape;
 
 import org.miaixz.bus.core.text.replacer.LookupReplacer;
+import org.miaixz.bus.core.text.replacer.ReplacerChain;
 
 /**
  * HTML4的ESCAPE 参考：Commons Lang3
@@ -35,7 +36,7 @@ import org.miaixz.bus.core.text.replacer.LookupReplacer;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Html4Escape extends XmlEscape {
+public class Html4Escape extends ReplacerChain {
 
     /**
      * ISO8859_1 转义字符

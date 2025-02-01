@@ -1014,6 +1014,19 @@ public class MapKit extends MapGets {
     }
 
     /**
+     * 返回一个只包含一个键值对的Map，不可变
+     *
+     * @param key   键
+     * @param value 值
+     * @param <K>   键类型
+     * @param <V>   值类型
+     * @return Map
+     */
+    public static <K, V> Map<K, V> singleton(final K key, final V value) {
+        return Collections.singletonMap(key, value);
+    }
+
+    /**
      * 根据传入的Map类型不同，返回对应类型的空Map，支持类型包括：
      *
      * <pre>

@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.core.center.date.culture.Loops;
+import org.miaixz.bus.core.center.date.culture.Vesta;
 import org.miaixz.bus.core.center.date.culture.cn.Direction;
 import org.miaixz.bus.core.center.date.culture.cn.Twenty;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
@@ -209,6 +210,15 @@ public class LunarYear extends Loops {
             m = m.next(1);
         }
         return l;
+    }
+
+    /**
+     * 灶马头
+     *
+     * @return 灶马头
+     */
+    public Vesta getKitchenGodSteed() {
+        return Vesta.fromLunarYear(year);
     }
 
 }

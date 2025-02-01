@@ -25,58 +25,61 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.extra.qrcode;
+package org.miaixz.bus.extra.qrcode.render;
 
 import java.awt.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 
-import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ColorKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.extra.image.ImageKit;
+import org.miaixz.bus.extra.qrcode.QrConfig;
 
 import com.google.zxing.common.BitMatrix;
 
 /**
- * 二维码的SVG表示
+ * SVG渲染器
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class QrSVG {
+public class SVGRender implements BitMatrixRender {
 
-    private final BitMatrix matrix;
     private final QrConfig qrConfig;
 
     /**
      * 构造
      *
-     * @param matrix   {@link BitMatrix}
-     * @param qrConfig {@link QrConfig}
+     * @param qrConfig 二维码配置
      */
-    public QrSVG(final BitMatrix matrix, final QrConfig qrConfig) {
-        this.matrix = matrix;
+    public SVGRender(final QrConfig qrConfig) {
         this.qrConfig = qrConfig;
     }
 
     @Override
-    public String toString() {
-        final Image logoImg = qrConfig.img;
-        final Integer foreColor = qrConfig.foreColor;
-        final Integer backColor = qrConfig.backColor;
-        final int ratio = qrConfig.ratio;
+    public void render(final BitMatrix matrix, final OutputStream out) {
+        render(matrix, new OutputStreamWriter(out, qrConfig.getCharset()));
+    }
 
-        final StringBuilder sb = new StringBuilder();
+    /**
+     * 渲染SVG
+     *
+     * @param matrix 二维码
+     * @param writer 输出
+     */
+    public void render(final BitMatrix matrix, final Appendable writer) {
+        final Image logoImg = qrConfig.getImg();
+        final Integer foreColor = qrConfig.getForeColor();
+        final Integer backColor = qrConfig.getBackColor();
+        final int ratio = qrConfig.getRatio();
+
         final int qrWidth = matrix.getWidth();
         int qrHeight = matrix.getHeight();
         final int moduleHeight = (qrHeight == 1) ? qrWidth / 2 : 1;
-        for (int y = 0; y < qrHeight; y++) {
-            for (int x = 0; x < qrWidth; x++) {
-                if (matrix.get(x, y)) {
-                    sb.append(" M").append(x).append(Symbol.COMMA).append(y).append("h1v").append(moduleHeight)
-                            .append("h-1z");
-                }
-            }
-        }
+
         qrHeight *= moduleHeight;
         String logoBase64 = "";
         int logoWidth = 0;
@@ -98,27 +101,45 @@ public class QrSVG {
 
         }
 
-        final StringBuilder result = StringKit.builder();
-        result.append("<svg width=\"").append(qrWidth).append("\" height=\"").append(qrHeight).append("\" \n");
-        if (backColor != null) {
-            final Color back = new Color(backColor, true);
-            result.append("style=\"background-color:").append(ColorKit.toCssRgba(back)).append("\"\n");
+        try {
+            writer.append("<svg width=\"").append(String.valueOf(qrWidth)).append("\" height=\"")
+                    .append(String.valueOf(qrHeight)).append("\" \n");
+            if (backColor != null) {
+                final Color back = new Color(backColor, true);
+                writer.append("style=\"background-color:").append(ColorKit.toCssRgba(back)).append("\"\n");
+            }
+            writer.append("viewBox=\"0 0 ").append(String.valueOf(qrWidth)).append(" ").append(String.valueOf(qrHeight))
+                    .append("\" \n");
+            writer.append("xmlns=\"http://www.w3.org/2000/svg\" \n");
+            writer.append("xmlns:xlink=\"http://www.w3.org/1999/xlink\" >\n");
+            writer.append("<path d=\"");
+
+            // 数据
+            for (int y = 0; y < qrHeight; y++) {
+                for (int x = 0; x < qrWidth; x++) {
+                    if (matrix.get(x, y)) {
+                        writer.append(" M").append(String.valueOf(x)).append(",").append(String.valueOf(y))
+                                .append("h1v").append(String.valueOf(moduleHeight)).append("h-1z");
+                    }
+                }
+            }
+
+            writer.append("\" ");
+            if (foreColor != null) {
+                final Color fore = new Color(foreColor, true);
+                writer.append("stroke=\"").append(ColorKit.toCssRgba(fore)).append("\"");
+            }
+            writer.append(" /> \n");
+            if (StringKit.isNotBlank(logoBase64)) {
+                writer.append("<image xlink:href=\"").append(logoBase64).append("\" height=\"")
+                        .append(String.valueOf(logoHeight)).append("\" width=\"").append(String.valueOf(logoWidth))
+                        .append("\" y=\"").append(String.valueOf(logoY)).append("\" x=\"").append(String.valueOf(logoX))
+                        .append("\" />\n");
+            }
+            writer.append("</svg>");
+        } catch (final IOException e) {
+            throw new InternalException(e);
         }
-        result.append("viewBox=\"0 0 ").append(qrWidth).append(Symbol.SPACE).append(qrHeight).append("\" \n");
-        result.append("xmlns=\"http://www.w3.org/2000/svg\" \n");
-        result.append("xmlns:xlink=\"http://www.w3.org/1999/xlink\" >\n");
-        result.append("<path d=\"").append(sb).append("\" ");
-        if (foreColor != null) {
-            final Color fore = new Color(foreColor, true);
-            result.append("stroke=\"").append(ColorKit.toCssRgba(fore)).append("\"");
-        }
-        result.append(" /> \n");
-        if (StringKit.isNotBlank(logoBase64)) {
-            result.append("<image xlink:href=\"").append(logoBase64).append("\" height=\"").append(logoHeight)
-                    .append("\" width=\"").append(logoWidth).append("\" y=\"").append(logoY).append("\" x=\"")
-                    .append(logoX).append("\" />\n");
-        }
-        result.append("</svg>");
-        return result.toString();
     }
+
 }

@@ -190,12 +190,12 @@ public class QrConfig {
      *
      * @return 前景色
      */
-    public int getForeColor() {
+    public Integer getForeColor() {
         return foreColor;
     }
 
     /**
-     * 设置前景色，例如：Ansi4BitColor.BLUE.getRGB()
+     * 设置前景色，例如：Color.BLUE.getRGB()
      *
      * @param foreColor 前景色
      * @return this
@@ -214,12 +214,12 @@ public class QrConfig {
      *
      * @return 背景色
      */
-    public int getBackColor() {
+    public Integer getBackColor() {
         return backColor;
     }
 
     /**
-     * 设置背景色，例如：Ansi4BitColor.BLUE
+     * 设置背景色，例如：Color.BLUE
      *
      * @param backColor 背景色,null表示透明背景
      * @return this
@@ -504,4 +504,5 @@ public class QrConfig {
         }
         return hints;
     }
+
 }

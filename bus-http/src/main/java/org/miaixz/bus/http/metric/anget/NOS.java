@@ -50,33 +50,38 @@ public class NOS extends UserAgent {
      * 支持的引擎类型
      */
     public static final List<NOS> NOS = ListKit.of(
-            new NOS("Windows 10 or Windows Server 2016", "windows nt 10\\.0", "windows nt (10\\.0)"),
-            new NOS("Windows 8.1 or Windows Server 2012R2", "windows nt 6\\.3", "windows nt (6\\.3)"),
-            new NOS("Windows 8 or Windows Server 2012", "windows nt 6\\.2", "windows nt (6\\.2)"),
-            new NOS("Windows Vista", "windows nt 6\\.0", "windows nt (6\\.0)"),
-            new NOS("Windows 7 or Windows Server 2008R2", "windows nt 6\\.1", "windows nt (6\\.1)"),
-            new NOS("Windows 2003", "windows nt 5\\.2", "windows nt (5\\.2)"),
-            new NOS("Windows XP", "windows nt 5\\.1", "windows nt (5\\.1)"),
-            new NOS("Windows 2000", "windows nt 5\\.0", "windows nt (5\\.0)"),
+            new NOS("Windows 10 or Windows Server 2016", "windows nt 10\\.0", "windows nt (10\\.0)"), //
+            new NOS("Windows 8.1 or Windows Server 2012R2", "windows nt 6\\.3", "windows nt (6\\.3)"), //
+            new NOS("Windows 8 or Windows Server 2012", "windows nt 6\\.2", "windows nt (6\\.2)"), //
+            new NOS("Windows Vista", "windows nt 6\\.0", "windows nt (6\\.0)"), //
+            new NOS("Windows 7 or Windows Server 2008R2", "windows nt 6\\.1", "windows nt (6\\.1)"), //
+            new NOS("Windows 2003", "windows nt 5\\.2", "windows nt (5\\.2)"), //
+            new NOS("Windows XP", "windows nt 5\\.1", "windows nt (5\\.1)"), //
+            new NOS("Windows 2000", "windows nt 5\\.0", "windows nt (5\\.0)"), //
             new NOS("Windows Phone", "windows (ce|phone|mobile)( os)?",
-                    "windows (?:ce|phone|mobile) (\\d+([._]\\d+)*)"),
-            new NOS("Windows", "windows"), new NOS("OSX", "os x (\\d+)[._](\\d+)", "os x (\\d+([._]\\d+)*)"),
-            new NOS("Android", "Android", "Android (\\d+([._]\\d+)*)"),
-            new NOS("Android", "XiaoMi|MI\\s+", "\\(X(\\d+([._]\\d+)*)"), new NOS("Linux", "linux"),
-            new NOS("Wii", "wii", "wii libnup/(\\d+([._]\\d+)*)"),
-            new NOS("PS3", "playstation 3", "playstation 3; (\\d+([._]\\d+)*)"),
-            new NOS("PSP", "playstation portable", "Portable\\); (\\d+([._]\\d+)*)"),
-            new NOS("iPad", "\\(iPad.*os (\\d+)[._](\\d+)", "\\(iPad.*os (\\d+([._]\\d+)*)"),
-            new NOS("iPhone", "\\(iPhone.*os (\\d+)[._](\\d+)", "\\(iPhone.*os (\\d+([._]\\d+)*)"),
+                    "windows (?:ce|phone|mobile) (\\d+([._]\\d+)*)"), //
+            new NOS("Windows", "windows"), //
+            new NOS("OSX", "os x (\\d+)[._](\\d+)", "os x (\\d+([._]\\d+)*)"), //
+            new NOS("Android", "Android", "Android (\\d+([._]\\d+)*)"), //
+            new NOS("Harmony", "OpenHarmony", "OpenHarmony (\\d+([._]\\d+)*)"), //
+            new NOS("Android", "XiaoMi|MI\\s+", "\\(X(\\d+([._]\\d+)*)"), //
+            new NOS("Linux", "linux"), //
+            new NOS("Wii", "wii", "wii libnup/(\\d+([._]\\d+)*)"), //
+            new NOS("PS3", "playstation 3", "playstation 3; (\\d+([._]\\d+)*)"), //
+            new NOS("PSP", "playstation portable", "Portable\\); (\\d+([._]\\d+)*)"), //
+            new NOS("iPad", "\\(iPad.*os (\\d+)[._](\\d+)", "\\(iPad.*os (\\d+([._]\\d+)*)"), //
+            new NOS("iPhone", "\\(iPhone.*os (\\d+)[._](\\d+)", "\\(iPhone.*os (\\d+([._]\\d+)*)"), //
             new NOS("YPod", "iPod touch[\\s\\;]+iPhone.*os (\\d+)[._](\\d+)",
-                    "iPod touch[\\s\\;]+iPhone.*os (\\d+([._]\\d+)*)"),
-            new NOS("YPad", "iPad[\\s\\;]+iPhone.*os (\\d+)[._](\\d+)", "iPad[\\s\\;]+iPhone.*os (\\d+([._]\\d+)*)"),
+                    "iPod touch[\\s\\;]+iPhone.*os (\\d+([._]\\d+)*)"), //
+            new NOS("YPad", "iPad[\\s\\;]+iPhone.*os (\\d+)[._](\\d+)", "iPad[\\s\\;]+iPhone.*os (\\d+([._]\\d+)*)"), //
             new NOS("YPhone", "iPhone[\\s\\;]+iPhone.*os (\\d+)[._](\\d+)",
-                    "iPhone[\\s\\;]+iPhone.*os (\\d+([._]\\d+)*)"),
-            new NOS("Symbian", "symbian(os)?"),
-            new NOS("Darwin", "Darwin\\/([\\d\\w\\.\\-]+)", "Darwin\\/([\\d\\w\\.\\-]+)"),
-            new NOS("Adobe Air", "AdobeAir\\/([\\d\\w\\.\\-]+)", "AdobeAir\\/([\\d\\w\\.\\-]+)"),
-            new NOS("Java", "Java[\\s]+([\\d\\w\\.\\-]+)", "Java[\\s]+([\\d\\w\\.\\-]+)"));
+                    "iPhone[\\s\\;]+iPhone.*os (\\d+([._]\\d+)*)"), //
+            new NOS("Symbian", "symbian(os)?"), //
+            new NOS("Darwin", "Darwin\\/([\\d\\w\\.\\-]+)", "Darwin\\/([\\d\\w\\.\\-]+)"), //
+            new NOS("Adobe Air", "AdobeAir\\/([\\d\\w\\.\\-]+)", "AdobeAir\\/([\\d\\w\\.\\-]+)"), //
+            new NOS("Java", "Java[\\s]+([\\d\\w\\.\\-]+)", "Java[\\s]+([\\d\\w\\.\\-]+)")//
+    );
+
     /**
      * 匹配正则
      */

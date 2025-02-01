@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CrontabException;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.cron.pattern.Part;
@@ -75,7 +76,8 @@ public class PatternParser {
      * @return {@link List}
      */
     private static List<PatternMatcher> parseGroupPattern(final String groupPattern) {
-        final List<String> patternList = CharsBacker.splitTrim(groupPattern, "|");
+        Assert.notBlank(groupPattern, "Cron expression must not be empty!");
+        final List<String> patternList = CharsBacker.splitTrim(groupPattern, Symbol.OR);
         final List<PatternMatcher> patternMatchers = new ArrayList<>(patternList.size());
         for (final String pattern : patternList) {
             patternMatchers.add(parseSingle(pattern));

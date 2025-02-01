@@ -27,13 +27,13 @@
 */
 package org.miaixz.bus.core.bean.desc;
 
-import java.beans.Transient;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 import org.miaixz.bus.core.convert.Convert;
 import org.miaixz.bus.core.lang.EnumValue;
+import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.annotation.Ignore;
 import org.miaixz.bus.core.lang.exception.BeanException;
 import org.miaixz.bus.core.lang.reflect.Invoker;
@@ -88,9 +88,20 @@ public class PropDesc {
      * @param setter    set方法
      */
     public PropDesc(final String fieldName, final Method getter, final Method setter) {
+        this(fieldName, MethodInvoker.of(getter), MethodInvoker.of(setter));
+    }
+
+    /**
+     * 构造 Getter和Setter方法设置为默认可访问
+     *
+     * @param fieldName 字段名
+     * @param getter    get方法执行器
+     * @param setter    set方法执行器
+     */
+    public PropDesc(final String fieldName, final Invoker getter, final Invoker setter) {
         this.fieldName = fieldName;
-        this.getter = null == getter ? null : MethodInvoker.of(getter);
-        this.setter = null == setter ? null : MethodInvoker.of(setter);
+        this.getter = getter;
+        this.setter = setter;
     }
 
     /**
@@ -141,16 +152,7 @@ public class PropDesc {
 
             // 检查注解
             if (!isTransient) {
-                Class aClass = null;
-                try {
-                    // Android可能无这个类
-                    aClass = Class.forName("java.beans.Transient");
-                } catch (final ClassNotFoundException e) {
-                    // ignore
-                }
-                if (null != aClass) {
-                    isTransient = AnnoKit.hasAnnotation(getter, aClass);
-                }
+                isTransient = AnnoKit.hasAnnotation(getter, Keys.JAVA_BEANS_TRANSIENT);
             }
         }
 
@@ -173,7 +175,7 @@ public class PropDesc {
 
             // 检查注解
             if (!isTransient) {
-                isTransient = AnnoKit.hasAnnotation(setter, Transient.class);
+                isTransient = AnnoKit.hasAnnotation(setter, Keys.JAVA_BEANS_TRANSIENT);
             }
         }
 

@@ -131,4 +131,5 @@ public class QrDecoder implements Decoder<Image, String> {
 
         return null != result ? result.getText() : null;
     }
+
 }

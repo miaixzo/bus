@@ -366,8 +366,11 @@ public class LunarMonth extends Loops {
      * @return 九星
      */
     public NineStar getNineStar() {
-        return NineStar.fromIndex(27 - year.getSixtyCycle().getEarthBranch().getIndex() % 3 * 3
-                - getSixtyCycle().getEarthBranch().getIndex());
+        int index = getSixtyCycle().getEarthBranch().getIndex();
+        if (index < 2) {
+            index += 3;
+        }
+        return NineStar.fromIndex(27 - year.getSixtyCycle().getEarthBranch().getIndex() % 3 * 3 - index);
     }
 
     /**

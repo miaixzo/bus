@@ -78,4 +78,5 @@ public class QrEncoder implements Encoder<CharSequence, BitMatrix> {
 
         return bitMatrix;
     }
+
 }

@@ -126,6 +126,10 @@ public class SpringBuilder implements ApplicationContextAware {
      * @return Bean对象
      */
     public static <T> T getBean(final Class<T> clazz, final Object... args) {
+        final ListableBeanFactory beanFactory = getBeanFactory();
+        if (ArrayKit.isEmpty(args)) {
+            return beanFactory.getBean(clazz);
+        }
         return getBeanFactory().getBean(clazz, args);
     }
 
@@ -148,8 +152,12 @@ public class SpringBuilder implements ApplicationContextAware {
      * @param args 创建bean需要的参数属性
      * @return Bean对象
      */
-    public static Object getBean(final String name, final Object... args) {
-        return getBeanFactory().getBean(name, args);
+    public static <T> T getBean(final String name, final Object... args) {
+        final ListableBeanFactory beanFactory = getBeanFactory();
+        if (ArrayKit.isEmpty(args)) {
+            return (T) beanFactory.getBean(name);
+        }
+        return (T) getBeanFactory().getBean(name, args);
     }
 
     /**

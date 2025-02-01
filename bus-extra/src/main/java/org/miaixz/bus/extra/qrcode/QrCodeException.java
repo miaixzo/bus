@@ -100,4 +100,5 @@ public class QrCodeException extends InternalException {
     public QrCodeException(final Throwable cause, final String messageTemplate, final Object... params) {
         super(cause, messageTemplate, params);
     }
+
 }

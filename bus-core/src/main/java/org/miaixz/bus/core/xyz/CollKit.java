@@ -223,11 +223,18 @@ public class CollKit extends CollectionStream {
             return coll1;
         }
         Collection<T> result = ObjectKit.clone(coll1);
-        if (null == result) {
-            result = CollKit.create(coll1.getClass());
+        try {
+            if (null == result) {
+                result = create(coll1.getClass());
+                result.addAll(coll1);
+            }
+            result.removeAll(coll2);
+        } catch (UnsupportedOperationException e) {
+            // 针对 coll1 为只读集合的补偿
+            result = create(AbstractCollection.class);
             result.addAll(coll1);
+            result.removeAll(coll2);
         }
-        result.removeAll(coll2);
         return result;
     }
 

@@ -64,7 +64,11 @@ public class Device extends UserAgent {
      */
     public static final Device ANDROID = new Device("Android", "android");
     /**
-     * android
+     * harmony
+     */
+    public static final Device HARMONY = new Device("Harmony", "OpenHarmony");
+    /**
+     * googletv
      */
     public static final Device GOOGLE_TV = new Device("GoogleTV", "googletv");
 
@@ -76,16 +80,28 @@ public class Device extends UserAgent {
     /**
      * 支持的移动平台类型
      */
-    public static final List<Device> MOBILE_DEVICE = ListKit.of(WINDOWS_PHONE, IPAD, IPOD, IPHONE,
-            new Device("Android", "XiaoMi|MI\\s+"), ANDROID, GOOGLE_TV, new Device("htcFlyer", "htc_flyer"),
-            new Device("Symbian", "symbian(os)?"), new Device("Blackberry", "blackberry"));
-
+    public static final List<Device> MOBILE_DEVICE = ListKit.of(WINDOWS_PHONE, //
+            IPAD, //
+            IPOD, //
+            IPHONE, //
+            new Device("Android", "XiaoMi|MI\\s+"), //
+            ANDROID, //
+            HARMONY, //
+            GOOGLE_TV, //
+            new Device("htcFlyer", "htc_flyer"), //
+            new Device("Symbian", "symbian(os)?"), //
+            new Device("Blackberry", "blackberry") //
+    );
     /**
      * 支持的桌面平台类型
      */
-    public static final List<Device> DESKTOP_DEVICE = ListKit.of(new Device("Windows", "windows"),
-            new Device("Mac", "(macintosh|darwin)"), new Device("Linux", "linux"), new Device("Wii", "wii"),
-            new Device("Playstation", "playstation"), new Device("Java", "java"));
+    public static final List<Device> DESKTOP_DEVICE = ListKit.of(new Device("Windows", "windows"), //
+            new Device("Mac", "(macintosh|darwin)"), //
+            new Device("Linux", "linux"), //
+            new Device("Wii", "wii"), //
+            new Device("Playstation", "playstation"), //
+            new Device("Java", "java") //
+    );
 
     /**
      * 支持的平台类型
@@ -145,6 +161,15 @@ public class Device extends UserAgent {
      */
     public boolean isAndroid() {
         return this.equals(ANDROID) || this.equals(GOOGLE_TV);
+    }
+
+    /**
+     * 是否为Harmony平台
+     *
+     * @return 是否为Harmony平台
+     */
+    public boolean isHarmony() {
+        return this.equals(HARMONY);
     }
 
 }

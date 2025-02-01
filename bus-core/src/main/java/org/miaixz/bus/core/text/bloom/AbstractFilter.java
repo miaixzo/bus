@@ -29,6 +29,8 @@ package org.miaixz.bus.core.text.bloom;
 
 import java.util.BitSet;
 
+import org.miaixz.bus.core.lang.Assert;
+
 /**
  * 抽象Bloom过滤器
  *
@@ -54,6 +56,7 @@ public abstract class AbstractFilter implements BloomFilter {
      * @param size 容量
      */
     public AbstractFilter(final int size) {
+        Assert.isTrue(size > 0, "Size must be greater than 0.");
         this.size = size;
         this.bitSet = new BitSet(size);
     }

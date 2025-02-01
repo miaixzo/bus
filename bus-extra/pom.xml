@@ -94,7 +94,7 @@
         <tiny.version>2.0.3.RELEASE</tiny.version>
         <bopomofo4j.version>1.0.1</bopomofo4j.version>
         <houbb.version>0.4.0</houbb.version>
-        <jsch.version>0.2.17</jsch.version>
+        <jsch.version>0.2.21</jsch.version>
         <sshj.version>0.39.0</sshj.version>
         <zxing.version>3.5.3</zxing.version>
         <net.version>3.10.0</net.version>

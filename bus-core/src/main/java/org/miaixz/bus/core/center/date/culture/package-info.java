@@ -30,7 +30,7 @@
  *
  * 其他区域根据相关内容实现或重写相关方法即可
  * <p>
- * 本包部分方法实现来自： <a href="https://github.com/6tail/lunar-java">https://github.com/6tail/lunar-java</a>
+ * 致谢：本包部分方法实现来自：<a href="https://github.com/6tail/lunar-java">https://github.com/6tail/lunar-java</a>
  * </p>
  *
  * @author Kimi Liu

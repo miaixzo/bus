@@ -68,10 +68,18 @@ public class Holiday extends Loops {
      */
     protected boolean work;
 
+    /**
+     * 节假日当天的公历日
+     */
+    protected SolarDay target;
+
     public Holiday(int year, int month, int day, String data) {
-        this.day = SolarDay.fromYmd(year, month, day);
+        SolarDay d = SolarDay.fromYmd(year, month, day);
+        this.day = d;
         work = '0' == data.charAt(8);
         name = NAMES[data.charAt(9) - '0'];
+        int offset = Integer.parseInt(data.substring(data.length() - 2));
+        target = d.next('-' == data.charAt(10) ? -offset : offset);
     }
 
     public static Holiday fromYmd(int year, int month, int day) {
@@ -153,13 +161,12 @@ public class Holiday extends Loops {
         return name;
     }
 
-    /**
-     * 是否上班
-     *
-     * @return true/false
-     */
     public boolean isWork() {
         return work;
+    }
+
+    public SolarDay getTarget() {
+        return target;
     }
 
 }

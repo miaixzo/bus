@@ -286,16 +286,11 @@ public class SolarDay extends Loops {
      * @return 三伏天
      */
     public DogDay getDogDay() {
+        // 夏至
         SolarTerms xiaZhi = SolarTerms.fromIndex(getYear(), 12);
-        // 第1个庚日
         SolarDay start = xiaZhi.getJulianDay().getSolarDay();
-        int add = 6 - start.getLunarDay().getSixtyCycle().getHeavenStem().getIndex();
-        if (add < 0) {
-            add += 10;
-        }
         // 第3个庚日，即初伏第1天
-        add += 20;
-        start = start.next(add);
+        start = start.next(start.getLunarDay().getSixtyCycle().getHeavenStem().stepsTo(6) + 20);
         int days = subtract(start);
         // 初伏以前
         if (days < 0) {

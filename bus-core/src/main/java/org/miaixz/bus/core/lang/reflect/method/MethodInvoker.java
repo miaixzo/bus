@@ -186,6 +186,10 @@ public class MethodInvoker implements Invoker {
         return this.paramTypes;
     }
 
+    public Type getReturnType() {
+        return this.method.getReturnType();
+    }
+
     @Override
     public String getName() {
         return this.method.getName();
