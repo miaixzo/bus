@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -236,8 +236,8 @@ public class Calculate extends Resolver {
     /**
      * 修改为一天的结束时间
      * <ul>
-     * <li>毫秒不归零：2024-05-01 23:59:59,999</li>
-     * <li>毫秒归零：2024-05-01 23:59:59,000</li>
+     * <li>毫秒不归零：2024-10-01 23:59:59,999</li>
+     * <li>毫秒归零：2024-10-01 23:59:59,000</li>
      * </ul>
      *
      * @param date                日期
@@ -249,7 +249,7 @@ public class Calculate extends Resolver {
     }
 
     /**
-     * 修改为月初的开始时间，例如：2024-05-01 00:00:00,000
+     * 修改为月初的开始时间，例如：2024-10-01 00:00:00,000
      *
      * @param time 日期时间
      * @return 月初的开始时间
@@ -259,7 +259,7 @@ public class Calculate extends Resolver {
     }
 
     /**
-     * 修改为月初的开始时间，例如：2024-05-01 00:00:00,000
+     * 修改为月初的开始时间，例如：2024-10-01 00:00:00,000
      *
      * @param date 日期
      * @return 月初的开始时间
@@ -290,7 +290,7 @@ public class Calculate extends Resolver {
     }
 
     /**
-     * 修改为一年的开始时间，例如：2024-05-01 00:00:00,000
+     * 修改为一年的开始时间，例如：2025-01-01 00:00:00,000
      *
      * @param time 日期时间
      * @return 一年的开始时间
@@ -300,7 +300,7 @@ public class Calculate extends Resolver {
     }
 
     /**
-     * 修改为一年的开始时间，例如：2024-05-01 00:00:00,000
+     * 修改为一年的开始时间，例如：2024-10-01 00:00:00,000
      *
      * @param date 日期
      * @return 一年的开始时间
