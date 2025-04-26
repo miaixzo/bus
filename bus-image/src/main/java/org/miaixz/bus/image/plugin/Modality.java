@@ -131,7 +131,7 @@ public class Modality {
         final BufferedWriter fileInfos = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmpFile)));
         try {
             DicomFiles.scan(fnames, (f, fmi, dsPos, ds) -> mppsscu.addInstance(ds)
-                    && storescu.addFile(fileInfos, f, dsPos, fmi, ds) && stgcmtscu.addInstance(ds));
+                    && storescu.addFile(fileInfos, f, dsPos, fmi) && stgcmtscu.addInstance(ds));
             storescu.setTmpFile(tmpFile);
         } finally {
             fileInfos.close();

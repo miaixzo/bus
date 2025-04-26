@@ -39,7 +39,6 @@ import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.image.*;
-import org.miaixz.bus.image.builtin.DicomFiles;
 import org.miaixz.bus.image.galaxy.EditorContext;
 import org.miaixz.bus.image.galaxy.ImageProgress;
 import org.miaixz.bus.image.galaxy.ProgressStatus;
@@ -155,59 +154,58 @@ public class StoreSCU implements AutoCloseable {
     }
 
     public void scanFiles(List<String> fnames) throws IOException {
-        this.scanFiles(fnames, true);
-    }
-
-    public void scanFiles(List<String> fnames, boolean printout) throws IOException {
         tmpFile = File.createTempFile(tmpPrefix, tmpSuffix, tmpDir);
         tmpFile.deleteOnExit();
         try (BufferedWriter fileInfos = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tmpFile)))) {
-            DicomFiles.scan(fnames, printout, (f, fmi, dsPos, ds) -> {
-                if (!addFile(fileInfos, f, dsPos, fmi, ds)) {
-                    return false;
-                }
+            for (String fname : fnames)
+                scan(new File(fname), fileInfos);
+        }
+    }
 
+    private void scan(File f, BufferedWriter fileInfos) {
+        if (f.isDirectory()) {
+            for (String s : f.list())
+                scan(new File(f, s), fileInfos);
+            return;
+        }
+        try (ImageInputStream in = new ImageInputStream(f)) {
+            in.setIncludeBulkData(ImageInputStream.IncludeBulkData.NO);
+            Attributes fmi = in.readFileMetaInformation();
+            long dsPos = in.getPosition();
+            if (fmi == null || !fmi.containsValue(Tag.TransferSyntaxUID)
+                    || !fmi.containsValue(Tag.MediaStorageSOPClassUID)
+                    || !fmi.containsValue(Tag.MediaStorageSOPInstanceUID)) {
+                Attributes ds = in.readDataset(Tag.SOPInstanceUID + 1);
+                fmi = ds.createFileMetaInformation(in.getTransferSyntax());
+            }
+            boolean b = addFile(fileInfos, f, dsPos, fmi);
+            if (b)
                 filesScanned++;
-                return true;
-            });
+        } catch (Exception e) {
+            e.printStackTrace(System.out);
         }
     }
 
     public void sendFiles() throws IOException {
-        BufferedReader fileInfos = new BufferedReader(new InputStreamReader(new FileInputStream(tmpFile)));
-        try {
+        try (BufferedReader fileInfos = new BufferedReader(new InputStreamReader(new FileInputStream(tmpFile)))) {
             String line;
             while (as.isReadyForDataTransfer() && (line = fileInfos.readLine()) != null) {
-                ImageProgress p = state.getProgress();
-                if (p != null) {
-                    if (p.isCancel()) {
-                        Logger.info("Aborting C-Store: {}", "cancel by progress");
-                        as.abort();
-                        break;
-                    }
-                }
                 String[] ss = StringKit.splitToArray(line, Symbol.HT);
                 try {
                     send(new File(ss[4]), Long.parseLong(ss[3]), ss[1], ss[0], ss[2]);
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
                 } catch (Exception e) {
-                    Logger.error("Cannot send file", e);
+                    e.printStackTrace();
                 }
             }
             try {
                 as.waitForOutstandingRSP();
             } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                Logger.error("Waiting for RSP", e);
+                e.printStackTrace();
             }
-        } finally {
-            IoKit.close(fileInfos);
         }
     }
 
-    public boolean addFile(BufferedWriter fileInfos, File f, long endFmi, Attributes fmi, Attributes ds)
-            throws IOException {
+    public boolean addFile(BufferedWriter fileInfos, File f, long endFmi, Attributes fmi) throws IOException {
         String cuid = fmi.getString(Tag.MediaStorageSOPClassUID);
         String iuid = fmi.getString(Tag.MediaStorageSOPInstanceUID);
         String ts = fmi.getString(Tag.TransferSyntaxUID);
