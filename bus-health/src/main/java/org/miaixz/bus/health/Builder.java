@@ -215,8 +215,8 @@ public final class Builder {
                 Integer.toBinaryString(edid[9] & 0xFF)).replace(Symbol.C_SPACE, '0');
         Logger.debug("Manufacurer ID: {}", temp);
         return String.format(Locale.ROOT, "%s%s%s", (char) (64 + Integer.parseInt(temp.substring(1, 6), 2)),
-                (char) (64 + Integer.parseInt(temp.substring(7, 11), 2)),
-                (char) (64 + Integer.parseInt(temp.substring(12, 16), 2))).replace(Symbol.AT, Normal.EMPTY);
+                (char) (64 + Integer.parseInt(temp.substring(6, 11), 2)),
+                (char) (64 + Integer.parseInt(temp.substring(11, 16), 2))).replace("@", "");
     }
 
     /**

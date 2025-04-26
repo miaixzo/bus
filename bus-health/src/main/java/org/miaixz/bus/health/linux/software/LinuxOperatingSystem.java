@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.function.Supplier;
 
 import org.miaixz.bus.core.center.regex.Pattern;
 import org.miaixz.bus.core.lang.Normal;
@@ -38,10 +39,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.lang.tuple.Triplet;
-import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.Config;
-import org.miaixz.bus.health.Executor;
-import org.miaixz.bus.health.Parsing;
+import org.miaixz.bus.health.*;
 import org.miaixz.bus.health.builtin.jna.Struct;
 import org.miaixz.bus.health.builtin.software.*;
 import org.miaixz.bus.health.builtin.software.common.AbstractOperatingSystem;
@@ -98,6 +96,9 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
     private static final String OS_NAME = Executor.getFirstAnswer("uname -o");
     // PPID is 4th numeric value in proc pid stat; subtract 1 for 0-index
     private static final int[] PPID_INDEX = { 3 };
+
+    private final Supplier<List<ApplicationInfo>> installedAppsSupplier = Memoizer
+            .memoize(LinuxInstalledApps::queryInstalledApps, Memoizer.installedAppsExpiration());
 
     static {
         boolean hasUdev = false;
@@ -701,4 +702,10 @@ public class LinuxOperatingSystem extends AbstractOperatingSystem {
         }
         return services;
     }
+
+    @Override
+    public List<ApplicationInfo> getInstalledApplications() {
+        return installedAppsSupplier.get();
+    }
+
 }

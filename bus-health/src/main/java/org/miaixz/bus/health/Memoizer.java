@@ -49,6 +49,10 @@ public final class Memoizer {
         return TimeUnit.MILLISECONDS.toNanos(Config.get(Config._UTIL_MEMOIZER_EXPIRATION, 300));
     }
 
+    public static long installedAppsExpiration() {
+        return TimeUnit.MINUTES.toNanos(1);
+    }
+
     /**
      * Default exipiration of memoized values in nanoseconds, which will refresh after this time elapses. Update by
      * setting {@link Config} property <code>bus.health.memoizer.expiration</code> to a value in milliseconds.

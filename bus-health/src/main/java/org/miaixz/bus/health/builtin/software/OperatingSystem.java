@@ -297,6 +297,17 @@ public interface OperatingSystem {
     }
 
     /**
+     * Retrieves a list of installed applications on the system.
+     * <p>
+     * This method is implemented per OS. If the OS does not support this feature, it returns an empty list.
+     *
+     * @return A list of installed applications or an empty list if unsupported.
+     */
+    default List<ApplicationInfo> getInstalledApplications() {
+        return Collections.emptyList();
+    }
+
+    /**
      * Gets the all services on the system. The definition of what is a service is platform-dependent.
      *
      * @return An array of {@link OSService} objects

@@ -71,17 +71,19 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
     private static final boolean USE_PROCSTATE_SUSPENDED = Config.get(Config._WINDOWS_PROCSTATE_SUSPENDED, false);
 
     private static final boolean IS_VISTA_OR_GREATER = VersionHelpers.IsWindowsVistaOrGreater();
-    /*
+    /**
      * OSProcess code will need to know bitness of current process
      */
     private static final boolean X86 = isCurrentX86();
-    /*
+    /**
      * Windows event log name
      */
     private static final Supplier<String> systemLog = Memoizer.memoize(WindowsOperatingSystem::querySystemLog,
             TimeUnit.HOURS.toNanos(1));
     private static final long BOOTTIME = querySystemBootTime();
     private static final boolean WOW = isCurrentWow();
+    private final Supplier<List<ApplicationInfo>> installedAppsSupplier = Memoizer
+            .memoize(WindowsInstalledApps::queryInstalledApps, Memoizer.installedAppsExpiration());
 
     static {
         enableDebugPrivilege();
@@ -277,6 +279,11 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         // If we get this far, event log reading has failed, either from no log or no
         // startup times. Subtract up time from current time as a reasonable proxy.
         return System.currentTimeMillis() / 1000L - querySystemUptime();
+    }
+
+    @Override
+    public List<ApplicationInfo> getInstalledApplications() {
+        return installedAppsSupplier.get();
     }
 
     /**
@@ -503,8 +510,15 @@ public class WindowsOperatingSystem extends AbstractOperatingSystem {
         // Older JDKs don't recognize Win11 and Server2022
         if ("10".equals(version) && buildNumber.compareTo("22000") >= 0) {
             version = "11";
-        } else if ("Server 2019".equals(version) && buildNumber.compareTo("20347") > 0) {
+        }
+        if ("Server 2016".equals(version) && buildNumber.compareTo("17762") > 0) {
+            version = "Server 2019";
+        }
+        if ("Server 2019".equals(version) && buildNumber.compareTo("20347") > 0) {
             version = "Server 2022";
+        }
+        if ("Server 2022".equals(version) && buildNumber.compareTo("26039") > 0) {
+            version = "Server 2025";
         }
         return Pair.of("Windows", new OperatingSystem.OSVersionInfo(version, codeName, buildNumber));
     }

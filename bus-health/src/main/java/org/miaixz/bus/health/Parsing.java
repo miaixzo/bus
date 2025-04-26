@@ -32,8 +32,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.*;
@@ -128,6 +127,19 @@ public final class Parsing {
     }
 
     /**
+     * Parse speed from a string, eg. "2.00 MT/s" is 2000000L.
+     *
+     * @param speed Transfer speed.
+     * @return {@link java.lang.Long} MT/s value. If not parseable, delegates to {#link {@link #parseHertz(String)}.
+     */
+    public static long parseSpeed(String speed) {
+        if (speed.contains("T/s")) {
+            return parseHertz(speed.replace("T/s", "Hz"));
+        }
+        return parseHertz(speed);
+    }
+
+    /**
      * Parse hertz from a string, eg. "2.00MHz" is 2000000L.
      *
      * @param hertz Hertz size.
@@ -135,7 +147,7 @@ public final class Parsing {
      */
     public static long parseHertz(String hertz) {
         Matcher matcher = HERTZ_PATTERN.matcher(hertz.trim());
-        if (matcher.find() && matcher.groupCount() == 3) {
+        if (matcher.find()) {
             // Regexp enforces #(.#) format so no test for NFE required
             double value = Double.valueOf(matcher.group(1)) * multipliers.getOrDefault(matcher.group(3), -1L);
             if (value >= 0d) {
@@ -1160,8 +1172,8 @@ public final class Parsing {
         int end = 0;
         // Iterate characters
         do {
-            // If we've reached a delimiter or the end of the array, add to list
-            if (end == bytes.length || bytes[end] == 0) {
+            // If we've reached a delimiter or the end of the array or new line (linux), add to list
+            if (end == bytes.length || bytes[end] == 0 || bytes[end] == '\n') {
                 // Zero length string means two nulls, we're done
                 if (start == end) {
                     break;
@@ -1290,6 +1302,61 @@ public final class Parsing {
     public static String getValueOrUnknown(Map<String, String> map, String key) {
         String value = map.getOrDefault(key, Normal.EMPTY);
         return value.isEmpty() ? Normal.UNKNOWN : value;
+    }
+
+    /**
+     * Checks if a value exists in the map for the given key and returns the value or unknown based on it
+     *
+     * @param map A map where the keys can be of any type and the values are Strings.
+     * @param key The key for which to fetch the value from the map. The key can be of any type that is compatible with
+     *            the map's key type.
+     * @return The value associated with the key if the key exists in the map and the value is not empty; otherwise,
+     *         returns a predefined "unknown" string
+     */
+    public static String getValueOrUnknown(Map<?, String> map, Object key) {
+        return getStringValueOrUnknown(map.get(key));
+    }
+
+    /**
+     * Returns the given string value if it is not empty; otherwise, returns {@code Constants.UNKNOWN}.
+     *
+     * @param value The input string value.
+     * @return The input value if it is non-empty; otherwise, {@code Constants.UNKNOWN}.
+     */
+    public static String getStringValueOrUnknown(String value) {
+        return (value == null || value.isEmpty()) ? Normal.UNKNOWN : value;
+    }
+
+    /**
+     * Parses a date string from a given format and converts it to epoch time (milliseconds since epoch). This method is
+     * useful for handling date formats across different operating systems, such as:
+     * <ul>
+     * <li>{@code yyyyMMdd}</li>
+     * <li>{@code dd/MM/yy, HH:mm}</li>
+     * </ul>
+     *
+     * @param dateString  The date string to parse.
+     * @param datePattern The expected date format pattern (e.g., {@code "yyyyMMdd"}).
+     * @return The epoch time in milliseconds since January 1, 1970, UTC. Returns {@code 0} if parsing fails.
+     */
+    public static long parseDateToEpoch(String dateString, String datePattern) {
+        if (dateString.equals(Normal.UNKNOWN) || dateString.isEmpty()) {
+            return 0; // Default value if date is unknown or empty
+        }
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(datePattern, Locale.ROOT);
+            // Determine whether the pattern includes time components
+            if (datePattern.contains("H") || datePattern.contains("m") || datePattern.contains("s")) {
+                LocalDateTime localDateTime = LocalDateTime.parse(dateString, formatter);
+                return localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            } else {
+                LocalDate localDate = LocalDate.parse(dateString, formatter);
+                return localDate.atStartOfDay(ZoneId.systemDefault()).toInstant().toEpochMilli();
+            }
+        } catch (DateTimeParseException e) {
+            Logger.trace("Unable to parse date string: " + dateString);
+            return 0;
+        }
     }
 
 }

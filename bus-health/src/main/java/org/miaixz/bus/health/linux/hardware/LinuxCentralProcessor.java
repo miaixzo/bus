@@ -458,7 +458,7 @@ final class LinuxCentralProcessor extends AbstractCentralProcessor {
             }
         }
         if (cpuName.isEmpty()) {
-            cpuName = Builder.getStringFromFile(ProcPath.MODEL);
+            cpuName = Builder.getStringFromFile(ProcPath.MODEL).trim();
         }
         if (cpuName.contains("Hz")) {
             // if Name contains CPU vendor frequency, ignore cpuinfo and use it

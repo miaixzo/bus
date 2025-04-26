@@ -93,7 +93,7 @@ public abstract class AbstractGlobalMemory implements GlobalMemory {
                         memoryType = split[1].trim();
                         break;
                     case "Speed":
-                        speed = Parsing.parseHertz(split[1]);
+                        speed = Parsing.parseSpeed(split[1]);
                         break;
                     case "Manufacturer":
                         manufacturer = split[1].trim();

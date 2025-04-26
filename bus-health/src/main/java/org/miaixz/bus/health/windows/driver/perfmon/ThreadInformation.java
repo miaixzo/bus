@@ -66,13 +66,17 @@ public final class ThreadInformation {
             int threadNum) {
         String procName = name.toLowerCase(Locale.ROOT);
         if (threadNum >= 0) {
-            return PerfCounterWildcardQuery.queryInstancesAndValues(ThreadPerformanceProperty.class,
-                    PerfmonConsts.THREAD, PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_PROC_THREAD + " WHERE Name LIKE \\\""
-                            + procName + "\\\" AND IDThread=" + threadNum,
-                    procName + "/" + threadNum);
+            Pair<List<String>, Map<ThreadPerformanceProperty, List<Long>>> threads = PerfCounterWildcardQuery
+                    .queryInstancesAndValues(ThreadPerformanceProperty.class, PerfmonConsts.THREAD,
+                            PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_PROC_THREAD + " WHERE Name LIKE \"" + procName
+                                    + "/_%\" AND IDThread=" + threadNum,
+                            procName + "/*");
+            if (!threads.getLeft().isEmpty()) {
+                return threads;
+            }
         }
         return PerfCounterWildcardQuery.queryInstancesAndValues(ThreadPerformanceProperty.class, PerfmonConsts.THREAD,
-                PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_PROC_THREAD + " WHERE Name LIKE \\\"" + procName + "\\\"",
+                PerfmonConsts.WIN32_PERF_RAW_DATA_PERF_PROC_THREAD + " WHERE Name LIKE \"" + procName + "/_%\"",
                 procName + "/*");
     }
 
