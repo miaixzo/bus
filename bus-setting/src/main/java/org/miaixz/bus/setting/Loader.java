@@ -40,6 +40,7 @@ import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.core.lang.exception.NotFoundException;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -118,23 +119,25 @@ public class Loader {
      *
      * @param resource 配置文件URL
      * @return 加载是否成功
+     * @throws NotFoundException 如果资源不存在，抛出此异常
      */
-    public GroupedMap load(final Resource resource) {
-        if (resource == null) {
-            throw new NullPointerException("Null setting url define!");
-        }
-        Logger.debug("Load setting file [{}]", resource);
-        InputStream in = null;
+    public GroupedMap load(final Resource resource) throws NotFoundException {
+        Assert.notNull(resource, "Null setting url define!");
+
+        GroupedMap groupedMap;
+        InputStream settingStream = null;
         try {
-            in = resource.getStream();
-            return load(in);
+            settingStream = resource.getStream();
+            groupedMap = load(settingStream);
         } catch (final Exception e) {
-            Logger.error(e, "Load setting error!");
-            // 加载错误跳过，返回空的map
-            return new GroupedMap();
+            if (e instanceof NotFoundException) {
+                throw (NotFoundException) e;
+            }
+            throw new NotFoundException(e);
         } finally {
-            IoKit.closeQuietly(in);
+            IoKit.closeQuietly(settingStream);
         }
+        return groupedMap;
     }
 
     /**

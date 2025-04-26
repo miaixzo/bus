@@ -130,16 +130,9 @@ public class LunarFestival extends Loops {
     }
 
     public LunarFestival next(int n) {
-        if (n == 0) {
-            return fromYmd(day.getYear(), day.getMonth(), day.getDay());
-        }
         int size = NAMES.length;
-        int t = index + n;
-        int offset = indexOf(t, size);
-        if (t < 0) {
-            t -= size;
-        }
-        return fromIndex(day.getYear() + t / size, offset);
+        int i = index + n;
+        return fromIndex((day.getYear() * size + i) / size, indexOf(i, size));
     }
 
     /**

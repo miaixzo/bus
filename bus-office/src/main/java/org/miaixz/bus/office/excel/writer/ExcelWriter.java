@@ -227,7 +227,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
     /**
      * 关闭工作簿 如果用户设定了目标文件，先写出目标文件后给关闭工作簿
      */
-    @SuppressWarnings("resource")
     @Override
     public void close() {
         if (null != this.targetFile) {

@@ -32,7 +32,7 @@ import org.miaixz.bus.core.center.date.culture.cn.eightchar.provider.EightCharPr
 import org.miaixz.bus.core.center.date.culture.lunar.LunarHour;
 
 /**
- * 默认的八字计算（晚子时算第二天）
+ * 默认的八字计算（晚子时日柱算第二天）
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -41,8 +41,7 @@ public class DefaultEightCharProvider implements EightCharProvider {
 
     @Override
     public EightChar getEightChar(LunarHour hour) {
-        return new EightChar(hour.getYearSixtyCycle(), hour.getMonthSixtyCycle(), hour.getDaySixtyCycle(),
-                hour.getSixtyCycle());
+        return hour.getSixtyCycleHour().getEightChar();
     }
 
 }

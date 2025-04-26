@@ -219,6 +219,9 @@ public class Builder {
 
     /**
      * 验证是否为合法的Cron表达式
+     * 
+     * @param expression 表达式
+     * @return the true/false
      */
     public static boolean isValidExpression(String expression) {
         if (expression == null) {

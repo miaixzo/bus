@@ -675,7 +675,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 比较数字值是否相等，相等返回{@code true} 需要注意的是{@link BigDecimal}需要特殊处理
+     * 比较数字是否相等，相等返回{@code true} 需要注意的是{@link BigDecimal}需要特殊处理
      * BigDecimal使用compareTo方式判断，因为使用equals方法也判断小数位数，如2.0和2.00就不相等， 此方法判断值相等时忽略精度的，即0.00 == 0
      *
      * <ul>

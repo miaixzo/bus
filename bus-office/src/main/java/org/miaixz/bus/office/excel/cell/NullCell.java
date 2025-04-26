@@ -88,11 +88,6 @@ public class NullCell implements Cell {
         return null;
     }
 
-    @Deprecated
-    public void setCellType(final CellType cellType) {
-        throw new UnsupportedOperationException("Can not set any thing to null cell!");
-    }
-
     @Override
     public CellType getCachedFormulaResultType() {
         return null;

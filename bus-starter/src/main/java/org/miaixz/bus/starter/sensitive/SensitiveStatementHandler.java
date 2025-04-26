@@ -59,7 +59,6 @@ import org.miaixz.bus.sensitive.magic.annotation.Shield;
  * 数据脱敏加密
  *
  * @author Kimi Liu
- * @version 6.0.6
  * @since Java 17+
  */
 @Intercepts({

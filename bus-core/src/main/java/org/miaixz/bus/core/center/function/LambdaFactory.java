@@ -124,7 +124,6 @@ public class LambdaFactory {
      * @param declaringClass {@link Executable}声明的类，如果方法或构造定义在父类中，此处用于指定子类
      * @return 接受Lambda的函数式接口对象
      */
-    @SuppressWarnings("unchecked")
     private static <F> F doBuildWithoutCache(final Class<F> funcType, final Executable executable,
             final Class<?> declaringClass) {
         ReflectKit.setAccessible(executable);

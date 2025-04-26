@@ -72,25 +72,6 @@ public class UrlPath {
     }
 
     /**
-     * 修正路径，包括去掉前后的/，去掉空白符
-     *
-     * @param path 节点或路径path
-     * @return 修正后的路径
-     */
-    private static String fixPath(final CharSequence path) {
-        Assert.notNull(path, "Path segment must be not null!");
-        if ("/".contentEquals(path)) {
-            return Normal.EMPTY;
-        }
-
-        String segmentStr = StringKit.trim(path);
-        segmentStr = StringKit.removePrefix(segmentStr, Symbol.SLASH);
-        segmentStr = StringKit.removeSuffix(segmentStr, Symbol.SLASH);
-        segmentStr = StringKit.trim(segmentStr);
-        return segmentStr;
-    }
-
-    /**
      * 是否path的末尾加 /
      *
      * @param withEngTag 是否path的末尾加 /
@@ -228,6 +209,25 @@ public class UrlPath {
         } else {
             this.segments.add(segment);
         }
+    }
+
+    /**
+     * 修正路径，包括去掉前后的/，去掉空白符
+     *
+     * @param path 节点或路径path
+     * @return 修正后的路径
+     */
+    private static String fixPath(final CharSequence path) {
+        Assert.notNull(path, "Path segment must be not null!");
+        if ("/".contentEquals(path)) {
+            return Normal.EMPTY;
+        }
+
+        String segmentStr = StringKit.trim(path);
+        segmentStr = StringKit.removePrefix(segmentStr, Symbol.SLASH);
+        segmentStr = StringKit.removeSuffix(segmentStr, Symbol.SLASH);
+        segmentStr = StringKit.trim(segmentStr);
+        return segmentStr;
     }
 
 }

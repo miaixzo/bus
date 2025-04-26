@@ -54,7 +54,6 @@ import org.miaixz.bus.sensitive.magic.annotation.Sensitive;
  * 数据解密脱敏
  *
  * @author Kimi Liu
- * @version 6.0.6
  * @since Java 17+
  */
 @Intercepts({

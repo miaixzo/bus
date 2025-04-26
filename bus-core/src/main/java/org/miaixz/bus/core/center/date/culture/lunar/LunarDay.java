@@ -37,6 +37,7 @@ import org.miaixz.bus.core.center.date.culture.cn.ren.MinorRen;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.EarthBranch;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.HeavenStem;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
+import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycleDay;
 import org.miaixz.bus.core.center.date.culture.cn.star.nine.NineStar;
 import org.miaixz.bus.core.center.date.culture.cn.star.six.SixStar;
 import org.miaixz.bus.core.center.date.culture.cn.star.twelve.TwelveStar;
@@ -64,6 +65,16 @@ public class LunarDay extends Loops {
      * 日
      */
     protected int day;
+
+    /**
+     * 公历日（第一次使用时才会初始化）
+     */
+    protected SolarDay solarDay;
+
+    /**
+     * 干支日（第一次使用时才会初始化）
+     */
+    protected SixtyCycleDay sixtyCycleDay;
 
     /**
      * 初始化
@@ -138,7 +149,7 @@ public class LunarDay extends Loops {
     }
 
     public LunarDay next(int n) {
-        return 0 != n ? getSolarDay().next(n).getLunarDay() : fromYmd(getYear(), getMonth(), day);
+        return getSolarDay().next(n).getLunarDay();
     }
 
     /**
@@ -191,47 +202,6 @@ public class LunarDay extends Loops {
     }
 
     /**
-     * 当天的年干支（立春换）
-     *
-     * @return 干支
-     */
-    public SixtyCycle getYearSixtyCycle() {
-        SolarDay solarDay = getSolarDay();
-        int solarYear = solarDay.getYear();
-        SolarDay springSolarDay = SolarTerms.fromIndex(solarYear, 3).getJulianDay().getSolarDay();
-        LunarYear lunarYear = month.getLunarYear();
-        int year = lunarYear.getYear();
-        SixtyCycle sixtyCycle = lunarYear.getSixtyCycle();
-        if (year == solarYear) {
-            if (solarDay.isBefore(springSolarDay)) {
-                sixtyCycle = sixtyCycle.next(-1);
-            }
-        } else if (year < solarYear) {
-            if (!solarDay.isBefore(springSolarDay)) {
-                sixtyCycle = sixtyCycle.next(1);
-            }
-        }
-        return sixtyCycle;
-    }
-
-    /**
-     * 当天的月干支（节气换）
-     *
-     * @return 干支
-     */
-    public SixtyCycle getMonthSixtyCycle() {
-        SolarDay solarDay = getSolarDay();
-        int year = solarDay.getYear();
-        SolarTerms term = solarDay.getTerm();
-        int index = term.getIndex() - 3;
-        if (index < 0 && term.getJulianDay().getSolarDay()
-                .isAfter(SolarTerms.fromIndex(year, 3).getJulianDay().getSolarDay())) {
-            index += 24;
-        }
-        return LunarMonth.fromYm(year, 1).getSixtyCycle().next((int) Math.floor(index * 1D / 2));
-    }
-
-    /**
      * 干支
      *
      * @return 干支
@@ -245,20 +215,20 @@ public class LunarDay extends Loops {
      * 建除十二值神
      *
      * @return 建除十二值神
+     * @see SixtyCycleDay
      */
     public Duty getDuty() {
-        return Duty.fromIndex(
-                getSixtyCycle().getEarthBranch().getIndex() - getMonthSixtyCycle().getEarthBranch().getIndex());
+        return getSixtyCycleDay().getDuty();
     }
 
     /**
      * 黄道黑道十二神
      *
      * @return 黄道黑道十二神
+     * @see SixtyCycleDay
      */
     public TwelveStar getTwelveStar() {
-        return TwelveStar.fromIndex(getSixtyCycle().getEarthBranch().getIndex()
-                + (8 - getMonthSixtyCycle().getEarthBranch().getIndex() % 6) * 2);
+        return getSixtyCycleDay().getTwelveStar();
     }
 
     /**
@@ -267,8 +237,8 @@ public class LunarDay extends Loops {
      * @return 九星
      */
     public NineStar getNineStar() {
-        SolarDay solar = getSolarDay();
-        SolarTerms dongZhi = SolarTerms.fromIndex(solar.getYear(), 0);
+        SolarDay d = getSolarDay();
+        SolarTerms dongZhi = SolarTerms.fromIndex(d.getYear(), 0);
         SolarTerms xiaZhi = dongZhi.next(12);
         SolarTerms dongZhi2 = dongZhi.next(24);
         SolarDay dongZhiSolar = dongZhi.getJulianDay().getSolarDay();
@@ -281,14 +251,14 @@ public class LunarDay extends Loops {
         SolarDay solarShunBai2 = dongZhiSolar2.next(dongZhiIndex2 > 29 ? 60 - dongZhiIndex2 : -dongZhiIndex2);
         SolarDay solarNiZi = xiaZhiSolar.next(xiaZhiIndex > 29 ? 60 - xiaZhiIndex : -xiaZhiIndex);
         int offset = 0;
-        if (!solar.isBefore(solarShunBai) && solar.isBefore(solarNiZi)) {
-            offset = solar.subtract(solarShunBai);
-        } else if (!solar.isBefore(solarNiZi) && solar.isBefore(solarShunBai2)) {
-            offset = 8 - solar.subtract(solarNiZi);
-        } else if (!solar.isBefore(solarShunBai2)) {
-            offset = solar.subtract(solarShunBai2);
-        } else if (solar.isBefore(solarShunBai)) {
-            offset = 8 + solarShunBai.subtract(solar);
+        if (!d.isBefore(solarShunBai) && d.isBefore(solarNiZi)) {
+            offset = d.subtract(solarShunBai);
+        } else if (!d.isBefore(solarNiZi) && d.isBefore(solarShunBai2)) {
+            offset = 8 - d.subtract(solarNiZi);
+        } else if (!d.isBefore(solarShunBai2)) {
+            offset = d.subtract(solarShunBai2);
+        } else if (d.isBefore(solarShunBai)) {
+            offset = 8 + solarShunBai.subtract(d);
         }
         return NineStar.fromIndex(offset);
     }
@@ -337,7 +307,22 @@ public class LunarDay extends Loops {
      * @return 公历日
      */
     public SolarDay getSolarDay() {
-        return month.getFirstJulianDay().next(day - 1).getSolarDay();
+        if (null == solarDay) {
+            solarDay = month.getFirstJulianDay().next(day - 1).getSolarDay();
+        }
+        return solarDay;
+    }
+
+    /**
+     * 干支日
+     *
+     * @return 干支日
+     */
+    public SixtyCycleDay getSixtyCycleDay() {
+        if (null == sixtyCycleDay) {
+            sixtyCycleDay = getSolarDay().getSixtyCycleDay();
+        }
+        return sixtyCycleDay;
     }
 
     /**
@@ -360,9 +345,9 @@ public class LunarDay extends Loops {
     }
 
     /**
-     * 当天的时辰列表
+     * 当天的农历时辰列表
      *
-     * @return 时辰列表
+     * @return 农历时辰列表
      */
     public List<LunarHour> getHours() {
         List<LunarHour> l = new ArrayList<>();
@@ -381,7 +366,7 @@ public class LunarDay extends Loops {
      * @return 神煞列表
      */
     public List<God> getGods() {
-        return God.getDayGods(getMonthSixtyCycle(), getSixtyCycle());
+        return getSixtyCycleDay().getGods();
     }
 
     /**
@@ -390,7 +375,7 @@ public class LunarDay extends Loops {
      * @return 宜忌列表
      */
     public List<Taboo> getRecommends() {
-        return Taboo.getDayRecommends(getMonthSixtyCycle(), getSixtyCycle());
+        return getSixtyCycleDay().getRecommends();
     }
 
     /**
@@ -399,7 +384,7 @@ public class LunarDay extends Loops {
      * @return 宜忌列表
      */
     public List<Taboo> getAvoids() {
-        return Taboo.getDayAvoids(getMonthSixtyCycle(), getSixtyCycle());
+        return getSixtyCycleDay().getAvoids();
     }
 
     /**

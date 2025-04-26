@@ -30,6 +30,7 @@ package org.miaixz.bus.core.center.date.culture.cn.fetus;
 import org.miaixz.bus.core.center.date.culture.Tradition;
 import org.miaixz.bus.core.center.date.culture.cn.Direction;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
+import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycleDay;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
 
 /**
@@ -60,8 +61,7 @@ public class FetusDay extends Tradition {
      */
     protected Direction direction;
 
-    public FetusDay(LunarDay lunarDay) {
-        SixtyCycle sixtyCycle = lunarDay.getSixtyCycle();
+    protected FetusDay(SixtyCycle sixtyCycle) {
         fetusHeavenStem = new FetusHeavenStem(sixtyCycle.getHeavenStem().getIndex() % 5);
         fetusEarthBranch = new FetusEarthBranch(sixtyCycle.getEarthBranch().getIndex() % 6);
         int index = new int[] { 3, 3, 8, 8, 8, 8, 8, 1, 1, 1, 1, 1, 1, 6, 6, 6, 6, 6, 5, 5, 5, 5, 5, 5, 0, 0, 0, 0, 0,
@@ -69,6 +69,14 @@ public class FetusDay extends Tradition {
                 3, 3 }[sixtyCycle.getIndex()];
         side = index < 0 ? 0 : 1;
         direction = Direction.fromIndex(index);
+    }
+
+    public FetusDay(LunarDay lunarDay) {
+        this(lunarDay.getSixtyCycle());
+    }
+
+    public FetusDay(SixtyCycleDay sixtyCycleDay) {
+        this(sixtyCycleDay.getSixtyCycle());
     }
 
     /**
@@ -79,6 +87,16 @@ public class FetusDay extends Tradition {
      */
     public static FetusDay fromLunarDay(LunarDay lunarDay) {
         return new FetusDay(lunarDay);
+    }
+
+    /**
+     * 从干支日初始化
+     *
+     * @param sixtyCycleDay 干支日
+     * @return 逐日胎神
+     */
+    public static FetusDay fromSixtyCycleDay(SixtyCycleDay sixtyCycleDay) {
+        return new FetusDay(sixtyCycleDay);
     }
 
     public String getName() {

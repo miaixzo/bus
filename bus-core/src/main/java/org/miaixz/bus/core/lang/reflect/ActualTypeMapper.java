@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.core.lang.reflect;
 
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -35,6 +36,7 @@ import java.util.Map;
 
 import org.miaixz.bus.core.center.map.reference.WeakConcurrentMap;
 import org.miaixz.bus.core.convert.Convert;
+import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.TypeKit;
 
 /**
@@ -43,7 +45,7 @@ import org.miaixz.bus.core.xyz.TypeKit;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ActualTypeMapperPool {
+public class ActualTypeMapper {
 
     private static final WeakConcurrentMap<Type, Map<Type, Type>> CACHE = new WeakConcurrentMap<>();
 
@@ -63,7 +65,7 @@ public class ActualTypeMapperPool {
      * @param type 被解析的包含泛型参数的类
      * @return 泛型对应关系Map
      */
-    public static Map<String, Type> getStrKeyMap(final Type type) {
+    public static Map<String, Type> getStringKeyMap(final Type type) {
         return Convert.toMap(String.class, Type.class, get(type));
     }
 
@@ -81,6 +83,28 @@ public class ActualTypeMapperPool {
             result = typeTypeMap.get(result);
         }
         return result;
+    }
+
+    /**
+     * 获得泛型变量对应的泛型实际类型，如果此变量没有对应的实际类型，返回null
+     *
+     * @param type             类
+     * @param genericArrayType 泛型数组
+     * @return 实际类型，可能为Class等
+     */
+    public static Type getActualType(final Type type, final GenericArrayType genericArrayType) {
+        final Map<Type, Type> typeTypeMap = get(type);
+        Type actualType = typeTypeMap.get(genericArrayType);
+        if (actualType == null) {
+            // 获取泛型数组元素泛型对应的确切类型
+            final Type componentType = typeTypeMap.get(genericArrayType.getGenericComponentType());
+            if (componentType instanceof Class) {
+                actualType = ArrayKit.getArrayType((Class<?>) componentType);
+                typeTypeMap.put(genericArrayType, actualType);
+            }
+        }
+
+        return actualType;
     }
 
     /**

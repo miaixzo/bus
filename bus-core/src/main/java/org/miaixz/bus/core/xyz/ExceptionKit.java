@@ -99,6 +99,19 @@ public class ExceptionKit {
     }
 
     /**
+     * 将指定的异常与消息包装为运行时异常
+     *
+     * @param throwable 异常
+     * @param message   异常消息
+     * @param params    参数值
+     * @return 运行时异常
+     */
+    public static RuntimeException wrapRuntime(final Throwable throwable, final String message,
+            final Object... params) {
+        return new RuntimeException(StringKit.format(message, params), throwable);
+    }
+
+    /**
      * 包装一个异常
      *
      * @param <T>           被包装的异常类型

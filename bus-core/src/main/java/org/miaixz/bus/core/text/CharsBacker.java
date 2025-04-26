@@ -1396,21 +1396,7 @@ public class CharsBacker extends CharsValidator {
      * @return 切分后的数组
      */
     public static String[] cut(final CharSequence text, final int partLength) {
-        if (null == text) {
-            return null;
-        }
-        final int len = text.length();
-        if (len < partLength) {
-            return new String[] { text.toString() };
-        }
-        final int part = MathKit.count(len, partLength);
-        final String[] array = new String[part];
-
-        final String text2 = text.toString();
-        for (int i = 0; i < part; i++) {
-            array[i] = text2.substring(i * partLength, (i == part - 1) ? len : (partLength + i * partLength));
-        }
-        return array;
+        return CharsBacker.splitByLength(text, partLength);
     }
 
     /**
@@ -3369,6 +3355,64 @@ public class CharsBacker extends CharsValidator {
      */
     public static <T extends CharSequence> T firstNonBlank(final T... args) {
         return ArrayKit.firstMatch(CharsBacker::isNotBlank, args);
+    }
+
+    /**
+     * 将字符串转为小写
+     *
+     * @param text 被转的字符串
+     * @return 转换后的字符串
+     * @see String#toLowerCase()
+     */
+    public static String toLoweCase(final CharSequence text) {
+        return toLoweCase(text, Locale.getDefault());
+    }
+
+    /**
+     * 将字符串转为小写
+     *
+     * @param text   被转的字符串
+     * @param locale Locale
+     * @return 转换后的字符串
+     * @see String#toLowerCase()
+     */
+    public static String toLoweCase(final CharSequence text, final Locale locale) {
+        if (null == text) {
+            return null;
+        }
+        if (0 == text.length()) {
+            return Normal.EMPTY;
+        }
+        return text.toString().toLowerCase(locale);
+    }
+
+    /**
+     * 将字符串转为大写
+     *
+     * @param text 被转的字符串
+     * @return 转换后的字符串
+     * @see String#toUpperCase()
+     */
+    public static String toUpperCase(final CharSequence text) {
+        return toUpperCase(text, Locale.getDefault());
+    }
+
+    /**
+     * 将字符串转为大写
+     *
+     * @param text   被转的字符串
+     * @param locale Locale
+     * @return 转换后的字符串
+     * @see String#toUpperCase()
+     */
+    public static String toUpperCase(final CharSequence text, final Locale locale) {
+        if (null == text) {
+            return null;
+        }
+        if (0 == text.length()) {
+            return Normal.EMPTY;
+        }
+        return text.toString().toUpperCase();
     }
 
     /**

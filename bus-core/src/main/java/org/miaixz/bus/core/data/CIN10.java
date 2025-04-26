@@ -33,6 +33,7 @@ import java.util.regex.Pattern;
 
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.PatternKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
@@ -92,9 +93,12 @@ public class CIN10 {
      * @param code 身份证号码
      * @throws IllegalArgumentException 身份证格式不支持
      */
-    public CIN10(final String code) throws IllegalArgumentException {
+    public CIN10(String code) throws IllegalArgumentException {
         this.code = code;
         if (StringKit.isNotBlank(code)) {
+            // 中文空格替换为英文
+            code = StringKit.replace(code, "（", Symbol.PARENTHESE_LEFT);
+            code = StringKit.replace(code, "）", Symbol.PARENTHESE_RIGHT);
             // 台湾
             if (PatternKit.isMatch(PATTERN_TW, code)) {
                 this.province = "台湾";

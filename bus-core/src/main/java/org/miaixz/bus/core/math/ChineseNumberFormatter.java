@@ -227,7 +227,7 @@ public class ChineseNumberFormatter {
      */
     public String format(double amount) {
         if (0 == amount) {
-            return this.moneyMode ? "零元整" : Symbol.UL_ZERO;
+            return this.moneyMode ? "零" + unitName + "整" : Symbol.UL_ZERO;
         }
         Assert.checkBetween(amount, -99_9999_9999_9999.99, 99_9999_9999_9999.99,
                 "Number support only: (-99999999999999.99 ~ 99999999999999.99)！");

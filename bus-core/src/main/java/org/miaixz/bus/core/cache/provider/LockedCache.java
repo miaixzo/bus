@@ -142,6 +142,7 @@ public abstract class LockedCache<K, V> extends AbstractCache<K, V> {
             if (null != co && co.isExpired()) {
                 // 过期移除
                 removeWithoutLock(key);
+                onRemove(co.key, co.object);
                 co = null;
             }
         } finally {

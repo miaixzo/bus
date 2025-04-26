@@ -29,7 +29,7 @@ package org.miaixz.bus.core.center.date.culture.cn.eightchar;
 
 import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
-import org.miaixz.bus.core.center.date.culture.lunar.LunarYear;
+import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycleYear;
 
 /**
  * 大运（10年1大运）
@@ -71,7 +71,8 @@ public class DecadeFortune extends Loops {
      * @return 开始年龄
      */
     public int getStartAge() {
-        return childLimit.getEndTime().getYear() - childLimit.getStartTime().getYear() + 1 + index * 10;
+        return childLimit.getEndSixtyCycleYear().getYear() - childLimit.getStartSixtyCycleYear().getYear() + 1
+                + index * 10;
     }
 
     /**
@@ -84,31 +85,12 @@ public class DecadeFortune extends Loops {
     }
 
     /**
-     * 开始农历年
-     *
-     * @return 农历年
-     */
-    public LunarYear getStartLunarYear() {
-        return childLimit.getEndLunarYear().next(index * 10);
-    }
-
-    /**
-     * 结束农历年
-     *
-     * @return 农历年
-     */
-    public LunarYear getEndLunarYear() {
-        return getStartLunarYear().next(9);
-    }
-
-    /**
      * 干支
      *
      * @return 干支
      */
     public SixtyCycle getSixtyCycle() {
-        int n = index + 1;
-        return childLimit.getEightChar().getMonth().next(childLimit.isForward() ? n : -n);
+        return childLimit.getEightChar().getMonth().next(childLimit.isForward() ? index + 1 : -index - 1);
     }
 
     public String getName() {
@@ -117,6 +99,24 @@ public class DecadeFortune extends Loops {
 
     public DecadeFortune next(int n) {
         return fromChildLimit(childLimit, index + n);
+    }
+
+    /**
+     * 开始干支年
+     *
+     * @return 干支年
+     */
+    public SixtyCycleYear getStartSixtyCycleYear() {
+        return childLimit.getEndSixtyCycleYear().next(index * 10);
+    }
+
+    /**
+     * 结束干支年
+     *
+     * @return 干支年
+     */
+    public SixtyCycleYear getEndSixtyCycleYear() {
+        return getStartSixtyCycleYear().next(9);
     }
 
     /**

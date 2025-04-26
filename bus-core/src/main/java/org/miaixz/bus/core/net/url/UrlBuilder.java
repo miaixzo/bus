@@ -169,7 +169,7 @@ public final class UrlBuilder implements Builder<String> {
      * @return UrlBuilder
      */
     public static UrlBuilder ofHttp(String httpUrl, final java.nio.charset.Charset charset) {
-        Assert.notBlank(httpUrl, "Protocol url must be not blank!");
+        Assert.notBlank(httpUrl, "Url must be not blank!");
 
         httpUrl = StringKit.trimPrefix(httpUrl);
         if (!StringKit.startWithAnyIgnoreCase(httpUrl, "http://", "https://")) {
@@ -196,6 +196,10 @@ public final class UrlBuilder implements Builder<String> {
      * <li>如果url已经编码，或部分编码，则需要设置charset，此时URL会解码编码后的参数，在build时也会编码。</li>
      * <li>如果url未编码，且存在歧义字符串，则需要设置charset为{@code null}，并调用{@link #setCharset(java.nio.charset.Charset)}在build时编码URL。</li>
      * </ul>
+     *
+     * @param url     URL字符串
+     * @param charset 编码，用于URLEncode和URLDecode
+     * @return UrlBuilder
      */
     public static UrlBuilder of(final String url, final java.nio.charset.Charset charset) {
         Assert.notBlank(url, "Url must be not blank!");

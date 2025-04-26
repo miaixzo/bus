@@ -27,6 +27,7 @@
 */
 package org.miaixz.bus.extra.pinyin.provider.houbb;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.extra.pinyin.PinyinProvider;
 
 import com.github.houbb.pinyin.constant.enums.PinyinStyleEnum;
@@ -55,48 +56,25 @@ import com.github.houbb.pinyin.util.PinyinHelper;
  */
 public class HoubbProvider implements PinyinProvider {
 
-    // 汉字拼音输出的格式
-    private PinyinStyleEnum format;
-
     /**
      * 构造
      */
     public HoubbProvider() {
-        this(null);
-    }
-
-    /**
-     * 构造
-     *
-     * @param format 格式
-     */
-    public HoubbProvider(final PinyinStyleEnum format) {
-        init(format);
-    }
-
-    /**
-     * 初始化
-     *
-     * @param format 格式
-     */
-    public void init(PinyinStyleEnum format) {
-        if (null == format) {
-            format = PinyinStyleEnum.NORMAL;
-        }
-        this.format = format;
+        // SPI方式加载时检查库是否引入
+        Assert.notNull(PinyinHelper.class);
     }
 
     @Override
-    public String getPinyin(final char c) {
+    public String getPinyin(final char c, final boolean tone) {
         final String result;
-        result = PinyinHelper.toPinyin(String.valueOf(c), format);
+        result = PinyinHelper.toPinyin(String.valueOf(c), tone ? PinyinStyleEnum.DEFAULT : PinyinStyleEnum.NORMAL);
         return result;
     }
 
     @Override
-    public String getPinyin(final String text, final String separator) {
+    public String getPinyin(final String str, final String separator, final boolean tone) {
         final String result;
-        result = PinyinHelper.toPinyin(text, format, separator);
+        result = PinyinHelper.toPinyin(str, tone ? PinyinStyleEnum.DEFAULT : PinyinStyleEnum.NORMAL, separator);
         return result;
     }
 

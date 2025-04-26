@@ -281,6 +281,8 @@ public class CharKit {
                 || c == '\u3164'
                 // Braille Pattern Blank
                 || c == '\u2800'
+                // Zero Width Non-Joiner, ZWNJ
+                || c == '\u200c'
                 // MONGOLIAN VOWEL SEPARATOR
                 || c == '\u180e';
     }

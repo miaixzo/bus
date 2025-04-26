@@ -30,8 +30,7 @@ package org.miaixz.bus.core.center.date.culture.cn.eightchar;
 import org.miaixz.bus.core.center.date.culture.cn.Opposite;
 import org.miaixz.bus.core.center.date.culture.cn.eightchar.provider.ChildLimitProvider;
 import org.miaixz.bus.core.center.date.culture.cn.eightchar.provider.impl.DefaultChildLimitProvider;
-import org.miaixz.bus.core.center.date.culture.lunar.LunarHour;
-import org.miaixz.bus.core.center.date.culture.lunar.LunarYear;
+import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycleYear;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 import org.miaixz.bus.core.lang.Gender;
@@ -188,12 +187,21 @@ public class ChildLimit {
     }
 
     /**
-     * 大运
+     * 起运大运
      *
      * @return 大运
      */
     public DecadeFortune getStartDecadeFortune() {
         return DecadeFortune.fromChildLimit(this, 0);
+    }
+
+    /**
+     * 所属大运
+     *
+     * @return 大运
+     */
+    public DecadeFortune getDecadeFortune() {
+        return DecadeFortune.fromChildLimit(this, -1);
     }
 
     /**
@@ -206,22 +214,40 @@ public class ChildLimit {
     }
 
     /**
-     * 结束农历年
+     * 开始(即出生)干支年
      *
-     * @return 农历年
+     * @return 干支年
      */
-    public LunarYear getEndLunarYear() {
-        SolarTime endTime = getEndTime();
-        int solarYear = endTime.getYear();
-        LunarYear y = endTime.getLunarHour().getLunarDay().getLunarMonth().getLunarYear();
-        if (y.getYear() < solarYear) {
-            // 正月初一在立春之后的，农历年往后推一年
-            if (LunarHour.fromYmdHms(solarYear, 1, 1, 0, 0, 0).getSolarTime()
-                    .isAfter(SolarTerms.fromIndex(solarYear, 3).getJulianDay().getSolarTime())) {
-                y = y.next(1);
-            }
-        }
-        return y;
+    public SixtyCycleYear getStartSixtyCycleYear() {
+        return SixtyCycleYear.fromYear(getStartTime().getYear());
+    }
+
+    /**
+     * 结束(即起运)干支年
+     *
+     * @return 干支年
+     */
+    public SixtyCycleYear getEndSixtyCycleYear() {
+        return SixtyCycleYear.fromYear(getEndTime().getYear());
+    }
+
+    /**
+     * 开始年龄
+     *
+     * @return 开始年龄
+     */
+    public int getStartAge() {
+        return 1;
+    }
+
+    /**
+     * 结束年龄
+     *
+     * @return 结束年龄
+     */
+    public int getEndAge() {
+        int n = getEndSixtyCycleYear().getYear() - getStartSixtyCycleYear().getYear();
+        return Math.max(n, 1);
     }
 
 }

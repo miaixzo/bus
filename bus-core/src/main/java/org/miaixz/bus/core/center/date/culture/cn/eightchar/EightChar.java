@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.core.center.date.culture.Tradition;
-import org.miaixz.bus.core.center.date.culture.cn.Duty;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.EarthBranch;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.HeavenStem;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
@@ -169,20 +168,9 @@ public class EightChar extends Tradition {
      * @return 身宫
      */
     public SixtyCycle getBodySign() {
-        int offset = month.getEarthBranch().getIndex() + hour.getEarthBranch().getIndex();
-        offset %= 12;
-        offset -= 1;
+        int offset = (month.getEarthBranch().getIndex() + hour.getEarthBranch().getIndex() - 1) % 12;
         return SixtyCycle.fromName(HeavenStem.fromIndex((year.getHeavenStem().getIndex() + 1) * 2 + offset).getName()
                 + EarthBranch.fromIndex(2 + offset).getName());
-    }
-
-    /**
-     * 建除十二值神
-     *
-     * @return 建除十二值神
-     */
-    public Duty getDuty() {
-        return Duty.fromIndex(day.getEarthBranch().getIndex() - month.getEarthBranch().getIndex());
     }
 
     /**

@@ -75,7 +75,7 @@ public class FieldInvoker implements Invoker {
      * @return {@code FieldInvoker}
      */
     public static FieldInvoker of(final Field field) {
-        return new FieldInvoker(field);
+        return null == field ? null : new FieldInvoker(field);
     }
 
     /**

@@ -29,7 +29,6 @@ package org.miaixz.bus.core.center.date.culture.cn.eightchar;
 
 import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
-import org.miaixz.bus.core.center.date.culture.lunar.LunarYear;
 
 /**
  * 小运
@@ -72,15 +71,6 @@ public class Fortune extends Loops {
      */
     public int getAge() {
         return childLimit.getEndTime().getYear() - childLimit.getStartTime().getYear() + 1 + index;
-    }
-
-    /**
-     * 农历年
-     *
-     * @return 农历年
-     */
-    public LunarYear getLunarYear() {
-        return childLimit.getEndLunarYear().next(index);
     }
 
     /**
