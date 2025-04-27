@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.core.center.date.culture.Tradition;
-import org.miaixz.bus.core.center.date.culture.cn.Duty;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.EarthBranch;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.HeavenStem;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
@@ -169,20 +168,9 @@ public class EightChar extends Tradition {
      * @return 身宫
      */
     public SixtyCycle getBodySign() {
-        int offset = month.getEarthBranch().getIndex() + hour.getEarthBranch().getIndex();
-        offset %= 12;
-        offset -= 1;
+        int offset = (month.getEarthBranch().getIndex() + hour.getEarthBranch().getIndex() - 1) % 12;
         return SixtyCycle.fromName(HeavenStem.fromIndex((year.getHeavenStem().getIndex() + 1) * 2 + offset).getName()
                 + EarthBranch.fromIndex(2 + offset).getName());
-    }
-
-    /**
-     * 建除十二值神
-     *
-     * @return 建除十二值神
-     */
-    public Duty getDuty() {
-        return Duty.fromIndex(day.getEarthBranch().getIndex() - month.getEarthBranch().getIndex());
     }
 
     /**
@@ -204,34 +192,40 @@ public class EightChar extends Tradition {
         int y = year.next(-57).getIndex() + 1;
         // 节令偏移值
         m *= 2;
-        // 时辰地支转时刻，子时按零点算
+        // 时辰地支转时刻
         int h = hour.getEarthBranch().getIndex() * 2;
+        // 兼容子时多流派
+        int[] hours = h == 0 ? new int[] { 0, 23 } : new int[] { h };
         int baseYear = startYear - 1;
+        if (baseYear > y) {
+            y += 60 * (int) Math.ceil((baseYear - y) / 60D);
+        }
         while (y <= endYear) {
-            if (y >= baseYear) {
-                // 立春为寅月的开始
-                SolarTerms term = SolarTerms.fromIndex(y, 3);
-                // 节令推移，年干支和月干支就都匹配上了
-                if (m > 0) {
-                    term = term.next(m);
+            // 立春为寅月的开始
+            SolarTerms term = SolarTerms.fromIndex(y, 3);
+            // 节令推移，年干支和月干支就都匹配上了
+            if (m > 0) {
+                term = term.next(m);
+            }
+            SolarTime solarTime = term.getJulianDay().getSolarTime();
+            if (solarTime.getYear() >= startYear) {
+                // 日干支和节令干支的偏移值
+                SolarDay solarDay = solarTime.getSolarDay();
+                int d = day.next(-solarDay.getLunarDay().getSixtyCycle().getIndex()).getIndex();
+                if (d > 0) {
+                    // 从节令推移天数
+                    solarDay = solarDay.next(d);
                 }
-                SolarTime solarTime = term.getJulianDay().getSolarTime();
-                if (solarTime.getYear() >= startYear) {
+                for (int hour : hours) {
                     int mi = 0;
                     int s = 0;
-                    // 日干支和节令干支的偏移值
-                    SolarDay solarDay = solarTime.getSolarDay();
-                    int d = day.next(-solarDay.getLunarDay().getSixtyCycle().getIndex()).getIndex();
-                    if (d > 0) {
-                        // 从节令推移天数
-                        solarDay = solarDay.next(d);
-                    } else if (h == solarTime.getHour()) {
-                        // 如果正好是节令当天，且小时和节令的小时数相等的极端情况，把分钟和秒钟带上
+                    // 如果正好是节令当天，且小时和节令的小时数相等的极端情况，把分钟和秒钟带上
+                    if (d == 0 && hour == solarTime.getHour()) {
                         mi = solarTime.getMinute();
                         s = solarTime.getSecond();
                     }
-                    SolarTime time = SolarTime.fromYmdHms(solarDay.getYear(), solarDay.getMonth(), solarDay.getDay(), h,
-                            mi, s);
+                    SolarTime time = SolarTime.fromYmdHms(solarDay.getYear(), solarDay.getMonth(), solarDay.getDay(),
+                            hour, mi, s);
                     // 验证一下
                     if (time.getLunarHour().getEightChar().equals(this)) {
                         l.add(time);

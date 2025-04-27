@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,15 +27,15 @@
 */
 package org.miaixz.bus.core.center.date.culture.cn.sixty;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.miaixz.bus.core.center.date.culture.Samsara;
-import org.miaixz.bus.core.center.date.culture.cn.Direction;
-import org.miaixz.bus.core.center.date.culture.cn.Element;
-import org.miaixz.bus.core.center.date.culture.cn.Opposite;
-import org.miaixz.bus.core.center.date.culture.cn.Zodiac;
+import org.miaixz.bus.core.center.date.culture.cn.*;
 import org.miaixz.bus.core.center.date.culture.cn.minor.PengZuEarthBranch;
 
 /**
- * 地支
+ * 地支（地元）
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -109,6 +109,25 @@ public class EarthBranch extends Samsara {
     public HeavenStem getHideHeavenStemResidual() {
         int n = new int[] { -1, 7, 4, -1, 9, 4, -1, 1, 4, -1, 3, -1 }[index];
         return n == -1 ? null : HeavenStem.fromIndex(n);
+    }
+
+    /**
+     * 藏干列表
+     *
+     * @return 藏干列表
+     */
+    public List<HiddenStem> getHideHeavenStems() {
+        List<HiddenStem> l = new ArrayList<>();
+        l.add(new HiddenStem(getHideHeavenStemMain(), HiddenStems.PRINCIPAL));
+        HeavenStem o = getHideHeavenStemMiddle();
+        if (null != o) {
+            l.add(new HiddenStem(o, HiddenStems.MIDDLE));
+        }
+        o = getHideHeavenStemResidual();
+        if (null != o) {
+            l.add(new HiddenStem(o, HiddenStems.RESIDUAL));
+        }
+        return l;
     }
 
     /**

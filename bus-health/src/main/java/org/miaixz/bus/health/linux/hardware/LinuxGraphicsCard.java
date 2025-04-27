@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               ~
+ ~ Copyright (c) 2015-2025 miaixz.org OSHI and other contributors.               ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -89,8 +89,8 @@ final class LinuxGraphicsCard extends AbstractGraphicsCard {
         for (String line : lspci) {
             String[] split = line.trim().split(Symbol.COLON, 2);
             String prefix = split[0];
-            // Skip until line contains "VGA"
-            if (prefix.equals("Class") && line.contains("VGA")) {
+            // Skip until line contains "VGA" or "3D controller"
+            if (prefix.equals("Class") && (line.contains("VGA") || line.contains("3D controller"))) {
                 found = true;
             } else if (prefix.equals("Device") && !found && split.length > 1) {
                 lookupDevice = split[1].trim();

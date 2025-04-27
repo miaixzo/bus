@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,7 +27,8 @@
 */
 package org.miaixz.bus.extra.pinyin.provider.pinyin4j;
 
-import org.miaixz.bus.core.lang.exception.InternalException;
+import org.apache.logging.log4j.util.InternalException;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.extra.pinyin.PinyinProvider;
 
@@ -61,48 +62,37 @@ import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombi
  */
 public class Pinyin4JProvider implements PinyinProvider {
 
-    // 设置汉子拼音输出的格式
-    private HanyuPinyinOutputFormat format;
+    private static final HanyuPinyinOutputFormat WITH_TONE_MARK;
+    private static final HanyuPinyinOutputFormat WITHOUT_TONE;
+    static {
+        WITH_TONE_MARK = new HanyuPinyinOutputFormat();
+        // 小写
+        WITH_TONE_MARK.setCaseType(HanyuPinyinCaseType.LOWERCASE);
+        // 'ü' 使用 "v" 代替
+        WITH_TONE_MARK.setVCharType(HanyuPinyinVCharType.WITH_V);
+        WITH_TONE_MARK.setToneType(HanyuPinyinToneType.WITH_TONE_MARK);
+
+        WITHOUT_TONE = new HanyuPinyinOutputFormat();
+        // 小写
+        WITHOUT_TONE.setCaseType(HanyuPinyinCaseType.LOWERCASE);
+        // 'ü' 使用 "v" 代替
+        WITHOUT_TONE.setVCharType(HanyuPinyinVCharType.WITH_V);
+        WITHOUT_TONE.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
+    }
 
     /**
      * 构造
      */
     public Pinyin4JProvider() {
-        this(null);
-    }
-
-    /**
-     * 构造
-     *
-     * @param format 格式
-     */
-    public Pinyin4JProvider(final HanyuPinyinOutputFormat format) {
-        init(format);
-    }
-
-    /**
-     * 初始化
-     *
-     * @param format 格式
-     */
-    public void init(HanyuPinyinOutputFormat format) {
-        if (null == format) {
-            format = new HanyuPinyinOutputFormat();
-            // 小写
-            format.setCaseType(HanyuPinyinCaseType.LOWERCASE);
-            // 不加声调
-            format.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
-            // 'ü' 使用 "v" 代替
-            format.setVCharType(HanyuPinyinVCharType.WITH_V);
-        }
-        this.format = format;
+        // SPI方式加载时检查库是否引入
+        Assert.notNull(PinyinHelper.class);
     }
 
     @Override
-    public String getPinyin(final char c) {
+    public String getPinyin(final char c, final boolean tone) {
         String result;
         try {
-            final String[] results = PinyinHelper.toHanyuPinyinStringArray(c, format);
+            final String[] results = PinyinHelper.toHanyuPinyinStringArray(c, tone ? WITH_TONE_MARK : WITHOUT_TONE);
             result = ArrayKit.isEmpty(results) ? String.valueOf(c) : results[0];
         } catch (final BadHanyuPinyinOutputFormatCombination e) {
             result = String.valueOf(c);
@@ -111,10 +101,10 @@ public class Pinyin4JProvider implements PinyinProvider {
     }
 
     @Override
-    public String getPinyin(final String text, final String separator) {
+    public String getPinyin(final String str, final String separator, final boolean tone) {
         final StringBuilder result = new StringBuilder();
         boolean isFirst = true;
-        final int strLen = text.length();
+        final int strLen = str.length();
         try {
             for (int i = 0; i < strLen; i++) {
                 if (isFirst) {
@@ -122,9 +112,10 @@ public class Pinyin4JProvider implements PinyinProvider {
                 } else {
                     result.append(separator);
                 }
-                final String[] pinyinStringArray = PinyinHelper.toHanyuPinyinStringArray(text.charAt(i), format);
+                final String[] pinyinStringArray = PinyinHelper.toHanyuPinyinStringArray(str.charAt(i),
+                        tone ? WITH_TONE_MARK : WITHOUT_TONE);
                 if (ArrayKit.isEmpty(pinyinStringArray)) {
-                    result.append(text.charAt(i));
+                    result.append(str.charAt(i));
                 } else {
                     result.append(pinyinStringArray[0]);
                 }
@@ -132,7 +123,6 @@ public class Pinyin4JProvider implements PinyinProvider {
         } catch (final BadHanyuPinyinOutputFormatCombination e) {
             throw new InternalException(e);
         }
-
         return result.toString();
     }
 

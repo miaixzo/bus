@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -37,6 +37,7 @@ import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.cn.Direction;
 import org.miaixz.bus.core.center.date.culture.cn.JulianDay;
 import org.miaixz.bus.core.center.date.culture.cn.fetus.FetusMonth;
+import org.miaixz.bus.core.center.date.culture.cn.ren.MinorRen;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.EarthBranch;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.HeavenStem;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
@@ -316,7 +317,7 @@ public class LunarMonth extends Loops {
     }
 
     /**
-     * 获取本月的农历日列表
+     * 本月的农历日列表
      *
      * @return 农历日列表
      */
@@ -365,8 +366,11 @@ public class LunarMonth extends Loops {
      * @return 九星
      */
     public NineStar getNineStar() {
-        return NineStar.fromIndex(27 - year.getSixtyCycle().getEarthBranch().getIndex() % 3 * 3
-                - getSixtyCycle().getEarthBranch().getIndex());
+        int index = getSixtyCycle().getEarthBranch().getIndex();
+        if (index < 2) {
+            index += 3;
+        }
+        return NineStar.fromIndex(27 - year.getSixtyCycle().getEarthBranch().getIndex() % 3 * 3 - index);
     }
 
     /**
@@ -387,6 +391,15 @@ public class LunarMonth extends Loops {
      */
     public FetusMonth getFetus() {
         return FetusMonth.fromLunarMonth(this);
+    }
+
+    /**
+     * 小六壬
+     *
+     * @return 小六壬
+     */
+    public MinorRen getMinorRen() {
+        return MinorRen.fromIndex((month - 1) % 6);
     }
 
 }

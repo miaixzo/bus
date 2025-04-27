@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -68,12 +68,12 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
      * @return 所有信息
      */
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         return this.getToken(accessTokenUrl(callback.getCode()));
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         String openId = accToken.getOpenId();
 
         String scope = accToken.getScope();

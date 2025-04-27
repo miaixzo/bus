@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -106,18 +106,8 @@ public class SolarQuarter extends Loops {
     }
 
     public SolarQuarter next(int n) {
-        int i = index;
-        int y = getYear();
-        if (n != 0) {
-            i += n;
-            y += i / 4;
-            i %= 4;
-            if (i < 0) {
-                i += 4;
-                y -= 1;
-            }
-        }
-        return fromIndex(y, i);
+        int i = index + n;
+        return fromIndex((getYear() * 4 + i) / 4, indexOf(i, 4));
     }
 
     /**

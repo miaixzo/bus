@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,10 +27,12 @@
 */
 package org.miaixz.bus.extra.pinyin.provider.jpinyin;
 
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.extra.pinyin.PinyinProvider;
 
+import com.github.stuxuhai.jpinyin.PinyinException;
 import com.github.stuxuhai.jpinyin.PinyinFormat;
 import com.github.stuxuhai.jpinyin.PinyinHelper;
 
@@ -50,49 +52,27 @@ import com.github.stuxuhai.jpinyin.PinyinHelper;
  */
 public class JPinyinProvider implements PinyinProvider {
 
-    // 设置汉子拼音输出的格式
-    private PinyinFormat format;
-
     /**
      * 构造
      */
     public JPinyinProvider() {
-        this(null);
-    }
-
-    /**
-     * 构造
-     *
-     * @param format {@link PinyinFormat}
-     */
-    public JPinyinProvider(final PinyinFormat format) {
-        init(format);
-    }
-
-    /**
-     * 初始化格式
-     *
-     * @param format 格式{@link PinyinFormat}
-     */
-    public void init(PinyinFormat format) {
-        if (null == format) {
-            // 不加声调
-            format = PinyinFormat.WITHOUT_TONE;
-        }
-        this.format = format;
+        // SPI方式加载时检查库是否引入
+        Assert.notNull(PinyinHelper.class);
     }
 
     @Override
-    public String getPinyin(final char c) {
-        final String[] results = PinyinHelper.convertToPinyinArray(c, format);
+    public String getPinyin(final char c, final boolean tone) {
+        final String[] results = PinyinHelper.convertToPinyinArray(c,
+                tone ? PinyinFormat.WITH_TONE_MARK : PinyinFormat.WITHOUT_TONE);
         return ArrayKit.isEmpty(results) ? String.valueOf(c) : results[0];
     }
 
     @Override
-    public String getPinyin(final String text, final String separator) {
+    public String getPinyin(final String str, final String separator, final boolean tone) {
         try {
-            return PinyinHelper.convertToPinyinString(text, separator, format);
-        } catch (com.github.stuxuhai.jpinyin.PinyinException e) {
+            return PinyinHelper.convertToPinyinString(str, separator,
+                    tone ? PinyinFormat.WITH_TONE_MARK : PinyinFormat.WITHOUT_TONE);
+        } catch (final PinyinException e) {
             throw new InternalException(e);
         }
     }

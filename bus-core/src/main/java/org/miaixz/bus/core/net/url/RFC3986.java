@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -97,15 +97,18 @@ public class RFC3986 {
      */
     public static final PercentCodec QUERY_PARAM_VALUE = PercentCodec.Builder.of(QUERY).removeSafe(Symbol.C_AND)
             .build();
-    /**
-     * query中的key key不能包含"{@code &}" 和 "="
-     */
-    public static final PercentCodec QUERY_PARAM_NAME = PercentCodec.Builder.of(QUERY_PARAM_VALUE)
-            .removeSafe(Symbol.C_EQUAL).build();
+
     /**
      * query中的value编码器，严格模式，value中不能包含任何分隔符。
      */
     public static final PercentCodec QUERY_PARAM_VALUE_STRICT = UNRESERVED;
+
+    /**
+     * query中的key key不能包含"{@code &}" 和 "="
+     */
+    public static final PercentCodec QUERY_PARAM_NAME = PercentCodec.Builder.of(QUERY_PARAM_VALUE).removeSafe('=')
+            .build();
+
     /**
      * query中的key编码器，严格模式，key中不能包含任何分隔符。
      */

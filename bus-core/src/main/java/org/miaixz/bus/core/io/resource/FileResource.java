@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -34,7 +34,7 @@ import java.net.URL;
 import java.nio.file.Path;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.NotFoundException;
 import org.miaixz.bus.core.xyz.FileKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.UrlKit;
@@ -87,8 +87,7 @@ public class FileResource implements Resource, Serializable {
      * @param fileName 文件名，带扩展名，如果为null获取文件本身的文件名
      */
     public FileResource(final File file, final String fileName) {
-        Assert.notNull(file, "File must be not null !");
-        this.file = file;
+        this.file = Assert.notNull(file, "File must be not null !");
         this.lastModified = file.lastModified();
         this.name = ObjectKit.defaultIfNull(fileName, file::getName);
     }
@@ -109,7 +108,10 @@ public class FileResource implements Resource, Serializable {
     }
 
     @Override
-    public InputStream getStream() throws InternalException {
+    public InputStream getStream() throws NotFoundException {
+        if (!exists()) {
+            throw new NotFoundException("File [{}] not exist!", this.file.getAbsolutePath());
+        }
         return FileKit.getInputStream(this.file);
     }
 
@@ -120,6 +122,15 @@ public class FileResource implements Resource, Serializable {
      */
     public File getFile() {
         return this.file;
+    }
+
+    /**
+     * 文件是否存在
+     *
+     * @return 是否存在
+     */
+    public boolean exists() {
+        return this.file.exists();
     }
 
     @Override

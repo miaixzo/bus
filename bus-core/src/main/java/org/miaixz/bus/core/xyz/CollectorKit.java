@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -36,6 +36,8 @@ import org.miaixz.bus.core.center.stream.EasyStream;
 import org.miaixz.bus.core.center.stream.EntryStream;
 import org.miaixz.bus.core.center.stream.SimpleCollector;
 import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.tuple.Pair;
+import org.miaixz.bus.core.lang.tuple.Triplet;
 
 /**
  * 可变的汇聚操作{@link Collector} 相关工具封装
@@ -447,6 +449,113 @@ public class CollectorKit {
         return new SimpleCollector<>(downstream.supplier(),
                 (r, t) -> java.util.Optional.of(t).filter(predicate).ifPresent(e -> downstreamAccumulator.accept(r, e)),
                 downstream.combiner(), downstream.finisher(), downstream.characteristics());
+    }
+
+    /**
+     * 将一个Collection 两个属性分流至两个ArrayList,并使用Pair收集。
+     *
+     * @param lMapper 左属性收集方法
+     * @param rMapper 右属性收集方法
+     * @param <T>     元素类型
+     * @param <L>     左属性类型
+     * @param <R>     右属性类型
+     * @return Pair收集的两个List
+     */
+    public static <T, L, R> Collector<T, Pair<List<L>, List<R>>, Pair<List<L>, List<R>>> toPairList(
+            Function<T, L> lMapper, Function<T, R> rMapper) {
+        return toPairCollection(lMapper, rMapper, ArrayList::new, ArrayList::new);
+    }
+
+    /**
+     * 将一个Collection 两个属性分流至两个Collection,并使用Pair收集。需要指定Collection类型
+     *
+     * @param lMapper        左属性收集方法
+     * @param rMapper        右属性收集方法
+     * @param newCollectionL 左属性Collection创建方法
+     * @param newCollectionR 右属性Collection创建方法
+     * @param <T>            元素类型
+     * @param <L>            左属性类型
+     * @param <R>            右属性类型
+     * @param <LC>           左分流Collection类型
+     * @param <RC>           右分流Collection类型
+     * @return Pair收集的两个List
+     */
+    public static <T, L, R, LC extends Collection<L>, RC extends Collection<R>> Collector<T, Pair<LC, RC>, Pair<LC, RC>> toPairCollection(
+            Function<T, L> lMapper, Function<T, R> rMapper, Supplier<LC> newCollectionL, Supplier<RC> newCollectionR) {
+        return new SimpleCollector<>(() -> Pair.of(newCollectionL.get(), newCollectionR.get()), (listPair, element) -> {
+            L lValue = lMapper.apply(element);
+            if (lValue != null) {
+                listPair.getLeft().add(lValue);
+            }
+            R rValue = rMapper.apply(element);
+            if (rValue != null) {
+                listPair.getRight().add(rValue);
+            }
+        }, (listPair1, listPair2) -> {
+            listPair1.getLeft().addAll(listPair2.getLeft());
+            listPair1.getRight().addAll(listPair2.getRight());
+            return listPair1;
+        }, CH_ID);
+    }
+
+    /**
+     * 将一个Collection 三个属性分流至三个ArrayList,并使用Triple收集。
+     *
+     * @param lMapper 左属性收集方法
+     * @param mMapper 中属性收集方法
+     * @param rMapper 右属性收集方法
+     * @param <T>     元素类型
+     * @param <L>     左属性类型
+     * @param <M>     中属性类型
+     * @param <R>     右属性类型
+     * @return Triplet收集的三个List
+     */
+    public static <T, L, M, R> Collector<T, Triplet<List<L>, List<M>, List<R>>, Triplet<List<L>, List<M>, List<R>>> toTripleList(
+            Function<T, L> lMapper, Function<T, M> mMapper, Function<T, R> rMapper) {
+        return toTripleCollection(lMapper, mMapper, rMapper, ArrayList::new, ArrayList::new, ArrayList::new);
+    }
+
+    /**
+     * 将一个Collection 两个属性分流至两个Collection,并使用Triple收集。需要指定Collection类型
+     *
+     * @param lMapper        左属性收集方法
+     * @param mMapper        中属性收集方法
+     * @param rMapper        右属性收集方法
+     * @param newCollectionL 左属性Collection创建方法
+     * @param newCollectionM 中属性Collection创建方法
+     * @param newCollectionR 右属性Collection创建方法
+     * @param <T>            元素类型
+     * @param <L>            左属性类型
+     * @param <M>            中属性类型
+     * @param <R>            右属性类型
+     * @param <LC>           左分流Collection类型
+     * @param <MC>           中分流Collection类型
+     * @param <RC>           右分流Collection类型
+     * @return Triplet收集的三个List
+     */
+    public static <T, L, M, R, LC extends Collection<L>, MC extends Collection<M>, RC extends Collection<R>> Collector<T, Triplet<LC, MC, RC>, Triplet<LC, MC, RC>> toTripleCollection(
+            Function<T, L> lMapper, Function<T, M> mMapper, Function<T, R> rMapper, Supplier<LC> newCollectionL,
+            Supplier<MC> newCollectionM, Supplier<RC> newCollectionR) {
+        return new SimpleCollector<>(() -> Triplet.of(newCollectionL.get(), newCollectionM.get(), newCollectionR.get()),
+                (listTriple, element) -> {
+                    L lValue = lMapper.apply(element);
+                    if (lValue != null) {
+                        listTriple.getLeft().add(lValue);
+                    }
+                    M mValue = mMapper.apply(element);
+                    if (mValue != null) {
+                        listTriple.getMiddle().add(mValue);
+                    }
+                    R rValue = rMapper.apply(element);
+                    if (rValue != null) {
+                        listTriple.getRight().add(rValue);
+                    }
+                }, (listTriple1, listTriple2) -> {
+                    listTriple1.getLeft().addAll(listTriple2.getLeft());
+                    listTriple1.getMiddle().addAll(listTriple2.getMiddle());
+                    listTriple1.getRight().addAll(listTriple2.getRight());
+                    return listTriple1;
+                }, CH_ID);
     }
 
 }

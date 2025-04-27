@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -33,7 +33,7 @@ import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.NotFoundException;
 import org.miaixz.bus.core.xyz.*;
 
 /**
@@ -133,7 +133,7 @@ public class ClassPathResource extends UrlResource {
     /**
      * 根据给定资源初始化URL
      */
-    private void initUrl() {
+    private void initUrl() throws NotFoundException {
         if (null != this.clazz) {
             super.url = this.clazz.getResource(this.path);
         } else if (null != this.classLoader) {
@@ -142,7 +142,7 @@ public class ClassPathResource extends UrlResource {
             super.url = ClassLoader.getSystemResource(this.path);
         }
         if (null == super.url) {
-            throw new InternalException("Resource of path [{}] not exist!", this.path);
+            throw new NotFoundException("Resource of path [{}] not exist!", this.path);
         }
     }
 

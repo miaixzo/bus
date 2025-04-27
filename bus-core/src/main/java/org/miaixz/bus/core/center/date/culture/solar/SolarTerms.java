@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -41,6 +41,10 @@ import org.miaixz.bus.core.xyz.EnumKit;
 public class SolarTerms extends Samsara {
 
     public static final String[] NAMES = X.get("name");
+    /**
+     * 年
+     */
+    protected int year;
 
     /**
      * 粗略的儒略日
@@ -49,17 +53,13 @@ public class SolarTerms extends Samsara {
 
     public SolarTerms(int year, int index) {
         super(NAMES, index);
-        initByYear(year, index);
+        int size = getSize();
+        initByYear((year * size + index) / size, getIndex());
     }
 
     public SolarTerms(int year, String name) {
         super(NAMES, name);
         initByYear(year, index);
-    }
-
-    public SolarTerms(double cursoryJulianDay, int index) {
-        super(NAMES, index);
-        this.cursoryJulianDay = cursoryJulianDay;
     }
 
     public static SolarTerms fromIndex(int year, int index) {
@@ -77,11 +77,14 @@ public class SolarTerms extends Samsara {
         if (Galaxy.calcQi(w) > jd) {
             w -= 365.2422;
         }
+        this.year = year;
         cursoryJulianDay = Galaxy.calcQi(w + 15.2184 * offset);
     }
 
     public SolarTerms next(int n) {
-        return new SolarTerms(cursoryJulianDay + 15.2184 * n, nextIndex(n));
+        int size = getSize();
+        int i = index + n;
+        return fromIndex((year * size + i) / size, indexOf(i));
     }
 
     /**
@@ -109,6 +112,15 @@ public class SolarTerms extends Samsara {
      */
     public JulianDay getJulianDay() {
         return JulianDay.fromJulianDay(Galaxy.qiAccurate2(cursoryJulianDay) + JulianDay.J2000);
+    }
+
+    /**
+     * 年
+     *
+     * @return 年
+     */
+    public int getYear() {
+        return year;
     }
 
     /**

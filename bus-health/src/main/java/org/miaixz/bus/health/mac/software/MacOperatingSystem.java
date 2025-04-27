@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               ~
+ ~ Copyright (c) 2015-2025 miaixz.org OSHI and other contributors.               ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -29,6 +29,7 @@ package org.miaixz.bus.health.mac.software;
 
 import java.io.File;
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.miaixz.bus.core.lang.Normal;
@@ -38,6 +39,7 @@ import org.miaixz.bus.core.lang.tuple.Pair;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Executor;
+import org.miaixz.bus.health.Memoizer;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.Struct;
 import org.miaixz.bus.health.builtin.software.*;
@@ -62,6 +64,8 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
     private static final String SYSTEM_LIBRARY_LAUNCH_AGENTS = "/System/Library/LaunchAgents";
     private static final String SYSTEM_LIBRARY_LAUNCH_DAEMONS = "/System/Library/LaunchDaemons";
     private static final long BOOTTIME;
+    private final Supplier<List<ApplicationInfo>> installedAppsSupplier = Memoizer
+            .memoize(MacInstalledApps::queryInstalledApps, Memoizer.installedAppsExpiration());
 
     static {
         try (Struct.CloseableTimeval tv = new Struct.CloseableTimeval()) {
@@ -296,6 +300,11 @@ public class MacOperatingSystem extends AbstractOperatingSystem {
     @Override
     public List<OSDesktopWindow> getDesktopWindows(boolean visibleOnly) {
         return WindowInfo.queryDesktopWindows(visibleOnly);
+    }
+
+    @Override
+    public List<ApplicationInfo> getInstalledApplications() {
+        return installedAppsSupplier.get();
     }
 
 }

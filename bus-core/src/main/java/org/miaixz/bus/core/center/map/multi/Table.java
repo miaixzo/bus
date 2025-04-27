@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -29,7 +29,7 @@ package org.miaixz.bus.core.center.map.multi;
 
 import java.util.*;
 
-import org.miaixz.bus.core.center.function.SerConsumer3;
+import org.miaixz.bus.core.center.function.Consumer3X;
 import org.miaixz.bus.core.lang.Optional;
 import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.MapKit;
@@ -255,7 +255,7 @@ public interface Table<R, C, V> extends Iterable<Table.Cell<R, C, V>> {
      *
      * @param consumer 单元格值处理器
      */
-    default void forEach(final SerConsumer3<? super R, ? super C, ? super V> consumer) {
+    default void forEach(final Consumer3X<? super R, ? super C, ? super V> consumer) {
         for (final Cell<R, C, V> cell : this) {
             consumer.accept(cell.getRowKey(), cell.getColumnKey(), cell.getValue());
         }

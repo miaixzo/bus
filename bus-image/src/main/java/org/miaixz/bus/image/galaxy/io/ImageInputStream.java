@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -609,11 +609,9 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
     }
 
     /**
-     * @deprecated Use one of the other {@link #readDataset()} methods instead. If you want to specify a length limit,
-     *             you may supply a {@link LimitedInputStream} or use {@link #createWithLimit} or
-     *             {@link #createWithLimitFromFileLength}.
+     * Use one of the other {@link #readDataset()} methods instead. If you want to specify a length limit, you may
+     * supply a {@link LimitedInputStream} or use {@link #createWithLimit} or {@link #createWithLimitFromFileLength}.
      */
-    @Deprecated
     public Attributes readDataset(int len, int stopTag) throws IOException {
         return readDataset(len, tagEqualOrGreater(stopTag));
     }
@@ -627,11 +625,9 @@ public class ImageInputStream extends FilterInputStream implements ImageInputHan
     }
 
     /**
-     * @deprecated Use one of the other {@link #readDataset()} methods instead. If you want to specify a length limit,
-     *             you may supply a {@link LimitedInputStream} or use {@link #createWithLimit} or
-     *             {@link #createWithLimitFromFileLength}.
+     * Use one of the other {@link #readDataset()} methods instead. If you want to specify a length limit, you may
+     * supply a {@link LimitedInputStream} or use {@link #createWithLimit} or {@link #createWithLimitFromFileLength}.
      */
-    @Deprecated
     public Attributes readDataset(long len, Predicate<ImageInputStream> stopPredicate) throws IOException {
         handler.startDataset(this);
         readFileMetaInformation();

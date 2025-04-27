@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -517,17 +517,28 @@ public class FileKit extends PathResolve {
     }
 
     /**
-     * 计算文件的总行数 参考：https://stackoverflow.com/questions/453018/number-of-lines-in-a-file-in-java
+     * 计算文件的总行数 参考：https://stackoverflow.com/questions/453018/number-of-lines-in-a-file-in-java 最后一行如果末尾带有换行符，则被当作为新行
      *
      * @param file       文件
      * @param bufferSize 缓存大小，小于1则使用默认的1024
      * @return 该文件总行数
      */
     public static int getTotalLines(final File file, int bufferSize) {
-        if (false == isFile(file)) {
-            throw new InternalException("Input must be a File");
-        }
+        return getTotalLines(file, bufferSize, true);
+    }
+
+    /**
+     * 计算文件的总行数 参考：https://stackoverflow.com/questions/453018/number-of-lines-in-a-file-in-java 最后一行如果末尾带有换行符，则被当作为新行
+     *
+     * @param file                       文件
+     * @param bufferSize                 缓存大小，小于1则使用默认的1024
+     * @param lastLineSeparatorAsNewLine 是否将最后一行分隔符作为新行，Linux下要求最后一行必须带有换行符，不算一行，此处用户选择
+     * @return 该文件总行数
+     */
+    public static int getTotalLines(final File file, final int bufferSize, final boolean lastLineSeparatorAsNewLine) {
+        Assert.isTrue(isFile(file), () -> new InternalException("Input must be a File"));
         try (final LineCounter lineCounter = new LineCounter(getInputStream(file), bufferSize)) {
+            lineCounter.setLastLineSeparatorAsNewLine(lastLineSeparatorAsNewLine);
             return lineCounter.getCount();
         } catch (final IOException e) {
             throw new InternalException(e);
@@ -699,7 +710,7 @@ public class FileKit extends PathResolve {
      * @return the true/false
      */
     public static boolean cleanEmpty(final File directory) {
-        if (directory == null || false == directory.exists() || false == directory.isDirectory()) {
+        if (directory == null || !directory.exists() || !directory.isDirectory()) {
             return true;
         }
 
@@ -1107,11 +1118,11 @@ public class FileKit extends PathResolve {
         if (null == classPath) {
             // throw new NullPointerException("ClassPath is null !");
             // 在jar运行模式中，ClassPath有可能获取不到，此时返回原始相对路径（此时获取的文件为相对工作目录）
-            return path;
+            return normalPath;
         }
 
         // 资源不存在的情况下使用标准化路径有问题，使用原始路径拼接后标准化路径
-        return FileName.normalize(classPath.concat(Objects.requireNonNull(path)));
+        return FileName.normalize(classPath.concat(Objects.requireNonNull(normalPath)));
     }
 
     /**
@@ -1159,7 +1170,8 @@ public class FileKit extends PathResolve {
         }
 
         // 给定的路径已经是绝对路径了
-        return Symbol.C_SLASH == path.charAt(0) || PatternKit.isMatch(PATTERN_PATH_ABSOLUTE, path);
+        return Symbol.C_SLASH == path.charAt(0) || PatternKit.isMatch(PATTERN_PATH_ABSOLUTE, path)
+                || path.startsWith(Symbol.BACKSLASH + Symbol.BACKSLASH);
     }
 
     /**
@@ -2344,6 +2356,23 @@ public class FileKit extends PathResolve {
     public static <T> File writeLines(final Collection<T> list, final File file, final java.nio.charset.Charset charset,
             final boolean isAppend) throws InternalException {
         return FileWriter.of(file, charset).writeLines(list, isAppend);
+    }
+
+    /**
+     * 将列表写入文件
+     *
+     * @param <T>                 集合元素类型
+     * @param list                列表
+     * @param file                文件
+     * @param charset             字符集
+     * @param isAppend            是否追加
+     * @param appendLineSeparator 是否在末尾追加换行符
+     * @return 目标文件
+     * @throws InternalException IO异常
+     */
+    public static <T> File writeLines(final Collection<T> list, final File file, final java.nio.charset.Charset charset,
+            final boolean isAppend, final boolean appendLineSeparator) throws InternalException {
+        return FileWriter.of(file, charset).writeLines(list, null, isAppend, appendLineSeparator);
     }
 
     /**

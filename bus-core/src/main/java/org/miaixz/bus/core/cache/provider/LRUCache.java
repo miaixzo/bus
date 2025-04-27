@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -41,7 +41,7 @@ import org.miaixz.bus.core.lang.mutable.Mutable;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class LRUCache<K, V> extends ReentrantCache<K, V> {
+public class LRUCache<K, V> extends LockedCache<K, V> {
 
     private static final long serialVersionUID = -1L;
 

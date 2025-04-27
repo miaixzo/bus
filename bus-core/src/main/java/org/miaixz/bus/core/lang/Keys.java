@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -218,6 +218,10 @@ public class Keys {
      * 扩展jdk的系统库目录
      */
     public static final String JAVA_ENDORSED_DIRS = "java.endorsed.dirs";
+    /**
+     * Transient注解的类名
+     */
+    public static final String JAVA_BEANS_TRANSIENT = "java.beans.Transient";
     /**
      * BootstrapClassLoader加载的jar包路径
      */

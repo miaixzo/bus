@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -72,7 +72,7 @@ public class TinyPinyinProvider implements PinyinProvider {
     }
 
     @Override
-    public String getPinyin(final char c) {
+    public String getPinyin(final char c, final boolean tone) {
         if (!Pinyin.isChinese(c)) {
             return String.valueOf(c);
         }
@@ -80,8 +80,8 @@ public class TinyPinyinProvider implements PinyinProvider {
     }
 
     @Override
-    public String getPinyin(final String text, final String separator) {
-        final String pinyin = Pinyin.toPinyin(text, separator);
+    public String getPinyin(final String str, final String separator, final boolean tone) {
+        final String pinyin = Pinyin.toPinyin(str, separator);
         return StringKit.isEmpty(pinyin) ? pinyin : pinyin.toLowerCase();
     }
 

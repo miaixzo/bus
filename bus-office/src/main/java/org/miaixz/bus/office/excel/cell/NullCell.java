@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -78,6 +78,11 @@ public class NullCell implements Cell {
         return this.row;
     }
 
+    @Deprecated
+    public void setCellType(final CellType cellType) {
+        throw new UnsupportedOperationException("Can not set any thing to null cell!");
+    }
+
     @Override
     public void setBlank() {
         throw new UnsupportedOperationException("Can not set any thing to null cell!");
@@ -86,11 +91,6 @@ public class NullCell implements Cell {
     @Override
     public CellType getCellType() {
         return null;
-    }
-
-    @Deprecated
-    public void setCellType(final CellType cellType) {
-        throw new UnsupportedOperationException("Can not set any thing to null cell!");
     }
 
     @Override

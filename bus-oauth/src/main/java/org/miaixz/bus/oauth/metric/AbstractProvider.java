@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -101,24 +101,6 @@ public abstract class AbstractProvider implements Provider {
         }
         return Arrays.stream(scopes).map(AuthorizeScope::getScope).collect(Collectors.toList());
     }
-
-    /**
-     * 获取access token
-     *
-     * @param callback 授权成功后的回调参数
-     * @return token
-     * @see AbstractProvider#authorize(String)
-     */
-    protected abstract AccToken getAccessToken(Callback callback);
-
-    /**
-     * 使用token换取用户信息
-     *
-     * @param accToken token信息
-     * @return 用户信息
-     * @see AbstractProvider#getAccessToken(Callback)
-     */
-    protected abstract Material getUserInfo(AccToken accToken);
 
     /**
      * 统一的登录入口。当通过{@link AbstractProvider#authorize(String)}授权成功后，会跳转到调用方的相关回调方法中

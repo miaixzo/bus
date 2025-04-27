@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -28,6 +28,8 @@
 package org.miaixz.bus.oauth.magic;
 
 import java.io.Serializable;
+
+import org.miaixz.bus.core.xyz.StringKit;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -93,5 +95,9 @@ public class Callback implements Serializable {
      *      response</a>
      */
     private String error;
+
+    public String getCode() {
+        return StringKit.isEmpty(code) ? auth_code : code;
+    }
 
 }

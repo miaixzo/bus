@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org gitlab4j and other contributors.           ~
+ ~ Copyright (c) 2015-2025 miaixz.org gitlab4j and other contributors.           ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -67,7 +67,6 @@ public class HealthCheckApi extends AbstractApi {
      * @param token Health Status token
      * @return HealthCheckInfo instance
      * @throws GitLabApiException if any exception occurs
-     * @deprecated
      */
     public HealthCheckInfo getLiveness(String token) throws GitLabApiException {
         try {
@@ -107,7 +106,6 @@ public class HealthCheckApi extends AbstractApi {
      * @param token Health Status token
      * @return HealthCheckInfo instance
      * @throws GitLabApiException if any exception occurs
-     * @deprecated
      */
     public HealthCheckInfo getReadiness(String token) throws GitLabApiException {
         try {

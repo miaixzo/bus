@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -51,7 +51,7 @@ public enum ErrorCode {
     REQUIRED_REFRESH_TOKEN("5010", "The refresh token is required; it must not be null"),
     ILLEGAL_TOKEN("5011", "Invalid token"), ILLEGAL_KID("5012", "Invalid key identifier(kid)"),
     ILLEGAL_TEAM_ID("5013", "Invalid team id"), ILLEGAL_CLIENT_ID("5014", "Invalid client id"),
-    ILLEGAL_CLIENT_SECRET("5015", "Invalid client secret");
+    ILLEGAL_CLIENT_SECRET("5015", "Invalid client secret"), ILLEGAL_WECHAT_AGENT_ID("5016", "Illegal wechat agent id");
 
     private final String code;
     private final String desc;

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -51,7 +51,18 @@ public interface PinyinProvider extends Provider {
      * @param c 任意字符，汉字返回拼音，非汉字原样返回
      * @return 汉字返回拼音，非汉字原样返回
      */
-    String getPinyin(char c);
+    default String getPinyin(final char c) {
+        return getPinyin(c, false);
+    }
+
+    /**
+     * 如果c为汉字，则返回大写拼音；如果c不是汉字，则返回String.valueOf(c)
+     *
+     * @param c    任意字符，汉字返回拼音，非汉字原样返回
+     * @param tone 是否返回声调
+     * @return 汉字返回拼音，非汉字原样返回
+     */
+    String getPinyin(char c, boolean tone);
 
     /**
      * 获取字符串对应的完整拼音，非中文返回原字符
@@ -60,7 +71,19 @@ public interface PinyinProvider extends Provider {
      * @param separator 拼音之间的分隔符
      * @return 拼音
      */
-    String getPinyin(String text, String separator);
+    default String getPinyin(final String text, final String separator) {
+        return getPinyin(text, separator, false);
+    }
+
+    /**
+     * 获取字符串对应的完整拼音，非中文返回原字符
+     *
+     * @param text      字符串
+     * @param separator 拼音之间的分隔符
+     * @param tone      是否返回声调
+     * @return 拼音
+     */
+    String getPinyin(String text, String separator, boolean tone);
 
     /**
      * 将输入字符串转为拼音首字母，其它字符原样返回
@@ -75,13 +98,13 @@ public interface PinyinProvider extends Provider {
     /**
      * 将输入字符串转为拼音首字母，其它字符原样返回
      *
-     * @param text      任意字符，汉字返回拼音，非汉字原样返回
+     * @param str       任意字符，汉字返回拼音，非汉字原样返回
      * @param separator 分隔符
      * @return 汉字返回拼音，非汉字原样返回
      */
-    default String getFirstLetter(final String text, final String separator) {
+    default String getFirstLetter(final String str, final String separator) {
         final String splitSeparator = StringKit.isEmpty(separator) ? Symbol.SHAPE : separator;
-        final List<String> split = CharsBacker.split(getPinyin(text, splitSeparator), splitSeparator);
+        final List<String> split = CharsBacker.split(getPinyin(str, splitSeparator), splitSeparator);
         return CollKit.join(split, separator, (s) -> String.valueOf(!s.isEmpty() ? s.charAt(0) : Normal.EMPTY));
     }
 

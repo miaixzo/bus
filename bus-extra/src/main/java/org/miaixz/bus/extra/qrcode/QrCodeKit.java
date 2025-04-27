@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -29,19 +29,19 @@ package org.miaixz.bus.extra.qrcode;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.Map;
 
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.io.file.FileName;
 import org.miaixz.bus.core.xyz.FileKit;
-import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.UrlKit;
 import org.miaixz.bus.extra.image.ImageKit;
+import org.miaixz.bus.extra.qrcode.render.AsciiArtRender;
+import org.miaixz.bus.extra.qrcode.render.BitMatrixRender;
+import org.miaixz.bus.extra.qrcode.render.ImageRender;
+import org.miaixz.bus.extra.qrcode.render.SVGRender;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.DecodeHintType;
@@ -130,44 +130,32 @@ public class QrCodeKit {
     /**
      * 生成二维码到文件，二维码图片格式取决于文件的扩展名
      *
-     * @param content  文本内容
-     * @param width    宽度（单位：类型为一般图片或SVG时，单位是像素，类型为 Ascii Art 字符画时，单位是字符▄或▀的大小）
-     * @param height   高度（单位：类型为一般图片或SVG时，单位是像素，类型为 Ascii Art 字符画时，单位是字符▄或▀的大小）
-     * @param destFile 目标文件，扩展名决定输出格式
+     * @param content    文本内容
+     * @param width      宽度（单位：类型为一般图片或SVG时，单位是像素，类型为 Ascii Art 字符画时，单位是字符▄或▀的大小）
+     * @param height     高度（单位：类型为一般图片或SVG时，单位是像素，类型为 Ascii Art 字符画时，单位是字符▄或▀的大小）
+     * @param targetFile 目标文件，扩展名决定输出格式
      * @return 目标文件
      */
-    public static File generate(final String content, final int width, final int height, final File destFile) {
-        return generate(content, QrConfig.of(width, height), destFile);
+    public static File generate(final String content, final int width, final int height, final File targetFile) {
+        return generate(content, QrConfig.of(width, height), targetFile);
     }
 
     /**
      * 生成二维码到文件，二维码图片格式取决于文件的扩展名
      *
-     * @param content  文本内容
-     * @param config   二维码配置，包括宽度、高度、边距、颜色等
-     * @param destFile 目标文件，扩展名决定输出格式
+     * @param content    文本内容
+     * @param config     二维码配置，包括宽度、高度、边距、颜色等
+     * @param targetFile 目标文件，扩展名决定输出格式
      * @return 目标文件
      */
-    public static File generate(final String content, final QrConfig config, final File destFile) {
-        final String extName = FileName.extName(destFile);
-        switch (extName) {
-        case QR_TYPE_SVG:
-            FileKit.writeUtf8String(generateAsSvg(content, config), destFile);
-            break;
-        case QR_TYPE_TXT:
-            FileKit.writeUtf8String(generateAsAsciiArt(content, config), destFile);
-            break;
-        default:
-            BufferedImage image = null;
-            try {
-                image = generate(content, config);
-                ImageKit.write(image, destFile);
-            } finally {
-                ImageKit.flush(image);
-            }
+    public static File generate(final String content, final QrConfig config, final File targetFile) {
+        final String extName = FileName.extName(targetFile);
+        try (final BufferedOutputStream outputStream = FileKit.getOutputStream(targetFile)) {
+            generate(content, config, extName, outputStream);
+        } catch (final IOException e) {
+            throw new RuntimeException(e);
         }
-
-        return destFile;
+        return targetFile;
     }
 
     /**
@@ -194,22 +182,18 @@ public class QrCodeKit {
      */
     public static void generate(final String content, final QrConfig config, final String imageType,
             final OutputStream out) {
+        final BitMatrixRender render;
         switch (imageType) {
         case QR_TYPE_SVG:
-            IoKit.write(out, false, generateAsSvg(content, config));
+            render = new SVGRender(config);
             break;
         case QR_TYPE_TXT:
-            IoKit.write(out, false, generateAsAsciiArt(content, config));
+            render = new AsciiArtRender(config);
             break;
         default:
-            BufferedImage img = null;
-            try {
-                img = generate(content, config);
-                ImageKit.write(img, imageType, out);
-            } finally {
-                ImageKit.flush(img);
-            }
+            render = new ImageRender(config, imageType);
         }
+        render.render(encode(content, config), out);
     }
 
     /**
@@ -232,7 +216,7 @@ public class QrCodeKit {
      * @return 二维码图片（黑白）
      */
     public static BufferedImage generate(final String content, final QrConfig config) {
-        return new QrImage(content, ObjectKit.defaultIfNull(config, QrConfig::new));
+        return new ImageRender(ObjectKit.defaultIfNull(config, QrConfig::new), null).render(encode(content, config));
     }
 
     /**
@@ -355,7 +339,9 @@ public class QrCodeKit {
      * @return SVG矢量图（字符串）
      */
     public static String toSVG(final BitMatrix matrix, final QrConfig config) {
-        return new QrSVG(matrix, config).toString();
+        final StringBuilder result = new StringBuilder();
+        new SVGRender(config).render(matrix, result);
+        return result.toString();
     }
 
     /**
@@ -372,12 +358,14 @@ public class QrCodeKit {
     /**
      * BitMatrix转ASCII Art字符画形式的二维码
      *
-     * @param bitMatrix BitMatrix
-     * @param qrConfig  QR设置
+     * @param matrix BitMatrix
+     * @param config QR设置
      * @return ASCII Art字符画形式的二维码
      */
-    public static String toAsciiArt(final BitMatrix bitMatrix, final QrConfig qrConfig) {
-        return new QrAsciiArt(bitMatrix, qrConfig).toString();
+    public static String toAsciiArt(final BitMatrix matrix, final QrConfig config) {
+        final StringBuilder result = new StringBuilder();
+        new AsciiArtRender(config).render(matrix, result);
+        return result.toString();
     }
 
     /**

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               ~
+ ~ Copyright (c) 2015-2025 miaixz.org OSHI and other contributors.               ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -290,10 +290,10 @@ public class WindowsOSProcess extends AbstractOSProcess {
     @Override
     public List<OSThread> getThreadDetails() {
         Map<Integer, ThreadPerformanceData.PerfCounterBlock> threads = tcb == null
-                ? ThreadPerformanceData.buildThreadMapFromPerfCounters(Collections.singleton(this.getProcessID()),
-                        this.getName(), -1)
+                ? queryMatchingThreads(Collections.singleton(this.getProcessID()))
                 : tcb;
         return threads.entrySet().stream().parallel()
+                .filter(entry -> entry.getValue().getOwningProcessID() == this.getProcessID())
                 .map(entry -> new WindowsOSThread(getProcessID(), entry.getKey(), this.name, entry.getValue()))
                 .collect(Collectors.toList());
     }
@@ -309,14 +309,21 @@ public class WindowsOSProcess extends AbstractOSProcess {
             pcb = ProcessPerformanceData.buildProcessMapFromPerfCounters(pids);
         }
         if (USE_PROCSTATE_SUSPENDED) {
-            this.tcb = ThreadPerformanceData.buildThreadMapFromRegistry(null);
-            // otherwise performance counters with WMI backup
-            if (this.tcb == null) {
-                this.tcb = ThreadPerformanceData.buildThreadMapFromPerfCounters(null);
-            }
+            this.tcb = queryMatchingThreads(pids);
         }
         Map<Integer, WtsInfo> wts = ProcessWtsData.queryProcessWtsMap(pids);
         return updateAttributes(pcb.get(this.getProcessID()), wts.get(this.getProcessID()));
+    }
+
+    private Map<Integer, ThreadPerformanceData.PerfCounterBlock> queryMatchingThreads(Set<Integer> pids) {
+        // fetch from registry
+        Map<Integer, ThreadPerformanceData.PerfCounterBlock> threads = ThreadPerformanceData
+                .buildThreadMapFromRegistry(pids);
+        // otherwise performance counters with WMI backup
+        if (threads == null) {
+            threads = ThreadPerformanceData.buildThreadMapFromPerfCounters(pids, this.getName(), -1);
+        }
+        return threads;
     }
 
     private List<String> queryArguments() {

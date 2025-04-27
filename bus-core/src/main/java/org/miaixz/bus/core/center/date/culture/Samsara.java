@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -127,6 +127,16 @@ public abstract class Samsara extends Loops {
      */
     protected int nextIndex(int n) {
         return indexOf(index + n);
+    }
+
+    /**
+     * 到目标索引的步数
+     *
+     * @param targetIndex 目标索引
+     * @return 步数
+     */
+    public int stepsTo(int targetIndex) {
+        return indexOf(targetIndex - index);
     }
 
 }

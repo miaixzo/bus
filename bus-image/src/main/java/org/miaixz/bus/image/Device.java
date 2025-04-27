@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -44,7 +44,7 @@ import javax.net.ssl.TrustManager;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.net.tls.TrustAnyTrustManager;
+import org.miaixz.bus.core.net.tls.AnyTrustManager;
 import org.miaixz.bus.image.galaxy.data.Code;
 import org.miaixz.bus.image.galaxy.data.Issuer;
 import org.miaixz.bus.image.metric.*;
@@ -1109,7 +1109,7 @@ public class Device implements Serializable {
         if (ret != null || keyStoreURL == null)
             return ret;
         String keyStorePin = keyStorePin();
-        km = ret = TrustAnyTrustManager.createKeyManager(Builder.replaceSystemProperties(keyStoreType()),
+        km = ret = AnyTrustManager.createKeyManager(Builder.replaceSystemProperties(keyStoreType()),
                 Builder.replaceSystemProperties(keyStoreURL), Builder.replaceSystemProperties(keyStorePin()),
                 Builder.replaceSystemProperties(keyPin(keyStorePin)));
         return ret;
@@ -1165,10 +1165,10 @@ public class Device implements Serializable {
             return ret;
 
         tm = ret = trustStoreURL != null
-                ? TrustAnyTrustManager.createTrustManager(Builder.replaceSystemProperties(trustStoreType()),
+                ? AnyTrustManager.createTrustManager(Builder.replaceSystemProperties(trustStoreType()),
                         Builder.replaceSystemProperties(trustStoreURL),
                         Builder.replaceSystemProperties(trustStorePin()))
-                : TrustAnyTrustManager.createTrustManager(getAllAuthorizedNodeCertificates());
+                : AnyTrustManager.createTrustManager(getAllAuthorizedNodeCertificates());
         return ret;
     }
 

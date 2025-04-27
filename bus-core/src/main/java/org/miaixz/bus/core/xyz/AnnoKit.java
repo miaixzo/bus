@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -170,6 +170,27 @@ public class AnnoKit {
     public static <A extends Annotation> A getAnnotation(final AnnotatedElement annotationEle,
             final Class<A> annotationType) {
         return (null == annotationEle) ? null : toCombination(annotationEle).getAnnotation(annotationType);
+    }
+
+    /**
+     * 检查是否包含指定注解 注解类传入全名，通过{@link Class#forName(String)}加载，避免不存在的注解导致的ClassNotFoundException
+     *
+     * @param annotationEle      {@link AnnotatedElement}，可以是Class、Method、Field、Constructor、ReflectPermission
+     * @param annotationTypeName 注解类型完整类名
+     * @return 是否包含指定注解
+     */
+    public static boolean hasAnnotation(final AnnotatedElement annotationEle, final String annotationTypeName) {
+        Class aClass = null;
+        try {
+            // Android可能无这个类
+            aClass = Class.forName(annotationTypeName);
+        } catch (final ClassNotFoundException e) {
+            // ignore
+        }
+        if (null != aClass) {
+            return hasAnnotation(annotationEle, aClass);
+        }
+        return false;
     }
 
     /**

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -227,7 +227,6 @@ public class ExcelWriter extends ExcelBase<ExcelWriter, ExcelWriteConfig> {
     /**
      * 关闭工作簿 如果用户设定了目标文件，先写出目标文件后给关闭工作簿
      */
-    @SuppressWarnings("resource")
     @Override
     public void close() {
         if (null != this.targetFile) {

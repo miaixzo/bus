@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -96,6 +96,19 @@ public class ExceptionKit {
      */
     public static RuntimeException wrapRuntime(final String message) {
         return new RuntimeException(message);
+    }
+
+    /**
+     * 将指定的异常与消息包装为运行时异常
+     *
+     * @param throwable 异常
+     * @param message   异常消息
+     * @param params    参数值
+     * @return 运行时异常
+     */
+    public static RuntimeException wrapRuntime(final Throwable throwable, final String message,
+            final Object... params) {
+        return new RuntimeException(StringKit.format(message, params), throwable);
     }
 
     /**

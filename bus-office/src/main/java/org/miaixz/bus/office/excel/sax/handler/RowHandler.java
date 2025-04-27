@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -30,6 +30,7 @@ package org.miaixz.bus.office.excel.sax.handler;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.miaixz.bus.core.lang.exception.TerminateException;
 
 /**
  * Sax方式读取Excel行处理器
@@ -41,7 +42,7 @@ import org.apache.poi.ss.usermodel.CellStyle;
 public interface RowHandler {
 
     /**
-     * 处理一行数据
+     * 处理一行数据， 如果想结束读取，抛出 {@link TerminateException} 即可
      *
      * @param sheetIndex 当前Sheet序号
      * @param rowIndex   当前行号，从0开始计数
@@ -50,7 +51,7 @@ public interface RowHandler {
     void handle(int sheetIndex, long rowIndex, List<Object> rowCells);
 
     /**
-     * 处理一个单元格的数据
+     * 处理一个单元格的数据，如果想结束读取，抛出 {@link TerminateException} 即可
      *
      * @param sheetIndex    当前Sheet序号
      * @param rowIndex      当前行号

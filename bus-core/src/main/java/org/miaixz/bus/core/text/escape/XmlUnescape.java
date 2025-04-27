@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -42,10 +42,6 @@ public class XmlUnescape extends ReplacerChain {
      * 基础反转义符
      */
     protected static final String[][] BASIC_UNESCAPE = invert(XmlEscape.BASIC_ESCAPE);
-    /**
-     * 特定字符反转义
-     */
-    protected static final String[][] OTHER_UNESCAPE = new String[][] { new String[] { "&apos;", "'" } };
     private static final long serialVersionUID = -1L;
 
     /**
@@ -54,7 +50,6 @@ public class XmlUnescape extends ReplacerChain {
     public XmlUnescape() {
         addChain(new LookupReplacer(BASIC_UNESCAPE));
         addChain(new NumericEntityUnescaper());
-        addChain(new LookupReplacer(OTHER_UNESCAPE));
     }
 
     /**

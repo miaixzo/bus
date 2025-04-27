@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -139,7 +139,17 @@ public class CharsBacker extends CharsValidator {
     }
 
     /**
-     * <p>
+     * 当给定字符串为空字符串时，转换为{@code null}
+     *
+     * @param <T>  字符串类型
+     * @param text 被转换的字符串
+     * @return 转换后的字符串
+     */
+    public static <T extends CharSequence> T nullIfBlank(final T text) {
+        return isBlank(text) ? null : text;
+    }
+
+    /**
      * 如果给定字符串为{@code null}返回默认值
      * 
      * <pre>{@code
@@ -1386,21 +1396,7 @@ public class CharsBacker extends CharsValidator {
      * @return 切分后的数组
      */
     public static String[] cut(final CharSequence text, final int partLength) {
-        if (null == text) {
-            return null;
-        }
-        final int len = text.length();
-        if (len < partLength) {
-            return new String[] { text.toString() };
-        }
-        final int part = MathKit.count(len, partLength);
-        final String[] array = new String[part];
-
-        final String text2 = text.toString();
-        for (int i = 0; i < part; i++) {
-            array[i] = text2.substring(i * partLength, (i == part - 1) ? len : (partLength + i * partLength));
-        }
-        return array;
+        return CharsBacker.splitByLength(text, partLength);
     }
 
     /**
@@ -3359,6 +3355,64 @@ public class CharsBacker extends CharsValidator {
      */
     public static <T extends CharSequence> T firstNonBlank(final T... args) {
         return ArrayKit.firstMatch(CharsBacker::isNotBlank, args);
+    }
+
+    /**
+     * 将字符串转为小写
+     *
+     * @param text 被转的字符串
+     * @return 转换后的字符串
+     * @see String#toLowerCase()
+     */
+    public static String toLoweCase(final CharSequence text) {
+        return toLoweCase(text, Locale.getDefault());
+    }
+
+    /**
+     * 将字符串转为小写
+     *
+     * @param text   被转的字符串
+     * @param locale Locale
+     * @return 转换后的字符串
+     * @see String#toLowerCase()
+     */
+    public static String toLoweCase(final CharSequence text, final Locale locale) {
+        if (null == text) {
+            return null;
+        }
+        if (0 == text.length()) {
+            return Normal.EMPTY;
+        }
+        return text.toString().toLowerCase(locale);
+    }
+
+    /**
+     * 将字符串转为大写
+     *
+     * @param text 被转的字符串
+     * @return 转换后的字符串
+     * @see String#toUpperCase()
+     */
+    public static String toUpperCase(final CharSequence text) {
+        return toUpperCase(text, Locale.getDefault());
+    }
+
+    /**
+     * 将字符串转为大写
+     *
+     * @param text   被转的字符串
+     * @param locale Locale
+     * @return 转换后的字符串
+     * @see String#toUpperCase()
+     */
+    public static String toUpperCase(final CharSequence text, final Locale locale) {
+        if (null == text) {
+            return null;
+        }
+        if (0 == text.length()) {
+            return Normal.EMPTY;
+        }
+        return text.toString().toUpperCase();
     }
 
     /**

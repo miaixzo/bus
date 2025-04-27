@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.CrontabException;
 import org.miaixz.bus.core.text.CharsBacker;
 import org.miaixz.bus.cron.pattern.Part;
@@ -75,7 +76,8 @@ public class PatternParser {
      * @return {@link List}
      */
     private static List<PatternMatcher> parseGroupPattern(final String groupPattern) {
-        final List<String> patternList = CharsBacker.splitTrim(groupPattern, "|");
+        Assert.notBlank(groupPattern, "Cron expression must not be empty!");
+        final List<String> patternList = CharsBacker.splitTrim(groupPattern, Symbol.OR);
         final List<PatternMatcher> patternMatchers = new ArrayList<>(patternList.size());
         for (final String pattern : patternList) {
             patternMatchers.add(parseSingle(pattern));

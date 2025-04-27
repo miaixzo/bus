@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,13 +27,17 @@
 */
 package org.miaixz.bus.oauth;
 
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
+import org.miaixz.bus.core.codec.binary.Base64;
+import org.miaixz.bus.core.lang.Algorithm;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
@@ -41,6 +45,7 @@ import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.MapKit;
+import org.miaixz.bus.core.xyz.RandomKit;
 import org.miaixz.bus.core.xyz.StringKit;
 
 import lombok.Getter;
@@ -74,28 +79,6 @@ public class Builder {
     }
 
     /**
-     * map转字符串，转换后的字符串格式为 {@code xxx=xxx&xxx=xxx}
-     *
-     * @param map    待转换的map
-     * @param encode 是否转码
-     * @return the {@link String}
-     */
-    public static String parseMapToString(Map<String, String> map, boolean encode) {
-        if (null == map || map.isEmpty()) {
-            return Normal.EMPTY;
-        }
-        List<String> paramList = new ArrayList<>();
-        map.forEach((k, v) -> {
-            if (null == v) {
-                paramList.add(k + Symbol.EQUAL);
-            } else {
-                paramList.add(k + Symbol.EQUAL + (encode ? UrlEncoder.encodeAll(v) : v));
-            }
-        });
-        return String.join(Symbol.AND, paramList);
-    }
-
-    /**
      * string字符串转map，str格式为 {@code xxx=xxx&xxx=xxx}
      *
      * @param text 待转换的字符串
@@ -120,6 +103,28 @@ public class Builder {
     }
 
     /**
+     * map转字符串，转换后的字符串格式为 {@code xxx=xxx&xxx=xxx}
+     *
+     * @param map    待转换的map
+     * @param encode 是否转码
+     * @return the {@link String}
+     */
+    public static String parseMapToString(Map<String, String> map, boolean encode) {
+        if (null == map || map.isEmpty()) {
+            return Normal.EMPTY;
+        }
+        List<String> paramList = new ArrayList<>();
+        map.forEach((k, v) -> {
+            if (null == v) {
+                paramList.add(k + Symbol.EQUAL);
+            } else {
+                paramList.add(k + Symbol.EQUAL + (encode ? UrlEncoder.encodeAll(v) : v));
+            }
+        });
+        return String.join(Symbol.AND, paramList);
+    }
+
+    /**
      * 签名
      *
      * @param key       key
@@ -137,6 +142,39 @@ public class Builder {
         } catch (InvalidKeyException ex) {
             throw new AuthorizedException("Invalid key: " + ArrayKit.toString(key), ex);
         }
+    }
+
+    public static String codeVerifier() {
+        return Base64.encodeUrlSafe(RandomKit.randomString(50));
+    }
+
+    /**
+     * 适用于 OAuth 2.0 PKCE 增强协议
+     *
+     * @param codeChallengeMethod s256 / plain
+     * @param codeVerifier        客户端生产的校验码
+     * @return code challenge
+     */
+    public static String codeChallenge(String codeChallengeMethod, String codeVerifier) {
+        if (Algorithm.SHA256.getValue().equalsIgnoreCase(codeChallengeMethod)) {
+            // https://tools.ietf.org/html/rfc7636#section-4.2
+            // code_challenge = BASE64URL-ENCODE(SHA256(ASCII(code_verifier)))
+            return new String(Base64.encode(digest(codeVerifier), true), StandardCharsets.US_ASCII);
+        } else {
+            return codeVerifier;
+        }
+    }
+
+    public static byte[] digest(String str) {
+        MessageDigest messageDigest;
+        try {
+            messageDigest = MessageDigest.getInstance(Algorithm.SHA256.getValue());
+            messageDigest.update(str.getBytes(StandardCharsets.UTF_8));
+            return messageDigest.digest();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
@@ -158,7 +196,7 @@ public class Builder {
         if (MapKit.isEmpty(this.params)) {
             return this.baseUrl;
         }
-        String baseUrl = StringKit.appendIfMissing(this.baseUrl, "?", Symbol.AND);
+        String baseUrl = StringKit.appendIfMissing(this.baseUrl, Symbol.QUESTION_MARK, Symbol.AND);
         String paramString = parseMapToString(this.params, encode);
         return baseUrl + paramString;
     }

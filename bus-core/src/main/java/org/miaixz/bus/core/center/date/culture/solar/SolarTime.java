@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -29,6 +29,7 @@ package org.miaixz.bus.core.center.date.culture.solar;
 
 import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.cn.JulianDay;
+import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycleHour;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarDay;
 import org.miaixz.bus.core.center.date.culture.lunar.LunarHour;
 
@@ -276,13 +277,22 @@ public class SolarTime extends Loops {
     }
 
     /**
-     * 时辰
+     * 农历时辰
      *
      * @return 农历时辰
      */
     public LunarHour getLunarHour() {
         LunarDay d = day.getLunarDay();
         return LunarHour.fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), hour, minute, second);
+    }
+
+    /**
+     * 干支时辰
+     *
+     * @return 干支时辰
+     */
+    public SixtyCycleHour getSixtyCycleHour() {
+        return SixtyCycleHour.fromSolarTime(this);
     }
 
 }

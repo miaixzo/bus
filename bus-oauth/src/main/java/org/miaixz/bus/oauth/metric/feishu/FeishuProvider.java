@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -98,7 +98,7 @@ public class FeishuProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         JSONObject requestObject = new JSONObject();
         requestObject.put("app_access_token", this.getAppAccessToken());
         requestObject.put("grant_type", "authorization_code");
@@ -108,7 +108,7 @@ public class FeishuProvider extends AbstractProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         String accessToken = accToken.getAccessToken();
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);

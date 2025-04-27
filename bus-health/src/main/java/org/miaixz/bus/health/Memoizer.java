@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               ~
+ ~ Copyright (c) 2015-2025 miaixz.org OSHI and other contributors.               ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -47,6 +47,10 @@ public final class Memoizer {
 
     private static long queryExpirationConfig() {
         return TimeUnit.MILLISECONDS.toNanos(Config.get(Config._UTIL_MEMOIZER_EXPIRATION, 300));
+    }
+
+    public static long installedAppsExpiration() {
+        return TimeUnit.MINUTES.toNanos(1);
     }
 
     /**

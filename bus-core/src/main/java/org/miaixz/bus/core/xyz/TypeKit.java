@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -31,7 +31,7 @@ import java.lang.reflect.*;
 import java.util.*;
 
 import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.lang.reflect.ActualTypeMapperPool;
+import org.miaixz.bus.core.lang.reflect.ActualTypeMapper;
 import org.miaixz.bus.core.lang.reflect.ParameterizedTypeImpl;
 import org.miaixz.bus.core.lang.reflect.TypeReference;
 
@@ -833,7 +833,7 @@ public class TypeKit {
      * @return 泛型对应关系Map
      */
     public static Map<Type, Type> getTypeMap(final Class<?> clazz) {
-        return ActualTypeMapperPool.get(clazz);
+        return ActualTypeMapper.get(clazz);
     }
 
     /**
@@ -858,7 +858,7 @@ public class TypeKit {
      *     2. 泛型变量，类似于T
      * </pre>
      *
-     * @param type         类
+     * @param type         泛型类
      * @param typeVariable 泛型变量，例如T等
      * @return 实际类型，可能为Class等
      */
@@ -869,6 +869,11 @@ public class TypeKit {
 
         if (typeVariable instanceof TypeVariable) {
             return getActualType(type, (TypeVariable<?>) typeVariable);
+        }
+
+        // 解决泛型数组泛型类型无法识别问题
+        if (typeVariable instanceof GenericArrayType) {
+            return ActualTypeMapper.getActualType(type, (GenericArrayType) typeVariable);
         }
 
         // 没有需要替换的泛型变量，原样输出
@@ -883,7 +888,7 @@ public class TypeKit {
      * @return 实际类型，可能为Class等
      */
     public static Type getActualType(final Type type, final TypeVariable<?> typeVariable) {
-        return ObjectKit.defaultIfNull(ActualTypeMapperPool.getActualType(type, typeVariable), typeVariable);
+        return ObjectKit.defaultIfNull(ActualTypeMapper.getActualType(type, typeVariable), typeVariable);
     }
 
     /**
@@ -918,7 +923,7 @@ public class TypeKit {
      * @return 实际类型数组，可能为Class等
      */
     public static Type[] getActualTypes(final Type type, final Type... typeVariables) {
-        return ActualTypeMapperPool.getActualTypes(type, typeVariables);
+        return ActualTypeMapper.getActualTypes(type, typeVariables);
     }
 
     /**

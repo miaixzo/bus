@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -741,18 +741,18 @@ public class UrlKit {
                     pos = i + 1;
                 }
             } else if (c == Symbol.C_AND) { // 参数对的分界点
-                if (pos != i) {
-                    if (null == name) {
-                        // 对于像&a&这类无参数值的字符串，我们将name为a的值设为""
+                if (null == name) {
+                    // 对于像&a&这类无参数值的字符串，我们将name为a的值设为""
+                    if (pos != i) {
                         name = queryPart.substring(pos, i);
                         builder.append(RFC3986.QUERY_PARAM_NAME.encode(name, charset)).append(Symbol.C_EQUAL);
-                    } else {
-                        builder.append(RFC3986.QUERY_PARAM_NAME.encode(name, charset)).append(Symbol.C_EQUAL)
-                                .append(RFC3986.QUERY_PARAM_VALUE.encode(queryPart.substring(pos, i), charset))
-                                .append(Symbol.C_AND);
                     }
-                    name = null;
+                } else {
+                    builder.append(RFC3986.QUERY_PARAM_NAME.encode(name, charset)).append(Symbol.C_EQUAL)
+                            .append(RFC3986.QUERY_PARAM_VALUE.encode(queryPart.substring(pos, i), charset))
+                            .append(Symbol.C_AND);
                 }
+                name = null;
                 pos = i + 1;
             }
         }
@@ -807,7 +807,7 @@ public class UrlKit {
 
         final Map<String, List<String>> params = new LinkedHashMap<>();
         queryMap.forEach((key, value) -> {
-            if (null != key && null != value) {
+            if (null != key) {
                 final List<String> values = params.computeIfAbsent(key.toString(), k -> new ArrayList<>(1));
                 // 一般是一个参数
                 values.add(StringKit.toStringOrNull(value));

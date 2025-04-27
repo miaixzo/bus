@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               ~
+ ~ Copyright (c) 2015-2025 miaixz.org OSHI and other contributors.               ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -67,6 +67,8 @@ public final class ProcPath {
     public static final String PID_STATM = PROC + "/%d/statm";
     public static final String PID_STATUS = PROC + "/%d/status";
     public static final String SELF_STAT = PROC + "/self/stat";
+    public static final String SNMP = NET + "/snmp";
+    public static final String SNMP6 = NET + "/snmp6";
     public static final String STAT = PROC + "/stat";
     public static final String SYS_FS_FILE_NR = PROC + "/sys/fs/file-nr";
     public static final String SYS_FS_FILE_MAX = PROC + "/sys/fs/file-max";

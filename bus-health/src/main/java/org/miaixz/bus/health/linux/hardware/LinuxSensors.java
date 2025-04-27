@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org OSHI and other contributors.               ~
+ ~ Copyright (c) 2015-2025 miaixz.org OSHI and other contributors.               ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -32,10 +32,14 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.function.ToIntFunction;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
 import org.miaixz.bus.health.Builder;
+import org.miaixz.bus.health.Config;
 import org.miaixz.bus.health.Executor;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.hardware.common.AbstractSensors;
@@ -50,6 +54,11 @@ import org.miaixz.bus.health.linux.SysPath;
 @ThreadSafe
 final class LinuxSensors extends AbstractSensors {
 
+    private static final List<String> THERMAL_ZONE_TYPE_PRIORITY = Stream
+            .of(Config.get(Config._LINUX_THERMAL_ZONE_TYPE_PRIORITY, "").split(",")).filter((s) -> !s.isEmpty())
+            .collect(Collectors.toList());
+
+    private static final String TYPE = "type";
     // Possible sensor types. See sysfs documentation for others, e.g. current
     private static final String TEMP = "temp";
     private static final String FAN = "fan";
@@ -114,22 +123,48 @@ final class LinuxSensors extends AbstractSensors {
     }
 
     /**
-     * Find all sensor files in a specific path and adds them to the hwmonMap
+     * Find all sensor files in a specific path and adds them to the sensorsMap
      *
      * @param sensorPath       A string containing the sensor path
      * @param sensor           A string containing the sensor
      * @param sensorFileFilter A FileFilter for detecting valid sensor files
      */
     private void getSensorFilesFromPath(String sensorPath, String sensor, FileFilter sensorFileFilter) {
+        getSensorFilesFromPath(sensorPath, sensor, sensorFileFilter, (files) -> 0);
+    }
+
+    /**
+     * Find all sensor files in a specific path and adds them to the sensorsMap
+     *
+     * @param sensorPath       A string containing the sensor path
+     * @param sensor           A string containing the sensor
+     * @param sensorFileFilter A FileFilter for detecting valid sensor files
+     * @param prioritizer      A callback to prioritize between multiple sensors
+     */
+    private void getSensorFilesFromPath(String sensorPath, String sensor, FileFilter sensorFileFilter,
+            ToIntFunction<File[]> prioritizer) {
+        String selectedPath = null;
+        int selectedPriority = Integer.MAX_VALUE;
+
         int i = 0;
         while (Paths.get(sensorPath + i).toFile().isDirectory()) {
             String path = sensorPath + i;
             File dir = new File(path);
             File[] matchingFiles = dir.listFiles(sensorFileFilter);
+
             if (matchingFiles != null && matchingFiles.length > 0) {
-                this.sensorsMap.put(sensor, String.format(Locale.ROOT, "%s/%s", path, sensor));
+                int priority = prioritizer.applyAsInt(matchingFiles);
+
+                if (priority < selectedPriority) {
+                    selectedPriority = priority;
+                    selectedPath = path;
+                }
             }
             i++;
+        }
+
+        if (selectedPath != null) {
+            this.sensorsMap.put(sensor, String.format(Locale.ROOT, "%s/%s", selectedPath, sensor));
         }
     }
 
@@ -156,7 +191,10 @@ final class LinuxSensors extends AbstractSensors {
      * Iterate over all thermal_zone* directories and look for sensor files, e.g., /sys/class/thermal/thermal_zone0/temp
      */
     private void populateSensorsMapFromThermalZone() {
-        getSensorFilesFromPath(THERMAL_ZONE_PATH, TEMP, f -> f.getName().equals(TEMP));
+        getSensorFilesFromPath(THERMAL_ZONE_PATH, TEMP, f -> f.getName().equals(TYPE) || f.getName().equals(TEMP),
+                files -> Stream.of(files).filter(f -> TYPE.equals(f.getName())).findFirst().map(File::getPath)
+                        .map(Builder::getStringFromFile).map(THERMAL_ZONE_TYPE_PRIORITY::indexOf)
+                        .filter((index) -> index >= 0).orElse(THERMAL_ZONE_TYPE_PRIORITY.size()));
     }
 
     @Override

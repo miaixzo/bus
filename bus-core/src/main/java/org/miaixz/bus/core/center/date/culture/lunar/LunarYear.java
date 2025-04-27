@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.miaixz.bus.core.center.date.culture.Loops;
+import org.miaixz.bus.core.center.date.culture.Vesta;
 import org.miaixz.bus.core.center.date.culture.cn.Direction;
 import org.miaixz.bus.core.center.date.culture.cn.Twenty;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
@@ -45,6 +46,11 @@ import org.miaixz.bus.core.center.date.culture.cn.star.nine.NineStar;
  * @since Java 17+
  */
 public class LunarYear extends Loops {
+
+    /**
+     * 年
+     */
+    protected int year;
 
     /**
      * 缓存{闰月:年}
@@ -76,11 +82,6 @@ public class LunarYear extends Loops {
         }
     }
 
-    /**
-     * 年
-     */
-    protected int year;
-
     public LunarYear(int year) {
         if (year < -1 || year > 9999) {
             throw new IllegalArgumentException(String.format("illegal lunar year: %d", year));
@@ -108,12 +109,12 @@ public class LunarYear extends Loops {
     }
 
     /**
-     * 月数
+     * 干支
      *
-     * @return 月数
+     * @return 干支
      */
-    public int getMonthCount() {
-        return getLeapMonth() > 0 ? 13 : 12;
+    public SixtyCycle getSixtyCycle() {
+        return SixtyCycle.fromIndex(year - 4);
     }
 
     /**
@@ -130,42 +131,21 @@ public class LunarYear extends Loops {
     }
 
     /**
+     * 月数
+     *
+     * @return 月数
+     */
+    public int getMonthCount() {
+        return getLeapMonth() > 0 ? 13 : 12;
+    }
+
+    /**
      * 依据国家标准《农历的编算和颁行》GB/T 33661-2017，农历年有2种命名方法：干支纪年法和生肖纪年法，这里默认采用干支纪年法。
      *
      * @return 名称
      */
     public String getName() {
         return String.format("农历%s年", getSixtyCycle());
-    }
-
-    public LunarYear next(int n) {
-        return fromYear(year + n);
-    }
-
-    /**
-     * 闰月
-     *
-     * @return 闰月数字，1代表闰1月，0代表无闰月
-     */
-    public int getLeapMonth() {
-        if (year == -1) {
-            return 11;
-        }
-        for (Map.Entry<Integer, List<Integer>> entry : LEAP.entrySet()) {
-            if (entry.getValue().contains(year)) {
-                return entry.getKey();
-            }
-        }
-        return 0;
-    }
-
-    /**
-     * 干支
-     *
-     * @return 干支
-     */
-    public SixtyCycle getSixtyCycle() {
-        return SixtyCycle.fromIndex(year - 4);
     }
 
     /**
@@ -196,6 +176,36 @@ public class LunarYear extends Loops {
                 new int[] { 0, 7, 7, 2, 3, 3, 8, 1, 1, 6, 0, 0 }[getSixtyCycle().getEarthBranch().getIndex()]);
     }
 
+    public LunarYear next(int n) {
+        return fromYear(year + n);
+    }
+
+    /**
+     * 闰月
+     *
+     * @return 闰月数字，1代表闰1月，0代表无闰月
+     */
+    public int getLeapMonth() {
+        if (year == -1) {
+            return 11;
+        }
+        for (Map.Entry<Integer, List<Integer>> entry : LEAP.entrySet()) {
+            if (entry.getValue().contains(year)) {
+                return entry.getKey();
+            }
+        }
+        return 0;
+    }
+
+    /**
+     * 首月（农历月，即一月，俗称正月）
+     *
+     * @return 农历月
+     */
+    public LunarMonth getFirstMonth() {
+        return LunarMonth.fromYm(year, 1);
+    }
+
     /**
      * 月份列表
      *
@@ -203,12 +213,21 @@ public class LunarYear extends Loops {
      */
     public List<LunarMonth> getMonths() {
         List<LunarMonth> l = new ArrayList<>(13);
-        LunarMonth m = LunarMonth.fromYm(year, 1);
+        LunarMonth m = getFirstMonth();
         while (m.getYear() == year) {
             l.add(m);
             m = m.next(1);
         }
         return l;
+    }
+
+    /**
+     * 灶马头
+     *
+     * @return 灶马头
+     */
+    public Vesta getVesta() {
+        return Vesta.fromLunarYear(year);
     }
 
 }

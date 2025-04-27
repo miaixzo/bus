@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -66,6 +66,11 @@ public class Context {
      * ID（原微软AAD）中的租户 ID 5. 喜马拉雅客户端包名，如果 {@link Context#type} 为1或2时必填。1-对Android客户端是包名，2-对IOS客户端是Bundle ID
      */
     private String unionId;
+
+    /**
+     * 扩展ID
+     */
+    private String extId;
 
     /**
      * 设备ID, 设备唯一标识ID
@@ -137,5 +142,22 @@ public class Context {
      * @see <a href="https://developer.apple.com/help/glossary/team-id/">team id</a>
      */
     private String teamId;
+
+    /**
+     * 新版企业微信 Web 登录时的参数，
+     *
+     * 登录类型。ServiceApp：服务商登录；CorpApp：企业自建/代开发应用登录。
+     * 
+     * @see <a href=
+     *      "https://developer.work.weixin.qq.com/document/path/98152">https://developer.work.weixin.qq.com/document/path/98152</a>
+     */
+    private String loginType = "CorpApp";
+
+    /**
+     * 企业微信平台的语言编码
+     *
+     * @since 1.16.7
+     */
+    private String lang = "zh";
 
 }

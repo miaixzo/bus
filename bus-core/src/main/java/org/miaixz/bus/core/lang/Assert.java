@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -709,7 +709,7 @@ public class Assert {
     }
 
     /**
-     * 断言给定对象是否是给定类的实例
+     * 断言给定对象是否是给定类的实例，如果不是则抛出异常, 此方法用于限定对象的类型
      * 
      * <pre class="code">
      * Assert.instanceOf(Foo.class, foo);
@@ -727,7 +727,7 @@ public class Assert {
     }
 
     /**
-     * 断言给定对象是否是给定类的实例
+     * 断言给定对象是否是给定类的实例, 此方法用于限定对象的类型
      * 
      * <pre class="code">
      * Assert.instanceOf(Foo.class, foo, "foo must be an instance of class Foo");
@@ -749,6 +749,49 @@ public class Assert {
             throw new IllegalArgumentException(StringKit.format(errorMsgTemplate, params));
         }
         return object;
+    }
+
+    /**
+     * 断言给定对象不是否是给定类的实例，如果是则抛出异常, 此方法用于排除给定类型
+     * 
+     * <pre class="code">
+     * Assert.isNotInstanceOf(Foo.class, foo);
+     * </pre>
+     *
+     * @param <T>  被检查对象泛型类型
+     * @param type 被检查对象匹配的类型
+     * @param obj  被检查对象
+     * @return 被检查的对象
+     * @throws IllegalArgumentException if the object is not an instance of clazz
+     * @see Class#isInstance(Object)
+     */
+    public static <T> T isNotInstanceOf(final Class<?> type, final T obj) {
+        return isNotInstanceOf(type, obj, "Object [{}] must be not instanceof [{}]", obj, type);
+    }
+
+    /**
+     * 断言给定对象是否不是给定类的实例，如果是则抛出异常, 此方法用于排除给定类型
+     * 
+     * <pre class="code">
+     * Assert.isNotInstanceOf(Foo.class, foo, "foo must be not an Foo");
+     * </pre>
+     *
+     * @param <T>              被检查对象泛型类型
+     * @param type             被检查对象匹配的类型
+     * @param obj              被检查对象
+     * @param errorMsgTemplate 异常时的消息模板
+     * @param params           参数列表
+     * @return 被检查对象
+     * @throws IllegalArgumentException if the object is an instance of clazz
+     * @see Class#isInstance(Object)
+     */
+    public static <T> T isNotInstanceOf(final Class<?> type, final T obj, final String errorMsgTemplate,
+            final Object... params) throws IllegalArgumentException {
+        notNull(type, "Type to check against must not be null");
+        if (type.isInstance(obj)) {
+            throw new IllegalArgumentException(StringKit.format(errorMsgTemplate, params));
+        }
+        return obj;
     }
 
     /**

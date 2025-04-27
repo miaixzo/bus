@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -69,25 +69,6 @@ public class UrlPath {
      */
     public static UrlPath of(final CharSequence pathStr, final Charset charset) {
         return of().parse(pathStr, charset);
-    }
-
-    /**
-     * 修正路径，包括去掉前后的/，去掉空白符
-     *
-     * @param path 节点或路径path
-     * @return 修正后的路径
-     */
-    private static String fixPath(final CharSequence path) {
-        Assert.notNull(path, "Path segment must be not null!");
-        if ("/".contentEquals(path)) {
-            return Normal.EMPTY;
-        }
-
-        String segmentStr = StringKit.trim(path);
-        segmentStr = StringKit.removePrefix(segmentStr, Symbol.SLASH);
-        segmentStr = StringKit.removeSuffix(segmentStr, Symbol.SLASH);
-        segmentStr = StringKit.trim(segmentStr);
-        return segmentStr;
     }
 
     /**
@@ -228,6 +209,25 @@ public class UrlPath {
         } else {
             this.segments.add(segment);
         }
+    }
+
+    /**
+     * 修正路径，包括去掉前后的/，去掉空白符
+     *
+     * @param path 节点或路径path
+     * @return 修正后的路径
+     */
+    private static String fixPath(final CharSequence path) {
+        Assert.notNull(path, "Path segment must be not null!");
+        if ("/".contentEquals(path)) {
+            return Normal.EMPTY;
+        }
+
+        String segmentStr = StringKit.trim(path);
+        segmentStr = StringKit.removePrefix(segmentStr, Symbol.SLASH);
+        segmentStr = StringKit.removeSuffix(segmentStr, Symbol.SLASH);
+        segmentStr = StringKit.trim(segmentStr);
+        return segmentStr;
     }
 
 }

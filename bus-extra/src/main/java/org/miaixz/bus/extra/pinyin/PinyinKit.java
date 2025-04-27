@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -69,6 +69,17 @@ public class PinyinKit {
     }
 
     /**
+     * 如果c为汉字，则返回大写拼音；如果c不是汉字，则返回String.valueOf(c)
+     *
+     * @param c    任意字符，汉字返回拼音，非汉字原样返回
+     * @param tone 是否保留声调
+     * @return 汉字返回拼音，非汉字原样返回
+     */
+    public static String getPinyin(final char c, final boolean tone) {
+        return getEngine().getPinyin(c, tone);
+    }
+
+    /**
      * 将输入字符串转为拼音，每个字之间的拼音使用空格分隔
      *
      * @param text 任意字符，汉字返回拼音，非汉字原样返回
@@ -76,6 +87,17 @@ public class PinyinKit {
      */
     public static String getPinyin(final String text) {
         return getPinyin(text, Symbol.SPACE);
+    }
+
+    /**
+     * 将输入字符串转为拼音，每个字之间的拼音使用空格分隔
+     *
+     * @param text 任意字符，汉字返回拼音，非汉字原样返回
+     * @param tone 是否保留声调
+     * @return 汉字返回拼音，非汉字原样返回
+     */
+    public static String getPinyin(final String text, final boolean tone) {
+        return getPinyin(text, Symbol.SPACE, tone);
     }
 
     /**
@@ -87,6 +109,18 @@ public class PinyinKit {
      */
     public static String getPinyin(final String text, final String separator) {
         return getEngine().getPinyin(text, separator);
+    }
+
+    /**
+     * 将输入字符串转为拼音，以字符为单位插入分隔符
+     *
+     * @param text      任意字符，汉字返回拼音，非汉字原样返回
+     * @param separator 每个字拼音之间的分隔符
+     * @param tone      是否保留声调
+     * @return 汉字返回拼音，非汉字原样返回
+     */
+    public static String getPinyin(final String text, final String separator, final boolean tone) {
+        return getEngine().getPinyin(text, separator, tone);
     }
 
     /**

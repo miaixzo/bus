@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -77,7 +77,7 @@ public class AppleProvider extends AbstractProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         if (!StringKit.isEmpty(callback.getError())) {
             throw new AuthorizedException(callback.getError());
         }
@@ -101,7 +101,7 @@ public class AppleProvider extends AbstractProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken authToken) {
+    public Material getUserInfo(AccToken authToken) {
         Base64.Decoder urlDecoder = Base64.getUrlDecoder();
         String[] idToken = authToken.getIdToken().split("\\.");
         String payload = new String(urlDecoder.decode(idToken[1]));

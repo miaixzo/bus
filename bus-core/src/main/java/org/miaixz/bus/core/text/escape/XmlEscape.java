@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -49,8 +49,7 @@ public class XmlEscape extends ReplacerChain {
     /**
      * XML转义字符
      */
-    protected static final String[][] BASIC_ESCAPE = {
-            // {"'", "&apos;"}, // " - single-quote
+    protected static final String[][] BASIC_ESCAPE = { { "'", "&apos;" }, // " - single-quote
             { "\"", "&quot;" }, // " - double-quote
             { Symbol.AND, "&amp;" }, // & - ampersand
             { "<", "&lt;" }, // < - less-than

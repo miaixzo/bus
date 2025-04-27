@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -87,8 +87,6 @@ public class ValueToBeanCopier<T> extends AbstractCopier<ValueProvider<String>, 
                 return;
             }
 
-            // 获取目标字段真实类型
-            final Type fieldType = TypeKit.getActualType(this.targetType, propDesc.getFieldType());
             // 编辑键值对
             final MutableEntry<Object, Object> entry = copyOptions.editField(tFieldName, null);
             if (null == entry) {
@@ -103,6 +101,9 @@ public class ValueToBeanCopier<T> extends AbstractCopier<ValueProvider<String>, 
             if (!source.containsKey(tFieldName)) {
                 return;
             }
+
+            // 获取目标字段真实类型
+            final Type fieldType = TypeKit.getActualType(this.targetType, propDesc.getFieldType());
             final Object sValue = source.value(tFieldName, fieldType);
 
             // 检查目标对象属性是否过滤属性

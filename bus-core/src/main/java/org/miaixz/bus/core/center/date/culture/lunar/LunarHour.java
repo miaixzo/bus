@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -34,9 +34,11 @@ import org.miaixz.bus.core.center.date.culture.cn.Taboo;
 import org.miaixz.bus.core.center.date.culture.cn.eightchar.EightChar;
 import org.miaixz.bus.core.center.date.culture.cn.eightchar.provider.EightCharProvider;
 import org.miaixz.bus.core.center.date.culture.cn.eightchar.provider.impl.DefaultEightCharProvider;
+import org.miaixz.bus.core.center.date.culture.cn.ren.MinorRen;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.EarthBranch;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.HeavenStem;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
+import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycleHour;
 import org.miaixz.bus.core.center.date.culture.cn.star.nine.NineStar;
 import org.miaixz.bus.core.center.date.culture.cn.star.twelve.TwelveStar;
 import org.miaixz.bus.core.center.date.culture.solar.SolarDay;
@@ -44,7 +46,7 @@ import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 
 /**
- * 时辰
+ * 农历时辰
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -71,6 +73,16 @@ public class LunarHour extends Loops {
      * 秒
      */
     protected int second;
+
+    /**
+     * 公历时刻（第一次使用时才会初始化）
+     */
+    protected SolarTime solarTime;
+
+    /**
+     * 干支时辰（第一次使用时才会初始化）
+     */
+    protected SixtyCycleHour sixtyCycleHour;
 
     /**
      * 初始化
@@ -243,64 +255,17 @@ public class LunarHour extends Loops {
     }
 
     /**
-     * 当时的年干支（立春换）
-     *
-     * @return 干支
-     */
-    public SixtyCycle getYearSixtyCycle() {
-        SolarTime solarTime = getSolarTime();
-        int solarYear = day.getSolarDay().getYear();
-        SolarTime springSolarTime = SolarTerms.fromIndex(solarYear, 3).getJulianDay().getSolarTime();
-        LunarYear lunarYear = day.getLunarMonth().getLunarYear();
-        int year = lunarYear.getYear();
-        SixtyCycle sixtyCycle = lunarYear.getSixtyCycle();
-        if (year == solarYear) {
-            if (solarTime.isBefore(springSolarTime)) {
-                sixtyCycle = sixtyCycle.next(-1);
-            }
-        } else if (year < solarYear) {
-            if (!solarTime.isBefore(springSolarTime)) {
-                sixtyCycle = sixtyCycle.next(1);
-            }
-        }
-        return sixtyCycle;
-    }
-
-    /**
-     * 当时的月干支（节气换）
-     *
-     * @return 干支
-     */
-    public SixtyCycle getMonthSixtyCycle() {
-        SolarTime solarTime = getSolarTime();
-        int year = solarTime.getYear();
-        SolarTerms term = solarTime.getTerm();
-        int index = term.getIndex() - 3;
-        if (index < 0 && term.getJulianDay().getSolarTime()
-                .isAfter(SolarTerms.fromIndex(year, 3).getJulianDay().getSolarTime())) {
-            index += 24;
-        }
-        return LunarMonth.fromYm(year, 1).getSixtyCycle().next((int) Math.floor(index * 1D / 2));
-    }
-
-    /**
-     * 当时的日干支（23:00开始算做第二天）
-     *
-     * @return 干支
-     */
-    public SixtyCycle getDaySixtyCycle() {
-        SixtyCycle d = day.getSixtyCycle();
-        return hour < 23 ? d : d.next(1);
-    }
-
-    /**
      * 干支
      *
      * @return 干支
      */
     public SixtyCycle getSixtyCycle() {
         int earthBranchIndex = getIndexInDay() % 12;
-        int heavenStemIndex = getDaySixtyCycle().getHeavenStem().getIndex() % 5 * 2 + earthBranchIndex;
+        SixtyCycle d = day.getSixtyCycle();
+        if (hour >= 23) {
+            d = d.next(1);
+        }
+        int heavenStemIndex = d.getHeavenStem().getIndex() % 5 * 2 + earthBranchIndex;
         return SixtyCycle.fromName(
                 HeavenStem.fromIndex(heavenStemIndex).getName() + EarthBranch.fromIndex(earthBranchIndex).getName());
     }
@@ -312,7 +277,7 @@ public class LunarHour extends Loops {
      */
     public TwelveStar getTwelveStar() {
         return TwelveStar.fromIndex(getSixtyCycle().getEarthBranch().getIndex()
-                + (8 - getDaySixtyCycle().getEarthBranch().getIndex() % 6) * 2);
+                + (8 - getSixtyCycleHour().getDay().getEarthBranch().getIndex() % 6) * 2);
     }
 
     /**
@@ -340,8 +305,11 @@ public class LunarHour extends Loops {
      * @return 公历时刻
      */
     public SolarTime getSolarTime() {
-        SolarDay d = day.getSolarDay();
-        return SolarTime.fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), hour, minute, second);
+        if (null == solarTime) {
+            SolarDay d = day.getSolarDay();
+            solarTime = SolarTime.fromYmdHms(d.getYear(), d.getMonth(), d.getDay(), hour, minute, second);
+        }
+        return solarTime;
     }
 
     /**
@@ -354,12 +322,24 @@ public class LunarHour extends Loops {
     }
 
     /**
+     * 干支时辰
+     *
+     * @return 干支时辰
+     */
+    public SixtyCycleHour getSixtyCycleHour() {
+        if (null == sixtyCycleHour) {
+            sixtyCycleHour = getSolarTime().getSixtyCycleHour();
+        }
+        return sixtyCycleHour;
+    }
+
+    /**
      * 宜
      *
      * @return 宜忌列表
      */
     public List<Taboo> getRecommends() {
-        return Taboo.getHourRecommends(getDaySixtyCycle(), getSixtyCycle());
+        return Taboo.getHourRecommends(getSixtyCycleHour().getDay(), getSixtyCycle());
     }
 
     /**
@@ -368,7 +348,16 @@ public class LunarHour extends Loops {
      * @return 宜忌列表
      */
     public List<Taboo> getAvoids() {
-        return Taboo.getHourAvoids(getDaySixtyCycle(), getSixtyCycle());
+        return Taboo.getHourAvoids(getSixtyCycleHour().getDay(), getSixtyCycle());
+    }
+
+    /**
+     * 小六壬
+     *
+     * @return 小六壬
+     */
+    public MinorRen getMinorRen() {
+        return getLunarDay().getMinorRen().next(getIndexInDay());
     }
 
 }

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -33,6 +33,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.cron.crontab.Crontab;
 import org.miaixz.bus.cron.pattern.CronPattern;
+import org.miaixz.bus.cron.pattern.parser.PatternParser;
 import org.miaixz.bus.setting.Setting;
 
 /**
@@ -214,6 +215,25 @@ public class Builder {
      */
     public static void stop() {
         scheduler.stop(true);
+    }
+
+    /**
+     * 验证是否为合法的Cron表达式
+     * 
+     * @param expression 表达式
+     * @return the true/false
+     */
+    public static boolean isValidExpression(String expression) {
+        if (expression == null) {
+            return false;
+        } else {
+            try {
+                PatternParser.parse(expression);
+                return true;
+            } catch (RuntimeException e) {
+                return false;
+            }
+        }
     }
 
 }

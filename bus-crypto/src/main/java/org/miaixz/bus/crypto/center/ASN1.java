@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -33,6 +33,9 @@ import java.io.OutputStream;
 
 import org.bouncycastle.asn1.*;
 import org.bouncycastle.asn1.util.ASN1Dump;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x500.X500NameBuilder;
+import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.miaixz.bus.core.io.stream.FastByteArrayOutputStream;
 import org.miaixz.bus.core.lang.exception.CryptoException;
 import org.miaixz.bus.core.lang.exception.InternalException;
@@ -121,6 +124,23 @@ public class ASN1 {
      */
     public static String getDumpString(final InputStream in) {
         return ASN1Dump.dumpAsString(decode(in));
+    }
+
+    /**
+     * 生成X500Name信息
+     *
+     * @param C  Country Name (国家代号),eg: CN
+     * @param ST State or Province Name (洲或者省份),eg: Beijing
+     * @param L  Locality Name (城市名),eg: Beijing
+     * @param O  Organization Name (可以是公司名称),
+     * @param OU Organizational Unit Name (可以是单位部门名称)
+     * @param CN Common Name (服务器ip或者域名),eg: 192.168.30.71 or www.baidu.com
+     * @return X500Name
+     */
+    public static X500Name createX500Name(final String C, final String ST, final String L, final String O,
+            final String OU, final String CN) {
+        return new X500NameBuilder().addRDN(BCStyle.C, C).addRDN(BCStyle.ST, ST).addRDN(BCStyle.L, L)
+                .addRDN(BCStyle.O, O).addRDN(BCStyle.OU, OU).addRDN(BCStyle.CN, CN).build();
     }
 
 }

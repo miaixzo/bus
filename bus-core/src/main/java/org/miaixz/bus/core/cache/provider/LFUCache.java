@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,8 +27,10 @@
 */
 package org.miaixz.bus.core.cache.provider;
 
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.miaixz.bus.core.lang.thread.lock.NoLock;
 
 /**
  * LFU(least frequently used) 最少使用率缓存 根据使用次数来判定对象是否被持续缓存 使用率是通过访问次数计算的。 当缓存满时清理过期对象。
@@ -39,7 +41,7 @@ import java.util.Iterator;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class LFUCache<K, V> extends StampedCache<K, V> {
+public class LFUCache<K, V> extends LockedCache<K, V> {
 
     private static final long serialVersionUID = -1L;
 
@@ -65,7 +67,8 @@ public class LFUCache<K, V> extends StampedCache<K, V> {
 
         this.capacity = capacity;
         this.timeout = timeout;
-        cacheMap = new HashMap<>(capacity + 1, 1.0f);
+        this.lock = NoLock.INSTANCE;
+        this.cacheMap = new ConcurrentHashMap<>(capacity + 1, 1.0f);
     }
 
     /**

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -210,8 +210,23 @@ public class FileWriter extends FileWrapper {
      * @return 目标文件
      * @throws InternalException IO异常
      */
-    public <T> File writeLines(final Iterable<T> list, final LineSeparator lineSeparator, final boolean isAppend)
-            throws InternalException {
+    public <T> File writeLines(final Iterable<T> list, final LineSeparator lineSeparator, final boolean isAppend) {
+        return writeLines(list, lineSeparator, isAppend, true);
+    }
+
+    /**
+     * 将列表写入文件
+     *
+     * @param <T>                 集合元素类型
+     * @param list                列表
+     * @param lineSeparator       换行符枚举（Windows、Mac或Linux换行符）
+     * @param isAppend            是否追加
+     * @param appendLineSeparator 是否在最后一行末尾追加换行符，Linux下要求最后一行必须带有换行符
+     * @return 目标文件
+     * @throws InternalException IO异常
+     */
+    public <T> File writeLines(final Iterable<T> list, final LineSeparator lineSeparator, final boolean isAppend,
+            final boolean appendLineSeparator) throws InternalException {
         try (final PrintWriter writer = getPrintWriter(isAppend)) {
             boolean isFirst = true;
             for (final T t : list) {
@@ -226,10 +241,12 @@ public class FileWriter extends FileWrapper {
                         printNewLine(writer, lineSeparator);
                     }
                     writer.print(t);
-
-                    writer.flush();
                 }
             }
+            if (appendLineSeparator) {
+                printNewLine(writer, lineSeparator);
+            }
+            writer.flush();
         }
         return this.file;
     }

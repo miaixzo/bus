@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -675,7 +675,7 @@ public class MathKit extends NumberValidator {
     }
 
     /**
-     * 比较数字值是否相等，相等返回{@code true} 需要注意的是{@link BigDecimal}需要特殊处理
+     * 比较数字是否相等，相等返回{@code true} 需要注意的是{@link BigDecimal}需要特殊处理
      * BigDecimal使用compareTo方式判断，因为使用equals方法也判断小数位数，如2.0和2.00就不相等， 此方法判断值相等时忽略精度的，即0.00 == 0
      *
      * <ul>

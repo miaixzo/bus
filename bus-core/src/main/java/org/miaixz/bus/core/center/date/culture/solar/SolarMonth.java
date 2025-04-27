@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -158,18 +158,8 @@ public class SolarMonth extends Loops {
     }
 
     public SolarMonth next(int n) {
-        int m = month;
-        int y = getYear();
-        if (n != 0) {
-            m += n;
-            y += m / 12;
-            m %= 12;
-            if (m < 1) {
-                m += 12;
-                y--;
-            }
-        }
-        return fromYm(y, m);
+        int i = month - 1 + n;
+        return fromYm((getYear() * 12 + i) / 12, indexOf(i, 12) + 1);
     }
 
     /**

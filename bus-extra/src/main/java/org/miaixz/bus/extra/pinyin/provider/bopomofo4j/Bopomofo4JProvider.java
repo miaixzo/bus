@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -64,13 +64,14 @@ public class Bopomofo4JProvider implements PinyinProvider {
     }
 
     @Override
-    public String getPinyin(final char c) {
-        return Bopomofo4j.pinyin(String.valueOf(c), ToneType.WITHOUT_TONE, false, false, Normal.EMPTY);
+    public String getPinyin(final char c, final boolean tone) {
+        return Bopomofo4j.pinyin(String.valueOf(c), tone ? ToneType.WITH_VOWEL_TONE : ToneType.WITHOUT_TONE, false,
+                false, Normal.EMPTY);
     }
 
     @Override
-    public String getPinyin(final String text, final String separator) {
-        return Bopomofo4j.pinyin(text, ToneType.WITHOUT_TONE, false, false, separator);
+    public String getPinyin(final String str, final String separator, final boolean tone) {
+        return Bopomofo4j.pinyin(str, tone ? ToneType.WITH_VOWEL_TONE : ToneType.WITHOUT_TONE, false, false, separator);
     }
 
 }

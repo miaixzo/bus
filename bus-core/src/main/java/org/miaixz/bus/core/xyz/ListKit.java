@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -220,6 +220,17 @@ public class ListKit {
      */
     public static <T> List<T> zero() {
         return new ArrayList<>(0);
+    }
+
+    /**
+     * 获取一个只包含一个元素的List，不可变
+     *
+     * @param <T>     元素类型
+     * @param element 元素
+     * @return 只包含一个元素的List
+     */
+    public static <T> List<T> singleton(final T element) {
+        return Collections.singletonList(element);
     }
 
     /**

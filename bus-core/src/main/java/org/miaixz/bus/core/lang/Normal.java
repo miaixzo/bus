@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -644,7 +644,7 @@ public class Normal {
     /**
      * 七色
      */
-    public static final String[] COLOR = { "白", "黒", "碧", "绿", "黄", "白", "赤", "白", "紫" };
+    public static final String[] COLOR = { "白", "黑", "碧", "绿", "黄", "白", "赤", "白", "紫" };
 
     /**
      * 缺省的币种代码，为CNY（人民币）。

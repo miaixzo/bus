@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -29,21 +29,27 @@ package org.miaixz.bus.core.cache.provider;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.miaixz.bus.core.cache.GlobalPruneTimer;
+import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.mutable.Mutable;
+import org.miaixz.bus.core.lang.thread.lock.NoLock;
 
 /**
- * 定时缓存 此缓存没有容量限制，对象只有在过期后才会被移除
+ * 定时缓存, 此缓存没有容量限制，对象只有在过期后才会被移除, 此缓存采用读写乐观锁，用于可脏读的场景，不能使用LinkedHashMap
+ *
  *
  * @param <K> 键类型
  * @param <V> 值类型
  * @author Kimi Liu
  * @since Java 17+
  */
-public class TimedCache<K, V> extends StampedCache<K, V> {
+public class TimedCache<K, V> extends LockedCache<K, V> {
 
     private static final long serialVersionUID = -1L;
 
@@ -69,8 +75,9 @@ public class TimedCache<K, V> extends StampedCache<K, V> {
      */
     public TimedCache(final long timeout, final Map<Mutable<K>, CacheObject<K, V>> map) {
         this.capacity = 0;
-        this.timeout = timeout;
-        this.cacheMap = map;
+        // 如果使用线程安全的Map，则不加锁，否则默认使用ReentrantLock
+        this.lock = map instanceof ConcurrentMap ? NoLock.INSTANCE : new ReentrantLock();
+        this.cacheMap = Assert.isNotInstanceOf(LinkedHashMap.class, map);
     }
 
     /**

@@ -4,7 +4,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-storage</artifactId>
-    <version>8.1.3</version>
+    <version>8.1.5</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -94,6 +94,7 @@
         <qiniu.oss.version>7.15.1</qiniu.oss.version>
         <qcloud.oss.version>5.6.225</qcloud.oss.version>
         <upyun.oss.version>4.2.3</upyun.oss.version>
+        <sardine.version>5.12</sardine.version>
         <jackson.version>2.18.1</jackson.version>
         <okhttp.version>4.12.0</okhttp.version>
     </properties>
@@ -102,6 +103,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>bus-cache</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>bus-gitlab</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
@@ -470,6 +476,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>com.github.lookfirst</groupId>
+            <artifactId>sardine</artifactId>
+            <version>${sardine.version}</version>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
     <build>
@@ -477,7 +489,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.13.0</version>
+                <version>3.14.0</version>
                 <configuration>
                     <source>21</source>
                     <target>21</target>
@@ -527,7 +539,7 @@
             <plugin>
                 <groupId>org.sonatype.central</groupId>
                 <artifactId>central-publishing-maven-plugin</artifactId>
-                <version>0.6.0</version>
+                <version>0.7.0</version>
                 <extensions>true</extensions>
                 <configuration>
                     <publishingServerId>central</publishingServerId>
@@ -537,7 +549,7 @@
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
-                <version>2.43.0</version>
+                <version>2.44.4</version>
                 <configuration>
                     <upToDateChecking>
                         <enabled>false</enabled>
@@ -583,7 +595,7 @@
                             <nrOfIndentSpace>4</nrOfIndentSpace>
                             <keepBlankLines>true</keepBlankLines>
                             <indentBlankLines>false</indentBlankLines>
-                            <indentSchemaLocation>true</indentSchemaLocation>
+                            <indentAttribute>schemaLocation</indentAttribute>
                             <spaceBeforeCloseEmptyElement>true</spaceBeforeCloseEmptyElement>
                             <sortModules>false</sortModules>
                             <sortExecutions>false</sortExecutions>
@@ -604,7 +616,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>flatten-maven-plugin</artifactId>
-                <version>1.6.0</version>
+                <version>1.7.0</version>
                 <inherited>true</inherited>
                 <executions>
                     <execution>

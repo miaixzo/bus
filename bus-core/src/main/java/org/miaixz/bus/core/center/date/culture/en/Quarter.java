@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -26,6 +26,10 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 package org.miaixz.bus.core.center.date.culture.en;
+
+import java.time.temporal.ChronoField;
+
+import org.miaixz.bus.core.lang.Assert;
 
 /**
  * 季度枚举
@@ -122,6 +126,58 @@ public enum Quarter {
      */
     public String getName() {
         return this.name;
+    }
+
+    /**
+     * 根据给定的月份值返回对应的季度
+     *
+     * @param monthValue 月份值，取值范围为1到12
+     * @return 对应的季度
+     * @throws IllegalArgumentException 如果月份值不在有效范围内（1到12），将抛出异常
+     */
+    public static Quarter fromMonth(final int monthValue) {
+        ChronoField.MONTH_OF_YEAR.checkValidValue(monthValue);
+        return of(computeQuarterValueInternal(monthValue));
+    }
+
+    /**
+     * 根据给定的月份返回对应的季度
+     *
+     * @param month 月份
+     * @return 对应的季度
+     */
+    public static Quarter fromMonth(final Month month) {
+        Assert.notNull(month);
+        final int monthValue = month.getValue();
+        return of(computeQuarterValueInternal(monthValue));
+    }
+
+    /**
+     * 该季度的第一个月
+     *
+     * @return 结果
+     */
+    public Month firstMonth() {
+        return Month.of(this.code * 3 - 3);
+    }
+
+    /**
+     * 该季度最后一个月
+     *
+     * @return 结果
+     */
+    public Month lastMonth() {
+        return Month.of(this.code * 3 - 1);
+    }
+
+    /**
+     * 计算给定月份对应的季度值
+     *
+     * @param monthValue 月份值，取值范围为1到12
+     * @return 对应的季度值
+     */
+    private static int computeQuarterValueInternal(final int monthValue) {
+        return (monthValue - 1) / 3 + 1;
     }
 
 }

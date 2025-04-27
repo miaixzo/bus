@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -29,7 +29,6 @@ package org.miaixz.bus.core.center.date.culture.cn.eightchar;
 
 import org.miaixz.bus.core.center.date.culture.Loops;
 import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycle;
-import org.miaixz.bus.core.center.date.culture.lunar.LunarYear;
 
 /**
  * 小运
@@ -71,16 +70,7 @@ public class Fortune extends Loops {
      * @return 年龄
      */
     public int getAge() {
-        return childLimit.getYearCount() + 1 + index;
-    }
-
-    /**
-     * 农历年
-     *
-     * @return 农历年
-     */
-    public LunarYear getLunarYear() {
-        return childLimit.getEndTime().getLunarHour().getLunarDay().getLunarMonth().getLunarYear().next(index);
+        return childLimit.getEndTime().getYear() - childLimit.getStartTime().getYear() + 1 + index;
     }
 
     /**

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -227,7 +227,7 @@ public class ChineseNumberFormatter {
      */
     public String format(double amount) {
         if (0 == amount) {
-            return this.moneyMode ? "零元整" : Symbol.UL_ZERO;
+            return this.moneyMode ? "零" + unitName + "整" : Symbol.UL_ZERO;
         }
         Assert.checkBetween(amount, -99_9999_9999_9999.99, 99_9999_9999_9999.99,
                 "Number support only: (-99999999999999.99 ~ 99999999999999.99)！");

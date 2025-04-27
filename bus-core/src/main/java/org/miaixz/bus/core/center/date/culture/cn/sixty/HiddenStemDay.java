@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -25,65 +25,40 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.extra.qrcode;
+package org.miaixz.bus.core.center.date.culture.cn.sixty;
 
-import org.miaixz.bus.core.lang.Symbol;
-import org.miaixz.bus.core.lang.ansi.AnsiElement;
-import org.miaixz.bus.core.lang.ansi.AnsiEncoder;
-import org.miaixz.bus.core.xyz.ColorKit;
-
-import com.google.zxing.common.BitMatrix;
+import org.miaixz.bus.core.center.date.culture.Replenish;
 
 /**
- * 二维码的AsciiArt表示
+ * 人元司令分野（地支藏干+天索引）
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class QrAsciiArt {
+public class HiddenStemDay extends Replenish {
 
-    private final BitMatrix matrix;
-    private final QrConfig qrConfig;
+    public HiddenStemDay(HiddenStem hiddenStem, int dayIndex) {
+        super(hiddenStem, dayIndex);
+    }
 
     /**
-     * 构造
+     * 藏干
      *
-     * @param matrix   {@link BitMatrix}
-     * @param qrConfig {@link QrConfig}
+     * @return 藏干
      */
-    public QrAsciiArt(final BitMatrix matrix, final QrConfig qrConfig) {
-        this.matrix = matrix;
-        this.qrConfig = qrConfig;
+    public HiddenStem getHideHeavenStem() {
+        return (HiddenStem) tradition;
+    }
+
+    @Override
+    public String getName() {
+        HeavenStem heavenStem = getHideHeavenStem().getHeavenStem();
+        return heavenStem.getName() + heavenStem.getElement().getName();
     }
 
     @Override
     public String toString() {
-        final int width = matrix.getWidth();
-        final int height = matrix.getHeight();
-
-        final AnsiElement foreground = qrConfig.foreColor == null ? null
-                : ColorKit.toAnsiColor(qrConfig.foreColor, true, false);
-        final AnsiElement background = qrConfig.backColor == null ? null
-                : ColorKit.toAnsiColor(qrConfig.backColor, true, true);
-
-        final StringBuilder builder = new StringBuilder();
-        for (int i = 0; i <= height; i += 2) {
-            final StringBuilder rowBuilder = new StringBuilder();
-            for (int j = 0; j < width; j++) {
-                final boolean tp = matrix.get(i, j);
-                final boolean bt = i + 1 >= height || matrix.get(i + 1, j);
-                if (tp && bt) {
-                    rowBuilder.append(Symbol.C_SPACE);// '\u0020'
-                } else if (tp) {
-                    rowBuilder.append('▄');// '\u2584'
-                } else if (bt) {
-                    rowBuilder.append('▀');// '\u2580'
-                } else {
-                    rowBuilder.append('█');// '\u2588'
-                }
-            }
-            builder.append(AnsiEncoder.encode(foreground, background, rowBuilder)).append('\n');
-        }
-        return builder.toString();
+        return String.format("%s第%d天", getName(), dayIndex + 1);
     }
+
 }

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -60,7 +60,7 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
     }
 
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback callback) {
         String response = doGetAuthorizationCode(accessTokenUrl(null));
 
         JSONObject object = this.checkResponse(response);
@@ -70,7 +70,7 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
     }
 
     @Override
-    protected Material getUserInfo(AccToken accToken) {
+    public Material getUserInfo(AccToken accToken) {
         String response = doGetUserInfo(accToken);
         JSONObject object = this.checkResponse(response);
 
@@ -112,7 +112,7 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
      * @return 返回获取accessToken的url
      */
     @Override
-    protected String accessTokenUrl(String code) {
+    public String accessTokenUrl(String code) {
         return Builder.fromUrl(complex.accessToken()).queryParam("corpid", context.getAppKey())
                 .queryParam("corpsecret", context.getAppSecret()).build();
     }
@@ -124,7 +124,7 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String userInfoUrl(AccToken accToken) {
+    public String userInfoUrl(AccToken accToken) {
         return Builder.fromUrl(complex.userInfo()).queryParam("access_token", accToken.getAccessToken())
                 .queryParam("code", accToken.getCode()).build();
     }

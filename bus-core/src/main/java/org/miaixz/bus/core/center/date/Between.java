@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -219,28 +219,26 @@ public class Between implements Serializable {
         final java.util.Calendar endCal = Calendar.calendar(end);
 
         final int result = endCal.get(java.util.Calendar.YEAR) - beginCal.get(java.util.Calendar.YEAR);
-        if (false == isReset) {
-            final int beginMonthBase0 = beginCal.get(java.util.Calendar.MONTH);
-            final int endMonthBase0 = endCal.get(java.util.Calendar.MONTH);
-            if (beginMonthBase0 < endMonthBase0) {
-                return result;
-            } else if (beginMonthBase0 > endMonthBase0) {
-                return result - 1;
-            } else if (java.util.Calendar.FEBRUARY == beginMonthBase0 && Calendar.isLastDayOfMonth(beginCal)
-                    && Calendar.isLastDayOfMonth(endCal)) {
-                // 考虑闰年的2月情况
-                // 两个日期都位于2月的最后一天，此时月数按照相等对待，此时都设置为1号
-                beginCal.set(java.util.Calendar.DAY_OF_MONTH, 1);
-                endCal.set(java.util.Calendar.DAY_OF_MONTH, 1);
-            }
-
-            endCal.set(java.util.Calendar.YEAR, beginCal.get(java.util.Calendar.YEAR));
-            final long between = endCal.getTimeInMillis() - beginCal.getTimeInMillis();
-            if (between < 0) {
-                return result - 1;
-            }
+        if (isReset) {
+            return result;
         }
-        return result;
+        final int beginMonthBase0 = beginCal.get(java.util.Calendar.MONTH);
+        final int endMonthBase0 = endCal.get(java.util.Calendar.MONTH);
+        if (beginMonthBase0 < endMonthBase0) {
+            return result;
+        } else if (beginMonthBase0 > endMonthBase0) {
+            return result - 1;
+        } else if (java.util.Calendar.FEBRUARY == beginMonthBase0 && Calendar.isLastDayOfMonth(beginCal)
+                && Calendar.isLastDayOfMonth(endCal)) {
+            // 考虑闰年的2月情况
+            // 两个日期都位于2月的最后一天，此时月数按照相等对待，此时都设置为1号
+            beginCal.set(java.util.Calendar.DAY_OF_MONTH, 1);
+            endCal.set(java.util.Calendar.DAY_OF_MONTH, 1);
+        }
+
+        endCal.set(java.util.Calendar.YEAR, beginCal.get(java.util.Calendar.YEAR));
+        final long between = endCal.getTimeInMillis() - beginCal.getTimeInMillis();
+        return between < 0 ? result - 1 : result;
     }
 
     /**

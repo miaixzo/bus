@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -130,16 +130,9 @@ public class LunarFestival extends Loops {
     }
 
     public LunarFestival next(int n) {
-        if (n == 0) {
-            return fromYmd(day.getYear(), day.getMonth(), day.getDay());
-        }
         int size = NAMES.length;
-        int t = index + n;
-        int offset = indexOf(t, size);
-        if (t < 0) {
-            t -= size;
-        }
-        return fromIndex(day.getYear() + t / size, offset);
+        int i = index + n;
+        return fromIndex((day.getYear() * size + i) / size, indexOf(i, size));
     }
 
     /**

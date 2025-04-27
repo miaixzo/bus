@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -45,6 +45,7 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.InternalException;
+import org.miaixz.bus.core.lang.exception.TerminateException;
 import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
@@ -154,6 +155,8 @@ public class Excel03SaxReader implements HSSFListener, ExcelSaxReader<Excel03Sax
             factory.processWorkbookEvents(request, fs);
         } catch (final IOException e) {
             throw new InternalException(e);
+        } catch (final TerminateException e) {
+            // 用户抛出此异常，表示强制结束读取
         } finally {
             IoKit.closeQuietly(fs);
         }

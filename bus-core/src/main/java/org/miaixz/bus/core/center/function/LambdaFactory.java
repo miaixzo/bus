@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -124,7 +124,6 @@ public class LambdaFactory {
      * @param declaringClass {@link Executable}声明的类，如果方法或构造定义在父类中，此处用于指定子类
      * @return 接受Lambda的函数式接口对象
      */
-    @SuppressWarnings("unchecked")
     private static <F> F doBuildWithoutCache(final Class<F> funcType, final Executable executable,
             final Class<?> declaringClass) {
         ReflectKit.setAccessible(executable);

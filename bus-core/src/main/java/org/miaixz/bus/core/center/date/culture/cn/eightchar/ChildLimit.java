@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -30,6 +30,7 @@ package org.miaixz.bus.core.center.date.culture.cn.eightchar;
 import org.miaixz.bus.core.center.date.culture.cn.Opposite;
 import org.miaixz.bus.core.center.date.culture.cn.eightchar.provider.ChildLimitProvider;
 import org.miaixz.bus.core.center.date.culture.cn.eightchar.provider.impl.DefaultChildLimitProvider;
+import org.miaixz.bus.core.center.date.culture.cn.sixty.SixtyCycleYear;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTerms;
 import org.miaixz.bus.core.center.date.culture.solar.SolarTime;
 import org.miaixz.bus.core.lang.Gender;
@@ -186,12 +187,21 @@ public class ChildLimit {
     }
 
     /**
-     * 大运
+     * 起运大运
      *
      * @return 大运
      */
     public DecadeFortune getStartDecadeFortune() {
         return DecadeFortune.fromChildLimit(this, 0);
+    }
+
+    /**
+     * 所属大运
+     *
+     * @return 大运
+     */
+    public DecadeFortune getDecadeFortune() {
+        return DecadeFortune.fromChildLimit(this, -1);
     }
 
     /**
@@ -201,6 +211,43 @@ public class ChildLimit {
      */
     public Fortune getStartFortune() {
         return Fortune.fromChildLimit(this, 0);
+    }
+
+    /**
+     * 开始(即出生)干支年
+     *
+     * @return 干支年
+     */
+    public SixtyCycleYear getStartSixtyCycleYear() {
+        return SixtyCycleYear.fromYear(getStartTime().getYear());
+    }
+
+    /**
+     * 结束(即起运)干支年
+     *
+     * @return 干支年
+     */
+    public SixtyCycleYear getEndSixtyCycleYear() {
+        return SixtyCycleYear.fromYear(getEndTime().getYear());
+    }
+
+    /**
+     * 开始年龄
+     *
+     * @return 开始年龄
+     */
+    public int getStartAge() {
+        return 1;
+    }
+
+    /**
+     * 结束年龄
+     *
+     * @return 结束年龄
+     */
+    public int getEndAge() {
+        int n = getEndSixtyCycleYear().getYear() - getStartSixtyCycleYear().getYear();
+        return Math.max(n, 1);
     }
 
 }

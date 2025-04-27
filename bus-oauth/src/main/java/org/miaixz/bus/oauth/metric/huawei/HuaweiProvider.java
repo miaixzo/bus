@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,14 +27,19 @@
 */
 package org.miaixz.bus.oauth.metric.huawei;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -66,75 +71,98 @@ public class HuaweiProvider extends AbstractProvider {
     /**
      * 获取access token
      *
-     * @param callback 授权成功后的回调参数
+     * @param Callback 授权成功后的回调参数
      * @return token
      * @see AbstractProvider#authorize(String)
      */
     @Override
-    protected AccToken getAccessToken(Callback callback) {
+    public AccToken getAccessToken(Callback Callback) {
         Map<String, String> form = new HashMap<>(8);
         form.put("grant_type", "authorization_code");
-        form.put("code", callback.getAuthorization_code());
+        form.put("code", Callback.getCode());
         form.put("client_id", context.getAppKey());
         form.put("client_secret", context.getAppSecret());
         form.put("redirect_uri", context.getRedirectUri());
 
-        String response = Httpx.post(complex.accessToken(), form);
-        return getAuthToken(response);
+        if (context.isPkce()) {
+            String cacheKey = this.complex.getName().concat(":code_verifier:").concat(Callback.getState());
+            String codeVerifier = (String) this.cache.get(cacheKey);
+            form.put("code_verifier", codeVerifier);
+        }
+
+        Map<String, String> header = new HashMap<>(8);
+        header.put(HTTP.CONTENT_TYPE, "application/x-www-form-urlencoded");
+
+        String response = Httpx.post(complex.accessToken(), header, form);
+
+        return getAccToken(response);
     }
 
     /**
      * 使用token换取用户信息
      *
-     * @param accToken token信息
+     * @param AccToken token信息
      * @return 用户信息
      * @see AbstractProvider#getAccessToken(Callback)
      */
     @Override
-    protected Material getUserInfo(AccToken accToken) {
-        Map<String, String> form = new HashMap<>(7);
-        form.put("nsp_ts", System.currentTimeMillis() + "");
-        form.put("access_token", accToken.getAccessToken());
-        form.put("nsp_fmt", "JS");
-        form.put("nsp_svc", "OpenUP.User.getInfo");
+    public Material getUserInfo(AccToken AccToken) {
+        String idToken = AccToken.getIdToken();
+        if (StringKit.isEmpty(idToken)) {
+            Map<String, String> form = new HashMap<>(7);
+            form.put("access_token", AccToken.getAccessToken());
+            form.put("getNickName", "1");
+            form.put("nsp_svc", "GOpen.User.getInfo");
 
-        String response = Httpx.post(complex.userInfo(), form);
-        JSONObject object = JSONObject.parseObject(response);
+            Map<String, String> header = new HashMap<>(7);
+            header.put(HTTP.CONTENT_TYPE, "application/x-www-form-urlencoded");
+            String response = Httpx.post(complex.userInfo(), header, form);
+            JSONObject object = JSONObject.parseObject(response);
 
-        this.checkResponse(object);
+            this.checkResponse(object);
 
-        Gender gender = getRealGender(object);
+            return Material.builder().rawJson(object).uuid(object.getString("unionID"))
+                    .username(object.getString("displayName")).nickname(object.getString("displayName"))
+                    .gender(Gender.UNKNOWN).avatar(object.getString("headPictureURL")).token(AccToken)
+                    .source(context.toString()).build();
+        }
+        String payload = new String(Base64.getUrlDecoder().decode(idToken.split("\\.")[1]), StandardCharsets.UTF_8);
 
-        return Material.builder().rawJson(object).uuid(object.getString("userID"))
-                .username(object.getString("userName")).nickname(object.getString("userName")).gender(gender)
-                .avatar(object.getString("headPictureURL")).token(accToken).source(complex.toString()).build();
+        JSONObject object = JSONObject.parseObject(payload);
+        return Material.builder().rawJson(object).uuid(object.getString("sub")).username(object.getString("name"))
+                .nickname(object.getString("nickname")).gender(Gender.UNKNOWN).avatar(object.getString("picture"))
+                .token(AccToken).source(complex.toString()).build();
     }
 
     /**
      * 刷新access token （续期）
      *
-     * @param accToken 登录成功后返回的Token信息
-     * @return Message
+     * @param AccToken 登录成功后返回的Token信息
+     * @return AuthResponse
      */
     @Override
-    public Message refresh(AccToken accToken) {
+    public Message refresh(AccToken AccToken) {
         Map<String, String> form = new HashMap<>(7);
         form.put("client_id", context.getAppKey());
         form.put("client_secret", context.getAppSecret());
-        form.put("refresh_token", accToken.getRefreshToken());
+        form.put("refresh_token", AccToken.getRefreshToken());
         form.put("grant_type", "refresh_token");
 
-        String response = Httpx.post(complex.refresh(), form);
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).data(getAuthToken(response)).build();
+        Map<String, String> header = new HashMap<>(7);
+        header.put(HTTP.CONTENT_TYPE, "application/x-www-form-urlencoded");
+        String response = Httpx.post(complex.refresh(), header, form);
+
+        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).data(getAccToken(response)).build();
     }
 
-    private AccToken getAuthToken(String response) {
+    private AccToken getAccToken(String response) {
         JSONObject object = JSONObject.parseObject(response);
 
         this.checkResponse(object);
 
         return AccToken.builder().accessToken(object.getString("access_token"))
-                .expireIn(object.getIntValue("expires_in")).refreshToken(object.getString("refresh_token")).build();
+                .expireIn(object.getIntValue("expires_in")).refreshToken(object.getString("refresh_token"))
+                .idToken(object.getString("id_token")).build();
     }
 
     /**
@@ -145,34 +173,22 @@ public class HuaweiProvider extends AbstractProvider {
      */
     @Override
     public String authorize(String state) {
-        return Builder.fromUrl(super.authorize(state)).queryParam("access_type", "offline")
-                .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(HuaweiScope.values())))
-                .build();
-    }
+        String realState = getRealState(state);
 
-    /**
-     * 返回获取userInfo的url
-     *
-     * @param accToken token
-     * @return 返回获取userInfo的url
-     */
-    @Override
-    protected String userInfoUrl(AccToken accToken) {
-        return Builder.fromUrl(complex.userInfo()).queryParam("nsp_ts", System.currentTimeMillis())
-                .queryParam("access_token", accToken.getAccessToken()).queryParam("nsp_fmt", "JS")
-                .queryParam("nsp_svc", "OpenUP.User.getInfo").build();
-    }
+        Builder builder = Builder.fromUrl(super.authorize(state)).queryParam("access_type", "offline")
+                .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(HuaweiScope.values())));
 
-    /**
-     * 获取用户的实际性别。华为系统中，用户的性别：1表示女，0表示男
-     *
-     * @param object 对象
-     * @return Authorize
-     */
-    private Gender getRealGender(JSONObject object) {
-        int genderCodeInt = object.getIntValue("gender");
-        String genderCode = genderCodeInt == 1 ? "0" : (genderCodeInt == 0) ? "1" : genderCodeInt + "";
-        return Gender.of(genderCode);
+        if (context.isPkce()) {
+            String cacheKey = this.complex.getName().concat(":code_verifier:").concat(realState);
+            String codeVerifier = Builder.codeVerifier();
+            String codeChallengeMethod = "S256";
+            String codeChallenge = Builder.codeChallenge(codeChallengeMethod, codeVerifier);
+            builder.queryParam("code_challenge", codeChallenge).queryParam("code_challenge_method",
+                    codeChallengeMethod);
+            // 缓存 codeVerifier 十分钟
+            this.cache.cache(cacheKey, codeVerifier, TimeUnit.MINUTES.toMillis(10));
+        }
+        return builder.build();
     }
 
     /**
@@ -185,8 +201,7 @@ public class HuaweiProvider extends AbstractProvider {
             throw new AuthorizedException(object.getString("error"));
         }
         if (object.containsKey("error")) {
-            throw new AuthorizedException(
-                    object.getString("sub_error") + Symbol.COLON + object.getString("error_description"));
+            throw new AuthorizedException(object.getString("sub_error") + ":" + object.getString("error_description"));
         }
     }
 

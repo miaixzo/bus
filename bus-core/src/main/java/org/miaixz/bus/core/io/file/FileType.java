@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -1050,7 +1050,7 @@ public class FileType {
      * @throws InternalException 读取文件引起的异常
      */
     public static String getType(final File file, final boolean isExact) throws InternalException {
-        if (false == FileKit.isFile(file)) {
+        if (!FileKit.isFile(file)) {
             throw new IllegalArgumentException("Not a regular file!");
         }
         InputStream in = null;

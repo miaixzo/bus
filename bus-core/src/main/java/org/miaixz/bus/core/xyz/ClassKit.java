@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -410,6 +410,37 @@ public class ClassKit {
             return false;
         }
         return (clazz.isPrimitive() || isPrimitiveWrapper(clazz));
+    }
+
+    /**
+     * 是否为基本类型的包装类匹配或反之，如：
+     * 
+     * <pre>
+     *     null    匹配 null
+     *     int     匹配 Integer
+     *     long    匹配 Long
+     *     short   匹配 Short
+     *     char    匹配 Character
+     *     float   匹配 Float
+     *     double  匹配 Double
+     *     boolean 匹配 Boolean
+     * </pre>
+     *
+     * @param returnType 类1
+     * @param fieldType  类2
+     * @return 是否为基本类型的包装类
+     */
+    public static boolean isBasicTypeMatch(final Class<?> returnType, final Class<?> fieldType) {
+        if (returnType == fieldType) {
+            return true;
+        }
+        if (null == returnType || null == fieldType) {
+            return false;
+        }
+        if (returnType.isPrimitive() && BasicType.wrap(returnType) == fieldType) {
+            return true;
+        }
+        return fieldType.isPrimitive() && BasicType.wrap(fieldType) == returnType;
     }
 
     /**

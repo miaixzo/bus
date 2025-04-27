@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -453,7 +453,7 @@ public class SM2 extends AbstractCrypto<SM2> {
     /**
      * 用私钥对信息生成数字签名
      *
-     * @param dataHex 被签名的数据数据（Hex格式）
+     * @param dataHex 被签名的数据（Hex格式）
      * @return 签名
      */
     public String signHexFromHex(final String dataHex) {
@@ -463,7 +463,7 @@ public class SM2 extends AbstractCrypto<SM2> {
     /**
      * 用私钥对信息生成数字签名
      *
-     * @param dataHex 被签名的数据数据（Hex格式）
+     * @param dataHex 被签名的数据（Hex格式）
      * @param idHex   可以为null，若为null，则默认withId为字节数组:"1234567812345678".getBytes()
      * @return 签名
      */
@@ -474,7 +474,7 @@ public class SM2 extends AbstractCrypto<SM2> {
     /**
      * 用私钥对信息生成数字签名
      *
-     * @param data 被签名的数据数据
+     * @param data 被签名的数据
      * @return 签名
      */
     public String signHex(final byte[] data) {
@@ -484,7 +484,7 @@ public class SM2 extends AbstractCrypto<SM2> {
     /**
      * 用私钥对信息生成数字签名
      *
-     * @param data 被签名的数据数据
+     * @param data 被签名的数据
      * @param id   可以为null，若为null，则默认withId为字节数组:"1234567812345678".getBytes()
      * @return 签名
      */
@@ -505,7 +505,7 @@ public class SM2 extends AbstractCrypto<SM2> {
     /**
      * 用私钥对信息生成数字签名，签名格式为ASN1 在硬件签名中，返回结果为R+S，可以通过调用{@link Builder#rsAsn1ToPlain(byte[])}方法转换之。
      *
-     * @param data 被签名的数据数据
+     * @param data 被签名的数据
      * @param id   可以为null，若为null，则默认withId为字节数组:"1234567812345678".getBytes()
      * @return 签名
      */

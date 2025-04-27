@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,7 +27,6 @@
 */
 package org.miaixz.bus.core.net.url;
 
-import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -87,7 +86,7 @@ public class UrlQuery {
      * @param charset decode用的编码，null表示不做decode
      * @return UrlQuery
      */
-    public static UrlQuery of(final String query, final Charset charset) {
+    public static UrlQuery of(final String query, final java.nio.charset.Charset charset) {
         return of(query, charset, true);
     }
 
@@ -99,7 +98,8 @@ public class UrlQuery {
      * @param autoRemovePath 是否自动去除path部分，{@code true}则自动去除第一个?前的内容
      * @return UrlQuery
      */
-    public static UrlQuery of(final String query, final Charset charset, final boolean autoRemovePath) {
+    public static UrlQuery of(final String query, final java.nio.charset.Charset charset,
+            final boolean autoRemovePath) {
         return of(query, charset, autoRemovePath, null);
     }
 
@@ -112,7 +112,7 @@ public class UrlQuery {
      * @param encodeMode     编码模式。
      * @return UrlQuery
      */
-    public static UrlQuery of(final String query, final Charset charset, final boolean autoRemovePath,
+    public static UrlQuery of(final String query, final java.nio.charset.Charset charset, final boolean autoRemovePath,
             final EncodeMode encodeMode) {
         return of(encodeMode).parse(query, charset, autoRemovePath);
     }
@@ -229,7 +229,7 @@ public class UrlQuery {
      * @param charset decode编码，null表示不做decode
      * @return this
      */
-    public UrlQuery parse(final String query, final Charset charset) {
+    public UrlQuery parse(final String query, final java.nio.charset.Charset charset) {
         return parse(query, charset, true);
     }
 
@@ -241,7 +241,7 @@ public class UrlQuery {
      * @param autoRemovePath 是否自动去除path部分，{@code true}则自动去除第一个?前的内容
      * @return this
      */
-    public UrlQuery parse(String query, final Charset charset, final boolean autoRemovePath) {
+    public UrlQuery parse(String query, final java.nio.charset.Charset charset, final boolean autoRemovePath) {
         if (StringKit.isBlank(query)) {
             return this;
         }
@@ -254,6 +254,9 @@ public class UrlQuery {
                 if (StringKit.isBlank(query)) {
                     return this;
                 }
+            } else if (StringKit.startWith(query, "http://") || StringKit.startWith(query, "https://")) {
+                // 用户传入只有URL，没有param部分，返回空
+                return this;
             }
         }
 
@@ -292,7 +295,7 @@ public class UrlQuery {
      * @param charset encode编码，null表示不做encode编码
      * @return URL查询字符串
      */
-    public String build(final Charset charset) {
+    public String build(final java.nio.charset.Charset charset) {
         switch (this.encodeMode) {
         case FORM_URL_ENCODED:
             return build(ALL, ALL, charset);
@@ -315,7 +318,8 @@ public class UrlQuery {
      * @param charset    encode编码，null表示不做encode编码
      * @return URL查询字符串
      */
-    public String build(final PercentCodec keyCoder, final PercentCodec valueCoder, final Charset charset) {
+    public String build(final PercentCodec keyCoder, final PercentCodec valueCoder,
+            final java.nio.charset.Charset charset) {
         if (MapKit.isEmpty(this.query)) {
             return Normal.EMPTY;
         }
@@ -346,7 +350,7 @@ public class UrlQuery {
      * @param charset decode编码，null表示不做decode
      * @return this
      */
-    private UrlQuery doParse(final String query, final Charset charset) {
+    private UrlQuery doParse(final String query, final java.nio.charset.Charset charset) {
         final int len = query.length();
         String name = null;
         int pos = 0; // 未处理字符开始位置
@@ -393,11 +397,11 @@ public class UrlQuery {
      *     4、key和value都为null，忽略之，比如&&
      * </pre>
      *
-     * @param key     data，为null则value作为key
+     * @param key     key，为null则value作为key
      * @param value   value，为null且key不为null时传入""
      * @param charset 编码
      */
-    private void addParam(final String key, final String value, final Charset charset) {
+    private void addParam(final String key, final String value, final java.nio.charset.Charset charset) {
         final boolean isFormUrlEncoded = EncodeMode.FORM_URL_ENCODED == this.encodeMode;
         if (null != key) {
             final String actualKey = UrlDecoder.decode(key, charset, isFormUrlEncoded);

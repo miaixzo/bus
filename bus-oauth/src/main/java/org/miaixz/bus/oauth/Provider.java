@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -33,6 +33,8 @@ import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.ErrorCode;
+import org.miaixz.bus.oauth.magic.Material;
+import org.miaixz.bus.oauth.metric.AbstractProvider;
 
 /**
  * {@code Provider}公共接口，所有平台的{@code Provider}都需要实现该接口 {@link Provider#authorize(String)}
@@ -82,6 +84,24 @@ public interface Provider extends org.miaixz.bus.core.Provider {
     default Message refresh(AccToken accToken) {
         throw new AuthorizedException(ErrorCode.NOT_IMPLEMENTED.getCode());
     }
+
+    /**
+     * 获取access token
+     *
+     * @param callback 授权成功后的回调参数
+     * @return token
+     * @see AbstractProvider#authorize(String)
+     */
+    AccToken getAccessToken(Callback callback);
+
+    /**
+     * 使用token换取用户信息
+     *
+     * @param accToken token信息
+     * @return 用户信息
+     * @see AbstractProvider#getAccessToken(Callback)
+     */
+    Material getUserInfo(AccToken accToken);
 
     @Override
     default Object type() {

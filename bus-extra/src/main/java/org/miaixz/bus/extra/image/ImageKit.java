@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -2287,6 +2287,16 @@ public class ImageKit {
     public static Font[] getAllFonts() {
         final GraphicsEnvironment e = GraphicsEnvironment.getLocalGraphicsEnvironment();
         return e.getAllFonts();
+    }
+
+    /**
+     * 注册字体到系统, 此方法用于将字体文件注册到系统，之后即可在字体名称列表中看到此字体
+     *
+     * @param font 字体
+     */
+    public static void registerFont(final Font font) {
+        final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        ge.registerFont(font);
     }
 
     /**

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -59,11 +59,11 @@ import com.amazonaws.services.s3.model.ObjectListing;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class JdYunOssProvider extends AbstractProvider {
+public class JdOssProvider extends AbstractProvider {
 
-    private AmazonS3 client;
+    private volatile AmazonS3 client;
 
-    public JdYunOssProvider(Context context) {
+    public JdOssProvider(Context context) {
         this.context = context;
         Assert.notBlank(this.context.getPrefix(), "[prefix] not defined");
         Assert.notBlank(this.context.getEndpoint(), "[endpoint] not defined");
@@ -81,7 +81,7 @@ public class JdYunOssProvider extends AbstractProvider {
                 this.context.getSecretKey());
         AWSCredentialsProvider awsCredentialsProvider = new AWSStaticCredentialsProvider(awsCredentials);
 
-        client = AmazonS3Client.builder().withEndpointConfiguration(endpointConfig).withClientConfiguration(config)
+        this.client = AmazonS3Client.builder().withEndpointConfiguration(endpointConfig).withClientConfiguration(config)
                 .withCredentials(awsCredentialsProvider).disableChunkedEncoding().withPathStyleAccessEnabled(true)
                 .build();
     }

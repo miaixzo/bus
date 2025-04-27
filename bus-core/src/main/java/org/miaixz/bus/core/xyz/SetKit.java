@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -198,6 +198,17 @@ public class SetKit {
      */
     public static <T> Set<T> zero() {
         return new HashSet<>(0, 1);
+    }
+
+    /**
+     * 获取一个只包含一个元素的Set，不可变
+     *
+     * @param <T>     元素类型
+     * @param element 元素
+     * @return 只包含一个元素的Set
+     */
+    public static <T> Set<T> singleton(final T element) {
+        return Collections.singleton(element);
     }
 
     /**

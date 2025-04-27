@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -45,8 +45,8 @@ import javax.net.ssl.X509TrustManager;
 import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.source.Source;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.core.net.tls.AnyHostnameVerifier;
 import org.miaixz.bus.core.net.tls.SSLContextBuilder;
-import org.miaixz.bus.core.net.tls.TrustAnyHostnameVerifier;
 import org.miaixz.bus.http.accord.ConnectionPool;
 import org.miaixz.bus.http.accord.ConnectionSuite;
 import org.miaixz.bus.http.accord.Exchange;
@@ -415,7 +415,7 @@ public class Httpd implements Cloneable, NewCall.Factory, WebSocket.Factory {
             }
             cookieJar = CookieJar.NO_COOKIES;
             socketFactory = SocketFactory.getDefault();
-            hostnameVerifier = TrustAnyHostnameVerifier.INSTANCE;
+            hostnameVerifier = AnyHostnameVerifier.INSTANCE;
             certificatePinner = CertificatePinner.DEFAULT;
             proxyAuthenticator = Authenticator.NONE;
             authenticator = Authenticator.NONE;

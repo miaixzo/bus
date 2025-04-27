@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2024 miaixz.org and other contributors.                    ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.List;
 
-import org.miaixz.bus.core.net.tls.TrustAnyTrustManager;
+import org.miaixz.bus.core.net.tls.AnyTrustManager;
 import org.miaixz.bus.image.metric.Connection;
 import org.miaixz.bus.image.metric.QueryOption;
 import org.miaixz.bus.image.metric.net.ApplicationEntity;
@@ -250,9 +250,9 @@ public class Args {
 
             Device device = conn.getDevice();
             try {
-                device.setKeyManager(TrustAnyTrustManager.createKeyManager(option.getKeystoreType(),
-                        option.getKeystoreURL(), option.getKeystorePass(), option.getKeyPass()));
-                device.setTrustManager(TrustAnyTrustManager.createTrustManager(option.getTruststoreType(),
+                device.setKeyManager(AnyTrustManager.createKeyManager(option.getKeystoreType(), option.getKeystoreURL(),
+                        option.getKeystorePass(), option.getKeyPass()));
+                device.setTrustManager(AnyTrustManager.createTrustManager(option.getTruststoreType(),
                         option.getTruststoreURL(), option.getTruststorePass()));
                 if (remote != null) {
                     remote.setTlsProtocols(conn.getTlsProtocols());
