@@ -112,7 +112,7 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
      * @return 返回获取accessToken的url
      */
     @Override
-    protected String accessTokenUrl(String code) {
+    public String accessTokenUrl(String code) {
         return Builder.fromUrl(complex.accessToken()).queryParam("corpid", context.getAppKey())
                 .queryParam("corpsecret", context.getAppSecret()).build();
     }
@@ -124,7 +124,7 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
      * @return 返回获取userInfo的url
      */
     @Override
-    protected String userInfoUrl(AccToken accToken) {
+    public String userInfoUrl(AccToken accToken) {
         return Builder.fromUrl(complex.userInfo()).queryParam("access_token", accToken.getAccessToken())
                 .queryParam("code", accToken.getCode()).build();
     }

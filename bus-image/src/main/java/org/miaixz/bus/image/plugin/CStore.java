@@ -123,7 +123,7 @@ public class CStore {
             }
             storeSCU.setPriority(options.getPriority());
 
-            storeSCU.scanFiles(files, false);
+            storeSCU.scanFiles(files);
 
             Status dcmState = storeSCU.getState();
 

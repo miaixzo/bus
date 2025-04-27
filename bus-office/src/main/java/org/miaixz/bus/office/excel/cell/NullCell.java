@@ -78,6 +78,11 @@ public class NullCell implements Cell {
         return this.row;
     }
 
+    @Deprecated
+    public void setCellType(final CellType cellType) {
+        throw new UnsupportedOperationException("Can not set any thing to null cell!");
+    }
+
     @Override
     public void setBlank() {
         throw new UnsupportedOperationException("Can not set any thing to null cell!");

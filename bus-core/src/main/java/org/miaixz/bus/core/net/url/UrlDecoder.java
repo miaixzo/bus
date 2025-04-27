@@ -28,12 +28,16 @@
 package org.miaixz.bus.core.net.url;
 
 import java.io.Serializable;
+import java.util.*;
 
 import org.miaixz.bus.core.io.stream.FastByteArrayOutputStream;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.CharKit;
+import org.miaixz.bus.core.xyz.CollKit;
+import org.miaixz.bus.core.xyz.MapKit;
+import org.miaixz.bus.core.xyz.StringKit;
 
 /**
  * URL解码，数据内容的类型是 application/x-www-form-urlencoded。
@@ -71,7 +75,7 @@ public class UrlDecoder implements Serializable {
     /**
      * 解码
      * 规则见：<a href="https://url.spec.whatwg.org/#urlencoded-parsing">https://url.spec.whatwg.org/#urlencoded-parsing</a>
-     * 
+     *
      * <pre>
      *   1. 将+和%20转换为空格(" ");
      *   2. 将"%xy"转换为文本形式,xy是两位16进制的数值;
@@ -88,7 +92,7 @@ public class UrlDecoder implements Serializable {
     /**
      * 解码
      * 规则见：<a href="https://url.spec.whatwg.org/#urlencoded-parsing">https://url.spec.whatwg.org/#urlencoded-parsing</a>
-     * 
+     *
      * <pre>
      *   1. 将+和%20转换为空格(" ");
      *   2. 将"%xy"转换为文本形式,xy是两位16进制的数值;
@@ -105,7 +109,7 @@ public class UrlDecoder implements Serializable {
 
     /**
      * 解码
-     * 
+     *
      * <pre>
      *   1. 将%20转换为空格 ;
      *   2. 将"%xy"转换为文本形式,xy是两位16进制的数值;
@@ -122,7 +126,7 @@ public class UrlDecoder implements Serializable {
 
     /**
      * 解码
-     * 
+     *
      * <pre>
      *   1. 将%20转换为空格 ;
      *   2. 将"%xy"转换为文本形式,xy是两位16进制的数值;
@@ -182,7 +186,7 @@ public class UrlDecoder implements Serializable {
 
     /**
      * 解码
-     * 
+     *
      * <pre>
      *   1. 将+和%20转换为空格 ;
      *   2. 将"%xy"转换为文本形式,xy是两位16进制的数值;
@@ -198,7 +202,7 @@ public class UrlDecoder implements Serializable {
 
     /**
      * 解码
-     * 
+     *
      * <pre>
      *   1. 将%20转换为空格 ;
      *   2. 将"%xy"转换为文本形式,xy是两位16进制的数值;
@@ -255,6 +259,101 @@ public class UrlDecoder implements Serializable {
         return new String(decode(
                 // 截取需要decode的部分
                 text.substring(begin, end).getBytes(Charset.ISO_8859_1), isPlusToSpace), charset);
+    }
+
+    /**
+     * 将URL参数解析为Map(也可以解析Post中的键值对参数)
+     *
+     * @param params  参数字符串(或者带参数的Path)
+     * @param charset 字符集
+     * @return 参数Map
+     */
+    public static Map<String, String> decodeMap(String params, String charset) {
+        final Map<String, List<String>> paramsMap = decodeObject(params, charset);
+        final Map<String, String> result = MapKit.newHashMap(paramsMap.size());
+        List<String> list;
+        for (Map.Entry<String, List<String>> entry : paramsMap.entrySet()) {
+            list = entry.getValue();
+            result.put(entry.getKey(), CollKit.isEmpty(list) ? null : list.get(0));
+        }
+        return result;
+    }
+
+    /**
+     * 将URL参数解析为Map(也可以解析Post中的键值对参数)
+     *
+     * @param params  参数字符串(或者带参数的Path)
+     * @param charset 字符集
+     * @return 参数Map
+     */
+    public static Map<String, List<String>> decodeObject(String params, String charset) {
+        if (StringKit.isBlank(params)) {
+            return Collections.emptyMap();
+        }
+
+        // 去掉Path部分
+        int pathEndPos = params.indexOf(Symbol.C_QUESTION_MARK);
+        if (pathEndPos > -1) {
+            params = StringKit.subSuf(params, pathEndPos + 1);
+        }
+
+        final Map<String, List<String>> map = new LinkedHashMap<>();
+        final int len = params.length();
+        String name = null;
+        int pos = 0; // 未处理字符开始位置
+        int i; // 未处理字符结束位置
+        char c; // 当前字符
+        for (i = 0; i < len; i++) {
+            c = params.charAt(i);
+            if (c == Symbol.C_EQUAL) { // 键值对的分界点
+                if (null == name) {
+                    // name可以是""
+                    name = params.substring(pos, i);
+                }
+                pos = i + 1;
+            } else if (c == Symbol.C_AND) { // 参数对的分界点
+                if (null == name && pos != i) {
+                    // 对于像&a&这类无参数值的字符串,我们将name为a的值设为""
+                    addParam(map, params.substring(pos, i), Normal.EMPTY, charset);
+                } else if (null != name) {
+                    addParam(map, name, params.substring(pos, i), charset);
+                    name = null;
+                }
+                pos = i + 1;
+            }
+        }
+
+        // 处理结尾
+        if (pos != i) {
+            if (null == name) {
+                addParam(map, params.substring(pos, i), Normal.EMPTY, charset);
+            } else {
+                addParam(map, name, params.substring(pos, i), charset);
+            }
+        } else if (null != name) {
+            addParam(map, name, Normal.EMPTY, charset);
+        }
+
+        return map;
+    }
+
+    /**
+     * 将键值对加入到值为List类型的Map中
+     *
+     * @param params  参数
+     * @param name    key
+     * @param value   value
+     * @param charset 编码
+     */
+    private static void addParam(Map<String, List<String>> params, String name, String value, String charset) {
+        name = decode(name, Charset.parse(charset));
+        value = decode(value, Charset.parse(charset));
+        List<String> values = params.get(name);
+        if (null == values) {
+            values = new ArrayList<>(1);
+            params.put(name, values);
+        }
+        values.add(value);
     }
 
 }
