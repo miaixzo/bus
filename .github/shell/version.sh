@@ -72,4 +72,3 @@ sed -i "s/${old_version}/${version}/g" "$pwd"/README.md
 
 # 保留新版本号
 echo "$version" > "$pwd"/VERSION
-
