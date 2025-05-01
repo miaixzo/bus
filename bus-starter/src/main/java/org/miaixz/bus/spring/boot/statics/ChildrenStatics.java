@@ -25,21 +25,28 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.startup.statics;
+package org.miaixz.bus.spring.boot.statics;
 
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+
 /**
- * 记录模块刷新的状态模型
+ * 统计模型持有的子模块
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-public class ModuleStatics extends ChildrenStatics<BeanStatics> {
+public class ChildrenStatics<T extends BaseStatics> extends BaseStatics {
 
-    private String threadName;
+    private List<T> children = new CopyOnWriteArrayList<>();
+
+    public void addChild(T child) {
+        this.children.add(child);
+    }
 
 }

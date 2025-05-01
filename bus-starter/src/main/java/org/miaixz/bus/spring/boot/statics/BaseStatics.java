@@ -25,42 +25,41 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz;
+package org.miaixz.bus.spring.boot.statics;
 
-import org.miaixz.bus.core.Version;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
- * <p>
- * Bus (应用/服务总线) 是一个微服务套件、基础框架，它基于Java8编写，参考、借鉴了大量已有 框架、组件的设计，可以作为后端服务的开发基础中间件。代码简洁，架构清晰，非常适合学习使用
- * </p>
- *
- * <p>
- * 目标期望能努力打造一套从 基础框架 - 分布式微服务架构 - 持续集成 - 自动化部署 -系统监测 等，快速实现业务需求的全栈式技术解决方案
- * 同时封装的工具涵盖了字符串、数字、集合、编码、日期、文件、IO、加解密、JSON、HTTP客户端等
- * </p>
- *
- * <p>
- * 欢迎各种形式的贡献，包括但不限于优化，添加功能，文档 代码的改进，问题和 bugs 的报告
- * </p>
+ * 启动状态的基本模型
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class Bus extends Version {
+@Getter
+@Setter
+public class BaseStatics {
 
-    /**
-     * 版本对象，格式：tok+ ( '-' tok+)? ( '+' tok+)?，版本之间使用'.'或'-'分隔，版本号可能包含'+' 数字部分按照大小比较，字符串按照字典顺序比较。
-     *
-     * <ol>
-     * <li>sequence: 主版本号</li>
-     * <li>pre: 次版本号</li>
-     * <li>build: 构建版本</li>
-     * </ol>
-     *
-     * @param v 版本字符串
-     */
-    public Bus(String v) {
-        super(v);
+    private final Map<String, String> attributes = new HashMap<>();
+    private String name;
+    private long startTime;
+    private long endTime;
+    private long cost;
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
+        this.cost = this.endTime - this.startTime;
+    }
+
+    public void putAttribute(String key, String value) {
+        this.attributes.put(key, value);
+    }
+
+    public String getAttribute(String key) {
+        return this.attributes.get(key);
     }
 
 }

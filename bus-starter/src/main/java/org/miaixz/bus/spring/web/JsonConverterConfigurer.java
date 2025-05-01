@@ -25,30 +25,43 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.startup.statics;
+package org.miaixz.bus.spring.web;
 
-import java.util.ArrayList;
+import org.springframework.http.converter.HttpMessageConverter;
+
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
-
 /**
- * 启动消耗统计组件
- *
- * @author Kimi Liu
- * @since Java 17+
+ * 用于配置 JSON 消息转换器的接口，支持集成自定义 JSON 框架（如 Gson、JSON-B）。 实现类需提供转换器名称、可用性检查、优先级顺序和配置逻辑。
  */
-@Getter
-@Setter
-public class StartupStatics {
+interface JsonConverterConfigurer {
 
-    private String appName;
+    /**
+     * 获取转换器名称。
+     *
+     * @return 转换器名称（如 "Jackson"、"Fastjson"）
+     */
+    String converterName();
 
-    private long applicationBootElapsedTime = 0;
+    /**
+     * 检查转换器是否可用（依赖类是否存在）。
+     *
+     * @return 如果依赖存在且可用返回 true，否则返回 false
+     */
+    boolean isAvailable();
 
-    private long applicationBootTime;
+    /**
+     * 获取转换器的优先级顺序。
+     *
+     * @return 转换器在列表中的插入索引
+     */
+    int order();
 
-    private List<BaseStatics> stageStats = new ArrayList<>();
+    /**
+     * 配置消息转换器。
+     *
+     * @param converters 要添加到的消息转换器列表
+     */
+    void configure(List<HttpMessageConverter<?>> converters);
 
 }

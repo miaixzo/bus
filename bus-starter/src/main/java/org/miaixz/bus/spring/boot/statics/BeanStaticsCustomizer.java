@@ -25,50 +25,24 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.env;
-
-import java.util.Properties;
-
-import org.miaixz.bus.core.Version;
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.env.EnvironmentPostProcessor;
-import org.springframework.core.Ordered;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.PropertiesPropertySource;
+package org.miaixz.bus.spring.boot.statics;
 
 /**
- *
- * 实现{@link EnvironmentPostProcessor}来设置一些属性 比如版本，将被添加为一个名为cconfigurationproperties的属性源。
+ * 接口自定义{@link BeanStatics}
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BusEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
+public interface BeanStaticsCustomizer {
 
-    @Override
-    public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
-        // 系统时区
-        System.setProperty("user.timezone", "Asia/Shanghai");
-        if (environment.getPropertySources().get(GeniusBuilder.BUS_PROPERTY_SOURCE) != null) {
-            return;
-        }
-
-        // 版本配置
-        Properties properties = new Properties();
-        properties.setProperty(GeniusBuilder.VERSION, Version._VERSION);
-
-        // 默认配置
-        PropertiesPropertySource propertySource = new PropertiesPropertySource(GeniusBuilder.BUS_PROPERTY_SOURCE,
-                properties);
-        environment.getPropertySources().addLast(propertySource);
-
-        environment.setRequiredProperties(GeniusBuilder.APP_NAME);
-    }
-
-    @Override
-    public int getOrder() {
-        return Ordered.LOWEST_PRECEDENCE - 100;
-    }
+    /**
+     * 自定义bean启动
+     *
+     * @param beanName 名称
+     * @param bean     实例
+     * @param beanStat 统计模型
+     * @return 如果{@code null}，则不会调用后续的BeanStatCustomizer
+     */
+    BeanStatics customize(String beanName, Object bean, BeanStatics beanStat);
 
 }

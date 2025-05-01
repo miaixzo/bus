@@ -25,23 +25,40 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.startup.statics;
-
-import lombok.Getter;
-import lombok.Setter;
+package org.miaixz;
 
 /**
- * 记录bean初始化的状态模型
+ * <p>
+ * Version (应用/服务总线) 是一个微服务套件、基础框架，它基于Java8编写，参考、借鉴了大量已有 框架、组件的设计，可以作为后端服务的开发基础中间件。代码简洁，架构清晰，非常适合学习使用
+ * </p>
+ *
+ * <p>
+ * 目标期望能努力打造一套从 基础框架 - 分布式微服务架构 - 持续集成 - 自动化部署 -系统监测 等，快速实现业务需求的全栈式技术解决方案
+ * 同时封装的工具涵盖了字符串、数字、集合、编码、日期、文件、IO、加解密、JSON、HTTP客户端等
+ * </p>
+ *
+ * <p>
+ * 欢迎各种形式的贡献，包括但不限于优化，添加功能，文档 代码的改进，问题和 bugs 的报告
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Getter
-@Setter
-public class BeanStatics extends ChildrenStatics<BeanStatics> {
+public class Version extends org.miaixz.bus.core.Version {
 
-    private String type;
-
-    private long realRefreshElapsedTime;
+    /**
+     * 版本对象，格式：tok+ ( '-' tok+)? ( '+' tok+)?，版本之间使用'.'或'-'分隔，版本号可能包含'+' 数字部分按照大小比较，字符串按照字典顺序比较。
+     *
+     * <ol>
+     * <li>sequence: 主版本号</li>
+     * <li>pre: 次版本号</li>
+     * <li>build: 构建版本</li>
+     * </ol>
+     *
+     * @param v 版本字符串
+     */
+    public Version(String v) {
+        super(v);
+    }
 
 }

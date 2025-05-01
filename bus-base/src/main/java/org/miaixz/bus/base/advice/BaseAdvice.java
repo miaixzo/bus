@@ -86,6 +86,7 @@ public class BaseAdvice extends Controller {
      */
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Object defaultException(Exception e) {
         this.defaultExceptionHandler(e);
         return write(ErrorCode.EM_FAILURE);
@@ -175,6 +176,7 @@ public class BaseAdvice extends Controller {
      * @return 异常提示
      */
     @ResponseBody
+    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     @ExceptionHandler(value = HttpMediaTypeNotSupportedException.class)
     public Object httpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
         this.defaultExceptionHandler(e);

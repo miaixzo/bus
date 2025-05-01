@@ -25,41 +25,21 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.startup.statics;
-
-import java.util.HashMap;
-import java.util.Map;
+package org.miaixz.bus.spring.boot.statics;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 启动状态的基本模型
+ * 记录模块刷新的状态模型
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-public class BaseStatics {
+public class ModuleStatics extends ChildrenStatics<BeanStatics> {
 
-    private final Map<String, String> attributes = new HashMap<>();
-    private String name;
-    private long startTime;
-    private long endTime;
-    private long cost;
-
-    public void setEndTime(long endTime) {
-        this.endTime = endTime;
-        this.cost = this.endTime - this.startTime;
-    }
-
-    public void putAttribute(String key, String value) {
-        this.attributes.put(key, value);
-    }
-
-    public String getAttribute(String key) {
-        return this.attributes.get(key);
-    }
+    private String threadName;
 
 }

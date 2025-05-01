@@ -27,20 +27,20 @@
 */
 package org.miaixz.bus.base.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.miaixz.bus.base.entity.BaseEntity;
 import org.miaixz.bus.base.mapper.BaseMapper;
 import org.miaixz.bus.core.basic.entity.Result;
 import org.miaixz.bus.core.basic.normal.Consts;
 import org.miaixz.bus.core.xyz.FieldKit;
+import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.mapper.entity.Condition;
 import org.miaixz.bus.pager.Page;
 import org.miaixz.bus.pager.PageContext;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * 基于spring 实现BaseService 接口 根据业务需要如无status，creator等相关属性内容 重写此类及{@link BaseEntity} 业务类继承新类
@@ -69,7 +69,7 @@ public class DefaultService<Mapper extends BaseMapper<T>, T extends BaseEntity> 
 
     @Override
     public Object insertBatch(List<T> list) {
-        List<String> data = new ArrayList<>();
+        List<String> data = ListKit.of();
         list.forEach(item -> {
             String id = this.insertSelective(item);
             data.add(id);
@@ -79,7 +79,7 @@ public class DefaultService<Mapper extends BaseMapper<T>, T extends BaseEntity> 
 
     @Override
     public Object insertBatchSelective(List<T> list) {
-        List<String> data = new ArrayList<>();
+        List<String> data = ListKit.of();
         list.forEach(item -> {
             String id = this.insertSelective(item);
             data.add(id);

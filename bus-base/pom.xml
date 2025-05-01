@@ -86,7 +86,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <lombok.version>1.18.36</lombok.version>
-        <spring.boot.version>3.3.11</spring.boot.version>
+        <spring.boot.version>3.4.5</spring.boot.version>
         <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
     </properties>
 

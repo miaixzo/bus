@@ -25,28 +25,30 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.startup.statics;
-
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+package org.miaixz.bus.spring.boot.statics;
 
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * 统计模型持有的子模块
+ * 启动消耗统计组件
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 @Getter
 @Setter
-public class ChildrenStatics<T extends BaseStatics> extends BaseStatics {
+public class StartupStatics {
 
-    private List<T> children = new CopyOnWriteArrayList<>();
+    private String appName;
 
-    public void addChild(T child) {
-        this.children.add(child);
-    }
+    private long applicationBootElapsedTime = 0;
+
+    private long applicationBootTime;
+
+    private List<BaseStatics> stageStats = new ArrayList<>();
 
 }

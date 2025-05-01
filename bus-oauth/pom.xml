@@ -87,7 +87,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <lombok.version>1.18.36</lombok.version>
         <bcpkix.version>1.79</bcpkix.version>
-        <fastjson.version>2.0.53</fastjson.version>
+        <fastjson.version>2.0.57</fastjson.version>
         <alipay.version>4.39.165.ALL</alipay.version>
     </properties>
 
@@ -120,8 +120,8 @@
             <optional>true</optional>
         </dependency>
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
+            <groupId>com.alibaba.fastjson2</groupId>
+            <artifactId>fastjson2</artifactId>
             <version>${fastjson.version}</version>
             <optional>true</optional>
         </dependency>

@@ -27,20 +27,18 @@
 */
 package org.miaixz.bus.base.entity;
 
-import java.util.List;
-import java.util.Objects;
-
-import org.miaixz.bus.core.basic.entity.Tracer;
-import org.miaixz.bus.core.basic.normal.Consts;
-import org.miaixz.bus.core.data.id.ID;
-import org.miaixz.bus.core.xyz.*;
-
 import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.miaixz.bus.core.basic.entity.Tracer;
+import org.miaixz.bus.core.basic.normal.Consts;
+import org.miaixz.bus.core.data.id.ID;
+import org.miaixz.bus.core.xyz.*;
+
+import java.util.List;
 
 /**
  * Entity 基本信息
@@ -131,10 +129,10 @@ public class BaseEntity extends Tracer {
      * @param target 目标实体
      */
     public <T extends BaseEntity> void setAccess(T source, T target) {
-        if (Objects.isNull(source) || Objects.isNull(target)) {
+        if (ObjectKit.isNull(source) || ObjectKit.isNull(target)) {
             return;
         }
-        target.setX_org_id(source.getX_org_id());
+        target.setX_tenant_id(source.getX_tenant_id());
         target.setX_user_id(source.getX_user_id());
     }
 
@@ -146,7 +144,7 @@ public class BaseEntity extends Tracer {
      * @param target 目标实体
      */
     public <T extends BaseEntity> void setAccess(T source, T... target) {
-        if (Objects.isNull(source) || ArrayKit.isEmpty(target)) {
+        if (ObjectKit.isNull(source) || ArrayKit.isEmpty(target)) {
             return;
         }
         for (T targetEntity : target) {
@@ -163,7 +161,7 @@ public class BaseEntity extends Tracer {
      * @param target 目标实体
      */
     public <S extends BaseEntity, E extends BaseEntity> void setAccess(S source, List<E> target) {
-        if (Objects.isNull(source) || CollKit.isEmpty(target)) {
+        if (ObjectKit.isNull(source) || CollKit.isEmpty(target)) {
             return;
         }
         target.forEach(targetEntity -> this.setAccess(source, targetEntity));

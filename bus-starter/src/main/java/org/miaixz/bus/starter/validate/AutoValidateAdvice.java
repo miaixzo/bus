@@ -27,14 +27,15 @@
 */
 package org.miaixz.bus.starter.validate;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-
+import org.miaixz.bus.core.xyz.ArrayKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.proxy.invoker.ProxyChain;
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.Context;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 
 /**
  * 自动进行参数处理实现类
@@ -65,8 +66,10 @@ public class AutoValidateAdvice {
         }
         Annotation[][] annotations = method.getParameterAnnotations();
         Object[] names = proxyChain.getNames();
-        for (int i = 0; i < agruements.length; i++) {
-            Builder.on(agruements[i], annotations[i], Context.newInstance(), StringKit.toString(names[i]));
+        if (!ArrayKit.isEmpty(names)) {
+            for (int i = 0; i < agruements.length; i++) {
+                Builder.on(agruements[i], annotations[i], Context.newInstance(), StringKit.toString(names[i]));
+            }
         }
         return proxyChain.proceed(agruements);
     }

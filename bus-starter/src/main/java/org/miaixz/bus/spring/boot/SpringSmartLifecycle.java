@@ -25,51 +25,79 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.startup;
+package org.miaixz.bus.spring.boot;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.spring.startup.statics.BaseStatics;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ApplicationContextInitializer;
+import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.spring.boot.statics.ChildrenStatics;
+import org.miaixz.bus.spring.boot.statics.ModuleStatics;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.GenericTypeResolver;
+import org.springframework.context.SmartLifecycle;
 
 /**
- * 扩展{@link SpringApplication}来计算{@link ApplicationContextInitializer}初始化所需的时间。
+ * 实现{@link SmartLifecycle}计算应用程序上下文刷新时间
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class StartupSpringApplication extends SpringApplication {
+public class SpringSmartLifecycle implements SmartLifecycle, ApplicationContextAware {
 
-    private final List<BaseStatics> initializerStartupStatList = new ArrayList<>();
+    public static final String ROOT_MODULE_NAME = "ROOT_APPLICATION_CONTEXT";
+    /**
+     * 收集和启动报告成本的基本组件
+     */
+    private final StartupReporter startupReporter;
 
-    public StartupSpringApplication(Class<?>... primarySources) {
-        super(primarySources);
+    /**
+     * 应用程序上下文
+     */
+    private ConfigurableApplicationContext applicationContext;
+
+    public SpringSmartLifecycle(StartupReporter startupReporter) {
+        this.startupReporter = startupReporter;
     }
 
     @Override
-    protected void applyInitializers(ConfigurableApplicationContext context) {
-        for (ApplicationContextInitializer initializer : getInitializers()) {
-            Class<?> requiredType = GenericTypeResolver.resolveTypeArgument(initializer.getClass(),
-                    ApplicationContextInitializer.class);
-            if (requiredType != null) {
-                Assert.isInstanceOf(requiredType, context, "Unable to call initializer.");
-                BaseStatics stat = new BaseStatics();
-                stat.setName(initializer.getClass().getName());
-                stat.setStartTime(System.currentTimeMillis());
-                initializer.initialize(context);
-                stat.setEndTime(System.currentTimeMillis());
-                initializerStartupStatList.add(stat);
-            }
-        }
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = (ConfigurableApplicationContext) applicationContext;
     }
 
-    public List<BaseStatics> getInitializerStartupStatList() {
-        return initializerStartupStatList;
+    @Override
+    public void start() {
+        // 初始化 ContextRefreshStageStat
+        ChildrenStatics<ModuleStatics> stat = new ChildrenStatics<>();
+        stat.setName(GeniusBuilder.APPLICATION_CONTEXT_REFRESH_STAGE);
+        stat.setEndTime(System.currentTimeMillis());
+
+        // 构建根模块
+        ModuleStatics rootModuleStat = new ModuleStatics();
+        rootModuleStat.setName(ROOT_MODULE_NAME);
+        rootModuleStat.setEndTime(stat.getEndTime());
+        rootModuleStat.setThreadName(Thread.currentThread().getName());
+
+        // 从ApplicationStartup获取beanstatlist
+        rootModuleStat.setChildren(startupReporter.generateBeanStats(applicationContext));
+
+        // 报告ContextRefreshStageStat
+        stat.addChild(rootModuleStat);
+        startupReporter.addCommonStartupStat(stat);
+    }
+
+    @Override
+    public void stop() {
+
+    }
+
+    @Override
+    public boolean isRunning() {
+        return false;
+    }
+
+    @Override
+    public int getPhase() {
+        return Integer.MIN_VALUE;
     }
 
 }

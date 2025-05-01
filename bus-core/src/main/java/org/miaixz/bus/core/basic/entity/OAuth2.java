@@ -50,6 +50,12 @@ public class OAuth2 extends Entity {
     private static final long serialVersionUID = -1L;
 
     /**
+     * 当前租户
+     */
+    @Transient
+    protected String x_tenant_id;
+
+    /**
      * 当前用户标识
      */
     @Transient
@@ -80,12 +86,6 @@ public class OAuth2 extends Entity {
     protected String x_duty_id;
 
     /**
-     * 当前用户组织
-     */
-    @Transient
-    protected String x_org_id;
-
-    /**
      * 当前用户设备
      */
     @Transient
@@ -96,12 +96,6 @@ public class OAuth2 extends Entity {
      */
     @Transient
     protected String x_app_id;
-
-    /**
-     * 当前租户
-     */
-    @Transient
-    protected String x_tenant_id;
 
     /**
      * 扩展参数信息

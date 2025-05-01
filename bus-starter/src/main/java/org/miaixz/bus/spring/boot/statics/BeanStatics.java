@@ -25,24 +25,23 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.startup.statics;
+package org.miaixz.bus.spring.boot.statics;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * 接口自定义{@link BeanStatics}
+ * 记录bean初始化的状态模型
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface BeanStaticsCustomizer {
+@Getter
+@Setter
+public class BeanStatics extends ChildrenStatics<BeanStatics> {
 
-    /**
-     * 自定义bean启动
-     *
-     * @param beanName 名称
-     * @param bean     实例
-     * @param beanStat 统计模型
-     * @return 如果{@code null}，则不会调用后续的BeanStatCustomizer
-     */
-    BeanStatics customize(String beanName, Object bean, BeanStatics beanStat);
+    private String type;
+
+    private long realRefreshElapsedTime;
 
 }

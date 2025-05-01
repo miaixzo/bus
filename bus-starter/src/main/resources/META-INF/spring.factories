@@ -23,14 +23,9 @@
 # THE SOFTWARE.                                                                 #
 #                                                                               #
 #################################################################################
-# Environment Post Processors
-org.springframework.boot.env.EnvironmentPostProcessor=\
-  org.miaixz.bus.spring.env.BusEnvironmentPostProcessor,\
-  org.miaixz.bus.spring.env.LoggingEnvironmentPostProcessor,\
-  org.miaixz.bus.spring.env.ScenesEnvironmentPostProcessor
 # Spring Application Run Listeners
 org.springframework.boot.SpringApplicationRunListener=\
-  org.miaixz.bus.spring.startup.StartupSpringApplicationRunListener
+  org.miaixz.bus.spring.boot.SpringApplicationRunListener
 # Application Listeners
 org.springframework.context.ApplicationListener=\
   org.miaixz.bus.spring.listener.SpringCloudConfigListener,\

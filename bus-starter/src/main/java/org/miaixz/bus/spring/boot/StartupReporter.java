@@ -25,16 +25,13 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.startup;
-
-import java.lang.management.ManagementFactory;
-import java.util.*;
+package org.miaixz.bus.spring.boot;
 
 import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.spring.startup.statics.BaseStatics;
-import org.miaixz.bus.spring.startup.statics.BeanStatics;
-import org.miaixz.bus.spring.startup.statics.BeanStaticsCustomizer;
-import org.miaixz.bus.spring.startup.statics.StartupStatics;
+import org.miaixz.bus.spring.boot.statics.BaseStatics;
+import org.miaixz.bus.spring.boot.statics.BeanStatics;
+import org.miaixz.bus.spring.boot.statics.BeanStaticsCustomizer;
+import org.miaixz.bus.spring.boot.statics.StartupStatics;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup;
 import org.springframework.boot.context.metrics.buffering.StartupTimeline;
@@ -45,6 +42,9 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.io.support.SpringFactoriesLoader;
 import org.springframework.core.metrics.ApplicationStartup;
 import org.springframework.core.metrics.StartupStep;
+
+import java.lang.management.ManagementFactory;
+import java.util.*;
 
 /**
  * 收集和启动报告成本的基本组件
