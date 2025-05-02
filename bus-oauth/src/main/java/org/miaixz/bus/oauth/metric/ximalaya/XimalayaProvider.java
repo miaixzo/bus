@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,11 +27,6 @@
 */
 package org.miaixz.bus.oauth.metric.ximalaya;
 
-import java.security.MessageDigest;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
-
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
@@ -40,6 +35,7 @@ import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -49,7 +45,10 @@ import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.security.MessageDigest;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * 喜马拉雅 登录
@@ -111,12 +110,27 @@ public class XimalayaProvider extends AbstractProvider {
         map.put("grant_type", "authorization_code");
         map.put("redirect_uri", context.getRedirectUri());
         String response = Httpx.post(complex.accessToken(), map);
-        JSONObject accessTokenObject = JSONObject.parseObject(response);
-        this.checkResponse(accessTokenObject);
+        try {
+            Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
+            if (accessTokenObject == null) {
+                throw new AuthorizedException("Failed to parse access token response: empty response");
+            }
+            this.checkResponse(accessTokenObject);
 
-        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
-                .refreshToken(accessTokenObject.getString("refresh_token"))
-                .expireIn(accessTokenObject.getIntValue("expires_in")).uid(accessTokenObject.getString("uid")).build();
+            String accessToken = (String) accessTokenObject.get("access_token");
+            if (accessToken == null) {
+                throw new AuthorizedException("Missing access_token in response");
+            }
+            String refreshToken = (String) accessTokenObject.get("refresh_token");
+            Object expiresInObj = accessTokenObject.get("expires_in");
+            int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
+            String uid = (String) accessTokenObject.get("uid");
+
+            return AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn).uid(uid)
+                    .build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
+        }
     }
 
     /**
@@ -138,9 +152,11 @@ public class XimalayaProvider extends AbstractProvider {
      *
      * @param object 接口返回的结果
      */
-    private void checkResponse(JSONObject object) {
+    private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("errcode")) {
-            throw new AuthorizedException(object.getString("error_no"), object.getString("error_desc"));
+            String errorNo = String.valueOf(object.get("error_no"));
+            String errorDesc = (String) object.get("error_desc");
+            throw new AuthorizedException(errorNo, errorDesc != null ? errorDesc : "Unknown error");
         }
     }
 
@@ -161,11 +177,26 @@ public class XimalayaProvider extends AbstractProvider {
         map.put("access_token", accToken.getAccessToken());
         map.put("sig", sign(map, context.getAppSecret()));
         String rawUserInfo = Httpx.get(complex.userInfo(), map);
-        JSONObject object = JSONObject.parseObject(rawUserInfo);
-        checkResponse(object);
-        return Material.builder().uuid(object.getString("id")).nickname(object.getString("nickname"))
-                .avatar(object.getString("avatar_url")).rawJson(object).source(complex.toString()).token(accToken)
-                .gender(Gender.UNKNOWN).build();
+        try {
+            Map<String, Object> object = JsonKit.toPojo(rawUserInfo, Map.class);
+            if (object == null) {
+                throw new AuthorizedException("Failed to parse user info response: empty response");
+            }
+            checkResponse(object);
+
+            String id = (String) object.get("id");
+            if (id == null) {
+                throw new AuthorizedException("Missing id in user info response");
+            }
+            String nickname = (String) object.get("nickname");
+            String avatarUrl = (String) object.get("avatar_url");
+
+            return Material.builder().uuid(id).nickname(nickname).avatar(avatarUrl)
+                    .rawJson(JsonKit.toJsonString(object)).source(complex.toString()).token(accToken)
+                    .gender(Gender.UNKNOWN).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
+        }
     }
 
 }

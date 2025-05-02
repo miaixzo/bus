@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,6 +27,13 @@
 */
 package org.miaixz.bus.oauth.metric.alipay;
 
+import com.alipay.api.AlipayApiException;
+import com.alipay.api.AlipayClient;
+import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.request.AlipaySystemOauthTokenRequest;
+import com.alipay.api.request.AlipayUserInfoShareRequest;
+import com.alipay.api.response.AlipaySystemOauthTokenResponse;
+import com.alipay.api.response.AlipayUserInfoShareResponse;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Charset;
@@ -34,6 +41,7 @@ import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.Protocol;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Checker;
 import org.miaixz.bus.oauth.Context;
@@ -43,15 +51,6 @@ import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
-
-import com.alibaba.fastjson.JSONObject;
-import com.alipay.api.AlipayApiException;
-import com.alipay.api.AlipayClient;
-import com.alipay.api.DefaultAlipayClient;
-import com.alipay.api.request.AlipaySystemOauthTokenRequest;
-import com.alipay.api.request.AlipayUserInfoShareRequest;
-import com.alipay.api.response.AlipaySystemOauthTokenResponse;
-import com.alipay.api.response.AlipayUserInfoShareResponse;
 
 /**
  * 支付宝 登录
@@ -190,8 +189,7 @@ public class AlipayProvider extends AbstractProvider {
         String location = String.format("%s %s", StringKit.isEmpty(province) ? "" : province,
                 StringKit.isEmpty(city) ? "" : city);
 
-        return Material.builder().rawJson(JSONObject.parseObject(JSONObject.toJSONString(response)))
-                .uuid(response.getUserId())
+        return Material.builder().rawJson(JsonKit.toJsonString(response)).uuid(response.getUserId())
                 .username(StringKit.isEmpty(response.getUserName()) ? response.getNickName() : response.getUserName())
                 .nickname(response.getNickName()).avatar(response.getAvatar()).location(location)
                 .gender(Gender.of(response.getGender())).token(accToken).source(complex.toString()).build();

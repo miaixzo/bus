@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -32,6 +32,7 @@ import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -42,7 +43,7 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.Map;
 
 /**
  * 抖音 登录
@@ -68,16 +69,39 @@ public class DouyinProvider extends AbstractProvider {
     @Override
     public Material getUserInfo(AccToken accToken) {
         String response = doGetUserInfo(accToken);
-        JSONObject userInfoObject = JSONObject.parseObject(response);
-        this.checkResponse(userInfoObject);
-        JSONObject object = userInfoObject.getJSONObject("data");
-        accToken.setUnionId(object.getString("union_id"));
-        return Material.builder().rawJson(object).uuid(object.getString("union_id"))
-                .username(object.getString("nickname")).nickname(object.getString("nickname"))
-                .avatar(object.getString("avatar")).remark(object.getString("description"))
-                .gender(Gender.of(object.getString("gender"))).location(String.format("%s %s %s",
-                        object.getString("country"), object.getString("province"), object.getString("city")))
-                .token(accToken).source(complex.toString()).build();
+        try {
+            Map<String, Object> userInfoObject = JsonKit.toPojo(response, Map.class);
+            if (userInfoObject == null) {
+                throw new AuthorizedException("Failed to parse user info response: empty response");
+            }
+            this.checkResponse(userInfoObject);
+
+            Map<String, Object> data = (Map<String, Object>) userInfoObject.get("data");
+            if (data == null) {
+                throw new AuthorizedException("Missing data field in user info response");
+            }
+
+            String unionId = (String) data.get("union_id");
+            if (unionId == null) {
+                throw new AuthorizedException("Missing union_id in user info response");
+            }
+            String nickname = (String) data.get("nickname");
+            String avatar = (String) data.get("avatar");
+            String description = (String) data.get("description");
+            String gender = (String) data.get("gender");
+            String country = (String) data.get("country");
+            String province = (String) data.get("province");
+            String city = (String) data.get("city");
+
+            accToken.setUnionId(unionId);
+
+            return Material.builder().rawJson(JsonKit.toJsonString(data)).uuid(unionId).username(nickname)
+                    .nickname(nickname).avatar(avatar).remark(description).gender(Gender.of(gender))
+                    .location(String.format("%s %s %s", country, province, city)).token(accToken)
+                    .source(complex.toString()).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
+        }
     }
 
     @Override
@@ -91,12 +115,17 @@ public class DouyinProvider extends AbstractProvider {
      *
      * @param object 请求响应内容
      */
-    private void checkResponse(JSONObject object) {
-        String message = object.getString("message");
-        JSONObject data = object.getJSONObject("data");
-        String errorCode = data.getString("error_code");
-        if ("error".equals(message) || Symbol.ZERO.equals(errorCode)) {
-            throw new AuthorizedException(errorCode, data.getString("description"));
+    private void checkResponse(Map<String, Object> object) {
+        String message = (String) object.get("message");
+        Map<String, Object> data = (Map<String, Object>) object.get("data");
+        if (data == null) {
+            throw new AuthorizedException("Missing data field in response");
+        }
+        Object errorCodeObj = data.get("error_code");
+        String errorCode = errorCodeObj != null ? String.valueOf(errorCodeObj) : null;
+        if ("error".equals(message) || !"0".equals(errorCode)) {
+            String description = (String) data.get("description");
+            throw new AuthorizedException(errorCode, description != null ? description : "Unknown error");
         }
     }
 
@@ -108,13 +137,36 @@ public class DouyinProvider extends AbstractProvider {
      */
     private AccToken getToken(String accessTokenUrl) {
         String response = Httpx.post(accessTokenUrl);
-        JSONObject object = JSONObject.parseObject(response);
-        this.checkResponse(object);
-        JSONObject dataObj = object.getJSONObject("data");
-        return AccToken.builder().accessToken(dataObj.getString("access_token")).openId(dataObj.getString("open_id"))
-                .expireIn(dataObj.getIntValue("expires_in")).refreshToken(dataObj.getString("refresh_token"))
-                .refreshTokenExpireIn(dataObj.getIntValue("refresh_expires_in")).scope(dataObj.getString("scope"))
-                .build();
+        try {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
+                throw new AuthorizedException("Failed to parse token response: empty response");
+            }
+            this.checkResponse(object);
+
+            Map<String, Object> dataObj = (Map<String, Object>) object.get("data");
+            if (dataObj == null) {
+                throw new AuthorizedException("Missing data field in token response");
+            }
+
+            String accessToken = (String) dataObj.get("access_token");
+            if (accessToken == null) {
+                throw new AuthorizedException("Missing access_token in response");
+            }
+            String openId = (String) dataObj.get("open_id");
+            Object expiresInObj = dataObj.get("expires_in");
+            int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
+            String refreshToken = (String) dataObj.get("refresh_token");
+            Object refreshExpiresInObj = dataObj.get("refresh_expires_in");
+            int refreshExpiresIn = refreshExpiresInObj instanceof Number ? ((Number) refreshExpiresInObj).intValue()
+                    : 0;
+            String scope = (String) dataObj.get("scope");
+
+            return AccToken.builder().accessToken(accessToken).openId(openId).expireIn(expiresIn)
+                    .refreshToken(refreshToken).refreshTokenExpireIn(refreshExpiresIn).scope(scope).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse token response: " + e.getMessage());
+        }
     }
 
     /**

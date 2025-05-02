@@ -28,17 +28,18 @@
 package org.miaixz.bus.spring.boot;
 
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.boot.statics.BaseStatics;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.GenericTypeResolver;
+import org.springframework.core.io.ResourceLoader;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 扩展{@link org.springframework.boot.SpringApplication}来计算{@link ApplicationContextInitializer}初始化所需的时间。
+ * 扩展 {@link org.springframework.boot.SpringApplication}，计算 {@link ApplicationContextInitializer} 初始化时间。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -49,68 +50,48 @@ public class SpringApplication extends org.springframework.boot.SpringApplicatio
 
     public SpringApplication(Class<?>... primarySources) {
         super(primarySources);
-        // 强制设置自定义监听器
-        setRunListeners();
     }
 
-    private void setRunListeners() {
-        try {
-            // 通过反射访问 listeners 字段
-            Field listenersField = org.springframework.boot.SpringApplication.class.getDeclaredField("listeners");
-            listenersField.setAccessible(true);
-            // 创建只包含 FrameworkRunListener 的列表
-            List<org.springframework.boot.SpringApplicationRunListener> listeners = new ArrayList<>();
-            listeners.add(new SpringApplicationRunListener(this));
-            // 设置监听器列表
-            listenersField.set(this, listeners);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to set run listeners", e);
-        }
+    public SpringApplication(ResourceLoader resourceLoader, Class<?>... primarySources) {
+        super(resourceLoader, primarySources);
+    }
+
+    public static ConfigurableApplicationContext run(Class<?> primarySource, String... args) {
+        return run(new Class<?>[]{primarySource}, args);
+    }
+
+    public static ConfigurableApplicationContext run(Class<?>[] primarySources, String[] args) {
+        return new SpringApplication(primarySources).run(args);
     }
 
     @Override
     public ConfigurableApplicationContext run(String... args) {
-        // 在运行前验证监听器
-        validateListeners();
         return super.run(args);
     }
 
     @Override
     protected void applyInitializers(ConfigurableApplicationContext context) {
         for (ApplicationContextInitializer initializer : getInitializers()) {
-            Class<?> requiredType = GenericTypeResolver.resolveTypeArgument(initializer.getClass(),
-                    ApplicationContextInitializer.class);
-            if (requiredType != null) {
-                Assert.isInstanceOf(requiredType, context, "Unable to call initializer.");
+            try {
+                Class<?> requiredType = GenericTypeResolver.resolveTypeArgument(initializer.getClass(),
+                        ApplicationContextInitializer.class);
+                Assert.isInstanceOf(requiredType, context,
+                        "Unable to call initializer: " + initializer.getClass().getName());
                 BaseStatics stat = new BaseStatics();
                 stat.setName(initializer.getClass().getName());
                 stat.setStartTime(System.currentTimeMillis());
                 initializer.initialize(context);
                 stat.setEndTime(System.currentTimeMillis());
                 initializerStartupStatList.add(stat);
+                Logger.debug("Initialized {} in {} ms", stat.getName(), stat.getCost());
+            } catch (Exception e) {
+                Logger.warn("Failed to initialize {}: {}", initializer.getClass().getName(), e.getMessage());
             }
         }
     }
 
     public List<BaseStatics> getInitializerStartupStatList() {
         return initializerStartupStatList;
-    }
-
-    // 可选：验证监听器，防止外部篡改
-    private void validateListeners() {
-        try {
-            Field listenersField = org.springframework.boot.SpringApplication.class.getDeclaredField("listeners");
-            listenersField.setAccessible(true);
-            List<org.springframework.boot.SpringApplicationRunListener> listeners = (List<org.springframework.boot.SpringApplicationRunListener>) listenersField
-                    .get(this);
-            for (org.springframework.boot.SpringApplicationRunListener listener : listeners) {
-                if (!(listener instanceof SpringApplicationRunListener)) {
-                    throw new IllegalStateException("Unauthorized listener detected: " + listener.getClass().getName());
-                }
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to validate listeners", e);
-        }
     }
 
 }

@@ -86,11 +86,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <spring.boot.version>3.4.5</spring.boot.version>
-        <compress.version>1.26.2</compress.version>
-        <freemarker.version>2.3.33</freemarker.version>
-        <lombok.version>1.18.36</lombok.version>
-        <hikaricp.version>5.1.0</hikaricp.version>
-        <mysql.version>9.0.0</mysql.version>
+        <compress.version>1.27.1</compress.version>
+        <freemarker.version>2.3.34</freemarker.version>
+        <lombok.version>1.18.38</lombok.version>
+        <hikaricp.version>6.3.0</hikaricp.version>
+        <mysql.version>9.3.0</mysql.version>
     </properties>
 
     <dependencies>

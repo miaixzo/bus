@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.oauth.metric.okta;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.codec.binary.Base64;
@@ -39,6 +36,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -49,7 +47,8 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Okta 登录
@@ -74,20 +73,37 @@ public class OktaProvider extends AbstractProvider {
     }
 
     private AccToken getAuthToken(String tokenUrl) {
-        Map header = new HashMap();
+        Map<String, String> header = new HashMap<>();
         header.put("accept", MediaType.APPLICATION_JSON);
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-
         header.put("Authorization",
                 "Basic " + Base64.encode(context.getAppKey().concat(Symbol.COLON).concat(context.getAppSecret())));
+
         String response = Httpx.post(tokenUrl, null, header);
-        JSONObject accessTokenObject = JSONObject.parseObject(response);
-        this.checkResponse(accessTokenObject);
-        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
-                .tokenType(accessTokenObject.getString("token_type"))
-                .expireIn(accessTokenObject.getIntValue("expires_in")).scope(accessTokenObject.getString("scope"))
-                .refreshToken(accessTokenObject.getString("refresh_token"))
-                .idToken(accessTokenObject.getString("id_token")).build();
+        try {
+            Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
+            if (accessTokenObject == null) {
+                throw new AuthorizedException("Failed to parse access token response: empty response");
+            }
+
+            this.checkResponse(accessTokenObject);
+
+            String accessToken = (String) accessTokenObject.get("access_token");
+            if (accessToken == null) {
+                throw new AuthorizedException("Missing access_token in response");
+            }
+            String tokenType = (String) accessTokenObject.get("token_type");
+            Object expiresInObj = accessTokenObject.get("expires_in");
+            int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
+            String scope = (String) accessTokenObject.get("scope");
+            String refreshToken = (String) accessTokenObject.get("refresh_token");
+            String idToken = (String) accessTokenObject.get("id_token");
+
+            return AccToken.builder().accessToken(accessToken).tokenType(tokenType).expireIn(expiresIn).scope(scope)
+                    .refreshToken(refreshToken).idToken(idToken).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
+        }
     }
 
     @Override
@@ -104,14 +120,33 @@ public class OktaProvider extends AbstractProvider {
     public Material getUserInfo(AccToken accToken) {
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", "Bearer " + accToken.getAccessToken());
+
         String response = Httpx.post(userInfoUrl(accToken), null, header);
-        JSONObject object = JSONObject.parseObject(response);
-        this.checkResponse(object);
-        JSONObject address = object.getJSONObject("address");
-        return Material.builder().rawJson(object).uuid(object.getString("sub")).username(object.getString("name"))
-                .nickname(object.getString("nickname")).email(object.getString("email"))
-                .location(null == address ? null : address.getString("street_address"))
-                .gender(Gender.of(object.getString("sex"))).token(accToken).source(complex.toString()).build();
+        try {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
+                throw new AuthorizedException("Failed to parse user info response: empty response");
+            }
+
+            this.checkResponse(object);
+
+            String sub = (String) object.get("sub");
+            if (sub == null) {
+                throw new AuthorizedException("Missing sub in user info response");
+            }
+            String name = (String) object.get("name");
+            String nickname = (String) object.get("nickname");
+            String email = (String) object.get("email");
+            String sex = (String) object.get("sex");
+            Map<String, Object> address = (Map<String, Object>) object.get("address");
+            String streetAddress = address != null ? (String) address.get("street_address") : null;
+
+            return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(sub).username(name).nickname(nickname)
+                    .email(email).location(streetAddress).gender(Gender.of(sex)).token(accToken)
+                    .source(complex.toString()).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
+        }
     }
 
     @Override
@@ -123,14 +158,16 @@ public class OktaProvider extends AbstractProvider {
         Map<String, String> header = new HashMap<>();
         header.put("Authorization",
                 "Basic " + Base64.encode(context.getAppKey().concat(Symbol.COLON).concat(context.getAppSecret())));
+
         Httpx.post(revokeUrl(accToken), params, header);
         ErrorCode status = ErrorCode.SUCCESS;
         return Message.builder().errcode(status.getCode()).errmsg(status.getDesc()).build();
     }
 
-    private void checkResponse(JSONObject object) {
+    private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error")) {
-            throw new AuthorizedException(object.getString("error_description"));
+            String errorDescription = (String) object.get("error_description");
+            throw new AuthorizedException(errorDescription != null ? errorDescription : "Unknown error");
         }
     }
 

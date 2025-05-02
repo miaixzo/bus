@@ -85,9 +85,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <lombok.version>1.18.36</lombok.version>
+        <lombok.version>1.18.38</lombok.version>
         <sentinel.version>1.8.8</sentinel.version>
-        <bytebuddy.version>1.15.3</bytebuddy.version>
+        <bytebuddy.version>1.17.5</bytebuddy.version>
     </properties>
 
     <dependencies>

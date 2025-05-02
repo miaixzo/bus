@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -32,6 +32,7 @@ import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.Protocol;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
@@ -41,7 +42,7 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.Map;
 
 /**
  * Facebook 登录
@@ -62,22 +63,53 @@ public class FacebookProvider extends AbstractProvider {
     @Override
     public AccToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
-        JSONObject accessTokenObject = JSONObject.parseObject(response);
-        this.checkResponse(accessTokenObject);
-        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
-                .expireIn(accessTokenObject.getIntValue("expires_in"))
-                .tokenType(accessTokenObject.getString("token_type")).build();
+        try {
+            Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
+            if (accessTokenObject == null) {
+                throw new AuthorizedException("Failed to parse access token response: empty response");
+            }
+            this.checkResponse(accessTokenObject);
+
+            String accessToken = (String) accessTokenObject.get("access_token");
+            if (accessToken == null) {
+                throw new AuthorizedException("Missing access_token in response");
+            }
+            Object expiresInObj = accessTokenObject.get("expires_in");
+            int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
+            String tokenType = (String) accessTokenObject.get("token_type");
+
+            return AccToken.builder().accessToken(accessToken).expireIn(expiresIn).tokenType(tokenType).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
+        }
     }
 
     @Override
     public Material getUserInfo(AccToken accToken) {
         String userInfo = doGetUserInfo(accToken);
-        JSONObject object = JSONObject.parseObject(userInfo);
-        this.checkResponse(object);
-        return Material.builder().rawJson(object).uuid(object.getString("id")).username(object.getString("name"))
-                .nickname(object.getString("name")).blog(object.getString("link")).avatar(getUserPicture(object))
-                .location(object.getString("locale")).email(object.getString("email"))
-                .gender(Gender.of(object.getString("gender"))).token(accToken).source(complex.toString()).build();
+        try {
+            Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
+            if (object == null) {
+                throw new AuthorizedException("Failed to parse user info response: empty response");
+            }
+            this.checkResponse(object);
+
+            String id = (String) object.get("id");
+            if (id == null) {
+                throw new AuthorizedException("Missing id in user info response");
+            }
+            String name = (String) object.get("name");
+            String link = (String) object.get("link");
+            String locale = (String) object.get("locale");
+            String email = (String) object.get("email");
+            String gender = (String) object.get("gender");
+
+            return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(name).nickname(name)
+                    .blog(link).avatar(getUserPicture(object)).location(locale).email(email).gender(Gender.of(gender))
+                    .token(accToken).source(complex.toString()).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
+        }
     }
 
     @Override
@@ -120,19 +152,23 @@ public class FacebookProvider extends AbstractProvider {
      *
      * @param object 请求响应内容
      */
-    private void checkResponse(JSONObject object) {
+    private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error")) {
-            throw new AuthorizedException(object.getJSONObject("error").getString("message"));
+            Map<String, Object> error = (Map<String, Object>) object.get("error");
+            String message = error != null ? (String) error.get("message") : null;
+            throw new AuthorizedException(message != null ? message : "Unknown error");
         }
     }
 
-    private String getUserPicture(JSONObject object) {
+    private String getUserPicture(Map<String, Object> object) {
         String picture = null;
         if (object.containsKey("picture")) {
-            JSONObject pictureObj = object.getJSONObject("picture");
-            pictureObj = pictureObj.getJSONObject("data");
-            if (null != pictureObj) {
-                picture = pictureObj.getString("url");
+            Map<String, Object> pictureObj = (Map<String, Object>) object.get("picture");
+            if (pictureObj != null) {
+                Map<String, Object> dataObj = (Map<String, Object>) pictureObj.get("data");
+                if (dataObj != null) {
+                    picture = (String) dataObj.get("url");
+                }
             }
         }
         return picture;

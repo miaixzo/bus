@@ -61,4 +61,8 @@ public class Version extends org.miaixz.bus.core.Version {
         super(v);
     }
 
+    public String name() {
+        return "Bus";
+    }
+
 }

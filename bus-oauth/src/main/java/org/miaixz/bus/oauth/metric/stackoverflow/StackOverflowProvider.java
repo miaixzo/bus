@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.oauth.metric.stackoverflow;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Charset;
 import org.miaixz.bus.core.lang.Gender;
@@ -38,6 +35,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.url.UrlDecoder;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -47,7 +45,9 @@ import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Stack Overflow 登录
@@ -75,11 +75,11 @@ public class StackOverflowProvider extends AbstractProvider {
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         String response = Httpx.post(accessTokenUrl, form, header);
 
-        JSONObject accessTokenObject = JSONObject.parseObject(response);
+        Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
         this.checkResponse(accessTokenObject);
 
-        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
-                .expireIn(accessTokenObject.getIntValue("expires")).build();
+        return AccToken.builder().accessToken((String) accessTokenObject.get("access_token"))
+                .expireIn(((Number) accessTokenObject.get("expires")).intValue()).build();
     }
 
     @Override
@@ -88,13 +88,13 @@ public class StackOverflowProvider extends AbstractProvider {
                 .queryParam("access_token", accToken.getAccessToken()).queryParam("site", "stackoverflow")
                 .queryParam("key", this.context.getUnionId()).build();
         String response = Httpx.get(userInfoUrl);
-        JSONObject object = JSONObject.parseObject(response);
+        Map<String, Object> object = JsonKit.toPojo(response, Map.class);
         this.checkResponse(object);
-        JSONObject userObj = object.getJSONArray("items").getJSONObject(0);
+        Map<String, Object> userObj = (Map<String, Object>) ((List<Object>) object.get("items")).get(0);
 
-        return Material.builder().rawJson(userObj).uuid(userObj.getString("user_id"))
-                .avatar(userObj.getString("profile_image")).location(userObj.getString("location"))
-                .nickname(userObj.getString("display_name")).blog(userObj.getString("website_url"))
+        return Material.builder().rawJson(JsonKit.toJsonString(userObj)).uuid((String) userObj.get("user_id"))
+                .avatar((String) userObj.get("profile_image")).location((String) userObj.get("location"))
+                .nickname((String) userObj.get("display_name")).blog((String) userObj.get("website_url"))
                 .gender(Gender.UNKNOWN).token(accToken).source(complex.toString()).build();
     }
 
@@ -117,9 +117,9 @@ public class StackOverflowProvider extends AbstractProvider {
      *
      * @param object 请求响应内容
      */
-    private void checkResponse(JSONObject object) {
+    private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error")) {
-            throw new AuthorizedException(object.getString("error_description"));
+            throw new AuthorizedException((String) object.get("error_description"));
         }
     }
 

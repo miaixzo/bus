@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,14 +27,13 @@
 */
 package org.miaixz.bus.oauth.metric.qq;
 
-import java.util.Map;
-
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -45,7 +44,7 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.Map;
 
 /**
  * QQ 登录
@@ -79,24 +78,25 @@ public class QqProvider extends AbstractProvider {
     public Material getUserInfo(AccToken accToken) {
         String openId = this.getOpenId(accToken);
         String response = doGetUserInfo(accToken);
-        JSONObject object = JSONObject.parseObject(response);
-        if (object.getIntValue("ret") != 0) {
-            throw new AuthorizedException(object.getString("msg"));
+        Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+        if (!"0".equals(object.get("ret"))) {
+            throw new AuthorizedException((String) object.get("msg"));
         }
-        String avatar = object.getString("figureurl_qq_2");
+        String avatar = (String) object.get("figureurl_qq_2");
         if (StringKit.isEmpty(avatar)) {
-            avatar = object.getString("figureurl_qq_1");
+            avatar = (String) object.get("figureurl_qq_1");
         }
 
-        String location = String.format("%s-%s", object.getString("province"), object.getString("city"));
-        return Material.builder().rawJson(object).username(object.getString("nickname"))
-                .nickname(object.getString("nickname")).avatar(avatar).location(location).uuid(openId)
-                .gender(Gender.of(object.getString("gender"))).token(accToken).source(complex.toString()).build();
+        String location = String.format("%s-%s", object.get("province"), object.get("city"));
+        return Material.builder().rawJson(JsonKit.toJsonString(object)).username((String) object.get("nickname"))
+                .nickname((String) object.get("nickname")).avatar(avatar).location(location).uuid(openId)
+                .gender(Gender.of((String) object.get("gender"))).token(accToken).source(complex.toString()).build();
     }
 
     /**
      * 获取QQ用户的OpenId，支持自定义是否启用查询unionid的功能，如果启用查询unionid的功能， 那就需要开发者先通过邮件申请unionid功能，参考链接
-     * {@see http://wiki.connect.qq.com/unionid%E4%BB%8B%E7%BB%8D}
+     * {@see <url id="d0a3btkc75r1mimetbp0" type="url" status="parsed" title="UnionID介绍 — QQ互联WIKI" wc=
+     * "4771">http://wiki.connect.qq.com/unionid%E4%BB%8B%E7%BB%8D</url> }
      *
      * @param accToken 通过{@link QqProvider#getAccessToken(Callback)}获取到的{@code accToken}
      * @return openId
@@ -108,13 +108,14 @@ public class QqProvider extends AbstractProvider {
         String removePrefix = response.replace("callback(", "");
         String removeSuffix = removePrefix.replace(");", "");
         String openId = removeSuffix.trim();
-        JSONObject object = JSONObject.parseObject(openId);
+        Map<String, Object> object = JsonKit.toPojo(openId, Map.class);
         if (object.containsKey("error")) {
-            throw new AuthorizedException(object.get("error") + Symbol.COLON + object.get("error_description"));
+            throw new AuthorizedException(
+                    (String) object.get("error") + Symbol.COLON + (String) object.get("error_description"));
         }
-        accToken.setOpenId(object.getString("openid"));
+        accToken.setOpenId((String) object.get("openid"));
         if (object.containsKey("unionid")) {
-            accToken.setUnionId(object.getString("unionid"));
+            accToken.setUnionId((String) object.get("unionid"));
         }
         return StringKit.isEmpty(accToken.getUnionId()) ? accToken.getOpenId() : accToken.getUnionId();
     }

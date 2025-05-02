@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.oauth.metric.dingtalk;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.extra.json.JsonKit;
@@ -41,7 +38,8 @@ import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Material;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 钉钉 二维码登录
@@ -78,14 +76,27 @@ public class DingTalkProvider extends AbstractDingtalkProvider {
         params.put("clientSecret", context.getAppSecret());
         params.put("code", callback.getCode());
         String response = Httpx.get(this.complex.accessToken(), JsonKit.toJsonString(params));
-        JSONObject accessTokenObject = JSONObject.parseObject(response);
-        if (!accessTokenObject.containsKey("accessToken")) {
-            throw new AuthorizedException(JSONObject.toJSONString(response), complex);
+        try {
+            Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
+            if (accessTokenObject == null) {
+                throw new AuthorizedException("Failed to parse access token response: empty response");
+            }
+            if (!accessTokenObject.containsKey("accessToken")) {
+                throw new AuthorizedException(
+                        "Missing accessToken in response: " + JsonKit.toJsonString(accessTokenObject));
+            }
+
+            String accessToken = (String) accessTokenObject.get("accessToken");
+            String refreshToken = (String) accessTokenObject.get("refreshToken");
+            Object expireInObj = accessTokenObject.get("expireIn");
+            int expireIn = expireInObj instanceof Number ? ((Number) expireInObj).intValue() : 0;
+            String corpId = (String) accessTokenObject.get("corpId");
+
+            return AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expireIn)
+                    .unionId(corpId).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
-        return AccToken.builder().accessToken(accessTokenObject.getString("accessToken"))
-                .refreshToken(accessTokenObject.getString("refreshToken"))
-                .expireIn(accessTokenObject.getIntValue("expireIn")).unionId(accessTokenObject.getString("corpId"))
-                .build();
     }
 
     @Override
@@ -94,12 +105,30 @@ public class DingTalkProvider extends AbstractDingtalkProvider {
         header.put("x-acs-dingtalk-access-token", authToken.getAccessToken());
         String response = Httpx.get(this.complex.userInfo(), new HashMap<>(0), header);
 
-        JSONObject object = JSONObject.parseObject(response);
-        authToken.setOpenId(object.getString("openId"));
-        authToken.setUnionId(object.getString("unionId"));
-        return Material.builder().rawJson(object).uuid(object.getString("unionId")).username(object.getString("nick"))
-                .nickname(object.getString("nick")).avatar(object.getString("avatarUrl"))
-                .snapshotUser(object.getBooleanValue("visitor")).token(authToken).source(complex.toString()).build();
+        try {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
+                throw new AuthorizedException("Failed to parse user info response: empty response");
+            }
+
+            String openId = (String) object.get("openId");
+            String unionId = (String) object.get("unionId");
+            if (unionId == null) {
+                throw new AuthorizedException("Missing unionId in user info response");
+            }
+            String nick = (String) object.get("nick");
+            String avatarUrl = (String) object.get("avatarUrl");
+            Object visitorObj = object.get("visitor");
+            boolean visitor = visitorObj instanceof Boolean ? (Boolean) visitorObj : false;
+
+            authToken.setOpenId(openId);
+            authToken.setUnionId(unionId);
+
+            return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(unionId).username(nick).nickname(nick)
+                    .avatar(avatarUrl).snapshotUser(visitor).token(authToken).source(complex.toString()).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
+        }
     }
 
     /**

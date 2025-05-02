@@ -95,7 +95,7 @@ public class WrapperConfiguration implements WebMvcRegistrations {
 
     @Bean("supportWebMvcConfigurer")
     public org.springframework.web.servlet.config.annotation.WebMvcConfigurer supportWebMvcConfigurer() {
-        return new WebMvcConfigurer();
+        return new WebMvcConfigurer(properties.getAutoType());
     }
 
     class RequestMappingHandler extends RequestMappingHandlerMapping {

@@ -91,72 +91,72 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <lombok.version>1.18.36</lombok.version>
+        <lombok.version>1.18.38</lombok.version>
         <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
         <jakarta.mail.version>2.1.3</jakarta.mail.version>
         <jakarta.servlet.version>6.1.0</jakarta.servlet.version>
         <jakarta.xml.soap.version>3.0.2</jakarta.xml.soap.version>
         <jakarta.xml.bind.version>4.0.2</jakarta.xml.bind.version>
         <jakarta.json.api.version>2.1.3</jakarta.json.api.version>
-        <commons.logging.version>1.3.4</commons.logging.version>
-        <jboss.version>3.6.0.Final</jboss.version>
+        <commons.logging.version>1.3.5</commons.logging.version>
+        <jboss.version>3.6.1.Final</jboss.version>
         <logback.version>1.5.18</logback.version>
         <log4j.version>2.24.3</log4j.version>
         <slf4j.version>2.0.17</slf4j.version>
         <tinylog.version>2.7.0</tinylog.version>
-        <yaml.version>2.2</yaml.version>
-        <aspectj.version>1.9.22.1</aspectj.version>
-        <bcpkix.version>1.79</bcpkix.version>
+        <yaml.version>2.4</yaml.version>
+        <aspectj.version>1.9.24</aspectj.version>
+        <bcpkix.version>1.80</bcpkix.version>
         <fastjson.version>2.0.57</fastjson.version>
-        <gson.version>2.11.0</gson.version>
-        <jackson.version>2.18.3</jackson.version>
+        <gson.version>2.13.1</gson.version>
+        <jackson.version>2.19.0</jackson.version>
         <jpinyin.version>1.1.8</jpinyin.version>
         <pinyin4j.version>2.5.1</pinyin4j.version>
         <tiny.version>2.0.3.RELEASE</tiny.version>
         <bopomofo4j.version>1.0.1</bopomofo4j.version>
         <houbb.version>0.4.0</houbb.version>
-        <jsch.version>0.2.21</jsch.version>
+        <jsch.version>0.2.25</jsch.version>
         <sshj.version>0.39.0</sshj.version>
         <zxing.version>3.5.3</zxing.version>
-        <net.version>3.10.0</net.version>
+        <net.version>3.11.1</net.version>
         <emoji.java.version>5.1.1</emoji.java.version>
-        <compress.version>1.26.2</compress.version>
-        <beetl.version>3.15.14.RELEASE</beetl.version>
-        <freemarker.version>2.3.33</freemarker.version>
-        <thymeleaf.version>3.1.2.RELEASE</thymeleaf.version>
+        <compress.version>1.27.1</compress.version>
+        <beetl.version>3.19.1.RELEASE</beetl.version>
+        <freemarker.version>2.3.34</freemarker.version>
+        <thymeleaf.version>3.1.3.RELEASE</thymeleaf.version>
         <guice.version>7.0.0</guice.version>
-        <jedis.version>5.1.3</jedis.version>
+        <jedis.version>6.0.0</jedis.version>
         <xmemcached.version>2.4.8</xmemcached.version>
-        <guava.version>33.3.0-jre</guava.version>
+        <guava.version>33.4.8-jre</guava.version>
         <hessian.version>4.0.66</hessian.version>
         <postgresql.version>42.7.5</postgresql.version>
-        <mysql.version>9.0.0</mysql.version>
-        <h2.version>2.2.222</h2.version>
-        <jersey.version>3.1.1</jersey.version>
+        <mysql.version>9.3.0</mysql.version>
+        <h2.version>2.2.232</h2.version>
+        <jersey.version>3.1.10</jersey.version>
         <jna.version>5.17.0</jna.version>
         <sentinel.version>1.8.8</sentinel.version>
-        <bytebuddy.version>1.15.3</bytebuddy.version>
-        <mybatis.version>3.5.16</mybatis.version>
+        <bytebuddy.version>1.17.5</bytebuddy.version>
+        <mybatis.version>3.5.19</mybatis.version>
         <mybatis.spring.version>3.0.4</mybatis.spring.version>
-        <poi.version>5.3.0</poi.version>
-        <ofdrw.version>2.3.4</ofdrw.version>
-        <jsqlparser.version>5.0</jsqlparser.version>
-        <hikaricp.version>5.1.0</hikaricp.version>
-        <druid.version>1.2.23</druid.version>
+        <poi.version>5.4.1</poi.version>
+        <ofdrw.version>2.3.6</ofdrw.version>
+        <jsqlparser.version>5.1</jsqlparser.version>
+        <hikaricp.version>6.3.0</hikaricp.version>
+        <druid.version>1.2.24</druid.version>
         <okhttp.version>4.12.0</okhttp.version>
-        <vertx.version>4.5.9</vertx.version>
-        <dubbo.version>3.2.15</dubbo.version>
-        <elasticsearch.version>8.15.0</elasticsearch.version>
-        <mongo.version>5.1.3</mongo.version>
-        <curator.version>5.7.0</curator.version>
-        <alipay.version>4.39.165.ALL</alipay.version>
-        <aliyun.oss.version>3.18.1</aliyun.oss.version>
-        <baidu.bos.version>0.10.331</baidu.bos.version>
-        <huawei.oss.version>3.24.3</huawei.oss.version>
-        <aws.oss.version>1.12.767</aws.oss.version>
-        <minio.oss.version>8.5.11</minio.oss.version>
-        <qiniu.oss.version>7.15.1</qiniu.oss.version>
-        <qcloud.oss.version>5.6.225</qcloud.oss.version>
+        <vertx.version>4.5.14</vertx.version>
+        <dubbo.version>3.3.4</dubbo.version>
+        <elasticsearch.version>9.0.0</elasticsearch.version>
+        <mongo.version>5.4.0</mongo.version>
+        <curator.version>5.8.0</curator.version>
+        <alipay.version>4.40.186.ALL</alipay.version>
+        <aliyun.oss.version>3.18.2</aliyun.oss.version>
+        <baidu.bos.version>0.10.372</baidu.bos.version>
+        <huawei.oss.version>3.25.4</huawei.oss.version>
+        <amazon.s3.version>2.31.33</amazon.s3.version>
+        <minio.s3.version>8.5.17</minio.s3.version>
+        <qiniu.oss.version>7.18.0</qiniu.oss.version>
+        <qcloud.oss.version>5.6.245</qcloud.oss.version>
         <upyun.oss.version>4.2.3</upyun.oss.version>
         <miaixz.bus.version>8.1.5</miaixz.bus.version>
         <spring.boot.version>3.4.5</spring.boot.version>
@@ -391,8 +391,8 @@
                 <version>${bcpkix.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.alibaba</groupId>
-                <artifactId>fastjson</artifactId>
+                <groupId>com.alibaba.fastjson2</groupId>
+                <artifactId>fastjson2</artifactId>
                 <version>${fastjson.version}</version>
             </dependency>
             <dependency>
@@ -1110,9 +1110,9 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>com.amazonaws</groupId>
-                <artifactId>aws-java-sdk-s3</artifactId>
-                <version>${aws.oss.version}</version>
+                <groupId>software.amazon.awssdk</groupId>
+                <artifactId>s3</artifactId>
+                <version>${amazon.s3.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>com.fasterxml.jackson.core</groupId>
@@ -1151,7 +1151,7 @@
             <dependency>
                 <groupId>io.minio</groupId>
                 <artifactId>minio</artifactId>
-                <version>${minio.oss.version}</version>
+                <version>${minio.s3.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>com.fasterxml.jackson.core</groupId>

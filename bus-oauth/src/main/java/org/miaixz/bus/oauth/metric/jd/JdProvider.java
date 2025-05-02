@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,18 +27,13 @@
 */
 package org.miaixz.bus.oauth.metric.jd;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
-
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -49,7 +44,11 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * 京东 登录
@@ -101,24 +100,50 @@ public class JdProvider extends AbstractProvider {
         form.put("grant_type", "authorization_code");
         form.put("code", callback.getCode());
         String response = Httpx.post(complex.accessToken(), form);
-        JSONObject object = JSONObject.parseObject(response);
+        try {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
+                throw new AuthorizedException("Failed to parse access token response: empty response");
+            }
+            this.checkResponse(object);
 
-        this.checkResponse(object);
+            String accessToken = (String) object.get("access_token");
+            if (accessToken == null) {
+                throw new AuthorizedException("Missing access_token in response");
+            }
+            Object expiresInObj = object.get("expires_in");
+            int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
+            String refreshToken = (String) object.get("refresh_token");
+            String scope = (String) object.get("scope");
+            String openId = (String) object.get("open_id");
 
-        return AccToken.builder().accessToken(object.getString("access_token"))
-                .expireIn(object.getIntValue("expires_in")).refreshToken(object.getString("refresh_token"))
-                .scope(object.getString("scope")).openId(object.getString("open_id")).build();
+            return AccToken.builder().accessToken(accessToken).expireIn(expiresIn).refreshToken(refreshToken)
+                    .scope(scope).openId(openId).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
+        }
     }
 
     /**
      * 个人用户无法申请应用 暂时只能参考官网给出的返回结果解析
      *
      * @param object 请求返回结果
-     * @return data JSONObject
+     * @return data Map
      */
-    private JSONObject getUserDataJsonObject(JSONObject object) {
-        return object.getJSONObject("jingdong_user_getUserInfoByOpenId_response")
-                .getJSONObject("getuserinfobyappidandopenid_result").getJSONObject("data");
+    private Map<String, Object> getUserDataJsonObject(Map<String, Object> object) {
+        Map<String, Object> response = (Map<String, Object>) object.get("jingdong_user_getUserInfoByOpenId_response");
+        if (response == null) {
+            throw new AuthorizedException("Missing jingdong_user_getUserInfoByOpenId_response in response");
+        }
+        Map<String, Object> result = (Map<String, Object>) response.get("getuserinfobyappidandopenid_result");
+        if (result == null) {
+            throw new AuthorizedException("Missing getuserinfobyappidandopenid_result in response");
+        }
+        Map<String, Object> data = (Map<String, Object>) result.get("data");
+        if (data == null) {
+            throw new AuthorizedException("Missing data in response");
+        }
+        return data;
     }
 
     @Override
@@ -129,20 +154,37 @@ public class JdProvider extends AbstractProvider {
         form.put("grant_type", "refresh_token");
         form.put("refresh_token", oldToken.getRefreshToken());
         String response = Httpx.post(complex.refresh(), form);
-        JSONObject object = JSONObject.parseObject(response);
+        try {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
+                throw new AuthorizedException("Failed to parse refresh token response: empty response");
+            }
+            this.checkResponse(object);
 
-        this.checkResponse(object);
+            String accessToken = (String) object.get("access_token");
+            if (accessToken == null) {
+                throw new AuthorizedException("Missing access_token in refresh response");
+            }
+            Object expiresInObj = object.get("expires_in");
+            int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
+            String refreshToken = (String) object.get("refresh_token");
+            String scope = (String) object.get("scope");
+            String openId = (String) object.get("open_id");
 
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode())
-                .data(AccToken.builder().accessToken(object.getString("access_token"))
-                        .expireIn(object.getIntValue("expires_in")).refreshToken(object.getString("refresh_token"))
-                        .scope(object.getString("scope")).openId(object.getString("open_id")).build())
-                .build();
+            return Message
+                    .builder().errcode(ErrorCode.SUCCESS.getCode()).data(AccToken.builder().accessToken(accessToken)
+                            .expireIn(expiresIn).refreshToken(refreshToken).scope(scope).openId(openId).build())
+                    .build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse refresh token response: " + e.getMessage());
+        }
     }
 
-    private void checkResponse(JSONObject object) {
+    private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error_response")) {
-            throw new AuthorizedException(object.getJSONObject("error_response").getString("zh_desc"));
+            Map<String, Object> errorResponse = (Map<String, Object>) object.get("error_response");
+            String zhDesc = errorResponse != null ? (String) errorResponse.get("zh_desc") : null;
+            throw new AuthorizedException(zhDesc != null ? zhDesc : "Unknown error");
         }
     }
 
@@ -155,15 +197,28 @@ public class JdProvider extends AbstractProvider {
                 .queryParam("v", "2.0");
         urlBuilder.queryParam("sign", sign(context.getAppSecret(), urlBuilder.getReadOnlyParams()));
         String response = Httpx.post(urlBuilder.build(true));
-        JSONObject object = JSONObject.parseObject(response);
+        try {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
+                throw new AuthorizedException("Failed to parse user info response: empty response");
+            }
+            this.checkResponse(object);
 
-        this.checkResponse(object);
+            Map<String, Object> data = this.getUserDataJsonObject(object);
 
-        JSONObject data = this.getUserDataJsonObject(object);
+            String nickName = (String) data.get("nickName");
+            if (nickName == null) {
+                throw new AuthorizedException("Missing nickName in user info response");
+            }
+            String imageUrl = (String) data.get("imageUrl");
+            String gender = (String) data.get("gendar");
 
-        return Material.builder().rawJson(data).uuid(accToken.getOpenId()).username(data.getString("nickName"))
-                .nickname(data.getString("nickName")).avatar(data.getString("imageUrl"))
-                .gender(Gender.of(data.getString("gendar"))).token(accToken).source(complex.toString()).build();
+            return Material.builder().rawJson(JsonKit.toJsonString(data)).uuid(accToken.getOpenId()).username(nickName)
+                    .nickname(nickName).avatar(imageUrl).gender(Gender.of(gender)).token(accToken)
+                    .source(complex.toString()).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
+        }
     }
 
     @Override

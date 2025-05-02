@@ -30,40 +30,38 @@ package org.miaixz.bus.spring.web;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import org.miaixz.bus.core.lang.Fields;
-import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.logger.Logger;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 /**
- * Jackson JSON 框架的配置器，与 Spring MVC 集成。 支持自定义日期格式和 Java 8/11 时间 API（LocalDateTime）。
+ * Jackson JSON 框架的配置器，与 Spring MVC 集成。支持自定义日期格式和 Java 8/11 时间 API（LocalDateTime）。 支持 autoType 配置，限制反序列化到指定包前缀的类。
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
-public record JacksonConverterConfigurer() implements JsonConverterConfigurer {
-    private static final String JACKSON_CLASS = "com.fasterxml.jackson.databind.ObjectMapper";
+@Component
+@ConditionalOnClass({ObjectMapper.class})
+public class JacksonConverterConfigurer implements JsonConverterConfigurer {
+
+    private String autoType;
 
     @Override
-    public String converterName() {
+    public String name() {
         return "Jackson";
-    }
-
-    @Override
-    public boolean isAvailable() {
-        boolean available = ClassKit.isPresent(JACKSON_CLASS, JacksonConverterConfigurer.class.getClassLoader());
-        if (!available) {
-            Logger.warn("Jackson dependency {} is not present in the classpath.", JACKSON_CLASS);
-        } else {
-            Logger.debug("Jackson dependency {} is present.", JACKSON_CLASS);
-        }
-        return available;
     }
 
     @Override
@@ -73,10 +71,17 @@ public record JacksonConverterConfigurer() implements JsonConverterConfigurer {
 
     @Override
     public void configure(List<HttpMessageConverter<?>> converters) {
-        Logger.debug("Configuring MappingJackson2HttpMessageConverter");
+        Logger.debug("Configuring MappingJackson2HttpMessageConverter with autoType: {}", autoType);
         // 配置 ObjectMapper，启用非空序列化和自定义日期处理
         ObjectMapper jacksonMapper = new ObjectMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL)
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+        // 配置 autoType 限制
+        if (autoType != null && !autoType.isEmpty()) {
+            PolymorphicTypeValidator ptv = BasicPolymorphicTypeValidator.builder().allowIfBaseType(autoType).build();
+            jacksonMapper.activateDefaultTyping(ptv, ObjectMapper.DefaultTyping.NON_FINAL);
+            Logger.debug("Jackson autoType enabled for package prefix: {}", autoType);
+        }
 
         // 添加对 Java 时间 API（LocalDateTime）的支持，使用自定义格式
         JavaTimeModule javaTimeModule = new JavaTimeModule();
@@ -93,4 +98,10 @@ public record JacksonConverterConfigurer() implements JsonConverterConfigurer {
         converters.add(order(), jacksonConverter);
         Logger.debug("Jackson converter configured with media types: {}", jacksonConverter.getSupportedMediaTypes());
     }
+
+    @Override
+    public void autoType(String autoType) {
+        this.autoType = autoType;
+    }
+
 }

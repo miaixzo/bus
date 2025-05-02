@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -31,6 +31,7 @@ import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.oauth.Builder;
@@ -42,7 +43,8 @@ import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 企业微信 第三方二维码登录
@@ -86,10 +88,15 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
     public AccToken getAccessToken(Callback callback) {
         try {
             String response = doGetAuthorizationCode(accessTokenUrl());
-            JSONObject object = this.checkResponse(response);
-            AccToken accToken = AccToken.builder().accessToken(object.getString("provider_access_token"))
-                    .expireIn(object.getIntValue("expires_in")).build();
-            return accToken;
+            Map<String, Object> object = this.checkResponse(response);
+            String accessToken = (String) object.get("provider_access_token");
+            if (accessToken == null) {
+                throw new AuthorizedException("Missing provider_access_token in response");
+            }
+            Object expiresInObj = object.get("expires_in");
+            int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
+
+            return AccToken.builder().accessToken(accessToken).expireIn(expiresIn).build();
         } catch (Exception e) {
             throw new AuthorizedException("企业微信获取token失败", e);
         }
@@ -97,10 +104,10 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
 
     @Override
     public String doGetAuthorizationCode(String code) {
-        JSONObject data = new JSONObject();
+        Map<String, Object> data = new HashMap<>();
         data.put("corpid", context.getAppKey());
         data.put("provider_secret", context.getAppSecret());
-        return Httpx.post(accessTokenUrl(code), data.toJSONString(), MediaType.APPLICATION_JSON);
+        return Httpx.post(accessTokenUrl(code), JsonKit.toJsonString(data), MediaType.APPLICATION_JSON);
     }
 
     /**
@@ -114,15 +121,15 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
 
     @Override
     public Material getUserInfo(AccToken accToken) {
-        JSONObject response = this.checkResponse(doGetUserInfo(accToken));
-        return Material.builder().rawJson(response).build();
+        Map<String, Object> response = this.checkResponse(doGetUserInfo(accToken));
+        return Material.builder().rawJson(JsonKit.toJsonString(response)).build();
     }
 
     @Override
     public String doGetUserInfo(AccToken accToken) {
-        JSONObject data = new JSONObject();
+        Map<String, Object> data = new HashMap<>();
         data.put("auth_code", accToken.getCode());
-        return Httpx.post(userInfoUrl(accToken), data.toJSONString(), MediaType.APPLICATION_JSON);
+        return Httpx.post(userInfoUrl(accToken), JsonKit.toJsonString(data), MediaType.APPLICATION_JSON);
     }
 
     @Override
@@ -130,12 +137,21 @@ public class WeChatEeThirdQrcodeProvider extends AbstractWeChatEeProvider {
         return Builder.fromUrl(complex.userInfo()).queryParam("access_token", accToken.getAccessToken()).build();
     }
 
-    private JSONObject checkResponse(String response) {
-        JSONObject object = JSONObject.parseObject(response);
-        if (object.containsKey("errcode") && object.getIntValue("errcode") != 0) {
-            throw new AuthorizedException(object.getString("errmsg"), complex.getName());
+    private Map<String, Object> checkResponse(String response) {
+        try {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
+                throw new AuthorizedException("Failed to parse response: empty response");
+            }
+            Object errcodeObj = object.get("errcode");
+            if (errcodeObj != null && !errcodeObj.equals(0)) {
+                String errmsg = (String) object.get("errmsg");
+                throw new AuthorizedException(errmsg != null ? errmsg : "Unknown error", complex.getName());
+            }
+            return object;
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse response: " + e.getMessage());
         }
-        return object;
     }
 
 }

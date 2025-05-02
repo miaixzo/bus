@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,13 +27,11 @@
 */
 package org.miaixz.bus.oauth.metric.teambition;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
@@ -43,7 +41,8 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Teambition 登录
@@ -74,12 +73,12 @@ public class TeambitionProvider extends AbstractProvider {
         form.put("grant_type", "code");
 
         String response = Httpx.post(complex.accessToken(), form);
-        JSONObject accessTokenObject = JSONObject.parseObject(response);
+        Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
 
         this.checkResponse(accessTokenObject);
 
-        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
-                .refreshToken(accessTokenObject.getString("refresh_token")).build();
+        return AccToken.builder().accessToken((String) accessTokenObject.get("access_token"))
+                .refreshToken((String) accessTokenObject.get("refresh_token")).build();
     }
 
     @Override
@@ -89,17 +88,17 @@ public class TeambitionProvider extends AbstractProvider {
         header.put("Authorization", "OAuth2 " + accessToken);
 
         String response = Httpx.get(complex.userInfo(), null, header);
-        JSONObject object = JSONObject.parseObject(response);
+        Map<String, Object> object = JsonKit.toPojo(response, Map.class);
 
         this.checkResponse(object);
 
-        accToken.setUid(object.getString("_id"));
+        accToken.setUid((String) object.get("_id"));
 
-        return Material.builder().rawJson(object).uuid(object.getString("_id")).username(object.getString("name"))
-                .nickname(object.getString("name")).avatar(object.getString("avatarUrl"))
-                .blog(object.getString("website")).location(object.getString("location"))
-                .email(object.getString("email")).gender(Gender.UNKNOWN).token(accToken).source(complex.toString())
-                .build();
+        return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid((String) object.get("_id"))
+                .username((String) object.get("name")).nickname((String) object.get("name"))
+                .avatar((String) object.get("avatarUrl")).blog((String) object.get("website"))
+                .location((String) object.get("location")).email((String) object.get("email")).gender(Gender.UNKNOWN)
+                .token(accToken).source(complex.toString()).build();
     }
 
     @Override
@@ -111,13 +110,13 @@ public class TeambitionProvider extends AbstractProvider {
         form.put("_userId", uid);
         form.put("refresh_token", refreshToken);
         String response = Httpx.post(complex.refresh(), form);
-        JSONObject refreshTokenObject = JSONObject.parseObject(response);
+        Map<String, Object> refreshTokenObject = JsonKit.toPojo(response, Map.class);
 
         this.checkResponse(refreshTokenObject);
 
         return Message.builder().errcode(ErrorCode.SUCCESS.getCode())
-                .data(AccToken.builder().accessToken(refreshTokenObject.getString("access_token"))
-                        .refreshToken(refreshTokenObject.getString("refresh_token")).build())
+                .data(AccToken.builder().accessToken((String) refreshTokenObject.get("access_token"))
+                        .refreshToken((String) refreshTokenObject.get("refresh_token")).build())
                 .build();
     }
 
@@ -126,9 +125,9 @@ public class TeambitionProvider extends AbstractProvider {
      *
      * @param object 请求响应内容
      */
-    private void checkResponse(JSONObject object) {
-        if ((object.containsKey("message") && object.containsKey("name"))) {
-            throw new AuthorizedException(object.getString("name") + ", " + object.getString("message"));
+    private void checkResponse(Map<String, Object> object) {
+        if (object.containsKey("message") && object.containsKey("name")) {
+            throw new AuthorizedException((String) object.get("name") + ", " + (String) object.get("message"));
         }
     }
 

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.oauth.metric.slack;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
@@ -38,6 +35,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -48,8 +46,9 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Slack 登录
@@ -72,11 +71,11 @@ public class SlackProvider extends AbstractProvider {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         String response = Httpx.get(accessTokenUrl(callback.getCode()), null, header);
-        JSONObject accessTokenObject = JSONObject.parseObject(response);
+        Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
         this.checkResponse(accessTokenObject);
-        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
-                .scope(accessTokenObject.getString("scope")).tokenType(accessTokenObject.getString("token_type"))
-                .uid(accessTokenObject.getJSONObject("authed_user").getString("id")).build();
+        return AccToken.builder().accessToken((String) accessTokenObject.get("access_token"))
+                .scope((String) accessTokenObject.get("scope")).tokenType((String) accessTokenObject.get("token_type"))
+                .uid(((Map<String, Object>) accessTokenObject.get("authed_user")).get("id").toString()).build();
     }
 
     @Override
@@ -85,14 +84,14 @@ public class SlackProvider extends AbstractProvider {
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         header.put("Authorization", "Bearer ".concat(accToken.getAccessToken()));
         String userInfo = Httpx.get(userInfoUrl(accToken), null, header);
-        JSONObject object = JSONObject.parseObject(userInfo);
+        Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
         this.checkResponse(object);
-        JSONObject user = object.getJSONObject("user");
-        JSONObject profile = user.getJSONObject("profile");
-        return Material.builder().rawJson(user).uuid(user.getString("id")).username(user.getString("name"))
-                .nickname(user.getString("real_name")).avatar(profile.getString("image_original"))
-                .email(profile.getString("email")).gender(Gender.UNKNOWN).token(accToken).source(complex.toString())
-                .build();
+        Map<String, Object> user = (Map<String, Object>) object.get("user");
+        Map<String, Object> profile = (Map<String, Object>) user.get("profile");
+        return Material.builder().rawJson(JsonKit.toJsonString(user)).uuid((String) user.get("id"))
+                .username((String) user.get("name")).nickname((String) user.get("real_name"))
+                .avatar((String) profile.get("image_original")).email((String) profile.get("email"))
+                .gender(Gender.UNKNOWN).token(accToken).source(complex.toString()).build();
     }
 
     @Override
@@ -101,10 +100,10 @@ public class SlackProvider extends AbstractProvider {
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
         header.put("Authorization", "Bearer ".concat(accToken.getAccessToken()));
         String userInfo = Httpx.get(complex.revoke(), null, header);
-        JSONObject object = JSONObject.parseObject(userInfo);
+        Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
         this.checkResponse(object);
         // 返回1表示取消授权成功，否则失败
-        ErrorCode status = object.getBooleanValue("revoked") ? ErrorCode.SUCCESS : ErrorCode.FAILURE;
+        ErrorCode status = (Boolean) object.get("revoked") ? ErrorCode.SUCCESS : ErrorCode.FAILURE;
         return Message.builder().errcode(status.getCode()).errmsg(status.getDesc()).build();
     }
 
@@ -113,13 +112,16 @@ public class SlackProvider extends AbstractProvider {
      *
      * @param object 请求响应内容
      */
-    private void checkResponse(JSONObject object) {
-        if (!object.getBooleanValue("ok")) {
-            String errorMsg = object.getString("error");
+    private void checkResponse(Map<String, Object> object) {
+        if (!((Boolean) object.get("ok"))) {
+            String errorMsg = (String) object.get("error");
             if (object.containsKey("response_metadata")) {
-                JSONArray array = object.getJSONObject("response_metadata").getJSONArray("messages");
-                if (null != array && array.size() > 0) {
-                    errorMsg += "; " + StringKit.join(Symbol.COMMA, array.toArray(new String[0]));
+                Map<String, Object> responseMetadata = (Map<String, Object>) object.get("response_metadata");
+                if (responseMetadata.containsKey("messages")) {
+                    List<String> messages = (List<String>) responseMetadata.get("messages");
+                    if (messages != null && !messages.isEmpty()) {
+                        errorMsg += "; " + StringKit.join(Symbol.COMMA, messages.toArray(new String[0]));
+                    }
                 }
             }
             throw new AuthorizedException(errorMsg);

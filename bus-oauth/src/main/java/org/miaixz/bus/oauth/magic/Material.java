@@ -27,17 +27,14 @@
 */
 package org.miaixz.bus.oauth.magic;
 
-import java.io.Serializable;
-
-import org.miaixz.bus.core.lang.Gender;
-
-import com.alibaba.fastjson.JSONObject;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.miaixz.bus.core.lang.Gender;
+
+import java.io.Serializable;
 
 /**
  * 授权成功后的用户信息，根据授权平台的不同，获取的数据完整性也不同
@@ -103,7 +100,7 @@ public class Material implements Serializable {
     /**
      * 第三方平台返回的原始用户信息
      */
-    private JSONObject rawJson;
+    private String rawJson;
 
     /**
      * 微信公众号 - 网页授权的登录时可用 微信针对网页授权登录，增加了一个快照页的逻辑，快照页获取到的微信用户的 uid oid 和头像昵称都是虚拟的信息

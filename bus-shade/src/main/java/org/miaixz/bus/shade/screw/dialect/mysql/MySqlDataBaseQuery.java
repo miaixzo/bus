@@ -27,14 +27,6 @@
 */
 package org.miaixz.bus.shade.screw.dialect.mysql;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.sql.DataSource;
-
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.CollKit;
@@ -45,9 +37,16 @@ import org.miaixz.bus.shade.screw.metadata.Column;
 import org.miaixz.bus.shade.screw.metadata.Database;
 import org.miaixz.bus.shade.screw.metadata.PrimaryKey;
 
+import javax.sql.DataSource;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * mysql 数据库查询 这里需要注意一点，jdbc url 一定要带有 useInformationSchema=true 或者通过配置文件方式配置上,这样才会走
- * {@link com.mysql.cj.jdbc.DatabaseMetaDataUsingInfoSchema} 元数据查询，查询的数据库表为INFORMATION_SCHEMA
+ * {@link com.mysql.cj.jdbc.DatabaseMetaDataMysqlSchema} 元数据查询，查询的数据库表为INFORMATION_SCHEMA
  *
  * @author Kimi Liu
  * @since Java 17+

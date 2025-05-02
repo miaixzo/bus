@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -30,6 +30,7 @@ package org.miaixz.bus.oauth.metric.oschina;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
@@ -38,7 +39,7 @@ import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.Map;
 
 /**
  * OSchina 登录
@@ -59,22 +60,58 @@ public class OschinaProvider extends AbstractProvider {
     @Override
     public AccToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
-        JSONObject accessTokenObject = JSONObject.parseObject(response);
-        this.checkResponse(accessTokenObject);
-        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
-                .refreshToken(accessTokenObject.getString("refresh_token")).uid(accessTokenObject.getString("uid"))
-                .expireIn(accessTokenObject.getIntValue("expires_in")).build();
+        try {
+            Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
+            if (accessTokenObject == null) {
+                throw new AuthorizedException("Failed to parse access token response: empty response");
+            }
+
+            this.checkResponse(accessTokenObject);
+
+            String accessToken = (String) accessTokenObject.get("access_token");
+            if (accessToken == null) {
+                throw new AuthorizedException("Missing access_token in response");
+            }
+            String refreshToken = (String) accessTokenObject.get("refresh_token");
+            String uid = (String) accessTokenObject.get("uid");
+            Object expiresInObj = accessTokenObject.get("expires_in");
+            int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
+
+            return AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).uid(uid).expireIn(expiresIn)
+                    .build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
+        }
     }
 
     @Override
     public Material getUserInfo(AccToken accToken) {
         String response = doGetUserInfo(accToken);
-        JSONObject object = JSONObject.parseObject(response);
-        this.checkResponse(object);
-        return Material.builder().rawJson(object).uuid(object.getString("id")).username(object.getString("name"))
-                .nickname(object.getString("name")).avatar(object.getString("avatar")).blog(object.getString("url"))
-                .location(object.getString("location")).gender(Gender.of(object.getString("gender")))
-                .email(object.getString("email")).token(accToken).source(complex.toString()).build();
+        try {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
+                throw new AuthorizedException("Failed to parse user info response: empty response");
+            }
+
+            this.checkResponse(object);
+
+            String id = (String) object.get("id");
+            if (id == null) {
+                throw new AuthorizedException("Missing id in user info response");
+            }
+            String name = (String) object.get("name");
+            String avatar = (String) object.get("avatar");
+            String url = (String) object.get("url");
+            String location = (String) object.get("location");
+            String gender = (String) object.get("gender");
+            String email = (String) object.get("email");
+
+            return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(name).nickname(name)
+                    .avatar(avatar).blog(url).location(location).gender(Gender.of(gender)).email(email).token(accToken)
+                    .source(complex.toString()).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
+        }
     }
 
     /**
@@ -108,9 +145,10 @@ public class OschinaProvider extends AbstractProvider {
      *
      * @param object 请求响应内容
      */
-    private void checkResponse(JSONObject object) {
+    private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error")) {
-            throw new AuthorizedException(object.getString("error_description"));
+            String errorDescription = (String) object.get("error_description");
+            throw new AuthorizedException(errorDescription != null ? errorDescription : "Unknown error");
         }
     }
 

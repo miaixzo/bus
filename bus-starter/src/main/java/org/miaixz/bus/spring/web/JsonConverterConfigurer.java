@@ -32,36 +32,42 @@ import org.springframework.http.converter.HttpMessageConverter;
 import java.util.List;
 
 /**
- * 用于配置 JSON 消息转换器的接口，支持集成自定义 JSON 框架（如 Gson、JSON-B）。 实现类需提供转换器名称、可用性检查、优先级顺序和配置逻辑。
+ * JSON 转换器配置器接口，用于配置 Spring MVC 的 HttpMessageConverter。 实现类需提供转换器名称、可用性检查、优先级顺序和配置逻辑。 支持设置 autoType 属性，用于序列化/反序列化配置（如
+ * Fastjson 的类型自动识别）。
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
-interface JsonConverterConfigurer {
+public interface JsonConverterConfigurer {
 
     /**
-     * 获取转换器名称。
+     * 返回转换器的名称，用于日志和调试。
      *
-     * @return 转换器名称（如 "Jackson"、"Fastjson"）
+     * @return 转换器名称
      */
-    String converterName();
+    String name();
 
     /**
-     * 检查转换器是否可用（依赖类是否存在）。
+     * 返回转换器的优先级顺序（值越小，优先级越高）。
      *
-     * @return 如果依赖存在且可用返回 true，否则返回 false
-     */
-    boolean isAvailable();
-
-    /**
-     * 获取转换器的优先级顺序。
-     *
-     * @return 转换器在列表中的插入索引
+     * @return 优先级顺序
      */
     int order();
 
     /**
-     * 配置消息转换器。
+     * 配置 HttpMessageConverter 列表。
      *
-     * @param converters 要添加到的消息转换器列表
+     * @param converters 要配置的消息转换器列表
      */
     void configure(List<HttpMessageConverter<?>> converters);
+
+    /**
+     * 设置 autoType 属性，用于序列化/反序列化配置。 默认实现为空，子类可覆盖以支持 autoType。
+     *
+     * @param autoType 自动类型配置字符串
+     */
+    default void autoType(String autoType) {
+        // 默认实现为空，兼容不依赖 autoType 的实现类
+    }
 
 }

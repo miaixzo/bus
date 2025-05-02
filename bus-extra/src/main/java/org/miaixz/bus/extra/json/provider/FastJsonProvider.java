@@ -47,15 +47,11 @@ import java.util.Map;
  */
 public class FastJsonProvider extends AbstractJsonProvider {
 
-    private static final JSONWriter.Feature[] WRITER_FEATURES = {
-            JSONWriter.Feature.FieldBased,
-            JSONWriter.Feature.WriteMapNullValue,
-            JSONWriter.Feature.WriteNulls
-    };
+    private static final JSONWriter.Feature[] WRITER_FEATURES = {JSONWriter.Feature.FieldBased,
+            JSONWriter.Feature.WriteMapNullValue, JSONWriter.Feature.WriteNulls};
 
-    private static final Filter[] FILTERS = {
-            (ValueFilter) (object, name, value) -> value == null || Normal.EMPTY.equals(value) || Symbol.SPACE.equals(value) ? null : value
-    };
+    private static final Filter[] FILTERS = {(ValueFilter) (object, name,
+                                                            value) -> value == null || Normal.EMPTY.equals(value) || Symbol.SPACE.equals(value) ? null : value};
 
     /**
      * 构造

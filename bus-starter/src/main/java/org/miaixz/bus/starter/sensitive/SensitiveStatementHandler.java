@@ -27,12 +27,6 @@
 */
 package org.miaixz.bus.starter.sensitive;
 
-import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
 import org.apache.ibatis.executor.statement.StatementHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -46,6 +40,7 @@ import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.xyz.BooleanKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.handler.AbstractSqlHandler;
 import org.miaixz.bus.sensitive.Builder;
@@ -54,6 +49,12 @@ import org.miaixz.bus.sensitive.magic.annotation.NShield;
 import org.miaixz.bus.sensitive.magic.annotation.Privacy;
 import org.miaixz.bus.sensitive.magic.annotation.Sensitive;
 import org.miaixz.bus.sensitive.magic.annotation.Shield;
+
+import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * 数据脱敏加密
@@ -166,7 +167,7 @@ public class SensitiveStatementHandler extends AbstractSqlHandler implements Int
         }
         NShield json = field.getAnnotation(NShield.class);
         if (ObjectKit.isNotEmpty(json) && ObjectKit.isNotEmpty(value)) {
-            Map<String, Object> map = Provider.parseToObjectMap(value.toString());
+            Map<String, Object> map = JsonKit.toMap(value.toString());
             Shield[] keys = json.value();
             for (Shield f : keys) {
                 String key = f.key();
@@ -175,7 +176,7 @@ public class SensitiveStatementHandler extends AbstractSqlHandler implements Int
                     map.put(key, Builder.on(data));
                 }
             }
-            value = Provider.parseMaptoJSONString(map);
+            value = JsonKit.toJsonString(map);
         }
         return value;
     }

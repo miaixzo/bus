@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,12 +27,6 @@
 */
 package org.miaixz.bus.oauth.metric.huawei;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
@@ -40,6 +34,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -50,7 +45,11 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 华为 登录
@@ -71,21 +70,21 @@ public class HuaweiProvider extends AbstractProvider {
     /**
      * 获取access token
      *
-     * @param Callback 授权成功后的回调参数
+     * @param callback 授权成功后的回调参数
      * @return token
      * @see AbstractProvider#authorize(String)
      */
     @Override
-    public AccToken getAccessToken(Callback Callback) {
+    public AccToken getAccessToken(Callback callback) {
         Map<String, String> form = new HashMap<>(8);
         form.put("grant_type", "authorization_code");
-        form.put("code", Callback.getCode());
+        form.put("code", callback.getCode());
         form.put("client_id", context.getAppKey());
         form.put("client_secret", context.getAppSecret());
         form.put("redirect_uri", context.getRedirectUri());
 
         if (context.isPkce()) {
-            String cacheKey = this.complex.getName().concat(":code_verifier:").concat(Callback.getState());
+            String cacheKey = this.complex.getName().concat(":code_verifier:").concat(callback.getState());
             String codeVerifier = (String) this.cache.get(cacheKey);
             form.put("code_verifier", codeVerifier);
         }
@@ -101,51 +100,77 @@ public class HuaweiProvider extends AbstractProvider {
     /**
      * 使用token换取用户信息
      *
-     * @param AccToken token信息
+     * @param accToken token信息
      * @return 用户信息
      * @see AbstractProvider#getAccessToken(Callback)
      */
     @Override
-    public Material getUserInfo(AccToken AccToken) {
-        String idToken = AccToken.getIdToken();
+    public Material getUserInfo(AccToken accToken) {
+        String idToken = accToken.getIdToken();
         if (StringKit.isEmpty(idToken)) {
             Map<String, String> form = new HashMap<>(7);
-            form.put("access_token", AccToken.getAccessToken());
+            form.put("access_token", accToken.getAccessToken());
             form.put("getNickName", "1");
             form.put("nsp_svc", "GOpen.User.getInfo");
 
             Map<String, String> header = new HashMap<>(7);
             header.put(HTTP.CONTENT_TYPE, "application/x-www-form-urlencoded");
             String response = Httpx.post(complex.userInfo(), header, form);
-            JSONObject object = JSONObject.parseObject(response);
+            try {
+                Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+                if (object == null) {
+                    throw new AuthorizedException("Failed to parse user info response: empty response");
+                }
+                this.checkResponse(object);
 
-            this.checkResponse(object);
+                String unionID = (String) object.get("unionID");
+                if (unionID == null) {
+                    throw new AuthorizedException("Missing unionID in user info response");
+                }
+                String displayName = (String) object.get("displayName");
+                String headPictureURL = (String) object.get("headPictureURL");
 
-            return Material.builder().rawJson(object).uuid(object.getString("unionID"))
-                    .username(object.getString("displayName")).nickname(object.getString("displayName"))
-                    .gender(Gender.UNKNOWN).avatar(object.getString("headPictureURL")).token(AccToken)
-                    .source(context.toString()).build();
+                return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(unionID).username(displayName)
+                        .nickname(displayName).gender(Gender.UNKNOWN).avatar(headPictureURL).token(accToken)
+                        .source(context.toString()).build();
+            } catch (Exception e) {
+                throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
+            }
         }
         String payload = new String(Base64.getUrlDecoder().decode(idToken.split("\\.")[1]), StandardCharsets.UTF_8);
+        try {
+            Map<String, Object> object = JsonKit.toPojo(payload, Map.class);
+            if (object == null) {
+                throw new AuthorizedException("Failed to parse id_token payload: empty response");
+            }
 
-        JSONObject object = JSONObject.parseObject(payload);
-        return Material.builder().rawJson(object).uuid(object.getString("sub")).username(object.getString("name"))
-                .nickname(object.getString("nickname")).gender(Gender.UNKNOWN).avatar(object.getString("picture"))
-                .token(AccToken).source(complex.toString()).build();
+            String sub = (String) object.get("sub");
+            if (sub == null) {
+                throw new AuthorizedException("Missing sub in id_token payload");
+            }
+            String name = (String) object.get("name");
+            String nickname = (String) object.get("nickname");
+            String picture = (String) object.get("picture");
+
+            return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(sub).username(name).nickname(nickname)
+                    .gender(Gender.UNKNOWN).avatar(picture).token(accToken).source(complex.toString()).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse id_token payload: " + e.getMessage());
+        }
     }
 
     /**
      * 刷新access token （续期）
      *
-     * @param AccToken 登录成功后返回的Token信息
+     * @param accToken 登录成功后返回的Token信息
      * @return AuthResponse
      */
     @Override
-    public Message refresh(AccToken AccToken) {
+    public Message refresh(AccToken accToken) {
         Map<String, String> form = new HashMap<>(7);
         form.put("client_id", context.getAppKey());
         form.put("client_secret", context.getAppSecret());
-        form.put("refresh_token", AccToken.getRefreshToken());
+        form.put("refresh_token", accToken.getRefreshToken());
         form.put("grant_type", "refresh_token");
 
         Map<String, String> header = new HashMap<>(7);
@@ -156,13 +181,27 @@ public class HuaweiProvider extends AbstractProvider {
     }
 
     private AccToken getAccToken(String response) {
-        JSONObject object = JSONObject.parseObject(response);
+        try {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
+                throw new AuthorizedException("Failed to parse access token response: empty response");
+            }
+            this.checkResponse(object);
 
-        this.checkResponse(object);
+            String accessToken = (String) object.get("access_token");
+            if (accessToken == null) {
+                throw new AuthorizedException("Missing access_token in response");
+            }
+            Object expiresInObj = object.get("expires_in");
+            int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
+            String refreshToken = (String) object.get("refresh_token");
+            String idToken = (String) object.get("id_token");
 
-        return AccToken.builder().accessToken(object.getString("access_token"))
-                .expireIn(object.getIntValue("expires_in")).refreshToken(object.getString("refresh_token"))
-                .idToken(object.getString("id_token")).build();
+            return AccToken.builder().accessToken(accessToken).expireIn(expiresIn).refreshToken(refreshToken)
+                    .idToken(idToken).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
+        }
     }
 
     /**
@@ -196,12 +235,16 @@ public class HuaweiProvider extends AbstractProvider {
      *
      * @param object 接口返回的结果
      */
-    private void checkResponse(JSONObject object) {
+    private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("NSP_STATUS")) {
-            throw new AuthorizedException(object.getString("error"));
+            String error = (String) object.get("error");
+            throw new AuthorizedException(error != null ? error : "Unknown error");
         }
         if (object.containsKey("error")) {
-            throw new AuthorizedException(object.getString("sub_error") + ":" + object.getString("error_description"));
+            String subError = (String) object.get("sub_error");
+            String errorDescription = (String) object.get("error_description");
+            throw new AuthorizedException((subError != null ? subError : "Unknown sub_error") + ":"
+                    + (errorDescription != null ? errorDescription : "Unknown description"));
         }
     }
 

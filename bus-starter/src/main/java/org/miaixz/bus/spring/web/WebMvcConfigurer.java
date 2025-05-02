@@ -28,7 +28,6 @@
 package org.miaixz.bus.spring.web;
 
 import org.miaixz.bus.core.lang.Charset;
-import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.spring.SpringBuilder;
 import org.miaixz.bus.spring.env.SpringEnvironmentPostProcessor;
@@ -54,6 +53,13 @@ public class WebMvcConfigurer extends SpringEnvironmentPostProcessor
     private static final List<MediaType> DEFAULT_MEDIA_TYPES = List.of(MediaType.APPLICATION_JSON,
             MediaType.parseMediaType(MediaType.TEXT_PLAIN_VALUE + ";charset=UTF-8"));
 
+    protected String autoType;
+
+    public WebMvcConfigurer(String autoType) {
+        super();
+        this.autoType = autoType;
+    }
+
     /**
      * 配置 Spring MVC 的消息转换器列表。 按指定顺序添加 StringHttpMessageConverter 和 JSON 转换器（默认和自定义）。 确保至少一个 JSON 框架（Jackson、Fastjson
      * 或自定义配置器）存在，否则抛出异常。
@@ -63,73 +69,34 @@ public class WebMvcConfigurer extends SpringEnvironmentPostProcessor
      */
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        // 检查至少一个 JSON 框架或自定义配置器存在
-        ensureAtLeastOneJsonFramework();
+        // 配置 StringHttpMessageConverter
+        configureConverter(converters, this::configureStringConverter, "StringHttpMessageConverter");
 
-        // 配置 StringHttpMessageConverter（无需依赖检查，顺序 -1）
-        configureConverter(converters, this::configureStringConverter, "StringHttpMessageConverter", -1);
-
-        // 配置默认 JSON 转换器（Jackson 和 Fastjson）
-        configureJsonConverters(converters, getDefaultJsonConfigurers());
-
-        // 配置用户定义的自定义 JSON 转换器
-        configureJsonConverters(converters, getCustomJsonConfigurers());
+        /**
+         * 配置 JSON 转换器 用户可自定义实现/只需实现 {@link JsonConverterConfigurer } @Component 即可自动加载
+         */
+        configureJsonConverters(converters, getJsonConfigurers());
     }
 
     /**
-     * 检查是否存在至少一个可用的 JSON 配置器。 如果没有可用的配置器，抛出 IllegalStateException 阻止服务启动。
-     *
-     * @throws IllegalStateException 如果没有可用的 JSON 配置器
-     */
-    private void ensureAtLeastOneJsonFramework() {
-        List<JsonConverterConfigurer> allConfigurers = ListKit.of();
-        allConfigurers.addAll(getDefaultJsonConfigurers());
-        allConfigurers.addAll(getCustomJsonConfigurers());
-
-        boolean hasAvailableConfigurer = allConfigurers.stream().anyMatch(JsonConverterConfigurer::isAvailable);
-
-        Logger.debug("Available JSON configurers: {} (count: {})", allConfigurers.stream()
-                        .filter(JsonConverterConfigurer::isAvailable).map(JsonConverterConfigurer::converterName).toList(),
-                allConfigurers.size());
-
-        if (!hasAvailableConfigurer) {
-            throw new IllegalStateException(
-                    "No JSON framework (Jackson, Fastjson, or custom JsonConverterConfigurer) is available in the classpath. At least one is required.");
-        }
-    }
-
-    /**
-     * 获取默认 JSON 配置器列表（Jackson 和 Fastjson）。
-     *
-     * @return 默认 JsonConverterConfigurer 实例列表
-     */
-    private List<JsonConverterConfigurer> getDefaultJsonConfigurers() {
-        List<JsonConverterConfigurer> configurers = ListKit.of();
-        try {
-            configurers.add(new JacksonConverterConfigurer());
-            Logger.debug("JacksonConverterConfigurer initialized");
-        } catch (Exception e) {
-            Logger.warn("Failed to initialize JacksonConverterConfigurer: {}", e.toString(), e);
-        }
-        try {
-            configurers.add(new FastJsonConverterConfigurer());
-            Logger.debug("FastJsonConverterConfigurer initialized");
-        } catch (Exception e) {
-            Logger.warn("Failed to initialize FastJsonConverterConfigurer: {}", e.toString(), e);
-        }
-        return configurers;
-    }
-
-    /**
-     * 使用 SpringBuilder.getBeansOfType 获取用户定义的 JSON 配置器。 按 order() 值排序配置器以确保优先级一致。
+     * 使用 SpringBuilder.getBeansOfType 获取用户定义的 JSON 配置器。 为每个配置器设置 autoType 属性，按 order() 值排序，仅返回可用的配置器。
      *
      * @return 自定义 JsonConverterConfigurer 实例列表
      */
-    private List<JsonConverterConfigurer> getCustomJsonConfigurers() {
+    private List<JsonConverterConfigurer> getJsonConfigurers() {
         List<JsonConverterConfigurer> configurers = SpringBuilder.getBeansOfType(JsonConverterConfigurer.class).values()
-                .stream().sorted(Comparator.comparingInt(JsonConverterConfigurer::order)).toList();
-        Logger.debug("Retrieved {} custom JsonConverterConfigurer beans: {}", configurers.size(),
-                configurers.stream().map(JsonConverterConfigurer::converterName).toList());
+                .stream().peek(configurer -> {
+                    try {
+                        configurer.autoType(this.autoType);
+                        Logger.debug("Set autoType '{}' for custom JsonConverterConfigurer: {}", this.autoType,
+                                configurer.name());
+                    } catch (Exception e) {
+                        Logger.warn("Failed to set autoType for custom JsonConverterConfigurer {}: {}",
+                                configurer.name(), e.getMessage(), e);
+                    }
+                }).sorted(Comparator.comparingInt(JsonConverterConfigurer::order)).toList();
+        Logger.debug("Retrieved {} available custom JsonConverterConfigurer beans: {}", configurers.size(),
+                configurers.stream().map(JsonConverterConfigurer::name).toList());
         return configurers;
     }
 
@@ -139,15 +106,14 @@ public class WebMvcConfigurer extends SpringEnvironmentPostProcessor
      * @param converters 要添加到的消息转换器列表
      * @param configurer 转换器的配置逻辑
      * @param name       转换器名称（用于日志）
-     * @param order      转换器的插入索引
      */
     private void configureConverter(List<HttpMessageConverter<?>> converters,
-                                    Consumer<List<HttpMessageConverter<?>>> configurer, String name, int order) {
+                                    Consumer<List<HttpMessageConverter<?>>> configurer, String name) {
         try {
             configurer.accept(converters);
             Logger.info("Successfully configured {} message converter", name);
         } catch (Exception e) {
-            Logger.warn("Failed to configure {}: {}", name, e.toString(), e);
+            Logger.warn("Failed to configure {}: {}", name, e.getMessage(), e);
         }
     }
 
@@ -160,11 +126,7 @@ public class WebMvcConfigurer extends SpringEnvironmentPostProcessor
     private void configureJsonConverters(List<HttpMessageConverter<?>> converters,
                                          List<JsonConverterConfigurer> configurers) {
         for (JsonConverterConfigurer configurer : configurers) {
-            if (configurer.isAvailable()) {
-                configureConverter(converters, configurer::configure, configurer.converterName(), configurer.order());
-            } else {
-                Logger.warn("{} is not available. Skipping configuration.", configurer.converterName());
-            }
+            configureConverter(converters, configurer::configure, configurer.name());
         }
     }
 

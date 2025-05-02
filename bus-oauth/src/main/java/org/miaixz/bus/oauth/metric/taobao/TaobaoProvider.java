@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -33,6 +33,7 @@ import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -43,7 +44,7 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.Map;
 
 /**
  * 淘宝 登录
@@ -66,32 +67,32 @@ public class TaobaoProvider extends AbstractProvider {
         return AccToken.builder().accessCode(callback.getCode()).build();
     }
 
-    private AccToken getAuthToken(JSONObject object) {
+    private AccToken getAuthToken(Map<String, Object> object) {
         this.checkResponse(object);
 
-        return AccToken.builder().accessToken(object.getString("access_token"))
-                .expireIn(object.getIntValue("expires_in")).tokenType(object.getString("token_type"))
-                .idToken(object.getString("id_token")).refreshToken(object.getString("refresh_token"))
-                .uid(object.getString("taobao_user_id")).openId(object.getString("taobao_open_uid")).build();
+        return AccToken.builder().accessToken((String) object.get("access_token"))
+                .expireIn(((Number) object.get("expires_in")).intValue()).tokenType((String) object.get("token_type"))
+                .idToken((String) object.get("id_token")).refreshToken((String) object.get("refresh_token"))
+                .uid((String) object.get("taobao_user_id")).openId((String) object.get("taobao_open_uid")).build();
     }
 
-    private void checkResponse(JSONObject object) {
+    private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error")) {
-            throw new AuthorizedException(object.getString("error_description"));
+            throw new AuthorizedException((String) object.get("error_description"));
         }
     }
 
     @Override
     public Material getUserInfo(AccToken accToken) {
         String response = doPostAuthorizationCode(accToken.getAccessCode());
-        JSONObject accessTokenObject = JSONObject.parseObject(response);
+        Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
         if (accessTokenObject.containsKey("error")) {
-            throw new AuthorizedException(accessTokenObject.getString("error_description"));
+            throw new AuthorizedException((String) accessTokenObject.get("error_description"));
         }
         accToken = this.getAuthToken(accessTokenObject);
 
-        String nick = UrlDecoder.decode(accessTokenObject.getString("taobao_user_nick"));
-        return Material.builder().rawJson(accessTokenObject)
+        String nick = UrlDecoder.decode((String) accessTokenObject.get("taobao_user_nick"));
+        return Material.builder().rawJson(JsonKit.toJsonString(accessTokenObject))
                 .uuid(StringKit.isEmpty(accToken.getUid()) ? accToken.getOpenId() : accToken.getUid()).username(nick)
                 .nickname(nick).gender(Gender.UNKNOWN).token(accToken).source(complex.toString()).build();
     }
@@ -100,7 +101,7 @@ public class TaobaoProvider extends AbstractProvider {
     public Message refresh(AccToken oldToken) {
         String tokenUrl = refreshTokenUrl(oldToken.getRefreshToken());
         String response = Httpx.post(tokenUrl);
-        JSONObject accessTokenObject = JSONObject.parseObject(response);
+        Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
         return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).data(this.getAuthToken(accessTokenObject))
                 .build();
     }

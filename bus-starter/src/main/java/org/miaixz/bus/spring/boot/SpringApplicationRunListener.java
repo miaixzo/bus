@@ -35,13 +35,13 @@ import org.miaixz.bus.spring.boot.statics.BaseStatics;
 import org.miaixz.bus.spring.boot.statics.ChildrenStatics;
 import org.miaixz.bus.spring.boot.statics.ModuleStatics;
 import org.springframework.boot.ConfigurableBootstrapContext;
-import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.boot.logging.LoggerConfiguration;
 import org.springframework.boot.logging.LoggingSystem;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.metrics.ApplicationStartup;
 
 import java.lang.management.ManagementFactory;
 import java.time.Duration;
@@ -49,12 +49,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 实现{@link org.springframework.boot.SpringApplicationRunListener}来计算启动阶段需要花费时间
+ * 实现 {@link SpringApplicationRunListener} 和 {@link ApplicationListener}，计算启动阶段时间。 支持动态加载和性能统计，记录 JVM 启动、环境准备、上下文初始化等阶段。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class SpringApplicationRunListener implements org.springframework.boot.SpringApplicationRunListener, Ordered {
+public class SpringApplicationRunListener implements org.springframework.boot.SpringApplicationRunListener,
+        ApplicationListener<ApplicationStartedEvent>, Ordered {
 
     /**
      * Spring boot 主引导和启动Spring应用程序
@@ -95,6 +96,8 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
     public SpringApplicationRunListener(org.springframework.boot.SpringApplication springApplication) {
         this.application = springApplication;
         this.startupReporter = new StartupReporter();
+        Logger.debug("Initialized SpringApplicationRunListener for application: {}",
+                springApplication.getMainApplicationClass());
     }
 
     @Override
@@ -103,6 +106,7 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
         jvmStartingStage.setName(GeniusBuilder.JVM_STARTING_STAGE);
         jvmStartingStage.setStartTime(ManagementFactory.getRuntimeMXBean().getStartTime());
         jvmStartingStage.setEndTime(System.currentTimeMillis());
+        Logger.debug("JVM starting stage completed in {} ms", jvmStartingStage.getCost());
     }
 
     @Override
@@ -117,9 +121,13 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
         startupReporter.bindToStartupReporter(environment);
         bootstrapContext.register(StartupReporter.class, key -> startupReporter);
 
-        ApplicationStartup userApplicationStartup = application.getApplicationStartup();
-        if (ApplicationStartup.DEFAULT == userApplicationStartup || userApplicationStartup == null) {
-            application.setApplicationStartup(new BufferingApplicationStartup(startupReporter.bufferSize));
+        try {
+            Class.forName("org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup");
+            application.setApplicationStartup(
+                    new org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup(
+                            startupReporter.bufferSize));
+        } catch (ClassNotFoundException e) {
+            Logger.debug("BufferingApplicationStartup not available, skipping startup metrics");
         }
     }
 
@@ -134,6 +142,8 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
             applicationContextPrepareStage.setChildren(new ArrayList<>(statisticsList));
             statisticsList.clear();
         }
+        Logger.debug("Application context preparation stage completed in {} ms",
+                applicationContextPrepareStage.getCost());
     }
 
     @Override
@@ -146,7 +156,8 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
         context.getBeanFactory().registerSingleton("STARTUP_REPORTER_BEAN", startupReporter);
         SpringSmartLifecycle springSmartLifecycle = new SpringSmartLifecycle(startupReporter);
         springSmartLifecycle.setApplicationContext(context);
-        context.getBeanFactory().registerSingleton("STARTUP_SMART_LIfE_CYCLE", springSmartLifecycle);
+        context.getBeanFactory().registerSingleton("STARTUP_SMART_LIFECYCLE", springSmartLifecycle);
+        Logger.debug("Application context loading stage completed in {} ms", applicationContextLoadStage.getCost());
     }
 
     @Override
@@ -154,6 +165,7 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
         ChildrenStatics<ModuleStatics> applicationRefreshStage = (ChildrenStatics<ModuleStatics>) startupReporter
                 .getStageNyName(GeniusBuilder.APPLICATION_CONTEXT_REFRESH_STAGE);
         applicationRefreshStage.setStartTime(applicationContextLoadStage.getEndTime());
+        applicationRefreshStage.setEndTime(System.currentTimeMillis());
         applicationRefreshStage.setCost(applicationRefreshStage.getEndTime() - applicationRefreshStage.getStartTime());
 
         ModuleStatics rootModule = applicationRefreshStage.getChildren().get(0);
@@ -170,6 +182,11 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
     }
 
     @Override
+    public void onApplicationEvent(ApplicationStartedEvent event) {
+        Logger.debug("Received ApplicationStartedEvent for application: {}", application.getMainApplicationClass());
+    }
+
+    @Override
     public int getOrder() {
         return Ordered.LOWEST_PRECEDENCE - 10;
     }
@@ -179,9 +196,11 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
         message.append("Started");
 
         ConfigurableEnvironment environment = context.getEnvironment();
-        String configName = context.getEnvironment().getProperty("spring.config.name", "application");
+        String appName = StringKit.defaultIfEmpty(environment.getProperty("spring.application.name"), "unknown");
+        message.append(" - App Name: ").append(appName);
+        String configName = StringKit.defaultIfEmpty(environment.getProperty("spring.config.name"), "application");
         message.append(" - Config Name: ").append(configName);
-        String[] activeProfiles = context.getEnvironment().getActiveProfiles();
+        String[] activeProfiles = environment.getActiveProfiles();
         message.append(" - Active Profiles: ")
                 .append(activeProfiles.length > 0 ? String.join(", ", activeProfiles) : "none");
 
@@ -191,12 +210,13 @@ public class SpringApplicationRunListener implements org.springframework.boot.Sp
             for (LoggerConfiguration config : loggingSystem.getLoggerConfigurations()) {
                 if ("org.miaixz".equalsIgnoreCase(config.getName())) {
                     logging = config.getEffectiveLevel().name();
+                    break;
                 }
             }
         }
 
         if (StringKit.hasText(logging)) {
-            message.append(" with [" + logging + "]");
+            message.append(" with [").append(logging).append("]");
         }
 
         message.append(" in ");

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,10 +27,6 @@
 */
 package org.miaixz.bus.oauth.metric.amazon;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
@@ -39,6 +35,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.url.UrlEncoder;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -49,7 +46,9 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Amazon 登录
@@ -126,7 +125,6 @@ public class AmazonProvider extends AbstractProvider {
         form.put("client_secret", context.getAppSecret());
         return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).data(getToken(form, this.complex.refresh()))
                 .build();
-
     }
 
     private AccToken getToken(Map<String, String> param, String url) {
@@ -135,11 +133,27 @@ public class AmazonProvider extends AbstractProvider {
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED + ";charset=UTF-8");
 
         String response = Httpx.post(url, param, header);
-        JSONObject jsonObject = JSONObject.parseObject(response);
-        this.checkResponse(jsonObject);
-        return AccToken.builder().accessToken(jsonObject.getString("access_token"))
-                .tokenType(jsonObject.getString("token_type")).expireIn(jsonObject.getIntValue("expires_in"))
-                .refreshToken(jsonObject.getString("refresh_token")).build();
+        try {
+            Map<String, Object> jsonObject = JsonKit.toPojo(response, Map.class);
+            if (jsonObject == null) {
+                throw new AuthorizedException("Failed to parse JSON response: empty response");
+            }
+            this.checkResponse(jsonObject);
+
+            String accessToken = (String) jsonObject.get("access_token");
+            if (accessToken == null) {
+                throw new AuthorizedException("Missing access_token in response");
+            }
+            String tokenType = (String) jsonObject.get("token_type");
+            Object expiresInObj = jsonObject.get("expires_in");
+            int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
+            String refreshToken = (String) jsonObject.get("refresh_token");
+
+            return AccToken.builder().accessToken(accessToken).tokenType(tokenType).expireIn(expiresIn)
+                    .refreshToken(refreshToken).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse token response: " + e.getMessage());
+        }
     }
 
     /**
@@ -147,10 +161,10 @@ public class AmazonProvider extends AbstractProvider {
      *
      * @param jsonObject 响应内容
      */
-    private void checkResponse(JSONObject jsonObject) {
+    private void checkResponse(Map<String, Object> jsonObject) {
         if (jsonObject.containsKey("error")) {
-            throw new AuthorizedException(jsonObject.getString("error_description").concat(Symbol.SPACE)
-                    + jsonObject.getString("error_description"));
+            String errorDescription = (String) jsonObject.get("error_description");
+            throw new AuthorizedException(errorDescription != null ? errorDescription : "Unknown error");
         }
     }
 
@@ -169,21 +183,42 @@ public class AmazonProvider extends AbstractProvider {
         header.put(HTTP.AUTHORIZATION, "bearer " + accessToken);
 
         String userInfo = Httpx.get(this.complex.userInfo(), new HashMap<>(0), header);
-        JSONObject jsonObject = JSONObject.parseObject(userInfo);
-        this.checkResponse(jsonObject);
+        try {
+            Map<String, Object> jsonObject = JsonKit.toPojo(userInfo, Map.class);
+            if (jsonObject == null) {
+                throw new AuthorizedException("Failed to parse user info response: empty response");
+            }
+            this.checkResponse(jsonObject);
 
-        return Material.builder().rawJson(jsonObject).uuid(jsonObject.getString("user_id"))
-                .username(jsonObject.getString("name")).nickname(jsonObject.getString("name"))
-                .email(jsonObject.getString("email")).gender(Gender.UNKNOWN).source(complex.toString()).token(accToken)
-                .build();
+            String userId = (String) jsonObject.get("user_id");
+            if (userId == null) {
+                throw new AuthorizedException("Missing user_id in response");
+            }
+            String name = (String) jsonObject.get("name");
+            String email = (String) jsonObject.get("email");
+
+            return Material.builder().rawJson(JsonKit.toJsonString(jsonObject)).uuid(userId).username(name)
+                    .nickname(name).email(email).gender(Gender.UNKNOWN).source(complex.toString()).token(accToken)
+                    .build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
+        }
     }
 
     private void checkToken(String accessToken) {
         String tokenInfo = Httpx
                 .get("https://api.amazon.com/auth/o2/tokeninfo?access_token=" + UrlEncoder.encodeAll(accessToken));
-        JSONObject jsonObject = JSONObject.parseObject(tokenInfo);
-        if (!context.getAppKey().equals(jsonObject.getString("aud"))) {
-            throw new AuthorizedException(ErrorCode.ILLEGAL_TOKEN.getCode());
+        try {
+            Map<String, Object> jsonObject = JsonKit.toPojo(tokenInfo, Map.class);
+            if (jsonObject == null) {
+                throw new AuthorizedException("Failed to parse token info response: empty response");
+            }
+            String aud = (String) jsonObject.get("aud");
+            if (!context.getAppKey().equals(aud)) {
+                throw new AuthorizedException(ErrorCode.ILLEGAL_TOKEN.getCode());
+            }
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse token info response: " + e.getMessage());
         }
     }
 

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,14 +27,13 @@
 */
 package org.miaixz.bus.oauth.metric.mi;
 
-import java.text.MessageFormat;
-
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.oauth.Builder;
@@ -46,7 +45,8 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.text.MessageFormat;
+import java.util.Map;
 
 /**
  * 小米 登录
@@ -73,52 +73,100 @@ public class MiProvider extends AbstractProvider {
     private AccToken getToken(String accessTokenUrl) {
         String response = Httpx.get(accessTokenUrl);
         String jsonStr = response.replace(PREFIX, Normal.EMPTY);
-        JSONObject accessTokenObject = JSONObject.parseObject(jsonStr);
+        try {
+            Map<String, Object> accessTokenObject = JsonKit.toPojo(jsonStr, Map.class);
+            if (accessTokenObject == null) {
+                throw new AuthorizedException("Failed to parse access token response: empty response");
+            }
 
-        if (accessTokenObject.containsKey("error")) {
-            throw new AuthorizedException(accessTokenObject.getString("error_description"));
+            if (accessTokenObject.containsKey("error")) {
+                String errorDescription = (String) accessTokenObject.get("error_description");
+                throw new AuthorizedException(errorDescription != null ? errorDescription : "Unknown error");
+            }
+
+            String accessToken = (String) accessTokenObject.get("access_token");
+            if (accessToken == null) {
+                throw new AuthorizedException("Missing access_token in response");
+            }
+            Object expiresInObj = accessTokenObject.get("expires_in");
+            int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
+            String scope = (String) accessTokenObject.get("scope");
+            String tokenType = (String) accessTokenObject.get("token_type");
+            String refreshToken = (String) accessTokenObject.get("refresh_token");
+            String openId = (String) accessTokenObject.get("openId");
+            String macAlgorithm = (String) accessTokenObject.get("mac_algorithm");
+            String macKey = (String) accessTokenObject.get("mac_key");
+
+            return AccToken.builder().accessToken(accessToken).expireIn(expiresIn).scope(scope).tokenType(tokenType)
+                    .refreshToken(refreshToken).openId(openId).macAlgorithm(macAlgorithm).macKey(macKey).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
-
-        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
-                .expireIn(accessTokenObject.getIntValue("expires_in")).scope(accessTokenObject.getString("scope"))
-                .tokenType(accessTokenObject.getString("token_type"))
-                .refreshToken(accessTokenObject.getString("refresh_token"))
-                .openId(accessTokenObject.getString("openId"))
-                .macAlgorithm(accessTokenObject.getString("mac_algorithm"))
-                .macKey(accessTokenObject.getString("mac_key")).build();
     }
 
     @Override
     public Material getUserInfo(AccToken accToken) {
         // 获取用户信息
         String userResponse = doGetUserInfo(accToken);
+        try {
+            Map<String, Object> userProfile = JsonKit.toPojo(userResponse, Map.class);
+            if (userProfile == null) {
+                throw new AuthorizedException("Failed to parse user info response: empty response");
+            }
 
-        JSONObject userProfile = JSONObject.parseObject(userResponse);
-        if ("error".equalsIgnoreCase(userProfile.getString("result"))) {
-            throw new AuthorizedException(userProfile.getString("description"));
+            String result = (String) userProfile.get("result");
+            if ("error".equalsIgnoreCase(result)) {
+                String description = (String) userProfile.get("description");
+                throw new AuthorizedException(description != null ? description : "Unknown error");
+            }
+
+            Map<String, Object> object = (Map<String, Object>) userProfile.get("data");
+            if (object == null) {
+                throw new AuthorizedException("Missing data in user info response");
+            }
+
+            String miliaoNick = (String) object.get("miliaoNick");
+            if (miliaoNick == null) {
+                throw new AuthorizedException("Missing miliaoNick in user info response");
+            }
+            String miliaoIcon = (String) object.get("miliaoIcon");
+            String mail = (String) object.get("mail");
+
+            Material authUser = Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(accToken.getOpenId())
+                    .username(miliaoNick).nickname(miliaoNick).avatar(miliaoIcon).email(mail).gender(Gender.UNKNOWN)
+                    .token(accToken).source(complex.toString()).build();
+
+            // 获取用户邮箱手机号等信息
+            String emailPhoneUrl = MessageFormat.format("{0}?clientId={1}&token={2}",
+                    "https://open.account.xiaomi.com/user/phoneAndEmail", context.getAppKey(),
+                    accToken.getAccessToken());
+
+            String emailResponse = Httpx.get(emailPhoneUrl);
+            try {
+                Map<String, Object> userEmailPhone = JsonKit.toPojo(emailResponse, Map.class);
+                if (userEmailPhone == null) {
+                    Logger.warn("Failed to parse email/phone response: empty response");
+                    return authUser;
+                }
+
+                String emailResult = (String) userEmailPhone.get("result");
+                if (!"error".equalsIgnoreCase(emailResult)) {
+                    Map<String, Object> emailPhone = (Map<String, Object>) userEmailPhone.get("data");
+                    if (emailPhone != null) {
+                        String email = (String) emailPhone.get("email");
+                        authUser.setEmail(email);
+                    }
+                } else {
+                    Logger.warn("小米开发平台暂时不对外开放用户手机及邮箱信息的获取");
+                }
+            } catch (Exception e) {
+                Logger.warn("Failed to parse email/phone response: " + e.getMessage());
+            }
+
+            return authUser;
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
-
-        JSONObject object = userProfile.getJSONObject("data");
-
-        Material authUser = Material.builder().rawJson(object).uuid(accToken.getOpenId())
-                .username(object.getString("miliaoNick")).nickname(object.getString("miliaoNick"))
-                .avatar(object.getString("miliaoIcon")).email(object.getString("mail")).gender(Gender.UNKNOWN)
-                .token(accToken).source(complex.toString()).build();
-
-        // 获取用户邮箱手机号等信息
-        String emailPhoneUrl = MessageFormat.format("{0}?clientId={1}&token={2}",
-                "https://open.account.xiaomi.com/user/phoneAndEmail", context.getAppKey(), accToken.getAccessToken());
-
-        String emailResponse = Httpx.get(emailPhoneUrl);
-        JSONObject userEmailPhone = JSONObject.parseObject(emailResponse);
-        if (!"error".equalsIgnoreCase(userEmailPhone.getString("result"))) {
-            JSONObject emailPhone = userEmailPhone.getJSONObject("data");
-            authUser.setEmail(emailPhone.getString("email"));
-        } else {
-            Logger.warn("小米开发平台暂时不对外开放用户手机及邮箱信息的获取");
-        }
-
-        return authUser;
     }
 
     /**

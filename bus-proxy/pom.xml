@@ -85,7 +85,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <aspectj.version>1.9.22.1</aspectj.version>
+        <aspectj.version>1.9.24</aspectj.version>
         <spring.boot.version>3.4.5</spring.boot.version>
     </properties>
 
