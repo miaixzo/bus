@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -31,6 +31,7 @@ import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
@@ -39,7 +40,7 @@ import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.Map;
 
 /**
  * Coding 登录
@@ -60,26 +61,63 @@ public class CodingProvider extends AbstractProvider {
     @Override
     public AccToken getAccessToken(Callback callback) {
         String response = doGetAuthorizationCode(callback.getCode());
-        JSONObject accessTokenObject = JSONObject.parseObject(response);
-        this.checkResponse(accessTokenObject);
-        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
-                .expireIn(accessTokenObject.getIntValue("expires_in"))
-                .refreshToken(accessTokenObject.getString("refresh_token")).build();
+        try {
+            Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
+            if (accessTokenObject == null) {
+                throw new AuthorizedException("Failed to parse access token response: empty response");
+            }
+            this.checkResponse(accessTokenObject);
+
+            String accessToken = (String) accessTokenObject.get("access_token");
+            if (accessToken == null) {
+                throw new AuthorizedException("Missing access_token in response");
+            }
+            Object expiresInObj = accessTokenObject.get("expires_in");
+            int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
+            String refreshToken = (String) accessTokenObject.get("refresh_token");
+
+            return AccToken.builder().accessToken(accessToken).expireIn(expiresIn).refreshToken(refreshToken).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
+        }
     }
 
     @Override
     public Material getUserInfo(AccToken accToken) {
         String response = doGetUserInfo(accToken);
-        JSONObject object = JSONObject.parseObject(response);
-        this.checkResponse(object);
+        try {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
+                throw new AuthorizedException("Failed to parse user info response: empty response");
+            }
+            this.checkResponse(object);
 
-        object = object.getJSONObject("data");
-        return Material.builder().rawJson(object).uuid(object.getString("id")).username(object.getString("name"))
-                .avatar("https://coding.net" + object.getString("avatar"))
-                .blog("https://coding.net" + object.getString("path")).nickname(object.getString("name"))
-                .company(object.getString("company")).location(object.getString("location"))
-                .gender(Gender.of(object.getString("sex"))).email(object.getString("email"))
-                .remark(object.getString("slogan")).token(accToken).source(complex.toString()).build();
+            Map<String, Object> data = (Map<String, Object>) object.get("data");
+            if (data == null) {
+                throw new AuthorizedException("Missing data field in user info response");
+            }
+
+            String id = String.valueOf(data.get("id"));
+            if (id == null) {
+                throw new AuthorizedException("Missing id in user info response");
+            }
+            String name = (String) data.get("name");
+            String avatar = (String) data.get("avatar");
+            String path = (String) data.get("path");
+            String company = (String) data.get("company");
+            String location = (String) data.get("location");
+            String sex = (String) data.get("sex");
+            String email = (String) data.get("email");
+            String slogan = (String) data.get("slogan");
+
+            return Material.builder().rawJson(JsonKit.toJsonString(data)).uuid(id).username(name)
+                    .avatar(avatar != null ? "https://coding.net" + avatar : null)
+                    .blog(path != null ? "https://coding.net" + path : null).nickname(name).company(company)
+                    .location(location).gender(Gender.of(sex)).email(email).remark(slogan).token(accToken)
+                    .source(complex.toString()).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
+        }
     }
 
     /**
@@ -87,9 +125,9 @@ public class CodingProvider extends AbstractProvider {
      *
      * @param object 请求响应内容
      */
-    private void checkResponse(JSONObject object) {
-        if (object.getIntValue("code") != 0) {
-            throw new AuthorizedException(object.getString("msg"));
+    private void checkResponse(Map<String, Object> object) {
+        if ((int) object.get("code") != 0) {
+            throw new AuthorizedException((String) object.get("msg"));
         }
     }
 

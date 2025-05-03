@@ -25,24 +25,25 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.startup.statics;
+package org.miaixz.bus.spring.boot;
+
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.Aware;
 
 /**
- * 接口自定义{@link BeanStatics}
+ * 接口可以由任何对象来实现，只要对象希望得到它所运行的{@link StartupReporter}的通知。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface BeanStaticsCustomizer {
+public interface StartupReporterAware extends Aware {
 
     /**
-     * 自定义bean启动
+     * 设置该对象运行的StartupReporter
      *
-     * @param beanName 名称
-     * @param bean     实例
-     * @param beanStat 统计模型
-     * @return 如果{@code null}，则不会调用后续的BeanStatCustomizer
+     * @param startupReporter 这个对象要使用的StartupReporter对象
+     * @throws BeansException 异常
      */
-    BeanStatics customize(String beanName, Object bean, BeanStatics beanStat);
+    void setStartupReporter(StartupReporter startupReporter) throws BeansException;
 
 }

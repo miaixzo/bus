@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-base</artifactId>
-    <version>8.1.5</version>
+    <version>8.1.6</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -85,8 +85,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <lombok.version>1.18.36</lombok.version>
-        <spring.boot.version>3.3.11</spring.boot.version>
+        <lombok.version>1.18.38</lombok.version>
+        <spring.boot.version>3.4.5</spring.boot.version>
         <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
     </properties>
 

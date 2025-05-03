@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,15 +27,13 @@
 */
 package org.miaixz.bus.oauth.metric.linkedin;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -46,9 +44,9 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.JSONPath;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 领英 登录
@@ -80,41 +78,49 @@ public class LinkedinProvider extends AbstractProvider {
         header.put("Authorization", "Bearer " + accessToken);
 
         String response = Httpx.get(userInfoUrl(accToken), null, header);
-        JSONObject userInfoObject = JSONObject.parseObject(response);
+        try {
+            Map<String, Object> data = JsonKit.toPojo(response, Map.class);
+            if (data == null) {
+                throw new AuthorizedException("Failed to parse user info response: empty response");
+            }
 
-        this.checkResponse(userInfoObject);
+            this.checkResponse(data);
 
-        String userName = getUserName(userInfoObject);
+            String id = (String) data.get("id");
+            if (id == null) {
+                throw new AuthorizedException("Missing id in user info response");
+            }
+            String userName = getUserName(data);
+            String avatar = this.getAvatar(data);
+            String email = this.getUserEmail(accessToken);
 
-        // 获取用户头像
-        String avatar = this.getAvatar(userInfoObject);
-
-        // 获取用户邮箱地址
-        String email = this.getUserEmail(accessToken);
-        return Material.builder().rawJson(userInfoObject).uuid(userInfoObject.getString("id")).username(userName)
-                .nickname(userName).avatar(avatar).email(email).token(accToken).gender(Gender.UNKNOWN)
-                .source(complex.toString()).build();
+            return Material.builder().rawJson(JsonKit.toJsonString(data)).uuid(id).username(userName).nickname(userName)
+                    .avatar(avatar).email(email).token(accToken).gender(Gender.UNKNOWN).source(complex.toString())
+                    .build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
+        }
     }
 
     /**
      * 获取用户的真实名
      *
-     * @param userInfoObject 用户json对象
+     * @param data 用户json对象
      * @return 用户名
      */
-    private String getUserName(JSONObject userInfoObject) {
+    private String getUserName(Map<String, Object> data) {
         String firstName, lastName;
         // 获取firstName
-        if (userInfoObject.containsKey("localizedFirstName")) {
-            firstName = userInfoObject.getString("localizedFirstName");
+        if (data.containsKey("localizedFirstName")) {
+            firstName = (String) data.get("localizedFirstName");
         } else {
-            firstName = getUserName(userInfoObject, "firstName");
+            firstName = getUserName(data, "firstName");
         }
         // 获取lastName
-        if (userInfoObject.containsKey("localizedLastName")) {
-            lastName = userInfoObject.getString("localizedLastName");
+        if (data.containsKey("localizedLastName")) {
+            lastName = (String) data.get("localizedLastName");
         } else {
-            lastName = getUserName(userInfoObject, "lastName");
+            lastName = getUserName(data, "lastName");
         }
         return firstName + Symbol.SPACE + lastName;
     }
@@ -122,31 +128,33 @@ public class LinkedinProvider extends AbstractProvider {
     /**
      * 获取用户的头像
      *
-     * @param userInfoObject 用户json对象
+     * @param data 用户json对象
      * @return 用户的头像地址
      */
-    private String getAvatar(JSONObject userInfoObject) {
-        JSONObject profilePictureObject = userInfoObject.getJSONObject("profilePicture");
-        if (null == profilePictureObject || !profilePictureObject.containsKey("displayImage~")) {
+    private String getAvatar(Map<String, Object> data) {
+        Map<String, Object> profilePictureObject = (Map<String, Object>) data.get("profilePicture");
+        if (profilePictureObject == null || !profilePictureObject.containsKey("displayImage~")) {
             return null;
         }
-        JSONObject displayImageObject = profilePictureObject.getJSONObject("displayImage~");
-        if (null == displayImageObject || !displayImageObject.containsKey("elements")) {
+        Map<String, Object> displayImageObject = (Map<String, Object>) profilePictureObject.get("displayImage~");
+        if (displayImageObject == null || !displayImageObject.containsKey("elements")) {
             return null;
         }
-        JSONArray displayImageElements = displayImageObject.getJSONArray("elements");
-        if (null == displayImageElements || displayImageElements.isEmpty()) {
+        List<Object> displayImageElements = (List<Object>) displayImageObject.get("elements");
+        if (displayImageElements == null || displayImageElements.isEmpty()) {
             return null;
         }
-        JSONObject largestImageObj = displayImageElements.getJSONObject(displayImageElements.size() - 1);
-        if (null == largestImageObj || !largestImageObj.containsKey("identifiers")) {
+        Map<String, Object> largestImageObj = (Map<String, Object>) displayImageElements
+                .get(displayImageElements.size() - 1);
+        if (largestImageObj == null || !largestImageObj.containsKey("identifiers")) {
             return null;
         }
-        JSONArray identifiers = largestImageObj.getJSONArray("identifiers");
-        if (null == identifiers || identifiers.isEmpty()) {
+        List<Object> identifiers = (List<Object>) largestImageObj.get("identifiers");
+        if (identifiers == null || identifiers.isEmpty()) {
             return null;
         }
-        return identifiers.getJSONObject(0).getString("identifier");
+        Map<String, Object> identifierObj = (Map<String, Object>) identifiers.get(0);
+        return (String) identifierObj.get("identifier");
     }
 
     /**
@@ -156,29 +164,49 @@ public class LinkedinProvider extends AbstractProvider {
      * @return 用户的邮箱地址
      */
     private String getUserEmail(String accessToken) {
-        Map<String, String> header = new HashMap();
+        Map<String, String> header = new HashMap<>();
         header.put("Host", "api.linkedin.com");
         header.put("Connection", "Keep-Alive");
         header.put("Authorization", "Bearer " + accessToken);
 
         String emailResponse = Httpx.get(
                 "https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))", null, header);
-        JSONObject emailObj = JSONObject.parseObject(emailResponse);
+        try {
+            Map<String, Object> emailObj = JsonKit.toPojo(emailResponse, Map.class);
+            if (emailObj == null) {
+                throw new AuthorizedException("Failed to parse email response: empty response");
+            }
 
-        this.checkResponse(emailObj);
+            this.checkResponse(emailObj);
 
-        Object object = JSONPath.eval(emailObj, "$['elements'][0]['handle~']['emailAddress']");
-        return null == object ? null : (String) object;
+            List<Object> elements = (List<Object>) emailObj.get("elements");
+            if (elements == null || elements.isEmpty()) {
+                return null;
+            }
+            Map<String, Object> handleObj = (Map<String, Object>) elements.get(0);
+            Map<String, Object> handleInnerObj = (Map<String, Object>) handleObj.get("handle~");
+            return handleInnerObj != null ? (String) handleInnerObj.get("emailAddress") : null;
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse email response: " + e.getMessage());
+        }
     }
 
-    private String getUserName(JSONObject userInfoObject, String nameKey) {
-        String firstName;
-        JSONObject firstNameObj = userInfoObject.getJSONObject(nameKey);
-        JSONObject localizedObj = firstNameObj.getJSONObject("localized");
-        JSONObject preferredLocaleObj = firstNameObj.getJSONObject("preferredLocale");
-        firstName = localizedObj.getString(
-                preferredLocaleObj.getString("language") + Symbol.UNDERLINE + preferredLocaleObj.getString("country"));
-        return firstName;
+    private String getUserName(Map<String, Object> data, String nameKey) {
+        Map<String, Object> nameObj = (Map<String, Object>) data.get(nameKey);
+        if (nameObj == null) {
+            return "";
+        }
+        Map<String, Object> localizedObj = (Map<String, Object>) nameObj.get("localized");
+        Map<String, Object> preferredLocaleObj = (Map<String, Object>) nameObj.get("preferredLocale");
+        if (localizedObj == null || preferredLocaleObj == null) {
+            return "";
+        }
+        String language = (String) preferredLocaleObj.get("language");
+        String country = (String) preferredLocaleObj.get("country");
+        if (language == null || country == null) {
+            return "";
+        }
+        return (String) localizedObj.get(language + Symbol.UNDERLINE + country);
     }
 
     /**
@@ -186,10 +214,11 @@ public class LinkedinProvider extends AbstractProvider {
      *
      * @param object 请求响应内容
      */
-    private void checkResponse(JSONObject object) {
+    private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error")) {
-            throw new AuthorizedException(ErrorCode.FAILURE.getCode(), object.getString("error_description"),
-                    complex.getName());
+            String errorDescription = (String) object.get("error_description");
+            throw new AuthorizedException(ErrorCode.FAILURE.getCode(),
+                    errorDescription != null ? errorDescription : "Unknown error", complex.getName());
         }
     }
 
@@ -200,18 +229,31 @@ public class LinkedinProvider extends AbstractProvider {
      * @return token对象
      */
     private AccToken getToken(String accessTokenUrl) {
-        Map<String, String> header = new HashMap();
+        Map<String, String> header = new HashMap<>();
         header.put("Host", "www.linkedin.com");
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
 
         String response = Httpx.post(accessTokenUrl, null, header);
-        JSONObject accessTokenObject = JSONObject.parseObject(response);
+        try {
+            Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
+            if (accessTokenObject == null) {
+                throw new AuthorizedException("Failed to parse access token response: empty response");
+            }
 
-        this.checkResponse(accessTokenObject);
+            this.checkResponse(accessTokenObject);
 
-        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
-                .expireIn(accessTokenObject.getIntValue("expires_in"))
-                .refreshToken(accessTokenObject.getString("refresh_token")).build();
+            String accessToken = (String) accessTokenObject.get("access_token");
+            if (accessToken == null) {
+                throw new AuthorizedException("Missing access_token in response");
+            }
+            Object expiresInObj = accessTokenObject.get("expires_in");
+            int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
+            String refreshToken = (String) accessTokenObject.get("refresh_token");
+
+            return AccToken.builder().accessToken(accessToken).expireIn(expiresIn).refreshToken(refreshToken).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
+        }
     }
 
     /**
@@ -239,4 +281,5 @@ public class LinkedinProvider extends AbstractProvider {
                 .queryParam("projection", "(id,firstName,lastName,profilePicture(displayImage~:playableStreams))")
                 .build();
     }
+
 }

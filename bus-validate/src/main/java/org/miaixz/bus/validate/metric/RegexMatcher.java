@@ -27,12 +27,13 @@
 */
 package org.miaixz.bus.validate.metric;
 
-import java.util.regex.Pattern;
-
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.validate.Context;
 import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.Regex;
+
+import java.util.regex.Pattern;
 
 /**
  * 正则匹配校验
@@ -40,18 +41,18 @@ import org.miaixz.bus.validate.magic.annotation.Regex;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class RegexMatcher implements Matcher<String, Regex> {
+public class RegexMatcher implements Matcher<Object, Regex> {
 
     @Override
-    public boolean on(String object, Regex regexValidate, Context context) {
-        if (StringKit.isEmpty(object)) {
+    public boolean on(Object object, Regex regexValidate, Context context) {
+        if (ObjectKit.isEmpty(object)) {
             return false;
         }
-        if (regexValidate.zeroAble() && object.length() == 0) {
+        if (regexValidate.zeroAble() && StringKit.toString(object).length() == 0) {
             return false;
         }
         Pattern pattern = Pattern.compile(regexValidate.pattern());
-        return pattern.matcher(object).matches();
+        return pattern.matcher(StringKit.toString(object)).matches();
     }
 
 }

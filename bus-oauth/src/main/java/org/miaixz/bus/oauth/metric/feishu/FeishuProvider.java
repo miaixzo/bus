@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.oauth.metric.feishu;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
@@ -38,6 +35,7 @@ import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -48,8 +46,8 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 飞书 登录
@@ -81,30 +79,37 @@ public class FeishuProvider extends AbstractProvider {
             return cacheAppAccessToken;
         }
         String url = "https://open.feishu.cn/open-apis/auth/v3/app_access_token/internal/";
-        JSONObject requestObject = new JSONObject();
+        Map<String, Object> requestObject = new HashMap<>();
         requestObject.put("app_id", context.getAppKey());
         requestObject.put("app_secret", context.getAppSecret());
 
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
 
-        String response = Httpx.post(url, requestObject.toJSONString(), header, MediaType.APPLICATION_JSON);
-        JSONObject jsonObject = JSON.parseObject(response);
+        String response = Httpx.post(url, JsonKit.toJsonString(requestObject), header, MediaType.APPLICATION_JSON);
+        Map<String, Object> jsonObject = JsonKit.toPojo(response, Map.class);
+        if (jsonObject == null) {
+            throw new AuthorizedException("Failed to parse app access token response: empty response");
+        }
         this.checkResponse(jsonObject);
-        String appAccessToken = jsonObject.getString("app_access_token");
+        String appAccessToken = (String) jsonObject.get("app_access_token");
+        if (appAccessToken == null) {
+            throw new AuthorizedException("Missing app_access_token in response");
+        }
+        Object expireObj = jsonObject.get("expire");
+        long expire = expireObj instanceof Number ? ((Number) expireObj).longValue() : 0;
         // 缓存 app access token
-        this.cache.cache(cacheKey, appAccessToken, jsonObject.getLongValue("expire") * 1000);
+        this.cache.cache(cacheKey, appAccessToken, expire * 1000);
         return appAccessToken;
     }
 
     @Override
     public AccToken getAccessToken(Callback callback) {
-        JSONObject requestObject = new JSONObject();
+        Map<String, Object> requestObject = new HashMap<>();
         requestObject.put("app_access_token", this.getAppAccessToken());
         requestObject.put("grant_type", "authorization_code");
         requestObject.put("code", callback.getCode());
         return getToken(requestObject, this.complex.accessToken());
-
     }
 
     @Override
@@ -114,35 +119,70 @@ public class FeishuProvider extends AbstractProvider {
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
         header.put("Authorization", "Bearer " + accessToken);
         String response = Httpx.get(complex.userInfo(), null, header);
-        JSONObject object = JSON.parseObject(response);
-        this.checkResponse(object);
-        JSONObject data = object.getJSONObject("data");
-        return Material.builder().rawJson(object).uuid(data.getString("union_id")).username(data.getString("name"))
-                .nickname(data.getString("name")).avatar(data.getString("avatar_url")).email(data.getString("email"))
-                .gender(Gender.UNKNOWN).token(accToken).source(complex.toString()).build();
+        try {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
+                throw new AuthorizedException("Failed to parse user info response: empty response");
+            }
+            this.checkResponse(object);
+            Map<String, Object> data = (Map<String, Object>) object.get("data");
+            if (data == null) {
+                throw new AuthorizedException("Missing data in user info response");
+            }
+
+            String unionId = (String) data.get("union_id");
+            String name = (String) data.get("name");
+            String avatarUrl = (String) data.get("avatar_url");
+            String email = (String) data.get("email");
+
+            return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(unionId).username(name).nickname(name)
+                    .avatar(avatarUrl).email(email).gender(Gender.UNKNOWN).token(accToken).source(complex.toString())
+                    .build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
+        }
     }
 
     @Override
     public Message refresh(AccToken accToken) {
-        JSONObject requestObject = new JSONObject();
+        Map<String, Object> requestObject = new HashMap<>();
         requestObject.put("app_access_token", this.getAppAccessToken());
         requestObject.put("grant_type", "refresh_token");
         requestObject.put("refresh_token", accToken.getRefreshToken());
         return Message.builder().errcode(ErrorCode.SUCCESS.getCode())
                 .data(getToken(requestObject, this.complex.refresh())).build();
-
     }
 
-    private AccToken getToken(JSONObject param, String url) {
+    private AccToken getToken(Map<String, Object> param, String url) {
         Map<String, String> header = new HashMap<>();
         header.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_JSON);
-        String response = Httpx.post(url, param.toJSONString(), header, MediaType.APPLICATION_JSON);
-        JSONObject jsonObject = JSON.parseObject(response);
-        this.checkResponse(jsonObject);
-        JSONObject data = jsonObject.getJSONObject("data");
-        return AccToken.builder().accessToken(data.getString("access_token"))
-                .refreshToken(data.getString("refresh_token")).expireIn(data.getIntValue("expires_in"))
-                .tokenType(data.getString("token_type")).openId(data.getString("open_id")).build();
+        String response = Httpx.post(url, JsonKit.toJsonString(param), header, MediaType.APPLICATION_JSON);
+        try {
+            Map<String, Object> jsonObject = JsonKit.toPojo(response, Map.class);
+            if (jsonObject == null) {
+                throw new AuthorizedException("Failed to parse token response: empty response");
+            }
+            this.checkResponse(jsonObject);
+            Map<String, Object> data = (Map<String, Object>) jsonObject.get("data");
+            if (data == null) {
+                throw new AuthorizedException("Missing data in token response");
+            }
+
+            String accessToken = (String) data.get("access_token");
+            if (accessToken == null) {
+                throw new AuthorizedException("Missing access_token in response");
+            }
+            String refreshToken = (String) data.get("refresh_token");
+            Object expiresInObj = data.get("expires_in");
+            int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
+            String tokenType = (String) data.get("token_type");
+            String openId = (String) data.get("open_id");
+
+            return AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn)
+                    .tokenType(tokenType).openId(openId).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse token response: " + e.getMessage());
+        }
     }
 
     @Override
@@ -157,9 +197,12 @@ public class FeishuProvider extends AbstractProvider {
      *
      * @param jsonObject 响应内容
      */
-    private void checkResponse(JSONObject jsonObject) {
-        if (jsonObject.getIntValue("code") != 0) {
-            throw new AuthorizedException(jsonObject.getString("message"));
+    private void checkResponse(Map<String, Object> jsonObject) {
+        Object codeObj = jsonObject.get("code");
+        int code = codeObj instanceof Number ? ((Number) codeObj).intValue() : -1;
+        if (code != 0) {
+            String message = (String) jsonObject.get("message");
+            throw new AuthorizedException(message != null ? message : "Unknown error");
         }
     }
 

@@ -29,6 +29,7 @@ package org.miaixz.bus.validate.metric;
 
 import org.miaixz.bus.core.lang.Validator;
 import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.validate.Context;
 import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.Email;
@@ -39,14 +40,14 @@ import org.miaixz.bus.validate.magic.annotation.Email;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class EmailMatcher implements Matcher<String, Email> {
+public class EmailMatcher implements Matcher<Object, Email> {
 
     @Override
-    public boolean on(String object, Email annotation, Context context) {
+    public boolean on(Object object, Email annotation, Context context) {
         if (ObjectKit.isEmpty(object)) {
             return false;
         }
-        return Validator.isEmail(object);
+        return Validator.isEmail(StringKit.toString(object));
     }
 
 }

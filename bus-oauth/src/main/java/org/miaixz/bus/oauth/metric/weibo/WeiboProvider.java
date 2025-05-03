@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.oauth.metric.weibo;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
@@ -37,6 +34,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.xyz.NetKit;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -47,7 +45,8 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 微博 登录
@@ -68,13 +67,28 @@ public class WeiboProvider extends AbstractProvider {
     @Override
     public AccToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
-        JSONObject accessTokenObject = JSONObject.parseObject(response);
-        if (accessTokenObject.containsKey("error")) {
-            throw new AuthorizedException(accessTokenObject.getString("error_description"));
+        try {
+            Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
+            if (accessTokenObject == null) {
+                throw new AuthorizedException("Failed to parse access token response: empty response");
+            }
+            if (accessTokenObject.containsKey("error")) {
+                String errorDescription = (String) accessTokenObject.get("error_description");
+                throw new AuthorizedException(errorDescription != null ? errorDescription : "Unknown error");
+            }
+
+            String accessToken = (String) accessTokenObject.get("access_token");
+            if (accessToken == null) {
+                throw new AuthorizedException("Missing access_token in response");
+            }
+            String uid = (String) accessTokenObject.get("uid");
+            Object expiresInObj = accessTokenObject.get("expires_in");
+            int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
+
+            return AccToken.builder().accessToken(accessToken).uid(uid).openId(uid).expireIn(expiresIn).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
-        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
-                .uid(accessTokenObject.getString("uid")).openId(accessTokenObject.getString("uid"))
-                .expireIn(accessTokenObject.getIntValue("expires_in")).build();
     }
 
     @Override
@@ -87,18 +101,36 @@ public class WeiboProvider extends AbstractProvider {
         header.put("Authorization", "OAuth2 " + oauthParam);
         header.put("API-RemoteIP", NetKit.getLocalhostStringV4());
         String userInfo = Httpx.get(userInfoUrl(accToken), null, header);
-        JSONObject object = JSONObject.parseObject(userInfo);
-        if (object.containsKey("error")) {
-            throw new AuthorizedException(object.getString("error"));
+        try {
+            Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
+            if (object == null) {
+                throw new AuthorizedException("Failed to parse user info response: empty response");
+            }
+            if (object.containsKey("error")) {
+                String error = (String) object.get("error");
+                throw new AuthorizedException(error != null ? error : "Unknown error");
+            }
+
+            String id = String.valueOf(object.get("id"));
+            if (id == null) {
+                throw new AuthorizedException("Missing id in user info response");
+            }
+            String name = (String) object.get("name");
+            String profileImageUrl = (String) object.get("profile_image_url");
+            String url = (String) object.get("url");
+            String profileUrl = (String) object.get("profile_url");
+            String screenName = (String) object.get("screen_name");
+            String location = (String) object.get("location");
+            String description = (String) object.get("description");
+            String gender = (String) object.get("gender");
+
+            return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(name)
+                    .avatar(profileImageUrl).blog(StringKit.isEmpty(url) ? "https://weibo.com/" + profileUrl : url)
+                    .nickname(screenName).location(location).remark(description).gender(Gender.of(gender))
+                    .token(accToken).source(complex.toString()).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
-        return Material.builder().rawJson(object).uuid(object.getString("id")).username(object.getString("name"))
-                .avatar(object.getString("profile_image_url"))
-                .blog(StringKit.isEmpty(object.getString("url"))
-                        ? "https://weibo.com/" + object.getString("profile_url")
-                        : object.getString("url"))
-                .nickname(object.getString("screen_name")).location(object.getString("location"))
-                .remark(object.getString("description")).gender(Gender.of(object.getString("gender"))).token(accToken)
-                .source(complex.toString()).build();
     }
 
     /**
@@ -123,13 +155,24 @@ public class WeiboProvider extends AbstractProvider {
     @Override
     public Message revoke(AccToken accToken) {
         String response = doGetRevoke(accToken);
-        JSONObject object = JSONObject.parseObject(response);
-        if (object.containsKey("error")) {
-            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(object.getString("error")).build();
+        try {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
+                throw new AuthorizedException("Failed to parse revoke response: empty response");
+            }
+            if (object.containsKey("error")) {
+                String error = (String) object.get("error");
+                return Message.builder().errcode(ErrorCode.FAILURE.getCode())
+                        .errmsg(error != null ? error : "Unknown error").build();
+            }
+
+            Object resultObj = object.get("result");
+            boolean result = resultObj instanceof Boolean ? (Boolean) resultObj : false;
+            ErrorCode status = result ? ErrorCode.SUCCESS : ErrorCode.FAILURE;
+            return Message.builder().errcode(status.getCode()).errmsg(status.getDesc()).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse revoke response: " + e.getMessage());
         }
-        // 返回 result = true 表示取消授权成功，否则失败
-        ErrorCode status = object.getBooleanValue("result") ? ErrorCode.SUCCESS : ErrorCode.FAILURE;
-        return Message.builder().errcode(status.getCode()).errmsg(status.getDesc()).build();
     }
 
 }

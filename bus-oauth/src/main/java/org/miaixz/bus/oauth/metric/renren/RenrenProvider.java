@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,14 +27,13 @@
 */
 package org.miaixz.bus.oauth.metric.renren;
 
-import java.util.Objects;
-
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.url.UrlEncoder;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -45,8 +44,9 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * 人人网 登录
@@ -72,11 +72,11 @@ public class RenrenProvider extends AbstractProvider {
     @Override
     public Material getUserInfo(AccToken accToken) {
         String response = doGetUserInfo(accToken);
-        JSONObject userObj = JSONObject.parseObject(response).getJSONObject("response");
+        Map<String, Object> userObj = (Map<String, Object>) JsonKit.toPojo(response, Map.class).get("response");
 
-        return Material.builder().rawJson(userObj).uuid(userObj.getString("id")).avatar(getAvatarUrl(userObj))
-                .nickname(userObj.getString("name")).company(getCompany(userObj)).gender(getGender(userObj))
-                .token(accToken).source(complex.toString()).build();
+        return Material.builder().rawJson(JsonKit.toJsonString(userObj)).uuid((String) userObj.get("id"))
+                .avatar(getAvatarUrl(userObj)).nickname((String) userObj.get("name")).company(getCompany(userObj))
+                .gender(getGender(userObj)).token(accToken).source(complex.toString()).build();
     }
 
     @Override
@@ -87,40 +87,40 @@ public class RenrenProvider extends AbstractProvider {
 
     private AccToken getToken(String url) {
         String response = Httpx.post(url);
-        JSONObject jsonObject = JSONObject.parseObject(response);
+        Map<String, Object> jsonObject = JsonKit.toPojo(response, Map.class);
         if (jsonObject.containsKey("error")) {
-            throw new AuthorizedException("Failed to get token from RenrenScope: " + jsonObject);
+            throw new AuthorizedException("Failed to get token from Renren: " + jsonObject);
         }
 
-        return AccToken.builder().tokenType(jsonObject.getString("token_type"))
-                .expireIn(jsonObject.getIntValue("expires_in"))
-                .accessToken(UrlEncoder.encodeAll(jsonObject.getString("access_token")))
-                .refreshToken(UrlEncoder.encodeAll(jsonObject.getString("refresh_token")))
-                .openId(jsonObject.getJSONObject("user").getString("id")).build();
+        return AccToken.builder().tokenType((String) jsonObject.get("token_type"))
+                .expireIn(((Number) jsonObject.get("expires_in")).intValue())
+                .accessToken(UrlEncoder.encodeAll((String) jsonObject.get("access_token")))
+                .refreshToken(UrlEncoder.encodeAll((String) jsonObject.get("refresh_token")))
+                .openId(((Map<String, Object>) jsonObject.get("user")).get("id").toString()).build();
     }
 
-    private String getAvatarUrl(JSONObject userObj) {
-        JSONArray jsonArray = userObj.getJSONArray("avatar");
+    private String getAvatarUrl(Map<String, Object> userObj) {
+        List<Map<String, Object>> jsonArray = (List<Map<String, Object>>) userObj.get("avatar");
         if (Objects.isNull(jsonArray) || jsonArray.isEmpty()) {
             return null;
         }
-        return jsonArray.getJSONObject(0).getString("url");
+        return jsonArray.get(0).get("url").toString();
     }
 
-    private Gender getGender(JSONObject userObj) {
-        JSONObject basicInformation = userObj.getJSONObject("basicInformation");
+    private Gender getGender(Map<String, Object> userObj) {
+        Map<String, Object> basicInformation = (Map<String, Object>) userObj.get("basicInformation");
         if (Objects.isNull(basicInformation)) {
             return Gender.UNKNOWN;
         }
-        return Gender.of(basicInformation.getString("sex"));
+        return Gender.of((String) basicInformation.get("sex"));
     }
 
-    private String getCompany(JSONObject userObj) {
-        JSONArray jsonArray = userObj.getJSONArray("work");
+    private String getCompany(Map<String, Object> userObj) {
+        List<Map<String, Object>> jsonArray = (List<Map<String, Object>>) userObj.get("work");
         if (Objects.isNull(jsonArray) || jsonArray.isEmpty()) {
             return null;
         }
-        return jsonArray.getJSONObject(0).getString("name");
+        return jsonArray.get(0).get("name").toString();
     }
 
     /**

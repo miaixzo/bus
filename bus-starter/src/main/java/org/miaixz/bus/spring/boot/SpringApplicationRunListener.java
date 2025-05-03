@@ -25,41 +25,42 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.startup;
+package org.miaixz.bus.spring.boot;
+
+import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.spring.GeniusBuilder;
+import org.miaixz.bus.spring.banner.TextBanner;
+import org.miaixz.bus.spring.boot.statics.BaseStatics;
+import org.miaixz.bus.spring.boot.statics.ChildrenStatics;
+import org.miaixz.bus.spring.boot.statics.ModuleStatics;
+import org.springframework.boot.ConfigurableBootstrapContext;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.boot.logging.LoggerConfiguration;
+import org.springframework.boot.logging.LoggingSystem;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.Ordered;
+import org.springframework.core.env.ConfigurableEnvironment;
 
 import java.lang.management.ManagementFactory;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.logger.Logger;
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.spring.banner.TextBanner;
-import org.miaixz.bus.spring.startup.statics.BaseStatics;
-import org.miaixz.bus.spring.startup.statics.ChildrenStatics;
-import org.miaixz.bus.spring.startup.statics.ModuleStatics;
-import org.springframework.boot.ConfigurableBootstrapContext;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.SpringApplicationRunListener;
-import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.Ordered;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.metrics.ApplicationStartup;
-
 /**
- * 实现{@link SpringApplicationRunListener}来计算启动阶段需要花费时间
+ * 实现 {@link SpringApplicationRunListener} 和 {@link ApplicationListener}，计算启动阶段时间。 支持动态加载和性能统计，记录 JVM 启动、环境准备、上下文初始化等阶段。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class StartupSpringApplicationRunListener implements SpringApplicationRunListener, Ordered {
+public class SpringApplicationRunListener implements org.springframework.boot.SpringApplicationRunListener,
+        ApplicationListener<ApplicationStartedEvent>, Ordered {
 
     /**
      * Spring boot 主引导和启动Spring应用程序
      */
-    private final SpringApplication application;
+    private final org.springframework.boot.SpringApplication application;
 
     /**
      * 收集和启动报告成本的基本组件
@@ -67,33 +68,36 @@ public class StartupSpringApplicationRunListener implements SpringApplicationRun
     private final StartupReporter startupReporter;
 
     /**
-     * JVM启动后的运行阶段{@link SpringApplicationRunListener#started(ConfigurableApplicationContext, Duration)} ()}
+     * JVM启动后的运行阶段{@link org.springframework.boot.SpringApplicationRunListener#started(ConfigurableApplicationContext, Duration)}
+     * ()}
      */
     private BaseStatics jvmStartingStage;
 
     /**
-     * 从{@link SpringApplicationRunListener#started(ConfigurableApplicationContext, Duration)}()}
-     * 到{@link SpringApplicationRunListener#environmentPrepared(ConfigurableBootstrapContext, ConfigurableEnvironment)}
+     * 从{@link org.springframework.boot.SpringApplicationRunListener#started(ConfigurableApplicationContext, Duration)}()}
+     * 到{@link org.springframework.boot.SpringApplicationRunListener#environmentPrepared(ConfigurableBootstrapContext, ConfigurableEnvironment)}
      * (ConfigurableEnvironment)}}的运行阶段
      */
     private BaseStatics environmentPrepareStage;
 
     /**
-     * 从{@link SpringApplicationRunListener#environmentPrepared(ConfigurableBootstrapContext, ConfigurableEnvironment)}
+     * 从{@link org.springframework.boot.SpringApplicationRunListener#environmentPrepared(ConfigurableBootstrapContext, ConfigurableEnvironment)}
      * (ConfigurableEnvironment)}
-     * 到{@link SpringApplicationRunListener#contextPrepared(ConfigurableApplicationContext)}}的运行阶段
+     * 到{@link org.springframework.boot.SpringApplicationRunListener#contextPrepared(ConfigurableApplicationContext)}}的运行阶段
      */
     private ChildrenStatics<BaseStatics> applicationContextPrepareStage;
 
     /**
-     * 从{@link SpringApplicationRunListener#contextPrepared(ConfigurableApplicationContext)}
-     * 到{@link SpringApplicationRunListener#contextLoaded(ConfigurableApplicationContext)}}的运行阶段
+     * 从{@link org.springframework.boot.SpringApplicationRunListener#contextPrepared(ConfigurableApplicationContext)}
+     * 到{@link org.springframework.boot.SpringApplicationRunListener#contextLoaded(ConfigurableApplicationContext)}}的运行阶段
      */
     private BaseStatics applicationContextLoadStage;
 
-    public StartupSpringApplicationRunListener(SpringApplication springApplication) {
+    public SpringApplicationRunListener(org.springframework.boot.SpringApplication springApplication) {
         this.application = springApplication;
         this.startupReporter = new StartupReporter();
+        Logger.debug("Initialized SpringApplicationRunListener for application: {}",
+                springApplication.getMainApplicationClass());
     }
 
     @Override
@@ -102,6 +106,7 @@ public class StartupSpringApplicationRunListener implements SpringApplicationRun
         jvmStartingStage.setName(GeniusBuilder.JVM_STARTING_STAGE);
         jvmStartingStage.setStartTime(ManagementFactory.getRuntimeMXBean().getStartTime());
         jvmStartingStage.setEndTime(System.currentTimeMillis());
+        Logger.debug("JVM starting stage completed in {} ms", jvmStartingStage.getCost());
     }
 
     @Override
@@ -116,9 +121,13 @@ public class StartupSpringApplicationRunListener implements SpringApplicationRun
         startupReporter.bindToStartupReporter(environment);
         bootstrapContext.register(StartupReporter.class, key -> startupReporter);
 
-        ApplicationStartup userApplicationStartup = application.getApplicationStartup();
-        if (ApplicationStartup.DEFAULT == userApplicationStartup || userApplicationStartup == null) {
-            application.setApplicationStartup(new BufferingApplicationStartup(startupReporter.bufferSize));
+        try {
+            Class.forName("org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup");
+            application.setApplicationStartup(
+                    new org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup(
+                            startupReporter.bufferSize));
+        } catch (ClassNotFoundException e) {
+            Logger.debug("BufferingApplicationStartup not available, skipping startup metrics");
         }
     }
 
@@ -128,11 +137,13 @@ public class StartupSpringApplicationRunListener implements SpringApplicationRun
         applicationContextPrepareStage.setName(GeniusBuilder.APPLICATION_CONTEXT_PREPARE_STAGE);
         applicationContextPrepareStage.setStartTime(environmentPrepareStage.getEndTime());
         applicationContextPrepareStage.setEndTime(System.currentTimeMillis());
-        if (application instanceof StartupSpringApplication startupSpringApplication) {
-            List<BaseStatics> statisticsList = startupSpringApplication.getInitializerStartupStatList();
+        if (application instanceof SpringApplication springApplication) {
+            List<BaseStatics> statisticsList = springApplication.getInitializerStartupStatList();
             applicationContextPrepareStage.setChildren(new ArrayList<>(statisticsList));
             statisticsList.clear();
         }
+        Logger.debug("Application context preparation stage completed in {} ms",
+                applicationContextPrepareStage.getCost());
     }
 
     @Override
@@ -143,9 +154,10 @@ public class StartupSpringApplicationRunListener implements SpringApplicationRun
         applicationContextLoadStage.setEndTime(System.currentTimeMillis());
         context.getBeanFactory().addBeanPostProcessor(new StartupReporterProcessor(startupReporter));
         context.getBeanFactory().registerSingleton("STARTUP_REPORTER_BEAN", startupReporter);
-        StartupSmartLifecycle startupSmartLifecycle = new StartupSmartLifecycle(startupReporter);
-        startupSmartLifecycle.setApplicationContext(context);
-        context.getBeanFactory().registerSingleton("STARTUP_SMART_LIfE_CYCLE", startupSmartLifecycle);
+        SpringSmartLifecycle springSmartLifecycle = new SpringSmartLifecycle(startupReporter);
+        springSmartLifecycle.setApplicationContext(context);
+        context.getBeanFactory().registerSingleton("STARTUP_SMART_LIFECYCLE", springSmartLifecycle);
+        Logger.debug("Application context loading stage completed in {} ms", applicationContextLoadStage.getCost());
     }
 
     @Override
@@ -153,6 +165,7 @@ public class StartupSpringApplicationRunListener implements SpringApplicationRun
         ChildrenStatics<ModuleStatics> applicationRefreshStage = (ChildrenStatics<ModuleStatics>) startupReporter
                 .getStageNyName(GeniusBuilder.APPLICATION_CONTEXT_REFRESH_STAGE);
         applicationRefreshStage.setStartTime(applicationContextLoadStage.getEndTime());
+        applicationRefreshStage.setEndTime(System.currentTimeMillis());
         applicationRefreshStage.setCost(applicationRefreshStage.getEndTime() - applicationRefreshStage.getStartTime());
 
         ModuleStatics rootModule = applicationRefreshStage.getChildren().get(0);
@@ -169,25 +182,41 @@ public class StartupSpringApplicationRunListener implements SpringApplicationRun
     }
 
     @Override
+    public void onApplicationEvent(ApplicationStartedEvent event) {
+        Logger.debug("Received ApplicationStartedEvent for application: {}", application.getMainApplicationClass());
+    }
+
+    @Override
     public int getOrder() {
         return Ordered.LOWEST_PRECEDENCE - 10;
     }
 
     private String getStartedMessage(ConfigurableApplicationContext context, Duration timeTakenToStartup) {
-        ConfigurableEnvironment environment = context.getEnvironment();
         StringBuilder message = new StringBuilder();
-        message.append("Started ");
+        message.append("Started");
 
-        String name = environment.getProperty(GeniusBuilder.APP_NAME);
-        if (StringKit.hasText(name)) {
-            message.append(name);
+        ConfigurableEnvironment environment = context.getEnvironment();
+        String appName = StringKit.defaultIfEmpty(environment.getProperty("spring.application.name"), "unknown");
+        message.append(" - App Name: ").append(appName);
+        String configName = StringKit.defaultIfEmpty(environment.getProperty("spring.config.name"), "application");
+        message.append(" - Config Name: ").append(configName);
+        String[] activeProfiles = environment.getActiveProfiles();
+        message.append(" - Active Profiles: ")
+                .append(activeProfiles.length > 0 ? String.join(", ", activeProfiles) : "none");
+
+        String logging = environment.getProperty(GeniusBuilder.LOGGING_LEVEL);
+        if (!StringKit.hasText(logging)) {
+            LoggingSystem loggingSystem = context.getBean(LoggingSystem.class);
+            for (LoggerConfiguration config : loggingSystem.getLoggerConfigurations()) {
+                if ("org.miaixz".equalsIgnoreCase(config.getName())) {
+                    logging = config.getEffectiveLevel().name();
+                    break;
+                }
+            }
         }
 
-        String logging = environment.getProperty(GeniusBuilder.BUS_STARTUP_LOGGING);
         if (StringKit.hasText(logging)) {
-            message.append(" with [");
-            message.append(logging);
-            message.append("]");
+            message.append(" with [").append(logging).append("]");
         }
 
         message.append(" in ");

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,16 +27,13 @@
 */
 package org.miaixz.bus.oauth.metric.apple;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.security.PrivateKey;
-import java.util.Base64;
-
+import lombok.Data;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
@@ -47,11 +44,14 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
-
-import lombok.Data;
+import java.io.IOException;
+import java.io.StringReader;
+import java.security.PrivateKey;
+import java.util.Base64;
+import java.util.Map;
 
 /**
+ * Apple 登录
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -82,22 +82,48 @@ public class AppleProvider extends AbstractProvider {
             throw new AuthorizedException(callback.getError());
         }
         this.context.setAppSecret(this.getToken());
-        // if failed will throw AuthorizedException
+        // 如果失败将抛出 AuthorizedException
         String response = doPostAuthorizationCode(callback.getCode());
-        JSONObject accessTokenObject = JSONObject.parseObject(response);
-        // https://developer.apple.com/documentation/sign_in_with_apple/tokenresponse
-        AccToken.AccTokenBuilder builder = AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
-                .expireIn(accessTokenObject.getIntValue("expires_in"))
-                .refreshToken(accessTokenObject.getString("refresh_token"))
-                .tokenType(accessTokenObject.getString("token_type")).idToken(accessTokenObject.getString("id_token"));
-        if (!StringKit.isEmpty(callback.getUser())) {
-            try {
-                AppleUserInfo userInfo = JSONObject.parseObject(callback.getUser(), AppleUserInfo.class);
-                builder.username(userInfo.getName().getFirstName() + " " + userInfo.getName().getLastName());
-            } catch (Exception ignored) {
+        try {
+            Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
+            if (accessTokenObject == null) {
+                throw new AuthorizedException("Failed to parse access token response: empty response");
             }
+
+            String accessToken = (String) accessTokenObject.get("access_token");
+            if (accessToken == null) {
+                throw new AuthorizedException("Missing access_token in response");
+            }
+            Object expiresInObj = accessTokenObject.get("expires_in");
+            int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
+            String refreshToken = (String) accessTokenObject.get("refresh_token");
+            String tokenType = (String) accessTokenObject.get("token_type");
+            String idToken = (String) accessTokenObject.get("id_token");
+
+            AccToken.AccTokenBuilder builder = AccToken.builder().accessToken(accessToken).expireIn(expiresIn)
+                    .refreshToken(refreshToken).tokenType(tokenType).idToken(idToken);
+
+            if (!StringKit.isEmpty(callback.getUser())) {
+                try {
+                    Map<String, Object> userInfoMap = JsonKit.toPojo(callback.getUser(), Map.class);
+                    if (userInfoMap != null) {
+                        Map<String, Object> nameMap = (Map<String, Object>) userInfoMap.get("name");
+                        if (nameMap != null) {
+                            String firstName = (String) nameMap.get("firstName");
+                            String lastName = (String) nameMap.get("lastName");
+                            if (firstName != null && lastName != null) {
+                                builder.username(firstName + " " + lastName);
+                            }
+                        }
+                    }
+                } catch (Exception ignored) {
+                    // 忽略用户信息的解析错误，继续返回 token
+                }
+            }
+            return builder.build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
         }
-        return builder.build();
     }
 
     @Override
@@ -105,10 +131,23 @@ public class AppleProvider extends AbstractProvider {
         Base64.Decoder urlDecoder = Base64.getUrlDecoder();
         String[] idToken = authToken.getIdToken().split("\\.");
         String payload = new String(urlDecoder.decode(idToken[1]));
-        JSONObject object = JSONObject.parseObject(payload);
-        // https://developer.apple.com/documentation/sign_in_with_apple/sign_in_with_apple_rest_api/authenticating_users_with_sign_in_with_apple#3383773
-        return Material.builder().rawJson(object).uuid(object.getString("sub")).email(object.getString("email"))
-                .username(authToken.getUsername()).token(authToken).source(this.complex.toString()).build();
+        try {
+            Map<String, Object> object = JsonKit.toPojo(payload, Map.class);
+            if (object == null) {
+                throw new AuthorizedException("Failed to parse id_token payload: empty response");
+            }
+
+            String sub = (String) object.get("sub");
+            if (sub == null) {
+                throw new AuthorizedException("Missing sub in id_token payload");
+            }
+            String email = (String) object.get("email");
+
+            return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(sub).email(email)
+                    .username(authToken.getUsername()).token(authToken).source(this.complex.toString()).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse id_token payload: " + e.getMessage());
+        }
     }
 
     @Override
@@ -131,9 +170,9 @@ public class AppleProvider extends AbstractProvider {
     /**
      * 获取token
      *
+     * @return string
      * @see <a href=
      *      "https://developer.apple.com/documentation/accountorganizationaldatasharing/creating-a-client-secret">creating-a-client-secret</a>
-     * @return string
      */
     private String getToken() {
         /*

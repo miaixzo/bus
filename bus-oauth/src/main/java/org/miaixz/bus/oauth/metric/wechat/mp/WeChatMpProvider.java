@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -33,6 +33,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -43,7 +44,8 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.wechat.AbstractWeChatProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 微信公众平台 登录
@@ -75,28 +77,48 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
     @Override
     public Material getUserInfo(AccToken accToken) {
         String openId = accToken.getOpenId();
-
         String scope = accToken.getScope();
         if (!StringKit.isEmpty(scope) && !scope.contains("snsapi_userinfo")) {
-            return Material.builder().rawJson(JSONObject.parseObject(JSONObject.toJSONString(accToken))).uuid(openId)
+            Map<String, Object> tokenMap = new HashMap<>();
+            tokenMap.put("access_token", accToken.getAccessToken());
+            tokenMap.put("refresh_token", accToken.getRefreshToken());
+            tokenMap.put("expires_in", accToken.getExpireIn());
+            tokenMap.put("openid", accToken.getOpenId());
+            tokenMap.put("scope", accToken.getScope());
+            tokenMap.put("is_snapshotuser", accToken.isSnapshotUser() ? 1 : 0);
+            return Material.builder().rawJson(JsonKit.toJsonString(tokenMap)).uuid(openId)
                     .snapshotUser(accToken.isSnapshotUser()).token(accToken).source(complex.toString()).build();
         }
 
         String response = doGetUserInfo(accToken);
-        JSONObject object = JSONObject.parseObject(response);
+        try {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
+                throw new AuthorizedException("Failed to parse user info response: empty response");
+            }
 
-        this.checkResponse(object);
-        String location = String.format("%s-%s-%s", object.getString("country"), object.getString("province"),
-                object.getString("city"));
+            this.checkResponse(object);
 
-        if (object.containsKey("unionid")) {
-            accToken.setUnionId(object.getString("unionid"));
+            String country = (String) object.get("country");
+            String province = (String) object.get("province");
+            String city = (String) object.get("city");
+            String location = String.format("%s-%s-%s", country, province, city);
+
+            String unionId = (String) object.get("unionid");
+            if (unionId != null) {
+                accToken.setUnionId(unionId);
+            }
+
+            String nickname = (String) object.get("nickname");
+            String headimgurl = (String) object.get("headimgurl");
+            String sex = (String) object.get("sex");
+
+            return Material.builder().rawJson(JsonKit.toJsonString(object)).username(nickname).nickname(nickname)
+                    .avatar(headimgurl).location(location).uuid(openId).snapshotUser(accToken.isSnapshotUser())
+                    .gender(getWechatRealGender(sex)).token(accToken).source(complex.toString()).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
-        return Material.builder().rawJson(object).username(object.getString("nickname"))
-                .nickname(object.getString("nickname")).avatar(object.getString("headimgurl")).location(location)
-                .uuid(openId).snapshotUser(accToken.isSnapshotUser())
-                .gender(getWechatRealGender(object.getString("sex"))).token(accToken).source(complex.toString())
-                .build();
     }
 
     @Override
@@ -110,9 +132,11 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
      *
      * @param object 请求响应内容
      */
-    private void checkResponse(JSONObject object) {
+    private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("errcode")) {
-            throw new AuthorizedException(object.getString("errcode"), object.getString("errmsg"));
+            String errcode = String.valueOf(object.get("errcode"));
+            String errmsg = (String) object.get("errmsg");
+            throw new AuthorizedException(errcode, errmsg != null ? errmsg : "Unknown error");
         }
     }
 
@@ -124,15 +148,31 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
      */
     private AccToken getToken(String accessTokenUrl) {
         String response = Httpx.get(accessTokenUrl);
-        JSONObject accessTokenObject = JSONObject.parseObject(response);
+        try {
+            Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
+            if (accessTokenObject == null) {
+                throw new AuthorizedException("Failed to parse token response: empty response");
+            }
 
-        this.checkResponse(accessTokenObject);
+            this.checkResponse(accessTokenObject);
 
-        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
-                .refreshToken(accessTokenObject.getString("refresh_token"))
-                .expireIn(accessTokenObject.getIntValue("expires_in")).openId(accessTokenObject.getString("openid"))
-                .scope(accessTokenObject.getString("scope"))
-                .snapshotUser(accessTokenObject.getIntValue("is_snapshotuser") == 1).build();
+            String accessToken = (String) accessTokenObject.get("access_token");
+            if (accessToken == null) {
+                throw new AuthorizedException("Missing access_token in response");
+            }
+            String refreshToken = (String) accessTokenObject.get("refresh_token");
+            Object expiresInObj = accessTokenObject.get("expires_in");
+            int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
+            String openId = (String) accessTokenObject.get("openid");
+            String scope = (String) accessTokenObject.get("scope");
+            Object snapshotUserObj = accessTokenObject.get("is_snapshotuser");
+            boolean snapshotUser = snapshotUserObj instanceof Number && ((Number) snapshotUserObj).intValue() == 1;
+
+            return AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn)
+                    .openId(openId).scope(scope).snapshotUser(snapshotUser).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse token response: " + e.getMessage());
+        }
     }
 
     /**
@@ -186,4 +226,5 @@ public class WeChatMpProvider extends AbstractWeChatProvider {
         return Builder.fromUrl(complex.refresh()).queryParam("appid", context.getAppKey())
                 .queryParam("grant_type", "refresh_token").queryParam("refresh_token", refreshToken).build();
     }
+
 }

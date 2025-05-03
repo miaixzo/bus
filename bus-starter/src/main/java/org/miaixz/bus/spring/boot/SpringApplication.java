@@ -25,45 +25,67 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.startup;
+package org.miaixz.bus.spring.boot;
+
+import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.spring.boot.statics.BaseStatics;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.GenericTypeResolver;
+import org.springframework.core.io.ResourceLoader;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.spring.startup.statics.BaseStatics;
-import org.springframework.boot.SpringApplication;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.GenericTypeResolver;
-
 /**
- * 扩展{@link SpringApplication}来计算{@link ApplicationContextInitializer}初始化所需的时间。
+ * 扩展 {@link org.springframework.boot.SpringApplication}，计算 {@link ApplicationContextInitializer} 初始化时间。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class StartupSpringApplication extends SpringApplication {
+public class SpringApplication extends org.springframework.boot.SpringApplication {
 
     private final List<BaseStatics> initializerStartupStatList = new ArrayList<>();
 
-    public StartupSpringApplication(Class<?>... primarySources) {
+    public SpringApplication(Class<?>... primarySources) {
         super(primarySources);
+    }
+
+    public SpringApplication(ResourceLoader resourceLoader, Class<?>... primarySources) {
+        super(resourceLoader, primarySources);
+    }
+
+    public static ConfigurableApplicationContext run(Class<?> primarySource, String... args) {
+        return run(new Class<?>[]{primarySource}, args);
+    }
+
+    public static ConfigurableApplicationContext run(Class<?>[] primarySources, String[] args) {
+        return new SpringApplication(primarySources).run(args);
+    }
+
+    @Override
+    public ConfigurableApplicationContext run(String... args) {
+        return super.run(args);
     }
 
     @Override
     protected void applyInitializers(ConfigurableApplicationContext context) {
         for (ApplicationContextInitializer initializer : getInitializers()) {
-            Class<?> requiredType = GenericTypeResolver.resolveTypeArgument(initializer.getClass(),
-                    ApplicationContextInitializer.class);
-            if (requiredType != null) {
-                Assert.isInstanceOf(requiredType, context, "Unable to call initializer.");
+            try {
+                Class<?> requiredType = GenericTypeResolver.resolveTypeArgument(initializer.getClass(),
+                        ApplicationContextInitializer.class);
+                Assert.isInstanceOf(requiredType, context,
+                        "Unable to call initializer: " + initializer.getClass().getName());
                 BaseStatics stat = new BaseStatics();
                 stat.setName(initializer.getClass().getName());
                 stat.setStartTime(System.currentTimeMillis());
                 initializer.initialize(context);
                 stat.setEndTime(System.currentTimeMillis());
                 initializerStartupStatList.add(stat);
+                Logger.debug("Initialized {} in {} ms", stat.getName(), stat.getCost());
+            } catch (Exception e) {
+                Logger.warn("Failed to initialize {}: {}", initializer.getClass().getName(), e.getMessage());
             }
         }
     }

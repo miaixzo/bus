@@ -36,6 +36,7 @@ import org.miaixz.bus.core.lang.exception.CrontabException;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -86,6 +87,7 @@ public class BaseAdvice extends Controller {
      */
     @ResponseBody
     @ExceptionHandler(value = Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Object defaultException(Exception e) {
         this.defaultExceptionHandler(e);
         return write(ErrorCode.EM_FAILURE);
@@ -175,6 +177,7 @@ public class BaseAdvice extends Controller {
      * @return 异常提示
      */
     @ResponseBody
+    @ResponseStatus(HttpStatus.UNSUPPORTED_MEDIA_TYPE)
     @ExceptionHandler(value = HttpMediaTypeNotSupportedException.class)
     public Object httpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
         this.defaultExceptionHandler(e);
@@ -216,6 +219,7 @@ public class BaseAdvice extends Controller {
      */
     public void defaultExceptionHandler(Exception ex) {
         try {
+            Logger.info(ex.getMessage());
             Instances.singletion(ErrorAdvice.class).handler(ex);
         } catch (RuntimeException ignore) {
             // ignore

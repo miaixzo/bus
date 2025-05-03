@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-mapper</artifactId>
-    <version>8.1.5</version>
+    <version>8.1.6</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -85,8 +85,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <lombok.version>1.18.36</lombok.version>
-        <mybatis.version>3.5.16</mybatis.version>
+        <lombok.version>1.18.38</lombok.version>
+        <mybatis.version>3.5.19</mybatis.version>
         <mybatis.spring.version>3.0.4</mybatis.spring.version>
         <jakarta.persistence.version>3.2.0</jakarta.persistence.version>
     </properties>

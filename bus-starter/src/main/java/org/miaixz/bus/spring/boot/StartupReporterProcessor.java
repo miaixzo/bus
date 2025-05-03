@@ -25,79 +25,39 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.startup;
+package org.miaixz.bus.spring.boot;
 
-import org.miaixz.bus.spring.GeniusBuilder;
-import org.miaixz.bus.spring.startup.statics.ChildrenStatics;
-import org.miaixz.bus.spring.startup.statics.ModuleStatics;
 import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.SmartLifecycle;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 
 /**
- * 实现{@link SmartLifecycle}计算应用程序上下文刷新时间
+ * 实现了{@link BeanPostProcessor}将StartupReporter注入到{@link StartupReporterAware} bean中。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class StartupSmartLifecycle implements SmartLifecycle, ApplicationContextAware {
+public class StartupReporterProcessor implements BeanPostProcessor {
 
-    public static final String ROOT_MODULE_NAME = "ROOT_APPLICATION_CONTEXT";
     /**
      * 收集和启动报告成本的基本组件
      */
     private final StartupReporter startupReporter;
 
     /**
-     * 应用程序上下文
+     * 构造
+     *
+     * @param startupReporter 收集和启动组件
      */
-    private ConfigurableApplicationContext applicationContext;
-
-    public StartupSmartLifecycle(StartupReporter startupReporter) {
+    public StartupReporterProcessor(StartupReporter startupReporter) {
         this.startupReporter = startupReporter;
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = (ConfigurableApplicationContext) applicationContext;
-    }
-
-    @Override
-    public void start() {
-        // 初始化 ContextRefreshStageStat
-        ChildrenStatics<ModuleStatics> stat = new ChildrenStatics<>();
-        stat.setName(GeniusBuilder.APPLICATION_CONTEXT_REFRESH_STAGE);
-        stat.setEndTime(System.currentTimeMillis());
-
-        // 构建根模块
-        ModuleStatics rootModuleStat = new ModuleStatics();
-        rootModuleStat.setName(ROOT_MODULE_NAME);
-        rootModuleStat.setEndTime(stat.getEndTime());
-        rootModuleStat.setThreadName(Thread.currentThread().getName());
-
-        // 从ApplicationStartup获取beanstatlist
-        rootModuleStat.setChildren(startupReporter.generateBeanStats(applicationContext));
-
-        // 报告ContextRefreshStageStat
-        stat.addChild(rootModuleStat);
-        startupReporter.addCommonStartupStat(stat);
-    }
-
-    @Override
-    public void stop() {
-
-    }
-
-    @Override
-    public boolean isRunning() {
-        return false;
-    }
-
-    @Override
-    public int getPhase() {
-        return Integer.MIN_VALUE;
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        if (bean instanceof StartupReporterAware) {
+            ((StartupReporterAware) bean).setStartupReporter(startupReporter);
+        }
+        return bean;
     }
 
 }

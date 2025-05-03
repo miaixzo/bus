@@ -27,12 +27,6 @@
 */
 package org.miaixz.bus.pager.parser.defaults;
 
-import java.util.*;
-
-import org.miaixz.bus.core.lang.exception.PageException;
-import org.miaixz.bus.pager.Builder;
-import org.miaixz.bus.pager.parser.SqlServerSqlParser;
-
 import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
@@ -41,6 +35,11 @@ import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.Statement;
 import net.sf.jsqlparser.statement.select.*;
+import org.miaixz.bus.core.lang.exception.PageException;
+import org.miaixz.bus.pager.Builder;
+import org.miaixz.bus.pager.parser.SqlServerSqlParser;
+
+import java.util.*;
 
 /**
  * 将sqlserver查询语句转换为分页语句 注意事项：
@@ -319,22 +318,24 @@ public class DefaultSqlServerSqlParser implements SqlServerSqlParser {
      * @param select 查询
      * @param level  int
      */
-    protected void processSelectBody(Select select, int level) {
-        if (select != null) {
-            if (select instanceof PlainSelect) {
-                processPlainSelect((PlainSelect) select, level + 1);
-            } else if (select instanceof WithItem) {
-                WithItem withItem = (WithItem) select;
-                if (withItem.getSelect() != null) {
-                    processSelectBody(withItem.getSelect(), level + 1);
-                }
-            } else {
-                SetOperationList operationList = (SetOperationList) select;
-                if (operationList.getSelects() != null && !operationList.getSelects().isEmpty()) {
-                    List<Select> plainSelects = operationList.getSelects();
-                    for (Select plainSelect : plainSelects) {
-                        processSelectBody(plainSelect, level + 1);
-                    }
+    protected void processSelectBody(Object select, int level) {
+        if (select == null) {
+            return;
+        }
+        if (select instanceof PlainSelect) {
+            processPlainSelect((PlainSelect) select, level + 1);
+        } else if (select instanceof WithItem<?>) {
+            WithItem<?> withItem = (WithItem<?>) select;
+            Select withSelect = withItem.getSelect();
+            if (withSelect != null) {
+                processSelectBody(withSelect, level + 1);
+            }
+        } else if (select instanceof SetOperationList) {
+            SetOperationList operationList = (SetOperationList) select;
+            List<Select> selects = operationList.getSelects();
+            if (isNotEmptyList(selects)) {
+                for (Select plainSelect : selects) {
+                    processSelectBody(plainSelect, level + 1);
                 }
             }
         }

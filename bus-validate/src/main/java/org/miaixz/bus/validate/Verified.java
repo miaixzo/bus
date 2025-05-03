@@ -27,13 +27,9 @@
 */
 package org.miaixz.bus.validate;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.core.lang.Assert;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -42,9 +38,12 @@ import org.miaixz.bus.validate.magic.Checker;
 import org.miaixz.bus.validate.magic.Material;
 import org.miaixz.bus.validate.magic.annotation.*;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * 被校验对象 注意: 当被校验对象为null时,无法获取到对象的Class,所以不会执行对象的Class上标记的任何校验注解
@@ -237,9 +236,9 @@ public class Verified extends Provider {
             material.addParam(Builder.FIELD, this.field);
 
             if (ObjectKit.isNotEmpty(object) && object.getClass().isArray()) {
-                material.addParam(Builder.VAL, Arrays.toString((Object[]) object));
+                material.addParam(Builder.VALUE, Arrays.toString((Object[]) object));
             } else {
-                material.addParam(Builder.VAL, String.valueOf(object));
+                material.addParam(Builder.VALUE, String.valueOf(object));
             }
 
             Method[] declaredMethods = annotationType.getDeclaredMethods();

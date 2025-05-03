@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,11 +27,6 @@
 */
 package org.miaixz.bus.oauth.metric.twitter;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import java.util.TreeMap;
-
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.Algorithm;
@@ -41,6 +36,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.HTTP;
 import org.miaixz.bus.core.net.url.UrlEncoder;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -50,7 +46,10 @@ import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.TreeMap;
 
 /**
  * Twitter 登录
@@ -192,13 +191,24 @@ public class TwitterProvider extends AbstractProvider {
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", buildHeader(form));
         String response = Httpx.get(userInfoUrl(accToken), null, header);
-        JSONObject userInfo = JSONObject.parseObject(response);
 
-        return Material.builder().rawJson(userInfo).uuid(userInfo.getString("id_str"))
-                .username(userInfo.getString("screen_name")).nickname(userInfo.getString("name"))
-                .remark(userInfo.getString("description")).avatar(userInfo.getString("profile_image_url_https"))
-                .blog(userInfo.getString("url")).location(userInfo.getString("location"))
-                .avatar(userInfo.getString("profile_image_url")).email(userInfo.getString("email"))
+        // 使用 JsonKit 解析 JSON 字符串为 Map
+        Map<String, Object> userInfo = JsonKit.toPojo(response, Map.class);
+
+        // 检查 userInfo 是否为 null 或空
+        if (userInfo == null || userInfo.isEmpty()) {
+            throw new IllegalArgumentException("Failed to parse user info from response: " + response);
+        }
+
+        // 使用 JsonKit 将 Map 转换为 JSON 字符串
+        String rawJson = JsonKit.toJsonString(userInfo);
+
+        // 直接从 Map 中获取值
+        return Material.builder().rawJson(rawJson).uuid((String) userInfo.get("id_str"))
+                .username((String) userInfo.get("screen_name")).nickname((String) userInfo.get("name"))
+                .remark((String) userInfo.get("description")).avatar((String) userInfo.get("profile_image_url_https"))
+                .blog((String) userInfo.get("url")).location((String) userInfo.get("location"))
+                .avatar((String) userInfo.get("profile_image_url")).email((String) userInfo.get("email"))
                 .source(complex.toString()).token(accToken).build();
     }
 

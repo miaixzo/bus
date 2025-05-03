@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -30,6 +30,7 @@ package org.miaixz.bus.oauth.metric.toutiao;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
@@ -39,7 +40,7 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.Map;
 
 /**
  * 今日头条 登录
@@ -60,33 +61,32 @@ public class ToutiaoProvider extends AbstractProvider {
     @Override
     public AccToken getAccessToken(Callback callback) {
         String response = doGetAuthorizationCode(callback.getCode());
-        JSONObject accessTokenObject = JSONObject.parseObject(response);
+        Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
 
         this.checkResponse(accessTokenObject);
 
-        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
-                .expireIn(accessTokenObject.getIntValue("expires_in")).openId(accessTokenObject.getString("open_id"))
-                .build();
+        return AccToken.builder().accessToken((String) accessTokenObject.get("access_token"))
+                .expireIn(((Number) accessTokenObject.get("expires_in")).intValue())
+                .openId((String) accessTokenObject.get("open_id")).build();
     }
 
     @Override
     public Material getUserInfo(AccToken accToken) {
         String userResponse = doGetUserInfo(accToken);
-
-        JSONObject userProfile = JSONObject.parseObject(userResponse);
+        Map<String, Object> userProfile = JsonKit.toPojo(userResponse, Map.class);
 
         this.checkResponse(userProfile);
 
-        JSONObject user = userProfile.getJSONObject("data");
+        Map<String, Object> user = (Map<String, Object>) userProfile.get("data");
 
-        boolean isAnonymousUser = user.getIntValue("uid_type") == 14;
+        boolean isAnonymousUser = "14".equals(user.get("uid_type"));
         String anonymousUserName = "匿名用户";
 
-        return Material.builder().rawJson(user).uuid(user.getString("uid"))
-                .username(isAnonymousUser ? anonymousUserName : user.getString("screen_name"))
-                .nickname(isAnonymousUser ? anonymousUserName : user.getString("screen_name"))
-                .avatar(user.getString("avatar_url")).remark(user.getString("description"))
-                .gender(Gender.of(user.getString("gender"))).token(accToken).source(complex.toString()).build();
+        return Material.builder().rawJson(JsonKit.toJsonString(userProfile)).uuid((String) user.get("uid"))
+                .username(isAnonymousUser ? anonymousUserName : (String) user.get("screen_name"))
+                .nickname(isAnonymousUser ? anonymousUserName : (String) user.get("screen_name"))
+                .avatar((String) user.get("avatar_url")).remark((String) user.get("description"))
+                .gender(Gender.of((String) user.get("gender"))).token(accToken).source(complex.toString()).build();
     }
 
     /**
@@ -132,9 +132,9 @@ public class ToutiaoProvider extends AbstractProvider {
      *
      * @param object 请求响应内容
      */
-    private void checkResponse(JSONObject object) {
+    private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error_code")) {
-            throw new AuthorizedException(ErrorCode.Toutiao.getErrorCode(object.getString("error_code")).getDesc());
+            throw new AuthorizedException(ErrorCode.Toutiao.getErrorCode((String) object.get("error_code")).getDesc());
         }
     }
 

@@ -25,39 +25,47 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.startup;
+package org.miaixz.bus.spring.env;
 
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.miaixz.bus.core.Version;
+import org.miaixz.bus.spring.GeniusBuilder;
+import org.springframework.boot.SpringApplication;
+import org.springframework.core.Ordered;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.PropertiesPropertySource;
+
+import java.util.Properties;
 
 /**
- * 实现了{@link BeanPostProcessor}将StartupReporter注入到{@link StartupReporterAware} bean中。
+ *
+ * 实现{@link org.springframework.boot.env.EnvironmentPostProcessor}来设置一些属性 比如版本，将被添加为一个名为cconfigurationproperties的属性源。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class StartupReporterProcessor implements BeanPostProcessor {
+public class SpringEnvironmentPostProcessor implements org.springframework.boot.env.EnvironmentPostProcessor, Ordered {
 
-    /**
-     * 收集和启动报告成本的基本组件
-     */
-    private final StartupReporter startupReporter;
+    @Override
+    public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
+        if (environment.getPropertySources().get(GeniusBuilder.BUS_PROPERTY_SOURCE) != null) {
+            return;
+        }
 
-    /**
-     * 构造
-     *
-     * @param startupReporter 收集和启动组件
-     */
-    public StartupReporterProcessor(StartupReporter startupReporter) {
-        this.startupReporter = startupReporter;
+        // 版本配置
+        Properties properties = new Properties();
+        properties.setProperty(GeniusBuilder.VERSION, Version._VERSION);
+
+        // 默认配置
+        PropertiesPropertySource propertySource = new PropertiesPropertySource(GeniusBuilder.BUS_PROPERTY_SOURCE,
+                properties);
+        environment.getPropertySources().addLast(propertySource);
+
+        environment.setRequiredProperties(GeniusBuilder.APP_NAME);
     }
 
     @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-        if (bean instanceof StartupReporterAware) {
-            ((StartupReporterAware) bean).setStartupReporter(startupReporter);
-        }
-        return bean;
+    public int getOrder() {
+        return Ordered.LOWEST_PRECEDENCE - 100;
     }
 
 }

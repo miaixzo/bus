@@ -28,7 +28,7 @@
 package org.miaixz.bus.validate.metric;
 
 import org.miaixz.bus.core.xyz.ArrayKit;
-import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.validate.Context;
 import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.NotIn;
@@ -39,11 +39,11 @@ import org.miaixz.bus.validate.magic.annotation.NotIn;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class NotInMatcher implements Matcher<String, NotIn> {
+public class NotInMatcher implements Matcher<Object, NotIn> {
 
     @Override
-    public boolean on(String object, NotIn annotation, Context context) {
-        if (StringKit.isEmpty(object)) {
+    public boolean on(Object object, NotIn annotation, Context context) {
+        if (ObjectKit.isEmpty(object)) {
             return false;
         }
         return !ArrayKit.contains(annotation.value(), object);

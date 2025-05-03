@@ -29,6 +29,7 @@ package org.miaixz.bus.validate.metric;
 
 import org.miaixz.bus.core.xyz.CitizenIdKit;
 import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.validate.Context;
 import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.CitizenId;
@@ -39,14 +40,14 @@ import org.miaixz.bus.validate.magic.annotation.CitizenId;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class CitizenIdMatcher implements Matcher<String, CitizenId> {
+public class CitizenIdMatcher implements Matcher<Object, CitizenId> {
 
     @Override
-    public boolean on(String object, CitizenId annotation, Context context) {
+    public boolean on(Object object, CitizenId annotation, Context context) {
         if (ObjectKit.isEmpty(object)) {
             return false;
         }
-        return CitizenIdKit.isValidCard(object);
+        return CitizenIdKit.isValidCard(StringKit.toString(object));
     }
 
 }

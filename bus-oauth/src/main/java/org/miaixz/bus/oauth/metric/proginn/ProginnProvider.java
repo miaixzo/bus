@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,13 +27,11 @@
 */
 package org.miaixz.bus.oauth.metric.proginn;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -43,7 +41,8 @@ import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 程序员客栈 登录
@@ -70,23 +69,23 @@ public class ProginnProvider extends AbstractProvider {
         params.put("grant_type", "authorization_code");
         params.put("redirect_uri", context.getRedirectUri());
         String response = Httpx.post(Registry.PROGINN.accessToken(), params);
-        JSONObject accessTokenObject = JSONObject.parseObject(response);
+        Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
         this.checkResponse(accessTokenObject);
-        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
-                .refreshToken(accessTokenObject.getString("refresh_token")).uid(accessTokenObject.getString("uid"))
-                .tokenType(accessTokenObject.getString("token_type"))
-                .expireIn(accessTokenObject.getIntValue("expires_in")).build();
+        return AccToken.builder().accessToken((String) accessTokenObject.get("access_token"))
+                .refreshToken((String) accessTokenObject.get("refresh_token"))
+                .uid((String) accessTokenObject.get("uid")).tokenType((String) accessTokenObject.get("token_type"))
+                .expireIn(((Number) accessTokenObject.get("expires_in")).intValue()).build();
     }
 
     @Override
     public Material getUserInfo(AccToken accToken) {
         String userInfo = doGetUserInfo(accToken);
-        JSONObject object = JSONObject.parseObject(userInfo);
+        Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
         this.checkResponse(object);
-        return Material.builder().rawJson(object).uuid(object.getString("uid")).username(object.getString("nickname"))
-                .nickname(object.getString("nickname")).avatar(object.getString("avatar"))
-                .email(object.getString("email")).gender(Gender.UNKNOWN).token(accToken).source(complex.toString())
-                .build();
+        return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid((String) object.get("uid"))
+                .username((String) object.get("nickname")).nickname((String) object.get("nickname"))
+                .avatar((String) object.get("avatar")).email((String) object.get("email")).gender(Gender.UNKNOWN)
+                .token(accToken).source(complex.toString()).build();
     }
 
     /**
@@ -94,9 +93,9 @@ public class ProginnProvider extends AbstractProvider {
      *
      * @param object 请求响应内容
      */
-    private void checkResponse(JSONObject object) {
+    private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error")) {
-            throw new AuthorizedException(object.getString("error_description"));
+            throw new AuthorizedException((String) object.get("error_description"));
         }
     }
 
@@ -112,5 +111,4 @@ public class ProginnProvider extends AbstractProvider {
                 .queryParam("scope", this.getScopes(Symbol.SPACE, true, this.getDefaultScopes(ProginnScope.values())))
                 .build();
     }
-
 }

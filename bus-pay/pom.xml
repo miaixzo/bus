@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-pay</artifactId>
-    <version>8.1.5</version>
+    <version>8.1.6</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -85,9 +85,9 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <lombok.version>1.18.36</lombok.version>
-        <bcpkix.version>1.79</bcpkix.version>
-        <alipay.version>4.39.165.ALL</alipay.version>
+        <lombok.version>1.18.38</lombok.version>
+        <bcpkix.version>1.80</bcpkix.version>
+        <alipay.version>4.40.186.ALL</alipay.version>
     </properties>
 
     <dependencies>

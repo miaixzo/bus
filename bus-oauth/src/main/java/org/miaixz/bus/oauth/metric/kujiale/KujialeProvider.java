@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -31,6 +31,7 @@ import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -41,7 +42,7 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.Map;
 
 /**
  * 酷家乐 登录
@@ -79,19 +80,38 @@ public class KujialeProvider extends AbstractProvider {
     }
 
     private AccToken getAuthToken(String response) {
-        JSONObject accessTokenObject = checkResponse(response);
-        JSONObject resultObject = accessTokenObject.getJSONObject("d");
-        return AccToken.builder().accessToken(resultObject.getString("accessToken"))
-                .refreshToken(resultObject.getString("refreshToken")).expireIn(resultObject.getIntValue("expiresIn"))
-                .build();
+        Map<String, Object> accessTokenObject = checkResponse(response);
+        Map<String, Object> resultObject = (Map<String, Object>) accessTokenObject.get("d");
+        if (resultObject == null) {
+            throw new AuthorizedException("Missing d in access token response");
+        }
+
+        String accessToken = (String) resultObject.get("accessToken");
+        if (accessToken == null) {
+            throw new AuthorizedException("Missing accessToken in response");
+        }
+        String refreshToken = (String) resultObject.get("refreshToken");
+        Object expiresInObj = resultObject.get("expiresIn");
+        int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
+
+        return AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn).build();
     }
 
-    private JSONObject checkResponse(String response) {
-        JSONObject accessTokenObject = JSONObject.parseObject(response);
-        if (!"0".equals(accessTokenObject.getString("c"))) {
-            throw new AuthorizedException(accessTokenObject.getString("m"));
+    private Map<String, Object> checkResponse(String response) {
+        try {
+            Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
+            if (accessTokenObject == null) {
+                throw new AuthorizedException("Failed to parse response: empty response");
+            }
+            String code = (String) accessTokenObject.get("c");
+            if (!"0".equals(code)) {
+                String message = (String) accessTokenObject.get("m");
+                throw new AuthorizedException(message != null ? message : "Unknown error");
+            }
+            return accessTokenObject;
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse response: " + e.getMessage());
         }
-        return accessTokenObject;
     }
 
     @Override
@@ -99,15 +119,34 @@ public class KujialeProvider extends AbstractProvider {
         String openId = this.getOpenId(accToken);
         String response = Httpx.get(Builder.fromUrl(complex.userInfo())
                 .queryParam("access_token", accToken.getAccessToken()).queryParam("open_id", openId).build());
-        JSONObject object = JSONObject.parseObject(response);
-        if (!"0".equals(object.getString("c"))) {
-            throw new AuthorizedException(object.getString("m"));
-        }
-        JSONObject resultObject = object.getJSONObject("d");
+        try {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
+                throw new AuthorizedException("Failed to parse user info response: empty response");
+            }
+            String code = (String) object.get("c");
+            if (!"0".equals(code)) {
+                String message = (String) object.get("m");
+                throw new AuthorizedException(message != null ? message : "Unknown error");
+            }
 
-        return Material.builder().rawJson(resultObject).username(resultObject.getString("userName"))
-                .nickname(resultObject.getString("userName")).avatar(resultObject.getString("avatar"))
-                .uuid(resultObject.getString("openId")).token(accToken).source(complex.toString()).build();
+            Map<String, Object> resultObject = (Map<String, Object>) object.get("d");
+            if (resultObject == null) {
+                throw new AuthorizedException("Missing d in user info response");
+            }
+
+            String userName = (String) resultObject.get("userName");
+            if (userName == null) {
+                throw new AuthorizedException("Missing userName in user info response");
+            }
+            String avatar = (String) resultObject.get("avatar");
+            String openIdFromResponse = (String) resultObject.get("openId");
+
+            return Material.builder().rawJson(JsonKit.toJsonString(resultObject)).username(userName).nickname(userName)
+                    .avatar(avatar).uuid(openIdFromResponse).token(accToken).source(complex.toString()).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
+        }
     }
 
     /**
@@ -119,8 +158,12 @@ public class KujialeProvider extends AbstractProvider {
     private String getOpenId(AccToken accToken) {
         String response = Httpx.get(Builder.fromUrl("https://oauth.kujiale.com/oauth2/auth/user")
                 .queryParam("access_token", accToken.getAccessToken()).build());
-        JSONObject accessTokenObject = checkResponse(response);
-        return accessTokenObject.getString("d");
+        Map<String, Object> accessTokenObject = checkResponse(response);
+        String openId = (String) accessTokenObject.get("d");
+        if (openId == null) {
+            throw new AuthorizedException("Missing openId in response");
+        }
+        return openId;
     }
 
     @Override

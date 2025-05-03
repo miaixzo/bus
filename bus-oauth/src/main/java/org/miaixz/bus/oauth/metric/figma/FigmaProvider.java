@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,16 +27,13 @@
 */
 package org.miaixz.bus.oauth.metric.figma;
 
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.codec.binary.Base64;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.HTTP;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -47,7 +44,9 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Figma 登录
@@ -79,30 +78,59 @@ public class FigmaProvider extends AbstractProvider {
                 "Basic ".concat(Base64.encode((this.context.getAppKey().concat(":").concat(this.context.getAppSecret()))
                         .getBytes(StandardCharsets.UTF_8))));
         String response = Httpx.post(super.accessTokenUrl(callback.getCode()), headers);
+        try {
+            Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
+            if (accessTokenObject == null) {
+                throw new AuthorizedException("Failed to parse access token response: empty response");
+            }
+            this.checkResponse(accessTokenObject);
 
-        JSONObject accessTokenObject = JSONObject.parseObject(response);
-        this.checkResponse(accessTokenObject);
-        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
-                .refreshToken(accessTokenObject.getString("refresh_token")).scope(accessTokenObject.getString("scope"))
-                .userId(accessTokenObject.getString("user_id")).expireIn(accessTokenObject.getIntValue("expires_in"))
-                .build();
+            String accessToken = (String) accessTokenObject.get("access_token");
+            if (accessToken == null) {
+                throw new AuthorizedException("Missing access_token in response");
+            }
+            String refreshToken = (String) accessTokenObject.get("refresh_token");
+            String scope = (String) accessTokenObject.get("scope");
+            String userId = (String) accessTokenObject.get("user_id");
+            Object expiresInObj = accessTokenObject.get("expires_in");
+            int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
+
+            return AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).scope(scope).userId(userId)
+                    .expireIn(expiresIn).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
+        }
     }
 
     @Override
     public Message refresh(AccToken accToken) {
         Map<String, String> headers = new HashMap<>(3);
         headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        String response = Httpx.post(super.accessTokenUrl(accToken.getCode()), headers);
-        JSONObject dataObj = JSONObject.parseObject(response);
+        String response = Httpx.post(refreshTokenUrl(accToken.getRefreshToken()), headers);
+        try {
+            Map<String, Object> dataObj = JsonKit.toPojo(response, Map.class);
+            if (dataObj == null) {
+                throw new AuthorizedException("Failed to parse refresh token response: empty response");
+            }
+            this.checkResponse(dataObj);
 
-        this.checkResponse(dataObj);
+            String accessToken = (String) dataObj.get("access_token");
+            if (accessToken == null) {
+                throw new AuthorizedException("Missing access_token in refresh response");
+            }
+            String openId = (String) dataObj.get("open_id");
+            Object expiresInObj = dataObj.get("expires_in");
+            int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
+            String refreshToken = (String) dataObj.get("refresh_token");
+            String scope = (String) dataObj.get("scope");
 
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode())
-                .data(AccToken.builder().accessToken(dataObj.getString("access_token"))
-                        .openId(dataObj.getString("open_id")).expireIn(dataObj.getIntValue("expires_in"))
-                        .refreshToken(dataObj.getString("refresh_token")).scope(dataObj.getString("scope")).build())
-                .build();
-
+            return Message
+                    .builder().errcode(ErrorCode.SUCCESS.getCode()).data(AccToken.builder().accessToken(accessToken)
+                            .openId(openId).expireIn(expiresIn).refreshToken(refreshToken).scope(scope).build())
+                    .build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse refresh token response: " + e.getMessage());
+        }
     }
 
     @Override
@@ -112,16 +140,31 @@ public class FigmaProvider extends AbstractProvider {
     }
 
     @Override
-    public Material getUserInfo(AccToken AccToken) {
+    public Material getUserInfo(AccToken accToken) {
         Map<String, String> headers = new HashMap<>(3);
         headers.put(HTTP.CONTENT_TYPE, MediaType.APPLICATION_FORM_URLENCODED);
-        headers.put("Authorization", "Bearer " + AccToken.getAccessToken());
-        String response = Httpx.post(super.accessTokenUrl(AccToken.getCode()), headers);
-        JSONObject dataObj = JSONObject.parseObject(response);
-        this.checkResponse(dataObj);
-        return Material.builder().rawJson(dataObj).uuid(dataObj.getString("id")).username(dataObj.getString("handle"))
-                .avatar(dataObj.getString("img_url")).email(dataObj.getString("email")).token(AccToken)
-                .source(complex.toString()).build();
+        headers.put("Authorization", "Bearer " + accToken.getAccessToken());
+        String response = Httpx.get(complex.userInfo(), null, headers);
+        try {
+            Map<String, Object> data = JsonKit.toPojo(response, Map.class);
+            if (data == null) {
+                throw new AuthorizedException("Failed to parse user info response: empty response");
+            }
+            this.checkResponse(data);
+
+            String id = (String) data.get("id");
+            if (id == null) {
+                throw new AuthorizedException("Missing id in user info response");
+            }
+            String handle = (String) data.get("handle");
+            String imgUrl = (String) data.get("img_url");
+            String email = (String) data.get("email");
+
+            return Material.builder().rawJson(JsonKit.toJsonString(data)).uuid(id).username(handle).avatar(imgUrl)
+                    .email(email).token(accToken).source(complex.toString()).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
+        }
     }
 
     /**
@@ -129,9 +172,12 @@ public class FigmaProvider extends AbstractProvider {
      *
      * @param object 接口返回的结果
      */
-    private void checkResponse(JSONObject object) {
+    private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error")) {
-            throw new AuthorizedException(object.getString("error") + ":" + object.getString("message"));
+            String error = (String) object.get("error");
+            String message = (String) object.get("message");
+            throw new AuthorizedException(
+                    (error != null ? error : "Unknown error") + ":" + (message != null ? message : "Unknown message"));
         }
     }
 

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,11 +27,9 @@
 */
 package org.miaixz.bus.oauth.metric.afdian;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -41,7 +39,8 @@ import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 爱发电 登录
@@ -70,8 +69,7 @@ public class AfDianProvider extends AbstractProvider {
 
         String response = Httpx.post(Registry.AFDIAN.accessToken(), params);
 
-        JSONObject accessTokenObject = JSONObject.parseObject(response);
-        String userId = accessTokenObject.getJSONObject("data").getString("user_id");
+        String userId = JsonKit.getValue(JsonKit.getValue(response, "data"), ("user_id"));
         return AccToken.builder().userId(userId).build();
     }
 

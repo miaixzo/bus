@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,9 +27,11 @@
 */
 package org.miaixz.bus.oauth.metric.wechat.mini;
 
+import lombok.Data;
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -38,11 +40,6 @@ import org.miaixz.bus.oauth.magic.AccToken;
 import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
-
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.annotation.JSONField;
-
-import lombok.Data;
 
 /**
  * 微信小程序授权登录
@@ -65,12 +62,12 @@ public class WeChatMiniProvider extends AbstractProvider {
         // 参见 https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html 文档
         // 使用 code 获取对应的 openId、unionId 等字段
         String response = Httpx.get(accessTokenUrl(authCallback.getCode()));
-        JSCode2SessionResponse accessTokenObject = JSONObject.parseObject(response, JSCode2SessionResponse.class);
+        JSCode2SessionResponse accessTokenObject = JsonKit.toPojo(response, JSCode2SessionResponse.class);
         assert accessTokenObject != null;
         checkResponse(accessTokenObject);
         // 拼装结果
-        return AccToken.builder().openId(accessTokenObject.getOpenid()).unionId(accessTokenObject.getUnionId())
-                .accessToken(accessTokenObject.getSessionKey()).build();
+        return AccToken.builder().openId(accessTokenObject.getOpenid()).unionId(accessTokenObject.getUnionid())
+                .accessToken(accessTokenObject.getSession_key()).build();
     }
 
     @Override
@@ -87,8 +84,8 @@ public class WeChatMiniProvider extends AbstractProvider {
      * @param response 请求响应内容
      */
     private void checkResponse(JSCode2SessionResponse response) {
-        if (!Symbol.ZERO.equals(response.getErrorCode())) {
-            throw new AuthorizedException(response.getErrorCode(), response.getErrorMsg());
+        if (!Symbol.ZERO.equals(response.getErrcode())) {
+            throw new AuthorizedException(response.getErrcode(), response.getErrmsg());
         }
     }
 
@@ -102,15 +99,11 @@ public class WeChatMiniProvider extends AbstractProvider {
     @Data
     private static class JSCode2SessionResponse {
 
-        @JSONField(name = "errcode")
-        private String errorCode;
-        @JSONField(name = "errmsg")
-        private String errorMsg;
-        @JSONField(name = "session_key")
-        private String sessionKey;
+        private String errcode;
+        private String errmsg;
+        private String session_key;
         private String openid;
-        @JSONField(name = "unionid")
-        private String unionId;
+        private String unionid;
 
     }
 

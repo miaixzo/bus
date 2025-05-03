@@ -25,28 +25,24 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.startup.statics;
-
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import lombok.Getter;
-import lombok.Setter;
+package org.miaixz.bus.spring.boot.statics;
 
 /**
- * 统计模型持有的子模块
+ * 接口自定义{@link BeanStatics}
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-@Getter
-@Setter
-public class ChildrenStatics<T extends BaseStatics> extends BaseStatics {
+public interface BeanStaticsCustomizer {
 
-    private List<T> children = new CopyOnWriteArrayList<>();
-
-    public void addChild(T child) {
-        this.children.add(child);
-    }
+    /**
+     * 自定义bean启动
+     *
+     * @param beanName 名称
+     * @param bean     实例
+     * @param beanStat 统计模型
+     * @return 如果{@code null}，则不会调用后续的BeanStatCustomizer
+     */
+    BeanStatics customize(String beanName, Object bean, BeanStatics beanStat);
 
 }

@@ -27,10 +27,10 @@
 */
 package org.miaixz.bus.validate;
 
-import java.lang.annotation.Annotation;
-
 import org.miaixz.bus.core.instance.Instances;
 import org.miaixz.bus.core.lang.Validator;
+
+import java.lang.annotation.Annotation;
 
 /**
  * 当前框架内预定义的校验器名称
@@ -51,7 +51,7 @@ public class Builder extends Validator {
     /**
      * 校验对象参数
      */
-    public static final String VAL = "val";
+    public static final String VALUE = "value";
     public static final String FIELD = "field";
     public static final String GROUP = "group";
     public static final String ERRCODE = "errcode";
@@ -110,9 +110,7 @@ public class Builder extends Validator {
     }
 
     /**
-     * 被校验对象
-     * <p>
-     * 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
+     * 被校验对象 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param <T>         对象
      * @param object      原始对象
@@ -124,9 +122,7 @@ public class Builder extends Validator {
     }
 
     /**
-     * 被校验对象
-     * <p>
-     * 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
+     * 被校验对象 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param <T>         对象
      * @param object      原始对象
@@ -139,9 +135,7 @@ public class Builder extends Validator {
     }
 
     /**
-     * 被校验对象
-     * <p>
-     * 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
+     * 被校验对象 每次都创建一个新的对象,避免线程问题 可以使用 {@link ThreadLocal} 简单优化
      *
      * @param <T>         对象
      * @param object      原始对象

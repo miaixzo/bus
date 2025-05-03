@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -35,6 +35,7 @@ import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.url.UrlEncoder;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Complex;
@@ -44,8 +45,8 @@ import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 钉钉 登录抽象类 负责处理使用钉钉账号登录第三方网站和扫码登录第三方网站两种钉钉的登录方式
@@ -84,19 +85,41 @@ public abstract class AbstractDingtalkProvider extends AbstractProvider {
     @Override
     public Material getUserInfo(AccToken accToken) {
         String code = accToken.getAccessCode();
-        JSONObject param = new JSONObject();
+        Map<String, Object> param = new HashMap<>();
         param.put("tmp_auth_code", code);
-        String response = Httpx.post(userInfoUrl(accToken), param.toJSONString(), MediaType.APPLICATION_JSON);
-        JSONObject object = JSON.parseObject(response);
-        if (object.getIntValue("errcode") != 0) {
-            throw new AuthorizedException(object.getString("errmsg"));
+        String response = Httpx.post(userInfoUrl(accToken), JsonKit.toJsonString(param), MediaType.APPLICATION_JSON);
+        try {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
+                throw new AuthorizedException("Failed to parse user info response: empty response");
+            }
+
+            Object errCodeObj = object.get("errcode");
+            int errCode = errCodeObj instanceof Number ? ((Number) errCodeObj).intValue() : -1;
+            if (errCode != 0) {
+                String errMsg = (String) object.get("errmsg");
+                throw new AuthorizedException(errMsg != null ? errMsg : "Unknown error");
+            }
+
+            Map<String, Object> userInfo = (Map<String, Object>) object.get("user_info");
+            if (userInfo == null) {
+                throw new AuthorizedException("Missing user_info in response");
+            }
+
+            String openId = (String) userInfo.get("openid");
+            String unionId = (String) userInfo.get("unionid");
+            if (unionId == null) {
+                throw new AuthorizedException("Missing unionid in user_info");
+            }
+            String nick = (String) userInfo.get("nick");
+
+            AccToken token = AccToken.builder().openId(openId).unionId(unionId).build();
+
+            return Material.builder().rawJson(JsonKit.toJsonString(userInfo)).uuid(unionId).nickname(nick)
+                    .username(nick).gender(Gender.UNKNOWN).source(complex.toString()).token(token).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
         }
-        object = object.getJSONObject("user_info");
-        AccToken token = AccToken.builder().openId(object.getString("openid")).unionId(object.getString("unionid"))
-                .build();
-        return Material.builder().rawJson(object).uuid(object.getString("unionid")).nickname(object.getString("nick"))
-                .username(object.getString("nick")).gender(Gender.UNKNOWN).source(complex.toString()).token(token)
-                .build();
     }
 
     /**

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.oauth.metric.microsoft;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Charset;
@@ -38,6 +35,7 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.net.url.UrlDecoder;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Complex;
@@ -48,7 +46,8 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 微软 登录抽象类,负责处理使用微软国际和微软中国账号登录第三方网站的登录方式
@@ -82,14 +81,29 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
         UrlDecoder.decodeMap(accessTokenUrl, Charset.DEFAULT_UTF_8).forEach(form::put);
 
         String response = Httpx.post(accessTokenUrl, form);
-        JSONObject accessTokenObject = JSONObject.parseObject(response);
+        try {
+            Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
+            if (accessTokenObject == null) {
+                throw new AuthorizedException("Failed to parse access token response: empty response");
+            }
 
-        this.checkResponse(accessTokenObject);
+            this.checkResponse(accessTokenObject);
 
-        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
-                .expireIn(accessTokenObject.getIntValue("expires_in")).scope(accessTokenObject.getString("scope"))
-                .tokenType(accessTokenObject.getString("token_type"))
-                .refreshToken(accessTokenObject.getString("refresh_token")).build();
+            String accessToken = (String) accessTokenObject.get("access_token");
+            if (accessToken == null) {
+                throw new AuthorizedException("Missing access_token in response");
+            }
+            Object expiresInObj = accessTokenObject.get("expires_in");
+            int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
+            String scope = (String) accessTokenObject.get("scope");
+            String tokenType = (String) accessTokenObject.get("token_type");
+            String refreshToken = (String) accessTokenObject.get("refresh_token");
+
+            return AccToken.builder().accessToken(accessToken).expireIn(expiresIn).scope(scope).tokenType(tokenType)
+                    .refreshToken(refreshToken).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
+        }
     }
 
     /**
@@ -97,9 +111,10 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
      *
      * @param object 请求响应内容
      */
-    private void checkResponse(JSONObject object) {
+    private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error")) {
-            throw new AuthorizedException(object.getString("error_description"));
+            String errorDescription = (String) object.get("error_description");
+            throw new AuthorizedException(errorDescription != null ? errorDescription : "Unknown error");
         }
     }
 
@@ -109,12 +124,29 @@ public abstract class AbstractMicrosoftProvider extends AbstractProvider {
         header.put("Authorization", accToken.getTokenType() + Symbol.SPACE + accToken.getAccessToken());
 
         String userInfo = Httpx.get(userInfoUrl(accToken), null, header);
-        JSONObject object = JSONObject.parseObject(userInfo);
-        this.checkResponse(object);
-        return Material.builder().rawJson(object).uuid(object.getString("id"))
-                .username(object.getString("userPrincipalName")).nickname(object.getString("displayName"))
-                .location(object.getString("officeLocation")).email(object.getString("mail")).gender(Gender.UNKNOWN)
-                .token(accToken).source(complex.toString()).build();
+        try {
+            Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
+            if (object == null) {
+                throw new AuthorizedException("Failed to parse user info response: empty response");
+            }
+
+            this.checkResponse(object);
+
+            String id = (String) object.get("id");
+            if (id == null) {
+                throw new AuthorizedException("Missing id in user info response");
+            }
+            String userPrincipalName = (String) object.get("userPrincipalName");
+            String displayName = (String) object.get("displayName");
+            String officeLocation = (String) object.get("officeLocation");
+            String mail = (String) object.get("mail");
+
+            return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(userPrincipalName)
+                    .nickname(displayName).location(officeLocation).email(mail).gender(Gender.UNKNOWN).token(accToken)
+                    .source(complex.toString()).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
+        }
     }
 
     /**

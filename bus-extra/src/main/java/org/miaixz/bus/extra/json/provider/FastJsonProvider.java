@@ -27,14 +27,17 @@
 */
 package org.miaixz.bus.extra.json.provider;
 
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONWriter;
+import com.alibaba.fastjson2.filter.Filter;
+import com.alibaba.fastjson2.filter.ValueFilter;
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Symbol;
+
 import java.lang.reflect.Type;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
-import com.alibaba.fastjson.serializer.SerializerFeature;
 
 /**
  * FastJson 解析器
@@ -44,7 +47,11 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
  */
 public class FastJsonProvider extends AbstractJsonProvider {
 
-    private static final SerializerFeature[] FEATURES = { SerializerFeature.SortField };
+    private static final JSONWriter.Feature[] WRITER_FEATURES = {JSONWriter.Feature.FieldBased,
+            JSONWriter.Feature.WriteMapNullValue, JSONWriter.Feature.WriteNulls};
+
+    private static final Filter[] FILTERS = {(ValueFilter) (object, name,
+                                                            value) -> value == null || Normal.EMPTY.equals(value) || Symbol.SPACE.equals(value) ? null : value};
 
     /**
      * 构造
@@ -55,12 +62,12 @@ public class FastJsonProvider extends AbstractJsonProvider {
 
     @Override
     public String toJsonString(Object object) {
-        return JSON.toJSONString(object, FEATURES);
+        return JSON.toJSONString(object, FILTERS, WRITER_FEATURES);
     }
 
     @Override
     public String toJsonString(Object object, String format) {
-        return JSON.toJSONStringWithDateFormat(object, format, SerializerFeature.WriteDateUseDateFormat);
+        return JSON.toJSONString(object, format, FILTERS, WRITER_FEATURES);
     }
 
     @Override
@@ -85,13 +92,7 @@ public class FastJsonProvider extends AbstractJsonProvider {
 
     @Override
     public <T> List<T> toList(String json, Type type) {
-        TypeReference<T> typeReference = new TypeReference<>() {
-            @Override
-            public Type getType() {
-                return type;
-            }
-        };
-        return JSON.parseObject(json, typeReference.getType());
+        return JSON.parseObject(json, type);
     }
 
     @Override

@@ -27,17 +27,16 @@
 */
 package org.miaixz.bus.starter.wrapper;
 
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
+import lombok.Getter;
+import lombok.Setter;
 import org.miaixz.bus.spring.GeniusBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 配置信息
@@ -53,11 +52,11 @@ public class WrapperProperties {
     /**
      * 设置此注册的名称 如果没有指定，将使用bean名
      */
-    private String name;
+    private String name = "_wrapper";
     /**
      * 设置注册bean的顺序
      */
-    private int order;
+    private int order = 100;
     /**
      * 标志，表示已启用注册
      */
@@ -70,6 +69,10 @@ public class WrapperProperties {
      * 扫描包后的API地址是否入库，结合basePackages使用
      */
     private boolean inStorage;
+    /**
+     * fastjson、jackson 都支持 AutoType 功能，这个功能在序列化的 JSON 字符串中带上类型信息，在反序列化时，不需要传入类型，实现自动类型识别
+     */
+    private String autoType;
     /**
      * 为此注册设置初始化参数。调用此方法将替换任何现有的初始化参数
      */

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,13 +27,11 @@
 */
 package org.miaixz.bus.oauth.metric.google;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
@@ -43,7 +41,8 @@ import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Google 登录
@@ -64,12 +63,28 @@ public class GoogleProvider extends AbstractProvider {
     @Override
     public AccToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
-        JSONObject accessTokenObject = JSONObject.parseObject(response);
-        this.checkResponse(accessTokenObject);
-        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
-                .expireIn(accessTokenObject.getIntValue("expires_in")).scope(accessTokenObject.getString("scope"))
-                .tokenType(accessTokenObject.getString("token_type")).idToken(accessTokenObject.getString("id_token"))
-                .build();
+        try {
+            Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
+            if (accessTokenObject == null) {
+                throw new AuthorizedException("Failed to parse access token response: empty response");
+            }
+            this.checkResponse(accessTokenObject);
+
+            String accessToken = (String) accessTokenObject.get("access_token");
+            if (accessToken == null) {
+                throw new AuthorizedException("Missing access_token in response");
+            }
+            Object expiresInObj = accessTokenObject.get("expires_in");
+            int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
+            String scope = (String) accessTokenObject.get("scope");
+            String tokenType = (String) accessTokenObject.get("token_type");
+            String idToken = (String) accessTokenObject.get("id_token");
+
+            return AccToken.builder().accessToken(accessToken).expireIn(expiresIn).scope(scope).tokenType(tokenType)
+                    .idToken(idToken).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
+        }
     }
 
     @Override
@@ -77,12 +92,28 @@ public class GoogleProvider extends AbstractProvider {
         Map<String, String> header = new HashMap<>();
         header.put("Authorization", "Bearer " + accToken.getAccessToken());
         String userInfo = Httpx.post(userInfoUrl(accToken), null, header);
-        JSONObject object = JSONObject.parseObject(userInfo);
-        this.checkResponse(object);
-        return Material.builder().rawJson(object).uuid(object.getString("sub")).username(object.getString("email"))
-                .avatar(object.getString("picture")).nickname(object.getString("name"))
-                .location(object.getString("locale")).email(object.getString("email")).gender(Gender.UNKNOWN)
-                .token(accToken).source(complex.toString()).build();
+        try {
+            Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
+            if (object == null) {
+                throw new AuthorizedException("Failed to parse user info response: empty response");
+            }
+            this.checkResponse(object);
+
+            String sub = (String) object.get("sub");
+            if (sub == null) {
+                throw new AuthorizedException("Missing sub in user info response");
+            }
+            String email = (String) object.get("email");
+            String picture = (String) object.get("picture");
+            String name = (String) object.get("name");
+            String locale = (String) object.get("locale");
+
+            return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(sub).username(email).avatar(picture)
+                    .nickname(name).location(locale).email(email).gender(Gender.UNKNOWN).token(accToken)
+                    .source(complex.toString()).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
+        }
     }
 
     /**
@@ -114,10 +145,13 @@ public class GoogleProvider extends AbstractProvider {
      *
      * @param object 请求响应内容
      */
-    private void checkResponse(JSONObject object) {
+    private void checkResponse(Map<String, Object> object) {
         if (object.containsKey("error") || object.containsKey("error_description")) {
-            throw new AuthorizedException(
-                    object.containsKey("error") + Symbol.COLON + object.getString("error_description"));
+            String error = (String) object.get("error");
+            String errorDescription = (String) object.get("error_description");
+            throw new AuthorizedException((error != null ? error : "Unknown error") + Symbol.COLON
+                    + (errorDescription != null ? errorDescription : "Unknown description"));
         }
     }
+
 }

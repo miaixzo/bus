@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -27,10 +27,9 @@
 */
 package org.miaixz.bus.oauth.metric.facebook;
 
-import org.miaixz.bus.oauth.metric.AuthorizeScope;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.miaixz.bus.oauth.metric.AuthorizeScope;
 
 /**
  * Facebook 授权范围

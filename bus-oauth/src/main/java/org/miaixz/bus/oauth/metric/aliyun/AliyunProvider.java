@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -29,6 +29,7 @@ package org.miaixz.bus.oauth.metric.aliyun;
 
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Gender;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
 import org.miaixz.bus.oauth.magic.AccToken;
@@ -36,7 +37,7 @@ import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.Map;
 
 /**
  * 阿里云登录
@@ -57,20 +58,21 @@ public class AliyunProvider extends AbstractProvider {
     @Override
     public AccToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
-        JSONObject accessTokenObject = JSONObject.parseObject(response);
-        return AccToken.builder().accessToken(accessTokenObject.getString("access_token"))
-                .expireIn(accessTokenObject.getIntValue("expires_in"))
-                .tokenType(accessTokenObject.getString("token_type")).idToken(accessTokenObject.getString("id_token"))
-                .refreshToken(accessTokenObject.getString("refresh_token")).build();
+        Map<String, Object> accessTokenObject = JsonKit.toPojo(response, Map.class);
+        return AccToken.builder().accessToken((String) accessTokenObject.get("access_token"))
+                .expireIn(((Number) accessTokenObject.get("expires_in")).intValue())
+                .tokenType((String) accessTokenObject.get("token_type"))
+                .idToken((String) accessTokenObject.get("id_token"))
+                .refreshToken((String) accessTokenObject.get("refresh_token")).build();
     }
 
     @Override
     public Material getUserInfo(AccToken accToken) {
         String userInfo = doGetUserInfo(accToken);
-        JSONObject object = JSONObject.parseObject(userInfo);
-        return Material.builder().rawJson(object).uuid(object.getString("sub")).username(object.getString("login_name"))
-                .nickname(object.getString("name")).gender(Gender.UNKNOWN).token(accToken).source(complex.toString())
-                .build();
+        Map<String, Object> object = JsonKit.toPojo(userInfo, Map.class);
+        return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid((String) object.get("sub"))
+                .username((String) object.get("login_name")).nickname((String) object.get("name"))
+                .gender(Gender.UNKNOWN).token(accToken).source(complex.toString()).build();
     }
 
 }

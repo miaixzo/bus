@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -31,6 +31,7 @@ import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.Gender;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Context;
 import org.miaixz.bus.oauth.Registry;
@@ -39,7 +40,7 @@ import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.Map;
 
 /**
  * Gitlab 登录
@@ -60,37 +61,70 @@ public class GitlabProvider extends AbstractProvider {
     @Override
     public AccToken getAccessToken(Callback callback) {
         String response = doPostAuthorizationCode(callback.getCode());
-        JSONObject object = JSONObject.parseObject(response);
+        try {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
+                throw new AuthorizedException("Failed to parse access token response: empty response");
+            }
+            this.checkResponse(object);
 
-        this.checkResponse(object);
+            String accessToken = (String) object.get("access_token");
+            if (accessToken == null) {
+                throw new AuthorizedException("Missing access_token in response");
+            }
+            String refreshToken = (String) object.get("refresh_token");
+            String idToken = (String) object.get("id_token");
+            String tokenType = (String) object.get("token_type");
+            String scope = (String) object.get("scope");
 
-        return AccToken.builder().accessToken(object.getString("access_token"))
-                .refreshToken(object.getString("refresh_token")).idToken(object.getString("id_token"))
-                .tokenType(object.getString("token_type")).scope(object.getString("scope")).build();
+            return AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).idToken(idToken)
+                    .tokenType(tokenType).scope(scope).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse access token response: " + e.getMessage());
+        }
     }
 
     @Override
     public Material getUserInfo(AccToken accToken) {
         String response = doGetUserInfo(accToken);
-        JSONObject object = JSONObject.parseObject(response);
+        try {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
+                throw new AuthorizedException("Failed to parse user info response: empty response");
+            }
+            this.checkResponse(object);
 
-        this.checkResponse(object);
+            String id = (String) object.get("id");
+            if (id == null) {
+                throw new AuthorizedException("Missing id in user info response");
+            }
+            String username = (String) object.get("username");
+            String name = (String) object.get("name");
+            String avatarUrl = (String) object.get("avatar_url");
+            String webUrl = (String) object.get("web_url");
+            String organization = (String) object.get("organization");
+            String location = (String) object.get("location");
+            String email = (String) object.get("email");
+            String bio = (String) object.get("bio");
 
-        return Material.builder().rawJson(object).uuid(object.getString("id")).username(object.getString("username"))
-                .nickname(object.getString("name")).avatar(object.getString("avatar_url"))
-                .blog(object.getString("web_url")).company(object.getString("organization"))
-                .location(object.getString("location")).email(object.getString("email")).remark(object.getString("bio"))
-                .gender(Gender.UNKNOWN).token(accToken).source(complex.toString()).build();
+            return Material.builder().rawJson(JsonKit.toJsonString(object)).uuid(id).username(username).nickname(name)
+                    .avatar(avatarUrl).blog(webUrl).company(organization).location(location).email(email).remark(bio)
+                    .gender(Gender.UNKNOWN).token(accToken).source(complex.toString()).build();
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse user info response: " + e.getMessage());
+        }
     }
 
-    private void checkResponse(JSONObject object) {
+    private void checkResponse(Map<String, Object> object) {
         // oauth/token 验证异常
         if (object.containsKey("error")) {
-            throw new AuthorizedException(object.getString("error_description"));
+            String errorDescription = (String) object.get("error_description");
+            throw new AuthorizedException(errorDescription != null ? errorDescription : "Unknown error");
         }
         // user 验证异常
         if (object.containsKey("message")) {
-            throw new AuthorizedException(object.getString("message"));
+            String message = (String) object.get("message");
+            throw new AuthorizedException(message != null ? message : "Unknown error");
         }
     }
 

@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org justauth.cn and other contributors.        ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -31,6 +31,7 @@ import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.lang.MediaType;
 import org.miaixz.bus.core.lang.exception.AuthorizedException;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.extra.json.JsonKit;
 import org.miaixz.bus.http.Httpx;
 import org.miaixz.bus.oauth.Builder;
 import org.miaixz.bus.oauth.Complex;
@@ -41,7 +42,8 @@ import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.wechat.AbstractWeChatProvider;
 
-import com.alibaba.fastjson.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 企业微信 登录
@@ -62,47 +64,64 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
     @Override
     public AccToken getAccessToken(Callback callback) {
         String response = doGetAuthorizationCode(accessTokenUrl(null));
+        Map<String, Object> object = this.checkResponse(response);
 
-        JSONObject object = this.checkResponse(response);
+        String accessToken = (String) object.get("access_token");
+        if (accessToken == null) {
+            throw new AuthorizedException("Missing access_token in response");
+        }
+        Object expiresInObj = object.get("expires_in");
+        int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
-        return AccToken.builder().accessToken(object.getString("access_token"))
-                .expireIn(object.getIntValue("expires_in")).code(callback.getCode()).build();
+        return AccToken.builder().accessToken(accessToken).expireIn(expiresIn).code(callback.getCode()).build();
     }
 
     @Override
     public Material getUserInfo(AccToken accToken) {
         String response = doGetUserInfo(accToken);
-        JSONObject object = this.checkResponse(response);
+        Map<String, Object> object = this.checkResponse(response);
 
         // 返回 OpenId 或其他，均代表非当前企业用户，不支持
         if (!object.containsKey("UserId")) {
             throw new AuthorizedException(ErrorCode.UNIDENTIFIED_PLATFORM.getCode(), complex);
         }
-        String userId = object.getString("UserId");
-        String userTicket = object.getString("user_ticket");
-        JSONObject userDetail = getUserDetail(accToken.getAccessToken(), userId, userTicket);
+        String userId = (String) object.get("UserId");
+        String userTicket = (String) object.get("user_ticket");
+        Map<String, Object> data = getUserDetail(accToken.getAccessToken(), userId, userTicket);
 
-        return Material.builder().rawJson(userDetail).username(userDetail.getString("name"))
-                .nickname(userDetail.getString("alias")).avatar(userDetail.getString("avatar"))
-                .location(userDetail.getString("address")).email(userDetail.getString("email")).uuid(userId)
-                .gender(getWechatRealGender(userDetail.getString("gender"))).token(accToken).source(complex.toString())
-                .build();
+        String name = (String) data.get("name");
+        String alias = (String) data.get("alias");
+        String avatar = (String) data.get("avatar");
+        String address = (String) data.get("address");
+        String email = (String) data.get("email");
+        String gender = (String) data.get("gender");
+
+        return Material.builder().rawJson(JsonKit.toJsonString(data)).username(name).nickname(alias).avatar(avatar)
+                .location(address).email(email).uuid(userId).gender(getWechatRealGender(gender)).token(accToken)
+                .source(complex.toString()).build();
     }
 
     /**
      * 校验请求结果
      *
      * @param response 请求结果
-     * @return 如果请求结果正常，则返回JSONObject
+     * @return 如果请求结果正常，则返回Map
      */
-    private JSONObject checkResponse(String response) {
-        JSONObject object = JSONObject.parseObject(response);
-
-        if (object.containsKey("errcode") && object.getIntValue("errcode") != 0) {
-            throw new AuthorizedException(object.getString("errmsg"), complex.getName());
+    private Map<String, Object> checkResponse(String response) {
+        try {
+            Map<String, Object> object = JsonKit.toPojo(response, Map.class);
+            if (object == null) {
+                throw new AuthorizedException("Failed to parse response: empty response");
+            }
+            Object errcodeObj = object.get("errcode");
+            if (errcodeObj != null && !errcodeObj.equals(0)) {
+                String errmsg = (String) object.get("errmsg");
+                throw new AuthorizedException(errmsg != null ? errmsg : "Unknown error", complex.getName());
+            }
+            return object;
+        } catch (Exception e) {
+            throw new AuthorizedException("Failed to parse response: " + e.getMessage());
         }
-
-        return object;
     }
 
     /**
@@ -137,21 +156,22 @@ public abstract class AbstractWeChatEeProvider extends AbstractWeChatProvider {
      * @param userTicket  成员票据，用于获取用户信息或敏感信息
      * @return 用户详情
      */
-    private JSONObject getUserDetail(String accessToken, String userId, String userTicket) {
+    private Map<String, Object> getUserDetail(String accessToken, String userId, String userTicket) {
         // 用户基础信息
         String userInfoUrl = Builder.fromUrl("https://qyapi.weixin.qq.com/cgi-bin/user/get")
                 .queryParam("access_token", accessToken).queryParam("userid", userId).build();
         String userInfoResponse = Httpx.get(userInfoUrl);
-        JSONObject userInfo = checkResponse(userInfoResponse);
+        Map<String, Object> userInfo = checkResponse(userInfoResponse);
 
         // 用户敏感信息
         if (StringKit.isNotEmpty(userTicket)) {
             String userDetailUrl = Builder.fromUrl("https://qyapi.weixin.qq.com/cgi-bin/auth/getuserdetail")
                     .queryParam("access_token", accessToken).build();
-            JSONObject param = new JSONObject();
+            Map<String, Object> param = new HashMap<>();
             param.put("user_ticket", userTicket);
-            String userDetailResponse = Httpx.post(userDetailUrl, param.toJSONString(), MediaType.APPLICATION_JSON);
-            JSONObject userDetail = checkResponse(userDetailResponse);
+            String userDetailResponse = Httpx.post(userDetailUrl, JsonKit.toJsonString(param),
+                    MediaType.APPLICATION_JSON);
+            Map<String, Object> userDetail = checkResponse(userDetailResponse);
 
             userInfo.putAll(userDetail);
         }

@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-storage</artifactId>
-    <version>8.1.5</version>
+    <version>8.1.6</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>
@@ -85,17 +85,17 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <lombok.version>1.18.36</lombok.version>
-        <aliyun.oss.version>3.18.1</aliyun.oss.version>
-        <baidu.bos.version>0.10.331</baidu.bos.version>
-        <huawei.oss.version>3.24.3</huawei.oss.version>
+        <lombok.version>1.18.38</lombok.version>
+        <aliyun.oss.version>3.18.2</aliyun.oss.version>
+        <baidu.bos.version>0.10.372</baidu.bos.version>
+        <huawei.oss.version>3.25.4</huawei.oss.version>
         <aws.oss.version>1.12.767</aws.oss.version>
-        <minio.oss.version>8.5.11</minio.oss.version>
-        <qiniu.oss.version>7.15.1</qiniu.oss.version>
-        <qcloud.oss.version>5.6.225</qcloud.oss.version>
+        <minio.oss.version>8.5.17</minio.oss.version>
+        <qiniu.oss.version>7.18.0</qiniu.oss.version>
+        <qcloud.oss.version>5.6.245</qcloud.oss.version>
         <upyun.oss.version>4.2.3</upyun.oss.version>
         <sardine.version>5.12</sardine.version>
-        <jackson.version>2.18.1</jackson.version>
+        <jackson.version>2.19.0</jackson.version>
         <okhttp.version>4.12.0</okhttp.version>
     </properties>
 

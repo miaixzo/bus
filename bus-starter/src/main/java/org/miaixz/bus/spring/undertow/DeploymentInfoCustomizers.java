@@ -27,18 +27,17 @@
 */
 package org.miaixz.bus.spring.undertow;
 
+import io.undertow.server.DefaultByteBufferPool;
+import io.undertow.websockets.jsr.WebSocketDeploymentInfo;
 import org.springframework.boot.web.embedded.undertow.UndertowServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.stereotype.Component;
-
-import io.undertow.server.DefaultByteBufferPool;
-import io.undertow.websockets.jsr.WebSocketDeploymentInfo;
 
 /**
  * 容器警告处理
  *
  * @author Kimi Liu
- * @since JDK 1.8+
+ * @since Java 17+
  */
 @Component
 public class DeploymentInfoCustomizers implements WebServerFactoryCustomizer<UndertowServletWebServerFactory> {

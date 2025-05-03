@@ -25,50 +25,79 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.env;
+package org.miaixz.bus.spring.boot;
 
-import java.util.Properties;
-
-import org.miaixz.bus.core.Version;
 import org.miaixz.bus.spring.GeniusBuilder;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.env.EnvironmentPostProcessor;
-import org.springframework.core.Ordered;
-import org.springframework.core.env.ConfigurableEnvironment;
-import org.springframework.core.env.PropertiesPropertySource;
+import org.miaixz.bus.spring.boot.statics.ChildrenStatics;
+import org.miaixz.bus.spring.boot.statics.ModuleStatics;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.SmartLifecycle;
 
 /**
- *
- * 实现{@link EnvironmentPostProcessor}来设置一些属性 比如版本，将被添加为一个名为cconfigurationproperties的属性源。
+ * 实现{@link SmartLifecycle}计算应用程序上下文刷新时间
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BusEnvironmentPostProcessor implements EnvironmentPostProcessor, Ordered {
+public class SpringSmartLifecycle implements SmartLifecycle, ApplicationContextAware {
 
-    @Override
-    public void postProcessEnvironment(ConfigurableEnvironment environment, SpringApplication application) {
-        // 系统时区
-        System.setProperty("user.timezone", "Asia/Shanghai");
-        if (environment.getPropertySources().get(GeniusBuilder.BUS_PROPERTY_SOURCE) != null) {
-            return;
-        }
+    public static final String ROOT_MODULE_NAME = "ROOT_APPLICATION_CONTEXT";
+    /**
+     * 收集和启动报告成本的基本组件
+     */
+    private final StartupReporter startupReporter;
 
-        // 版本配置
-        Properties properties = new Properties();
-        properties.setProperty(GeniusBuilder.VERSION, Version._VERSION);
+    /**
+     * 应用程序上下文
+     */
+    private ConfigurableApplicationContext applicationContext;
 
-        // 默认配置
-        PropertiesPropertySource propertySource = new PropertiesPropertySource(GeniusBuilder.BUS_PROPERTY_SOURCE,
-                properties);
-        environment.getPropertySources().addLast(propertySource);
-
-        environment.setRequiredProperties(GeniusBuilder.APP_NAME);
+    public SpringSmartLifecycle(StartupReporter startupReporter) {
+        this.startupReporter = startupReporter;
     }
 
     @Override
-    public int getOrder() {
-        return Ordered.LOWEST_PRECEDENCE - 100;
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = (ConfigurableApplicationContext) applicationContext;
+    }
+
+    @Override
+    public void start() {
+        // 初始化 ContextRefreshStageStat
+        ChildrenStatics<ModuleStatics> stat = new ChildrenStatics<>();
+        stat.setName(GeniusBuilder.APPLICATION_CONTEXT_REFRESH_STAGE);
+        stat.setEndTime(System.currentTimeMillis());
+
+        // 构建根模块
+        ModuleStatics rootModuleStat = new ModuleStatics();
+        rootModuleStat.setName(ROOT_MODULE_NAME);
+        rootModuleStat.setEndTime(stat.getEndTime());
+        rootModuleStat.setThreadName(Thread.currentThread().getName());
+
+        // 从ApplicationStartup获取beanstatlist
+        rootModuleStat.setChildren(startupReporter.generateBeanStats(applicationContext));
+
+        // 报告ContextRefreshStageStat
+        stat.addChild(rootModuleStat);
+        startupReporter.addCommonStartupStat(stat);
+    }
+
+    @Override
+    public void stop() {
+
+    }
+
+    @Override
+    public boolean isRunning() {
+        return false;
+    }
+
+    @Override
+    public int getPhase() {
+        return Integer.MIN_VALUE;
     }
 
 }

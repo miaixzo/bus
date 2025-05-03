@@ -45,30 +45,44 @@ public class HighMultiReplacer extends StringReplacer {
     private final AhoCorasickAutomaton ahoCorasickAutomaton;
 
     /**
-     * 构造
+     * 构造函数，初始化AC自动机。
      *
-     * @param map key为需要被查找的字符串，value为对应的替换的值
+     * @param map 关键字映射，key为需要查找的字符串，value为替换值
      */
     public HighMultiReplacer(final Map<String, Object> map) {
         ahoCorasickAutomaton = new AhoCorasickAutomaton(map);
     }
 
     /**
-     * 生成一个HighMultiReplacer对象
+     * 工厂方法，创建HighMultiReplacer实例。
      *
-     * @param map key为需要被查找的字符串，value为对应的替换的值
-     * @return this
+     * @param map 关键字映射，key为需要查找的字符串，value为替换值
+     * @return HighMultiReplacer实例
      */
     public static HighMultiReplacer of(final Map<String, Object> map) {
         return new HighMultiReplacer(map);
     }
 
+    /**
+     * 执行字符串替换，从指定位置开始，将结果追加到输出缓冲区。
+     *
+     * @param text 待替换的字符串
+     * @param pos  替换起始位置
+     * @param out  输出缓冲区，存储替换结果
+     * @return 替换后处理的字符数
+     */
     @Override
     public int replace(final CharSequence text, final int pos, final StringBuilder out) {
         ahoCorasickAutomaton.replace(text, out);
         return text.length();
     }
 
+    /**
+     * 应用替换规则，返回替换后的字符串。
+     *
+     * @param text 待替换的字符串
+     * @return 替换后的字符串
+     */
     @Override
     public CharSequence apply(final CharSequence text) {
         final StringBuilder builder = new StringBuilder();
@@ -77,22 +91,24 @@ public class HighMultiReplacer extends StringReplacer {
     }
 
     /**
-     * AC自动机
+     * AC自动机实现，用于高效查找和替换关键字。
      */
     private static class AhoCorasickAutomaton {
 
         /**
-         * AC自动机的根结点，根结点不存储任何字符信息
+         * AC自动机的根节点，不存储任何字符信息。
          */
         private final Node root;
 
         /**
-         * 待查找的目标字符串集合
+         * 关键字映射，key为查找的目标字符串，value为对应的替换值。
          */
         private final Map<String, Object> target;
 
         /**
-         * @param target 待查找的目标字符串集合
+         * 构造函数，初始化AC自动机，构建Trie树和fail指针。
+         *
+         * @param target 关键字映射
          */
         public AhoCorasickAutomaton(final Map<String, Object> target) {
             root = new Node();
@@ -102,103 +118,103 @@ public class HighMultiReplacer extends StringReplacer {
         }
 
         /**
-         * 由目标字符串构建Trie树
+         * 构建Trie树，支持三种关键字格式：field、${field}和{field}。
          */
         private void buildTrieTree() {
             for (final String text : target.keySet()) {
-                Node curr = root;
                 if (text == null) {
-                    continue;
+                    continue; // 跳过空关键字
                 }
-                for (int i = 0; i < text.length(); i++) {
-                    final char ch = text.charAt(i);
-                    Node node = curr.children.get(ch);
-                    if (node == null) {
-                        node = new Node();
-                        curr.children.put(ch, node);
-                    }
-                    curr = node;
-                }
-                // 将每个目标字符串的最后一个字符对应的结点变成终点
-                curr.text = text;
+                // 添加直接关键字格式（如 field）
+                buildTrieTree(text, text);
+                // 添加${}包装格式（如 ${field}）
+                buildTrieTree("${" + text + "}", text);
+                // 添加{}包装格式（如 {field}）
+                buildTrieTree("{" + text + "}", text);
             }
         }
 
         /**
-         * 由Trie树构建AC自动机，本质是一个自动机，相当于构建KMP算法的next数组
+         * 将关键字模式添加到Trie树。
+         *
+         * @param pattern 匹配模式（如 field、${field} 或 {field}）
+         * @param key     原始关键字，用于查找替换值（如 field）
+         */
+        private void buildTrieTree(final String pattern, final String key) {
+            Node curr = root; // 初始化为根节点
+            for (int i = 0; i < pattern.length(); i++) {
+                final char ch = pattern.charAt(i);
+                Node node = curr.children.get(ch);
+                if (node == null) {
+                    node = new Node();
+                    curr.children.put(ch, node);
+                }
+                curr = node;
+            }
+            // 存储原始关键字，用于后续替换
+            curr.text = key;
+        }
+
+        /**
+         * 由Trie树构建AC自动机，生成fail指针，类似KMP算法的next数组。
          */
         private void buildAcFromTrie() {
-            // 广度优先遍历所使用的队列
             final LinkedList<Node> queue = new LinkedList<>();
-
-            // 单独处理根结点的所有孩子结点
+            // 初始化根节点的子节点
             for (final Node x : root.children.values()) {
-                /* 根结点的所有孩子结点的fail都指向根结点 */
-                x.fail = root;
-                queue.addLast(x);// 所有根结点的孩子结点入列
+                x.fail = root; // 子节点的fail指针指向根节点
+                queue.addLast(x); // 入队
             }
 
+            // 广度优先遍历，构建fail指针
             while (!queue.isEmpty()) {
-                // 确定出列结点的所有孩子结点的fail的指向
                 final Node p = queue.removeFirst();
                 for (final Map.Entry<Character, Node> entry : p.children.entrySet()) {
-
-                    /* 孩子结点入列 */
                     queue.addLast(entry.getValue());
-                    // 从p.fail开始找起
                     Node failTo = p.fail;
                     while (true) {
-                        // 说明找到了根结点还没有找到
                         if (failTo == null) {
-                            entry.getValue().fail = root;
+                            entry.getValue().fail = root; // 未找到匹配，指向根节点
                             break;
                         }
-
-                        // 说明有公共前缀
                         if (failTo.children.get(entry.getKey()) != null) {
-                            entry.getValue().fail = failTo.children.get(entry.getKey());
+                            entry.getValue().fail = failTo.children.get(entry.getKey()); // 找到匹配
                             break;
-                        } else {// 继续向上寻找
-                            failTo = failTo.fail;
                         }
+                        failTo = failTo.fail; // 继续向上回溯
                     }
-
                 }
             }
         }
 
         /**
-         * 在文本串中替换所有的目标字符串
+         * 执行字符串替换，将匹配的关键字替换为目标值。
          *
-         * @param text          被替换的目标字符串
-         * @param stringBuilder 替换后的结果
+         * @param text          待替换的字符串
+         * @param stringBuilder 输出缓冲区，存储替换结果
          */
         public void replace(final CharSequence text, final StringBuilder stringBuilder) {
             Node curr = root;
             int i = 0;
             while (i < text.length()) {
-                // 文本串中的字符
                 final char ch = text.charAt(i);
-                // 文本串中的字符和AC自动机中的字符进行比较
                 final Node node = curr.children.get(ch);
                 if (node != null) {
-                    stringBuilder.append(ch);
-                    // 若相等，自动机进入下一状态
+                    // 匹配到字符，进入下一状态
                     curr = node;
                     if (curr.isWord()) {
-                        stringBuilder.delete(stringBuilder.length() - curr.text.length(), stringBuilder.length());
-                        stringBuilder.append(target.get(curr.text));
-                        curr = root;
+                        // 匹配到完整关键字，追加替换值
+                        final Object replacement = target.get(curr.text);
+                        stringBuilder.append(replacement != null ? replacement : "");
+                        curr = root; // 重置状态机
                     }
-                    // 索引自增，指向下一个文本串中的字符
                     i++;
                 } else {
-                    // 若不等，找到下一个应该比较的状态
-                    curr = curr.fail;
-                    /// 到根结点还未找到，说明文本串中以ch作为结束的字符片段不是任何目标字符串的前缀，状态机重置，比较下一个字符
-                    if (curr == null) {
-                        stringBuilder.append(ch);
-                        curr = root;
+                    // 未匹配，尝试fail指针
+                    if (curr != root) {
+                        curr = curr.fail; // 回溯
+                    } else {
+                        stringBuilder.append(ch); // 无匹配，追加当前字符
                         i++;
                     }
                 }
@@ -206,28 +222,32 @@ public class HighMultiReplacer extends StringReplacer {
         }
 
         /**
-         * 用于表示AC自动机的每个结点，在每个结点中我们并没有存储该结点对应的字符
+         * AC自动机的节点，表示Trie树中的一个状态。
          */
         private static class Node {
             /**
-             * 如果该结点是一个终点，即，从根结点到此结点表示了一个目标字符串，则str != null, 且str就表示该字符串
+             * 终点标记，表示从根节点到此节点形成一个关键字，存储原始关键字。
              */
             String text;
 
             /**
-             * 该节点下的子节点
+             * 子节点映射，key为字符，value为对应的子节点。
              */
             Map<Character, Node> children = new HashMap<>();
 
             /**
-             * 当前结点的孩子结点不能匹配文本串中的某个字符时，下一个应该查找的结点
+             * fail指针，指向匹配失败时应跳转的节点。
              */
             Node fail;
 
+            /**
+             * 判断当前节点是否为关键字的终点。
+             *
+             * @return 是否为终点
+             */
             public boolean isWord() {
                 return text != null;
             }
-
         }
     }
 

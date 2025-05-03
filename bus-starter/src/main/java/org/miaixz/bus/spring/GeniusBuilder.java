@@ -27,9 +27,6 @@
 */
 package org.miaixz.bus.spring;
 
-import java.io.File;
-import java.time.Duration;
-
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ClassKit;
@@ -38,6 +35,9 @@ import org.springframework.boot.SpringApplicationRunListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
+
+import java.io.File;
+import java.time.Duration;
 
 /**
  * 全局常量配置
@@ -132,11 +132,6 @@ public class GeniusBuilder {
      * Logging pattern file key
      */
     public static final String LOGGING_PATTERN_FILE = "logging.pattern.file";
-
-    /**
-     * bus startup logging extra info
-     */
-    public static final String BUS_STARTUP_LOGGING = "startup.logging";
 
     /**
      * bus startup logging extra info
