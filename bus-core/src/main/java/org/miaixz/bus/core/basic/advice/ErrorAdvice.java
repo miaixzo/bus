@@ -27,9 +27,9 @@
 */
 package org.miaixz.bus.core.basic.advice;
 
-import java.util.ServiceLoader;
-
 import org.miaixz.bus.core.basic.service.ErrorService;
+
+import java.util.ServiceLoader;
 
 /**
  * 异常信息处理
@@ -47,20 +47,17 @@ public class ErrorAdvice {
      */
     public boolean handler(Exception ex) {
         final ServiceLoader<ErrorService> loader = ServiceLoader.load(ErrorService.class);
+        boolean continueChain = true;
         for (ErrorService service : loader) {
-            if (service instanceof ErrorService) {
-                if (loader.stream().count() > 1) {
-                    if (!service.getClass().getName().equals(ErrorService.class.getName())) {
-                        service.before(ex);
-                        service.after(ex);
-                    }
-                } else {
-                    service.before(ex);
-                    service.after(ex);
-                }
-            }
+            continueChain &= service.before(ex) && service.after(ex);
         }
-        return true;
+        if (!loader.iterator().hasNext()) {
+            // 没有实现时，使用默认实现
+            ErrorService defaultService = new ErrorService() {
+            };
+            continueChain &= defaultService.before(ex) && defaultService.after(ex);
+        }
+        return continueChain;
     }
 
 }

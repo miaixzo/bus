@@ -29,6 +29,7 @@ package org.miaixz.bus.validate.metric;
 
 import org.miaixz.bus.core.lang.Regex;
 import org.miaixz.bus.core.xyz.ObjectKit;
+import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.validate.Context;
 import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.annotation.Chinese;
@@ -39,14 +40,14 @@ import org.miaixz.bus.validate.magic.annotation.Chinese;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class ChineseMatcher implements Matcher<String, Chinese> {
+public class ChineseMatcher implements Matcher<Object, Chinese> {
 
     @Override
-    public boolean on(String object, Chinese annotation, Context context) {
+    public boolean on(Object object, Chinese annotation, Context context) {
         if (ObjectKit.isEmpty(object)) {
             return false;
         }
-        return object.matches(Regex.CHINESE);
+        return StringKit.toString(object).matches(Regex.CHINESE);
     }
 
 }

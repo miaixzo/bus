@@ -27,7 +27,7 @@
 */
 package org.miaixz.bus.validate.metric;
 
-import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.core.xyz.ObjectKit;
 import org.miaixz.bus.validate.Context;
 import org.miaixz.bus.validate.magic.Matcher;
 import org.miaixz.bus.validate.magic.Validator;
@@ -39,16 +39,16 @@ import org.miaixz.bus.validate.magic.annotation.NotBlank;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class NotBlankMatcher implements Validator<String>, Matcher<String, NotBlank> {
+public class NotBlankMatcher implements Validator<Object>, Matcher<Object, NotBlank> {
 
     @Override
-    public boolean on(String object, NotBlank annotation, Context context) {
+    public boolean on(Object object, NotBlank annotation, Context context) {
         return on(object, context);
     }
 
     @Override
-    public boolean on(String object, Context context) {
-        return StringKit.isNotBlank(object);
+    public boolean on(Object object, Context context) {
+        return !ObjectKit.isBlankIfString(object);
     }
 
 }

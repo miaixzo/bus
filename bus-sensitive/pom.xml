@@ -32,7 +32,7 @@
 
     <groupId>org.miaixz</groupId>
     <artifactId>bus-sensitive</artifactId>
-    <version>8.1.5</version>
+    <version>8.1.6</version>
     <packaging>jar</packaging>
 
     <name>${project.artifactId}</name>

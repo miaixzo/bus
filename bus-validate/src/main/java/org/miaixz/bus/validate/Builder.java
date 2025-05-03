@@ -51,7 +51,7 @@ public class Builder extends Validator {
     /**
      * 校验对象参数
      */
-    public static final String VAL = "val";
+    public static final String VALUE = "value";
     public static final String FIELD = "field";
     public static final String GROUP = "group";
     public static final String ERRCODE = "errcode";

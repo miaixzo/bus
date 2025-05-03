@@ -36,6 +36,7 @@ import org.miaixz.bus.core.lang.exception.CrontabException;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.exception.ValidateException;
 import org.miaixz.bus.core.xyz.StringKit;
+import org.miaixz.bus.logger.Logger;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.http.HttpStatus;
 import org.springframework.ui.Model;
@@ -218,6 +219,7 @@ public class BaseAdvice extends Controller {
      */
     public void defaultExceptionHandler(Exception ex) {
         try {
+            Logger.info(ex.getMessage());
             Instances.singletion(ErrorAdvice.class).handler(ex);
         } catch (RuntimeException ignore) {
             // ignore
