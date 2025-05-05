@@ -54,7 +54,7 @@ public class UpyunOssProvider extends AbstractProvider {
 
     public UpyunOssProvider(Context context) {
         this.context = context;
-        Assert.notBlank(this.context.getPrefix(), "[prefix] not defined");
+
         Assert.notBlank(this.context.getBucket(), "[bucket] not defined");
         Assert.notBlank(this.context.getAccessKey(), "[accessKey] not defined");
         Assert.notBlank(this.context.getSecretKey(), "[secure] not defined");
@@ -119,7 +119,7 @@ public class UpyunOssProvider extends AbstractProvider {
             client.deleteFile(Symbol.C_SLASH + fileName, null);
             return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
         } catch (IOException | UpException e) {
-            Logger.error("file remove failed", e.getMessage());
+            Logger.error("file remove failed {}", e.getMessage());
         }
         return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }

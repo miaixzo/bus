@@ -48,6 +48,7 @@ public class GitlabFileProvider extends AbstractProvider {
 
     public GitlabFileProvider(Context context) {
         this.context = context;
+
         Assert.notBlank(this.context.getPrefix(), "[prefix] not defined");
         Assert.notBlank(this.context.getBucket(), "[bucket] not defined");
         Assert.notBlank(this.context.getAccessKey(), "[accessKey] not defined");

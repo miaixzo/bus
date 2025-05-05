@@ -41,43 +41,38 @@ import org.miaixz.bus.storage.Context;
 import org.miaixz.bus.storage.magic.ErrorCode;
 import org.miaixz.bus.storage.magic.Material;
 
-import com.amazonaws.ClientConfiguration;
-import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.client.builder.AwsClientBuilder;
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.GetObjectRequest;
-import com.amazonaws.services.s3.model.ListObjectsRequest;
-import com.amazonaws.services.s3.model.ObjectListing;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.core.exception.SdkException;
+import software.amazon.awssdk.core.sync.RequestBody;
+import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.S3ClientBuilder;
+import software.amazon.awssdk.services.s3.model.*;
 
 public class AmazonS3Provider extends AbstractProvider {
 
-    private volatile AmazonS3 client;
+    private volatile S3Client client;
 
     public AmazonS3Provider(Context context) {
         this.context = context;
-        Assert.notBlank(this.context.getPrefix(), "[prefix] not defined");
+
         Assert.notBlank(this.context.getEndpoint(), "[endpoint] not defined");
         Assert.notBlank(this.context.getBucket(), "[bucket] not defined");
         Assert.notBlank(this.context.getAccessKey(), "[accessKey] not defined");
         Assert.notBlank(this.context.getSecretKey(), "[secretKey] not defined");
         Assert.notBlank(this.context.getRegion(), "[region] not defined");
 
-        ClientConfiguration config = new ClientConfiguration();
+        S3ClientBuilder builder = S3Client.builder()
+                .credentialsProvider(StaticCredentialsProvider
+                        .create(AwsBasicCredentials.create(this.context.getAccessKey(), this.context.getSecretKey())))
+                .region(Region.of(this.context.getRegion()));
 
-        AwsClientBuilder.EndpointConfiguration endpointConfig = new AwsClientBuilder.EndpointConfiguration(
-                this.context.getEndpoint(), this.context.getRegion());
+        if (StringKit.isNotBlank(this.context.getEndpoint())) {
+            builder.endpointOverride(java.net.URI.create(this.context.getEndpoint()));
+        }
 
-        AWSCredentials awsCredentials = new BasicAWSCredentials(this.context.getAccessKey(),
-                this.context.getSecretKey());
-        AWSCredentialsProvider awsCredentialsProvider = new AWSStaticCredentialsProvider(awsCredentials);
-
-        this.client = AmazonS3Client.builder().withEndpointConfiguration(endpointConfig).withClientConfiguration(config)
-                .withCredentials(awsCredentialsProvider).disableChunkedEncoding().withPathStyleAccessEnabled(true)
-                .build();
+        this.client = builder.build();
     }
 
     @Override
@@ -97,34 +92,44 @@ public class AmazonS3Provider extends AbstractProvider {
 
     @Override
     public Message download(String bucket, String fileName, File file) {
-        this.client.getObject(new GetObjectRequest(bucket, fileName), file);
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        try {
+            GetObjectRequest request = GetObjectRequest.builder().bucket(bucket).key(fileName).build();
+            client.getObject(request, file.toPath());
+            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        } catch (SdkException e) {
+            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(e.getMessage()).build();
+        }
     }
 
     @Override
     public Message list() {
-        ListObjectsRequest request = new ListObjectsRequest().withBucketName(this.context.getBucket());
-        ObjectListing objectListing = client.listObjects(request);
+        try {
+            ListObjectsV2Request request = ListObjectsV2Request.builder().bucket(this.context.getBucket()).build();
+            ListObjectsV2Response response = client.listObjectsV2(request);
 
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
-                .data(objectListing.getObjectSummaries().stream().map(item -> {
-                    Map<String, Object> extend = new HashMap<>();
-                    extend.put("tag", item.getETag());
-                    extend.put("storageClass", item.getStorageClass());
-                    extend.put("lastModified", item.getLastModified());
-                    return Material.builder().name(item.getKey()).owner(item.getOwner().getDisplayName())
-                            .size(StringKit.toString(item.getSize())).extend(extend).build();
-                }).collect(Collectors.toList())).build();
+            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc())
+                    .data(response.contents().stream().map(item -> {
+                        Map<String, Object> extend = new HashMap<>();
+                        extend.put("tag", item.eTag());
+                        extend.put("storageClass", item.storageClassAsString());
+                        extend.put("lastModified", item.lastModified());
+                        return Material.builder().name(item.key())
+                                .owner(item.owner() != null ? item.owner().displayName() : null)
+                                .size(StringKit.toString(item.size())).extend(extend).build();
+                    }).collect(Collectors.toList())).build();
+        } catch (SdkException e) {
+            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(e.getMessage()).build();
+        }
     }
 
     @Override
     public Message rename(String oldName, String newName) {
-        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg("failure to provide services").build();
+        return rename(this.context.getBucket(), oldName, newName);
     }
 
     @Override
     public Message rename(String bucket, String oldName, String newName) {
-        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg("failure to provide services").build();
     }
 
     @Override
@@ -134,13 +139,24 @@ public class AmazonS3Provider extends AbstractProvider {
 
     @Override
     public Message upload(String bucket, String fileName, InputStream content) {
-        client.putObject(bucket, fileName, content, null);
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        try {
+            PutObjectRequest request = PutObjectRequest.builder().bucket(bucket).key(fileName).build();
+            client.putObject(request, RequestBody.fromInputStream(content, content.available()));
+            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        } catch (Exception e) {
+            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(e.getMessage()).build();
+        }
     }
 
     @Override
     public Message upload(String bucket, String fileName, byte[] content) {
-        return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
+        try {
+            PutObjectRequest request = PutObjectRequest.builder().bucket(bucket).key(fileName).build();
+            client.putObject(request, RequestBody.fromBytes(content));
+            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        } catch (SdkException e) {
+            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(e.getMessage()).build();
+        }
     }
 
     @Override
@@ -150,8 +166,13 @@ public class AmazonS3Provider extends AbstractProvider {
 
     @Override
     public Message remove(String bucket, String fileName) {
-        this.client.deleteObject(bucket, fileName);
-        return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        try {
+            DeleteObjectRequest request = DeleteObjectRequest.builder().bucket(bucket).key(fileName).build();
+            client.deleteObject(request);
+            return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
+        } catch (SdkException e) {
+            return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(e.getMessage()).build();
+        }
     }
 
     @Override

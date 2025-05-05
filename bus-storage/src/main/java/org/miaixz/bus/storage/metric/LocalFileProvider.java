@@ -108,7 +108,7 @@ public class LocalFileProvider extends AbstractProvider {
             out.close();
             return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
         } catch (IOException e) {
-            Logger.error("file upload failed", e.getMessage());
+            Logger.error("file upload failed {}", e.getMessage());
         }
         return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }

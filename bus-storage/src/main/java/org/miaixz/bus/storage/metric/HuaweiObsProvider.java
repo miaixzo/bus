@@ -58,6 +58,7 @@ public class HuaweiObsProvider extends AbstractProvider {
 
     public HuaweiObsProvider(Context context) {
         this.context = context;
+
         Assert.notBlank(this.context.getEndpoint(), "[endpoint] not defined");
         Assert.notBlank(this.context.getBucket(), "[bucket] not defined");
         Assert.notBlank(this.context.getAccessKey(), "[accessKey] not defined");

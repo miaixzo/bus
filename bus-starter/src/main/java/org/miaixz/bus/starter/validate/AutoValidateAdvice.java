@@ -27,15 +27,16 @@
 */
 package org.miaixz.bus.starter.validate;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.validate.Builder;
 import org.miaixz.bus.validate.Context;
 import org.springframework.core.DefaultParameterNameDiscoverer;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 
 /**
  * 自动进行参数处理实现类
@@ -75,10 +76,9 @@ public class AutoValidateAdvice {
         Annotation[][] annotations = method.getParameterAnnotations();
         String[] names = new DefaultParameterNameDiscoverer().getParameterNames(method);
         if (names == null || names.length == 0) {
-            Logger.warn("Parameter names are null or empty for method: {}", method.getName());
             names = new String[arguments.length]; // 分配默认名称
             for (int i = 0; i < names.length; i++) {
-                names[i] = "arg" + i;
+                names[i] = Normal.EMPTY + i;
             }
         }
 

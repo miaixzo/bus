@@ -59,12 +59,11 @@ public class AliYunOssProvider extends AbstractProvider {
 
     public AliYunOssProvider(Context context) {
         this.context = context;
-        Assert.notBlank(this.context.getPrefix(), "[prefix] not defined");
+
         Assert.notBlank(this.context.getEndpoint(), "[endpoint] not defined");
         Assert.notBlank(this.context.getBucket(), "[bucket] not defined");
         Assert.notBlank(this.context.getAccessKey(), "[accessKey] not defined");
         Assert.notBlank(this.context.getSecretKey(), "[secretKey] not defined");
-        Assert.notNull(this.context.isSecure(), "[secure] not defined");
 
         this.client = new OSSClient(this.context.getEndpoint(),
                 new DefaultCredentialProvider(this.context.getAccessKey(), this.context.getSecretKey()), null);
@@ -96,7 +95,7 @@ public class AliYunOssProvider extends AbstractProvider {
             }
             return Message.builder().data(reader).build();
         } catch (Exception e) {
-            Logger.error("file download failed", e.getMessage());
+            Logger.error("file download failed {}", e.getMessage());
         }
         return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
@@ -157,7 +156,7 @@ public class AliYunOssProvider extends AbstractProvider {
             byte[] bytes = new byte[content.available()];
             return upload(this.context.getBucket(), fileName, bytes);
         } catch (IOException e) {
-            Logger.error("file upload failed ", e.getMessage());
+            Logger.error("file upload failed {}", e.getMessage());
         }
         return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
@@ -180,7 +179,7 @@ public class AliYunOssProvider extends AbstractProvider {
 
         } catch (Exception e) {
             this.client.putObject(bucket, fileName, bis);
-            Logger.error("file upload failed ", e.getMessage());
+            Logger.error("file upload failed {}", e.getMessage());
         }
         return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }

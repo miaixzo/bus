@@ -27,11 +27,8 @@
 */
 package org.miaixz.bus.spring.web;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonParseException;
-import com.google.gson.TypeAdapter;
-import com.google.gson.reflect.TypeToken;
+import java.util.List;
+
 import org.miaixz.bus.logger.Logger;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.http.MediaType;
@@ -39,7 +36,11 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.GsonHttpMessageConverter;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonParseException;
+import com.google.gson.TypeAdapter;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * Gson JSON 转换器配置器，与 Spring MVC 集成。 支持 autoType 配置，限制反序列化到指定包前缀的类。
@@ -48,7 +49,7 @@ import java.util.List;
  * @since Java 17+
  */
 @Component
-@ConditionalOnClass({com.google.gson.Gson.class})
+@ConditionalOnClass({ com.google.gson.Gson.class })
 public class GsonConverterConfigurer implements JsonConverterConfigurer {
 
     private String autoType;

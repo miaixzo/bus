@@ -60,12 +60,11 @@ public class BaiduBosProvider extends AbstractProvider {
 
     public BaiduBosProvider(Context context) {
         this.context = context;
-        Assert.notBlank(this.context.getPrefix(), "[prefix] not defined");
+
         Assert.notBlank(this.context.getEndpoint(), "[endpoint] not defined");
         Assert.notBlank(this.context.getBucket(), "[bucket] not defined");
         Assert.notBlank(this.context.getAccessKey(), "[accessKey] not defined");
         Assert.notBlank(this.context.getSecretKey(), "[secure] not defined");
-        Assert.notNull(this.context.isSecure(), "[secure] not defined");
 
         BosClientConfiguration config = new BosClientConfiguration();
         config.setCredentials(new DefaultBceCredentials(this.context.getAccessKey(), this.context.getSecretKey()));

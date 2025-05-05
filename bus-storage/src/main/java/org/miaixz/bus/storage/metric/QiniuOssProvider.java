@@ -69,7 +69,7 @@ public class QiniuOssProvider extends AbstractProvider {
 
     public QiniuOssProvider(Context context) {
         this.context = context;
-        Assert.notBlank(this.context.getPrefix(), "[prefix] not defined");
+
         Assert.notBlank(this.context.getBucket(), "[bucket] not defined");
         Assert.notBlank(this.context.getAccessKey(), "[accessKey] not defined");
         Assert.notBlank(this.context.getSecretKey(), "[secretKey] not defined");
@@ -145,7 +145,7 @@ public class QiniuOssProvider extends AbstractProvider {
                             .path(response.url()))
                     .build();
         } catch (QiniuException e) {
-            Logger.error("file upload failed", e.getMessage());
+            Logger.error("file upload failed {}", e.getMessage());
         }
         return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
@@ -164,7 +164,7 @@ public class QiniuOssProvider extends AbstractProvider {
                             .path(response.url()))
                     .build();
         } catch (QiniuException e) {
-            Logger.error("file upload failed", e.getMessage());
+            Logger.error("file upload failed {}", e.getMessage());
         }
         return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
@@ -178,7 +178,7 @@ public class QiniuOssProvider extends AbstractProvider {
             bucketManager.delete(this.context.getBucket(), fileKey);
             return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
         } catch (QiniuException e) {
-            Logger.error("file remove failed", e.getMessage());
+            Logger.error("file remove failed {}", e.getMessage());
         }
         return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
@@ -189,7 +189,7 @@ public class QiniuOssProvider extends AbstractProvider {
             bucketManager.delete(bucket, fileName);
             return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
         } catch (QiniuException e) {
-            Logger.error("file remove failed", e.getMessage());
+            Logger.error("file remove failed {}", e.getMessage());
         }
         return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }

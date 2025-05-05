@@ -53,7 +53,7 @@ public class WebDavProvider extends AbstractProvider {
 
     public WebDavProvider(Context context) {
         this.context = context;
-        Assert.notBlank(this.context.getPrefix(), "[prefix] not defined");
+
         Assert.notBlank(this.context.getBucket(), "[bucket] not defined");
         Assert.notBlank(this.context.getAccessKey(), "[accessKey] not defined");
         Assert.notBlank(this.context.getSecretKey(), "[secure] not defined");
@@ -117,7 +117,7 @@ public class WebDavProvider extends AbstractProvider {
             this.client.delete(getUrl(bucket + "/" + fileName));
             return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
         } catch (Exception e) {
-            Logger.error("file remove failed ", e.getMessage());
+            Logger.error("file remove failed {}", e.getMessage());
         }
         return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
@@ -128,7 +128,7 @@ public class WebDavProvider extends AbstractProvider {
             this.client.delete(getUrl(bucket + "/" + path.toString()));
             return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).errmsg(ErrorCode.SUCCESS.getDesc()).build();
         } catch (Exception e) {
-            Logger.error("file remove failed ", e.getMessage());
+            Logger.error("file remove failed {}", e.getMessage());
         }
         return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }

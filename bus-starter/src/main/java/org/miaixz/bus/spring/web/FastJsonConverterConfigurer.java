@@ -27,11 +27,11 @@
 */
 package org.miaixz.bus.spring.web;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONReader;
-import com.alibaba.fastjson2.JSONWriter;
-import com.alibaba.fastjson2.filter.Filter;
-import com.alibaba.fastjson2.filter.ValueFilter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.IoKit;
@@ -47,10 +47,11 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONReader;
+import com.alibaba.fastjson2.JSONWriter;
+import com.alibaba.fastjson2.filter.Filter;
+import com.alibaba.fastjson2.filter.ValueFilter;
 
 /**
  * Fastjson2 JSON 转换器配置器。 配置 Fastjson2 的 HttpMessageConverter，支持 autoType 自动类型识别。
@@ -59,7 +60,7 @@ import java.util.List;
  * @since Java 17+
  */
 @Component
-@ConditionalOnClass({JSON.class})
+@ConditionalOnClass({ JSON.class })
 public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
 
     private static final List<MediaType> DEFAULT_MEDIA_TYPES = List.of(MediaType.APPLICATION_JSON,
@@ -93,11 +94,11 @@ public class FastJsonConverterConfigurer implements JsonConverterConfigurer {
      * 自定义 Fastjson2 的 HttpMessageConverter，使用 JSONWriter.Feature 配置序列化， JSONReader.Feature 配置反序列化，并根据构造函数参数配置 autoType。
      */
     static class FastJson2HttpMessageConverter extends AbstractHttpMessageConverter<Object> {
-        private static final JSONWriter.Feature[] WRITER_FEATURES = {JSONWriter.Feature.FieldBased,
-                JSONWriter.Feature.WriteMapNullValue, JSONWriter.Feature.WriteNulls};
-        private static final JSONReader.Feature[] READER_FEATURES = {JSONReader.Feature.FieldBased};
-        private static final Filter[] FILTERS = {(ValueFilter) (object, name,
-                                                                value) -> value == null || Normal.EMPTY.equals(value) || Symbol.SPACE.equals(value) ? null : value};
+        private static final JSONWriter.Feature[] WRITER_FEATURES = { JSONWriter.Feature.FieldBased,
+                JSONWriter.Feature.WriteMapNullValue, JSONWriter.Feature.WriteNulls };
+        private static final JSONReader.Feature[] READER_FEATURES = { JSONReader.Feature.FieldBased };
+        private static final Filter[] FILTERS = { (ValueFilter) (object, name,
+                value) -> value == null || Normal.EMPTY.equals(value) || Symbol.SPACE.equals(value) ? null : value };
 
         private final String[] autoTypes;
 

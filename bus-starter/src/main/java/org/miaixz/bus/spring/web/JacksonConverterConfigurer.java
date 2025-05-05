@@ -27,14 +27,10 @@
 */
 package org.miaixz.bus.spring.web;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
-import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+
 import org.miaixz.bus.core.lang.Fields;
 import org.miaixz.bus.logger.Logger;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -43,9 +39,14 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 /**
  * Jackson JSON 框架的配置器，与 Spring MVC 集成。支持自定义日期格式和 Java 8/11 时间 API（LocalDateTime）。 支持 autoType 配置，限制反序列化到指定包前缀的类。
@@ -54,7 +55,7 @@ import java.util.List;
  * @since Java 17+
  */
 @Component
-@ConditionalOnClass({ObjectMapper.class})
+@ConditionalOnClass({ ObjectMapper.class })
 public class JacksonConverterConfigurer implements JsonConverterConfigurer {
 
     private String autoType;

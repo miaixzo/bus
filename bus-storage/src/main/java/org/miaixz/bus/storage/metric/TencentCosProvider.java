@@ -62,7 +62,7 @@ public class TencentCosProvider extends AbstractProvider {
 
     public TencentCosProvider(Context context) {
         this.context = context;
-        Assert.notBlank(this.context.getPrefix(), "[prefix] not defined");
+
         Assert.notBlank(this.context.getBucket(), "[bucket] not defined");
         Assert.notBlank(this.context.getAccessKey(), "[accessKey] not defined");
         Assert.notBlank(this.context.getSecretKey(), "[secretKey] not defined");
@@ -128,7 +128,7 @@ public class TencentCosProvider extends AbstractProvider {
                     .data(Material.builder().path(this.context.getPrefix() + fileName).name(fileName)).build();
 
         } catch (IOException e) {
-            Logger.error("file upload failed", e.getMessage());
+            Logger.error("file upload failed {}", e.getMessage());
         }
         return Message.builder().errcode(ErrorCode.FAILURE.getCode()).errmsg(ErrorCode.FAILURE.getDesc()).build();
     }
