@@ -27,12 +27,47 @@
 */
 package org.miaixz.bus.storage;
 
+import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.xyz.StringKit;
+
 /**
- * 框架内预定义的存储信息
- *
- * @author Kimi Liu
- * @since Java 17+
+ * 存储服务工具类
  */
 public class Builder {
+
+    /**
+     * 构建对象键，拼接前缀（如果存在）与路径和文件名。
+     *
+     * @param prefix   前缀路径
+     * @param path     路径
+     * @param fileName 文件名
+     * @return 规范化后的对象键
+     */
+    public static String buildObjectKey(String prefix, String path, String fileName) {
+        String normalizedPrefix = buildNormalizedPrefix(prefix);
+        String normalizedPath = StringKit.isBlank(path) ? Normal.EMPTY
+                : path.replaceAll("/{2,}", "/").replaceAll("^/|/$", Normal.EMPTY);
+
+        if (StringKit.isBlank(normalizedPrefix) && StringKit.isBlank(normalizedPath)) {
+            return fileName;
+        } else if (StringKit.isBlank(normalizedPrefix)) {
+            return normalizedPath + "/" + fileName;
+        } else if (StringKit.isBlank(normalizedPath)) {
+            return normalizedPrefix + "/" + fileName;
+        } else {
+            return normalizedPrefix + "/" + normalizedPath + "/" + fileName;
+        }
+    }
+
+    /**
+     * 构建规范化后的前缀路径。
+     *
+     * @param prefix 原始前缀路径
+     * @return 规范化后的前缀路径
+     */
+    public static String buildNormalizedPrefix(String prefix) {
+        return StringKit.isBlank(prefix) ? Normal.EMPTY
+                : prefix.replaceAll("/{2,}", "/").replaceAll("^/|/$", Normal.EMPTY);
+    }
 
 }

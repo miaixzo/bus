@@ -65,7 +65,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      *
      * @param bucket   存储桶名
      * @param fileName 文件名
-     * @param file     保存的本地文件路径
+     * @param file     目标路径
      * @return 处理结果 {@link Message}
      */
     Message download(String bucket, String fileName, File file);
@@ -74,7 +74,7 @@ public interface Provider extends org.miaixz.bus.core.Provider {
      * 文件下载(文件下载到本地)
      *
      * @param fileName 文件名
-     * @param file     保存的本地文件路径
+     * @param file     目标路径
      * @return 处理结果 {@link Message}
      */
     Message download(String fileName, File file);
@@ -100,41 +100,82 @@ public interface Provider extends org.miaixz.bus.core.Provider {
     /**
      * 重命名
      *
-     * @param bucket  存储桶名
+     * @param path    路径
      * @param oldName 原始名称
      * @param newName 新名称
      * @return 处理结果 {@link Message}
      */
-    Message rename(String bucket, String oldName, String newName);
+    Message rename(String path, String oldName, String newName);
 
     /**
-     * 上传文件到指定的 bucket
+     * 重命名
      *
-     * @param fileName 文件名字
-     * @param content  文件内容
+     * @param bucket  存储桶名
+     * @param path    路径
+     * @param oldName 原始名称
+     * @param newName 新名称
+     * @return 处理结果 {@link Message}
+     */
+    Message rename(String bucket, String path, String oldName, String newName);
+
+    /**
+     * 上传文件
+     *
+     * @param fileName 文件名称
+     * @param content  字节数组
      * @return 处理结果 {@link Message}
      */
     Message upload(String fileName, byte[] content);
 
     /**
-     * 上传文件到指定的 bucket
+     * 上传文件-到指定的 path
      *
-     * @param bucket   存储桶名
-     * @param fileName 文件名字
-     * @param content  文件内容
+     * @param fileName 文件名称
+     * @param content  字节数组
      * @return 处理结果 {@link Message}
      */
-    Message upload(String bucket, String fileName, InputStream content);
+    Message upload(String path, String fileName, byte[] content);
 
     /**
-     * 上传文件到指定的 bucket
+     * 上传文件-到指定的 bucket 和指定的 path
      *
      * @param bucket   存储桶名
-     * @param fileName 文件名字
+     * @param path     上传路径
+     * @param fileName 文件名称
+     * @param content  字节数组
+     * @return 处理结果 {@link Message}
+     */
+    Message upload(String bucket, String path, String fileName, byte[] content);
+
+    /**
+     * 上传文件
+     *
+     * @param fileName 文件名称
      * @param content  文件内容
      * @return 处理结果 {@link Message}
      */
-    Message upload(String bucket, String fileName, byte[] content);
+    Message upload(String fileName, InputStream content);
+
+    /**
+     * 上传文件-到指定的 path
+     *
+     * @param path     上传路径
+     * @param fileName 文件名称
+     * @param content  文件内容
+     * @return 处理结果 {@link Message}
+     */
+    Message upload(String path, String fileName, InputStream content);
+
+    /**
+     * 上传文件-到指定的 bucket 和指定的 path
+     *
+     * @param bucket   存储桶名
+     * @param path     上传路径
+     * @param fileName 文件名称
+     * @param content  文件内容
+     * @return 处理结果 {@link Message}
+     */
+    Message upload(String bucket, String path, String fileName, InputStream content);
 
     /**
      * 删除文件
@@ -147,17 +188,26 @@ public interface Provider extends org.miaixz.bus.core.Provider {
     /**
      * 删除文件
      *
-     * @param bucket   存储桶名
-     * @param fileName 文件名
+     * @param path     存储路径
+     * @param fileName 文件名称
      * @return 处理结果 {@link Message}
      */
-    Message remove(String bucket, String fileName);
+    Message remove(String path, String fileName);
+
+    /**
+     * 删除文件
+     *
+     * @param bucket   存储桶名
+     * @param fileName 文件名称
+     * @return 处理结果 {@link Message}
+     */
+    Message remove(String bucket, String path, String fileName);
 
     /**
      * 删除文件
      *
      * @param bucket 存储桶名
-     * @param path   文件路径
+     * @param path   目标路径
      * @return 处理结果 {@link Message}
      */
     Message remove(String bucket, Path path);

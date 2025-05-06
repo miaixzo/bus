@@ -9,7 +9,6 @@
     <baidu.bos.version>0.10.48</baidu.bos.version>
     <huawei.oss.version>3.0.5</huawei.oss.version>
     <jd.oss.version>1.11.136</jd.oss.version>
-    <minio.oss.version>3.0.12</minio.oss.version>
     <qiniu.oss.version>[7.2.0, 7.2.99]</qiniu.oss.version>
     <tencent.oss.version>5.5.9</tencent.oss.version>
     <upyun.oss.version>4.0.1</upyun.oss.version>
@@ -68,13 +67,6 @@
         <groupId>com.amazonaws</groupId>
         <artifactId>aws-java-sdk</artifactId>
         <version>${jd.oss.version}</version>
-        <optional>true</optional>
-    </dependency>
-    <!-- MinIO -->
-    <dependency>
-        <groupId>io.minio</groupId>
-        <artifactId>minio</artifactId>
-        <version>${minio.oss.version}</version>
         <optional>true</optional>
     </dependency>
     <!-- 七牛云 -->

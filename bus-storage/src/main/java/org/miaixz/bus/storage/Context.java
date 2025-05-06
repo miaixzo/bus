@@ -73,6 +73,10 @@ public class Context {
      */
     private boolean secure;
     /**
+     * 路径样式
+     */
+    private boolean pathStyle = true;
+    /**
      * 连接超时
      */
     private long connectTimeout;
