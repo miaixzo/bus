@@ -85,6 +85,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <lombok.version>1.18.38</lombok.version>
         <jna.version>5.17.0</jna.version>
     </properties>
 
@@ -93,6 +94,12 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>bus-setting</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>net.java.dev.jna</groupId>

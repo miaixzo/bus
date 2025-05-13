@@ -27,6 +27,8 @@
 */
 package org.miaixz.bus.base.service;
 
+import java.util.List;
+
 import org.miaixz.bus.base.entity.BaseEntity;
 import org.miaixz.bus.base.mapper.BaseMapper;
 import org.miaixz.bus.core.basic.entity.Result;
@@ -39,8 +41,6 @@ import org.miaixz.bus.mapper.entity.Condition;
 import org.miaixz.bus.pager.Page;
 import org.miaixz.bus.pager.PageContext;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 /**
  * 基于spring 实现BaseService 接口 根据业务需要如无status，creator等相关属性内容 重写此类及{@link BaseEntity} 业务类继承新类
@@ -226,7 +226,7 @@ public class DefaultService<Mapper extends BaseMapper<T>, T extends BaseEntity> 
         if (ObjectKit.isEmpty(entity)) {
             return null;
         }
-        if (StringKit.isEmpty(entity.getStatus())) {
+        if (ObjectKit.isEmpty(entity.getStatus())) {
             entity.setStatus(Consts.STATUS_ONE);
         }
         entity.setValue(entity);

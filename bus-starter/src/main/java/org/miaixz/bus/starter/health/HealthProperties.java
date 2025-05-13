@@ -25,38 +25,29 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.Initializer;
+package org.miaixz.bus.starter.health;
 
-import org.miaixz.bus.logger.Logger;
+import org.miaixz.bus.health.builtin.TID;
 import org.miaixz.bus.spring.GeniusBuilder;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.Ordered;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * 初始化器 {@link ApplicationContextInitializer}，可以使用属性来动态启用。
+ * 健康状态配置属性。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class BannerApplicationContextInitializer extends SwitchableApplicationContextInitializer {
+@Getter
+@Setter
+@ConfigurationProperties(GeniusBuilder.HEALTH)
+public class HealthProperties {
 
-    protected static final String CONFIG_KEY_PREFIX = "banner";
-
-    @Override
-    public int getOrder() {
-        return Ordered.LOWEST_PRECEDENCE - 2;
-    }
-
-    @Override
-    protected String switchKey() {
-        return CONFIG_KEY_PREFIX;
-    }
-
-    @Override
-    protected void doInitialize(ConfigurableApplicationContext context) {
-        Logger.info("The springboot " + context.getEnvironment().getProperty(GeniusBuilder.APP_NAME)
-                + " application is starting");
-    }
+    /**
+     * 返回类型。{@link TID}
+     */
+    private String type;
 
 }

@@ -44,27 +44,41 @@ import org.springframework.core.env.Environment;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class TextBanner implements Banner {
+public class TextBanner extends AbstractBanner implements Banner {
+
+    public TextBanner() {
+        super(null, null, null);
+    }
+
+    public TextBanner(Class<?> resourceClass, String resourceLocation, String defaultBanner) {
+        super(resourceClass, resourceLocation, defaultBanner);
+    }
 
     @Override
     public void printBanner(Environment environment, Class<?> sourceClass, PrintStream printStream) {
         printStream.println();
+        printStream.println(printBanner(null));
+        printStream.println();
+    }
+
+    @Override
+    protected String printBanner(String bannerText) {
+        StringBuilder builder = new StringBuilder();
         for (String line : GeniusBuilder.BUS_BANNER) {
-            printStream.println(AnsiOutput.toString(AnsiColor.BRIGHT_GREEN, line));
+            builder.append(AnsiOutput.toString(AnsiColor.BRIGHT_GREEN, line) + "\n");
         }
 
         String springVersion = GeniusBuilder.SPRING_BOOT_BANNER
                 + String.format("(v%s)", SpringBootVersion.getVersion());
         String busVersion = GeniusBuilder.BUS_BOOT_BANNER + String.format("(v%s)", Version.all());
-
         StringBuilder padding = new StringBuilder();
         while (padding.length() < 70 - (springVersion.length() + busVersion.length())) {
             padding.append(Symbol.SPACE);
         }
 
-        printStream.println(AnsiOutput.toString(AnsiColor.BRIGHT_MAGENTA, springVersion, padding.toString(),
+        builder.append(AnsiOutput.toString(AnsiColor.BRIGHT_MAGENTA, springVersion, padding.toString(),
                 AnsiColor.BRIGHT_MAGENTA, busVersion));
-        printStream.println();
+        return builder.toString();
     }
 
 }

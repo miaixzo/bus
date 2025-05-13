@@ -25,50 +25,65 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.Initializer;
+package org.miaixz.bus.http.plugin.httpz;
 
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.Ordered;
+import java.util.Map;
+
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.http.Httpd;
 
 /**
- * 初始化器 {@link ApplicationContextInitializer}，可以使用属性来动态启用。
+ * HEAD 请求参数构造器，提供链式调用接口来构建 HEAD 请求。 支持设置 URL、查询参数、请求头、标签和请求 ID。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class AbstractApplicationContextInitializer
-        implements ApplicationContextInitializer<ConfigurableApplicationContext>, Ordered {
+public class HeadBuilder extends RequestBuilder<HeadBuilder> {
 
-    @Override
-    public void initialize(ConfigurableApplicationContext applicationContext) {
-        if (isEnable(applicationContext)) {
-            doInitialize(applicationContext);
-        }
+    /**
+     * 构造函数，初始化 HeadBuilder。
+     *
+     * @param httpd Httpd 客户端
+     */
+    public HeadBuilder(Httpd httpd) {
+        super(httpd);
     }
 
     /**
-     * 初始化
+     * 构建 HEAD 请求的 RequestCall 对象。 如果存在查询参数，将其拼接至 URL。
      *
-     * @param context 上下文信息
+     * @return RequestCall 对象，用于执行请求
      */
-    protected abstract void doInitialize(ConfigurableApplicationContext context);
+    @Override
+    public RequestCall build() {
+        if (null != params) {
+            url = append(url, params); // 拼接查询参数至 URL
+        }
+        return new HeadRequest(url, tag, params, headers, id).build(httpd);
+    }
 
     /**
-     * 是否启用
+     * 将查询参数拼接至 URL。
      *
-     * @param context 上下文信息
-     * @return the true/false
+     * @param url    原始 URL
+     * @param params 查询参数
+     * @return 拼接后的 URL
      */
-    protected abstract boolean isEnable(ConfigurableApplicationContext context);
-
-    /**
-     * 指定如果未设置属性，是否应该匹配条件。默认为{@code true}。
-     *
-     * @return 如果属性缺失，则条件应该匹配
-     */
-    protected boolean matchIfMissing() {
-        return true;
+    protected String append(String url, Map<String, String> params) {
+        if (null == url || null == params || params.isEmpty()) {
+            return url; // 无参数或 URL 为空，直接返回
+        }
+        StringBuilder builder = new StringBuilder();
+        params.forEach((k, v) -> {
+            if (builder.length() == 0) {
+                builder.append(Symbol.QUESTION_MARK); // 第一个参数前加 ?
+            } else if (builder.length() > 0) {
+                builder.append(Symbol.AND); // 后续参数加 &
+            }
+            builder.append(k);
+            builder.append(Symbol.EQUAL).append(v);
+        });
+        return url + builder.toString(); // 返回拼接后的 URL
     }
 
 }

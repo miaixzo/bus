@@ -25,47 +25,85 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.spring.Initializer;
+package org.miaixz.bus.health.builtin;
 
-import org.miaixz.bus.core.lang.Assert;
-import org.miaixz.bus.core.xyz.StringKit;
-import org.springframework.context.ApplicationContextInitializer;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.Ordered;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * 初始化器 {@link ApplicationContextInitializer}，可以使用属性来动态启用。
- *
+ * 磁盘信息
+ * 
  * @author Kimi Liu
  * @since Java 17+
  */
-public abstract class SwitchableApplicationContextInitializer extends AbstractApplicationContextInitializer {
-
-    protected static final String CONFIG_KEY_PREFIX = "bus.";
-
-    @Override
-    public int getOrder() {
-        return Ordered.LOWEST_PRECEDENCE - 1;
-    }
+@Getter
+@Setter
+@Builder
+public class Disk {
+    /**
+     * 设备名称 (如 /dev/sda1)
+     */
+    private String deviceName;
 
     /**
-     * 从 bus 开始
-     *
-     * @return 开关键，不能为空。
+     * 文件系统卷名
      */
-    protected abstract String switchKey();
+    private String volumeName;
 
-    @Override
-    protected boolean isEnable(ConfigurableApplicationContext context) {
-        String switchKey = switchKey();
-        Assert.notNull(switchKey, "switch key must has text.");
-        String realKey = CONFIG_KEY_PREFIX + switchKey + ".enabled";
-        String switchText = context.getEnvironment().getProperty(realKey);
-        if (StringKit.hasText(switchText)) {
-            return Boolean.parseBoolean(switchText);
-        } else {
-            return matchIfMissing();
-        }
-    }
+    /**
+     * 卷标
+     */
+    private String label;
+
+    /**
+     * 逻辑卷名
+     */
+    private String logicalVolumeName;
+
+    /**
+     * 挂载点 (如 /mnt/data)
+     */
+    private String mountPoint;
+
+    /**
+     * 文件系统描述
+     */
+    private String description;
+
+    /**
+     * 挂载选项 (如 rw,ro)
+     */
+    private String mountOptions;
+
+    /**
+     * 文件系统类型 (如 ext4, xfs, vfat)
+     */
+    private String filesystemType;
+
+    /**
+     * UUID
+     */
+    private String uuid;
+
+    /**
+     * 总空间
+     */
+    private Long totalSpace;
+
+    /**
+     * 已用空间
+     */
+    private Long usedSpace;
+
+    /**
+     * 可用空间
+     */
+    private Long freeSpace;
+
+    /**
+     * 使用率 (usedSpace / totalSpace * 100)
+     */
+    private double usagePercent;
 
 }

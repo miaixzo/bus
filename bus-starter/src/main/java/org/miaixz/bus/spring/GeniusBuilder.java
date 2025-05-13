@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.spring;
 
+import java.io.File;
+import java.time.Duration;
+
 import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.xyz.ClassKit;
@@ -35,9 +38,6 @@ import org.springframework.boot.SpringApplicationRunListener;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.Environment;
-
-import java.io.File;
-import java.time.Duration;
 
 /**
  * 全局常量配置
@@ -77,6 +77,21 @@ public class GeniusBuilder {
      * Spring boot banner
      */
     public static final String SPRING_BOOT_BANNER = " :: Spring Boot :: ";
+
+    public static final String BUS_MODULE_FILE = "bus-module.properties";
+
+    public static final String SPRING_CONTEXT_PATH = "META-INF/spring";
+
+    public static final String DEFAULT_PROFILE_VALUE = "default";
+
+    /** module.properties keywords **/
+    public static final String SPRING_PARENT = "Spring-Parent";
+
+    public static final String MODULE_NAME = "Module-Name";
+
+    public static final String REQUIRE_MODULE = "Require-Module";
+
+    public static final String MODULE_PROFILE = "Module-Profile";
 
     /**
      * Bus config property source key
@@ -134,6 +149,16 @@ public class GeniusBuilder {
     public static final String LOGGING_PATTERN_FILE = "logging.pattern.file";
 
     /**
+     * Spring banner file
+     */
+    public static final String SPRING_BANNER_TXT = "banner.txt";
+
+    /**
+     * Spring banner location
+     */
+    public static final String SPRING_BANNER_LOCATION = "spring.banner.location";
+
+    /**
      * bus startup logging extra info
      */
     public static final String BUS_SWITCH_LISTENER_PREFIX_ = "bus.switch.listener.";
@@ -177,6 +202,11 @@ public class GeniusBuilder {
      * Bus goalie key
      */
     public static final String GOALIE = BUS + Symbol.DOT + "goalie";
+
+    /**
+     * Bus goalie key
+     */
+    public static final String HEALTH = BUS + Symbol.DOT + "health";
 
     /**
      * Bus i18n key

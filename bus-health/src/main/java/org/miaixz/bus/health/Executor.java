@@ -44,7 +44,7 @@ import org.miaixz.bus.logger.Logger;
 import com.sun.jna.Platform;
 
 /**
- * A class for executing on the command line and returning the result of execution.
+ * 用于在命令行上执行命令并返回执行结果的类。
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -52,8 +52,14 @@ import com.sun.jna.Platform;
 @ThreadSafe
 public final class Executor {
 
+    /** 默认环境变量设置，用于确保命令输出使用标准语言格式 */
     private static final String[] DEFAULT_ENV = getDefaultEnv();
 
+    /**
+     * 获取默认环境变量设置。
+     *
+     * @return Windows 系统返回 {"LANGUAGE=C"}，其他系统返回 {"LC_ALL=C"}
+     */
     private static String[] getDefaultEnv() {
         if (Platform.isWindows()) {
             return new String[] { "LANGUAGE=C" };
@@ -63,13 +69,11 @@ public final class Executor {
     }
 
     /**
-     * Executes a command on the native command line and returns the result. This is a convenience method to call
-     * {@link java.lang.Runtime#exec(String)} and capture the resulting output in a list of Strings. On Windows,
-     * built-in commands not associated with an executable program may require {@code cmd.exe /c} to be prepended to the
-     * command.
+     * 在本地命令行上执行命令并返回结果。这是一个便捷方法，用于调用 {@link java.lang.Runtime#exec(String)} 并捕获结果输出为字符串列表。在 Windows 上，
+     * 与可执行程序无关的内置命令可能需要在命令前添加 {@code cmd.exe /c}。
      *
-     * @param cmdToRun Command to run
-     * @return A list of Strings representing the result of the command, or empty string if the command failed
+     * @param cmdToRun 要运行的命令
+     * @return 表示命令结果的字符串列表，如果命令失败则返回空列表
      */
     public static List<String> runNative(String cmdToRun) {
         String[] cmd = cmdToRun.split(Symbol.SPACE);
@@ -77,29 +81,23 @@ public final class Executor {
     }
 
     /**
-     * Executes a command on the native command line and returns the result line by line. This is a convenience method
-     * to call {@link java.lang.Runtime#exec(String[])} and capture the resulting output in a list of Strings. On
-     * Windows, built-in commands not associated with an executable program may require the strings {@code cmd.exe} and
-     * {@code /c} to be prepended to the array.
+     * 在本地命令行上执行命令并逐行返回结果。这是一个便捷方法，用于调用 {@link java.lang.Runtime#exec(String[])} 并捕获结果输出为字符串列表。在 Windows 上，
+     * 与可执行程序无关的内置命令可能需要在数组前添加字符串 {@code cmd.exe} 和 {@code /c}。
      *
-     * @param cmdToRunWithArgs Command to run and args, in an array
-     * @return A list of Strings representing the result of the command, or empty string if the command failed
+     * @param cmdToRunWithArgs 要运行的命令及其参数，以数组形式
+     * @return 表示命令结果的字符串列表，如果命令失败则返回空列表
      */
     public static List<String> runNative(String[] cmdToRunWithArgs) {
         return runNative(cmdToRunWithArgs, DEFAULT_ENV);
     }
 
     /**
-     * Executes a command on the native command line and returns the result line by line. This is a convenience method
-     * to call {@link java.lang.Runtime#exec(String[])} and capture the resulting output in a list of Strings. On
-     * Windows, built-in commands not associated with an executable program may require the strings {@code cmd.exe} and
-     * {@code /c} to be prepended to the array.
+     * 在本地命令行上执行命令并逐行返回结果。这是一个便捷方法，用于调用 {@link java.lang.Runtime#exec(String[])} 并捕获结果输出为字符串列表。在 Windows 上，
+     * 与可执行程序无关的内置命令可能需要在数组前添加字符串 {@code cmd.exe} 和 {@code /c}。
      *
-     * @param cmdToRunWithArgs Command to run and args, in an array
-     * @param envp             array of strings, each element of which has environment variable settings in the format
-     *                         name=value, or null if the subprocess should inherit the environment of the current
-     *                         process.
-     * @return A list of Strings representing the result of the command, or empty string if the command failed
+     * @param cmdToRunWithArgs 要运行的命令及其参数，以数组形式
+     * @param envp             环境变量设置的字符串数组，每个元素格式为 name=value， 如果为 null，则子进程继承当前进程的环境
+     * @return 表示命令结果的字符串列表，如果命令失败则返回空列表
      */
     public static List<String> runNative(String[] cmdToRunWithArgs, String[] envp) {
         Process p = null;
@@ -109,25 +107,25 @@ public final class Executor {
         } catch (SecurityException | IOException e) {
             Logger.trace("Couldn't run command {}: {}", Arrays.toString(cmdToRunWithArgs), e.getMessage());
         } finally {
-            // Ensure all resources are released
+            // 确保所有资源被释放
             if (p != null) {
-                // Windows and Solaris don't close descriptors on destroy,
-                // so we must handle separately
+                // Windows 和 Solaris 在 destroy 时不会关闭描述符，
+                // 因此必须单独处理
                 if (Platform.isWindows() || Platform.isSolaris()) {
                     try {
                         p.getOutputStream().close();
                     } catch (IOException e) {
-                        // do nothing on failure
+                        // 失败时不做任何操作
                     }
                     try {
                         p.getInputStream().close();
                     } catch (IOException e) {
-                        // do nothing on failure
+                        // 失败时不做任何操作
                     }
                     try {
                         p.getErrorStream().close();
                     } catch (IOException e) {
-                        // do nothing on failure
+                        // 失败时不做任何操作
                     }
                 }
                 p.destroy();
@@ -136,6 +134,13 @@ public final class Executor {
         return Collections.emptyList();
     }
 
+    /**
+     * 从进程获取输出并存储为字符串列表。
+     *
+     * @param p   运行的进程
+     * @param cmd 执行的命令数组
+     * @return 进程输出的字符串列表
+     */
     private static List<String> getProcessOutput(Process p, String[] cmd) {
         ArrayList<String> sa = new ArrayList<>();
         try (BufferedReader reader = new BufferedReader(
@@ -155,21 +160,21 @@ public final class Executor {
     }
 
     /**
-     * Return first line of response for selected command.
+     * 返回指定命令的第一行响应。
      *
-     * @param cmd2launch String command to be launched
-     * @return String or empty string if command failed
+     * @param cmd2launch 要启动的命令
+     * @return 响应字符串，如果命令失败则返回空字符串
      */
     public static String getFirstAnswer(String cmd2launch) {
         return getAnswerAt(cmd2launch, 0);
     }
 
     /**
-     * Return response on selected line index (0-based) after running selected command.
+     * 返回运行指定命令后指定行索引（基于 0）的响应。
      *
-     * @param cmd2launch String command to be launched
-     * @param answerIdx  int index of line in response of the command
-     * @return String whole line in response or empty string if invalid index or running of command fails
+     * @param cmd2launch 要启动的命令
+     * @param answerIdx  命令响应中的行索引
+     * @return 响应中的整行，如果索引无效或命令运行失败则返回空字符串
      */
     public static String getAnswerAt(String cmd2launch, int answerIdx) {
         List<String> sa = Executor.runNative(cmd2launch);

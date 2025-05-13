@@ -33,6 +33,7 @@ import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.exception.NotFoundException;
 import org.miaixz.bus.health.Config;
 import org.miaixz.bus.logger.Logger;
 
@@ -62,7 +63,7 @@ public class WmiQueryHandler {
 
     static {
         if (globalTimeout == 0 || globalTimeout < -1) {
-            throw new Config.PropertyException(Config._UTIL_WMI_TIMEOUT);
+            throw new NotFoundException("The property does not exist " + Config._UTIL_WMI_TIMEOUT);
         }
     }
 

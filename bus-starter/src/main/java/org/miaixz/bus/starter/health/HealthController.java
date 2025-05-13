@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org OSHI and other contributors.               ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -25,75 +25,85 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.health.builtin;
+package org.miaixz.bus.starter.health;
 
-import java.io.Serializable;
-
-import org.miaixz.bus.core.lang.Keys;
-import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.Platform;
+import org.miaixz.bus.core.basic.spring.Controller;
+import org.springframework.web.bind.annotation.*;
 
 /**
- * 代表Java Specification的信息
+ * 健康检查
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class JavaSpec implements Serializable {
+@RestController
+public class HealthController extends Controller {
 
-    private static final long serialVersionUID = -1L;
+    public HealthProviderService service;
 
     /**
-     * 取得当前Java Spec.的名称(取自系统属性：<code>java.specification.name</code>)
+     * 构造函数，注入 HealthProviderService。
      *
-     * <p>
-     * 例如Sun JDK 1.4.2：<code>"Java Platform API Specification"</code>
-     * </p>
-     *
-     * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
+     * @param service 健康状态服务
      */
-    public final String getName() {
-        return Platform.get(Keys.JAVA_SPECIFICATION_NAME, false);
+    public HealthController(HealthProviderService service) {
+        this.service = service;
     }
 
     /**
-     * 取得当前Java Spec.的版本(取自系统属性：<code>java.specification.version</code>)
+     * 获取系统健康状态信息
      *
-     * <p>
-     * 例如Sun JDK 1.4.2：<code>"1.4"</code>
-     * </p>
-     *
-     * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
+     * @param tid 参数
+     * @return 操作结果
      */
-    public final String getVersion() {
-        return Platform.get(Keys.JAVA_SPECIFICATION_VERSION, false);
+    @ResponseBody
+    @RequestMapping(value = "/healthz", method = { RequestMethod.POST, RequestMethod.GET })
+    public Object healthz(@RequestParam(value = "tid", required = false) String tid) {
+        return write(service.healthz(tid));
     }
 
     /**
-     * 取得当前Java Spec.的厂商(取自系统属性：<code>java.specification.vendor</code>)
-     *
-     * <p>
-     * 例如Sun JDK 1.4.2：<code>"Sun Microsystems Inc."</code>
-     * </p>
-     *
-     * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
+     * 将存活状态改为 BROKEN，导致 Kubernetes 杀死并重启 pod。
+     * 
+     * @return 操作结果
      */
-    public final String getVendor() {
-        return Platform.get(Keys.JAVA_SPECIFICATION_VENDOR, false);
+    @ResponseBody
+    @RequestMapping(value = "/broken", method = { RequestMethod.POST, RequestMethod.GET })
+    public Object broken() {
+        return write(service.broken());
     }
 
     /**
-     * 将Java Specification的信息转换成字符串
-     *
-     * @return JVM spec.的字符串表示
+     * 将存活状态改为 CORRECT，表示 pod 正常运行。
+     * 
+     * @return 操作结果
      */
-    @Override
-    public final String toString() {
-        StringBuilder builder = new StringBuilder();
-        Builder.append(builder, "Java Spec. Name:    ", getName());
-        Builder.append(builder, "Java Spec. Version: ", getVersion());
-        Builder.append(builder, "Java Spec. Vendor:  ", getVendor());
-        return builder.toString();
+    @ResponseBody
+    @RequestMapping(value = "/correct", method = { RequestMethod.POST, RequestMethod.GET })
+    public Object correct() {
+        return write(service.correct());
+    }
+
+    /**
+     * 将就绪状态改为 ACCEPTING_TRAFFIC，Kubernetes 将请求转发到此 pod。
+     * 
+     * @return 操作结果
+     */
+    @ResponseBody
+    @RequestMapping(value = "/accept", method = { RequestMethod.POST, RequestMethod.GET })
+    public Object accept() {
+        return write(service.accept());
+    }
+
+    /**
+     * 将就绪状态改为 REFUSING_TRAFFIC，Kubernetes 拒绝外部请求。
+     *
+     * @return 操作结果
+     */
+    @ResponseBody
+    @RequestMapping(value = "/refuse", method = { RequestMethod.POST, RequestMethod.GET })
+    public Object refuse() {
+        return write(service.refuse());
     }
 
 }

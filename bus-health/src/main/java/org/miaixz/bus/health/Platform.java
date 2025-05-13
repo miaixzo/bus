@@ -33,7 +33,7 @@ import java.util.Properties;
 import java.util.function.Supplier;
 
 import org.miaixz.bus.core.convert.Convert;
-import org.miaixz.bus.core.lang.Normal;
+import org.miaixz.bus.core.lang.Keys;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.xyz.ObjectKit;
@@ -55,109 +55,427 @@ import org.miaixz.bus.health.windows.hardware.WindowsHardwareAbstractionLayer;
 import org.miaixz.bus.health.windows.software.WindowsOperatingSystem;
 
 /**
- * System information. This is the main entry point. This object provides getters which instantiate the appropriate
- * platform-specific implementations of {@link OperatingSystem} (software) and {@link HardwareAbstractionLayer}
- * (hardware).
+ * 系统信息主入口，提供特定平台的 {@link OperatingSystem} 和 {@link HardwareAbstractionLayer} 实现。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class Platform {
 
-    public static final OS CURRENT_PLATFORM = OS.getValue(com.sun.jna.Platform.getOSType());
+    /**
+     * 单例实例
+     */
+    public static final Platform INSTANCE = new Platform();
 
-    public static final String NOT_SUPPORTED = "Operating system not supported: ";
+    /**
+     * 不支持的操作系统错误提示消息
+     */
+    private static final String NOT_SUPPORTED = "Operating system not supported: ";
 
-    public final Supplier<OperatingSystem> os = Memoizer.memoize(Platform::createOperatingSystem);
+    /**
+     * 当前操作系统平台，使用 OS 枚举表示，通过 JNA Platform.getOSType() 初始化
+     */
+    private static final OS CURRENT_PLATFORM = OS.getValue(getOSType());
 
-    public final Supplier<HardwareAbstractionLayer> hardware = Memoizer.memoize(Platform::createHardware);
+    /**
+     * 使用 Memoizer 缓存 OperatingSystem 实例，避免重复创建，提高性能
+     */
+    private final Supplier<OperatingSystem> os = Memoizer.memoize(this::createOperatingSystem);
 
+    /**
+     * 使用 Memoizer 缓存 HardwareAbstractionLayer 实例，避免重复创建，提高性能
+     */
+    private final Supplier<HardwareAbstractionLayer> hardware = Memoizer.memoize(this::createHardware);
+
+    /**
+     * 私有构造函数，防止外部实例化
+     */
+    private Platform() {
+    }
+
+    /**
+     * 获取当前操作系统类型
+     *
+     * @return JNA 平台类型常量
+     */
     public static int getOSType() {
         return com.sun.jna.Platform.getOSType();
     }
 
+    /**
+     * 判断是否为 macOS
+     *
+     * @return true 如果是 macOS
+     */
     public static boolean isMac() {
         return com.sun.jna.Platform.isMac();
     }
 
+    /**
+     * 判断是否为 Android
+     *
+     * @return true 如果是 Android
+     */
     public static boolean isAndroid() {
         return com.sun.jna.Platform.isAndroid();
     }
 
+    /**
+     * 判断是否为 Linux
+     *
+     * @return true 如果是 Linux
+     */
     public static boolean isLinux() {
         return com.sun.jna.Platform.isLinux();
     }
 
+    /**
+     * 判断是否为 AIX
+     *
+     * @return true 如果是 AIX
+     */
     public static boolean isAIX() {
         return com.sun.jna.Platform.isAIX();
     }
 
+    /**
+     * 判断是否为 Windows CE
+     *
+     * @return true 如果是 Windows CE
+     */
     public static boolean isWindowsCE() {
         return com.sun.jna.Platform.isWindowsCE();
     }
 
+    /**
+     * 判断是否为 Windows
+     *
+     * @return true 如果是 Windows
+     */
     public static boolean isWindows() {
         return com.sun.jna.Platform.isWindows();
     }
 
+    /**
+     * 判断是否为 Solaris
+     *
+     * @return true 如果是 Solaris
+     */
     public static boolean isSolaris() {
         return com.sun.jna.Platform.isSolaris();
     }
 
+    /**
+     * 判断是否为 FreeBSD
+     *
+     * @return true 如果是 FreeBSD
+     */
     public static boolean isFreeBSD() {
         return com.sun.jna.Platform.isFreeBSD();
     }
 
+    /**
+     * 判断是否为 OpenBSD
+     *
+     * @return true 如果是 OpenBSD
+     */
     public static boolean isOpenBSD() {
         return com.sun.jna.Platform.isOpenBSD();
     }
 
+    /**
+     * 判断是否为 NetBSD
+     *
+     * @return true 如果是 NetBSD
+     */
     public static boolean isNetBSD() {
         return com.sun.jna.Platform.isNetBSD();
     }
 
+    /**
+     * 判断是否为 GNU
+     *
+     * @return true 如果是 GNU
+     */
     public static boolean isGNU() {
         return com.sun.jna.Platform.isGNU();
     }
 
-    public static boolean iskFreeBSD() {
+    /**
+     * 判断是否为 kFreeBSD
+     *
+     * @return true 如果是 kFreeBSD
+     */
+    public static boolean isKFreeBSD() {
         return com.sun.jna.Platform.iskFreeBSD();
     }
 
+    /**
+     * 判断是否支持 X11
+     *
+     * @return true 如果支持 X11
+     */
     public static boolean isX11() {
         return com.sun.jna.Platform.isX11();
     }
 
+    /**
+     * 判断是否支持运行时执行
+     *
+     * @return true 如果支持
+     */
     public static boolean hasRuntimeExec() {
         return com.sun.jna.Platform.hasRuntimeExec();
     }
 
+    /**
+     * 判断是否为 64 位平台
+     *
+     * @return true 如果是 64 位
+     */
     public static boolean is64Bit() {
         return com.sun.jna.Platform.is64Bit();
     }
 
+    /**
+     * 判断 CPU 是否为 Intel
+     *
+     * @return true 如果是 Intel
+     */
     public static boolean isIntel() {
         return com.sun.jna.Platform.isIntel();
     }
 
+    /**
+     * 判断 CPU 是否为 PowerPC
+     *
+     * @return true 如果是 PowerPC
+     */
     public static boolean isPPC() {
         return com.sun.jna.Platform.isPPC();
     }
 
+    /**
+     * 判断 CPU 是否为 ARM
+     *
+     * @return true 如果是 ARM
+     */
     public static boolean isARM() {
         return com.sun.jna.Platform.isARM();
     }
 
+    /**
+     * 判断 CPU 是否为 SPARC
+     *
+     * @return true 如果是 SPARC
+     */
     public static boolean isSPARC() {
         return com.sun.jna.Platform.isSPARC();
     }
 
+    /**
+     * 判断 CPU 是否为 MIPS
+     *
+     * @return true 如果是 MIPS
+     */
     public static boolean isMIPS() {
         return com.sun.jna.Platform.isMIPS();
     }
 
     /**
-     * 根据当前操作系统类型/arch/名称生成一个规范的字符串前缀
+     * 获取系统属性，失败时返回默认值。
+     *
+     * @param name         属性名
+     * @param defaultValue 默认值
+     * @return 属性值或默认值
+     */
+    public static String get(String name, String defaultValue) {
+        return ObjectKit.defaultIfNull(get(name, false), defaultValue);
+    }
+
+    /**
+     * 样属性，失败时返回 null。
+     *
+     * @param name  属性名
+     * @param quiet 是否静默模式（不打印错误）
+     * @return 属性值或 null
+     */
+    public static String get(String name, boolean quiet) {
+        try {
+            return System.getProperty(name);
+        } catch (SecurityException e) {
+            if (!quiet) {
+                throw new InternalException("Failed to retrieve system property: " + name + " {}", e.getMessage());
+            }
+            return null;
+        }
+    }
+
+    /**
+     * 获取系统属性，失败时返回 null。
+     *
+     * @param key 键
+     * @return 属性值或 null
+     */
+    public static String get(String key) {
+        return get(key, null);
+    }
+
+    /**
+     * 获取布尔类型系统属性
+     *
+     * @param key          键
+     * @param defaultValue 默认值
+     * @return 布尔值
+     */
+    public static boolean getBoolean(String key, boolean defaultValue) {
+        String value = get(key);
+        if (value == null) {
+            return defaultValue;
+        }
+        value = value.trim().toLowerCase();
+        if (value.isEmpty()) {
+            return true;
+        }
+        return switch (value) {
+        case "true", "yes", Symbol.ONE -> true;
+        case "false", "no", Symbol.ZERO -> false;
+        default -> defaultValue;
+        };
+    }
+
+    /**
+     * 获取整型系统属性
+     *
+     * @param key          键
+     * @param defaultValue 默认值
+     * @return 整型值
+     */
+    public static int getInt(String key, int defaultValue) {
+        return Convert.toInt(get(key), defaultValue);
+    }
+
+    /**
+     * 获取长整型系统属性
+     *
+     * @param key          键
+     * @param defaultValue 默认值
+     * @return 长整型值
+     */
+    public static long getLong(String key, long defaultValue) {
+        return Convert.toLong(get(key), defaultValue);
+    }
+
+    /**
+     * 获取所有系统属性
+     *
+     * @return 系样属性列表
+     */
+    public static Properties props() {
+        return Keys.getProps();
+    }
+
+    /**
+     * 获取当前进程 PID
+     *
+     * @return 进程 ID
+     */
+    public static long getCurrentPID() {
+        return Long.parseLong(getRuntimeMXBean().getName().split(Symbol.AT)[0]);
+    }
+
+    /**
+     * 获取类加载系统属性
+     *
+     * @return 类加载 MXBean
+     */
+    public static ClassLoadingMXBean getClassLoadingMXBean() {
+        return ManagementFactory.getClassLoadingMXBean();
+    }
+
+    /**
+     * 获取内存系统属性
+     *
+     * @return 内存 MXBean
+     */
+    public static MemoryMXBean getMemoryMXBean() {
+        return ManagementFactory.getMemoryMXBean();
+    }
+
+    /**
+     * 获取线程系统属性
+     *
+     * @return 线程 MXBean
+     */
+    public static ThreadMXBean getThreadMXBean() {
+        return ManagementFactory.getThreadMXBean();
+    }
+
+    /**
+     * 获取运行时系统属性
+     *
+     * @return 运行时 MXBean
+     */
+    public static RuntimeMXBean getRuntimeMXBean() {
+        return ManagementFactory.getRuntimeMXBean();
+    }
+
+    /**
+     * 获取编译系统属性，可能返回 null。
+     *
+     * @return 编译 MXBean 或 null
+     */
+    public static CompilationMXBean getCompilationMXBean() {
+        return ManagementFactory.getCompilationMXBean();
+    }
+
+    /**
+     * 获取操作系统相关属性
+     *
+     * @return 操作系统 MXBean
+     */
+    public static OperatingSystemMXBean getOperatingSystemMXBean() {
+        return ManagementFactory.getOperatingSystemMXBean();
+    }
+
+    /**
+     * 获取内存池列表
+     *
+     * @return 内存池 MXBean 列表
+     */
+    public static List<MemoryPoolMXBean> getMemoryPoolMXBeans() {
+        return ManagementFactory.getMemoryPoolMXBeans();
+    }
+
+    /**
+     * 获取内存管理器列表
+     *
+     * @return 内存管理器 MXBean 列表
+     */
+    public static List<MemoryManagerMXBean> getMemoryManagerMXBeans() {
+        return ManagementFactory.getMemoryManagerMXBeans();
+    }
+
+    /**
+     * 获取垃圾回收器列表
+     *
+     * @return 垃圾回收器 MXBean 列表
+     */
+    public static List<GarbageCollectorMXBean> getGarbageCollectorMXBeans() {
+        return ManagementFactory.getGarbageCollectorMXBeans();
+    }
+
+    /**
+     * 获取当前平台的 OS 枚举值
+     *
+     * @return 当前平台
+     */
+    public static OS getCurrentPlatform() {
+        return CURRENT_PLATFORM;
+    }
+
+    /**
+     * 根据当前操作系统生成本地库资源路径前缀
      *
      * @return 路径前缀
      */
@@ -167,272 +485,61 @@ public class Platform {
     }
 
     /**
-     * 根据给定的操作系统类型/arch/名称生成一个规范的字符串前缀。
+     * 根据操作系统类型、架构和名称生成本地库资源路径前缀
      *
-     * @param osType 从 {@link #getOSType()} 获取
-     * @param arch   从 <code>os.arch</code> 获取系统属性
-     * @param name   从 <code>os.name</code> 获取系统属性
-     * @return the path prefix
+     * @param osType 操作系统类型（JNA Platform.getOSType()）
+     * @param arch   系统架构（os.arch）
+     * @param name   系统名称（os.name）
+     * @return 路径前缀
      */
     public static String getNativeLibraryResourcePrefix(int osType, String arch, String name) {
-        String osPrefix;
+        // 规范化架构名称
         arch = arch.toLowerCase().trim();
-        if ("powerpc".equals(arch)) {
-            arch = "ppc";
-        } else if ("powerpc64".equals(arch)) {
-            arch = "ppc64";
-        } else if ("i386".equals(arch)) {
-            arch = "x86";
-        } else if ("x86_64".equals(arch) || "amd64".equals(arch)) {
-            arch = "x86_64";
-        }
+        arch = switch (arch) {
+        case "powerpc" -> "ppc";
+        case "powerpc64" -> "ppc64";
+        case "i386" -> "x86";
+        case "x86_64", "amd64" -> "x86_64";
+        default -> arch;
+        };
+
+        // 根据操作系统类型生成前缀
         switch (osType) {
         case com.sun.jna.Platform.ANDROID:
-            if (arch.startsWith("arm")) {
-                arch = "arm";
-            }
-            osPrefix = "android-" + arch;
-            break;
+            return "android-" + (arch.startsWith("arm") ? "arm" : arch);
         case com.sun.jna.Platform.WINDOWS:
-            osPrefix = "win32-" + arch;
-            break;
+            return "win32-" + arch;
         case com.sun.jna.Platform.WINDOWSCE:
-            osPrefix = "w32ce-" + arch;
-            break;
+            return "w32ce-" + arch;
         case com.sun.jna.Platform.MAC:
-            osPrefix = "macos-" + arch;
-            break;
+            return "macos-" + arch;
         case com.sun.jna.Platform.LINUX:
-            osPrefix = "linux-" + arch;
-            break;
+            return "linux-" + arch;
         case com.sun.jna.Platform.SOLARIS:
-            osPrefix = "sunos-" + arch;
-            break;
+            return "sunos-" + arch;
         case com.sun.jna.Platform.FREEBSD:
-            osPrefix = "freebsd-" + arch;
-            break;
+            return "freebsd-" + arch;
         case com.sun.jna.Platform.OPENBSD:
-            osPrefix = "openbsd-" + arch;
-            break;
+            return "openbsd-" + arch;
         case com.sun.jna.Platform.NETBSD:
-            osPrefix = "netbsd-" + arch;
-            break;
+            return "netbsd-" + arch;
         case com.sun.jna.Platform.KFREEBSD:
-            osPrefix = "kfreebsd-" + arch;
-            break;
+            return "kfreebsd-" + arch;
         case com.sun.jna.Platform.AIX:
-            osPrefix = "aix-" + arch;
-            break;
+            return "aix-" + arch;
         default:
-            osPrefix = name.toLowerCase();
-            int space = osPrefix.indexOf(Symbol.SPACE);
-            if (space != Normal.__1) {
-                osPrefix = osPrefix.substring(0, space);
-            }
-            osPrefix += Symbol.MINUS + arch;
-            break;
-        }
-        return osPrefix;
-    }
-
-    /**
-     * 取得系统属性,如果因为Java安全的限制而失败,则将错误打在Log中,然后返回 <code>null</code>
-     *
-     * @param name         属性名
-     * @param defaultValue 默认值
-     * @return 属性值或<code>null</code>
-     */
-    public static String get(String name, String defaultValue) {
-        return ObjectKit.defaultIfNull(get(name, false), defaultValue);
-    }
-
-    /**
-     * 取得系统属性,如果因为Java安全的限制而失败,则将错误打在Log中,然后返回 <code>null</code>
-     *
-     * @param name  属性名
-     * @param quiet 安静模式,不将出错信息打在<code>System.err</code>中
-     * @return 属性值或<code>null</code>
-     */
-    public static String get(String name, boolean quiet) {
-        try {
-            return System.getProperty(name);
-        } catch (SecurityException e) {
-            throw new InternalException(e);
+            String osPrefix = name.toLowerCase().split(" ")[0];
+            return osPrefix + Symbol.MINUS + arch;
         }
     }
 
     /**
-     * 获得System属性(调用System.getProperty)
+     * 创建特定平台的操作系统实例
      *
-     * @param key 键
-     * @return 属性值
+     * @return 操作系统实例
+     * @throws UnsupportedOperationException 如果平台不受支持
      */
-    public static String get(String key) {
-        return get(key, null);
-    }
-
-    /**
-     * 获得boolean类型值
-     *
-     * @param key          键
-     * @param defaultValue 默认值
-     * @return 值
-     */
-    public static boolean getBoolean(String key, boolean defaultValue) {
-        String value = get(key);
-        if (null == value) {
-            return defaultValue;
-        }
-
-        value = value.trim().toLowerCase();
-        if (value.isEmpty()) {
-            return true;
-        }
-
-        if ("true".equals(value) || "yes".equals(value) || Symbol.ONE.equals(value)) {
-            return true;
-        }
-
-        if ("false".equals(value) || "no".equals(value) || Symbol.ZERO.equals(value)) {
-            return false;
-        }
-
-        return defaultValue;
-    }
-
-    /**
-     * 获得int类型值
-     *
-     * @param key          键
-     * @param defaultValue 默认值
-     * @return 值
-     */
-    public static long getInt(String key, int defaultValue) {
-        return Convert.toInt(get(key), defaultValue);
-    }
-
-    /**
-     * 获得long类型值
-     *
-     * @param key          键
-     * @param defaultValue 默认值
-     * @return 值
-     */
-    public static long getLong(String key, long defaultValue) {
-        return Convert.toLong(get(key), defaultValue);
-    }
-
-    /**
-     * @return 属性列表
-     */
-    public static Properties props() {
-        return System.getProperties();
-    }
-
-    /**
-     * 获取当前进程 PID
-     *
-     * @return 当前进程 ID
-     */
-    public static long getCurrentPID() {
-        return Long.parseLong(getRuntimeMXBean().getName().split(Symbol.AT)[0]);
-    }
-
-    /**
-     * 返回Java虚拟机类加载系统相关属性
-     *
-     * @return {@link ClassLoadingMXBean}
-     */
-    public static ClassLoadingMXBean getClassLoadingMXBean() {
-        return ManagementFactory.getClassLoadingMXBean();
-    }
-
-    /**
-     * 返回Java虚拟机内存系统相关属性
-     *
-     * @return {@link MemoryMXBean}
-     */
-    public static MemoryMXBean getMemoryMXBean() {
-        return ManagementFactory.getMemoryMXBean();
-    }
-
-    /**
-     * 返回Java虚拟机线程系统相关属性
-     *
-     * @return {@link ThreadMXBean}
-     */
-    public static ThreadMXBean getThreadMXBean() {
-        return ManagementFactory.getThreadMXBean();
-    }
-
-    /**
-     * 返回Java虚拟机运行时系统相关属性
-     *
-     * @return {@link RuntimeMXBean}
-     */
-    public static RuntimeMXBean getRuntimeMXBean() {
-        return ManagementFactory.getRuntimeMXBean();
-    }
-
-    /**
-     * 返回Java虚拟机编译系统相关属性 如果没有编译系统,则返回<code>null</code>
-     *
-     * @return a {@link CompilationMXBean} ,如果没有编译系统,则返回<code>null</code>
-     */
-    public static CompilationMXBean getCompilationMXBean() {
-        return ManagementFactory.getCompilationMXBean();
-    }
-
-    /**
-     * 返回Java虚拟机运行下的操作系统相关信息属性
-     *
-     * @return {@link OperatingSystemMXBean}
-     */
-    public static OperatingSystemMXBean getOperatingSystemMXBean() {
-        return ManagementFactory.getOperatingSystemMXBean();
-    }
-
-    /**
-     * Returns a list of {@link MemoryPoolMXBean} objects in the Java virtual machine. The Java virtual machine can have
-     * first or more memory pools. It may add or remove memory pools during execution.
-     *
-     * @return a list of MemoryPoolMXBean objects.
-     */
-    public static List<MemoryPoolMXBean> getMemoryPoolMXBeans() {
-        return ManagementFactory.getMemoryPoolMXBeans();
-    }
-
-    /**
-     * Returns a list of {@link MemoryManagerMXBean} objects in the Java virtual machine. The Java virtual machine can
-     * have first or more memory managers. It may add or remove memory managers during execution.
-     *
-     * @return a list of MemoryManagerMXBean objects.
-     */
-    public static List<MemoryManagerMXBean> getMemoryManagerMXBeans() {
-        return ManagementFactory.getMemoryManagerMXBeans();
-    }
-
-    /**
-     * Returns a list of {@link GarbageCollectorMXBean} objects in the Java virtual machine. The Java virtual machine
-     * may have first or more GarbageCollectorMXBean objects. It may add or remove GarbageCollectorMXBean during
-     * execution.
-     *
-     * @return a list of GarbageCollectorMXBean objects.
-     */
-    public static List<GarbageCollectorMXBean> getGarbageCollectorMXBeans() {
-        return ManagementFactory.getGarbageCollectorMXBeans();
-    }
-
-    /**
-     * Gets the {@link OS} value representing this system.
-     *
-     * @return Returns the current platform
-     */
-    public static OS getCurrentPlatform() {
-        return CURRENT_PLATFORM;
-    }
-
-    private static OperatingSystem createOperatingSystem() {
+    private OperatingSystem createOperatingSystem() {
         switch (CURRENT_PLATFORM) {
         case WINDOWS:
             return new WindowsOperatingSystem();
@@ -454,7 +561,13 @@ public class Platform {
         }
     }
 
-    private static HardwareAbstractionLayer createHardware() {
+    /**
+     * 创建特定平台的硬件抽象层实例
+     *
+     * @return 硬件抽象层实例
+     * @throws UnsupportedOperationException 如果平台不受支持
+     */
+    private HardwareAbstractionLayer createHardware() {
         switch (CURRENT_PLATFORM) {
         case WINDOWS:
             return new WindowsHardwareAbstractionLayer();
@@ -477,26 +590,25 @@ public class Platform {
     }
 
     /**
-     * Creates a new instance of the appropriate platform-specific {@link OperatingSystem}.
+     * 获取特定平台的操作系统实例
      *
-     * @return A new instance of {@link OperatingSystem}.
+     * @return 操作系统实例
      */
     public OperatingSystem getOperatingSystem() {
         return os.get();
     }
 
     /**
-     * Creates a new instance of the appropriate platform-specific {@link HardwareAbstractionLayer}.
+     * 获取特定平台的硬件抽象层实例
      *
-     * @return A new instance of {@link HardwareAbstractionLayer}.
+     * @return 硬件抽象层实例
      */
     public HardwareAbstractionLayer getHardware() {
         return hardware.get();
     }
 
     /**
-     * An enumeration of supported operating systems. The order of declaration matches the osType constants in the JNA
-     * Platform class.
+     * 支持的操作系统枚举，与 JNA 平台类型常量顺序一致。
      */
     public enum OS {
 
@@ -553,27 +665,17 @@ public class Platform {
          */
         UNKNOWN("Unknown");
 
-        public final String name;
+        private final String name;
 
         OS(String name) {
             this.name = name;
         }
 
         /**
-         * Gets the friendly name of the specified JNA Platform type
+         * 根据 JNA 平台类型获取 OS 枚举值
          *
-         * @param osType The constant returned from JNA's {@link com.sun.jna.Platform#getOSType()} method.
-         * @return the friendly name of the specified JNA Platform type
-         */
-        public static String getName(int osType) {
-            return getValue(osType).getName();
-        }
-
-        /**
-         * Gets the value corresponding to the specified JNA Platform type
-         *
-         * @param osType The constant returned from JNA's {@link com.sun.jna.Platform#getOSType()} method.
-         * @return the value corresponding to the specified JNA Platform type
+         * @param osType JNA Platform.getOSType() 返回值
+         * @return 对应的 OS 枚举值
          */
         public static OS getValue(int osType) {
             if (osType < 0 || osType >= UNKNOWN.ordinal()) {
@@ -583,14 +685,23 @@ public class Platform {
         }
 
         /**
-         * Gets the friendly name of the platform
+         * 根据 JNA 平台类型获取平台名称
          *
-         * @return the friendly name of the platform
+         * @param osType JNA Platform.getOSType() 返回值
+         * @return 平台名称
          */
-        public String getName() {
-            return this.name;
+        public static String getName(int osType) {
+            return getValue(osType).getName();
         }
 
+        /**
+         * 获取操作系统平台名称。
+         *
+         * @return 平台名称
+         */
+        public String getName() {
+            return name;
+        }
     }
 
 }

@@ -37,26 +37,73 @@ import org.miaixz.bus.core.io.source.BufferSource;
 import org.miaixz.bus.core.lang.Normal;
 
 /**
- * 兼容的WebSocket框架阅读器. 这个类不是线程安全的
+ * WebSocket 协议帧读取器
+ * <p>
+ * 用于从 WebSocket 数据源读取和解析协议帧，支持控制帧（如 ping、pong、close）和消息帧（文本或二进制）。 此类非线程安全，需在单一线程中操作。
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class WebSocketReader {
 
+    /**
+     * 是否为客户端
+     */
     final boolean isClient;
+    /**
+     * 数据源
+     */
     final BufferSource source;
+    /**
+     * 帧回调接口
+     */
     final FrameCallback frameCallback;
+    /**
+     * 控制帧缓冲区
+     */
     private final Buffer controlFrameBuffer = new Buffer();
+    /**
+     * 消息帧缓冲区
+     */
     private final Buffer messageFrameBuffer = new Buffer();
+    /**
+     * 掩码密钥
+     */
     private final byte[] maskKey;
+    /**
+     * 掩码游标
+     */
     private final Buffer.UnsafeCursor maskCursor;
+    /**
+     * 是否已关闭
+     */
     boolean closed;
+    /**
+     * 操作码
+     */
     int opcode;
+    /**
+     * 帧长度
+     */
     long frameLength;
+    /**
+     * 是否为最终帧
+     */
     boolean isFinalFrame;
+    /**
+     * 是否为控制帧
+     */
     boolean isControlFrame;
 
+    /**
+     * 构造函数，初始化 WebSocketReader 实例
+     *
+     * @param isClient      是否为客户端
+     * @param source        数据源
+     * @param frameCallback 帧回调接口
+     * @throws NullPointerException 如果 source 或 frameCallback 为 null
+     */
     WebSocketReader(boolean isClient, BufferSource source, FrameCallback frameCallback) {
         if (source == null)
             throw new NullPointerException("source == null");
@@ -72,14 +119,12 @@ public class WebSocketReader {
     }
 
     /**
-     * Process the next protocol frame.
+     * 处理下一个协议帧
+     * <p>
+     * 对于控制帧，调用一次 {@link FrameCallback} 方法。 对于消息帧，调用 {@link FrameCallback#onReadMessage}，可能包含多个帧的连续消息。 控制帧可能在消息帧之间交错处理。
+     * </p>
      *
-     * <ul>
-     * <li>If it is a control frame this will result in a single call to {@link FrameCallback}.
-     * <li>If it is a message frame this will result in a single call to {@link FrameCallback#onReadMessage}. If the
-     * message spans multiple frames, each interleaved control frame will result in a corresponding call to
-     * {@link FrameCallback}.
-     * </ul>
+     * @throws IOException 如果读取或解析失败
      */
     void processNextFrame() throws IOException {
         readHeader();
@@ -90,6 +135,11 @@ public class WebSocketReader {
         }
     }
 
+    /**
+     * 读取帧头
+     *
+     * @throws IOException 如果读取失败或帧头格式无效
+     */
     private void readHeader() throws IOException {
         if (closed)
             throw new IOException("closed");
@@ -152,6 +202,11 @@ public class WebSocketReader {
         }
     }
 
+    /**
+     * 读取控制帧
+     *
+     * @throws IOException 如果读取失败或控制帧格式无效
+     */
     private void readControlFrame() throws IOException {
         if (frameLength > 0) {
             source.readFully(controlFrameBuffer, frameLength);
@@ -193,6 +248,11 @@ public class WebSocketReader {
         }
     }
 
+    /**
+     * 读取消息帧
+     *
+     * @throws IOException 如果读取失败或操作码无效
+     */
     private void readMessageFrame() throws IOException {
         int opcode = this.opcode;
         if (opcode != WebSocketProtocol.OPCODE_TEXT && opcode != WebSocketProtocol.OPCODE_BINARY) {
@@ -209,7 +269,9 @@ public class WebSocketReader {
     }
 
     /**
-     * Read headers and process any control frames until we reach a non-control frame.
+     * 读取直到非控制帧
+     *
+     * @throws IOException 如果读取失败
      */
     private void readUntilNonControlFrame() throws IOException {
         while (!closed) {
@@ -222,8 +284,12 @@ public class WebSocketReader {
     }
 
     /**
-     * Reads a message body into across one or more frames. Control frames that occur between fragments will be
-     * processed. If the message payload is masked this will unmask as it's being processed.
+     * 读取消息体
+     * <p>
+     * 跨多个帧读取消息体，处理交错的控制帧并解码掩码数据。
+     * </p>
+     *
+     * @throws IOException 如果读取失败或帧格式无效
      */
     private void readMessage() throws IOException {
         while (true) {
@@ -251,16 +317,47 @@ public class WebSocketReader {
         }
     }
 
+    /**
+     * WebSocket 帧回调接口
+     */
     public interface FrameCallback {
 
+        /**
+         * 接收文本消息
+         *
+         * @param text 文本内容
+         * @throws IOException 如果处理失败
+         */
         void onReadMessage(String text) throws IOException;
 
+        /**
+         * 接收二进制消息
+         *
+         * @param bytes 二进制内容
+         * @throws IOException 如果处理失败
+         */
         void onReadMessage(ByteString bytes) throws IOException;
 
+        /**
+         * 接收 ping 帧
+         *
+         * @param buffer ping 数据
+         */
         void onReadPing(ByteString buffer);
 
+        /**
+         * 接收 pong 帧
+         *
+         * @param buffer pong 数据
+         */
         void onReadPong(ByteString buffer);
 
+        /**
+         * 接收 close 帧
+         *
+         * @param code   关闭代码
+         * @param reason 关闭原因
+         */
         void onReadClose(int code, String reason);
     }
 

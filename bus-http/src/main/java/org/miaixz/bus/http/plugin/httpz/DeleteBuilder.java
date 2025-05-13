@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org OSHI and other contributors.               ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -25,78 +25,65 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.health.builtin;
+package org.miaixz.bus.http.plugin.httpz;
 
-import java.io.Serializable;
+import java.util.Map;
 
-import org.miaixz.bus.core.xyz.FileKit;
-import org.miaixz.bus.health.Builder;
+import org.miaixz.bus.core.lang.Symbol;
+import org.miaixz.bus.http.Httpd;
 
 /**
- * 运行时信息，包括内存总大小、已用大小、可用大小等
+ * DELETE 请求参数构造器，提供链式调用接口来构建 DELETE 请求。 支持设置 URL、查询参数、请求头、标签和请求 ID。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class JvmRuntime implements Serializable {
-
-    private static final long serialVersionUID = -1L;
-
-    private final Runtime currentRuntime = Runtime.getRuntime();
+public class DeleteBuilder extends RequestBuilder<DeleteBuilder> {
 
     /**
-     * 获得运行时对象
+     * 构造函数，初始化 DeleteBuilder。
      *
-     * @return {@link Runtime}
+     * @param httpd Httpd 客户端
      */
-    public final Runtime getRuntime() {
-        return currentRuntime;
+    public DeleteBuilder(Httpd httpd) {
+        super(httpd);
     }
 
     /**
-     * 获得JVM最大内存
+     * 构建 DELETE 请求的 RequestCall 对象。 如果存在查询参数，将其拼接至 URL。
      *
-     * @return 最大内存
+     * @return RequestCall 对象，用于执行请求
      */
-    public final long getMaxMemory() {
-        return currentRuntime.maxMemory();
-    }
-
-    /**
-     * 获得JVM已分配内存
-     *
-     * @return 已分配内存
-     */
-    public final long getTotalMemory() {
-        return currentRuntime.totalMemory();
-    }
-
-    /**
-     * 获得JVM已分配内存中的剩余空间
-     *
-     * @return 已分配内存中的剩余空间
-     */
-    public final long getFreeMemory() {
-        return currentRuntime.freeMemory();
-    }
-
-    /**
-     * 获得JVM最大可用内存
-     *
-     * @return 最大可用内存
-     */
-    public final long getUsableMemory() {
-        return currentRuntime.maxMemory() - currentRuntime.totalMemory() + currentRuntime.freeMemory();
-    }
-
     @Override
-    public String toString() {
+    public RequestCall build() {
+        if (null != params) {
+            url = append(url, params); // 拼接查询参数至 URL
+        }
+        return new DeleteRequest(url, tag, params, headers, id).build(httpd);
+    }
+
+    /**
+     * 将查询参数拼接至 URL。
+     *
+     * @param url    原始 URL
+     * @param params 查询参数
+     * @return 拼接后的 URL
+     */
+    protected String append(String url, Map<String, String> params) {
+        if (null == url || null == params || params.isEmpty()) {
+            return url; // 无参数或 URL 为空，直接返回
+        }
         StringBuilder builder = new StringBuilder();
-        Builder.append(builder, "Max Memory:    ", FileKit.readableFileSize(getMaxMemory()));
-        Builder.append(builder, "Total Memory:     ", FileKit.readableFileSize(getTotalMemory()));
-        Builder.append(builder, "Free Memory:     ", FileKit.readableFileSize(getFreeMemory()));
-        Builder.append(builder, "Usable Memory:     ", FileKit.readableFileSize(getUsableMemory()));
-        return builder.toString();
+        params.forEach((k, v) -> {
+            if (builder.length() == 0) {
+                builder.append(Symbol.QUESTION_MARK); // 第一个参数前加 ?
+            } else if (builder.length() > 0) {
+                builder.append(Symbol.AND); // 后续参数加 &
+            }
+            builder.append(k);
+            builder.append(Symbol.EQUAL).append(v);
+        });
+        return url + builder.toString(); // 返回拼接后的 URL
     }
 
 }

@@ -32,7 +32,7 @@ import java.util.Locale;
 import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.annotation.Immutable;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
-import org.miaixz.bus.health.Builder;
+import org.miaixz.bus.core.xyz.ThreadKit;
 import org.miaixz.bus.health.Formats;
 import org.miaixz.bus.health.Parsing;
 import org.miaixz.bus.health.builtin.jna.ByRef.CloseableLONGLONGByReference;
@@ -78,7 +78,7 @@ public final class PerfDataKit {
             int retries = 0;
             while (ret == PdhMsg.PDH_NO_DATA && retries++ < 3) {
                 // Exponential fallback.
-                Builder.sleep(1L << retries);
+                ThreadKit.sleep(1L << retries);
                 ret = IS_VISTA_OR_GREATER ? PDH.PdhCollectQueryDataWithTime(query.getValue(), pllTimeStamp)
                         : PDH.PdhCollectQueryData(query.getValue());
             }

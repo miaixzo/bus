@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org OSHI and other contributors.               ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -25,77 +25,53 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.health.builtin;
+package org.miaixz.bus.http.plugin.httpz;
 
-import java.io.Serializable;
+import java.util.Map;
 
-import org.miaixz.bus.core.lang.Keys;
-import org.miaixz.bus.health.Builder;
-import org.miaixz.bus.health.Platform;
+import org.miaixz.bus.http.Request;
+import org.miaixz.bus.http.bodys.RequestBody;
 
 /**
- * 代表Java Virutal Machine Specification的信息
+ * HEAD 请求处理类，封装 HEAD 请求的参数和配置。 HEAD 请求用于获取资源的元数据，不包含响应体。
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class JvmSpec implements Serializable {
-
-    private static final long serialVersionUID = -1L;
+public class HeadRequest extends HttpRequest {
 
     /**
-     * 取得当前JVM spec.的名称(取自系统属性：<code>java.vm.specification.name</code>)
+     * 构造函数，初始化 HEAD 请求的参数。
      *
-     * <p>
-     * 例如Sun JDK 1.4.2：<code>"Java Virtual Machine Specification"</code>
-     * </p>
-     *
-     * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
+     * @param url     请求的 URL
+     * @param tag     请求的标签，用于取消请求
+     * @param params  查询参数
+     * @param headers 请求头
+     * @param id      请求的唯一标识
      */
-    public final String getName() {
-        return Platform.get(Keys.JAVA_VM_SPECIFICATION_NAME, false);
+    public HeadRequest(String url, Object tag, Map<String, String> params, Map<String, String> headers, String id) {
+        super(url, tag, params, headers, null, null, null, id);
     }
 
     /**
-     * 取得当前JVM spec.的版本(取自系统属性：<code>java.vm.specification.version</code>)
+     * 构建 HEAD 请求的请求体。 HEAD 请求无请求体，返回 null。
      *
-     * <p>
-     * 例如Sun JDK 1.4.2：<code>"1.0"</code>
-     * </p>
-     *
-     * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
-     */
-    public final String getVersion() {
-        return Platform.get(Keys.JAVA_VM_SPECIFICATION_VERSION, false);
-    }
-
-    /**
-     * 取得当前JVM spec.的厂商(取自系统属性：<code>java.vm.specification.vendor</code>)
-     *
-     * <p>
-     * 例如Sun JDK 1.4.2：<code>"Sun Microsystems Inc."</code>
-     * </p>
-     *
-     * @return 属性值, 如果不能取得(因为Java安全限制)或值不存在,则返回<code>null</code>
-     */
-    public final String getVendor() {
-        return Platform.get(Keys.JAVA_VM_SPECIFICATION_VENDOR, false);
-    }
-
-    /**
-     * 将Java Virutal Machine Specification的信息转换成字符串
-     *
-     * @return JVM spec.的字符串表示
+     * @return 始终返回 null
      */
     @Override
-    public final String toString() {
-        StringBuilder builder = new StringBuilder();
+    protected RequestBody buildRequestBody() {
+        return null;
+    }
 
-        Builder.append(builder, "JavaVM Spec. Name:    ", getName());
-        Builder.append(builder, "JavaVM Spec. Version: ", getVersion());
-        Builder.append(builder, "JavaVM Spec. Vendor:  ", getVendor());
-
-        return builder.toString();
+    /**
+     * 构建 HEAD 请求对象。
+     *
+     * @param requestBody 请求体（HEAD 请求为 null）
+     * @return 构建完成的 Request 对象
+     */
+    @Override
+    protected Request buildRequest(RequestBody requestBody) {
+        return builder.head().build(); // 使用 HEAD 方法构建请求
     }
 
 }

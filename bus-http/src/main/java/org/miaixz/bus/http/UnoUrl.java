@@ -40,66 +40,103 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.net.Protocol;
 
 /**
- * 统一资源定位器(URL)，其模式为{@code http}或{@code https}。使用这个类来组合和分解Internet地址 这个类有一个现代的API。它避免了惩罚性的检查异常:{@link #get
- * get()}对无效的输入抛出{@link IllegalArgumentException}， 或者{@link #parse parse()}如果输入是无效的URL，则返回null。您甚至可以明确每个组件是否已经编码
+ * HTTP 或 HTTPS 的统一资源定位器（URL）
+ * <p>
+ * 提供对 URL 的构建、解析和编码处理，支持 HTTP 和 HTTPS 协议。 避免使用检查型异常，解析无效 URL 时返回 null 或抛出 IllegalArgumentException。
+ * 实例是不可变的，支持组件的编码和解码操作。
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class UnoUrl {
 
-    public static final String USERNAME_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#";
-    public static final String PASSWORD_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#";
-    public static final String PATH_SEGMENT_ENCODE_SET = " \"<>^`{}|/\\?#";
-    public static final String PATH_SEGMENT_ENCODE_SET_URI = Symbol.BRACKET;
-    public static final String QUERY_ENCODE_SET = " \"'<>#";
-    public static final String QUERY_COMPONENT_REENCODE_SET = " \"'<>#&=";
-    public static final String QUERY_COMPONENT_ENCODE_SET = " !\"#$&'(),/:;<=>?@[]\\^`{|}~";
-    public static final String QUERY_COMPONENT_ENCODE_SET_URI = "\\^`{|}";
-    public static final String FORM_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#&!$(),~";
-    public static final String FRAGMENT_ENCODE_SET = Normal.EMPTY;
-    public static final String FRAGMENT_ENCODE_SET_URI = " \"#<>\\^`{|}";
-
     /**
-     * "http" or "https"
+     * 用户名编码字符集
+     */
+    public static final String USERNAME_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#";
+    /**
+     * 密码编码字符集
+     */
+    public static final String PASSWORD_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#";
+    /**
+     * 路径段编码字符集
+     */
+    public static final String PATH_SEGMENT_ENCODE_SET = " \"<>^`{}|/\\?#";
+    /**
+     * URI 路径段编码字符集
+     */
+    public static final String PATH_SEGMENT_ENCODE_SET_URI = Symbol.BRACKET;
+    /**
+     * 查询参数编码字符集
+     */
+    public static final String QUERY_ENCODE_SET = " \"'<>#";
+    /**
+     * 查询组件重新编码字符集
+     */
+    public static final String QUERY_COMPONENT_REENCODE_SET = " \"'<>#&=";
+    /**
+     * 查询组件编码字符集
+     */
+    public static final String QUERY_COMPONENT_ENCODE_SET = " !\"#$&'(),/:;<=>?@[]\\^`{|}~";
+    /**
+     * URI 查询组件编码字符集
+     */
+    public static final String QUERY_COMPONENT_ENCODE_SET_URI = "\\^`{|}";
+    /**
+     * 表单编码字符集
+     */
+    public static final String FORM_ENCODE_SET = " \"':;<=>@[]^`{}|/\\?#&!$(),~";
+    /**
+     * 片段编码字符集
+     */
+    public static final String FRAGMENT_ENCODE_SET = Normal.EMPTY;
+    /**
+     * URI 片段编码字符集
+     */
+    public static final String FRAGMENT_ENCODE_SET_URI = " \"#<>\\^`{|}";
+    /**
+     * URL 协议（http 或 https）
      */
     final String scheme;
     /**
-     * 规范的主机名
+     * 规范化的主机名
      */
     final String host;
     /**
-     * 要么 80, 443 或用户指定的端口。范围内(1 . . 65535)
+     * 端口号（80、443 或用户指定，范围 1-65535）
      */
     final int port;
     /**
-     * 解码的用户名
+     * 解码后的用户名
      */
     private final String username;
     /**
-     * 解码的密码
+     * 解码后的密码
      */
     private final String password;
     /**
-     * 规范路径段的列表。此列表始终包含至少一个元素，该元素可以是空字符串。 每个段的格式是前导的‘/’，所以如果路径段是["a"， "b"， ""]，那么编码的路径就是"/a/b/".
+     * 解码后的路径段列表
      */
     private final List<String> pathSegments;
-
     /**
-     * 交替，解码的查询名称和值，或空无查询。名称可以为空或非空，但绝不为空 如果名称没有对应的'='分隔符，或为空，或为非空，则值为空.
+     * 解码后的查询参数名称和值列表
      */
     private final List<String> queryNamesAndValues;
-
     /**
-     * 解码片段
+     * 解码后的片段
      */
     private final String fragment;
-
     /**
-     * 规范的URL
+     * 规范化的 URL 字符串
      */
     private final String url;
 
+    /**
+     * 构造函数，基于 Builder 初始化 UnoUrl 实例
+     *
+     * @param builder Builder 实例，包含所有 URL 组件
+     */
     UnoUrl(Builder builder) {
         this.scheme = builder.scheme;
         this.username = percentDecode(builder.encodedUsername, false);
@@ -115,7 +152,13 @@ public class UnoUrl {
     }
 
     /**
-     * Returns 80 if {@code scheme.equals("http")}, 443 if {@code scheme.equals("https")} and -1 otherwise.
+     * 获取默认端口号
+     * <p>
+     * 返回 80（http）、443（https）或 -1（其他协议）。
+     * </p>
+     *
+     * @param scheme 协议名称
+     * @return 默认端口号
      */
     public static int defaultPort(String scheme) {
         if (Protocol.HTTP.name.equals(scheme)) {
@@ -127,6 +170,12 @@ public class UnoUrl {
         }
     }
 
+    /**
+     * 将路径段列表拼接为字符串
+     *
+     * @param out          输出 StringBuilder
+     * @param pathSegments 路径段列表
+     */
     static void pathSegmentsToString(StringBuilder out, List<String> pathSegments) {
         for (int i = 0, size = pathSegments.size(); i < size; i++) {
             out.append(Symbol.C_SLASH);
@@ -134,6 +183,12 @@ public class UnoUrl {
         }
     }
 
+    /**
+     * 将查询参数名称和值拼接为查询字符串
+     *
+     * @param out            输出 StringBuilder
+     * @param namesAndValues 名称和值列表
+     */
     static void namesAndValuesToQueryString(StringBuilder out, List<String> namesAndValues) {
         for (int i = 0, size = namesAndValues.size(); i < size; i += 2) {
             String name = namesAndValues.get(i);
@@ -149,9 +204,13 @@ public class UnoUrl {
     }
 
     /**
-     * Cuts {@code encodedQuery} up into alternating parameter names and values. This divides a query string like
-     * {@code subject=math&easy&problem=5-2=3} into the list {@code ["subject", "math",
-     * "easy", null, "problem", "5-2=3"]}. Note that values may be null and may contain '=' characters.
+     * 将编码的查询字符串解析为名称和值列表
+     * <p>
+     * 例如，解析 "subject=math&easy&problem=5-2=3" 得到 ["subject", "math", "easy", null, "problem", "5-2=3"]。
+     * </p>
+     *
+     * @param encodedQuery 编码的查询字符串
+     * @return 名称和值列表
      */
     static List<String> queryStringToNamesAndValues(String encodedQuery) {
         List<String> result = new ArrayList<>();
@@ -163,7 +222,7 @@ public class UnoUrl {
             int equalsOffset = encodedQuery.indexOf(Symbol.C_EQUAL, pos);
             if (equalsOffset == -1 || equalsOffset > ampersandOffset) {
                 result.add(encodedQuery.substring(pos, ampersandOffset));
-                result.add(null); // No value for this name.
+                result.add(null);
             } else {
                 result.add(encodedQuery.substring(pos, equalsOffset));
                 result.add(encodedQuery.substring(equalsOffset + 1, ampersandOffset));
@@ -174,8 +233,13 @@ public class UnoUrl {
     }
 
     /**
-     * Returns a new {@code HttpUrl} representing {@code url} if it is a well-formed HTTP or HTTPS URL, or null if it
-     * isn't.
+     * 解析 URL 字符串为 UnoUrl 实例
+     * <p>
+     * 如果 URL 格式有效，返回 UnoUrl 实例；否则返回 null。
+     * </p>
+     *
+     * @param url URL 字符串
+     * @return UnoUrl 实例或 null
      */
     public static UnoUrl parse(String url) {
         try {
@@ -186,31 +250,63 @@ public class UnoUrl {
     }
 
     /**
-     * Returns a new {@code HttpUrl} representing {@code url}.
+     * 构建 UnoUrl 实例
+     * <p>
+     * 如果 URL 格式无效，抛出 IllegalArgumentException。
+     * </p>
      *
-     * @throws IllegalArgumentException If {@code url} is not a well-formed HTTP or HTTPS URL.
+     * @param url URL 字符串
+     * @return UnoUrl 实例
+     * @throws IllegalArgumentException 如果 URL 格式无效
      */
     public static UnoUrl get(String url) {
         return new Builder().parse(null, url).build();
     }
 
     /**
-     * Returns an {@link UnoUrl} for {@code url} if its protocol is {@code http} or {@code https}, or null if it has any
-     * other protocol.
+     * 从 URL 对象构建 UnoUrl 实例
+     * <p>
+     * 仅支持 http 和 https 协议，非有效协议返回 null。
+     * </p>
+     *
+     * @param url URL 对象
+     * @return UnoUrl 实例或 null
      */
     public static UnoUrl get(URL url) {
         return parse(url.toString());
     }
 
+    /**
+     * 从 URI 对象构建 UnoUrl 实例
+     *
+     * @param uri URI 对象
+     * @return UnoUrl 实例或 null
+     */
     public static UnoUrl get(URI uri) {
         return parse(uri.toString());
     }
 
+    /**
+     * 解码百分比编码字符串
+     *
+     * @param encoded     编码字符串
+     * @param plusIsSpace 是否将加号解码为空格
+     * @return 解码后的字符串
+     */
     public static String percentDecode(String encoded, boolean plusIsSpace) {
         return percentDecode(encoded, 0, encoded.length(), plusIsSpace);
     }
 
-    static String percentDecode(String encoded, int pos, int limit, boolean plusIsSpace) {
+    /**
+     * 解码百分比编码字符串（指定范围）
+     *
+     * @param encoded     编码字符串
+     * @param pos         起始位置
+     * @param limit       结束位置
+     * @param plusIsSpace 是否将加号解码为空格
+     * @return 解码后的字符串
+     */
+    public static String percentDecode(String encoded, int pos, int limit, boolean plusIsSpace) {
         for (int i = pos; i < limit; i++) {
             char c = encoded.charAt(i);
             if (c == Symbol.C_PERCENT || (c == Symbol.C_PLUS && plusIsSpace)) {
@@ -220,11 +316,19 @@ public class UnoUrl {
                 return out.readUtf8();
             }
         }
-
         return encoded.substring(pos, limit);
     }
 
-    static void percentDecode(Buffer out, String encoded, int pos, int limit, boolean plusIsSpace) {
+    /**
+     * 解码百分比编码字符串到缓冲区
+     *
+     * @param out         输出缓冲区
+     * @param encoded     编码字符串
+     * @param pos         起始位置
+     * @param limit       结束位置
+     * @param plusIsSpace 是否将加号解码为空格
+     */
+    public static void percentDecode(Buffer out, String encoded, int pos, int limit, boolean plusIsSpace) {
         int codePoint;
         for (int i = pos; i < limit; i += Character.charCount(codePoint)) {
             codePoint = encoded.codePointAt(i);
@@ -244,29 +348,38 @@ public class UnoUrl {
         }
     }
 
-    static boolean percentEncoded(String encoded, int pos, int limit) {
+    /**
+     * 检查字符串是否为百分比编码
+     *
+     * @param encoded 编码字符串
+     * @param pos     起始位置
+     * @param limit   结束位置
+     * @return true 如果是有效的百分比编码
+     */
+    public static boolean percentEncoded(String encoded, int pos, int limit) {
         return pos + 2 < limit && encoded.charAt(pos) == Symbol.C_PERCENT
                 && org.miaixz.bus.http.Builder.decodeHexDigit(encoded.charAt(pos + 1)) != -1
                 && org.miaixz.bus.http.Builder.decodeHexDigit(encoded.charAt(pos + 2)) != -1;
     }
 
     /**
-     * Returns a substring of {@code input} on the range {@code [pos..limit)} with the following transformations:
-     * <ul>
-     * <li>Tabs, newlines, form feeds and carriage returns are skipped.
-     * <li>In queries, ' ' is encoded to '+' and '+' is encoded to "%2B".
-     * <li>Characters in {@code encodeSet} are percent-encoded.
-     * <li>Control characters and non-ASCII characters are percent-encoded.
-     * <li>All other characters are copied without transformation.
-     * </ul>
+     * 规范化字符串
+     * <p>
+     * 跳过控制字符，编码指定字符集中的字符，处理百分比编码和加号。
+     * </p>
      *
-     * @param alreadyEncoded true to leave '%' as-is; false to convert it to '%25'.
-     * @param strict         true to encode '%' if it is not the prefix of a valid percent encoding.
-     * @param plusIsSpace    true to encode '+' as "%2B" if it is not already encoded.
-     * @param asciiOnly      true to encode all non-ASCII codepoints.
-     * @param charset        which charset to use, null equals UTF-8.
+     * @param input          输入字符串
+     * @param pos            起始位置
+     * @param limit          结束位置
+     * @param encodeSet      编码字符集
+     * @param alreadyEncoded 是否已编码
+     * @param strict         是否严格编码
+     * @param plusIsSpace    是否将加号编码为空格
+     * @param asciiOnly      是否仅限 ASCII
+     * @param charset        字符集（null 为 UTF-8）
+     * @return 规范化字符串
      */
-    static String canonicalize(String input, int pos, int limit, String encodeSet, boolean alreadyEncoded,
+    public static String canonicalize(String input, int pos, int limit, String encodeSet, boolean alreadyEncoded,
             boolean strict, boolean plusIsSpace, boolean asciiOnly, java.nio.charset.Charset charset) {
         int codePoint;
         for (int i = pos; i < limit; i += Character.charCount(codePoint)) {
@@ -284,31 +397,42 @@ public class UnoUrl {
         return input.substring(pos, limit);
     }
 
-    static void canonicalize(Buffer out, String input, int pos, int limit, String encodeSet, boolean alreadyEncoded,
-            boolean strict, boolean plusIsSpace, boolean asciiOnly, java.nio.charset.Charset charset) {
+    /**
+     * 规范化字符串到缓冲区
+     *
+     * @param out            输出缓冲区
+     * @param input          输入字符串
+     * @param pos            起始位置
+     * @param limit          结束位置
+     * @param encodeSet      编码字符集
+     * @param alreadyEncoded 是否已编码
+     * @param strict         是否严格编码
+     * @param plusIsSpace    是否将加号编码为空格
+     * @param asciiOnly      是否仅限 ASCII
+     * @param charset        字符集（null 为 UTF-8）
+     */
+    public static void canonicalize(Buffer out, String input, int pos, int limit, String encodeSet,
+            boolean alreadyEncoded, boolean strict, boolean plusIsSpace, boolean asciiOnly,
+            java.nio.charset.Charset charset) {
         Buffer encodedCharBuffer = null;
         int codePoint;
         for (int i = pos; i < limit; i += Character.charCount(codePoint)) {
             codePoint = input.codePointAt(i);
             if (alreadyEncoded && (codePoint == Symbol.C_HT || codePoint == Symbol.C_LF || codePoint == '\f'
                     || codePoint == Symbol.C_CR)) {
-
             } else if (codePoint == Symbol.C_PLUS && plusIsSpace) {
                 out.writeUtf8(alreadyEncoded ? Symbol.PLUS : "%2B");
             } else if (codePoint < 0x20 || codePoint == 0x7f || codePoint >= 0x80 && asciiOnly
                     || encodeSet.indexOf(codePoint) != -1 || codePoint == Symbol.C_PERCENT
                             && (!alreadyEncoded || strict && !percentEncoded(input, i, limit))) {
-
                 if (null == encodedCharBuffer) {
                     encodedCharBuffer = new Buffer();
                 }
-
                 if (null == charset || charset.equals(Charset.UTF_8)) {
                     encodedCharBuffer.writeUtf8CodePoint(codePoint);
                 } else {
                     encodedCharBuffer.writeString(input, i, i + Character.charCount(codePoint), charset);
                 }
-
                 while (!encodedCharBuffer.exhausted()) {
                     int b = encodedCharBuffer.readByte() & 0xff;
                     out.writeByte(Symbol.C_PERCENT);
@@ -321,40 +445,62 @@ public class UnoUrl {
         }
     }
 
+    /**
+     * 规范化字符串（默认 UTF-8）
+     *
+     * @param input          输入字符串
+     * @param encodeSet      编码字符集
+     * @param alreadyEncoded 是否已编码
+     * @param strict         是否严格编码
+     * @param plusIsSpace    是否将加号编码为空格
+     * @param asciiOnly      是否仅限 ASCII
+     * @param charset        字符集（null 为 UTF-8）
+     * @return 规范化字符串
+     */
     public static String canonicalize(String input, String encodeSet, boolean alreadyEncoded, boolean strict,
             boolean plusIsSpace, boolean asciiOnly, java.nio.charset.Charset charset) {
         return canonicalize(input, 0, input.length(), encodeSet, alreadyEncoded, strict, plusIsSpace, asciiOnly,
                 charset);
     }
 
-    static String canonicalize(String input, String encodeSet, boolean alreadyEncoded, boolean strict,
+    /**
+     * 规范化字符串（默认 UTF-8）
+     *
+     * @param input          输入字符串
+     * @param encodeSet      编码字符集
+     * @param alreadyEncoded 是否已编码
+     * @param strict         是否严格编码
+     * @param plusIsSpace    是否将加号编码为空格
+     * @param asciiOnly      是否仅限 ASCII
+     * @return 规范化字符串
+     */
+    public static String canonicalize(String input, String encodeSet, boolean alreadyEncoded, boolean strict,
             boolean plusIsSpace, boolean asciiOnly) {
         return canonicalize(input, 0, input.length(), encodeSet, alreadyEncoded, strict, plusIsSpace, asciiOnly, null);
     }
 
     /**
-     * Returns this URL as a {@link URL java.net.URL}.
+     * 转换为 java.net.URL 对象
+     *
+     * @return URL 对象
+     * @throws RuntimeException 如果 URL 格式无效
      */
     public URL url() {
         try {
             return new URL(url);
         } catch (MalformedURLException e) {
-            throw new RuntimeException(e); // Unexpected!
+            throw new RuntimeException(e);
         }
     }
 
     /**
-     * Returns this URL as a {@link URI java.net.URI}. Because {@code URI} is more strict than this class, the returned
-     * URI may be semantically different from this URL:
-     *
-     * <ul>
-     * <li>Characters forbidden by URI like {@code [} and {@code |} will be escaped.
-     * <li>Invalid percent-encoded sequences like {@code %xx} will be encoded like {@code %25xx}.
-     * <li>Whitespace and control characters in the fragment will be stripped.
-     * </ul>
+     * 转换为 java.net.URI 对象
      * <p>
-     * These differences may have a significant consequence when the URI is interpreted by a webserver. For this reason
-     * the {@linkplain URI URI class} and this method should be avoided.
+     * 注意：URI 比 UnoUrl 更严格，可能对某些字符进行转义或移除（如片段中的空白）。 建议避免直接使用 URI，以免服务器解释差异。
+     * </p>
+     *
+     * @return URI 对象
+     * @throws RuntimeException 如果 URI 格式无效
      */
     public URI uri() {
         String uri = newBuilder().reencodeForUri().toString();
@@ -362,7 +508,7 @@ public class UnoUrl {
             return new URI(uri);
         } catch (URISyntaxException e) {
             try {
-                String stripped = uri.replaceAll("[\\u0000-\\u001F\\u007F-\\u009F\\p{javaWhitespace}]", Normal.EMPTY);
+                String stripped = uri.replaceAll("[\u0000-\u001F\u007F-\u009F\\p{javaWhitespace}]", Normal.EMPTY);
                 return URI.create(stripped);
             } catch (Exception e1) {
                 throw new RuntimeException(e);
@@ -371,18 +517,27 @@ public class UnoUrl {
     }
 
     /**
-     * Returns either "http" or "https".
+     * 获取协议
+     *
+     * @return 协议（http 或 https）
      */
     public String scheme() {
         return scheme;
     }
 
+    /**
+     * 检查是否为 HTTPS 协议
+     *
+     * @return true 如果协议为 HTTPS
+     */
     public boolean isHttps() {
         return Protocol.isHttps(scheme);
     }
 
     /**
-     * Returns the username, or an empty string if none is set.
+     * 获取编码后的用户名
+     *
+     * @return 编码后的用户名（空字符串如果未设置）
      */
     public String encodedUsername() {
         if (username.isEmpty())
@@ -393,7 +548,7 @@ public class UnoUrl {
     }
 
     /**
-     * 返回已解码的用户名，如果不存在，则返回空字符串.
+     * 获取解码后的用户名
      *
      * <ul>
      * <li>{@code http://host/}{@code ""}</li>
@@ -409,7 +564,7 @@ public class UnoUrl {
     }
 
     /**
-     * 返回密码，如果没有设置则返回空字符串.
+     * 获取编码后的密码
      *
      * <ul>
      * <li>{@code http://host/}{@code ""}</li>
@@ -429,7 +584,7 @@ public class UnoUrl {
     }
 
     /**
-     * 返回已解码的密码，如果不存在，则返回空字符串.
+     * 获取解码后的密码
      *
      * <ul>
      * <li>{@code http://host/}{@code ""}</li>
@@ -445,6 +600,8 @@ public class UnoUrl {
     }
 
     /**
+     * 获取主机名
+     *
      * <ul>
      * <li>A regular host name, like {@code android.com}.
      * <li>An IPv4 address, like {@code 127.0.0.1}.
@@ -466,6 +623,8 @@ public class UnoUrl {
     }
 
     /**
+     * 获取端口号
+     *
      * <ul>
      * <li>{@code http://host/}{@code 80}</li>
      * <li>{@code http://host:8000/}{@code 8000}</li>
@@ -479,8 +638,7 @@ public class UnoUrl {
     }
 
     /**
-     * Returns the number of segments in this URL's path. This is also the number of slashes in the URL's path, like 3
-     * in {@code http://host/a/b/c}. This is always at least 1.
+     * 获取路径段数量
      *
      * <ul>
      * <li>{@code http://host/}{@code 1}</li>
@@ -495,7 +653,7 @@ public class UnoUrl {
     }
 
     /**
-     * 该URL编码后用于HTTP资源解析。返回的路径将以{@code /}开始
+     * 获取编码后的路径
      *
      * <ul>
      * <li>{@code http://host/}{@code /}</li>
@@ -512,8 +670,7 @@ public class UnoUrl {
     }
 
     /**
-     * 返回一个已编码的路径段列表 {@code ["a", "b", "c"]} for the URL {@code
-     * http://host/a/b/c}. 这个列表从不为空，尽管它可能包含一个空字符串.
+     * 获取编码后的路径段列表
      *
      * <ul>
      * <li>{@code http://host/}{@code [""]}</li>
@@ -537,8 +694,7 @@ public class UnoUrl {
     }
 
     /**
-     * Returns a list of path segments like {@code ["a", "b", "c"]} for the URL {@code
-     * http://host/a/b/c}. This list is never empty though it may contain a single empty string.
+     * 获取解码后的路径段列表
      *
      * <ul>
      * <li>{@code http://host/}{@code [""]}</li>
@@ -553,8 +709,7 @@ public class UnoUrl {
     }
 
     /**
-     * Returns the query of this URL, encoded for use in HTTP resource resolution. The returned string may be null (for
-     * URLs with no query), empty (for URLs with an empty query) or non-empty (all other URLs).
+     * 获取编码后的查询字符串
      *
      * <ul>
      * <li>{@code http://host/}null</li>
@@ -576,9 +731,7 @@ public class UnoUrl {
     }
 
     /**
-     * Returns this URL's query, like {@code "abc"} for {@code http://host/?abc}. Most callers should prefer
-     * {@link #queryParameterName} and {@link #queryParameterValue} because these methods offer direct access to
-     * individual query parameters.
+     * 获取解码后的查询字符串
      *
      * <ul>
      * <li>{@code http://host/}null</li>
@@ -600,9 +753,7 @@ public class UnoUrl {
     }
 
     /**
-     * Returns the number of query parameters in this URL, like 2 for {@code
-     * http://host/?a=apple&b=banana}. If this URL has no query this returns 0. Otherwise it returns one more than the
-     * number of {@code "&"} separators in the query.
+     * 获取查询参数数量
      *
      * <ul>
      * <li>{@code http://host/}{@code 0}</li>
@@ -619,8 +770,7 @@ public class UnoUrl {
     }
 
     /**
-     * Returns the first query parameter named {@code name} decoded using UTF-8, or null if there is no such query
-     * parameter.
+     * 获取指定名称的第一个查询参数值
      *
      * <ul>
      * <li>{@code http://host/}null</li>
@@ -645,8 +795,7 @@ public class UnoUrl {
     }
 
     /**
-     * Returns the distinct query parameter names in this URL, like {@code ["a", "b"]} for {@code
-     * http://host/?a=apple&b=banana}. If this URL has no query this returns the empty set.
+     * 获取查询参数名称集合
      *
      * <ul>
      * <li>{@code http://host/}{@code []}</li>
@@ -669,9 +818,7 @@ public class UnoUrl {
     }
 
     /**
-     * Returns all values for the query parameter {@code name} ordered by their appearance in this URL. For example this
-     * returns {@code ["banana"]} for {@code queryParameterValue("b")} on {@code
-     * http://host/?a=apple&b=banana}.
+     * 获取指定名称的所有查询参数值
      *
      * <ul>
      * <li>{@code http://host/}{@code []}{@code []}</li>
@@ -700,9 +847,7 @@ public class UnoUrl {
     }
 
     /**
-     * Returns the name of the query parameter at {@code index}. For example this returns {@code "a"} for
-     * {@code queryParameterName(0)} on {@code http://host/?a=apple&b=banana}. This throws if {@code index} is not less
-     * than the {@linkplain #querySize query size}.
+     * 获取指定索引的查询参数名称
      *
      * <ul>
      * <li>{@code http://host/}exceptionexception</li>
@@ -715,7 +860,8 @@ public class UnoUrl {
      * </ul>
      *
      * @param index 索引
-     * @return the string
+     * @return 参数名称
+     * @throws IndexOutOfBoundsException 如果索引无效
      */
     public String queryParameterName(int index) {
         if (null == queryNamesAndValues)
@@ -724,9 +870,7 @@ public class UnoUrl {
     }
 
     /**
-     * Returns the value of the query parameter at {@code index}. For example this returns {@code
-     * "apple"} for {@code queryParameterName(0)} on {@code http://host/?a=apple&b=banana}. This throws if {@code index}
-     * is not less than the {@linkplain #querySize query size}.
+     * 获取指定索引的查询参数值
      *
      * <ul>
      * <li>{@code http://host/}exceptionexception</li>
@@ -739,7 +883,8 @@ public class UnoUrl {
      * </ul>
      *
      * @param index 索引
-     * @return the string
+     * @return 参数值
+     * @throws IndexOutOfBoundsException 如果索引无效
      */
     public String queryParameterValue(int index) {
         if (null == queryNamesAndValues)
@@ -748,7 +893,8 @@ public class UnoUrl {
     }
 
     /**
-     * 返回这个URL的片段 {@code "abc"} for {@code http://host/#abc}. 如果URL没有片段，则返回null
+     * 获取编码后的片段
+     *
      * <ul>
      * <li>{@code http://host/}null</li>
      * <li>{@code http://host/#}{@code ""}</li>
@@ -756,7 +902,7 @@ public class UnoUrl {
      * <li>{@code http://host/#abc|def}{@code "abc|def"}</li>
      * </ul>
      *
-     * @return the string
+     * @return 编码后的片段（可能为 null）
      */
     public String encodedFragment() {
         if (null == fragment)
@@ -766,7 +912,8 @@ public class UnoUrl {
     }
 
     /**
-     * 返回这个URL的片段 {@code "abc"} for {@code http://host/#abc}. 如果URL没有片段，则返回null
+     * 获取解码后的片段
+     *
      * <ul>
      * <li>{@code http://host/}null</li>
      * <li>{@code http://host/#}{@code ""}</li>
@@ -774,21 +921,37 @@ public class UnoUrl {
      * <li>{@code http://host/#abc|def}{@code "abc|def"}</li>
      * </ul>
      *
-     * @return the string
+     * @return 解码后的片段（可能为 null）
      */
     public String fragment() {
         return fragment;
     }
 
+    /**
+     * 返回隐藏敏感信息的 URL
+     *
+     * @return 隐藏用户名和密码的 URL 字符串
+     */
     public String redact() {
         return newBuilder("/...").username(Normal.EMPTY).password(Normal.EMPTY).build().toString();
     }
 
+    /**
+     * 解析相对链接
+     *
+     * @param link 相对链接
+     * @return 解析后的 UnoUrl 实例（无效时为 null）
+     */
     public UnoUrl resolve(String link) {
         Builder builder = newBuilder(link);
         return null != builder ? builder.build() : null;
     }
 
+    /**
+     * 创建新的 Builder 实例
+     *
+     * @return Builder 实例
+     */
     public Builder newBuilder() {
         Builder result = new Builder();
         result.scheme = scheme;
@@ -804,8 +967,10 @@ public class UnoUrl {
     }
 
     /**
-     * Returns a builder for the URL that would be retrieved by following {@code link} from this URL, or null if the
-     * resulting URL is not well-formed.
+     * 创建相对链接的 Builder 实例
+     *
+     * @param link 相对链接
+     * @return Builder 实例（无效时为 null）
      */
     public Builder newBuilder(String link) {
         try {
@@ -815,21 +980,44 @@ public class UnoUrl {
         }
     }
 
+    /**
+     * 比较两个 UnoUrl 对象是否相等
+     *
+     * @param other 另一个对象
+     * @return true 如果两个 URL 相等
+     */
     @Override
     public boolean equals(Object other) {
         return other instanceof UnoUrl && ((UnoUrl) other).url.equals(url);
     }
 
+    /**
+     * 计算 URL 的哈希码
+     *
+     * @return 哈希码值
+     */
     @Override
     public int hashCode() {
         return url.hashCode();
     }
 
+    /**
+     * 返回 URL 的字符串表示
+     *
+     * @return URL 字符串
+     */
     @Override
     public String toString() {
         return url;
     }
 
+    /**
+     * 解码字符串列表
+     *
+     * @param list        字符串列表
+     * @param plusIsSpace 是否将加号解码为空格
+     * @return 解码后的字符串列表
+     */
     private List<String> percentDecode(List<String> list, boolean plusIsSpace) {
         int size = list.size();
         List<String> result = new ArrayList<>(size);
@@ -840,25 +1028,62 @@ public class UnoUrl {
         return Collections.unmodifiableList(result);
     }
 
+    /**
+     * URL 构建器
+     */
     public static class Builder {
 
+        /**
+         * 无效主机名错误消息
+         */
         static final String INVALID_HOST = "Invalid URL host";
+        /**
+         * 编码后的路径段列表
+         */
         final List<String> encodedPathSegments = new ArrayList<>();
+        /**
+         * 协议
+         */
         String scheme;
+        /**
+         * 编码后的用户名
+         */
         String encodedUsername = Normal.EMPTY;
+        /**
+         * 编码后的密码
+         */
         String encodedPassword = Normal.EMPTY;
+        /**
+         * 主机名
+         */
         String host;
+        /**
+         * 端口号
+         */
         int port = -1;
+        /**
+         * 编码后的查询参数名称和值
+         */
         List<String> encodedQueryNamesAndValues;
+        /**
+         * 编码后的片段
+         */
         String encodedFragment;
 
+        /**
+         * 默认构造函数
+         */
         public Builder() {
             encodedPathSegments.add(Normal.EMPTY);
         }
 
         /**
-         * Returns the index of the ':' in {@code input} that is after scheme characters. Returns -1 if {@code input}
-         * does not have a scheme that starts at {@code pos}.
+         * 查找协议分隔符（:）的位置
+         *
+         * @param input 输入字符串
+         * @param pos   起始位置
+         * @param limit 结束位置
+         * @return 分隔符位置（不存在时为 -1）
          */
         private static int schemeDelimiterOffset(String input, int pos, int limit) {
             if (limit - pos < 2)
@@ -885,7 +1110,12 @@ public class UnoUrl {
         }
 
         /**
-         * Returns the number of '/' and '\' slashes in {@code input}, starting at {@code pos}.
+         * 计算斜杠数量
+         *
+         * @param input 输入字符串
+         * @param pos   起始位置
+         * @param limit 结束位置
+         * @return 斜杠数量
          */
         private static int slashCount(String input, int pos, int limit) {
             int slashCount = 0;
@@ -902,7 +1132,12 @@ public class UnoUrl {
         }
 
         /**
-         * 在{@code input}中查找第一个“:”，跳过方括号“[…]”之间的字符
+         * 查找端口分隔符（:）的位置
+         *
+         * @param input 输入字符串
+         * @param pos   起始位置
+         * @param limit 结束位置
+         * @return 分隔符位置
          */
         private static int portColonOffset(String input, int pos, int limit) {
             for (int i = pos; i < limit; i++) {
@@ -920,10 +1155,26 @@ public class UnoUrl {
             return limit;
         }
 
+        /**
+         * 规范化主机名
+         *
+         * @param input 输入字符串
+         * @param pos   起始位置
+         * @param limit 结束位置
+         * @return 规范化主机名
+         */
         private static String canonicalizeHost(String input, int pos, int limit) {
             return org.miaixz.bus.http.Builder.canonicalizeHost(percentDecode(input, pos, limit, false));
         }
 
+        /**
+         * 解析端口号
+         *
+         * @param input 输入字符串
+         * @param pos   起始位置
+         * @param limit 结束位置
+         * @return 端口号（无效时为 -1）
+         */
         private static int parsePort(String input, int pos, int limit) {
             try {
                 String portString = canonicalize(input, pos, limit, Normal.EMPTY, false, false, false, true, null);
@@ -936,6 +1187,14 @@ public class UnoUrl {
             }
         }
 
+        /**
+         * 设置协议
+         *
+         * @param scheme 协议（http 或 https）
+         * @return 当前 Builder 实例
+         * @throws NullPointerException     如果 scheme 为 null
+         * @throws IllegalArgumentException 如果协议无效
+         */
         public Builder scheme(String scheme) {
             if (null == scheme) {
                 throw new NullPointerException("scheme == null");
@@ -949,6 +1208,13 @@ public class UnoUrl {
             return this;
         }
 
+        /**
+         * 设置用户名
+         *
+         * @param username 用户名
+         * @return 当前 Builder 实例
+         * @throws NullPointerException 如果 username 为 null
+         */
         public Builder username(String username) {
             if (null == username)
                 throw new NullPointerException("username == null");
@@ -956,6 +1222,13 @@ public class UnoUrl {
             return this;
         }
 
+        /**
+         * 设置编码后的用户名
+         *
+         * @param encodedUsername 编码后的用户名
+         * @return 当前 Builder 实例
+         * @throws NullPointerException 如果 encodedUsername 为 null
+         */
         public Builder encodedUsername(String encodedUsername) {
             if (null == encodedUsername)
                 throw new NullPointerException("encodedUsername == null");
@@ -963,6 +1236,13 @@ public class UnoUrl {
             return this;
         }
 
+        /**
+         * 设置密码
+         *
+         * @param password 密码
+         * @return 当前 Builder 实例
+         * @throws NullPointerException 如果 password 为 null
+         */
         public Builder password(String password) {
             if (null == password)
                 throw new NullPointerException("password == null");
@@ -970,6 +1250,13 @@ public class UnoUrl {
             return this;
         }
 
+        /**
+         * 设置编码后的密码
+         *
+         * @param encodedPassword 编码后的密码
+         * @return 当前 Builder 实例
+         * @throws NullPointerException 如果 encodedPassword 为 null
+         */
         public Builder encodedPassword(String encodedPassword) {
             if (null == encodedPassword)
                 throw new NullPointerException("encodedPassword == null");
@@ -978,7 +1265,12 @@ public class UnoUrl {
         }
 
         /**
-         * @param host either a regular hostname, International Domain Name, IPv4 address, or IPv6 address.
+         * 设置主机名
+         *
+         * @param host 主机名（普通主机名、IPv4、IPv6 或编码的 IDN）
+         * @return 当前 Builder 实例
+         * @throws NullPointerException     如果 host 为 null
+         * @throws IllegalArgumentException 如果主机名无效
          */
         public Builder host(String host) {
             if (null == host)
@@ -990,6 +1282,13 @@ public class UnoUrl {
             return this;
         }
 
+        /**
+         * 设置端口号
+         *
+         * @param port 端口号
+         * @return 当前 Builder 实例
+         * @throws IllegalArgumentException 如果端口号无效
+         */
         public Builder port(int port) {
             if (port <= 0 || port > 65535)
                 throw new IllegalArgumentException("unexpected port: " + port);
@@ -997,10 +1296,22 @@ public class UnoUrl {
             return this;
         }
 
+        /**
+         * 获取有效端口号
+         *
+         * @return 有效端口号
+         */
         int effectivePort() {
             return port != -1 ? port : defaultPort(scheme);
         }
 
+        /**
+         * 添加路径段
+         *
+         * @param pathSegment 路径段
+         * @return 当前 Builder 实例
+         * @throws NullPointerException 如果 pathSegment 为 null
+         */
         public Builder addPathSegment(String pathSegment) {
             if (null == pathSegment)
                 throw new NullPointerException("pathSegment == null");
@@ -1009,8 +1320,11 @@ public class UnoUrl {
         }
 
         /**
-         * Adds a set of path segments separated by a slash (either {@code \} or {@code /}). If {@code pathSegments}
-         * starts with a slash, the resulting URL will have empty path segment.
+         * 添加路径段列表
+         *
+         * @param pathSegments 路径段字符串
+         * @return 当前 Builder 实例
+         * @throws NullPointerException 如果 pathSegments 为 null
          */
         public Builder addPathSegments(String pathSegments) {
             if (null == pathSegments)
@@ -1018,6 +1332,13 @@ public class UnoUrl {
             return addPathSegments(pathSegments, false);
         }
 
+        /**
+         * 添加编码后的路径段
+         *
+         * @param encodedPathSegment 编码后的路径段
+         * @return 当前 Builder 实例
+         * @throws NullPointerException 如果 encodedPathSegment 为 null
+         */
         public Builder addEncodedPathSegment(String encodedPathSegment) {
             if (null == encodedPathSegment) {
                 throw new NullPointerException("encodedPathSegment == null");
@@ -1027,8 +1348,11 @@ public class UnoUrl {
         }
 
         /**
-         * Adds a set of encoded path segments separated by a slash (either {@code \} or {@code /}). If
-         * {@code encodedPathSegments} starts with a slash, the resulting URL will have empty path segment.
+         * 添加编码后的路径段列表
+         *
+         * @param encodedPathSegments 编码后的路径段字符串
+         * @return 当前 Builder 实例
+         * @throws NullPointerException 如果 encodedPathSegments 为 null
          */
         public Builder addEncodedPathSegments(String encodedPathSegments) {
             if (null == encodedPathSegments) {
@@ -1037,6 +1361,13 @@ public class UnoUrl {
             return addPathSegments(encodedPathSegments, true);
         }
 
+        /**
+         * 添加路径段（内部实现）
+         *
+         * @param pathSegments   路径段字符串
+         * @param alreadyEncoded 是否已编码
+         * @return 当前 Builder 实例
+         */
         private Builder addPathSegments(String pathSegments, boolean alreadyEncoded) {
             int offset = 0;
             do {
@@ -1049,6 +1380,15 @@ public class UnoUrl {
             return this;
         }
 
+        /**
+         * 设置路径段
+         *
+         * @param index       索引
+         * @param pathSegment 路径段
+         * @return 当前 Builder 实例
+         * @throws NullPointerException     如果 pathSegment 为 null
+         * @throws IllegalArgumentException 如果路径段无效
+         */
         public Builder setPathSegment(int index, String pathSegment) {
             if (null == pathSegment)
                 throw new NullPointerException("pathSegment == null");
@@ -1061,6 +1401,15 @@ public class UnoUrl {
             return this;
         }
 
+        /**
+         * 设置编码后的路径段
+         *
+         * @param index              索引
+         * @param encodedPathSegment 编码后的路径段
+         * @return 当前 Builder 实例
+         * @throws NullPointerException     如果 encodedPathSegment 为 null
+         * @throws IllegalArgumentException 如果路径段无效
+         */
         public Builder setEncodedPathSegment(int index, String encodedPathSegment) {
             if (null == encodedPathSegment) {
                 throw new NullPointerException("encodedPathSegment == null");
@@ -1074,6 +1423,12 @@ public class UnoUrl {
             return this;
         }
 
+        /**
+         * 移除路径段
+         *
+         * @param index 索引
+         * @return 当前 Builder 实例
+         */
         public Builder removePathSegment(int index) {
             encodedPathSegments.remove(index);
             if (encodedPathSegments.isEmpty()) {
@@ -1082,6 +1437,14 @@ public class UnoUrl {
             return this;
         }
 
+        /**
+         * 设置编码后的路径
+         *
+         * @param encodedPath 编码后的路径
+         * @return 当前 Builder 实例
+         * @throws NullPointerException     如果 encodedPath 为 null
+         * @throws IllegalArgumentException 如果路径无效
+         */
         public Builder encodedPath(String encodedPath) {
             if (null == encodedPath)
                 throw new NullPointerException("encodedPath == null");
@@ -1092,6 +1455,12 @@ public class UnoUrl {
             return this;
         }
 
+        /**
+         * 设置查询字符串
+         *
+         * @param query 查询字符串
+         * @return 当前 Builder 实例
+         */
         public Builder query(String query) {
             this.encodedQueryNamesAndValues = null != query
                     ? queryStringToNamesAndValues(canonicalize(query, QUERY_ENCODE_SET, false, false, true, true))
@@ -1099,6 +1468,12 @@ public class UnoUrl {
             return this;
         }
 
+        /**
+         * 设置编码后的查询字符串
+         *
+         * @param encodedQuery 编码后的查询字符串
+         * @return 当前 Builder 实例
+         */
         public Builder encodedQuery(String encodedQuery) {
             this.encodedQueryNamesAndValues = null != encodedQuery
                     ? queryStringToNamesAndValues(canonicalize(encodedQuery, QUERY_ENCODE_SET, true, false, true, true))
@@ -1107,7 +1482,12 @@ public class UnoUrl {
         }
 
         /**
-         * Encodes the query parameter using UTF-8 and adds it to this URL's query string.
+         * 添加查询参数
+         *
+         * @param name  参数名称
+         * @param value 参数值
+         * @return 当前 Builder 实例
+         * @throws NullPointerException 如果 name 为 null
          */
         public Builder addQueryParameter(String name, String value) {
             if (null == name)
@@ -1121,7 +1501,12 @@ public class UnoUrl {
         }
 
         /**
-         * Adds the pre-encoded query parameter to this URL's query string.
+         * 添加编码后的查询参数
+         *
+         * @param encodedName  编码后的参数名称
+         * @param encodedValue 编码后的参数值
+         * @return 当前 Builder 实例
+         * @throws NullPointerException 如果 encodedName 为 null
          */
         public Builder addEncodedQueryParameter(String encodedName, String encodedValue) {
             if (null == encodedName)
@@ -1136,18 +1521,41 @@ public class UnoUrl {
             return this;
         }
 
+        /**
+         * 设置查询参数（替换现有参数）
+         *
+         * @param name  参数名称
+         * @param value 参数值
+         * @return 当前 Builder 实例
+         * @throws NullPointerException 如果 name 为 null
+         */
         public Builder setQueryParameter(String name, String value) {
             removeAllQueryParameters(name);
             addQueryParameter(name, value);
             return this;
         }
 
+        /**
+         * 设置编码后的查询参数（替换现有参数）
+         *
+         * @param encodedName  编码后的参数名称
+         * @param encodedValue 编码后的参数值
+         * @return 当前 Builder 实例
+         * @throws NullPointerException 如果 encodedName 为 null
+         */
         public Builder setEncodedQueryParameter(String encodedName, String encodedValue) {
             removeAllEncodedQueryParameters(encodedName);
             addEncodedQueryParameter(encodedName, encodedValue);
             return this;
         }
 
+        /**
+         * 移除指定名称的所有查询参数
+         *
+         * @param name 参数名称
+         * @return 当前 Builder 实例
+         * @throws NullPointerException 如果 name 为 null
+         */
         public Builder removeAllQueryParameters(String name) {
             if (name == null)
                 throw new NullPointerException("name == null");
@@ -1158,6 +1566,13 @@ public class UnoUrl {
             return this;
         }
 
+        /**
+         * 移除编码后的所有查询参数
+         *
+         * @param encodedName 编码后的参数名称
+         * @return 当前 Builder 实例
+         * @throws NullPointerException 如果 encodedName 为 null
+         */
         public Builder removeAllEncodedQueryParameters(String encodedName) {
             if (null == encodedName)
                 throw new NullPointerException("encodedName == null");
@@ -1168,6 +1583,11 @@ public class UnoUrl {
             return this;
         }
 
+        /**
+         * 移除规范化的查询参数
+         *
+         * @param canonicalName 规范化参数名称
+         */
         private void removeAllCanonicalQueryParameters(String canonicalName) {
             for (int i = encodedQueryNamesAndValues.size() - 2; i >= 0; i -= 2) {
                 if (canonicalName.equals(encodedQueryNamesAndValues.get(i))) {
@@ -1181,6 +1601,12 @@ public class UnoUrl {
             }
         }
 
+        /**
+         * 设置片段
+         *
+         * @param fragment 片段
+         * @return 当前 Builder 实例
+         */
         public Builder fragment(String fragment) {
             this.encodedFragment = null != fragment
                     ? canonicalize(fragment, FRAGMENT_ENCODE_SET, false, false, false, false)
@@ -1188,6 +1614,12 @@ public class UnoUrl {
             return this;
         }
 
+        /**
+         * 设置编码后的片段
+         *
+         * @param encodedFragment 编码后的片段
+         * @return 当前 Builder 实例
+         */
         public Builder encodedFragment(String encodedFragment) {
             this.encodedFragment = null != encodedFragment
                     ? canonicalize(encodedFragment, FRAGMENT_ENCODE_SET, true, false, false, false)
@@ -1196,8 +1628,9 @@ public class UnoUrl {
         }
 
         /**
-         * Re-encodes the components of this URL so that it satisfies (obsolete) RFC 2396, which is particularly strict
-         * for certain components.
+         * 为 URI 重新编码 URL 组件
+         *
+         * @return 当前 Builder 实例
          */
         Builder reencodeForUri() {
             for (int i = 0, size = encodedPathSegments.size(); i < size; i++) {
@@ -1220,6 +1653,12 @@ public class UnoUrl {
             return this;
         }
 
+        /**
+         * 构建 UnoUrl 实例
+         *
+         * @return UnoUrl 实例
+         * @throws IllegalStateException 如果 scheme 或 host 未设置
+         */
         public UnoUrl build() {
             if (null == scheme)
                 throw new IllegalStateException("scheme == null");
@@ -1228,6 +1667,11 @@ public class UnoUrl {
             return new UnoUrl(this);
         }
 
+        /**
+         * 返回 URL 的字符串表示
+         *
+         * @return URL 字符串
+         */
         @Override
         public String toString() {
             StringBuilder result = new StringBuilder();
@@ -1280,18 +1724,26 @@ public class UnoUrl {
             return result.toString();
         }
 
+        /**
+         * 解析 URL 字符串
+         *
+         * @param base  基础 URL
+         * @param input 输入字符串
+         * @return 当前 Builder 实例
+         * @throws IllegalArgumentException 如果 URL 格式无效
+         */
         Builder parse(UnoUrl base, String input) {
             int pos = org.miaixz.bus.http.Builder.skipLeadingAsciiWhitespace(input, 0, input.length());
             int limit = org.miaixz.bus.http.Builder.skipTrailingAsciiWhitespace(input, pos, input.length());
 
             int schemeDelimiterOffset = schemeDelimiterOffset(input, pos, limit);
             if (schemeDelimiterOffset != -1) {
-                if (input.regionMatches(true, pos, Protocol.HTTPS.name + Symbol.COLON, 0, 6)) {
+                if (input.regionMatches(true, pos, Protocol.HTTPS.name + Symbol.C_COLON, 0, 6)) {
                     this.scheme = Protocol.HTTPS.name;
-                    pos += (Protocol.HTTPS.name + Symbol.COLON).length();
-                } else if (input.regionMatches(true, pos, Protocol.HTTP.name + Symbol.COLON, 0, 5)) {
+                    pos += (Protocol.HTTPS.name + Symbol.C_COLON).length();
+                } else if (input.regionMatches(true, pos, Protocol.HTTP.name + Symbol.C_COLON, 0, 5)) {
                     this.scheme = Protocol.HTTP.name;
-                    pos += (Protocol.HTTP.name + Symbol.COLON).length();
+                    pos += (Protocol.HTTP.name + Symbol.C_COLON).length();
                 } else {
                     throw new IllegalArgumentException("Expected URL scheme 'http' or 'https' but was '"
                             + input.substring(0, schemeDelimiterOffset) + Symbol.SINGLE_QUOTE);
@@ -1390,6 +1842,13 @@ public class UnoUrl {
             return this;
         }
 
+        /**
+         * 解析路径
+         *
+         * @param input 输入字符串
+         * @param pos   起始位置
+         * @param limit 结束位置
+         */
         private void resolvePath(String input, int pos, int limit) {
             if (pos == limit) {
                 return;
@@ -1414,7 +1873,13 @@ public class UnoUrl {
         }
 
         /**
-         * Adds a path segment. If the input is ".." or equivalent, this pops a path segment.
+         * 添加路径段
+         *
+         * @param input            输入字符串
+         * @param pos              起始位置
+         * @param limit            结束位置
+         * @param addTrailingSlash 是否添加尾部斜杠
+         * @param alreadyEncoded   是否已编码
          */
         private void push(String input, int pos, int limit, boolean addTrailingSlash, boolean alreadyEncoded) {
             String segment = canonicalize(input, pos, limit, PATH_SEGMENT_ENCODE_SET, alreadyEncoded, false, false,
@@ -1436,18 +1901,29 @@ public class UnoUrl {
             }
         }
 
+        /**
+         * 检查是否为点（.）
+         *
+         * @param input 输入字符串
+         * @return true 如果是点
+         */
         private boolean isDot(String input) {
             return input.equals(Symbol.DOT) || input.equalsIgnoreCase("%2e");
         }
 
+        /**
+         * 检查是否为双点（..）
+         *
+         * @param input 输入字符串
+         * @return true 如果是双点
+         */
         private boolean isDotDot(String input) {
             return input.equals(Symbol.DOUBLE_DOT) || input.equalsIgnoreCase("%2e.") || input.equalsIgnoreCase(".%2e")
                     || input.equalsIgnoreCase("%2e%2e");
         }
 
         /**
-         * 删除路径段。当这个方法返回时，最后一个段总是""，这意味着编码后的路径将以/结尾 1. 出现 "/a/b/c/" yields "/a/b/". 在本例中，路径段的 列表从["a", "b", "c", ""] to
-         * ["a", "b", ""]. 2. 出现 "/a/b/c" also yields "/a/b/". 路径段的 列表从["a", "b", "c"] to ["a", "b", ""].
+         * 移除路径段
          */
         private void pop() {
             String removed = encodedPathSegments.remove(encodedPathSegments.size() - 1);
@@ -1457,7 +1933,6 @@ public class UnoUrl {
                 encodedPathSegments.add(Normal.EMPTY);
             }
         }
-
     }
 
 }

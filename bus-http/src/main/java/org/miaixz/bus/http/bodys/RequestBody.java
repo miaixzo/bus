@@ -39,7 +39,10 @@ import org.miaixz.bus.core.xyz.IoKit;
 import org.miaixz.bus.http.Builder;
 
 /**
- * 内容对象
+ * HTTP 请求体
+ * <p>
+ * 表示 HTTP 请求的内容，支持从字符串、字节数组、文件等创建请求体。 提供媒体类型、内容长度和写入功能，支持双工和一次性传输的特殊场景。
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
@@ -47,11 +50,14 @@ import org.miaixz.bus.http.Builder;
 public abstract class RequestBody {
 
     /**
-     * 返回传输{@code content}的新请求体。 如果{@code mediaType}是非空且缺少字符集，则使用UTF-8
+     * 从字符串创建请求体
+     * <p>
+     * 如果 <code>mediaType</code> 非空且缺少字符集，则使用 UTF-8。
+     * </p>
      *
-     * @param mediaType 请求类型
-     * @param content   内容
-     * @return 传输请求体
+     * @param mediaType 媒体类型（可能为 null）
+     * @param content   内容字符串
+     * @return 请求体实例
      */
     public static RequestBody create(MediaType mediaType, String content) {
         java.nio.charset.Charset charset = Charset.UTF_8;
@@ -67,11 +73,11 @@ public abstract class RequestBody {
     }
 
     /**
-     * 返回发送{@code content}的新请求体
+     * 从 ByteString 创建请求体
      *
-     * @param mediaType 请求类型
-     * @param content   内容
-     * @return 传输请求体
+     * @param mediaType 媒体类型（可能为 null）
+     * @param content   内容 ByteString
+     * @return 请求体实例
      */
     public static RequestBody create(final MediaType mediaType, final ByteString content) {
         return new RequestBody() {
@@ -93,24 +99,27 @@ public abstract class RequestBody {
     }
 
     /**
-     * 发送{@code content}的新请求体
+     * 从字节数组创建请求体
      *
-     * @param mediaType 媒体类型
-     * @param content   内容
-     * @return 传输请求体
+     * @param mediaType 媒体类型（可能为 null）
+     * @param content   内容字节数组
+     * @return 请求体实例
+     * @throws NullPointerException 如果 content 为 null
      */
     public static RequestBody create(final MediaType mediaType, final byte[] content) {
         return create(mediaType, content, 0, content.length);
     }
 
     /**
-     * 发送{@code content}的新请求体
+     * 从字节数组部分创建请求体
      *
-     * @param mediaType 媒体类型
-     * @param content   内容
+     * @param mediaType 媒体类型（可能为 null）
+     * @param content   内容字节数组
      * @param offset    偏移量
-     * @param byteCount 当前大小
-     * @return 传输请求体
+     * @param byteCount 字节数
+     * @return 请求体实例
+     * @throws NullPointerException           如果 content 为 null
+     * @throws ArrayIndexOutOfBoundsException 如果 offset 或 byteCount 无效
      */
     public static RequestBody create(final MediaType mediaType, final byte[] content, final int offset,
             final int byteCount) {
@@ -137,11 +146,12 @@ public abstract class RequestBody {
     }
 
     /**
-     * 新的请求体，该请求体传输{@code file}的内容
+     * 从文件创建请求体
      *
-     * @param mediaType 请求类型
+     * @param mediaType 媒体类型（可能为 null）
      * @param file      文件
-     * @return 传输请求体
+     * @return 请求体实例
+     * @throws NullPointerException 如果 file 为 null
      */
     public static RequestBody create(final MediaType mediaType, final File file) {
         if (null == file) {
@@ -169,56 +179,52 @@ public abstract class RequestBody {
     }
 
     /**
-     * @return 返回此主体的媒体类型
+     * 获取媒体类型
+     *
+     * @return 媒体类型（可能为 null）
      */
     public abstract MediaType mediaType();
 
     /**
-     * 返回调用{@link #writeTo}时写入{@code sink}的字节数，如果该计数未知，则返回-1
+     * 获取内容长度
+     * <p>
+     * 返回写入 <code>sink</code> 的字节数，如果未知则返回 -1。
+     * </p>
      *
-     * @return 计数信息
-     * @throws IOException 异常
+     * @return 内容长度
+     * @throws IOException 如果无法确定长度
      */
     public long length() throws IOException {
         return -1;
     }
 
     /**
-     * 将此请求的内容写入{@code sink}
+     * 将请求体内容写入输出流
      *
-     * @param sink 缓存区
-     * @throws IOException 异常信息
+     * @param sink 输出流
+     * @throws IOException 如果写入失败
      */
     public abstract void writeTo(BufferSink sink) throws IOException;
 
     /**
-     * A duplex request body is special in how it is <strong>transmitted</strong> on the network and in the <strong>API
-     * contract</strong> between Http and the application. This method returns false unless it is overridden by a
-     * subclass. Duplex Transmission With regular HTTP calls the request always completes sending before the response
-     * may begin receiving. With duplex the request and response may be interleaved! That is, request body bytes may be
-     * sent after response headers or body bytes have been received. Though any call may be initiated as a duplex call,
-     * only web servers that are specially designed for this nonstandard interaction will use it. As of 2019-01, the
-     * only widely-used implementation of this pattern is
-     * <a href="https://github.com/grpc/grpc/blob/master/doc/PROTOCOL-HTTP2.md">gRPC</a>. Because the encoding of
-     * interleaved data is not well-defined for HTTP/1, duplex request bodies may only be used with HTTP/2. Calls to
-     * HTTP/1 servers will fail before the HTTP request is transmitted. If you cannot ensure that your client and server
-     * both support HTTP/2, do not use this feature. With regular request bodies it is not legal to write bytes to the
-     * sink passed to {@link RequestBody#writeTo} after that method returns. For duplex requests bodies that condition
-     * is lifted. Such writes occur on an application-provided thread and may occur concurrently with reads of the
-     * {@link ResponseBody}. For duplex request bodies, {@link #writeTo} should return quickly, possibly by handing off
-     * the provided request body to another thread to perform writing.
+     * 检查是否为双工请求体
+     * <p>
+     * 双工请求体允许请求和响应数据交错传输，仅支持 HTTP/2。 默认返回 false，除非子类重写。
+     * </p>
+     *
+     * @return true 如果是双工请求体
      */
     public boolean isDuplex() {
         return false;
     }
 
     /**
-     * Returns true if this body expects at most one call to {@link #writeTo} and can be transmitted at most once. This
-     * is typically used when writing the request body is destructive and it is not possible to recreate the request
-     * body after it has been sent. This method returns false unless it is overridden by a subclass. By default Http
-     * will attempt to retransmit request bodies when the original request fails due to a stale connection, a client
-     * timeout (HTTP 408), a satisfied authorization challenge (HTTP 401 and 407), or a retryable server failure (HTTP
-     * 503 with a {@code Retry-After: 0} header).
+     * 检查是否为一次性请求体
+     * <p>
+     * 一次性请求体只能传输一次，通常用于破坏性写入场景。 默认返回 false，除非子类重写。
+     * </p>
+     *
+     * @return true 如果是一次性请求体
      */
     public boolean isOneShot() {
         return false;

@@ -37,28 +37,65 @@ import org.miaixz.bus.core.io.sink.Sink;
 import org.miaixz.bus.core.io.timout.Timeout;
 
 /**
- * RFC 6455兼容的WebSocket帧写入器 这个类不是线程安全的
+ * WebSocket 协议帧写入器
+ * <p>
+ * 用于将 WebSocket 协议帧写入输出流，遵循 RFC 6455 标准，支持控制帧（如 ping、pong、close）和消息帧。 此类非线程安全，需在单一线程中操作。
+ * </p>
  *
  * @author Kimi Liu
  * @since Java 17+
  */
 public class WebSocketWriter {
 
+    /**
+     * 是否为客户端
+     */
     final boolean isClient;
+    /**
+     * 随机数生成器
+     */
     final Random random;
-
+    /**
+     * 输出流
+     */
     final BufferSink sink;
     /**
-     * The {@link Buffer} of {@link #sink}. Write to this and then flush/emit {@link #sink}.
+     * 输出流的缓冲区
      */
     final Buffer sinkBuffer;
+    /**
+     * 内部缓冲区
+     */
     final Buffer buffer = new Buffer();
+    /**
+     * 帧输出流
+     */
     final FrameSink frameSink = new FrameSink();
+    /**
+     * 掩码密钥
+     */
     private final byte[] maskKey;
+    /**
+     * 掩码游标
+     */
     private final Buffer.UnsafeCursor maskCursor;
+    /**
+     * 是否已关闭
+     */
     boolean writerClosed;
+    /**
+     * 是否有活动写入器
+     */
     boolean activeWriter;
 
+    /**
+     * 构造函数，初始化 WebSocketWriter 实例
+     *
+     * @param isClient 是否为客户端
+     * @param sink     输出流
+     * @param random   随机数生成器
+     * @throws NullPointerException 如果 sink 或 random 为 null
+     */
     WebSocketWriter(boolean isClient, BufferSink sink, Random random) {
         if (sink == null)
             throw new NullPointerException("sink == null");
@@ -71,29 +108,38 @@ public class WebSocketWriter {
 
         // Masks are only a concern for client writers.
         maskKey = isClient ? new byte[4] : null;
-        maskCursor = isClient ? new Buffer.UnsafeCursor() : null;
+        maskCursor = isClient ? null : new Buffer.UnsafeCursor();
     }
 
     /**
-     * Send a ping with the supplied {@code payload}.
+     * 写入 ping 帧
+     *
+     * @param payload ping 数据
+     * @throws IOException 如果写入失败
      */
     void writePing(ByteString payload) throws IOException {
         writeControlFrame(WebSocketProtocol.OPCODE_CONTROL_PING, payload);
     }
 
     /**
-     * Send a pong with the supplied {@code payload}.
+     * 写入 pong 帧
+     *
+     * @param payload pong 数据
+     * @throws IOException 如果写入失败
      */
     void writePong(ByteString payload) throws IOException {
         writeControlFrame(WebSocketProtocol.OPCODE_CONTROL_PONG, payload);
     }
 
     /**
-     * Send a close frame with optional code and reason.
+     * 写入 close 帧
+     * <p>
+     * 包含可选的关闭代码和原因，关闭后标记写入器为关闭状态。
+     * </p>
      *
-     * @param code   Status code as defined by <a href="http://tools.ietf.org/html/rfc6455#section-7.4">Section 7.4 of
-     *               RFC 6455</a> or {@code 0}.
-     * @param reason Reason for shutting down or {@code null}.
+     * @param code   关闭代码（符合 RFC 6455 Section 7.4 或 0）
+     * @param reason 关闭原因（可能为 null）
+     * @throws IOException 如果写入失败
      */
     void writeClose(int code, ByteString reason) throws IOException {
         ByteString payload = ByteString.EMPTY;
@@ -116,6 +162,14 @@ public class WebSocketWriter {
         }
     }
 
+    /**
+     * 写入控制帧
+     *
+     * @param opcode  操作码
+     * @param payload 数据
+     * @throws IOException              如果写入失败
+     * @throws IllegalArgumentException 如果数据长度超限
+     */
     private void writeControlFrame(int opcode, ByteString payload) throws IOException {
         if (writerClosed)
             throw new IOException("closed");
@@ -155,8 +209,15 @@ public class WebSocketWriter {
     }
 
     /**
-     * Stream a message payload as a series of frames. This allows control frames to be interleaved between parts of the
-     * message.
+     * 创建新的消息输出流
+     * <p>
+     * 用于流式写入消息，支持控制帧交错。
+     * </p>
+     *
+     * @param formatOpcode  消息操作码
+     * @param contentLength 内容长度
+     * @return 输出流
+     * @throws IllegalStateException 如果已有活动写入器
      */
     Sink newMessageSink(int formatOpcode, long contentLength) {
         if (activeWriter) {
@@ -173,6 +234,15 @@ public class WebSocketWriter {
         return frameSink;
     }
 
+    /**
+     * 写入消息帧
+     *
+     * @param formatOpcode 消息操作码
+     * @param byteCount    字节数
+     * @param isFirstFrame 是否为首帧
+     * @param isFinal      是否为最终帧
+     * @throws IOException 如果写入失败
+     */
     void writeMessageFrame(int formatOpcode, long byteCount, boolean isFirstFrame, boolean isFinal) throws IOException {
         if (writerClosed)
             throw new IOException("closed");
@@ -220,12 +290,35 @@ public class WebSocketWriter {
         sink.emit();
     }
 
+    /**
+     * WebSocket 帧输出流
+     */
     class FrameSink implements Sink {
+
+        /**
+         * 消息操作码
+         */
         int formatOpcode;
+        /**
+         * 内容长度
+         */
         long contentLength;
+        /**
+         * 是否为首帧
+         */
         boolean isFirstFrame;
+        /**
+         * 是否已关闭
+         */
         boolean closed;
 
+        /**
+         * 写入数据
+         *
+         * @param source    数据源
+         * @param byteCount 字节数
+         * @throws IOException 如果流已关闭或写入失败
+         */
         @Override
         public void write(Buffer source, long byteCount) throws IOException {
             if (closed)
@@ -244,6 +337,11 @@ public class WebSocketWriter {
             }
         }
 
+        /**
+         * 刷新数据
+         *
+         * @throws IOException 如果流已关闭或写入失败
+         */
         @Override
         public void flush() throws IOException {
             if (closed)
@@ -253,11 +351,21 @@ public class WebSocketWriter {
             isFirstFrame = false;
         }
 
+        /**
+         * 获取超时配置
+         *
+         * @return 超时配置
+         */
         @Override
         public Timeout timeout() {
             return sink.timeout();
         }
 
+        /**
+         * 关闭输出流
+         *
+         * @throws IOException 如果流已关闭或写入失败
+         */
         @Override
         public void close() throws IOException {
             if (closed)

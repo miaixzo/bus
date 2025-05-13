@@ -31,6 +31,7 @@ import java.io.File;
 
 import org.miaixz.bus.core.lang.Normal;
 import org.miaixz.bus.core.lang.annotation.ThreadSafe;
+import org.miaixz.bus.core.lang.exception.NotFoundException;
 import org.miaixz.bus.health.Config;
 
 /**
@@ -60,7 +61,7 @@ public final class DevPath {
         // Ensure prefix begins with path separator, but doesn't end with one
         devPath = '/' + devPath.replaceAll("/$|^/", Normal.EMPTY);
         if (!new File(devPath).exists()) {
-            throw new Config.PropertyException(Config._UTIL_DEV_PATH, "The path does not exist");
+            throw new NotFoundException(Config._UTIL_DEV_PATH, "The path does not exist");
         }
         return devPath;
     }

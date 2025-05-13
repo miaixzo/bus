@@ -45,7 +45,7 @@ public enum TemplateType implements Serializable {
     /**
      * freeMarker 模板
      */
-    FREEMARKER(Normal.META_INF + "/template/", FreemarkerEngine.class, ".ftl");
+    FREEMARKER(Normal.META_INF + "/shade/beans/", FreemarkerEngine.class, ".ftl");
 
     /**
      * 模板目录

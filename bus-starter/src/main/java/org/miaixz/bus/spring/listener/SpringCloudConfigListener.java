@@ -55,29 +55,6 @@ public class SpringCloudConfigListener implements ApplicationListener<Applicatio
     private final static MapPropertySource HIGH_PRIORITY_CONFIG = new MapPropertySource(GeniusBuilder.BUS_HIGH_PRIORITY,
             new HashMap<>());
 
-    /**
-     * 配置日志信息
-     *
-     * @param environment 环境资源信息
-     */
-    private void assemblyLogSetting(ConfigurableEnvironment environment) {
-        StreamSupport.stream(environment.getPropertySources().spliterator(), false)
-                .filter(propertySource -> propertySource instanceof EnumerablePropertySource)
-                .map(propertySource -> Arrays.asList(((EnumerablePropertySource<?>) propertySource).getPropertyNames()))
-                .flatMap(Collection::stream).filter(GeniusBuilder::isLoggingConfig)
-                .forEach((key) -> HIGH_PRIORITY_CONFIG.getSource().put(key, environment.getProperty(key)));
-    }
-
-    /**
-     * 配置必需的属性
-     */
-    private void assemblyRequireProperties(ConfigurableEnvironment environment) {
-        if (StringKit.hasText(environment.getProperty(GeniusBuilder.APP_NAME))) {
-            HIGH_PRIORITY_CONFIG.getSource().put(GeniusBuilder.APP_NAME,
-                    environment.getProperty(GeniusBuilder.APP_NAME));
-        }
-    }
-
     @Override
     public int getOrder() {
         return Ordered.HIGHEST_PRECEDENCE;
@@ -123,9 +100,32 @@ public class SpringCloudConfigListener implements ApplicationListener<Applicatio
                         .forEach(listener -> ((EnvironmentPostProcessorApplicationListener) listener)
                                 .onApplicationEvent(bootstrapEvent));
 
-                assemblyLogSetting(bootstrapEnvironment);
-                assemblyRequireProperties(bootstrapEnvironment);
+                logSetting(bootstrapEnvironment);
+                requireProperties(bootstrapEnvironment);
             }
+        }
+    }
+
+    /**
+     * 配置日志信息
+     *
+     * @param environment 环境资源信息
+     */
+    private void logSetting(ConfigurableEnvironment environment) {
+        StreamSupport.stream(environment.getPropertySources().spliterator(), false)
+                .filter(propertySource -> propertySource instanceof EnumerablePropertySource)
+                .map(propertySource -> Arrays.asList(((EnumerablePropertySource<?>) propertySource).getPropertyNames()))
+                .flatMap(Collection::stream).filter(GeniusBuilder::isLoggingConfig)
+                .forEach((key) -> HIGH_PRIORITY_CONFIG.getSource().put(key, environment.getProperty(key)));
+    }
+
+    /**
+     * 配置必需的属性
+     */
+    private void requireProperties(ConfigurableEnvironment environment) {
+        if (StringKit.hasText(environment.getProperty(GeniusBuilder.APP_NAME))) {
+            HIGH_PRIORITY_CONFIG.getSource().put(GeniusBuilder.APP_NAME,
+                    environment.getProperty(GeniusBuilder.APP_NAME));
         }
     }
 

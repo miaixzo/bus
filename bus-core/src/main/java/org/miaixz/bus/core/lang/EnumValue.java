@@ -559,4 +559,32 @@ public interface EnumValue<E extends EnumValue<E>> extends Enumers {
 
     }
 
+    /**
+     * 排序方式
+     */
+    @Getter
+    @AllArgsConstructor
+    enum Probe {
+
+        /**
+         * 拒绝流量
+         */
+        REFUSE("refuse"),
+        /**
+         * 接受流量
+         */
+        ACCEPT("accept"),
+        /**
+         * 存活正常
+         */
+        CORRECT("correct"),
+        /**
+         * 存活异常
+         */
+        BROKEN("broken");
+
+        private final String value;
+
+    }
+
 }

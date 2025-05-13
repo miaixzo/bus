@@ -177,7 +177,7 @@ public class Httpx {
                     try {
                         return dns.lookup(hostname);
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Logger.error("DNS lookup failed: {}", e.getMessage());
                     }
                     return DnsX.SYSTEM.lookup(hostname);
                 });
@@ -295,7 +295,7 @@ public class Httpx {
      */
     public static void post(String url, Map<String, String> formMap, Callback callback) {
         StringBuilder data = new StringBuilder();
-        if (ObjectKit.isNotEmpty(formMap)) {
+        if (MapKit.isNotEmpty(formMap)) {
             Set<String> keys = formMap.keySet();
             for (String key : keys) {
                 data.append(key).append(Symbol.EQUAL).append(formMap.get(key)).append(Symbol.AND);
@@ -384,6 +384,15 @@ public class Httpx {
                 .requestCharset(charset).responseCharset(charset).build());
     }
 
+    /**
+     * 带查询参数 POST 请求 使用默认编码 UTF-8
+     *
+     * @param url       URL地址
+     * @param data      请求数据
+     * @param headerMap 头部数据
+     * @param mediaType 类型
+     * @return the {@link String}
+     */
     public static String post(final String url, final String data, final Map<String, String> headerMap,
             final String mediaType) {
         return execute(Builder.builder().url(url).method(HTTP.POST).data(data).headerMap(headerMap).mediaType(mediaType)
@@ -436,6 +445,245 @@ public class Httpx {
     }
 
     /**
+     * 简单的 PUT 请求 使用默认编码 UTF-8
+     *
+     * @param url URL地址
+     * @return the {@link String}
+     */
+    public static String put(final String url) {
+        return put(url, (String) null, Charset.DEFAULT_UTF_8);
+    }
+
+    /**
+     * 带查询参数 PUT 请求 使用默认编码 UTF-8
+     *
+     * @param url     URL地址
+     * @param formMap 请求数据
+     * @return the {@link String}
+     */
+    public static String put(final String url, final Map<String, String> formMap) {
+        return put(url, formMap, MediaType.APPLICATION_FORM_URLENCODED, Charset.DEFAULT_UTF_8);
+    }
+
+    /**
+     * 带查询参数 PUT 请求 使用默认编码 UTF-8
+     *
+     * @param url       URL地址
+     * @param data      请求数据
+     * @param mediaType 类型
+     * @return the {@link String}
+     */
+    public static String put(final String url, final String data, final String mediaType) {
+        return put(url, data, mediaType, Charset.DEFAULT_UTF_8);
+    }
+
+    /**
+     * 带查询参数 PUT 请求 使用默认编码 UTF-8
+     *
+     * @param url       URL地址
+     * @param formMap   请求数据
+     * @param mediaType 类型
+     * @return the {@link String}
+     */
+    public static String put(final String url, final Map<String, String> formMap, final String mediaType) {
+        return put(url, formMap, mediaType, Charset.DEFAULT_UTF_8);
+    }
+
+    /**
+     * 带查询参数 PUT 请求 使用自定义编码
+     *
+     * @param url       URL地址
+     * @param formMap   请求数据
+     * @param headerMap 头部数据
+     * @return the {@link String}
+     */
+    public static String put(final String url, final Map<String, String> formMap, final Map<String, String> headerMap) {
+        return put(url, formMap, headerMap, MediaType.APPLICATION_FORM_URLENCODED);
+    }
+
+    /**
+     * 带查询参数 PUT 请求 使用默认编码 UTF-8
+     *
+     * @param url       URL地址
+     * @param data      请求数据
+     * @param mediaType 类型
+     * @param charset   自定义编码
+     * @return the {@link String}
+     */
+    public static String put(final String url, final String data, final String mediaType, final String charset) {
+        return execute(Builder.builder().url(url).method(HTTP.PUT).data(data).mediaType(mediaType)
+                .requestCharset(charset).responseCharset(charset).build());
+    }
+
+    /**
+     * 带查询参数 PUT 请求 使用默认编码 UTF-8
+     *
+     * @param url       URL地址
+     * @param data      请求数据
+     * @param headerMap 头部数据
+     * @param mediaType 类型
+     * @return the {@link String}
+     */
+    public static String put(final String url, final String data, final Map<String, String> headerMap,
+            final String mediaType) {
+        return execute(Builder.builder().url(url).method(HTTP.PUT).data(data).headerMap(headerMap).mediaType(mediaType)
+                .requestCharset(Charset.DEFAULT_UTF_8).responseCharset(Charset.DEFAULT_UTF_8).build());
+    }
+
+    /**
+     * 带查询参数 PUT 请求 使用自定义编码
+     *
+     * @param url       URL地址
+     * @param formMap   请求数据
+     * @param mediaType 类型
+     * @param charset   自定义编码
+     * @return the {@link String}
+     */
+    public static String put(final String url, final Map<String, String> formMap, final String mediaType,
+            final String charset) {
+        return execute(Builder.builder().url(url).method(HTTP.PUT).formMap(formMap).mediaType(mediaType)
+                .requestCharset(charset).responseCharset(charset).build());
+    }
+
+    /**
+     * 带查询参数 PUT 请求 使用自定义编码
+     *
+     * @param url       URL地址
+     * @param headerMap 头部数据
+     * @param formMap   请求数据
+     * @param mediaType 类型
+     * @return the {@link String}
+     */
+    public static String put(final String url, final Map<String, String> formMap, final Map<String, String> headerMap,
+            final String mediaType) {
+        return put(url, formMap, headerMap, mediaType, Charset.DEFAULT_UTF_8);
+    }
+
+    /**
+     * 带查询参数 PUT 请求 使用自定义编码
+     *
+     * @param url       URL地址
+     * @param headerMap 头部数据
+     * @param formMap   请求数据
+     * @param mediaType 类型
+     * @param charset   自定义编码
+     * @return the {@link String}
+     */
+    public static String put(final String url, final Map<String, String> formMap, final Map<String, String> headerMap,
+            final String mediaType, final String charset) {
+        return execute(Builder.builder().url(url).method(HTTP.PUT).headerMap(headerMap).formMap(formMap)
+                .mediaType(mediaType).requestCharset(charset).responseCharset(charset).build());
+    }
+
+    /**
+     * 简单的 DELETE 请求 使用默认编码 UTF-8
+     *
+     * @param url URL地址
+     * @return the {@link String}
+     */
+    public static String delete(final String url) {
+        return delete(url, null, Charset.DEFAULT_UTF_8);
+    }
+
+    /**
+     * 带查询参数 DELETE 请求 使用默认编码 UTF-8
+     *
+     * @param url     URL地址
+     * @param formMap 请求数据
+     * @return the {@link String}
+     */
+    public static String delete(final String url, final Map<String, String> formMap) {
+        return delete(url, formMap, Charset.DEFAULT_UTF_8);
+    }
+
+    /**
+     * 带查询参数 DELETE 请求 使用自定义编码
+     *
+     * @param url     URL地址
+     * @param formMap 请求数据
+     * @param charset 自定义编码
+     * @return the {@link String}
+     */
+    public static String delete(final String url, final Map<String, String> formMap, final String charset) {
+        return execute(Builder.builder().url(url).method(HTTP.DELETE).formMap(formMap).requestCharset(charset)
+                .responseCharset(charset).build());
+    }
+
+    /**
+     * 带查询参数 DELETE 请求 使用默认编码 UTF-8
+     *
+     * @param url       URL地址
+     * @param formMap   请求数据
+     * @param headerMap 头部数据
+     * @return the {@link String}
+     */
+    public static String delete(final String url, final Map<String, String> formMap,
+            final Map<String, String> headerMap) {
+        return delete(url, formMap, headerMap, Charset.DEFAULT_UTF_8);
+    }
+
+    /**
+     * 带查询参数 DELETE 请求 使用自定义编码
+     *
+     * @param url       URL地址
+     * @param formMap   请求数据
+     * @param headerMap 头部数据
+     * @param charset   自定义编码
+     * @return the {@link String}
+     */
+    public static String delete(final String url, final Map<String, String> formMap,
+            final Map<String, String> headerMap, final String charset) {
+        return execute(Builder.builder().url(url).method(HTTP.DELETE).headerMap(headerMap).formMap(formMap)
+                .requestCharset(charset).responseCharset(charset).build());
+    }
+
+    /**
+     * 简单的 HEAD 请求 使用默认编码 UTF-8
+     *
+     * @param url URL地址
+     * @return 响应头信息，格式为字符串
+     */
+    public static String head(final String url) {
+        return head(url, Charset.DEFAULT_UTF_8);
+    }
+
+    /**
+     * HEAD 请求 使用自定义编码
+     *
+     * @param url     URL地址
+     * @param charset 自定义编码
+     * @return 响应头信息，格式为字符串
+     */
+    public static String head(final String url, final String charset) {
+        return head(url, null, charset);
+    }
+
+    /**
+     * 带头部参数 HEAD 请求 使用自定义编码
+     *
+     * @param url       URL地址
+     * @param headerMap 头部数据
+     * @param charset   自定义编码
+     * @return 响应头信息，格式为字符串
+     */
+    public static String head(final String url, final Map<String, String> headerMap, final String charset) {
+        StringBuilder result = new StringBuilder();
+        try {
+            Request request = builder(Builder.builder().url(url).method(HTTP.HEAD).headerMap(headerMap)
+                    .requestCharset(charset).responseCharset(charset).build()).url(url).build();
+            Response response = httpd.newCall(request).execute();
+            if (response.headers() != null) {
+                response.headers().toMultimap().forEach((key, values) -> result.append(key).append(": ")
+                        .append(String.join(", ", values)).append("\n"));
+            }
+            response.close();
+        } catch (Exception e) {
+            Logger.error("HEAD request failed for URL [{}]: {}", url, e.getMessage());
+        }
+        return result.toString();
+    }
+
+    /**
      * 表单提交带文件上传
      *
      * @param url     请求地址
@@ -446,26 +694,31 @@ public class Httpx {
     public static String post(final String url, final Map<String, String> formMap, final List<String> list) {
         MediaType mediaType = MediaType
                 .valueOf(MediaType.APPLICATION_FORM_URLENCODED + Symbol.SEMICOLON + Charset.DEFAULT_UTF_8);
-        RequestBody bodyParams = RequestBody.create(mediaType, formMap.toString());
+        RequestBody bodyParams = RequestBody.create(mediaType,
+                MapKit.isNotEmpty(formMap) ? formMap.toString() : Normal.EMPTY);
         MultipartBody.Builder requestBodyBuilder = new MultipartBody.Builder()
                 .setType(MediaType.MULTIPART_FORM_DATA_TYPE).addFormDataPart("params", Normal.EMPTY, bodyParams);
 
-        File file;
         for (String path : list) {
-            file = new File(path);
-            requestBodyBuilder.addFormDataPart("file", file.getName(), RequestBody.create(mediaType, new File(path)));
+            File file = new File(path);
+            if (file.exists()) {
+                requestBodyBuilder.addFormDataPart("file", file.getName(), RequestBody.create(mediaType, file));
+            } else {
+                Logger.warn("File not found: {}", path);
+            }
         }
         RequestBody requestBody = requestBodyBuilder.build();
         Request request = new Request.Builder().url(url).post(requestBody).build();
         String result = Normal.EMPTY;
         try {
             Response response = httpd.newCall(request).execute();
-            if (null != response.body()) {
+            if (response.body() != null) {
                 byte[] bytes = response.body().bytes();
                 result = new String(bytes, Charset.DEFAULT_UTF_8);
             }
+            response.close();
         } catch (Exception e) {
-            Logger.error(">>>>>>>>Requesting HTTP Error [%s]<<<<<<<<", e);
+            Logger.error("Requesting HTTP Error for URL [{}]: {}", url, e.getMessage());
         }
         return result;
     }
@@ -490,7 +743,7 @@ public class Httpx {
             builder.mediaType = MediaType.APPLICATION_FORM_URLENCODED;
         }
         if (builder.tracer) {
-            Logger.info(">>>>>>>>Builder[{}]<<<<<<<<", builder.toString());
+            Logger.info("Request Builder: {}", builder);
         }
 
         Request.Builder request = new Request.Builder();
@@ -509,18 +762,20 @@ public class Httpx {
                         builder.url.contains(Symbol.QUESTION_MARK) ? Symbol.AND : Symbol.QUESTION_MARK, form);
             }
             request.get();
+        } else if (StringKit.equals(method, HTTP.HEAD)) {
+            request.head();
         } else if (ArrayKit.contains(new String[] { HTTP.POST, HTTP.PUT, HTTP.DELETE, HTTP.PATCH }, method)) {
+            RequestBody requestBody = null;
             if (StringKit.isNotEmpty(builder.data)) {
-                RequestBody requestBody = RequestBody.create(MediaType.valueOf(mediaType), builder.data);
-                request.method(method, requestBody);
-            }
-            if (MapKit.isNotEmpty(builder.formMap)) {
+                requestBody = RequestBody.create(MediaType.valueOf(mediaType), builder.data);
+            } else if (MapKit.isNotEmpty(builder.formMap)) {
                 FormBody.Builder form = new FormBody.Builder(Charset.UTF_8);
                 builder.formMap.forEach((key, value) -> form.add(key, StringKit.toString(value)));
-                request.method(method, form.build());
+                requestBody = form.build();
             }
+            request.method(method, requestBody);
         } else {
-            throw new InternalException(String.format(">>>>>>>>Request Method Not found[%s]<<<<<<<<", method));
+            throw new InternalException("Unsupported request method: " + method);
         }
         return request;
     }
@@ -532,19 +787,20 @@ public class Httpx {
      * @return the {@link String}
      */
     private static String execute(final Builder builder) {
-        Request.Builder request = builder(builder);
         String result = Normal.EMPTY;
         try {
-            Response response = httpd.newCall(request.url(builder.url).build()).execute();
-            if (null != response.body()) {
+            Request request = builder(builder).url(builder.url).build();
+            Response response = httpd.newCall(request).execute();
+            if (response.body() != null) {
                 byte[] bytes = response.body().bytes();
                 result = new String(bytes, builder.responseCharset);
             }
             if (builder.tracer) {
-                Logger.info(">>>>>>>>Url[{}],Response[{}]<<<<<<<<", builder.url, result);
+                Logger.info("Response for URL [{}]: {}", builder.url, result);
             }
+            response.close();
         } catch (Exception e) {
-            Logger.error(e, ">>>>>>>>Builder[{}] Error<<<<<<<<", builder.toString());
+            Logger.error("Request failed for URL [{}]: {}", builder.url, e.getMessage());
         }
         return result;
     }
@@ -556,23 +812,27 @@ public class Httpx {
      * @return the {@link String}
      */
     private static String enqueue(final Builder builder) {
-        Request.Builder request = builder(builder);
-        NewCall call = httpd.newCall(request.url(builder.url).build());
+        Request request = builder(builder).url(builder.url).build();
+        NewCall call = httpd.newCall(request);
         String[] result = { Normal.EMPTY };
         call.enqueue(new Callback() {
             @Override
             public void onFailure(NewCall call, IOException e) {
-                Logger.info(String.format(">>>>>>>>Url[%s] Failure<<<<<<<<", builder.url));
+                Logger.error("Async request failed for URL [{}]: {}", builder.url, e.getMessage());
             }
 
             @Override
             public void onResponse(NewCall call, Response response) throws IOException {
-                if (null != response.body()) {
-                    byte[] bytes = response.body().bytes();
-                    result[0] = new String(bytes, builder.responseCharset);
-                    if (builder.tracer) {
-                        Logger.info(">>>>>>>>Url[{}],Response[{}]<<<<<<<<", builder.url, result[0]);
+                try {
+                    if (response.body() != null) {
+                        byte[] bytes = response.body().bytes();
+                        result[0] = new String(bytes, builder.responseCharset);
+                        if (builder.tracer) {
+                            Logger.info("Async response for URL [{}]: {}", builder.url, result[0]);
+                        }
                     }
+                } finally {
+                    response.close();
                 }
             }
         });
