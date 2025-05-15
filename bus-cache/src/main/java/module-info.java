@@ -25,38 +25,47 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.aopalliance.intercept;
-
-import org.aopalliance.aop.Advice;
-
 /**
- * This interface represents a generic interceptor. A generic interceptor can intercept runtime events that occur within
- * a base program. Those events are materialized by (reified in) joinpoints. Runtime joinpoints can be invocations,
- * field access, exceptions... This interface is not used directly. Use the sub-interfaces to intercept specific events.
- * For instance, the following class implements some specific interceptors in order to implement a debugger:
- *
- * <pre>
- * class DebuggingInterceptor implements MethodInterceptor,
- *     ConstructorInterceptor {
- *
- *   Object invoke(MethodInvocation i) throws Throwable {
- *     debug(i.getMethod(), i.getThis(), i.getArgs());
- *     return i.proceed();
- *   }
- *
- *   Object construct(ConstructorInvocation i) throws Throwable {
- *     debug(i.getConstructor(), i.getThis(), i.getArgs());
- *     return i.proceed();
- *   }
- *
- *   void debug(AccessibleObject ao, Object this, Object value) {
- *     ...
- *   }
- * }
- * </pre>
- *
- * @see Joinpoint
+ * bus.cache
+ * 
+ * @author Kimi Liu
+ * @since Java 17+
  */
-public interface Interceptor extends Advice {
+module bus.cache {
+
+    requires java.desktop;
+    requires java.sql;
+    requires java.management;
+    requires java.compiler;
+    requires java.naming;
+
+    requires bus.core;
+    requires bus.logger;
+    requires bus.extra;
+    requires bus.setting;
+    requires bus.proxy;
+
+    requires static lombok;
+    requires static jakarta.annotation;
+    requires static spring.jdbc;
+    requires static spring.expression;
+    requires static com.zaxxer.hikari;
+    requires static redis.clients.jedis;
+    requires static xmemcached;
+    requires static zookeeper;
+    requires static hessian;
+    requires static com.google.common;
+    requires static com.google.guice;
+    requires static curator.framework;
+    requires static curator.recipes;
+    requires static curator.client;
+
+    exports org.miaixz.bus.cache;
+    exports org.miaixz.bus.cache.magic;
+    exports org.miaixz.bus.cache.magic.annotation;
+    exports org.miaixz.bus.cache.metric;
+    exports org.miaixz.bus.cache.provider;
+    exports org.miaixz.bus.cache.serialize;
+    exports org.miaixz.bus.cache.support;
 
 }

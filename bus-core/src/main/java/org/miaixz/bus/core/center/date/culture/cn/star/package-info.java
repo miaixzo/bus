@@ -25,20 +25,10 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.aopalliance.intercept;
-
 /**
- * This interface represents an invocation in the program. An invocation is a joinpoint and can be intercepted by an
- * interceptor.
+ * 中国传统文化/日历相关
+ *
+ * @author Kimi Liu
+ * @since Java 17+
  */
-public interface Invocation extends Joinpoint {
-
-    /**
-     * Get the arguments as an array object. It is possible to change element values within this array to change the
-     * arguments.
-     *
-     * @return the argument of the invocation
-     */
-    Object[] getArguments();
-
-}
+package org.miaixz.bus.core.center.date.culture.cn.star;

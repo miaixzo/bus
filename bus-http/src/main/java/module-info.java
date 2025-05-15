@@ -25,47 +25,35 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.extra.nlp.provider.ikanalyzer;
-
-import java.io.IOException;
-
-import org.miaixz.bus.core.lang.exception.InternalException;
-import org.miaixz.bus.extra.nlp.AbstractResult;
-import org.miaixz.bus.extra.nlp.NLPWord;
-import org.wltea.analyzer.core.IKSegmenter;
-import org.wltea.analyzer.core.Lexeme;
-
 /**
- * IKAnalyzer分词结果实现 项目地址：https://github.com/yozhao/IKAnalyzer
- *
+ * bus.http
+ * 
  * @author Kimi Liu
  * @since Java 17+
  */
-public class IKAnalyzerResult extends AbstractResult {
+module bus.http {
 
-    private final IKSegmenter seg;
+    requires bus.core;
+    requires bus.logger;
 
-    /**
-     * 构造
-     *
-     * @param seg 分词结果
-     */
-    public IKAnalyzerResult(final IKSegmenter seg) {
-        this.seg = seg;
-    }
+    requires static lombok;
+    requires static jakarta.xml.soap;
 
-    @Override
-    protected NLPWord nextWord() {
-        final Lexeme next;
-        try {
-            next = this.seg.next();
-        } catch (final IOException e) {
-            throw new InternalException(e);
-        }
-        if (null == next) {
-            return null;
-        }
-        return new IKAnalyzerWord(next);
-    }
+    exports org.miaixz.bus.http;
+    exports org.miaixz.bus.http.accord;
+    exports org.miaixz.bus.http.accord.platform;
+    exports org.miaixz.bus.http.bodys;
+    exports org.miaixz.bus.http.cache;
+    exports org.miaixz.bus.http.metric;
+    exports org.miaixz.bus.http.metric.anget;
+    exports org.miaixz.bus.http.metric.http;
+    exports org.miaixz.bus.http.metric.proxy;
+    exports org.miaixz.bus.http.metric.suffix;
+    exports org.miaixz.bus.http.plugin.httpv;
+    exports org.miaixz.bus.http.plugin.httpx;
+    exports org.miaixz.bus.http.plugin.httpz;
+    exports org.miaixz.bus.http.plugin.soap;
+    exports org.miaixz.bus.http.secure;
+    exports org.miaixz.bus.http.socket;
 
 }

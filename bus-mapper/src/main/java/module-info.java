@@ -25,36 +25,51 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.aopalliance.intercept;
-
 /**
- * Intercepts calls on an interface on its way to the target. These are nested "on top" of the target. The user should
- * implement the {@link #invoke(MethodInvocation)} method to modify the original behavior. E.g. the following class
- * implements a tracing interceptor (traces all the calls on the intercepted method(s)):
- *
- * <pre class=code>
- * class TracingInterceptor implements MethodInterceptor {
- *     Object invoke(MethodInvocation i) throws Throwable {
- *         System.out.println(
- *                 "method " + i.getMethod() + " is called on " + i.getThis() + " with args " + i.getArguments());
- *         Object ret = i.proceed();
- *         System.out.println("method " + i.getMethod() + " returns " + ret);
- *         return ret;
- *     }
- * }
- * </pre>
+ * bus.mapper
+ * 
+ * @author Kimi Liu
+ * @since Java 17+
  */
-@FunctionalInterface
-public interface MethodInterceptor extends Interceptor {
+module bus.mapper {
 
-    /**
-     * Implement this method to perform extra treatments before and after the invocation. Polite implementations would
-     * certainly like to invoke {@link Joinpoint#proceed()}.
-     *
-     * @param invocation the method invocation joinpoint
-     * @return the result of the call to {@link Joinpoint#proceed()}; might be intercepted by the interceptor
-     * @throws Throwable if the interceptors or the target object throws an exception
-     */
-    Object invoke(MethodInvocation invocation) throws Throwable;
+    requires java.desktop;
+
+    requires bus.core;
+    requires bus.logger;
+
+    requires static org.mybatis;
+    requires static jakarta.persistence;
+
+    exports org.miaixz.bus.mapper;
+    exports org.miaixz.bus.mapper.additional.aggregation;
+    exports org.miaixz.bus.mapper.additional.delete;
+    exports org.miaixz.bus.mapper.additional.dialect.oracle;
+    exports org.miaixz.bus.mapper.additional.idlist;
+    exports org.miaixz.bus.mapper.additional.insert;
+    exports org.miaixz.bus.mapper.additional.select;
+    exports org.miaixz.bus.mapper.additional.update.batch;
+    exports org.miaixz.bus.mapper.additional.update.differ;
+    exports org.miaixz.bus.mapper.additional.update.force;
+    exports org.miaixz.bus.mapper.additional.upsert;
+    exports org.miaixz.bus.mapper.annotation;
+    exports org.miaixz.bus.mapper.builder;
+    exports org.miaixz.bus.mapper.builder.resolve;
+    exports org.miaixz.bus.mapper.common;
+    exports org.miaixz.bus.mapper.common.basic;
+    exports org.miaixz.bus.mapper.common.basic.delete;
+    exports org.miaixz.bus.mapper.common.basic.insert;
+    exports org.miaixz.bus.mapper.common.basic.select;
+    exports org.miaixz.bus.mapper.common.basic.update;
+    exports org.miaixz.bus.mapper.common.condition;
+    exports org.miaixz.bus.mapper.common.ids;
+    exports org.miaixz.bus.mapper.common.rowbounds;
+    exports org.miaixz.bus.mapper.common.special;
+    exports org.miaixz.bus.mapper.common.sqlserver;
+    exports org.miaixz.bus.mapper.criteria;
+    exports org.miaixz.bus.mapper.entity;
+    exports org.miaixz.bus.mapper.handler;
+    exports org.miaixz.bus.mapper.provider;
+    exports org.miaixz.bus.mapper.support;
 
 }

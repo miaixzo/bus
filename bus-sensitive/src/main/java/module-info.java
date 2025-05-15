@@ -25,58 +25,23 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.extra.ssh;
-
-import java.io.IOException;
-
-import org.apache.sshd.client.SshClient;
-import org.apache.sshd.client.session.ClientSession;
-import org.miaixz.bus.core.lang.exception.InternalException;
-
 /**
- * Apache MINA SSHD（https://mina.apache.org/sshd-project/）相关工具类
- *
+ * bus.sensitive
+ * 
  * @author Kimi Liu
  * @since Java 17+
  */
-public class MinaKit {
+module bus.sensitive {
 
-    /**
-     * 打开一个客户端对象
-     *
-     * @return 客户端对象
-     */
-    public static SshClient openClient() {
-        final SshClient sshClient = SshClient.setUpDefaultClient();
-        sshClient.start();
+    requires bus.core;
+    requires bus.crypto;
+    requires bus.extra;
 
-        return sshClient;
-    }
+    requires static lombok;
 
-    /**
-     * 打开一个新的Session
-     *
-     * @param sshClient 客户端
-     * @param connector 连接信息
-     * @return {@link ClientSession}
-     */
-    public static ClientSession openSession(final SshClient sshClient, final Connector connector) {
-        final ClientSession session;
-        final boolean success;
-        try {
-            session = sshClient.connect(connector.getUser(), connector.getHost(), connector.getPort()).verify()
-                    .getSession();
+    exports org.miaixz.bus.sensitive;
+    exports org.miaixz.bus.sensitive.magic;
+    exports org.miaixz.bus.sensitive.magic.annotation;
+    exports org.miaixz.bus.sensitive.metric;
 
-            session.addPasswordIdentity(connector.getPassword());
-            success = session.auth().verify().isSuccess();
-        } catch (final IOException e) {
-            throw new InternalException(e);
-        }
-
-        if (!success) {
-            throw new InternalException("Authentication failed.");
-        }
-
-        return session;
-    }
 }

@@ -26,9 +26,45 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 这个包为AOP提供了最通用和最通用的接口
- *
+ * bus.notify
+ * 
  * @author Kimi Liu
  * @since Java 17+
  */
-package org.aopalliance.aop;
+module bus.notify {
+
+    requires bus.cache;
+    requires bus.core;
+    requires bus.crypto;
+    requires bus.logger;
+    requires bus.extra;
+    requires bus.http;
+
+    requires static lombok;
+    requires static jakarta.activation;
+    requires static jakarta.mail;
+
+    exports org.miaixz.bus.notify;
+    exports org.miaixz.bus.notify.cache;
+    exports org.miaixz.bus.notify.magic;
+    exports org.miaixz.bus.notify.metric;
+    exports org.miaixz.bus.notify.metric.aliyun;
+    exports org.miaixz.bus.notify.metric.baidu;
+    exports org.miaixz.bus.notify.metric.cloopen;
+    exports org.miaixz.bus.notify.metric.ctyun;
+    exports org.miaixz.bus.notify.metric.dingtalk;
+    exports org.miaixz.bus.notify.metric.emay;
+    exports org.miaixz.bus.notify.metric.generic;
+    exports org.miaixz.bus.notify.metric.huawei;
+    exports org.miaixz.bus.notify.metric.jdcloud;
+    exports org.miaixz.bus.notify.metric.jpush;
+    exports org.miaixz.bus.notify.metric.netease;
+    exports org.miaixz.bus.notify.metric.qiniu;
+    exports org.miaixz.bus.notify.metric.tencent;
+    exports org.miaixz.bus.notify.metric.unisms;
+    exports org.miaixz.bus.notify.metric.upyun;
+    exports org.miaixz.bus.notify.metric.wechat;
+    exports org.miaixz.bus.notify.metric.yunpian;
+    exports org.miaixz.bus.notify.metric.zhutong;
+
+}

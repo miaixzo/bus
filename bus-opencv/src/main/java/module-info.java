@@ -25,31 +25,22 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.aopalliance.aop;
-
 /**
- * Superclass for all AOP infrastructure exceptions. Unchecked, as such exceptions are fatal and end user code shouldn't
- * be forced to catch them.
+ * bus.opencv
+ * 
+ * @author Kimi Liu
+ * @since Java 17+
  */
-public class AspectException extends RuntimeException {
+module bus.opencv {
 
-    /**
-     * Constructor for AspectException.
-     *
-     * @param message the exception message
-     */
-    public AspectException(String message) {
-        super(message);
-    }
+    requires java.base;
+    requires java.desktop;
 
-    /**
-     * Constructor for AspectException.
-     *
-     * @param message the exception message
-     * @param cause   the root cause, if any
-     */
-    public AspectException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    exports org.opencv.core;
+    exports org.opencv.img_hash;
+    exports org.opencv.imgcodecs;
+    exports org.opencv.imgproc;
+    exports org.opencv.osgi;
+    exports org.opencv.utils;
 
 }

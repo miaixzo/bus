@@ -25,24 +25,23 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.proxy.jdk;
-
-import org.miaixz.bus.proxy.Aspect;
-import org.miaixz.bus.proxy.Builder;
-import org.miaixz.bus.proxy.Provider;
-
 /**
- * JDK实现的切面代理
+ * bus.proxy
  *
  * @author Kimi Liu
  * @since Java 17+
  */
-public class JdkProvider implements Provider {
+module bus.proxy {
 
-    @Override
-    public <T> T proxy(final T target, final Aspect aspect) {
-        return Builder.newProxyInstance(target.getClass().getClassLoader(), new JdkInterceptor(target, aspect),
-                target.getClass().getInterfaces());
-    }
+    requires java.base;
+    requires bus.core;
+    requires bus.logger;
+    requires static spring.core;
+    requires static org.aspectj.weaver;
+
+    exports org.miaixz.bus.proxy;
+    exports org.miaixz.bus.proxy.invoker;
+    exports org.miaixz.bus.proxy.jdk;
+    exports org.miaixz.bus.proxy.spring;
 
 }

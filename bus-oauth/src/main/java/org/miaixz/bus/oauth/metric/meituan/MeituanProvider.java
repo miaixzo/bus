@@ -27,6 +27,9 @@
 */
 package org.miaixz.bus.oauth.metric.meituan;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.miaixz.bus.cache.metric.ExtendCache;
 import org.miaixz.bus.core.basic.entity.Message;
 import org.miaixz.bus.core.lang.Gender;
@@ -41,9 +44,6 @@ import org.miaixz.bus.oauth.magic.Callback;
 import org.miaixz.bus.oauth.magic.ErrorCode;
 import org.miaixz.bus.oauth.magic.Material;
 import org.miaixz.bus.oauth.metric.AbstractProvider;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 美团 登录
@@ -149,7 +149,7 @@ public class MeituanProvider extends AbstractProvider {
             int expiresIn = expiresInObj instanceof Number ? ((Number) expiresInObj).intValue() : 0;
 
             return Message.builder().errcode(ErrorCode.SUCCESS.getCode()).data(
-                            AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn).build())
+                    AccToken.builder().accessToken(accessToken).refreshToken(refreshToken).expireIn(expiresIn).build())
                     .build();
         } catch (Exception e) {
             throw new AuthorizedException("Failed to parse refresh token response: " + e.getMessage());

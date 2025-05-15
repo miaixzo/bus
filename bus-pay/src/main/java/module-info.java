@@ -26,9 +26,49 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * IKAnalyzer分词引擎实现 项目地址：https://github.com/yozhao/IKAnalyzer
- *
+ * bus.pay
+ * 
  * @author Kimi Liu
  * @since Java 17+
  */
-package org.miaixz.bus.extra.nlp.provider.ikanalyzer;
+module bus.pay {
+
+    requires java.xml;
+
+    requires bus.cache;
+    requires bus.core;
+    requires bus.crypto;
+    requires bus.extra;
+    requires bus.http;
+    requires bus.logger;
+
+    requires static lombok;
+    requires static org.bouncycastle.provider;
+
+    exports org.miaixz.bus.pay;
+    exports org.miaixz.bus.pay.cache;
+    exports org.miaixz.bus.pay.magic;
+    exports org.miaixz.bus.pay.metric;
+    exports org.miaixz.bus.pay.metric.alipay;
+    exports org.miaixz.bus.pay.metric.alipay.api;
+    exports org.miaixz.bus.pay.metric.jdpay;
+    exports org.miaixz.bus.pay.metric.jdpay.api;
+    exports org.miaixz.bus.pay.metric.jdpay.entity;
+    exports org.miaixz.bus.pay.metric.paypal;
+    exports org.miaixz.bus.pay.metric.paypal.api;
+    exports org.miaixz.bus.pay.metric.paypal.entity;
+    exports org.miaixz.bus.pay.metric.tenpay;
+    exports org.miaixz.bus.pay.metric.tenpay.api;
+    exports org.miaixz.bus.pay.metric.tenpay.entity;
+    exports org.miaixz.bus.pay.metric.unionpay;
+    exports org.miaixz.bus.pay.metric.unionpay.api;
+    exports org.miaixz.bus.pay.metric.unionpay.entity;
+    exports org.miaixz.bus.pay.metric.wechat;
+    exports org.miaixz.bus.pay.metric.wechat.api;
+    exports org.miaixz.bus.pay.metric.wechat.api.v2;
+    exports org.miaixz.bus.pay.metric.wechat.api.v3;
+    exports org.miaixz.bus.pay.metric.wechat.entity;
+    exports org.miaixz.bus.pay.metric.wechat.entity.v2;
+    exports org.miaixz.bus.pay.metric.wechat.entity.v3;
+
+}

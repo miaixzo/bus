@@ -25,50 +25,28 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.extra.nlp.provider.ikanalyzer;
-
-import org.miaixz.bus.extra.nlp.NLPWord;
-import org.wltea.analyzer.core.Lexeme;
-
 /**
- * IKAnalyzer分词中的一个单词包装
- *
+ * bus.limiter
+ * 
  * @author Kimi Liu
  * @since Java 17+
  */
-public class IKAnalyzerWord implements NLPWord {
+module bus.limiter {
 
-    private static final long serialVersionUID = -1L;
+    requires bus.core;
+    requires bus.cache;
+    requires bus.crypto;
+    requires bus.extra;
+    requires bus.logger;
 
-    private final Lexeme word;
+    requires static lombok;
+    requires static net.bytebuddy;
+    requires static sentinel.core;
 
-    /**
-     * 构造
-     *
-     * @param word {@link Lexeme}
-     */
-    public IKAnalyzerWord(final Lexeme word) {
-        this.word = word;
-    }
-
-    @Override
-    public String getText() {
-        return word.getLexemeText();
-    }
-
-    @Override
-    public int getStartOffset() {
-        return word.getBeginPosition();
-    }
-
-    @Override
-    public int getEndOffset() {
-        return word.getEndPosition();
-    }
-
-    @Override
-    public String toString() {
-        return getText();
-    }
+    exports org.miaixz.bus.limiter;
+    exports org.miaixz.bus.limiter.magic;
+    exports org.miaixz.bus.limiter.magic.annotation;
+    exports org.miaixz.bus.limiter.metric;
+    exports org.miaixz.bus.limiter.proxy;
 
 }

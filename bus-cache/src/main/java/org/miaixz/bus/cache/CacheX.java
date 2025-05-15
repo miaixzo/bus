@@ -36,16 +36,15 @@ import java.util.Map;
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface CacheX {
+public interface CacheX<K, V> {
 
     /**
      * 从缓存中获得对象
      *
      * @param key 键
      * @return 键对应的对象
-     * @see #read(String)
      */
-    Object read(String key);
+    V read(K key);
 
     /**
      * 从缓存中获得一组对象信息
@@ -53,7 +52,7 @@ public interface CacheX {
      * @param keys 多个键
      * @return 值对象
      */
-    Map<String, Object> read(Collection<String> keys);
+    Map<K, V> read(Collection<K> keys);
 
     /**
      * 将对象加入到缓存,使用指定失效时长
@@ -61,9 +60,8 @@ public interface CacheX {
      * @param key    键
      * @param value  缓存的对象
      * @param expire 失效时长,单位毫秒
-     * @see CacheX#write(String, Object, long)
      */
-    void write(String key, Object value, long expire);
+    void write(K key, V value, long expire);
 
     /**
      * 将对象加入到缓存,使用指定失效时长
@@ -72,7 +70,7 @@ public interface CacheX {
      * @param expire 失效时长,单位毫秒
      * @see CacheX#write(Map, long)
      */
-    void write(Map<String, Object> map, long expire);
+    void write(Map<K, V> map, long expire);
 
     /**
      * 是否存在key，如果对应key的value值已过期，也返回false
@@ -80,7 +78,7 @@ public interface CacheX {
      * @param key 缓存key
      * @return true：存在key，并且value没过期；false：key不存在或者已过期
      */
-    default boolean containsKey(String key) {
+    default boolean containsKey(K key) {
         return true;
     }
 
@@ -89,7 +87,7 @@ public interface CacheX {
      *
      * @param keys 键
      */
-    void remove(String... keys);
+    void remove(K... keys);
 
     /**
      * 清空缓存信息

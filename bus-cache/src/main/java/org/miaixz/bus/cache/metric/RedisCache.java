@@ -48,7 +48,7 @@ import redis.clients.jedis.Pipeline;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class RedisCache implements CacheX {
+public class RedisCache<K, V> implements CacheX<K, V> {
 
     private BaseSerializer serializer;
 
@@ -94,37 +94,37 @@ public class RedisCache implements CacheX {
     }
 
     @Override
-    public Object read(String key) {
+    public V read(K key) {
         try (Jedis client = jedisPool.getResource()) {
-            byte[] bytes = client.get(key.getBytes());
+            byte[] bytes = client.get(((String) key).getBytes());
             return serializer.deserialize(bytes);
         }
     }
 
     @Override
-    public void write(String key, Object value, long expire) {
+    public void write(K key, V value, long expire) {
         try (Jedis client = jedisPool.getResource()) {
             byte[] bytesValue = serializer.serialize(value);
             if (expire == CacheExpire.FOREVER) {
-                client.set(key.getBytes(), bytesValue);
+                client.set(((String) key).getBytes(), bytesValue);
             } else {
-                client.psetex(key.getBytes(), expire, bytesValue);
+                client.psetex(((String) key).getBytes(), expire, bytesValue);
             }
         }
     }
 
     @Override
-    public Map<String, Object> read(Collection<String> keys) {
+    public Map<K, V> read(Collection<K> keys) {
         try (Jedis client = jedisPool.getResource()) {
-            List<byte[]> bytesValues = client.mget(toByteArray(keys));
-            return toObjectMap(keys, bytesValues, this.serializer);
+            List<byte[]> bytesValues = client.mget(toByteArray((Collection<String>) keys));
+            return (Map<K, V>) toObjectMap((Collection<String>) keys, bytesValues, this.serializer);
         }
     }
 
     @Override
-    public void write(Map<String, Object> keyValueMap, long expire) {
+    public void write(Map<K, V> keyValueMap, long expire) {
         try (Jedis client = jedisPool.getResource()) {
-            byte[][] kvs = toByteArray(keyValueMap, serializer);
+            byte[][] kvs = toByteArray((Map<String, Object>) keyValueMap, serializer);
             if (expire == CacheExpire.FOREVER) {
                 client.mset(kvs);
             } else {
@@ -138,9 +138,9 @@ public class RedisCache implements CacheX {
     }
 
     @Override
-    public void remove(String... keys) {
+    public void remove(K... keys) {
         try (Jedis client = jedisPool.getResource()) {
-            client.del(keys);
+            client.del(keys.toString());
         }
     }
 

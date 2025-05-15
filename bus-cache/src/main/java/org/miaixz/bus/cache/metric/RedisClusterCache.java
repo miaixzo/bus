@@ -43,7 +43,7 @@ import redis.clients.jedis.JedisCluster;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class RedisClusterCache implements CacheX {
+public class RedisClusterCache<K, V> implements CacheX<K, V> {
 
     private BaseSerializer serializer;
 
@@ -89,51 +89,51 @@ public class RedisClusterCache implements CacheX {
     }
 
     @Override
-    public Object read(String key) {
-        return serializer.deserialize(jedisCluster.get(key.getBytes()));
+    public V read(K key) {
+        return serializer.deserialize(jedisCluster.get(((String) key).getBytes()));
     }
 
     @Override
-    public void write(String key, Object value, long expire) {
+    public void write(K key, V value, long expire) {
         byte[] bytes = serializer.serialize(value);
         if (expire == CacheExpire.FOREVER) {
-            jedisCluster.set(key.getBytes(), bytes);
+            jedisCluster.set(((String) key).getBytes(), bytes);
         } else {
-            jedisCluster.setex(key.getBytes(), (int) (expire / 1000), bytes);
+            jedisCluster.setex(((String) key).getBytes(), (int) (expire / 1000), bytes);
         }
     }
 
     @Override
-    public Map<String, Object> read(Collection<String> keys) {
+    public Map<K, V> read(Collection<K> keys) {
         if (keys.isEmpty()) {
             return Collections.emptyMap();
         }
 
-        List<byte[]> bytesValues = jedisCluster.mget(toByteArray(keys));
-        return toObjectMap(keys, bytesValues, this.serializer);
+        List<byte[]> bytesValues = jedisCluster.mget(toByteArray((Collection<String>) keys));
+        return (Map<K, V>) toObjectMap((Collection<String>) keys, bytesValues, this.serializer);
     }
 
     @Override
-    public void write(Map<String, Object> keyValueMap, long expire) {
+    public void write(Map<K, V> keyValueMap, long expire) {
         if (keyValueMap.isEmpty()) {
             return;
         }
 
         if (expire == CacheExpire.FOREVER) {
-            jedisCluster.mset(toByteArray(keyValueMap, this.serializer));
+            jedisCluster.mset(toByteArray((Map<String, Object>) keyValueMap, this.serializer));
         } else {
-            for (Map.Entry<String, Object> entry : keyValueMap.entrySet()) {
+            for (Map.Entry<K, V> entry : keyValueMap.entrySet()) {
                 write(entry.getKey(), entry.getValue(), expire);
             }
         }
     }
 
     @Override
-    public void remove(String... keys) {
+    public void remove(K... keys) {
         if (keys.length == 0) {
             return;
         }
-        jedisCluster.del(keys);
+        jedisCluster.del(keys.toString());
     }
 
     @Override

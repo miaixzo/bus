@@ -26,9 +26,32 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * Apache MINA SSHD（https://mina.apache.org/sshd-project/） 引擎封装
- *
+ * bus.logger
+ * 
  * @author Kimi Liu
  * @since Java 17+
  */
-package org.miaixz.bus.extra.ssh.provider.mina;
+module bus.logger {
+
+    requires java.logging;
+    requires bus.core;
+
+    requires static org.jboss.logging;
+    requires static org.apache.commons.logging;
+    requires static org.apache.logging.log4j;
+    requires static org.slf4j;
+    requires static org.tinylog.api;
+    requires static ch.qos.logback.classic;
+
+    exports org.miaixz.bus.logger;
+    exports org.miaixz.bus.logger.magic;
+    exports org.miaixz.bus.logger.magic.level;
+    exports org.miaixz.bus.logger.metric.apache.commons;
+    exports org.miaixz.bus.logger.metric.apache.log4j;
+    exports org.miaixz.bus.logger.metric.console;
+    exports org.miaixz.bus.logger.metric.jboss;
+    exports org.miaixz.bus.logger.metric.jdk;
+    exports org.miaixz.bus.logger.metric.slf4j;
+    exports org.miaixz.bus.logger.metric.tinylog;
+
+}

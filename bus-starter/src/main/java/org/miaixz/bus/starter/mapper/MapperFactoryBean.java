@@ -30,6 +30,7 @@ package org.miaixz.bus.starter.mapper;
 import org.apache.ibatis.executor.ErrorContext;
 import org.apache.ibatis.session.Configuration;
 import org.miaixz.bus.core.lang.Assert;
+import org.miaixz.bus.logger.Logger;
 import org.miaixz.bus.mapper.builder.MapperBuilder;
 import org.mybatis.spring.support.SqlSessionDaoSupport;
 import org.springframework.beans.factory.FactoryBean;
@@ -67,7 +68,7 @@ public class MapperFactoryBean<T> extends SqlSessionDaoSupport implements Factor
             try {
                 configuration.addMapper(this.mapperInterface);
             } catch (Exception e) {
-                logger.error("Error while adding the mapper '" + this.mapperInterface + "' to configuration.", e);
+                Logger.error("Error while adding the mapper '" + this.mapperInterface + "' to configuration.", e);
                 throw new IllegalArgumentException(e);
             } finally {
                 ErrorContext.instance().reset();

@@ -27,9 +27,12 @@
 */
 package org.miaixz.bus.pager.cache;
 
+import java.util.Collection;
+import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.xyz.StringKit;
 
 import com.google.common.cache.CacheBuilder;
@@ -40,7 +43,7 @@ import com.google.common.cache.CacheBuilder;
  * @author Kimi Liu
  * @since Java 17+
  */
-public class GuavaCache<K, V> implements Cache<K, V> {
+public class GuavaCache<K, V> implements CacheX<K, V> {
 
     private final com.google.common.cache.Cache<K, V> CACHE;
 
@@ -68,13 +71,33 @@ public class GuavaCache<K, V> implements Cache<K, V> {
     }
 
     @Override
-    public V get(K key) {
+    public V read(K key) {
         return CACHE.getIfPresent(key);
     }
 
     @Override
-    public void put(K key, V value) {
+    public Map<K, V> read(Collection<K> keys) {
+        return Map.of();
+    }
+
+    @Override
+    public void write(K key, V value, long expire) {
         CACHE.put(key, value);
+    }
+
+    @Override
+    public void write(Map<K, V> map, long expire) {
+
+    }
+
+    @Override
+    public void remove(K... keys) {
+
+    }
+
+    @Override
+    public void clear() {
+
     }
 
 }

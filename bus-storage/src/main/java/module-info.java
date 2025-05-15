@@ -25,38 +25,31 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.aopalliance.intercept;
-
 /**
- * Intercepts the construction of a new object. The user should implement the {@link #construct(ConstructorInvocation)}
- * method to modify the original behavior. E.g. the following class implements a singleton interceptor (allows only one
- * unique instance for the intercepted class):
- *
- * <pre class=code>
- * class DebuggingInterceptor implements ConstructorInterceptor {
- *     Object instance = null;
- *
- *     Object construct(ConstructorInvocation i) throws Throwable {
- *         if (instance == null) {
- *             return instance = i.proceed();
- *         } else {
- *             throw new Exception("singleton does not allow multiple instance");
- *         }
- *     }
- * }
- * </pre>
+ * bus.storage
+ * 
+ * @author Kimi Liu
+ * @since Java 17+
  */
-public interface ConstructorInterceptor extends Interceptor {
+module bus.storage {
 
-    /**
-     * Implement this method to perform extra treatments before and after the construction of a new object. Polite
-     * implementations would certainly like to invoke {@link Joinpoint#proceed()}.
-     *
-     * @param invocation the construction joinpoint
-     * @return the newly created object, which is also the result of the call to {@link Joinpoint#proceed()}; might be
-     *         replaced by the interceptor
-     * @throws Throwable if the interceptors or the target object throws an exception
-     */
-    Object construct(ConstructorInvocation invocation) throws Throwable;
+    requires bus.cache;
+    requires bus.core;
+    requires bus.crypto;
+    requires bus.logger;
+    requires bus.gitlab;
+    requires bus.http;
+
+    requires static lombok;
+    requires static com.github.sardine;
+    requires static software.amazon.awssdk.auth;
+    requires static software.amazon.awssdk.core;
+    requires static software.amazon.awssdk.regions;
+    requires static software.amazon.awssdk.services.s3;
+
+    exports org.miaixz.bus.storage;
+    exports org.miaixz.bus.storage.cache;
+    exports org.miaixz.bus.storage.magic;
+    exports org.miaixz.bus.storage.metric;
 
 }

@@ -49,7 +49,7 @@ import com.google.gson.reflect.TypeToken;
  * @since Java 17+
  */
 @Component
-@ConditionalOnClass({ com.google.gson.Gson.class })
+@ConditionalOnClass({ Gson.class })
 public class GsonConverterConfigurer implements JsonConverterConfigurer {
 
     private String autoType;

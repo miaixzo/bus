@@ -25,24 +25,42 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.aopalliance.intercept;
-
-import java.lang.reflect.Constructor;
-
 /**
- * Description of an invocation to a constructor, given to an interceptor upon constructor-call. A constructor
- * invocation is a joinpoint and can be intercepted by a constructor interceptor.
- *
- * @see ConstructorInterceptor
+ * bus.office
+ * 
+ * @author Kimi Liu
+ * @since Java 17+
  */
-public interface ConstructorInvocation extends Invocation {
+module bus.office {
 
-    /**
-     * Get the constructor being called. This method is a friendly implementation of the
-     * {@link Joinpoint#getStaticPart()} method (same result).
-     *
-     * @return the constructor being called
-     */
-    Constructor<?> getConstructor();
+    requires java.sql;
+    requires java.desktop;
+
+    requires bus.core;
+
+    requires static org.apache.poi.poi;
+    requires static org.apache.poi.ooxml;
+    requires static ofdrw.converter;
+    requires static ofdrw.layout;
+    requires static ofdrw.font;
+    requires static ofdrw.reader;
+
+    exports org.miaixz.bus.office;
+    exports org.miaixz.bus.office.builtin;
+    exports org.miaixz.bus.office.csv;
+    exports org.miaixz.bus.office.excel;
+    exports org.miaixz.bus.office.excel.cell;
+    exports org.miaixz.bus.office.excel.cell.editors;
+    exports org.miaixz.bus.office.excel.cell.setters;
+    exports org.miaixz.bus.office.excel.cell.values;
+    exports org.miaixz.bus.office.excel.reader;
+    exports org.miaixz.bus.office.excel.sax;
+    exports org.miaixz.bus.office.excel.sax.handler;
+    exports org.miaixz.bus.office.excel.shape;
+    exports org.miaixz.bus.office.excel.style;
+    exports org.miaixz.bus.office.excel.writer;
+    exports org.miaixz.bus.office.excel.xyz;
+    exports org.miaixz.bus.office.ofd;
+    exports org.miaixz.bus.office.word;
 
 }

@@ -28,7 +28,10 @@
 package org.miaixz.bus.starter.health;
 
 import org.miaixz.bus.core.basic.spring.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 /**
  * 健康检查
@@ -36,7 +39,6 @@ import org.springframework.web.bind.annotation.*;
  * @author Kimi Liu
  * @since Java 17+
  */
-@RestController
 public class HealthController extends Controller {
 
     public HealthProviderService service;

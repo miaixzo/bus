@@ -25,57 +25,37 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.extra.nlp.provider.ikanalyzer;
-
-import org.miaixz.bus.core.xyz.StringKit;
-import org.miaixz.bus.extra.nlp.NLPProvider;
-import org.miaixz.bus.extra.nlp.NLPResult;
-import org.wltea.analyzer.cfg.Configuration;
-import org.wltea.analyzer.cfg.DefaultConfig;
-import org.wltea.analyzer.core.IKSegmenter;
-
 /**
- * IKAnalyzer分词引擎实现 项目地址：https://github.com/yozhao/IKAnalyzer {@link IKSegmenter} 非线程全，因此每次单独创建对象
- *
+ * bus.pager
+ * 
  * @author Kimi Liu
  * @since Java 17+
  */
-public class IKAnalyzerProvider implements NLPProvider {
+module bus.pager {
 
-    private final Configuration cfg;
+    requires java.sql;
 
-    /**
-     * 构造
-     */
-    public IKAnalyzerProvider() {
-        this(createDefaultConfig());
-    }
+    requires bus.cache;
+    requires bus.crypto;
+    requires bus.core;
+    requires bus.logger;
+    requires bus.mapper;
 
-    /**
-     * 构造
-     *
-     * @param cfg 配置
-     */
-    public IKAnalyzerProvider(final Configuration cfg) {
-        cfg.setUseSmart(true);
-        this.cfg = cfg;
-    }
+    requires static org.mybatis;
+    requires static druid;
+    requires static com.zaxxer.hikari;
+    requires static com.google.common;
+    requires static net.sf.jsqlparser;
 
-    /**
-     * 创建默认配置
-     *
-     * @return {@link Configuration}
-     */
-    private static Configuration createDefaultConfig() {
-        final Configuration configuration = DefaultConfig.getInstance();
-        configuration.setUseSmart(true);
-        return configuration;
-    }
-
-    @Override
-    public NLPResult parse(final CharSequence text) {
-        final IKSegmenter seg = new IKSegmenter(StringKit.getReader(text), cfg);
-        return new IKAnalyzerResult(seg);
-    }
-
+    exports org.miaixz.bus.pager;
+    exports org.miaixz.bus.pager.builtin;
+    exports org.miaixz.bus.pager.cache;
+    exports org.miaixz.bus.pager.dialect;
+    exports org.miaixz.bus.pager.dialect.auto;
+    exports org.miaixz.bus.pager.dialect.base;
+    exports org.miaixz.bus.pager.dialect.replace;
+    exports org.miaixz.bus.pager.dialect.rowbounds;
+    exports org.miaixz.bus.pager.parser;
+    exports org.miaixz.bus.pager.parser.defaults;
+    exports org.miaixz.bus.pager.plugin;
 }

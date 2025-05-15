@@ -26,9 +26,42 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * AOP相关处理类
- *
+ * bus.goalie
+ * 
  * @author Kimi Liu
  * @since Java 17+
  */
-package org.aopalliance;
+module bus.goalie {
+
+    requires bus.core;
+    requires bus.crypto;
+    requires bus.extra;
+    requires bus.http;
+
+    requires static lombok;
+    requires static jakarta.annotation;
+    requires static jakarta.servlet;
+    requires static spring.core;
+    requires static spring.beans;
+    requires static spring.web;
+    requires static spring.webmvc;
+    requires static spring.webflux;
+    requires static spring.boot;
+    requires static spring.boot.autoconfigure;
+    requires static reactor.core;
+    requires static reactor.netty.http;
+    requires static reactor.netty.core;
+    requires static io.netty.handler;
+    requires static org.reactivestreams;
+    requires static com.google.common;
+    requires bus.logger;
+
+    exports org.miaixz.bus.goalie;
+    exports org.miaixz.bus.goalie.annotation;
+    exports org.miaixz.bus.goalie.filter;
+    exports org.miaixz.bus.goalie.handler;
+    exports org.miaixz.bus.goalie.metric;
+    exports org.miaixz.bus.goalie.registry;
+    exports org.miaixz.bus.goalie.support;
+
+}

@@ -25,24 +25,10 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.aopalliance.intercept;
-
-import java.lang.reflect.Method;
-
 /**
- * Description of an invocation to a method, given to an interceptor upon method-call. A method invocation is a
- * joinpoint and can be intercepted by a method interceptor.
- *
- * @see MethodInterceptor
+ * Spring 相关封装
+ * 
+ * @author Kimi Liu
+ * @since Java 17+
  */
-public interface MethodInvocation extends Invocation {
-
-    /**
-     * Get the method being called. This method is a friendly implementation of the {@link Joinpoint#getStaticPart()}
-     * method (same result).
-     *
-     * @return the method being called
-     */
-    Method getMethod();
-
-}
+package org.miaixz.bus.spring;

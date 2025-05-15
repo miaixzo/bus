@@ -25,11 +25,24 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.aopalliance.aop;
-
 /**
- * Tag interface for Advice. Implementations can be any type of advice, such as Interceptors.
+ * bus.cron
+ * 
+ * @author Kimi Liu
+ * @since Java 17+
  */
-public interface Advice {
+module bus.cron {
+
+    requires bus.core;
+    requires bus.logger;
+    requires bus.setting;
+
+    exports org.miaixz.bus.cron;
+    exports org.miaixz.bus.cron.crontab;
+    exports org.miaixz.bus.cron.listener;
+    exports org.miaixz.bus.cron.pattern;
+    exports org.miaixz.bus.cron.pattern.matcher;
+    exports org.miaixz.bus.cron.pattern.parser;
+    exports org.miaixz.bus.cron.timings;
 
 }

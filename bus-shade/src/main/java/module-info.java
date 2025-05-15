@@ -3,7 +3,7 @@
  ~                                                                               ~
  ~ The MIT License (MIT)                                                         ~
  ~                                                                               ~
- ~ Copyright (c) 2015-2025 miaixz.org mybatis.io and other contributors.         ~
+ ~ Copyright (c) 2015-2025 miaixz.org and other contributors.                    ~
  ~                                                                               ~
  ~ Permission is hereby granted, free of charge, to any person obtaining a copy  ~
  ~ of this software and associated documentation files (the "Software"), to deal ~
@@ -25,17 +25,48 @@
  ~                                                                               ~
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
-package org.miaixz.bus.pager.cache;
-
 /**
- * Simple cache interface
- *
+ * bus.shade
+ * 
  * @author Kimi Liu
  * @since Java 17+
  */
-public interface Cache<K, V> {
+module bus.shade {
 
-    V get(K key);
+    requires java.sql;
+    requires java.desktop;
 
-    void put(K key, V value);
+    requires bus.core;
+    requires bus.logger;
+
+    requires static lombok;
+    requires static freemarker;
+    requires static org.apache.commons.compress;
+    requires static spring.boot.loader;
+
+    exports org.miaixz.bus.shade.beans;
+    exports org.miaixz.bus.shade.safety;
+    exports org.miaixz.bus.shade.safety.algorithm;
+    exports org.miaixz.bus.shade.safety.archive;
+    exports org.miaixz.bus.shade.safety.boot;
+    exports org.miaixz.bus.shade.safety.boot.jar;
+    exports org.miaixz.bus.shade.safety.complex;
+    exports org.miaixz.bus.shade.safety.provider;
+    exports org.miaixz.bus.shade.safety.streams;
+    exports org.miaixz.bus.shade.screw;
+    exports org.miaixz.bus.shade.screw.dialect;
+    exports org.miaixz.bus.shade.screw.dialect.cachedb;
+    exports org.miaixz.bus.shade.screw.dialect.db2;
+    exports org.miaixz.bus.shade.screw.dialect.h2;
+    exports org.miaixz.bus.shade.screw.dialect.mariadb;
+    exports org.miaixz.bus.shade.screw.dialect.mysql;
+    exports org.miaixz.bus.shade.screw.dialect.oracle;
+    exports org.miaixz.bus.shade.screw.dialect.postgresql;
+    exports org.miaixz.bus.shade.screw.dialect.sqlserver;
+    exports org.miaixz.bus.shade.screw.engine;
+    exports org.miaixz.bus.shade.screw.execute;
+    exports org.miaixz.bus.shade.screw.mapping;
+    exports org.miaixz.bus.shade.screw.metadata;
+    exports org.miaixz.bus.shade.screw.process;
+
 }

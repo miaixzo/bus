@@ -26,9 +26,24 @@
  ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 */
 /**
- * 提供了一组用于拦截的接口机制
- *
+ * bus.setting
+ * 
  * @author Kimi Liu
  * @since Java 17+
  */
-package org.aopalliance.intercept;
+module bus.setting {
+
+    requires bus.core;
+    requires bus.logger;
+    requires static org.yaml.snakeyaml;
+
+    exports org.miaixz.bus.setting;
+    exports org.miaixz.bus.setting.format;
+    exports org.miaixz.bus.setting.magic;
+    exports org.miaixz.bus.setting.metric.ini;
+    exports org.miaixz.bus.setting.metric.props;
+    exports org.miaixz.bus.setting.metric.setting;
+    exports org.miaixz.bus.setting.metric.toml;
+    exports org.miaixz.bus.setting.metric.yaml;
+
+}

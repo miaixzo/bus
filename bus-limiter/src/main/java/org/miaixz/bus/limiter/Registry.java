@@ -31,13 +31,11 @@ import org.miaixz.bus.core.xyz.ListKit;
 import org.miaixz.bus.limiter.magic.annotation.Downgrade;
 import org.miaixz.bus.limiter.magic.annotation.Hotspot;
 import org.miaixz.bus.limiter.magic.annotation.Limiting;
-import org.miaixz.bus.limiter.metric.ResourceManager;
 import org.miaixz.bus.logger.Logger;
 
+import com.alibaba.csp.sentinel.slots.block.RuleConstant;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRuleManager;
-import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRule;
-import com.alibaba.csp.sentinel.slots.block.flow.param.ParamFlowRuleManager;
 
 /**
  * 管控规则
@@ -54,10 +52,8 @@ public class Registry {
      * @param resourceKey 资源标识
      */
     public static void register(Downgrade downgrade, String resourceKey) {
-
         if (!FlowRuleManager.hasConfig(resourceKey)) {
             FlowRule rule = new FlowRule();
-
             rule.setResource(resourceKey);
             rule.setGrade(downgrade.grade().getGrade());
             rule.setCount(downgrade.count());
@@ -75,18 +71,16 @@ public class Registry {
      * @param resourceKey 资源标识
      */
     public static void register(Hotspot hotspot, String resourceKey) {
-        // 仅在未配置时进行注册
-        if (!ParamFlowRuleManager.hasRules(resourceKey)) {
-            // 设置规则（base sentinel）
-            ParamFlowRule rule = new ParamFlowRule();
-
+        if (!FlowRuleManager.hasConfig(resourceKey)) {
+            FlowRule rule = new FlowRule();
             rule.setResource(resourceKey);
             rule.setGrade(hotspot.grade().getGrade());
             rule.setCount(hotspot.count());
-            rule.setDurationInSec(hotspot.duration());
-            rule.setParamIdx(0);
+            rule.setLimitApp("default");
+            // 注意：sentinel-core 1.8.8 不支持热点参数流控，简化为普通流控规则
+            // 若需热点功能，需扩展 Sentinel 或使用其他框架
 
-            ParamFlowRuleManager.loadRules(ListKit.of(rule));
+            FlowRuleManager.loadRules(ListKit.of(rule));
             Logger.info("Add Hot Rule [{}]", rule.getResource());
         }
     }
@@ -98,8 +92,14 @@ public class Registry {
      * @param resourceKey 资源标识
      */
     public static void register(Limiting limiting, String resourceKey) {
-        if (!ResourceManager.contain(resourceKey)) {
-            ResourceManager.add(resourceKey);
+        if (!FlowRuleManager.hasConfig(resourceKey)) {
+            FlowRule rule = new FlowRule();
+            rule.setResource(resourceKey);
+            rule.setGrade(RuleConstant.FLOW_GRADE_QPS); // 默认 QPS 限流
+            rule.setCount(limiting.count());
+            rule.setLimitApp("default");
+
+            FlowRuleManager.loadRules(ListKit.of(rule));
             Logger.info("Add Request Limit [{}]", resourceKey);
         }
     }

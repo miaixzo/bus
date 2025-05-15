@@ -32,6 +32,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.plugin.Plugin;
+import org.apache.ibatis.reflection.DefaultReflectorFactory;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.miaixz.bus.core.lang.Symbol;
@@ -48,6 +50,7 @@ public abstract class AbstractSqlHandler implements SQLHandler {
     public static final String DELEGATE_BOUNDSQL_SQL = "delegate.boundSql.sql";
     public static final String DELEGATE_MAPPEDSTATEMENT = "delegate.mappedStatement";
     public static final String MAPPEDSTATEMENT = "mappedStatement";
+    public static final DefaultReflectorFactory DEFAULT_REFLECTOR_FACTORY = new DefaultReflectorFactory();
 
     /**
      * SQL 解析缓存 key 可能是 mappedStatement 的 ID,也可能是 class 的 name
@@ -100,10 +103,22 @@ public abstract class AbstractSqlHandler implements SQLHandler {
      */
     protected static <T> T realTarget(Object target) {
         if (Proxy.isProxyClass(target.getClass())) {
-            MetaObject metaObject = SystemMetaObject.forObject(target);
-            return realTarget(metaObject.getValue("h.target"));
+            Plugin plugin = (Plugin) Proxy.getInvocationHandler(target);
+            MetaObject metaObject = getMetaObject(plugin);
+            return realTarget(metaObject.getValue("target"));
         }
         return (T) target;
+    }
+
+    /**
+     * 获取对象元数据信息
+     *
+     * @param object 参数
+     * @return 元数据信息
+     */
+    public static MetaObject getMetaObject(Object object) {
+        return MetaObject.forObject(object, SystemMetaObject.DEFAULT_OBJECT_FACTORY,
+                SystemMetaObject.DEFAULT_OBJECT_WRAPPER_FACTORY, DEFAULT_REFLECTOR_FACTORY);
     }
 
 }

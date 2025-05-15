@@ -34,10 +34,10 @@ import org.apache.ibatis.cache.CacheKey;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.RowBounds;
+import org.miaixz.bus.cache.CacheX;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.pager.Builder;
 import org.miaixz.bus.pager.Page;
-import org.miaixz.bus.pager.cache.Cache;
 import org.miaixz.bus.pager.cache.CacheFactory;
 import org.miaixz.bus.pager.dialect.AbstractPaging;
 import org.miaixz.bus.pager.dialect.ReplaceSql;
@@ -55,15 +55,15 @@ import org.miaixz.bus.pager.parser.defaults.DefaultSqlServerSqlParser;
 public class SqlServer extends AbstractPaging {
 
     protected SqlServerSqlParser sqlServerSqlParser;
-    protected Cache<String, String> CACHE_COUNTSQL;
-    protected Cache<String, String> CACHE_PAGESQL;
+    protected CacheX<String, String> CACHE_COUNTSQL;
+    protected CacheX<String, String> CACHE_PAGESQL;
     protected ReplaceSql replaceSql;
 
     @Override
     public String getCountSql(MappedStatement ms, BoundSql boundSql, Object parameterObject, RowBounds rowBounds,
             CacheKey countKey) {
         String sql = boundSql.getSql();
-        String cacheSql = CACHE_COUNTSQL.get(sql);
+        String cacheSql = CACHE_COUNTSQL.read(sql);
         if (cacheSql != null) {
             return cacheSql;
         } else {
@@ -72,7 +72,7 @@ public class SqlServer extends AbstractPaging {
         cacheSql = replaceSql.replace(cacheSql);
         cacheSql = countSqlParser.getSmartCountSql(cacheSql);
         cacheSql = replaceSql.restore(cacheSql);
-        CACHE_COUNTSQL.put(sql, cacheSql);
+        CACHE_COUNTSQL.write(sql, cacheSql, 60);
         return cacheSql;
     }
 
@@ -87,13 +87,13 @@ public class SqlServer extends AbstractPaging {
         // 处理pageKey
         pageKey.update(page.getStartRow());
         pageKey.update(page.getPageSize());
-        String cacheSql = CACHE_PAGESQL.get(sql);
+        String cacheSql = CACHE_PAGESQL.read(sql);
         if (cacheSql == null) {
             cacheSql = sql;
             cacheSql = replaceSql.replace(cacheSql);
             cacheSql = sqlServerSqlParser.convertToPageSql(cacheSql, null, null);
             cacheSql = replaceSql.restore(cacheSql);
-            CACHE_PAGESQL.put(sql, cacheSql);
+            CACHE_PAGESQL.write(sql, cacheSql, 60);
         }
         cacheSql = cacheSql.replace(String.valueOf(Long.MIN_VALUE), String.valueOf(page.getStartRow()));
         cacheSql = cacheSql.replace(String.valueOf(Long.MAX_VALUE), String.valueOf(page.getPageSize()));

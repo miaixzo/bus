@@ -38,26 +38,23 @@ import org.miaixz.bus.core.lang.Symbol;
 import org.miaixz.bus.core.lang.exception.InternalException;
 import org.miaixz.bus.core.lang.reflect.TypeReference;
 import org.miaixz.bus.core.xyz.ArrayKit;
+import org.miaixz.bus.core.xyz.ClassKit;
 import org.miaixz.bus.core.xyz.StringKit;
 import org.miaixz.bus.logger.Logger;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
-import org.springframework.beans.factory.annotation.AnnotatedGenericBeanDefinition;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.ScannedGenericBeanDefinition;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.MethodMetadata;
 import org.springframework.stereotype.Component;
-import org.springframework.util.ClassUtils;
-import org.springframework.util.StringUtils;
 
 /**
  * Spring上下文管理和Bean操作工具类
@@ -76,7 +73,7 @@ public class SpringBuilder implements ApplicationContextAware {
 
     /**
      * 获取Spring上下文
-     * 
+     *
      * @return 上下文对象
      */
     public static ConfigurableApplicationContext getContext() {
@@ -85,7 +82,7 @@ public class SpringBuilder implements ApplicationContextAware {
 
     /**
      * 设置Spring上下文
-     * 
+     *
      * @param context 上下文对象
      */
     public static void setContext(ConfigurableApplicationContext context) {
@@ -96,16 +93,16 @@ public class SpringBuilder implements ApplicationContextAware {
 
     /**
      * 获取Bean工厂
-     * 
+     *
      * @return Bean工厂对象
      */
     public static ListableBeanFactory getBeanFactory() {
-        return context != null ? context.getBeanFactory() : context;
+        return context != null ? context.getBeanFactory() : null;
     }
 
     /**
      * 通过名称获取Bean
-     * 
+     *
      * @param name Bean名称
      * @param <T>  Bean类型
      * @return Bean实例
@@ -116,7 +113,7 @@ public class SpringBuilder implements ApplicationContextAware {
 
     /**
      * 通过类型获取Bean
-     * 
+     *
      * @param clazz Bean类型
      * @param args  构造函数参数
      * @param <T>   Bean类型
@@ -128,7 +125,7 @@ public class SpringBuilder implements ApplicationContextAware {
 
     /**
      * 通过名称和参数获取Bean
-     * 
+     *
      * @param name Bean名称
      * @param args 构造函数参数
      * @param <T>  Bean类型
@@ -140,7 +137,7 @@ public class SpringBuilder implements ApplicationContextAware {
 
     /**
      * 通过名称和类型获取Bean
-     * 
+     *
      * @param name  Bean名称
      * @param clazz Bean类型
      * @param <T>   Bean类型
@@ -152,7 +149,7 @@ public class SpringBuilder implements ApplicationContextAware {
 
     /**
      * 通过类型参考获取带泛型的Bean
-     * 
+     *
      * @param reference 类型参考
      * @param <T>       Bean类型
      * @return Bean实例
@@ -169,7 +166,7 @@ public class SpringBuilder implements ApplicationContextAware {
 
     /**
      * 获取指定类型的所有Bean
-     * 
+     *
      * @param type Bean类型
      * @param <T>  Bean类型
      * @return Bean名称到实例的映射
@@ -180,7 +177,7 @@ public class SpringBuilder implements ApplicationContextAware {
 
     /**
      * 获取指定类型的Bean名称
-     * 
+     *
      * @param type Bean类型
      * @return Bean名称数组
      */
@@ -190,7 +187,7 @@ public class SpringBuilder implements ApplicationContextAware {
 
     /**
      * 获取配置属性值
-     * 
+     *
      * @param key 属性键
      * @return 属性值
      */
@@ -200,7 +197,7 @@ public class SpringBuilder implements ApplicationContextAware {
 
     /**
      * 获取当前激活的环境配置
-     * 
+     *
      * @return 环境配置数组
      */
     public static String[] getActiveProfiles() {
@@ -209,8 +206,8 @@ public class SpringBuilder implements ApplicationContextAware {
 
     /**
      * 获取第一个激活的环境配置
-     * 
-     * @return 环境配置
+     *
+     * @return 环境配置 fcn
      */
     public static String getActiveProfile() {
         String[] profiles = getActiveProfiles();
@@ -219,7 +216,7 @@ public class SpringBuilder implements ApplicationContextAware {
 
     /**
      * 动态注册Bean定义
-     * 
+     *
      * @param clazz Bean类型
      */
     public static void registerBeanDefinition(Class<?> clazz) {
@@ -230,7 +227,7 @@ public class SpringBuilder implements ApplicationContextAware {
 
     /**
      * 动态注册单例Bean
-     * 
+     *
      * @param clazz Bean类型
      */
     public static void registerSingleton(Class<?> clazz) {
@@ -244,7 +241,7 @@ public class SpringBuilder implements ApplicationContextAware {
 
     /**
      * 动态注册单例Bean
-     * 
+     *
      * @param clazz Bean类型
      * @param bean  Bean实例
      */
@@ -256,7 +253,7 @@ public class SpringBuilder implements ApplicationContextAware {
 
     /**
      * 注销单例Bean
-     * 
+     *
      * @param beanName Bean名称
      */
     public static void unRegisterSingleton(String beanName) {
@@ -270,7 +267,7 @@ public class SpringBuilder implements ApplicationContextAware {
 
     /**
      * 发布事件
-     * 
+     *
      * @param event 事件对象
      */
     public static void publishEvent(Object event) {
@@ -301,7 +298,7 @@ public class SpringBuilder implements ApplicationContextAware {
 
     /**
      * 获取应用程序名称
-     * 
+     *
      * @return 应用程序名称
      */
     public static String getApplicationName() {
@@ -310,7 +307,7 @@ public class SpringBuilder implements ApplicationContextAware {
 
     /**
      * 判断是否为开发或测试模式
-     * 
+     *
      * @return 是否为开发/测试模式
      */
     public static boolean isDemoMode() {
@@ -319,7 +316,7 @@ public class SpringBuilder implements ApplicationContextAware {
 
     /**
      * 判断是否为开发环境
-     * 
+     *
      * @return 是否为开发环境
      */
     public static boolean isDevMode() {
@@ -328,7 +325,7 @@ public class SpringBuilder implements ApplicationContextAware {
 
     /**
      * 判断是否为测试环境
-     * 
+     *
      * @return 是否为测试环境
      */
     public static boolean isTestMode() {
@@ -337,7 +334,7 @@ public class SpringBuilder implements ApplicationContextAware {
 
     /**
      * 替换文本中的环境变量占位符
-     * 
+     *
      * @param text 待处理文本
      * @param env  环境配置
      * @return 替换后的文本
@@ -363,69 +360,82 @@ public class SpringBuilder implements ApplicationContextAware {
     }
 
     /**
-     * {@link AnnotatedGenericBeanDefinition} {@link ScannedGenericBeanDefinition} {@link GenericBeanDefinition}
-     * {@link org.springframework.beans.factory.support.ChildBeanDefinition}
-     * {@link org.springframework.beans.factory.support.RootBeanDefinition}
+     * 从BeanDefinition解析Bean的类类型
      *
-     * @param beanDefinition resolve bean class type from bean definition
-     * @return class for bean definition, could be null.
+     * @param beanDefinition Bean定义，非空
+     * @return Bean的类类型，可能为null
+     * @throws IllegalArgumentException 如果beanDefinition为null
      */
     public static Class<?> resolveBeanClassType(BeanDefinition beanDefinition) {
+        if (beanDefinition == null) {
+            throw new IllegalArgumentException("BeanDefinition cannot be null");
+        }
+
         Class<?> clazz = null;
+        String className = null;
 
-        if (beanDefinition instanceof AnnotatedBeanDefinition) {
-            String className;
+        // 处理AnnotatedBeanDefinition类型
+        if (beanDefinition instanceof AnnotatedBeanDefinition annotatedBeanDefinition) {
             if (isFromConfigurationSource(beanDefinition)) {
-                MethodMetadata methodMetadata = ((AnnotatedBeanDefinition) beanDefinition).getFactoryMethodMetadata();
-                className = methodMetadata.getReturnTypeName();
+                // 从工厂方法元数据获取返回类型
+                MethodMetadata methodMetadata = annotatedBeanDefinition.getFactoryMethodMetadata();
+                className = methodMetadata != null ? methodMetadata.getReturnTypeName() : null;
             } else {
-                AnnotationMetadata annotationMetadata = ((AnnotatedBeanDefinition) beanDefinition).getMetadata();
-                className = annotationMetadata.getClassName();
-            }
-
-            try {
-                if (StringUtils.hasText(className)) {
-                    clazz = ClassUtils.forName(className, null);
-                }
-            } catch (Throwable throwable) {
-                // ignore
+                // 从注解元数据获取类名
+                AnnotationMetadata annotationMetadata = annotatedBeanDefinition.getMetadata();
+                className = annotationMetadata != null ? annotationMetadata.getClassName() : null;
             }
         }
 
-        if (clazz == null) {
+        // 尝试加载类
+        if (StringKit.hasText(className)) {
             try {
-                clazz = ((AbstractBeanDefinition) beanDefinition).getBeanClass();
-            } catch (IllegalStateException ex) {
-                try {
-                    String className = beanDefinition.getBeanClassName();
-                    if (StringUtils.hasText(className)) {
-                        clazz = ClassUtils.forName(className, null);
+                clazz = ClassKit.forName(className, null);
+            } catch (Throwable e) {
+                Logger.debug("Failed to load class: {}", className, e);
+            }
+        }
+
+        // 如果类未解析，尝试从AbstractBeanDefinition获取
+        if (clazz == null && beanDefinition instanceof AbstractBeanDefinition abstractBeanDefinition) {
+            try {
+                clazz = abstractBeanDefinition.getBeanClass();
+            } catch (IllegalStateException e) {
+                Logger.debug("Failed to get bean class from AbstractBeanDefinition", e);
+                className = beanDefinition.getBeanClassName();
+                if (StringKit.hasText(className)) {
+                    try {
+                        clazz = ClassKit.forName(className, null);
+                    } catch (Throwable ex) {
+                        Logger.debug("Failed to load class from bean class name: {}", className, ex);
                     }
-                } catch (Throwable throwable) {
-                    // ignore
                 }
             }
         }
 
-        if (clazz == null) {
-            if (beanDefinition instanceof RootBeanDefinition) {
-                clazz = ((RootBeanDefinition) beanDefinition).getTargetType();
-            }
+        // 如果类仍未解析，尝试从RootBeanDefinition获取目标类型
+        if (clazz == null && beanDefinition instanceof RootBeanDefinition rootBeanDefinition) {
+            clazz = rootBeanDefinition.getTargetType();
         }
 
-        if (ClassUtils.isCglibProxyClass(clazz)) {
-            return clazz.getSuperclass();
-        } else {
-            return clazz;
-        }
+        return clazz;
     }
 
     /**
-     * @param beanDefinition Check whether it is a bean definition created from a configuration class as opposed to any
-     *                       other configuration source.
-     * @return
+     * 检查BeanDefinition是否来源于配置类（而非其他配置源，如XML或组件扫描）。
+     * <p>
+     * 该方法通过检查BeanDefinition的类全限定名是否以
+     * {@code org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader} 开头，
+     * 判断其是否由Spring的{@code @Configuration}类生成。通常用于区分注解配置与传统XML配置或组件扫描的Bean定义。
+     *
+     * @param beanDefinition 要检查的Bean定义对象，非空
+     * @return 如果BeanDefinition来源于配置类，返回{@code true}；否则返回{@code false}
+     * @throws IllegalArgumentException 如果beanDefinition为null
      */
     public static boolean isFromConfigurationSource(BeanDefinition beanDefinition) {
+        if (beanDefinition == null) {
+            throw new IllegalArgumentException("BeanDefinition cannot be null");
+        }
         return beanDefinition.getClass().getCanonicalName()
                 .startsWith("org.springframework.context.annotation.ConfigurationClassBeanDefinitionReader");
     }

@@ -120,7 +120,7 @@ public class HealthProviderService {
             }
 
             // 返回 Message 对象
-            return Message.builder().errcode(ErrorCode.EM_SUCCESS).errmsg("success").data(result).build();
+            return result;
         } catch (Exception e) {
             Logger.error("Failed to retrieve health information for tid '{}': {}", tid, e.getMessage(), e);
             return Message.builder().errcode(ErrorCode.EM_FAILURE)
@@ -174,9 +174,8 @@ public class HealthProviderService {
      * @param probe 探针类型
      * @return 包含错误消息和时间戳的映射
      */
-    public Message builder(EnumValue.Probe probe) {
-        return Message.builder().errcode(ErrorCode.EM_SUCCESS).errmsg("success " + probe.getValue())
-                .data("{timestamp:" + DateKit.current() + "}").build();
+    public Object builder(EnumValue.Probe probe) {
+        return Map.of("state", probe.getValue(), "timestamp:", DateKit.current());
     }
 
     /**

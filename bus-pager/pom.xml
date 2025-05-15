@@ -90,9 +90,15 @@
         <jsqlparser.version>5.1</jsqlparser.version>
         <hikaricp.version>6.3.0</hikaricp.version>
         <druid.version>1.2.24</druid.version>
+        <slf4j.version>2.0.17</slf4j.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>bus-cache</artifactId>
+            <version>${project.version}</version>
+        </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>bus-crypto</artifactId>
@@ -113,6 +119,12 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
             <optional>true</optional>
         </dependency>
         <dependency>
