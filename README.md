@@ -12,7 +12,7 @@
     <img src="https://img.shields.io/badge/Java-17+-green.svg">
   </a>
   <a target="_blank" href="https://spring.io/projects/spring-boot">
-    <img src="https://img.shields.io/badge/Spring Boot-3.0.5-brightgreen.svg">
+    <img src="https://img.shields.io/badge/Spring Boot-3.4.5-brightgreen.svg">
   </a>
   <a target="_blank" href="https://www.mysql.com">
     <img src="https://img.shields.io/badge/Mysql-8.x-blue.svg">
